@@ -58,7 +58,7 @@ waist=majordomos_chain_of_office,id=71357,reforge=mastery_hit,gems=40int_40int_1
 legs=balespiders_leggings,id=71283,reforge=mastery_hit,gems=40int_40int_20int,enchant=95int_80sta
 feet=boots_of_the_black_flame,id=69954,reforge=crit_haste,gems=40int_10int,enchant=50haste
 wrists=wristwraps_of_arrogant_doom,id=71350,reforge=crit_hit,enchant=50int
-hands=fingers_of_incineration,id=71358,reforge=crit_hit,gems=40int_10int,enchant=65mastery
+hands=fingers_of_incineration,id=71358,reforge=crit_hit,gems=40int_10int,enchant=50haste
 finger1=crystal_prison_band,id=71024,reforge=mastery_hit,enchant=40int
 finger2=crystalline_brimstone_ring,id=71210,reforge=mastery_haste,enchant=40int
 trinket1=rune_of_zeth,id=68998,reforge=crit_haste
@@ -87,7 +87,7 @@ waist=majordomos_chain_of_office,id=71357,reforge=mastery_hit,gems=40int_40int_1
 legs=balespiders_leggings,id=71283,reforge=mastery_hit,gems=40int_40int_20int,enchant=95int_80sta
 feet=boots_of_the_black_flame,id=69954,reforge=crit_haste,gems=40int_10int,enchant=50haste
 wrists=wristwraps_of_arrogant_doom,id=71350,reforge=crit_hit,enchant=50int
-hands=fingers_of_incineration,id=71358,reforge=crit_hit,gems=40int_10int,enchant=65mastery
+hands=fingers_of_incineration,id=71358,reforge=crit_hit,gems=40int_10int,enchant=50haste
 finger1=crystal_prison_band,id=71024,reforge=mastery_hit,enchant=40int
 finger2=crystalline_brimstone_ring,id=71210,reforge=mastery_haste,enchant=40int
 trinket1=rune_of_zeth,id=68998,reforge=crit_haste
@@ -120,7 +120,7 @@ hands=fingers_of_incineration,id=71358,reforge=crit_hit,gems=40int_10int,enchant
 finger1=crystal_prison_band,id=71024,reforge=crit_hit,enchant=40int
 finger2=crystalline_brimstone_ring,id=71210,enchant=40int
 trinket1=darkmoon_card_volcano,id=62047
-trinket2=necromantic_focus,id=69139
+trinket2=necromantic_focus,id=68982
 back=rippling_flamewrath_drape,id=71230,enchant=50int
 main_hand=chelleys_sterilized_scalpel,id=71359,enchant=power_torrent
 off_hand=molten_scream,id=71323,reforge=crit_mastery,enchant=40int
@@ -167,7 +167,22 @@ use_pre_potion=1
 professions=enchanting=525/inscription=525
 talents=http://www.wowhead.com/talent#warlock-22312210301332032123002000000000000000300000000000000000
 glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt
-#gear here
+head=balespiders_hood,id=71595,reforge=mastery_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
+neck=flowform_choker,id=71472,reforge=mastery_hit,gems=40int_10int
+shoulders=balespiders_mantle,id=71598,gems=40int,enchant=130int_25haste
+chest=balespiders_robes,id=71597,gems=40int_40int,enchant=20all
+waist=majordomos_chain_of_office,id=71613,reforge=mastery_hit,gems=40int_40int_10int
+legs=balespiders_leggings,id=71596,reforge=mastery_haste,gems=40int_40int_20int,enchant=95int_80sta
+feet=coalwalker_sandals,id=71447,reforge=crit_hit,gems=40int,enchant=50hit
+wrists=wristwraps_of_arrogant_doom,id=71471,reforge=crit_hit,enchant=50int
+hands=fingers_of_incineration,id=71614,reforge=crit_hit,gems=40int_10int,enchant=50haste
+finger1=infernal_signet_of_the_avengers,id=71217,gems=40int_10int,enchant=40int
+finger2=crystalline_brimstone_ring,id=71574,reforge=mastery_haste,enchant=40int
+trinket1=rune_of_zeth,id=69185,reforge=crit_haste
+trinket2=necromantic_focus,id=69139
+back=rippling_flamewrath_drape,id=71389,enchant=50int
+main_hand=shoravon_greatstaff_of_annihilation,id=71797,reforge=mastery_haste,enchant=power_torrent
+ranged=trail_of_embers,id=71575
 actions=
 save=Warlock_AffDrain_T12H.simc
 
@@ -180,7 +195,22 @@ use_pre_potion=1
 professions=enchanting=525/inscription=525
 talents=http://www.wowhead.com/talent#warlock-22312210301332032113000000000000000003300000000000000000
 glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt
-#gear here
+head=balespiders_hood,id=71595,reforge=mastery_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
+neck=flowform_choker,id=71472,reforge=mastery_hit,gems=40int_10int
+shoulders=balespiders_mantle,id=71598,gems=40int,enchant=130int_25haste
+chest=balespiders_robes,id=71597,gems=40int_40int,enchant=20all
+waist=majordomos_chain_of_office,id=71613,reforge=mastery_hit,gems=40int_40int_10int
+legs=balespiders_leggings,id=71596,reforge=mastery_haste,gems=40int_40int_20int,enchant=95int_80sta
+feet=coalwalker_sandals,id=71447,reforge=crit_hit,gems=40int,enchant=50hit
+wrists=wristwraps_of_arrogant_doom,id=71471,reforge=crit_hit,enchant=50int
+hands=fingers_of_incineration,id=71614,reforge=crit_hit,gems=40int_10int,enchant=50haste
+finger1=infernal_signet_of_the_avengers,id=71217,gems=40int_10int,enchant=40int
+finger2=crystalline_brimstone_ring,id=71574,reforge=mastery_haste,enchant=40int
+trinket1=rune_of_zeth,id=69185,reforge=crit_haste
+trinket2=necromantic_focus,id=69139
+back=rippling_flamewrath_drape,id=71389,enchant=50int
+main_hand=shoravon_greatstaff_of_annihilation,id=71797,reforge=mastery_haste,enchant=power_torrent
+ranged=trail_of_embers,id=71575
 actions=
 save=Warlock_Affliction_T12H.simc
 
@@ -206,7 +236,22 @@ use_pre_potion=1
 professions=enchanting=525/inscription=525
 talents=http://www.wowhead.com/talent#warlock-00300000000000000023002000000000000003320202312201312211
 glyphs=life_tap/immolate/imp/conflagrate
-#gear here
+head=balespiders_hood,id=71595,reforge=mastery_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
+neck=flowform_choker,id=71472,reforge=mastery_hit,gems=20int_20hit_10int
+shoulders=balespiders_mantle,id=71598,gems=40int,enchant=130int_25haste
+chest=balespiders_robes,id=71597,gems=20int_20haste_20int_20hit_20int,enchant=20all
+waist=majordomos_chain_of_office,id=71613,reforge=mastery_hit,gems=40int_40int_10int
+legs=balespiders_leggings,id=71596,reforge=mastery_haste,gems=40int_40int_20int,enchant=95int_80sta
+feet=coalwalker_sandals,id=71447,reforge=crit_hit,gems=40int,enchant=50haste
+wrists=wristwraps_of_arrogant_doom,id=71471,reforge=crit_hit,enchant=65haste
+hands=fingers_of_incineration,id=71614,reforge=crit_hit,gems=40int_10int,enchant=50haste
+finger1=infernal_signet_of_the_avengers,id=71217,gems=40int_10int,enchant=40int
+finger2=crystalline_brimstone_ring,id=71574,reforge=mastery_haste,enchant=40int
+trinket1=rune_of_zeth,id=69185,reforge=crit_hit
+trinket2=darkmoon_card_volcano,id=62047,reforge=mastery_haste
+back=rippling_flamewrath_drape,id=71389,enchant=50int
+main_hand=shoravon_greatstaff_of_annihilation,id=71797,reforge=mastery_haste,enchant=power_torrent
+ranged=trail_of_embers,id=71575
 actions=
 save=Warlock_Destruction_T12H.simc
 
