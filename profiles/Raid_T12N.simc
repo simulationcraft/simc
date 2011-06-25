@@ -3,7 +3,7 @@
 optimal_raid=1
 ptr=1
 
-Druid_T12.simc
+Druid_T12N.simc
 
 #Hunter_MM_T12N.simc
 #Hunter_SV_T12N.simc
@@ -18,10 +18,7 @@ Paladin_Retribution_T12N.simc
 Priest_Shadow_T12N.simc
 Priest_Shadow_T12N_DTR.simc
 
-#Warlock_AffDrain_T12N.simc
-#Warlock_Affliction_T12N.simc
-#Warlock_Demonology_T12N.simc
-#Warlock_Destruction_T12N.simc
+Warlock_T12N.simc
 
 Warrior_T12N.simc
 
