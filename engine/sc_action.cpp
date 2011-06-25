@@ -1098,7 +1098,7 @@ void action_t::last_tick()
 
 void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 {
-  assess_damage( t, travel_dmg, ( direct_tick ? DMG_OVER_TIME : DMG_DIRECT ), travel_result );
+  assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
 
   if ( result_is_hit( travel_result ) )
   {
