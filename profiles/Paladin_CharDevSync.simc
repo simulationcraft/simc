@@ -4,7 +4,7 @@ ptr=0
 
 chardev=35780 save=Paladin_Retribution_T11_359.simc name=Paladin_Retribution_T11_359
 
-#hardev=47301 save=Paladin_Retribution_T11_372.simc name=Paladin_Retribution_T11_372
+chardev=47301 save=Paladin_Retribution_T11_372.simc name=Paladin_Retribution_T11_372
 
 ptr=1
 
@@ -39,7 +39,6 @@ ranged=relic_of_the_elemental_lords,id=71587,reforge=haste_mastery,gems=40str
 trinket1=vessel_of_acceleration,id=69167
 trinket2=apparatus_of_khazgoroth,id=69113
 save=Paladin_Retribution_T12H.simc
-
 
 
 paladin=Paladin_Retribution_T12N
