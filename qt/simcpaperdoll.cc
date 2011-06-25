@@ -25,7 +25,7 @@ PaperdollPixmap::get( const QString& icon_str, bool border, QSize size )
   return icon;
 }
 
-QString 
+const QString&
 PaperdollPixmap::resourcePath( void )
 {
   if ( PaperdollPixmap::rpath.isEmpty() )
@@ -47,10 +47,8 @@ PaperdollPixmap::PaperdollPixmap( const QString& icon, bool draw_border, QSize s
 {
   QImage icon_image( QString( resourcePath() + icon ), 0 );
   if ( icon_image.isNull() )
-  {
     icon_image = QImage( QString( QDir::homePath() + "/WoWAssets/Icons/" + icon ) );
-  }
-
+  
   QImage border( resourcePath() + "border" );
 
   if ( icon_image.isNull() )
@@ -72,6 +70,8 @@ PaperdollProfile::PaperdollProfile() :
   QObject(), 
   m_currentSlot( SLOT_NONE ), m_class( PLAYER_NONE ), m_race( RACE_NONE )
 { 
+  m_professions[ 0 ] = m_professions[ 1 ] = PROFESSION_NONE;
+  
   for ( int i = 0; i < SLOT_MAX; i++ )
   {
     m_slotItem[ i ] = 0;
@@ -123,6 +123,16 @@ PaperdollProfile::setRace( int player_race )
   m_race = ( race_type ) player_race;
   
   emit raceChanged( m_race );
+}
+
+void 
+PaperdollProfile::setProfession( int profession, int type )
+{
+  assert( profession >= 0 && profession < 2 && type > PROFESSION_NONE && type < PROFESSION_MAX );
+  
+  m_professions[ profession ] = ( profession_type ) type;
+  
+  emit professionChanged( m_professions[ profession ] );
 }
 
 ItemFilterProxyModel::ItemFilterProxyModel( PaperdollProfile* profile, QObject* parent ) :
@@ -462,11 +472,8 @@ ItemDataListModel::data( const QModelIndex& index, int role ) const
   if ( index.row() > dbc_t::n_items( false ) - 1 )
     return QVariant( QVariant::Invalid );
 
-  // Make an icon here ..
   if ( role == Qt::DecorationRole )
-  {
     return QVariant::fromValue< QPixmap >( PaperdollPixmap::get( items[ index.row() ].icon, true ).scaled( 48, 48 ) );
-  }
   else if ( role == Qt::UserRole )
     return QVariant::fromValue< void* >( (void*) &( items[ index.row() ] ) );
   
@@ -971,6 +978,51 @@ EnchantFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sou
   return true;
 }
 
+PaperdollBasicButton::PaperdollBasicButton( PaperdollProfile* profile, QWidget* parent ) :
+  QAbstractButton( parent ), m_profile( profile )
+{
+  setCheckable( true );
+  setAutoExclusive( true );
+}
+
+void
+PaperdollBasicButton::paintEvent( QPaintEvent* event )
+{
+  QPainter paint;
+  
+  paint.begin( this );
+  
+  if ( isEnabled() )
+  {
+    paint.drawPixmap( event -> rect(), m_icon.scaled( sizeHint() ) );
+  }
+  // Disabled, grayscale
+  else
+  {
+    QImage image = m_icon.toImage();
+    QRgb col;
+    int gray;
+    int width = m_icon.width();
+    int height = m_icon.height();
+    for ( int i = 0; i < width; i++ )
+    {
+      for ( int j = 0; j < height; j++ )
+      {
+        col = image.pixel( i, j );
+        gray = qGray( col );
+        image.setPixel( i, j, qRgba( gray, gray, gray, qAlpha( col ) ) );
+      }
+    }
+    paint.drawImage( event -> rect(), image );
+  }
+  
+  // Selection border
+  if ( isChecked() )
+    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border", false ).scaled( sizeHint() ) );
+  
+  paint.end();
+}
+
 QString
 PaperdollSlotButton::getSlotIconName( slot_type slot_id )
 {
@@ -1004,23 +1056,14 @@ PaperdollSlotButton::getSlotIconName( slot_type slot_id )
 }
 
 PaperdollSlotButton::PaperdollSlotButton( slot_type slot, PaperdollProfile* profile, QWidget* parent ) :
-  QAbstractButton( parent ), m_slot( slot ), m_profile( profile )
+  PaperdollBasicButton( profile, parent ), m_slot( slot )
 {
-  m_slotIcon = PaperdollPixmap::get( PaperdollSlotButton::getSlotIconName( m_slot ), true );
-  
-  setCheckable( true );
-  setAutoExclusive( true );
+  m_icon = PaperdollPixmap::get( PaperdollSlotButton::getSlotIconName( m_slot ), true );
   
   QObject::connect( this,    SIGNAL( selectedSlot( slot_type ) ),
                     profile, SLOT( setSelectedSlot( slot_type ) ) );
   QObject::connect( profile, SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
                     this,    SLOT( setSlotItem( slot_type, const item_data_t* ) ) );
-}
-
-QSize
-PaperdollSlotButton::sizeHint() const
-{
-  return QSize( 64, 64 );
 }
 
 void
@@ -1039,7 +1082,7 @@ PaperdollSlotButton::paintEvent( QPaintEvent* event )
 
   // Empty slot
   if ( ! m_profile -> slotItem( m_slot ) )
-    paint.drawPixmap( event -> rect(), m_slotIcon );
+    paint.drawPixmap( event -> rect(), m_icon );
   // Item in it, paint the item icon instead
   else
     paint.drawPixmap( event -> rect(), PaperdollPixmap::get( m_profile -> slotItem( m_slot ) -> icon, true ) );
@@ -1059,65 +1102,21 @@ PaperdollSlotButton::setSlotItem( slot_type t, const item_data_t* )
 }
 
 PaperdollClassButton::PaperdollClassButton( PaperdollProfile* profile, player_type t, QWidget* parent ) :
-  QAbstractButton( parent ), m_profile( profile ), m_type( t )
+  PaperdollBasicButton( profile, parent ), m_type( t )
 {
-  setCheckable( true );
-  setAutoExclusive( true );
-
   m_icon = PaperdollPixmap::get( QString( "class_%1" ).arg( util_t::player_type_string( t ) ), true );
 }
 
-QSize 
-PaperdollClassButton::sizeHint() const
-{
-  return QSize( 32, 32 );
-}
-
-void
-PaperdollClassButton::paintEvent( QPaintEvent* event )
-{
-  QPainter paint;
-  
-  paint.begin( this );
-  
-  paint.drawPixmap( event -> rect(), m_icon.scaled( 32, 32 ) );
-  
-  // Selection border
-  if ( isChecked() )
-    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border", false ).scaled( 32, 32 ) );
-  
-  paint.end();
-}
-
 PaperdollRaceButton::PaperdollRaceButton( PaperdollProfile* profile, race_type t, QWidget* parent ) :
-QAbstractButton( parent ), m_profile( profile ), m_type( t )
+  PaperdollBasicButton( profile, parent ), m_type( t )
 {
-  setCheckable( true );
-  setAutoExclusive( true );
-  
   m_icon = PaperdollPixmap::get( QString( "race_%1" ).arg( util_t::race_type_string( t ) ), true );
 }
 
-QSize 
-PaperdollRaceButton::sizeHint() const
+PaperdollProfessionButton::PaperdollProfessionButton( PaperdollProfile* profile, profession_type t, QWidget* parent ) :
+PaperdollBasicButton( profile, parent ), m_type( t )
 {
-  return QSize( 32, 32 );
-}
-
-void
-PaperdollRaceButton::paintEvent( QPaintEvent* event )
-{
-  QPainter paint;
-  
-  paint.begin( this );
-  
-  paint.drawPixmap( event -> rect(), m_icon.scaled( 32, 32 ) );
-  
-  // Selection border
-  if ( isChecked() )
-    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border", false ).scaled( 32, 32 ) );
-  
-  paint.end();
+  m_icon = PaperdollPixmap::get( QString( "prof_%1" ).arg( util_t::profession_type_string( t ) ), true );
 }
 
 PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile, QWidget* parent ) :
@@ -1143,20 +1142,40 @@ PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile,
   QObject::connect( m_classButtonGroup, SIGNAL( buttonClicked( int ) ),
                     profile,            SLOT( setClass( int ) ) );
   
+  QObject::connect( profile,            SIGNAL( raceChanged( race_type ) ),
+                    this,               SLOT( raceSelected( race_type ) ) );
+  
   setLayout( m_classButtonGroupLayout );
   setCheckable( false );
   setFlat( true );
   setAlignment( Qt::AlignHCenter );
 }
 
+void
+PaperdollClassButtonGroup::raceSelected( race_type t )
+{
+  assert( t > RACE_ELEMENTAL && t < RACE_MAX );
+  
+  for ( player_type i = DEATH_KNIGHT; i < PLAYER_PET; i++ )
+    m_classButtons[ i ] -> setEnabled( false );
+  
+  for ( int i = DEATH_KNIGHT; i < PLAYER_PET; i++ )
+  {
+    for ( int j = 0; j < RACE_MAX - RACE_NIGHT_ELF; j++ )
+    {
+      if ( raceCombinations[ i ][ j ] == t )
+      {
+        m_classButtons[ i ] -> setEnabled( true );
+        break;
+      }
+    }
+  }
+}
+
 PaperdollRaceButtonGroup::PaperdollRaceButtonGroup( PaperdollProfile* profile, QWidget* parent ) :
-QGroupBox( "Select character race", parent ), m_profile( profile )
+  QGroupBox( "Select character race", parent ), m_profile( profile )
 {
   PaperdollRaceButton* tmp;
-  race_type races[2][6] = {
-    { RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN, },
-    { RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN, }
-  };
   const char* faction_str[2] = { 
     "alliance", 
     "horde" 
@@ -1181,8 +1200,8 @@ QGroupBox( "Select character race", parent ), m_profile( profile )
     
     for ( int race = 0; race < 6; race++ )
     {
-      tmp = m_raceButtons[ races[ faction ][ race ] - RACE_NIGHT_ELF ] = new PaperdollRaceButton( profile, races[ faction ][ race ], this );
-      m_raceButtonGroup -> addButton( tmp, races[ faction ][ race ] );
+      tmp = m_raceButtons[ raceButtonOrder[ faction ][ race ] - RACE_NIGHT_ELF ] = new PaperdollRaceButton( profile, raceButtonOrder[ faction ][ race ], this );
+      m_raceButtonGroup -> addButton( tmp, raceButtonOrder[ faction ][ race ] );
       m_raceButtonGroupLayout[ faction ] -> addWidget( tmp );
     }
   }
@@ -1195,6 +1214,86 @@ QGroupBox( "Select character race", parent ), m_profile( profile )
   QObject::connect( m_raceButtonGroup, SIGNAL( buttonClicked( int ) ),
                     profile,           SLOT( setRace( int ) ) );
   
+  QObject::connect( profile,            SIGNAL( classChanged( player_type ) ),
+                    this,               SLOT( classSelected( player_type ) ) );
+}
+
+void
+PaperdollRaceButtonGroup::classSelected( player_type t )
+{
+  assert( t < PLAYER_PET && t > PLAYER_NONE );
+  
+  for ( race_type race = RACE_NIGHT_ELF; race < RACE_MAX; race++ )
+    m_raceButtons[ race - RACE_NIGHT_ELF ] -> setEnabled( false );
+  
+  for ( int i = 0; i < RACE_MAX - RACE_NIGHT_ELF; i++ )
+  {
+    for ( int j = 0; j < PLAYER_PET; j++ )
+    {
+      if ( classCombinations[ i ][ j ] == t )
+      {
+        m_raceButtons[ i ] -> setEnabled( true );
+        break;
+      }
+    }
+  }
+}
+
+PaperdollProfessionButtonGroup::PaperdollProfessionButtonGroup( PaperdollProfile* profile, QWidget* parent ) :
+  QGroupBox( "Select character professions", parent )
+{
+  PaperdollProfessionButton* tmp;
+  
+  m_professionsLayout = new QVBoxLayout();
+  m_professionsLayout -> setSpacing( 2 );
+  m_professionsLayout -> setContentsMargins( 1, 1, 1, 1 );
+  
+  for ( int profession = 0; profession < 2; profession++ )
+  {
+    m_professionGroup[ profession ] = new QButtonGroup();
+    m_professionLayout[ profession ] = new QHBoxLayout();
+    m_professionLayout[ profession ] -> setAlignment( Qt::AlignHCenter | Qt::AlignTop );
+    m_professionLayout[ profession ] -> setSpacing( 2 );
+    m_professionLayout[ profession ] -> setContentsMargins( 0, 0, 0, 0 );
+    
+    m_professionsLayout -> addLayout( m_professionLayout[ profession ] );
+    
+    for ( profession_type p = PROF_ALCHEMY; p < PROFESSION_MAX; p++ )
+    { 
+      tmp = m_professionButtons[ profession ][ p - PROF_ALCHEMY ] = new PaperdollProfessionButton( profile, p, this );
+      m_professionGroup[ profession ] -> addButton( tmp, p );
+      m_professionLayout[ profession ] -> addWidget( tmp );
+    }
+    
+    QObject::connect( m_professionGroup[ profession ], SIGNAL( buttonClicked( int ) ),
+                      this,           SLOT( setProfession( int ) ) );
+  }
+  
+  setLayout( m_professionsLayout );
+  setCheckable( false );
+  setFlat( true );
+  setAlignment( Qt::AlignHCenter );
+}
+
+void 
+PaperdollProfessionButtonGroup::setProfession( int newValue )
+{
+  QButtonGroup* sender = qobject_cast< QButtonGroup* >( QObject::sender() );
+  
+  for ( int i = 0; i < 2; i ++ )
+  {
+    if ( m_professionGroup[ i ] == sender )
+      continue;
+    
+    // Enable all first
+    for ( int j = 0; j < PROFESSION_MAX - 1; j++ )
+      m_professionButtons[ i ][ j ] -> setEnabled( true );
+
+    m_professionButtons[ i ][ newValue - PROF_ALCHEMY ] -> setEnabled( false );
+    
+    emit professionSelected( i, newValue );
+    break;
+  }
 }
 
 Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
@@ -1233,6 +1332,7 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   
   m_classGroup = new PaperdollClassButtonGroup( profile, this );
   m_raceGroup = new PaperdollRaceButtonGroup( profile, this );
+  m_professionGroup = new PaperdollProfessionButtonGroup( profile, this );
   
   m_layout -> addWidget( m_slotWidgets[ SLOT_HEAD ],      0, 0, Qt::AlignLeft | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_NECK ],      1, 0, Qt::AlignLeft | Qt::AlignTop );
@@ -1256,10 +1356,11 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   m_layout -> addWidget( m_slotWidgets[ SLOT_TRINKET_1 ], 6, 4, Qt::AlignRight | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_TRINKET_2 ], 7, 4, Qt::AlignRight | Qt::AlignTop );
 
-  m_layout -> addLayout( m_baseSelectorLayout, 0, 1, 2, 3 );
+  m_layout -> addLayout( m_baseSelectorLayout, 0, 1, 3, 3 );
 
   m_baseSelectorLayout -> addWidget( m_classGroup, Qt::AlignLeft | Qt::AlignTop );
   m_baseSelectorLayout -> addWidget( m_raceGroup, Qt::AlignLeft | Qt::AlignTop );
+  m_baseSelectorLayout -> addWidget( m_professionGroup, Qt::AlignLeft | Qt::AlignTop );
   
   setLayout( m_layout );
 }
@@ -1271,3 +1372,62 @@ Paperdoll::sizeHint() const
 }
 
 QString PaperdollPixmap::rpath = "";
+
+const race_type PaperdollRaceButtonGroup::raceButtonOrder[ 2 ][ 6 ] = {
+  { RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN, },
+  { RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN, }
+};
+
+const player_type PaperdollRaceButtonGroup::classCombinations[ 12 ][ 11 ] = {
+  // Night Elf
+  { DEATH_KNIGHT, DRUID, HUNTER, MAGE,          PRIEST, ROGUE,                  WARRIOR },
+  // Human
+  { DEATH_KNIGHT,        HUNTER, MAGE, PALADIN, PRIEST, ROGUE,         WARLOCK, WARRIOR },
+  // Gnome
+  { DEATH_KNIGHT,                MAGE,          PRIEST, ROGUE,         WARLOCK, WARRIOR },
+  // Dwarf
+  { DEATH_KNIGHT,        HUNTER,       PALADIN, PRIEST, ROGUE, SHAMAN,          WARRIOR },
+  // Draenei
+  { DEATH_KNIGHT,        HUNTER, MAGE, PALADIN, PRIEST,        SHAMAN,          WARRIOR },
+  // Worgen
+  { DEATH_KNIGHT, DRUID, HUNTER, MAGE,          PRIEST, ROGUE,         WARLOCK, WARRIOR },
+  // Orc
+  { DEATH_KNIGHT,        HUNTER, MAGE,                  ROGUE, SHAMAN, WARLOCK, WARRIOR },
+  // Troll
+  { DEATH_KNIGHT, DRUID, HUNTER, MAGE,          PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR },
+  // Undead
+  { DEATH_KNIGHT,        HUNTER, MAGE,          PRIEST, ROGUE,         WARLOCK, WARRIOR },
+  // Blood Elf
+  { DEATH_KNIGHT,        HUNTER, MAGE, PALADIN, PRIEST, ROGUE,         WARLOCK, WARRIOR },
+  // Tauren
+  { DEATH_KNIGHT, DRUID, HUNTER,       PALADIN, PRIEST,        SHAMAN,          WARRIOR },
+  // Goblin
+  { DEATH_KNIGHT,        HUNTER, MAGE,          PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR },
+};
+
+// Note note this is in simulationcraft internal order, not the order of the game client
+const race_type PaperdollClassButtonGroup::raceCombinations[ 11 ][ 12 ] = {
+  { RACE_NONE },
+  // Death Knight
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
+  // Druid
+  {                                   RACE_NIGHT_ELF,              RACE_TAUREN,             RACE_TROLL,                                            RACE_WORGEN },
+  // Hunter
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN,             RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
+  // Mage
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD,              RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
+  // Paladin
+  { RACE_HUMAN,           RACE_DWARF,                              RACE_TAUREN,                                      RACE_BLOOD_ELF, RACE_DRAENEI,             },
+  // Priest
+  { RACE_HUMAN,           RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
+  // Rogue
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD,              RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF,               RACE_WORGEN },
+  // Shaman
+  {             RACE_ORC, RACE_DWARF,                              RACE_TAUREN,             RACE_TROLL, RACE_GOBLIN,                 RACE_DRAENEI,             },
+  // Warlock
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF,                 RACE_UNDEAD,              RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF,               RACE_WORGEN },
+  // Warrior
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
+};
+
+

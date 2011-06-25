@@ -47,7 +47,7 @@ class PaperdollPixmap : public QPixmap
 {
 public:
   static QPixmap get( const QString&, bool = false, QSize = QSize( 64, 64 ) );
-  static QString resourcePath( void );
+  static const QString& resourcePath( void );
 
   PaperdollPixmap();
   PaperdollPixmap( const QString&, bool = false, QSize = QSize( 64, 64 ) );
@@ -75,6 +75,7 @@ public slots:
   void setSelectedEnchant( int );
   void setClass( int );
   void setRace( int );
+  void setProfession( int, int );
 
 signals:
   void slotChanged( slot_type );
@@ -82,10 +83,12 @@ signals:
   void enchantChanged( slot_type, const EnchantData& );
   void classChanged( player_type );
   void raceChanged( race_type );
+  void professionChanged( profession_type );
 
 private:
   player_type        m_class;
   race_type          m_race;
+  profession_type    m_professions[ 2 ];
   slot_type          m_currentSlot;          // Currently selected paperdoll slot
   const item_data_t* m_slotItem[ SLOT_MAX ]; // Currently selected item in a slot
   EnchantData        m_slotEnchant[ SLOT_MAX ]; // Currently selected enchants in a slot;
@@ -241,7 +244,20 @@ private:
   PaperdollProfile* m_profile;
 };
 
-class PaperdollSlotButton : public QAbstractButton
+class PaperdollBasicButton : public QAbstractButton
+{
+  Q_OBJECT
+public:
+  PaperdollBasicButton( PaperdollProfile*, QWidget* = 0 );
+
+  virtual QSize sizeHint() const { return QSize( 32, 32 ); }
+  virtual void paintEvent( QPaintEvent* );
+protected:
+  QPixmap           m_icon;
+  PaperdollProfile* m_profile;
+};
+
+class PaperdollSlotButton : public PaperdollBasicButton
 {
   Q_OBJECT
 public:
@@ -249,8 +265,8 @@ public:
 
   PaperdollSlotButton( slot_type, PaperdollProfile*, QWidget* = 0 );
   
-  QSize sizeHint() const;
   void  paintEvent( QPaintEvent* );
+  QSize sizeHint() const { return QSize( 64, 64 ); }
   slot_type getSlot( void ) const { return m_slot; }
 signals:
   void selectedSlot( slot_type );
@@ -258,30 +274,44 @@ public slots:
   void setSlotItem( slot_type, const item_data_t* );
 protected:
   void mousePressEvent( QMouseEvent* );
-private:
   slot_type          m_slot;
-  QPixmap            m_slotIcon;
-  PaperdollProfile*  m_profile;
 };
 
-class PaperdollClassButton : public QAbstractButton
+class PaperdollClassButton : public PaperdollBasicButton
 {
-  Q_OBJECT
 public:
   PaperdollClassButton( PaperdollProfile*, player_type, QWidget* = 0 );
-  QSize sizeHint() const;
-  void paintEvent( QPaintEvent* );
-private:
+protected:
   player_type       m_type;
-  QPixmap           m_icon;
-  PaperdollProfile* m_profile;
+};
+
+class PaperdollRaceButton : public PaperdollBasicButton
+{
+public:
+  PaperdollRaceButton( PaperdollProfile*, race_type, QWidget* = 0 );
+protected:
+  race_type         m_type;
+};
+
+class PaperdollProfessionButton : public PaperdollBasicButton
+{
+public:
+  static QString professionString( profession_type );
+  
+  PaperdollProfessionButton( PaperdollProfile*, profession_type, QWidget* = 0 );
+protected:
+  profession_type   m_type;
 };
 
 class PaperdollClassButtonGroup : public QGroupBox
 {
   Q_OBJECT
 public:
+  static const race_type raceCombinations[ 11 ][ 12 ];
+
   PaperdollClassButtonGroup( PaperdollProfile*, QWidget* = 0 );
+public slots:
+  void raceSelected( race_type );
 private:
   PaperdollProfile*     m_profile;
   QButtonGroup*         m_classButtonGroup;
@@ -289,24 +319,16 @@ private:
   PaperdollClassButton* m_classButtons[ PLAYER_PET ];
 };
 
-class PaperdollRaceButton : public QAbstractButton
-{
-  Q_OBJECT
-public:
-  PaperdollRaceButton( PaperdollProfile*, race_type, QWidget* = 0 );
-  QSize sizeHint() const;
-  void paintEvent( QPaintEvent* );
-private:
-  race_type         m_type;
-  QPixmap           m_icon;
-  PaperdollProfile* m_profile;
-};
-
 class PaperdollRaceButtonGroup : public QGroupBox
 {
   Q_OBJECT
 public:
+  static const race_type   raceButtonOrder[ 2 ][ 6 ];
+  static const player_type classCombinations[ 12 ][ 11 ];
+  
   PaperdollRaceButtonGroup( PaperdollProfile*, QWidget* = 0 );
+public slots:
+  void classSelected( player_type );
 private:
   PaperdollProfile*     m_profile;
   QButtonGroup*         m_raceButtonGroup;
@@ -314,6 +336,23 @@ private:
   QHBoxLayout*          m_raceButtonGroupLayout[ 2 ];
   QLabel*               m_factionLabel[ 2 ];
   PaperdollRaceButton*  m_raceButtons[ 12 ];
+};
+
+class PaperdollProfessionButtonGroup : public QGroupBox
+{
+  Q_OBJECT
+public:
+  PaperdollProfessionButtonGroup( PaperdollProfile*, QWidget* = 0 );
+signals:
+  void professionSelected( int, int );
+private slots:
+  void setProfession( int );
+private:
+  PaperdollProfile*          m_profile;
+  QButtonGroup*              m_professionGroup[ 2 ];
+  QHBoxLayout*               m_professionLayout[ 2 ];
+  QVBoxLayout*               m_professionsLayout;
+  PaperdollProfessionButton* m_professionButtons[ 2 ][ 11 ];
 };
 
 class Paperdoll : public QWidget
@@ -328,6 +367,7 @@ private:
   QVBoxLayout*         m_baseSelectorLayout;
   PaperdollClassButtonGroup* m_classGroup;
   PaperdollRaceButtonGroup*  m_raceGroup;
+  PaperdollProfessionButtonGroup* m_professionGroup;
   PaperdollSlotButton* m_slotWidgets[ SLOT_MAX ];
   PaperdollProfile*    m_profile;
 };
