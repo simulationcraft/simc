@@ -37,8 +37,9 @@ class EnchantFilterProxyModel;
 
 class EnchantData {
 public:
-  const item_data_t*  item_enchant;
+  const item_data_t*  item;
   const spell_data_t* enchant;
+  const item_enchantment_data_t* item_enchant;
   inline bool operator==(const EnchantData& other) { return enchant == other.enchant; }
 };
 Q_DECLARE_METATYPE( EnchantData );
@@ -68,6 +69,7 @@ public:
   inline slot_type          currentSlot( void ) const     { return m_currentSlot; }
   inline player_type        currentClass( void ) const { return m_class; }
   inline race_type          currentRace( void ) const { return m_race; }
+  inline profession_type    currentProfession( unsigned p ) const { assert( p < 2 ); return m_professions[ p ]; }
 
 public slots:
   void setSelectedSlot( slot_type );
@@ -98,6 +100,7 @@ class ItemFilterProxyModel : public QSortFilterProxyModel
 {
   Q_OBJECT
 public:
+  static const int professionIds[ PROFESSION_MAX ];
   ItemFilterProxyModel( PaperdollProfile*, QObject* = 0 );
 
   inline int minIlevel( void ) { return m_minIlevel; }
@@ -106,11 +109,11 @@ public:
 public slots:
   void setMinIlevel( int );
   void setMaxIlevel( int );
-  void setClass( player_type );
-  void setRace( race_type );
   void setSlot( slot_type );
   void setMatchArmor( int );
   void SearchTextChanged( const QString& );
+  
+  void filterChanged() { invalidate(); sort( 0 ); }
 
 signals:
   void itemSelected( const QModelIndex& );
@@ -122,6 +125,7 @@ protected:
 private:
   bool itemFitsSlot( const item_data_t*, bool = false ) const;
   bool itemFitsClass( const item_data_t* ) const;
+  bool itemUsableByProfessions( const item_data_t* ) const;
   bool filterByName( const item_data_t* ) const;
   bool itemUsedByClass( const item_data_t* ) const;
   int  primaryStat( void ) const;
@@ -232,6 +236,7 @@ public:
 public slots:
   void setSlot( slot_type );
   void setSlotItem( slot_type, const item_data_t* );
+  void setProfession( profession_type );
 
 signals:
   void enchantSelected( int );

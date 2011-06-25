@@ -112,8 +112,7 @@ PaperdollProfile::setClass( int player_class )
   m_class = ( player_type ) player_class;
   
   emit classChanged( m_class );
-  // We need to invalidate items here possibly, 
-  // if class changes to an item that cannot use the item
+  // FIXME: Invalidate items
 }
 
 void
@@ -123,6 +122,7 @@ PaperdollProfile::setRace( int player_race )
   m_race = ( race_type ) player_race;
   
   emit raceChanged( m_race );
+  // FIXME: Invalidate items
 }
 
 void 
@@ -133,6 +133,7 @@ PaperdollProfile::setProfession( int profession, int type )
   m_professions[ profession ] = ( profession_type ) type;
   
   emit professionChanged( m_professions[ profession ] );
+  // FIXME: Invalidate items
 }
 
 ItemFilterProxyModel::ItemFilterProxyModel( PaperdollProfile* profile, QObject* parent ) :
@@ -141,48 +142,35 @@ ItemFilterProxyModel::ItemFilterProxyModel( PaperdollProfile* profile, QObject* 
   m_matchArmor( true ), m_minIlevel( 359 ), m_maxIlevel( 410 ),
   m_searchText()
 {
+  
   QObject::connect( profile, SIGNAL( classChanged( player_type ) ),
-                    this,    SLOT( setClass( player_type ) ) );
+                    this,    SLOT( filterChanged() ) );
 
   QObject::connect( profile, SIGNAL( raceChanged( race_type ) ),
-                    this,    SLOT( setRace( race_type ) ) );
+                    this,    SLOT( filterChanged() ) );
+
+  QObject::connect( profile, SIGNAL( professionChanged( profession_type ) ),
+                   this,    SLOT( filterChanged() ) );
 }
 
 void 
 ItemFilterProxyModel::setMinIlevel( int newValue )
 {
   m_minIlevel = newValue;
-  invalidate();
-  sort( 0 );
+  filterChanged();
 }
 
 void 
 ItemFilterProxyModel::setMaxIlevel( int newValue )
 {
   m_maxIlevel = newValue;
-  invalidate();
-  sort( 0 );
-}
-
-void 
-ItemFilterProxyModel::setClass( player_type newValue )
-{
-  invalidate();
-  sort( 0 );
-}
-
-void 
-ItemFilterProxyModel::setRace( race_type newValue )
-{
-  invalidate();
-  sort( 0 );
+  filterChanged();
 }
 
 void 
 ItemFilterProxyModel::setSlot( slot_type slot )
 {
-  invalidate();
-  sort( 0 );
+  filterChanged();
   
   if ( m_profile -> slotItem( slot ) )
   {
@@ -203,16 +191,14 @@ void
 ItemFilterProxyModel::SearchTextChanged( const QString& newValue )
 {
   m_searchText = newValue;
-  invalidate();
-  sort( 0 );
+  filterChanged();
 }
 
 void
 ItemFilterProxyModel::setMatchArmor( int newValue )
 {
   m_matchArmor = newValue;
-  invalidate();
-  sort( 0 );
+  filterChanged();
 }
 
 bool
@@ -242,6 +228,7 @@ ItemFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& source
     return false;
   
   bool state = ( filterByName( item ) && itemFitsSlot( item ) && itemFitsClass( item ) &&
+                itemUsableByProfessions( item ) &&
                 itemUsedByClass( item ) && 
                 item -> level >= m_minIlevel && item -> level <= m_maxIlevel &&
                 ( item -> class_mask & util_t::class_id_mask( player_class ) ) &&
@@ -451,6 +438,17 @@ ItemFilterProxyModel::itemUsedByClass( const item_data_t* item ) const
   }
   
   return primary_stat_found;
+}
+
+bool 
+ItemFilterProxyModel::itemUsableByProfessions( const item_data_t* item ) const
+{
+  if ( item -> req_skill == 0 ) return true;
+  if ( item -> req_skill == professionIds[ m_profile -> currentProfession( 0 ) ] ||
+       item -> req_skill == professionIds[ m_profile -> currentProfession( 1 ) ] )
+    return true;
+  
+  return false;
 }
 
 ItemDataListModel::ItemDataListModel( QObject* parent ) :
@@ -838,9 +836,12 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
         // Item based permanent enchant, presume enchant in effect 1 always for now
         if ( spell -> effect1().type() == E_ENCHANT_ITEM )
         {
+          const item_enchantment_data_t* item_enchant = &( dbc.item_enchantment( spell -> effect1().misc_value1() ) );
+          
           EnchantData ed;
-          ed.item_enchant = item;
+          ed.item = item;
           ed.enchant = spell;
+          ed.item_enchant = item_enchant;
           
           if ( std::find( m_enchants.begin(), m_enchants.end(), ed ) == m_enchants.end() )
             m_enchants.push_back( ed );
@@ -857,9 +858,12 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
   {
     if ( s -> effect1().type() == E_ENCHANT_ITEM )
     {
+      const item_enchantment_data_t* item_enchant = &( dbc.item_enchantment( s -> effect1().misc_value1() ) );
+
       EnchantData ed;
-      ed.item_enchant = 0;
+      ed.item = 0;
       ed.enchant = s;
+      ed.item_enchant = item_enchant;
       
       if ( std::find( m_enchants.begin(), m_enchants.end(), ed ) == m_enchants.end() )
         m_enchants.push_back( ed );
@@ -880,8 +884,8 @@ EnchantDataModel::data( const QModelIndex& index, int role ) const
   
   if ( role == Qt::DisplayRole )
   {
-    if ( m_enchants[ index.row() ].item_enchant )
-      return QVariant( m_enchants[ index.row() ].item_enchant -> name );
+    if ( m_enchants[ index.row() ].item )
+      return QVariant( m_enchants[ index.row() ].item -> name );
     else
       return QVariant( m_enchants[ index.row() ].enchant -> name_cstr() );
   }
@@ -890,8 +894,8 @@ EnchantDataModel::data( const QModelIndex& index, int role ) const
   else if ( role == Qt::DecorationRole )
   {
     const EnchantData& data =  m_enchants[ index.row() ];
-    if ( data.item_enchant )
-      return QVariant( PaperdollPixmap::get( data.item_enchant -> icon, true ).scaled( 16, 16 ) );
+    if ( data.item )
+      return QVariant( PaperdollPixmap::get( data.item -> icon, true ).scaled( 16, 16 ) );
     else
       return QVariant( PaperdollPixmap::get( data.enchant -> _icon, true ).scaled( 16, 16 ) );
     
@@ -909,6 +913,9 @@ EnchantFilterProxyModel::EnchantFilterProxyModel( PaperdollProfile* profile, QWi
 
   QObject::connect( profile, SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
                     this,    SLOT( setSlotItem( slot_type, const item_data_t* ) ) );
+
+  QObject::connect( profile, SIGNAL( professionChanged( profession_type ) ),
+                    this,    SLOT( setProfession( profession_type ) ) );
 }
 
 void 
@@ -941,14 +948,21 @@ EnchantFilterProxyModel::setSlotItem( slot_type, const item_data_t* )
   sort( 0 );
 }
 
+void
+EnchantFilterProxyModel::setProfession( profession_type )
+{
+  invalidate();
+  sort( 0 );
+}
+
 bool
 EnchantFilterProxyModel::lessThan( const QModelIndex& left, const QModelIndex& right ) const
 {
   const EnchantData e_left  = left.data( Qt::UserRole ).value< EnchantData >(),
                     e_right = right.data( Qt::UserRole ).value< EnchantData >();
   
-  return QString::compare( e_left.item_enchant ? e_left.item_enchant -> name : e_left.enchant -> name_cstr(),
-                           e_right.item_enchant ? e_right.item_enchant -> name : e_right.enchant -> name_cstr() ) < 0;
+  return QString::compare( e_left.item ? e_left.item -> name : e_left.enchant -> name_cstr(),
+                           e_right.item ? e_right.item -> name : e_right.enchant -> name_cstr() ) < 0;
 }
 
 bool
@@ -974,6 +988,17 @@ EnchantFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sou
   if ( ed.enchant -> _equipped_subclass_mask && 
        ! ( ( 1 << item -> item_subclass ) & ed.enchant -> _equipped_subclass_mask ) ) 
     return false;
+  
+  if ( ed.item_enchant -> req_skill > 0 )
+  {
+    int profession_1 = ItemFilterProxyModel::professionIds[ m_profile -> currentProfession( 0 ) ],
+        profession_2 = ItemFilterProxyModel::professionIds[ m_profile -> currentProfession( 1 ) ];
+    
+    if ( ed.item_enchant -> req_skill == profession_1 || ed.item_enchant -> req_skill == profession_2 )
+      return true;
+    
+    return false;
+  }
 
   return true;
 }
@@ -1266,8 +1291,11 @@ PaperdollProfessionButtonGroup::PaperdollProfessionButtonGroup( PaperdollProfile
     }
     
     QObject::connect( m_professionGroup[ profession ], SIGNAL( buttonClicked( int ) ),
-                      this,           SLOT( setProfession( int ) ) );
+                      this,                            SLOT( setProfession( int ) ) );
   }
+  
+  QObject::connect( this,    SIGNAL( professionSelected( int, int ) ),
+                    profile, SLOT( setProfession( int, int ) ) );
   
   setLayout( m_professionsLayout );
   setCheckable( false );
@@ -1372,6 +1400,22 @@ Paperdoll::sizeHint() const
 }
 
 QString PaperdollPixmap::rpath = "";
+
+
+const int ItemFilterProxyModel::professionIds[ PROFESSION_MAX ] = {
+  0,
+  171,  // Alchemy
+  186,  // Mining
+  182,  // Herbalism
+  165,  // Leatherworking
+  202,  // Engineering
+  164,  // Blacksmithing
+  773,  // Inscription
+  393,  // Skinning
+  197,  // Tailoring,
+  755,  // Jewelcrafting
+  333,  // Enchanting
+};
 
 const race_type PaperdollRaceButtonGroup::raceButtonOrder[ 2 ][ 6 ] = {
   { RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN, },
