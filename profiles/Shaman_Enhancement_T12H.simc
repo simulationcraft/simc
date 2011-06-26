@@ -27,7 +27,7 @@ actions+=/use_item,name=ancient_petrified_seed
 actions+=/blood_fury
 actions+=/searing_totem
 actions+=/lava_lash
-actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
 actions+=/unleash_elements
 actions+=/flame_shock,if=!ticking|(buff.unleash_flame.up&ticks_remain<=2)
 actions+=/earth_shock
@@ -36,7 +36,7 @@ actions+=/spirit_wolf
 actions+=/earth_elemental_totem
 actions+=/fire_nova,if=target.adds>1
 actions+=/spiritwalkers_grace,moving=1
-actions+=/lightning_bolt,if=buff.maelstrom_weapon.stack=4&buff.maelstrom_weapon.react
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.react=4
 head=erupting_volcanic_helmet,heroic=1,type=mail,ilevel=391,quality=epic,stats=2214armor_400agi_689sta_299haste_248mastery,reforge=haste_hit,gems=agile_shadowspirit_20agi_20hit_30agi,enchant=60agi_35haste
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=haste_hit
 shoulders=erupting_volcanic_spaulders,heroic=1,type=mail,ilevel=391,quality=epic,stats=2044armor_322agi_513sta_220hit_213exp,reforge=exp_mastery,gems=20agi_20mastery_10agi,enchant=50agi_25mastery

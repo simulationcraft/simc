@@ -1786,6 +1786,37 @@ void shaman_spell_t::execute()
       p -> cooldowns_t12_2pc_caster -> start( 105.0 );
     }
   }
+  
+  // Shamans have specialized swing timer reset system, where every cast time spell
+  // resets the swing timers, _IF_ the spell is not maelstromable, or the maelstrom
+  // weapon stack is zero.
+  if ( execute_time() > 0 )
+  {
+    if ( ! maelstrom || p -> buffs_maelstrom_weapon -> check() == 0 )
+    {
+      if ( sim -> debug )
+      { 
+        log_t::output( sim, "Resetting swing timers for '%s', maelstrom=%d, stacks=%d", 
+          name_str.c_str(), maelstrom, p -> buffs_maelstrom_weapon -> check() );
+      }
+      
+      double time_to_next_hit;
+
+      // Non-maelstromable spell finishes casting, reset swing timers
+      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
+      {
+        time_to_next_hit = player -> main_hand_attack -> execute_time();
+        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
+      
+      // Offhand
+      if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
+      {
+        time_to_next_hit = player -> off_hand_attack -> execute_time();
+        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
+    }
+  }
 }
 
 // shaman_spell_t::execute =================================================
@@ -1808,53 +1839,6 @@ void shaman_spell_t::schedule_execute()
     if( player -> action_queued )
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;
-    }
-  }
-
-  if ( special && time_to_execute > 0 && ! proc )
-  {
-    double time_to_next_hit = 0;
-    shaman_t* p = player -> cast_shaman();
-
-    // If a maelstromable ability is cast, and we have maelstrom weapon up
-    // we clip swings instead of outright reset the swing timer(s)
-    if ( maelstrom && p -> buffs_maelstrom_weapon -> check() )
-    {
-      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event &&
-           sim -> current_time + time_to_execute > player -> main_hand_attack -> execute_event -> occurs() )
-      {
-        p -> procs_swings_clipped_mh -> occur();
-        time_to_next_hit = player -> main_hand_attack -> execute_event -> remains() + 
-                           player -> main_hand_attack -> execute_time();
-        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      }
-      
-      if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event &&
-           sim -> current_time + time_to_execute > player -> off_hand_attack -> execute_event -> occurs() )
-      {
-        p -> procs_swings_clipped_oh -> occur();
-        time_to_next_hit = player -> off_hand_attack -> execute_event -> remains() + 
-                           player -> off_hand_attack -> execute_time();
-        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      }
-    }
-    else
-    {
-      // While a non-maelstromable spell is casting, main/offhand swing times are _RESET_
-      // Mainhand
-      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
-      {
-        time_to_next_hit  = player -> main_hand_attack -> execute_time();
-        time_to_next_hit += time_to_execute;
-        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      }
-      // Offhand
-      if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
-      {
-        time_to_next_hit  = player -> off_hand_attack -> execute_time();
-        time_to_next_hit += time_to_execute;
-        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      }
     }
   }
 }
@@ -4011,23 +3995,22 @@ void shaman_t::init_actions()
         
       action_list_str += "/searing_totem";
       action_list_str += "/lava_lash";
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=5&buff.maelstrom_weapon.react";
+      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
       if ( level > 80 ) action_list_str += "/unleash_elements";
       action_list_str += "/flame_shock,if=!ticking|(buff.unleash_flame.up&ticks_remain<=2)";
       action_list_str += "/earth_shock";
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
       action_list_str += "/earth_elemental_totem";
-      action_list_str += "/fire_nova";
-      action_list_str +=  ",if=target.adds>1";
+      action_list_str += "/fire_nova,if=target.adds>1";
       action_list_str += "/spiritwalkers_grace,moving=1";
       if ( caster_mainhand )
-        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack>1&buff.maelstrom_weapon.react";
+        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
       else
-        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.stack=4&buff.maelstrom_weapon.react";
+        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=4";
       
       if ( caster_mainhand )
-        action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+0.5";
+        action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+travel_time";
     }
     else
     {
@@ -4076,11 +4059,11 @@ void shaman_t::init_actions()
       // Unleash elements for elemental is a downgrade in dps ...
       //if ( level >= 81 )
       //  action_list_str += "/unleash_elements";
-      if ( level >= 75 ) action_list_str += "/lava_burst,if=(dot.flame_shock.remains-cast_time)>=0.05";
+      if ( level >= 75 ) action_list_str += "/lava_burst,if=dot.flame_shock.remains>(cast_time+travel_time)";
       if ( talent_fulmination -> rank() ) 
       {
-        action_list_str += "/earth_shock,if=buff.lightning_shield.stack=9";
-        action_list_str += "/earth_shock,if=buff.lightning_shield.stack>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
+        action_list_str += "/earth_shock,if=buff.lightning_shield.react=9";
+        action_list_str += "/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
       }
       action_list_str += "/fire_elemental_totem";
       action_list_str += "/earth_elemental_totem";
