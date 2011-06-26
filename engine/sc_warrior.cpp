@@ -2592,9 +2592,6 @@ struct recklessness_t : public warrior_spell_t
     harmful = false;
 
     cooldown -> duration *= 1.0 + p -> talents.intensify_rage -> effect1().percent();
-
-
-    stancemask = STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE;
   }
 
   virtual void execute()
