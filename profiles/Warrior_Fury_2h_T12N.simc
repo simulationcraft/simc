@@ -6,6 +6,7 @@ level=85
 race=worgen
 role=attack
 use_pre_potion=1
+professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022321020000000000000000000
 glyphs=death_wish/cleaving/heroic_throw/bloody_healing/battle/berserker_rage/bloodthirst/raging_blow/slam
 actions=flask,type=titanic_strength
