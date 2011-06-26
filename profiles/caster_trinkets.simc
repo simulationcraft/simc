@@ -58,3 +58,21 @@ copy=stump
 trinket1=stump_of_time,id=62465
 #artificially reforging to haste and assuming the remaining hit means we can reforge mastery or crit to haste instead of hit on other gear
 enchant_haste_rating=321
+
+copy=capacitor
+trinket1=variable_pulse_lightning_capacitor,id=68925
+
+copy=Hcapacitor
+trinket1=variable_pulse_lightning_capacitor,id=69110
+
+copy=focus
+trinket1=necromantic_focus,id=68982
+
+copy=Hfocus
+trinket1=necromantic_focus,id=69139
+
+copy=rune
+trinket1=rune_of_zeth,id=68998,reforge=crit_haste
+
+copy=Hrune
+trinket1=rune_of_zeth,id=69185,reforge=crit_haste
