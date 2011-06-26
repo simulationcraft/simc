@@ -110,7 +110,7 @@ use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022320120000000000000000000
 glyphs=death_wish/cleaving/heroic_throw/battle/berserker_rage/bloody_healing/slam/raging_blow/bloodthirst
-head=helmet_of_the_molten_giant,id=71599,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery,reforge=mastery_crit
+head=greathelm_of_the_voracious_maw,id=71430,gems=reverberating_shadowspirit_20str_20hit_30str,enchant=60str_35mastery,reforge=mastery_hit
 neck=stoneheart_choker,id=71586,reforge=exp_hit
 shoulders=pauldrons_of_the_molten_giant,id=71603,gems=40str,enchant=50str_25crit,reforge=haste_hit
 chest=battleplate_of_the_molten_giant,id=71600,gems=20str_20crit_20str_20crit_20str,enchant=20all
@@ -156,6 +156,7 @@ off_hand=sulfuras_the_extinguished_hand,id=71352,gems=40str_40str_20str,enchant=
 ranged=giantslicer,id=71154
 save=Warrior_Fury_2h_T12N.simc
 
+
 warrior=Warrior_Fury_2h_T12H
 level=85
 race=worgen
@@ -163,7 +164,7 @@ role=attack
 use_pre_potion=1
 talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022321020000000000000000000
 glyphs=death_wish/cleaving/heroic_throw/bloody_healing/battle/berserker_rage/bloodthirst/raging_blow/slam
-head=helmet_of_the_molten_giant,id=71599,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery,reforge=haste_crit
+head=greathelm_of_the_voracious_maw,id=71430,gems=reverberating_shadowspirit_20str_20hit_30str,enchant=60str_35mastery,reforge=mastery_hit
 neck=stoneheart_choker,id=71586,reforge=exp_hit
 shoulders=pauldrons_of_the_molten_giant,id=71603,gems=40str,enchant=50str_25crit,reforge=haste_hit
 chest=battleplate_of_the_molten_giant,id=71600,gems=20str_20crit_20str_20crit_20str,enchant=20all
@@ -181,5 +182,8 @@ main_hand=sulfuras_the_extinguished_hand,id=70723,gems=40str_40str_20str,enchant
 off_hand=sulfuras_the_extinguished_hand,id=70723,gems=40str_40str_20str,enchant=landslide,reforge=mastery_hit
 ranged=giantslicer,id=71593
 save=Warrior_Fury_2h_T12H.simc
+
+
+
 
 ptr=0

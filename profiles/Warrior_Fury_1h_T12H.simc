@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_Fury_1h_T12H
-origin="input=Warrior_CharDevSync.simc"
+origin="Warrior_CharDevSync.simc"
 level=85
 race=worgen
 role=attack
@@ -29,7 +29,7 @@ actions+=/execute,if=rage>=50
 actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
 actions+=/raging_blow
 actions+=/battle_shout,if=rage<70
-head=helmet_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3057armor_400str_689sta_281haste_266mastery,reforge=mastery_crit,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
+head=greathelm_of_the_voracious_maw,heroic=1,type=plate,ilevel=391,quality=epic,stats=3057armor_400str_689sta_320mastery_224crit,reforge=mastery_hit,gems=reverberating_shadowspirit_20str_20hit_30str,enchant=60str_35mastery
 neck=stoneheart_choker,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_154exp_181crit,reforge=exp_hit
 shoulders=pauldrons_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=2822armor_322str_513sta_223crit_210haste,reforge=haste_hit,gems=40str,enchant=50str_25crit
 chest=battleplate_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3762armor_420str_689sta_297crit_263hit,gems=20str_20crit_20str_20crit_20str,enchant=20all
@@ -47,17 +47,17 @@ main_hand=obsidium_cleaver,heroic=1,ilevel=391,quality=epic,stats=197str_296sta_
 off_hand=obsidium_cleaver,heroic=1,ilevel=391,quality=epic,stats=197str_296sta_139mastery_119hit,reforge=mastery_crit,gems=40str_40str_20str,enchant=landslide,weapon=axe_2.60speed_1133min_2105max
 ranged=giantslicer,heroic=1,ilevel=391,quality=epic,stats=145str_217sta_92exp_99hit,weapon=thrown_2.10speed_1410min_2116max
 # Gear Summary
-# gear_strength=6393
+# gear_strength=6373
 # gear_agility=20
 # gear_stamina=6868
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=750
-# gear_hit_rating=1430
-# gear_crit_rating=2325
-# gear_haste_rating=802
-# gear_mastery_rating=652
+# gear_hit_rating=1578
+# gear_crit_rating=2443
+# gear_haste_rating=521
+# gear_mastery_rating=684
 # gear_armor=22377
 # meta_gem=reverberating_shadowspirit
 # tier12_2pc_melee=1

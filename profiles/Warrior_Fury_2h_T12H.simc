@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_Fury_2h_T12H
-origin="input=Warrior_CharDevSync.simc"
+origin="Warrior_CharDevSync.simc"
 level=85
 race=worgen
 role=attack
@@ -28,7 +28,7 @@ actions+=/raging_blow
 actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute,if=rage>=50
 actions+=/battle_shout,if=rage<70
-head=helmet_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3057armor_400str_689sta_281haste_266mastery,reforge=haste_crit,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
+head=greathelm_of_the_voracious_maw,heroic=1,type=plate,ilevel=391,quality=epic,stats=3057armor_400str_689sta_320mastery_224crit,reforge=mastery_hit,gems=reverberating_shadowspirit_20str_20hit_30str,enchant=60str_35mastery
 neck=stoneheart_choker,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_154exp_181crit,reforge=exp_hit
 shoulders=pauldrons_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=2822armor_322str_513sta_223crit_210haste,reforge=haste_hit,gems=40str,enchant=50str_25crit
 chest=battleplate_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3762armor_420str_689sta_297crit_263hit,gems=20str_20crit_20str_20crit_20str,enchant=20all
@@ -46,17 +46,17 @@ main_hand=sulfuras_the_extinguished_hand,heroic=1,ilevel=397,quality=epic,stats=
 off_hand=sulfuras_the_extinguished_hand,heroic=1,ilevel=397,quality=epic,stats=446str_730sta_333crit_262mastery,reforge=mastery_hit,gems=40str_40str_20str,enchant=landslide,weapon=mace2h_3.80speed_2700min_4050max
 ranged=giantslicer,heroic=1,ilevel=391,quality=epic,stats=145str_217sta_92exp_99hit,weapon=thrown_2.10speed_1410min_2116max
 # Gear Summary
-# gear_strength=6891
+# gear_strength=6871
 # gear_agility=20
 # gear_stamina=7736
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=750
-# gear_hit_rating=1400
-# gear_crit_rating=2887
-# gear_haste_rating=690
-# gear_mastery_rating=906
+# gear_hit_rating=1548
+# gear_crit_rating=2999
+# gear_haste_rating=521
+# gear_mastery_rating=832
 # gear_armor=22377
 # meta_gem=reverberating_shadowspirit
 # tier12_2pc_melee=1
