@@ -1,7 +1,7 @@
 #!./simc 
 
 hunter=Hunter_MM_T12H
-origin="Hunter_CharDevSync.simc"
+origin="Hunter_Chardevsync.simc"
 level=85
 race=troll
 role=attack
@@ -36,16 +36,16 @@ head=flamewakers_headguard,heroic=1,type=mail,ilevel=391,quality=epic,stats=2214
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=mastery_crit
 shoulders=flamewakers_spaulders,heroic=1,type=mail,ilevel=391,quality=epic,stats=2044armor_322agi_513sta_235mastery_194haste,reforge=mastery_crit,gems=67agi_10agi,enchant=50agi_25mastery
 chest=flamewakers_tunic,heroic=1,type=mail,ilevel=391,quality=epic,stats=2725armor_420agi_689sta_276mastery_291crit,reforge=mastery_haste,gems=67agi_20agi_20crit_20agi,enchant=20all
-waist=flamebinding_girdle,heroic=1,type=leather,ilevel=391,quality=epic,stats=1084armor_322agi_513sta_238haste_191hit,gems=67agi_40agi
-legs=flamewakers_legguards,heroic=1,type=mail,ilevel=391,quality=epic,stats=2385armor_420agi_689sta_316hit_242haste,gems=40agi_40agi,enchant=190ap_55crit
+waist=flamebinding_girdle,heroic=1,type=leather,ilevel=391,quality=epic,stats=1084armor_322agi_513sta_238haste_191hit,reforge=haste_crit,gems=67agi_40agi
+legs=flamewakers_legguards,heroic=1,type=mail,ilevel=391,quality=epic,stats=2385armor_420agi_689sta_316hit_242haste,reforge=haste_crit,gems=40agi_40agi,enchant=190ap_55crit
 feet=sandals_of_leaping_coals,heroic=1,type=leather,ilevel=391,quality=epic,stats=1325armor_322agi_513sta_260mastery_153crit,reforge=mastery_haste,gems=40agi_10agi,enchant=35agi
 wrists=hidebound_chains,heroic=1,type=mail,ilevel=391,quality=epic,stats=1192armor_256agi_384sta_195haste_130hit,enchant=50agi
 hands=flamewakers_gloves,heroic=1,type=mail,ilevel=391,quality=epic,stats=1703armor_322agi_513sta_231crit_202haste,gems=20agi_20crit_10agi,enchant=20agi
-finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,gems=40agi_10agi,enchant=40agi
+finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,reforge=mastery_crit,gems=40agi_10agi,enchant=40agi
 finger2=splintered_brimstone_seal,heroic=1,ilevel=391,quality=epic,stats=256agi_384sta_178mastery_158crit_170hit,reforge=mastery_haste,enchant=40agi,suffix=133
 trinket1=matrix_restabilizer,heroic=1,ilevel=397,quality=epic,stats=458agi
 trinket2=the_hungerer,heroic=1,ilevel=391,quality=epic,stats=433agi,equip=onattackhit_1730haste_100%_15dur_60cd
-back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,gems=40agi_40agi_20agi,enchant=22agi
+back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=mastery_crit,gems=40agi_40agi_20agi,enchant=22agi
 main_hand=ranseur_of_hatred,heroic=1,ilevel=391,quality=epic,stats=460agi_689sta_320crit_284haste,enchant=130agi,weapon=polearm_3.60speed_2418min_3628max
 ranged=arathar_the_eye_of_flame,heroic=1,ilevel=397,quality=epic,stats=153agi_230sta_108crit_92haste,enchant=gnomish_xray,weapon=bow_3.00speed_1865min_3464max
 # Gear Summary
@@ -56,9 +56,9 @@ ranged=arathar_the_eye_of_flame,heroic=1,ilevel=397,quality=epic,stats=153agi_23
 # gear_spirit=20
 # gear_attack_power=190
 # gear_hit_rating=965
-# gear_crit_rating=1818
-# gear_haste_rating=2403
-# gear_mastery_rating=948
+# gear_crit_rating=2107
+# gear_haste_rating=2212
+# gear_mastery_rating=850
 # gear_armor=15417
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1
