@@ -1644,7 +1644,7 @@ struct mind_blast_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    if ( p -> ptr && p -> set_bonus.tier12_4pc_caster() )
+    if ( p -> set_bonus.tier12_4pc_caster() )
     {
       if ( p -> dots_shadow_word_pain -> ticking && p -> dots_vampiric_touch -> ticking && p -> dots_devouring_plague -> ticking )
       {
@@ -4639,7 +4639,7 @@ void priest_t::init_actions()
       }
 
                                                          action_list_str += "/mind_blast,if=buff.shadow_orb.react>=1";
-      if ( dbc.ptr )                                     action_list_str += "&!set_bonus.tier12_4pc_caster";
+                                                         action_list_str += "&!set_bonus.tier12_4pc_caster";
 
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
@@ -4657,11 +4657,8 @@ void priest_t::init_actions()
                                                          action_list_str += "&dot.devouring_plague.remains>5";
       }
 
-      if ( dbc.ptr )
-      {
                                                          action_list_str += "/mind_blast,if=buff.shadow_orb.react>=1";
                                                          action_list_str += "&set_bonus.tier12_4pc_caster";
-      }
                     
                                                          action_list_str += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
 

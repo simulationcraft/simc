@@ -37,13 +37,13 @@ actions+=/lightning_bolt
 actions+=/thunderstorm
 head=crown_of_flame,heroic=1,type=mail,ilevel=397,quality=epic,stats=2261armor_426int_730sta_319spi_260haste,reforge=spi_mastery,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,gems=40int_10int
-shoulders=shoulderwraps_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=1911armor_191crit_266int_171mastery_429sta,reforge=crit_haste,gems=40int,enchant=50int_25haste
+shoulders=shoulderwraps_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=1911armor_266int_429sta_191crit_171mastery,reforge=crit_haste,gems=40int,enchant=50int_25haste
 chest=hauberk_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=2548armor_345int_578sta_257haste_217crit,reforge=crit_mastery,gems=40int_40int,enchant=20all
 waist=firemend_cinch,heroic=1,type=mail,ilevel=391,quality=epic,stats=1533armor_322int_513sta_235crit_197haste,reforge=crit_mastery,gems=20int_20spi_10int
-legs=kilt_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=2230armor_257haste_345int_217spi_578sta,gems=40int_40int,enchant=95int_55spi
+legs=kilt_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=2230armor_345int_578sta_257haste_217spi,gems=40int_40int,enchant=95int_55spi
 feet=treads_of_implicit_obedience,heroic=1,type=mail,ilevel=391,quality=epic,stats=1874armor_322int_513sta_201spi_228crit,reforge=crit_haste,gems=40int_10int,enchant=50mastery
 wrists=lava_line_wristbands,heroic=1,type=mail,ilevel=391,quality=epic,stats=1192armor_256int_384sta_178spi_158haste,reforge=spi_mastery
-hands=gloves_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=1593armor_191crit_171haste_266int_429sta,reforge=crit_mastery,gems=40int
+hands=gloves_of_the_raging_elements,heroic=1,type=mail,ilevel=372,quality=epic,stats=1593armor_266int_429sta_191crit_171haste,reforge=crit_mastery,gems=40int
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int,enchant=40int
 finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,reforge=hit_haste,enchant=40int
 trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur

@@ -1335,7 +1335,7 @@ void shaman_attack_t::player_buff()
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
   
-  if ( p -> ptr && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
+  if ( school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
     player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
 }
 
@@ -1641,7 +1641,7 @@ struct stormstrike_t : public shaman_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_stormstrike -> trigger();
-      if ( p -> ptr && p -> set_bonus.tier12_4pc_melee() )
+      if ( p -> set_bonus.tier12_4pc_melee() )
         p -> buffs_stormfire -> trigger();
       stormstrike_mh -> execute();
       if ( stormstrike_oh ) stormstrike_oh -> execute();
@@ -1747,7 +1747,7 @@ void shaman_spell_t::player_buff()
   player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
   
   // Apply Tier12 4 piece enhancement bonus as multiplicative for now
-  if ( p -> ptr && ! is_totem && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
+  if ( ! is_totem && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
     player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
 }
 
@@ -1779,7 +1779,7 @@ void shaman_spell_t::execute()
     if ( school == SCHOOL_FIRE )
       p -> buffs_unleash_flame -> expire();
       
-    if ( p -> ptr && p -> cooldowns_t12_2pc_caster -> remains() == 0 && 
+    if ( p -> cooldowns_t12_2pc_caster -> remains() == 0 && 
          p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
       p -> cooldowns_fire_elemental_totem -> reset();
@@ -2133,7 +2133,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
     p -> buffs_elemental_mastery_insta -> expire();
-    if ( p -> ptr && p -> buffs_lava_surge -> check() )
+    if ( p -> buffs_lava_surge -> check() )
       p -> buffs_lava_surge -> expire();
   }
 
@@ -2145,7 +2145,7 @@ struct lava_burst_t : public shaman_spell_t
     if ( p -> buffs_elemental_mastery_insta -> up() )
       t *= 1.0 + p -> buffs_elemental_mastery_insta -> mod_additive( P_CAST_TIME );
       
-    if ( p -> ptr && p -> buffs_lava_surge -> up() )
+    if ( p -> buffs_lava_surge -> up() )
       return 0;
     
     return t;
@@ -2282,7 +2282,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     
-    if ( p -> ptr && p -> glyph_unleashed_lightning -> ok() )
+    if ( p -> glyph_unleashed_lightning -> ok() )
       return true;
     
     return shaman_spell_t::usable_moving();
@@ -2628,7 +2628,7 @@ struct flame_shock_t : public shaman_spell_t
     {
       p -> procs_lava_surge -> occur();
       p -> cooldowns_lava_burst -> reset();
-      if ( p -> ptr && p -> set_bonus.tier12_4pc_caster() )
+      if ( p -> set_bonus.tier12_4pc_caster() )
         p -> buffs_lava_surge -> trigger();
     }
   }
@@ -2883,7 +2883,7 @@ struct fire_elemental_totem_t : public shaman_totem_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( p -> ptr && p -> set_bonus.tier12_2pc_caster() && 
+    if ( p -> set_bonus.tier12_2pc_caster() && 
          p -> totems[ TOTEM_FIRE ] && p -> totems[ TOTEM_FIRE ] == this )
       return false;
     return shaman_spell_t::ready();
@@ -3801,8 +3801,7 @@ void shaman_t::init_spells()
   glyph_lava_lash             = find_glyph( "Glyph of Lava Lash" );
   glyph_lightning_bolt        = find_glyph( "Glyph of Lightning Bolt" );
   glyph_stormstrike           = find_glyph( "Glyph of Stormstrike" );
-  if ( ptr )
-    glyph_unleashed_lightning = find_glyph( "Glyph of Unleashed Lightning" );
+  glyph_unleashed_lightning = find_glyph( "Glyph of Unleashed Lightning" );
   glyph_water_shield          = find_glyph( "Glyph of Water Shield" );
   glyph_windfury_weapon       = find_glyph( "Glyph of Windfury Weapon" );
   
@@ -3890,8 +3889,7 @@ void shaman_t::init_buffs()
   buffs_shamanistic_rage        = new buff_t                 ( this, talent_shamanistic_rage -> spell_id(),                    "shamanistic_rage"      );
   buffs_spiritwalkers_grace     = new buff_t                 ( this, 79206,                                                    "spiritwalkers_grace",       1.0, 0 );
   // Enhancement T12 4Piece Bonus
-  if ( ptr )
-    buffs_stormfire             = new buff_t                 ( this, 99212,                                                    "stormfire"             );
+  buffs_stormfire             = new buff_t                 ( this, 99212,                                                    "stormfire"             );
   buffs_stormstrike             = new buff_t                 ( this, talent_stormstrike -> spell_id(),                         "stormstrike"           );
   buffs_unleash_flame           = new unleash_elements_buff_t( this, 73683,                                                    "unleash_flame"         );
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );

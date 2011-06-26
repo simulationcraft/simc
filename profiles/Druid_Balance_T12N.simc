@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_Balance_T12N
-origin="input=Druid_CharDevSync.simc"
+origin="Druid_CharDevSync.simc"
 level=85
 race=troll
 role=spell
@@ -49,11 +49,11 @@ legs=firecat_leggings,type=leather,ilevel=378,quality=epic,stats=1592armor_368in
 feet=ethereal_footfalls,type=leather,ilevel=378,quality=epic,stats=1251armor_282int_454sta_197spi_187haste,enchant=35mastery
 wrists=glowing_wing_bracers,type=leather,ilevel=378,quality=epic,stats=796armor_227int_341sta_154spi_148haste,enchant=50int
 hands=obsidian_arborweave_gloves,type=leather,ilevel=378,quality=epic,stats=1137armor_282int_454sta_205haste_177spi,gems=20int_20haste_10int,enchant=50haste
-finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta
+finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=215int_322sta_143mastery_143haste
 finger2=crystalline_brimstone_ring,ilevel=378,quality=epic,stats=227int_341sta_162hit_133mastery,reforge=mastery_spi
 trinket1=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_42mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_209int_344sta_153mastery_133haste,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
 main_hand=kogun_hammer_of_the_firelord,ilevel=384,quality=epic,stats=185int_277sta_134spi_105haste_2467sp,enchant=power_torrent,weapon=mace_2.10speed_428min_797max
 off_hand=goblet_of_anger,ilevel=378,quality=epic,stats=227int_341sta_137spi_160haste,enchant=40int
 ranged=soulflame_vial,ilevel=378,quality=epic,stats=128int_192sta_89mastery_79haste,gems=40int

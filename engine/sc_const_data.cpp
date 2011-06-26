@@ -36,18 +36,18 @@ static unsigned             idx_td_size[2]     = { 0, 0 };
 const char* dbc_t::build_level( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? "14333" : "14007";
+  return ptr ? "14333" : "14333";
 #else
-  return "14007";
+  return "14333";
 #endif
 }
 
 const char* dbc_t::wow_version( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? "4.2.0" : "4.1.0";
+  return ptr ? "4.2.0" : "4.2.0";
 #else
-  return "4.1.0";
+  return "4.2.0";
 #endif
 }
 
@@ -533,12 +533,24 @@ unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n 
 
 unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) SC_CONST
 {
-  assert( class_id < CLASS_SIZE && tier < 12 && n < set_bonus_spell_size() );
-
 #if SC_USE_PTR
+  assert( class_id < CLASS_SIZE && tier < ( ptr ? PTR_TIER_BONUSES_MAX_TIER : TIER_BONUSES_MAX_TIER ) && n < set_bonus_spell_size() );
   return ptr ? __ptr_tier_bonuses_data[ class_id ][ tier ][ n ]
              : __tier_bonuses_data[ class_id ][ tier ][ n ];
 #else
+  if ( class_id >= CLASS_SIZE )
+  {
+    return -1;
+  }
+  if ( tier >= TIER_BONUSES_MAX_TIER )
+  {
+    return -1;
+  }
+  if ( n >= set_bonus_spell_size() )
+  {
+    return -1;
+  }
+  assert( class_id < CLASS_SIZE && tier < TIER_BONUSES_MAX_TIER && n < set_bonus_spell_size() );
   return __tier_bonuses_data[ class_id ][ tier ][ n ];
 #endif
 }
@@ -608,58 +620,63 @@ unsigned dbc_t::set_bonus_spell_size() SC_CONST
 
 const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_rand_prop_points_data[ ilevel - 1 ] : __rand_prop_points_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __rand_prop_points_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamageonehand_data[ ilevel - 1 ] : __itemdamageonehand_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamageonehand_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_2h( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamagetwohand_data[ ilevel - 1 ] : __itemdamagetwohand_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamagetwohand_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_caster_1h( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamageonehandcaster_data[ ilevel - 1 ] : __itemdamageonehandcaster_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamageonehandcaster_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamagetwohandcaster_data[ ilevel - 1 ] : __itemdamagetwohandcaster_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamagetwohandcaster_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_ranged( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamageranged_data[ ilevel - 1 ] : __itemdamageranged_data[ ilevel - 1 ];
 #else
   return __itemdamageranged_data[ ilevel - 1 ];
@@ -668,50 +685,55 @@ const item_scale_data_t& dbc_t::item_damage_ranged( unsigned ilevel ) SC_CONST
 
 const item_scale_data_t& dbc_t::item_damage_thrown( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamagethrown_data[ ilevel - 1 ] : __itemdamagethrown_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamagethrown_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_wand( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamagewand_data[ ilevel - 1 ] : __itemdamagewand_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamagewand_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemarmorquality_data[ ilevel - 1 ] : __itemarmorquality_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemarmorquality_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_armor_shield( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemarmorshield_data[ ilevel - 1 ] : __itemarmorshield_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemarmorshield_data[ ilevel - 1 ];
 #endif
 }
 
 const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) SC_CONST
 {
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
 #if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemarmortotal_data[ ilevel - 1 ] : __itemarmortotal_data[ ilevel - 1 ];
 #else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemarmortotal_data[ ilevel - 1 ];
 #endif
 }
@@ -1382,6 +1404,8 @@ unsigned dbc_t::set_bonus_spell_id( player_type c, const char* name, int tier ) 
 
   if ( tier == -1 ) tier = 11;
 
+  tier -= 11;
+
   for ( int t = 0; t < tier; t++ )
   {
     for ( unsigned n = 0; n < set_bonus_spell_size(); n++ )
@@ -1496,11 +1520,11 @@ bool dbc_t::is_set_bonus_spell( uint32_t spell_id ) SC_CONST
 {
   for ( unsigned cls = 0; cls < 12; cls++ )
   {
-    for ( unsigned tier = 0; tier < 12; tier++ )
+    for ( unsigned tier = 11; tier < 12; tier++ )
     {
       for ( unsigned n = 0; n < set_bonus_spell_size(); n++ )
       {
-        if ( set_bonus_spell( cls, tier, n ) == spell_id )
+        if ( set_bonus_spell( cls, tier - 11, n ) == spell_id )
           return true;
       }
     }

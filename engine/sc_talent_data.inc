@@ -1,6 +1,6 @@
 #define TALENT_SIZE (660)
 
-// 660 talents, wow build 14007
+// 660 talents, wow build 14333
 static struct talent_data_t __talent_data[] = {
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 }, 0, 0, 0 },
   { "Lightning Reflexes"                ,   186, 0x00,  1, 0x008, 0x0,     0,  0,  0,  2, { 13712, 13788, 13789 }, 0, 0, 0 },
@@ -31,7 +31,7 @@ static struct talent_data_t __talent_data[] = {
   { "Elemental Focus"                   ,   574, 0x00,  0, 0x040, 0x0,     0,  0,  1,  2, { 16164,     0,     0 }, 0, 0, 0 },
   { "Reverberation"                     ,   575, 0x00,  0, 0x040, 0x0,     0,  0,  2,  1, { 16040, 16113,     0 }, 0, 0, 0 },
   { "Ancestral Healing"                 ,   581, 0x00,  2, 0x040, 0x0,     0,  0,  0,  2, { 16176, 16235,     0 }, 0, 0, 0 },
-  { "Improved Water Shield"             ,   583, 0x00,  2, 0x040, 0x0,     0,  0,  0,  1, { 16180, 16196,     0 }, 0, 0, 0 },
+  { "Resurgence"                        ,   583, 0x00,  2, 0x040, 0x0,     0,  0,  0,  1, { 16180, 16196,     0 }, 0, 0, 0 },
   { "Soothing Rains"                    ,   588, 0x00,  2, 0x040, 0x0,     0,  0,  1,  3, { 16187, 16205,     0 }, 0, 0, 0 },
   { "Mana Tide Totem"                   ,   590, 0x00,  2, 0x040, 0x0,     0,  0,  1,  4, { 16190,     0,     0 }, 0, 0, 0 },
   { "Nature's Swiftness"                ,   591, 0x00,  2, 0x040, 0x0,     0,  0,  1,  2, { 16188,     0,     0 }, 0, 0, 0 },

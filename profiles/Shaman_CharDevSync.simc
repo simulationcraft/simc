@@ -1,14 +1,5 @@
 #!simc
 
-chardev=14385 name=Shaman_Elemental_T11_372 save=Shaman_Elemental_T11_372.simc
-
-chardev=39863 name=Shaman_Enh_T11_372 save=Shaman_Enh_T11_372.simc
-
-chardev=39882 name=Shaman_Enh_T11_372_Caster save=Shaman_Enh_T11_372_Caster.simc
-
-# Ensure PTR for now
-ptr=1
-
 # Tier 11
 
 chardev=14385 name=Shaman_Elemental_T11H save=Shaman_Elemental_T11H.simc
@@ -285,5 +276,3 @@ ranged=singed_plume_of_aviana,id=71577,gems=40int
 main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=40int_40int_40int_30int,enchant=power_torrent,reforge=hit_mastery,source=ptrhead
 save=Shaman_Elemental_T12H_T11H4P_DTR.simc
 
-# Ensure live
-ptr=0

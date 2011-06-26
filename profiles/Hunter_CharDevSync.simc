@@ -1,25 +1,5 @@
 #!simc
 
-ptr=0
-
-chardev=34113 name=Hunter_BM_T11_372 save=Hunter_BM_T11_372.simc
-
-chardev=116024 name=Hunter_MM_T11_372_Arcane save=Hunter_MM_T11_372_Arcane.simc
-
-chardev=34116 name=Hunter_SV_T11_372 save=Hunter_SV_T11_372.simc
-
-chardev=116023 name=Hunter_MM_T11_372 save=Hunter_MM_T11_372.simc
-
-chardev=36175 name=Hunter_BM_T11_359 save=Hunter_BM_T11_359.simc
-
-chardev=36177 name=Hunter_SV_T11_359 save=Hunter_SV_T11_359.simc
-
-chardev=36158 name=Hunter_MM_T11_359 save=Hunter_MM_T11_359.simc
-
-chardev=66004 name=Hunter_MM_T11_359_Arcane save=Hunter_MM_T11_359_Arcane.simc
-
-ptr=1
-
 # Tier 11
 
 
@@ -202,4 +182,3 @@ main_hand=foo,id=71557,enchant=130agi
 ranged=foo,id=71611,enchant=gnomish_xray
 save=Hunter_SV_T12H.simc
 
-ptr=0

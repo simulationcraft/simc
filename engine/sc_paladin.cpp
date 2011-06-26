@@ -586,8 +586,6 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
   if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
 
-  if ( ! p -> dbc.ptr ) return;
-
   struct flames_of_the_faithful_t : public paladin_attack_t
   {
     bool use_bug;
@@ -828,7 +826,7 @@ struct divine_storm_t : public paladin_attack_t
     spell_haste       = true;
     trigger_dp        = true;
     trigger_seal      = false;
-    trigger_seal_of_righteousness = p -> dbc.ptr;
+    trigger_seal_of_righteousness = true;
     base_cooldown     = cooldown -> duration;
   }
 
@@ -901,7 +899,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
   {
     check_talent( p -> talents.hammer_of_the_righteous -> rank() );
 
-    trigger_seal_of_righteousness = p -> dbc.ptr;
+    trigger_seal_of_righteousness = true;
 
     parse_options( NULL, options_str );
 
@@ -1127,7 +1125,7 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     paladin_attack_t( "seal_of_righteousness", p, SCHOOL_HOLY )
   {
     background  = true;
-    may_crit    = p -> dbc.ptr;
+    may_crit    = true;
     proc        = true;
     trigger_gcd = 0;
 
@@ -1353,13 +1351,11 @@ struct judgement_t : public paladin_attack_t
       p -> buffs_divine_purpose -> trigger();
       p -> buffs_judgements_of_the_pure -> trigger();
       p -> buffs_sacred_duty-> trigger();
-
-      if ( ! p -> dbc.ptr ) p -> buffs_judgements_of_the_wise -> trigger();
     }
 
     p -> buffs_judgements_of_the_bold -> trigger();
 
-    if ( p -> dbc.ptr ) p -> buffs_judgements_of_the_wise -> trigger();
+    p -> buffs_judgements_of_the_wise -> trigger();
 
     if ( p -> talents.communion -> rank() ) p -> trigger_replenishment();
 
@@ -1397,8 +1393,6 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
-    if ( ! p -> ptr && p -> talents.holy_shield -> rank() )
-      p -> buffs_holy_shield -> trigger();
     if ( result_is_hit() )
       p -> buffs_sacred_duty -> expire();
   }
@@ -1909,8 +1903,6 @@ struct inquisition_t : public paladin_spell_t
     if ( p -> set_bonus.tier11_4pc_melee() )
       p -> buffs_inquisition -> buff_duration += base_duration;
     p -> buffs_inquisition -> trigger( 1, base_value() );
-    if ( ! p -> ptr && p -> talents.holy_shield -> rank() )
-      p -> buffs_holy_shield -> trigger();
     p -> buffs_divine_purpose -> trigger();
 
     paladin_spell_t::execute();
@@ -1937,7 +1929,7 @@ struct zealotry_t : public paladin_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> buffs_zealotry -> trigger();
-    if ( p -> ptr && p -> set_bonus.tier12_4pc_melee() )
+    if ( p -> set_bonus.tier12_4pc_melee() )
       p -> buffs_zealotry -> extend_duration( p, p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive( P_DURATION ) );
   }
 
@@ -2108,8 +2100,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
-  if ( ptr )
-    if ( name == "holy_shield"               ) return new holy_shield_t              ( this, options_str );
+  if ( name == "holy_shield"               ) return new holy_shield_t              ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
@@ -2145,7 +2136,7 @@ void paladin_t::init_defense()
 {
   player_t::init_defense();
 
-  initial_parry_rating_per_strength = dbc.ptr ? 0.27 : 0.25;
+  initial_parry_rating_per_strength = 0.27;
 }
 
 // paladin_t::init_base =====================================================
@@ -2660,7 +2651,7 @@ int paladin_t::primary_role() SC_CONST
 double paladin_t::composite_attack_expertise() SC_CONST
 {
   double m = player_t::composite_attack_expertise();
-  if ( ( ( active_seal == SEAL_OF_TRUTH ) || ( dbc.ptr && ( active_seal == SEAL_OF_RIGHTEOUSNESS ) ) )&& glyphs.seal_of_truth -> ok() )
+  if ( ( ( active_seal == SEAL_OF_TRUTH ) || ( active_seal == SEAL_OF_RIGHTEOUSNESS ) )&& glyphs.seal_of_truth -> ok() )
   {
     m += glyphs.seal_of_truth -> mod_additive( P_EFFECT_2 ) / 100.0;
   }

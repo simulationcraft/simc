@@ -872,8 +872,6 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
   if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
 
-  if ( ! p -> dbc.ptr ) return;
-
   struct burning_wounds_t : public rogue_attack_t
   {
     burning_wounds_t( rogue_t* player ) :
@@ -965,8 +963,6 @@ static void trigger_tier12_4pc_melee( attack_t* s )
   double value = 0.0;
 
   if ( ! p -> set_bonus.tier12_4pc_melee() ) return;
-
-  if ( ! p -> dbc.ptr ) return;
 
   if ( p -> buffs_tier12_4pc_haste   -> check() ||
        p -> buffs_tier12_4pc_crit    -> check() ||

@@ -751,8 +751,6 @@ static void trigger_tier12_4pc_melee( attack_t* a )
 {
   warrior_t* p = a -> player -> cast_warrior();
 
-  if ( ! p -> dbc.ptr ) return;
-
   if ( ! p -> set_bonus.tier12_4pc_melee() ) return;
 
   if ( ! a -> weapon ) return;
@@ -1295,13 +1293,7 @@ struct charge_t : public warrior_attack_t
 
       if ( ( p -> position == POSITION_BACK ) || ( p -> position == POSITION_FRONT ) )
       {
-        if ( p -> dbc.ptr )
-          return false;
-
-        if ( ! p -> sim -> target -> big_hitbox )
-        {
-          return false;
-        }
+        return false;
       }
     }
 
@@ -2421,12 +2413,10 @@ struct battle_shout_t : public warrior_spell_t
     rage_gain = 20 + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
     cooldown -> duration += p -> talents.booming_voice -> effect1().seconds();
 
-    if ( p -> dbc.ptr )
-    {
-      uint32_t id = p -> sets -> set( SET_T12_2PC_MELEE ) -> effect_trigger_spell( 1 );
-      spell_data_t* s = spell_data_t::find( id, "Burning Rage", p -> dbc.ptr );
-      burning_rage_value = s -> effect1().percent();
-    }
+
+    uint32_t id = p -> sets -> set( SET_T12_2PC_MELEE ) -> effect_trigger_spell( 1 );
+    spell_data_t* s = spell_data_t::find( id, "Burning Rage", p -> dbc.ptr );
+    burning_rage_value = s -> effect1().percent();
   }
   
   virtual void execute()
@@ -2509,7 +2499,7 @@ struct deadly_calm_t : public warrior_spell_t
     if ( p -> buffs_inner_rage -> check() )
       return false;
 
-    if ( p -> ptr && p -> buffs_recklessness -> check() )
+    if ( p -> buffs_recklessness -> check() )
       return false;
 
     return warrior_spell_t::ready();
@@ -2603,10 +2593,8 @@ struct recklessness_t : public warrior_spell_t
 
     cooldown -> duration *= 1.0 + p -> talents.intensify_rage -> effect1().percent();
 
-    if ( p -> dbc.ptr )
-      stancemask = STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE;
-    else
-      stancemask  = STANCE_BERSERKER;
+
+    stancemask = STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE;
   }
 
   virtual void execute()
@@ -2622,7 +2610,7 @@ struct recklessness_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    if ( p -> ptr && p -> buffs_deadly_calm -> check() )
+    if ( p -> buffs_deadly_calm -> check() )
       return false;
 
     return warrior_spell_t::ready();
@@ -2999,7 +2987,7 @@ void warrior_t::init_defense()
 {
   player_t::init_defense();
 
-  initial_parry_rating_per_strength = dbc.ptr ? 0.27 : 0.25;
+  initial_parry_rating_per_strength = 0.27;
 }
 
 // warrior_t::init_base =====================================================
@@ -3040,10 +3028,8 @@ void warrior_t::init_base()
 
   base_gcd = 1.5;
 
-  if ( dbc.ptr )
-  {
-    fiery_attack = new fiery_attack_t( this );
-  }
+
+  fiery_attack = new fiery_attack_t( this );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -3090,7 +3076,7 @@ void warrior_t::init_buffs()
   buffs_hold_the_line             = new buff_t( this, "hold_the_line",             1,  5.0 * talents.hold_the_line -> rank() ); 
   buffs_incite                    = new buff_t( this, "incite",                    1, 10.0, 0.0, talents.incite -> proc_chance() );
   buffs_inner_rage                = new buff_t( this, 1134, "inner_rage" );
-  buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, dbc.ptr ? 1.5 : 1.0 );
+  buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.5 );
   buffs_juggernaut                = new buff_t( this, 65156, "juggernaut", talents.juggernaut -> proc_chance() ); //added by hellord
   buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    3, 15.0, 0, talents.lambs_to_the_slaughter -> proc_chance() );
   buffs_last_stand                = new buff_last_stand_t( this, 12976, "last_stand" );
@@ -3272,10 +3258,7 @@ void warrior_t::init_actions()
     {
       action_list_str += "/stance,choose=berserker,if=(buff.taste_for_blood.down&rage<75)";
       action_list_str += "/stance,choose=battle,if=(dot.rend.remains=0|((buff.overpower.up|buff.taste_for_blood.up)&cooldown.mortal_strike.remains>1)&rage<=75)";
-      if ( talents.juggernaut -> ok() && ! dbc.ptr )
-      {
-        action_list_str += "/charge,use_in_combat=1,if=big_hitbox=1";
-      }      
+    
       action_list_str += "/recklessness,if=((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)";
       if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage,if=!buff.deadly_calm.up&rage<70";
       if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<30&((target.health_pct>20&target.time_to_die>130)|(target.health_pct<=20&buff.recklessness.up))";

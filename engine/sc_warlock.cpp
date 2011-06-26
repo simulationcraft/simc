@@ -1089,7 +1089,7 @@ struct warlock_spell_t : public spell_t
   {
     warlock_t* p = s -> player -> cast_warlock();
 
-    if ( p -> dbc.ptr && p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_fiery_imp -> remains() == 0 ) )
+    if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_fiery_imp -> remains() == 0 ) )
     {
       if ( p -> rng_fiery_imp -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
       {
@@ -1107,7 +1107,7 @@ struct warlock_spell_t : public spell_t
   {
     warlock_t* p = s -> player -> cast_warlock();
 
-    if ( ! p -> dbc.ptr || ! p -> set_bonus.tier12_4pc_caster() ) return;
+    if ( ! p -> set_bonus.tier12_4pc_caster() ) return;
 
     p -> buffs_tier12_4pc_caster -> trigger( 1, p -> tier12_4pc_caster -> effect1().percent() );
   }
@@ -2438,13 +2438,6 @@ struct drain_life_t : public warlock_spell_t
     binary       = true;
     hasted_ticks = false;
     may_crit     = false;
-
-    //FIXME: 2010/05/20 hotfix, should probably remove when 4.2 hits
-    if ( ! player -> ptr )
-    {
-      tick_power_mod = 0.129;
-      base_td = 82.2797;
-    }
   }
 
   virtual void execute()
@@ -4073,10 +4066,7 @@ void warlock_t::create_pets()
   create_pet( "infernal"  );
   create_pet( "doomguard" );
   create_pet( "ebon_imp"  );
-  if ( dbc.ptr )
-  {
-    create_pet( "fiery_imp" );
-  }
+  create_pet( "fiery_imp" );
 }
 
 // warlock_t::init_talents ==================================================

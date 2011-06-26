@@ -33,10 +33,9 @@ void heal_t::_init_heal_t()
 
   stats -> type = STATS_HEAL;
 
-  if ( player -> dbc.ptr )
-  {
-    crit_bonus = 1.0;
-  }
+
+  crit_bonus = 1.0;
+
 
   if ( player -> meta_gem == META_REVITALIZING_SHADOWSPIRIT )
   {

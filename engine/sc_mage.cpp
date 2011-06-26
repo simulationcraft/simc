@@ -1027,7 +1027,7 @@ static void trigger_tier12_mirror_image( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( p -> dbc.ptr && p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_tier12_mirror_image -> remains() == 0 ) )
+  if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_tier12_mirror_image -> remains() == 0 ) )
   {
     if ( p -> rng_tier12_mirror_image -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
@@ -2956,10 +2956,8 @@ void mage_t::create_pets()
 {
   create_pet( "mirror_image_3"  );
   create_pet( "water_elemental" );
-  if ( dbc.ptr )
-  {
-    create_pet( "tier12_mirror_image" );
-  }
+
+  create_pet( "tier12_mirror_image" );
 }
 
 // mage_t::init_talents =====================================================

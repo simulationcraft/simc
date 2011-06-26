@@ -1,18 +1,5 @@
 #!./simc 
 
-ptr=0
-
-chardev=111753 save=Death_Knight_Frost_1h_T11_372.simc name=Death_Knight_Frost_1h_T11_372
-
-chardev=143058 save=Death_Knight_Frost_2h_T11_372.simc name=Death_Knight_Frost_2h_T11_372
-
-chardev=34574 save=Death_Knight_Unholy_1h_T11_372.simc name=Death_Knight_Unholy_1h_T11_372
-
-chardev=144973 save=Death_Knight_Unholy_2h_T11_372.simc name=Death_Knight_Unholy_2h_T11_372
-
-
-ptr=1
-
 
 chardev=111753 save=Death_Knight_Frost_1h_T11H.simc name=Death_Knight_Frost_1h_T11H
 
@@ -130,4 +117,3 @@ main_hand=sulfuras_the_extinguished_hand,id=70723,enchant=rune_of_the_fallen_cru
 ranged=relic_of_the_elemental_lords,id=71587,gems=40str,reforge=crit_hit
 save=Death_Knight_Unholy_2h_T12H.simc
 
-ptr=0

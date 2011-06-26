@@ -839,8 +839,6 @@ static void trigger_tier12_2pc_melee( attack_t* a )
 {
   hunter_t* p = a -> player -> cast_hunter();
 
-  if ( ! p -> dbc.ptr ) return;
-
   if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
 
   if ( ! a -> weapon ) return;
@@ -1662,7 +1660,7 @@ double hunter_attack_t::cost() SC_CONST
   hunter_t* p = player -> cast_hunter();
   double c = attack_t::cost();
   if ( c == 0 ) return 0;
-  if ( p -> ptr && p -> buffs_tier12_4pc -> check() && consumes_tier12_4pc ) return 0;
+  if ( p -> buffs_tier12_4pc -> check() && consumes_tier12_4pc ) return 0;
   if ( p -> buffs_beast_within -> check() ) c *= ( 1.0 + p -> buffs_beast_within -> effect1().percent() );
   return c;
 }
@@ -1671,7 +1669,7 @@ void hunter_attack_t::consume_resource()
 {
   attack_t::consume_resource();
   hunter_t* p = player -> cast_hunter();
-  if ( p -> ptr && p -> buffs_tier12_4pc -> up() )
+  if ( p -> buffs_tier12_4pc -> up() )
   {
     // Treat the savings like a gain
     double amount = attack_t::cost();
@@ -2731,7 +2729,7 @@ double hunter_spell_t::cost() SC_CONST
   hunter_t* p = player -> cast_hunter();
   double c = spell_t::cost();
   if ( c == 0 ) return 0;
-  if ( p -> dbc.ptr && p -> buffs_tier12_4pc -> check() && consumes_tier12_4pc ) return 0;
+  if ( p -> buffs_tier12_4pc -> check() && consumes_tier12_4pc ) return 0;
   if ( p -> buffs_beast_within -> check() ) c *= ( 1.0 + p -> buffs_beast_within -> effect1().percent() );
   return c;
 }
@@ -2742,7 +2740,7 @@ void hunter_spell_t::consume_resource()
 {
   spell_t::consume_resource();
   hunter_t* p = player -> cast_hunter();
-  if ( p -> dbc.ptr && p -> buffs_tier12_4pc -> up() )
+  if ( p -> buffs_tier12_4pc -> up() )
   {
     // Treat the savings like a gain
     double amount = spell_t::cost();
@@ -3478,10 +3476,7 @@ void hunter_t::init_base()
     register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new wild_quiver_shot_t( this ) ) );
   }
 
-  if ( dbc.ptr )
-  {
-    flaming_arrow = new flaming_arrow_t( this );
-  }
+  flaming_arrow = new flaming_arrow_t( this );
 }
 
 // hunter_t::init_buffs =======================================================

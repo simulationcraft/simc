@@ -1,19 +1,5 @@
 #!simc
 
-# 410 Profiles
-ptr=0
-
-chardev=133579 talents=http://www.wowhead.com/talent#warrior-3022031312021230221103220000000000000000030000000000000000000 save=Warrior_Arms_T11_372_NoCharge.simc name=Warrior_Arms_T11_372_NoCharge
-
-chardev=133579 save=Warrior_Arms_T11_372.simc name=Warrior_Arms_T11_372
-
-chardev=36557 save=Warrior_Fury_1h_T11_372.simc name=Warrior_Fury_1h_T11_372
-
-chardev=36611 save=Warrior_Fury_2h_T11_372.simc name=Warrior_Fury_2h_T11_372
-
-# 420 Profiles
-ptr=1
-
 chardev=133579 name=Warrior_Arms_T11H actions= save=Warrior_Arms_T11H.simc
 
 chardev=36557 name=Warrior_Fury_1h_T11H actions= save=Warrior_Fury_1h_T11H.simc
@@ -185,7 +171,3 @@ main_hand=sulfuras_the_extinguished_hand,id=70723,gems=40str_40str_20str,enchant
 off_hand=sulfuras_the_extinguished_hand,id=70723,gems=40str_40str_20str,enchant=landslide,reforge=mastery_hit
 ranged=giantslicer,id=71593,reforge=exp_crit
 save=Warrior_Fury_2h_T12H.simc
-
-
-
-ptr=0

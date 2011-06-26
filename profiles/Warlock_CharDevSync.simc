@@ -1,26 +1,5 @@
 #!simc
 
-ptr=0
-
-chardev=36735 name=Warlock_AffDrain_T11_359 save=Warlock_AffDrain_T11_359.simc
-
-chardev=36739 name=Warlock_Affliction_T11_359 save=Warlock_Affliction_T11_359.simc
-
-chardev=36741 name=Warlock_Demonology_T11_359 save=Warlock_Demonology_T11_359.simc
-
-chardev=36743 name=Warlock_Destruction_T11_359 save=Warlock_Destruction_T11_359.simc
-
-chardev=36745 name=Warlock_AffDrain_T11_372 save=Warlock_AffDrain_T11_372.simc
-
-chardev=36750 name=Warlock_Affliction_T11_372 save=Warlock_Affliction_T11_372.simc
-
-chardev=128609 name=Warlock_Demonology_T11_372 save=Warlock_Demonology_T11_372.simc
-
-chardev=36761 name=Warlock_Destruction_T11_372 save=Warlock_Destruction_T11_372.simc
-
-
-ptr=1
-
 # Tier 11
 
 chardev=36735 name=Warlock_AffDrain_T11N glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt actions= save=Warlock_AffDrain_T11N.simc
@@ -270,4 +249,3 @@ ranged=trail_of_embers,id=71575
 actions=
 save=Warlock_Destruction_T12H.simc
 
-ptr=0

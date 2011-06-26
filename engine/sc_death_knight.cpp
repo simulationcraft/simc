@@ -747,8 +747,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       aoe              = -1;
       may_crit         = true;
       direct_power_mod = 0.06;
-      if ( ! p -> ptr )
-        base_multiplier *= 0.50; // DRW penalty
 
       if ( o -> race == RACE_ORC )
       {
@@ -784,8 +782,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       direct_power_mod  *= 0.055 * 1.15;
       may_miss           = false;
       hasted_ticks       = false;
-      if ( ! p -> ptr )
-        base_multiplier   *= 0.50; // DRW penalty
 
       if ( o -> race == RACE_ORC )
       {
@@ -816,8 +812,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level );
       base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
       base_multiplier *= 1 + o -> glyphs.death_coil * 0.15;
-      if ( ! p -> ptr )
-        base_multiplier *= 0.50; // DRW Penalty
+
       if ( o -> set_bonus.tier11_2pc_melee() )
         base_crit     += 0.05;
 
@@ -844,8 +839,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       trigger_gcd = 0;
       base_crit       +=     o -> talents.improved_death_strike -> effect2().percent();
       base_multiplier *= 1 + o -> talents.improved_death_strike -> effect1().percent();
-      if ( ! p -> ptr )
-        base_multiplier *= 0.50; // DRW penalty
 
       if ( o -> race == RACE_ORC )
       {
@@ -875,8 +868,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       num_ticks         = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
       direct_power_mod *= 0.055 * 1.15;
       base_multiplier  *= 1.0 + o -> glyphs.icy_touch * 0.2;
-      if ( ! p -> ptr )
-        base_multiplier  *= 0.50; // DRW Penalty
 
       if ( o -> race == RACE_ORC )
       {
@@ -903,8 +894,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_add_multiplier = 0.75;
       trigger_gcd         = 0;
       base_multiplier    *= 1 + o -> glyphs.heart_strike          * 0.30;
-      if ( ! p -> ptr )
-        base_multiplier    *= 0.50; // DRW penalty
 
       if ( o -> race == RACE_ORC )
       {
@@ -939,8 +928,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background       = true;
       trigger_gcd      = 0;
       direct_power_mod = 0.2;
-      if ( ! p -> ptr )
-        base_multiplier *= 0.5; // DRW Penalty
 
       if ( o -> race == RACE_ORC )
       {
@@ -990,8 +977,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background       = true;
       trigger_gcd      = 0;
       may_crit         = true;
-      if ( ! p -> ptr )
-        base_multiplier *= 0.50; // DRW penalty
 
       if ( o -> race == RACE_ORC )
       {
@@ -1030,8 +1015,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background        = true;
       repeating         = true;
       weapon_power_mod *= 2.0; //Attack power scaling is unaffected by the DRW 50% penalty.
-      if ( ! p -> ptr )
-        base_multiplier  *= 0.5; // DRW Penalty
 
       if ( p -> owner -> race == RACE_ORC )
       {
@@ -2141,7 +2124,7 @@ struct melee_t : public death_knight_attack_t
         p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
       }
 
-      if ( weapon -> slot == SLOT_MAIN_HAND || ( p -> dbc.ptr && weapon -> slot == SLOT_OFF_HAND ) )
+      if ( weapon -> slot == SLOT_MAIN_HAND || ( weapon -> slot == SLOT_OFF_HAND ) )
       {
         // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
         double chance = weapon -> proc_chance_on_swing( util_t::talent_rank( p -> talents.killing_machine -> rank(), 3, 1, 3, 5 ) );
@@ -4243,7 +4226,7 @@ void death_knight_t::init_defense()
 {
   player_t::init_defense();
 
-  initial_parry_rating_per_strength = dbc.ptr ? 0.27 : 0.25;
+  initial_parry_rating_per_strength = 0.27;
 }
 
 // death_knight_t::init_base ================================================
@@ -5032,7 +5015,7 @@ void death_knight_t::regen( double periodicity )
   if ( talents.butchery -> rank() )
     resource_gain( RESOURCE_RUNIC, ( talents.butchery -> effect2().resource( RESOURCE_RUNIC ) / 5.0 * periodicity ), gains_butchery );
 
-  if ( ptr && set_bonus.tier12_2pc_melee() && sim -> auras.horn_of_winter -> check() )
+  if ( set_bonus.tier12_2pc_melee() && sim -> auras.horn_of_winter -> check() )
     resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity, gains_tier12_2pc_melee );
     
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )

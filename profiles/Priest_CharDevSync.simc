@@ -1,31 +1,5 @@
 #!simc
 
-ptr=0
-
-chardev=19782 name=Priest_Shadow_T11_359 save=Priest_Shadow_T11_359.simc
-
-chardev=18129 name=Priest_Shadow_T11_372 save=Priest_Shadow_T11_372.simc
-
-# Holy Smite Archangel
-chardev=18129
-talents=http://www.wowhead.com/talent#priest-033210000000000000000233112221211201102211001000000000000000000
-role=dps
-glyphs=penance/smite/shadow_word_pain/divine_accuracy
-name=Priest_Holy_Smite_AA_T11_372
-actions=
-save=Priest_Holy_Smite_AA_T11_372.simc
-
-# Discipline Smite
-chardev=18129
-talents=http://www.wowhead.com/talent#priest-033213011213200312021003000000000000000000302000200000000000000
-role=dps
-glyphs=penance/smite/shadow_word_pain/divine_accuracy
-name=Priest_Disc_Smite_T11_372
-save=Priest_Disc_Smite_T11_372.simc
-
-
-ptr=1
-
 # Tier 11
 
 chardev=19782 name=Priest_Shadow_T11N actions= save=Priest_Shadow_T11N.simc
@@ -238,4 +212,3 @@ trinket2=darkmoon_card_volcano,id=62047,reforge=mastery_haste
 actions=
 save=Priest_Shadow_T12N.simc
 
-ptr=0

@@ -1011,7 +1011,7 @@ static void trigger_burning_treant( spell_t* s )
 {
   druid_t* p = s -> player -> cast_druid();
 
-  if ( p -> dbc.ptr && p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_burning_treant -> remains() == 0 ) )
+  if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_burning_treant -> remains() == 0 ) )
   {
     if ( p -> rng_burning_treant -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
@@ -1033,8 +1033,6 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
   sim_t* sim = s -> sim;
 
   if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
-
-  if ( ! p -> dbc.ptr ) return;
 
   struct fiery_claws_t : public druid_cat_attack_t
   {
@@ -1175,7 +1173,7 @@ void druid_cat_attack_t::execute()
   {
     if ( requires_combo_points )
     {
-      if ( p -> ptr && p -> set_bonus.tier12_4pc_melee() & p -> buffs_berserk -> check() )
+      if ( p -> set_bonus.tier12_4pc_melee() & p -> buffs_berserk -> check() )
       {
         if ( p -> rng_tier12_4pc_melee -> roll( p -> buffs_combo_points -> check() / 5 ) )
           p -> buffs_berserk -> extend_duration( p, 2.0 );
@@ -1384,30 +1382,23 @@ struct ferocious_bite_t : public druid_cat_attack_t
     // consumes up to 35 additional energy to increase damage by up to 100%.
     // Assume 100/35 = 2.857% per additional energy consumed
 
-    // Glyph: Your Ferocious Bite ability no longer converts extra energy into additional damage.
-    if ( ! p -> ptr && p -> glyphs.ferocious_bite -> enabled() )
+    excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
+
+    if ( excess_energy > max_excess_energy )
+    {
+      excess_energy = max_excess_energy;
+    }
+    else if ( excess_energy < 0 )
     {
       excess_energy = 0;
     }
-    else
-    {
-      excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
 
-      if ( excess_energy > max_excess_energy )
-      {
-        excess_energy = max_excess_energy;
-      }
-      else if ( excess_energy < 0 )
-      {
-        excess_energy = 0;
-      }
-    }
 
     druid_cat_attack_t::execute();
 
     if ( result_is_hit() )
     {
-      if ( p -> ptr && p -> glyphs.ferocious_bite -> enabled() )
+      if ( p -> glyphs.ferocious_bite -> enabled() )
       {
         double amount = p -> resource_max[ RESOURCE_HEALTH ] * 0.01 * ( (int) ( excess_energy + druid_cat_attack_t::cost() ) / 10 );
         p -> resource_gain( RESOURCE_HEALTH, amount, p -> gains_glyph_ferocious_bite );
@@ -1561,14 +1552,11 @@ struct rake_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     dot_behavior        = DOT_REFRESH;
-    direct_power_mod    = ( p -> ptr ) ? 0.147 : 0.0207;
-    tick_power_mod      = ( p -> ptr ) ? 0.147 : 0.378 / 3.0;
+    direct_power_mod    = 0.147;
+    tick_power_mod      = 0.147;
     num_ticks          += p -> talents.endless_carnage -> rank();
     base_td_multiplier *= 1.0 + p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
-    if ( p -> ptr )
-    {
-      base_dd_min = base_dd_max = base_td;
-    }
+    base_dd_min = base_dd_max = base_td;
   }
 };
 
@@ -2126,8 +2114,8 @@ struct lacerate_t : public druid_bear_attack_t
 
     parse_options( NULL, options_str );
 
-    direct_power_mod     = ( p -> ptr ) ? 0.0552 : 0.0766;
-    tick_power_mod       = ( p -> ptr ) ? 0.00369 : 0.00512;
+    direct_power_mod     = 0.0552;
+    tick_power_mod       = 0.00369;
     dot_behavior         = DOT_REFRESH;
     base_crit           += p -> glyphs.lacerate -> mod_additive( P_CRIT );
     mangle_bear_cooldown = p -> get_cooldown( "mangle_bear" );
@@ -2219,8 +2207,8 @@ struct maul_t : public druid_bear_attack_t
     aoe = 1;
     base_add_multiplier = p -> glyphs.maul -> effect3().percent();
     // DBC data points to base scaling, tooltip states AP scaling which is correct
-    base_dd_min = base_dd_max = ( p -> ptr ) ? 35 : 8;
-    direct_power_mod = ( p -> ptr ) ? 0.19 : 0.264;
+    base_dd_min = base_dd_max = 35;
+    direct_power_mod = 0.19;
   }
 
   virtual void execute()
@@ -2341,8 +2329,8 @@ struct thrash_t : public druid_bear_attack_t
     check_min_level( 81 );
 
     aoe               = -1;
-    direct_power_mod  = ( p -> ptr ) ? 0.0982 : 0.192;
-    tick_power_mod    = ( p -> ptr ) ? 0.0167 : 0.0326;
+    direct_power_mod  = 0.0982;
+    tick_power_mod    = 0.0167;
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
   }
@@ -2939,7 +2927,7 @@ void druid_spell_t::player_tick()
 
   player_crit = p -> composite_spell_crit();
 
-  player_crit += ( p -> ptr ? 0.05 : 0.33 ) * p -> buffs_t11_4pc_caster -> stack();
+  player_crit += 0.05 * p -> buffs_t11_4pc_caster -> stack();
 }
 
 // druid_spell_t::player_buff ==============================================
@@ -2975,7 +2963,7 @@ void druid_spell_t::player_buff()
   // Reset Additive_Multiplier
   additive_multiplier = 0.0;
 
-  player_crit += ( p -> ptr ? 0.05 : 0.33 ) * p -> buffs_t11_4pc_caster -> stack();
+  player_crit += 0.05 * p -> buffs_t11_4pc_caster -> stack();
 }
 
 // Auto Attack =============================================================
@@ -3334,7 +3322,7 @@ struct innervate_t : public druid_spell_t
     else
     {
       // Either Dreamstate increases innervate OR you get glyph of innervate
-      gain = p -> dbc.ptr ? 0.05 : 0.20;
+      gain = 0.05;
       p -> buffs_glyph_of_innervate -> trigger( 1, p -> resource_max[ RESOURCE_MANA ] * 0.1 / 10.0 );
     }
     innervate_target -> buffs.innervate -> trigger( 1, p -> resource_max[ RESOURCE_MANA ] * gain / 10.0 );
@@ -3508,11 +3496,11 @@ struct moonfire_t : public druid_spell_t
       if ( p -> dots_sunfire -> ticking )
         p -> dots_sunfire -> action -> cancel();
 
-      if ( p -> ptr && p -> buffs_lunar_shower -> check() ) 
+      if ( p -> buffs_lunar_shower -> check() ) 
         trigger_eclipse_gain_delay( this, 8 );
         
       // If moving trigger all 3 stacks, because it will stack up immediately
-      p -> buffs_lunar_shower -> trigger( p -> dbc.ptr ? 1 : ( p -> is_moving() ? 3 : 1 ) );
+      p -> buffs_lunar_shower -> trigger( 1 );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
       
     }
@@ -3981,11 +3969,11 @@ struct sunfire_t : public druid_spell_t
       if ( p -> dots_moonfire -> ticking )
         p -> dots_moonfire -> action -> cancel();
 
-      if ( p -> ptr && p -> buffs_lunar_shower -> check() ) 
+      if ( p -> buffs_lunar_shower -> check() ) 
         trigger_eclipse_gain_delay( this, -8 );
         
       // If moving trigger all 3 stacks, because it will stack up immediately
-      p -> buffs_lunar_shower -> trigger( p -> dbc.ptr ? 1 : ( p -> is_moving() ? 3 : 1 ) );
+      p -> buffs_lunar_shower -> trigger( 1 );
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
 
     }
@@ -4162,7 +4150,7 @@ struct wild_mushroom_detonate_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
     p -> buffs_wild_mushroom -> expire();
 
-    if ( p -> dbc.ptr && result_is_hit() )
+    if ( result_is_hit() )
       trigger_earth_and_moon( this );
   }
 
@@ -4411,10 +4399,7 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 void druid_t::create_pets()
 {
   create_pet( "treants" );
-  if ( dbc.ptr )
-  {
-    create_pet( "burning_treant" );
-  }
+  create_pet( "burning_treant" );
 }
 
 // druid_t::init_talents =====================================================
@@ -4501,7 +4486,7 @@ void druid_t::init_spells()
   spells.moonfury        = spell_data_t::find( 16913, "Moonfury",        dbc.ptr );
   spells.razor_claws     = spell_data_t::find( 77493, "Razor Claws",     dbc.ptr );
   spells.savage_defender = spell_data_t::find( 77494, "Savage Defender", dbc.ptr );
-  spells.symbiosis       = spell_data_t::find( 77495, ( ptr ) ? "Harmony" : "Symbiosis",         dbc.ptr );
+  spells.symbiosis       = spell_data_t::find( 77495, "Harmony",         dbc.ptr );
   spells.total_eclipse   = spell_data_t::find( 77492, "Total Eclipse",   dbc.ptr );
   spells.vengeance       = spell_data_t::find( 84840, "Vengeance",       dbc.ptr );
 
@@ -4557,7 +4542,7 @@ void druid_t::init_base()
   base_attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
   attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.heart_of_the_wild -> effect1().percent();
-  initial_attack_power_per_strength = ( ptr ) ? 1.0 : 2.0;
+  initial_attack_power_per_strength = 1.0;
   initial_spell_power_per_intellect = 1.0;
 
   // FIXME! Level-specific!  Should be form-specific!
@@ -4594,7 +4579,7 @@ void druid_t::init_buffs()
   // These have either incorrect or no values in the DBC or don't really exist
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate -> enabled() );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
-  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  dbc.ptr ? 15.0 : 8.0,     0, 3.5 / 60.0 );
+  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().seconds() );
   buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell(1).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
   buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
@@ -4882,13 +4867,7 @@ void druid_t::init_actions()
       if ( race == RACE_TROLL )
         action_list_str += "/berserking";
       action_list_str += "/insect_swarm,if=ticks_remain<2|(dot.insect_swarm.remains<4&buff.solar_eclipse.up&eclipse<15)";
-      if ( primary_tree() == TREE_BALANCE && ! dbc.ptr )
-        action_list_str += "/starsurge,if=buff.t11_4pc_caster.up";
-      if ( ! dbc.ptr )
-      {
-        action_list_str += "/starfire,if=buff.t11_4pc_caster.up&buff.lunar_eclipse.up";
-        action_list_str += "/wrath,if=buff.t11_4pc_caster.up";
-      }
+
       action_list_str += "/wild_mushroom_detonate,moving=1,if=buff.wild_mushroom.stack=3";
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       if ( talents.typhoon -> rank() )
@@ -4896,18 +4875,13 @@ void druid_t::init_actions()
       if ( talents.starfall -> rank() )
       {
         action_list_str += "/starfall,if=buff.lunar_eclipse.up";
-        if ( ! dbc.ptr )
-          action_list_str += "&buff.t11_4pc_caster.down";
       }
       if ( talents.sunfire -> rank() )
       {
         action_list_str += "/sunfire,if=(!ticking|ticks_remain<2|(dot.sunfire.remains<4&buff.solar_eclipse.up&eclipse<15))&!dot.moonfire.remains>0";
-        if ( set_bonus.tier11_4pc_caster() && ! dbc.ptr )
-          action_list_str += "&buff.t11_4pc_caster.down";
       }
       action_list_str += "/moonfire,if=(!ticking|ticks_remain<2|(dot.moonfire.remains<4&buff.lunar_eclipse.up&eclipse>-20))";
-      if ( set_bonus.tier11_4pc_caster() && ! dbc.ptr )
-        action_list_str += "&buff.t11_4pc_caster.down";
+
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0";
       if ( primary_tree() == TREE_BALANCE )
@@ -4920,14 +4894,7 @@ void druid_t::init_actions()
         }
         else
         {
-          if ( dbc.ptr )
-          {
-            action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
-          }
-          else
-          {
-          action_list_str += "/starsurge,if=!((eclipse<=-87&eclipse_dir=-1)|(eclipse>=80&eclipse_dir=1))";
-          }
+          action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
         }
       }
       action_list_str += "/innervate,if=mana_pct<50";
@@ -4955,8 +4922,8 @@ void druid_t::init_actions()
       action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/starfire";
       action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
-      if ( dbc.ptr )
-        action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
+
+      action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
       action_list_str += "/moonfire,moving=1";
       action_list_str += "/sunfire,moving=1";
     }
