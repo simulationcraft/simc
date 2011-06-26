@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_Balance_T12H
-origin="Druid_CharDevSync.simc"
+origin="input=Druid_CharDevSync.simc"
 level=85
 race=troll
 role=spell
@@ -44,7 +44,7 @@ head=obsidian_arborweave_cover,heroic=1,type=leather,ilevel=391,quality=epic,sta
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,gems=67int_10int
 shoulders=obsidian_arborweave_shoulderwraps,heroic=1,type=leather,ilevel=391,quality=epic,stats=1446armor_322int_513sta_231crit_195mastery,reforge=crit_spi,gems=40int_10int,enchant=50int_25haste
 chest=obsidian_arborweave_vestment,heroic=1,type=leather,ilevel=391,quality=epic,stats=1928armor_420int_689sta_269haste_301mastery,gems=67int_67int,enchant=20all
-waist=majordomos_chain_of_office,heroic=1,type=cloth,ilevel=397,quality=epic,stats=865armor_341int_542sta_206mastery_243haste,gems=40int_10int
+waist=firescar_sash,type=leather,ilevel=378,quality=epic,stats=1024armor_282int_454sta_208crit_172haste,reforge=crit_spi,gems=20int_20spi_10int
 legs=firecat_leggings,heroic=1,type=leather,ilevel=391,quality=epic,stats=1687armor_420int_689sta_269spi_295haste,gems=20int_20spi_20int_20spi_20int,enchant=95int_55spi
 feet=phoenixdown_treads,heroic=1,type=leather,ilevel=391,quality=epic,stats=1325armor_322int_513sta_241spi_185mastery,reforge=spi_haste,gems=20int_20haste_10int,enchant=35mastery
 wrists=glowing_wing_bracers,heroic=1,type=leather,ilevel=391,quality=epic,stats=843armor_256int_384sta_173spi_166haste,enchant=50int
@@ -53,24 +53,24 @@ finger1=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int
 finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit
 trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=lightweave_embroidery
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_209int_344sta_153mastery_133haste,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
 main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max
 off_hand=goblet_of_anger,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_154spi_181haste,enchant=40int
 ranged=soulflame_vial,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_101mastery_89haste,gems=40int
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=7001
-# gear_intellect=5739
-# gear_spirit=1302
+# gear_stamina=6873
+# gear_intellect=5643
+# gear_spirit=1466
 # gear_spell_power=2783
-# gear_hit_rating=479
-# gear_crit_rating=174
-# gear_haste_rating=2776
-# gear_mastery_rating=1740
-# gear_armor=11610
+# gear_hit_rating=329
+# gear_crit_rating=299
+# gear_haste_rating=2675
+# gear_mastery_rating=1626
+# gear_armor=11723
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
-# back=rippling_flamewrath_drape,heroic=1,enchant=lightweave_embroidery
+# back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
 # main_hand=kogun_hammer_of_the_firelord,heroic=1,weapon=mace_2.10speed_484min_899max,enchant=power_torrent
