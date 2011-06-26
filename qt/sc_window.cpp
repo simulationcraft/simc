@@ -728,7 +728,7 @@ void SimulationCraftWindow::createBestInSlotTab()
   importTab->addTab( bisTree, "BiS" );
 
   const int TIER_MAX=1;
-  const char* tierNames[] = { "T11", "T12" };
+  const char* tierNames[] = { "T12" };
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
   for( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
