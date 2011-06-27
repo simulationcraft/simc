@@ -2259,6 +2259,7 @@ struct sim_t
   std::string main_target_str;
   int         big_hitbox;
   double      dtr_proc_chance;
+  double      target_death_pct;
 
   // Data access
   dbc_t       dbc;

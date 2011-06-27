@@ -821,7 +821,7 @@ void sim_t::combat( int iteration )
     {
       // The first iteration is always time-limited since we do not yet have inferred health
 
-      if ( current_time > expected_time )
+      if ( current_time > expected_time * ( 1 - target_death_pct / 100.0 ) )
       {
         delete e;
         break;
@@ -836,7 +836,7 @@ void sim_t::combat( int iteration )
         break;
       }
 
-      if (  target -> resource_current[ RESOURCE_HEALTH ] <= 0 )
+      if (  target -> resource_current[ RESOURCE_HEALTH ] / target -> resource_max[ RESOURCE_HEALTH ] <= target_death_pct / 100.0 )
       {
         if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
         delete e;
@@ -2088,6 +2088,7 @@ void sim_t::create_options()
     { "main_target",                      OPT_STRING, &( main_target_str                          ) },
     { "big_hitbox",                       OPT_BOOL,   &( big_hitbox                               ) },
     { "default_dtr_proc_chance",          OPT_FLT,    &( dtr_proc_chance                          ) },
+    { "target_death_pct",                 OPT_FLT,    &( target_death_pct                         ) },
     // Character Creation
     { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
     { "deathknight",                      OPT_FUNC,   ( void* ) ::parse_player                      },

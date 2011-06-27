@@ -110,35 +110,73 @@ struct enemy_add_t : public pet_t
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
+
+struct melee_t : public attack_t
+{
+  melee_t( const char* name, player_t* player ) :
+    attack_t( name, player, RESOURCE_MANA, SCHOOL_PHYSICAL )
+  {
+
+    may_crit    = true;
+    background  = true;
+    repeating   = true;
+    trigger_gcd = 0;
+    base_cost   = 0;
+    base_dd_min = 120000;
+    base_execute_time = 2.0;
+
+  }
+};
+
 struct auto_attack_t : public attack_t
 {
   auto_attack_t( player_t* p, const std::string& options_str ) :
     attack_t( "auto_attack", p, RESOURCE_MANA, SCHOOL_PHYSICAL )
   {
-    base_execute_time = 2.0;
-    base_dd_min = 120000;
+    p -> main_hand_attack = new melee_t( "melee_main_hand", player );
+    p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
+    p -> main_hand_attack -> base_execute_time = 2.0;
 
     option_t options[] =
     {
-      { "damage",       OPT_FLT, &base_dd_min       },
-      { "attack_speed", OPT_FLT, &base_execute_time },
+      { "damage",       OPT_FLT, &p -> main_hand_attack -> base_dd_min       },
+      { "attack_speed", OPT_FLT, &p -> main_hand_attack -> base_execute_time },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    base_dd_max = base_dd_min;
-    if ( base_execute_time < 0.01 )
-      base_execute_time = 2.0;
+    p -> main_hand_attack -> target = target;
+
+    p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min;
+    if ( p -> main_hand_attack -> base_execute_time < 0.01 )
+      p -> main_hand_attack -> base_execute_time = 2.0;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
     stats -> school = school;
     name_str = name_str + "_" + target -> name();
 
-    may_crit = true;
-
-    weapon = &( player -> main_hand_weapon );
+    trigger_gcd = 0;
   }
+
+
+  virtual void execute()
+  {
+    enemy_t* p = player -> cast_enemy();
+    p -> main_hand_attack -> schedule_execute();
+    if ( p -> off_hand_attack )
+    {
+      p -> off_hand_attack -> schedule_execute();
+    }
+  }
+
+  virtual bool ready()
+  {
+    enemy_t* p = player -> cast_enemy();
+    if ( p -> is_moving() ) return false;
+    return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+  }
+
 };
 
 struct spell_nuke_t : public spell_t
@@ -155,6 +193,39 @@ struct spell_nuke_t : public spell_t
     {
       { "damage",       OPT_FLT, &base_dd_min          },
       { "attack_speed", OPT_FLT, &base_execute_time    },
+      { "cooldown",     OPT_FLT, &cooldown -> duration },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    base_dd_max = base_dd_min;
+    if ( base_execute_time < 0.01 )
+      base_execute_time = 3.0;
+
+
+    stats = player -> get_stats( name_str + "_" + target -> name(), this );
+    stats -> school = school;
+    name_str = name_str + "_" + target -> name();
+
+    may_crit = true;
+
+  }
+};
+
+struct spell_aoe_t : public spell_t
+{
+  spell_aoe_t( player_t* p, const std::string& options_str ) :
+    spell_t( "spell_aoe", p, RESOURCE_MANA, SCHOOL_FIRE )
+  {
+    base_execute_time = 3.0;
+    base_dd_min = 50000;
+
+    cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
+
+    option_t options[] =
+    {
+      { "damage",       OPT_FLT, &base_dd_min          },
+      { "cast_time", OPT_FLT, &base_execute_time    },
       { "cooldown",     OPT_FLT, &cooldown -> duration },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -236,6 +307,7 @@ action_t* enemy_t::create_action( const std::string& name,
 {
   if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
   if ( name == "spell_nuke"              ) return new               spell_nuke_t( this, options_str );
+  if ( name == "spell_aoe"               ) return new               spell_aoe_t( this, options_str );
   if ( name == "summon_add"              ) return new               summon_add_t( this, options_str );
 
 
