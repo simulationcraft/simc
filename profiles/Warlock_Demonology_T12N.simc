@@ -1,7 +1,7 @@
 #!./simc 
 
 warlock=Warlock_Demonology_T12N
-origin="Warlock_CharDevSync.simc"
+origin="warlock_chardevsync.simc"
 level=85
 race=orc
 role=spell
