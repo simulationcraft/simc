@@ -79,8 +79,8 @@ actions+=/inner_fire
 actions+=/snapshot_stats
 actions+=/inner_focus
 actions+=/power_word_shield,if=buff.weakened_soul.down,target=Warrior_Tank
-actions+=/penance_heal,target=Warrior_Tank,if=target.health_pct<=90
-actions+=/greater_heal,target=Warrior_Tank,if=target.health_pct<75
+actions+=/penance_heal,target=Warrior_Tank,if=target.health_pct<=80
+actions+=/greater_heal,target=Warrior_Tank,if=target.health_pct<70
 actions+=/prayer_of_mending,moving=1,single=1
 actions+=/renew,moving=1
 head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
@@ -116,29 +116,8 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
 # back=drape_of_the_twins,heroic=1,enchant=lightweave_embroidery_old
 # main_hand=andoros_fist_of_the_dragon_king,heroic=1,weapon=mace_1.80speed_82min_154max
 
-Priest_Shadow_T11_372.simc
-
 enemy=Overridden_Main_Target
 level=88
 role=tank
 actions+=/snapshot_stats
-#actions+=/auto_attack
-
-enemy=Second_Target
-level=84
-race=gnome
-role=tank
-actions=flask,type=draconic_mind
-actions+=/snapshot_stats
-actions+=/summon_add,name=Add_of_Second_Target,if=time>=50,cooldown=70,duration=40
-actions+=/spell_nuke,cooldown=30,target=Warrior_Tank
-actions+=/auto_attack,target=Warrior_Tank
-main_hand=andoros_fist_of_the_dragon_king,heroic=1,ilevel=372,quality=epic,stats=165int_110mastery_110spi_2207sp_247sta,reforge=mastery_crit,weapon=mace_1.80speed_82min_154max,enchant=power_torrent
-
-pet=Add_of_Second_Target
-level=85
-#role=spell
-actions+=/snapshot_stats
-actions+=/auto_attack,target=Warrior_Tank,damage=10
-
-
+actions+=/auto_attack,target=Warrior_Tank,damage=120000,attack_speed=2

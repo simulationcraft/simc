@@ -1,0 +1,17 @@
+Priest_Disc_Single_T12N.simc
+name=Priest_Disc_Single_T12N_finite
+Priest_Disc_Single_T12H.simc
+name=Priest_Disc_Single_T12H_finite
+Priest_Disc_Single_Renew_T12N.simc
+name=Priest_Disc_Single_Renew_T12N_finite
+
+Priest_Disc_Single_T12N.simc
+infinite_mana=1
+Priest_Disc_Single_T12H.simc
+infinite_mana=1
+Priest_Disc_PWS_T12N.simc
+infinite_mana=1
+Priest_Disc_AE_T12N.simc
+infinite_mana=1
+Priest_Disc_Single_Renew_T12N.simc
+infinite_mana=1

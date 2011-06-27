@@ -1,6 +1,6 @@
 #!./simc 
 
-priest=Priest_Discipline_Single_T12H
+priest=Priest_Disc_Single_T12H
 origin="generate_priest_heal.simc"
 level=85
 race=troll
@@ -9,8 +9,7 @@ use_pre_potion=1
 professions=enchanting=525/tailoring=525
 talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
 glyphs=inner_fire/mass_dispel/levitate/power_word_shield/prayer_of_mending/penance
-actions=flask,type=draconic_mind
-actions+=/food,type=seafood_magnifique_feast
+actions=food,type=seafood_magnifique_feast
 actions+=/fortitude
 actions+=/inner_fire
 actions+=/snapshot_stats
@@ -55,5 +54,6 @@ ranged=scorchvine_wand,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_98sp
 # meta_gem=burning_shadowspirit
 # tier12_2pc_heal=1
 # tier12_4pc_heal=1
+# trinket1=eye_of_blazing_power,heroic=1
 # back=flowing_flamewrath_cape,heroic=1,enchant=lightweave_embroidery
 # main_hand=kogun_hammer_of_the_firelord,heroic=1,weapon=mace_2.10speed_484min_899max,enchant=power_torrent

@@ -1,6 +1,6 @@
 #!./simc 
 
-priest=Priest_Discipline_Single_T12N
+priest=Priest_Disc_AE_T12N
 origin="generate_priest_heal.simc"
 level=85
 race=troll
@@ -9,8 +9,7 @@ use_pre_potion=1
 professions=enchanting=525/tailoring=525
 talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
 glyphs=inner_fire/mass_dispel/levitate/power_word_shield/prayer_of_mending/penance
-actions=flask,type=draconic_mind
-actions+=/food,type=seafood_magnifique_feast
+actions=food,type=seafood_magnifique_feast
 actions+=/fortitude
 actions+=/inner_fire
 actions+=/snapshot_stats
@@ -21,9 +20,8 @@ actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/berserking
 actions+=/power_infusion
 actions+=/inner_focus
-actions+=/power_word_shield,if=buff.weakened_soul.down
-actions+=/penance_heal
-actions+=/greater_heal
+actions+=/prayer_of_mending
+actions+=/prayer_of_healing
 head=cowl_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_255spi_229mastery,reforge=mastery_crit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
 neck=heartstone_of_rhyolith,ilevel=378,quality=epic,stats=227int_341sta_162spi_133mastery,reforge=mastery_crit
 shoulders=mantle_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1043armor_282int_454sta_201spi_183haste,gems=20spi_20int_10int,enchant=50int_25haste
@@ -55,5 +53,6 @@ ranged=scorchvine_wand,ilevel=378,quality=epic,stats=128int_192sta_86spi_83maste
 # meta_gem=burning_shadowspirit
 # tier12_2pc_heal=1
 # tier12_4pc_heal=1
+# trinket1=eye_of_blazing_power
 # back=flowing_flamewrath_cape,enchant=lightweave_embroidery
 # main_hand=kogun_hammer_of_the_firelord,weapon=mace_2.10speed_428min_797max,enchant=power_torrent
