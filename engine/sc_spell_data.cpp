@@ -1107,6 +1107,42 @@ struct spell_race_expr_t : public spell_list_expr_t
   }
 };
 
+struct spell_attribute_expr_t : public spell_list_expr_t
+{
+  spell_attribute_expr_t( sim_t* sim, expr_data_type_t type ) : spell_list_expr_t( sim, "attribute", type ) { }
+  
+  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other )
+  {
+    std::vector<uint32_t> res;
+
+    // Only for spells
+    if ( data_type == DATA_EFFECT || data_type == DATA_TALENT )
+      return res;
+    
+    // Numbered attributes only
+    if ( other.result_type != TOK_NUM )
+      return res;
+    
+    uint32_t attridx = ( unsigned ) other.result_num / ( sizeof( unsigned ) * 8 );
+    uint32_t flagidx = ( unsigned ) other.result_num % ( sizeof( unsigned ) * 8 );
+    
+    assert( attridx < 10 && flagidx < 32 );
+    
+    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
+    {
+      const spell_data_t* spell = sim -> dbc.spell( *i );
+      
+      if ( ! spell )
+        continue;
+      
+      if ( spell -> _attributes[ attridx ] & ( 1 << flagidx ) )
+        res.push_back( *i );
+    }
+
+    return res;
+  }
+};
+
 struct spell_school_expr_t : public spell_list_expr_t
 {
   spell_school_expr_t( sim_t* sim, expr_data_type_t type ) : spell_list_expr_t( sim, "school", type ) { }
@@ -1296,6 +1332,8 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
       return new spell_class_expr_t( sim, data_type );
     else if ( ! effect_query && util_t::str_compare_ci( splits[ 1 ], "race" ) )
       return new spell_race_expr_t( sim, data_type );
+    else if ( ! effect_query && util_t::str_compare_ci( splits[ 1 ], "attribute" ) )
+      return new spell_attribute_expr_t( sim, data_type );
     else if ( ! effect_query && data_type == DATA_TALENT && util_t::str_compare_ci( splits[ 1 ], "pet_class" ) )
       return new spell_pet_class_expr_t( sim, data_type );
     else if ( ! effect_query && data_type != DATA_TALENT && util_t::str_compare_ci( splits[ 1 ], "school" ) )
