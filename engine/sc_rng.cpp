@@ -119,7 +119,7 @@ double rng_t::exgauss( double mean, double stddev, double nu )
   }
   while ( x <=  0 ); // avoid ln(0)
 
-  double result =  ( gauss( mean - nu, stddev ) ) - log( x / nu );
+  double result =  ( gauss( mean, stddev ) ) - log( x / nu ) * nu;
   if ( result < 0 ) result = 0;
   if ( result > 5 ) result = 5; // cut it off at 5s
 

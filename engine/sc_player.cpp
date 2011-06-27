@@ -295,7 +295,7 @@ player_t::player_t( sim_t*             s,
   pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
   active_pets( 0 ), big_hitbox( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
-  reaction_mean( 1.0 ), reaction_stddev( 0.0 ), reaction_nu( 1.0 ),
+  reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ),
   dbc( s -> dbc ),
   race_str( "" ), race( r ),
   // Haste
