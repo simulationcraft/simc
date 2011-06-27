@@ -3419,7 +3419,7 @@ void rogue_t::init_actions()
 
       action_list_str += "/backstab,if=combo_points<3&energy>60";
 
-      action_list_str += "/backstab,if=combo_points<4&energy>40&energy<75";
+      action_list_str += "/backstab,if=combo_points<4&energy>40&energy<80";
       action_list_str += "/backstab,if=combo_points<5&energy>80";
     }
     else

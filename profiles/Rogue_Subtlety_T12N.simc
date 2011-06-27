@@ -8,7 +8,7 @@ role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000332031321310012321
-glyphs=expose_armor/backstab/shadow_dance/slice_and_dice
+glyphs=backstab/eviscerate/slice_and_dice/feint/sprint/tricks_of_the_trade/blurred_speed/poisons/safe_fall
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/apply_poison,main_hand=instant,off_hand=deadly
@@ -33,7 +33,7 @@ actions+=/rupture,if=combo_points=5&!ticking
 actions+=/recuperate,if=combo_points=5&remains<3
 actions+=/eviscerate,if=combo_points=5&dot.rupture.remains>1
 actions+=/backstab,if=combo_points<3&energy>60
-actions+=/backstab,if=combo_points<4&energy>40&energy<75
+actions+=/backstab,if=combo_points<4&energy>40&energy<80
 actions+=/backstab,if=combo_points<5&energy>80
 head=dark_phoenix_helmet,type=leather,ilevel=378,quality=epic,stats=1478armor_348agi_611sta_249haste_227hit,gems=agile_shadowspirit_20agi_20haste_30agi,enchant=60agi_35haste
 neck=choker_of_the_vanquished_lord,ilevel=384,quality=epic,stats=240agi_360sta_162haste_156mastery,reforge=mastery_exp
