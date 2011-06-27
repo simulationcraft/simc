@@ -37,10 +37,12 @@ struct shaman_t : public player_t
   action_t* totems[ TOTEM_MAX ];
 
   // Buffs
+  buff_t* buffs_earth_elemental;
   buff_t* buffs_elemental_devastation;
   buff_t* buffs_elemental_focus;
   buff_t* buffs_elemental_mastery;
   buff_t* buffs_elemental_mastery_insta;
+  buff_t* buffs_fire_elemental;
   buff_t* buffs_flurry;
   buff_t* buffs_lava_surge;
   buff_t* buffs_lightning_shield;
@@ -467,7 +469,11 @@ struct earth_elemental_pet_t : public pet_t
     virtual void execute()
     {
       pet_t* p = player -> cast_pet();
+      shaman_t* o = ( player -> cast_pet() ) -> owner -> cast_shaman();
+
       p -> main_hand_attack -> schedule_execute();
+
+      o -> buffs_earth_elemental -> up();
     }
 
     virtual bool ready()
@@ -545,9 +551,23 @@ struct earth_elemental_pet_t : public pet_t
 
   virtual void summon( double duration )
   {
+    shaman_t* o = owner -> cast_shaman();
+
     pet_t::summon();
     owner_sp = owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
+
+    o -> buffs_earth_elemental -> trigger();
   }
+
+  virtual void demise()
+  {
+    shaman_t* o = owner -> cast_shaman();
+
+    pet_t::demise();
+
+    o -> buffs_earth_elemental -> expire();
+  }
+  
   
   virtual double composite_spell_power( const school_type ) SC_CONST
   {
@@ -652,6 +672,15 @@ struct fire_elemental_pet_t : public pet_t
       spell_t::player_buff();
       // Fire elemental has approx 3% crit
       player_crit = 0.03;
+    }
+
+    virtual void execute()
+    {
+      shaman_t* o = ( player -> cast_pet() ) -> owner -> cast_shaman();
+
+      spell_t::execute();
+
+      o -> buffs_fire_elemental -> up();
     }
     
     virtual void target_debuff( player_t* t, int dmg_type ) { }
@@ -793,11 +822,24 @@ struct fire_elemental_pet_t : public pet_t
   // Snapshot int, spell power from player
   virtual void summon( double duration )
   {
+    shaman_t* o = owner -> cast_shaman();
+
     pet_t::summon();
     fire_shield -> execute();
+
+    o -> buffs_fire_elemental -> trigger();
     
     owner_int = owner -> intellect();
     owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
+  }
+
+  virtual void demise()
+  {
+    shaman_t* o = owner -> cast_shaman();
+
+    pet_t::demise();
+
+    o -> buffs_fire_elemental -> expire();
   }
   
   virtual double intellect() SC_CONST
@@ -3857,12 +3899,14 @@ void shaman_t::init_buffs()
 {
   player_t::init_buffs();
 
+  buffs_earth_elemental         = new buff_t                 ( this, "earth_elemental", 1 );
   buffs_elemental_devastation   = new elemental_devastation_t( this, talent_elemental_devastation -> spell_id(),               "elemental_devastation" );
   buffs_elemental_focus         = new buff_t                 ( this, talent_elemental_focus -> effect_trigger_spell( 1 ),      "elemental_focus"       );
   // For now, elemental mastery will need 2 buffs, 1 to trigger the insta cast, and a second for the haste/damage buff
   buffs_elemental_mastery_insta = new buff_t                 ( this, talent_elemental_mastery -> spell_id(),                   "elemental_mastery_instant", 1.0, -1.0, true );
   // Note the chance override, as the spell itself does not have a proc chance
   buffs_elemental_mastery       = new buff_t                 ( this, talent_elemental_mastery -> effect_trigger_spell( 2 ),    "elemental_mastery",         1.0 );
+  buffs_fire_elemental          = new buff_t                 ( this, "fire_elemental", 1 );
   buffs_flurry                  = new buff_t                 ( this, talent_flurry -> effect_trigger_spell( 1 ),               "flurry",                    talent_flurry -> proc_chance() );
   // TBD how this is handled for reals
   buffs_lava_surge              = new buff_t                 ( this, 77762,                                                    "lava_surge",                1.0, -1.0, true );
