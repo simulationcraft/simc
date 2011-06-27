@@ -39,33 +39,33 @@ actions+=/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&target.health
 actions+=/ravage,if=buff.stampede_cat.up&!buff.omen_of_clarity.react&buff.tigers_fury.up
 actions+=/shred
 head=obsidian_arborweave_headpiece,heroic=1,type=leather,ilevel=391,quality=epic,stats=1566armor_400agi_689sta_246crit_301hit,reforge=hit_haste,gems=agile_shadowspirit_40agi_30agi,enchant=60agi_35haste
-neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=mastery_crit
+neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery
 shoulders=obsidian_arborweave_spaulders,heroic=1,type=leather,ilevel=391,quality=epic,stats=1446armor_322agi_513sta_180crit_244mastery,reforge=mastery_haste,gems=40agi,enchant=50agi_25mastery
-chest=breastplate_of_the_incendiary_soul,heroic=1,type=leather,ilevel=391,quality=epic,stats=1928armor_420agi_689sta_264haste_303mastery,reforge=mastery_crit,gems=40agi_40agi_20agi,enchant=20all
+chest=obsidian_arborweave_raiment,heroic=1,type=leather,ilevel=391,quality=epic,stats=1928armor_420agi_689sta_253exp_311crit,reforge=exp_haste,gems=40agi_40agi_20agi,enchant=20all
 waist=riplimbs_lost_collar,heroic=1,type=leather,ilevel=391,quality=epic,stats=1084armor_322agi_513sta_244crit_180exp,reforge=exp_haste,gems=40agi_67agi
-legs=obsidian_arborweave_legguards,heroic=1,type=leather,ilevel=391,quality=epic,stats=1687armor_420agi_689sta_193hit_349mastery,reforge=hit_haste,gems=40agi_40agi,enchant=190ap_55crit
-feet=sandals_of_leaping_coals,heroic=1,type=leather,ilevel=391,quality=epic,stats=1325armor_322agi_513sta_260mastery_153crit,reforge=mastery_haste,gems=40agi_10agi,enchant=35mastery
-wrists=flamebinder_bracers,heroic=1,type=leather,ilevel=391,quality=epic,stats=843armor_256agi_384sta_173exp_166crit,reforge=exp_haste,gems=67agi,enchant=50agi
-hands=obsidian_arborweave_grips,heroic=1,type=leather,ilevel=391,quality=epic,stats=1205armor_322agi_513sta_231haste_202crit,gems=40agi_67agi,enchant=65mastery
+legs=cinderweb_leggings,heroic=1,type=leather,ilevel=391,quality=epic,stats=1687armor_420agi_689sta_320mastery_244haste,gems=40agi_20agi_20mastery_20agi,enchant=190ap_55crit
+feet=sandals_of_leaping_coals,heroic=1,type=leather,ilevel=391,quality=epic,stats=1325armor_322agi_513sta_260mastery_153crit,reforge=mastery_haste,gems=40agi_10agi,enchant=35agi
+wrists=flickering_wristbands,heroic=1,type=leather,ilevel=391,quality=epic,stats=843armor_384sta_256agi_170haste_170mastery,reforge=haste_crit,gems=67agi,enchant=50agi,suffix=136
+hands=obsidian_arborweave_grips,heroic=1,type=leather,ilevel=391,quality=epic,stats=1205armor_322agi_513sta_231haste_202crit,reforge=crit_mastery,gems=40agi_67agi,enchant=65mastery
 finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,reforge=mastery_crit,gems=40agi_10agi
-finger2=widows_kiss,heroic=1,ilevel=391,quality=epic,stats=256agi_384sta_188haste_142mastery,reforge=mastery_crit
+finger2=widows_kiss,heroic=1,ilevel=391,quality=epic,stats=256agi_384sta_188haste_142mastery
 trinket1=matrix_restabilizer,heroic=1,ilevel=397,quality=epic,stats=458agi
 trinket2=the_hungerer,heroic=1,ilevel=391,quality=epic,stats=433agi,equip=onattackhit_1730haste_100%_15dur_60cd
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=hit_haste,gems=40agi_40agi_20agi,enchant=65crit
-main_hand=fandrals_flamescythe,heroic=1,ilevel=391,quality=epic,stats=460agi_689sta_311crit_299mastery,reforge=mastery_haste,enchant=130agi,weapon=staff_2.40speed_1612min_2419max
-ranged=covenant_of_the_flame,heroic=1,ilevel=391,quality=epic,stats=145agi_217sta_99crit_92mastery,gems=40agi
+main_hand=fandrals_flamescythe,heroic=1,ilevel=391,quality=epic,stats=460agi_689sta_311crit_299mastery,reforge=crit_haste,enchant=130agi,weapon=staff_2.40speed_1612min_2419max
+ranged=covenant_of_the_flame,heroic=1,ilevel=391,quality=epic,stats=145agi_217sta_99crit_92mastery,reforge=crit_haste,gems=40agi
 # Gear Summary
 # gear_strength=20
-# gear_agility=6459
+# gear_agility=6494
 # gear_stamina=6987
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=212
-# gear_hit_rating=392
-# gear_crit_rating=2021
-# gear_haste_rating=1803
-# gear_mastery_rating=1617
+# gear_expertise_rating=260
+# gear_hit_rating=276
+# gear_crit_rating=1744
+# gear_haste_rating=1884
+# gear_mastery_rating=1886
 # gear_armor=11829
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1
