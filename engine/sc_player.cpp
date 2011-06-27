@@ -408,6 +408,12 @@ player_t::player_t( sim_t*             s,
     attribute_buffed[ i ] = 0;
   }
 
+  for ( int i=0; i < RESOURCE_MAX; i++ )
+  {
+    infinite_resource[ i ] = false;
+  }
+  infinite_resource[ RESOURCE_HEALTH ] = true;
+
   for ( int i=0; i <= SCHOOL_MAX; i++ )
   {
     initial_spell_power[ i ] = spell_power[ i ] = 0;
@@ -2996,7 +3002,7 @@ void player_t::regen( double periodicity )
 {
   int resource_type = primary_resource();
 
-  if ( sim -> infinite_resource[ resource_type ] == 0 )
+  if ( infinite_resource[ resource_type ] == 0 )
   {
     if ( resource_type == RESOURCE_ENERGY )
     {
@@ -3098,7 +3104,7 @@ double player_t::resource_loss( int       resource,
 
   double actual_amount;
 
-  if ( sim -> infinite_resource[ resource ] == 0 || is_enemy() )
+  if ( infinite_resource[ resource ] == 0 || is_enemy() )
   {
     actual_amount = std::min( amount, resource_current[ resource ] );
     resource_current[ resource ] -= actual_amount;
@@ -5910,6 +5916,13 @@ void player_t::create_options()
     { "enchant_energy",                       OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ]        ) },
     { "enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]        ) },
     { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]        ) },
+    // Regen
+    { "infinite_energy",                      OPT_BOOL,   &( infinite_resource[ RESOURCE_ENERGY ]     ) },
+    { "infinite_focus",                       OPT_BOOL,   &( infinite_resource[ RESOURCE_FOCUS  ]     ) },
+    { "infinite_health",                      OPT_BOOL,   &( infinite_resource[ RESOURCE_HEALTH ]     ) },
+    { "infinite_mana",                        OPT_BOOL,   &( infinite_resource[ RESOURCE_MANA   ]     ) },
+    { "infinite_rage",                        OPT_BOOL,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
+    { "infinite_runic",                       OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
     // Misc
     { "dtr_proc_chance",                      OPT_FLT,    &( dtr_proc_chance                          ) },
     { "dtr_base_proc_chance",                 OPT_FLT,    &( dtr_base_proc_chance                     ) },

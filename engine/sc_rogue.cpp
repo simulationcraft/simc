@@ -3924,7 +3924,7 @@ void rogue_t::regen( double periodicity )
 
   if ( buffs_adrenaline_rush -> up() )
   {
-    if ( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 )
+    if ( infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {
       double energy_regen = periodicity * energy_regen_per_second();
 
@@ -3934,7 +3934,7 @@ void rogue_t::regen( double periodicity )
 
   if ( buffs_overkill -> up() )
   {
-    if ( sim -> infinite_resource[ RESOURCE_ENERGY ] == 0 )
+    if ( infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {
       double energy_regen = periodicity * energy_regen_per_second() * 0.30;
 

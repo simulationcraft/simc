@@ -2249,7 +2249,6 @@ struct sim_t
   int64_t     events_remaining, max_events_remaining;
   int64_t     events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration, current_slot;
-  int         infinite_resource[ RESOURCE_MAX ];
   int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, log, debug;
   int         save_profiles, default_actions;
@@ -2890,6 +2889,7 @@ struct player_t
   double      dtr_proc_chance;
   double      dtr_base_proc_chance;
   double      reaction_mean,reaction_stddev,reaction_nu;
+  int         infinite_resource[ RESOURCE_MAX ];
 
   // Data access
   dbc_t       dbc;

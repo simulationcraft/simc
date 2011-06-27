@@ -1864,7 +1864,7 @@ struct mind_spike_t : public priest_spell_t
   }
 };
 
-// Mind Spike Spell =========================================================
+// Mind Sear Spell =========================================================
 
 struct mind_sear_tick_t : public priest_spell_t
 {

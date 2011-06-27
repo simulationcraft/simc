@@ -602,11 +602,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   const char* dbsources[] = { "local", "wowhead", "mmoc", "armory", "ptrhead" };
   item_db_sources = std::vector<std::string>( dbsources, dbsources + sizeof( dbsources ) / sizeof( const char* ) );
 
-  for ( int i=0; i < RESOURCE_MAX; i++ )
-  {
-    infinite_resource[ i ] = false;
-  }
-  infinite_resource[ RESOURCE_HEALTH ] = true;
+
 
   scaling = new scaling_t( this );
   plot    = new    plot_t( this );
@@ -2066,12 +2062,6 @@ void sim_t::create_options()
     { "override.windfury_totem",          OPT_BOOL,   &( overrides.windfury_totem                 ) },
     { "override.wrath_of_air",            OPT_BOOL,   &( overrides.wrath_of_air                   ) },
     // Regen
-    { "infinite_energy",                  OPT_BOOL,   &( infinite_resource[ RESOURCE_ENERGY ]     ) },
-    { "infinite_focus",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_FOCUS  ]     ) },
-    { "infinite_health",                  OPT_BOOL,   &( infinite_resource[ RESOURCE_HEALTH ]     ) },
-    { "infinite_mana",                    OPT_BOOL,   &( infinite_resource[ RESOURCE_MANA   ]     ) },
-    { "infinite_rage",                    OPT_BOOL,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
-    { "infinite_runic",                   OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
     { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
     // RNG
     { "smooth_rng",                       OPT_BOOL,   &( smooth_rng                               ) },
