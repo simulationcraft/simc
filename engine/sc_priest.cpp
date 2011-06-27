@@ -4666,7 +4666,6 @@ void priest_t::init_actions()
       if ( level >= 66 )                                 action_list_str += "/shadow_fiend";
                                                          action_list_str += "/mind_blast";
                                                          action_list_str += "/mind_flay";
-      if ( talents.dispersion -> rank() )                action_list_str += "/dispersion,moving=1";
       if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1,if=mana_pct>10";
                                                          action_list_str += "/shadow_word_death,moving=1";
       if ( talents.dispersion -> rank() )                action_list_str += "/dispersion";

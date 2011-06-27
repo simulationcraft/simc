@@ -31,7 +31,6 @@ actions+=/shadow_word_death,health_percentage<=25
 actions+=/shadow_fiend
 actions+=/mind_blast
 actions+=/mind_flay
-actions+=/dispersion,moving=1
 actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/shadow_word_death,moving=1
 actions+=/dispersion
