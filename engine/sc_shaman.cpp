@@ -1470,7 +1470,9 @@ struct melee_t : public shaman_attack_t
   {
     shaman_attack_t::schedule_execute();
     shaman_t* p = player -> cast_shaman();
-    p -> buffs_unleash_wind -> decrement();
+    // Clipped swings do not eat unleash wind buffs
+    if ( time_to_execute > 0 && ! p -> executing )
+      p -> buffs_unleash_wind -> decrement();
   }
 };
 
@@ -4098,7 +4100,8 @@ void shaman_t::init_actions()
           action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
         }
       }
-      action_list_str += "/unleash_elements,moving=1";
+      if ( ! glyph_unleashed_lightning -> ok() )
+        action_list_str += "/unleash_elements,moving=1";
       action_list_str += "/flame_shock,if=!ticking|ticks_remain<3";
       // Unleash elements for elemental is a downgrade in dps ...
       //if ( level >= 81 )
