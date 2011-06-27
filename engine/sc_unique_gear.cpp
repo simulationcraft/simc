@@ -2147,7 +2147,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "mark_of_norgannon"            ) e = "491Haste_20Dur_120Cd";
   else if ( name == "mark_of_supremacy"            ) e = "1024AP_20Dur_120Cd";
   else if ( name == "mark_of_the_firelord"         ) e = ( heroic ? "1441Int_15Dur_60Cd"  : "1277Int_15Dur_60Cd" );
-  else if ( name == "moonwell_chalice"             ) e = "1700Int_20Dur_120Cd";
+  else if ( name == "moonwell_chalice"             ) e = "1700Mastery_20Dur_120Cd";
   else if ( name == "moonwell_phial"               ) e = "1700Dodge_20Dur_120Cd";
   else if ( name == "might_of_the_ocean"           ) e = ( heroic ? "1425Str_15Dur_90Cd" : "765Str_15Dur_90Cd" );
   else if ( name == "platinum_disks_of_battle"     ) e = "752AP_20Dur_120Cd";
