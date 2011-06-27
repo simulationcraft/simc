@@ -572,6 +572,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ), save_suffix_str( "" ),
   input_is_utf8( false ), main_target_str( "" ),
   big_hitbox( 1 ), dtr_proc_chance( -1.0 ),
+  target_death_pct( 0 ),
   rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
   smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
