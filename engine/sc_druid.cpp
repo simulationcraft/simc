@@ -4864,7 +4864,7 @@ void druid_t::init_actions()
       action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
       if ( race == RACE_TROLL )
         action_list_str += "/berserking";
-      action_list_str += "/insect_swarm,if=ticks_remain<2|(dot.insect_swarm.remains<4&buff.solar_eclipse.up&eclipse<15)";
+      action_list_str += "/insect_swarm,if=ticks_remain<2|(dot.insect_swarm.remains<10&buff.solar_eclipse.up&eclipse<15)";
 
       action_list_str += "/wild_mushroom_detonate,moving=1,if=buff.wild_mushroom.stack=3";
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
@@ -4876,9 +4876,9 @@ void druid_t::init_actions()
       }
       if ( talents.sunfire -> rank() )
       {
-        action_list_str += "/sunfire,if=(!ticking|ticks_remain<2|(dot.sunfire.remains<4&buff.solar_eclipse.up&eclipse<15))&!dot.moonfire.remains>0";
+        action_list_str += "/sunfire,if=(!ticking|ticks_remain<2|(dot.sunfire.remains<10&buff.solar_eclipse.up&eclipse<15))&!dot.moonfire.remains>0";
       }
-      action_list_str += "/moonfire,if=(!ticking|ticks_remain<2|(dot.moonfire.remains<4&buff.lunar_eclipse.up&eclipse>-20))";
+      action_list_str += "/moonfire,if=(!ticking|ticks_remain<2|(dot.moonfire.remains<10&buff.lunar_eclipse.up&eclipse>-20))&buff.lunar_eclipse.up";
 
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0";
