@@ -23,8 +23,8 @@ actions+=/berserking
 actions+=/explosive_trap,if=target.adds>0
 actions+=/multi_shot,if=target.adds>5
 actions+=/steady_shot,if=target.adds>5
-actions+=/serpent_sting,if=!ticking&target.health_pct<=80
-actions+=/chimera_shot,if=target.health_pct<=80
+actions+=/serpent_sting,if=!ticking&target.health_pct<=90
+actions+=/chimera_shot,if=target.health_pct<=90
 actions+=/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3

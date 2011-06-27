@@ -3693,10 +3693,10 @@ void hunter_t::init_actions()
     case TREE_MARKSMANSHIP:
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
-      action_list_str += "/serpent_sting,if=!ticking&target.health_pct<=80";
+      action_list_str += "/serpent_sting,if=!ticking&target.health_pct<=90";
       if ( talents.chimera_shot -> rank() )
       {
-        action_list_str += "/chimera_shot,if=target.health_pct<=80";
+        action_list_str += "/chimera_shot,if=target.health_pct<=90";
       }
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
@@ -3712,7 +3712,7 @@ void hunter_t::init_actions()
         action_list_str += "/aimed_shot,if=target.health_pct>80|buff.rapid_fire.up|buff.bloodlust.up";
         if ( race == RACE_TROLL )
           action_list_str += "|buff.berserking.up";
-        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<80&!buff.rapid_fire.up&!buff.bloodlust.up";
+        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.up";
         if ( race == RACE_TROLL )
           action_list_str += "&!buff.berserking.up)";
         else
