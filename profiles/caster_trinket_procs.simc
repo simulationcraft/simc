@@ -45,9 +45,6 @@ trinket1=bell_of_enraging_resonance
 copy=Hbell_of_enraging_resonance
 trinket1=bell_of_enraging_resonance,heroic=1
 
-copy=gale_of_shadows
-trinket1=gale_of_shadows,heroic=1
-
 copy=figurine__jeweled_serpent
 trinket1=figurine__jeweled_serpent
 
@@ -59,3 +56,7 @@ trinket1=anhuurs_hymnal,heroic=1
 
 copy=darkmoon_card_volcano
 trinket1=darkmoon_card_volcano
+
+copy=moonwell_chalice
+trinket1=moonwell_chalice
+modify_action=metamorphosis,if=buff.moonwell_chalice.up

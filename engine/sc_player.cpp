@@ -1309,6 +1309,19 @@ void player_t::init_actions()
 
     if ( sim -> debug ) log_t::output( sim, "Player %s: action_list_str=%s", name(), action_list_str.c_str() );
 
+    std::string modify_action_options = "";
+
+    if ( ! modify_action.empty() )
+    {
+      std::string::size_type cut_pt = modify_action.find( "," );
+
+      if ( cut_pt != modify_action.npos )
+      {
+        modify_action_options = modify_action.substr( cut_pt + 1 );
+        modify_action         = modify_action.substr( 0, cut_pt );
+      }
+    }
+
     std::vector<std::string> splits;
     int num_splits = util_t::string_split( splits, action_list_str, "/" );
 
@@ -1346,6 +1359,13 @@ void player_t::init_actions()
       }
       else
       {
+        if ( action_name == modify_action )
+        {
+          if ( sim -> debug )
+            log_t::output( sim, "Player %s: modify_action=%s", name(), modify_action.c_str() );
+
+          action_options = modify_action_options;
+        }
         a = create_action( action_name, action_options );
       }
 
@@ -5895,6 +5915,7 @@ void player_t::create_options()
     { "dtr_base_proc_chance",                 OPT_FLT,    &( dtr_base_proc_chance                     ) },
     { "big_hitbox",                           OPT_BOOL,   &( big_hitbox                               ) },
     { "skip_actions",                         OPT_STRING, &( action_list_skip                         ) },
+    { "modify_action",                        OPT_STRING, &( modify_action                            ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                              ) },
     { "flask",                                OPT_STRING, &( flask_str                                ) },
     { "food",                                 OPT_STRING, &( food_str                                 ) },

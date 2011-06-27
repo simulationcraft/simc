@@ -3030,6 +3030,7 @@ struct player_t
   action_t*   action_list;
   std::string action_list_str;
   std::string action_list_skip;
+  std::string modify_action;
   int         action_list_default;
   cooldown_t* cooldown_list;
   dot_t*      dot_list;
