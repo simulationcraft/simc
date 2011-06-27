@@ -4010,7 +4010,8 @@ void shaman_t::init_actions()
       if ( off_hand_weapon.type != WEAPON_NONE )
         action_list_str += "/flametongue_weapon,weapon=off";
       action_list_str += "/strength_of_earth_totem/windfury_totem/mana_spring_totem/lightning_shield";
-      action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react";
+      action_list_str += "/tolvir_potion,if=!in_combat";
+      action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
       action_list_str += "/wind_shear";
@@ -4040,20 +4041,17 @@ void shaman_t::init_actions()
         action_list_str += "/fire_elemental_totem";
         
       action_list_str += "/searing_totem";
+      if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       action_list_str += "/lava_lash";
       action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
       if ( level > 80 ) action_list_str += "/unleash_elements";
-      action_list_str += "/flame_shock,if=!ticking|(buff.unleash_flame.up&ticks_remain<=2)";
+      action_list_str += "/flame_shock,if=!ticking|buff.unleash_flame.up";
       action_list_str += "/earth_shock";
-      if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
       action_list_str += "/earth_elemental_totem";
       action_list_str += "/fire_nova,if=target.adds>1";
       action_list_str += "/spiritwalkers_grace,moving=1";
-      if ( caster_mainhand )
-        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
-      else
-        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=4";
+      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
       
       if ( caster_mainhand )
         action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+travel_time";
@@ -4065,7 +4063,8 @@ void shaman_t::init_actions()
       action_list_str += "/flametongue_weapon,weapon=main/lightning_shield";
       action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       action_list_str += "/snapshot_stats";
-      action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react";
+      action_list_str += "/volcanic_potion,if=!in_combat";
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       
       action_list_str += "/wind_shear";
       action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
