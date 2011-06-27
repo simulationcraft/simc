@@ -89,6 +89,7 @@ struct druid_t : public player_t
   gain_t* gains_primal_madness;
   gain_t* gains_revitalize;
   gain_t* gains_tigers_fury;
+  gain_t* gains_heartfire; // T12_2pc_Heal
 
   // Glyphs
   struct glyphs_t
@@ -148,6 +149,7 @@ struct druid_t : public player_t
   rng_t* rng_tier12_4pc_melee;
   rng_t* rng_wrath_eclipsegain;
   rng_t* rng_burning_treant;
+  rng_t* rng_heartfire; // Tier12_2pc_Heal
 
   // Spell Data
   struct spells_t
@@ -2563,6 +2565,10 @@ struct lifebloom_t : public druid_heal_t
       p -> buffs_omen_of_clarity -> trigger( 1, 1, p -> talents.malfurions_gift -> proc_chance() );
     }
 
+    if ( p -> rng_heartfire -> roll( p -> sets -> set( SET_T12_2PC_HEAL ) -> proc_chance()  ) )
+      player -> resource_gain( RESOURCE_MANA, player -> resource_base[ RESOURCE_MANA ] * p -> sets -> set( SET_T12_2PC_HEAL ) -> effect_base_value( 1 ) / 100.0, p -> gains_heartfire );
+
+
     trigger_revitalize( this );
   }
 };
@@ -4663,6 +4669,7 @@ void druid_t::init_gains()
   gains_primal_madness       = get_gain( "primal_madness"       );
   gains_revitalize           = get_gain( "revitalize"           );
   gains_tigers_fury          = get_gain( "tigers_fury"          );
+  gains_heartfire            = get_gain( "heartfire"            );
 }
 
 // druid_t::init_procs ======================================================
@@ -4710,6 +4717,7 @@ void druid_t::init_rng()
   rng_tier12_4pc_melee    = get_rng( "tier12_4pc_melee"    );
   rng_wrath_eclipsegain   = get_rng( "wrath_eclipsegain"   );
   rng_burning_treant      = get_rng( "burning_treant_proc" );
+  rng_heartfire           = get_rng( "heartfire"           );
 }
 
 // druid_t::init_actions ====================================================
