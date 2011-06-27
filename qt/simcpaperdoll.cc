@@ -6,10 +6,72 @@
 #include <QDir>
 #include <QPixmapCache>
 #include <QCoreApplication>
+#include <QTextDocument>
 
 #include <algorithm>
 
 #include "simcpaperdoll.h"
+
+// =============================================================================
+// Temporary place to do implementation, will be removed later on
+// =============================================================================
+#define RAND_SUFFIX_GROUP_SIZE (51)
+
+static struct random_suffix_group_t __rand_suffix_group_data[] = {
+  {  390, {   5,   6,   7,   8,  14,  36,  37,  39,  40,  41,  42,  43,  45,  91, 114, 118, 120, 121, 122, 123, 124, 125, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 0 } },
+  {  391, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  392, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  393, {   5,   6,   7,   8,  14,  36,  37,  39,  40,  41,  42,  43,  45,  91, 114, 118, 120, 121, 122, 123, 124, 125, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 0 } },
+  {  394, {   6,   8,  36,  37,  39,  41,  42, 114, 129, 130, 131, 132, 138, 0 } },
+  {  395, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  396, {   5,  40,  41,  91, 133, 134, 135, 136, 137, 0 } },
+  {  397, {   5,  40,  41,  91, 133, 134, 135, 136, 137, 0 } },
+  {  398, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  399, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  400, {   6,   8,  36,  37,  39,  42, 130, 131, 132, 138, 0 } },
+  {  401, {   6,   8,  36,  37,  39,  41,  42, 114, 129, 130, 131, 132, 138, 0 } },
+  {  402, {   5,  40,  91, 131, 132, 133, 134, 135, 136, 137, 0 } },
+  {  403, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  404, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  405, {   5,  40,  91, 131, 132, 133, 134, 135, 136, 137, 0 } },
+  {  406, {   6,   7,   8,  14,  36,  37,  39,  41,  42,  43,  45, 118, 120, 121, 122, 123, 124, 125, 127, 128, 131, 132, 139, 0 } },
+  {  407, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  408, {   6,   7,   8,  14,  36,  37,  39,  41,  42,  43,  45, 118, 120, 121, 122, 123, 124, 125, 127, 128, 131, 132, 139, 0 } },
+  {  409, {   6,   8,  36,  37,  39,  41,  42, 114, 129, 130, 131, 132, 138, 0 } },
+  {  410, {   6,   8,  36,  37,  39,  41,  42, 114, 129, 130, 131, 132, 138, 0 } },
+  {  411, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  412, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  413, {   5,   7,  14,  40,  41,  43,  91, 118, 120, 121, 122, 123, 133, 134, 135, 136, 137, 139, 0 } },
+  {  414, {   6,   8,  36,  37,  39,  41,  42, 114, 129, 130, 131, 132, 138, 0 } },
+  {  415, { 154, 155, 156, 157, 158, 159, 0 } },
+  {  417, { 169, 170, 171, 172, 0 } },
+  {  418, { 203, 204, 205, 206, 0 } },
+  {  419, { 220, 221, 222, 223, 0 } },
+  {  420, { 173, 174, 175, 176, 0 } },
+  {  421, { 118, 120, 121, 122, 0 } },
+  {  422, { 180, 181, 182, 0 } },
+  {  423, { 224, 225, 226, 0 } },
+  {  424, { 207, 208, 209, 0 } },
+  {  425, { 177, 178, 179, 0 } },
+  {  426, { 125, 127, 128, 0 } },
+  {  427, { 183, 184, 185, 186, 187, 188, 0 } },
+  {  429, { 114, 129, 130, 131, 132, 138, 0 } },
+  {  431, { 189, 190, 191, 192, 193, 194, 0 } },
+  {  432, { 191, 192, 193, 194, 0 } },
+  {  433, { 229, 230, 231, 232, 0 } },
+  {  434, { 212, 213, 214, 215, 0 } },
+  {  435, { 185, 186, 187, 188, 0 } },
+  {  437, { 195, 196, 197, 198, 0 } },
+  {  438, { 216, 217, 218, 219, 0 } },
+  {  439, { 233, 234, 235, 236, 0 } },
+  {  440, { 199, 200, 201, 202, 0 } },
+  {  441, { 133, 135, 136, 137, 0 } },
+  {  442, { 114, 118, 120, 121, 122, 123, 124, 125, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 0 } },
+  {  450, {   5,  40,  91, 131, 132, 133, 134, 135, 136, 137, 0 } },
+  {  451, {   5,  40,  91, 131, 132, 133, 134, 135, 136, 137, 0 } },
+  {    0, {   0 } }
+};
+// =============================================================================
 
 QPixmap
 PaperdollPixmap::get( const QString& icon_str, bool border, QSize size )
@@ -500,24 +562,8 @@ ItemDataDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, 
 {
   const item_data_t* item = reinterpret_cast< const item_data_t* >( index.data( Qt::UserRole ).value< void* >() );
   QPixmap icon = index.data( Qt::DecorationRole ).value< QPixmap >();
-  QFont name_font = painter -> font();
-  QFont ilevel_font = painter -> font();
-  QFont heroic_font = painter -> font();
-  QFont stats_font = painter -> font();
   QRect draw_area = option.rect.adjusted( 1, 1, -1, -1 );
-  QFontMetrics qfm = QFontMetrics( name_font );
-
-  name_font.setBold( true );
   
-  ilevel_font.setPointSize( 9 );
-
-  heroic_font.setPointSize( 9 );
-  heroic_font.setItalic( true );
-  
-  QFontMetrics qfm2 = QFontMetrics( ilevel_font );
-  
-  stats_font.setPointSize( 10 );
-
   painter -> save();
   
   if (option.state & QStyle::State_Selected)
@@ -551,73 +597,77 @@ ItemDataDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, 
     has_sockets = true;
   }
   
-  QRect name_area = draw_area;
-  name_area.setX( name_area.x() + icon.width() + ( has_sockets ? socket_icon.width() : 0 ) + 3 );
-  
-  QRect stats_area = name_area;
-  stats_area.setY( name_area.y() + qfm.height() );
-  
-  QRect ilevel_area = QRect( draw_area.x() + draw_area.width() - 20, 
-                             draw_area.y(),
-                             20,
-                             qfm2.height() ) ;
-  
-  QRect heroic_area = QRect( ilevel_area.x() - 50,
-                             ilevel_area.y(),
-                             50,
-                             qfm2.height() );
-  
-  QRect set_area = QRect( draw_area.x() + draw_area.width() - 50,
-                          draw_area.y() + draw_area.height() - qfm2.height(),
-                          50,
-                          qfm2.height() );
-  
-  painter -> setFont( name_font );
+  QRect stats_area = draw_area.translated( icon.width() + 1 + ( has_sockets ? socket_icon.width() + 1 : 0 ), 0 );
+  stats_area.setSize( QSize( draw_area.width() - ( icon.width() + 1 + ( has_sockets ? socket_icon.width() : 0 ) + 2 ),
+                             draw_area.height() - 12 ) );
+
+  QRect flags_area = draw_area.translated( icon.width() + 1 + ( has_sockets ? socket_icon.width() + 1 : 0 ), 
+                                           draw_area.height() - 12 );
+  flags_area.setSize( QSize( stats_area.width(), 12 ) );
+
   painter -> setRenderHint(QPainter::Antialiasing, true);
-  painter -> setPen( Qt::SolidLine );
-  switch ( item -> quality )
-  {
-    case 0:
-      painter -> setPen( QColor( 0x9d, 0x9d, 0x9d ) );
-      break;
-    case 1:
-      painter -> setPen( QColor( 0xff, 0xff, 0xff ) );
-      break;
-    case 2:
-      painter -> setPen( QColor( 0x1e, 0xff, 0x00 ) );
-      break;
-    case 3: 
-      painter -> setPen( QColor( 0x00, 0x70, 0xff ) );
-      break;
-    case 4:
-      painter -> setPen( QColor( 0xb0, 0x48, 0xf8 ) );
-      break;
-    case 5:
-      painter -> setPen( QColor( 0xff, 0x80, 0x80 ) );
-      break;
-  }
-  painter -> drawText( name_area, item -> name );
-  painter -> setPen( Qt::white );
-  painter -> setFont( ilevel_font );
-  painter -> drawText( ilevel_area, Qt::AlignRight, QString( "%1" ).arg( item -> level ) );
-  painter -> setFont( heroic_font );
-  painter -> setPen( QColor( 0x1e, 0xff, 0x00 ) );
-  painter -> drawText( heroic_area, Qt::AlignRight, QString( "%1" ).arg( item -> flags_1 & ITEM_FLAG_HEROIC ? "Heroic" : "" ) );
-  if ( item -> id_set > 0 && util_t::set_item_type_string( item -> id_set ) != 0 )
-  {
-    painter -> setPen( Qt::yellow );
-    painter -> setFont( ilevel_font );
-    painter -> drawText( set_area, Qt::AlignRight, QString( "%1 Set" ).arg( util_t::set_item_type_string( item -> id_set ) ) );
-  }
-  painter -> setFont( stats_font );
-  painter -> setPen( Qt::white );
-  painter -> drawText( stats_area, Qt::AlignLeft | Qt::TextWordWrap, itemStatsString( item ) );
+  QTextDocument text;
+
+  painter -> save();
+  painter -> translate( stats_area.x(), stats_area.y() );
+  text.setDocumentMargin( 0 );
+  text.setPageSize( stats_area.size() );
+  text.setHtml( itemStatsString( item ) );
+  text.drawContents( painter );
+  painter -> restore();
+
+  painter -> save();
+  painter -> translate( flags_area.x(), flags_area.y() );
+  text.setDocumentMargin( 0 );
+  text.setPageSize( flags_area.size() );
+  text.setHtml( ItemDataDelegate::itemFlagStr( item ) );
+  text.drawContents( painter );
+  painter -> restore();
   
   painter -> restore();
 }
 
 QString
-ItemDataDelegate::itemStatsString( const item_data_t* item ) const
+ItemDataDelegate::itemQualityColor( const item_data_t* item )
+{
+  assert( item );
+  
+  switch ( item -> quality )
+  {
+    case 0:
+      return QString( "#%1%2%3" ).arg( 0x9d, 0, 16 ).arg( 0x9d, 0, 16 ).arg( 0x9d, 0, 16 );
+    case 1:
+      return QString( "#%1%2%3" ).arg( 0xff, 0, 16 ).arg( 0xff, 0, 16 ).arg( 0xff, 0, 16 );
+    case 2:
+      return QString( "#%1%2%3" ).arg( 0x1e, 0, 16 ).arg( 0xff, 0, 16 ).arg( 0x00, 0, 16 );
+    case 3: 
+      return QString( "#%1%2%3" ).arg( 0x00, 0, 16 ).arg( 0x70, 0, 16 ).arg( 0xff, 0, 16 );
+    case 4:
+      return QString( "#%1%2%3" ).arg( 0xb0, 0, 16 ).arg( 0x48, 0, 16 ).arg( 0xf8, 0, 16 );
+    case 5:
+      return QString( "#%1%2%3" ).arg( 0xff, 0, 16 ).arg( 0x80, 0, 16 ).arg( 0x80, 0, 16 );
+  }
+  
+  return QString("white");
+}
+
+QString
+ItemDataDelegate::itemFlagStr( const item_data_t* item )
+{
+  QStringList str;
+  
+  str += QString( "%1" ).arg( item -> level );
+  if ( item -> flags_1 & ITEM_FLAG_HEROIC )
+    str += QString( "<span style='color:#1eff00;font-style:italic;'>%1</span>" ).arg( "Heroic" );
+  
+  if ( item -> id_set > 0 && util_t::set_item_type_string( item -> id_set ) != 0 )
+    str += QString( "<span style='color:yellow;'>%1 Set</span>" ).arg( util_t::set_item_type_string( item -> id_set ) );
+
+  return QString( "<div align='right' style='font-size:9pt;color:white;'>%1</div>" ).arg( str.join(" ") );
+}
+
+QString
+ItemDataDelegate::itemStatsString( const item_data_t* item, bool html ) const
 {
   assert( item != 0 );
   QStringList stats;
@@ -625,17 +675,21 @@ ItemDataDelegate::itemStatsString( const item_data_t* item ) const
   QString stats_str;
   uint32_t armor;
   dbc_t dbc( false );
-
+  
+  stats_str += QString( "<span style='font-size:11pt;font-weight:bold;color:%1;'>%2</span><br />" )
+                      .arg( itemQualityColor( item ) )
+                      .arg( item -> name );
+  
   if ( item -> item_class == ITEM_CLASS_WEAPON )
   {
-    weapon_stats += QString( "%1%2" )
+    weapon_stats += QString( "<strong>%1%2" )
       .arg( util_t::weapon_class_string( item -> inventory_type ) ? QString( util_t::weapon_class_string( item -> inventory_type ) ) + QString( " " ) : "" )
       .arg( util_t::weapon_subclass_string( item -> item_subclass ) );
     weapon_stats += QString( "%1 - %2 (%3)" )
       .arg( item_database_t::weapon_dmg_min( item, dbc ) )
       .arg( item_database_t::weapon_dmg_max( item, dbc ) )
       .arg( dbc.weapon_dps( item -> id ), 0, 'f', 1 );
-    weapon_stats += QString( "%1 Speed" ).arg( item -> delay / 1000.0, 0, 'f', 2 );
+    weapon_stats += QString( "%1 Speed</strong>" ).arg( item -> delay / 1000.0, 0, 'f', 2 );
   }
   
   if ( ( armor = item_database_t::armor_value( item, dbc ) ) > 0 )
@@ -654,16 +708,19 @@ ItemDataDelegate::itemStatsString( const item_data_t* item ) const
       .arg( util_t::stat_type_abbrev( t ) );
   }
   
+  if ( item -> id_suffix_group > 0 )
+    stats += "<span style='font-size:10pt;color:#1eff00'>&lt;Random Enchantment&gt;</span>";
+  
   if ( weapon_stats.size() > 0 )
   {
     stats_str += weapon_stats.join( ", " );
-    stats_str += "\n";
+    stats_str += "<br />";
   }
   
   if ( stats.size() > 0 )
     stats_str += stats.join( ", " );
-  
-  return stats_str;
+
+  return QString("<div style='font-size:10pt;color:white;'>%1</div>").arg(stats_str);
 }
 
 ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* parent ) :
@@ -694,6 +751,12 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
 
   m_itemSetup                 = new QWidget( this );
   m_itemSetupLayout           = new QVBoxLayout();
+  
+  m_itemSetupRandomSuffix     = new QGroupBox( m_itemSetup );
+  m_itemSetupRandomSuffixLayout = new QHBoxLayout();
+  
+  m_itemSetupRandomSuffixModel = new RandomSuffixDataModel( profile );
+  m_itemSetupRandomSuffixView = new QComboBox( m_itemSetup );
   
   m_itemSetupEnchantBox       = new QGroupBox( m_itemSetup );
   m_itemSetupEnchantBoxLayout = new QHBoxLayout();
@@ -770,6 +833,15 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   
   m_itemSetup -> setLayout( m_itemSetupLayout );
   
+  m_itemSetupRandomSuffix -> setTitle( "Random Suffix" );
+  m_itemSetupRandomSuffix -> setLayout( m_itemSetupRandomSuffixLayout );
+  m_itemSetupRandomSuffix -> setVisible( false );
+  
+  m_itemSetupRandomSuffixLayout -> addWidget( m_itemSetupRandomSuffixView );
+  m_itemSetupRandomSuffixLayout -> setAlignment( Qt::AlignCenter | Qt::AlignTop );
+  
+  m_itemSetupRandomSuffixView -> setModel( m_itemSetupRandomSuffixModel );
+   
   m_itemSetupEnchantBox -> setTitle( "Enchant" );
   m_itemSetupEnchantBox -> setLayout( m_itemSetupEnchantBoxLayout );
   
@@ -781,6 +853,7 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   
   m_itemSetupEnchantProxy -> setSourceModel( m_itemSetupEnchantModel );
   
+  m_itemSetupLayout -> addWidget( m_itemSetupRandomSuffix );
   m_itemSetupLayout -> addWidget( m_itemSetupEnchantBox );
 
   QObject::connect( profile,                 SIGNAL( slotChanged( slot_type ) ),
@@ -791,6 +864,9 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
 
   QObject::connect( m_itemSetupEnchantProxy, SIGNAL( enchantSelected( int ) ),
                     m_itemSetupEnchantView,  SLOT( setCurrentIndex( int ) ) );
+  
+  QObject::connect( m_itemSetupRandomSuffixModel, SIGNAL( hasSuffixGroup( bool ) ),
+                    m_itemSetupRandomSuffix, SLOT( setVisible( bool ) ) );
   
   // Add to main tab
   
@@ -814,6 +890,100 @@ QSize
 ItemSelectionWidget::sizeHint() const
 {
   return QSize( 400, 250 );
+}
+
+RandomSuffixDataModel::RandomSuffixDataModel( PaperdollProfile* profile, QObject* parent ) :
+  QAbstractListModel( parent ), m_profile( profile )
+{
+  QObject::connect( profile, SIGNAL( slotChanged( slot_type ) ),
+                   this, SLOT( stateChanged() ) );
+  QObject::connect( profile, SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
+                   this, SLOT( stateChanged() ) );
+}
+
+void
+RandomSuffixDataModel::stateChanged()
+{
+  beginResetModel();
+  endResetModel();
+  
+  emit hasSuffixGroup( rowCount( QModelIndex() ) );
+}
+
+int 
+RandomSuffixDataModel::rowCount( const QModelIndex& ) const
+{
+  if ( m_profile -> currentSlot() == SLOT_NONE )
+    return 0;
+  
+  const item_data_t* item = m_profile -> slotItem( m_profile -> currentSlot() );
+  
+  if ( ! item )
+    return 0;
+  
+  if ( item -> id_suffix_group == 0 )
+    return 0;
+  
+  for ( int i = 0; i < RAND_SUFFIX_GROUP_SIZE; i++ )
+  {
+    if ( __rand_suffix_group_data[ i ].id == item -> id_suffix_group )
+    {
+      int count = 0;
+      while ( __rand_suffix_group_data[ i ].suffix_id[ count ] )
+        count++;
+      return count;
+    }
+  }
+  
+  return 0;
+}
+
+QVariant 
+RandomSuffixDataModel::data( const QModelIndex& index, int role ) const
+{
+  const item_data_t* item = m_profile -> slotItem( m_profile -> currentSlot() );
+  dbc_t dbc( false );
+  
+  if ( role == Qt::DisplayRole )
+  {
+    for ( int i = 0; i < RAND_SUFFIX_GROUP_SIZE; i++ )
+    {
+      if ( __rand_suffix_group_data[ i ].id == item -> id_suffix_group )
+      {
+        const random_suffix_data_t& rs = dbc.random_suffix( __rand_suffix_group_data[ i ].suffix_id[ index.row() ] );
+        return QVariant( rs.suffix );
+      }
+    }
+    
+    return QVariant( QVariant::Invalid );
+  }
+
+  return QVariant( QVariant::Invalid );
+}
+
+QString
+EnchantDataModel::enchantStatsStr( const item_enchantment_data_t* enchant )
+{
+  assert( enchant );
+  
+  QStringList stats;
+  
+  for ( int i = 0; i < 3; i++ )
+  {
+    if ( enchant -> ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
+      continue;
+    
+    stat_type t = util_t::translate_item_mod( enchant -> ench_prop[ i ] );
+    if ( t == STAT_NONE )
+      continue;
+    
+    stats << QString( "+%1 %2" )
+      .arg( enchant -> ench_amount[ i ] )
+      .arg( util_t::stat_type_abbrev( t ) );
+    
+  }
+  
+  return stats.join( ", " );
 }
 
 // All enchants are cached and split by slot as we do not want to go through the 
@@ -901,6 +1071,8 @@ EnchantDataModel::data( const QModelIndex& index, int role ) const
     
     return QVariant( QVariant::Invalid );
   }
+  else if ( role == Qt::ToolTipRole )
+    return QVariant( EnchantDataModel::enchantStatsStr( m_enchants[ index.row() ].item_enchant ) );
   
   return QVariant( QVariant::Invalid );
 }

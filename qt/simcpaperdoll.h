@@ -34,6 +34,7 @@
 class Paperdoll;
 class EnchantDataModel;
 class EnchantFilterProxyModel;
+class RandomSuffixDataModel;
 
 class EnchantData {
 public:
@@ -155,12 +156,15 @@ class ItemDataDelegate : public QStyledItemDelegate
 {
   Q_OBJECT
 public:
+  static QString itemQualityColor( const item_data_t* );
+  static QString itemFlagStr( const item_data_t* );
+
   ItemDataDelegate( QObject* = 0 );
   
   QSize sizeHint( const QStyleOptionViewItem&, const QModelIndex& ) const;
   void paint( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
 private:
-  QString itemStatsString( const item_data_t* ) const;
+  QString itemStatsString( const item_data_t*, bool = false ) const;
 };
 
 class ItemSelectionWidget : public QTabWidget
@@ -202,18 +206,43 @@ private:
   QWidget*              m_itemSetup;
   QVBoxLayout*          m_itemSetupLayout;
   
+  QGroupBox*            m_itemSetupRandomSuffix;
+  QHBoxLayout*          m_itemSetupRandomSuffixLayout;
+  
+  QComboBox*            m_itemSetupRandomSuffixView;
+  RandomSuffixDataModel* m_itemSetupRandomSuffixModel;
+
   QGroupBox*            m_itemSetupEnchantBox;
   QHBoxLayout*          m_itemSetupEnchantBoxLayout;
   
   QComboBox*            m_itemSetupEnchantView;
   EnchantDataModel*     m_itemSetupEnchantModel;
   EnchantFilterProxyModel* m_itemSetupEnchantProxy;
+
+};
+
+class RandomSuffixDataModel : public QAbstractListModel
+{
+  Q_OBJECT
+public:
+  RandomSuffixDataModel( PaperdollProfile*, QObject* = 0 );
+
+  int rowCount( const QModelIndex& ) const;
+  QVariant data( const QModelIndex& = QModelIndex(), int = Qt::DisplayRole ) const;
+signals:
+  void hasSuffixGroup( bool );
+public slots:
+  void stateChanged();
+private:
+  PaperdollProfile* m_profile;
 };
 
 class EnchantDataModel : public QAbstractListModel
 {
   Q_OBJECT
 public:
+  static QString enchantStatsStr( const item_enchantment_data_t* );
+
   EnchantDataModel( PaperdollProfile*, QObject* = 0 );
   
   int rowCount( const QModelIndex& ) const;
