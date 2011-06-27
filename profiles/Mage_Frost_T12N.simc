@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_Frost_T12N
-origin="Mage_CharDevSync.simc"
+origin="./Mage_CharDevSync.simc"
 level=85
 race=troll
 role=spell
@@ -13,7 +13,7 @@ actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/arcane_brilliance
 actions+=/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down
-actions+=/molten_armor,if=mana_pct>60&buff.mage_armor.up
+actions+=/molten_armor,if=mana_pct>45&buff.mage_armor.up
 actions+=/water_elemental
 actions+=/snapshot_stats
 actions+=/counterspell
@@ -23,7 +23,7 @@ actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
 actions+=/mana_gem,if=mana_deficit>12500
 actions+=/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30
-actions+=/frostfire_orb,if=target.time_to_die>=12
+actions+=/frostfire_orb,if=target.time_to_die>=12&!ticking
 actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/berserking,if=buff.icy_veins.down&buff.bloodlust.down
 actions+=/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down

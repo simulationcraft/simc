@@ -165,7 +165,7 @@ save=Mage_Fire_T12H.simc
 
 mage=Mage_Frost_T12H
 level=85
-race=troll
+race=orc
 role=spell
 use_pre_potion=1
 professions=tailoring=525/enchanting=525

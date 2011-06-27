@@ -1,9 +1,9 @@
 #!./simc 
 
 mage=Mage_Frost_T12H
-origin="Mage_CharDevSync.simc"
+origin="./Mage_CharDevSync.simc"
 level=85
-race=troll
+race=orc
 role=spell
 use_pre_potion=1
 professions=tailoring=525/enchanting=525
@@ -13,18 +13,18 @@ actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/arcane_brilliance
 actions+=/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down
-actions+=/molten_armor,if=mana_pct>60&buff.mage_armor.up
+actions+=/molten_armor,if=mana_pct>45&buff.mage_armor.up
 actions+=/water_elemental
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3
 actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
+actions+=/blood_fury
 actions+=/mana_gem,if=mana_deficit>12500
 actions+=/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30
-actions+=/frostfire_orb,if=target.time_to_die>=12
+actions+=/frostfire_orb,if=target.time_to_die>=12&!ticking
 actions+=/mirror_image,if=target.time_to_die>=25
-actions+=/berserking,if=buff.icy_veins.down&buff.bloodlust.down
 actions+=/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down
 actions+=/deep_freeze
 actions+=/frostfire_bolt,if=buff.brain_freeze.react

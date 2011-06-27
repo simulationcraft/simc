@@ -3253,7 +3253,7 @@ void mage_t::init_actions()
     else
     {
       action_list_str += "/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down";
-      action_list_str += "/molten_armor,if=mana_pct>60&buff.mage_armor.up";
+      action_list_str += "/molten_armor,if=mana_pct>45&buff.mage_armor.up";
     }
 
     // Water Elemental
@@ -3435,7 +3435,7 @@ void mage_t::init_actions()
       if ( talents.cold_snap -> rank() ) action_list_str += "/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30";
       if ( talents.frostfire_orb -> rank() && level >= 81 )
       {
-        action_list_str += "/frostfire_orb,if=target.time_to_die>=12";
+        action_list_str += "/frostfire_orb,if=target.time_to_die>=12&!ticking";
       }
       action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( race == RACE_TROLL )
