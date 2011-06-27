@@ -617,12 +617,9 @@ bool item_t::decode_random_suffix()
     }
   }
 
-  // Append random suffix to name only if it's not "hardcoded"
-  if ( option_name_str.empty() )
-  {
-    std::string name_str = suffix_data.suffix;
-    encoded_name_str += "_" + armory_t::format( name_str );
-  }
+  std::string name_str = suffix_data.suffix;
+  encoded_name_str += "_" + armory_t::format( name_str );
+
 
   // Append stats to the existing encoded stats string, as
   // a simple suffix will not tell the user anything about

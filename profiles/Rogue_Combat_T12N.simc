@@ -35,7 +35,7 @@ chest=breastplate_of_the_incendiary_soul,type=leather,ilevel=378,quality=epic,st
 waist=flamebinding_girdle,type=leather,ilevel=378,quality=epic,stats=1024armor_282agi_454sta_211haste_167hit,reforge=haste_exp,gems=67agi_40agi
 legs=dark_phoenix_legguards,type=leather,ilevel=378,quality=epic,stats=1592armor_368agi_611sta_218crit_280hit,reforge=crit_exp,gems=40agi_20agi_20hit_20agi,enchant=190ap_55crit
 feet=treads_of_the_craft,type=leather,ilevel=378,quality=epic,stats=1251armor_282agi_454sta_197haste_187mastery,reforge=mastery_hit,gems=40agi_10agi,enchant=35agi
-wrists=flickering_wristbands,type=leather,ilevel=378,quality=epic,stats=796armor_340sta_227agi_151haste_151mastery,reforge=mastery_hit,enchant=50agi,suffix=136
+wrists=flickering_wristbands_of_the_zephyr,type=leather,ilevel=378,quality=epic,stats=796armor_340sta_227agi_151haste_151mastery,reforge=mastery_hit,enchant=50agi,suffix=136
 hands=dark_phoenix_gloves,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_230haste_133crit,reforge=crit_exp,gems=40agi_10haste,enchant=65mastery,addon=synapse_springs
 finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,reforge=mastery_exp,gems=40agi_10agi
 finger2=widows_kiss,ilevel=378,quality=epic,stats=227agi_341sta_167haste_126mastery,reforge=mastery_exp
