@@ -35,34 +35,34 @@ actions+=/overpower
 actions+=/execute
 actions+=/slam,if=(cooldown.mortal_strike.remains>=1.5&(rage>=35|buff.deadly_calm.up|buff.colossus_smash.up))|(cooldown.mortal_strike.remains>=1.2&buff.colossus_smash.remains>0.5&rage>=35)
 actions+=/battle_shout,if=rage<20
-head=helmet_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=2943armor_348str_611sta_245haste_233mastery,reforge=haste_crit,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
+head=greathelm_of_the_voracious_maw,type=plate,ilevel=378,quality=epic,stats=2943armor_348str_611sta_284mastery_192crit,reforge=mastery_hit,gems=reverberating_shadowspirit_20str_20hit_30str,enchant=60str_35mastery
 neck=stoneheart_choker,ilevel=378,quality=epic,stats=227str_341sta_137exp_160crit,reforge=exp_mastery
-shoulders=pauldrons_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=2716armor_282str_454sta_197crit_185haste,reforge=haste_mastery,gems=40str,enchant=50str_25crit
-chest=battleplate_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=3622armor_368str_611sta_261crit_232hit,reforge=hit_mastery,gems=20str_20crit_20str_20crit_20str,enchant=20all
-waist=cinch_of_the_flaming_ember,type=plate,ilevel=378,quality=epic,stats=2037armor_282str_454sta_133hit_230crit,gems=40str_67str
-legs=legplates_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=3169armor_368str_611sta_280exp_218crit,gems=40str_40str_20str,enchant=190ap_55crit
-feet=arachnaflame_treads,type=plate,ilevel=378,quality=epic,stats=2490armor_282str_454sta_202crit_182haste,reforge=haste_mastery,gems=40str_10str,enchant=35mastery
-wrists=gigantiform_bracers,type=plate,ilevel=378,quality=epic,stats=1584armor_227str_341sta_115hit_173mastery,reforge=mastery_crit,gems=67str,enchant=50str
+shoulders=pauldrons_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=2716armor_282str_454sta_197crit_185haste,reforge=haste_hit,gems=40str,enchant=50str_25crit
+chest=battleplate_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=3622armor_368str_611sta_261crit_232hit,reforge=hit_exp,gems=20str_20crit_20str_20crit_20str,enchant=20all
+waist=cinch_of_the_flaming_ember,type=plate,ilevel=378,quality=epic,stats=2037armor_282str_454sta_133hit_230crit,reforge=hit_mastery,gems=40str_67str
+legs=legplates_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=3169armor_368str_611sta_280exp_218crit,reforge=exp_mastery,gems=40str_40str_20str,enchant=190ap_55crit
+feet=warboots_of_mighty_lords,type=plate,ilevel=378,quality=epic,stats=2490armor_282str_454sta_197crit_187hit,gems=40str_10str,enchant=35mastery
+wrists=earthcrack_bracers,type=plate,ilevel=378,quality=epic,stats=1584armor_227str_341sta_140haste_158crit,reforge=haste_mastery,gems=67str,enchant=50str
 hands=gauntlets_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=2264armor_282str_454sta_183hit_201mastery,reforge=mastery_crit,gems=20str_20crit_67str_10str,enchant=50str
 finger1=alysrazors_band,ilevel=378,quality=epic,stats=227str_341sta_150exp_107haste,reforge=haste_crit,gems=40str_10str
-finger2=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,reforge=hit_mastery,gems=40str_10str
+finger2=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,ilevel=378,quality=epic,stats=383str
 trinket2=vessel_of_acceleration,ilevel=384,quality=epic,stats=406str,equip=onattackhit_77crit_5stack_20dur
-back=bladed_flamewrath_cover,ilevel=378,quality=epic,stats=695armor_227str_341sta_173haste_115exp,reforge=exp_crit,enchant=65crit
-main_hand=sulfuras_the_extinguished_hand,ilevel=384,quality=epic,stats=391str_646sta_294crit_229mastery,gems=40str_40str_20str,enchant=landslide,weapon=mace2h_3.80speed_2392min_3588max
-ranged=giantslicer,ilevel=378,quality=epic,stats=128str_192sta_81exp_88hit,weapon=thrown_2.10speed_1250min_1875max
+back=bladed_flamewrath_cover,ilevel=378,quality=epic,stats=695armor_227str_341sta_173haste_115exp,reforge=haste_crit,enchant=65crit
+main_hand=sulfuras_the_extinguished_hand,ilevel=384,quality=epic,stats=391str_646sta_294crit_229mastery,reforge=mastery_exp,gems=40str_40str_20str,enchant=landslide,weapon=mace2h_3.80speed_2392min_3588max
+ranged=giantslicer,ilevel=378,quality=epic,stats=128str_192sta_81exp_88hit,reforge=hit_crit,weapon=thrown_2.10speed_1250min_1875max
 # Gear Summary
-# gear_strength=5739
+# gear_strength=5719
 # gear_agility=20
 # gear_stamina=6255
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=663
-# gear_hit_rating=725
-# gear_crit_rating=2297
-# gear_haste_rating=606
-# gear_mastery_rating=1093
+# gear_expertise_rating=780
+# gear_hit_rating=960
+# gear_crit_rating=2533
+# gear_haste_rating=364
+# gear_mastery_rating=775
 # gear_armor=21520
 # meta_gem=reverberating_shadowspirit
 # tier12_2pc_melee=1
