@@ -330,6 +330,7 @@ struct warrior_t : public player_t
   virtual double    composite_attack_hit() SC_CONST;
   virtual double    composite_attack_crit() SC_CONST;
   virtual double    composite_mastery() SC_CONST;
+  virtual double    composite_attack_haste() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
@@ -1011,8 +1012,6 @@ struct melee_t : public warrior_attack_t
     if ( p -> buffs_executioner_talent -> up() )
       h *= 1.0 / ( 1.0 + p -> buffs_executioner_talent -> stack() *
                    p -> buffs_executioner_talent -> effect1().percent() );
-
-    // FIXME: does unholy_frenzy benefit from mastery.unshackled_fury?
 
     return h;
   }
@@ -3403,6 +3402,24 @@ double warrior_t::composite_mastery() SC_CONST
   m += spec.precision -> effect_base_value( 2 );
 
   return m;
+}
+
+// warrior_t::composite_attack_haste ========================================
+
+double warrior_t::composite_attack_haste() SC_CONST
+{
+  double h = player_t::composite_attack_haste();
+
+  // Unholy Frenzy is effected by Unshackled Fury
+  if ( mastery.unshackled_fury -> ok() && buffs.unholy_frenzy -> up() )
+  {
+    // Assume it's multiplicative.
+    h /= 1.0 / ( 1.0 + 0.2 );
+
+    h *= 1.0 / ( 1.0 + ( 0.2 * ( 1.0 + composite_mastery() * mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0 ) ) );
+  }
+
+  return h;
 }
 
 // warrior_t::composite_player_multiplier ===================================
