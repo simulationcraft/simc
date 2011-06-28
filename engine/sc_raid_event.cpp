@@ -248,7 +248,7 @@ struct damage_event_t : public raid_event_t
       // 5% stddev
       x = rng -> gauss( amount, amount_stddev );
       if ( sim -> log ) log_t::output( sim, "%s takes %.0f raid damage.", p -> name(), x );
-      p -> assess_damage( x, parse_school_type(type), DMG_DIRECT, RESULT_HIT );
+      p -> assess_damage( x, util_t::parse_school_type(type), DMG_DIRECT, RESULT_HIT );
     }
   }
 };

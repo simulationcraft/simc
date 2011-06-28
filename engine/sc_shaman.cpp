@@ -682,8 +682,6 @@ struct fire_elemental_pet_t : public pet_t
 
       o -> buffs_fire_elemental -> up();
     }
-    
-    virtual void target_debuff( player_t* t, int dmg_type ) { }
   };
 
   struct fire_shield_t : public fire_elemental_spell_t
