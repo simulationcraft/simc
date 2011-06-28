@@ -57,6 +57,12 @@ COPY       = copy
 REMOVE     = del /f
 PATHSEP    = \\
 AR         = ar
+# MinGW W64
+ifeq (64,${BITS})
+LINK_FLAGS = -static
+CPP_FLAGS  += -m64
+LINK_FLAGS += -m64	
+endif
 endif
 
 SRC =\
