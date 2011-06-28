@@ -2018,7 +2018,6 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
 
 static void print_html_action_resource( FILE* file, stats_t* s, player_t* p, int j )
 {
-  int id = 0;
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t<tr" );
@@ -2031,7 +2030,6 @@ static void print_html_action_resource( FILE* file, stats_t* s, player_t* p, int
   for ( action_t* a = s -> player -> action_list; a; a = a -> next )
   {
     if ( a -> stats != s ) continue;
-    id = a -> id;
     if ( ! a -> background ) break;
   }
 

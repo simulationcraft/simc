@@ -377,8 +377,6 @@ void enemy_t::init_actions()
   {
     action_list_str += "/snapshot_stats";
 
-    bool tank = false;
-
     if ( !is_add() )
     {
       for ( player_t* q = sim -> player_list; q; q = q -> next )
@@ -387,7 +385,6 @@ void enemy_t::init_actions()
           continue;
         action_list_str += "/auto_attack,target=";
         action_list_str += q -> name_str;
-        tank = true;
         break;
       }
     }

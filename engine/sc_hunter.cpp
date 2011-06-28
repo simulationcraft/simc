@@ -821,7 +821,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
 
   double piercing_shots_dmg = p -> talents.piercing_shots -> effect1().percent() * dmg;
 
-  if ( p -> merge_piercing_shots > 0 ) // Does not report Ignite seperately.
+  if ( p -> merge_piercing_shots > 0 ) // Does not report Piercing Shots seperately.
   {
     int result = a -> result;
     a -> result = RESULT_HIT;
@@ -861,8 +861,8 @@ static void trigger_piercing_shots( action_t* a, double dmg )
   {
     if ( dot -> tick_event -> occurs() < p -> active_piercing_shots -> travel_event -> occurs() )
     {
-      // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
-      // both tick -and- get rolled into the next Ignite.
+      // Piercing Shots will tick before SPELL_AURA_APPLIED occurs, which means that the current Piercing Shots will
+      // both tick -and- get rolled into the next Piercing Shots.
       if ( sim -> log ) log_t::output( sim, "Player %s rolls Piercing Shots.", p -> name() );
       p -> procs_rolled_piercing_shots -> occur();
     }

@@ -2943,7 +2943,6 @@ void player_t::clear_debuffs()
 std::string player_t::print_action_map( int iterations, int precision )
 {
   std::map<std::string,int>::const_iterator it = action_map.begin();
-  std::map<std::string,int>::const_iterator end = action_map.end();
   std::string ret = "Label: Number of executes (Average number of executes per iteration)";
   ret += "<br />\n";
   while ( it != action_map.end() )
