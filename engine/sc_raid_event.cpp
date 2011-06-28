@@ -220,14 +220,16 @@ struct damage_event_t : public raid_event_t
 {
   double amount;
   double amount_stddev;
+  std::string type;
 
   damage_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "damage" ), amount( 1 ), amount_stddev( 0 )
+    raid_event_t( s, "damage" ), amount( 1 ), amount_stddev( 0 ), type( "holy" )
   {
     option_t options[] =
     {
       { "amount",        OPT_FLT, &amount        },
       { "amount_stddev", OPT_FLT, &amount_stddev },
+      { "type",          OPT_STRING, &type },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -246,7 +248,7 @@ struct damage_event_t : public raid_event_t
       // 5% stddev
       x = rng -> gauss( amount, amount_stddev );
       if ( sim -> log ) log_t::output( sim, "%s takes %.0f raid damage.", p -> name(), x );
-      p -> assess_damage( x, SCHOOL_HOLY, DMG_DIRECT, RESULT_HIT );
+      p -> assess_damage( x, parse_school_type(type), DMG_DIRECT, RESULT_HIT );
     }
   }
 };
