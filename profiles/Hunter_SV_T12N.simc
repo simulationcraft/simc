@@ -33,9 +33,9 @@ head=flamewakers_headguard,type=mail,ilevel=378,quality=epic,stats=2115armor_348
 neck=choker_of_the_vanquished_lord,ilevel=384,quality=epic,stats=240agi_360sta_162haste_156mastery,reforge=mastery_crit
 shoulders=flamewakers_spaulders,type=mail,ilevel=378,quality=epic,stats=1952armor_282agi_454sta_208mastery_170haste,reforge=mastery_crit,gems=67agi_10mastery,enchant=50agi_25mastery
 chest=flamewakers_tunic,type=mail,ilevel=378,quality=epic,stats=2603armor_368agi_611sta_243mastery_255crit,reforge=mastery_haste,gems=67agi_20agi_20crit_20agi,enchant=20all
-waist=flamebinding_girdle,type=leather,ilevel=378,quality=epic,stats=1024armor_282agi_454sta_211haste_167hit,reforge=haste_crit,gems=67agi_20agi_20hit_10agi
+waist=firearrow_belt,type=mail,ilevel=378,quality=epic,stats=1464armor_282agi_454sta_182mastery_193haste,reforge=mastery_crit,gems=67agi_20agi_20hit_10agi
 legs=flamewakers_legguards,type=mail,ilevel=378,quality=epic,stats=2278armor_368agi_611sta_278hit_211haste,reforge=haste_crit,gems=40agi_20agi_20hit_20agi,enchant=190ap_55crit
-feet=earthen_scale_sabatons,type=mail,ilevel=378,quality=epic,stats=1790armor_282agi_454sta_197crit_187mastery,reforge=mastery_hit,gems=40agi_10agi,enchant=35agi
+feet=decimation_treads,type=mail,ilevel=378,quality=epic,stats=1790armor_281agi_454sta_176hit_199crit,gems=40agi_10agi,enchant=35agi
 wrists=hidebound_chains,type=mail,ilevel=378,quality=epic,stats=1139armor_227agi_341sta_173haste_115hit,reforge=haste_crit,enchant=50agi
 hands=flamewakers_gloves,type=mail,ilevel=378,quality=epic,stats=1627armor_282agi_454sta_205crit_177haste,gems=20agi_20crit_10agi,enchant=20agi
 finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,reforge=mastery_crit,gems=40agi_10agi,enchant=40agi
@@ -47,16 +47,16 @@ main_hand=ranseur_of_hatred,ilevel=378,quality=epic,stats=408agi_611sta_284crit_
 ranged=arathar_the_eye_of_flame,ilevel=384,quality=epic,stats=135agi_203sta_95crit_81haste,enchant=gnomish_xray,weapon=bow_3.00speed_1652min_3069max
 # Gear Summary
 # gear_strength=20
-# gear_agility=5812
+# gear_agility=5811
 # gear_stamina=6210
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_hit_rating=933
-# gear_crit_rating=2009
-# gear_haste_rating=1751
-# gear_mastery_rating=651
-# gear_armor=15223
+# gear_hit_rating=868
+# gear_crit_rating=1999
+# gear_haste_rating=1817
+# gear_mastery_rating=648
+# gear_armor=15663
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1
 # tier12_4pc_melee=1
