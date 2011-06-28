@@ -1484,6 +1484,8 @@ void player_t::init_buffs()
   buffs.hymn_of_hope = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope"                 );
   buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1,  4.0 );
   buffs.grace                     = new buff_t( this,        "grace",               3, 15.0 );
+  buffs.blessing_of_ancient_kings = new buff_t( this, 64411, "blessing_of_ancient_kings"    );
+  buffs.blessing_of_ancient_kings -> buff_duration = 15.0; // FIXME: remove once buff is in dbc
 
   buffs.raid_movement = new buff_t( this, "raid_movement", 1 );
   buffs.self_movement = new buff_t( this, "self_movement", 1 );

@@ -3148,6 +3148,7 @@ struct player_t
     buff_t* volcanic_potion;
     buff_t* wild_magic_potion_crit;
     buff_t* wild_magic_potion_sp;
+    buff_t* blessing_of_ancient_kings;
 
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
@@ -3892,6 +3893,8 @@ struct heal_t : public spell_t
 {
   std::vector<player_t*> heal_target;
   std::string target_str;
+
+  spell_t* valanyr;
 
   // Reporting
   double total_heal, total_actual;

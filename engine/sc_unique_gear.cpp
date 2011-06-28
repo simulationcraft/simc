@@ -1513,6 +1513,55 @@ static void register_blazing_power( item_t* item )
   p -> register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> heroic() ) )  );
 }
 
+// register_valanyr ======================================================
+
+static void register_valanyr( item_t* item )
+{
+    player_t* p = item -> player;
+
+    item -> unique = true;
+
+
+    struct valanyr_callback_t : public action_callback_t
+    {
+      proc_t* proc;
+      rng_t* rng;
+      cooldown_t* cd;
+
+      valanyr_callback_t( player_t* p ) :
+        action_callback_t( p -> sim, p )
+      {
+        proc = p -> get_proc( "valanyr" );
+        rng  = p -> get_rng ( "valanyr" );
+        cd = p -> get_cooldown( "valanyr_callback" );
+        cd -> duration = 45.0;
+      }
+
+      virtual void trigger( action_t* a, void* call_data )
+      {
+        if (   a -> aoe      ||
+               a -> proc     ||
+               a -> dual     ||
+               ! a -> harmful   )
+          return;
+
+        if ( cd -> remains() > 0 )
+          return;
+
+        if ( rng -> roll( 0.10 ) )
+        {
+          listener -> buffs.blessing_of_ancient_kings -> trigger();
+          proc -> occur();
+          cd -> start();
+        }
+
+      }
+    };
+
+  // FIXME: Observe if it procs of non-direct healing spells
+  p -> register_heal_callback( RESULT_ALL_MASK, new valanyr_callback_t( p )  );
+}
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -1568,6 +1617,9 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "unheeded_warning"                    ) ) register_unheeded_warning                  ( &item );
     if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
+    if ( ! strcmp( item.name(), "valanyr_hammer_of_ancient_kings"     ) ) register_valanyr                     ( &item );
+
+
   }
 }
 

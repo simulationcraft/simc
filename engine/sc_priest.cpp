@@ -617,6 +617,7 @@ struct priest_heal_t : public heal_t
     }
   };
 
+
   divine_aegis_t* da;
 
   void trigger_echo_of_light( heal_t* a, player_t* t )
@@ -4015,7 +4016,7 @@ struct tier12_heal_2pc_event_t : public event_t
     if ( buff -> check() )
     {
       priest_t* p = player -> cast_priest();
-      player -> resource_gain( RESOURCE_MANA, player -> resource_base[ RESOURCE_MANA ] * 0.02, p -> gains_divine_fire );
+      player -> resource_gain( RESOURCE_MANA, player -> resource_base[ RESOURCE_MANA ] * p -> sets -> set( SET_T12_2PC_HEAL ) -> effect_base_value( 1 ) / 100.0, p -> gains_divine_fire );
       new ( sim ) tier12_heal_2pc_event_t( player, buff );
     }
   }

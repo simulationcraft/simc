@@ -17,6 +17,17 @@
 
 // heal_t::_init_heal_t == Heal Constructor Initializations =================
 
+  struct valanyr_t : public absorb_t
+  {
+    valanyr_t( player_t* player ) :
+      absorb_t( "valanyr", player, 47753 )
+    {
+      proc             = true;
+      background       = true;
+      direct_power_mod = 0;
+    }
+  };
+
 void heal_t::_init_heal_t()
 {
   heal_target.push_back( player );
@@ -41,12 +52,14 @@ void heal_t::_init_heal_t()
   {
     crit_multiplier *= 1.03;
   }
+
+    valanyr = new valanyr_t( player );
 }
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
 
 heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
-  spell_t( n, sname, player, t )
+  spell_t( n, sname, player, t ), valanyr( 0 )
 {
   _init_heal_t();
 }
@@ -54,7 +67,7 @@ heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
 // heal_t::heal_t ======== Heal Constructor by Spell ID =====================
 
 heal_t::heal_t( const char* n, player_t* player, const uint32_t id, int t ) :
-  spell_t( n, id, player, t )
+  spell_t( n, id, player, t ), valanyr( 0 )
 {
   _init_heal_t();
 }
@@ -169,6 +182,9 @@ void heal_t::execute()
 
     schedule_travel( heal_target[ i ] );
   }
+
+
+
 
   consume_resource();
 
@@ -364,6 +380,13 @@ void heal_t::assess_damage( player_t* t,
                             int    heal_type,
                             int    heal_result )
 {
+  // Val'Anyr
+  if ( valanyr && player -> buffs.blessing_of_ancient_kings -> up() )
+  {
+    valanyr -> base_dd_min = valanyr -> base_dd_max = heal_amount * 0.15;
+    valanyr -> execute();
+  }
+
   double heal_actual = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
 
   total_heal   += heal_amount;
