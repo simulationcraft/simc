@@ -2402,10 +2402,10 @@ void paladin_t::init_actions()
 
       std::string hp_proc_str = "divine_purpose";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
+      action_list_str += "/zealotry";
       if ( level >= 85 )
-        action_list_str += "/guardian_of_ancient_kings";
-      action_list_str += "/avenging_wrath,if=buff.zealotry.down";
-      action_list_str += "/zealotry,if=buff.avenging_wrath.down";
+        action_list_str += "/guardian_of_ancient_kings,if=buff.zealotry.remains<31|cooldown.zealotry.remains>60";
+      action_list_str += "/avenging_wrath,if=buff.zealotry.remains<21";
       if ( level >= 81 )
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(holy_power=3|buff."+hp_proc_str+".react)";
       // CS before TV if <3 power, even with HoL/DP up
