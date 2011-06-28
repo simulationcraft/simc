@@ -69,6 +69,9 @@ struct hunter_t : public player_t
   proc_t* procs_wild_quiver;  
   proc_t* procs_lock_and_load;
   proc_t* procs_flaming_arrow;
+  proc_t* procs_deferred_piercing_shots;
+  proc_t* procs_munched_piercing_shots;
+  proc_t* procs_rolled_piercing_shots;
 
   // Random Number Generation
   rng_t* rng_frenzy;
@@ -183,6 +186,8 @@ struct hunter_t : public player_t
 
   action_t* flaming_arrow;
 
+  double merge_piercing_shots;
+
   hunter_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, HUNTER, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
@@ -196,7 +201,7 @@ struct hunter_t : public player_t
     active_aspect          = ASPECT_NONE;
     active_piercing_shots  = 0;
 
-
+    merge_piercing_shots = 0;
 
     // Cooldowns
     cooldowns_glyph_kill_shot = get_cooldown("cooldowns_glyph_kill_shot");
@@ -764,9 +769,10 @@ static void trigger_go_for_the_throat( attack_t* a )
 
 // trigger_piercing_shots
 
-static void trigger_piercing_shots( action_t* a )
+static void trigger_piercing_shots( action_t* a, double dmg )
 {
   hunter_t* p = a -> player -> cast_hunter();
+  sim_t* sim = a -> sim;
 
   if ( ! p -> talents.piercing_shots -> rank() )
     return;
@@ -775,11 +781,14 @@ static void trigger_piercing_shots( action_t* a )
   {
     piercing_shots_t( player_t* p ) : attack_t( "piercing_shots", 63468, p )
     {
-      may_miss     = false;
-      may_crit     = true;
-      background   = true;
-      proc         = true;
-      hasted_ticks = false;
+      may_miss      = false;
+      may_crit      = true;
+      background    = true;
+      proc          = true;
+      hasted_ticks  = false;
+      tick_may_crit = false;
+      may_resist    = true;
+      dot_behavior  = DOT_REFRESH;
 
       base_multiplier = 1.0;
       tick_power_mod  = 0;
@@ -796,9 +805,30 @@ static void trigger_piercing_shots( action_t* a )
         target_multiplier = 1.30;
       }
     }
+    virtual void travel( player_t* t, int travel_result, double piercing_shots_dmg )
+    {
+      attack_t::travel( t, travel_result, 0 );
+
+      // FIXME: Is a is_hit check necessary here?
+      base_td = piercing_shots_dmg / dot -> num_ticks;
+    }
+    virtual double travel_time()
+    {
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+    }
+    virtual double total_td_multiplier() SC_CONST { return 1.0; }
   };
 
-  double dmg = p -> talents.piercing_shots -> effect1().percent() * a -> direct_dmg;
+  double piercing_shots_dmg = p -> talents.piercing_shots -> effect1().percent() * dmg;
+
+  if ( p -> merge_piercing_shots > 0 ) // Does not report Ignite seperately.
+  {
+    int result = a -> result;
+    a -> result = RESULT_HIT;
+    a -> assess_damage( a -> target, piercing_shots_dmg * p -> merge_piercing_shots, DMG_OVER_TIME, a -> result );
+    a -> result = result;
+    return;
+  }
 
   if ( ! p -> active_piercing_shots ) p -> active_piercing_shots = new piercing_shots_t( p );
 
@@ -806,12 +836,37 @@ static void trigger_piercing_shots( action_t* a )
 
   if ( dot -> ticking )
   {
-    dmg += p -> active_piercing_shots -> base_td * dot -> ticks();
-
-    p -> active_piercing_shots -> cancel();
+    piercing_shots_dmg += p -> active_piercing_shots -> base_td * dot -> ticks();
   }
-  p -> active_piercing_shots -> base_td = dmg / p -> active_piercing_shots -> num_ticks;
-  p -> active_piercing_shots -> execute();
+
+  if( ( 8.0 + sim -> aura_delay ) < dot -> remains() )
+  {
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Piercing Shots due to Max Piercing Shots Duration.", p -> name() );
+    p -> procs_munched_piercing_shots -> occur();
+    return;
+  }
+
+  if ( p -> active_piercing_shots -> travel_event )
+  {
+    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
+    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Piercing Shots due to Aura Delay.", p -> name() );
+    p -> procs_munched_piercing_shots -> occur();
+  }
+
+  p -> active_piercing_shots -> direct_dmg = piercing_shots_dmg;
+  p -> active_piercing_shots -> result = RESULT_HIT;
+  p -> active_piercing_shots -> schedule_travel( a -> target );
+
+  if ( p -> active_piercing_shots -> travel_event && dot -> ticking )
+  {
+    if ( dot -> tick_event -> occurs() < p -> active_piercing_shots -> travel_event -> occurs() )
+    {
+      // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
+      // both tick -and- get rolled into the next Ignite.
+      if ( sim -> log ) log_t::output( sim, "Player %s rolls Piercing Shots.", p -> name() );
+      p -> procs_rolled_piercing_shots -> occur();
+    }
+  }
 }
 
 // trigger_thrill_of_the_hunt ========================================
@@ -1852,10 +1907,15 @@ struct aimed_shot_mm_t : public hunter_attack_t
     {
       if ( p -> active_pet )
         p -> active_pet -> buffs_sic_em -> trigger();
-      trigger_piercing_shots( this );
       p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect1().resource( RESOURCE_FOCUS ), p -> gains_glyph_aimed_shot );
     }
     p -> buffs_master_marksman_fire -> expire();
+  }
+
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    hunter_attack_t::travel( t, travel_result, travel_dmg);
+    if ( travel_result == RESULT_CRIT ) trigger_piercing_shots( this, travel_dmg );
   }
 
   virtual bool ready()
@@ -1950,10 +2010,15 @@ struct aimed_shot_t : public hunter_attack_t
       {
         if ( p -> active_pet )
           p -> active_pet -> buffs_sic_em -> trigger();
-        trigger_piercing_shots( this );
         p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect1().resource( RESOURCE_FOCUS ), p -> gains_glyph_aimed_shot );
       }
     }
+  }
+
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    hunter_attack_t::travel( t, travel_result, travel_dmg);
+    if ( travel_result == RESULT_CRIT ) trigger_piercing_shots( this, travel_dmg );
   }
 };
 
@@ -2182,10 +2247,6 @@ struct chimera_shot_t : public hunter_attack_t
 
     if ( result_is_hit() )
     {
-      if ( result == RESULT_CRIT )
-      {
-        trigger_piercing_shots( this );
-      }
       if ( p -> dots_serpent_sting -> ticking )
       {
         p -> dots_serpent_sting -> action -> refresh_duration();
@@ -2193,7 +2254,11 @@ struct chimera_shot_t : public hunter_attack_t
     }
   }
 
-
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    hunter_attack_t::travel( t, travel_result, travel_dmg);
+    if ( travel_result == RESULT_CRIT ) trigger_piercing_shots( this, travel_dmg );
+  }
 };
 
 // Cobra Shot Attack ==========================================================
@@ -2627,6 +2692,7 @@ struct steady_shot_t : public hunter_attack_t
       }
     }
     trigger_tier12_2pc_melee( this );
+    if ( travel_result == RESULT_CRIT ) trigger_piercing_shots( this, travel_dmg );
   }
 
   virtual bool usable_moving()
@@ -2646,11 +2712,6 @@ struct steady_shot_t : public hunter_attack_t
         focus += p -> talents.termination -> effect1().resource( RESOURCE_FOCUS );
 
       p -> resource_gain( RESOURCE_FOCUS, focus, p -> gains_steady_shot );
-
-      if ( result == RESULT_CRIT )
-      {
-        trigger_piercing_shots( this );
-      }
     }
   }
 
@@ -3539,6 +3600,11 @@ void hunter_t::init_procs()
   procs_wild_quiver        = get_proc( "wild_quiver"        );
   procs_lock_and_load      = get_proc( "lock_and_load"      );
   procs_flaming_arrow      = get_proc( "flaming_arrow"      );
+  procs_deferred_piercing_shots = get_proc( "deferred_piercing_shots" );
+  procs_munched_piercing_shots  = get_proc( "munched_piercing_shotse" );
+  procs_rolled_piercing_shots   = get_proc( "rolled_piercing_shots"   );
+
+
 }
 
 // hunter_t::init_rng ========================================================
@@ -3868,6 +3934,7 @@ void hunter_t::create_options()
   {
     { "summon_pet", OPT_STRING, &( summon_pet_str  ) },
     { "position",   OPT_STRING, &( hunter_position ) },
+    { "merge_piercing_shots", OPT_FLT, &( merge_piercing_shots ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -3912,6 +3979,7 @@ void hunter_t::copy_from( player_t* source )
   hunter_t* p = source -> cast_hunter();
   summon_pet_str = p -> summon_pet_str;
   hunter_position = p -> hunter_position;
+  merge_piercing_shots           = source -> cast_hunter() -> merge_piercing_shots;
   
   for ( pet_t* pet = source -> pet_list; pet; pet = pet -> next_pet )
   {
