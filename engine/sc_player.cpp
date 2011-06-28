@@ -3002,8 +3002,7 @@ void player_t::regen( double periodicity )
 {
   int resource_type = primary_resource();
 
-  if ( infinite_resource[ resource_type ] == 0 )
-  {
+
     if ( resource_type == RESOURCE_ENERGY )
     {
       double energy_regen = periodicity * energy_regen_per_second();
@@ -3068,7 +3067,7 @@ void player_t::regen( double periodicity )
         resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_might );
       }
     }
-  }
+
 
   if ( resource_type != RESOURCE_NONE )
   {
@@ -3113,6 +3112,8 @@ double player_t::resource_loss( int       resource,
   else
   {
     actual_amount = amount;
+    resource_current[ resource ] -= actual_amount;
+    resource_lost[ resource ] += actual_amount;
   }
 
   if ( resource == RESOURCE_MANA )
@@ -3180,7 +3181,7 @@ double player_t::resource_gain( int       resource,
 bool player_t::resource_available( int    resource,
                                    double cost ) SC_CONST
 {
-  if ( resource == RESOURCE_NONE || cost == 0 )
+  if ( resource == RESOURCE_NONE || cost == 0 || infinite_resource[ resource ] == 1 )
   {
     return true;
   }
