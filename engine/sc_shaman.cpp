@@ -761,7 +761,9 @@ struct fire_elemental_pet_t : public pet_t
       base_spell_power_multiplier  = 1.0;
       base_attack_power_multiplier = 0.0;
       base_execute_time            = 3.5;
-      crit_bonus_multiplier   = 2.5;
+      crit_bonus_multiplier        = 2.5;
+      // Fire elemental has approx 1.5% crit
+      base_crit                    = 0.015;
       
       base_dd_min                = 427;
       base_dd_max                = 460;
@@ -2845,6 +2847,12 @@ struct earth_elemental_totem_t : public shaman_totem_t
   earth_elemental_totem_t( player_t* player, const std::string& options_str ) :
     shaman_totem_t( "earth_elemental_totem", "Earth Elemental Totem", player, options_str, TOTEM_EARTH )
   {
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
   }
@@ -2876,6 +2884,12 @@ struct fire_elemental_totem_t : public shaman_totem_t
     shaman_totem_t( "fire_elemental_totem", "Fire Elemental Totem", player, options_str, TOTEM_FIRE )
   {
     shaman_t* p = player -> cast_shaman();
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
     cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive( P_COOLDOWN );
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
@@ -2905,15 +2919,9 @@ struct fire_elemental_totem_t : public shaman_totem_t
     player -> dismiss_pet( "fire_elemental" );
   }
   
-  // Fire Elemental Totem will always override any fire totem you have, except if you have 
-  // T12 2PC, it will not override itself
+  // Allow Fire Elemental Totem to override any active fire totems
   virtual bool ready()
   {
-    shaman_t* p = player -> cast_shaman();
-
-    if ( p -> set_bonus.tier12_2pc_caster() && 
-         p -> totems[ TOTEM_FIRE ] && p -> totems[ TOTEM_FIRE ] == this )
-      return false;
     return shaman_spell_t::ready();
   }
 };
@@ -4038,7 +4046,7 @@ void shaman_t::init_actions()
       }
 
       if ( level <= 80 )
-        action_list_str += "/fire_elemental_totem";
+        action_list_str += "/fire_elemental_totem,if=!ticking";
         
       action_list_str += "/searing_totem";
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
@@ -4111,8 +4119,8 @@ void shaman_t::init_actions()
         action_list_str += "/earth_shock,if=buff.lightning_shield.react=9";
         action_list_str += "/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
       }
-      action_list_str += "/fire_elemental_totem";
-      action_list_str += "/earth_elemental_totem";
+      action_list_str += "/fire_elemental_totem,if=!ticking";
+      action_list_str += "/earth_elemental_totem,if=!ticking";
       action_list_str += "/searing_totem";
       action_list_str += "/spiritwalkers_grace,moving=1";
       action_list_str += "/chain_lightning,if=target.adds>2";
