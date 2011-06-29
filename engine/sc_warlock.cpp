@@ -4639,10 +4639,11 @@ void player_t::warlock_combat_begin( sim_t* sim )
   
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    if ( sim -> overrides.dark_intent )
+    if ( sim -> overrides.dark_intent && ! p -> is_pet() )
     {
-      p -> buffs.dark_intent          -> override();
+      p -> buffs.dark_intent          -> override( 1, p -> type == WARLOCK ? 0.03 : 0.01 );
       p -> buffs.dark_intent_feedback -> override( 3 );
+      p -> dark_intent_cb -> active = true;
     }
   }
 
