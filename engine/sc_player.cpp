@@ -1372,6 +1372,7 @@ void player_t::init_actions()
             log_t::output( sim, "Player %s: modify_action=%s", name(), modify_action.c_str() );
 
           action_options = modify_action_options;
+          splits[ i ] = modify_action + "," + modify_action_options;
         }
         a = create_action( action_name, action_options );
       }
