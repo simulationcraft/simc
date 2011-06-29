@@ -353,6 +353,7 @@ player_t::player_t( sim_t*             s,
   food( FOOD_NONE ),
   // Events
   executing( 0 ), channeling( 0 ), readying( 0 ), in_combat( false ), action_queued( false ),
+  cast_delay_reaction( 0 ), cast_delay_occurred( 0 ),
   // Actions
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
@@ -2706,6 +2707,9 @@ void player_t::reset()
   readying = 0;
   in_combat = false;
   iteration_dmg = 0;
+  
+  cast_delay_reaction = 0;
+  cast_delay_occurred = 0;
 
   main_hand_weapon.buff_type  = 0;
   main_hand_weapon.buff_value = 0;
@@ -2762,6 +2766,7 @@ void player_t::schedule_ready( double delta_time,
                                bool   waiting )
 {
   assert( ! readying );
+  action_t* was_executing = ( channeling ? channeling : executing );
 
   executing = 0;
   channeling = 0;
@@ -2837,6 +2842,21 @@ void player_t::schedule_ready( double delta_time,
   if ( delta_time == 0 ) delta_time = 0.000001;
 
   readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
+
+  if ( was_executing && was_executing -> gcd() > 0 && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
+  {
+    // Record the last ability use time for cast_react
+    cast_delay_occurred = readying -> occurs();
+    cast_delay_reaction = total_reaction_time();
+    if ( sim -> debug ) 
+    {
+      log_t::output( sim, "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f", 
+        name_str.c_str(),
+        was_executing -> name_str.c_str(), 
+        readying -> occurs(), 
+        cast_delay_reaction );
+    }
+  }
 }
 
 // player_t::arise ==========================================================

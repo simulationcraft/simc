@@ -1778,6 +1778,36 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new miss_react_expr_t( this );
   }
+  if ( name_str == "cast_delay" )
+  {
+    struct cast_delay_expr_t : public action_expr_t
+    {
+      cast_delay_expr_t( action_t* a ) : action_expr_t( a, "cast_delay", TOK_NUM ) {}
+      virtual int evaluate()
+      {
+        if ( action -> sim -> debug )
+        {
+          log_t::output( action -> sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f", 
+            action -> player -> name_str.c_str(), 
+            action -> name_str.c_str(), 
+            action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction,
+            action -> sim -> current_time );
+        }
+        
+        if ( ! action -> player -> cast_delay_occurred ||
+             action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction < action -> sim -> current_time )
+        {
+          result_num = 1;
+        }
+        else
+        {
+          result_num = 0;
+        }
+        return TOK_NUM;
+      }
+    };
+    return new cast_delay_expr_t( this );
+  }
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );

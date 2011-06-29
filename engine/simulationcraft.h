@@ -3013,6 +3013,11 @@ struct player_t
   event_t*  readying;
   bool      in_combat;
   bool      action_queued;
+  
+  // Delay time used by "cast_delay" expression to determine when an action 
+  // can be used at minimum after a spell cast has finished, including GCD
+  double    cast_delay_reaction;
+  double    cast_delay_occurred;
 
   // Callbacks
   std::vector<action_callback_t*> all_callbacks;
