@@ -1222,7 +1222,7 @@ void action_t::schedule_execute()
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
   }
-  if ( special && time_to_execute > 0 && ! proc )
+  if ( special && time_to_execute > 0 && ! proc && ! background )
   {
     // While an ability is casting, the auto_attack is paused
     // So we simply reschedule the auto_attack by the ability's casttime
