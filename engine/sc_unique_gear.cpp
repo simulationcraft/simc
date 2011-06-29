@@ -466,8 +466,13 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     apparatus_of_khazgoroth_callback_t( player_t* p, bool h ) :
       action_callback_t( p -> sim, p ), heroic( h )
     {
+      double amount = heroic ? 1725 : 1530;
+
+      // It's actually doing more than the tooltip says.
+      amount = heroic ? 2865 : 2540;
+
       apparatus_of_khazgoroth = new buff_t( p, "apparatus_of_khazgoroth", 5, 30.0, 0.0, 1, true ); // TODO: Duration, cd, etc.?
-      blessing_of_khazgoroth  = new stat_buff_t( p, "blessing_of_khazgoroth", STAT_CRIT_RATING, ( heroic ? 1725 : 1530 ), 1, 15.0, 120.0 );
+      blessing_of_khazgoroth  = new stat_buff_t( p, "blessing_of_khazgoroth", STAT_CRIT_RATING, amount, 1, 15.0, 120.0 );
       proc_apparatus_of_khazgoroth_haste   = p -> get_proc( "apparatus_of_khazgoroth_haste"   );
       proc_apparatus_of_khazgoroth_crit    = p -> get_proc( "apparatus_of_khazgoroth_crit"    );
       proc_apparatus_of_khazgoroth_mastery = p -> get_proc( "apparatus_of_khazgoroth_mastery" );
