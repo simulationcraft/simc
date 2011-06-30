@@ -1752,6 +1752,8 @@ struct stormstrike_t : public shaman_attack_t
     };
     parse_options( options, options_str );
 
+    weapon               = &( p -> main_hand_weapon );
+    weapon_multiplier    = 0.0;
     may_crit             = false;
     cooldown             = p -> cooldowns_strike;
     cooldown -> duration = p -> dbc.spell( id ) -> cooldown();

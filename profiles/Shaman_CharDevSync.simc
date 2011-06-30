@@ -23,7 +23,7 @@ back=dreadfire_drape,id=71415,gems=40agi_40agi_20agi,enchant=22agi
 chest=erupting_volcanic_cuirass,id=71547,gems=40agi_20agi_20mastery_20agi,enchant=20all,reforge=exp_hit
 wrists=bracers_of_forked_lightning,id=71570,enchant=50agi,reforge=crit_hit
 hands=erupting_volcanic_grips,id=71548,gems=20agi_20hit_10agi,enchant=65mastery
-waist=firearrow_belt,id=71396,gems=20agi_20hit_40agi_10agi,reforge=haste_exp
+waist=firearrow_belt,id=71396,gems=20agi_20hit_40agi_10agi
 legs=moltenfeather_leggings,id=71429,gems=40agi_20agi_20hit_20agi,enchant=190ap_55crit
 feet=decimation_treads,id=71457,gems=40agi_10agi,enchant=35agi,reforge=crit_mastery
 finger1=viridian_signet_of_the_avengers,id=71216,gems=40agi_10agi,enchant=40agi
@@ -50,7 +50,7 @@ back=dreadfire_drape,id=71415,gems=40agi_40agi_20agi,enchant=22agi
 chest=erupting_volcanic_cuirass,id=71547,gems=40agi_20agi_20mastery_20agi,enchant=20all,reforge=exp_hit
 wrists=bracers_of_forked_lightning,id=71570,enchant=50agi,reforge=crit_hit
 hands=erupting_volcanic_grips,id=71548,gems=40agi,enchant=65mastery
-waist=firearrow_belt,id=71396,gems=40agi_40agi,reforge=haste_exp
+waist=firearrow_belt,id=71396,gems=40agi_40agi
 legs=moltenfeather_leggings,id=71429,gems=40agi_20agi_20hit_20agi,enchant=190ap_55crit
 feet=decimation_treads,id=71457,gems=40agi_10agi,enchant=35agi,reforge=crit_mastery
 finger1=viridian_signet_of_the_avengers,id=71216,gems=40agi_10agi,enchant=40agi
