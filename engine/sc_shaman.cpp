@@ -105,6 +105,7 @@ struct shaman_t : public player_t
   proc_t* procs_windfury;
   
   proc_t* procs_fulmination[7];
+  proc_t* procs_maelstrom_weapon_used[6];
 
   // Random Number Generators
   rng_t* rng_elemental_overload;
@@ -1923,6 +1924,12 @@ void shaman_spell_t::execute()
     }
   }
   
+  // Record maelstrom weapon stack usage
+  if ( maelstrom )
+  {
+    p -> procs_maelstrom_weapon_used[ p -> buffs_maelstrom_weapon -> check() ] -> occur();
+  }
+
   // Shamans have specialized swing timer reset system, where every cast time spell
   // resets the swing timers, _IF_ the spell is not maelstromable, or the maelstrom
   // weapon stack is zero.
@@ -4058,6 +4065,11 @@ void shaman_t::init_procs()
   for ( int i = 0; i < 7; i++ )
   {
     procs_fulmination[ i ] = get_proc( "fulmination_" + util_t::to_string( i ) );
+  }
+  
+  for ( int i = 0; i < 6; i++ )
+  {
+    procs_maelstrom_weapon_used[ i ] = get_proc( "maelstrom_weapon_stack_" + util_t::to_string( i ) );
   }
 }
 
