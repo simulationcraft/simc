@@ -1,14 +1,14 @@
 #!./simc 
 
 warlock=Warlock_Demonology_T12H
-origin="warlock_chardevsync.simc"
+origin="Warlock_CharDevSync.simc"
 level=85
 race=orc
 role=spell
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#warlock-00000000000000000033222003103122122113320200000000000000
-glyphs=life_tap/shadow_bolt/immolate/incinerate/metamorphosis
+glyphs=life_tap/shadow_bolt/immolate/corruption/metamorphosis
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
