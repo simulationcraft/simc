@@ -2896,6 +2896,9 @@ struct player_t
   double      reaction_mean,reaction_stddev,reaction_nu;
   int         infinite_resource[ RESOURCE_MAX ];
 
+  // Latency
+  double      world_lag, world_lag_stddev;
+
   // Data access
   dbc_t       dbc;
 
@@ -3252,6 +3255,7 @@ struct player_t
     rng_t* lag_queue;
     rng_t* lag_ability;
     rng_t* lag_reaction;
+    rng_t* lag_world;
     void reset() { memset( ( void* ) this, 0x00, sizeof( rngs_t ) ); }
     rngs_t() { reset(); }
   };
@@ -3986,10 +3990,10 @@ struct cooldown_t
   cooldown_t( const std::string& n, player_t* p ) : sim(p->sim), player(p), name_str(n), duration(0), ready(-1), next(0) {}
   cooldown_t( const std::string& n, sim_t* s ) : sim(s), player(0), name_str(n), duration(0), ready(-1), next(0) {}
   void reset() { ready=-1; }
-  void start( double override=-1 )
+  void start( double override=-1, double delay=0 )
   {
     if ( override >= 0 ) duration = override;
-    if ( duration > 0 ) ready = sim -> current_time + duration;
+    if ( duration > 0 ) ready = sim -> current_time + duration + delay;
   }
   double remains()
   {

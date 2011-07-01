@@ -296,6 +296,8 @@ player_t::player_t( sim_t*             s,
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
   active_pets( 0 ), big_hitbox( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
   reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ),
+  // Latency
+  world_lag( 0.1 ), world_lag_stddev( 0.0 ),
   dbc( s -> dbc ),
   race_str( "" ), race( r ),
   // Haste
@@ -732,6 +734,7 @@ void player_t::init_base()
   if ( level <= 80 ) health_per_stamina = 10;
   else if ( level <= 85 ) health_per_stamina = ( level - 80 ) / 5 * 4 + 10;
   else if ( level <= MAX_LEVEL ) health_per_stamina = 14;
+  if ( world_lag_stddev == 0 ) world_lag_stddev = world_lag * 0.1;
 }
 
 // player_t::init_items =====================================================
@@ -1562,6 +1565,7 @@ void player_t::init_rng()
   rngs.lag_queue    = get_rng( "lag_queue"    );
   rngs.lag_ability  = get_rng( "lag_ability"  );
   rngs.lag_reaction = get_rng( "lag_reaction" );
+  rngs.lag_world    = get_rng( "lag_world"    );
 }
 
 // player_t::init_stats ====================================================
@@ -5834,6 +5838,8 @@ void player_t::create_options()
     { "save_actions",                         OPT_STRING,   &( save_actions_str                       ) },
     { "comment",                              OPT_STRING,   &( comment_str                            ) },
     { "bugs",                                 OPT_BOOL,     &( bugs                                   ) },
+    { "world_lag",                            OPT_FLT,      &( world_lag                              ) },
+    { "world_lag_stddev",                     OPT_FLT,      &( world_lag_stddev                       ) },
     // Items
     { "meta_gem",                             OPT_STRING,   &( meta_gem_str                           ) },
     { "items",                                OPT_STRING,   &( items_str                              ) },

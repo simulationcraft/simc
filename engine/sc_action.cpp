@@ -1408,11 +1408,18 @@ void action_t::extend_duration_seconds( double extra_seconds )
 
 void action_t::update_ready()
 {
+  double delay = 0;
   if ( cooldown -> duration > 0 && ! dual )
   {
     if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 
-    cooldown -> start();
+    if ( ! background && ! proc )
+    {
+      delay = player -> rngs.lag_world -> gauss( player -> world_lag, player -> world_lag_stddev );
+      if ( sim -> debug ) log_t::output( sim, "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay );
+    }
+    
+    cooldown -> start( -1, delay );
   }
   if ( num_ticks )
   {
