@@ -569,6 +569,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
   channel_lag( 0.250 ), channel_lag_stddev( 0 ),
   queue_gcd_reduction( 0.032 ), strict_gcd_queue( 0 ),
+  world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 0.25 ),
   current_time( 0 ), max_time( 450 ), expected_time( 0 ), vary_combat_length( 0.2 ),
   fixed_time( 0 ),
@@ -1034,6 +1035,7 @@ bool sim_t::init()
   if (   queue_lag_stddev == 0 )   queue_lag_stddev =   queue_lag * 0.25;
   if (     gcd_lag_stddev == 0 )     gcd_lag_stddev =     gcd_lag * 0.25;
   if ( channel_lag_stddev == 0 ) channel_lag_stddev = channel_lag * 0.25;
+  if ( world_lag_stddev    < 0 ) world_lag_stddev   =   world_lag * 0.1;
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )
@@ -2003,6 +2005,8 @@ void sim_t::create_options()
     { "queue_lag_stddev",                 OPT_FLT,    &( queue_lag_stddev                         ) },
     { "queue_gcd_reduction",              OPT_FLT,    &( queue_gcd_reduction                      ) },
     { "strict_gcd_queue",                 OPT_BOOL,   &( strict_gcd_queue                         ) },
+    { "default_world_lag",                OPT_FLT,    &( world_lag                                ) },
+    { "default_world_lag_stddev",         OPT_FLT,    &( world_lag_stddev                         ) },
     { "default_skill",                    OPT_FLT,    &( default_skill                            ) },
     { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
     { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
@@ -2011,8 +2015,8 @@ void sim_t::create_options()
     { "default_actions",                  OPT_BOOL,   &( default_actions                          ) },
     { "debug",                            OPT_BOOL,   &( debug                                    ) },
     { "html",                             OPT_STRING, &( html_file_str                            ) },
-    { "hosted_html",                      OPT_BOOL,   &( hosted_html                            ) },
-    { "print_styles",                     OPT_BOOL,   &( print_styles                            ) },
+    { "hosted_html",                      OPT_BOOL,   &( hosted_html                              ) },
+    { "print_styles",                     OPT_BOOL,   &( print_styles                             ) },
     { "xml",                              OPT_STRING, &( xml_file_str                             ) },
     { "log",                              OPT_BOOL,   &( log                                      ) },
     { "output",                           OPT_STRING, &( output_file_str                          ) },

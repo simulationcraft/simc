@@ -273,6 +273,48 @@ static bool parse_role_string( sim_t* sim,
   return true;
 }
 
+
+// parse_world_lag ========================================================
+
+static bool parse_world_lag( sim_t* sim,
+                               const std::string& name,
+                               const std::string& value )
+{
+  assert( name == "world_lag" );
+
+  sim -> active_player -> world_lag = atof( value.c_str() );
+
+  if ( sim -> active_player -> world_lag < 0.0 )
+  {
+    sim -> active_player -> world_lag = 0.0;
+  }
+
+  sim -> active_player -> world_lag_override = true;
+
+  return true;
+}
+
+
+// parse_world_lag ========================================================
+
+static bool parse_world_lag_stddev( sim_t* sim,
+                               const std::string& name,
+                               const std::string& value )
+{
+  assert( name == "world_lag_stddev" );
+
+  sim -> active_player -> world_lag_stddev = atof( value.c_str() );
+
+  if ( sim -> active_player -> world_lag_stddev < 0.0 )
+  {
+    sim -> active_player -> world_lag_stddev = 0.0;
+  }
+
+  sim -> active_player -> world_lag_stddev_override = true;
+
+  return true;
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 
@@ -297,7 +339,8 @@ player_t::player_t( sim_t*             s,
   active_pets( 0 ), big_hitbox( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
   reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ),
   // Latency
-  world_lag( 0.1 ), world_lag_stddev( 0.0 ),
+  world_lag( 0.1 ), world_lag_stddev( -1.0 ),
+  world_lag_override( false ), world_lag_stddev_override( false ),
   dbc( s -> dbc ),
   race_str( "" ), race( r ),
   // Haste
@@ -734,7 +777,7 @@ void player_t::init_base()
   if ( level <= 80 ) health_per_stamina = 10;
   else if ( level <= 85 ) health_per_stamina = ( level - 80 ) / 5 * 4 + 10;
   else if ( level <= MAX_LEVEL ) health_per_stamina = 14;
-  if ( world_lag_stddev == 0 ) world_lag_stddev = world_lag * 0.1;
+  if ( world_lag_stddev < 0 ) world_lag_stddev = world_lag * 0.1;
 }
 
 // player_t::init_items =====================================================
@@ -5838,8 +5881,8 @@ void player_t::create_options()
     { "save_actions",                         OPT_STRING,   &( save_actions_str                       ) },
     { "comment",                              OPT_STRING,   &( comment_str                            ) },
     { "bugs",                                 OPT_BOOL,     &( bugs                                   ) },
-    { "world_lag",                            OPT_FLT,      &( world_lag                              ) },
-    { "world_lag_stddev",                     OPT_FLT,      &( world_lag_stddev                       ) },
+    { "world_lag",                            OPT_FUNC,     ( void* ) ::parse_world_lag                 },
+    { "world_lag_stddev",                     OPT_FUNC,     ( void* ) ::parse_world_lag_stddev          },
     // Items
     { "meta_gem",                             OPT_STRING,   &( meta_gem_str                           ) },
     { "items",                                OPT_STRING,   &( items_str                              ) },

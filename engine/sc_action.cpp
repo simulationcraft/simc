@@ -1415,7 +1415,11 @@ void action_t::update_ready()
 
     if ( ! background && ! proc )
     {
-      delay = player -> rngs.lag_world -> gauss( player -> world_lag, player -> world_lag_stddev );
+      double lag, dev;
+
+      lag = player -> world_lag_override ? player -> world_lag : sim -> world_lag;
+      dev = player -> world_lag_stddev_override ? player -> world_lag_stddev : sim -> world_lag_stddev;
+      delay = player -> rngs.lag_world -> gauss( lag, dev );
       if ( sim -> debug ) log_t::output( sim, "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay );
     }
     

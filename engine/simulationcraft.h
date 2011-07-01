@@ -2243,6 +2243,9 @@ struct sim_t
   double      channel_lag, channel_lag_stddev;
   double      queue_gcd_reduction;
   int         strict_gcd_queue;
+    // Latency
+  double      world_lag, world_lag_stddev;
+
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
   double      current_time, max_time, expected_time, vary_combat_length;
   int         fixed_time;
@@ -2898,6 +2901,7 @@ struct player_t
 
   // Latency
   double      world_lag, world_lag_stddev;
+  bool        world_lag_override, world_lag_stddev_override;
 
   // Data access
   dbc_t       dbc;
