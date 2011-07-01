@@ -2259,7 +2259,11 @@ struct sim_t
   std::string main_target_str;
   int         big_hitbox;
   double      dtr_proc_chance;
+
+  // Target options
   double      target_death_pct;
+  int         target_level;
+  std::string target_race;
 
   // Data access
   dbc_t       dbc;
