@@ -726,6 +726,9 @@ struct avengers_shield_t : public paladin_attack_t
     may_dodge    = false;
     may_block    = false;
 
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
+
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = extra_coeff();
     direct_power_mod = 1.0;
@@ -821,6 +824,9 @@ struct divine_storm_t : public paladin_attack_t
     check_talent( p -> talents.divine_storm -> rank() );
 
     parse_options( NULL, options_str );
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
 
     aoe               = -1;
     spell_haste       = true;
@@ -934,6 +940,9 @@ struct hammer_of_wrath_t : public paladin_attack_t
     may_block    = false;
     trigger_dp   = true;
     trigger_seal = 1; // TODO: only SoT or all seals?
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
 
     base_crit += p -> talents.sanctified_wrath -> mod_additive( P_CRIT )
                  + p -> talents.wrath_of_the_lightbringer -> mod_additive( P_CRIT );
@@ -1102,6 +1111,9 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     may_dodge  = false;
     may_block  = false;
 
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
+
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
     base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.judgement -> mod_additive( P_GENERIC );
@@ -1152,6 +1164,9 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     may_dodge  = false;
     may_block  = false;
     may_crit   = false;
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
     base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
@@ -1254,6 +1269,9 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
     may_dodge    = false;
     may_block    = false;
     trigger_seal = 1;
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
     base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent()
@@ -1384,6 +1402,9 @@ struct shield_of_the_righteous_t : public paladin_attack_t
     may_parry = false;
     may_dodge = false;
     may_block = false;
+
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
 
     direct_power_mod = extra_coeff();
     base_multiplier *= 1.0 + p -> glyphs.shield_of_the_righteous -> mod_additive( P_GENERIC );
