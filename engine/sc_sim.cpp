@@ -491,6 +491,16 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> raid_events_str += "/stun,cooldown=60,duration=2";
     sim -> raid_events_str += "/invulnerable,cooldown=120,duration=3";
   }
+  else if ( util_t::str_compare_ci( value, "LightMovement" ) )
+  {
+    sim -> fight_style = "LightMovement";
+    sim -> raid_events_str = "/movement,players_only=1,first=53,cooldown=85,duration=7,last=360";
+  }
+  else if ( util_t::str_compare_ci( value, "HeavyMovement" ) )
+  {
+    sim -> fight_style = "HeavyMovement";
+    sim -> raid_events_str = "/movement,players_only=1,first=10,cooldown=10,duration=4";
+  }
   else
   {
     log_t::output( sim, "Custom fight style specified: %s", value.c_str() );
