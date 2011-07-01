@@ -1,1 +1,1 @@
-raid_event+=/movement,players_only=1,first=10,cooldown=10,duration=4
+raid_events+=/movement,players_only=1,first=10,cooldown=10,duration=4
