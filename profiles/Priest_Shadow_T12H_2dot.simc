@@ -1,6 +1,6 @@
 #!./simc 
 
-priest=Priest_Shadow_T12H_DTR
+priest=Priest_Shadow_T12H_2dot
 origin="Priest_CharDevSync.simc"
 level=85
 race=troll
@@ -24,12 +24,16 @@ actions+=/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&mi
 actions+=/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react
 actions+=/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2|dot.vampiric_touch.remains<cast_time+2.5
 actions+=/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react
+actions+=/vampiric_touch_2,if=(!ticking|dot.vampiric_touch_2.remains<cast_time+2.5)&miss_react
+actions+=/shadow_word_pain_2,if=(!ticking|dot.shadow_word_pain_2.remains<gcd+0.5)&miss_react
 actions+=/archangel,if=buff.dark_evangelism.stack>=5&dot.vampiric_touch.remains>5&dot.devouring_plague.remains>5
 actions+=/mind_blast,if=buff.shadow_orb.react>=1&set_bonus.tier12_4pc_caster
 actions+=/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1
 actions+=/shadow_word_death,health_percentage<=25
 actions+=/shadow_fiend
 actions+=/mind_blast
+actions+=/mind_flay_2,if=(dot.shadow_word_pain_2.remains<dot.shadow_word_pain.remains)&miss_react
+actions+=/shadow_word_death,if=mana_pct<10
 actions+=/mind_flay
 actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/shadow_word_death,moving=1
@@ -47,24 +51,26 @@ finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384
 finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_185spi_127mastery,reforge=mastery_haste,gems=40int_10int
 trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_48mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_spi,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_haste,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
-off_hand=empty
+back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_spi,enchant=lightweave_embroidery
+main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max
+off_hand=goblet_of_anger,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_154spi_181haste,enchant=40int
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=7113
-# gear_intellect=5993
-# gear_spirit=1140
-# gear_spell_power=2973
-# gear_hit_rating=601
+# gear_stamina=7030
+# gear_intellect=5888
+# gear_spirit=1509
+# gear_spell_power=2783
+# gear_hit_rating=235
 # gear_crit_rating=831
-# gear_haste_rating=2661
+# gear_haste_rating=2644
 # gear_mastery_rating=1239
 # gear_armor=9372
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
 # back=wings_of_flame,heroic=1,enchant=lightweave_embroidery
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
+# main_hand=kogun_hammer_of_the_firelord,heroic=1,weapon=mace_2.10speed_484min_899max,enchant=power_torrent
+## Variables
+double_dot=1
