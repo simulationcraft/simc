@@ -538,18 +538,6 @@ unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) 
   return ptr ? __ptr_tier_bonuses_data[ class_id ][ tier ][ n ]
              : __tier_bonuses_data[ class_id ][ tier ][ n ];
 #else
-  if ( class_id >= CLASS_SIZE )
-  {
-    return 0;
-  }
-  if ( tier >= TIER_BONUSES_MAX_TIER )
-  {
-    return 0;
-  }
-  if ( n >= set_bonus_spell_size() )
-  {
-    return 0;
-  }
   assert( class_id < CLASS_SIZE && tier < TIER_BONUSES_MAX_TIER && n < set_bonus_spell_size() );
   return __tier_bonuses_data[ class_id ][ tier ][ n ];
 #endif
