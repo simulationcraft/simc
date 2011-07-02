@@ -3,6 +3,8 @@
 #NOTE: Distance must be 10 yards or more for players who aren't climbing the web
 #(including off-tank and at least 1 healer), and 9 yards or less for everyone else
 
+max_time=270
+
 #Venom Rain
 #http://www.worldoflogs.com/reports/c612s1o0o3wkqbtm/log/?s=1956&e=2310
 #http://ptr.wowhead.com/spell=99333
