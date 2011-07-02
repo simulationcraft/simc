@@ -1,6 +1,6 @@
 #!./simc 
 
-shaman=Shaman_Elemental_T12H_DTR
+shaman=Shaman_Elemental_T12H_GoUL_DTR
 origin="Shaman_CharDevSync.simc"
 level=85
 race=troll
@@ -8,7 +8,7 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/enchanting=525
 talents=http://www.wowhead.com/talent#shaman-3032023212231101321203002200000000000000000000000000000000
-glyphs=chain_lightning/thunder/healing_stream_totem/thunderstorm/astral_recall/renewed_life/flame_shock/lightning_bolt/lava_burst
+glyphs=chain_lightning/thunder/healing_stream_totem/thunderstorm/astral_recall/renewed_life/flame_shock/unleashed_lightning/lava_burst
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/flametongue_weapon,weapon=main
@@ -23,7 +23,6 @@ actions+=/bloodlust,health_percentage<=25
 actions+=/bloodlust,if=target.time_to_die<=60
 actions+=/berserking
 actions+=/elemental_mastery
-actions+=/unleash_elements,moving=1
 actions+=/flame_shock,if=!ticking|ticks_remain<3
 actions+=/lava_burst,if=dot.flame_shock.remains>(cast_time+travel_time)
 actions+=/earth_shock,if=buff.lightning_shield.react=9

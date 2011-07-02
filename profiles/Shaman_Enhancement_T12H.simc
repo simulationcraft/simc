@@ -42,32 +42,32 @@ head=erupting_volcanic_helmet,heroic=1,type=mail,ilevel=391,quality=epic,stats=2
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=haste_hit
 shoulders=erupting_volcanic_spaulders,heroic=1,type=mail,ilevel=391,quality=epic,stats=2044armor_322agi_513sta_220hit_213exp,reforge=exp_mastery,gems=20agi_20mastery_10agi,enchant=50agi_25mastery
 chest=erupting_volcanic_cuirass,heroic=1,type=mail,ilevel=391,quality=epic,stats=2725armor_420agi_689sta_293exp_279mastery,reforge=exp_hit,gems=40agi_20agi_20mastery_20agi,enchant=20all
-waist=firearrow_belt,heroic=1,type=mail,ilevel=391,quality=epic,stats=1533armor_322agi_513sta_205mastery_221haste,gems=20agi_20hit_40agi_10agi
+waist=firearrow_belt,type=mail,ilevel=378,quality=epic,stats=1464armor_282agi_454sta_182mastery_193haste,gems=20agi_20hit_40agi_10agi
 legs=moltenfeather_leggings,heroic=1,type=mail,ilevel=391,quality=epic,stats=2385armor_420agi_689sta_290hit_282mastery,gems=40agi_20agi_20hit_20agi,enchant=190ap_55crit
 feet=decimation_treads,heroic=1,type=mail,ilevel=391,quality=epic,stats=1874armor_321agi_513sta_199hit_227crit,reforge=crit_mastery,gems=40agi_10agi,enchant=35agi
-wrists=bracers_of_forked_lightning,heroic=1,type=mail,ilevel=391,quality=epic,stats=1192armor_256agi_384sta_186crit_146mastery,reforge=crit_hit,enchant=50agi
+wrists=hidebound_chains,heroic=1,type=mail,ilevel=391,quality=epic,stats=1192armor_256agi_384sta_195haste_130hit,reforge=haste_mastery,enchant=50agi
 hands=erupting_volcanic_grips,heroic=1,type=mail,ilevel=391,quality=epic,stats=1703armor_322agi_513sta_231hit_202mastery,gems=20agi_20hit_10agi,enchant=65mastery
 finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,gems=40agi_10agi,enchant=40agi
 finger2=widows_kiss,heroic=1,ilevel=391,quality=epic,stats=256agi_384sta_188haste_142mastery,reforge=haste_hit,enchant=40agi
 trinket1=matrix_restabilizer,heroic=1,ilevel=397,quality=epic,stats=458agi
-trinket2=ancient_petrified_seed,heroic=1,ilevel=391,quality=epic,stats=433mastery,use=1441agi_15dur_60cd
+trinket2=ancient_petrified_seed,ilevel=378,quality=epic,stats=383mastery,use=1277agi_15dur_60cd
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,gems=40agi_40agi_20agi,enchant=22agi
-main_hand=gatecrasher,heroic=1,ilevel=391,quality=epic,stats=197agi_296sta_135crit_125exp,reforge=exp_hit,enchant=landslide,weapon=axe_2.60speed_1133min_2105max
+main_hand=gatecrasher,heroic=1,ilevel=391,quality=epic,stats=197agi_296sta_135crit_125exp,reforge=exp_mastery,enchant=landslide,weapon=axe_2.60speed_1133min_2105max
 off_hand=gatecrasher,heroic=1,ilevel=391,quality=epic,stats=197agi_296sta_135crit_125exp,reforge=exp_mastery,enchant=landslide,weapon=axe_2.60speed_1133min_2105max
 ranged=covenant_of_the_flame,heroic=1,ilevel=391,quality=epic,stats=145agi_217sta_99crit_92mastery,reforge=crit_hit,gems=40agi
 # Gear Summary
 # gear_strength=20
-# gear_agility=5735
-# gear_stamina=6890
+# gear_agility=5695
+# gear_stamina=6831
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=454
-# gear_hit_rating=1725
-# gear_crit_rating=634
-# gear_haste_rating=840
-# gear_mastery_rating=2807
-# gear_armor=16415
+# gear_hit_rating=1731
+# gear_crit_rating=522
+# gear_haste_rating=929
+# gear_mastery_rating=2716
+# gear_armor=16346
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1
 # tier12_4pc_melee=1
