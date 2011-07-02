@@ -3388,9 +3388,47 @@ void rogue_t::init_actions()
         action_list_str += "/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down";
       }
 
-      init_use_item_actions( ",if=buff.shadow_dance.up" );
+      int num_items = ( int ) items.size();
+      int hand_enchant_found = -1;
+      int found_item = -1;
 
-      init_use_profession_actions( ",if=buff.shadow_dance.up" );
+      for ( int i=0; i < num_items; i++ )
+      {
+        if ( items[ i ].use.active() )
+        {
+          if ( items[ i ].slot == SLOT_HANDS )
+          {
+            hand_enchant_found = i;
+            continue;
+          }
+          action_list_str += "/use_item,name=";
+          action_list_str += items[ i ].name();
+          if ( found_item < 0 )
+          {
+            action_list_str += ",if=buff.shadow_dance.up";
+            found_item = i;
+          }
+          else
+          {
+            action_list_str += ",if=buff.shadow_dance.cooldown_remains>20";
+          }
+        }
+      }
+      if ( hand_enchant_found >= 0 )
+      {
+          action_list_str += "/use_item,name=";
+          action_list_str += items[ hand_enchant_found ].name();
+          if ( found_item < 0 )
+          {
+            action_list_str += ",if=buff.shadow_dance.up";            
+          }
+          else
+          {
+            action_list_str += ",if=buff.shadow_dance.cooldown_remains>20";
+          }
+      }
+
+      init_use_profession_actions( ( found_item >= 0 ) ? "" : ",if=buff.shadow_dance.up" );
 
       init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
