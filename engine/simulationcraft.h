@@ -2881,7 +2881,7 @@ struct player_t
   player_type type;
   role_type   role;
   int         level, use_pre_potion, party, member;
-  double      skill, initial_skill, distance, gcd_ready, base_gcd;
+  double      skill, initial_skill, distance, default_distance, gcd_ready, base_gcd;
   int         potion_used, sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;

@@ -333,6 +333,7 @@ struct priest_t : public player_t
     atonement_c                          = 0;
 
     distance                             = 40;
+    default_distance                     = 40;
 
     max_mana_cost                        = 0.0;
 

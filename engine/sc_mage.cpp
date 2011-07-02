@@ -260,6 +260,7 @@ struct mage_t : public player_t
     cooldowns_tier12_mirror_image -> duration = 45.0;
 
     distance = 40;
+    default_distance = 40;
     mana_gem_charges = 3;
     merge_ignite = 0;
 

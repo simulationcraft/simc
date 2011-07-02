@@ -308,6 +308,9 @@ struct warrior_t : public player_t
     initial_rage = 0;
     fiery_attack = NULL;
 
+    distance = 3;
+    default_distance = 3;
+
     create_talents();
     create_glyphs();
     create_options();

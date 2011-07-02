@@ -276,8 +276,6 @@ struct druid_t : public player_t
     cooldowns_burning_treant = get_cooldown( "burning_treant" );
     cooldowns_burning_treant -> duration = 45.0;
 
-    distance = 30;
-
     dots_insect_swarm = get_dot( "insect_swarm" );
     dots_lacerate     = get_dot( "lacerate"     );
     dots_lifebloom    = get_dot( "lifebloom"    );
@@ -296,6 +294,10 @@ struct druid_t : public player_t
 
     create_talents();
     create_glyphs();
+    
+    distance = ( primary_tree() == TREE_FERAL ) ? 3 : 30;
+    default_distance = distance;
+    
     create_options();
   }
 

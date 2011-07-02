@@ -232,6 +232,10 @@ struct paladin_t : public player_t
 
     create_talents();
     create_glyphs();
+    
+    distance = ( primary_tree() == TREE_HOLY ) ? 30 : 3;
+    default_distance = distance;
+    
     create_options();
   }
 

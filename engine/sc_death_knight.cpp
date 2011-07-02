@@ -323,6 +323,8 @@ struct death_knight_t : public player_t
     create_talents();
     create_glyphs();
     create_options();
+    
+    default_distance = 0;
   }
 
   // Character Definition

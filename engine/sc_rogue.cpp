@@ -358,6 +358,9 @@ struct rogue_t : public player_t
     tricks_of_the_trade_target_str = "other";
     tricks_of_the_trade_target = 0;
 
+    distance = 3;
+    default_distance = 3;
+
     create_talents();
     create_glyphs();
     create_options();

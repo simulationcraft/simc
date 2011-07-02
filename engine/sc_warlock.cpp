@@ -364,6 +364,7 @@ struct warlock_t : public player_t
     tree_type[ WARLOCK_DESTRUCTION ] = TREE_DESTRUCTION;
 
     distance = 40;
+    default_distance = 40;
 
     active_pet                  = 0;
     spells_burning_embers       = 0;

@@ -114,7 +114,7 @@ struct movement_event_t : public raid_event_t
   int players_only;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "movement" ), move_to( 0 ), move_distance( 0 ), players_only( 0 )
+    raid_event_t( s, "movement" ), move_to( -2 ), move_distance( 0 ), players_only( 0 )
   {
     option_t options[] =
     {
@@ -125,7 +125,6 @@ struct movement_event_t : public raid_event_t
     };
     parse_options( options, options_str );
     if ( move_distance ) name_str = "movement_distance";
-
   }
   virtual void start()
   {
@@ -150,6 +149,13 @@ struct movement_event_t : public raid_event_t
       if ( p -> buffs.stunned -> check() ) continue;
       p -> moving();
     }
+  }
+  virtual void finish() {
+    if ( move_to >= 0 )
+      player -> distance = move_to;
+    else if (move_to == -1 )
+      player -> distance = player -> default_distance;
+    raid_event_t::finish();
   }
 };
 

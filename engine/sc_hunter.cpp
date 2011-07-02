@@ -214,6 +214,7 @@ struct hunter_t : public player_t
     summon_pet_str = "";
     hunter_position = "back";
     distance = 40;
+    default_distance = 40;
     base_gcd = 1.0;
     flaming_arrow = NULL;
 

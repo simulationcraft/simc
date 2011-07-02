@@ -3970,6 +3970,7 @@ void shaman_t::init_base()
   base_attack_crit += talent_acuity -> base_value();
 
   distance = ( primary_tree() == TREE_ENHANCEMENT ) ? 3 : 30;
+  default_distance = distance;
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;
