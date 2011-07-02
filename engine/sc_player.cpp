@@ -315,6 +315,43 @@ static bool parse_world_lag_stddev( sim_t* sim,
   return true;
 }
 
+// parse_brain_lag ========================================================
+
+static bool parse_brain_lag( sim_t* sim,
+                               const std::string& name,
+                               const std::string& value )
+{
+  assert( name == "brain_lag" );
+
+  sim -> active_player -> brain_lag = atof( value.c_str() );
+
+  if ( sim -> active_player -> brain_lag < 0.0 )
+  {
+    sim -> active_player -> brain_lag = 0.0;
+  }
+
+  return true;
+}
+
+
+// parse_brain_lag_stddev ========================================================
+
+static bool parse_brain_lag_stddev( sim_t* sim,
+                               const std::string& name,
+                               const std::string& value )
+{
+  assert( name == "brain_lag_stddev" );
+
+  sim -> active_player -> brain_lag_stddev = atof( value.c_str() );
+
+  if ( sim -> active_player -> brain_lag_stddev < 0.0 )
+  {
+    sim -> active_player -> brain_lag_stddev = 0.0;
+  }
+
+  return true;
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 
@@ -340,6 +377,7 @@ player_t::player_t( sim_t*             s,
   reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ),
   // Latency
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
+  brain_lag( -1.0 ), brain_lag_stddev( -1.0 ),
   world_lag_override( false ), world_lag_stddev_override( false ),
   dbc( s -> dbc ),
   race_str( "" ), race( r ),
@@ -778,6 +816,7 @@ void player_t::init_base()
   else if ( level <= 85 ) health_per_stamina = ( level - 80 ) / 5 * 4 + 10;
   else if ( level <= MAX_LEVEL ) health_per_stamina = 14;
   if ( world_lag_stddev < 0 ) world_lag_stddev = world_lag * 0.1;
+  if ( brain_lag_stddev < 0 ) brain_lag_stddev = brain_lag * 0.1;
 }
 
 // player_t::init_items =====================================================
@@ -1609,6 +1648,7 @@ void player_t::init_rng()
   rngs.lag_ability  = get_rng( "lag_ability"  );
   rngs.lag_reaction = get_rng( "lag_reaction" );
   rngs.lag_world    = get_rng( "lag_world"    );
+  rngs.lag_brain    = get_rng( "lag_brain"    );
 }
 
 // player_t::init_stats ====================================================
@@ -2895,7 +2935,7 @@ void player_t::schedule_ready( double delta_time,
   {
     // Record the last ability use time for cast_react
     cast_delay_occurred = readying -> occurs();
-    cast_delay_reaction = total_reaction_time();
+    cast_delay_reaction = rngs.lag_brain -> gauss( brain_lag, brain_lag_stddev );
     if ( sim -> debug ) 
     {
       log_t::output( sim, "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f", 
@@ -5883,6 +5923,8 @@ void player_t::create_options()
     { "bugs",                                 OPT_BOOL,     &( bugs                                   ) },
     { "world_lag",                            OPT_FUNC,     ( void* ) ::parse_world_lag                 },
     { "world_lag_stddev",                     OPT_FUNC,     ( void* ) ::parse_world_lag_stddev          },
+    { "brain_lag",                            OPT_FUNC,     ( void* ) ::parse_brain_lag                 },
+    { "brain_lag_stddev",                     OPT_FUNC,     ( void* ) ::parse_brain_lag_stddev          },
     // Items
     { "meta_gem",                             OPT_STRING,   &( meta_gem_str                           ) },
     { "items",                                OPT_STRING,   &( items_str                              ) },

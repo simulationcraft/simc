@@ -2245,7 +2245,6 @@ struct sim_t
   int         strict_gcd_queue;
     // Latency
   double      world_lag, world_lag_stddev;
-
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
   double      current_time, max_time, expected_time, vary_combat_length;
   int         fixed_time;
@@ -2901,6 +2900,7 @@ struct player_t
 
   // Latency
   double      world_lag, world_lag_stddev;
+  double      brain_lag, brain_lag_stddev;
   bool        world_lag_override, world_lag_stddev_override;
 
   // Data access
@@ -3260,6 +3260,7 @@ struct player_t
     rng_t* lag_ability;
     rng_t* lag_reaction;
     rng_t* lag_world;
+    rng_t* lag_brain;
     void reset() { memset( ( void* ) this, 0x00, sizeof( rngs_t ) ); }
     rngs_t() { reset(); }
   };
