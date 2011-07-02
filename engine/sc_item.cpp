@@ -618,10 +618,11 @@ bool item_t::decode_random_suffix()
   }
 
   std::string name_str = suffix_data.suffix;
+  armory_t::format( name_str );
 
-  if ( ! encoded_name_str.find( name_str ) )
+  if ( encoded_name_str.find( name_str ) == std::string::npos )
   {
-    encoded_name_str += "_" + armory_t::format( name_str );
+    encoded_name_str += "_" + name_str;
   }
 
 
