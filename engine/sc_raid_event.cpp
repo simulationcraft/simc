@@ -112,6 +112,7 @@ struct movement_event_t : public raid_event_t
   double move_to;
   double move_distance;
   int players_only;
+  bool is_distance;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "movement" ), move_to( -2 ), move_distance( 0 ), players_only( 0 )
@@ -124,7 +125,8 @@ struct movement_event_t : public raid_event_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-    if ( move_distance ) name_str = "movement_distance";
+    is_distance = move_distance || ( move_to >= -1 && !duration);
+    if (is_distance) name_str = "movement_distance";
   }
   virtual void start()
   {
@@ -134,28 +136,29 @@ struct movement_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
       if ( p -> is_pet() && players_only ) continue;
-      if ( move_distance )
-      {
-        p -> buffs.raid_movement -> buff_duration = move_distance / p -> composite_movement_speed();
-        p -> buffs.raid_movement -> trigger();
+      double my_duration;
+      if ( is_distance ) {
+        double my_move_distance;
+        if ( move_to >= -1 ) {
+          double new_distance = (move_to < 0) ? p -> default_distance : move_to;
+          my_move_distance = move_distance ? move_distance : abs(new_distance - p -> distance);
+          p -> distance = new_distance;
+        }
+        my_duration = my_move_distance / p -> composite_movement_speed();
       }
       else
       {
-        p -> buffs.raid_movement -> buff_duration = saved_duration;
+        my_duration = saved_duration;        
+      }
+      if ( my_duration > 0 )
+      {
+        p -> buffs.raid_movement -> buff_duration = my_duration; 
         p -> buffs.raid_movement -> trigger();
       }
-
       if ( p -> sleeping ) continue;
       if ( p -> buffs.stunned -> check() ) continue;
       p -> moving();
     }
-  }
-  virtual void finish() {
-    if ( move_to >= 0 )
-      player -> distance = move_to;
-    else if (move_to == -1 )
-      player -> distance = player -> default_distance;
-    raid_event_t::finish();
   }
 };
 
