@@ -2874,12 +2874,13 @@ struct player_t
 {
   sim_t*      sim;
   bool        ptr;
-  std::string name_str, talents_str, glyphs_str, id_str;
+  std::string name_str, talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   player_t*   next;
   int         index;
   player_type type;
   role_type   role;
+  player_t*   target;
   int         level, use_pre_potion, party, member;
   double      skill, initial_skill, distance, default_distance, gcd_ready, base_gcd;
   int         potion_used, sleeping, initialized;
@@ -3305,6 +3306,7 @@ struct player_t
   virtual void init_rng();
   virtual void init_stats();
   virtual void init_values();
+  virtual void init_target();
 
   virtual void reset();
   virtual void combat_begin();
@@ -3599,6 +3601,7 @@ struct pet_t : public player_t
   virtual void init();
   virtual void init_base();
   virtual void init_talents();
+  virtual void init_target();
   virtual void reset();
   virtual void summon( double duration=0 );
   virtual void dismiss();

@@ -13,6 +13,7 @@
 
 void pet_t::_init_pet_t()
 {
+  target = owner -> target;
   level = owner -> level;
   full_name_str = owner -> name_str + "_" + name_str;
 
@@ -107,6 +108,16 @@ void pet_t::init()
 
 void pet_t::init_base()
 {
+}
+
+// pet_t::init_target =======================================================
+
+void pet_t::init_target()
+{
+  if ( ! target_str.empty() )
+    player_t::init_target();
+  else
+    target = owner -> target;
 }
 
 void pet_t::init_talents()

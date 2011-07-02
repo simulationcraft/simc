@@ -383,6 +383,8 @@ void enemy_t::init_actions()
       {
         if ( q -> primary_role() != ROLE_TANK )
           continue;
+	if ( !target )
+          target = q;
         action_list_str += "/auto_attack,target=";
         action_list_str += q -> name_str;
         break;
@@ -414,6 +416,7 @@ void enemy_t::create_options()
     { "target_health",                    OPT_FLT,    &( fixed_health                      ) },
     { "target_initial_health_percentage", OPT_FLT,    &( initial_health_percentage         ) },
     { "target_fixed_health_percentage",   OPT_FLT,    &( fixed_health_percentage           ) },
+    { "target_tank",                      OPT_STRING, &( target_str                        ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

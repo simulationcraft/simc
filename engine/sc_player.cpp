@@ -365,7 +365,7 @@ player_t::player_t( sim_t*             s,
                     player_type        t,
                     const std::string& n,
                     race_type          r ) :
-  sim( s ), ptr( s -> dbc.ptr ), name_str( n ),
+  sim( s ), ptr( s -> dbc.ptr ), name_str( n ), target_str( "" ),
   region_str( s->default_region_str ), server_str( s->default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ),
@@ -671,7 +671,6 @@ bool player_t::init( sim_t* sim )
   if ( sim -> debug )
     log_t::output( sim, "Initializing Players." );
 
-
   bool too_quiet = true; // Check for at least 1 active player
   bool zero_dds = true; // Check for at least 1 player != TANK/HEAL
 
@@ -765,6 +764,7 @@ void player_t::init()
   if ( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );
 
   initialized = 1;
+  init_target();
   init_talents();
   init_spells();
   init_glyphs();
@@ -1323,6 +1323,19 @@ struct execute_pet_action_t : public action_t
   }
 };
 
+// player_t::init_target ============================================================
+
+void player_t::init_target()
+{
+  if ( ! target_str.empty() )
+  {
+      target = sim -> find_player( target_str );
+  }
+  if ( ! target )
+  {
+    target = sim -> target;
+  }
+}
 
 // player_t::init_use_item_actions ==================================================
 
@@ -1395,6 +1408,7 @@ void player_t::init_use_racial_actions( const std::string& append )
 
 void player_t::init_actions()
 {
+
   if ( ! action_list_str.empty() )
   {
     if ( action_list_default && sim -> debug ) log_t::output( sim, "Player %s using default actions", name() );
@@ -5915,6 +5929,7 @@ void player_t::create_options()
     { "level",                                OPT_INT,      &( level                                  ) },
     { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                         ) },
     { "role",                                 OPT_FUNC,     ( void* ) ::parse_role_string               },
+    { "target",                               OPT_STRING,   &( target_str                             ) },
     { "skill",                                OPT_FLT,      &( initial_skill                          ) },
     { "distance",                             OPT_FLT,      &( distance                               ) },
     { "professions",                          OPT_STRING,   &( professions_str                        ) },

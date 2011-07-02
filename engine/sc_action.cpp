@@ -16,7 +16,7 @@ void action_t::_init_action_t()
   sim                            = s_player->sim;
   name_str                       = s_token;
   player                         = s_player;
-  target                         = s_player -> sim -> target;
+  target                         = s_player -> target;
   id                             = 0;
   result                         = RESULT_NONE;
   aoe                            = 0;
@@ -190,7 +190,7 @@ action_t::action_t( int               ty,
                     bool              sp ) :
   spell_id_t( p, n ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
-  player( s_player ), target( s_player -> sim -> target ), school( s ), resource( r ),
+  player( s_player ), target( s_player -> target ), school( s ), resource( r ),
   tree( tr ), special( sp )
 {
   _init_action_t();
