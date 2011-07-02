@@ -3369,6 +3369,7 @@ struct player_t
   virtual void      interrupt();
   virtual void      halt();
   virtual void      moving();
+  virtual void      stun();
   virtual void      clear_debuffs();
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual void      arise();

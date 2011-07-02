@@ -3024,6 +3024,13 @@ void player_t::halt()
   if (    ranged_attack )    ranged_attack -> cancel();
 }
 
+// player_t::stun() =========================================================
+
+void player_t::stun()
+{
+  halt();
+}
+
 // player_t::moving =========================================================
 
 void player_t::moving()

@@ -111,6 +111,8 @@ struct mage_t : public player_t
     spell_data_t* fire_specialization;
     spell_data_t* frost_specialization;
 
+    spell_data_t* blink;
+
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   };
   spells_t spells;
@@ -299,6 +301,7 @@ struct mage_t : public player_t
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_resistance( const school_type school ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
+  virtual void      stun();
 
   // Event Tracking
   virtual void   regen( double periodicity );
@@ -1549,6 +1552,25 @@ struct blast_wave_t : public mage_spell_t
     aoe = -1;
   }
 };
+
+// Blink Spell ==========================================================
+
+struct blink_t : public mage_spell_t
+{
+  blink_t( mage_t* p, const std::string& options_str ) :
+      mage_spell_t( "blink", 1953, p )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    player -> buffs.stunned -> expire();
+  }
+};
+
 
 // Cold Snap Spell ==========================================================
 
@@ -2900,6 +2922,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "arcane_missiles"   ) return new         arcane_missiles_t( this, options_str );
   if ( name == "arcane_power"      ) return new            arcane_power_t( this, options_str );
   if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
+  if ( name == "blink"             ) return new                   blink_t( this, options_str );
   if ( name == "choose_rotation"   ) return new         choose_rotation_t( this, options_str );
   if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
@@ -3045,6 +3068,8 @@ void mage_t::init_spells()
   spells.arcane_specialization = spell_data_t::find( 84671, "Arcane Specialization", dbc.ptr );
   spells.fire_specialization   = spell_data_t::find( 84668, "Fire Specialization",   dbc.ptr );
   spells.frost_specialization  = spell_data_t::find( 84669, "Frost Specialization",  dbc.ptr );
+
+  spells.blink = spell_data_t::find( 1953, "Blink", dbc.ptr );
 
   memset( (void*) &specializations, 0x00, sizeof( specializations_t ) );
 
@@ -3668,6 +3693,13 @@ double mage_t::resource_loss( int       resource,
   }
 
   return actual_amount;
+}
+
+// mage_t::stun =============================================================
+
+void mage_t::stun() {
+  //TODO: override this to handle Blink
+  player_t::stun();
 }
 
 // mage_t::create_expression ================================================

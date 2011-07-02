@@ -138,10 +138,12 @@ struct movement_event_t : public raid_event_t
       if ( p -> is_pet() && players_only ) continue;
       double my_duration;
       if ( is_distance ) {
-        double my_move_distance;
-        if ( move_to >= -1 ) {
+        double my_move_distance = move_distance;
+        if ( move_to >= -1 )
+        {
           double new_distance = (move_to < 0) ? p -> default_distance : move_to;
-          my_move_distance = move_distance ? move_distance : abs(new_distance - p -> distance);
+          if (!my_move_distance)
+            my_move_distance = abs(new_distance - p -> distance);
           p -> distance = new_distance;
         }
         my_duration = my_move_distance / p -> composite_movement_speed();
@@ -180,7 +182,7 @@ struct stun_event_t : public raid_event_t
       player_t* p = affected_players[ i ];
       p -> buffs.stunned -> increment();
       if ( p -> sleeping ) continue;
-      p -> halt();
+      p -> stun();
     }
   }
   virtual void finish()
