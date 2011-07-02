@@ -4890,11 +4890,12 @@ void priest_t::init_actions()
       if ( double_dot )
       {
                                                          action_list_str += "/mind_flay_2,if=(dot.shadow_word_pain_2.remains<dot.shadow_word_pain.remains)&miss_react";
-                                                         action_list_str += "/shadow_word_death,if=mana_pct<10";
       }
+                                                         action_list_str += "/shadow_word_death,if=mana_pct<10";
                                                          action_list_str += "/mind_flay";
-      if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1,if=mana_pct>10";
                                                          action_list_str += "/shadow_word_death,moving=1";
+      if ( talents.improved_devouring_plague -> rank() ) action_list_str += "/devouring_plague,moving=1,if=mana_pct>10";
+
       if ( talents.dispersion -> rank() )                action_list_str += "/dispersion";
       break;
 

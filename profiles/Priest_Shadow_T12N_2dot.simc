@@ -35,8 +35,8 @@ actions+=/mind_blast
 actions+=/mind_flay_2,if=(dot.shadow_word_pain_2.remains<dot.shadow_word_pain.remains)&miss_react
 actions+=/shadow_word_death,if=mana_pct<10
 actions+=/mind_flay
-actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/shadow_word_death,moving=1
+actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/dispersion
 head=hood_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_249mastery_235haste,reforge=mastery_spi,gems=burning_shadowspirit_67int_30int,enchant=60int_35crit
 neck=flowform_choker,ilevel=378,quality=epic,stats=227int_341sta_143haste_115mastery,reforge=mastery_spi,gems=67int_10int
