@@ -11,6 +11,7 @@ trinket1=rune_of_zeth
 
 copy=theralions_mirror
 trinket1=theralions_mirror
+modify_action=summon_doomguard,if=buff.theralions_mirror.up
 
 copy=Hrune_of_zeth
 trinket1=rune_of_zeth,heroic=1
@@ -20,6 +21,7 @@ trinket1=witching_hourglass,heroic=1
 
 copy=Htheralions_mirror
 trinket1=theralions_mirror,heroic=1
+modify_action=summon_doomguard,if=buff.theralions_mirror.up
 
 copy=Hheart_of_ignacious
 trinket1=heart_of_ignacious,heroic=1
