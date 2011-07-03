@@ -1,7 +1,7 @@
 #!./simc 
 
 hunter=Hunter_MM_T12H
-origin="hunter_chardevsync.simc"
+origin="Hunter_CharDevSync.simc"
 level=85
 race=troll
 role=attack
