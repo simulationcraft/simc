@@ -1711,8 +1711,12 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       warlock_pet_spell_t( "doombolt", player, "Doom Bolt" )
     {
       //FIXME: Needs testing, but WoL seems to suggest it has been changed from 2.5 to 3.0 sometime after 4.1.
-
       base_execute_time = 3.0;
+
+      //Rough numbers based on report in EJ thread 2011/07/04
+      direct_power_mod  = 1.36; 
+      base_dd_min *= 1.25;
+      base_dd_max *= 1.25;
     }
   };
 
@@ -1745,7 +1749,13 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
 
     warlock_t* o = owner -> cast_warlock();
 
-    m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * o -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
+    if ( o -> race == RACE_ORC )
+    {
+      m  *= 1.05;
+    }
+
+    // FIXME: Somehow he gains three times as much from mastery as expected?
+    m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * o -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 ) * 3;
 
     return m;
   }
