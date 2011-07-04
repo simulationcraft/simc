@@ -4399,7 +4399,7 @@ void warlock_t::init_actions()
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
       if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
-      if ( level >= 50) action_list_str += "/summon_doomguard";
+      if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( level >= 75) action_list_str += "/shadowflame";
       if ( talent_bane -> rank() == 3 )
@@ -4446,7 +4446,7 @@ void warlock_t::init_actions()
         action_list_str += "/soul_fire,if=buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)";
       }
       if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
-      if ( level >= 50) action_list_str += "/summon_doomguard";
+      if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
         action_list_str += "/soul_fire,if=buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd)&!in_flight";
@@ -4478,7 +4478,7 @@ void warlock_t::init_actions()
           action_list_str += "/soul_fire,if=buff.decimation.react|buff.soulburn.up";
         }
       }
-      if ( level >= 50) action_list_str += "/summon_doomguard,if=buff.metamorphosis.down";
+      if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
       action_list_str += "/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down";
       if ( glyphs.imp -> ok() ) action_list_str += "&buff.demon_soul_imp.down";
       else if ( glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_succubus.down";
