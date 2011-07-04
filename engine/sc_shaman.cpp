@@ -1086,18 +1086,20 @@ static void trigger_rolling_thunder ( spell_t* s )
 
 // trigger_static_shock =============================================
 
-static void trigger_static_shock ( attack_t* a )
+static bool trigger_static_shock ( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
 
   if ( ! p -> buffs_lightning_shield -> stack() )
-    return;
+    return false;
   
   if ( p -> rng_static_shock -> roll( p -> talent_static_shock -> proc_chance() ) )
   {
     p -> active_lightning_charge -> execute();
     p -> procs_static_shock -> occur();
+    return true;
   }
+  return false;
 }
 
 // =========================================================================
@@ -1785,7 +1787,8 @@ struct stormstrike_t : public shaman_attack_t
       stormstrike_mh -> execute();
       if ( stormstrike_oh ) stormstrike_oh -> execute();
 
-      trigger_static_shock( this );
+      bool shock = trigger_static_shock( this );
+      if ( !shock && stormstrike_oh ) trigger_static_shock( this );
     }
   }
 };
