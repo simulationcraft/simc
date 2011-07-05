@@ -18,7 +18,7 @@ actions+=/snapshot_stats
 actions+=/use_item,name=moonwell_chalice
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
-actions+=/metamorphosis
+actions+=/metamorphosis,if=buff.moonwell_chalice.up
 actions+=/demon_soul
 actions+=/immolation_aura,if=buff.metamorphosis.remains>10
 actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react

@@ -5768,13 +5768,14 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
   {
     if ( action_list_str.size() > 0 )
     {
-      std::vector<std::string> splits;
-      int num_splits = util_t::string_split( splits, action_list_str, "/" );
-      for ( int i=0; i < num_splits; i++ )
+      int i = 0;
+      for ( action_t* a = action_list; a; a = a -> next )
       {
+        if ( a -> signature_str.empty() ) continue;
         profile_str += "actions";
         profile_str += i ? "+=/" : "=";
-        profile_str += splits[ i ] + term;
+        profile_str += a -> signature_str + term;
+        i++;
       }
     }
   }
