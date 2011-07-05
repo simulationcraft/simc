@@ -2266,6 +2266,7 @@ struct sim_t
   double      target_death_pct;
   int         target_level;
   std::string target_race;
+  int         target_adds;
 
   // Data access
   dbc_t       dbc;

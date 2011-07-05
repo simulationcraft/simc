@@ -10,6 +10,54 @@
 // ==========================================================================
 
 
+struct adds_event_t : public raid_event_t
+{
+  int count;
+  double health;
+  adds_event_t( sim_t* s, const std::string& options_str ) :
+    raid_event_t( s, "adds" ), count(1), health( 100000 )
+  {
+    option_t options[] =
+    {
+      { "count", OPT_INT, &count },
+      { "health", OPT_FLT, &health },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    for ( pet_t* pet = sim -> target -> pet_list; pet; pet = pet -> next_pet )
+    {
+      pet -> resource_base[ RESOURCE_HEALTH ] = health;
+    }
+    if ( count > sim -> target_adds )
+    {
+      sim -> target_adds = count;
+    }
+  }
+  virtual void start()
+  {
+    raid_event_t::start();
+    int i = 0;
+    for ( pet_t* pet = sim -> target -> pet_list; pet; pet = pet -> next_pet )
+    {
+      if ( i >= count ) continue;
+      pet -> summon();
+      i++;
+    }
+  }
+  virtual void finish()
+  {
+    int i = 0;
+    for ( pet_t* pet = sim -> target -> pet_list; pet; pet = pet -> next_pet )
+    {
+      if ( i >= count ) continue;
+      pet -> dismiss();
+      i++;
+    }
+    raid_event_t::finish();
+  }
+};
+
 // Casting ==================================================================
 
 struct casting_event_t : public raid_event_t
@@ -495,6 +543,7 @@ raid_event_t* raid_event_t::create( sim_t* sim,
                                     const std::string& name,
                                     const std::string& options_str )
 {
+  if ( name == "adds"         ) return new         adds_event_t( sim, options_str );
   if ( name == "casting"      ) return new      casting_event_t( sim, options_str );
   if ( name == "distraction"  ) return new  distraction_event_t( sim, options_str );
   if ( name == "invul"        ) return new invulnerable_event_t( sim, options_str );
