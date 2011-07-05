@@ -615,12 +615,14 @@ struct priest_heal_t : public heal_t
 {
   struct divine_aegis_t : public priest_absorb_t
   {
+    double shield_multiple;
     divine_aegis_t( player_t* player ) :
       priest_absorb_t( "divine_aegis", player, 47753 )
     {
       proc             = true;
       background       = true;
       direct_power_mod = 0;
+      shield_multiple  = player -> cast_priest() -> talents.divine_aegis -> effect1().percent();
     }
   };
 
@@ -785,8 +787,8 @@ struct priest_heal_t : public heal_t
     // Divine Aegis
     if ( da && travel_result == RESULT_CRIT )
     {
-      da -> base_dd_min = travel_dmg * 0.3;
-      da -> base_dd_max = travel_dmg * 0.3;
+      da -> base_dd_min = travel_dmg * da -> shield_multiple;
+      da -> base_dd_max = travel_dmg * da -> shield_multiple;
       da -> heal_target.clear();
       da -> heal_target.push_back( t );
       da -> execute();
@@ -3361,6 +3363,8 @@ struct prayer_of_healing_t : public priest_heal_t
       glyph = new glyph_prayer_of_healing_t( p );
       add_child( glyph );
     }
+
+    if ( da != NULL ) da -> shield_multiple *= 2;
   }
 
   virtual void execute()
@@ -3427,8 +3431,8 @@ struct prayer_of_healing_t : public priest_heal_t
     // Divine Aegis
     if ( da && travel_result != RESULT_CRIT )
     {
-      da -> base_dd_min = travel_dmg * 0.3;
-      da -> base_dd_max = travel_dmg * 0.3;
+      da -> base_dd_min = travel_dmg * da -> shield_multiple / 2;
+      da -> base_dd_max = travel_dmg * da -> shield_multiple / 2;
       da -> heal_target.clear();
       da -> heal_target.push_back( t );
       da -> execute();
