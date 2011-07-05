@@ -61,6 +61,8 @@ tabard=guild_tabard,ilevel=1
 # main_hand=elementium_fang,heroic=1,weapon=sword_2.60speed_745min_1385max
 # ranged=themios_the_darkbringer,weapon=bow_2.90speed_1265min_2350max
 
+infinite_health=0
+
 priest=Warrior_Tank_Healer
 queue_lag=0.2
 queue_lag_stddev=1.0
