@@ -13,9 +13,6 @@ copy=theralions_mirror
 trinket1=theralions_mirror
 modify_action=summon_doomguard,if=buff.theralions_mirror.up
 
-copy=Hrune_of_zeth
-trinket1=rune_of_zeth,heroic=1
-
 copy=witching_hourglass
 trinket1=witching_hourglass,heroic=1
 
