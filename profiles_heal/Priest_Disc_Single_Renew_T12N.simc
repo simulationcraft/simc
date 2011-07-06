@@ -8,7 +8,7 @@ role=heal
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
 talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
-glyphs=inner_fire/mass_dispel/levitate/power_word_shield/renew/penance
+glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/renew
 actions=food,type=seafood_magnifique_feast
 actions+=/fortitude
 actions+=/inner_fire
