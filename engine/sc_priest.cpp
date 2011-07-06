@@ -516,27 +516,25 @@ struct priest_spell_t : public spell_t
     if ( p -> atonement_nc && p -> atonement_c )
     {
       double atonement_dmg = damage * p -> talents.atonement -> effect1().percent();
+      spell_t* atonement = p -> atonement_nc;
+      double cap = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
+
       if ( result == RESULT_CRIT )
       {
-        // Assuming there is no cap for crits, since it's not clear how much it would be.
-        p -> atonement_c -> base_dd_min = atonement_dmg;
-        p -> atonement_c -> base_dd_max = atonement_dmg;
-        p -> atonement_c -> round_base_dmg = false;
-        p -> atonement_c -> execute();
+        atonement = p -> atonement_c;
+        // FIXME: Crits in 4.1 capped at 150% of the non-crit cap. This may
+        //        be changed to 200% in 4.2 along with the general heal
+        //        crit multiplier change.
+        cap *= 1.5;
       }
-      else
-      {
-        // Hotfix Cap from 05.01.2011
-        if ( atonement_dmg > p -> resource_max[ RESOURCE_HEALTH ] * 0.3 )
-        {
-          atonement_dmg = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
-        }
 
-        p -> atonement_nc -> base_dd_min = atonement_dmg;
-        p -> atonement_nc -> base_dd_max = atonement_dmg;
-        p -> atonement_nc -> round_base_dmg = false;
-        p -> atonement_nc -> execute();
-      }
+      if ( atonement_dmg > cap )
+        atonement_dmg = cap;
+
+      atonement -> base_dd_min = atonement_dmg;
+      atonement -> base_dd_max = atonement_dmg;
+      atonement -> round_base_dmg = false;
+      atonement -> execute();
     }
   }
 
@@ -622,7 +620,10 @@ struct priest_heal_t : public heal_t
       proc             = true;
       background       = true;
       direct_power_mod = 0;
-      shield_multiple  = player -> cast_priest() -> talents.divine_aegis -> effect1().percent();
+
+      priest_t* priest = player -> cast_priest();
+      assert( priest -> talents.divine_aegis -> ok() );
+      shield_multiple  = priest -> talents.divine_aegis -> effect1().percent();
     }
   };
 
@@ -2725,44 +2726,49 @@ struct chakra_t : public priest_spell_t
   }
 };
 
-// Smite non-crit Atonement Heal ============================================
+// Common base for atonement crit and non-crit heals
 
-struct atonement_nc_t : public priest_heal_t
+struct atonement_common_t : public priest_heal_t
 {
-  atonement_nc_t( player_t* player ) :
-    priest_heal_t( "atonement", player, 81751 )
+  atonement_common_t( player_t* player, int id ) :
+      priest_heal_t( "atonement", player, id )
   {
     proc       = true;
     background = true;
   }
+
+  virtual void player_buff()
+  {
+    priest_heal_t::player_buff();
+    priest_t* p = player -> cast_priest();
+
+    // Atonement does not scale with Twin Disciplines as of WoW 4.2
+    player_multiplier /= 1.0 + p -> constants.twin_disciplines_value;
+  }
+};
+
+// non-crit Atonement Heal ============================================
+
+struct atonement_nc_t : public atonement_common_t
+{
+  atonement_nc_t( player_t* player ) :
+    atonement_common_t( player, 81751 )
+  {}
 
   virtual void calculate_result()
   {
     result = RESULT_HIT;
   }
-
-  virtual void target_debuff( player_t* t, int dmg_type )
-  {
-    priest_heal_t::target_debuff( t, dmg_type );
-
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> bugs && t -> buffs.grace -> up() )
-      target_multiplier /= 1.0 + t -> buffs.grace -> value();
-  }
 };
 
-// Smite non-crit Atonement Heal ============================================
+// crit Atonement Heal ============================================
 
-struct atonement_c_t : public priest_heal_t
+struct atonement_c_t : public atonement_common_t
 {
   // Missusing ID 81751 for now, correct id is: 94472
   atonement_c_t( player_t* player ) :
-    priest_heal_t( "atonement", player, 81751 )
-  {
-    proc       = true;
-    background = true;
-  }
+    atonement_common_t( player, 81751 )
+  {}
 
   virtual void calculate_result()
   {
@@ -2772,16 +2778,6 @@ struct atonement_c_t : public priest_heal_t
   virtual double total_crit_bonus() SC_CONST
   {
     return 0;
-  }
-
-  virtual void target_debuff( player_t* t, int dmg_type )
-  {
-    priest_heal_t::target_debuff( t, dmg_type );
-
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> bugs && t -> buffs.grace -> up() )
-      target_multiplier /= 1.0 + t -> buffs.grace -> value();
   }
 };
 
