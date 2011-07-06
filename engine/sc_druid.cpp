@@ -4099,11 +4099,14 @@ struct typhoon_t : public druid_spell_t
 
     parse_options( NULL, options_str );
 
+    // Damage information is stored in effect 2's trigger spell
+    const spell_data_t* damage_spell = p -> dbc.spell( effect_trigger_spell( 2 ) );
+
     aoe                   = -1;
-    base_dd_min           = p -> dbc.effect_min( effect_id( 2 ), p -> level );
-    base_dd_max           = p -> dbc.effect_max( effect_id( 2 ), p -> level );
+    base_dd_min           = p -> dbc.effect_min( damage_spell -> effect_id( 2 ), p -> level );
+    base_dd_max           = p -> dbc.effect_max( damage_spell -> effect_id( 2 ), p -> level );
     base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect1().percent();
-    direct_power_mod      = p -> dbc.effect( effect_id( 2 ) ) -> coeff();
+    direct_power_mod      = damage_spell -> effect2().coeff();
     cooldown -> duration += p -> glyphs.monsoon -> mod_additive( P_COOLDOWN );
     base_cost            *= 1.0 + p -> glyphs.typhoon -> mod_additive( P_RESOURCE_COST );
   }
