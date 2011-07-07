@@ -735,7 +735,7 @@ struct priest_heal_t : public heal_t
 
     // Grace
     if ( p -> talents.grace -> ok() )
-      target_multiplier *= 1.0 + t -> buffs.grace -> stack() * p -> dbc.effect( p -> dbc.spell( p -> talents.grace -> effect_trigger_spell( 1 ) ) -> effect1().id() ) -> base_value() / 100.0;
+      target_multiplier *= 1.0 + t -> buffs.grace -> stack() * t -> buffs.grace -> value();
 
     // Test of Faith
     if ( p -> talents.test_of_faith -> rank() )
@@ -3571,6 +3571,8 @@ struct prayer_of_mending_t : public priest_heal_t
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
+
+    if ( da != NULL ) da -> shield_multiple *= 0;
   }
 
   virtual void player_buff()
