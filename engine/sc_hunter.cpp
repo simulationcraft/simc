@@ -666,6 +666,7 @@ struct hunter_attack_t : public attack_t
     tick_may_crit          = true;
     normalize_weapon_speed = true;
     consumes_tier12_4pc    = false;
+    dot_behavior      = DOT_REFRESH;
   }
   hunter_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
       attack_t( n, player, RESOURCE_FOCUS, s, t, special )
