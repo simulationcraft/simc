@@ -85,8 +85,8 @@ finger2=widows_kiss,id=71032,enchant=40agi,reforge=haste_hit
 trinket1=matrix_restabilizer,id=68994
 trinket2=ancient_petrified_seed,id=69001
 ranged=covenant_of_the_flame,id=71146,gems=40agi,reforge=crit_hit
-main_hand=obsidium_cleaver,id=71362,enchant=landslide
-off_hand=obsidium_cleaver,id=71362,enchant=landslide
+main_hand=gatecrasher,id=71312,enchant=landslide,reforge=exp_mastery
+off_hand=gatecrasher,id=71312,enchant=landslide,reforge=exp_mastery
 save=Shaman_Enhancement_T12N.simc
 
 shaman=Shaman_Elemental_T12H

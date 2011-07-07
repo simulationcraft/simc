@@ -52,25 +52,25 @@ finger2=widows_kiss,ilevel=378,quality=epic,stats=227agi_341sta_167haste_126mast
 trinket1=matrix_restabilizer,ilevel=384,quality=epic,stats=406agi
 trinket2=ancient_petrified_seed,ilevel=378,quality=epic,stats=383mastery,use=1277agi_15dur_60cd
 back=dreadfire_drape,ilevel=378,quality=epic,stats=695armor_212agi_341sta_95mastery_138hit,gems=40agi_40agi_20agi,enchant=22agi
-main_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
-off_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
+main_hand=gatecrasher,ilevel=378,quality=epic,stats=175agi_262sta_120crit_111exp,reforge=exp_mastery,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
+off_hand=gatecrasher,ilevel=378,quality=epic,stats=175agi_262sta_120crit_111exp,reforge=exp_mastery,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
 ranged=covenant_of_the_flame,ilevel=378,quality=epic,stats=128agi_192sta_88crit_81mastery,reforge=crit_hit,gems=40agi
 # Gear Summary
-# gear_strength=370
-# gear_agility=4819
+# gear_strength=20
+# gear_agility=5169
 # gear_stamina=6152
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=516
-# gear_hit_rating=1715
-# gear_crit_rating=227
+# gear_expertise_rating=650
+# gear_hit_rating=1505
+# gear_crit_rating=467
 # gear_haste_rating=721
-# gear_mastery_rating=2605
+# gear_mastery_rating=2447
 # gear_armor=15663
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1
 # tier12_4pc_melee=1
 # trinket1=matrix_restabilizer
-# main_hand=obsidium_cleaver,weapon=axe_2.60speed_1004min_1865max,enchant=landslide
-# off_hand=obsidium_cleaver,weapon=axe_2.60speed_1004min_1865max,enchant=landslide
+# main_hand=gatecrasher,weapon=axe_2.60speed_1004min_1865max,enchant=landslide
+# off_hand=gatecrasher,weapon=axe_2.60speed_1004min_1865max,enchant=landslide
