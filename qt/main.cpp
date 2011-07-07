@@ -1,3 +1,4 @@
+#include <QLocale>
 #include <QtGui/QApplication>
 #include "simulationcraftqt.h"
 #ifndef SIMC_NO_AUTOUPDATE
@@ -6,6 +7,7 @@
 
 int main(int argc, char *argv[])
 {
+  QLocale::setDefault( QLocale( "C" ) );
   thread_t::init();
   dbc_t::init();
 
