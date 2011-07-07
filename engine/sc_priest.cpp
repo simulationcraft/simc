@@ -735,7 +735,7 @@ struct priest_heal_t : public heal_t
 
     // Grace
     if ( p -> talents.grace -> ok() )
-      target_multiplier *= 1.0 + t -> buffs.grace -> value();
+      target_multiplier *= 1.0 + t -> buffs.grace -> stack() * p -> dbc.effect( p -> dbc.spell( p -> talents.grace -> effect_trigger_spell( 1 ) ) -> effect1().id() ) -> base_value() / 100.0;
 
     // Test of Faith
     if ( p -> talents.test_of_faith -> rank() )
