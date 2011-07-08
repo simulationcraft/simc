@@ -1486,12 +1486,12 @@ void SimulationCraftWindow::cmdLineReturnPressed()
     if( cmdLine->text().count( "battle.net" ) || 
         cmdLine->text().count( "wowarmory.com" ) )
     {
-      battleNetView->setUrl( QUrl( cmdLine->text() ) ); 
+      battleNetView->setUrl( QUrl::fromUserInput( cmdLine->text() ) ); 
       importTab->setCurrentIndex( TAB_BATTLE_NET );
     }
     else if( cmdLine->text().count( "chardev.org" ) )
     {
-      charDevView->setUrl( QUrl( cmdLine->text() ) ); 
+      charDevView->setUrl( QUrl::fromUserInput( cmdLine->text() ) ); 
       importTab->setCurrentIndex( TAB_CHAR_DEV );
     }
     else
