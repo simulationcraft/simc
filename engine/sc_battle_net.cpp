@@ -328,16 +328,11 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
     std::string data_item_str, id_str;
     xml_t::get_value( data_item_str, anchor_node, "data-item" );
-    // US/EU Battle.net profile format changed, data-item no longer contains i=<item_id>, it 
-    // needs to be extracted from the href of the anchor. 
-    if ( util_t::str_compare_ci( region, "us" ) || util_t::str_compare_ci( region, "eu" ) )
-    {
-      xml_t::get_value( id_str, anchor_node, "href" );
-      if ( id_str.rfind('/') != std::string::npos )
-        id_str = id_str.substr( id_str.rfind('/') + 1 );
-      else
-        id_str = "";
-    }
+    xml_t::get_value( id_str, anchor_node, "href" );
+    if ( id_str.rfind('/') != std::string::npos )
+      id_str = id_str.substr( id_str.rfind('/') + 1 );
+    else
+      id_str = "";
     
     std::vector<std::string> tokens;
     int num_tokens = util_t::string_split( tokens, data_item_str, "&=" );
