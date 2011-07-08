@@ -173,7 +173,7 @@ static QComboBox* createChoice( int count, ... )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 12 )
+  if( tokens.count() >= 13 )
   {
          versionChoice->setCurrentIndex( tokens[  0 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
@@ -186,6 +186,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
     armoryRegionChoice->setCurrentIndex( tokens[  8 ].toInt() );
       armorySpecChoice->setCurrentIndex( tokens[  9 ].toInt() );
      defaultRoleChoice->setCurrentIndex( tokens[ 10 ].toInt() );
+         latencyChoice->setCurrentIndex( tokens[ 11 ].toInt() );
   }
 
   QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup->buttons();
@@ -250,7 +251,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
     .arg(       versionChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
@@ -262,6 +263,7 @@ QString SimulationCraftWindow::encodeOptions()
     .arg(  armoryRegionChoice->currentIndex() )
     .arg(    armorySpecChoice->currentIndex() )
     .arg(   defaultRoleChoice->currentIndex() )
+    .arg(       latencyChoice->currentIndex() )
     ;
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
@@ -544,6 +546,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
   globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
+  globalsLayout->addRow(      "World Lag",       latencyChoice = createChoice( 3, "Low", "Medium", "High" ) );
   globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "HelterSkelter" ) );
@@ -938,6 +941,14 @@ void SimulationCraftWindow::createToolTips()
                            "Gory details are very gory.  No documentation will be forthcoming.\n"
                            "Due to the forced single iteration, no scale factor calculation." );
   
+  latencyChoice->setToolTip( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
+                             "It is currently used to extend the cooldown duration of user executable abilities "
+                             " that have a cooldown.\n"
+                             "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n"
+                             "    'Low'   : 100ms\n"
+                             "    'Medium': 300ms\n"
+                             "    'High'  : 500ms" );
+  
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
 }
@@ -1271,6 +1282,10 @@ QString SimulationCraftWindow::mergeOptions()
   {
     options += "dps_plot_iterations=1000\n";
   }
+  const char *world_lag[] = { "0.1", "0.3", "0.5" };
+  options += "default_world_lag=";
+  options += world_lag[ latencyChoice->currentIndex() ];
+  options += "\n";
   options += "max_time=" + fightLengthChoice->currentText() + "\n";
   options += "vary_combat_length=";
   const char *variance[] = { "0.0", "0.1", "0.2" };
