@@ -22,7 +22,6 @@ struct priest_t : public player_t
   buff_t* buffs_inner_fire;
   buff_t* buffs_inner_focus;
   buff_t* buffs_inner_will;
-  buff_t* buffs_weakened_soul;
 
   // Holy
   buff_t* buffs_chakra_pre;
@@ -823,11 +822,10 @@ struct priest_heal_t : public heal_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( p -> talents.strength_of_soul -> rank() && p -> buffs_weakened_soul -> up() )
-      p -> buffs_weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect1().base_value() );
+    if ( p -> talents.strength_of_soul -> rank() && t -> buffs.weakened_soul -> up() )
+      t -> buffs.weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect1().base_value() );
   }
 };
-
 
 // ==========================================================================
 // Pet Shadow Fiend
@@ -3000,7 +2998,7 @@ struct _heal_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
+    if ( t -> buffs.grace -> up() || t -> buffs.weakened_soul -> up() )
       player_crit += p -> talents.renewed_hope -> effect1().percent();
   }
 };
@@ -3085,7 +3083,7 @@ struct flash_heal_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
+    if ( t -> buffs.grace -> up() || t -> buffs.weakened_soul -> up() )
       player_crit += p -> talents.renewed_hope -> effect1().percent();
   }
 
@@ -3296,7 +3294,7 @@ struct greater_heal_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
+    if ( t -> buffs.grace -> up() || t -> buffs.weakened_soul -> up() )
       player_crit += p -> talents.renewed_hope -> effect1().percent();
   }
 
@@ -3714,7 +3712,6 @@ struct power_word_shield_t : public priest_absorb_t
     priest_t* p = player -> cast_priest();
 
     p -> buffs_borrowed_time -> trigger();
-    p -> buffs_weakened_soul -> trigger();
 
     // Rapture
     if ( p -> cooldowns_rapture -> remains() == 0 && p -> talents.rapture -> rank() )
@@ -3732,10 +3729,11 @@ struct power_word_shield_t : public priest_absorb_t
 
     priest_t* p = player -> cast_priest();
 
+    t -> buffs.weakened_soul -> trigger();
+
     // Glyph
     if ( glyph_pws )
     {
-
       glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = p -> glyphs.power_word_shield -> effect1().percent() * travel_dmg;
       glyph_pws -> heal_target.clear();
       glyph_pws -> heal_target.push_back( t );
@@ -3786,7 +3784,7 @@ struct penance_heal_tick_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( t -> buffs.grace -> up() || p -> buffs_weakened_soul -> up() )
+    if ( t -> buffs.grace -> up() || t -> buffs.weakened_soul -> up() )
       player_crit += p -> talents.renewed_hope -> effect1().percent();
   }
 };
@@ -4783,7 +4781,6 @@ void priest_t::init_buffs()
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
-  buffs_weakened_soul              = new buff_t( this,  6788, "weakened_soul" );
 
   // Holy
   buffs_chakra_pre                 = new buff_t( this, 14751, "chakra_pre" );
@@ -5388,8 +5385,8 @@ void player_t::priest_init( sim_t* sim )
     p -> buffs.fortitude      = new stat_buff_t( p, "fortitude",       STAT_STAMINA, floor( sim -> dbc.effect_average( sim -> dbc.spell( 79104 ) -> effect1().id(), sim -> max_player_level ) ), !p -> is_pet() );
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
     p -> buffs.inspiration    = new      buff_t( p, "inspiration", 1, 15.0, 0 );
+    p -> buffs.weakened_soul  = new      buff_t( p,  6788, "weakened_soul" );
   }
-
 }
 
 // player_t::priest_combat_begin =============================================

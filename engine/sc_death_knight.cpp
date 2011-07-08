@@ -3905,7 +3905,6 @@ struct unholy_frenzy_t : public spell_t
     update_ready();
     unholy_frenzy_target -> buffs.unholy_frenzy -> trigger( 1 );
   }
-
 };
 
 } // ANONYMOUS NAMESPACE ====================================================

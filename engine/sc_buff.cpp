@@ -572,8 +572,10 @@ void buff_t::extend_duration( player_t* p, double extra_seconds )
 
     if ( reschedule_time < 0 )
     {
+      // FIXME: If we're trying to extend it negatively, should it remove the debuff?
+      // Disc Priest with Strength of Soul to test
       if ( sim -> debug )
-        log_t::output( sim, "%s can't extend buff %s by %.1f seconds. New expiration would be in the past!",
+        log_t::output( sim, "%s can't decrease buff %s by %.1f seconds. New expiration would be in the past!",
                        p -> name(), name(), extra_seconds );
     }
     else
@@ -583,7 +585,7 @@ void buff_t::extend_duration( player_t* p, double extra_seconds )
       expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time );
 
       if ( sim -> debug )
-        log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
+        log_t::output( sim, "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
                        p -> name(), name(), extra_seconds, expiration -> occurs() );
     }
   }

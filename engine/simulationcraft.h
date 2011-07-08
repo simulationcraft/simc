@@ -3164,6 +3164,7 @@ struct player_t
     buff_t* tricks_of_the_trade;
     buff_t* unholy_frenzy;
     buff_t* volcanic_potion;
+    buff_t* weakened_soul;
     buff_t* wild_magic_potion_crit;
     buff_t* wild_magic_potion_sp;
     buff_t* blessing_of_ancient_kings;
