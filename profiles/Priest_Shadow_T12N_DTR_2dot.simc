@@ -49,7 +49,7 @@ wrists=firesoul_wristguards,type=cloth,ilevel=378,quality=epic,stats=608armor_22
 hands=fingers_of_incineration,type=cloth,ilevel=384,quality=epic,stats=898armor_300int_480sta_215crit_188haste,reforge=crit_mastery,gems=67int_10int,enchant=50haste
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int
 finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_185spi_127mastery,reforge=mastery_haste,gems=40int_10int
-trinket1=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_42mastery_10stack_10dur
+trinket1=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_39mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=rippling_flamewrath_drape,ilevel=378,quality=epic,stats=695armor_227int_341sta_162haste_133hit,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max

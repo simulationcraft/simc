@@ -48,7 +48,7 @@ hands=firehawk_gloves,type=cloth,ilevel=378,quality=epic,stats=869armor_282int_4
 finger1=crystal_prison_band,ilevel=378,quality=epic,stats=227int_341sta_162mastery_133crit,reforge=crit_hit,enchant=40int
 finger2=crystalline_brimstone_ring,ilevel=378,quality=epic,stats=227int_341sta_162hit_133mastery,enchant=40int
 trinket1=rune_of_zeth,ilevel=378,quality=epic,stats=383crit,use=1277int_15dur_60cd
-trinket2=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_42mastery_10stack_10dur
+trinket2=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_39mastery_10stack_10dur
 back=rippling_flamewrath_drape,ilevel=378,quality=epic,stats=695armor_227int_341sta_162haste_133hit,enchant=lightweave_embroidery
 main_hand=volcanospike,ilevel=378,quality=epic,stats=175int_262sta_105hit_123haste_2333sp,enchant=power_torrent,weapon=sword_1.60speed_309min_574max
 off_hand=molten_scream,ilevel=378,quality=epic,stats=227int_341sta_156crit_144hit,reforge=crit_mastery,enchant=40int
