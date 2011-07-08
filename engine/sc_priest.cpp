@@ -2070,12 +2070,11 @@ struct penance_t : public priest_spell_t
 
     parse_options( NULL, options_str );
 
-    harmful = false;
-    channeled         = true;
-    tick_zero         = true;
-
-    num_ticks         = 2;
-    base_tick_time    = 1.0;
+    harmful        = false;
+    channeled      = true;
+    tick_zero      = true;
+    num_ticks      = 2;
+    base_tick_time = 1.0;
 
     cooldown -> duration  += p -> glyphs.penance -> effect1().seconds();
 
@@ -3802,17 +3801,16 @@ struct penance_heal_t : public priest_heal_t
 
     parse_options( NULL, options_str );
 
-    may_crit = false;
-
-    channeled         = true;
-    tick_zero         = true;
-
-    num_ticks         = 2;
-    base_tick_time    = 1.0;
+    may_crit       = false;
+    channeled      = true;
+    tick_zero      = true;
+    num_ticks      = 2;
+    base_tick_time = 1.0;
+    hasted_ticks   = false;
 
     cooldown = player -> get_cooldown( "penance" );
-    cooldown -> duration = spell_id_t::cooldown();
-    cooldown -> duration  += p -> glyphs.penance -> effect1().seconds();
+    cooldown -> duration  = spell_id_t::cooldown();
+    cooldown -> duration += p -> glyphs.penance -> effect1().seconds();
 
     penance_tick = new penance_heal_tick_t( p );
   }
