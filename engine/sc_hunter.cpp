@@ -4068,9 +4068,8 @@ void hunter_t::armory_extensions( const std::string& region,
           ! js_t::get_value( pet_level,   pet_records[ i ], "level"    ) ||
           ! js_t::get_value( pet_family,  pet_records[ i ], "familyId" ) )
       {
-        sim -> errorf( "\nHunter %s unable to decode pet name/build/level/familyId\n", name() );
-        sim -> cancel();
-        return;
+        sim -> errorf( "\nHunter %s unable to decode pet name/build/level/familyId for pet %s\n", name(), pet_name.c_str() );
+        continue;
       }
 
       // Pets can have spaces in names, replace with underscore ..

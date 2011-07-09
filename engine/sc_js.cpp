@@ -129,6 +129,10 @@ static void parse_value( sim_t*                  sim,
       }
 
       token_type = parse_token( token_str, input, index );
+      
+      // Apparently Blizzard does not know what kind of pets Hunters have in their game
+      if ( token_type == ',' ) continue;
+
       parse_value( sim, child, token_type, token_str, input, index );
 
       token_type = parse_token( token_str, input, index );
