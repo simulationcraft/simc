@@ -47,7 +47,7 @@ hands=fingers_of_incineration,type=cloth,ilevel=384,quality=epic,stats=898armor_
 finger1=crystal_prison_band,ilevel=378,quality=epic,stats=227int_341sta_162mastery_133crit,reforge=crit_hit,enchant=40int
 finger2=crystalline_brimstone_ring,ilevel=378,quality=epic,stats=227int_341sta_162hit_133mastery,enchant=40int
 trinket1=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-trinket2=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_39mastery_10stack_10dur
+trinket2=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_42mastery_10stack_10dur
 back=rippling_flamewrath_drape,ilevel=378,quality=epic,stats=695armor_227int_341sta_162haste_133hit,enchant=50int
 main_hand=chelleys_sterilized_scalpel,ilevel=378,quality=epic,stats=2333sp_175int_262sta_118crit_113mastery,enchant=power_torrent,weapon=dagger_1.50speed_289min_538max
 off_hand=molten_scream,ilevel=378,quality=epic,stats=227int_341sta_156crit_144hit,reforge=crit_mastery,enchant=40int
