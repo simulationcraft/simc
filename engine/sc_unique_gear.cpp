@@ -1469,25 +1469,22 @@ static void register_blazing_power( item_t* item )
 
     struct blazing_power_heal_t : public heal_t
     {
-      bool heroic;
-
-      blazing_power_heal_t( player_t* p, bool h ) :
-        heal_t( "blazing_power", p, h ? 97136 : 96966 ), heroic( h )
+      blazing_power_heal_t( player_t* p, bool heroic ) :
+        heal_t( "blaze_of_life", p, heroic ? 97136 : 96966 )
       {
         trigger_gcd = 0;
         background  = true;
         may_miss = false;
         may_crit = true;
         callbacks = false;
-        base_crit = 0.05; // FIXME: needs confirmation
         init();
       }
-      virtual void player_buff() {}
     };
 
     struct blazing_power_callback_t : public action_callback_t
     {
       heal_t* heal;
+      cooldown_t* cd;
       proc_t* proc;
       rng_t* rng;
 
@@ -1496,6 +1493,8 @@ static void register_blazing_power( item_t* item )
       {
         proc = p -> get_proc( "blazing_power" );
         rng  = p -> get_rng ( "blazing_power" );
+        cd = p -> get_cooldown( "blazing_power_callback" );
+        cd -> duration = 45.0;
       }
 
       virtual void trigger( action_t* a, void* call_data )
@@ -1506,10 +1505,14 @@ static void register_blazing_power( item_t* item )
                ! a -> harmful   )
           return;
 
+        if ( cd -> remains() > 0 )
+          return;
+
         if ( rng -> roll( 0.10 ) )
         {
           heal -> execute();
           proc -> occur();
+          cd -> start();
         }
       }
     };
