@@ -4046,7 +4046,7 @@ void hunter_t::armory_extensions( const std::string& region,
     if( pos != std::string::npos ) cdata_str.erase( pos );
 
     js_node_t* pet_js = js_t::create( sim, cdata_str );
-    pet_js = js_t::get_node( pet_js, "Pets" );
+    pet_js = js_t::get_node( pet_js, "Pet.data" );
     if ( sim -> debug ) js_t::print( pet_js, sim -> output_file );
 
     if( ! pet_js )

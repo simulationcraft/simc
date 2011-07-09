@@ -56,7 +56,8 @@ static char parse_token( std::string&            token_str,
   if ( c == '{' || c == '}' ||
        c == '[' || c == ']' ||
        c == '(' || c == ')' ||
-       c == ',' || c == ':' )
+       c == ',' || c == ':' ||
+       c == '=' )
   {
     return c;
   }
@@ -209,6 +210,19 @@ static void parse_value( sim_t*                  sim,
   else if ( token_type == 'S' )
   {
     node -> value = token_str;
+    
+    std::string::size_type start = index;
+    token_type = parse_token( token_str, input, index );
+    
+    if ( token_type == '=' )
+    {
+      token_type = parse_token( token_str, input, index );
+      js_node_t* child = new js_node_t( node -> value );
+      node -> children.push_back( child );
+      parse_value( sim, child, token_type, token_str, input, index );
+    }
+    else
+      index = start;
   }
   else
   {
