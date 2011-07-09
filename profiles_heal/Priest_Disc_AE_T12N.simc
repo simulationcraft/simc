@@ -22,7 +22,7 @@ actions+=/power_infusion
 actions+=/inner_focus
 actions+=/prayer_of_mending
 actions+=/prayer_of_healing
-head=cowl_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_255spi_229mastery,reforge=mastery_crit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
+head=cowl_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_255spi_229mastery,reforge=mastery_crit,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit
 neck=heartstone_of_rhyolith,ilevel=378,quality=epic,stats=227int_341sta_162spi_133mastery,reforge=mastery_crit
 shoulders=mantle_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1043armor_282int_454sta_201spi_183haste,gems=20spi_20int_10int,enchant=50int_25haste
 chest=robes_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1391armor_368int_611sta_261spi_243mastery,gems=20int_20crit_20int_20spi_20int,enchant=20all
@@ -50,7 +50,7 @@ ranged=scorchvine_wand,ilevel=378,quality=epic,stats=128int_192sta_86spi_83maste
 # gear_haste_rating=1236
 # gear_mastery_rating=951
 # gear_armor=8717
-# meta_gem=burning_shadowspirit
+# meta_gem=ember_shadowspirit
 # tier12_2pc_heal=1
 # tier12_4pc_heal=1
 # trinket1=eye_of_blazing_power

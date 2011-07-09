@@ -24,7 +24,7 @@ actions+=/inner_focus
 actions+=/power_word_shield,if=buff.weakened_soul.down
 actions+=/penance_heal
 actions+=/greater_heal
-head=foo,id=71272,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
+head=foo,id=71272,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
 neck=foo,id=71012,reforge=mastery_crit
 shoulders=foo,id=71275,gems=20spi_20int_10int,enchant=50int_25haste
 back=foo,id=71229,enchant=lightweave_embroidery,reforge=mastery_crit
@@ -65,7 +65,7 @@ actions+=/archangel,if=buff.holy_evangelism.stack>=5
 actions+=/power_word_shield,if=buff.weakened_soul.down
 actions+=/holy_fire
 actions+=/smite
-head=foo,id=71272,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
+head=foo,id=71272,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
 neck=foo,id=71012,reforge=mastery_crit
 shoulders=foo,id=71275,gems=20spi_20int_10int,enchant=50int_25haste
 back=foo,id=71229,enchant=lightweave_embroidery,reforge=mastery_crit
@@ -106,7 +106,7 @@ actions+=/inner_focus
 actions+=/power_word_shield,if=buff.weakened_soul.down
 actions+=/penance_heal
 actions+=/greater_heal
-head=foo,id=71272,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
+head=foo,id=71272,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
 neck=foo,id=71012,reforge=mastery_crit
 shoulders=foo,id=71275,gems=20spi_20int_10int,enchant=50int_25haste
 back=foo,id=71229,enchant=lightweave_embroidery,reforge=mastery_crit
@@ -148,7 +148,7 @@ actions+=/inner_focus
 actions+=/power_word_shield,if=buff.weakened_soul.down
 actions+=/penance_heal
 actions+=/greater_heal
-head=foo,id=71528,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
+head=foo,id=71528,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
 neck=foo,id=71423,reforge=mastery_crit
 shoulders=foo,id=71531,gems=20spi_20int_10int,enchant=50int_25haste
 back=foo,id=71390,enchant=lightweave_embroidery,reforge=mastery_crit
@@ -186,7 +186,7 @@ actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/berserking
 actions+=/power_infusion
 actions+=/power_word_shield
-head=foo,id=71272,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
+head=foo,id=71272,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
 neck=foo,id=71012,reforge=mastery_crit
 shoulders=foo,id=71275,gems=20spi_20int_10int,enchant=50int_25haste
 back=foo,id=71229,enchant=lightweave_embroidery,reforge=mastery_crit
@@ -226,7 +226,7 @@ actions+=/power_infusion
 actions+=/inner_focus
 actions+=/prayer_of_mending
 actions+=/prayer_of_healing
-head=foo,id=71272,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
+head=foo,id=71272,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
 neck=foo,id=71012,reforge=mastery_crit
 shoulders=foo,id=71275,gems=20spi_20int_10int,enchant=50int_25haste
 back=foo,id=71229,enchant=lightweave_embroidery,reforge=mastery_crit
@@ -268,7 +268,7 @@ actions+=/power_word_shield,if=buff.weakened_soul.down
 actions+=/renew,if=!ticking|remains<tick_time
 actions+=/penance_heal
 actions+=/greater_heal
-head=foo,id=71272,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
+head=foo,id=71272,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit,reforge=mastery_crit
 neck=foo,id=71012,reforge=mastery_crit
 shoulders=foo,id=71275,gems=20spi_20int_10int,enchant=50int_25haste
 back=foo,id=71229,enchant=lightweave_embroidery,reforge=mastery_crit
