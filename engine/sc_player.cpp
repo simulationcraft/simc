@@ -379,6 +379,7 @@ player_t::player_t( sim_t*             s,
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   brain_lag( -1.0 ), brain_lag_stddev( -1.0 ),
   world_lag_override( false ), world_lag_stddev_override( false ),
+  events( 0 ),
   dbc( s -> dbc ),
   race_str( "" ), race( r ),
   // Haste
@@ -2739,6 +2740,7 @@ void player_t::reset()
   gcd_ready = 0;
 
   sleeping = 1;
+  events = 0;
 
   dmg_taken = 0;
 
@@ -2981,6 +2983,9 @@ void player_t::arise()
 
 void player_t::demise()
 {
+  // No point in demising anything if we're not even active
+  if ( sleeping == 1 ) return;
+
   if ( sim -> log )
     log_t::output( sim, "%s demises.", name() );
 

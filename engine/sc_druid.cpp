@@ -613,12 +613,6 @@ struct burning_treant_pet_t : public pet_t
     sleeping = 0;
   }
 
-  virtual void dismiss()
-  {
-    pet_t::dismiss();
-    sleeping = 1;
-  }
-
   virtual double composite_spell_crit() SC_CONST
   {
     return snapshot_crit;

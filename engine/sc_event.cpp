@@ -61,6 +61,27 @@ void event_t::deallocate( event_t* e )
   ::delete [] e2;
 }
 
+void event_t::cancel( event_t*& e ) 
+{
+  if ( e ) 
+  { 
+    if ( e -> player && ! e -> canceled ) e -> player -> events--;
+    e -> canceled = 1; 
+    e = 0; 
+  }
+}
+
+void event_t::early( event_t*& e )
+{ 
+  if ( e ) 
+  { 
+    if ( e -> player && ! e -> canceled ) e -> player -> events--;
+    e -> canceled = 1; 
+    e -> execute(); 
+    e = 0; 
+  }
+}
+
 // ==========================================================================
 // Player Ready Event
 // ==========================================================================

@@ -761,13 +761,6 @@ struct warlock_main_pet_t : public warlock_pet_t
     o -> active_pet = 0;
   }
 
-  virtual void demise()
-  {
-    warlock_t* o = owner -> cast_warlock();
-    warlock_pet_t::demise();
-    o -> active_pet = 0;
-  }
-
   virtual double composite_attack_expertise() SC_CONST
   {
     return owner -> spell_hit * 26.0 / 17.0;
@@ -814,13 +807,13 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 
   virtual void summon( double duration=0 )
   {
+    reset();
     warlock_pet_t::summon( duration );
     // Guardians use snapshots
     snapshot_crit = owner -> composite_spell_crit();
     snapshot_haste = owner -> composite_spell_haste();
     snapshot_sp = owner -> composite_spell_power( SCHOOL_MAX ); // Get the max SP for simplicity
     snapshot_mastery = owner -> composite_mastery();
-    reset();
   }
 
   virtual double composite_attack_crit() SC_CONST
@@ -1813,13 +1806,6 @@ struct fiery_imp_pet_t : public pet_t
     {
       snapshot_crit = 0.00; // Rough guess
     }
-    sleeping = 0;
-  }
-
-  virtual void dismiss()
-  {
-    pet_t::dismiss();
-    sleeping = 1;
   }
 
   virtual double composite_spell_crit() SC_CONST

@@ -2625,8 +2625,8 @@ struct event_t
   virtual void reschedule( double new_time );
   virtual void execute() { util_t::printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
   virtual ~event_t() {}
-  static void cancel( event_t*& e ) { if ( e ) { e -> canceled = 1;                 e=0; } }
-  static void  early( event_t*& e ) { if ( e ) { e -> canceled = 1; e -> execute(); e=0; } }
+  static void cancel( event_t*& e );
+  static void  early( event_t*& e );
   // Simple free-list memory manager.
   static void* operator new( size_t, sim_t* );
   static void* operator new( size_t ) throw();  // DO NOT USE!
@@ -2904,6 +2904,8 @@ struct player_t
   double      world_lag, world_lag_stddev;
   double      brain_lag, brain_lag_stddev;
   bool        world_lag_override, world_lag_stddev_override;
+
+  int    events;
 
   // Data access
   dbc_t       dbc;

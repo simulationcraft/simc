@@ -737,8 +737,13 @@ void sim_t::add_event( event_t* e,
 
   events_remaining++;
   if ( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
+  if ( e -> player ) e -> player -> events++;
 
-  if ( debug ) log_t::output( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
+  if ( debug )
+  {
+    log_t::output( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
+    if ( e -> player ) log_t::output( this, "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> events );
+  }
 }
 
 // sim_t::reschedule_event ====================================================
@@ -788,6 +793,14 @@ void sim_t::flush_events()
   {
     while ( event_t* e = timing_wheel[ i ] )
     {
+      if ( e -> player && ! e -> canceled )
+      {
+        // Make sure we dont recancel events, although it should 
+        // not technically matter
+        e -> canceled = 1;
+        e -> player -> events--;
+        assert( e -> player -> events >= 0 );
+      }
       timing_wheel[ i ] = e -> next;
       delete e;
     }
@@ -803,16 +816,25 @@ void sim_t::flush_events()
 
 void sim_t::cancel_events( player_t* p )
 {
-  for ( int i=0; i < wheel_size; i++ )
+  if ( p -> events <= 0 ) return;
+
+  if ( debug ) log_t::output( this, "Canceling events for player %s, events to cancel %d", p -> name(), p -> events );
+
+  for ( int i=0; i < wheel_size && p -> events > 0; i++ )
   {
-    for ( event_t* e = timing_wheel[ i ]; e; e = e -> next )
+    for ( event_t* e = timing_wheel[ i ]; e && p -> events > 0; e = e -> next )
     {
       if ( e -> player == p )
       {
+        if ( ! e -> canceled )
+          p -> events--;
+
         e -> canceled = 1;
       }
     }
   }
+  
+  assert( p -> events == 0 );
 }
 
 // sim_t::combat ==============================================================
@@ -829,6 +851,13 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
+    // Perform actor event bookkeeping first
+    if ( e -> player && ! e -> canceled )
+    {
+      e -> player -> events--;
+      assert( e -> player -> events >= 0 );
+    }
+    
     if ( fixed_time || ( target -> resource_base[ RESOURCE_HEALTH ] == 0 ) )
     {
       // The first iteration is always time-limited since we do not yet have inferred health

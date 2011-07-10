@@ -158,7 +158,7 @@ void pet_t::summon( double duration )
       }
       virtual void execute()
       {
-        player -> cast_pet() -> dismiss();
+        if ( ! player -> sleeping ) player -> cast_pet() -> dismiss();
       }
     };
     new ( sim ) expiration_t( sim, this, duration );
