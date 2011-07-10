@@ -1052,10 +1052,21 @@ struct warlock_spell_t : public spell_t
 
     if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
 
-    // The target health percentage is ONLY contained in the Rank-1 version of the talent.
-    if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> spell(1).effect3().base_value() )
+    if ( p -> bugs )
     {
-      return p -> talent_deaths_embrace -> effect2().percent();
+      // Tested on live 2010/07/10 to be 35% as opposed to the tooltip's stated 25%
+      if ( s -> target -> health_percentage() <= 35 )
+      {
+        return p -> talent_deaths_embrace -> effect2().percent();
+      }
+    }
+    else
+    {
+      // The target health percentage is ONLY contained in the Rank-1 version of the talent.
+      if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> spell(1).effect3().base_value() )
+      {
+        return p -> talent_deaths_embrace -> effect2().percent();
+      }
     }
 
     return 0;
@@ -1266,14 +1277,10 @@ struct imp_pet_t : public warlock_main_pet_t
         // Glyph is additive with orc racial
         player_multiplier /= 1.05;
         player_multiplier *= 1.05 + o -> glyphs.imp -> base_value();
-        // Since 4.1 there's a bug causing the imp to benefit twice from the orc racial and the glyph
-        if ( o -> bugs ) player_multiplier *= 1.05 * ( 1.0 + o -> glyphs.imp -> base_value() );
       }
       else
       {
         player_multiplier *= 1.0 + o -> glyphs.imp -> base_value();
-        // Since 4.1 there's a bug causing the imp to benefit twice from the orc racial and the glyph
-        if ( o -> bugs ) player_multiplier *= 1.0 + o -> glyphs.imp -> base_value();
       }
     }
 
