@@ -864,6 +864,9 @@ void sim_t::combat( int iteration )
 
       if ( current_time > expected_time * ( 1 - target_death_pct / 100.0 ) )
       {
+        // Set this last event as canceled, so asserts dont fire when odd things happen at the 
+        // tail-end of the simulation iteration
+        e -> canceled = 1;
         delete e;
         break;
       }
@@ -873,6 +876,9 @@ void sim_t::combat( int iteration )
       if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
       {
         if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
+        // Set this last event as canceled, so asserts dont fire when odd things happen at the 
+        // tail-end of the simulation iteration
+        e -> canceled = 1;
         delete e;
         break;
       }
@@ -880,6 +886,9 @@ void sim_t::combat( int iteration )
       if (  target -> resource_current[ RESOURCE_HEALTH ] / target -> resource_max[ RESOURCE_HEALTH ] <= target_death_pct / 100.0 )
       {
         if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
+        // Set this last event as canceled, so asserts dont fire when odd things happen at the 
+        // tail-end of the simulation iteration
+        e -> canceled = 1;
         delete e;
         break;
       }
