@@ -572,7 +572,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 0.25 ),
   current_time( 0 ), max_time( 450 ), expected_time( 0 ), vary_combat_length( 0.2 ),
-  fixed_time( 0 ),
+  last_event( 0 ), fixed_time( 0 ),
   events_remaining( 0 ), max_events_remaining( 0 ),
   events_processed( 0 ), total_events_processed( 0 ),
   seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
@@ -726,6 +726,8 @@ void sim_t::add_event( event_t* e,
     assert( 0 );
   }
 
+  if ( e -> time > last_event ) last_event = e -> time;
+
   uint32_t slice = ( uint32_t ) ( e -> time * wheel_granularity ) & wheel_mask;
 
   event_t** prev = &( timing_wheel[ slice ] );
@@ -820,16 +822,56 @@ void sim_t::cancel_events( player_t* p )
 
   if ( debug ) log_t::output( this, "Canceling events for player %s, events to cancel %d", p -> name(), p -> events );
 
-  for ( int i=0; i < wheel_size && p -> events > 0; i++ )
-  {
-    for ( event_t* e = timing_wheel[ i ]; e && p -> events > 0; e = e -> next )
-    {
-      if ( e -> player == p )
-      {
-        if ( ! e -> canceled )
-          p -> events--;
+  int begin_slice = ( uint32_t ) ( current_time * wheel_granularity ) & wheel_mask,
+        end_slice = ( uint32_t ) ( last_event * wheel_granularity ) & wheel_mask;
 
-        e -> canceled = 1;
+  // Loop only partial wheel, [current_time..last_event], as that's the range where there
+  // are events for actors in the sim
+  if ( begin_slice <= end_slice )
+  {
+    for ( int i = begin_slice; i <= end_slice && p -> events > 0; i++ )
+    {
+      for ( event_t* e = timing_wheel[ i ]; e && p -> events > 0; e = e -> next )
+      {
+        if ( e -> player == p )
+        {
+          if ( ! e -> canceled )
+            p -> events--;
+
+          e -> canceled = 1;
+        }
+      }
+    }
+  }
+  // Loop only partial wheel in two places, as the wheel has wrapped around, but simulation 
+  // current time is still at the tail-end, [begin_slice..wheel_size[ and [0..last_event]
+  else
+  {
+    for ( int i = begin_slice; i < wheel_size && p -> events > 0; i++ )
+    {
+      for ( event_t* e = timing_wheel[ i ]; e && p -> events > 0; e = e -> next )
+      {
+        if ( e -> player == p )
+        {
+          if ( ! e -> canceled )
+            p -> events--;
+
+          e -> canceled = 1;
+        }
+      }
+    }
+
+    for ( int i = 0; i <= end_slice && p -> events > 0; i++ )
+    {
+      for ( event_t* e = timing_wheel[ i ]; e && p -> events > 0; e = e -> next )
+      {
+        if ( e -> player == p )
+        {
+          if ( ! e -> canceled )
+            p -> events--;
+
+          e -> canceled = 1;
+        }
       }
     }
   }
@@ -921,7 +963,7 @@ void sim_t::reset()
 {
   if ( debug ) log_t::output( this, "Reseting Simulator" );
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
-  current_time = id = 0;
+  current_time = id = last_event = 0;
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> reset();

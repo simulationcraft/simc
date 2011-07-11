@@ -2246,7 +2246,7 @@ struct sim_t
     // Latency
   double      world_lag, world_lag_stddev;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
-  double      current_time, max_time, expected_time, vary_combat_length;
+  double      current_time, max_time, expected_time, vary_combat_length, last_event;
   int         fixed_time;
   int64_t     events_remaining, max_events_remaining;
   int64_t     events_processed, total_events_processed;
