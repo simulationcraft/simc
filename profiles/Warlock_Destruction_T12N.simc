@@ -21,7 +21,6 @@ actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=
 actions+=/demon_soul
 actions+=/soulburn,if=buff.bloodlust.down
 actions+=/soul_fire,if=buff.soulburn.up
-actions+=/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8
 actions+=/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react
 actions+=/conflagrate
 actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react

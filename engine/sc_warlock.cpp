@@ -4264,9 +4264,9 @@ void warlock_t::init_gains()
   gains_fel_armor         = get_gain( "fel_armor"         );
   gains_felhunter         = get_gain( "felhunter"         );
   gains_life_tap          = get_gain( "life_tap"          );
+  gains_mana_feed         = get_gain( "mana_feed"         );
   gains_soul_leech        = get_gain( "soul_leech"        );
   gains_soul_leech_health = get_gain( "soul_leech_health" );
-  gains_mana_feed         = get_gain( "mana_feed"         );
 }
 
 // warlock_t::init_uptimes ==================================================
@@ -4286,11 +4286,12 @@ void warlock_t::init_uptimes()
 void warlock_t::init_procs()
 {
   player_t::init_procs();
-  procs_impending_doom   = get_proc( "impending_doom" );
-  procs_empowered_imp    = get_proc( "empowered_imp"  );
-  procs_shadow_trance    = get_proc( "shadow_trance"  );
+
   procs_ebon_imp         = get_proc( "ebon_imp"       );
+  procs_empowered_imp    = get_proc( "empowered_imp"  );
   procs_fiery_imp        = get_proc( "fiery_imp"      );
+  procs_impending_doom   = get_proc( "impending_doom" );
+  procs_shadow_trance    = get_proc( "shadow_trance"  );
 }
 
 // warlock_t::init_rng ======================================================
@@ -4299,14 +4300,14 @@ void warlock_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_soul_leech              = get_rng( "soul_leech"             );
-  rng_everlasting_affliction  = get_rng( "everlasting_affliction" );
-  rng_pandemic                = get_rng( "pandemic"               );
   rng_cremation               = get_rng( "cremation"              );
-  rng_impending_doom          = get_rng( "impending_doom"         );
-  rng_siphon_life             = get_rng( "siphon_life"            );
   rng_ebon_imp                = get_rng( "ebon_imp_proc"          );
+  rng_everlasting_affliction  = get_rng( "everlasting_affliction" );
   rng_fiery_imp               = get_rng( "fiery_imp_proc"         );
+  rng_impending_doom          = get_rng( "impending_doom"         );
+  rng_pandemic                = get_rng( "pandemic"               );
+  rng_siphon_life             = get_rng( "siphon_life"            );
+  rng_soul_leech              = get_rng( "soul_leech"             );
 }
 
 // warlock_t::init_actions ==================================================
@@ -4401,7 +4402,7 @@ void warlock_t::init_actions()
       action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
-      if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
+      if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
       if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( level >= 75) action_list_str += "/shadowflame";
@@ -4438,7 +4439,7 @@ void warlock_t::init_actions()
       {
         action_list_str += "/soul_fire,if=buff.soulburn.up";
       }
-      if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8";
+      if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8";
       action_list_str += "/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
       if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
@@ -4466,7 +4467,7 @@ void warlock_t::init_actions()
       if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
       action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
-      if ( level >= 81 ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
+      if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
       if ( level >= 75 ) action_list_str += "/shadowflame";
       if ( level >= 85 && glyphs.imp -> ok() ) action_list_str += "/demon_soul";
       if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";

@@ -23,7 +23,6 @@ actions+=/corruption,if=(!ticking|remains<tick_time)&miss_react
 actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
 actions+=/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react
 actions+=/haunt
-actions+=/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8
 actions+=/summon_doomguard,if=time>10
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
 actions+=/shadowflame
