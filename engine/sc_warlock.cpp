@@ -3563,6 +3563,8 @@ struct dark_intent_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
+    harmful = false;
+
     if ( target_str.empty() )
     {
       dark_intent_target = p;
