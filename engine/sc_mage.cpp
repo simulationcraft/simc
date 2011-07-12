@@ -3823,7 +3823,6 @@ void player_t::mage_init( sim_t* sim )
     p -> debuffs.critical_mass   = new debuff_t( p, 22959, "critical_mass" );
     p -> debuffs.slow            = new debuff_t( p, 31589, "slow" );
   }
-
 }
 
 // player_t::mage_combat_begin ==============================================
