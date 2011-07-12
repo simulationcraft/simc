@@ -116,6 +116,7 @@ struct shaman_t : public player_t
   rng_t* rng_static_shock;
   rng_t* rng_t12_2pc_caster;
   rng_t* rng_windfury_weapon;
+  rng_t* rng_windfury_delay;
 
   // Talents
 
@@ -1038,6 +1039,29 @@ static void trigger_flametongue_weapon( attack_t* a )
 
 // trigger_windfury_weapon ================================================
 
+struct windfury_delay_event_t : public event_t
+{
+  attack_t* wf;
+  double delay;
+
+  windfury_delay_event_t( sim_t* sim, player_t* p, attack_t* wf, double delay ) : 
+    event_t( sim, p ), wf( wf ), delay( delay )
+  {
+    name = "windfury_delay_event";
+    sim -> add_event( this, delay );
+  }
+
+  virtual void execute()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    p -> procs_windfury -> occur();
+    wf -> execute();
+    wf -> execute();
+    wf -> execute();
+  }
+};
+
 static void trigger_windfury_weapon( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
@@ -1052,12 +1076,10 @@ static void trigger_windfury_weapon( attack_t* a )
 
   if ( p -> rng_windfury_weapon -> roll( wf -> proc_chance() ) )
   {
-    p -> cooldowns_windfury_weapon -> start( 3.0 );
+    p -> cooldowns_windfury_weapon -> start( p -> rng_windfury_delay -> gauss( 3.0, 0.3 ) );
 
-    p -> procs_windfury -> occur();
-    wf -> execute();
-    wf -> execute();
-    wf -> execute();
+    // Delay windfury by some time, up to about a second
+    new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, p -> rng_windfury_delay -> gauss( 0.75, 0.25 ) );
   }
 }
 
@@ -4091,6 +4113,7 @@ void shaman_t::init_rng()
   rng_searing_flames       = get_rng( "searing_flames"       );
   rng_static_shock         = get_rng( "static_shock"         );  
   rng_t12_2pc_caster       = get_rng( "t12_2pc_caster"       );
+  rng_windfury_delay       = get_rng( "windfury_delay"       );
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
 }
 
