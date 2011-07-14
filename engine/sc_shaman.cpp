@@ -29,6 +29,9 @@ enum imbue_type_t { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
 
 struct shaman_t : public player_t
 {
+  double wf_delay;
+  double wf_delay_stddev;
+
   // Active
   action_t* active_lightning_charge;
   action_t* active_searing_flames_dot;
@@ -186,7 +189,8 @@ struct shaman_t : public player_t
   
   glyph_t* glyph_thunderstorm;
   
-  shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r )
+  shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r ),
+    wf_delay( 0.95 ), wf_delay_stddev( 0.25 )
   {
     if ( race == RACE_NONE ) race = RACE_TAUREN;
 
@@ -244,6 +248,7 @@ struct shaman_t : public player_t
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
+  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -1079,7 +1084,7 @@ static void trigger_windfury_weapon( attack_t* a )
     p -> cooldowns_windfury_weapon -> start( p -> rng_windfury_delay -> gauss( 3.0, 0.3 ) );
 
     // Delay windfury by some time, up to about a second
-    new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, p -> rng_windfury_delay -> gauss( 0.75, 0.25 ) );
+    new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, p -> rng_windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
   }
 }
 
@@ -3806,6 +3811,24 @@ void shaman_t::clear_debuffs()
   player_t::clear_debuffs();
   buffs_searing_flames -> expire();
 }
+
+// shaman_t::create_options =================================================
+
+void shaman_t::create_options()
+{
+  player_t::create_options();
+
+  option_t shaman_options[] =
+  {
+    { "wf_delay",        OPT_FLT,     &( wf_delay        ) },
+    { "wf_delay_stddev", OPT_FLT,     &( wf_delay_stddev ) },
+    { NULL,              OPT_UNKNOWN, NULL                 }
+  };
+
+  option_t::copy( options, shaman_options );
+
+}
+
 // shaman_t::create_action  =================================================
 
 action_t* shaman_t::create_action( const std::string& name,
