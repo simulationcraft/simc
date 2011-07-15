@@ -177,7 +177,7 @@ static bool parse_player( sim_t*             sim,
 
     if ( wowhead.empty() )
     {
-      if ( region == "cn" || region == "tw" )
+      if ( region == "cn" )
       {
         sim -> active_player = armory_t::download_player( sim, region, server, player_name, "active" );
       }
@@ -312,7 +312,7 @@ static bool parse_armory( sim_t*             sim,
       }
       if ( ! sim -> input_is_utf8 )
         sim -> input_is_utf8 = utf8::is_valid( player_name.begin(), player_name.end() ) && utf8::is_valid( server.begin(), server.end() );
-      if ( region == "cn" || region == "tw" )
+      if ( region == "cn" )
       {
         sim -> active_player = armory_t::download_player( sim, region, server, player_name, description );
       }
@@ -375,7 +375,7 @@ static bool parse_armory( sim_t*             sim,
     int player_type = PLAYER_NONE;
     if ( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
 
-    if ( region == "cn" || region == "tw" )
+    if ( region == "cn" )
     {
       return armory_t::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, cache );
     }

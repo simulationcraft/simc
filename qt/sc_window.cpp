@@ -1081,7 +1081,7 @@ void ImportThread::importBattleNet()
                 cpp_s   = server.toUtf8().constData(),
                 cpp_c   = character.toUtf8().constData(),
                 cpp_r   = region.toUtf8().constData();
-    if( cpp_r == "cn" || cpp_r == "tw" )
+    if( cpp_r == "cn" )
     {
       player = armory_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
     }
@@ -1787,7 +1787,7 @@ void SimulationCraftWindow::armoryRegionChanged( const QString& region )
 {
   QString importUrl = "http://" + region;
 
-  if( region == "cn" || region == "tw" )
+  if( region == "cn" )
   {
     importUrl += ".wowarmory.com";
   }

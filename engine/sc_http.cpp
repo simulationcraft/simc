@@ -106,6 +106,7 @@ static std::string build_request( std::string&   host,
              "Cookie: cookieLangId=en_US\r\n"
              // Skip arenapass 2011 advertisement .. can we please have a sensible
              // API soon?
+             "Cookie: int-WOW=1\r\n"
              "Cookie: int-WOW-arenapass2011=1\r\n"
              "Cookie: int-WOW-epic-savings-promo=1\r\n"
              "Connection: close\r\n"
@@ -126,6 +127,7 @@ static std::string build_request( std::string&   host,
              "Cookie: cookieLangId=en_US\r\n"
              // Skip arenapass 2011 advertisement .. can we please have a sensible
              // API soon?
+             "Cookie: int-WOW=1\r\n"
              "Cookie: int-WOW-arenapass2011=1\r\n"
              "Cookie: int-WOW-epic-savings-promo=1\r\n"
              "Connection: close\r\n"
@@ -433,6 +435,7 @@ bool http_t::download( std::string& result,
     wHeaders += L"Cookie: cookieLangId=en_US\r\n";
     // Skip arenapass 2011 advertisement .. can we please have a sensible
     // API soon?
+    wHeaders += L"Cookie: int-WOW=1\r\n";
     wHeaders += L"Cookie: int-WOW-arenapass2011=1\r\n";
     wHeaders += L"Cookie: int-WOW-epic-savings-promo=1\r\n";
 
