@@ -3147,6 +3147,7 @@ struct summon_pet_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     harmful = false;
     base_execute_time += p -> talent_master_summoner -> effect1().seconds();
+    base_cost         *= 1.0 + p -> talent_master_summoner -> effect2().percent();
   }
 
   summon_pet_t( const char* n, player_t* player, int id ) :
@@ -3156,6 +3157,7 @@ struct summon_pet_t : public warlock_spell_t
 
     harmful = false;
     base_execute_time += p -> talent_master_summoner -> effect1().seconds();
+    base_cost         *= 1.0 + p -> talent_master_summoner -> effect2().percent();
   }
 
   virtual void execute()
