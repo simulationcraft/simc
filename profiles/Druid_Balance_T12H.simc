@@ -51,7 +51,7 @@ wrists=glowing_wing_bracers,heroic=1,type=leather,ilevel=391,quality=epic,stats=
 hands=obsidian_arborweave_gloves,heroic=1,type=leather,ilevel=391,quality=epic,stats=1205armor_322int_513sta_231haste_202spi,gems=20int_20haste_10int,enchant=50haste
 finger1=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,reforge=mastery_haste
 finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit
-trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_45mastery_10stack_10dur
+trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_209int_344sta_153mastery_133haste,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
 main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max

@@ -49,7 +49,7 @@ finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_
 trinket1=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_39mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=rippling_flamewrath_drape,ilevel=378,quality=epic,stats=695armor_227int_341sta_162haste_133hit,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=404,quality=legendary,stats=459int_779sta_366hit_252haste_2973sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_2190min_4067max
 off_hand=empty
 ranged=trail_of_embers,ilevel=378,quality=epic,stats=128int_192sta_79hit_89haste
 # Gear Summary
@@ -68,4 +68,4 @@ ranged=trail_of_embers,ilevel=378,quality=epic,stats=128int_192sta_79hit_89haste
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
 # back=rippling_flamewrath_drape,enchant=lightweave_embroidery
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2190min_4067max,enchant=power_torrent

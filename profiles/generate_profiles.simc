@@ -1,4 +1,4 @@
-#!simc
+#!./simc 
 
 ##############################################################
 # Meta-profile to generate all the BiS profiles in one file. #

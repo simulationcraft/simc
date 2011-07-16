@@ -45,10 +45,10 @@ wrists=lava_line_wristbands,heroic=1,type=mail,ilevel=391,quality=epic,stats=119
 hands=erupting_volcanic_gloves,heroic=1,type=mail,ilevel=391,quality=epic,stats=1703armor_322int_513sta_225crit_208haste,reforge=crit_mastery,gems=40int
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,reforge=hit_mastery,gems=40int_10int,enchant=40int
 finger2=crystal_prison_band,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183mastery_150crit,reforge=crit_haste,enchant=40int
-trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_45mastery_10stack_10dur
+trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=404,quality=legendary,stats=459int_779sta_366hit_252haste_2973sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_2190min_4067max
 ranged=singed_plume_of_aviana,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_105spi_82haste,gems=40int
 # Gear Summary
 # gear_strength=20
@@ -66,4 +66,4 @@ ranged=singed_plume_of_aviana,heroic=1,ilevel=391,quality=epic,stats=145int_217s
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
 # back=rippling_flamewrath_drape,heroic=1,enchant=lightweave_embroidery
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2190min_4067max,enchant=power_torrent

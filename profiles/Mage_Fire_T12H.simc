@@ -44,7 +44,7 @@ hands=fingers_of_incineration,heroic=1,type=cloth,ilevel=397,quality=epic,stats=
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int,enchant=40int
 finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,reforge=mastery_crit,enchant=40int
 trinket1=rune_of_zeth,heroic=1,ilevel=391,quality=epic,stats=433crit,use=1441int_15dur_60cd
-trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_45mastery_10stack_10dur
+trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=lightweave_embroidery
 main_hand=firethorn_mindslicer,heroic=1,ilevel=391,quality=epic,stats=197int_296sta_100hit_150crit_2636sp,enchant=power_torrent,weapon=sword_1.70speed_370min_688max
 off_hand=molten_scream,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_176crit_162hit,reforge=crit_haste,enchant=40int

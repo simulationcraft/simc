@@ -52,7 +52,7 @@ finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int
 trinket1=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_1269.5nature_15%_10stack_2.5cd_chance
 trinket2=shard_of_woe,heroic=1,ilevel=379,quality=epic,use=1935haste_10dur_60cd
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=404,quality=legendary,stats=459int_779sta_366hit_252haste_2973sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_2190min_4067max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste
 # Gear Summary
 # gear_strength=20
@@ -70,4 +70,4 @@ ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hi
 # tier12_2pc_caster=1
 # trinket2=shard_of_woe,heroic=1
 # back=rippling_flamewrath_drape,heroic=1,enchant=lightweave_embroidery
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2190min_4067max,enchant=power_torrent

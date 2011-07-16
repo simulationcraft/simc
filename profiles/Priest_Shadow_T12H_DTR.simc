@@ -46,10 +46,10 @@ wrists=wristwraps_of_arrogant_doom,heroic=1,type=cloth,ilevel=391,quality=epic,s
 hands=fingers_of_incineration,heroic=1,type=cloth,ilevel=397,quality=epic,stats=961armor_341int_542sta_243crit_214haste,reforge=crit_spi,gems=67int_10int,enchant=50haste
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int
 finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_185spi_127mastery,reforge=mastery_haste,gems=40int_10int
-trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_45mastery_10stack_10dur
+trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_spi,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_haste,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=404,quality=legendary,stats=459int_779sta_366hit_252haste_2973sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_2190min_4067max
 off_hand=empty
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste
 # Gear Summary
@@ -68,4 +68,4 @@ ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hi
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
 # back=wings_of_flame,heroic=1,enchant=lightweave_embroidery
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2190min_4067max,enchant=power_torrent
