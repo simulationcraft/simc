@@ -373,7 +373,7 @@ player_t::player_t( sim_t*             s,
   potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
   pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
-  active_pets( 0 ), big_hitbox( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
+  active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
   reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ),
   // Latency
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
@@ -5511,15 +5511,6 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new ptr_expr_t( a );
   }
-  if ( name_str == "big_hitbox" )
-  {
-    struct big_hitbox_expr_t : public action_expr_t
-    {
-      big_hitbox_expr_t( action_t* a ) : action_expr_t( a, "big_hitbox", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> sim -> target -> big_hitbox  ? 1 : 0 ); return TOK_NUM; }
-    };
-    return new big_hitbox_expr_t( a );
-  }
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
   if ( splits[ 0 ] == "pet" )
@@ -6084,7 +6075,6 @@ void player_t::create_options()
     // Misc
     { "dtr_proc_chance",                      OPT_FLT,    &( dtr_proc_chance                          ) },
     { "dtr_base_proc_chance",                 OPT_FLT,    &( dtr_base_proc_chance                     ) },
-    { "big_hitbox",                           OPT_BOOL,   &( big_hitbox                               ) },
     { "skip_actions",                         OPT_STRING, &( action_list_skip                         ) },
     { "modify_action",                        OPT_STRING, &( modify_action                            ) },
     { "elixirs",                              OPT_STRING, &( elixirs_str                              ) },

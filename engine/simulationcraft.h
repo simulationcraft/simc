@@ -2259,7 +2259,6 @@ struct sim_t
   bool        input_is_utf8;
   std::vector<player_t*> actor_list;
   std::string main_target_str;
-  int         big_hitbox;
   double      dtr_proc_chance;
 
   // Target options
@@ -2894,7 +2893,6 @@ struct player_t
   bool        vengeance_enabled;
   double      vengeance_damage, vengeance_value, vengeance_max; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
   int         active_pets;
-  int         big_hitbox;
   double      dtr_proc_chance;
   double      dtr_base_proc_chance;
   double      reaction_mean,reaction_stddev,reaction_nu;

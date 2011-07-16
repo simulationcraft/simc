@@ -25,13 +25,11 @@ struct enemy_t : public player_t
     *last = this;
     next = 0;
 
-    big_hitbox = sim -> big_hitbox;
-
     create_talents();
     create_glyphs();
     create_options();
-
   }
+
 // target_t::combat_begin ====================================================
 
   virtual void combat_begin()
@@ -83,11 +81,9 @@ struct enemy_add_t : public pet_t
 {
   enemy_add_t( sim_t* s, player_t* o, const std::string& n, pet_type_t pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
-
   {
     type = ENEMY_ADD;
     create_options();
-    big_hitbox = 0;
   }
 
   virtual void init_actions()
@@ -413,7 +409,6 @@ void enemy_t::create_options()
 {
   option_t target_options[] =
   {
-    { "target_big_hitbox",                OPT_BOOL,   &( big_hitbox                        ) },
     { "target_health",                    OPT_FLT,    &( fixed_health                      ) },
     { "target_initial_health_percentage", OPT_FLT,    &( initial_health_percentage         ) },
     { "target_fixed_health_percentage",   OPT_FLT,    &( fixed_health_percentage           ) },
@@ -425,7 +420,6 @@ void enemy_t::create_options()
 
   player_t::create_options();
 }
-
 
 // enemy_t::create_add ======================================================
 

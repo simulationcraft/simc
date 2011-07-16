@@ -520,6 +520,8 @@ static bool parse_spell_query( sim_t*             sim,
   return sim -> spell_query > 0;
 }
 
+// parse_item_sources =======================================================
+
 static bool parse_item_sources( sim_t*             sim,
                                 const std::string& name,
                                 const std::string& value )
@@ -582,7 +584,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   default_region_str( "us" ),
   save_prefix_str( "save_" ), save_suffix_str( "" ),
   input_is_utf8( false ), main_target_str( "" ),
-  big_hitbox( 1 ), dtr_proc_chance( -1.0 ),
+  dtr_proc_chance( -1.0 ),
   target_death_pct( 0 ), target_level( -1 ), target_race( "" ), target_adds( 0 ),
   rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
   smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
@@ -609,12 +611,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   path_str += DIRECTORY_DELIMITER;
   path_str += "profiles_heal";
 
-  // Initialize the default item database source order, leave local item db to last for now
-  // until it has proven to be trustworthy
+  // Initialize the default item database source order
   const char* dbsources[] = { "local", "wowhead", "mmoc", "armory", "ptrhead" };
   item_db_sources = std::vector<std::string>( dbsources, dbsources + sizeof( dbsources ) / sizeof( const char* ) );
-
-
 
   scaling = new scaling_t( this );
   plot    = new    plot_t( this );
@@ -642,8 +641,6 @@ sim_t::sim_t( sim_t* p, int index ) :
 
     seed = parent -> seed;
   }
-
-
 }
 
 // sim_t::~sim_t ============================================================
@@ -1142,10 +1139,7 @@ bool sim_t::init()
   {
     if ( target_level >= 0 )
       t -> level = target_level;
-
-
   }
-
 
   if ( max_player_level < 0 )
   {
@@ -1178,7 +1172,7 @@ bool sim_t::init()
   return canceled ? false : true;
 }
 
-// sim_t::analyze ============================================================
+// compare_dps ==============================================================
 
 struct compare_dps
 {
@@ -1187,6 +1181,8 @@ struct compare_dps
     return l -> dps > r -> dps;
   }
 };
+
+// compare_name =============================================================
 
 struct compare_name
 {
@@ -1203,6 +1199,8 @@ struct compare_name
     return l -> name_str < r -> name_str;
   }
 };
+
+// sim_t::analyze_player ====================================================
 
 void sim_t::analyze_player( player_t* p )
 {
@@ -1241,7 +1239,6 @@ void sim_t::analyze_player( player_t* p )
     if ( add_stat & ! s -> quiet )
       p -> total_dmg += s -> total_dmg;
   }
-
 
   p -> dps = p -> total_seconds ? p -> total_dmg / p -> total_seconds : 0;
 
@@ -1321,13 +1318,11 @@ void sim_t::analyze_player( player_t* p )
   for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
     proc -> analyze( this );
 
-
   p -> timeline_dmg.clear();
   p -> timeline_dps.clear();
 
   p -> timeline_dmg.insert( p -> timeline_dmg.begin(), max_buckets, 0 );
   p -> timeline_dps.insert( p -> timeline_dps.begin(), max_buckets, 0 );
-
 
   for ( int i=0; i < num_stats; i++ )
   {
@@ -1421,7 +1416,6 @@ void sim_t::analyze_player( player_t* p )
       p -> dps_convergence_error[i] /= i;
       p -> dps_convergence_error[i] = sqrt( p -> dps_convergence_error[i] );
       p -> dps_convergence_error[i] = 2.0 * p -> dps_convergence_error[i] / sqrt ( ( float ) i );
-
     }
   }
 
@@ -1477,6 +1471,8 @@ void sim_t::analyze_player( player_t* p )
   p -> death_count_pct /= iterations;
   p -> death_count_pct *= 100.0;
 }
+
+// sim_t::analyze ===========================================================
 
 void sim_t::analyze()
 {
@@ -1568,7 +1564,6 @@ void sim_t::analyze()
     chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
     chart_t::dps_error          ( p -> dps_error_chart,                 p );
     chart_t::distribution_dps   ( p -> distribution_dps_chart,          p );
-
   }
 }
 
@@ -2198,7 +2193,6 @@ void sim_t::create_options()
     { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
     { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
     { "main_target",                      OPT_STRING, &( main_target_str                          ) },
-    { "big_hitbox",                       OPT_BOOL,   &( big_hitbox                               ) },
     { "default_dtr_proc_chance",          OPT_FLT,    &( dtr_proc_chance                          ) },
     { "target_death_pct",                 OPT_FLT,    &( target_death_pct                         ) },
     { "target_level",                     OPT_INT,    &( target_level                             ) },

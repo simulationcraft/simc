@@ -923,7 +923,7 @@ struct fire_elemental_pet_t : public pet_t
     owner_int = owner -> intellect();
     owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
 
-    fire_shield -> num_ticks = duration / fire_shield -> base_execute_time;
+    fire_shield -> num_ticks = ( int ) ( duration / fire_shield -> base_execute_time );
     fire_shield -> execute();
 
     cooldown_fire_nova -> start();
@@ -958,15 +958,14 @@ struct fire_elemental_pet_t : public pet_t
 
   virtual double composite_attack_hit() SC_CONST
   {
-      return owner -> composite_spell_hit();
+    return owner -> composite_spell_hit();
   }
 
   virtual double composite_attack_expertise() SC_CONST
   {
-      return owner -> composite_spell_hit() * 26.0 / 17.0; 
+    return owner -> composite_spell_hit() * 26.0 / 17.0; 
   }
-
-
+  
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
