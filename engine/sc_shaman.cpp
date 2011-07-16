@@ -3806,8 +3806,9 @@ struct unleash_flame_expiration_delay_t : public event_t
   unleash_flame_expiration_delay_t( sim_t* sim, player_t* p, buff_t* b ) : 
     event_t( sim, p ), buff( b )
   {
+    shaman_t* s = player -> cast_shaman();
     name = "unleash_flame_expiration_delay";
-    sim -> add_event( this, sim -> gauss( 0.3, 0.05 ) );
+    sim -> add_event( this, sim -> gauss( s -> uf_expiration_delay, s -> uf_expiration_delay_stddev ) );
   }
 
   virtual void execute()
