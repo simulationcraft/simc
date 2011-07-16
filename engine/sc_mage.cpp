@@ -1767,22 +1767,14 @@ struct evocation_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time = 6.0;
     base_tick_time    = 2.0;
-    num_ticks         = 3;
+    num_ticks         = ( int ) ( duration() / base_tick_time );
+    tick_zero         = true;
     channeled         = true;
     harmful           = false;
     hasted_ticks      = false;
 
     cooldown -> duration += p -> talents.arcane_flows -> effect2().seconds();
-  }
-
-  virtual void execute()
-  {
-    mage_t* p = player -> cast_mage();
-    mage_spell_t::execute();
-    double mana = p -> resource_max[ RESOURCE_MANA ] * effect1().percent();
-    p -> resource_gain( RESOURCE_MANA, mana, p -> gains_evocation );
   }
 
   virtual void tick()
@@ -1797,8 +1789,9 @@ struct evocation_t : public mage_spell_t
     if ( ! mage_spell_t::ready() )
       return false;
 
+    // FIXME: This should likely be removed in favor of expressions
     return ( player -> resource_current[ RESOURCE_MANA ] /
-             player -> resource_max    [ RESOURCE_MANA ] ) < 0.40;
+             player -> resource_max    [ RESOURCE_MANA ] ) < 0.60;
   }
 };
 
