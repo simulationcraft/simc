@@ -31,6 +31,8 @@ struct shaman_t : public player_t
 {
   double wf_delay;
   double wf_delay_stddev;
+  double uf_expiration_delay;
+  double uf_expiration_delay_stddev;
 
   // Active
   action_t* active_lightning_charge;
@@ -190,7 +192,7 @@ struct shaman_t : public player_t
   glyph_t* glyph_thunderstorm;
   
   shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r ),
-    wf_delay( 0.95 ), wf_delay_stddev( 0.25 )
+    wf_delay( 0.95 ), wf_delay_stddev( 0.25 ), uf_expiration_delay( 0.3 ), uf_expiration_delay_stddev( 0.05 )
   {
     if ( race == RACE_NONE ) race = RACE_TAUREN;
 
@@ -3797,6 +3799,47 @@ struct unleash_elements_buff_t : public buff_t
   }
 };
 
+struct unleash_flame_expiration_delay_t : public event_t
+{
+  buff_t* buff;
+
+  unleash_flame_expiration_delay_t( sim_t* sim, player_t* p, buff_t* b ) : 
+    event_t( sim, p ), buff( b )
+  {
+    name = "unleash_flame_expiration_delay";
+    sim -> add_event( this, sim -> gauss( 0.3, 0.05 ) );
+  }
+
+  virtual void execute()
+  {
+    // Call real expire after a delay
+    buff -> buff_t::expire();
+  }
+};
+
+struct unleash_flame_buff_t : public unleash_elements_buff_t
+{
+  event_t* expiration_delay;
+
+  unleash_flame_buff_t( player_t* p ) :
+    unleash_elements_buff_t( p, 73683, "unleash_flame" ), expiration_delay( 0 )
+  {
+  }
+
+  bool trigger( int stacks, double value, double chance )
+  {
+    expiration_delay = 0;
+    return buff_t::trigger( stacks, value, chance );
+  }
+
+  void expire()
+  {
+    if ( current_stack <= 0 ) return;
+    if ( expiration_delay ) return;
+    expiration_delay = new ( sim ) unleash_flame_expiration_delay_t( sim, player, this );
+  }
+};
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -3819,9 +3862,11 @@ void shaman_t::create_options()
 
   option_t shaman_options[] =
   {
-    { "wf_delay",        OPT_FLT,     &( wf_delay        ) },
-    { "wf_delay_stddev", OPT_FLT,     &( wf_delay_stddev ) },
-    { NULL,              OPT_UNKNOWN, NULL                 }
+    { "wf_delay",                   OPT_FLT,     &( wf_delay                   ) },
+    { "wf_delay_stddev",            OPT_FLT,     &( wf_delay_stddev            ) },
+    { "uf_expiration_delay",        OPT_FLT,     &( uf_expiration_delay        ) },
+    { "uf_expiration_delay_stddev", OPT_FLT,     &( uf_expiration_delay_stddev ) },
+    { NULL,                         OPT_UNKNOWN, NULL                            }
   };
 
   option_t::copy( options, shaman_options );
@@ -4074,9 +4119,9 @@ void shaman_t::init_buffs()
   buffs_shamanistic_rage        = new buff_t                 ( this, talent_shamanistic_rage -> spell_id(),                    "shamanistic_rage"      );
   buffs_spiritwalkers_grace     = new buff_t                 ( this, 79206,                                                    "spiritwalkers_grace",       1.0, 0 );
   // Enhancement T12 4Piece Bonus
-  buffs_stormfire             = new buff_t                 ( this, 99212,                                                    "stormfire"             );
+  buffs_stormfire               = new buff_t                 ( this, 99212,                                                    "stormfire"             );
   buffs_stormstrike             = new buff_t                 ( this, talent_stormstrike -> spell_id(),                         "stormstrike"           );
-  buffs_unleash_flame           = new unleash_elements_buff_t( this, 73683,                                                    "unleash_flame"         );
+  buffs_unleash_flame           = new unleash_flame_buff_t   ( this );
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );
   buffs_water_shield            = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),             "water_shield"          );
 }
