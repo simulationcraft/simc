@@ -1154,6 +1154,7 @@ void druid_cat_attack_t::consume_resource()
     if ( amount > 0 )
     {
       p -> gains_omen_of_clarity -> add( amount );
+      p -> gains_omen_of_clarity -> type = RESOURCE_ENERGY;
       p -> buffs_omen_of_clarity -> expire();
     }
   }
@@ -1606,6 +1607,7 @@ struct ravage_t : public druid_cat_attack_t
       if ( amount > 0 )
       {
         p -> gains_omen_of_clarity -> add( amount );
+        p -> gains_omen_of_clarity -> type = RESOURCE_ENERGY;
         p -> buffs_omen_of_clarity -> expire();
       }
     }
@@ -1924,6 +1926,7 @@ void druid_bear_attack_t::consume_resource()
     if ( amount > 0 )
     {
       p -> gains_omen_of_clarity -> add( amount );
+      p -> gains_omen_of_clarity -> type = RESOURCE_RAGE;
       p -> buffs_omen_of_clarity -> expire();
     }
   }
@@ -2351,6 +2354,7 @@ void druid_heal_t::consume_resource()
     if ( amount > 0 )
     {
       p -> gains_omen_of_clarity -> add( amount );
+      p -> gains_omen_of_clarity -> type = RESOURCE_MANA;
       p -> buffs_omen_of_clarity -> expire();
     }
   }
@@ -2916,6 +2920,7 @@ void druid_spell_t::consume_resource()
     if ( amount > 0 )
     {
       p -> gains_omen_of_clarity -> add( amount );
+      p -> gains_omen_of_clarity -> type = RESOURCE_MANA;
       p -> buffs_omen_of_clarity -> expire();
     }
   }

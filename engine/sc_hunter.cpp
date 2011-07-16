@@ -1737,6 +1737,7 @@ void hunter_attack_t::consume_resource()
     if ( amount > 0 )
     {
       p -> gains_tier12_4pc -> add( amount );
+      p -> gains_tier12_4pc -> type = RESOURCE_FOCUS;
       p -> buffs_tier12_4pc -> expire();
     }
   }
@@ -2814,6 +2815,7 @@ void hunter_spell_t::consume_resource()
     if ( amount > 0 )
     {
       p -> gains_tier12_4pc -> add( amount );
+      p -> gains_tier12_4pc -> type = RESOURCE_FOCUS;
       p -> buffs_tier12_4pc -> expire();
     }
   }
