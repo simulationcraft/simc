@@ -4122,7 +4122,7 @@ void shaman_t::init_buffs()
   // Enhancement T12 4Piece Bonus
   buffs_stormfire               = new buff_t                 ( this, 99212,                                                    "stormfire"             );
   buffs_stormstrike             = new buff_t                 ( this, talent_stormstrike -> spell_id(),                         "stormstrike"           );
-  buffs_unleash_flame           = new unleash_flame_buff_t   ( this );
+  buffs_unleash_flame           = new unleash_elements_buff_t( this, 73683,                                                    "unleash_flame" );
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );
   buffs_water_shield            = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),             "water_shield"          );
 }
