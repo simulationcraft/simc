@@ -235,7 +235,6 @@ static bool parse_player( sim_t*             sim,
       return false;
     }
 
-
     sim -> active_player = player_t::create( sim, util_t::player_type_string( source -> type ), player_name );
     if ( sim -> active_player != 0 ) sim -> active_player -> copy_from ( source );
   }
@@ -900,7 +899,6 @@ void sim_t::combat( int iteration )
     if ( fixed_time || ( target -> resource_base[ RESOURCE_HEALTH ] == 0 ) )
     {
       // The first iteration is always time-limited since we do not yet have inferred health
-
       if ( current_time > expected_time * ( 1 - target_death_pct / 100.0 ) )
       {
         // Set this last event as canceled, so asserts dont fire when odd things happen at the 
@@ -1122,19 +1120,16 @@ bool sim_t::init()
   {
     target = target_list;
   }
-
   else if ( ! main_target_str.empty() )
   {
     player_t* p = find_player( main_target_str );
     if ( p )
       target = p;
   }
-
   else
     target = player_t::create( this, "enemy", "Fluffy_Pillow" );
 
   // Target overrides
-
   for ( player_t* t = target_list; t; t = t -> next )
   {
     if ( target_level >= 0 )
@@ -1157,7 +1152,6 @@ bool sim_t::init()
   if ( ! player_t::init( this ) ) return false;
 
   // Target overrides 2
-
   for ( player_t* t = target_list; t; t = t -> next )
   {
     if ( ! target_race.empty() )
@@ -2449,8 +2443,8 @@ int sim_t::main( int argc, char** argv )
 
     if( execute() )
     {
-      scaling -> analyze();
-      plot    -> analyze();
+      scaling      -> analyze();
+      plot         -> analyze();
       reforge_plot -> analyze();
       util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
       report_t::print_suite( this );

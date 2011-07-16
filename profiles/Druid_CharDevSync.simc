@@ -1,4 +1,4 @@
-#!simc
+#./!simc
 
 
 chardev=34093 save=Druid_Balance_T11N.simc name=Druid_Balance_T11N
