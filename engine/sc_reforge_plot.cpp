@@ -165,11 +165,24 @@ void reforge_plot_t::analyze_stats()
     delta_sim = new sim_t( sim );
     if ( reforge_plot_iterations > 0 )
       delta_sim -> iterations = reforge_plot_iterations;
+    if ( sim -> report_progress )
+      util_t::fprintf( stdout, "Current reforge: " );
     for ( int j=0; j < ( int ) stat_mods[ i ].size(); j++ )
     {
       delta_sim -> enchant.add_stat( reforge_plot_stat_indices[ j ],
                                      stat_mods[ i ][ j ] );
       delta_result[ j ] = stat_mods[ i ][ j ];
+
+      if ( sim -> report_progress )
+        util_t::fprintf( stdout, "%s: %d ",
+                         util_t::stat_type_string( reforge_plot_stat_indices[ j ] ),
+                         stat_mods[ i ][ j ] );
+    }
+
+    if ( sim -> report_progress )
+    {
+      util_t::fprintf( stdout, "\n" );
+      fflush( stdout );
     }
 
     current_stat_combo = i;
@@ -193,7 +206,6 @@ void reforge_plot_t::analyze_stats()
       delta_sim = 0;
     }
   }
-
 }
 
 // reforge_plot_t::analyze() ================================================

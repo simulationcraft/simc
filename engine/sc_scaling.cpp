@@ -231,7 +231,7 @@ void scaling_t::analyze_stats()
 
     current_scaling_stat = i;
 
-    if( sim -> report_progress )
+    if ( sim -> report_progress )
     {
       util_t::fprintf( stdout, "\nGenerating scale factors for %s...\n", util_t::stat_type_string( i ) );
       fflush( stdout );
