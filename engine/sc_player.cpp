@@ -4393,6 +4393,21 @@ struct blood_fury_t : public action_t
   }
 };
 
+// Rocket Barrage =====================================================
+
+struct rocket_barrage_t : public spell_t
+{
+  rocket_barrage_t( player_t* p, const std::string& options_str ) :
+    spell_t( "rocket_barrage", 69041, p )
+  {
+    parse_options( NULL, options_str );
+
+    base_spell_power_multiplier  = direct_power_mod;
+    base_attack_power_multiplier = extra_coeff();
+    direct_power_mod             = 1.0;
+  }
+};
+
 // Stoneform ==========================================================
 
 struct stoneform_t : public action_t
@@ -4996,6 +5011,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "lifeblood"        ) return new        lifeblood_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
+  if ( name == "rocket_barrage"   ) return new   rocket_barrage_t( this, options_str );
   if ( name == "sequence"         ) return new         sequence_t( this, options_str );
   if ( name == "snapshot_stats"   ) return new   snapshot_stats_t( this, options_str );
   if ( name == "start_moving"     ) return new     start_moving_t( this, options_str );
