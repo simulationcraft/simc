@@ -5764,8 +5764,6 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
       profile_str += "talents=" + talents_str + term;
     };
 
-
-
     if ( glyphs_str.size() > 0 )
     {
       profile_str += "glyphs=" + glyphs_str + term;
@@ -5782,7 +5780,9 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
         if ( a -> signature_str.empty() ) continue;
         profile_str += "actions";
         profile_str += i ? "+=/" : "=";
-        profile_str += a -> signature_str + term;
+        std::string encoded_action = a -> signature_str;
+        report_t::encode_html( encoded_action );
+        profile_str += encoded_action + term;
         i++;
       }
     }
@@ -5876,7 +5876,6 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
         profile_str += term;
       }
     }
-
   }
 
   return true;

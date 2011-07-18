@@ -4305,6 +4305,7 @@ struct proc_t
 
 struct report_t
 {
+  static void encode_html( std::string& buffer );
   static void print_spell_query( sim_t* );
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );

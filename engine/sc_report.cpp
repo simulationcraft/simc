@@ -41,27 +41,6 @@ static void simplify_html( std::string& buffer )
   }
 }
 
-// encode_html =============================================================
-
-static void encode_html ( std::string& buffer )
-{
-  for ( std::string::size_type pos = buffer.find( "&", 0 ); pos != std::string::npos; pos = buffer.find( "&", pos ) )
-  {
-    buffer.replace( pos, 1, "&amp;" );
-    pos+=2;
-  }
-  for ( std::string::size_type pos = buffer.find( "<", 0 ); pos != std::string::npos; pos = buffer.find( "<", pos ) )
-  {
-    buffer.replace( pos, 1, "&lt;" );
-    pos+=2;
-  }
-  for ( std::string::size_type pos = buffer.find( ">", 0 ); pos != std::string::npos; pos = buffer.find( ">", pos ) )
-  {
-    buffer.replace( pos, 1, "&gt;" );
-    pos+=2;
-  }
-}
-
 // print_text_action ==============================================================
 
 static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
@@ -2612,7 +2591,7 @@ util_t::fprintf( file,
       util_t::fprintf( file, " class=\"odd\"" );
     }
     util_t::fprintf( file, ">\n" );
-    std::string enc_action = a -> signature_str; encode_html( enc_action );
+    std::string enc_action = a -> signature_str; report_t::encode_html( enc_action );
     util_t::fprintf( file,
                      "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">%c</th>\n"
                      "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
@@ -3520,13 +3499,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    p -> total_seconds ? 60.0 * p -> total_foreground_actions / p -> total_seconds : 0 );
 
   // Spec and gear
-  if ( !p -> is_pet() )
+  if ( ! p -> is_pet() )
   {
     util_t::fprintf( file,
                      "\t\t\t\t\t\t<table class=\"sc mt\">\n" );
     if ( p -> origin_str.compare( "unknown" ) )
     {
-      std::string  enc_url = p -> origin_str; encode_html(  enc_url );
+      std::string  enc_url = p -> origin_str; report_t::encode_html(  enc_url );
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                        "\t\t\t\t\t\t\t\t<th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
@@ -3537,7 +3516,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     }
     if ( !p -> talents_str.empty() )
     {
-      std::string  enc_url = p -> talents_str; encode_html(  enc_url );
+      std::string  enc_url = p -> talents_str; report_t::encode_html(  enc_url );
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                        "\t\t\t\t\t\t\t\t<th>Talents</th>\n"
@@ -3857,6 +3836,27 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 // ===========================================================================
 // Report
 // ===========================================================================
+
+// report_t::encode_html =============================================================
+
+void report_t::encode_html ( std::string& buffer )
+{
+  for ( std::string::size_type pos = buffer.find( "&", 0 ); pos != std::string::npos; pos = buffer.find( "&", pos ) )
+  {
+    buffer.replace( pos, 1, "&amp;" );
+    pos+=2;
+  }
+  for ( std::string::size_type pos = buffer.find( "<", 0 ); pos != std::string::npos; pos = buffer.find( "<", pos ) )
+  {
+    buffer.replace( pos, 1, "&lt;" );
+    pos+=2;
+  }
+  for ( std::string::size_type pos = buffer.find( ">", 0 ); pos != std::string::npos; pos = buffer.find( ">", pos ) )
+  {
+    buffer.replace( pos, 1, "&gt;" );
+    pos+=2;
+  }
+}
 
 // report_t::print_text ======================================================
 
