@@ -5781,7 +5781,8 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
         profile_str += "actions";
         profile_str += i ? "+=/" : "=";
         std::string encoded_action = a -> signature_str;
-        report_t::encode_html( encoded_action );
+        if( save_html )
+          report_t::encode_html( encoded_action );
         profile_str += encoded_action + term;
         i++;
       }
