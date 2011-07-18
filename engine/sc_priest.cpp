@@ -3730,6 +3730,14 @@ struct power_word_shield_t : public priest_absorb_t
     if ( p -> talents.body_and_soul -> rank() )
       t -> buffs.body_and_soul -> trigger( 1, p -> talents.body_and_soul -> effect1().percent() );
   }
+
+  virtual bool ready()
+  {
+    if ( target -> buffs.weakened_soul -> check() )
+      return false;
+
+    return priest_absorb_t::ready();
+  }
 };
 
 // Penance Heal Spell =======================================================

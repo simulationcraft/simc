@@ -80,7 +80,7 @@ actions+=/fortitude
 actions+=/inner_fire
 actions+=/snapshot_stats
 actions+=/inner_focus
-actions+=/power_word_shield,if=debuff.weakened_soul.down,target=Warrior_Tank
+actions+=/power_word_shield,target=Warrior_Tank
 actions+=/penance_heal,target=Warrior_Tank,if=target.health_pct<=80
 actions+=/greater_heal,target=Warrior_Tank,if=target.health_pct<70
 actions+=/prayer_of_mending,moving=1,single=1
