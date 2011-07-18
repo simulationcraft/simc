@@ -20,7 +20,7 @@ actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/berserking
 actions+=/power_infusion
 actions+=/inner_focus
-actions+=/power_word_shield,if=buff.weakened_soul.down
+actions+=/power_word_shield
 actions+=/renew,if=!ticking|remains<tick_time
 actions+=/penance_heal
 actions+=/greater_heal

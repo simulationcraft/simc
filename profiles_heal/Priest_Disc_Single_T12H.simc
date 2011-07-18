@@ -20,7 +20,7 @@ actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/berserking
 actions+=/power_infusion
 actions+=/inner_focus
-actions+=/power_word_shield,if=buff.weakened_soul.down
+actions+=/power_word_shield
 actions+=/penance_heal
 actions+=/greater_heal
 head=cowl_of_the_cleansing_flame,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1211armor_400int_689sta_289spi_263mastery,reforge=mastery_crit,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit

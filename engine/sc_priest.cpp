@@ -315,7 +315,7 @@ struct priest_t : public player_t
 
     was_sub_25                           = false;
     echo_of_light_merged                 = false;
-    
+
     use_shadow_word_death                = 0;
     double_dot                           = 0;
     use_mind_blast                       = 1;
@@ -838,14 +838,14 @@ struct shadow_fiend_pet_t : public pet_t
     spell_data_t* shadowflame;
     double dmg_mult;
 
-    tier12_flame_attack_t( player_t* player ) : 
+    tier12_flame_attack_t( player_t* player ) :
       spell_t( "Shadowflame", player, SCHOOL_FIRE ), shadowflame( NULL ), dmg_mult( 0.2 )
     {
       priest_t* o = player -> cast_pet() -> owner -> cast_priest();
 
       background       = true;
-      may_miss         = false;    
-      proc             = true;      
+      may_miss         = false;
+      proc             = true;
       may_crit         = false;
       direct_power_mod = 0.0;
       trigger_gcd      = false;
@@ -857,7 +857,7 @@ struct shadow_fiend_pet_t : public pet_t
         dmg_mult = shadowflame->effect1().percent();
       }
     }
-    
+
     virtual double calculate_direct_damage()
     {
       double dmg = base_dd_min * dmg_mult;
@@ -1656,7 +1656,7 @@ struct mind_blast_t : public priest_spell_t
       else
       {
         p -> uptimes_dark_flames -> update( 0 );
-      }     
+      }
     }
 
     m += p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
@@ -3649,11 +3649,17 @@ struct glyph_power_word_shield_t : public priest_heal_t
 struct power_word_shield_t : public priest_absorb_t
 {
   glyph_power_word_shield_t* glyph_pws;
+  int ignore_debuff;
 
   power_word_shield_t( player_t* player, const std::string& options_str ) :
-    priest_absorb_t( "power_word_shield", player, 17 ), glyph_pws( 0 )
+    priest_absorb_t( "power_word_shield", player, 17 ), glyph_pws( 0 ), ignore_debuff( 0 )
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "ignore_debuff", OPT_BOOL,    &ignore_debuff },
+      { NULL,            OPT_UNKNOWN, NULL           }
+    };
+    parse_options( options, options_str );
 
     priest_t* p = player -> cast_priest();
 
@@ -3733,7 +3739,7 @@ struct power_word_shield_t : public priest_absorb_t
 
   virtual bool ready()
   {
-    if ( target -> buffs.weakened_soul -> check() )
+    if ( !ignore_debuff & target -> buffs.weakened_soul -> check() )
       return false;
 
     return priest_absorb_t::ready();
@@ -3813,6 +3819,8 @@ struct penance_heal_t : public priest_heal_t
   virtual void tick()
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+    penance_tick -> heal_target.clear();
+    penance_tick -> heal_target.push_back( target );
     penance_tick -> execute();
     stats -> add_tick( time_to_tick );
   }
@@ -4863,7 +4871,7 @@ void priest_t::init_actions()
         if ( talents.vampiric_touch -> rank() )          action_list_str += "/vampiric_touch_2,if=(!ticking|dot.vampiric_touch_2.remains<cast_time+2.5)&miss_react";
                                                          action_list_str += "/shadow_word_pain_2,if=(!ticking|dot.shadow_word_pain_2.remains<gcd+0.5)&miss_react";
       }
-                                                         
+
       if ( talents.archangel -> ok() )
       {
                                                          action_list_str += "/archangel,if=buff.dark_evangelism.stack>=5";
@@ -4873,7 +4881,7 @@ void priest_t::init_actions()
 
                                                          action_list_str += "/mind_blast,if=buff.shadow_orb.react>=1";
                                                          action_list_str += "&set_bonus.tier12_4pc_caster";
-                    
+
                                                          action_list_str += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
 
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";

@@ -19,7 +19,7 @@ actions+=/shadow_fiend,if=mana_pct<=20
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/berserking
 actions+=/power_infusion
-actions+=/power_word_shield
+actions+=/power_word_shield,ignore_debuff=1
 head=cowl_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_255spi_229mastery,reforge=mastery_crit,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit
 neck=heartstone_of_rhyolith,ilevel=378,quality=epic,stats=227int_341sta_162spi_133mastery,reforge=mastery_crit
 shoulders=mantle_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1043armor_282int_454sta_201spi_183haste,gems=20spi_20int_10int,enchant=50int_25haste
