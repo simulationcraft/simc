@@ -118,10 +118,6 @@ struct priest_t : public player_t
     // Discipline
     passive_spell_t* enlightenment;
     passive_spell_t* meditation_disc;
-    passive_spell_t* dark_evangelism_1;
-    passive_spell_t* dark_evangelism_2;
-    passive_spell_t* holy_evangelism_1;
-    passive_spell_t* holy_evangelism_2;
 
     // Holy
     passive_spell_t* spiritual_healing;
@@ -254,9 +250,6 @@ struct priest_t : public player_t
 
     // Discipline
     double twin_disciplines_value;
-    double dark_evangelism_damage_value;
-    double holy_evangelism_damage_value;
-    double holy_evangelism_mana_value;
     double dark_archangel_damage_value;
     double dark_archangel_mana_value;
     double holy_archangel_value;
@@ -1251,7 +1244,7 @@ struct devouring_plague_burst_t : public priest_spell_t
 
     double m = 1.0;
 
-    m += p -> buffs_dark_evangelism -> stack () * p -> constants.dark_evangelism_damage_value;
+    m += p -> buffs_dark_evangelism -> stack () * p -> buffs_dark_evangelism -> effect1().percent();
     m += p -> buffs_empowered_shadow -> value();
 
     if ( ! p -> bugs )
@@ -1501,7 +1494,7 @@ struct holy_fire_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    player_multiplier *= 1.0 + ( p -> buffs_holy_evangelism -> stack() * p -> buffs_holy_evangelism -> effect1().percent() );
   }
 
   virtual double cost() SC_CONST
@@ -1510,7 +1503,7 @@ struct holy_fire_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    c *= 1.0 - ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> check() * p -> constants.holy_evangelism_mana_value );
+    c *= 1.0 + ( p -> buffs_holy_evangelism -> check() * p -> buffs_holy_evangelism -> effect2().percent() );
 
     return c;
   }
@@ -1738,7 +1731,7 @@ struct mind_flay_t : public priest_spell_t
     if ( result_is_hit() )
     {
       // Evangelism procs off both the initial cast and each tick.
-      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, p -> talents.evangelism -> rank() ? 1.0 : 0.0 );
+      p -> buffs_dark_evangelism -> trigger();
     }
   }
 
@@ -1764,7 +1757,7 @@ struct mind_flay_t : public priest_spell_t
 
     if ( result_is_hit() )
     {
-      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, p -> talents.evangelism -> rank() ? 1.0 : 0.0 );
+      p -> buffs_dark_evangelism -> trigger();
       p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
 
       if ( p -> dots_shadow_word_pain -> ticking )
@@ -1855,7 +1848,7 @@ struct mind_flay_t_2 : public priest_spell_t
     if ( result_is_hit() )
     {
       // Evangelism procs off both the initial cast and each tick.
-      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, p -> talents.evangelism -> rank() ? 1.0 : 0.0 );
+      p -> buffs_dark_evangelism -> trigger();
     }
   }
 
@@ -1881,7 +1874,7 @@ struct mind_flay_t_2 : public priest_spell_t
 
     if ( result_is_hit() )
     {
-      p -> buffs_dark_evangelism  -> trigger( 1, 1.0, p -> talents.evangelism -> rank() ? 1.0 : 0.0 );
+      p -> buffs_dark_evangelism -> trigger();
       p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
 
       if ( p -> dots_shadow_word_pain_2 -> ticking )
@@ -2050,9 +2043,7 @@ struct penance_tick_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() *
-                                 p -> buffs_holy_evangelism -> stack() *
-                                 p -> constants.holy_evangelism_damage_value );
+    player_multiplier *= 1.0 + ( p -> buffs_holy_evangelism -> stack() * p -> buffs_holy_evangelism -> effect1().percent() );
   }
 };
 
@@ -2095,9 +2086,7 @@ struct penance_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    c *= 1.0 - ( p -> talents.evangelism -> rank() *
-                 p -> buffs_holy_evangelism -> check() *
-                 p -> constants.holy_evangelism_mana_value );
+    c *= 1.0 + ( p -> buffs_holy_evangelism -> check() * p -> buffs_holy_evangelism -> effect2().percent() );
 
     return c;
   }
@@ -2804,7 +2793,7 @@ struct smite_t : public priest_spell_t
     if ( p -> buffs_surge_of_light -> trigger() )
       p -> procs_surge_of_light -> occur();
 
-    p -> buffs_holy_evangelism  -> trigger();
+    p -> buffs_holy_evangelism -> trigger();
 
     // Chakra
     if ( p -> buffs_chakra_pre -> up() )
@@ -2837,7 +2826,7 @@ struct smite_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    player_multiplier *= 1.0 + ( p -> talents.evangelism -> rank() * p -> buffs_holy_evangelism -> stack() * p -> constants.holy_evangelism_damage_value );
+    player_multiplier *= 1.0 + ( p -> buffs_holy_evangelism -> stack() * p -> buffs_holy_evangelism -> effect1().percent() );
 
     if ( p -> dots_holy_fire -> ticking && p -> glyphs.smite -> ok() )
       player_multiplier *= 1.0 + p -> glyphs.smite -> effect1().percent();
@@ -2849,9 +2838,7 @@ struct smite_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    c *= 1.0 - ( p -> talents.evangelism -> rank() *
-    p -> buffs_holy_evangelism -> check() *
-    p -> constants.holy_evangelism_mana_value );
+    c *= 1.0 + ( p -> buffs_holy_evangelism -> check() * p -> buffs_holy_evangelism -> effect2().percent() );
 
     return c;
   }
@@ -3828,9 +3815,7 @@ struct penance_heal_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    c *= 1.0 - ( p -> talents.evangelism -> rank() *
-    p -> buffs_holy_evangelism -> check() *
-    p -> constants.holy_evangelism_mana_value );
+    c *= 1.0 + ( p -> buffs_holy_evangelism -> check() * p -> buffs_holy_evangelism -> effect2().percent() );
 
     return c;
   }
@@ -4381,7 +4366,7 @@ double priest_t::composite_player_td_multiplier( const school_type school, actio
   {
     // Shadow TD
     player_multiplier += buffs_empowered_shadow -> value();
-    player_multiplier += buffs_dark_evangelism -> stack () * constants.dark_evangelism_damage_value;
+    player_multiplier += buffs_dark_evangelism -> stack () * buffs_dark_evangelism -> effect1().percent();
   }
 
   return player_multiplier;
@@ -4696,10 +4681,6 @@ void priest_t::init_spells()
   // Discipline
   passive_spells.enlightenment          = new passive_spell_t( this, "enlightenment", "Enlightenment" );
   passive_spells.meditation_disc        = new passive_spell_t( this, "meditation_disc", "Meditation" );
-  passive_spells.dark_evangelism_1      = new passive_spell_t( this, "dark_evangelism_1", 87117 );
-  passive_spells.dark_evangelism_2      = new passive_spell_t( this, "dark_evangelism_2", 87118 );
-  passive_spells.holy_evangelism_1      = new passive_spell_t( this, "holy_evangelism_1", 81660 );
-  passive_spells.holy_evangelism_2      = new passive_spell_t( this, "holy_evangelism_2", 81661 );
 
   // Holy
   passive_spells.spiritual_healing      = new passive_spell_t( this, "spiritual_healing", "Enlightenment" );
@@ -4768,11 +4749,10 @@ void priest_t::init_buffs()
 {
   player_t::init_buffs();
 
-
   // Discipline
   buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect_trigger_spell( 1 ), "borrowed_time", talents.borrowed_time -> rank() );
-  buffs_dark_evangelism            = new buff_t( this, 81661, "dark_evangelism" );
-  buffs_holy_evangelism            = new buff_t( this, 81661, "holy_evangelism" );
+  buffs_dark_evangelism            = new buff_t( this, talents.evangelism -> rank() == 2 ? 87118 : 87117, "dark_evangelism", talents.evangelism -> rank() );
+  buffs_holy_evangelism            = new buff_t( this, talents.evangelism -> rank() == 2 ? 81661 : 81660, "holy_evangelism", talents.evangelism -> rank() );
   buffs_dark_archangel             = new buff_t( this, 87153, "dark_archangel" );
   buffs_holy_archangel             = new buff_t( this, 81700, "holy_archangel" );
   buffs_inner_fire                 = new buff_t( this,   588, "inner_fire"                                              );
@@ -5031,27 +5011,6 @@ void priest_t::init_values()
 
   // Discipline
   constants.twin_disciplines_value          = talents.twin_disciplines->base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-
-  switch ( talents.evangelism -> rank() )
-  {
-  case 1:
-    constants.dark_evangelism_damage_value  = passive_spells.dark_evangelism_1  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
-    constants.holy_evangelism_damage_value  = passive_spells.holy_evangelism_1  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0 );
-    constants.holy_evangelism_mana_value    = passive_spells.holy_evangelism_1  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14 );
-    break;
-  case 2:
-    constants.dark_evangelism_damage_value  = passive_spells.dark_evangelism_2  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
-    constants.holy_evangelism_damage_value  = passive_spells.holy_evangelism_2  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0 );
-    constants.holy_evangelism_mana_value    = passive_spells.holy_evangelism_2  -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14 );
-    break;
-  default:
-    constants.dark_evangelism_damage_value  = 0.0;
-    constants.holy_evangelism_damage_value  = 0.0;
-    constants.holy_evangelism_mana_value    = 0.0;
-    break;
-  }
-
-
   constants.dark_archangel_damage_value   = active_spells.dark_archangel   -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
   constants.dark_archangel_mana_value     = active_spells.dark_archangel   -> effect_base_value( 3 ) / 100.0;
   constants.holy_archangel_value          = active_spells.holy_archangel2  -> base_value( E_APPLY_AURA, A_MOD_HEALING_DONE_PERCENT ) / 100.0;
