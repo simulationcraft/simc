@@ -74,7 +74,7 @@ actions+=/fortitude
 actions+=/inner_fire
 actions+=/snapshot_stats
 actions+=/inner_focus
-actions+=/power_word_shield,if=buff.weakened_soul.down,target=Death_Knight_Tank
+actions+=/power_word_shield,if=debuff.weakened_soul.down,target=Death_Knight_Tank
 actions+=/penance_heal,target=Death_Knight_Tank
 actions+=/greater_heal,target=Death_Knight_Tank
 head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
