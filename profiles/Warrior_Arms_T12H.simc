@@ -18,7 +18,7 @@ actions+=/stance,choose=berserker,if=(buff.taste_for_blood.down&rage<75)
 actions+=/stance,choose=battle,if=(dot.rend.remains=0|((buff.overpower.up|buff.taste_for_blood.up)&cooldown.mortal_strike.remains>1)&rage<=75)
 actions+=/recklessness,if=((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)
 actions+=/berserker_rage,if=!buff.deadly_calm.up&rage<70
-actions+=/deadly_calm,if=rage<30&(target.health_pct>20&target.time_to_die>130)
+actions+=/deadly_calm,if=rage<30
 actions+=/sweeping_strikes,if=target.adds>0
 actions+=/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up
 actions+=/cleave,if=target.adds>0

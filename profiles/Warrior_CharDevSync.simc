@@ -1,4 +1,4 @@
-#!simc
+#./!simc
 
 chardev=133579 name=Warrior_Arms_T11H actions= save=Warrior_Arms_T11H.simc
 
