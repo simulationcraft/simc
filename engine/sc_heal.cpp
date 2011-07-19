@@ -30,10 +30,9 @@
 
 void heal_t::_init_heal_t()
 {
-  heal_target.push_back( player );
+  target = player;
+  heal_target.push_back( target );
 
-  target= player;
-  target_str = "";
   total_heal = total_actual = 0;
 
   dot_behavior      = DOT_REFRESH;
@@ -505,10 +504,9 @@ void heal_t::refresh_duration()
 
 void absorb_t::_init_absorb_t()
 {
-  heal_target.push_back( player );
-
   target = player;
-  target_str = "";
+  heal_target.push_back( target );
+
   total_heal = total_actual = 0;
   may_trigger_dtr   = false;
 

@@ -454,6 +454,10 @@ void action_t::parse_options( option_t*          options,
 
     if ( p )
       target = p;
+    else
+    {
+      sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
+    }
   }
 }
 
@@ -1422,7 +1426,7 @@ void action_t::update_ready()
       delay = player -> rngs.lag_world -> gauss( lag, dev );
       if ( sim -> debug ) log_t::output( sim, "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay );
     }
-    
+
     cooldown -> start( -1, delay );
   }
   if ( num_ticks )
@@ -1798,13 +1802,13 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       {
         if ( action -> sim -> debug )
         {
-          log_t::output( action -> sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f", 
-            action -> player -> name_str.c_str(), 
-            action -> name_str.c_str(), 
+          log_t::output( action -> sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f",
+            action -> player -> name_str.c_str(),
+            action -> name_str.c_str(),
             action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction,
             action -> sim -> current_time );
         }
-        
+
         if ( ! action -> player -> cast_delay_occurred ||
              action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction < action -> sim -> current_time )
         {

@@ -311,13 +311,13 @@ enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_SEQUENCE, A
 enum school_type
 {
   SCHOOL_NONE=0,
-  SCHOOL_ARCANE,      SCHOOL_FIRE,        SCHOOL_FROST,       SCHOOL_HOLY,        SCHOOL_NATURE,      
-  SCHOOL_SHADOW,      SCHOOL_PHYSICAL,    SCHOOL_MAX_PRIMARY, SCHOOL_FROSTFIRE,       
+  SCHOOL_ARCANE,      SCHOOL_FIRE,        SCHOOL_FROST,       SCHOOL_HOLY,        SCHOOL_NATURE,
+  SCHOOL_SHADOW,      SCHOOL_PHYSICAL,    SCHOOL_MAX_PRIMARY, SCHOOL_FROSTFIRE,
   SCHOOL_HOLYSTRIKE,  SCHOOL_FLAMESTRIKE, SCHOOL_HOLYFIRE,    SCHOOL_STORMSTRIKE, SCHOOL_HOLYSTORM,
   SCHOOL_FIRESTORM,   SCHOOL_FROSTSTRIKE, SCHOOL_HOLYFROST,   SCHOOL_FROSTSTORM,  SCHOOL_SHADOWSTRIKE,
   SCHOOL_SHADOWLIGHT, SCHOOL_SHADOWFLAME, SCHOOL_SHADOWSTORM, SCHOOL_SHADOWFROST, SCHOOL_SPELLSTRIKE,
   SCHOOL_DIVINE,      SCHOOL_SPELLFIRE,   SCHOOL_SPELLSTORM,  SCHOOL_SPELLFROST,  SCHOOL_SPELLSHADOW,
-  SCHOOL_ELEMENTAL,   SCHOOL_CHROMATIC,   SCHOOL_MAGIC,       SCHOOL_CHAOS,       SCHOOL_BLEED,       
+  SCHOOL_ELEMENTAL,   SCHOOL_CHROMATIC,   SCHOOL_MAGIC,       SCHOOL_CHAOS,       SCHOOL_BLEED,
   SCHOOL_DRAIN,
   SCHOOL_MAX
 };
@@ -1351,7 +1351,7 @@ struct dbc_t
 
   static const item_data_t* items( bool ptr = false );
   static size_t             n_items( bool ptr = false );
-  
+
   // Index access
   spell_data_t** spell_data_index() SC_CONST;
   unsigned spell_data_index_size() SC_CONST;
@@ -1396,7 +1396,7 @@ struct dbc_t
   const spelleffect_data_t*      effect( unsigned effect_id ) SC_CONST;
   const talent_data_t*           talent( unsigned talent_id ) SC_CONST;
   const item_data_t*             item( unsigned item_id ) SC_CONST;
-  
+
   const random_suffix_data_t&    random_suffix( unsigned suffix_id ) SC_CONST;
   const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) SC_CONST;
   const gem_property_data_t&     gem_property( unsigned gem_id ) SC_CONST;
@@ -1605,7 +1605,7 @@ struct util_t
   static unsigned pet_mask( int type );
   static unsigned pet_id( int type );
   static player_type pet_class_type( int type );
-  
+
   static const char* class_id_string( int type );
   static int translate_class_id( int cid );
   static int translate_class_str( std::string& s );
@@ -3026,8 +3026,8 @@ struct player_t
   event_t*  readying;
   bool      in_combat;
   bool      action_queued;
-  
-  // Delay time used by "cast_delay" expression to determine when an action 
+
+  // Delay time used by "cast_delay" expression to determine when an action
   // can be used at minimum after a spell cast has finished, including GCD
   double    cast_delay_reaction;
   double    cast_delay_occurred;
@@ -3916,7 +3916,6 @@ struct spell_t : public action_t
 struct heal_t : public spell_t
 {
   std::vector<player_t*> heal_target;
-  std::string target_str;
 
   spell_t* valanyr;
 
@@ -3951,7 +3950,6 @@ struct heal_t : public spell_t
 struct absorb_t : public spell_t
 {
   std::vector<player_t*> heal_target;
-  std::string target_str;
 
   // Reporting
   double total_heal, total_actual;
@@ -4169,7 +4167,7 @@ struct unique_gear_t
 
   static action_callback_t* register_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                      int max_stacks, const school_type school, double amount, double scaling,
-                                                     double proc_chance, double cooldown, bool no_crits, bool no_buffs, bool no_debuffs, 
+                                                     double proc_chance, double cooldown, bool no_crits, bool no_buffs, bool no_debuffs,
                                                      int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_chance_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
