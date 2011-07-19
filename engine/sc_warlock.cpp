@@ -3371,7 +3371,7 @@ struct immolation_aura_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     warlock_t* p = player -> cast_warlock();
-    harmful = false;
+    harmful = true;
     tick_may_crit = false;
     immolation_damage = new immolation_damage_t( p );
   }
