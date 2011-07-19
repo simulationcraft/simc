@@ -4766,10 +4766,10 @@ void druid_t::init_actions()
         action_list_str += "/snapshot_stats";
         if ( race == RACE_TROLL ) action_list_str += "/berserking";
         action_list_str += "/skull_bash_bear";
-        action_list_str += "/faerie_fire_feral,if=!debuff.faerie_fire.up";  // Use on pull.
+        action_list_str += "/faerie_fire_feral,if=!debuff.faerie_fire.up";
         action_list_str += "/survival_instincts"; // For now use it on CD
         action_list_str += "/barkskin"; // For now use it on CD
-        action_list_str += "/enrage,time<=5"; // Use only at the start
+        action_list_str += "/enrage";
         action_list_str += use_str;
         // Lifeblood
         if ( profession[ PROF_HERBALISM ] >= 450 )
@@ -4813,8 +4813,12 @@ void druid_t::init_actions()
         action_list_str += "/auto_attack";
         action_list_str += "/skull_bash_cat";
         action_list_str += "/tigers_fury,if=energy<=35";
-        if ( talents.berserk -> rank() )action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
-
+        if ( talents.berserk -> rank() )
+        {
+          action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<";
+          action_list_str += ( glyphs.berserk -> ok() ) ? "25" : "15";
+          action_list_str += "&cooldown.tigers_fury.remains>6)";
+        }
         if ( level > 80 )
         {
           action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
@@ -4825,7 +4829,7 @@ void druid_t::init_actions()
         }
         if ( race == RACE_TROLL ) action_list_str += "/berserking";
         if ( set_bonus.tier11_4pc_melee() ) 
-          action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&(buff.t11_4pc_melee.stack<3|buff.t11_4pc_melee.remains<3)";
+          action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&buff.t11_4pc_melee.remains<4";
         action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
         action_list_str += "/mangle_cat,if=debuff.mangle.remains<=2&(!debuff.mangle.up|debuff.mangle.remains>=0.0)";
         action_list_str += "/ravage,if=buff.stampede_cat.up&buff.stampede_cat.remains<=1";
@@ -4856,6 +4860,8 @@ void druid_t::init_actions()
           action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=14.0&buff.savage_roar.remains>=10.0";
         }
         action_list_str += "/ravage,if=buff.stampede_cat.up&!buff.omen_of_clarity.react&buff.tigers_fury.up";
+        if ( set_bonus.tier11_4pc_melee() )
+          action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&buff.t11_4pc_melee.stack<3";
         action_list_str += "/shred,if=buff.tigers_fury.up|buff.berserk.up";
         action_list_str += "/shred,if=(buff.combo_points.stack<5&dot.rip.remains<3.0)|(buff.combo_points.stack=0&buff.savage_roar.remains<2)";
         action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";

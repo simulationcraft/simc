@@ -1337,8 +1337,11 @@ struct arcane_blast_t : public mage_spell_t
       return 0;
 
     double c = spell_t::cost();
-    double delta_cost = c;
+    double base_cost = c;
+    double stack_cost = 0;
 
+    // Arcane Power only affects the initial base cost, it doesn't inflate the stack cost too
+    // ( BaseCost * AP ) + ( BaseCost * 1.5 * ABStacks )
     if ( p -> buffs_arcane_power -> check() )
     {
       double m = 1.0 + p -> buffs_arcane_power -> effect2().percent();
@@ -1348,16 +1351,23 @@ struct arcane_blast_t : public mage_spell_t
         m += p -> sets -> set( SET_T12_4PC_CASTER ) -> s_effects[ 0 ] -> percent();
       }
 
-      delta_cost *= m;
-      delta_cost = delta_cost - c;
+      c *= m;
     }
 
     if ( p -> buffs_arcane_blast -> check() )
     {
-      c *= p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2().percent();
+      stack_cost = base_cost * p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2().percent();
+ 
+      // The T12 4pc causes AP to reduce the base cost of AB in the stack calculation
+      // ( BaseCost * AP ) + ( BaseCost * AP * 1.5 * ABStacks )
+      if ( p -> set_bonus.tier12_4pc_caster() && p -> buffs_arcane_power -> check() )
+      {
+        stack_cost *= 1.0 + p -> buffs_arcane_power -> effect2().percent()
+                          + p -> sets -> set( SET_T12_4PC_CASTER ) -> s_effects[ 0 ] -> percent();
+      }
     }
 
-    c += delta_cost;
+    c += stack_cost;
 
     return c;
   }
