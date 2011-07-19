@@ -10,6 +10,7 @@ professions=enchanting=525/tailoring=525
 talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
 glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/prayer_of_healing
 actions=food,type=seafood_magnifique_feast
+actions+=/flask,type=draconic_mind
 actions+=/fortitude
 actions+=/inner_fire
 actions+=/snapshot_stats
