@@ -1357,7 +1357,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( p -> buffs_arcane_blast -> check() )
     {
       stack_cost = base_cost * p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2().percent();
- 
+
       // The T12 4pc causes AP to reduce the base cost of AB in the stack calculation
       // ( BaseCost * AP ) + ( BaseCost * AP * 1.5 * ABStacks )
       if ( p -> set_bonus.tier12_4pc_caster() && p -> buffs_arcane_power -> check() )
@@ -1644,7 +1644,7 @@ struct combustion_t : public mage_spell_t
     ignite_dmg = calculate_dot_dps( p -> dots_ignite         );
     ignite_dmg /= 1.0 + p -> specializations.flashburn * p -> dots_ignite -> action -> snapshot_mastery;
     ignite_dmg *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
-    
+
     base_td = 0;
     base_td += calculate_dot_dps( p -> dots_frostfire_bolt );
     base_td += ignite_dmg;
@@ -2222,12 +2222,12 @@ struct frostfire_orb_tick_t : public mage_spell_t
     direct_tick = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
   }
-  
+
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     // Ticks don't trigger ignite
     spell_t::travel( t, travel_result, travel_dmg );
-    
+
     mage_t* p = player -> cast_mage();
 
     if( may_chill && result_is_hit( travel_result ) )
@@ -3294,7 +3294,7 @@ void mage_t::init_actions()
     // Counterspell
     action_list_str += "/counterspell";
     //Conjure Mana Gem
-    if ( primary_tree() == TREE_ARCANE ) action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<44&target.time_to_die>20&mana_gem_charges=0";
+    if ( primary_tree() == TREE_ARCANE ) action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>105&mana_gem_charges=0";
     action_list_str += "/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3"; // for HelterSkelter
 
     // Usable Items
@@ -3310,11 +3310,11 @@ void mage_t::init_actions()
         {
           if ( has_shard == true )
           {
-            action_list_str += ",if=(cooldown.evocation.remains<40&buff.arcane_blast.stack=4)|cooldown.evocation.remains>90|target.time_to_die<40";
+            action_list_str += ",if=(cooldown.evocation.remains<50&buff.arcane_blast.stack=4)|cooldown.evocation.remains>90|target.time_to_die<40";
           }
           else
           {
-            action_list_str += ",if=(cooldown.evocation.remains<30&buff.arcane_blast.stack=4)|cooldown.evocation.remains>90|target.time_to_die<40";
+            action_list_str += ",if=(cooldown.evocation.remains<40&buff.arcane_blast.stack=4)|cooldown.evocation.remains>90|target.time_to_die<40";
           }
         }
       }
@@ -3337,11 +3337,11 @@ void mage_t::init_actions()
       {
         if ( has_shard == true )
           {
-            action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<40&buff.arcane_blast.stack=4";
+            action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<50&buff.arcane_blast.stack=4";
           }
           else
           {
-            action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<30&buff.arcane_blast.stack=4";
+            action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<40&buff.arcane_blast.stack=4";
           }
       }
       else
@@ -3377,11 +3377,11 @@ void mage_t::init_actions()
       {
         if ( has_shard == true )
         {
-          action_list_str += "/blood_fury,if=cooldown.evocation.remains<40&buff.arcane_blast.stack=4";
+          action_list_str += "/blood_fury,if=cooldown.evocation.remains<50&buff.arcane_blast.stack=4";
         }
         else
         {
-          action_list_str += "/blood_fury,if=cooldown.evocation.remains<30&buff.arcane_blast.stack=4";
+          action_list_str += "/blood_fury,if=cooldown.evocation.remains<40&buff.arcane_blast.stack=4";
         }
       }
       else if ( race == RACE_TROLL )
@@ -3391,14 +3391,14 @@ void mage_t::init_actions()
 
       if ( has_shard == true )
       {
-        if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=(cooldown.evocation.remains<40&buff.arcane_blast.stack=4)|target.time_to_die<40";
-        action_list_str += "/mana_gem,if=(cooldown.evocation.remains<40&buff.arcane_blast.stack=4)|target.time_to_die<40";
+        if ( talents.arcane_power -> rank() ) action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4&(cooldown.evocation.remains<50|target.time_to_die<60)";
+        action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<60";
         action_list_str += "/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)";
       }
       else
       {
-        if ( talents.arcane_power -> rank() ) action_list_str += "/arcane_power,if=(cooldown.evocation.remains<30&buff.arcane_blast.stack=4)|target.time_to_die<40";
-        action_list_str += "/mana_gem,if=(cooldown.evocation.remains<30&buff.arcane_blast.stack=4)|target.time_to_die<40";
+        if ( talents.arcane_power -> rank() ) action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4&(cooldown.evocation.remains<40|target.time_to_die<60)";
+        action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<60";
         action_list_str += "/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)";
       }
 
@@ -3410,11 +3410,11 @@ void mage_t::init_actions()
       action_list_str += "/arcane_blast,if=target.time_to_die<60&mana_pct>4"; // final burn phase
       if ( has_shard == true )
       {
-        action_list_str += "/arcane_blast,if=cooldown.evocation.remains<40&mana_pct>26"; // burn phase AB spam
+        action_list_str += "/arcane_blast,if=cooldown.evocation.remains<50&mana_pct>26"; // burn phase AB spam
       }
       else
       {
-        action_list_str += "/arcane_blast,if=cooldown.evocation.remains<30&mana_pct>26"; // burn phase AB spam
+        action_list_str += "/arcane_blast,if=cooldown.evocation.remains<40&mana_pct>26"; // burn phase AB spam
       }
       action_list_str += "/evocation,invulnerable=1";
       action_list_str += "/evocation,if=target.time_to_die>=31";
