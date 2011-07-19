@@ -3193,14 +3193,13 @@ struct summon_main_pet_t : public summon_pet_t
     summon_pet_t( n, player, sname, options_str ), pet_name( n )
   { }
 
-  virtual void execute()
+  virtual void schedule_execute()
   {
     warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::schedule_execute();
 
     if ( p -> active_pet )
       p -> active_pet -> dismiss();
-
-    summon_pet_t::execute();
   }
 
   virtual bool ready()
