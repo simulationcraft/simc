@@ -681,9 +681,7 @@ struct priest_heal_t : public heal_t
     }
   }
 
-
-  priest_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-    heal_t( n, player, sname, t ), da( 0 )
+  void _init_da()
   {
     priest_t* p = player -> cast_priest();
 
@@ -693,15 +691,16 @@ struct priest_heal_t : public heal_t
     }
   }
 
+  priest_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+    heal_t( n, player, sname, t ), da( 0 )
+  {
+    _init_da();
+  }
+
   priest_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
     heal_t( n, player, id, t ), da( 0 )
   {
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> talents.divine_aegis -> ok() )
-    {
-      da = new divine_aegis_t( p );
-    }
+    _init_da();
   }
 
   virtual void player_buff()
@@ -780,8 +779,7 @@ struct priest_heal_t : public heal_t
     // Divine Aegis
     if ( da && travel_result == RESULT_CRIT )
     {
-      da -> base_dd_min = travel_dmg * da -> shield_multiple;
-      da -> base_dd_max = travel_dmg * da -> shield_multiple;
+      da -> base_dd_min = da -> base_dd_max = travel_dmg * da -> shield_multiple;
       da -> heal_target.clear();
       da -> heal_target.push_back( t );
       da -> execute();
@@ -2070,7 +2068,6 @@ struct penance_t : public priest_spell_t
     cooldown -> duration  += p -> glyphs.penance -> effect1().seconds();
 
     tick_spell = new penance_tick_t( p );
-
   }
 
   virtual void tick()
@@ -3115,8 +3112,10 @@ struct binding_heal_t : public priest_heal_t
 
   virtual void execute()
   {
-    // Adjust heal_target
     priest_t* p = player -> cast_priest();
+
+    // Adjust heal_target
+    heal_target.resize( 1 );
     if ( heal_target[0] != p )
       heal_target.push_back( p );
     else
@@ -3349,18 +3348,17 @@ struct prayer_of_healing_t : public priest_heal_t
 
   virtual void execute()
   {
-    // Choose Heal Targets
     priest_t* p = player -> cast_priest();
-    unsigned int h = 0;
+
+    // Choose Heal Targets
     heal_target.resize( 1 ); // Only leave the first target, reset the others.
     for ( player_t* q = sim -> player_list; q; q = q -> next )
     {
-      if( h > 3 ) continue; // This is actually not correct, but since simc partys aren't automatically limited to 5 people it would screw the results on large simulations.
-      if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( heal_target[0] ) < ( range * range ) && q -> party == p -> party )
+      if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( heal_target[0] ) < ( range * range ) && q -> party == heal_target[0] -> party )
       {
         heal_target.push_back( q );
+        if ( heal_target.size() >= 5 ) break;
       }
-      h++;
     }
 
     priest_heal_t::execute();
@@ -3411,8 +3409,7 @@ struct prayer_of_healing_t : public priest_heal_t
     // Divine Aegis
     if ( da && travel_result != RESULT_CRIT )
     {
-      da -> base_dd_min = travel_dmg * da -> shield_multiple / 2;
-      da -> base_dd_max = travel_dmg * da -> shield_multiple / 2;
+      da -> base_dd_min = da -> base_dd_max = travel_dmg * da -> shield_multiple * 0.5;
       da -> heal_target.clear();
       da -> heal_target.push_back( t );
       da -> execute();
@@ -3499,17 +3496,15 @@ struct circle_of_healing_t : public priest_heal_t
       cooldown -> duration +=  p -> buffs_chakra_sanctuary -> effect2().seconds();
 
     // Choose Heal Target
-    int h = 0;
     heal_target.clear();
     heal_target.push_back( find_lowest_player() );
     for ( player_t* q = sim -> player_list; q; q = q -> next )
     {
-      if( h > ( p -> glyphs.circle_of_healing -> ok() ? 4 : 3 ) ) continue;
-      if ( !q -> is_pet() && q != player && q -> get_player_distance( heal_target[0] ) < ( range * range ) )
+      if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( target ) < ( range * range ) )
       {
         heal_target.push_back( q );
+        if( heal_target.size() >= ( p -> glyphs.circle_of_healing -> ok() ? 6 : 5 ) ) break;
       }
-      h++;
     }
 
     priest_heal_t::execute();
@@ -3556,7 +3551,8 @@ struct prayer_of_mending_t : public priest_heal_t
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
-    if ( da != NULL ) da -> shield_multiple *= 0;
+     // FIXME: Don't trigger DA at all.
+    if ( da != NULL ) { da -> shield_multiple = 0; }
   }
 
   virtual void player_buff()
@@ -3587,15 +3583,13 @@ struct prayer_of_mending_t : public priest_heal_t
     heal_target.resize( 1 ); // Only leave the first target, reset the others.
     if ( ! single )
     {
-      unsigned int h = 0;
       for ( player_t* p = sim -> player_list; p; p = p -> next )
       {
-        if( h > 3 ) continue;
-        if ( !p -> is_pet() && p != player )
+        if ( !p -> is_pet() && p != heal_target[0] )
         {
           heal_target.push_back( p );
+          if ( heal_target.size() >= 5 ) break;
         }
-        h++;
       }
     }
 
@@ -3856,7 +3850,7 @@ struct holy_word_sanctuary_tick_t : public priest_heal_t
     heal_target.clear();
     for ( player_t* q = sim -> player_list; q; q = q -> next )
     {
-      if ( !q -> is_pet() && q -> get_player_distance( player ) < ( range * range ) )
+      if ( !q -> is_pet() && q -> get_player_distance( target ) < ( range * range ) )
       {
         heal_target.push_back( q );
       }
@@ -3892,7 +3886,6 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
     tick_spell = new holy_word_sanctuary_tick_t( p );
-
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect1().percent();
   }
@@ -3934,11 +3927,14 @@ struct holy_word_chastise_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( p -> buffs_chakra_sanctuary -> check() )
-      return false;
+    if ( p -> talents.revelations -> rank() )
+    {
+      if ( p -> buffs_chakra_sanctuary -> check() )
+        return false;
 
-    if (  p -> buffs_chakra_serenity -> check() )
-      return false;
+      if ( p -> buffs_chakra_serenity -> check() )
+        return false;
+    }
 
     return priest_spell_t::ready();
   }
@@ -4132,16 +4128,14 @@ struct divine_hymn_tick_t : public priest_heal_t
   virtual void execute()
   {
     // Choose Heal Targets
-    unsigned int h = 0;
     heal_target.clear();
     heal_target.push_back( find_lowest_player() ); // Find at least the lowest player
     for ( player_t* q = sim -> player_list; q; q = q -> next )
     {
-      if( h > 1 ) continue; // This is actually not correct, but since simc partys aren't automatically limited to 5 people it would screw the results on large simulations.
       if ( !q -> is_pet() && q != heal_target[0] )
       {
         heal_target.push_back( q );
-        h++;
+        if ( heal_target.size() >= 3 ) break;
       }
     }
 
