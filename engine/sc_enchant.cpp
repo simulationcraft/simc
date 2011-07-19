@@ -19,6 +19,7 @@ struct enchant_data_t
 static enchant_data_t enchant_db[] =
 {
   { "4270",  "+145 Stamina and +55 Dodge Rating",                         "145sta_55dodge",                 NULL,        NULL },
+  { "4267",  "Flintlocke's Woodchucker",                                  "flintlockes_woodchucker",        NULL,        NULL },
   { "4266",  "+50 Agility",                                               "50agi",                          NULL,        NULL },
   { "4265",  "+50 Intellect",                                             "50int",                          NULL,        NULL },
   { "4258",  "+50 Agility",                                               "50agi",                          NULL,        NULL },
@@ -876,7 +877,11 @@ void enchant_t::init( player_t* p )
   {
     item_t& item = p -> items[ i ];
 
-    if ( item.enchant.stat )
+    if ( item.enchant.stat && item.enchant.school )
+    {
+      unique_gear_t::register_stat_discharge_proc( item, item.enchant );
+    }
+    else if ( item.enchant.stat )
     {
       unique_gear_t::register_stat_proc( item, item.enchant );
     }

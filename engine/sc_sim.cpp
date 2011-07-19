@@ -958,7 +958,8 @@ void sim_t::reset()
 {
   if ( debug ) log_t::output( this, "Reseting Simulator" );
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
-  current_time = id = last_event = 0;
+  id = 0;
+  current_time = last_event = 0;
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> reset();

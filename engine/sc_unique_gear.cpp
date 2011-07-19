@@ -2157,6 +2157,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_800Mana_30%_15Dur_45Cd";       // TO-DO: Confirm ICD.
   else if ( name == "swordguard_embroidery_old"           ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
   else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
+  else if ( name == "flintlockes_woodchucker"             ) e = "OnAttackHit_1100Physical_300Agi_10%_10Dur_40Cd"; // TO-DO: Confirm ICD.
 
   // DK Runeforges
   else if ( name == "rune_of_cinderglacier"               ) e = "custom";
