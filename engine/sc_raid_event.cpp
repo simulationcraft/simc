@@ -198,11 +198,11 @@ struct movement_event_t : public raid_event_t
       }
       else
       {
-        my_duration = saved_duration;        
+        my_duration = saved_duration;
       }
       if ( my_duration > 0 )
       {
-        p -> buffs.raid_movement -> buff_duration = my_duration; 
+        p -> buffs.raid_movement -> buff_duration = my_duration;
         p -> buffs.raid_movement -> trigger();
       }
       if ( p -> sleeping ) continue;
@@ -295,6 +295,7 @@ struct damage_event_t : public raid_event_t
 
     assert( duration == 0 );
   }
+
   virtual void start()
   {
     raid_event_t::start();
@@ -308,6 +309,43 @@ struct damage_event_t : public raid_event_t
       x = rng -> gauss( amount, amount_stddev );
       if ( sim -> log ) log_t::output( sim, "%s takes %.0f raid damage.", p -> name(), x );
       p -> assess_damage( x, util_t::parse_school_type(type), DMG_DIRECT, RESULT_HIT );
+    }
+  }
+};
+
+// Heal =====================================================================
+
+struct heal_event_t : public raid_event_t
+{
+  double amount;
+  double amount_stddev;
+
+  heal_event_t( sim_t* s, const std::string& options_str ) :
+    raid_event_t( s, "heal" ), amount( 1 ), amount_stddev( 0 )
+  {
+    option_t options[] =
+    {
+      { "amount",        OPT_FLT, &amount        },
+      { "amount_stddev", OPT_FLT, &amount_stddev },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    assert( duration == 0 );
+  }
+
+  virtual void start()
+  {
+    raid_event_t::start();
+    int num_affected = ( int ) affected_players.size();
+    for ( int i=0; i < num_affected; i++ )
+    {
+      player_t* p = affected_players[ i ];
+      if ( p -> sleeping ) continue;
+
+      double x = rng -> gauss( amount, amount_stddev );
+      if ( sim -> log ) log_t::output( sim, "%s takes %.0f raid heal.", p -> name(), x );
+      p -> resource_gain( RESOURCE_HEALTH, x );
     }
   }
 };
@@ -552,6 +590,7 @@ raid_event_t* raid_event_t::create( sim_t* sim,
   if ( name == "movement"     ) return new     movement_event_t( sim, options_str );
   if ( name == "moving"       ) return new     movement_event_t( sim, options_str );
   if ( name == "damage"       ) return new       damage_event_t( sim, options_str );
+  if ( name == "heal"         ) return new         heal_event_t( sim, options_str );
   if ( name == "stun"         ) return new         stun_event_t( sim, options_str );
   if ( name == "vulnerable"   ) return new   vulnerable_event_t( sim, options_str );
 
