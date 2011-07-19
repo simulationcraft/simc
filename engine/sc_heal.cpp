@@ -182,9 +182,6 @@ void heal_t::execute()
     schedule_travel( heal_target[ i ] );
   }
 
-
-
-
   consume_resource();
 
   update_ready();

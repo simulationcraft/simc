@@ -307,7 +307,6 @@ action_t* enemy_t::create_action( const std::string& name,
   if ( name == "spell_aoe"               ) return new               spell_aoe_t( this, options_str );
   if ( name == "summon_add"              ) return new               summon_add_t( this, options_str );
 
-
   return player_t::create_action( name, options_str );
 }
 
@@ -498,13 +497,11 @@ void enemy_t::recalculate_health()
   if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, dmg_taken );
 }
 
-
 // enemy_t::create_expression ================================================
 
 action_expr_t* enemy_t::create_expression( action_t* action,
     const std::string& name_str )
 {
-
   if ( name_str == "adds" )
   {
     struct target_adds_expr_t : public action_expr_t
@@ -519,6 +516,8 @@ action_expr_t* enemy_t::create_expression( action_t* action,
 
   return player_t::create_expression( action, name_str );
 }
+
+// enemy_t::combat_end ======================================================
 
 void enemy_t::combat_end()
 {
@@ -541,8 +540,6 @@ action_t* enemy_add_t::create_action( const std::string& name,
   return pet_t::create_action( name, options_str );
 }
 
-
-
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -554,7 +551,7 @@ player_t* player_t::create_enemy( sim_t* sim, const std::string& name, race_type
   return new enemy_t( sim, name );
 }
 
-// warrior_init =============================================================
+// player_t::enemy_init =====================================================
 
 void player_t::enemy_init( sim_t* sim )
 {

@@ -3176,7 +3176,6 @@ void warrior_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    
     switch ( primary_tree() )
     {
 
@@ -3263,7 +3262,7 @@ void warrior_t::init_actions()
     
       action_list_str += "/recklessness,if=((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)";
       if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage,if=!buff.deadly_calm.up&rage<70";
-      if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<30&((target.health_pct>20&target.time_to_die>130)|(target.health_pct<=20&buff.recklessness.up))";
+      if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<30&(target.health_pct>20&target.time_to_die>130)";
       if ( talents.sweeping_strikes -> ok() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
       // Don't want to bladestorm during SS as it's only 1 extra hit per WW not per target
       action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";

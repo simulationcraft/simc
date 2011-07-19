@@ -899,7 +899,6 @@ void player_t::init_items()
     break;
   }
 
-
   init_meta_gem( item_stats );
 
   for ( int i=0; i < STAT_MAX; i++ )
@@ -1835,8 +1834,7 @@ void player_t::init_scaling()
       case STAT_DODGE_RATING:   initial_dodge       += v / rating.dodge; break;
       case STAT_PARRY_RATING:   initial_parry       += v / rating.parry; break;
 
-      case STAT_BLOCK_RATING: initial_block       += v / rating.block; break;
-
+      case STAT_BLOCK_RATING:   initial_block       += v / rating.block; break;
 
       case STAT_MAX: break;
 
@@ -2016,12 +2014,16 @@ double player_t::composite_armor() SC_CONST
   return a;
 }
 
+// player_t::composite_armor_multiplier =====================================
+
 double player_t::composite_armor_multiplier() SC_CONST
 {
   double a = armor_multiplier;
 
   return a;
 }
+
+// player_t::composite_spell_resistance =====================================
 
 double player_t::composite_spell_resistance( const school_type school ) SC_CONST
 {
@@ -2438,7 +2440,7 @@ double player_t::composite_movement_speed() SC_CONST
 
   // Druid: Feral Swiftness: 15%/30%
 
-  // Aspect of  the Cheetah/Pack: 30%, with talent Pathfinding +34%/38%
+  // Aspect of the Cheetah/Pack: 30%, with talent Pathfinding +34%/38%
 
   // Shaman Ghost Wolf: 30%, with Glyph 35%
 
@@ -2449,8 +2451,6 @@ double player_t::composite_movement_speed() SC_CONST
   // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
   //       Improved Blink: 35%/70% for 3 sec after blink
   //       Glyph of Invisibility: 40% while invisible
-
-  // Body and Soul: 30%/60%
 
   // Rogue: Spring 70%
 
@@ -2635,7 +2635,7 @@ void player_t::combat_begin()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
 
-  if ( ! is_pet() && !is_add() )
+  if ( ! is_pet() && ! is_add() )
   {
     arise();
   }
@@ -2707,8 +2707,6 @@ void player_t::combat_end()
   }
   else if ( is_pet() )
     cast_pet() -> dismiss();
-
-
 
   double iteration_seconds = current_time;
 
@@ -3069,7 +3067,8 @@ void player_t::clear_debuffs()
   }
 }
 
-// player_t::execute_action =================================================
+// player_t::print_action_map ===============================================
+
 std::string player_t::print_action_map( int iterations, int precision )
 {
   std::map<std::string,int>::const_iterator it = action_map.begin();
@@ -3085,6 +3084,8 @@ std::string player_t::print_action_map( int iterations, int precision )
 
   return ret;
 }
+
+// player_t::execute_action =================================================
 
 action_t* player_t::execute_action()
 {
@@ -3133,72 +3134,70 @@ void player_t::regen( double periodicity )
 {
   int resource_type = primary_resource();
 
+  if ( resource_type == RESOURCE_ENERGY )
+  {
+    double energy_regen = periodicity * energy_regen_per_second();
 
-    if ( resource_type == RESOURCE_ENERGY )
+    resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
+  }
+  else if ( resource_type == RESOURCE_FOCUS )
+  {
+    double focus_regen = periodicity * focus_regen_per_second();
+
+    resource_gain( RESOURCE_FOCUS, focus_regen, gains.focus_regen );
+  }
+  else if ( resource_type == RESOURCE_MANA )
+  {
+    if( buffs.innervate -> check() )
     {
-      double energy_regen = periodicity * energy_regen_per_second();
-
-      resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
-    }
-    else if ( resource_type == RESOURCE_FOCUS )
-    {
-      double focus_regen = periodicity * focus_regen_per_second();
-
-      resource_gain( RESOURCE_FOCUS, focus_regen, gains.focus_regen );
-    }
-    else if ( resource_type == RESOURCE_MANA )
-    {
-      if( buffs.innervate -> check() )
-      {
-        resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
-      }
-
-      double spirit_regen = periodicity * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
-
-      if ( mana_regen_while_casting < 1.0 )
-      {
-        spirit_regen *= mana_regen_while_casting;
-      }
-      if( spirit_regen > 0 )
-      {
-        resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
-      }
-
-      double mp5_regen = periodicity * composite_mp5() / 5.0;
-
-      resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
-
-      if ( buffs.replenishment -> up() )
-      {
-        double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0010 / 1.0;
-
-        resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
-      }
-
-      if ( buffs.essence_of_the_red -> up() )
-      {
-        double essence_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.05;
-
-        resource_gain( RESOURCE_MANA, essence_regen, gains.essence_of_the_red );
-      }
-
-      double bow = buffs.blessing_of_might_regen -> current_value;
-      double ms  = ( ! is_enemy() && ! is_add() ) ? sim -> auras.mana_spring_totem -> current_value : 0;
-
-      if ( ms > bow )
-      {
-        double mana_spring_regen = periodicity * ms / 5.0;
-
-        resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring_totem );
-      }
-      else if ( bow > 0 )
-      {
-        double wisdom_regen = periodicity * bow / 5.0;
-
-        resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_might );
-      }
+      resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
     }
 
+    double spirit_regen = periodicity * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
+
+    if ( mana_regen_while_casting < 1.0 )
+    {
+      spirit_regen *= mana_regen_while_casting;
+    }
+    if( spirit_regen > 0 )
+    {
+      resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
+    }
+
+    double mp5_regen = periodicity * composite_mp5() / 5.0;
+
+    resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
+
+    if ( buffs.replenishment -> up() )
+    {
+      double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0010 / 1.0;
+
+      resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
+    }
+
+    if ( buffs.essence_of_the_red -> up() )
+    {
+      double essence_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.05;
+
+      resource_gain( RESOURCE_MANA, essence_regen, gains.essence_of_the_red );
+    }
+
+    double bow = buffs.blessing_of_might_regen -> current_value;
+    double ms  = ( ! is_enemy() && ! is_add() ) ? sim -> auras.mana_spring_totem -> current_value : 0;
+
+    if ( ms > bow )
+    {
+      double mana_spring_regen = periodicity * ms / 5.0;
+
+      resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring_totem );
+    }
+    else if ( bow > 0 )
+    {
+      double wisdom_regen = periodicity * bow / 5.0;
+
+      resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_might );
+    }
+  }
 
   if ( resource_type != RESOURCE_NONE )
   {
