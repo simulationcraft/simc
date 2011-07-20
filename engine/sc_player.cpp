@@ -3646,7 +3646,7 @@ double player_t::assess_damage( double            amount,
 
   double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount );
 
-  if ( resource_current[ RESOURCE_HEALTH ] <= 0 && !is_enemy() )
+  if ( resource_current[ RESOURCE_HEALTH ] <= 0 && !is_enemy() && infinite_resource[ RESOURCE_HEALTH ] == 0 )
   {
     if ( !sleeping )
     {
