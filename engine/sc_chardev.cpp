@@ -103,7 +103,7 @@ player_t* chardev_t::download_player( sim_t* sim,
   if ( ! js_t::get_value( race_str, profile_js, "0/2/1" ) ||
        ! js_t::get_value( type_str, profile_js, "0/3/1" ) )
   {
-    sim -> errorf( "Unable to extract player race/type from CharDev id %s.\n", id.c_str() );
+    sim -> errorf( "Unable to extract player race/type from CharDev id %s.\nThis is often caused by not saving the profile.\n", id.c_str() );
     return 0;
   }
 
