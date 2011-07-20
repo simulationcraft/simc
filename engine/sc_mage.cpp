@@ -1582,7 +1582,6 @@ struct blink_t : public mage_spell_t
   }
 };
 
-
 // Cold Snap Spell ==========================================================
 
 struct cold_snap_t : public mage_spell_t

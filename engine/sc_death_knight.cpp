@@ -839,8 +839,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       background  = true;
       trigger_gcd = 0;
-      base_crit       +=     o -> talents.improved_death_strike -> effect2().percent();
-      base_multiplier *= 1 + o -> talents.improved_death_strike -> effect1().percent();
+      base_crit       +=     o -> talents.improved_death_strike -> rank() * 0.10; // Hotfix 20 Jul 2011
+      base_multiplier *= 1 + o -> talents.improved_death_strike -> rank() * 0.40; // Hotfix 20 Jul 2011
 
       if ( o -> race == RACE_ORC )
       {

@@ -541,7 +541,6 @@ struct priest_spell_t : public spell_t
     }
   }
 
-
   static void trigger_shadowy_apparition( player_t* player );
   static void add_more_shadowy_apparitions( player_t* player );
 };
@@ -3107,7 +3106,7 @@ struct binding_heal_t : public priest_heal_t
     {
       for ( player_t* q = sim -> player_list; q; q = q -> next )
       {
-        if ( !q -> is_pet() && q != heal_target[0] && p -> get_player_distance( q ) < ( range * range ) )
+        if ( ! q -> is_pet() && q != heal_target[0] && p -> get_player_distance( q ) < ( range * range ) )
         {
           heal_target.push_back( q );
           break;

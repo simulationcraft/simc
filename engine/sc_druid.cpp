@@ -285,7 +285,7 @@ struct druid_t : public player_t
     dots_rejuvenation = get_dot( "rejuvenation" );
     dots_rip          = get_dot( "rip"          );
     dots_sunfire      = get_dot( "sunfire"      );
-    dots_wild_growth  = get_dot ( "wild_growth" );
+    dots_wild_growth  = get_dot( "wild_growth"  );
 
     cat_melee_attack = 0;
     bear_melee_attack = 0;
@@ -517,8 +517,6 @@ struct treants_pet_t : public pet_t
     melee_t( player_t* player ) :
       attack_t( "treant_melee", player )
     {
-      //druid_t* o = player -> cast_pet() -> owner -> cast_druid();
-
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       base_dd_min = base_dd_max = 1;
@@ -686,7 +684,6 @@ static void trigger_eclipse_proc( druid_t* p )
   p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.euphoria -> effect3().resource( RESOURCE_MANA ), p -> gains_euphoria );
   p -> buffs_t11_4pc_caster -> trigger( 3 );
   p -> buffs_natures_grace -> cooldown -> reset();
-
 }
 
 // trigger_eclipse_energy_gain ==============================================
@@ -800,7 +797,7 @@ static void trigger_efflorescence( heal_t* a )
     efflorescence_t( druid_t* player ) :
       druid_heal_t( "efflorescence", player, 81269 )
     {
-      aoe            = 3; // DRs kick in after 6
+      aoe            = 3;
       background     = true;
       base_tick_time = 1.0;
       hasted_ticks   = true;
