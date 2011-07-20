@@ -352,14 +352,15 @@ struct druid_t : public player_t
     return combo_point_rank( cp_list );
   }
 
-  int hot_counter()
+  bool hot_counter( player_t* t )
   {
-    int hots = 0;
-    if ( dots_regrowth -> ticking     ) hots++;
-    if ( dots_rejuvenation -> ticking ) hots++;
-    if ( dots_lifebloom -> ticking    ) hots++;
-    if ( dots_wild_growth -> ticking  ) hots++;
-    return hots;
+    if ( ( t -> find_dot( "regrowth"     ) && t -> find_dot( "regrowth"     ) -> ticking ) ||
+         ( t -> find_dot( "rejuvenation" ) && t -> find_dot( "rejuvenation" ) -> ticking ) ||
+         ( t -> find_dot( "lifebloom"    ) && t -> find_dot( "lifebloom"    ) -> ticking ) ||
+         ( t -> find_dot( "wild_growth"  ) && t -> find_dot( "wild_growth"  ) -> ticking ) )
+      return true;
+    
+    return false;
   }
 
   void reset_gcd()
@@ -2012,8 +2013,8 @@ struct bear_melee_t : public druid_bear_attack_t
 
 struct demoralizing_roar_t : public druid_bear_attack_t
 {
-  demoralizing_roar_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "demoralizing_roar", 99, player )
+  demoralizing_roar_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "demoralizing_roar", 99, p )
   {
     parse_options( NULL, options_str );
 
@@ -2290,8 +2291,8 @@ struct skull_bash_bear_t : public druid_bear_attack_t
 
 struct swipe_bear_t : public druid_bear_attack_t
 {
-  swipe_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "swipe_bear", 779, player )
+  swipe_bear_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "swipe_bear", 779, p )
   {
     parse_options( NULL, options_str );
 
@@ -2399,10 +2400,8 @@ void druid_heal_t::player_buff()
   player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> effect1().percent();
   player_multiplier *= 1.0 + p -> buffs_tree_of_life -> value();
 
-  // FIXME: If we're refreshing a hot, that doesn't count towards the count
-  // eg: Only rejuv is up, refresh rejuv, rejuv doesn't get the bonus
-  // If regrowth is up and we refresh rejuv, we get the bonus
-  if ( p -> primary_tree() == TREE_RESTORATION && p -> hot_counter() )
+  // FIXME: This is the old mastery
+  if ( p -> primary_tree() == TREE_RESTORATION && p -> hot_counter( p ) )
   {
     player_multiplier *= 1.0 + p -> spells.symbiosis -> effect1().coeff() * 0.01 * p -> composite_mastery();
   }
@@ -2476,11 +2475,11 @@ struct lifebloom_bloom_t : public druid_heal_t
     // The stats doesn't work as expected when merging
 
     // All the data exists in the original lifebloom spell
-    const spell_data_t* damage_spell = player -> dbc.spell( 33763 );
-    direct_power_mod   = damage_spell -> effect2().coeff();
-    base_dd_min        = player -> dbc.effect_min( damage_spell -> effect2().id(), player -> level );
-    base_dd_max        = player -> dbc.effect_max( damage_spell -> effect2().id(), player -> level );
-    school             = spell_id_t::get_school_type( damage_spell -> school_mask() );
+    const spell_data_t* bloom = player -> dbc.spell( 33763 );
+    direct_power_mod   = bloom -> effect2().coeff();
+    base_dd_min        = player -> dbc.effect_min( bloom -> effect2().id(), player -> level );
+    base_dd_max        = player -> dbc.effect_max( bloom -> effect2().id(), player -> level );
+    school             = spell_id_t::get_school_type( bloom -> school_mask() );
 
     base_crit          += p -> glyphs.lifebloom -> mod_additive( P_CRIT );
     base_dd_multiplier *= 1.0 + p -> talents.gift_of_the_earthmother -> effect1().percent();
@@ -2549,8 +2548,10 @@ struct lifebloom_t : public druid_heal_t
     }
 
     if ( p -> rng_heartfire -> roll( p -> sets -> set( SET_T12_2PC_HEAL ) -> proc_chance()  ) )
-      player -> resource_gain( RESOURCE_MANA, player -> resource_base[ RESOURCE_MANA ] * p -> sets -> set( SET_T12_2PC_HEAL ) -> effect_base_value( 1 ) / 100.0, p -> gains_heartfire );
-
+      player -> resource_gain( RESOURCE_MANA,
+                               player -> resource_base[ RESOURCE_MANA ] * 
+                               p -> sets -> set( SET_T12_2PC_HEAL ) -> effect_base_value( 1 ) / 100.0,
+                               p -> gains_heartfire );
 
     trigger_revitalize( this );
   }
@@ -2579,12 +2580,14 @@ struct nourish_t : public druid_heal_t
       trigger_living_seed( this );
   }
 
-  virtual void player_buff()
+  virtual void target_debuff( player_t* t, int dmg_type )
   {
-    druid_heal_t::player_buff();
+    druid_heal_t::target_debuff( t, dmg_type );
+
     druid_t* p = player -> cast_druid();
-    if ( p -> hot_counter() )
-      player_multiplier *= 1.20;
+
+    if ( p -> hot_counter( t ) )
+      target_multiplier *= 1.20;
   }
 };
 
