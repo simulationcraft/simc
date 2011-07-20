@@ -14,6 +14,7 @@ actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
 actions+=/summon_imp
 actions+=/dark_intent
+actions+=/soulburn,if=!in_combat
 actions+=/snapshot_stats
 actions+=/use_item,name=rune_of_zeth
 actions+=/blood_fury
@@ -68,3 +69,4 @@ ranged=trail_of_embers,ilevel=378,quality=epic,stats=128int_192sta_79hit_89haste
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
 # main_hand=volcanospike,weapon=sword_1.60speed_309min_574max,enchant=power_torrent
+use_pre_soulburn=1

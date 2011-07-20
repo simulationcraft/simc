@@ -14,6 +14,7 @@ actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
 actions+=/summon_imp
 actions+=/dark_intent
+actions+=/soulburn,if=!in_combat
 actions+=/snapshot_stats
 actions+=/use_item,name=rune_of_zeth
 actions+=/blood_fury
@@ -49,7 +50,7 @@ finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int
 trinket1=rune_of_zeth,heroic=1,ilevel=391,quality=epic,stats=433crit,reforge=crit_hit,use=1441int_15dur_60cd
 trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=50int
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,quality=legendary,stats=459int_779sta_366hit_252haste_2973sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_2190min_4067max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste
 # Gear Summary
 # gear_strength=20
@@ -66,4 +67,5 @@ ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hi
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2190min_4067max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
+use_pre_soulburn=1

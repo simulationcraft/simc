@@ -388,7 +388,7 @@ struct warlock_t : public player_t
     cooldowns_fiery_imp = get_cooldown( "fiery_imp" );
     cooldowns_fiery_imp -> duration = 45.0;
 
-    use_pre_soulburn = 0;
+    use_pre_soulburn = 1;
 
     create_talents();
     create_glyphs();
@@ -4335,14 +4335,14 @@ void warlock_t::init_actions()
     // Choose Pet
     if ( primary_tree() == TREE_DESTRUCTION )
       action_list_str += "/summon_imp";
-    else if ( primary_tree() == TREE_AFFLICTION || primary_tree() == TREE_DEMONOLOGY )
+    else if ( primary_tree() == TREE_DEMONOLOGY )
+      action_list_str += "/summon_felguard,if=cooldown.demon_soul.remains<5&cooldown.metamorphosis.remains<5&!pet.felguard.active";
+    else if ( primary_tree() == TREE_AFFLICTION )
     {
       if ( glyphs.lash_of_pain -> ok() )
         action_list_str += "/summon_succubus";
       else if ( glyphs.imp -> ok() )
         action_list_str += "/summon_imp";
-      else if ( glyphs.felguard -> ok() )
-        action_list_str += "/summon_felguard";
       else
         action_list_str += "/summon_felhunter";
     }
@@ -4352,6 +4352,10 @@ void warlock_t::init_actions()
     // Dark Intent
     if ( level >= 83 )
       action_list_str += "/dark_intent";
+
+    // Pre soulburn
+    if ( use_pre_soulburn )
+      action_list_str += "/soulburn,if=!in_combat";
 
     // Snapshot Stats
     action_list_str += "/snapshot_stats";
@@ -4364,6 +4368,8 @@ void warlock_t::init_actions()
       {
         action_list_str += "/use_item,name=";
         action_list_str += items[ i ].name();
+        if ( primary_tree() == TREE_DEMONOLOGY )
+          action_list_str += ",if=cooldown.metamorphosis.remains=0|cooldown.metamorphosis.remains>cooldown";
       }
     }
 
@@ -4387,7 +4393,12 @@ void warlock_t::init_actions()
 
     // Choose Potion
     if ( level >= 80 )
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20";
+    {
+      if ( primary_tree() == TREE_DEMONOLOGY )
+        action_list_str += "/volcanic_potion,if=buff.metamorphosis.up|!in_combat";
+      else
+        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20";
+    }
     else if ( level >= 70 )
     {
       if ( primary_tree() == TREE_AFFLICTION )
@@ -4465,33 +4476,22 @@ void warlock_t::init_actions()
 
     case TREE_DEMONOLOGY:
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
-      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() && ! glyphs.imp -> ok() ) action_list_str += "/demon_soul";
+      if ( level >= 85 ) action_list_str += "/demon_soul,if=buff.metamorphosis.up&pet.felguard.active";
+      if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
+      action_list_str += "/felguard:felstorm";
+      action_list_str += "/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking";
+      action_list_str += "/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active";
       if ( level >= 60 ) action_list_str += "/immolation_aura,if=buff.metamorphosis.remains>10";
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
+      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react&cooldown.demon_soul.remains>30";
       action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
       if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
       if ( level >= 75 ) action_list_str += "/shadowflame";
-      if ( level >= 85 && glyphs.imp -> ok() ) action_list_str += "/demon_soul";
-      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
+      if ( glyphs.corruption -> ok() ) action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
       if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
-      if ( level >= 54) action_list_str += "/soulburn";
-      if ( level >= 54)
-      {
-        if ( talent_improved_soul_fire -> ok() )
-        {
-          action_list_str += "/soul_fire,if=buff.improved_soul_fire.cooldown_remains<(cast_time+travel_time)&buff.bloodlust.down&!in_flight&miss_react";
-        } else {
-          action_list_str += "/soul_fire,if=buff.decimation.react|buff.soulburn.up";
-        }
-      }
-      if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
-      action_list_str += "/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down";
-      if ( glyphs.imp -> ok() ) action_list_str += "&buff.demon_soul_imp.down";
-      else if ( glyphs.lash_of_pain -> ok() ) action_list_str += "&buff.demon_soul_succubus.down";
-      else if ( glyphs.felguard -> ok() ) action_list_str += "&buff.demon_soul_felguard.down";
-      else action_list_str += "&buff.demon_soul_felhunter.down";
-      if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
+      if ( level >= 54) action_list_str += "/soul_fire,if=buff.decimation.up";
+      action_list_str += "/life_tap,if=mana_pct<=30&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felguard.down";
       action_list_str += "/shadow_bolt";
 
     break;

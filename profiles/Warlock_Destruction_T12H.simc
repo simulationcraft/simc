@@ -14,6 +14,7 @@ actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
 actions+=/summon_imp
 actions+=/dark_intent
+actions+=/soulburn,if=!in_combat
 actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
@@ -66,3 +67,4 @@ ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hi
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
 # main_hand=shoravon_greatstaff_of_annihilation,heroic=1,weapon=staff_2.90speed_764min_1146max,enchant=power_torrent
+use_pre_soulburn=1

@@ -12,25 +12,28 @@ glyphs=life_tap/shadow_bolt/immolate/incinerate/metamorphosis
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
-actions+=/summon_felhunter
+actions+=/summon_felguard,if=cooldown.demon_soul.remains<5&cooldown.metamorphosis.remains<5&!pet.felguard.active
 actions+=/dark_intent
+actions+=/soulburn,if=!in_combat
 actions+=/snapshot_stats
-actions+=/use_item,name=rune_of_zeth
+actions+=/use_item,name=rune_of_zeth,if=cooldown.metamorphosis.remains=0|cooldown.metamorphosis.remains>cooldown
 actions+=/blood_fury
-actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+actions+=/volcanic_potion,if=buff.metamorphosis.up|!in_combat
 actions+=/metamorphosis
-actions+=/demon_soul
+actions+=/demon_soul,if=buff.metamorphosis.up&pet.felguard.active
+actions+=/summon_doomguard,if=time>10
+actions+=/felguard:felstorm
+actions+=/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking
+actions+=/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active
 actions+=/immolation_aura,if=buff.metamorphosis.remains>10
-actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
 actions+=/immolate,if=!ticking&target.time_to_die>=4&miss_react
+actions+=/hand_of_guldan
+actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react&cooldown.demon_soul.remains>30
 actions+=/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react
 actions+=/shadowflame
-actions+=/hand_of_guldan
 actions+=/incinerate,if=buff.molten_core.react
-actions+=/soulburn
-actions+=/soul_fire,if=buff.decimation.react|buff.soulburn.up
-actions+=/summon_doomguard,if=time>10
-actions+=/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felhunter.down
+actions+=/soul_fire,if=buff.decimation.up
+actions+=/life_tap,if=mana_pct<=30&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felguard.down
 actions+=/shadow_bolt
 actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
 actions+=/fel_flame,moving=1
@@ -49,7 +52,7 @@ finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int
 trinket1=rune_of_zeth,heroic=1,ilevel=391,quality=epic,stats=433crit,reforge=crit_haste,use=1441int_15dur_60cd
 trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,reforge=haste_mastery,enchant=50int
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,quality=legendary,stats=459int_779sta_366hit_252haste_2973sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_2190min_4067max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste,reforge=haste_mastery
 # Gear Summary
 # gear_strength=20
@@ -66,4 +69,5 @@ ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hi
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2190min_4067max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
+use_pre_soulburn=1

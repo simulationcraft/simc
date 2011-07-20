@@ -12,25 +12,28 @@ glyphs=life_tap/shadow_bolt/metamorphosis/incinerate/immolate
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
-actions+=/summon_felhunter
+actions+=/summon_felguard,if=cooldown.demon_soul.remains<5&cooldown.metamorphosis.remains<5&!pet.felguard.active
 actions+=/dark_intent
+actions+=/soulburn,if=!in_combat
 actions+=/snapshot_stats
 actions+=/blood_fury
-actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
+actions+=/volcanic_potion,if=buff.metamorphosis.up|!in_combat
 actions+=/metamorphosis
-actions+=/demon_soul
+actions+=/demon_soul,if=buff.metamorphosis.up&pet.felguard.active
+actions+=/summon_doomguard,if=time>10
+actions+=/felguard:felstorm
+actions+=/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking
+actions+=/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active
 actions+=/immolation_aura,if=buff.metamorphosis.remains>10
-actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
 actions+=/immolate,if=!ticking&target.time_to_die>=4&miss_react
+actions+=/hand_of_guldan
+actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react&cooldown.demon_soul.remains>30
 actions+=/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react
 actions+=/fel_flame,if=buff.tier11_4pc_caster.react
 actions+=/shadowflame
-actions+=/hand_of_guldan
 actions+=/incinerate,if=buff.molten_core.react
-actions+=/soulburn
-actions+=/soul_fire,if=buff.decimation.react|buff.soulburn.up
-actions+=/summon_doomguard,if=time>10
-actions+=/life_tap,if=mana_pct<=50&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felhunter.down
+actions+=/soul_fire,if=buff.decimation.up
+actions+=/life_tap,if=mana_pct<=30&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felguard.down
 actions+=/shadow_bolt
 actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
 actions+=/fel_flame,moving=1
@@ -68,3 +71,4 @@ ranged=theresas_booklight,ilevel=359,quality=epic,stats=107int_161sta_72mastery_
 # tier11_2pc_caster=1
 # tier11_4pc_caster=1
 # main_hand=incineratus,weapon=dagger_1.80speed_291min_541max,enchant=power_torrent
+use_pre_soulburn=1
