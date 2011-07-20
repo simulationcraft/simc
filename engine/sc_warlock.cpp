@@ -3640,7 +3640,7 @@ struct soulburn_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( !( p -> use_pre_soulburn && p -> in_combat ) )
+    if ( p -> use_pre_soulburn || p -> in_combat )
       p -> buffs_soulburn -> trigger();
     warlock_spell_t::execute();
   }
