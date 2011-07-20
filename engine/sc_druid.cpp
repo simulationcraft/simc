@@ -1297,12 +1297,10 @@ struct feral_charge_cat_t : public druid_cat_attack_t
 {
   double stampede_cost_reduction, stampede_duration;
 
-  feral_charge_cat_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "feral_charge_cat", 49376, player ),
+  feral_charge_cat_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "feral_charge_cat", 49376, p ),
     stampede_cost_reduction( 0.0 ), stampede_duration( 0.0 )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     if ( p -> talents.stampede -> rank() )
@@ -1359,12 +1357,10 @@ struct ferocious_bite_t : public druid_cat_attack_t
   double excess_energy;
   double max_excess_energy;
 
-  ferocious_bite_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "ferocious_bite", 22568, player ),
+  ferocious_bite_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "ferocious_bite", 22568, p ),
     base_dmg_per_point( 0 ), excess_energy( 0 ), max_excess_energy( 0 )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     base_dmg_per_point    = p -> dbc.effect_bonus( effect_id( 1 ), p -> level );
@@ -1413,7 +1409,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
       // Proc chance is not stored in the talent anymore
       if ( p -> dots_rip -> ticking && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> rank() * 0.50 ) )
       {
-         p -> dots_rip -> action -> refresh_duration();
+        p -> dots_rip -> action -> refresh_duration();
       }
     }
   }
@@ -1480,14 +1476,12 @@ struct maim_t : public druid_cat_attack_t
 
 struct mangle_cat_t : public druid_cat_attack_t
 {
-  mangle_cat_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "mangle_cat", 33876, player )
+  mangle_cat_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "mangle_cat", 33876, p )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
-    adds_combo_points = 1; // Not in the DBC
+    adds_combo_points = 1; // Not picked up from the DBC
     base_multiplier  *= 1.0 + p -> glyphs.mangle -> mod_additive( P_GENERIC );
   }
 
@@ -1503,6 +1497,7 @@ struct mangle_cat_t : public druid_cat_attack_t
       p -> buffs_t11_4pc_melee -> trigger();
     }
   }
+
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     druid_cat_attack_t::travel( t, travel_result, travel_dmg );
@@ -1650,18 +1645,16 @@ struct rip_t : public druid_cat_attack_t
   double base_dmg_per_point;
   double ap_per_point;
 
-  rip_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "rip", 1079, player ),
+  rip_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "rip", 1079, p ),
     base_dmg_per_point( 0 ), ap_per_point( 0 )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     base_dmg_per_point    = p -> dbc.effect_bonus( effect_id( 1 ), p -> level );
     ap_per_point          = 0.0207;
     requires_combo_points = true;
-    may_crit   = false;
+    may_crit              = false;
     base_multiplier      *= 1.0 + p -> glyphs.rip -> mod_additive( P_TICK_DAMAGE );
 
     dot_behavior          = DOT_REFRESH; // Tested on PTR server.
@@ -1732,7 +1725,7 @@ struct savage_roar_t : public druid_cat_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    double duration = 9.0 + 5.0 * p -> buffs_combo_points -> stack();
+    double duration = this -> duration() + 5.0 * p -> buffs_combo_points -> stack();
     duration += p -> talents.endless_carnage -> effect2().seconds();
 
     // execute clears CP, so has to be after calculation duration
@@ -1780,6 +1773,7 @@ struct shred_t : public druid_cat_attack_t
       trigger_infected_wounds( this );
     }
   }
+
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     druid_cat_attack_t::travel( t, travel_result, travel_dmg );
@@ -1817,16 +1811,14 @@ struct shred_t : public druid_cat_attack_t
 
 struct skull_bash_cat_t : public druid_cat_attack_t
 {
-  skull_bash_cat_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "skull_bash_cat", 22570, player )
+  skull_bash_cat_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "skull_bash_cat", 22570, p )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
-    cooldown -> duration  += p -> talents.brutal_impact -> effect3().seconds();
+    cooldown -> duration += p -> talents.brutal_impact -> effect3().seconds();
   }
 
   virtual bool ready()
@@ -1855,11 +1847,9 @@ struct swipe_cat_t : public druid_cat_attack_t
 
 struct tigers_fury_t : public druid_cat_attack_t
 {
-  tigers_fury_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "tigers_fury", 5217, player )
+  tigers_fury_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "tigers_fury", 5217, p )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -1953,16 +1943,15 @@ void druid_bear_attack_t::execute()
   }
 }
 
+// druid_bear_attack_t::haste ===============================================
+
 double druid_bear_attack_t::haste() SC_CONST
 {
   druid_t* p = player -> cast_druid();
 
   double h = attack_t::haste();
 
-  if ( p -> buffs_stampede_bear -> up() )
-  {
-    h *= p -> buffs_stampede_bear -> value();
-  }
+  h *= p -> buffs_stampede_bear -> value();
 
   return h;
 }
@@ -1974,18 +1963,14 @@ void druid_bear_attack_t::player_buff()
   druid_t* p = player -> cast_druid();
   attack_t::player_buff();
 
-  if ( p -> talents.master_shapeshifter -> rank() )
-  {
-    player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> base_value() * 0.01;
-  }
+  player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> base_value() * 0.01;
+
   if ( p -> talents.king_of_the_jungle -> rank() && p -> buffs_enrage -> up() )
   {
     player_multiplier *= 1.0 + p -> talents.king_of_the_jungle -> effect1().percent();
   }
-  if ( p -> buffs_pulverize -> up() )
-  {
-    player_crit += p -> buffs_pulverize -> value();
-  }
+
+  player_crit += p -> buffs_pulverize -> value();
 }
 
 // Bear Melee Attack =======================================================
@@ -2058,12 +2043,10 @@ struct feral_charge_bear_t : public druid_bear_attack_t
 {
   double stampede_haste, stampede_duration;
 
-  feral_charge_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "feral_charge_bear", 16979, player ),
+  feral_charge_bear_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "feral_charge_bear", 16979, p ),
     stampede_haste( 0.0 ), stampede_duration( 0.0 )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     if ( p -> talents.stampede -> rank() )
@@ -2113,11 +2096,9 @@ struct lacerate_t : public druid_bear_attack_t
 {
   cooldown_t* mangle_bear_cooldown;
 
-  lacerate_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "lacerate",  33745, player ), mangle_bear_cooldown( 0 )
+  lacerate_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "lacerate",  33745, p ), mangle_bear_cooldown( 0 )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     direct_power_mod     = 0.0552;
@@ -2163,11 +2144,9 @@ struct lacerate_t : public druid_bear_attack_t
 
 struct mangle_bear_t : public druid_bear_attack_t
 {
-  mangle_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "mangle_bear", 33878, player )
+  mangle_bear_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "mangle_bear", 33878, p )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     base_multiplier *= 1.0 + p -> glyphs.mangle -> mod_additive( P_GENERIC );
@@ -2188,9 +2167,11 @@ struct mangle_bear_t : public druid_bear_attack_t
     if ( result_is_hit() )
     {
       target -> debuffs.mangle -> trigger();
+      target -> debuffs.mangle -> source = p;
       trigger_infected_wounds( this );
     }
   }
+
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     druid_bear_attack_t::travel( t, travel_result, travel_dmg );
@@ -2202,16 +2183,16 @@ struct mangle_bear_t : public druid_bear_attack_t
 
 struct maul_t : public druid_bear_attack_t
 {
-  maul_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "maul",  6807, player )
+  maul_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "maul",  6807, p )
   {
     parse_options( NULL, options_str );
-    druid_t*  p = player -> cast_druid();
 
     weapon = &( player -> main_hand_weapon );
 
-    aoe = 1;
+    aoe = p -> glyphs.maul -> effect1().base_value();
     base_add_multiplier = p -> glyphs.maul -> effect3().percent();
+
     // DBC data points to base scaling, tooltip states AP scaling which is correct
     base_dd_min = base_dd_max = 35;
     direct_power_mod = 0.19;
@@ -2250,10 +2231,9 @@ struct maul_t : public druid_bear_attack_t
 
 struct pulverize_t : public druid_bear_attack_t
 {
-  pulverize_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "pulverize", 80313, player )
+  pulverize_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "pulverize", 80313, p )
   {
-    druid_t* p = player -> cast_druid();
     check_talent( p -> talents.pulverize -> ok() );
 
     parse_options( NULL, options_str );
@@ -2287,11 +2267,9 @@ struct pulverize_t : public druid_bear_attack_t
 
 struct skull_bash_bear_t : public druid_bear_attack_t
 {
-  skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "skull_bash_bear", 80964, player )
+  skull_bash_bear_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "skull_bash_bear", 80964, p )
   {
-    druid_t* p = player -> cast_druid();
-
     parse_options( NULL, options_str );
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
