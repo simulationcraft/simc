@@ -255,6 +255,7 @@ struct priest_t : public player_t
     double holy_archangel_value;
     double archangel_mana_value;
     double inner_will_value;
+    double borrowed_time_value;
 
     // Holy
     double holy_concentration_value;
@@ -459,6 +460,16 @@ struct priest_spell_t : public spell_t
     }
   }
 
+  virtual void execute()
+  {
+    spell_t::execute();
+
+    priest_t* p = player -> cast_priest();
+
+    if ( execute_time() > 0 && p -> buffs_borrowed_time -> up() )
+      p -> buffs_borrowed_time -> expire();
+  }
+
   virtual void assess_damage( player_t* t,
                               double amount,
                               int    dmg_type,
@@ -531,8 +542,8 @@ struct priest_spell_t : public spell_t
   }
 
 
-  static void    trigger_shadowy_apparition( player_t* player );
-  static void    add_more_shadowy_apparitions( player_t* player );
+  static void trigger_shadowy_apparition( player_t* player );
+  static void add_more_shadowy_apparitions( player_t* player );
 };
 
 // ==========================================================================
@@ -570,20 +581,6 @@ struct priest_absorb_t : public absorb_t
     priest_t* p = player -> cast_priest();
 
     player_multiplier *= 1.0 + (  p -> composite_mastery() * p -> mastery_spells.shield_discipline -> ok() * 2.5 / 100.0 );
-  }
-
-  virtual double haste() SC_CONST
-  {
-    double h = absorb_t::haste();
-
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> buffs_borrowed_time -> up() )
-    {
-      h *= 1.0 / ( 1.0 + p -> talents.borrowed_time -> effect1().percent() );
-    }
-
-    return h;
   }
 
   virtual void execute()
@@ -739,18 +736,6 @@ struct priest_heal_t : public heal_t
       else
         p -> uptimes_test_of_faith -> update( false );
     }
-  }
-
-  virtual double haste() SC_CONST
-  {
-    double h = heal_t::haste();
-
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> buffs_borrowed_time -> up() )
-      h *= 1.0 / ( 1.0 + p -> talents.borrowed_time -> effect1().percent() );
-
-    return h;
   }
 
   virtual void execute()
@@ -4337,6 +4322,10 @@ double priest_t::composite_spell_haste() SC_CONST
   double h = player_t::composite_spell_haste();
 
   h *= constants.darkness_value;
+
+  if ( buffs_borrowed_time -> up() )
+    h *= constants.borrowed_time_value;
+
   return h;
 }
 
@@ -5020,21 +5009,18 @@ void priest_t::init_values()
                                               passive_spells.meditation_holy  -> base_value( E_APPLY_AURA, A_MOD_MANA_REGEN_INTERRUPT );
 
   // Discipline
-  constants.twin_disciplines_value          = talents.twin_disciplines->base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-  constants.dark_archangel_damage_value   = active_spells.dark_archangel   -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
-  constants.dark_archangel_mana_value     = active_spells.dark_archangel   -> effect_base_value( 3 ) / 100.0;
-  constants.holy_archangel_value          = active_spells.holy_archangel2  -> base_value( E_APPLY_AURA, A_MOD_HEALING_DONE_PERCENT ) / 100.0;
-  constants.archangel_mana_value          = active_spells.holy_archangel   -> base_value( E_ENERGIZE_PCT );
+  constants.twin_disciplines_value          = talents.twin_disciplines          -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
+  constants.dark_archangel_damage_value     = active_spells.dark_archangel      -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
+  constants.dark_archangel_mana_value       = active_spells.dark_archangel      -> effect_base_value( 3 ) / 100.0;
+  constants.holy_archangel_value            = active_spells.holy_archangel2     -> base_value( E_APPLY_AURA, A_MOD_HEALING_DONE_PERCENT ) / 100.0;
+  constants.archangel_mana_value            = active_spells.holy_archangel      -> base_value( E_ENERGIZE_PCT );
+  constants.borrowed_time_value             = 1.0 / ( 1.0 + talents.borrowed_time -> effect1().percent() );
 
   // Holy
   constants.holy_concentration_value        = talents.holy_concentration        -> effect1().percent();
 
   // Shadow Core
   constants.shadow_power_damage_value       = passive_spells.shadow_power       -> effect_base_value( 1 ) / 100.0;
-  // FIX-ME
-  // Hotfix nerf to Shadow Power
-  constants.shadow_power_damage_value       = passive_spells.shadow_power -> ok() ? 0.15 : 0;
-
   constants.shadow_power_crit_value         = passive_spells.shadow_power       -> effect_base_value( 2 ) / 100.0;
   constants.shadow_orb_proc_value           = mastery_spells.shadow_orb_power   -> proc_chance();
   constants.shadow_orb_mastery_value        = mastery_spells.shadow_orb_power   -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
