@@ -1965,7 +1965,7 @@ struct focus_magic_t : public mage_spell_t
 
     struct focus_magic_feedback_callback_t : public action_callback_t
     {
-      focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
+      focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p, true ) {}
 
       virtual void trigger( action_t* a, void* call_data )
       {
@@ -2365,8 +2365,8 @@ struct living_bomb_t : public mage_spell_t
     spell_t::target_debuff( t, dmg_type );
 
     target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect1().percent() +
-				 p -> talents.critical_mass -> effect2().percent() +
-				 p -> specializations.flashburn * p -> composite_mastery() );
+                                 p -> talents.critical_mass -> effect2().percent() +
+                                 p -> specializations.flashburn * p -> composite_mastery() );
   }
 
   virtual void last_tick()
