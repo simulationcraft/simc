@@ -949,9 +949,13 @@ static void trigger_primal_fury( druid_bear_attack_t* a )
   if ( ! p -> talents.primal_fury -> rank() )
     return;
 
-  if ( p -> rng_primal_fury -> roll( p -> talents.primal_fury -> rank() * 0.5 ) )
+  const spell_data_t* primal_fury = p -> dbc.spell( p -> talents.primal_fury -> effect1().trigger_spell_id() );
+
+  if ( p -> rng_primal_fury -> roll( primal_fury -> proc_chance() ) )
   {
-    p -> resource_gain( RESOURCE_RAGE, 5.0, p -> gains_primal_fury );
+    p -> resource_gain( RESOURCE_RAGE,
+                        p -> dbc.spell( primal_fury -> effect1().trigger_spell_id() ) -> effect1().base_value() / 10,
+                        p -> gains_primal_fury );
   }
 }
 
@@ -967,7 +971,9 @@ static void trigger_primal_fury( druid_cat_attack_t* a )
   if ( ! a -> adds_combo_points )
     return;
 
-  if ( p -> rng_primal_fury -> roll( p -> talents.primal_fury -> rank() * 0.5 ) )
+  const spell_data_t* blood_frenzy = p -> dbc.spell( p -> talents.primal_fury -> effect2().trigger_spell_id() );
+
+  if ( p -> rng_primal_fury -> roll( blood_frenzy -> proc_chance() ) )
   {
     add_combo_point( p );
     p -> procs_primal_fury -> occur();
@@ -1172,7 +1178,7 @@ void druid_cat_attack_t::execute()
       if ( p -> set_bonus.tier12_4pc_melee() & p -> buffs_berserk -> check() )
       {
         if ( p -> rng_tier12_4pc_melee -> roll( p -> buffs_combo_points -> check() / 5 ) )
-          p -> buffs_berserk -> extend_duration( p, 2.0 );
+          p -> buffs_berserk -> extend_duration( p, p ->sets ->set( SET_T12_4PC_MELEE ) -> base_value() );
       }
 
       p -> buffs_combo_points -> expire();
@@ -1389,23 +1395,25 @@ struct ferocious_bite_t : public druid_cat_attack_t
       excess_energy = 0;
     }
 
-
     druid_cat_attack_t::execute();
 
     if ( result_is_hit() )
     {
       if ( p -> glyphs.ferocious_bite -> enabled() )
       {
-        double amount = p -> resource_max[ RESOURCE_HEALTH ] * 0.01 * ( (int) ( excess_energy + druid_cat_attack_t::cost() ) / 10 );
+        double amount = p -> resource_max[ RESOURCE_HEALTH ] * 
+                        p -> glyphs.ferocious_bite -> effect1().percent() *
+                        ( (int) ( excess_energy + druid_cat_attack_t::cost() ) / 10 );
         p -> resource_gain( RESOURCE_HEALTH, amount, p -> gains_glyph_ferocious_bite );
       }
     }
 
     if ( result_is_hit() && target -> health_percentage() <= p -> talents.blood_in_the_water -> base_value() )
     {
-      if ( p -> dots_rip -> ticking && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> proc_chance() ) )
+      // Proc chance is not stored in the talent anymore
+      if ( p -> dots_rip -> ticking && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> rank() * 0.50 ) )
       {
-        p -> dots_rip -> action -> refresh_duration();
+         p -> dots_rip -> action -> refresh_duration();
       }
     }
   }
