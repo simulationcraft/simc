@@ -1,3 +1,4 @@
+default_actions=1
 Warlock_Affliction_T12H.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier11_2pc_caster=0 tier11_4pc_caster=0 name=Warlock_Affliction_NoTier
 Warlock_Affliction_T12H.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier11_2pc_caster=1 tier11_4pc_caster=0 name=Warlock_Affliction_2PT11
 Warlock_Affliction_T12H.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier11_2pc_caster=1 tier11_4pc_caster=1 name=Warlock_Affliction_4PT11
