@@ -279,43 +279,38 @@ struct damage_event_t : public raid_event_t
 {
   double amount;
   double amount_stddev;
-  std::string type;
-  attack_t* raid_damage;
+  spell_t* raid_damage;
 
   damage_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "damage" ), amount( 1 ), amount_stddev( 0 ), type( "holy" ), raid_damage( 0 )
+    raid_event_t( s, "damage" ), amount( 1 ), amount_stddev( 0 ), raid_damage( 0 )
   {
+    std::string type_str = "holy";
     option_t options[] =
     {
       { "amount",        OPT_FLT, &amount        },
       { "amount_stddev", OPT_FLT, &amount_stddev },
-      { "type",          OPT_STRING, &type },
+      { "type",          OPT_STRING, &type_str   },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
     assert( duration == 0 );
 
-    struct raid_damage_t : public attack_t
+    name_str = "raid_damage_" + type_str;
+
+    struct raid_damage_t : public spell_t
     {
-      raid_damage_t( player_t* player ) :
-        attack_t( "raid_damage", player, RESOURCE_NONE, SCHOOL_HOLY )
+      raid_damage_t( const char* n, player_t* player, const school_type s ) :
+        spell_t( n, player, RESOURCE_NONE, s )
       {
-        may_glance = may_block = may_dodge = may_parry = may_crit = false;
+        may_crit = false;
         background = true;
         trigger_gcd = 0;
-        init();
       }
     };
 
-    if ( ! raid_damage ) 
-    {
-      raid_damage = new raid_damage_t( sim -> target );
-      // FIXME: If we have multiple damage events with different school types
-      // the last event to fire will set the school when it's reported at the end
-      raid_damage -> type   = util_t::parse_school_type( type );
-      raid_damage -> school = util_t::parse_school_type( type );
-    }
+    raid_damage = new raid_damage_t( name_str.c_str(), sim -> target, util_t::parse_school_type( type_str ) );
+    raid_damage -> init();
   }
 
   virtual void start()
@@ -327,7 +322,7 @@ struct damage_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
-      raid_damage -> base_dd_min = rng -> gauss( amount, amount_stddev );
+      raid_damage -> base_dd_min = raid_damage -> base_dd_max = rng -> gauss( amount, amount_stddev );
       raid_damage -> target = p;
       raid_damage -> execute();
     }
