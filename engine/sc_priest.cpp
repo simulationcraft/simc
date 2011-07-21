@@ -1111,7 +1111,7 @@ struct cauterizing_flames_pet_t : public pet_t
 
 
 
-// Shadowy Apparation Spell ============================================================
+// Shadowy Apparition Spell ============================================================
 
 struct shadowy_apparition_t : public priest_spell_t
 {
@@ -1120,6 +1120,7 @@ struct shadowy_apparition_t : public priest_spell_t
   {
     background        = true;
     proc              = true;
+    callbacks         = false;
 
     trigger_gcd       = 0;
     travel_speed      = 3.5;
