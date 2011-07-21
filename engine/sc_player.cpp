@@ -3676,11 +3676,11 @@ double player_t::target_mitigation( double            amount,
 
   double mitigated_amount = amount;
 
-  if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
-    log_t::output( sim, "Damage to %s before armor mitigation is %f", action -> target -> name(), mitigated_amount );
-
   if ( school == SCHOOL_PHYSICAL )
   {
+    if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
+      log_t::output( sim, "Damage to %s before armor mitigation is %f", action -> target -> name(), mitigated_amount );
+
     // Inspiration
     mitigated_amount *= 1.0 - buffs.inspiration -> value() / 100.0;
 
@@ -3695,10 +3695,10 @@ double player_t::target_mitigation( double            amount,
         resist = 0.75;
       mitigated_amount *= 1.0 - resist;
     }
+    
+    if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
+      log_t::output( sim, "Damage to %s after armor mitigation is %f", action -> target -> name(), mitigated_amount );
   }
-
-  if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
-    log_t::output( sim, "Damage to %s after armor mitigation is %f", action -> target -> name(), mitigated_amount );
 
   return mitigated_amount;
 }
