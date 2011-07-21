@@ -4100,14 +4100,10 @@ struct lightwell_t : public priest_heal_t
 
 struct divine_hymn_tick_t : public priest_heal_t
 {
-  int charges;
-
   divine_hymn_tick_t( player_t* player ) :
-    priest_heal_t( "divine_hymn_tick", player, 64844 ),
-    charges( 0 )
+    priest_heal_t( "divine_hymn_tick", player, 64844 )
   {
     background  = true;
-    may_crit    = true;
   }
 
   virtual void execute()
@@ -4125,16 +4121,6 @@ struct divine_hymn_tick_t : public priest_heal_t
     }
 
     priest_heal_t::execute();
-  }
-
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
-  {
-    priest_heal_t::travel( t, travel_result, travel_dmg );
-
-    charges--;
-
-    if ( charges <= 0 )
-      cancel();
   }
 
   virtual void player_buff()
@@ -4161,32 +4147,17 @@ struct divine_hymn_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     harmful = false;
-
     channeled = true;
 
     divine_hymn_tick = new divine_hymn_tick_t( p );
-
     add_child( divine_hymn_tick );
-  }
-
-  virtual void execute()
-  {
-    divine_hymn_tick -> charges = 12;
-
-    priest_heal_t::execute();
   }
 
   virtual void tick()
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-
-    if ( divine_hymn_tick -> charges > 0 )
-    {
-      divine_hymn_tick -> execute();
-      stats -> add_tick( time_to_tick );
-    }
-    else
-      cancel();
+    divine_hymn_tick -> execute();
+    stats -> add_tick( time_to_tick );
   }
 };
 
