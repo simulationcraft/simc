@@ -280,9 +280,10 @@ struct damage_event_t : public raid_event_t
   double amount;
   double amount_stddev;
   std::string type;
+  attack_t* raid_damage;
 
   damage_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "damage" ), amount( 1 ), amount_stddev( 0 ), type( "holy" )
+    raid_event_t( s, "damage" ), amount( 1 ), amount_stddev( 0 ), type( "holy" ), raid_damage( 0 )
   {
     option_t options[] =
     {
@@ -294,21 +295,41 @@ struct damage_event_t : public raid_event_t
     parse_options( options, options_str );
 
     assert( duration == 0 );
+
+    struct raid_damage_t : public attack_t
+    {
+      raid_damage_t( player_t* player ) :
+        attack_t( "raid_damage", player, RESOURCE_NONE, SCHOOL_HOLY )
+      {
+        may_glance = may_block = may_dodge = may_parry = may_crit = false;
+        background = true;
+        trigger_gcd = 0;
+        init();
+      }
+    };
+
+    if ( ! raid_damage ) 
+    {
+      raid_damage = new raid_damage_t( sim -> target );
+      // FIXME: If we have multiple damage events with different school types
+      // the last event to fire will set the school when it's reported at the end
+      raid_damage -> type   = util_t::parse_school_type( type );
+      raid_damage -> school = util_t::parse_school_type( type );
+    }
   }
 
   virtual void start()
   {
     raid_event_t::start();
+
     int num_affected = ( int ) affected_players.size();
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
-      double x = 0;
-      // 5% stddev
-      x = rng -> gauss( amount, amount_stddev );
-      if ( sim -> log ) log_t::output( sim, "%s takes %.0f raid damage.", p -> name(), x );
-      p -> assess_damage( x, util_t::parse_school_type(type), DMG_DIRECT, RESULT_HIT );
+      raid_damage -> base_dd_min = rng -> gauss( amount, amount_stddev );
+      raid_damage -> target = p;
+      raid_damage -> execute();
     }
   }
 };

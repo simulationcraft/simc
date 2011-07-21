@@ -5348,7 +5348,7 @@ double druid_t::assess_damage( double            amount,
     amount *= 1.0 + buffs_survival_instincts -> value();
   }
 
-  // To benefit from -10% physical damage before SD is taken into account, debug=1 will look funny though
+  // Call here to benefit from -10% physical damage before SD is taken into account
   amount = player_t::assess_damage( amount, school, dmg_type, result, action );
 
   if ( school == SCHOOL_PHYSICAL && buffs_savage_defense -> up() )
