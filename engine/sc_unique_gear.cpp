@@ -930,11 +930,11 @@ static void register_matrix_restabilizer( item_t* item )
       }
       else if ( p -> stats.haste_rating > p -> stats.mastery_rating )
       {
-        max_stat = STAT_HASTE_RATING;        
+        max_stat = STAT_HASTE_RATING;
       }
       else
       {
-        max_stat = STAT_MASTERY_RATING;       
+        max_stat = STAT_MASTERY_RATING;
       }
 
       buff -> stat = max_stat;
@@ -1393,7 +1393,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
       if ( ! a -> may_trigger_dtr ) return;
 
-      if ( a -> tick_dmg > 0 ) 
+      if ( a -> tick_dmg > 0 )
         dmg = a -> tick_dmg;
       else
         dmg = a -> direct_dmg;
@@ -1774,7 +1774,7 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
                                                            bool               no_debuffs,
                                                            int                rng_type )
 {
-  action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown, 
+  action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
                                                          no_crits, no_buffs, no_debuffs, rng_type );
 
   if ( type == PROC_DAMAGE )
@@ -1843,7 +1843,7 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( int           
                                                                   bool               no_debuffs,
                                                                   int                rng_type )
 {
-  action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown, 
+  action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
                                                                 no_crits, no_buffs, no_debuffs, rng_type );
 
   if ( type == PROC_DAMAGE )
@@ -1915,7 +1915,7 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( int             
                                                                 bool               no_buffs,
                                                                 bool               no_debuffs )
 {
-  action_callback_t* cb = new stat_discharge_proc_callback_t( name, player, stat, max_stacks, stat_amount, school, min_dmg, max_dmg, proc_chance, 
+  action_callback_t* cb = new stat_discharge_proc_callback_t( name, player, stat, max_stacks, stat_amount, school, min_dmg, max_dmg, proc_chance,
                                                               duration, cooldown, no_crits, no_buffs, no_debuffs );
 
   if ( type == PROC_DAMAGE )
@@ -2214,7 +2214,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "platinum_disks_of_battle"     ) e = "752AP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_sorcery"    ) e = "440SP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_swiftness"  ) e = "375Haste_20Dur_120Cd";
-  else if ( name == "rickets_mangetic_fireball"    ) e = "1700Crit_20Dur_120Cd"; // FIXME: "Your attacks may occasionally attract small celestial objects."
+  else if ( name == "rickets_magnetic_fireball"    ) e = "1700Crit_20Dur_120Cd"; // FIXME: "Your attacks may occasionally attract small celestial objects."
   else if ( name == "rune_of_zeth"                 ) e = ( heroic ? "1441Int_15Dur_60Cd" : "1277Int_15Dur_60Cd" );
   else if ( name == "scale_of_fates"               ) e = "432Haste_20Dur_120Cd";
   else if ( name == "sea_star"                     ) e = ( heroic ? "1425Sp_20Dur_120Cd" : "765Sp_20Dur_120Cd" );
