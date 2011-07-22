@@ -4252,13 +4252,23 @@ struct wrath_t : public druid_spell_t
             if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
             {
               gain *= 2;
-              // Euphoria procs also add 1 to the counter
+              // Euphoria proc also adds 1 to the counter
               p -> eclipse_wrath_count++;
             }
           }
+
+          // (4) Set: While not in an Eclipse state, your Wrath generates 3
+          // additional Lunar Energy and your Starfire generates 5 additional
+          // Solar Energy.
+          // With 4T12 the 13,13,14 sequence becomes a 17,17,16 sequence, which
+          // means that the counter gets increased ad additional time per wrath
+          // The extra energy is not doubled by Euphoria procs
+          
           if ( p -> set_bonus.tier12_4pc_caster() )
           {
             gain += 3;
+            // 4T12 also adds 1 to the counter
+            p -> eclipse_wrath_count++;
           }
         }
 
