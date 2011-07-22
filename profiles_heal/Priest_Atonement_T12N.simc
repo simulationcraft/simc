@@ -7,23 +7,28 @@ race=troll
 role=heal
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
-talents=http://www.wowhead.com/talent#priest-233213021203000312021003000000000000000000302000200000000000000
+talents=http://www.wowhead.com/talent#priest-232210021213201312021033002000000000000000200000000000000000000
 glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/prayer_of_healing
-actions=food,type=seafood_magnifique_feast
-actions+=/flask,type=draconic_mind
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
 actions+=/fortitude
 actions+=/inner_fire
 actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat|buff.bloodlust.react
 actions+=/use_item,name=jaws_of_defeat
-actions+=/mana_potion,if=mana_pct<=75
-actions+=/shadow_fiend,if=mana_pct<=20
-actions+=/hymn_of_hope,if=pet.shadow_fiend.active
+actions+=/shadow_fiend,if=mana_pct<=60
+actions+=/hymn_of_hope,if=pet.shadow_fiend.active&mana_pct<=40
 actions+=/power_infusion
 actions+=/berserking
+actions+=/inner_focus
 actions+=/archangel,if=buff.holy_evangelism.stack>=5
-actions+=/power_word_shield
+actions+=/power_word_shield,if=!cooldown.rapture.remains
+actions+=/penance_heal,if=buff.borrowed_time.up|buff.grace.down
+actions+=/greater_heal,if=buff.inner_focus.up
 actions+=/holy_fire
-actions+=/smite
+actions+=/smite,if=dot.holy_fire.remains>cast_time
+actions+=/penance_heal
+actions+=/greater_heal
 head=cowl_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_255spi_229mastery,reforge=mastery_crit,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit
 neck=heartstone_of_rhyolith,ilevel=378,quality=epic,stats=227int_341sta_162spi_133mastery,reforge=mastery_crit
 shoulders=mantle_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1043armor_282int_454sta_201spi_183haste,gems=20spi_20int_10int,enchant=50int_25haste
@@ -31,7 +36,7 @@ chest=robes_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1391
 waist=majordomos_chain_of_office,type=cloth,ilevel=384,quality=epic,stats=808armor_300int_480sta_182mastery_214haste,gems=40int_40int_10int
 legs=legwraps_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1217armor_368int_611sta_291spi_198crit,gems=40int_20int_20crit_20int,enchant=95int_55spi
 feet=endless_dream_walkers,type=cloth,ilevel=378,quality=epic,stats=956armor_282int_454sta_197spi_187haste,gems=40int_10int,enchant=35mastery
-wrists=firesoul_wristguards,type=cloth,ilevel=378,quality=epic,stats=608armor_227int_341sta_158spi_140haste,reforge=spi_mastery,enchant=50int
+wrists=firesoul_wristguards,type=cloth,ilevel=378,quality=epic,stats=608armor_227int_341sta_158spi_140haste,enchant=50int
 hands=handwraps_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=869armor_282int_454sta_206spi_172haste,gems=40int_10int,enchant=50haste
 finger1=soothing_brimstone_circle,ilevel=378,quality=epic,stats=227int_341sta_156spi_144crit
 finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_185spi_127mastery,reforge=mastery_crit,gems=40int_10int
@@ -46,11 +51,11 @@ ranged=scorchvine_wand,ilevel=378,quality=epic,stats=128int_192sta_86spi_83maste
 # gear_agility=20
 # gear_stamina=6253
 # gear_intellect=5529
-# gear_spirit=2642
+# gear_spirit=2705
 # gear_spell_power=2467
 # gear_crit_rating=698
 # gear_haste_rating=1236
-# gear_mastery_rating=951
+# gear_mastery_rating=888
 # gear_armor=8717
 # meta_gem=ember_shadowspirit
 # tier12_2pc_heal=1
