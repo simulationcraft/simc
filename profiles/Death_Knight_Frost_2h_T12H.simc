@@ -51,7 +51,7 @@ hands=elementium_deathplate_gauntlets,heroic=1,type=plate,ilevel=391,quality=epi
 finger1=alysrazors_band,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_171exp_124haste,reforge=exp_mastery,gems=40str_10str
 finger2=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,reforge=crit_haste
 trinket1=heart_of_rage,heroic=1,ilevel=372,quality=epic,stats=363exp,reforge=exp_haste,equip=onattackhit_2178str_10%_20dur_100cd
-trinket2=vessel_of_acceleration,heroic=1,ilevel=397,quality=epic,stats=458str,equip=onattackhit_93crit_5stack_20dur
+trinket2=vessel_of_acceleration,heroic=1,ilevel=397,quality=epic,stats=458str,equip=onattackcrit_93crit_5stack_20dur
 back=bladed_flamewrath_cover,heroic=1,ilevel=391,quality=epic,stats=745armor_256str_384sta_195haste_130exp,reforge=exp_mastery,enchant=65crit
 main_hand=sulfuras_the_extinguished_hand,heroic=1,ilevel=397,quality=epic,stats=446str_730sta_333crit_262mastery,reforge=crit_haste,enchant=rune_of_the_fallen_crusader,weapon=mace2h_3.80speed_2700min_4050max
 ranged=relic_of_the_elemental_lords,heroic=1,ilevel=391,quality=epic,stats=145str_217sta_94crit_98haste,reforge=crit_hit,gems=40str

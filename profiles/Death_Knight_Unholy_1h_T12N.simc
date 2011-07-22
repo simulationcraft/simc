@@ -52,7 +52,7 @@ hands=elementium_deathplate_gauntlets,type=plate,ilevel=378,quality=epic,stats=2
 finger1=alysrazors_band,ilevel=378,quality=epic,stats=227str_341sta_150exp_107haste,reforge=exp_mastery,gems=40str_10str
 finger2=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,reforge=crit_haste
 trinket1=heart_of_rage,ilevel=359,quality=epic,stats=321exp,reforge=exp_haste,equip=onattackhit_1926str_10%_20dur_100cd
-trinket2=vessel_of_acceleration,ilevel=384,quality=epic,stats=406str,equip=onattackhit_82crit_5stack_20dur
+trinket2=vessel_of_acceleration,ilevel=384,quality=epic,stats=406str,equip=onattackcrit_82crit_5stack_20dur
 back=bladed_flamewrath_cover,ilevel=378,quality=epic,stats=695armor_227str_341sta_173haste_115exp,reforge=exp_mastery,enchant=65crit
 main_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,reforge=hit_haste,enchant=rune_of_razorice,weapon=axe_2.60speed_1004min_1865max
 off_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,reforge=hit_haste,enchant=rune_of_the_fallen_crusader,weapon=axe_2.60speed_1004min_1865max

@@ -41,7 +41,7 @@ hands=gauntlets_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=226
 finger1=alysrazors_band,ilevel=378,quality=epic,stats=227str_341sta_150exp_107haste,reforge=haste_crit,gems=40str_10str
 finger2=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,ilevel=378,quality=epic,stats=383str
-trinket2=vessel_of_acceleration,ilevel=384,quality=epic,stats=406str,equip=onattackhit_82crit_5stack_20dur
+trinket2=vessel_of_acceleration,ilevel=384,quality=epic,stats=406str,equip=onattackcrit_82crit_5stack_20dur
 back=bladed_flamewrath_cover,ilevel=378,quality=epic,stats=695armor_227str_341sta_173haste_115exp,reforge=exp_crit,enchant=65crit
 main_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,reforge=mastery_crit,gems=40str_40str_20str,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
 off_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,reforge=mastery_crit,gems=40str_40str_20str,enchant=landslide,weapon=axe_2.60speed_1004min_1865max

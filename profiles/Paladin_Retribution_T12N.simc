@@ -43,7 +43,7 @@ wrists=gigantiform_bracers,type=plate,ilevel=378,quality=epic,stats=1584armor_22
 hands=immolation_gauntlets,type=plate,ilevel=378,quality=epic,stats=2264armor_282str_454sta_178hit_182mastery,gems=40str_40str,enchant=50str
 finger1=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,reforge=crit_mastery,gems=40str_10str
 finger2=alysrazors_band,ilevel=378,quality=epic,stats=227str_341sta_150exp_107haste,reforge=haste_mastery,gems=40str_10str
-trinket1=vessel_of_acceleration,ilevel=384,quality=epic,stats=406str,equip=onattackhit_82crit_5stack_20dur
+trinket1=vessel_of_acceleration,ilevel=384,quality=epic,stats=406str,equip=onattackcrit_82crit_5stack_20dur
 trinket2=apparatus_of_khazgoroth,ilevel=378,quality=epic,stats=383str
 back=bladed_flamewrath_cover,ilevel=378,quality=epic,stats=695armor_227str_341sta_173haste_115exp,reforge=haste_mastery,enchant=65crit
 main_hand=sulfuras_the_extinguished_hand,ilevel=384,quality=epic,stats=391str_646sta_294crit_229mastery,reforge=crit_hit,gems=40str_40str_20str,enchant=landslide,weapon=mace2h_3.80speed_2392min_3588max
