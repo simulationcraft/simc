@@ -3205,6 +3205,15 @@ struct greater_heal_t : public priest_heal_t
     if ( p -> buffs_surge_of_light -> trigger() )
       p -> procs_surge_of_light -> occur();
 
+    // Train of Thought
+    if ( p -> talents.train_of_thought -> rank() )
+    {
+      if ( p -> cooldowns_inner_focus -> remains() > p -> talents.train_of_thought -> effect1().base_value() )
+        p -> cooldowns_inner_focus -> ready -= p -> talents.train_of_thought -> effect1().base_value();
+      else
+        p -> cooldowns_inner_focus -> reset();
+    }
+
     // Inner Focus
     if ( p -> buffs_inner_focus -> up() )
     {
@@ -3226,15 +3235,6 @@ struct greater_heal_t : public priest_heal_t
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
       p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect1().seconds();
       p -> cooldowns_chakra -> start();
-    }
-
-    // Train of Thought
-    if ( p -> talents.train_of_thought -> rank() )
-    {
-      if ( p -> cooldowns_inner_focus -> remains() > p -> talents.train_of_thought -> effect1().base_value() )
-        p -> cooldowns_inner_focus -> ready -= p -> talents.train_of_thought -> effect1().base_value();
-      else
-        p -> cooldowns_inner_focus -> reset();
     }
   }
 
