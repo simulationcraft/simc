@@ -570,24 +570,25 @@ void buff_t::extend_duration( player_t* p, double extra_seconds )
   {
     double reschedule_time = expiration -> remains() + extra_seconds;
 
-    if ( reschedule_time < 0 )
+    if ( reschedule_time <= 0 )
     {
-      // FIXME: If we're trying to extend it negatively, should it remove the debuff?
-      // Disc Priest with Strength of Soul to test
-      if ( sim -> debug )
-        log_t::output( sim, "%s can't decrease buff %s by %.1f seconds. New expiration would be in the past!",
-                       p -> name(), name(), extra_seconds );
-    }
-    else
-    {
-      event_t::cancel( expiration );
+      // When Strength of Soul removes the Weakened Soul debuff completely,
+      // there's a delay before the server notifies the client. Modeling
+      // this effect as a world lag.
+      double lag, dev;
 
-      expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time );
-
-      if ( sim -> debug )
-        log_t::output( sim, "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
-                       p -> name(), name(), extra_seconds, expiration -> occurs() );
+      lag = p -> world_lag_override ? p -> world_lag : sim -> world_lag;
+      dev = p -> world_lag_stddev_override ? p -> world_lag_stddev : sim -> world_lag_stddev;
+      reschedule_time = p -> rngs.lag_world -> gauss( lag, dev );
     }
+
+    event_t::cancel( expiration );
+
+    expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time );
+
+    if ( sim -> debug )
+      log_t::output( sim, "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
+                     p -> name(), name(), extra_seconds, expiration -> occurs() );
   }
 }
 
