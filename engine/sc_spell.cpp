@@ -222,10 +222,10 @@ void spell_t::execute()
     {
       action_callback_t::trigger( player -> spell_callbacks[ result ], this );
     }
-  //  if ( ! background ) // OnSpellCast
- //   {
+    if ( ! background ) // OnSpellCast
+    {
       action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
-  //  }
+    }
   }
 }
 
