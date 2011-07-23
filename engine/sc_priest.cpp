@@ -710,7 +710,7 @@ struct priest_heal_t : public heal_t
     if ( p -> buffs_serenity -> up() )
       player_crit += 0.10;
 
-    player_multiplier *= 1.0 + p -> buffs_holy_archangel -> stack() * 0.03;
+    player_multiplier *= 1.0 + p -> buffs_holy_archangel -> value();
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -2543,7 +2543,7 @@ struct archangel_t : public priest_spell_t
     if ( p -> buffs_holy_evangelism -> up() && delta > 0 )
     {
       cooldown -> duration = p -> dbc.effect( p -> dbc.spell( 87151 ) -> effect2().id() ) -> base_value();
-      p -> buffs_holy_archangel -> trigger( 1, p -> buffs_holy_evangelism -> stack() );
+      p -> buffs_holy_archangel -> trigger( 1, p -> constants.holy_archangel_value * p -> buffs_holy_evangelism -> stack() );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_holy_evangelism -> expire();
     }
