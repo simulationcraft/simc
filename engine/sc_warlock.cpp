@@ -4627,7 +4627,7 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_ty
 
 void player_t::warlock_init( sim_t* sim )
 {
-  sim -> auras.demonic_pact         = new aura_t( sim, "demonic_Pact", 1 );
+  sim -> auras.demonic_pact         = new aura_t( sim, "demonic_pact", 1 );
   sim -> auras.fel_intelligence     = new aura_t( sim, "fel_intelligence", 1 );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )

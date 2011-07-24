@@ -3624,6 +3624,7 @@ struct stats_t
   sim_t* sim;
   player_t* player;
   stats_t* next;
+  stats_t* parent;
   school_type school;
   stats_type type;
   std::vector<action_t*> action_list;
@@ -3656,6 +3657,7 @@ struct stats_t
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
 
+  void add_child( stats_t* child );
   void consume_resource( double r ) { resource_consumed += r; }
   void add_result( double amount, int dmg_type, int result );
   void add_tick   ( double time );
@@ -3845,7 +3847,7 @@ struct action_t : public spell_id_t
 
   virtual double ppm_proc_chance( double PPM ) SC_CONST;
 
-  virtual void add_child( action_t* child ) { stats -> children.push_back( child -> stats ); }
+  void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
   // Move to ability_t in future
   const spell_data_t* spell;

@@ -2726,7 +2726,7 @@ void player_t::combat_end()
 
 void player_t::reset()
 {
-  if ( sim -> debug ) log_t::output( sim, "Reseting player %s", name() );
+  if ( sim -> debug ) log_t::output( sim, "Resetting player %s", name() );
 
   skill = initial_skill;
 

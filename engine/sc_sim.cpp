@@ -956,7 +956,7 @@ void sim_t::combat( int iteration )
 
 void sim_t::reset()
 {
-  if ( debug ) log_t::output( this, "Reseting Simulator" );
+  if ( debug ) log_t::output( this, "Resetting Simulator" );
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
   id = 0;
   current_time = last_event = 0;

@@ -1888,4 +1888,3 @@ int action_t::hasted_num_ticks( double d ) SC_CONST
 
   return ( int ) ceil( ( d / t ) - 0.5 );
 }
-
