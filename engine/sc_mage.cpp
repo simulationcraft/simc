@@ -3249,6 +3249,7 @@ void mage_t::init_rng()
 
 // mage_t::init_actions =====================================================
 
+
 void mage_t::init_actions()
 {
   if ( action_list_str.empty() )
@@ -3298,10 +3299,8 @@ void mage_t::init_actions()
     action_list_str += "/snapshot_stats";
     // Counterspell
     action_list_str += "/counterspell";
-    //Conjure Mana Gem
-    if ( primary_tree() == TREE_ARCANE ) action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>105&mana_gem_charges=0";
-    action_list_str += "/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3"; // for HelterSkelter
-
+    // Refresh Gem during invuln phases
+    action_list_str += "/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3";
     // Usable Items
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -3312,16 +3311,7 @@ void mage_t::init_actions()
         action_list_str += items[ i ].name();
         //Special trinket handling for Arcane, previously only used for Shard of Woe but seems to be good for all useable trinkets
         if ( primary_tree() == TREE_ARCANE )
-        {
-          if ( has_shard == true )
-          {
-            action_list_str += ",if=(cooldown.evocation.remains<50&buff.arcane_blast.stack=4)|cooldown.evocation.remains>90|target.time_to_die<40";
-          }
-          else
-          {
-            action_list_str += ",if=(cooldown.evocation.remains<40&buff.arcane_blast.stack=4)|cooldown.evocation.remains>90|target.time_to_die<40";
-          }
-        }
+          action_list_str += ",if=buff.improved_mana_gem.up|cooldown.evocation.remains>90|target.time_to_die<50";
       }
     }
     // Lifeblood
@@ -3340,14 +3330,7 @@ void mage_t::init_actions()
       }
       else if ( primary_tree() == TREE_ARCANE )
       {
-        if ( has_shard == true )
-          {
-            action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<50&buff.arcane_blast.stack=4";
-          }
-          else
-          {
-            action_list_str += "/volcanic_potion,if=cooldown.evocation.remains<40&buff.arcane_blast.stack=4";
-          }
+        action_list_str += "/volcanic_potion,if=buff.improved_mana_gem.up|target.time_to_die<50";
       }
       else
       {
@@ -3377,59 +3360,44 @@ void mage_t::init_actions()
     // Arcane
     if ( primary_tree() == TREE_ARCANE )
     {
+      action_list_str += "/evocation,if=mana_pct<=26&target.time_to_die>=31";
+      if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=10";
       //Special handling for Race Abilities
       if ( race == RACE_ORC )
       {
-        if ( has_shard == true )
-        {
-          action_list_str += "/blood_fury,if=cooldown.evocation.remains<50&buff.arcane_blast.stack=4";
-        }
-        else
-        {
-          action_list_str += "/blood_fury,if=cooldown.evocation.remains<40&buff.arcane_blast.stack=4";
-        }
+        action_list_str += "/blood_fury,if=buff.improved_mana_gem.up|target.time_to_die<50";
       }
       else if ( race == RACE_TROLL )
       {
         action_list_str += "/berserking,if=buff.arcane_power.up|cooldown.arcane_power.remains>20";
       }
-
-      if ( has_shard == true )
+      //Conjure Mana Gem
+      action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>105&mana_gem_charges=0";
+      //Primary Cooldowns
+      action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4";
+      if ( talents.arcane_power -> rank() )
       {
-        if ( talents.arcane_power -> rank() ) action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4&(cooldown.evocation.remains<50|target.time_to_die<60)";
-        action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<60";
+        action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<50";
         action_list_str += "/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)";
       }
       else
       {
-        if ( talents.arcane_power -> rank() ) action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4&(cooldown.evocation.remains<40|target.time_to_die<60)";
-        action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<60";
-        action_list_str += "/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)";
+         action_list_str += "/mirror_image";
       }
 
-      if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=10";
       if ( talents.presence_of_mind -> rank() )
       {
         action_list_str += "/presence_of_mind,arcane_blast";
       }
-      action_list_str += "/arcane_blast,if=target.time_to_die<60&mana_pct>4"; // final burn phase
+
       if ( has_shard == true )
       {
-        action_list_str += "/arcane_blast,if=cooldown.evocation.remains<50&mana_pct>26"; // burn phase AB spam
+        action_list_str += "/arcane_blast,if=target.time_to_die<50|cooldown.evocation.remains<=50";
+        action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up";
       }
       else
       {
-        action_list_str += "/arcane_blast,if=cooldown.evocation.remains<40&mana_pct>26"; // burn phase AB spam
-      }
-      action_list_str += "/evocation,invulnerable=1";
-      action_list_str += "/evocation,if=target.time_to_die>=31";
-      if ( has_shard == true ) // AB5 conserve with the Shard
-      {
-        action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up";
-
-      }
-      else // AB4 conserve without Shard
-      {
+        action_list_str += "/arcane_blast,if=target.time_to_die<40|cooldown.evocation.remains<=40";
         action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up";
       }
       action_list_str += "/arcane_missiles";
