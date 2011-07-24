@@ -8,7 +8,7 @@ race=troll
 role=heal
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
-talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
+talents=http://www.wowhead.com/talent#bfhMrosbsRMochMZb
 glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/prayer_of_healing
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -48,7 +48,7 @@ copy=Priest_Disc_Single_T12N_Valanyr,Priest_Disc_Single_T12N
 main_hand=valanyr_hammer_of_ancient_kings,id=46017,enchant=power_torrent
 save=Priest_Disc_Single_T12N_Valanyr.simc
 
-copy=Priest_Atonement_T12N,Priest_Disc_Single_T12N
+copy=Priest_AAA_T12N,Priest_Disc_Single_T12N
 talents=http://www.wowhead.com/talent#bfroMRsbsRMochMZb
 glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/prayer_of_healing
 actions=flask,type=draconic_mind
@@ -59,7 +59,6 @@ actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat|buff.bloodlust.react
 actions+=/use_item,name=jaws_of_defeat
 actions+=/shadow_fiend,if=mana_pct<=60
-actions+=/hymn_of_hope,if=pet.shadow_fiend.active&mana_pct<=40
 actions+=/power_infusion
 actions+=/berserking
 actions+=/inner_focus
@@ -68,14 +67,28 @@ actions+=/power_word_shield,if=!cooldown.rapture.remains
 actions+=/penance_heal,if=buff.borrowed_time.up|buff.grace.down
 actions+=/greater_heal,if=buff.inner_focus.up
 actions+=/holy_fire
-actions+=/smite,if=dot.holy_fire.remains>cast_time
+actions+=/smite,if=dot.holy_fire.remains>cast_time&buff.holy_evangelism.stack<5&buff.holy_archangel.down
 actions+=/penance_heal
 actions+=/greater_heal
+save=Priest_AAA_T12N.simc
+
+copy=Priest_Atonement_T12N,Priest_AAA_T12N
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/fortitude
+actions+=/inner_fire
+actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat|buff.bloodlust.react
+actions+=/use_item,name=jaws_of_defeat
+actions+=/shadow_fiend,if=mana_pct<=60
+actions+=/power_infusion
+actions+=/berserking
+actions+=/archangel,if=buff.holy_evangelism.stack>=5
+actions+=/holy_fire
+actions+=/smite
 save=Priest_Atonement_T12N.simc
 
 copy=Priest_Disc_PWS_T12N,Priest_Disc_Single_T12N
-talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
-glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/prayer_of_healing
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fortitude
@@ -91,8 +104,6 @@ actions+=/power_word_shield,ignore_debuff=1
 save=Priest_Disc_PWS_T12N.simc
 
 copy=Priest_Disc_AE_T12N,Priest_Disc_Single_T12N
-talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
-glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/prayer_of_healing
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fortitude
@@ -110,7 +121,6 @@ actions+=/prayer_of_healing
 save=Priest_Disc_AE_T12N.simc
 
 copy=Priest_Disc_Single_Renew_T12N,Priest_Disc_Single_T12N
-talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
 glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/renew
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast

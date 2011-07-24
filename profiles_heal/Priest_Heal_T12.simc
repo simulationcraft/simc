@@ -1,23 +1,35 @@
 # T12H equip uses non-existant upgraded heroics, disabled for now
 
+# Do not group the AE priest with the priests that are using Grace;
+# we don't want to artificially inflate his numbers. It's still
+# possible for his Prayer of Mending to bounce into the other groups,
+# but that's a small enough portion of total healing that it shouldn't
+# have a large affect.
+Priest_Disc_AE_T12N.simc
+infinite_mana=1
+Priest_Atonement_T12N.simc
+name=Priest_Atonement_T12N_finite
+Priest_Atonement_T12N.simc
+infinite_mana=1
+Priest_Disc_PWS_T12N.simc
+infinite_mana=1
+# Fill up group 1
+warrior=dummy1 main_hand=shadowmourne,id=49623 actions="wait,sec=50" quiet=1
+
 Priest_Disc_Single_T12N.simc
 name=Priest_Disc_Single_T12N_finite
 #Priest_Disc_Single_T12H.simc
 #name=Priest_Disc_Single_T12H_finite
 Priest_Disc_Single_Renew_T12N.simc
 name=Priest_Disc_Single_Renew_T12N_finite
-Priest_Atonement_T12N.simc
-name=Priest_Atonement_T12N_finite
+Priest_AAA_T12N.simc
+name=Priest_AAA_T12N_finite
 
 Priest_Disc_Single_T12N.simc
 infinite_mana=1
 #Priest_Disc_Single_T12H.simc
 #infinite_mana=1
-Priest_Disc_PWS_T12N.simc
-infinite_mana=1
-Priest_Disc_AE_T12N.simc
-infinite_mana=1
 Priest_Disc_Single_Renew_T12N.simc
 infinite_mana=1
-Priest_Atonement_T12N.simc
+Priest_AAA_T12N.simc
 infinite_mana=1
