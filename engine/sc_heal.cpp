@@ -43,7 +43,6 @@ void heal_t::_init_heal_t()
 
   stats -> type = STATS_HEAL;
 
-
   crit_bonus = 1.0;
 
   crit_multiplier = 1.0;

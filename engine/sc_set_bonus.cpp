@@ -195,10 +195,7 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N
 set_bonus_array_t::~set_bonus_array_t()
 {
   for ( int i = 0; i < SET_MAX; i++ )
-  {
-    if ( set_bonuses[ i ] )
-      delete set_bonuses[ i ];
-  }
+    delete set_bonuses[ i ];
 
   delete default_value;
 }

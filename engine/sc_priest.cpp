@@ -46,6 +46,7 @@ struct priest_t : public player_t
   // Set Bonus
   buff_t* buffs_indulgence_of_the_penitent;
   buff_t* buffs_divine_fire;
+  buff_t* buffs_cauterizing_flame;
 
   // Talents
 
@@ -159,7 +160,6 @@ struct priest_t : public player_t
   cooldown_t*       cooldowns_rapture;
   cooldown_t*       cooldowns_inner_focus;
   cooldown_t*       cooldowns_penance;
-  cooldown_t*       cooldowns_cauterizing_flames;
 
   // DoTs
   dot_t*            dots_shadow_word_pain;
@@ -190,7 +190,6 @@ struct priest_t : public player_t
   // Procs
   proc_t* procs_shadowy_apparation;
   proc_t* procs_surge_of_light;
-  proc_t* procs_cauterizing_flames;
 
   // Special
   std::queue<spell_t* > shadowy_apparition_free_list;
@@ -202,7 +201,10 @@ struct priest_t : public player_t
 
   // Random Number Generators
   rng_t* rng_pain_and_suffering;
-  rng_t* rng_cauterizing_flames;
+  rng_t* rng_cauterizing_flame;
+
+  // Pets
+  pet_t* active_cauterizing_flame;
 
   // Options
   std::string power_infusion_target_str;
@@ -342,11 +344,11 @@ struct priest_t : public player_t
     cooldowns_shadow_fiend               = get_cooldown( "shadow_fiend" );
     cooldowns_chakra                     = get_cooldown( "chakra"   );
     cooldowns_rapture                    = get_cooldown( "rapture" );
-    cooldowns_rapture -> duration = 12.0;
+    cooldowns_rapture -> duration        = dbc.spell( 63853 ) -> duration();
     cooldowns_inner_focus                = get_cooldown( "inner_focus" );
     cooldowns_penance                    = get_cooldown( "penance" );
-    cooldowns_cauterizing_flames         = get_cooldown( "cauterizing_flames" );
-    cooldowns_cauterizing_flames -> duration = 5.1;
+
+    active_cauterizing_flame             = 0;
 
     create_talents();
     create_glyphs();
@@ -399,6 +401,8 @@ struct priest_t : public player_t
 
   virtual double    empowered_shadows_amount() SC_CONST;
   virtual double    shadow_orb_amount() SC_CONST;
+
+  void trigger_cauterizing_flame();
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -466,7 +470,7 @@ struct priest_spell_t : public spell_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( execute_time() > 0 && p -> buffs_borrowed_time -> up() )
+    if ( execute_time() > 0 )
       p -> buffs_borrowed_time -> expire();
   }
 
@@ -588,8 +592,11 @@ struct priest_absorb_t : public absorb_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( execute_time() > 0 && p -> buffs_borrowed_time -> up() )
+    if ( execute_time() > 0 )
       p -> buffs_borrowed_time -> expire();
+
+    if ( !(background || proc) )
+      p -> trigger_cauterizing_flame();
   }
 };
 
@@ -602,8 +609,9 @@ struct priest_heal_t : public heal_t
   struct divine_aegis_t : public priest_absorb_t
   {
     double shield_multiple;
-    divine_aegis_t( player_t* player ) :
-      priest_absorb_t( "divine_aegis", player, 47753 )
+
+    divine_aegis_t( const char* n, player_t* player ) :
+      priest_absorb_t( n, player, 47753 )
     {
       proc             = true;
       background       = true;
@@ -615,8 +623,8 @@ struct priest_heal_t : public heal_t
     }
   };
 
-
   divine_aegis_t* da;
+  bool can_trigger_DA;
 
   void trigger_echo_of_light( heal_t* a, player_t* t )
   {
@@ -677,27 +685,27 @@ struct priest_heal_t : public heal_t
     }
   }
 
-  void _init_da()
+  virtual void init()
   {
     priest_t* p = player -> cast_priest();
 
-    if ( p -> talents.divine_aegis -> ok() )
+    heal_t::init();
+
+    if ( can_trigger_DA && p -> talents.divine_aegis -> ok() )
     {
-      da = new divine_aegis_t( p );
+      std::string da_name = name_str + "_divine_aegis";
+      da = new divine_aegis_t( da_name.c_str(), p );
+      add_child( da );
     }
   }
 
   priest_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-    heal_t( n, player, sname, t ), da( 0 )
-  {
-    _init_da();
-  }
+    heal_t( n, player, sname, t ), da( 0 ), can_trigger_DA( true )
+  {}
 
   priest_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-    heal_t( n, player, id, t ), da( 0 )
-  {
-    _init_da();
-  }
+    heal_t( n, player, id, t ), da( 0 ), can_trigger_DA( true )
+  {}
 
   virtual void player_buff()
   {
@@ -743,15 +751,10 @@ struct priest_heal_t : public heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> rng_cauterizing_flames -> roll( p -> sets -> set( SET_T12_4PC_HEAL ) -> proc_chance()  ) )
-      if ( ! p -> cooldowns_cauterizing_flames -> remains() ) // Assuming you can only have 1 Cauterizing Flame
-      {
-        p -> procs_cauterizing_flames -> occur();
-        p -> cooldowns_cauterizing_flames -> start();
-        p -> summon_pet( "cauterizing_flames", 5 );
-      }
+    if ( !(background || proc) )
+      p -> trigger_cauterizing_flame();
 
-    if ( execute_time() > 0 && p -> buffs_borrowed_time -> up() )
+    if ( execute_time() > 0 )
       p -> buffs_borrowed_time -> expire();
   }
 
@@ -865,7 +868,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       spell_t::execute();
 
-      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player -> cast_pet() );
 
       p -> buffs_shadowcrawl -> start( 1, p -> shadowcrawl -> effect_base_value( 2 ) / 100.0 );
     }
@@ -1071,38 +1074,55 @@ struct shadow_fiend_pet_t : public pet_t
 // Pet Cauterizing Flames
 // ==========================================================================
 
-struct cauterizing_flames_pet_t : public pet_t
+struct cauterizing_flame_pet_t : public pet_t
 {
-
-
-  struct cauterizing_flames_heal_t : public heal_t
+  struct cauterizing_flame_heal_t : public heal_t
   {
-    cauterizing_flames_heal_t( player_t* player ) :
-      heal_t( "cauterizing_flames_heal", player, 99152 )
+    cauterizing_flame_heal_t( player_t* player ) :
+      heal_t( "cauterizing_flame_heal", player, 99152 )
     {
-      may_miss = false;
-      cooldown -> duration = 5;
+      // HACK: Travel events get canceled on demise, so lie about travel
+      travel_speed = 0;
+      cooldown -> duration = 1;
     }
 
+    void execute()
+    {
+      // Choose Heal Target
+      heal_target.clear();
+      heal_target.push_back( find_lowest_player() );
+      heal_t::execute();
+    }
   };
 
-
-  cauterizing_flames_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "cauterizing_flames" )
+  cauterizing_flame_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "cauterizing_flame" )
   {
-
-    action_list_str             = "/snapshot_stats/cauterizing_flames_heal";
+    role = ROLE_HEAL;
+    action_list_str = "/snapshot_stats/cauterizing_flame_heal/wait_until_ready";
   }
-
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "cauterizing_flames_heal" ) return new cauterizing_flames_heal_t( this );
+    if ( name == "cauterizing_flame_heal" ) return new cauterizing_flame_heal_t( this );
 
     return pet_t::create_action( name, options_str );
   }
 
+  virtual void summon( double duration )
+  {
+    priest_t* p = owner -> cast_priest();
+    pet_t::summon( duration );
+    p -> buffs_cauterizing_flame -> start();
+  }
+
+  virtual void dismiss()
+  {
+    priest_t* p = owner -> cast_priest();
+    pet_t::dismiss();
+    p -> buffs_cauterizing_flame -> expire();
+  }
 };
 
 // ==========================================================================
@@ -2733,7 +2753,7 @@ struct atonement_nc_t : public atonement_common_t
 
 struct atonement_c_t : public atonement_common_t
 {
-  // Missusing ID 81751 for now, correct id is: 94472
+  // Misusing ID 81751 for now, correct id is: 94472
   atonement_c_t( player_t* player ) :
     atonement_common_t( player, 81751 )
   {}
@@ -3206,6 +3226,8 @@ struct greater_heal_t : public priest_heal_t
       p -> procs_surge_of_light -> occur();
 
     // Train of Thought
+    // NOTE: Process Train of Thought _before_ Inner Focus: the GH that consumes Inner Focus does not
+    //       reduce the cooldown, since Inner Focus doesn't go on cooldown until after it is consumed.
     if ( p -> talents.train_of_thought -> rank() )
     {
       if ( p -> cooldowns_inner_focus -> remains() > p -> talents.train_of_thought -> effect1().base_value() )
@@ -3328,7 +3350,8 @@ struct prayer_of_healing_t : public priest_heal_t
       add_child( glyph );
     }
 
-    if ( da != NULL ) da -> shield_multiple *= 2;
+    // PoH crits double the DA percentage.
+    if ( da ) da -> shield_multiple *= 2;
   }
 
   virtual void execute()
@@ -3536,8 +3559,7 @@ struct prayer_of_mending_t : public priest_heal_t
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
-     // FIXME: Don't trigger DA at all.
-    if ( da != NULL ) { da -> shield_multiple = 0; }
+    can_trigger_DA = false;
   }
 
   virtual void player_buff()
@@ -4234,6 +4256,16 @@ double priest_t::shadow_orb_amount() SC_CONST
   return a;
 }
 
+void priest_t::trigger_cauterizing_flame()
+{
+  // Assuming you can only have 1 Cauterizing Flame
+  if ( active_cauterizing_flame && active_cauterizing_flame -> sleeping &&
+       rng_cauterizing_flame -> roll( sets -> set( SET_T12_4PC_HEAL ) -> proc_chance()  ) )
+  {
+    summon_pet( "cauterizing_flame", dbc.spell( 99136 ) -> duration() );
+  }
+}
+
 // priest_t::primary_role
 
 int priest_t::primary_role() SC_CONST
@@ -4446,7 +4478,7 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
   if ( p ) return p;
 
   if ( pet_name == "shadow_fiend" ) return new shadow_fiend_pet_t( sim, this );
-  if ( pet_name == "cauterizing_flames" ) return new cauterizing_flames_pet_t( sim, this );
+  if ( pet_name == "cauterizing_flame" ) return new cauterizing_flame_pet_t( sim, this );
 
   return 0;
 }
@@ -4456,7 +4488,7 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 void priest_t::create_pets()
 {
   create_pet( "shadow_fiend" );
-  create_pet( "cauterizing_flames" );
+  active_cauterizing_flame = create_pet( "cauterizing_flame" );
 }
 
 // priest_t::init_base =======================================================
@@ -4501,7 +4533,6 @@ void priest_t::init_procs()
 
   procs_shadowy_apparation   = get_proc( "shadowy_apparation_proc" );
   procs_surge_of_light       = get_proc( "surge_of_light" );
-  procs_cauterizing_flames   = get_proc( "cauterizing_flames" );
 }
 
 // priest_t::init_scaling ====================================================
@@ -4510,7 +4541,7 @@ void priest_t::init_scaling()
 {
   player_t::init_scaling();
 
-  // A Atonement Priest might be Health-caped
+  // An Atonement Priest might be Health-capped
   scales_with[ STAT_STAMINA ] = talents.atonement -> ok();
 
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
@@ -4569,7 +4600,7 @@ void priest_t::init_rng()
   player_t::init_rng();
 
   rng_pain_and_suffering = get_rng( "pain_and_suffering" );
-  rng_cauterizing_flames = get_rng( "rng_cauterizing_flames" );
+  rng_cauterizing_flame  = get_rng( "rng_cauterizing_flame" );
 }
 
 // priest_t::init_talents
@@ -4754,6 +4785,7 @@ void priest_t::init_buffs()
   // Set Bonus
   buffs_indulgence_of_the_penitent = new buff_t( this, 89913, "indulgence_of_the_penitent", set_bonus.tier11_4pc_heal() );
   buffs_divine_fire = new tier12_heal_2pc_buff_t( this, 99132, "divine_fire", set_bonus.tier12_2pc_heal() );
+  buffs_cauterizing_flame          = new buff_t( this, "cauterizing_flame",          1                           );
 }
 
 // priest_t::init_actions =====================================================
@@ -5038,9 +5070,15 @@ void priest_t::reset()
   if ( talents.atonement -> rank() )
   {
     if ( ! atonement_nc )
+    {
       atonement_nc = new atonement_nc_t( this );
+      atonement_nc -> init();
+    }
     if ( ! atonement_c )
+    {
       atonement_c = new atonement_c_t( this );
+      atonement_c -> init();
+    }
   }
 
   was_sub_25 = false;
