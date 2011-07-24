@@ -809,6 +809,7 @@ const char* chart_t::action_dmg( std::string& s,
   {
     if ( st -> quiet ) continue;
     if ( st -> total_dmg <= 0 ) continue;
+    if ( (p -> role == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
     stats_list.push_back( st );
   }
 
@@ -818,6 +819,7 @@ const char* chart_t::action_dmg( std::string& s,
     {
       if ( st -> quiet ) continue;
       if ( st -> total_dmg <= 0 ) continue;
+      if ( (p -> role == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
       stats_list.push_back( st );
     }
   }
@@ -874,7 +876,9 @@ const char* chart_t::action_dmg( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name();
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Sources", formatted_name.c_str() ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Sources", formatted_name.c_str(),
+            (p->role == ROLE_HEAL ? "Healing" : "Damage") );
+  s += buffer;
   s += "&amp;";
   if ( p -> sim -> print_styles )
   {

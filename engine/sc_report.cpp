@@ -3014,7 +3014,7 @@ static void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
   char buffer[ 1024 ];
   int num_players = ( int ) sim -> players_by_name.size();
 
-  // Check for healer's in the raid
+  // Check for healers in the raid
   bool healer_in_the_raid = false;
   for ( player_t* q = sim -> player_list; q; q = q -> next )
   {
