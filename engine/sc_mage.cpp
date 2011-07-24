@@ -2571,6 +2571,12 @@ struct presence_of_mind_t : public mage_spell_t
 
   virtual bool ready()
   {
+    mage_t* p = player -> cast_mage();
+
+    // Can't use PoM while AP is up
+    if ( p -> buffs_arcane_power -> check() )
+      return false;
+
     return( mage_spell_t::ready() && fast_action -> ready() );
   }
 };
