@@ -329,8 +329,8 @@ void enemy_t::init_base()
     case 82: initial_armor = 10338; break;
     case 83: initial_armor = 10643; break;
     case 84: initial_armor = 10880; break; // Need real value
-    case 85: initial_armor = 11161; break; // Need real value
-    case 86: initial_armor = 11441; break; // Need real value
+    case 85: initial_armor = 11092; break;
+    case 86: initial_armor = 11387; break;
     case 87: initial_armor = 11682; break;
     case 88: initial_armor = 11977; break;
     default: if ( level < 80 )
