@@ -278,17 +278,17 @@ struct interrupt_event_t : public raid_event_t
 struct damage_event_t : public raid_event_t
 {
   double amount;
-  double amount_stddev;
+  double amount_range;
   spell_t* raid_damage;
 
   damage_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "damage" ), amount( 1 ), amount_stddev( 0 ), raid_damage( 0 )
+    raid_event_t( s, "damage" ), amount( 1 ), amount_range( 0 ), raid_damage( 0 )
   {
     std::string type_str = "holy";
     option_t options[] =
     {
       { "amount",        OPT_FLT, &amount        },
-      { "amount_stddev", OPT_FLT, &amount_stddev },
+      { "amount_range",  OPT_FLT, &amount_range },
       { "type",          OPT_STRING, &type_str   },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -322,7 +322,7 @@ struct damage_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
-      raid_damage -> base_dd_min = raid_damage -> base_dd_max = rng -> gauss( amount, amount_stddev );
+      raid_damage -> base_dd_min = raid_damage -> base_dd_max = rng -> range( amount - amount_range, amount + amount_range );
       raid_damage -> target = p;
       raid_damage -> execute();
     }
@@ -334,15 +334,15 @@ struct damage_event_t : public raid_event_t
 struct heal_event_t : public raid_event_t
 {
   double amount;
-  double amount_stddev;
+  double amount_range;
 
   heal_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "heal" ), amount( 1 ), amount_stddev( 0 )
+    raid_event_t( s, "heal" ), amount( 1 ), amount_range( 0 )
   {
     option_t options[] =
     {
       { "amount",        OPT_FLT, &amount        },
-      { "amount_stddev", OPT_FLT, &amount_stddev },
+      { "amount_range", OPT_FLT,  &amount_range },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -359,7 +359,7 @@ struct heal_event_t : public raid_event_t
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
 
-      double x = rng -> gauss( amount, amount_stddev );
+      double x = rng -> range( amount - amount_range, amount + amount_range );
       if ( sim -> log ) log_t::output( sim, "%s takes %.0f raid heal.", p -> name(), x );
       p -> resource_gain( RESOURCE_HEALTH, x );
     }
