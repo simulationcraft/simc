@@ -2053,8 +2053,8 @@ void death_knight_spell_t::target_debuff( player_t* t, int dmg_type )
 
 struct flaming_torment_t : public death_knight_spell_t
 {
-  flaming_torment_t( death_knight_t* player ) : 
-    death_knight_spell_t( "Flaming Torment", player, RESOURCE_NONE, SCHOOL_FIRE )
+  flaming_torment_t( const char* n, death_knight_t* player ) :
+    death_knight_spell_t( n, player, RESOURCE_NONE, SCHOOL_FIRE )
   {
     background       = true;
     may_miss         = false;    
@@ -3242,8 +3242,7 @@ struct obliterate_offhand_t : public death_knight_attack_t
 
     if ( p -> set_bonus.tier12_4pc_melee() )
     {
-      flaming_torment = new flaming_torment_t( player );
-
+      flaming_torment = new flaming_torment_t( "obliterate_offhand_flaming_torment", player );
       add_child( flaming_torment );
     }
   }
@@ -3314,8 +3313,7 @@ struct obliterate_t : public death_knight_attack_t
 
     if ( p -> set_bonus.tier12_4pc_melee() )
     {
-      flaming_torment = new flaming_torment_t( player );
-
+      flaming_torment = new flaming_torment_t( "obliterate_mainhand_flaming_torment", player );
       add_child( flaming_torment );
     }
 
@@ -3763,8 +3761,7 @@ struct scourge_strike_t : public death_knight_attack_t
 
       if ( p -> set_bonus.tier12_4pc_melee() )
       {
-        flaming_torment = new flaming_torment_t( player );
-
+        flaming_torment = new flaming_torment_t( "scourge_strike_shadow_flaming_torment", player );
         add_child( flaming_torment );
       }
     }
@@ -3813,8 +3810,7 @@ struct scourge_strike_t : public death_knight_attack_t
 
     if ( p -> set_bonus.tier12_4pc_melee() )
     {
-      flaming_torment = new flaming_torment_t( player );
-
+      flaming_torment = new flaming_torment_t( "scourge_strike_flaming_torment", player );
       add_child( flaming_torment );
     }
   }
