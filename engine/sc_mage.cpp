@@ -1885,7 +1885,11 @@ struct flame_orb_tick_t : public mage_spell_t
     spell_t::travel( t, travel_result, travel_dmg );
     // Trigger Missiles here because the background action wouldn't trigger them otherwise
     mage_t* p = player -> cast_mage();
-    p -> buffs_arcane_missiles -> trigger();
+    if ( ! p -> talents.hot_streak   -> ok() &&
+         ! p -> talents.brain_freeze -> ok() )
+    {
+      p -> buffs_arcane_missiles -> trigger();
+    }
   }
 };
 
