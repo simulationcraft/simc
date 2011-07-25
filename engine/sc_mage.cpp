@@ -1883,6 +1883,9 @@ struct flame_orb_tick_t : public mage_spell_t
   {
     // Ticks don't trigger ignite
     spell_t::travel( t, travel_result, travel_dmg );
+    // Trigger Missiles here because the background action wouldn't trigger them otherwise
+    mage_t* p = player -> cast_mage();
+    p -> buffs_arcane_missiles -> trigger();
   }
 };
 
