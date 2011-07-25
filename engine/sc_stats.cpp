@@ -23,7 +23,7 @@ void stats_t::add_child( stats_t* child )
   {
     if ( child -> parent != this )
     {
-      sim -> errorf( "stats_t::child stats %s equal to parent.\n", name_str.c_str() );
+      sim -> errorf( "stats_t %s already has parent %s, can't parent to %s", child-> name_str.c_str(), child->parent-> name_str.c_str(), name_str.c_str() );
       assert( 0 );
     }
     return;
