@@ -1,6 +1,6 @@
 #!./simc 
 
-priest=Priest_AAA_T12N
+priest=Priest_AAA_Single_T12N
 origin="generate_priest_heal.simc"
 level=85
 race=troll

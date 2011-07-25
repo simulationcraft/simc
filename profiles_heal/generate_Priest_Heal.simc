@@ -48,7 +48,7 @@ copy=Priest_Disc_Single_T12N_Valanyr,Priest_Disc_Single_T12N
 main_hand=valanyr_hammer_of_ancient_kings,id=46017,enchant=power_torrent
 save=Priest_Disc_Single_T12N_Valanyr.simc
 
-copy=Priest_AAA_T12N,Priest_Disc_Single_T12N
+copy=Priest_AAA_Single_T12N,Priest_Disc_Single_T12N
 talents=http://www.wowhead.com/talent#bfroMRsbsRMochMZb
 glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/prayer_of_healing
 actions=flask,type=draconic_mind
@@ -70,9 +70,9 @@ actions+=/holy_fire
 actions+=/smite,if=dot.holy_fire.remains>cast_time&buff.holy_evangelism.stack<5&buff.holy_archangel.down
 actions+=/penance_heal
 actions+=/greater_heal
-save=Priest_AAA_T12N.simc
+save=Priest_AAA_Single_T12N.simc
 
-copy=Priest_Atonement_T12N,Priest_AAA_T12N
+copy=Priest_Atonement_T12N,Priest_AAA_Single_T12N
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fortitude

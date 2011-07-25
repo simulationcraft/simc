@@ -2031,7 +2031,7 @@ struct buff_t : public spell_id_t
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
 
-  virtual void _init_buff_t();
+  void _init_buff_t();
 
   const spelleffect_data_t& effect1() const { return s_data -> effect1(); }
   const spelleffect_data_t& effect2() const { return s_data -> effect2(); }
@@ -3767,7 +3767,7 @@ struct action_t : public spell_id_t
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, int t=TREE_NONE, bool special=false );
   virtual ~action_t();
 
-  virtual void _init_action_t();
+  void _init_action_t();
 
   virtual void      parse_data();
   virtual void      parse_effect_data( int spell_id, int effect_nr );
@@ -3864,7 +3864,7 @@ struct attack_t : public action_t
   attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   attack_t( const char* name, const char* sname, player_t* p, int t = TREE_NONE, bool special=false );
   attack_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE, bool special=false );
-  virtual void _init_attack_t();
+  void _init_attack_t();
 
   // Attack Overrides
   virtual double haste() SC_CONST;
@@ -3896,7 +3896,7 @@ struct spell_t : public action_t
   spell_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE );
   spell_t( const char* name, const char* sname, player_t* p, int t = TREE_NONE );
   spell_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE );
-  virtual void _init_spell_t();
+  void _init_spell_t();
 
   // Spell Overrides
   virtual double haste() SC_CONST;

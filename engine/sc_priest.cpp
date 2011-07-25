@@ -196,8 +196,6 @@ struct priest_t : public player_t
   std::list<spell_t* >  shadowy_apparition_active_list;
   heal_t* heals_echo_of_light;
   bool echo_of_light_merged;
-  spell_t* atonement_nc;
-  spell_t* atonement_c;
 
   // Random Number Generators
   rng_t* rng_pain_and_suffering;
@@ -208,6 +206,7 @@ struct priest_t : public player_t
 
   // Options
   std::string power_infusion_target_str;
+  std::string atonement_target_str;
 
   // Mana Resource Tracker
   struct mana_resource_t
@@ -324,8 +323,6 @@ struct priest_t : public player_t
     use_mind_blast                       = 1;
     recast_mind_blast                    = 0;
     heals_echo_of_light                  = 0;
-    atonement_nc                         = 0;
-    atonement_c                          = 0;
 
     distance                             = 40;
     default_distance                     = 40;
@@ -2755,6 +2752,10 @@ struct atonement_heal_t : public priest_heal_t
     // HACK: Setting may_crit = true will force crits.
     may_crit = false;
     base_crit = 1.0;
+
+    priest_t* p = player -> cast_priest();
+    if( !p -> atonement_target_str.empty() )
+      target = sim -> find_player( p -> atonement_target_str.c_str() );
   }
 
   virtual double total_crit_bonus() SC_CONST
@@ -2774,7 +2775,7 @@ struct atonement_heal_t : public priest_heal_t
   virtual void execute()
   {
     heal_target.clear();
-    heal_target.push_back( find_lowest_player() );
+    heal_target.push_back( target ? target : find_lowest_player() );
 
     priest_heal_t::execute();
   }
@@ -2782,7 +2783,7 @@ struct atonement_heal_t : public priest_heal_t
   virtual void tick()
   {
     heal_target.clear();
-    heal_target.push_back( find_lowest_player() );
+    heal_target.push_back( target ? target : find_lowest_player() );
 
     priest_heal_t::tick();
   }
@@ -5231,10 +5232,11 @@ void priest_t::create_options()
 
   option_t priest_options[] =
   {
-    { "use_shadow_word_death",   OPT_BOOL,   &( use_shadow_word_death     ) },
-    { "use_mind_blast",          OPT_INT,    &( use_mind_blast            ) },
-    { "power_infusion_target",   OPT_STRING, &( power_infusion_target_str ) },
+    { "atonement_target",        OPT_STRING, &( atonement_target_str      ) },
     { "double_dot",              OPT_BOOL,   &( double_dot                ) },
+    { "power_infusion_target",   OPT_STRING, &( power_infusion_target_str ) },
+    { "use_mind_blast",          OPT_INT,    &( use_mind_blast            ) },
+    { "use_shadow_word_death",   OPT_BOOL,   &( use_shadow_word_death     ) },
 
     { NULL, OPT_UNKNOWN, NULL }
   };
@@ -5252,6 +5254,7 @@ bool priest_t::create_profile( std::string& profile_str, int save_type, bool sav
   {
     std::string temp_str;
     if ( ! power_infusion_target_str.empty() ) profile_str += "power_infusion_target=" + power_infusion_target_str + "\n";
+    if ( ! atonement_target_str.empty() ) profile_str += "atonement_target=" + atonement_target_str + "\n";
     if ( ( use_shadow_word_death ) || ( use_mind_blast != 1 ) || ( double_dot ) )
     {
       profile_str += "## Variables\n";
@@ -5283,6 +5286,7 @@ void priest_t::copy_from( player_t* source )
   priest_t* p = source -> cast_priest();
 
   power_infusion_target_str = p -> power_infusion_target_str;
+  atonement_target_str      = p -> atonement_target_str;
   use_shadow_word_death     = p -> use_shadow_word_death;
   use_mind_blast            = p -> use_mind_blast;
   double_dot                = p -> double_dot;
