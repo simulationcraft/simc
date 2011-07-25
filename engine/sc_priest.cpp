@@ -414,6 +414,9 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 
 struct priest_spell_t : public spell_t
 {
+  spell_t* atonement;
+  bool can_trigger_atonement;
+
   void _init_priest_spell_t()
   {
     priest_t* p = player -> cast_priest();
@@ -428,7 +431,7 @@ struct priest_spell_t : public spell_t
   }
 
   priest_spell_t( const char* n, player_t* player, const school_type s, int t ) :
-    spell_t( n, player, RESOURCE_MANA, s, t )
+    spell_t( n, player, RESOURCE_MANA, s, t ), atonement( 0 ), can_trigger_atonement( false )
   {
     _init_priest_spell_t();
   }
@@ -450,6 +453,8 @@ struct priest_spell_t : public spell_t
   {
     _init_priest_spell_t();
   }
+
+  virtual void init();
 
   virtual void player_buff()
   {
@@ -515,33 +520,37 @@ struct priest_spell_t : public spell_t
     }
   }
 
-  static void trigger_atonement( player_t* player, int result, double damage )
+  void trigger_atonement( double damage, int dmg_type, int result )
   {
+    if ( !atonement ) return;
+
     priest_t* p = player -> cast_priest();
 
-    // Atonement
-    if ( p -> atonement_nc && p -> atonement_c )
+    double atonement_dmg = damage * p -> talents.atonement -> effect1().percent();
+    double cap = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
+
+    if ( result == RESULT_CRIT )
     {
-      double atonement_dmg = damage * p -> talents.atonement -> effect1().percent();
-      spell_t* atonement = p -> atonement_nc;
-      double cap = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
+      // FIXME: Crits in 4.1 capped at 150% of the non-crit cap. This may
+      //        be changed to 200% in 4.2 along with the general heal
+      //        crit multiplier change.
+      cap *= 1.5;
+    }
 
-      if ( result == RESULT_CRIT )
-      {
-        atonement = p -> atonement_c;
-        // FIXME: Crits in 4.1 capped at 150% of the non-crit cap. This may
-        //        be changed to 200% in 4.2 along with the general heal
-        //        crit multiplier change.
-        cap *= 1.5;
-      }
+    if ( atonement_dmg > cap )
+      atonement_dmg = cap;
 
-      if ( atonement_dmg > cap )
-        atonement_dmg = cap;
-
-      atonement -> base_dd_min = atonement_dmg;
-      atonement -> base_dd_max = atonement_dmg;
-      atonement -> round_base_dmg = false;
+    if ( dmg_type == HEAL_DIRECT )
+    {
+      atonement -> may_crit = result == RESULT_CRIT;
+      atonement -> num_ticks = 0;
+      atonement -> base_dd_min = atonement -> base_dd_max = atonement_dmg;
       atonement -> execute();
+    } else {
+      atonement -> tick_may_crit = result == RESULT_CRIT;
+      atonement -> num_ticks = 1;
+      atonement -> base_td = atonement_dmg;
+      atonement -> tick();
     }
   }
 
@@ -618,7 +627,7 @@ struct priest_heal_t : public heal_t
       direct_power_mod = 0;
 
       priest_t* priest = player -> cast_priest();
-      assert( priest -> talents.divine_aegis -> ok() );
+      check_talent( priest -> talents.divine_aegis -> rank() );
       shield_multiple  = priest -> talents.divine_aegis -> effect1().percent();
     }
   };
@@ -777,6 +786,20 @@ struct priest_heal_t : public heal_t
       trigger_echo_of_light( this, t );
       if ( p -> buffs_chakra_serenity -> up() && p -> dots_renew -> ticking )
         p -> dots_renew -> action -> refresh_duration();
+    }
+  }
+
+  void tick()
+  {
+    heal_t::tick();
+
+    // Divine Aegis
+    if ( da && result == RESULT_CRIT )
+    {
+      da -> base_dd_min = da -> base_dd_max = tick_dmg * da -> shield_multiple;
+      da -> heal_target.clear();
+      da -> heal_target.push_back( heal_target[0] );
+      da -> execute();
     }
   }
 
@@ -1471,6 +1494,8 @@ struct holy_fire_t : public priest_spell_t
     base_execute_time += p -> talents.divine_fury -> effect1().seconds();
 
     base_hit       += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
+
+    can_trigger_atonement = true;
   }
 
   virtual void execute()
@@ -1481,14 +1506,14 @@ struct holy_fire_t : public priest_spell_t
 
     p -> buffs_holy_evangelism  -> trigger();
 
-    trigger_atonement( player, result, direct_dmg );
+    trigger_atonement( direct_dmg, HEAL_DIRECT, result );
   }
 
   virtual void tick()
   {
     priest_spell_t::tick();
 
-    trigger_atonement( player, result, tick_dmg );
+    trigger_atonement( tick_dmg, HEAL_OVER_TIME, result );
   }
 
   virtual void player_buff()
@@ -2714,15 +2739,27 @@ struct chakra_t : public priest_spell_t
   }
 };
 
-// Common base for atonement crit and non-crit heals
+// Atonement heal
 
-struct atonement_common_t : public priest_heal_t
+struct atonement_heal_t : public priest_heal_t
 {
-  atonement_common_t( player_t* player, int id ) :
-      priest_heal_t( "atonement", player, id )
+  atonement_heal_t( const char* n, player_t* player ) :
+      priest_heal_t( n, player, 81751 )
   {
     proc       = true;
     background = true;
+    round_base_dmg = false;
+
+    time_to_tick = 0;
+
+    // HACK: Setting may_crit = true will force crits.
+    may_crit = false;
+    base_crit = 1.0;
+  }
+
+  virtual double total_crit_bonus() SC_CONST
+  {
+    return 0;
   }
 
   virtual void player_buff()
@@ -2733,41 +2770,35 @@ struct atonement_common_t : public priest_heal_t
     // Atonement does not scale with Twin Disciplines as of WoW 4.2
     player_multiplier /= 1.0 + p -> constants.twin_disciplines_value;
   }
+
+  virtual void execute()
+  {
+    heal_target.clear();
+    heal_target.push_back( find_lowest_player() );
+
+    priest_heal_t::execute();
+  }
+
+  virtual void tick()
+  {
+    heal_target.clear();
+    heal_target.push_back( find_lowest_player() );
+
+    priest_heal_t::tick();
+  }
 };
 
-// non-crit Atonement Heal ============================================
-
-struct atonement_nc_t : public atonement_common_t
+void priest_spell_t::init()
 {
-  atonement_nc_t( player_t* player ) :
-    atonement_common_t( player, 81751 )
-  {}
+  spell_t::init();
 
-  virtual void calculate_result()
+  priest_t* p = player -> cast_priest();
+  if( can_trigger_atonement && p -> talents.atonement -> rank() )
   {
-    result = RESULT_HIT;
+    std::string n = "atonement_" + name_str;
+    atonement = new atonement_heal_t( n.c_str(), p );
   }
-};
-
-// crit Atonement Heal ============================================
-
-struct atonement_c_t : public atonement_common_t
-{
-  // Misusing ID 81751 for now, correct id is: 94472
-  atonement_c_t( player_t* player ) :
-    atonement_common_t( player, 81751 )
-  {}
-
-  virtual void calculate_result()
-  {
-    result = RESULT_CRIT;
-  }
-
-  virtual double total_crit_bonus() SC_CONST
-  {
-    return 0;
-  }
-};
+}
 
 // Smite Spell ==============================================================
 
@@ -2784,6 +2815,7 @@ struct smite_t : public priest_spell_t
 
     base_hit       += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
 
+    can_trigger_atonement = true;
   }
 
   virtual void execute()
@@ -2810,7 +2842,7 @@ struct smite_t : public priest_spell_t
       p -> cooldowns_chakra -> start();
     }
 
-    trigger_atonement( player, result, direct_dmg );
+    trigger_atonement( direct_dmg, HEAL_DIRECT, result );
 
     // Train of Thought
     if ( p -> talents.train_of_thought -> rank() )
@@ -2872,6 +2904,8 @@ struct renew_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
+    may_crit = false;
+
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
@@ -2882,7 +2916,6 @@ struct renew_t : public priest_heal_t
     if ( p -> talents.divine_touch -> rank() )
     {
       dt = new divine_touch_t( p );
-
       add_child( dt );
     }
 
@@ -5066,20 +5099,6 @@ void priest_t::reset()
   recast_mind_blast = 0;
 
   echo_of_light_merged = false;
-
-  if ( talents.atonement -> rank() )
-  {
-    if ( ! atonement_nc )
-    {
-      atonement_nc = new atonement_nc_t( this );
-      atonement_nc -> init();
-    }
-    if ( ! atonement_c )
-    {
-      atonement_c = new atonement_c_t( this );
-      atonement_c -> init();
-    }
-  }
 
   was_sub_25 = false;
 
