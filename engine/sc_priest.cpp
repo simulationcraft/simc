@@ -3383,6 +3383,11 @@ struct prayer_of_healing_t : public priest_heal_t
       glyph = new glyph_prayer_of_healing_t( p );
       add_child( glyph );
     }
+  }
+
+  virtual void init()
+  {
+    priest_heal_t::init();
 
     // PoH crits double the DA percentage.
     if ( da ) da -> shield_multiple *= 2;
