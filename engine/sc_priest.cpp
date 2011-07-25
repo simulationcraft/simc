@@ -2372,7 +2372,7 @@ struct shadow_word_death_t : public priest_spell_t
     if ( p -> talents.mind_melt -> rank() && ( target -> health_percentage() <= 25 ) )
       player_multiplier *= 1.0 + p -> talents.mind_melt -> rank() * 0.15;
 
-    if ( p -> glyphs.shadow_word_death -> ok() && ( target -> health_percentage() <= 25 ) )
+    if ( target -> health_percentage() <= 25 )
       player_multiplier *= 3.0;
 
     player_multiplier *= 1.0 + p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
