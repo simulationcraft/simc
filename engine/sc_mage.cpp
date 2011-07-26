@@ -3322,7 +3322,7 @@ void mage_t::init_actions()
         action_list_str += items[ i ].name();
         //Special trinket handling for Arcane, previously only used for Shard of Woe but seems to be good for all useable trinkets
         if ( primary_tree() == TREE_ARCANE )
-          action_list_str += ",if=buff.improved_mana_gem.up|cooldown.evocation.remains>90|target.time_to_die<50";
+          action_list_str += ",if=buff.improved_mana_gem.up|cooldown.evocation.remains>90|target.time_to_die<=50";
       }
     }
     // Lifeblood
@@ -3341,7 +3341,7 @@ void mage_t::init_actions()
       }
       else if ( primary_tree() == TREE_ARCANE )
       {
-        action_list_str += "/volcanic_potion,if=buff.improved_mana_gem.up|target.time_to_die<50";
+        action_list_str += "/volcanic_potion,if=buff.improved_mana_gem.up|target.time_to_die<=50";
       }
       else
       {
@@ -3376,7 +3376,7 @@ void mage_t::init_actions()
       //Special handling for Race Abilities
       if ( race == RACE_ORC )
       {
-        action_list_str += "/blood_fury,if=buff.improved_mana_gem.up|target.time_to_die<50";
+        action_list_str += "/blood_fury,if=buff.improved_mana_gem.up|target.time_to_die<=50";
       }
       else if ( race == RACE_TROLL )
       {
@@ -3385,10 +3385,10 @@ void mage_t::init_actions()
       //Conjure Mana Gem
       action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>105&mana_gem_charges=0";
       //Primary Cooldowns
-      action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4";
+      action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4&(target.time_to_die<=50|cooldown.evocation.remains<=50)";
       if ( talents.arcane_power -> rank() )
       {
-        action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<50";
+        action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50";
         action_list_str += "/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)";
       }
       else
@@ -3403,7 +3403,7 @@ void mage_t::init_actions()
 
       if ( has_shard == true )
       {
-        action_list_str += "/arcane_blast,if=target.time_to_die<50|cooldown.evocation.remains<=50";
+        action_list_str += "/arcane_blast,if=target.time_to_die<=50|cooldown.evocation.remains<=50";
         action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up";
       }
       else
