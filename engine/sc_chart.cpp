@@ -9,7 +9,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 #define MAX_PLAYERS_PER_CHART 20
 
-// Colors returned by this function are defined as http://www.wowwiki.com/Class_colors
+// Colors returned by this function are defined as http://www.wowpedia.org/Class_colors
 static const char* class_color( int type )
 {
   switch ( type )
@@ -1100,7 +1100,7 @@ const char* chart_t::scaling_dps( std::string& s,
   char buffer[ 1024 ];
 
   s = get_chart_base_url();
-  s += "chs=600x300";
+  s += "chs=550x300";
   s += "&amp;";
   s += "cht=lc";
   s += "&amp;";

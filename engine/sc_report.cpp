@@ -1202,7 +1202,7 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
         if ( p -> scaling.get_stat( j ) == 0 )
         {
           util_t::fprintf( file, "\t\t\t\t\t\t<td class=\"small\">-</td>\n" );
-        } 
+        }
         else
         {
           util_t::fprintf( file,
@@ -3011,7 +3011,6 @@ util_t::fprintf( file,
 
 static void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
 {
-  char buffer[ 1024 ];
   int num_players = ( int ) sim -> players_by_name.size();
 
   // Check for healers in the raid
@@ -3040,38 +3039,35 @@ if ( ! p -> action_dpet_chart.empty() )
 {
   if ( num_players == 1 )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Action DPET Chart\" />\n", p -> action_dpet_chart.c_str() );
+    action_dpet_str = "<img src=\"" + p -> action_dpet_chart + "\" alt=\"Action DPET Chart\" />\n";
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">%s</span>\n", p -> action_dpet_chart.c_str() );
+    action_dpet_str = "<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">" + p -> action_dpet_chart + "</span>\n";
   }
-  action_dpet_str = buffer;
 }
 if ( ! p -> action_dmg_chart.empty() )
 {
   if ( num_players == 1 )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Action Damage Chart\" />\n", p -> action_dmg_chart.c_str() );
+    action_dmg_str = "<img src=\"" + p -> action_dmg_chart + "\" alt=\"Action Damage Chart\" />\n";
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">%s</span>\n", p -> action_dmg_chart.c_str() );
+    action_dmg_str = "<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">" + p -> action_dmg_chart + "</span>\n";
   }
-  action_dmg_str = buffer;
 }
 
 if ( ! p -> scaling_dps_chart.empty() )
 {
   if ( num_players == 1 )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Scaling DPS Chart\" />\n", p -> scaling_dps_chart.c_str() );
+    scaling_dps_str = "<img src=\"" + p -> scaling_dps_chart + "\" alt=\"Scaling DPS Chart\" />\n";
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-scaling-dps\" title=\"Scaling DPS Chart\">%s</span>\n", p -> scaling_dps_chart.c_str() );
+    scaling_dps_str = "<span class=\"chart-scaling-dps\" title=\"Scaling DPS Chart\">" + p -> scaling_dps_chart + "</span>\n";
   }
-  scaling_dps_str = buffer;
 }
 if ( ! p -> reforge_dps_chart.empty() )
 {
@@ -3079,13 +3075,12 @@ if ( ! p -> reforge_dps_chart.empty() )
   {
     if ( num_players == 1 )
     {
-      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Reforge DPS Chart\" />\n", p -> reforge_dps_chart.c_str() );
+      reforge_dps_str = "<img src=\"" + p -> reforge_dps_chart + "\" alt=\"Reforge DPS Chart\" />\n";
     }
     else
     {
-      snprintf( buffer, sizeof( buffer ), "<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n", p -> reforge_dps_chart.c_str() );
+      reforge_dps_str = "<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">" + p -> reforge_dps_chart + "</span>\n";
     }
-    reforge_dps_str = buffer;
   }
   else
   {
@@ -3108,68 +3103,62 @@ if ( ! p -> timeline_resource_chart.empty() )
 {
   if ( num_players == 1 )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Resource Timeline Chart\" />\n", p -> timeline_resource_chart.c_str() );
+    timeline_resource_str = "<img src=\"" + p -> timeline_resource_chart + "\" alt=\"Resource Timeline Chart\" />\n";
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-resource\" title=\"Resource Timeline Chart\">%s</span>\n", p -> timeline_resource_chart.c_str() );
+    timeline_resource_str = "<span class=\"chart-timeline-resource\" title=\"Resource Timeline Chart\">" + p -> timeline_resource_chart + "</span>\n";
   }
-  timeline_resource_str = buffer;
 }
 if ( ! p -> timeline_resource_health_chart.empty() && healer_in_the_raid )
 {
   if ( num_players == 1 )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Health Timeline Chart\" />\n", p -> timeline_resource_health_chart.c_str() );
+    timeline_resource_health_str = "<img src=\"" + p ->timeline_resource_health_chart + "\" alt=\"Health Timeline Chart\" />\n";
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-health-timeline-resource\" title=\"Health Timeline Chart\">%s</span>\n", p -> timeline_resource_health_chart.c_str() );
+    timeline_resource_health_str = "<span class=\"chart-health-timeline-resource\" title=\"Health Timeline Chart\">" + p -> timeline_resource_health_chart + "</span>\n";
   }
-  timeline_resource_health_str = buffer;
 }
 if ( ! p -> timeline_dps_chart.empty() )
 {
   if ( num_players == 1 )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Timeline Chart\" />\n", p -> timeline_dps_chart.c_str() );
+    timeline_dps_str = "<img src=\"" + p -> timeline_dps_chart + "\" alt=\"DPS Timeline Chart\" />\n";
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">%s</span>\n", p -> timeline_dps_chart.c_str() );
+    timeline_dps_str = "<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">" + p -> timeline_dps_chart + "</span>\n";
   }
-  timeline_dps_str = buffer;
 }
 if ( ! p -> distribution_dps_chart.empty() )
 {
   if ( num_players == 1 )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Distribution Chart\" />\n", p -> distribution_dps_chart.c_str() );
+    distribution_dps_str = "<img src=\"" + p -> distribution_dps_chart + "\" alt=\"DPS Distribution Chart\" />\n";
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">%s</span>\n", p -> distribution_dps_chart.c_str() );
+    distribution_dps_str = "<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">" + p -> distribution_dps_chart + "%s</span>\n";
   }
-  distribution_dps_str = buffer;
 }
 if ( ! p -> scale_factors_chart.empty() )
 {
   if ( num_players == 1 )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Scale Factors Chart\" />\n", p -> scale_factors_chart.c_str() );
+    scale_factors_str = "<img src=\"" + p -> scale_factors_chart + "\" alt=\"Scale Factors Chart\" />\n";
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "<span class=\"chart-scale-factors\" title=\"Scale Factors Chart\">%s</span>\n", p -> scale_factors_chart.c_str() );
+    scale_factors_str = "<span class=\"chart-scale-factors\" title=\"Scale Factors Chart\">" + p -> scale_factors_chart + "</span>\n";
   }
-  scale_factors_str = buffer;
 }
 if ( ! sim -> timeline_chart.empty() )
 {
   if ( num_players == 1 )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Encounter Timeline Distribution Chart\" />\n", sim -> timeline_chart.c_str() );
-    distribution_encounter_timeline_str = buffer;
+    distribution_encounter_timeline_str = "<img src=\"" + sim -> timeline_chart + "\" alt=\"Encounter Timeline Distribution Chart\" />\n";
   }
 }
 
