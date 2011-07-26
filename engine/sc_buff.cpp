@@ -22,6 +22,28 @@ struct expiration_t : public event_t
     buff -> expire();
   }
 };
+
+struct buff_delay_t : public event_t
+{
+  buff_t* buff;
+  int     stacks;
+  double  value;
+
+  buff_delay_t( sim_t* sim, player_t* p, buff_t* b, int stacks, double value ) : 
+    event_t( sim, p ), buff( b ), stacks( stacks ), value( value )
+  {
+    name = buff -> name();
+    double delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+
+    sim -> add_event( this, delay_duration );
+  }
+
+  virtual void execute()
+  {
+    buff -> execute( stacks, value );
+    buff -> delay = 0;
+  }
+};
 }
 
 // ==========================================================================
@@ -42,7 +64,7 @@ buff_t::buff_t( sim_t*             s,
                 int                id ) :
   spell_id_t( 0, n.c_str() ),
   sim( s ), player( 0 ), source( 0 ), name_str( n ),
-  max_stack( ms ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
+  max_stack( ms ), activated( true ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   reverse( r ), constant( false ), quiet( q ), aura_id( id ), rng_type( rt )
 {
   init();
@@ -59,10 +81,11 @@ buff_t::buff_t( player_t*          p,
                 bool               q,
                 bool               r,
                 int                rt,
-                int                id ) :
+                int                id,
+                bool               act ) :
   spell_id_t( p, n.c_str() ),
   sim( p -> sim ), player( p ), source( p ), name_str( n ),
-  max_stack( ms ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
+  max_stack( ms ), activated( act ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   reverse( r ), constant( false ), quiet( q ), aura_id( id ), rng_type( rt )
 {
   init();
@@ -74,7 +97,7 @@ buff_t::buff_t( player_t* p,
                 talent_t* talent, ... ) :
   spell_id_t( p, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
   sim( p -> sim ), player( p ), source( p ), name_str( s_token ),
-  max_stack( 0 ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
+  max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
   if( talent -> rank() )
@@ -103,7 +126,7 @@ buff_t::buff_t( player_t*     p,
                 spell_data_t* spell, ... ) :
   spell_id_t( p, spell -> name_cstr(), spell -> id() ),
   sim( p -> sim ), player( p ), source( p ), name_str( s_token ),
-  max_stack( 0 ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
+  max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
   max_stack = std::max( ( int ) spell -> max_stacks(), 1 );
@@ -189,6 +212,7 @@ void buff_t::init()
   constant = false;
   overridden = false;
   expiration = 0;
+  delay = 0;
 
   buff_t** tail=0;
 
@@ -239,10 +263,12 @@ buff_t::buff_t( player_t*          p,
                 double             cd,
                 bool               q,
                 bool               r,
-                int                rt ) :
+                int                rt,
+                bool               act ) :
   spell_id_t( p, n.c_str(), sname, 0 ),
   sim( p -> sim ), player( p ), source( 0 ), name_str( n ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
+  activated( act ),
   buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
   default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false ), quiet( q ), aura_id( 0 ), rng_type( rt )
@@ -285,10 +311,12 @@ buff_t::buff_t( player_t*          p,
                 double             cd,
                 bool               q,
                 bool               r,
-                int                rt ) :
+                int                rt,
+                bool               act ) :
   spell_id_t( p, n.c_str(), id ),
   sim( p -> sim ), player( p ), source( 0 ), name_str( n ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
+  activated( act ),
   buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
   default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false ), quiet( q ), aura_id( 0 ), rng_type( rt )
@@ -354,6 +382,7 @@ void buff_t::_init_buff_t()
   constant = false;
   overridden = false;
   expiration = 0;
+  delay = 0;
 
   if( max_stack >= 0 )
   {
@@ -474,6 +503,32 @@ bool buff_t::trigger( int    stacks,
   if ( ! rng -> roll( chance ) )
     return false;
 
+  if ( ! activated && player && player -> in_combat && sim -> default_aura_delay > 0 )
+  {
+    // In-game, procs that happen "close to eachother" are usually delayed into the 
+    // same time slot. We roughly model this by allowing procs that happen during the
+    // buff's already existing delay period to trigger at the same time as the first 
+    // delayed proc will happen.
+    if ( delay )
+    {
+     buff_delay_t* d = dynamic_cast< buff_delay_t* >( delay );
+     d -> stacks += stacks;
+     d -> value = value;
+    }
+    else
+     delay = new ( sim ) buff_delay_t( sim, player, this, stacks, value );
+  }
+  else
+    execute( stacks, value );
+
+  return true;
+}
+
+void buff_t::execute( int stacks, double value )
+{
+  // Add a Cooldown check here to avoid extra processing due to delays
+  if ( cooldown -> remains() > 0 ) return;
+
   if( last_trigger > 0 )
   {
     trigger_intervals_sum += sim -> current_time - last_trigger;
@@ -501,8 +556,6 @@ bool buff_t::trigger( int    stacks,
   }
 
   trigger_successes++;
-
-  return true;
 }
 
 // buff_t::increment ========================================================
@@ -766,6 +819,7 @@ void buff_t::aura_loss()
 
 void buff_t::reset()
 {
+  event_t::cancel( delay );
   cooldown -> reset();
   expire();
   last_start = -1;
@@ -973,8 +1027,9 @@ stat_buff_t::stat_buff_t( player_t*          p,
                           bool               q,
                           bool               r,
                           int                rng_type,
-                          int                id ) :
-  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id ), stat( st ), amount( a )
+                          int                id,
+                          bool               act ) :
+  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id, act ), stat( st ), amount( a )
 {
 }
 
@@ -989,8 +1044,9 @@ stat_buff_t::stat_buff_t( player_t*          p,
                           double             cd,
                           bool               q,
                           bool               r,
-                          int                rng_type ) :
-  buff_t( p, id, n, ch, cd, q, r, rng_type ), stat( st ), amount( a )
+                          int                rng_type,
+                          bool               act ) :
+  buff_t( p, id, n, ch, cd, q, r, rng_type, act ), stat( st ), amount( a )
 {
 }
 
@@ -1063,8 +1119,9 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               bool               q,
                                               bool               r,
                                               int                rng_type,
-                                              int                id ) :
-  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id ), school( sch ), amount( a ), refreshes( re )
+                                              int                id,
+                                              bool               act ) :
+  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id, act ), school( sch ), amount( a ), refreshes( re )
 {
 }
 
@@ -1080,8 +1137,9 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               bool               re,
                                               bool               q,
                                               bool               r,
-                                              int                rng_type ) :
-  buff_t( p, id, n, ch, cd, q, r, rng_type ), school( sch ), amount( a ), refreshes( re )
+                                              int                rng_type,
+                                              bool               act ) :
+  buff_t( p, id, n, ch, cd, q, r, rng_type, act ), school( sch ), amount( a ), refreshes( re )
 {
 }
 

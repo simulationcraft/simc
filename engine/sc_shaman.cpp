@@ -3700,23 +3700,6 @@ struct spiritwalkers_grace_t : public shaman_spell_t
 // Shaman Passive Buffs
 // ==========================================================================
 
-struct maelstrom_weapon_t : public buff_t
-{
-  maelstrom_weapon_t( player_t*   p,
-                      uint32_t    id,
-                      const char* n ) :
-    buff_t( p, id, n ) { }
-
-  virtual bool trigger( int, double, double chance )
-  {
-    bool            result = false;
-
-    result = buff_t::trigger( 1, -1, chance );
-
-    return result;
-  }
-};
-
 struct elemental_devastation_t : public buff_t
 {
   elemental_devastation_t( player_t*   p,
@@ -4103,18 +4086,18 @@ void shaman_t::init_buffs()
   player_t::init_buffs();
 
   buffs_earth_elemental         = new buff_t                 ( this, "earth_elemental", 1 );
-  buffs_elemental_devastation   = new elemental_devastation_t( this, talent_elemental_devastation -> spell_id(),               "elemental_devastation" );
-  buffs_elemental_focus         = new buff_t                 ( this, talent_elemental_focus -> effect_trigger_spell( 1 ),      "elemental_focus"       );
+  buffs_elemental_devastation   = new elemental_devastation_t( this, talent_elemental_devastation -> spell_id(),               "elemental_devastation" ); buffs_elemental_devastation -> activated = false;
+  buffs_elemental_focus         = new buff_t                 ( this, talent_elemental_focus -> effect_trigger_spell( 1 ),      "elemental_focus"       ); buffs_elemental_focus -> activated = false;
   // For now, elemental mastery will need 2 buffs, 1 to trigger the insta cast, and a second for the haste/damage buff
   buffs_elemental_mastery_insta = new buff_t                 ( this, talent_elemental_mastery -> spell_id(),                   "elemental_mastery_instant", 1.0, -1.0, true );
   // Note the chance override, as the spell itself does not have a proc chance
   buffs_elemental_mastery       = new buff_t                 ( this, talent_elemental_mastery -> effect_trigger_spell( 2 ),    "elemental_mastery",         1.0 );
   buffs_fire_elemental          = new buff_t                 ( this, "fire_elemental", 1 );
-  buffs_flurry                  = new buff_t                 ( this, talent_flurry -> effect_trigger_spell( 1 ),               "flurry",                    talent_flurry -> proc_chance() );
+  buffs_flurry                  = new buff_t                 ( this, talent_flurry -> effect_trigger_spell( 1 ),               "flurry",                    talent_flurry -> proc_chance() ); buffs_flurry -> activated = false;
   // TBD how this is handled for reals
-  buffs_lava_surge              = new buff_t                 ( this, 77762,                                                    "lava_surge",                1.0, -1.0, true );
+  buffs_lava_surge              = new buff_t                 ( this, 77762,                                                    "lava_surge",                1.0, -1.0, true ); buffs_lava_surge -> activated = false;
   buffs_lightning_shield        = new lightning_shield_buff_t( this, dbc.class_ability_id( type, "Lightning Shield" ),         "lightning_shield"      );
-  buffs_maelstrom_weapon        = new maelstrom_weapon_t     ( this, talent_maelstrom_weapon -> effect_trigger_spell( 1 ),     "maelstrom_weapon"      );  
+  buffs_maelstrom_weapon        = new buff_t                 ( this, talent_maelstrom_weapon -> effect_trigger_spell( 1 ),     "maelstrom_weapon"      ); buffs_maelstrom_weapon -> activated = false;
   buffs_natures_swiftness       = new buff_t                 ( this, talent_natures_swiftness -> spell_id(),                   "natures_swiftness"     );
   buffs_searing_flames          = new searing_flames_buff_t  ( this, talent_searing_flames -> spell_id(),                      "searing_flames"        );
   buffs_shamanistic_rage        = new buff_t                 ( this, talent_shamanistic_rage -> spell_id(),                    "shamanistic_rage"      );

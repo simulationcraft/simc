@@ -727,11 +727,13 @@ void enchant_t::init( player_t* p )
   if ( mh_enchant == "berserking" )
   {
     buff_t* buff = new stat_buff_t( p, "berserking_mh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
+    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "berserking" )
   {
     buff_t* buff = new stat_buff_t( p, "berserking_oh", STAT_ATTACK_POWER, 400, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
+    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
   }
   if ( mh_enchant == "elemental_slayer" )
@@ -747,6 +749,7 @@ void enchant_t::init( player_t* p )
     // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
 
     buff_t* buff = new stat_buff_t( p, "executioner", STAT_CRIT_RATING, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
+    buff -> activated = false;
 
     if ( mh_enchant == "executioner" )
     {
@@ -763,12 +766,14 @@ void enchant_t::init( player_t* p )
     if ( mh_enchant == "hurricane" )
     {
       mh_buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
+      mh_buff -> activated = false;
       p -> register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
       p -> register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
     }
     if ( oh_enchant == "hurricane" )
     {
       oh_buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
+      oh_buff -> activated = false;
       p -> register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
       p -> register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
     }
@@ -802,32 +807,38 @@ void enchant_t::init( player_t* p )
       }
     };
     buff_t* s_buff = new stat_buff_t( p, "hurricane_s", STAT_HASTE_RATING, 450, 1, 12, 45.0 );
+    s_buff -> activated = false;
     p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
     p -> register_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
   }
   if ( mh_enchant == "landslide" )
   {
     buff_t* buff = new stat_buff_t( p, "landslide_mh", STAT_ATTACK_POWER, 1000, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
+    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "landslide" )
   {
     buff_t* buff = new stat_buff_t( p, "landslide_oh", STAT_ATTACK_POWER, 1000, 1, 12, 0, 0, false, false, RNG_DISTRIBUTED );
+    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
   }
   if ( mh_enchant == "mongoose" )
   {
     p -> buffs.mongoose_mh = new stat_buff_t( p, "mongoose_main_hand", STAT_AGILITY, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
+    p -> buffs.mongoose_mh -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, p -> buffs.mongoose_mh, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "mongoose" )
   {
     p -> buffs.mongoose_oh = new stat_buff_t( p, "mongoose_off_hand" , STAT_AGILITY, 120, 1, 15, 0, 0, false, false, RNG_DISTRIBUTED );
+    p -> buffs.mongoose_oh -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, p -> buffs.mongoose_oh, 1.0/*PPM*/ ) );
   }
   if ( mh_enchant == "power_torrent" )
   {
     buff_t* buff = new stat_buff_t( p, "power_torrent_mh", STAT_INTELLECT, 500, 1, 12, 45, 0.20, false, false, RNG_DISTRIBUTED );
+    buff -> activated = false;
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> register_direct_damage_callback( RESULT_ALL_MASK, cb );
@@ -835,6 +846,7 @@ void enchant_t::init( player_t* p )
   if ( oh_enchant == "power_torrent" )
   {
     buff_t* buff = new stat_buff_t( p, "power_torrent_oh", STAT_INTELLECT, 500, 1, 12, 45, 0.20, false, false, RNG_DISTRIBUTED );
+    buff -> activated = false;
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> register_direct_damage_callback( RESULT_ALL_MASK, cb );
@@ -842,23 +854,27 @@ void enchant_t::init( player_t* p )
   if ( mh_enchant == "windwalk" )
   {
     buff_t* buff = new stat_buff_t( p, "windwalk_mh", STAT_DODGE_RATING, 600, 1, 10, 45, 0.15, false, false, RNG_DISTRIBUTED );
+    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff ) );
   }
   if ( oh_enchant == "windwalk" )
   {
     buff_t* buff = new stat_buff_t( p, "windwalk_oh", STAT_DODGE_RATING, 600, 1, 10, 45, 0.15, false, false, RNG_DISTRIBUTED );
+    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff ) );
   }
   if ( ranged_enchant == "gnomish_xray" )
   {
     //FIXME: 1.0 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
     buff_t* buff = new stat_buff_t( p, "xray_targeting", STAT_ATTACK_POWER, 800, 1, 10, 40, 0, false, false, RNG_DISTRIBUTED, 95712 );
+    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw, buff, 1.0/*PPM*/ ) );
   }
   if ( p -> meta_gem == META_THUNDERING_SKYFIRE )
   {
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
     buff_t* buff = new stat_buff_t( p, "skyfire_swiftness", STAT_HASTE_RATING, 240, 1, 6, 40, 0, false, false, RNG_DISTRIBUTED, 39959 );
+    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
@@ -867,6 +883,7 @@ void enchant_t::init( player_t* p )
   {
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
     buff_t* buff = new stat_buff_t( p, "skyflare_swiftness", STAT_HASTE_RATING, 480, 1, 6, 40, 0, false, false, RNG_DISTRIBUTED, 55379 );
+    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
