@@ -4247,10 +4247,15 @@ void warlock_t::init_buffs()
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul_imp        = new buff_t( this, 79459, "demon_soul_imp" );
+  buffs_demon_soul_imp        -> activated = false;
   buffs_demon_soul_felguard   = new buff_t( this, 79462, "demon_soul_felguard" );
+  buffs_demon_soul_felguard   -> activated = false;
   buffs_demon_soul_felhunter  = new buff_t( this, 79460, "demon_soul_felhunter" );
+  buffs_demon_soul_felhunter  -> activated = false;
   buffs_demon_soul_succubus   = new buff_t( this, 79463, "demon_soul_succubus" );
+  buffs_demon_soul_succubus   -> activated = false;
   buffs_demon_soul_voidwalker = new buff_t( this, 79464, "demon_soul_voidwalker" );
+  buffs_demon_soul_voidwalker -> activated = false;
   buffs_bane_of_havoc         = new buff_t( this, 80240, "bane_of_havoc" );
   buffs_searing_pain_soulburn = new buff_t( this, 79440, "searing_pain_soulburn" );
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
