@@ -1,21 +1,23 @@
 #!simc
 
 # T11 profiles
-chardev=34631	name=Mage_Arcane_T11N			save=Mage_Arcane_T11N.simc
-chardev=35357	name=Mage_Arcane_T11H			save=Mage_Arcane_T11H.simc
-chardev=88851	name=Mage_Fire_Frostfire_T11H	save=Mage_Fire_Frostfire_T11H.simc
-chardev=88793	name=Mage_Fire_T11H				save=Mage_Fire_T11H.simc
-chardev=87205	name=Mage_Frost_Frostfire_T11H	save=Mage_Frost_Frostfire_T11H.simc
-chardev=87885	name=Mage_Frost_T11H			save=Mage_Frost_T11H.simc
+chardev=34631   name=Mage_Arcane_T11N           save=Mage_Arcane_T11N.simc
+chardev=35357   name=Mage_Arcane_T11H           save=Mage_Arcane_T11H.simc
+chardev=88851   name=Mage_Fire_Frostfire_T11H   save=Mage_Fire_Frostfire_T11H.simc
+chardev=88793   name=Mage_Fire_T11H             save=Mage_Fire_T11H.simc
+chardev=87205   name=Mage_Frost_Frostfire_T11H  save=Mage_Frost_Frostfire_T11H.simc
+chardev=87885   name=Mage_Frost_T11H            save=Mage_Frost_T11H.simc
 
-# T12 profiles
-chardev=164388	name=Mage_Arcane_T12H			save=Mage_Arcane_T12H.simc
-chardev=164393	name=Mage_Arcane_T12H_DTR		save=Mage_Arcane_T12H_DTR.simc
-chardev=164407	name=Mage_Fire_T12H				save=Mage_Fire_T12H.simc
-chardev=164406	name=Mage_Fire_T12H_DTR			save=Mage_Fire_T12H_DTR.simc
-chardev=164405	name=Mage_Frost_T12H			save=Mage_Frost_T12H.simc
-chardev=164404	name=Mage_Frost_T12H_DTR		save=Mage_Frost_T12H_DTR.simc
+# T12H profiles
+# TODO: Fix DTR item level to 397
+chardev=164388  name=Mage_Arcane_T12H           save=Mage_Arcane_T12H.simc
+chardev=164393  name=Mage_Arcane_T12H_DTR       save=Mage_Arcane_T12H_DTR.simc
+chardev=164407  name=Mage_Fire_T12H             save=Mage_Fire_T12H.simc
+chardev=164406  name=Mage_Fire_T12H_DTR         save=Mage_Fire_T12H_DTR.simc
+chardev=164405  name=Mage_Frost_T12H            save=Mage_Frost_T12H.simc
+chardev=164404  name=Mage_Frost_T12H_DTR        save=Mage_Frost_T12H_DTR.simc
 
+# T12N profiles
 mage=Mage_Arcane_T12N
 level=85
 race=gnome

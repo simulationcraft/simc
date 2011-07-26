@@ -12,14 +12,14 @@ glyphs=ice_barrier/evocation/blink/slow_fall/conjuring/arcane_brilliance/ice_lan
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/arcane_brilliance
-actions+=/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down
-actions+=/molten_armor,if=mana_pct>45&buff.mage_armor.up
+actions+=/molten_armor
 actions+=/water_elemental
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3
 actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
+actions+=/evocation,if=mana_pct<40&(buff.icy_veins.react|buff.bloodlust.react)
 actions+=/mana_gem,if=mana_deficit>12500
 actions+=/cold_snap,if=cooldown.deep_freeze.remains>15&cooldown.frostfire_orb.remains>30&cooldown.icy_veins.remains>30
 actions+=/frostfire_orb,if=target.time_to_die>=12&!ticking
@@ -30,7 +30,6 @@ actions+=/deep_freeze
 actions+=/frostfire_bolt,if=buff.brain_freeze.react
 actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
 actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
-actions+=/mage_armor,if=(mana_pct*15)<target.time_to_die
 actions+=/frostbolt,if=!cooldown.early_frost.remains
 actions+=/frostfire_bolt
 actions+=/ice_lance,moving=1
