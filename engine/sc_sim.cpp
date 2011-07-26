@@ -2468,28 +2468,27 @@ int sim_t::main( int argc, char** argv )
 
 int sim_t::errorf( const char* format, ... )
 {
-  va_list fmtargs;
-  int retcode = 0;
-  char *p_locale = NULL;
-  char buffer_locale[ 1024 ];
   char buffer_printf[ 1024 ];
 
-  p_locale = setlocale( LC_CTYPE, NULL );
+  va_list fmtargs;
+  va_start( fmtargs, format );
+  int retcode = vsnprintf( buffer_printf, sizeof( buffer_printf ), format, fmtargs );
+  va_end( fmtargs );
+  assert( retcode >= 0 );
+
+  char buffer_locale[ 1024 ];
+  char *p_locale = setlocale( LC_CTYPE, NULL );
   if ( p_locale != NULL )
   {
-    strncpy( buffer_locale, p_locale, 1023 );
-    buffer_locale[1023] = '\0';
+    strncpy( buffer_locale, p_locale, sizeof( buffer_locale ) - 1 );
+    buffer_locale[ sizeof( buffer_locale ) - 1 ] = '\0';
   }
   else
   {
-    buffer_locale[0] = '\0';
+    buffer_locale[ 0 ] = '\0';
   }
 
   setlocale( LC_CTYPE, "" );
-
-  va_start( fmtargs, format );
-  retcode = vsnprintf( buffer_printf, 1023, format, fmtargs );
-  va_end( fmtargs );
 
   fprintf( output_file, "%s", buffer_printf );
   fprintf( output_file, "\n" );

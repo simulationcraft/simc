@@ -91,8 +91,6 @@ static bool parse_item_level( item_t& item, const item_data_t* item_data )
 {
   assert( item_data );
 
-  item.armory_ilevel_str.clear();
-
   item.armory_ilevel_str = util_t::to_string( item_data -> level );
 
   return true;
@@ -101,8 +99,6 @@ static bool parse_item_level( item_t& item, const item_data_t* item_data )
 static bool parse_item_name( item_t& item, const item_data_t* item_data )
 {
   assert( item_data );
-
-  item.armory_name_str.clear();
 
   item.armory_name_str = item_data -> name;
 

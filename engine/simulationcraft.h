@@ -1619,8 +1619,8 @@ struct util_t
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
   static int string_strip_quotes( std::string& str );
 
-  static std::string& to_string( int i );
-  static std::string& to_string( double f, int precision );
+  static std::string to_string( int i );
+  static std::string to_string( double f, int precision );
 
   static int64_t milliseconds();
   static int64_t parse_date( const std::string& month_day_year );

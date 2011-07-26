@@ -221,14 +221,12 @@ void buff_t::init()
     stack_react_time.resize( max_stack + 1 );
     aura_str.resize( max_stack + 1 );
 
-    char *buffer = new char[ name_str.size() + 16 ];
-
+    std::vector<char> buffer( name_str.size() + 16 );
     for ( int i=1; i <= max_stack; i++ )
     {
-      sprintf( buffer, "%s(%d)", name_str.c_str(), i );
-      aura_str[ i ] = buffer;
+      snprintf( &buffer[ 0 ], buffer.size(), "%s(%d)", name_str.c_str(), i );
+      aura_str[ i ] = &buffer[ 0 ];
     }
-    delete [] buffer;
   }
 }
 
@@ -363,14 +361,12 @@ void buff_t::_init_buff_t()
     stack_react_time.resize( max_stack + 1 );
     aura_str.resize( max_stack + 1 );
 
-    char *buffer = new char[ name_str.size() + 16 ];
-
+    std::vector<char> buffer( name_str.size() + 16 );
     for ( int i=1; i <= max_stack; i++ )
     {
-      sprintf( buffer, "%s(%d)", name_str.c_str(), i );
-      aura_str[ i ] = buffer;
+      sprintf( &buffer[ 0 ], "%s(%d)", name_str.c_str(), i );
+      aura_str[ i ] = &buffer[ 0 ];
     }
-    delete [] buffer;
   }
 }
 

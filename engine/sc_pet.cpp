@@ -90,7 +90,7 @@ const char* pet_t::id()
   {
     // create artifical unit ID, format type+subtype+id= TTTSSSSSSSIIIIII
     char buffer[ 1024 ];
-    sprintf( buffer, "0xF140601FC5%06X,\"%s\",0x1111", index, name_str.c_str() );
+    snprintf( buffer, sizeof( buffer ), "0xF140601FC5%06X,\"%s\",0x1111", index, name_str.c_str() );
     id_str = buffer;
   }
 

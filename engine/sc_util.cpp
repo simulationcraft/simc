@@ -1882,24 +1882,20 @@ int util_t::string_strip_quotes( std::string& str )
 
 // util_t::to_string =======================================================
 
-std::string& util_t::to_string( int i )
+std::string util_t::to_string( int i )
 {
-  static std::string s;
-  char buffer[ 1024 ];
-  sprintf( buffer, "%d", i );
-  s = buffer;
-  return s;
+  char buffer[ 64 ];
+  snprintf( buffer, sizeof( buffer ), "%d", i );
+  return std::string( buffer );
 }
 
 // util_t::to_string =======================================================
 
-std::string& util_t::to_string( double f, int precision )
+std::string util_t::to_string( double f, int precision )
 {
-  static std::string s;
   char buffer[ 1024 ];
-  sprintf( buffer, "%.*f", precision, f );
-  s = buffer;
-  return s;
+  snprintf( buffer, sizeof( buffer ), "%.*f", precision, f );
+  return std::string( buffer );
 }
 
 // util_t::milliseconds ====================================================

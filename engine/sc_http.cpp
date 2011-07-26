@@ -89,51 +89,52 @@ static std::string build_request( std::string&   host,
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
   char buffer[2048];
+
   if ( http_t::proxy_type == "http" )
   {
     // append port info only if not the standard port
     char portbuff[7] = "\0";
     if ( port != 80 )
     {
-      sprintf( portbuff, ":%i", port );
+      snprintf( portbuff, sizeof( portbuff ), ":%i", port );
     }
     // building a proxified request : absoluteURI without Host header
-    sprintf( buffer,
-             "GET http://%s%s%s HTTP/1.0\r\n"
-             "User-Agent: Firefox/3.0\r\n"
-             "Accept: */*\r\n"
-             "Cookie: loginChecked=1\r\n"
-             "Cookie: cookieLangId=en_US\r\n"
-             // Skip arenapass 2011 advertisement .. can we please have a sensible
-             // API soon?
-             "Cookie: int-WOW=1\r\n"
-             "Cookie: int-WOW-arenapass2011=1\r\n"
-             "Cookie: int-WOW-epic-savings-promo=1\r\n"
-             "Connection: close\r\n"
-             "\r\n",
-             host.c_str(),
-             portbuff,
-             path.c_str() );
+    snprintf( buffer, sizeof( buffer ),
+              "GET http://%s%s%s HTTP/1.0\r\n"
+              "User-Agent: Firefox/3.0\r\n"
+              "Accept: */*\r\n"
+              "Cookie: loginChecked=1\r\n"
+              "Cookie: cookieLangId=en_US\r\n"
+              // Skip arenapass 2011 advertisement .. can we please have a sensible
+              // API soon?
+              "Cookie: int-WOW=1\r\n"
+              "Cookie: int-WOW-arenapass2011=1\r\n"
+              "Cookie: int-WOW-epic-savings-promo=1\r\n"
+              "Connection: close\r\n"
+              "\r\n",
+              host.c_str(),
+              portbuff,
+              path.c_str() );
   }
   else
   {
     // building a direct request : using abs_path and Host header
-    sprintf( buffer,
-             "GET %s HTTP/1.0\r\n"
-             "User-Agent: Firefox/3.0\r\n"
-             "Accept: */*\r\n"
-             "Host: %s\r\n"
-             "Cookie: loginChecked=1\r\n"
-             "Cookie: cookieLangId=en_US\r\n"
-             // Skip arenapass 2011 advertisement .. can we please have a sensible
-             // API soon?
-             "Cookie: int-WOW=1\r\n"
-             "Cookie: int-WOW-arenapass2011=1\r\n"
-             "Cookie: int-WOW-epic-savings-promo=1\r\n"
-             "Connection: close\r\n"
-             "\r\n",
-             path.c_str(),
-             host.c_str() );
+    snprintf( buffer, sizeof( buffer ),
+              "GET %s HTTP/1.0\r\n"
+              "User-Agent: Firefox/3.0\r\n"
+              "Accept: */*\r\n"
+              "Host: %s\r\n"
+              "Cookie: loginChecked=1\r\n"
+              "Cookie: cookieLangId=en_US\r\n"
+              // Skip arenapass 2011 advertisement .. can we please have a sensible
+              // API soon?
+              "Cookie: int-WOW=1\r\n"
+              "Cookie: int-WOW-arenapass2011=1\r\n"
+              "Cookie: int-WOW-epic-savings-promo=1\r\n"
+              "Connection: close\r\n"
+              "\r\n",
+              path.c_str(),
+              host.c_str() );
   }
   return std::string( buffer );
 }
@@ -180,7 +181,8 @@ bool http_t::cache_load()
                fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
                fread( &result_size, sizeof( uint32_t ), 1, file ) )
           {
-            assert( url_size > 0 && result_size > 0 );
+            assert( url_size > 0 && url_size <= max_size );
+            assert( result_size > 0 && result_size <= max_size );
 
             if ( fread( buffer, sizeof( char ), url_size, file ) )
             {

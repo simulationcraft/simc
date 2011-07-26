@@ -21,9 +21,10 @@ void log_t::output( sim_t* sim, const char* format, ... )
   char buffer[2048];
 
   va_start( vap, format );
+  vsnprintf( buffer, sizeof( buffer ),  format, vap );
+  va_end( vap );
+
   util_t::fprintf( sim -> output_file, "%-8.2f ", sim -> current_time );
-  vsnprintf( buffer, 2047,  format, vap );
-  buffer[2047] = '\0';
   util_t::fprintf( sim -> output_file, "%s", buffer );
   util_t::fprintf( sim -> output_file, "\n" );
   fflush( sim -> output_file );

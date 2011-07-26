@@ -161,10 +161,7 @@ static xml_node_t* download_item_tooltip( player_t* p,
   url += "?r=" + p -> server_str;
   url += "&n=" + p -> name_str;
   url += "&i=" + id_str;
-
-  char buffer[ 80 ];
-  sprintf( buffer, "&s=%d", slot );
-  url += buffer;
+  url += "&s=" + util_t::to_string( slot );
 
   xml_node_t* node;
 

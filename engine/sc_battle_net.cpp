@@ -321,7 +321,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     item_t& item = p -> items[ i ];
 
     char slot_id[ 80 ];
-    sprintf( slot_id, "%d", i );
+    snprintf( slot_id, sizeof( slot_id ), "%d", i );
 
     xml_node_t* slot_node = xml_t::get_node( inventory_node, "div", "data-id", slot_id );
     xml_node_t* anchor_node = xml_t::get_node( slot_node, "a" );

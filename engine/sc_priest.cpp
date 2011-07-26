@@ -5262,7 +5262,6 @@ bool priest_t::create_profile( std::string& profile_str, int save_type, bool sav
 
   if ( save_type == SAVE_ALL )
   {
-    std::string temp_str;
     if ( ! power_infusion_target_str.empty() ) profile_str += "power_infusion_target=" + power_infusion_target_str + "\n";
     if ( ! atonement_target_str.empty() ) profile_str += "atonement_target=" + atonement_target_str + "\n";
     if ( ( use_shadow_word_death ) || ( use_mind_blast != 1 ) || ( double_dot ) )
@@ -5275,8 +5274,7 @@ bool priest_t::create_profile( std::string& profile_str, int save_type, bool sav
     }
     if ( use_mind_blast != 1 )
     {
-      temp_str = util_t::to_string( use_mind_blast );
-      profile_str += "use_mind_blast=" + temp_str + "\n";
+      profile_str += "use_mind_blast=" + util_t::to_string( use_mind_blast ) + "\n";
     }
     if ( double_dot )
     {

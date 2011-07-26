@@ -2150,7 +2150,7 @@ const char* chart_t::dps_error( std::string& s,
   s += "&amp;";
   s += "chxl=1:|DPS|3:|p";
   s += "&amp;";
-  s += "chtt=95% Confidence Intervall";
+  s += "chtt=95% Confidence Interval";
   s += "&amp;";
   s += "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
   s += "&amp;";
