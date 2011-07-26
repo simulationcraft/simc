@@ -620,17 +620,17 @@ struct priest_heal_t : public heal_t
     heal_t::travel( t, travel_result, travel_dmg );
     priest_t* p = player -> cast_priest();
 
-    // Divine Aegis
-    if ( da && travel_result == RESULT_CRIT )
-    {
-      da -> base_dd_min = da -> base_dd_max = travel_dmg * da -> shield_multiple;
-      da -> heal_target.clear();
-      da -> heal_target.push_back( t );
-      da -> execute();
-    }
-
     if ( travel_dmg > 0 )
     {
+      // Divine Aegis
+      if ( da && travel_result == RESULT_CRIT )
+      {
+        da -> base_dd_min = da -> base_dd_max = travel_dmg * da -> shield_multiple;
+        da -> heal_target.clear();
+        da -> heal_target.push_back( t );
+        da -> execute();
+      }
+
       trigger_echo_of_light( this, t );
       if ( p -> buffs_chakra_serenity -> up() && p -> dots_renew -> ticking )
         p -> dots_renew -> action -> refresh_duration();
@@ -2788,20 +2788,21 @@ struct chakra_t : public priest_spell_t
 
   virtual void execute()
   {
+    // FIXME: Doesn't the cooldown work like Inner Focus?
     cooldown -> duration = sim -> wheel_seconds;
 
     priest_spell_t::execute();
 
     priest_t* p = player -> cast_priest();
 
-    p -> buffs_chakra_pre -> trigger();
+    p -> buffs_chakra_pre -> start();
   }
 
   virtual bool ready()
   {
     priest_t* p = player -> cast_priest();
 
-    if ( p -> buffs_chakra_pre -> up() )
+    if ( p -> buffs_chakra_pre -> check() )
       return false;
 
     return priest_spell_t::ready();
@@ -3884,51 +3885,53 @@ struct penance_heal_t : public priest_heal_t
 
 // Holy Word Spell ==========================================================
 
-struct holy_word_sanctuary_tick_t : public priest_heal_t
-{
-  holy_word_sanctuary_tick_t( player_t* player ) :
-    priest_heal_t( "holy_word_sanctuary_tick", player, 88686 )
-  {
-    dual        = true;
-    background  = true;
-    direct_tick = true;
-
-    stats = player -> get_stats( "holy_word_sanctuary", this );
-  }
-  virtual void execute()
-  {
-    // Choose Heal Targets
-    heal_target.clear();
-    for ( player_t* q = sim -> player_list; q; q = q -> next )
-    {
-      if ( !q -> is_pet() && q -> get_player_distance( target ) < ( range * range ) )
-      {
-        heal_target.push_back( q );
-      }
-    }
-
-    priest_heal_t::execute();
-  }
-
-  virtual void player_buff()
-  {
-    priest_heal_t::player_buff();
-
-    priest_t* p = player -> cast_priest();
-
-    if ( p -> buffs_chakra_sanctuary -> up() )
-      player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect1().percent();
-  }
-};
-
 struct holy_word_sanctuary_t : public priest_heal_t
 {
-  spell_t* tick_spell;
+  struct holy_word_sanctuary_tick_t : public priest_heal_t
+  {
+    holy_word_sanctuary_tick_t( player_t* player ) :
+      priest_heal_t( "holy_word_sanctuary_tick", player, 88686 )
+    {
+      dual        = true;
+      background  = true;
+      direct_tick = true;
 
-  holy_word_sanctuary_t( player_t* player ) :
+      stats = player -> get_stats( "holy_word_sanctuary", this );
+    }
+    virtual void execute()
+    {
+      // Choose Heal Targets
+      heal_target.clear();
+      for ( player_t* q = sim -> player_list; q; q = q -> next )
+      {
+        if ( !q -> is_pet() && q -> get_player_distance( target ) < ( range * range ) )
+        {
+          heal_target.push_back( q );
+        }
+      }
+
+      priest_heal_t::execute();
+    }
+
+    virtual void player_buff()
+    {
+      priest_heal_t::player_buff();
+
+      priest_t* p = player -> cast_priest();
+
+      if ( p -> buffs_chakra_sanctuary -> up() )
+        player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect1().percent();
+    }
+  };
+
+  holy_word_sanctuary_tick_t* tick_spell;
+
+  holy_word_sanctuary_t( player_t* player, const std::string& options_str ) :
     priest_heal_t( "holy_word_sanctuary", player, 88685 ),
     tick_spell( 0 )
   {
+    parse_options( NULL, options_str );
+
     hasted_ticks = false;
     may_crit     = false;
 
@@ -3963,9 +3966,11 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
 struct holy_word_chastise_t : public priest_spell_t
 {
-  holy_word_chastise_t( player_t* player ) :
+  holy_word_chastise_t( player_t* player, const std::string& options_str ) :
     priest_spell_t( "holy_word_chastise", player, 88625 )
   {
+    parse_options( NULL, options_str );
+
     priest_t* p = player -> cast_priest();
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
@@ -3993,9 +3998,11 @@ struct holy_word_chastise_t : public priest_spell_t
 
 struct holy_word_serenity_t : public priest_heal_t
 {
-  holy_word_serenity_t( player_t* player ) :
+  holy_word_serenity_t( player_t* player, const std::string& options_str ) :
     priest_heal_t( "holy_word_serenity", player, 88684 )
   {
+    parse_options( NULL, options_str );
+
     priest_t* p = player -> cast_priest();
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
@@ -4037,13 +4044,11 @@ struct holy_word_t : public priest_spell_t
     priest_spell_t( "holy_word", player, SCHOOL_HOLY, TREE_HOLY ),
     hw_sanctuary( 0 ), hw_chastise( 0 ), hw_serenity( 0 )
   {
-    parse_options( NULL, options_str );
-
     priest_t* p = player -> cast_priest();
 
-    hw_sanctuary = new holy_word_sanctuary_t( p );
-    hw_chastise  = new holy_word_chastise_t ( p );
-    hw_serenity  = new holy_word_serenity_t ( p );
+    hw_sanctuary = new holy_word_sanctuary_t( p, options_str );
+    hw_chastise  = new holy_word_chastise_t ( p, options_str );
+    hw_serenity  = new holy_word_serenity_t ( p, options_str );
   }
 
   virtual void schedule_execute()
@@ -4091,40 +4096,41 @@ struct holy_word_t : public priest_spell_t
 
 // Lightwell Spell ==========================================================
 
-struct lightwell_hot_t : public priest_heal_t
-{
-  int charges;
-  double consume_interval;
-
-  lightwell_hot_t( player_t* player ) :
-    priest_heal_t( "lightwell_hot", player, 7001 ),
-    charges( 0 ), consume_interval( 0.0 )
-  {
-    // Hardcoded in the tooltip
-    tick_power_mod = 0.308;
-    base_multiplier *= 3 * 1.25;
-
-    proc          = true;
-    background    = true;
-    hasted_ticks  = false;
-    may_crit      = false;
-  }
-
-  virtual void execute()
-  {
-    priest_heal_t::execute();
-
-    if ( charges >= 0 )
-    {
-      // Assuming a Lightwell Charge is used every 10 seconds
-      execute_event = new ( sim ) action_execute_event_t( sim, this, consume_interval );
-      charges -= 1;
-    }
-  }
-};
-
 struct lightwell_t : public priest_heal_t
 {
+  struct lightwell_hot_t : public priest_heal_t
+  {
+    int charges;
+    double consume_interval;
+
+    lightwell_hot_t( player_t* player ) :
+      priest_heal_t( "lightwell_hot", player, 7001 ),
+      charges( 0 ), consume_interval( 0.0 )
+    {
+      // Hardcoded in the tooltip
+      tick_power_mod = 0.308;
+      base_multiplier *= 3 * 1.25;
+
+      proc          = true;
+      background    = true;
+      hasted_ticks  = false; // FIXME: Lightwell ticks _are_ hasted, but it doesn't benefit from,
+                             //        buffs, only bare haste rating.
+      may_crit      = false;
+    }
+
+    virtual void execute()
+    {
+      priest_heal_t::execute();
+
+      if ( charges >= 0 )
+      {
+        // Assuming a Lightwell Charge is used every 10 seconds
+        execute_event = new ( sim ) action_execute_event_t( sim, this, consume_interval );
+        charges -= 1;
+      }
+    }
+  };
+
   lightwell_hot_t* lw_hot;
   double consume_interval;
 
@@ -4144,20 +4150,17 @@ struct lightwell_t : public priest_heal_t
     check_talent( p -> talents.lightwell -> rank() );
 
     lw_hot = new lightwell_hot_t( p );
-
     add_child( lw_hot );
   }
 
   virtual void execute()
   {
     priest_heal_t::execute();
+
     priest_t* p = player -> cast_priest();
 
-    lw_hot -> charges = 10;
+    lw_hot -> charges = 10 + p -> glyphs.lightwell -> effect1().base_value();
     lw_hot -> consume_interval = consume_interval;
-
-    lw_hot -> charges += p -> glyphs.lightwell -> effect1().base_value();
-
     lw_hot -> execute();
   }
 };
@@ -4728,7 +4731,7 @@ void priest_t::init_spells()
   passive_spells.meditation_disc        = new passive_spell_t( this, "meditation_disc", "Meditation" );
 
   // Holy
-  passive_spells.spiritual_healing      = new passive_spell_t( this, "spiritual_healing", "Enlightenment" );
+  passive_spells.spiritual_healing      = new passive_spell_t( this, "spiritual_healing", "Spiritual Healing" );
   passive_spells.meditation_holy        = new passive_spell_t( this, "meditation_holy", 95861 );
 
   // Shadow
@@ -4812,6 +4815,7 @@ void priest_t::init_buffs()
   buffs_chakra_serenity            = new buff_t( this, 81208, "chakra_serenity" );
   buffs_serendipity                = new buff_t( this, talents.serendipity -> effect_trigger_spell( 1 ), "serendipity", talents.serendipity -> rank() );
   buffs_serenity                   = new buff_t( this, 88684, "chakra_serenity_crit" );
+  buffs_serenity -> cooldown -> duration = 0;
   buffs_surge_of_light             = new buff_t( this, talents.surge_of_light, NULL );
 
 
