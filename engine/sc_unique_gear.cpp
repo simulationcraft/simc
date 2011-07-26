@@ -898,18 +898,17 @@ static void register_matrix_restabilizer( item_t* item )
   struct matrix_restabilizer_callback_t : public stat_proc_callback_t
   {
     bool heroic;
-    stat_type max_stat;
-    stat_buff_t* buff_matrix_restabilzer_crit;
-    stat_buff_t* buff_matrix_restabilzer_haste;
-    stat_buff_t* buff_matrix_restabilzer_mastery;
+    stat_buff_t* buff_matrix_restabilizer_crit;
+    stat_buff_t* buff_matrix_restabilizer_haste;
+    stat_buff_t* buff_matrix_restabilizer_mastery;
 
     matrix_restabilizer_callback_t( player_t* p, bool h ) :
       stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, 0, 0, 0, 0 ),
-      heroic( h ), buff_matrix_restabilzer_crit( 0 ), buff_matrix_restabilzer_haste( 0 ), buff_matrix_restabilzer_mastery( 0 )
+      heroic( h ), buff_matrix_restabilizer_crit( 0 ), buff_matrix_restabilizer_haste( 0 ), buff_matrix_restabilizer_mastery( 0 )
     {
-      buff_matrix_restabilzer_crit     = new stat_buff_t( p, "matrix_restabilzer_crit",    STAT_CRIT_RATING,    heroic ? 1834 : 1624, 1, 30, 105, .15 );
-      buff_matrix_restabilzer_haste    = new stat_buff_t( p, "matrix_restabilzer_haste",   STAT_HASTE_RATING,   heroic ? 1834 : 1624, 1, 30, 105, .15 );
-      buff_matrix_restabilzer_mastery  = new stat_buff_t( p, "matrix_restabilzer_mastery", STAT_MASTERY_RATING, heroic ? 1834 : 1624, 1, 30, 105, .15 );
+      buff_matrix_restabilizer_crit     = new stat_buff_t( p, "matrix_restabilizer_crit",    STAT_CRIT_RATING,    heroic ? 1834 : 1624, 1, 30, 105, .15 );
+      buff_matrix_restabilizer_haste    = new stat_buff_t( p, "matrix_restabilizer_haste",   STAT_HASTE_RATING,   heroic ? 1834 : 1624, 1, 30, 105, .15 );
+      buff_matrix_restabilizer_mastery  = new stat_buff_t( p, "matrix_restabilizer_mastery", STAT_MASTERY_RATING, heroic ? 1834 : 1624, 1, 30, 105, .15 );
     }
 
     virtual void trigger( action_t* a, void* call_data )
@@ -922,20 +921,20 @@ static void register_matrix_restabilizer( item_t* item )
       {
         if ( p -> stats.crit_rating > p -> stats.mastery_rating )
         {
-          buff = buff_matrix_restabilzer_crit;
+          buff = buff_matrix_restabilizer_crit;
         }
         else
         {
-          buff = buff_matrix_restabilzer_mastery;
+          buff = buff_matrix_restabilizer_mastery;
         }
       }
       else if ( p -> stats.haste_rating > p -> stats.mastery_rating )
       {
-        buff = buff_matrix_restabilzer_haste;
+        buff = buff_matrix_restabilizer_haste;
       }
       else
       {
-        buff = buff_matrix_restabilzer_mastery;
+        buff = buff_matrix_restabilizer_mastery;
       }
 
       stat_proc_callback_t::trigger( a, call_data );
