@@ -30,7 +30,7 @@ actions+=/readiness,wait_for_rapid_fire=1
 actions+=/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3
 actions+=/kill_shot
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
-actions+=/aimed_shot,if=target.health_pct>80|buff.rapid_fire.up|buff.bloodlust.up|buff.berserking.up
+actions+=/aimed_shot,if=target.health_pct>90|buff.rapid_fire.up|buff.bloodlust.up|buff.berserking.up
 actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.up&!buff.berserking.up)
 actions+=/steady_shot
 head=lightningcharged_headguard,heroic=1,type=mail,ilevel=372,quality=epic,stats=2071armor_325agi_578sta_257crit_197mastery,reforge=mastery_haste,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste

@@ -29,7 +29,7 @@ actions+=/readiness,wait_for_rapid_fire=1
 actions+=/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3
 actions+=/kill_shot
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
-actions+=/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.up|target.health_pct>80
+actions+=/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.up|target.health_pct>90
 actions+=/steady_shot
 head=flamewakers_headguard,heroic=1,type=mail,ilevel=391,quality=epic,stats=2214armor_400agi_689sta_278crit_272haste,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=mastery_crit
