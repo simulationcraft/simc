@@ -1,6 +1,6 @@
 #!./simc 
 
-priest=Priest_Shadow_T12N_DTR_2dot
+priest=Priest_Shadow_T12H_DTR_noRag_2dot
 origin="Priest_CharDevSync.simc"
 level=85
 race=troll
@@ -38,39 +38,39 @@ actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
 actions+=/devouring_plague,moving=1,if=mana_pct>10
 actions+=/dispersion
-head=hood_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_249mastery_235haste,reforge=mastery_spi,gems=burning_shadowspirit_67int_30int,enchant=60int_35crit
-neck=flowform_choker,ilevel=378,quality=epic,stats=227int_341sta_143haste_115mastery,gems=67int_10int
-shoulders=shoulderwraps_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1043armor_282int_454sta_201crit_183haste,reforge=crit_spi,gems=20haste_20int_10int,enchant=50int_25haste
-chest=vestment_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1391armor_368int_611sta_222spi_274haste,reforge=spi_mastery,gems=20int_20haste_20int_20spi_20int,enchant=20all
-waist=majordomos_chain_of_office,type=cloth,ilevel=384,quality=epic,stats=808armor_300int_480sta_182mastery_214haste,reforge=mastery_spi,gems=40int_40int_10int
-legs=leggings_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1217armor_368int_611sta_267crit_237mastery,reforge=crit_haste,gems=40int_40int_20int,enchant=95int_55spi
-feet=endless_dream_walkers,type=cloth,ilevel=378,quality=epic,stats=956armor_282int_454sta_197spi_187haste,gems=40int,enchant=35mastery
-wrists=firesoul_wristguards,type=cloth,ilevel=378,quality=epic,stats=608armor_227int_341sta_158spi_140haste,enchant=50int
-hands=fingers_of_incineration,type=cloth,ilevel=384,quality=epic,stats=898armor_300int_480sta_215crit_188haste,reforge=crit_spi,gems=67int_10int,enchant=50haste
+head=flickering_cowl_of_the_feverflare,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1211armor_689sta_400int_276haste_276mastery,gems=burning_shadowspirit_20int_20haste_30int,enchant=60int_35crit,suffix=-262
+neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_spi,gems=67int_10int
+shoulders=shoulderwraps_of_the_cleansing_flame,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1118armor_322int_513sta_227crit_209haste,reforge=crit_spi,gems=20haste_20int_10int,enchant=50int_25haste
+chest=vestment_of_the_cleansing_flame,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1491armor_420int_689sta_254spi_310haste,gems=40int_40int,enchant=20all
+waist=majordomos_chain_of_office,type=cloth,ilevel=384,quality=epic,stats=808armor_300int_480sta_182mastery_214haste,reforge=mastery_spi,gems=67int_40int_10int
+legs=leggings_of_the_cleansing_flame,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1304armor_420int_689sta_301crit_271mastery,reforge=crit_haste,gems=40int_40int_20int,enchant=95int_55spi
+feet=coalwalker_sandals,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1025armor_322int_513sta_235crit_197haste,reforge=crit_spi,gems=40int,enchant=35mastery
+wrists=wristwraps_of_arrogant_doom,heroic=1,type=cloth,ilevel=391,quality=epic,stats=652armor_256int_384sta_154crit_181haste,reforge=crit_spi,enchant=50int
+hands=gloves_of_the_cleansing_flame,heroic=1,type=cloth,ilevel=391,quality=epic,stats=932armor_322int_513sta_180spi_244haste,gems=67int,enchant=50haste
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int
 finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_185spi_127mastery,reforge=mastery_haste,gems=40int_10int
-trinket1=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_39mastery_10stack_10dur
-trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-back=rippling_flamewrath_drape,ilevel=378,quality=epic,stats=695armor_227int_341sta_162haste_133hit,enchant=lightweave_embroidery
+trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
+trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_spi,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_haste,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,stats=271haste_314hit_426int_2786sp_730sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_2502min_3754max
 off_hand=empty
-ranged=trail_of_embers,ilevel=378,quality=epic,stats=128int_192sta_79hit_89haste,reforge=hit_mastery
+ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=6434
-# gear_intellect=5488
-# gear_spirit=1107
+# gear_stamina=6973
+# gear_intellect=5890
+# gear_spirit=1193
 # gear_spell_power=2786
-# gear_hit_rating=641
-# gear_crit_rating=446
-# gear_haste_rating=2658
-# gear_mastery_rating=1036
-# gear_armor=8746
+# gear_hit_rating=549
+# gear_crit_rating=685
+# gear_haste_rating=2688
+# gear_mastery_rating=1218
+# gear_armor=9286
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
-# back=rippling_flamewrath_drape,enchant=lightweave_embroidery
+# back=wings_of_flame,heroic=1,enchant=lightweave_embroidery
 # main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2502min_3754max,enchant=power_torrent
 ## Variables
 double_dot=1

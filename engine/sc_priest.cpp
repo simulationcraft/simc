@@ -1435,11 +1435,17 @@ struct devouring_plague_t : public priest_spell_t
 struct dispersion_t : public priest_spell_t
 {
   pet_t* shadow_fiend;
+  int low_mana;
 
   dispersion_t( player_t* player, const std::string& options_str ) :
-    priest_spell_t( "dispersion", player, "Dispersion" )
+    priest_spell_t( "dispersion", player, "Dispersion" ), low_mana( 0 )
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "low_mana",         OPT_BOOL,    &low_mana   },
+      { NULL,               OPT_UNKNOWN, NULL        }
+    };
+    parse_options( options, options_str );
 
     priest_t* p = player -> cast_priest();
 
@@ -1471,6 +1477,9 @@ struct dispersion_t : public priest_spell_t
   {
     if ( ! priest_spell_t::ready() )
       return false;
+
+    if ( ! low_mana )
+      return true;
 
     priest_t* p = player -> cast_priest();
 
@@ -3556,7 +3565,7 @@ struct circle_of_healing_t : public priest_heal_t
       if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( target ) < ( range * range ) )
       {
         heal_target.push_back( q );
-        if( heal_target.size() >= ( p -> glyphs.circle_of_healing -> ok() ? 6 : 5 ) ) break;
+        if( heal_target.size() >= (unsigned) ( p -> glyphs.circle_of_healing -> ok() ? 6 : 5 ) ) break;
       }
     }
 
