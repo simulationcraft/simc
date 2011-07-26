@@ -404,6 +404,8 @@ struct hunter_pet_t : public pet_t
     base_focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline -> effect1().percent();
 
     base_gcd = 1.20;
+
+    infinite_resource[ RESOURCE_FOCUS ] = o -> infinite_resource[ RESOURCE_FOCUS ];
   }
 
   virtual void init_talents()
@@ -1120,6 +1122,7 @@ struct claw_t : public hunter_pet_attack_t
     {
       c -= basec * o -> talents.sic_em -> effect1().percent();
     }
+    if ( c < 0 ) c = 0;
 
     return c;
   }

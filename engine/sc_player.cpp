@@ -3311,7 +3311,7 @@ double player_t::resource_gain( int       resource,
 bool player_t::resource_available( int    resource,
                                    double cost ) SC_CONST
 {
-  if ( resource == RESOURCE_NONE || cost == 0 || infinite_resource[ resource ] == 1 )
+  if ( resource == RESOURCE_NONE || cost <= 0 || infinite_resource[ resource ] == 1 )
   {
     return true;
   }
