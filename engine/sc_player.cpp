@@ -2596,7 +2596,7 @@ double player_t::expertise_rating() SC_CONST
 double player_t::dodge_rating() SC_CONST
 {
   double a = stats.dodge_rating;
-  
+
   return a;
 }
 
@@ -2805,7 +2805,7 @@ void player_t::reset()
   readying = 0;
   in_combat = false;
   iteration_dmg = 0;
-  
+
   cast_delay_reaction = 0;
   cast_delay_occurred = 0;
 
@@ -2946,12 +2946,12 @@ void player_t::schedule_ready( double delta_time,
     // Record the last ability use time for cast_react
     cast_delay_occurred = readying -> occurs();
     cast_delay_reaction = rngs.lag_brain -> gauss( brain_lag, brain_lag_stddev );
-    if ( sim -> debug ) 
+    if ( sim -> debug )
     {
-      log_t::output( sim, "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f", 
+      log_t::output( sim, "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
         name_str.c_str(),
-        was_executing -> name_str.c_str(), 
-        readying -> occurs(), 
+        was_executing -> name_str.c_str(),
+        readying -> occurs(),
         cast_delay_reaction );
     }
   }
@@ -3695,7 +3695,7 @@ double player_t::target_mitigation( double            amount,
         resist = 0.75;
       mitigated_amount *= 1.0 - resist;
     }
-    
+
     if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
       log_t::output( sim, "Damage to %s after armor mitigation is %f", action -> target -> name(), mitigated_amount );
   }
@@ -5349,6 +5349,15 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new mana_pct_expr_t( a );
   }
+  if ( name_str == "mana_pct_nonproc" )
+  {
+    struct mana_pct_nonproc_expr_t : public action_expr_t
+    {
+      mana_pct_nonproc_expr_t( action_t* a ) : action_expr_t( a, "mana_pct_nonproc", TOK_NUM ) {}
+      virtual int evaluate() { player_t* p = action -> player; result_num = 100 * ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_buffed[ RESOURCE_MANA ] ); return TOK_NUM; }
+    };
+    return new mana_pct_nonproc_expr_t( a );
+  }
   if ( name_str == "health_pct" )
   {
     struct health_pct_expr_t : public action_expr_t
@@ -5505,6 +5514,15 @@ action_expr_t* player_t::create_expression( action_t* a,
       virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_MANA ]; return TOK_NUM; }
     };
     return new max_mana_expr_t( a );
+  }
+  if ( name_str == "max_mana_nonproc" )
+  {
+    struct max_mana_nonproc_expr_t : public action_expr_t
+    {
+      max_mana_nonproc_expr_t( action_t* a ) : action_expr_t( a, "max_mana_nonproc", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resource_buffed[ RESOURCE_MANA ]; return TOK_NUM; }
+    };
+    return new max_mana_nonproc_expr_t( a );
   }
   if ( name_str == "ptr" )
   {
