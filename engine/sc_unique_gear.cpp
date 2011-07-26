@@ -899,16 +899,17 @@ static void register_matrix_restabilizer( item_t* item )
   {
     bool heroic;
     stat_type max_stat;
-    proc_t* proc_matrix_restabilizer_haste;
-    proc_t* proc_matrix_restabilizer_crit;
-    proc_t* proc_matrix_restabilizer_mastery;
+    stat_buff_t* buff_matrix_restabilzer_crit;
+    stat_buff_t* buff_matrix_restabilzer_haste;
+    stat_buff_t* buff_matrix_restabilzer_mastery;
 
     matrix_restabilizer_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, heroic ? 1834 : 1624, 0.15, 30.0, 105.0 ), heroic( h )
+      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, 0, 0, 0, 0 ),
+      heroic( h ), buff_matrix_restabilzer_crit( 0 ), buff_matrix_restabilzer_haste( 0 ), buff_matrix_restabilzer_mastery( 0 )
     {
-      proc_matrix_restabilizer_haste   = p -> get_proc( "matrix_restabilizer_haste"   );
-      proc_matrix_restabilizer_crit    = p -> get_proc( "matrix_restabilizer_crit"    );
-      proc_matrix_restabilizer_mastery = p -> get_proc( "matrix_restabilizer_mastery" );
+      buff_matrix_restabilzer_crit     = new stat_buff_t( p, "matrix_restabilzer_crit",    STAT_CRIT_RATING,    heroic ? 1834 : 1624, 1, 30, 105, .15 );
+      buff_matrix_restabilzer_haste    = new stat_buff_t( p, "matrix_restabilzer_haste",   STAT_HASTE_RATING,   heroic ? 1834 : 1624, 1, 30, 105, .15 );
+      buff_matrix_restabilzer_mastery  = new stat_buff_t( p, "matrix_restabilzer_mastery", STAT_MASTERY_RATING, heroic ? 1834 : 1624, 1, 30, 105, .15 );
     }
 
     virtual void trigger( action_t* a, void* call_data )
@@ -921,44 +922,23 @@ static void register_matrix_restabilizer( item_t* item )
       {
         if ( p -> stats.crit_rating > p -> stats.mastery_rating )
         {
-          max_stat = STAT_CRIT_RATING;
+          buff = buff_matrix_restabilzer_crit;
         }
         else
         {
-          max_stat = STAT_MASTERY_RATING;
+          buff = buff_matrix_restabilzer_mastery;
         }
       }
       else if ( p -> stats.haste_rating > p -> stats.mastery_rating )
       {
-        max_stat = STAT_HASTE_RATING;
+        buff = buff_matrix_restabilzer_haste;
       }
       else
       {
-        max_stat = STAT_MASTERY_RATING;
+        buff = buff_matrix_restabilzer_mastery;
       }
-
-      buff -> stat = max_stat;
 
       stat_proc_callback_t::trigger( a, call_data );
-
-      if ( buff -> check() )
-      {
-        switch ( max_stat )
-        {
-        case STAT_HASTE_RATING:
-          proc_matrix_restabilizer_haste -> occur();
-          break;
-        case STAT_CRIT_RATING:
-          proc_matrix_restabilizer_crit -> occur();
-          break;
-        case STAT_MASTERY_RATING:
-          proc_matrix_restabilizer_mastery -> occur();
-          break;
-        default:
-          assert( 0 );
-          break;
-        }
-      }
     }
   };
 
