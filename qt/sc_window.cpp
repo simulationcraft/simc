@@ -934,7 +934,7 @@ void SimulationCraftWindow::createToolTips()
                                  "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." );
 
   threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
-                             "Most modern desktops have two at least two CPU cores." );
+                             "Most modern desktops have at least two CPU cores." );
 
   armoryRegionChoice->setToolTip( "United States, Europe, Taiwan, China, Korea" );
 

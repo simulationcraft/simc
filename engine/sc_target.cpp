@@ -424,7 +424,6 @@ void enemy_t::create_options()
 
 pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& pet_type )
 {
-
   pet_t* p = find_pet( add_name );
   if ( p ) return p;
 
