@@ -59,7 +59,7 @@ static OptionEntry* getItemSourceOptions()
       { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
       { NULL, NULL, NULL }
     };
-    
+
   return options;
 }
 
@@ -217,7 +217,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      {
        QStringList item_db_list = opt_tokens[ 1 ].split('/');
        QListWidgetItem** items = new QListWidgetItem *[item_db_list.size()];
-       
+
        for ( int opt = 0; opt < item_db_list.size(); opt++ )
        {
          for ( int source = 0; itemDbOrder -> count(); source++ )
@@ -229,7 +229,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
           }
          }
        }
-       
+
        for ( int j = 0; j < item_db_list.size(); j++ )
          itemDbOrder -> addItem( items[ j ] );
 
@@ -295,7 +295,7 @@ QString SimulationCraftWindow::encodeOptions()
     encoded += "=";
     encoded += buttons.at( i )->isChecked() ? "1" : "0";
   }
-  
+
   buttons = plotsButtonGroup->buttons();
   OptionEntry* plots = getPlotOptions();
   for( int i=1; plots[ i ].label; i++ )
@@ -327,7 +327,7 @@ QString SimulationCraftWindow::encodeOptions()
         encoded += "/";
     }
   }
-  
+
   return encoded;
 }
 
@@ -398,7 +398,7 @@ void SimulationCraftWindow::saveHistory()
 
     QStringList importHistory;
     int count = historyList->count();
-    for( int i=0; i < count; i++ ) 
+    for( int i=0; i < count; i++ )
     {
       importHistory.append( historyList->item( i )->text() );
     }
@@ -424,7 +424,7 @@ void SimulationCraftWindow::saveHistory()
 // ==========================================================================
 
 SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
-  : QWidget(parent), 
+  : QWidget(parent),
     historyWidth(0), historyHeight(0), historyMaximized(1),
     visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
 {
@@ -454,12 +454,12 @@ SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
 #endif
 
   connect( mainTab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
-  
+
   QVBoxLayout* vLayout = new QVBoxLayout();
   vLayout->addWidget( mainTab );
   vLayout->addWidget( cmdLineGroupBox );
   setLayout( vLayout );
-  
+
   timer = new QTimer( this );
   connect( timer, SIGNAL(timeout()), this, SLOT(updateSimProgress()) );
 
@@ -516,7 +516,7 @@ void SimulationCraftWindow::createWelcomeTab()
   welcomeBanner->setUrl( url );
   mainTab->addTab( welcomeBanner, "Welcome" );
 }
- 
+
 void SimulationCraftWindow::createOptionsTab()
 {
   optionsTab = new QTabWidget();
@@ -534,10 +534,10 @@ void SimulationCraftWindow::createOptionsTab()
   QAbstractButton* allScaling = scalingButtonGroup->buttons().at( 0 );
 
   connect( armoryRegionChoice, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(armoryRegionChanged(const QString&)) );
-  
-  connect( allBuffs,   SIGNAL(toggled(bool)), this, SLOT(allBuffsChanged(bool))   );  
-  connect( allDebuffs, SIGNAL(toggled(bool)), this, SLOT(allDebuffsChanged(bool)) );  
-  connect( allScaling, SIGNAL(toggled(bool)), this, SLOT(allScalingChanged(bool)) );  
+
+  connect( allBuffs,   SIGNAL(toggled(bool)), this, SLOT(allBuffsChanged(bool))   );
+  connect( allDebuffs, SIGNAL(toggled(bool)), this, SLOT(allDebuffsChanged(bool)) );
+  connect( allScaling, SIGNAL(toggled(bool)), this, SLOT(allScalingChanged(bool)) );
 }
 
 void SimulationCraftWindow::createGlobalsTab()
@@ -564,7 +564,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsGroupBox->setLayout( globalsLayout );
 
   optionsTab->addTab( globalsGroupBox, "Globals" );
-  
+
   createItemDataSourceSelector( globalsLayout );
 }
 
@@ -751,7 +751,7 @@ void SimulationCraftWindow::createBestInSlotTab()
   {
     CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
     dir            = QString( CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding()) );
-    
+
     CFRelease(fileRef);
     CFRelease(macPath);
   }
@@ -858,7 +858,7 @@ void SimulationCraftWindow::createHelpTab()
   helpView->setUrl( QUrl( "http://code.google.com/p/simulationcraft/wiki/StartersGuide" ) );
   mainTab->addTab( helpView, "Help" );
 }
- 
+
 void SimulationCraftWindow::createResultsTab()
 {
   QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
@@ -940,7 +940,7 @@ void SimulationCraftWindow::createToolTips()
   debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
                            "Gory details are very gory.  No documentation will be forthcoming.\n"
                            "Due to the forced single iteration, no scale factor calculation." );
-  
+
   latencyChoice->setToolTip( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
                              "It is currently used to extend the cooldown duration of user executable abilities "
                              " that have a cooldown.\n"
@@ -948,7 +948,7 @@ void SimulationCraftWindow::createToolTips()
                              "    'Low'   : 100ms\n"
                              "    'Medium': 300ms\n"
                              "    'High'  : 500ms" );
-  
+
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
 }
@@ -964,11 +964,11 @@ void SimulationCraftWindow::createPaperdoll()
   PaperdollProfile* profile = new PaperdollProfile();
   Paperdoll* paperdoll = new Paperdoll( profile, paperdollTab );
   ItemSelectionWidget* items = new ItemSelectionWidget( profile, paperdollTab );
-  
+
   paperdollMainLayout -> addWidget( items );
   paperdollMainLayout -> addWidget( paperdoll );
-  
-  
+
+
   mainTab -> addTab( paperdollTab, "Paperdoll" );
 }
 #endif
@@ -982,7 +982,7 @@ void SimulationCraftWindow::createItemDataSourceSelector( QFormLayout* layout )
   itemDbOrder -> setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   itemDbOrder -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   OptionEntry* item_sources = getItemSourceOptions();
-  
+
   for ( int i = 0; item_sources[ i ].label; i++ )
   {
     QListWidgetItem* item = new QListWidgetItem( item_sources[ i ].label );
@@ -992,7 +992,7 @@ void SimulationCraftWindow::createItemDataSourceSelector( QFormLayout* layout )
   }
 
   itemDbOrder -> setFixedHeight( ( itemDbOrder -> model() -> rowCount() + 1 ) * itemDbOrder -> sizeHintForRow( 0 ) );
-  
+
   layout->addRow("Item Source Order", itemDbOrder );
 }
 
@@ -1010,7 +1010,7 @@ void SimulationCraftWindow::updateVisibleWebView( SimulationCraftWebView* wv )
 
 sim_t* SimulationCraftWindow::initSim()
 {
-  if( ! sim ) 
+  if( ! sim )
   {
     sim = new sim_t();
     sim -> input_is_utf8 = true; // Presume GUI input is always UTF-8
@@ -1026,7 +1026,7 @@ sim_t* SimulationCraftWindow::initSim()
 
 void SimulationCraftWindow::deleteSim()
 {
-  if( sim ) 
+  if( sim )
   {
     fclose( sim -> output_file );
     delete sim;
@@ -1040,7 +1040,7 @@ void SimulationCraftWindow::deleteSim()
 }
 
 // ==========================================================================
-// Import 
+// Import
 // ==========================================================================
 
 void ImportThread::importBattleNet()
@@ -1048,7 +1048,7 @@ void ImportThread::importBattleNet()
   QString region, server, character;
   QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
   int count = tokens.count();
-  for( int i=0; i < count-1; i++ ) 
+  for( int i=0; i < count-1; i++ )
   {
     QString& t = tokens[ i ];
     if( t == "http" )
@@ -1075,7 +1075,7 @@ void ImportThread::importBattleNet()
   }
   else
   {
-    // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so 
+    // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so
     // do it in a silly way as a workaround for now.
     std::string talents = mainWindow->armorySpecChoice->currentText().toUtf8().constData(),
                 cpp_s   = server.toUtf8().constData(),
@@ -1252,7 +1252,7 @@ void SimulationCraftWindow::startSim()
   simulateCmdLineHistory.add( cmdLine->text() );
   simProgress = 0;
   mainButton->setText( "Cancel!" );
-  simulateThread->start( initSim(), mergeOptions() ); 
+  simulateThread->start( initSim(), mergeOptions() );
   simulateText->setPlainText( defaultSimulateText() );
   cmdLineText = "";
   cmdLine->setText( cmdLineText );
@@ -1292,9 +1292,7 @@ QString SimulationCraftWindow::mergeOptions()
   options += variance[ fightVarianceChoice->currentIndex() ];
   options += "\n";
   options += "fight_style=" + fightStyleChoice->currentText() + "\n";
-  options += "enemy=Fluffy_Pillow\n";
-  options += "level=88\n";
-  options += "race=" + targetRaceChoice->currentText() + "\n";
+  options += "target_race=" + targetRaceChoice->currentText() + "\n";
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ playerSkillChoice->currentIndex() ];
@@ -1470,8 +1468,8 @@ void SimulationCraftWindow::saveResults()
 // Window Events
 // ==========================================================================
 
-void SimulationCraftWindow::closeEvent( QCloseEvent* e ) 
-{ 
+void SimulationCraftWindow::closeEvent( QCloseEvent* e )
+{
   saveHistory();
   battleNetView->stop();
   QCoreApplication::quit();
@@ -1498,15 +1496,15 @@ void SimulationCraftWindow::cmdLineReturnPressed()
 {
   if( mainTab->currentIndex() == TAB_IMPORT )
   {
-    if( cmdLine->text().count( "battle.net" ) || 
+    if( cmdLine->text().count( "battle.net" ) ||
         cmdLine->text().count( "wowarmory.com" ) )
     {
-      battleNetView->setUrl( QUrl::fromUserInput( cmdLine->text() ) ); 
+      battleNetView->setUrl( QUrl::fromUserInput( cmdLine->text() ) );
       importTab->setCurrentIndex( TAB_BATTLE_NET );
     }
     else if( cmdLine->text().count( "chardev.org" ) )
     {
-      charDevView->setUrl( QUrl::fromUserInput( cmdLine->text() ) ); 
+      charDevView->setUrl( QUrl::fromUserInput( cmdLine->text() ) );
       importTab->setCurrentIndex( TAB_CHAR_DEV );
     }
     else
@@ -1547,7 +1545,7 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
 void SimulationCraftWindow::backButtonClicked( bool checked )
 {
   checked=true;
-  if( visibleWebView ) 
+  if( visibleWebView )
   {
     if( mainTab->currentIndex() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
     {
@@ -1582,7 +1580,7 @@ void SimulationCraftWindow::backButtonClicked( bool checked )
 void SimulationCraftWindow::forwardButtonClicked( bool checked )
 {
   checked=true;
-  if( visibleWebView ) 
+  if( visibleWebView )
   {
     visibleWebView->forward();
     visibleWebView->setFocus();
@@ -1634,16 +1632,16 @@ void SimulationCraftWindow::mainTabChanged( int index )
   case TAB_OVERRIDES: cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_HELP:      cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_LOG:       cmdLine->setText( logFileText ); mainButton->setText( "Save!" ); break;
-  case TAB_IMPORT:    
-    mainButton->setText( sim ? "Cancel!" : "Import!" ); 
-    importTabChanged( importTab->currentIndex() ); 
+  case TAB_IMPORT:
+    mainButton->setText( sim ? "Cancel!" : "Import!" );
+    importTabChanged( importTab->currentIndex() );
     break;
-  case TAB_RESULTS:   
-    mainButton->setText( "Save!" ); 
-    resultsTabChanged( resultsTab->currentIndex() ); 
+  case TAB_RESULTS:
+    mainButton->setText( "Save!" );
+    resultsTabChanged( resultsTab->currentIndex() );
     break;
   case TAB_SITE:
-    cmdLine->setText( cmdLineText ); 
+    cmdLine->setText( cmdLineText );
     mainButton->setText( sim ? "Cancel!" : "Simulate!" );
     updateVisibleWebView( siteView );
     break;
@@ -1653,7 +1651,7 @@ void SimulationCraftWindow::mainTabChanged( int index )
 #endif
   default: assert(0);
   }
-  if( visibleWebView ) 
+  if( visibleWebView )
   {
     progressBar->setFormat( "%p%" );
   }
@@ -1714,8 +1712,8 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
 {
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
-  
-  if( url.count( "battle.net"    ) || 
+
+  if( url.count( "battle.net"    ) ||
       url.count( "wowarmory.com" ) )
   {
     battleNetView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
@@ -1739,7 +1737,7 @@ void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
   QString profile = item->text( 0 );
 
   QString s = "Unable to import profile "; s += profile;
-  
+
   QFile file( bisProfilePath + profile );
   if( file.open( QIODevice::ReadOnly ) )
   {
