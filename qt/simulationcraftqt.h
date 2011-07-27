@@ -86,6 +86,19 @@ public:
   void save();
 };
 
+class ReforgeButtonGroup : public QButtonGroup
+{
+  Q_OBJECT
+public:
+  ReforgeButtonGroup( QObject* parent = 0 );
+
+private:
+  int selected;
+
+public slots:
+  void setSelected( int state );
+};
+
 class SimulationCraftWindow : public QWidget
 {
     Q_OBJECT
@@ -123,7 +136,7 @@ public:
     QButtonGroup* debuffsButtonGroup;
     QButtonGroup* scalingButtonGroup;
     QButtonGroup* plotsButtonGroup;
-    QButtonGroup* reforgeplotsButtonGroup;
+    ReforgeButtonGroup* reforgeplotsButtonGroup;
     SimulationCraftWebView* battleNetView;
     SimulationCraftWebView* charDevView;
     SimulationCraftWebView* siteView;

@@ -170,6 +170,32 @@ static QComboBox* createChoice( int count, ... )
   return choice;
 }
 
+ReforgeButtonGroup::ReforgeButtonGroup( QObject* parent ) :
+  QButtonGroup( parent ), selected( 0 )
+{
+  
+}
+
+void ReforgeButtonGroup::setSelected( int state )
+{
+  if ( state ) selected++; else selected--;
+  
+  // Three selected, disallow selection of any more
+  if ( selected >= 3 )
+  {
+    QList< QAbstractButton* > b = buttons();
+    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); i++ )
+      if ( ! ( *i ) -> isChecked() ) ( *i ) -> setEnabled( false );
+  }
+  // Less than three selected, allow selection of all/any
+  else
+  {
+    QList< QAbstractButton* > b = buttons();
+    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); i++ )
+      ( *i ) -> setEnabled( true );
+  }
+}
+
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
@@ -213,7 +239,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      else if( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffs;         buttons = &debuff_buttons;      }
      else if( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scaling;         buttons = &scaling_buttons;     }
      else if( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plots;           buttons = &plot_buttons;        }
-     else if( ! opt_tokens[ 0 ].compare( "reforgeplots"   ) ) { options = reforgeplots;    buttons = &reforgeplot_buttons; }
+     else if( ! opt_tokens[ 0 ].compare( "reforge_plots"  ) ) { options = reforgeplots;    buttons = &reforgeplot_buttons; }
      else if( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
      {
        QStringList item_db_list = opt_tokens[ 1 ].split('/');
@@ -290,7 +316,7 @@ QString SimulationCraftWindow::encodeOptions()
 
   buttons = scalingButtonGroup->buttons();
   OptionEntry* scaling = getScalingOptions();
-  for( int i=1; scaling[ i ].label; i++ )
+  for( int i=2; scaling[ i ].label; i++ )
   {
     encoded += " scaling:";
     encoded += scaling[ i ].option;
@@ -300,7 +326,7 @@ QString SimulationCraftWindow::encodeOptions()
 
   buttons = plotsButtonGroup->buttons();
   OptionEntry* plots = getPlotOptions();
-  for( int i=1; plots[ i ].label; i++ )
+  for( int i=0; plots[ i ].label; i++ )
   {
     encoded += " plots:";
     encoded += plots[ i ].option;
@@ -310,7 +336,7 @@ QString SimulationCraftWindow::encodeOptions()
 
   buttons = reforgeplotsButtonGroup->buttons();
   OptionEntry* reforgeplots = getReforgePlotOptions();
-  for( int i=1; reforgeplots[ i ].label; i++ )
+  for( int i=0; reforgeplots[ i ].label; i++ )
   {
     encoded += " reforge_plots:";
     encoded += reforgeplots[ i ].option;
@@ -656,7 +682,7 @@ void SimulationCraftWindow::createPlotsTab()
 void SimulationCraftWindow::createReforgePlotsTab()
 {
   QVBoxLayout* reforgeplotsLayout = new QVBoxLayout();
-  reforgeplotsButtonGroup = new QButtonGroup();
+  reforgeplotsButtonGroup = new ReforgeButtonGroup();
   reforgeplotsButtonGroup->setExclusive( false );
   OptionEntry* reforgeplots = getReforgePlotOptions();
   for( int i=0; reforgeplots[ i ].label; i++ )
@@ -665,6 +691,8 @@ void SimulationCraftWindow::createReforgePlotsTab()
     checkBox->setToolTip( reforgeplots[ i ].tooltip );
     reforgeplotsButtonGroup->addButton( checkBox );
     reforgeplotsLayout->addWidget( checkBox );
+    QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
+                      reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
   }
   reforgeplotsLayout->addStretch( 1 );
   QGroupBox* reforgeplotsGroupBox = new QGroupBox();
