@@ -43,8 +43,8 @@ class StringHistory : public QStringList
 public:
   int current_index;
   StringHistory() : current_index(-1) {}
-  QString current() 
-  { 
+  QString current()
+  {
     if( current_index < 0 ) return "";
     if( current_index >= size() ) return "";
     return at( current_index );
@@ -89,7 +89,7 @@ public:
 class SimulationCraftWindow : public QWidget
 {
     Q_OBJECT
-   
+
 public:
     qint32 historyWidth, historyHeight;
     qint32 historyMaximized;
@@ -110,6 +110,7 @@ public:
     QComboBox* fightLengthChoice;
     QComboBox* fightVarianceChoice;
     QComboBox* fightStyleChoice;
+    QComboBox* targetLevelChoice;
     QComboBox* targetRaceChoice;
     QComboBox* playerSkillChoice;
     QComboBox* threadsChoice;
@@ -181,7 +182,7 @@ public:
 
     void loadHistory();
     void saveHistory();
-    
+
     void createCmdLine();
     void createWelcomeTab();
     void createOptionsTab();
@@ -265,22 +266,22 @@ protected:
     }
     switch( mainWindow->mainTab->currentIndex() )
     {
-    case TAB_WELCOME:   
-    case TAB_OPTIONS:   
-    case TAB_SIMULATE:  
-    case TAB_OVERRIDES: 
-      mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k ); 
-      setText( mainWindow->cmdLineText ); 
+    case TAB_WELCOME:
+    case TAB_OPTIONS:
+    case TAB_SIMULATE:
+    case TAB_OVERRIDES:
+      mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k );
+      setText( mainWindow->cmdLineText );
       break;
     case TAB_IMPORT:
       break;
     case TAB_LOG:
       mainWindow->logFileText = mainWindow->logCmdLineHistory.next( k );
-      setText( mainWindow->logFileText ); 
+      setText( mainWindow->logFileText );
       break;
     case TAB_RESULTS:
       mainWindow->resultsFileText = mainWindow-> resultsCmdLineHistory.next( k );
-      setText( mainWindow->resultsFileText ); 
+      setText( mainWindow->resultsFileText );
       break;
     }
   }
@@ -330,8 +331,8 @@ private slots:
   }
 
 public:
-  SimulationCraftWebView( SimulationCraftWindow* mw ) : 
-    mainWindow(mw), progress(0) 
+  SimulationCraftWebView( SimulationCraftWindow* mw ) :
+    mainWindow(mw), progress(0)
   {
     connect( this, SIGNAL(loadProgress(int)),       this, SLOT(loadProgressSlot(int)) );
     connect( this, SIGNAL(loadFinished(bool)),      this, SLOT(loadFinishedSlot(bool)) );

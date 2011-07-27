@@ -173,7 +173,7 @@ static QComboBox* createChoice( int count, ... )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 13 )
+  if( tokens.count() >= 14 )
   {
          versionChoice->setCurrentIndex( tokens[  0 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
@@ -187,6 +187,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
       armorySpecChoice->setCurrentIndex( tokens[  9 ].toInt() );
      defaultRoleChoice->setCurrentIndex( tokens[ 10 ].toInt() );
          latencyChoice->setCurrentIndex( tokens[ 11 ].toInt() );
+     targetLevelChoice->setCurrentIndex( tokens[ 12 ].toInt() );
   }
 
   QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup->buttons();
@@ -201,7 +202,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   OptionEntry*        plots = getPlotOptions();
   OptionEntry* reforgeplots = getReforgePlotOptions();
 
-  for(int i = 12; i < tokens.count(); i++)
+  for(int i = 13; i < tokens.count(); i++)
   {
      QStringList opt_tokens = tokens[ i ].split(':');
 
@@ -251,7 +252,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13" )
     .arg(       versionChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
@@ -264,6 +265,7 @@ QString SimulationCraftWindow::encodeOptions()
     .arg(    armorySpecChoice->currentIndex() )
     .arg(   defaultRoleChoice->currentIndex() )
     .arg(       latencyChoice->currentIndex() )
+    .arg(   targetLevelChoice->currentIndex() )
     ;
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
@@ -550,6 +552,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 2, "Patchwerk", "HelterSkelter" ) );
+  globalsLayout->addRow(   "Target Level",   targetLevelChoice = createChoice( 3, "Raid Boss", "5-man heroic", "5-man normal" ) );
   globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
@@ -925,6 +928,8 @@ void SimulationCraftWindow::createToolTips()
 
   targetRaceChoice->setToolTip( "Race of the target and any adds." );
 
+  targetLevelChoice->setToolTip( "Level of the target and any adds." );
+
   playerSkillChoice->setToolTip( "Elite:       No mistakes.  No cheating either.\n"
                                  "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." );
 
@@ -1292,6 +1297,12 @@ QString SimulationCraftWindow::mergeOptions()
   options += variance[ fightVarianceChoice->currentIndex() ];
   options += "\n";
   options += "fight_style=" + fightStyleChoice->currentText() + "\n";
+
+  static const char* const targetlevel[] = { "88", "87", "85" };
+  options += "target_level=";
+  options += targetlevel[ targetLevelChoice->currentIndex() ];
+  options += "\n";
+
   options += "target_race=" + targetRaceChoice->currentText() + "\n";
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
