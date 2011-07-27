@@ -655,5 +655,19 @@ player_t* rawr_t::load_player( sim_t* sim,
     }
   }
 
+  // Parse Professions
+  p -> professions_str = "";
+  std::string profession_value[2];
+  xml_t::get_value( profession_value[0], root_node, "PrimaryProfession/."   );
+  xml_t::get_value( profession_value[1], root_node, "SecondaryProfession/." );
+  if ( ! profession_value[0].empty() )
+  {
+    p -> professions_str = util_t::tolower( profession_value[0] );
+    if ( ! profession_value[1].empty() )
+      p -> professions_str += "/";
+  }
+  if ( ! profession_value[1].empty() )
+    p -> professions_str += util_t::tolower( profession_value[1] );
+
   return p;
 }
