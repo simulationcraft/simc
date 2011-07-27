@@ -1121,6 +1121,12 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
         {
           // Recasting a dot while it's still ticking gives it an extra tick in total
           dot -> num_ticks++;
+
+          // Fix to refreshing tick_zero dots
+          if ( tick_zero )
+          {
+            dot -> num_ticks++;
+          }
         }
       }
       else
