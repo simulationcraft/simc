@@ -1146,7 +1146,11 @@ struct lava_burst_overload_t : public shaman_spell_t
     // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use 
     // a _DIFFERENT_ effect in shamanism, that has 75% of the shamanism
     // "real" effect
-    direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
+    if ( p -> spec_shamanism -> ok() )
+    {
+      direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
+      direct_power_mod  += 0.12 * 0.75; // HOTFIX 26 Jul 11
+    }
     
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
@@ -1180,7 +1184,11 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use 
     // a _DIFFERENT_ effect in shamanism, that has 75% of the shamanism
     // "real" effect
-    direct_power_mod    += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
+    if ( p -> spec_shamanism -> ok() )
+    {
+      direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
+      direct_power_mod  += 0.12 * 0.75; // HOTFIX 26 Jul 11
+    }
       
     // Elemental fury
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
@@ -1214,7 +1222,11 @@ struct chain_lightning_overload_t : public shaman_spell_t
     // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use 
     // a _DIFFERENT_ effect in shamanism, that has 75% of the shamanism
     // "real" effect
-    direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
+    if ( p -> spec_shamanism -> ok() )
+    {
+      direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
+      direct_power_mod  += 0.12 * 0.75; // HOTFIX 26 Jul 11
+    }
       
     // Elemental fury
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
@@ -2085,7 +2097,11 @@ struct chain_lightning_t : public shaman_spell_t
     parse_options( options, options_str );
 
     maelstrom          = true;
-    direct_power_mod  += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
+    if ( p -> spec_shamanism -> ok() )
+    {
+      direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
+      direct_power_mod += 0.12; // HOTFIX 26 Jul 11
+    }
     base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
@@ -2273,7 +2289,11 @@ struct lava_burst_t : public shaman_spell_t
     parse_options( options, options_str );
 
     // Shamanism
-    direct_power_mod    += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
+    if ( p -> spec_shamanism -> ok() )
+    {
+      direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
+      direct_power_mod += 0.12; // HOTFIX 26 Jul 11
+    }
     base_execute_time   += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
     base_cost_reduction += p -> talent_convection -> mod_additive( P_RESOURCE_COST );
     m_additive          += 
@@ -2361,7 +2381,11 @@ struct lightning_bolt_t : public shaman_spell_t
 
     maelstrom          = true;
     // Shamanism
-    direct_power_mod  += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
+    if ( p -> spec_shamanism -> ok() )
+    {
+      direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
+      direct_power_mod += 0.12; // HOTFIX 26 Jul 11
+    }
     base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
     // Elemental fury
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
