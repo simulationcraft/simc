@@ -4539,10 +4539,11 @@ struct lifeblood_t : public action_t
 
 struct restart_sequence_t : public action_t
 {
+  sequence_t* seq;
   std::string seq_name_str;
 
   restart_sequence_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "restart_sequence", player )
+    action_t( ACTION_OTHER, "restart_sequence", player ), seq( 0 )
   {
     seq_name_str = "default"; // matches default name for sequences
     option_t options[] =
@@ -4557,17 +4558,30 @@ struct restart_sequence_t : public action_t
 
   virtual void execute()
   {
-    for ( action_t* a = player -> action_list; a; a = a -> next )
+    if ( ! seq )
     {
-      if ( a -> type != ACTION_SEQUENCE )
-        continue;
-
-      if ( ! seq_name_str.empty() )
-        if ( seq_name_str != a -> name_str )
+      for ( action_t* a = player -> action_list; a; a = a -> next )
+      {
+        if ( a -> type != ACTION_SEQUENCE )
           continue;
 
-      ( ( sequence_t* ) a ) -> restart();
+        if ( ! seq_name_str.empty() )
+          if ( seq_name_str != a -> name_str )
+          continue;
+
+        seq = dynamic_cast< sequence_t* >( a );
+      }
+      
+      assert( seq );
     }
+    
+    seq -> restart();
+  }
+  
+  virtual bool ready()
+  {
+    if ( seq ) return ! seq -> restarted;
+    return action_t::ready();
   }
 };
 

@@ -3986,13 +3986,14 @@ struct sequence_t : public action_t
 {
   std::vector<action_t*> sub_actions;
   int current_action;
+  bool restarted;
 
   sequence_t( player_t*, const std::string& sub_action_str );
   virtual ~sequence_t();
   virtual void schedule_execute();
   virtual void reset();
   virtual bool ready();
-  virtual void restart() { current_action=0; }
+  virtual void restart() { current_action=0; restarted=true;}
 };
 
 // Cooldown ==================================================================

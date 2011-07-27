@@ -12,7 +12,7 @@
 // sequence_t::sequence_t ===================================================
 
 sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
-  action_t( ACTION_SEQUENCE, "default", p ), current_action( -1 )
+  action_t( ACTION_SEQUENCE, "default", p ), current_action( -1 ), restarted( false )
 {
   trigger_gcd = 0;
 
@@ -64,6 +64,8 @@ sequence_t::~sequence_t()
 void sequence_t::schedule_execute()
 {
   sub_actions[ current_action++ ] -> schedule_execute();
+  // No longer restarted
+  restarted = false;
 }
 
 // sequence_t::reset =========================================================
@@ -83,6 +85,7 @@ void sequence_t::reset()
     }
   }
   current_action = 0;
+  restarted = false;
 }
 
 // sequence_t::ready =========================================================
