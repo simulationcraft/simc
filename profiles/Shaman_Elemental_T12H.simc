@@ -39,33 +39,33 @@ head=crown_of_flame,heroic=1,type=mail,ilevel=397,quality=epic,stats=2261armor_4
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,gems=40int_10int
 shoulders=erupting_volcanic_shoulderwraps,heroic=1,type=mail,ilevel=391,quality=epic,stats=2044armor_322int_513sta_215haste_221spi,gems=40int_10int,enchant=50int_25haste
 chest=erupting_volcanic_hauberk,heroic=1,type=mail,ilevel=391,quality=epic,stats=2725armor_420int_689sta_293haste_279mastery,gems=40int_20int_20haste_20int,enchant=20all
-waist=firemend_cinch,type=mail,ilevel=378,quality=epic,stats=1464armor_282int_454sta_208crit_172haste,reforge=crit_mastery,gems=20int_20spi_10int
-legs=erupting_volcanic_kilt,heroic=1,type=mail,ilevel=391,quality=epic,stats=2385armor_420int_689sta_315haste_249mastery,gems=20int_20spi_20int_20spi_20int,enchant=95int_55spi
-feet=treads_of_implicit_obedience,heroic=1,type=mail,ilevel=391,quality=epic,stats=1874armor_322int_513sta_201spi_228crit,reforge=crit_haste,gems=40int_10int,enchant=50mastery
-wrists=lava_line_wristbands,heroic=1,type=mail,ilevel=391,quality=epic,stats=1192armor_256int_384sta_178spi_158haste
-hands=erupting_volcanic_gloves,heroic=1,type=mail,ilevel=391,quality=epic,stats=1703armor_322int_513sta_225crit_208haste,reforge=crit_mastery,gems=20int_20spi_10int
-finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,reforge=hit_mastery,gems=40int_10int,enchant=40int
-finger2=crystal_prison_band,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183mastery_150crit,reforge=crit_haste,enchant=40int
+waist=firemend_cinch,type=mail,ilevel=378,quality=epic,stats=1464armor_282int_454sta_208crit_172haste,gems=40int_40int
+legs=erupting_volcanic_kilt,heroic=1,type=mail,ilevel=391,quality=epic,stats=2385armor_420int_689sta_315haste_249mastery,gems=40int_40int,enchant=95int_55spi
+feet=treads_of_implicit_obedience,heroic=1,type=mail,ilevel=391,quality=epic,stats=1874armor_322int_513sta_201spi_228crit,reforge=crit_hit,gems=40int_10int,enchant=50haste
+wrists=lava_line_wristbands,heroic=1,type=mail,ilevel=391,quality=epic,stats=1192armor_256int_384sta_178spi_158haste,enchant=50int
+hands=erupting_volcanic_gloves,heroic=1,type=mail,ilevel=391,quality=epic,stats=1703armor_322int_513sta_225crit_208haste,reforge=crit_mastery,gems=40int,enchant=65mastery
+finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int,enchant=40int
+finger2=crystal_prison_band,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183mastery_150crit,reforge=crit_spi,enchant=40int
 trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=lightweave_embroidery
+back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_spi,enchant=lightweave_embroidery
 main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max
 off_hand=ward_of_the_red_widow,heroic=1,ilevel=391,quality=epic,stats=12421armor_236int_384sta_173spi_146haste,gems=40int_10int,enchant=40int
-ranged=singed_plume_of_aviana,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_105spi_82haste,gems=40int
+ranged=singed_plume_of_aviana,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_105spi_82haste,reforge=spi_mastery,gems=40int
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=6954
-# gear_intellect=5755
-# gear_spirit=1504
+# gear_intellect=5885
+# gear_spirit=1506
 # gear_spell_power=2783
-# gear_hit_rating=238
-# gear_crit_rating=522
-# gear_haste_rating=2810
-# gear_mastery_rating=1318
+# gear_hit_rating=237
+# gear_crit_rating=703
+# gear_haste_rating=2526
+# gear_mastery_rating=1410
 # gear_armor=28814
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
-# back=rippling_flamewrath_drape,heroic=1,enchant=lightweave_embroidery
+# back=wings_of_flame,heroic=1,enchant=lightweave_embroidery
 # main_hand=kogun_hammer_of_the_firelord,heroic=1,weapon=mace_2.10speed_484min_899max,enchant=power_torrent
