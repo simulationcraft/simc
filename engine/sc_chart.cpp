@@ -2016,7 +2016,7 @@ const char* chart_t::gear_weights_wowreforge( std::string& s,
 
   if( util_t::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
   {
-    s = "http://wowreforge.com/" + region_str + "/" + server_str + "/" + name_str + "?Spec=Main&amp;template=";
+    s = "http://wowreforge.com/" + p -> region_str + "/" + p -> server_str + "/" + p -> name_str + "?Spec=Main&amp;template=";
   }
   else
   {
@@ -2036,6 +2036,8 @@ const char* chart_t::gear_weights_wowreforge( std::string& s,
     snprintf( buffer, sizeof( buffer ), ",%s:%.*f", util_t::stat_type_abbrev( i ), p -> sim -> report_precision, value );
     s += buffer;
   }
+  
+  util_t::urlencode( s );
 
   return s.c_str();
 }

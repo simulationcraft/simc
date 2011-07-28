@@ -82,16 +82,18 @@ player_t* battle_net_t::download_player( sim_t* sim,
   }
 
   xml_node_t* name_node = xml_t::get_node( profile_info, "div", "class", "name" );
+  xml_node_t* server_node = xml_t::get_node( profile_info, "span", "class", "realm tip" );
 
-  std::string type_str, race_str, name_str;
+  std::string type_str, race_str, name_str, server_str;
   int level;
 
   if ( ! xml_t::get_value( name_str, xml_t::get_child( name_node, "a" ), "href" ) ||
        ! xml_t::get_value( type_str, xml_t::get_node( profile_info, "a", "class", "class" ), "href" ) ||
        ! xml_t::get_value( race_str, xml_t::get_node( profile_info, "a", "class", "race"  ), "href" ) ||
-       ! xml_t::get_value(    level, xml_t::get_node( xml_t::get_node( profile_info, "span", "class", "level" ), "strong" ), "." ) )
+       ! xml_t::get_value(    level, xml_t::get_node( xml_t::get_node( profile_info, "span", "class", "level" ), "strong" ), "." ) ||
+       ! xml_t::get_value( server_str, server_node, "." ) )
   {
-    sim -> errorf( "Unable to determine name/class/race/level from armory xml for %s|%s|%s.\n",
+    sim -> errorf( "Unable to determine name/class/race/level/server from armory xml for %s|%s|%s.\n",
                    region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
@@ -158,7 +160,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   p -> level      = level;
   p -> region_str = region;
-  p -> server_str = server;
+  p -> server_str = server_str;
 
   std::string origin_str = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
   http_t::format( p -> origin_str, origin_str );
