@@ -214,6 +214,7 @@ struct rogue_t : public player_t
   rng_t* rng_serrated_blades;
   rng_t* rng_sinister_strike_glyph;
   rng_t* rng_venomous_wounds;
+  rng_t* rng_vile_poisons;
   rng_t* rng_wound_poison;
   rng_t* rng_hat_interval;
 
@@ -531,9 +532,9 @@ static void break_stealth( rogue_t* p )
 
 // trigger_apply_poisons ===================================================
 
-static void trigger_apply_poisons( rogue_attack_t* a )
+static void trigger_apply_poisons( rogue_attack_t* a, weapon_t* we = 0 )
 {
-  weapon_t* w = a -> weapon;
+  weapon_t* w = ( we ) ? we : a -> weapon;
 
   if ( ! w ) 
     return;
@@ -1900,6 +1901,47 @@ struct expose_armor_t : public rogue_attack_t
   }
 };
 
+// Fan of Knives ============================================================
+
+struct fan_of_knives_t : public rogue_attack_t
+{
+  fan_of_knives_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "fan_of_knives", 51723, p )
+  {
+    parse_options( options_str );
+
+    aoe    = -1;
+    weapon = &( p -> ranged_weapon );
+
+    base_cost += p -> talents.slaughter_from_the_shadows -> effect2().resource( RESOURCE_ENERGY );
+  }
+
+  virtual void execute()
+  {
+    rogue_attack_t::execute();
+
+    rogue_t* p = player -> cast_rogue();
+
+    // FIXME: are these independent rolls for each hand?
+    if ( p -> rng_vile_poisons -> roll( p -> talents.vile_poisons ->effect3().percent() ) )
+    {
+      if ( &( p -> main_hand_weapon ) )
+        trigger_apply_poisons( this, &( p -> main_hand_weapon ) );
+      if ( &( p -> off_hand_weapon ) )
+        trigger_apply_poisons( this, &( p -> off_hand_weapon ) );
+    }
+  }
+
+  virtual bool ready()
+  {
+    rogue_t* p = player -> cast_rogue();
+    if ( p -> ranged_weapon.type != WEAPON_THROWN )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
+};
+
 // Feint ====================================================================
 
 struct feint_t : public rogue_attack_t
@@ -2931,26 +2973,30 @@ struct apply_poison_t : public action_t
 {
   int main_hand_poison;
   int  off_hand_poison;
+  int    thrown_poison;
 
   apply_poison_t( rogue_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "apply_poison", p ),
-    main_hand_poison(0), off_hand_poison(0)
+    main_hand_poison( 0 ), off_hand_poison( 0 ), thrown_poison( 0 )
   {
     std::string main_hand_str;
     std::string  off_hand_str;
+    std::string    thrown_str;
 
     option_t options[] =
     {
       { "main_hand", OPT_STRING, &main_hand_str },
       {  "off_hand", OPT_STRING,  &off_hand_str },
+      {    "thrown", OPT_STRING,    &thrown_str },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
     if ( main_hand_str.empty() &&
-         off_hand_str.empty() )
+         off_hand_str.empty() && 
+         thrown_str.empty() )
     {
-      sim -> errorf( "Player %s: At least one of 'main_hand/off_hand' must be specified in 'apply_poison'.  Accepted values are 'deadly/instant/wound'.\n", p -> name() );
+      sim -> errorf( "Player %s: At least one of 'main_hand/off_hand/thrown' must be specified in 'apply_poison'.  Accepted values are 'deadly/instant/wound'.\n", p -> name() );
       sim -> cancel();
     }
 
@@ -2965,9 +3011,15 @@ struct apply_poison_t : public action_t
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if ( off_hand_str == "deadly"     ) off_hand_poison =     DEADLY_POISON;
-      if ( off_hand_str == "instant"    ) off_hand_poison =    INSTANT_POISON;
-      if ( off_hand_str == "wound"      ) off_hand_poison =      WOUND_POISON;
+      if ( off_hand_str == "deadly"     ) off_hand_poison =  DEADLY_POISON;
+      if ( off_hand_str == "instant"    ) off_hand_poison = INSTANT_POISON;
+      if ( off_hand_str == "wound"      ) off_hand_poison =   WOUND_POISON;
+    }
+    if ( p -> ranged_weapon.type == WEAPON_THROWN )
+    {
+      if ( thrown_str == "deadly"       ) thrown_poison =  DEADLY_POISON;
+      if ( thrown_str == "instant"      ) thrown_poison = INSTANT_POISON;
+      if ( thrown_str == "wound"        ) thrown_poison =   WOUND_POISON;
     }
 
     if ( ! p -> active_deadly_poison    ) p -> active_deadly_poison     = new  deadly_poison_t( p );
@@ -2984,6 +3036,7 @@ struct apply_poison_t : public action_t
 
     if ( main_hand_poison ) p -> main_hand_weapon.buff_type = main_hand_poison;
     if (  off_hand_poison ) p ->  off_hand_weapon.buff_type =  off_hand_poison;
+    if (    thrown_poison ) p ->    ranged_weapon.buff_type =    thrown_poison;
   };
 
   virtual bool ready()
@@ -2997,6 +3050,10 @@ struct apply_poison_t : public action_t
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       if ( off_hand_poison )
         return( off_hand_poison != p -> off_hand_weapon.buff_type );
+
+    if ( p -> ranged_weapon.type == WEAPON_THROWN )
+      if ( thrown_poison )
+        return ( thrown_poison != p -> ranged_weapon.buff_type );
 
     return false;
   }
@@ -3499,6 +3556,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
   if ( name == "expose_armor"        ) return new expose_armor_t       ( this, options_str );
   if ( name == "feint"               ) return new feint_t              ( this, options_str );
+  if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
@@ -3746,6 +3804,7 @@ void rogue_t::init_rng()
   rng_serrated_blades       = get_rng( "serrated_blades"       );
   rng_sinister_strike_glyph = get_rng( "sinister_strike_glyph" );
   rng_venomous_wounds       = get_rng( "venomous_wounds"       );
+  rng_vile_poisons          = get_rng( "vile_poisons"          );
   rng_wound_poison          = get_rng( "wound_poison"          );
 
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_rng=1
