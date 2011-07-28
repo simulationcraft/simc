@@ -26,28 +26,26 @@ actions+=/templars_verdict,if=buff.divine_purpose.react
 actions+=/crusader_strike
 actions+=/hammer_of_wrath
 actions+=/exorcism,if=buff.the_art_of_war.react
-actions+=/judgement,if=buff.judgements_of_the_pure.remains<2
-actions+=/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.5
 actions+=/judgement
 actions+=/holy_wrath
 actions+=/consecration
 actions+=/divine_plea
-head=dragon_bone_warhelm,type=plate,ilevel=359,quality=epic,stats=2784armor_259str_512sta_113exp_281mastery,gems=reverberating_shadowspirit_40str_45sta,enchant=60str_35mastery
-neck=rage_of_ages,ilevel=359,quality=epic,stats=190str_286sta_127mastery_127hit
-shoulders=reinforced_sapphirium_pauldrons,type=plate,ilevel=359,quality=epic,stats=2570armor_233str_380sta_169haste_149hit,reforge=haste_mastery,gems=40str_10haste,enchant=50str_25crit
-chest=reinforced_sapphirium_battleplate,type=plate,ilevel=359,quality=epic,stats=3426armor_301str_512sta_228crit_188haste,reforge=haste_mastery,gems=40str_20str_20hit_20str,enchant=20all
-waist=belt_of_the_ferocious_wolf,type=plate,ilevel=359,quality=epic,stats=1927armor_233str_380sta_169mastery_149crit,reforge=crit_exp,gems=40str_67str
-legs=reinforced_sapphirium_legplates,type=plate,ilevel=359,quality=epic,stats=2998armor_301str_512sta_228mastery_188hit,gems=40str_40str,enchant=190ap_55crit
-feet=massacre_treads,type=plate,ilevel=359,quality=epic,stats=2355armor_233str_380sta_149exp_169mastery,gems=40str,enchant=50mastery
-wrists=electron_inductor_coils,type=plate,ilevel=359,quality=epic,stats=1499armor_190str_286sta_127haste_127hit,reforge=haste_mastery,gems=67str,enchant=50str
-hands=reinforced_sapphirium_gauntlets,type=plate,ilevel=359,quality=epic,stats=2141armor_233str_380sta_169haste_149mastery,reforge=haste_hit,gems=40str_67str,enchant=50str
-finger1=band_of_bees,ilevel=359,quality=epic,stats=190str_286sta_127haste_127mastery,reforge=haste_hit
-finger2=blauvelts_family_crest,ilevel=359,quality=epic,stats=190str_286sta_127haste_127mastery,reforge=haste_hit
+head=dragon_bone_warhelm,type=plate,ilevel=359,quality=epic,stats=2784armor_113exp_281mastery_512sta_259str,gems=reverberating_shadowspirit_40str_45sta,enchant=60str_35mastery
+neck=rage_of_ages,ilevel=359,quality=epic,stats=127hit_127mastery_286sta_190str
+shoulders=reinforced_sapphirium_pauldrons,type=plate,ilevel=359,quality=epic,stats=2570armor_169haste_149hit_380sta_233str,reforge=haste_mastery,gems=40str_10haste,enchant=50str_25crit
+chest=reinforced_sapphirium_battleplate,type=plate,ilevel=359,quality=epic,stats=3426armor_228crit_188haste_512sta_301str,reforge=haste_mastery,gems=40str_20hit_20str_20str,enchant=20all
+waist=belt_of_the_ferocious_wolf,type=plate,ilevel=359,quality=epic,stats=1927armor_149crit_169mastery_380sta_233str,reforge=crit_exp,gems=40str_67str
+legs=reinforced_sapphirium_legplates,type=plate,ilevel=359,quality=epic,stats=2998armor_188hit_228mastery_512sta_301str,gems=40str_40str,enchant=190ap_55crit
+feet=massacre_treads,type=plate,ilevel=359,quality=epic,stats=2355armor_149exp_169mastery_380sta_233str,gems=40str,enchant=50mastery
+wrists=electron_inductor_coils,type=plate,ilevel=359,quality=epic,stats=1499armor_127haste_127hit_286sta_190str,reforge=haste_mastery,gems=67str,enchant=50str
+hands=reinforced_sapphirium_gauntlets,type=plate,ilevel=359,quality=epic,stats=2141armor_169haste_149mastery_380sta_233str,reforge=haste_hit,gems=40str_67str,enchant=50str
+finger1=band_of_bees,ilevel=359,quality=epic,stats=127haste_127mastery_286sta_190str,reforge=haste_hit
+finger2=blauvelts_family_crest,ilevel=359,quality=epic,stats=127haste_127mastery_286sta_190str,reforge=haste_hit
 trinket1=crushing_weight,ilevel=359,quality=epic,stats=321str,equip=onattackhit_1926haste_10%_15dur_75cd
 trinket2=heart_of_rage,ilevel=359,quality=epic,stats=321exp,reforge=exp_mastery,equip=onattackhit_1926str_10%_20dur_100cd
-back=floating_web,ilevel=359,quality=epic,stats=625armor_190str_286sta_127mastery_127exp,enchant=65crit
-main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,ilevel=359,quality=epic,stats=341str_512sta_228crit_228hit,reforge=crit_mastery,enchant=landslide,weapon=sword2h_3.80speed_1894min_2842max
-ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=107str_161sta_72crit_72exp,reforge=crit_mastery,gems=40str
+back=floating_web,ilevel=359,quality=epic,stats=625armor_127exp_127mastery_286sta_190str,enchant=65crit
+main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,ilevel=359,quality=epic,stats=228crit_228hit_512sta_341str,reforge=crit_mastery,enchant=landslide,weapon=sword2h_3.80speed_1894min_2843max
+ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=72crit_72exp_161sta_107str,reforge=crit_mastery,gems=40str
 # Gear Summary
 # gear_strength=4397
 # gear_agility=20
@@ -64,4 +62,4 @@ ranged=relic_of_aggramar,ilevel=359,quality=epic,stats=107str_161sta_72crit_72ex
 # meta_gem=reverberating_shadowspirit
 # tier11_2pc_melee=1
 # tier11_4pc_melee=1
-# main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,weapon=sword2h_3.80speed_1894min_2842max,enchant=landslide
+# main_hand=reclaimed_ashkandi_greatsword_of_the_brotherhood,weapon=sword2h_3.80speed_1894min_2843max,enchant=landslide
