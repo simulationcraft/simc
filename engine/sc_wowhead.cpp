@@ -840,9 +840,9 @@ player_t* wowhead_t::download_player( sim_t* sim,
   {
     level = 60;
   }
-  else if ( level > 80 )
+  else if ( level > 85 )
   {
-    level = 80;
+    level = 85;
   }
 
   std::string cid_str;
@@ -882,7 +882,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if ( num_realm > 0 ) p -> server_str = realm_data[ 0 ];
 
   int user_id=0;
-  if ( js_t::get_value( user_id, profile_js, "user" ) && ( user_id != 0 ) )
+  if ( js_t::get_value( user_id, profile_js, "source" ) && ( user_id != 0 ) )
   {
     p -> origin_str = "http://www.wowhead.com/profile=" + id;
   }
@@ -1007,7 +1007,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
     if ( js_t::get_value( inventory_data, profile_js, translate_inventory_id( i ) ) )
     {
       std::string    item_id = inventory_data[ 0 ];
-      std::string rsuffix_id = inventory_data[ 1 ];
+      std::string rsuffix_id = ( inventory_data[ 1 ] == "0" ) ? "" : inventory_data[ 1 ];
       std::string enchant_id = inventory_data[ 2 ];
 
       std::string gem_ids[ 3 ];
@@ -1015,7 +1015,10 @@ player_t* wowhead_t::download_player( sim_t* sim,
       gem_ids[ 1 ] = inventory_data[ 5 ];
       gem_ids[ 2 ] = inventory_data[ 6 ];
 
-      std::string addon_id, reforge_id;
+      std::string addon_id; // WoWHead only supports an enchant OR tinker, both are in the enchant spot
+      std::string reforge_id = inventory_data[ 8 ];
+
+      if ( item_id == "0" ) continue; // ignore empty slots
 
       if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
       {

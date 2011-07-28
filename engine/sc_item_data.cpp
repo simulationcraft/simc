@@ -246,7 +246,7 @@ static bool parse_enchant( item_t&            item,
                            const item_data_t* item_data,
                            const std::string& enchant_id )
 {
-  if ( enchant_id.empty() || enchant_id == "none" ) return true;
+  if ( enchant_id.empty() || enchant_id == "none" || enchant_id == "0" ) return true;
 
   long                                    eid = strtol( enchant_id.c_str(), 0, 10 );
   bool                              has_spell = true;
