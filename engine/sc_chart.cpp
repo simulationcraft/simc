@@ -1834,31 +1834,18 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 
   s = "http://www.guildox.com/wr.asp?";
 
-  std::string region_str, server_str, name_str;
-
-  if( ! util_t::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
-  {
-    s += "&amp;grp=" + region_str;
-    s += "&amp;ser=" + server_str;
-    s += "&amp;usr=" + name_str;
-  }
-  else
-  {
-    s += "usr=&amp;ser=&amp;grp=www";
-  }
-
   switch ( p -> type )
   {
-  case DEATH_KNIGHT: s += "&amp;Cla=2048"; break;
-  case DRUID:        s += "&amp;Cla=1024"; break;
-  case HUNTER:       s += "&amp;Cla=4";    break;
-  case MAGE:         s += "&amp;Cla=128";  break;
-  case PALADIN:      s += "&amp;Cla=2";    break;
-  case PRIEST:       s += "&amp;Cla=16";   break;
-  case ROGUE:        s += "&amp;Cla=8";    break;
-  case SHAMAN:       s += "&amp;Cla=64";   break;
-  case WARLOCK:      s += "&amp;Cla=256";  break;
-  case WARRIOR:      s += "&amp;Cla=1";    break;
+  case DEATH_KNIGHT: s += "&Cla=2048"; break;
+  case DRUID:        s += "&Cla=1024"; break;
+  case HUNTER:       s += "&Cla=4";    break;
+  case MAGE:         s += "&Cla=128";  break;
+  case PALADIN:      s += "&Cla=2";    break;
+  case PRIEST:       s += "&Cla=16";   break;
+  case ROGUE:        s += "&Cla=8";    break;
+  case SHAMAN:       s += "&Cla=64";   break;
+  case WARLOCK:      s += "&Cla=256";  break;
+  case WARRIOR:      s += "&Cla=1";    break;
   default: assert( 0 );
   }
 
@@ -1869,14 +1856,14 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
   case RACE_GNOME:
   case RACE_DWARF:
   case RACE_WORGEN:
-  case RACE_DRAENEI: s += "&amp;F=A"; break;
+  case RACE_DRAENEI: s += "&F=A"; break;
 
   case RACE_ORC:
   case RACE_TROLL:
   case RACE_UNDEAD:
   case RACE_BLOOD_ELF:
   case RACE_GOBLIN:
-  case RACE_TAUREN: s += "&amp;F=H"; break;
+  case RACE_TAUREN: s += "&F=H"; break;
   default: break;
   }
 
@@ -1911,13 +1898,13 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
 
     if ( name )
     {
-      snprintf( buffer, sizeof( buffer ), "&amp;%s=%.*f", name, p -> sim -> report_precision, value );
+      snprintf( buffer, sizeof( buffer ), "&%s=%.*f", name, p -> sim -> report_precision, value );
       s += buffer;
     }
   }
 
-  s += "&amp;Ver=6";
-
+  s += "&Ver=6";
+  util_t::urlencode( s );
 
   return s.c_str();
 }
@@ -2013,14 +2000,22 @@ const char* chart_t::gear_weights_wowreforge( std::string& s,
   char buffer[ 1024 ];
 
   std::string region_str, server_str, name_str;
-
-  if( util_t::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
+  
+  // Use valid names if we are provided those
+  if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
   {
     s = "http://wowreforge.com/" + p -> region_str + "/" + p -> server_str + "/" + p -> name_str + "?Spec=Main&amp;template=";
   }
   else
   {
-    s = "http://wowreforge.com/?template=";
+    if( util_t::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
+    {
+      s = "http://wowreforge.com/" + region_str + "/" + server_str + "/" + name_str + "?Spec=Main&amp;template=";
+    }
+    else
+    {
+      s = "http://wowreforge.com/?template=";
+    }
   }
 
   s += "for:";
