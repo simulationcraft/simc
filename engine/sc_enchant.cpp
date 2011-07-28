@@ -842,6 +842,8 @@ void enchant_t::init( player_t* p )
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> register_direct_damage_callback( RESULT_ALL_MASK, cb );
+    p -> register_tick_heal_callback    ( RESULT_ALL_MASK, cb );
+    p -> register_direct_heal_callback  ( RESULT_ALL_MASK, cb );
   }
   if ( oh_enchant == "power_torrent" )
   {
@@ -850,6 +852,8 @@ void enchant_t::init( player_t* p )
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> register_direct_damage_callback( RESULT_ALL_MASK, cb );
+    p -> register_tick_heal_callback    ( RESULT_ALL_MASK, cb );
+    p -> register_direct_heal_callback  ( RESULT_ALL_MASK, cb );
   }
   if ( mh_enchant == "windwalk" )
   {
