@@ -2048,7 +2048,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "crushing_weight"                     ) e = ( heroic ? "OnAttackHit_2178Haste_10%_15Dur_75Cd" : "OnAttackHit_1926Haste_10%_15Dur_75Cd" );
   else if ( name == "dark_matter"                         ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
   else if ( name == "darkmoon_card_crusade"               ) e = "OnDamage_8SP_10Stack_10Dur";
-  else if ( name == "dwyers_caber"                        ) e = "OnDamage_1020Crit_15%_20Dur_100Cd"; // FIXME: Verify ICD
+  else if ( name == "dwyers_caber"                        ) e = "OnDamage_1020Crit_15%_20Dur_50Cd"; // FIXME: Verify ICD
   else if ( name == "dying_curse"                         ) e = "OnSpellCast_765SP_15%_10Dur_45Cd";
   else if ( name == "elemental_focus_stone"               ) e = "OnSpellCast_522Haste_10%_10Dur_45Cd";
   else if ( name == "embrace_of_the_spider"               ) e = "OnSpellCast_505Haste_10%_10Dur_45Cd";
