@@ -1149,6 +1149,12 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_type = PROC_ATTACK;
       effect.trigger_mask = RESULT_MISS_MASK;
     }
+    else if ( t.full == "onspelldamageheal" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DAMAGE_HEAL;
+      effect.trigger_mask = SCHOOL_SPELL_MASK;
+    }
     else
     {
       sim -> errorf( "Player %s has unknown 'use/equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );

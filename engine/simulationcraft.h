@@ -303,6 +303,7 @@ enum proc_type
   PROC_SPELL_AND_TICK,
   PROC_HEAL_SPELL,
   PROC_HARMFUL_SPELL,
+  PROC_DAMAGE_HEAL,
   PROC_MAX
 };
 
@@ -1968,7 +1969,7 @@ struct buff_t : public spell_id_t
   buff_t* next;
 
   buff_t() : sim( 0 ) {}
-  virtual ~buff_t() { };
+  virtual ~buff_t() {}
 
   // Raid Aura
   buff_t( sim_t*, const std::string& name,

@@ -1636,12 +1636,12 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, reverse, rng_type, type == PROC_NONE );
 
-  if ( type == PROC_DAMAGE )
+  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_damage_callback( mask, cb );
     player -> register_direct_damage_callback( mask, cb );
   }
-  else if ( type == PROC_HEAL )
+  if ( type == PROC_HEAL || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_heal_callback( mask, cb );
     player -> register_direct_heal_callback( mask, cb );
@@ -1698,12 +1698,12 @@ action_callback_t* unique_gear_t::register_cost_reduction_proc( int             
 {
   action_callback_t* cb = new cost_reduction_proc_callback_t( name, player, school, max_stacks, amount, proc_chance, duration, cooldown, refreshes, reverse, rng_type, type == PROC_NONE );
 
-  if ( type == PROC_DAMAGE )
+  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_damage_callback( mask, cb );
     player -> register_direct_damage_callback( mask, cb );
   }
-  else if ( type == PROC_HEAL )
+  if ( type == PROC_HEAL || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_heal_callback( mask, cb );
     player -> register_direct_heal_callback( mask, cb );
@@ -1762,12 +1762,12 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
                                                          no_crits, no_buffs, no_debuffs, rng_type );
 
-  if ( type == PROC_DAMAGE )
+  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_damage_callback( mask, cb );
     player -> register_direct_damage_callback( mask, cb );
   }
-  else if ( type == PROC_HEAL )
+  if ( type == PROC_HEAL || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_heal_callback( mask, cb );
     player -> register_direct_heal_callback( mask, cb );
@@ -1831,12 +1831,12 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( int           
   action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
                                                                 no_crits, no_buffs, no_debuffs, rng_type );
 
-  if ( type == PROC_DAMAGE )
+  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_damage_callback( mask, cb );
     player -> register_direct_damage_callback( mask, cb );
   }
-  else if ( type == PROC_HEAL )
+  if ( type == PROC_HEAL  || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_heal_callback( mask, cb );
     player -> register_direct_heal_callback( mask, cb );
@@ -1903,12 +1903,12 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( int             
   action_callback_t* cb = new stat_discharge_proc_callback_t( name, player, stat, max_stacks, stat_amount, school, min_dmg, max_dmg, proc_chance,
                                                               duration, cooldown, no_crits, no_buffs, no_debuffs, type == PROC_NONE );
 
-  if ( type == PROC_DAMAGE )
+  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_damage_callback( mask, cb );
     player -> register_direct_damage_callback( mask, cb );
   }
-  else if ( type == PROC_HEAL )
+  if ( type == PROC_HEAL  || type == PROC_DAMAGE_HEAL )
   {
     player -> register_tick_heal_callback( mask, cb );
     player -> register_direct_heal_callback( mask, cb );
@@ -2054,7 +2054,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "embrace_of_the_spider"               ) e = "OnSpellCast_505Haste_10%_10Dur_45Cd";
   else if ( name == "essence_of_the_cyclone"              ) e = ( heroic ? "OnAttackHit_2178Crit_10%_10Dur_50Cd" : "OnAttackHit_1926Crit_10%_10Dur_50Cd" );
   else if ( name == "eye_of_magtheridon"                  ) e = "OnSpellMiss_170SP_10Dur";
-  else if ( name == "eye_of_the_broodmother"              ) e = "OnSpellDamage_25SP_5Stack_10Dur";
+  else if ( name == "eye_of_the_broodmother"              ) e = "OnSpellDamageHeal_25SP_5Stack_10Dur";
   else if ( name == "flare_of_the_heavens"                ) e = "OnSpellCast_850SP_10%_10Dur_45Cd";
   else if ( name == "fluid_death"                         ) e = "OnAttackHit_38Agi_10Stack_15Dur";
   else if ( name == "forge_ember"                         ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
@@ -2136,8 +2136,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   // Enchants
   else if ( name == "lightweave_old"                      ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
   else if ( name == "lightweave_embroidery_old"           ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
-  else if ( name == "lightweave"                          ) e = "OnSpellDamage_580Int_25%_15Dur_64Cd";
-  else if ( name == "lightweave_embroidery"               ) e = "OnSpellDamage_580Int_25%_15Dur_64Cd";
+  else if ( name == "lightweave" ||
+            name == "lightweave_embroidery"               ) e = "OnSpellDamageHeal_580Int_25%_15Dur_64Cd";
   else if ( name == "darkglow_embroidery_old"             ) e = "OnSpellCast_400Mana_35%_15Dur_60Cd";
   else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_800Mana_30%_15Dur_45Cd";       // TO-DO: Confirm ICD.
   else if ( name == "swordguard_embroidery_old"           ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
