@@ -3398,7 +3398,11 @@ double player_t::health_percentage() SC_CONST
 
 double player_t::time_to_die() SC_CONST
 {
-  if ( resource_base[ RESOURCE_HEALTH ] > 0 )
+  // FIXME: Someone can figure out a better way to do this, for now, we NEED to 
+  // wait a minimum gcd before starting to estimate fight duration based on health, 
+  // otherwise very odd things happen with multi-actor simulations and time_to_die 
+  // expressions
+  if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= 1.0 )
   {
     return sim -> current_time * resource_current[ RESOURCE_HEALTH ] / dmg_taken;
   }
