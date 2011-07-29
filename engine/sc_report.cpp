@@ -2509,7 +2509,8 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
       for ( int i=0; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
           util_t::fprintf( file,
-                           "\t\t\t\t\t\t\t\t<td>%.0f</td>\n",
+                           "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                           ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
                            p -> sim -> scaling -> stats.get_stat( i ) );
       if ( p -> sim -> scaling -> scale_lag )
         util_t::fprintf( file,
