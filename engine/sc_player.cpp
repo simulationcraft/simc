@@ -4896,6 +4896,8 @@ struct use_item_t : public action_t
     cooldown = player -> get_cooldown( cooldown_name );
     cooldown -> duration = item -> use.cooldown;
     trigger_gcd = 0;
+
+    if ( buff != 0 ) buff -> cooldown = cooldown;
   }
 
   void lockout( double duration )
