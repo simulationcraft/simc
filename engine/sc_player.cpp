@@ -5921,6 +5921,27 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
         profile_str += term;
       }
     }
+
+    if ( enchant.attribute[ ATTR_STRENGTH  ] != 0 )  profile_str += "enchant_strength="         + enchant.attribute[ ATTR_STRENGTH  ];
+    if ( enchant.attribute[ ATTR_AGILITY   ] != 0 )  profile_str += "enchant_agility="          + enchant.attribute[ ATTR_AGILITY   ];
+    if ( enchant.attribute[ ATTR_STAMINA   ] != 0 )  profile_str += "enchant_stamina="          + enchant.attribute[ ATTR_STAMINA   ];
+    if ( enchant.attribute[ ATTR_INTELLECT ] != 0 )  profile_str += "enchant_intellect="        + enchant.attribute[ ATTR_INTELLECT ];
+    if ( enchant.attribute[ ATTR_SPIRIT    ] != 0 )  profile_str += "enchant_spirit="           + enchant.attribute[ ATTR_SPIRIT    ];
+    if ( enchant.spell_power                 != 0 )  profile_str += "enchant_spell_power="      + enchant.spell_power;
+    if ( enchant.mp5                         != 0 )  profile_str += "enchant_mp5="              + enchant.mp5;
+    if ( enchant.attack_power                != 0 )  profile_str += "enchant_attack_power="     + enchant.attack_power;
+    if ( enchant.expertise_rating            != 0 )  profile_str += "enchant_expertise_rating=" + enchant.expertise_rating;
+    if ( enchant.armor                       != 0 )  profile_str += "enchant_armor="            + enchant.armor;
+    if ( enchant.haste_rating                != 0 )  profile_str += "enchant_haste_rating="     + enchant.haste_rating;
+    if ( enchant.hit_rating                  != 0 )  profile_str += "enchant_hit_rating="       + enchant.hit_rating;
+    if ( enchant.crit_rating                 != 0 )  profile_str += "enchant_crit_rating="      + enchant.crit_rating;
+    if ( enchant.mastery_rating              != 0 )  profile_str += "enchant_mastery_rating="   + enchant.mastery_rating;
+    if ( enchant.resource[ RESOURCE_HEALTH ] != 0 )  profile_str += "enchant_health="           + enchant.resource[ RESOURCE_HEALTH ];
+    if ( enchant.resource[ RESOURCE_MANA   ] != 0 )  profile_str += "enchant_mana="             + enchant.resource[ RESOURCE_MANA   ];
+    if ( enchant.resource[ RESOURCE_RAGE   ] != 0 )  profile_str += "enchant_rage="             + enchant.resource[ RESOURCE_RAGE   ];
+    if ( enchant.resource[ RESOURCE_ENERGY ] != 0 )  profile_str += "enchant_energy="           + enchant.resource[ RESOURCE_ENERGY ];
+    if ( enchant.resource[ RESOURCE_FOCUS  ] != 0 )  profile_str += "enchant_focus="            + enchant.resource[ RESOURCE_FOCUS  ];
+    if ( enchant.resource[ RESOURCE_RUNIC  ] != 0 )  profile_str += "enchant_runic="            + enchant.resource[ RESOURCE_RUNIC  ];
   }
 
   return true;
