@@ -794,7 +794,7 @@ void sim_t::flush_events()
     {
       if ( e -> player && ! e -> canceled )
       {
-        // Make sure we dont recancel events, although it should 
+        // Make sure we dont recancel events, although it should
         // not technically matter
         e -> canceled = 1;
         e -> player -> events--;
@@ -840,7 +840,7 @@ void sim_t::cancel_events( player_t* p )
       }
     }
   }
-  // Loop only partial wheel in two places, as the wheel has wrapped around, but simulation 
+  // Loop only partial wheel in two places, as the wheel has wrapped around, but simulation
   // current time is still at the tail-end, [begin_slice..wheel_size[ and [0..last_event]
   else
   {
@@ -872,7 +872,7 @@ void sim_t::cancel_events( player_t* p )
       }
     }
   }
-  
+
   assert( p -> events == 0 );
 }
 
@@ -896,13 +896,13 @@ void sim_t::combat( int iteration )
       e -> player -> events--;
       assert( e -> player -> events >= 0 );
     }
-    
+
     if ( fixed_time || ( target -> resource_base[ RESOURCE_HEALTH ] == 0 ) )
     {
       // The first iteration is always time-limited since we do not yet have inferred health
       if ( current_time > expected_time * ( 1 - target_death_pct / 100.0 ) )
       {
-        // Set this last event as canceled, so asserts dont fire when odd things happen at the 
+        // Set this last event as canceled, so asserts dont fire when odd things happen at the
         // tail-end of the simulation iteration
         e -> canceled = 1;
         delete e;
@@ -914,7 +914,7 @@ void sim_t::combat( int iteration )
       if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
       {
         if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
-        // Set this last event as canceled, so asserts dont fire when odd things happen at the 
+        // Set this last event as canceled, so asserts dont fire when odd things happen at the
         // tail-end of the simulation iteration
         e -> canceled = 1;
         delete e;
@@ -924,7 +924,7 @@ void sim_t::combat( int iteration )
       if (  target -> resource_current[ RESOURCE_HEALTH ] / target -> resource_max[ RESOURCE_HEALTH ] <= target_death_pct / 100.0 )
       {
         if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
-        // Set this last event as canceled, so asserts dont fire when odd things happen at the 
+        // Set this last event as canceled, so asserts dont fire when odd things happen at the
         // tail-end of the simulation iteration
         e -> canceled = 1;
         delete e;
@@ -1200,6 +1200,8 @@ struct compare_name
 
 void sim_t::analyze_player( player_t* p )
 {
+  p -> pre_analyze_hook();
+
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
     b -> analyze();
 

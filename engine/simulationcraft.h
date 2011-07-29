@@ -3579,6 +3579,9 @@ struct player_t
   rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );
   double      get_player_distance( player_t* p );
   double      get_position_distance( double m=0, double v=0 );
+
+  // Opportunity to perform any stat fixups before analysis
+  virtual void pre_analyze_hook() {}
 };
 
 // Pet =======================================================================

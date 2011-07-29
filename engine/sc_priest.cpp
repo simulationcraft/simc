@@ -399,6 +399,9 @@ struct priest_t : public player_t
   virtual double    empowered_shadows_amount() SC_CONST;
   virtual double    shadow_orb_amount() SC_CONST;
 
+  void fixup_atonement_stats( const char* trigger_spell_name, const char* atonement_spell_name );
+  virtual void pre_analyze_hook();
+
   void trigger_cauterizing_flame();
 };
 
@@ -698,7 +701,7 @@ struct atonement_heal_t : public priest_heal_t
       target = sim -> find_player( p -> atonement_target_str.c_str() );
   }
 
-  void trigger( double atonement_dmg, int dmg_type, int result, double execute_time = 0 )
+  void trigger( double atonement_dmg, int dmg_type, int result )
   {
     priest_t* p = player -> cast_priest();
 
@@ -729,7 +732,6 @@ struct atonement_heal_t : public priest_heal_t
       // num_ticks = 0;
       base_dd_min = base_dd_max = atonement_dmg;
       may_crit = (result == RESULT_CRIT);
-      time_to_execute = execute_time;
       execute();
     }
   }
@@ -892,7 +894,7 @@ public:
     }
 
     if ( atonement )
-      atonement -> trigger( amount, dmg_type, travel_result, time_to_execute );
+      atonement -> trigger( amount, dmg_type, travel_result );
   }
 
   static void trigger_shadowy_apparition( player_t* player );
@@ -5130,6 +5132,35 @@ void priest_t::reset()
 
 
   init_party();
+}
+
+// priest_t::fixup_atonement_stats  ==========================================
+
+void priest_t::fixup_atonement_stats( const char* trigger_spell_name,
+                                    const char* atonement_spell_name )
+{
+  if ( stats_t* trigger = get_stats( trigger_spell_name ) )
+  {
+    if ( stats_t* atonement = get_stats( atonement_spell_name ) )
+    {
+      // Copy stats from the trigger spell to the atonement spell
+      // to get proper HPR and HPET reports.
+      atonement -> resource_consumed = trigger -> resource_consumed;
+      atonement -> total_execute_time = trigger -> total_execute_time;
+      atonement -> total_tick_time = trigger -> total_tick_time;
+    }
+  }
+}
+
+// priest_t::pre_analyze_hook  ===============================================
+
+void priest_t::pre_analyze_hook()
+{
+  if ( talents.atonement -> rank() )
+  {
+    fixup_atonement_stats( "smite", "atonement_smite" );
+    fixup_atonement_stats( "holy_fire", "atonement_holy_fire" );
+  }
 }
 
 // priest_t::regen  ==========================================================
