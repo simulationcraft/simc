@@ -698,7 +698,7 @@ struct atonement_heal_t : public priest_heal_t
       target = sim -> find_player( p -> atonement_target_str.c_str() );
   }
 
-  void trigger( double atonement_dmg, int dmg_type, int result )
+  void trigger( double atonement_dmg, int dmg_type, int result, double execute_time = 0 )
   {
     priest_t* p = player -> cast_priest();
 
@@ -711,28 +711,26 @@ struct atonement_heal_t : public priest_heal_t
       //        be changed to 200% in 4.2 along with the general heal
       //        crit multiplier change.
       cap *= 1.5;
-      may_crit = tick_may_crit = true;
-    }
-    else
-    {
-      may_crit = tick_may_crit = false;
     }
 
     if ( atonement_dmg > cap )
       atonement_dmg = cap;
 
-    switch( dmg_type )
+    if ( dmg_type == DMG_OVER_TIME )
     {
-    case DMG_DIRECT:
-      // num_ticks = 0;
-      base_dd_min = base_dd_max = atonement_dmg;
-      execute();
-      break;
-    case DMG_OVER_TIME:
       // num_ticks = 1;
       base_td = atonement_dmg;
+      tick_may_crit = (result == RESULT_CRIT);
       tick();
-      break;
+    }
+    else
+    {
+      assert( dmg_type == DMG_DIRECT );
+      // num_ticks = 0;
+      base_dd_min = base_dd_max = atonement_dmg;
+      may_crit = (result == RESULT_CRIT);
+      time_to_execute = execute_time;
+      execute();
     }
   }
 
@@ -894,7 +892,7 @@ public:
     }
 
     if ( atonement )
-      atonement -> trigger( amount, dmg_type, travel_result );
+      atonement -> trigger( amount, dmg_type, travel_result, time_to_execute );
   }
 
   static void trigger_shadowy_apparition( player_t* player );
