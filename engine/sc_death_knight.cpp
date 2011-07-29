@@ -580,7 +580,7 @@ struct army_ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
-	// copied from the pet ghoul, tested in unholy and frost.
+    // copied from the pet ghoul, tested in unholy and frost.
     double strength_scaling = 1.01 + o -> glyphs.raise_dead * 0.4254;
     a += snapshot_strength * strength_scaling;
     a *= composite_attribute_multiplier( ATTR_STRENGTH );
