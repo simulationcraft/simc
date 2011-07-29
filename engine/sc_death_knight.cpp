@@ -4794,7 +4794,6 @@ void death_knight_t::init_procs()
   proc_fs_killing_machine       = get_proc( "frost_strike_killing_machine" );
 }
 
-
 // death_knight_t::init_resources ===========================================
 
 void death_knight_t::init_resources( bool force )
@@ -4833,7 +4832,7 @@ void death_knight_t::combat_begin()
     sim -> auras.abominations_might -> trigger( 1, am_value );
 }
 
-// death_knight_t::asses_damage =============================================
+// death_knight_t::assess_damage ============================================
 
 double death_knight_t::assess_damage( double            amount,
                                       const school_type school,
@@ -4853,7 +4852,6 @@ double death_knight_t::assess_damage( double            amount,
 
   return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
-
 
 // death_knight_t::composite_pet_attack_crit ===============================
 
