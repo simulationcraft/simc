@@ -580,8 +580,8 @@ struct army_ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
-    double strength_scaling = 1.0 + o -> glyphs.raise_dead * 0.4;
-    strength_scaling += 0.0354; // FIXME : copied from the pet ghoul, works well for unholy
+	// copied from the pet ghoul, tested in unholy and frost.
+    double strength_scaling = 1.01 + o -> glyphs.raise_dead * 0.4254;
     a += snapshot_strength * strength_scaling;
     a *= composite_attribute_multiplier( ATTR_STRENGTH );
     return a;
@@ -1214,10 +1214,6 @@ struct ghoul_pet_t : public pet_t
       {
         player_multiplier *= 1.6;
       }
-      if ( o -> buffs_frost_presence -> check() )
-      {
-        player_multiplier *= 1.0 + o -> buffs_frost_presence -> value();
-      }
     }
   };
 
@@ -1277,7 +1273,7 @@ struct ghoul_pet_t : public pet_t
       id = 91778;
       aoe = 2;
       parse_data();
-      weapon_power_mod = 0.120 / weapon -> swing_time; // FIXME: Copied from claw, but most likely scales better
+      weapon_power_mod = 0.120 / weapon -> swing_time; // Copied from claw, but seems Ok
     }
 
     virtual bool ready()
@@ -1315,8 +1311,8 @@ struct ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
-    double strength_scaling = 1.0 + o -> glyphs.raise_dead * 0.4;
-    strength_scaling += 0.0354; //not sure from where it come, maybe the glyph...
+    double strength_scaling = 1.01 + o -> glyphs.raise_dead * 0.4254; //weird, but accurate
+
     // Perma Ghouls are updated constantly
     if ( o -> primary_tree() == TREE_UNHOLY )
     {
