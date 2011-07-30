@@ -2,7 +2,7 @@
 
 # Tier 12
 
-chardev=174146
+chardev=174520
 name=Priest_Disc_Single_T12N
 role=heal
 use_pre_potion=1
@@ -52,7 +52,7 @@ actions+=/holy_fire
 actions+=/smite
 save=Priest_Atonement_T12N.simc
 
-chardev=174148
+chardev=174522
 name=Priest_Disc_PWS_T12N
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -105,11 +105,11 @@ actions+=/penance_heal
 actions+=/greater_heal
 save=Priest_Disc_Single_Renew_T12N.simc
 
-chardev=174149
+chardev=174524
 name=Priest_Disc_Single_T12H
 save=Priest_Disc_Single_T12H.simc
 
-#chardev=174160
+#chardev=174527
 #name=Priest_Disc_PWS_T12H
 #actions=flask,type=draconic_mind
 #actions+=/food,type=seafood_magnifique_feast

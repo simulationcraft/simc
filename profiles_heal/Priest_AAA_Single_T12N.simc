@@ -1,7 +1,7 @@
 #!./simc 
 
 priest=Priest_AAA_Single_T12N
-origin="http://chardev.org/?profile=174146"
+origin="http://chardev.org/?profile=174520"
 level=85
 race=troll
 role=heal
