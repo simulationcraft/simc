@@ -4160,6 +4160,8 @@ struct lightwell_t : public priest_heal_t
 
     lw_hot = new lightwell_hot_t( p );
     add_child( lw_hot );
+
+    harmful = false;
   }
 
   virtual void execute()
@@ -4973,8 +4975,30 @@ void priest_t::init_actions()
         if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=20";
         if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
         if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active";
-        if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
+        if ( talents.inner_focus ->ok() )                action_list_str += "/inner_focus";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
+        if ( talents.power_infusion -> ok() )            action_list_str += "/power_infusion";
+                                                         action_list_str += "/power_word_shield";
+        if ( talents.rapture -> ok() )                   action_list_str += ",if=!cooldown.rapture.remains";
+        if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
+        if ( talents.borrowed_time -> ok() )
+        {
+                                                         action_list_str += "/penance_heal,if=buff.borrowed_time.up";
+          if ( talents.grace -> ok() )                   action_list_str += "|buff.grace.down";
+        }
+        if ( talents.inner_focus -> ok() )               action_list_str += "/greater_heal,if=buff.inner_focus.up";
+        if ( talents.archangel -> ok() )
+        {
+                                                         action_list_str += "/holy_fire";
+          if ( talents.atonement -> ok() )
+          {
+                                                         action_list_str += "/smite,if=";
+            if ( glyphs.smite -> ok() )                  action_list_str += "dot.holy_fire.remains>cast_time&";
+                                                         action_list_str += "buff.holy_evangelism.stack<5&buff.holy_archangel.down";
+          }
+        }
+                                                         action_list_str += "/penance_heal";
+                                                         action_list_str += "/greater_heal";
       }
       break;
 
