@@ -2131,31 +2131,31 @@ struct mind_sear_t : public priest_spell_t
 
 // Penance Spell ============================================================
 
-struct penance_tick_t : public priest_spell_t
-{
-  penance_tick_t( player_t* player ) :
-    priest_spell_t( "penance_tick", player, 47666 )
-  {
-    background  = true;
-    dual        = true;
-    direct_tick = true;
-
-    stats = player -> get_stats( "penance", this );
-  }
-
-  virtual void player_buff()
-  {
-    priest_spell_t::player_buff();
-
-    priest_t* p = player -> cast_priest();
-
-    player_multiplier *= 1.0 + ( p -> buffs_holy_evangelism -> stack() * p -> buffs_holy_evangelism -> effect1().percent() );
-  }
-};
-
 struct penance_t : public priest_spell_t
 {
-  spell_t* tick_spell;
+  struct penance_tick_t : public priest_spell_t
+  {
+    penance_tick_t( player_t* player ) :
+      priest_spell_t( "penance_tick", player, 47666 )
+    {
+      background  = true;
+      dual        = true;
+      direct_tick = true;
+
+      stats = player -> get_stats( "penance", this );
+    }
+
+    virtual void player_buff()
+    {
+      priest_spell_t::player_buff();
+
+      priest_t* p = player -> cast_priest();
+
+      player_multiplier *= 1.0 + ( p -> buffs_holy_evangelism -> stack() * p -> buffs_holy_evangelism -> effect1().percent() );
+    }
+  };
+
+  penance_tick_t* tick_spell;
 
   penance_t( player_t* player, const std::string& options_str ) :
     priest_spell_t( "penance", player, "Penance" ),
@@ -2167,11 +2167,13 @@ struct penance_t : public priest_spell_t
 
     parse_options( NULL, options_str );
 
-    harmful        = false;
+    may_crit       = false;
+    may_miss       = false;
     channeled      = true;
     tick_zero      = true;
     num_ticks      = 2;
     base_tick_time = 1.0;
+    hasted_ticks   = false;
 
     cooldown -> duration  += p -> glyphs.penance -> effect1().seconds();
 
@@ -4810,8 +4812,11 @@ void priest_t::init_buffs()
 
   // Discipline
   buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect_trigger_spell( 1 ), "borrowed_time", talents.borrowed_time -> rank() );
+  // TEST: buffs_borrowed_time -> activated = false;
   buffs_dark_evangelism            = new buff_t( this, talents.evangelism -> rank() == 2 ? 87118 : 87117, "dark_evangelism", talents.evangelism -> rank() );
+  buffs_dark_evangelism -> activated = false;
   buffs_holy_evangelism            = new buff_t( this, talents.evangelism -> rank() == 2 ? 81661 : 81660, "holy_evangelism", talents.evangelism -> rank() );
+  buffs_holy_evangelism -> activated = false;
   buffs_dark_archangel             = new buff_t( this, 87153, "dark_archangel" );
   buffs_holy_archangel             = new buff_t( this, 81700, "holy_archangel" );
   buffs_inner_fire                 = new buff_t( this,   588, "inner_fire"                                              );
@@ -4825,9 +4830,12 @@ void priest_t::init_buffs()
   buffs_chakra_sanctuary           = new buff_t( this, 81206, "chakra_sanctuary" );
   buffs_chakra_serenity            = new buff_t( this, 81208, "chakra_serenity" );
   buffs_serendipity                = new buff_t( this, talents.serendipity -> effect_trigger_spell( 1 ), "serendipity", talents.serendipity -> rank() );
+  // TEST: buffs_serendipity -> activated = false;
   buffs_serenity                   = new buff_t( this, 88684, "chakra_serenity_crit" );
   buffs_serenity -> cooldown -> duration = 0;
+  // TEST: buffs_serenity -> activated = false;
   buffs_surge_of_light             = new buff_t( this, talents.surge_of_light, NULL );
+  // TEST: buffs_surge_of_light -> activated = false;
 
 
   // Shadow
@@ -4950,22 +4958,30 @@ void priest_t::init_actions()
       // DAMAGE DEALER
       if ( primary_role() != ROLE_HEAL )
       {
-                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
-        if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=50";
-        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
-        if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active&time>200";
-        if ( race == RACE_TROLL )                        action_list_str += "/berserking";
+                                                         action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.up|time_to_die<=40";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
+        if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=60";
+        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
+        if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active&mana_pct<=20";
+        if ( race == RACE_TROLL )                        action_list_str += "/berserking";
         if ( talents.power_infusion -> rank() )          action_list_str += "/power_infusion";
         if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
-        if ( talents.rapture -> ok() )                   action_list_str += "/power_word_shield,if=buff.weakened_soul.down";
+        if ( talents.rapture -> ok() )                   action_list_str += "/power_word_shield,if=!cooldown.rapture.remains";
+        if ( talents.borrowed_time -> ok() )
+        {
+          if ( level >= 28 )                             action_list_str += "/devouring_plague,if=buff.borrowed_time.up&(remains<3*tick_time|!ticking)";
+                                                         action_list_str += "/shadow_word_pain,if=buff.borrowed_time.up&(remains<2*tick_time|!ticking)";
+                                                         action_list_str += "/penance,if=buff.borrowed_time.up";
+        }
                                                          action_list_str += "/holy_fire";
-        if ( level >= 28 )                               action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
+        if ( ! talents.borrowed_time -> ok() )
+        {
+          if ( level >= 28 )                             action_list_str += "/devouring_plague,if=remains<tick_time|!ticking";
                                                          action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
+        }
                                                          action_list_str += "/penance";
         if ( ! talents.archangel -> ok() )               action_list_str += "/mind_blast";
                                                          action_list_str += "/smite";
-        if ( talents.archangel -> ok() )                 action_list_str += ",if=buff.holy_evangelism.stack<5|buff.holy_evangelism.remains<cooldown.archangel.remains+0.5";
       }
       // HEALER
       else
@@ -4975,8 +4991,8 @@ void priest_t::init_actions()
         if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=20";
         if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
         if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active";
-        if ( talents.inner_focus ->ok() )                action_list_str += "/inner_focus";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
+        if ( talents.inner_focus ->ok() )                action_list_str += "/inner_focus";
         if ( talents.power_infusion -> ok() )            action_list_str += "/power_infusion";
                                                          action_list_str += "/power_word_shield";
         if ( talents.rapture -> ok() )                   action_list_str += ",if=!cooldown.rapture.remains";
@@ -5008,11 +5024,11 @@ void priest_t::init_actions()
       if ( primary_role() != ROLE_HEAL )
       {
                                                          action_list_str += "/mana_potion,if=mana_pct<=75";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )                               action_list_str += "/shadow_fiend,if=mana_pct<=50";
         if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
         if ( level >= 66 )                               action_list_str += ",if=pet.shadow_fiend.active&time>200";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
-        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
         if ( talents.chakra -> ok() )                    action_list_str += "/chakra";
         if ( talents.archangel -> ok() )                 action_list_str += "/archangel,if=buff.holy_evangelism.stack>=5";
                                                          action_list_str += "/holy_fire";
