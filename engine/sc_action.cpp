@@ -1160,42 +1160,37 @@ void action_t::assess_damage( player_t* t,
 
   if ( dmg_type == DMG_DIRECT )
   {
-    if ( dmg_amount > 0 )
+    if ( sim -> log )
     {
-      direct_dmg = dmg_adjusted;
-
-      if ( sim -> log )
-      {
-        log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
-                       player -> name(), name(),
-                       target -> name(), dmg_adjusted,
-                       util_t::school_type_string( school ),
-                       util_t::result_type_string( result ) );
-      }
-      if ( callbacks ) action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
+      log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
+                     player -> name(), name(),
+                     target -> name(), dmg_adjusted,
+                     util_t::school_type_string( school ),
+                     util_t::result_type_string( result ) );
     }
+
+    direct_dmg = dmg_adjusted;
+
+    if ( callbacks ) action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
   }
   else // DMG_OVER_TIME
   {
-    if ( dmg_amount > 0 )
+    if ( sim -> log )
     {
-      tick_dmg = dmg_adjusted;
-
-      if ( sim -> log )
-      {
-        log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
-                       player -> name(), name(),
-                       dot -> current_tick, dot -> num_ticks,
-                       t -> name(), dmg_adjusted,
-                       util_t::school_type_string( school ),
-                       util_t::result_type_string( result ) );
-      }
-      if ( callbacks ) action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
+      log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+                     player -> name(), name(),
+                     dot -> current_tick, dot -> num_ticks,
+                     t -> name(), dmg_adjusted,
+                     util_t::school_type_string( school ),
+                     util_t::result_type_string( result ) );
     }
+
+    tick_dmg = dmg_adjusted;
+
+    if ( callbacks ) action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
   }
 
-  stats -> add_result( dmg_adjusted, dmg_type, dmg_result );
-
+  stats -> add_result( dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : dmg_type ), dmg_result );
 }
 
 // action_t::additional_damage =============================================

@@ -200,14 +200,7 @@ void heal_t::execute()
     {
       if ( result != RESULT_NONE )
       {
-        if ( direct_tick )
-        {
-          action_callback_t::trigger( player -> tick_callbacks[ result ], this );
-        }
-        else
-        {
-          action_callback_t::trigger( player -> heal_callbacks[ result ], this );
-        }
+        action_callback_t::trigger( player -> heal_callbacks[ result ], this );
       }
       if ( ! background ) // OnSpellCast
       {
@@ -220,7 +213,7 @@ void heal_t::execute()
 
 void heal_t::travel( player_t* t, int travel_result, double travel_heal=0 )
 {
-  assess_damage( t, travel_heal, ( direct_tick ? HEAL_OVER_TIME : HEAL_DIRECT ), travel_result );
+  assess_damage( t, travel_heal, HEAL_DIRECT, travel_result );
 
   if ( num_ticks > 0 )
   {
@@ -397,9 +390,10 @@ void heal_t::assess_damage( player_t* t,
                      util_t::result_type_string( result ) );
     }
 
+    direct_dmg = heal_amount;
     if ( callbacks ) action_callback_t::trigger( player -> direct_heal_callbacks[ school ], this );
   }
-  else
+  else // HEAL_OVER_TIME
   {
     if ( sim -> log )
     {
@@ -410,10 +404,11 @@ void heal_t::assess_damage( player_t* t,
                      util_t::result_type_string( result ) );
     }
 
+    tick_dmg = heal_amount;
     if ( callbacks ) action_callback_t::trigger( player -> tick_heal_callbacks[ school ], this );
   }
 
-  stats -> add_result( heal_amount, heal_type, heal_result );
+  stats -> add_result( heal_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );
 }
 
 // heal_t::last_tick =======================================================
@@ -436,7 +431,7 @@ player_t* heal_t::find_greatest_difference_player()
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     // No love for pets right now
-    diff = p -> is_pet() ? 0 : p -> resource_max[ RESOURCE_HEALTH ] - p -> resource_current[ RESOURCE_HEALTH];
+    diff = p -> is_pet() ? 0 : p -> resource_max[ RESOURCE_HEALTH ] - p -> resource_current[ RESOURCE_HEALTH ];
     if ( diff > max )
     {
       max = diff;
@@ -456,7 +451,7 @@ player_t* heal_t::find_lowest_player()
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     // No love for pets right now
-    diff =  p -> is_pet() ? 0 : 1.0 / p -> resource_current[ RESOURCE_HEALTH];
+    diff =  p -> is_pet() ? 0 : 1.0 / p -> resource_current[ RESOURCE_HEALTH ];
     if ( diff > max )
     {
       max = diff;
