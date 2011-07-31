@@ -46,3 +46,8 @@ party=Priest_Disc_AE_T12N,dummy1,dummy2,dummy3,dummy4
 #name=Priest_Disc_Single_T12H_finite
 #copy=Priest_Disc_Single_T12H
 #infinite_mana=1
+
+Priest_Holy_Single_T12N.simc
+name=Priest_Holy_Single_T12N_finite
+copy=Priest_Holy_Single_T12N,Priest_Holy_Single_T12N_finite
+infinite_mana=1
