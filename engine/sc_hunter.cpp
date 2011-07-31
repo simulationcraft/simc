@@ -1894,6 +1894,8 @@ struct aimed_shot_mm_t : public hunter_attack_t
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
+    base_dd_min *= weapon_multiplier; // Aimed Shot's weapon multiplier applies to the base damage as well
+    base_dd_max *= weapon_multiplier;
 
     normalize_weapon_speed = true;
   }
@@ -1955,7 +1957,9 @@ struct aimed_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
     normalize_weapon_speed = true;
-    
+    base_dd_min *= weapon_multiplier; // Aimed Shot's weapon multiplier applies to the base damage as well
+    base_dd_max *= weapon_multiplier;
+
     casted = 0;
 
     // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
@@ -2425,7 +2429,9 @@ struct kill_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     weapon_multiplier = effect_average( 2 ) / 100.0;
-    direct_power_mod = 0.45;
+    base_dd_min *= weapon_multiplier; // Kill Shot's weapon multiplier applies to the base damage as well
+    base_dd_max *= weapon_multiplier;
+    direct_power_mod = 0.45 * weapon_multiplier; // and the coefficient too
 
     base_crit += p -> talents.sniper_training -> effect2().percent();
 
