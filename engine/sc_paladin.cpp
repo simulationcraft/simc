@@ -592,10 +592,8 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
   struct flames_of_the_faithful_t : public paladin_attack_t
   {
-    bool use_bug;
-
     flames_of_the_faithful_t( paladin_t* player ) :
-      paladin_attack_t( "flames_of_the_faithful", 99092, player ), use_bug( false )
+      paladin_attack_t( "flames_of_the_faithful", 99092, player )
     {
       background    = true;
       proc          = true;
@@ -607,20 +605,8 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     }
     virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
     {
-      if ( use_bug )
-      {
-        num_ticks++;
-      }
-
       paladin_attack_t::travel( t, travel_result, 0 );
-
       int nticks = dot -> num_ticks;
-      if ( use_bug )
-      {
-        num_ticks--;
-        nticks--;
-        use_bug = false;
-      }
       base_td = total_dot_dmg / nticks;
     }
     virtual double travel_time()
@@ -652,13 +638,6 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
   if ( dot -> ticking )
   {
     total_dot_dmg += p -> active_flames_of_the_faithful_proc -> base_td * dot -> ticks();
-  }
-  else
-  {
-    if ( p -> bugs )
-    {
-      ( ( flames_of_the_faithful_t* )( p -> active_flames_of_the_faithful_proc ) )-> use_bug = true;
-    }
   }
 
   if( ( p -> dbc.spell( 99092 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
