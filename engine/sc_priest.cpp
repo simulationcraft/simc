@@ -2175,7 +2175,7 @@ struct penance_t : public priest_spell_t
     base_tick_time = 1.0;
     hasted_ticks   = false;
 
-    cooldown -> duration  += p -> glyphs.penance -> effect1().seconds();
+    cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().seconds();
 
     tick_spell = new penance_tick_t( p );
   }
@@ -3867,8 +3867,7 @@ struct penance_heal_t : public priest_heal_t
     hasted_ticks   = false;
 
     cooldown = player -> get_cooldown( "penance" );
-    cooldown -> duration  = spell_id_t::cooldown();
-    cooldown -> duration += p -> glyphs.penance -> effect1().seconds();
+    cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().seconds();
 
     penance_tick = new penance_heal_tick_t( p );
   }
