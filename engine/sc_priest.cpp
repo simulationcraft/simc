@@ -575,8 +575,10 @@ struct priest_heal_t : public heal_t
 
     player_multiplier *= 1.0 + p -> passive_spells.spiritual_healing -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER ) ;
 
+    if ( p -> buffs_chakra_serenity -> up() )
+      player_crit += p -> buffs_chakra_serenity -> effect1().percent();
     if ( p -> buffs_serenity -> up() )
-      player_crit += 0.10;
+      player_crit += p -> buffs_serenity -> effect2().percent();
 
     player_multiplier *= 1.0 + p -> buffs_holy_archangel -> value();
   }
@@ -3062,7 +3064,7 @@ struct flash_heal_t : public priest_heal_t
 
     priest_heal_t::execute();
 
-    // Assuming a SoL Flash Heal can't proc SoL
+    // TEST: Assuming a SoL Flash Heal can't proc SoL
     if ( p -> buffs_surge_of_light -> up() )
       p -> buffs_surge_of_light -> expire();
     else if ( p -> buffs_surge_of_light -> trigger() )
@@ -3178,7 +3180,7 @@ struct binding_heal_t : public priest_heal_t
     {
       for ( player_t* q = sim -> player_list; q; q = q -> next )
       {
-        if ( ! q -> is_pet() && q != heal_target[0] && p -> get_player_distance( q ) < ( range * range ) )
+        if ( q != p && ! q -> is_pet() && p -> get_player_distance( q ) < ( range * range ) )
         {
           heal_target.push_back( q );
           break;
@@ -3188,7 +3190,7 @@ struct binding_heal_t : public priest_heal_t
 
     priest_heal_t::execute();
 
-    p -> buffs_serendipity -> trigger( 1 );
+    p -> buffs_serendipity -> trigger();
 
     if ( p -> buffs_surge_of_light -> trigger() )
       p -> procs_surge_of_light -> occur();
@@ -3230,7 +3232,7 @@ struct binding_heal_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> buffs_inner_focus -> up() )
+    if ( p -> buffs_inner_focus -> check() )
       player_crit += p -> buffs_inner_focus -> effect2().percent();
   }
 
@@ -4114,18 +4116,22 @@ struct lightwell_t : public priest_heal_t
     double consume_interval;
 
     lightwell_hot_t( player_t* player ) :
-      priest_heal_t( "lightwell_hot", player, 7001 ),
+      priest_heal_t( "lightwell_renew", player, 7001 ),
       charges( 0 ), consume_interval( 0.0 )
     {
       // Hardcoded in the tooltip
       tick_power_mod = 0.308;
-      base_multiplier *= 3 * 1.25;
 
       proc          = true;
       background    = true;
-      hasted_ticks  = false; // FIXME: Lightwell ticks _are_ hasted, but it doesn't benefit from,
-                             //        buffs, only bare haste rating.
+      hasted_ticks  = true;
       may_crit      = false;
+    }
+
+    virtual double haste() SC_CONST
+    {
+      // Lightwell ticks _are_ hasted, but it doesn't benefit from buffs, only bare haste rating.
+      return player -> spell_haste;
     }
 
     virtual void execute()
@@ -4147,10 +4153,13 @@ struct lightwell_t : public priest_heal_t
   lightwell_t( player_t* player, const std::string& options_str ) :
     priest_heal_t( "lightwell", player, 724 ), lw_hot( 0 ), consume_interval( 10.0 )
   {
+    // FIXME: lightwell should really be a pet, to avoid using any extraneous
+    //        modifiers from the player or raid buffs.
+
     option_t options[] =
     {
-      { "consume_interval", OPT_FLT, &consume_interval },
-      { NULL,     OPT_UNKNOWN, NULL       }
+      { "consume_interval", OPT_FLT,     &consume_interval },
+      { NULL,               OPT_UNKNOWN, NULL              }
     };
     parse_options( options, options_str );
 
@@ -4830,7 +4839,7 @@ void priest_t::init_buffs()
   buffs_chakra_serenity            = new buff_t( this, 81208, "chakra_serenity" );
   buffs_serendipity                = new buff_t( this, talents.serendipity -> effect_trigger_spell( 1 ), "serendipity", talents.serendipity -> rank() );
   // TEST: buffs_serendipity -> activated = false;
-  buffs_serenity                   = new buff_t( this, 88684, "chakra_serenity_crit" );
+  buffs_serenity                   = new buff_t( this, 88684, "serenity" );
   buffs_serenity -> cooldown -> duration = 0;
   // TEST: buffs_serenity -> activated = false;
   buffs_surge_of_light             = new buff_t( this, talents.surge_of_light, NULL );
