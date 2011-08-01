@@ -2601,7 +2601,7 @@ struct death_and_decay_t : public death_knight_spell_t
     tick_may_crit    = true;
     tick_zero        = true;
     hasted_ticks     = false;
-    base_multiplier *= 1.0 + p -> talents.morbidity -> effect1().percent();
+    base_multiplier *= 1.0 + p -> talents.morbidity -> effect2().percent();
     if ( p -> glyphs.death_and_decay )
       num_ticks     += 5;
   }
