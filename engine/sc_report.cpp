@@ -2290,7 +2290,18 @@ static void print_html_stats ( FILE* file, player_t* a )
                      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                      "\t\t\t\t\t\t\t\t\t</tr>\n",
                      100 * ( 1 / a -> buffed_attack_haste - 1 ),
-                     100 * ( 1 / a -> attack_haste - 1 ),
+                     100 * ( 1 / a -> composite_attack_haste() - 1 ),
+                     a -> stats.haste_rating );
+
+        util_t::fprintf( file,
+                     "\t\t\t\t\t\t\t\t\t<tr>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Swing Speed</th>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+                     "\t\t\t\t\t\t\t\t\t</tr>\n",
+                     100 * ( 1 / a -> buffed_attack_speed - 1 ),
+                     100 * ( 1 / a -> composite_attack_speed() - 1 ),
                      a -> stats.haste_rating );
 
     util_t::fprintf( file,

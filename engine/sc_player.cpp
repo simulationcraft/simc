@@ -4645,6 +4645,7 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed_spell_haste  = p -> composite_spell_haste();
     p -> buffed_attack_haste = p -> composite_attack_haste();
+    p -> buffed_attack_speed = p -> composite_attack_speed();
     p -> buffed_mastery      = p -> composite_mastery();
 
     p -> attribute_buffed[ ATTR_STRENGTH  ] = floor( p -> strength()  );

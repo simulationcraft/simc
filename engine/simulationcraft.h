@@ -2938,7 +2938,7 @@ struct player_t
   // Haste
   double base_haste_rating, initial_haste_rating, haste_rating;
   double spell_haste, buffed_spell_haste;
-  double attack_haste, buffed_attack_haste;
+  double attack_haste, buffed_attack_haste, buffed_attack_speed;
 
   // Attributes
   double attribute                   [ ATTRIBUTE_MAX ];
