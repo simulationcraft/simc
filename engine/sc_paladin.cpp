@@ -252,6 +252,8 @@ struct paladin_t : public player_t
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    composite_attack_expertise() SC_CONST;
+  virtual double    composite_attack_haste() SC_CONST;
+  virtual double    composite_spell_haste() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual double    composite_tank_crit( const school_type school ) SC_CONST;
@@ -270,6 +272,7 @@ struct paladin_t : public player_t
   int               holy_power_stacks() SC_CONST;
   double            get_divine_bulwark() SC_CONST;
   double            get_hand_of_light() SC_CONST;
+  double            jotp_haste() SC_CONST;
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -374,26 +377,25 @@ struct paladin_attack_t : public attack_t
   bool trigger_seal;
   bool trigger_seal_of_righteousness;
   bool spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
-  double jotp_haste;
   bool trigger_dp;
 
   paladin_attack_t( const char* n, paladin_t* p, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true, bool use2hspec=true )
     : attack_t( n, p, RESOURCE_MANA, s, t, special ),
-      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ),  jotp_haste( 1.0 ), trigger_dp( false )
+      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
   paladin_attack_t( const char* n, uint32_t id, paladin_t* p, bool use2hspec=true, bool special=true )
     : attack_t( n, id, p, TREE_NONE, special ),
-      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), jotp_haste( 1.0 ), trigger_dp( false )
+      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
   paladin_attack_t( const char* n, const char* sname, paladin_t* p, bool use2hspec=true, bool special=true )
     : attack_t( n, sname, p, TREE_NONE, special ),
-      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), jotp_haste( 1.0 ), trigger_dp( false )
+      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
@@ -405,9 +407,6 @@ struct paladin_attack_t : public attack_t
     class_flag1 = ! use2hspec;
 
     base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
-
-    if ( p() -> talents.judgements_of_the_pure -> rank() )
-      jotp_haste = 1.0 / ( 1.0 + p() -> buffs_judgements_of_the_pure -> base_value( E_APPLY_AURA, A_HASTE_ALL ) );
   }
 
   paladin_t* p() SC_CONST
@@ -418,12 +417,7 @@ struct paladin_attack_t : public attack_t
   virtual double haste() SC_CONST
   {
     paladin_t* p = player -> cast_paladin();
-    double h = spell_haste ? p -> composite_spell_haste() : attack_t::haste();
-    if ( p -> buffs_judgements_of_the_pure -> up() )
-    {
-      h *= jotp_haste;
-    }
-    return h;
+    return spell_haste ? p -> composite_spell_haste() : attack_t::haste();
   }
 
   virtual void execute()
@@ -484,7 +478,6 @@ struct paladin_attack_t : public attack_t
       player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
     }
   }
-
 
   virtual double cost() SC_CONST
   {
@@ -1460,23 +1453,22 @@ struct templars_verdict_t : public paladin_attack_t
 
 struct paladin_spell_t : public spell_t
 {
-  double jotp_haste;
   bool trigger_dp;
 
   paladin_spell_t( const char* n, paladin_t* p, const school_type s=SCHOOL_HOLY, int t=TREE_NONE )
-    : spell_t( n, p, RESOURCE_MANA, s, t ), jotp_haste( 1.0 ), trigger_dp( false )
+    : spell_t( n, p, RESOURCE_MANA, s, t ), trigger_dp( false )
   {
     initialize_();
   }
 
   paladin_spell_t( const char* n, uint32_t id, paladin_t* p )
-    : spell_t( n, id, p ), jotp_haste( 1.0 ), trigger_dp( false )
+    : spell_t( n, id, p ), trigger_dp( false )
   {
     initialize_();
   }
 
   paladin_spell_t( const char *n, const char *sname, paladin_t* p )
-    : spell_t( n, sname, p ), jotp_haste( 1.0 ), trigger_dp( false )
+    : spell_t( n, sname, p ), trigger_dp( false )
   {
     initialize_();
   }
@@ -1484,25 +1476,11 @@ struct paladin_spell_t : public spell_t
   void initialize_()
   {
     base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
-
-    if ( p() -> talents.judgements_of_the_pure -> rank() )
-      jotp_haste = 1.0 / ( 1.0 + p() -> buffs_judgements_of_the_pure -> base_value( E_APPLY_AURA, A_HASTE_ALL ) );
   }
 
   paladin_t* p() SC_CONST
   {
     return static_cast<paladin_t*>( player );
-  }
-
-  virtual double haste() SC_CONST
-  {
-    paladin_t* p = player -> cast_paladin();
-    double h = spell_t::haste();
-    if ( p -> buffs_judgements_of_the_pure -> up() )
-    {
-      h *= jotp_haste;
-    }
-    return h;
   }
 
   virtual void player_buff()
@@ -2659,6 +2637,30 @@ double paladin_t::composite_attack_expertise() SC_CONST
     m += glyphs.seal_of_truth -> mod_additive( P_EFFECT_2 ) / 100.0;
   }
   return m;
+}
+
+// paladin_t::jotp_haste =============================================
+
+double paladin_t::jotp_haste() SC_CONST
+{
+  if ( talents.judgements_of_the_pure -> rank() && buffs_judgements_of_the_pure -> up() )
+    return 1.0 / ( 1.0 + buffs_judgements_of_the_pure -> base_value( E_APPLY_AURA, A_HASTE_ALL ) );
+  else
+    return 1.0;
+}
+
+// paladin_t::composite_attack_haste =================================
+
+double paladin_t::composite_attack_haste() SC_CONST
+{
+  return player_t::composite_attack_haste() * jotp_haste();
+}
+
+// paladin_t::composite_spell_haste =================================
+
+double paladin_t::composite_spell_haste() SC_CONST
+{
+  return player_t::composite_spell_haste() * jotp_haste();
 }
 
 // paladin_t::composite_attribute_multiplier =================================
