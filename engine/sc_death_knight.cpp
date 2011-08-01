@@ -2304,6 +2304,9 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
+    crit_bonus            = 1.0;
+    crit_bonus_multiplier = 1.0;
+
     base_td          = effect_average( 1 ) * 1.15;
     base_tick_time   = 3.0;
     tick_may_crit    = true;
