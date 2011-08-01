@@ -24,7 +24,7 @@ actions+=/raise_dead,time>=15
 actions+=/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2
 actions+=/howling_blast,if=dot.frost_fever.remains<=2
 actions+=/plague_strike,if=dot.blood_plague.remains<=2
-actions+=/obliterate,if=frost=2&unholy=2
+actions+=/obliterate,if=frost=2|unholy=2
 actions+=/obliterate,if=death=2
 actions+=/obliterate,if=buff.killing_machine.react
 actions+=/empower_rune_weapon,if=target.time_to_die<=120&buff.killing_machine.react

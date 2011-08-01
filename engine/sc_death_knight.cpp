@@ -4468,7 +4468,7 @@ void death_knight_t::init_actions()
         action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
       action_list_str += "/howling_blast,if=dot.frost_fever.remains<=2";
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
-      action_list_str += "/obliterate,if=frost=2&unholy=2";
+      action_list_str += "/obliterate,if=frost=2|unholy=2";
       action_list_str += "/obliterate,if=death=2";
       action_list_str += "/obliterate,if=buff.killing_machine.react"; // All 3 are seperated for Sample Sequence
       action_list_str += "/empower_rune_weapon,if=target.time_to_die<=120&buff.killing_machine.react";
