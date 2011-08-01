@@ -157,20 +157,20 @@ struct death_knight_t : public player_t
   struct glyphs_t
   {
     // Prime
-    int death_and_decay;
-    int death_coil;
-    int death_strike;
-    int frost_strike;
-    int heart_strike;
-    int howling_blast;
-    int icy_touch;
-    int obliterate;
-    int raise_dead;
-    int rune_strike;
-    int scourge_strike;
+    glyph_t* death_and_decay;
+    glyph_t* death_coil;
+    glyph_t* death_strike;
+    glyph_t* frost_strike;
+    glyph_t* heart_strike;
+    glyph_t* howling_blast;
+    glyph_t* icy_touch;
+    glyph_t* obliterate;
+    glyph_t* raise_dead;
+    glyph_t* rune_strike;
+    glyph_t* scourge_strike;
 
     // Minor
-    int horn_of_winter;
+    glyph_t* horn_of_winter;
 
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -341,7 +341,6 @@ struct death_knight_t : public player_t
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_glyphs();
   virtual void      init_resources( bool force );
   double composite_pet_attack_crit();
   virtual double    composite_armor_multiplier() SC_CONST;
@@ -581,7 +580,7 @@ struct army_ghoul_pet_t : public pet_t
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
     // copied from the pet ghoul, tested in unholy and frost.
-    double strength_scaling = 1.01 + o -> glyphs.raise_dead * 0.4254;
+    double strength_scaling = 1.01 + o -> glyphs.raise_dead -> ok() * 0.4254;
     a += snapshot_strength * strength_scaling;
     a *= composite_attribute_multiplier( ATTR_STRENGTH );
     return a;
@@ -817,7 +816,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       direct_power_mod = 0.3 * 0.85; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
       base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level );
       base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
-      base_multiplier *= 1 + o -> glyphs.death_coil * 0.15;
+      base_multiplier *= 1 + o -> glyphs.death_coil -> effect1().percent();
 
       if ( o -> set_bonus.tier11_2pc_melee() )
         base_crit     += 0.05;
@@ -873,7 +872,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       may_miss          = false;
       num_ticks         = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
       direct_power_mod *= 0.055 * 1.15;
-      base_multiplier  *= 1.0 + o -> glyphs.icy_touch * 0.2;
+      base_multiplier  *= 1.0 + o -> glyphs.icy_touch -> effect1().percent();
 
       if ( o -> race == RACE_ORC )
       {
@@ -899,7 +898,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       aoe                 = 2;
       base_add_multiplier = 0.75;
       trigger_gcd         = 0;
-      base_multiplier    *= 1 + o -> glyphs.heart_strike          * 0.30;
+      base_multiplier    *= 1 + o -> glyphs.heart_strike -> ok() * 0.30;
 
       if ( o -> race == RACE_ORC )
       {
@@ -1311,7 +1310,7 @@ struct ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
-    double strength_scaling = 1.01 + o -> glyphs.raise_dead * 0.4254; //weird, but accurate
+    double strength_scaling = 1.01 + o -> glyphs.raise_dead -> ok() * 0.4254; //weird, but accurate
 
     // Perma Ghouls are updated constantly
     if ( o -> primary_tree() == TREE_UNHOLY )
@@ -2605,8 +2604,7 @@ struct death_and_decay_t : public death_knight_spell_t
     tick_zero        = true;
     hasted_ticks     = false;
     base_multiplier *= 1.0 + p -> talents.morbidity -> effect2().percent();
-    if ( p -> glyphs.death_and_decay )
-      num_ticks     += 5;
+    num_ticks       += p -> glyphs.death_and_decay -> effect1().base_value() / 10;
   }
 };
 
@@ -2624,8 +2622,8 @@ struct death_coil_t : public death_knight_spell_t
     direct_power_mod = 0.23;
     base_dd_min      = p -> dbc.effect_min( effect_id( 1 ), p -> level );
     base_dd_max      = p -> dbc.effect_max( effect_id( 1 ), p -> level );
-    base_multiplier *= 1 + p -> talents.morbidity -> mod_additive( P_GENERIC )
-                       + p -> glyphs.death_coil * 0.15;
+    base_multiplier *= 1 + p -> talents.morbidity -> effect1().percent()
+                       + p -> glyphs.death_coil -> effect1().percent();
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit     += 0.05;
 
@@ -2705,9 +2703,9 @@ struct death_strike_t : public death_knight_attack_t
   {
     death_knight_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> glyphs.death_strike )
+    if ( p -> glyphs.death_strike -> ok() )
     {
-      player_multiplier *= 1 + p -> resource_current[ RESOURCE_RUNIC ] / 5 * 0.02;
+      player_multiplier *= 1 + p -> resource_current[ RESOURCE_RUNIC ] / 5 * p -> glyphs.death_strike -> effect1().percent();
     }
   }
 };
@@ -2796,7 +2794,7 @@ struct frost_fever_t : public death_knight_spell_t
     num_ticks        = 7 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 1, 3, 4 );
     tick_power_mod   = 0.055 * 1.15;
     base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect1().percent();
-    base_multiplier *= 1.0 + p -> glyphs.icy_touch * 0.2
+    base_multiplier *= 1.0 + p -> glyphs.icy_touch -> effect1().percent()
                        + p -> talents.virulence -> effect1().percent();
     init(); // Not a real action
   }
@@ -2871,7 +2869,7 @@ struct frost_strike_t : public death_knight_attack_t
     parse_options( NULL, options_str );
 
     weapon     = &( p -> main_hand_weapon );
-    base_cost -= p -> glyphs.frost_strike * 8;
+    base_cost += p -> glyphs.frost_strike -> effect1().base_value() / 10;
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit += 0.05;
 
@@ -2934,7 +2932,7 @@ struct heart_strike_t : public death_knight_attack_t
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
 
-    base_multiplier *= 1 + p -> glyphs.heart_strike            * 0.30;
+    base_multiplier *= 1 + p -> glyphs.heart_strike -> ok() * 0.30;
 
     aoe = 2;
     base_add_multiplier *= 0.75;
@@ -2989,7 +2987,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( ! sim -> overrides.horn_of_winter )
     {
-      sim -> auras.horn_of_winter -> buff_duration = 120.0 + p -> glyphs.horn_of_winter * 60.0;
+      sim -> auras.horn_of_winter -> buff_duration = 120.0 + p -> glyphs.horn_of_winter -> effect1().seconds();
       sim -> auras.horn_of_winter -> trigger( 1, bonus );
     }
 
@@ -3054,7 +3052,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     if ( result_is_hit() )
     {
-      if ( p -> glyphs.howling_blast )
+      if ( p -> glyphs.howling_blast -> ok() )
       {
         if ( p -> frost_fever )
           p -> frost_fever -> execute();
@@ -3233,8 +3231,8 @@ struct obliterate_offhand_t : public death_knight_attack_t
 
     // These both stack additive with MOTFW
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
-    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
-                     + ( p -> glyphs.obliterate ? 0.2 : 0 );
+    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC ) +
+                     p -> glyphs.obliterate -> effect1().percent();
 
     if ( p -> set_bonus.tier12_4pc_melee() )
     {
@@ -3304,8 +3302,8 @@ struct obliterate_t : public death_knight_attack_t
 
     // These both stack additive with MOTFW
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
-    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC )
-                     + ( p -> glyphs.obliterate ? 0.2 : 0 );
+    m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC ) +
+                     p -> glyphs.obliterate -> effect1().percent();
 
     if ( p -> set_bonus.tier12_4pc_melee() )
     {
@@ -3689,7 +3687,7 @@ struct rune_strike_t : public death_knight_attack_t
 
     parse_options( NULL, options_str );
 
-    base_crit       += p -> glyphs.rune_strike * 0.10;
+    base_crit       += p -> glyphs.rune_strike -> effect1().percent();
     direct_power_mod = 0.15;
     may_dodge = may_block = may_parry = false;
   }
@@ -3753,7 +3751,7 @@ struct scourge_strike_t : public death_knight_attack_t
       background        = true;
       trigger_gcd       = 0;
       weapon_multiplier = 0;
-      base_multiplier  *= 1.0 + p -> glyphs.scourge_strike * 0.3;
+      base_multiplier  *= 1.0 + p -> glyphs.scourge_strike -> effect1().percent();
 
       if ( p -> set_bonus.tier12_4pc_melee() )
       {
@@ -4347,6 +4345,20 @@ void death_knight_t::init_spells()
     tier12_4pc_melee_value = tier12_4pc_melee_spell -> effect1().percent();
   }
 
+  // Glyphs
+  glyphs.death_and_decay = find_glyph( "Glyph of Death and Decay" );
+  glyphs.death_coil      = find_glyph( "Glyph of Death Coil" );
+  glyphs.death_strike    = find_glyph( "Glyph of Death Strike" );
+  glyphs.frost_strike    = find_glyph( "Glyph of Frost Strike" );
+  glyphs.heart_strike    = find_glyph( "Glyph of Heart Strike" );
+  glyphs.horn_of_winter  = find_glyph( "Glyph of Horn of Winter" );
+  glyphs.howling_blast   = find_glyph( "Glyph of Howling Blast" );
+  glyphs.icy_touch       = find_glyph( "Glyph of Icy Touch" );
+  glyphs.obliterate      = find_glyph( "Glyph of Obliterate" );
+  glyphs.raise_dead      = find_glyph( "Glyph of Raise Dead" );
+  glyphs.rune_strike     = find_glyph( "Glyph of Rune Strike" );
+  glyphs.scourge_strike  = find_glyph( "Glyph of Scourge Strike" );
+
   // Tier Bonuses
   static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -4642,58 +4654,6 @@ void death_knight_t::init_enchant()
   else if ( oh_enchant == "rune_of_cinderglacier" )
   {
     register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_cinderglacier ) );
-  }
-}
-
-// death_knight_t::init_glyphs ==============================================
-
-void death_knight_t::init_glyphs()
-{
-  memset( ( void* ) &glyphs, 0x0, sizeof( glyphs_t ) );
-
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
-
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string& n = glyph_names[ i ];
-
-    if      ( n == "death_and_decay" ) glyphs.death_and_decay = 1;
-    else if ( n == "death_coil"      ) glyphs.death_coil = 1;
-    else if ( n == "death_strike"    ) glyphs.death_strike = 1;
-    else if ( n == "frost_strike"    ) glyphs.frost_strike = 1;
-    else if ( n == "heart_strike"    ) glyphs.heart_strike = 1;
-    else if ( n == "horn_of_winter"  ) glyphs.horn_of_winter = 1;
-    else if ( n == "howling_blast"   ) glyphs.howling_blast = 1;
-    else if ( n == "icy_touch"       ) glyphs.icy_touch = 1;
-    else if ( n == "obliterate"      ) glyphs.obliterate = 1;
-    else if ( n == "raise_dead"      ) glyphs.raise_dead = 1;
-    else if ( n == "rune_strike"     ) glyphs.rune_strike = 1;
-    else if ( n == "scourge_strike"  ) glyphs.scourge_strike = 1;
-    // To prevent warnings
-    else if ( n == "antimagic_shell"     );
-    else if ( n == "blood_boil"          );
-    else if ( n == "blood_tap"           );
-    else if ( n == "bone_shield"         );
-    else if ( n == "chains_of_ice"       );
-    else if ( n == "dancing_rune_weapon" );
-    else if ( n == "death_gate"          );
-    else if ( n == "death_grip"          );
-    else if ( n == "deaths_embrace"      );
-    else if ( n == "hungering_cold"      );
-    else if ( n == "path_of_frost"       );
-    else if ( n == "pestilence"          );
-    else if ( n == "pilar_of_frost"      );
-    else if ( n == "raise_ally"          );
-    else if ( n == "resilient_grip"      );
-    else if ( n == "rune_tap"            );
-    else if ( n == "strangulate"         );
-    else if ( n == "vampiric_blood"      );
-    else if ( n == "dark_succor"         );
-    else if ( ! sim -> parent )
-    {
-      sim -> errorf( "Player %s has unrecognized glyph %s\n", name(), n.c_str() );
-    }
   }
 }
 
