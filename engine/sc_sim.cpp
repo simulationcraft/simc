@@ -2252,7 +2252,7 @@ void sim_t::create_options()
     { "report_pets_separately",           OPT_BOOL,   &( report_pets_separately                   ) },
     { "report_targets",                   OPT_BOOL,   &( report_targets                           ) },
     { "report_details",                   OPT_BOOL,   &( report_details                           ) },
-    { "report_rng",                       OPT_BOOL,   &( report_rng                           ) },
+    { "report_rng",                       OPT_BOOL,   &( report_rng                               ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
