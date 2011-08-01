@@ -2305,8 +2305,8 @@ struct ice_lance_t : public mage_spell_t
     mage_spell_t::player_buff();
     if ( p -> buffs_fingers_of_frost -> up() )
     {
-      player_multiplier *= 2.0; // Built in bonus against frozen targets
-      player_multiplier *= 1.25;
+      player_multiplier *= 1.0 + effect2().percent(); // Built in bonus against frozen targets
+      player_multiplier *= 1.25; // Buff from Fingers of Frost
     }
   }
 };

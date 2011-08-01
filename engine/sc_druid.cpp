@@ -4885,7 +4885,7 @@ void druid_t::init_actions()
       action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
       if ( race == RACE_TROLL )
         action_list_str += "/berserking";
-      action_list_str += "/insect_swarm,if=ticks_remain<2|(dot.insect_swarm.remains<10&buff.solar_eclipse.up&eclipse<15)";
+      action_list_str += "/insect_swarm,if=(ticks_remain<2|(dot.insect_swarm.remains<10&buff.solar_eclipse.up&eclipse<15))&(buff.solar_eclipse.up|buff.lunar_eclipse.up|time<10)";
 
       action_list_str += "/wild_mushroom_detonate,moving=1,if=buff.wild_mushroom.stack=3";
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
