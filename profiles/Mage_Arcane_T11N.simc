@@ -26,8 +26,8 @@ actions+=/mana_gem,if=buff.arcane_blast.stack=4&(target.time_to_die<=50|cooldown
 actions+=/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50
 actions+=/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)
 actions+=/presence_of_mind,arcane_blast
-actions+=/arcane_blast,if=target.time_to_die<40|cooldown.evocation.remains<=40
-actions+=/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up
+actions+=/arcane_blast,if=target.time_to_die<35|cooldown.evocation.remains<=35
+actions+=/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast
 actions+=/arcane_missiles
 actions+=/arcane_barrage,if=buff.arcane_blast.stack>0
 actions+=/arcane_barrage,moving=1

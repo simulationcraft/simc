@@ -38,6 +38,7 @@ actions+=/restart_sequence,name=conserve
 head=flickering_cowl_of_the_flameblaze,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1211armor_689sta_400int_276mastery_276hit,reforge=mastery_haste,gems=burning_shadowspirit_20int_20mastery_30int,enchant=60int_35crit,suffix=261
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=haste_hit,gems=67int_10int
 shoulders=firehawk_mantle,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1118armor_322int_513sta_227crit_209haste,reforge=crit_hit,gems=40int,enchant=50int_25haste
+shirt=tuxedo_shirt,ilevel=1
 chest=firehawk_robes,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1491armor_420int_689sta_254hit_310haste,gems=67int_67int,enchant=20all
 waist=majordomos_chain_of_office,heroic=1,type=cloth,ilevel=397,quality=epic,stats=865armor_341int_542sta_206mastery_243haste,reforge=haste_hit,gems=40int_40int_10int
 legs=firehawk_leggings,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1304armor_420int_689sta_301crit_271mastery,reforge=crit_hit,gems=40int_40int_20int,enchant=95int_80sta
@@ -50,7 +51,7 @@ trinket1=shard_of_woe,heroic=1,ilevel=379,quality=epic,use=1935haste_10dur_60cd
 trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_1269.5nature_15%_10stack_2.5cd_chance
 back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_hit,enchant=50int
 main_hand=shoravon_greatstaff_of_annihilation,heroic=1,ilevel=397,quality=epic,stats=466int_730sta_357mastery_249crit_2786sp,reforge=crit_hit,gems=40int_10int,enchant=power_torrent,weapon=staff_2.90speed_764min_1146max
-ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste,reforge=haste_exp
+ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste,reforge=haste_mastery
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
@@ -58,11 +59,10 @@ ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hi
 # gear_intellect=6006
 # gear_spirit=20
 # gear_spell_power=2786
-# gear_expertise_rating=40
 # gear_hit_rating=1745
 # gear_crit_rating=925
 # gear_haste_rating=1754
-# gear_mastery_rating=1577
+# gear_mastery_rating=1617
 # gear_armor=9343
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1

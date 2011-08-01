@@ -3401,15 +3401,15 @@ void mage_t::init_actions()
         action_list_str += "/presence_of_mind,arcane_blast";
       }
 
-      if ( has_shard == true )
+      if ( has_shard )
       {
         action_list_str += "/arcane_blast,if=target.time_to_die<=50|cooldown.evocation.remains<=50";
         action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up";
       }
       else
       {
-        action_list_str += "/arcane_blast,if=target.time_to_die<40|cooldown.evocation.remains<=40";
-        action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up";
+        action_list_str += "/arcane_blast,if=target.time_to_die<35|cooldown.evocation.remains<=35";
+        action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast";
       }
       action_list_str += "/arcane_missiles";
       action_list_str += "/arcane_barrage,if=buff.arcane_blast.stack>0"; // when AM hasn't procced
