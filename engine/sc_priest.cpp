@@ -1167,9 +1167,90 @@ struct shadow_fiend_pet_t : public pet_t
   }
 };
 
+// ==========================================================================
+// Pet Lightwell
+// ==========================================================================
+
+struct lightwell_pet_t : public pet_t
+{
+  struct lightwell_renew_t : public heal_t
+  {
+    lightwell_renew_t( lightwell_pet_t* player ) :
+      heal_t( "lightwell_renew", player, 7001 )
+    {
+      priest_t* p = player -> owner -> cast_priest();
+
+      may_crit = false;
+      tick_may_crit = true;
+
+      tick_power_mod = 0.308;
+      base_multiplier *= ( 1.0 + p -> constants.twin_disciplines_value ) * 1.15;
+    }
+
+    lightwell_pet_t* cast()
+    {
+      return static_cast<lightwell_pet_t*>( player );
+    }
+
+    virtual void execute()
+    {
+      cast() -> charges--;
+
+      assert( heal_target.size() == 1 );
+      heal_target[ 0 ] = find_lowest_player();
+
+      heal_t::execute();
+    }
+
+    virtual void last_tick()
+    {
+      heal_t::last_tick();
+
+      if ( cast() -> charges <= 0 )
+        cast() -> dismiss();
+    }
+
+    virtual bool ready()
+    {
+      if ( cast() -> charges <= 0 )
+        return false;
+      return heal_t::ready();
+    }
+  };
+
+  int charges;
+
+  lightwell_pet_t( sim_t* sim, priest_t* p ) :
+    pet_t( sim, p, "lightwell", PET_NONE, true ),
+    charges( 0 )
+  {
+    role = ROLE_HEAL;
+    action_list_str = "/snapshot_stats/lightwell_renew/wait,sec=cooldown.lightwell_renew.remains";
+  }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "lightwell_renew" ) return new lightwell_renew_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  virtual void summon( double duration )
+  {
+    priest_t* p = owner -> cast_priest();
+
+    spell_haste = p -> spell_haste;
+    spell_power[ SCHOOL_HOLY ] = p -> composite_spell_power( SCHOOL_HOLY );
+
+    charges = 10 + p -> glyphs.lightwell -> effect1().base_value();
+
+    pet_t::summon( duration );
+  }
+};
 
 // ==========================================================================
-// Pet Cauterizing Flames
+// Pet Cauterizing Flame
 // ==========================================================================
 
 struct cauterizing_flame_pet_t : public pet_t
@@ -1194,7 +1275,7 @@ struct cauterizing_flame_pet_t : public pet_t
   };
 
   cauterizing_flame_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "cauterizing_flame" )
+    pet_t( sim, owner, "cauterizing_flame", PET_NONE, true )
   {
     role = ROLE_HEAL;
     action_list_str = "/snapshot_stats/cauterizing_flame_heal/wait_until_ready";
@@ -4108,54 +4189,13 @@ struct holy_word_t : public priest_spell_t
 
 // Lightwell Spell ==========================================================
 
-struct lightwell_t : public priest_heal_t
+struct lightwell_t : public spell_t
 {
-  struct lightwell_hot_t : public priest_heal_t
-  {
-    int charges;
-    double consume_interval;
-
-    lightwell_hot_t( player_t* player ) :
-      priest_heal_t( "lightwell_renew", player, 7001 ),
-      charges( 0 ), consume_interval( 0.0 )
-    {
-      // Hardcoded in the tooltip
-      tick_power_mod = 0.308;
-
-      proc          = true;
-      background    = true;
-      hasted_ticks  = true;
-      may_crit      = false;
-    }
-
-    virtual double haste() SC_CONST
-    {
-      // Lightwell ticks _are_ hasted, but it doesn't benefit from buffs, only bare haste rating.
-      return player -> spell_haste;
-    }
-
-    virtual void execute()
-    {
-      priest_heal_t::execute();
-
-      if ( charges >= 0 )
-      {
-        // Assuming a Lightwell Charge is used every 10 seconds
-        execute_event = new ( sim ) action_execute_event_t( sim, this, consume_interval );
-        charges -= 1;
-      }
-    }
-  };
-
-  lightwell_hot_t* lw_hot;
   double consume_interval;
 
-  lightwell_t( player_t* player, const std::string& options_str ) :
-    priest_heal_t( "lightwell", player, 724 ), lw_hot( 0 ), consume_interval( 10.0 )
+  lightwell_t( priest_t* p, const std::string& options_str ) :
+    spell_t( "lightwell", 724, p ), consume_interval( 10 )
   {
-    // FIXME: lightwell should really be a pet, to avoid using any extraneous
-    //        modifiers from the player or raid buffs.
-
     option_t options[] =
     {
       { "consume_interval", OPT_FLT,     &consume_interval },
@@ -4163,26 +4203,19 @@ struct lightwell_t : public priest_heal_t
     };
     parse_options( options, options_str );
 
-    assert( consume_interval > 0 && consume_interval < cooldown -> duration );
-
-    priest_t* p = player -> cast_priest();
-    check_talent( p -> talents.lightwell -> rank() );
-
-    lw_hot = new lightwell_hot_t( p );
-    add_child( lw_hot );
-
     harmful = false;
+
+    assert( consume_interval > 0 && consume_interval < cooldown -> duration );
   }
 
   virtual void execute()
   {
-    priest_heal_t::execute();
-
     priest_t* p = player -> cast_priest();
 
-    lw_hot -> charges = 10 + p -> glyphs.lightwell -> effect1().base_value();
-    lw_hot -> consume_interval = consume_interval;
-    lw_hot -> execute();
+    spell_t::execute();
+
+    p -> find_pet( "lightwell" ) -> get_cooldown( "lightwell_renew" ) -> duration = consume_interval;
+    p -> summon_pet( "lightwell", duration() );
   }
 };
 
@@ -4338,14 +4371,18 @@ void priest_t::trigger_cauterizing_flame()
 
 int priest_t::primary_role() SC_CONST
 {
-  if ( player_t::primary_role() == ROLE_HEAL )
+  switch( player_t::primary_role() )
+  {
+  case ROLE_HEAL:
     return ROLE_HEAL;
-
-  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_SPELL )
+  case ROLE_DPS:
+  case ROLE_SPELL:
     return ROLE_SPELL;
-
-  if ( primary_tree() == TREE_DISCIPLINE || primary_tree() == TREE_HOLY )
-    return ROLE_HEAL;
+  default:
+    if ( primary_tree() == TREE_DISCIPLINE || primary_tree() == TREE_HOLY )
+      return ROLE_HEAL;
+    break;
+  }
 
   return ROLE_SPELL;
 }
@@ -4546,6 +4583,7 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
   if ( p ) return p;
 
   if ( pet_name == "shadow_fiend" ) return new shadow_fiend_pet_t( sim, this );
+  if ( pet_name == "lightwell" ) return new lightwell_pet_t( sim, this );
   if ( pet_name == "cauterizing_flame" ) return new cauterizing_flame_pet_t( sim, this );
 
   return 0;
@@ -4557,6 +4595,7 @@ void priest_t::create_pets()
 {
   create_pet( "shadow_fiend" );
   active_cauterizing_flame = create_pet( "cauterizing_flame" );
+  create_pet( "lightwell" );
 }
 
 // priest_t::init_base =======================================================
