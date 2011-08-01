@@ -4714,50 +4714,6 @@ struct snapshot_stats_t : public action_t
   }
 };
 
-// Wait Until Ready Action ===================================================
-
-struct wait_until_ready_t : public action_t
-{
-  double sec;
-
-  wait_until_ready_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "wait", player ), sec( 1.0 )
-  {
-    option_t options[] =
-    {
-      { "sec", OPT_FLT, &sec },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    trigger_gcd = 0;
-  }
-
-  virtual double execute_time() SC_CONST
-  {
-    double wait = sec;
-    double remains = 0;
-
-    for ( action_t* a = player -> action_list; a; a = a -> next )
-    {
-      if ( a -> background ) continue;
-
-      remains = a -> cooldown -> remains();
-      if ( remains > 0 && remains < wait ) wait = remains;
-
-      remains = a -> dot -> remains();
-      if ( remains > 0 && remains < wait ) wait = remains;
-    }
-
-    return wait + 0.001;
-  }
-
-  virtual void execute()
-  {
-    player -> total_waiting += time_to_execute;
-  }
-};
-
 // Wait Fixed Action =========================================================
 
 struct wait_fixed_t : public action_t
@@ -4790,6 +4746,34 @@ struct wait_fixed_t : public action_t
   virtual void execute()
   {
     player -> total_waiting += time_to_execute;
+  }
+};
+
+// Wait Until Ready Action ===================================================
+
+struct wait_until_ready_t : public wait_fixed_t
+{
+  wait_until_ready_t( player_t* player, const std::string& options_str ) :
+    wait_fixed_t( player, options_str )
+  {}
+
+  virtual double execute_time() SC_CONST
+  {
+    double wait = wait_fixed_t::execute_time();
+    double remains = 0;
+
+    for ( action_t* a = player -> action_list; a; a = a -> next )
+    {
+      if ( a -> background ) continue;
+
+      remains = a -> cooldown -> remains();
+      if ( remains > 0 && remains < wait ) wait = remains;
+
+      remains = a -> dot -> remains();
+      if ( remains > 0 && remains < wait ) wait = remains;
+    }
+
+    return wait + 0.001;
   }
 };
 
