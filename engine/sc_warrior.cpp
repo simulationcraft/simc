@@ -1600,7 +1600,7 @@ struct mortal_strike_t : public warrior_attack_t
                            + p -> set_bonus.tier11_2pc_melee() * 0.05
                            + p -> talents.war_academy -> effect1().percent();
     crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
-    base_crit                  += p -> talents.cruelty -> effect1().percent();
+    base_crit             += p -> talents.cruelty -> effect1().percent();
   }
 
   virtual void execute()
@@ -1672,7 +1672,7 @@ struct overpower_t : public warrior_attack_t
 
     base_crit += p -> talents.taste_for_blood -> effect2().percent();
     crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
-    base_multiplier            *= 1.0 + p -> glyphs.overpower -> effect1().percent();
+    base_multiplier       *= 1.0 + p -> glyphs.overpower -> effect1().percent();
 
     stancemask = STANCE_BATTLE;    
   }

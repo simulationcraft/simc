@@ -2129,7 +2129,6 @@ struct black_arrow_t : public hunter_attack_t
 
     base_dd_min=base_dd_max=0;
     tick_power_mod=extra_coeff();
-
   }
 
   virtual void tick()
