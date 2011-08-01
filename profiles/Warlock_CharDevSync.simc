@@ -153,7 +153,7 @@ hands=fingers_of_incineration,id=71614,reforge=crit_hit,gems=40int_10int,enchant
 finger1=infernal_signet_of_the_avengers,id=71217,gems=40int_10int,enchant=40int
 finger2=crystal_prison_band,id=71449,reforge=crit_hit,enchant=40int
 trinket1=moonwell_chalice,id=70142
-trinket2=necromantic_focus,id=69139
+trinket2=darkmoon_card_volcano,id=62047
 back=wings_of_flame,id=71434,reforge=crit_hit,enchant=50int
 main_hand=shoravon_greatstaff_of_annihilation,id=71797,reforge=crit_hit,gems=40int_10int,enchant=power_torrent
 ranged=trail_of_embers,id=71575
