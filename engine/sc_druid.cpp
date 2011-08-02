@@ -505,6 +505,7 @@ struct druid_spell_t : public spell_t
   virtual void   player_tick();
   virtual void   player_buff();
   virtual void   schedule_execute();
+  virtual int    hasted_num_ticks(double d) SC_CONST;
 };
 
 // ==========================================================================
@@ -2921,6 +2922,27 @@ void druid_spell_t::player_tick()
   player_crit = p -> composite_spell_crit();
 
   player_crit += 0.05 * p -> buffs_t11_4pc_caster -> stack();
+}
+
+// druid_spell_t::hasted_num_ticks ==============================================
+
+int druid_spell_t::hasted_num_ticks( double d ) SC_CONST
+{
+  if ( ! hasted_ticks ) return num_ticks;
+
+  assert( player_haste > 0.0 );
+
+  // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
+  // It's important that we're accurate here so that we model haste breakpoints correctly.
+
+  // Druids override this function because they use ceil and -0.5 in the final line of code instead of floor and +0.5 like the other classes
+
+  if ( d < 0 )
+    d = num_ticks * base_tick_time;
+
+  double t = floor( ( base_tick_time * player_haste * 1000.0 ) + 0.5 ) / 1000.0;
+
+  return ( int ) ceil( ( d / t ) - 0.5 );
 }
 
 // druid_spell_t::player_buff ==============================================
