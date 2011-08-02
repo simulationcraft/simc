@@ -1887,5 +1887,5 @@ int action_t::hasted_num_ticks( double d ) SC_CONST
 
   double t = floor( ( base_tick_time * player_haste * 1000.0 ) + 0.5 ) / 1000.0;
 
-  return ( int ) ceil( ( d / t ) - 0.5 );
+  return ( int ) floor( ( d / t ) + 0.5 );
 }
