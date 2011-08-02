@@ -4420,10 +4420,6 @@ struct thread_t
 
 struct armory_t
 {
-  static int download_guild( std::vector<std::string>& characters,
-                             const std::string& region,
-                             const std::string& server,
-                             const std::string& name );
   static bool download_guild( sim_t* sim,
                               const std::string& region,
                               const std::string& server,
