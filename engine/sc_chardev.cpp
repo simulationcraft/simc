@@ -53,25 +53,6 @@ static const char* translate_slot( int slot )
   return "unknown";
 }
 
-static profession_type translate_profession( int skill_id )
-{
-  switch ( skill_id )
-  {
-  case 164: return PROF_BLACKSMITHING;
-  case 165: return PROF_LEATHERWORKING;
-  case 171: return PROF_ALCHEMY;
-  case 182: return PROF_HERBALISM;
-  case 186: return PROF_MINING;
-  case 197: return PROF_TAILORING;
-  case 202: return PROF_ENGINEERING;
-  case 333: return PROF_ENCHANTING;
-  case 393: return PROF_SKINNING;
-  case 755: return PROF_JEWELCRAFTING;
-  case 773: return PROF_INSCRIPTION;
-  }
-  return PROFESSION_NONE;
-}
-
 } // ANONYMOUS NAMESPACE ====================================================
 
 // chardev_t::download_player ===============================================
@@ -230,7 +211,7 @@ player_t* chardev_t::download_player( sim_t* sim,
       if ( js_t::get_value( skill_id, skill_nodes[ i ], "0" ) &&
            js_t::get_value( skill_level, skill_nodes[ i ], "1" ) )
       {
-        std::string skill_name_str = util_t::profession_type_string( translate_profession( skill_id ) );
+        std::string skill_name_str = util_t::profession_type_string( util_t::translate_profession_id( skill_id ) );
         if ( i ) p -> professions_str += "/";
         p -> professions_str += skill_name_str + "=" + skill_level;
       }

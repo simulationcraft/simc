@@ -1614,6 +1614,8 @@ struct util_t
   static stat_type translate_item_mod( int stat_mod );
   static slot_type translate_invtype( int inv_type );
   static weapon_type translate_weapon_subclass( item_subclass_weapon weapon_subclass );
+  static profession_type translate_profession_id( int skill_id );
+
   static bool socket_gem_match( int socket, int gem );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );

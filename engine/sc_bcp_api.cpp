@@ -45,7 +45,7 @@ js_node_t* download_guild( sim_t* sim,
   js_node_t* js = js_t::create( sim, result );
   if ( ! js || ! ( js = js_t::get_child( js, "members" ) ) )
   {
-    sim -> errorf( "Unable to determine members for guild %s|%s|%s from BCP API.\n", region.c_str(), server.c_str(), name.c_str() );
+    sim -> errorf( "Unable to determine members of guild %s|%s|%s from BCP API.\n", region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
@@ -143,27 +143,25 @@ player_t* download_player( sim_t* sim,
 
   if ( js_node_t* profession = js_t::get_node( profile_js, "professions/primary/0" ) )
   {
-    std::string name;
-    if ( js_t::get_value( name, profession, "name" ) )
+    int id;
+    std::string rank;
+    if ( js_t::get_value( id, profession, "id" ) && js_t::get_value( rank, profession, "rank" ) )
     {
-      int rank;
-      if ( js_t::get_value( rank, profession, "rank" ) )
-        p -> professions_str = name + "=" + util_t::to_string( rank );
+      p -> professions_str += util_t::profession_type_string( util_t::translate_profession_id( id ) );
+      p -> professions_str += '=' + rank;
     }
   }
 
   if ( js_node_t* profession = js_t::get_node( profile_js, "professions/primary/1" ) )
   {
-    std::string name;
-    if ( js_t::get_value( name, profession, "name" ) )
+    int id;
+    std::string rank;
+    if ( js_t::get_value( id, profession, "id" ) && js_t::get_value( rank, profession, "rank" ) )
     {
-      int rank;
-      if ( js_t::get_value( rank, profession, "rank" ) )
-      {
-        if ( p -> professions_str.length() > 0 )
-          p -> professions_str += '/';
-        p -> professions_str += name + "=" + util_t::to_string( rank );
-      }
+      if ( p -> professions_str.length() > 0 )
+        p -> professions_str += '/';
+      p -> professions_str += util_t::profession_type_string( util_t::translate_profession_id( id ) );
+      p -> professions_str += '=' + rank;
     }
   }
 

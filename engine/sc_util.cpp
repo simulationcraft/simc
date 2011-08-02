@@ -266,6 +266,27 @@ int util_t::parse_profession_type( const std::string& name )
   return PROFESSION_NONE;
 }
 
+// util_t::translate_profession_id ==========================================
+
+profession_type util_t::translate_profession_id( int skill_id )
+{
+  switch ( skill_id )
+  {
+  case 164: return PROF_BLACKSMITHING;
+  case 165: return PROF_LEATHERWORKING;
+  case 171: return PROF_ALCHEMY;
+  case 182: return PROF_HERBALISM;
+  case 186: return PROF_MINING;
+  case 197: return PROF_TAILORING;
+  case 202: return PROF_ENGINEERING;
+  case 333: return PROF_ENCHANTING;
+  case 393: return PROF_SKINNING;
+  case 755: return PROF_JEWELCRAFTING;
+  case 773: return PROF_INSCRIPTION;
+  }
+  return PROFESSION_NONE;
+}
+
 // util_t::player_type_string ===============================================
 
 const char* util_t::player_type_string( int type )
@@ -912,7 +933,7 @@ const char* util_t::set_item_type_string( int item_set )
     case 1015:  // Shaman T12
     case 1017:  // Warrior T12
       return "Melee";
-      
+
     // Tank sets
     case 926:   // Death Knight T11
     case 934:   // Paladin T11
@@ -932,7 +953,7 @@ const char* util_t::set_item_type_string( int item_set )
     case 1012:  // Paladin T12
     case 1014:  // Shaman T12
       return "Healer";
-    
+
     // DPS Caster sets
     case 929:   // Druid T11
     case 936:   // Priest T11
@@ -1714,7 +1735,7 @@ slot_type util_t::translate_invtype( int inv_type )
     case INVTYPE_WRISTS:
       return SLOT_WRISTS;
   }
-  
+
   return SLOT_NONE;
 }
 
