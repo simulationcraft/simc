@@ -1121,7 +1121,7 @@ static void register_sorrowsong( item_t* item )
   struct sorrowsong_callback_t : public stat_proc_callback_t
   {
     sorrowsong_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "sorrowsong", p, STAT_SPELL_POWER, 1, h ? 1710 : 1512, 0.10, 10.0, 20.0, 0, false, RNG_DEFAULT, false )
+      stat_proc_callback_t( "sorrowsong", p, STAT_SPELL_POWER, 1, h ? 1710 : 1512, 1.0, 10.0, 20.0, 0, false, RNG_DEFAULT, false )
     {}
 
     virtual void trigger( action_t* a, void* call_data )
