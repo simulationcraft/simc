@@ -110,6 +110,7 @@ static std::string build_request( std::string&   host,
               "Cookie: int-WOW=1\r\n"
               "Cookie: int-WOW-arenapass2011=1\r\n"
               "Cookie: int-WOW-epic-savings-promo=1\r\n"
+              "Cookie: int-EuropeanInvitational2011=1\r\n"
               "Connection: close\r\n"
               "\r\n",
               host.c_str(),
@@ -131,6 +132,7 @@ static std::string build_request( std::string&   host,
               "Cookie: int-WOW=1\r\n"
               "Cookie: int-WOW-arenapass2011=1\r\n"
               "Cookie: int-WOW-epic-savings-promo=1\r\n"
+              "Cookie: int-EuropeanInvitational2011=1\r\n"
               "Connection: close\r\n"
               "\r\n",
               path.c_str(),
@@ -440,6 +442,7 @@ bool http_t::download( std::string& result,
     wHeaders += L"Cookie: int-WOW=1\r\n";
     wHeaders += L"Cookie: int-WOW-arenapass2011=1\r\n";
     wHeaders += L"Cookie: int-WOW-epic-savings-promo=1\r\n";
+    wHeaders += L"Cookie: int-EuropeanInvitational2011=1\r\n";
 
     hFile = InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 );
     if ( hFile )
