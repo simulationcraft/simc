@@ -1229,12 +1229,13 @@ const char* chart_t::reforge_dps( std::string& s,
   int num_stats = pd[ 0 ].size() - 1;
   if ( num_stats != 3 && num_stats != 2 )
   {
-    p -> sim -> errorf( "Cannot generate reforge plot for more than 3 stats.\n" );
+    p -> sim -> errorf( "You must choose 2 or 3 stats to generate a reforge plot.\n" );
     return 0;
   }
 
   for ( int i=0; i < ( int ) pd.size(); i++ )
   {
+    assert( num_stats < ( int ) pd[ i ].size() );
     if ( pd[ i ][ num_stats ] < min_dps )
       min_dps = pd[ i ][ num_stats ];
     if ( pd[ i ][ num_stats ] > max_dps )

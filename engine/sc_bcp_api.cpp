@@ -21,7 +21,7 @@ std::string urlencode( const std::string& s )
 std::string get_region_host( const std::string& region )
 {
   if ( region == "cn" )
-    return "http://battle.net.cn/";
+    return "http://battlenet.com.cn/";
   else
     return "http://" + urlencode( region ) + ".battle.net/";
 }
@@ -139,7 +139,7 @@ player_t* download_player( sim_t* sim,
   if ( ! js_t::get_value( p -> server_str, profile_js, "realm" ) )
     p -> server_str = server;
 
-  p -> origin_str = battlenet + "wow/" + urlencode( region ) + "/character/" + urlencode( server ) + "/" + urlencode( name ) + "/advanced";
+  p -> origin_str = battlenet + "wow/en/character/" + urlencode( server ) + "/" + urlencode( name ) + "/advanced";
 
   if ( js_node_t* profession = js_t::get_node( profile_js, "professions/primary/0" ) )
   {
