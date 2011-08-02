@@ -19,6 +19,7 @@ SOURCES += engine/sc_action.cpp
 SOURCES += engine/sc_armory.cpp
 SOURCES += engine/sc_attack.cpp
 SOURCES += engine/sc_battle_net.cpp
+SOURCES += engine/sc_bcp_api.cpp
 SOURCES += engine/sc_buff.cpp
 SOURCES += engine/sc_chardev.cpp
 SOURCES += engine/sc_chart.cpp

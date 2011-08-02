@@ -374,6 +374,9 @@ static bool parse_armory( sim_t*             sim,
     int player_type = PLAYER_NONE;
     if ( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
 
+    if ( true )
+      return bcp_api::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, cache );
+
     if ( region == "cn" )
     {
       return armory_t::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, cache );
@@ -464,6 +467,49 @@ static bool parse_rawr( sim_t*             sim,
     {
       sim -> errorf( "Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
     }
+  }
+
+  return sim -> active_player != 0;
+}
+
+// parse_bcp_api ============================================================
+
+static bool parse_bcp_api( sim_t*             sim,
+                           const std::string& name,
+                           const std::string& value )
+{
+  if ( name != "bcp" ) return false;
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, value, ",." );
+
+  if ( num_splits < 3 )
+  {
+    sim -> errorf( "Expected format is: bcp=region,server,player1,player2,...\n" );
+    return false;
+  }
+
+  const std::string& region = splits[ 0 ];
+  const std::string& server = splits[ 1 ];
+
+  for ( int i=2; i < num_splits; i++ )
+  {
+    std::string player_name;
+    bool active;
+
+    if ( splits[ i ][ 0 ] == '!' )
+    {
+      player_name.assign( splits[ i ].begin() + 1, splits[ i ].end() );
+      active = false;
+    }
+    else
+    {
+      player_name = splits[ i ];
+      active = true;
+    }
+
+    sim -> active_player = bcp_api::download_player( sim, region, server, player_name, active );
+    if ( ! sim -> active_player ) return false;
   }
 
   return sim -> active_player != 0;
@@ -2218,6 +2264,7 @@ void sim_t::create_options()
     { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },
     { "chardev",                          OPT_FUNC,   ( void* ) ::parse_chardev                     },
     { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
+    { "bcp",                              OPT_FUNC,   ( void* ) ::parse_bcp_api                     },
     { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
     { "default_region",                   OPT_STRING, &( default_region_str                       ) },
     { "default_server",                   OPT_STRING, &( default_server_str                       ) },

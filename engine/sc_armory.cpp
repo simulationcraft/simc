@@ -663,53 +663,6 @@ int armory_t::parse_meta_gem( const std::string& description )
   return META_GEM_NONE;
 }
 
-// armory_t::download_servers ===============================================
-
-int armory_t::download_servers( std::vector<std::string>& servers,
-                                const std::string& region )
-{
-  servers.clear();
-
-  return servers.size();
-}
-
-// armory_t::download_guild =================================================
-
-int armory_t::download_guild( std::vector<std::string>& character_names,
-                              const std::string& region,
-                              const std::string& server,
-                              const std::string& name )
-{
-  // http://us.battle.net/wow/en/guild/llane/wicked%20legion/roster
-
-  std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
-
-  xml_node_t* guild_info = xml_t::download( NULL, url, "</members>", -1 );
-  if ( ! guild_info ) return 0;
-
-  xml_node_t* members = xml_t::get_node( guild_info, "members" );
-  if ( ! members ) return 0;
-
-  std::vector<xml_node_t*> characters;
-  int num_characters = xml_t::get_nodes( characters, members, "character" );
-  for ( int i=0; i < num_characters; i++ )
-  {
-    std::string character_name;
-    int character_level;
-
-    if ( xml_t::get_value( character_name,  characters[ i ], "name"  ) &&
-         xml_t::get_value( character_level, characters[ i ], "level" ) )
-    {
-      if ( character_level < 80 )
-        continue;
-
-      character_names.push_back( character_name );
-    }
-  }
-
-  return character_names.size();
-}
-
 // armory_t::download_guild =================================================
 
 bool armory_t::download_guild( sim_t* sim,

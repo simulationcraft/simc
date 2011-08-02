@@ -495,7 +495,7 @@ struct priest_heal_t : public heal_t
     struct echo_of_light_t : public priest_heal_t
     {
       echo_of_light_t( player_t* p ) :
-        priest_heal_t( "echo_of_light", p, 77485 )
+        priest_heal_t( "echo_of_light", p, 77489 )
       {
         base_tick_time = 1.0;
         num_ticks      = 6;

@@ -67,11 +67,15 @@ endif
 
 SRC =\
 	simulationcraft.h	\
+  data_definitions.hh \
+  data_enums.hh \
+  utf8.h \
 	sc_action.cpp		\
 	sc_armory.cpp		\
 	sc_attack.cpp		\
 	sc_battle_net.cpp	\
-	sc_buff.cpp		\
+  sc_bcp_api.cpp \
+  sc_buff.cpp		\
 	sc_chardev.cpp		\
 	sc_chart.cpp		\
 	sc_const_data.cpp	\
@@ -126,7 +130,7 @@ SRC =\
 	sc_wowhead.cpp		\
 	sc_xml.cpp
 
-SRC_H   := $(filter %.h,   $(SRC))
+SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
 OBJ_DIR = .
 OBJ_EXT = o

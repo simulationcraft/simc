@@ -4420,8 +4420,6 @@ struct thread_t
 
 struct armory_t
 {
-  static int download_servers( std::vector<std::string>& servers,
-                               const std::string& region );
   static int download_guild( std::vector<std::string>& characters,
                              const std::string& region,
                              const std::string& server,
@@ -4486,7 +4484,7 @@ struct wowhead_t
                              const std::string gem_ids[ 3 ],
                              int cache_only=0,
                              bool ptr=false );
-  static bool download_item( item_t&, const std::string& item_id, int cache_only=0,bool ptr=false );
+  static bool download_item( item_t&, const std::string& item_id, int cache_only=0, bool ptr=false );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id, int cache_only=0, bool ptr=false );
   static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0, bool ptr=false );
 };
@@ -4522,6 +4520,26 @@ struct rawr_t
   static player_t* load_player( sim_t*, const std::string& character_filename );
   static player_t* load_player( sim_t*, const std::string& character_filename, const std::string& character_xml );
 };
+
+// Blizzard Community Platform API ===========================================
+
+namespace bcp_api
+{
+  bool download_guild( sim_t* sim,
+                       const std::string& region,
+                       const std::string& server,
+                       const std::string& name,
+                       const std::vector<int>& ranks,
+                       int player_type = PLAYER_NONE,
+                       int max_rank=0,
+                       bool allow_cache=0 );
+  player_t* download_player( sim_t*,
+                             const std::string& region,
+                             const std::string& server,
+                             const std::string& name,
+                             bool active=true );
+  bool download_item( item_t&, const std::string& item_id, bool cache_only=0 );
+}
 
 // HTTP Download  ============================================================
 
