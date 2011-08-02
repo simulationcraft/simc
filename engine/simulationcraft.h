@@ -4398,12 +4398,14 @@ struct rng_t
 
 // String utils =================================================================
 
-std::string tolower( std::string src );
-std::string trim( std::string src );
-void replace_char( std::string& src, char old_c, char new_c  );
-void replace_str( std::string& src, std::string old_str, std::string new_str  );
-bool str_to_float( std::string src, double& dest );
+std::string tolower( const std::string& src );
 std::string proper_option_name( const std::string& full_name );
+#if 0 // UNUSED
+std::string trim( const std::string& src );
+void replace_char( std::string& str, char old_c, char new_c  );
+void replace_str( std::string& str, const std::string& old_str, const std::string& new_str  );
+bool str_to_float( const std::string& src, double& dest );
+#endif // UNUSED
 
 // Thread Wrappers ===========================================================
 
@@ -4535,7 +4537,8 @@ namespace bcp_api
                              const std::string& region,
                              const std::string& server,
                              const std::string& name,
-                             bool active=true );
+                             const std::string& talents=std::string("active"),
+                             bool allow_cache=true );
   bool download_item( item_t&, const std::string& item_id, bool cache_only=0 );
 }
 

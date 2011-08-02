@@ -291,8 +291,8 @@ static bool parse_armory( sim_t*             sim,
       return false;
     }
 
-    std::string region = splits[ 0 ];
-    std::string server = splits[ 1 ];
+    const std::string& region = splits[ 0 ];
+    const std::string& server = splits[ 1 ];
 
     for ( int i=2; i < num_splits; i++ )
     {
@@ -494,21 +494,23 @@ static bool parse_bcp_api( sim_t*             sim,
 
   for ( int i=2; i < num_splits; i++ )
   {
-    std::string player_name;
-    bool active;
+    std::string talents = "active";
 
     if ( splits[ i ][ 0 ] == '!' )
     {
-      player_name.assign( splits[ i ].begin() + 1, splits[ i ].end() );
-      active = false;
-    }
-    else
-    {
-      player_name = splits[ i ];
-      active = true;
+      splits[ i ].erase( 0, 1 );
+      talents = "inactive";
     }
 
-    sim -> active_player = bcp_api::download_player( sim, region, server, player_name, active );
+    std::string::size_type pos = splits[ i ].find('|');
+    if ( pos != std::string::npos )
+    {
+      std::string::size_type n = splits[ i ].length() - pos - 1;
+      talents.assign( splits[ i ], pos + 1, n );
+      splits[ i ].erase( pos, n + 1 );
+    }
+
+    sim -> active_player = bcp_api::download_player( sim, region, server, splits[ i ], talents );
     if ( ! sim -> active_player ) return false;
   }
 

@@ -1112,7 +1112,7 @@ std::string& armory_t::format( std::string& name, int format_type )
 {
   if ( name.empty() ) return name;
 
-  std::string buffer="";
+  std::string buffer;
 
   switch ( format_type & FORMAT_CONVERT_MASK )
   {
@@ -1168,7 +1168,7 @@ std::string& armory_t::format( std::string& name, int format_type )
     }
     buffer += c;
   }
-  name = buffer;
+  name.swap( buffer );
 
   return name;
 }

@@ -6,8 +6,6 @@
 #include "simulationcraft.h"
 #include "utf8.h"
 
-bool my_isdigit( char c );
-
 // pred_ci =================================================================
 
 static bool pred_ci ( char a, char b )
@@ -1896,8 +1894,7 @@ int util_t::string_strip_quotes( std::string& str )
     }
   }
 
-  str = old_string;
-
+  str.swap( old_string );
   return 0;
 }
 
@@ -1914,7 +1911,7 @@ std::string util_t::to_string( int i )
 
 std::string util_t::to_string( double f, int precision )
 {
-  char buffer[ 1024 ];
+  char buffer[ 64 ];
   snprintf( buffer, sizeof( buffer ), "%.*f", precision, f );
   return std::string( buffer );
 }
@@ -2044,7 +2041,7 @@ std::string& util_t::str_to_utf8( std::string& str )
   for ( int i = 0; i < l; i++ )
     utf8::append( ( unsigned char ) str[ i ], std::back_inserter( temp ) );
 
-  str = temp;
+  str.swap( temp );
   return str;
 }
 
@@ -2059,8 +2056,7 @@ std::string& util_t::str_to_latin1( std::string& str )
   while ( i != str.end() )
     temp += ( unsigned char ) utf8::next( i, str.end() );
 
-  str = temp;
-
+  str.swap( temp );
   return str;
 }
 
@@ -2089,7 +2085,7 @@ std::string& util_t::urlencode( std::string& str )
       temp += c;
   }
 
-  str = temp;
+  str.swap( temp );
   return str;
 }
 
@@ -2118,7 +2114,7 @@ std::string& util_t::urldecode( std::string& str )
       temp += c;
   }
 
-  str = temp;
+  str.swap( temp );
   return str;
 }
 
@@ -2255,8 +2251,8 @@ double util_t::round( double X, unsigned int decplaces )
 
 std::string& util_t::tolower( std::string& str )
 {
-  for ( unsigned i=0; i<str.length(); i++ )
-    str[i]=::tolower( str[i] );
+  for( std::string::size_type i = 0, n = str.length(); i < n; ++i )
+    str[i] = ::tolower( str[i] );
   return str;
 }
 
@@ -2266,43 +2262,42 @@ std::string& util_t::tolower( std::string& str )
 
 
 // utility functions
-std::string tolower( std::string src )
+std::string tolower( const std::string& src )
 {
-  std::string dest=src;
-  for ( unsigned i=0; i<dest.length(); i++ )
-    dest[i]=tolower( dest[i] );
+  std::string dest;
+  for( std::string::size_type i = 0, n = src.length(); i < n; ++i )
+    dest.push_back( tolower( src[ i ] ) );
   return dest;
 }
 
-std::string trim( std::string src )
+#if 0 // UNUSED
+std::string trim( const std::string& src )
 {
-  if ( src=="" ) return "";
-  std::string dest=src;
-  //remove left
-  int p=0;
-  while ( ( p<( int )dest.length() )&&( dest[p]==' ' ) ) p++;
-  if ( p>0 )
-    dest.erase( 0,p );
-  //remove right
-  p= ( int ) dest.length()-1;
-  while ( ( p>=0 )&&( dest[p]==' ' ) ) p--;
-  if ( p<( int )dest.length()-1 )
-    dest.erase( p+1 );
-  //return trimmed string
+  std::string dest;
+
+  std::string::size_type begin = src.find_first_not_of( ' ' );
+  if ( begin != src.npos )
+  {
+    std::string::size_type end = src.find_last_not_of( ' ' );
+    dest.assign( src, begin, end - begin );
+  }
+
   return dest;
 }
 
-
-void replace_char( std::string& src, char old_c, char new_c  )
+void replace_char( std::string& str, char old_c, char new_c  )
 {
-  for ( int i=0; i<( int )src.length(); i++ )
-    if ( src[i]==old_c )
-      src[i]=new_c;
+  for ( std::string::size_type i = 0, n = str.length(); i < n; ++i )
+  {
+    if ( str[ i ] == old_c )
+      str[ i ] = new_c;
+  }
 }
 
-void replace_str( std::string& src, std::string old_str, std::string new_str  )
+void replace_str( std::string& src, const std::string& old_str, const std::string& new_str  )
 {
-  if ( old_str=="" ) return;
+  if ( old_str.empty() ) return;
+
   std::string dest="";
   size_t p;
   while ( ( p=src.find( old_str ) )!=std::string::npos )
@@ -2312,13 +2307,6 @@ void replace_str( std::string& src, std::string old_str, std::string new_str  )
   }
   dest+=src;
   src=dest;
-}
-
-bool my_isdigit( char c )
-{
-  if ( c=='+' ) return true;
-  if ( c=='-' ) return true;
-  return isdigit( c )!=0;
 }
 
 bool str_to_float( std::string src, double& dest )
@@ -2356,3 +2344,4 @@ bool str_to_float( std::string src, double& dest )
   dest=atof( src.c_str() );
   return res;
 }
+#endif
