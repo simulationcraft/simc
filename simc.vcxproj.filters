@@ -56,6 +56,10 @@
     <ClCompile Include="engine\sc_spell_info.cpp" />
     <ClCompile Include="engine\sc_battle_net.cpp" />
     <ClCompile Include="engine\sc_chardev.cpp" />
+    <ClCompile Include="engine\sc_heal.cpp" />
+    <ClCompile Include="engine\sc_item_data.cpp" />
+    <ClCompile Include="engine\sc_reforge_plot.cpp" />
+    <ClCompile Include="engine\sc_bcp_api.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\simulationcraft.h" />
@@ -103,6 +107,8 @@
     <None Include="engine\utf8\unchecked.h">
       <Filter>utf8</Filter>
     </None>
+    <None Include="engine\sc_item_data.inc" />
+    <None Include="engine\sc_item_data_ptr.inc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Data Files">
