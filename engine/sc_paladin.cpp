@@ -420,6 +420,12 @@ struct paladin_attack_t : public attack_t
     return spell_haste ? p -> composite_spell_haste() : attack_t::haste();
   }
 
+  virtual double total_haste() SC_CONST
+  {
+    paladin_t* p = player -> cast_paladin();
+    return spell_haste ? p -> composite_spell_haste() : attack_t::total_haste();
+  }
+
   virtual void execute()
   {
     attack_t::execute();
