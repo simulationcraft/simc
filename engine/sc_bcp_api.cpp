@@ -34,6 +34,27 @@ std::string get_region_host( const std::string& region )
     return "http://" + urlencode( region ) + ".battle.net/";
 }
 
+js_node_t* download_id( sim_t* sim, const std::string& item_id, bool cache_only )
+{
+  if ( item_id.empty() || item_id == "0" ) return 0;
+
+  std::string url = get_region_host( sim -> default_region_str ) + "api/wow/data/item/" + urlencode( item_id );
+
+  std::string result;
+  if ( cache_only )
+  {
+    if ( ! http_t::cache_get( result, url ) )
+      return 0;
+  }
+  else
+  {
+    if ( ! http_t::get( result, url, "itemLevel" ) )
+      return 0;
+  }
+
+  return js_t::create( sim, result );
+}
+
 js_node_t* download_guild( sim_t* sim,
                            const std::string& region,
                            const std::string& server,
@@ -306,6 +327,9 @@ player_t* download_player( sim_t* sim,
 
   p -> origin_str = battlenet + "wow/en/character/" + urlencode( server ) + "/" + urlencode( name ) + "/advanced";
 
+  if ( js_t::get_value( p -> thumbnail_url, profile_js, "thumbnail" ) )
+    p -> thumbnail_url = battlenet + "static-render/" + urlencode( region ) + '/' + p -> thumbnail_url;
+
   parse_profession( p -> professions_str, profile_js, 0 );
   parse_profession( p -> professions_str, profile_js, 1 );
 
@@ -336,40 +360,19 @@ player_t* download_player( sim_t* sim,
   return p;
 }
 
-#if 0 // Blizzard hasn't actually implemented the item data API yet.
+#if 1 // Blizzard hasn't actually implemented the item data API yet.
 
 // bcp_api::download_item() ================================================
 
 bool download_item( item_t& item, const std::string& item_id, bool cache_only )
 {
-  if ( item_id.empty() || item_id == "0" ) return false;
-
-  std::string url = get_region_host( item.player -> region_str ) + "api/wow/data/item/" + urlencode( item_id );
-
-  std::string result;
-  js_node_t* js = 0;
-  if ( cache_only )
-  {
-    if ( ! http_t::cache_get( result, url ) )
-      return false;
-  }
-  else
-  {
-    if ( ! http_t::get( result, url, "itemLevel" ) )
-    {
-      item.sim -> errorf( "Player %s unable to download item id %s from BCP API at slot %s.\n", item.player -> name(), item_id.c_str(), item.slot_name() );
-      return false;
-    }
-  }
-
-  js = js_t::create( item.sim, result );
+  js_node_t* js = download_id( item.sim, item_id, cache_only );
   if ( ! js )
   {
     if ( ! cache_only )
-      item.sim -> errorf( "Player %s unable to parse item %s from BCP API at slot %s.\n", item.player -> name(), item_id.c_str(), item.slot_name() );
+      item.sim -> errorf( "Player %s unable to download item id %s from Blizzard at slot %s.\n", item.player -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
-
   if ( item.sim -> debug ) js_t::print( js, item.sim -> output_file );
 
   if ( ! js_t::get_value( item.armory_name_str, js, "name" ) )
@@ -441,6 +444,28 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
     if ( !player )
       return false;
   }
+
+  return true;
+}
+
+// bcp_api::download_glyph ================================================
+
+bool download_glyph( player_t*          player,
+                     std::string&       glyph_name,
+                     const std::string& glyph_id,
+                     bool               cache_only )
+{
+  js_node_t* item = download_id( player -> sim, glyph_id, cache_only );
+  if ( ! item || ! js_t::get_value( glyph_name, item, "name" ) )
+  {
+    if ( ! cache_only )
+      player -> sim -> errorf( "Unable to download glyph id %s from Blizzard\n", glyph_id.c_str() );
+    return false;
+  }
+
+  if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+  else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+  armory_t::format( glyph_name );
 
   return true;
 }

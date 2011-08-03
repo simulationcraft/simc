@@ -3411,6 +3411,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     util_t::fprintf( file, " section-open" );
   }
   util_t::fprintf( file, "\">\n" );
+
+  if ( ! p -> thumbnail_url.empty()  )
+    util_t::fprintf( file,
+                     "\t\t\t<a href=\"%s\" class=\"player-thumbnail%s\"><img src=\"%s\" alt=\"%s\"/></a>\n",
+                     p -> origin_str.c_str(), ( num_players == 1 ) ? "" : " hide",
+                     p -> thumbnail_url.c_str(), p -> name_str.c_str() );
+
   util_t::fprintf( file,
                    "\t\t\t<h2 class=\"toggle" );
   if ( num_players == 1 )
@@ -4219,6 +4226,7 @@ void report_t::print_html( sim_t* sim )
                      "\t\t\ttr.details td table.details tr.odd td {background-color: #292929; }\n"
                      "\t\t\ttr.details td table.details tr td {padding: 1px 3px 1px 3px; }\n"
                      "\t\t\ttr.details td table.details tr td.right {text-align: right; }\n"
+                     "\t\t\t.player-thumbnail {float: right;margin: 8px;border-radius: 12px;-moz-border-radius: 12px;-webkit-border-radius: 12px;-khtml-border-radius: 12px;}\n"
                      "\t\t</style>\n" );
   }
 
@@ -4464,6 +4472,7 @@ void report_t::print_html( sim_t* sim )
                      "\t\t\t\t\t\t}\n"
                      "\t\t\t\t\t}\n"
                      "\t\t\t\t\t$(this).next('.toggle-content').toggle(150);\n"
+                     "\t\t\t\t\t$(this).prev('.player-thumbnail').toggleClass('hide');\n"
                      "\t\t\t\t\tchart_containers = $(this).next('.toggle-content').find('.charts');\n"
                      "\t\t\t\t\tload_images(chart_containers);\n"
                      "\t\t\t\t});\n"

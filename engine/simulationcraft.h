@@ -3106,6 +3106,7 @@ struct player_t
   std::string save_talents_str;
   std::string save_actions_str;
   std::string comment_str;
+  std::string thumbnail_url;
 
   // Gear
   std::string items_str, meta_gem_str;
@@ -4539,7 +4540,8 @@ namespace bcp_api
                              const std::string& name,
                              const std::string& talents=std::string("active"),
                              bool allow_cache=true );
-  bool download_item( item_t&, const std::string& item_id, bool cache_only=0 );
+  bool download_item( item_t&, const std::string& item_id, bool cache_only=false );
+  bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id, bool cache_only=false );
 }
 
 // HTTP Download  ============================================================
