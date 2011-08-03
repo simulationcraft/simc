@@ -177,13 +177,18 @@ static bool parse_player( sim_t*             sim,
 
     if ( wowhead.empty() )
     {
-      if ( region == "cn" )
-      {
-        sim -> active_player = armory_t::download_player( sim, region, server, player_name, "active" );
-      }
+      if ( true )
+        sim -> active_player = bcp_api::download_player( sim, region, server, player_name, "active" );
       else
       {
-        sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, "active" );
+        if ( region == "cn" )
+        {
+          sim -> active_player = armory_t::download_player( sim, region, server, player_name, "active" );
+        }
+        else
+        {
+          sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, "active" );
+        }
       }
     }
     else
@@ -311,7 +316,12 @@ static bool parse_armory( sim_t*             sim,
       }
       if ( ! sim -> input_is_utf8 )
         sim -> input_is_utf8 = utf8::is_valid( player_name.begin(), player_name.end() ) && utf8::is_valid( server.begin(), server.end() );
-      if ( region == "cn" )
+
+      if ( true )
+      {
+        sim -> active_player = bcp_api::download_player( sim, region, server, player_name, description );
+      }
+      else if ( region == "cn" )
       {
         sim -> active_player = armory_t::download_player( sim, region, server, player_name, description );
       }
