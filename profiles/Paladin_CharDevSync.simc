@@ -22,7 +22,7 @@ chest=breastplate_of_shifting_visions,id=71469,reforge=haste_crit,gems=67str_20s
 wrists=gigantiform_bracers,id=71584,reforge=hit_crit,gems=40str,enchant=50str
 hands=immolation_gauntlets,id=71513,gems=40str_40str,enchant=50str
 waist=cinch_of_the_flaming_ember,id=71399,reforge=crit_mastery,gems=20str_20hit_67str_10str
-legs=immolation_legplates,id=71515,reforge=crit_hit,gems=67str_20str_20mastery,enchant=190ap_55crit
+legs=immolation_legplates,id=71515,reforge=crit_hit,gems=67str_20str_20mastery_20str,enchant=190ap_55crit
 feet=arachnaflame_treads,id=71404,gems=40str_10str,reforge=haste_mastery,enchant=50mastery
 finger1=obsidian_signet_of_the_avengers,id=71215,reforge=crit_mastery,gems=40str_10str
 finger2=alysrazors_band,id=71433,reforge=haste_mastery,gems=40str_10str
@@ -49,7 +49,7 @@ chest=breastplate_of_shifting_visions,id=71344,reforge=haste_crit,gems=67str_20s
 wrists=gigantiform_bracers,id=71261,gems=40str,enchant=50str
 hands=immolation_gauntlets,id=71064,gems=40str_40str,enchant=50str
 waist=cinch_of_the_flaming_ember,id=71250,reforge=crit_mastery,gems=40str_67str
-legs=immolation_legplates,id=71066,reforge=crit_hit,gems=67str_20str_20mastery,enchant=190ap_55crit
+legs=immolation_legplates,id=71066,reforge=crit_hit,gems=67str_20str_20mastery_20str,enchant=190ap_55crit
 feet=arachnaflame_treads,id=71029,gems=40str_10str,reforge=haste_mastery,enchant=50mastery
 finger1=obsidian_signet_of_the_avengers,id=71215,reforge=crit_mastery,gems=40str_10str
 finger2=alysrazors_band,id=70738,reforge=haste_mastery,gems=40str_10str

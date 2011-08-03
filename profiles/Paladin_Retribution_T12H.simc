@@ -35,7 +35,7 @@ neck=stoneheart_choker,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_154e
 shoulders=immolation_pauldrons,heroic=1,type=plate,ilevel=391,quality=epic,stats=2822armor_322str_513sta_238crit_191haste,reforge=haste_mastery,gems=40str,enchant=50str_25crit
 chest=breastplate_of_shifting_visions,heroic=1,type=plate,ilevel=391,quality=epic,stats=3762armor_420str_689sta_301mastery_266haste,reforge=haste_crit,gems=67str_20str_20hit_20str,enchant=20all
 waist=cinch_of_the_flaming_ember,heroic=1,type=plate,ilevel=391,quality=epic,stats=2116armor_322str_513sta_153hit_260crit,reforge=crit_mastery,gems=20str_20hit_67str_10str
-legs=immolation_legplates,heroic=1,type=plate,ilevel=391,quality=epic,stats=3292armor_420str_689sta_309mastery_261crit,reforge=crit_hit,gems=67str_20str_20mastery,enchant=190ap_55crit
+legs=immolation_legplates,heroic=1,type=plate,ilevel=391,quality=epic,stats=3292armor_420str_689sta_309mastery_261crit,reforge=crit_hit,gems=67str_20str_20mastery_20str,enchant=190ap_55crit
 feet=arachnaflame_treads,heroic=1,type=plate,ilevel=391,quality=epic,stats=2586armor_322str_513sta_228crit_208haste,reforge=haste_mastery,gems=40str_10str,enchant=50mastery
 wrists=gigantiform_bracers,heroic=1,type=plate,ilevel=391,quality=epic,stats=1646armor_256str_384sta_130hit_195mastery,reforge=hit_crit,gems=40str,enchant=50str
 hands=immolation_gauntlets,heroic=1,type=plate,ilevel=391,quality=epic,stats=2351armor_322str_513sta_204hit_209mastery,gems=40str_40str,enchant=50str
@@ -47,7 +47,7 @@ back=bladed_flamewrath_cover,heroic=1,ilevel=391,quality=epic,stats=745armor_256
 main_hand=sulfuras_the_extinguished_hand,heroic=1,ilevel=397,quality=epic,stats=446str_730sta_333crit_262mastery,reforge=crit_hit,gems=40str_40str_20str,enchant=landslide,weapon=mace2h_3.80speed_2700min_4050max
 ranged=relic_of_the_elemental_lords,heroic=1,ilevel=391,quality=epic,stats=145str_217sta_94crit_98haste,reforge=haste_mastery,gems=40str
 # Gear Summary
-# gear_strength=6365
+# gear_strength=6385
 # gear_agility=20
 # gear_stamina=7006
 # gear_intellect=20
