@@ -230,6 +230,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\sc_bcp_api.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_buff.cpp"
 				>
 			</File>
