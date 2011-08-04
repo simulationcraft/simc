@@ -385,7 +385,7 @@ static bool parse_armory( sim_t*             sim,
     if ( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
 
     if ( true )
-      return bcp_api::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, cache );
+      return bcp_api::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, cache != 0 );
 
     if ( region == "cn" )
     {

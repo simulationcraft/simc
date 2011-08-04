@@ -2722,7 +2722,18 @@ struct shadow_fiend_spell_t : public priest_spell_t
     priest_spell_t::execute();
 
     p -> summon_pet( "shadow_fiend", duration() );
+  }
 
+  virtual bool ready()
+  {
+    priest_t* p = player -> cast_priest();
+
+    if ( p -> buffs_shadowfiend -> check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
   }
 };
 
