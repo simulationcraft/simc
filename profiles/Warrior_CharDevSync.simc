@@ -84,8 +84,8 @@ finger2=obsidian_signet_of_the_avengers,id=71215,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,id=68972
 trinket2=vessel_of_acceleration,id=68995
 back=bladed_flamewrath_cover,id=71227,enchant=65crit,reforge=exp_crit
-main_hand=obsidium_cleaver,id=71362,gems=40str_40str_20str,enchant=landslide,reforge=mastery_crit
-off_hand=obsidium_cleaver,id=71362,gems=40str_40str_20str,enchant=landslide,reforge=mastery_crit
+main_hand=obsidium_cleaver,id=71362,enchant=landslide,reforge=mastery_crit
+off_hand=obsidium_cleaver,id=71362,enchant=landslide,reforge=mastery_crit
 ranged=giantslicer,id=71154
 save=Warrior_Fury_1h_T12N.simc
 
@@ -112,8 +112,8 @@ finger2=obsidian_signet_of_the_avengers,id=71215,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,id=69113
 trinket2=vessel_of_acceleration,id=69167
 back=bladed_flamewrath_cover,id=71391,enchant=65crit,reforge=exp_crit
-main_hand=obsidium_cleaver,id=71562,gems=40str_40str_20str,enchant=landslide,reforge=mastery_crit
-off_hand=obsidium_cleaver,id=71562,gems=40str_40str_20str,enchant=landslide,reforge=mastery_crit
+main_hand=obsidium_cleaver,id=71562,enchant=landslide,reforge=mastery_crit
+off_hand=obsidium_cleaver,id=71562,enchant=landslide,reforge=mastery_crit
 ranged=giantslicer,id=71593
 save=Warrior_Fury_1h_T12H.simc
 

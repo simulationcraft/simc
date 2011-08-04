@@ -43,11 +43,11 @@ finger2=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384
 trinket1=apparatus_of_khazgoroth,ilevel=378,quality=epic,stats=383str
 trinket2=vessel_of_acceleration,ilevel=384,quality=epic,stats=406str,equip=onattackcrit_82crit_5stack_20dur
 back=bladed_flamewrath_cover,ilevel=378,quality=epic,stats=695armor_227str_341sta_173haste_115exp,reforge=exp_crit,enchant=65crit
-main_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,reforge=mastery_crit,gems=40str_40str_20str,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
-off_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,reforge=mastery_crit,gems=40str_40str_20str,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
+main_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,reforge=mastery_crit,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
+off_hand=obsidium_cleaver,ilevel=378,quality=epic,stats=175str_262sta_123mastery_105hit,reforge=mastery_crit,enchant=landslide,weapon=axe_2.60speed_1004min_1865max
 ranged=giantslicer,ilevel=378,quality=epic,stats=128str_192sta_81exp_88hit,weapon=thrown_2.10speed_1250min_1875max
 # Gear Summary
-# gear_strength=5798
+# gear_strength=5598
 # gear_agility=20
 # gear_stamina=6133
 # gear_intellect=20
