@@ -173,13 +173,13 @@ static QComboBox* createChoice( int count, ... )
 ReforgeButtonGroup::ReforgeButtonGroup( QObject* parent ) :
   QButtonGroup( parent ), selected( 0 )
 {
-  
+
 }
 
 void ReforgeButtonGroup::setSelected( int state )
 {
   if ( state ) selected++; else selected--;
-  
+
   // Three selected, disallow selection of any more
   if ( selected >= 3 )
   {
@@ -1114,14 +1114,12 @@ void ImportThread::importBattleNet()
                 cpp_s   = server.toUtf8().constData(),
                 cpp_c   = character.toUtf8().constData(),
                 cpp_r   = region.toUtf8().constData();
-    if( cpp_r == "cn" )
-    {
+    if ( true )
+      player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
+    else if( cpp_r == "cn" )
       player = armory_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-    }
     else
-    {
       player = battle_net_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-    }
   }
 }
 
@@ -1286,7 +1284,7 @@ void SimulationCraftWindow::startSim()
   simProgress = 0;
   mainButton->setText( "Cancel!" );
   simulateThread->start( initSim(), mergeOptions() );
-  simulateText->setPlainText( defaultSimulateText() );
+  // simulateText->setPlainText( defaultSimulateText() );
   cmdLineText = "";
   cmdLine->setText( cmdLineText );
   timer->start( 500 );
