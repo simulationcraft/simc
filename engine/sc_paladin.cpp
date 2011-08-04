@@ -2137,7 +2137,7 @@ void paladin_t::init_base()
   initial_spell_power_per_intellect = 1.0;
 
   base_spell_power  = 0;
-  base_attack_power = ( level * 3 ) - 20;
+  base_attack_power = level * 3;
 
   resource_base[ RESOURCE_HOLY_POWER ] = 3;
 
