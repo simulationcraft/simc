@@ -139,7 +139,7 @@ hands=obsidian_arborweave_grips,id=71097,gems=40agi_40agi,enchant=65mastery
 finger1=viridian_signet_of_the_avengers,id=71216,gems=40agi_10agi,reforge=mastery_crit
 finger2=splintered_brimstone_seal,id=71209,reforge=mastery_haste
 trinket1=matrix_restabilizer,id=68994
-trinket2=unheeded_warning,id=59520
+trinket2=the_hungerer,id=68927
 back=dreadfire_drape,id=70992,gems=40agi_40agi_20agi,enchant=65crit,reforge=hit_haste
 main_hand=ranseur_of_hatred,id=71361,enchant=130agi
 ranged=covenant_of_the_flame,id=71146,gems=40agi,reforge=mastery_haste

@@ -1303,57 +1303,6 @@ static void register_tyrandes_favorite_doll( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_MANA, new tyrandes_callback_t( p ) );
 }
 
-// register_unheeded_warning ================================================
-
-static void register_unheeded_warning( item_t* item )
-{
-  player_t* p = item -> player;
-
-  item -> unique = true;
-
-  struct uhw_buff_t : public buff_t
-  {
-    double bonus_dmg;
-
-    uhw_buff_t( player_t* p ) : buff_t( p, "unheeded_warning", 1, 10.0, 50.0, 0.10 ), bonus_dmg( 680 ) { }
-
-    virtual bool trigger( int stacks, double value, double chance )
-    {
-      bool success = buff_t::trigger( stacks, value, chance );
-      if( success )
-      {
-        player -> main_hand_weapon.bonus_dmg += bonus_dmg;
-        player ->  off_hand_weapon.bonus_dmg += bonus_dmg;
-      }
-      return success;
-    }
-
-    virtual void expire()
-    {
-      player -> main_hand_weapon.bonus_dmg -= bonus_dmg;
-      player ->  off_hand_weapon.bonus_dmg -= bonus_dmg;
-      buff_t::expire();
-    }
-  };
-
-  struct uhw_callback_t : public action_callback_t
-  {
-    buff_t* buff;
-
-    uhw_callback_t( player_t* p, buff_t* b ) : action_callback_t( p -> sim, p ), buff( b ) {}
-
-    virtual void trigger( action_t* a, void* call_data )
-    {
-      if ( a -> weapon && ! a -> proc )
-      {
-        buff -> trigger();
-      }
-    }
-  };
-
-  p -> register_attack_callback( RESULT_HIT_MASK, new uhw_callback_t( p, new uhw_buff_t( p ) ) );
-};
-
 // register_dragonwrath_tarecgosas_rest ===================================================
 
 static void register_dragonwrath_tarecgosas_rest( item_t* item )
@@ -1607,7 +1556,6 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "sorrowsong"                          ) ) register_sorrowsong                        ( &item );
     if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar"           ) ) register_tiny_abom                         ( &item );
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
-    if ( ! strcmp( item.name(), "unheeded_warning"                    ) ) register_unheeded_warning                  ( &item );
     if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
     if ( ! strcmp( item.name(), "valanyr_hammer_of_ancient_kings"     ) ) register_valanyr                     ( &item );
@@ -2099,6 +2047,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "the_hungerer"                        ) e = ( heroic ? "OnAttackHit_1730Haste_100%_15Dur_60Cd" : "OnAttackHit_1532Haste_100%_15Dur_60Cd" );
   else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnSpellCast_2178Mastery_10%_20Dur_100Cd" : "OnSpellCast_1926Mastery_10%_20Dur_100Cd" ); // TO-DO: Confirm ICD
   else if ( name == "tias_grace"                          ) e = ( heroic ? "OnAttackHit_34Agi_10Stack_15Dur" : "OnAttackHit_34Agi_10Stack_15Dur" );
+  else if ( name == "unheeded_warning"                    ) e = "OnAttackHit_1926AP_10%_10Dur_50Cd";
   else if ( name == "vessel_of_acceleration"              ) e = ( heroic ? "OnAttackCrit_93Crit_5Stack_20Dur" : "OnAttackCrit_82Crit_5Stack_20Dur" );
   else if ( name == "witching_hourglass"                  ) e = ( heroic ? "OnSpellCast_1710Haste_10%_15Dur_75Cd" : "OnSpellCast_918Haste_10%_15Dur_75Cd" );
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellHit_132SP_5%_10Dur";

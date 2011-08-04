@@ -53,13 +53,13 @@ hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137a
 finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,reforge=mastery_crit,gems=40agi_10agi
 finger2=splintered_brimstone_seal,ilevel=378,quality=epic,stats=227agi_341sta_158mastery_140crit,reforge=mastery_haste
 trinket1=matrix_restabilizer,ilevel=384,quality=epic,stats=406agi
-trinket2=unheeded_warning,ilevel=359,quality=epic,stats=321agi
+trinket2=the_hungerer,ilevel=378,quality=epic,stats=383agi,equip=onattackhit_1532haste_100%_15dur_60cd
 back=dreadfire_drape,ilevel=378,quality=epic,stats=695armor_212agi_341sta_95mastery_138hit,reforge=hit_haste,gems=40agi_40agi_20agi,enchant=65crit
 main_hand=ranseur_of_hatred,ilevel=378,quality=epic,stats=408agi_611sta_284crit_252haste,enchant=130agi,weapon=polearm_3.60speed_2142min_3214max
 ranged=covenant_of_the_flame,ilevel=378,quality=epic,stats=128agi_192sta_88crit_81mastery,reforge=mastery_haste,gems=40agi
 # Gear Summary
 # gear_strength=20
-# gear_agility=5792
+# gear_agility=5854
 # gear_stamina=6239
 # gear_intellect=20
 # gear_spirit=20
@@ -74,5 +74,4 @@ ranged=covenant_of_the_flame,ilevel=378,quality=epic,stats=128agi_192sta_88crit_
 # tier12_2pc_melee=1
 # tier12_4pc_melee=1
 # trinket1=matrix_restabilizer
-# trinket2=unheeded_warning
 # main_hand=ranseur_of_hatred,weapon=polearm_3.60speed_2142min_3214max

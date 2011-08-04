@@ -146,7 +146,7 @@ void pet_t::summon( double duration )
   owner -> active_pets++;
 
   summon_time = sim -> current_time;
-  summoned=true;
+  summoned = true;
 
   if( duration > 0 )
   {
@@ -156,6 +156,7 @@ void pet_t::summon( double duration )
       {
         sim -> add_event( this, duration );
       }
+
       virtual void execute()
       {
         if ( ! player -> sleeping ) player -> cast_pet() -> dismiss();
@@ -188,7 +189,6 @@ double pet_t::assess_damage( double            amount,
 {
   if ( ! action )
     amount *= 0.10;
-
   else if ( action -> aoe )
     amount *= 0.10;
 
