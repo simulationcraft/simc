@@ -259,9 +259,13 @@ player_t* download_player( sim_t* sim,
                            bool allow_cache )
 {
   std::string battlenet = get_region_host( region );
-
-  std::string url = battlenet + "api/wow/character/" + urlencode( server ) + '/' + urlencode ( name ) + "?fields=talents,items,professions,pets"; // ,stats
-
+  std::string utf8_name = name;
+  std::string utf8_server = server;
+  
+  std::string url = battlenet + "api/wow/character/" + 
+    urlencode( util_t::str_to_utf8( utf8_server ) ) + '/' + 
+    urlencode( util_t::str_to_utf8( utf8_name ) ) + "?fields=talents,items,professions,pets"; // ,stats
+  
   std::string result;
   if ( allow_cache )
   {

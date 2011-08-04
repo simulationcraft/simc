@@ -4539,7 +4539,7 @@ namespace bcp_api
                              const std::string& server,
                              const std::string& name,
                              const std::string& talents=std::string("active"),
-                             bool allow_cache=true );
+                             bool allow_cache=false );
   bool download_item( item_t&, const std::string& item_id, bool cache_only=false );
   bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id, bool cache_only=false );
 }
