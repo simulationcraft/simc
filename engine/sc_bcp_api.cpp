@@ -379,6 +379,8 @@ player_t* download_player( sim_t* sim,
   if ( ! parse_items( p, js_t::get_child( profile_js, "items" ) ) )
     return 0;
 
+  p -> armory_extensions( region, server, name );
+
   return p;
 }
 
