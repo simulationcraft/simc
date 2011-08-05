@@ -376,26 +376,26 @@ struct paladin_attack_t : public attack_t
 {
   bool trigger_seal;
   bool trigger_seal_of_righteousness;
-  bool spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
+  bool use_spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
   bool trigger_dp;
 
   paladin_attack_t( const char* n, paladin_t* p, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true, bool use2hspec=true )
     : attack_t( n, p, RESOURCE_MANA, s, t, special ),
-      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), trigger_dp( false )
+      trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
   paladin_attack_t( const char* n, uint32_t id, paladin_t* p, bool use2hspec=true, bool special=true )
     : attack_t( n, id, p, TREE_NONE, special ),
-      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), trigger_dp( false )
+      trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
   paladin_attack_t( const char* n, const char* sname, paladin_t* p, bool use2hspec=true, bool special=true )
     : attack_t( n, sname, p, TREE_NONE, special ),
-      trigger_seal( false ), trigger_seal_of_righteousness( false ), spell_haste( false ), trigger_dp( false )
+      trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
@@ -417,13 +417,13 @@ struct paladin_attack_t : public attack_t
   virtual double haste() SC_CONST
   {
     paladin_t* p = player -> cast_paladin();
-    return spell_haste ? p -> composite_spell_haste() : attack_t::haste();
+    return use_spell_haste ? p -> composite_spell_haste() : attack_t::haste();
   }
 
   virtual double total_haste() SC_CONST
   {
     paladin_t* p = player -> cast_paladin();
-    return spell_haste ? p -> composite_spell_haste() : attack_t::total_haste();
+    return use_spell_haste ? p -> composite_spell_haste() : attack_t::total_haste();
   }
 
   virtual void execute()
@@ -746,7 +746,7 @@ struct crusader_strike_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
-    spell_haste  = true;
+    use_spell_haste  = true;
     trigger_seal = true;
 
     // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
@@ -812,7 +812,7 @@ struct divine_storm_t : public paladin_attack_t
     weapon_multiplier = 0.0;
 
     aoe               = -1;
-    spell_haste       = true;
+    use_spell_haste   = true;
     trigger_dp        = true;
     trigger_seal      = false;
     trigger_seal_of_righteousness = true;
@@ -1177,7 +1177,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     background       = true;
     proc             = true;
     hasted_ticks     = true;
-    spell_haste      = true;
+    use_spell_haste  = true;
     tick_may_crit    = true;
     may_crit         = false;
     may_dodge        = false;
