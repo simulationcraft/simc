@@ -378,6 +378,8 @@ player_t* battle_net_t::download_player( sim_t* sim,
   return p;
 }
 
+// battle_net_t::download_guild =============================================
+
 bool battle_net_t::download_guild( sim_t* sim,
                                    const std::string& region,
                                    const std::string& server,

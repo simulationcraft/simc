@@ -19,12 +19,16 @@ inline T clamp( T x, T low, T high )
   return x < low ? low : ( high < x ? high : x );
 }
 
+// urlencode ================================================================
+
 std::string urlencode( const std::string& s )
 {
   std::string encoded = s;
   util_t::urlencode( encoded );
   return encoded;
 }
+
+// get_region_host ==========================================================
 
 std::string get_region_host( const std::string& region )
 {
@@ -33,6 +37,8 @@ std::string get_region_host( const std::string& region )
   else
     return "http://" + urlencode( region ) + ".battle.net/";
 }
+
+// download_id ==============================================================
 
 js_node_t* download_id( sim_t* sim, const std::string& item_id, bool cache_only )
 {
@@ -54,6 +60,8 @@ js_node_t* download_id( sim_t* sim, const std::string& item_id, bool cache_only 
 
   return js_t::create( sim, result );
 }
+
+// download_guild ===========================================================
 
 js_node_t* download_guild( sim_t* sim,
                            const std::string& region,
@@ -81,6 +89,8 @@ js_node_t* download_guild( sim_t* sim,
   return js;
 }
 
+// parse_profession =========================================================
+
 void parse_profession( std::string& professions_str, js_node_t* profile, int index )
 {
   std::string key = "professions/primary/" + util_t::to_string( index );
@@ -97,6 +107,8 @@ void parse_profession( std::string& professions_str, js_node_t* profile, int ind
     }
   }
 }
+
+// pick_talents =============================================================
 
 js_node_t* pick_talents( js_node_t* talents, const std::string& specifier )
 {
@@ -136,6 +148,8 @@ js_node_t* pick_talents( js_node_t* talents, const std::string& specifier )
   return 0;
 }
 
+// parse_talents ============================================================
+
 bool parse_talents( player_t* p, js_node_t* talents )
 {
   std::string talent_encoding;
@@ -158,6 +172,8 @@ bool parse_talents( player_t* p, js_node_t* talents )
 
   return true;
 }
+
+// parse_glyphs =============================================================
 
 bool parse_glyphs( player_t* p, js_node_t* build )
 {
@@ -188,6 +204,8 @@ bool parse_glyphs( player_t* p, js_node_t* build )
 
   return true;
 }
+
+// parse_items ==============================================================
 
 bool parse_items( player_t* p, js_node_t* items )
 {
@@ -396,6 +414,8 @@ bool download_item( item_t& item, const std::string& item_id, bool cache_only )
   return true;
 }
 #endif
+
+// bcp_api::download_guild ==================================================
 
 bool download_guild( sim_t* sim, const std::string& region, const std::string& server, const std::string& name,
                      const std::vector<int>& ranks, int player_filter, int max_rank, bool allow_cache )
