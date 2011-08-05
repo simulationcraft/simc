@@ -152,6 +152,7 @@ struct mage_t : public player_t
   rng_t* rng_improved_freeze;
   rng_t* rng_nether_vortex;
   rng_t* rng_tier12_mirror_image;
+  rng_t* rng_mage_armor_start;
 
   // Rotation (DPS vs DPM)
   struct rotation_t
@@ -2412,6 +2413,60 @@ struct mage_armor_t : public mage_spell_t
   }
 };
 
+// Mage Armor Event
+
+struct mage_armor_event_t : public event_t
+{
+  buff_t* buff;
+  double tick_time;
+
+  mage_armor_event_t ( player_t* player,buff_t* b, double d ) :
+    event_t( player -> sim, player ), buff( 0 ), tick_time( d )
+  {
+    buff = b;
+    name = "tier12_heal_2pc";
+    if ( tick_time < 0 ) tick_time = 0;
+    if ( tick_time > 5 ) tick_time = 5;
+    sim -> add_event( this, tick_time );
+  }
+
+  virtual void execute()
+  {
+
+    if ( buff -> check() )
+    {
+      mage_t* p = player -> cast_mage();
+
+      double gain_amount = p -> resource_max[ RESOURCE_MANA ] * p -> spells.mage_armor -> effect2().percent();
+      gain_amount *= 1.0 + p -> glyphs.mage_armor -> effect1().percent();
+
+      p -> resource_gain( RESOURCE_MANA, gain_amount, p -> gains_mage_armor );
+
+      new ( sim ) mage_armor_event_t( player, buff, 5.0 );
+    }
+  }
+};
+
+// Mage Armor Buff
+
+struct mage_armor_buff_t : public buff_t
+{
+  mage_armor_buff_t( player_t* p, spell_data_t* spell, ... ) :
+    buff_t ( p, spell, NULL )
+  {
+
+  }
+
+  virtual void start( int stacks, double value )
+  {
+    mage_t* p = player -> cast_mage();
+    double d = p -> rng_mage_armor_start -> real() * 5.0; // Random start of the first mana regen tick.
+    new ( sim ) mage_armor_event_t( player, this, d );
+    buff_t::start( stacks, value );
+
+  }
+};
+
 // Mana Gem =================================================================
 
 struct mana_gem_t : public action_t
@@ -3182,7 +3237,7 @@ void mage_t::init_buffs()
   buffs_icy_veins            = new buff_t( this, spells.icy_veins,             "cooldown", 0.0, NULL ); // CD managed in action
   buffs_improved_mana_gem    = new buff_t( this, talents.improved_mana_gem,    "duration", 15.0, NULL );
   buffs_invocation           = new buff_t( this, talents.invocation,           NULL );
-  buffs_mage_armor           = new buff_t( this, spells.mage_armor,            NULL );
+  buffs_mage_armor           = new mage_armor_buff_t( this, spells.mage_armor,            NULL );
   buffs_molten_armor         = new buff_t( this, spells.molten_armor,          NULL );
 
   buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2 );
@@ -3252,6 +3307,7 @@ void mage_t::init_rng()
   rng_improved_freeze     = get_rng( "improved_freeze"     );
   rng_nether_vortex       = get_rng( "nether_vortex"       );
   rng_tier12_mirror_image = get_rng( "tier12_mirror_image" );
+  rng_mage_armor_start    = get_rng( "rng_mage_armor_start");
 }
 
 // mage_t::init_actions =====================================================
@@ -3624,15 +3680,7 @@ void mage_t::regen( double periodicity )
 
   player_t::regen( periodicity );
 
-  if ( buffs_mage_armor -> up() )
-  {
-    double gain_amount = resource_max[ RESOURCE_MANA ] * spells.mage_armor -> effect2().percent();
-    gain_amount *= periodicity / 5.0;
-    gain_amount *= 1.0 + glyphs.mage_armor -> effect1().percent();
-
-    resource_gain( RESOURCE_MANA, gain_amount, gains_mage_armor );
-  }
-  else if ( buffs_frost_armor -> up() && glyphs.frost_armor -> ok() )
+  if ( buffs_frost_armor -> up() && glyphs.frost_armor -> ok() )
   {
     double gain_amount = resource_max[ RESOURCE_MANA ] * glyphs.frost_armor -> effect1().percent();
     gain_amount *= periodicity / 5.0;
