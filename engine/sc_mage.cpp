@@ -2424,7 +2424,7 @@ struct mage_armor_event_t : public event_t
     event_t( player -> sim, player ), buff( 0 ), tick_time( d )
   {
     buff = b;
-    name = "tier12_heal_2pc";
+    name = "mage_armor";
     if ( tick_time < 0 ) tick_time = 0;
     if ( tick_time > 5 ) tick_time = 5;
     sim -> add_event( this, tick_time );
