@@ -2413,57 +2413,45 @@ struct mage_armor_t : public mage_spell_t
   }
 };
 
-// Mage Armor Event
-
-struct mage_armor_event_t : public event_t
-{
-  buff_t* buff;
-  double tick_time;
-
-  mage_armor_event_t ( player_t* player,buff_t* b, double d ) :
-    event_t( player -> sim, player ), buff( 0 ), tick_time( d )
-  {
-    buff = b;
-    name = "mage_armor";
-    if ( tick_time < 0 ) tick_time = 0;
-    if ( tick_time > 5 ) tick_time = 5;
-    sim -> add_event( this, tick_time );
-  }
-
-  virtual void execute()
-  {
-
-    if ( buff -> check() )
-    {
-      mage_t* p = player -> cast_mage();
-
-      double gain_amount = p -> resource_max[ RESOURCE_MANA ] * p -> spells.mage_armor -> effect2().percent();
-      gain_amount *= 1.0 + p -> glyphs.mage_armor -> effect1().percent();
-
-      p -> resource_gain( RESOURCE_MANA, gain_amount, p -> gains_mage_armor );
-
-      new ( sim ) mage_armor_event_t( player, buff, 5.0 );
-    }
-  }
-};
-
-// Mage Armor Buff
+// Mage Armor Buff ==========================================================
 
 struct mage_armor_buff_t : public buff_t
 {
-  mage_armor_buff_t( player_t* p, spell_data_t* spell, ... ) :
-    buff_t ( p, spell, NULL )
+  struct mage_armor_event_t : public event_t
   {
+    mage_armor_event_t( player_t* player, double tick_time ) :
+      event_t( player -> sim, player, "mage_armor" )
+    {
+      if ( tick_time < 0 ) tick_time = 0;
+      if ( tick_time > 5 ) tick_time = 5;
+      sim -> add_event( this, tick_time );
+    }
 
-  }
+    virtual void execute()
+    {
+      mage_t* p = player -> cast_mage();
+      if ( p -> buffs_mage_armor -> check() )
+      {
+        double gain_amount = p -> resource_max[ RESOURCE_MANA ] * p -> spells.mage_armor -> effect2().percent();
+        gain_amount *= 1.0 + p -> glyphs.mage_armor -> effect1().percent();
+
+        p -> resource_gain( RESOURCE_MANA, gain_amount, p -> gains_mage_armor );
+
+        new ( sim ) mage_armor_event_t( player, 5.0 );
+      }
+    }
+  };
+
+  mage_armor_buff_t( player_t* p ) :
+    buff_t ( p, p -> cast_mage() -> spells.mage_armor )
+  {}
 
   virtual void start( int stacks, double value )
   {
     mage_t* p = player -> cast_mage();
     double d = p -> rng_mage_armor_start -> real() * 5.0; // Random start of the first mana regen tick.
-    new ( sim ) mage_armor_event_t( player, this, d );
+    new ( sim ) mage_armor_event_t( player, d );
     buff_t::start( stacks, value );
-
   }
 };
 
@@ -3237,7 +3225,7 @@ void mage_t::init_buffs()
   buffs_icy_veins            = new buff_t( this, spells.icy_veins,             "cooldown", 0.0, NULL ); // CD managed in action
   buffs_improved_mana_gem    = new buff_t( this, talents.improved_mana_gem,    "duration", 15.0, NULL );
   buffs_invocation           = new buff_t( this, talents.invocation,           NULL );
-  buffs_mage_armor           = new mage_armor_buff_t( this, spells.mage_armor,            NULL );
+  buffs_mage_armor           = new mage_armor_buff_t( this );
   buffs_molten_armor         = new buff_t( this, spells.molten_armor,          NULL );
 
   buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2 );
