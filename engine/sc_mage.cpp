@@ -2443,7 +2443,7 @@ struct mage_armor_buff_t : public buff_t
   };
 
   mage_armor_buff_t( player_t* p ) :
-    buff_t ( p, p -> cast_mage() -> spells.mage_armor )
+    buff_t ( p, p -> cast_mage() -> spells.mage_armor, NULL )
   {}
 
   virtual void start( int stacks, double value )
