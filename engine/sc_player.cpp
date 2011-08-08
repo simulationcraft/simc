@@ -781,9 +781,9 @@ void player_t::init()
   init_weapon( &main_hand_weapon );
   init_weapon( &off_hand_weapon );
   init_weapon( &ranged_weapon );
-  init_unique_gear();
-  init_enchant();
   init_professions();
+  init_unique_gear();
+  init_enchant();  
   init_consumables();
   init_scaling();
   init_buffs();
