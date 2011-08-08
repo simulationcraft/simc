@@ -2869,6 +2869,8 @@ void paladin_t::combat_begin()
   player_t::combat_begin();
 
   if ( talents.communion -> rank() ) sim -> auras.communion -> trigger();
+
+  resource_current[ RESOURCE_HOLY_POWER ] = 0;
 }
 
 // paladin_t::holy_power_stacks ==============================================
