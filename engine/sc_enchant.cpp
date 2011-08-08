@@ -668,6 +668,12 @@ static void register_synapse_springs( item_t* item )
 {
   player_t* p = item -> player;
 
+  if ( p -> profession[ PROF_ENGINEERING ] < 425 )
+  {
+    item -> sim -> errorf( "Player %s attempting to use synapse springs without 425 in engineering.\n", p -> name() );
+    return;
+  }
+
   int attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTRIBUTE_NONE };
   int stat[] = { STAT_STRENGTH, STAT_AGILITY, STAT_INTELLECT, STAT_NONE };
 
