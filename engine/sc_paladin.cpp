@@ -1570,7 +1570,7 @@ struct avenging_wrath_t : public paladin_spell_t
 struct consecration_tick_t : public paladin_spell_t
 {
   consecration_tick_t( paladin_t* p )
-    : paladin_spell_t( "consecration", 81297, p )
+    : paladin_spell_t( "consecration_tick", 81297, p )
   {
     aoe         = -1;
     dual        = true;
@@ -1578,6 +1578,7 @@ struct consecration_tick_t : public paladin_spell_t
     background  = true;
     may_crit    = true;
     may_miss    = true;
+    hasted_ticks = false;
 
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = extra_coeff();
@@ -1596,6 +1597,7 @@ struct consecration_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );;
 
+    hasted_ticks   = false;
     may_miss       = false;
     num_ticks      = 10;
     base_tick_time = 1;
