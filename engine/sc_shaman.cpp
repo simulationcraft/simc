@@ -2133,7 +2133,7 @@ struct chain_lightning_t : public shaman_spell_t
     {
       trigger_rolling_thunder( this );
 
-      double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
+      double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 ) / 3.0;
 
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
         overload -> execute();
