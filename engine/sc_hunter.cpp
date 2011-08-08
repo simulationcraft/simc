@@ -894,7 +894,6 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
   }
 }
 
-
 // trigger_tier12_2pc_melee ========================================
 
 static void trigger_tier12_2pc_melee( attack_t* a )
@@ -915,7 +914,6 @@ static void trigger_tier12_2pc_melee( attack_t* a )
     p -> flaming_arrow -> execute();
   }  
 }
-
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -1331,7 +1329,6 @@ struct rabid_t : public hunter_pet_spell_t
 
     parse_options( NULL, options_str );
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
-
   }
 
   virtual void execute()
@@ -1712,6 +1709,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
 
     add_child( tick_spell );
   }
+
   virtual void tick()
   {
     tick_spell -> execute();

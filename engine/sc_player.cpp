@@ -1857,7 +1857,6 @@ item_t* player_t::find_item( const std::string& str )
   return 0;
 }
 
-
 // player_t::energy_regen_per_second ======================================
 
 double player_t::energy_regen_per_second() SC_CONST
@@ -4264,9 +4263,10 @@ struct stop_moving_t : public action_t
 
 struct arcane_torrent_t : public action_t
 {
-  arcane_torrent_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "arcane_torrent", player )
+  arcane_torrent_t( player_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "arcane_torrent", p )
   {
+    check_race( RACE_BLOOD_ELF );
     parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 120;
@@ -4331,9 +4331,10 @@ struct arcane_torrent_t : public action_t
 
 struct berserking_t : public action_t
 {
-  berserking_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "berserking", player )
+  berserking_t( player_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "berserking", p )
   {
+    check_race( RACE_TROLL );
     parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 180;
@@ -4364,9 +4365,10 @@ struct berserking_t : public action_t
 
 struct blood_fury_t : public action_t
 {
-  blood_fury_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "blood_fury", player )
+  blood_fury_t( player_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "blood_fury", p )
   {
+    check_race( RACE_ORC );
     parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 120;
@@ -4409,11 +4411,20 @@ struct rocket_barrage_t : public spell_t
   rocket_barrage_t( player_t* p, const std::string& options_str ) :
     spell_t( "rocket_barrage", 69041, p )
   {
+    check_race( RACE_GOBLIN );
     parse_options( NULL, options_str );
 
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = extra_coeff();
     direct_power_mod             = 1.0;
+  }
+
+  virtual bool ready()
+  {
+    if ( player -> race != RACE_GOBLIN )
+      return false;
+
+    return action_t::ready();
   }
 };
 
@@ -4421,9 +4432,10 @@ struct rocket_barrage_t : public spell_t
 
 struct stoneform_t : public action_t
 {
-  stoneform_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "stoneform", player )
+  stoneform_t( player_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "stoneform", p )
   {
+    check_race( RACE_DWARF );
     parse_options( NULL, options_str );
     trigger_gcd = 0;
     cooldown -> duration = 120;
@@ -4499,6 +4511,13 @@ struct lifeblood_t : public action_t
   lifeblood_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "lifeblood", player )
   {
+    if ( player -> profession[ PROF_HERBALISM ] < 450 )
+    {
+      sim -> errorf( "Player %s attempting to execute action %s without 450 in Herbalism.\n",
+                     player -> name(), name() );
+
+      background = true; // prevent action from being executed
+    }
     parse_options( NULL, options_str );
     harmful = false;
     trigger_gcd = 0;

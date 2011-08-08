@@ -1654,6 +1654,18 @@ void action_t::check_talent( int talent_rank )
   background = true; // prevent action from being executed
 }
 
+// action_t::check_race =====================================================
+
+void action_t::check_race( int race )
+{
+  if ( player -> race != race )
+  {
+    sim -> errorf( "Player %s attempting to execute action %s while not being a %s.\n", player -> name(), name(), util_t::race_type_string( race ) );
+
+    background = true; // prevent action from being executed
+  }
+}
+
 // action_t::check_spec =====================================================
 
 void action_t::check_spec( int necessary_spec )
