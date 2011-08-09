@@ -18,17 +18,12 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 
 static xml_node_t* download_id( sim_t*             sim,
                                 const std::string& id_str,
-                                int                cache_only=0 )
+                                cache::behavior_t  caching )
 {
-  if ( id_str.empty() || id_str == "" || id_str == "0" ) return 0;
-  std::string url = "http://db.mmo-champion.com/i/" + id_str + "/";
+  if ( id_str.empty() || id_str == "0" ) return 0;
+  std::string url = "http://db.mmo-champion.com/i/" + id_str + '/';
 
-  xml_node_t* node;
-
-  if ( cache_only )
-    node = xml_t::download_cache( sim, url );
-  else
-    node = xml_t::download( sim, url, "<h4>Item #", 0 );
+  xml_node_t* node = xml_t::get( sim, url, "<h4>Item #", caching );
 
   if ( sim -> debug ) xml_t::print( node );
   return node;
@@ -436,15 +431,15 @@ static bool parse_quality( item_t&     item,
 
 int mmo_champion_t::parse_gem( item_t&            item,
                                const std::string& gem_id,
-                               int cache_only )
+                               cache::behavior_t  caching )
 {
-  if ( gem_id.empty() || gem_id == "" || gem_id == "0" )
+  if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
 
-  xml_node_t* node = download_id( item.sim, gem_id, cache_only );
+  xml_node_t* node = download_id( item.sim, gem_id, caching );
   if ( ! node )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       item.sim -> errorf( "Player %s unable to download gem id %s from mmo-champion.\n",
                           item.player -> name(), gem_id.c_str() );
     return GEM_NONE;
@@ -498,12 +493,12 @@ int mmo_champion_t::parse_gem( item_t&            item,
 bool mmo_champion_t::download_glyph( player_t*          player,
                                      std::string&       glyph_name,
                                      const std::string& glyph_id,
-                                     int cache_only )
+                                     cache::behavior_t  caching )
 {
-  xml_node_t* node = download_id( player -> sim, glyph_id, cache_only );
+  xml_node_t* node = download_id( player -> sim, glyph_id, caching );
   if ( ! node || ! xml_t::get_value( glyph_name, node, "title/." ) )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       player -> sim -> errorf( "Unable to download glyph id %s from mmo-champion\n", glyph_id.c_str() );
     return false;
   }
@@ -519,14 +514,14 @@ bool mmo_champion_t::download_glyph( player_t*          player,
 
 bool mmo_champion_t::download_item( item_t&            item,
                                     const std::string& item_id,
-                                    int cache_only )
+                                    cache::behavior_t  caching )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id, cache_only );
+  xml_node_t* node = download_id( item.sim, item_id, caching );
   if ( ! node )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       item.sim -> errorf( "Player %s unable to download item id '%s' from mmo-champion at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
@@ -585,14 +580,14 @@ bool mmo_champion_t::download_slot( item_t&            item,
                                     const std::string& reforge_id,
                                     const std::string& rsuffix_id,
                                     const std::string  gem_ids[ 3 ],
-                                    int cache_only )
+                                    cache::behavior_t  caching )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id, cache_only );
+  xml_node_t* node = download_id( item.sim, item_id, caching );
   if ( ! node )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       item.sim -> errorf( "Player %s nable to download item id '%s' from mmo-champion at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }

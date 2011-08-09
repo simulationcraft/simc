@@ -104,10 +104,10 @@ static xml_node_t* download_character_sheet( sim_t* sim,
                                              const std::string& region,
                                              const std::string& server,
                                              const std::string& name,
-                                             int cache )
+                                             cache::behavior_t  caching )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-sheet.xml?locale=en_US&r=" + server + "&n=" + name;
-  xml_node_t* node = xml_t::download( sim, url, "</characterTab>", ( cache ? 0 : -1 ), sim -> current_throttle );
+  xml_node_t* node = xml_t::get( sim, url, "</characterTab>", caching, sim -> current_throttle );
 
   if ( ! node )
   {
@@ -129,10 +129,10 @@ static xml_node_t* download_character_talents( sim_t* sim,
                                                const std::string& region,
                                                const std::string& server,
                                                const std::string& name,
-                                               int   cache )
+                                               cache::behavior_t  caching )
 {
   std::string url = "http://" + region + ".wowarmory.com/character-talents.xml?locale=en_US&r=" + server + "&n=" + name;
-  xml_node_t* node = xml_t::download( sim, url, "</talentGroup>", ( cache ? 0 : -1 ), sim -> current_throttle );
+  xml_node_t* node = xml_t::get( sim, url, "</talentGroup>", caching, sim -> current_throttle );
 
   if ( ! node )
   {
@@ -153,7 +153,7 @@ static xml_node_t* download_character_talents( sim_t* sim,
 static xml_node_t* download_item_tooltip( player_t* p,
                                           const std::string& id_str,
                                           int slot,
-                                          int cache_only )
+                                          cache::behavior_t caching )
 {
   sim_t* sim = p -> sim;
 
@@ -165,11 +165,9 @@ static xml_node_t* download_item_tooltip( player_t* p,
 
   xml_node_t* node;
 
-  if ( cache_only )
-    node = xml_t::download_cache( sim, url, p -> last_modified );
-  else
+  node = xml_t::get( sim, url, "</itemTooltip>", caching, sim -> current_throttle );
+  if ( caching != cache::ONLY )
   {
-    node = xml_t::download( sim, url, "</itemTooltip>", p -> last_modified, sim -> current_throttle );
     if ( ! node )
     {
       sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
@@ -189,18 +187,16 @@ static xml_node_t* download_item_tooltip( player_t* p,
 
 static xml_node_t* download_item_tooltip( player_t* p,
                                           const std::string& id_str,
-                                          int cache_only=0 )
+                                          cache::behavior_t caching )
 {
   sim_t* sim = p -> sim;
 
   std::string url = "http://" + p -> region_str + ".wowarmory.com/item-tooltip.xml?i=" + id_str;
   xml_node_t* node;
 
-  if ( cache_only )
-    node = xml_t::download_cache( sim, url );
-  else
+  node = xml_t::get( sim, url, "</itemTooltip>", caching, sim -> current_throttle );
+  if ( caching != cache::ONLY )
   {
-    node = xml_t::download( sim, url, "</itemTooltip>", 0, sim -> current_throttle );
     if ( ! node )
     {
       sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
@@ -672,11 +668,11 @@ bool armory_t::download_guild( sim_t* sim,
                                const std::vector<int>& ranks,
                                int player_filter,
                                int max_rank,
-                               int cache )
+                               cache::behavior_t caching )
 {
   std::string url = "http://" + region + ".wowarmory.com/guild-info.xml?r=" + server + "&gn=" + name;
 
-  xml_node_t* guild_info = xml_t::download( sim, url, "</members>", ( cache ? 0 : -1 ), sim -> current_throttle );
+  xml_node_t* guild_info = xml_t::get( sim, url, "</members>", caching, sim -> current_throttle );
   if ( ! guild_info )
   {
     sim -> current_throttle = sim -> current_throttle > 20 ? sim -> current_throttle : 20 ;
@@ -742,12 +738,12 @@ bool armory_t::download_guild( sim_t* sim,
       util_t::format_text( formatted_name, sim -> input_is_utf8 );
 
       sim -> errorf( "Downloading character: %s\n", formatted_name.c_str() );
-      player_t* p = armory_t::download_player( sim, region, server, character_name, "active", cache );
+      player_t* p = armory_t::download_player( sim, region, server, character_name, "active", caching );
 
       if ( ! p )
       {
         sim -> errorf( "simulationcraft: Armory failed...  Attempting to download character from wowhead.\n" );
-        p = wowhead_t::download_player( sim, region, server, character_name, 1 );
+        p = wowhead_t::download_player( sim, region, server, character_name, true, caching );
       }
       if ( ! p ) return false;
 
@@ -775,13 +771,13 @@ player_t* armory_t::download_player( sim_t* sim,
                                      const std::string& server,
                                      const std::string& name,
                                      const std::string& talents_description,
-                                     int cache )
+                                     cache::behavior_t  caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = name;
 
-  xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, name, cache );
-  xml_node_t* talents_xml = download_character_talents( sim, region, server, name, cache );
+  xml_node_t*   sheet_xml = download_character_sheet  ( sim, region, server, name, caching );
+  xml_node_t* talents_xml = download_character_talents( sim, region, server, name, caching );
 
   if ( ! sheet_xml || ! talents_xml )
   {
@@ -810,7 +806,7 @@ player_t* armory_t::download_player( sim_t* sim,
 
   if( ! talents_description.empty() && ( talents_description != "active" ) )
   {
-    name_str += "_" + talents_description;
+    name_str += '_' + talents_description;
   }
 
   player_t* p = player_t::create( sim, type_str, name_str, r );
@@ -844,8 +840,8 @@ player_t* armory_t::download_player( sim_t* sim,
     if ( xml_t::get_value(   key_str, skill_nodes[ i ], "key"   ) &&
          xml_t::get_value( value_str, skill_nodes[ i ], "value" ) )
     {
-      if ( i ) p -> professions_str += "/";
-      p -> professions_str += key_str + "=" + value_str;
+      if ( i ) p -> professions_str += '/';
+      p -> professions_str += key_str + '=' + value_str;
     }
   }
 
@@ -988,14 +984,14 @@ player_t* armory_t::download_player( sim_t* sim,
 
 bool armory_t::download_slot( item_t& item,
                               const std::string& id_str,
-                              int cache_only )
+                              cache::behavior_t  caching )
 {
   player_t* p = item.player;
 
-  xml_node_t* slot_xml = download_item_tooltip( p, id_str, item.slot, cache_only );
+  xml_node_t* slot_xml = download_item_tooltip( p, id_str, item.slot, caching );
   if ( ! slot_xml )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       item.sim -> errorf( "Unable to download item %s from armory at slot %d for player %s\n", id_str.c_str(), item.slot, p -> name() );
     return false;
   }
@@ -1061,14 +1057,14 @@ bool armory_t::download_slot( item_t& item,
 
 bool armory_t::download_item( item_t& item,
                               const std::string& id_str,
-                              int cache_only )
+                              cache::behavior_t  caching )
 {
   player_t* p = item.player;
 
-  xml_node_t* item_xml = download_item_tooltip( p, id_str, cache_only );
+  xml_node_t* item_xml = download_item_tooltip( p, id_str, caching );
   if ( ! item_xml )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       item.sim -> errorf( "Player %s unable to download item %s from armory at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }

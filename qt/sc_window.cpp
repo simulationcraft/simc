@@ -1125,7 +1125,6 @@ void ImportThread::importBattleNet()
 
 void ImportThread::importCharDev()
 {
-  QString region, server, character;
   QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
   int count = tokens.count();
   if( count > 0 )

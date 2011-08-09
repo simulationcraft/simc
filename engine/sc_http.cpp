@@ -6,6 +6,14 @@
 #include "simulationcraft.h"
 #include "utf8.h"
 
+#include <fstream>
+
+#ifdef USE_TR1
+#include <unordered_map>
+#else
+#include <map>
+#endif
+
 // Cross-Platform Support for HTTP-Download =================================
 
 // ==========================================================================
@@ -14,9 +22,11 @@
 
 // http_t::proxy_* ==========================================================
 
-std::string http_t::proxy_type = "none";
-std::string http_t::proxy_host = "";
+std::string http_t::proxy_type;
+std::string http_t::proxy_host;
 int         http_t::proxy_port = 0;
+
+cache::cache_control_t cache::cache_control_t::singleton;
 
 // http_t::clear_cache ======================================================
 
@@ -31,21 +41,26 @@ bool http_t::clear_cache( sim_t* sim,
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-static const char*  url_cache_file = "simc_cache.dat";
-static const double url_cache_version = 2.0;
+static const char* const url_cache_file = "simc_cache.dat";
+static const double url_cache_version = 3.0;
 
 static void* cache_mutex = 0;
 
-struct url_cache_t
+struct url_cache_entry_t
 {
-  std::string url;
   std::string result;
-  int64_t timestamp;
-  url_cache_t() : timestamp( 0 ) {}
-  url_cache_t( const std::string& u, const std::string& r, int64_t t ) : url( u ), result( r ), timestamp( t ) {}
+  cache::era_t era;
+  url_cache_entry_t() : era( cache::IN_THE_BEGINNING ) {};
+  url_cache_entry_t( const std::string& result_, cache::era_t era_ ) :
+    result( result_ ), era( era_ ) {}
 };
 
-static std::vector<url_cache_t> url_cache_db;
+#ifdef USE_TR1
+typedef std::tr1::unordered_map<std::string, url_cache_entry_t> url_db_t;
+#else
+typedef std::map<std::string, url_cache_entry_t> url_db_t;
+#endif // USE_TR1
+static url_db_t url_db;
 
 // parse_url ================================================================
 
@@ -55,90 +70,76 @@ static bool parse_url( std::string&    host,
                        const char*     url )
 {
   if ( strncmp( url, "http://", 7 ) ) return false;
+  url += 7;
 
-  char buffer[ 2048 ];
-  strcpy( buffer, url+7 );
+  port = 80;
 
-  char* port_start = strstr( buffer, ":" );
-  char* path_start = strstr( buffer, "/" );
-
-  if ( ! path_start ) return false;
-
-  *path_start = '\0';
-
-  if ( port_start )
+  host.clear();
+  while( *url )
   {
-    *port_start = '\0';
-    port = atoi( port_start + 1 );
+    if ( *url == ':' )
+    {
+      port = strtol( url + 1, const_cast<char**>( &url ), 10 );
+      break;
+    }
+
+    if ( *url == '/' )
+      break;
+
+    host.push_back( *url++ );
   }
-  else port = 80;
 
-  host = buffer;
+  path = '/';
 
-  path = "/";
-  path += ( path_start + 1 );
+  if ( !*url )
+    return true;
 
+  if ( *url++ != '/' )
+    return false;
+
+  path.append( url );
   return true;
 }
 
 // build_request ============================================================
 
-static std::string build_request( std::string&   host,
-                                  std::string&   path,
+static std::string build_request( const std::string&   host,
+                                  const std::string&   path,
                                   unsigned short port )
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
-  char buffer[2048];
+  std::stringstream request;
+  bool use_proxy = ( http_t::proxy_type == "http" );
 
-  if ( http_t::proxy_type == "http" )
+  request << "GET ";
+
+  if ( use_proxy )
   {
+    request << "http://" << host;
     // append port info only if not the standard port
-    char portbuff[7] = "\0";
     if ( port != 80 )
-    {
-      snprintf( portbuff, sizeof( portbuff ), ":%i", port );
-    }
-    // building a proxified request : absoluteURI without Host header
-    snprintf( buffer, sizeof( buffer ),
-              "GET http://%s%s%s HTTP/1.0\r\n"
-              "User-Agent: Firefox/3.0\r\n"
-              "Accept: */*\r\n"
-              "Cookie: loginChecked=1\r\n"
-              "Cookie: cookieLangId=en_US\r\n"
-              // Skip arenapass 2011 advertisement .. can we please have a sensible
-              // API soon?
-              "Cookie: int-WOW=1\r\n"
-              "Cookie: int-WOW-arenapass2011=1\r\n"
-              "Cookie: int-WOW-epic-savings-promo=1\r\n"
-              "Cookie: int-EuropeanInvitational2011=1\r\n"
-              "Connection: close\r\n"
-              "\r\n",
-              host.c_str(),
-              portbuff,
-              path.c_str() );
+      request << ':' << port;
   }
-  else
-  {
-    // building a direct request : using abs_path and Host header
-    snprintf( buffer, sizeof( buffer ),
-              "GET %s HTTP/1.0\r\n"
-              "User-Agent: Firefox/3.0\r\n"
-              "Accept: */*\r\n"
-              "Host: %s\r\n"
-              "Cookie: loginChecked=1\r\n"
-              "Cookie: cookieLangId=en_US\r\n"
-              // Skip arenapass 2011 advertisement .. can we please have a sensible
-              // API soon?
-              "Cookie: int-WOW=1\r\n"
-              "Cookie: int-WOW-arenapass2011=1\r\n"
-              "Cookie: int-WOW-epic-savings-promo=1\r\n"
-              "Cookie: int-EuropeanInvitational2011=1\r\n"
-              "Connection: close\r\n"
-              "\r\n",
-              path.c_str(),
-              host.c_str() );
-  }
-  return std::string( buffer );
+
+  request << path << " HTTP/1.0\r\n"
+             "User-Agent: Firefox/3.0\r\n"
+             "Accept: */*\r\n";
+
+  if ( ! use_proxy )
+    request << "Host: " << host << "\r\n";
+
+  request << "Cookie: loginChecked=1\r\n"
+             "Cookie: cookieLangId=en_US\r\n"
+             // Skip arenapass 2011 advertisement .. can we please have a sensible
+             // API soon?
+             "Cookie: int-WOW=1\r\n"
+             "Cookie: int-WOW-arenapass2011=1\r\n"
+             "Cookie: int-WOW-epic-savings-promo=1\r\n"
+             "Cookie: int-EuropeanInvitational2011=1\r\n"
+             "Connection: close\r\n"
+             "\r\n";
+
+  return request.str();
 }
 
 // throttle =================================================================
@@ -152,246 +153,17 @@ static void throttle( int seconds )
   last = now;
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+// cache_set ================================================================
 
-// http_t::cache_load =======================================================
-
-bool http_t::cache_load()
+static void cache_set( const std::string& url,
+                       const std::string& result,
+                       int era )
 {
-  FILE* file = fopen( url_cache_file, "rb" );
-
-  if ( file )
-  {
-    double version;
-    uint32_t num_records, max_size;
-
-    if ( fread( &version,     sizeof( double   ), 1, file ) &&
-         fread( &num_records, sizeof( uint32_t ), 1, file ) &&
-         fread( &max_size,    sizeof( uint32_t ), 1, file ) )
-    {
-      if ( version == url_cache_version )
-      {
-        std::string url, result;
-        char* buffer = new char[ max_size+1 ];
-
-        for ( unsigned i=0; i < num_records; i++ )
-        {
-          int64_t timestamp;
-          uint32_t url_size, result_size;
-
-          if ( fread( &timestamp,   sizeof(  int64_t ), 1, file ) &&
-               fread( &url_size,    sizeof( uint32_t ), 1, file ) &&
-               fread( &result_size, sizeof( uint32_t ), 1, file ) )
-          {
-            assert( url_size > 0 && url_size <= max_size );
-            assert( result_size > 0 && result_size <= max_size );
-
-            if ( fread( buffer, sizeof( char ), url_size, file ) )
-            {
-              buffer[ url_size ] = '\0';
-              url = buffer;
-            }
-            else break;
-
-            if ( fread( buffer, sizeof( char ), result_size, file ) )
-            {
-              buffer[ result_size ] = '\0';
-              result = buffer;
-            }
-            else break;
-
-            cache_set( url, result, timestamp );
-          }
-          else break;
-        }
-        delete[] buffer;
-      }
-    }
-    fclose( file );
-  }
-
-  return true;
-}
-
-// http_t::cache_save =======================================================
-
-bool http_t::cache_save()
-{
-  FILE* file = fopen( url_cache_file, "wb" );
-  if ( file )
-  {
-    uint32_t num_records = ( uint32_t ) url_cache_db.size();
-    uint32_t max_size=0;
-
-    for ( unsigned i=0; i < num_records; i++ )
-    {
-      url_cache_t& c = url_cache_db[ i ];
-      uint32_t size = ( uint32_t ) std::max( c.url.size(), c.result.size() );
-      if ( size > max_size ) max_size = size;
-    }
-
-    if ( 1 != fwrite( &url_cache_version, sizeof( double   ), 1, file ) ||
-         1 != fwrite( &num_records,       sizeof( uint32_t ), 1, file ) ||
-         1 != fwrite( &max_size,          sizeof( uint32_t ), 1, file ) )
-    {
-      perror( "fwrite failed while saving cache file" );
-    }
-
-    for ( unsigned i=0; i < num_records; i++ )
-    {
-      url_cache_t& c = url_cache_db[ i ];
-
-      uint32_t    url_size = ( uint32_t ) c.   url.size();
-      uint32_t result_size = ( uint32_t ) c.result.size();
-
-      if ( 1 != fwrite( &( c.timestamp ), sizeof(  int64_t ), 1, file ) ||
-           1 != fwrite( &url_size,        sizeof( uint32_t ), 1, file ) ||
-           1 != fwrite( &result_size,     sizeof( uint32_t ), 1, file ) ||
-           url_size    != fwrite( c.   url.c_str(), sizeof( char ),    url_size, file ) ||
-           result_size != fwrite( c.result.c_str(), sizeof( char ), result_size, file ) )
-      {
-        perror( "fwrite failed while saving cache file" );
-      }
-    }
-
-    fclose( file );
-  }
-
-  return true;
-}
-
-// http_t::cache_clear ======================================================
-
-void http_t::cache_clear()
-{
-  thread_t::mutex_lock( cache_mutex );
-  url_cache_db.clear();
-  thread_t::mutex_unlock( cache_mutex );
-}
-
-
-// http_t::cache_get ========================================================
-
-bool http_t::cache_get( std::string&       result,
-                        const std::string& url,
-                        int64_t            timestamp )
-{
-  if ( timestamp < 0 ) return false;
-
-  thread_t::mutex_lock( cache_mutex );
-
-  bool success = false;
-
-  int num_records = ( int ) url_cache_db.size();
-  for ( int i=0; i < num_records && ! success; i++ )
-  {
-    url_cache_t& c = url_cache_db[ i ];
-
-    if ( url == c.url )
-    {
-      if ( timestamp > 0 )
-        if ( timestamp > c.timestamp )
-          break;
-
-      result = c.result;
-      success = true;
-    }
-  }
-
-  thread_t::mutex_unlock( cache_mutex );
-
-  return success;
-}
-
-// http_t::cache_set ========================================================
-
-void http_t::cache_set( const std::string& url,
-                        const std::string& result,
-                        int64_t            timestamp )
-{
-  thread_t::mutex_lock( cache_mutex );
-
-  int num_records = ( int ) url_cache_db.size();
-  bool success = false;
-
-  for ( int i=0; i < num_records; i++ )
-  {
-    url_cache_t& c = url_cache_db[ i ];
-
-    if ( url == c.url )
-    {
-      c.url = url;
-      c.result = result;
-      c.timestamp = timestamp;
-      success = true;
-      break;
-    }
-  }
-
-  if ( ! success ) url_cache_db.push_back( url_cache_t( url, result, timestamp ) );
-
-  thread_t::mutex_unlock( cache_mutex );
-}
-
-// http_t::get ==============================================================
-
-bool http_t::get( std::string& result,
-                  const std::string& url,
-                  const std::string& confirmation,
-                  int64_t timestamp,
-                  int throttle_seconds )
-{
-  static void* mutex = 0;
-
-  thread_t::mutex_lock( mutex );
-
-  result.clear();
-
-  bool success = cache_get( result, url, timestamp );
-
-  if ( ! success )
-  {
-    util_t::printf( "@" ); fflush( stdout );
-    throttle( throttle_seconds );
-    std::string encoded_url;
-    success = download( result, format( encoded_url, url ) );
-
-    if ( success )
-    {
-      if ( confirmation.size() > 0 && ( result.find( confirmation ) == std::string::npos ) )
-      {
-        //util_t::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
-        //util_t::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
-        fflush( stdout );
-        success = false;
-      }
-      else
-      {
-        cache_set( url, result, timestamp );
-      }
-    }
-  }
-
-  thread_t::mutex_unlock( mutex );
-
-  return success;
-}
-
-// http_t::format ===========================================================
-
-std::string& http_t::format( std::string& encoded_url,
-                             const std::string& url )
-{
-  encoded_url.clear();
-  bool is_utf8 = utf8::is_valid( url.begin(), url.end() );
-  encoded_url = url;
-
-  if ( is_utf8 )
-    util_t::urlencode( encoded_url );
-  else
-    util_t::urlencode( util_t::str_to_utf8( encoded_url ) );
-
-  return encoded_url;
+  // writer lock
+  thread_t::auto_lock_t lock( cache_mutex );
+  url_cache_entry_t& c = url_db[ url ];
+  c.result = result;
+  c.era = era;
 }
 
 #if defined( NO_HTTP )
@@ -400,10 +172,10 @@ std::string& http_t::format( std::string& encoded_url,
 // NO HTTP-DOWNLOAD SUPPORT
 // ==========================================================================
 
-// http_t::download =========================================================
+// download =================================================================
 
-bool http_t::download( std::string& result,
-                       const std::string& url )
+static bool download( std::string& result,
+                      const std::string& url )
 {
   return false;
 }
@@ -419,49 +191,46 @@ bool http_t::download( std::string& result,
 #include <windows.h>
 #include <wininet.h>
 
-// http_t::download =========================================================
+// download =================================================================
 
-bool http_t::download( std::string& result,
-                       const std::string& url )
+static bool download( std::string& result,
+                      const std::string& url )
 {
   // hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PROXY, "proxy-server", NULL, 0 );
 
-  result = "";
-  HINTERNET hINet, hFile;
-  hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
-  if ( hINet )
+  result.clear();
+  HINTERNET hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+  if ( !hInet )
+    return false;
+
+  std::wstring wURL( url.length(), L' ' );
+  std::copy( url.begin(), url.end(), wURL.begin() );
+
+  std::wstring wHeaders;
+  wHeaders += L"Cookie: loginChecked=1\r\n";
+  wHeaders += L"Cookie: cookieLangId=en_US\r\n";
+  // Skip arenapass 2011 advertisement .. can we please have a sensible
+  // API soon?
+  wHeaders += L"Cookie: int-WOW=1\r\n";
+  wHeaders += L"Cookie: int-WOW-arenapass2011=1\r\n";
+  wHeaders += L"Cookie: int-WOW-epic-savings-promo=1\r\n";
+  wHeaders += L"Cookie: int-EuropeanInvitational2011=1\r\n";
+
+  HINTERNET hFile = InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 );
+  if ( hFile )
   {
-    std::wstring wURL( url.length(), L' ' );
-    std::copy( url.begin(), url.end(), wURL.begin() );
-
-    std::wstring wHeaders = L"";
-    wHeaders += L"Cookie: loginChecked=1\r\n";
-    wHeaders += L"Cookie: cookieLangId=en_US\r\n";
-    // Skip arenapass 2011 advertisement .. can we please have a sensible
-    // API soon?
-    wHeaders += L"Cookie: int-WOW=1\r\n";
-    wHeaders += L"Cookie: int-WOW-arenapass2011=1\r\n";
-    wHeaders += L"Cookie: int-WOW-epic-savings-promo=1\r\n";
-    wHeaders += L"Cookie: int-EuropeanInvitational2011=1\r\n";
-
-    hFile = InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 );
-    if ( hFile )
+    char buffer[ 20000 ];
+    DWORD amount;
+    while ( InternetReadFile( hFile, buffer, sizeof( buffer ), &amount ) )
     {
-      char buffer[ 20000 ];
-      DWORD amount;
-      while ( InternetReadFile( hFile, buffer, sizeof( buffer )-2, &amount ) )
-      {
-        if ( amount > 0 )
-        {
-          buffer[ amount ] = '\0';
-          result += buffer;
-        }
-        else break;
-      }
-      InternetCloseHandle( hFile );
+      if ( amount == 0 )
+        break;
+      result.append( &buffer[ 0 ], &buffer[ amount ] );
     }
-    InternetCloseHandle( hINet );
+    InternetCloseHandle( hFile );
   }
+  InternetCloseHandle( hINet );
+
   return result.size() > 0;
 }
 
@@ -487,10 +256,10 @@ bool http_t::download( std::string& result,
 
 #endif
 
-// http_t::download =========================================================
+// download =================================================================
 
-bool http_t::download( std::string& result,
-                       const std::string& url )
+static bool download( std::string& result,
+                      const std::string& url )
 {
 
 #if defined( __MINGW32__ )
@@ -521,10 +290,10 @@ bool http_t::download( std::string& result,
     struct hostent* h;
     sockaddr_in a;
 
-    if ( proxy_type == "http" )
+    if ( http_t::proxy_type == "http" )
     {
-      h = gethostbyname( proxy_host.c_str() );
-      a.sin_port = htons( proxy_port );
+      h = gethostbyname( http_t::proxy_host.c_str() );
+      a.sin_port = htons( http_t::proxy_port );
     }
     else
     {
@@ -534,10 +303,9 @@ bool http_t::download( std::string& result,
 
     if ( ! h ) return false;
     a.sin_family = AF_INET;
-    a.sin_addr = *( in_addr * )h->h_addr_list[0];
+    a.sin_addr = *( in_addr * )h -> h_addr_list[0];
 
-    int s;
-    s = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+    int s = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
     if ( s < 0 ) return false;
 
     int r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
@@ -548,23 +316,20 @@ bool http_t::download( std::string& result,
     }
 
     r = ::send( s, request.c_str(), request.size(), 0 );
-    if ( r != ( int ) request.size() )
+    if ( r != static_cast<int>( request.size() ) )
     {
       ::close( s );
       return false;
     }
 
-    result = "";
+    result.clear();
     char buffer[2048];
     while ( 1 )
     {
-      r = ::recv( s, buffer, sizeof( buffer )-1, 0 );
-      if ( r > 0 )
-      {
-        buffer[ r ] = '\0';
-        result += buffer;
-      }
-      else break;
+      r = ::recv( s, buffer, sizeof( buffer ), 0 );
+      if ( r <= 0 )
+        break;
+      result.append( &buffer[ 0 ], &buffer[ r ] );
     }
 
     ::close( s );
@@ -584,7 +349,6 @@ bool http_t::download( std::string& result,
     {
       if ( redirect < redirect_max )
       {
-
         std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
         current_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
         redirect ++;
@@ -593,7 +357,7 @@ bool http_t::download( std::string& result,
     }
     else
     {
-      result.erase( result.begin(), result.begin() + pos + 4 );
+      result.erase( 0, pos + 4 );
       return true;
     }
   }
@@ -601,6 +365,152 @@ bool http_t::download( std::string& result,
 }
 
 #endif
+
+// cache_get ================================================================
+
+static bool cache_get( std::string&       result,
+                       const std::string& url,
+                       cache::behavior_t  caching )
+{
+  // reader lock
+  thread_t::auto_lock_t lock( cache_mutex );
+
+  url_db_t::const_iterator p = url_db.find( url );
+  if ( p != url_db.end() && ( ( caching != cache::CURRENT ) || p -> second.era >= cache::era() ) )
+  {
+    result = p -> second.result;
+    return true;
+  }
+
+  return false;
+}
+
+} // ANONYMOUS NAMESPACE ====================================================
+
+// http_t::cache_load =======================================================
+
+void http_t::cache_load()
+{
+  try
+  {
+    std::ifstream file( url_cache_file, std::ios::binary );
+    if ( !file ) return;
+    file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
+    file.unsetf( std::ios::skipws );
+
+    double version;
+    file.read( reinterpret_cast<char*>( &version ) , sizeof( version ) );
+    if ( version != url_cache_version )
+      return;
+
+    std::string url, result;
+
+    while ( ! file.eof() )
+    {
+      uint32_t size;
+
+      file.read( reinterpret_cast<char*>( &size ), sizeof( size ) );
+      url.resize( size );
+      file.read( &url[ 0 ], size );
+
+      file.read( reinterpret_cast<char*>( &size ), sizeof( size ) );
+      result.resize( size );
+      file.read( &result[ 0 ], size );
+
+      cache_set( url, result, 0 );
+    }
+  }
+  catch( ... )
+  {}
+}
+
+// http_t::cache_save =======================================================
+
+void http_t::cache_save()
+{
+  try
+  {
+    std::ofstream file( url_cache_file, std::ios::binary );
+    if ( ! file ) return;
+    file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
+
+    file.write( reinterpret_cast<const char*>( &url_cache_version ), sizeof( url_cache_version ) );
+
+    for ( url_db_t::const_iterator p = url_db.begin(), e = url_db.end(); p != e; ++p )
+    {
+      uint32_t size = p -> first.size();
+      file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
+      file.write( p -> first.data(), size );
+
+      size = p -> second.result.size();
+      file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
+      file.write( p -> second.result.data(), size );
+    }
+  }
+  catch ( ... )
+  {}
+}
+
+// http_t::cache_clear ======================================================
+
+void http_t::cache_clear()
+{
+  // writer lock
+  thread_t::auto_lock_t lock( cache_mutex );
+  url_db.clear();
+}
+
+
+// http_t::get ==============================================================
+
+bool http_t::get( std::string&       result,
+                  const std::string& url,
+                  const std::string& confirmation,
+                  cache::behavior_t  caching,
+                  int                throttle_seconds )
+{
+  result.clear();
+
+  static void* mutex = 0;
+  thread_t::auto_lock_t lock( mutex );
+
+  if ( cache_get( result, url, caching ) )
+    return true;
+
+  if ( caching == cache::ONLY )
+    return false;
+
+  if ( true )
+    util_t::printf( "http_t download: \"%s\"\n", url.c_str() );
+
+  util_t::printf( "@" ); fflush( stdout );
+  throttle( throttle_seconds );
+
+  std::string encoded_url;
+  if ( ! download( result, format( encoded_url, url ) ) )
+    return false;
+
+  if ( confirmation.size() && ( result.find( confirmation ) == std::string::npos ) )
+  {
+    //util_t::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
+    //util_t::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
+    //fflush( stdout );
+    return false;
+  }
+
+  cache_set( url, result, cache::era() );
+
+  return true;
+}
+
+// http_t::format ===========================================================
+
+void http_t::_format( std::string& encoded_url,
+                      const std::string& url )
+{
+  encoded_url = url;
+  util_t::urlencode( util_t::str_to_utf8( encoded_url ) );
+}
 
 #ifdef UNIT_TEST
 
@@ -618,7 +528,7 @@ int main( int argc, char** argv )
   else util_t::printf( "Unable to download armory data.\n" );
 
 
-  if ( http_t::get( result, "http://www.wowhead.com/?item=40328&xml" ) )
+  if ( http_t::get( result, "http://www.wowhead.com/item=40328&xml" ) )
   {
     util_t::printf( "%s\n", result.c_str() );
   }

@@ -42,25 +42,28 @@ std::string& format_server( std::string& name )
 // download_profile =========================================================
 
 static js_node_t* download_profile( sim_t* sim,
-                                    const std::string& id )
+                                    const std::string& id,
+                                    cache::behavior_t caching )
 {
   std::string url_www = "http://www.wowhead.com/profile=load&id=" + id;
   std::string url_ptr = "http://ptr.wowhead.com/profile=load&id=" + id;
   std::string result;
 
-  if ( http_t::download( result, url_www ) || http_t::download( result, url_ptr ) )
+  if ( http_t::get( result, url_www, "WowheadProfiler.registerProfile(", caching ) ||
+       http_t::get( result, url_ptr, "WowheadProfiler.registerProfile(", caching ) )
   {
     std::string::size_type start = result.find( "WowheadProfiler.registerProfile(" );
-    if ( start != std::string::npos ) start = result.find( "{", start );
+    if ( start != std::string::npos ) start = result.find( '{', start );
     if ( start != std::string::npos )
     {
-      std::string::size_type finish = result.find( ";", start );
-      if ( finish != std::string::npos ) finish = result.rfind( "}", finish );
+      std::string::size_type finish = result.find( ';', start );
+      if ( finish != std::string::npos ) finish = result.rfind( '}', finish );
       if ( finish != std::string::npos )
       {
-        std::string buffer = result.substr( start, ( finish - start ) + 1 );
-        if ( sim -> debug ) util_t::fprintf( sim -> output_file, "Profile JS:\n%s\n", buffer.c_str() );
-        return js_t::create( sim, buffer );
+        result.resize( finish + 1 );
+        result.erase( 0, start );
+        if ( sim -> debug ) util_t::fprintf( sim -> output_file, "Profile JS:\n%s\n", result.c_str() );
+        return js_t::create( sim, result );
       }
     }
   }
@@ -70,27 +73,17 @@ static js_node_t* download_profile( sim_t* sim,
 
 // download_id ==============================================================
 
-static xml_node_t* download_id( sim_t* sim,
+static xml_node_t* download_id( sim_t*             sim,
                                 const std::string& id_str,
-                                int cache_only=0,
-                                bool ptr = false )
+                                cache::behavior_t  caching,
+                                bool               ptr=false )
 {
-  if ( id_str.empty() || id_str == "" || id_str == "0" ) return 0;
-  std::string url_www = "http://www.wowhead.com/item=" + id_str + "&xml";
-  if ( ptr )
-    url_www = "http://ptr.wowhead.com/item=" + id_str + "&xml";
+  if ( id_str.empty() || id_str == "0" ) return 0;
 
-  xml_node_t *node;
+  std::string url_www = ( ptr ? "http://ptr.wowhead.com/item=" : "http://www.wowhead.com/item=")
+      + id_str + "&xml";
 
-  if ( cache_only )
-  {
-    node = xml_t::download_cache( sim, url_www );
-  }
-  else
-  {
-    node = xml_t::download( sim, url_www, "</json>", 0 );
-  }
-
+  xml_node_t *node = xml_t::get( sim, url_www, "</json>", caching );
   if ( sim -> debug ) xml_t::print( node );
   return node;
 }
@@ -520,16 +513,16 @@ static const char* translate_inventory_id( int slot )
 
 int wowhead_t::parse_gem( item_t&            item,
                           const std::string& gem_id,
-                          int cache_only,
-                          bool ptr )
+                          cache::behavior_t  caching,
+                          bool               ptr )
 {
-  if ( gem_id.empty() || gem_id == "" || gem_id == "0" )
+  if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
 
-  xml_node_t* node = download_id( item.sim, gem_id, cache_only, ptr );
+  xml_node_t* node = download_id( item.sim, gem_id, caching, ptr );
   if ( ! node )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       item.sim -> errorf( "Player %s unable to download gem id %s from wowhead\n", item.player -> name(), gem_id.c_str() );
     return GEM_NONE;
   }
@@ -574,13 +567,13 @@ int wowhead_t::parse_gem( item_t&            item,
 bool wowhead_t::download_glyph( player_t*          player,
                                 std::string&       glyph_name,
                                 const std::string& glyph_id,
-                                int                cache_only,
+                                cache::behavior_t  caching,
                                 bool               ptr )
 {
-  xml_node_t* node = download_id( player -> sim, glyph_id, cache_only, ptr );
+  xml_node_t* node = download_id( player -> sim, glyph_id, caching, ptr );
   if ( ! node || ! xml_t::get_value( glyph_name, node, "name/cdata" ) )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       player -> sim -> errorf( "Unable to download glyph id %s from wowhead\n", glyph_id.c_str() );
     return false;
   }
@@ -595,15 +588,15 @@ bool wowhead_t::download_glyph( player_t*          player,
 
 bool wowhead_t::download_item( item_t&            item,
                                const std::string& item_id,
-                               int cache_only,
-                               bool ptr )
+                               cache::behavior_t  caching,
+                               bool               ptr )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id, cache_only, ptr );
+  xml_node_t* node = download_id( item.sim, item_id, caching, ptr );
   if ( ! node )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       item.sim -> errorf( "Player %s unable to download item id %s from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
@@ -662,15 +655,15 @@ bool wowhead_t::download_slot( item_t&            item,
                                const std::string& reforge_id,
                                const std::string& rsuffix_id,
                                const std::string  gem_ids[ 3 ],
-                               int cache_only,
-                               bool ptr )
+                               cache::behavior_t  caching,
+                               bool               ptr )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id, cache_only, ptr );
+  xml_node_t* node = download_id( item.sim, item_id, caching, ptr );
   if ( ! node )
   {
-    if ( ! cache_only )
+    if ( caching != cache::ONLY )
       item.sim -> errorf( "Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
@@ -762,7 +755,8 @@ player_t* wowhead_t::download_player( sim_t* sim,
                                       const std::string& region,
                                       const std::string& server,
                                       const std::string& name,
-                                      int use_active_talents )
+                                      bool               use_active_talents,
+                                      cache::behavior_t  caching )
 {
   std::string character_name = name;
   armory_t::format( character_name, FORMAT_CHAR_NAME_MASK | FORMAT_ASCII_MASK );
@@ -773,14 +767,14 @@ player_t* wowhead_t::download_player( sim_t* sim,
   std::string url = "http://www.wowhead.com/profile=" + region + "." + server_name + "." + character_name;
   std::string result;
 
-  if ( http_t::download( result, url ) )
+  if ( http_t::get( result, url, "profilah.initialize(", caching ) )
   {
     if ( sim -> debug ) util_t::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
 
     std::string::size_type start = result.find( "profilah.initialize(" );
     if ( start != std::string::npos )
     {
-      std::string::size_type finish = result.find( ";", start );
+      std::string::size_type finish = result.find( ';', start );
       if ( finish != std::string::npos )
       {
         std::vector<std::string> splits;
@@ -803,12 +797,13 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
 player_t* wowhead_t::download_player( sim_t* sim,
                                       const std::string& id,
-                                      int use_active_talents )
+                                      bool use_active_talents,
+                                      cache::behavior_t caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;
 
-  js_node_t* profile_js = download_profile( sim, id );
+  js_node_t* profile_js = download_profile( sim, id, caching );
 
   if ( ! profile_js )
   {

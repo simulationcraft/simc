@@ -10,10 +10,10 @@
 
 static bool pred_ci ( char a, char b )
 {
-  return tolower( a ) == tolower( b );
+  return std::tolower( a ) == std::tolower( b );
 }
 
-// compare_ci ==============================================================
+// util_t::str_compare_ci ==================================================
 
 bool util_t::str_compare_ci( const std::string& l,
                              const std::string& r )
@@ -24,7 +24,18 @@ bool util_t::str_compare_ci( const std::string& l,
   return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
-// compare_ci ==============================================================
+// util_t::str_prefix_ci ===================================================
+
+bool util_t::str_prefix_ci( const std::string& str,
+                            const std::string& prefix )
+{
+  if ( str.size() < prefix.size() )
+    return false;
+
+  return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
+}
+
+// util_t::str_in_str_ci ===================================================
 
 bool util_t::str_in_str_ci( const std::string& l,
                             const std::string& r )
@@ -162,7 +173,8 @@ int util_t::ability_rank( int player_level,
 
 char* util_t::dup( const char *value )
 {
-  return strcpy( ( char* ) malloc( strlen( value ) + 1 ), value );
+  std::size_t n = strlen( value ) + 1;
+  return static_cast<char*>( memcpy( malloc( n ), value, n ) );
 }
 
 // util_t::role_type_string ================================================
@@ -1757,60 +1769,40 @@ bool util_t::socket_gem_match( int socket,
 
 // util_t::string_split ====================================================
 
-int util_t::string_split( std::vector<std::string>& results,
-                          const std::string&        str,
-                          const char*               delim,
-                          bool                      allow_quotes )
+void util_t::_string_split( std::vector<std::string>& results,
+                            const std::string&        str,
+                            const char*               delim,
+                            bool                      allow_quotes )
 {
   std::string buffer = str;
-  std::string::size_type cut_pt;
+  std::string::size_type cut_pt, start = 0;
 
-  std::string search = delim;
-  search += '"';
-  bool in_quotes = false;
-  std::string temp_str;
+  std::string not_in_quote = delim;
+  if ( allow_quotes )
+    not_in_quote += '"';
 
-  while ( ( cut_pt = buffer.find_first_of( search ) ) != buffer.npos )
+  static const std::string in_quote = "\"";
+  const std::string* search = &not_in_quote;
+
+  while ( ( cut_pt = buffer.find_first_of( *search, start ) ) != buffer.npos )
   {
-    if ( cut_pt > 0 )
+    if ( allow_quotes && ( buffer[ cut_pt ] == '"' ) )
     {
-      if ( allow_quotes && ( buffer[cut_pt] == '"' ) )
-      {
-        in_quotes = !in_quotes;
-        temp_str = buffer.substr( 0, cut_pt );
-        temp_str += buffer.substr( cut_pt + 1 );
-        buffer = temp_str;
-        if ( in_quotes )
-        {
-          search = '"';
-        }
-        else
-        {
-          search = delim;
-          search += '"';
-        }
-      }
-      if ( !in_quotes )
-      {
+      buffer.erase( cut_pt, 1 );
+      start = cut_pt;
+      search = ( search == &not_in_quote ) ? &in_quote : &not_in_quote;
+    }
+    else if ( search == &not_in_quote )
+    {
+      if ( cut_pt > 0 )
         results.push_back( buffer.substr( 0, cut_pt ) );
-      }
-    }
-    if ( !in_quotes )
-    {
-      if ( buffer.length() > cut_pt )
-      {
-        buffer = buffer.substr( cut_pt + 1 );
-      }
-      else
-      {
-        buffer = "";
-      }
+      buffer.erase( 0, cut_pt + 1 );
+      start = 0;
     }
   }
+
   if ( buffer.length() > 0 )
-  {
     results.push_back( buffer );
-  }
 
   /*
     std::string buffer = str;
@@ -1829,7 +1821,6 @@ int util_t::string_split( std::vector<std::string>& results,
       results.push_back( buffer );
     }
   */
-  return static_cast<int>( results.size() );
 }
 
 // util_t::string_split ====================================================
@@ -1857,10 +1848,10 @@ int util_t::string_split( const std::string& str,
       if      ( f == "i" ) *( ( int* )         va_arg( vap, int*    ) ) = atoi( s );
       else if ( f == "f" ) *( ( double* )      va_arg( vap, double* ) ) = atof( s );
       else if ( f == "d" ) *( ( double* )      va_arg( vap, double* ) ) = atof( s );
-      else if ( f == "s" ) strcpy( ( char* )   va_arg( vap, char* ), s );
       else if ( f == "S" ) *( ( std::string* ) va_arg( vap, std::string* ) ) = s;
       else assert( 0 );
     }
+
     va_end( vap );
   }
 
@@ -1869,33 +1860,19 @@ int util_t::string_split( const std::string& str,
 
 // util_t::string_strip_quotes =============================================
 
-int util_t::string_strip_quotes( std::string& str )
+void util_t::string_strip_quotes( std::string& str )
 {
-  std::string old_string = str;
+  std::string::size_type pos = str.find_first_of( '"' );
+  if ( pos == str.npos ) return;
 
-  std::string::size_type cut_pt;
-
-  std::string search = "";
-  search += '"';
-  std::string temp_str;
-
-  while ( ( cut_pt = old_string.find_first_of( search ) ) != old_string.npos )
+  std::string::iterator dst = str.begin() + pos, src = dst;
+  while ( ++src != str.end() )
   {
-    if ( cut_pt > 0 )
-    {
-      temp_str = old_string.substr( 0, cut_pt );
-      temp_str += old_string.substr( cut_pt + 1 );
-      old_string = temp_str;
-    }
-    else
-    {
-      temp_str = old_string.substr( 1 );
-      old_string = temp_str;
-    }
+    if ( *src != '"' )
+      *dst++ = *src;
   }
 
-  str.swap( old_string );
-  return 0;
+  str.resize( dst - str.begin() );
 }
 
 // util_t::to_string =======================================================
@@ -1931,9 +1908,9 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   int num_splits = util_t::string_split( splits, month_day_year, " _,;-/ \t\n\r" );
   if ( num_splits != 3 ) return 0;
 
-  std::string month = splits[ 0 ];
-  std::string day   = splits[ 1 ];
-  std::string year  = splits[ 2 ];
+  std::string& month = splits[ 0 ];
+  std::string& day   = splits[ 1 ];
+  std::string& year  = splits[ 2 ];
 
   std::transform( month.begin(), month.end(), month.begin(), ( int( * )( int ) ) std::tolower );
 
@@ -2030,50 +2007,47 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
-std::string& util_t::str_to_utf8( std::string& str )
+void util_t::_str_to_utf8( std::string& str )
 {
-  std::string temp;
-  int l = str.length();
+  std::string::iterator p = utf8::find_invalid( str.begin(), str.end() );
+  if ( p == str.end() ) return;
 
-  if ( ! l ) return str;
-  if ( utf8::is_valid( str.begin(), str.end() ) ) return str;
-
-  for ( int i = 0; i < l; i++ )
-    utf8::append( ( unsigned char ) str[ i ], std::back_inserter( temp ) );
+  std::string temp( str.begin(), p );
+  for ( std::string::iterator e = str.end(); p != e; ++p )
+    utf8::append( static_cast<unsigned char>( *p ), std::back_inserter( temp ) );
 
   str.swap( temp );
-  return str;
 }
 
-std::string& util_t::str_to_latin1( std::string& str )
+void util_t::_str_to_latin1( std::string& str )
 {
-  if ( str.empty() ) return str;
-  if ( ! utf8::is_valid( str.begin(), str.end() ) ) return str;
+  if ( str.empty() ) return;
+  if ( ! utf8::is_valid( str.begin(), str.end() ) ) return;
+
 
   std::string temp;
-  std::string::iterator i = str.begin();
+  std::string::iterator i = str.begin(), e = str.end();
 
-  while ( i != str.end() )
-    temp += ( unsigned char ) utf8::next( i, str.end() );
+  while ( i != e )
+    temp += ( unsigned char ) utf8::next( i, e );
 
   str.swap( temp );
-  return str;
 }
 
-std::string& util_t::urlencode( std::string& str )
+void util_t::_urlencode( std::string& str )
 {
+  std::string::size_type l = str.length();
+  if ( ! l ) return;
+
   std::string temp;
-  int l = str.length();
-  char enc_str[4];
 
-  if ( ! l ) return str;
-
-  for ( int i = 0; i < l; i++ )
+  for ( std::string::size_type i = 0; i < l; ++i )
   {
     unsigned char c = str[ i ];
 
     if ( c > 0x7F || c == ' ' || c == '\'' )
     {
+      char enc_str[4];
       snprintf( enc_str, sizeof( enc_str ), "%%%02X", c );
       temp += enc_str;
     }
@@ -2086,25 +2060,22 @@ std::string& util_t::urlencode( std::string& str )
   }
 
   str.swap( temp );
-  return str;
 }
 
-std::string& util_t::urldecode( std::string& str )
+void util_t::_urldecode( std::string& str )
 {
-  std::string temp, sub;
-  int l = str.length();
+  std::string::size_type l = str.length();
+  if ( ! l ) return;
 
-  if ( ! l ) return str;
+  std::string temp;
 
-  for ( int i = 0; i < l; i++ )
+  for ( std::string::size_type i = 0; i < l; ++i )
   {
     unsigned char c = ( unsigned char ) str[ i ];
 
     if ( c == '%' && i + 2 < l )
     {
-      long c = 0;
-      sub = str.substr( i + 1, 2 );
-      c = strtol( sub.c_str(), 0, 16 );
+      long c = strtol( str.substr( i + 1, 2 ).c_str(), 0, 16 );
       if ( c ) temp += ( unsigned char ) c;
       i += 2;
     }
@@ -2115,23 +2086,20 @@ std::string& util_t::urldecode( std::string& str )
   }
 
   str.swap( temp );
-  return str;
 }
 
-std::string& util_t::format_text( std::string& name, bool input_is_utf8 )
+void util_t::_format_text( std::string& name, bool input_is_utf8 )
 {
-  if ( name.empty() ) return name;
+  if ( name.empty() ) return;
   bool is_utf8 = utf8::is_valid( name.begin(), name.end() );
 
   if ( is_utf8 && ! input_is_utf8 )
     util_t::str_to_latin1( name );
   else if ( ! is_utf8 && input_is_utf8 )
     util_t::str_to_utf8( name );
-
-  return name;
 }
 
-std::string& util_t::html_special_char_decode( std::string& str )
+void util_t::_html_special_char_decode( std::string& str )
 {
   std::string::size_type pos = 0;
 
@@ -2165,8 +2133,6 @@ std::string& util_t::html_special_char_decode( std::string& str )
       str.insert( pos, ">" );
     }
   }
-
-  return str;
 }
 
 void util_t::add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b )
@@ -2249,11 +2215,10 @@ double util_t::round( double X, unsigned int decplaces )
   }
 }
 
-std::string& util_t::tolower( std::string& str )
+void util_t::_tolower( std::string& str )
 {
   for( std::string::size_type i = 0, n = str.length(); i < n; ++i )
     str[i] = ::tolower( str[i] );
-  return str;
 }
 
 //-------------------------------

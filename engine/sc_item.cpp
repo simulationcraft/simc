@@ -1288,13 +1288,16 @@ bool item_t::download_slot( item_t& item,
   for ( unsigned i = 0; i < item.sim -> item_db_sources.size(); i++ )
   {
     if ( item.sim -> item_db_sources[ i ] == "wowhead" )
-      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1, item.player -> dbc.ptr );
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, cache::ONLY, item.player -> dbc.ptr );
     else if ( item.sim -> item_db_sources[ i ] == "ptrhead" )
-      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1, ! item.player -> dbc.ptr );
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, cache::ONLY, ! item.player -> dbc.ptr );
     else if ( item.sim -> item_db_sources[ i ] == "mmoc" )
-      success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 1 );
+      success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                               rsuffix_id, gem_ids, cache::ONLY );
     else if ( item.sim -> item_db_sources[ i ] == "armory" )
-      success = armory_t::download_slot( item, item_id, 1 );
+      success = armory_t::download_slot( item, item_id, cache::ONLY );
 
     if ( success ) return true;
   }
@@ -1303,15 +1306,19 @@ bool item_t::download_slot( item_t& item,
   for ( unsigned i = 0; i < item.sim -> item_db_sources.size(); i++ )
   {
     if ( item.sim -> item_db_sources[ i ] == "local" )
-      success = item_database_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids );
+      success = item_database_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                                rsuffix_id, gem_ids );
     else if ( item.sim -> item_db_sources[ i ] == "wowhead" )
-      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0, item.player -> dbc.ptr );
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, cache::behavior(), item.player -> dbc.ptr );
     else if ( item.sim -> item_db_sources[ i ] == "ptrhead" )
-      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0, ! item.player -> dbc.ptr );
+      success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, cache::behavior(), ! item.player -> dbc.ptr );
     else if ( item.sim -> item_db_sources[ i ] == "mmoc" )
-      success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids, 0 );
+      success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                               rsuffix_id, gem_ids, cache::behavior() );
     else if ( item.sim -> item_db_sources[ i ] == "armory" )
-      success = armory_t::download_slot( item, item_id, 0 );
+      success = armory_t::download_slot( item, item_id, cache::behavior() );
 
     if ( success ) return true;
   }
@@ -1337,13 +1344,13 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
   for ( unsigned i = 0; i < source_list.size(); i++ )
   {
     if ( source_list[ i ] == "wowhead" )
-      success = wowhead_t::download_item( item, item_id, 1 );
+      success = wowhead_t::download_item( item, item_id, cache::ONLY );
     else if ( source_list[ i ] == "ptrhead" )
-      success = wowhead_t::download_item( item, item_id, 1, true );
+      success = wowhead_t::download_item( item, item_id, cache::ONLY, true );
     else if ( source_list[ i ] == "mmoc" )
-      success = mmo_champion_t::download_item( item, item_id, 1 );
+      success = mmo_champion_t::download_item( item, item_id, cache::ONLY );
     else if ( source_list[ i ] == "armory" )
-      success = armory_t::download_item( item, item_id, 1 );
+      success = armory_t::download_item( item, item_id, cache::ONLY );
 
     if ( success ) return true;
   }
@@ -1354,13 +1361,13 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
     if ( source_list[ i ] == "local" )
       success = item_database_t::download_item( item, item_id );
     else if ( source_list[ i ] == "wowhead" )
-      success = wowhead_t::download_item( item, item_id, 0 );
+      success = wowhead_t::download_item( item, item_id );
     else if ( source_list[ i ] == "ptrhead" )
-      success = wowhead_t::download_item( item, item_id, 0, true );
+      success = wowhead_t::download_item( item, item_id, cache::behavior(), true );
     else if ( source_list[ i ] == "mmoc" )
-      success = mmo_champion_t::download_item( item, item_id, 0 );
+      success = mmo_champion_t::download_item( item, item_id );
     else if ( source_list[ i ] == "armory" )
-      success = armory_t::download_item( item, item_id, 0 );
+      success = armory_t::download_item( item, item_id );
 
     if ( success ) return true;
   }
@@ -1378,11 +1385,11 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
   for ( unsigned i = 0; i < player -> sim -> item_db_sources.size(); i++ )
   {
     if ( player -> sim -> item_db_sources[ i ] == "wowhead" )
-      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 1 );
+      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
     else if ( player -> sim -> item_db_sources[ i ] == "ptrhead" )
-      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 1, true );
+      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, cache::ONLY, true );
     else if ( player -> sim -> item_db_sources[ i ] == "mmoc" )
-      success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id, 1 );
+      success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
 
     if ( success ) return true;
   }
@@ -1393,11 +1400,11 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
     if ( player -> sim -> item_db_sources[ i ] == "local" )
       success = item_database_t::download_glyph( player, glyph_name, glyph_id );
     else if ( player -> sim -> item_db_sources[ i ] == "wowhead" )
-      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 0 );
+      success = wowhead_t::download_glyph( player, glyph_name, glyph_id );
     else if ( player -> sim -> item_db_sources[ i ] == "ptrhead" )
-      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, 0, true );
+      success = wowhead_t::download_glyph( player, glyph_name, glyph_id, cache::behavior(), true );
     else if ( player -> sim -> item_db_sources[ i ] == "mmoc" )
-      success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id, 0 );
+      success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id );
 
     if ( success ) return true;
   }
@@ -1427,11 +1434,11 @@ int item_t::parse_gem( item_t&            item,
   for ( unsigned i = 0; i < source_list.size(); i++ )
   {
     if ( source_list[ i ] == "wowhead" )
-      gem_type = wowhead_t::parse_gem( item, gem_id, 1 );
+      gem_type = wowhead_t::parse_gem( item, gem_id, cache::ONLY );
     else if ( source_list[ i ] == "ptrhead" )
-      gem_type = wowhead_t::parse_gem( item, gem_id, 1, true );
+      gem_type = wowhead_t::parse_gem( item, gem_id, cache::ONLY, true );
     else if ( source_list[ i ] == "mmoc" )
-      gem_type = mmo_champion_t::parse_gem( item, gem_id, 1 );
+      gem_type = mmo_champion_t::parse_gem( item, gem_id, cache::ONLY );
 
     if ( gem_type != GEM_NONE ) return gem_type;
   }
@@ -1442,11 +1449,11 @@ int item_t::parse_gem( item_t&            item,
     if ( source_list[ i ] == "local" )
       gem_type = item_database_t::parse_gem( item, gem_id );
     else if ( source_list[ i ] == "wowhead" )
-      gem_type = wowhead_t::parse_gem( item, gem_id, 0 );
+      gem_type = wowhead_t::parse_gem( item, gem_id );
     else if ( source_list[ i ] == "ptrhead" )
-      gem_type = wowhead_t::parse_gem( item, gem_id, 0, true );
+      gem_type = wowhead_t::parse_gem( item, gem_id, cache::behavior(), true );
     else if ( source_list[ i ] == "mmoc" )
-      gem_type = mmo_champion_t::parse_gem( item, gem_id, 0 );
+      gem_type = mmo_champion_t::parse_gem( item, gem_id );
 
     if ( gem_type != GEM_NONE ) return gem_type;
   }

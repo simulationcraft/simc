@@ -10,17 +10,16 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // download_profile =========================================================
 
 static js_node_t* download_profile( sim_t* sim,
-                                    const std::string& id )
+                                    const std::string& id,
+                                    cache::behavior_t caching )
 {
   std::string url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
   std::string profile_str;
 
-  if ( http_t::download( profile_str, url ) )
-  {
-    return js_t::create( sim, profile_str );
-  }
+  if ( ! http_t::get( profile_str, url, std::string(), caching ) )
+    return 0;
 
-  return 0;
+  return js_t::create( sim, profile_str );
 }
 
 // translate_slot ===========================================================
@@ -58,13 +57,13 @@ static const char* translate_slot( int slot )
 // chardev_t::download_player ===============================================
 
 player_t* chardev_t::download_player( sim_t* sim,
-                                      const std::string& id )
+                                      const std::string& id,
+                                      cache::behavior_t caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;
 
-  js_node_t* profile_js = download_profile( sim, id );
-
+  js_node_t* profile_js = download_profile( sim, id, caching );
   if ( ! profile_js )
   {
     sim -> errorf( "Unable to download character profile %s from chardev.\n", id.c_str() );

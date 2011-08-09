@@ -1535,6 +1535,17 @@ struct talent_translation_t
 
 struct util_t
 {
+private:
+  static void _str_to_utf8( std::string& str );
+  static void _str_to_latin1( std::string& str );
+  static void _urlencode( std::string& str );
+  static void _urldecode( std::string& str );
+  static void _format_text( std::string& name, bool input_is_utf8 );
+  static void _html_special_char_decode( std::string& str );
+  static void _tolower( std::string& );
+  static void _string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes );
+
+public:
   static double talent_rank( int num, int max, double increment );
   static double talent_rank( int num, int max, double value1, double value2, ... );
 
@@ -1618,9 +1629,10 @@ struct util_t
 
   static bool socket_gem_match( int socket, int gem );
 
-  static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
+  static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false )
+  { _string_split( results, str, delim, allow_quotes ); return static_cast<int>( results.size() ); }
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
-  static int string_strip_quotes( std::string& str );
+  static void string_strip_quotes( std::string& str );
 
   static std::string to_string( int i );
   static std::string to_string( double f, int precision );
@@ -1631,17 +1643,20 @@ struct util_t
   static int printf( const char *format,  ... );
   static int fprintf( FILE *stream, const char *format,  ... );
 
-  static std::string& str_to_utf8( std::string& str );
-  static std::string& str_to_latin1( std::string& str );
-  static std::string& urlencode( std::string& str );
-  static std::string& urldecode( std::string& str );
+  static std::string& str_to_utf8( std::string& str ) { _str_to_utf8( str ); return str; }
+  static std::string& str_to_latin1( std::string& str ) { _str_to_latin1( str ); return str; }
+  static std::string& urlencode( std::string& str ) { _urlencode( str ); return str; }
+  static std::string& urldecode( std::string& str ) { _urldecode( str ); return str; }
 
-  static std::string& format_text( std::string& name, bool input_is_utf8 );
+  static std::string& format_text( std::string& name, bool input_is_utf8 )
+  { _format_text( name, input_is_utf8 ); return name; }
 
-  static std::string& html_special_char_decode( std::string& str );
+  static std::string& html_special_char_decode( std::string& str )
+  { _html_special_char_decode( str ); return str; }
 
   static bool str_compare_ci( const std::string& l, const std::string& r );
   static bool str_in_str_ci ( const std::string& l, const std::string& r );
+  static bool str_prefix_ci ( const std::string& str, const std::string& prefix );
 
   static void add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b );
 
@@ -1649,7 +1664,7 @@ struct util_t
   static double ceil( double X, unsigned int decplaces = 0 );
   static double round( double X, unsigned int decplaces = 0 );
 
-  static std::string& tolower( std::string& );
+  static std::string& tolower( std::string& str ) { _tolower( str ); return str; }
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form
@@ -1984,7 +1999,13 @@ struct buff_t : public spell_id_t
           double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0, bool activated=true );
 
   // Player Buff with extracted data
+private:
+  void _init_from_talent( player_t*, talent_t* );
+  void _init_from_spell( player_t*, spell_data_t* );
+public:
+  buff_t( player_t*, talent_t* );
   buff_t( player_t*, talent_t*, ... );
+  buff_t( player_t*, spell_data_t* );
   buff_t( player_t*, spell_data_t*, ... );
 
   // Player Buff as spell_id_t by name
@@ -3442,6 +3463,7 @@ struct player_t
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
 
+
   virtual void create_talents();
   virtual void create_glyphs();
 
@@ -4422,7 +4444,67 @@ struct thread_t
   static void mutex_init( void*& mutex );
   static void mutex_lock( void*& mutex );
   static void mutex_unlock( void*& mutex );
+
+  class auto_lock_t
+  {
+  private:
+    void*& mutex;
+  public:
+    auto_lock_t( void*& mutex_ ) : mutex( mutex_ ) { mutex_lock( mutex ); }
+    ~auto_lock_t() { mutex_unlock( mutex ); }
+  };
 };
+
+// Cache Control =============================================================
+
+namespace cache {
+
+typedef unsigned int era_t;
+static const era_t IN_THE_BEGINNING = 0;  // A time before any other possible era;
+                                          // used to mark persistent caches at load.
+
+enum behavior_t
+{
+  ANY,      // * Use any version present in the cache, retrieve if not present.
+  CURRENT,  // * Use only current info from the cache; validate old versions as needed.
+  ONLY,     // * Use any version present in the cache, fail if not present.
+};
+
+class cache_control_t
+{
+private:
+  era_t current_era;
+  behavior_t default_cache_behavior;
+
+public:
+  cache_control_t() :
+    current_era( IN_THE_BEGINNING ), default_cache_behavior( CURRENT )
+  {}
+
+  era_t era() const { return current_era; }
+  void advance_era() { ++current_era; }
+
+  behavior_t default_behavior() const { return default_cache_behavior; }
+  void default_behavior( behavior_t b ) { default_cache_behavior = b; }
+
+  static cache_control_t singleton;
+};
+
+// Caching system's global notion of the current time.
+inline era_t era()
+{ return cache_control_t::singleton.era(); }
+
+// Time marches on.
+inline void advance_era()
+{ cache_control_t::singleton.advance_era(); }
+
+// Get/Set default cache behavior.
+inline behavior_t behavior()
+{ return cache_control_t::singleton.default_behavior(); }
+inline void behavior( behavior_t b )
+{ cache_control_t::singleton.default_behavior( b ); }
+
+}
 
 // Armory ====================================================================
 
@@ -4433,17 +4515,17 @@ struct armory_t
                               const std::string& server,
                               const std::string& name,
                               const std::vector<int>& ranks,
-                              int player_type = PLAYER_NONE,
+                              int player_type= PLAYER_NONE,
                               int max_rank=0,
-                              int cache=0 );
+                              cache::behavior_t b=cache::behavior() );
   static player_t* download_player( sim_t* sim,
                                     const std::string& region,
                                     const std::string& server,
                                     const std::string& name,
                                     const std::string& talents,
-                                    int cache=0 );
-  static bool download_slot( item_t&, const std::string& item_id, int cache_only=0 );
-  static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
+                                    cache::behavior_t  b=cache::behavior() );
+  static bool download_slot( item_t&, const std::string& item_id, cache::behavior_t b=cache::behavior() );
+  static bool download_item( item_t&, const std::string& item_id, cache::behavior_t b=cache::behavior() );
   static void fuzzy_stats( std::string& encoding, const std::string& description );
   static int  parse_meta_gem( const std::string& description );
   static std::string& format( std::string& name, int format_type = FORMAT_DEFAULT );
@@ -4458,15 +4540,15 @@ struct battle_net_t
                                     const std::string& server,
                                     const std::string& name,
                                     const std::string& talents,
-                                    int cache=0 );
+                                    cache::behavior_t b=cache::behavior() );
   static bool download_guild( sim_t* sim,
                               const std::string& region,
                               const std::string& server,
                               const std::string& name,
                               const std::vector<int>& ranks,
-                              int player_type = PLAYER_NONE,
+                              int player_type=PLAYER_NONE,
                               int max_rank=0,
-                              int cache=0 );
+                              cache::behavior_t b=cache::behavior() );
 };
 
 // Wowhead  ==================================================================
@@ -4477,8 +4559,12 @@ struct wowhead_t
                                     const std::string& region,
                                     const std::string& server,
                                     const std::string& name,
-                                    int active=1 );
-  static player_t* download_player( sim_t* sim, const std::string& id, int active=1 );
+                                    bool active=true,
+                                    cache::behavior_t b=cache::behavior() );
+  static player_t* download_player( sim_t* sim,
+                                    const std::string& id,
+                                    bool active=true,
+                                    cache::behavior_t b=cache::behavior() );
   static bool download_slot( item_t&,
                              const std::string& item_id,
                              const std::string& enchant_id,
@@ -4486,18 +4572,21 @@ struct wowhead_t
                              const std::string& reforge_id,
                              const std::string& rsuffix_id,
                              const std::string gem_ids[ 3 ],
-                             int cache_only=0,
+                             cache::behavior_t b=cache::behavior(),
                              bool ptr=false );
-  static bool download_item( item_t&, const std::string& item_id, int cache_only=0, bool ptr=false );
-  static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id, int cache_only=0, bool ptr=false );
-  static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0, bool ptr=false );
+  static bool download_item( item_t&, const std::string& item_id,
+                             cache::behavior_t b=cache::behavior(), bool ptr=false );
+  static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
+                              cache::behavior_t b=cache::behavior(), bool ptr=false );
+  static int  parse_gem( item_t& item, const std::string& gem_id,
+                         cache::behavior_t b=cache::behavior(), bool ptr=false );
 };
 
 // CharDev  ==================================================================
 
 struct chardev_t
 {
-  static player_t* download_player( sim_t* sim, const std::string& id );
+  static player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_t b=cache::behavior() );
 };
 
 // MMO Champion ==============================================================
@@ -4511,10 +4600,13 @@ struct mmo_champion_t
                              const std::string& reforge_id,
                              const std::string& rsuffix_id,
                              const std::string gem_ids[ 3 ],
-                             int cache_only=0 );
-  static bool download_item( item_t&, const std::string& item_id, int cache_only=0 );
-  static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id, int cache_only=0 );
-  static int  parse_gem( item_t& item, const std::string& gem_id, int cache_only=0 );
+                             cache::behavior_t b=cache::behavior() );
+  static bool download_item( item_t&, const std::string& item_id,
+                             cache::behavior_t b=cache::behavior() );
+  static bool download_glyph( player_t* player, std::string& glyph_name,
+                              const std::string& glyph_id, cache::behavior_t b=cache::behavior() );
+  static int  parse_gem( item_t& item, const std::string& gem_id,
+                         cache::behavior_t b=cache::behavior() );
 };
 
 // Rawr ======================================================================
@@ -4536,33 +4628,40 @@ namespace bcp_api
                        const std::vector<int>& ranks,
                        int player_type = PLAYER_NONE,
                        int max_rank=0,
-                       bool allow_cache=0 );
+                       cache::behavior_t b=cache::behavior() );
   player_t* download_player( sim_t*,
                              const std::string& region,
                              const std::string& server,
                              const std::string& name,
                              const std::string& talents=std::string("active"),
-                             bool allow_cache=false );
-  bool download_item( item_t&, const std::string& item_id, bool cache_only=false );
-  bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id, bool cache_only=false );
+                             cache::behavior_t b=cache::behavior() );
+  bool download_item( item_t&, const std::string& item_id, cache::behavior_t b=cache::behavior() );
+  bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
+                       cache::behavior_t b=cache::behavior() );
 }
 
 // HTTP Download  ============================================================
 
 struct http_t
 {
+private:
+  static void _format( std::string& encoded_url, const std::string& url );
+public:
   static std::string proxy_type;
   static std::string proxy_host;
   static int proxy_port;
-  static bool cache_load();
-  static bool cache_save();
+
+  static void cache_load();
+  static void cache_save();
   static void cache_clear();
-  static void cache_set( const std::string& url, const std::string& result, int64_t timestamp=0 );
-  static bool cache_get( std::string& result, const std::string& url, int64_t timestamp=0 );
-  static bool download( std::string& result, const std::string& url );
-  static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(), int64_t timestamp=0, int throttle_seconds=0 );
+
+  static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(),
+                   cache::behavior_t b=cache::behavior(), int throttle_seconds=0 );
+
   static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
-  static std::string& format( std::string& encoded_url, const std::string& url );
+
+  static std::string& format( std::string& encoded_url, const std::string& url )
+  { _format( encoded_url, url ); return encoded_url; }
 };
 
 // XML =======================================================================
@@ -4579,8 +4678,7 @@ struct xml_t
   static bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
-  static xml_node_t* download( sim_t* sim, const std::string& url, const std::string& confirmation=std::string(), int64_t timestamp=0, int throttle_seconds=0 );
-  static xml_node_t* download_cache( sim_t* sim, const std::string& url, int64_t timestamp=0 );
+  static xml_node_t* get( sim_t* sim, const std::string& url, const std::string& confirmation=std::string(), cache::behavior_t b=cache::behavior(), int throttle_seconds=0 );
   static xml_node_t* create( sim_t* sim, const std::string& input );
   static xml_node_t* create( sim_t* sim, FILE* input );
   static void print( xml_node_t* root, FILE* f=0, int spacing=0 );

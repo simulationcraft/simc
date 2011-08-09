@@ -5094,7 +5094,6 @@ void priest_t::init_actions()
                                                          action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
         if ( ! talents.archangel -> ok() )               action_list_str += "/mind_blast";
                                                          action_list_str += "/smite";
-        if ( talents.archangel -> ok() )                 action_list_str += ",if=buff.holy_evangelism.stack<5|buff.holy_evangelism.remains<cooldown.archangel.remains+0.5";
       }
       // HEALER
       else

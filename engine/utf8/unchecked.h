@@ -231,7 +231,7 @@ namespace utf8
             explicit iterator (const octet_iterator& octet_it): it(octet_it) {}
             // the default "big three" are OK
             octet_iterator base () const { return it; }
-            uint32_t operator * () const
+            uint32_t operator * ()
             {
                 return utf8::unchecked::next(it);
             }
@@ -260,6 +260,7 @@ namespace utf8
         template <class octet_iterator>
         class iterator : public utf8::unchecked::internal::iterator<octet_iterator, typename std::iterator_traits<octet_iterator>::iterator_category> {
         public:
+            iterator() {}
             iterator( const octet_iterator& it ) :
                 utf8::unchecked::internal::iterator<octet_iterator, typename std::iterator_traits<octet_iterator>::iterator_category>( it )
             {}
