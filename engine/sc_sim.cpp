@@ -715,8 +715,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     enchant = parent -> enchant;
 
     seed = parent -> seed;
-  } else
-    cache::advance_era();
+  }
 }
 
 // sim_t::~sim_t ============================================================
@@ -2142,6 +2141,7 @@ void sim_t::create_options()
     { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
     { "ptr",                              OPT_FUNC,   ( void* ) ::parse_ptr                         },
     { "threads",                          OPT_INT,    &( threads                                  ) },
+
     { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
     { "item_db_source",                   OPT_FUNC,   ( void* ) ::parse_item_sources                },
     { "proxy",                            OPT_FUNC,   ( void* ) ::parse_proxy                       },
@@ -2364,6 +2364,9 @@ bool sim_t::parse_options( int    _argc,
 
   if ( argc <= 1 ) return false;
 
+  if ( ! parent )
+    cache::advance_era();
+
   for ( int i=1; i < argc; i++ )
   {
     if ( ! option_t::parse_line( this, argv[ i ] ) )
@@ -2482,7 +2485,6 @@ int sim_t::main( int argc, char** argv )
   thread_t::init();
 
   http_t::cache_load();
-  cache::advance_era();
 
   dbc_t::init();
 

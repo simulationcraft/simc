@@ -91,9 +91,9 @@ buff_t::buff_t( player_t*          p,
   init();
 }
 
-// buff_t::_init_buff_from_talent ===========================================
+// buff_t::init_buff_from_talent_ ===========================================
 
-void buff_t::_init_from_talent( player_t* p, talent_t* talent )
+void buff_t::init_from_talent_( player_t* p, talent_t* talent )
 {
   if( talent -> rank() )
   {
@@ -118,7 +118,7 @@ buff_t::buff_t( player_t* p,
   max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
-  _init_from_talent( p, talent );
+  init_from_talent_( p, talent );
 
   va_list vap;
   va_start( vap, talent );
@@ -136,13 +136,13 @@ buff_t::buff_t( player_t* p,
   max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
-  _init_from_talent( p, talent );
+  init_from_talent_( p, talent );
   init();
 }
 
-// buff_t::_init_from_spell =================================================
+// buff_t::init_from_spell_ =================================================
 
-void buff_t::_init_from_spell( player_t* p, spell_data_t* spell )
+void buff_t::init_from_spell_( player_t* p, spell_data_t* spell )
 {
   max_stack = std::max( ( int ) spell -> max_stacks(), 1 );
   default_chance = spell -> proc_chance() ? spell -> proc_chance() : 1.0;
@@ -160,7 +160,7 @@ buff_t::buff_t( player_t*     p,
   max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
-  _init_from_spell( p, spell );
+  init_from_spell_( p, spell );
 
   va_list vap;
   va_start( vap, spell );
@@ -178,7 +178,7 @@ buff_t::buff_t( player_t*     p,
   max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
-  _init_from_spell( p, spell );
+  init_from_spell_( p, spell );
   init();
 }
 
@@ -313,7 +313,7 @@ buff_t::buff_t( player_t*          p,
   default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false ), quiet( q ), aura_id( 0 ), rng_type( rt )
 {
-  _init_buff_t();
+  init_buff_t_();
 
   cooldown = player -> get_cooldown( "buff_" + name_str );
   if ( cd < 0.0 )
@@ -361,7 +361,7 @@ buff_t::buff_t( player_t*          p,
   default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   reverse( r ), constant( false ), quiet( q ), aura_id( 0 ), rng_type( rt )
 {
-  _init_buff_t();
+  init_buff_t_();
 
   cooldown = player -> get_cooldown( "buff_" + name_str );
   if ( cd < 0.0 )
@@ -390,9 +390,9 @@ buff_t::buff_t( player_t*          p,
     log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );
 }
 
-// buff_t::_init_buff_t ====================================================
+// buff_t::init_buff_t_ ====================================================
 
-void buff_t::_init_buff_t()
+void buff_t::init_buff_t_()
 {
   // FIXME! For the love of all that is holy.... FIXME!
   // This routine will disappear once data-access rework is complete
@@ -1389,7 +1389,7 @@ new_buff_t::new_buff_t( player_t*          p,
     }
   }
 
-  _init_buff_t();
+  init_buff_t_();
 }
 
 bool new_buff_t::trigger( int stacks, double value, double chance )

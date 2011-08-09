@@ -366,25 +366,6 @@ static bool download( std::string& result,
 
 #endif
 
-// cache_get ================================================================
-
-static bool cache_get( std::string&       result,
-                       const std::string& url,
-                       cache::behavior_t  caching )
-{
-  // reader lock
-  thread_t::auto_lock_t lock( cache_mutex );
-
-  url_db_t::const_iterator p = url_db.find( url );
-  if ( p != url_db.end() && ( ( caching != cache::CURRENT ) || p -> second.era >= cache::era() ) )
-  {
-    result = p -> second.result;
-    return true;
-  }
-
-  return false;
-}
-
 } // ANONYMOUS NAMESPACE ====================================================
 
 // http_t::cache_load =======================================================
@@ -474,14 +455,43 @@ bool http_t::get( std::string&       result,
   static void* mutex = 0;
   thread_t::auto_lock_t lock( mutex );
 
-  if ( cache_get( result, url, caching ) )
-    return true;
+
+  if ( false )
+  {
+    std::ofstream http_log( "simc_http_log.txt", std::ios::app );
+
+    http_log << cache::era() << ": get(\"" << url << "\") = ";
+
+    thread_t::auto_lock_t lock( cache_mutex );
+    url_db_t::const_iterator p = url_db.find( url );
+    if ( p != url_db.end() )
+    {
+      if ( ( ( caching != cache::CURRENT ) || p -> second.era >= cache::era() ) )
+        http_log << "warm";
+      else
+        http_log << "cold";
+      http_log << " cache hit: " << p -> second.era;
+    } else
+      http_log << "cache miss";
+    if ( caching != cache::ONLY && ( p == url_db.end() || ( caching == cache::CURRENT && p -> second.era < cache::era() ) ) )
+      http_log << " [download]";
+    http_log << '\n';
+  }
+
+  {
+    // reader lock
+    thread_t::auto_lock_t lock( cache_mutex );
+
+    url_db_t::const_iterator p = url_db.find( url );
+    if ( p != url_db.end() && ( ( caching != cache::CURRENT ) || p -> second.era >= cache::era() ) )
+    {
+      result = p -> second.result;
+      return true;
+    }
+  }
 
   if ( caching == cache::ONLY )
     return false;
-
-  if ( true )
-    util_t::printf( "http_t download: \"%s\"\n", url.c_str() );
 
   util_t::printf( "@" ); fflush( stdout );
   throttle( throttle_seconds );
@@ -505,7 +515,7 @@ bool http_t::get( std::string&       result,
 
 // http_t::format ===========================================================
 
-void http_t::_format( std::string& encoded_url,
+void http_t::format_( std::string& encoded_url,
                       const std::string& url )
 {
   encoded_url = url;

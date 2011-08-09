@@ -1536,14 +1536,14 @@ struct talent_translation_t
 struct util_t
 {
 private:
-  static void _str_to_utf8( std::string& str );
-  static void _str_to_latin1( std::string& str );
-  static void _urlencode( std::string& str );
-  static void _urldecode( std::string& str );
-  static void _format_text( std::string& name, bool input_is_utf8 );
-  static void _html_special_char_decode( std::string& str );
-  static void _tolower( std::string& );
-  static void _string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes );
+  static void str_to_utf8_( std::string& str );
+  static void str_to_latin1_( std::string& str );
+  static void urlencode_( std::string& str );
+  static void urldecode_( std::string& str );
+  static void format_text_( std::string& name, bool input_is_utf8 );
+  static void html_special_char_decode_( std::string& str );
+  static void tolower_( std::string& );
+  static void string_split_( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes );
 
 public:
   static double talent_rank( int num, int max, double increment );
@@ -1582,7 +1582,7 @@ public:
   static int         talent_tree               ( int tree, player_type ptype );
   static const char* talent_tree_string        ( int tree, bool armory_format = true );
   static const char* weapon_type_string        ( int type );
-  static const char* weapon_class_string       ( int _class );
+  static const char* weapon_class_string       ( int class_ );
   static const char* weapon_subclass_string    ( int subclass );
   static const char* set_item_type_string      ( int item_set );
 
@@ -1630,7 +1630,7 @@ public:
   static bool socket_gem_match( int socket, int gem );
 
   static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false )
-  { _string_split( results, str, delim, allow_quotes ); return static_cast<int>( results.size() ); }
+  { string_split_( results, str, delim, allow_quotes ); return static_cast<int>( results.size() ); }
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
   static void string_strip_quotes( std::string& str );
 
@@ -1643,16 +1643,16 @@ public:
   static int printf( const char *format,  ... );
   static int fprintf( FILE *stream, const char *format,  ... );
 
-  static std::string& str_to_utf8( std::string& str ) { _str_to_utf8( str ); return str; }
-  static std::string& str_to_latin1( std::string& str ) { _str_to_latin1( str ); return str; }
-  static std::string& urlencode( std::string& str ) { _urlencode( str ); return str; }
-  static std::string& urldecode( std::string& str ) { _urldecode( str ); return str; }
+  static std::string& str_to_utf8( std::string& str ) { str_to_utf8_( str ); return str; }
+  static std::string& str_to_latin1( std::string& str ) { str_to_latin1_( str ); return str; }
+  static std::string& urlencode( std::string& str ) { urlencode_( str ); return str; }
+  static std::string& urldecode( std::string& str ) { urldecode_( str ); return str; }
 
   static std::string& format_text( std::string& name, bool input_is_utf8 )
-  { _format_text( name, input_is_utf8 ); return name; }
+  { format_text_( name, input_is_utf8 ); return name; }
 
   static std::string& html_special_char_decode( std::string& str )
-  { _html_special_char_decode( str ); return str; }
+  { html_special_char_decode_( str ); return str; }
 
   static bool str_compare_ci( const std::string& l, const std::string& r );
   static bool str_in_str_ci ( const std::string& l, const std::string& r );
@@ -1664,7 +1664,7 @@ public:
   static double ceil( double X, unsigned int decplaces = 0 );
   static double round( double X, unsigned int decplaces = 0 );
 
-  static std::string& tolower( std::string& str ) { _tolower( str ); return str; }
+  static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form
@@ -2000,8 +2000,8 @@ struct buff_t : public spell_id_t
 
   // Player Buff with extracted data
 private:
-  void _init_from_talent( player_t*, talent_t* );
-  void _init_from_spell( player_t*, spell_data_t* );
+  void init_from_talent_( player_t*, talent_t* );
+  void init_from_spell_( player_t*, spell_data_t* );
 public:
   buff_t( player_t*, talent_t* );
   buff_t( player_t*, talent_t*, ... );
@@ -2058,7 +2058,7 @@ public:
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
 
-  void _init_buff_t();
+  void init_buff_t_();
 
   const spelleffect_data_t& effect1() const { return s_data -> effect1(); }
   const spelleffect_data_t& effect2() const { return s_data -> effect2(); }
@@ -3622,7 +3622,7 @@ struct pet_t : public player_t
   bool summoned;
   pet_type_t pet_type;
 
-  void _init_pet_t();
+  void init_pet_t_();
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_type_t pt, bool guardian=false );
 
@@ -3803,7 +3803,7 @@ struct action_t : public spell_id_t
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, int t=TREE_NONE, bool special=false );
   virtual ~action_t();
 
-  void _init_action_t();
+  void init_action_t_();
 
   virtual void      parse_data();
   virtual void      parse_effect_data( int spell_id, int effect_nr );
@@ -3903,7 +3903,7 @@ struct attack_t : public action_t
   attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   attack_t( const char* name, const char* sname, player_t* p, int t = TREE_NONE, bool special=false );
   attack_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE, bool special=false );
-  void _init_attack_t();
+  void init_attack_t_();
 
   // Attack Overrides
   virtual double haste() SC_CONST;
@@ -3935,7 +3935,7 @@ struct spell_t : public action_t
   spell_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE );
   spell_t( const char* name, const char* sname, player_t* p, int t = TREE_NONE );
   spell_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE );
-  void _init_spell_t();
+  void init_spell_t_();
 
   // Spell Overrides
   virtual double haste() SC_CONST;
@@ -3963,7 +3963,7 @@ struct heal_t : public spell_t
   // Reporting
   double total_heal, total_actual;
 
-  void _init_heal_t();
+  void init_heal_t_();
   heal_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
   heal_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 
@@ -3995,7 +3995,7 @@ struct absorb_t : public spell_t
   // Reporting
   double total_heal, total_actual;
 
-  void _init_absorb_t();
+  void init_absorb_t_();
   absorb_t(const char* n, player_t* player, const char* sname, int t = TREE_NONE);
   absorb_t(const char* n, player_t* player, const uint32_t id, int t = TREE_NONE);
 
@@ -4293,8 +4293,8 @@ struct gain_t
   resource_type type;
   int id;
   gain_t* next;
-  gain_t( const std::string& n, int _id=0 ) :
-    name_str( n ), actual( 0 ), overflow( 0 ), count( 0 ), type( RESOURCE_NONE ), id( _id ) {}
+  gain_t( const std::string& n, int id_=0 ) :
+    name_str( n ), actual( 0 ), overflow( 0 ), count( 0 ), type( RESOURCE_NONE ), id( id_ ) {}
   void add( double a, double o=0 ) { actual += a; overflow += o; count++; }
   void merge( gain_t* other ) { actual += other -> actual; overflow += other -> overflow; count += other -> count; }
   void analyze( sim_t* sim ) { actual /= sim -> iterations; overflow /= sim -> iterations; count /= sim -> iterations; }
@@ -4645,7 +4645,7 @@ namespace bcp_api
 struct http_t
 {
 private:
-  static void _format( std::string& encoded_url, const std::string& url );
+  static void format_( std::string& encoded_url, const std::string& url );
 public:
   static std::string proxy_type;
   static std::string proxy_host;
@@ -4661,7 +4661,7 @@ public:
   static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
   static std::string& format( std::string& encoded_url, const std::string& url )
-  { _format( encoded_url, url ); return encoded_url; }
+  { format_( encoded_url, url ); return encoded_url; }
 };
 
 // XML =======================================================================

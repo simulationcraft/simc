@@ -11,7 +11,7 @@
 
 // action_t::action_t =======================================================
 
-void action_t::_init_action_t()
+void action_t::init_action_t_()
 {
   sim                            = s_player->sim;
   name_str                       = s_token;
@@ -193,7 +193,7 @@ action_t::action_t( int               ty,
   player( s_player ), target( s_player -> target ), school( s ), resource( r ),
   tree( tr ), special( sp )
 {
-  _init_action_t();
+  init_action_t_();
 }
 
 action_t::action_t( int ty, const char* name, const char* sname, player_t* p, int t, bool sp ) :
@@ -202,7 +202,7 @@ action_t::action_t( int ty, const char* name, const char* sname, player_t* p, in
   player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ),
   tree( t ), special( sp )
 {
-  _init_action_t();
+  init_action_t_();
 }
 
 action_t::action_t( int ty, const active_spell_t& s, int t, bool sp ) :
@@ -211,7 +211,7 @@ action_t::action_t( int ty, const active_spell_t& s, int t, bool sp ) :
   player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ),
   tree( t ), special( sp )
 {
-  _init_action_t();
+  init_action_t_();
 }
 
 action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, int t, bool sp ) :
@@ -220,7 +220,7 @@ action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, 
   player( s_player ), target( s_player -> sim -> target ), school( get_school_type() ), resource( power_type() ),
   tree( t ), special( sp )
 {
-  _init_action_t();
+  init_action_t_();
 }
 
 action_t::~action_t()

@@ -911,9 +911,9 @@ const char* util_t::weapon_subclass_string( int subclass )
   return "Unknown";
 }
 
-const char* util_t::weapon_class_string( int _class )
+const char* util_t::weapon_class_string( int class_ )
 {
-  switch ( _class )
+  switch ( class_ )
   {
     case INVTYPE_WEAPON:
       return "One Hand";
@@ -1769,7 +1769,7 @@ bool util_t::socket_gem_match( int socket,
 
 // util_t::string_split ====================================================
 
-void util_t::_string_split( std::vector<std::string>& results,
+void util_t::string_split_( std::vector<std::string>& results,
                             const std::string&        str,
                             const char*               delim,
                             bool                      allow_quotes )
@@ -2007,7 +2007,7 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
-void util_t::_str_to_utf8( std::string& str )
+void util_t::str_to_utf8_( std::string& str )
 {
   std::string::iterator p = utf8::find_invalid( str.begin(), str.end() );
   if ( p == str.end() ) return;
@@ -2019,7 +2019,7 @@ void util_t::_str_to_utf8( std::string& str )
   str.swap( temp );
 }
 
-void util_t::_str_to_latin1( std::string& str )
+void util_t::str_to_latin1_( std::string& str )
 {
   if ( str.empty() ) return;
   if ( ! utf8::is_valid( str.begin(), str.end() ) ) return;
@@ -2034,7 +2034,7 @@ void util_t::_str_to_latin1( std::string& str )
   str.swap( temp );
 }
 
-void util_t::_urlencode( std::string& str )
+void util_t::urlencode_( std::string& str )
 {
   std::string::size_type l = str.length();
   if ( ! l ) return;
@@ -2062,7 +2062,7 @@ void util_t::_urlencode( std::string& str )
   str.swap( temp );
 }
 
-void util_t::_urldecode( std::string& str )
+void util_t::urldecode_( std::string& str )
 {
   std::string::size_type l = str.length();
   if ( ! l ) return;
@@ -2088,7 +2088,7 @@ void util_t::_urldecode( std::string& str )
   str.swap( temp );
 }
 
-void util_t::_format_text( std::string& name, bool input_is_utf8 )
+void util_t::format_text_( std::string& name, bool input_is_utf8 )
 {
   if ( name.empty() ) return;
   bool is_utf8 = utf8::is_valid( name.begin(), name.end() );
@@ -2099,7 +2099,7 @@ void util_t::_format_text( std::string& name, bool input_is_utf8 )
     util_t::str_to_utf8( name );
 }
 
-void util_t::_html_special_char_decode( std::string& str )
+void util_t::html_special_char_decode_( std::string& str )
 {
   std::string::size_type pos = 0;
 
@@ -2215,7 +2215,7 @@ double util_t::round( double X, unsigned int decplaces )
   }
 }
 
-void util_t::_tolower( std::string& str )
+void util_t::tolower_( std::string& str )
 {
   for( std::string::size_type i = 0, n = str.length(); i < n; ++i )
     str[i] = ::tolower( str[i] );

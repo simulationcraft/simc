@@ -15,7 +15,7 @@
 // heal_target is set to player for now.
 // ==========================================================================
 
-// heal_t::_init_heal_t == Heal Constructor Initializations =================
+// heal_t::init_heal_t_ == Heal Constructor Initializations =================
 
   struct valanyr_t : public absorb_t
   {
@@ -28,7 +28,7 @@
     }
   };
 
-void heal_t::_init_heal_t()
+void heal_t::init_heal_t_()
 {
   target = player;
   heal_target.push_back( target );
@@ -59,7 +59,7 @@ void heal_t::_init_heal_t()
 heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
   spell_t( n, sname, player, t ), valanyr( 0 )
 {
-  _init_heal_t();
+  init_heal_t_();
 }
 
 // heal_t::heal_t ======== Heal Constructor by Spell ID =====================
@@ -67,7 +67,7 @@ heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
 heal_t::heal_t( const char* n, player_t* player, const uint32_t id, int t ) :
   spell_t( n, id, player, t ), valanyr( 0 )
 {
-  _init_heal_t();
+  init_heal_t_();
 }
 
 // heal_t::parse_options ====================================================
@@ -491,9 +491,9 @@ void heal_t::refresh_duration()
 // dmg_type = ABSORB, all crits killed
 // ==========================================================================
 
-// absorb_t::_init_absorb_t == Absorb Constructor Initializations ===========
+// absorb_t::init_absorb_t_ == Absorb Constructor Initializations ===========
 
-void absorb_t::_init_absorb_t()
+void absorb_t::init_absorb_t_()
 {
   target = player;
   heal_target.push_back( target );
@@ -511,7 +511,7 @@ void absorb_t::_init_absorb_t()
 absorb_t::absorb_t( const char* n, player_t* player, const char* sname, int t ) :
   spell_t( n, sname, player, t )
 {
-  _init_absorb_t();
+  init_absorb_t_();
 }
 
 // absorb_t::absorb_t ======== absorb Constructor by Spell ID =====================
@@ -519,7 +519,7 @@ absorb_t::absorb_t( const char* n, player_t* player, const char* sname, int t ) 
 absorb_t::absorb_t( const char* n, player_t* player, const uint32_t id, int t ) :
   spell_t( n, id, player, t )
 {
-  _init_absorb_t();
+  init_absorb_t_();
 }
 
 // absorb_t::parse_options ====================================================

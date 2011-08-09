@@ -1144,6 +1144,7 @@ void ImportThread::importRawr()
 
 void ImportThread::run()
 {
+  cache::advance_era();
   switch( tab )
   {
   case TAB_BATTLE_NET: importBattleNet(); break;

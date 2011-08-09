@@ -11,7 +11,7 @@
 
 // pet_t::pet_t =============================================================
 
-void pet_t::_init_pet_t()
+void pet_t::init_pet_t_()
 {
   target = owner -> target;
   level = owner -> level;
@@ -43,7 +43,7 @@ pet_t::pet_t( sim_t*             s,
               bool               g ) :
               player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( PET_NONE )
 {
-  _init_pet_t();
+  init_pet_t_();
 }
 
 pet_t::pet_t( sim_t*             s,
@@ -53,7 +53,7 @@ pet_t::pet_t( sim_t*             s,
               bool               g ) :
               player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
 {
-  _init_pet_t();
+  init_pet_t_();
 }
 
 // pet_t::create_action =====================================================
