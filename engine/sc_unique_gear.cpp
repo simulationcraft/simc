@@ -114,7 +114,6 @@ struct cost_reduction_proc_callback_t : public action_callback_t
   }
 };
 
-
 // discharge_proc_callback ==================================================
 
 struct discharge_proc_callback_t : public action_callback_t
@@ -1463,7 +1462,6 @@ static void register_valanyr( item_t* item )
 
     item -> unique = true;
 
-
     struct valanyr_callback_t : public action_callback_t
     {
       proc_t* proc;
@@ -1558,9 +1556,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
     if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
-    if ( ! strcmp( item.name(), "valanyr_hammer_of_ancient_kings"     ) ) register_valanyr                     ( &item );
-
-
+    if ( ! strcmp( item.name(), "valanyr_hammer_of_ancient_kings"     ) ) register_valanyr                           ( &item );
   }
 }
 

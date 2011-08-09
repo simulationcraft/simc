@@ -773,6 +773,7 @@ void player_t::init()
   init_race();
   init_base();
   init_racials();
+  init_professions();
   init_items();
   init_core();
   init_spell();
@@ -781,7 +782,6 @@ void player_t::init()
   init_weapon( &main_hand_weapon );
   init_weapon( &off_hand_weapon );
   init_weapon( &ranged_weapon );
-  init_professions();
   init_unique_gear();
   init_enchant();  
   init_consumables();
@@ -1150,7 +1150,7 @@ void player_t::init_weapon( weapon_t* w )
 
   if ( w -> slot == SLOT_MAIN_HAND ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
   if ( w -> slot == SLOT_OFF_HAND  ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
-  if ( w -> slot == SLOT_RANGED    ) assert( w -> type == WEAPON_NONE || ( w -> type > WEAPON_2H && w -> type < WEAPON_RANGED ) );
+  if ( w -> slot == SLOT_RANGED    ) assert( w -> type > WEAPON_2H && w -> type < WEAPON_RANGED );
 }
 
 // player_t::init_unique_gear ==============================================

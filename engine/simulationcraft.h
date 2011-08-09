@@ -3871,6 +3871,8 @@ struct action_t : public spell_id_t
   const spelleffect_data_t& effect3() const { return spell -> effect3(); }
 };
 
+// Attack ===================================================================
+
 struct attack_t : public action_t
 {
   double base_expertise, player_expertise, target_expertise;

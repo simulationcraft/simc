@@ -330,7 +330,18 @@ bool item_t::init()
   if ( ! option_stats_str.empty()   ) encoded_stats_str   = option_stats_str;
   if ( ! option_reforge_str.empty() ) encoded_reforge_str = option_reforge_str;
   if ( ! option_gems_str.empty()    ) encoded_gems_str    = option_gems_str;
-  if ( ! option_enchant_str.empty() ) encoded_enchant_str = option_enchant_str;
+  if ( ! option_enchant_str.empty() )
+  {
+    if ( ( slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 ) && ! ( player -> profession[ PROF_ENCHANTING ] > 0 ) )
+    {
+      sim -> errorf( "Player %s at slot %s has a ring enchant without the enchanting profession'\n",
+                     player -> name(), slot_name() );
+    }
+    else
+    {
+      encoded_enchant_str = option_enchant_str;
+    }
+  }
   if ( ! option_addon_str.empty()   ) encoded_addon_str   = option_addon_str;
   if ( ! option_weapon_str.empty()  ) encoded_weapon_str  = option_weapon_str;
   if ( ! option_random_suffix_str.empty() ) encoded_random_suffix_str = option_random_suffix_str;
