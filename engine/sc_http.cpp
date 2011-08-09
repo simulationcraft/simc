@@ -79,7 +79,7 @@ static bool parse_url( std::string&    host,
   {
     if ( *url == ':' )
     {
-      port = strtol( url + 1, const_cast<char**>( &url ), 10 );
+      port = static_cast<unsigned short>( strtol( url + 1, const_cast<char**>( &url ), 10 ) );
       break;
     }
 
@@ -200,7 +200,7 @@ static bool download( std::string& result,
 
   result.clear();
   HINTERNET hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
-  if ( !hInet )
+  if ( !hINet )
     return false;
 
   std::wstring wURL( url.length(), L' ' );

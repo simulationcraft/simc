@@ -432,11 +432,11 @@ static bool parse_wowhead( sim_t*             sim,
     if ( num_splits == 1 )
     {
       std::string player_id = splits[ 0 ];
-      int active = 1;
+      bool active = true;
       if ( player_id[ 0 ] == '!' )
       {
         player_id.erase( 0, 1 );
-        active = 0;
+        active = false;
       }
       sim -> active_player = wowhead_t::download_player( sim, player_id, active );
     }
@@ -448,11 +448,11 @@ static bool parse_wowhead( sim_t*             sim,
       for ( int i=2; i < num_splits; i++ )
       {
         std::string player_name = splits[ i ];
-        int active = 1;
+        bool active = true;
         if ( player_name[ 0 ] == '!' )
         {
           player_name.erase( 0, 1 );
-          active = 0;
+          active = false;
         }
         sim -> active_player = wowhead_t::download_player( sim, region, server, player_name, active );
         if ( ! sim -> active_player ) return false;
