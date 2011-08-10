@@ -3489,10 +3489,13 @@ struct moonfire_t : public druid_spell_t
       if ( p -> dots_sunfire -> ticking )
         p -> dots_sunfire -> action -> cancel();
 
-      if ( p -> buffs_lunar_shower -> check() ) 
-        trigger_eclipse_gain_delay( this, 8 );
+      if ( p -> talents.lunar_shower -> rank() )
+      {
+        if ( p -> buffs_lunar_shower -> check() ) 
+          trigger_eclipse_gain_delay( this, 8 );
         
-      p -> buffs_lunar_shower -> trigger();
+        p -> buffs_lunar_shower -> trigger();
+      }
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
     }
   }
@@ -3960,11 +3963,14 @@ struct sunfire_t : public druid_spell_t
       if ( p -> dots_moonfire -> ticking )
         p -> dots_moonfire -> action -> cancel();
 
-      if ( p -> buffs_lunar_shower -> check() ) 
-        trigger_eclipse_gain_delay( this, -8 );
+      if ( p -> talents.lunar_shower -> rank() )
+      {
+        if ( p -> buffs_lunar_shower -> check() ) 
+          trigger_eclipse_gain_delay( this, -8 );
         
-      // If moving trigger all 3 stacks, because it will stack up immediately
-      p -> buffs_lunar_shower -> trigger( 1 );
+        // If moving trigger all 3 stacks, because it will stack up immediately
+        p -> buffs_lunar_shower -> trigger( 1 );
+      }
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
 
     }
