@@ -3159,8 +3159,7 @@ struct player_t
   uptime_t* uptime_list;
   std::vector<double> dps_plot_data[ STAT_MAX ];
   std::vector<std::vector<double> > reforge_plot_data;
-  std::vector<double> timeline_resource;
-  std::vector<double> timeline_health;
+  std::vector<std::vector<double> > timeline_resource;
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
   std::vector<double> iteration_dps;
@@ -3168,7 +3167,8 @@ struct player_t
   std::vector<double> dps_convergence_error;
   std::string action_sequence;
   std::string action_dpet_chart, action_dmg_chart, gains_chart;
-  std::string timeline_resource_chart, timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
+  std::vector<std::string> timeline_resource_chart;
+  std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
   std::string reforge_dps_chart, dps_error_chart;
   std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_wowreforge_link;
@@ -4419,8 +4419,7 @@ struct chart_t
   static const char* action_dpet      ( std::string& s, player_t* );
   static const char* action_dmg       ( std::string& s, player_t* );
   static const char* gains            ( std::string& s, player_t*, resource_type );
-  static const char* timeline_resource( std::string& s, player_t* );
-  static const char* timeline_health  ( std::string& s, player_t* );
+  static const char* timeline_resource( std::string& s, player_t*, int );
   static const char* timeline_dps     ( std::string& s, player_t* );
   static const char* timeline_dps_error( std::string& s, player_t* );
   static const char* scale_factors    ( std::string& s, player_t* );

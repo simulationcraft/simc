@@ -2841,7 +2841,6 @@ static void print_html_player_resources( FILE* file, sim_t* sim, player_t* p )
 {
 // Resources Section
 
-
 util_t::fprintf( file,
 
                  "\t\t\t\t<div class=\"player-section gains\">\n"
@@ -3015,9 +3014,39 @@ for ( i = 0; i < RESOURCE_MAX; i++ )
 
   }
 }
+
+
+std::vector<std::string> timeline_resource_str;
+for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+{
+timeline_resource_str.push_back(std::string());
+}
+
+for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+{
+  if ( i == RESOURCE_NONE || p -> resource_max[i] == 0 )
+    continue;
+
+if ( ! p -> timeline_resource_chart[i].empty() )
+{
+
+    timeline_resource_str[i] = "<img src=\"" + p -> timeline_resource_chart[i] + "\" alt=\"Resource Timeline Chart\" />\n";
+
+}
+}
+
+for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+{
+  util_t::fprintf( file,
+               "\t\t\t\t\t\t%s\n",
+               timeline_resource_str[ i ].c_str() );
+
+}
+
 util_t::fprintf( file,
                  "\t\t\t\t\t</div>\n"
                  "\t\t\t\t</div>\n" );
+
 }
 
 // print_html_player_charts =========================================================
@@ -3042,7 +3071,6 @@ std::string action_dmg_str                      = "";
 std::string reforge_dps_str                     = "";
 std::string scaling_dps_str                     = "";
 std::string scale_factors_str                   = "";
-std::string timeline_resource_str               = "";
 std::string timeline_resource_health_str        = "";
 std::string timeline_dps_str                    = "";
 std::string distribution_dps_str                = "";
@@ -3109,18 +3137,6 @@ if ( ! p -> reforge_dps_chart.empty() )
       reforge_dps_str = p -> reforge_dps_chart;
 //        reforge_dps_str += "</span>\n";
     }
-  }
-}
-
-if ( ! p -> timeline_resource_chart.empty() )
-{
-  if ( num_players == 1 )
-  {
-    timeline_resource_str = "<img src=\"" + p -> timeline_resource_chart + "\" alt=\"Resource Timeline Chart\" />\n";
-  }
-  else
-  {
-    timeline_resource_str = "<span class=\"chart-timeline-resource\" title=\"Resource Timeline Chart\">" + p -> timeline_resource_chart + "</span>\n";
   }
 }
 if ( ! p -> timeline_resource_health_chart.empty() && healer_in_the_raid )
@@ -3191,7 +3207,6 @@ util_t::fprintf( file,
                  "              %s"
                  "              %s"
                  "              %s"
-                 "              %s"
                  "\t\t\t\t\t\t</div>\n"
                  "\t\t\t\t\t\t<div class=\"clear\"></div>\n"
                  "\t\t\t\t\t</div>\n"
@@ -3201,7 +3216,6 @@ util_t::fprintf( file,
                  scaling_dps_str.c_str(),
                  reforge_dps_str.c_str(),
                  scale_factors_str.c_str(),
-                 timeline_resource_str.c_str(),
                  timeline_resource_health_str.c_str(),
                  timeline_dps_str.c_str(),
                  distribution_dps_str.c_str(),

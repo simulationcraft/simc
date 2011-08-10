@@ -1209,17 +1209,18 @@ void player_t::init_resources( bool force )
 
   if ( timeline_resource.empty() )
   {
-    int size = ( int ) sim -> max_time;
-    if ( size == 0 ) size = 600; // Default to 10 minutes
-    size *= 2;
-    timeline_resource.insert( timeline_resource.begin(), size, 0 );
-  }
-  if ( timeline_health.empty() )
-  {
-    int size = ( int ) sim -> max_time;
-    if ( size == 0 ) size = 600; // Default to 10 minutes
-    size *= 2;
-    timeline_health.insert( timeline_health.begin(), size, 0 );
+    for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+    {
+      timeline_resource.push_back(std::vector<double>());
+      timeline_resource_chart.push_back(std::string());
+      if ( timeline_resource[i].empty() )
+      {
+        int size = ( int ) sim -> max_time;
+        if ( size == 0 ) size = 600; // Default to 10 minutes
+        size *= 2;
+        timeline_resource[i].insert( timeline_resource[i].begin(), size, 0 );
+      }
+    }
   }
 }
 
@@ -3199,23 +3200,14 @@ void player_t::regen( double periodicity )
     }
   }
 
-  if ( resource_type != RESOURCE_NONE )
+  for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     int index = ( int ) sim -> current_time;
-    int size = ( int ) timeline_resource.size();
+    int size = ( int ) timeline_resource[i].size();
 
-    if ( index >= size ) timeline_resource.insert( timeline_resource.begin() + size, size, 0 );
+    if ( index >= size ) timeline_resource[i].insert( timeline_resource[i].begin() + size, size, 0 );
 
-    timeline_resource[ index ] += resource_current[ resource_type ] * periodicity;
-  }
-  if ( resource_type != RESOURCE_HEALTH )
-  {
-    int index = ( int ) sim -> current_time;
-    int size = ( int ) timeline_health.size();
-
-    if ( index >= size ) timeline_health.insert( timeline_health.begin() + size, size, 0 );
-
-    timeline_health[ index ] += resource_current[ RESOURCE_HEALTH ] * periodicity;
+    timeline_resource[i][ index ] += resource_current[ i ] * periodicity;
   }
 }
 

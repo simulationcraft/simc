@@ -1356,22 +1356,16 @@ void sim_t::analyze_player( player_t* p )
     max_buckets = ( int ) o -> total_seconds;
   }
 
-  int num_buckets = ( int ) p -> timeline_resource.size();
-
-  if ( num_buckets > max_buckets ) p -> timeline_resource.resize( max_buckets );
-
-  for ( int i=0; i < max_buckets; i++ )
+  for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    p -> timeline_resource[ i ] /= divisor_timeline[ i ];
-  }
+    int num_buckets = ( int ) p -> timeline_resource[i].size();
 
-  num_buckets = ( int ) p -> timeline_health.size();
+    if ( num_buckets > max_buckets ) p -> timeline_resource[i].resize( max_buckets );
 
-  if ( num_buckets > max_buckets ) p -> timeline_health.resize( max_buckets );
-
-  for ( int i=0; i < max_buckets; i++ )
-  {
-    p -> timeline_health[ i ] /= divisor_timeline[ i ];
+    for ( int j=0; j < max_buckets; j++ )
+    {
+      p -> timeline_resource[i][ j ] /= divisor_timeline[ j ];
+    }
   }
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
@@ -1620,8 +1614,10 @@ void sim_t::analyze()
     {
       chart_t::action_dpet        ( pet -> action_dpet_chart,               pet );
       chart_t::action_dmg         ( pet -> action_dmg_chart,                pet );
-      chart_t::timeline_resource  ( pet -> timeline_resource_chart,         pet );
-      chart_t::timeline_health    ( pet -> timeline_resource_health_chart,  pet );
+      for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+      {
+      chart_t::timeline_resource  ( pet -> timeline_resource_chart[i],         pet, i );
+      }
       chart_t::timeline_dps       ( pet -> timeline_dps_chart,              pet );
       chart_t::timeline_dps_error ( pet -> timeline_dps_error_chart,        pet );
       chart_t::dps_error          ( pet -> dps_error_chart,                 pet );
@@ -1631,8 +1627,10 @@ void sim_t::analyze()
 
     chart_t::action_dpet        ( p -> action_dpet_chart,               p );
     chart_t::action_dmg         ( p -> action_dmg_chart,                p );
-    chart_t::timeline_resource  ( p -> timeline_resource_chart,         p );
-    chart_t::timeline_health    ( p -> timeline_resource_health_chart,  p );
+    for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+    {
+    chart_t::timeline_resource  ( p -> timeline_resource_chart[i],         p, i );
+    }
     chart_t::timeline_dps       ( p -> timeline_dps_chart,              p );
     chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
     chart_t::dps_error          ( p -> dps_error_chart,                 p );
@@ -1706,21 +1704,17 @@ void sim_t::merge( sim_t& other_sim )
       p -> iteration_dps.push_back( other_p -> iteration_dps[ i ] );
     }
 
-    int num_buckets = ( int ) std::min(       p -> timeline_resource.size(),
-                                        other_p -> timeline_resource.size() );
-
-    for ( int i=0; i < num_buckets; i++ )
+    for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     {
-      p -> timeline_resource[ i ] += other_p -> timeline_resource[ i ];
+      int num_buckets = ( int ) std::min(       p -> timeline_resource[i].size(),
+                                          other_p -> timeline_resource[i].size() );
+
+      for ( int j=0; j < num_buckets; j++ )
+      {
+        p -> timeline_resource[i][ j ] += other_p -> timeline_resource[i][ j ];
+      }
     }
 
-    num_buckets = ( int ) std::min(       p -> timeline_health.size(),
-                                    other_p -> timeline_health.size() );
-
-    for ( int i=0; i < num_buckets; i++ )
-    {
-      p -> timeline_health[ i ] += other_p -> timeline_health[ i ];
-    }
 
     for ( int i=0; i < RESOURCE_MAX; i++ )
     {
