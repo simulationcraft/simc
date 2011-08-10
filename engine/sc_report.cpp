@@ -2985,68 +2985,50 @@ for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
 util_t::fprintf( file,
                  "\t\t\t\t\t\t</table>\n" );
 
-char buffer[ 1024 ];
-std::string gains_str                     = "";
-for ( i = 0; i < RESOURCE_MAX; i++ )
+util_t::fprintf( file,
+                 "\t\t\t\t\t\t<div class=\"charts charts-left\">\n" );
+for ( i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
 {
-  gains_str                     = "";
   double total_gain=0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if ( g -> actual <= 0 ) continue;
-    if ( g -> type != i ) continue;
-    total_gain += g -> actual;
+    if ( g -> actual > 0 && g -> type == i )
+      total_gain += g -> actual;
   }
 
   if ( total_gain > 0 )
   {
-    chart_t::gains              ( p -> gains_chart, p, (resource_type) i );
+    chart_t::gains( p -> gains_chart, p, ( resource_type ) i );
     if ( ! p -> gains_chart.empty() )
-      {
-
-      snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Resource Gains Chart\" />\n", p -> gains_chart.c_str() );
-
-      gains_str = buffer;
-      }
-    util_t::fprintf( file,
-                 "\t\t\t\t\t\t%s\n",
-                 gains_str.c_str() );
-
+    {
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Gains Chart\" />\n",
+                       p -> gains_chart.c_str() );
+    }
   }
 }
+util_t::fprintf( file,
+                 "\t\t\t\t\t\t</div>\n" );
 
 
-std::vector<std::string> timeline_resource_str;
-for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+util_t::fprintf( file,
+                 "\t\t\t\t\t\t<div class=\"charts\">\n" );
+for ( int i = RESOURCE_NONE + 1; i < RESOURCE_MAX; i++ )
 {
-timeline_resource_str.push_back(std::string());
+  if ( p -> resource_max[ i ] > 0 && ! p -> timeline_resource_chart[ i ].empty() )
+  {
+    util_t::fprintf( file,
+                     "\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Timeline Chart\" />\n",
+                     p -> timeline_resource_chart[ i ].c_str() );
+  }
 }
-
-for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-{
-  if ( i == RESOURCE_NONE || p -> resource_max[i] == 0 )
-    continue;
-
-if ( ! p -> timeline_resource_chart[i].empty() )
-{
-
-    timeline_resource_str[i] = "<img src=\"" + p -> timeline_resource_chart[i] + "\" alt=\"Resource Timeline Chart\" />\n";
-
-}
-}
-
-for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-{
-  util_t::fprintf( file,
-               "\t\t\t\t\t\t%s\n",
-               timeline_resource_str[ i ].c_str() );
-
-}
+util_t::fprintf( file,
+                 "\t\t\t\t\t\t</div>\n"
+                 "\t\t\t\t\t<div class=\"clear\"></div>\n" );
 
 util_t::fprintf( file,
                  "\t\t\t\t\t</div>\n"
                  "\t\t\t\t</div>\n" );
-
 }
 
 // print_html_player_charts =========================================================
