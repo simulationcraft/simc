@@ -2201,7 +2201,7 @@ void sim_t::create_options()
     { "override.ebon_plaguebringer",      OPT_BOOL,   &( overrides.ebon_plaguebringer             ) },
     { "override.elemental_oath",          OPT_BOOL,   &( overrides.elemental_oath                 ) },
     { "override.essence_of_the_red",      OPT_BOOL,   &( overrides.essence_of_the_red             ) },
-    { "override.expode_armor",            OPT_BOOL,   &( overrides.expose_armor                   ) },
+    { "override.expose_armor",            OPT_BOOL,   &( overrides.expose_armor                   ) },
     { "override.faerie_fire",             OPT_BOOL,   &( overrides.faerie_fire                    ) },
     { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
     { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
