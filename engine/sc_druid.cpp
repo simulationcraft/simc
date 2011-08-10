@@ -3352,6 +3352,9 @@ struct insect_swarm_t : public druid_spell_t
     num_ticks   += ( int ) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 );
     dot_behavior = DOT_REFRESH;
 
+    if ( p -> primary_tree() == TREE_BALANCE )
+      crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
 
