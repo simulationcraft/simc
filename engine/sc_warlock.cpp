@@ -4324,6 +4324,19 @@ void warlock_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
+
+    // Moonwell Chalice check for Demo
+    bool has_mwc = false;
+    for ( int i=0; i < SLOT_MAX; i++ )
+    {
+      item_t& item = items[ i ];
+      if ( strstr( item.name(), "moonwell_chalice" ) )
+      {
+        has_mwc = true;
+        break;
+      }
+    }
+
     // Flask
     if ( level >= 80 )
       action_list_str += "/flask,type=draconic_mind";
@@ -4367,7 +4380,7 @@ void warlock_t::init_actions()
 
     // Usable Item
     int num_items = ( int ) items.size();
-    for ( int i=0; i < num_items; i++ )
+    for ( int i = num_items - 1; i >= 0; i-- )
     {
       if ( items[ i ].use.active() )
       {
@@ -4481,6 +4494,7 @@ void warlock_t::init_actions()
 
     case TREE_DEMONOLOGY:
       if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
+      if ( talent_metamorphosis -> ok() && has_mwc ) action_list_str += ",if=buff.moonwell_chalice.up";
       if ( level >= 85 ) action_list_str += "/demon_soul,if=buff.metamorphosis.up&pet.felguard.active";
       if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
       action_list_str += "/felguard:felstorm";
@@ -4489,7 +4503,8 @@ void warlock_t::init_actions()
       if ( level >= 60 ) action_list_str += "/immolation_aura,if=buff.metamorphosis.remains>10";
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
       if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react&cooldown.demon_soul.remains>30";
+      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
+      if ( level >= 20 && has_mwc ) action_list_str += "&cooldown.demon_soul.remains>30";
       action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
       if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
       if ( level >= 75 ) action_list_str += "/shadowflame";
