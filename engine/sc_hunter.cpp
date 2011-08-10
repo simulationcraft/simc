@@ -250,7 +250,7 @@ struct hunter_t : public player_t
   virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
-  virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c );
+  virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_t );
   virtual void      moving();
 
   // Event Tracking
@@ -4021,7 +4021,8 @@ void hunter_t::copy_from( player_t* source )
 
 void hunter_t::armory_extensions( const std::string& region,
                                   const std::string& server,
-                                  const std::string& character )
+                                  const std::string& character,
+                                  cache::behavior_t  caching )
 {
   // Pet support
   static pet_type_t pet_types[] =
@@ -4041,7 +4042,7 @@ void hunter_t::armory_extensions( const std::string& region,
   int num_families = sizeof( pet_types ) / sizeof( pet_type_t );
 
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + '/' + character + "/pet";
-  xml_node_t* pet_xml = xml_t::get( sim, url );
+  xml_node_t* pet_xml = xml_t::get( sim, url, "", caching );
   if ( sim -> debug ) xml_t::print( pet_xml, sim -> output_file );
 
   xml_node_t* pet_list_xml = xml_t::get_node( pet_xml, "div", "class", "pets-list" );

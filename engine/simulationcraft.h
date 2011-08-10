@@ -751,6 +751,57 @@ enum rating_type {
   RATING_MAX
 };
 
+// Cache Control =============================================================
+
+namespace cache {
+
+typedef unsigned int era_t;
+static const era_t IN_THE_BEGINNING = 0;  // A time before any other possible era;
+                                          // used to mark persistent caches at load.
+
+enum behavior_t
+{
+  ANY,      // * Use any version present in the cache, retrieve if not present.
+  CURRENT,  // * Use only current info from the cache; validate old versions as needed.
+  ONLY,     // * Use any version present in the cache, fail if not present.
+};
+
+class cache_control_t
+{
+private:
+  era_t current_era;
+  behavior_t default_cache_behavior;
+
+public:
+  cache_control_t() :
+    current_era( IN_THE_BEGINNING ), default_cache_behavior( CURRENT )
+  {}
+
+  era_t era() const { return current_era; }
+  void advance_era() { ++current_era; }
+
+  behavior_t default_behavior() const { return default_cache_behavior; }
+  void default_behavior( behavior_t b ) { default_cache_behavior = b; }
+
+  static cache_control_t singleton;
+};
+
+// Caching system's global notion of the current time.
+inline era_t era()
+{ return cache_control_t::singleton.era(); }
+
+// Time marches on.
+inline void advance_era()
+{ cache_control_t::singleton.advance_era(); }
+
+// Get/Set default cache behavior.
+inline behavior_t behavior()
+{ return cache_control_t::singleton.default_behavior(); }
+inline void behavior( behavior_t b )
+{ cache_control_t::singleton.default_behavior( b ); }
+
+}
+
 struct stat_data_t {
   double      strength;
   double      agility;
@@ -3488,7 +3539,8 @@ struct player_t
 
   virtual void recalculate_haste();
 
-  virtual void armory_extensions( const std::string& region, const std::string& server, const std::string& character ) {}
+  virtual void armory_extensions( const std::string& region, const std::string& server, const std::string& character,
+                                  cache::behavior_t b=cache::behavior()) {}
 
   // Class-Specific Methods
 
@@ -4454,57 +4506,6 @@ struct thread_t
     ~auto_lock_t() { mutex_unlock( mutex ); }
   };
 };
-
-// Cache Control =============================================================
-
-namespace cache {
-
-typedef unsigned int era_t;
-static const era_t IN_THE_BEGINNING = 0;  // A time before any other possible era;
-                                          // used to mark persistent caches at load.
-
-enum behavior_t
-{
-  ANY,      // * Use any version present in the cache, retrieve if not present.
-  CURRENT,  // * Use only current info from the cache; validate old versions as needed.
-  ONLY,     // * Use any version present in the cache, fail if not present.
-};
-
-class cache_control_t
-{
-private:
-  era_t current_era;
-  behavior_t default_cache_behavior;
-
-public:
-  cache_control_t() :
-    current_era( IN_THE_BEGINNING ), default_cache_behavior( CURRENT )
-  {}
-
-  era_t era() const { return current_era; }
-  void advance_era() { ++current_era; }
-
-  behavior_t default_behavior() const { return default_cache_behavior; }
-  void default_behavior( behavior_t b ) { default_cache_behavior = b; }
-
-  static cache_control_t singleton;
-};
-
-// Caching system's global notion of the current time.
-inline era_t era()
-{ return cache_control_t::singleton.era(); }
-
-// Time marches on.
-inline void advance_era()
-{ cache_control_t::singleton.advance_era(); }
-
-// Get/Set default cache behavior.
-inline behavior_t behavior()
-{ return cache_control_t::singleton.default_behavior(); }
-inline void behavior( behavior_t b )
-{ cache_control_t::singleton.default_behavior( b ); }
-
-}
 
 // Armory ====================================================================
 

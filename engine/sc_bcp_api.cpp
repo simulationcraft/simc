@@ -59,13 +59,13 @@ js_node_t* download_guild( sim_t* sim,
                            const std::string& region,
                            const std::string& server,
                            const std::string& name,
-                           cache::behavior_t   caching )
+                           cache::behavior_t  caching )
 {
   std::string url = get_region_host( region ) + "api/wow/guild/" + urlencode_utf8( server ) + '/' +
       urlencode_utf8( name ) + "?fields=members";
 
   std::string result;
-  if ( ! http_t::get( result, url, "members", caching ) )
+  if ( ! http_t::get( result, url, "\"members\"", caching ) )
   {
     sim -> errorf( "Unable to download guild %s|%s|%s from BCP API.\n", region.c_str(), server.c_str(), name.c_str() );
     return 0;
@@ -263,7 +263,7 @@ player_t* download_player( sim_t*             sim,
                            const std::string& server,
                            const std::string& name,
                            const std::string& talents,
-                           cache::behavior_t   caching )
+                           cache::behavior_t  caching )
 {
   std::string battlenet = get_region_host( region );
   std::string url = battlenet + "api/wow/character/" +
@@ -359,7 +359,7 @@ player_t* download_player( sim_t*             sim,
   if ( ! parse_items( p, js_t::get_child( profile_js, "items" ) ) )
     return 0;
 
-  p -> armory_extensions( region, server, name );
+  p -> armory_extensions( region, server, name, caching );
 
   return p;
 }

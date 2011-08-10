@@ -50,7 +50,7 @@ struct url_cache_entry_t
 {
   std::string result;
   cache::era_t era;
-  url_cache_entry_t() : era( cache::IN_THE_BEGINNING ) {};
+  url_cache_entry_t() : era( cache::IN_THE_BEGINNING ) {}
   url_cache_entry_t( const std::string& result_, cache::era_t era_ ) :
     result( result_ ), era( era_ ) {}
 };
@@ -116,6 +116,7 @@ static std::string build_request( const std::string&   host,
   if ( use_proxy )
   {
     request << "http://" << host;
+
     // append port info only if not the standard port
     if ( port != 80 )
       request << ':' << port;
@@ -455,27 +456,31 @@ bool http_t::get( std::string&       result,
   static void* mutex = 0;
   thread_t::auto_lock_t lock( mutex );
 
-
   if ( false )
   {
     std::ofstream http_log( "simc_http_log.txt", std::ios::app );
-
-    http_log << cache::era() << ": get(\"" << url << "\") = ";
-
-    thread_t::auto_lock_t lock( cache_mutex );
-    url_db_t::const_iterator p = url_db.find( url );
-    if ( p != url_db.end() )
+    std::ostream::sentry s( http_log );
+    if ( s )
     {
-      if ( ( ( caching != cache::CURRENT ) || p -> second.era >= cache::era() ) )
-        http_log << "warm";
-      else
-        http_log << "cold";
-      http_log << " cache hit: " << p -> second.era;
-    } else
-      http_log << "cache miss";
-    if ( caching != cache::ONLY && ( p == url_db.end() || ( caching == cache::CURRENT && p -> second.era < cache::era() ) ) )
-      http_log << " [download]";
-    http_log << '\n';
+      http_log << cache::era() << ": get(\"" << url << "\") = ";
+
+      thread_t::auto_lock_t lock( cache_mutex );
+      url_db_t::const_iterator p = url_db.find( url );
+      if ( p != url_db.end() )
+      {
+        if ( p -> second.era >= cache::era() )
+          http_log << "hot";
+        else if ( caching != cache::CURRENT )
+          http_log << "warm";
+        else
+          http_log << "cold";
+        http_log << ": " << p -> second.era;
+      } else
+        http_log << "miss";
+      if ( caching != cache::ONLY && ( p == url_db.end() || ( caching == cache::CURRENT && p -> second.era < cache::era() ) ) )
+        http_log << " [download]";
+      http_log << '\n';
+    }
   }
 
   {
