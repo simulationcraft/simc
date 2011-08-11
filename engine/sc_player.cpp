@@ -499,7 +499,7 @@ player_t::player_t( sim_t*             s,
   }
   infinite_resource[ RESOURCE_HEALTH ] = true;
 
-  for ( int i=0; i <= SCHOOL_MAX; i++ )
+  for ( int i=0; i < SCHOOL_MAX; i++ )
   {
     initial_spell_power[ i ] = spell_power[ i ] = 0;
     initial_resource_reduction[ i ] = resource_reduction[ i ] = 0;
