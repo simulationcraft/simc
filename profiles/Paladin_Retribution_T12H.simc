@@ -1,14 +1,14 @@
 #!./simc 
 
 paladin=Paladin_Retribution_T12H
-origin="Paladin_CharDevSync.simc"
+origin="http://chardev.org/?profile=190710"
 level=85
 race=human
 role=hybrid
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#paladin-203002000000000000000200000000000000000023203213211113012301
-glyphs=the_ascetic_crusader/hammer_of_wrath/templars_verdict/exorcism/seal_of_truth
+glyphs=the_ascetic_crusader/hammer_of_wrath/rebuke/templars_verdict/exorcism/seal_of_truth
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
 actions+=/seal_of_truth

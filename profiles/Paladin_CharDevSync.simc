@@ -4,57 +4,7 @@ chardev=35780 name=Paladin_Retribution_T11N save=Paladin_Retribution_T11N.simc
 
 chardev=47301 name=Paladin_Retribution_T11H save=Paladin_Retribution_T11H.simc
 
+chardev=190710 name=Paladin_Retribution_T12H save=Paladin_Retribution_T12H.simc
 
-paladin=Paladin_Retribution_T12H
-level=85
-race=human
-role=hybrid
-use_pre_potion=1
-professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#paladin-203002000000000000000200000000000000000023203213211113012301
-glyphs=the_ascetic_crusader/hammer_of_wrath/templars_verdict/exorcism/seal_of_truth
-head=immolation_helmet,id=71514,reforge=hit_mastery,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
-neck=stoneheart_choker,id=71586,reforge=exp_mastery
-#neck=necklace_of_fetishes,id=71446,reforge=crit_mastery
-shoulders=immolation_pauldrons,id=71516,reforge=haste_mastery,gems=40str,enchant=50str_25crit
-back=bladed_flamewrath_cover,id=71391,reforge=haste_mastery,enchant=65crit
-chest=breastplate_of_shifting_visions,id=71469,reforge=haste_crit,gems=67str_20str_20hit_20str,enchant=20all
-wrists=gigantiform_bracers,id=71584,reforge=hit_crit,gems=40str,enchant=50str
-hands=immolation_gauntlets,id=71513,gems=40str_40str,enchant=50str
-waist=cinch_of_the_flaming_ember,id=71399,reforge=crit_mastery,gems=20str_20hit_67str_10str
-legs=immolation_legplates,id=71515,reforge=crit_hit,gems=67str_20str_20mastery_20str,enchant=190ap_55crit
-feet=arachnaflame_treads,id=71404,gems=40str_10str,reforge=haste_mastery,enchant=50mastery
-finger1=obsidian_signet_of_the_avengers,id=71215,reforge=crit_mastery,gems=40str_10str
-finger2=alysrazors_band,id=71433,reforge=haste_mastery,gems=40str_10str
-main_hand=sulfuras_the_extinguished_hand,id=70723,reforge=crit_hit,gems=40str_40str_20str,enchant=landslide
-ranged=relic_of_the_elemental_lords,id=71587,reforge=haste_mastery,gems=40str
-trinket1=vessel_of_acceleration,id=69167
-trinket2=apparatus_of_khazgoroth,id=69113
-save=Paladin_Retribution_T12H.simc
+chardev=190725 name=Paladin_Retribution_T12N save=Paladin_Retribution_T12N.simc
 
-
-paladin=Paladin_Retribution_T12N
-level=85
-race=human
-role=hybrid
-use_pre_potion=1
-professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#paladin-203002000000000000000200000000000000000023203213211113012301
-glyphs=the_ascetic_crusader/hammer_of_wrath/templars_verdict/exorcism/seal_of_truth
-head=immolation_helmet,id=71065,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
-neck=stoneheart_choker,id=71212,reforge=crit_mastery
-shoulders=immolation_pauldrons,id=71067,reforge=haste_mastery,gems=40str,enchant=50str_25crit
-back=bladed_flamewrath_cover,id=71227,reforge=haste_mastery,enchant=65crit
-chest=breastplate_of_shifting_visions,id=71344,reforge=haste_crit,gems=67str_20str_20hit_20str,enchant=20all
-wrists=gigantiform_bracers,id=71261,gems=40str,enchant=50str
-hands=immolation_gauntlets,id=71064,gems=40str_40str,enchant=50str
-waist=cinch_of_the_flaming_ember,id=71250,reforge=crit_mastery,gems=40str_67str
-legs=immolation_legplates,id=71066,reforge=crit_hit,gems=67str_20str_20mastery_20str,enchant=190ap_55crit
-feet=arachnaflame_treads,id=71029,gems=40str_10str,reforge=haste_mastery,enchant=50mastery
-finger1=obsidian_signet_of_the_avengers,id=71215,reforge=crit_mastery,gems=40str_10str
-finger2=alysrazors_band,id=70738,reforge=haste_mastery,gems=40str_10str
-main_hand=sulfuras_the_extinguished_hand,id=71352,reforge=crit_hit,gems=40str_40str_20str,enchant=landslide
-ranged=relic_of_the_elemental_lords,id=71147,reforge=haste_mastery,gems=40str
-trinket1=vessel_of_acceleration,id=68995
-trinket2=apparatus_of_khazgoroth,id=68972
-save=Paladin_Retribution_T12N.simc
