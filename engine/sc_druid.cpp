@@ -294,10 +294,10 @@ struct druid_t : public player_t
 
     create_talents();
     create_glyphs();
-    
+
     distance = ( primary_tree() == TREE_FERAL ) ? 3 : 30;
     default_distance = distance;
-    
+
     create_options();
   }
 
@@ -359,7 +359,7 @@ struct druid_t : public player_t
          ( t -> find_dot( "lifebloom"    ) && t -> find_dot( "lifebloom"    ) -> ticking ) ||
          ( t -> find_dot( "wild_growth"  ) && t -> find_dot( "wild_growth"  ) -> ticking ) )
       return true;
-    
+
     return false;
   }
 
@@ -1001,8 +1001,8 @@ static void trigger_revitalize( druid_heal_t* a )
   if ( p -> buffs_revitalize -> trigger() )
   {
     p -> procs_revitalize -> occur();
-    p -> resource_gain( RESOURCE_MANA, 
-                        p -> resource_max[ RESOURCE_MANA ] * p -> talents.revitalize -> effect1().percent(), 
+    p -> resource_gain( RESOURCE_MANA,
+                        p -> resource_max[ RESOURCE_MANA ] * p -> talents.revitalize -> effect1().percent(),
                         p -> gains_revitalize );
   }
 }
@@ -1071,7 +1071,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
       if ( sim -> debug )
         log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
                        name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
-    }   
+    }
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
   };
 
@@ -1398,7 +1398,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     {
       if ( p -> glyphs.ferocious_bite -> enabled() )
       {
-        double amount = p -> resource_max[ RESOURCE_HEALTH ] * 
+        double amount = p -> resource_max[ RESOURCE_HEALTH ] *
                         p -> glyphs.ferocious_bite -> effect1().percent() *
                         ( (int) ( excess_energy + druid_cat_attack_t::cost() ) / 10 );
         p -> resource_gain( RESOURCE_HEALTH, amount, p -> gains_glyph_ferocious_bite );
@@ -1515,7 +1515,7 @@ struct pounce_bleed_t : public druid_cat_attack_t
   {
     background     = true;
     stats          = player -> get_stats( "pounce", this );
-    tick_power_mod = 0.03; 
+    tick_power_mod = 0.03;
   }
 };
 
@@ -1741,7 +1741,7 @@ struct savage_roar_t : public druid_cat_attack_t
 
 struct shred_t : public druid_cat_attack_t
 {
-  int extend_rip; 
+  int extend_rip;
 
   shred_t( druid_t* p, const std::string& options_str ) :
     druid_cat_attack_t( "shred", 5221, p ),
@@ -2509,7 +2509,7 @@ struct lifebloom_t : public druid_heal_t
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE );
 
     bloom = new lifebloom_bloom_t( p );
-    
+
     // This can be only cast on one target, unless Tree of Life is up
   }
 
@@ -2549,7 +2549,7 @@ struct lifebloom_t : public druid_heal_t
 
     if ( p -> rng_heartfire -> roll( p -> sets -> set( SET_T12_2PC_HEAL ) -> proc_chance()  ) )
       player -> resource_gain( RESOURCE_MANA,
-                               player -> resource_base[ RESOURCE_MANA ] * 
+                               player -> resource_base[ RESOURCE_MANA ] *
                                p -> sets -> set( SET_T12_2PC_HEAL ) -> effect_base_value( 1 ) / 100.0,
                                p -> gains_heartfire );
 
@@ -2662,7 +2662,7 @@ struct rejuvenation_t : public druid_heal_t
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE ) +
                         p -> talents.blessing_of_the_grove -> mod_additive( P_TICK_DAMAGE ) +
-                        p -> talents.improved_rejuvenation -> mod_additive( P_TICK_DAMAGE ) + 
+                        p -> talents.improved_rejuvenation -> mod_additive( P_TICK_DAMAGE ) +
                         p -> glyphs.rejuvenation -> mod_additive( P_TICK_DAMAGE );
   }
 
@@ -2696,7 +2696,7 @@ struct swiftmend_t : public druid_heal_t
     check_spec( TREE_RESTORATION );
 
     parse_options( NULL, options_str );
-    
+
     additive_factors += p -> talents.improved_rejuvenation -> mod_additive( P_GENERIC );
     consume_ooc       = true;
   }
@@ -3494,9 +3494,9 @@ struct moonfire_t : public druid_spell_t
 
       if ( p -> talents.lunar_shower -> rank() )
       {
-        if ( p -> buffs_lunar_shower -> check() ) 
-          trigger_eclipse_gain_delay( this, 8 );
-        
+        if ( p -> buffs_lunar_shower -> check() )
+          trigger_eclipse_gain_delay( this, ( p -> eclipse_bar_direction > 0 ? 8 : -8 ) );
+
         p -> buffs_lunar_shower -> trigger();
       }
       p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
@@ -3968,9 +3968,9 @@ struct sunfire_t : public druid_spell_t
 
       if ( p -> talents.lunar_shower -> rank() )
       {
-        if ( p -> buffs_lunar_shower -> check() ) 
+        if ( p -> buffs_lunar_shower -> check() )
           trigger_eclipse_gain_delay( this, -8 );
-        
+
         // If moving trigger all 3 stacks, because it will stack up immediately
         p -> buffs_lunar_shower -> trigger( 1 );
       }
@@ -4272,7 +4272,7 @@ struct wrath_t : public druid_spell_t
           // With 4T12 the 13,13,14 sequence becomes a 17,17,16 sequence, which
           // means that the counter gets increased ad additional time per wrath
           // The extra energy is not doubled by Euphoria procs
-          
+
           if ( p -> set_bonus.tier12_4pc_caster() )
           {
             gain += 3;
@@ -4540,7 +4540,7 @@ void druid_t::init_spells()
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 90160, 90163, 90162, 90165,     0,     0,     0,     0 }, // Tier11
     { 99019, 99049, 99001, 99009,     0,     0, 99013, 99015 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 }, 
+    {     0,     0,     0,     0,     0,     0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4575,7 +4575,7 @@ void druid_t::init_base()
   // Furor: +5/10/15% max mana
   resource_base[ RESOURCE_MANA ] *= 1.0 + talents.furor -> effect2().percent();
   mana_per_intellect             *= 1.0 + talents.furor -> effect2().percent();
-  
+
   if ( primary_tree() == TREE_RESTORATION )
     mana_regen_while_casting = spells.meditation -> effect1().percent();
 
@@ -4833,12 +4833,12 @@ void druid_t::init_actions()
           action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=40";
         }
         if ( race == RACE_TROLL ) action_list_str += "/berserking";
-        if ( set_bonus.tier11_4pc_melee() ) 
+        if ( set_bonus.tier11_4pc_melee() )
           action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&buff.t11_4pc_melee.remains<4";
         action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
         action_list_str += "/mangle_cat,if=debuff.mangle.remains<=2&(!debuff.mangle.up|debuff.mangle.remains>=0.0)";
         action_list_str += "/ravage,if=buff.stampede_cat.up&buff.stampede_cat.remains<=1";
-        
+
         if ( talents.blood_in_the_water -> rank() )
         {
           action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=1&dot.rip.ticking&dot.rip.remains<=1&target.health_pct<=25";
@@ -5278,7 +5278,7 @@ int druid_t::decode_set( item_t& item )
     if ( is_caster ) return SET_T12_CASTER;
     if ( is_melee  ) return SET_T12_MELEE;
   }
-  
+
   return SET_NONE;
 }
 
