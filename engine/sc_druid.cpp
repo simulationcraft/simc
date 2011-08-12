@@ -4896,7 +4896,6 @@ void druid_t::init_actions()
         action_list_str += "/berserking";
       action_list_str += "/insect_swarm,if=(ticks_remain<2|(dot.insect_swarm.remains<10&buff.solar_eclipse.up&eclipse<15))&(buff.solar_eclipse.up|buff.lunar_eclipse.up|time<10)";
 
-      action_list_str += "/wild_mushroom_detonate,moving=1,if=buff.wild_mushroom.stack=3";
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       if ( talents.typhoon -> rank() )
         action_list_str += "/typhoon,moving=1";
@@ -4904,14 +4903,19 @@ void druid_t::init_actions()
       {
         action_list_str += "/starfall,if=buff.lunar_eclipse.up";
       }
+
+      const std::string renew_after = util_t::to_string( set_bonus.tier12_4pc_caster() ? 7 : 10 );
       if ( talents.sunfire -> rank() )
       {
-        action_list_str += "/sunfire,if=(!ticking|ticks_remain<2|(dot.sunfire.remains<10&buff.solar_eclipse.up&eclipse<15))&!dot.moonfire.remains>0";
+        action_list_str += "/sunfire,if=(ticks_remain<2&!dot.moonfire.remains>0)|(eclipse<15&dot.sunfire.remains<";
+        action_list_str += renew_after;
+        action_list_str += ')';
       }
-      action_list_str += "/moonfire,if=(!ticking|ticks_remain<2|(dot.moonfire.remains<10&buff.lunar_eclipse.up&eclipse>-20))&buff.lunar_eclipse.up";
-
+      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&((ticks_remain<2";
       if ( talents.sunfire -> rank() )
         action_list_str += "&!dot.sunfire.remains>0";
+      action_list_str += ")|(eclipse>-20&dot.moonfire.remains<" + renew_after + "))";
+
       if ( primary_tree() == TREE_BALANCE )
       {
         if ( set_bonus.tier12_4pc_caster() )
