@@ -4965,8 +4965,7 @@ void priest_t::init_actions()
                                                          action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
       }
 
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.react>=1";
-                                                         action_list_str += "&!set_bonus.tier12_4pc_caster";
+                                                         action_list_str += "/mind_blast";
 
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
@@ -4990,14 +4989,11 @@ void priest_t::init_actions()
                                                          action_list_str += "&dot.devouring_plague.remains>5";
       }
 
-                                                         action_list_str += "/mind_blast,if=buff.shadow_orb.react>=1";
-                                                         action_list_str += "&set_bonus.tier12_4pc_caster";
-
                                                          action_list_str += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
 
                                                          action_list_str += "/shadow_word_death,health_percentage<=25";
       if ( level >= 66 )                                 action_list_str += "/shadow_fiend";
-                                                         action_list_str += "/mind_blast";
+
       if ( double_dot )
       {
                                                          action_list_str += "/mind_flay_2,if=(dot.shadow_word_pain_2.remains<dot.shadow_word_pain.remains)&miss_react";

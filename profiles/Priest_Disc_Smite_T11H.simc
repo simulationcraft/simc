@@ -36,11 +36,11 @@ legs=mercurial_leggings,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177ar
 feet=einhorns_galoshes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_266int_429sta_191haste_171mastery,reforge=mastery_spi,gems=40int_10haste,enchant=35mastery
 wrists=bracers_of_the_dark_mother,heroic=1,type=cloth,ilevel=379,quality=epic,stats=612armor_209int_344sta_133spi_153mastery,reforge=mastery_haste,gems=20int_20haste_10int,enchant=50int
 hands=mercurial_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_266int_429sta_171crit_191mastery,reforge=crit_spi,gems=40int,enchant=65mastery
-finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=143haste_215int_143mastery_322sta,reforge=mastery_spi
+finger1=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=215int_322sta_143mastery_143haste,reforge=mastery_spi
 finger2=planetary_band_of_the_undertow,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143haste_143spi,suffix=131
 trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_133haste_209int_153mastery_344sta,reforge=mastery_spi,gems=20int_20haste_10int,enchant=lightweave_embroidery
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_209int_344sta_153mastery_133haste,reforge=mastery_spi,gems=20int_20haste_10int,enchant=lightweave_embroidery
 main_hand=incineratus,heroic=1,ilevel=372,quality=epic,stats=165int_248sta_110mastery_110haste_2207sp,reforge=mastery_spi,enchant=power_torrent,weapon=dagger_1.80speed_328min_611max
 off_hand=book_of_binding_will,heroic=1,ilevel=372,quality=epic,stats=215int_322sta_143haste_143hit,enchant=40int
 ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_181sta_81spi_81mastery,reforge=mastery_haste
