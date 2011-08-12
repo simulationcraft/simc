@@ -136,7 +136,7 @@ namespace pet_stats {
     { 0, 0, 0, 0 }
   };
   static const _weapon_list_t infernal_weapon[]=
-  { 
+  {
     { 85, 1072.0, 1072.0, 2.0 }, //Rough numbers
     { 80, 924.0, 924.0, 2.0 }, //Rough numbers
     { 0, 0, 0, 0 }
@@ -820,7 +820,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   {
     return snapshot_crit;
   }
-    
+
   virtual double composite_attack_expertise() SC_CONST
   {
     return 0;
@@ -863,9 +863,9 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 
   virtual double composite_spell_power_multiplier() SC_CONST
   {
-    double m = pet_t::composite_spell_power_multiplier(); 
+    double m = pet_t::composite_spell_power_multiplier();
     warlock_t* o = owner -> cast_warlock();
-  
+
     // Guardians normally don't gain demonic pact, but when they provide it they also provide it to themselves
     if ( o -> talent_demonic_pact -> rank() ) m *= 1.10;
 
@@ -1531,7 +1531,7 @@ struct succubus_pet_t : public warlock_main_pet_t
       if ( o -> level == 85 )
       {
         // only tested at level 85
-        base_dd_min = 283; 
+        base_dd_min = 283;
         base_dd_max = 314;
       }
       if ( o -> bugs ) min_gcd = 1.5;
@@ -1714,7 +1714,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       base_execute_time = 3.0;
 
       //Rough numbers based on report in EJ thread 2011/07/04
-      direct_power_mod  = 1.36; 
+      direct_power_mod  = 1.36;
       base_dd_min *= 1.25;
       base_dd_max *= 1.25;
     }
@@ -2149,7 +2149,7 @@ struct shadow_bolt_t : public warlock_spell_t
 
     trigger_tier12_4pc_caster( this );
   }
-  
+
   virtual void player_buff()
   {
     warlock_t* p = player -> cast_warlock();
@@ -2649,7 +2649,7 @@ struct unstable_affliction_t : public warlock_spell_t
 
   virtual void extend_duration( int extra_ticks )
   {
-    // Can't extend beyond initial duration. 
+    // Can't extend beyond initial duration.
     // Assuming this limit is based on current haste, not haste at previous application/extension/refresh.
 
     int max_extra_ticks = std::max( hasted_num_ticks() - dot -> ticks(), 0 );
@@ -2737,7 +2737,7 @@ struct immolate_t : public warlock_spell_t
 
   virtual void extend_duration( int extra_ticks )
   {
-    // Can't extend beyond initial duration. 
+    // Can't extend beyond initial duration.
     // Assuming this limit is based on current haste, not haste at previous application/extension/refresh.
 
     int max_extra_ticks = std::max( hasted_num_ticks() - dot -> ticks(), 0 );
@@ -3165,21 +3165,6 @@ struct summon_pet_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     p -> summon_pet( pet_name.c_str(), summoning_duration );
     warlock_spell_t::execute();
-    if ( p -> buffs_soulburn -> check() )
-    {
-      p -> buffs_soulburn -> expire();
-    }
-  }
-
-  virtual double execute_time() SC_CONST
-  {
-    warlock_t* p = player -> cast_warlock();
-    double t = warlock_spell_t::execute_time();
-
-    if ( p -> buffs_soulburn -> up() )
-      t = 0.0;
-
-    return t;
   }
 };
 
@@ -3211,6 +3196,24 @@ struct summon_main_pet_t : public summon_pet_t
         return false;
 
     return summon_pet_t::ready();
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if ( p -> buffs_soulburn -> up() )
+      return 0.0;
+
+    return warlock_spell_t::execute_time();
+  }
+
+  virtual void execute()
+  {
+    warlock_t* p = player -> cast_warlock();
+    summon_pet_t::execute();
+    if ( p -> buffs_soulburn -> check() )
+      p -> buffs_soulburn -> expire();
   }
 };
 
@@ -3408,9 +3411,9 @@ struct metamorphosis_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_metamorphosis -> rank() );
-    
+
     parse_options( NULL, options_str );
-    
+
     trigger_gcd = 0;
     harmful = false;
   }
@@ -3432,9 +3435,9 @@ struct demonic_empowerment_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_demonic_empowerment -> rank() );
-    
+
     parse_options( NULL, options_str );
-    
+
     harmful = false;
   }
 
@@ -3516,7 +3519,7 @@ struct fel_flame_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
     warlock_t* p = player -> cast_warlock();
-    
+
     p -> buffs_tier11_4pc_caster -> decrement();
   }
 
@@ -3932,8 +3935,8 @@ double warlock_t::composite_player_multiplier( const school_type school, action_
 
   if ( buffs_improved_soul_fire -> up() )
   {
-    fire_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04; 
-    shadow_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04; 
+    fire_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04;
+    shadow_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04;
   }
 
   if ( buffs_tier12_4pc_caster -> up() )
@@ -4042,7 +4045,7 @@ action_t* warlock_t::create_action( const std::string& name,
 // warlock_t::create_pet ====================================================
 
 pet_t* warlock_t::create_pet( const std::string& pet_name,
-			      const std::string& pet_type )
+            const std::string& pet_type )
 {
   pet_t* p = find_pet( pet_name );
 
@@ -4151,7 +4154,7 @@ void warlock_t::init_spells()
     { 99220, 99229,     0,     0,     0,     0,     0,     0 }, // Tier12
     {     0,     0,     0,     0,     0,     0,     0,     0 },
   };
-  sets                        = new set_bonus_array_t( this, set_bonuses );  
+  sets                        = new set_bonus_array_t( this, set_bonuses );
 
   // passive_spells =========================================================
 
@@ -4242,7 +4245,7 @@ void warlock_t::init_buffs()
   buffs_molten_core           = new buff_t( this, talent_molten_core -> effect_trigger_spell( 1 ), "molten_core", talent_molten_core -> rank() * 0.02 );
   buffs_shadow_embrace        = new buff_t( this, talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", talent_shadow_embrace -> rank() );
   buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> base_value() / 100.0 );
-  
+
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
@@ -4441,7 +4444,7 @@ void warlock_t::init_actions()
       if ( talent_bane -> rank() == 3 )
       {
         action_list_str += "/life_tap,mana_percentage<=35";
-        if ( glyphs.lash_of_pain -> ok() ) 
+        if ( glyphs.lash_of_pain -> ok() )
         {
           action_list_str += "/soulburn,if=buff.demon_soul_succubus.down";
         }
@@ -4452,7 +4455,7 @@ void warlock_t::init_actions()
         action_list_str += "/soul_fire,if=buff.soulburn.up";
         if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
         action_list_str += "/shadow_bolt";
-      } 
+      }
       else
       {
         if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul,if=buff.shadow_trance.react";
@@ -4664,7 +4667,7 @@ void player_t::warlock_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.demonic_pact     ) sim -> auras.demonic_pact     -> override();
   if ( sim -> overrides.fel_intelligence ) sim -> auras.fel_intelligence -> override();
-  
+
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( sim -> overrides.dark_intent && ! p -> is_pet() )
