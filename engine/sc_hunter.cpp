@@ -45,7 +45,6 @@ struct hunter_t : public player_t
 
   // Custom Parameters
   std::string summon_pet_str;
-  std::string hunter_position;
 
   // Dots
   dot_t* dots_serpent_sting;
@@ -212,7 +211,6 @@ struct hunter_t : public player_t
 
     ranged_attack = 0;
     summon_pet_str = "";
-    hunter_position = "back";
     distance = 40;
     default_distance = 40;
     base_gcd = 1.0;
@@ -229,6 +227,7 @@ struct hunter_t : public player_t
   virtual void      init_base();
   virtual void      init_buffs();
   virtual void      init_gains();
+  virtual void      init_position();
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_scaling();
@@ -3543,11 +3542,6 @@ void hunter_t::init_base()
 
   resource_base[ RESOURCE_FOCUS ] = 100 + talents.kindred_spirits -> effect1().resource( RESOURCE_FOCUS );
 
-  if ( hunter_position == "front" )
-    position = POSITION_RANGED_FRONT;
-  else if ( hunter_position == "back" )
-    position = POSITION_RANGED_BACK;
-
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;
   diminished_parry_capi = 0.006870;
@@ -3608,6 +3602,24 @@ void hunter_t::init_gains()
   gains_cobra_shot           = get_gain( "cobra_shot"           );
   gains_tier11_4pc           = get_gain( "tier11_4pc"           );
   gains_tier12_4pc           = get_gain( "tier12_4pc"           );
+}
+
+// hunter_t::init_position ==================================================
+
+void hunter_t::init_position()
+{
+  player_t::init_position();
+
+  if ( position == POSITION_FRONT )
+  {
+    position = POSITION_RANGED_FRONT;
+    position_str = util_t::position_type_string( position );
+  }
+  else if ( position == POSITION_BACK )
+  {
+    position = POSITION_RANGED_BACK;
+    position_str = util_t::position_type_string( position );
+  }
 }
 
 // hunter_t::init_procs ======================================================
@@ -3953,7 +3965,6 @@ void hunter_t::create_options()
   option_t hunter_options[] =
   {
     { "summon_pet", OPT_STRING, &( summon_pet_str  ) },
-    { "position",   OPT_STRING, &( hunter_position ) },
     { "merge_piercing_shots", OPT_FLT, &( merge_piercing_shots ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
@@ -3998,7 +4009,6 @@ void hunter_t::copy_from( player_t* source )
   player_t::copy_from( source );
   hunter_t* p = source -> cast_hunter();
   summon_pet_str = p -> summon_pet_str;
-  hunter_position = p -> hunter_position;
   merge_piercing_shots           = source -> cast_hunter() -> merge_piercing_shots;
 
   for ( pet_t* pet = source -> pet_list; pet; pet = pet -> next_pet )

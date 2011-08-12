@@ -3446,9 +3446,10 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   util_t::fprintf( file,
                    "\t\t\t\t\t<li><b>Level:</b> %d</li>\n"
                    "\t\t\t\t\t<li><b>Role:</b> %s</li>\n"
+                   "\t\t\t\t\t<li><b>Position:</b> %s</li>\n"
                    "\t\t\t\t</ul>\n"
                    "\t\t\t\t<div class=\"clear\"></div>\n",
-                   p -> level, util_t::role_type_string( p -> primary_role() ) );
+                   p -> level, util_t::role_type_string( p -> primary_role() ), p -> position_str.c_str() );
 
   // Main player table
   util_t::fprintf( file,

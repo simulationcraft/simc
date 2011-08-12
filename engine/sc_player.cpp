@@ -411,7 +411,7 @@ player_t::player_t( sim_t*             s,
   attack_power_per_strength( 0 ), initial_attack_power_per_strength( 0 ),
   attack_power_per_agility( 0 ),  initial_attack_power_per_agility( 0 ),
   attack_crit_per_agility( 0 ),   initial_attack_crit_per_agility( 0 ),
-  position( POSITION_BACK ),
+  position( POSITION_BACK ), position_str ( "" ),
   // Defense Mechanics
   target_auto_attack( 0 ),
   base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ),       buffed_armor( 0 ),
@@ -773,6 +773,7 @@ void player_t::init()
   init_race();
   init_base();
   init_racials();
+  init_position();
   init_professions();
   init_items();
   init_core();
@@ -1020,6 +1021,28 @@ void player_t::init_core()
     initial_stats.attribute[ i ] = gear.attribute[ i ] + enchant.attribute[ i ] + ( is_pet() ? 0 : sim -> enchant.attribute[ i ] );
 
     attribute[ i ] = attribute_initial[ i ] = attribute_base[ i ] + initial_stats.attribute[ i ];
+  }
+}
+
+// player_t::init_position ==================================================
+
+void player_t::init_position()
+{
+  if ( position_str.empty() )
+  {
+    position_str = util_t::position_type_string( position );
+  }
+  else
+  {
+    position = util_t::parse_position_type( position_str );
+  }
+
+  // default to back when we have an invalid position
+  if ( position == POSITION_NONE )
+  {
+    sim -> errorf( "Player %s has an invalid position of %s, defaulting to back.\n", name(), position_str.c_str() );
+    position = POSITION_BACK;
+    position_str = util_t::position_type_string( position );
   }
 }
 
@@ -5765,6 +5788,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     profile_str += "origin=\"" + origin_str + "\"" + term;
     profile_str += "level=" + util_t::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
+    profile_str += "position=" + position_str + term;
     profile_str += "role=";
     profile_str += util_t::role_type_string( primary_role() ) + term;
     profile_str += "use_pre_potion=" + util_t::to_string( use_pre_potion ) + term;
@@ -5944,6 +5968,8 @@ void player_t::copy_from( player_t* source )
   level = source -> level;
   race_str = source -> race_str;
   role = source -> role;
+  position = source -> position;
+  position_str = source -> position_str;
   use_pre_potion = source -> use_pre_potion;
   professions_str = source -> professions_str;
   talents_str = "http://www.wowhead.com/talent#";
@@ -5995,6 +6021,7 @@ void player_t::create_options()
     { "target",                               OPT_STRING,   &( target_str                             ) },
     { "skill",                                OPT_FLT,      &( initial_skill                          ) },
     { "distance",                             OPT_FLT,      &( distance                               ) },
+    { "position",                             OPT_STRING,   &( position_str                           ) },
     { "professions",                          OPT_STRING,   &( professions_str                        ) },
     { "actions",                              OPT_STRING,   &( action_list_str                        ) },
     { "actions+",                             OPT_APPEND,   &( action_list_str                        ) },

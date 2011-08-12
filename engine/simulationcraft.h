@@ -1619,6 +1619,7 @@ public:
   static const char* meta_gem_type_string      ( int type );
   static const char* player_type_string        ( int type );
   static const char* pet_type_string           ( int type );
+  static const char* position_type_string      ( int type );
   static const char* profession_type_string    ( int type );
   static const char* race_type_string          ( int type );
   static const char* role_type_string          ( int type );
@@ -1649,6 +1650,7 @@ public:
   static player_type parse_player_type         ( const std::string& name );
   static pet_type_t parse_pet_type             ( const std::string& name );
   static int parse_profession_type             ( const std::string& name );
+  static position_type parse_position_type     ( const std::string& name );
   static race_type parse_race_type             ( const std::string& name );
   static role_type parse_role_type             ( const std::string& name );
   static int parse_resource_type               ( const std::string& name );
@@ -3055,6 +3057,7 @@ struct player_t
   double attack_power_per_agility,  initial_attack_power_per_agility;
   double attack_crit_per_agility,   initial_attack_crit_per_agility;
   int    position;
+  std::string position_str;
 
   // Defense Mechanics
   event_t* target_auto_attack;
@@ -3368,6 +3371,7 @@ struct player_t
   virtual void init_items();
   virtual void init_meta_gem( gear_stats_t& );
   virtual void init_core();
+  virtual void init_position();
   virtual void init_race();
   virtual void init_racials();
   virtual void init_spell();

@@ -243,6 +243,33 @@ race_type util_t::parse_race_type( const std::string& name )
   return RACE_NONE;
 }
 
+// util_t::parse_position_type ==============================================
+
+position_type util_t::parse_position_type( const std::string& name )
+{
+  for ( int i = ( int ) POSITION_NONE; i < ( int ) POSITION_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::position_type_string( i ) ) )
+      return ( position_type ) i;
+
+  return POSITION_NONE;
+}
+
+// util_t::position_type_string =============================================
+
+const char* util_t::position_type_string( int type )
+{
+  switch ( type )
+  {
+  case POSITION_NONE:         return "none";
+  case POSITION_BACK:         return "back";
+  case POSITION_FRONT:        return "front";
+  case POSITION_RANGED_BACK:  return "ranged_back";
+  case POSITION_RANGED_FRONT: return "ranged_front";
+  }
+
+  return "unknown";
+}
+
 // util_t::profession_type_string ===========================================
 
 const char* util_t::profession_type_string( int type )
