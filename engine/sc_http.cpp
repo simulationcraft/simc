@@ -46,6 +46,8 @@ static const double url_cache_version = 3.0;
 
 static void* cache_mutex = 0;
 
+static const unsigned int NETBUFSIZE = 1 << 15;
+
 struct url_cache_entry_t
 {
   std::string result;
@@ -61,6 +63,128 @@ typedef std::tr1::unordered_map<std::string, url_cache_entry_t> url_db_t;
 typedef std::map<std::string, url_cache_entry_t> url_db_t;
 #endif // USE_TR1
 static url_db_t url_db;
+
+// throttle =================================================================
+
+static void throttle( int seconds )
+{
+  static int64_t last = 0;
+  int64_t now;
+  do { now = time( NULL ); }
+  while ( ( now - last ) < seconds );
+  last = now;
+}
+
+// cache_set ================================================================
+
+static void cache_set( const std::string& url,
+                       const std::string& result,
+                       int era )
+{
+  // writer lock
+  thread_t::auto_lock_t lock( cache_mutex );
+  url_cache_entry_t& c = url_db[ url ];
+  c.result = result;
+  c.era = era;
+}
+
+#if defined( NO_HTTP )
+
+// ==========================================================================
+// NO HTTP-DOWNLOAD SUPPORT
+// ==========================================================================
+
+// download =================================================================
+
+static bool download( std::string& result,
+                      const std::string& url )
+{
+  return false;
+}
+
+#elif defined( _MSC_VER )
+
+// ==========================================================================
+// HTTP-DOWNLOAD FOR WINDOWS (MS Visual C++ Only)
+// ==========================================================================
+#ifndef UNICODE
+#define UNICODE
+#endif
+#include <windows.h>
+#include <wininet.h>
+
+// download =================================================================
+
+static bool download( std::string& result,
+                      const std::string& url )
+{
+  class InternetWrapper
+  {
+  public:
+    HINTERNET handle;
+
+    explicit InternetWrapper( HINTERNET handle_ ) : handle( handle_ ) {}
+    ~InternetWrapper() { if ( handle ) InternetCloseHandle( handle ); }
+    operator HINTERNET () const { return handle; }
+  };
+
+  result.clear();
+
+  // InternetWrapper hINet( InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PROXY, "proxy-server", NULL, 0 ) );
+  InternetWrapper hINet( InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 ) );
+  if ( ! hINet )
+    return false;
+
+  std::wstring wURL( url.length(), L' ' );
+  std::copy( url.begin(), url.end(), wURL.begin() );
+
+  std::wstring wHeaders;
+  wHeaders += L"Cookie: loginChecked=1\r\n";
+  wHeaders += L"Cookie: cookieLangId=en_US\r\n";
+  // Skip arenapass 2011 advertisement .. can we please have a sensible
+  // API soon?
+  wHeaders += L"Cookie: int-WOW=1\r\n";
+  wHeaders += L"Cookie: int-WOW-arenapass2011=1\r\n";
+  wHeaders += L"Cookie: int-WOW-epic-savings-promo=1\r\n";
+  wHeaders += L"Cookie: int-EuropeanInvitational2011=1\r\n";
+
+  InternetWrapper hFile( InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 ) );
+  if ( ! hFile )
+    return false;
+
+  char buffer[ NETBUFSIZE ];
+  DWORD amount;
+  while ( InternetReadFile( hFile, buffer, sizeof( buffer ), &amount ) )
+  {
+    if ( amount == 0 )
+      break;
+    result.append( &buffer[ 0 ], &buffer[ amount ] );
+  }
+
+  return result.size() > 0;
+}
+
+#else
+
+// ==========================================================================
+// HTTP-DOWNLOAD FOR WINDOWS (MinGW Only) and FOR POSIX COMPLIANT PLATFORMS
+// ==========================================================================
+
+#if defined( __MINGW32__ )
+
+#include <windows.h>
+#include <wininet.h>
+#include <Winsock2.h>
+#include <io.h> // for POSIX ::close
+
+#else
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
+
+#endif
 
 // parse_url ================================================================
 
@@ -143,120 +267,6 @@ static std::string build_request( const std::string&   host,
   return request.str();
 }
 
-// throttle =================================================================
-
-static void throttle( int seconds )
-{
-  static int64_t last = 0;
-  int64_t now;
-  do { now = time( NULL ); }
-  while ( ( now - last ) < seconds );
-  last = now;
-}
-
-// cache_set ================================================================
-
-static void cache_set( const std::string& url,
-                       const std::string& result,
-                       int era )
-{
-  // writer lock
-  thread_t::auto_lock_t lock( cache_mutex );
-  url_cache_entry_t& c = url_db[ url ];
-  c.result = result;
-  c.era = era;
-}
-
-#if defined( NO_HTTP )
-
-// ==========================================================================
-// NO HTTP-DOWNLOAD SUPPORT
-// ==========================================================================
-
-// download =================================================================
-
-static bool download( std::string& result,
-                      const std::string& url )
-{
-  return false;
-}
-
-#elif defined( _MSC_VER )
-
-// ==========================================================================
-// HTTP-DOWNLOAD FOR WINDOWS (MS Visual C++ Only)
-// ==========================================================================
-#ifndef UNICODE
-#define UNICODE
-#endif
-#include <windows.h>
-#include <wininet.h>
-
-// download =================================================================
-
-static bool download( std::string& result,
-                      const std::string& url )
-{
-  // hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PROXY, "proxy-server", NULL, 0 );
-
-  result.clear();
-  HINTERNET hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
-  if ( !hINet )
-    return false;
-
-  std::wstring wURL( url.length(), L' ' );
-  std::copy( url.begin(), url.end(), wURL.begin() );
-
-  std::wstring wHeaders;
-  wHeaders += L"Cookie: loginChecked=1\r\n";
-  wHeaders += L"Cookie: cookieLangId=en_US\r\n";
-  // Skip arenapass 2011 advertisement .. can we please have a sensible
-  // API soon?
-  wHeaders += L"Cookie: int-WOW=1\r\n";
-  wHeaders += L"Cookie: int-WOW-arenapass2011=1\r\n";
-  wHeaders += L"Cookie: int-WOW-epic-savings-promo=1\r\n";
-  wHeaders += L"Cookie: int-EuropeanInvitational2011=1\r\n";
-
-  HINTERNET hFile = InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 );
-  if ( hFile )
-  {
-    char buffer[ 20000 ];
-    DWORD amount;
-    while ( InternetReadFile( hFile, buffer, sizeof( buffer ), &amount ) )
-    {
-      if ( amount == 0 )
-        break;
-      result.append( &buffer[ 0 ], &buffer[ amount ] );
-    }
-    InternetCloseHandle( hFile );
-  }
-  InternetCloseHandle( hINet );
-
-  return result.size() > 0;
-}
-
-#else
-
-// ==========================================================================
-// HTTP-DOWNLOAD FOR WINDOWS (MinGW Only) and FOR POSIX COMPLIANT PLATFORMS
-// ==========================================================================
-
-#if defined( __MINGW32__ )
-
-#include <windows.h>
-#include <wininet.h>
-#include <Winsock2.h>
-#include <io.h> // for POSIX ::close
-
-#else
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-
-#endif
-
 // download =================================================================
 
 static bool download( std::string& result,
@@ -309,25 +319,23 @@ static bool download( std::string& result,
     int s = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
     if ( s < 0 ) return false;
 
-    int r = ::connect( s, ( sockaddr * )&a, sizeof( a ) );
-    if ( r < 0 )
+    if ( ::connect( s, ( sockaddr * )&a, sizeof( a ) ) < 0 )
     {
       ::close( s );
       return false;
     }
 
-    r = ::send( s, request.c_str(), request.size(), 0 );
-    if ( r != static_cast<int>( request.size() ) )
+    if ( ::send( s, request.c_str(), request.size(), 0 ) != static_cast<int>( request.size() ) )
     {
       ::close( s );
       return false;
     }
 
     result.clear();
-    char buffer[2048];
-    while ( 1 )
+    char buffer[ NETBUFSIZE ];
+    while ( true )
     {
-      r = ::recv( s, buffer, sizeof( buffer ), 0 );
+      int r = ::recv( s, buffer, sizeof( buffer ), 0 );
       if ( r <= 0 )
         break;
       result.append( &buffer[ 0 ], &buffer[ r ] );

@@ -537,14 +537,11 @@ bool item_t::decode_reforge()
 
 bool item_t::decode_random_suffix()
 {
-  long                                   rsid;
   int                                       f = item_database_t::random_suffix_type( *this );
-  unsigned                         enchant_id;
-  double                          stat_amount;
-  std::vector<std::string>          stat_list;
 
-  if ( encoded_random_suffix_str.empty() || encoded_random_suffix_str == "" ||
-       encoded_random_suffix_str == "none"  || encoded_random_suffix_str == "0" )
+  if ( encoded_random_suffix_str.empty() ||
+       encoded_random_suffix_str == "none" ||
+       encoded_random_suffix_str == "0" )
     return true;
 
   // We need the ilevel/quality data, otherwise we cannot figure out
@@ -555,25 +552,27 @@ bool item_t::decode_random_suffix()
     return true;
   }
 
-  rsid = abs( strtol( encoded_random_suffix_str.c_str(), 0, 10 ) );
+  long rsid = abs( strtol( encoded_random_suffix_str.c_str(), 0, 10 ) );
   const random_prop_data_t& ilevel_data   = player -> dbc.random_property( ilevel );
   const random_suffix_data_t& suffix_data = player -> dbc.random_suffix( rsid );
 
   if ( ! suffix_data.id )
   {
-    sim -> errorf( "Warning: Unknown random suffix identifier %d at slot %s for item %s.\n",
+    sim -> errorf( "Warning: Unknown random suffix identifier %ld at slot %s for item %s.\n",
                    rsid, slot_name(), name() );
     return true;
   }
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "random_suffix: item=%s suffix_id=%d ilevel=%d quality=%d random_point_pool=%d",
+    log_t::output( sim, "random_suffix: item=%s suffix_id=%ld ilevel=%d quality=%d random_point_pool=%d",
                    name(), rsid, ilevel, quality, f );
   }
 
+  std::vector<std::string>          stat_list;
   for ( int i = 0; i < 5; i++ )
   {
+    unsigned                         enchant_id;
     if ( ! ( enchant_id = suffix_data.enchant_id[ i ] ) )
       continue;
 
@@ -583,6 +582,7 @@ bool item_t::decode_random_suffix()
       continue;
 
     // Calculate amount of points
+    double                          stat_amount;
     if ( quality == 4 ) // Epic
       stat_amount = ilevel_data.p_epic[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
     else if ( quality == 3 ) // Rare
@@ -633,7 +633,7 @@ bool item_t::decode_random_suffix()
 
   if ( encoded_name_str.find( name_str ) == std::string::npos )
   {
-    encoded_name_str += "_" + name_str;
+    encoded_name_str += '_' + name_str;
   }
 
 

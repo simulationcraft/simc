@@ -255,7 +255,7 @@ static bool parse_enchant( item_t&            item,
   const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( eid );
   if ( ! item_enchant.id )
   {
-    item.player -> sim -> errorf( "Unable to find enchant id %u from item enchantment database", eid );
+    item.player -> sim -> errorf( "Unable to find enchant id %lu from item enchantment database", eid );
     return true;
   }
 
@@ -411,17 +411,17 @@ uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc
 {
   if ( ! item || item -> quality > 5 )
     return 0;
-  
+
   // Shield have separate armor table, bypass normal calculation
   if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
     return ( uint32_t ) floor( dbc.item_armor_shield( item -> level ).values[ item -> quality ] + 0.5 );
-  
+
   // Only Cloth, Leather, Mail and Plate armor has innate armor values
   if ( item -> item_subclass != ITEM_SUBCLASS_ARMOR_MISC && item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
     return 0;
-  
+
   double m_invtype = 0, m_quality = 0, total_armor = 0;
-  
+
   switch ( item -> inventory_type )
   {
     case INVTYPE_HEAD:
@@ -445,7 +445,7 @@ uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc
     }
     default: return 0;
   }
-  
+
   return ( uint32_t ) floor( total_armor * m_quality * m_invtype + 0.5 );
 }
 

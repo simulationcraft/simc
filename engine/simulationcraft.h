@@ -35,15 +35,17 @@
 #if defined(__GNUC__)
 #  define likely(x)       __builtin_expect((x),1)
 #  define unlikely(x)     __builtin_expect((x),0)
+#  define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 #else
 #  define likely(x) (x)
 #  define unlikely(x) (x)
+#  define PRINTF_ATTRIBUTE(a,b)
 #endif
 
 #include <typeinfo>
-#include <stdarg.h>
-#include <float.h>
-#include <time.h>
+#include <cstdarg>
+#include <cfloat>
+#include <ctime>
 #include <string>
 #include <queue>
 #include <vector>
@@ -51,12 +53,12 @@
 #include <map>
 #include <limits>
 #include <algorithm>
-#include <assert.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
+#include <cassert>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
 #include <sstream>
 #include <cctype>
 
@@ -1686,13 +1688,14 @@ public:
   static void string_strip_quotes( std::string& str );
 
   static std::string to_string( int i );
+  static std::string to_string( double f );
   static std::string to_string( double f, int precision );
 
   static int64_t milliseconds();
   static int64_t parse_date( const std::string& month_day_year );
 
-  static int printf( const char *format,  ... );
-  static int fprintf( FILE *stream, const char *format,  ... );
+  static int printf( const char *format,  ... ) PRINTF_ATTRIBUTE(1,2);
+  static int fprintf( FILE *stream, const char *format,  ... ) PRINTF_ATTRIBUTE(2,3);
 
   static std::string& str_to_utf8( std::string& str ) { str_to_utf8_( str ); return str; }
   static std::string& str_to_latin1( std::string& str ) { str_to_latin1_( str ); return str; }
@@ -2586,7 +2589,7 @@ struct sim_t
   void      aura_gain( const char* name, int aura_id=0 );
   void      aura_loss( const char* name, int aura_id=0 );
   action_expr_t* create_expression( action_t*, const std::string& name );
-  int       errorf( const char* format, ... );
+  int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE(2,3);
 };
 
 // Scaling ===================================================================
@@ -4440,7 +4443,7 @@ struct chart_t
 struct log_t
 {
   // Generic Output
-  static void output( sim_t*, const char* format, ... );
+  static void output( sim_t*, const char* format, ... ) PRINTF_ATTRIBUTE(2,3);
 
   // Combat Log (unsupported)
 };

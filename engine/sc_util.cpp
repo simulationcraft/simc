@@ -1893,6 +1893,16 @@ std::string util_t::to_string( double f, int precision )
   return std::string( buffer );
 }
 
+// util_t::to_string =======================================================
+
+std::string util_t::to_string( double f )
+{
+  if ( std::abs( f - static_cast<int>( f ) ) < 0.001 )
+    return to_string( static_cast<int>( f ) );
+  else
+    return to_string( f, 3 );
+}
+
 // util_t::milliseconds ====================================================
 
 int64_t util_t::milliseconds()
@@ -1940,35 +1950,14 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   return atoi( buffer.c_str() );
 }
 
-// util_t::printf ========================================================
-
-
-int util_t::printf( const char *format,  ... )
+static int vfprintf_helper( FILE *stream, const char *format, va_list args )
 {
-  va_list fmtargs;
-  int retcode = 0;
-  char *p_locale = NULL;
-  char buffer_locale[ 1024 ];
-
-  p_locale = strdup( setlocale( LC_CTYPE, NULL ) );
-  if ( p_locale != NULL )
-  {
-    strncpy( buffer_locale, p_locale, 1023 );
-    buffer_locale[1023] = '\0';
-  }
-  else
-  {
-    buffer_locale[0] = '\0';
-  }
-
+  char *p_locale = strdup( setlocale( LC_CTYPE, NULL ) );
   setlocale( LC_CTYPE, "" );
 
-  va_start( fmtargs, format );
-  retcode = vprintf( format, fmtargs );
-  va_end( fmtargs );
+  int retcode = vfprintf( stream, format, args );
 
   setlocale( LC_CTYPE, p_locale );
-
   free( p_locale );
 
   return retcode;
@@ -1979,30 +1968,25 @@ int util_t::printf( const char *format,  ... )
 int util_t::fprintf( FILE *stream, const char *format,  ... )
 {
   va_list fmtargs;
-  int retcode = 0;
-  char *p_locale = NULL;
-  char buffer_locale[ 1024 ];
-
-  p_locale = strdup( setlocale( LC_CTYPE, NULL ) );
-  if ( p_locale != NULL )
-  {
-    strncpy( buffer_locale, p_locale, 1023 );
-    buffer_locale[1023] = '\0';
-  }
-  else
-  {
-    buffer_locale[0] = '\0';
-  }
-
-  setlocale( LC_CTYPE, "" );
-
   va_start( fmtargs, format );
-  retcode = vfprintf( stream, format, fmtargs );
+
+  int retcode = vfprintf_helper( stream, format, fmtargs );
+
   va_end( fmtargs );
 
-  setlocale( LC_CTYPE, p_locale );
+  return retcode;
+}
 
-  free( p_locale );
+// util_t::printf ========================================================
+
+int util_t::printf( const char *format,  ... )
+{
+  va_list fmtargs;
+  va_start( fmtargs, format );
+
+  int retcode = vfprintf_helper( stdout, format, fmtargs );
+
+  va_end( fmtargs );
 
   return retcode;
 }

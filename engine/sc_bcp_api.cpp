@@ -44,7 +44,7 @@ js_node_t* download_id( sim_t* sim, const std::string& region, const std::string
 {
   if ( item_id.empty() || item_id == "0" ) return 0;
 
-  std::string url = get_region_host( region ) + "api/wow/item/" + urlencode_utf8( item_id );
+  std::string url = get_region_host( region ) + "api/wow/item/" + urlencode_utf8( item_id ) + "?locale=en_US";
 
   std::string result;
   if ( ! http_t::get( result, url, std::string(), caching ) )

@@ -2385,8 +2385,8 @@ static void print_html_stats ( FILE* file, player_t* a )
     util_t::fprintf( file,
                      "\t\t\t\t\t\t\t\t\t<tr class=\"odd\">\n"
                      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Mastery</th>\n"
-                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f% </td>\n"
-                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%</td>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
                      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                      "\t\t\t\t\t\t\t\t\t</tr>\n",
                      a -> buffed_mastery,
@@ -2701,7 +2701,7 @@ static void print_html_player_statistics( FILE* file, sim_t* sim, player_t* p )
 
  util_t::fprintf( file,
                   "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100% ]</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                   "\t\t\t\t\t\t\t\t</tr>\n",
                   p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0 );
@@ -2889,8 +2889,7 @@ for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
                          "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
                          "\t\t\t\t\t\t\t\t<td colspan=\"3\" class=\"filler\"></td>\n"
                          "\t\t\t\t\t\t\t</tr>\n",
-                         pet -> name_str.c_str(),
-                         pet -> dps );
+                         pet -> name_str.c_str() );
       }
       print_html_action_resource( file, s, p, i );
       i++;
@@ -3227,9 +3226,7 @@ static void print_html_player_buffs( FILE* file, sim_t* sim, player_t* p )
                    "\t\t\t\t\t\t\t\t<th>Trigger</th>\n"
                    "\t\t\t\t\t\t\t\t<th>Up-Time</th>\n"
                    "\t\t\t\t\t\t\t\t<th>Benefit</th>\n"
-                   "\t\t\t\t\t\t\t</tr>\n",
-                   p -> name(),
-                   p -> name() );
+                   "\t\t\t\t\t\t\t</tr>\n" );
 
   std::vector<buff_t*> dynamic_buffs;
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
@@ -3244,10 +3241,10 @@ static void print_html_player_buffs( FILE* file, sim_t* sim, player_t* p )
   {
     buff_t* b = dynamic_buffs[ i ];
 
-    std::string buff_name = "";
+    std::string buff_name;
     if( b -> player && b -> player -> is_pet() )
     {
-      buff_name += b -> player -> name_str + "-";
+      buff_name += b -> player -> name_str + '-';
     }
     buff_name += b -> name();
 
@@ -3692,9 +3689,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t\t\t\t<th></th>\n"
                    "\t\t\t\t\t\t\t\t\t<th>Count</th>\n"
                    "\t\t\t\t\t\t\t\t\t<th>Interval</th>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n",
-                   n.c_str(),
-                   n.c_str() );
+                   "\t\t\t\t\t\t\t\t</tr>\n" );
   i = 1;
   for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
   {
