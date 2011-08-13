@@ -107,7 +107,7 @@ save=Warlock_Destruction_T12N.simc
 
 chardev=193644 name=Warlock_Affliction_T12H actions= save=Warlock_Affliction_T12H.simc
 
-chardev=193736 name=Warlock_Demonology_T12H actions= save=Warlock_Demonology_T12H.simc
+chardev=193905 name=Warlock_Demonology_T12H actions= save=Warlock_Demonology_T12H.simc
 
 chardev=193762 name=Warlock_Destruction_T12H actions= save=Warlock_Destruction_T12H.simc
 
