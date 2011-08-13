@@ -7,7 +7,6 @@
 #include "utf8.h"
 
 #include <fstream>
-#include <iostream>
 
 #ifdef USE_TR1
 #include <unordered_map>
@@ -62,11 +61,19 @@ static url_db_t url_db;
 
 static void throttle( int seconds )
 {
-  static int64_t last = 0;
-  int64_t now;
-  do { now = time( NULL ); }
-  while ( ( now - last ) < seconds );
-  last = now;
+  static std::time_t last = 0;
+  while ( true )
+  {
+    std::time_t now = std::time( NULL );
+
+    if ( last + seconds <= now )
+    {
+      last = now;
+      return;
+    }
+
+    thread_t::sleep( last + seconds - now );
+  }
 }
 
 // cache_clear ==============================================================
@@ -147,7 +154,7 @@ static bool download( url_cache_entry_t& entry,
   }
 
   std::wstring wURL( url.begin(), url.end() );
-  InetWrapper hFile( InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0,
+  InetWrapper hFile( InternetOpenUrl( hINet, wURL.c_str(), wHeaders.data(), wHeaders.length(),
                                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
   if ( ! hFile )
     return false;

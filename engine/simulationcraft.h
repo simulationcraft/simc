@@ -4503,6 +4503,7 @@ struct thread_t
   static void mutex_init( void*& mutex );
   static void mutex_lock( void*& mutex );
   static void mutex_unlock( void*& mutex );
+  static void sleep( int seconds );
 
   class auto_lock_t
   {
