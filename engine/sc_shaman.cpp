@@ -37,15 +37,17 @@ struct shaman_t : public player_t
   // Active
   action_t* active_lightning_charge;
   action_t* active_searing_flames_dot;
-
+  
   // Totems
-  pet_t* totems[ TOTEM_MAX ];
+  action_t* totems[ TOTEM_MAX ];
 
   // Buffs
+  buff_t* buffs_earth_elemental;
   buff_t* buffs_elemental_devastation;
   buff_t* buffs_elemental_focus;
   buff_t* buffs_elemental_mastery;
   buff_t* buffs_elemental_mastery_insta;
+  buff_t* buffs_fire_elemental;
   buff_t* buffs_flurry;
   buff_t* buffs_lava_surge;
   buff_t* buffs_lightning_shield;
@@ -59,18 +61,18 @@ struct shaman_t : public player_t
   buff_t* buffs_unleash_flame;
   buff_t* buffs_unleash_wind;
   buff_t* buffs_water_shield;
-
+  
   // Tree specialization passives
   passive_spell_t* spec_elemental_fury;
   passive_spell_t* spec_shamanism;
   passive_spell_t* spec_mental_quickness;
   passive_spell_t* spec_dual_wield;
   passive_spell_t* spec_primal_wisdom;
-
+  
   // Masteries
   mastery_t* mastery_elemental_overload;
   mastery_t* mastery_enhanced_elements;
-
+  
   // Armor specializations
   passive_spell_t* mail_specialization;
 
@@ -106,7 +108,7 @@ struct shaman_t : public player_t
   proc_t* procs_wasted_ls;
   proc_t* procs_wasted_mw;
   proc_t* procs_windfury;
-
+  
   proc_t* procs_fulmination[7];
   proc_t* procs_maelstrom_weapon_used[6];
 
@@ -145,7 +147,7 @@ struct shaman_t : public player_t
   talent_t* talent_elemental_weapons;
   talent_t* talent_feral_spirit;
   talent_t* talent_flurry;
-  talent_t* talent_focused_strikes;
+  talent_t* talent_focused_strikes;  
   talent_t* talent_frozen_power;
   talent_t* talent_improved_fire_nova;
   talent_t* talent_improved_lava_lash;
@@ -169,7 +171,7 @@ struct shaman_t : public player_t
   attack_t* windfury_oh;
   spell_t*  flametongue_mh;
   spell_t*  flametongue_oh;
-
+  
   // Glyphs
   glyph_t* glyph_feral_spirit;
   glyph_t* glyph_fire_elemental_totem;
@@ -182,13 +184,13 @@ struct shaman_t : public player_t
   glyph_t* glyph_unleashed_lightning;
   glyph_t* glyph_water_shield;
   glyph_t* glyph_windfury_weapon;
-
+  
   glyph_t* glyph_chain_lightning;
   glyph_t* glyph_shocking;
   glyph_t* glyph_thunder;
-
+  
   glyph_t* glyph_thunderstorm;
-
+  
   shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r ),
     wf_delay( 0.95 ), wf_delay_stddev( 0.25 ), uf_expiration_delay( 0.3 ), uf_expiration_delay_stddev( 0.05 )
   {
@@ -201,7 +203,7 @@ struct shaman_t : public player_t
     // Active
     active_lightning_charge   = 0;
     active_searing_flames_dot = 0;
-
+    
     // Totem tracking
     for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;
 
@@ -256,7 +258,6 @@ struct shaman_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST;
   virtual void      combat_begin();
-  virtual action_expr_t* create_expression( action_t* a, const std::string& name_str );
 
   // Event Tracking
   virtual void regen( double periodicity );
@@ -273,18 +274,18 @@ struct shaman_attack_t : public attack_t
   /* Old style construction, spell data will not be accessed */
   shaman_attack_t( const char* n, player_t* player, school_type s, int t, bool special ) :
     attack_t( n, player, RESOURCE_MANA, s, t, special ) { }
-
+  
   /* Class spell data based construction, spell name in s_name */
   shaman_attack_t( const char* n, const char* s_name, player_t* player ) :
-    attack_t( n, s_name, player, TREE_NONE, true )
-  {
+    attack_t( n, s_name, player, TREE_NONE, true ) 
+  { 
     may_crit    = true;
   }
-
+  
   /* Spell data based construction, spell id in spell_id */
   shaman_attack_t( const char* n, uint32_t spell_id, player_t* player ) :
     attack_t( n, spell_id, player, TREE_NONE, true )
-  {
+  { 
     may_crit    = true;
   }
 
@@ -304,11 +305,11 @@ struct shaman_spell_t : public spell_t
   double base_cost_reduction;
   bool   maelstrom;
   bool   is_totem;
-
+  
   /* Old style construction, spell data will not be accessed */
   shaman_spell_t( const char* n, player_t* p, const school_type s, int t ) :
     spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction( 0 ), maelstrom( false ), is_totem( false ) { }
-
+  
   /* Class spell data based construction, spell name in s_name */
   shaman_spell_t( const char* n, const char* s_name, player_t* p ) :
     spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), is_totem( false )
@@ -336,7 +337,7 @@ struct shaman_spell_t : public spell_t
   virtual bool   usable_moving()
   {
     shaman_t* p = player -> cast_shaman();
-
+    
     if ( p -> buffs_spiritwalkers_grace -> up() || execute_time() == 0 )
       return true;
 
@@ -370,7 +371,7 @@ struct spirit_wolf_pet_t : public pet_t
       }
 
       // Wolves have a base multiplier of 1.49835 approximately, and there are
-      // two wolves. Verified using paper doll damage range values on a
+      // two wolves. Verified using paper doll damage range values on a 
       // level 85 enhancement shaman, with and without Glyph
       base_multiplier *= 1.49835 * 2.0;
     }
@@ -387,7 +388,7 @@ struct spirit_wolf_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 1.5;
   }
-
+  
   virtual void init_base()
   {
     pet_t::init_base();
@@ -405,52 +406,48 @@ struct spirit_wolf_pet_t : public pet_t
 
     melee = new melee_t( this );
   }
-
+  
   virtual double composite_attack_power() SC_CONST
   {
     shaman_t* o         = owner -> cast_shaman();
     double ap           = pet_t::composite_attack_power();
     // In game testing has ap_per_owner without glyph as ~33%, and with glyph, ~65%
     double ap_per_owner = 0.329 + o -> glyph_feral_spirit -> ok() * 0.320;
-
+    
     return ap + ap_per_owner * o -> composite_attack_power_multiplier() * o -> composite_attack_power();
   }
-
+  
   virtual void summon( double duration=0 )
   {
     pet_t::summon( duration );
     melee -> execute(); // Kick-off repeating attack
   }
-
+  
   virtual double composite_attribute_multiplier( int attr ) SC_CONST
   {
     return attribute_multiplier[ attr ];
   }
-
+  
   virtual double strength() SC_CONST
   {
     return attribute[ ATTR_STRENGTH ];
   }
-
+  
   virtual double agility() SC_CONST
   {
     return attribute[ ATTR_AGILITY ];
   }
-
+  
   virtual double composite_attack_power_multiplier() SC_CONST
   {
     return attack_power_multiplier;
   }
-
+  
   virtual double composite_player_multiplier( const school_type, action_t* a ) SC_CONST
   {
     return 1.0;
   }
 };
-
-// ==========================================================================
-// Guardian Earth Elemental
-// ==========================================================================
 
 struct earth_elemental_pet_t : public pet_t
 {
@@ -464,7 +461,7 @@ struct earth_elemental_pet_t : public pet_t
     virtual bool ready() { return ( player -> distance > 1 ); }
     virtual bool usable_moving() { return true; }
   };
-
+  
   struct auto_attack_t : public attack_t
   {
     auto_attack_t( player_t* player ) :
@@ -481,7 +478,11 @@ struct earth_elemental_pet_t : public pet_t
     virtual void execute()
     {
       pet_t* p = player -> cast_pet();
+      shaman_t* o = ( player -> cast_pet() ) -> owner -> cast_shaman();
+
       p -> main_hand_attack -> schedule_execute();
+
+      o -> buffs_earth_elemental -> up();
     }
 
     virtual bool ready()
@@ -507,18 +508,18 @@ struct earth_elemental_pet_t : public pet_t
       base_attack_power_multiplier = 0;
       if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
-
+    
     virtual double swing_haste() SC_CONST
     {
       return 1.0;
     }
-
+    
     // Earth elemental scales purely with spell power
     virtual double total_attack_power() SC_CONST
     {
       return player -> composite_spell_power( SCHOOL_MAX );
     }
-
+    
     // Melee swings have a ~3% crit rate on boss level mobs
     virtual double crit_chance( int delta_level ) SC_CONST
     {
@@ -544,7 +545,7 @@ struct earth_elemental_pet_t : public pet_t
     pet_t::init_base();
 
     resource_base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
-    resource_base[ RESOURCE_MANA   ] = 0; //
+    resource_base[ RESOURCE_MANA   ] = 0; // 
 
     health_per_stamina = 13.75; // See above
     mana_per_intellect = 0;
@@ -559,10 +560,24 @@ struct earth_elemental_pet_t : public pet_t
 
   virtual void summon( double duration )
   {
+    shaman_t* o = owner -> cast_shaman();
+
     pet_t::summon();
     owner_sp = owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
+
+    o -> buffs_earth_elemental -> trigger();
   }
 
+  virtual void demise()
+  {
+    shaman_t* o = owner -> cast_shaman();
+
+    pet_t::demise();
+
+    o -> buffs_earth_elemental -> expire();
+  }
+  
+  
   virtual double composite_spell_power( const school_type ) SC_CONST
   {
     return owner_sp;
@@ -580,7 +595,7 @@ struct earth_elemental_pet_t : public pet_t
 
   virtual double composite_attack_expertise() SC_CONST
   {
-      return owner -> composite_spell_hit() * 26.0 / 17.0;
+      return owner -> composite_spell_hit() * 26.0 / 17.0; 
   }
 
 
@@ -592,18 +607,18 @@ struct earth_elemental_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
-
+  
   virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
   {
     double m = 1.0;
-
+    
     // 10/14 21:18:26.413  SPELL_AURA_APPLIED,0x0000000000000000,nil,0x80000000,0xF1303C4E0000E927,"Greater Fire Elemental",0x2111,73828,"Strength of Wrynn",0x1,BUFF
     if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
     {
       // ICC buff.
       m *= 1.3;
     }
-
+    
     return m;
   }
 };
@@ -614,21 +629,21 @@ struct earth_elemental_pet_t : public pet_t
 // - Fire elemental does not gain any kind of attack-power based bonuses,
 //   it scales purely on spellpower
 // - Fire elemental takes a snapshot of owner's Intellect and pure Spell Power
-// - Fire elemental gets 7.5 health and 4.5 mana per point of owner's Stamina
+// - Fire elemental gets 7.5 health and 4.5 mana per point of owner's Stamina 
 //   and Intellect, respectively
-// - DBC Data files gave coefficients for spells it does, melee coefficient
+// - DBC Data files gave coefficients for spells it does, melee coefficient 
 //   is based on empirical testing
-// - Fire elemental gains Spell Power (to power abilities) with a different
-//   multiplier for Intellect and pure Spell Power. Current numbers are from
+// - Fire elemental gains Spell Power (to power abilities) with a different 
+//   multiplier for Intellect and pure Spell Power. Current numbers are from 
 //   Cataclysm beta, level 85 shaman.
 // - Fire Elemental base damage values are from Cataclysm, level 85
 // - Fire Elemental now has a proper action list, using Fire Blast and Fire Nova
-//   with random cooldowns to do damage to the target. In addition, both
-//   Fire Nova and Fire Blast cause the Fire Elemental to reset the swing timer,
+//   with random cooldowns to do damage to the target. In addition, both 
+//   Fire Nova and Fire Blast cause the Fire Elemental to reset the swing timer, 
 //   and an on-going Fire Nova cast will also clip a swing.
 // TODO:
 // - Analysis of in-game Fire Elemental Fire Nova and Fire Blast ability cooldown
-//   distributions would help us make a more realistic model. The current values
+//   distributions would help us make a more realistic model. The current values 
 //   of 5-20 seconds are not very well researched.
 // ==========================================================================
 
@@ -648,26 +663,26 @@ struct fire_elemental_pet_t : public pet_t
   {
     double int_multiplier;
     double sp_multiplier;
-
+    
     fire_elemental_spell_t( player_t* player, const char* n ) :
       spell_t( n, player, RESOURCE_MANA, SCHOOL_FIRE ),
-      int_multiplier( 0.85 ), sp_multiplier ( 0.53419 )
-    {
+      int_multiplier( 0.85 ), sp_multiplier ( 0.53419 ) 
+    { 
       // Apparently, fire elemental spell crit damage bonus is 100% now.
       crit_bonus_multiplier = 2.0;
     }
-
+    
     virtual double total_spell_power() SC_CONST
     {
       double sp  = 0.0;
       pet_t* pet = player -> cast_pet();
-
+      
       sp += pet -> intellect() * int_multiplier;
       sp += pet -> composite_spell_power( school ) * sp_multiplier;
       return floor( sp );
     }
-
-    virtual void player_buff()
+    
+    virtual void player_buff() 
     {
       spell_t::player_buff();
       // Fire elemental has approx 3% crit
@@ -676,10 +691,14 @@ struct fire_elemental_pet_t : public pet_t
 
     virtual void execute()
     {
+      shaman_t* o = ( player -> cast_pet() ) -> owner -> cast_shaman();
+
       spell_t::execute();
 
-      // Fire Nova and Fire Blast both seem to reset the swing time of the elemental, or
-      // at least incur some sort of delay penalty to melee swings, so push back the
+      o -> buffs_fire_elemental -> up();
+
+      // Fire Nova and Fire Blast both seem to reset the swing time of the elemental, or 
+      // at least incur some sort of delay penalty to melee swings, so push back the 
       // auto attack an execute time
       if ( ! background && player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
@@ -687,7 +706,7 @@ struct fire_elemental_pet_t : public pet_t
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
     }
-
+    
   };
 
   struct fire_shield_t : public fire_elemental_spell_t
@@ -703,8 +722,8 @@ struct fire_elemental_pet_t : public pet_t
       base_dd_min = base_dd_max = 89;
       direct_power_mod          = player -> dbc.spell( 13376 ) -> effect1().coeff();
     }
-
-    virtual void execute()
+    
+    virtual void execute() 
     {
       if ( player -> distance <= 11.0 )
         fire_elemental_spell_t::execute();
@@ -724,12 +743,12 @@ struct fire_elemental_pet_t : public pet_t
       may_crit             = true;
       direct_power_mod     = player -> dbc.spell( 12470 ) -> effect1().coeff();
       cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 20.0 );
-
+      
       // 207 = 80
       base_cost            = player -> level * 2.750;
       // For now, model the cast time increase as well, see below
       base_execute_time    = player -> dbc.spell( 12470 ) -> cast_time( player -> level );
-
+      
       base_dd_min          = 583;
       base_dd_max          = 663;
     }
@@ -756,16 +775,16 @@ struct fire_elemental_pet_t : public pet_t
       base_execute_time    = 0;
       direct_power_mod     = player -> dbc.spell( 57984 ) -> effect1().coeff();
       cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 20.0 );
-
+      
       base_dd_min        = 276;
       base_dd_max        = 321;
     }
-
+    
     virtual bool usable_moving()
     {
       return true;
     }
-
+    
     virtual void execute()
     {
       fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
@@ -780,9 +799,9 @@ struct fire_elemental_pet_t : public pet_t
   {
     double int_multiplier;
     double sp_multiplier;
-
+    
     fire_melee_t( player_t* player ) :
-      attack_t( "fire_melee", player, RESOURCE_NONE, SCHOOL_FIRE ),
+      attack_t( "fire_melee", player, RESOURCE_NONE, SCHOOL_FIRE ), 
       int_multiplier( 0.9647 ), sp_multiplier ( 0.6457 )
     {
       may_crit                     = true;
@@ -798,19 +817,19 @@ struct fire_elemental_pet_t : public pet_t
       // Fire elemental has approx 1.5% crit
       base_crit                    = 0.015;
     }
-
+    
     virtual double total_spell_power() SC_CONST
     {
       double sp  = 0.0;
-
+      
       pet_t* pet = player -> cast_pet();
-
+      
       sp += pet -> intellect() * int_multiplier;
       sp += pet -> composite_spell_power( school ) * sp_multiplier;
-
+      
       return floor( sp );
     }
-
+    
     virtual void execute()
     {
       // If we're casting Fire Nova, we should clip a swing
@@ -855,7 +874,7 @@ struct fire_elemental_pet_t : public pet_t
   fire_elemental_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "fire_elemental", true /*GUARDIAN*/ ), owner_int( 0.0 ), owner_sp( 0.0 )
   {
-    intellect_per_owner         = 1.0;
+    intellect_per_owner         = 1.0; 
     stamina_per_owner           = 1.0;
   }
 
@@ -864,7 +883,7 @@ struct fire_elemental_pet_t : public pet_t
     pet_t::init_base();
 
     resource_base[ RESOURCE_HEALTH ] = 4643; // Approximated from lvl83 fire elem with naked shaman
-    resource_base[ RESOURCE_MANA   ] = 8508; //
+    resource_base[ RESOURCE_MANA   ] = 8508; // 
 
     health_per_stamina               = 7.5; // See above
     mana_per_intellect               = 4.5;
@@ -882,7 +901,7 @@ struct fire_elemental_pet_t : public pet_t
 
     // Run menacingly to the target, start meleeing and acting erratically
     action_list_str                  = "travel/auto_attack/fire_nova/fire_blast";
-
+    
     fire_shield                      = new fire_shield_t( this );
   }
 
@@ -899,17 +918,31 @@ struct fire_elemental_pet_t : public pet_t
   // Snapshot int, spell power from player
   virtual void summon( double duration )
   {
+    shaman_t* o = owner -> cast_shaman();
+
     pet_t::summon();
 
     owner_int = owner -> intellect();
     owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
 
+    fire_shield -> num_ticks = ( int ) ( duration / fire_shield -> base_execute_time );
     fire_shield -> execute();
 
     cooldown_fire_nova -> start();
     cooldown_fire_blast -> start();
+
+    o -> buffs_fire_elemental -> trigger();
   }
 
+  virtual void demise()
+  {
+    shaman_t* o = owner -> cast_shaman();
+
+    pet_t::demise();
+
+    o -> buffs_fire_elemental -> expire();
+  }
+  
   virtual double intellect() SC_CONST
   {
     return owner_int;
@@ -932,9 +965,9 @@ struct fire_elemental_pet_t : public pet_t
 
   virtual double composite_attack_expertise() SC_CONST
   {
-    return owner -> composite_spell_hit() * 26.0 / 17.0;
+    return owner -> composite_spell_hit() * 26.0 / 17.0; 
   }
-
+  
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
@@ -945,18 +978,18 @@ struct fire_elemental_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
-
+  
   virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
   {
     double m = 1.0;
-
+    
     // 10/14 21:18:26.413  SPELL_AURA_APPLIED,0x0000000000000000,nil,0x80000000,0xF1303C4E0000E927,"Greater Fire Elemental",0x2111,73828,"Strength of Wrynn",0x1,BUFF
     if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
     {
       // ICC buff.
       m *= 1.3;
     }
-
+    
     return m;
   }
 };
@@ -979,7 +1012,7 @@ static void trigger_flametongue_weapon( attack_t* a )
     p -> procs_ft_icd -> occur();
     return;
   }
-
+  
   if ( a -> weapon -> slot == SLOT_MAIN_HAND )
     ft = p -> flametongue_mh;
   else
@@ -1001,9 +1034,9 @@ static void trigger_flametongue_weapon( attack_t* a )
     ft -> base_spell_power_multiplier = m_coeff * m_ft;
     ft -> base_attack_power_multiplier = 0;
   }
-
+  
   // Add a very slight cooldown to flametongue weapon to prevent overly good results
-  // when using FT/FT combo and near-synced attacks. This should model in-game results
+  // when using FT/FT combo and near-synced attacks. This should model in-game results 
   // decently as well. See EJ Shaman forum for more information.
   p -> cooldowns_flametongue_weapon -> start( 0.15 );
 
@@ -1017,7 +1050,7 @@ struct windfury_delay_event_t : public event_t
   attack_t* wf;
   double delay;
 
-  windfury_delay_event_t( sim_t* sim, player_t* p, attack_t* wf, double delay ) :
+  windfury_delay_event_t( sim_t* sim, player_t* p, attack_t* wf, double delay ) : 
     event_t( sim, p ), wf( wf ), delay( delay )
   {
     name = "windfury_delay_event";
@@ -1039,7 +1072,7 @@ static void trigger_windfury_weapon( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
   attack_t* wf = 0;
-
+  
   if ( a -> weapon -> slot == SLOT_MAIN_HAND )
     wf = p -> windfury_mh;
   else
@@ -1061,16 +1094,16 @@ static void trigger_windfury_weapon( attack_t* a )
 static void trigger_rolling_thunder ( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
-
+  
   if ( ! p -> buffs_lightning_shield -> check() )
     return;
-
+  
   if ( p -> rng_rolling_thunder -> roll( p -> talent_rolling_thunder -> proc_chance() ) )
   {
-    p -> resource_gain( RESOURCE_MANA,
+    p -> resource_gain( RESOURCE_MANA, 
                         p -> dbc.spell( 88765 ) -> effect1().percent() * p -> resource_max[ RESOURCE_MANA ],
                         p -> gains_rolling_thunder );
-
+    
     if ( p -> buffs_lightning_shield -> check() == p -> buffs_lightning_shield -> max_stack )
       p -> procs_wasted_ls -> occur();
 
@@ -1087,7 +1120,7 @@ static bool trigger_static_shock ( attack_t* a )
 
   if ( ! p -> buffs_lightning_shield -> stack() )
     return false;
-
+  
   if ( p -> rng_static_shock -> roll( p -> talent_static_shock -> proc_chance() ) )
   {
     p -> active_lightning_charge -> execute();
@@ -1109,8 +1142,8 @@ struct lava_burst_overload_t : public shaman_spell_t
     shaman_t* p          = player -> cast_shaman();
     proc                 = true;
     background           = true;
-
-    // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use
+    
+    // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use 
     // a _DIFFERENT_ effect in shamanism, that has 75% of the shamanism
     // "real" effect
     if ( p -> spec_shamanism -> ok() )
@@ -1118,12 +1151,12 @@ struct lava_burst_overload_t : public shaman_spell_t
 //      direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
       direct_power_mod  += 0.32 * 0.75; // HOTFIX 26 Jul 11
     }
-
+    
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
       p -> talent_call_of_flame -> effect2().percent();
-
-    crit_bonus_multiplier *= 1.0 +
+            
+    crit_bonus_multiplier *= 1.0 + 
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE ) +
       p -> talent_lava_flows -> mod_additive( P_CRIT_DAMAGE );
   }
@@ -1131,10 +1164,10 @@ struct lava_burst_overload_t : public shaman_spell_t
   virtual void player_buff()
   {
     shaman_spell_t::player_buff();
-
+    
     shaman_t* p = player -> cast_shaman();
-
-    if ( p -> dot_flame_shock -> ticking )
+    
+    if ( p -> dot_flame_shock -> ticking ) 
       player_crit += 1.0;
   }
 };
@@ -1147,8 +1180,8 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     shaman_t* p          = player -> cast_shaman();
     proc                 = true;
     background           = true;
-
-    // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use
+    
+    // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use 
     // a _DIFFERENT_ effect in shamanism, that has 75% of the shamanism
     // "real" effect
     if ( p -> spec_shamanism -> ok() )
@@ -1156,7 +1189,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
 //      direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
       direct_power_mod  += 0.32 * 0.75; // HOTFIX 26 Jul 11
     }
-
+      
     // Elemental fury
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
@@ -1178,15 +1211,15 @@ struct lightning_bolt_overload_t : public shaman_spell_t
 struct chain_lightning_overload_t : public shaman_spell_t
 {
   int glyph_targets;
-
+  
   chain_lightning_overload_t( player_t* player ) :
     shaman_spell_t( "chain_lightning_overload", 45297, player ), glyph_targets( 0 )
   {
     shaman_t* p          = player -> cast_shaman();
     proc                 = true;
     background           = true;
-
-    // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use
+    
+    // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use 
     // a _DIFFERENT_ effect in shamanism, that has 75% of the shamanism
     // "real" effect
     if ( p -> spec_shamanism -> ok() )
@@ -1194,7 +1227,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
 //      direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
       direct_power_mod  += 0.32 * 0.75; // HOTFIX 26 Jul 11
     }
-
+      
     // Elemental fury
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
@@ -1203,11 +1236,11 @@ struct chain_lightning_overload_t : public shaman_spell_t
       p -> glyph_chain_lightning -> mod_additive( P_GENERIC );
 
     glyph_targets        = (int) p -> glyph_chain_lightning -> mod_additive( P_TARGET );
-
+    
     base_add_multiplier = 0.7;
     aoe = ( 2 + glyph_targets );
   }
-
+  
   virtual void execute()
   {
     shaman_spell_t::execute();
@@ -1221,27 +1254,27 @@ struct chain_lightning_overload_t : public shaman_spell_t
 
 struct searing_flames_t : public shaman_spell_t
 {
-  searing_flames_t( player_t* player ) :
+  searing_flames_t( player_t* player ) : 
     shaman_spell_t( "searing_flames", 77661, player )
   {
     background       = true;
-    may_miss         = false;
-    tick_may_crit    = true;
-    proc             = true;
+    may_miss         = false;    
+    tick_may_crit    = true;  
+    proc             = true;      
     dot_behavior     = DOT_REFRESH;
     hasted_ticks     = false;
     may_crit         = false;
-
+    
     // Override spell data values, as they seem wrong, instead
     // make searing totem calculate the damage portion of the
-    // spell, without using any tick power modifiers or
+    // spell, without using any tick power modifiers or 
     // player based multipliers here
     tick_power_mod   = 0.0;
   }
-
+  
   // Don't double dip
   virtual void target_debuff( player_t* t, int dmg_type ) { }
-
+  
   virtual double total_td_multiplier() SC_CONST
   {
     shaman_t* p = player -> cast_shaman();
@@ -1259,7 +1292,7 @@ struct searing_flames_t : public shaman_spell_t
 struct lightning_charge_t : public shaman_spell_t
 {
   int consume_threshold;
-
+  
   lightning_charge_t( player_t* player, const std::string& n ) :
     shaman_spell_t( n.c_str(), 26364, player ), consume_threshold( 0 )
   {
@@ -1267,11 +1300,11 @@ struct lightning_charge_t : public shaman_spell_t
     shaman_t* p      = player -> cast_shaman();
     background       = true;
     may_crit         = true;
-    base_multiplier *= 1.0 +
+    base_multiplier *= 1.0 + 
       p -> talent_improved_shields -> mod_additive( P_GENERIC );
 
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
-
+      
     consume_threshold = ( int ) p -> talent_fulmination -> base_value();
   }
 
@@ -1293,15 +1326,15 @@ struct lightning_charge_t : public shaman_spell_t
 
 struct unleash_flame_t : public shaman_spell_t
 {
-  unleash_flame_t( player_t* player ) :
+  unleash_flame_t( player_t* player ) : 
     shaman_spell_t( "unleash_flame", 73683, player )
   {
     shaman_t* p = player -> cast_shaman();
 
     background           = true;
     proc                 = true;
-
-    crit_bonus_multiplier *= 1.0 +
+    
+    crit_bonus_multiplier *= 1.0 + 
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     // Don't cooldown here, unleash elements ability will handle it
@@ -1312,13 +1345,13 @@ struct unleash_flame_t : public shaman_spell_t
   {
     // Figure out weapons
     shaman_t* p = player -> cast_shaman();
-
+    
     if ( p -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
     {
       shaman_spell_t::execute();
     }
-
-    if ( p -> off_hand_weapon.type != WEAPON_NONE &&
+    
+    if ( p -> off_hand_weapon.type != WEAPON_NONE && 
          p -> off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
     {
       shaman_spell_t::execute();
@@ -1350,27 +1383,27 @@ struct windfury_weapon_attack_t : public shaman_attack_t
     stats -> school  = SCHOOL_PHYSICAL;
     background       = true;
     base_multiplier *= 1.0 + p -> talent_elemental_weapons -> effect3().percent();
-
+    
     init();
   }
-
+  
   virtual void player_buff()
   {
     shaman_attack_t::player_buff();
     player_attack_power += weapon -> buff_value;
   }
-
+  
   virtual double proc_chance() SC_CONST
   {
     shaman_t* p      = player -> cast_shaman();
-
+    
     return spell_id_t::proc_chance() + p -> glyph_windfury_weapon -> mod_additive( P_PROC_CHANCE );
   }
 };
 
 struct unleash_wind_t : public shaman_attack_t
 {
-  unleash_wind_t( player_t* player ) :
+  unleash_wind_t( player_t* player ) : 
     shaman_attack_t( "unleash_wind", 73681, player )
   {
     background           = true;
@@ -1384,14 +1417,14 @@ struct unleash_wind_t : public shaman_attack_t
   {
     // Figure out weapons
     shaman_t* p = player -> cast_shaman();
-
+    
     if ( p -> main_hand_weapon.buff_type == WINDFURY_IMBUE  )
     {
       weapon = &( p -> main_hand_weapon );
       shaman_attack_t::execute();
     }
-
-    if ( p -> off_hand_weapon.type != WEAPON_NONE &&
+    
+    if ( p -> off_hand_weapon.type != WEAPON_NONE && 
          p -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
     {
       weapon = &( p -> off_hand_weapon );
@@ -1402,7 +1435,7 @@ struct unleash_wind_t : public shaman_attack_t
 
 struct stormstrike_attack_t : public shaman_attack_t
 {
-  stormstrike_attack_t( player_t* player, const char* n, uint32_t id, weapon_t* w ) :
+  stormstrike_attack_t( player_t* player, const char* n, uint32_t id, weapon_t* w ) : 
     shaman_attack_t( n, id, player )
   {
     shaman_t* p          = player -> cast_shaman();
@@ -1412,7 +1445,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     may_dodge            = false;
     may_parry            = false;
     weapon               = w;
-
+  
     weapon_multiplier   *= 1.0 + p -> talent_focused_strikes -> mod_additive( P_GENERIC );
     base_multiplier     *= 1.0 +
       p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
@@ -1434,14 +1467,14 @@ void shaman_attack_t::execute()
   if ( result_is_hit() && ! proc )
   {
     int   mwstack = p -> buffs_maelstrom_weapon -> check();
-    double chance = weapon -> proc_chance_on_swing(
+    double chance = weapon -> proc_chance_on_swing( 
       util_t::talent_rank( p -> talent_maelstrom_weapon -> rank(), 3, 3.0, 6.0, 10.0 ) );
-
+  
     if ( p -> buffs_maelstrom_weapon -> trigger( 1, -1, chance ) )
     {
       if ( mwstack == p -> buffs_maelstrom_weapon -> max_stack )
         p -> procs_wasted_mw -> occur();
-
+      
       p -> procs_maelstrom_weapon -> occur();
     }
 
@@ -1462,7 +1495,7 @@ void shaman_attack_t::execute()
 void shaman_attack_t::consume_resource()
 {
   attack_t::consume_resource();
-
+  
   shaman_t* p = player -> cast_shaman();
 
   if ( result == RESULT_CRIT )
@@ -1475,10 +1508,10 @@ void shaman_attack_t::player_buff()
 {
   attack_t::player_buff();
   shaman_t* p = player -> cast_shaman();
-
+  
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-
+  
   if ( school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
     player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
 }
@@ -1490,7 +1523,7 @@ double shaman_attack_t::cost_reduction() SC_CONST
 {
   shaman_t* p = player -> cast_shaman();
   double   cr = 0.0;
-
+  
   if ( p -> buffs_shamanistic_rage -> up() )
     cr += p -> buffs_shamanistic_rage -> mod_additive( P_RESOURCE_COST );
 
@@ -1503,7 +1536,7 @@ double shaman_attack_t::cost() SC_CONST
 {
   double    c = attack_t::cost();
   c *= 1.0 + cost_reduction();
-  if ( c < 0 ) c = 0.0;
+  if ( c < 0 ) c = 0.0;  
   return c;
 }
 
@@ -1533,10 +1566,10 @@ struct melee_t : public shaman_attack_t
     double h = attack_t::swing_haste();
     if ( p -> buffs_flurry -> up() )
       h *= 1.0 / ( 1.0 + p -> buffs_flurry -> base_value() );
-
+    
     if ( p -> buffs_unleash_wind -> up() )
       h *= 1.0 / ( 1.0 + ( p -> buffs_unleash_wind -> base_value( E_APPLY_AURA, A_319 ) ) );
-
+    
     return h;
   }
 
@@ -1554,7 +1587,7 @@ struct melee_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( time_to_execute > 0 && p -> executing )
+    if ( time_to_execute > 0 && p -> executing )      
     {
       if ( sim -> debug ) log_t::output( sim, "Executing '%s' during melee (%s).", p -> executing -> name(), util_t::slot_type_string( weapon -> slot ) );
       schedule_execute();
@@ -1640,7 +1673,7 @@ struct lava_lash_t : public shaman_attack_t
          sf_bonus;
 
   lava_lash_t( player_t* player, const std::string& options_str ) :
-    shaman_attack_t( "lava_lash", "Lava Lash", player ),
+    shaman_attack_t( "lava_lash", "Lava Lash", player ), 
     wf_cd_only( 0 ), flametongue_bonus( 0 ), sf_bonus( 0 )
   {
     shaman_t* p = player -> cast_shaman();
@@ -1655,9 +1688,9 @@ struct lava_lash_t : public shaman_attack_t
 
     weapon              = &( player -> off_hand_weapon );
 
-    if ( weapon -> type == WEAPON_NONE )
+    if ( weapon -> type == WEAPON_NONE ) 
       background        = true; // Do not allow execution.
-
+    
     // Lava lash's flametongue bonus is in the weird dummy script effect
     flametongue_bonus   = base_value( E_DUMMY ) / 100.0;
 
@@ -1674,9 +1707,9 @@ struct lava_lash_t : public shaman_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_searing_flames -> expire();
-      if ( p -> active_searing_flames_dot )
+      if ( p -> active_searing_flames_dot ) 
         p -> active_searing_flames_dot -> cancel();
-
+      
       trigger_static_shock( this );
     }
   }
@@ -1686,15 +1719,15 @@ struct lava_lash_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
 
     shaman_attack_t::player_buff();
-
+    
     // Lava lash damage calculation from: http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p11/#post1935780
-
+    
     // First group, Searing Flames + Flametongue bonus
-    player_multiplier *= 1.0 + p -> buffs_searing_flames -> check() * sf_bonus +
+    player_multiplier *= 1.0 + p -> buffs_searing_flames -> check() * sf_bonus + 
                                flametongue_bonus;
-
+                               
     // Second group, Improved Lava Lash + Glyph of Lava Lash + T11 2Piece bonus
-    player_multiplier *= 1.0 + p -> glyph_lava_lash -> mod_additive( P_GENERIC ) +
+    player_multiplier *= 1.0 + p -> glyph_lava_lash -> mod_additive( P_GENERIC ) + 
                                p -> talent_improved_lava_lash -> mod_additive( P_GENERIC ) +
                                p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
   }
@@ -1747,7 +1780,7 @@ struct stormstrike_t : public shaman_attack_t
 {
   stormstrike_attack_t * stormstrike_mh;
   stormstrike_attack_t * stormstrike_oh;
-
+  
   stormstrike_t( player_t* player, const std::string& options_str ) :
     shaman_attack_t( "stormstrike", "Stormstrike", player ),
     stormstrike_mh( 0 ), stormstrike_oh( 0 )
@@ -1777,15 +1810,15 @@ struct stormstrike_t : public shaman_attack_t
       add_child( stormstrike_oh );
     }
   }
-
+  
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
-
+    
     // Bypass shaman-specific attack based procs and co for this spell, the relevant ones
     // are handled by stormstrike_attack_t
     attack_t::execute();
-
+    
     if ( result_is_hit() )
     {
       p -> buffs_stormstrike -> trigger();
@@ -1825,7 +1858,7 @@ double shaman_spell_t::cost_reduction() SC_CONST
 
   if ( p -> buffs_shamanistic_rage -> up() )
     cr += p -> buffs_shamanistic_rage -> mod_additive( P_RESOURCE_COST );
-
+    
   if ( harmful && callbacks && ! proc && p -> buffs_elemental_focus -> up() )
     cr += p -> buffs_elemental_focus -> mod_additive( P_RESOURCE_COST );
 
@@ -1840,9 +1873,9 @@ double shaman_spell_t::cost_reduction() SC_CONST
 double shaman_spell_t::cost() SC_CONST
 {
   double    c = spell_t::cost();
-
+  
   c *= 1.0 + cost_reduction();
-
+  
   if ( c < 0 ) c = 0;
   return c;
 }
@@ -1862,7 +1895,7 @@ void shaman_spell_t::consume_resource()
 double shaman_spell_t::execute_time() SC_CONST
 {
   shaman_t* p = player -> cast_shaman();
-  if ( p -> buffs_natures_swiftness -> up() && school == SCHOOL_NATURE && base_execute_time < 10.0 )
+  if ( p -> buffs_natures_swiftness -> up() && school == SCHOOL_NATURE && base_execute_time < 10.0 ) 
     return 1.0 + p -> buffs_natures_swiftness -> base_value();
 
   return spell_t::execute_time();
@@ -1875,26 +1908,26 @@ void shaman_spell_t::player_buff()
   shaman_t* p = player -> cast_shaman();
   spell_t::player_buff();
 
-  // Can do this here, as elemental will not have access to
+  // Can do this here, as elemental will not have access to 
   // stormstrike, and all nature spells will benefit from this for enhancement
   if ( school == SCHOOL_NATURE && p -> buffs_stormstrike -> up() )
   {
-    player_crit +=
+    player_crit += 
       p -> buffs_stormstrike -> base_value( E_APPLY_AURA, A_308 ) +
       p -> glyph_stormstrike -> mod_additive( P_EFFECT_1 ) / 100.0;
   }
-
+    
   if ( sim -> auras.elemental_oath -> up() && p -> buffs_elemental_focus -> up() )
   {
     // Elemental oath self buff is type 0 sub type 0
     player_multiplier *= 1.0 + p -> talent_elemental_oath -> base_value( E_NONE, A_NONE ) / 100.0;
   }
-
+  
   if ( p -> buffs_elemental_mastery -> up() )
     player_multiplier *= 1.0 + p -> buffs_elemental_mastery -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-
+    
   player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-
+  
   // Apply Tier12 4 piece enhancement bonus as multiplicative for now
   if ( ! is_totem && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
     player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
@@ -1906,11 +1939,11 @@ void shaman_spell_t::execute()
 {
   shaman_t* p = player -> cast_shaman();
   spell_t::execute();
-
+  
   // Triggers wont happen for procs or totems
   if ( proc || ! callbacks )
     return;
-
+  
   if ( result_is_hit() )
   {
     if ( result == RESULT_CRIT )
@@ -1924,20 +1957,20 @@ void shaman_spell_t::execute()
           p -> buffs_elemental_focus -> trigger( p -> buffs_elemental_focus -> initial_stacks() );
       }
     }
-
+    
     if ( school == SCHOOL_FIRE )
       p -> buffs_unleash_flame -> expire();
-
-    if ( p -> cooldowns_t12_2pc_caster -> remains() == 0 &&
+      
+    if ( p -> cooldowns_t12_2pc_caster -> remains() == 0 && 
          p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
       p -> cooldowns_fire_elemental_totem -> reset();
       p -> cooldowns_t12_2pc_caster -> start( 105.0 );
     }
   }
-
+  
   // Record maelstrom weapon stack usage
-  if ( maelstrom && p -> primary_tree() == TREE_ENHANCEMENT )
+  if ( maelstrom )
   {
     p -> procs_maelstrom_weapon_used[ p -> buffs_maelstrom_weapon -> check() ] -> occur();
   }
@@ -1950,11 +1983,11 @@ void shaman_spell_t::execute()
     if ( ! maelstrom || p -> buffs_maelstrom_weapon -> check() == 0 )
     {
       if ( sim -> debug )
-      {
-        log_t::output( sim, "Resetting swing timers for '%s', maelstrom=%d, stacks=%d",
+      { 
+        log_t::output( sim, "Resetting swing timers for '%s', maelstrom=%d, stacks=%d", 
           name_str.c_str(), maelstrom, p -> buffs_maelstrom_weapon -> check() );
       }
-
+      
       double time_to_next_hit;
 
       // Non-maelstromable spell finishes casting, reset swing timers
@@ -1963,7 +1996,7 @@ void shaman_spell_t::execute()
         time_to_next_hit = player -> main_hand_attack -> execute_time();
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
-
+      
       // Offhand
       if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
       {
@@ -2015,17 +2048,17 @@ struct bloodlust_t : public shaman_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
+    
     harmful = false;
   }
 
   virtual void execute()
   {
     shaman_spell_t::execute();
-
+    
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> sleeping || p -> buffs.exhaustion -> check() )
+      if ( p -> sleeping || p -> buffs.exhaustion -> check() ) 
         continue;
       p -> buffs.bloodlust -> trigger();
       p -> buffs.exhaustion -> trigger();
@@ -2050,7 +2083,7 @@ struct chain_lightning_t : public shaman_spell_t
 {
   int      glyph_targets;
   chain_lightning_overload_t* overload;
-
+  
   chain_lightning_t( player_t* player, const std::string& options_str ) :
     shaman_spell_t( "chain_lightning", "Chain Lightning", player ),
     glyph_targets( 0 )
@@ -2079,9 +2112,9 @@ struct chain_lightning_t : public shaman_spell_t
     base_cost_reduction += p -> talent_convection -> mod_additive( P_RESOURCE_COST );
 
     glyph_targets        = (int) p -> glyph_chain_lightning -> mod_additive( P_TARGET );
-
+      
     overload             = new chain_lightning_overload_t( player );
-
+    
     base_add_multiplier = 0.7;
     aoe = ( 2 + glyph_targets );
    }
@@ -2093,7 +2126,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     p -> buffs_maelstrom_weapon        -> expire();
     p -> buffs_elemental_mastery_insta -> expire();
-
+    
     p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
 
     if ( result_is_hit() )
@@ -2111,12 +2144,12 @@ struct chain_lightning_t : public shaman_spell_t
   {
     double t    = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
-
+    
     if ( p -> buffs_elemental_mastery_insta -> up() )
       t *= 1.0 + p -> buffs_elemental_mastery_insta -> base_value();
 
     t *= 1.0 + p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> mod_additive( P_CAST_TIME );
-
+    
     return t;
   }
 
@@ -2124,7 +2157,7 @@ struct chain_lightning_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     double   cr = shaman_spell_t::cost_reduction();
-
+    
     cr += p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> mod_additive( P_RESOURCE_COST );
 
     return cr;
@@ -2140,7 +2173,7 @@ struct elemental_mastery_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talent_elemental_mastery -> rank() );
-
+    
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -2156,12 +2189,12 @@ struct elemental_mastery_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
-
+    
     // Hack cooldowns for elemental mastery, as they are now tracked in both
     // in this spell, and in the two buffs we use for it.
     p -> buffs_elemental_mastery_insta -> cooldown -> reset();
     p -> buffs_elemental_mastery       -> cooldown -> reset();
-
+    
     p -> buffs_elemental_mastery_insta -> trigger();
     p -> buffs_elemental_mastery       -> trigger();
   }
@@ -2172,7 +2205,7 @@ struct elemental_mastery_t : public shaman_spell_t
 struct fire_nova_t : public shaman_spell_t
 {
   double m_additive;
-
+  
   fire_nova_t( player_t* player, const std::string& options_str ) :
     shaman_spell_t( "fire_nova", "Fire Nova", player ), m_additive( 0.0 )
   {
@@ -2189,19 +2222,19 @@ struct fire_nova_t : public shaman_spell_t
     m_additive =  p -> talent_call_of_flame -> effect1().percent();
 
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
-
+    
     // Scaling information is from another spell (8349)
     base_dd_min           = p -> dbc.effect_min( p -> dbc.spell( 8349 ) -> effect1().id(), p -> level );
     base_dd_max           = p -> dbc.effect_max( p -> dbc.spell( 8349 ) -> effect1().id(), p -> level );
     direct_power_mod      = p -> dbc.spell( 8349 ) -> effect1().coeff();
   }
-
+  
   virtual void player_buff()
   {
     shaman_spell_t::player_buff();
-
+    
     shaman_t* p = player -> cast_shaman();
-
+    
     if ( p -> buffs_unleash_flame -> up() )
       base_multiplier = 1.0 + m_additive + p -> buffs_unleash_flame -> mod_additive( P_GENERIC );
     else
@@ -2263,12 +2296,12 @@ struct lava_burst_t : public shaman_spell_t
     }
     base_execute_time   += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
     base_cost_reduction += p -> talent_convection -> mod_additive( P_RESOURCE_COST );
-    m_additive          +=
+    m_additive          += 
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
       p -> talent_call_of_flame -> effect2().percent() +
       p -> glyph_lava_burst -> mod_additive( P_GENERIC );
-
-    crit_bonus_multiplier *= 1.0 +
+      
+    crit_bonus_multiplier *= 1.0 + 
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE ) +
       p -> talent_lava_flows -> mod_additive( P_CRIT_DAMAGE );
 
@@ -2288,25 +2321,25 @@ struct lava_burst_t : public shaman_spell_t
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
-
+    
     if ( p -> buffs_elemental_mastery_insta -> up() )
       t *= 1.0 + p -> buffs_elemental_mastery_insta -> mod_additive( P_CAST_TIME );
-
+      
     if ( p -> buffs_lava_surge -> up() )
       return 0;
-
+    
     return t;
   }
 
   virtual void player_buff()
   {
     shaman_spell_t::player_buff();
-
+    
     shaman_t* p = player -> cast_shaman();
-
-    if ( p -> dot_flame_shock -> ticking )
+    
+    if ( p -> dot_flame_shock -> ticking ) 
       player_crit += 1.0;
-
+      
     if ( p -> buffs_unleash_flame -> up() )
       base_multiplier = 1.0 + m_additive + p -> buffs_unleash_flame -> mod_additive( P_GENERIC );
     else
@@ -2316,7 +2349,7 @@ struct lava_burst_t : public shaman_spell_t
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     shaman_t* p = player -> cast_shaman();
-
+    
     spell_t::travel( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
@@ -2364,7 +2397,7 @@ struct lightning_bolt_t : public shaman_spell_t
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
       p -> glyph_lightning_bolt -> mod_additive( P_GENERIC );
 
-    base_cost_reduction +=
+    base_cost_reduction += 
       p -> talent_convection -> mod_additive( P_RESOURCE_COST );
 
     overload            = new lightning_bolt_overload_t( player );
@@ -2374,41 +2407,41 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::execute();
-
+    
     p -> buffs_maelstrom_weapon        -> expire();
     p -> buffs_elemental_mastery_insta -> expire();
 
     p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
   }
-
+  
   virtual double execute_time() SC_CONST
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
     if ( p -> buffs_elemental_mastery_insta -> up() )
       t *= 1.0 + p -> buffs_elemental_mastery_insta -> mod_additive( P_CAST_TIME );
-
+    
     // Tier11 4pc Caster Bonus (apply to raw base cast time for now, until verified)
     t *= 1.0 + p -> sets -> set( SET_T11_4PC_CASTER ) -> mod_additive( P_CAST_TIME );
-
+    
     t *= 1.0 + p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> mod_additive( P_CAST_TIME );
     return t;
   }
-
+  
   virtual double cost_reduction() SC_CONST
   {
     shaman_t* p = player -> cast_shaman();
     double   cr = shaman_spell_t::cost_reduction();
-
+    
     cr += p -> buffs_maelstrom_weapon -> stack() * p -> buffs_maelstrom_weapon -> mod_additive( P_RESOURCE_COST );
 
     return cr;
   }
-
+  
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     shaman_t* p = player -> cast_shaman();
-
+    
     spell_t::travel( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
@@ -2423,7 +2456,7 @@ struct lightning_bolt_t : public shaman_spell_t
       if ( p -> talent_telluric_currents -> rank() )
       {
         p -> resource_gain( RESOURCE_MANA,
-          travel_dmg * p -> talent_telluric_currents -> base_value() / 100.0,
+          travel_dmg * p -> talent_telluric_currents -> base_value() / 100.0, 
           p -> gains_telluric_currents );
       }
     }
@@ -2432,10 +2465,10 @@ struct lightning_bolt_t : public shaman_spell_t
   virtual bool usable_moving()
   {
     shaman_t* p = player -> cast_shaman();
-
+    
     if ( p -> glyph_unleashed_lightning -> ok() )
       return true;
-
+    
     return shaman_spell_t::usable_moving();
   }
 };
@@ -2453,7 +2486,7 @@ struct shamans_swiftness_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talent_natures_swiftness -> rank() );
-
+    
     option_t options[] =
     {
       { NULL, OPT_UNKNOWN, NULL }
@@ -2466,7 +2499,7 @@ struct shamans_swiftness_t : public shaman_spell_t
       sub_cooldown = p -> get_cooldown( options_str );
       sub_dot      = p -> get_dot     ( options_str );
     }
-
+    
     harmful = false;
   }
 
@@ -2550,7 +2583,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_spell_t::execute();
-
+    
     player -> summon_pet( "spirit_wolf", duration() );
   }
 };
@@ -2560,7 +2593,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
 struct thunderstorm_t : public shaman_spell_t
 {
   double bonus;
-
+  
   thunderstorm_t( player_t* player, const std::string& options_str ) :
     shaman_spell_t( "thunderstorm", "Thunderstorm", player ), bonus( 0 )
   {
@@ -2574,8 +2607,8 @@ struct thunderstorm_t : public shaman_spell_t
     parse_options( options, options_str );
 
     cooldown -> duration += p -> glyph_thunder -> mod_additive( P_COOLDOWN );
-    bonus                 =
-      p -> dbc.spell( id ) -> effect2().percent() +
+    bonus                 = 
+      p -> dbc.spell( id ) -> effect2().percent() + 
       p -> glyph_thunderstorm -> mod_additive( P_EFFECT_2 ) / 100.0;
   }
 
@@ -2603,7 +2636,7 @@ struct unleash_elements_t : public shaman_spell_t
 {
   unleash_wind_t*   wind;
   unleash_flame_t* flame;
-
+  
   unleash_elements_t( player_t* player, const std::string& options_str ) :
     shaman_spell_t( "unleash_elements", "Unleash Elements", player )
   {
@@ -2615,7 +2648,7 @@ struct unleash_elements_t : public shaman_spell_t
 
     may_crit    = false;
     may_miss    = false;
-
+    
     wind        = new unleash_wind_t( player );
     flame       = new unleash_flame_t( player );
   }
@@ -2624,16 +2657,16 @@ struct unleash_elements_t : public shaman_spell_t
   {
     shaman_t* p = player -> cast_shaman();
     spell_t::execute();
-
+    
     wind  -> execute();
     flame -> execute();
-
+    
     // You get the buffs, regardless of hit/miss
     if ( p -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       p -> buffs_unleash_flame -> trigger();
     else if ( p -> main_hand_weapon.buff_type == WINDFURY_IMBUE )
       p -> buffs_unleash_wind -> trigger( p -> buffs_unleash_wind -> initial_stacks() );
-
+      
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       if ( p -> off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
@@ -2653,7 +2686,7 @@ struct unleash_elements_t : public shaman_spell_t
 struct earth_shock_t : public shaman_spell_t
 {
   int consume_threshold;
-
+  
   earth_shock_t( player_t* player, const std::string& options_str ) :
     shaman_spell_t( "earth_shock", "Earth Shock", player ), consume_threshold( 0 )
   {
@@ -2664,26 +2697,26 @@ struct earth_shock_t : public shaman_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    base_dd_multiplier   *= 1.0 +
+    
+    base_dd_multiplier   *= 1.0 + 
       p -> talent_concussion -> mod_additive( P_GENERIC );
-
+                                  
     base_cost_reduction  += p -> talent_convection -> mod_additive( P_RESOURCE_COST );
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     cooldown = p -> cooldowns_shock;
     cooldown -> duration = p -> dbc.spell( id ) -> cooldown() +
       p -> talent_reverberation -> mod_additive( P_COOLDOWN );
-
+    
     if ( p -> glyph_shocking -> ok() )
     {
       trigger_gcd         = 1.0;
       min_gcd             = 1.0;
     }
-
+    
     consume_threshold     = ( int ) p -> talent_fulmination -> base_value();
   }
-
+  
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
@@ -2695,7 +2728,7 @@ struct earth_shock_t : public shaman_spell_t
     if ( result_is_hit() )
     {
       int consuming_stacks = p -> buffs_lightning_shield -> stack() - consume_threshold;
-      if ( consuming_stacks > 0 )
+      if ( consuming_stacks > 0 ) 
       {
         p -> active_lightning_charge -> execute();
         p -> buffs_lightning_shield  -> decrement( consuming_stacks );
@@ -2711,7 +2744,7 @@ struct flame_shock_t : public shaman_spell_t
 {
   double m_dd_additive,
          m_td_additive;
-
+  
   flame_shock_t( player_t* player, const std::string& options_str ) :
     shaman_spell_t( "flame_shock", "Flame Shock", player ), m_dd_additive( 0 ), m_td_additive( 0 )
   {
@@ -2725,18 +2758,18 @@ struct flame_shock_t : public shaman_spell_t
 
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
-    m_dd_additive         =
+    m_dd_additive         = 
       p -> talent_concussion -> mod_additive( P_GENERIC );
-
-    m_td_additive         =
-      p -> talent_concussion -> mod_additive( P_TICK_DAMAGE ) +
+                                  
+    m_td_additive         = 
+      p -> talent_concussion -> mod_additive( P_TICK_DAMAGE ) + 
       p -> talent_lava_flows -> mod_additive( P_TICK_DAMAGE );
-
+    
     base_cost_reduction  *= 1.0 + p -> talent_convection -> mod_additive( P_RESOURCE_COST );
-
+    
     // Tier11 2pc Caster Bonus
     base_crit             = p -> sets -> set( SET_T11_2PC_CASTER ) -> mod_additive( P_CRIT );
-
+    
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     num_ticks = (int) floor( ( (double) num_ticks ) * ( 1.0 + p -> glyph_flame_shock -> mod_additive( P_DURATION ) ) );
@@ -2756,7 +2789,7 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::player_buff();
     shaman_t* p = player -> cast_shaman();
-
+    
     // Unleash flame is an additive bonus
     if ( p -> buffs_unleash_flame -> up() )
     {
@@ -2769,11 +2802,11 @@ struct flame_shock_t : public shaman_spell_t
       base_td_multiplier = 1.0 + m_td_additive;
     }
   }
-
+  
   virtual void tick()
   {
     shaman_spell_t::tick();
-
+    
     shaman_t* p = player -> cast_shaman();
     if ( p -> rng_lava_surge -> roll ( p -> talent_lava_surge -> proc_chance() ) )
     {
@@ -2800,7 +2833,7 @@ struct frost_shock_t : public shaman_spell_t
     };
     parse_options( options, options_str );
 
-    base_multiplier   *= 1.0 +
+    base_multiplier   *= 1.0 + 
       p -> talent_concussion -> mod_additive( P_GENERIC );
 
     base_cost_reduction  += p -> talent_convection -> mod_additive( P_RESOURCE_COST );
@@ -2827,7 +2860,7 @@ struct wind_shear_t : public shaman_spell_t
       shaman_spell_t( "wind_shear", "Wind Shear", player )
   {
     shaman_t* p = player -> cast_shaman();
-
+    
     may_miss = may_resist = may_crit = false;
 
     cooldown -> duration += p -> talent_reverberation -> mod_additive( P_COOLDOWN );
@@ -2841,103 +2874,17 @@ struct wind_shear_t : public shaman_spell_t
 };
 
 // =========================================================================
-// Shaman Totem system
+// Shaman Totem Spells
 // =========================================================================
 
-struct totem_t : public pet_t
+struct shaman_totem_t : public shaman_spell_t
 {
-  totem_type  type;
-  buff_t*     totem_buff;     // Aura for the totem, e.g. flametongue
-  action_t*   totem_action;   // Background action for totem, e.g. searing bolt
-  double      totem_duration;
-  const char* totem_summon;   // Summon name for totem, e.g. "fire_elemental"
-
-  action_t*   totem_summon_action;
-  pet_t*      totem_summon_pet;
-
-  totem_t( sim_t* sim, player_t* owner, const std::string& name, totem_type t ) :
-    pet_t( sim, owner, name, true /*GUARDIAN*/ ),
-    type( t ), totem_buff( 0 ), totem_action( 0 ), totem_duration( 0 ), totem_summon( 0 ),
-    totem_summon_action( 0 ), totem_summon_pet( 0 )
-  {
-  }
-
-  virtual void summon( double duration )
-  {
-    shaman_t* o = owner -> cast_shaman();
-
-    totem_duration = duration;
-
-    // Nuke previous totem of the same type, if exists
-    if ( o -> totems[ type ] )
-      o -> totems[ type ] -> dismiss();
-
-    pet_t::summon( duration );
-
-    // Set totems to be at the distance of the owner
-    distance = owner -> distance;
-
-    // Activate the totem ability, or multiple abilities in case
-    // of certain totems
-    if ( totem_buff   ) totem_buff   -> trigger();
-    if ( totem_action ) totem_action -> schedule_execute();
-    if ( totem_summon ) o -> summon_pet( totem_summon );
-
-    // Cache the totem summon action so we can update uptime
-    // properly for totems
-    if ( ! totem_summon_action )
-    {
-      totem_summon_action = o -> find_action( name_str );
-      assert( totem_summon_action );
-    }
-
-    // Cache the summoned pet to optimize dismissal
-    if ( totem_summon && ! totem_summon_pet )
-    {
-      totem_summon_pet = o -> find_pet( totem_summon );
-      assert( totem_summon_pet );
-    }
-
-    o -> totems[ type ] = this;
-  }
-
-  virtual void demise()
-  {
-    // No point in demising anything if we're not even active
-    if ( sleeping == 1 ) return;
-
-    shaman_t* o = owner -> cast_shaman();
-
-    if ( o -> totems[ type ] != this ) return;
-
-    if ( totem_buff   ) totem_buff   -> expire();
-    if ( totem_action ) totem_action -> cancel();
-    if ( totem_summon ) totem_summon_pet -> dismiss();
-
-    if ( totem_summon_action )
-      totem_summon_action -> stats -> total_tick_time += std::min( sim -> current_time - summon_time, totem_duration );
-
-    pet_t::demise();
-
-    o -> totems[ type ] = 0;
-  }
-
-  virtual void reset()
-  {
-    pet_t::reset();
-
-    shaman_t* o = owner -> cast_shaman();
-    o -> totems[ type ] = 0;
-  }
-};
-
-struct totem_summon_spell_t : public shaman_spell_t
-{
-  double  totem_duration;
-  int*    override;
-
-  totem_summon_spell_t( const std::string& name, const char* spell_name, player_t* player, const std::string& options_str, int* override = 0 ) :
-    shaman_spell_t( name.c_str(), spell_name, player ), totem_duration( 0 ), override( override )
+  double totem_duration;
+  double totem_bonus;
+  totem_type totem;
+    
+  shaman_totem_t( const char * name, const char * totem_name, player_t* player, const std::string& options_str, totem_type t ) :
+    shaman_spell_t( name, totem_name, player ), totem_duration( 0 ), totem_bonus( 0 ), totem( t )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -2947,532 +2894,534 @@ struct totem_summon_spell_t : public shaman_spell_t
     };
     parse_options( options, options_str );
 
+    is_totem             = true;
     harmful              = false;
+    hasted_ticks         = false;
+    callbacks            = false;
     base_cost_reduction += p -> talent_totemic_focus -> mod_additive( P_RESOURCE_COST );
     totem_duration       = duration() * ( 1.0 + p -> talent_totemic_focus -> mod_additive( P_DURATION ) );
+    // Model all totems as ticking "dots" for now, this will cause them to properly
+    // "fade", so we can recast them if the fight length is long enough and optimal_raid=0
+    num_ticks            = 1;
+    base_tick_time       = totem_duration;
   }
-
+    
+  // Simulate a totem "drop", this is a simplified action_t::execute()
   virtual void execute()
   {
-    shaman_spell_t::execute();
     shaman_t* p = player -> cast_shaman();
 
-    p -> summon_pet( name(), totem_duration );
+    if ( p -> totems[ totem ] )
+      p -> totems[ totem ] -> cancel();
+
+    if ( sim -> log )
+      log_t::output( sim, "%s performs %s", player -> name(), name() );
+      
+    result = RESULT_HIT; tick_dmg = 0; direct_dmg = 0;
+
+    consume_resource();
+    update_ready();
+    schedule_travel( target );
+
+    p -> totems[ totem ] = this;
+
+    stats -> add_execute( time_to_execute );
+  }
+  
+  virtual void last_tick()
+  {
+    shaman_spell_t::last_tick();
+    
+    shaman_t* p = player -> cast_shaman();
+    if ( sim -> log )
+      log_t::output( sim, "%s destroys %s", player -> name(), p -> totems[ totem ] -> name() );
+    p -> totems[ totem ] = 0;
   }
 
+  virtual void tick()
+  {
+    if ( sim -> debug ) 
+      log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+
+    player_buff(); // Totems recalculate stats on every "tick"
+    target_debuff( target, DMG_DIRECT );
+    calculate_result();
+
+    if ( result_is_hit() )
+    {
+      direct_dmg = calculate_direct_damage();
+      
+      if ( direct_dmg > 0 )
+      {
+        tick_dmg = direct_dmg;
+        direct_dmg = 0;
+        assess_damage( target, tick_dmg, DMG_OVER_TIME, result );
+      }
+    }
+    else
+    {
+      if ( sim -> log ) 
+        log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
+    }
+    
+    stats -> add_tick( time_to_tick );
+  }
+
+  virtual double gcd() SC_CONST 
+  { 
+    if ( harmful )
+      return shaman_spell_t::gcd();
+    
+    return player -> in_combat ? shaman_spell_t::gcd() : 0; 
+  }
+  
   virtual bool ready()
   {
-    // Make sure we dont bother summoning totems that have an override which
-    // is enabled
-    if ( override && *override == 1 )
+    shaman_t* p = player -> cast_shaman();
+    if ( p -> totems[ totem ] )
       return false;
 
-    return shaman_spell_t::ready();
+    return spell_t::ready();
   }
-
-  virtual action_expr_t* create_expression( const std::string& name_str )
+  
+  virtual void reset()
   {
-    if ( util_t::str_compare_ci( name_str, "active" ) )
-    {
-      struct active_expr_t : public action_expr_t
-      {
-        totem_t*   totem;
-
-        active_expr_t( action_t* a ) : action_expr_t( a, "totem_active", TOK_NUM ), totem( 0 ) {
-          totem = dynamic_cast< totem_t* >( action -> player -> find_pet( action -> name() ) );
-          assert( totem );
-        }
-
-        virtual int evaluate() {
-          result_num = ! totem -> sleeping;
-          return TOK_NUM;
-        }
-      };
-
-      return new active_expr_t( this );
-    }
-
-    if ( util_t::str_compare_ci( name_str, "remains" ) )
-    {
-      struct remains_expr_t : public action_expr_t
-      {
-        totem_t*   totem;
-
-        remains_expr_t( action_t* a ) : action_expr_t( a, "totem_remains", TOK_NUM ), totem( 0 ) {
-          totem = dynamic_cast< totem_t* >( action -> player -> find_pet( action -> name() ) );
-          assert( totem );
-        }
-
-        virtual int evaluate() {
-          result_num = ( ! totem -> sleeping ) ? 0 : totem -> totem_duration - ( action -> sim -> current_time - totem -> summon_time );
-          return TOK_NUM;
-        }
-      };
-
-      return new remains_expr_t( this );
-    }
-
-    return shaman_spell_t::create_expression( name_str );
-  }
-
-};
-
-// Totem buffs by default are simple wrappers to the aura system of the sim
-struct totem_buff_t : public buff_t
-{
-  int*    override;
-  aura_t* aura;
-
-  totem_buff_t( const char* name, uint32_t spell_id, player_t* player, int* override = 0, aura_t* aura = 0 ) :
-    buff_t( player, spell_id, name ), override( override ), aura( aura )
-  {
-  }
-
-  virtual bool trigger( int, double, double )
-  {
-
-    if ( override && *override == 0 && aura )
-    {
-      totem_t* totem = dynamic_cast< totem_t* >( player );
-
-      aura -> buff_duration = totem -> totem_duration;
-      aura -> trigger( 1, current_value );
-    }
-
-    return true;
-  }
-
-  virtual void expire()
-  {
-    if ( override && *override == 0 && aura )
-      aura -> expire();
-  }
-};
-
-// Base class for the spells that a totem guardian casts
-struct totem_spell_t : public spell_t
-{
-  totem_spell_t( const char* name, uint32_t spell_id, player_t* player ) :
-    spell_t( name, spell_id, player ) { }
-
-  // For now, totems will not benefit from any owner haste
-  virtual double total_haste() SC_CONST { return 1.0; }
-
-  // Totem spells need the owners stats more or less, so grab relevant stuff in
-  // shaman_spell_t::player_buff, spell_t::player_buff and action_t::player_buff and
-  // fetch it from owner, instead of the player (totem)
-  virtual void player_buff()
-  {
-    pet_t* pet                    = player -> cast_pet();
-    shaman_t* owner               = pet -> owner -> cast_shaman();
-
-    player_dd_adder               = 0;
-    player_hit                    = owner -> composite_spell_hit();
-    player_crit                   = owner -> composite_spell_crit();
-    player_haste                  = total_haste();
-    player_penetration            = owner -> composite_spell_penetration();
-    player_multiplier             = owner -> composite_player_multiplier   ( school, this );
-    player_dd_multiplier          = owner -> composite_player_dd_multiplier( school, this );
-    player_td_multiplier          = owner -> composite_player_td_multiplier( school, this );
-    player_spell_power            = owner -> composite_spell_power( school );
-    player_spell_power_multiplier = owner -> composite_spell_power_multiplier();
-
-    if ( sim -> auras.elemental_oath -> up() && owner -> buffs_elemental_focus -> up() )
-    {
-      // Elemental oath self buff is type 0 sub type 0
-      player_multiplier *= 1.0 + owner -> talent_elemental_oath -> base_value( E_NONE, A_NONE ) / 100.0;
-    }
-
-    if ( owner -> buffs_elemental_mastery -> up() )
-      player_multiplier *= 1.0 + owner -> buffs_elemental_mastery -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-
-    player_multiplier *= 1.0 + owner -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-
-    if ( sim -> debug )
-      log_t::output( sim, "shaman_totem_spell_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ",
-                     name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );
-  }
-
-  void travel( player_t* t, int travel_result, double travel_dmg )
-  {
-    spell_t::travel( t, travel_result, travel_dmg );
-
-    pet_t* pet = player -> cast_pet();
-    shaman_t* owner = pet -> owner -> cast_shaman();
-
-    // Owner goes into combat if the totem does
-    if ( harmful && ! owner -> in_combat )
-    {
-      if ( sim -> debug )
-        log_t::output( sim, "%s (owner of %s) enters combat.", owner -> name(), pet -> name() );
-
-      owner -> in_combat = true;
-    }
-  }
-};
-
-// Generic totem buff for Wrathful Totems talent
-struct totemic_wrath_buff_t : public totem_buff_t
-{
-  totemic_wrath_buff_t( player_t* player ) :
-    totem_buff_t( "totemic_wrath", 77746, player,
-      &( player -> sim -> overrides.flametongue_totem ), player -> sim -> auras.flametongue_totem )
-  {
-    current_value  = effect_base_value( 1 ) / 100.0;
+    shaman_spell_t::reset();
+    
+    shaman_t* p = player -> cast_shaman();
+    if ( p -> totems[ totem ] == this )
+      p -> totems[ totem ] = 0;
   }
 };
 
 // Earth Elemental Totem Spell =================================================
 
-struct earth_elemental_totem_guardian_t : public totem_t
+struct earth_elemental_totem_t : public shaman_totem_t
 {
-  earth_elemental_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "earth_elemental_totem", TOTEM_EARTH )
+  earth_elemental_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "earth_elemental_totem", "Earth Elemental Totem", player, options_str, TOTEM_EARTH )
   {
-    totem_summon = "earth_elemental";
+    option_t options[] =
+    {
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    // Skip a pointless cancel call (and debug=1 cancel line)
+    dot_behavior = DOT_REFRESH;
+  }
+  
+  virtual void execute()
+  {
+    shaman_totem_t::execute();
+    player -> summon_pet( "earth_elemental" );
+  }
+  
+  virtual void last_tick()
+  {
+    shaman_totem_t::last_tick();
+    player -> dismiss_pet( "earth_elemental" );
+  }
+  
+  // Earth Elemental Totem will always override any earth totem you have
+  virtual bool ready()
+  {
+    return shaman_spell_t::ready();
   }
 };
 
 // Fire Elemental Totem Spell =================================================
 
-struct fire_elemental_totem_summon_spell_t : public totem_summon_spell_t
+struct fire_elemental_totem_t : public shaman_totem_t
 {
-  fire_elemental_totem_summon_spell_t( player_t* player, const std::string& options_str ) :
-    totem_summon_spell_t( "fire_elemental_totem", "Fire Elemental Totem", player, options_str )
+  fire_elemental_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "fire_elemental_totem", "Fire Elemental Totem", player, options_str, TOTEM_FIRE )
   {
     shaman_t* p = player -> cast_shaman();
-    cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive( P_COOLDOWN );
-  }
-};
-
-struct fire_elemental_totem_guardian_t : public totem_t
-{
-  fire_elemental_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "fire_elemental_totem", TOTEM_FIRE )
-  {
-    totem_summon = "fire_elemental";
-  }
-
-  virtual void summon( double duration )
-  {
-    shaman_t* o = owner -> cast_shaman();
-
-    if ( ! totem_buff )
+    option_t options[] =
     {
-      if ( o -> talent_totemic_wrath -> rank() )
-        totem_buff = new totemic_wrath_buff_t( this );
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive( P_COOLDOWN );
+    // Skip a pointless cancel call (and debug=1 cancel line)
+    dot_behavior = DOT_REFRESH;
+  }
+  
+  virtual void execute()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    shaman_totem_t::execute();
+
+    if ( p -> talent_totemic_wrath -> rank() )
+    {
+      if ( sim -> overrides.flametongue_totem == 0 )
+      {
+        sim -> auras.flametongue_totem -> buff_duration = totem_duration;
+        sim -> auras.flametongue_totem -> trigger( 1, p -> talent_totemic_wrath -> base_value() / 100.0 );
+      }
     }
 
-    totem_t::summon( duration );
+    p -> summon_pet( "fire_elemental" );
+  }
+  
+  virtual void last_tick()
+  {
+    shaman_totem_t::last_tick();
+    player -> dismiss_pet( "fire_elemental" );
+  }
+  
+  // Allow Fire Elemental Totem to override any active fire totems
+  virtual bool ready()
+  {
+    return shaman_spell_t::ready();
   }
 };
 
 // Flametongue Totem Spell ====================================================
 
-struct flametongue_totem_buff_t : public totem_buff_t
+struct flametongue_totem_t : public shaman_totem_t
 {
-  flametongue_totem_buff_t( player_t* player ) :
-    totem_buff_t( "flametongue_totem", 52109, player,
-      &( player -> sim -> overrides.flametongue_totem ), player -> sim -> auras.flametongue_totem )
+  flametongue_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "flametongue_totem", "Flametongue Totem", player, options_str, TOTEM_FIRE )
   {
-    current_value = effect_base_value( 1 );
+    shaman_t* p = player -> cast_shaman();
+
+    if ( p -> talent_totemic_wrath -> rank() > 0 )
+      totem_bonus        = p -> talent_totemic_wrath -> base_value() / 100.0;
+    // XX: Hardcode this based on tooltip information for now, effect is spell id 52109
+    else
+      totem_bonus        = p -> dbc.spell( 52109 ) -> effect1().percent();
   }
-};
 
-struct flametongue_totem_guardian_t : public totem_t
-{
-  flametongue_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "flametongue_totem", TOTEM_FIRE ) { }
-
-  virtual void summon( double duration )
+  virtual void execute()
   {
-    shaman_t* o = owner -> cast_shaman();
+    shaman_totem_t::execute();
 
-    if ( ! totem_buff )
+    if ( sim -> overrides.flametongue_totem == 0 )
     {
-      if ( o -> talent_totemic_wrath -> rank() )
-        totem_buff = new totemic_wrath_buff_t( this );
-      else
-        totem_buff = new flametongue_totem_buff_t( this );
+      sim -> auras.flametongue_totem -> buff_duration = totem_duration;
+      sim -> auras.flametongue_totem -> trigger( 1, totem_bonus );
     }
+  }
 
-    totem_t::summon( duration );
+  virtual bool ready()
+  {
+    if( sim -> auras.flametongue_totem -> check() )
+      return false;
+
+    return shaman_totem_t::ready();
   }
 };
 
 // Magma Totem Spell =======================================================
 
-struct magma_totem_spell_t : public totem_spell_t
+struct magma_totem_t : public shaman_totem_t
 {
-  magma_totem_spell_t( player_t* player ) : totem_spell_t( "magma_totem", 8187, player )
+  magma_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "magma_totem", "Magma Totem", player, options_str, TOTEM_FIRE )
   {
-    pet_t* pet = player -> cast_pet();
-    shaman_t* o = pet -> owner -> cast_shaman();
+    const spell_data_t* trigger;
+    shaman_t*            p = player -> cast_shaman();
 
     aoe               = -1;
     harmful           = true;
     may_crit          = true;
-    background        = true;
-    repeating         = true;
-
-    // Base multiplier x2 in the effect of call of flame, no easy way to discern them except to hardcode it with
+    // Magma Totem is not a real DoT, but rather a pet that is spawned.
+    
+    // Base multiplier x2 in the effect of call of flame, no real way to discern them except to hardcode it with
     // the effect number
-    base_multiplier  *= 1.0 + o -> talent_call_of_flame -> effect1().percent();
-
-    crit_bonus_multiplier *= 1.0 + o -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
-
-    base_execute_time = o -> dbc.spell( 8188 ) -> effect1().period();
+    base_multiplier  *= 1.0 + p -> talent_call_of_flame -> effect1().percent();
+    
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    
+    // Spell id 8188 does the triggering of magma totem's aura
+    base_tick_time    = p -> dbc.spell( 8188 ) -> effect1().period();
+    num_ticks         = (int) ( totem_duration / base_tick_time );
+    
+    // Fill out scaling data
+    trigger           = p -> dbc.spell( p -> dbc.spell( 8188 ) -> effect1().trigger_spell_id() );
+    // Also kludge totem school to fire for accurate damage
+    school            = spell_id_t::get_school_type( trigger -> school_mask() );
+    stats -> school   = school;
+    
+    base_dd_min       = p -> dbc.effect_min( trigger -> effect1().id(), p -> level );
+    base_dd_max       = p -> dbc.effect_max( trigger -> effect1().id(), p -> level );
+    direct_power_mod  = trigger -> effect1().coeff();
   }
-};
 
-struct magma_totem_guardian_t : public totem_t
-{
-  magma_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "magma_totem", TOTEM_FIRE ) { }
-
-  virtual void summon( double duration )
+  virtual void execute()
   {
-    shaman_t* o = owner -> cast_shaman();
-
-    if ( ! totem_action )
+    shaman_t* p = player -> cast_shaman();
+    
+    if ( p -> talent_totemic_wrath -> rank() )
     {
-      totem_action = new magma_totem_spell_t( this );
-      totem_action -> init();
+      if ( sim -> overrides.flametongue_totem == 0 )
+      {
+        sim -> auras.flametongue_totem -> buff_duration = totem_duration;
+        sim -> auras.flametongue_totem -> trigger( 1, p -> talent_totemic_wrath -> base_value() / 100.0 );
+      }
     }
-
-    if ( ! totem_buff && o -> talent_totemic_wrath -> rank() )
-      totem_buff = new totemic_wrath_buff_t( this );
-
-    totem_t::summon( duration );
+      
+    player_buff();
+    shaman_totem_t::execute();
   }
 };
 
 // Mana Spring Totem Spell ================================================
 
-struct mana_spring_totem_buff_t : public totem_buff_t {
-  mana_spring_totem_buff_t( player_t* player ) :
-    totem_buff_t( "mana_spring", 5677, player,
-      &( player -> sim -> overrides.mana_spring_totem ), player -> sim -> auras.mana_spring_totem )
-  {
-    current_value = effect_average( 1 );
-  }
-};
-
-struct mana_spring_totem_guardian_t : public totem_t
+struct mana_spring_totem_t : public shaman_totem_t
 {
-  mana_spring_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "mana_spring_totem", TOTEM_WATER ) { }
-
-  virtual void summon( double duration )
+  mana_spring_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "mana_spring_totem", "Mana Spring Totem", player, options_str, TOTEM_WATER )
   {
-    if ( ! totem_buff )
-      totem_buff = new mana_spring_totem_buff_t( this );
+    // Mana spring effect is at spell id 5677. Get scaling information from there.
+    totem_bonus  = player -> dbc.effect_average( player -> dbc.spell( 5677 ) -> effect1().id(), player -> level );
+  }
 
-    totem_t::summon( duration );
+  virtual void execute()
+  {
+    shaman_totem_t::execute();
+    
+    if ( sim -> overrides.mana_spring_totem == 0 )
+    {
+      sim -> auras.mana_spring_totem -> buff_duration = totem_duration;
+      sim -> auras.mana_spring_totem -> trigger( 1, totem_bonus );
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( sim -> overrides.mana_spring_totem == 1 || 
+      sim -> auras.mana_spring_totem -> current_value >= totem_bonus )
+      return false;
+
+    return shaman_totem_t::ready();
   }
 };
 
 // Mana Tide Totem Spell ==================================================
 
-struct mana_tide_totem_buff_t : totem_buff_t {
-  mana_tide_totem_buff_t( player_t* player ) :
-    totem_buff_t( "mana_tide", 16191, player, 0, 0 )
+struct mana_tide_totem_t : public shaman_totem_t
+{
+  mana_tide_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "mana_tide_totem", "Mana Tide Totem", player, options_str, TOTEM_WATER )
   {
-    current_value = effect_base_value( 1 ) / 100.0;
+    shaman_t* p = player -> cast_shaman();
+    check_talent( p -> talent_mana_tide_totem -> rank() );
+
+    // Mana tide effect bonus is in a separate spell, we dont need other info
+    // from there anymore, as mana tide does not pulse anymore
+    totem_bonus  = p -> dbc.spell( 16191 ) -> effect1().percent();
   }
 
-  virtual bool trigger( int, double, double )
+  virtual void execute()
   {
-    totem_t* totem = dynamic_cast< totem_t* >( player );
-
+    shaman_totem_t::execute();
+    
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      // Change buff duration based on totem duration
-      p -> buffs.mana_tide -> buff_duration = totem -> totem_duration;
-      p -> buffs.mana_tide -> trigger( 1, current_value );
+      if ( p -> party == player -> party )
+      {
+        // Change buff duration based on totem duration
+        p -> buffs.mana_tide -> buff_duration = totem_duration;
+        p -> buffs.mana_tide -> trigger( 1, totem_bonus );
+      }
     }
 
-    return true;
+    update_ready();
   }
-};
 
-struct mana_tide_totem_guardian_t : public totem_t
-{
-  mana_tide_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "mana_tide_totem", TOTEM_WATER ) { }
-
-  virtual void summon( double duration )
+  virtual bool ready()
   {
-    if ( ! totem_buff )
-      totem_buff = new mana_tide_totem_buff_t( this );
+    if ( ! shaman_spell_t::ready() )
+      return false;
 
-    totem_t::summon( duration );
+    return ( player -> resource_current[ RESOURCE_MANA ] < ( 0.75 * player -> resource_max[ RESOURCE_MANA ] ) );
   }
 };
 
 // Searing Totem Spell =======================================================
 
-struct searing_bolt_t : public totem_spell_t
+struct searing_totem_t : public shaman_totem_t
 {
-  searing_bolt_t( player_t* player ) : totem_spell_t( "searing_bolt", 3606, player )
+  searing_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "searing_totem", "Searing Totem", player, options_str, TOTEM_FIRE )
   {
-    pet_t* pet = player -> cast_pet();
-    shaman_t* o = pet -> owner -> cast_shaman();
+    shaman_t* p = player -> cast_shaman();
 
-    harmful    = true;
-    may_crit   = true;
-    repeating  = true;
-    background = true;
-
+    harmful   = true;
+    may_crit  = true;
+    
     // Base multiplier has to be applied like this, because the talent has two identical effects
-    base_multiplier       *= 1.0 + o -> talent_call_of_flame -> effect1().percent();
-
-    crit_bonus_multiplier *= 1.0 + o -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
-
-    // Note, searing totem tick time should come from the searing totem's casting time (1.50 sec),
+    base_multiplier     *= 1.0 + p -> talent_call_of_flame -> effect1().percent();
+    
+    crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    
+    // Scaling information is found in Searing Bolt (3606)
+    // Tooltip and spell data is wrong for 4.0.4, the base_dd_min/max are higher in beta than in 
+    // spell data
+    if ( ! p -> bugs )
+    {
+      base_dd_min        = p -> dbc.effect_min( p -> dbc.spell( 3606 ) -> effect1().id(), p -> level );
+      base_dd_max        = p -> dbc.effect_max( p -> dbc.spell( 3606 ) -> effect1().id(), p -> level );
+    }
+    else
+    {
+      base_dd_min        = 92;
+      base_dd_max        = 120;
+    }
+    direct_power_mod     = p -> dbc.spell( 3606 ) -> effect1().coeff();
+    // Note, searing totem tick time should come from the searing totem's casting time (1.50 sec), 
     // except it's in-game cast time is ~1.6sec
-    base_execute_time      = 1.6;
-
-    if ( o -> talent_searing_flames -> rank() > 0 )
-    {
-      o -> active_searing_flames_dot = new searing_flames_t( o );
-      o -> active_searing_flames_dot -> init();
-    }
+    // base_tick_time       = p -> player_data.spell_cast_time( 3606, p -> level );
+    base_tick_time       = 1.6;
+    travel_speed         = 0; // TODO: Searing bolt has a real travel time, however modeling it is another issue entirely
+    range                = p -> dbc.spell( 3606 ) -> max_range();
+    num_ticks            = (int) ( totem_duration / base_tick_time );
+    // Also kludge totem school to fire
+    school               = spell_id_t::get_school_type( p -> dbc.spell( 3606 ) -> school_mask() );
+    stats -> school      = SCHOOL_FIRE;
+    p -> active_searing_flames_dot = new searing_flames_t( p );
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void execute()
   {
-    totem_spell_t::travel( t, travel_result, travel_dmg );
-
-    pet_t* pet = player -> cast_pet();
-    shaman_t* o = pet -> owner -> cast_shaman();
-
-    if ( result_is_hit( travel_result ) && o -> buffs_searing_flames -> trigger() )
+    shaman_t* p = player -> cast_shaman();
+    shaman_totem_t::execute();
+    
+    if ( p -> talent_totemic_wrath -> rank() )
     {
-      double new_base_damage = travel_dmg;
-      // Searing flame dot treats all hits as.. HITS
-      if ( travel_result == RESULT_CRIT )
-        new_base_damage /= 1.0 + total_crit_bonus();
-
-      o -> active_searing_flames_dot -> base_td = new_base_damage / o -> active_searing_flames_dot -> num_ticks;
-      o -> active_searing_flames_dot -> execute();
+      if ( sim -> overrides.flametongue_totem == 0 )
+      {
+        sim -> auras.flametongue_totem -> buff_duration = totem_duration;
+        sim -> auras.flametongue_totem -> trigger( 1, p -> talent_totemic_wrath -> base_value() / 100.0 );
+      }
     }
   }
-
+  
   virtual double total_spell_power() SC_CONST
-  {
-    pet_t* pet = player -> cast_pet();
-    shaman_t* o = pet -> owner -> cast_shaman();
-
+  { 
     if ( ! player -> bugs )
-      return totem_spell_t::total_spell_power();
+      return shaman_totem_t::total_spell_power();
     // Searing totem is double dipping into Wrathful Totems,
     else
     {
-      double sp   = totem_spell_t::total_spell_power();
-      sp         *= 1.0 + o -> talent_totemic_wrath -> base_value() / 100.0;
+      shaman_t* p = player -> cast_shaman();
+      double sp   = shaman_totem_t::total_spell_power();
+      sp         *= 1.0 + p -> talent_totemic_wrath -> base_value() / 100.0;
 
       return floor( sp );
     }
   }
-};
-
-struct searing_totem_guardian_t : public totem_t
-{
-  searing_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "searing_totem", TOTEM_FIRE ) { }
-
-  virtual void summon( double duration )
+  
+  virtual void tick()
   {
-    shaman_t* o = owner -> cast_shaman();
-
-    if ( ! totem_action )
+    shaman_t* p = player -> cast_shaman();
+    shaman_totem_t::tick();
+    if ( result_is_hit() && p -> buffs_searing_flames -> trigger() )
     {
-      totem_action = new searing_bolt_t( this );
-      totem_action -> init();
+      double new_base_td = tick_dmg;
+      // Searing flame dot treats all hits as.. HITS
+      if ( result == RESULT_CRIT )
+        new_base_td /= 1.0 + total_crit_bonus();
+
+      p -> active_searing_flames_dot -> base_td = new_base_td / p -> active_searing_flames_dot -> num_ticks;
+      p -> active_searing_flames_dot -> execute();
     }
-
-    if ( ! totem_buff && o -> talent_totemic_wrath -> rank() )
-      totem_buff = new totemic_wrath_buff_t( this );
-
-    totem_t::summon( duration );
   }
 };
 
 // Strength of Earth Totem Spell ==============================================
 
-struct strength_of_earth_totem_buff_t : public totem_buff_t
+struct strength_of_earth_totem_t : public shaman_totem_t
 {
-  strength_of_earth_totem_buff_t( player_t* player ) :
-    totem_buff_t( "strength_of_earth", 8076, player,
-      &( player -> sim -> overrides.strength_of_earth ), player -> sim -> auras.strength_of_earth )
+  strength_of_earth_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "strength_of_earth_totem", "Strength of Earth Totem", player, options_str, TOTEM_EARTH )
   {
-    current_value = effect_average( 1 );
+    // We can use either A_MOD_STAT effect, as they both apply the same amount of stat
+    totem_bonus  = player -> dbc.effect_average( player -> dbc.spell( 8076 ) -> effect1().id(), player -> level );
   }
-};
 
-struct strength_of_earth_totem_guardian_t : public totem_t
-{
-  strength_of_earth_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "strength_of_earth_totem", TOTEM_EARTH ) { }
-
-  virtual void summon( double duration )
+  virtual void execute()
   {
-    if ( ! totem_buff )
-      totem_buff = new strength_of_earth_totem_buff_t( this );
+    shaman_totem_t::execute();
 
-    totem_t::summon( duration );
+    if ( sim -> overrides.strength_of_earth == 0 )
+    {
+      sim -> auras.strength_of_earth -> buff_duration = totem_duration;
+      sim -> auras.strength_of_earth -> trigger( 1, totem_bonus );
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( sim -> overrides.strength_of_earth == 1 || sim -> auras.strength_of_earth -> check () )
+      return false;
+
+    return shaman_totem_t::ready();
   }
 };
 
 // Windfury Totem Spell =====================================================
 
-struct windfury_totem_buff_t : public totem_buff_t
+struct windfury_totem_t : public shaman_totem_t
 {
-  windfury_totem_buff_t( player_t* player ) :
-    totem_buff_t( "windfury_totem", 8515, player,
-      &( player -> sim -> overrides.windfury_totem ), player -> sim -> auras.windfury_totem )
+  windfury_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "windfury_totem", "Windfury Totem", player, options_str, TOTEM_AIR )
   {
-    current_value  = effect_base_value( 1 ) / 100.0;
+    totem_bonus  = player -> dbc.spell( 8515 ) -> effect1().percent();
   }
-};
 
-struct windfury_totem_guardian_t : public totem_t
-{
-  windfury_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "windfury_totem", TOTEM_AIR ) { }
-
-  virtual void summon( double duration )
+  virtual void execute()
   {
-    if ( ! totem_buff )
-      totem_buff = new windfury_totem_buff_t( this );
+    shaman_totem_t::execute();
 
-    totem_t::summon( duration );
+    if ( sim -> overrides.windfury_totem == 0 )
+    {
+      sim -> auras.windfury_totem -> buff_duration = totem_duration;
+      sim -> auras.windfury_totem -> trigger( 1, totem_bonus );
+    }
+  }
+
+  virtual bool ready()
+  {
+    if( sim -> overrides.windfury_totem == 1 || sim -> auras.windfury_totem -> check() )
+      return false;
+
+    return shaman_totem_t::ready();
   }
 };
 
 // Wrath of Air Totem Spell =================================================
-struct wrath_of_air_totem_buff_t : public totem_buff_t
+
+struct wrath_of_air_totem_t : public shaman_totem_t
 {
-  wrath_of_air_totem_buff_t( player_t* player ) :
-    totem_buff_t( "wrath_of_air_totem", 2895, player,
-      &( player -> sim -> overrides.wrath_of_air ), player -> sim -> auras.wrath_of_air )
+  wrath_of_air_totem_t( player_t* player, const std::string& options_str ) :
+    shaman_totem_t( "wrath_of_air_totem", "Wrath of Air Totem", player, options_str, TOTEM_AIR )
   {
-    current_value  = effect_base_value( 1 ) / 100.0;
+    totem_bonus  = player -> dbc.spell( 2895 ) -> effect1().percent();
   }
-};
 
-struct wrath_of_air_totem_guardian_t : public totem_t
-{
-  wrath_of_air_totem_guardian_t( sim_t* sim, player_t* owner ) :
-    totem_t( sim, owner, "wrath_of_air_totem", TOTEM_AIR ) { }
-
-  virtual void summon( double duration )
+  virtual void execute()
   {
-    if ( ! totem_buff )
-      totem_buff = new wrath_of_air_totem_buff_t( this );
+    shaman_totem_t::execute();
 
-    totem_t::summon( duration );
+    if ( sim -> overrides.wrath_of_air == 0 )
+    {
+      sim -> auras.wrath_of_air -> buff_duration = totem_duration;
+      sim -> auras.wrath_of_air -> trigger( 1, totem_bonus );
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( sim -> overrides.windfury_totem == 1 || sim -> auras.wrath_of_air -> check() )
+      return false;
+
+    return shaman_totem_t::ready();
   }
 };
 
@@ -3488,7 +3437,7 @@ struct flametongue_weapon_t : public shaman_spell_t
   int    main, off;
 
   flametongue_weapon_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "flametongue_weapon", "Flametongue Weapon", player ),
+    shaman_spell_t( "flametongue_weapon", "Flametongue Weapon", player ), 
     bonus_power( 0 ), main( 0 ), off( 0 )
   {
     shaman_t* p = player -> cast_shaman();
@@ -3524,16 +3473,16 @@ struct flametongue_weapon_t : public shaman_spell_t
       sim -> errorf( "Player %s: flametongue_weapon: weapon option must be one of main/off/both\n", p -> name() );
       assert( 0 );
     }
-
+    
     // Spell damage scaling is defined in "Flametongue Weapon (Passive), id 10400"
     bonus_power  = p -> dbc.effect_average( p -> dbc.spell( 10400 ) -> effect2().id(), p -> level );
     bonus_power *= 1.0 + p -> talent_elemental_weapons -> effect1().percent();
     harmful      = false;
     may_miss     = false;
-
+    
     if ( main )
       p -> flametongue_mh = new flametongue_weapon_spell_t( p, "flametongue_mh" );
-
+    
     if ( off )
       p -> flametongue_oh = new flametongue_weapon_spell_t( p, "flametongue_oh" );
   }
@@ -3564,6 +3513,11 @@ struct flametongue_weapon_t : public shaman_spell_t
 
     return false;
   }
+  
+  virtual double gcd() SC_CONST 
+  { 
+    return player -> in_combat ? shaman_spell_t::gcd() : 0; 
+  }
 };
 
 // Windfury Weapon Spell ====================================================
@@ -3574,7 +3528,7 @@ struct windfury_weapon_t : public shaman_spell_t
   int    main, off;
 
   windfury_weapon_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "windfury_weapon", "Windfury Weapon", player ),
+    shaman_spell_t( "windfury_weapon", "Windfury Weapon", player ), 
     bonus_power( 0 ), main( 0 ), off( 0 )
   {
     shaman_t* p = player -> cast_shaman();
@@ -3613,10 +3567,10 @@ struct windfury_weapon_t : public shaman_spell_t
     bonus_power  = p -> dbc.effect_average( p -> dbc.spell( id ) -> effect2().id(), p -> level );
     harmful      = false;
     may_miss     = false;
-
+    
     if ( main )
       p -> windfury_mh = new windfury_weapon_attack_t( p, "windfury_mh", &( p -> main_hand_weapon ) );
-
+    
     if ( off )
       p -> windfury_oh = new windfury_weapon_attack_t( p, "windfury_oh", &( p -> off_hand_weapon ) );
   }
@@ -3646,6 +3600,11 @@ struct windfury_weapon_t : public shaman_spell_t
       return true;
 
     return false;
+  }
+  
+  virtual double gcd() SC_CONST 
+  { 
+    return player -> in_combat ? shaman_spell_t::gcd() : 0; 
   }
 };
 
@@ -3684,6 +3643,11 @@ struct lightning_shield_t : public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
+  
+  virtual double gcd() SC_CONST 
+  { 
+    return player -> in_combat ? shaman_spell_t::gcd() : 0; 
+  }
 };
 
 // Water Shield Spell =========================================================
@@ -3691,7 +3655,7 @@ struct lightning_shield_t : public shaman_spell_t
 struct water_shield_t : public shaman_spell_t
 {
   double bonus;
-
+  
   water_shield_t( player_t* player, const std::string& options_str ) :
     shaman_spell_t( "water_shield", "Water Shield", player ), bonus( 0.0 )
   {
@@ -3700,7 +3664,7 @@ struct water_shield_t : public shaman_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
+    
     shaman_t* p  = player -> cast_shaman();
     harmful      = false;
     bonus        = p -> dbc.effect_average( p -> dbc.spell( id ) -> effect2().id(), p -> level );
@@ -3712,7 +3676,7 @@ struct water_shield_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_spell_t::execute();
-
+    
     shaman_t* p = player -> cast_shaman();
     p -> buffs_lightning_shield -> expire();
     p -> buffs_water_shield -> trigger( initial_stacks(), bonus );
@@ -3724,6 +3688,11 @@ struct water_shield_t : public shaman_spell_t
     if ( p -> buffs_water_shield -> check() )
       return false;
     return shaman_spell_t::ready();
+  }
+  
+  virtual double gcd() SC_CONST 
+  { 
+    return player -> in_combat ? shaman_spell_t::gcd() : 0; 
   }
 };
 
@@ -3740,13 +3709,13 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     };
     parse_options( options, options_str );
   }
-
+  
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
 
     shaman_spell_t::execute();
-
+    
     p -> buffs_spiritwalkers_grace -> trigger();
   }
 };
@@ -3760,16 +3729,16 @@ struct elemental_devastation_t : public buff_t
   elemental_devastation_t( player_t*   p,
                            uint32_t    id,
                            const char* n ) :
-    buff_t( p, id, n )
-  {
+    buff_t( p, id, n ) 
+  { 
     // Duration has to be parsed out from the triggered spell
     const spell_data_t* trigger = p -> dbc.spell( p -> dbc.spell( id ) -> effect1().trigger_spell_id() );
     buff_duration = trigger -> duration();
-
+    
     // And fix atomic, as it's a triggered spell, but not really .. sigh
     s_single = s_effects[ 0 ];
   }
-
+  
   virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
   {
     return buff_t::base_value( type, sub_type, misc_value, misc_value2 ) / 100.0;
@@ -3781,14 +3750,14 @@ struct lightning_shield_buff_t : public buff_t
   lightning_shield_buff_t( player_t*   p,
                            uint32_t    id,
                            const char* n ) :
-    buff_t( p, id, n, 1.0, false )
-  {
+    buff_t( p, id, n, 1.0, false ) 
+  { 
     shaman_t* s = player -> cast_shaman();
-
+      
     // This requires rolling thunder checking for max stack
     if ( s -> talent_rolling_thunder -> rank() > 0 )
       max_stack = (int) s -> talent_rolling_thunder -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL );
-
+    
     // Reinit because of max_stack change
     init_buff_t_();
   }
@@ -3825,12 +3794,12 @@ struct unleash_elements_buff_t : public buff_t
     shaman_t* s = player -> cast_shaman();
     bonus       = s -> talent_elemental_weapons -> effect2().percent();
   }
-
+  
   virtual double mod_additive( property_type_t p_type ) SC_CONST
   {
     return buff_t::mod_additive( p_type ) * ( 1.0 + bonus );
   }
-
+  
   virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
   {
     return buff_t::base_value( type, sub_type, misc_value, misc_value2 ) * ( 1.0 + bonus );
@@ -3841,7 +3810,7 @@ struct unleash_flame_expiration_delay_t : public event_t
 {
   buff_t* buff;
 
-  unleash_flame_expiration_delay_t( sim_t* sim, player_t* p, buff_t* b ) :
+  unleash_flame_expiration_delay_t( sim_t* sim, player_t* p, buff_t* b ) : 
     event_t( sim, p ), buff( b )
   {
     shaman_t* s = player -> cast_shaman();
@@ -3920,39 +3889,37 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
   if ( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
+  if ( name == "earth_elemental_totem"   ) return new    earth_elemental_totem_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
+  if ( name == "fire_elemental_totem"    ) return new     fire_elemental_totem_t( this, options_str );
   if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );
   if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
+  if ( name == "flametongue_totem"       ) return new        flametongue_totem_t( this, options_str );
   if ( name == "flametongue_weapon"      ) return new       flametongue_weapon_t( this, options_str );
   if ( name == "frost_shock"             ) return new              frost_shock_t( this, options_str );
   if ( name == "lava_burst"              ) return new               lava_burst_t( this, options_str );
   if ( name == "lava_lash"               ) return new                lava_lash_t( this, options_str );
   if ( name == "lightning_bolt"          ) return new           lightning_bolt_t( this, options_str );
   if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
-  if ( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options_str );
+  if ( name == "magma_totem"             ) return new              magma_totem_t( this, options_str );
+  if ( name == "mana_spring_totem"       ) return new        mana_spring_totem_t( this, options_str );
+  if ( name == "mana_tide_totem"         ) return new          mana_tide_totem_t( this, options_str );
+  if ( name == "natures_swiftness"       ) return new        shamans_swiftness_t( this, options_str );  
   if ( name == "primal_strike"           ) return new            primal_strike_t( this, options_str );
+  if ( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
   if ( name == "spirit_wolf"             ) return new        spirit_wolf_spell_t( this, options_str );
   if ( name == "spiritwalkers_grace"     ) return new      spiritwalkers_grace_t( this, options_str );
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
+  if ( name == "strength_of_earth_totem" ) return new  strength_of_earth_totem_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
   if ( name == "unleash_elements"        ) return new         unleash_elements_t( this, options_str );
   if ( name == "water_shield"            ) return new             water_shield_t( this, options_str );
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
+  if ( name == "windfury_totem"          ) return new           windfury_totem_t( this, options_str );
   if ( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
-
-  // Totems
-  if ( name == "earth_elemental_totem"   ) return new totem_summon_spell_t( name, "Earth Elemental Totem",   this, options_str );
-  if ( name == "fire_elemental_totem"    ) return new fire_elemental_totem_summon_spell_t( this, options_str );
-  if ( name == "flametongue_totem"       ) return new totem_summon_spell_t( name, "Flametongue Totem",       this, options_str, &( sim -> overrides.flametongue_totem ) );
-  if ( name == "magma_totem"             ) return new totem_summon_spell_t( name, "Magma Totem",             this, options_str );
-  if ( name == "mana_spring_totem"       ) return new totem_summon_spell_t( name, "Mana Spring Totem",       this, options_str, &( sim -> overrides.mana_spring_totem ) );
-  if ( name == "mana_tide_totem"         ) return new totem_summon_spell_t( name, "Mana Tide Totem",         this, options_str );
-  if ( name == "searing_totem"           ) return new totem_summon_spell_t( name, "Searing Totem",           this, options_str );
-  if ( name == "strength_of_earth_totem" ) return new totem_summon_spell_t( name, "Strength of Earth Totem", this, options_str, &( sim -> overrides.strength_of_earth ) );
-  if ( name == "windfury_totem"          ) return new totem_summon_spell_t( name, "Windfury Totem",          this, options_str, &( sim -> overrides.windfury_totem ) );
-  if ( name == "wrath_of_air_totem"      ) return new totem_summon_spell_t( name, "Wrath of Air Totem",      this, options_str, &( sim -> overrides.wrath_of_air ) );
+  if ( name == "wrath_of_air_totem"      ) return new       wrath_of_air_totem_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3966,19 +3933,9 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "spirit_wolf"             ) return new spirit_wolf_pet_t    ( sim, this );
-  if ( pet_name == "fire_elemental"          ) return new fire_elemental_pet_t ( sim, this );
-  if ( pet_name == "fire_elemental_totem"    ) return new fire_elemental_totem_guardian_t( sim, this );
-  if ( pet_name == "earth_elemental"         ) return new earth_elemental_pet_t( sim, this );
-  if ( pet_name == "earth_elemental_totem"   ) return new earth_elemental_totem_guardian_t( sim, this );
-  if ( pet_name == "flametongue_totem"       ) return new flametongue_totem_guardian_t( sim, this );
-  if ( pet_name == "magma_totem"             ) return new magma_totem_guardian_t( sim, this );
-  if ( pet_name == "mana_spring_totem"       ) return new mana_spring_totem_guardian_t( sim, this );
-  if ( pet_name == "mana_tide_totem"         ) return new mana_tide_totem_guardian_t( sim, this );
-  if ( pet_name == "searing_totem"           ) return new searing_totem_guardian_t( sim, this );
-  if ( pet_name == "strength_of_earth_totem" ) return new strength_of_earth_totem_guardian_t( sim, this );
-  if ( pet_name == "windfury_totem"          ) return new windfury_totem_guardian_t( sim, this );
-  if ( pet_name == "wrath_of_air_totem"      ) return new wrath_of_air_totem_guardian_t( sim, this );
+  if ( pet_name == "spirit_wolf"     ) return new spirit_wolf_pet_t    ( sim, this );
+  if ( pet_name == "fire_elemental"  ) return new fire_elemental_pet_t ( sim, this );
+  if ( pet_name == "earth_elemental" ) return new earth_elemental_pet_t( sim, this );
 
   return 0;
 }
@@ -3987,19 +3944,9 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
 void shaman_t::create_pets()
 {
-  create_pet( "earth_elemental"         );
-  create_pet( "earth_elemental_totem"   );
-  create_pet( "fire_elemental"          );
-  create_pet( "fire_elemental_totem"    );
-  create_pet( "flametongue_totem"       );
-  create_pet( "magma_totem"             );
-  create_pet( "mana_spring_totem"       );
-  create_pet( "mana_tide_totem"         );
-  create_pet( "searing_totem"           );
-  create_pet( "spirit_wolf"             );
-  create_pet( "strength_of_earth_totem" );
-  create_pet( "windfury_totem"          );
-  create_pet( "wrath_of_air_totem"      );
+  create_pet( "spirit_wolf" );
+  create_pet( "fire_elemental" );
+  create_pet( "earth_elemental" );
 }
 
 // shaman_t::init_talents ======================================================
@@ -4009,7 +3956,7 @@ void shaman_t::init_talents()
   // Talents
 
   // Elemental
-  talent_acuity                   = find_talent( "Acuity" );
+  talent_acuity                   = find_talent( "Acuity" ); 
   talent_call_of_flame            = find_talent( "Call of Flame" );
   talent_concussion               = find_talent( "Concussion" );
   talent_convection               = find_talent( "Convection" );
@@ -4034,7 +3981,7 @@ void shaman_t::init_talents()
   talent_focused_strikes          = find_talent( "Focused Strikes" );
   talent_frozen_power             = find_talent( "Frozen Power" );
   talent_improved_lava_lash       = find_talent( "Improved Lava Lash" );
-  talent_improved_shields         = find_talent( "Improved Shields" );
+  talent_improved_shields         = find_talent( "Improved Shields" );    
   talent_maelstrom_weapon         = find_talent( "Maelstrom Weapon" );
   talent_searing_flames           = find_talent( "Searing Flames" );
   talent_shamanistic_rage         = find_talent( "Shamanistic Rage" );
@@ -4049,7 +3996,7 @@ void shaman_t::init_talents()
   talent_telluric_currents        = find_talent( "Telluric Currents" );
   talent_totemic_focus            = find_talent( "Totemic Focus" );
 
-  player_t::init_talents();
+  player_t::init_talents(); 
 }
 
 // shaman_t::init_spells ======================================================
@@ -4075,11 +4022,11 @@ void shaman_t::init_spells()
   spec_primal_wisdom          = new passive_spell_t( this, "primal_wisdom",      51522 );
 
   mail_specialization         = new passive_spell_t( this, "mail_specialization", 86529 );
-
+  
   // Masteries
   mastery_elemental_overload  = new mastery_t( this, "elemental_overload", 77222, TREE_ELEMENTAL );
   mastery_enhanced_elements   = new mastery_t( this, "enhanced_elements",  77223, TREE_ENHANCEMENT );
-
+  
   // Glyphs
   glyph_feral_spirit          = find_glyph( "Glyph of Feral Spirit" );
   glyph_fire_elemental_totem  = find_glyph( "Glyph of Fire Elemental Totem" );
@@ -4089,16 +4036,16 @@ void shaman_t::init_spells()
   glyph_lava_lash             = find_glyph( "Glyph of Lava Lash" );
   glyph_lightning_bolt        = find_glyph( "Glyph of Lightning Bolt" );
   glyph_stormstrike           = find_glyph( "Glyph of Stormstrike" );
-  glyph_unleashed_lightning   = find_glyph( "Glyph of Unleashed Lightning" );
+  glyph_unleashed_lightning = find_glyph( "Glyph of Unleashed Lightning" );
   glyph_water_shield          = find_glyph( "Glyph of Water Shield" );
   glyph_windfury_weapon       = find_glyph( "Glyph of Windfury Weapon" );
-
+  
   glyph_chain_lightning       = find_glyph( "Glyph of Chain Lightning" );
   glyph_shocking              = find_glyph( "Glyph of Shocking" );
   glyph_thunder               = find_glyph( "Glyph of Thunder" );
 
   glyph_thunderstorm          = find_glyph( "Glyph of Thunderstorm" );
-
+  
   sets                        = new set_bonus_array_t( this, set_bonuses );
 }
 
@@ -4108,7 +4055,7 @@ void shaman_t::init_base()
 {
   player_t::init_base();
 
-  attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 +
+  attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + 
     talent_toughness -> base_value( E_APPLY_AURA, A_MOD_TOTAL_STAT_PERCENTAGE );
   base_attack_expertise = talent_unleashed_rage -> base_value( E_APPLY_AURA, A_MOD_EXPERTISE );
 
@@ -4162,12 +4109,14 @@ void shaman_t::init_buffs()
 {
   player_t::init_buffs();
 
+  buffs_earth_elemental         = new buff_t                 ( this, "earth_elemental", 1 );
   buffs_elemental_devastation   = new elemental_devastation_t( this, talent_elemental_devastation -> spell_id(),               "elemental_devastation" ); buffs_elemental_devastation -> activated = false;
   buffs_elemental_focus         = new buff_t                 ( this, talent_elemental_focus -> effect_trigger_spell( 1 ),      "elemental_focus"       ); buffs_elemental_focus -> activated = false;
   // For now, elemental mastery will need 2 buffs, 1 to trigger the insta cast, and a second for the haste/damage buff
   buffs_elemental_mastery_insta = new buff_t                 ( this, talent_elemental_mastery -> spell_id(),                   "elemental_mastery_instant", 1.0, -1.0, true );
   // Note the chance override, as the spell itself does not have a proc chance
   buffs_elemental_mastery       = new buff_t                 ( this, talent_elemental_mastery -> effect_trigger_spell( 2 ),    "elemental_mastery",         1.0 );
+  buffs_fire_elemental          = new buff_t                 ( this, "fire_elemental", 1 );
   buffs_flurry                  = new buff_t                 ( this, talent_flurry -> effect_trigger_spell( 1 ),               "flurry",                    talent_flurry -> proc_chance() ); buffs_flurry -> activated = false;
   // TBD how this is handled for reals
   buffs_lava_surge              = new buff_t                 ( this, 77762,                                                    "lava_surge",                1.0, -1.0, true ); buffs_lava_surge -> activated = false;
@@ -4215,12 +4164,12 @@ void shaman_t::init_procs()
   procs_wasted_ls          = get_proc( "wasted_lightning_shield" );
   procs_wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
   procs_windfury           = get_proc( "windfury"                );
-
+  
   for ( int i = 0; i < 7; i++ )
   {
     procs_fulmination[ i ] = get_proc( "fulmination_" + util_t::to_string( i ) );
   }
-
+  
   for ( int i = 0; i < 6; i++ )
   {
     procs_maelstrom_weapon_used[ i ] = get_proc( "maelstrom_weapon_stack_" + util_t::to_string( i ) );
@@ -4237,7 +4186,7 @@ void shaman_t::init_rng()
   rng_primal_wisdom        = get_rng( "primal_wisdom"        );
   rng_rolling_thunder      = get_rng( "rolling_thunder"      );
   rng_searing_flames       = get_rng( "searing_flames"       );
-  rng_static_shock         = get_rng( "static_shock"         );
+  rng_static_shock         = get_rng( "static_shock"         );  
   rng_t12_2pc_caster       = get_rng( "t12_2pc_caster"       );
   rng_windfury_delay       = get_rng( "windfury_delay"       );
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
@@ -4270,15 +4219,13 @@ void shaman_t::init_actions()
       }
 
       action_list_str  = "flask,type=winds/food,type=seafood_magnifique_feast";
-
+      
       action_list_str +="/windfury_weapon,weapon=main";
       if ( off_hand_weapon.type != WEAPON_NONE )
         action_list_str += "/flametongue_weapon,weapon=off";
-      action_list_str += "/strength_of_earth_totem,if=!active";
-      action_list_str += "/windfury_totem,if=!active";
-      action_list_str += "/mana_spring_totem,if=!active";
-      action_list_str += "/lightning_shield";
-      action_list_str += "/tolvir_potion,if=buff.bloodlust.react|!in_combat|target.time_to_die<=40";
+      action_list_str += "/strength_of_earth_totem/windfury_totem/mana_spring_totem/lightning_shield";
+      action_list_str += "/tolvir_potion,if=!in_combat";
+      action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
       action_list_str += "/wind_shear";
@@ -4305,13 +4252,9 @@ void shaman_t::init_actions()
       }
 
       if ( level <= 80 )
-      {
-        action_list_str += "/fire_elemental_totem";
-        action_list_str += "/searing_totem,if=!active&!totem.fire_elemental.active&cooldown.fire_elemental.remains>0";
-      }
-      else
-        action_list_str += "/searing_totem,if=!active";
-
+        action_list_str += "/fire_elemental_totem,if=!ticking";
+        
+      action_list_str += "/searing_totem";
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       action_list_str += "/lava_lash";
       action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
@@ -4323,21 +4266,20 @@ void shaman_t::init_actions()
       action_list_str += "/fire_nova,if=target.adds>1";
       action_list_str += "/spiritwalkers_grace,moving=1";
       action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
-
+      
       if ( caster_mainhand )
         action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+travel_time";
     }
     else
     {
       action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
-
-      action_list_str += "/flametongue_weapon,weapon=main";
-      action_list_str += "/lightning_shield";
-      action_list_str += "/mana_spring_totem,if=!active";
-      action_list_str += "/wrath_of_air_totem,if=!active";
+      
+      action_list_str += "/flametongue_weapon,weapon=main/lightning_shield";
+      action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       action_list_str += "/snapshot_stats";
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.time_to_die<=40";
-
+      action_list_str += "/volcanic_potion,if=!in_combat";
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      
       action_list_str += "/wind_shear";
       action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
       int num_items = ( int ) items.size();
@@ -4360,7 +4302,7 @@ void shaman_t::init_actions()
       {
         action_list_str += "/berserking";
       }
-
+      
       if ( talent_elemental_mastery -> rank() )
       {
         if ( level > 80 )
@@ -4375,16 +4317,17 @@ void shaman_t::init_actions()
         action_list_str += "/unleash_elements,moving=1";
       action_list_str += "/flame_shock,if=!ticking|ticks_remain<3";
       // Unleash elements for elemental is a downgrade in dps ...
-      if ( level >= 75 ) action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+travel_time";
-      if ( talent_fulmination -> rank() )
+      //if ( level >= 81 )
+      //  action_list_str += "/unleash_elements";
+      if ( level >= 75 ) action_list_str += "/lava_burst,if=dot.flame_shock.remains>(cast_time+travel_time)";
+      if ( talent_fulmination -> rank() ) 
       {
         action_list_str += "/earth_shock,if=buff.lightning_shield.react=9";
         action_list_str += "/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
       }
-      action_list_str += "/fire_elemental_totem,if=!active";
-      action_list_str += "/earth_elemental_totem";
-      if ( ! set_bonus.tier12_2pc_caster() )
-        action_list_str += "/searing_totem,if=!active&!totem.fire_elemental_totem.active&cooldown.fire_elemental_totem.remains>0";
+      action_list_str += "/fire_elemental_totem,if=!ticking";
+      action_list_str += "/earth_elemental_totem,if=!ticking";
+      action_list_str += "/searing_totem";
       action_list_str += "/spiritwalkers_grace,moving=1";
       action_list_str += "/chain_lightning,if=target.adds>2";
       if ( ! ( set_bonus.tier11_4pc_caster() || level > 80 ) )
@@ -4404,8 +4347,8 @@ void shaman_t::init_actions()
 void shaman_t::moving()
 {
   // Spiritwalker's Grace complicates things, as you can cast it while casting
-  // anything. So, to model that, if a raid move event comes, we need to check
-  // if we can trigger Spiritwalker's Grace. If so, execute it, to allow the
+  // anything. So, to model that, if a raid move event comes, we need to check 
+  // if we can trigger Spiritwalker's Grace. If so, execute it, to allow the 
   // currently executing cast to finish.
   if ( level == 85 )
   {
@@ -4413,9 +4356,9 @@ void shaman_t::moving()
 
     if ( swg && swg -> ready() && executing )
     {
-      if ( sim -> log )
-        log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
-                       executing -> name_str.c_str() );
+      if ( sim -> log ) 
+	log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish", 
+		       executing -> name_str.c_str() );
       swg -> execute();
     }
     else
@@ -4454,9 +4397,9 @@ double shaman_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 double shaman_t::composite_attack_hit() SC_CONST
 {
   double hit = player_t::composite_attack_hit();
-
+  
   hit += spec_dual_wield -> base_value( E_APPLY_AURA, A_MOD_HIT_CHANCE );
-
+  
   return hit;
 }
 
@@ -4466,7 +4409,7 @@ double shaman_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_RATING_FROM_STAT ) *
+  hit += ( talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_RATING_FROM_STAT ) * 
     ( spirit() - attribute_base[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
@@ -4497,7 +4440,7 @@ double shaman_t::composite_spell_power( const school_type school ) SC_CONST
     sp += main_hand_weapon.buff_value;
 
   if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    sp += off_hand_weapon.buff_value;
+    sp += off_hand_weapon.buff_value; 
 
   return sp;
 }
@@ -4507,23 +4450,23 @@ double shaman_t::composite_spell_power( const school_type school ) SC_CONST
 double shaman_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
   double m = player_t::composite_player_multiplier( school, a );
-
+  
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     m *= 1.0 + composite_mastery() * mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
-
-  return m;
+ 
+  return m; 
 }
 
 double shaman_t::composite_spell_crit() SC_CONST
 {
   double v = player_t::composite_spell_crit();
-
+  
   if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
     v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
-
+  
   if ( off_hand_weapon.type != WEAPON_NONE && off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
     v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
-
+  
   return v;
 }
 
@@ -4558,86 +4501,6 @@ void shaman_t::combat_begin()
   {
     sim -> auras.unleashed_rage -> trigger( 1, ur );
   }
-}
-
-action_expr_t* shaman_t::create_expression( action_t* a, const std::string& name_str )
-{
-  const char* totem_types[] = { 0, "air", "earth", "fire", "water" };
-  totem_type tt = TOTEM_NONE;
-  std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, name_str, "." );
-
-  if ( num_splits == 3 && util_t::str_compare_ci( splits[ 0 ], "totem" ) )
-  {
-    std::string totem_name = util_t::tolower( splits[ 1 ] );
-    totem_t* t = 0;
-
-    for ( int i = 1; i < TOTEM_MAX; i++ )
-    {
-      if ( util_t::str_compare_ci( totem_name, totem_types[ i ] ) )
-      {
-        tt = ( totem_type ) i;
-        break;
-      }
-    }
-
-    // Find by name
-    if ( tt == TOTEM_NONE )
-    {
-      if ( totem_name.find( "_totem" ) == std::string::npos )
-        totem_name += "_totem";
-
-      t = dynamic_cast< totem_t* >( find_pet( totem_name ) );
-      if ( ! t ) return player_t::create_expression( a, name_str );
-    }
-
-    if ( util_t::str_compare_ci( splits[ 2 ], "active" ) )
-    {
-      struct totem_active_expr_t : public action_expr_t
-      {
-        totem_t*   totem;
-        totem_type type;
-
-        totem_active_expr_t( action_t* a, totem_t* t, totem_type tt ) : action_expr_t( a, "totem_active", TOK_NUM ), totem( t ), type( tt ) { }
-        virtual int evaluate() {
-          if ( type == TOTEM_NONE )
-            result_num = ( ! totem || totem -> sleeping ) ? 0 : 1;
-          else
-          {
-            shaman_t* p = action -> player -> cast_shaman();
-            if ( p && p -> totems[ type ] && ! p -> totems[ type ] -> sleeping )
-              result_num = 1;
-            else
-              result_num = 0;
-          }
-          return TOK_NUM;
-        }
-      };
-
-      return new totem_active_expr_t( a, t, tt );
-    }
-    else if ( util_t::str_compare_ci( splits[ 2 ], "remains" ) )
-    {
-      struct totem_remains_expr_t : public action_expr_t
-      {
-        totem_t*   totem;
-        totem_type type;
-
-        totem_remains_expr_t( action_t* a, totem_t* t, totem_type tt ) : action_expr_t( a, "totem_remains", TOK_NUM ), totem( t ), type( tt ) { }
-        virtual int evaluate() {
-          if ( type == TOTEM_NONE )
-            result_num = ( ! totem || totem -> sleeping ) ? 0 : totem -> totem_duration - ( action -> sim -> current_time - totem -> summon_time );
-          else
-            result_num = 0;
-          return TOK_NUM;
-        }
-      };
-
-      return new totem_remains_expr_t( a, t, tt );
-    }
-  }
-
-  return player_t::create_expression( a, name_str );
 }
 
 // shaman_t::decode_set ====================================================
@@ -4759,9 +4622,9 @@ void player_t::shaman_combat_begin( sim_t* sim )
   if ( sim -> overrides.unleashed_rage    ) sim -> auras.unleashed_rage    -> override( 1, 0.10 );
   if ( sim -> overrides.windfury_totem    ) sim -> auras.windfury_totem    -> override( 1, 0.10 );
   if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.05 );
-
-  if ( sim -> overrides.mana_spring_totem )
+  
+  if ( sim -> overrides.mana_spring_totem ) 
     sim -> auras.mana_spring_totem -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 5677 ) -> effect1().id(), sim -> max_player_level ) );
-  if ( sim -> overrides.strength_of_earth )
+  if ( sim -> overrides.strength_of_earth ) 
     sim -> auras.strength_of_earth -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 8076 ) -> effect1().id(), sim -> max_player_level ) );
 }
