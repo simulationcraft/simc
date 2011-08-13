@@ -4,6 +4,7 @@ warlock=Warlock_Affliction_T12H_DTR
 origin="Warlock_CharDevSync.simc"
 level=85
 race=orc
+position=back
 role=spell
 use_pre_potion=1
 professions=enchanting=525/inscription=525
@@ -48,22 +49,22 @@ finger2=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int
 trinket1=rune_of_zeth,heroic=1,ilevel=391,quality=epic,stats=433crit,reforge=crit_hit,use=1441int_15dur_60cd
 trinket2=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,enchant=50int
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,stats=271haste_314hit_426int_2786sp_730sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_2502min_3754max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=7193
-# gear_intellect=6122
+# gear_stamina=7144
+# gear_intellect=6089
 # gear_spirit=20
-# gear_spell_power=2973
-# gear_hit_rating=2122
+# gear_spell_power=2786
+# gear_hit_rating=2070
 # gear_crit_rating=976
-# gear_haste_rating=2749
+# gear_haste_rating=2768
 # gear_mastery_rating=630
 # gear_armor=9372
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2502min_3754max,enchant=power_torrent
 use_pre_soulburn=1

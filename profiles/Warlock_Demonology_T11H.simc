@@ -4,6 +4,7 @@ warlock=Warlock_Demonology_T11H
 origin="http://chardev.org/?profile=128609"
 level=85
 race=orc
+position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
@@ -27,7 +28,7 @@ actions+=/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.ac
 actions+=/immolation_aura,if=buff.metamorphosis.remains>10
 actions+=/immolate,if=!ticking&target.time_to_die>=4&miss_react
 actions+=/hand_of_guldan
-actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react&cooldown.demon_soul.remains>30
+actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
 actions+=/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react
 actions+=/fel_flame,if=buff.tier11_4pc_caster.react
 actions+=/shadowflame

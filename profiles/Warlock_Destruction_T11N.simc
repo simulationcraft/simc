@@ -4,6 +4,7 @@ warlock=Warlock_Destruction_T11N
 origin="http://chardev.org/?profile=36743"
 level=85
 race=orc
+position=back
 role=spell
 use_pre_potion=1
 professions=enchanting=525/inscription=525

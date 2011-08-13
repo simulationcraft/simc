@@ -4,6 +4,7 @@ warlock=Warlock_Affliction_T12N
 origin="Warlock_CharDevSync.simc"
 level=85
 race=orc
+position=back
 role=spell
 use_pre_potion=1
 professions=enchanting=525/inscription=525
