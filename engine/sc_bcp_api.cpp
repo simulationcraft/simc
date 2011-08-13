@@ -268,7 +268,7 @@ player_t* download_player( sim_t*             sim,
   std::string battlenet = get_region_host( region );
   std::string url = battlenet + "api/wow/character/" +
     urlencode_utf8( server ) + '/' + urlencode_utf8( name ) +
-      "?fields=talents,items,professions"; // ,pets,stats
+      "?fields=talents,items,professions&locale=en_US";
 
   std::string result;
   if ( ! http_t::get( result, url, std::string(), caching ) )

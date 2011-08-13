@@ -7,6 +7,7 @@
 #include "utf8.h"
 
 #include <fstream>
+#include <iostream>
 
 #ifdef USE_TR1
 #include <unordered_map>
@@ -28,21 +29,12 @@ int         http_t::proxy_port = 0;
 
 cache::cache_control_t cache::cache_control_t::singleton;
 
-// http_t::clear_cache ======================================================
-
-bool http_t::clear_cache( sim_t* sim,
-                          const std::string& name,
-                          const std::string& value )
-{
-  assert( name == "http_clear_cache" );
-  if ( value != "0" && ! sim -> parent ) http_t::cache_clear();
-  return true;
-}
-
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+static const bool HTTP_CACHE_DEBUG = false;
+
 static const char* const url_cache_file = "simc_cache.dat";
-static const double url_cache_version = 3.0;
+static const double url_cache_version = 3.1;
 
 static void* cache_mutex = 0;
 
@@ -51,10 +43,12 @@ static const unsigned int NETBUFSIZE = 1 << 15;
 struct url_cache_entry_t
 {
   std::string result;
-  cache::era_t era;
-  url_cache_entry_t() : era( cache::IN_THE_BEGINNING ) {}
-  url_cache_entry_t( const std::string& result_, cache::era_t era_ ) :
-    result( result_ ), era( era_ ) {}
+  std::string last_modified_header;
+  cache::era_t modified, validated;
+
+  url_cache_entry_t() :
+    modified( cache::INVALID_ERA ), validated( cache::INVALID_ERA )
+  {}
 };
 
 #ifdef USE_TR1
@@ -75,18 +69,24 @@ static void throttle( int seconds )
   last = now;
 }
 
-// cache_set ================================================================
+// cache_clear ==============================================================
 
-static void cache_set( const std::string& url,
-                       const std::string& result,
-                       int era )
+static void cache_clear()
 {
   // writer lock
   thread_t::auto_lock_t lock( cache_mutex );
-  url_cache_entry_t& c = url_db[ url ];
-  c.result = result;
-  c.era = era;
+  url_db.clear();
 }
+
+static const char* const cookies =
+  "Cookie: loginChecked=1\r\n"
+  "Cookie: cookieLangId=en_US\r\n"
+  // Skip arenapass 2011 advertisement .. can we please have a sensible
+  // API soon?
+  "Cookie: int-WOW=1\r\n"
+  "Cookie: int-WOW-arenapass2011=1\r\n"
+  "Cookie: int-WOW-epic-savings-promo=1\r\n"
+  "Cookie: int-EuropeanInvitational2011=1\r\n";
 
 #if defined( NO_HTTP )
 
@@ -115,45 +115,55 @@ static bool download( std::string& result,
 
 // download =================================================================
 
-static bool download( std::string& result,
+static bool download( url_cache_entry_t& entry,
                       const std::string& url )
 {
-  class InternetWrapper
+  class InetWrapper
   {
   public:
     HINTERNET handle;
 
-    explicit InternetWrapper( HINTERNET handle_ ) : handle( handle_ ) {}
-    ~InternetWrapper() { if ( handle ) InternetCloseHandle( handle ); }
+    explicit InetWrapper( HINTERNET handle_ ) : handle( handle_ ) {}
+    ~InetWrapper() { if ( handle ) InternetCloseHandle( handle ); }
     operator HINTERNET () const { return handle; }
   };
 
-  result.clear();
+  static HINTERNET hINet;
+  if ( !hINet )
+  {
+    // hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PROXY, "proxy-server", NULL, 0 );
+    hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+    if ( ! hINet )
+      return false;
+  }
 
-  // InternetWrapper hINet( InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PROXY, "proxy-server", NULL, 0 ) );
-  InternetWrapper hINet( InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 ) );
-  if ( ! hINet )
-    return false;
+  std::wstring wHeaders( cookies, cookies + std::strlen( cookies ) );
 
-  std::wstring wURL( url.length(), L' ' );
-  std::copy( url.begin(), url.end(), wURL.begin() );
+  if ( ! entry.last_modified_header.empty() )
+  {
+    wHeaders += L"If-Modified-Since: ";
+    wHeaders.append( entry.last_modified_header.begin(), entry.last_modified_header.end() );
+    wHeaders += L"\r\n";
+  }
 
-  std::wstring wHeaders;
-  wHeaders += L"Cookie: loginChecked=1\r\n";
-  wHeaders += L"Cookie: cookieLangId=en_US\r\n";
-  // Skip arenapass 2011 advertisement .. can we please have a sensible
-  // API soon?
-  wHeaders += L"Cookie: int-WOW=1\r\n";
-  wHeaders += L"Cookie: int-WOW-arenapass2011=1\r\n";
-  wHeaders += L"Cookie: int-WOW-epic-savings-promo=1\r\n";
-  wHeaders += L"Cookie: int-EuropeanInvitational2011=1\r\n";
-
-  InternetWrapper hFile( InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0, INTERNET_FLAG_RELOAD, 0 ) );
+  std::wstring wURL( url.begin(), url.end() );
+  InetWrapper hFile( InternetOpenUrl( hINet, wURL.c_str(), wHeaders.c_str(), 0,
+                                       INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
   if ( ! hFile )
     return false;
 
   char buffer[ NETBUFSIZE ];
-  DWORD amount;
+  DWORD amount = sizeof( buffer );
+  if ( ! HttpQueryInfoA( hFile, HTTP_QUERY_STATUS_CODE, buffer, &amount, 0 ) )
+    return false;
+
+  if ( ! std::strcmp( buffer, "304" ) )
+  {
+    entry.validated = cache::era();
+    return true;
+  }
+
+  std::string result;
   while ( InternetReadFile( hFile, buffer, sizeof( buffer ), &amount ) )
   {
     if ( amount == 0 )
@@ -161,7 +171,16 @@ static bool download( std::string& result,
     result.append( &buffer[ 0 ], &buffer[ amount ] );
   }
 
-  return result.size() > 0;
+  entry.result = result;
+  entry.modified = entry.validated = cache::era();
+
+  entry.last_modified_header.clear();
+  amount = sizeof( buffer );
+  DWORD index = 0;
+  if ( HttpQueryInfoA( hFile, HTTP_QUERY_LAST_MODIFIED, buffer, &amount, &index ) )
+    entry.last_modified_header.assign( &buffer[ 0 ], &buffer[ amount ] );
+
+  return true;
 }
 
 #else
@@ -227,9 +246,10 @@ static bool parse_url( std::string&    host,
 
 // build_request ============================================================
 
-static std::string build_request( const std::string&   host,
-                                  const std::string&   path,
-                                  unsigned short port )
+static std::string build_request( const std::string& host,
+                                  const std::string& path,
+                                  unsigned short     port,
+                                  const std::string& last_modified )
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
   std::stringstream request;
@@ -253,15 +273,12 @@ static std::string build_request( const std::string&   host,
   if ( ! use_proxy )
     request << "Host: " << host << "\r\n";
 
-  request << "Cookie: loginChecked=1\r\n"
-             "Cookie: cookieLangId=en_US\r\n"
-             // Skip arenapass 2011 advertisement .. can we please have a sensible
-             // API soon?
-             "Cookie: int-WOW=1\r\n"
-             "Cookie: int-WOW-arenapass2011=1\r\n"
-             "Cookie: int-WOW-epic-savings-promo=1\r\n"
-             "Cookie: int-EuropeanInvitational2011=1\r\n"
-             "Connection: close\r\n"
+  request << cookies;
+
+  if ( ! last_modified.empty() )
+    request << "If-Modified-Since: " << last_modified << "\r\n";
+
+  request << "Connection: close\r\n"
              "\r\n";
 
   return request.str();
@@ -269,7 +286,7 @@ static std::string build_request( const std::string&   host,
 
 // download =================================================================
 
-static bool download( std::string& result,
+static bool download( url_cache_entry_t& entry,
                       const std::string& url )
 {
 
@@ -286,17 +303,19 @@ static bool download( std::string& result,
 #endif
 
   std::string current_url = url;
-  std::string host;
-  std::string path;
-  unsigned short port;
-  int redirect = 0, redirect_max = 5;
+  unsigned int redirect = 0;
+  static const unsigned int redirect_max = 5;
 
   // get a page and if we find a redirect update current_url and loop
-  while ( redirect < redirect_max )
+  while ( true )
   {
-    if ( ! parse_url( host, path, port, current_url.c_str() ) ) return false;
+    std::string host;
+    std::string path;
+    unsigned short port;
+    if ( ! parse_url( host, path, port, current_url.c_str() ) )
+      return false;
 
-    std::string request = build_request( host, path, port );
+    std::string request = build_request( host, path, port, entry.last_modified_header );
 
     struct hostent* h;
     sockaddr_in a;
@@ -316,7 +335,7 @@ static bool download( std::string& result,
     a.sin_family = AF_INET;
     a.sin_addr = *( in_addr * )h -> h_addr_list[0];
 
-    int s = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+    int s = ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
     if ( s < 0 ) return false;
 
     if ( ::connect( s, ( sockaddr * )&a, sizeof( a ) ) < 0 )
@@ -331,7 +350,7 @@ static bool download( std::string& result,
       return false;
     }
 
-    result.clear();
+    std::string result;
     char buffer[ NETBUFSIZE ];
     while ( true )
     {
@@ -345,42 +364,69 @@ static bool download( std::string& result,
 
     std::string::size_type pos = result.find( "\r\n\r\n" );
     if ( pos == result.npos )
-    {
-      result.clear();
       return false;
-    }
 
     // reference : http://tools.ietf.org/html/rfc2616#section-14.30
     // Checking for redirects via "Location:" in headers, which applies at least
     // to 301 Moved Permanently, 302 Found, 303 See Other, 307 Temporary Redirect
-    std::string::size_type pos_location = result.find( "Location: " );
-    if ( pos_location != result.npos && pos_location < pos )
+    std::string::size_type pos_location = result.find( "\r\nLocation: " );
+    if ( pos_location < pos )
     {
-      if ( redirect < redirect_max )
-      {
-        std::string::size_type pos_line_end = result.find( "\r\n", pos_location + 10 );
-        current_url = result.substr( pos_location + 10, pos_line_end - ( pos_location + 10 ) );
-        redirect ++;
-      }
-      else return false;
+      if ( ++redirect > redirect_max )
+        return false;
+
+      pos_location += 12;
+      std::string::size_type pos_line_end = result.find( "\r\n", pos_location );
+      current_url.assign( result, pos_location, pos_line_end - pos_location );
     }
     else
     {
-      result.erase( 0, pos + 4 );
+      entry.validated = cache::era();
+      {
+        // Item is not modified
+        std::string::size_type pos_304 = result.find( "304" );
+        std::string::size_type line_end = result.find( "\r\n" );
+        if ( pos_304 < line_end )
+          return true;
+      }
+
+      entry.modified = cache::era();
+      entry.last_modified_header.clear();
+      std::string::size_type pos_l_m = result.find( "\r\nLast-Modified: " );
+      if ( pos_l_m < pos )
+      {
+        pos_l_m += 17;
+        std::string::size_type pos_l_m_end = result.find( "\r\n", pos_l_m );
+        if ( pos_l_m_end < pos )
+          entry.last_modified_header.assign( result, pos_l_m, pos_l_m_end - pos_l_m );
+      }
+      entry.result.assign( result, pos + 4, result.npos );
       return true;
     }
   }
-  return false;
 }
 
 #endif
 
 } // ANONYMOUS NAMESPACE ====================================================
 
+// http_t::clear_cache ======================================================
+
+bool http_t::clear_cache( sim_t* sim,
+                          const std::string& name,
+                          const std::string& value )
+{
+  assert( name == "http_clear_cache" );
+  if ( value != "0" && ! sim -> parent ) cache_clear();
+  return true;
+}
+
 // http_t::cache_load =======================================================
 
 void http_t::cache_load()
 {
+  thread_t::auto_lock_t lock( cache_mutex );
+
   try
   {
     std::ifstream file( url_cache_file, std::ios::binary );
@@ -393,7 +439,7 @@ void http_t::cache_load()
     if ( version != url_cache_version )
       return;
 
-    std::string url, result;
+    std::string url, result, last_modified;
 
     while ( ! file.eof() )
     {
@@ -404,10 +450,17 @@ void http_t::cache_load()
       file.read( &url[ 0 ], size );
 
       file.read( reinterpret_cast<char*>( &size ), sizeof( size ) );
+      last_modified.resize( size );
+      file.read( &last_modified[ 0 ], size );
+
+      file.read( reinterpret_cast<char*>( &size ), sizeof( size ) );
       result.resize( size );
       file.read( &result[ 0 ], size );
 
-      cache_set( url, result, 0 );
+      url_cache_entry_t& c = url_db[ url ];
+      c.result = result;
+      c.last_modified_header = last_modified;
+      c.modified = c.validated = cache::IN_THE_BEGINNING;
     }
   }
   catch( ... )
@@ -428,9 +481,16 @@ void http_t::cache_save()
 
     for ( url_db_t::const_iterator p = url_db.begin(), e = url_db.end(); p != e; ++p )
     {
+      if ( p -> second.validated == cache::INVALID_ERA )
+        continue;
+
       uint32_t size = p -> first.size();
       file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
       file.write( p -> first.data(), size );
+
+      size = p -> second.last_modified_header.size();
+      file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
+      file.write( p -> second.last_modified_header.data(), size );
 
       size = p -> second.result.size();
       file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
@@ -439,15 +499,6 @@ void http_t::cache_save()
   }
   catch ( ... )
   {}
-}
-
-// http_t::cache_clear ======================================================
-
-void http_t::cache_clear()
-{
-  // writer lock
-  thread_t::auto_lock_t lock( cache_mutex );
-  url_db.clear();
 }
 
 
@@ -461,10 +512,11 @@ bool http_t::get( std::string&       result,
 {
   result.clear();
 
-  static void* mutex = 0;
-  thread_t::auto_lock_t lock( mutex );
+  thread_t::auto_lock_t lock( cache_mutex );
 
-  if ( false )
+  url_cache_entry_t& entry = url_db[ url ];
+
+  if ( HTTP_CACHE_DEBUG )
   {
     std::ofstream http_log( "simc_http_log.txt", std::ios::app );
     std::ostream::sentry s( http_log );
@@ -472,57 +524,55 @@ bool http_t::get( std::string&       result,
     {
       http_log << cache::era() << ": get(\"" << url << "\") = ";
 
-      thread_t::auto_lock_t lock( cache_mutex );
-      url_db_t::const_iterator p = url_db.find( url );
-      if ( p != url_db.end() )
+      if ( entry.validated != cache::INVALID_ERA )
       {
-        if ( p -> second.era >= cache::era() )
+        if ( entry.validated >= cache::era() )
           http_log << "hot";
         else if ( caching != cache::CURRENT )
           http_log << "warm";
         else
           http_log << "cold";
-        http_log << ": " << p -> second.era;
+        http_log << ": (" << entry.modified << ", " << entry.validated << ')';
       } else
         http_log << "miss";
-      if ( caching != cache::ONLY && ( p == url_db.end() || ( caching == cache::CURRENT && p -> second.era < cache::era() ) ) )
+      if ( caching != cache::ONLY &&
+           ( entry.validated == cache::INVALID_ERA ||
+             ( caching == cache::CURRENT && entry.validated < cache::era() ) ) )
         http_log << " [download]";
       http_log << '\n';
     }
   }
 
+  if ( entry.validated == cache::INVALID_ERA ||
+       ( ( caching == cache::CURRENT && entry.validated < cache::era() ) ) )
   {
-    // reader lock
-    thread_t::auto_lock_t lock( cache_mutex );
+    if ( caching == cache::ONLY )
+      return false;
 
-    url_db_t::const_iterator p = url_db.find( url );
-    if ( p != url_db.end() && ( ( caching != cache::CURRENT ) || p -> second.era >= cache::era() ) )
+    util_t::printf( "@" ); fflush( stdout );
+    throttle( throttle_seconds );
+
+    std::string encoded_url;
+    format( encoded_url, url );
+    if ( ! download( entry, encoded_url ) )
+      return false;
+
+    if ( confirmation.size() && ( entry.result.find( confirmation ) == std::string::npos ) )
     {
-      result = p -> second.result;
-      return true;
+      //util_t::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
+      //util_t::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
+      //fflush( stdout );
+      return false;
+    }
+
+    if ( HTTP_CACHE_DEBUG && entry.modified < entry.validated )
+    {
+      std::ofstream http_log( "simc_http_log.txt", std::ios::app );
+      http_log << cache::era() << ": Unmodified since " << entry.modified << '\n';
     }
   }
 
-  if ( caching == cache::ONLY )
-    return false;
-
-  util_t::printf( "@" ); fflush( stdout );
-  throttle( throttle_seconds );
-
-  std::string encoded_url;
-  if ( ! download( result, format( encoded_url, url ) ) )
-    return false;
-
-  if ( confirmation.size() && ( result.find( confirmation ) == std::string::npos ) )
-  {
-    //util_t::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
-    //util_t::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
-    //fflush( stdout );
-    return false;
-  }
-
-  cache_set( url, result, cache::era() );
-
+  result = entry.result;
   return true;
 }
 

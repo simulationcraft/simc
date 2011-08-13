@@ -1079,29 +1079,69 @@ void SimulationCraftWindow::deleteSim()
 void ImportThread::importBattleNet()
 {
   QString region, server, character;
-  QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
-  int count = tokens.count();
-  for( int i=0; i < count-1; i++ )
+  QUrl qurl = url;
+
   {
-    QString& t = tokens[ i ];
-    if( t == "http" )
+    QStringList parts = qurl.host().split( '.' );
+
+    if( parts.size() )
     {
-      region = tokens[ ++i ];
-    }
-    else if( t == "r" ) // old armory
-    {
-      server = tokens[ ++i ];
-    }
-    else if( t == "n" || t == "cn" ) // old armory
-    {
-      character = tokens[ ++i ];
-    }
-    else if( t == "character" && (i<count-2) ) // new battle.net
-    {
-      server    = tokens[ ++i ];
-      character = tokens[ ++i ];
+      if( parts[ parts.size() - 1 ].length() == 2 )
+        region = parts[ parts.size() - 1 ];
+      else
+      {
+        for( QStringList::size_type i = 0; i < parts.size(); ++i )
+        {
+          if( parts[ i ].length() == 2 )
+          {
+            region = parts[ i ];
+            break;
+          }
+        }
+      }
     }
   }
+
+  {
+    QStringList parts = qurl.path().split( '/' );
+    for( QStringList::size_type i = 0, n = parts.size(); i + 2 < n; ++i )
+    {
+      if( parts[ i ] == "character" )
+      {
+        server = parts[ i + 1 ];
+        character = parts[ i + 2 ];
+        break;
+      }
+    }
+  }
+
+  if( false )
+  {
+    QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
+    int count = tokens.count();
+    for( int i=0; i < count-1; i++ )
+    {
+      QString& t = tokens[ i ];
+      if( t == "http" )
+      {
+        region = tokens[ ++i ];
+      }
+      else if( t == "r" ) // old armory
+      {
+        server = tokens[ ++i ];
+      }
+      else if( t == "n" ) // old armory
+      {
+        character = tokens[ ++i ];
+      }
+      else if( t == "character" && (i<count-2) ) // new battle.net
+      {
+        server    = tokens[ ++i ];
+        character = tokens[ ++i ];
+      }
+    }
+  }
+
   if( region.isEmpty() || server.isEmpty() || character.isEmpty() )
   {
     fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
@@ -1114,12 +1154,15 @@ void ImportThread::importBattleNet()
                 cpp_s   = server.toUtf8().constData(),
                 cpp_c   = character.toUtf8().constData(),
                 cpp_r   = region.toUtf8().constData();
-    if ( true )
-      player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-    else if( cpp_r == "cn" )
-      player = armory_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-    else
-      player = battle_net_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
+    player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
+
+    if( false )
+    {
+      if( cpp_r == "cn" )
+        player = armory_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
+      else
+        player = battle_net_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
+    }
   }
 }
 
@@ -1445,7 +1488,7 @@ void SimulationCraftWindow::simulateFinished()
     // Html results will _ALWAYS_ be utf-8, regardless of the input encoding
     // so read them to the WebView through QTextStream
     QTextStream s(&file);
-    s.setCodec("utf-8");
+    s.setCodec("UTF-8");
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
     SimulationCraftWebView* resultsView = new SimulationCraftWebView( this );
     resultsHtml.append( s.readAll() );

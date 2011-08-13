@@ -757,7 +757,8 @@ enum rating_type {
 
 namespace cache {
 
-typedef unsigned int era_t;
+typedef int era_t;
+static const era_t INVALID_ERA = -1;
 static const era_t IN_THE_BEGINNING = 0;  // A time before any other possible era;
                                           // used to mark persistent caches at load.
 
@@ -4660,12 +4661,10 @@ public:
 
   static void cache_load();
   static void cache_save();
-  static void cache_clear();
+  static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
   static bool get( std::string& result, const std::string& url, const std::string& confirmation=std::string(),
                    cache::behavior_t b=cache::behavior(), int throttle_seconds=0 );
-
-  static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
   static std::string& format( std::string& encoded_url, const std::string& url )
   { format_( encoded_url, url ); return encoded_url; }
