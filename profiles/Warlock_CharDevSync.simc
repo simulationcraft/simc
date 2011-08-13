@@ -21,85 +21,11 @@ chardev=36761 name=Warlock_Destruction_T11H
 
 # Tier 12 Normal
 
-warlock=Warlock_Affliction_T12N
-level=85
-race=orc
-role=spell
-use_pre_potion=1
-professions=enchanting=525/inscription=525
-talents=http://www.wowhead.com/talent#warlock-22312210301332032113000000000000000003300000000000000000
-glyphs=life_tap/shadow_bolt/corruption/unstable_affliction/haunt
-head=balespiders_hood,id=71282,reforge=mastery_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
-neck=flowform_choker,id=71348,reforge=mastery_hit,gems=40int_10int
-shoulders=balespiders_mantle,id=71285,gems=40int,enchant=130int_25haste
-chest=balespiders_robes,id=71284,gems=40int_40int,enchant=20all
-waist=majordomos_chain_of_office,id=71357,reforge=mastery_hit,gems=40int_40int_10int
-legs=balespiders_leggings,id=71283,reforge=mastery_hit,gems=40int_40int_20int,enchant=95int_80sta
-feet=boots_of_the_black_flame,id=69954,reforge=crit_haste,gems=40int_10int,enchant=50haste
-wrists=wristwraps_of_arrogant_doom,id=71350,reforge=crit_hit,enchant=50int
-hands=fingers_of_incineration,id=71358,reforge=crit_hit,gems=40int_10int,enchant=50haste
-finger1=crystal_prison_band,id=71024,reforge=mastery_hit,enchant=40int
-finger2=crystalline_brimstone_ring,id=71210,reforge=mastery_haste,enchant=40int
-trinket1=rune_of_zeth,id=68998,reforge=crit_haste
-trinket2=darkmoon_card_volcano,id=62047,reforge=mastery_haste
-back=rippling_flamewrath_drape,id=71230,enchant=50int
-main_hand=volcanospike,id=71006,enchant=power_torrent
-off_hand=molten_scream,id=71323,reforge=crit_haste,enchant=40int
-ranged=trail_of_embers,id=71151
+chardev=194155 name=Warlock_Affliction_T12N
 
+chardev=194164 name=Warlock_Demonology_T12N
 
-warlock=Warlock_Demonology_T12N
-level=85
-race=orc
-role=spell
-use_pre_potion=1
-professions=enchanting=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#warlock-00000000000000000033222023103102122113320200000000000000
-glyphs=life_tap/shadow_bolt/immolate/corruption/metamorphosis
-head=balespiders_hood,id=71282,reforge=haste_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
-neck=flowform_choker,id=71348,reforge=haste_hit,gems=40int_10int
-shoulders=balespiders_mantle,id=71285,reforge=haste_mastery,gems=40int,enchant=130int_25haste
-chest=balespiders_robes,id=71284,reforge=haste_mastery,gems=40int_40int,enchant=20all
-waist=majordomos_chain_of_office,id=71357,reforge=haste_hit,gems=40int_40int_10int
-legs=balespiders_leggings,id=71283,reforge=crit_hit,gems=40int_40int_20int,enchant=95int_80sta
-feet=boots_of_the_black_flame,id=69954,reforge=crit_mastery,gems=40int_10int,enchant=50haste
-wrists=emberflame_bracers,id=71265,enchant=50int
-hands=fingers_of_incineration,id=71358,reforge=crit_hit,gems=40int_10int,enchant=65mastery
-finger1=crystal_prison_band,id=71024,reforge=crit_hit,enchant=40int
-finger2=crystalline_brimstone_ring,id=71210,enchant=40int
-trinket1=darkmoon_card_volcano,id=62047
-trinket2=necromantic_focus,id=68982
-back=rippling_flamewrath_drape,id=71230,enchant=50int
-main_hand=chelleys_sterilized_scalpel,id=71359,enchant=power_torrent
-off_hand=molten_scream,id=71323,reforge=crit_mastery,enchant=40int
-ranged=trail_of_embers,reforge=haste_mastery,id=71151
-
-
-warlock=Warlock_Destruction_T12N
-level=85
-race=orc
-role=spell
-use_pre_potion=1
-professions=enchanting=525/inscription=525
-talents=http://www.wowhead.com/talent#warlock-00300000000000000023002000000000000003320202312201312211
-glyphs=life_tap/immolate/imp/conflagrate
-head=balespiders_hood,id=71282,reforge=mastery_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
-neck=flowform_choker,id=71348,reforge=mastery_hit,gems=40int_10int
-shoulders=balespiders_mantle,id=71285,gems=20int_20haste_20int,enchant=130int_25haste
-chest=balespiders_robes,id=71284,gems=20int_20haste_20int_20haste_20int,enchant=20all
-waist=majordomos_chain_of_office,id=71357,reforge=mastery_hit,gems=40int_40int_10int
-legs=leggings_of_billowing_fire,id=70989,reforge=crit_hit,gems=20int_20haste_20int_20haste_20int,enchant=95int_80sta
-feet=boots_of_the_black_flame,id=69954,reforge=crit_haste,gems=40int_10int,enchant=50haste
-wrists=wristwraps_of_arrogant_doom,id=71350,reforge=crit_hit,enchant=65haste
-hands=balespiders_handwraps,id=71281,gems=40int,enchant=50haste
-finger1=crystal_prison_band,id=71024,reforge=mastery_haste,enchant=40int
-finger2=crystalline_brimstone_ring,id=71210,reforge=mastery_haste,enchant=40int
-trinket1=rune_of_zeth,id=68998,reforge=crit_haste
-trinket2=darkmoon_card_volcano,id=62047,reforge=mastery_haste
-back=rippling_flamewrath_drape,id=71230,enchant=50int
-main_hand=volcanospike,id=71006,enchant=power_torrent
-off_hand=molten_scream,id=71323,reforge=crit_haste,enchant=40int
-ranged=trail_of_embers,id=71151
+chardev=194173 name=Warlock_Destruction_T12N
 
 
 # Tier 12 Heroic
