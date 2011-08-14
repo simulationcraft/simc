@@ -99,6 +99,7 @@ struct paladin_t : public player_t
   proc_t* procs_parry_haste;
   proc_t* procs_munched_tier12_2pc_melee;
   proc_t* procs_rolled_tier12_2pc_melee;
+  proc_t* procs_wasted_divine_purpose;
 
   // Spells
   struct spells_t
@@ -228,7 +229,7 @@ struct paladin_t : public player_t
     active_hand_of_light_proc          = 0;
     ancient_fury_explosion             = 0;
 
-    ret_pvp_gloves = 0;
+    ret_pvp_gloves = -1;
 
     create_talents();
     create_glyphs();
@@ -257,6 +258,7 @@ struct paladin_t : public player_t
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
   virtual double    composite_tank_crit( const school_type school ) SC_CONST;
+  virtual void      create_options();
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
@@ -470,7 +472,14 @@ struct paladin_attack_t : public attack_t
         }
       }
       if ( trigger_dp )
-        p() -> buffs_divine_purpose -> trigger();
+      {
+        bool dp_already_up = pa -> buffs_divine_purpose -> up();
+        pa -> buffs_divine_purpose -> trigger();
+        if ( dp_already_up && pa -> buffs_divine_purpose -> up() )
+        {
+          pa -> procs_wasted_divine_purpose -> occur();
+        }
+      }
     }
   }
 
@@ -1508,8 +1517,13 @@ struct paladin_spell_t : public spell_t
     {
       if ( trigger_dp )
       {
-        paladin_t* p = player -> cast_paladin();
-        p -> buffs_divine_purpose -> trigger();
+        paladin_t* pa = player -> cast_paladin();
+        bool dp_already_up = pa -> buffs_divine_purpose -> up();
+        pa -> buffs_divine_purpose -> trigger();
+        if ( dp_already_up && pa -> buffs_divine_purpose -> up() )
+        {
+          pa -> procs_wasted_divine_purpose -> occur();
+        }
       }
     }
   }
@@ -2219,6 +2233,7 @@ void paladin_t::init_procs()
   procs_parry_haste              = get_proc( "parry_haste"                    );
   procs_munched_tier12_2pc_melee = get_proc( "munched_flames_of_the_faithful" );
   procs_rolled_tier12_2pc_melee  = get_proc( "rolled_flames_of_the_faithful"  );
+  procs_wasted_divine_purpose    = get_proc( "wasted_divine_purpose"          );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -2257,9 +2272,9 @@ int paladin_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( item.slot == SLOT_HANDS && strstr( s, "gladiators_scaled_gauntlets" ) && item.ilevel > 140 )
+  if ( item.slot == SLOT_HANDS && ret_pvp_gloves == -1 )  // i.e. hasn't been overriden by option
   {
-    ret_pvp_gloves = 1;
+    ret_pvp_gloves = strstr( s, "gladiators_scaled_gauntlets" ) && item.ilevel > 140;
   }
 
   if ( strstr( s, "reinforced_sapphirium" ) )
@@ -2835,6 +2850,22 @@ cooldown_t* paladin_t::get_cooldown( const std::string& name )
 
   return player_t::get_cooldown( name );
 }
+
+// paladin_t::create_options =================================================
+
+void paladin_t::create_options()
+{
+  player_t::create_options();
+
+  option_t paladin_options[] =
+  {
+    { "pvp_gloves", OPT_BOOL,    &( ret_pvp_gloves ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
+
+  option_t::copy( options, paladin_options );
+}
+
 
 // paladin_t::create_pet =====================================================
 
