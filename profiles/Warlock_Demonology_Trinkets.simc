@@ -1,15 +1,15 @@
-Warlock_Demonology_T12H.simc
+Warlock_Demonology_T12N.simc
 
 gear_strength=20
 gear_agility=20
-gear_stamina=7144
-gear_intellect=5916
-gear_spirit=20
-gear_spell_power=2786
-gear_hit_rating=1640
-gear_crit_rating=995
-gear_haste_rating=1564
-gear_mastery_rating=2214
-gear_armor=9372
+gear_stamina=6344
+gear_intellect=5231
+gear_spirit=21
+gear_spell_power=2467
+gear_hit_rating=1746
+gear_crit_rating=649
+gear_haste_rating=1108
+gear_mastery_rating=2228
+gear_armor=8746
 
 caster_trinket_procs.simc

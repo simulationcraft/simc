@@ -1,15 +1,15 @@
-Warlock_Destruction_T12H.simc
+Warlock_Destruction_T12N.simc
 
 gear_strength=20
 gear_agility=20
-gear_stamina=7144
-gear_intellect=5979
-gear_spirit=20
-gear_spell_power=2786
-gear_hit_rating=1756
-gear_crit_rating=1225
-gear_haste_rating=2639
-gear_mastery_rating=845
-gear_armor=9372
+gear_stamina=6318
+gear_intellect=4803
+gear_spirit=21
+gear_spell_power=2467
+gear_hit_rating=1708
+gear_crit_rating=940
+gear_haste_rating=2596
+gear_mastery_rating=892
+gear_armor=8717
 
 caster_trinket_procs.simc
