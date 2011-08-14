@@ -3025,6 +3025,8 @@ void player_t::demise()
   for( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> expire();
+    // Dead actors speak no lies .. or proc aura delayed buffs
+    if ( b -> delay ) event_t::cancel( b -> delay );
   }
   for ( action_t* a = action_list; a; a = a -> next )
   {
