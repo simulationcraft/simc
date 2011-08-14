@@ -2115,6 +2115,11 @@ double player_t::composite_tank_block_reduction() SC_CONST
 {
   double b = block_reduction;
 
+  if ( meta_gem == META_ETERNAL_SHADOWSPIRIT )
+  {
+    b += 0.01;
+  }
+
   return b;
 }
 

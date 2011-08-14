@@ -880,6 +880,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_attack_t
     may_dodge = false;
     may_parry = false;
     may_miss  = false;
+    background = true;
     aoe       = -1;
 
     direct_power_mod = extra_coeff();
