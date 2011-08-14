@@ -2452,7 +2452,9 @@ void paladin_t::init_actions()
         action_list_str += "/lifeblood";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/avenging_wrath";
+      action_list_str += "/guardian_of_ancient_kings,if=health_pct<=30";
       action_list_str += "/word_of_glory,if=health_pct<=50";
+      action_list_str += "/holy_shield";
       action_list_str += "/shield_of_the_righteous,if=holy_power=3";
       action_list_str += "/crusader_strike";
       action_list_str += "/judgement";
