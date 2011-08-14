@@ -420,6 +420,7 @@ player_t::player_t( sim_t*             s,
   base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),       buffed_dodge( 0 ),
   base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),       buffed_parry( 0 ),
   base_block( 0 ),       initial_block( 0 ),       block( 0 ),       buffed_block( 0 ),
+  base_block_reduction( 0.3 ), initial_block_reduction( 0 ), block_reduction( 0 ),
   armor_multiplier( 1.0 ), initial_armor_multiplier( 1.0 ),
   dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
   parry_rating_per_strength( 0 ), initial_parry_rating_per_strength( 0 ),
@@ -1155,6 +1156,7 @@ void player_t::init_defense()
   initial_dodge             = base_dodge       + initial_stats.dodge_rating / rating.dodge;
   initial_parry             = base_parry       + initial_stats.parry_rating / rating.parry;
   initial_block             = base_block       + initial_stats.block_rating / rating.block;
+  initial_block_reduction   = base_block_reduction;
 
   if ( type != ENEMY && type != ENEMY_ADD )
   {
@@ -2107,6 +2109,15 @@ double player_t::composite_tank_block() SC_CONST
   return b;
 }
 
+// player_t::composite_tank_block_reduction ===================================
+
+double player_t::composite_tank_block_reduction() SC_CONST
+{
+  double b = block_reduction;
+
+  return b;
+}
+
 // player_t::composite_tank_crit_block ===================================
 
 double player_t::composite_tank_crit_block() SC_CONST
@@ -2801,6 +2812,7 @@ void player_t::reset()
   dodge              = initial_dodge;
   parry              = initial_parry;
   block              = initial_block;
+  block_reduction    = initial_block_reduction;
 
   spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
@@ -3694,6 +3706,18 @@ double player_t::target_mitigation( double            amount,
     return 0;
 
   double mitigated_amount = amount;
+
+  if ( result == RESULT_BLOCK )
+  {
+    mitigated_amount *= ( 1 - composite_tank_block_reduction() );
+    if ( mitigated_amount < 0 ) return 0;
+  }
+
+  if ( result == RESULT_CRIT_BLOCK )
+  {
+    mitigated_amount *= ( 1 - 2 * composite_tank_block_reduction() );
+    if ( mitigated_amount < 0 ) return 0;
+  }
 
   if ( school == SCHOOL_PHYSICAL )
   {

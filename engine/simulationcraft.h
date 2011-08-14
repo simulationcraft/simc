@@ -3068,6 +3068,7 @@ struct player_t
   double base_dodge,       initial_dodge,       dodge,       buffed_dodge;
   double base_parry,       initial_parry,       parry,       buffed_parry;
   double base_block,       initial_block,       block,       buffed_block;
+  double base_block_reduction, initial_block_reduction, block_reduction;
   double armor_multiplier,  initial_armor_multiplier;
   double dodge_per_agility, initial_dodge_per_agility;
   double parry_rating_per_strength, initial_parry_rating_per_strength;
@@ -3431,6 +3432,7 @@ struct player_t
   virtual double composite_tank_dodge()            SC_CONST;
   virtual double composite_tank_parry()            SC_CONST;
   virtual double composite_tank_block()            SC_CONST;
+  virtual double composite_tank_block_reduction()  SC_CONST;
   virtual double composite_tank_crit_block()            SC_CONST;
   virtual double composite_tank_crit( const school_type school ) SC_CONST;
 

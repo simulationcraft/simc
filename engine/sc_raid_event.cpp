@@ -448,8 +448,7 @@ double raid_event_t::duration_time() SC_CONST
 void raid_event_t::start()
 {
   if ( sim -> log )
-    log_t::output( sim, "Raid event %s starts (%lx).", name(),
-                   reinterpret_cast<unsigned long int>( this ) );
+    log_t::output( sim, "Raid event %s starts.", name() );
 
   num_starts++;
 
@@ -474,8 +473,7 @@ void raid_event_t::start()
 void raid_event_t::finish()
 {
   if ( sim -> log )
-    log_t::output( sim, "Raid event %s finishes (%lx).", name(),
-                   reinterpret_cast<unsigned long int>( this ) );
+    log_t::output( sim, "Raid event %s finishes.", name() );
 }
 
 // raid_event_t::schedule ===================================================

@@ -972,17 +972,7 @@ double action_t::calculate_direct_damage()
     dmg *= 1.0 - resistance();
   }
 
-  if ( result == RESULT_BLOCK )
-  {
-    dmg *= ( 1 - 0.3 );
-    if ( dmg < 0 ) dmg = 0;
-  }
 
-  if ( result == RESULT_CRIT_BLOCK )
-  {
-    dmg *= ( 1 - 0.6 );
-    if ( dmg < 0 ) dmg = 0;
-  }
 
   if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
 

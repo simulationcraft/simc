@@ -16,7 +16,6 @@ actions+=/earthen_potion,if=!in_combat|health_pct<35&buff.earthen_potion.down
 actions+=/auto_attack
 actions+=/stance,choose=defensive
 actions+=/last_stand,if=health_pct<35
-actions+=/shield_bash,target=Second_Target
 actions+=/heroic_strike,if=rage>=35
 actions+=/revenge
 actions+=/shockwave
