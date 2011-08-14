@@ -20,8 +20,8 @@ actions+=/snapshot_stats
 actions+=/use_item,name=moonwell_chalice,if=cooldown.metamorphosis.remains=0|cooldown.metamorphosis.remains>cooldown
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.metamorphosis.up|!in_combat
-actions+=/metamorphosis,if=buff.moonwell_chalice.up
-actions+=/demon_soul,if=buff.metamorphosis.up&pet.felguard.active
+actions+=/metamorphosis,if=buff.moonwell_chalice.up&pet.felguard.active
+actions+=/demon_soul,if=buff.metamorphosis.up
 actions+=/summon_doomguard,if=time>10
 actions+=/felguard:felstorm
 actions+=/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking

@@ -19,8 +19,8 @@ actions+=/soulburn,if=!in_combat
 actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.metamorphosis.up|!in_combat
-actions+=/metamorphosis
-actions+=/demon_soul,if=buff.metamorphosis.up&pet.felguard.active
+actions+=/metamorphosis,if=pet.felguard.active
+actions+=/demon_soul,if=buff.metamorphosis.up
 actions+=/summon_doomguard,if=time>10
 actions+=/felguard:felstorm
 actions+=/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking

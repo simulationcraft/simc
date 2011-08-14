@@ -4496,9 +4496,15 @@ void warlock_t::init_actions()
     break;
 
     case TREE_DEMONOLOGY:
-      if ( talent_metamorphosis -> ok() ) action_list_str += "/metamorphosis";
-      if ( talent_metamorphosis -> ok() && has_mwc ) action_list_str += ",if=buff.moonwell_chalice.up";
-      if ( level >= 85 ) action_list_str += "/demon_soul,if=buff.metamorphosis.up&pet.felguard.active";
+      if ( talent_metamorphosis -> ok() )
+      {
+        action_list_str += "/metamorphosis";
+        if ( has_mwc )
+          action_list_str += ",if=buff.moonwell_chalice.up&pet.felguard.active";
+        else
+          action_list_str += ",if=pet.felguard.active";
+      }
+      if ( level >= 85 ) action_list_str += "/demon_soul,if=buff.metamorphosis.up";
       if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
       action_list_str += "/felguard:felstorm";
       action_list_str += "/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking";
