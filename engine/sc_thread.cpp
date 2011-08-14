@@ -129,7 +129,7 @@ namespace impl {
 
   public:
     void launch( sim_t* sim ) { pthread_create( &t, NULL, thread_execute, sim ); }
-    void wait() { pthread_join( &t, NULL ); }
+    void wait() { pthread_join( t, NULL ); }
   };
 
   void sleep( int seconds )
