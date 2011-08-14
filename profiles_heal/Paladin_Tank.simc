@@ -16,6 +16,7 @@ actions+=/seal_of_truth
 actions+=/snapshot_stats
 actions+=/auto_attack
 actions+=/avenging_wrath
+actions+=/holy_shield
 actions+=/crusader_strike
 actions+=/judgement
 actions+=/divine_plea,if=holy_power=0

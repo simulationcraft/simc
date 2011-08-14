@@ -257,6 +257,7 @@ struct paladin_t : public player_t
   virtual double    composite_spell_haste() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_tank_block() SC_CONST;
+  virtual double    composite_tank_block_reduction() SC_CONST;
   virtual double    composite_tank_crit( const school_type school ) SC_CONST;
   virtual void      create_options();
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -2330,7 +2331,7 @@ void paladin_t::init_buffs()
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
   buffs_grand_crusader         = new buff_t( this, talents.grand_crusader -> effect_trigger_spell( 1 ), "grand_crusader", talents.grand_crusader -> proc_chance() );
-  buffs_holy_shield            = new buff_t( this, 87342, "holy_shield" );
+  buffs_holy_shield            = new buff_t( this, 20925, "holy_shield" );
   buffs_inquisition            = new buff_t( this, 84963, "inquisition" );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", ( primary_tree() == TREE_RETRIBUTION ? 1 : 0 ) );
   buffs_judgements_of_the_pure = new buff_t( this, talents.judgements_of_the_pure -> effect_trigger_spell( 1 ), "judgements_of_the_pure", talents.judgements_of_the_pure -> proc_chance() );
@@ -2734,6 +2735,15 @@ double paladin_t::composite_tank_block() SC_CONST
 {
   double b = player_t::composite_tank_block();
   b += get_divine_bulwark();
+  return b;
+}
+
+// paladin_t::composite_tank_block_reduction =================================
+
+double paladin_t::composite_tank_block_reduction() SC_CONST
+{
+  double b = player_t::composite_tank_block_reduction();
+  b += buffs_holy_shield -> up() * buffs_holy_shield -> effect1().percent();
   return b;
 }
 
