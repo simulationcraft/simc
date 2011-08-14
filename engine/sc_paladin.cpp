@@ -2404,26 +2404,21 @@ void paladin_t::init_actions()
       if ( profession[ PROF_HERBALISM ] >= 450 )
         action_list_str += "/lifeblood";
 
-      std::string hp_proc_str = "divine_purpose";
       if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
       action_list_str += "/zealotry";
       if ( level >= 85 )
         action_list_str += "/guardian_of_ancient_kings,if=(buff.zealotry.remains<31&buff.zealotry.up)|cooldown.zealotry.remains>60";
       action_list_str += "/avenging_wrath,if=buff.zealotry.remains<21&buff.zealotry.up";
       if ( level >= 81 )
-        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(holy_power=3|buff."+hp_proc_str+".react)";
-      // CS before TV if <3 power, even with HoL/DP up
+        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(holy_power=3|buff.divine_purpose.react)";
+      action_list_str += "/crusader_strike,if=holy_power<3";  // CS before TV if <3 power, even with DP up
+      action_list_str += "/templars_verdict,if=buff.divine_purpose.react";
       action_list_str += "/templars_verdict,if=holy_power=3";
-      action_list_str += "/crusader_strike,if=buff."+hp_proc_str+".react&(buff."+hp_proc_str+".remains>2)&holy_power<3";
-      action_list_str += "/templars_verdict,if=buff."+hp_proc_str+".react";
-      action_list_str += "/crusader_strike";
       action_list_str += "/hammer_of_wrath";
       action_list_str += "/exorcism,if=buff.the_art_of_war.react";
-      // action_list_str += "/judgement,if=buff.judgements_of_the_pure.remains<2";
-      // action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.5";
       action_list_str += "/judgement";
       action_list_str += "/holy_wrath";
-      action_list_str += "/consecration";
+      action_list_str += "/consecration,if=mana>17000";  // Consecration is expensive, only use if we have plenty of mana
       action_list_str += "/divine_plea";
     }
     break;

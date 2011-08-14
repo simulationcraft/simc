@@ -4,6 +4,7 @@ paladin=Paladin_Retribution_T12N
 origin="http://chardev.org/?profile=190725"
 level=85
 race=human
+position=back
 role=hybrid
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
@@ -20,15 +21,14 @@ actions+=/zealotry
 actions+=/guardian_of_ancient_kings,if=(buff.zealotry.remains<31&buff.zealotry.up)|cooldown.zealotry.remains>60
 actions+=/avenging_wrath,if=buff.zealotry.remains<21&buff.zealotry.up
 actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(holy_power=3|buff.divine_purpose.react)
-actions+=/templars_verdict,if=holy_power=3
-actions+=/crusader_strike,if=buff.divine_purpose.react&(buff.divine_purpose.remains>2)&holy_power<3
+actions+=/crusader_strike,if=holy_power<3
 actions+=/templars_verdict,if=buff.divine_purpose.react
-actions+=/crusader_strike
+actions+=/templars_verdict,if=holy_power=3
 actions+=/hammer_of_wrath
 actions+=/exorcism,if=buff.the_art_of_war.react
 actions+=/judgement
 actions+=/holy_wrath
-actions+=/consecration
+actions+=/consecration,if=mana>17000
 actions+=/divine_plea
 head=immolation_helmet,type=plate,ilevel=378,quality=epic,stats=2943armor_348str_611sta_199hit_279crit,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
 neck=stoneheart_choker,ilevel=378,quality=epic,stats=227str_341sta_137exp_160crit,reforge=crit_mastery
