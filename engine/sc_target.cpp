@@ -379,7 +379,7 @@ void enemy_t::init_actions()
       {
         if ( q -> primary_role() != ROLE_TANK )
           continue;
-	if ( !target )
+        if ( !target )
           target = q;
         action_list_str += "/auto_attack,target=";
         action_list_str += q -> name_str;
