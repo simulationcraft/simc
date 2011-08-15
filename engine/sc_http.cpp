@@ -30,7 +30,7 @@ cache::cache_control_t cache::cache_control_t::singleton;
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-static const bool HTTP_CACHE_DEBUG = true;
+static const bool HTTP_CACHE_DEBUG = false;
 
 static const char* const url_cache_file = "simc_cache.dat";
 static const double url_cache_version = 3.1;
