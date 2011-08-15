@@ -1595,7 +1595,7 @@ struct ravage_t : public hunter_pet_spell_t
 struct tailspin_t : public hunter_pet_spell_t
 {
   tailspin_t( player_t* player, const std::string& options_str ) :
-      hunter_pet_spell_t( "tailspin", player, 90315 )
+      hunter_pet_spell_t( "tailspin", player, 90314 )
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
