@@ -1,11 +1,12 @@
-
 QT += core gui network webkit
 
-win32:LIBS += libwsock32
+win32:LIBS += libwsock32 libwininet
 
 TARGET = ../SimulationCraft
 
 TEMPLATE = app
+
+INCLUDEPATH += engine
 
 HEADERS += engine/simulationcraft.h
 HEADERS += engine/data_enums.hh
@@ -14,6 +15,8 @@ HEADERS += engine/utf8.h
 HEADERS += engine/utf8/core.h
 HEADERS += engine/utf8/checked.h
 HEADERS += engine/utf8/unchecked.h
+HEADERS += qt/sc_autoupdate.h
+HEADERS += qt/simulationcraftqt.h
 
 SOURCES += engine/sc_action.cpp
 SOURCES += engine/sc_armory.cpp
@@ -73,11 +76,5 @@ SOURCES += engine/sc_warrior.cpp
 SOURCES += engine/sc_weapon.cpp
 SOURCES += engine/sc_wowhead.cpp
 SOURCES += engine/sc_xml.cpp
-
-INCLUDEPATH += engine
-
-HEADERS += qt/sc_autoupdate.h
-HEADERS += qt/simulationcraftqt.h
-
 SOURCES += qt/main.cpp
 SOURCES += qt/sc_window.cpp

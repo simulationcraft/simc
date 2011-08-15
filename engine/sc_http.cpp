@@ -30,7 +30,7 @@ cache::cache_control_t cache::cache_control_t::singleton;
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-static const bool HTTP_CACHE_DEBUG = false;
+static const bool HTTP_CACHE_DEBUG = true;
 
 static const char* const url_cache_file = "simc_cache.dat";
 static const double url_cache_version = 3.1;
@@ -72,7 +72,7 @@ static void throttle( int seconds )
       return;
     }
 
-    thread_t::sleep( last + seconds - now );
+    thread_t::sleep( static_cast<int>( last + seconds - now ) );
   }
 }
 
@@ -103,13 +103,13 @@ static const char* const cookies =
 
 // download =================================================================
 
-static bool download( std::string& result,
-                      const std::string& url )
+static bool download( url_cache_entry_t&,
+                      const std::string& )
 {
   return false;
 }
 
-#elif defined( _MSC_VER )
+#elif defined( _MSC_VER ) || defined( __MINGW32__ )
 
 // ==========================================================================
 // HTTP-DOWNLOAD FOR WINDOWS (MS Visual C++ Only)
@@ -212,50 +212,67 @@ static bool download( url_cache_entry_t& entry,
 
 #endif
 
+#ifdef USE_OPENSSL
+#include <openssl/ssl.h>
+#endif
+
 // parse_url ================================================================
 
-static bool parse_url( std::string&    host,
-                       std::string&    path,
-                       unsigned short& port,
-                       const char*     url )
+struct url_t
 {
-  if ( strncmp( url, "http://", 7 ) ) return false;
-  url += 7;
+  std::string protocol;
+  std::string host;
+  unsigned short port;
+  std::string path;
 
-  port = 80;
+  static bool split( url_t& split, const std::string& url );
+};
 
-  host.clear();
-  while( *url )
-  {
-    if ( *url == ':' )
-    {
-      port = static_cast<unsigned short>( strtol( url + 1, const_cast<char**>( &url ), 10 ) );
-      break;
-    }
+bool url_t::split( url_t&             split,
+                   const std::string& url )
+{
+  typedef std::string::size_type pos_t;
 
-    if ( *url == '/' )
-      break;
+  pos_t pos_colon = url.find_first_of( ':' );
+  if ( pos_colon == url.npos || pos_colon + 2 > url.length() ||
+       url[ pos_colon + 1 ] != '/' || url[ pos_colon + 2 ] != '/' )
+    return false;
+  split.protocol.assign( url, 0, pos_colon );
 
-    host.push_back( *url++ );
-  }
+  pos_t pos_host = pos_colon + 3;
+  pos_t end_host = url.find_first_of( ":/", pos_host );
+  split.host.assign( url, pos_host, end_host - pos_host );
 
-  path = '/';
+  if ( split.protocol == "https" )
+    split.port = 443;
+  else
+    split.port = 80;
 
-  if ( !*url )
+  split.path = '/';
+  if ( end_host >= url.length() )
     return true;
 
-  if ( *url++ != '/' )
-    return false;
+  pos_t pos_path;
+  if ( url[ end_host ] == ':' )
+  {
+    split.port = static_cast<unsigned short>( strtol( &url[ end_host + 1 ], 0, 10 ) );
+    pos_path = url.find_first_of( '/', end_host + 1 );
+    if ( pos_path == url.npos )
+      return true;
+  }
+  else
+  {
+    pos_path = end_host;
+  }
 
-  path.append( url );
+  ++pos_path;
+  split.path.append( url, pos_path, url.npos );
   return true;
 }
 
 // build_request ============================================================
 
-static std::string build_request( const std::string& host,
-                                  const std::string& path,
-                                  unsigned short     port,
+static std::string build_request( const url_t&       url,
                                   const std::string& last_modified )
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
@@ -266,19 +283,19 @@ static std::string build_request( const std::string& host,
 
   if ( use_proxy )
   {
-    request << "http://" << host;
+    request << url.protocol << "://" << url.host;
 
     // append port info only if not the standard port
-    if ( port != 80 )
-      request << ':' << port;
+    if ( url.port != 80 )
+      request << ':' << url.port;
   }
 
-  request << path << " HTTP/1.0\r\n"
+  request << url.path << " HTTP/1.0\r\n"
              "User-Agent: Firefox/3.0\r\n"
              "Accept: */*\r\n";
 
   if ( ! use_proxy )
-    request << "Host: " << host << "\r\n";
+    request << "Host: " << url.host << "\r\n";
 
   request << cookies;
 
@@ -309,49 +326,57 @@ static bool download( url_cache_entry_t& entry,
 
 #endif
 
+#ifdef USE_OPENSSL
+  static SSL_CTX* ssl_ctx;
+  if ( ! ssl_ctx )
+  {
+    SSL_library_init();
+    ssl_ctx = SSL_CTX_new( SSLv23_client_method() );
+    SSL_CTX_set_mode( ssl_ctx, SSL_MODE_AUTO_RETRY );
+  }
+#endif
+
   std::string current_url = url;
   unsigned int redirect = 0;
-  static const unsigned int redirect_max = 5;
+  static const unsigned int redirect_max = 8;
+  const bool use_proxy = ( http_t::proxy_type == "http" );
 
   // get a page and if we find a redirect update current_url and loop
   while ( true )
   {
-    std::string host;
-    std::string path;
-    unsigned short port;
-    if ( ! parse_url( host, path, port, current_url.c_str() ) )
+    url_t split_url;
+    if ( ! url_t::split( split_url, current_url ) )
       return false;
 
-    std::string request = build_request( host, path, port, entry.last_modified_header );
+    std::string request = build_request( split_url, entry.last_modified_header );
+
+#ifndef USE_OPENSSL
+    if ( ! use_proxy && split_url.protocol != "http" )
+      return false;
+#endif
 
     struct hostent* h;
     sockaddr_in a;
 
-    if ( http_t::proxy_type == "http" )
+    if ( use_proxy )
     {
       h = gethostbyname( http_t::proxy_host.c_str() );
       a.sin_port = htons( http_t::proxy_port );
     }
     else
     {
-      h = gethostbyname( host.c_str() );
-      a.sin_port = htons( port );
+      h = gethostbyname( split_url.host.c_str() );
+      a.sin_port = htons( split_url.port );
     }
 
     if ( ! h ) return false;
     a.sin_family = AF_INET;
-    a.sin_addr = *( in_addr * )h -> h_addr_list[0];
+    std::memcpy( &a.sin_addr, h -> h_addr_list[ 0 ], sizeof( a.sin_addr ) );
 
     int s = ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
     if ( s < 0 ) return false;
 
-    if ( ::connect( s, ( sockaddr * )&a, sizeof( a ) ) < 0 )
-    {
-      ::close( s );
-      return false;
-    }
-
-    if ( ::send( s, request.c_str(), request.size(), 0 ) != static_cast<int>( request.size() ) )
+    if ( ::connect( s, reinterpret_cast<sockaddr*>( &a ), sizeof( a ) ) < 0 )
     {
       ::close( s );
       return false;
@@ -359,12 +384,53 @@ static bool download( url_cache_entry_t& entry,
 
     std::string result;
     char buffer[ NETBUFSIZE ];
-    while ( true )
+
+#ifdef USE_OPENSSL
+    if ( ! use_proxy && split_url.protocol == "https" )
     {
-      int r = ::recv( s, buffer, sizeof( buffer ), 0 );
-      if ( r <= 0 )
-        break;
-      result.append( &buffer[ 0 ], &buffer[ r ] );
+      SSL* ssl = SSL_new( ssl_ctx );
+      if ( ! SSL_set_fd( ssl, s ) || SSL_connect( ssl ) <= 0 )
+      {
+        SSL_free( ssl );
+        ::close( s );
+        return false;
+      }
+
+      if ( SSL_write( ssl, request.data(), request.size() ) != static_cast<int>( request.size() ) )
+      {
+        SSL_shutdown( ssl );
+        SSL_free( ssl );
+        ::close( s );
+        return false;
+      }
+
+      while ( true )
+      {
+        int r = SSL_read( ssl, buffer, sizeof( buffer ) );
+        if ( r <= 0 )
+          break;
+        result.append( &buffer[ 0 ], &buffer[ r ] );
+      }
+
+      SSL_shutdown( ssl );
+      SSL_free( ssl );
+    }
+    else
+#endif
+    {
+      if ( ::send( s, request.data(), request.size(), 0 ) != static_cast<int>( request.size() ) )
+      {
+        ::close( s );
+        return false;
+      }
+
+      while ( true )
+      {
+        int r = ::recv( s, buffer, sizeof( buffer ), 0 );
+        if ( r <= 0 )
+          break;
+        result.append( &buffer[ 0 ], &buffer[ r ] );
+      }
     }
 
     ::close( s );
@@ -529,7 +595,7 @@ bool http_t::get( std::string&       result,
     std::ostream::sentry s( http_log );
     if ( s )
     {
-      http_log << cache::era() << ": get(\"" << url << "\") = ";
+      http_log << cache::era() << ": get(\"" << url << "\") [";
 
       if ( entry.validated != cache::INVALID_ERA )
       {
@@ -545,13 +611,12 @@ bool http_t::get( std::string&       result,
       if ( caching != cache::ONLY &&
            ( entry.validated == cache::INVALID_ERA ||
              ( caching == cache::CURRENT && entry.validated < cache::era() ) ) )
-        http_log << " [download]";
-      http_log << '\n';
+        http_log << " download";
+      http_log << "]\n";
     }
   }
 
-  if ( entry.validated == cache::INVALID_ERA ||
-       ( ( caching == cache::CURRENT && entry.validated < cache::era() ) ) )
+  if ( entry.validated < cache::era() && ( caching == cache::CURRENT || entry.validated == cache::INVALID_ERA ) )
   {
     if ( caching == cache::ONLY )
       return false;
@@ -564,18 +629,18 @@ bool http_t::get( std::string&       result,
     if ( ! download( entry, encoded_url ) )
       return false;
 
+    if ( HTTP_CACHE_DEBUG && entry.modified < entry.validated )
+    {
+      std::ofstream http_log( "simc_http_log.txt", std::ios::app );
+      http_log << cache::era() << ": Unmodified (" << entry.modified << ", " << entry.validated << ")\n";
+    }
+
     if ( confirmation.size() && ( entry.result.find( confirmation ) == std::string::npos ) )
     {
       //util_t::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
       //util_t::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
       //fflush( stdout );
       return false;
-    }
-
-    if ( HTTP_CACHE_DEBUG && entry.modified < entry.validated )
-    {
-      std::ofstream http_log( "simc_http_log.txt", std::ios::app );
-      http_log << cache::era() << ": Unmodified since " << entry.modified << '\n';
     }
   }
 
@@ -596,8 +661,9 @@ void http_t::format_( std::string& encoded_url,
 
 void thread_t::mutex_lock( void*& mutex ) {}
 void thread_t::mutex_unlock( void*& mutex ) {}
+void thread_t::sleep( int ) {}
 
-int main( int argc, char** argv )
+int main( int argc, char* argv[] )
 {
   std::string result;
 

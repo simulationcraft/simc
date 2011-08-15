@@ -33,7 +33,7 @@ inline std::string urlencode_utf8( const std::string& s )
 std::string get_region_host( const std::string& region )
 {
   if ( region == "cn" )
-    return "http://battlenet.com.cn/";
+    return "https://www.battlenet.com.cn/";
   else
     return "http://" + urlencode_utf8( region ) + ".battle.net/";
 }
