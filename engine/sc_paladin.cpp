@@ -475,9 +475,9 @@ struct paladin_attack_t : public attack_t
       }
       if ( trigger_dp )
       {
-        bool dp_already_up = pa -> buffs_divine_purpose -> up();
-        pa -> buffs_divine_purpose -> trigger();
-        if ( dp_already_up && pa -> buffs_divine_purpose -> up() )
+        bool already_up = pa -> buffs_divine_purpose -> check();
+        bool triggered = pa -> buffs_divine_purpose -> trigger();
+        if ( already_up && triggered )
         {
           pa -> procs_wasted_divine_purpose -> occur();
         }
@@ -552,8 +552,8 @@ struct melee_t : public paladin_attack_t
     if ( result_is_hit() )
     {
       bool already_up = p -> buffs_the_art_of_war -> check();
-      p -> buffs_the_art_of_war -> trigger();
-      if ( already_up && p -> buffs_the_art_of_war -> check() )
+      bool triggered = p -> buffs_the_art_of_war -> trigger();
+      if ( already_up && triggered )
       {
         p -> procs_wasted_art_of_war -> occur();
       }
@@ -1526,9 +1526,9 @@ struct paladin_spell_t : public spell_t
       if ( trigger_dp )
       {
         paladin_t* pa = player -> cast_paladin();
-        bool dp_already_up = pa -> buffs_divine_purpose -> up();
-        pa -> buffs_divine_purpose -> trigger();
-        if ( dp_already_up && pa -> buffs_divine_purpose -> up() )
+        bool already_up = pa -> buffs_divine_purpose -> check();
+        bool triggered = pa -> buffs_divine_purpose -> trigger();
+        if ( already_up && triggered )
         {
           pa -> procs_wasted_divine_purpose -> occur();
         }
