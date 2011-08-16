@@ -2044,6 +2044,8 @@ void death_knight_spell_t::target_debuff( player_t* t, int dmg_type )
   }
 }
 
+// Flaming Torment ( Tier 12 4pc ) ==========================================
+
 struct flaming_torment_t : public death_knight_spell_t
 {
   flaming_torment_t( const char* n, death_knight_t* player ) :

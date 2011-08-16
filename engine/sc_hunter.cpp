@@ -452,8 +452,8 @@ struct hunter_pet_t : public pet_t
         talents.call_of_the_wild -> set_rank( 1, true );
         talents.rabid            -> set_rank( 1, true );
         talents.spiders_bite     -> set_rank( 3, true );
-        talents.wild_hunt        -> set_rank( 1, true );
         talents.shark_attack     -> set_rank( 1, true );
+        talents.wild_hunt        -> set_rank( 1, true );
 
         if( owner -> cast_hunter() -> talents.beast_mastery -> rank() )
         {

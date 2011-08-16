@@ -1025,7 +1025,7 @@ static void trigger_burning_treant( spell_t* s )
   }
 }
 
-// trigger_tier12_2pc_melee ===========================================================
+// trigger_tier12_2pc_melee =================================================
 
 static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 {

@@ -84,6 +84,7 @@ struct warrior_t : public player_t
   action_t* active_deep_wounds;
   action_t* active_opportunity_strike;
   int       active_stance;
+  action_t* active_tier12_2pc_tank;
 
   // Buffs
   buff_t* buffs_bastion_of_defense;
@@ -188,6 +189,8 @@ struct warrior_t : public player_t
   proc_t* procs_strikes_of_opportunity;
   proc_t* procs_sudden_death;
   proc_t* procs_fiery_attack;
+  proc_t* procs_munched_tier12_2pc_tank;
+  proc_t* procs_rolled_tier12_2pc_tank;
 
   // Random Number Generation
   rng_t* rng_blood_frenzy;
@@ -659,6 +662,101 @@ static void trigger_sword_and_board( attack_t* a, int result )
     if ( p -> buffs_sword_and_board -> trigger() )
     {
       p -> cooldowns_shield_slam -> reset();
+    }
+  }
+}
+
+// trigger_tier12_2pc_tank ==================================================
+
+static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
+{
+  if ( s -> school != SCHOOL_PHYSICAL ) return;
+
+  warrior_t* p = s -> player -> cast_warrior();
+  sim_t* sim = s -> sim;
+
+  if ( ! p -> set_bonus.tier12_2pc_tank() ) return;
+
+  struct combust_t : public warrior_attack_t
+  {
+    combust_t( warrior_t* player ) :
+      warrior_attack_t( "combust", 99240, player )
+    {
+      background    = true;
+      proc          = true;
+      may_resist    = true;
+      tick_may_crit = false;
+      hasted_ticks  = false;
+      dot_behavior  = DOT_REFRESH;
+      init();
+    }
+
+    virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
+    {
+      warrior_attack_t::travel( t, travel_result, 0 );
+
+      base_td = total_dot_dmg / dot -> num_ticks;
+    }
+
+    virtual double travel_time()
+    {
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+    }
+
+    virtual void target_debuff( player_t* t, int dmg_type )
+    {
+      target_multiplier            = 1.0;
+      target_hit                   = 0;
+      target_crit                  = 0;
+      target_attack_power          = 0;
+      target_spell_power           = 0;
+      target_penetration           = 0;
+      target_dd_adder              = 0;
+      if ( sim -> debug )
+        log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
+                       name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
+    }
+
+    virtual double total_td_multiplier() SC_CONST { return 1.0; }
+  };
+
+  double total_dot_dmg = dmg * p -> dbc.spell( 99239 ) -> effect1().percent();
+
+  if ( ! p -> active_tier12_2pc_tank ) p -> active_tier12_2pc_tank = new combust_t( p );
+
+  dot_t* dot = p -> active_tier12_2pc_tank -> dot;
+
+  if ( dot -> ticking )
+  {
+    total_dot_dmg += p -> active_tier12_2pc_tank -> base_td * dot -> ticks();
+  }
+
+  if( ( p -> dbc.spell( 99240 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
+  {
+    if ( sim -> log ) log_t::output( sim, "Player %s munches Combust due to Combust duration.", p -> name() );
+    p -> procs_munched_tier12_2pc_tank -> occur();
+    return;
+  }
+
+  if ( p -> active_tier12_2pc_tank -> travel_event )
+  {
+    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
+    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Combust due to Aura Delay.", p -> name() );
+    p -> procs_munched_tier12_2pc_tank -> occur();
+  }
+
+  p -> active_tier12_2pc_tank -> direct_dmg = total_dot_dmg;
+  p -> active_tier12_2pc_tank -> result = RESULT_HIT;
+  p -> active_tier12_2pc_tank -> schedule_travel( s -> target );
+
+  if ( p -> active_tier12_2pc_tank -> travel_event && dot -> ticking )
+  {
+    if ( dot -> tick_event -> occurs() < p -> active_tier12_2pc_tank -> travel_event -> occurs() )
+    {
+      // Combust will tick before SPELL_AURA_APPLIED occurs, which means that the current Combust will
+      // both tick -and- get rolled into the next Combust
+      if ( sim -> log ) log_t::output( sim, "Player %s rolls Combust.", p -> name() );
+      p -> procs_rolled_tier12_2pc_tank -> occur();
     }
   }
 }
@@ -2061,6 +2159,12 @@ struct shield_slam_t : public warrior_attack_t
 
     return warrior_attack_t::cost();
   }
+
+  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  {
+    warrior_attack_t::travel( t, travel_result, travel_dmg );
+    trigger_tier12_2pc_tank( this, direct_dmg );
+  }
 };
 
 // Shockwave ================================================================
@@ -3131,12 +3235,14 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_munched_deep_wounds     = get_proc( "munched_deep_wounds"    );
-  procs_rolled_deep_wounds      = get_proc( "rolled_deep_wounds"     );
-  procs_parry_haste             = get_proc( "parry_haste"            );
-  procs_strikes_of_opportunity  = get_proc( "strikes_of_opportunity" );
-  procs_sudden_death            = get_proc( "sudden_death"           );
-  procs_fiery_attack            = get_proc( "fiery_attack"           );
+  procs_munched_deep_wounds     = get_proc( "munched_deep_wounds"     );
+  procs_rolled_deep_wounds      = get_proc( "rolled_deep_wounds"      );
+  procs_parry_haste             = get_proc( "parry_haste"             );
+  procs_strikes_of_opportunity  = get_proc( "strikes_of_opportunity"  );
+  procs_sudden_death            = get_proc( "sudden_death"            );
+  procs_fiery_attack            = get_proc( "fiery_attack"            );
+  procs_munched_tier12_2pc_tank = get_proc( "munched_tier12_2pc_tank" );
+  procs_rolled_tier12_2pc_tank  = get_proc( "rolled_tier12_2pc_tank"  );
 }
 
 // warrior_t::init_uptimes ==================================================
