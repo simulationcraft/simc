@@ -4,6 +4,7 @@ hunter=Hunter_BM_T11N.simc
 origin="http://chardev.org/?profile=36175"
 level=85
 race=orc
+position=ranged_back
 role=attack
 use_pre_potion=1
 professions=enchanting=525/jewelcrafting=525

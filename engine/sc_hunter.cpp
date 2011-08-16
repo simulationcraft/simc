@@ -439,6 +439,7 @@ struct hunter_pet_t : public pet_t
       for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
         total_points += talent_trees[ i ][ j ] -> rank();
 
+    // default pet talents
     if ( total_points == 0 )
     {
       talents.serpent_swiftness -> set_rank( 2, true );
@@ -451,11 +452,13 @@ struct hunter_pet_t : public pet_t
         talents.call_of_the_wild -> set_rank( 1, true );
         talents.rabid            -> set_rank( 1, true );
         talents.spiders_bite     -> set_rank( 3, true );
-        talents.wild_hunt        -> set_rank( 2, true );
+        talents.wild_hunt        -> set_rank( 1, true );
+        talents.shark_attack     -> set_rank( 1, true );
 
-        if( owner -> primary_tree() == TREE_BEAST_MASTERY ) // Should reference the talent in question, if possible
+        if( owner -> cast_hunter() -> talents.beast_mastery -> rank() )
         {
           talents.shark_attack -> set_rank( 2, true );
+          talents.wild_hunt    -> set_rank( 2, true );
         }
       }
       else if ( tab == PET_TAB_CUNNING )
