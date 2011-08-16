@@ -3806,11 +3806,21 @@ struct unleash_elements_buff_t : public buff_t
   }
 };
 
+struct unleash_flame_buff_t : public unleash_elements_buff_t
+{
+  event_t* expiration_delay;
+  
+  unleash_flame_buff_t( player_t* p );
+  
+  void reset();
+  void expire();
+};
+
 struct unleash_flame_expiration_delay_t : public event_t
 {
-  buff_t* buff;
+  unleash_flame_buff_t* buff;
 
-  unleash_flame_expiration_delay_t( sim_t* sim, player_t* p, buff_t* b ) : 
+  unleash_flame_expiration_delay_t( sim_t* sim, player_t* p, unleash_flame_buff_t* b ) : 
     event_t( sim, p ), buff( b )
   {
     shaman_t* s = player -> cast_shaman();
@@ -3821,32 +3831,43 @@ struct unleash_flame_expiration_delay_t : public event_t
   virtual void execute()
   {
     // Call real expire after a delay
-    buff -> buff_t::expire();
+    buff -> unleash_elements_buff_t::expire();
+    buff -> expiration_delay = 0;
   }
 };
 
-struct unleash_flame_buff_t : public unleash_elements_buff_t
+unleash_flame_buff_t::unleash_flame_buff_t( player_t* p ) :
+  unleash_elements_buff_t( p, 73683, "unleash_flame" ), expiration_delay( 0 )
 {
-  event_t* expiration_delay;
+}
 
-  unleash_flame_buff_t( player_t* p ) :
-    unleash_elements_buff_t( p, 73683, "unleash_flame" ), expiration_delay( 0 )
-  {
-  }
+void 
+unleash_flame_buff_t::reset()
+{
+  unleash_elements_buff_t::reset();
+  event_t::cancel( expiration_delay );
+}
 
-  bool trigger( int stacks, double value, double chance )
-  {
-    expiration_delay = 0;
-    return buff_t::trigger( stacks, value, chance );
-  }
-
-  void expire()
+void 
+unleash_flame_buff_t::expire()
+{
+  // Active player's Unleash Flame buff has a short aura expiration delay, which allows
+  // "Double Casting" with a single buff
+  if ( ! player -> sleeping )
   {
     if ( current_stack <= 0 ) return;
     if ( expiration_delay ) return;
     expiration_delay = new ( sim ) unleash_flame_expiration_delay_t( sim, player, this );
   }
-};
+  // If the actor is sleeping, make sure the existing buff behavior works (i.e., a call to 
+  // expire) and additionally, make _absolutely sure_ that any pending expiration delay 
+  // is canceled
+  else
+  {
+    unleash_elements_buff_t::expire();
+    event_t::cancel( expiration_delay );
+  }
+}
 
 } // ANONYMOUS NAMESPACE ===================================================
 
@@ -4129,7 +4150,8 @@ void shaman_t::init_buffs()
   // Enhancement T12 4Piece Bonus
   buffs_stormfire               = new buff_t                 ( this, 99212,                                                    "stormfire"             );
   buffs_stormstrike             = new buff_t                 ( this, talent_stormstrike -> spell_id(),                         "stormstrike"           );
-  buffs_unleash_flame           = new unleash_elements_buff_t( this, 73683,                                                    "unleash_flame" );
+  //buffs_unleash_flame           = new unleash_elements_buff_t( this, 73683,                                                    "unleash_flame" );
+  buffs_unleash_flame           = new unleash_flame_buff_t   ( this );
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );
   buffs_water_shield            = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),             "water_shield"          );
 }
