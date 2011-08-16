@@ -3749,16 +3749,8 @@ void hunter_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
-    // Lifeblood
-    if ( profession[ PROF_HERBALISM ] >= 450 )
-      action_list_str += "/lifeblood";
-    switch ( race )
-    {
-    case RACE_ORC:       action_list_str += "/blood_fury";     break;
-    case RACE_TROLL:     action_list_str += "/berserking";     break;
-    case RACE_BLOOD_ELF: action_list_str += "/arcane_torrent"; break;
-    default: break;
-    }
+    init_use_profession_actions();
+    init_use_racial_actions();
     action_list_str += "/explosive_trap,if=target.adds>0";
     switch ( primary_tree() )
     {

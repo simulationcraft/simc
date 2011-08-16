@@ -4371,6 +4371,8 @@ void death_knight_t::init_spells()
   sets = new set_bonus_array_t( this, set_bonuses );
 }
 
+// death_knight_t::init_use_racial_actions ==================================
+
 void death_knight_t::init_use_racial_actions( const std::string& append )
 {
   if ( race == RACE_DWARF )

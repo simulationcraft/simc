@@ -2408,11 +2408,8 @@ void paladin_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      // Lifeblood
-      if ( profession[ PROF_HERBALISM ] >= 450 )
-        action_list_str += "/lifeblood";
-
-      if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
+      init_use_profession_actions();
+      init_use_racial_actions();
       action_list_str += "/zealotry";
       if ( level >= 85 )
         action_list_str += "/guardian_of_ancient_kings,if=(buff.zealotry.remains<31&buff.zealotry.up)|cooldown.zealotry.remains>60";
@@ -2454,10 +2451,8 @@ void paladin_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      // Lifeblood
-      if ( profession[ PROF_HERBALISM ] >= 450 )
-        action_list_str += "/lifeblood";
-      if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
+      init_use_profession_actions();
+      init_use_racial_actions();
       action_list_str += "/avenging_wrath";
       action_list_str += "/guardian_of_ancient_kings,if=health_pct<=30";
       action_list_str += "/word_of_glory,if=health_pct<=50";
@@ -2495,10 +2490,8 @@ void paladin_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      // Lifeblood
-      if ( profession[ PROF_HERBALISM ] >= 450 )
-        action_list_str += "/lifeblood";
-      if ( race == RACE_BLOOD_ELF ) action_list_str += "/arcane_torrent";
+      init_use_profession_actions();
+      init_use_racial_actions();
       action_list_str += "/avenging_wrath";
       action_list_str += "/judgement";
       action_list_str += "/holy_wrath";

@@ -3300,7 +3300,6 @@ void mage_t::init_rng()
 
 // mage_t::init_actions =====================================================
 
-
 void mage_t::init_actions()
 {
   if ( action_list_str.empty() )
@@ -3369,9 +3368,7 @@ void mage_t::init_actions()
           action_list_str += ",if=buff.improved_mana_gem.up|cooldown.evocation.remains>90|target.time_to_die<=50";
       }
     }
-    // Lifeblood
-    if ( profession[ PROF_HERBALISM ] >= 450 )
-      action_list_str += "/lifeblood";
+    init_use_profession_actions();
     //Potions
     if ( level > 80 )
     {

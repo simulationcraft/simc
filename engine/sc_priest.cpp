@@ -4946,9 +4946,7 @@ void priest_t::init_actions()
       }
     }
 
-    // Lifeblood
-    if ( profession[ PROF_HERBALISM ] >= 450 )
-      action_list_str += "/lifeblood";
+    init_use_profession_actions();
 
     switch ( primary_tree() )
     {
@@ -4967,8 +4965,7 @@ void priest_t::init_actions()
 
                                                          action_list_str += "/mind_blast";
 
-      if ( race == RACE_TROLL )                          action_list_str += "/berserking";
-      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent";
+                                                         init_use_racial_actions();
                                                          action_list_str += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
       if ( level >= 28 )                                 action_list_str += "/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react";
 

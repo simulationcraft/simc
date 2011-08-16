@@ -4394,23 +4394,8 @@ void warlock_t::init_actions()
       }
     }
 
-    // Lifeblood
-    if ( profession[ PROF_HERBALISM ] >= 450 )
-      action_list_str += "/lifeblood";
-
-    // Race Skills
-    if ( race == RACE_ORC )
-    {
-      action_list_str += "/blood_fury";
-    }
-    else if ( race == RACE_BLOOD_ELF )
-    {
-      action_list_str += "/arcane_torrent";
-    }
-    else if ( race == RACE_TROLL )
-    {
-      action_list_str += "/berserking";
-    }
+    init_use_profession_actions();
+    init_use_racial_actions();
 
     // Choose Potion
     if ( level >= 80 )
