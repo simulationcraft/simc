@@ -1076,6 +1076,7 @@ void action_t::tick()
 
   stats -> add_tick( time_to_tick );
 }
+
 // action_t::last_tick =======================================================
 
 void action_t::last_tick()
@@ -1156,7 +1157,7 @@ void action_t::assess_damage( player_t* t,
                      player -> name(), name(),
                      target -> name(), dmg_adjusted,
                      util_t::school_type_string( school ),
-                     util_t::result_type_string( result ) );
+                     util_t::result_type_string( dmg_result ) );
     }
 
     direct_dmg = dmg_adjusted;
@@ -1172,7 +1173,7 @@ void action_t::assess_damage( player_t* t,
                      dot -> current_tick, dot -> num_ticks,
                      t -> name(), dmg_adjusted,
                      util_t::school_type_string( school ),
-                     util_t::result_type_string( result ) );
+                     util_t::result_type_string( dmg_result ) );
     }
 
     tick_dmg = dmg_adjusted;
