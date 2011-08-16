@@ -4,6 +4,7 @@ warrior=Warrior_Fury_1h_T12N
 origin="Warrior_CharDevSync.simc"
 level=85
 race=worgen
+position=back
 role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525

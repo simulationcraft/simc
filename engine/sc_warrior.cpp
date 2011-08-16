@@ -3214,7 +3214,14 @@ void warrior_t::init_actions()
     action_list_str += "/snapshot_stats";
 
     // Potion
-    if ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY )
+    if ( primary_tree() == TREE_ARMS )
+    {
+      if ( level >= 80 )
+        action_list_str += "/golemblood_potion,if=!in_combat|buff.recklessness.up|target.time_to_die<26";
+      else if ( level >= 70 )
+        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+    }
+    else if ( primary_tree() == TREE_FURY )
     {
       if ( level >= 80 )
         action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react";
@@ -3264,11 +3271,12 @@ void warrior_t::init_actions()
       action_list_str += "/mortal_strike,if=target.health_pct>20|rage>=30";
       action_list_str += "/execute,if=buff.battle_trance.up";
       action_list_str += "/rend,if=!ticking";
-      if ( level >= 81 ) action_list_str += "/colossus_smash,if=buff.colossus_smash.remains<0.5";
+      if ( level >= 81 ) action_list_str += "/colossus_smash,if=!buff.colossus_smash.up";
       action_list_str += "/execute,if=(buff.deadly_calm.up|buff.recklessness.up)";
       action_list_str += "/mortal_strike";
       action_list_str += "/overpower";
       action_list_str += "/execute";
+      action_list_str += "/colossus_smash,if=buff.colossus_smash.remains<=1.5";
       action_list_str += "/slam,if=(cooldown.mortal_strike.remains>=1.5&(rage>=35|buff.deadly_calm.up|buff.colossus_smash.up))|(cooldown.mortal_strike.remains>=1.2&buff.colossus_smash.remains>0.5&rage>=35)";
       action_list_str += "/battle_shout,if=rage<20";
     }
