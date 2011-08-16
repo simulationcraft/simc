@@ -100,6 +100,7 @@ struct paladin_t : public player_t
   proc_t* procs_munched_tier12_2pc_melee;
   proc_t* procs_rolled_tier12_2pc_melee;
   proc_t* procs_wasted_divine_purpose;
+  proc_t* procs_wasted_art_of_war;
 
   // Spells
   struct spells_t
@@ -550,7 +551,12 @@ struct melee_t : public paladin_attack_t
     paladin_attack_t::execute();
     if ( result_is_hit() )
     {
+      bool already_up = p -> buffs_the_art_of_war -> check();
       p -> buffs_the_art_of_war -> trigger();
+      if ( already_up && p -> buffs_the_art_of_war -> check() )
+      {
+        p -> procs_wasted_art_of_war -> occur();
+      }
     }
     if ( !proc && p -> buffs_reckoning -> up() )
     {
@@ -2236,6 +2242,7 @@ void paladin_t::init_procs()
   procs_munched_tier12_2pc_melee = get_proc( "munched_flames_of_the_faithful" );
   procs_rolled_tier12_2pc_melee  = get_proc( "rolled_flames_of_the_faithful"  );
   procs_wasted_divine_purpose    = get_proc( "wasted_divine_purpose"          );
+  procs_wasted_art_of_war        = get_proc( "wasted_art_of_war"              );
 }
 
 // paladin_t::init_scaling ==================================================
