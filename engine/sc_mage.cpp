@@ -2204,6 +2204,14 @@ struct frostfire_bolt_t : public mage_spell_t
   }
 
   virtual double total_td_multiplier() SC_CONST { return 1.0; } // No double-dipping!
+  
+  virtual void tick()
+  {
+    // Ticks don't benefit from Shatter, which checks for fof_frozen
+    // So disable it for the ticks, assuming it was set to true in execute
+    fof_frozen = false;
+    mage_spell_t::tick();
+  }
 };
 
 // Frostfire Orb Spell ==========================================================
