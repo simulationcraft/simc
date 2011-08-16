@@ -4,6 +4,7 @@ priest=Priest_Disc_Smite_T11H
 origin="http://chardev.org/?profile=18129"
 level=85
 race=troll
+position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
