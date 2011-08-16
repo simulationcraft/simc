@@ -4,6 +4,7 @@ rogue=Rogue_Subtlety_T11N
 origin="http://chardev.org/?profile=36366"
 level=85
 race=troll
+position=back
 role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
@@ -32,8 +33,9 @@ actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
 actions+=/rupture,if=combo_points=5&!ticking
 actions+=/recuperate,if=combo_points=5&remains<3
 actions+=/eviscerate,if=combo_points=5&dot.rupture.remains>1
-actions+=/backstab,if=combo_points<3&energy>60
-actions+=/backstab,if=combo_points<4&energy>40&energy<80
+actions+=/hemorrhage,if=combo_points<4&energy>40&dot.hemorrhage.remains<4
+actions+=/hemorrhage,if=combo_points<5&energy>80&dot.hemorrhage.remains<4
+actions+=/backstab,if=combo_points<4&energy>40
 actions+=/backstab,if=combo_points<5&energy>80
 head=wind_dancers_helmet,type=leather,ilevel=359,quality=epic,stats=1356armor_281agi_512sta_228crit_168hit,reforge=crit_haste,gems=agile_shadowspirit_20agi_20hit_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,ilevel=359,quality=epic,stats=190agi_286sta_127mastery_127haste,reforge=mastery_exp

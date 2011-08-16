@@ -3440,8 +3440,6 @@ void rogue_t::init_actions()
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
 
-      // XXX Tweaks might still be needed; Recuperate and Rupture can drop off, and maintaining their uptime 100% seems impossible (but not required too)
-
       if ( talents.shadow_dance -> rank() )
       {
         action_list_str += "/pool_energy,for_next=1";
@@ -3513,11 +3511,13 @@ void rogue_t::init_actions()
 
       action_list_str += "/eviscerate,if=combo_points=5&dot.rupture.remains>1";
 
-      // if ( talents.hemorrhage -> rank() )
+      if ( talents.hemorrhage -> rank() )
+      {
+        action_list_str += "/hemorrhage,if=combo_points<4&energy>40&dot.hemorrhage.remains<4";
+        action_list_str += "/hemorrhage,if=combo_points<5&energy>80&dot.hemorrhage.remains<4";
+      }
 
-      action_list_str += "/backstab,if=combo_points<3&energy>60";
-
-      action_list_str += "/backstab,if=combo_points<4&energy>40&energy<80";
+      action_list_str += "/backstab,if=combo_points<4&energy>40";
       action_list_str += "/backstab,if=combo_points<5&energy>80";
     }
     else

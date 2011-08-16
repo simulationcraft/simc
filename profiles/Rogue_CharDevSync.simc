@@ -41,8 +41,6 @@ actions=
 save=Rogue_Assassination_T12H.simc
 
 
-
-
 rogue=Rogue_Combat_T12H
 level=85
 race=troll
@@ -72,7 +70,6 @@ actions=
 save=Rogue_Combat_T12H.simc
 
 
-
 rogue=Rogue_Subtlety_T12H
 level=85
 race=troll
@@ -80,7 +77,7 @@ role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000332031321310012321
-glyphs=backstab/eviscerate/slice_and_dice/feint/sprint/tricks_of_the_trade/blurred_speed/poisons/safe_fall
+glyphs=backstab/hemorrhage/slice_and_dice/feint/sprint/tricks_of_the_trade/blurred_speed/poisons/safe_fall
 head=hood_of_rampant_disdain,id=71416,gems=agile_shadowspirit_40agi_30agi,enchant=60agi_35haste
 neck=choker_of_the_vanquished_lord,id=71610,reforge=mastery_crit
 shoulders=dark_phoenix_spaulders,id=71541,gems=67agi_10agi,enchant=50agi_25mastery,reforge=mastery_exp
@@ -134,8 +131,6 @@ actions=
 save=Rogue_Assassination_T12N.simc
 
 
-
-
 rogue=Rogue_Combat_T12N
 level=85
 race=troll
@@ -165,7 +160,6 @@ actions=
 save=Rogue_Combat_T12N.simc
 
 
-
 rogue=Rogue_Subtlety_T12N
 level=85
 race=troll
@@ -173,7 +167,7 @@ role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000332031321310012321
-glyphs=backstab/eviscerate/slice_and_dice/feint/sprint/tricks_of_the_trade/blurred_speed/poisons/safe_fall
+glyphs=backstab/hemorrhage/slice_and_dice/feint/sprint/tricks_of_the_trade/blurred_speed/poisons/safe_fall
 head=dark_phoenix_helmet,id=71047,gems=agile_shadowspirit_20agi_20haste_30agi,enchant=60agi_35haste
 neck=choker_of_the_vanquished_lord,id=71354,reforge=mastery_exp
 shoulders=dark_phoenix_spaulders,id=71049,gems=67agi_10agi,enchant=50agi_25mastery,reforge=mastery_exp
@@ -193,4 +187,3 @@ off_hand=alysras_razor,id=70733,gems=20agi_20mastery_10agi,enchant=landslide
 ranged=arathar_the_eye_of_flame,id=71353,enchant=gnomish_xray,reforge=crit_exp
 actions=
 save=Rogue_Subtlety_T12N.simc
-

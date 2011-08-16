@@ -4,6 +4,7 @@ rogue=Rogue_Combat_T12N
 origin="Rogue_CharDevSync.simc"
 level=85
 race=troll
+position=back
 role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525

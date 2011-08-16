@@ -4,6 +4,7 @@ rogue=Rogue_Assassination_T11H
 origin="http://chardev.org/?profile=36311"
 level=85
 race=troll
+position=back
 role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
