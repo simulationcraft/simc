@@ -100,7 +100,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     return 0;
   }
 
-  size_t pos = 0;
+  std::size_t pos = 0;
   name_str.erase( name_str.end() - 1 );
 
   if ( ( pos = name_str.rfind( '/' ) ) == std::string::npos )
@@ -428,7 +428,7 @@ bool battle_net_t::download_guild( sim_t* sim,
       return false;
     else // Urldecode the name, as xml_t::get_value seems to have issues with utf-8
     {
-      size_t pos = 0;
+      std::size_t pos = 0;
       c_url.erase( c_url.end() - 1 );
 
       if ( ( pos = c_url.rfind( '/' ) ) == std::string::npos )

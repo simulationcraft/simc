@@ -37,7 +37,7 @@ static std::string encode_stats( const std::vector<std::string>& stats )
   return s.str();
 }
 
-static size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantment, std::vector<std::string>& stats )
+static std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantment, std::vector<std::string>& stats )
 {
   assert( enchantment.id );
 
@@ -53,7 +53,7 @@ static size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantm
   return stats.size();
 }
 
-static size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats )
+static std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats )
 {
   assert( item );
 
@@ -665,7 +665,7 @@ int item_database_t::parse_gem( item_t& item, const std::string& gem_id )
   if ( gem_prop.color == 1 )
   {
     std::string gem_name = gem -> name;
-    size_t cut_pt = gem_name.rfind( " Diamond" );
+    std::size_t cut_pt = gem_name.rfind( " Diamond" );
     if ( cut_pt != gem_name.npos )
     {
       gem_name = gem_name.substr( 0, cut_pt );

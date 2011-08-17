@@ -2381,7 +2381,7 @@ struct sim_t : private thread_t
   int         argc;
   char**      argv;
   sim_t*      parent;
-  event_t*    free_list;
+  event_freelist_t free_list;
   player_t*   target;
   player_t*   target_list;
   player_t*   player_list;
@@ -2764,6 +2764,15 @@ struct reforge_plot_t
 
 struct event_t
 {
+private:
+  static void cancel_( event_t* e );
+  static void early_( event_t* e );
+
+  static void* operator new( std::size_t ) throw(); // DO NOT USE!
+  event_t( const event_t& other ); // = delete
+  event_t& operator = ( const event_t& other ); // = delete
+
+public:
   event_t*  next;
   sim_t*    sim;
   player_t* player;
@@ -2780,16 +2789,28 @@ struct event_t
   double occurs()  SC_CONST { return ( reschedule_time != 0 ) ? reschedule_time : time; }
   double remains() SC_CONST { return occurs() - sim -> current_time; }
   virtual void reschedule( double new_time );
-  virtual void execute() { util_t::printf( "%s\n", name ? name : "(no name)" ); assert( 0 ); }
+  virtual void execute() = 0;
   virtual ~event_t() {}
-  static void cancel( event_t*& e );
-  static void  early( event_t*& e );
+
+  // T must be implicitly convertible to event_t* --
+  // basically, a pointer to a type derived from event_t.
+  template <typename T> static void cancel( T& e )
+  { if ( e ) { cancel_( e ); e = 0; } }
+  template <typename T> static void early( T& e )
+  { if ( e ) { early_( e ); e = 0; } }
+
   // Simple free-list memory manager.
-  static void* operator new( size_t, sim_t* );
-  static void* operator new( size_t ) throw();  // DO NOT USE!
-  static void  operator delete( void* );
-  static void  operator delete( void*, sim_t* ) {}
-  static void deallocate( event_t* e );
+  static void* operator new( std::size_t size, sim_t* sim )
+  { return sim -> free_list.allocate( size ); }
+
+  static void operator delete( void* p )
+  {
+    event_t* e = static_cast<event_t*>( p );
+    e -> sim -> free_list.deallocate( e );
+  }
+
+  static void operator delete( void* p, sim_t* sim )
+  { sim -> free_list.deallocate( p ); }
 };
 
 struct event_compare_t

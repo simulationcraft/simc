@@ -2274,15 +2274,12 @@ void replace_str( std::string& src, const std::string& old_str, const std::strin
 {
   if ( old_str.empty() ) return;
 
-  std::string dest="";
-  size_t p;
-  while ( ( p=src.find( old_str ) )!=std::string::npos )
+  std::string::size_type p = 0;
+  while ( ( p = src.find( old_str, p ) ) != std::string::npos )
   {
-    dest+=src.substr( 0,p )+new_str;
-    src.erase( 0,p+old_str.length() );
+    src.replace( p, p + old_str.length(), new_str );
+    p += new_str.length();
   }
-  dest+=src;
-  src=dest;
 }
 
 bool str_to_float( std::string src, double& dest )
@@ -2292,7 +2289,7 @@ bool str_to_float( std::string src, double& dest )
   bool was_dot=false;
   bool res=true;
   //check each char
-  for ( size_t p=0; res&&( p<src.length() ); p++ )
+  for ( std::size_t p=0; res&&( p<src.length() ); p++ )
   {
     char ch=src[p];
     if ( ch==' ' ) continue;

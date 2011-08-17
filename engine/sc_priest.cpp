@@ -421,7 +421,7 @@ struct remove_dots_event_t : public event_t
     sim -> add_event( this, delay_duration );
   }
   virtual void execute()
-  {     
+  {
     p -> remove_dots_event = 0;
     if ( p -> dots_shadow_word_pain   -> ticking ) p -> dots_shadow_word_pain -> reset();
     if ( p -> dots_vampiric_touch     -> ticking ) p -> dots_vampiric_touch -> reset();
@@ -5266,7 +5266,7 @@ void priest_t::reset()
 
 void priest_t::demise()
 {
-  event_t::cancel( (event_t*&) remove_dots_event );
+  event_t::cancel( remove_dots_event );
   player_t::demise();
 }
 

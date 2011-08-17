@@ -9,33 +9,57 @@
 // Event Memory Management
 // ==========================================================================
 
-// ::new ====================================================================
+// event_freelist_t::allocate ===============================================
 
-void* event_t::operator new( size_t size,
-                             sim_t* sim )
+void* event_freelist_t::allocate( std::size_t size )
 {
   // This override of ::new is ONLY for event_t memory management!
 
-  static size_t SIZE = 2 * sizeof( event_t );
+  static const std::size_t SIZE = 2 * sizeof( event_t );
   assert( SIZE > size );
 
-  event_t* new_event = sim -> free_list;
+  free_event_t* new_event = list;
 
   if ( new_event )
   {
-    sim -> free_list = sim -> free_list -> next;
+   list = list -> next;
   }
   else
   {
-    new_event = ( event_t* ) ::new char[ SIZE ];
+    new_event = static_cast<free_event_t*>( ::operator new( SIZE ) );
   }
 
   return new_event;
 }
 
+// event_freelist_t::deallocate =============================================
+
+void event_freelist_t::deallocate( void* p )
+{
+  free_event_t* fe = new( p ) free_event_t;
+  fe -> next = list;
+  list = fe;
+}
+
+// event_freelist_t::~event_freelist_t ======================================
+
+event_freelist_t::~event_freelist_t()
+{
+  while ( list )
+  {
+    free_event_t* p = list;
+    list = list -> next;
+    delete p;
+  }
+}
+
+// ==========================================================================
+// Event
+// ==========================================================================
+
 // event_t::new =============================================================
 
-void* event_t::operator new( size_t size ) throw()
+void* event_t::operator new( std::size_t size ) throw()
 {
   util_t::fprintf( stderr, "All events must be allocated via: new (sim) event_class_name_t()\n" );
   fflush( stderr );
@@ -43,55 +67,53 @@ void* event_t::operator new( size_t size ) throw()
   return NULL;
 }
 
-// event_t::delete ==========================================================
-
-void event_t::operator delete( void* p )
+void event_t::reschedule( double new_time )
 {
-  event_t* e = ( event_t* ) p;
-  sim_t* sim = e -> sim;
-  e -> next = sim -> free_list;
-  sim -> free_list = e;
+  reschedule_time = sim -> current_time + new_time;
+
+  if ( sim -> debug ) log_t::output( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time );
+
+  if ( ! strcmp( name, "Rabid Expiration" ) ) assert( false );
 }
 
-// event_t::deallocate ======================================================
+// event_t::cancel_ =========================================================
 
-void event_t::deallocate( event_t* e )
+void event_t::cancel_( event_t* e )
 {
-  char* e2 = ( char * ) e;
-  ::delete [] e2;
-}
-
-void event_t::cancel( event_t*& e ) 
-{
-  if ( e ) 
-  { 
-    if ( e -> player && ! e -> canceled ) 
+  assert( e );
+  if ( e -> player && ! e -> canceled )
+  {
+    e -> player -> events--;
+    if ( e -> player -> events < 0 )
     {
-      e -> player -> events--;
-      if ( e -> player -> events < 0 )
-      {
-        e -> sim -> errorf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n", e -> name, e -> player -> name() );
-        assert( 0 );
-      }
+      e -> sim -> errorf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n", e -> name, e -> player -> name() );
+      assert( 0 );
     }
-    e -> canceled = 1; 
-    e = 0; 
   }
+  e -> canceled = 1;
 }
 
-void event_t::early( event_t*& e )
-{ 
-  if ( e ) 
-  { 
-    if ( e -> player && ! e -> canceled ) 
-    {
-      e -> player -> events--;
-      assert( e -> player -> events >= 0 );
-    }
-    e -> canceled = 1; 
-    e -> execute(); 
-    e = 0; 
+// event_t::early_ ==========================================================
+
+void event_t::early_( event_t* e )
+{
+  assert( e );
+  if ( e -> player && ! e -> canceled )
+  {
+    e -> player -> events--;
+    assert( e -> player -> events >= 0 );
   }
+  e -> canceled = 1;
+  e -> execute();
+}
+
+// event_t::execute =========================================================
+
+void event_t::execute()
+{
+  util_t::printf( "event_t::execute() called for event \"%s\"\n",
+                  name ? name : "(no name)" );
+  assert( 0 );
 }
 
 // ==========================================================================
@@ -293,17 +315,4 @@ void regen_event_t::execute()
   }
 
   new ( sim ) regen_event_t( sim );
-}
-
-// ===============================================================================
-// Event
-// ===============================================================================
-
-void event_t::reschedule( double new_time )
-{
-  reschedule_time = sim -> current_time + new_time;
-
-  if ( sim -> debug ) log_t::output( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time );
-
-  if ( ! strcmp( name, "Rabid Expiration" ) ) assert( false );
 }

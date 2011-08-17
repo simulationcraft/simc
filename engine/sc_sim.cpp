@@ -640,7 +640,7 @@ static bool parse_item_sources( sim_t*             sim,
 
 sim_t::sim_t( sim_t* p, int index ) :
   parent( p ),
-  free_list( 0 ), target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), max_player_level( -1 ), canceled( 0 ),
+  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), max_player_level( -1 ), canceled( 0 ),
   queue_lag( 0.037 ), queue_lag_stddev( 0 ),
   gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
   channel_lag( 0.250 ), channel_lag_stddev( 0 ),
@@ -734,12 +734,6 @@ sim_t::~sim_t()
   {
     player_list = p -> next;
     delete p;
-  }
-
-  while ( event_t* e = free_list )
-  {
-    free_list = e -> next;
-    event_t::deallocate( e );
   }
 
   while ( rng_t* r = rng_list )
@@ -1422,7 +1416,7 @@ void sim_t::analyze_player( player_t* p )
     p -> timeline_dps[ i ] = window_dmg / window_size;
   }
 
-  assert( p -> iteration_dps.size() >= ( size_t ) iterations );
+  assert( p -> iteration_dps.size() >= ( std::size_t ) iterations );
 
   p -> dps_min = +1.0E+50;
   p -> dps_max = -1.0E+50;
@@ -2573,7 +2567,7 @@ int sim_t::errorf( const char* format, ... )
 // ==========================================================================
 
 #if 0
-void* operator new ( size_t size )
+void* operator new ( std::size_t size )
 {
   if ( iterating ) assert( 0 );
   return malloc( size );

@@ -398,7 +398,7 @@ static bool parse_item_level( item_t&     item,
   std::string info_str;
   if ( ! get_tti_value( info_str, node, "tti-level" ) ) return false;
 
-  size_t p_lvl = info_str.rfind( "Item Level " );
+  std::size_t p_lvl = info_str.rfind( "Item Level " );
 
   if ( p_lvl == info_str.npos ) return false;
 
