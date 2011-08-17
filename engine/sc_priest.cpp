@@ -1815,9 +1815,13 @@ struct mind_blast_t : public priest_spell_t
 
     p -> buffs_mind_melt -> expire();
     p -> buffs_mind_spike -> expire();
-    p -> buffs_shadow_orb -> expire();
 
-    p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
+    if ( p -> buffs_shadow_orb -> check() )
+    {
+      p -> buffs_shadow_orb -> expire();
+
+      p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
+    }
 
     if ( result_is_hit() )
     {
@@ -2154,8 +2158,12 @@ struct mind_spike_t : public priest_spell_t
       }
 
       p -> buffs_mind_melt  -> trigger( 1, 1.0 );
-      p -> buffs_shadow_orb -> expire();
-      p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
+
+      if ( p -> buffs_shadow_orb -> check() )
+      {
+        p -> buffs_shadow_orb -> expire();
+        p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
+      }
       p -> buffs_mind_spike -> trigger( 1, effect2().percent() );
     }
   }
