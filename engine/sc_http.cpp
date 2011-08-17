@@ -212,8 +212,90 @@ static bool download( url_cache_entry_t& entry,
 
 #endif
 
+struct SocketWrapper
+{
+  int fd;
+
+  SocketWrapper() : fd( -1 ) {}
+  ~SocketWrapper() { if ( fd >= 0 ) ::close( fd ); }
+
+  operator int () const { return fd; }
+
+  int connect( const std::string& host, unsigned short port );
+
+  int send( const char* buf, std::size_t size )
+  { return ::send( fd, buf, size, 0 ); }
+
+  int recv( char* buf, std::size_t size )
+  { return ::recv( fd, buf, size, 0 ); }
+
+  void close()
+  { ::close( fd ); fd = -1; }
+};
+
+int SocketWrapper::connect( const std::string& host, unsigned short port )
+{
+  struct hostent* h;
+  sockaddr_in a;
+
+  a.sin_family = AF_INET;
+
+  if ( http_t::proxy_type == "http" || http_t::proxy_type == "https" )
+  {
+    h = gethostbyname( http_t::proxy_host.c_str() );
+    a.sin_port = htons( http_t::proxy_port );
+  }
+  else
+  {
+    h = gethostbyname( host.c_str() );
+    a.sin_port = htons( port );
+  }
+  if ( ! h ) return -1;
+
+  if ( ( fd = ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP ) ) < 0 )
+    return -1;
+
+  std::memcpy( &a.sin_addr, h -> h_addr_list[ 0 ], sizeof( a.sin_addr ) );
+
+  return ::connect( fd, reinterpret_cast<const sockaddr*>( &a ), sizeof( a ) );
+}
+
 #ifdef USE_OPENSSL
 #include <openssl/ssl.h>
+
+struct SSLWrapper
+{
+  static SSL_CTX* ctx;
+
+  static void init()
+  {
+    if ( ! ctx )
+    {
+      SSL_library_init();
+      ctx = SSL_CTX_new( SSLv23_client_method() );
+      SSL_CTX_set_mode( ctx, SSL_MODE_AUTO_RETRY );
+    }
+  }
+
+  SSL* s;
+  SSLWrapper() : s( SSL_new( ctx ) ) {}
+
+  ~SSLWrapper() { if ( s ) close(); }
+
+  int open( int fd )
+  { return ( ! SSL_set_fd( s, fd ) || SSL_connect( s ) <= 0 ) ? -1 : 0; }
+
+  int read( char* buffer, std::size_t size )
+  { return SSL_read( s, buffer, size ); }
+
+  int write( const char* buffer, std::size_t size )
+  { return SSL_write( s, buffer, size ); }
+
+  void close()
+  { SSL_shutdown( s ); SSL_free( s ); s = 0; }
+};
+
+SSL_CTX* SSLWrapper::ctx = 0;
 #endif
 
 // parse_url ================================================================
@@ -233,15 +315,16 @@ bool url_t::split( url_t&             split,
 {
   typedef std::string::size_type pos_t;
 
-  pos_t pos_colon = url.find_first_of( ':' );
-  if ( pos_colon == url.npos || pos_colon + 2 > url.length() ||
-       url[ pos_colon + 1 ] != '/' || url[ pos_colon + 2 ] != '/' )
+  pos_t pos = url.find_first_of( ':' );
+  if ( pos == url.npos || pos + 2 > url.length() ||
+       url[ pos + 1 ] != '/' || url[ pos + 2 ] != '/' )
     return false;
-  split.protocol.assign( url, 0, pos_colon );
+  split.protocol.assign( url, 0, pos );
 
-  pos_t pos_host = pos_colon + 3;
-  pos_t end_host = url.find_first_of( ":/", pos_host );
-  split.host.assign( url, pos_host, end_host - pos_host );
+  pos += 3;
+  pos_t end = url.find_first_of( ":/", pos );
+  split.host.assign( url, pos, end - pos );
+  pos = end;
 
   if ( split.protocol == "https" )
     split.port = 443;
@@ -249,24 +332,20 @@ bool url_t::split( url_t&             split,
     split.port = 80;
 
   split.path = '/';
-  if ( end_host >= url.length() )
+  if ( pos >= url.length() )
     return true;
 
-  pos_t pos_path;
-  if ( url[ end_host ] == ':' )
+  if ( url[ pos ] == ':' )
   {
-    split.port = static_cast<unsigned short>( strtol( &url[ end_host + 1 ], 0, 10 ) );
-    pos_path = url.find_first_of( '/', end_host + 1 );
-    if ( pos_path == url.npos )
+    ++pos;
+    split.port = static_cast<unsigned short>( strtol( &url[ pos ], 0, 10 ) );
+    pos = url.find_first_of( '/', pos );
+    if ( pos == url.npos )
       return true;
   }
-  else
-  {
-    pos_path = end_host;
-  }
 
-  ++pos_path;
-  split.path.append( url, pos_path, url.npos );
+  ++pos;
+  split.path.append( url, pos, url.npos );
   return true;
 }
 
@@ -277,7 +356,7 @@ static std::string build_request( const url_t&       url,
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
   std::stringstream request;
-  bool use_proxy = ( http_t::proxy_type == "http" );
+  bool use_proxy = ( http_t::proxy_type == "http" || http_t::proxy_type == "https" );
 
   request << "GET ";
 
@@ -313,7 +392,6 @@ static std::string build_request( const url_t&       url,
 static bool download( url_cache_entry_t& entry,
                       const std::string& url )
 {
-
 #if defined( __MINGW32__ )
 
   static bool initialized = false;
@@ -327,19 +405,14 @@ static bool download( url_cache_entry_t& entry,
 #endif
 
 #ifdef USE_OPENSSL
-  static SSL_CTX* ssl_ctx;
-  if ( ! ssl_ctx )
-  {
-    SSL_library_init();
-    ssl_ctx = SSL_CTX_new( SSLv23_client_method() );
-    SSL_CTX_set_mode( ssl_ctx, SSL_MODE_AUTO_RETRY );
-  }
+  SSLWrapper::init();
 #endif
 
   std::string current_url = url;
   unsigned int redirect = 0;
   static const unsigned int redirect_max = 8;
-  const bool use_proxy = ( http_t::proxy_type == "http" );
+  bool ssl_proxy = ( http_t::proxy_type == "https" );
+  const bool use_proxy = ( ssl_proxy || http_t::proxy_type == "http" );
 
   // get a page and if we find a redirect update current_url and loop
   while ( true )
@@ -348,92 +421,59 @@ static bool download( url_cache_entry_t& entry,
     if ( ! url_t::split( split_url, current_url ) )
       return false;
 
-    std::string request = build_request( split_url, entry.last_modified_header );
-
+    bool use_ssl = ssl_proxy || ( ! use_proxy && ( split_url.protocol == "https" ) );
 #ifndef USE_OPENSSL
-    if ( ! use_proxy && split_url.protocol != "http" )
+    if ( use_ssl )
+    {
+      // FIXME: report unable to use SSL
       return false;
+    }
 #endif
 
-    struct hostent* h;
-    sockaddr_in a;
-
-    if ( use_proxy )
-    {
-      h = gethostbyname( http_t::proxy_host.c_str() );
-      a.sin_port = htons( http_t::proxy_port );
-    }
-    else
-    {
-      h = gethostbyname( split_url.host.c_str() );
-      a.sin_port = htons( split_url.port );
-    }
-
-    if ( ! h ) return false;
-    a.sin_family = AF_INET;
-    std::memcpy( &a.sin_addr, h -> h_addr_list[ 0 ], sizeof( a.sin_addr ) );
-
-    int s = ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
-    if ( s < 0 ) return false;
-
-    if ( ::connect( s, reinterpret_cast<sockaddr*>( &a ), sizeof( a ) ) < 0 )
-    {
-      ::close( s );
+    SocketWrapper s;
+    if ( s.connect( split_url.host, split_url.port ) < 0 )
       return false;
-    }
+
+    std::string request = build_request( split_url, entry.last_modified_header );
 
     std::string result;
     char buffer[ NETBUFSIZE ];
 
 #ifdef USE_OPENSSL
-    if ( ! use_proxy && split_url.protocol == "https" )
+    if ( use_ssl )
     {
-      SSL* ssl = SSL_new( ssl_ctx );
-      if ( ! SSL_set_fd( ssl, s ) || SSL_connect( ssl ) <= 0 )
-      {
-        SSL_free( ssl );
-        ::close( s );
-        return false;
-      }
+      SSLWrapper ssl;
 
-      if ( SSL_write( ssl, request.data(), request.size() ) != static_cast<int>( request.size() ) )
-      {
-        SSL_shutdown( ssl );
-        SSL_free( ssl );
-        ::close( s );
+      if ( ssl.open( s ) < 0 )
         return false;
-      }
+
+      if ( ssl.write( request.data(), request.size() ) != static_cast<int>( request.size() ) )
+        return false;
 
       while ( true )
       {
-        int r = SSL_read( ssl, buffer, sizeof( buffer ) );
+        int r = ssl.read( buffer, sizeof( buffer ) );
         if ( r <= 0 )
           break;
         result.append( &buffer[ 0 ], &buffer[ r ] );
       }
-
-      SSL_shutdown( ssl );
-      SSL_free( ssl );
     }
     else
 #endif
     {
-      if ( ::send( s, request.data(), request.size(), 0 ) != static_cast<int>( request.size() ) )
-      {
-        ::close( s );
+      if ( s.send( request.data(), request.size() ) != static_cast<int>( request.size() ) )
         return false;
-      }
 
       while ( true )
       {
-        int r = ::recv( s, buffer, sizeof( buffer ), 0 );
+        int r = s.recv( buffer, sizeof( buffer ) );
         if ( r <= 0 )
           break;
         result.append( &buffer[ 0 ], &buffer[ r ] );
       }
     }
 
-    ::close( s );
+    s.close();
 
     std::string::size_type pos = result.find( "\r\n\r\n" );
     if ( pos == result.npos )
@@ -456,11 +496,13 @@ static bool download( url_cache_entry_t& entry,
     {
       entry.validated = cache::era();
       {
-        // Item is not modified
         std::string::size_type pos_304 = result.find( "304" );
         std::string::size_type line_end = result.find( "\r\n" );
         if ( pos_304 < line_end )
+        {
+          // Item is not modified
           return true;
+        }
       }
 
       entry.modified = cache::era();
@@ -585,9 +627,12 @@ bool http_t::get( std::string&       result,
 {
   result.clear();
 
+  std::string encoded_url;
+  format( encoded_url, url );
+
   auto_lock_t lock( cache_mutex );
 
-  url_cache_entry_t& entry = url_db[ url ];
+  url_cache_entry_t& entry = url_db[ encoded_url ];
 
   if ( HTTP_CACHE_DEBUG )
   {
@@ -624,8 +669,6 @@ bool http_t::get( std::string&       result,
     util_t::printf( "@" ); fflush( stdout );
     throttle( throttle_seconds );
 
-    std::string encoded_url;
-    format( encoded_url, url );
     if ( ! download( entry, encoded_url ) )
       return false;
 
@@ -659,9 +702,11 @@ void http_t::format_( std::string& encoded_url,
 
 #ifdef UNIT_TEST
 
-void thread_t::mutex_lock( void*& mutex ) {}
-void thread_t::mutex_unlock( void*& mutex ) {}
-void thread_t::sleep( int ) {}
+namespace thread {
+inline void mutex_t::lock() {}
+inline void mutex_t::unlock() {}
+inline void sleep( int ) {}
+}
 
 int main( int argc, char* argv[] )
 {

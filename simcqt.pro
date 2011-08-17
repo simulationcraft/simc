@@ -1,3 +1,7 @@
+#DEFINES += USE_OPENSSL
+#INCLUDEPATH += C:/OpenSSL-Win32/include
+#win32:LIBS += -LC:/OpenSSL-Win32/lib -lssleay32
+
 QT += core gui network webkit
 
 win32:LIBS += libwsock32 libwininet

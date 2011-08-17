@@ -13,6 +13,7 @@
 
 MODULE     = simc
 OS         = UNIX
+OPENSSL_PATH = 
 
 # Any UNIX platform
 ifeq (UNIX,${OS})
@@ -39,11 +40,6 @@ endif
 endif
 endif
 
-ifeq (yes,${USE_CURL})
-CPP_FLAGS += -DUSE_CURL
-LINK_LIBS += -lcurl
-endif
-
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
 MODULE     = simc.exe
@@ -63,6 +59,16 @@ LINK_FLAGS = -static
 CPP_FLAGS  += -m64
 LINK_FLAGS += -m64	
 endif
+endif
+
+ifeq (yes,${USE_CURL})
+CPP_FLAGS += -DUSE_CURL
+LINK_LIBS += -lcurl
+endif
+
+ifneq ($(OPENSSL_PATH),)
+CPP_FLAGS += -DUSE_OPENSSL -I$(OPENSSL_PATH)/include
+LINK_LIBS += -L$(OPENSSL_PATH)/lib -lssleay32
 endif
 
 SRC =\

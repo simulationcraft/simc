@@ -256,8 +256,8 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      std::string formatted_name = p -> name_str;
-      util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+      std::string formatted_name;
+      http_t::format( formatted_name, p -> name_str );
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), p -> dps, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
     }
     s += "&amp;";
@@ -1921,7 +1921,7 @@ const char* chart_t::gear_weights_wowreforge( std::string& s,
   char buffer[ 1024 ];
 
   std::string region_str, server_str, name_str;
-  
+
   // Use valid names if we are provided those
   if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
   {
@@ -1952,7 +1952,7 @@ const char* chart_t::gear_weights_wowreforge( std::string& s,
     snprintf( buffer, sizeof( buffer ), ",%s:%.*f", util_t::stat_type_abbrev( i ), p -> sim -> report_precision, value );
     s += buffer;
   }
-  
+
   util_t::urlencode( s );
 
   return s.c_str();
