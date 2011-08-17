@@ -2306,9 +2306,77 @@ struct spell_data_expr_t
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
 
+
+// Thread Wrappers ===========================================================
+
+class thread_t
+{
+private:
+  class impl_t;
+  impl_t* impl;
+public:
+  thread_t() : impl( 0 ) {}
+  void launch();
+  void wait();
+
+  virtual void run() = 0;
+
+  static void sleep( int seconds );
+  static void init();
+  static void de_init();
+};
+
+class mutex_t
+{
+private:
+  class impl_t;
+  impl_t* impl;
+  void create();
+
+  static impl_t global_lock;
+  static std::vector<mutex_t*> mutex_list;
+
+public:
+  mutex_t() : impl( 0 ) {}
+  void lock();
+  void unlock();
+
+  static void de_init();
+};
+
+class auto_lock_t
+{
+private:
+  mutex_t& mutex;
+public:
+  auto_lock_t( mutex_t& mutex_ ) : mutex( mutex_ ) { mutex.lock(); }
+  ~auto_lock_t() { mutex.unlock(); }
+};
+
+inline void thread_t::init()    {}
+inline void thread_t::de_init() { mutex_t::de_init(); }
+
+
+// Simple freelist allocator for events ======================================
+
+class event_freelist_t
+{
+private:
+  struct free_event_t { free_event_t* next; };
+  free_event_t* list;
+
+public:
+  event_freelist_t() : list( 0 ) {}
+  ~event_freelist_t();
+
+  void* allocate( std::size_t );
+  void deallocate( void* );
+};
+
+
 // Simulation Engine =========================================================
 
-struct sim_t
+struct sim_t : private thread_t
 {
   int         argc;
   char**      argv;
@@ -2541,12 +2609,14 @@ struct sim_t
   int hosted_html;
   int print_styles;
 
+private:
   // Multi-Threading
   int threads;
   std::vector<sim_t*> children;
-  void* thread_handle;
-  int  thread_index;
+  int thread_index;
+  virtual void run() { iterate(); }
 
+public:
   // Spell database access
   spell_data_expr_t* spell_query;
 
@@ -4493,29 +4563,6 @@ void replace_char( std::string& str, char old_c, char new_c  );
 void replace_str( std::string& str, const std::string& old_str, const std::string& new_str  );
 bool str_to_float( const std::string& src, double& dest );
 #endif // UNUSED
-
-// Thread Wrappers ===========================================================
-
-struct thread_t
-{
-  static void init();
-  static void de_init();
-  static void launch( sim_t* );
-  static void wait( sim_t* );
-  static void mutex_init( void*& mutex );
-  static void mutex_lock( void*& mutex );
-  static void mutex_unlock( void*& mutex );
-  static void sleep( int seconds );
-
-  class auto_lock_t
-  {
-  private:
-    void*& mutex;
-  public:
-    auto_lock_t( void*& mutex_ ) : mutex( mutex_ ) { mutex_lock( mutex ); }
-    ~auto_lock_t() { mutex_unlock( mutex ); }
-  };
-};
 
 // Armory ====================================================================
 

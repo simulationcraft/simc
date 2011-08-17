@@ -674,7 +674,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   // Report
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_rng( 0 ), hosted_html( 0 ), print_styles( false ),
   // Multi-Threading
-  threads( 0 ), thread_handle( 0 ), thread_index( index ),
+  threads( 0 ), thread_index( index ),
   spell_query( 0 )
 {
   path_str += "|profiles";
@@ -1771,7 +1771,7 @@ void sim_t::merge()
   for ( int i=0; i < num_children; i++ )
   {
     sim_t* child = children[ i ];
-    thread_t::wait( child );
+    child -> wait();
     merge( *child );
     delete child;
   }
@@ -1804,9 +1804,7 @@ void sim_t::partition()
   }
 
   for ( int i=0; i < num_children; i++ )
-  {
-    thread_t::launch( children[ i ] );
-  }
+    children[ i ] -> launch();
 }
 
 // sim_t::execute ===========================================================

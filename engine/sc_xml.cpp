@@ -43,8 +43,7 @@ struct xml_cache_entry_t
 typedef std::map<std::string, xml_cache_entry_t> xml_cache_t;
 
 static xml_cache_t xml_cache;
-
-static void* xml_mutex = 0;
+static mutex_t xml_mutex;
 
 // Forward Declarations ====================================================
 
@@ -361,7 +360,7 @@ xml_node_t* xml_t::get( sim_t*             sim,
                         cache::behavior_t  caching,
                         int                throttle_seconds )
 {
-  thread_t::auto_lock_t lock( xml_mutex );
+  auto_lock_t lock( xml_mutex );
 
   xml_cache_t::iterator p = xml_cache.find( url );
   if( p != xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )

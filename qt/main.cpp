@@ -21,20 +21,20 @@ int main(int argc, char *argv[])
   updater = new SparkleAutoUpdater("http://simc.rungie.com/simcqt/update.xml");
 
 #endif
-  
+
   if( updater)
   {
     updater->checkForUpdates();
   }
 #endif /* SIMC_NO_AUTOUPDATE */
-  
+
 #ifdef Q_WS_MAC
   QDir::home().mkpath("Library/Application Support/simcqt");
   QDir::setCurrent(QDir::home().absoluteFilePath("Library/Application Support/simcqt"));
 #endif
 
   SimulationCraftWindow w;
-    
+
   if( w.historyWidth  != 0 &&
       w.historyHeight != 0 )
   {
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
         file.close();
       }
     }
-    w.mainTab->setCurrentIndex( TAB_SIMULATE );    
+    w.mainTab->setCurrentIndex( TAB_SIMULATE );
   }
 
   return a.exec();

@@ -35,7 +35,7 @@ static const bool HTTP_CACHE_DEBUG = false;
 static const char* const url_cache_file = "simc_cache.dat";
 static const double url_cache_version = 3.1;
 
-static void* cache_mutex = 0;
+static mutex_t cache_mutex;
 
 static const unsigned int NETBUFSIZE = 1 << 15;
 
@@ -81,7 +81,7 @@ static void throttle( int seconds )
 static void cache_clear()
 {
   // writer lock
-  thread_t::auto_lock_t lock( cache_mutex );
+  auto_lock_t lock( cache_mutex );
   url_db.clear();
 }
 
@@ -498,7 +498,7 @@ bool http_t::clear_cache( sim_t* sim,
 
 void http_t::cache_load()
 {
-  thread_t::auto_lock_t lock( cache_mutex );
+  auto_lock_t lock( cache_mutex );
 
   try
   {
@@ -585,7 +585,7 @@ bool http_t::get( std::string&       result,
 {
   result.clear();
 
-  thread_t::auto_lock_t lock( cache_mutex );
+  auto_lock_t lock( cache_mutex );
 
   url_cache_entry_t& entry = url_db[ url ];
 
