@@ -1338,9 +1338,9 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     }
   };
 
-  double chance = 0.01;
+  double chance = 0.10;
 
-  if ( p -> sim-> dtr_proc_chance >= 0.0 )
+  if ( p -> sim -> dtr_proc_chance >= 0.0 )
   {
     chance = p -> sim-> dtr_proc_chance;
   }
