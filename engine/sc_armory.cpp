@@ -822,8 +822,8 @@ player_t* armory_t::download_player( sim_t* sim,
   p -> region_str = region;
   p -> server_str = server;
 
-  std::string temp_origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
-  http_t::format( p -> origin_str, temp_origin_str );
+  p -> origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
+  http_t::format( p -> origin_str );
 
   std::string last_modified;
   if ( xml_t::get_value( last_modified, sheet_xml, "character/lastModified" ) )

@@ -1863,16 +1863,7 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
 
 void SimulationCraftWindow::armoryRegionChanged( const QString& region )
 {
-  QString importUrl = "http://" + region;
-
-  if( region == "cn" )
-  {
-    importUrl += ".wowarmory.com";
-  }
-  else
-  {
-    importUrl += ".battle.net/wow/en";
-  }
+  QString importUrl = "http://" + region + ".battle.net/wow/en";
 
   battleNetView->stop();
   battleNetView->setUrl( QUrl( importUrl ) );

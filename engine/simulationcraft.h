@@ -1405,7 +1405,7 @@ struct dbc_t
   static void        create_talent_data_index( bool ptr = false );
 
   static const item_data_t* items( bool ptr = false );
-  static size_t             n_items( bool ptr = false );
+  static std::size_t        n_items( bool ptr = false );
 
   // Index access
   spell_data_t** spell_data_index() SC_CONST;
@@ -4185,8 +4185,8 @@ struct action_callback_t
   {
     if ( ! a -> player -> in_combat ) return;
 
-    size_t size = v.size();
-    for ( size_t i=0; i < size; i++ )
+    std::size_t size = v.size();
+    for ( std::size_t i=0; i < size; i++ )
     {
       action_callback_t* cb = v[ i ];
       if ( cb -> active )
@@ -4199,8 +4199,8 @@ struct action_callback_t
   }
   static void reset( std::vector<action_callback_t*>& v )
   {
-    size_t size = v.size();
-    for ( size_t i=0; i < size; i++ )
+    std::size_t size = v.size();
+    for ( std::size_t i=0; i < size; i++ )
     {
       v[ i ] -> reset();
     }
@@ -4671,6 +4671,8 @@ public:
 
   static std::string& format( std::string& encoded_url, const std::string& url )
   { format_( encoded_url, url ); return encoded_url; }
+  static std::string& format( std::string& url )
+  { format_( url, url ); return url; }
 };
 
 // XML =======================================================================

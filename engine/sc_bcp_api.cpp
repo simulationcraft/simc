@@ -19,32 +19,13 @@ inline T clamp( T x, T low, T high )
   return x < low ? low : ( high < x ? high : x );
 }
 
-// urlencode_utf8 ===========================================================
-
-inline std::string urlencode_utf8( const std::string& s )
-{
-  std::string encoded;
-  http_t::format( encoded, s );
-  return encoded;
-}
-
-// get_region_host ==========================================================
-
-std::string get_region_host( const std::string& region )
-{
-  if ( region == "cn" )
-    return "https://www.battlenet.com.cn/";
-  else
-    return "http://" + urlencode_utf8( region ) + ".battle.net/";
-}
-
 // download_id ==============================================================
 
 js_node_t* download_id( sim_t* sim, const std::string& region, const std::string& item_id, cache::behavior_t caching )
 {
   if ( item_id.empty() || item_id == "0" ) return 0;
 
-  std::string url = get_region_host( region ) + "api/wow/item/" + urlencode_utf8( item_id ) + "?locale=en_US";
+  std::string url = "http://" + region + ".battle.net/api/wow/item/" + item_id + "?locale=en_US";
 
   std::string result;
   if ( ! http_t::get( result, url, std::string(), caching ) )
@@ -61,8 +42,8 @@ js_node_t* download_guild( sim_t* sim,
                            const std::string& name,
                            cache::behavior_t  caching )
 {
-  std::string url = get_region_host( region ) + "api/wow/guild/" + urlencode_utf8( server ) + '/' +
-      urlencode_utf8( name ) + "?fields=members";
+  std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
+      name + "?fields=members";
 
   std::string result;
   if ( ! http_t::get( result, url, "\"members\"", caching ) )
@@ -265,10 +246,11 @@ player_t* download_player( sim_t*             sim,
                            const std::string& talents,
                            cache::behavior_t  caching )
 {
-  std::string battlenet = get_region_host( region );
+  std::string battlenet = "http://" + region + ".battle.net/";
   std::string url = battlenet + "api/wow/character/" +
-    urlencode_utf8( server ) + '/' + urlencode_utf8( name ) +
-      "?fields=talents,items,professions&locale=en_US";
+    server + '/' + name + "?fields=talents,items,professions&locale=en_US";
+
+  sim -> current_name = name;
 
   std::string result;
   if ( ! http_t::get( result, url, std::string(), caching ) )
@@ -286,7 +268,6 @@ player_t* download_player( sim_t*             sim,
   if ( ! js_t::get_value( name_str, profile_js, "name"  ) )
     name_str = name;
   sim -> current_name = name_str;
-  util_t::format_text( name_str, sim -> input_is_utf8 );
   if ( talents != "active" )
     name_str += '_' + talents;
 
@@ -327,10 +308,14 @@ player_t* download_player( sim_t*             sim,
   if ( ! js_t::get_value( p -> server_str, profile_js, "realm" ) )
     p -> server_str = server;
 
-  p -> origin_str = battlenet + "wow/en/character/" + urlencode_utf8( server ) + '/' + urlencode_utf8( name ) + "/advanced";
+  p -> origin_str = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
+  http_t::format( p ->origin_str );
 
   if ( js_t::get_value( p -> thumbnail_url, profile_js, "thumbnail" ) )
-    p -> thumbnail_url = battlenet + "static-render/" + urlencode_utf8( region ) + '/' + p -> thumbnail_url;
+  {
+    p -> thumbnail_url = battlenet + "static-render/" + region + '/' + p -> thumbnail_url;
+    http_t::format( p -> thumbnail_url );
+  }
 
   parse_profession( p -> professions_str, profile_js, 0 );
   parse_profession( p -> professions_str, profile_js, 1 );

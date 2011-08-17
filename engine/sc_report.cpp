@@ -3508,7 +3508,9 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                      "\t\t\t\t\t\t<table class=\"sc mt\">\n" );
     if ( p -> origin_str.compare( "unknown" ) )
     {
-      std::string  enc_url = p -> origin_str; report_t::encode_html(  enc_url );
+      std::string enc_url = p -> origin_str;
+      util_t::urldecode( enc_url );
+      report_t::encode_html( enc_url );
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                        "\t\t\t\t\t\t\t\t<th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
@@ -3517,9 +3519,10 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                        p -> origin_str.c_str(),
                        enc_url.c_str() );
     }
-    if ( !p -> talents_str.empty() )
+    if ( ! p -> talents_str.empty() )
     {
-      std::string  enc_url = p -> talents_str; report_t::encode_html(  enc_url );
+      std::string enc_url = p -> talents_str;
+      report_t::encode_html( enc_url );
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                        "\t\t\t\t\t\t\t\t<th>Talents</th>\n"
@@ -3840,23 +3843,22 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 
 // report_t::encode_html =============================================================
 
+static inline void replace_entity( std::string& str, char c, const char* text )
+{
+  std::size_t len = strlen( text );
+  std::string::size_type pos = 0;
+  while ( ( pos = str.find( c, pos ) ) != str.npos )
+  {
+    str.replace( pos, 1, text );
+    pos += len;
+  }
+}
+
 void report_t::encode_html ( std::string& buffer )
 {
-  for ( std::string::size_type pos = buffer.find( "&", 0 ); pos != std::string::npos; pos = buffer.find( "&", pos ) )
-  {
-    buffer.replace( pos, 1, "&amp;" );
-    pos+=2;
-  }
-  for ( std::string::size_type pos = buffer.find( "<", 0 ); pos != std::string::npos; pos = buffer.find( "<", pos ) )
-  {
-    buffer.replace( pos, 1, "&lt;" );
-    pos+=2;
-  }
-  for ( std::string::size_type pos = buffer.find( ">", 0 ); pos != std::string::npos; pos = buffer.find( ">", pos ) )
-  {
-    buffer.replace( pos, 1, "&gt;" );
-    pos+=2;
-  }
+  replace_entity( buffer, '&', "&amp;" );
+  replace_entity( buffer, '<', "&lt;" );
+  replace_entity( buffer, '>', "&gt;" );
 }
 
 // report_t::print_text ======================================================

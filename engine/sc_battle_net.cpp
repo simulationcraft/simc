@@ -164,8 +164,8 @@ player_t* battle_net_t::download_player( sim_t* sim,
   p -> region_str = region;
   p -> server_str = server_str;
 
-  std::string origin_str = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
-  http_t::format( p -> origin_str, origin_str );
+  p -> origin_str = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
+  http_t::format( p -> origin_str );
 
   std::string last_modified;
   if ( xml_t::get_value( last_modified, xml_t::get_node( sheet_xml, "div", "class", "summary-lastupdate" ), "." ) )

@@ -100,8 +100,8 @@ player_t* chardev_t::download_player( sim_t* sim,
     return 0;
   }
 
-  std::string origin_str = "http://chardev.org/?profile=" + id;
-  http_t::format( p -> origin_str, origin_str );
+  p -> origin_str = "http://chardev.org/?profile=" + id;
+  http_t::format( p -> origin_str );
 
   js_node_t*        gear_root = js_t::get_child( profile_js, "1" );
   js_node_t*     talents_root = js_t::get_child( profile_js, "2" );
