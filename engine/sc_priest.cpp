@@ -369,6 +369,7 @@ struct priest_t : public player_t
   virtual void      init_procs();
   virtual void      init_scaling();
   virtual void      reset();
+  virtual void      demise();
   virtual void      init_party();
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
@@ -5261,6 +5262,12 @@ void priest_t::reset()
   remove_dots_event                    = 0;
 
   init_party();
+}
+
+void priest_t::demise()
+{
+  event_t::cancel( (event_t*&) remove_dots_event );
+  player_t::demise();
 }
 
 // priest_t::fixup_atonement_stats  ==========================================
