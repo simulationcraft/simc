@@ -307,6 +307,8 @@ struct priest_t : public player_t
   bool   was_sub_25;
   int    double_dot;
 
+  struct remove_dots_event_t* remove_dots_event;
+
   priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
@@ -346,6 +348,8 @@ struct priest_t : public player_t
     cooldowns_penance                    = get_cooldown( "penance" );
 
     active_cauterizing_flame             = 0;
+
+    remove_dots_event                    = 0;
 
     create_talents();
     create_glyphs();
@@ -403,6 +407,27 @@ struct priest_t : public player_t
   virtual void pre_analyze_hook();
 
   void trigger_cauterizing_flame();
+};
+
+struct remove_dots_event_t : public event_t
+{
+  priest_t* p;
+
+  remove_dots_event_t( sim_t* sim, priest_t* pr ) : event_t( sim, pr ), p( pr )
+  {
+    double delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+    name = "mind_spike_remove_dots";
+    sim -> add_event( this, delay_duration );
+  }
+  virtual void execute()
+  {     
+    p -> remove_dots_event = 0;
+    if ( p -> dots_shadow_word_pain   -> ticking ) p -> dots_shadow_word_pain -> reset();
+    if ( p -> dots_vampiric_touch     -> ticking ) p -> dots_vampiric_touch -> reset();
+    if ( p -> dots_devouring_plague   -> ticking ) p -> dots_devouring_plague -> reset();
+    if ( p -> dots_shadow_word_pain_2 -> ticking ) p -> dots_shadow_word_pain_2 -> reset();
+    if ( p -> dots_vampiric_touch_2   -> ticking ) p -> dots_vampiric_touch_2 -> reset();
+  }
 };
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -2165,6 +2190,11 @@ struct mind_spike_t : public priest_spell_t
         p -> buffs_empowered_shadow -> trigger( 1, p -> empowered_shadows_amount() );
       }
       p -> buffs_mind_spike -> trigger( 1, effect2().percent() );
+
+      if ( ! p -> remove_dots_event )
+      {
+        p -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p );
+      }
     }
   }
 
@@ -5228,6 +5258,7 @@ void priest_t::reset()
 
   heals_echo_of_light                  = 0;
 
+  remove_dots_event                    = 0;
 
   init_party();
 }
