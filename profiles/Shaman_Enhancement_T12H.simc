@@ -4,6 +4,7 @@ shaman=Shaman_Enhancement_T12H
 origin="Shaman_CharDevSync.simc"
 level=85
 race=orc
+position=back
 role=hybrid
 use_pre_potion=1
 professions=enchanting=525/alchemy=525
@@ -24,6 +25,7 @@ actions+=/auto_attack
 actions+=/wind_shear
 actions+=/bloodlust,health_percentage<=25
 actions+=/bloodlust,if=target.time_to_die<=60
+actions+=/flame_shock,previous_action=lava_burst,if=buff.unleash_flame.up
 actions+=/use_item,name=ancient_petrified_seed
 actions+=/blood_fury
 actions+=/searing_totem
@@ -31,6 +33,7 @@ actions+=/stormstrike
 actions+=/lava_lash
 actions+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
 actions+=/unleash_elements
+actions+=/lava_burst,if=cooldown.shock.remains<cast_time&dot.flame_shock.remains>cast_time+travel_time&buff.unleash_flame.remains>cast_time
 actions+=/flame_shock,if=!ticking|buff.unleash_flame.up
 actions+=/earth_shock
 actions+=/spirit_wolf

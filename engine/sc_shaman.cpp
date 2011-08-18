@@ -29,6 +29,7 @@ enum imbue_type_t { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
 
 struct shaman_t : public player_t
 {
+  // Options
   double wf_delay;
   double wf_delay_stddev;
   double uf_expiration_delay;
@@ -305,22 +306,51 @@ struct shaman_spell_t : public spell_t
   double base_cost_reduction;
   bool   maelstrom;
   bool   is_totem;
+
+  std::string previous_action_str;
+  action_t* previous_action_match;
   
   /* Old style construction, spell data will not be accessed */
-  shaman_spell_t( const char* n, player_t* p, const school_type s, int t ) :
-    spell_t( n, p, RESOURCE_MANA, s, t ), base_cost_reduction( 0 ), maelstrom( false ), is_totem( false ) { }
+  shaman_spell_t( const char* n, player_t* p, const std::string& options_str, const school_type s, int t ) :
+    spell_t( n, p, RESOURCE_MANA, s, t ), 
+    base_cost_reduction( 0 ), maelstrom( false ), is_totem( false ), 
+    previous_action_match( 0 )
+  {
+    option_t options[] =
+    {
+      { "previous_action", OPT_STRING,  &( previous_action_str ) },
+      { NULL,              OPT_UNKNOWN, NULL                     }
+    };
+    parse_options( options, options_str );
+  }
   
   /* Class spell data based construction, spell name in s_name */
-  shaman_spell_t( const char* n, const char* s_name, player_t* p ) :
-    spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), is_totem( false )
+  shaman_spell_t( const char* n, const char* s_name, player_t* p, const std::string& options_str = std::string() ) :
+    spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), is_totem( false ),
+    previous_action_match( 0 )
   {
+    option_t options[] =
+    {
+      { "previous_action", OPT_STRING,  &( previous_action_str ) },
+      { NULL,              OPT_UNKNOWN, NULL                     }
+    };
+    parse_options( options, options_str );
+
     may_crit = true;
   }
 
   /* Spell data based construction, spell id in spell_id */
-  shaman_spell_t( const char* n, uint32_t spell_id, player_t* p ) :
-    spell_t( n, spell_id, p ), base_cost_reduction( 0.0 ), maelstrom( false ), is_totem( false )
+  shaman_spell_t( const char* n, uint32_t spell_id, player_t* p, const std::string& options_str = std::string() ) :
+    spell_t( n, spell_id, p ), base_cost_reduction( 0.0 ), maelstrom( false ), is_totem( false ),
+    previous_action_match( 0 )
   {
+    option_t options[] =
+    {
+      { "previous_action", OPT_STRING,  &( previous_action_str ) },
+      { NULL,              OPT_UNKNOWN, NULL                     }
+    };
+    parse_options( options, options_str );
+
     may_crit = true;
   }
 
@@ -342,6 +372,26 @@ struct shaman_spell_t : public spell_t
       return true;
 
     return spell_t::usable_moving();
+  }
+  
+  virtual bool ready()
+  {
+    if ( previous_action_str.empty() ) return spell_t::ready();
+    
+    if ( ! previous_action_match )
+    {
+      shaman_t* p = player -> cast_shaman();
+      previous_action_match = p -> find_action( previous_action_str );
+      assert( previous_action_match );
+    }
+      
+    if ( ! player -> last_foreground_action )
+      return false;
+
+    if ( player -> last_foreground_action != previous_action_match )
+      return false;
+    
+    return spell_t::ready();
   }
 };
 
@@ -2041,14 +2091,8 @@ void shaman_spell_t::schedule_execute()
 struct bloodlust_t : public shaman_spell_t
 {
   bloodlust_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "bloodlust", "Bloodlust", player )
+    shaman_spell_t( "bloodlust", "Bloodlust", player, options_str )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-    
     harmful = false;
   }
 
@@ -2085,16 +2129,10 @@ struct chain_lightning_t : public shaman_spell_t
   chain_lightning_overload_t* overload;
   
   chain_lightning_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "chain_lightning", "Chain Lightning", player ),
+    shaman_spell_t( "chain_lightning", "Chain Lightning", player, options_str ),
     glyph_targets( 0 )
   {
     shaman_t* p = player -> cast_shaman();
-
-    option_t options[] =
-    {
-      { NULL,           OPT_UNKNOWN, NULL          }
-    };
-    parse_options( options, options_str );
 
     maelstrom          = true;
     if ( p -> spec_shamanism -> ok() )
@@ -2169,17 +2207,11 @@ struct chain_lightning_t : public shaman_spell_t
 struct elemental_mastery_t : public shaman_spell_t
 {
   elemental_mastery_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "elemental_mastery", "Elemental Mastery", player )
+    shaman_spell_t( "elemental_mastery", "Elemental Mastery", player, options_str )
   {
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talent_elemental_mastery -> rank() );
     
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     harmful  = false;
     may_crit = false;
     may_miss = false;
@@ -2207,15 +2239,9 @@ struct fire_nova_t : public shaman_spell_t
   double m_additive;
   
   fire_nova_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "fire_nova", "Fire Nova", player ), m_additive( 0.0 )
+    shaman_spell_t( "fire_nova", "Fire Nova", player, options_str ), m_additive( 0.0 )
   {
     shaman_t* p = player -> cast_shaman();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
 
     aoe                   = -1;
 
@@ -2277,16 +2303,10 @@ struct lava_burst_t : public shaman_spell_t
   double                m_additive;
 
   lava_burst_t( player_t* player, const std::string& options_str ) :
-      shaman_spell_t( "lava_burst", "Lava Burst", player ),
+      shaman_spell_t( "lava_burst", "Lava Burst", player, options_str ),
       m_additive( 0 )
   {
     shaman_t* p = player -> cast_shaman();
-
-    option_t options[] =
-    {
-      { NULL,          OPT_UNKNOWN, NULL         }
-    };
-    parse_options( options, options_str );
 
     // Shamanism
     if ( p -> spec_shamanism -> ok() )
@@ -2369,15 +2389,9 @@ struct lightning_bolt_t : public shaman_spell_t
   lightning_bolt_overload_t* overload;
 
   lightning_bolt_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "lightning_bolt", "Lightning Bolt", player )
+    shaman_spell_t( "lightning_bolt", "Lightning Bolt", player, options_str )
   {
     shaman_t* p = player -> cast_shaman();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
 
     maelstrom          = true;
     // Shamanism
@@ -2481,18 +2495,12 @@ struct shamans_swiftness_t : public shaman_spell_t
   dot_t*      sub_dot;
 
   shamans_swiftness_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "natures_swiftness", "Nature's Swiftness", player ),
+    shaman_spell_t( "natures_swiftness", "Nature's Swiftness", player, options_str ),
     sub_cooldown(0), sub_dot(0)
   {
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talent_natures_swiftness -> rank() );
     
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     if ( ! options_str.empty() )
     {
       // This will prevent Natures Swiftness from being called before the desired "fast spell" is ready to be cast.
@@ -2529,16 +2537,10 @@ struct shamans_swiftness_t : public shaman_spell_t
 struct shamanistic_rage_t : public shaman_spell_t
 {
   shamanistic_rage_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "shamanistic_rage", "Shamanistic Rage", player )
+    shaman_spell_t( "shamanistic_rage", "Shamanistic Rage", player, options_str )
   {
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talent_shamanistic_rage -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
 
     harmful = false;
   }
@@ -2566,16 +2568,10 @@ struct shamanistic_rage_t : public shaman_spell_t
 struct spirit_wolf_spell_t : public shaman_spell_t
 {
   spirit_wolf_spell_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "spirit_wolf", "Feral Spirit", player )
+    shaman_spell_t( "spirit_wolf", "Feral Spirit", player, options_str )
   {
     shaman_t* p = player -> cast_shaman();
     check_talent( p -> talent_feral_spirit -> rank() );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
 
     harmful = false;
   }
@@ -2595,16 +2591,10 @@ struct thunderstorm_t : public shaman_spell_t
   double bonus;
   
   thunderstorm_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "thunderstorm", "Thunderstorm", player ), bonus( 0 )
+    shaman_spell_t( "thunderstorm", "Thunderstorm", player, options_str ), bonus( 0 )
   {
     shaman_t* p = player -> cast_shaman();
     check_spec( TREE_ELEMENTAL );
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
 
     cooldown -> duration += p -> glyph_thunder -> mod_additive( P_COOLDOWN );
     bonus                 = 
@@ -2638,14 +2628,8 @@ struct unleash_elements_t : public shaman_spell_t
   unleash_flame_t* flame;
   
   unleash_elements_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "unleash_elements", "Unleash Elements", player )
+    shaman_spell_t( "unleash_elements", "Unleash Elements", player, options_str )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     may_crit    = false;
     may_miss    = false;
     
@@ -2688,15 +2672,9 @@ struct earth_shock_t : public shaman_spell_t
   int consume_threshold;
   
   earth_shock_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "earth_shock", "Earth Shock", player ), consume_threshold( 0 )
+    shaman_spell_t( "earth_shock", "Earth Shock", player, options_str ), consume_threshold( 0 )
   {
     shaman_t* p = player -> cast_shaman();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
     
     base_dd_multiplier   *= 1.0 + 
       p -> talent_concussion -> mod_additive( P_GENERIC );
@@ -2746,15 +2724,9 @@ struct flame_shock_t : public shaman_spell_t
          m_td_additive;
   
   flame_shock_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "flame_shock", "Flame Shock", player ), m_dd_additive( 0 ), m_td_additive( 0 )
+    shaman_spell_t( "flame_shock", "Flame Shock", player, options_str ), m_dd_additive( 0 ), m_td_additive( 0 )
   {
     shaman_t* p = player -> cast_shaman();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
 
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
@@ -2857,7 +2829,7 @@ struct frost_shock_t : public shaman_spell_t
 struct wind_shear_t : public shaman_spell_t
 {
   wind_shear_t( player_t* player, const std::string& options_str ) :
-      shaman_spell_t( "wind_shear", "Wind Shear", player )
+      shaman_spell_t( "wind_shear", "Wind Shear", player, options_str )
   {
     shaman_t* p = player -> cast_shaman();
     
@@ -2884,15 +2856,9 @@ struct shaman_totem_t : public shaman_spell_t
   totem_type totem;
     
   shaman_totem_t( const char * name, const char * totem_name, player_t* player, const std::string& options_str, totem_type t ) :
-    shaman_spell_t( name, totem_name, player ), totem_duration( 0 ), totem_bonus( 0 ), totem( t )
+    shaman_spell_t( name, totem_name, player, options_str ), totem_duration( 0 ), totem_bonus( 0 ), totem( t )
   {
     shaman_t* p = player -> cast_shaman();
-
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
 
     is_totem             = true;
     harmful              = false;
@@ -3001,12 +2967,6 @@ struct earth_elemental_totem_t : public shaman_totem_t
   earth_elemental_totem_t( player_t* player, const std::string& options_str ) :
     shaman_totem_t( "earth_elemental_totem", "Earth Elemental Totem", player, options_str, TOTEM_EARTH )
   {
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
   }
@@ -3038,11 +2998,6 @@ struct fire_elemental_totem_t : public shaman_totem_t
     shaman_totem_t( "fire_elemental_totem", "Fire Elemental Totem", player, options_str, TOTEM_FIRE )
   {
     shaman_t* p = player -> cast_shaman();
-    option_t options[] =
-    {
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
 
     cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive( P_COOLDOWN );
     // Skip a pointless cancel call (and debug=1 cancel line)
@@ -4229,6 +4184,7 @@ void shaman_t::init_actions()
   {
     if ( primary_tree() == TREE_ENHANCEMENT )
     {
+      /*
       bool caster_mainhand = false;
       // Caster weapon mainhand check, affects priority list very slightly
       for ( unsigned i = 0; i < items.size(); i++ )
@@ -4238,7 +4194,7 @@ void shaman_t::init_actions()
           caster_mainhand = true;
           break;
         }
-      }
+      }*/
 
       action_list_str  = "flask,type=winds/food,type=seafood_magnifique_feast";
       
@@ -4252,6 +4208,7 @@ void shaman_t::init_actions()
       action_list_str += "/auto_attack";
       action_list_str += "/wind_shear";
       action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
+      action_list_str += "/flame_shock,previous_action=lava_burst,if=buff.unleash_flame.up";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
@@ -4271,7 +4228,11 @@ void shaman_t::init_actions()
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       action_list_str += "/lava_lash";
       action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
-      if ( level > 80 ) action_list_str += "/unleash_elements";
+      if ( level > 80 ) 
+      {
+        action_list_str += "/unleash_elements";
+        action_list_str += "/lava_burst,if=cooldown.shock.remains<cast_time&dot.flame_shock.remains>cast_time+travel_time&buff.unleash_flame.remains>cast_time";
+      }
       action_list_str += "/flame_shock,if=!ticking|buff.unleash_flame.up";
       action_list_str += "/earth_shock";
       if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
@@ -4280,8 +4241,8 @@ void shaman_t::init_actions()
       action_list_str += "/spiritwalkers_grace,moving=1";
       action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
       
-      if ( caster_mainhand )
-        action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+travel_time";
+      // if ( caster_mainhand )
+      //  action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+travel_time";
     }
     else
     {
