@@ -158,11 +158,15 @@ bool parse_glyphs( player_t* p, js_node_t* build )
       {
         for( std::size_t i = 0; i < children.size(); ++i )
         {
-          std::string glyph_id;
           std::string glyph_name;
-          if ( js_t::get_value( glyph_id, children[ i ], "item" ) &&
-               item_t::download_glyph( p, glyph_name, glyph_id ) )
+          if ( js_t::get_value( glyph_name, children[ i ], "name" ) )
           {
+            // FIXME: Move this common boilerplate stuff into util_t where all the data
+            //        sources can use it instead of cut'n'pasting.
+            if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+            else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+            armory_t::format( glyph_name );
+
             if ( p -> glyphs_str.length() )
               p -> glyphs_str += '/';
             p -> glyphs_str += glyph_name;
@@ -250,6 +254,7 @@ player_t* download_player( sim_t*             sim,
   std::string url = battlenet + "api/wow/character/" +
     server + '/' + name + "?fields=talents,items,professions&locale=en_US";
 
+  sim -> current_slot = 0;
   sim -> current_name = name;
 
   std::string result;
@@ -259,7 +264,7 @@ player_t* download_player( sim_t*             sim,
   js_node_t* profile_js = js_t::create( sim, result );
   if ( ! profile_js )
   {
-    sim -> errorf( "Unable to download player %s from BCP API.\n", name.c_str() );
+    sim -> errorf( "BCP API: Unable to download player '%s'\n", name.c_str() );
     return 0;
   }
   if ( sim -> debug ) js_t::print( profile_js, sim -> output_file );
@@ -274,7 +279,7 @@ player_t* download_player( sim_t*             sim,
   int level;
   if ( ! js_t::get_value( level, profile_js, "level"  ) )
   {
-    sim -> errorf( "Unable to extract player level from BCP API '%s'.\n", url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", url.c_str() );
     return 0;
   }
   level = clamp( level, 60, 85 );
@@ -282,7 +287,7 @@ player_t* download_player( sim_t*             sim,
   int cid;
   if ( ! js_t::get_value( cid, profile_js, "class" ) )
   {
-    sim -> errorf( "Unable to extract player class from BCP API '%s'.\n", url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", url.c_str() );
     return 0;
   }
   std::string class_str = util_t::player_type_string( util_t::translate_class_id( cid ) );
@@ -290,7 +295,7 @@ player_t* download_player( sim_t*             sim,
   int rid;
   if ( ! js_t::get_value( rid, profile_js, "race" ) )
   {
-    sim -> errorf( "Unable to extract player race from BCP API '%s'.\n", url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", url.c_str() );
     return 0;
   }
 
@@ -298,7 +303,7 @@ player_t* download_player( sim_t*             sim,
   sim -> active_player = p;
   if ( ! p )
   {
-    sim -> errorf( "Unable to build player with class '%s' and name '%s' from BCP API '%s'.\n",
+    sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
                    class_str.c_str(), name_str.c_str(), url.c_str() );
     return 0;
   }
@@ -323,7 +328,7 @@ player_t* download_player( sim_t*             sim,
   js_node_t* build = js_t::get_node( profile_js, "talents" );
   if ( ! build )
   {
-    sim -> errorf( "BCP API did not return talents for player '%s' from URL '%s'.\n",
+    sim -> errorf( "BCP API: Player '%s' from URL '%s' has no talents.\n",
                    name_str.c_str(), url.c_str() );
     return 0;
   }
@@ -331,7 +336,7 @@ player_t* download_player( sim_t*             sim,
   build = pick_talents( build, talents );
   if ( ! build )
   {
-    sim -> errorf( "Invalid talent spec '%s' for player '%s'.\n",
+    sim -> errorf( "BCP API: Invalid talent spec '%s' for player '%s'.\n",
                    talents.c_str(), name_str.c_str() );
     return 0;
   }
@@ -357,26 +362,31 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
   if ( ! js )
   {
     if ( caching != cache::ONLY )
-      item.sim -> errorf( "Player %s unable to download item id %s from Blizzard at slot %s.\n", item.player -> name(), item_id.c_str(), item.slot_name() );
+    {
+      item.sim -> errorf( "BCP API: Player '%s' unable to download item id '%s' at slot %s.\n",
+                          item.player -> name(), item_id.c_str(), item.slot_name() );
+    }
     return false;
   }
   if ( item.sim -> debug ) js_t::print( js, item.sim -> output_file );
 
   if ( ! js_t::get_value( item.armory_name_str, js, "name" ) )
   {
-    item.sim -> errorf( "Player %s unable to parse item %s name from BCP API at slot %s.\n", item.player -> name(), item_id.c_str(), item.slot_name() );
+    item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%s' name at slot '%s'.\n",
+                        item.player -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
   armory_t::format( item.armory_name_str );
 
   if ( ! js_t::get_value( item.armory_id_str, js, "id" ) )
   {
-    item.sim -> errorf( "Player %s unable to parse item %s id from BCP API at slot %s.\n", item.player -> name(), item_id.c_str(), item.slot_name() );
+    item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%s' id at slot '%s'.\n",
+                        item.player -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
   // Err, success?
-  return true;
+  assert( ! "This is finished." );
 }
 
 // bcp_api::download_guild ==================================================
@@ -426,7 +436,7 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
     player_t* player = download_player( sim, region, server, cname, "active", caching );
     if ( !player )
     {
-      sim -> errorf( "BCP API failed for '%s' ...\n", cname.c_str() );
+      sim -> errorf( "BCP API: Failed to download player '%s' ...\n", cname.c_str() );
       player = wowhead_t::download_player( sim, region, server, cname, "active", caching );
     }
     if ( !player )
@@ -443,12 +453,13 @@ bool download_glyph( player_t*          player,
                      const std::string& glyph_id,
                      cache::behavior_t  caching )
 {
-  // BCP API localizes the glyph names, but we need english; so get from the US region.
-  js_node_t* item = download_id( player -> sim, "us", glyph_id, caching );
+  js_node_t* item = download_id( player -> sim,
+                                 player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str,
+                                 glyph_id, caching );
   if ( ! item || ! js_t::get_value( glyph_name, item, "name" ) )
   {
     if ( caching != cache::ONLY )
-      player -> sim -> errorf( "Unable to download glyph id %s from Blizzard\n", glyph_id.c_str() );
+      player -> sim -> errorf( "BCP API: Unable to download glyph id '%s'\n", glyph_id.c_str() );
     return false;
   }
 
