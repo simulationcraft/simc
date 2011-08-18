@@ -307,7 +307,7 @@ struct priest_t : public player_t
   bool   was_sub_25;
   int    double_dot;
 
-  struct remove_dots_event_t* remove_dots_event;
+  event_t* remove_dots_event;
 
   priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
   {
