@@ -385,9 +385,6 @@ struct shaman_spell_t : public spell_t
       assert( previous_action_match );
     }
       
-    if ( ! player -> last_foreground_action )
-      return false;
-
     if ( player -> last_foreground_action != previous_action_match )
       return false;
     
