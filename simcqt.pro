@@ -4,7 +4,10 @@
 
 QT += core gui network webkit
 
-win32:LIBS += libwsock32 libwininet
+win32 {
+  LIBS += libwsock32 libwininet
+  RC_FILE += simcqt.rc
+}
 
 TARGET = ../SimulationCraft
 
