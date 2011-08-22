@@ -1238,8 +1238,8 @@ void SimulationCraftWindow::importFinished()
     simulateTextHistory.add( importThread->profile );
 
     QString label = QString::fromUtf8( importThread->player->name_str.c_str() );
-    while( label.size() < 20 ) label += " ";
-    label += importThread->player->origin_str.c_str();
+    while( label.size() < 20 ) label += ' ';
+    label += QString::fromUtf8( importThread->player->origin_str.c_str() );
 
     bool found = false;
     for( int i=0; i < historyList->count() && ! found; i++ )
