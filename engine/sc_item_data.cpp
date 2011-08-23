@@ -76,7 +76,7 @@ static bool parse_item_quality( item_t& item, const item_data_t* item_data )
   item.armory_quality_str.clear();
 
   if ( item_data -> quality == 5 )
-    item.armory_quality_str = "artifact";
+    item.armory_quality_str = "legendary";
   else if ( item_data -> quality == 4 )
     item.armory_quality_str = "epic";
   else if ( item_data -> quality == 3 )

@@ -50,7 +50,7 @@ finger2=crystal_prison_band,heroic=1,ilevel=391,quality=epic,stats=256int_384sta
 trinket1=shard_of_woe,heroic=1,ilevel=379,quality=epic,use=1935haste_10dur_60cd
 trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_1269.5nature_15%_10stack_2.5cd_chance
 back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_hit,enchant=50int
-main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=artifact,stats=426int_730sta_314hit_271haste_2786sp,reforge=haste_mastery,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,reforge=haste_mastery,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste,reforge=haste_mastery
 # Gear Summary
 # gear_strength=20
