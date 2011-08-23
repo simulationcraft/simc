@@ -61,6 +61,7 @@
 #include <cmath>
 #include <sstream>
 #include <cctype>
+#include <memory>
 
 #include "data_enums.hh"
 
@@ -2322,26 +2323,23 @@ public:
   virtual void run() = 0;
 
   static void sleep( int seconds );
-  static void init();
-  static void de_init();
+  static void init() {}
+  static void de_init() {}
 };
 
 class mutex_t
 {
 private:
   class impl_t;
-  impl_t* impl;
+  std::auto_ptr<impl_t> impl;
   void create();
 
   static impl_t global_lock;
-  static std::vector<mutex_t*> mutex_list;
 
 public:
-  mutex_t() : impl( 0 ) {}
+  ~mutex_t();
   void lock();
   void unlock();
-
-  static void de_init();
 };
 
 class auto_lock_t
@@ -2352,9 +2350,6 @@ public:
   auto_lock_t( mutex_t& mutex_ ) : mutex( mutex_ ) { mutex.lock(); }
   ~auto_lock_t() { mutex.unlock(); }
 };
-
-inline void thread_t::init()    {}
-inline void thread_t::de_init() { mutex_t::de_init(); }
 
 
 // Simple freelist allocator for events ======================================

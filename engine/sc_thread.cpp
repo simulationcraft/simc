@@ -123,19 +123,13 @@ void thread_t::sleep( int seconds )
 #endif // POSIX
 
 mutex_t::impl_t mutex_t::global_lock;
-std::vector<mutex_t*> mutex_t::mutex_list;
 
-// mutex_t::de_init =========================================================
+// mutex_t::~mutex_t =======================================================
 
-void mutex_t::de_init()
+mutex_t::~mutex_t()
 {
-  while ( ! mutex_list.empty() )
-  {
-    mutex_t* m = mutex_list.back();
-    mutex_list.pop_back();
-    delete m -> impl;
-    m -> impl = 0;
-  }
+  // ~mutex_t has to be out-of-line here where impl_t is completely defined
+  //  so that auto_ptr can destroy impl properly.
 }
 
 // mutex_t::create =========================================================
@@ -144,11 +138,8 @@ inline void mutex_t::create()
 {
   global_lock.lock();
 
-  if ( ! impl )
-  {
-    impl = new impl_t;
-    mutex_list.push_back( this );
-  }
+  if ( ! impl.get() )
+    impl.reset( new impl_t );
 
   global_lock.unlock();
 }
@@ -157,14 +148,14 @@ inline void mutex_t::create()
 
 void mutex_t::lock()
 {
-  if ( ! impl ) create();
+  if ( ! impl.get() ) create();
   impl -> lock();
 }
 
 // mutex_t::unlock ==========================================================
 
 void mutex_t::unlock()
-{ impl -> unlock(); }
+{ assert( impl.get() != 0 ); impl -> unlock(); }
 
 // launch ===================================================================
 
@@ -182,6 +173,7 @@ void thread_t::launch()
 
 void thread_t::wait()
 {
+  assert( impl );
   if ( impl )
   {
     impl -> wait();
