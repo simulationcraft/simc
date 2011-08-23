@@ -1570,6 +1570,17 @@ struct arcane_power_t : public mage_spell_t
     mage_spell_t::execute();
     p -> buffs_arcane_power -> trigger( 1, effect1().percent() );
   }
+
+  virtual bool ready()
+  {
+    mage_t* p = player -> cast_mage();
+    
+    // Can't trigger AP if PoM is up
+    if ( p -> buffs_presence_of_mind -> check() )
+      return false;
+
+    return mage_spell_t::ready();
+  }
 };
 
 // Blast Wave Spell =========================================================
@@ -3230,7 +3241,7 @@ void mage_t::init_buffs()
   buffs_mage_armor           = new mage_armor_buff_t( this );
   buffs_molten_armor         = new buff_t( this, spells.molten_armor,          NULL );
 
-  buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2 );
+  buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2,    0, 0, talents.arcane_potency ->rank() );
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_presence_of_mind     = new buff_t( this, "presence_of_mind",     1 );
