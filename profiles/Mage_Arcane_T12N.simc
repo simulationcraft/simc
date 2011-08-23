@@ -30,7 +30,7 @@ actions+=/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20
 actions+=/presence_of_mind
 actions+=/arcane_blast,if=target.time_to_die<=50|cooldown.evocation.remains<=50
 actions+=/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up
-actions+=/arcane_missiles
+actions+=/arcane_missiles,if=buff.arcane_missiles.react
 actions+=/arcane_barrage,if=buff.arcane_blast.stack>0
 actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1

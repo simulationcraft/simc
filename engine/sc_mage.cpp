@@ -1180,13 +1180,12 @@ void mage_spell_t::execute()
 
 double mage_spell_t::execute_time() SC_CONST
 {
-  double t = spell_t::execute_time();
   mage_t* p = player -> cast_mage();
 
   if ( ! channeled && p -> buffs_presence_of_mind -> up() )
     return 0;
 
-  return t;
+  return spell_t::execute_time();
 }
 
 // mage_spell_t::travel =====================================================
@@ -1546,7 +1545,7 @@ struct arcane_missiles_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    if ( ! p -> buffs_arcane_missiles -> may_react() )
+    if ( ! p -> buffs_arcane_missiles -> up() )
       return false;
     return mage_spell_t::ready();
   }
@@ -1575,7 +1574,7 @@ struct arcane_power_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    
+
     // Can't trigger AP if PoM is up
     if ( p -> buffs_presence_of_mind -> check() )
       return false;
@@ -3333,9 +3332,9 @@ void mage_t::init_actions()
 
     // Flask
     if ( level >= 80 )
-      action_list_str += "/flask,type=draconic_mind";
+      action_list_str = "flask,type=draconic_mind";
     else if ( level >= 75 )
-      action_list_str += "/flask,type=frost_wyrm";
+      action_list_str = "flask,type=frost_wyrm";
 
     // Food
     if ( level >= 80 ) action_list_str += "/food,type=seafood_magnifique_feast";
@@ -3467,7 +3466,7 @@ void mage_t::init_actions()
         action_list_str += "/arcane_blast,if=target.time_to_die<35|cooldown.evocation.remains<=35";
         action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast";
       }
-      action_list_str += "/arcane_missiles";
+      action_list_str += "/arcane_missiles,if=buff.arcane_missiles.react";
       action_list_str += "/arcane_barrage,if=buff.arcane_blast.stack>0"; // when AM hasn't procced
       action_list_str += "/arcane_barrage,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
