@@ -1142,7 +1142,8 @@ void mage_spell_t::execute()
   if ( consumes_arcane_blast ) p -> buffs_arcane_blast -> expire();
 
   p -> buffs_arcane_potency -> decrement();
-  if ( ! channeled ) p -> buffs_presence_of_mind -> expire();
+  if ( ! channeled && spell_t::execute_time() > 0 )
+    p -> buffs_presence_of_mind -> expire();
 
   if ( fof_frozen )
   {
@@ -1182,10 +1183,12 @@ double mage_spell_t::execute_time() SC_CONST
 {
   mage_t* p = player -> cast_mage();
 
-  if ( ! channeled && p -> buffs_presence_of_mind -> up() )
+  double t = spell_t::execute_time();
+
+  if ( ! channeled && t > 0 && p -> buffs_presence_of_mind -> up() )
     return 0;
 
-  return spell_t::execute_time();
+  return t;
 }
 
 // mage_spell_t::travel =====================================================
