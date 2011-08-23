@@ -1781,7 +1781,7 @@ struct deep_freeze_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    if ( ! p -> buffs_fingers_of_frost -> may_react() )
+    if ( ! p -> buffs_fingers_of_frost -> up() )
       return false;
     return mage_spell_t::ready();
   }
@@ -3513,7 +3513,7 @@ void mage_t::init_actions()
         action_list_str += "/berserking,if=buff.icy_veins.down&buff.bloodlust.down";
       }
       if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down";
-      if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze";
+      if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze,if=buff.fingers_of_frost.react";
       if ( talents.brain_freeze -> rank() )
       {
         action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react";

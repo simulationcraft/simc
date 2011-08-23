@@ -1939,7 +1939,7 @@ struct aimed_shot_mm_t : public hunter_attack_t
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    if( ! p -> buffs_master_marksman_fire -> may_react() )
+    if( ! p -> buffs_master_marksman_fire -> up() )
       return false;
     return hunter_attack_t::ready();
   }
