@@ -4,6 +4,7 @@ mage=Mage_Arcane_T12H
 origin="http://chardev.org/?profile=164388"
 level=85
 race=gnome
+position=back
 role=spell
 use_pre_potion=1
 professions=jewelcrafting=525/enchanting=525
@@ -26,7 +27,7 @@ actions+=/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>1
 actions+=/mana_gem,if=buff.arcane_blast.stack=4&(target.time_to_die<=50|cooldown.evocation.remains<=50)
 actions+=/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50
 actions+=/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)
-actions+=/presence_of_mind,arcane_blast
+actions+=/presence_of_mind
 actions+=/arcane_blast,if=target.time_to_die<=50|cooldown.evocation.remains<=50
 actions+=/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up
 actions+=/arcane_missiles

@@ -598,7 +598,6 @@ void action_t::player_buff()
         player_multiplier *= 0.90;
       }
     }
-
     else if ( school != SCHOOL_PHYSICAL )
     {
       player_penetration = p -> composite_spell_penetration();

@@ -4,6 +4,7 @@ mage=Mage_Arcane_T12H_DTR
 origin="http://chardev.org/?profile=164393"
 level=85
 race=gnome
+position=back
 role=spell
 use_pre_potion=1
 professions=jewelcrafting=525/enchanting=525
@@ -26,7 +27,7 @@ actions+=/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>1
 actions+=/mana_gem,if=buff.arcane_blast.stack=4&(target.time_to_die<=50|cooldown.evocation.remains<=50)
 actions+=/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50
 actions+=/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)
-actions+=/presence_of_mind,arcane_blast
+actions+=/presence_of_mind
 actions+=/arcane_blast,if=target.time_to_die<=50|cooldown.evocation.remains<=50
 actions+=/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up
 actions+=/arcane_missiles
@@ -49,22 +50,22 @@ finger2=crystal_prison_band,heroic=1,ilevel=391,quality=epic,stats=256int_384sta
 trinket1=shard_of_woe,heroic=1,ilevel=379,quality=epic,use=1935haste_10dur_60cd
 trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_1269.5nature_15%_10stack_2.5cd_chance
 back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_hit,enchant=50int
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,stats=252haste_366hit_459int_2973sp_779sta,reforge=haste_mastery,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_928min_1393max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=artifact,stats=426int_730sta_314hit_271haste_2786sp,reforge=haste_mastery,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste,reforge=haste_mastery
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=7193
-# gear_intellect=6081
+# gear_stamina=7144
+# gear_intellect=6048
 # gear_spirit=20
-# gear_spell_power=2973
-# gear_hit_rating=1808
+# gear_spell_power=2786
+# gear_hit_rating=1756
 # gear_crit_rating=982
-# gear_haste_rating=1659
-# gear_mastery_rating=1675
+# gear_haste_rating=1670
+# gear_mastery_rating=1683
 # gear_armor=9372
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
 # trinket1=shard_of_woe,heroic=1
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_928min_1393max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1304max,enchant=power_torrent

@@ -4,6 +4,7 @@ mage=Mage_Frost_T12H
 origin="http://chardev.org/?profile=164405"
 level=85
 race=orc
+position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/enchanting=525

@@ -4,6 +4,7 @@ mage=Mage_Fire_T12H
 origin="http://chardev.org/?profile=164407"
 level=85
 race=troll
+position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/enchanting=525

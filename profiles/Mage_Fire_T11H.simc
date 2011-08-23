@@ -4,6 +4,7 @@ mage=Mage_Fire_T11H
 origin="http://chardev.org/?profile=88793"
 level=85
 race=troll
+position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
@@ -41,7 +42,7 @@ wrists=bracers_of_the_bronze_flight,heroic=1,type=cloth,ilevel=372,quality=epic,
 hands=firelords_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_266int_429sta_171crit_191mastery,reforge=mastery_hit,gems=40int,enchant=65mastery
 finger1=planetary_band_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143hit_143crit,reforge=crit_haste,suffix=129
 finger2=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=215int_322sta_143mastery_143haste,reforge=mastery_hit
-trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd
+trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onharmfulspellcast_2178mastery_10%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_209int_344sta_153mastery_133haste,reforge=mastery_hit,gems=40int,enchant=lightweave_embroidery
 main_hand=stormwake_the_tempests_reach_of_the_wildfire,heroic=1,ilevel=372,quality=epic,stats=2207sp_247sta_165int_110hit_110crit,reforge=crit_haste,enchant=power_torrent,weapon=sword_1.60speed_292min_543max,suffix=129

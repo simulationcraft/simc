@@ -4,6 +4,7 @@ mage=Mage_Arcane_T11H
 origin="http://chardev.org/?profile=35357"
 level=85
 race=gnome
+position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
@@ -26,7 +27,7 @@ actions+=/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>1
 actions+=/mana_gem,if=buff.arcane_blast.stack=4&(target.time_to_die<=50|cooldown.evocation.remains<=50)
 actions+=/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50
 actions+=/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)
-actions+=/presence_of_mind,arcane_blast
+actions+=/presence_of_mind
 actions+=/arcane_blast,if=target.time_to_die<=50|cooldown.evocation.remains<=50
 actions+=/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up
 actions+=/arcane_missiles
@@ -46,7 +47,7 @@ wrists=bracers_of_the_dark_mother,heroic=1,type=cloth,ilevel=379,quality=epic,st
 hands=firelords_gloves,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_266int_429sta_171crit_191mastery,reforge=mastery_hit,gems=40int,enchant=65mastery
 finger1=planetary_band_of_the_flameblaze,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143mastery_143hit,suffix=114
 finger2=signet_of_the_fifth_circle,heroic=1,ilevel=372,quality=epic,stats=215int_322sta_143mastery_143haste,reforge=haste_hit
-trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onspellcast_2178mastery_10%_20dur_100cd
+trinket1=theralions_mirror,heroic=1,ilevel=372,quality=epic,stats=363int,equip=onharmfulspellcast_2178mastery_10%_20dur_100cd
 trinket2=shard_of_woe,heroic=1,ilevel=379,quality=epic,use=1935haste_10dur_60cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_209int_344sta_153mastery_133haste,reforge=mastery_hit,gems=40int,enchant=lightweave_embroidery
 main_hand=stormwake_the_tempests_reach_of_the_flameblaze,heroic=1,ilevel=372,quality=epic,stats=2207sp_247sta_165int_110mastery_110hit,enchant=power_torrent,weapon=sword_1.60speed_292min_543max,suffix=114

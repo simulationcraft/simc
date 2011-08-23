@@ -42,6 +42,7 @@ struct mage_t : public player_t
   buff_t* buffs_mage_armor;
   buff_t* buffs_missile_barrage;
   buff_t* buffs_molten_armor;
+  buff_t* buffs_presence_of_mind;
 
   // Cooldowns
   cooldown_t* cooldowns_deep_freeze;
@@ -365,6 +366,7 @@ struct mage_spell_t : public spell_t
   virtual double cost() SC_CONST;
   virtual double haste() SC_CONST;
   virtual void   execute();
+  virtual double execute_time() SC_CONST;
   virtual void   travel( player_t* t, int travel_result, double travel_dmg );
   virtual void   consume_resource();
   virtual void   player_buff();
@@ -1140,6 +1142,7 @@ void mage_spell_t::execute()
   if ( consumes_arcane_blast ) p -> buffs_arcane_blast -> expire();
 
   p -> buffs_arcane_potency -> decrement();
+  p -> buffs_presence_of_mind -> expire();
 
   if ( fof_frozen )
   {
@@ -1170,6 +1173,19 @@ void mage_spell_t::execute()
   {
     p -> buffs_arcane_missiles -> trigger();
   }
+}
+
+// mage_spell_t::execute_time ===============================================
+
+double mage_spell_t::execute_time() SC_CONST
+{
+  double t = spell_t::execute_time();
+  mage_t* p = player -> cast_mage();
+    
+  if ( p -> buffs_presence_of_mind -> up() )
+    return 0;
+
+  return t;
 }
 
 // mage_spell_t::travel =====================================================
@@ -2582,8 +2598,6 @@ struct molten_armor_t : public mage_spell_t
 
 struct presence_of_mind_t : public mage_spell_t
 {
-  action_t* fast_action;
-
   presence_of_mind_t( mage_t* p, const std::string& options_str ) :
       mage_spell_t( "presence_of_mind", 12043, p )
   {
@@ -2592,39 +2606,14 @@ struct presence_of_mind_t : public mage_spell_t
     harmful = false;
 
     cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect1().percent();
-
-    if ( options_str.empty() )
-    {
-      sim -> errorf( "Player %s: The presence_of_mind action must be coupled with a second action.", p -> name() );
-      sim -> cancel();
-    }
-
-    std::string spell_name    = options_str;
-    std::string spell_options = "";
-
-    std::string::size_type cut_pt = spell_name.find_first_of( "," );
-
-    if ( cut_pt != spell_name.npos )
-    {
-      spell_options = spell_name.substr( cut_pt + 1 );
-      spell_name    = spell_name.substr( 0, cut_pt );
-    }
-
-    fast_action = p -> create_action( spell_name.c_str(), spell_options.c_str() );
-    fast_action -> base_execute_time = 0;
-    fast_action -> background = true;
   }
 
   virtual void execute()
   {
     mage_spell_t::execute();
     mage_t* p = player -> cast_mage();
-    p -> aura_gain( "Presence of Mind" );
-    p -> last_foreground_action = fast_action;
+    p -> buffs_presence_of_mind -> trigger();
     p -> buffs_arcane_potency -> trigger( 2 );
-    fast_action -> execute();
-    p -> aura_loss( "Presence of Mind" );
-    update_ready();
   }
 
   virtual bool ready()
@@ -2635,7 +2624,7 @@ struct presence_of_mind_t : public mage_spell_t
     if ( p -> buffs_arcane_power -> check() )
       return false;
 
-    return( mage_spell_t::ready() && fast_action -> ready() );
+    return mage_spell_t::ready();
   }
 };
 
@@ -3239,6 +3228,7 @@ void mage_t::init_buffs()
   buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2 );
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
+  buffs_presence_of_mind     = new buff_t( this, "presence_of_mind",     1 );
 }
 
 // mage_t::init_gains =======================================================
@@ -3447,7 +3437,7 @@ void mage_t::init_actions()
 
       if ( talents.presence_of_mind -> rank() )
       {
-        action_list_str += "/presence_of_mind,arcane_blast";
+        action_list_str += "/presence_of_mind";
       }
 
       if ( has_shard )

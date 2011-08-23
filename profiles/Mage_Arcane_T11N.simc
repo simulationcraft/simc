@@ -4,6 +4,7 @@ mage=Mage_Arcane_T11N
 origin="http://chardev.org/?profile=34631"
 level=85
 race=gnome
+position=back
 role=spell
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
@@ -25,7 +26,7 @@ actions+=/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>1
 actions+=/mana_gem,if=buff.arcane_blast.stack=4&(target.time_to_die<=50|cooldown.evocation.remains<=50)
 actions+=/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50
 actions+=/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)
-actions+=/presence_of_mind,arcane_blast
+actions+=/presence_of_mind
 actions+=/arcane_blast,if=target.time_to_die<35|cooldown.evocation.remains<=35
 actions+=/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast
 actions+=/arcane_missiles
@@ -45,7 +46,7 @@ wrists=bracers_of_the_bronze_flight,type=cloth,ilevel=359,quality=epic,stats=547
 hands=firelords_gloves,type=cloth,ilevel=359,quality=epic,stats=782armor_233int_380sta_149crit_169mastery,reforge=crit_hit,gems=40int,enchant=65mastery
 finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=190int_286sta_127mastery_127haste,reforge=haste_hit,enchant=40int
 finger2=planetary_band_of_the_flameblaze,ilevel=359,quality=epic,stats=285sta_190int_126mastery_126hit,reforge=hit_haste,enchant=40int,suffix=114
-trinket1=theralions_mirror,ilevel=359,quality=epic,stats=321int,equip=onspellcast_1926mastery_10%_20dur_100cd
+trinket1=theralions_mirror,ilevel=359,quality=epic,stats=321int,equip=onharmfulspellcast_1926mastery_10%_20dur_100cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_hit,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_170int_286sta_127mastery_107haste,reforge=mastery_hit,gems=40int,enchant=lightweave_embroidery
 main_hand=stormwake_the_tempests_reach_of_the_flameblaze,ilevel=359,quality=epic,stats=1954sp_219sta_146int_97mastery_97hit,enchant=power_torrent,weapon=sword_1.60speed_258min_481max,suffix=114
