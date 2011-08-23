@@ -1427,11 +1427,7 @@ const char* chart_t::timeline_dps( std::string& s,
   int max_points  = 600;
   int increment   = 1;
 
-  if ( max_buckets <= max_points )
-  {
-    max_points = max_buckets;
-  }
-  else
+  if ( max_buckets > max_points )
   {
     increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
   }
@@ -1511,11 +1507,7 @@ const char* chart_t::timeline_dps_error( std::string& s,
   int max_points  = 600;
   int increment   = 1;
 
-  if ( max_buckets <= max_points )
-  {
-    max_points = max_buckets;
-  }
-  else
+  if ( max_buckets > max_points )
   {
     increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
   }
@@ -1605,11 +1597,7 @@ const char* chart_t::timeline_resource( std::string& s,
 
   if ( max_buckets <= 0 ) return 0;
 
-  if ( max_buckets <= max_points )
-  {
-    max_points = max_buckets;
-  }
-  else
+  if ( max_buckets > max_points )
   {
     increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
   }
