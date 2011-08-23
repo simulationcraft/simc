@@ -1142,7 +1142,7 @@ void mage_spell_t::execute()
   if ( consumes_arcane_blast ) p -> buffs_arcane_blast -> expire();
 
   p -> buffs_arcane_potency -> decrement();
-  p -> buffs_presence_of_mind -> expire();
+  if ( ! channeled ) p -> buffs_presence_of_mind -> expire();
 
   if ( fof_frozen )
   {
