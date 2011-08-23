@@ -1877,78 +1877,71 @@ struct auto_shot_t : public hunter_attack_t
   }
 };
 
-// Aimed Shot - Master Marksman ====================================================
-
-struct aimed_shot_mm_t : public hunter_attack_t
-{
-  aimed_shot_mm_t( player_t* player, const std::string& options_str=std::string() ) :
-      hunter_attack_t( "aimed_shot_mm", player, 82928 )
-  {
-    hunter_t* p = player -> cast_hunter();
-    check_spec ( TREE_MARKSMANSHIP );
-    if( ! options_str.empty() ) parse_options( NULL, options_str );
-
-    // Don't know why these values aren't 0 in the database.
-    base_cost = 0;
-    base_execute_time = 0;
-
-    // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
-    // Testing confirms that the weapon multiplier also affects the RAP coeff
-    // and the base damage of the shot. Probably a bug on Blizzard's end.
-    direct_power_mod  = 0.724;
-    direct_power_mod *= weapon_multiplier;
-
-    weapon = &( p -> ranged_weapon );
-    assert( weapon -> group() == WEAPON_RANGED );
-    base_dd_min *= weapon_multiplier; // Aimed Shot's weapon multiplier applies to the base damage as well
-    base_dd_max *= weapon_multiplier;
-
-    normalize_weapon_speed = true;
-  }
-
-  virtual void player_buff()
-  {
-    hunter_t* p = player -> cast_hunter();
-    hunter_attack_t::player_buff();
-
-    if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
-    {
-      player_crit += p -> talents.careful_aim -> effect1().percent();
-    }
-  }
-
-  virtual void execute()
-  {
-    hunter_t* p = player -> cast_hunter();
-    hunter_attack_t::execute();
-    if ( result == RESULT_CRIT )
-    {
-      if ( p -> active_pet )
-        p -> active_pet -> buffs_sic_em -> trigger();
-      p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect1().resource( RESOURCE_FOCUS ), p -> gains_glyph_aimed_shot );
-    }
-    p -> buffs_master_marksman_fire -> expire();
-  }
-
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
-  {
-    hunter_attack_t::travel( t, travel_result, travel_dmg);
-    if ( travel_result == RESULT_CRIT ) trigger_piercing_shots( this, travel_dmg );
-  }
-
-  virtual bool ready()
-  {
-    hunter_t* p = player -> cast_hunter();
-    if( ! p -> buffs_master_marksman_fire -> up() )
-      return false;
-    return hunter_attack_t::ready();
-  }
-};
-
 // Aimed Shot ===============================================================
 
 struct aimed_shot_t : public hunter_attack_t
 {
+
+  // Aimed Shot - Master Marksman ====================================================
+
+  struct aimed_shot_mm_t : public hunter_attack_t
+  {
+    aimed_shot_mm_t( player_t* player, const std::string& options_str=std::string() ) :
+        hunter_attack_t( "aimed_shot_mm", player, 82928 )
+    {
+      hunter_t* p = player -> cast_hunter();
+      check_spec ( TREE_MARKSMANSHIP );
+      if( ! options_str.empty() ) parse_options( NULL, options_str );
+
+      // Don't know why these values aren't 0 in the database.
+      base_cost = 0;
+      base_execute_time = 0;
+
+      // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
+      // Testing confirms that the weapon multiplier also affects the RAP coeff
+      // and the base damage of the shot. Probably a bug on Blizzard's end.
+      direct_power_mod  = 0.724;
+      direct_power_mod *= weapon_multiplier;
+
+      weapon = &( p -> ranged_weapon );
+      assert( weapon -> group() == WEAPON_RANGED );
+      base_dd_min *= weapon_multiplier; // Aimed Shot's weapon multiplier applies to the base damage as well
+      base_dd_max *= weapon_multiplier;
+
+      normalize_weapon_speed = true;
+    }
+
+    virtual void player_buff()
+    {
+      hunter_t* p = player -> cast_hunter();
+      hunter_attack_t::player_buff();
+
+      if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
+      {
+        player_crit += p -> talents.careful_aim -> effect1().percent();
+      }
+    }
+
+    virtual void execute()
+    {
+      hunter_t* p = player -> cast_hunter();
+      hunter_attack_t::execute();
+      if ( result == RESULT_CRIT )
+      {
+        if ( p -> active_pet )
+          p -> active_pet -> buffs_sic_em -> trigger();
+        p -> resource_gain( RESOURCE_FOCUS, p -> glyphs.aimed_shot -> effect1().resource( RESOURCE_FOCUS ), p -> gains_glyph_aimed_shot );
+      }
+      p -> buffs_master_marksman_fire -> expire();
+    }
+
+    virtual void travel( player_t* t, int travel_result, double travel_dmg )
+    {
+      hunter_attack_t::travel( t, travel_result, travel_dmg);
+      if ( travel_result == RESULT_CRIT ) trigger_piercing_shots( this, travel_dmg );
+    }
+  };
+
   aimed_shot_mm_t* as_mm;
   int casted;
   aimed_shot_t( player_t* player, const std::string& options_str ) :
@@ -3340,7 +3333,6 @@ action_t* hunter_t::create_action( const std::string& name,
 {
   if ( name == "auto_shot"             ) return new              auto_shot_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
-  if ( name == "aimed_shot_mm"         ) return new          aimed_shot_mm_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "aspect_of_the_hawk"    ) return new     aspect_of_the_hawk_t( this, options_str );
   if ( name == "aspect_of_the_fox"     ) return new     aspect_of_the_fox_t( this, options_str );
@@ -3356,7 +3348,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
-//if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "readiness"             ) return new              readiness_t( this, options_str );
   if ( name == "scatter_shot"          ) return new           scatter_shot_t( this, options_str );
   if ( name == "serpent_sting"         ) return new          serpent_sting_t( this, options_str );
