@@ -1160,7 +1160,8 @@ void mage_spell_t::execute()
     {
       p -> cooldowns_fire_blast -> reset();
     }
-    if ( p -> buffs_clearcasting -> trigger() && p -> talents.arcane_potency -> rank() )
+
+    if ( p -> buffs_clearcasting -> trigger() )
     {
       p -> buffs_arcane_potency -> trigger( 2 );
     }
@@ -1182,7 +1183,7 @@ double mage_spell_t::execute_time() SC_CONST
   double t = spell_t::execute_time();
   mage_t* p = player -> cast_mage();
 
-  if ( p -> buffs_presence_of_mind -> up() && ! channeled )
+  if ( ! channeled && p -> buffs_presence_of_mind -> up() )
     return 0;
 
   return t;
