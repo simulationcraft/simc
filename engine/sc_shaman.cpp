@@ -4321,8 +4321,8 @@ void shaman_t::moving()
     if ( swg && swg -> ready() && executing )
     {
       if ( sim -> log )
-  log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
-           executing -> name_str.c_str() );
+        log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
+                       executing -> name_str.c_str() );
       swg -> execute();
     }
     else

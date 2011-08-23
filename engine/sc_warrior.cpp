@@ -3643,10 +3643,10 @@ int warrior_t::primary_role() SC_CONST
 // warrior_t::assess_damage ==================================================
 
 double warrior_t::assess_damage( double            amount,
-         const school_type school,
-         int               dmg_type,
-         int               result,
-         action_t*         action )
+                                 const school_type school,
+                                 int               dmg_type,
+                                 int               result,
+                                 action_t*         action )
 {
   if ( result == RESULT_HIT    ||
        result == RESULT_CRIT   ||
