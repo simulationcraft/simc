@@ -566,7 +566,7 @@ struct weapon_stat_proc_callback_t : public action_callback_t
   weapon_stat_proc_callback_t( player_t* p, weapon_t* w, buff_t* b, double ppm=0.0, bool all=false ) :
     action_callback_t( p -> sim, p ), weapon( w ), buff( b ), PPM( ppm ), all_damage( all ) {}
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a, void* /* call_data */ )
   {
     if( ! all_damage && a -> proc ) return;
     if( weapon && a -> weapon != weapon ) return;
@@ -631,7 +631,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
 
   virtual void deactivate() { action_callback_t::deactivate(); stacks=0; }
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a, void* /* call_data */ )
   {
     if( a -> proc ) return;
     if( weapon && a -> weapon != weapon ) return;
@@ -795,7 +795,7 @@ void enchant_t::init( player_t* p )
         action_callback_t( p -> sim, p ), mh_buff( mhb ), oh_buff( ohb ), s_buff( sb )
       {
       }
-      virtual void trigger( action_t* a, void* call_data )
+      virtual void trigger( action_t* /* a */, void* /* call_data */ )
       {
         if( s_buff -> cooldown -> remains() > 0 ) return;
         if( ! s_buff -> rng -> roll( 0.15 ) ) return;

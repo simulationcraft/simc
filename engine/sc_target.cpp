@@ -351,7 +351,7 @@ void enemy_t::init_base()
 
 // enemy_t::init_resources =====================================================
 
-void enemy_t::init_resources( bool force )
+void enemy_t::init_resources( bool /* force */ )
 {
   double health_adjust = 1.0 + sim -> vary_combat_length * sim -> iteration_adjust();
 
@@ -422,7 +422,7 @@ void enemy_t::create_options()
 
 // enemy_t::create_add ======================================================
 
-pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& pet_type )
+pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( add_name );
   if ( p ) return p;
@@ -545,21 +545,21 @@ action_t* enemy_add_t::create_action( const std::string& name,
 
 // player_t::create_enemy ===================================================
 
-player_t* player_t::create_enemy( sim_t* sim, const std::string& name, race_type r )
+player_t* player_t::create_enemy( sim_t* sim, const std::string& name, race_type /* r */ )
 {
   return new enemy_t( sim, name );
 }
 
 // player_t::enemy_init =====================================================
 
-void player_t::enemy_init( sim_t* sim )
+void player_t::enemy_init( sim_t* /* sim */ )
 {
 
 }
 
 // player_t::warrior_combat_begin ===========================================
 
-void player_t::enemy_combat_begin( sim_t* sim )
+void player_t::enemy_combat_begin( sim_t* /* sim */ )
 {
 
 }

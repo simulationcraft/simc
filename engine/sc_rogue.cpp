@@ -899,7 +899,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     {
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
-    virtual void target_debuff( player_t* t, int dmg_type )
+    virtual void target_debuff( player_t* /* t */ , int /* dmg_type */ )
     {
       target_multiplier            = 1.0;
       target_hit                   = 0;
@@ -3071,8 +3071,9 @@ struct stealth_t : public spell_t
     spell_t( "stealth", p ), used(false)
   {
     trigger_gcd = 0;
-
     id = 1784;
+
+    parse_options( NULL, options_str );
   }
 
   virtual void execute()
@@ -3873,7 +3874,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 {
   honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r -> sim, r ) {}
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a, void* /* call_data */ )
   {
     rogue_t* rogue = listener -> cast_rogue();
 

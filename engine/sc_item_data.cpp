@@ -243,7 +243,6 @@ static bool parse_gems( item_t&            item,
 }
 
 static bool parse_enchant( item_t&            item,
-                           const item_data_t* item_data,
                            const std::string& enchant_id )
 {
   if ( enchant_id.empty() || enchant_id == "none" || enchant_id == "0" ) return true;
@@ -554,7 +553,7 @@ bool item_database_t::download_slot( item_t&            item,
   parse_weapon_type( item, item_data );
   parse_gems( item, item_data, gem_ids );
 
-  if ( ! parse_enchant( item, item_data, enchant_id ) )
+  if ( ! parse_enchant( item, enchant_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
   }

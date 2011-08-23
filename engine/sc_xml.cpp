@@ -112,8 +112,7 @@ static bool parse_name( std::string&            name_str,
 
 // create_parameter ========================================================
 
-static void create_parameter( sim_t*                  sim,
-                              xml_node_t*             node,
+static void create_parameter( xml_node_t*             node,
                               const std::string&      input,
                               std::string::size_type& index )
 {
@@ -158,7 +157,7 @@ static xml_node_t* create_node( sim_t*                  sim,
 
   while ( is_white_space( input[ index ] ) )
   {
-    create_parameter( sim, node, input, ++index );
+    create_parameter( node, input, ++index );
   }
 
   c = input[ index ];

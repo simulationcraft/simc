@@ -959,33 +959,6 @@ struct dark_rune_t : public action_t
 };
 
 // ==========================================================================
-// consumable_t::init_flask
-// ==========================================================================
-
-void consumable_t::init_flask( player_t* p )
-{
-  // Eventually, flask will be taken off the actions= directive.
-}
-
-// ==========================================================================
-// consumable_t::init_elixirs
-// ==========================================================================
-
-void consumable_t::init_elixirs( player_t* p )
-{
-  // Eventually, elixirs will be taken off the actions= directive.
-}
-
-// ==========================================================================
-// consumable_t::init_food
-// ==========================================================================
-
-void consumable_t::init_food( player_t* p )
-{
-  // Eventually, food will be taken off the actions= directive.
-}
-
-// ==========================================================================
 // consumable_t::create_action
 // ==========================================================================
 

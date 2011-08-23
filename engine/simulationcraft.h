@@ -2288,19 +2288,19 @@ struct spell_data_expr_t
   virtual int evaluate() { return result_type; }
   virtual const char* name() { return name_str.c_str(); }
 
-  virtual std::vector<uint32_t> operator|(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator&(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator-(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator|(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator&(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator-(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
 
-  virtual std::vector<uint32_t> operator<(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator>(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator<=(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator>=(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator==(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> operator!=(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator<(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator>(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator<=(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator>=(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator==(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> operator!=(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
 
-  virtual std::vector<uint32_t> in(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
-  virtual std::vector<uint32_t> not_in(const spell_data_expr_t& other) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> in(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
+  virtual std::vector<uint32_t> not_in(const spell_data_expr_t& /* other */) { return std::vector<uint32_t>(); }
 
   static spell_data_expr_t* parse( sim_t* sim, const std::string& expr_str );
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
@@ -3474,7 +3474,6 @@ struct player_t
   virtual void init_unique_gear();
   virtual void init_enchant();
   virtual void init_resources( bool force = false );
-  virtual void init_consumables();
   virtual void init_professions();
   virtual void init_use_item_actions( const std::string& append = std::string() );
   virtual void init_use_profession_actions( const std::string& append = std::string() );
@@ -3534,14 +3533,14 @@ struct player_t
   virtual double composite_spell_power_multiplier() SC_CONST;
   virtual double composite_attribute_multiplier( int attr ) SC_CONST;
 
-  virtual double matching_gear_multiplier( const attribute_type attr ) SC_CONST { return 0.0; }
+  virtual double matching_gear_multiplier( const attribute_type /* attr */ ) SC_CONST { return 0; }
 
   virtual double composite_player_multiplier   ( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double composite_player_dd_multiplier( const school_type school, action_t* a = NULL ) SC_CONST { return 1.0; }
+  virtual double composite_player_dd_multiplier( const school_type /* school */, action_t* /* a */ = NULL ) SC_CONST { return 1; }
   virtual double composite_player_td_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
 
   virtual double composite_player_heal_multiplier   ( const school_type school ) SC_CONST;
-  virtual double composite_player_dh_multiplier( const school_type school ) SC_CONST { return 1.0; }
+  virtual double composite_player_dh_multiplier( const school_type /* school */ ) SC_CONST { return 1; }
   virtual double composite_player_th_multiplier( const school_type school ) SC_CONST;
 
   virtual double composite_player_absorb_multiplier   ( const school_type school ) SC_CONST;
@@ -3611,7 +3610,7 @@ struct player_t
   virtual void register_tick_heal_callback    ( int64_t result_mask, action_callback_t* );
   virtual void register_direct_heal_callback  ( int64_t result_mask, action_callback_t* );
 
-  virtual bool parse_talent_trees( int talents[], const uint32_t size );
+  virtual bool parse_talent_trees( const int talents[MAX_TALENT_SLOTS] );
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
 
@@ -3631,7 +3630,7 @@ struct player_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual void      create_pets() { }
-  virtual pet_t*    create_pet( const std::string& name,  const std::string& type = std::string() ) { return 0; }
+  virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return 0; }
   virtual pet_t*    find_pet  ( const std::string& name );
 
   virtual void trigger_replenishment();
@@ -3640,8 +3639,9 @@ struct player_t
 
   virtual void recalculate_haste();
 
-  virtual void armory_extensions( const std::string& region, const std::string& server, const std::string& character,
-                                  cache::behavior_t b=cache::behavior()) {}
+  virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
+                                  cache::behavior_t /* behavior */=cache::behavior())
+  {}
 
   // Class-Specific Methods
 
@@ -4012,12 +4012,12 @@ struct action_t : public spell_id_t
   virtual void   check_min_level( int level );
   virtual const char* name() SC_CONST { return name_str.c_str(); }
 
-  virtual double   miss_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
-  virtual double  dodge_chance( int delta_level ) SC_CONST { return 0.0; }
-  virtual double  parry_chance( int delta_level ) SC_CONST { return 0.0; }
-  virtual double glance_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
-  virtual double  block_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
-  virtual double   crit_chance( int delta_level ) SC_CONST { delta_level=0; return 0; }
+  virtual double   miss_chance( int /* delta_level */ ) SC_CONST { return 0; }
+  virtual double  dodge_chance( int /* delta_level */ ) SC_CONST { return 0; }
+  virtual double  parry_chance( int /* delta_level */ ) SC_CONST { return 0; }
+  virtual double glance_chance( int /* delta_level */ ) SC_CONST { return 0; }
+  virtual double  block_chance( int /* delta_level */ ) SC_CONST { return 0; }
+  virtual double   crit_chance( int /* delta_level */ ) SC_CONST { return 0; }
 
   virtual double total_multiplier() SC_CONST { return   base_multiplier * player_multiplier * target_multiplier; }
   virtual double total_hit() SC_CONST        { return   base_hit        + player_hit        + target_hit;        }
@@ -4414,10 +4414,6 @@ struct enchant_t
 
 struct consumable_t
 {
-  static void init_flask  ( player_t* );
-  static void init_elixirs( player_t* );
-  static void init_food   ( player_t* );
-
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
 

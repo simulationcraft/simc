@@ -323,7 +323,7 @@ struct death_knight_t : public player_t
     create_talents();
     create_glyphs();
     create_options();
-    
+
     default_distance = 0;
   }
 
@@ -497,8 +497,8 @@ struct army_ghoul_pet_t : public pet_t
 
   struct army_ghoul_pet_attack_t : public attack_t
   {
-    army_ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-      attack_t( n, player, r, SCHOOL_PHYSICAL, t, special )
+    army_ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, bool special=true ) :
+      attack_t( n, player, r, SCHOOL_PHYSICAL, TREE_NONE, special )
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
@@ -510,7 +510,7 @@ struct army_ghoul_pet_t : public pet_t
   struct army_ghoul_pet_melee_t : public army_ghoul_pet_attack_t
   {
     army_ghoul_pet_melee_t( player_t* player ) :
-      army_ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+      army_ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, false )
     {
       base_execute_time = weapon -> swing_time;
       background        = true;
@@ -557,7 +557,7 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual void init_base()
   {
-    // FIXME: Copied from the pet ghoul 
+    // FIXME: Copied from the pet ghoul
     attribute_base[ ATTR_STRENGTH  ] = 476;
     attribute_base[ ATTR_AGILITY   ] = 3343;
     attribute_base[ ATTR_STAMINA   ] = 546;
@@ -1192,8 +1192,8 @@ struct ghoul_pet_t : public pet_t
 
   struct ghoul_pet_attack_t : public attack_t
   {
-    ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-      attack_t( n, player, RESOURCE_ENERGY, SCHOOL_PHYSICAL, t, special )
+    ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, bool special=true ) :
+      attack_t( n, player, r, SCHOOL_PHYSICAL, TREE_NONE, special )
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
@@ -1219,7 +1219,7 @@ struct ghoul_pet_t : public pet_t
   struct ghoul_pet_melee_t : public ghoul_pet_attack_t
   {
     ghoul_pet_melee_t( player_t* player ) :
-      ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+      ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, false )
     {
       base_execute_time = weapon -> swing_time;
       background        = true;
@@ -1424,7 +1424,7 @@ struct ghoul_pet_t : public pet_t
     }
   }
 
-  //Ghoul regen doesn't benefit from haste (even bloodlust/heroism) 
+  //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
   virtual int primary_resource() SC_CONST
   {
     return RESOURCE_ENERGY;
@@ -1778,7 +1778,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
       init();
     }
 
-    void target_debuff( player_t* t, int dmg_type )
+    void target_debuff( player_t* /* t */, int /* dmg_type */ )
     {
       // no debuff effect
     }
@@ -2052,14 +2052,14 @@ struct flaming_torment_t : public death_knight_spell_t
     death_knight_spell_t( n, player, RESOURCE_NONE, SCHOOL_FIRE )
   {
     background       = true;
-    may_miss         = false;    
-    proc             = true;      
+    may_miss         = false;
+    proc             = true;
     may_crit         = false;
     direct_power_mod = 0.0;
     trigger_gcd      = false;
     school           = SCHOOL_FIRE;
   }
-  
+
   virtual double calculate_direct_damage()
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -3762,7 +3762,7 @@ struct scourge_strike_t : public death_knight_attack_t
       }
     }
 
-    virtual void target_debuff( player_t* t, int dmg_type )
+    virtual void target_debuff( player_t* t, int /* dmg_type */ )
     {
       // Shadow portion doesn't double dips in debuffs, other than EP/E&M/CoE below
       // death_knight_spell_t::target_debuff( t, dmg_type );
@@ -4130,7 +4130,7 @@ void death_knight_t::create_pets()
 // death_knight_t::create_pet ===============================================
 
 pet_t* death_knight_t::create_pet( const std::string& pet_name,
-                                   const std::string& pet_type )
+                                   const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
 
@@ -4552,7 +4552,7 @@ void death_knight_t::init_enchant()
 
     cinderglacier_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot( s ), buff( b ) {}
 
-    virtual void trigger( action_t* a, void* call_data )
+    virtual void trigger( action_t* a, void* /* call_data */ )
     {
       weapon_t* w = a -> weapon;
       if ( ! w || w -> slot != slot ) return;
@@ -4572,7 +4572,7 @@ void death_knight_t::init_enchant()
 
     fallen_crusader_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot( s ), buff( b ) {}
 
-    virtual void trigger( action_t* a, void* call_data )
+    virtual void trigger( action_t* a, void* /* call_data */ )
     {
       weapon_t* w = a -> weapon;
       if ( ! w ) return;
@@ -4612,7 +4612,7 @@ void death_knight_t::init_enchant()
       razorice_damage_proc = new razorice_spell_t( p );
     }
 
-    virtual void trigger( action_t* a, void* call_data )
+    virtual void trigger( action_t* a, void* /* call_data */ )
     {
       weapon_t* w = a -> weapon;
       if ( ! w ) return;
@@ -4965,7 +4965,7 @@ void death_knight_t::regen( double periodicity )
 
   if ( set_bonus.tier12_2pc_melee() && sim -> auras.horn_of_winter -> check() )
     resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity, gains_tier12_2pc_melee );
-    
+
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     _runes.slot[i].regen_rune( this, periodicity );

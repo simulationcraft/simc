@@ -303,7 +303,7 @@ stat_data_t& dbc_t::race_base( race_type r ) SC_CONST
 #endif
 }
 
-stat_data_t& dbc_t::race_base( pet_type_t r ) SC_CONST
+stat_data_t& dbc_t::race_base( pet_type_t /* r */ ) SC_CONST
 {
   return race_base( RACE_NONE );
 }
@@ -1279,7 +1279,7 @@ unsigned dbc_t::class_ability_id( player_type c, const char* spell_name, int tre
 }
 
 // TODO: Implement racial spell fetch at some point
-unsigned dbc_t::race_ability_id( player_type c, race_type r, const char* spell_name ) SC_CONST
+unsigned dbc_t::race_ability_id( player_type /* c */, race_type /* r */, const char* /* spell_name */ ) SC_CONST
 {
   return 0;
 }
@@ -1451,7 +1451,7 @@ bool dbc_t::is_class_ability( uint32_t spell_id ) SC_CONST
   return false;
 }
 
-bool dbc_t::is_race_ability( uint32_t spell_id ) SC_CONST
+bool dbc_t::is_race_ability( uint32_t /* spell_id */ ) SC_CONST
 {
   return false;
 }

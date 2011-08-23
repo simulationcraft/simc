@@ -422,9 +422,8 @@ struct druid_cat_attack_t : public attack_t
 struct druid_bear_attack_t : public attack_t
 {
   druid_bear_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
-    attack_t( n, player, RESOURCE_RAGE, s, t, true )
-  {
-  }
+    attack_t( n, player, RESOURCE_RAGE, s, t, special )
+  {}
 
   druid_bear_attack_t( const char* n, uint32_t id, druid_t* p, bool special = true ) :
     attack_t( n, id, p, 0, special )
@@ -1059,7 +1058,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     {
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
-    virtual void target_debuff( player_t* t, int dmg_type )
+    virtual void target_debuff( player_t* /* t */, int /* dmg_type */ )
     {
       target_multiplier            = 1.0;
       target_hit                   = 0;
@@ -2963,7 +2962,7 @@ void druid_spell_t::player_buff()
 
 struct auto_attack_t : public action_t
 {
-  auto_attack_t( player_t* player, const std::string& options_str ) :
+  auto_attack_t( player_t* player, const std::string& /* options_str */ ) :
     action_t( ACTION_OTHER, "auto_attack", player )
   {
     trigger_gcd = 0;
@@ -4395,7 +4394,7 @@ action_t* druid_t::create_action( const std::string& name,
 // druid_t::create_pet ======================================================
 
 pet_t* druid_t::create_pet( const std::string& pet_name,
-                            const std::string& pet_type )
+                            const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
 

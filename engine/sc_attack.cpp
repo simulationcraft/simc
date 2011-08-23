@@ -266,7 +266,7 @@ double attack_t::glance_chance( int delta_level ) SC_CONST
 
 // attack_t::block_chance ===================================================
 
-double attack_t::block_chance( int delta_level ) SC_CONST
+double attack_t::block_chance( int /* delta_level */ ) SC_CONST
 {
   // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
   // % is 5%, and not 5% + delta_level * 0.5%.
@@ -278,7 +278,7 @@ double attack_t::block_chance( int delta_level ) SC_CONST
 
 // attack_t::crit_block_chance ===================================================
 
-double attack_t::crit_block_chance( int delta_level ) SC_CONST
+double attack_t::crit_block_chance( int /* delta_level */ ) SC_CONST
 {
   // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
   // % is 5%, and not 5% + delta_level * 0.5%.

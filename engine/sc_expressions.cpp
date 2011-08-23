@@ -301,7 +301,7 @@ void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 
 // convert_to_unary ==========================================================
 
-void expression_t::convert_to_unary( action_t* action, std::vector<expr_token_t>& tokens )
+void expression_t::convert_to_unary( action_t* /* action */, std::vector<expr_token_t>& tokens )
 {
   int num_tokens = tokens.size();
   for ( int i=0; i < num_tokens; i++ )
@@ -326,7 +326,7 @@ void expression_t::convert_to_unary( action_t* action, std::vector<expr_token_t>
 
 // convert_to_rpn ============================================================
 
-bool expression_t::convert_to_rpn( action_t* action, std::vector<expr_token_t>& tokens )
+bool expression_t::convert_to_rpn( action_t* /* action */, std::vector<expr_token_t>& tokens )
 {
   std::vector<expr_token_t> rpn, stack;
 

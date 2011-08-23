@@ -538,7 +538,7 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
 
 // scaling_t::scale_over_function_error ==================================================
 
-double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
+double scaling_t::scale_over_function_error( sim_t* /* s */, player_t* p )
 {
   if ( scale_over == "raid_dps"       ) return 0;
   if ( scale_over == "deaths"         ) return 0;

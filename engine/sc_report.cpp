@@ -813,7 +813,7 @@ static void print_text_hat_donors( FILE* file, sim_t* sim )
 
 // print_text_player =========================================================
 
-static void print_text_player( FILE* file, sim_t* sim, player_t* p, int j )
+static void print_text_player( FILE* file, player_t* p )
 {
   util_t::fprintf( file, "\n%s: %s %s %s %s %d\n",
                    p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player",
@@ -1021,7 +1021,7 @@ static void print_html_contents( FILE*  file, sim_t* sim )
   }
   for ( i=0; i < n; i++ )
   {
-    util_t::fprintf( file, cols[i].c_str() );
+    util_t::fprintf( file, "%s", cols[i].c_str() );
   }
 
   util_t::fprintf( file,
@@ -1996,7 +1996,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
 
 // print_html_action_resource ==================================================
 
-static void print_html_action_resource( FILE* file, stats_t* s, player_t* p, int j )
+static void print_html_action_resource( FILE* file, stats_t* s, int j )
 {
 
   util_t::fprintf( file,
@@ -2649,7 +2649,7 @@ util_t::fprintf( file,
 
 // print_html_player_statistics =========================================================
 
-static void print_html_player_statistics( FILE* file, sim_t* sim, player_t* p )
+static void print_html_player_statistics( FILE* file, player_t* p )
 {
 
 // Statistics & Data Analysis
@@ -2837,7 +2837,7 @@ static void print_html_player_statistics( FILE* file, sim_t* sim, player_t* p )
 
 // print_html_player_resources =========================================================
 
-static void print_html_player_resources( FILE* file, sim_t* sim, player_t* p )
+static void print_html_player_resources( FILE* file, player_t* p )
 {
 // Resources Section
 
@@ -2867,7 +2867,7 @@ for ( stats_t* s = p -> stats_list; s; s = s -> next )
 {
   if ( s -> rpe > 0 )
   {
-    print_html_action_resource( file, s, p, i );
+    print_html_action_resource( file, s, i );
     i++;
   }
 }
@@ -2891,7 +2891,7 @@ for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
                          "\t\t\t\t\t\t\t</tr>\n",
                          pet -> name_str.c_str() );
       }
-      print_html_action_resource( file, s, p, i );
+      print_html_action_resource( file, s, i );
       i++;
     }
   }
@@ -3206,7 +3206,7 @@ util_t::fprintf( file,
 
 // print_html_player_buffs =========================================================
 
-static void print_html_player_buffs( FILE* file, sim_t* sim, player_t* p )
+static void print_html_player_buffs( FILE* file, player_t* p )
 {
   int i=0;
 // Buff Section
@@ -3644,9 +3644,9 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t</div>\n" );
 
 
-  print_html_player_resources( file, sim, p );
+  print_html_player_resources( file, p );
 
-  print_html_player_buffs( file, sim, p );
+  print_html_player_buffs( file, p );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t<div class=\"player-section uptimes\">\n"
@@ -3773,7 +3773,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 
 
 
-  print_html_player_statistics( file, sim, p );
+  print_html_player_statistics( file, p );
 
   print_html_player_action_priority_list( file, sim, p );
 
@@ -3908,7 +3908,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
   // Report Players
   for ( int i=0; i < num_players; i++ )
   {
-    print_text_player( file, sim, sim -> players_by_name[ i ], i );
+    print_text_player( file, sim -> players_by_name[ i ] );
 
     // Pets
     if ( sim -> report_pets_separately )
@@ -3916,7 +3916,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
       for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
       {
         if ( pet -> summoned )
-          print_text_player( file, sim, pet, 1 );
+          print_text_player( file, pet );
       }
     }
   }
@@ -3928,7 +3928,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 
     for ( int i=0; i < ( int ) sim -> targets_by_name.size(); i++ )
     {
-      print_text_player( file, sim, sim -> targets_by_name[ i ], i );
+      print_text_player( file, sim -> targets_by_name[ i ] );
 
       // Pets
       if ( sim -> report_pets_separately )
@@ -3936,7 +3936,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
         for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
         {
           if ( pet -> summoned )
-            print_text_player( file, sim, pet, 1 );
+            print_text_player( file, pet );
         }
       }
     }

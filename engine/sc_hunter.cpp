@@ -807,7 +807,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       init();
     }
     void player_buff() {}
-    void target_debuff( player_t* t, int dmg_type )
+    void target_debuff( player_t* t, int /* dmg_type */ )
     {
       if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() || t -> debuffs.tendon_rip -> up() )
       {
@@ -1031,7 +1031,7 @@ struct pet_melee_t : public hunter_pet_attack_t
 
 struct pet_auto_attack_t : public hunter_pet_attack_t
 {
-  pet_auto_attack_t( hunter_pet_t* player, const std::string& options_str ) :
+  pet_auto_attack_t( hunter_pet_t* player, const std::string& /* options_str */ ) :
     hunter_pet_attack_t( "auto_attack", player, 0 )
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
@@ -1847,7 +1847,7 @@ struct ranged_t : public hunter_attack_t
 
 struct auto_shot_t : public hunter_attack_t
 {
-  auto_shot_t( player_t* player, const std::string& options_str ) :
+  auto_shot_t( player_t* player, const std::string& /* options_str */ ) :
       hunter_attack_t( "auto_shot", player )
   {
     hunter_t* p = player -> cast_hunter();
@@ -2652,7 +2652,7 @@ struct multi_shot_t : public hunter_attack_t
 
 struct silencing_shot_t : public hunter_attack_t
 {
-  silencing_shot_t( player_t* player, const std::string& options_str ) :
+  silencing_shot_t( player_t* player, const std::string& /* options_str */ ) :
       hunter_attack_t( "silencing_shot", player, "Silencing Shot" )
   {
     hunter_t* p = player -> cast_hunter();
@@ -2778,7 +2778,7 @@ struct wild_quiver_trigger_t : public action_callback_t
     rng = p -> get_rng( "wild_quiver" );
   }
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* a, void* /* call_data */ )
   {
     hunter_t* p = listener -> cast_hunter();
     if ( ! a -> weapon ) return;
@@ -3250,7 +3250,7 @@ struct summon_pet_t : public hunter_spell_t
 
 struct trueshot_aura_t : public hunter_spell_t
 {
-  trueshot_aura_t( player_t* player, const std::string& options_str ) :
+  trueshot_aura_t( player_t* player, const std::string& /* options_str */ ) :
       hunter_spell_t( "trueshot_aura", player, "Trueshot Aura" )
   {
     hunter_t* p = player -> cast_hunter();
@@ -3707,7 +3707,7 @@ void hunter_t::init_unique_gear()
       {
         rng = p -> get_rng( "zods_repeating_longbow" );
       }
-      virtual void trigger( action_t* a, void* call_data )
+      virtual void trigger( action_t* a, void* /* call_data */ )
       {
         if ( ! a -> weapon ) return;
         if ( a -> weapon -> slot != SLOT_RANGED ) return;

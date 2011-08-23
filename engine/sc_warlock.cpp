@@ -2496,8 +2496,7 @@ struct drain_life_t : public warlock_spell_t
       max_multiplier[2] =  0.18;
     }
 
-    assert( p -> talent_soul_siphon -> rank() >= 0 &&
-            p -> talent_soul_siphon -> rank() <= 2 );
+    assert( p -> talent_soul_siphon -> rank() <= 2 );
 
     double min = min_multiplier[ p -> talent_soul_siphon -> rank() ];
     double max = max_multiplier[ p -> talent_soul_siphon -> rank() ];
@@ -2580,8 +2579,7 @@ struct drain_soul_t : public warlock_spell_t
       max_multiplier[2] =  0.18;
     }
 
-    assert( p -> talent_soul_siphon -> rank() >= 0 &&
-            p -> talent_soul_siphon -> rank() <= 2 );
+    assert( p -> talent_soul_siphon -> rank() <= 2 );
 
     double min = min_multiplier[ p -> talent_soul_siphon -> rank() ];
     double max = max_multiplier[ p -> talent_soul_siphon -> rank() ];
@@ -4045,7 +4043,7 @@ action_t* warlock_t::create_action( const std::string& name,
 // warlock_t::create_pet ====================================================
 
 pet_t* warlock_t::create_pet( const std::string& pet_name,
-            const std::string& pet_type )
+                              const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
 

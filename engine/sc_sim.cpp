@@ -253,7 +253,7 @@ static bool parse_player( sim_t*             sim,
 // parse_proxy ==============================================================
 
 static bool parse_proxy( sim_t*             sim,
-                         const std::string& name,
+                         const std::string& /* name */,
                          const std::string& value )
 {
 
@@ -280,14 +280,14 @@ static bool parse_proxy( sim_t*             sim,
 
 // parse_armory =============================================================
 
-static bool parse_cache( sim_t*             sim,
+static bool parse_cache( sim_t*             /* sim */,
                          const std::string& name,
                          const std::string& value )
 {
   if ( name != "cache" ) return false;
 
   if ( value == "1" ) cache::behavior( cache::ANY );
-  else if ( value == "0" )cache::behavior( cache::CURRENT );
+  else if ( value == "0" ) cache::behavior( cache::CURRENT );
   else if ( util_t::str_compare_ci( value, "only" ) ) cache::behavior( cache::ONLY );
   else return false;
 
@@ -587,7 +587,7 @@ static bool parse_fight_style( sim_t*             sim,
 // parse_spell_query ========================================================
 
 static bool parse_spell_query( sim_t*             sim,
-                               const std::string& name,
+                               const std::string& /* name */,
                                const std::string& value )
 {
   sim -> spell_query = spell_data_expr_t::parse( sim, value );
@@ -597,7 +597,7 @@ static bool parse_spell_query( sim_t*             sim,
 // parse_item_sources =======================================================
 
 static bool parse_item_sources( sim_t*             sim,
-                                const std::string& name,
+                                const std::string& /* name */,
                                 const std::string& value )
 {
   std::vector<std::string> sources;
@@ -1941,14 +1941,14 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
 // sim_t::aura_gain =========================================================
 
-void sim_t::aura_gain( const char* aura_name , int aura_id )
+void sim_t::aura_gain( const char* aura_name , int /* aura_id */ )
 {
   if( log ) log_t::output( this, "Raid gains %s", aura_name );
 }
 
 // sim_t::aura_loss =========================================================
 
-void sim_t::aura_loss( const char* aura_name , int aura_id )
+void sim_t::aura_loss( const char* aura_name , int /* aura_id */ )
 {
   if( log ) log_t::output( this, "Raid loses %s", aura_name );
 }

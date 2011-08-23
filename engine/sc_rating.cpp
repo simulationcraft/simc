@@ -446,7 +446,7 @@ double rating_t::interpolate( int    level,
 
 // rating_t::get_attribute_base ================================================
 
-double rating_t::get_attribute_base( sim_t* sim, dbc_t& dbc, int level, player_type class_type, race_type race, base_stat_type stat_type )
+double rating_t::get_attribute_base( sim_t* /* sim */, dbc_t& dbc, int level, player_type class_type, race_type race, base_stat_type stat_type )
 {
   double res                       = 0.0;
 

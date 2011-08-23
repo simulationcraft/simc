@@ -211,7 +211,7 @@ struct rng_sfmt_t : public rng_t
 
 // period_certification =====================================================
 
-inline static void period_certification( w128_t* sfmt, uint32_t* psfmt32 )
+inline static void period_certification( uint32_t* psfmt32 )
 {
   int inner = 0;
   int i, j;
@@ -247,7 +247,6 @@ inline static void period_certification( w128_t* sfmt, uint32_t* psfmt32 )
 
 inline static void init_gen_rand( rng_sfmt_t* r, uint32_t seed )
 {
-  w128_t*   sfmt    = r -> sfmt;
   uint32_t* psfmt32 = r -> psfmt32;
 
   int i;
@@ -257,7 +256,7 @@ inline static void init_gen_rand( rng_sfmt_t* r, uint32_t seed )
   {
     psfmt32[i] = 1812433253UL * ( psfmt32[i - 1] ^ ( psfmt32[i - 1] >> 30 ) ) + i;
   }
-  period_certification( sfmt, psfmt32 );
+  period_certification( psfmt32 );
 }
 
 // rshift128 ================================================================
@@ -313,8 +312,7 @@ inline static void do_recursion( w128_t *r, w128_t *a, w128_t *b, w128_t *c, w12
 
 // gen_rand_all =============================================================
 
-inline static void gen_rand_all( w128_t*   sfmt,
-                                 uint32_t* psfmt32 )
+inline static void gen_rand_all( w128_t*   sfmt )
 {
   int i;
   w128_t *r1, *r2;
@@ -341,7 +339,7 @@ inline static uint32_t gen_rand32( rng_sfmt_t* r )
 {
   if ( r->idx >= N32 )
   {
-    gen_rand_all( r->sfmt, r->psfmt32 );
+    gen_rand_all( r->sfmt );
     r->idx = 0;
   }
   return r->psfmt32[r->idx++];
@@ -393,8 +391,8 @@ struct rng_normalized_t : public rng_t
 
   virtual double real() { return base -> real(); }
   virtual double range( double min, double max ) { return ( min + max ) / 2.0; }
-  virtual double gauss( double mean, double stddev ) { return mean; }
-  virtual int    roll( double chance ) { assert( 0 ); return 0; } // must be overridden
+  virtual double gauss( double mean, double /* stddev */ ) { return mean; }
+  virtual int    roll( double chance ) = 0; // must be overridden
 };
 
 // ==========================================================================

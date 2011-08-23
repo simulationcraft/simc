@@ -293,7 +293,7 @@ static bool parse_item_stats( item_t&     item,
 // parse_item_reforge =========================================================
 
 static bool parse_item_reforge( item_t&     item,
-                                xml_node_t* node )
+                                xml_node_t* /* node */ )
 {
   item.armory_reforge_str.clear();
 

@@ -93,7 +93,7 @@ buff_t::buff_t( player_t*          p,
 
 // buff_t::init_buff_from_talent_ ===========================================
 
-void buff_t::init_from_talent_( player_t* p, talent_t* talent )
+void buff_t::init_from_talent_( player_t* /* p */, talent_t* talent )
 {
   if( talent -> rank() )
   {
@@ -142,7 +142,7 @@ buff_t::buff_t( player_t* p,
 
 // buff_t::init_from_spell_ =================================================
 
-void buff_t::init_from_spell_( player_t* p, spell_data_t* spell )
+void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
 {
   max_stack = std::max( ( int ) spell -> max_stacks(), 1 );
   default_chance = spell -> proc_chance() ? spell -> proc_chance() : 1.0;
@@ -1113,7 +1113,7 @@ void stat_buff_t::bump( int    stacks,
 // stat_buff_t::decrement ===================================================
 
 void stat_buff_t::decrement( int    stacks,
-                             double value )
+                             double /* value */ )
 {
   if ( max_stack == 0 ) return;
   if ( stacks == 0 || current_stack <= stacks )
@@ -1206,7 +1206,7 @@ void cost_reduction_buff_t::bump( int    stacks,
 // cost_reduction_buff_t::decrement ===================================================
 
 void cost_reduction_buff_t::decrement( int    stacks,
-                                       double value )
+                                       double /* value */ )
 {
   if ( max_stack == 0 ) return;
   if ( stacks == 0 || current_stack <= stacks )

@@ -234,10 +234,10 @@ struct paladin_t : public player_t
 
     create_talents();
     create_glyphs();
-    
+
     distance = ( primary_tree() == TREE_HOLY ) ? 30 : 3;
     default_distance = distance;
-    
+
     create_options();
   }
 
@@ -579,6 +579,8 @@ struct auto_attack_t : public paladin_attack_t
     p -> main_hand_attack = new melee_t( p );
 
     trigger_gcd = 0;
+
+    parse_options( NULL, options_str );
   }
 
   virtual void execute()
@@ -629,7 +631,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     {
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
-    virtual void target_debuff( player_t* t, int dmg_type )
+    virtual void target_debuff( player_t* /* t */, int /* dmg_type */ )
     {
       target_multiplier            = 1.0;
       target_hit                   = 0;
@@ -641,7 +643,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
       if ( sim -> debug )
         log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
                        name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
-    }    
+    }
     virtual double total_td_multiplier() SC_CONST { return 1.0; }
   };
 
@@ -2878,7 +2880,7 @@ void paladin_t::create_options()
 // paladin_t::create_pet =====================================================
 
 pet_t* paladin_t::create_pet( const std::string& pet_name,
-                              const std::string& pet_type )
+                              const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
   if ( p ) return p;

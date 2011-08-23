@@ -13,7 +13,7 @@ struct dark_intent_callback_t : public action_callback_t
 {
   dark_intent_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
 
-  virtual void trigger( action_t* a, void* call_data )
+  virtual void trigger( action_t* /* a */, void* /* call_data */ )
   {
     listener -> buffs.dark_intent_feedback -> trigger();
   }
@@ -785,8 +785,7 @@ void player_t::init()
   init_weapon( &off_hand_weapon );
   init_weapon( &ranged_weapon );
   init_unique_gear();
-  init_enchant();  
-  init_consumables();
+  init_enchant();
   init_scaling();
   init_buffs();
   init_values();
@@ -1247,15 +1246,6 @@ void player_t::init_resources( bool force )
       }
     }
   }
-}
-
-// player_t::init_consumables ==============================================
-
-void player_t::init_consumables()
-{
-  consumable_t::init_flask  ( this );
-  consumable_t::init_elixirs( this );
-  consumable_t::init_food   ( this );
 }
 
 // player_t::init_professions ==============================================
@@ -2132,7 +2122,7 @@ double player_t::composite_tank_crit_block() SC_CONST
 
 // player_t::composite_tank_crit ==========================================
 
-double player_t::composite_tank_crit( const school_type school ) SC_CONST
+double player_t::composite_tank_crit( const school_type /* school */ ) SC_CONST
 {
   return 0;
 }
@@ -2367,7 +2357,7 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // player_t::composite_player_multiplier ================================
 
-double player_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+double player_t::composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) SC_CONST
 {
   double m = 1.0;
 
@@ -2407,7 +2397,7 @@ double player_t::composite_player_multiplier( const school_type school, action_t
 
 // player_t::composite_player_td_multiplier ==============================
 
-double player_t::composite_player_td_multiplier( const school_type school, action_t* a ) SC_CONST
+double player_t::composite_player_td_multiplier( const school_type /* school */, action_t* /* a */ ) SC_CONST
 {
   double m = 1.0;
 
@@ -3620,8 +3610,8 @@ void player_t::stat_loss( int       stat,
 
 void player_t::cost_reduction_gain( int       school,
                                     double    amount,
-                                    gain_t*   gain,
-                                    action_t* action )
+                                    gain_t*   /* gain */,
+                                    action_t* /* action */ )
 {
   if( amount <= 0 ) return;
 
@@ -3647,7 +3637,7 @@ void player_t::cost_reduction_gain( int       school,
 
 void player_t::cost_reduction_loss( int       school,
                                     double    amount,
-                                    action_t* action )
+                                    action_t* /* action */ )
 {
   if( amount <= 0 ) return;
 
@@ -3705,7 +3695,7 @@ double player_t::assess_damage( double            amount,
 
 double player_t::target_mitigation( double            amount,
                                     const school_type school,
-                                    int               dmg_type,
+                                    int               /* dmg_type */,
                                     int               result,
                                     action_t*         action )
 {
@@ -3976,7 +3966,7 @@ void player_t::aura_gain( const char* aura_name , double value )
 
 // player_t::aura_loss ======================================================
 
-void player_t::aura_loss( const char* aura_name , double value )
+void player_t::aura_loss( const char* aura_name , double /* value */ )
 {
   if ( sim -> log && ! sleeping )
   {
@@ -4516,7 +4506,9 @@ struct cycle_t : public action_t
 
   cycle_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "cycle", player ), current_action( 0 )
-  {}
+  {
+    parse_options( NULL, options_str );
+  }
 
   virtual void reset()
   {
@@ -5129,7 +5121,7 @@ void player_t::trigger_replenishment()
 
 // player_t::parse_talent_trees ===================================================
 
-bool player_t::parse_talent_trees( int encoding[], const uint32_t size )
+bool player_t::parse_talent_trees( const int encoding[ MAX_TALENT_SLOTS ] )
 {
   int index=0;
 
@@ -5150,11 +5142,11 @@ bool player_t::parse_talent_trees( int encoding[], const uint32_t size )
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-  int encoding[MAX_TALENT_SLOTS];
+  assert( talent_string.size() <= MAX_TALENT_SLOTS );
+  int encoding[ MAX_TALENT_SLOTS ];
 
-  for( int i=0; i < MAX_TALENT_SLOTS; i++ ) encoding[ i ] = 0;
-
-  for( unsigned int i = 0; i < talent_string.size(); i++ )
+  unsigned int i;
+  for ( i = 0; i < talent_string.size(); i++ )
   {
     char c = talent_string[ i ];
     if ( c < '0' || c > '5' )
@@ -5162,10 +5154,12 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
       sim -> errorf( "Player %s has illegal character '%c' in talent encoding.\n", name(), c );
       return false;
     }
-    encoding[i] = c - '0';
+    encoding[ i ] = c - '0';
   }
 
-  return parse_talent_trees( encoding, talent_string.size() );
+  while ( i < MAX_TALENT_SLOTS ) encoding[ i++ ] = 0;
+
+  return parse_talent_trees( encoding );
 }
 
 // player_t::parse_talents_wowhead ==========================================
@@ -5176,7 +5170,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   // each character expands to a pair of numbers [0-5][0-5]
   // unused deeper talents are simply left blank instead of filling up the string with zero-zero encodings
 
-  struct decode_t
+  static const struct decode_t
   {
     char key, first, second;
   }
@@ -5221,10 +5215,14 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
       continue;
     }
 
-    decode_t* decode = 0;
-    for ( int j=0; decoding[ j ].key != '\0' && ! decode; j++ )
+    const decode_t* decode = 0;
+    for ( int j=0; decoding[ j ].key != '\0'; j++ )
     {
-      if ( decoding[ j ].key == c ) decode = decoding + j;
+      if ( decoding[ j ].key == c )
+      {
+        decode = &decoding[ j ];
+        break;
+      }
     }
 
     if ( ! decode )
@@ -5250,12 +5248,12 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
   if ( sim -> debug )
   {
-    std::string str_out = "";
-    for(  int i=0; i < count; i++ ) str_out += ( char )encoding[i];
+    std::string str_out;
+    for ( int i = 0; i < count; i++ ) str_out += ( char )encoding[i];
     util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.c_str() );
   }
 
-  return parse_talent_trees( encoding, count );
+  return parse_talent_trees( encoding );
 }
 
 // player_t::create_talents =================================================

@@ -514,7 +514,7 @@ struct priest_heal_t : public heal_t
   divine_aegis_t* da;
   bool can_trigger_DA;
 
-  void trigger_echo_of_light( heal_t* a, player_t* t )
+  void trigger_echo_of_light( heal_t* a, player_t* /* t */ )
   {
     priest_t* p = a -> player -> cast_priest();
 
@@ -830,7 +830,7 @@ public:
     _init_priest_spell_t();
   }
 
-  priest_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
+  priest_spell_t( const active_spell_t& s ) :
     spell_t( s )
   {
     _init_priest_spell_t();
@@ -4628,7 +4628,7 @@ action_t* priest_t::create_action( const std::string& name,
 // priest_t::create_pet ======================================================
 
 pet_t* priest_t::create_pet( const std::string& pet_name,
-                             const std::string& pet_type )
+                             const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
 

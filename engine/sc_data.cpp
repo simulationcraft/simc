@@ -458,7 +458,7 @@ unsigned talent_data_t::mask_pet() SC_CONST
 
 uint32_t talent_data_t::rank_spell_id( uint32_t rank ) SC_CONST
 {
-  assert( ( rank >= 0 ) && ( rank <= MAX_RANK ) );
+  assert( rank <= MAX_RANK );
 
   if ( rank == 0 )
     return 0;

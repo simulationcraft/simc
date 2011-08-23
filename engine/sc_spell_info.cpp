@@ -182,7 +182,7 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 355
 };
 
-static std::string spell_flags( sim_t* sim, const spell_data_t* spell )
+static std::string spell_flags( sim_t* /* sim */, const spell_data_t* spell )
 {
   std::ostringstream s;
 

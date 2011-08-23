@@ -131,7 +131,7 @@ void heal_t::player_buff()
 
 // heal_t::target_buff ====================================================
 
-void heal_t::target_debuff( player_t* t, int dmg_type )
+void heal_t::target_debuff( player_t* /* t */, int /* dmg_type */ )
 {
   target_multiplier            = 1.0;
   target_hit                   = 0;
@@ -578,7 +578,7 @@ void absorb_t::player_buff()
 
 // absorb_t::target_debuff ====================================================
 
-void absorb_t::target_debuff( player_t* t, int dmg_type )
+void absorb_t::target_debuff( player_t* /* t */, int /* dmg_type */ )
 {
   target_multiplier            = 1.0;
   target_hit                   = 0;

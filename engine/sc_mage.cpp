@@ -1181,7 +1181,7 @@ double mage_spell_t::execute_time() SC_CONST
 {
   double t = spell_t::execute_time();
   mage_t* p = player -> cast_mage();
-    
+
   if ( p -> buffs_presence_of_mind -> up() )
     return 0;
 
@@ -1436,8 +1436,11 @@ struct arcane_brilliance_t : public mage_spell_t
   arcane_brilliance_t( mage_t* p, const std::string& options_str ) :
       mage_spell_t( "arcane_brilliance", 1459, p ), bonus( 0 )
   {
+    parse_options( NULL, options_str );
+
     bonus      = p -> dbc.effect_average( p -> dbc.spell( 79058 ) -> effect1().id(), p -> level );
     base_cost *= 1.0 + p -> glyphs.arcane_brilliance -> effect1().percent();
+    harmful = false;
   }
 
   virtual void execute()
@@ -1455,7 +1458,7 @@ struct arcane_brilliance_t : public mage_spell_t
 
   virtual bool ready()
   {
-    return( player -> buffs.arcane_brilliance -> current_value < bonus );
+    return ( player -> buffs.arcane_brilliance -> current_value < bonus ) && mage_spell_t::ready();
   }
 };
 
@@ -1588,6 +1591,7 @@ struct blink_t : public mage_spell_t
   blink_t( mage_t* p, const std::string& options_str ) :
       mage_spell_t( "blink", 1953, p )
   {
+    parse_options( NULL, options_str );
     harmful = false;
   }
 
@@ -1991,7 +1995,7 @@ struct focus_magic_t : public mage_spell_t
     {
       focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p, true ) {}
 
-      virtual void trigger( action_t* a, void* call_data )
+      virtual void trigger( action_t* /* a */, void* /* call_data */ )
       {
         listener -> cast_mage() -> buffs_focus_magic_feedback -> trigger();
       }
@@ -2220,7 +2224,7 @@ struct frostfire_bolt_t : public mage_spell_t
   }
 
   virtual double total_td_multiplier() SC_CONST { return 1.0; } // No double-dipping!
-  
+
   virtual void tick()
   {
     // Ticks don't benefit from Shatter, which checks for fof_frozen
@@ -2603,6 +2607,7 @@ struct presence_of_mind_t : public mage_spell_t
   {
     check_talent( p -> talents.presence_of_mind -> rank() );
 
+    parse_options( NULL, options_str );
     harmful = false;
 
     cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect1().percent();
@@ -3017,7 +3022,7 @@ action_t* mage_t::create_action( const std::string& name,
 // mage_t::create_pet =======================================================
 
 pet_t* mage_t::create_pet( const std::string& pet_name,
-                           const std::string& pet_type )
+                           const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
 

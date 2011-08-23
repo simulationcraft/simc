@@ -629,7 +629,7 @@ void action_t::player_buff()
 
 // action_t::target_debuff ==================================================
 
-void action_t::target_debuff( player_t* t, int dmg_type )
+void action_t::target_debuff( player_t* t, int /* dmg_type */ )
 {
   target_multiplier            = 1.0;
   target_hit                   = 0;
