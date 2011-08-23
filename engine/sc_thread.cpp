@@ -161,10 +161,10 @@ void mutex_t::unlock()
 
 void thread_t::launch()
 {
-  assert( ! impl );
-  if ( !impl )
+  assert( impl.get() == 0 );
+  if ( ! impl.get() )
   {
-    impl = new impl_t;
+    impl.reset( new impl_t );
     impl -> launch( *this );
   }
 }
@@ -173,11 +173,16 @@ void thread_t::launch()
 
 void thread_t::wait()
 {
-  assert( impl );
-  if ( impl )
+  assert( impl.get() != 0 );
+  if ( impl.get() )
   {
     impl -> wait();
-    delete impl;
-    impl = NULL;
+    impl.reset( 0 );
   }
+}
+
+thread_t::~thread_t()
+{
+  // ~thread_t has to be out-of-line here where impl_t is completely defined
+  //  so that auto_ptr can destroy impl properly.
 }

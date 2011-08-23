@@ -702,11 +702,10 @@ void http_t::format_( std::string& encoded_url,
 
 #ifdef UNIT_TEST
 
-namespace thread {
+inline mutex_t::~mutex_t() {}
 inline void mutex_t::lock() {}
 inline void mutex_t::unlock() {}
-inline void sleep( int ) {}
-}
+inline void thread_t::sleep( int ) {}
 
 int main( int argc, char* argv[] )
 {

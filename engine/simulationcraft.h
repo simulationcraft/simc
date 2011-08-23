@@ -2314,9 +2314,9 @@ class thread_t
 {
 private:
   class impl_t;
-  impl_t* impl;
+  std::auto_ptr<impl_t> impl;
 public:
-  thread_t() : impl( 0 ) {}
+  virtual ~thread_t();
   void launch();
   void wait();
 
