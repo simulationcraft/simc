@@ -2280,7 +2280,9 @@ struct blood_boil_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> buffs_crimson_scourge -> up() )
+    {
       return 0;
+    }
 
     return death_knight_spell_t::cost();
   }
@@ -2293,6 +2295,8 @@ struct blood_boil_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_blood_boil -> execute();
+    if( p -> buffs_crimson_scourge -> up() )
+      p -> buffs_crimson_scourge -> expire();
   }
 };
 
