@@ -1182,7 +1182,7 @@ double mage_spell_t::execute_time() SC_CONST
   double t = spell_t::execute_time();
   mage_t* p = player -> cast_mage();
 
-  if ( p -> buffs_presence_of_mind -> up() )
+  if ( p -> buffs_presence_of_mind -> up() && ! channeled )
     return 0;
 
   return t;
