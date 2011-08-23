@@ -19,7 +19,7 @@ role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-033323011302211032100200000000000000002030030000000000000
-glyphs=expose_armor/mutilate/backstab/rupture
+glyphs=expose_armor/mutilate/backstab/rupture/tricks_of_the_trade
 head=dark_phoenix_helmet,id=71539,gems=agile_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste,reforge=hit_mastery
 neck=choker_of_the_vanquished_lord,id=71610,reforge=haste_hit
 shoulders=dark_phoenix_spaulders,id=71541,gems=40agi_10agi,enchant=50agi_25mastery,reforge=haste_hit
@@ -48,7 +48,7 @@ role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-023020000000000000023322303100300123210030000000000000000
-glyphs=expose_armor/slice_and_dice/sinister_strike/adrenaline_rush
+glyphs=expose_armor/slice_and_dice/sinister_strike/adrenaline_rush/tricks_of_the_trade
 head=dark_phoenix_helmet,id=71539,gems=agile_shadowspirit_20agi_20haste_30agi,enchant=60agi_35haste
 neck=choker_of_the_vanquished_lord,id=71610,reforge=mastery_exp
 shoulders=dark_phoenix_spaulders,id=71541,gems=67agi_10agi,enchant=50agi_25mastery,reforge=mastery_exp
@@ -109,7 +109,7 @@ role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-033323011302211032100200000000000000002030030000000000000
-glyphs=expose_armor/mutilate/backstab/rupture
+glyphs=expose_armor/mutilate/backstab/rupture/tricks_of_the_trade
 head=dark_phoenix_helmet,id=71047,gems=agile_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste,reforge=haste_mastery
 neck=choker_of_the_vanquished_lord,id=71354,reforge=haste_hit
 shoulders=dark_phoenix_spaulders,id=71049,gems=40agi_10agi,enchant=50agi_25mastery
@@ -138,7 +138,7 @@ role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-023020000000000000023322303100300123210030000000000000000
-glyphs=expose_armor/slice_and_dice/sinister_strike/adrenaline_rush
+glyphs=expose_armor/slice_and_dice/sinister_strike/adrenaline_rush/tricks_of_the_trade
 head=dark_phoenix_helmet,id=71047,gems=agile_shadowspirit_20agi_20haste_30agi,enchant=60agi_35haste,reforge=haste_exp
 neck=choker_of_the_vanquished_lord,id=71354,reforge=mastery_exp
 shoulders=dark_phoenix_spaulders,id=71049,gems=67agi_10agi,enchant=50agi_25mastery,reforge=mastery_hit

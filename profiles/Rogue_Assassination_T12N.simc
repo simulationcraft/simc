@@ -9,7 +9,7 @@ role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-033323011302211032100200000000000000002030030000000000000
-glyphs=expose_armor/mutilate/backstab/rupture
+glyphs=expose_armor/mutilate/backstab/rupture/tricks_of_the_trade
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/apply_poison,main_hand=instant,off_hand=deadly
