@@ -1955,11 +1955,6 @@ struct flame_orb_t : public mage_spell_t
   {
     tick_spell -> execute();
     mage_t* p = player -> cast_mage();
-    if ( ! p -> talents.hot_streak   -> ok() &&
-         ! p -> talents.brain_freeze -> ok() )
-    {
-      p -> buffs_arcane_missiles -> trigger();
-    }
     stats -> add_tick( time_to_tick );
   }
 
