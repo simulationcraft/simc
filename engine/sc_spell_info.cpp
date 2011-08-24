@@ -536,7 +536,7 @@ std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent
   if ( talent -> mask_class() )
   {
     s << "Class        : ";
-    for ( unsigned int i = 0; i < 12; i++ )
+    for ( unsigned int i = 1; i < 12; i++ )
     {
       if ( talent -> mask_class() & ( 1 << ( i - 1 ) ) )
         s << _class_map[ i ].name << ", ";
