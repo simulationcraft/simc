@@ -2316,6 +2316,7 @@ private:
   class impl_t;
   std::auto_ptr<impl_t> impl;
 public:
+  thread_t();
   virtual ~thread_t();
   void launch();
   void wait();
@@ -2337,6 +2338,7 @@ private:
   static impl_t global_lock;
 
 public:
+  mutex_t();
   ~mutex_t();
   void lock();
   void unlock();

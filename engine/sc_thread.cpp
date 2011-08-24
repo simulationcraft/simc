@@ -1,4 +1,3 @@
-// ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -124,15 +123,23 @@ void thread_t::sleep( int seconds )
 
 mutex_t::impl_t mutex_t::global_lock;
 
-// mutex_t::~mutex_t =======================================================
+// mutex_t::mutex_t =========================================================
+
+mutex_t::mutex_t()
+{
+  // mutex_t has to be out-of-line here where impl_t is completely defined
+  // to avoid a compiler warning.
+}
+
+// mutex_t::~mutex_t ========================================================
 
 mutex_t::~mutex_t()
 {
   // ~mutex_t has to be out-of-line here where impl_t is completely defined
-  //  so that auto_ptr can destroy impl properly.
+  // so that auto_ptr can destroy impl properly.
 }
 
-// mutex_t::create =========================================================
+// mutex_t::create ==========================================================
 
 inline void mutex_t::create()
 {
@@ -157,7 +164,15 @@ void mutex_t::lock()
 void mutex_t::unlock()
 { assert( impl.get() != 0 ); impl -> unlock(); }
 
-// launch ===================================================================
+// thread_t::thread_t =======================================================
+
+thread_t::thread_t()
+{
+  // thread_t has to be out-of-line here where impl_t is completely defined
+  // to avoid a compiler warning.
+}
+
+// thread_t::launch =========================================================
 
 void thread_t::launch()
 {
