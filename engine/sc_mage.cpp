@@ -1954,7 +1954,6 @@ struct flame_orb_t : public mage_spell_t
   virtual void tick()
   {
     tick_spell -> execute();
-    mage_t* p = player -> cast_mage();
     stats -> add_tick( time_to_tick );
   }
 

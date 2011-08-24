@@ -43,12 +43,6 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -58,14 +52,14 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <PrecompiledHeaderFile>simulationcraft.h</PrecompiledHeaderFile>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>simc.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -80,25 +74,51 @@
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt;C:\data\code\simcraft\simulationcraft;C:\data\code\simcraft\simulationcraft\vs;C:\data\code\simcraft\simulationcraft\sfmt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4005;4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>simc.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <Profile>true</Profile>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="engine\utf8\checked.h" />
+    <ClInclude Include="engine\utf8\core.h" />
+    <ClInclude Include="engine\simulationcraft.h" />
+    <ClInclude Include="engine\utf8\unchecked.h" />
+    <ClInclude Include="engine\utf8.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="engine\data_definitions.hh" />
+    <None Include="engine\data_enums.hh" />
+    <None Include="engine\sc_extra_data.inc" />
+    <None Include="engine\sc_extra_data_ptr.inc" />
+    <None Include="engine\sc_item_data.inc" />
+    <None Include="engine\sc_item_data_ptr.inc" />
+    <None Include="engine\sc_scale_data.inc" />
+    <None Include="engine\sc_scale_data_ptr.inc" />
+    <None Include="engine\sc_spell_data.inc" />
+    <None Include="engine\sc_spell_data_ptr.inc" />
+    <None Include="engine\sc_spell_lists.inc" />
+    <None Include="engine\sc_spell_lists_ptr.inc" />
+    <None Include="engine\sc_talent_data.inc" />
+    <None Include="engine\sc_talent_data_ptr.inc" />
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="engine\sc_action.cpp" />
     <ClCompile Include="engine\sc_armory.cpp" />
@@ -159,37 +179,6 @@
     <ClCompile Include="engine\sc_weapon.cpp" />
     <ClCompile Include="engine\sc_wowhead.cpp" />
     <ClCompile Include="engine\sc_xml.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="engine\simulationcraft.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="engine\data_definitions.hh" />
-    <None Include="engine\data_enums.hh" />
-    <None Include="engine\utf8.h" />
-    <None Include="engine\utf8\checked.h" />
-    <None Include="engine\utf8\core.h" />
-    <None Include="engine\utf8\unchecked.h" />
-    <None Include="engine\sc_extra_data.inc" />
-    <None Include="engine\sc_extra_data_ptr.inc" />
-    <None Include="engine\sc_item_data.inc" />
-    <None Include="engine\sc_item_data_ptr.inc" />
-    <None Include="engine\sc_scale_data.inc">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="engine\sc_scale_data_ptr.inc">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="engine\sc_spell_data.inc">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="engine\sc_spell_data_ptr.inc">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="engine\sc_spell_lists.inc" />
-    <None Include="engine\sc_spell_lists_ptr.inc" />
-    <None Include="engine\sc_talent_data.inc" />
-    <None Include="engine\sc_talent_data_ptr.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
