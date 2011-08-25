@@ -2071,7 +2071,7 @@ void shaman_spell_t::schedule_execute()
   {
     player -> executing = this;
     player -> gcd_ready = sim -> current_time + gcd();
-    if( player -> action_queued )
+    if( player -> action_queued && sim -> strict_gcd_queue )
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
