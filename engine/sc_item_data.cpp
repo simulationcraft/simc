@@ -203,7 +203,7 @@ static bool parse_gems( item_t&            item,
 
   for ( unsigned i = 0; i < 3; i++ )
   {
-    if ( gem_ids[ i ].empty() || gem_ids[ i ] == "" )
+    if ( gem_ids[ i ].empty() )
     {
       /// Check if there's a gem slot, if so, this is ungemmed item.
       if ( item_data -> socket_color[ i ] )

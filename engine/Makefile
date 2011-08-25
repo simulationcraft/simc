@@ -11,26 +11,30 @@
 # Override MODULE on the cmd-line invocation if you want to build a custom named executable, e.g. 'simc64'
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
-MODULE     = simc
 OS         = UNIX
 OPENSSL_PATH = 
 
+CXX        = g++
+CPP_FLAGS  = -Wall -Woverloaded-virtual -W -Wswitch
+OPTS       = -O3
+BITS       = 32
+
+ifeq (64,${BITS})
+CPP_FLAGS += -m64
+LINK_FLAGS+= -m64
+endif
+
 # Any UNIX platform
 ifeq (UNIX,${OS})
-CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual -W -Wswitch -D_stricmp=strcasecmp
-LINK_FLAGS = 
-LINK_LIBS  = -lpthread
-OPTS       = -O3 -ffast-math
-BITS       = 32
+MODULE     = simc
+CPP_FLAGS += -D_stricmp=strcasecmp
+LINK_LIBS += -lpthread
+OPTS      += -ffast-math
 AR         = ar
 COPY       = cp
 REMOVE     = rm -f
 PATHSEP    = /
-ifeq (64,${BITS})
-CPP_FLAGS  += -m64
-LINK_FLAGS += -m64
-else
+ifneq (64,${BITS})
 ifeq (i386,${HOSTTYPE})
 CPP_FLAGS  += -malign-double
 endif
@@ -43,12 +47,8 @@ endif
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
 MODULE     = simc.exe
-CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual -malign-double
-LINK_FLAGS = 
+CPP_FLAGS += -malign-double
 LINK_LIBS  = -lws2_32 -lwininet
-OPTS       = -O3
-BITS       = 32
 COPY       = copy
 REMOVE     = del /f
 PATHSEP    = \\
@@ -56,14 +56,7 @@ AR         = ar
 # MinGW W64
 ifeq (64,${BITS})
 LINK_FLAGS = -static
-CPP_FLAGS  += -m64
-LINK_FLAGS += -m64	
 endif
-endif
-
-ifeq (yes,${USE_CURL})
-CPP_FLAGS += -DUSE_CURL
-LINK_LIBS += -lcurl
 endif
 
 ifneq ($(OPENSSL_PATH),)
@@ -71,69 +64,69 @@ CPP_FLAGS += -DUSE_OPENSSL -I$(OPENSSL_PATH)/include
 LINK_LIBS += -L$(OPENSSL_PATH)/lib -lssleay32
 endif
 
-SRC =\
-	simulationcraft.h	\
+SRC = \
+	simulationcraft.h \
   data_definitions.hh \
   data_enums.hh \
   utf8.h \
-	sc_action.cpp		\
-	sc_armory.cpp		\
-	sc_attack.cpp		\
-	sc_battle_net.cpp	\
+	sc_action.cpp \
+	sc_armory.cpp \
+	sc_attack.cpp \
+	sc_battle_net.cpp \
   sc_bcp_api.cpp \
-  sc_buff.cpp		\
-	sc_chardev.cpp		\
-	sc_chart.cpp		\
-	sc_const_data.cpp	\
-	sc_consumable.cpp	\
-	sc_data.cpp		\
-	sc_death_knight.cpp	\
-	sc_druid.cpp		\
-	sc_enchant.cpp		\
-	sc_expressions.cpp	\
-	sc_event.cpp		\
-	sc_gear_stats.cpp	\
-	sc_heal.cpp         \
-	sc_hunter.cpp		\
-	sc_http.cpp		\
-	sc_item.cpp		\
-	sc_item_data.cpp		\
-	sc_js.cpp		\
-	sc_log.cpp		\
-	sc_mage.cpp		\
-	sc_main.cpp		\
-	sc_mmo_champion.cpp	\
-	sc_option.cpp		\
-	sc_paladin.cpp          \
-	sc_pet.cpp		\
-	sc_player.cpp		\
-	sc_plot.cpp		\
-	sc_priest.cpp		\
-	sc_raid_event.cpp	\
-	sc_rating.cpp		\
-	sc_rawr.cpp		\
+  sc_buff.cpp \
+	sc_chardev.cpp \
+	sc_chart.cpp \
+	sc_const_data.cpp \
+	sc_consumable.cpp \
+	sc_data.cpp \
+	sc_death_knight.cpp \
+	sc_druid.cpp \
+	sc_enchant.cpp \
+	sc_expressions.cpp \
+	sc_event.cpp \
+	sc_gear_stats.cpp \
+	sc_heal.cpp \
+	sc_hunter.cpp \
+	sc_http.cpp \
+	sc_item.cpp \
+	sc_item_data.cpp \
+	sc_js.cpp \
+	sc_log.cpp \
+	sc_mage.cpp \
+	sc_main.cpp \
+	sc_mmo_champion.cpp \
+	sc_option.cpp \
+	sc_paladin.cpp \
+	sc_pet.cpp \
+	sc_player.cpp \
+	sc_plot.cpp \
+	sc_priest.cpp \
+	sc_raid_event.cpp \
+	sc_rating.cpp \
+	sc_rawr.cpp \
 	sc_reforge_plot.cpp \
-	sc_report.cpp		\
-	sc_rng.cpp		\
-	sc_rogue.cpp		\
-	sc_shaman.cpp		\
-	sc_scaling.cpp		\
-	sc_sequence.cpp		\
-	sc_set_bonus.cpp	\
-	sc_sim.cpp		\
-	sc_spell.cpp		\
-	sc_spell_data.cpp	\
-	sc_spell_info.cpp	\
-	sc_stats.cpp		\
-	sc_talent.cpp		\
-	sc_target.cpp		\
-	sc_thread.cpp		\
-	sc_unique_gear.cpp	\
-	sc_util.cpp		\
-	sc_warlock.cpp		\
-	sc_warrior.cpp		\
-	sc_weapon.cpp		\
-	sc_wowhead.cpp		\
+	sc_report.cpp \
+	sc_rng.cpp \
+	sc_rogue.cpp \
+	sc_shaman.cpp \
+	sc_scaling.cpp \
+	sc_sequence.cpp \
+	sc_set_bonus.cpp \
+	sc_sim.cpp \
+	sc_spell.cpp \
+	sc_spell_data.cpp \
+	sc_spell_info.cpp \
+	sc_stats.cpp \
+	sc_talent.cpp \
+	sc_target.cpp \
+	sc_thread.cpp \
+	sc_unique_gear.cpp \
+	sc_util.cpp \
+	sc_warlock.cpp \
+	sc_warrior.cpp \
+	sc_weapon.cpp \
+	sc_wowhead.cpp \
 	sc_xml.cpp
 
 SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC))
@@ -153,7 +146,7 @@ $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
 	@$(CXX) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
-$(OBJ_DIR)/%.$(OBJ_EXT): %.cpp $(SRC_H)
+$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
 	@$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
 

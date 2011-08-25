@@ -319,7 +319,7 @@ int js_t::get_children( std::vector<js_node_t*>& nodes,
 js_node_t* js_t::get_node( js_node_t*         root,
                            const std::string& path )
 {
-  if ( path.empty() || path.size() == 0 || path == root -> name() )
+  if ( path.empty() || path == root -> name() )
     return root;
 
   return split_path( root, path );
@@ -331,7 +331,7 @@ int js_t::get_nodes( std::vector<js_node_t*>& nodes,
                      js_node_t*               root,
                      const std::string&       path )
 {
-  if ( path.empty() || path.size() == 0 || path == root -> name() )
+  if ( path.empty() || path == root -> name() )
   {
     nodes.push_back( root );
   }

@@ -995,9 +995,10 @@ bool enchant_t::get_reforge_encoding( std::string& name,
                                       std::string& encoding,
                                       const std::string& reforge_id )
 {
-  name = encoding = "";
+  name.clear();
+  encoding.clear();
 
-  if ( reforge_id.empty() || reforge_id == "" || reforge_id == "0" )
+  if ( reforge_id.empty() || reforge_id == "0" )
     return true;
 
   int start = 0;
@@ -1067,7 +1068,7 @@ bool enchant_t::download( item_t&            item,
 {
   item.armory_enchant_str.clear();
 
-  if ( enchant_id.empty() || enchant_id == "" || enchant_id == "0" )
+  if ( enchant_id.empty() || enchant_id == "0" )
     return true;
 
   std::string description;
@@ -1087,7 +1088,7 @@ bool enchant_t::download_addon( item_t&            item,
 {
   item.armory_addon_str.clear();
 
-  if ( addon_id.empty() || addon_id == "" || addon_id == "0" )
+  if ( addon_id.empty() || addon_id == "0" )
     return true;
 
   std::string description;
@@ -1107,7 +1108,7 @@ bool enchant_t::download_reforge( item_t&            item,
 {
   item.armory_reforge_str.clear();
 
-  if ( reforge_id.empty() || reforge_id == "" || reforge_id == "0" )
+  if ( reforge_id.empty() || reforge_id == "0" )
     return true;
 
   std::string description;

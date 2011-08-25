@@ -20,11 +20,9 @@
 // PLATFORM INDEPENDENT SECTION
 // ==========================================================================
 
-// http_t::proxy_* ==========================================================
+// http_t::proxy ============================================================
 
-std::string http_t::proxy_type;
-std::string http_t::proxy_host;
-int         http_t::proxy_port = 0;
+http_t::proxy_t http_t::proxy;
 
 cache::cache_control_t cache::cache_control_t::singleton;
 
@@ -240,10 +238,10 @@ int SocketWrapper::connect( const std::string& host, unsigned short port )
 
   a.sin_family = AF_INET;
 
-  if ( http_t::proxy_type == "http" || http_t::proxy_type == "https" )
+  if ( http_t::proxy.type == "http" || http_t::proxy.type == "https" )
   {
-    h = gethostbyname( http_t::proxy_host.c_str() );
-    a.sin_port = htons( http_t::proxy_port );
+    h = gethostbyname( http_t::proxy.host.c_str() );
+    a.sin_port = htons( http_t::proxy.port );
   }
   else
   {
@@ -356,7 +354,7 @@ static std::string build_request( const url_t&       url,
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
   std::stringstream request;
-  bool use_proxy = ( http_t::proxy_type == "http" || http_t::proxy_type == "https" );
+  bool use_proxy = ( http_t::proxy.type == "http" || http_t::proxy.type == "https" );
 
   request << "GET ";
 
@@ -411,8 +409,8 @@ static bool download( url_cache_entry_t& entry,
   std::string current_url = url;
   unsigned int redirect = 0;
   static const unsigned int redirect_max = 8;
-  bool ssl_proxy = ( http_t::proxy_type == "https" );
-  const bool use_proxy = ( ssl_proxy || http_t::proxy_type == "http" );
+  bool ssl_proxy = ( http_t::proxy.type == "https" );
+  const bool use_proxy = ( ssl_proxy || http_t::proxy.type == "http" );
 
   // get a page and if we find a redirect update current_url and loop
   while ( true )

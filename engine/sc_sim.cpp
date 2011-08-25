@@ -53,7 +53,7 @@ sim_t* sim_signal_handler_t::global_sim = 0;
 #else
 struct sim_signal_handler_t
 {
-  static void init( sim_t* sim ) {}
+  static void init( sim_t* ) {}
 };
 #endif
 
@@ -269,9 +269,9 @@ static bool parse_proxy( sim_t*             sim,
   int port = atoi( splits[ 2 ].c_str() );
   if ( splits[ 0 ] == "http" && port > 0 && port < 65536 )
   {
-    http_t::proxy_type = splits[ 0 ];
-    http_t::proxy_host = splits[ 1 ];
-    http_t::proxy_port = port;
+    http_t::proxy.type = splits[ 0 ];
+    http_t::proxy.host = splits[ 1 ];
+    http_t::proxy.port = port;
     return true;
   }
 
@@ -754,11 +754,11 @@ sim_t::~sim_t()
     delete d;
   }
 
-  if ( rng     )           delete rng;
-  if ( deterministic_rng ) delete deterministic_rng;
-  if ( scaling )           delete scaling;
-  if ( plot    )           delete plot;
-  if ( reforge_plot )      delete reforge_plot;
+  delete rng;
+  delete deterministic_rng;
+  delete scaling;
+  delete plot;
+  delete reforge_plot;
 
   int num_events = ( int ) raid_events.size();
   for ( int i=0; i < num_events; i++ )
@@ -771,9 +771,9 @@ sim_t::~sim_t()
   {
     delete children[ i ];
   }
-  if ( timing_wheel ) delete[] timing_wheel;
 
-  if ( spell_query ) delete spell_query;
+  delete[] timing_wheel;
+  delete spell_query;
 }
 
 // sim_t::add_event ==========================================================

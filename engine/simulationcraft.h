@@ -4719,9 +4719,13 @@ struct http_t
 private:
   static void format_( std::string& encoded_url, const std::string& url );
 public:
-  static std::string proxy_type;
-  static std::string proxy_host;
-  static int proxy_port;
+  struct proxy_t
+  {
+    std::string type;
+    std::string host;
+    int port;
+  };
+  static proxy_t proxy;
 
   static void cache_load();
   static void cache_save();

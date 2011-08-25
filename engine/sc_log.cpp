@@ -5,10 +5,6 @@
 
 #include "simulationcraft.h"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
-
-} // ANONYMOUS NAMESPACE ====================================================
-
 // ==========================================================================
 // Log
 // ==========================================================================
@@ -24,8 +20,6 @@ void log_t::output( sim_t* sim, const char* format, ... )
   vsnprintf( buffer, sizeof( buffer ),  format, vap );
   va_end( vap );
 
-  util_t::fprintf( sim -> output_file, "%-8.2f ", sim -> current_time );
-  util_t::fprintf( sim -> output_file, "%s", buffer );
-  util_t::fprintf( sim -> output_file, "\n" );
+  util_t::fprintf( sim -> output_file, "%-8.2f %s\n", sim -> current_time, buffer );
   fflush( sim -> output_file );
 }

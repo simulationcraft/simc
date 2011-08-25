@@ -1390,6 +1390,8 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
       success = wowhead_t::download_glyph( player, glyph_name, glyph_id, cache::ONLY, true );
     else if ( player -> sim -> item_db_sources[ i ] == "mmoc" )
       success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
+    else if ( player -> sim -> item_db_sources[ i ] == "bcp" )
+      success = bcp_api::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
 
     if ( success ) return true;
   }
@@ -1405,6 +1407,8 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
       success = wowhead_t::download_glyph( player, glyph_name, glyph_id, cache::behavior(), true );
     else if ( player -> sim -> item_db_sources[ i ] == "mmoc" )
       success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id );
+    else if ( player -> sim -> item_db_sources[ i ] == "bcp" )
+      success = bcp_api::download_glyph( player, glyph_name, glyph_id );
 
     if ( success ) return true;
   }
@@ -1420,7 +1424,7 @@ int item_t::parse_gem( item_t&            item,
   int gem_type = GEM_NONE;
   std::vector<std::string> source_list;
 
-  if ( gem_id.empty() || gem_id == "" || gem_id == "0" )
+  if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
 
   if ( ! item_database_t::initialize_item_sources( item, source_list ) )
