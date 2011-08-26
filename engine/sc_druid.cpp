@@ -3682,12 +3682,13 @@ struct starfire_t : public druid_spell_t
               gain *= 2;
             }
           }
+
+          if ( p -> set_bonus.tier12_4pc_caster() )
+          {
+            gain += 5;
+          }
         }
-        if ( p -> set_bonus.tier12_4pc_caster() )
-        {
-          gain += 5;
-        }
-        //trigger_eclipse_energy_gain( this, gain );
+        
         trigger_eclipse_gain_delay( this, gain );
       }
       else
