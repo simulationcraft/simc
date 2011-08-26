@@ -146,6 +146,7 @@ PaperdollProfile::setSelectedSlot( slot_type t )
 {
   m_currentSlot = t;
   emit slotChanged( m_currentSlot );
+  emit profileChanged();
 }
 
 void
@@ -156,6 +157,7 @@ PaperdollProfile::setSelectedItem( const QModelIndex& index )
   m_slotItem[ m_currentSlot ] = item;
   
   emit itemChanged( m_currentSlot, m_slotItem[ m_currentSlot ] );
+  emit profileChanged();
 }
 
 void 
@@ -165,6 +167,17 @@ PaperdollProfile::setSelectedEnchant( int idx )
     m_slotEnchant[ m_currentSlot ] = sender -> model() -> index ( idx, 0 ).data( Qt::UserRole ).value< EnchantData >();
   
   emit enchantChanged( m_currentSlot, m_slotEnchant[ m_currentSlot ] );
+  emit profileChanged();
+}
+
+void
+PaperdollProfile::setSelectedSuffix( int idx )
+{
+  if ( QComboBox* sender = qobject_cast< QComboBox* >( QObject::sender() ) )
+    m_slotSuffix[ m_currentSlot ] = sender -> model() -> index ( idx, 0 ).data( Qt::UserRole ).value< unsigned >();
+
+  emit suffixChanged( m_currentSlot, m_slotSuffix[ m_currentSlot ] );
+  emit profileChanged();
 }
 
 void
@@ -173,8 +186,11 @@ PaperdollProfile::setClass( int player_class )
   assert( player_class > PLAYER_NONE && player_class < PLAYER_PET );
   m_class = ( player_type ) player_class;
   
+  for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t++ )
+    validateSlot( t );
+
   emit classChanged( m_class );
-  // FIXME: Invalidate items
+  emit profileChanged();
 }
 
 void
@@ -183,8 +199,11 @@ PaperdollProfile::setRace( int player_race )
   assert( player_race >= RACE_NIGHT_ELF && player_race <= RACE_GOBLIN );
   m_race = ( race_type ) player_race;
   
+  for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t++ )
+    validateSlot( t );
+
   emit raceChanged( m_race );
-  // FIXME: Invalidate items
+  emit profileChanged();  
 }
 
 void 
@@ -194,8 +213,261 @@ PaperdollProfile::setProfession( int profession, int type )
   
   m_professions[ profession ] = ( profession_type ) type;
   
+  for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t++ )
+    validateSlot( t );
+
   emit professionChanged( m_professions[ profession ] );
-  // FIXME: Invalidate items
+  emit profileChanged();  
+}
+
+bool
+PaperdollProfile::enchantUsableByProfile( const EnchantData& e ) const
+{
+  if ( e.enchant == 0 ) return true;
+
+  if ( m_slotItem[ m_currentSlot ] -> item_class != e.enchant -> _equipped_class ) 
+    return false;
+  
+  if ( e.enchant -> _equipped_invtype_mask && 
+      ! ( ( 1 << m_slotItem[ m_currentSlot ] -> inventory_type ) & e.enchant -> _equipped_invtype_mask ) ) 
+    return false;
+  
+  if ( e.enchant -> _equipped_subclass_mask && 
+      ! ( ( 1 << m_slotItem[ m_currentSlot ] -> item_subclass ) & e.enchant -> _equipped_subclass_mask ) ) 
+    return false;
+  
+  if ( e.item_enchant -> req_skill > 0 )
+  {
+    int profession_1 = ItemFilterProxyModel::professionIds[ m_professions[ 0 ] ],
+        profession_2 = ItemFilterProxyModel::professionIds[ m_professions[ 1 ] ];
+    
+    if ( e.item_enchant -> req_skill == profession_1 || e.item_enchant -> req_skill == profession_2 )
+      return true;
+    
+    return false;
+  }
+  
+  return true;
+}
+
+bool
+PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor ) const
+{
+  if ( ! item -> class_mask & util_t::class_id_mask( m_class ) ) return false;
+
+  if ( item -> item_class == ITEM_CLASS_WEAPON )
+  {
+    // Dual wield isnt for everyone
+    if ( item -> inventory_type == INVTYPE_WEAPONOFFHAND &&
+         m_class != SHAMAN && m_class != DEATH_KNIGHT && m_class != ROGUE &&
+         m_class != HUNTER && m_class != WARRIOR )
+      return false;
+
+    switch ( item -> item_subclass )
+    {
+      case ITEM_SUBCLASS_WEAPON_AXE:
+        return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
+               m_class == PALADIN      || m_class == ROGUE   ||
+               m_class == SHAMAN       || m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_AXE2:
+        return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
+               m_class == PALADIN      || m_class == SHAMAN  || 
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_BOW:
+      case ITEM_SUBCLASS_WEAPON_GUN:
+      case ITEM_SUBCLASS_WEAPON_THROWN:
+      case ITEM_SUBCLASS_WEAPON_CROSSBOW:
+        return m_class == HUNTER       || m_class == ROGUE   ||
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_MACE:
+        return m_class == DEATH_KNIGHT || m_class == DRUID   || 
+               m_class == PALADIN      || m_class == PRIEST  || 
+               m_class == ROGUE        || m_class == SHAMAN  || 
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_MACE2:
+        return m_class == DEATH_KNIGHT || m_class == DRUID   || 
+               m_class == PALADIN      || m_class == SHAMAN  || 
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_POLEARM:
+        return m_class == DEATH_KNIGHT || m_class == DRUID   || 
+               m_class == HUNTER       || m_class == PALADIN || 
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_SWORD:
+        return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
+               m_class == MAGE         || m_class == PALADIN || 
+               m_class == ROGUE        || m_class == WARLOCK || 
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_SWORD2:
+        return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
+               m_class == PALADIN      || m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_STAFF:
+        return m_class == DRUID        || m_class == HUNTER  ||
+               m_class == MAGE         || m_class == PRIEST  ||
+               m_class == SHAMAN       || m_class == WARLOCK ||
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_FIST:
+        return m_class == DRUID        || m_class == HUNTER  ||
+               m_class == ROGUE        || m_class == SHAMAN  || 
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_DAGGER:
+        return m_class == DRUID        || m_class == HUNTER  ||
+               m_class == MAGE         || m_class == PRIEST  || 
+               m_class == ROGUE        || m_class == SHAMAN  ||
+               m_class == WARLOCK      || m_class == WARRIOR;
+      case ITEM_SUBCLASS_WEAPON_WAND:
+        return m_class == MAGE         || m_class == PRIEST  ||
+               m_class == WARLOCK;
+        
+    }
+  }
+  else if ( item -> item_class == ITEM_CLASS_ARMOR )
+  {
+    switch ( item -> item_subclass )
+    {
+      case ITEM_SUBCLASS_ARMOR_MISC:
+        return true;
+      case ITEM_SUBCLASS_ARMOR_CLOTH: // Cloaks are all cloth
+        if ( ! match_armor || item -> inventory_type == INVTYPE_CLOAK )
+          return true;
+        else
+          return m_class == MAGE         || m_class == PRIEST  ||
+                 m_class == WARLOCK;
+      case ITEM_SUBCLASS_ARMOR_LEATHER:
+        if ( ! match_armor )
+          return m_class == DEATH_KNIGHT || m_class == DRUID   ||
+                 m_class == HUNTER       || m_class == PALADIN ||
+                 m_class == ROGUE        || m_class == SHAMAN  ||
+                 m_class == WARRIOR;
+        else
+          return m_class == DRUID        || m_class == ROGUE;
+      case ITEM_SUBCLASS_ARMOR_MAIL:
+        if ( ! match_armor )
+          return m_class == DEATH_KNIGHT || m_class == HUNTER  || 
+                 m_class == PALADIN      || m_class == SHAMAN  ||
+                 m_class == WARRIOR;
+        else
+          return m_class == HUNTER       || m_class == SHAMAN;
+      case ITEM_SUBCLASS_ARMOR_PLATE:
+        return m_class == DEATH_KNIGHT || m_class == PALADIN ||
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_ARMOR_SHIELD:
+        return m_class == PALADIN        || m_class == SHAMAN  ||
+               m_class == WARRIOR;
+      case ITEM_SUBCLASS_ARMOR_LIBRAM:
+        return m_class == PALADIN;
+      case ITEM_SUBCLASS_ARMOR_IDOL:
+        return m_class == DRUID;
+      case ITEM_SUBCLASS_ARMOR_TOTEM:
+        return m_class == SHAMAN;
+      case ITEM_SUBCLASS_ARMOR_SIGIL:
+        return m_class == DEATH_KNIGHT   || m_class == SHAMAN || 
+               m_class == PALADIN        || m_class == DRUID;
+    }
+  }
+  
+  return false;
+}
+
+bool
+PaperdollProfile::itemUsableByRace( const item_data_t* item ) const
+{
+  return item -> race_mask & util_t::race_mask( m_race );
+}
+
+bool
+PaperdollProfile::itemUsableByProfession( const item_data_t* item ) const
+{
+  if ( item -> req_skill > 0 &&
+       item -> req_skill != m_professions[ 0 ] && 
+       item -> req_skill != m_professions[ 1 ] )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool
+PaperdollProfile::itemUsableByProfile( const item_data_t* item ) const
+{
+  if ( ! itemUsableByClass( item, false ) )
+    return false;
+  
+  if ( ! itemUsableByProfession( item ) )
+    return false;
+  
+  return true;
+}
+
+bool
+PaperdollProfile::itemFitsProfileSlot( const item_data_t* item ) const
+{
+  switch ( item -> inventory_type )
+  {
+    case INVTYPE_HEAD:           return m_currentSlot == SLOT_HEAD;
+    case INVTYPE_NECK:           return m_currentSlot == SLOT_NECK;
+    case INVTYPE_SHOULDERS:      return m_currentSlot == SLOT_SHOULDERS;
+    case INVTYPE_BODY:           return m_currentSlot == SLOT_SHIRT;
+    case INVTYPE_CHEST:          return m_currentSlot == SLOT_CHEST;
+    case INVTYPE_WAIST:          return m_currentSlot == SLOT_WAIST;
+    case INVTYPE_LEGS:           return m_currentSlot == SLOT_LEGS;
+    case INVTYPE_FEET:           return m_currentSlot == SLOT_FEET;
+    case INVTYPE_WRISTS:         return m_currentSlot == SLOT_WRISTS;
+    case INVTYPE_HANDS:          return m_currentSlot == SLOT_HANDS;
+    case INVTYPE_FINGER:         return m_currentSlot == SLOT_FINGER_1  || m_currentSlot == SLOT_FINGER_2;
+    case INVTYPE_TRINKET:        return m_currentSlot == SLOT_TRINKET_1 || m_currentSlot == SLOT_TRINKET_2;
+    case INVTYPE_WEAPON:
+    {
+     return m_currentSlot == SLOT_MAIN_HAND ||
+        ( ( m_class == SHAMAN || m_class == DEATH_KNIGHT || m_class == ROGUE || m_class == HUNTER || m_class == WARRIOR ) && m_currentSlot == SLOT_OFF_HAND );
+    }
+    case INVTYPE_SHIELD:         return m_currentSlot == SLOT_OFF_HAND;
+    case INVTYPE_RANGED:         return m_currentSlot == SLOT_RANGED;
+    case INVTYPE_CLOAK:          return m_currentSlot == SLOT_BACK;
+    case INVTYPE_2HWEAPON:       return m_currentSlot == SLOT_MAIN_HAND;
+    case INVTYPE_TABARD:         return m_currentSlot == SLOT_TABARD;
+    case INVTYPE_ROBE:           return m_currentSlot == SLOT_CHEST;
+    case INVTYPE_WEAPONMAINHAND: return m_currentSlot == SLOT_MAIN_HAND;
+    case INVTYPE_WEAPONOFFHAND:  return m_currentSlot == SLOT_OFF_HAND;
+    case INVTYPE_HOLDABLE:       return m_currentSlot == SLOT_OFF_HAND;
+    case INVTYPE_THROWN:         return m_currentSlot == SLOT_RANGED;
+    case INVTYPE_RELIC:          return m_currentSlot == SLOT_RANGED;
+  }
+  
+  return false;
+}
+
+void
+PaperdollProfile::validateSlot( slot_type t )
+{
+  if ( t == SLOT_NONE ) return;
+  if ( ! m_slotItem[ t ] ) return;
+  
+  // Make sure item is still usable, if not, clear the slot
+  if ( ! itemUsableByProfile( m_slotItem[ t ] ) )
+  {
+    if ( clearSlot( t ) ) emit itemChanged( t, m_slotItem[ t ] );
+  }
+
+  // Validate enchant
+  if ( m_slotEnchant[ t ].enchant != 0 && ! enchantUsableByProfile( m_slotEnchant[ t ] ) )
+  {
+    m_slotEnchant[ t ] = EnchantData();
+    emit enchantChanged( t, m_slotEnchant[ t ] );
+  }
+}
+
+bool
+PaperdollProfile::clearSlot( slot_type t )
+{
+  if ( t == SLOT_NONE ) return false;
+  bool has_item = m_slotItem[ t ] != 0;
+  
+  m_slotItem   [ t ] = 0;
+  m_slotSuffix [ t ] = 0;
+  m_slotEnchant[ t ] = EnchantData();
+  
+  return has_item;
 }
 
 ItemFilterProxyModel::ItemFilterProxyModel( PaperdollProfile* profile, QObject* parent ) :
@@ -205,13 +477,13 @@ ItemFilterProxyModel::ItemFilterProxyModel( PaperdollProfile* profile, QObject* 
   m_searchText()
 {
   
-  QObject::connect( profile, SIGNAL( classChanged( player_type ) ),
+  QObject::connect( profile, SIGNAL( profileChanged() ),
                     this,    SLOT( filterChanged() ) );
 
-  QObject::connect( profile, SIGNAL( raceChanged( race_type ) ),
+  QObject::connect( profile, SIGNAL( profileChanged() ),
                     this,    SLOT( filterChanged() ) );
 
-  QObject::connect( profile, SIGNAL( professionChanged( profession_type ) ),
+  QObject::connect( profile, SIGNAL( profileChanged() ),
                    this,    SLOT( filterChanged() ) );
 }
 
@@ -283,18 +555,17 @@ ItemFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& source
   // Grab the pointer from userdata, and filter through it
   const QModelIndex& idx  = sourceModel() -> index( sourceRow, 0, sourceParent );
   const item_data_t* item = reinterpret_cast< const item_data_t* >( idx.data( Qt::UserRole ).value< void* >() );
-  player_type player_class = m_profile -> currentClass();
-  race_type player_race = m_profile -> currentRace();
   
   if ( m_profile -> currentSlot() == SLOT_NONE )
     return false;
   
-  bool state = ( filterByName( item ) && itemFitsSlot( item ) && itemFitsClass( item ) &&
-                itemUsableByProfessions( item ) &&
-                itemUsedByClass( item ) && 
-                item -> level >= m_minIlevel && item -> level <= m_maxIlevel &&
-                ( item -> class_mask & util_t::class_id_mask( player_class ) ) &&
-                ( item -> race_mask &  util_t::race_mask( player_race ) ) );
+  bool state = filterByName( item ) && 
+               m_profile -> itemFitsProfileSlot( item ) && 
+               item -> level >= m_minIlevel && item -> level <= m_maxIlevel &&
+               m_profile -> itemUsableByClass( item, m_matchArmor ) &&
+               m_profile -> itemUsableByRace( item ) &&
+               m_profile -> itemUsableByProfession( item ) &&
+               itemUsedByClass( item );
   
   return state;
 }
@@ -313,153 +584,6 @@ ItemFilterProxyModel::filterByName( const item_data_t* item ) const
   return true;
 }
           
-bool
-ItemFilterProxyModel::itemFitsSlot( const item_data_t* item, bool dual_wield ) const
-{
-  slot_type slot = m_profile -> currentSlot();
-  switch ( item -> inventory_type )
-  {
-    case INVTYPE_HEAD:           return slot == SLOT_HEAD;
-    case INVTYPE_NECK:           return slot == SLOT_NECK;
-    case INVTYPE_SHOULDERS:      return slot == SLOT_SHOULDERS;
-    case INVTYPE_BODY:           return slot == SLOT_SHIRT;
-    case INVTYPE_CHEST:          return slot == SLOT_CHEST;
-    case INVTYPE_WAIST:          return slot == SLOT_WAIST;
-    case INVTYPE_LEGS:           return slot == SLOT_LEGS;
-    case INVTYPE_FEET:           return slot == SLOT_FEET;
-    case INVTYPE_WRISTS:         return slot == SLOT_WRISTS;
-    case INVTYPE_HANDS:          return slot == SLOT_HANDS;
-    case INVTYPE_FINGER:         return slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2;
-    case INVTYPE_TRINKET:        return slot == SLOT_TRINKET_1 || slot == SLOT_TRINKET_2;
-    case INVTYPE_WEAPON:         return slot == SLOT_MAIN_HAND || ( dual_wield && slot == SLOT_OFF_HAND );
-    case INVTYPE_SHIELD:         return slot == SLOT_OFF_HAND;
-    case INVTYPE_RANGED:         return slot == SLOT_RANGED;
-    case INVTYPE_CLOAK:          return slot == SLOT_BACK;
-    case INVTYPE_2HWEAPON:       return slot == SLOT_MAIN_HAND;
-    case INVTYPE_TABARD:         return slot == SLOT_TABARD;
-    case INVTYPE_ROBE:           return slot == SLOT_CHEST;
-    case INVTYPE_WEAPONMAINHAND: return slot == SLOT_MAIN_HAND;
-    case INVTYPE_WEAPONOFFHAND:  return slot == SLOT_OFF_HAND;
-    case INVTYPE_HOLDABLE:       return slot == SLOT_OFF_HAND;
-    case INVTYPE_THROWN:         return slot == SLOT_RANGED;
-    case INVTYPE_RELIC:          return slot == SLOT_RANGED;
-  }
-  
-  return false;
-}
-
-bool
-ItemFilterProxyModel::itemFitsClass( const item_data_t* item ) const
-{
-  player_type player_class = m_profile -> currentClass();
-  
-  if ( item -> item_class == ITEM_CLASS_WEAPON )
-  {
-    switch ( item -> item_subclass )
-    {
-      case ITEM_SUBCLASS_WEAPON_AXE:
-        return player_class == DEATH_KNIGHT || player_class == HUNTER  ||
-               player_class == PALADIN      || player_class == ROGUE   ||
-               player_class == SHAMAN       || player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_AXE2:
-        return player_class == DEATH_KNIGHT || player_class == HUNTER  ||
-               player_class == PALADIN      || player_class == SHAMAN  || 
-               player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_BOW:
-      case ITEM_SUBCLASS_WEAPON_GUN:
-      case ITEM_SUBCLASS_WEAPON_THROWN:
-      case ITEM_SUBCLASS_WEAPON_CROSSBOW:
-        return player_class == HUNTER       || player_class == ROGUE   ||
-               player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_MACE:
-        return player_class == DEATH_KNIGHT || player_class == DRUID   || 
-               player_class == PALADIN      || player_class == PRIEST  || 
-               player_class == ROGUE        || player_class == SHAMAN  || 
-               player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_MACE2:
-        return player_class == DEATH_KNIGHT || player_class == DRUID   || 
-               player_class == PALADIN      || player_class == SHAMAN  || 
-               player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_POLEARM:
-        return player_class == DEATH_KNIGHT || player_class == DRUID   || 
-               player_class == HUNTER       || player_class == PALADIN || 
-               player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_SWORD:
-        return player_class == DEATH_KNIGHT || player_class == HUNTER  ||
-               player_class == MAGE         || player_class == PALADIN || 
-               player_class == ROGUE        || player_class == WARLOCK || 
-               player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_SWORD2:
-        return player_class == DEATH_KNIGHT || player_class == HUNTER  ||
-               player_class == PALADIN      || player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_STAFF:
-        return player_class == DRUID        || player_class == HUNTER  ||
-               player_class == MAGE         || player_class == PRIEST  ||
-               player_class == SHAMAN       || player_class == WARLOCK ||
-               player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_FIST:
-        return player_class == DRUID        || player_class == HUNTER  ||
-               player_class == ROGUE        || player_class == SHAMAN  || 
-               player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_DAGGER:
-        return player_class == DRUID        || player_class == HUNTER  ||
-               player_class == MAGE         || player_class == PRIEST  || 
-               player_class == ROGUE        || player_class == SHAMAN  ||
-               player_class == WARLOCK      || player_class == WARRIOR;
-      case ITEM_SUBCLASS_WEAPON_WAND:
-        return player_class == MAGE         || player_class == PRIEST  ||
-               player_class == WARLOCK;
-        
-    }
-  }
-  else if ( item -> item_class == ITEM_CLASS_ARMOR )
-  {
-    switch ( item -> item_subclass )
-    {
-      case ITEM_SUBCLASS_ARMOR_MISC:
-        return true;
-      case ITEM_SUBCLASS_ARMOR_CLOTH: // Cloaks are all cloth
-        if ( ! m_matchArmor || item -> inventory_type == INVTYPE_CLOAK )
-          return true;
-        else
-          return player_class == MAGE         || player_class == PRIEST  ||
-                 player_class == WARLOCK;
-      case ITEM_SUBCLASS_ARMOR_LEATHER:
-        if ( ! m_matchArmor )
-          return player_class == DEATH_KNIGHT || player_class == DRUID   ||
-                 player_class == HUNTER       || player_class == PALADIN ||
-                 player_class == ROGUE        || player_class == SHAMAN  ||
-                 player_class == WARRIOR;
-        else
-          return player_class == DRUID        || player_class == ROGUE;
-      case ITEM_SUBCLASS_ARMOR_MAIL:
-        if ( ! m_matchArmor )
-          return player_class == DEATH_KNIGHT || player_class == HUNTER  || 
-                 player_class == PALADIN      || player_class == SHAMAN  ||
-                 player_class == WARRIOR;
-        else
-          return player_class == HUNTER       || player_class == SHAMAN;
-      case ITEM_SUBCLASS_ARMOR_PLATE:
-          return player_class == DEATH_KNIGHT || player_class == PALADIN ||
-                 player_class == WARRIOR;
-      case ITEM_SUBCLASS_ARMOR_SHIELD:
-        return player_class == PALADIN        || player_class == SHAMAN  ||
-               player_class == WARRIOR;
-      case ITEM_SUBCLASS_ARMOR_LIBRAM:
-        return player_class == PALADIN;
-      case ITEM_SUBCLASS_ARMOR_IDOL:
-        return player_class == DRUID;
-      case ITEM_SUBCLASS_ARMOR_TOTEM:
-        return player_class == SHAMAN;
-      case ITEM_SUBCLASS_ARMOR_SIGIL:
-        return player_class == DEATH_KNIGHT   || player_class == SHAMAN || 
-               player_class == PALADIN        || player_class == DRUID;
-    }
-  }
-
-  return false;
-}
-
 int
 ItemFilterProxyModel::primaryStat( void ) const
 {
@@ -500,17 +624,6 @@ ItemFilterProxyModel::itemUsedByClass( const item_data_t* item ) const
   }
   
   return primary_stat_found;
-}
-
-bool 
-ItemFilterProxyModel::itemUsableByProfessions( const item_data_t* item ) const
-{
-  if ( item -> req_skill == 0 ) return true;
-  if ( item -> req_skill == professionIds[ m_profile -> currentProfession( 0 ) ] ||
-       item -> req_skill == professionIds[ m_profile -> currentProfession( 1 ) ] )
-    return true;
-  
-  return false;
 }
 
 ItemDataListModel::ItemDataListModel( QObject* parent ) :
@@ -835,7 +948,7 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   
   m_itemSetupRandomSuffix -> setTitle( "Random Suffix" );
   m_itemSetupRandomSuffix -> setLayout( m_itemSetupRandomSuffixLayout );
-  m_itemSetupRandomSuffix -> setVisible( false );
+  m_itemSetupRandomSuffix -> setVisible( false );  
   
   m_itemSetupRandomSuffixLayout -> addWidget( m_itemSetupRandomSuffixView );
   m_itemSetupRandomSuffixLayout -> setAlignment( Qt::AlignCenter | Qt::AlignTop );
@@ -844,6 +957,7 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
    
   m_itemSetupEnchantBox -> setTitle( "Enchant" );
   m_itemSetupEnchantBox -> setLayout( m_itemSetupEnchantBoxLayout );
+  m_itemSetupEnchantBox -> setVisible( false );
   
   m_itemSetupEnchantBoxLayout -> addWidget( m_itemSetupEnchantView );
   m_itemSetupEnchantBoxLayout -> setAlignment( Qt::AlignCenter | Qt::AlignTop );
@@ -861,12 +975,21 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   
   QObject::connect( profile,                 SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
                     m_itemSetupEnchantView,  SLOT( update() ) );
+  
+  QObject::connect( profile,                 SIGNAL( professionChanged( profession_type ) ),
+                    m_itemSetupEnchantView,  SLOT( update() ) );
 
   QObject::connect( m_itemSetupEnchantProxy, SIGNAL( enchantSelected( int ) ),
                     m_itemSetupEnchantView,  SLOT( setCurrentIndex( int ) ) );
   
+  QObject::connect( m_itemSetupEnchantProxy, SIGNAL( hasEnchant( bool ) ),
+                    m_itemSetupEnchantBox,   SLOT( setVisible( bool ) ) );
+  
   QObject::connect( m_itemSetupRandomSuffixModel, SIGNAL( hasSuffixGroup( bool ) ),
                     m_itemSetupRandomSuffix, SLOT( setVisible( bool ) ) );
+
+  QObject::connect( m_itemSetupRandomSuffixModel, SIGNAL( suffixSelected( int ) ),
+                    m_itemSetupRandomSuffixView, SLOT( setCurrentIndex( int ) ) );
   
   // Add to main tab
   
@@ -884,12 +1007,69 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
 
   QObject::connect( m_itemSetupEnchantView, SIGNAL( currentIndexChanged( int ) ),
                    profile,           SLOT( setSelectedEnchant( int ) ) );
+  
+  QObject::connect( m_itemSetupRandomSuffixView, SIGNAL( currentIndexChanged( int ) ),
+                   profile,          SLOT( setSelectedSuffix( int ) ) );
 }
 
 QSize
 ItemSelectionWidget::sizeHint() const
 {
   return QSize( 400, 250 );
+}
+
+QString
+RandomSuffixDataModel::randomSuffixStatsStr( const random_suffix_data_t& suffix ) const
+{
+  const item_data_t* item = m_profile -> slotItem( m_profile -> currentSlot() );
+  int f = item_database_t::random_suffix_type( item );
+  dbc_t dbc( false );
+
+  const random_prop_data_t& ilevel_data   = dbc.random_property( item -> level );
+  const random_suffix_data_t& suffix_data = dbc.random_suffix( suffix.id );
+  assert( f != -1 && ilevel_data.ilevel > 0 && suffix_data.id > 0 );
+  unsigned enchant_id;
+  double stat_amount;
+  QStringList stat_list;
+
+  for ( int i = 0; i < 5; i++ )
+  {
+    if ( ! ( enchant_id = suffix_data.enchant_id[ i ] ) )
+      continue;
+    
+    const item_enchantment_data_t& enchant_data = dbc.item_enchantment( enchant_id );
+    
+    if ( ! enchant_data.id )
+      continue;
+    
+    // Calculate amount of points
+    if ( item -> quality == 4 ) // Epic
+      stat_amount = ilevel_data.p_epic[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
+    else if ( item -> quality == 3 ) // Rare
+      stat_amount = ilevel_data.p_rare[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
+    else if ( item -> quality == 2 ) // Uncommon
+      stat_amount = ilevel_data.p_uncommon[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
+    else // Impossible choices, so bogus data, skip
+      continue;
+    
+    // Loop through enchantment stats, adding valid ones to the stats of the item.
+    // Typically (and for cata random suffixes), there seems to be only one stat per enchantment
+    for ( int j = 0; j < 3; j++ )
+    {
+      if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
+      
+      stat_type stat = util_t::translate_item_mod( enchant_data.ench_prop[ j ] );
+      
+      if ( stat == STAT_NONE ) continue;
+      
+      std::string stat_str = util_t::stat_type_abbrev( stat );
+      char statbuf[32];
+      snprintf( statbuf, sizeof( statbuf ), "+%d%s", static_cast< int >( stat_amount ), stat_str.c_str() );
+      stat_list.push_back( statbuf );
+    }
+  }
+  
+  return stat_list.join( ", " );
 }
 
 RandomSuffixDataModel::RandomSuffixDataModel( PaperdollProfile* profile, QObject* parent ) :
@@ -906,6 +1086,25 @@ RandomSuffixDataModel::stateChanged()
 {
   beginResetModel();
   endResetModel();
+  
+  unsigned currentSuffix = m_profile -> slotSuffix( m_profile -> currentSlot() );
+  
+  if ( currentSuffix == 0 )
+  {
+    emit hasSuffixGroup( rowCount( QModelIndex() ) );
+    return;
+  }
+  
+  for ( int i = 0; i < rowCount( QModelIndex() ); i++ )
+  {
+    const QModelIndex& idx = index( i, 0 );
+    unsigned s = idx.data( Qt::UserRole ).value< unsigned >();
+    if ( currentSuffix == s )
+    {
+      emit suffixSelected( idx.row() );
+      break;
+    }
+  }
   
   emit hasSuffixGroup( rowCount( QModelIndex() ) );
 }
@@ -944,18 +1143,17 @@ RandomSuffixDataModel::data( const QModelIndex& index, int role ) const
   const item_data_t* item = m_profile -> slotItem( m_profile -> currentSlot() );
   dbc_t dbc( false );
   
-  if ( role == Qt::DisplayRole )
+  for ( int i = 0; i < RAND_SUFFIX_GROUP_SIZE; i++ )
   {
-    for ( int i = 0; i < RAND_SUFFIX_GROUP_SIZE; i++ )
+    if ( __rand_suffix_group_data[ i ].id == item -> id_suffix_group )
     {
-      if ( __rand_suffix_group_data[ i ].id == item -> id_suffix_group )
-      {
-        const random_suffix_data_t& rs = dbc.random_suffix( __rand_suffix_group_data[ i ].suffix_id[ index.row() ] );
-        return QVariant( rs.suffix );
-      }
+      const random_suffix_data_t& rs = dbc.random_suffix( __rand_suffix_group_data[ i ].suffix_id[ index.row() ] );
+
+      if ( role == Qt::DisplayRole )
+        return QVariant( QString( "%1 (%2)" ).arg( rs.suffix ).arg( randomSuffixStatsStr( rs ) ) );
+      else if ( role == Qt::UserRole )
+        return QVariant( rs.id );
     }
-    
-    return QVariant( QVariant::Invalid );
   }
 
   return QVariant( QVariant::Invalid );
@@ -1054,10 +1252,14 @@ EnchantDataModel::data( const QModelIndex& index, int role ) const
   
   if ( role == Qt::DisplayRole )
   {
+    QString enchant_stats_str = enchantStatsStr( m_enchants[ index.row() ].item_enchant );
+    if ( enchant_stats_str.size() )
+      enchant_stats_str = " (" + enchant_stats_str + ")";
+    
     if ( m_enchants[ index.row() ].item )
-      return QVariant( m_enchants[ index.row() ].item -> name );
+      return QVariant( QString( "%1%2" ).arg( m_enchants[ index.row() ].item -> name ).arg( enchant_stats_str ) );
     else
-      return QVariant( m_enchants[ index.row() ].enchant -> name_cstr() );
+      return QVariant( QString( "%1%2" ).arg( m_enchants[ index.row() ].enchant -> name_cstr() ).arg( enchant_stats_str ) );
   }
   else if ( role == Qt::UserRole )
     return QVariant::fromValue< EnchantData >( m_enchants[ index.row() ] );
@@ -1072,7 +1274,7 @@ EnchantDataModel::data( const QModelIndex& index, int role ) const
     return QVariant( QVariant::Invalid );
   }
   else if ( role == Qt::ToolTipRole )
-    return QVariant( EnchantDataModel::enchantStatsStr( m_enchants[ index.row() ].item_enchant ) );
+    return QVariant( enchantStatsStr( m_enchants[ index.row() ].item_enchant ) );
   
   return QVariant( QVariant::Invalid );
 }
@@ -1081,25 +1283,28 @@ EnchantFilterProxyModel::EnchantFilterProxyModel( PaperdollProfile* profile, QWi
   QSortFilterProxyModel( parent ), m_profile( profile )
 {
   QObject::connect( profile, SIGNAL( slotChanged( slot_type ) ),
-                    this,    SLOT( setSlot( slot_type ) ) );  
+                    this,    SLOT( stateChanged() ) );  
 
   QObject::connect( profile, SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
-                    this,    SLOT( setSlotItem( slot_type, const item_data_t* ) ) );
+                    this,    SLOT( stateChanged() ) );
 
   QObject::connect( profile, SIGNAL( professionChanged( profession_type ) ),
-                    this,    SLOT( setProfession( profession_type ) ) );
+                    this,    SLOT( stateChanged() ) );
 }
 
 void 
-EnchantFilterProxyModel::setSlot( slot_type t )
+EnchantFilterProxyModel::stateChanged()
 {
   invalidate();
   sort( 0 );
 
-  EnchantData currentEnchant = m_profile -> slotEnchant( t );
+  EnchantData currentEnchant = m_profile -> slotEnchant( m_profile -> currentSlot() );
 
   if ( ! currentEnchant.enchant )
+  {
+    emit hasEnchant( rowCount( QModelIndex() ) );
     return;
+  }
   
   for ( int i = 0; i < rowCount(); i++ )
   {
@@ -1111,20 +1316,8 @@ EnchantFilterProxyModel::setSlot( slot_type t )
       break;
     }
   }
-}
-
-void 
-EnchantFilterProxyModel::setSlotItem( slot_type, const item_data_t* )
-{
-  invalidate();
-  sort( 0 );
-}
-
-void
-EnchantFilterProxyModel::setProfession( profession_type )
-{
-  invalidate();
-  sort( 0 );
+  
+  emit hasEnchant( rowCount( QModelIndex() ) );
 }
 
 bool
@@ -1149,30 +1342,8 @@ EnchantFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sou
   
   if ( slot == SLOT_NONE || ! item ) 
     return false;
-  
-  if ( item -> item_class != ed.enchant -> _equipped_class ) 
-    return false;
-  
-  if ( ed.enchant -> _equipped_invtype_mask && 
-       ! ( ( 1 << item -> inventory_type ) & ed.enchant -> _equipped_invtype_mask ) ) 
-    return false;
-  
-  if ( ed.enchant -> _equipped_subclass_mask && 
-       ! ( ( 1 << item -> item_subclass ) & ed.enchant -> _equipped_subclass_mask ) ) 
-    return false;
-  
-  if ( ed.item_enchant -> req_skill > 0 )
-  {
-    int profession_1 = ItemFilterProxyModel::professionIds[ m_profile -> currentProfession( 0 ) ],
-        profession_2 = ItemFilterProxyModel::professionIds[ m_profile -> currentProfession( 1 ) ];
-    
-    if ( ed.item_enchant -> req_skill == profession_1 || ed.item_enchant -> req_skill == profession_2 )
-      return true;
-    
-    return false;
-  }
 
-  return true;
+  return m_profile -> enchantUsableByProfile( ed );
 }
 
 PaperdollBasicButton::PaperdollBasicButton( PaperdollProfile* profile, QWidget* parent ) :

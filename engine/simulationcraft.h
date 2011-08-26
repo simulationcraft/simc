@@ -3002,6 +3002,7 @@ struct item_database_t
   static bool     initialize_item_sources( const item_t& item, std::vector<std::string>& source_list );
 
   static int      random_suffix_type( const item_t& item );
+  static int      random_suffix_type( const item_data_t* );
   static uint32_t armor_value(        const item_t& item, unsigned item_id );
   static uint32_t armor_value(        const item_data_t*, const dbc_t& );
   static uint32_t weapon_dmg_min(     const item_t& item, unsigned item_id );

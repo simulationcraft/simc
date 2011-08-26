@@ -64,29 +64,45 @@ class PaperdollProfile : public QObject
   Q_OBJECT
 public:
   PaperdollProfile();
+  
+  bool enchantUsableByProfile( const EnchantData& ) const;
 
+  bool itemUsableByProfile( const item_data_t* ) const;
+  bool itemUsableByClass( const item_data_t*, bool = true ) const;
+  bool itemUsableByRace( const item_data_t* ) const;
+  bool itemUsableByProfession( const item_data_t* ) const;
+  bool itemFitsProfileSlot( const item_data_t* ) const;
+  
   inline const item_data_t* slotItem( slot_type t ) const { return m_slotItem[ t ]; }
+  inline unsigned           slotSuffix( slot_type t ) const { return m_slotSuffix[ t ]; }
   inline const EnchantData& slotEnchant( slot_type t ) const { return m_slotEnchant[ t ]; }
   inline slot_type          currentSlot( void ) const     { return m_currentSlot; }
   inline player_type        currentClass( void ) const { return m_class; }
   inline race_type          currentRace( void ) const { return m_race; }
   inline profession_type    currentProfession( unsigned p ) const { assert( p < 2 ); return m_professions[ p ]; }
-
+  
 public slots:
   void setSelectedSlot( slot_type );
   void setSelectedItem( const QModelIndex& );
   void setSelectedEnchant( int );
+  void setSelectedSuffix( int );
   void setClass( int );
   void setRace( int );
   void setProfession( int, int );
 
+  void validateSlot( slot_type t );
+  bool clearSlot( slot_type t );
+  
 signals:
   void slotChanged( slot_type );
   void itemChanged( slot_type, const item_data_t* );
   void enchantChanged( slot_type, const EnchantData& );
+  void suffixChanged( slot_type, unsigned );
   void classChanged( player_type );
   void raceChanged( race_type );
   void professionChanged( profession_type );
+  
+  void profileChanged();
 
 private:
   player_type        m_class;
@@ -94,6 +110,7 @@ private:
   profession_type    m_professions[ 2 ];
   slot_type          m_currentSlot;          // Currently selected paperdoll slot
   const item_data_t* m_slotItem[ SLOT_MAX ]; // Currently selected item in a slot
+  unsigned           m_slotSuffix[ SLOT_MAX ];
   EnchantData        m_slotEnchant[ SLOT_MAX ]; // Currently selected enchants in a slot;
 };
 
@@ -124,9 +141,6 @@ protected:
   bool lessThan( const QModelIndex&, const QModelIndex& ) const;
   
 private:
-  bool itemFitsSlot( const item_data_t*, bool = false ) const;
-  bool itemFitsClass( const item_data_t* ) const;
-  bool itemUsableByProfessions( const item_data_t* ) const;
   bool filterByName( const item_data_t* ) const;
   bool itemUsedByClass( const item_data_t* ) const;
   int  primaryStat( void ) const;
@@ -231,9 +245,12 @@ public:
   QVariant data( const QModelIndex& = QModelIndex(), int = Qt::DisplayRole ) const;
 signals:
   void hasSuffixGroup( bool );
+  void suffixSelected( int );
 public slots:
   void stateChanged();
 private:
+  QString randomSuffixStatsStr( const random_suffix_data_t& ) const;
+
   PaperdollProfile* m_profile;
 };
 
@@ -263,12 +280,11 @@ public:
   EnchantFilterProxyModel( PaperdollProfile*, QWidget* = 0 );
 
 public slots:
-  void setSlot( slot_type );
-  void setSlotItem( slot_type, const item_data_t* );
-  void setProfession( profession_type );
+  void stateChanged();
 
 signals:
   void enchantSelected( int );
+  void hasEnchant( bool );
 
 protected:  
   bool filterAcceptsRow( int, const QModelIndex& ) const;

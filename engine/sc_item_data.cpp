@@ -323,6 +323,62 @@ bool item_database_t::initialize_item_sources( const item_t& item, std::vector<s
 
 // item_database_t::random_suffix_type ===========================================
 
+int item_database_t::random_suffix_type( const item_data_t* item )
+{
+  switch ( item -> item_class )
+  {
+    case ITEM_CLASS_WEAPON:
+      switch ( item -> item_subclass )
+      {
+        case ITEM_SUBCLASS_WEAPON_AXE2:
+        case ITEM_SUBCLASS_WEAPON_MACE2:
+        case ITEM_SUBCLASS_WEAPON_POLEARM:
+        case ITEM_SUBCLASS_WEAPON_SWORD2:
+        case ITEM_SUBCLASS_WEAPON_STAFF:
+          return 0;
+
+        case ITEM_SUBCLASS_WEAPON_BOW:
+        case ITEM_SUBCLASS_WEAPON_GUN:
+        case ITEM_SUBCLASS_WEAPON_THROWN:
+        case ITEM_SUBCLASS_WEAPON_CROSSBOW:
+        case ITEM_SUBCLASS_WEAPON_WAND:
+          return 4;
+        default:
+          return 3;
+      }
+    case ITEM_CLASS_ARMOR:
+      switch ( item -> inventory_type )
+      {
+        case INVTYPE_HEAD:
+        case INVTYPE_CHEST:
+        case INVTYPE_LEGS:
+        case INVTYPE_ROBE:
+          return 0;
+        
+        case INVTYPE_SHOULDERS:
+        case INVTYPE_WAIST:
+        case INVTYPE_FEET:
+        case INVTYPE_HANDS:
+        case INVTYPE_TRINKET:
+          return 1;
+        
+        case INVTYPE_NECK:
+        case INVTYPE_WEAPONOFFHAND:
+        case INVTYPE_HOLDABLE:
+        case INVTYPE_FINGER:
+        case INVTYPE_CLOAK:
+          return 2;
+        
+        default:
+          return -1;
+      }
+    default:
+      return -1;
+  }
+  
+  return -1;
+}
+
 int item_database_t::random_suffix_type( const item_t& item )
 {
   int       f = -1;
