@@ -700,10 +700,14 @@ void http_t::format_( std::string& encoded_url,
 
 #ifdef UNIT_TEST
 
+inline mutex_t::mutex_t() {}
 inline mutex_t::~mutex_t() {}
 inline void mutex_t::lock() {}
 inline void mutex_t::unlock() {}
 inline void thread_t::sleep( int ) {}
+
+std::string& armory_t::format( std::string& name, int ) { return name; }
+uint32_t spell_id_t::get_school_mask( school_type x ) { return 0; }
 
 int main( int argc, char* argv[] )
 {

@@ -185,7 +185,7 @@ bool parse_items( player_t* p, js_node_t* items )
 {
   if ( !items ) return true;
 
-  static const char* const slot_map[ SLOT_MAX ] = {
+  static const char* const slot_map[] = {
     "head",
     "neck",
     "shoulder",
@@ -207,7 +207,9 @@ bool parse_items( player_t* p, js_node_t* items )
     "tabard"
   };
 
-  for ( int i = 0; i < SLOT_MAX; ++i )
+  assert( sizeof( slot_map ) / sizeof ( slot_map[ 0 ] ) == SLOT_MAX );
+
+  for ( unsigned i = 0; i < SLOT_MAX; ++i )
   {
     js_node_t* item = js_t::get_child( items, slot_map[ i ] );
     if ( ! item ) continue;

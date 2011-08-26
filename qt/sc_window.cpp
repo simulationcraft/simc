@@ -1598,9 +1598,8 @@ void SimulationCraftWindow::cmdLineReturnPressed()
   }
 }
 
-void SimulationCraftWindow::mainButtonClicked( bool checked )
+void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
 {
-  checked=true;
   switch( mainTab->currentIndex() )
   {
   case TAB_WELCOME:   startSim(); break;
@@ -1622,9 +1621,8 @@ void SimulationCraftWindow::mainButtonClicked( bool checked )
   }
 }
 
-void SimulationCraftWindow::backButtonClicked( bool checked )
+void SimulationCraftWindow::backButtonClicked( bool /* checked */ )
 {
-  checked=true;
   if( visibleWebView )
   {
     if( mainTab->currentIndex() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
@@ -1657,9 +1655,8 @@ void SimulationCraftWindow::backButtonClicked( bool checked )
   }
 }
 
-void SimulationCraftWindow::forwardButtonClicked( bool checked )
+void SimulationCraftWindow::forwardButtonClicked( bool /* checked */ )
 {
-  checked=true;
   if( visibleWebView )
   {
     visibleWebView->forward();
@@ -1680,9 +1677,8 @@ void SimulationCraftWindow::forwardButtonClicked( bool checked )
   }
 }
 
-void SimulationCraftWindow::rawrButtonClicked( bool checked )
+void SimulationCraftWindow::rawrButtonClicked( bool /* checked */ )
 {
-  checked=true;
   QFileDialog dialog( this );
   dialog.setFileMode( QFileDialog::ExistingFile );
   dialog.setNameFilter( "Rawr Profiles (*.xml)" );
@@ -1810,10 +1806,8 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
   }
 }
 
-void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int col )
+void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
 {
-  col=0;
-
   QString profile = item->text( 0 );
 
   QString s = "Unable to import profile "; s += profile;
