@@ -1517,9 +1517,7 @@ struct devouring_plague_t : public priest_spell_t
       if ( p -> bugs )
       {
         // Currently it's rounding up but only using haste rating haste.
-        double d = num_ticks * base_tick_time;
-        double t = floor( ( base_tick_time * p -> spell_haste * 1000.0 ) + 0.5 ) / 1000.0;
-        n = ( int ) ceil( ( d / t ) );
+        n = ( int ) ceil( num_ticks / p -> spell_haste );
       }
 
       burst_spell -> base_dd_min    = dmg * n;
