@@ -1521,7 +1521,13 @@ struct devouring_plague_t : public priest_spell_t
         // Currently it's rounding up but only using haste rating haste.
         double d = num_ticks * base_tick_time;
         double t = floor( ( base_tick_time * p -> spell_haste * 1000.0 ) + 0.5 ) / 1000.0;
-        n = ( int ) ceil( ( d / t ) );
+        n = d / t;
+
+        // banker's rounding
+        if ( n - 0.5 == ( double ) ( int ) n && ( ( int ) n ) % 2 == 0 )
+          n = ceil ( n - 0.5 );
+        else
+          n = floor( n + 0.5 );
       }
 
       burst_spell -> base_dd_min    = dmg * n;
