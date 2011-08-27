@@ -4455,23 +4455,20 @@ void warlock_t::init_actions()
       action_list_str += "/soulburn,if=buff.bloodlust.down";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
-        action_list_str += "/soul_fire,if=buff.soulburn.up";
+        action_list_str += "/soul_fire,if=buff.soulburn.up&!in_combat";
       }
       if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8";
       action_list_str += "/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
+      action_list_str += "/immolate,if=buff.bloodlust.react&buff.bloodlust.remains>32&cooldown.conflagrate.remains<=3&remains<12";
       if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
       action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
       if ( level >= 75) action_list_str += "/shadowflame";
-      if ( talent_improved_soul_fire -> ok() && level >= 54)
-      {
-        action_list_str += "/soul_fire,if=buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time)";
-      }
       if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
       if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
       if ( talent_improved_soul_fire -> ok() && level >= 54)
       {
-        action_list_str += "/soul_fire,if=buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd)&!in_flight";
+        action_list_str += "/soul_fire,if=((buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time))|buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd))&!in_flight";
       }
       if ( talent_shadowburn -> ok() ) action_list_str += "/shadowburn";
       if ( level >= 64) action_list_str += "/incinerate"; else action_list_str += "/shadow_bolt";

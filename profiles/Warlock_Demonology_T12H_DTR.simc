@@ -54,7 +54,7 @@ finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384
 trinket1=moonwell_chalice,ilevel=365,quality=epic,stats=340int,use=1700mastery_20dur_120cd
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_hit,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=artifact,stats=426int_730sta_314hit_271haste_2786sp,reforge=haste_mastery,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,reforge=haste_mastery,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste,reforge=haste_mastery
 # Gear Summary
 # gear_strength=20
