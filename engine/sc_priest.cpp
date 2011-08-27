@@ -425,11 +425,9 @@ struct remove_dots_event_t : public event_t
   virtual void execute()
   {
     p -> remove_dots_event = 0;
-    if ( p -> dots_shadow_word_pain   -> ticking ) p -> dots_shadow_word_pain -> reset();
-    if ( p -> dots_vampiric_touch     -> ticking ) p -> dots_vampiric_touch -> reset();
-    if ( p -> dots_devouring_plague   -> ticking ) p -> dots_devouring_plague -> reset();
-    if ( p -> dots_shadow_word_pain_2 -> ticking ) p -> dots_shadow_word_pain_2 -> reset();
-    if ( p -> dots_vampiric_touch_2   -> ticking ) p -> dots_vampiric_touch_2 -> reset();
+    if ( p -> dots_shadow_word_pain   -> ticking ) { p -> dots_shadow_word_pain -> action -> cancel(); p -> dots_shadow_word_pain -> reset(); }
+    if ( p -> dots_vampiric_touch     -> ticking ) { p -> dots_vampiric_touch   -> action -> cancel(); p -> dots_vampiric_touch   -> reset(); }
+    if ( p -> dots_devouring_plague   -> ticking ) { p -> dots_devouring_plague -> action -> cancel(); p -> dots_devouring_plague -> reset(); }
   }
 };
 
@@ -1521,13 +1519,7 @@ struct devouring_plague_t : public priest_spell_t
         // Currently it's rounding up but only using haste rating haste.
         double d = num_ticks * base_tick_time;
         double t = floor( ( base_tick_time * p -> spell_haste * 1000.0 ) + 0.5 ) / 1000.0;
-        n = d / t;
-
-        // banker's rounding
-        if ( n - 0.5 == ( double ) ( int ) n && ( ( int ) n ) % 2 == 0 )
-          n = ceil ( n - 0.5 );
-        else
-          n = floor( n + 0.5 );
+        n = ( int ) ceil( ( d / t ) );
       }
 
       burst_spell -> base_dd_min    = dmg * n;
