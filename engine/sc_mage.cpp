@@ -3212,6 +3212,8 @@ void mage_t::init_base()
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
   diminished_parry_capi = 0.006650;
+
+
 }
 
 // mage_t::init_scaling ========================================================
@@ -3227,6 +3229,11 @@ void mage_t::init_scaling()
 void mage_t::init_buffs()
 {
   player_t::init_buffs();
+  if ( set_bonus.pvp_2pc_caster() )
+      attribute_initial[ ATTR_INTELLECT ] += 70;
+
+  if ( set_bonus.pvp_4pc_caster() )
+      attribute_initial[ ATTR_INTELLECT ] += 90;
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
@@ -3346,7 +3353,7 @@ void mage_t::init_actions()
     // Focus Magic
     if ( talents.focus_magic -> rank() ) action_list_str += "/focus_magic";
     // Arcane Brilliance
-    action_list_str += "/arcane_brilliance";
+    if ( level >= 58 ) action_list_str += "/arcane_brilliance";
 
     // Armor
     if ( primary_tree() == TREE_ARCANE )
@@ -3371,7 +3378,7 @@ void mage_t::init_actions()
     // Counterspell
     action_list_str += "/counterspell";
     // Refresh Gem during invuln phases
-    action_list_str += "/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3";
+    if ( level >= 48 ) action_list_str += "/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3";
     // Usable Items
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -3510,16 +3517,21 @@ void mage_t::init_actions()
       {
         action_list_str += "/frostfire_orb,if=target.time_to_die>=12&!ticking";
       }
-      action_list_str += "/mirror_image,if=target.time_to_die>=25";
+      if ( level >= 50) action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( race == RACE_TROLL )
       {
         action_list_str += "/berserking,if=buff.icy_veins.down&buff.bloodlust.down";
       }
       if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down";
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze,if=buff.fingers_of_frost.react";
-      if ( talents.brain_freeze -> rank() )
+      if ( talents.brain_freeze -> rank())
       {
-        action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react";
+        if ( level >= 56)
+        {
+          action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react";
+        }
+        else
+          action_list_str += "/fireball,if=buff.brain_freeze.react";
       }
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd";
@@ -3833,8 +3845,9 @@ int mage_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "firelord"    ) ) return SET_T11_CASTER;
-  if ( strstr( s, "firehawk"    ) ) return SET_T12_CASTER;
+  if ( strstr( s, "firelord"            ) ) return SET_T11_CASTER;
+  if ( strstr( s, "firehawk"            ) ) return SET_T12_CASTER;
+  if ( strstr( s, "ruthless_gladiators" ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
 }

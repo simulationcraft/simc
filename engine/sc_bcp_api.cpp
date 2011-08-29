@@ -284,7 +284,9 @@ player_t* download_player( sim_t*             sim,
     sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", url.c_str() );
     return 0;
   }
-  level = clamp( level, 60, 85 );
+  //level = clamp( level, 60, 85 );
+  // Is there a reason not to import low level characters? Besides the 20pt base stats in player_t::init_resource
+  if ( level > 85 ) level = 85;
 
   int cid;
   if ( ! js_t::get_value( cid, profile_js, "class" ) )

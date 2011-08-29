@@ -93,6 +93,24 @@ int set_bonus_t::tier14_2pc_heal() SC_CONST { return ( count[ SET_T14_2PC_HEAL ]
 
 int set_bonus_t::tier14_4pc_heal() SC_CONST { return ( count[ SET_T14_4PC_HEAL ] > 0 || ( count[ SET_T14_4PC_HEAL ] < 0 && count[ SET_T14_HEAL ] >= 4 ) ) ? 1 : 0; }
 
+// set_bonus_t::pvp =======================================================
+
+int set_bonus_t::pvp_2pc_caster() SC_CONST { return ( count[ SET_PVP_2PC_CASTER ] > 0 || ( count[ SET_PVP_2PC_CASTER ] < 0 && count[ SET_PVP_CASTER ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::pvp_4pc_caster() SC_CONST { return ( count[ SET_PVP_4PC_CASTER ] > 0 || ( count[ SET_PVP_4PC_CASTER ] < 0 && count[ SET_PVP_CASTER ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::pvp_2pc_melee() SC_CONST { return ( count[ SET_PVP_2PC_MELEE ] > 0 || ( count[ SET_PVP_2PC_MELEE ] < 0 && count[ SET_PVP_MELEE ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::pvp_4pc_melee() SC_CONST { return ( count[ SET_PVP_4PC_MELEE ] > 0 || ( count[ SET_PVP_4PC_MELEE ] < 0 && count[ SET_PVP_MELEE ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::pvp_2pc_tank() SC_CONST { return ( count[ SET_PVP_2PC_TANK ] > 0 || ( count[ SET_PVP_2PC_TANK ] < 0 && count[ SET_PVP_TANK ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::pvp_4pc_tank() SC_CONST { return ( count[ SET_PVP_4PC_TANK ] > 0 || ( count[ SET_PVP_4PC_TANK ] < 0 && count[ SET_PVP_TANK ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::pvp_2pc_heal() SC_CONST { return ( count[ SET_PVP_2PC_HEAL ] > 0 || ( count[ SET_PVP_2PC_HEAL ] < 0 && count[ SET_PVP_HEAL ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::pvp_4pc_heal() SC_CONST { return ( count[ SET_PVP_4PC_HEAL ] > 0 || ( count[ SET_PVP_4PC_HEAL ] < 0 && count[ SET_PVP_HEAL ] >= 4 ) ) ? 1 : 0; }
+
 // set_bonus_t::decode ======================================================
 
 int set_bonus_t::decode( player_t* p,

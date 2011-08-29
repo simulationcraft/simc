@@ -528,7 +528,7 @@ bool scaling_t::has_scale_factors()
 double scaling_t::scale_over_function( sim_t* s, player_t* p )
 {
   if ( scale_over == "raid_dps"       ) return s -> raid_dps;
-  if ( scale_over == "deaths"         ) return -1.0 * p -> death_count_pct;
+  if ( scale_over == "deaths"         ) return -100 * p -> death_count_pct;
   if ( scale_over == "min_death_time" ) return p -> min_death_time * 1000;
   if ( scale_over == "avg_death_time" ) return p -> avg_death_time * 1000;
   if ( scale_over == "dmg_taken"      ) return -1.0 * p -> total_dmg_taken;

@@ -5992,6 +5992,15 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     if ( set_bonus.tier14_2pc_heal()   ) profile_str += "# tier14_2pc_heal=1" + term;
     if ( set_bonus.tier14_4pc_heal()   ) profile_str += "# tier14_4pc_heal=1" + term;
 
+    if ( set_bonus.pvp_2pc_caster() ) profile_str += "# pvp_2pc_caster=1" + term;
+    if ( set_bonus.pvp_4pc_caster() ) profile_str += "# pvp_4pc_caster=1" + term;
+    if ( set_bonus.pvp_2pc_melee()  ) profile_str += "# pvp_2pc_melee=1" + term;
+    if ( set_bonus.pvp_4pc_melee()  ) profile_str += "# pvp_4pc_melee=1" + term;
+    if ( set_bonus.pvp_2pc_tank()   ) profile_str += "# pvp_2pc_tank=1" + term;
+    if ( set_bonus.pvp_4pc_tank()   ) profile_str += "# pvp_4pc_tank=1" + term;
+    if ( set_bonus.pvp_2pc_heal()   ) profile_str += "# pvp_2pc_heal=1" + term;
+    if ( set_bonus.pvp_4pc_heal()   ) profile_str += "# pvp_4pc_heal=1" + term;
+
     for ( int i=0; i < SLOT_MAX; i++ )
     {
       item_t& item = items[ i ];
@@ -6175,6 +6184,15 @@ void player_t::create_options()
     { "tier14_4pc_tank",                      OPT_BOOL,     &( set_bonus.count[ SET_T14_4PC_TANK ]    ) },
     { "tier14_2pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T14_2PC_HEAL ]    ) },
     { "tier14_4pc_heal",                      OPT_BOOL,     &( set_bonus.count[ SET_T14_4PC_HEAL ]    ) },
+    { "pvp_2pc_caster",                       OPT_BOOL,     &( set_bonus.count[ SET_PVP_2PC_CASTER ]  ) },
+    { "pvp_4pc_caster",                       OPT_BOOL,     &( set_bonus.count[ SET_PVP_4PC_CASTER ]  ) },
+    { "pvp_2pc_melee",                        OPT_BOOL,     &( set_bonus.count[ SET_PVP_2PC_MELEE ]   ) },
+    { "pvp_4pc_melee",                        OPT_BOOL,     &( set_bonus.count[ SET_PVP_4PC_MELEE ]   ) },
+    { "pvp_2pc_tank",                         OPT_BOOL,     &( set_bonus.count[ SET_PVP_2PC_TANK ]    ) },
+    { "pvp_4pc_tank",                         OPT_BOOL,     &( set_bonus.count[ SET_PVP_4PC_TANK ]    ) },
+    { "pvp_2pc_heal",                         OPT_BOOL,     &( set_bonus.count[ SET_PVP_2PC_HEAL ]    ) },
+    { "pvp_4pc_heal",                         OPT_BOOL,     &( set_bonus.count[ SET_PVP_4PC_HEAL ]    ) },
+
     // Gear Stats
     { "gear_strength",                        OPT_FLT,  &( gear.attribute[ ATTR_STRENGTH  ]           ) },
     { "gear_agility",                         OPT_FLT,  &( gear.attribute[ ATTR_AGILITY   ]           ) },

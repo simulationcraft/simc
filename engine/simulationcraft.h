@@ -425,9 +425,9 @@ enum slot_type   // these enum values match armory settings
   SLOT_MAX       = 19
 };
 
-// Tiers 11..14
+// Tiers 11..14 + PVP
 #ifndef N_TIER
-#define N_TIER 4
+#define N_TIER 5
 #endif
 
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
@@ -454,6 +454,10 @@ enum set_type
   SET_T14_MELEE,  SET_T14_2PC_MELEE,  SET_T14_4PC_MELEE,
   SET_T14_TANK,   SET_T14_2PC_TANK,   SET_T14_4PC_TANK,
   SET_T14_HEAL,   SET_T14_2PC_HEAL,   SET_T14_4PC_HEAL,
+  SET_PVP_CASTER, SET_PVP_2PC_CASTER, SET_PVP_4PC_CASTER,
+  SET_PVP_MELEE,  SET_PVP_2PC_MELEE,  SET_PVP_4PC_MELEE,
+  SET_PVP_TANK,   SET_PVP_2PC_TANK,   SET_PVP_4PC_TANK,
+  SET_PVP_HEAL,   SET_PVP_2PC_HEAL,   SET_PVP_4PC_HEAL,
   SET_MAX
 };
 
@@ -3024,6 +3028,8 @@ struct set_bonus_t
   int tier13_4pc_caster() SC_CONST; int tier13_4pc_melee() SC_CONST; int tier13_4pc_tank() SC_CONST; int tier13_4pc_heal() SC_CONST;
   int tier14_2pc_caster() SC_CONST; int tier14_2pc_melee() SC_CONST; int tier14_2pc_tank() SC_CONST; int tier14_2pc_heal() SC_CONST;
   int tier14_4pc_caster() SC_CONST; int tier14_4pc_melee() SC_CONST; int tier14_4pc_tank() SC_CONST; int tier14_4pc_heal() SC_CONST;
+  int pvp_2pc_caster() SC_CONST; int pvp_2pc_melee() SC_CONST; int pvp_2pc_tank() SC_CONST; int pvp_2pc_heal() SC_CONST;
+  int pvp_4pc_caster() SC_CONST; int pvp_4pc_melee() SC_CONST; int pvp_4pc_tank() SC_CONST; int pvp_4pc_heal() SC_CONST;
   int decode( player_t*, item_t& item ) SC_CONST;
   bool init( player_t* );
   set_bonus_t();
