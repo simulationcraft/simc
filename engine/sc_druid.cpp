@@ -3678,6 +3678,13 @@ struct starfire_t : public druid_spell_t
         // Eclipse bar is moving towards, >35 for Starfire/towards Solar
         int gain = effect2().base_value();
 
+        // Tier12 4 piece bonus is now affected by euphoria, see
+        // http://themoonkinrepository.com/viewtopic.php?f=19&t=6251
+        if ( p -> set_bonus.tier12_4pc_caster() )
+        {
+          gain += 5;
+        }
+
         if ( ! p -> buffs_eclipse_lunar -> check() )
         {
           if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
@@ -3686,11 +3693,6 @@ struct starfire_t : public druid_spell_t
             {
               gain *= 2;
             }
-          }
-
-          if ( p -> set_bonus.tier12_4pc_caster() )
-          {
-            gain += 5;
           }
         }
         
@@ -4256,6 +4258,20 @@ struct wrath_t : public druid_spell_t
         // Every wrath increases the counter by 1
         p -> eclipse_wrath_count++;
 
+        // (4) Set: While not in an Eclipse state, your Wrath generates 3
+        // additional Lunar Energy and your Starfire generates 5 additional
+        // Solar Energy.
+        // With 4T12 the 13,13,14 sequence becomes a 17,17,16 sequence, which
+        // means that the counter gets increased ad additional time per wrath
+        // The extra energy is not doubled by Euphoria procs
+
+        if ( p -> set_bonus.tier12_4pc_caster() )
+        {
+          gain += 3;
+          // 4T12 also adds 1 to the counter
+          p -> eclipse_wrath_count++;
+        }
+
         // BUG (FEATURE?) ON LIVE
         // #1 Euphoria does not proc, if you are more than 35 into the side the
         // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
@@ -4269,20 +4285,6 @@ struct wrath_t : public druid_spell_t
               // Euphoria proc also adds 1 to the counter
               p -> eclipse_wrath_count++;
             }
-          }
-
-          // (4) Set: While not in an Eclipse state, your Wrath generates 3
-          // additional Lunar Energy and your Starfire generates 5 additional
-          // Solar Energy.
-          // With 4T12 the 13,13,14 sequence becomes a 17,17,16 sequence, which
-          // means that the counter gets increased ad additional time per wrath
-          // The extra energy is not doubled by Euphoria procs
-
-          if ( p -> set_bonus.tier12_4pc_caster() )
-          {
-            gain += 3;
-            // 4T12 also adds 1 to the counter
-            p -> eclipse_wrath_count++;
           }
         }
 
