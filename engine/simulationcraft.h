@@ -3567,6 +3567,7 @@ struct player_t
   virtual void   regen( double periodicity=2.0 );
   virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
   virtual double resource_loss( int resource, double amount, action_t* a=0 );
+  virtual void   recalculate_resource_max( int resource );
   virtual bool   resource_available( int resource, double cost ) SC_CONST;
   virtual int    primary_resource() SC_CONST { return RESOURCE_NONE; }
   virtual int    primary_role() SC_CONST;

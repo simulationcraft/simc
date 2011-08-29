@@ -1248,6 +1248,7 @@ const char* util_t::stat_type_string( int stat )
 
   case STAT_HEALTH: return "health";
   case STAT_MANA:   return "mana";
+  case STAT_MAX_MANA: return "maximum_mana";
   case STAT_RAGE:   return "rage";
   case STAT_ENERGY: return "energy";
   case STAT_FOCUS:  return "focus";

@@ -1216,6 +1216,7 @@ void player_t::init_resources( bool force )
           resource_initial[ i ] *= 1.05;
         }
         resource_initial[ i ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
+        resource_initial[ i ] += buffs.arcane_brilliance -> value();
       }
       if ( i == RESOURCE_HEALTH )
       {
@@ -3320,11 +3321,11 @@ double player_t::resource_gain( int       resource,
 
   if ( sim -> log )
   {
-    log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f)",
-                   name(), actual_amount, amount,
+    log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)",
+                   name(), actual_amount, amount, 
                    util_t::resource_type_string( resource ),
                    source ? source -> name() : action ? action -> name() : "unknown",
-                   resource_current[ resource ] );
+                   resource_current[ resource ], resource_max[ resource ] );
   }
 
   return actual_amount;
@@ -3341,6 +3342,51 @@ bool player_t::resource_available( int    resource,
   }
 
   return resource_current[ resource ] >= cost;
+}
+
+// player_t::recalculate_resource_max ======================================
+
+void player_t::recalculate_resource_max( int resource )
+{
+  double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : 20;
+
+  resource_max[ resource ] = resource_base[ resource ] + 
+                             gear.resource[ resource ] + 
+                             enchant.resource[ resource ] + 
+                             ( is_pet() ? 0 : sim -> enchant.resource[ resource ] );
+
+  switch ( resource )
+  {
+    case RESOURCE_MANA:
+    {
+      if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
+      {
+        resource_max[ resource ] *= 1.02;
+      }
+      
+      if ( race == RACE_GNOME )
+      {
+        resource_initial[ resource ] *= 1.05;
+      }
+      resource_max[ resource ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
+      // Arcane Brilliance needs to be done here as a generic resource, otherwise override will 
+      // not (and did not previously) work
+      resource_max[ resource ] += buffs.arcane_brilliance -> value();
+      break;
+    }
+    case RESOURCE_HEALTH:
+    {
+      resource_max[ resource ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
+
+      if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
+      {
+        // ICC buff.
+        resource_max[ resource ] *= 1.30;
+      }
+      break;
+    }
+    default: break;
+  }
 }
 
 // player_t::primary_tab ===================================================
@@ -3459,8 +3505,8 @@ void player_t::stat_gain( int       stat,
   {
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; attribute[ ATTR_STRENGTH  ] += amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; attribute[ ATTR_AGILITY   ] += amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; attribute[ ATTR_STAMINA   ] += amount; resource_max[ RESOURCE_HEALTH ] += amount * health_per_stamina; break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; resource_max[ RESOURCE_MANA   ] += amount * mana_per_intellect; break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; attribute[ ATTR_STAMINA   ] += amount; recalculate_resource_max( RESOURCE_HEALTH ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; recalculate_resource_max( RESOURCE_MANA ); break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; attribute[ ATTR_SPIRIT    ] += amount; break;
 
   case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] += amount; attribute[ i ] += amount; } break;
@@ -3534,8 +3580,8 @@ void player_t::stat_loss( int       stat,
   {
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; attribute[ ATTR_STRENGTH  ] -= amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; attribute[ ATTR_AGILITY   ] -= amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, amount * health_per_stamina, action ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA,   amount * mana_per_intellect, action ); break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * health_per_stamina, action ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA, floor( amount * composite_attribute_multiplier( ATTR_INTELLECT ) ) * mana_per_intellect, action ); break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
 
   case STAT_MAX: for( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] -= amount; attribute[ i ] -= amount; } break;
@@ -3559,7 +3605,7 @@ void player_t::stat_loss( int       stat,
               ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
               ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
               ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC );
-    resource_max[ r ] -= amount;
+    recalculate_resource_max( r );
     double delta = resource_current[ r ] - resource_max[ r ];
     if( delta > 0 ) resource_loss( r, delta, action );
   }
