@@ -1347,6 +1347,8 @@ struct arcane_blast_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+    if ( p -> set_bonus.pvp_4pc_caster() )
+      base_multiplier *= 1.05;
   }
 
   virtual double cost() SC_CONST
@@ -1863,7 +1865,9 @@ struct fireball_t : public mage_spell_t
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.fireball -> effect1().percent();
     may_hot_streak = true;
-    if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+    if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+    if ( p -> set_bonus.pvp_4pc_caster() )
+      base_multiplier *= 1.05;
   }
 
   virtual double cost() SC_CONST
@@ -2100,6 +2104,8 @@ struct frostbolt_t : public mage_spell_t
     may_brain_freeze = true;
     if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     base_multiplier *= 1.0 + p -> specializations.frost3;
+    if ( p -> set_bonus.pvp_4pc_caster() )
+      base_multiplier *= 1.05;
   }
 
   virtual void schedule_execute()
@@ -2182,7 +2188,9 @@ struct frostfire_bolt_t : public mage_spell_t
       base_tick_time = 3.0;
       dot_behavior = DOT_REFRESH;
     }
-    if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+    if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+    if ( p -> set_bonus.pvp_4pc_caster() ) 
+      base_multiplier *= 1.05;
   }
 
   virtual void reset()
@@ -2743,6 +2751,8 @@ struct scorch_t : public mage_spell_t
     if ( debuff )
       check_talent( p -> talents.critical_mass -> rank() );
 
+    if ( p -> set_bonus.pvp_4pc_caster() )
+      base_multiplier *= 1.05;
   }
 
   virtual bool usable_moving()
