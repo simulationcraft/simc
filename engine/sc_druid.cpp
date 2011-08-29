@@ -338,6 +338,7 @@ struct druid_t : public player_t
   virtual int       primary_resource() SC_CONST;
   virtual int       primary_role() SC_CONST;
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
+  virtual double    intellect() const;
 
   // Utilities
   double combo_point_rank( double* cp_list ) SC_CONST
@@ -3413,6 +3414,10 @@ struct mark_of_the_wild_t : public druid_spell_t
       if ( p -> ooc_buffs() )
       {
         p -> buffs.mark_of_the_wild -> trigger();
+        // Force max mana recalculation here
+        p -> recalculate_resource_max( RESOURCE_MANA );
+        if ( ! p -> in_combat ) 
+          p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] - p -> resource_current[ RESOURCE_MANA ], 0, this );
       }
     }
   }
@@ -5168,6 +5173,24 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
   }
 
   return m;
+}
+
+// Heart of the Wild does nothing for base int so we need to do completely silly 
+// tricks to match paper doll in game
+double druid_t::intellect() const
+{
+  double a = attribute_base[ ATTR_INTELLECT ];
+  a *= ( 1.0 + matching_gear_multiplier( ATTR_INTELLECT ) );
+  
+  double b = attribute[ ATTR_INTELLECT ] - attribute_base[ ATTR_INTELLECT ];
+  b *= ( attribute_multiplier_initial[ ATTR_INTELLECT ] );
+  b *= ( 1.0 + matching_gear_multiplier( ATTR_INTELLECT ) );
+  
+  double z = floor( a + b );
+  if ( buffs.mark_of_the_wild -> check() || buffs.blessing_of_kings -> check() )
+    z *= 1.05;
+
+  return z;
 }
 
 // druid_t::matching_gear_multiplier ==================================
