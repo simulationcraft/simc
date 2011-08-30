@@ -408,6 +408,9 @@ struct hunter_pet_t : public pet_t
     base_gcd = 1.20;
 
     infinite_resource[ RESOURCE_FOCUS ] = o -> infinite_resource[ RESOURCE_FOCUS ];
+
+    world_lag = 0.3; // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
+    world_lag_override = true;
   }
 
   virtual void init_talents()

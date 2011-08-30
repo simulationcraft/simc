@@ -80,8 +80,8 @@ static const char* resource_color( int type )
   case RESOURCE_RUNIC:        return class_color( DEATH_KNIGHT );
   case RESOURCE_RUNE:         return class_color( DEATH_KNIGHT );
   case RESOURCE_RUNE_BLOOD:   return class_color( DEATH_KNIGHT );
-  case RESOURCE_RUNE_UNHOLY:  return class_color( DEATH_KNIGHT );
-  case RESOURCE_RUNE_FROST:   return class_color( DEATH_KNIGHT );
+  case RESOURCE_RUNE_UNHOLY:  return class_color( HUNTER );
+  case RESOURCE_RUNE_FROST:   return class_color( SHAMAN );
   case RESOURCE_HOLY_POWER:   return class_color( PALADIN );
   case RESOURCE_SOUL_SHARDS:  return class_color( WARLOCK );
   case RESOURCE_NONE:         return "000000";
@@ -1596,7 +1596,7 @@ const char* chart_t::timeline_resource( std::string& s,
                                         player_t* p, int resource_type )
 {
 
-  if ( resource_type == RESOURCE_NONE || p -> resource_max[ resource_type ] == 0 )
+  if ( resource_type == RESOURCE_NONE )
     return "";
 
   int max_buckets = ( int ) p -> timeline_resource[resource_type].size();
@@ -1618,6 +1618,10 @@ const char* chart_t::timeline_resource( std::string& s,
       resource_max = p -> timeline_resource[resource_type][ i ];
     }
   }
+
+  if ( resource_max == 0 )
+    return "";
+
   double resource_range  = 60.0;
   double resource_adjust = resource_range / resource_max;
 
