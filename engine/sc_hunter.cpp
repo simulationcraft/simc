@@ -2097,6 +2097,9 @@ struct flaming_arrow_t : public hunter_attack_t
     proc = true;
     normalize_weapon_speed=true;
   }
+
+  virtual void trigger_improved_steady_shot()
+  { }
 };
 
 
