@@ -2105,7 +2105,6 @@ struct flaming_arrow_t : public hunter_attack_t
   { }
 };
 
-
 // Black Arrow =================================================================
 
 struct black_arrow_t : public hunter_attack_t
@@ -4039,7 +4038,9 @@ void hunter_t::armory_extensions( const std::string& region,
       /*40*/ PET_NONE,         PET_SILITHID,     PET_WORM,         PET_RHINO,    PET_WASP,
       /*45*/ PET_CORE_HOUND,   PET_SPIRIT_BEAST, PET_NONE,         PET_NONE,     PET_NONE,
       /*50*/ PET_FOX,          PET_MONKEY,       PET_DOG,          PET_BEETLE,   PET_NONE,
-      /*55*/ PET_SHALE_SPIDER, PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE
+      /*55*/ PET_SHALE_SPIDER, PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE,
+      /*60*/ PET_NONE,         PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE,
+      /*65*/ PET_NONE,         PET_WASP,         PET_NONE,         PET_NONE,     PET_NONE
     };
   int num_families = sizeof( pet_types ) / sizeof( pet_type_t );
 
@@ -4160,7 +4161,7 @@ void hunter_t::armory_extensions( const std::string& region,
         util_t::html_special_char_decode( summoned_pet_name );
         if ( ! summoned_pet_name.empty() )
         {
-          summon_pet_str = summoned_pet_name.substr( 1, summoned_pet_name.size() - 2 ); // Fix quotation
+          summon_pet_str = summoned_pet_name;
           if ( ! summoned_pet_id.empty() )
             summon_pet_str += '_' + summoned_pet_id;
         }

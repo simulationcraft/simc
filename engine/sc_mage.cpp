@@ -3554,16 +3554,6 @@ void mage_t::init_actions()
       }
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd";
-/*
-      if ( glyphs.frostbolt -> ok() )
-      {
-        if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*12)<target.time_to_die";
-      }
-      else
-      {
-        if ( level >= 68 ) action_list_str += "/mage_armor,if=(mana_pct*15)<target.time_to_die";
-      }
-*/
       if ( glyphs.frostbolt -> ok() )
       {
         action_list_str += "/frostbolt";
