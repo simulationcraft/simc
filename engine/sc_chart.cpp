@@ -78,6 +78,10 @@ static const char* resource_color( int type )
   case RESOURCE_ENERGY:       return class_text_color( ROGUE );
   case RESOURCE_FOCUS:        return class_text_color( ROGUE );
   case RESOURCE_RUNIC:        return class_color( DEATH_KNIGHT );
+  case RESOURCE_RUNE:         return class_color( DEATH_KNIGHT );
+  case RESOURCE_RUNE_BLOOD:   return class_color( DEATH_KNIGHT );
+  case RESOURCE_RUNE_UNHOLY:  return class_color( DEATH_KNIGHT );
+  case RESOURCE_RUNE_FROST:   return class_color( DEATH_KNIGHT );
   case RESOURCE_HOLY_POWER:   return class_color( PALADIN );
   case RESOURCE_SOUL_SHARDS:  return class_color( WARLOCK );
   case RESOURCE_NONE:         return "000000";
@@ -146,6 +150,10 @@ static const char* chart_resource_type_string( int type )
   case RESOURCE_ENERGY:       return "Energy";
   case RESOURCE_FOCUS:        return "Focus";
   case RESOURCE_RUNIC:        return "Runic Power";
+  case RESOURCE_RUNE:         return "All Runes";
+  case RESOURCE_RUNE_BLOOD:   return "Blood Rune";
+  case RESOURCE_RUNE_UNHOLY:  return "Unholy Rune";
+  case RESOURCE_RUNE_FROST:   return "Frost Rune";
   case RESOURCE_SOUL_SHARDS:  return "Soul Shards";
   case RESOURCE_HOLY_POWER:   return "Holy Power";
   }

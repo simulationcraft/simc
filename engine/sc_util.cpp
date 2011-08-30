@@ -642,6 +642,10 @@ const char* util_t::resource_type_string( int type )
   case RESOURCE_ENERGY:       return "energy";
   case RESOURCE_FOCUS:        return "focus";
   case RESOURCE_RUNIC:        return "runic_power";
+  case RESOURCE_RUNE:         return "all_runes";
+  case RESOURCE_RUNE_BLOOD:   return "blood_runes";
+  case RESOURCE_RUNE_UNHOLY:  return "unholy_runes";
+  case RESOURCE_RUNE_FROST:   return "frost_runes";
   case RESOURCE_SOUL_SHARDS:  return "soul_shards";
   case RESOURCE_HOLY_POWER:   return "holy_power";
   }

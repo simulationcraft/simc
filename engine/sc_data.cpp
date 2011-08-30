@@ -47,7 +47,11 @@ resource_type spell_data_t::power_type() SC_CONST
   case POWER_FOCUS:       return RESOURCE_FOCUS;
   case POWER_ENERGY:      return RESOURCE_ENERGY;
   case POWER_HAPPINESS:   return RESOURCE_HAPPINESS;
-  case POWER_RUNE:        return RESOURCE_RUNE;
+  // rune power types are not currently used
+  // case POWER_RUNE:        return RESOURCE_RUNE;
+  // case POWER_RUNE_BLOOD:  return RESOURCE_RUNE_BLOOD;
+  // case POWER_RUNE_UNHOLY: return RESOURCE_RUNE_UNHOLY;
+  // case POWER_RUNE_FROST:  return RESOURCE_RUNE_FROST;
   case POWER_RUNIC_POWER: return RESOURCE_RUNIC;
   case POWER_SOUL_SHARDS: return RESOURCE_SOUL_SHARDS;
   case POWER_ECLIPSE:     return RESOURCE_ECLIPSE;

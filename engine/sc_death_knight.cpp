@@ -47,11 +47,14 @@ struct dk_rune_t
 
   dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ) {}
 
-  bool is_death() SC_CONST { return ( type & RUNE_TYPE_DEATH ) != 0; }
-  bool is_ready() SC_CONST { return state == STATE_FULL; }
-  bool is_depleted() SC_CONST { return state == STATE_DEPLETED; }
-  bool is_regenerating() SC_CONST { return state == STATE_REGENERATING; }
-  int  get_type() SC_CONST { return type & RUNE_TYPE_MASK; }
+  bool is_death()        SC_CONST { return ( type & RUNE_TYPE_DEATH ) != 0                ; }
+  bool is_blood()        SC_CONST { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_BLOOD  ; }
+  bool is_unholy()       SC_CONST { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_UNHOLY ; }
+  bool is_frost()        SC_CONST { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_FROST  ; }
+  bool is_ready()        SC_CONST { return state == STATE_FULL                            ; }
+  bool is_depleted()     SC_CONST { return state == STATE_DEPLETED                        ; }
+  bool is_regenerating() SC_CONST { return state == STATE_REGENERATING                    ; }
+  int  get_type()        SC_CONST { return type & RUNE_TYPE_MASK                          ; }
 
   void regen_rune( player_t* p, double periodicity );
 
@@ -152,6 +155,17 @@ struct death_knight_t : public player_t
   gain_t* gains_rune_abilities;
   gain_t* gains_scent_of_blood;
   gain_t* gains_tier12_2pc_melee;
+  gain_t* gains_rune;
+  gain_t* gains_rune_unholy;
+  gain_t* gains_rune_blood;
+  gain_t* gains_rune_frost;
+  gain_t* gains_rune_unknown;
+  gain_t* gains_runic_empowerment;
+  gain_t* gains_runic_empowerment_blood;
+  gain_t* gains_runic_empowerment_unholy;
+  gain_t* gains_runic_empowerment_frost;
+  gain_t* gains_blood_tap;
+  gain_t* gains_blood_tap_blood;
 
   // Glyphs
   struct glyphs_t
@@ -407,12 +421,12 @@ static void log_rune_status( death_knight_t* p )
 
 void dk_rune_t::regen_rune( player_t* p, double periodicity )
 {
-  // Full runes don't regen.
-  if ( state == STATE_FULL ) return;
-  // If the other rune is already regening, we don't.
-  if ( state == STATE_DEPLETED && paired_rune -> state == STATE_REGENERATING ) return;
+  // If the other rune is already regening, we don't
+  // but if both are full we still continue on to record resource gain overflow
+  if ( state == STATE_DEPLETED &&   paired_rune -> state == STATE_REGENERATING ) return;
+  if ( state == STATE_FULL     && ! paired_rune -> state == STATE_FULL         ) return;
 
-  death_knight_t* o = p -> cast_death_knight();
+
   // Base rune regen rate is 10 seconds; we want the per-second regen
   // rate, so divide by 10.0.  Haste is a multiplier (so 30% haste
   // means composite_attack_haste is 1/1.3), so we invert it.  Haste
@@ -420,6 +434,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   // seconds, etc.
   double runes_per_second = 1.0 / 10.0 / p -> composite_attack_haste();
 
+  death_knight_t* o = p -> cast_death_knight();
   if ( o -> buffs_blood_presence -> check() && o -> talents.improved_blood_presence -> rank() )
   {
     runes_per_second *= 1.0 + o -> talents.improved_blood_presence -> effect3().percent();
@@ -430,9 +445,30 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
     runes_per_second *= 1.0 + ( o -> talents.runic_corruption -> effect1().percent() );
   }
 
+  double regen_amount = periodicity * runes_per_second;
+
+  // record rune gains and overflow
+  gain_t* gains_rune      = o -> gains_rune         ;
+  gain_t* gains_rune_type = 
+    is_frost()            ? o -> gains_rune_frost   :
+    is_blood()            ? o -> gains_rune_blood   :
+    is_unholy()           ? o -> gains_rune_unholy  :
+                            o -> gains_rune_unknown ; // should never happen, so if you've seen this in a report happy bug hunting
+
+  // full runes don't regen. if both full, record half of overflow, as the other rune will record the other half
+  if ( state == STATE_FULL )
+  {
+    if ( paired_rune -> state == STATE_FULL )
+    {
+      gains_rune_type -> add(0, regen_amount * 0.5);
+      gains_rune      -> add(0, regen_amount * 0.5);
+    }
+    return;
+  }
+
   // Chances are, we will overflow by a small amount.  Toss extra
   // overflow into our paired rune if it is regenerating or depleted.
-  value += periodicity * runes_per_second;
+  value += regen_amount;
   double overflow = 0.0;
   if ( value > 1.0 )
   {
@@ -447,12 +483,20 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 
   if ( overflow > 0.0 && ( paired_rune -> state == STATE_REGENERATING || paired_rune -> state == STATE_DEPLETED ) )
   {
-    paired_rune -> value = std::min( 1.0, paired_rune -> value + overflow );
+    // we shouldn't ever overflow the paired rune, but take care just in case
+    paired_rune -> value += overflow;
+    if( paired_rune -> value > 1.0 )
+    {
+      overflow = paired_rune -> value - 1.0;
+      paired_rune -> value = 1.0;
+    }
     if ( paired_rune -> value >= 1.0 )
       paired_rune -> state = STATE_FULL;
     else
       paired_rune -> state = STATE_REGENERATING;
   }
+ gains_rune_type -> add(regen_amount - overflow, overflow);
+ gains_rune      -> add(regen_amount - overflow, overflow);
 
   if ( p -> sim -> debug )
   {
@@ -487,7 +531,7 @@ struct army_ghoul_pet_t : public pet_t
   double snapshot_crit, snapshot_haste, snapshot_speed, snapshot_hit, snapshot_strength;
 
   army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "army_of_the_dead_ghoul_8" ),
+    pet_t( sim, owner, "army_of_the_dead" ),
     snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_speed( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -2236,12 +2280,12 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // sense to cast ghouls 7-10s before a fight begins so you don't
       // waste rune regen and enter the fight depleted.  So, the time
       // you get for ghouls is 4-6 seconds less.
-      player -> summon_pet( "army_of_the_dead_ghoul_8", 35.0 );
+      player -> summon_pet( "army_of_the_dead", 35.0 );
     }
     else
     {
       death_knight_spell_t::execute();
-      player -> summon_pet( "army_of_the_dead_ghoul_8", 40.0 );
+      player -> summon_pet( "army_of_the_dead", 40.0 );
     }
   }
   virtual void consume_resource()
@@ -2438,6 +2482,8 @@ struct blood_tap_t : public death_knight_spell_t
       dk_rune_t& r = p -> _runes.slot[i];
       if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && ! r.is_ready() )
       {
+        p -> gains_blood_tap       -> add(1 - r.value, r.value);
+        p -> gains_blood_tap_blood -> add(1 - r.value, r.value);
         r.fill_rune();
         rune_was_refreshed = true;
         break;
@@ -2452,6 +2498,8 @@ struct blood_tap_t : public death_knight_spell_t
         dk_rune_t& r = p -> _runes.slot[i];
         if ( r.get_type() == RUNE_TYPE_BLOOD && r.is_death() && ! r.is_ready() )
         {
+          p -> gains_blood_tap       -> add(1 - r.value, r.value);
+          p -> gains_blood_tap_blood -> add(1 - r.value, r.value);
           r.fill_rune();
           rune_was_refreshed = true;
           break;
@@ -4128,7 +4176,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
 
 void death_knight_t::create_pets()
 {
-  create_pet( "army_of_the_dead_ghoul_8" );
+  create_pet( "army_of_the_dead" );
   create_pet( "bloodworms" );
   create_pet( "dancing_rune_weapon" );
   create_pet( "gargoyle" );
@@ -4144,7 +4192,7 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "army_of_the_dead_ghoul_8" ) return new army_ghoul_pet_t          ( sim, this );
+  if ( pet_name == "army_of_the_dead"         ) return new army_ghoul_pet_t          ( sim, this );
   if ( pet_name == "bloodworms"               ) return new bloodworms_pet_t          ( sim, this );
   if ( pet_name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_pet_t ( sim, this );
   if ( pet_name == "gargoyle"                 ) return new gargoyle_pet_t            ( sim, this );
@@ -4742,16 +4790,37 @@ void death_knight_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_butchery                   = get_gain( "butchery"                   );
-  gains_chill_of_the_grave         = get_gain( "chill_of_the_grave"         );
-  gains_frost_presence             = get_gain( "frost_presence"             );
-  gains_horn_of_winter             = get_gain( "horn_of_winter"             );
-  gains_improved_frost_presence    = get_gain( "improved_frost_presence"    );
-  gains_might_of_the_frozen_wastes = get_gain( "might_of_the_frozen_wastes" );
-  gains_power_refund               = get_gain( "power_refund"               );
-  gains_rune_abilities             = get_gain( "rune_abilities"             );
-  gains_scent_of_blood             = get_gain( "scent_of_blood"             );
-  gains_tier12_2pc_melee           = get_gain( "tier12_2pc_melee"           );
+  gains_butchery                         = get_gain( "butchery"                   );
+  gains_chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
+  gains_frost_presence                   = get_gain( "frost_presence"             );
+  gains_horn_of_winter                   = get_gain( "horn_of_winter"             );
+  gains_improved_frost_presence          = get_gain( "improved_frost_presence"    );
+  gains_might_of_the_frozen_wastes       = get_gain( "might_of_the_frozen_wastes" );
+  gains_power_refund                     = get_gain( "power_refund"               );
+  gains_rune_abilities                   = get_gain( "rune_abilities"             );
+  gains_scent_of_blood                   = get_gain( "scent_of_blood"             );
+  gains_tier12_2pc_melee                 = get_gain( "tier12_2pc_melee"           );
+  gains_rune                             = get_gain( "rune_regen_all"             );
+  gains_rune_unholy                      = get_gain( "rune_regen_unholy"          );
+  gains_rune_blood                       = get_gain( "rune_regen_blood"           );
+  gains_rune_frost                       = get_gain( "rune_regen_frost"           );
+  gains_rune_unknown                     = get_gain( "rune_regen_unknown"         );
+  gains_runic_empowerment                = get_gain( "runic_empowerment"          );
+  gains_runic_empowerment_blood          = get_gain( "runic_empowerment_blood"    );
+  gains_runic_empowerment_frost          = get_gain( "runic_empowerment_frost"    );
+  gains_runic_empowerment_unholy         = get_gain( "runic_empowerment_unholy"   );
+  gains_blood_tap                        = get_gain( "blood_tap"                  );
+  gains_blood_tap_blood                  = get_gain( "blood_tap_blood"            );
+  gains_rune                     -> type = ( resource_type ) RESOURCE_RUNE         ;
+  gains_rune_unholy              -> type = ( resource_type ) RESOURCE_RUNE_UNHOLY  ;
+  gains_rune_blood               -> type = ( resource_type ) RESOURCE_RUNE_BLOOD   ;
+  gains_rune_frost               -> type = ( resource_type ) RESOURCE_RUNE_FROST   ;
+  gains_runic_empowerment        -> type = ( resource_type ) RESOURCE_RUNE         ;
+  gains_runic_empowerment_blood  -> type = ( resource_type ) RESOURCE_RUNE_BLOOD   ;
+  gains_runic_empowerment_unholy -> type = ( resource_type ) RESOURCE_RUNE_UNHOLY  ;
+  gains_runic_empowerment_frost  -> type = ( resource_type ) RESOURCE_RUNE_FROST   ;
+  gains_blood_tap                -> type = ( resource_type ) RESOURCE_RUNE         ;
+  gains_blood_tap_blood          -> type = ( resource_type ) RESOURCE_RUNE_BLOOD   ;
 }
 
 // death_knight_t::init_procs ===============================================
@@ -5093,7 +5162,13 @@ void death_knight_t::trigger_runic_empowerment()
   if ( num_depleted > 0 )
   {
     int rune_to_regen = depleted_runes[ ( int ) ( sim -> rng -> real() * num_depleted * 0.9999 ) ];
-    _runes.slot[rune_to_regen].fill_rune();
+    dk_rune_t* regen_rune = &_runes.slot[rune_to_regen];
+    regen_rune -> fill_rune();
+    if      ( regen_rune -> is_blood()  ) gains_runic_empowerment_blood  -> add (1,0);
+    else if ( regen_rune -> is_unholy() ) gains_runic_empowerment_unholy -> add (1,0);
+    else if ( regen_rune -> is_frost()  ) gains_runic_empowerment_frost  -> add (1,0);
+
+    gains_runic_empowerment -> add (1,0);
     if ( sim -> log ) log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
     proc_runic_empowerment -> occur();
   }
@@ -5101,6 +5176,7 @@ void death_knight_t::trigger_runic_empowerment()
   {
     // If there were no available runes to refresh
     proc_runic_empowerment_wasted -> occur();
+    gains_runic_empowerment -> add (0,1);
   }
 }
 

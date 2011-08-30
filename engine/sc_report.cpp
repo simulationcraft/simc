@@ -426,7 +426,7 @@ static void print_text_gains( FILE* file, player_t* p )
   int max_length = 0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if ( g -> actual > 0 )
+    if ( g -> actual > 0 || g -> overflow > 0 )
     {
       int length = ( int ) strlen( g -> name() );
       if ( length > max_length ) max_length = length;
@@ -438,7 +438,7 @@ static void print_text_gains( FILE* file, player_t* p )
 
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if ( g -> actual > 0 )
+    if ( g -> actual > 0 || g -> overflow > 0 )
     {
       util_t::fprintf( file, "    %8.1f : %-*s", g -> actual, max_length, g -> name() );
       double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
@@ -459,7 +459,7 @@ static void print_text_pet_gains( FILE* file, player_t* p )
     int max_length = 0;
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
     {
-      if ( g -> actual > 0 )
+      if ( g -> actual > 0 || g -> overflow > 0 )
       {
         int length = ( int ) strlen( g -> name() );
         if ( length > max_length ) max_length = length;
@@ -471,7 +471,7 @@ static void print_text_pet_gains( FILE* file, player_t* p )
 
       for ( gain_t* g = pet -> gain_list; g; g = g -> next )
       {
-        if ( g -> actual > 0 )
+        if ( g -> actual > 0 || g -> overflow > 0 )
         {
           util_t::fprintf( file, "    %7.1f : %-*s", g -> actual, max_length, g -> name() );
           double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
@@ -2911,12 +2911,12 @@ util_t::fprintf( file,
                  "\t\t\t\t\t\t\t\t<th>Count</th>\n"
                  "\t\t\t\t\t\t\t\t<th>Total</th>\n"
                  "\t\t\t\t\t\t\t\t<th>Average</th>\n"
-                 "\t\t\t\t\t\t\t\t<th>Overflow</th>\n"
+                 "\t\t\t\t\t\t\t\t<th colspan=2>Overflow</th>\n"
                  "\t\t\t\t\t\t\t</tr>\n" );
 i = 1;
 for ( gain_t* g = p -> gain_list; g; g = g -> next )
 {
-  if ( g -> actual > 0 )
+  if ( g -> actual > 0 || g -> overflow > 0 )
   {
     double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
     util_t::fprintf( file,
@@ -2932,6 +2932,7 @@ for ( gain_t* g = p -> gain_list; g; g = g -> next )
                      "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                     "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
                      "\t\t\t\t\t\t\t</tr>\n",
                      g -> name(),
@@ -2939,7 +2940,8 @@ for ( gain_t* g = p -> gain_list; g; g = g -> next )
                      g -> count,
                      g -> actual,
                      g -> actual / g -> count,
-                     overflow_pct );
+                     overflow_pct,
+                     g -> overflow);
     i++;
   }
 }
@@ -2949,7 +2951,7 @@ for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   bool first = true;
   for ( gain_t* g = pet -> gain_list; g; g = g -> next )
   {
-    if ( g -> actual > 0 )
+    if ( g -> actual > 0 || g -> overflow > 0 )
     {
       if ( first )
       {
@@ -2970,6 +2972,7 @@ for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
                        "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                        "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                        "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                       "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                        "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
                        "\t\t\t\t\t\t\t</tr>\n",
                        g -> name(),
@@ -2977,7 +2980,8 @@ for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
                        g -> count,
                        g -> actual,
                        g -> actual / g -> count,
-                       overflow_pct );
+                       overflow_pct,
+                       g -> overflow);
     }
   }
 }
@@ -2988,6 +2992,8 @@ util_t::fprintf( file,
                  "\t\t\t\t\t\t<div class=\"charts charts-left\">\n" );
 for ( i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
 {
+  // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
+  if ( i == RESOURCE_RUNE_BLOOD | i == RESOURCE_RUNE_UNHOLY | i == RESOURCE_RUNE_FROST ) continue;
   double total_gain=0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
