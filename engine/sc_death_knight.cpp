@@ -164,6 +164,7 @@ struct death_knight_t : public player_t
   gain_t* gains_runic_empowerment_blood;
   gain_t* gains_runic_empowerment_unholy;
   gain_t* gains_runic_empowerment_frost;
+  gain_t* gains_empower_rune_weapon;
   gain_t* gains_blood_tap;
   // only useful if the blood rune charts are enabled
   // charts are currently disabled so commenting out
@@ -2787,11 +2788,16 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
 
+    double erw_gain = 0.0;
+    double erw_over = 0.0;
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
       dk_rune_t& r = p -> _runes.slot[i];
+      erw_gain += 1-r.value;
+      erw_over += r.value;
       r.fill_rune();
     }
+    p -> gains_empower_rune_weapon -> add(erw_gain, erw_over);
   }
 };
 
@@ -4811,6 +4817,7 @@ void death_knight_t::init_gains()
   gains_runic_empowerment_blood          = get_gain( "runic_empowerment_blood"    );
   gains_runic_empowerment_frost          = get_gain( "runic_empowerment_frost"    );
   gains_runic_empowerment_unholy         = get_gain( "runic_empowerment_unholy"   );
+  gains_empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
   gains_blood_tap                        = get_gain( "blood_tap"                  );
   // gains_blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   gains_rune                     -> type = ( resource_type ) RESOURCE_RUNE         ;
@@ -4821,6 +4828,7 @@ void death_knight_t::init_gains()
   gains_runic_empowerment_blood  -> type = ( resource_type ) RESOURCE_RUNE_BLOOD   ;
   gains_runic_empowerment_unholy -> type = ( resource_type ) RESOURCE_RUNE_UNHOLY  ;
   gains_runic_empowerment_frost  -> type = ( resource_type ) RESOURCE_RUNE_FROST   ;
+  gains_empower_rune_weapon      -> type = ( resource_type ) RESOURCE_RUNE         ;
   gains_blood_tap                -> type = ( resource_type ) RESOURCE_RUNE         ;
   //gains_blood_tap_blood          -> type = ( resource_type ) RESOURCE_RUNE_BLOOD   ;
 }
