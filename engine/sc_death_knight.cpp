@@ -165,7 +165,9 @@ struct death_knight_t : public player_t
   gain_t* gains_runic_empowerment_unholy;
   gain_t* gains_runic_empowerment_frost;
   gain_t* gains_blood_tap;
-  gain_t* gains_blood_tap_blood;
+  // only useful if the blood rune charts are enabled
+  // charts are currently disabled so commenting out
+  // gain_t* gains_blood_tap_blood;
 
   // Glyphs
   struct glyphs_t
@@ -2483,7 +2485,7 @@ struct blood_tap_t : public death_knight_spell_t
       if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && ! r.is_ready() )
       {
         p -> gains_blood_tap       -> add(1 - r.value, r.value);
-        p -> gains_blood_tap_blood -> add(1 - r.value, r.value);
+        // p -> gains_blood_tap_blood -> add(1 - r.value, r.value);
         r.fill_rune();
         rune_was_refreshed = true;
         break;
@@ -2499,7 +2501,7 @@ struct blood_tap_t : public death_knight_spell_t
         if ( r.get_type() == RUNE_TYPE_BLOOD && r.is_death() && ! r.is_ready() )
         {
           p -> gains_blood_tap       -> add(1 - r.value, r.value);
-          p -> gains_blood_tap_blood -> add(1 - r.value, r.value);
+          // p -> gains_blood_tap_blood -> add(1 - r.value, r.value);
           r.fill_rune();
           rune_was_refreshed = true;
           break;
@@ -4810,7 +4812,7 @@ void death_knight_t::init_gains()
   gains_runic_empowerment_frost          = get_gain( "runic_empowerment_frost"    );
   gains_runic_empowerment_unholy         = get_gain( "runic_empowerment_unholy"   );
   gains_blood_tap                        = get_gain( "blood_tap"                  );
-  gains_blood_tap_blood                  = get_gain( "blood_tap_blood"            );
+  // gains_blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   gains_rune                     -> type = ( resource_type ) RESOURCE_RUNE         ;
   gains_rune_unholy              -> type = ( resource_type ) RESOURCE_RUNE_UNHOLY  ;
   gains_rune_blood               -> type = ( resource_type ) RESOURCE_RUNE_BLOOD   ;
@@ -4820,7 +4822,7 @@ void death_knight_t::init_gains()
   gains_runic_empowerment_unholy -> type = ( resource_type ) RESOURCE_RUNE_UNHOLY  ;
   gains_runic_empowerment_frost  -> type = ( resource_type ) RESOURCE_RUNE_FROST   ;
   gains_blood_tap                -> type = ( resource_type ) RESOURCE_RUNE         ;
-  gains_blood_tap_blood          -> type = ( resource_type ) RESOURCE_RUNE_BLOOD   ;
+  //gains_blood_tap_blood          -> type = ( resource_type ) RESOURCE_RUNE_BLOOD   ;
 }
 
 // death_knight_t::init_procs ===============================================
