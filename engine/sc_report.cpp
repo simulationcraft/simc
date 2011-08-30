@@ -2993,7 +2993,7 @@ util_t::fprintf( file,
 for ( i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
 {
   // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
-  if ( i == RESOURCE_RUNE_BLOOD | i == RESOURCE_RUNE_UNHOLY | i == RESOURCE_RUNE_FROST ) continue;
+  if ( i == RESOURCE_RUNE_BLOOD || i == RESOURCE_RUNE_UNHOLY || i == RESOURCE_RUNE_FROST ) continue;
   double total_gain=0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
