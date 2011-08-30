@@ -249,6 +249,7 @@ struct paladin_t : public player_t
   virtual void      init_buffs();
   virtual void      init_talents();
   virtual void      init_spells();
+  virtual void      init_values();
   virtual void      init_actions();
   virtual void      reset();
   virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
@@ -1325,6 +1326,9 @@ struct judgement_t : public paladin_attack_t
     seal_of_insight       = new seal_of_insight_judgement_t      ( p );
     seal_of_righteousness = new seal_of_righteousness_judgement_t( p );
     seal_of_truth         = new seal_of_truth_judgement_t        ( p );
+
+    if ( p -> set_bonus.pvp_4pc_melee() )
+      cooldown -> duration -= 1.0;
   }
 
   action_t* active_seal() SC_CONST
@@ -2324,6 +2328,14 @@ int paladin_t::decode_set( item_t& item )
     if ( is_tank   ) return SET_T12_TANK;
   }
 
+  // PVP Season 9-10 Heal
+  if ( strstr( s, "vicious_gladiators_ornamented"  ) ) return SET_PVP_HEAL;
+  if ( strstr( s, "ruthless_gladiators_ornamented" ) ) return SET_PVP_HEAL;
+
+  // PVP Season 9-10 Hybrid
+  if ( strstr( s, "vicious_gladiators_scaled"  ) ) return SET_PVP_MELEE;
+  if ( strstr( s, "ruthless_gladiators_scaled" ) ) return SET_PVP_MELEE;
+
   return SET_NONE;
 }
 
@@ -2628,6 +2640,25 @@ void paladin_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
+}
+
+// paladin_t::init_values ========================================================
+
+void paladin_t::init_values()
+{
+  player_t::init_values();
+
+  if ( set_bonus.pvp_2pc_heal() )
+      attribute_initial[ ATTR_INTELLECT ] += 70;
+
+  if ( set_bonus.pvp_4pc_heal() )
+      attribute_initial[ ATTR_INTELLECT ] += 90;
+
+  if ( set_bonus.pvp_2pc_melee() )
+      attribute_initial[ ATTR_STRENGTH ] += 70;
+
+  if ( set_bonus.pvp_4pc_melee() )
+      attribute_initial[ ATTR_STRENGTH ] += 90;
 }
 
 // paladin_t::primary_role ===============================================

@@ -278,6 +278,7 @@ struct mage_t : public player_t
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
+  virtual void      init_values();
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -3234,16 +3235,24 @@ void mage_t::init_scaling()
   scales_with[ STAT_SPIRIT ] = 0;
 }
 
-// mage_t::init_buffs =======================================================
+// mage_t::init_values ========================================================
 
-void mage_t::init_buffs()
+void mage_t::init_values()
 {
-  player_t::init_buffs();
+  player_t::init_values();
+
   if ( set_bonus.pvp_2pc_caster() )
       attribute_initial[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
       attribute_initial[ ATTR_INTELLECT ] += 90;
+}
+
+// mage_t::init_buffs =======================================================
+
+void mage_t::init_buffs()
+{
+  player_t::init_buffs();
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
 
@@ -3857,6 +3866,9 @@ int mage_t::decode_set( item_t& item )
 
   if ( strstr( s, "firelord"            ) ) return SET_T11_CASTER;
   if ( strstr( s, "firehawk"            ) ) return SET_T12_CASTER;
+
+  // PVP Season 9-10
+  if ( strstr( s, "vicious_gladiators"  ) ) return SET_PVP_CASTER;
   if ( strstr( s, "ruthless_gladiators" ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
