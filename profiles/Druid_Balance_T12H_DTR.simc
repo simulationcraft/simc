@@ -4,6 +4,7 @@ druid=Druid_Balance_T12H_DTR
 origin="Druid_CharDevSync.simc"
 level=85
 race=troll
+position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
@@ -53,22 +54,22 @@ finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384
 trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_209int_344sta_153mastery_133haste,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=404,quality=legendary,stats=459int_779sta_366hit_252haste_2973sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_2190min_4067max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
 ranged=soulflame_vial,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_101mastery_89haste,gems=40int
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=6956
-# gear_intellect=5748
+# gear_stamina=6907
+# gear_intellect=5715
 # gear_spirit=1054
-# gear_spell_power=2973
-# gear_hit_rating=695
+# gear_spell_power=2786
+# gear_hit_rating=643
 # gear_crit_rating=299
-# gear_haste_rating=2628
+# gear_haste_rating=2647
 # gear_mastery_rating=1733
 # gear_armor=11723
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
 # back=shroud_of_endless_grief,heroic=1,enchant=lightweave_embroidery
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2190min_4067max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1304max,enchant=power_torrent

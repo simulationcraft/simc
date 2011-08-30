@@ -1,13 +1,14 @@
 #!./simc 
 
 druid=Druid_Feral_T12N
-origin="Druid_CharDevSync.simc"
+origin="http://chardev.org/?profile=211252"
 level=85
 race=worgen
+position=back
 role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#druid-000000000000000000002320322312011221202301020301000000000000000
+talents=http://www.wowhead.com/talent#druid-000000000000000000002320322312011021222301020301000000000000000
 glyphs=rip/shred/berserk
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
@@ -41,34 +42,34 @@ actions+=/shred,if=(buff.combo_points.stack<5&dot.rip.remains<3.0)|(buff.combo_p
 actions+=/shred,if=cooldown.tigers_fury.remains<=3.0
 actions+=/shred,if=target.time_to_die<=8.5
 actions+=/shred,if=time_to_max_energy<=1.0
-head=obsidian_arborweave_headpiece,type=leather,ilevel=378,quality=epic,stats=1478armor_348agi_611sta_213crit_265hit,reforge=hit_haste,gems=agile_shadowspirit_40agi_30agi,enchant=60agi_35haste
+head=obsidian_arborweave_headpiece,type=leather,ilevel=378,quality=epic,stats=1478armor_348agi_611sta_213crit_265hit,reforge=hit_haste,gems=agile_shadowspirit_20agi_20mastery_30agi,enchant=60agi_35haste
 neck=choker_of_the_vanquished_lord,ilevel=384,quality=epic,stats=240agi_360sta_162haste_156mastery
 shoulders=obsidian_arborweave_spaulders,type=leather,ilevel=378,quality=epic,stats=1365armor_282agi_454sta_157crit_216mastery,reforge=mastery_haste,gems=40agi,enchant=50agi_25mastery
-chest=obsidian_arborweave_raiment,type=leather,ilevel=378,quality=epic,stats=1820armor_368agi_611sta_221exp_275crit,reforge=exp_haste,gems=67agi_67agi_20agi,enchant=20all
-waist=flamebinding_girdle,type=leather,ilevel=378,quality=epic,stats=1024armor_282agi_454sta_211haste_167hit,reforge=hit_crit,gems=40agi_40agi
+chest=obsidian_arborweave_raiment,type=leather,ilevel=378,quality=epic,stats=1820armor_368agi_611sta_221exp_275crit,reforge=exp_haste,gems=40agi_40agi_20agi,enchant=20all
+waist=flamebinding_girdle,type=leather,ilevel=378,quality=epic,stats=1024armor_282agi_454sta_211haste_167hit,reforge=hit_crit,gems=40agi_67agi
 legs=cinderweb_leggings,type=leather,ilevel=378,quality=epic,stats=1592armor_368agi_611sta_284mastery_212haste,gems=67agi_20agi_20mastery_20agi,enchant=190ap_55crit
-feet=treads_of_the_craft,type=leather,ilevel=378,quality=epic,stats=1251armor_282agi_454sta_197haste_187mastery,reforge=mastery_crit,gems=40agi_10agi,enchant=35mastery
-wrists=flamebinder_bracers,type=leather,ilevel=378,quality=epic,stats=796armor_227agi_341sta_154exp_148crit,reforge=exp_haste,gems=40agi,enchant=50agi
-hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_205haste_177crit,gems=40agi_40agi,enchant=65mastery
+feet=treads_of_the_craft,type=leather,ilevel=378,quality=epic,stats=1251armor_282agi_454sta_197haste_187mastery,reforge=mastery_crit,gems=40agi_10agi,enchant=35agi
+wrists=flamebinder_bracers,type=leather,ilevel=378,quality=epic,stats=796armor_227agi_341sta_154exp_148crit,reforge=exp_haste,gems=67agi,enchant=50agi
+hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_205haste_177crit,gems=40agi_67agi,enchant=65mastery
 finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,reforge=mastery_crit,gems=40agi_10agi
 finger2=splintered_brimstone_seal,ilevel=378,quality=epic,stats=227agi_341sta_158mastery_140crit,reforge=mastery_haste
 trinket1=matrix_restabilizer,ilevel=384,quality=epic,stats=406agi
 trinket2=the_hungerer,ilevel=378,quality=epic,stats=383agi,equip=onattackhit_1532haste_100%_15dur_60cd
-back=dreadfire_drape,ilevel=378,quality=epic,stats=695armor_212agi_341sta_95mastery_138hit,reforge=hit_haste,gems=40agi_40agi_20agi,enchant=65crit
+back=dreadfire_drape,ilevel=378,quality=epic,stats=695armor_212agi_341sta_95mastery_138hit,reforge=hit_haste,gems=40agi_40agi_20agi,enchant=22agi
 main_hand=ranseur_of_hatred,ilevel=378,quality=epic,stats=408agi_611sta_284crit_252haste,enchant=130agi,weapon=polearm_3.60speed_2142min_3214max
 ranged=covenant_of_the_flame,ilevel=378,quality=epic,stats=128agi_192sta_88crit_81mastery,reforge=mastery_haste,gems=40agi
 # Gear Summary
 # gear_strength=20
-# gear_agility=5854
+# gear_agility=5918
 # gear_stamina=6239
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=226
 # gear_hit_rating=343
-# gear_crit_rating=1795
+# gear_crit_rating=1730
 # gear_haste_rating=1946
-# gear_mastery_rating=1148
+# gear_mastery_rating=1133
 # gear_armor=11158
 # meta_gem=agile_shadowspirit
 # tier12_2pc_melee=1
