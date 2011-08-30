@@ -2940,8 +2940,8 @@ for ( gain_t* g = p -> gain_list; g; g = g -> next )
                      g -> count,
                      g -> actual,
                      g -> actual / g -> count,
-                     overflow_pct,
-                     g -> overflow);
+                     g -> overflow,
+                     overflow_pct);
     i++;
   }
 }
