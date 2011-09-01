@@ -28,3 +28,6 @@ simcqt.app
 simcqt.dmg
 Makefile
 moc_simulationcraftqt.cpp
+SimulationCraft.app
+*/project.xcworkspace
+*/xcuserdata
