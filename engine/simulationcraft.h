@@ -81,7 +81,9 @@
 
 #if defined( NO_THREADS )
 #elif defined( __MINGW32__ ) || defined( _MSC_VER )
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #include <windows.h>
 #else // POSIX
 #include <pthread.h>
