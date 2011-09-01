@@ -2004,7 +2004,7 @@ struct focus_magic_t : public mage_spell_t
     {
       focus_magic_target = sim -> find_player( target_str );
 
-      if ( focus_magic_target != 0 || focus_magic_target != p )
+      if ( focus_magic_target == 0 || focus_magic_target == p )
       {
         // Warn we didn't find the FM target and default to the player
         sim -> errorf( "Warning couldn't find %s for %s's Focus Magic, defaulting to SomebodySomewhere", target_str.c_str(), p -> name() );
