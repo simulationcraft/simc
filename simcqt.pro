@@ -9,7 +9,9 @@ win32 {
   RC_FILE += simcqt.rc
 }
 
-contains(QMAKE_CXX,g++) {
+COMPILER_CHECK_CXX = $$replace(QMAKE_CXX,'.*g\\+\\+'.*,'g++')
+
+contains(COMPILER_CHECK_CXX,'g++') {
   QMAKE_CXXFLAGS += -ffast-math
 }
 
