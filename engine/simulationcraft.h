@@ -2405,7 +2405,7 @@ public:
   void unlock() { pthread_mutex_unlock( &m ); }
 };
 
-class thread_t : public noncopyable
+class thread : public noncopyable
 {
   pthread_t t;
 public:

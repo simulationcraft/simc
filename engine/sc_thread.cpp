@@ -61,7 +61,7 @@ static void* execute( void* t )
 // thread::launch() =========================================================
 
 void thread::launch()
-{ pthread_create( &t, NULL, thread_execute, this ); }
+{ pthread_create( &t, NULL, execute, this ); }
 
 #endif
 
