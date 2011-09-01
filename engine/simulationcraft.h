@@ -2665,7 +2665,7 @@ struct sim_t : private thread_t
   scaling_t* scaling;
   plot_t*    plot;
   reforge_plot_t* reforge_plot;
-  double     raid_dps, total_dmg, raid_hps, total_heal, total_seconds, elapsed_cpu_seconds;
+  double     raid_dps, total_dmg, raid_hps, total_heal, total_seconds, elapsed_cpu_seconds, max_fight_length;
   int        report_progress;
   int        bloodlust_percent, bloodlust_time;
   std::string reference_player_str;
@@ -3326,7 +3326,7 @@ struct player_t
   // Reporting
   int       quiet;
   action_t* last_foreground_action;
-  double    current_time, total_seconds;
+  double    current_time, total_seconds, max_fight_length;
   double    total_waiting, total_foreground_actions;
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
@@ -3379,9 +3379,12 @@ struct player_t
   gear_stats_t scaling;
   gear_stats_t scaling_normalized;
   gear_stats_t scaling_error;
+  gear_stats_t scaling_delta_dps;
+  gear_stats_t scaling_compare_error;
   double       scaling_lag;
   int          scales_with[ STAT_MAX ];
   double       over_cap[ STAT_MAX ];
+  std::vector<int> scaling_stats; // sorting vector
 
   // Movement & Position
   double base_movement_speed;

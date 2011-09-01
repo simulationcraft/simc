@@ -70,6 +70,19 @@ static bool parse_normalize_scale_factors( sim_t* sim,
   return true;
 }
 
+// scaling_t::compare_scale_factors ====================================================
+
+struct compare_scale_factors
+{
+  player_t* player;
+  compare_scale_factors( player_t* p ) : player( p ) {}
+  bool operator()( const int& l, const int& r ) SC_CONST
+  {
+    return( player -> scaling.get_stat( l ) >
+            player -> scaling.get_stat( r ) );
+  }
+};
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -285,9 +298,16 @@ void scaling_t::analyze_stats()
       double delta_error = scale_over_function_error( delta_sim, delta_p );
       double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
 
+      p -> scaling_delta_dps.set_stat( i, delta_score );
+
       double score = ( delta_score - ref_score ) / divisor;
       double error = sqrt ( delta_error * delta_error + ref_error * ref_error );
       error = fabs( error / divisor );
+
+      if ( center )
+        p -> scaling_compare_error.set_stat( i, error );
+      else
+        p -> scaling_compare_error.set_stat( i, delta_error / divisor );
 
       if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
       {
@@ -457,6 +477,19 @@ void scaling_t::analyze()
     if ( p -> quiet ) continue;
 
     chart_t::scale_factors( p -> scale_factors_chart, p );
+
+    // Sort scaling results
+    for( int i=0; i < STAT_MAX; i++ )
+    {
+      if( p -> scales_with[ i ] )
+      {
+        double s = p -> scaling.get_stat( i );
+
+        if ( s > 0 ) p -> scaling_stats.push_back( i );
+      }
+    }
+    std::sort( p -> scaling_stats.begin(), p -> scaling_stats.end(), compare_scale_factors( p ) );
+
   }
 
 }

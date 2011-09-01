@@ -1101,7 +1101,7 @@ static void register_shard_of_woe( item_t* item )
 
   item -> unique = true;
 
-  for ( int i = 0; i <= SCHOOL_MAX; i++ )
+  for ( int i = 0; i < SCHOOL_MAX; i++ )
   {
     p -> initial_resource_reduction[ i ] += 205;
   }

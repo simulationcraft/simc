@@ -2541,6 +2541,16 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t</tr>\n" );
       util_t::fprintf( file,
+                             "\t\t\t\t\t\t\t<tr>\n"
+                             "\t\t\t\t\t\t\t\t<th class=\"left\">Delta DPS</th>\n" );
+             for ( int i=0; i < STAT_MAX; i++ )
+               if ( p -> scales_with[ i ] )
+                 util_t::fprintf( file,
+                             "\t\t\t\t\t\t\t\t<td>%.0f</td>\n",
+                             p -> scaling_delta_dps.get_stat( i ) );
+             util_t::fprintf( file,
+                             "\t\t\t\t\t\t\t</tr>\n" );
+      util_t::fprintf( file,
                        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                        "\t\t\t\t\t\t\t\t<th>Gear Ranking</th>\n"
                        "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
@@ -2564,6 +2574,33 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
                        "\t\t\t\t\t\t\t</tr>\n",
                        colspan,
                        p -> gear_weights_wowreforge_link.c_str() );
+      util_t::fprintf( file,
+                             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                             "\t\t\t\t\t\t\t\t<th>Stat Ranking ( 95%% confidence )</th>\n"
+                             "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
+                             "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
+                             "\t\t\t\t\t\t\t\t\t\t<li>",
+                             colspan );
+      int num_scaling_stats = p -> scaling_stats.size();
+      for ( int i=0; i < num_scaling_stats; i++ )
+      {
+        if ( i > 0 )
+        {
+        if ( ( ( p -> scaling.get_stat( p -> scaling_stats[ i - 1 ] ) - p -> scaling.get_stat( p -> scaling_stats[ i ] ) )
+            > sqrt ( p -> scaling_compare_error.get_stat( p -> scaling_stats[ i - 1 ] ) * p -> scaling_compare_error.get_stat( p -> scaling_stats[ i - 1 ] ) / 4 + p -> scaling_compare_error.get_stat( p -> scaling_stats[ i ] ) * p -> scaling_compare_error.get_stat( p -> scaling_stats[ i ] ) / 4 ) * 2 ) )
+          util_t::fprintf( file, " > " );
+        else
+          util_t::fprintf( file, " = " );
+        }
+
+        util_t::fprintf( file, "%s", util_t::stat_type_abbrev( p -> scaling_stats[ i ] ) );
+
+      }
+      util_t::fprintf( file,       "</li>\n"
+                                   "\t\t\t\t\t\t\t\t\t</ul>\n"
+                                   "\t\t\t\t\t\t\t\t</td>\n"
+                                   "\t\t\t\t\t\t\t</tr>\n" );
+
       util_t::fprintf( file,
                        "\t\t\t\t\t\t</table>\n" );
       if ( sim -> iterations < 10000 )

@@ -666,7 +666,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   fight_style( "Patchwerk" ), buff_list( 0 ), aura_delay( 0.15 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
   raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
-  total_seconds( 0 ), elapsed_cpu_seconds( 0 ),
+  total_seconds( 0 ), elapsed_cpu_seconds( 0 ), max_fight_length( 0 ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( -60 ),
   path_str( "." ), output_file( stdout ),
@@ -1114,6 +1114,9 @@ void sim_t::combat_end()
 
   iteration_timeline.push_back( current_time );
 
+  if ( current_time > max_fight_length )
+    max_fight_length = current_time;
+
   total_seconds += current_time;
   total_events_processed += events_processed;
 
@@ -1341,13 +1344,13 @@ void sim_t::analyze_player( player_t* p )
     }
   }
 
-  int max_buckets = ( int ) p -> total_seconds;
+  int max_buckets = ( int ) p -> max_fight_length;
 
   // Make the pet graphs the same length as owner's
   if ( p -> is_pet() )
   {
     player_t* o = p -> cast_pet() -> owner;
-    max_buckets = ( int ) o -> total_seconds;
+    max_buckets = ( int ) o -> max_fight_length;
   }
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
@@ -1531,6 +1534,7 @@ void sim_t::analyze_player( player_t* p )
   p -> death_count_pct = p -> death_count;
   p -> death_count_pct /= iterations;
   p -> death_count_pct *= 100.0;
+
 }
 
 // sim_t::analyze ===========================================================
@@ -1541,7 +1545,7 @@ void sim_t::analyze()
 
   // divisor_timeline is necessary because not all iterations go the same length of time
 
-  int max_buckets = ( int ) floor( total_seconds / iterations ) + 1;
+  int max_buckets = ( int ) max_fight_length + 1;
   divisor_timeline.insert( divisor_timeline.begin(), max_buckets, 0 );
 
   int num_timelines = iteration_timeline.size();

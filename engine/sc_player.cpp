@@ -443,7 +443,7 @@ player_t::player_t( sim_t*             s,
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
-  current_time( 0 ), total_seconds( 0 ),
+  current_time( 0 ), total_seconds( 0 ), max_fight_length( 0 ),
   total_waiting( 0 ), total_foreground_actions( 0 ),
   iteration_dmg( 0 ), total_dmg( 0 ),
   dps( 0 ), dps_min( 0 ), dps_max( 0 ),
@@ -1240,7 +1240,7 @@ void player_t::init_resources( bool force )
       timeline_resource_chart.push_back(std::string());
       if ( timeline_resource[i].empty() )
       {
-        int size = ( int ) sim -> max_time;
+        int size = ( int ) ( sim -> max_time * ( 1.0 + sim -> vary_combat_length ) );
         if ( size == 0 ) size = 600; // Default to 10 minutes
         size *= 2;
         timeline_resource[i].insert( timeline_resource[i].begin(), size, 0 );
@@ -2745,6 +2745,9 @@ void player_t::combat_end()
   {
     total_seconds += iteration_seconds;
 
+    if ( iteration_seconds > max_fight_length )
+      max_fight_length = iteration_seconds;
+
     for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
     {
       iteration_dmg += pet -> iteration_dmg;
@@ -2790,6 +2793,9 @@ void player_t::reset()
   for ( int i=0; i <= SCHOOL_MAX; i++ )
   {
     spell_power[ i ] = initial_spell_power[ i ];
+  }
+  for ( int i=0; i < SCHOOL_MAX; i++ )
+  {
     resource_reduction[ i ] = initial_resource_reduction[ i ];
   }
 
@@ -4280,6 +4286,8 @@ bool player_t::debuffs_t::snared()
   if ( thunder_clap -> check() ) return true;
   return false;
 }
+
+
 
 // Chosen Movement Actions
 
