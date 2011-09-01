@@ -81,6 +81,7 @@
 
 #if defined( NO_THREADS )
 #elif defined( __MINGW32__ ) || defined( _MSC_VER )
+#define NOMINMAX
 #include <windows.h>
 #else // POSIX
 #include <pthread.h>
@@ -2427,7 +2428,7 @@ class thread_t : public thread_impl::thread
 {
 protected:
   thread_t() {}
-  ~thread_t() {}
+  virtual ~thread_t() {}
 public:
   static void init() {}
   static void de_init() {}
