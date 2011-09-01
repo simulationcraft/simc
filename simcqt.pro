@@ -9,11 +9,16 @@ win32 {
   RC_FILE += simcqt.rc
 }
 
+contains(QMAKE_CXX,g++) {
+  QMAKE_CXXFLAGS += -ffast-math
+}
+
 TARGET = ../SimulationCraft
 
 TEMPLATE = app
 
 INCLUDEPATH += engine
+DEPENDPATH += engine
 
 HEADERS += engine/simulationcraft.h
 HEADERS += engine/data_enums.hh
