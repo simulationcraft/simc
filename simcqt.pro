@@ -9,6 +9,13 @@ win32 {
   RC_FILE += simcqt.rc
 }
 
+macx {
+	QMAKE_INFO_PLIST = qt/Simulationcraft.plist
+	ICON = qt/icon/Simcraft2.icns
+	OBJECTIVE_SOURCES += qt/sc_mac_update.mm
+	LIBS += -framework CoreFoundation -framework Sparkle -framework AppKit
+}
+
 COMPILER_CHECK_CXX = $$replace(QMAKE_CXX,'.*g\\+\\+'.*,'g++')
 
 contains(COMPILER_CHECK_CXX,'g++') {
