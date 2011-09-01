@@ -112,9 +112,6 @@ static bool download( url_cache_entry_t&,
 // ==========================================================================
 // HTTP-DOWNLOAD FOR WINDOWS (MS Visual C++ Only)
 // ==========================================================================
-#ifndef UNICODE
-#define UNICODE
-#endif
 #include <windows.h>
 #include <wininet.h>
 

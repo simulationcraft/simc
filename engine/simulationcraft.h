@@ -12,6 +12,9 @@
 #  define VC_EXTRALEAN
 #  define _CRT_SECURE_NO_WARNINGS
 #  define DIRECTORY_DELIMITER "\\"
+#  ifndef UNICODE
+#    define UNICODE
+#  endif
 #  define SIGACTION 0
 #else
 #  define DIRECTORY_DELIMITER "/"
@@ -74,6 +77,14 @@
 
 #if SIGACTION
 #include <signal.h>
+#endif
+
+#if defined( NO_THREADS )
+#elif defined( __MINGW32__ ) || defined( _MSC_VER )
+#include <windows.h>
+#else // POSIX
+#include <pthread.h>
+#include <unistd.h>
 #endif
 
 #include "data_definitions.hh"
@@ -761,6 +772,24 @@ enum rating_type {
   RATING_EXPERTISE,
   RATING_MASTERY,
   RATING_MAX
+};
+
+// Type utilities and simple meta-programming tools ==========================
+
+class noncopyable
+{
+public:
+  noncopyable() {} // = default
+private:
+  noncopyable( const noncopyable& ); // = delete
+  noncopyable& operator = ( const noncopyable& ); // = delete
+};
+
+class nonmoveable : public noncopyable
+{
+private:
+  // nonmoveable( nonmoveable&& ) = delete;
+  // nonmoveable& operator = ( nonmoveable&& ) = delete;
 };
 
 // Cache Control =============================================================
@@ -2317,40 +2346,91 @@ struct spell_data_expr_t
 };
 
 
-// Thread Wrappers ===========================================================
+namespace thread_impl { // ===================================================
 
-class thread_t
+#if defined( NO_THREADS )
+
+class mutex : public nonmoveable
+{
+public:
+  void lock() {}
+  void unlock() {}
+};
+
+class thread : public noncopyable
+{
+public:
+  virtual void run() = 0;
+
+  void launch() { run(); } // Run sequentially in foreground.
+  void wait() {}
+
+  static void sleep( int seconds );
+};
+
+#elif defined( __MINGW32__ ) || defined( _MSC_VER )
+
+class mutex : public nonmoveable
+{
+  CRITICAL_SECTION cs;
+public:
+  mutex() { InitializeCriticalSection( &cs ); }
+  ~mutex() { DeleteCriticalSection( &cs ); }
+  void lock() { EnterCriticalSection( &cs ); }
+  void unlock() { LeaveCriticalSection( &cs ); }
+};
+
+class thread : public noncopyable
 {
 private:
-  class impl_t;
-  std::auto_ptr<impl_t> impl;
+  HANDLE handle;
 public:
-  thread_t();
-  virtual ~thread_t();
+  virtual void run() = 0;
+
   void launch();
   void wait();
 
-  virtual void run() = 0;
-
-  static void sleep( int seconds );
-  static void init() {}
-  static void de_init() {}
+  static void sleep( int seconds ) { Sleep( seconds * 1000 ); }
 };
 
-class mutex_t
+#else // POSIX
+
+class mutex : public nonmoveable
 {
-private:
-  class impl_t;
-  std::auto_ptr<impl_t> impl;
-  void create();
-
-  static impl_t global_lock;
-
+  pthread_mutex_t m;
 public:
-  mutex_t();
-  ~mutex_t();
-  void lock();
-  void unlock();
+  mutex() { pthread_mutex_init( &m, NULL ); }
+  ~mutex() { pthread_mutex_destroy( &m ); }
+  void lock() { pthread_mutex_lock( &m ); }
+  void unlock() { pthread_mutex_unlock( &m ); }
+};
+
+class thread_t : public noncopyable
+{
+  pthread_t t;
+public:
+  virtual void run() = 0;
+
+  void launch();
+  void wait() { pthread_join( t, NULL ); }
+
+  static void sleep( int seconds ) { ::sleep( seconds ); }
+};
+
+#endif
+
+} // namespace thread_impl ===================================================
+
+typedef thread_impl::mutex mutex_t;
+
+class thread_t : public thread_impl::thread
+{
+protected:
+  thread_t() {}
+  ~thread_t() {}
+public:
+  static void init() {}
+  static void de_init() {}
 };
 
 class auto_lock_t
@@ -2768,15 +2848,13 @@ struct reforge_plot_t
 
 // Event =====================================================================
 
-struct event_t
+struct event_t : public noncopyable
 {
 private:
   static void cancel_( event_t* e );
   static void early_( event_t* e );
 
   static void* operator new( std::size_t ) throw(); // DO NOT USE!
-  event_t( const event_t& other ); // = delete
-  event_t& operator = ( const event_t& other ); // = delete
 
 public:
   event_t*  next;

@@ -1597,7 +1597,7 @@ const char* chart_t::timeline_resource( std::string& s,
 {
 
   if ( resource_type == RESOURCE_NONE || p -> resource_base[ resource_type ] <= 0 ||
-      p -> resource_gained[ resource_type ] == 0 && p -> resource_lost[ resource_type ] == 0 )
+      ( p -> resource_gained[ resource_type ] == 0 && p -> resource_lost[ resource_type ] == 0 ) )
     return "";
 
   int max_buckets = ( int ) p -> timeline_resource[resource_type].size();
