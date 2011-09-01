@@ -2004,8 +2004,12 @@ struct focus_magic_t : public mage_spell_t
     {
       focus_magic_target = sim -> find_player( target_str );
 
-      assert ( focus_magic_target != 0 );
-      assert ( focus_magic_target != p );
+      if ( focus_magic_target != 0 || focus_magic_target != p )
+      {
+        // Warn we didn't find the FM target and default to the player
+        sim -> errorf( "Warning couldn't find %s for %s's Focus Magic, defaulting to SomebodySomewhere", target_str.c_str(), p -> name() );
+        focus_magic_target = p;
+      }
     }
 
     trigger_gcd = 0;
@@ -3223,8 +3227,6 @@ void mage_t::init_base()
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
   diminished_parry_capi = 0.006650;
-
-
 }
 
 // mage_t::init_scaling ========================================================
@@ -3242,10 +3244,10 @@ void mage_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_caster() )
-      attribute_initial[ ATTR_INTELLECT ] += 70;
+    attribute_initial[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-      attribute_initial[ ATTR_INTELLECT ] += 90;
+    attribute_initial[ ATTR_INTELLECT ] += 90;
 }
 
 // mage_t::init_buffs =======================================================
@@ -3566,7 +3568,6 @@ void mage_t::init_actions()
       action_list_str += "/ice_lance,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
-
 
     action_list_default = 1;
   }

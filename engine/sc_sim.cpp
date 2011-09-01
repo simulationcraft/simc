@@ -1534,7 +1534,6 @@ void sim_t::analyze_player( player_t* p )
   p -> death_count_pct = p -> death_count;
   p -> death_count_pct /= iterations;
   p -> death_count_pct *= 100.0;
-
 }
 
 // sim_t::analyze ===========================================================

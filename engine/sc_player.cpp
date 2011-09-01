@@ -4287,9 +4287,7 @@ bool player_t::debuffs_t::snared()
   return false;
 }
 
-
-
-// Chosen Movement Actions
+// Chosen Movement Actions ==================================================
 
 struct start_moving_t : public action_t
 {
