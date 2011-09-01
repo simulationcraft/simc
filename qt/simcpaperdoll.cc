@@ -186,7 +186,7 @@ PaperdollProfile::setClass( int player_class )
   assert( player_class > PLAYER_NONE && player_class < PLAYER_PET );
   m_class = ( player_type ) player_class;
   
-  for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t++ )
+  for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t=(slot_type)((int)t+1) )
     validateSlot( t );
 
   emit classChanged( m_class );
@@ -199,7 +199,7 @@ PaperdollProfile::setRace( int player_race )
   assert( player_race >= RACE_NIGHT_ELF && player_race <= RACE_GOBLIN );
   m_race = ( race_type ) player_race;
   
-  for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t++ )
+  for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t=(slot_type)((int)t+1) )
     validateSlot( t );
 
   emit raceChanged( m_race );
@@ -213,7 +213,7 @@ PaperdollProfile::setProfession( int profession, int type )
   
   m_professions[ profession ] = ( profession_type ) type;
   
-  for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t++ )
+  for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t=(slot_type)((int)t+1) )
     validateSlot( t );
 
   emit professionChanged( m_professions[ profession ] );
@@ -1499,7 +1499,7 @@ PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile,
   
   m_classButtonGroup = new QButtonGroup();
   
-  for ( player_type i = DEATH_KNIGHT; i < PLAYER_PET; i++ )
+  for ( player_type i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_type)((int)i+1) )
   {
     tmp = m_classButtons[ i ] = new PaperdollClassButton( profile, i, this );
     
@@ -1524,7 +1524,7 @@ PaperdollClassButtonGroup::raceSelected( race_type t )
 {
   assert( t > RACE_ELEMENTAL && t < RACE_MAX );
   
-  for ( player_type i = DEATH_KNIGHT; i < PLAYER_PET; i++ )
+  for ( player_type i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_type)((int)i+1) )
     m_classButtons[ i ] -> setEnabled( false );
   
   for ( int i = DEATH_KNIGHT; i < PLAYER_PET; i++ )
@@ -1591,7 +1591,7 @@ PaperdollRaceButtonGroup::classSelected( player_type t )
 {
   assert( t < PLAYER_PET && t > PLAYER_NONE );
   
-  for ( race_type race = RACE_NIGHT_ELF; race < RACE_MAX; race++ )
+  for ( race_type race = RACE_NIGHT_ELF; race < RACE_MAX; race=(race_type)((int)race+1) )
     m_raceButtons[ race - RACE_NIGHT_ELF ] -> setEnabled( false );
   
   for ( int i = 0; i < RACE_MAX - RACE_NIGHT_ELF; i++ )
@@ -1626,7 +1626,7 @@ PaperdollProfessionButtonGroup::PaperdollProfessionButtonGroup( PaperdollProfile
     
     m_professionsLayout -> addLayout( m_professionLayout[ profession ] );
     
-    for ( profession_type p = PROF_ALCHEMY; p < PROFESSION_MAX; p++ )
+    for ( profession_type p = PROF_ALCHEMY; p < PROFESSION_MAX; p=(profession_type)((int)p+1) )
     { 
       tmp = m_professionButtons[ profession ][ p - PROF_ALCHEMY ] = new PaperdollProfessionButton( profile, p, this );
       m_professionGroup[ profession ] -> addButton( tmp, p );
