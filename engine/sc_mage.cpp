@@ -49,6 +49,7 @@ struct mage_t : public player_t
   cooldown_t* cooldowns_fire_blast;
   cooldown_t* cooldowns_early_frost;
   cooldown_t* cooldowns_tier12_mirror_image;
+  cooldown_t* cooldowns_evocation;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -164,6 +165,7 @@ struct mage_t : public player_t
     double dpm_mana_loss;
     double dps_time;
     double dpm_time;
+    double last_time;
 
     void reset() { memset( ( void* ) this, 0x00, sizeof( rotation_t ) ); current = ROTATION_DPS; }
     rotation_t() { reset(); }
@@ -237,6 +239,7 @@ struct mage_t : public player_t
   uptime_t* uptimes_water_elemental;
 
   int mana_gem_charges;
+  double mage_armor_timer;
 
   mage_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, MAGE, name, r )
   {
@@ -260,6 +263,7 @@ struct mage_t : public player_t
     cooldowns_deep_freeze = get_cooldown( "deep_freeze" );
     cooldowns_fire_blast  = get_cooldown( "fire_blast"  );
     cooldowns_early_frost = get_cooldown( "early_frost" );
+    cooldowns_evocation   = get_cooldown( "evocation"  );
     cooldowns_tier12_mirror_image = get_cooldown( "tier12_mirror_image" );
     cooldowns_tier12_mirror_image -> duration = 45.0;
 
@@ -1841,6 +1845,24 @@ struct evocation_t : public mage_spell_t
     return ( player -> resource_current[ RESOURCE_MANA ] /
              player -> resource_max    [ RESOURCE_MANA ] ) < 0.60;
   }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    // evocation automatically causes a switch to dpm rotation
+    mage_t* p = player -> cast_mage();
+    if ( p -> rotation.current == ROTATION_DPS )
+    {
+      p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
+    }
+    else if ( p -> rotation.current == ROTATION_DPM )
+    {
+      p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
+    }
+    p -> rotation.last_time = sim -> current_time;
+    if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
+    p -> rotation.current = ROTATION_DPM;
+  }
 };
 
 // Fire Blast Spell =========================================================
@@ -2487,6 +2509,7 @@ struct mage_armor_buff_t : public buff_t
       mage_t* p = player -> cast_mage();
       if ( p -> buffs_mage_armor -> check() )
       {
+        p -> mage_armor_timer = sim -> current_time;
         double gain_amount = p -> resource_max[ RESOURCE_MANA ] * p -> spells.mage_armor -> effect2().percent();
         gain_amount *= 1.0 + p -> glyphs.mage_armor -> effect1().percent();
 
@@ -2505,6 +2528,7 @@ struct mage_armor_buff_t : public buff_t
   {
     mage_t* p = player -> cast_mage();
     double d = p -> rng_mage_armor_start -> real() * 5.0; // Random start of the first mana regen tick.
+    p -> mage_armor_timer = sim -> current_time + d - 5.0;
     new ( sim ) mage_armor_event_t( player, d );
     buff_t::start( stacks, value );
   }
@@ -2886,16 +2910,30 @@ struct water_elemental_spell_t : public mage_spell_t
 
 struct choose_rotation_t : public action_t
 {
-  double last_time;
+  double evocation_target_mana_percentage;
+  int force_dps;
+  int force_dpm;
+  double final_burn_offset;
+  double oom_offset;
 
   choose_rotation_t( mage_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "choose_rotation", p ), last_time( 0 )
+      action_t( ACTION_USE, "choose_rotation", p )
   {
     cooldown -> duration = 10;
+    evocation_target_mana_percentage = 35;
+    force_dps = 0;
+    force_dpm = 0;
+    final_burn_offset = 20;
+    oom_offset = 0;
 
     option_t options[] =
     {
       { "cooldown", OPT_FLT, &( cooldown -> duration ) },
+      { "evocation_pct", OPT_FLT, &( evocation_target_mana_percentage ) },
+      { "force_dps", OPT_INT, &( force_dps ) },
+      { "force_dpm", OPT_INT, &( force_dpm ) },
+      { "final_burn_offset", OPT_FLT, &( final_burn_offset ) },
+      { "oom_offset", OPT_FLT, &( oom_offset ) },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2914,7 +2952,45 @@ struct choose_rotation_t : public action_t
   {
     mage_t* p = player -> cast_mage();
 
+    if ( force_dps || force_dpm )
+    {
+      if ( p -> rotation.current == ROTATION_DPS )
+      {
+        p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
+      }
+      else if ( p -> rotation.current == ROTATION_DPM )
+      {
+        p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
+      }
+      p -> rotation.last_time = sim -> current_time;
+
+      if ( sim -> log ) 
+      {
+        log_t::output( sim, "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / sim -> current_time ), sim -> target -> time_to_die());
+      }
+
+      if ( force_dps )
+      {
+        if ( sim -> log ) log_t::output( sim, "%s switches to DPS spell rotation", p -> name() );
+        p -> rotation.current = ROTATION_DPS;
+      }
+      if ( force_dpm )
+      {
+        if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
+        p -> rotation.current = ROTATION_DPM;
+      }
+
+      update_ready();
+
+      return;
+    }
+
     if ( sim -> log ) log_t::output( sim, "%s Considers Spell Rotation", p -> name() );
+
+    // The purpose of this action is to automatically determine when to start dps rotation.
+    // We aim to either reach 0 mana at end of fight or evocation_target_mana_percentage at next evocation.
+    // If mana gem has charges we assume it will be used during the next dps rotation burn.
+    // The dps rotation should correspond only to the actual burn, not any corrections due to overshooting.
 
     // It is important to smooth out the regen rate by averaging out the returns from Evocation and Mana Gems.
     // In order for this to work, the resource_gain() method must filter out these sources when
@@ -2922,24 +2998,31 @@ struct choose_rotation_t : public action_t
 
     double regen_rate = p -> rotation.mana_gain / sim -> current_time;
 
-    // Evocation
-    regen_rate += p -> resource_max[ RESOURCE_MANA ] * 0.60 / ( 240.0 - p -> talents.arcane_flows -> rank() * 60.0 );
-
-    // Mana Gem, if we have uses left
-    if ( p -> mana_gem_charges > 0 )
-      regen_rate += p -> dbc.effect_max( 16856, p -> level ) / 60.0;
+    double ttd = sim -> target -> time_to_die();
+    double tte = p -> cooldowns_evocation -> remains();
 
     if ( p -> rotation.current == ROTATION_DPS )
     {
-      p -> rotation.dps_time += ( sim -> current_time - last_time );
+      p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
 
-      double consumption_rate = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - regen_rate;
+      // We should only drop out of dps rotation if we break target mana treshold.
+      // In that situation we enter a mps rotation waiting for evocation to come off cooldown or for fight to end.
+      // The action list should take into account that it might actually need to do some burn in such a case.
 
-      if ( consumption_rate > 0 )
+      if (tte < ttd)
       {
-        double oom_time = p -> resource_current[ RESOURCE_MANA ] / consumption_rate;
+        // We're going until target percentage
+        if ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] < evocation_target_mana_percentage / 100.0 )
+        {
+          if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
 
-        if ( oom_time < sim -> target -> time_to_die() )
+          p -> rotation.current = ROTATION_DPM;
+        }
+      }
+      else
+      {
+        // We're going until OOM, stop when we can no longer cast full stack AB (approximately, 4 stack with AP can be 6177)
+        if ( p -> resource_current[ RESOURCE_MANA ] < 6200 )
         {
           if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
 
@@ -2949,15 +3032,54 @@ struct choose_rotation_t : public action_t
     }
     else if ( p -> rotation.current == ROTATION_DPM )
     {
-      p -> rotation.dpm_time += ( sim -> current_time - last_time );
+      p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
 
-      double consumption_rate = ( p -> rotation.dpm_mana_loss / p -> rotation.dpm_time ) - regen_rate;
+      // Calculate consumption rate of dps rotation and determine if we should start burning.
+
+      double consumption_rate = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - regen_rate;
+      double available_mana = p -> resource_current[ RESOURCE_MANA ];
+
+      // Mana Gem, if we have uses left
+      if ( p -> mana_gem_charges > 0 )
+      {
+        available_mana += p -> dbc.effect_max( 16856, p -> level );
+      }
+
+      // If this will be the last evocation then figure out how much of it we can actually burn before end and adjust appropriately.
+
+      double evo_cooldown = ( 240.0 - p -> talents.arcane_flows -> rank() * 60.0 );
+
+      double target_time;
+      double target_pct;
+
+      if ( ttd < tte + evo_cooldown )
+      {
+        if (ttd < tte + final_burn_offset)
+        {
+          // No more evocations, aim for OOM
+          target_time = ttd;
+          target_pct = oom_offset;
+        }
+        else
+        {
+          // If we aim for normal evo percentage we'll get the most out of burn/mana adept synergy.
+          target_time = tte;
+          target_pct = evocation_target_mana_percentage / 100.0;
+        }
+      }
+      else
+      {
+        // We'll cast more then one evocation, we're aiming for a normal evo target burn.
+        target_time = tte;
+        target_pct = evocation_target_mana_percentage / 100.0;
+      }
 
       if ( consumption_rate > 0 )
       {
-        double oom_time = p -> resource_current[ RESOURCE_MANA ] / consumption_rate;
+        // Compute time to get to desired percentage.
+        double expected_time = ( available_mana - target_pct * p -> resource_max[ RESOURCE_MANA ] ) / consumption_rate;
 
-        if ( oom_time > sim -> target -> time_to_die() )
+        if ( expected_time >= target_time )
         {
           if ( sim -> log ) log_t::output( sim, "%s switches to DPS spell rotation", p -> name() );
 
@@ -2966,12 +3088,14 @@ struct choose_rotation_t : public action_t
       }
       else
       {
-        if ( sim -> log ) log_t::output( sim, "%s switches to DPS rotation (negative consumption)", p -> name() );
+        // If dps rotation is regen, then obviously use it all the time.
+
+        if ( sim -> log ) log_t::output( sim, "%s switches to DPS spell rotation", p -> name() );
 
         p -> rotation.current = ROTATION_DPS;
       }
     }
-    last_time = sim -> current_time;
+    p -> rotation.last_time = sim -> current_time;
 
     update_ready();
   }
@@ -2984,13 +3108,15 @@ struct choose_rotation_t : public action_t
     if ( sim -> current_time < cooldown -> duration )
       return false;
 
+    if ( if_expr && ! if_expr -> success() )
+      return false;
+
     return true;
   }
 
   virtual void reset()
   {
     action_t::reset();
-    last_time=0;
   }
 };
 
@@ -3400,6 +3526,11 @@ void mage_t::init_actions()
     action_list_str += "/counterspell";
     // Refresh Gem during invuln phases
     if ( level >= 48 ) action_list_str += "/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3";
+    // Arcane Choose Rotation
+    if ( primary_tree() == TREE_ARCANE )
+    {
+      action_list_str += "/choose_rotation,cooldown=1,evocation_pct=35,if=cooldown.evocation.remains+15>target.time_to_die,final_burn_offset=15";
+    }
     // Usable Items
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )
@@ -3457,7 +3588,7 @@ void mage_t::init_actions()
     // Arcane
     if ( primary_tree() == TREE_ARCANE )
     {
-      action_list_str += "/evocation,if=mana_pct<=26&target.time_to_die>=31";
+      action_list_str += "/evocation,if=((max_mana>max_mana_nonproc&mana_pct_nonproc<=40)|(max_mana=max_mana_nonproc&mana_pct<=35))&target.time_to_die>10";
       if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=10";
       //Special handling for Race Abilities
       if ( race == RACE_ORC )
@@ -3469,9 +3600,16 @@ void mage_t::init_actions()
         action_list_str += "/berserking,if=buff.arcane_power.up|cooldown.arcane_power.remains>20";
       }
       //Conjure Mana Gem
-      action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>105&mana_gem_charges=0";
-      //Primary Cooldowns
-      action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4&(target.time_to_die<=50|cooldown.evocation.remains<=50)";
+      if (! talents.presence_of_mind -> rank() )
+      {
+        action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>105&mana_gem_charges=0";
+      }
+      //Mana Gem
+      action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4";
+      //Choose Rotation
+      action_list_str += "/choose_rotation,cooldown=1,force_dps=1,if=buff.improved_mana_gem.up&dpm=1&cooldown.evocation.remains+15<target.time_to_die";
+      action_list_str += "/choose_rotation,cooldown=1,force_dpm=1,if=cooldown.evocation.remains<=20&dps=1&mana_pct<22&(target.time_to_die>60|burn_mps*((target.time_to_die-5)-cooldown.evocation.remains)>max_mana_nonproc)&cooldown.evocation.remains+15<target.time_to_die";
+      //Arcane Power
       if ( talents.arcane_power -> rank() )
       {
         action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50";
@@ -3485,24 +3623,21 @@ void mage_t::init_actions()
       if ( talents.presence_of_mind -> rank() )
       {
         action_list_str += "/presence_of_mind";
+        action_list_str += "/conjure_mana_gem,if=buff.presence_of_mind.up&target.time_to_die>cooldown.mana_gem.remains&mana_gem_charges=0";
+        action_list_str += "/arcane_blast,if=buff.presence_of_mind.up";
       }
 
-      if ( has_shard )
-      {
-        action_list_str += "/arcane_blast,if=target.time_to_die<=50|cooldown.evocation.remains<=50";
-        action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast:arcane_blast:arcane_blast,if=!buff.bloodlust.up";
-      }
-      else
-      {
-        action_list_str += "/arcane_blast,if=target.time_to_die<35|cooldown.evocation.remains<=35";
-        action_list_str += "/sequence,name=conserve:arcane_blast:arcane_blast:arcane_blast";
-      }
-      action_list_str += "/arcane_missiles,if=buff.arcane_missiles.react";
-      action_list_str += "/arcane_barrage,if=buff.arcane_blast.stack>0"; // when AM hasn't procced
+      action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|buff.improved_mana_gem.up|cooldown.mana_gem.remains<5)&mana_pct>=22)";
+      action_list_str += "/arcane_blast,if=buff.arcane_blast.remains<0.8&buff.arcane_blast.stack=4";
+      action_list_str += "/arcane_missiles,if=mana_pct_nonproc<92&buff.arcane_missiles.react&mage_armor_timer<=2";
+      action_list_str += "/arcane_missiles,if=mana_pct_nonproc<93&buff.arcane_missiles.react&mage_armor_timer>2";
+      action_list_str += "/arcane_barrage,if=mana_pct_nonproc<87&buff.arcane_blast.stack=2";
+      action_list_str += "/arcane_barrage,if=mana_pct_nonproc<90&buff.arcane_blast.stack=3";
+      action_list_str += "/arcane_barrage,if=mana_pct_nonproc<92&buff.arcane_blast.stack=4";
+      action_list_str += "/arcane_blast";
       action_list_str += "/arcane_barrage,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
       action_list_str += "/ice_lance,moving=1"; // when moving
-      action_list_str += "/restart_sequence,name=conserve";
     }
     // Fire
     else if ( primary_tree() == TREE_FIRE )
@@ -3796,6 +3931,41 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
       virtual int evaluate() { result_num = action -> player -> cast_mage() -> mana_gem_charges; return TOK_NUM; }
     };
     return new mana_gem_charges_expr_t( a );
+  }
+
+  if ( name_str == "mage_armor_timer" )
+  {
+    struct mage_armor_timer_expr_t : public action_expr_t
+    {
+      mage_armor_timer_expr_t( action_t* a ) : action_expr_t( a, "mage_armor_timer", TOK_NUM ){}
+      virtual int evaluate() { result_num = action -> player -> cast_mage() -> mage_armor_timer + 5 - action -> sim -> current_time; return TOK_NUM; }
+    };
+    return new mage_armor_timer_expr_t( a );
+  }
+
+  if ( name_str == "burn_mps" )
+  {
+    struct burn_mps_expr_t : public action_expr_t
+    {
+      burn_mps_expr_t( action_t* a ) : action_expr_t( a, "burn_mps", TOK_NUM ){}
+      virtual int evaluate() 
+      { 
+        mage_t* p = action -> player -> cast_mage();
+        if ( p -> rotation.current == ROTATION_DPS )
+        {
+          p -> rotation.dps_time += ( action -> sim -> current_time - p -> rotation.last_time );
+        }
+        else if ( p -> rotation.current == ROTATION_DPM )
+        {
+          p -> rotation.dpm_time += ( action -> sim -> current_time - p -> rotation.last_time );
+        }
+        p -> rotation.last_time = action -> sim -> current_time;
+
+        result_num = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / action -> sim -> current_time ); 
+        return TOK_NUM; 
+      }
+    };
+    return new burn_mps_expr_t( a );
   }
 
   return player_t::create_expression( a, name_str );
