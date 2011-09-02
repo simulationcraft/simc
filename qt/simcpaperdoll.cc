@@ -139,7 +139,7 @@ getPaperdollPixmap( const QString& name, bool draw_border, QSize s )
 
   if ( ! QPixmapCache::find( name, &icon ) )
   {
-    icon.fill( QRgb( 0 ) );
+    icon.fill( QColor( 0, 0, 0, 0 ) );
     QPainter paint( &icon );
 
     QImage icon_image( "icon:" + name + ".png" );
