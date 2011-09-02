@@ -3271,6 +3271,50 @@ struct faerie_fire_t : public druid_spell_t
   }
 };
 
+// Innervate
+
+// Event
+struct innervate_event_t : public event_t
+{
+  buff_t* buff;
+
+  innervate_event_t ( player_t* player,buff_t* b ) :
+    event_t( player -> sim, player ), buff( 0 )
+  {
+    buff = b;
+    name = "innervate";
+    sim -> add_event( this, 1.0 );
+  }
+
+  virtual void execute()
+  {
+
+    if ( buff -> check() )
+    {
+      player -> resource_gain( RESOURCE_MANA, player -> buffs.innervate -> value(), player -> gains.innervate );
+      new ( sim ) innervate_event_t( player, buff );
+    }
+  }
+};
+
+// Buff
+
+struct innervate_buff_t : public buff_t
+{
+  innervate_buff_t( player_t* p, const uint32_t id, const std::string& n ) :
+    buff_t ( p, id, n )
+  {
+
+  }
+
+  virtual void start( int stacks, double value )
+  {
+    new ( sim ) innervate_event_t( player, this );
+    buff_t::start( stacks, value );
+
+  }
+};
+
 // Innervate Spell =========================================================
 
 struct innervate_t : public druid_spell_t
@@ -5425,7 +5469,7 @@ void player_t::druid_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.innervate              = new buff_t( p, "innervate",        1, 10.0 );
+    p -> buffs.innervate              = new innervate_buff_t( p, 29166, "innervate" );
     p -> buffs.mark_of_the_wild       = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
     p -> debuffs.demoralizing_roar    = new debuff_t( p, 99, "demoralizing_roar" );
     p -> debuffs.earth_and_moon       = new debuff_t( p, 60433, "earth_and_moon" );

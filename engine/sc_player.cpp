@@ -48,6 +48,8 @@ struct hymn_of_hope_buff_t : public buff_t
   }
 };
 
+
+
 // Event Vengeance
 
 struct vengeance_t : public event_t
@@ -3188,11 +3190,6 @@ void player_t::regen( double periodicity )
   }
   else if ( resource_type == RESOURCE_MANA )
   {
-    if( buffs.innervate -> check() )
-    {
-      resource_gain( RESOURCE_MANA, buffs.innervate -> value() * periodicity, gains.innervate );
-    }
-
     double spirit_regen = periodicity * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
 
     if ( mana_regen_while_casting < 1.0 )

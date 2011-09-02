@@ -1286,6 +1286,7 @@ void sim_t::analyze_player( player_t* p )
 
   std::vector<stats_t*> stats_list;
 
+  // Stats Analysis ============================================
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
     stats_list.push_back( s );
@@ -1300,6 +1301,7 @@ void sim_t::analyze_player( player_t* p )
   }
 
   int num_stats = ( int ) stats_list.size();
+
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
@@ -1311,6 +1313,7 @@ void sim_t::analyze_player( player_t* p )
       p -> total_dmg += s -> total_dmg;
   }
 
+  // DPS Calculation ===========================================
   p -> dps = p -> total_seconds ? p -> total_dmg / p -> total_seconds : 0;
 
   if ( p -> total_seconds == 0 ) return;
@@ -1323,6 +1326,19 @@ void sim_t::analyze_player( player_t* p )
     s -> portion_dps = s -> portion_dmg * p -> dps;
   }
 
+    // Avoid double-counting of pet damage
+    if ( ! p -> is_pet() )
+    {
+      if ( ! p -> is_enemy() && ! p -> is_add() )
+      {
+        if ( p -> primary_role() == ROLE_HEAL )
+          total_heal += p -> total_dmg;
+        else
+          total_dmg += p -> total_dmg;
+      }
+    }
+
+  // Actor Lists ===============================================
   if ( ! p -> quiet && ! p -> is_enemy() && ! p -> is_add() )
   {
     players_by_rank.push_back( p );
@@ -1333,27 +1349,18 @@ void sim_t::analyze_player( player_t* p )
     targets_by_name.push_back( p );
   }
 
-  // Avoid double-counting of pet damage
-  if ( ! p -> is_pet() )
-  {
-    if ( ! p -> is_enemy() && ! p -> is_add() )
-    {
-      if ( p -> primary_role() == ROLE_HEAL )
-        total_heal += p -> total_dmg;
-      else
-        total_dmg += p -> total_dmg;
-    }
-  }
 
+  // Pet Chart Adjustement =====================================
   int max_buckets = ( int ) p -> max_fight_length;
 
-  // Make the pet graphs the same length as owner's
+    // Make the pet graphs the same length as owner's
   if ( p -> is_pet() )
   {
     player_t* o = p -> cast_pet() -> owner;
     max_buckets = ( int ) o -> max_fight_length;
   }
 
+  // Resources & Gains =========================================
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     int num_buckets = ( int ) p -> timeline_resource[i].size();
@@ -1380,8 +1387,12 @@ void sim_t::analyze_player( player_t* p )
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
     g -> analyze( this );
 
+  // Procs =====================================================
+
   for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
     proc -> analyze( this );
+
+  // Damage Timelines ==========================================
 
   p -> timeline_dmg.clear();
   p -> timeline_dps.clear();
@@ -1420,6 +1431,8 @@ void sim_t::analyze_player( player_t* p )
     p -> timeline_dps[ i ] = window_dmg / window_size;
   }
 
+  // DPS Error =================================================
+
   assert( p -> iteration_dps.size() >= ( std::size_t ) iterations );
 
   p -> dps_min = +1.0E+50;
@@ -1441,6 +1454,8 @@ void sim_t::analyze_player( player_t* p )
     double delta = i_dps - p -> dpse;
     p -> dps_std_dev += delta * delta;
   }
+
+  // Error Convergence =========================================
 
   int    convergence_iterations = 0;
   double convergence_dps = 0;
@@ -1500,6 +1515,7 @@ void sim_t::analyze_player( player_t* p )
     p -> dps_convergence = convergence_error / ( p -> dps_error * convergence_scale );
   }
 
+  // DPS Statistics ============================================
   if ( ( p -> dps_max - p -> dps_min ) > 0 )
   {
     int num_buckets = 50;
@@ -1522,7 +1538,7 @@ void sim_t::analyze_player( player_t* p )
   p -> dps_10_percentile = p -> iteration_dps[ ( int ) floor( 0.1 * p -> iteration_dps.size() ) ];
   p -> dps_90_percentile = p -> iteration_dps[ ( int ) floor( 0.9 * p -> iteration_dps.size() ) ];
 
-  // Death analysis
+  // Death Analysis ============================================
   double count_death_time = p -> death_time.size();
   assert ( count_death_time == p -> death_count );
   for ( int i = 0; i < count_death_time; i++ )
