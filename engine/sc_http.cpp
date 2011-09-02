@@ -255,7 +255,7 @@ int SocketWrapper::connect( const std::string& host, unsigned short port )
   return ::connect( fd, reinterpret_cast<const sockaddr*>( &a ), sizeof( a ) );
 }
 
-#ifdef USE_OPENSSL
+#ifdef SC_USE_OPENSSL
 #include <openssl/ssl.h>
 
 struct SSLWrapper
@@ -399,7 +399,7 @@ static bool download( url_cache_entry_t& entry,
 
 #endif
 
-#ifdef USE_OPENSSL
+#ifdef SC_USE_OPENSSL
   SSLWrapper::init();
 #endif
 
@@ -417,7 +417,7 @@ static bool download( url_cache_entry_t& entry,
       return false;
 
     bool use_ssl = ssl_proxy || ( ! use_proxy && ( split_url.protocol == "https" ) );
-#ifndef USE_OPENSSL
+#ifndef SC_USE_OPENSSL
     if ( use_ssl )
     {
       // FIXME: report unable to use SSL
@@ -434,7 +434,7 @@ static bool download( url_cache_entry_t& entry,
     std::string result;
     char buffer[ NETBUFSIZE ];
 
-#ifdef USE_OPENSSL
+#ifdef SC_USE_OPENSSL
     if ( use_ssl )
     {
       SSLWrapper ssl;

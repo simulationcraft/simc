@@ -1,19 +1,23 @@
-#DEFINES += USE_OPENSSL
-#INCLUDEPATH += C:/OpenSSL-Win32/include
-#win32:LIBS += -LC:/OpenSSL-Win32/lib -lssleay32
-
+TEMPLATE = app
+TARGET = SimulationCraft
 QT += core gui network webkit
+#CONFIG += paperdoll
+#CONFIG += openssl
 
 win32 {
   LIBS += libwsock32 libwininet
   RC_FILE += simcqt.rc
+
+  # OpenSSL stuff:
+  OPENSSL_INCLUDES = C:/OpenSSL-Win32/include
+  OPENSSL_LIBS = C:/OpenSSL-Win32/lib
 }
 
 macx {
-	QMAKE_INFO_PLIST = qt/Simulationcraft.plist
-	ICON = qt/icon/Simcraft2.icns
-	OBJECTIVE_SOURCES += qt/sc_mac_update.mm
-	LIBS += -framework CoreFoundation -framework Sparkle -framework AppKit
+  QMAKE_INFO_PLIST = qt/Simulationcraft.plist
+  ICON = qt/icon/Simcraft2.icns
+  OBJECTIVE_SOURCES += qt/sc_mac_update.mm
+  LIBS += -framework CoreFoundation -framework Sparkle -framework AppKit
 }
 
 COMPILER_CHECK_CXX = $$replace(QMAKE_CXX,'.*g\\+\\+'.*,'g++')
@@ -21,10 +25,6 @@ COMPILER_CHECK_CXX = $$replace(QMAKE_CXX,'.*g\\+\\+'.*,'g++')
 contains(COMPILER_CHECK_CXX,'g++') {
   QMAKE_CXXFLAGS += -ffast-math
 }
-
-TARGET = ../SimulationCraft
-
-TEMPLATE = app
 
 INCLUDEPATH += engine
 DEPENDPATH += engine
@@ -38,7 +38,6 @@ HEADERS += engine/utf8/checked.h
 HEADERS += engine/utf8/unchecked.h
 HEADERS += qt/sc_autoupdate.h
 HEADERS += qt/simulationcraftqt.h
-HEADERS += qt/simcpaperdoll.h
 
 SOURCES += engine/sc_action.cpp
 SOURCES += engine/sc_armory.cpp
@@ -99,5 +98,16 @@ SOURCES += engine/sc_weapon.cpp
 SOURCES += engine/sc_wowhead.cpp
 SOURCES += engine/sc_xml.cpp
 SOURCES += qt/main.cpp
-SOURCES += qt/simcpaperdoll.cc
 SOURCES += qt/sc_window.cpp
+
+CONFIG(paperdoll) {
+  DEFINES += SC_PAPERDOLL
+  HEADERS += qt/simcpaperdoll.h
+  SOURCES += qt/simcpaperdoll.cc
+}
+
+CONFIG(openssl) {
+  DEFINES += SC_USE_OPENSSL
+  INCLUDEPATH += $$OPENSSL_INCLUDES
+  LIBS += -L$$OPENSSL_LIBS -lssleay32
+}
