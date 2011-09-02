@@ -38,6 +38,7 @@ HEADERS += engine/utf8/checked.h
 HEADERS += engine/utf8/unchecked.h
 HEADERS += qt/sc_autoupdate.h
 HEADERS += qt/simulationcraftqt.h
+HEADERS += qt/simcpaperdoll.h
 
 SOURCES += engine/sc_action.cpp
 SOURCES += engine/sc_armory.cpp
@@ -98,4 +99,5 @@ SOURCES += engine/sc_weapon.cpp
 SOURCES += engine/sc_wowhead.cpp
 SOURCES += engine/sc_xml.cpp
 SOURCES += qt/main.cpp
+SOURCES += qt/simcpaperdoll.cc
 SOURCES += qt/sc_window.cpp
