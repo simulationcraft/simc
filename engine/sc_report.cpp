@@ -821,11 +821,10 @@ static void print_text_player( FILE* file, player_t* p )
                    util_t::player_type_string( p -> type ),
                    util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
-  util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%  Convergence=%.1f%%",
+  util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%",
                    p -> dps,
                    p -> dps_error, p -> dps ? p -> dps_error * 100 / p -> dps : 0,
-                   ( p -> dps_max - p -> dps_min ) / 2.0 , p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0,
-                   p -> dps_convergence * 100 );
+                   ( p -> dps_max - p -> dps_min ) / 2.0 , p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0 );
 
   if ( p -> rps_loss > 0 )
   {
@@ -2843,20 +2842,10 @@ static void print_html_player_statistics( FILE* file, player_t* p )
  util_t::fprintf( file,
                   "\t\t\t\t\t\t\t\t</table>\n" );
 
- std::string timeline_dps_error_str           = "";
  std::string dps_error_str                    = "";
 
  char buffer[ 1024 ];
 
- if ( ! p -> timeline_dps_error_chart.empty() )
- {
-   snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" />\n", p -> timeline_dps_error_chart.c_str() );
-   timeline_dps_error_str = buffer;
- }
-
- util_t::fprintf( file,
-                  "%s\n",
-                  timeline_dps_error_str.c_str() );
 
  if ( ! p -> dps_error_chart.empty() )
  {

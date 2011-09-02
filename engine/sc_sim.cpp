@@ -662,7 +662,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   dtr_proc_chance( -1.0 ),
   target_death_pct( 0 ), target_level( -1 ), target_race( "" ), target_adds( 0 ),
   rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
-  smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 0 ),
+  smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), buff_list( 0 ), aura_delay( 0.15 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
@@ -1456,66 +1456,6 @@ void sim_t::analyze_player( player_t* p )
     p -> dps_std_dev += delta * delta;
   }
 
-  // Error Convergence =========================================
-
-  int    convergence_iterations = 0;
-  double convergence_dps = 0;
-  double convergence_min = +1.0E+50;
-  double convergence_max = -1.0E+50;
-  double convergence_std_dev = 0;
-
-  if ( iterations > 1 && convergence_scale > 1 )
-  {
-    for ( int i=0; i < iterations; i++ )
-    {
-      if ( ( i % convergence_scale ) == 0 )
-      {
-        convergence_dps += p -> iteration_dps[ i ];
-        convergence_iterations++;
-      }
-    }
-    convergence_dps /= convergence_iterations;
-
-    for ( int i=0; i < iterations; i++ )
-    {
-      if ( ( i % convergence_scale ) == 0 )
-      {
-        double i_dps = p -> iteration_dps[ i ];
-        if ( convergence_min > i_dps ) convergence_min = i_dps;
-        if ( convergence_max < i_dps ) convergence_max = i_dps;
-        double delta = i_dps - convergence_dps;
-        convergence_std_dev += delta * delta;
-      }
-
-      p -> dps_convergence_error.push_back( 0 );
-      for ( int j=0; j < i; j++ )
-      {
-        double j_dps = p -> iteration_dps[ j ];
-        double delta = j_dps - convergence_dps;
-        p -> dps_convergence_error[i] += delta * delta;
-      }
-      p -> dps_convergence_error[i] /= i;
-      p -> dps_convergence_error[i] = sqrt( p -> dps_convergence_error[i] );
-      p -> dps_convergence_error[i] = 2.0 * p -> dps_convergence_error[i] / sqrt ( ( float ) i );
-    }
-  }
-
-  if ( p -> dps_min >= 1.0E+50 ) p -> dps_min = 0.0;
-  if ( p -> dps_max < 0.0      ) p -> dps_max = 0.0;
-
-  if ( iterations > 1 ) p -> dps_std_dev /= ( iterations - 1 );
-  p -> dps_std_dev = sqrt( p -> dps_std_dev );
-  p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( ( float ) iterations );
-
-  convergence_std_dev /= convergence_iterations;
-  convergence_std_dev = sqrt( convergence_std_dev );
-  double convergence_error = 2.0 * convergence_std_dev / sqrt( ( float ) convergence_iterations );
-
-  if ( convergence_error > 0 )
-  {
-    p -> dps_convergence = convergence_error / ( p -> dps_error * convergence_scale );
-  }
-
   // DPS Statistics ============================================
   if ( ( p -> dps_max - p -> dps_min ) > 0 )
   {
@@ -1563,7 +1503,6 @@ void sim_t::analyze_player( player_t* p )
     chart_t::timeline_resource  ( pet -> timeline_resource_chart[i],         pet, i );
     }
     chart_t::timeline_dps       ( pet -> timeline_dps_chart,              pet );
-    chart_t::timeline_dps_error ( pet -> timeline_dps_error_chart,        pet );
     chart_t::dps_error          ( pet -> dps_error_chart,                 pet );
     chart_t::distribution_dps   ( pet -> distribution_dps_chart,          pet );
   }
@@ -1576,7 +1515,6 @@ void sim_t::analyze_player( player_t* p )
   chart_t::timeline_resource  ( p -> timeline_resource_chart[i],         p, i );
   }
   chart_t::timeline_dps       ( p -> timeline_dps_chart,              p );
-  chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
   chart_t::dps_error          ( p -> dps_error_chart,                 p );
   chart_t::distribution_dps   ( p -> distribution_dps_chart,          p );
 
@@ -2256,7 +2194,6 @@ void sim_t::create_options()
     { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
     { "average_range",                    OPT_BOOL,   &( average_range                            ) },
     { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
-    { "convergence_scale",                OPT_INT,    &( convergence_scale                        ) },
     // Misc
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
     { "active",                           OPT_FUNC,   ( void* ) ::parse_active                      },

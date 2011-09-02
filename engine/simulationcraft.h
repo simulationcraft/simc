@@ -2525,7 +2525,6 @@ struct sim_t : private thread_t
   rng_t* deterministic_rng;
   rng_t* rng_list;
   int smooth_rng, deterministic_roll, average_range, average_gauss;
-  int convergence_scale;
 
   // Timing Wheel Event Management
   event_t** timing_wheel;
@@ -3335,7 +3334,7 @@ struct player_t
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
-  double    dps, dpse, dps_min, dps_max, dps_std_dev, dps_error, dps_convergence;
+  double    dps, dpse, dps_min, dps_max, dps_std_dev, dps_error;
   double    dps_10_percentile,dps_90_percentile;
   double    dpr, rps_gain, rps_loss;
   int       death_count;
@@ -3354,11 +3353,10 @@ struct player_t
   std::vector<double> timeline_dps;
   std::vector<double> iteration_dps;
   std::vector<int> distribution_dps;
-  std::vector<double> dps_convergence_error;
   std::string action_sequence;
   std::string action_dpet_chart, action_dmg_chart, gains_chart;
   std::vector<std::string> timeline_resource_chart;
-  std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
+  std::string timeline_dps_chart, timeline_resource_health_chart;
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
   std::string reforge_dps_chart, dps_error_chart;
   std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_wowreforge_link;
@@ -4613,7 +4611,6 @@ struct chart_t
   static const char* gains            ( std::string& s, player_t*, resource_type );
   static const char* timeline_resource( std::string& s, player_t*, int );
   static const char* timeline_dps     ( std::string& s, player_t* );
-  static const char* timeline_dps_error( std::string& s, player_t* );
   static const char* scale_factors    ( std::string& s, player_t* );
   static const char* scaling_dps      ( std::string& s, player_t* );
   static const char* reforge_dps      ( std::string& s, player_t* );
