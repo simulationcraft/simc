@@ -37,6 +37,15 @@ int main(int argc, char *argv[])
   QDir::setCurrent(QDir::home().absoluteFilePath("Library/Application Support/simcqt"));
 #endif
 
+  // Setup search paths for resources
+  {
+    QString appDirPath = a.applicationDirPath();
+    QDir::addSearchPath( "icon", ":/icons/" );
+    QDir::addSearchPath( "icon", QString( "%1/../Resources/" ).arg( appDirPath ) );
+    QDir::addSearchPath( "icon", QString( "%1/qt/icons/" ).arg( appDirPath ) );
+    QDir::addSearchPath( "icon", "./qt/icons/" );
+  }
+
   SimulationCraftWindow w;
 
   if( w.historyWidth  != 0 &&

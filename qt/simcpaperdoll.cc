@@ -73,6 +73,9 @@ static struct random_suffix_group_t __rand_suffix_group_data[] = {
 };
 // =============================================================================
 
+#if 0
+QString PaperdollPixmap::rpath;
+
 QPixmap
 PaperdollPixmap::get( const QString& icon_str, bool border, QSize size )
 {
@@ -119,13 +122,52 @@ PaperdollPixmap::PaperdollPixmap( const QString& icon, bool draw_border, QSize s
   QSize d = ( draw_border ? border.size() : size() ) - icon_image.size();
   d /= 2;
 
-  assert( ! draw_border || ( draw_border && border.size() == size() ) );
+  assert( ! draw_border || border.size() == size() );
 
   fill( QColor( 0, 0, 0, 0 ) );
 
   QPainter paint( this );
   paint.drawImage( d.width(), d.height(), icon_image );
   if ( draw_border ) paint.drawImage( 0, 0, border );
+}
+#endif
+
+QPixmap
+getPaperdollPixmap( const QString& name, bool draw_border, QSize s )
+{
+  QPixmap icon( s );
+
+  if ( ! QPixmapCache::find( name, &icon ) )
+  {
+    icon.fill( QRgb( 0 ) );
+    QPainter paint( &icon );
+
+    QImage icon_image( "icon:" + name + ".png" );
+    if ( icon_image.isNull() )
+    {
+      icon_image = QImage( QDir::homePath() + "/WoWAssets/Icons/" + name );
+      if ( icon_image.isNull() )
+        icon_image = QImage( "icon:ABILITY_SEAL.PNG" );
+    }
+
+    QSize d = s;
+
+    if ( draw_border )
+    {
+      QImage border( "icon:border.png" );
+      assert( border.size() == s );
+      paint.drawImage( 0, 0, border );
+      d = border.size();
+    }
+
+    d = ( d - icon_image.size() ) / 2;
+
+    paint.drawImage( d.width(), d.height(), icon_image );
+
+    QPixmapCache::insert( name, icon );
+  }
+
+  return icon;
 }
 
 PaperdollProfile::PaperdollProfile() :
@@ -646,7 +688,7 @@ ItemDataListModel::data( const QModelIndex& index, int role ) const
     return QVariant( QVariant::Invalid );
 
   if ( role == Qt::DecorationRole )
-    return QVariant::fromValue( PaperdollPixmap::get( items[ index.row() ].icon, true ).scaled( 48, 48 ) );
+    return QVariant::fromValue( getPaperdollPixmap( items[ index.row() ].icon, true ).scaled( 48, 48 ) );
   else if ( role == Qt::UserRole )
     return QVariant::fromValue<void*>( const_cast<item_data_t*>( &( items[ index.row() ] ) ) );
 
@@ -698,7 +740,7 @@ ItemDataDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, 
   {
     if ( item -> socket_color[ i ] > 0 )
     {
-      socket_icon = PaperdollPixmap::get( QString( "socket_%1" ).arg( item -> socket_color[ i ] ), false, QSize( 16, 16 ) );
+      socket_icon = getPaperdollPixmap( QString( "socket_%1" ).arg( item -> socket_color[ i ] ), false, QSize( 16, 16 ) );
       if ( ! socket_icon.isNull() )
         painter -> drawPixmap( draw_area.x() + icon.width() + 1,
                                draw_area.y() + ( i * ( socket_icon.height() + 1 ) ),
@@ -1267,9 +1309,9 @@ EnchantDataModel::data( const QModelIndex& index, int role ) const
   {
     const EnchantData& data =  m_enchants[ index.row() ];
     if ( data.item )
-      return QVariant( PaperdollPixmap::get( data.item -> icon, true ).scaled( 16, 16 ) );
+      return QVariant( getPaperdollPixmap( data.item -> icon, true ).scaled( 16, 16 ) );
     else
-      return QVariant( PaperdollPixmap::get( data.enchant -> _icon, true ).scaled( 16, 16 ) );
+      return QVariant( getPaperdollPixmap( data.enchant -> _icon, true ).scaled( 16, 16 ) );
 
     return QVariant( QVariant::Invalid );
   }
@@ -1386,7 +1428,7 @@ PaperdollBasicButton::paintEvent( QPaintEvent* event )
 
   // Selection border
   if ( isChecked() )
-    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border", false ).scaled( sizeHint() ) );
+    paint.drawPixmap( event -> rect(), getPaperdollPixmap( "selection_border", false ).scaled( sizeHint() ) );
 
   paint.end();
 }
@@ -1426,7 +1468,7 @@ PaperdollSlotButton::getSlotIconName( slot_type slot_id )
 PaperdollSlotButton::PaperdollSlotButton( slot_type slot, PaperdollProfile* profile, QWidget* parent ) :
   PaperdollBasicButton( profile, parent ), m_slot( slot )
 {
-  m_icon = PaperdollPixmap::get( PaperdollSlotButton::getSlotIconName( m_slot ), true );
+  m_icon = getPaperdollPixmap( PaperdollSlotButton::getSlotIconName( m_slot ), true );
 
   QObject::connect( this,    SIGNAL( selectedSlot( slot_type ) ),
                     profile, SLOT( setSelectedSlot( slot_type ) ) );
@@ -1453,11 +1495,11 @@ PaperdollSlotButton::paintEvent( QPaintEvent* event )
     paint.drawPixmap( event -> rect(), m_icon );
   // Item in it, paint the item icon instead
   else
-    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( m_profile -> slotItem( m_slot ) -> icon, true ) );
+    paint.drawPixmap( event -> rect(), getPaperdollPixmap( m_profile -> slotItem( m_slot ) -> icon, true ) );
 
   // Selection border
   if ( isChecked() )
-    paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border" ) );
+    paint.drawPixmap( event -> rect(), getPaperdollPixmap( "selection_border" ) );
 
   paint.end();
 }
@@ -1472,19 +1514,19 @@ PaperdollSlotButton::setSlotItem( slot_type t, const item_data_t* )
 PaperdollClassButton::PaperdollClassButton( PaperdollProfile* profile, player_type t, QWidget* parent ) :
   PaperdollBasicButton( profile, parent ), m_type( t )
 {
-  m_icon = PaperdollPixmap::get( QString( "class_%1" ).arg( util_t::player_type_string( t ) ), true );
+  m_icon = getPaperdollPixmap( QString( "class_%1" ).arg( util_t::player_type_string( t ) ), true );
 }
 
 PaperdollRaceButton::PaperdollRaceButton( PaperdollProfile* profile, race_type t, QWidget* parent ) :
   PaperdollBasicButton( profile, parent ), m_type( t )
 {
-  m_icon = PaperdollPixmap::get( QString( "race_%1" ).arg( util_t::race_type_string( t ) ), true );
+  m_icon = getPaperdollPixmap( QString( "race_%1" ).arg( util_t::race_type_string( t ) ), true );
 }
 
 PaperdollProfessionButton::PaperdollProfessionButton( PaperdollProfile* profile, profession_type t, QWidget* parent ) :
 PaperdollBasicButton( profile, parent ), m_type( t )
 {
-  m_icon = PaperdollPixmap::get( QString( "prof_%1" ).arg( util_t::profession_type_string( t ) ), true );
+  m_icon = getPaperdollPixmap( QString( "prof_%1" ).arg( util_t::profession_type_string( t ) ), true );
 }
 
 PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile, QWidget* parent ) :
@@ -1563,7 +1605,7 @@ PaperdollRaceButtonGroup::PaperdollRaceButtonGroup( PaperdollProfile* profile, Q
     m_factionLayout -> addLayout( m_raceButtonGroupLayout[ faction ] );
 
     m_factionLabel[ faction ] = new QLabel( this );
-    m_factionLabel[ faction ] -> setPixmap( PaperdollPixmap::get( QString( "%1" ).arg( faction_str[ faction ] ), true ).scaled( 32, 32 ) );
+    m_factionLabel[ faction ] -> setPixmap( getPaperdollPixmap( QString( "%1" ).arg( faction_str[ faction ] ), true ).scaled( 32, 32 ) );
     m_raceButtonGroupLayout[ faction ] -> addWidget( m_factionLabel[ faction ] );
 
     for ( int race = 0; race < 6; race++ )
@@ -1741,9 +1783,6 @@ Paperdoll::sizeHint() const
 {
   return QSize( 400, 616 );
 }
-
-QString PaperdollPixmap::rpath = "";
-
 
 const int ItemFilterProxyModel::professionIds[ PROFESSION_MAX ] = {
   0,

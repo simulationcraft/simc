@@ -45,6 +45,9 @@ public:
 };
 Q_DECLARE_METATYPE( EnchantData );
 
+QPixmap getPaperdollPixmap( const QString& name, bool = false, QSize = QSize( 64, 64 ) );
+
+#if 0
 class PaperdollPixmap : public QPixmap
 {
 public:
@@ -56,15 +59,16 @@ public:
 private:
   static QString rpath;
 };
+#endif
 
-// Profile state + signaling, all state manipulation goes through this 
+// Profile state + signaling, all state manipulation goes through this
 // class to have some sanity in what signals bounce, and where
 class PaperdollProfile : public QObject
 {
   Q_OBJECT
 public:
   PaperdollProfile();
-  
+
   bool enchantUsableByProfile( const EnchantData& ) const;
 
   bool itemUsableByProfile( const item_data_t* ) const;
@@ -72,7 +76,7 @@ public:
   bool itemUsableByRace( const item_data_t* ) const;
   bool itemUsableByProfession( const item_data_t* ) const;
   bool itemFitsProfileSlot( const item_data_t* ) const;
-  
+
   inline const item_data_t* slotItem( slot_type t ) const { return m_slotItem[ t ]; }
   inline unsigned           slotSuffix( slot_type t ) const { return m_slotSuffix[ t ]; }
   inline const EnchantData& slotEnchant( slot_type t ) const { return m_slotEnchant[ t ]; }
@@ -80,7 +84,7 @@ public:
   inline player_type        currentClass( void ) const { return m_class; }
   inline race_type          currentRace( void ) const { return m_race; }
   inline profession_type    currentProfession( unsigned p ) const { assert( p < 2 ); return m_professions[ p ]; }
-  
+
 public slots:
   void setSelectedSlot( slot_type );
   void setSelectedItem( const QModelIndex& );
@@ -92,7 +96,7 @@ public slots:
 
   void validateSlot( slot_type t );
   bool clearSlot( slot_type t );
-  
+
 signals:
   void slotChanged( slot_type );
   void itemChanged( slot_type, const item_data_t* );
@@ -101,7 +105,7 @@ signals:
   void classChanged( player_type );
   void raceChanged( race_type );
   void professionChanged( profession_type );
-  
+
   void profileChanged();
 
 private:
@@ -130,16 +134,16 @@ public slots:
   void setSlot( slot_type );
   void setMatchArmor( int );
   void SearchTextChanged( const QString& );
-  
+
   void filterChanged() { invalidate(); sort( 0 ); }
 
 signals:
   void itemSelected( const QModelIndex& );
-  
-protected:  
+
+protected:
   bool filterAcceptsRow( int, const QModelIndex& ) const;
   bool lessThan( const QModelIndex&, const QModelIndex& ) const;
-  
+
 private:
   bool filterByName( const item_data_t* ) const;
   bool itemUsedByClass( const item_data_t* ) const;
@@ -158,7 +162,7 @@ class ItemDataListModel : public QAbstractListModel
  Q_OBJECT
 public:
   ItemDataListModel( QObject* = 0 );
-  
+
   int rowCount( const QModelIndex& ) const;
   QVariant data( const QModelIndex& = QModelIndex(), int = Qt::DisplayRole ) const;
 public slots:
@@ -174,7 +178,7 @@ public:
   static QString itemFlagStr( const item_data_t* );
 
   ItemDataDelegate( QObject* = 0 );
-  
+
   QSize sizeHint( const QStyleOptionViewItem&, const QModelIndex& ) const;
   void paint( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
 private:
@@ -186,7 +190,7 @@ class ItemSelectionWidget : public QTabWidget
   Q_OBJECT
 public:
   ItemSelectionWidget( PaperdollProfile*, QWidget* = 0 );
-  
+
   QSize sizeHint() const;
 private:
   PaperdollProfile*     m_profile;
@@ -197,17 +201,17 @@ private:
 
   QLineEdit*            m_itemSearchInput;
   QListView*            m_itemSearchView;
-  
+
   ItemFilterProxyModel* m_itemSearchProxy;
   ItemDataListModel*    m_itemSearchModel;
   ItemDataDelegate*     m_itemSearchDelegate;
-  
+
   // Item filtering rules in the second tab
   QWidget*              m_itemFilter;
   QFormLayout*          m_itemFilterLayout;
-  
+
   QCheckBox*            m_itemFilterMatchArmor;
-  
+
   QHBoxLayout*          m_itemFilterMinIlevelLayout;
   QSlider*              m_itemFilterMinIlevel;
   QLabel*               m_itemFilterMinIlevelLabel;
@@ -215,20 +219,20 @@ private:
   QHBoxLayout*          m_itemFilterMaxIlevelLayout;
   QSlider*              m_itemFilterMaxIlevel;
   QLabel*               m_itemFilterMaxIlevelLabel;
-  
+
   // Item enchant / reforge / gems / random suffix setup in the third tab
   QWidget*              m_itemSetup;
   QVBoxLayout*          m_itemSetupLayout;
-  
+
   QGroupBox*            m_itemSetupRandomSuffix;
   QHBoxLayout*          m_itemSetupRandomSuffixLayout;
-  
+
   QComboBox*            m_itemSetupRandomSuffixView;
   RandomSuffixDataModel* m_itemSetupRandomSuffixModel;
 
   QGroupBox*            m_itemSetupEnchantBox;
   QHBoxLayout*          m_itemSetupEnchantBoxLayout;
-  
+
   QComboBox*            m_itemSetupEnchantView;
   EnchantDataModel*     m_itemSetupEnchantModel;
   EnchantFilterProxyModel* m_itemSetupEnchantProxy;
@@ -261,7 +265,7 @@ public:
   static QString enchantStatsStr( const item_enchantment_data_t* );
 
   EnchantDataModel( PaperdollProfile*, QObject* = 0 );
-  
+
   int rowCount( const QModelIndex& ) const;
   QVariant data( const QModelIndex& = QModelIndex(), int = Qt::DisplayRole ) const;
 protected:
@@ -286,10 +290,10 @@ signals:
   void enchantSelected( int );
   void hasEnchant( bool );
 
-protected:  
+protected:
   bool filterAcceptsRow( int, const QModelIndex& ) const;
   bool lessThan( const QModelIndex&, const QModelIndex& ) const;
-  
+
 private:
   PaperdollProfile* m_profile;
 };
@@ -314,7 +318,7 @@ public:
   static QString getSlotIconName( slot_type );
 
   PaperdollSlotButton( slot_type, PaperdollProfile*, QWidget* = 0 );
-  
+
   void  paintEvent( QPaintEvent* );
   QSize sizeHint() const { return QSize( 64, 64 ); }
   slot_type getSlot( void ) const { return m_slot; }
@@ -347,7 +351,7 @@ class PaperdollProfessionButton : public PaperdollBasicButton
 {
 public:
   static QString professionString( profession_type );
-  
+
   PaperdollProfessionButton( PaperdollProfile*, profession_type, QWidget* = 0 );
 protected:
   profession_type   m_type;
@@ -375,7 +379,7 @@ class PaperdollRaceButtonGroup : public QGroupBox
 public:
   static const race_type   raceButtonOrder[ 2 ][ 6 ];
   static const player_type classCombinations[ 12 ][ 11 ];
-  
+
   PaperdollRaceButtonGroup( PaperdollProfile*, QWidget* = 0 );
 public slots:
   void classSelected( player_type );
