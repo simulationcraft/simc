@@ -2017,7 +2017,7 @@ void shaman_spell_t::execute()
   }
 
   // Record maelstrom weapon stack usage
-  if ( maelstrom )
+  if ( maelstrom && p -> primary_tree() == TREE_ENHANCEMENT )
   {
     p -> procs_maelstrom_weapon_used[ p -> buffs_maelstrom_weapon -> check() ] -> occur();
   }
