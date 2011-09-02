@@ -179,6 +179,12 @@ void action_t::init_action_t_()
 
     background = true; // prevent action from being executed
   }
+
+  if ( sim -> travel_variance && travel_speed && player -> distance )
+  {
+      std::string buffer = name_str + "_travel";
+      rng_travel = player -> get_rng( buffer, RNG_DISTRIBUTED );
+  }
 }
 
 action_t::action_t( int               ty,
@@ -1216,8 +1222,8 @@ void action_t::schedule_execute()
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
-  }
-  if ( special && time_to_execute > 0 && ! proc && ! background )
+
+  if ( special && time_to_execute > 0 && ! proc )
   {
     // While an ability is casting, the auto_attack is paused
     // So we simply reschedule the auto_attack by the ability's casttime
@@ -1238,6 +1244,7 @@ void action_t::schedule_execute()
       time_to_next_hit += time_to_execute;
       player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
     }
+  }
   }
 }
 

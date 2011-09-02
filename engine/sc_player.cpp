@@ -3182,12 +3182,14 @@ void player_t::regen( double periodicity )
 
     resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
   }
+
   else if ( resource_type == RESOURCE_FOCUS )
   {
     double focus_regen = periodicity * focus_regen_per_second();
 
     resource_gain( RESOURCE_FOCUS, focus_regen, gains.focus_regen );
   }
+
   else if ( resource_type == RESOURCE_MANA )
   {
     double spirit_regen = periodicity * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;

@@ -42,6 +42,7 @@ struct hunter_t : public player_t
 
   // Cooldowns
   cooldown_t* cooldowns_glyph_kill_shot;
+  cooldown_t* cooldowns_explosive_shot;
 
   // Custom Parameters
   std::string summon_pet_str;
@@ -205,6 +206,7 @@ struct hunter_t : public player_t
     // Cooldowns
     cooldowns_glyph_kill_shot = get_cooldown("cooldowns_glyph_kill_shot");
     cooldowns_glyph_kill_shot -> duration = 6.0;
+    cooldowns_explosive_shot = get_cooldown( "explosive_shot " );
 
     // Dots
     dots_serpent_sting = get_dot("serpent_sting");
@@ -2141,7 +2143,7 @@ struct black_arrow_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     if ( p -> buffs_lock_and_load -> trigger( 2 ) ) {
       p -> procs_lock_and_load -> occur();
-      p -> get_cooldown( "explosive_shot" ) -> reset();
+      p -> cooldowns_explosive_shot -> reset();
     }
   }
 
@@ -2178,7 +2180,7 @@ struct explosive_trap_effect_t : public hunter_attack_t
     if ( p -> buffs_lock_and_load -> trigger( 2 ) )
     {
       p -> procs_lock_and_load -> occur();
-      p -> get_cooldown( "explosive_shot" ) -> reset();
+      p -> cooldowns_explosive_shot -> reset();
     }
   }
 };

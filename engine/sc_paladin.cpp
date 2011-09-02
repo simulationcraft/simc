@@ -76,6 +76,9 @@ struct paladin_t : public player_t
   gain_t* gains_hp_tower_of_radiance;
   gain_t* gains_hp_zealotry;
 
+  // Cooldowns
+  cooldown_t* cooldowns_avengers_shield;
+
   // Passives
   struct passives_t
   {
@@ -230,6 +233,8 @@ struct paladin_t : public player_t
     active_hand_of_light_proc          = 0;
     ancient_fury_explosion             = 0;
 
+    cooldowns_avengers_shield = get_cooldown( "avengers_shield" );
+
     ret_pvp_gloves = -1;
 
     create_talents();
@@ -303,7 +308,7 @@ static void trigger_grand_crusader( action_t* a )
 
   if ( a -> sim -> roll( p -> talents.grand_crusader -> proc_chance() ) )
   {
-    p -> get_cooldown( "avengers_shield" ) -> reset();
+    p -> cooldowns_avengers_shield -> reset();
     p -> buffs_grand_crusader -> trigger();
   }
 }
