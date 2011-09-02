@@ -662,7 +662,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   dtr_proc_chance( -1.0 ),
   target_death_pct( 0 ), target_level( -1 ), target_race( "" ), target_adds( 0 ),
   rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
-  smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
+  smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 0 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), buff_list( 0 ), aura_delay( 0.15 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
