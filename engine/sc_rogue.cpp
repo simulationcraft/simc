@@ -1029,9 +1029,8 @@ static void trigger_tier12_4pc_melee( attack_t* s )
 
 // apply_poison_debuff ======================================================
 
-static void apply_poison_debuff( rogue_t* p )
+static void apply_poison_debuff( rogue_t* p, player_t* t )
 {
-  player_t* t = p -> sim -> target;
 
   if ( p -> talents.master_poisoner -> rank() )
     t -> debuffs.master_poisoner -> increment();
@@ -1278,7 +1277,7 @@ double rogue_attack_t::total_multiplier() SC_CONST
     m *= 1.0 + p -> buffs_killing_spree -> value();
 
   // Sanguinary Vein (subtlety) - dynamically increases all damage as long as target is bleeding
-  if ( p -> sim -> target -> debuffs.bleeding -> check() )
+  if ( target -> debuffs.bleeding -> check() )
     m *= 1.0 + p -> talents.sanguinary_vein -> base_value() / 100.0;
 
   // Vendetta (Assassination) - dynamically increases all damage as long as target is affected by Vendetta
@@ -1725,7 +1724,7 @@ struct envenom_t : public rogue_attack_t
       m *= 1.0 + p -> buffs_killing_spree -> value();
 
     // Sanguinary Vein (subtlety) - dynamically increases all damage as long as target is bleeding
-    if ( p -> sim -> target -> debuffs.bleeding -> check() )
+    if ( target -> debuffs.bleeding -> check() )
       m *= 1.0 + p -> talents.sanguinary_vein -> base_value() / 100.0;
 
     // Vendetta (Assassination) - dynamically increases all damage as long as target is affected by Vendetta
@@ -2767,7 +2766,7 @@ double rogue_poison_t::total_multiplier() SC_CONST
     m *= 1.0 + p -> buffs_killing_spree -> value();
 
   // Sanguinary Vein (subtlety) - dynamically increases all damage as long as target is bleeding
-  if ( p -> sim -> target -> debuffs.bleeding -> check() )
+  if ( target -> debuffs.bleeding -> check() )
     m *= 1.0 + p -> talents.sanguinary_vein -> base_value() / 100.0;
 
   // Vendetta (Assassination) - dynamically increases all damage as long as target is affected by Vendetta
@@ -2835,7 +2834,7 @@ struct deadly_poison_t : public rogue_poison_t
         else
         {
           schedule_travel( target );
-          apply_poison_debuff( p );
+          apply_poison_debuff( p, target );
         }
       }
 
@@ -2916,10 +2915,11 @@ struct wound_poison_t : public rogue_poison_t
   {
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, rogue_t* p ) : event_t( sim, p )
+      player_t* target;
+      expiration_t( sim_t* sim, rogue_t* p, player_t* t ) : event_t( sim, p ), target( t )
       {
         name = "Wound Poison Expiration";
-        apply_poison_debuff( p );
+        apply_poison_debuff( p, target );
         sim -> add_event( this, 15.0 );
       }
       virtual void execute()
@@ -2961,7 +2961,7 @@ struct wound_poison_t : public rogue_poison_t
         if ( e )
           e -> reschedule( 15.0 );
         else
-          e = new ( sim ) expiration_t( sim, p );
+          e = new ( sim ) expiration_t( sim, p, target );
       }
     }
   }

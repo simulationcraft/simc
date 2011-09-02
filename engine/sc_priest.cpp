@@ -1603,7 +1603,7 @@ struct dispersion_t : public priest_spell_t
     double current_mana = p -> resource_current[ RESOURCE_MANA ];
 
     double consumption_rate = ( p -> mana_resource.mana_loss - p -> mana_resource.mana_gain ) / sim -> current_time;
-    double time_to_die = sim -> target -> time_to_die();
+    double time_to_die = p -> target -> time_to_die();
 
     if ( consumption_rate <= 0.00001 ) return false;
 
