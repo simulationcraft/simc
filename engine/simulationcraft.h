@@ -2497,6 +2497,7 @@ struct sim_t : private thread_t
   int         save_profiles, default_actions;
   int         normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str,save_suffix_str;
+  int         save_talent_str;
   bool        input_is_utf8;
   std::vector<player_t*> actor_list;
   std::string main_target_str;

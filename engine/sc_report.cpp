@@ -4635,6 +4635,11 @@ void report_t::print_profiles( sim_t* sim )
     {
       file_name  = sim -> save_prefix_str;
       file_name += p -> name_str;
+      if ( sim -> save_talent_str != 0 )
+      {
+        file_name += "_";
+        file_name += p -> primary_tree_name();
+      }
       file_name += sim -> save_suffix_str;
       file_name += ".simc";
       util_t::urlencode( util_t::format_text( file_name, sim -> input_is_utf8 ) );

@@ -657,6 +657,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   normalized_stat( STAT_NONE ),
   default_region_str( "us" ),
   save_prefix_str( "save_" ), save_suffix_str( "" ),
+  save_talent_str( 0 ),
   input_is_utf8( false ), main_target_str( "" ),
   dtr_proc_chance( -1.0 ),
   target_death_pct( 0 ), target_level( -1 ), target_race( "" ), target_adds( 0 ),
@@ -2290,6 +2291,7 @@ void sim_t::create_options()
     { "default_server",                   OPT_STRING, &( default_server_str                       ) },
     { "save_prefix",                      OPT_STRING, &( save_prefix_str                          ) },
     { "save_suffix",                      OPT_STRING, &( save_suffix_str                          ) },
+    { "save_talent_str",                  OPT_BOOL,   &( save_talent_str                          ) },
     // Stat Enchants
     { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },
     { "default_enchant_agility",                  OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ] ) },

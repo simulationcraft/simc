@@ -481,7 +481,7 @@ public:
     if ( execute_time() > 0 )
       p -> buffs_borrowed_time -> expire();
 
-    if ( !(background || proc) )
+    if ( !( background || proc ) )
       p -> trigger_cauterizing_flame();
   }
 };
@@ -615,7 +615,6 @@ struct priest_heal_t : public heal_t
 
     priest_t* p = player -> cast_priest();
 
-
     // Grace
     if ( p -> talents.grace -> ok() )
       target_multiplier *= 1.0 + t -> buffs.grace -> check() * t -> buffs.grace -> value();
@@ -625,7 +624,7 @@ struct priest_heal_t : public heal_t
     {
       if (  t -> resource_current[ RESOURCE_HEALTH ] * 2 <= t -> resource_max[ RESOURCE_HEALTH ] )
       {
-        target_multiplier *= 1.0 + p -> talents.test_of_faith -> rank() * 0.04;
+        target_multiplier *= 1.0 + p -> talents.test_of_faith -> effect2().percent();
         p -> uptimes_test_of_faith -> update( true );
       }
       else
@@ -639,7 +638,7 @@ struct priest_heal_t : public heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( !(background || proc) )
+    if ( !( background || proc ) )
       p -> trigger_cauterizing_flame();
 
     if ( execute_time() > 0 )
@@ -663,6 +662,7 @@ struct priest_heal_t : public heal_t
       }
 
       trigger_echo_of_light( this, t );
+
       if ( p -> buffs_chakra_serenity -> up() && p -> dots_renew -> ticking )
         p -> dots_renew -> action -> refresh_duration();
     }
@@ -714,8 +714,8 @@ struct atonement_heal_t : public priest_heal_t
   atonement_heal_t( const char* n, player_t* player ) :
       priest_heal_t( n, player, 81751 )
   {
-    proc       = true;
-    background = true;
+    proc           = true;
+    background     = true;
     round_base_dmg = false;
 
     time_to_tick = 0;
@@ -725,6 +725,7 @@ struct atonement_heal_t : public priest_heal_t
     base_crit = 1.0;
 
     priest_t* p = player -> cast_priest();
+
     if( !p -> atonement_target_str.empty() )
       target = sim -> find_player( p -> atonement_target_str.c_str() );
   }
@@ -851,6 +852,7 @@ public:
     spell_t::init();
 
     priest_t* p = player -> cast_priest();
+
     if( can_trigger_atonement && p -> talents.atonement -> rank() )
     {
       std::string n = "atonement_" + name_str;
