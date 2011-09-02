@@ -1512,6 +1512,8 @@ const char* chart_t::timeline_dps_error( std::string& s,
                                          player_t* p )
 {
   int max_buckets = ( int ) p -> dps_convergence_error.size();
+  if ( ! max_buckets ) return 0;
+
   int max_points  = 600;
   int increment   = 1;
 
