@@ -77,13 +77,13 @@ QPixmap
 PaperdollPixmap::get( const QString& icon_str, bool border, QSize size )
 {
   QPixmap icon;
-  
+
   if ( ! QPixmapCache::find( icon_str, &icon ) )
   {
     icon = PaperdollPixmap( icon_str, border, size );
     QPixmapCache::insert( icon_str, icon );
   }
-  
+
   return icon;
 }
 
@@ -98,7 +98,7 @@ PaperdollPixmap::resourcePath( void )
     PaperdollPixmap::rpath = QString( "%1/qt/icons/" ).arg( QCoreApplication::instance() -> applicationDirPath() );
 #endif
   }
-  
+
   return PaperdollPixmap::rpath;
 }
 
@@ -110,17 +110,17 @@ PaperdollPixmap::PaperdollPixmap( const QString& icon, bool draw_border, QSize s
   QImage icon_image( QString( resourcePath() + icon ), 0 );
   if ( icon_image.isNull() )
     icon_image = QImage( QString( QDir::homePath() + "/WoWAssets/Icons/" + icon ) );
-  
+
   QImage border( resourcePath() + "border" );
 
   if ( icon_image.isNull() )
     icon_image = QImage( QString( resourcePath() + "ABILITY_SEAL" ), 0 );
-  
+
   QSize d = ( draw_border ? border.size() : size() ) - icon_image.size();
   d /= 2;
-  
+
   assert( ! draw_border || ( draw_border && border.size() == size() ) );
-  
+
   fill( QColor( 0, 0, 0, 0 ) );
 
   QPainter paint( this );
@@ -129,11 +129,11 @@ PaperdollPixmap::PaperdollPixmap( const QString& icon, bool draw_border, QSize s
 }
 
 PaperdollProfile::PaperdollProfile() :
-  QObject(), 
-  m_currentSlot( SLOT_NONE ), m_class( PLAYER_NONE ), m_race( RACE_NONE )
-{ 
+  QObject(),
+  m_class( PLAYER_NONE ), m_race( RACE_NONE ), m_currentSlot( SLOT_NONE )
+{
   m_professions[ 0 ] = m_professions[ 1 ] = PROFESSION_NONE;
-  
+
   for ( int i = 0; i < SLOT_MAX; i++ )
   {
     m_slotItem[ i ] = 0;
@@ -155,17 +155,17 @@ PaperdollProfile::setSelectedItem( const QModelIndex& index )
   const item_data_t* item = reinterpret_cast< const item_data_t* >( index.data( Qt::UserRole ).value< void* >() );
 
   m_slotItem[ m_currentSlot ] = item;
-  
+
   emit itemChanged( m_currentSlot, m_slotItem[ m_currentSlot ] );
   emit profileChanged();
 }
 
-void 
+void
 PaperdollProfile::setSelectedEnchant( int idx )
 {
   if ( QComboBox* sender = qobject_cast< QComboBox* >( QObject::sender() ) )
     m_slotEnchant[ m_currentSlot ] = sender -> model() -> index ( idx, 0 ).data( Qt::UserRole ).value< EnchantData >();
-  
+
   emit enchantChanged( m_currentSlot, m_slotEnchant[ m_currentSlot ] );
   emit profileChanged();
 }
@@ -185,7 +185,7 @@ PaperdollProfile::setClass( int player_class )
 {
   assert( player_class > PLAYER_NONE && player_class < PLAYER_PET );
   m_class = ( player_type ) player_class;
-  
+
   for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t=(slot_type)((int)t+1) )
     validateSlot( t );
 
@@ -198,26 +198,26 @@ PaperdollProfile::setRace( int player_race )
 {
   assert( player_race >= RACE_NIGHT_ELF && player_race <= RACE_GOBLIN );
   m_race = ( race_type ) player_race;
-  
+
   for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t=(slot_type)((int)t+1) )
     validateSlot( t );
 
   emit raceChanged( m_race );
-  emit profileChanged();  
+  emit profileChanged();
 }
 
-void 
+void
 PaperdollProfile::setProfession( int profession, int type )
 {
   assert( profession >= 0 && profession < 2 && type > PROFESSION_NONE && type < PROFESSION_MAX );
-  
+
   m_professions[ profession ] = ( profession_type ) type;
-  
+
   for ( slot_type t = SLOT_NONE; t < SLOT_MAX; t=(slot_type)((int)t+1) )
     validateSlot( t );
 
   emit professionChanged( m_professions[ profession ] );
-  emit profileChanged();  
+  emit profileChanged();
 }
 
 bool
@@ -225,28 +225,28 @@ PaperdollProfile::enchantUsableByProfile( const EnchantData& e ) const
 {
   if ( e.enchant == 0 ) return true;
 
-  if ( m_slotItem[ m_currentSlot ] -> item_class != e.enchant -> _equipped_class ) 
+  if ( static_cast<unsigned>( m_slotItem[ m_currentSlot ] -> item_class ) != e.enchant -> _equipped_class )
     return false;
-  
-  if ( e.enchant -> _equipped_invtype_mask && 
-      ! ( ( 1 << m_slotItem[ m_currentSlot ] -> inventory_type ) & e.enchant -> _equipped_invtype_mask ) ) 
+
+  if ( e.enchant -> _equipped_invtype_mask &&
+      ! ( ( 1 << m_slotItem[ m_currentSlot ] -> inventory_type ) & e.enchant -> _equipped_invtype_mask ) )
     return false;
-  
-  if ( e.enchant -> _equipped_subclass_mask && 
-      ! ( ( 1 << m_slotItem[ m_currentSlot ] -> item_subclass ) & e.enchant -> _equipped_subclass_mask ) ) 
+
+  if ( e.enchant -> _equipped_subclass_mask &&
+      ! ( ( 1 << m_slotItem[ m_currentSlot ] -> item_subclass ) & e.enchant -> _equipped_subclass_mask ) )
     return false;
-  
+
   if ( e.item_enchant -> req_skill > 0 )
   {
-    int profession_1 = ItemFilterProxyModel::professionIds[ m_professions[ 0 ] ],
-        profession_2 = ItemFilterProxyModel::professionIds[ m_professions[ 1 ] ];
-    
+    unsigned profession_1 = ItemFilterProxyModel::professionIds[ m_professions[ 0 ] ],
+             profession_2 = ItemFilterProxyModel::professionIds[ m_professions[ 1 ] ];
+
     if ( e.item_enchant -> req_skill == profession_1 || e.item_enchant -> req_skill == profession_2 )
       return true;
-    
+
     return false;
   }
-  
+
   return true;
 }
 
@@ -271,7 +271,7 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
                m_class == SHAMAN       || m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_AXE2:
         return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
-               m_class == PALADIN      || m_class == SHAMAN  || 
+               m_class == PALADIN      || m_class == SHAMAN  ||
                m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_BOW:
       case ITEM_SUBCLASS_WEAPON_GUN:
@@ -280,22 +280,22 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
         return m_class == HUNTER       || m_class == ROGUE   ||
                m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_MACE:
-        return m_class == DEATH_KNIGHT || m_class == DRUID   || 
-               m_class == PALADIN      || m_class == PRIEST  || 
-               m_class == ROGUE        || m_class == SHAMAN  || 
+        return m_class == DEATH_KNIGHT || m_class == DRUID   ||
+               m_class == PALADIN      || m_class == PRIEST  ||
+               m_class == ROGUE        || m_class == SHAMAN  ||
                m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_MACE2:
-        return m_class == DEATH_KNIGHT || m_class == DRUID   || 
-               m_class == PALADIN      || m_class == SHAMAN  || 
+        return m_class == DEATH_KNIGHT || m_class == DRUID   ||
+               m_class == PALADIN      || m_class == SHAMAN  ||
                m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_POLEARM:
-        return m_class == DEATH_KNIGHT || m_class == DRUID   || 
-               m_class == HUNTER       || m_class == PALADIN || 
+        return m_class == DEATH_KNIGHT || m_class == DRUID   ||
+               m_class == HUNTER       || m_class == PALADIN ||
                m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_SWORD:
         return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
-               m_class == MAGE         || m_class == PALADIN || 
-               m_class == ROGUE        || m_class == WARLOCK || 
+               m_class == MAGE         || m_class == PALADIN ||
+               m_class == ROGUE        || m_class == WARLOCK ||
                m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_SWORD2:
         return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
@@ -307,17 +307,17 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
                m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_FIST:
         return m_class == DRUID        || m_class == HUNTER  ||
-               m_class == ROGUE        || m_class == SHAMAN  || 
+               m_class == ROGUE        || m_class == SHAMAN  ||
                m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_DAGGER:
         return m_class == DRUID        || m_class == HUNTER  ||
-               m_class == MAGE         || m_class == PRIEST  || 
+               m_class == MAGE         || m_class == PRIEST  ||
                m_class == ROGUE        || m_class == SHAMAN  ||
                m_class == WARLOCK      || m_class == WARRIOR;
       case ITEM_SUBCLASS_WEAPON_WAND:
         return m_class == MAGE         || m_class == PRIEST  ||
                m_class == WARLOCK;
-        
+
     }
   }
   else if ( item -> item_class == ITEM_CLASS_ARMOR )
@@ -342,7 +342,7 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
           return m_class == DRUID        || m_class == ROGUE;
       case ITEM_SUBCLASS_ARMOR_MAIL:
         if ( ! match_armor )
-          return m_class == DEATH_KNIGHT || m_class == HUNTER  || 
+          return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
                  m_class == PALADIN      || m_class == SHAMAN  ||
                  m_class == WARRIOR;
         else
@@ -360,11 +360,11 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
       case ITEM_SUBCLASS_ARMOR_TOTEM:
         return m_class == SHAMAN;
       case ITEM_SUBCLASS_ARMOR_SIGIL:
-        return m_class == DEATH_KNIGHT   || m_class == SHAMAN || 
+        return m_class == DEATH_KNIGHT   || m_class == SHAMAN ||
                m_class == PALADIN        || m_class == DRUID;
     }
   }
-  
+
   return false;
 }
 
@@ -378,7 +378,7 @@ bool
 PaperdollProfile::itemUsableByProfession( const item_data_t* item ) const
 {
   if ( item -> req_skill > 0 &&
-       item -> req_skill != m_professions[ 0 ] && 
+       item -> req_skill != m_professions[ 0 ] &&
        item -> req_skill != m_professions[ 1 ] )
   {
     return false;
@@ -392,10 +392,10 @@ PaperdollProfile::itemUsableByProfile( const item_data_t* item ) const
 {
   if ( ! itemUsableByClass( item, false ) )
     return false;
-  
+
   if ( ! itemUsableByProfession( item ) )
     return false;
-  
+
   return true;
 }
 
@@ -433,7 +433,7 @@ PaperdollProfile::itemFitsProfileSlot( const item_data_t* item ) const
     case INVTYPE_THROWN:         return m_currentSlot == SLOT_RANGED;
     case INVTYPE_RELIC:          return m_currentSlot == SLOT_RANGED;
   }
-  
+
   return false;
 }
 
@@ -442,7 +442,7 @@ PaperdollProfile::validateSlot( slot_type t )
 {
   if ( t == SLOT_NONE ) return;
   if ( ! m_slotItem[ t ] ) return;
-  
+
   // Make sure item is still usable, if not, clear the slot
   if ( ! itemUsableByProfile( m_slotItem[ t ] ) )
   {
@@ -462,21 +462,21 @@ PaperdollProfile::clearSlot( slot_type t )
 {
   if ( t == SLOT_NONE ) return false;
   bool has_item = m_slotItem[ t ] != 0;
-  
+
   m_slotItem   [ t ] = 0;
   m_slotSuffix [ t ] = 0;
   m_slotEnchant[ t ] = EnchantData();
-  
+
   return has_item;
 }
 
 ItemFilterProxyModel::ItemFilterProxyModel( PaperdollProfile* profile, QObject* parent ) :
-  QSortFilterProxyModel( parent ), 
-  m_profile( profile ), 
+  QSortFilterProxyModel( parent ),
+  m_profile( profile ),
   m_matchArmor( true ), m_minIlevel( 359 ), m_maxIlevel( 410 ),
   m_searchText()
 {
-  
+
   QObject::connect( profile, SIGNAL( profileChanged() ),
                     this,    SLOT( filterChanged() ) );
 
@@ -487,25 +487,25 @@ ItemFilterProxyModel::ItemFilterProxyModel( PaperdollProfile* profile, QObject* 
                    this,    SLOT( filterChanged() ) );
 }
 
-void 
+void
 ItemFilterProxyModel::setMinIlevel( int newValue )
 {
   m_minIlevel = newValue;
   filterChanged();
 }
 
-void 
+void
 ItemFilterProxyModel::setMaxIlevel( int newValue )
 {
   m_maxIlevel = newValue;
   filterChanged();
 }
 
-void 
+void
 ItemFilterProxyModel::setSlot( slot_type slot )
 {
   filterChanged();
-  
+
   if ( m_profile -> slotItem( slot ) )
   {
     for ( int i = 0; i < rowCount(); i++ )
@@ -521,7 +521,7 @@ ItemFilterProxyModel::setSlot( slot_type slot )
   }
 }
 
-void 
+void
 ItemFilterProxyModel::SearchTextChanged( const QString& newValue )
 {
   m_searchText = newValue;
@@ -545,28 +545,28 @@ ItemFilterProxyModel::lessThan( const QModelIndex& left, const QModelIndex& righ
     return true;
   else if ( ileft -> level == iright -> level )
     return QString::compare( ileft -> name, iright -> name ) < 0;
-  
+
   return false;
 }
 
-bool 
+bool
 ItemFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const
 {
   // Grab the pointer from userdata, and filter through it
   const QModelIndex& idx  = sourceModel() -> index( sourceRow, 0, sourceParent );
   const item_data_t* item = reinterpret_cast< const item_data_t* >( idx.data( Qt::UserRole ).value< void* >() );
-  
+
   if ( m_profile -> currentSlot() == SLOT_NONE )
     return false;
-  
-  bool state = filterByName( item ) && 
-               m_profile -> itemFitsProfileSlot( item ) && 
+
+  bool state = filterByName( item ) &&
+               m_profile -> itemFitsProfileSlot( item ) &&
                item -> level >= m_minIlevel && item -> level <= m_maxIlevel &&
                m_profile -> itemUsableByClass( item, m_matchArmor ) &&
                m_profile -> itemUsableByRace( item ) &&
                m_profile -> itemUsableByProfession( item ) &&
                itemUsedByClass( item );
-  
+
   return state;
 }
 
@@ -580,10 +580,10 @@ ItemFilterProxyModel::filterByName( const item_data_t* item ) const
     else
       return false;
   }
-  
+
   return true;
 }
-          
+
 int
 ItemFilterProxyModel::primaryStat( void ) const
 {
@@ -606,7 +606,7 @@ ItemFilterProxyModel::primaryStat( void ) const
   }
 }
 
-bool 
+bool
 ItemFilterProxyModel::itemUsedByClass( const item_data_t* item ) const
 {
   player_type player_class = m_profile -> currentClass();
@@ -622,7 +622,7 @@ ItemFilterProxyModel::itemUsedByClass( const item_data_t* item ) const
       primary_stat_found = true;
     }
   }
-  
+
   return primary_stat_found;
 }
 
@@ -632,29 +632,29 @@ ItemDataListModel::ItemDataListModel( QObject* parent ) :
 }
 
 int
-ItemDataListModel::rowCount( const QModelIndex& parent ) const
+ItemDataListModel::rowCount( const QModelIndex& /* parent */ ) const
 {
   return dbc_t::n_items( false );
 }
 
-QVariant 
+QVariant
 ItemDataListModel::data( const QModelIndex& index, int role ) const
 {
   const item_data_t* items = dbc_t::items( false );
-  
-  if ( index.row() > dbc_t::n_items( false ) - 1 )
+
+  if ( index.row() > static_cast<int>( dbc_t::n_items( false ) ) - 1 )
     return QVariant( QVariant::Invalid );
 
   if ( role == Qt::DecorationRole )
-    return QVariant::fromValue< QPixmap >( PaperdollPixmap::get( items[ index.row() ].icon, true ).scaled( 48, 48 ) );
+    return QVariant::fromValue( PaperdollPixmap::get( items[ index.row() ].icon, true ).scaled( 48, 48 ) );
   else if ( role == Qt::UserRole )
-    return QVariant::fromValue< void* >( (void*) &( items[ index.row() ] ) );
-  
+    return QVariant::fromValue<void*>( const_cast<item_data_t*>( &( items[ index.row() ] ) ) );
+
   return QVariant( QVariant::Invalid );
 }
 
 void
-ItemDataListModel::dataSourceChanged( int newChoice )
+ItemDataListModel::dataSourceChanged( int /* newChoice */ )
 {
   reset();
 }
@@ -665,20 +665,20 @@ ItemDataDelegate::ItemDataDelegate( QObject* parent ) :
 }
 
 QSize
-ItemDataDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+ItemDataDelegate::sizeHint( const QStyleOptionViewItem& /* option */, const QModelIndex& /* index */ ) const
 {
   return QSize( 350, 50 );
 }
 
-void 
+void
 ItemDataDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   const item_data_t* item = reinterpret_cast< const item_data_t* >( index.data( Qt::UserRole ).value< void* >() );
   QPixmap icon = index.data( Qt::DecorationRole ).value< QPixmap >();
   QRect draw_area = option.rect.adjusted( 1, 1, -1, -1 );
-  
+
   painter -> save();
-  
+
   if (option.state & QStyle::State_Selected)
     painter -> fillRect( option.rect, option.palette.highlight() );
   else
@@ -691,9 +691,9 @@ ItemDataDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, 
 
   painter -> drawPixmap( draw_area.x(), draw_area.y(), icon.width(), icon.height(), icon );
   bool has_sockets = false;
-  
+
   QPixmap socket_icon;
-  
+
   for ( int i = 0; i < 3; i++ )
   {
     if ( item -> socket_color[ i ] > 0 )
@@ -706,15 +706,15 @@ ItemDataDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, 
                                socket_icon.height(),
                                socket_icon );
     }
-    
+
     has_sockets = true;
   }
-  
+
   QRect stats_area = draw_area.translated( icon.width() + 1 + ( has_sockets ? socket_icon.width() + 1 : 0 ), 0 );
   stats_area.setSize( QSize( draw_area.width() - ( icon.width() + 1 + ( has_sockets ? socket_icon.width() : 0 ) + 2 ),
                              draw_area.height() - 12 ) );
 
-  QRect flags_area = draw_area.translated( icon.width() + 1 + ( has_sockets ? socket_icon.width() + 1 : 0 ), 
+  QRect flags_area = draw_area.translated( icon.width() + 1 + ( has_sockets ? socket_icon.width() + 1 : 0 ),
                                            draw_area.height() - 12 );
   flags_area.setSize( QSize( stats_area.width(), 12 ) );
 
@@ -736,7 +736,7 @@ ItemDataDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, 
   text.setHtml( ItemDataDelegate::itemFlagStr( item ) );
   text.drawContents( painter );
   painter -> restore();
-  
+
   painter -> restore();
 }
 
@@ -744,7 +744,7 @@ QString
 ItemDataDelegate::itemQualityColor( const item_data_t* item )
 {
   assert( item );
-  
+
   switch ( item -> quality )
   {
     case 0:
@@ -753,14 +753,14 @@ ItemDataDelegate::itemQualityColor( const item_data_t* item )
       return QString( "#%1%2%3" ).arg( 0xff, 0, 16 ).arg( 0xff, 0, 16 ).arg( 0xff, 0, 16 );
     case 2:
       return QString( "#%1%2%3" ).arg( 0x1e, 0, 16 ).arg( 0xff, 0, 16 ).arg( 0x00, 0, 16 );
-    case 3: 
+    case 3:
       return QString( "#%1%2%3" ).arg( 0x00, 0, 16 ).arg( 0x70, 0, 16 ).arg( 0xff, 0, 16 );
     case 4:
       return QString( "#%1%2%3" ).arg( 0xb0, 0, 16 ).arg( 0x48, 0, 16 ).arg( 0xf8, 0, 16 );
     case 5:
       return QString( "#%1%2%3" ).arg( 0xff, 0, 16 ).arg( 0x80, 0, 16 ).arg( 0x80, 0, 16 );
   }
-  
+
   return QString("white");
 }
 
@@ -768,11 +768,11 @@ QString
 ItemDataDelegate::itemFlagStr( const item_data_t* item )
 {
   QStringList str;
-  
+
   str += QString( "%1" ).arg( item -> level );
   if ( item -> flags_1 & ITEM_FLAG_HEROIC )
     str += QString( "<span style='color:#1eff00;font-style:italic;'>%1</span>" ).arg( "Heroic" );
-  
+
   if ( item -> id_set > 0 && util_t::set_item_type_string( item -> id_set ) != 0 )
     str += QString( "<span style='color:yellow;'>%1 Set</span>" ).arg( util_t::set_item_type_string( item -> id_set ) );
 
@@ -780,7 +780,7 @@ ItemDataDelegate::itemFlagStr( const item_data_t* item )
 }
 
 QString
-ItemDataDelegate::itemStatsString( const item_data_t* item, bool html ) const
+ItemDataDelegate::itemStatsString( const item_data_t* item, bool /* html */ ) const
 {
   assert( item != 0 );
   QStringList stats;
@@ -788,11 +788,11 @@ ItemDataDelegate::itemStatsString( const item_data_t* item, bool html ) const
   QString stats_str;
   uint32_t armor;
   dbc_t dbc( false );
-  
+
   stats_str += QString( "<span style='font-size:11pt;font-weight:bold;color:%1;'>%2</span><br />" )
                       .arg( itemQualityColor( item ) )
                       .arg( item -> name );
-  
+
   if ( item -> item_class == ITEM_CLASS_WEAPON )
   {
     weapon_stats += QString( "<strong>%1%2" )
@@ -804,32 +804,32 @@ ItemDataDelegate::itemStatsString( const item_data_t* item, bool html ) const
       .arg( dbc.weapon_dps( item -> id ), 0, 'f', 1 );
     weapon_stats += QString( "%1 Speed</strong>" ).arg( item -> delay / 1000.0, 0, 'f', 2 );
   }
-  
+
   if ( ( armor = item_database_t::armor_value( item, dbc ) ) > 0 )
     stats += QString( "%1 Armor" ).arg( armor );
-  
+
   for ( int i = 0; i < 10; i++ )
   {
     if ( item -> stat_type[ i ] < 0 || item -> stat_val[ i ] == 0 )
       continue;
-    
+
     stat_type t = util_t::translate_item_mod( item -> stat_type[ i ] );
     if ( t == STAT_NONE ) continue;
-    
+
     stats << QString( "%1 %2" )
       .arg( item -> stat_val[ i ] )
       .arg( util_t::stat_type_abbrev( t ) );
   }
-  
+
   if ( item -> id_suffix_group > 0 )
     stats += "<span style='font-size:10pt;color:#1eff00'>&lt;Random Enchantment&gt;</span>";
-  
+
   if ( weapon_stats.size() > 0 )
   {
     stats_str += weapon_stats.join( ", " );
     stats_str += "<br />";
   }
-  
+
   if ( stats.size() > 0 )
     stats_str += stats.join( ", " );
 
@@ -841,86 +841,86 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
 {
   m_itemSearch                = new QWidget( this );
   m_itemSearchLayout          = new QVBoxLayout();
-  
+
   m_itemSearchInput           = new QLineEdit( m_itemSearch );
   m_itemSearchView            = new QListView( m_itemSearch );
-  
+
   m_itemSearchModel           = new ItemDataListModel();
   m_itemSearchProxy           = new ItemFilterProxyModel( profile );
   m_itemSearchDelegate        = new ItemDataDelegate();
-  
+
   m_itemFilter                = new QWidget( this );
   m_itemFilterLayout          = new QFormLayout();
-  
+
   m_itemFilterMatchArmor      = new QCheckBox( m_itemFilter );
-  
+
   m_itemFilterMinIlevelLayout = new QHBoxLayout();
   m_itemFilterMinIlevel       = new QSlider( Qt::Horizontal, m_itemFilter );
   m_itemFilterMinIlevelLabel  = new QLabel();
-  
+
   m_itemFilterMaxIlevelLayout = new QHBoxLayout();
   m_itemFilterMaxIlevel       = new QSlider( Qt::Horizontal, m_itemFilter );
   m_itemFilterMaxIlevelLabel  = new QLabel();
 
   m_itemSetup                 = new QWidget( this );
   m_itemSetupLayout           = new QVBoxLayout();
-  
+
   m_itemSetupRandomSuffix     = new QGroupBox( m_itemSetup );
   m_itemSetupRandomSuffixLayout = new QHBoxLayout();
-  
+
   m_itemSetupRandomSuffixModel = new RandomSuffixDataModel( profile );
   m_itemSetupRandomSuffixView = new QComboBox( m_itemSetup );
-  
+
   m_itemSetupEnchantBox       = new QGroupBox( m_itemSetup );
   m_itemSetupEnchantBoxLayout = new QHBoxLayout();
   m_itemSetupEnchantView      = new QComboBox( m_itemSetup );
   m_itemSetupEnchantModel     = new EnchantDataModel( profile );
   m_itemSetupEnchantProxy     = new EnchantFilterProxyModel( profile );
-  
+
   // Search widget setup
-  
+
   m_itemSearchView -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   m_itemSearchView -> setModel( m_itemSearchProxy );
   m_itemSearchView -> setItemDelegate( m_itemSearchDelegate );
 
   m_itemSearchProxy -> setSourceModel( m_itemSearchModel );
-  
+
   QObject::connect( m_itemSearchInput, SIGNAL( textChanged( const QString& ) ),
                     m_itemSearchProxy, SLOT( SearchTextChanged( const QString& ) ) );
-  
+
   QObject::connect( m_itemSearchProxy, SIGNAL( itemSelected( const QModelIndex& ) ),
                     m_itemSearchView,  SLOT( setCurrentIndex( const QModelIndex& ) ) );
 
   m_itemSearch -> setLayout( m_itemSearchLayout );
-  
+
   m_itemSearchLayout -> addWidget( m_itemSearchInput );
   m_itemSearchLayout -> addWidget( m_itemSearchView );
-  
+
   // Filter widget setup
-  
+
   m_itemFilterMatchArmor -> setCheckState( Qt::Checked );
-  
+
   m_itemFilterMinIlevel -> setTickPosition( QSlider::TicksBelow );
   m_itemFilterMinIlevel -> setRange( 272, 410 );
   m_itemFilterMinIlevel -> setSingleStep( 1 );
   m_itemFilterMinIlevel -> setPageStep( 10 );
   m_itemFilterMinIlevel -> setTracking( false );
   m_itemFilterMinIlevel -> setValue ( m_itemSearchProxy -> minIlevel() );
-  
+
   m_itemFilterMinIlevelLabel -> setNum( m_itemSearchProxy -> minIlevel() );
-  
+
   m_itemFilterMinIlevelLayout -> addWidget( m_itemFilterMinIlevel, 0, Qt::AlignLeft | Qt::AlignCenter );
   m_itemFilterMinIlevelLayout -> addWidget( m_itemFilterMinIlevelLabel, 0, Qt::AlignLeft | Qt::AlignCenter );
-  
+
   m_itemFilterMaxIlevel -> setTickPosition( QSlider::TicksBelow );
   m_itemFilterMaxIlevel -> setRange( 272, 410 );
   m_itemFilterMaxIlevel -> setSingleStep( 1 );
   m_itemFilterMaxIlevel -> setPageStep( 10 );
   m_itemFilterMaxIlevel -> setTracking( false );
   m_itemFilterMaxIlevel -> setValue( m_itemSearchProxy -> maxIlevel() );
-  
+
   m_itemFilterMaxIlevelLabel -> setNum( m_itemSearchProxy -> maxIlevel() );
-  
+
   m_itemFilterMaxIlevelLayout -> addWidget( m_itemFilterMaxIlevel, 0, Qt::AlignLeft | Qt::AlignCenter );
   m_itemFilterMaxIlevelLayout -> addWidget( m_itemFilterMaxIlevelLabel, 0, Qt::AlignLeft | Qt::AlignCenter );
 
@@ -928,7 +928,7 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   m_itemFilterLayout -> addRow( "Match Armor:", m_itemFilterMatchArmor );
   m_itemFilterLayout -> addRow( "Minimum item level: ", m_itemFilterMinIlevelLayout );
   m_itemFilterLayout -> addRow( "Maximum item level: ", m_itemFilterMaxIlevelLayout );
-  
+
   QObject::connect( m_itemFilterMinIlevel,      SIGNAL( sliderMoved( int ) ),
                     m_itemFilterMinIlevelLabel, SLOT( setNum( int ) ) );
   QObject::connect( m_itemFilterMaxIlevel,      SIGNAL( sliderMoved( int ) ),
@@ -941,73 +941,73 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
                     m_itemSearchProxy,          SLOT( setMatchArmor( int ) ) );
 
   m_itemFilter -> setLayout( m_itemFilterLayout );
-  
+
   // Item setup widget
-  
+
   m_itemSetup -> setLayout( m_itemSetupLayout );
-  
+
   m_itemSetupRandomSuffix -> setTitle( "Random Suffix" );
   m_itemSetupRandomSuffix -> setLayout( m_itemSetupRandomSuffixLayout );
-  m_itemSetupRandomSuffix -> setVisible( false );  
-  
+  m_itemSetupRandomSuffix -> setVisible( false );
+
   m_itemSetupRandomSuffixLayout -> addWidget( m_itemSetupRandomSuffixView );
   m_itemSetupRandomSuffixLayout -> setAlignment( Qt::AlignCenter | Qt::AlignTop );
-  
+
   m_itemSetupRandomSuffixView -> setModel( m_itemSetupRandomSuffixModel );
-   
+
   m_itemSetupEnchantBox -> setTitle( "Enchant" );
   m_itemSetupEnchantBox -> setLayout( m_itemSetupEnchantBoxLayout );
   m_itemSetupEnchantBox -> setVisible( false );
-  
+
   m_itemSetupEnchantBoxLayout -> addWidget( m_itemSetupEnchantView );
   m_itemSetupEnchantBoxLayout -> setAlignment( Qt::AlignCenter | Qt::AlignTop );
-  
+
   m_itemSetupEnchantView -> setModel( m_itemSetupEnchantProxy );
   m_itemSetupEnchantView -> setEditable( false );
-  
+
   m_itemSetupEnchantProxy -> setSourceModel( m_itemSetupEnchantModel );
-  
+
   m_itemSetupLayout -> addWidget( m_itemSetupRandomSuffix );
   m_itemSetupLayout -> addWidget( m_itemSetupEnchantBox );
 
   QObject::connect( profile,                 SIGNAL( slotChanged( slot_type ) ),
                     m_itemSetupEnchantView,  SLOT( update() ) );
-  
+
   QObject::connect( profile,                 SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
                     m_itemSetupEnchantView,  SLOT( update() ) );
-  
+
   QObject::connect( profile,                 SIGNAL( professionChanged( profession_type ) ),
                     m_itemSetupEnchantView,  SLOT( update() ) );
 
   QObject::connect( m_itemSetupEnchantProxy, SIGNAL( enchantSelected( int ) ),
                     m_itemSetupEnchantView,  SLOT( setCurrentIndex( int ) ) );
-  
+
   QObject::connect( m_itemSetupEnchantProxy, SIGNAL( hasEnchant( bool ) ),
                     m_itemSetupEnchantBox,   SLOT( setVisible( bool ) ) );
-  
+
   QObject::connect( m_itemSetupRandomSuffixModel, SIGNAL( hasSuffixGroup( bool ) ),
                     m_itemSetupRandomSuffix, SLOT( setVisible( bool ) ) );
 
   QObject::connect( m_itemSetupRandomSuffixModel, SIGNAL( suffixSelected( int ) ),
                     m_itemSetupRandomSuffixView, SLOT( setCurrentIndex( int ) ) );
-  
+
   // Add to main tab
-  
+
   addTab( m_itemSearch, "Search" );
   addTab( m_itemFilter, "Filter" );
   addTab( m_itemSetup, "Setup" );
-  
+
   setMaximumWidth( 400 );
-  
+
   QObject::connect( m_itemSearchView,  SIGNAL( clicked( const QModelIndex& ) ),
                     profile,           SLOT( setSelectedItem( const QModelIndex& ) ) );
-  
+
   QObject::connect( profile,           SIGNAL( slotChanged( slot_type ) ),
-                    m_itemSearchProxy, SLOT( setSlot( slot_type ) ) );  
+                    m_itemSearchProxy, SLOT( setSlot( slot_type ) ) );
 
   QObject::connect( m_itemSetupEnchantView, SIGNAL( currentIndexChanged( int ) ),
                    profile,           SLOT( setSelectedEnchant( int ) ) );
-  
+
   QObject::connect( m_itemSetupRandomSuffixView, SIGNAL( currentIndexChanged( int ) ),
                    profile,          SLOT( setSelectedSuffix( int ) ) );
 }
@@ -1036,12 +1036,12 @@ RandomSuffixDataModel::randomSuffixStatsStr( const random_suffix_data_t& suffix 
   {
     if ( ! ( enchant_id = suffix_data.enchant_id[ i ] ) )
       continue;
-    
+
     const item_enchantment_data_t& enchant_data = dbc.item_enchantment( enchant_id );
-    
+
     if ( ! enchant_data.id )
       continue;
-    
+
     // Calculate amount of points
     if ( item -> quality == 4 ) // Epic
       stat_amount = ilevel_data.p_epic[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
@@ -1051,24 +1051,24 @@ RandomSuffixDataModel::randomSuffixStatsStr( const random_suffix_data_t& suffix 
       stat_amount = ilevel_data.p_uncommon[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
     else // Impossible choices, so bogus data, skip
       continue;
-    
+
     // Loop through enchantment stats, adding valid ones to the stats of the item.
     // Typically (and for cata random suffixes), there seems to be only one stat per enchantment
     for ( int j = 0; j < 3; j++ )
     {
       if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
-      
+
       stat_type stat = util_t::translate_item_mod( enchant_data.ench_prop[ j ] );
-      
+
       if ( stat == STAT_NONE ) continue;
-      
+
       std::string stat_str = util_t::stat_type_abbrev( stat );
       char statbuf[32];
       snprintf( statbuf, sizeof( statbuf ), "+%d%s", static_cast< int >( stat_amount ), stat_str.c_str() );
       stat_list.push_back( statbuf );
     }
   }
-  
+
   return stat_list.join( ", " );
 }
 
@@ -1086,15 +1086,15 @@ RandomSuffixDataModel::stateChanged()
 {
   beginResetModel();
   endResetModel();
-  
+
   unsigned currentSuffix = m_profile -> slotSuffix( m_profile -> currentSlot() );
-  
+
   if ( currentSuffix == 0 )
   {
     emit hasSuffixGroup( rowCount( QModelIndex() ) );
     return;
   }
-  
+
   for ( int i = 0; i < rowCount( QModelIndex() ); i++ )
   {
     const QModelIndex& idx = index( i, 0 );
@@ -1105,27 +1105,27 @@ RandomSuffixDataModel::stateChanged()
       break;
     }
   }
-  
+
   emit hasSuffixGroup( rowCount( QModelIndex() ) );
 }
 
-int 
+int
 RandomSuffixDataModel::rowCount( const QModelIndex& ) const
 {
   if ( m_profile -> currentSlot() == SLOT_NONE )
     return 0;
-  
+
   const item_data_t* item = m_profile -> slotItem( m_profile -> currentSlot() );
-  
+
   if ( ! item )
     return 0;
-  
+
   if ( item -> id_suffix_group == 0 )
     return 0;
-  
+
   for ( int i = 0; i < RAND_SUFFIX_GROUP_SIZE; i++ )
   {
-    if ( __rand_suffix_group_data[ i ].id == item -> id_suffix_group )
+    if ( static_cast<int>( __rand_suffix_group_data[ i ].id ) == item -> id_suffix_group )
     {
       int count = 0;
       while ( __rand_suffix_group_data[ i ].suffix_id[ count ] )
@@ -1133,19 +1133,19 @@ RandomSuffixDataModel::rowCount( const QModelIndex& ) const
       return count;
     }
   }
-  
+
   return 0;
 }
 
-QVariant 
+QVariant
 RandomSuffixDataModel::data( const QModelIndex& index, int role ) const
 {
   const item_data_t* item = m_profile -> slotItem( m_profile -> currentSlot() );
   dbc_t dbc( false );
-  
+
   for ( int i = 0; i < RAND_SUFFIX_GROUP_SIZE; i++ )
   {
-    if ( __rand_suffix_group_data[ i ].id == item -> id_suffix_group )
+    if ( static_cast<int>( __rand_suffix_group_data[ i ].id ) == item -> id_suffix_group )
     {
       const random_suffix_data_t& rs = dbc.random_suffix( __rand_suffix_group_data[ i ].suffix_id[ index.row() ] );
 
@@ -1163,34 +1163,34 @@ QString
 EnchantDataModel::enchantStatsStr( const item_enchantment_data_t* enchant )
 {
   assert( enchant );
-  
+
   QStringList stats;
-  
+
   for ( int i = 0; i < 3; i++ )
   {
     if ( enchant -> ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
       continue;
-    
+
     stat_type t = util_t::translate_item_mod( enchant -> ench_prop[ i ] );
     if ( t == STAT_NONE )
       continue;
-    
+
     stats << QString( "+%1 %2" )
       .arg( enchant -> ench_amount[ i ] )
       .arg( util_t::stat_type_abbrev( t ) );
-    
+
   }
-  
+
   return stats.join( ", " );
 }
 
-// All enchants are cached and split by slot as we do not want to go through the 
+// All enchants are cached and split by slot as we do not want to go through the
 // whole item and spell databases every time the the model gets stale.
 EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent ) :
   QAbstractListModel( parent ), m_profile( profile )
 {
   dbc_t dbc( false );
-  
+
   const item_data_t* item = dbc_t::items( dbc.ptr );
 
   while ( item -> id != 0 )
@@ -1200,17 +1200,17 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
       if ( item -> id_spell[ i ] > 0 )
       {
         const spell_data_t* spell = dbc.spell( item -> id_spell[ i ] );
-        
+
         // Item based permanent enchant, presume enchant in effect 1 always for now
         if ( spell -> effect1().type() == E_ENCHANT_ITEM )
         {
           const item_enchantment_data_t* item_enchant = &( dbc.item_enchantment( spell -> effect1().misc_value1() ) );
-          
+
           EnchantData ed;
           ed.item = item;
           ed.enchant = spell;
           ed.item_enchant = item_enchant;
-          
+
           if ( std::find( m_enchants.begin(), m_enchants.end(), ed ) == m_enchants.end() )
             m_enchants.push_back( ed );
 
@@ -1218,7 +1218,7 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
         }
       }
     }
-    
+
     item++;
   }
 
@@ -1232,7 +1232,7 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
       ed.item = 0;
       ed.enchant = s;
       ed.item_enchant = item_enchant;
-      
+
       if ( std::find( m_enchants.begin(), m_enchants.end(), ed ) == m_enchants.end() )
         m_enchants.push_back( ed );
     }
@@ -1249,20 +1249,20 @@ QVariant
 EnchantDataModel::data( const QModelIndex& index, int role ) const
 {
   if ( ! index.isValid() ) return QVariant( QVariant::Invalid );
-  
+
   if ( role == Qt::DisplayRole )
   {
     QString enchant_stats_str = enchantStatsStr( m_enchants[ index.row() ].item_enchant );
     if ( enchant_stats_str.size() )
       enchant_stats_str = " (" + enchant_stats_str + ")";
-    
+
     if ( m_enchants[ index.row() ].item )
       return QVariant( QString( "%1%2" ).arg( m_enchants[ index.row() ].item -> name ).arg( enchant_stats_str ) );
     else
       return QVariant( QString( "%1%2" ).arg( m_enchants[ index.row() ].enchant -> name_cstr() ).arg( enchant_stats_str ) );
   }
   else if ( role == Qt::UserRole )
-    return QVariant::fromValue< EnchantData >( m_enchants[ index.row() ] );
+    return QVariant::fromValue( m_enchants[ index.row() ] );
   else if ( role == Qt::DecorationRole )
   {
     const EnchantData& data =  m_enchants[ index.row() ];
@@ -1270,12 +1270,12 @@ EnchantDataModel::data( const QModelIndex& index, int role ) const
       return QVariant( PaperdollPixmap::get( data.item -> icon, true ).scaled( 16, 16 ) );
     else
       return QVariant( PaperdollPixmap::get( data.enchant -> _icon, true ).scaled( 16, 16 ) );
-    
+
     return QVariant( QVariant::Invalid );
   }
   else if ( role == Qt::ToolTipRole )
     return QVariant( enchantStatsStr( m_enchants[ index.row() ].item_enchant ) );
-  
+
   return QVariant( QVariant::Invalid );
 }
 
@@ -1283,7 +1283,7 @@ EnchantFilterProxyModel::EnchantFilterProxyModel( PaperdollProfile* profile, QWi
   QSortFilterProxyModel( parent ), m_profile( profile )
 {
   QObject::connect( profile, SIGNAL( slotChanged( slot_type ) ),
-                    this,    SLOT( stateChanged() ) );  
+                    this,    SLOT( stateChanged() ) );
 
   QObject::connect( profile, SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
                     this,    SLOT( stateChanged() ) );
@@ -1292,7 +1292,7 @@ EnchantFilterProxyModel::EnchantFilterProxyModel( PaperdollProfile* profile, QWi
                     this,    SLOT( stateChanged() ) );
 }
 
-void 
+void
 EnchantFilterProxyModel::stateChanged()
 {
   invalidate();
@@ -1305,7 +1305,7 @@ EnchantFilterProxyModel::stateChanged()
     emit hasEnchant( rowCount( QModelIndex() ) );
     return;
   }
-  
+
   for ( int i = 0; i < rowCount(); i++ )
   {
     const QModelIndex& idx = index( i, 0 );
@@ -1316,7 +1316,7 @@ EnchantFilterProxyModel::stateChanged()
       break;
     }
   }
-  
+
   emit hasEnchant( rowCount( QModelIndex() ) );
 }
 
@@ -1325,7 +1325,7 @@ EnchantFilterProxyModel::lessThan( const QModelIndex& left, const QModelIndex& r
 {
   const EnchantData e_left  = left.data( Qt::UserRole ).value< EnchantData >(),
                     e_right = right.data( Qt::UserRole ).value< EnchantData >();
-  
+
   return QString::compare( e_left.item ? e_left.item -> name : e_left.enchant -> name_cstr(),
                            e_right.item ? e_right.item -> name : e_right.enchant -> name_cstr() ) < 0;
 }
@@ -1339,8 +1339,8 @@ EnchantFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sou
   // Slot based filtering then.
   slot_type          slot = m_profile -> currentSlot();
   const item_data_t* item = m_profile -> slotItem( slot );
-  
-  if ( slot == SLOT_NONE || ! item ) 
+
+  if ( slot == SLOT_NONE || ! item )
     return false;
 
   return m_profile -> enchantUsableByProfile( ed );
@@ -1357,9 +1357,9 @@ void
 PaperdollBasicButton::paintEvent( QPaintEvent* event )
 {
   QPainter paint;
-  
+
   paint.begin( this );
-  
+
   if ( isEnabled() )
   {
     paint.drawPixmap( event -> rect(), m_icon.scaled( sizeHint() ) );
@@ -1383,11 +1383,11 @@ PaperdollBasicButton::paintEvent( QPaintEvent* event )
     }
     paint.drawImage( event -> rect(), image );
   }
-  
+
   // Selection border
   if ( isChecked() )
     paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border", false ).scaled( sizeHint() ) );
-  
+
   paint.end();
 }
 
@@ -1395,7 +1395,7 @@ QString
 PaperdollSlotButton::getSlotIconName( slot_type slot_id )
 {
   QString slot;
-  
+
   switch ( slot_id )
   {
     case SLOT_HEAD:      slot = "-Head"; break;
@@ -1427,7 +1427,7 @@ PaperdollSlotButton::PaperdollSlotButton( slot_type slot, PaperdollProfile* prof
   PaperdollBasicButton( profile, parent ), m_slot( slot )
 {
   m_icon = PaperdollPixmap::get( PaperdollSlotButton::getSlotIconName( m_slot ), true );
-  
+
   QObject::connect( this,    SIGNAL( selectedSlot( slot_type ) ),
                     profile, SLOT( setSelectedSlot( slot_type ) ) );
   QObject::connect( profile, SIGNAL( itemChanged( slot_type, const item_data_t* ) ),
@@ -1458,7 +1458,7 @@ PaperdollSlotButton::paintEvent( QPaintEvent* event )
   // Selection border
   if ( isChecked() )
     paint.drawPixmap( event -> rect(), PaperdollPixmap::get( "selection_border" ) );
-  
+
   paint.end();
 }
 
@@ -1491,28 +1491,28 @@ PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile,
   QGroupBox( "Select character class", parent ), m_profile( profile )
 {
   PaperdollClassButton* tmp;
-  
+
   m_classButtonGroupLayout = new QHBoxLayout();
   m_classButtonGroupLayout -> setAlignment( Qt::AlignHCenter | Qt::AlignTop );
   m_classButtonGroupLayout -> setSpacing( 2 );
   m_classButtonGroupLayout -> setContentsMargins( 1, 1, 1, 1 );
-  
+
   m_classButtonGroup = new QButtonGroup();
-  
+
   for ( player_type i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_type)((int)i+1) )
   {
     tmp = m_classButtons[ i ] = new PaperdollClassButton( profile, i, this );
-    
+
     m_classButtonGroup -> addButton( tmp, i );
     m_classButtonGroupLayout -> addWidget( tmp );
   }
-  
+
   QObject::connect( m_classButtonGroup, SIGNAL( buttonClicked( int ) ),
                     profile,            SLOT( setClass( int ) ) );
-  
+
   QObject::connect( profile,            SIGNAL( raceChanged( race_type ) ),
                     this,               SLOT( raceSelected( race_type ) ) );
-  
+
   setLayout( m_classButtonGroupLayout );
   setCheckable( false );
   setFlat( true );
@@ -1523,10 +1523,10 @@ void
 PaperdollClassButtonGroup::raceSelected( race_type t )
 {
   assert( t > RACE_ELEMENTAL && t < RACE_MAX );
-  
+
   for ( player_type i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_type)((int)i+1) )
     m_classButtons[ i ] -> setEnabled( false );
-  
+
   for ( int i = DEATH_KNIGHT; i < PLAYER_PET; i++ )
   {
     for ( int j = 0; j < RACE_MAX - RACE_NIGHT_ELF; j++ )
@@ -1544,15 +1544,15 @@ PaperdollRaceButtonGroup::PaperdollRaceButtonGroup( PaperdollProfile* profile, Q
   QGroupBox( "Select character race", parent ), m_profile( profile )
 {
   PaperdollRaceButton* tmp;
-  const char* faction_str[2] = { 
-    "alliance", 
-    "horde" 
+  const char* faction_str[2] = {
+    "alliance",
+    "horde"
   };
-  
+
   m_factionLayout = new QVBoxLayout();
   m_factionLayout -> setSpacing( 2 );
   m_factionLayout -> setContentsMargins( 1, 1, 1, 1 );
-  
+
   m_raceButtonGroup = new QButtonGroup();
   for ( int faction = 0; faction < 2; faction++ )
   {
@@ -1561,11 +1561,11 @@ PaperdollRaceButtonGroup::PaperdollRaceButtonGroup( PaperdollProfile* profile, Q
     m_raceButtonGroupLayout[ faction ] -> setSpacing( 2 );
     m_raceButtonGroupLayout[ faction ] -> setContentsMargins( 0, 0, 0, 0 );
     m_factionLayout -> addLayout( m_raceButtonGroupLayout[ faction ] );
-    
+
     m_factionLabel[ faction ] = new QLabel( this );
     m_factionLabel[ faction ] -> setPixmap( PaperdollPixmap::get( QString( "%1" ).arg( faction_str[ faction ] ), true ).scaled( 32, 32 ) );
     m_raceButtonGroupLayout[ faction ] -> addWidget( m_factionLabel[ faction ] );
-    
+
     for ( int race = 0; race < 6; race++ )
     {
       tmp = m_raceButtons[ raceButtonOrder[ faction ][ race ] - RACE_NIGHT_ELF ] = new PaperdollRaceButton( profile, raceButtonOrder[ faction ][ race ], this );
@@ -1573,7 +1573,7 @@ PaperdollRaceButtonGroup::PaperdollRaceButtonGroup( PaperdollProfile* profile, Q
       m_raceButtonGroupLayout[ faction ] -> addWidget( tmp );
     }
   }
-  
+
   setLayout( m_factionLayout );
   setCheckable( false );
   setFlat( true );
@@ -1581,7 +1581,7 @@ PaperdollRaceButtonGroup::PaperdollRaceButtonGroup( PaperdollProfile* profile, Q
 
   QObject::connect( m_raceButtonGroup, SIGNAL( buttonClicked( int ) ),
                     profile,           SLOT( setRace( int ) ) );
-  
+
   QObject::connect( profile,            SIGNAL( classChanged( player_type ) ),
                     this,               SLOT( classSelected( player_type ) ) );
 }
@@ -1590,10 +1590,10 @@ void
 PaperdollRaceButtonGroup::classSelected( player_type t )
 {
   assert( t < PLAYER_PET && t > PLAYER_NONE );
-  
+
   for ( race_type race = RACE_NIGHT_ELF; race < RACE_MAX; race=(race_type)((int)race+1) )
     m_raceButtons[ race - RACE_NIGHT_ELF ] -> setEnabled( false );
-  
+
   for ( int i = 0; i < RACE_MAX - RACE_NIGHT_ELF; i++ )
   {
     for ( int j = 0; j < PLAYER_PET; j++ )
@@ -1611,11 +1611,11 @@ PaperdollProfessionButtonGroup::PaperdollProfessionButtonGroup( PaperdollProfile
   QGroupBox( "Select character professions", parent )
 {
   PaperdollProfessionButton* tmp;
-  
+
   m_professionsLayout = new QVBoxLayout();
   m_professionsLayout -> setSpacing( 2 );
   m_professionsLayout -> setContentsMargins( 1, 1, 1, 1 );
-  
+
   for ( int profession = 0; profession < 2; profession++ )
   {
     m_professionGroup[ profession ] = new QButtonGroup();
@@ -1623,45 +1623,45 @@ PaperdollProfessionButtonGroup::PaperdollProfessionButtonGroup( PaperdollProfile
     m_professionLayout[ profession ] -> setAlignment( Qt::AlignHCenter | Qt::AlignTop );
     m_professionLayout[ profession ] -> setSpacing( 2 );
     m_professionLayout[ profession ] -> setContentsMargins( 0, 0, 0, 0 );
-    
+
     m_professionsLayout -> addLayout( m_professionLayout[ profession ] );
-    
+
     for ( profession_type p = PROF_ALCHEMY; p < PROFESSION_MAX; p=(profession_type)((int)p+1) )
-    { 
+    {
       tmp = m_professionButtons[ profession ][ p - PROF_ALCHEMY ] = new PaperdollProfessionButton( profile, p, this );
       m_professionGroup[ profession ] -> addButton( tmp, p );
       m_professionLayout[ profession ] -> addWidget( tmp );
     }
-    
+
     QObject::connect( m_professionGroup[ profession ], SIGNAL( buttonClicked( int ) ),
                       this,                            SLOT( setProfession( int ) ) );
   }
-  
+
   QObject::connect( this,    SIGNAL( professionSelected( int, int ) ),
                     profile, SLOT( setProfession( int, int ) ) );
-  
+
   setLayout( m_professionsLayout );
   setCheckable( false );
   setFlat( true );
   setAlignment( Qt::AlignHCenter );
 }
 
-void 
+void
 PaperdollProfessionButtonGroup::setProfession( int newValue )
 {
   QButtonGroup* sender = qobject_cast< QButtonGroup* >( QObject::sender() );
-  
+
   for ( int i = 0; i < 2; i ++ )
   {
     if ( m_professionGroup[ i ] == sender )
       continue;
-    
+
     // Enable all first
     for ( int j = 0; j < PROFESSION_MAX - 1; j++ )
       m_professionButtons[ i ][ j ] -> setEnabled( true );
 
     m_professionButtons[ i ][ newValue - PROF_ALCHEMY ] -> setEnabled( false );
-    
+
     emit professionSelected( i, newValue );
     break;
   }
@@ -1676,7 +1676,7 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   m_layout -> setColumnMinimumWidth( 1, 96 );
   m_layout -> setColumnMinimumWidth( 2, 96 );
   m_layout -> setColumnMinimumWidth( 3, 96 );
-  
+
   m_slotWidgets[ SLOT_HEAD ]      = new PaperdollSlotButton( SLOT_HEAD,      profile, this );
   m_slotWidgets[ SLOT_NECK ]      = new PaperdollSlotButton( SLOT_NECK,      profile, this );
   m_slotWidgets[ SLOT_SHOULDERS ] = new PaperdollSlotButton( SLOT_SHOULDERS, profile, this );
@@ -1698,13 +1698,13 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   m_slotWidgets[ SLOT_MAIN_HAND ] = new PaperdollSlotButton( SLOT_MAIN_HAND, profile, this );
   m_slotWidgets[ SLOT_OFF_HAND ]  = new PaperdollSlotButton( SLOT_OFF_HAND,  profile, this );
   m_slotWidgets[ SLOT_RANGED ]    = new PaperdollSlotButton( SLOT_RANGED,    profile, this );
-  
+
   m_baseSelectorLayout = new QVBoxLayout();
-  
+
   m_classGroup = new PaperdollClassButtonGroup( profile, this );
   m_raceGroup = new PaperdollRaceButtonGroup( profile, this );
   m_professionGroup = new PaperdollProfessionButtonGroup( profile, this );
-  
+
   m_layout -> addWidget( m_slotWidgets[ SLOT_HEAD ],      0, 0, Qt::AlignLeft | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_NECK ],      1, 0, Qt::AlignLeft | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_SHOULDERS ], 2, 0, Qt::AlignLeft | Qt::AlignTop );
@@ -1717,7 +1717,7 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   m_layout -> addWidget( m_slotWidgets[ SLOT_MAIN_HAND ], 8, 1, Qt::AlignCenter | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_OFF_HAND ],  8, 2, Qt::AlignCenter | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_RANGED ],    8, 3, Qt::AlignCenter | Qt::AlignTop );
-  
+
   m_layout -> addWidget( m_slotWidgets[ SLOT_HANDS ],     0, 4, Qt::AlignRight | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_WAIST ],     1, 4, Qt::AlignRight | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_LEGS ],      2, 4, Qt::AlignRight | Qt::AlignTop );
@@ -1732,7 +1732,7 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   m_baseSelectorLayout -> addWidget( m_classGroup, Qt::AlignLeft | Qt::AlignTop );
   m_baseSelectorLayout -> addWidget( m_raceGroup, Qt::AlignLeft | Qt::AlignTop );
   m_baseSelectorLayout -> addWidget( m_professionGroup, Qt::AlignLeft | Qt::AlignTop );
-  
+
   setLayout( m_layout );
 }
 
