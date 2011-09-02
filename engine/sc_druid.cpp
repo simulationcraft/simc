@@ -3289,7 +3289,7 @@ struct innervate_buff_t : public buff_t
 
       virtual void execute()
       {
-        if ( player -> buffs.innervate -> up() )
+        if ( player -> buffs.innervate -> check() )
         {
           player -> resource_gain( RESOURCE_MANA, player -> buffs.innervate -> value(), player -> gains.innervate );
           new ( sim ) innervate_event_t( player );
