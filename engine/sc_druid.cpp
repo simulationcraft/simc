@@ -3271,47 +3271,34 @@ struct faerie_fire_t : public druid_spell_t
   }
 };
 
-// Innervate
-
-// Event
-struct innervate_event_t : public event_t
-{
-  buff_t* buff;
-
-  innervate_event_t ( player_t* player,buff_t* b ) :
-    event_t( player -> sim, player ), buff( 0 )
-  {
-    buff = b;
-    name = "innervate";
-    sim -> add_event( this, 1.0 );
-  }
-
-  virtual void execute()
-  {
-
-    if ( buff -> check() )
-    {
-      player -> resource_gain( RESOURCE_MANA, player -> buffs.innervate -> value(), player -> gains.innervate );
-      new ( sim ) innervate_event_t( player, buff );
-    }
-  }
-};
-
-// Buff
+// Innervate Buff ==========================================================
 
 struct innervate_buff_t : public buff_t
 {
-  innervate_buff_t( player_t* p, const uint32_t id, const std::string& n ) :
-    buff_t ( p, id, n )
-  {
-
-  }
+  innervate_buff_t( player_t* p ) :
+    buff_t ( p, 29166, "innervate" )
+  {}
 
   virtual void start( int stacks, double value )
   {
-    new ( sim ) innervate_event_t( player, this );
-    buff_t::start( stacks, value );
+    struct innervate_event_t : public event_t
+    {
+      innervate_event_t ( player_t* player ) :
+        event_t( player -> sim, player, "innervate" )
+      { sim -> add_event( this, 1.0 ); }
 
+      virtual void execute()
+      {
+        if ( player -> buffs.innervate -> up() )
+        {
+          player -> resource_gain( RESOURCE_MANA, player -> buffs.innervate -> value(), player -> gains.innervate );
+          new ( sim ) innervate_event_t( player );
+        }
+      }
+    };
+
+    new ( sim ) innervate_event_t( player );
+    buff_t::start( stacks, value );
   }
 };
 
@@ -3460,7 +3447,7 @@ struct mark_of_the_wild_t : public druid_spell_t
         p -> buffs.mark_of_the_wild -> trigger();
         // Force max mana recalculation here
         p -> recalculate_resource_max( RESOURCE_MANA );
-        if ( ! p -> in_combat ) 
+        if ( ! p -> in_combat )
           p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] - p -> resource_current[ RESOURCE_MANA ], 0, this );
       }
     }
@@ -3739,7 +3726,7 @@ struct starfire_t : public druid_spell_t
             }
           }
         }
-        
+
         trigger_eclipse_gain_delay( this, gain );
       }
       else
@@ -5221,17 +5208,17 @@ double druid_t::composite_attribute_multiplier( int attr ) SC_CONST
   return m;
 }
 
-// Heart of the Wild does nothing for base int so we need to do completely silly 
+// Heart of the Wild does nothing for base int so we need to do completely silly
 // tricks to match paper doll in game
 double druid_t::intellect() const
 {
   double a = attribute_base[ ATTR_INTELLECT ];
   a *= ( 1.0 + matching_gear_multiplier( ATTR_INTELLECT ) );
-  
+
   double b = attribute[ ATTR_INTELLECT ] - attribute_base[ ATTR_INTELLECT ];
   b *= ( attribute_multiplier_initial[ ATTR_INTELLECT ] );
   b *= ( 1.0 + matching_gear_multiplier( ATTR_INTELLECT ) );
-  
+
   double z = floor( a + b );
   if ( buffs.mark_of_the_wild -> check() || buffs.blessing_of_kings -> check() )
     z *= 1.05;
@@ -5469,7 +5456,7 @@ void player_t::druid_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.innervate              = new innervate_buff_t( p, 29166, "innervate" );
+    p -> buffs.innervate              = new innervate_buff_t( p );
     p -> buffs.mark_of_the_wild       = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
     p -> debuffs.demoralizing_roar    = new debuff_t( p, 99, "demoralizing_roar" );
     p -> debuffs.earth_and_moon       = new debuff_t( p, 60433, "earth_and_moon" );
