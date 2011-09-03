@@ -2216,7 +2216,7 @@ struct frostfire_bolt_t : public mage_spell_t
       dot_behavior = DOT_REFRESH;
     }
     if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
-    if ( p -> set_bonus.pvp_4pc_caster() ) 
+    if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
   }
 
@@ -2964,7 +2964,7 @@ struct choose_rotation_t : public action_t
       }
       p -> rotation.last_time = sim -> current_time;
 
-      if ( sim -> log ) 
+      if ( sim -> log )
       {
         log_t::output( sim, "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / sim -> current_time ), sim -> target -> time_to_die());
       }
@@ -3475,6 +3475,7 @@ void mage_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
+#if 0 // UNUSED
     // Shard of Woe check for Arcane
     bool has_shard = false;
     for ( int i=0; i < SLOT_MAX; i++ )
@@ -3486,6 +3487,7 @@ void mage_t::init_actions()
         break;
       }
     }
+#endif
 
     // Flask
     if ( level >= 80 )
@@ -3948,8 +3950,8 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
     struct burn_mps_expr_t : public action_expr_t
     {
       burn_mps_expr_t( action_t* a ) : action_expr_t( a, "burn_mps", TOK_NUM ){}
-      virtual int evaluate() 
-      { 
+      virtual int evaluate()
+      {
         mage_t* p = action -> player -> cast_mage();
         if ( p -> rotation.current == ROTATION_DPS )
         {
@@ -3961,8 +3963,8 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
         }
         p -> rotation.last_time = action -> sim -> current_time;
 
-        result_num = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / action -> sim -> current_time ); 
-        return TOK_NUM; 
+        result_num = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / action -> sim -> current_time );
+        return TOK_NUM;
       }
     };
     return new burn_mps_expr_t( a );

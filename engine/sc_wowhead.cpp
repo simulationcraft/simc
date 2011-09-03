@@ -470,7 +470,7 @@ static const char* translate_profession_id( int type )
   case PROF_HERBALISM:      return "skills/182";
   case PROF_INSCRIPTION:    return "skills/773";
   case PROF_JEWELCRAFTING:  return "skills/755";
-  case PROF_LEATHERWORKING: return "skills//165";
+  case PROF_LEATHERWORKING: return "skills/165";
   case PROF_MINING:         return "skills/186";
   case PROF_SKINNING:       return "skills/393";
   case PROF_TAILORING:      return "skills/197";
