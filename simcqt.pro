@@ -4,6 +4,10 @@ QT += core gui network webkit
 #CONFIG += paperdoll
 #CONFIG += openssl
 
+release {
+  DEFINES += NDEBUG
+}
+
 win32 {
   LIBS += libwsock32 libwininet
   RC_FILE += simcqt.rc
