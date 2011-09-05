@@ -81,7 +81,7 @@ static bool parse_item_quality( item_t& item, const item_data_t* item_data )
     item.armory_quality_str = "epic";
   else if ( item_data -> quality == 3 )
     item.armory_quality_str = "rare";
-  else if ( item_data -> quality == 3 )
+  else if ( item_data -> quality == 2 )
     item.armory_quality_str = "uncommon";
 
   return true;
@@ -354,28 +354,28 @@ int item_database_t::random_suffix_type( const item_data_t* item )
         case INVTYPE_LEGS:
         case INVTYPE_ROBE:
           return 0;
-        
+
         case INVTYPE_SHOULDERS:
         case INVTYPE_WAIST:
         case INVTYPE_FEET:
         case INVTYPE_HANDS:
         case INVTYPE_TRINKET:
           return 1;
-        
+
         case INVTYPE_NECK:
         case INVTYPE_WEAPONOFFHAND:
         case INVTYPE_HOLDABLE:
         case INVTYPE_FINGER:
         case INVTYPE_CLOAK:
           return 2;
-        
+
         default:
           return -1;
       }
     default:
       return -1;
   }
-  
+
   return -1;
 }
 
