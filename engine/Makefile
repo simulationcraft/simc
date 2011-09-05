@@ -3,7 +3,7 @@
 # Send questions to natehieter@gmail.com
 # ==========================================================================
 
-# To build on Unix/Mac: make 
+# To build on Unix/Mac: make
 # To build on Windows with MinGW: c:\mingw\bin\mingw32-make OS=WINDOWS
 
 # To build debuggable executable, add OPTS=-g to cmd-line invocation
@@ -12,7 +12,7 @@
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
 OS         = UNIX
-OPENSSL_PATH = 
+OPENSSL_PATH =
 
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W -Wswitch
@@ -149,6 +149,11 @@ $(MODULE): $(SRC_OBJ)
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
 	@$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
+
+%.s: %.cpp $(SRC_H)
+	-@echo [$(MODULE)] Compiling $(notdir $<)
+	@$(CXX) $(CPP_FLAGS) $(OPTS) -S $< -o $@
+
 
 mostlyclean:
 	-@echo [$(MODULE)] Cleaning intermediate files
