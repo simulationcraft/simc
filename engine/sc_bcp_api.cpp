@@ -13,6 +13,8 @@ namespace bcp_api { // ======================================================
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+const bool BCP_DEBUG_ITEMS = false;
+
 template <typename T>
 inline T clamp( T x, T low, T high )
 {
@@ -48,13 +50,13 @@ js_node_t* download_guild( sim_t* sim,
   std::string result;
   if ( ! http_t::get( result, url, "\"members\"", caching ) )
   {
-    sim -> errorf( "Unable to download guild %s|%s|%s from BCP API.\n", region.c_str(), server.c_str(), name.c_str() );
+    sim -> errorf( "BCP API: Unable to download guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
   js_node_t* js = js_t::create( sim, result );
   if ( ! js || ! ( js = js_t::get_child( js, "members" ) ) )
   {
-    sim -> errorf( "Unable to determine members of guild %s|%s|%s from BCP API.\n", region.c_str(), server.c_str(), name.c_str() );
+    sim -> errorf( "BCP API: Unable to get members of guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
 
@@ -125,13 +127,13 @@ bool parse_talents( player_t* p, js_node_t* talents )
   std::string talent_encoding;
   if ( ! js_t::get_value( talent_encoding, talents, "build" ) )
   {
-    p -> sim -> errorf( "Player %s unable to access talent encoding from profile.\n", p -> name() );
+    p -> sim -> errorf( "BCP API: No talent encoding for player %s.\n", p -> name() );
     return false;
   }
 
   if ( ! p -> parse_talents_armory( talent_encoding ) )
   {
-    p -> sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encoding.c_str() );
+    p -> sim -> errorf( "BCP API: Can't parse talent encoding '%s' for player %s.\n", talent_encoding.c_str(), p -> name() );
     return false;
   }
 
@@ -149,7 +151,7 @@ bool parse_glyphs( player_t* p, js_node_t* build )
 {
   static const char* const glyph_type_names[] = { "glyphs/prime", "glyphs/major", "glyphs/minor" };
 
-  for ( std::size_t i = 0; i < sizeof( glyph_type_names ) / sizeof( glyph_type_names[ 0 ]); ++i )
+  for ( std::size_t i = 0; i < sizeof_array( glyph_type_names ); ++i )
   {
     if ( js_node_t* glyphs = js_t::get_node( build, glyph_type_names[ i ] ) )
     {
@@ -207,7 +209,7 @@ bool parse_items( player_t* p, js_node_t* items )
     "tabard"
   };
 
-  assert( sizeof( slot_map ) / sizeof ( slot_map[ 0 ] ) == SLOT_MAX );
+  assert( sizeof_array( slot_map ) == SLOT_MAX );
 
   for ( unsigned i = 0; i < SLOT_MAX; ++i )
   {
@@ -274,9 +276,9 @@ player_t* download_player( sim_t*             sim,
   std::string name_str;
   if ( ! js_t::get_value( name_str, profile_js, "name"  ) )
     name_str = name;
-  sim -> current_name = name_str;
   if ( talents != "active" )
     name_str += '_' + talents;
+  sim -> current_name = name_str;
 
   int level;
   if ( ! js_t::get_value( level, profile_js, "level"  ) )
@@ -284,9 +286,6 @@ player_t* download_player( sim_t*             sim,
     sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", url.c_str() );
     return 0;
   }
-  //level = clamp( level, 60, 85 );
-  // Is there a reason not to import low level characters? Besides the 20pt base stats in player_t::init_resource
-  if ( level > 85 ) level = 85;
 
   int cid;
   if ( ! js_t::get_value( cid, profile_js, "class" ) )
@@ -318,7 +317,7 @@ player_t* download_player( sim_t*             sim,
     p -> server_str = server;
 
   p -> origin_str = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
-  http_t::format( p ->origin_str );
+  http_t::format( p -> origin_str );
 
   if ( js_t::get_value( p -> thumbnail_url, profile_js, "thumbnail" ) )
   {
@@ -358,10 +357,85 @@ player_t* download_player( sim_t*             sim,
   return p;
 }
 
+namespace { // ANONYMOUS ===================================================
+
+inline bool parse_item_id( item_t& item, js_node_t* js )
+{ return js_t::get_value( item.armory_id_str, js, "id" ); }
+
+bool parse_item_name( item_t& item, js_node_t* js )
+{
+  if ( js_t::get_value( item.armory_name_str, js, "name" ) )
+  {
+    armory_t::format( item.armory_name_str );
+    return true;
+  }
+  else
+    return false;
+}
+
+bool parse_item_quality( item_t& item, js_node_t* js )
+{
+  int quality;
+  if ( js_t::get_value( quality, js, "quality" ) )
+  {
+    if ( quality > 1 )
+      item.armory_quality_str = util_t::item_quality_string( quality );
+    return true;
+  }
+  else
+    return false;
+}
+
+inline bool parse_item_level( item_t& item, js_node_t* js )
+{ return js_t::get_value( item.armory_ilevel_str, js, "itemLevel" ); }
+
+bool parse_item_heroic( item_t&, js_node_t* )
+{
+  // "heroic" is not available from BCP API.
+  return true;
+}
+
+bool parse_item_armor_type( item_t& item, js_node_t* js )
+{
+  item.armory_armor_type_str.clear();
+
+  int itemclass, itemsubclass;
+  if ( js_t::get_value( itemclass, js, "itemClass" ) &&
+       js_t::get_value( itemsubclass, js, "itemSubClass" ) &&
+       itemclass == ITEM_CLASS_ARMOR )
+  {
+    switch ( itemsubclass )
+    {
+    case ITEM_SUBCLASS_ARMOR_CLOTH:
+      item.armory_armor_type_str = "cloth";
+      break;
+    case ITEM_SUBCLASS_ARMOR_LEATHER:
+      item.armory_armor_type_str = "leather";
+      break;
+    case ITEM_SUBCLASS_ARMOR_MAIL:
+      item.armory_armor_type_str = "mail";
+      break;
+    case ITEM_SUBCLASS_ARMOR_PLATE:
+      item.armory_armor_type_str = "plate";
+      break;
+    default:
+      break;
+    }
+  }
+
+  return true;
+}
+
+} // ANONYMOUS namespace ===================================================
+
 // bcp_api::download_item() ================================================
 
 bool download_item( item_t& item, const std::string& item_id, cache::behavior_t caching )
 {
+  // BCP API doesn't currently provide enough information to describe items completely.
+  if ( ! BCP_DEBUG_ITEMS )
+    return false;
+
   js_node_t* js = download_id( item.sim, item.sim -> default_region_str, item_id, caching );
   if ( ! js )
   {
@@ -374,22 +448,128 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
   }
   if ( item.sim -> debug ) js_t::print( js, item.sim -> output_file );
 
-  if ( ! js_t::get_value( item.armory_name_str, js, "name" ) )
+  item_data_t item_data;
+  zerofill( item_data );
+
+  try
   {
-    item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%s' name at slot '%s'.\n",
-                        item.player -> name(), item_id.c_str(), item.slot_name() );
+    {
+      int id;
+      if ( ! js_t::get_value( id, js, "id" ) ) throw( "id" );
+      item_data.id = id;
+    }
+
+    std::string item_name;
+    if ( ! js_t::get_value( item_name, js, "name" ) ) throw( "name" );
+    item_data.name = item_name.c_str();
+
+    std::string item_icon;
+    if ( js_t::get_value( item_name, js, "icon" ) )
+      item_data.icon = item_icon.c_str();
+
+    if ( ! js_t::get_value( item_data.level, js, "itemLevel" ) ) throw( "level" );
+
+    js_t::get_value( item_data.req_level, js, "requiredLevel" );
+    js_t::get_value( item_data.req_skill, js, "requiredSkill" );
+    js_t::get_value( item_data.req_skill_level, js, "requiredSkillRank" );
+
+    if ( ! js_t::get_value( item_data.quality, js, "quality" ) ) throw( "quality" );
+
+    if ( ! js_t::get_value( item_data.inventory_type, js, "inventoryType" ) ) throw( "inventory type" );
+    if ( ! js_t::get_value( item_data.item_class, js, "itemClass" ) ) throw( "item class" );
+    if ( ! js_t::get_value( item_data.item_subclass, js, "itemSubClass" ) ) throw( "item subclass" );
+    js_t::get_value( item_data.bind_type, js, "itemBind" );
+
+    if ( js_node_t* w = js_t::get_child( js, "weaponInfo" ) )
+    {
+      int minDmg, maxDmg;
+      double speed;
+      if ( ! js_t::get_value( speed, w, "weaponSpeed" ) ) throw( "weapon speed" );
+      if ( ! js_t::get_value( minDmg, w, "damage/minDamage" ) ) throw( "weapon minimum damage" );
+      if ( ! js_t::get_value( maxDmg, w, "damage/maxDamage" ) ) throw( "weapon maximum damage" );
+      item_data.delay = speed * 1000.0;
+      item_data.dmg_range = maxDmg - minDmg;
+    }
+
+    {
+      std::vector<js_node_t*> nodes;
+      if ( js_t::get_children( nodes, js, "allowableClasses" ) )
+      {
+        for ( unsigned i = 0, n = nodes.size(); i < n; ++i )
+        {
+          int cid;
+          if ( js_t::get_value( cid, nodes[ i ] ) )
+            item_data.class_mask |= 1 << ( cid - 1 );
+        }
+      }
+      else
+        item_data.class_mask = -1;
+    }
+
+    {
+      std::vector<js_node_t*> nodes;
+      if ( js_t::get_children( nodes, js, "allowableRaces" ) )
+      {
+        for ( unsigned i = 0, n = nodes.size(); i < n; ++i )
+        {
+          int rid;
+          if ( js_t::get_value( rid, nodes[ i ] ) )
+            item_data.race_mask |= 1 << ( rid - 1 );
+        }
+      }
+      else
+        item_data.race_mask = -1;
+    }
+
+    {
+      std::vector<js_node_t*> nodes;
+      js_t::get_children( nodes, js, "bonusStats" );
+      for ( unsigned i = 0, n = std::min( nodes.size(), sizeof_array( item_data.stat_type ) ); i < n; ++i )
+      {
+        if ( ! js_t::get_value( item_data.stat_type[ i ], nodes[ i ], "stat" ) ) throw( "bonus stat" );
+        if ( ! js_t::get_value( item_data.stat_val[ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
+      }
+    }
+
+    {
+      std::string color;
+      std::vector<js_node_t*> nodes;
+      js_t::get_children( nodes, js, "socketInfo/sockets" );
+      for ( unsigned i = 0, n = std::min( nodes.size(), sizeof_array( item_data.socket_color ) ); i < n; ++i )
+      {
+        if ( js_t::get_value( color, nodes[ i ], "type" ) )
+        {
+          if ( color == "META" )
+            item_data.socket_color[ i ] = SOCKET_COLOR_META;
+          else if ( color == "RED" )
+            item_data.socket_color[ i ] = SOCKET_COLOR_RED;
+          else if ( color == "YELLOW" )
+            item_data.socket_color[ i ] = SOCKET_COLOR_RED;
+          else if ( color == "BLUE" )
+            item_data.socket_color[ i ] = SOCKET_COLOR_BLUE;
+          else if ( color == "COGWHEEL" )
+            item_data.socket_color[ i ] = SOCKET_COLOR_COGWHEEL;
+        }
+      }
+    }
+
+    js_t::get_value( item_data.id_set, js, "itemSet" );
+
+    // heroic tag is not available from BCP API.
+    if ( false ) item_data.flags_1 |= ITEM_FLAG_HEROIC;
+
+    // socket bonus is not available from BCP API.
+    if ( false ) item_data.id_socket_bonus = 7748234923;
+  }
+  catch ( const char* fieldname )
+  {
+    item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%s' %s at slot '%s'.\n",
+                       item.player -> name(), item_id.c_str(), fieldname, item.slot_name() );
     return false;
   }
-  armory_t::format( item.armory_name_str );
 
-  if ( ! js_t::get_value( item.armory_id_str, js, "id" ) )
-  {
-    item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%s' id at slot '%s'.\n",
-                        item.player -> name(), item_id.c_str(), item.slot_name() );
-    return false;
-  }
-
-  return true;
+  // return item.loadFrom( item_data );
+  return false;
 }
 
 // bcp_api::download_guild ==================================================
@@ -406,25 +586,23 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
 
   for ( std::size_t i = 0, n = characters.size(); i < n; ++i )
   {
-    std::string cname;
-    if ( ! js_t::get_value( cname, characters[ i ], "character/name" ) ) continue;
+    int level;
+    if ( ! js_t::get_value( level, characters[ i ], "character/level" ) || level < 85 )
+      continue;
 
     int cid;
-    if ( ! js_t::get_value( cid, characters[ i ], "character/class" ) ) continue;
-
-    int level;
-    if ( ! js_t::get_value( level, characters[ i ], "character/level" ) ) continue;
+    if ( ! js_t::get_value( cid, characters[ i ], "character/class" ) ||
+        ( player_filter != PLAYER_NONE && player_filter != util_t::translate_class_id( cid ) ) )
+      continue;
 
     int rank;
-    if ( ! js_t::get_value( rank, characters[ i ], "rank" ) ) continue;
-
-    if ( level < 85 || ( ( max_rank > 0 ) && ( rank > max_rank ) ) ||
-         ( ( ranks.size() > 0 ) && std::find( ranks.begin(), ranks.end(), rank ) == ranks.end() ) )
+    if ( ! js_t::get_value( rank, characters[ i ], "rank" ) ||
+        ( ( max_rank > 0 ) && ( rank > max_rank ) ) ||
+        ( ! ranks.empty() && std::find( ranks.begin(), ranks.end(), rank ) == ranks.end() ) )
       continue;
 
-    if ( player_filter != PLAYER_NONE && player_filter != util_t::translate_class_id( cid ) )
-      continue;
-
+    std::string cname;
+    if ( ! js_t::get_value( cname, characters[ i ], "character/name" ) ) continue;
     names.push_back( cname );
   }
 
@@ -435,15 +613,15 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
   for ( std::size_t i = 0, n = names.size(); i < n; ++i )
   {
     const std::string& cname = names[ i ];
-    sim -> errorf( "Downloading character: %s\n", cname.c_str() );
+    util_t::printf( "Downloading character: %s\n", cname.c_str() );
     player_t* player = download_player( sim, region, server, cname, "active", caching );
     if ( !player )
     {
-      sim -> errorf( "BCP API: Failed to download player '%s' ...\n", cname.c_str() );
+      sim -> errorf( "BCP API: Failed to download player '%s' trying Wowhead instead\n", cname.c_str() );
       player = wowhead_t::download_player( sim, region, server, cname, "active", caching );
+      if ( !player )
+        return false;
     }
-    if ( !player )
-      return false;
   }
 
   return true;
@@ -456,9 +634,10 @@ bool download_glyph( player_t*          player,
                      const std::string& glyph_id,
                      cache::behavior_t  caching )
 {
-  js_node_t* item = download_id( player -> sim,
-                                 player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str,
-                                 glyph_id, caching );
+  const std::string& region =
+      ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
+
+  js_node_t* item = download_id( player -> sim, region, glyph_id, caching );
   if ( ! item || ! js_t::get_value( glyph_name, item, "name" ) )
   {
     if ( caching != cache::ONLY )

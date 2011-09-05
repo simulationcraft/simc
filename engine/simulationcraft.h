@@ -779,6 +779,16 @@ enum rating_type {
 
 // Type utilities and simple meta-programming tools ==========================
 
+#define sizeof_array( x ) ( sizeof( x ) / sizeof( x[ 0 ] ) )
+
+template <typename T>
+inline void zerofill( T* t )
+{ memset( t, 0, sizeof( *t ) ); }
+
+template <typename T>
+inline void zerofill( T& t )
+{ zerofill( &t ); }
+
 class noncopyable
 {
 public:

@@ -176,7 +176,7 @@ static const char* get_chart_base_url()
     "http://8.chart.apis.google.com/chart?",
     "http://9.chart.apis.google.com/chart?",
   };
-  round_robin = ( round_robin + 1 ) % ( sizeof( base_urls ) / sizeof( base_urls[ 0 ] ) );
+  round_robin = ( round_robin + 1 ) % sizeof_array( base_urls );
 
   return base_urls[ round_robin ];
 }
