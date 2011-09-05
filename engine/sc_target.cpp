@@ -48,7 +48,7 @@ struct enemy_t : public player_t
 
   virtual int primary_resource() SC_CONST
   {
-    return RESOURCE_HEALTH;
+    return RESOURCE_NONE;
   }
 
 // target_t::base_armor ======================================================

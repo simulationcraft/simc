@@ -3192,14 +3192,12 @@ void player_t::regen( double periodicity )
 
   else if ( resource_type == RESOURCE_MANA )
   {
-    double spirit_regen = periodicity * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
+    if ( mana_regen_while_casting > 0 )
+    {
+      double spirit_regen = periodicity * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
 
-    if ( mana_regen_while_casting < 1.0 )
-    {
       spirit_regen *= mana_regen_while_casting;
-    }
-    if( spirit_regen > 0 )
-    {
+
       resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
     }
 

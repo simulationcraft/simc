@@ -40,7 +40,9 @@ struct buff_delay_t : public event_t
 
   virtual void execute()
   {
-    buff -> execute( stacks, value );
+    // Add a Cooldown check here to avoid extra processing due to delays
+    if ( buff -> cooldown -> remains() > 0 )
+      buff -> execute( stacks, value );
     buff -> delay = 0;
   }
 };
@@ -566,9 +568,6 @@ bool buff_t::trigger( int    stacks,
 
 void buff_t::execute( int stacks, double value )
 {
-  // Add a Cooldown check here to avoid extra processing due to delays
-  if ( cooldown -> remains() > 0 ) return;
-
   if( last_trigger > 0 )
   {
     trigger_intervals_sum += sim -> current_time - last_trigger;

@@ -2189,9 +2189,11 @@ struct frostbolt_t : public mage_spell_t
   virtual double gcd() SC_CONST
   {
     mage_t* p = player -> cast_mage();
+
     if ( p -> talents.early_frost -> rank() )
       if( ! p -> cooldowns_early_frost -> remains() )
-  return 1.0;
+        return 1.0;
+
     return mage_spell_t::gcd();
   }
 };
@@ -3840,8 +3842,6 @@ void mage_t::reset()
 
 void mage_t::regen( double periodicity )
 {
-  mana_regen_while_casting  = 0;
-
   player_t::regen( periodicity );
 
   if ( glyphs.frost_armor -> ok() && buffs_frost_armor -> up()  )

@@ -1647,6 +1647,8 @@ struct fortitude_t : public priest_spell_t
 
     harmful = false;
 
+    background = sim -> overrides.fortitude;
+
     bonus = floor( player -> dbc.effect_average( player -> dbc.spell( 79104 ) -> effect1().id() , player -> level ) );
   }
 
@@ -5234,6 +5236,8 @@ void priest_t::init_values()
                                               ( set_bonus.tier12_2pc_caster() ? -75.0 : 0.0 );
 
   constants.max_shadowy_apparitions         = passive_spells.shadowy_apparition_num -> effect_base_value( 1 );
+
+  mana_regen_while_casting = constants.meditation_value + constants.holy_concentration_value;
 }
 
 
@@ -5243,16 +5247,19 @@ void priest_t::reset()
 {
   player_t::reset();
 
-  while ( shadowy_apparition_active_list.size() )
+  if ( talents.shadowy_apparition -> rank() )
   {
-    spell_t* s = shadowy_apparition_active_list.front();
+    while ( shadowy_apparition_active_list.size() )
+    {
+      spell_t* s = shadowy_apparition_active_list.front();
 
-    shadowy_apparition_active_list.pop_front();
+      shadowy_apparition_active_list.pop_front();
 
-    shadowy_apparition_free_list.push( s );
+      shadowy_apparition_free_list.push( s );
+    }
+
+    priest_spell_t::add_more_shadowy_apparitions( this );
   }
-
-  priest_spell_t::add_more_shadowy_apparitions( this );
 
   recast_mind_blast = 0;
 
@@ -5308,8 +5315,6 @@ void priest_t::pre_analyze_hook()
 
 void priest_t::regen( double periodicity )
 {
-  mana_regen_while_casting = constants.meditation_value + constants.holy_concentration_value;
-
   player_t::regen( periodicity );
 }
 

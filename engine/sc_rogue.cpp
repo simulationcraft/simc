@@ -1291,23 +1291,7 @@ double rogue_attack_t::total_multiplier() SC_CONST
 
 bool rogue_attack_t::ready()
 {
-  if ( ! attack_t::ready() )
-    return false;
-
   rogue_t* p = player -> cast_rogue();
-
-  //Killing Spree blocks all rogue actions for duration
-  if ( p -> buffs_killing_spree -> check() )
-    if ((special == true) && (proc == false))
-      return false;
-
-  if ( requires_weapon != WEAPON_NONE )
-    if ( ! weapon || weapon -> type != requires_weapon )
-      return false;
-
-  if ( requires_position != POSITION_NONE )
-    if ( p -> position != requires_position )
-      return false;
 
   if ( requires_combo_points && ! p -> combo_points -> count )
     return false;
@@ -1322,7 +1306,21 @@ bool rogue_attack_t::ready()
     }
   }
 
-  return true;
+  //Killing Spree blocks all rogue actions for duration
+  if ( p -> buffs_killing_spree -> check() )
+    if ((special == true) && (proc == false))
+      return false;
+
+  if ( requires_position != POSITION_NONE )
+    if ( p -> position != requires_position )
+      return false;
+
+  if ( requires_weapon != WEAPON_NONE )
+    if ( ! weapon || weapon -> type != requires_weapon )
+      return false;
+
+
+  return attack_t::ready();
 }
 
 // rogue_attack_t::assess_damage ===========================================
@@ -4033,7 +4031,7 @@ void rogue_t::regen( double periodicity )
     }
   }
 
-  if ( buffs_overkill -> up() )
+  if ( talents.overkill -> rank() && buffs_overkill -> up() )
   {
     if ( infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {

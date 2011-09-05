@@ -332,9 +332,9 @@ int attack_t::build_table( double* chances,
   {
     double block_total = block_chance( delta_level ) + target -> composite_tank_block();
 
-    block = block_total * ( 1 - crit_block_chance( delta_level ) - target -> composite_tank_crit_block() );
+    block = block_total * ( 1 - crit_block_chance( delta_level ) );
 
-    crit_block = block_total * ( crit_block_chance( delta_level ) + target -> composite_tank_crit_block() );
+    crit_block = block_total * ( crit_block_chance( delta_level ) );
 
   }
 
@@ -346,7 +346,7 @@ int attack_t::build_table( double* chances,
   if ( sim -> debug ) log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit_block=%.3f crit=%.3f",
                                      name(), miss, dodge, parry, glance, block, crit_block, crit );
 
-  double limit = special ? 1.0 : 1.0;
+  double limit = 1.0;
   double total = 0;
   int num_results = 0;
 
