@@ -454,7 +454,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
 
   // record rune gains and overflow
   gain_t* gains_rune      = o -> gains_rune         ;
-  gain_t* gains_rune_type = 
+  gain_t* gains_rune_type =
     is_frost()            ? o -> gains_rune_frost   :
     is_blood()            ? o -> gains_rune_blood   :
     is_unholy()           ? o -> gains_rune_unholy  :
@@ -1519,21 +1519,6 @@ struct death_knight_attack_t : public attack_t
 // Death Knight Spell
 // ==========================================================================
 
-void extract_rune_cost( spell_id_t* spell, int* cost_blood, int* cost_frost, int* cost_unholy )
-{
-  // Rune costs appear to be in binary: 0a0b0c where 'c' is whether the ability
-  // costs a blood rune, 'b' is whether it costs an unholy rune, and 'a'
-  // is whether it costs a frost rune.
-
-  uint32_t spell_id = spell -> spell_id();
-  if ( spell_id == 0 ) return;
-
-  uint32_t rune_cost = spell -> rune_cost();
-  *cost_blood  =        rune_cost & 0x1;
-  *cost_unholy = ( rune_cost >> 2 ) & 0x1;
-  *cost_frost  = ( rune_cost >> 4 ) & 0x1;
-}
-
 struct death_knight_spell_t : public spell_t
 {
   int    cost_blood;
@@ -1544,14 +1529,14 @@ struct death_knight_spell_t : public spell_t
 
   death_knight_spell_t( const char* n, death_knight_t* p, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
     spell_t( n, p, r, s, t ),
-    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( false )
+    cost_blood( 0 ), cost_frost( 0 ), cost_unholy( 0 ), convert_runes( 0 )
   {
     _init_dk_spell();
   }
 
   death_knight_spell_t( const char* n, uint32_t id, death_knight_t* p ) :
     spell_t( n, id, p ),
-    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( false )
+    cost_blood( 0 ), cost_frost( 0 ), cost_unholy( 0 ), convert_runes( 0 )
   {
     _init_dk_spell();
   }
@@ -1579,6 +1564,21 @@ struct death_knight_spell_t : public spell_t
 // ==========================================================================
 // Local Utility Functions
 // ==========================================================================
+
+static void extract_rune_cost( const spell_id_t* spell, int* cost_blood, int* cost_frost, int* cost_unholy )
+{
+  // Rune costs appear to be in binary: 0a0b0c where 'c' is whether the ability
+  // costs a blood rune, 'b' is whether it costs an unholy rune, and 'a'
+  // is whether it costs a frost rune.
+
+  uint32_t spell_id = spell -> spell_id();
+  if ( spell_id == 0 ) return;
+
+  uint32_t rune_cost = spell -> rune_cost();
+  *cost_blood  =        rune_cost & 0x1;
+  *cost_unholy = ( rune_cost >> 2 ) & 0x1;
+  *cost_frost  = ( rune_cost >> 4 ) & 0x1;
+}
 
 // Count Runes ==============================================================
 
@@ -1612,7 +1612,7 @@ static int count_death_runes( death_knight_t* p, bool inactive )
 
 // Consume Runes ============================================================
 
-static void consume_runes( player_t* player, const bool* use, bool convert_runes = false )
+static void consume_runes( player_t* player, const bool use[RUNE_SLOT_MAX], bool convert_runes = false )
 {
   death_knight_t* p = player -> cast_death_knight();
 
@@ -1638,7 +1638,7 @@ static void consume_runes( player_t* player, const bool* use, bool convert_runes
 
 // Group Runes ==============================================================
 
-static bool group_runes ( player_t* player, int blood, int frost, int unholy, bool* group )
+static bool group_runes ( player_t* player, int blood, int frost, int unholy, bool group[RUNE_SLOT_MAX] )
 {
   death_knight_t* p = player -> cast_death_knight();
   int cost[]  = { blood + frost + unholy, blood, frost, unholy };
@@ -1965,7 +1965,7 @@ void death_knight_attack_t::target_debuff( player_t* t, int dmg_type )
 void death_knight_spell_t::reset()
 {
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
-  action_t::reset();
+  spell_t::reset();
 }
 
 // death_knight_spell_t::consume_resource() =================================
@@ -2286,35 +2286,15 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
 struct blood_boil_t : public death_knight_spell_t
 {
-  blood_boil_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "blood_boil", 48721, player )
+  blood_boil_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "blood_boil", 48721, p )
   {
-    death_knight_t* p = player -> cast_death_knight();
-
     parse_options( NULL, options_str );
 
     aoe                = -1;
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     direct_power_mod   = 0.08;
     player_multiplier *= 1.0 + p -> talents.crimson_scourge -> mod_additive( P_GENERIC );
-  }
-
-  virtual double cost() SC_CONST
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    if ( p -> buffs_crimson_scourge -> check() )
-    {
-      return 0;
-    }
-
-    return death_knight_spell_t::cost();
-  }
-
-  virtual void consume_resource()
-  {
-    death_knight_t* p = player -> cast_death_knight();
-
-    p -> buffs_crimson_scourge -> up();
   }
 
   virtual void execute()
@@ -2327,6 +2307,20 @@ struct blood_boil_t : public death_knight_spell_t
       p -> active_dancing_rune_weapon -> drw_blood_boil -> execute();
     if( p -> buffs_crimson_scourge -> up() )
       p -> buffs_crimson_scourge -> expire();
+  }
+
+  virtual bool ready()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+
+    if ( ! spell_t::ready() )
+      return false;
+
+    if ( ( ! p -> in_combat && ! harmful ) || p -> buffs_crimson_scourge -> check() )
+      return group_runes( p, 0, 0, 0, use );
+    else
+      return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
+
   }
 };
 
@@ -3487,10 +3481,9 @@ struct pestilence_t : public death_knight_spell_t
 
 struct pillar_of_frost_t : public death_knight_spell_t
 {
-  pillar_of_frost_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "pillar_of_frost", 51271, player )
+  pillar_of_frost_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "pillar_of_frost", 51271, p )
   {
-    death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.pillar_of_frost -> rank() );
 
     parse_options( NULL, options_str );
