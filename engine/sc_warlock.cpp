@@ -2077,7 +2077,7 @@ struct bane_of_havoc_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( p -> buffs_bane_of_havoc -> up() )
+    if ( p -> buffs_bane_of_havoc -> check() )
       return false;
 
     return warlock_spell_t::ready();

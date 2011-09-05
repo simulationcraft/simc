@@ -908,7 +908,7 @@ double warrior_attack_t::cost() SC_CONST
 {
   warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost();
-  if ( p -> buffs_deadly_calm -> up()                 ) c  = 0;
+  if ( p -> buffs_deadly_calm -> check()              ) c  = 0;
   if ( p -> buffs_battle_trance -> check() && c > 5   ) c  = 0;
   return c;
 }
@@ -920,6 +920,8 @@ void warrior_attack_t::consume_resource()
   warrior_t* p = player -> cast_warrior();
 
   attack_t::consume_resource();
+
+  p -> buffs_deadly_calm -> up();
 
   if ( proc )
     return;

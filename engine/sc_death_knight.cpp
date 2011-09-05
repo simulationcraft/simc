@@ -2302,12 +2302,19 @@ struct blood_boil_t : public death_knight_spell_t
   virtual double cost() SC_CONST
   {
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> buffs_crimson_scourge -> up() )
+    if ( p -> buffs_crimson_scourge -> check() )
     {
       return 0;
     }
 
     return death_knight_spell_t::cost();
+  }
+
+  virtual void consume_resource()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+
+    p -> buffs_crimson_scourge -> up();
   }
 
   virtual void execute()

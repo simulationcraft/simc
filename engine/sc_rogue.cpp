@@ -1297,7 +1297,7 @@ bool rogue_attack_t::ready()
   rogue_t* p = player -> cast_rogue();
 
   //Killing Spree blocks all rogue actions for duration
-  if ( p -> buffs_killing_spree -> up() )
+  if ( p -> buffs_killing_spree -> check() )
     if ((special == true) && (proc == false))
       return false;
 

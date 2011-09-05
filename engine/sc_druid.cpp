@@ -1591,6 +1591,8 @@ struct ravage_t : public druid_cat_attack_t
 
     if ( result_is_hit() )
       trigger_infected_wounds( this );
+
+    p -> buffs_stampede_cat -> up();
   }
 
   virtual double cost() SC_CONST
@@ -1637,7 +1639,7 @@ struct ravage_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    if ( p -> buffs_stampede_cat -> up() )
+    if ( p -> buffs_stampede_cat -> check() )
     {
       requires_stealth = false;
     }

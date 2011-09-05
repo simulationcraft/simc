@@ -1528,6 +1528,7 @@ struct arcane_missiles_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
+    p -> buffs_arcane_missiles -> up();
     p -> buffs_arcane_missiles -> expire();
   }
 
@@ -1547,7 +1548,7 @@ struct arcane_missiles_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    if ( ! p -> buffs_arcane_missiles -> up() )
+    if ( ! p -> buffs_arcane_missiles -> check() )
       return false;
     return mage_spell_t::ready();
   }
@@ -1780,10 +1781,19 @@ struct deep_freeze_t : public mage_spell_t
     trigger_gcd = p -> base_gcd;
   }
 
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    mage_t* p = player -> cast_mage();
+
+    p -> buffs_fingers_of_frost -> up();
+  }
+
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    if ( ! p -> buffs_fingers_of_frost -> up() )
+    if ( ! p -> buffs_fingers_of_frost -> check() )
       return false;
     return mage_spell_t::ready();
   }
@@ -3834,7 +3844,7 @@ void mage_t::regen( double periodicity )
 
   player_t::regen( periodicity );
 
-  if ( buffs_frost_armor -> up() && glyphs.frost_armor -> ok() )
+  if ( glyphs.frost_armor -> ok() && buffs_frost_armor -> up()  )
   {
     double gain_amount = resource_max[ RESOURCE_MANA ] * glyphs.frost_armor -> effect1().percent();
     gain_amount *= periodicity / 5.0;

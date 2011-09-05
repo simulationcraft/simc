@@ -378,7 +378,7 @@ struct shaman_spell_t : public spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( p -> buffs_spiritwalkers_grace -> up() || execute_time() == 0 )
+    if ( p -> buffs_spiritwalkers_grace -> check() || execute_time() == 0 )
       return true;
 
     return spell_t::usable_moving();
@@ -1520,6 +1520,8 @@ void shaman_attack_t::execute()
   shaman_t* p = player -> cast_shaman();
 
   attack_t::execute();
+
+  p -> buffs_spiritwalkers_grace -> up();
 
   if ( result_is_hit() && ! proc )
   {
