@@ -177,7 +177,8 @@ enum item_socket_color
   SOCKET_COLOR_META                 = 1,
   SOCKET_COLOR_RED                  = 2,
   SOCKET_COLOR_YELLOW               = 4,
-  SOCKET_COLOR_BLUE                 = 8
+  SOCKET_COLOR_BLUE                 = 8,
+  SOCKET_COLOR_COGWHEEL             = 32,
 };
 
 enum item_bind_type
