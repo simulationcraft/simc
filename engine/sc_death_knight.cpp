@@ -216,10 +216,11 @@ struct death_knight_t : public player_t
   spells_t spells;
 
   // Pets and Guardians
-  army_ghoul_pet_t*          active_army_ghoul;
-  bloodworms_pet_t*          active_bloodworms;
+  pet_t* active_army_ghoul;
+  pet_t* active_bloodworms;
   dancing_rune_weapon_pet_t* active_dancing_rune_weapon;
-  ghoul_pet_t*               active_ghoul;
+  pet_t* active_ghoul;
+  pet_t* active_gargoyle;
 
   // Procs
   proc_t* proc_runic_empowerment;
@@ -334,6 +335,7 @@ struct death_knight_t : public player_t
     active_bloodworms          = NULL;
     active_dancing_rune_weapon = NULL;
     active_ghoul               = NULL;
+    active_gargoyle            = NULL;
 
     blood_plague = NULL;
     frost_fever  = NULL;
@@ -647,14 +649,6 @@ struct army_ghoul_pet_t : public pet_t
     snapshot_speed    = o -> composite_attack_speed();
     snapshot_hit      = o -> composite_attack_hit();
     snapshot_strength = o -> strength();
-    o -> active_army_ghoul = this;
-  }
-
-  virtual void dismiss()
-  {
-    death_knight_t* o = owner -> cast_death_knight();
-    pet_t::dismiss();
-    o -> active_army_ghoul = 0;
   }
 
   virtual double composite_attack_crit() SC_CONST
@@ -754,17 +748,8 @@ struct bloodworms_pet_t : public pet_t
 
   virtual void summon( double duration=0 )
   {
-    death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
-    o -> active_bloodworms = this;
     melee -> schedule_execute();
-  }
-
-  virtual void dismiss()
-  {
-    death_knight_t* o = owner -> cast_death_knight();
-    pet_t::dismiss();
-    o -> active_bloodworms = 0;
   }
 
   virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
@@ -1141,20 +1126,12 @@ struct dancing_rune_weapon_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
-    o -> active_dancing_rune_weapon = this;
     snapshot_spell_crit  = o -> composite_spell_crit();
     snapshot_attack_crit = o -> composite_attack_crit();
     haste_snapshot       = o -> composite_attack_haste();
     speed_snapshot       = o -> composite_attack_speed();
     attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
     drw_melee -> schedule_execute();
-  }
-
-  virtual void dismiss()
-  {
-    death_knight_t* o = owner -> cast_death_knight();
-    pet_t::dismiss();
-    o -> active_dancing_rune_weapon = 0;
   }
 };
 
@@ -1386,14 +1363,6 @@ struct ghoul_pet_t : public pet_t
     snapshot_speed    = o -> composite_attack_speed();
     snapshot_hit      = o -> composite_attack_hit();
     snapshot_strength = o -> strength();
-    o -> active_ghoul = this;
-  }
-
-  virtual void dismiss()
-  {
-    death_knight_t* o = owner -> cast_death_knight();
-    pet_t::dismiss();
-    o -> active_ghoul = 0;
   }
 
   virtual double composite_attack_crit() SC_CONST
@@ -2283,12 +2252,15 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // sense to cast ghouls 7-10s before a fight begins so you don't
       // waste rune regen and enter the fight depleted.  So, the time
       // you get for ghouls is 4-6 seconds less.
-      player -> summon_pet( "army_of_the_dead", 35.0 );
+      p -> active_army_ghoul -> summon( 35.0 );
     }
     else
     {
       death_knight_spell_t::execute();
-      player -> summon_pet( "army_of_the_dead", 40.0 );
+
+      death_knight_t* p = player -> cast_death_knight();
+
+      p -> active_army_ghoul -> summon( 40.0 );
     }
   }
   virtual void consume_resource()
@@ -2303,7 +2275,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> active_army_ghoul )
+    if ( p -> active_army_ghoul && ! p -> active_army_ghoul -> sleeping )
       return false;
 
     return death_knight_spell_t::ready();
@@ -2602,7 +2574,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
     p -> buffs_dancing_rune_weapon -> trigger();
-    p -> summon_pet( "dancing_rune_weapon", p -> dbc.spell( id ) -> duration() );
+    p -> active_dancing_rune_weapon -> summon( p -> dbc.spell( id ) -> duration() );
   }
 };
 
@@ -3722,9 +3694,8 @@ struct raise_dead_t : public death_knight_spell_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    consume_resource();
-    update_ready();
-    player -> summon_pet( "ghoul", ( p -> primary_tree() == TREE_UNHOLY ) ? 0.0 : 60.0 );
+    death_knight_spell_t::execute();
+    p -> active_ghoul -> summon( ( p -> primary_tree() == TREE_UNHOLY ) ? 0.0 : 60.0 );
   }
 
   virtual double gcd() SC_CONST
@@ -3735,7 +3706,7 @@ struct raise_dead_t : public death_knight_spell_t
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> active_ghoul )
+    if ( p -> active_ghoul && ! p -> active_ghoul -> sleeping )
       return false;
 
     return death_knight_spell_t::ready();
@@ -3916,7 +3887,8 @@ struct summon_gargoyle_t : public death_knight_spell_t
     // can begin casting, so rather than the tooltip's 30s duration,
     // let's use 25s.  This still probably overestimates and assumes
     // no meleeing, which gargoyles sometimes choose to do.
-    player -> summon_pet( "gargoyle", 25.0 );
+    death_knight_t* p = player -> cast_death_knight();
+    p -> active_gargoyle -> summon( 25.0 );
   }
 };
 
@@ -4184,11 +4156,11 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
 
 void death_knight_t::create_pets()
 {
-  create_pet( "army_of_the_dead" );
-  create_pet( "bloodworms" );
-  create_pet( "dancing_rune_weapon" );
-  create_pet( "gargoyle" );
-  create_pet( "ghoul" );
+  active_army_ghoul           = create_pet( "army_of_the_dead" );
+  active_bloodworms           = create_pet( "bloodworms" );
+  active_dancing_rune_weapon  = new dancing_rune_weapon_pet_t ( sim, this );
+  active_gargoyle             = create_pet( "gargoyle" );
+  active_ghoul                = create_pet( "ghoul" );
 }
 
 // death_knight_t::create_pet ===============================================
@@ -4202,7 +4174,6 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
 
   if ( pet_name == "army_of_the_dead"         ) return new army_ghoul_pet_t          ( sim, this );
   if ( pet_name == "bloodworms"               ) return new bloodworms_pet_t          ( sim, this );
-  if ( pet_name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_pet_t ( sim, this );
   if ( pet_name == "gargoyle"                 ) return new gargoyle_pet_t            ( sim, this );
   if ( pet_name == "ghoul"                    ) return new ghoul_pet_t               ( sim, this );
 
@@ -4780,7 +4751,8 @@ void death_knight_t::init_buffs()
     virtual void start( int stacks, double value )
     {
       buff_t::start( stacks, value );
-      player -> summon_pet( "bloodworms" );
+      death_knight_t* p = player -> cast_death_knight();
+      p -> active_bloodworms -> summon();
     }
     virtual void expire()
     {
@@ -4871,12 +4843,6 @@ void death_knight_t::reset()
 
   // Active
   active_presence = 0;
-
-  // Pets and Guardians
-  active_army_ghoul          = NULL;
-  active_bloodworms          = NULL;
-  active_dancing_rune_weapon = NULL;
-  active_ghoul               = NULL;
 
   _runes.reset();
 }

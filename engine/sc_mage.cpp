@@ -15,7 +15,9 @@ struct mage_t : public player_t
 {
   // Active
   spell_t* active_ignite;
-  pet_t*   active_water_elemental;
+  pet_t*   pet_water_elemental;
+  pet_t*   pet_tier12_mirror_image;
+  pet_t*   pet_mirror_image_3;
 
   // Dots
   dot_t* dots_frostfire_bolt;
@@ -251,7 +253,11 @@ struct mage_t : public player_t
 
     // Active
     active_ignite          = 0;
-    active_water_elemental = 0;
+
+    // Pets
+    pet_water_elemental     = 0;
+    pet_tier12_mirror_image = 0;
+    pet_mirror_image_3      = 0;
 
     // Dots
     dots_frostfire_bolt = get_dot( "frostfire_bolt" );
@@ -471,20 +477,6 @@ struct water_elemental_pet_t : public pet_t
     double h = player_t::composite_spell_haste();
     h *= owner -> spell_haste;
     return h;
-  }
-
-  virtual void summon( double duration=0 )
-  {
-    pet_t::summon( duration );
-    mage_t* o = cast_pet() -> owner -> cast_mage();
-    o -> active_water_elemental = this;
-  }
-
-  virtual void dismiss()
-  {
-    pet_t::dismiss();
-    mage_t* o = cast_pet() -> owner -> cast_mage();
-    o -> active_water_elemental = 0;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1044,8 +1036,8 @@ static void trigger_tier12_mirror_image( spell_t* s )
     if ( p -> rng_tier12_mirror_image -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
       p -> procs_tier12_mirror_image -> occur();
-      p -> dismiss_pet( "tier12_mirror_image" );
-      p -> summon_pet( "tier12_mirror_image", p -> dbc.spell( 99063 ) -> duration() - 0.01 );
+      p -> pet_tier12_mirror_image -> dismiss();
+      p -> pet_tier12_mirror_image -> summon( p -> dbc.spell( 99063 ) -> duration() - 0.01 );
       p -> cooldowns_tier12_mirror_image -> start();
     }
   }
@@ -2607,9 +2599,8 @@ struct mirror_image_t : public mage_spell_t
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
-    consume_resource();
-    update_ready();
-    p -> summon_pet( "mirror_image_3" );
+    mage_spell_t::execute();
+    p -> pet_mirror_image_3 -> summon();
   }
 
   virtual double gcd() SC_CONST
@@ -2895,14 +2886,17 @@ struct water_elemental_spell_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    player -> summon_pet( "water_elemental" );
+    mage_t* p = player -> cast_mage();
+    p -> pet_water_elemental -> summon();
   }
 
   virtual bool ready()
   {
     if ( ! mage_spell_t::ready() )
       return false;
-    return player -> cast_mage() -> active_water_elemental == 0;
+
+    mage_t* p = player -> cast_mage();
+    return ! ( p -> pet_water_elemental && ! p -> pet_water_elemental -> sleeping );
   }
 };
 
@@ -3194,10 +3188,9 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 
 void mage_t::create_pets()
 {
-  create_pet( "mirror_image_3"  );
-  create_pet( "water_elemental" );
-
-  create_pet( "tier12_mirror_image" );
+  pet_mirror_image_3      = create_pet( "mirror_image_3"      );
+  pet_water_elemental     = create_pet( "water_elemental"     );
+  pet_tier12_mirror_image = create_pet( "tier12_mirror_image" );
 }
 
 // mage_t::init_talents =====================================================
@@ -3828,7 +3821,7 @@ void mage_t::combat_begin()
 void mage_t::reset()
 {
   player_t::reset();
-  active_water_elemental = 0;
+
   rotation.reset();
   mana_gem_charges = 3;
 }
@@ -3848,7 +3841,8 @@ void mage_t::regen( double periodicity )
     resource_gain( RESOURCE_MANA, gain_amount, gains_frost_armor );
   }
 
-  uptimes_water_elemental -> update( active_water_elemental != 0 );
+  if ( pet_water_elemental )
+    uptimes_water_elemental -> update( pet_water_elemental -> sleeping == 0 );
 }
 
 // mage_t::resource_gain ====================================================

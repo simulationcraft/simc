@@ -170,6 +170,8 @@ struct warlock_t : public player_t
 {
   // Active Pet
   warlock_main_pet_t* active_pet;
+  pet_t* pet_ebon_imp;
+  pet_t* pet_fiery_imp;
 
   // Dots
   dot_t*  dots_corruption;
@@ -367,6 +369,8 @@ struct warlock_t : public player_t
     default_distance = 40;
 
     active_pet                  = 0;
+    pet_ebon_imp                = 0;
+    pet_fiery_imp               = 0;
     spells_burning_embers       = 0;
 
     dots_corruption             = get_dot( "corruption" );
@@ -1099,8 +1103,8 @@ struct warlock_spell_t : public spell_t
       if ( p -> rng_fiery_imp -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
       {
         p -> procs_fiery_imp -> occur();
-        p -> dismiss_pet( "fiery_imp" );
-        p -> summon_pet( "fiery_imp", p -> dbc.spell( 99221 ) -> duration() - 0.01 );
+        p -> pet_fiery_imp -> dismiss();
+        p -> pet_fiery_imp -> summon( p -> dbc.spell( 99221 ) -> duration() - 0.01 );
         p -> cooldowns_fiery_imp -> start();
       }
     }
@@ -2032,8 +2036,8 @@ struct bane_of_doom_t : public warlock_spell_t
     if ( p -> rng_ebon_imp -> roll ( x ) )
     {
       p -> procs_ebon_imp -> occur();
-      p -> dismiss_pet( "ebon_imp" );
-      p -> summon_pet( "ebon_imp", 14.99 );
+      p -> pet_ebon_imp -> dismiss();
+      p -> pet_ebon_imp -> summon( 14.99 );
     }
   }
 };
@@ -4073,8 +4077,8 @@ void warlock_t::create_pets()
   create_pet( "voidwalker");
   create_pet( "infernal"  );
   create_pet( "doomguard" );
-  create_pet( "ebon_imp"  );
-  create_pet( "fiery_imp" );
+  pet_ebon_imp = create_pet( "ebon_imp"  );
+  pet_fiery_imp = create_pet( "fiery_imp" );
 }
 
 // warlock_t::init_talents ==================================================
@@ -4541,6 +4545,7 @@ void warlock_t::reset()
 
   // Active
   active_pet = 0;
+  spells_burning_embers       = 0;
 }
 
 // warlock_t::create_expression =============================================

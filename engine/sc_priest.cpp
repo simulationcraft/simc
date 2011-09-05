@@ -13,6 +13,7 @@ struct remove_dots_event_t;
 
 struct priest_t : public player_t
 {
+
   // Buffs
 
   // Discipline
@@ -204,7 +205,9 @@ struct priest_t : public player_t
   rng_t* rng_cauterizing_flame;
 
   // Pets
-  pet_t* active_cauterizing_flame;
+  pet_t* pet_shadow_fiend;
+  pet_t* pet_cauterizing_flame;
+  pet_t* pet_lightwell;
 
   // Options
   std::string power_infusion_target_str;
@@ -349,7 +352,9 @@ struct priest_t : public player_t
     cooldowns_inner_focus                = get_cooldown( "inner_focus" );
     cooldowns_penance                    = get_cooldown( "penance" );
 
-    active_cauterizing_flame             = 0;
+    pet_shadow_fiend                     = 0;
+    pet_cauterizing_flame                = 0;
+    pet_lightwell                        = 0;
 
     remove_dots_event                    = 0;
 
@@ -2760,7 +2765,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    p -> summon_pet( "shadow_fiend", duration() );
+    p -> pet_shadow_fiend -> summon( duration() );
   }
 
   virtual bool ready()
@@ -4264,8 +4269,8 @@ struct lightwell_t : public spell_t
 
     spell_t::execute();
 
-    p -> find_pet( "lightwell" ) -> get_cooldown( "lightwell_renew" ) -> duration = consume_interval;
-    p -> summon_pet( "lightwell", duration() );
+    p -> pet_lightwell -> get_cooldown( "lightwell_renew" ) -> duration = consume_interval;
+    p -> pet_lightwell -> summon( duration() );
   }
 };
 
@@ -4410,10 +4415,10 @@ double priest_t::shadow_orb_amount() SC_CONST
 void priest_t::trigger_cauterizing_flame()
 {
   // Assuming you can only have 1 Cauterizing Flame
-  if ( active_cauterizing_flame && active_cauterizing_flame -> sleeping &&
+  if ( pet_cauterizing_flame && pet_cauterizing_flame -> sleeping &&
        rng_cauterizing_flame -> roll( sets -> set( SET_T12_4PC_HEAL ) -> proc_chance()  ) )
   {
-    summon_pet( "cauterizing_flame", dbc.spell( 99136 ) -> duration() );
+    pet_cauterizing_flame -> summon( dbc.spell( 99136 ) -> duration() );
   }
 }
 
@@ -4643,9 +4648,9 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 
 void priest_t::create_pets()
 {
-  create_pet( "shadow_fiend" );
-  active_cauterizing_flame = create_pet( "cauterizing_flame" );
-  create_pet( "lightwell" );
+  pet_shadow_fiend      = create_pet( "shadow_fiend"      );
+  pet_cauterizing_flame = create_pet( "cauterizing_flame" );
+  pet_lightwell         = create_pet( "lightwell"         );
 }
 
 // priest_t::init_base =======================================================

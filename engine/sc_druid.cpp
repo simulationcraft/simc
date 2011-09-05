@@ -17,6 +17,10 @@ struct druid_t : public player_t
   heal_t*   active_living_seed;
   attack_t* active_tier12_2pc_melee;
 
+  // Pets
+  pet_t* pet_burning_treant;
+  pet_t* pet_treants;
+
   // Auto-attacks
   attack_t* cat_melee_attack;
   attack_t* bear_melee_attack;
@@ -266,6 +270,9 @@ struct druid_t : public player_t
     active_fury_swipes        = NULL;
     active_living_seed        = 0;
     active_tier12_2pc_melee   = 0;
+
+    pet_burning_treant = 0;
+    pet_treants         = 0;
 
     eclipse_bar_value     = 0;
     eclipse_wrath_count   = 0;
@@ -1018,8 +1025,8 @@ static void trigger_burning_treant( spell_t* s )
     if ( p -> rng_burning_treant -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
       p -> procs_burning_treant -> occur();
-      p -> dismiss_pet( "burning_treant" );
-      p -> summon_pet( "burning_treant", p -> dbc.spell( 99035 ) -> duration() - 0.01 );
+      p -> pet_burning_treant -> dismiss();
+      p -> pet_burning_treant -> summon( p -> dbc.spell( 99035 ) -> duration() - 0.01 );
       p -> cooldowns_burning_treant -> start();
     }
   }
@@ -4091,9 +4098,9 @@ struct treants_spell_t : public druid_spell_t
 
   virtual void execute()
   {
-    consume_resource();
-    update_ready();
-    player -> summon_pet( "treants", 30.0 );
+    druid_spell_t::execute();
+    druid_t* p = player -> cast_druid();
+    p -> pet_treants -> summon( 30.0 );
   }
 };
 
@@ -4449,8 +4456,8 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 
 void druid_t::create_pets()
 {
-  create_pet( "treants" );
-  create_pet( "burning_treant" );
+  pet_treants = create_pet( "treants" );
+  pet_burning_treant = create_pet( "burning_treant" );
 }
 
 // druid_t::init_talents =====================================================

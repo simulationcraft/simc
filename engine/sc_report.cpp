@@ -1738,13 +1738,13 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                       "\t\t\t\t\t\t\t\t\t<table class=\"details\">\n"
                       "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
     util_t::fprintf ( file,
-                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">executes</th>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">direct results</th>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">ticks</th>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">tick results</th>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Executes</th>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Direct Results</th>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Ticks</th>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Tick Results</th>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Execute Time per Execution</th>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Tick Time per  Tick</th>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">total dmg</th>\n" );
+                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Damage</th>\n" );
     util_t::fprintf ( file,
                       "\t\t\t\t\t\t\t\t\t\t</tr>\n"
                       "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
@@ -1755,7 +1755,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                       "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.4f</td>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.4f</td>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n",
+                      "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n",
                       s -> num_executes,
                       s -> num_direct_results,
                       s -> num_ticks,
@@ -1796,7 +1796,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
           util_t::fprintf( file, ">\n" );
           util_t::fprintf ( file,
                             "\t\t\t\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
-                            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
+                            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
                             "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f%%</td>\n"
                             "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
                             "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
@@ -2709,6 +2709,13 @@ static void print_html_player_statistics( FILE* file, player_t* p )
 
  util_t::fprintf( file,
                   "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Average</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  p -> dps );
+
+ util_t::fprintf( file,
+                  "\t\t\t\t\t\t\t\t<tr>\n"
                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
                   "\t\t\t\t\t\t\t\t</tr>\n",
@@ -2738,7 +2745,7 @@ static void print_html_player_statistics( FILE* file, player_t* p )
  util_t::fprintf( file,
                   "\t\t\t\t\t\t\t\t<tr>\n"
                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
                   "\t\t\t\t\t\t\t\t</tr>\n",
                   p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0 );
 
@@ -2806,35 +2813,35 @@ static void print_html_player_statistics( FILE* file, player_t* p )
 
  util_t::fprintf( file,
                   "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% dps error</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% DPS Error</td>\n"
                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                   "\t\t\t\t\t\t\t\t</tr>\n",
                   ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) ) : 0 ) );
 
  util_t::fprintf( file,
                   "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% dps error</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% DPS Error</td>\n"
                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                   "\t\t\t\t\t\t\t\t</tr>\n",
                   ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) ) : 0 ) );
 
  util_t::fprintf( file,
                   "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 scale factor error with delta=300</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                   "\t\t\t\t\t\t\t\t</tr>\n",
                   ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) ) );
 
  util_t::fprintf( file,
                   "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 scale factor error with delta=300</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                   "\t\t\t\t\t\t\t\t</tr>\n",
                   ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) ) );
 
  util_t::fprintf( file,
                   "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 scale factor error with delta=300</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                   "\t\t\t\t\t\t\t\t</tr>\n",
                   ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) ) );

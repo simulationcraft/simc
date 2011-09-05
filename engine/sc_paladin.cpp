@@ -1826,7 +1826,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     if ( p -> primary_tree() == TREE_RETRIBUTION )
-      p -> summon_pet( "guardian_of_ancient_kings", p -> spells.guardian_of_ancient_kings_ret -> duration() );
+      p -> guardian_of_ancient_kings -> summon( p -> spells.guardian_of_ancient_kings_ret -> duration() );
   }
 };
 

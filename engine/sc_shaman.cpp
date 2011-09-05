@@ -39,6 +39,11 @@ struct shaman_t : public player_t
   action_t* active_lightning_charge;
   action_t* active_searing_flames_dot;
 
+  // Pets
+  pet_t* pet_spirit_wolf;
+  pet_t* pet_fire_elemental;
+  pet_t* pet_earth_elemental;
+
   // Totems
   action_t* totems[ TOTEM_MAX ];
 
@@ -204,6 +209,11 @@ struct shaman_t : public player_t
     // Active
     active_lightning_charge   = 0;
     active_searing_flames_dot = 0;
+
+    // Pets
+    pet_spirit_wolf     = 0;
+    pet_fire_elemental  = 0;
+    pet_earth_elemental = 0;
 
     // Totem tracking
     for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;
@@ -2577,7 +2587,9 @@ struct spirit_wolf_spell_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    player -> summon_pet( "spirit_wolf", duration() );
+    shaman_t* p = player -> cast_shaman();
+
+    p -> pet_spirit_wolf -> summon( duration() );
   }
 };
 
@@ -2971,13 +2983,19 @@ struct earth_elemental_totem_t : public shaman_totem_t
   virtual void execute()
   {
     shaman_totem_t::execute();
-    player -> summon_pet( "earth_elemental" );
+
+    shaman_t* p = player -> cast_shaman();
+
+    p -> pet_earth_elemental -> summon();
   }
 
   virtual void last_tick()
   {
     shaman_totem_t::last_tick();
-    player -> dismiss_pet( "earth_elemental" );
+
+    shaman_t* p = player -> cast_shaman();
+
+    p -> pet_earth_elemental -> dismiss();
   }
 
   // Earth Elemental Totem will always override any earth totem you have
@@ -3016,13 +3034,16 @@ struct fire_elemental_totem_t : public shaman_totem_t
       }
     }
 
-    p -> summon_pet( "fire_elemental" );
+    p -> pet_fire_elemental -> summon();
   }
 
   virtual void last_tick()
   {
     shaman_totem_t::last_tick();
-    player -> dismiss_pet( "fire_elemental" );
+
+    shaman_t* p = player -> cast_shaman();
+
+    p -> pet_fire_elemental -> dismiss();
   }
 
   // Allow Fire Elemental Totem to override any active fire totems
@@ -3919,9 +3940,9 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
 void shaman_t::create_pets()
 {
-  create_pet( "spirit_wolf" );
-  create_pet( "fire_elemental" );
-  create_pet( "earth_elemental" );
+  pet_spirit_wolf     = create_pet( "spirit_wolf"     );
+  pet_fire_elemental  = create_pet( "fire_elemental"  );
+  pet_earth_elemental = create_pet( "earth_elemental" );
 }
 
 // shaman_t::init_talents ======================================================
