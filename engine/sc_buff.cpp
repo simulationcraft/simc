@@ -41,7 +41,7 @@ struct buff_delay_t : public event_t
   virtual void execute()
   {
     // Add a Cooldown check here to avoid extra processing due to delays
-    if ( buff -> cooldown -> remains() > 0 )
+    if ( buff -> cooldown -> remains() == 0 )
       buff -> execute( stacks, value );
     buff -> delay = 0;
   }
