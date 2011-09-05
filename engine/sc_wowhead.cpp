@@ -367,21 +367,15 @@ static bool parse_item_heroic( item_t&     item,
 static bool parse_item_quality( item_t&     item,
                                 xml_node_t* node )
 {
-  std::string info_str;
-
-  item.armory_quality_str.clear();
-
-  if ( ! xml_t::get_value( info_str, node, "quality/id" ) )
+  int quality;
+  if ( ! xml_t::get_value( quality, node, "quality/id" ) )
     return false;
 
+  item.armory_quality_str.clear();
   // Let's just convert the quality id to text, and then
   // in decode() parse it into an integer
-  if ( info_str == "4" )
-    item.armory_quality_str = "epic";
-  else if ( info_str == "3" )
-    item.armory_quality_str = "rare";
-  else if ( info_str == "2" )
-    item.armory_quality_str = "uncommon";
+  if ( quality > 1 )
+    item.armory_quality_str = util_t::item_quality_string( quality );
 
   return true;
 }

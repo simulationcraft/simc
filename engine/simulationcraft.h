@@ -1682,6 +1682,7 @@ public:
   static const char* weapon_class_string       ( int class_ );
   static const char* weapon_subclass_string    ( int subclass );
   static const char* set_item_type_string      ( int item_set );
+  static const char* item_quality_string       ( int item_quality );
 
   static int parse_attribute_type              ( const std::string& name );
   static int parse_dmg_type                    ( const std::string& name );
@@ -1705,6 +1706,7 @@ public:
   static stat_type parse_reforge_type          ( const std::string& name );
   static int parse_talent_tree                 ( const std::string& name );
   static int parse_weapon_type                 ( const std::string& name );
+  static int parse_item_quality                ( const std::string& quality );
 
   static bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
 

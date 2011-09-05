@@ -1805,6 +1805,34 @@ bool util_t::socket_gem_match( int socket,
   return false;
 }
 
+// util_t::item_quality_string =============================================
+
+const char* util_t::item_quality_string( int quality )
+{
+  switch( quality )
+  {
+  case 1:   return "common";
+  case 2:   return "uncommon";
+  case 3:   return "rare";
+  case 4:   return "epic";
+  case 5:   return "legendary";
+  default:  return "poor";
+  }
+}
+
+// util_t::parse_item_quality ==============================================
+
+int util_t::parse_item_quality( const std::string& quality )
+{
+  int i = 6;
+
+  while ( --i > 0 )
+    if ( str_compare_ci( quality, item_quality_string( i ) ) )
+      break;
+
+  return i;
+}
+
 // util_t::string_split ====================================================
 
 void util_t::string_split_( std::vector<std::string>& results,

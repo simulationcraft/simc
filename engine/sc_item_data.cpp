@@ -11,30 +11,34 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 static std::string stat_to_str( int stat, int stat_amount )
 {
   std::string stat_str;
-  char        stat_buf[64];
-  stat_type          s = util_t::translate_item_mod( stat );
 
-  if ( ! stat_amount || s == STAT_NONE ) return "";
+  if ( stat_amount )
+  {
+    stat_type s = util_t::translate_item_mod( stat );
+    if ( s != STAT_NONE )
+    {
+      char stat_buf[64];
+      snprintf( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util_t::stat_type_abbrev( s ) );
+      stat_str = stat_buf;
 
-  snprintf( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util_t::stat_type_abbrev( s ) );
-  stat_str = stat_buf;
+      armory_t::format( stat_str );
+    }
+  }
 
-  return armory_t::format( stat_str );
+  return stat_str;
 }
 
 static std::string encode_stats( const std::vector<std::string>& stats )
 {
-  std::ostringstream s;
+  std::string s;
 
   for ( unsigned i = 0; i < stats.size(); i++ )
   {
-    s << stats[ i ];
-
-    if ( i < stats.size() - 1 )
-      s << "_";
+    if ( i ) s += '_';
+    s += stats[ i ];
   }
 
-  return s.str();
+  return s;
 }
 
 static std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantment, std::vector<std::string>& stats )
@@ -75,14 +79,8 @@ static bool parse_item_quality( item_t& item, const item_data_t* item_data )
 
   item.armory_quality_str.clear();
 
-  if ( item_data -> quality == 5 )
-    item.armory_quality_str = "legendary";
-  else if ( item_data -> quality == 4 )
-    item.armory_quality_str = "epic";
-  else if ( item_data -> quality == 3 )
-    item.armory_quality_str = "rare";
-  else if ( item_data -> quality == 2 )
-    item.armory_quality_str = "uncommon";
+  if ( item_data -> quality > 1 )
+    item.armory_quality_str = util_t::item_quality_string( item_data -> quality );
 
   return true;
 }
@@ -381,10 +379,7 @@ int item_database_t::random_suffix_type( const item_data_t* item )
 
 int item_database_t::random_suffix_type( const item_t& item )
 {
-  int       f = -1;
-  weapon_t* w;
-
-  if ( ( w = item.weapon() ) )
+  if ( weapon_t* w = item.weapon() )
   {
     switch ( w -> type )
     {
@@ -394,72 +389,52 @@ int item_database_t::random_suffix_type( const item_t& item )
     case WEAPON_POLEARM:
     case WEAPON_SWORD_2H:
     case WEAPON_STAFF:
-    {
-      f = 0;
-      break;
-    }
+      return 0;
+
     // Various ranged types use the fifth point allocation budget
     case WEAPON_BOW:
     case WEAPON_CROSSBOW:
     case WEAPON_GUN:
     case WEAPON_THROWN:
     case WEAPON_WAND:
-    {
-      f = 4;
-      break;
-    }
+      return 4;
+
     // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
     default:
-    {
-      f = 3;
-      break;
-    }
-    }
-  }
-  // Armor handling goes by slot
-  else
-  {
-    switch ( item.slot )
-    {
-    case SLOT_HEAD:
-    case SLOT_CHEST:
-    case SLOT_LEGS:
-    {
-      f = 0;
-      break;
-    }
-    case SLOT_SHOULDERS:
-    case SLOT_WAIST:
-    case SLOT_FEET:
-    case SLOT_HANDS:
-    case SLOT_TRINKET_1:
-    case SLOT_TRINKET_2:
-    {
-      f = 1;
-      break;
-    }
-    case SLOT_NECK:
-    case SLOT_WRISTS:
-    case SLOT_FINGER_1:
-    case SLOT_FINGER_2:
-    case SLOT_OFF_HAND: // Shields, off hand items
-    case SLOT_BACK:
-    {
-      f = 2;
-      break;
-    }
-    // Ranged non-weapons are relics, which do not have a point allocation
-    case SLOT_RANGED:
-    case SLOT_TABARD:
-    {
-      return f;
-    }
-    default:
-      return f;
+      return 3;
     }
   }
 
-  return f;
+  // Armor handling goes by slot
+  switch ( item.slot )
+  {
+  case SLOT_HEAD:
+  case SLOT_CHEST:
+  case SLOT_LEGS:
+    return 0;
+
+  case SLOT_SHOULDERS:
+  case SLOT_WAIST:
+  case SLOT_FEET:
+  case SLOT_HANDS:
+  case SLOT_TRINKET_1:
+  case SLOT_TRINKET_2:
+    return 1;
+
+  case SLOT_NECK:
+  case SLOT_WRISTS:
+  case SLOT_FINGER_1:
+  case SLOT_FINGER_2:
+  case SLOT_OFF_HAND: // Shields, off hand items
+  case SLOT_BACK:
+    return 2;
+
+  // Ranged non-weapons are relics, which do not have a point allocation
+  case SLOT_RANGED:
+  case SLOT_TABARD:
+  default:
+    return -1;
+  }
 }
 
 uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc )
@@ -492,10 +467,9 @@ uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc
     {
       total_armor = dbc.item_armor_total( item -> level ).armor_type[ item -> item_subclass - 1 ];
       m_quality   = dbc.item_armor_quality( item -> level ).values[ item -> quality ];
-      if ( item -> inventory_type == INVTYPE_ROBE )
-        m_invtype = dbc.item_armor_inv_type( INVTYPE_CHEST ).armor_type[ item -> item_subclass - 1 ];
-      else
-        m_invtype = dbc.item_armor_inv_type( item -> inventory_type ).armor_type[ item -> item_subclass - 1 ];
+      unsigned invtype = item -> inventory_type;
+      if ( invtype == INVTYPE_ROBE ) invtype = INVTYPE_CHEST;
+      m_invtype = dbc.item_armor_inv_type( invtype ).armor_type[ item -> item_subclass - 1 ];
       break;
     }
     default: return 0;
@@ -508,46 +482,8 @@ uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc
 
 uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_id )
 {
-  const item_data_t* item = item_struct.player -> dbc.item( item_id );
-
-  if ( ! item || item -> quality > 5 )
-    return 0;
-
-  // Shield have separate armor table, bypass normal calculation
-  if ( item -> item_class == ITEM_CLASS_ARMOR && item -> item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-    return ( uint32_t ) floor( item_struct.player -> dbc.item_armor_shield( item -> level ).values[ item -> quality ] + 0.5 );
-
-  // Only Cloth, Leather, Mail and Plate armor has innate armor values
-  if ( item -> item_subclass != ITEM_SUBCLASS_ARMOR_MISC && item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
-    return 0;
-
-  double m_invtype = 0, m_quality = 0, total_armor = 0;
-
-  switch ( item -> inventory_type )
-  {
-  case INVTYPE_HEAD:
-  case INVTYPE_SHOULDERS:
-  case INVTYPE_CHEST:
-  case INVTYPE_WAIST:
-  case INVTYPE_LEGS:
-  case INVTYPE_FEET:
-  case INVTYPE_WRISTS:
-  case INVTYPE_HANDS:
-  case INVTYPE_CLOAK:
-  case INVTYPE_ROBE:
-  {
-    total_armor = item_struct.player -> dbc.item_armor_total( item -> level ).armor_type[ item -> item_subclass - 1 ];
-    m_quality   = item_struct.player -> dbc.item_armor_quality( item -> level ).values[ item -> quality ];
-    if ( item -> inventory_type == INVTYPE_ROBE )
-      m_invtype = item_struct.player -> dbc.item_armor_inv_type( INVTYPE_CHEST ).armor_type[ item -> item_subclass - 1 ];
-    else
-      m_invtype = item_struct.player -> dbc.item_armor_inv_type( item -> inventory_type ).armor_type[ item -> item_subclass - 1 ];
-    break;
-  }
-  default: return 0;
-  }
-
-  return ( uint32_t ) floor( total_armor * m_quality * m_invtype + 0.5 );
+  const dbc_t& dbc = item_struct.player -> dbc;
+  return armor_value( dbc.item( item_id ), dbc );
 }
 
 // item_database_t::weapon_dmg_min/max ===========================================

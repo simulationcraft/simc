@@ -423,15 +423,8 @@ bool item_t::decode_ilevel()
 
 bool item_t::decode_quality()
 {
-  if ( encoded_quality_str.empty() ) return true;
-
-  if ( encoded_quality_str == "epic" )
-    quality = 4;
-  else if ( encoded_quality_str == "rare" )
-    quality = 3;
-  else if ( encoded_quality_str == "uncommon" )
-    quality = 2;
-
+  if ( ! encoded_quality_str.empty() )
+    quality = util_t::parse_item_quality( encoded_quality_str );
   return true;
 }
 
