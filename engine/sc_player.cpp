@@ -2088,7 +2088,7 @@ double player_t::composite_tank_parry() SC_CONST
 {
   double p = parry;
 
-  p += strength() * parry_rating_per_strength / rating.parry;
+  p += ( strength() - attribute_base[ ATTR_STRENGTH ] ) * parry_rating_per_strength / rating.parry;
 
   return p;
 }
@@ -2161,7 +2161,7 @@ double player_t::diminished_parry() SC_CONST
 
   double p = stats.parry_rating / rating.parry;
 
-  p += parry_rating_per_strength * stats.attribute[ ATTR_STRENGTH ] * composite_attribute_multiplier( ATTR_STRENGTH ) / rating.parry;
+  p += parry_rating_per_strength * ( strength() - attribute_base[ ATTR_STRENGTH ] ) / rating.parry;
 
   if ( p == 0 ) return 0;
 
@@ -3305,20 +3305,21 @@ double player_t::resource_gain( int       resource,
   if ( actual_amount > 0 )
   {
     resource_current[ resource ] += actual_amount;
+    resource_gained [ resource ] += actual_amount;
   }
-
-  resource_gained [ resource ] += actual_amount;
 
   if ( source )
   {
     if ( source -> type == RESOURCE_NONE )
       source -> type = ( resource_type ) resource;
+
     if ( resource != source -> type )
     {
       sim -> errorf( "player_t::resource_gain: player=%s gain=%s resource_gain type not identical to gain resource type..\n resource=%s gain=%s",
                      name(), source -> name_str.c_str(), util_t::resource_type_string( resource ), util_t::resource_type_string( source -> type ) );
       assert ( 0 );
     }
+
     source -> add( actual_amount, amount - actual_amount );
   }
 
