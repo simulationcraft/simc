@@ -429,7 +429,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   // If the other rune is already regening, we don't
   // but if both are full we still continue on to record resource gain overflow
   if ( state == STATE_DEPLETED &&   paired_rune -> state == STATE_REGENERATING ) return;
-  if ( state == STATE_FULL     && ! paired_rune -> state == STATE_FULL         ) return;
+  if ( state == STATE_FULL     && ! ( paired_rune -> state == STATE_FULL )     ) return;
 
 
   // Base rune regen rate is 10 seconds; we want the per-second regen

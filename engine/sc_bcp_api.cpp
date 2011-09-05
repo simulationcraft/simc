@@ -389,8 +389,7 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
     return false;
   }
 
-  // Err, success?
-  assert( ! "This is finished." );
+  return true;
 }
 
 // bcp_api::download_guild ==================================================

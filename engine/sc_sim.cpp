@@ -1491,7 +1491,7 @@ void sim_t::analyze_player( player_t* p )
 
       for ( int i=0; i < iterations; i++ )
       {
-        p -> dps_convergence_error.push_back( 2.0 * sqrt( sum_of_squares / i ) / sqrt( i ) );
+        p -> dps_convergence_error.push_back( 2.0 * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
 
         double delta = p -> iteration_dps[ i ] - convergence_dps;
         double delta_squared = delta * delta;
@@ -1506,12 +1506,11 @@ void sim_t::analyze_player( player_t* p )
     if ( convergence_iterations > 1 ) convergence_std_dev /= convergence_iterations;
     convergence_std_dev = sqrt( convergence_std_dev );
     double convergence_error = 2.0 * convergence_std_dev;
-    if ( convergence_iterations > 1 ) convergence_error /= sqrt( convergence_iterations );
+    if ( convergence_iterations > 1 ) convergence_error /= sqrt( ( float ) convergence_iterations );
 
     if ( convergence_error > 0 )
       p -> dps_convergence = convergence_error / ( p -> dps_error * convergence_scale );
   }
-
 
   // DPS Statistics ============================================
   if ( ( p -> dps_max - p -> dps_min ) > 0 )
