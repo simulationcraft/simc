@@ -526,7 +526,7 @@ bool http_t::clear_cache( sim_t* sim,
                           const std::string& name,
                           const std::string& value )
 {
-  assert( name == "http_clear_cache" );
+  assert( name == "http_clear_cache" ); (void)name;
   if ( value != "0" && ! sim -> parent ) cache_clear();
   return true;
 }

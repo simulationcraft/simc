@@ -210,7 +210,7 @@ static bool parse_talent_url( sim_t* sim,
                               const std::string& name,
                               const std::string& url )
 {
-  assert( name == "talents" );
+  assert( name == "talents" ); (void)name;
 
   player_t* p = sim -> active_player;
 
@@ -268,7 +268,7 @@ static bool parse_role_string( sim_t* sim,
                                const std::string& name,
                                const std::string& value )
 {
-  assert( name == "role" );
+  assert( name == "role" ); (void)name;
 
   sim -> active_player -> role = util_t::parse_role_type( value );
 
@@ -282,7 +282,7 @@ static bool parse_world_lag( sim_t* sim,
                                const std::string& name,
                                const std::string& value )
 {
-  assert( name == "world_lag" );
+  assert( name == "world_lag" ); (void)name;
 
   sim -> active_player -> world_lag = atof( value.c_str() );
 
@@ -303,7 +303,7 @@ static bool parse_world_lag_stddev( sim_t* sim,
                                const std::string& name,
                                const std::string& value )
 {
-  assert( name == "world_lag_stddev" );
+  assert( name == "world_lag_stddev" ); (void)name;
 
   sim -> active_player -> world_lag_stddev = atof( value.c_str() );
 
@@ -323,7 +323,7 @@ static bool parse_brain_lag( sim_t* sim,
                                const std::string& name,
                                const std::string& value )
 {
-  assert( name == "brain_lag" );
+  assert( name == "brain_lag" ); (void)name;
 
   sim -> active_player -> brain_lag = atof( value.c_str() );
 
@@ -342,7 +342,7 @@ static bool parse_brain_lag_stddev( sim_t* sim,
                                const std::string& name,
                                const std::string& value )
 {
-  assert( name == "brain_lag_stddev" );
+  assert( name == "brain_lag_stddev" ); (void)name;
 
   sim -> active_player -> brain_lag_stddev = atof( value.c_str() );
 
@@ -3328,7 +3328,7 @@ double player_t::resource_gain( int       resource,
   if ( sim -> log )
   {
     log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)",
-                   name(), actual_amount, amount, 
+                   name(), actual_amount, amount,
                    util_t::resource_type_string( resource ),
                    source ? source -> name() : action ? action -> name() : "unknown",
                    resource_current[ resource ], resource_max[ resource ] );
@@ -3356,9 +3356,9 @@ void player_t::recalculate_resource_max( int resource )
 {
   double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : 20;
 
-  resource_max[ resource ] = resource_base[ resource ] + 
-                             gear.resource[ resource ] + 
-                             enchant.resource[ resource ] + 
+  resource_max[ resource ] = resource_base[ resource ] +
+                             gear.resource[ resource ] +
+                             enchant.resource[ resource ] +
                              ( is_pet() ? 0 : sim -> enchant.resource[ resource ] );
 
   switch ( resource )
@@ -3369,13 +3369,13 @@ void player_t::recalculate_resource_max( int resource )
       {
         resource_max[ resource ] *= 1.02;
       }
-      
+
       if ( race == RACE_GNOME )
       {
         resource_initial[ resource ] *= 1.05;
       }
       resource_max[ resource ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
-      // Arcane Brilliance needs to be done here as a generic resource, otherwise override will 
+      // Arcane Brilliance needs to be done here as a generic resource, otherwise override will
       // not (and did not previously) work
       resource_max[ resource ] += buffs.arcane_brilliance -> value();
       break;
@@ -4850,7 +4850,7 @@ struct wait_fixed_t : public action_t
   virtual double execute_time() SC_CONST
   {
     int result = time_expr -> evaluate();
-    assert( result == TOK_NUM );
+    assert( result == TOK_NUM ); (void)result;
     return time_expr -> result_num;
   }
 
