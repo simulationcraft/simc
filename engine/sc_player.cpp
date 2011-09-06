@@ -1447,8 +1447,6 @@ void player_t::init_actions()
     action_priority_list_t* chosen_action_list = find_action_priority_list( "default" );
     if ( chosen_action_list )
           action_list_str = chosen_action_list -> action_list_str;
-    else
-      sim -> errorf( "No Default Action List available.\n" );
   }
 
 
