@@ -1475,6 +1475,9 @@ bool action_t::ready()
   if ( ! player -> resource_available( resource, cost() ) )
     return false;
 
+  if ( if_expr && ! if_expr -> success() )
+    return false;
+
   if ( min_current_time > 0 )
     if ( sim -> current_time < min_current_time )
       return false;
@@ -1528,9 +1531,6 @@ bool action_t::ready()
   if ( max_health_percentage > 0 )
     if ( t -> health_percentage() > max_health_percentage )
       return false;
-
-  if ( if_expr && ! if_expr -> success() )
-    return false;
 
   return true;
 }

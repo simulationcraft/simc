@@ -49,40 +49,122 @@ struct expr_binary_t : public action_expr_t
   virtual int evaluate()
   {
     result_type = TOK_UNKNOWN;
-    int  left_result =  left -> evaluate();
-    int right_result = right -> evaluate();
-    if ( left_result != right_result )
-    {
-      action -> sim -> errorf( "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n",
-                               action -> player -> name(), action -> name(), left -> name(), right -> name(), name() );
-      action -> sim -> cancel();
-    }
-    else if ( left_result == TOK_NUM )
+    int right_result,
+        left_result = left -> evaluate();
+
+    if ( left_result == TOK_NUM )
     {
       result_type = TOK_NUM;
       switch( operation )
       {
-      case TOK_ADD:  result_num = left -> result_num + right -> result_num; break;
-      case TOK_SUB:  result_num = left -> result_num - right -> result_num; break;
-      case TOK_MULT: result_num = left -> result_num * right -> result_num; break;
-      case TOK_DIV:  result_num = left -> result_num / right -> result_num; break;
+        case TOK_ADD:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = left -> result_num + right -> result_num;
+          break;
+        }
+        case TOK_SUB:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = left -> result_num - right -> result_num;
+          break;
+        }
+        case TOK_MULT:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = left -> result_num * right -> result_num;
+          break;
+        }
+        case TOK_DIV:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = left -> result_num / right -> result_num;
+          break;
+        }
+      
+        case TOK_EQ:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = static_cast< int >( left -> result_num == right -> result_num );
+          break;
+        }
+        case TOK_NOTEQ:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = static_cast< int >( left -> result_num != right -> result_num );
+          break;
+        }
+        case TOK_LT:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = static_cast< int >( left -> result_num < right -> result_num );
+          break;
+        }
+        case TOK_LTEQ:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = static_cast< int >( left -> result_num <= right -> result_num );
+          break;
+        }
+        case TOK_GT:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = static_cast< int >( left -> result_num > right -> result_num );
+          break;
+        }
+        case TOK_GTEQ:
+        {
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = static_cast< int >( left -> result_num >= right -> result_num );
+          break;
+        }
 
-      case TOK_EQ:    result_num = ( left -> result_num == right -> result_num ) ? 1 : 0; break;
-      case TOK_NOTEQ: result_num = ( left -> result_num != right -> result_num ) ? 1 : 0; break;
-      case TOK_LT:    result_num = ( left -> result_num <  right -> result_num ) ? 1 : 0; break;
-      case TOK_LTEQ:  result_num = ( left -> result_num <= right -> result_num ) ? 1 : 0; break;
-      case TOK_GT:    result_num = ( left -> result_num >  right -> result_num ) ? 1 : 0; break;
-      case TOK_GTEQ:  result_num = ( left -> result_num >= right -> result_num ) ? 1 : 0; break;
+        case TOK_AND:
+        {
+          if ( left -> result_num == 0 )
+          {
+            result_num = 0;
+            break;
+          }
 
-      case TOK_AND: result_num = ( ( left -> result_num != 0 ) && ( right -> result_num != 0 ) ) ? 1 : 0; break;
-      case TOK_OR:  result_num = ( ( left -> result_num != 0 ) || ( right -> result_num != 0 ) ) ? 1 : 0; break;
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = static_cast< int >( ( left -> result_num != 0 ) && ( right -> result_num != 0 ) );
+          break;
+        }
 
-      default: assert( 0 );
+        case TOK_OR:
+        {
+          if ( left -> result_num != 0 )
+          {
+            result_num = 1;
+            break;
+          }
+
+          right_result = right -> evaluate();
+          if ( left_result != right_result ) goto error;
+          result_num = static_cast< int >( ( left -> result_num != 0 ) || ( right -> result_num != 0 ) );
+          break;
+        }
+
+        default: assert( 0 );
       }
     }
     else if ( left_result == TOK_STR )
     {
       result_type = TOK_NUM;
+      right_result = right -> evaluate();
+      if ( left_result != right_result ) goto error;
       switch( operation )
       {
       case TOK_EQ:    result_num = ( left -> result_str == right -> result_str ) ? 1 : 0; break;
@@ -95,6 +177,12 @@ struct expr_binary_t : public action_expr_t
       default: assert( 0 );
       }
     }
+    return result_type;
+error:
+    action -> sim -> errorf( "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n",
+                             action -> player -> name(), action -> name(), left -> name(), right -> name(), name() );
+    action -> sim -> cancel();
+
     return result_type;
   }
 };
@@ -368,7 +456,7 @@ bool expression_t::convert_to_rpn( action_t* /* action */, std::vector<expr_toke
         if ( stack.empty() ) break;
         expr_token_t& s = stack.back();
         if ( s.type == TOK_LPAR ) break;
-        if ( precedence( t.type ) >= precedence( s.type ) ) break;
+        if ( precedence( t.type ) > precedence( s.type ) ) break;
         rpn.push_back( s );
         stack.pop_back();
       }
