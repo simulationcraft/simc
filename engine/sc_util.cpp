@@ -6,14 +6,14 @@
 #include "simulationcraft.h"
 #include "utf8.h"
 
-// pred_ci =================================================================
+// pred_ci ==================================================================
 
 static bool pred_ci ( char a, char b )
 {
   return std::tolower( a ) == std::tolower( b );
 }
 
-// util_t::str_compare_ci ==================================================
+// util_t::str_compare_ci ===================================================
 
 bool util_t::str_compare_ci( const std::string& l,
                              const std::string& r )
@@ -24,7 +24,7 @@ bool util_t::str_compare_ci( const std::string& l,
   return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
-// util_t::str_prefix_ci ===================================================
+// util_t::str_prefix_ci ====================================================
 
 bool util_t::str_prefix_ci( const std::string& str,
                             const std::string& prefix )
@@ -35,7 +35,7 @@ bool util_t::str_prefix_ci( const std::string& str,
   return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
 }
 
-// util_t::str_in_str_ci ===================================================
+// util_t::str_in_str_ci ====================================================
 
 bool util_t::str_in_str_ci( const std::string& l,
                             const std::string& r )
@@ -43,7 +43,7 @@ bool util_t::str_in_str_ci( const std::string& l,
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
 
-// util_t::talent_rank =====================================================
+// util_t::talent_rank ======================================================
 
 double util_t::talent_rank( int    num,
                             int    max,
@@ -57,7 +57,7 @@ double util_t::talent_rank( int    num,
   return num * increment;
 }
 
-// util_t::talent_rank =====================================================
+// util_t::talent_rank ======================================================
 
 int util_t::talent_rank( int num,
                          int max,
@@ -71,7 +71,7 @@ int util_t::talent_rank( int num,
   return num * increment;
 }
 
-// util_t::talent_rank =====================================================
+// util_t::talent_rank ======================================================
 
 double util_t::talent_rank( int    num,
                             int    max,
@@ -100,7 +100,7 @@ double util_t::talent_rank( int    num,
   return value;
 }
 
-// util_t::talent_rank =====================================================
+// util_t::talent_rank ======================================================
 
 int util_t::talent_rank( int num,
                          int max,
@@ -129,7 +129,7 @@ int util_t::talent_rank( int num,
   return value;
 }
 
-// util_t::ability_rank ====================================================
+// util_t::ability_rank =====================================================
 
 double util_t::ability_rank( int    player_level,
                              double ability_value,
@@ -149,7 +149,7 @@ double util_t::ability_rank( int    player_level,
   return ability_value;
 }
 
-// util_t::ability_rank ====================================================
+// util_t::ability_rank =====================================================
 
 int util_t::ability_rank( int player_level,
                           int ability_value,
@@ -169,7 +169,7 @@ int util_t::ability_rank( int player_level,
   return ability_value;
 }
 
-// util_t::dup =============================================================
+// util_t::dup ==============================================================
 
 char* util_t::dup( const char *value )
 {
@@ -177,7 +177,7 @@ char* util_t::dup( const char *value )
   return static_cast<char*>( memcpy( malloc( n ), value, n ) );
 }
 
-// util_t::role_type_string ================================================
+// util_t::role_type_string =================================================
 
 const char* util_t::role_type_string( int role )
 {
@@ -194,7 +194,7 @@ const char* util_t::role_type_string( int role )
   return "unknown";
 }
 
-// util_t::parse_role_type =================================================
+// util_t::parse_role_type ==================================================
 
 role_type util_t::parse_role_type( const std::string& name )
 {
@@ -205,7 +205,7 @@ role_type util_t::parse_role_type( const std::string& name )
   return ROLE_HYBRID;
 }
 
-// util_t::race_type_string ================================================
+// util_t::race_type_string =================================================
 
 const char* util_t::race_type_string( int type )
 {
@@ -379,7 +379,7 @@ player_type util_t::parse_player_type( const std::string& name )
   return PLAYER_NONE;
 }
 
-// util_t::pet_type_string =================================================
+// util_t::pet_type_string ==================================================
 
 const char* util_t::pet_type_string( int type )
 {
@@ -445,7 +445,7 @@ const char* util_t::pet_type_string( int type )
   return "unknown";
 }
 
-// util_t::parse_pet_type ==================================================
+// util_t::parse_pet_type ===================================================
 
 pet_type_t util_t::parse_pet_type( const std::string& name )
 {
@@ -456,7 +456,7 @@ pet_type_t util_t::parse_pet_type( const std::string& name )
   return PET_NONE;
 }
 
-// util_t::attribute_type_string ===========================================
+// util_t::attribute_type_string ============================================
 
 const char* util_t::attribute_type_string( int type )
 {
@@ -471,7 +471,7 @@ const char* util_t::attribute_type_string( int type )
   return "unknown";
 }
 
-// util_t::parse_attribute_type ============================================
+// util_t::parse_attribute_type =============================================
 
 int util_t::parse_attribute_type( const std::string& name )
 {
@@ -482,7 +482,7 @@ int util_t::parse_attribute_type( const std::string& name )
   return ATTRIBUTE_NONE;
 }
 
-// util_t::dmg_type_string =================================================
+// util_t::dmg_type_string ==================================================
 
 const char* util_t::dmg_type_string( int type )
 {
@@ -494,7 +494,7 @@ const char* util_t::dmg_type_string( int type )
   return "unknown";
 }
 
-// util_t::gem_type_string =================================================
+// util_t::gem_type_string ==================================================
 
 const char* util_t::gem_type_string( int type )
 {
@@ -513,7 +513,7 @@ const char* util_t::gem_type_string( int type )
   return "unknown";
 }
 
-// util_t::parse_gem_type ==================================================
+// util_t::parse_gem_type ===================================================
 
 int util_t::parse_gem_type( const std::string& name )
 {
@@ -524,7 +524,7 @@ int util_t::parse_gem_type( const std::string& name )
   return GEM_NONE;
 }
 
-// util_t::meta_gem_type_string ============================================
+// util_t::meta_gem_type_string =============================================
 
 const char* util_t::meta_gem_type_string( int type )
 {
@@ -587,7 +587,7 @@ const char* util_t::meta_gem_type_string( int type )
   return "unknown";
 }
 
-// util_t::parse_meta_gem_type =============================================
+// util_t::parse_meta_gem_type ==============================================
 
 int util_t::parse_meta_gem_type( const std::string& name )
 {
@@ -598,7 +598,7 @@ int util_t::parse_meta_gem_type( const std::string& name )
   return META_GEM_NONE;
 }
 
-// util_t::result_type_string ==============================================
+// util_t::result_type_string ===============================================
 
 const char* util_t::result_type_string( int type )
 {
@@ -618,7 +618,7 @@ const char* util_t::result_type_string( int type )
   return "unknown";
 }
 
-// util_t::parse_result_type ===============================================
+// util_t::parse_result_type ================================================
 
 int util_t::parse_result_type( const std::string& name )
 {
@@ -629,7 +629,7 @@ int util_t::parse_result_type( const std::string& name )
   return RESULT_NONE;
 }
 
-// util_t::resource_type_string ============================================
+// util_t::resource_type_string =============================================
 
 const char* util_t::resource_type_string( int type )
 {
@@ -652,7 +652,7 @@ const char* util_t::resource_type_string( int type )
   return "unknown";
 }
 
-// util_t::parse_resource_type =============================================
+// util_t::parse_resource_type ==============================================
 
 int util_t::parse_resource_type( const std::string& name )
 {
@@ -663,7 +663,7 @@ int util_t::parse_resource_type( const std::string& name )
   return RESOURCE_NONE;
 }
 
-// util_t::school_type_component ===========================================
+// util_t::school_type_component ============================================
 
 int util_t::school_type_component( int s_type, int c_type )
 {
@@ -673,7 +673,7 @@ int util_t::school_type_component( int s_type, int c_type )
   return s_mask & c_mask;
 }
 
-// util_t::school_type_string ==============================================
+// util_t::school_type_string ===============================================
 
 const char* util_t::school_type_string( int school )
 {
@@ -717,7 +717,7 @@ const char* util_t::school_type_string( int school )
   return "unknown";
 }
 
-// util_t::parse_school_type ===============================================
+// util_t::parse_school_type ================================================
 
 school_type util_t::parse_school_type( const std::string& name )
 {
@@ -728,7 +728,7 @@ school_type util_t::parse_school_type( const std::string& name )
   return SCHOOL_NONE;
 }
 
-// util_t::talent_tree ==============================================
+// util_t::talent_tree ======================================================
 
 int util_t::talent_tree( int tree, player_type ptype )
 {
@@ -788,6 +788,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     {
     case SHAMAN_ELEMENTAL:      return TREE_ELEMENTAL;
     case SHAMAN_ENHANCEMENT:    return TREE_ENHANCEMENT;
+    case SHAMAN_RESTORATION:    return TREE_RESTORATION;
     }
   case WARLOCK:
     switch ( tree )
@@ -809,7 +810,7 @@ int util_t::talent_tree( int tree, player_type ptype )
   return TREE_NONE;
 }
 
-// util_t::talent_tree_string ==============================================
+// util_t::talent_tree_string ===============================================
 
 const char* util_t::talent_tree_string( int tree, bool armory_format )
 {
@@ -881,7 +882,7 @@ const char* util_t::talent_tree_string( int tree, bool armory_format )
   }
 }
 
-// util_t::parse_talent_tree ===============================================
+// util_t::parse_talent_tree ================================================
 
 int util_t::parse_talent_tree( const std::string& name )
 {
@@ -892,7 +893,7 @@ int util_t::parse_talent_tree( const std::string& name )
   return TREE_NONE;
 }
 
-// util_t::weapon_type_string ==============================================
+// util_t::weapon_type_string ===============================================
 
 const char* util_t::weapon_type_string( int weapon )
 {
@@ -919,6 +920,8 @@ const char* util_t::weapon_type_string( int weapon )
   return "unknown";
 }
 
+// util_t::weapon_subclass_string ===========================================
+
 const char* util_t::weapon_subclass_string( int subclass )
 {
   switch ( subclass )
@@ -942,6 +945,8 @@ const char* util_t::weapon_subclass_string( int subclass )
   return "Unknown";
 }
 
+// util_t::weapon_class_string ==============================================
+
 const char* util_t::weapon_class_string( int class_ )
 {
   switch ( class_ )
@@ -957,6 +962,8 @@ const char* util_t::weapon_class_string( int class_ )
   }
   return 0;
 }
+
+// util_t::set_item_type_string =============================================
 
 const char* util_t::set_item_type_string( int item_set )
 {
@@ -1007,8 +1014,7 @@ const char* util_t::set_item_type_string( int item_set )
   return 0;
 }
 
-
-// util_t::parse_weapon_type ===============================================
+// util_t::parse_weapon_type ================================================
 
 int util_t::parse_weapon_type( const std::string& name )
 {
@@ -1019,7 +1025,7 @@ int util_t::parse_weapon_type( const std::string& name )
   return WEAPON_NONE;
 }
 
-// util_t::flask_type_string ===============================================
+// util_t::flask_type_string ================================================
 
 const char* util_t::flask_type_string( int flask )
 {
@@ -1046,7 +1052,7 @@ const char* util_t::flask_type_string( int flask )
   return "unknown";
 }
 
-// util_t::parse_flask_type ================================================
+// util_t::parse_flask_type =================================================
 
 int util_t::parse_flask_type( const std::string& name )
 {
@@ -1057,7 +1063,7 @@ int util_t::parse_flask_type( const std::string& name )
   return FLASK_NONE;
 }
 
-// util_t::food_type_string ================================================
+// util_t::food_type_string =================================================
 
 const char* util_t::food_type_string( int food )
 {
@@ -1098,7 +1104,7 @@ const char* util_t::food_type_string( int food )
   return "unknown";
 }
 
-// util_t::parse_food_type =================================================
+// util_t::parse_food_type ==================================================
 
 int util_t::parse_food_type( const std::string& name )
 {
@@ -1109,7 +1115,7 @@ int util_t::parse_food_type( const std::string& name )
   return FOOD_NONE;
 }
 
-// util_t::set_bonus_string ===============================================
+// util_t::set_bonus_string =================================================
 
 const char* util_t::set_bonus_string( set_type type )
 {
@@ -1151,7 +1157,7 @@ const char* util_t::set_bonus_string( set_type type )
   return "unknown";
 }
 
-// util_t::parse_set_bonus ================================================
+// util_t::parse_set_bonus ==================================================
 
 set_type util_t::parse_set_bonus( const std::string& name )
 {
@@ -1190,6 +1196,8 @@ const char* util_t::slot_type_string( int slot )
   }
   return "unknown";
 }
+
+// util_t::armor_type_string ================================================
 
 const char* util_t::armor_type_string( player_type ptype, int slot_type )
 {
@@ -1233,7 +1241,7 @@ const char* util_t::armor_type_string( player_type ptype, int slot_type )
   }
 }
 
-// util_t::parse_slot_type =================================================
+// util_t::parse_slot_type ==================================================
 
 int util_t::parse_slot_type( const std::string& name )
 {
@@ -1392,7 +1400,7 @@ const char* util_t::stat_type_wowhead( int stat )
   return "unknown";
 }
 
-// util_t::parse_stat_type =================================================
+// util_t::parse_stat_type ==================================================
 
 stat_type util_t::parse_stat_type( const std::string& name )
 {
@@ -1429,7 +1437,7 @@ stat_type util_t::parse_stat_type( const std::string& name )
   return STAT_NONE;
 }
 
-// util_t::parse_reforge_type =================================================
+// util_t::parse_reforge_type ===============================================
 
 stat_type util_t::parse_reforge_type( const std::string& name )
 {
@@ -1451,7 +1459,7 @@ stat_type util_t::parse_reforge_type( const std::string& name )
   }
 }
 
-// util_t::parse_origin ====================================================
+// util_t::parse_origin =====================================================
 
 bool util_t::parse_origin( std::string& region_str,
                            std::string& server_str,
@@ -1499,7 +1507,7 @@ bool util_t::parse_origin( std::string& region_str,
   return true;
 }
 
-// util_t::class_id_max ====================================================
+// util_t::class_id_max =====================================================
 
 int util_t::class_id_mask( int type )
 {
@@ -1508,7 +1516,7 @@ int util_t::class_id_mask( int type )
   return 1 << ( cid - 1 );
 }
 
-// util_t::class_id ========================================================
+// util_t::class_id =========================================================
 
 int util_t::class_id( int type )
 {
@@ -1530,7 +1538,7 @@ int util_t::class_id( int type )
   return 0;
 }
 
-// util_t::race_id ========================================================
+// util_t::race_id ==========================================================
 
 unsigned util_t::race_id( int r )
 {
@@ -1565,7 +1573,7 @@ unsigned util_t::race_mask( int r )
   return 0x00;
 }
 
-// util_t::pet_class_type ========================================================
+// util_t::pet_class_type ===================================================
 
 player_type util_t::pet_class_type( int c )
 {
@@ -1591,7 +1599,7 @@ player_type util_t::pet_class_type( int c )
   return p;
 }
 
-// util_t::pet_mask ========================================================
+// util_t::pet_mask =========================================================
 
 unsigned util_t::pet_mask( int p )
 {
@@ -1604,6 +1612,8 @@ unsigned util_t::pet_mask( int p )
 
   return 0x0;
 }
+
+// util_t::pet_id ===========================================================
 
 unsigned util_t::pet_id( int p )
 {
@@ -1619,7 +1629,7 @@ unsigned util_t::pet_id( int p )
   return 0;
 }
 
-// util_t::class_id_string =================================================
+// util_t::class_id_string ==================================================
 
 const char* util_t::class_id_string( int type )
 {
@@ -1640,7 +1650,7 @@ const char* util_t::class_id_string( int type )
   return "0";
 }
 
-// util_t::translate_class_id ==============================================
+// util_t::translate_class_id ===============================================
 
 int util_t::translate_class_id( int cid )
 {
@@ -1661,7 +1671,7 @@ int util_t::translate_class_id( int cid )
   return PLAYER_NONE;
 }
 
-// util_t::translate_race_id ===============================================
+// util_t::translate_race_id ================================================
 
 race_type util_t::translate_race_id( int rid )
 {
@@ -1713,6 +1723,8 @@ stat_type util_t::translate_item_mod( int item_mod )
   return STAT_NONE;
 }
 
+// util_t::translate_weapon_subclass ========================================
+
 weapon_type util_t::translate_weapon_subclass( item_subclass_weapon id )
 {
   switch ( id )
@@ -1737,6 +1749,8 @@ weapon_type util_t::translate_weapon_subclass( item_subclass_weapon id )
 
   return WEAPON_NONE;
 }
+
+// util_t::translate_invtype ================================================
 
 slot_type util_t::translate_invtype( int inv_type )
 {
@@ -1787,7 +1801,7 @@ slot_type util_t::translate_invtype( int inv_type )
   return SLOT_NONE;
 }
 
-// util_t::socket_gem_match ================================================
+// util_t::socket_gem_match =================================================
 
 bool util_t::socket_gem_match( int socket,
                                int gem )
@@ -1805,7 +1819,7 @@ bool util_t::socket_gem_match( int socket,
   return false;
 }
 
-// util_t::item_quality_string =============================================
+// util_t::item_quality_string ==============================================
 
 const char* util_t::item_quality_string( int quality )
 {
@@ -1820,7 +1834,7 @@ const char* util_t::item_quality_string( int quality )
   }
 }
 
-// util_t::parse_item_quality ==============================================
+// util_t::parse_item_quality ===============================================
 
 int util_t::parse_item_quality( const std::string& quality )
 {
@@ -1833,7 +1847,7 @@ int util_t::parse_item_quality( const std::string& quality )
   return i;
 }
 
-// util_t::string_split ====================================================
+// util_t::string_split =====================================================
 
 void util_t::string_split_( std::vector<std::string>& results,
                             const std::string&        str,
@@ -1889,7 +1903,7 @@ void util_t::string_split_( std::vector<std::string>& results,
   */
 }
 
-// util_t::string_split ====================================================
+// util_t::string_split =====================================================
 
 int util_t::string_split( const std::string& str,
                           const char*        delim,
@@ -1924,7 +1938,7 @@ int util_t::string_split( const std::string& str,
   return str_size;
 }
 
-// util_t::string_strip_quotes =============================================
+// util_t::string_strip_quotes ==============================================
 
 void util_t::string_strip_quotes( std::string& str )
 {
@@ -1941,7 +1955,7 @@ void util_t::string_strip_quotes( std::string& str )
   str.resize( dst - str.begin() );
 }
 
-// util_t::to_string =======================================================
+// util_t::to_string ========================================================
 
 std::string util_t::to_string( int i )
 {
@@ -1950,7 +1964,7 @@ std::string util_t::to_string( int i )
   return std::string( buffer );
 }
 
-// util_t::to_string =======================================================
+// util_t::to_string ========================================================
 
 std::string util_t::to_string( double f, int precision )
 {
@@ -1959,7 +1973,7 @@ std::string util_t::to_string( double f, int precision )
   return std::string( buffer );
 }
 
-// util_t::to_string =======================================================
+// util_t::to_string ========================================================
 
 std::string util_t::to_string( double f )
 {
@@ -1969,14 +1983,14 @@ std::string util_t::to_string( double f )
     return to_string( f, 3 );
 }
 
-// util_t::milliseconds ====================================================
+// util_t::milliseconds =====================================================
 
 int64_t util_t::milliseconds()
 {
   return 1000 * clock() / CLOCKS_PER_SEC;
 }
 
-// util_t::parse_date ======================================================
+// util_t::parse_date =======================================================
 
 int64_t util_t::parse_date( const std::string& month_day_year )
 {
@@ -2016,6 +2030,8 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   return atoi( buffer.c_str() );
 }
 
+// vfprintf_helper ==========================================================
+
 static int vfprintf_helper( FILE *stream, const char *format, va_list args )
 {
   char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
@@ -2029,7 +2045,7 @@ static int vfprintf_helper( FILE *stream, const char *format, va_list args )
   return retcode;
 }
 
-// util_t::fprintf ========================================================
+// util_t::fprintf ==========================================================
 
 int util_t::fprintf( FILE *stream, const char *format,  ... )
 {
@@ -2043,7 +2059,7 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
-// util_t::printf ========================================================
+// util_t::printf ===========================================================
 
 int util_t::printf( const char *format,  ... )
 {
@@ -2057,6 +2073,8 @@ int util_t::printf( const char *format,  ... )
   return retcode;
 }
 
+// util_t::str_to_utf8_ =====================================================
+
 void util_t::str_to_utf8_( std::string& str )
 {
   std::string::iterator p = utf8::find_invalid( str.begin(), str.end() );
@@ -2068,6 +2086,8 @@ void util_t::str_to_utf8_( std::string& str )
 
   str.swap( temp );
 }
+
+// util_t::str_to_latin1_ ===================================================
 
 void util_t::str_to_latin1_( std::string& str )
 {
@@ -2083,6 +2103,8 @@ void util_t::str_to_latin1_( std::string& str )
 
   str.swap( temp );
 }
+
+// util_t::urlencode_ =======================================================
 
 void util_t::urlencode_( std::string& str )
 {
@@ -2112,6 +2134,8 @@ void util_t::urlencode_( std::string& str )
   str.swap( temp );
 }
 
+// util_t::urldecode_ =======================================================
+
 void util_t::urldecode_( std::string& str )
 {
   std::string::size_type l = str.length();
@@ -2138,6 +2162,8 @@ void util_t::urldecode_( std::string& str )
   str.swap( temp );
 }
 
+// util_t::format_text ======================================================
+
 void util_t::format_text_( std::string& name, bool input_is_utf8 )
 {
   if ( name.empty() ) return;
@@ -2148,6 +2174,8 @@ void util_t::format_text_( std::string& name, bool input_is_utf8 )
   else if ( ! is_utf8 && input_is_utf8 )
     util_t::str_to_utf8( name );
 }
+
+// util_t::html_special_char_decode_ ========================================
 
 void util_t::html_special_char_decode_( std::string& str )
 {
@@ -2185,6 +2213,8 @@ void util_t::html_special_char_decode_( std::string& str )
   }
 }
 
+// util_t::add_base_stats ===================================================
+
 void util_t::add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b )
 {
   result.level      = a.level      + b.level;
@@ -2198,6 +2228,8 @@ void util_t::add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t
   result.spell_crit = a.spell_crit + b.spell_crit;
   result.melee_crit = a.melee_crit + b.melee_crit;
 }
+
+// util_t::floor ============================================================
 
 double util_t::floor( double X, unsigned int decplaces )
 {
@@ -2221,6 +2253,8 @@ double util_t::floor( double X, unsigned int decplaces )
   }
 }
 
+// util_t::ceil =============================================================
+
 double util_t::ceil( double X, unsigned int decplaces )
 {
   switch ( decplaces )
@@ -2242,6 +2276,8 @@ double util_t::ceil( double X, unsigned int decplaces )
     return ::ceil( X * mult ) * div;
   }
 }
+
+// util_t::round ============================================================
 
 double util_t::round( double X, unsigned int decplaces )
 {
@@ -2265,6 +2301,8 @@ double util_t::round( double X, unsigned int decplaces )
   }
 }
 
+// util_t::tolower_ =========================================================
+
 void util_t::tolower_( std::string& str )
 {
   for( std::string::size_type i = 0, n = str.length(); i < n; ++i )
@@ -2274,7 +2312,6 @@ void util_t::tolower_( std::string& str )
 //-------------------------------
 // std::STRING   utils
 //-------------------------------
-
 
 // utility functions
 std::string tolower( const std::string& src )

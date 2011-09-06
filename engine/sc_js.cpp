@@ -15,9 +15,9 @@ struct js_node_t
   const char* name() { return name_str.c_str(); }
 };
 
-namespace { // ANONYMOUS NAMESPACE =========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// is_white_space ==========================================================
+// is_white_space ===========================================================
 
 static bool is_white_space( char c )
 {
@@ -27,7 +27,7 @@ static bool is_white_space( char c )
           c == '\r' );
 }
 
-// is_token_char ===========================================================
+// is_token_char ============================================================
 
 static bool is_token_char( char c )
 {
@@ -41,7 +41,7 @@ static bool is_token_char( char c )
   return false;
 }
 
-// parse_token =============================================================
+// parse_token ==============================================================
 
 static char parse_token( std::string&            token_str,
                          const std::string&      input,
@@ -235,7 +235,7 @@ static void parse_value( sim_t*                  sim,
   }
 }
 
-// split_path ==============================================================
+// split_path ===============================================================
 
 static js_node_t* split_path( js_node_t*         node,
                               const std::string& path )
@@ -252,9 +252,9 @@ static js_node_t* split_path( js_node_t*         node,
   return node;
 }
 
-} // ANONYMOUS NAMESPACE ===================================================
+} // ANONYMOUS NAMESPACE ====================================================
 
-// js_t::create ===========================================================
+// js_t::create =============================================================
 
 js_node_t* js_t::create( sim_t* sim, const std::string& input )
 {
@@ -272,7 +272,7 @@ js_node_t* js_t::create( sim_t* sim, const std::string& input )
   return root;
 }
 
-// js_t::create ===========================================================
+// js_t::create =============================================================
 
 js_node_t* js_t::create( sim_t* sim, FILE* input )
 {
@@ -283,7 +283,7 @@ js_node_t* js_t::create( sim_t* sim, FILE* input )
   return create( sim, buffer );
 }
 
-// js_t::get_child ========================================================
+// js_t::get_child ==========================================================
 
 js_node_t* js_t::get_child( js_node_t*         root,
                             const std::string& name_str )
@@ -298,7 +298,7 @@ js_node_t* js_t::get_child( js_node_t*         root,
   return 0;
 }
 
-// js_t::get_children ======================================================
+// js_t::get_children =======================================================
 
 int js_t::get_children( std::vector<js_node_t*>& nodes,
                         js_node_t*               root,
@@ -314,7 +314,7 @@ int js_t::get_children( std::vector<js_node_t*>& nodes,
   return ( int ) nodes.size();
 }
 
-// js_t::get_node =========================================================
+// js_t::get_node ===========================================================
 
 js_node_t* js_t::get_node( js_node_t*         root,
                            const std::string& path )
@@ -325,7 +325,7 @@ js_node_t* js_t::get_node( js_node_t*         root,
   return split_path( root, path );
 }
 
-// js_t::get_nodes ========================================================
+// js_t::get_nodes ==========================================================
 
 int js_t::get_nodes( std::vector<js_node_t*>& nodes,
                      js_node_t*               root,
@@ -363,7 +363,7 @@ int js_t::get_nodes( std::vector<js_node_t*>& nodes,
   return ( int ) nodes.size();
 }
 
-// js_t::get_value ========================================================
+// js_t::get_value ==========================================================
 
 bool js_t::get_value( std::string&       value,
                       js_node_t*         root,
@@ -376,7 +376,7 @@ bool js_t::get_value( std::string&       value,
   return true;
 }
 
-// js_t::get_value ========================================================
+// js_t::get_value ==========================================================
 
 bool js_t::get_value( int&               value,
                       js_node_t*         root,
@@ -389,7 +389,7 @@ bool js_t::get_value( int&               value,
   return true;
 }
 
-// js_t::get_value ========================================================
+// js_t::get_value ==========================================================
 
 bool js_t::get_value( double&            value,
                       js_node_t*         root,
@@ -402,7 +402,7 @@ bool js_t::get_value( double&            value,
   return true;
 }
 
-// js_t::get_value ========================================================
+// js_t::get_value ==========================================================
 
 int js_t::get_value( std::vector<std::string>& value,
                      js_node_t*               root,
@@ -420,7 +420,7 @@ int js_t::get_value( std::vector<std::string>& value,
   return size;
 }
 
-// js_t::get_name ========================================================
+// js_t::get_name ===========================================================
 
 const char* js_t::get_name( js_node_t* node )
 {
@@ -430,7 +430,7 @@ const char* js_t::get_name( js_node_t* node )
   return node -> name();
 }
 
-// js_t::print ============================================================
+// js_t::print ==============================================================
 
 void js_t::print( js_node_t* root,
                   FILE*      file,
