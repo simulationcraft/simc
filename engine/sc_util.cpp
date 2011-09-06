@@ -6,12 +6,31 @@
 #include "simulationcraft.h"
 #include "utf8.h"
 
+namespace { // ANONYMOUS ====================================================
+
 // pred_ci ==================================================================
 
-static bool pred_ci ( char a, char b )
+bool pred_ci ( char a, char b )
 {
   return std::tolower( a ) == std::tolower( b );
 }
+
+// vfprintf_helper ==========================================================
+
+int vfprintf_helper( FILE *stream, const char *format, va_list args )
+{
+  char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
+  setlocale( LC_CTYPE, "" );
+
+  int retcode = vfprintf( stream, format, args );
+
+  setlocale( LC_CTYPE, p_locale );
+  free( p_locale );
+
+  return retcode;
+}
+
+} // ANONYMOUS namespace ====================================================
 
 // util_t::str_compare_ci ===================================================
 
@@ -176,6 +195,33 @@ char* util_t::dup( const char *value )
   std::size_t n = strlen( value ) + 1;
   return static_cast<char*>( memcpy( malloc( n ), value, n ) );
 }
+
+#ifdef _MSC_VER
+#undef snprintf
+// snprintf =================================================================
+
+int snprintf( char* buf, size_t size, const char* fmt, ... )
+{
+  if ( buf && size )
+  {
+    va_list ap;
+    va_start( ap, fmt );
+    int rval = _vsnprintf( buf, size, fmt, ap );
+    va_end( ap );
+    if ( rval < 0 || static_cast<unsigned>( rval ) < size )
+      return rval;
+
+    buf[ size - 1 ] = '\0';
+  }
+
+  va_list ap;
+  va_start( ap, fmt );
+  int rval = _vscprintf( fmt, ap );
+  va_end( ap );
+
+  return rval;
+}
+#endif
 
 // util_t::role_type_string =================================================
 
@@ -2028,21 +2074,6 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   std::string buffer = year + month + day;
 
   return atoi( buffer.c_str() );
-}
-
-// vfprintf_helper ==========================================================
-
-static int vfprintf_helper( FILE *stream, const char *format, va_list args )
-{
-  char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
-  setlocale( LC_CTYPE, "" );
-
-  int retcode = vfprintf( stream, format, args );
-
-  setlocale( LC_CTYPE, p_locale );
-  free( p_locale );
-
-  return retcode;
 }
 
 // util_t::fprintf ==========================================================

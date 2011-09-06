@@ -29,7 +29,6 @@
 
 #if defined( _MSC_VER )
 #  include "../vs/stdint.h"
-#  define snprintf _snprintf
 #else
 #  include <stdint.h>
 #endif
@@ -1638,6 +1637,12 @@ struct talent_translation_t
 };
 
 // Utilities =================================================================
+
+#ifdef _MSC_VER
+// C99-compliant snprintf - MSVC _snprintf is NOT the same.
+#undef snprintf
+int snprintf( char* buf, size_t size, const char* fmt, ... );
+#endif
 
 struct util_t
 {
