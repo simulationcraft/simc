@@ -3229,9 +3229,12 @@ void player_t::regen( double periodicity )
       resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
     }
 
-    double mp5_regen = periodicity * composite_mp5() / 5.0;
+    if ( mp5_per_intellect > 0 )
+    {
+      double mp5_regen = periodicity * composite_mp5() / 5.0;
 
-    resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
+      resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
+    }
 
     if ( buffs.replenishment -> up() )
     {
@@ -3266,6 +3269,8 @@ void player_t::regen( double periodicity )
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
+    if ( resource_max[ i ] == 0 ) continue;
+
     int index = ( int ) sim -> current_time;
     int size = ( int ) timeline_resource[i].size();
 
