@@ -3111,6 +3111,8 @@ struct item_database_t
   static uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t& );
   static uint32_t weapon_dmg_max(     const item_t& item, unsigned item_id );
   static uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
+
+  static bool     load_item_from_data( item_t& item, const item_data_t* item_data );
 };
 
 // Set Bonus =================================================================

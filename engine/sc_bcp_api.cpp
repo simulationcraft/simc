@@ -556,10 +556,14 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
     js_t::get_value( item_data.id_set, js, "itemSet" );
 
     // heroic tag is not available from BCP API.
-    if ( false ) item_data.flags_1 |= ITEM_FLAG_HEROIC;
+    {
+      // FIXME: set item_data.flags_1 to ITEM_FLAG_HEROIC as appropriate.
+    }
 
     // socket bonus is not available from BCP API.
-    if ( false ) item_data.id_socket_bonus = 0; // This is not an int, is it actually useful? 7748234923;
+    {
+      // FIXME: set item_data.id_socket_bonus appropriately.
+    }
   }
   catch ( const char* fieldname )
   {
@@ -568,8 +572,7 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
     return false;
   }
 
-  // return item.loadFrom( item_data );
-  return false;
+  return item_database_t::load_item_from_data( item, &item_data );
 }
 
 // bcp_api::download_guild ==================================================

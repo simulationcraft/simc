@@ -585,12 +585,9 @@ bool item_database_t::download_slot( item_t&            item,
   return true;
 }
 
-bool item_database_t::download_item( item_t& item, const std::string& item_id )
+bool item_database_t::load_item_from_data( item_t& item, const item_data_t* item_data )
 {
-  long iid                     = strtol( item_id.c_str(), 0, 10 );
-  const item_data_t* item_data = item.player -> dbc.item( iid );
-
-  if ( ! item_data || ! iid ) return false;
+  if ( ! item_data ) return false;
 
   parse_item_name( item, item_data );
   parse_item_quality( item, item_data );
@@ -618,6 +615,14 @@ bool item_database_t::download_item( item_t& item, const std::string& item_id )
   }
 
   return true;
+}
+
+bool item_database_t::download_item( item_t& item, const std::string& item_id )
+{
+  long iid = strtol( item_id.c_str(), 0, 10 );
+  if ( ! iid ) return false;
+
+  return load_item_from_data( item, item.player -> dbc.item( iid ) );
 }
 
 bool item_database_t::download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id )

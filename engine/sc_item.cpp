@@ -1344,6 +1344,8 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
       success = mmo_champion_t::download_item( item, item_id, cache::ONLY );
     else if ( source_list[ i ] == "armory" )
       success = armory_t::download_item( item, item_id, cache::ONLY );
+    else if ( source_list[ i ] == "bcpapi" )
+      success = bcp_api::download_item( item, item_id, cache::ONLY );
 
     if ( success ) return true;
   }
@@ -1361,6 +1363,8 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
       success = mmo_champion_t::download_item( item, item_id );
     else if ( source_list[ i ] == "armory" )
       success = armory_t::download_item( item, item_id );
+    else if ( source_list[ i ] == "bcpapi" )
+      success = bcp_api::download_item( item, item_id );
 
     if ( success ) return true;
   }
@@ -1383,7 +1387,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
       success = wowhead_t::download_glyph( player, glyph_name, glyph_id, cache::ONLY, true );
     else if ( player -> sim -> item_db_sources[ i ] == "mmoc" )
       success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
-    else if ( player -> sim -> item_db_sources[ i ] == "bcp" )
+    else if ( player -> sim -> item_db_sources[ i ] == "bcpapi" )
       success = bcp_api::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
 
     if ( success ) return true;
@@ -1400,7 +1404,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
       success = wowhead_t::download_glyph( player, glyph_name, glyph_id, cache::behavior(), true );
     else if ( player -> sim -> item_db_sources[ i ] == "mmoc" )
       success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id );
-    else if ( player -> sim -> item_db_sources[ i ] == "bcp" )
+    else if ( player -> sim -> item_db_sources[ i ] == "bcpapi" )
       success = bcp_api::download_glyph( player, glyph_name, glyph_id );
 
     if ( success ) return true;
