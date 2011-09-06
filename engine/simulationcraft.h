@@ -101,6 +101,7 @@
 struct action_t;
 struct action_callback_t;
 struct action_expr_t;
+struct action_priority_list_t;
 struct alias_t;
 struct attack_t;
 struct base_stats_t;
@@ -3333,12 +3334,14 @@ struct player_t
   // Action Priority List
   action_t*   action_list;
   std::string action_list_str;
+  std::string choose_action_list;
   std::string action_list_skip;
   std::string modify_action;
   int         action_list_default;
   cooldown_t* cooldown_list;
   dot_t*      dot_list;
   std::map<std::string,int> action_map;
+  std::vector<action_priority_list_t*> action_priority_list;
 
   // Reporting
   int       quiet;
@@ -3582,9 +3585,9 @@ struct player_t
   virtual void init_enchant();
   virtual void init_resources( bool force = false );
   virtual void init_professions();
-  virtual void init_use_item_actions( const std::string& append = std::string() );
-  virtual void init_use_profession_actions( const std::string& append = std::string() );
-  virtual void init_use_racial_actions( const std::string& append = std::string() );
+  virtual std::string init_use_item_actions( const std::string& append = std::string() );
+  virtual std::string init_use_profession_actions( const std::string& append = std::string() );
+  virtual std::string init_use_racial_actions( const std::string& append = std::string() );
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_scaling();
@@ -3855,6 +3858,7 @@ struct player_t
 
   cooldown_t* find_cooldown( const std::string& name );
   dot_t*      find_dot     ( const std::string& name );
+  action_priority_list_t* find_action_priority_list( const std::string& name );
 
   cooldown_t* get_cooldown( const std::string& name );
   dot_t*      get_dot     ( const std::string& name );
@@ -3865,6 +3869,7 @@ struct player_t
   rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );
   double      get_player_distance( player_t* p );
   double      get_position_distance( double m=0, double v=0 );
+  action_priority_list_t* get_action_priority_list( const std::string& name );
 
   // Opportunity to perform any stat fixups before analysis
   virtual void pre_analyze_hook() {}
@@ -4404,6 +4409,17 @@ struct action_callback_t
       v[ i ] -> reset();
     }
   }
+};
+
+// Action Priority List ======================================================
+
+struct action_priority_list_t
+{
+  std::string name_str;
+  std::string action_list_str;
+  player_t* player;
+  action_priority_list_t( std::string name, player_t* p ) : name_str( name ), player( p )
+  {}
 };
 
 // Player Ready Event ========================================================

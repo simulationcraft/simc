@@ -3375,11 +3375,11 @@ void rogue_t::init_actions()
 
     if ( primary_tree() == TREE_ASSASSINATION )
     {
-      init_use_item_actions();
+      action_list_str += init_use_item_actions();
 
-      init_use_profession_actions();
+      action_list_str += init_use_profession_actions();
 
-      init_use_racial_actions();
+      action_list_str += init_use_racial_actions();
 
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
@@ -3410,11 +3410,11 @@ void rogue_t::init_actions()
     }
     else if ( primary_tree() == TREE_COMBAT )
     {
-      init_use_item_actions();
+      action_list_str += init_use_item_actions();
 
-      init_use_profession_actions();
+      action_list_str += init_use_profession_actions();
 
-      init_use_racial_actions();
+      action_list_str += init_use_racial_actions();
 
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
@@ -3485,9 +3485,9 @@ void rogue_t::init_actions()
           }
       }
 
-      init_use_profession_actions( ( found_item >= 0 ) ? "" : ",if=buff.shadow_dance.up" );
+      action_list_str += init_use_profession_actions( ( found_item >= 0 ) ? "" : ",if=buff.shadow_dance.up" );
 
-      init_use_racial_actions( ",if=buff.shadow_dance.up" );
+      action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
       action_list_str += "/pool_energy,for_next=1";
       action_list_str += "/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up";
@@ -3521,9 +3521,9 @@ void rogue_t::init_actions()
     }
     else
     {
-      init_use_item_actions();
+      action_list_str += init_use_item_actions();
 
-      init_use_racial_actions();
+      action_list_str += init_use_racial_actions();
 
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";

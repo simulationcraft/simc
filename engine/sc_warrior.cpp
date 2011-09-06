@@ -3357,8 +3357,8 @@ void warrior_t::init_actions()
       }
     }
 
-    init_use_profession_actions();
-    init_use_racial_actions();
+    action_list_str += init_use_profession_actions();
+    action_list_str += init_use_racial_actions();
 
     // Arms
     if ( primary_tree() == TREE_ARMS )

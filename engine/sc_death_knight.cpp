@@ -354,7 +354,7 @@ struct death_knight_t : public player_t
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_actions();
-  virtual void      init_use_racial_actions( const std::string& append = std::string() );
+  virtual std::string init_use_racial_actions( const std::string& append = std::string() );
   virtual void      init_enchant();
   virtual void      init_rng();
   virtual void      init_defense();
@@ -4412,16 +4412,20 @@ void death_knight_t::init_spells()
 
 // death_knight_t::init_use_racial_actions ==================================
 
-void death_knight_t::init_use_racial_actions( const std::string& append )
+std::string death_knight_t::init_use_racial_actions( const std::string& append )
 {
+  std::string buffer;
+
   if ( race == RACE_DWARF )
   {
-    if ( talents.bladed_armor -> rank() > 0 ) action_list_str += "/stoneform" + append;
+    if ( talents.bladed_armor -> rank() > 0 ) buffer += "/stoneform" + append;
   }
   else
   {
-    player_t::init_use_racial_actions( append );
+    buffer = player_t::init_use_racial_actions( append );
   }
+
+  return buffer;
 }
 
 // death_knight_t::init_actions =============================================
@@ -4457,11 +4461,11 @@ void death_knight_t::init_actions()
     int num_items = ( int ) items.size();
     bool has_hor = false;
 
-    init_use_item_actions( ",time>=10" );
+    action_list_str += init_use_item_actions( ",time>=10" );
 
-    init_use_profession_actions();
+    action_list_str += init_use_profession_actions();
 
-    init_use_racial_actions( ",time>=10" );
+    action_list_str += init_use_racial_actions( ",time>=10" );
 
     for ( int i=0; i < num_items; i++ )
     {

@@ -3750,8 +3750,8 @@ void hunter_t::init_actions()
         action_list_str += items[ i ].name();
       }
     }
-    init_use_profession_actions();
-    init_use_racial_actions();
+    action_list_str += init_use_profession_actions();
+    action_list_str += init_use_racial_actions();
     action_list_str += "/explosive_trap,if=target.adds>0";
     switch ( primary_tree() )
     {

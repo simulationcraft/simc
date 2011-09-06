@@ -4240,8 +4240,8 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      init_use_profession_actions();
-      init_use_racial_actions();
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions();
 
       if ( level <= 80 )
         action_list_str += "/fire_elemental_totem,if=!ticking";
@@ -4287,8 +4287,8 @@ void shaman_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      init_use_profession_actions();
-      init_use_racial_actions();
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions();
 
       if ( talent_elemental_mastery -> rank() )
       {

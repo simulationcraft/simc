@@ -3551,7 +3551,7 @@ void mage_t::init_actions()
           action_list_str += ",if=buff.improved_mana_gem.up|cooldown.evocation.remains>90|target.time_to_die<=50";
       }
     }
-    init_use_profession_actions();
+    action_list_str += init_use_profession_actions();
     //Potions
     if ( level > 80 )
     {

@@ -4396,8 +4396,8 @@ void warlock_t::init_actions()
       }
     }
 
-    init_use_profession_actions();
-    init_use_racial_actions();
+    action_list_str += init_use_profession_actions();
+    action_list_str += init_use_racial_actions();
 
     // Choose Potion
     if ( level >= 80 )

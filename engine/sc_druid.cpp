@@ -4816,14 +4816,14 @@ void druid_t::init_actions()
         action_list_str += "/bear_form";
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
-        init_use_racial_actions();
+        action_list_str += init_use_racial_actions();
         action_list_str += "/skull_bash_bear";
         action_list_str += "/faerie_fire_feral,if=!debuff.faerie_fire.up";
         action_list_str += "/survival_instincts"; // For now use it on CD
         action_list_str += "/barkskin"; // For now use it on CD
         action_list_str += "/enrage";
         action_list_str += use_str;
-        init_use_profession_actions();
+        action_list_str += init_use_profession_actions();
         action_list_str += "/maul,if=rage>=75";
         action_list_str += "/mangle_bear";
         action_list_str += "/demoralizing_roar,if=!debuff.demoralizing_roar.up";
@@ -4877,7 +4877,7 @@ void druid_t::init_actions()
         {
           action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=40";
         }
-        init_use_racial_actions();
+        action_list_str += init_use_racial_actions();
         if ( set_bonus.tier11_4pc_melee() )
           action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&buff.t11_4pc_melee.remains<4";
         action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
@@ -4890,7 +4890,7 @@ void druid_t::init_actions()
           action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.ticking&target.health_pct<=25";
         }
         action_list_str += use_str;
-        init_use_profession_actions();
+        action_list_str += init_use_profession_actions();
         action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&target.health_pct>25";
         action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
@@ -4935,7 +4935,7 @@ void druid_t::init_actions()
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)";
       action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
-      init_use_racial_actions();
+      action_list_str += init_use_racial_actions();
       action_list_str += "/insect_swarm,if=(ticks_remain<2|(dot.insect_swarm.remains<10&buff.solar_eclipse.up&eclipse<15))&(buff.solar_eclipse.up|buff.lunar_eclipse.up|time<10)";
 
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
@@ -4975,7 +4975,7 @@ void druid_t::init_actions()
       if ( talents.force_of_nature -> rank() )
         action_list_str += "/treants,time>=5";
       action_list_str += use_str;
-      init_use_profession_actions();
+      action_list_str += init_use_profession_actions();
       if ( set_bonus.tier12_4pc_caster() )
       {
         action_list_str += "/starfire,if=eclipse_dir=1&eclipse<75";

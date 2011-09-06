@@ -442,7 +442,7 @@ player_t::player_t( sim_t*             s,
   executing( 0 ), channeling( 0 ), readying( 0 ), in_combat( false ), action_queued( false ),
   cast_delay_reaction( 0 ), cast_delay_occurred( 0 ),
   // Actions
-  action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
+  action_list( 0 ), choose_action_list( "" ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
   current_time( 0 ), total_seconds( 0 ), max_fight_length( 0 ),
@@ -1358,72 +1358,100 @@ void player_t::init_target()
 
 // player_t::init_use_item_actions ==================================================
 
-void player_t::init_use_item_actions( const std::string& append )
+std::string player_t::init_use_item_actions( const std::string& append )
 {
+  std::string buffer;
   int num_items = ( int ) items.size();
   for ( int i=0; i < num_items; i++ )
   {
     if ( items[ i ].use.active() )
     {
-      action_list_str += "/use_item,name=";
-      action_list_str += items[ i ].name();
+      buffer += "/use_item,name=";
+      buffer += items[ i ].name();
       if ( ! append.empty() )
       {
-        action_list_str += append;
+        buffer += append;
       }
     }
   }
+
+  return buffer;
 }
 
 // player_t::init_use_profession_actions ====================================
 
-void player_t::init_use_profession_actions( const std::string& append )
+std::string player_t::init_use_profession_actions( const std::string& append )
 {
+  std::string buffer;
   // Lifeblood
   if ( profession[ PROF_HERBALISM ] >= 450 )
   {
-    action_list_str += "/lifeblood";
-  }
-  else
-  {
-    return;
+    buffer += "/lifeblood";
   }
   if ( ! append.empty() )
   {
-    action_list_str += append;
+    buffer += append;
   }
+
+  return buffer;
 }
 
 // player_t::init_use_racial_actions ========================================
 
-void player_t::init_use_racial_actions( const std::string& append )
+std::string player_t::init_use_racial_actions( const std::string& append )
 {
+  std::string buffer;
+
   if ( race == RACE_ORC )
   {
-    action_list_str += "/blood_fury";
+    buffer += "/blood_fury";
   }
   else if ( race == RACE_TROLL )
   {
-    action_list_str += "/berserking";
+    buffer += "/berserking";
   }
   else if ( race == RACE_BLOOD_ELF )
   {
-    action_list_str += "/arcane_torrent";
-  }
-  else
-  {
-    return;
+    buffer += "/arcane_torrent";
   }
   if ( ! append.empty() )
   {
-    action_list_str += append;
+    buffer += append;
   }
+
+  return buffer;
 }
 
 // player_t::init_actions ===================================================
 
 void player_t::init_actions()
 {
+  if ( ! choose_action_list.empty() )
+  {
+    action_priority_list_t* chosen_action_list = find_action_priority_list( choose_action_list );
+
+    if ( chosen_action_list )
+      action_list_str = chosen_action_list -> action_list_str;
+    else if ( choose_action_list != "default" )
+    {
+      sim -> errorf( "Action List %s not found, using default action list.\n", choose_action_list.c_str() );
+      action_priority_list_t* default_action_list = find_action_priority_list( "default" );
+      if ( default_action_list )
+        action_list_str = default_action_list -> action_list_str;
+      else if ( action_list_str.empty() )
+        sim -> errorf( "No Default Action List available.\n" );
+    }
+  }
+  else if ( action_list_str.empty() )
+  {
+    action_priority_list_t* chosen_action_list = find_action_priority_list( "default" );
+    if ( chosen_action_list )
+          action_list_str = chosen_action_list -> action_list_str;
+    else
+      sim -> errorf( "No Default Action List available.\n" );
+  }
+
+
   if ( ! action_list_str.empty() )
   {
     if ( action_list_default && sim -> debug ) log_t::output( sim, "Player %s using default actions", name() );
@@ -4274,7 +4302,45 @@ double player_t::get_position_distance( double m, double v )
   return distance;
 }
 
-// player_t::debuffs_t::snared ===============================================
+// player_t::get_action_priority_list( const std::string& name ) ============
+
+action_priority_list_t* player_t::get_action_priority_list( const std::string& name )
+{
+
+  action_priority_list_t* a;
+
+  for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
+  {
+    action_priority_list_t* a = action_priority_list[i];
+    if ( a -> name_str == name )
+      return a;
+  }
+
+  a = new action_priority_list_t( name, this );
+
+  action_priority_list.push_back( a );
+
+  return a;
+}
+
+// player_t::find_action_priority_list( const std::string& name ) ===========
+
+action_priority_list_t* player_t::find_action_priority_list( const std::string& name )
+{
+
+  action_priority_list_t* a;
+
+  for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
+  {
+    a = action_priority_list[i];
+    if ( a -> name_str == name )
+      return a;
+  }
+
+  return 0;
+}
+
+// player_t::debuffs_t::snared ==============================================
 
 bool player_t::debuffs_t::snared()
 {
@@ -6078,6 +6144,11 @@ void player_t::copy_from( player_t* source )
   }
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
+  action_priority_list.clear();
+  for ( unsigned int i = 0; i < source -> action_priority_list.size(); i++ )
+  {
+    action_priority_list.push_back( source -> action_priority_list[ i ] );
+  }
   int num_items = ( int ) items.size();
   for ( int i=0; i < num_items; i++ )
   {
@@ -6113,6 +6184,7 @@ void player_t::create_options()
     { "professions",                          OPT_STRING,   &( professions_str                        ) },
     { "actions",                              OPT_STRING,   &( action_list_str                        ) },
     { "actions+",                             OPT_APPEND,   &( action_list_str                        ) },
+    { "action_list",                         OPT_STRING,   &( choose_action_list                     ) },
     { "sleeping",                             OPT_BOOL,     &( sleeping                               ) },
     { "quiet",                                OPT_BOOL,     &( quiet                                  ) },
     { "save",                                 OPT_STRING,   &( save_str                               ) },
