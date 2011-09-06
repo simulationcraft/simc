@@ -18,7 +18,7 @@ struct enemy_t : public player_t
   enemy_t( sim_t* s, const std::string& n, race_type r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
-    fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ), waiting_time( 0.1 )
+    fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ), waiting_time( s -> max_time )
 
   {
     player_t** last = &( sim -> target_list );
@@ -393,14 +393,15 @@ void enemy_t::init_actions()
   player_t::init_actions();
 
   // Small hack to increase waiting time for target without any actions
-  int x = 0;
   for ( action_t* action = action_list; action; action = action -> next )
     {
     if ( action -> background ) continue;
     if ( action -> name_str == "snapshot_stats" ) continue;
-    x++;
+    if ( action -> name_str.find( "auto_attack" ) != std::string::npos )
+      continue;
+    waiting_time = 1.0;
+    break;
     }
-  if ( x <= 0 ) waiting_time = 10.0;
 }
 
 // enemy_t::composite_tank_block ===============================================

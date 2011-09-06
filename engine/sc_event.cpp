@@ -137,7 +137,13 @@ void player_ready_event_t::execute()
 {
   if ( ! player -> execute_action() )
   {
-    player -> schedule_ready( player -> available(), true );
+    double x = player -> available();
+    player -> schedule_ready( x, true );
+    // Waiting Debug
+    //if ( sim -> debug )
+    //{
+    //  log_t::output( sim, "%s is waiting for %.4f resource=%.2f", player -> name(), x, player -> resource_current[ player -> primary_resource() ] );
+    //}
   }
 }
 
