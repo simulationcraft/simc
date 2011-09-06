@@ -2556,7 +2556,7 @@ int sim_t::main( int argc, char** argv )
 
 int sim_t::errorf( const char* format, ... )
 {
-  char *p_locale = strdup( setlocale( LC_CTYPE, NULL ) );
+  char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
   setlocale( LC_CTYPE, "" );
 
   va_list fmtargs;

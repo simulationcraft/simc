@@ -1641,7 +1641,7 @@ struct fortitude_t : public priest_spell_t
 
     harmful = false;
 
-    background = sim -> overrides.fortitude;
+    background = ( sim -> overrides.fortitude != 0 );
 
     bonus = floor( player -> dbc.effect_average( player -> dbc.spell( 79104 ) -> effect1().id() , player -> level ) );
   }
@@ -1798,7 +1798,7 @@ struct mind_blast_t : public priest_spell_t
   stats_t* orb_stats[ 4 ];
 
   mind_blast_t( player_t* player, const std::string& options_str ) :
-    priest_spell_t( "mind_blast", player, "Mind Blast" ), orb_stats()
+    priest_spell_t( "mind_blast", player, "Mind Blast" )
   {
     parse_options( NULL, options_str );
 

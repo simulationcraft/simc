@@ -30,7 +30,6 @@
 #if defined( _MSC_VER )
 #  include "../vs/stdint.h"
 #  define snprintf _snprintf
-#  define strdup _strdup
 #else
 #  include <stdint.h>
 #endif

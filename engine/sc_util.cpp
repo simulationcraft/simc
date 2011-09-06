@@ -2018,7 +2018,7 @@ int64_t util_t::parse_date( const std::string& month_day_year )
 
 static int vfprintf_helper( FILE *stream, const char *format, va_list args )
 {
-  char *p_locale = strdup( setlocale( LC_CTYPE, NULL ) );
+  char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
   setlocale( LC_CTYPE, "" );
 
   int retcode = vfprintf( stream, format, args );
