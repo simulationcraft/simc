@@ -3227,7 +3227,7 @@ void player_t::regen( double periodicity )
       resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
     }
 
-    if ( mp5_per_intellect > 0 )
+    if ( base_mp5 > 0 )
     {
       double mp5_regen = periodicity * composite_mp5() / 5.0;
 
