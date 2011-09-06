@@ -1439,6 +1439,7 @@ struct felguard_pet_t : public warlock_main_pet_t
 
 struct felhunter_pet_t : public warlock_main_pet_t
 {
+  cooldown_t* cooldowns_shadow_bite;
    // TODO: Need to add fel intelligence on the warlock while felhunter is out
   struct shadow_bite_t : public warlock_pet_spell_t
   {
@@ -1482,6 +1483,8 @@ struct felhunter_pet_t : public warlock_main_pet_t
     action_list_str += "/snapshot_stats";
     action_list_str += "/shadow_bite";
     action_list_str += "/wait_until_ready";
+
+    cooldowns_shadow_bite = get_cooldown( "shadow_bite" );
   }
 
   virtual void init_base()
@@ -1776,8 +1779,9 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
     warlock_guardian_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
   {
     action_list_str += "/snapshot_stats";
-    action_list_str += "/wait_until_ready";
   }
+
+  virtual double    available() SC_CONST { return 10.0; }
 
   virtual double composite_attack_power() SC_CONST
   {

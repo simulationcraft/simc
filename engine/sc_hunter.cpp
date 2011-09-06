@@ -540,7 +540,7 @@ struct hunter_pet_t : public pet_t
         action_list_str += "/wolverine_bite";
       }
       action_list_str += "/claw";
-      action_list_str += "/wait_until_ready,sec=3";
+      action_list_str += "/wait_until_ready";
       action_list_default = 1;
     }
 

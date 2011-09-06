@@ -688,6 +688,16 @@ struct army_ghoul_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
+
+  double available() SC_CONST
+  {
+    double energy = resource_current[ RESOURCE_ENERGY ];
+
+    if ( energy > 40 )
+      return 0.1;
+
+    return std::max( ( 40 - energy ) / energy_regen_per_second(), 0.1 );
+  }
 };
 
 // ==========================================================================
@@ -1457,6 +1467,16 @@ struct ghoul_pet_t : public pet_t
     if ( name == "sweeping_claws" ) return new ghoul_pet_sweeping_claws_t( this );
 
     return pet_t::create_action( name, options_str );
+  }
+
+  double available() SC_CONST
+  {
+    double energy = resource_current[ RESOURCE_ENERGY ];
+
+    if ( energy > 40 )
+      return 0.1;
+
+    return std::max( ( 40 - energy ) / energy_regen_per_second(), 0.1 );
   }
 };
 

@@ -13,11 +13,12 @@ struct enemy_t : public player_t
 {
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
+  double waiting_time;
 
   enemy_t( sim_t* s, const std::string& n, race_type r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
-    fixed_health_percentage( 0 ), initial_health_percentage( 100.0 )
+    fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ), waiting_time( 0.1 )
 
   {
     player_t** last = &( sim -> target_list );
@@ -71,6 +72,7 @@ struct enemy_t : public player_t
   virtual void combat_end();
   virtual void recalculate_health();
   virtual action_expr_t* create_expression( action_t* action, const std::string& type );
+  virtual double    available() SC_CONST { return waiting_time; }
 };
 
 // ==========================================================================
@@ -389,6 +391,16 @@ void enemy_t::init_actions()
   }
 
   player_t::init_actions();
+
+  // Small hack to increase waiting time for target without any actions
+  int x = 0;
+  for ( action_t* action = action_list; action; action = action -> next )
+    {
+    if ( action -> background ) continue;
+    if ( action -> name_str == "snapshot_stats" ) continue;
+    x++;
+    }
+  if ( x <= 0 ) waiting_time = 10.0;
 }
 
 // enemy_t::composite_tank_block ===============================================
