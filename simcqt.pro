@@ -4,9 +4,7 @@ QT += core gui network webkit
 #CONFIG += paperdoll
 #CONFIG += openssl
 
-release {
-  DEFINES += NDEBUG
-}
+QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 
 win32 {
   LIBS += libwsock32 libwininet
