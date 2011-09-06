@@ -9,13 +9,12 @@
 // Raid Events
 // ==========================================================================
 
-
 struct adds_event_t : public raid_event_t
 {
   int count;
   double health;
   adds_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "adds" ), count(1), health( 100000 )
+    raid_event_t( s, "adds" ), count( 1 ), health( 100000 )
   {
     option_t options[] =
     {
@@ -34,6 +33,7 @@ struct adds_event_t : public raid_event_t
       sim -> target_adds = count;
     }
   }
+
   virtual void start()
   {
     raid_event_t::start();
@@ -45,6 +45,7 @@ struct adds_event_t : public raid_event_t
       i++;
     }
   }
+
   virtual void finish()
   {
     int i = 0;
@@ -67,6 +68,7 @@ struct casting_event_t : public raid_event_t
   {
     parse_options( NULL, options_str );
   }
+
   virtual void start()
   {
     raid_event_t::start();
@@ -77,6 +79,7 @@ struct casting_event_t : public raid_event_t
       p -> interrupt();
     }
   }
+
   virtual void finish()
   {
     sim -> target -> debuffs.casting -> decrement();
@@ -100,16 +103,18 @@ struct distraction_event_t : public raid_event_t
     };
     parse_options( options, options_str );
   }
+
   virtual void start()
   {
     raid_event_t::start();
-    int num_affected = ( int )affected_players.size();
+    int num_affected = ( int ) affected_players.size();
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
       p -> skill -= skill;
     }
   }
+
   virtual void finish()
   {
     int num_affected = ( int ) affected_players.size();
@@ -131,6 +136,7 @@ struct invulnerable_event_t : public raid_event_t
   {
     parse_options( NULL, options_str );
   }
+
   virtual void start()
   {
     raid_event_t::start();
@@ -142,6 +148,7 @@ struct invulnerable_event_t : public raid_event_t
       p -> clear_debuffs(); // FIXME! this is really just clearing DoTs at the moment
     }
   }
+
   virtual void finish()
   {
     sim -> target -> debuffs.invulnerable -> decrement();
@@ -163,19 +170,20 @@ struct movement_event_t : public raid_event_t
   bool is_distance;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "movement" ), move_to( -2 ), move_distance( 0 ), players_only( 0 )
+    raid_event_t( s, "movement" ), move_to( -2 ), move_distance( 0 ), players_only( 0 ), is_distance( 0 )
   {
     option_t options[] =
     {
-      { "to",           OPT_FLT,  &move_to      },
-      { "distance",     OPT_FLT,  &move_distance},
-      { "players_only", OPT_BOOL, &players_only },
+      { "to",           OPT_FLT,  &move_to       },
+      { "distance",     OPT_FLT,  &move_distance },
+      { "players_only", OPT_BOOL, &players_only  },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-    is_distance = move_distance || ( move_to >= -1 && !duration);
-    if (is_distance) name_str = "movement_distance";
+    is_distance = move_distance || ( move_to >= -1 && ! duration );
+    if ( is_distance ) name_str = "movement_distance";
   }
+
   virtual void start()
   {
     raid_event_t::start();
@@ -222,6 +230,7 @@ struct stun_event_t : public raid_event_t
   {
     parse_options( NULL, options_str );
   }
+
   virtual void start()
   {
     raid_event_t::start();
@@ -234,6 +243,7 @@ struct stun_event_t : public raid_event_t
       p -> stun();
     }
   }
+
   virtual void finish()
   {
     int num_affected = ( int ) affected_players.size();
@@ -252,7 +262,7 @@ struct stun_event_t : public raid_event_t
   }
 };
 
-// Interrupt =================================================================
+// Interrupt ================================================================
 
 struct interrupt_event_t : public raid_event_t
 {
@@ -261,6 +271,7 @@ struct interrupt_event_t : public raid_event_t
   {
     parse_options( NULL, options_str );
   }
+
   virtual void start()
   {
     raid_event_t::start();
@@ -289,7 +300,7 @@ struct damage_event_t : public raid_event_t
     option_t options[] =
     {
       { "amount",        OPT_FLT, &amount        },
-      { "amount_range",  OPT_FLT, &amount_range },
+      { "amount_range",  OPT_FLT, &amount_range  },
       { "type",          OPT_STRING, &type_str   },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -342,8 +353,8 @@ struct heal_event_t : public raid_event_t
   {
     option_t options[] =
     {
-      { "amount",        OPT_FLT, &amount        },
-      { "amount_range", OPT_FLT,  &amount_range },
+      { "amount",       OPT_FLT, &amount       },
+      { "amount_range", OPT_FLT, &amount_range },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -377,16 +388,18 @@ struct vulnerable_event_t : public raid_event_t
   {
     option_t options[] =
     {
-      { "multiplier",        OPT_FLT, &multiplier        },
+      { "multiplier", OPT_FLT, &multiplier },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
   }
+
   virtual void start()
   {
     raid_event_t::start();
     sim -> target -> debuffs.vulnerable -> increment( 1, multiplier );
   }
+
   virtual void finish()
   {
     sim -> target -> debuffs.vulnerable -> decrement();
@@ -492,6 +505,7 @@ void raid_event_t::schedule()
       name = re -> name_str.c_str();
       sim -> add_event( this, time );
     }
+
     virtual void execute()
     {
       raid_event -> finish();
@@ -507,13 +521,13 @@ void raid_event_t::schedule()
       name = re -> name_str.c_str();
       sim -> add_event( this, time );
     }
+
     virtual void execute()
     {
       raid_event -> saved_duration = raid_event -> duration_time();
       double ct = raid_event -> cooldown_time();
 
       raid_event -> start();
-
 
       if ( ct <= raid_event -> saved_duration ) ct = raid_event -> saved_duration + 0.01;
 
@@ -554,8 +568,7 @@ void raid_event_t::reset()
 void raid_event_t::parse_options( option_t*          options,
                                   const std::string& options_str )
 {
-  if ( options_str.empty()     ) return;
-  if ( options_str.size() == 0 ) return;
+  if ( options_str.empty() ) return;
 
   option_t base_options[] =
   {

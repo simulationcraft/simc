@@ -559,7 +559,7 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
     if ( false ) item_data.flags_1 |= ITEM_FLAG_HEROIC;
 
     // socket bonus is not available from BCP API.
-    if ( false ) item_data.id_socket_bonus = 7748234923;
+    if ( false ) item_data.id_socket_bonus = 0; // This is not an int, is it actually useful? 7748234923;
   }
   catch ( const char* fieldname )
   {
