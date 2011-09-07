@@ -615,7 +615,8 @@ static bool parse_item_sources( sim_t*             sim,
          ! util_t::str_compare_ci( sources[ i ], "mmoc" ) &&
          ! util_t::str_compare_ci( sources[ i ], "wowhead" ) &&
          ! util_t::str_compare_ci( sources[ i ], "ptrhead" ) &&
-         ! util_t::str_compare_ci( sources[ i ], "armory" ) )
+         ! util_t::str_compare_ci( sources[ i ], "armory" ) &&
+         ! util_t::str_compare_ci( sources[ i ], "bcpapi" ) )
     {
       continue;
     }
