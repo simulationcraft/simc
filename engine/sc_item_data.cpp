@@ -190,97 +190,6 @@ bool parse_weapon_type( item_t&            item,
   return true;
 }
 
-bool parse_gems( item_t&            item,
-                 const item_data_t* item_data,
-                 const std::string  gem_ids[ 3 ] )
-{
-  bool match = true;
-  std::vector<std::string> stats;
-
-  item.armory_gems_str.clear();
-
-  for ( unsigned i = 0; i < 3; i++ )
-  {
-    if ( gem_ids[ i ].empty() )
-    {
-      /// Check if there's a gem slot, if so, this is ungemmed item.
-      if ( item_data -> socket_color[ i ] )
-        match = false;
-      continue;
-    }
-
-    if ( item_data -> socket_color[ i ] )
-    {
-      if ( ! ( item_t::parse_gem( item, gem_ids[ i ] ) & item_data -> socket_color[ i ] ) )
-        match = false;
-    }
-    else
-    {
-      // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a
-      // single extra one. Wrist/hands should be checked against player professions at
-      // least ..
-      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || item.slot == SLOT_WAIST )
-      {
-        item_t::parse_gem( item, gem_ids[ i ] );
-        break;
-      }
-    }
-  }
-
-  // Socket bonus
-  const item_enchantment_data_t& socket_bonus = item.player -> dbc.item_enchantment( item_data -> id_socket_bonus );
-  if ( match && socket_bonus.id )
-  {
-    if ( encode_item_enchant_stats( socket_bonus, stats ) > 0 && ! item.armory_gems_str.empty() )
-      item.armory_gems_str += "_";
-
-    item.armory_gems_str += encode_stats( stats );
-  }
-
-  return true;
-}
-
-bool parse_enchant( item_t&            item,
-                    const std::string& enchant_id )
-{
-  if ( enchant_id.empty() || enchant_id == "none" || enchant_id == "0" ) return true;
-
-  long                                    eid = strtol( enchant_id.c_str(), 0, 10 );
-  bool                              has_spell = true;
-  std::vector<std::string> stats;
-
-  const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( eid );
-  if ( ! item_enchant.id )
-  {
-    item.player -> sim -> errorf( "Unable to find enchant id %lu from item enchantment database", eid );
-    return true;
-  }
-
-  item.armory_enchant_str.clear();
-
-  for ( unsigned i = 0; i < 3; i++ )
-  {
-    if ( item_enchant.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
-    {
-      has_spell = true;
-      break;
-    }
-  }
-
-  // For now, if there's a spell in the enchant, defer back to old ways
-  if ( has_spell )
-  {
-    return enchant_t::download( item, enchant_id );
-  }
-  else
-  {
-    if ( encode_item_enchant_stats( item_enchant, stats ) > 0 )
-      item.armory_enchant_str = encode_stats( stats );
-  }
-
-  return true;
-}
-
 // download_common ==========================================================
 
 const item_data_t* download_common( item_t& item, const std::string& item_id )
@@ -556,6 +465,97 @@ uint32_t item_database_t::weapon_dmg_max( const item_t& item, unsigned item_id )
   return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item_id ) *
                              item.player -> dbc.item( item_id ) -> delay / 1000.0 *
                              ( 1 + item.player -> dbc.item( item_id ) -> dmg_range / 2 ) + 0.5 );
+}
+
+bool item_database_t::parse_gems( item_t&            item,
+                                  const item_data_t* item_data,
+                                  const std::string  gem_ids[ 3 ] )
+{
+  bool match = true;
+  std::vector<std::string> stats;
+
+  item.armory_gems_str.clear();
+
+  for ( unsigned i = 0; i < 3; i++ )
+  {
+    if ( gem_ids[ i ].empty() )
+    {
+      /// Check if there's a gem slot, if so, this is ungemmed item.
+      if ( item_data -> socket_color[ i ] )
+        match = false;
+      continue;
+    }
+
+    if ( item_data -> socket_color[ i ] )
+    {
+      if ( ! ( item_t::parse_gem( item, gem_ids[ i ] ) & item_data -> socket_color[ i ] ) )
+        match = false;
+    }
+    else
+    {
+      // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a
+      // single extra one. Wrist/hands should be checked against player professions at
+      // least ..
+      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || item.slot == SLOT_WAIST )
+      {
+        item_t::parse_gem( item, gem_ids[ i ] );
+        break;
+      }
+    }
+  }
+
+  // Socket bonus
+  const item_enchantment_data_t& socket_bonus = item.player -> dbc.item_enchantment( item_data -> id_socket_bonus );
+  if ( match && socket_bonus.id )
+  {
+    if ( encode_item_enchant_stats( socket_bonus, stats ) > 0 && ! item.armory_gems_str.empty() )
+      item.armory_gems_str += "_";
+
+    item.armory_gems_str += encode_stats( stats );
+  }
+
+  return true;
+}
+
+bool item_database_t::parse_enchant( item_t&            item,
+                                     const std::string& enchant_id )
+{
+  if ( enchant_id.empty() || enchant_id == "none" || enchant_id == "0" ) return true;
+
+  long                                    eid = strtol( enchant_id.c_str(), 0, 10 );
+  bool                              has_spell = true;
+  std::vector<std::string> stats;
+
+  const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( eid );
+  if ( ! item_enchant.id )
+  {
+    item.player -> sim -> errorf( "Unable to find enchant id %lu from item enchantment database", eid );
+    return true;
+  }
+
+  item.armory_enchant_str.clear();
+
+  for ( unsigned i = 0; i < 3; i++ )
+  {
+    if ( item_enchant.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
+    {
+      has_spell = true;
+      break;
+    }
+  }
+
+  // For now, if there's a spell in the enchant, defer back to old ways
+  if ( has_spell )
+  {
+    return enchant_t::download( item, enchant_id );
+  }
+  else
+  {
+    if ( encode_item_enchant_stats( item_enchant, stats ) > 0 )
+      item.armory_enchant_str = encode_stats( stats );
+  }
+
+  return true;
 }
 
 // item_database_t::download_slot ===========================================

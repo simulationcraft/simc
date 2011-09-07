@@ -3130,6 +3130,10 @@ struct item_database_t
   static uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
 
   static bool     load_item_from_data( item_t& item, const item_data_t* item_data );
+  static bool     parse_gems(         item_t&            item,
+                                      const item_data_t* item_data,
+                                      const std::string  gem_ids[ 3 ] );
+  static bool     parse_enchant(      item_t& item, const std::string& enchant_id );
 };
 
 // Set Bonus =================================================================
@@ -4853,6 +4857,15 @@ namespace bcp_api
   bool download_item( item_t&, const std::string& item_id, cache::behavior_t b=cache::items() );
   bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                        cache::behavior_t b=cache::items() );
+  bool download_slot( item_t& item,
+                      const std::string& item_id,
+                      const std::string& enchant_id,
+                      const std::string& addon_id,
+                      const std::string& reforge_id,
+                      const std::string& rsuffix_id,
+                      const std::string gem_ids[ 3 ],
+                      cache::behavior_t b=cache::items() );
+  int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t b=cache::items() );
 }
 
 // HTTP Download  ============================================================

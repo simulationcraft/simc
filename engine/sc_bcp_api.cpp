@@ -15,12 +15,6 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 const bool BCP_DEBUG_ITEMS = false;
 
-template <typename T>
-inline T clamp( T x, T low, T high )
-{
-  return x < low ? low : ( high < x ? high : x );
-}
-
 // download_id ==============================================================
 
 js_node_t* download_id( sim_t* sim, const std::string& region, const std::string& item_id, cache::behavior_t caching )
@@ -34,33 +28,6 @@ js_node_t* download_id( sim_t* sim, const std::string& region, const std::string
     return 0;
 
   return js_t::create( sim, result );
-}
-
-// download_guild ===========================================================
-
-js_node_t* download_guild( sim_t* sim,
-                           const std::string& region,
-                           const std::string& server,
-                           const std::string& name,
-                           cache::behavior_t  caching )
-{
-  std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
-      name + "?fields=members";
-
-  std::string result;
-  if ( ! http_t::get( result, url, caching, "\"members\"" ) )
-  {
-    sim -> errorf( "BCP API: Unable to download guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
-    return 0;
-  }
-  js_node_t* js = js_t::create( sim, result );
-  if ( ! js || ! ( js = js_t::get_child( js, "members" ) ) )
-  {
-    sim -> errorf( "BCP API: Unable to get members of guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
-    return 0;
-  }
-
-  return js;
 }
 
 // parse_profession =========================================================
@@ -277,7 +244,10 @@ player_t* download_player( sim_t*             sim,
   if ( ! js_t::get_value( name_str, profile_js, "name"  ) )
     name_str = name;
   if ( talents != "active" )
-    name_str += '_' + talents;
+  {
+    name_str += '_';
+    name_str += talents;
+  }
   sim -> current_name = name_str;
 
   int level;
@@ -357,80 +327,16 @@ player_t* download_player( sim_t*             sim,
   return p;
 }
 
-namespace { // ANONYMOUS ===================================================
+namespace { // ANONYMOUS ====================================================
 
-inline bool parse_item_id( item_t& item, js_node_t* js )
-{ return js_t::get_value( item.armory_id_str, js, "id" ); }
-
-bool parse_item_name( item_t& item, js_node_t* js )
+struct item_info_t : public item_data_t
 {
-  if ( js_t::get_value( item.armory_name_str, js, "name" ) )
-  {
-    armory_t::format( item.armory_name_str );
-    return true;
-  }
-  else
-    return false;
-}
+  std::string name_str, icon_str;
+  item_info_t() { zerofill( static_cast<item_data_t&>( *this ) ); }
+};
 
-bool parse_item_quality( item_t& item, js_node_t* js )
-{
-  int quality;
-  if ( js_t::get_value( quality, js, "quality" ) )
-  {
-    if ( quality > 1 )
-      item.armory_quality_str = util_t::item_quality_string( quality );
-    return true;
-  }
-  else
-    return false;
-}
-
-inline bool parse_item_level( item_t& item, js_node_t* js )
-{ return js_t::get_value( item.armory_ilevel_str, js, "itemLevel" ); }
-
-bool parse_item_heroic( item_t&, js_node_t* )
-{
-  // "heroic" is not available from BCP API.
-  return true;
-}
-
-bool parse_item_armor_type( item_t& item, js_node_t* js )
-{
-  item.armory_armor_type_str.clear();
-
-  int itemclass, itemsubclass;
-  if ( js_t::get_value( itemclass, js, "itemClass" ) &&
-       js_t::get_value( itemsubclass, js, "itemSubClass" ) &&
-       itemclass == ITEM_CLASS_ARMOR )
-  {
-    switch ( itemsubclass )
-    {
-    case ITEM_SUBCLASS_ARMOR_CLOTH:
-      item.armory_armor_type_str = "cloth";
-      break;
-    case ITEM_SUBCLASS_ARMOR_LEATHER:
-      item.armory_armor_type_str = "leather";
-      break;
-    case ITEM_SUBCLASS_ARMOR_MAIL:
-      item.armory_armor_type_str = "mail";
-      break;
-    case ITEM_SUBCLASS_ARMOR_PLATE:
-      item.armory_armor_type_str = "plate";
-      break;
-    default:
-      break;
-    }
-  }
-
-  return true;
-}
-
-} // ANONYMOUS namespace ===================================================
-
-// bcp_api::download_item() ================================================
-
-bool download_item( item_t& item, const std::string& item_id, cache::behavior_t caching )
+bool download_item_data( item_t& item, item_info_t& item_data,
+                         const std::string& item_id, cache::behavior_t caching )
 {
   // BCP API doesn't currently provide enough information to describe items completely.
   if ( ! BCP_DEBUG_ITEMS )
@@ -448,9 +354,6 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
   }
   if ( item.sim -> debug ) js_t::print( js, item.sim -> output_file );
 
-  item_data_t item_data;
-  zerofill( item_data );
-
   try
   {
     {
@@ -459,13 +362,11 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
       item_data.id = id;
     }
 
-    std::string item_name;
-    if ( ! js_t::get_value( item_name, js, "name" ) ) throw( "name" );
-    item_data.name = item_name.c_str();
+    if ( ! js_t::get_value( item_data.name_str, js, "name" ) ) throw( "name" );
+    item_data.name = item_data.name_str.c_str();
 
-    std::string item_icon;
-    if ( js_t::get_value( item_name, js, "icon" ) )
-      item_data.icon = item_icon.c_str();
+    if ( js_t::get_value( item_data.icon_str, js, "icon" ) )
+      item_data.icon = item_data.icon_str.c_str();
 
     if ( ! js_t::get_value( item_data.level, js, "itemLevel" ) ) throw( "level" );
 
@@ -491,39 +392,38 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
       item_data.dmg_range = maxDmg - minDmg;
     }
 
+    if ( js_node_t* classes = js_t::get_child( js, "allowableClasses" ) )
     {
       std::vector<js_node_t*> nodes;
-      if ( js_t::get_children( nodes, js, "allowableClasses" ) )
+      js_t::get_children( nodes, classes );
+      for ( unsigned i = 0, n = nodes.size(); i < n; ++i )
       {
-        for ( unsigned i = 0, n = nodes.size(); i < n; ++i )
-        {
-          int cid;
-          if ( js_t::get_value( cid, nodes[ i ] ) )
-            item_data.class_mask |= 1 << ( cid - 1 );
-        }
+        int cid;
+        if ( js_t::get_value( cid, nodes[ i ] ) )
+          item_data.class_mask |= 1 << ( cid - 1 );
       }
-      else
-        item_data.class_mask = -1;
     }
+    else
+      item_data.class_mask = -1;
 
+    if ( js_node_t* races = js_t::get_child( js, "allowableRaces" ) )
     {
       std::vector<js_node_t*> nodes;
-      if ( js_t::get_children( nodes, js, "allowableRaces" ) )
+      js_t::get_children( nodes, races );
+      for ( unsigned i = 0, n = nodes.size(); i < n; ++i )
       {
-        for ( unsigned i = 0, n = nodes.size(); i < n; ++i )
-        {
-          int rid;
-          if ( js_t::get_value( rid, nodes[ i ] ) )
-            item_data.race_mask |= 1 << ( rid - 1 );
-        }
+        int rid;
+        if ( js_t::get_value( rid, nodes[ i ] ) )
+          item_data.race_mask |= 1 << ( rid - 1 );
       }
-      else
-        item_data.race_mask = -1;
     }
+    else
+      item_data.race_mask = -1;
 
+    if ( js_node_t* stats = js_t::get_child( js, "bonusStats" ) )
     {
       std::vector<js_node_t*> nodes;
-      js_t::get_children( nodes, js, "bonusStats" );
+      js_t::get_children( nodes, stats );
       for ( unsigned i = 0, n = std::min( nodes.size(), sizeof_array( item_data.stat_type ) ); i < n; ++i )
       {
         if ( ! js_t::get_value( item_data.stat_type[ i ], nodes[ i ], "stat" ) ) throw( "bonus stat" );
@@ -531,12 +431,13 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
       }
     }
 
+    if ( js_node_t* sockets = js_t::get_node( js, "socketInfo/sockets" ) )
     {
-      std::string color;
       std::vector<js_node_t*> nodes;
-      js_t::get_children( nodes, js, "socketInfo/sockets" );
+      js_t::get_children( nodes, sockets );
       for ( unsigned i = 0, n = std::min( nodes.size(), sizeof_array( item_data.socket_color ) ); i < n; ++i )
       {
+        std::string color;
         if ( js_t::get_value( color, nodes[ i ], "type" ) )
         {
           if ( color == "META" )
@@ -547,6 +448,8 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
             item_data.socket_color[ i ] = SOCKET_COLOR_RED;
           else if ( color == "BLUE" )
             item_data.socket_color[ i ] = SOCKET_COLOR_BLUE;
+          else if ( color == "PRISMATIC" )
+            item_data.socket_color[ i ] = SOCKET_COLOR_PRISMATIC;
           else if ( color == "COGWHEEL" )
             item_data.socket_color[ i ] = SOCKET_COLOR_COGWHEEL;
         }
@@ -575,12 +478,105 @@ bool download_item( item_t& item, const std::string& item_id, cache::behavior_t 
   return item_database_t::load_item_from_data( item, &item_data );
 }
 
+} // ANONYMOUS namespace ====================================================
+
+// bcp_api::download_item() =================================================
+
+bool download_item( item_t& item, const std::string& item_id, cache::behavior_t caching )
+{
+  // BCP API doesn't currently provide enough information to describe items completely.
+  if ( ! BCP_DEBUG_ITEMS )
+    return false;
+
+  item_info_t item_data;
+  return download_item_data( item, item_data, item_id, caching );
+}
+
+// bcp_api::download_slot() =================================================
+
+bool download_slot( item_t& item,
+                    const std::string& item_id,
+                    const std::string& enchant_id,
+                    const std::string& addon_id,
+                    const std::string& reforge_id,
+                    const std::string& rsuffix_id,
+                    const std::string gem_ids[ 3 ],
+                    cache::behavior_t caching )
+{
+  // BCP API doesn't currently provide enough information to describe items completely.
+  if ( ! BCP_DEBUG_ITEMS )
+    return false;
+
+  item_info_t item_data;
+  if ( ! download_item_data( item, item_data, item_id, caching ) )
+    return false;
+
+  item_database_t::parse_gems( item, &item_data, gem_ids );
+
+  if ( ! item_database_t::parse_enchant( item, enchant_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n",
+                        item.player -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
+  }
+
+  if ( ! enchant_t::download_addon( item, addon_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n",
+                        item.player -> name(), addon_id.c_str(), item.name(), item.slot_name() );
+  }
+
+  if ( ! enchant_t::download_reforge( item, reforge_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse reforge id %s for item \"%s\" at slot %s.\n",
+                        item.player -> name(), reforge_id.c_str(), item.name(), item.slot_name() );
+  }
+
+  if ( ! enchant_t::download_rsuffix( item, rsuffix_id ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n",
+                        item.player -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
+  }
+
+  return true;
+}
+
+namespace { // ANONYMOUS ====================================================
+
+// download_roster ==========================================================
+
+js_node_t* download_roster( sim_t* sim,
+                            const std::string& region,
+                            const std::string& server,
+                            const std::string& name,
+                            cache::behavior_t  caching )
+{
+  std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
+      name + "?fields=members";
+
+  std::string result;
+  if ( ! http_t::get( result, url, caching, "\"members\"" ) )
+  {
+    sim -> errorf( "BCP API: Unable to download guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
+    return 0;
+  }
+  js_node_t* js = js_t::create( sim, result );
+  if ( ! js || ! ( js = js_t::get_child( js, "members" ) ) )
+  {
+    sim -> errorf( "BCP API: Unable to get members of guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
+    return 0;
+  }
+
+  return js;
+}
+
+} // ANONYMOUS namespace ====================================================
+
 // bcp_api::download_guild ==================================================
 
 bool download_guild( sim_t* sim, const std::string& region, const std::string& server, const std::string& name,
                      const std::vector<int>& ranks, int player_filter, int max_rank, cache::behavior_t caching )
 {
-  js_node_t* js = download_guild( sim, region, server, name, caching );
+  js_node_t* js = download_roster( sim, region, server, name, caching );
   if ( !js ) return false;
 
   std::vector<std::string> names;
@@ -630,7 +626,7 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
   return true;
 }
 
-// bcp_api::download_glyph ================================================
+// bcp_api::download_glyph ==================================================
 
 bool download_glyph( player_t*          player,
                      std::string&       glyph_name,
@@ -648,11 +644,108 @@ bool download_glyph( player_t*          player,
     return false;
   }
 
-  if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-  else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+  static const std::string glyph_of = "Glyph of ";
+  static const std::string glyph_dash = "Glyph - ";
+
+  if ( util_t::str_prefix_ci( glyph_name, glyph_of ) )
+    glyph_name.erase( 0, glyph_of.length() );
+  else if ( util_t::str_prefix_ci( glyph_name, glyph_dash ) )
+    glyph_name.erase( 0, glyph_dash.length() );
   armory_t::format( glyph_name );
 
   return true;
+}
+
+namespace { // ANONYMOUS ====================================================
+
+// bcp_api::parse_gem_stats =================================================
+
+std::string parse_gem_stats( const std::string& bonus )
+{
+  std::istringstream in( bonus );
+  std::ostringstream out;
+
+  int amount;
+  std::string stat;
+
+  in >> amount;
+  in >> stat;
+
+  stat_type st = util_t::parse_stat_type( stat );
+  if ( st != STAT_NONE )
+    out << amount << util_t::stat_type_abbrev( st );
+
+  in >> stat;
+  if ( in )
+  {
+    if ( util_t::str_compare_ci( stat, "Rating" ) )
+      in >> stat;
+
+    if ( in )
+    {
+      if ( util_t::str_compare_ci( stat, "and" ) )
+      {
+        in >> amount;
+        in >> stat;
+
+        st = util_t::parse_stat_type( stat );
+        if ( st != STAT_NONE )
+          out << '_' << amount << util_t::stat_type_abbrev( st );
+      }
+    }
+  }
+
+  return out.str();
+}
+
+} // ANONYMOUS namespace ====================================================
+
+// bcp_api::parse_gem =======================================================
+
+int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t caching )
+{
+  const std::string& region =
+      item.player -> region_str.empty()
+      ? item.sim -> default_region_str
+      : item.player -> region_str;
+
+  js_node_t* js = download_id( item.sim, region, gem_id, caching );
+  if ( ! js )
+    return GEM_NONE;
+
+  std::string type_str;
+  if ( ! js_t::get_value( type_str, js, "gemInfo/type/type" ) )
+    return GEM_NONE;
+  armory_t::format( type_str );
+
+  int type = util_t::parse_gem_type( type_str );
+
+  std::string result;
+  if ( type == GEM_META )
+  {
+    if ( ! js_t::get_value( result, js, "name" ) )
+      return GEM_NONE;
+
+    std::string::size_type pos = result.rfind( " Diamond" );
+    if ( pos != std::string::npos ) result.erase( pos );
+  }
+  else
+  {
+    std::string bonus;
+    if ( ! js_t::get_value( bonus, js, "gemInfo/bonus/name" ) )
+      return GEM_NONE;
+    result = parse_gem_stats( bonus );
+  }
+
+  if ( ! result.empty() )
+  {
+    armory_t::format( result );
+    if ( ! item.armory_gems_str.empty() )
+      item.armory_gems_str += '_';
+    item.armory_gems_str += result;
+  }
+
+  return type;
 }
 
 } // namespace bcp_api =====================================================
