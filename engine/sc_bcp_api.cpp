@@ -30,7 +30,7 @@ js_node_t* download_id( sim_t* sim, const std::string& region, const std::string
   std::string url = "http://" + region + ".battle.net/api/wow/item/" + item_id + "?locale=en_US";
 
   std::string result;
-  if ( ! http_t::get( result, url, std::string(), caching ) )
+  if ( ! http_t::get( result, url, caching ) )
     return 0;
 
   return js_t::create( sim, result );
@@ -48,7 +48,7 @@ js_node_t* download_guild( sim_t* sim,
       name + "?fields=members";
 
   std::string result;
-  if ( ! http_t::get( result, url, "\"members\"", caching ) )
+  if ( ! http_t::get( result, url, caching, "\"members\"" ) )
   {
     sim -> errorf( "BCP API: Unable to download guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
     return 0;
@@ -262,7 +262,7 @@ player_t* download_player( sim_t*             sim,
   sim -> current_name = name;
 
   std::string result;
-  if ( ! http_t::get( result, url, std::string(), caching ) )
+  if ( ! http_t::get( result, url, caching ) )
     return 0;
   // if ( sim -> debug ) util_t::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
   js_node_t* profile_js = js_t::create( sim, result );

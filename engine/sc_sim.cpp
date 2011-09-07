@@ -144,16 +144,13 @@ static bool parse_player( sim_t*             sim,
 {
   if ( name == "player" )
   {
-    std::string player_name = value;
+
+    std::string::size_type cut_pt = value.find( ',' );
+    std::string player_name( value, 0, cut_pt );
+
     std::string player_options;
-
-    std::string::size_type cut_pt = value.find_first_of( ',' );
-
     if ( cut_pt != value.npos )
-    {
-      player_options = value.substr( cut_pt + 1 );
-      player_name    = value.substr( 0, cut_pt );
-    }
+      player_options.assign( value, cut_pt + 1, value.npos );
 
     std::string wowhead;
     std::string region = sim -> default_region_str;
@@ -174,7 +171,7 @@ static bool parse_player( sim_t*             sim,
     option_t::parse( sim, "player", options, player_options );
 
     sim -> input_is_utf8 = utf8::is_valid( player_name.begin(), player_name.end() ) && utf8::is_valid( server.begin(), server.end() );
-    cache::behavior_t caching = use_cache ? cache::ANY : cache::behavior();
+    cache::behavior_t caching = use_cache ? cache::ANY : cache::players();
 
     if ( wowhead.empty() )
     {
@@ -201,37 +198,31 @@ static bool parse_player( sim_t*             sim,
                        player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
     }
   }
+
   else if( name == "pet" )
   {
-    std::string pet_name = value;
-    std::string pet_type = value;
+    std::string::size_type cut_pt = value.find( ',' );
+    std::string pet_type( value, 0, cut_pt );
 
-    std::string::size_type cut_pt = value.find_first_of( "," );
+    std::string pet_name;
     if ( cut_pt != value.npos )
-    {
-      pet_type = value.substr( 0, cut_pt );
-      pet_name = value.substr( cut_pt + 1 );
-    }
+      pet_name.assign( value, cut_pt + 1, value.npos );
+    else
+      pet_name = value;
 
     sim -> active_player = sim -> active_player -> create_pet( pet_name, pet_type );
   }
+
   else if ( name == "copy" )
   {
-    std::string::size_type cut_pt = value.find_first_of( ',' );
+    std::string::size_type cut_pt = value.find( ',' );
+    std::string player_name( value, 0, cut_pt );
 
     player_t* source;
-    std::string player_name;
-
     if ( cut_pt == value.npos )
-    {
       source = sim -> active_player;
-      player_name = value;
-    }
     else
-    {
       source = sim -> find_player( value.substr( cut_pt + 1 ) );
-      player_name = value.substr( 0, cut_pt );
-    }
 
     if ( source == 0 )
     {
@@ -242,10 +233,9 @@ static bool parse_player( sim_t*             sim,
     sim -> active_player = player_t::create( sim, util_t::player_type_string( source -> type ), player_name );
     if ( sim -> active_player != 0 ) sim -> active_player -> copy_from ( source );
   }
+
   else
-  {
     sim -> active_player = player_t::create( sim, name, value );
-  }
 
   return sim -> active_player != 0;
 }
@@ -284,12 +274,29 @@ static bool parse_cache( sim_t*             /* sim */,
                          const std::string& name,
                          const std::string& value )
 {
-  if ( name != "cache" ) return false;
+  if ( name == "cache_players" )
+  {
+    if ( value == "1" ) cache::players( cache::ANY );
+    else if ( value == "0" ) cache::players( cache::CURRENT );
+    else if ( util_t::str_compare_ci( value, "only" ) ) cache::players( cache::ONLY );
+    else return false;
 
-  if ( value == "1" ) cache::behavior( cache::ANY );
-  else if ( value == "0" ) cache::behavior( cache::CURRENT );
-  else if ( util_t::str_compare_ci( value, "only" ) ) cache::behavior( cache::ONLY );
-  else return false;
+    return true;
+  }
+
+  else if ( name == "cache_items" )
+  {
+    if ( value == "1" ) cache::items( cache::ANY );
+    else if ( value == "0" ) cache::items( cache::CURRENT );
+    else if ( util_t::str_compare_ci( value, "only" ) ) cache::items( cache::ONLY );
+    else return false;
+
+    return true;
+  }
+
+  else
+    return false;
+
 
   return true;
 }
@@ -351,18 +358,12 @@ static bool parse_armory( sim_t*             sim,
   }
   else if ( name == "guild" )
   {
-    std::string guild_name = value;
+    std::string::size_type cut_pt = value.find( ',' );
+    std::string guild_name( value, 0, cut_pt );
+
     std::string guild_options;
-    std::vector<int> ranks_list;
-    std::vector<std::string> ranks;
-
-    std::string::size_type cut_pt = value.find_first_of( ',' );
-
     if ( cut_pt != value.npos )
-    {
-      guild_options = value.substr( cut_pt + 1 );
-      guild_name    = value.substr( 0, cut_pt );
-    }
+      guild_options.assign( value, cut_pt + 1, value.npos );
 
     std::string region = sim -> default_region_str;
     std::string server = sim -> default_server_str;
@@ -385,8 +386,10 @@ static bool parse_armory( sim_t*             sim,
     if ( ! option_t::parse( sim, "guild", options, guild_options ) )
       return false;
 
+    std::vector<int> ranks_list;
     if ( ! ranks_str.empty() )
     {
+      std::vector<std::string> ranks;
       int n_ranks = util_t::string_split( ranks, ranks_str, "/" );
       if ( n_ranks > 0 )
       {
@@ -400,7 +403,7 @@ static bool parse_armory( sim_t*             sim,
     int player_type = PLAYER_NONE;
     if ( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
 
-    cache::behavior_t caching = use_cache ? cache::ANY : cache::behavior();
+    cache::behavior_t caching = use_cache ? cache::ANY : cache::players();
 
     if ( true )
       return bcp_api::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, caching );
@@ -2297,7 +2300,8 @@ void sim_t::create_options()
     { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
     { "bcp",                              OPT_FUNC,   ( void* ) ::parse_bcp_api                     },
     { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
-    { "cache",                            OPT_FUNC,   ( void* ) ::parse_cache                       },
+    { "cache_items",                      OPT_FUNC,   ( void* ) ::parse_cache                       },
+    { "cache_players",                    OPT_FUNC,   ( void* ) ::parse_cache                       },
     { "default_region",                   OPT_STRING, &( default_region_str                       ) },
     { "default_server",                   OPT_STRING, &( default_server_str                       ) },
     { "save_prefix",                      OPT_STRING, &( save_prefix_str                          ) },

@@ -16,7 +16,7 @@ static js_node_t* download_profile( sim_t* sim,
   std::string url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
   std::string profile_str;
 
-  if ( ! http_t::get( profile_str, url, std::string(), caching ) )
+  if ( ! http_t::get( profile_str, url, caching ) )
     return 0;
 
   return js_t::create( sim, profile_str );

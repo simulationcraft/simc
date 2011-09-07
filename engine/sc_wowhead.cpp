@@ -49,8 +49,8 @@ static js_node_t* download_profile( sim_t* sim,
   std::string url_ptr = "http://ptr.wowhead.com/profile=load&id=" + id;
   std::string result;
 
-  if ( http_t::get( result, url_www, "WowheadProfiler.registerProfile(", caching ) ||
-       http_t::get( result, url_ptr, "WowheadProfiler.registerProfile(", caching ) )
+  if ( http_t::get( result, url_www, caching, "WowheadProfiler.registerProfile(" ) ||
+       http_t::get( result, url_ptr, caching, "WowheadProfiler.registerProfile(" ) )
   {
     std::string::size_type start = result.find( "WowheadProfiler.registerProfile(" );
     if ( start != std::string::npos ) start = result.find( '{', start );
@@ -83,7 +83,7 @@ static xml_node_t* download_id( sim_t*             sim,
   std::string url_www = ( ptr ? "http://ptr.wowhead.com/item=" : "http://www.wowhead.com/item=")
       + id_str + "&xml";
 
-  xml_node_t *node = xml_t::get( sim, url_www, "</json>", caching );
+  xml_node_t *node = xml_t::get( sim, url_www, caching, "</json>" );
   if ( sim -> debug ) xml_t::print( node );
   return node;
 }
@@ -507,8 +507,8 @@ static const char* translate_inventory_id( int slot )
 
 int wowhead_t::parse_gem( item_t&            item,
                           const std::string& gem_id,
-                          cache::behavior_t  caching,
-                          bool               ptr )
+                          bool               ptr,
+                          cache::behavior_t  caching )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -561,8 +561,8 @@ int wowhead_t::parse_gem( item_t&            item,
 bool wowhead_t::download_glyph( player_t*          player,
                                 std::string&       glyph_name,
                                 const std::string& glyph_id,
-                                cache::behavior_t  caching,
-                                bool               ptr )
+                                bool               ptr,
+                                cache::behavior_t  caching )
 {
   xml_node_t* node = download_id( player -> sim, glyph_id, caching, ptr );
   if ( ! node || ! xml_t::get_value( glyph_name, node, "name/cdata" ) )
@@ -582,8 +582,8 @@ bool wowhead_t::download_glyph( player_t*          player,
 
 bool wowhead_t::download_item( item_t&            item,
                                const std::string& item_id,
-                               cache::behavior_t  caching,
-                               bool               ptr )
+                               bool               ptr,
+                               cache::behavior_t  caching )
 {
   player_t* p = item.player;
 
@@ -591,13 +591,13 @@ bool wowhead_t::download_item( item_t&            item,
   if ( ! node )
   {
     if ( caching != cache::ONLY )
-      item.sim -> errorf( "Player %s unable to download item id %s from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+      item.sim -> errorf( "Player %s unable to download item id '%s'' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
   if ( ! parse_item_name( item, node ) )
   {
-    item.sim -> errorf( "Player %s unable to determine item name for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    item.sim -> errorf( "Player %s unable to determine item name for id '%s'' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
@@ -649,8 +649,8 @@ bool wowhead_t::download_slot( item_t&            item,
                                const std::string& reforge_id,
                                const std::string& rsuffix_id,
                                const std::string  gem_ids[ 3 ],
-                               cache::behavior_t  caching,
-                               bool               ptr )
+                               bool               ptr,
+                               cache::behavior_t  caching )
 {
   player_t* p = item.player;
 
@@ -659,6 +659,12 @@ bool wowhead_t::download_slot( item_t&            item,
   {
     if ( caching != cache::ONLY )
       item.sim -> errorf( "Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_name( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
@@ -671,12 +677,6 @@ bool wowhead_t::download_slot( item_t&            item,
   if ( ! parse_item_level( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
-    return false;
-  }
-
-  if ( ! parse_item_name( item, node ) )
-  {
-    item.sim -> errorf( "Player %s unable to determine item name for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
@@ -698,15 +698,15 @@ bool wowhead_t::download_slot( item_t&            item,
     return false;
   }
 
-  if ( ! parse_item_reforge( item, node ) )
-  {
-    item.sim -> errorf( "Player %s unable to determine reforge for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
-    return false;
-  }
-
   if ( ! parse_weapon( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine weapon info for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_reforge( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine reforge for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 
@@ -761,7 +761,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   std::string url = "http://www.wowhead.com/profile=" + region + "." + server_name + "." + character_name;
   std::string result;
 
-  if ( http_t::get( result, url, "profilah.initialize(", caching ) )
+  if ( http_t::get( result, url, caching, "profilah.initialize(" ) )
   {
     if ( sim -> debug ) util_t::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
 

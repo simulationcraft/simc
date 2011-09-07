@@ -16,7 +16,7 @@ static xml_node_t* download_character_sheet( sim_t* sim,
                                              cache::behavior_t caching )
 {
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
-  xml_node_t* node = xml_t::get( sim, url, std::string(), caching, sim -> current_throttle );
+  xml_node_t* node = xml_t::get( sim, url, caching, std::string(), sim -> current_throttle );
   if ( sim -> debug ) xml_t::print( node, sim -> output_file );
   return node;
 }
@@ -31,7 +31,7 @@ static xml_node_t* download_character_talents( sim_t* sim,
                                                cache::behavior_t caching )
 {
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/talent/" + p_s;
-  xml_node_t* node = xml_t::get( sim, url, std::string(), caching, sim -> current_throttle );
+  xml_node_t* node = xml_t::get( sim, url, caching, std::string(), sim -> current_throttle );
   if ( sim -> debug ) xml_t::print( node, sim -> output_file );
   return node;
 }
@@ -397,7 +397,7 @@ bool battle_net_t::download_guild( sim_t* sim,
   util_t::urlencode( url_server );
   std::string url = "http://" + region + ".battle.net/wow/en/guild/" + url_server + "/" + url_name + "/roster";
 
-  xml_node_t* node = xml_t::get( sim, url, std::string(), caching, sim -> current_throttle );
+  xml_node_t* node = xml_t::get( sim, url, caching, std::string(), sim -> current_throttle );
   xml_node_t* guild_info = xml_t::get_node( xml_t::get_node( node, "div", "id", "roster" ), "tbody" );
   if ( ! guild_info ) return false;
 

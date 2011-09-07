@@ -179,8 +179,8 @@ int util_t::ability_rank( int player_level,
 
   while ( player_level < ability_level )
   {
-    ability_value = ( int )    va_arg( vap, int );
-    ability_level = ( int ) va_arg( vap, int );
+    ability_value = va_arg( vap, int );
+    ability_level = va_arg( vap, int );
   }
 
   va_end( vap );
@@ -193,7 +193,9 @@ int util_t::ability_rank( int player_level,
 char* util_t::dup( const char *value )
 {
   std::size_t n = strlen( value ) + 1;
-  return static_cast<char*>( memcpy( malloc( n ), value, n ) );
+  void *p = malloc( n );
+  if ( p ) memcpy( p, value, n );
+  return static_cast<char*>( p );
 }
 
 #ifdef _MSC_VER

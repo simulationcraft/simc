@@ -23,7 +23,7 @@ static xml_node_t* download_id( sim_t*             sim,
   if ( id_str.empty() || id_str == "0" ) return 0;
   std::string url = "http://db.mmo-champion.com/i/" + id_str + '/';
 
-  xml_node_t* node = xml_t::get( sim, url, "<h4>Item #", caching );
+  xml_node_t* node = xml_t::get( sim, url, caching, "<h4>Item #" );
 
   if ( sim -> debug ) xml_t::print( node );
   return node;

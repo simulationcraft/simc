@@ -355,8 +355,8 @@ const char* xml_t::get_name( xml_node_t* node )
 
 xml_node_t* xml_t::get( sim_t*             sim,
                         const std::string& url,
-                        const std::string& confirmation,
                         cache::behavior_t  caching,
+                        const std::string& confirmation,
                         int                throttle_seconds )
 {
   auto_lock_t lock( xml_mutex );
@@ -366,7 +366,7 @@ xml_node_t* xml_t::get( sim_t*             sim,
     return p -> second.root;
 
   std::string result;
-  if ( ! http_t::get( result, url, confirmation, caching, throttle_seconds ) )
+  if ( ! http_t::get( result, url, caching, confirmation, throttle_seconds ) )
     return 0;
 
   if ( xml_node_t* node = xml_t::create( sim, result ) )

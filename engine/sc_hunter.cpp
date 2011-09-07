@@ -4047,7 +4047,7 @@ void hunter_t::armory_extensions( const std::string& region,
   int num_families = sizeof( pet_types ) / sizeof( pet_type_t );
 
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + '/' + character + "/pet";
-  xml_node_t* pet_xml = xml_t::get( sim, url, "", caching );
+  xml_node_t* pet_xml = xml_t::get( sim, url, caching );
   if ( sim -> debug ) xml_t::print( pet_xml, sim -> output_file );
 
   xml_node_t* pet_list_xml = xml_t::get_node( pet_xml, "div", "class", "pets-list" );

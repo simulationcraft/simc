@@ -110,7 +110,7 @@ static bool download( url_cache_entry_t&,
 #elif defined( _MSC_VER ) || defined( __MINGW32__ )
 
 // ==========================================================================
-// HTTP-DOWNLOAD FOR WINDOWS (MS Visual C++ Only)
+// HTTP-DOWNLOAD FOR WINDOWS
 // ==========================================================================
 #include <windows.h>
 #include <wininet.h>
@@ -139,16 +139,20 @@ static bool download( url_cache_entry_t& entry,
       return false;
   }
 
-  std::wstring wHeaders( cookies, cookies + std::strlen( cookies ) );
+  std::wstring wHeaders;
+  utf8::utf8to16( cookies, cookies + std::strlen( cookies ), std::back_inserter( wHeaders ) );
 
   if ( ! entry.last_modified_header.empty() )
   {
     wHeaders += L"If-Modified-Since: ";
-    wHeaders.append( entry.last_modified_header.begin(), entry.last_modified_header.end() );
+    utf8::utf8to16( entry.last_modified_header.begin(), entry.last_modified_header.end(),
+                    std::back_inserter( wHeaders ) );
     wHeaders += L"\r\n";
   }
 
-  std::wstring wURL( url.begin(), url.end() );
+  std::wstring wURL;
+  utf8::utf8to16( url.begin(), url.end(), std::back_inserter( wURL ) );
+
   InetWrapper hFile( InternetOpenUrl( hINet, wURL.c_str(), wHeaders.data(), wHeaders.length(),
                                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
   if ( ! hFile )
@@ -616,8 +620,8 @@ void http_t::cache_save()
 
 bool http_t::get( std::string&       result,
                   const std::string& url,
-                  const std::string& confirmation,
                   cache::behavior_t  caching,
+                  const std::string& confirmation,
                   int                throttle_seconds )
 {
   result.clear();
@@ -697,31 +701,52 @@ void http_t::format_( std::string& encoded_url,
 
 #ifdef UNIT_TEST
 
-inline mutex_t::mutex_t() {}
-inline mutex_t::~mutex_t() {}
-inline void mutex_t::lock() {}
-inline void mutex_t::unlock() {}
-inline void thread_t::sleep( int ) {}
+#include <iostream>
 
 std::string& armory_t::format( std::string& name, int ) { return name; }
 uint32_t spell_id_t::get_school_mask( school_type x ) { return 0; }
 
 int main( int argc, char* argv[] )
 {
-  std::string result;
-
-  if ( http_t::get( result, "http://us.battle.net/wow/en/character/llane/pagezero/advanced" ) )
+  if ( argc > 1 )
   {
-    util_t::printf( "%s\n", result.c_str() );
+    for ( int i = 1; i < argc; ++i )
+    {
+      if ( !strcmp( argv[ i ], "--dump" ) )
+      {
+        url_db.clear();
+        http_t::cache_load();
+
+        for ( auto& i : url_db )
+        {
+          std::cout << "URL: \"" << i.first << "\" (" << i.second.last_modified_header << ")\n"
+                    << i.second.result << '\n';
+        }
+      }
+      else
+      {
+        std::string result;
+        if ( http_t::get( result, argv[ i ], cache::CURRENT ) )
+          std::cout << result << '\n';
+        else
+          std::cout << "Unable to download \"" << argv[ i ] << "\".\n";
+      }
+    }
   }
-  else util_t::printf( "Unable to download armory data.\n" );
-
-
-  if ( http_t::get( result, "http://www.wowhead.com/item=40328&xml" ) )
+  else
   {
-    util_t::printf( "%s\n", result.c_str() );
+    std::string result;
+
+    if ( http_t::get( result, "http://us.battle.net/wow/en/character/llane/pagezero/advanced", cache::CURRENT ) )
+      std::cout << result << '\n';
+    else
+      std::cout << "Unable to download armory data.\n";
+
+    if ( http_t::get( result, "http://www.wowhead.com/item=40328&xml", cache::CURRENT ) )
+      std::cout << result << '\n';
+    else
+      std::cout << "Unable to download wowhead data.\n";
   }
-  else util_t::printf( "Unable to download wowhead data.\n" );
 
   return 0;
 }
