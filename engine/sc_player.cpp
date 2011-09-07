@@ -48,8 +48,6 @@ struct hymn_of_hope_buff_t : public buff_t
   }
 };
 
-
-
 // Event Vengeance
 
 struct vengeance_t : public event_t
@@ -81,7 +79,6 @@ struct vengeance_t : public event_t
 
     if ( player -> vengeance_value > player -> vengeance_max )
       player -> vengeance_max = player -> vengeance_value;
-
 
     if ( sim -> debug )
     {
@@ -696,8 +693,7 @@ bool player_t::init( sim_t* sim )
   // Set Fixed_Time when there are no DD's present
   if ( zero_dds && ! sim -> debug )
     sim -> fixed_time = true;
-
-
+  
   // Parties
   if ( sim -> debug )
     log_t::output( sim, "Building Parties." );

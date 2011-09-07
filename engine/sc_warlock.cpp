@@ -379,7 +379,7 @@ struct warlock_t : public player_t
     dots_bane_of_doom           = get_dot( "bane_of_doom" );
     dots_drain_life             = get_dot( "drain_life" );
     dots_drain_soul             = get_dot( "drain_soul" );
-    dots_shadowflame            = get_dot( "shadowflame" );
+    dots_shadowflame            = get_dot( "shadowflame_dot" );
     dots_immolate               = get_dot( "immolate" );
     dots_curse_of_elements      = get_dot( "curse_of_elements" );
     dots_burning_embers         = get_dot( "burning_embers" );
