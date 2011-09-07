@@ -296,6 +296,7 @@ struct warrior_t : public player_t
     // Active
     active_deep_wounds        = 0;
     active_opportunity_strike = 0;
+    active_tier12_2pc_tank    = 0;
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
