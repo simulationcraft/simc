@@ -301,16 +301,9 @@ js_node_t* js_t::get_child( js_node_t*         root,
 // js_t::get_children =======================================================
 
 int js_t::get_children( std::vector<js_node_t*>& nodes,
-                        js_node_t*               root,
-                        const std::string&       name_str )
+                        js_node_t*               root )
 {
-  int num_children = ( int ) root -> children.size();
-  for ( int i=0; i < num_children; i++ )
-  {
-    js_node_t* node = root -> children[ i ];
-    if ( name_str.empty() || ( name_str == node -> name() ) ) nodes.push_back( node );
-  }
-
+  nodes = root -> children;
   return ( int ) nodes.size();
 }
 
@@ -323,44 +316,6 @@ js_node_t* js_t::get_node( js_node_t*         root,
     return root;
 
   return split_path( root, path );
-}
-
-// js_t::get_nodes ==========================================================
-
-int js_t::get_nodes( std::vector<js_node_t*>& nodes,
-                     js_node_t*               root,
-                     const std::string&       path )
-{
-  if ( path.empty() || path == root -> name() )
-  {
-    nodes.push_back( root );
-  }
-  else
-  {
-    js_node_t* node = root;
-    std::string name_str = path;
-
-    if ( path.find( "/" ) != std::string::npos )
-    {
-      std::vector<std::string> splits;
-      int num_splits = util_t::string_split( splits, path, "/" );
-
-      for ( int i=0; i < num_splits-1; i++ )
-      {
-        node = get_child( node, splits[ i ] );
-        if ( ! node ) return 0;
-      }
-      name_str = splits[ num_splits-1 ];
-    }
-
-    int num_children = ( int ) node -> children.size();
-    for ( int i=0; i < num_children; i++ )
-    {
-      get_nodes( nodes, node -> children[ i ], name_str );
-    }
-  }
-
-  return ( int ) nodes.size();
 }
 
 // js_t::get_value ==========================================================

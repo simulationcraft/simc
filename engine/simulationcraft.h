@@ -4911,8 +4911,7 @@ struct js_t
 {
   static js_node_t* get_child( js_node_t* root, const std::string& name );
   static js_node_t* get_node ( js_node_t* root, const std::string& path );
-  static int  get_children( std::vector<js_node_t*>&, js_node_t* root, const std::string& name = std::string() );
-  static int  get_nodes   ( std::vector<js_node_t*>&, js_node_t* root, const std::string& path );
+  static int  get_children( std::vector<js_node_t*>&, js_node_t* root );
   static int  get_value( std::vector<std::string>& value, js_node_t* root, const std::string& path = std::string() );
   static bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
   static bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
