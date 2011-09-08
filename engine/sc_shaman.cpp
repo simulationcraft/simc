@@ -571,6 +571,8 @@ struct earth_elemental_pet_t : public pet_t
       return 1.0;
     }
 
+    virtual double    available() SC_CONST { return sim -> max_time; }
+
     // Earth elemental scales purely with spell power
     virtual double total_attack_power() SC_CONST
     {

@@ -1148,6 +1148,8 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> queue_lag * 1000.0, sim -> queue_lag_stddev * 1000.0 );
+  if ( sim -> strict_gcd_queue )
+  {
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>GCD Lag:</th>\n"
@@ -1166,6 +1168,8 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> queue_gcd_reduction * 1000.0 );
+  }
+
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t</table>\n" );
