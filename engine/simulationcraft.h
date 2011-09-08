@@ -2726,6 +2726,7 @@ struct sim_t : private thread_t
   int report_rng;
   int hosted_html;
   int print_styles;
+  int report_threads;
 
 private:
   // Multi-Threading

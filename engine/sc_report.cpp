@@ -993,6 +993,8 @@ static void print_html_contents( FILE*  file, sim_t* sim )
           ab = 1;
         }
         ci++;
+        cols[i] += "\t\t\t\t\t\t<li><a href=\"#sim-info\">Simulation Information</a></li>\n";
+        ci++;
       }
       if ( sim -> report_targets && ab > 0 )
       {
@@ -1030,6 +1032,133 @@ static void print_html_contents( FILE*  file, sim_t* sim )
                    "\t\t</div>\n\n" );
 }
 
+// print_html_sim_summary ===================================================
+
+static void print_html_sim_summary( FILE*  file, sim_t* sim )
+{
+
+  util_t::fprintf( file,
+                   "\t\t\t\t<div id=\"sim-info\" class=\"section" );
+  util_t::fprintf( file, " grouped-first" );
+  util_t::fprintf ( file, "\">\n" );
+
+  util_t::fprintf ( file,
+                    "\t\t\t\t\t<h2 class=\"toggle\">Simulation Information</h2>\n"
+                    "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
+
+
+    util_t::fprintf( file,
+                     "\t\t\t\t\t\t<table class=\"sc mt\">\n" );
+
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                       "\t\t\t\t\t\t\t\t<th>Iterations:</th>\n"
+                       "\t\t\t\t\t\t\t\t<td>%d</td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n",
+                       sim -> iterations );
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                       "\t\t\t\t\t\t\t\t<th>Threads:</th>\n"
+                       "\t\t\t\t\t\t\t\t<td>%d</td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n",
+                       sim -> report_threads );
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                       "\t\t\t\t\t\t\t\t<th>Fight Length:</th>\n"
+                       "\t\t\t\t\t\t\t\t<td>%.0f - %.0f</td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n",
+                       sim -> iteration_timeline[ 0 ],
+                       sim -> iteration_timeline [sim -> iteration_timeline.size() - 1 ] );
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                       "\t\t\t\t\t\t\t\t<th><h2>Performance:</h2></th>\n"
+                       "\t\t\t\t\t\t\t\t<td></td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n" );
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                       "\t\t\t\t\t\t\t\t<th>Total Events Processed:</th>\n"
+                       "\t\t\t\t\t\t\t\t<td>%ld</td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n",
+                       ( long ) sim -> total_events_processed );
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                       "\t\t\t\t\t\t\t\t<th>Max Event Queue:</th>\n"
+                       "\t\t\t\t\t\t\t\t<td>%ld</td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n",
+                       ( long ) sim -> max_events_remaining );
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                       "\t\t\t\t\t\t\t\t<th>Sim Seconds:</th>\n"
+                       "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n",
+                       sim -> iterations * sim -> total_seconds );
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                       "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
+                       "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n",
+                       sim -> elapsed_cpu_seconds );
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                       "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
+                       "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n",
+                       sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
+
+      util_t::fprintf( file,
+                            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                            "\t\t\t\t\t\t\t\t<th><h2>Settings:</h2></th>\n"
+                            "\t\t\t\t\t\t\t\t<td></td>\n"
+                            "\t\t\t\t\t\t\t</tr>\n" );
+      util_t::fprintf( file,
+                             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                             "\t\t\t\t\t\t\t\t<th>World Lag:</th>\n"
+                             "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+                             "\t\t\t\t\t\t\t</tr>\n",
+                             sim -> world_lag * 1000.0, sim -> world_lag_stddev * 1000.0 );
+      util_t::fprintf( file,
+                             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                             "\t\t\t\t\t\t\t\t<th>Queue Lag:</th>\n"
+                             "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+                             "\t\t\t\t\t\t\t</tr>\n",
+                             sim -> queue_lag * 1000.0, sim -> queue_lag_stddev * 1000.0 );
+      util_t::fprintf( file,
+                             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                             "\t\t\t\t\t\t\t\t<th>GCD Lag:</th>\n"
+                             "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+                             "\t\t\t\t\t\t\t</tr>\n",
+                             sim -> gcd_lag * 1000.0, sim -> gcd_lag_stddev * 1000.0 );
+      util_t::fprintf( file,
+                             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                             "\t\t\t\t\t\t\t\t<th>Channel Lag:</th>\n"
+                             "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+                             "\t\t\t\t\t\t\t</tr>\n",
+                             sim -> channel_lag * 1000.0, sim -> channel_lag_stddev * 1000.0 );
+      util_t::fprintf( file,
+                             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                             "\t\t\t\t\t\t\t\t<th>Queue GCD Reduction:</th>\n"
+                             "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
+                             "\t\t\t\t\t\t\t</tr>\n",
+                             sim -> queue_gcd_reduction * 1000.0 );
+
+    util_t::fprintf( file,
+                     "\t\t\t\t\t\t</table>\n" );
+
+
+    if ( sim -> iterations > 1 )
+    {
+      util_t::fprintf( file,
+                       "\t\t\t\t\t<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
+                       sim -> timeline_chart.c_str() );
+    }
+
+
+  // closure
+  util_t::fprintf( file,
+                   "\t\t\t\t<div class=\"clear\"></div>\n"
+                   "\t\t\t</div>\n"
+                   "\t\t</div>\n\n" );
+}
 // print_html_raid_summary ===================================================
 
 static void print_html_raid_summary( FILE*  file, sim_t* sim )
@@ -1040,6 +1169,28 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
                    "\t\t\t<h2 class=\"toggle open\">Raid Summary</h2>\n" );
   util_t::fprintf( file,
                    "\t\t\t<div class=\"toggle-content\">\n" );
+
+
+  util_t::fprintf( file,
+                     "\t\t\t<ul class=\"params\">\n" );
+    util_t::fprintf( file,
+                     "\t\t\t\t<li><b>Raid Damage:</b> %.0f</li>\n",
+                     sim -> total_dmg );
+    util_t::fprintf( file,
+                     "\t\t\t\t<li><b>Raid DPS:</b> %.0f</li>\n",
+                     sim -> raid_dps );
+    if ( sim -> total_heal > 0 )
+    {
+    util_t::fprintf( file,
+                     "\t\t\t\t<li><b>Raid Heal:</b> %.0f</li>\n",
+                     sim -> total_heal );
+    util_t::fprintf( file,
+                     "\t\t\t\t<li><b>Raid HPS:</b> %.0f</li>\n",
+                     sim -> raid_hps );
+    }
+  util_t::fprintf( file,
+                   "\t\t\t</ul><p>&nbsp;</p>\n" );
+
 
   assert( sim ->  dps_charts.size() ==
           sim -> gear_charts.size() );
@@ -1061,12 +1212,7 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
                      "\t\t\t\t\t<img src=\"%s\" alt=\"Gear Chart\" />\n",
                      sim -> gear_charts[ i ].c_str() );
   }
-  if ( sim -> iterations > 1 )
-  {
-    util_t::fprintf( file,
-                     "\t\t\t\t\t<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
-                     sim -> timeline_chart.c_str() );
-  }
+
   if ( ! sim -> raid_events_str.empty() )
   {
     util_t::fprintf( file,
@@ -4398,6 +4544,9 @@ void report_t::print_html( sim_t* sim )
 
   // Auras
   print_html_auras_buffs( file, sim );
+
+  // Auras
+  print_html_sim_summary( file, sim );
 
   // Report Targets
   if ( sim -> report_targets )

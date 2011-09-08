@@ -1443,6 +1443,8 @@ struct arcane_brilliance_t : public mage_spell_t
     bonus      = p -> dbc.effect_average( p -> dbc.spell( 79058 ) -> effect1().id(), p -> level );
     base_cost *= 1.0 + p -> glyphs.arcane_brilliance -> effect1().percent();
     harmful = false;
+
+    background = ( sim -> overrides.arcane_brilliance != 0 );
   }
 
   virtual void execute()
@@ -1460,7 +1462,10 @@ struct arcane_brilliance_t : public mage_spell_t
 
   virtual bool ready()
   {
-    return ( player -> buffs.arcane_brilliance -> current_value < bonus ) && mage_spell_t::ready();
+    if( player -> buffs.arcane_brilliance -> current_value < bonus )
+      return false;
+
+    return mage_spell_t::ready();
   }
 };
 

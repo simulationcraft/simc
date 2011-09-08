@@ -1439,7 +1439,6 @@ struct felguard_pet_t : public warlock_main_pet_t
 
 struct felhunter_pet_t : public warlock_main_pet_t
 {
-  cooldown_t* cooldowns_shadow_bite;
    // TODO: Need to add fel intelligence on the warlock while felhunter is out
   struct shadow_bite_t : public warlock_pet_spell_t
   {
@@ -1475,6 +1474,28 @@ struct felhunter_pet_t : public warlock_main_pet_t
     }
   };
 
+  // Wait For ShadowCrawl Action ===================================================
+
+  struct wait_for_shadow_bite_t : public action_t
+  {
+    cooldown_t* cd_sb;
+    wait_for_shadow_bite_t( player_t* player ) :
+      action_t( ACTION_OTHER, "wait_for_shadow_bite", player ), cd_sb( 0 )
+    {
+      cd_sb = player -> get_cooldown( "shadow_bite" );
+    }
+
+    virtual double execute_time() SC_CONST
+    {
+      return cd_sb -> remains();
+    }
+
+    virtual void execute()
+    {
+      player -> total_waiting += time_to_execute;
+    }
+  };
+
   felhunter_pet_t( sim_t* sim, player_t* owner ) :
       warlock_main_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
   {
@@ -1482,9 +1503,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
 
     action_list_str += "/snapshot_stats";
     action_list_str += "/shadow_bite";
-    action_list_str += "/wait_until_ready";
-
-    cooldowns_shadow_bite = get_cooldown( "shadow_bite" );
+    action_list_str += "/wait_for_shadow_bite";
   }
 
   virtual void init_base()
@@ -1505,6 +1524,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
                                    const std::string& options_str )
   {
     if ( name == "shadow_bite" ) return new shadow_bite_t( this );
+    if ( name == "wait_for_shadow_bite" ) return new wait_for_shadow_bite_t( this );
 
     return warlock_main_pet_t::create_action( name, options_str );
   }

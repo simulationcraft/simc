@@ -677,7 +677,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   path_str( "." ), output_file( stdout ),
   armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
   // Report
-  report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_rng( 0 ), hosted_html( 0 ), print_styles( false ),
+  report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
+  report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_threads( 0 ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),
   spell_query( 0 )
@@ -2416,6 +2417,9 @@ bool sim_t::parse_options( int    _argc,
     iterations = 1;
     threads = 1;
   }
+
+  report_threads = threads;
+  if ( report_threads < 1 ) report_threads = 1;
 
   return true;
 }

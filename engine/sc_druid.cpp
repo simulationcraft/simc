@@ -3443,6 +3443,8 @@ struct mark_of_the_wild_t : public druid_spell_t
     id          = 1126;
     base_cost  *= 1.0 + p -> glyphs.mark_of_the_wild -> mod_additive( P_RESOURCE_COST ) / 100.0;
     harmful     = false;
+
+    background = ( sim -> overrides.mark_of_the_wild != 0 );
   }
 
   virtual void execute()

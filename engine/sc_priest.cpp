@@ -1070,6 +1070,28 @@ struct shadow_fiend_pet_t : public pet_t
     }
   };
 
+  // Wait For ShadowCrawl Action ===================================================
+
+  struct wait_for_shadowcrawl_t : public action_t
+  {
+    cooldown_t* cd_sc;
+    wait_for_shadowcrawl_t( player_t* player ) :
+      action_t( ACTION_OTHER, "wait_for_shadowcrawl", player ), cd_sc( 0 )
+    {
+      cd_sc = player -> get_cooldown( "shadow_crawl" );
+    }
+
+    virtual double execute_time() SC_CONST
+    {
+      return cd_sc -> remains();
+    }
+
+    virtual void execute()
+    {
+      player -> total_waiting += time_to_execute;
+    }
+  };
+
   shadow_fiend_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "shadow_fiend" ), buffs_shadowcrawl( 0 ), shadowcrawl( 0 ), mana_leech( 0 ),
     bad_swing( false ), bad_spell_power( 0.0 ), extra_tick( false )
@@ -1083,13 +1105,14 @@ struct shadow_fiend_pet_t : public pet_t
 
     bad_spell_power = util_t::ability_rank( owner -> level,  370.0,85,  358.0,82,  352.0,80,  0.0,0 );
 
-    action_list_str             = "/snapshot_stats/shadowcrawl/wait_until_ready";
+    action_list_str             = "/snapshot_stats/shadowcrawl/wait_for_shadowcrawl";
   }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
     if ( name == "shadowcrawl" ) return new shadowcrawl_t( this );
+    if ( name == "wait_for_shadowcrawl" ) return new wait_for_shadowcrawl_t( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -1305,17 +1328,40 @@ struct cauterizing_flame_pet_t : public pet_t
     }
   };
 
+  // Wait For Cauterizing Flame ===================================================
+
+  struct wait_for_cauterizing_flame_t : public action_t
+  {
+    cooldown_t* cd_cf;
+    wait_for_cauterizing_flame_t( player_t* player ) :
+      action_t( ACTION_OTHER, "wait_for_cauterizing_flame", player ), cd_cf( 0 )
+    {
+      cd_cf = player -> get_cooldown( "cauterizing_flame_heal" );
+    }
+
+    virtual double execute_time() SC_CONST
+    {
+      return cd_cf -> remains();
+    }
+
+    virtual void execute()
+    {
+      player -> total_waiting += time_to_execute;
+    }
+  };
+
   cauterizing_flame_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "cauterizing_flame", PET_NONE, true )
   {
     role = ROLE_HEAL;
-    action_list_str = "/snapshot_stats/cauterizing_flame_heal/wait_until_ready";
+    action_list_str = "/snapshot_stats/cauterizing_flame_heal/wait_for_cauterizing_flame";
   }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
     if ( name == "cauterizing_flame_heal" ) return new cauterizing_flame_heal_t( this );
+    if ( name == "wait_for_cauterizing_flame" ) return new wait_for_cauterizing_flame_t( this );
 
     return pet_t::create_action( name, options_str );
   }

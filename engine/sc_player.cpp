@@ -681,7 +681,7 @@ bool player_t::init( sim_t* sim )
     if ( sim -> default_actions && ! p -> is_pet() ) p -> action_list_str.clear();
     p -> init();
     if ( ! p -> quiet ) too_quiet = false;
-    if ( p -> primary_role() != ROLE_HEAL && p -> primary_role() != ROLE_TANK && !p -> is_pet() ) zero_dds = false;
+    if ( p -> primary_role() != ROLE_HEAL && p -> primary_role() != ROLE_TANK && !p -> is_pet() && p -> quiet ) zero_dds = false;
   }
 
   if ( too_quiet && ! sim -> debug )
