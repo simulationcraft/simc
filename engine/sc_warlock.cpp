@@ -1474,7 +1474,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
     }
   };
 
-  // Wait For ShadowCrawl Action ===================================================
+  // Wait For Shadow Bite ===================================================
 
   struct wait_for_shadow_bite_t : public action_t
   {
