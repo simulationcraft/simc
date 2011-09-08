@@ -1343,14 +1343,13 @@ void sim_t::analyze_player( player_t* p )
       }
     }
 
-  if ( p -> quiet ) return;
   // Actor Lists ===============================================
-  if (  ! p -> is_enemy() && ! p -> is_add() )
+  if (  ! p -> quiet && ! p -> is_enemy() && ! p -> is_add() )
   {
     players_by_rank.push_back( p );
     players_by_name.push_back( p );
   }
-  if ( p -> is_enemy() || p -> is_add() )
+  if ( ! p -> quiet && ( p -> is_enemy() || p -> is_add() ) )
   {
     targets_by_name.push_back( p );
   }
@@ -1555,20 +1554,6 @@ void sim_t::analyze_player( player_t* p )
   p -> death_count_pct *= 100.0;
 
   // Charts ====================================================
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-  {
-    chart_t::action_dpet        ( pet -> action_dpet_chart,               pet );
-    chart_t::action_dmg         ( pet -> action_dmg_chart,                pet );
-    for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-    {
-    chart_t::timeline_resource  ( pet -> timeline_resource_chart[i],         pet, i );
-    }
-    chart_t::timeline_dps       ( pet -> timeline_dps_chart,              pet );
-    chart_t::timeline_dps_error ( pet -> timeline_dps_error_chart,        pet );
-    chart_t::dps_error          ( pet -> dps_error_chart,                 pet );
-    chart_t::distribution_dps   ( pet -> distribution_dps_chart,          pet );
-  }
-
 
   chart_t::action_dpet        ( p -> action_dpet_chart,               p );
   chart_t::action_dmg         ( p -> action_dmg_chart,                p );
