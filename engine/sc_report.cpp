@@ -3721,7 +3721,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    util_t::resource_type_string( p -> primary_resource() ),
                    p -> total_seconds ? 100.0 * p -> total_waiting / p -> total_seconds : 0,
                    p -> total_seconds ? 60.0 * p -> total_foreground_actions / p -> total_seconds : 0,
-                   p -> total_seconds / sim -> total_seconds * 100.0 );
+                   sim -> total_seconds ? p -> total_seconds / sim -> total_seconds * 100.0 : 0 );
 
   // Spec and gear
   if ( ! p -> is_pet() )

@@ -1384,7 +1384,8 @@ void sim_t::analyze_player( player_t* p )
     p -> resource_gained[ i ] /= iterations;
   }
 
-  p -> dpr = p -> total_dmg / p -> resource_lost[ p -> primary_resource() ];
+  double rl = p -> resource_lost[ p -> primary_resource() ];
+  p -> dpr = ( rl > 0 ) ? p -> total_dmg / rl : 0;
 
   p -> rps_loss = p -> resource_lost  [ p -> primary_resource() ] / p -> total_seconds;
   p -> rps_gain = p -> resource_gained[ p -> primary_resource() ] / p -> total_seconds;
@@ -1394,7 +1395,7 @@ void sim_t::analyze_player( player_t* p )
 
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
    {
-    for ( gain_t* g = p -> gain_list; g; g = g -> next )
+    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
         g -> analyze( this );
    }
 

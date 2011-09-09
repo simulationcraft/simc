@@ -3367,7 +3367,7 @@ struct player_t
   // Reporting
   int       quiet;
   action_t* last_foreground_action;
-  double    current_time, total_seconds, max_fight_length, arise_time;
+  double    current_time, iteration_seconds, total_seconds, max_fight_length, arise_time;
   double    total_waiting, total_foreground_actions;
   double    iteration_dmg, total_dmg;
   double    resource_lost  [ RESOURCE_MAX ];

@@ -442,7 +442,7 @@ player_t::player_t( sim_t*             s,
   action_list( 0 ), choose_action_list( "" ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
-  current_time( 0 ), total_seconds( 0 ), max_fight_length( 0 ), arise_time( 0 ),
+  current_time( 0 ), iteration_seconds( 0 ), total_seconds( 0 ), max_fight_length( 0 ), arise_time( 0 ),
   total_waiting( 0 ), total_foreground_actions( 0 ),
   iteration_dmg( 0 ), total_dmg( 0 ),
   dps( 0 ), dps_min( 0 ), dps_max( 0 ),
@@ -2691,6 +2691,8 @@ void player_t::combat_begin()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
 
+  iteration_seconds = 0;
+
   if ( ! is_pet() && ! is_add() )
   {
     arise();
@@ -2764,8 +2766,7 @@ void player_t::combat_end()
   else if ( is_pet() )
     cast_pet() -> dismiss();
 
-  double iteration_seconds = current_time;
-
+  total_seconds += iteration_seconds;
   if ( iteration_seconds > 0 )
   {
     if ( iteration_seconds > max_fight_length )
@@ -2777,6 +2778,8 @@ void player_t::combat_end()
     }
     iteration_dps[ sim -> current_iteration ] = iteration_dmg / iteration_seconds;
   }
+
+
 }
 
 // player_t::reset =========================================================
@@ -3033,7 +3036,7 @@ void player_t::arise()
 
   readying = 0;
 
-  arise_time = is_pet() ? cast_pet() -> owner -> current_time : current_time;
+  arise_time = sim -> current_time;
 
   schedule_ready();
 }
@@ -3045,16 +3048,15 @@ void player_t::demise()
   // No point in demising anything if we're not even active
   if ( sleeping == 1 ) return;
 
-  assert( arise_time >= 0 );
-  total_seconds += ( current_time - arise_time );
-  arise_time = -1;
   if ( sim -> log )
-    log_t::output( sim, "%s demises.%.2f", name(),total_seconds );
+    log_t::output( sim, "%s demises.", name() );
 
   sleeping = 1;
   readying = 0;
 
-
+  assert( arise_time >= 0 );
+  iteration_seconds += ( sim -> current_time - arise_time );
+  arise_time = -1;
 
   for( buff_t* b = buff_list; b; b = b -> next )
   {
