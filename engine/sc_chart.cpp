@@ -63,6 +63,7 @@ static const char* school_color( int type )
   case SCHOOL_SHADOWFROST: 	return "000066"; // Shadowfrost???
   case SCHOOL_SHADOWFLAME:	return "435133";
   case SCHOOL_SHADOWSTRIKE: return "0099CC";
+  case SCHOOL_NONE:         return "FFFFFF";
   default: return "";
   }
   return 0;
@@ -888,6 +889,116 @@ const char* chart_t::action_dmg( std::string& s,
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Sources", formatted_name.c_str(),
             ( p -> primary_role() == ROLE_HEAL ? "Healing" : "Damage" ) );
+  s += buffer;
+  s += "&amp;";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
+
+  return s.c_str();
+}
+
+// chart_t::spent_time =======================================================
+
+struct compare_time
+{
+  bool operator()( stats_t* l, stats_t* r ) SC_CONST
+  {
+    return l -> total_time > r -> total_time;
+  }
+};
+
+// chart_t::spent_time
+
+const char* chart_t::time_spent( std::string& s,
+                                 player_t* p )
+{
+  std::vector<stats_t*> stats_list;
+
+  for ( stats_t* st = p -> stats_list; st; st = st -> next )
+  {
+    if ( st -> quiet ) continue;
+    if ( st -> total_time <= 0 ) continue;
+    if ( st -> background ) continue;
+
+    stats_list.push_back( st );
+  }
+  int num_stats = stats_list.size();
+
+  if ( num_stats == 0 && p -> total_waiting == 0 )
+    return 0;
+
+  std::sort( stats_list.begin(), stats_list.end(), compare_time() );
+
+  char buffer[ 1024 ];
+
+  s = get_chart_base_url();
+  snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_stats * 10 ); s += buffer;
+  s += "&amp;";
+  s += "cht=p";
+  s += "&amp;";
+  if ( ! p -> sim -> print_styles )
+  {
+    s += "chf=bg,s,333333";
+    s += "&amp;";
+  }
+  s += "chd=t:";
+  for ( int i=0; i < num_stats; i++ )
+  {
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * stats_list[ i ] -> total_time / p -> total_seconds ); s += buffer;
+  }
+  if ( p -> total_waiting > 0 )
+  {
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? ",":"" ), 100.0 * p -> total_waiting / p -> total_seconds ); s += buffer;
+  }
+  s += "&amp;";
+  s += "chds=0,100";
+  s += "&amp;";
+  s += "chdls=ffffff";
+  s += "&amp;";
+  s += "chco=";
+  for ( int i=0; i < num_stats; i++ )
+  {
+    if ( i ) s += ",";
+
+    std::string school = school_color( stats_list[ i ] -> school );
+    if ( school.empty() )
+    {
+      p -> sim -> errorf( "chart_t::time_spent assertion error! School unknown, stats %s from %s.\n", stats_list[ i ] -> name_str.c_str(), p -> name() );
+      assert( 0 );
+    }
+    s += school;
+
+  }
+  if ( p -> total_waiting > 0 )
+  { if ( num_stats > 0 )s += ",";
+    s += "ffffff";
+  }
+  s += "&amp;";
+  s += "chl=";
+  for ( int i=0; i < num_stats; i++ )
+  {
+    stats_t* st = stats_list[ i ];
+    if ( i ) s += "|";
+    s += st -> name_str.c_str();
+    snprintf( buffer, sizeof( buffer ), " %.1fs", st -> total_time ); s += buffer;
+
+  }
+  if ( p -> total_waiting > 0 )
+  {
+    if ( num_stats > 0 )s += "|";
+    s += "waiting";
+    snprintf( buffer, sizeof( buffer ), " %.1fs", p -> total_waiting ); s += buffer;
+  }
+  s += "&amp;";
+  std::string formatted_name = p -> name();
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Spent Time", formatted_name.c_str() );
   s += buffer;
   s += "&amp;";
   if ( p -> sim -> print_styles )

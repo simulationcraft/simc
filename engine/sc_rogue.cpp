@@ -2533,6 +2533,7 @@ struct pool_energy_t : public action_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+
   }
 
   virtual void execute()

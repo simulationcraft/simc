@@ -3254,19 +3254,10 @@ static void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
 {
   int num_players = ( int ) sim -> players_by_name.size();
 
-  // Check for healers in the raid
-  bool healer_in_the_raid = false;
-  for ( player_t* q = sim -> player_list; q; q = q -> next )
-  {
-    if ( q -> primary_role() == ROLE_HEAL )
-    {
-      healer_in_the_raid = true;
-      break;
-    }
-  }
 
 std::string action_dpet_str                     = "";
 std::string action_dmg_str                      = "";
+std::string time_spent_str                      = "";
 std::string reforge_dps_str                     = "";
 std::string scaling_dps_str                     = "";
 std::string scale_factors_str                   = "";
@@ -3295,6 +3286,17 @@ if ( ! p -> action_dmg_chart.empty() )
   else
   {
     action_dmg_str = "<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">" + p -> action_dmg_chart + "</span>\n";
+  }
+}
+if ( ! p -> time_spent_chart.empty() )
+{
+  if ( num_players == 1 )
+  {
+    time_spent_str = "<img src=\"" + p -> time_spent_chart + "\" alt=\"Time Spent Chart\" />\n";
+  }
+  else
+  {
+    time_spent_str = "<span class=\"chart-time_spent\" title=\"Time Spent Chart\">" + p -> time_spent_chart + "</span>\n";
   }
 }
 
@@ -3336,17 +3338,6 @@ if ( ! p -> reforge_dps_chart.empty() )
       reforge_dps_str = p -> reforge_dps_chart;
 //        reforge_dps_str += "</span>\n";
     }
-  }
-}
-if ( ! p -> timeline_resource_health_chart.empty() && healer_in_the_raid )
-{
-  if ( num_players == 1 )
-  {
-    timeline_resource_health_str = "<img src=\"" + p ->timeline_resource_health_chart + "\" alt=\"Health Timeline Chart\" />\n";
-  }
-  else
-  {
-    timeline_resource_health_str = "<span class=\"chart-health-timeline-resource\" title=\"Health Timeline Chart\">" + p -> timeline_resource_health_chart + "</span>\n";
   }
 }
 if ( ! p -> timeline_dps_chart.empty() )
@@ -3406,6 +3397,7 @@ util_t::fprintf( file,
                  "              %s"
                  "              %s"
                  "              %s"
+                 "              %s"
                  "\t\t\t\t\t\t</div>\n"
                  "\t\t\t\t\t\t<div class=\"clear\"></div>\n"
                  "\t\t\t\t\t</div>\n"
@@ -3418,7 +3410,8 @@ util_t::fprintf( file,
                  timeline_resource_health_str.c_str(),
                  timeline_dps_str.c_str(),
                  distribution_dps_str.c_str(),
-                 distribution_encounter_timeline_str.c_str() );
+                 distribution_encounter_timeline_str.c_str(),
+                 time_spent_str.c_str() );
 }
 
 

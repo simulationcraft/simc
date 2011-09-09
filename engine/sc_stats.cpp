@@ -10,7 +10,7 @@
 stats_t::stats_t( const std::string& n, player_t* p ) :
   name_str( n ), sim( p->sim ), player( p ), next( 0 ), parent( 0 ),
   school( SCHOOL_NONE ), type( STATS_DMG ), analyzed( false ),
-  initialized( false ), quiet( false ), resource( RESOURCE_NONE ),
+  initialized( false ), quiet( false ), background( true ), resource( RESOURCE_NONE ),
   resource_consumed( 0 ), last_execute( -1 )
 {
 }
@@ -68,7 +68,7 @@ void stats_t::init()
 
   num_direct_results = num_tick_results = 0;
   num_executes = num_ticks = 0;
-  total_execute_time = total_tick_time = 0;
+  total_execute_time = total_tick_time = total_time = 0;
   total_dmg = portion_dmg = compound_dmg = opportunity_cost = 0;
   dps = dpe = dpet = dpr = etpe = ttpt = 0;
   total_intervals = num_intervals = 0;
@@ -158,6 +158,7 @@ void stats_t::analyze()
     if ( a -> channeled ) channeled = true;
     school   = a -> school;
     resource = a -> resource;
+    if ( ! a -> background ) background = false;
   }
 
   int num_iterations = sim -> iterations;
@@ -218,7 +219,7 @@ void stats_t::analyze()
   {
     dpe  = ( num_executes > 0 ) ? ( compound_dmg / num_executes ) : 0;
 
-    double total_time = total_execute_time + total_tick_time;
+    total_time = total_execute_time + total_tick_time;
     dps  = ( total_time > 0 ) ? ( compound_dmg / total_time ) : 0;
 
     total_time = total_execute_time + ( channeled ? total_tick_time : 0 );
@@ -226,6 +227,8 @@ void stats_t::analyze()
 
     dpr  = ( resource_consumed > 0 ) ? ( compound_dmg / resource_consumed ) : 0;
   }
+  else
+    total_time = total_execute_time + ( channeled ? total_tick_time : 0 );
 
   ttpt = num_ticks ? total_tick_time / num_ticks : 0;
   etpe = num_executes? ( total_execute_time + ( channeled ? total_tick_time : 0 ) ) / num_executes : 0;

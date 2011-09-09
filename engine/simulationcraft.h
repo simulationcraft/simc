@@ -3390,7 +3390,7 @@ struct player_t
   std::vector<int> distribution_dps;
   std::vector<double> dps_convergence_error;
   std::string action_sequence;
-  std::string action_dpet_chart, action_dmg_chart, gains_chart;
+  std::string action_dpet_chart, action_dmg_chart, time_spent_chart, gains_chart;
   std::vector<std::string> timeline_resource_chart;
   std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
@@ -3951,12 +3951,13 @@ struct stats_t
   bool analyzed;
   bool initialized;
   bool quiet;
+  bool background;
 
   int resource;
   double resource_consumed, resource_portion;
   double frequency, num_executes, num_ticks;
   double num_direct_results, num_tick_results;
-  double total_execute_time, total_tick_time;
+  double total_execute_time, total_tick_time, total_time;
   double total_dmg, portion_dmg;
   double dps, portion_dps, dpe, dpet, dpr, rpe, etpe, ttpt;
   double total_intervals, num_intervals;
@@ -4657,6 +4658,7 @@ struct chart_t
   static const char* raid_timeline    ( std::string& s, sim_t* );
   static const char* action_dpet      ( std::string& s, player_t* );
   static const char* action_dmg       ( std::string& s, player_t* );
+  static const char* time_spent       ( std::string& s, player_t* );
   static const char* gains            ( std::string& s, player_t*, resource_type );
   static const char* timeline_resource( std::string& s, player_t*, int );
   static const char* timeline_dps     ( std::string& s, player_t* );
