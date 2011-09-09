@@ -47,7 +47,7 @@ wrists=lava_line_wristbands,heroic=1,type=mail,ilevel=391,quality=epic,stats=119
 hands=erupting_volcanic_gloves,heroic=1,type=mail,ilevel=391,quality=epic,stats=1703armor_322int_513sta_225crit_208haste,reforge=crit_mastery,gems=40int,enchant=65mastery
 finger1=crystal_prison_band,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183mastery_150crit,reforge=crit_haste
 finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int
-trinket1=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_3300.7nature_50%_10stack_2.5cd_chance
+trinket1=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_3300.7nature_15%_10stack_2.5cd_chance
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_haste,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max

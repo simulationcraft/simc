@@ -46,7 +46,7 @@ wrists=lava_line_wristbands,type=mail,ilevel=378,quality=epic,stats=1139armor_22
 hands=erupting_volcanic_gloves,type=mail,ilevel=378,quality=epic,stats=1627armor_282int_454sta_199crit_183haste,reforge=crit_spi,gems=40int,enchant=65mastery
 finger1=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,reforge=hit_haste
 finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,reforge=hit_mastery,gems=40int_10int
-trinket1=variable_pulse_lightning_capacitor,ilevel=384,quality=epic,stats=406int,equip=onspellcrit_2926.3nature_50%_10stack_2.5cd_chance
+trinket1=variable_pulse_lightning_capacitor,ilevel=384,quality=epic,stats=406int,equip=onspellcrit_2926.3nature_15%_10stack_2.5cd_chance
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,reforge=hit_mastery,enchant=lightweave_embroidery
 main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max

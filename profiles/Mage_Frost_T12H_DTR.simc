@@ -46,7 +46,7 @@ hands=fingers_of_incineration,heroic=1,type=cloth,ilevel=397,quality=epic,stats=
 finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int,enchant=40int
 finger2=crystal_prison_band,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183mastery_150crit,reforge=crit_hit,enchant=40int
 trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
-trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_1269.5nature_15%_10stack_2.5cd_chance
+trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_3300.7nature_15%_10stack_2.5cd_chance
 back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_hit,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste
