@@ -1470,7 +1470,6 @@ void sim_t::analyze_player( player_t* p )
   }
   assert( p -> timeline_dps.size() == static_cast<unsigned>( max_buckets ) );
 
-
   // DPS Error =================================================
 
   p -> dps_min = +1.0E+50;

@@ -1214,13 +1214,15 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     may_glance       = false;
     dot_behavior     = DOT_REFRESH;
 
-
     base_spell_power_multiplier  = tick_power_mod;
     base_attack_power_multiplier = extra_coeff();
     tick_power_mod               = 1.0;
 
     base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure -> effect1().percent() +
                                p -> talents.inquiry_of_faith -> mod_additive( P_TICK_DAMAGE ) );
+
+    // Hotfix 40% increased damage needs testing
+    base_multiplier *= 1.40;
   }
 
   virtual void player_buff()

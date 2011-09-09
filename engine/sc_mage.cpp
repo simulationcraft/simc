@@ -50,6 +50,7 @@ struct mage_t : public player_t
   cooldown_t* cooldowns_deep_freeze;
   cooldown_t* cooldowns_fire_blast;
   cooldown_t* cooldowns_early_frost;
+  cooldown_t* cooldowns_mana_gem;
   cooldown_t* cooldowns_tier12_mirror_image;
   cooldown_t* cooldowns_evocation;
 
@@ -269,7 +270,8 @@ struct mage_t : public player_t
     cooldowns_deep_freeze = get_cooldown( "deep_freeze" );
     cooldowns_fire_blast  = get_cooldown( "fire_blast"  );
     cooldowns_early_frost = get_cooldown( "early_frost" );
-    cooldowns_evocation   = get_cooldown( "evocation"  );
+    cooldowns_evocation   = get_cooldown( "evocation"   );
+    cooldowns_mana_gem    = get_cooldown( "mana_gem"    );
     cooldowns_tier12_mirror_image = get_cooldown( "tier12_mirror_image" );
     cooldowns_tier12_mirror_image -> duration = 45.0;
 
@@ -1632,7 +1634,7 @@ struct cold_snap_t : public mage_spell_t
     cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect1().percent();
 
     cooldown_list.push_back( p -> get_cooldown( "cone_of_cold"  ) );
-    cooldown_list.push_back( p -> get_cooldown( "deep_freeze"   ) );
+    cooldown_list.push_back( p -> cooldowns_deep_freeze           );
     cooldown_list.push_back( p -> get_cooldown( "frostfire_orb" ) );
     cooldown_list.push_back( p -> get_cooldown( "icy_veins"     ) );
   }
@@ -2557,7 +2559,7 @@ struct mana_gem_t : public action_t
       max = 3500.0;
     }
 
-    cooldown = p -> get_cooldown( "mana_gem" );
+    cooldown = p -> cooldowns_mana_gem;
     cooldown -> duration = 120.0;
     trigger_gcd = 0;
     harmful = false;
