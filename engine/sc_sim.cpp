@@ -1432,18 +1432,47 @@ void sim_t::analyze_player( player_t* p )
   }
 
   p -> timeline_dps.reserve( max_buckets );
-  for ( int i=0; i < max_buckets; i++ )
+  const int HALFWINDOW = 10;
+  double window_dmg = 0;
+
+  if ( max_buckets >= 2 * HALFWINDOW )
   {
-    const int HALFWIDTH = 10;
-    int left_edge = std::max( 0, i - HALFWIDTH );
-    int right_edge = std::min( max_buckets, i + HALFWIDTH + 1 );
+    // Fill right half of sliding window
+    int right_edge = 0;
+    while ( right_edge < HALFWINDOW )
+      window_dmg += p -> timeline_dmg[ right_edge++ ];
 
-    double window_dmg = 0;
-    for( int j = left_edge; j < right_edge; ++j )
-      window_dmg += p -> timeline_dmg[ j ];
+    // Fill left half of sliding window
+    while ( right_edge < 2 * HALFWINDOW )
+    {
+      window_dmg += p -> timeline_dmg[ right_edge++ ];
+      p -> timeline_dps.push_back( window_dmg / ( right_edge - 0 ) );
+    }
 
-    p -> timeline_dps.push_back( window_dmg / ( right_edge - left_edge - 1 ) );
+    // Slide until window hits end of data
+    int left_edge = 0;
+    while ( right_edge < max_buckets )
+    {
+      window_dmg += p -> timeline_dmg[ right_edge++ ];
+      p -> timeline_dps.push_back( window_dmg / ( right_edge - left_edge ) );
+      window_dmg -= p -> timeline_dmg[ left_edge++ ];
+    }
+
+    // Empty right half of sliding window
+    while ( left_edge < max_buckets - HALFWINDOW )
+    {
+      p -> timeline_dps.push_back( window_dmg / ( max_buckets - left_edge ) );
+      window_dmg -= p -> timeline_dmg[ left_edge++ ];
+    }
   }
+  else
+  {
+    for ( int i=0; i < max_buckets; i++ )
+      window_dmg += p -> timeline_dmg[ i ];
+    p -> timeline_dps.assign( max_buckets, window_dmg / max_buckets );
+  }
+  assert( timeline_dps.size() == max_buckets );
+
 
   // DPS Error =================================================
 
