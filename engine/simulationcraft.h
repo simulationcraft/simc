@@ -2726,16 +2726,13 @@ struct sim_t : private thread_t
   int report_rng;
   int hosted_html;
   int print_styles;
-  int report_threads;
 
-private:
   // Multi-Threading
   int threads;
   std::vector<sim_t*> children;
   int thread_index;
   virtual void run() { iterate(); }
 
-public:
   // Spell database access
   spell_data_expr_t* spell_query;
 
@@ -4936,6 +4933,20 @@ struct js_t
   static void print( js_node_t* root, FILE* f=0, int spacing=0 );
   static const char* get_name( js_node_t* root );
 };
+
+
+// Handy Actions =============================================================
+
+// Wait For Cooldown Action =================================================
+
+struct wait_for_cooldown_t : public action_t
+{
+  cooldown_t* wait_cd;
+  wait_for_cooldown_t( player_t* player, const std::string& cd_name );
+  virtual double execute_time() SC_CONST;
+  virtual void execute();
+};
+
 
 #ifdef WHAT_IF
 

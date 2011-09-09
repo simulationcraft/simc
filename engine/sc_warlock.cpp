@@ -1475,28 +1475,6 @@ struct felhunter_pet_t : public warlock_main_pet_t
     }
   };
 
-  // Wait For Shadow Bite ===================================================
-
-  struct wait_for_shadow_bite_t : public action_t
-  {
-    cooldown_t* cd_sb;
-    wait_for_shadow_bite_t( player_t* player ) :
-      action_t( ACTION_OTHER, "wait_for_shadow_bite", player ), cd_sb( 0 )
-    {
-      cd_sb = player -> get_cooldown( "shadow_bite" );
-    }
-
-    virtual double execute_time() SC_CONST
-    {
-      return cd_sb -> remains();
-    }
-
-    virtual void execute()
-    {
-      player -> total_waiting += time_to_execute;
-    }
-  };
-
   felhunter_pet_t( sim_t* sim, player_t* owner ) :
       warlock_main_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
   {
@@ -1525,7 +1503,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
                                    const std::string& options_str )
   {
     if ( name == "shadow_bite" ) return new shadow_bite_t( this );
-    if ( name == "wait_for_shadow_bite" ) return new wait_for_shadow_bite_t( this );
+    if ( name == "wait_for_shadow_bite" ) return new wait_for_cooldown_t( this, "shadow_bite" );
 
     return warlock_main_pet_t::create_action( name, options_str );
   }

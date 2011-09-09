@@ -1904,3 +1904,16 @@ int action_t::hasted_num_ticks( double d ) SC_CONST
 
   return ( int ) floor( n + 0.5 );
 }
+
+// Wait For Cooldown Action =================================================
+
+wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& cd_name ) :
+  action_t( ACTION_OTHER, ( "wait_for_" + cd_name ).c_str(), player ),
+  wait_cd( player -> get_cooldown( cd_name ) )
+{}
+
+double wait_for_cooldown_t::execute_time() SC_CONST
+{ return wait_cd -> remains() + 0.000001; }
+
+void wait_for_cooldown_t::execute()
+{ player -> total_waiting += time_to_execute; }

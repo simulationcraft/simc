@@ -1087,7 +1087,7 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    "\t\t\t\t\t\t\t\t<th>Threads:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%d</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
-                   sim -> report_threads );
+                   sim -> threads < 1 ? 1 : sim -> threads );
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Fight Length:</th>\n"

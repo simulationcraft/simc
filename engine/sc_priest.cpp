@@ -938,22 +938,14 @@ public:
 
 struct shadow_fiend_pet_t : public pet_t
 {
-  buff_t*   buffs_shadowcrawl;
-  active_spell_t* shadowcrawl;
-  passive_spell_t* mana_leech;
-  bool bad_swing;
-  double bad_spell_power;
-  bool extra_tick;
-
   struct tier12_flame_attack_t : public spell_t
   {
-    spell_data_t* shadowflame;
     double dmg_mult;
 
-    tier12_flame_attack_t( player_t* player ) :
-      spell_t( "Shadowflame", player, SCHOOL_FIRE ), shadowflame( NULL ), dmg_mult( 0.2 )
+    tier12_flame_attack_t( shadow_fiend_pet_t* player ) :
+      spell_t( "Shadowflame", player, SCHOOL_FIRE ), dmg_mult( 0.2 )
     {
-      priest_t* o = player -> cast_pet() -> owner -> cast_priest();
+      priest_t* o = player -> owner -> cast_priest();
 
       background       = true;
       may_miss         = false;
@@ -963,8 +955,7 @@ struct shadow_fiend_pet_t : public pet_t
       trigger_gcd      = false;
       school           = SCHOOL_FIRE;
 
-      shadowflame = spell_data_t::find( 99156, "Shadowflame", o -> dbc.ptr );
-      if ( shadowflame )
+      if ( const spell_data_t* shadowflame = spell_data_t::find( 99156, "Shadowflame", o -> dbc.ptr ) )
       {
         dmg_mult = shadowflame->effect1().percent();
       }
@@ -985,8 +976,8 @@ struct shadow_fiend_pet_t : public pet_t
 
   struct shadowcrawl_t : public spell_t
   {
-    shadowcrawl_t( player_t* player ) :
-      spell_t( *( ( ( shadow_fiend_pet_t* ) ( player -> cast_pet() ) ) -> shadowcrawl ) )
+    shadowcrawl_t( shadow_fiend_pet_t* player ) :
+      spell_t( *( player -> shadowcrawl ) )
     {
       may_miss = false;
     }
@@ -995,7 +986,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       spell_t::execute();
 
-      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player -> cast_pet() );
+      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player );
 
       p -> buffs_shadowcrawl -> start( 1, p -> shadowcrawl -> effect_base_value( 2 ) / 100.0 );
     }
@@ -1005,10 +996,10 @@ struct shadow_fiend_pet_t : public pet_t
   {
     tier12_flame_attack_t* tier12_flame_attack_spell;
 
-    melee_t( player_t* player ) :
+    melee_t( shadow_fiend_pet_t* player ) :
       attack_t( "melee", player, RESOURCE_NONE, SCHOOL_SHADOW ), tier12_flame_attack_spell( 0 )
     {
-      priest_t* o = player -> cast_pet() -> owner -> cast_priest();
+      priest_t* o = player -> owner -> cast_priest();
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       weapon_multiplier = 0;
@@ -1070,31 +1061,18 @@ struct shadow_fiend_pet_t : public pet_t
     }
   };
 
-  // Wait For ShadowCrawl Action ===================================================
+  double bad_spell_power;
+  buff_t* buffs_shadowcrawl;
+  active_spell_t* shadowcrawl;
+  passive_spell_t* mana_leech;
+  bool bad_swing;
+  bool extra_tick;
 
-  struct wait_for_shadowcrawl_t : public action_t
-  {
-    cooldown_t* cd_sc;
-    wait_for_shadowcrawl_t( player_t* player ) :
-      action_t( ACTION_OTHER, "wait_for_shadowcrawl", player ), cd_sc( 0 )
-    {
-      cd_sc = player -> get_cooldown( "shadow_crawl" );
-    }
-
-    virtual double execute_time() SC_CONST
-    {
-      return cd_sc -> remains();
-    }
-
-    virtual void execute()
-    {
-      player -> total_waiting += time_to_execute;
-    }
-  };
-
-  shadow_fiend_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "shadow_fiend" ), buffs_shadowcrawl( 0 ), shadowcrawl( 0 ), mana_leech( 0 ),
-    bad_swing( false ), bad_spell_power( 0.0 ), extra_tick( false )
+  shadow_fiend_pet_t( sim_t* sim, priest_t* owner ) :
+    pet_t( sim, owner, "shadow_fiend" ),
+    bad_spell_power( util_t::ability_rank( owner -> level,  370.0,85,  358.0,82,  352.0,80,  0.0,0 ) ),
+    buffs_shadowcrawl( 0 ), shadowcrawl( 0 ), mana_leech( 0 ),
+    bad_swing( false ), extra_tick( false )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.5;
@@ -1103,8 +1081,6 @@ struct shadow_fiend_pet_t : public pet_t
     stamina_per_owner           = 0.30;
     intellect_per_owner         = 0.50;
 
-    bad_spell_power = util_t::ability_rank( owner -> level,  370.0,85,  358.0,82,  352.0,80,  0.0,0 );
-
     action_list_str             = "/snapshot_stats/shadowcrawl/wait_for_shadowcrawl";
   }
 
@@ -1112,7 +1088,7 @@ struct shadow_fiend_pet_t : public pet_t
                                    const std::string& options_str )
   {
     if ( name == "shadowcrawl" ) return new shadowcrawl_t( this );
-    if ( name == "wait_for_shadowcrawl" ) return new wait_for_shadowcrawl_t( this );
+    if ( name == "wait_for_shadowcrawl" ) return new wait_for_cooldown_t( this, "shadowcrawl" );
 
     return pet_t::create_action( name, options_str );
   }
@@ -1146,7 +1122,7 @@ struct shadow_fiend_pet_t : public pet_t
   {
     pet_t::init_buffs();
 
-    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl->duration() );
+    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration() );
   }
 
   virtual double composite_spell_power( const school_type school ) SC_CONST
@@ -1314,7 +1290,7 @@ struct cauterizing_flame_pet_t : public pet_t
     cauterizing_flame_heal_t( player_t* player ) :
       heal_t( "cauterizing_flame_heal", player, 99152 )
     {
-      // HACK: Travel events get canceled on demise, so lie about travel
+      // HACK: Travel events are canceled on demise, so lie about travel
       travel_speed = 0;
       cooldown -> duration = 1;
     }
@@ -1328,40 +1304,18 @@ struct cauterizing_flame_pet_t : public pet_t
     }
   };
 
-  // Wait For Cauterizing Flame ===================================================
-
-  struct wait_for_cauterizing_flame_t : public action_t
-  {
-    cooldown_t* cd_cf;
-    wait_for_cauterizing_flame_t( player_t* player ) :
-      action_t( ACTION_OTHER, "wait_for_cauterizing_flame", player ), cd_cf( 0 )
-    {
-      cd_cf = player -> get_cooldown( "cauterizing_flame_heal" );
-    }
-
-    virtual double execute_time() SC_CONST
-    {
-      return cd_cf -> remains();
-    }
-
-    virtual void execute()
-    {
-      player -> total_waiting += time_to_execute;
-    }
-  };
-
   cauterizing_flame_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "cauterizing_flame", PET_NONE, true )
   {
     role = ROLE_HEAL;
-    action_list_str = "/snapshot_stats/cauterizing_flame_heal/wait_for_cauterizing_flame";
+    action_list_str = "/snapshot_stats/cauterizing_flame_heal/wait_for_cauterizing_flame_heal";
   }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
     if ( name == "cauterizing_flame_heal" ) return new cauterizing_flame_heal_t( this );
-    if ( name == "wait_for_cauterizing_flame" ) return new wait_for_cauterizing_flame_t( this );
+    if ( name == "wait_for_cauterizing_flame_heal" ) return new wait_for_cooldown_t( this, "cauterizing_flame_heal" );
 
     return pet_t::create_action( name, options_str );
   }
@@ -2261,6 +2215,7 @@ struct mind_sear_tick_t : public priest_spell_t
 };
 
 struct mind_sear_t : public priest_spell_t
+
 {
   mind_sear_tick_t* mind_sear_tick;
 
