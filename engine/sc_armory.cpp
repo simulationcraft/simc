@@ -825,12 +825,6 @@ player_t* armory_t::download_player( sim_t* sim,
   p -> origin_str = "http://" + region + ".wowarmory.com/character-sheet.xml?r=" + server + "&n=" + name;
   http_t::format( p -> origin_str );
 
-  std::string last_modified;
-  if ( xml_t::get_value( last_modified, sheet_xml, "character/lastModified" ) )
-  {
-    p -> last_modified = util_t::parse_date( last_modified );
-  }
-
   p -> professions_str = "";
   std::vector<xml_node_t*> skill_nodes;
   int num_skills = xml_t::get_nodes( skill_nodes, sheet_xml, "professions/skill" );

@@ -3188,7 +3188,6 @@ struct player_t
   int         potion_used, sleeping, initial_sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
-  int64_t     last_modified;
   int         bugs;
   int         specialization;
   int         invert_scaling;

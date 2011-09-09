@@ -167,12 +167,6 @@ player_t* battle_net_t::download_player( sim_t* sim,
   p -> origin_str = "http://" + region + ".battle.net/wow/en/character/" + server + "/" + name + "/advanced";
   http_t::format( p -> origin_str );
 
-  std::string last_modified;
-  if ( xml_t::get_value( last_modified, xml_t::get_node( sheet_xml, "div", "class", "summary-lastupdate" ), "." ) )
-  {
-    p -> last_modified = util_t::parse_date( last_modified.substr( 16 ) );
-  }
-
   p -> professions_str = "";
   xml_node_t* profession_list_node = xml_t::get_node( sheet_xml, "div", "class", "summary-professions" );
   std::vector<xml_node_t*> profession_nodes;
