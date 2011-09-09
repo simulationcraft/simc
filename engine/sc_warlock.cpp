@@ -1372,6 +1372,7 @@ struct felguard_pet_t : public warlock_main_pet_t
       aoe         = -1;
       direct_tick = true;
       stats       = player -> get_stats( "felstorm", this );
+      resource    = RESOURCE_MANA;
     }
   };
 
@@ -1415,6 +1416,7 @@ struct felguard_pet_t : public warlock_main_pet_t
     action_list_str += "/legion_strike";
     action_list_str += "/wait_until_ready";
   }
+
 
   virtual void init_base()
   {

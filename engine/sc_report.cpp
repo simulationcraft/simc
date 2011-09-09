@@ -3696,6 +3696,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t\t\t<th>Resource</th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-waiting\" class=\"help\">Waiting</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th>Active</th>\n"
                    "\t\t\t\t\t\t\t</tr>\n"
                    "\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -3707,6 +3708,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t\t\t<td>%s</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.2f%%</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n"
                    "\t\t\t\t\t\t</table>\n",
                    p -> dps,
@@ -3718,7 +3720,8 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    p -> rps_gain,
                    util_t::resource_type_string( p -> primary_resource() ),
                    p -> total_seconds ? 100.0 * p -> total_waiting / p -> total_seconds : 0,
-                   p -> total_seconds ? 60.0 * p -> total_foreground_actions / p -> total_seconds : 0 );
+                   p -> total_seconds ? 60.0 * p -> total_foreground_actions / p -> total_seconds : 0,
+                   p -> total_seconds / sim -> total_seconds * 100.0 );
 
   // Spec and gear
   if ( ! p -> is_pet() )

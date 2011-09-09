@@ -442,7 +442,7 @@ player_t::player_t( sim_t*             s,
   action_list( 0 ), choose_action_list( "" ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
-  current_time( 0 ), total_seconds( 0 ), max_fight_length( 0 ),
+  current_time( 0 ), total_seconds( 0 ), max_fight_length( 0 ), arise_time( 0 ),
   total_waiting( 0 ), total_foreground_actions( 0 ),
   iteration_dmg( 0 ), total_dmg( 0 ),
   dps( 0 ), dps_min( 0 ), dps_max( 0 ),
@@ -2767,8 +2767,6 @@ void player_t::combat_end()
 
   if ( iteration_seconds > 0 )
   {
-    total_seconds += iteration_seconds;
-
     if ( iteration_seconds > max_fight_length )
       max_fight_length = iteration_seconds;
 
@@ -3032,6 +3030,8 @@ void player_t::arise()
 
   readying = 0;
 
+  arise_time = is_pet() ? cast_pet() -> owner -> current_time : current_time;
+
   schedule_ready();
 }
 
@@ -3047,6 +3047,10 @@ void player_t::demise()
 
   sleeping = 1;
   readying = 0;
+
+  assert( arise_time >= 0 );
+  total_seconds += ( current_time - arise_time );
+  arise_time = -1;
 
   for( buff_t* b = buff_list; b; b = b -> next )
   {
