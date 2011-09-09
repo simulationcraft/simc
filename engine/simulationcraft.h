@@ -3931,8 +3931,8 @@ struct pet_t : public player_t
   virtual void summon( double duration=0 );
   virtual void dismiss();
   virtual bool ooc_buffs() { return false; }
-
   virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a=0 );
+  virtual void combat_begin();
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual const char* name() SC_CONST { return full_name_str.c_str(); }

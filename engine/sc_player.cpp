@@ -3042,15 +3042,16 @@ void player_t::demise()
   // No point in demising anything if we're not even active
   if ( sleeping == 1 ) return;
 
+  assert( arise_time >= 0 );
+  total_seconds += ( current_time - arise_time );
+  arise_time = -1;
   if ( sim -> log )
-    log_t::output( sim, "%s demises.", name() );
+    log_t::output( sim, "%s demises.%.2f", name(),total_seconds );
 
   sleeping = 1;
   readying = 0;
 
-  assert( arise_time >= 0 );
-  total_seconds += ( current_time - arise_time );
-  arise_time = -1;
+
 
   for( buff_t* b = buff_list; b; b = b -> next )
   {

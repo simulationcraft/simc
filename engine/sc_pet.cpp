@@ -31,8 +31,7 @@ void pet_t::init_pet_t_()
 
   party = owner -> party;
 
-  // By default, only report statistics in the context of the owner
-  quiet = ! sim -> report_pets_separately;
+
 
   // Inherit owner's dbc state
   dbc.ptr = owner -> dbc.ptr;
@@ -193,4 +192,14 @@ double pet_t::assess_damage( double            amount,
     amount *= 0.10;
 
   return player_t::assess_damage( amount, school, dmg_type, result, action );
+}
+
+// pet_t::combat_begin ==================================================
+
+void pet_t::combat_begin()
+{
+  // By default, only report statistics in the context of the owner
+  quiet = ! sim -> report_pets_separately;
+
+  player_t::combat_begin();
 }
