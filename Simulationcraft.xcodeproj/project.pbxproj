@@ -394,7 +394,7 @@
 			outputFiles = (
 				"${DERIVED_SOURCES_DIR}/moc_${INPUT_FILE_BASE}.cpp",
 			);
-			script = "if [ -x /Developer/Tools/qt/moc]; then\n   QT_MOC_PATH='/Developer/Tools/qt/moc'\nelse\n   QT_MOC_PATH='moc'\nfi\n${QT_MOC_PATH} ${QT_DEFINES} ${QT_INCLUDES} ${INPUT_FILE_PATH} -o ${DERIVED_SOURCES_DIR}/moc_${INPUT_FILE_BASE}.cpp";
+			script = "if [ -x /Developer/Tools/qt/moc ]; then\n   QT_MOC_PATH='/Developer/Tools/qt/moc'\nelse\n   QT_MOC_PATH='moc'\nfi\n${QT_MOC_PATH} ${QT_DEFINES} ${QT_INCLUDES} ${INPUT_FILE_PATH} -o ${DERIVED_SOURCES_DIR}/moc_${INPUT_FILE_BASE}.cpp";
 		};
 /* End PBXBuildRule section */
 
@@ -1462,6 +1462,9 @@
 /* Begin PBXProject section */
 		6EC6189A1396770F006B7A89 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0410;
+			};
 			buildConfigurationList = 6EC6189D1396770F006B7A89 /* Build configuration list for PBXProject "Simulationcraft" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -1564,12 +1567,10 @@
 			inputPaths = (
 			);
 			outputPaths = (
-				"/tmp/SimulationC\U0005raft.app",
-				/tmp/source,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "MAJOR_VERSION=$(grep \"SC_MAJOR_VERSION\" engine/simulationcraft.h|sed -E -e \"s/#define SC_MAJOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nMINOR_VERSION=$(grep \"SC_MINOR_VERSION\" engine/simulationcraft.h|sed -E -e \"s/#define SC_MINOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nREVISION=$(svn info \"$PROJECT_DIR\"||git --git-dir=\"${PROJECT_DIR}/.git\" svn info|grep \"Revision\"|$SED -E -e \"s/Revision:[^0-9]+//\")\necho Revision is: $REVISION\nCONTENTS_FOLDER_PATH=/tmp/SimulationCraft.app/Contents\n\n$CP -rf \"${PROJECT_DIR}/SimulationCraft.app\" /tmp\nmacdeployqt /tmp/SimulationCraft.app -verbose=2\n$SED -i -e \"s/GIT-REV-PARSE-HERE/$REVISION/\" $CONTENTS_FOLDER_PATH/Info.plist\n$SED -i -e \"s/VERSION-PARSE-HERE/$MAJOR_VERSION\\.$MINOR_VERSION/\" $CONTENTS_FOLDER_PATH/Info.plist\nsvn export --force \"${PROJECT_DIR}\" /tmp/source || git checkout-index -a -f --prefix=/tmp/source/\nrm -rf /tmp/source/dbc_extract /tmp/source/html /tmp/source/qt/icon/SIMC-LOGO-MK.psd\n\nhdiutil create -srcfolder /tmp/SimulationCraft.app -srcfolder /tmp/source -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder \"${PROJECT_DIR}/simc\" -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $CONTENTS_FOLDER_PATH/Info CFBundleVersion`\" -ov -puppetstrings simc-$MAJOR_VERSION-$MINOR_VERSION-osx-x86.dmg";
+			shellScript = "MAJOR_VERSION=$(grep \"SC_MAJOR_VERSION\" engine/simulationcraft.h|sed -E -e \"s/#define SC_MAJOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nMINOR_VERSION=$(grep \"SC_MINOR_VERSION\" engine/simulationcraft.h|sed -E -e \"s/#define SC_MINOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nREVISION=$((svn info \"$PROJECT_DIR\"||git --git-dir=\"${PROJECT_DIR}/.git\")|grep \"Revision\"|$SED -E -e \"s/Revision:[^0-9]+//\")\nDEPLOY_DIR=$(mktemp -d -t SimulationCraft)\nCONTENTS_FOLDER_PATH=$DEPLOY_DIR/SimulationCraft.app/Contents\necho Revision is: $REVISION\necho Deploying to: $DEPLOY_DIR\n\n$CP -rf \"${PROJECT_DIR}/SimulationCraft.app\" $DEPLOY_DIR\nmacdeployqt $DEPLOY_DIR/SimulationCraft.app -verbose=2\n$SED -i -e \"s/GIT-REV-PARSE-HERE/$REVISION/\" $CONTENTS_FOLDER_PATH/Info.plist\n$SED -i -e \"s/VERSION-PARSE-HERE/$MAJOR_VERSION\\.$MINOR_VERSION/\" $CONTENTS_FOLDER_PATH/Info.plist\nsvn export --force \"${PROJECT_DIR}\" $DEPLOY_DIR/source || git checkout-index -a -f --prefix=$DEPLOY_DIR/source/\nrm -rf $DEPLOY_DIR/source/dbc_extract $DEPLOY_DIR/source/html $DEPLOY_DIR/source/qt/icon/SIMC-LOGO-MK.psd $DEPLOY_DIR/source/qt/icons\n\nhdiutil create -srcfolder $DEPLOY_DIR/SimulationCraft.app -srcfolder $DEPLOY_DIR/source -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder \"${PROJECT_DIR}/simc\" -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $CONTENTS_FOLDER_PATH/Info CFBundleVersion`\" -ov -puppetstrings simc-$MAJOR_VERSION-$MINOR_VERSION-osx-x86.dmg\n[ -d $DEPLOY_DIR ] && rm -rf $DEPLOY_DIR";
 		};
 		6EF04D13139F987E009AA411 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1777,7 +1778,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				QT_DEFINES = "-DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_SHARED -D__APPLE__ -D__GNUC__";
 				QT_INCLUDES = "-I/Library/Frameworks/QtCore.framework/Headers -I/Library/Frameworks/QtNetwork.framework/Headers -I/Library/Frameworks/QtGui.framework/Headers -I/Library/Frameworks/QtWebKit.framework/Headers -I../engine -I.";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
+				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = engine;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1817,7 +1819,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				QT_DEFINES = "-DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_SHARED -D__APPLE__ -D__GNUC__";
 				QT_INCLUDES = "-I/Library/Frameworks/QtCore.framework/Headers -I/Library/Frameworks/QtNetwork.framework/Headers -I/Library/Frameworks/QtGui.framework/Headers -I/Library/Frameworks/QtWebKit.framework/Headers -I../engine -I.";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
+				STRIP_INSTALLED_PRODUCT = YES;
 				USER_HEADER_SEARCH_PATHS = engine;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1870,7 +1873,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
@@ -1893,7 +1896,7 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
