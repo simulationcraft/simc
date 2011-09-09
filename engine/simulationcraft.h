@@ -3410,7 +3410,7 @@ struct player_t
   // Gear
   std::string items_str, meta_gem_str;
   std::vector<item_t> items;
-  gear_stats_t stats, initial_stats, gear, enchant;
+  gear_stats_t stats, initial_stats, gear, enchant, temporary;
   set_bonus_t set_bonus;
   set_bonus_array_t * sets;
   int meta_gem;
@@ -3713,8 +3713,8 @@ struct player_t
   virtual double time_to_die() SC_CONST;
   virtual double total_reaction_time() SC_CONST;
 
-  virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0 );
-  virtual void stat_loss( int stat, double amount, action_t* a=0 );
+  virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
+  virtual void stat_loss( int stat, double amount, action_t* a=0, bool temporary=false );
 
   virtual void cost_reduction_gain( int school, double amount, gain_t* g=0, action_t* a=0 );
   virtual void cost_reduction_loss( int school, double amount, action_t* a=0 );
