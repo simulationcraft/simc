@@ -3161,7 +3161,7 @@ for ( gain_t* g = p -> gain_list; g; g = g -> next )
 }
 for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
 {
-  if ( pet -> total_dmg <= 0 ) continue;
+  if ( pet -> total_seconds <= 0 ) continue;
   bool first = true;
   for ( gain_t* g = pet -> gain_list; g; g = g -> next )
   {

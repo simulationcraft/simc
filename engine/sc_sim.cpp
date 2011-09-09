@@ -1344,12 +1344,12 @@ void sim_t::analyze_player( player_t* p )
     }
 
   // Actor Lists ===============================================
-  if (  ! p -> quiet && ! p -> is_enemy() && ! p -> is_add() )
+  if (  ! p -> quiet && ! p -> is_enemy() && ! p -> is_add() && ! ( p -> is_pet() && report_pets_separately ) )
   {
     players_by_rank.push_back( p );
     players_by_name.push_back( p );
   }
-  if ( ! p -> quiet && ( p -> is_enemy() || p -> is_add() ) )
+  if ( ! p -> quiet && ( p -> is_enemy() || p -> is_add() ) && ! ( p -> is_pet() && report_pets_separately ) )
   {
     targets_by_name.push_back( p );
   }
@@ -1391,6 +1391,12 @@ void sim_t::analyze_player( player_t* p )
 
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
     g -> analyze( this );
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+   {
+    for ( gain_t* g = p -> gain_list; g; g = g -> next )
+        g -> analyze( this );
+   }
 
   // Procs =====================================================
 
@@ -1601,6 +1607,7 @@ void sim_t::analyze()
   for ( unsigned int i = 0; i < actor_list.size(); i++ )
   {
     player_t* p = actor_list[i];
+    if ( p -> quiet ) continue;
     analyze_player( p );
   }
 

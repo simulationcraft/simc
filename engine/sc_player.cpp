@@ -369,7 +369,7 @@ player_t::player_t( sim_t*             s,
   next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), target( NULL ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ),
   skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
-  potion_used( 0 ), sleeping( 1 ), initialized( 0 ),
+  potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), last_modified( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
@@ -3026,7 +3026,7 @@ void player_t::arise()
   if ( sim -> log )
     log_t::output( sim, "%s arises.", name() );
 
-  sleeping = 0;
+  if ( ! initial_sleeping ) sleeping = 0;
 
   init_resources( true );
 
@@ -6185,7 +6185,7 @@ void player_t::create_options()
     { "actions",                              OPT_STRING,   &( action_list_str                        ) },
     { "actions+",                             OPT_APPEND,   &( action_list_str                        ) },
     { "action_list",                         OPT_STRING,   &( choose_action_list                     ) },
-    { "sleeping",                             OPT_BOOL,     &( sleeping                               ) },
+    { "sleeping",                             OPT_BOOL,     &( initial_sleeping                       ) },
     { "quiet",                                OPT_BOOL,     &( quiet                                  ) },
     { "save",                                 OPT_STRING,   &( save_str                               ) },
     { "save_gear",                            OPT_STRING,   &( save_gear_str                          ) },

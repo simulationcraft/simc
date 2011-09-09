@@ -32,7 +32,7 @@ void pet_t::init_pet_t_()
   party = owner -> party;
 
   // By default, only report statistics in the context of the owner
-  quiet = 1;
+  quiet = ! sim -> report_pets_separately;
 
   // Inherit owner's dbc state
   dbc.ptr = owner -> dbc.ptr;

@@ -3188,7 +3188,7 @@ struct player_t
   player_t*   target;
   int         level, use_pre_potion, party, member;
   double      skill, initial_skill, distance, default_distance, gcd_ready, base_gcd;
-  int         potion_used, sleeping, initialized;
+  int         potion_used, sleeping, initial_sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
   int64_t     last_modified;

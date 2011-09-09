@@ -750,13 +750,11 @@ struct tier12_mirror_image_pet_t : public pet_t
     {
       snapshot_crit = 0.00; // Rough guess
     }
-    sleeping = 0;
   }
 
   virtual void dismiss()
   {
     pet_t::dismiss();
-    sleeping = 1;
   }
 
   virtual double composite_spell_crit() SC_CONST
