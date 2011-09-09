@@ -1468,7 +1468,7 @@ void sim_t::analyze_player( player_t* p )
       window_dmg += p -> timeline_dmg[ i ];
     p -> timeline_dps.assign( max_buckets, window_dmg / max_buckets );
   }
-  assert( timeline_dps.size() == max_buckets );
+  assert( p -> timeline_dps.size() == static_cast<unsigned>( max_buckets ) );
 
 
   // DPS Error =================================================
@@ -1566,7 +1566,7 @@ void sim_t::analyze_player( player_t* p )
   p -> dps_90_percentile = p -> iteration_dps[ 9 * p -> iteration_dps.size() / 10 ];
 
   // Death Analysis ============================================
-  assert ( p -> death_time.size() == p -> death_count );
+  assert ( p -> death_time.size() == static_cast<unsigned>( p -> death_count ) );
   double avg = 0;
   for ( int i = 0; i < p -> death_count; i++ )
   {
