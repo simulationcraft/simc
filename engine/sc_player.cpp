@@ -5776,16 +5776,7 @@ action_expr_t* player_t::create_expression( action_t* a,
   }
   else if ( splits[ 0 ] == "temporary_bonus" )
   {
-    int stat = STAT_NONE;
-    // Someone should maybe create a str<->stat mapping ...
-    for ( int i = 0; i < STAT_MAX; i++ )
-    {
-      if ( util_t::str_compare_ci( util_t::stat_type_string( i ), splits[ 1 ] ) )
-      {
-        stat = i;
-        break;
-      }
-    }
+    int stat = util_t::parse_stat_type( splits[ 1 ] );
     
     if ( stat != STAT_NONE )
     {
