@@ -25,11 +25,11 @@ actions+=/bloodlust,if=target.time_to_die<=60
 actions+=/berserking
 actions+=/elemental_mastery
 actions+=/unleash_elements,moving=1
-actions+=/flame_shock,if=!ticking|ticks_remain<3
+actions+=/flame_shock,if=!ticking|ticks_remain<2
 actions+=/lava_burst,if=dot.flame_shock.remains>(cast_time+travel_time)
 actions+=/earth_shock,if=buff.lightning_shield.react=9
 actions+=/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
-actions+=/fire_elemental_totem,if=!ticking
+actions+=/fire_elemental_totem,if=!ticking&temporary_bonus.intellect>=2100
 actions+=/earth_elemental_totem,if=!ticking
 actions+=/searing_totem
 actions+=/spiritwalkers_grace,moving=1

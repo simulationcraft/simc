@@ -4204,22 +4204,28 @@ void shaman_t::init_actions()
     return;
   }
 
+  bool has_power_torrent      = false;
+  bool has_dmc_volcano        = false;
+  bool has_lightweave         = false;
+  bool has_fiery_quintessence = false;
+
+  // Detect some stuff so we can figure out how much int should be used to summon FE
+  for ( int i = 0; i < SLOT_MAX; i++ )
+  {
+    if ( util_t::str_compare_ci( items[ i ].name(), "darkmoon_card_volcano" ) )
+      has_dmc_volcano = true;
+    else if ( util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
+      has_fiery_quintessence = true;
+    else if ( util_t::str_compare_ci( items[ i ].encoded_enchant_str, "power_torrent" ) )
+      has_power_torrent = true;
+    else if ( util_t::str_compare_ci( items[ i ].encoded_enchant_str, "lightweave_embroidery" ) )
+      has_lightweave = true;
+  }
+
   if ( action_list_str.empty() )
   {
     if ( primary_tree() == TREE_ENHANCEMENT )
     {
-      /*
-      bool caster_mainhand = false;
-      // Caster weapon mainhand check, affects priority list very slightly
-      for ( unsigned i = 0; i < items.size(); i++ )
-      {
-        if ( items[ i ].slot == SLOT_MAIN_HAND && items[ i ].stats.spell_power > 0 )
-        {
-          caster_mainhand = true;
-          break;
-        }
-      }*/
-
       action_list_str  = "flask,type=winds/food,type=seafood_magnifique_feast";
 
       action_list_str +="/windfury_weapon,weapon=main";
@@ -4264,12 +4270,15 @@ void shaman_t::init_actions()
       action_list_str += "/fire_nova,if=target.adds>1";
       action_list_str += "/spiritwalkers_grace,moving=1";
       action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
-
-      // if ( caster_mainhand )
-      //  action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time+travel_time";
     }
     else
     {
+      int int_threshold = 0;
+      if ( set_bonus.tier12_2pc_caster() )
+        int_threshold = ( has_power_torrent || has_lightweave ) ? ( ( has_dmc_volcano ) ? 1600 : 500 ) : 0;
+      else
+        int_threshold = ( has_power_torrent || has_lightweave ) * 500 + has_dmc_volcano * 1600 + has_fiery_quintessence * 1100;
+
       action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
 
       action_list_str += "/flametongue_weapon,weapon=main/lightning_shield";
@@ -4283,11 +4292,16 @@ void shaman_t::init_actions()
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
-        if ( items[ i ].use.active() )
+        if ( ! items[ i ].use.active() ) continue;
+        
+        if ( ! util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
         {
           action_list_str += "/use_item,name=";
           action_list_str += items[ i ].name();
         }
+          // Fiery quintessence is aligned to fire elmeental
+        else
+          action_list_str += "/use_item,name=fiery_quintessence,if=cooldown.fire_elemental_totem.remains=0&temporary_bonus.intellect>=" + util_t::to_string( int_threshold );
       }
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions();
@@ -4304,7 +4318,7 @@ void shaman_t::init_actions()
       }
       if ( ! glyph_unleashed_lightning -> ok() )
         action_list_str += "/unleash_elements,moving=1";
-      action_list_str += "/flame_shock,if=!ticking|ticks_remain<3";
+      action_list_str += "/flame_shock,if=!ticking|ticks_remain<2";
       // Unleash elements for elemental is a downgrade in dps ...
       //if ( level >= 81 )
       //  action_list_str += "/unleash_elements";
@@ -4314,7 +4328,23 @@ void shaman_t::init_actions()
         action_list_str += "/earth_shock,if=buff.lightning_shield.react=9";
         action_list_str += "/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
       }
-      action_list_str += "/fire_elemental_totem,if=!ticking";
+
+      int_threshold += has_fiery_quintessence * 1100;
+      if ( set_bonus.tier12_2pc_caster() )
+      {
+        if ( int_threshold > 0 )
+          action_list_str += "/fire_elemental_totem,if=temporary_bonus.intellect>=" + util_t::to_string( int_threshold ) + "&(!ticking|remains<25)";
+        else
+          action_list_str += "/fire_elemental_totem,if=!ticking";
+      }
+      else
+      {
+        if ( int_threshold > 0 )
+          action_list_str += "/fire_elemental_totem,if=!ticking&temporary_bonus.intellect>=" + util_t::to_string( int_threshold );
+        else
+          action_list_str += "/fire_elemental_totem,if=!ticking";
+      }
+
       action_list_str += "/earth_elemental_totem,if=!ticking";
       action_list_str += "/searing_totem";
       action_list_str += "/spiritwalkers_grace,moving=1";

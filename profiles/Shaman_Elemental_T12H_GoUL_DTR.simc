@@ -24,11 +24,11 @@ actions+=/bloodlust,health_percentage<=25
 actions+=/bloodlust,if=target.time_to_die<=60
 actions+=/berserking
 actions+=/elemental_mastery
-actions+=/flame_shock,if=!ticking|ticks_remain<3
+actions+=/flame_shock,if=!ticking|ticks_remain<2
 actions+=/lava_burst,if=dot.flame_shock.remains>(cast_time+travel_time)
 actions+=/earth_shock,if=buff.lightning_shield.react=9
 actions+=/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
-actions+=/fire_elemental_totem,if=!ticking
+actions+=/fire_elemental_totem,if=temporary_bonus.intellect>=1600&(!ticking|remains<25)
 actions+=/earth_elemental_totem,if=!ticking
 actions+=/searing_totem
 actions+=/spiritwalkers_grace,moving=1
@@ -48,7 +48,7 @@ finger2=crystal_prison_band,heroic=1,ilevel=391,quality=epic,stats=256int_384sta
 trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
 back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=crit_haste,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=artifact,stats=426int_730sta_314hit_271haste_2786sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
 ranged=singed_plume_of_aviana,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_105spi_82haste,gems=40int
 # Gear Summary
 # gear_strength=20

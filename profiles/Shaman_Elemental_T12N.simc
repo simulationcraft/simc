@@ -1,15 +1,15 @@
 #!./simc 
 
 shaman=Shaman_Elemental_T12N
-origin="Shaman_CharDevSync.simc"
+origin="http://chardev.org/?profile=221160"
 level=85
 race=troll
 position=back
 role=spell
 use_pre_potion=1
-professions=tailoring=525/enchanting=525
-talents=http://www.wowhead.com/talent#shaman-3032023212231101321203002200000000000000000000000000000000
-glyphs=chain_lightning/thunder/healing_stream_totem/thunderstorm/astral_recall/renewed_life/flame_shock/lightning_bolt/lava_burst
+professions=alchemy=525/tailoring=525
+talents=http://www.wowhead.com/talent#shaman-3232023212231101321203000200000000000000000000000000000000
+glyphs=fire_nova/thunder/lightning_shield/astral_recall/renewed_life/thunderstorm/lightning_bolt/lava_burst/flame_shock
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/flametongue_weapon,weapon=main
@@ -25,11 +25,11 @@ actions+=/bloodlust,if=target.time_to_die<=60
 actions+=/berserking
 actions+=/elemental_mastery
 actions+=/unleash_elements,moving=1
-actions+=/flame_shock,if=!ticking|ticks_remain<3
+actions+=/flame_shock,if=!ticking|ticks_remain<2
 actions+=/lava_burst,if=dot.flame_shock.remains>(cast_time+travel_time)
 actions+=/earth_shock,if=buff.lightning_shield.react=9
 actions+=/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
-actions+=/fire_elemental_totem,if=!ticking
+actions+=/fire_elemental_totem,if=temporary_bonus.intellect>=1600&(!ticking|remains<25)
 actions+=/earth_elemental_totem,if=!ticking
 actions+=/searing_totem
 actions+=/spiritwalkers_grace,moving=1
@@ -40,33 +40,33 @@ head=crown_of_flame,type=mail,ilevel=384,quality=epic,stats=2160armor_371int_646
 neck=flowform_choker,ilevel=378,quality=epic,stats=227int_341sta_143haste_115mastery,gems=40int_10int
 shoulders=erupting_volcanic_shoulderwraps,type=mail,ilevel=378,quality=epic,stats=1952armor_282int_454sta_189haste_195spi,gems=40int_10int,enchant=50int_25haste
 chest=erupting_volcanic_hauberk,type=mail,ilevel=378,quality=epic,stats=2603armor_368int_611sta_259haste_245mastery,gems=40int_20int_20haste_20int,enchant=20all
-waist=firemend_cinch,type=mail,ilevel=378,quality=epic,stats=1464armor_282int_454sta_208crit_172haste,reforge=crit_mastery,gems=20int_20spi_10int
-legs=erupting_volcanic_kilt,type=mail,ilevel=378,quality=epic,stats=2278armor_368int_611sta_279haste_217mastery,gems=40int_40int,enchant=95int_55spi
-feet=footwraps_of_quenched_fire,type=mail,ilevel=378,quality=epic,stats=1790armor_282int_454sta_197spi_187haste,gems=40int_10int,enchant=50mastery
-wrists=lava_line_wristbands,type=mail,ilevel=378,quality=epic,stats=1139armor_227int_341sta_158spi_140haste
-hands=erupting_volcanic_gloves,type=mail,ilevel=378,quality=epic,stats=1627armor_282int_454sta_199crit_183haste,reforge=crit_mastery,gems=40int
-finger1=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int,enchant=40int
-finger2=crystalline_brimstone_ring,ilevel=378,quality=epic,stats=227int_341sta_162hit_133mastery,enchant=40int
-trinket1=necromantic_focus,ilevel=378,quality=epic,stats=383int,equip=onspelltickdamage_39mastery_10stack_10dur
+waist=firemend_cinch,type=mail,ilevel=378,quality=epic,stats=1464armor_282int_454sta_208crit_172haste,reforge=crit_spi,gems=40int_40int
+legs=erupting_volcanic_kilt,type=mail,ilevel=378,quality=epic,stats=2278armor_368int_611sta_279haste_217mastery,reforge=mastery_spi,gems=40int_40int,enchant=95int_55spi
+feet=footwraps_of_quenched_fire,type=mail,ilevel=378,quality=epic,stats=1790armor_282int_454sta_197spi_187haste,gems=40int_10int,enchant=50haste
+wrists=lava_line_wristbands,type=mail,ilevel=378,quality=epic,stats=1139armor_227int_341sta_158spi_140haste,enchant=50int
+hands=erupting_volcanic_gloves,type=mail,ilevel=378,quality=epic,stats=1627armor_282int_454sta_199crit_183haste,reforge=crit_spi,gems=40int,enchant=65mastery
+finger1=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,reforge=hit_haste
+finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,reforge=hit_mastery,gems=40int_10int
+trinket1=variable_pulse_lightning_capacitor,ilevel=384,quality=epic,stats=406int,equip=onspellcrit_2926.3nature_50%_10stack_2.5cd_chance
 trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-back=rippling_flamewrath_drape,ilevel=378,quality=epic,stats=695armor_227int_341sta_162haste_133hit,enchant=lightweave_embroidery
-main_hand=kogun_hammer_of_the_firelord,ilevel=384,quality=epic,stats=185int_277sta_134spi_105haste_2467sp,enchant=power_torrent,weapon=mace_2.10speed_428min_797max
-off_hand=ward_of_the_red_widow,ilevel=378,quality=epic,stats=12201armor_207int_341sta_154spi_128haste,gems=40int_10int,enchant=40int
-ranged=singed_plume_of_aviana,ilevel=378,quality=epic,stats=128int_192sta_93spi_73haste,gems=40int
+back=rippling_flamewrath_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_183haste_150hit,reforge=hit_mastery,enchant=lightweave_embroidery
+main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max
+off_hand=ward_of_the_red_widow,ilevel=378,quality=epic,stats=12201armor_207int_341sta_154spi_128haste,reforge=spi_mastery,gems=40int_10int,enchant=40int
+ranged=singed_plume_of_aviana,ilevel=378,quality=epic,stats=128int_192sta_93spi_73haste,reforge=spi_mastery,gems=40int
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=6262
-# gear_intellect=5271
-# gear_spirit=1307
-# gear_spell_power=2467
-# gear_hit_rating=441
+# gear_stamina=6383
+# gear_intellect=5395
+# gear_spirit=1454
+# gear_spell_power=2783
+# gear_hit_rating=288
 # gear_crit_rating=280
-# gear_haste_rating=2592
+# gear_haste_rating=2749
 # gear_mastery_rating=1115
-# gear_armor=27909
+# gear_armor=27959
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
 # tier12_4pc_caster=1
-# back=rippling_flamewrath_drape,enchant=lightweave_embroidery
-# main_hand=kogun_hammer_of_the_firelord,weapon=mace_2.10speed_428min_797max,enchant=power_torrent
+# back=rippling_flamewrath_drape,heroic=1,enchant=lightweave_embroidery
+# main_hand=kogun_hammer_of_the_firelord,heroic=1,weapon=mace_2.10speed_484min_899max,enchant=power_torrent
