@@ -365,7 +365,11 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 
   virtual void dismiss()
   {
+    // Only trigger the explosion if we're not sleeping
+    if ( sleeping ) return;
+
     pet_t::dismiss();
+    
     if ( owner -> cast_paladin() -> ancient_fury_explosion )
       owner -> cast_paladin() -> ancient_fury_explosion -> execute();
   }

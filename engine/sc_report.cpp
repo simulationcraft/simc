@@ -1150,24 +1150,24 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    sim -> queue_lag * 1000.0, sim -> queue_lag_stddev * 1000.0 );
   if ( sim -> strict_gcd_queue )
   {
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-                   "\t\t\t\t\t\t\t\t<th>GCD Lag:</th>\n"
-                   "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-                   "\t\t\t\t\t\t\t</tr>\n",
-                   sim -> gcd_lag * 1000.0, sim -> gcd_lag_stddev * 1000.0 );
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-                   "\t\t\t\t\t\t\t\t<th>Channel Lag:</th>\n"
-                   "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-                   "\t\t\t\t\t\t\t</tr>\n",
-                   sim -> channel_lag * 1000.0, sim -> channel_lag_stddev * 1000.0 );
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-                   "\t\t\t\t\t\t\t\t<th>Queue GCD Reduction:</th>\n"
-                   "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
-                   "\t\t\t\t\t\t\t</tr>\n",
-                   sim -> queue_gcd_reduction * 1000.0 );
+    util_t::fprintf( file,
+                     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                     "\t\t\t\t\t\t\t\t<th>GCD Lag:</th>\n"
+                     "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+                     "\t\t\t\t\t\t\t</tr>\n",
+                     sim -> gcd_lag * 1000.0, sim -> gcd_lag_stddev * 1000.0 );
+    util_t::fprintf( file,
+                     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                     "\t\t\t\t\t\t\t\t<th>Channel Lag:</th>\n"
+                     "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+                     "\t\t\t\t\t\t\t</tr>\n",
+                     sim -> channel_lag * 1000.0, sim -> channel_lag_stddev * 1000.0 );
+    util_t::fprintf( file,
+                     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                     "\t\t\t\t\t\t\t\t<th>Queue GCD Reduction:</th>\n"
+                     "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
+                     "\t\t\t\t\t\t\t</tr>\n",
+                     sim -> queue_gcd_reduction * 1000.0 );
   }
 
 
@@ -3046,7 +3046,6 @@ static void print_html_player_statistics( FILE* file, player_t* p )
                   "\t\t\t\t\t\t\t</div>\n"
                   "\t\t\t\t\t\t</div>\n",
                   dps_error_str.c_str() );
-
 }
 
 // print_html_player_resources =========================================================

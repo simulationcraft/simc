@@ -2780,7 +2780,6 @@ void player_t::combat_end()
   iteration_dps[ sim -> current_iteration ] = iteration_seconds ? iteration_dmg / iteration_seconds : 0;
 
   iteration_dpse[ sim -> current_iteration ] = sim -> current_time ? iteration_dmg / sim -> current_time : 0;
-
 }
 
 // player_t::reset =========================================================

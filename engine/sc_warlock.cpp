@@ -1417,7 +1417,6 @@ struct felguard_pet_t : public warlock_main_pet_t
     action_list_str += "/wait_until_ready";
   }
 
-
   virtual void init_base()
   {
     warlock_main_pet_t::init_base();

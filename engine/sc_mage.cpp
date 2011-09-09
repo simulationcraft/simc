@@ -752,11 +752,6 @@ struct tier12_mirror_image_pet_t : public pet_t
     }
   }
 
-  virtual void dismiss()
-  {
-    pet_t::dismiss();
-  }
-
   virtual double composite_spell_crit() SC_CONST
   {
     return snapshot_crit;
