@@ -3142,18 +3142,18 @@ void player_t::clear_debuffs()
 
 std::string player_t::print_action_map( int iterations, int precision )
 {
-  std::map<std::string,int>::const_iterator it = action_map.begin();
-  std::string ret = "Label: Number of executes (Average number of executes per iteration)";
-  ret += "<br />\n";
-  while ( it != action_map.end() )
+  std::ostringstream ret;
+  ret.precision( precision );
+  ret << "Label: Number of executes (Average number of executes per iteration)<br />\n";
+
+  for ( std::map<std::string,int>::const_iterator it = action_map.begin(), end = action_map.end(); it != end; ++it )
   {
-    ret += it->first + ": " + util_t::to_string( it -> second );
-    if ( iterations > 0 ) ret += " (" + util_t::to_string( ( ( double )it -> second ) / iterations, precision ) + ")";
-    ret += "<br />\n";
-    it++;
+    ret << it -> first << ": " << it -> second;
+    if ( iterations > 0 ) ret << " (" << ( ( double )it -> second ) / iterations << ')';
+    ret << "<br />\n";
   }
 
-  return ret;
+  return ret.str();
 }
 
 // player_t::execute_action =================================================
@@ -3187,13 +3187,8 @@ action_t* player_t::execute_action()
     action -> schedule_execute();
     total_foreground_actions++;
     if ( action -> marker ) action_sequence += action -> marker;
-    if ( action -> label_str != "" )
-    {
-      if ( ! action_map[ action -> label_str ] )
-        action_map[ action -> label_str ] = 0;
-
-      action_map [ action -> label_str ] += 1;
-    }
+    if ( ! action -> label_str.empty() )
+      action_map[ action -> label_str ] += 1;
   }
 
   return action;

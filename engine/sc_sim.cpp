@@ -1278,6 +1278,8 @@ struct compare_name
 
 void sim_t::analyze_player( player_t* p )
 {
+  assert( iterations > 0 );
+
   p -> pre_analyze_hook();
 
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
@@ -1307,14 +1309,11 @@ void sim_t::analyze_player( player_t* p )
 
   int num_stats = ( int ) stats_list.size();
 
-  for ( int i=0; i < num_stats; i++ )
+  for ( int i=0, is_hps = ( p -> primary_role() == ROLE_HEAL ); i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
-    bool add_stat = ( ( s -> type == STATS_DMG ) && ( p -> primary_role() != ROLE_HEAL ) ) ||
-                    ( ( ( s -> type == STATS_HEAL ) || ( s -> type == STATS_ABSORB ) ) && ( p -> primary_role() == ROLE_HEAL ) );
-
     s -> analyze();
-    if ( add_stat & ! s -> quiet )
+    if ( ! s -> quiet && ( ( s -> type != STATS_DMG ) == is_hps ) )
       p -> total_dmg += s -> total_dmg;
   }
 
@@ -1364,9 +1363,7 @@ void sim_t::analyze_player( player_t* p )
     players_by_name.push_back( p );
   }
   if ( ! p -> quiet && ( p -> is_enemy() || p -> is_add() ) && ! ( p -> is_pet() && report_pets_separately ) )
-  {
     targets_by_name.push_back( p );
-  }
 
 
   // Pet Chart Adjustement =====================================
@@ -1408,10 +1405,10 @@ void sim_t::analyze_player( player_t* p )
     g -> analyze( this );
 
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-   {
+  {
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
-        g -> analyze( this );
-   }
+      g -> analyze( this );
+  }
 
   // Procs =====================================================
 
@@ -1421,10 +1418,10 @@ void sim_t::analyze_player( player_t* p )
   // Damage Timelines ==========================================
 
   p -> timeline_dmg.assign( max_buckets, 0 );
-  for ( int i=0; i < num_stats; i++ )
+  for ( int i=0, is_hps = ( p -> primary_role() == ROLE_HEAL ); i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
-    if ( ( s -> type == STATS_DMG ) == ( p -> primary_role() != ROLE_HEAL ) )
+    if ( ( s -> type != STATS_DMG ) == is_hps )
     {
       for ( int j = 0, j_max = std::min( max_buckets, s -> num_buckets ); j < j_max; j++ )
         p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
@@ -1546,14 +1543,14 @@ void sim_t::analyze_player( player_t* p )
   }
 
   // DPS Statistics ============================================
-  if ( ( p -> dps_max - p -> dps_min ) > 0 )
+  if ( p -> dps_max > p -> dps_min )
   {
     int num_buckets = 50;
     double min = p -> dps_min - 1;
     double max = p -> dps_max + 1;
     double range = max - min;
 
-    p -> distribution_dps.insert( p -> distribution_dps.begin(), num_buckets, 0 );
+    p -> distribution_dps.assign( num_buckets, 0 );
 
     for ( int i=0; i < iterations; i++ )
     {
@@ -1565,22 +1562,20 @@ void sim_t::analyze_player( player_t* p )
 
   std::sort( p -> iteration_dps.begin(), p -> iteration_dps.end() );
 
-  p -> dps_10_percentile = p -> iteration_dps[ ( int ) floor( 0.1 * p -> iteration_dps.size() ) ];
-  p -> dps_90_percentile = p -> iteration_dps[ ( int ) floor( 0.9 * p -> iteration_dps.size() ) ];
+  p -> dps_10_percentile = p -> iteration_dps[ p -> iteration_dps.size() / 10 ];
+  p -> dps_90_percentile = p -> iteration_dps[ 9 * p -> iteration_dps.size() / 10 ];
 
   // Death Analysis ============================================
-  double count_death_time = p -> death_time.size();
-  assert ( count_death_time == p -> death_count );
-  for ( int i = 0; i < count_death_time; i++ )
+  assert ( p -> death_time.size() == p -> death_count );
+  double avg = 0;
+  for ( int i = 0; i < p -> death_count; i++ )
   {
     if ( p -> death_time[ i ] < p -> min_death_time )
       p -> min_death_time = p -> death_time[ i ];
-    p -> avg_death_time += p -> death_time[ i ];
+    avg += p -> death_time[ i ];
   }
-  p -> avg_death_time /= count_death_time;
-  p -> death_count_pct = p -> death_count;
-  p -> death_count_pct /= iterations;
-  p -> death_count_pct *= 100.0;
+  p -> avg_death_time = avg / p -> death_count;
+  p -> death_count_pct = 100.0 * p -> death_count / iterations;
 
   // Charts ====================================================
 
@@ -1606,7 +1601,7 @@ void sim_t::analyze()
   // divisor_timeline is necessary because not all iterations go the same length of time
 
   int max_buckets = ( int ) max_fight_length + 1;
-  divisor_timeline.insert( divisor_timeline.begin(), max_buckets, 0 );
+  divisor_timeline.assign( max_buckets, 0 );
 
   int num_timelines = iteration_timeline.size();
   for( int i=0; i < num_timelines; i++ )
@@ -1614,7 +1609,7 @@ void sim_t::analyze()
     int last = ( int ) floor( iteration_timeline[ i ] );
     int num_buckets = divisor_timeline.size();
     int delta = 1 + last - num_buckets;
-    if( delta > 0 ) divisor_timeline.insert( divisor_timeline.begin() + num_buckets, delta, 0 );
+    if( delta > 0 ) divisor_timeline.insert( divisor_timeline.end(), delta, 0 );
     for( int j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }
 
@@ -1628,10 +1623,7 @@ void sim_t::analyze()
   total_seconds /= iterations;
 
   for ( unsigned int i = 0; i < actor_list.size(); i++ )
-  {
-    player_t* p = actor_list[i];
-    analyze_player( p );
-  }
+    analyze_player( actor_list[i] );
 
   if ( num_timelines > 2 )
   {
@@ -1643,7 +1635,7 @@ void sim_t::analyze()
     double max = iteration_timeline[ num_timelines-2 ] + 1;
     double range = max - min;
 
-    distribution_timeline.insert( distribution_timeline.begin(), num_buckets, 0 );
+    distribution_timeline.assign( num_buckets, 0 );
 
     for ( int i=1; i < num_timelines-1; i++ )
     {
@@ -1707,10 +1699,8 @@ void sim_t::merge( sim_t& other_sim )
 
   if ( max_events_remaining < other_sim.max_events_remaining ) max_events_remaining = other_sim.max_events_remaining;
 
-  for ( int i=0; i < other_sim.iterations; i++ )
-  {
-    iteration_timeline.push_back( other_sim.iteration_timeline[ i ] );
-  }
+  std::copy( other_sim.iteration_timeline.begin(), other_sim.iteration_timeline.end(),
+             std::back_inserter( iteration_timeline ) );
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
@@ -1727,11 +1717,10 @@ void sim_t::merge( sim_t& other_sim )
     p -> total_waiting += other_p -> total_waiting;
     p -> total_foreground_actions += other_p -> total_foreground_actions;
 
-    for ( int i=0; i < other_sim.iterations; i++ )
-    {
-      p -> iteration_dps.push_back( other_p -> iteration_dps[ i ] );
-      p -> iteration_dpse.push_back( other_p -> iteration_dpse[ i ] );
-    }
+    std::copy( other_p -> iteration_dps.begin(), other_p -> iteration_dps.end(),
+               std::back_inserter( p -> iteration_dps ) );
+    std::copy( other_p -> iteration_dpse.begin(), other_p -> iteration_dpse.end(),
+               std::back_inserter( p -> iteration_dpse ) );
 
     for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     {
@@ -1776,18 +1765,9 @@ void sim_t::merge( sim_t& other_sim )
       uptime -> merge( other_p -> get_uptime( uptime -> name_str ) );
     }
 
-    // this will likely crash with low iterations (if action maps don't match across threads) :)
-
-    std::map<std::string,int>::const_iterator it1 = p -> action_map.begin();
-    std::map<std::string,int>::const_iterator end1 = p -> action_map.end();
-    std::map<std::string,int>::const_iterator it2 = other_p -> action_map.begin();
-
-    while ( it1 != end1 )
-    {
-      p -> action_map[ it1 -> first ] += it2 -> second;
-      it1++;
-      it2++;
-    }
+    for ( std::map<std::string,int>::const_iterator it = other_p -> action_map.begin(),
+          end = other_p -> action_map.end(); it != end; ++it )
+      p -> action_map[ it -> first ] += it -> second;
   }
 }
 
