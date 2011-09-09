@@ -1319,7 +1319,16 @@ void sim_t::analyze_player( player_t* p )
   }
 
   // DPS Calculation ===========================================
-  p -> dps = p -> total_seconds ? p -> total_dmg / p -> total_seconds : 0;
+
+  for ( int i=0; i < iterations; i++ )
+  {
+    p -> dps  += p -> iteration_dps[ i ];
+    p -> dpse += p -> iteration_dpse[ i ];
+  }
+  p -> dps  /= iterations;
+  p -> dpse /= iterations;
+
+  if ( p -> quiet ) return;
 
   if ( p -> total_seconds == 0 ) return;
 
@@ -1451,12 +1460,6 @@ void sim_t::analyze_player( player_t* p )
   p -> dps_max = -1.0E+50;
   p -> dps_std_dev = 0.0;
 
-  p -> dpse = 0.0;
-  for ( int i=0; i < iterations; i++ )
-  {
-    p -> dpse += p -> iteration_dps[ i ];
-  }
-  p -> dpse /= iterations;
 
   for ( int i=0; i < iterations; i++ )
   {
@@ -1608,7 +1611,6 @@ void sim_t::analyze()
   for ( unsigned int i = 0; i < actor_list.size(); i++ )
   {
     player_t* p = actor_list[i];
-    if ( p -> quiet ) continue;
     analyze_player( p );
   }
 
@@ -1709,6 +1711,7 @@ void sim_t::merge( sim_t& other_sim )
     for ( int i=0; i < other_sim.iterations; i++ )
     {
       p -> iteration_dps.push_back( other_p -> iteration_dps[ i ] );
+      p -> iteration_dpse.push_back( other_p -> iteration_dpse[ i ] );
     }
 
     for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )

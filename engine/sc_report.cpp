@@ -3848,11 +3848,12 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
           util_t::fprintf( file,
                            "\t\t\t\t\t\t\t<tr>\n"
                            "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
-                           "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f</th>\n"
+                           "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
                            "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
                            "\t\t\t\t\t\t\t</tr>\n",
                            pet -> name_str.c_str(),
-                           pet -> dps );
+                           pet -> dps,
+                           pet -> dpse );
         }
         print_html_action_damage( file, s, p, i );
         i++;

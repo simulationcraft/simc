@@ -3390,6 +3390,7 @@ struct player_t
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
   std::vector<double> iteration_dps;
+  std::vector<double> iteration_dpse;
   std::vector<int> distribution_dps;
   std::vector<double> dps_convergence_error;
   std::string action_sequence;

@@ -445,7 +445,7 @@ player_t::player_t( sim_t*             s,
   current_time( 0 ), iteration_seconds( 0 ), total_seconds( 0 ), max_fight_length( 0 ), arise_time( 0 ),
   total_waiting( 0 ), total_foreground_actions( 0 ),
   iteration_dmg( 0 ), total_dmg( 0 ),
-  dps( 0 ), dps_min( 0 ), dps_max( 0 ),
+  dps( 0 ), dpse( 0 ), dps_min( 0 ), dps_max( 0 ),
   dps_std_dev( 0 ), dps_error( 0 ), dps_convergence( 0 ),
   dps_10_percentile( 0 ),dps_90_percentile( 0 ),
   dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
@@ -1714,6 +1714,8 @@ void player_t::init_stats()
 
   iteration_dps.clear();
   iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
+  iteration_dpse.clear();
+  iteration_dpse.insert( iteration_dpse.begin(), sim -> iterations, 0 );
 }
 
 // player_t::init_values ====================================================
@@ -2767,18 +2769,17 @@ void player_t::combat_end()
     cast_pet() -> dismiss();
 
   total_seconds += iteration_seconds;
-  if ( iteration_seconds > 0 )
+
+  if ( iteration_seconds > max_fight_length )
+    max_fight_length = iteration_seconds;
+
+  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
-    if ( iteration_seconds > max_fight_length )
-      max_fight_length = iteration_seconds;
-
-    for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
-    {
-      iteration_dmg += pet -> iteration_dmg;
-    }
-    iteration_dps[ sim -> current_iteration ] = iteration_dmg / iteration_seconds;
+    iteration_dmg += pet -> iteration_dmg;
   }
+  iteration_dps[ sim -> current_iteration ] = iteration_seconds ? iteration_dmg / iteration_seconds : 0;
 
+  iteration_dpse[ sim -> current_iteration ] = sim -> current_time ? iteration_dmg / sim -> current_time : 0;
 
 }
 
