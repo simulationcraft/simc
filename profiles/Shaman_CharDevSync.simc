@@ -91,7 +91,7 @@ save=Shaman_Enhancement_T12N.simc
 
 chardev=170670 name=Shaman_Elemental_T12H save=Shaman_Elemental_T12H.simc
 
-chardev=170670 name=Shaman_Elemental_T12H glyphs=fire_nova/thunder/lightning_shield/astral_recall/renewed_life/thunderstorm/unleashed_lightning/lava_burst/flame_shock save=Shaman_Elemental_T12H_GoUL.simc
+chardev=170670 name=Shaman_Elemental_T12H_GoUL glyphs=fire_nova/thunder/lightning_shield/astral_recall/renewed_life/thunderstorm/unleashed_lightning/lava_burst/flame_shock save=Shaman_Elemental_T12H_GoUL.simc
 
 chardev=221160 name=Shaman_Elemental_T12N save=Shaman_Elemental_T12N.simc
 
