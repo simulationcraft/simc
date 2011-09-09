@@ -693,7 +693,7 @@ bool player_t::init( sim_t* sim )
   // Set Fixed_Time when there are no DD's present
   if ( zero_dds && ! sim -> debug )
     sim -> fixed_time = true;
-  
+
   // Parties
   if ( sim -> debug )
     log_t::output( sim, "Building Parties." );
@@ -1712,10 +1712,8 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  iteration_dps.clear();
-  iteration_dps.insert( iteration_dps.begin(), sim -> iterations, 0 );
-  iteration_dpse.clear();
-  iteration_dpse.insert( iteration_dpse.begin(), sim -> iterations, 0 );
+  iteration_dps.reserve( sim -> iterations );
+  iteration_dpse.reserve( sim -> iterations );
 }
 
 // player_t::init_values ====================================================
@@ -2777,9 +2775,8 @@ void player_t::combat_end()
   {
     iteration_dmg += pet -> iteration_dmg;
   }
-  iteration_dps[ sim -> current_iteration ] = iteration_seconds ? iteration_dmg / iteration_seconds : 0;
-
-  iteration_dpse[ sim -> current_iteration ] = sim -> current_time ? iteration_dmg / sim -> current_time : 0;
+  iteration_dps.push_back( iteration_seconds ? iteration_dmg / iteration_seconds : 0 );
+  iteration_dpse.push_back( sim -> current_time ? iteration_dmg / sim -> current_time : 0 );
 }
 
 // player_t::reset =========================================================
@@ -2920,7 +2917,7 @@ void player_t::reset()
   for ( stats_t* s = stats_list; s; s = s -> next ) s -> reset();
 
   potion_used = 0;
-  
+
   memset( &temporary, 0x00, sizeof( temporary ) );
 }
 
@@ -5777,11 +5774,11 @@ action_expr_t* player_t::create_expression( action_t* a,
   else if ( splits[ 0 ] == "temporary_bonus" )
   {
     int stat = util_t::parse_stat_type( splits[ 1 ] );
-    
+
     if ( stat != STAT_NONE )
     {
       double* p_stat = 0;
-      
+
       switch ( stat )
       {
         case STAT_STRENGTH:         p_stat = &( a -> player -> temporary.attribute[ ATTR_STRENGTH  ] ); break;
@@ -5802,7 +5799,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         case STAT_MASTERY_RATING:   p_stat = &( a -> player -> temporary.mastery_rating              ); break;
         default: break;
       }
-      
+
       if ( p_stat )
       {
         struct temporary_stat_expr_t : public action_expr_t
