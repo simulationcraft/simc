@@ -1320,6 +1320,11 @@ void sim_t::analyze_player( player_t* p )
 
   // DPS Calculation ===========================================
 
+  assert( p -> iteration_dps.size() == ( std::size_t ) iterations );
+  assert( p -> iteration_dpse.size() == ( std::size_t ) iterations );
+
+  p -> dps = p -> dpse = 0;
+
   for ( int i=0; i < iterations; i++ )
   {
     p -> dps  += p -> iteration_dps[ i ];
@@ -1415,51 +1420,36 @@ void sim_t::analyze_player( player_t* p )
 
   // Damage Timelines ==========================================
 
-  p -> timeline_dmg.clear();
-  p -> timeline_dps.clear();
-
-  p -> timeline_dmg.insert( p -> timeline_dmg.begin(), max_buckets, 0 );
-  p -> timeline_dps.insert( p -> timeline_dps.begin(), max_buckets, 0 );
-
+  p -> timeline_dmg.assign( max_buckets, 0 );
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
-    bool add_stat = ( ( s -> type == STATS_DMG ) && ( p -> primary_role() != ROLE_HEAL ) ) ||
-                    ( ( ( s -> type == STATS_HEAL ) || ( s -> type == STATS_ABSORB ) ) && ( p -> primary_role() == ROLE_HEAL ) );
-    for ( int j=0; ( j < max_buckets ) && ( j < s -> num_buckets ); j++ )
+    if ( ( s -> type == STATS_DMG ) == ( p -> primary_role() != ROLE_HEAL ) )
     {
-      if ( add_stat )
+      for ( int j = 0, j_max = std::min( max_buckets, s -> num_buckets ); j < j_max; j++ )
         p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
     }
   }
 
+  p -> timeline_dps.reserve( max_buckets );
   for ( int i=0; i < max_buckets; i++ )
   {
-    double window_dmg  = p -> timeline_dmg[ i ];
-    int    window_size = 1;
+    const int HALFWIDTH = 10;
+    int left_edge = std::max( 0, i - HALFWIDTH );
+    int right_edge = std::min( max_buckets, i + HALFWIDTH + 1 );
 
-    for ( int j=1; ( j <= 10 ) && ( ( i-j ) >=0 ); j++ )
-    {
-      window_dmg += p -> timeline_dmg[ i-j ];
-      window_size++;
-    }
-    for ( int j=1; ( j <= 10 ) && ( ( i+j ) < max_buckets ); j++ )
-    {
-      window_dmg += p -> timeline_dmg[ i+j ];
-      window_size++;
-    }
+    double window_dmg = 0;
+    for( int j = left_edge; j < right_edge; ++j )
+      window_dmg += p -> timeline_dmg[ j ];
 
-    p -> timeline_dps[ i ] = window_dmg / window_size;
+    p -> timeline_dps.push_back( window_dmg / ( right_edge - left_edge - 1 ) );
   }
 
   // DPS Error =================================================
 
-  assert( p -> iteration_dps.size() >= ( std::size_t ) iterations );
-
   p -> dps_min = +1.0E+50;
   p -> dps_max = -1.0E+50;
   p -> dps_std_dev = 0.0;
-
 
   for ( int i=0; i < iterations; i++ )
   {
@@ -1569,7 +1559,7 @@ void sim_t::analyze_player( player_t* p )
   chart_t::action_dmg         ( p -> action_dmg_chart,                p );
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-  chart_t::timeline_resource  ( p -> timeline_resource_chart[i],         p, i );
+  chart_t::timeline_resource  ( p -> timeline_resource_chart[i],      p, i );
   }
   chart_t::timeline_dps       ( p -> timeline_dps_chart,              p );
   chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
