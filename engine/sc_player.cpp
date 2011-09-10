@@ -395,7 +395,6 @@ player_t::player_t( sim_t*             s,
   base_mp5( 0 ),               initial_mp5( 0 ),               mp5( 0 ),               buffed_mp5( 0 ),
   spell_power_multiplier( 1.0 ),  initial_spell_power_multiplier( 1.0 ),
   spell_power_per_intellect( 0 ), initial_spell_power_per_intellect( 0 ),
-  spell_power_per_spirit( 0 ),    initial_spell_power_per_spirit( 0 ),
   spell_crit_per_intellect( 0 ),  initial_spell_crit_per_intellect( 0 ),
   mp5_per_intellect( 0 ),
   mana_regen_base( 0 ), mana_regen_while_casting( 0 ),
@@ -2265,7 +2264,6 @@ double player_t::composite_spell_power( const school_type school ) SC_CONST
   if ( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
 
   sp += spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
-  sp += spell_power_per_spirit    * spirit();
 
   return sp;
 }
@@ -2839,7 +2837,6 @@ void player_t::reset()
 
   spell_power_multiplier    = initial_spell_power_multiplier;
   spell_power_per_intellect = initial_spell_power_per_intellect;
-  spell_power_per_spirit    = initial_spell_power_per_spirit;
   spell_crit_per_intellect  = initial_spell_crit_per_intellect;
 
   attack_power_multiplier   = initial_attack_power_multiplier;
