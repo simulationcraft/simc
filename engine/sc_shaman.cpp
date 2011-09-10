@@ -1053,9 +1053,9 @@ struct fire_elemental_pet_t : public pet_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Shaman Ability Triggers
-// =========================================================================
+// ==========================================================================
 
 // trigger_flametongue_weapon ===============================================
 
@@ -1102,7 +1102,7 @@ static void trigger_flametongue_weapon( attack_t* a )
   ft -> execute();
 }
 
-// trigger_windfury_weapon ================================================
+// trigger_windfury_weapon ==================================================
 
 struct windfury_delay_event_t : public event_t
 {
@@ -1148,7 +1148,7 @@ static void trigger_windfury_weapon( attack_t* a )
   }
 }
 
-// trigger_rolling_thunder ==============================================
+// trigger_rolling_thunder ==================================================
 
 static void trigger_rolling_thunder ( spell_t* s )
 {
@@ -1171,7 +1171,7 @@ static void trigger_rolling_thunder ( spell_t* s )
   }
 }
 
-// trigger_static_shock =============================================
+// trigger_static_shock =====================================================
 
 static bool trigger_static_shock ( attack_t* a )
 {
@@ -1189,9 +1189,9 @@ static bool trigger_static_shock ( attack_t* a )
   return false;
 }
 
-// =========================================================================
+// ==========================================================================
 // Shaman Secondary Spells / Attacks
-// =========================================================================
+// ==========================================================================
 
 struct lava_burst_overload_t : public shaman_spell_t
 {
@@ -1511,11 +1511,11 @@ struct stormstrike_attack_t : public shaman_attack_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Shaman Attack
-// =========================================================================
+// ==========================================================================
 
-// shaman_attack_t::execute ================================================
+// shaman_attack_t::execute =================================================
 
 void shaman_attack_t::execute()
 {
@@ -1563,7 +1563,7 @@ void shaman_attack_t::consume_resource()
     p -> buffs_flurry -> trigger( p -> buffs_flurry -> initial_stacks() );
 }
 
-// shaman_attack_t::player_buff ============================================
+// shaman_attack_t::player_buff =============================================
 
 void shaman_attack_t::player_buff()
 {
@@ -1578,7 +1578,7 @@ void shaman_attack_t::player_buff()
 }
 
 
-// shaman_attack_t::cost_reduction ====================================
+// shaman_attack_t::cost_reduction ==========================================
 
 double shaman_attack_t::cost_reduction() SC_CONST
 {
@@ -1591,7 +1591,7 @@ double shaman_attack_t::cost_reduction() SC_CONST
   return cr;
 }
 
-// shaman_attack_t::cost ==========================================
+// shaman_attack_t::cost ====================================================
 
 double shaman_attack_t::cost() SC_CONST
 {
@@ -1601,7 +1601,7 @@ double shaman_attack_t::cost() SC_CONST
   return c;
 }
 
-// Melee Attack ============================================================
+// Melee Attack =============================================================
 
 struct melee_t : public shaman_attack_t
 {
@@ -1672,7 +1672,7 @@ struct melee_t : public shaman_attack_t
   }
 };
 
-// Auto Attack =============================================================
+// Auto Attack ==============================================================
 
 struct auto_attack_t : public shaman_attack_t
 {
@@ -1805,7 +1805,7 @@ struct lava_lash_t : public shaman_attack_t
   }
 };
 
-// Primal Strike Attack =======================================================
+// Primal Strike Attack =====================================================
 
 struct primal_strike_t : public shaman_attack_t
 {
@@ -1894,9 +1894,9 @@ struct stormstrike_t : public shaman_attack_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Shaman Spell
-// =========================================================================
+// ==========================================================================
 
 // shaman_spell_t::haste ====================================================
 
@@ -1929,7 +1929,7 @@ double shaman_spell_t::cost_reduction() SC_CONST
   return cr;
 }
 
-// shaman_spell_t::cost ====================================================
+// shaman_spell_t::cost =====================================================
 
 double shaman_spell_t::cost() SC_CONST
 {
@@ -1941,7 +1941,7 @@ double shaman_spell_t::cost() SC_CONST
   return c;
 }
 
-// shaman_spell_t::consume_resource ========================================
+// shaman_spell_t::consume_resource =========================================
 
 void shaman_spell_t::consume_resource()
 {
@@ -1951,7 +1951,7 @@ void shaman_spell_t::consume_resource()
     p -> buffs_elemental_focus -> decrement();
 }
 
-// shaman_spell_t::execute_time ============================================
+// shaman_spell_t::execute_time =============================================
 
 double shaman_spell_t::execute_time() SC_CONST
 {
@@ -1962,7 +1962,7 @@ double shaman_spell_t::execute_time() SC_CONST
   return spell_t::execute_time();
 }
 
-// shaman_spell_t::player_buff =============================================
+// shaman_spell_t::player_buff ==============================================
 
 void shaman_spell_t::player_buff()
 {
@@ -1994,7 +1994,7 @@ void shaman_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
 }
 
-// shaman_spell_t::execute =================================================
+// shaman_spell_t::execute ==================================================
 
 void shaman_spell_t::execute()
 {
@@ -2068,7 +2068,7 @@ void shaman_spell_t::execute()
   }
 }
 
-// shaman_spell_t::execute =================================================
+// shaman_spell_t::execute ==================================================
 
 void shaman_spell_t::schedule_execute()
 {
@@ -2093,11 +2093,11 @@ void shaman_spell_t::schedule_execute()
 }
 
 
-// =========================================================================
+// ==========================================================================
 // Shaman Spells
-// =========================================================================
+// ==========================================================================
 
-// Bloodlust Spell ===========================================================
+// Bloodlust Spell ==========================================================
 
 struct bloodlust_t : public shaman_spell_t
 {
@@ -2132,7 +2132,7 @@ struct bloodlust_t : public shaman_spell_t
   }
 };
 
-// Chain Lightning Spell ===================================================
+// Chain Lightning Spell ====================================================
 
 struct chain_lightning_t : public shaman_spell_t
 {
@@ -2243,7 +2243,7 @@ struct elemental_mastery_t : public shaman_spell_t
   }
 };
 
-// Fire Nova Spell =======================================================
+// Fire Nova Spell ==========================================================
 
 struct fire_nova_t : public shaman_spell_t
 {
@@ -2543,7 +2543,7 @@ struct shamans_swiftness_t : public shaman_spell_t
   }
 };
 
-// Shamanisitc Rage Spell ===========================================================
+// Shamanisitc Rage Spell ===================================================
 
 struct shamanistic_rage_t : public shaman_spell_t
 {
@@ -2574,7 +2574,7 @@ struct shamanistic_rage_t : public shaman_spell_t
   }
 };
 
-// Spirit Wolf Spell ==========================================================
+// Spirit Wolf Spell ========================================================
 
 struct spirit_wolf_spell_t : public shaman_spell_t
 {
@@ -2597,7 +2597,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
   }
 };
 
-// Thunderstorm Spell ==========================================================
+// Thunderstorm Spell =======================================================
 
 struct thunderstorm_t : public shaman_spell_t
 {
@@ -2633,7 +2633,7 @@ struct thunderstorm_t : public shaman_spell_t
   }
 };
 
-// Unleash Elements Spell ==========================================================
+// Unleash Elements Spell ===================================================
 
 struct unleash_elements_t : public shaman_spell_t
 {
@@ -2674,11 +2674,11 @@ struct unleash_elements_t : public shaman_spell_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Shaman Shock Spells
-// =========================================================================
+// ==========================================================================
 
-// Earth Shock Spell =======================================================
+// Earth Shock Spell ========================================================
 
 struct earth_shock_t : public shaman_spell_t
 {
@@ -2729,7 +2729,7 @@ struct earth_shock_t : public shaman_spell_t
   }
 };
 
-// Flame Shock Spell =======================================================
+// Flame Shock Spell ========================================================
 
 struct flame_shock_t : public shaman_spell_t
 {
@@ -2803,7 +2803,7 @@ struct flame_shock_t : public shaman_spell_t
   }
 };
 
-// Frost Shock Spell =======================================================
+// Frost Shock Spell ========================================================
 
 struct frost_shock_t : public shaman_spell_t
 {
@@ -2837,7 +2837,7 @@ struct frost_shock_t : public shaman_spell_t
   }
 };
 
-// Wind Shear Spell ========================================================
+// Wind Shear Spell =========================================================
 
 struct wind_shear_t : public shaman_spell_t
 {
@@ -2858,9 +2858,9 @@ struct wind_shear_t : public shaman_spell_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Shaman Totem Spells
-// =========================================================================
+// ==========================================================================
 
 struct shaman_totem_t : public shaman_spell_t
 {
@@ -2973,7 +2973,7 @@ struct shaman_totem_t : public shaman_spell_t
   }
 };
 
-// Earth Elemental Totem Spell =================================================
+// Earth Elemental Totem Spell ==============================================
 
 struct earth_elemental_totem_t : public shaman_totem_t
 {
@@ -3009,7 +3009,7 @@ struct earth_elemental_totem_t : public shaman_totem_t
   }
 };
 
-// Fire Elemental Totem Spell =================================================
+// Fire Elemental Totem Spell ===============================================
 
 struct fire_elemental_totem_t : public shaman_totem_t
 {
@@ -3057,7 +3057,7 @@ struct fire_elemental_totem_t : public shaman_totem_t
   }
 };
 
-// Flametongue Totem Spell ====================================================
+// Flametongue Totem Spell ==================================================
 
 struct flametongue_totem_t : public shaman_totem_t
 {
@@ -3093,7 +3093,7 @@ struct flametongue_totem_t : public shaman_totem_t
   }
 };
 
-// Magma Totem Spell =======================================================
+// Magma Totem Spell ========================================================
 
 struct magma_totem_t : public shaman_totem_t
 {
@@ -3147,7 +3147,7 @@ struct magma_totem_t : public shaman_totem_t
   }
 };
 
-// Mana Spring Totem Spell ================================================
+// Mana Spring Totem Spell ==================================================
 
 struct mana_spring_totem_t : public shaman_totem_t
 {
@@ -3179,7 +3179,7 @@ struct mana_spring_totem_t : public shaman_totem_t
   }
 };
 
-// Mana Tide Totem Spell ==================================================
+// Mana Tide Totem Spell ====================================================
 
 struct mana_tide_totem_t : public shaman_totem_t
 {
@@ -3220,7 +3220,7 @@ struct mana_tide_totem_t : public shaman_totem_t
   }
 };
 
-// Searing Totem Spell =======================================================
+// Searing Totem Spell ======================================================
 
 struct searing_totem_t : public shaman_totem_t
 {
@@ -3311,7 +3311,7 @@ struct searing_totem_t : public shaman_totem_t
   }
 };
 
-// Strength of Earth Totem Spell ==============================================
+// Strength of Earth Totem Spell ============================================
 
 struct strength_of_earth_totem_t : public shaman_totem_t
 {
@@ -3402,11 +3402,11 @@ struct wrath_of_air_totem_t : public shaman_totem_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Shaman Weapon Imbues
-// =========================================================================
+// ==========================================================================
 
-// Flametongue Weapon Spell ===================================================
+// Flametongue Weapon Spell =================================================
 
 struct flametongue_weapon_t : public shaman_spell_t
 {
@@ -3585,11 +3585,11 @@ struct windfury_weapon_t : public shaman_spell_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Shaman Shields
-// =========================================================================
+// ==========================================================================
 
-// Lightning Shield Spell =====================================================
+// Lightning Shield Spell ===================================================
 
 struct lightning_shield_t : public shaman_spell_t
 {
@@ -3629,7 +3629,7 @@ struct lightning_shield_t : public shaman_spell_t
   }
 };
 
-// Water Shield Spell =========================================================
+// Water Shield Spell =======================================================
 
 struct water_shield_t : public shaman_spell_t
 {
@@ -3924,7 +3924,7 @@ action_t* shaman_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-// shaman_t::create_pet ======================================================
+// shaman_t::create_pet =====================================================
 
 pet_t* shaman_t::create_pet( const std::string& pet_name,
                              const std::string& /* pet_type */ )
@@ -3940,7 +3940,7 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
   return 0;
 }
 
-// shaman_t::create_pets =====================================================
+// shaman_t::create_pets ====================================================
 
 void shaman_t::create_pets()
 {
@@ -3949,7 +3949,7 @@ void shaman_t::create_pets()
   pet_earth_elemental = create_pet( "earth_elemental" );
 }
 
-// shaman_t::init_talents ======================================================
+// shaman_t::init_talents ===================================================
 
 void shaman_t::init_talents()
 {
@@ -3999,7 +3999,7 @@ void shaman_t::init_talents()
   player_t::init_talents();
 }
 
-// shaman_t::init_spells ======================================================
+// shaman_t::init_spells ====================================================
 
 void shaman_t::init_spells()
 {
@@ -4049,7 +4049,7 @@ void shaman_t::init_spells()
   sets                        = new set_bonus_array_t( this, set_bonuses );
 }
 
-// shaman_t::init_base ========================================================
+// shaman_t::init_base ======================================================
 
 void shaman_t::init_base()
 {
@@ -4077,7 +4077,7 @@ void shaman_t::init_base()
   diminished_parry_capi = 0.006870;
 }
 
-// shaman_t::init_scaling ====================================================
+// shaman_t::init_scaling ===================================================
 
 void shaman_t::init_scaling()
 {
@@ -4103,7 +4103,7 @@ void shaman_t::init_scaling()
 
 }
 
-// shaman_t::init_buffs ======================================================
+// shaman_t::init_buffs =====================================================
 
 void shaman_t::init_buffs()
 {
@@ -4135,7 +4135,7 @@ void shaman_t::init_buffs()
   buffs_water_shield            = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),             "water_shield"          );
 }
 
-// shaman_t::init_gains ======================================================
+// shaman_t::init_gains =====================================================
 
 void shaman_t::init_gains()
 {
@@ -4148,7 +4148,7 @@ void shaman_t::init_gains()
   gains_water_shield         = get_gain( "water_shield"      );
 }
 
-// shaman_t::init_procs ======================================================
+// shaman_t::init_procs =====================================================
 
 void shaman_t::init_procs()
 {
@@ -4177,7 +4177,7 @@ void shaman_t::init_procs()
   }
 }
 
-// shaman_t::init_rng ========================================================
+// shaman_t::init_rng =======================================================
 
 void shaman_t::init_rng()
 {
@@ -4193,7 +4193,7 @@ void shaman_t::init_rng()
   rng_windfury_weapon      = get_rng( "windfury_weapon"      );
 }
 
-// shaman_t::init_actions =====================================================
+// shaman_t::init_actions ===================================================
 
 void shaman_t::init_actions()
 {
@@ -4293,7 +4293,7 @@ void shaman_t::init_actions()
       for ( int i=0; i < num_items; i++ )
       {
         if ( ! items[ i ].use.active() ) continue;
-        
+
         if ( ! util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
         {
           action_list_str += "/use_item,name=";
@@ -4361,7 +4361,7 @@ void shaman_t::init_actions()
   player_t::init_actions();
 }
 
-// shaman_t::moving ==========================================================
+// shaman_t::moving =========================================================
 
 void shaman_t::moving()
 {
@@ -4394,7 +4394,7 @@ void shaman_t::moving()
   }
 }
 
-// shaman_t::matching_gear_multiplier =============================================
+// shaman_t::matching_gear_multiplier =======================================
 
 double shaman_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
@@ -4412,7 +4412,7 @@ double shaman_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
   return 0.0;
 }
 
-// shaman_t::composite_spell_hit ==========================================
+// shaman_t::composite_spell_hit ============================================
 double shaman_t::composite_attack_hit() SC_CONST
 {
   double hit = player_t::composite_attack_hit();
@@ -4422,7 +4422,7 @@ double shaman_t::composite_attack_hit() SC_CONST
   return hit;
 }
 
-// shaman_t::composite_spell_hit ==========================================
+// shaman_t::composite_spell_hit ============================================
 
 double shaman_t::composite_spell_hit() SC_CONST
 {
@@ -4490,7 +4490,7 @@ double shaman_t::composite_spell_crit() SC_CONST
 }
 
 
-// shaman_t::regen  =======================================================
+// shaman_t::regen  =========================================================
 
 void shaman_t::regen( double periodicity )
 {
@@ -4506,7 +4506,7 @@ void shaman_t::regen( double periodicity )
   }
 }
 
-// shaman_t::combat_begin =================================================
+// shaman_t::combat_begin ===================================================
 
 void shaman_t::combat_begin()
 {
@@ -4522,7 +4522,7 @@ void shaman_t::combat_begin()
   }
 }
 
-// shaman_t::decode_set ====================================================
+// shaman_t::decode_set =====================================================
 
 int shaman_t::decode_set( item_t& item )
 {

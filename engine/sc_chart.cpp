@@ -209,7 +209,7 @@ static const char* extended_encoding( int number )
 // Chart
 // ==========================================================================
 
-// chart_t::raid_dps =========================================================
+// chart_t::raid_dps ========================================================
 
 int chart_t::raid_dps( std::vector<std::string>& images,
                        sim_t* sim )
@@ -295,7 +295,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
   return ( int ) images.size();
 }
 
-// chart_t::raid_gear ========================================================
+// chart_t::raid_gear =======================================================
 
 int chart_t::raid_gear( std::vector<std::string>& images,
                         sim_t* sim )
@@ -451,7 +451,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   return ( int ) images.size();
 }
 
-// chart_t::raid_downtime =====================================================
+// chart_t::raid_downtime ===================================================
 
 const char* chart_t::raid_downtime( std::string& s,
                                     sim_t* sim )
@@ -529,7 +529,7 @@ const char* chart_t::raid_downtime( std::string& s,
   return s.c_str();
 }
 
-// chart_t::raid_timeline =====================================================
+// chart_t::raid_timeline ===================================================
 
 const char* chart_t::raid_timeline( std::string& s,
                                     sim_t* sim )
@@ -593,7 +593,7 @@ const char* chart_t::raid_timeline( std::string& s,
   return s.c_str();
 }
 
-// chart_t::raid_dpet ========================================================
+// chart_t::raid_dpet =======================================================
 
 struct compare_dpet
 {
@@ -707,7 +707,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
   return ( int ) images.size();
 }
 
-// chart_t::action_dpet ======================================================
+// chart_t::action_dpet =====================================================
 
 const char* chart_t::action_dpet( std::string& s,
                                   player_t* p )
@@ -801,7 +801,7 @@ const char* chart_t::action_dpet( std::string& s,
   return s.c_str();
 }
 
-// chart_t::action_dmg =======================================================
+// chart_t::action_dmg ======================================================
 
 struct compare_dmg
 {
@@ -903,7 +903,7 @@ const char* chart_t::action_dmg( std::string& s,
   return s.c_str();
 }
 
-// chart_t::spent_time =======================================================
+// chart_t::spent_time ======================================================
 
 struct compare_time
 {
@@ -1013,7 +1013,7 @@ const char* chart_t::time_spent( std::string& s,
   return s.c_str();
 }
 
-// chart_t::gains ============================================================
+// chart_t::gains ===========================================================
 
 struct compare_gain
 {
@@ -1089,7 +1089,7 @@ const char* chart_t::gains( std::string& s,
   return s.c_str();
 }
 
-// chart_t::scale_factors ====================================================
+// chart_t::scale_factors ===================================================
 
 struct compare_scale_factors
 {
@@ -1193,7 +1193,7 @@ const char* chart_t::scale_factors( std::string& s,
   return s.c_str();
 }
 
-// chart_t::scaling_dps ======================================================
+// chart_t::scaling_dps =====================================================
 
 const char* chart_t::scaling_dps( std::string& s,
                                   player_t* p )
@@ -1308,7 +1308,7 @@ const char* chart_t::scaling_dps( std::string& s,
   return s.c_str();
 }
 
-// chart_t::reforge_dps ======================================================
+// chart_t::reforge_dps =====================================================
 
 std::vector<double> ternary_coords( std::vector<double> xyz )
 {
@@ -1537,7 +1537,7 @@ const char* chart_t::reforge_dps( std::string& s,
   return s.c_str();
 }
 
-// chart_t::timeline_dps =====================================================
+// chart_t::timeline_dps ====================================================
 
 const char* chart_t::timeline_dps( std::string& s,
                                    player_t* p )
@@ -1617,7 +1617,7 @@ const char* chart_t::timeline_dps( std::string& s,
   return s.c_str();
 }
 
-// chart_t::timeline_dps_error =====================================================
+// chart_t::timeline_dps_error ==============================================
 
 const char* chart_t::timeline_dps_error( std::string& s,
                                          player_t* p )
@@ -1703,7 +1703,7 @@ const char* chart_t::timeline_dps_error( std::string& s,
   return s.c_str();
 }
 
-// chart_t::timeline_resource ================================================
+// chart_t::timeline_resource ===============================================
 
 const char* chart_t::timeline_resource( std::string& s,
                                         player_t* p, int resource_type )
@@ -1789,7 +1789,7 @@ const char* chart_t::timeline_resource( std::string& s,
   return s.c_str();
 }
 
-// chart_t::distribution_dps ==================================================
+// chart_t::distribution_dps ================================================
 
 const char* chart_t::distribution_dps( std::string& s,
                                        player_t* p )
@@ -1860,7 +1860,7 @@ const char* chart_t::distribution_dps( std::string& s,
   return s.c_str();
 }
 
-// chart_t::gear_weights_lootrank =============================================
+// chart_t::gear_weights_lootrank ===========================================
 
 const char* chart_t::gear_weights_lootrank( std::string& s,
                                             player_t*    p )
@@ -1944,7 +1944,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
   return s.c_str();
 }
 
-// chart_t::gear_weights_wowhead ==============================================
+// chart_t::gear_weights_wowhead ============================================
 
 const char* chart_t::gear_weights_wowhead( std::string& s,
                                            player_t*    p )
@@ -2027,7 +2027,7 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
   return s.c_str();
 }
 
-// chart_t::gear_weights_wowreforge ===========================================
+// chart_t::gear_weights_wowreforge =========================================
 
 const char* chart_t::gear_weights_wowreforge( std::string& s,
                                               player_t*    p )
@@ -2072,7 +2072,7 @@ const char* chart_t::gear_weights_wowreforge( std::string& s,
   return s.c_str();
 }
 
-// chart_t::gear_weights_pawn =============================================
+// chart_t::gear_weights_pawn ===============================================
 
 struct compare_stat_scale_factors
 {
@@ -2149,7 +2149,7 @@ const char* chart_t::gear_weights_pawn( std::string& s,
   return s.c_str();
 }
 
-// chart_t::timeline_dps_error =====================================================
+// chart_t::timeline_dps_error ==============================================
 
 const char* chart_t::dps_error( std::string& s,
                                          player_t* p )

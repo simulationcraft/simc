@@ -7,7 +7,7 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// format_server =========================================================
+// format_server ============================================================
 
 std::string& format_server( std::string& name )
 {
@@ -290,7 +290,7 @@ static bool parse_item_stats( item_t&     item,
   return true;
 }
 
-// parse_item_reforge =========================================================
+// parse_item_reforge =======================================================
 
 static bool parse_item_reforge( item_t&     item,
                                 xml_node_t* /* node */ )
@@ -325,7 +325,7 @@ static bool parse_item_name( item_t&     item,
   return true;
 }
 
-// parse_item_heroic =========================================================
+// parse_item_heroic ========================================================
 
 static bool parse_item_heroic( item_t&     item,
                                xml_node_t* node )
@@ -362,7 +362,7 @@ static bool parse_item_heroic( item_t&     item,
   return true;
 }
 
-// parse_item_quality =========================================================
+// parse_item_quality =======================================================
 
 static bool parse_item_quality( item_t&     item,
                                 xml_node_t* node )
@@ -397,7 +397,7 @@ static bool parse_item_level( item_t&     item,
   return true;
 }
 
-// parse_item_armor_type =========================================================
+// parse_item_armor_type ====================================================
 
 static bool parse_item_armor_type( item_t&     item,
                                    xml_node_t* node )
@@ -503,7 +503,7 @@ static const char* translate_inventory_id( int slot )
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-// wowhead_t::parse_gem ================================================================
+// wowhead_t::parse_gem =====================================================
 
 int wowhead_t::parse_gem( item_t&            item,
                           const std::string& gem_id,

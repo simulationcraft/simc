@@ -73,7 +73,7 @@ struct stat_proc_callback_t : public action_callback_t
   }
 };
 
-// cost_reduction_proc_callback =======================================================
+// cost_reduction_proc_callback =============================================
 
 struct cost_reduction_proc_callback_t : public action_callback_t
 {
@@ -236,7 +236,7 @@ struct discharge_proc_callback_t : public action_callback_t
   }
 };
 
-// chance_discharge_proc_callback ==================================================
+// chance_discharge_proc_callback ===========================================
 
 struct chance_discharge_proc_callback_t : public action_callback_t
 {
@@ -447,7 +447,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   }
 };
 
-// register_apparatus_of_khazgoroth ====================================
+// register_apparatus_of_khazgoroth =========================================
 
 static void register_apparatus_of_khazgoroth( item_t* item )
 {
@@ -1302,7 +1302,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_MANA, new tyrandes_callback_t( p ) );
 }
 
-// register_dragonwrath_tarecgosas_rest ===================================================
+// register_dragonwrath_tarecgosas_rest =====================================
 
 static void register_dragonwrath_tarecgosas_rest( item_t* item )
 {
@@ -1392,7 +1392,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, cb );
 }
 
-// register_blazing_power ======================================================
+// register_blazing_power ===================================================
 
 static void register_blazing_power( item_t* item )
 {
@@ -1454,7 +1454,7 @@ static void register_blazing_power( item_t* item )
   p -> register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> heroic() ) )  );
 }
 
-// register_valanyr ======================================================
+// register_valanyr =========================================================
 
 static void register_valanyr( item_t* item )
 {

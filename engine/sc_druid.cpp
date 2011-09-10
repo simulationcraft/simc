@@ -1014,7 +1014,7 @@ static void trigger_revitalize( druid_heal_t* a )
   }
 }
 
-// trigger_burning_treant ============================================
+// trigger_burning_treant ===================================================
 
 static void trigger_burning_treant( spell_t* s )
 {
@@ -1299,7 +1299,7 @@ struct claw_t : public druid_cat_attack_t
   }
 };
 
-// Feral Charge (Cat) ======================================================
+// Feral Charge (Cat) =======================================================
 
 struct feral_charge_cat_t : public druid_cat_attack_t
 {
@@ -1895,7 +1895,7 @@ struct tigers_fury_t : public druid_cat_attack_t
 // Druid Bear Attack
 // ==========================================================================
 
-// druid_bear_attack_t::parse_options ======================================
+// druid_bear_attack_t::parse_options =======================================
 
 void druid_bear_attack_t::parse_options( option_t*          options,
                                          const std::string& options_str )
@@ -1908,7 +1908,7 @@ void druid_bear_attack_t::parse_options( option_t*          options,
   attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
-// druid_bear_attack_t::cost ===============================================
+// druid_bear_attack_t::cost ================================================
 
 double druid_bear_attack_t::cost() SC_CONST
 {
@@ -1918,7 +1918,7 @@ double druid_bear_attack_t::cost() SC_CONST
   return c;
 }
 
-// druid_bear_attack_t::consume_resource ===================================
+// druid_bear_attack_t::consume_resource ====================================
 
 void druid_bear_attack_t::consume_resource()
 {
@@ -1937,7 +1937,7 @@ void druid_bear_attack_t::consume_resource()
   }
 }
 
-// druid_bear_attack_t::execute ============================================
+// druid_bear_attack_t::execute =============================================
 
 void druid_bear_attack_t::execute()
 {
@@ -1966,7 +1966,7 @@ double druid_bear_attack_t::haste() SC_CONST
   return h;
 }
 
-// druid_bear_attack_t::player_buff ========================================
+// druid_bear_attack_t::player_buff =========================================
 
 void druid_bear_attack_t::player_buff()
 {
@@ -1983,7 +1983,7 @@ void druid_bear_attack_t::player_buff()
   player_crit += p -> buffs_pulverize -> value();
 }
 
-// Bear Melee Attack =======================================================
+// Bear Melee Attack ========================================================
 
 struct bear_melee_t : public druid_bear_attack_t
 {
@@ -2100,7 +2100,7 @@ struct feral_charge_bear_t : public druid_bear_attack_t
   }
 };
 
-// Lacerate ================================================================
+// Lacerate =================================================================
 
 struct lacerate_t : public druid_bear_attack_t
 {
@@ -2150,7 +2150,7 @@ struct lacerate_t : public druid_bear_attack_t
   }
 };
 
-// Mangle (Bear) ===========================================================
+// Mangle (Bear) ============================================================
 
 struct mangle_bear_t : public druid_bear_attack_t
 {
@@ -2189,7 +2189,7 @@ struct mangle_bear_t : public druid_bear_attack_t
   }
 };
 
-// Maul ====================================================================
+// Maul =====================================================================
 
 struct maul_t : public druid_bear_attack_t
 {
@@ -2296,7 +2296,7 @@ struct skull_bash_bear_t : public druid_bear_attack_t
   }
 };
 
-// Swipe (Bear) ============================================================
+// Swipe (Bear) =============================================================
 
 struct swipe_bear_t : public druid_bear_attack_t
 {
@@ -2334,7 +2334,7 @@ struct thrash_t : public druid_bear_attack_t
 // Druid Heal
 // ==========================================================================
 
-// druid_spell_t::consume_resource =========================================
+// druid_spell_t::consume_resource ==========================================
 
 void druid_heal_t::consume_resource()
 {
@@ -2421,7 +2421,7 @@ void druid_heal_t::player_buff()
   }
 }
 
-// druid_heal_t::schedule_execute =========================================
+// druid_heal_t::schedule_execute ===========================================
 
 void druid_heal_t::schedule_execute()
 {
@@ -2758,7 +2758,7 @@ struct swiftmend_t : public druid_heal_t
   }
 };
 
-// Tranquility =============================================================
+// Tranquility ==============================================================
 
 struct tranquility_t : public druid_heal_t
 {
@@ -2826,7 +2826,7 @@ void druid_spell_t::parse_options( option_t*          options,
   spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
 }
 
-// druid_spell_t::cost_reduction ===========================================
+// druid_spell_t::cost_reduction ============================================
 
 double druid_spell_t::cost_reduction() SC_CONST
 {
@@ -2836,7 +2836,7 @@ double druid_spell_t::cost_reduction() SC_CONST
   return cr;
 }
 
-// druid_spell_t::cost =====================================================
+// druid_spell_t::cost ======================================================
 
 double druid_spell_t::cost() SC_CONST
 {
@@ -2848,7 +2848,7 @@ double druid_spell_t::cost() SC_CONST
   return c;
 }
 
-// druid_spell_t::haste ====================================================
+// druid_spell_t::haste =====================================================
 
 double druid_spell_t::haste() SC_CONST
 {
@@ -2860,7 +2860,7 @@ double druid_spell_t::haste() SC_CONST
   return h;
 }
 
-// druid_spell_t::execute_time =============================================
+// druid_spell_t::execute_time ==============================================
 
 double druid_spell_t::execute_time() SC_CONST
 {
@@ -2871,7 +2871,7 @@ double druid_spell_t::execute_time() SC_CONST
   return spell_t::execute_time();
 }
 
-// druid_spell_t::schedule_execute =========================================
+// druid_spell_t::schedule_execute ==========================================
 
 void druid_spell_t::schedule_execute()
 {
@@ -2885,7 +2885,7 @@ void druid_spell_t::schedule_execute()
   }
 }
 
-// druid_spell_t::execute ==================================================
+// druid_spell_t::execute ===================================================
 
 void druid_spell_t::execute()
 {
@@ -2902,7 +2902,7 @@ void druid_spell_t::execute()
   }
 }
 
-// druid_spell_t::consume_resource =========================================
+// druid_spell_t::consume_resource ==========================================
 
 void druid_spell_t::consume_resource()
 {
@@ -2921,7 +2921,7 @@ void druid_spell_t::consume_resource()
   }
 }
 
-// druid_spell_t::player_tick ==============================================
+// druid_spell_t::player_tick ===============================================
 
 void druid_spell_t::player_tick()
 {
@@ -2932,7 +2932,7 @@ void druid_spell_t::player_tick()
   player_crit += 0.05 * p -> buffs_t11_4pc_caster -> stack();
 }
 
-// druid_spell_t::player_buff ==============================================
+// druid_spell_t::player_buff ===============================================
 
 void druid_spell_t::player_buff()
 {
@@ -2968,7 +2968,7 @@ void druid_spell_t::player_buff()
   player_crit += 0.05 * p -> buffs_t11_4pc_caster -> stack();
 }
 
-// Auto Attack =============================================================
+// Auto Attack ==============================================================
 
 struct auto_attack_t : public action_t
 {
@@ -3125,7 +3125,7 @@ struct berserk_t : public druid_spell_t
   }
 };
 
-// Cat Form Spell =========================================================
+// Cat Form Spell ===========================================================
 
 struct cat_form_t : public druid_spell_t
 {
@@ -3192,7 +3192,7 @@ struct cat_form_t : public druid_spell_t
   }
 };
 
-// Enrage ==================================================================
+// Enrage ===================================================================
 
 struct enrage_t : public druid_spell_t
 {
@@ -3258,7 +3258,7 @@ struct faerie_fire_feral_t : public druid_spell_t
   }
 };
 
-// Faerie Fire Spell =======================================================
+// Faerie Fire Spell ========================================================
 
 struct faerie_fire_t : public druid_spell_t
 {
@@ -3280,7 +3280,7 @@ struct faerie_fire_t : public druid_spell_t
   }
 };
 
-// Innervate Buff ==========================================================
+// Innervate Buff ===========================================================
 
 struct innervate_buff_t : public buff_t
 {
@@ -3311,7 +3311,7 @@ struct innervate_buff_t : public buff_t
   }
 };
 
-// Innervate Spell =========================================================
+// Innervate Spell ==========================================================
 
 struct innervate_t : public druid_spell_t
 {
@@ -3374,7 +3374,7 @@ struct innervate_t : public druid_spell_t
   }
 };
 
-// Insect Swarm Spell ======================================================
+// Insect Swarm Spell =======================================================
 
 struct insect_swarm_t : public druid_spell_t
 {
@@ -3428,7 +3428,7 @@ struct insect_swarm_t : public druid_spell_t
   }
 };
 
-// Mark of the Wild Spell =====================================================
+// Mark of the Wild Spell ===================================================
 
 struct mark_of_the_wild_t : public druid_spell_t
 {
@@ -3572,7 +3572,7 @@ struct moonfire_t : public druid_spell_t
   }
 };
 
-// Moonkin Form Spell =====================================================
+// Moonkin Form Spell =======================================================
 
 struct moonkin_form_t : public druid_spell_t
 {
@@ -4464,7 +4464,7 @@ void druid_t::create_pets()
   pet_burning_treant = create_pet( "burning_treant" );
 }
 
-// druid_t::init_talents =====================================================
+// druid_t::init_talents ====================================================
 
 void druid_t::init_talents()
 {
@@ -5133,7 +5133,7 @@ double druid_t::composite_attack_power_multiplier() SC_CONST
   return multiplier;
 }
 
-// druid_t::composite_attack_crit ==========================================
+// druid_t::composite_attack_crit ===========================================
 
 double druid_t::composite_attack_crit() SC_CONST
 {
@@ -5147,7 +5147,7 @@ double druid_t::composite_attack_crit() SC_CONST
   return floor( c * 10000.0 ) / 10000.0;
 }
 
-// druid_t::composite_player_multiplier =======================================
+// druid_t::composite_player_multiplier =====================================
 
 double druid_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
@@ -5237,7 +5237,7 @@ double druid_t::intellect() const
   return z;
 }
 
-// druid_t::matching_gear_multiplier ==================================
+// druid_t::matching_gear_multiplier ========================================
 
 double druid_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {

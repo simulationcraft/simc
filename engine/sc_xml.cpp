@@ -45,11 +45,11 @@ typedef std::map<std::string, xml_cache_entry_t> xml_cache_t;
 static xml_cache_t xml_cache;
 static mutex_t xml_mutex;
 
-// Forward Declarations ====================================================
+// Forward Declarations =====================================================
 
 static int create_children( sim_t* sim, xml_node_t* root, const std::string& input, std::string::size_type& index );
 
-// simplify_xml ============================================================
+// simplify_xml =============================================================
 
 static void simplify_xml( std::string& buffer )
 {
@@ -67,7 +67,7 @@ static void simplify_xml( std::string& buffer )
   }
 }
 
-// is_white_space ==========================================================
+// is_white_space ===========================================================
 
 static bool is_white_space( char c )
 {
@@ -79,7 +79,7 @@ static bool is_white_space( char c )
           c < 0 );
 }
 
-// is_name_char ============================================================
+// is_name_char =============================================================
 
 static bool is_name_char( char c )
 {
@@ -88,7 +88,7 @@ static bool is_name_char( char c )
   return( c == '_' || c == '-' || c ==':' );
 }
 
-// parse_name ==============================================================
+// parse_name ===============================================================
 
 static bool parse_name( std::string&            name_str,
                         const std::string&      input,
@@ -110,7 +110,7 @@ static bool parse_name( std::string&            name_str,
   return true;
 }
 
-// create_parameter ========================================================
+// create_parameter =========================================================
 
 static void create_parameter( xml_node_t*             node,
                               const std::string&      input,
@@ -140,7 +140,7 @@ static void create_parameter( xml_node_t*             node,
   node -> parameters.push_back( xml_parm_t( name_str, value_str ) );
 }
 
-// create_node =============================================================
+// create_node ==============================================================
 
 static xml_node_t* create_node( sim_t*                  sim,
                                 const std::string&      input,
@@ -186,7 +186,7 @@ static xml_node_t* create_node( sim_t*                  sim,
   return node;
 }
 
-// create_children =========================================================
+// create_children ==========================================================
 
 static int create_children( sim_t*                  sim,
                             xml_node_t*             root,
@@ -268,7 +268,7 @@ static int create_children( sim_t*                  sim,
   return ( int ) root -> children.size();
 }
 
-// search_tree =============================================================
+// search_tree ==============================================================
 
 static xml_node_t* search_tree( xml_node_t*        root,
                                 const std::string& name_str )
@@ -288,7 +288,7 @@ static xml_node_t* search_tree( xml_node_t*        root,
   return 0;
 }
 
-// search_tree =============================================================
+// search_tree ==============================================================
 
 static xml_node_t* search_tree( xml_node_t*        root,
                                 const std::string& name_str,
@@ -313,7 +313,7 @@ static xml_node_t* search_tree( xml_node_t*        root,
   return 0;
 }
 
-// split_path ==============================================================
+// split_path ===============================================================
 
 static xml_node_t* split_path( xml_node_t*        node,
                                std::string&       key,
@@ -344,14 +344,14 @@ static xml_node_t* split_path( xml_node_t*        node,
 
 #ifndef UNIT_TEST
 
-// xml_t::get_name =========================================================
+// xml_t::get_name ==========================================================
 
 const char* xml_t::get_name( xml_node_t* node )
 {
   return node -> name();
 }
 
-// xml_t::get ==============================================================
+// xml_t::get ===============================================================
 
 xml_node_t* xml_t::get( sim_t*             sim,
                         const std::string& url,
@@ -382,7 +382,7 @@ xml_node_t* xml_t::get( sim_t*             sim,
 
 #endif
 
-// xml_t::create ===========================================================
+// xml_t::create ============================================================
 
 xml_node_t* xml_t::create( sim_t* sim, const std::string& input )
 {
@@ -397,7 +397,7 @@ xml_node_t* xml_t::create( sim_t* sim, const std::string& input )
   return root;
 }
 
-// xml_t::create ===========================================================
+// xml_t::create ============================================================
 
 xml_node_t* xml_t::create( sim_t* sim, FILE* input )
 {
@@ -408,7 +408,7 @@ xml_node_t* xml_t::create( sim_t* sim, FILE* input )
   return create( sim, buffer );
 }
 
-// xml_t::get_child ========================================================
+// xml_t::get_child =========================================================
 
 xml_node_t* xml_t::get_child( xml_node_t*        root,
                               const std::string& name_str )
@@ -444,7 +444,7 @@ int xml_t::get_children( std::vector<xml_node_t*>& nodes,
   return ( int ) nodes.size();
 }
 
-// xml_t::get_node =========================================================
+// xml_t::get_node ==========================================================
 
 xml_node_t* xml_t::get_node( xml_node_t*        root,
                              const std::string& path )
@@ -462,7 +462,7 @@ xml_node_t* xml_t::get_node( xml_node_t*        root,
   return node;
 }
 
-// xml_t::get_node =========================================================
+// xml_t::get_node ==========================================================
 
 xml_node_t* xml_t::get_node( xml_node_t*        root,
                              const std::string& path,
@@ -479,7 +479,7 @@ xml_node_t* xml_t::get_node( xml_node_t*        root,
   return node;
 }
 
-// xml_t::get_nodes ========================================================
+// xml_t::get_nodes =========================================================
 
 int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
                       xml_node_t*               root,
@@ -506,7 +506,7 @@ int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
   return ( int ) nodes.size();
 }
 
-// xml_t::get_nodes ========================================================
+// xml_t::get_nodes =========================================================
 
 int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
                       xml_node_t*               root,
@@ -539,7 +539,7 @@ int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
   return ( int ) nodes.size();
 }
 
-// xml_t::get_value ========================================================
+// xml_t::get_value =========================================================
 
 bool xml_t::get_value( std::string&       value,
                        xml_node_t*        root,
@@ -557,7 +557,7 @@ bool xml_t::get_value( std::string&       value,
   return true;
 }
 
-// xml_t::get_value ========================================================
+// xml_t::get_value =========================================================
 
 bool xml_t::get_value( int&               value,
                        xml_node_t*        root,
@@ -575,7 +575,7 @@ bool xml_t::get_value( int&               value,
   return true;
 }
 
-// xml_t::get_value ========================================================
+// xml_t::get_value =========================================================
 
 bool xml_t::get_value( double&            value,
                        xml_node_t*        root,
@@ -593,7 +593,7 @@ bool xml_t::get_value( double&            value,
   return true;
 }
 
-// xml_t::print ============================================================
+// xml_t::print =============================================================
 
 void xml_t::print( xml_node_t* root,
                    FILE*       file,

@@ -782,7 +782,7 @@ sim_t::~sim_t()
   delete spell_query;
 }
 
-// sim_t::add_event ==========================================================
+// sim_t::add_event =========================================================
 
 void sim_t::add_event( event_t* e,
                        double   delta_time )
@@ -820,7 +820,7 @@ void sim_t::add_event( event_t* e,
   }
 }
 
-// sim_t::reschedule_event ====================================================
+// sim_t::reschedule_event ==================================================
 
 void sim_t::reschedule_event( event_t* e )
 {
@@ -831,7 +831,7 @@ void sim_t::reschedule_event( event_t* e )
   e -> reschedule_time = 0;
 }
 
-// sim_t::next_event ==========================================================
+// sim_t::next_event ========================================================
 
 event_t* sim_t::next_event()
 {
@@ -951,7 +951,7 @@ void sim_t::cancel_events( player_t* p )
   assert( p -> events == 0 );
 }
 
-// sim_t::combat ==============================================================
+// sim_t::combat ============================================================
 
 void sim_t::combat( int iteration )
 {
@@ -1293,7 +1293,7 @@ void sim_t::analyze_player( player_t* p )
 
   std::vector<stats_t*> stats_list;
 
-  // Stats Analysis ============================================
+  // Stats Analysis =========================================================
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
     stats_list.push_back( s );
@@ -1317,7 +1317,7 @@ void sim_t::analyze_player( player_t* p )
       p -> total_dmg += s -> total_dmg;
   }
 
-  // DPS Calculation ===========================================
+  // DPS Calculation ========================================================
 
   assert( p -> iteration_dps.size() == ( std::size_t ) iterations );
   assert( p -> iteration_dpse.size() == ( std::size_t ) iterations );
@@ -1356,7 +1356,7 @@ void sim_t::analyze_player( player_t* p )
       }
     }
 
-  // Actor Lists ===============================================
+  // Actor Lists ============================================================
   if (  ! p -> quiet && ! p -> is_enemy() && ! p -> is_add() && ! ( p -> is_pet() && report_pets_separately ) )
   {
     players_by_rank.push_back( p );
@@ -1366,7 +1366,7 @@ void sim_t::analyze_player( player_t* p )
     targets_by_name.push_back( p );
 
 
-  // Pet Chart Adjustement =====================================
+  // Pet Chart Adjustement ==================================================
   int max_buckets = ( int ) p -> max_fight_length;
 
     // Make the pet graphs the same length as owner's
@@ -1376,7 +1376,7 @@ void sim_t::analyze_player( player_t* p )
     max_buckets = ( int ) o -> max_fight_length;
   }
 
-  // Resources & Gains =========================================
+  // Resources & Gains ======================================================
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     int num_buckets = ( int ) p -> timeline_resource[i].size();
@@ -1410,12 +1410,12 @@ void sim_t::analyze_player( player_t* p )
       g -> analyze( this );
   }
 
-  // Procs =====================================================
+  // Procs ==================================================================
 
   for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
     proc -> analyze( this );
 
-  // Damage Timelines ==========================================
+  // Damage Timelines =======================================================
 
   p -> timeline_dmg.assign( max_buckets, 0 );
   for ( int i=0, is_hps = ( p -> primary_role() == ROLE_HEAL ); i < num_stats; i++ )
@@ -1471,7 +1471,7 @@ void sim_t::analyze_player( player_t* p )
   assert( p -> timeline_dps.size() == ( std::size_t ) max_buckets );
 
 
-  // DPS Error =================================================
+  // DPS Error ==============================================================
 
   p -> dps_min = +1.0E+50;
   p -> dps_max = -1.0E+50;
@@ -1494,7 +1494,7 @@ void sim_t::analyze_player( player_t* p )
   p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( ( float ) iterations );
 
 
-  // Error Convergence =========================================
+  // Error Convergence ======================================================
   {
     int    convergence_iterations = 0;
     double convergence_dps = 0;
@@ -1542,7 +1542,7 @@ void sim_t::analyze_player( player_t* p )
       p -> dps_convergence = convergence_error / ( p -> dps_error * convergence_scale );
   }
 
-  // DPS Statistics ============================================
+  // DPS Statistics =========================================================
   if ( p -> dps_max > p -> dps_min )
   {
     int num_buckets = 50;
@@ -1565,7 +1565,7 @@ void sim_t::analyze_player( player_t* p )
   p -> dps_10_percentile = p -> iteration_dps[ p -> iteration_dps.size() / 10 ];
   p -> dps_90_percentile = p -> iteration_dps[ 9 * p -> iteration_dps.size() / 10 ];
 
-  // Death Analysis ============================================
+  // Death Analysis =========================================================
   assert ( p -> death_time.size() == ( std::size_t ) p -> death_count );
   double avg = 0;
   for ( int i = 0; i < p -> death_count; i++ )
@@ -1577,7 +1577,7 @@ void sim_t::analyze_player( player_t* p )
   p -> avg_death_time = avg / p -> death_count;
   p -> death_count_pct = 100.0 * p -> death_count / iterations;
 
-  // Charts ====================================================
+  // Charts =================================================================
 
   chart_t::action_dpet        ( p -> action_dpet_chart,               p );
   chart_t::action_dmg         ( p -> action_dmg_chart,                p );
@@ -1857,7 +1857,7 @@ player_t* sim_t::find_player( int index )
   return 0;
 }
 
-// sim_t::get_cooldown ===================================================
+// sim_t::get_cooldown ======================================================
 
 cooldown_t* sim_t::get_cooldown( const std::string& name )
 {

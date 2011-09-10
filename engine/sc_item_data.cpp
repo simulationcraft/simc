@@ -233,7 +233,7 @@ void log_item( const item_t& item )
 
 }  // ANONYMOUS NAMESPACE ====================================================
 
-// item_database_t::initialize_item_sources ===========================================
+// item_database_t::initialize_item_sources =================================
 
 bool item_database_t::initialize_item_sources( const item_t& item, std::vector<std::string>& source_list )
 {
@@ -270,7 +270,7 @@ bool item_database_t::initialize_item_sources( const item_t& item, std::vector<s
   return true;
 }
 
-// item_database_t::random_suffix_type ===========================================
+// item_database_t::random_suffix_type ======================================
 
 int item_database_t::random_suffix_type( const item_data_t* item )
 {
@@ -429,7 +429,7 @@ uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc
   return ( uint32_t ) floor( total_armor * m_quality * m_invtype + 0.5 );
 }
 
-// item_database_t::armor_value ===========================================
+// item_database_t::armor_value =============================================
 
 uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_id )
 {
@@ -437,7 +437,7 @@ uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_
   return armor_value( dbc.item( item_id ), dbc );
 }
 
-// item_database_t::weapon_dmg_min/max ===========================================
+// item_database_t::weapon_dmg_min/max ======================================
 
 uint32_t item_database_t::weapon_dmg_min( const item_t& item, unsigned item_id )
 {

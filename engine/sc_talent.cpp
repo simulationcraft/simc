@@ -175,7 +175,7 @@ uint32_t talent_t::rank() SC_CONST
 // Spell ID
 // ==========================================================================
 
-// spell_id_t::spell_id_t =======================================================
+// spell_id_t::spell_id_t ===================================================
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
   s_type( T_SPELL ), s_id( 0 ), s_data( 0 ), s_enabled( false ), s_player( player ),

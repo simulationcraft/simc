@@ -95,7 +95,7 @@
 #define SC_USE_PTR ( 1 )
 #define SC_BETA ( 0 )
 
-// Forward Declarations ======================================================
+// Forward Declarations =====================================================
 
 struct action_t;
 struct action_callback_t;
@@ -155,7 +155,7 @@ struct warrior_t;
 struct weapon_t;
 struct xml_node_t;
 
-// Enumerations ==============================================================
+// Enumerations =============================================================
 
 enum race_type
 {
@@ -712,7 +712,7 @@ enum format_type
 #define FORMAT_DEFAULT         ( FORMAT_ASCII_MASK )
 #define FORMAT_ALL_MASK        -1
 
-// Data Access ====================================================
+// Data Access ==============================================================
 #ifndef MAX_LEVEL
 #define MAX_LEVEL (85)
 #endif
@@ -776,7 +776,7 @@ enum rating_type {
   RATING_MAX
 };
 
-// Type utilities and simple meta-programming tools ==========================
+// Type utilities and simple meta-programming tools =========================
 
 #define sizeof_array( x ) ( sizeof( x ) / sizeof( x[ 0 ] ) )
 
@@ -804,7 +804,7 @@ private:
   // nonmoveable& operator = ( nonmoveable&& ) = delete;
 };
 
-// Cache Control =============================================================
+// Cache Control ============================================================
 
 namespace cache {
 
@@ -1212,7 +1212,7 @@ enum spell_attribute_t {
  SPELL_ATTR_EX9_UNK31, // 31
 };
 
-// DBC related classes ========================================================
+// DBC related classes ======================================================
 
 struct spell_data_t {
   const char * _name;               // Spell name from Spell.dbc stringblock (enGB)
@@ -1584,7 +1584,7 @@ struct dbc_t
   static double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
 };
 
-// Options ====================================================================
+// Options ==================================================================
 
 enum option_type_t
 {
@@ -1625,7 +1625,7 @@ struct option_t
   static bool parse_token( sim_t*, std::string& token );
 };
 
-// Talent Translation =========================================================
+// Talent Translation =======================================================
 
 #define MAX_TALENT_POINTS 41
 #define MAX_TALENT_ROW ((MAX_TALENT_POINTS+4)/5)
@@ -1647,7 +1647,7 @@ struct talent_translation_t
   std::string name;
 };
 
-// Utilities =================================================================
+// Utilities ================================================================
 
 #ifdef _MSC_VER
 // C99-compliant snprintf - MSVC _snprintf is NOT the same.
@@ -2051,7 +2051,7 @@ struct raid_event_t
   static void combat_end( sim_t* ) {}
 };
 
-// Gear Stats ================================================================
+// Gear Stats ===============================================================
 
 struct gear_stats_t
 {
@@ -2086,7 +2086,7 @@ struct gear_stats_t
 };
 
 
-// Buffs ======================================================================
+// Buffs ====================================================================
 
 struct buff_t : public spell_id_t
 {
@@ -2246,7 +2246,7 @@ struct debuff_t : public buff_t
 typedef struct buff_t aura_t;
 
 
-// Expressions =================================================================
+// Expressions ==============================================================
 
 enum token_type_t {
   TOK_UNKNOWN=0,
@@ -2474,7 +2474,7 @@ public:
 };
 
 
-// Simple freelist allocator for events ======================================
+// Simple freelist allocator for events =====================================
 
 class event_freelist_t
 {
@@ -2491,7 +2491,7 @@ public:
 };
 
 
-// Simulation Engine =========================================================
+// Simulation Engine ========================================================
 
 struct sim_t : private thread_t
 {
@@ -2781,7 +2781,7 @@ struct sim_t : private thread_t
   int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE(2,3);
 };
 
-// Scaling ===================================================================
+// Scaling ==================================================================
 
 struct scaling_t
 {
@@ -2826,7 +2826,7 @@ struct scaling_t
   double scale_over_function_error( sim_t* s, player_t* p );
 };
 
-// Plot ======================================================================
+// Plot =====================================================================
 
 struct plot_t
 {
@@ -2848,7 +2848,7 @@ struct plot_t
   void create_options();
 };
 
-// Reforge Plot ===============================================================
+// Reforge Plot =============================================================
 
 struct reforge_plot_t
 {
@@ -2876,7 +2876,7 @@ struct reforge_plot_t
   void create_options();
 };
 
-// Event =====================================================================
+// Event ====================================================================
 
 struct event_t : public noncopyable
 {
@@ -2935,7 +2935,7 @@ struct event_compare_t
   }
 };
 
-// Gear Rating Conversions ===================================================
+// Gear Rating Conversions ==================================================
 
 struct rating_t
 {
@@ -2951,7 +2951,7 @@ struct rating_t
   static double get_attribute_base( sim_t*, dbc_t& pData, int level, player_type class_type, race_type race, base_stat_type stat_type );
 };
 
-// Weapon ====================================================================
+// Weapon ===================================================================
 
 struct weapon_t
 {
@@ -2973,7 +2973,7 @@ struct weapon_t
     type(t), school(s), damage(d), min_dmg(d), max_dmg(d), swing_time(st), slot(SLOT_NONE), buff_type(0), buff_value(0), bonus_dmg(0) { }
 };
 
-// Item ======================================================================
+// Item =====================================================================
 
 struct item_t
 {
@@ -3103,7 +3103,7 @@ struct item_t
                          const std::string& gem_id );
 };
 
-// Item database =============================================================
+// Item database ============================================================
 struct item_database_t
 {
   static bool     download_slot(      item_t& item,
@@ -3134,7 +3134,7 @@ struct item_database_t
   static bool     parse_enchant(      item_t& item, const std::string& enchant_id );
 };
 
-// Set Bonus =================================================================
+// Set Bonus ================================================================
 
 struct set_bonus_t
 {
@@ -3170,7 +3170,7 @@ struct set_bonus_array_t
   virtual const spell_id_t* create_set_bonus( player_t* p, uint32_t spell_id ) SC_CONST;
 };
 
-// Player ====================================================================
+// Player ===================================================================
 
 struct player_t
 {
@@ -3892,7 +3892,7 @@ struct player_t
   virtual void pre_analyze_hook() {}
 };
 
-// Pet =======================================================================
+// Pet ======================================================================
 
 struct pet_t : public player_t
 {
@@ -3935,7 +3935,7 @@ struct pet_t : public player_t
   virtual const char* id();
 };
 
-// Stats =====================================================================
+// Stats ====================================================================
 
 struct stats_t
 {
@@ -3989,7 +3989,7 @@ struct stats_t
   stats_t( const std::string& name, player_t* );
 };
 
-// Rank ======================================================================
+// Rank =====================================================================
 
 struct rank_t
 {
@@ -3997,7 +3997,7 @@ struct rank_t
   double dd_min, dd_max, tick, cost;
 };
 
-// Base Stats ================================================================
+// Base Stats ===============================================================
 
 struct base_stats_t
 {
@@ -4007,7 +4007,7 @@ struct base_stats_t
   double spell_crit, melee_crit;
 };
 
-// Action ====================================================================
+// Action ===================================================================
 
 struct action_t : public spell_id_t
 {
@@ -4211,7 +4211,7 @@ struct attack_t : public action_t
   virtual double   crit_chance( int delta_level ) SC_CONST;
 };
 
-// Spell =====================================================================
+// Spell ====================================================================
 
 struct spell_t : public action_t
 {
@@ -4236,7 +4236,7 @@ struct spell_t : public action_t
   virtual void   schedule_execute();
 };
 
-// Heal ======================================================================
+// Heal =====================================================================
 
 struct heal_t : public spell_t
 {
@@ -4270,7 +4270,7 @@ struct heal_t : public spell_t
 
 };
 
-// Absorb ======================================================================
+// Absorb ===================================================================
 
 struct absorb_t : public spell_t
 {
@@ -4296,7 +4296,7 @@ struct absorb_t : public spell_t
 
 };
 
-// Sequence ==================================================================
+// Sequence =================================================================
 
 struct sequence_t : public action_t
 {
@@ -4312,7 +4312,7 @@ struct sequence_t : public action_t
   virtual void restart() { current_action=0; restarted=true;}
 };
 
-// Cooldown ==================================================================
+// Cooldown =================================================================
 
 struct cooldown_t
 {
@@ -4339,7 +4339,7 @@ struct cooldown_t
   const char* name() { return name_str.c_str(); }
 };
 
-// DoT =======================================================================
+// DoT ======================================================================
 
 struct dot_t
 {
@@ -4429,7 +4429,7 @@ struct action_callback_t
   }
 };
 
-// Action Priority List ======================================================
+// Action Priority List =====================================================
 
 struct action_priority_list_t
 {
@@ -4440,7 +4440,7 @@ struct action_priority_list_t
   {}
 };
 
-// Player Ready Event ========================================================
+// Player Ready Event =======================================================
 
 struct player_ready_event_t : public event_t
 {
@@ -4448,7 +4448,7 @@ struct player_ready_event_t : public event_t
   virtual void execute();
 };
 
-// Action Execute Event ======================================================
+// Action Execute Event =====================================================
 
 struct action_execute_event_t : public event_t
 {
@@ -4457,7 +4457,7 @@ struct action_execute_event_t : public event_t
   virtual void execute();
 };
 
-// DoT Tick Event ============================================================
+// DoT Tick Event ===========================================================
 
 struct dot_tick_event_t : public event_t
 {
@@ -4466,7 +4466,7 @@ struct dot_tick_event_t : public event_t
   virtual void execute();
 };
 
-// Action Travel Event =======================================================
+// Action Travel Event ======================================================
 
 struct action_travel_event_t : public event_t
 {
@@ -4478,7 +4478,7 @@ struct action_travel_event_t : public event_t
   virtual void execute();
 };
 
-// Regen Event ===============================================================
+// Regen Event ==============================================================
 
 struct regen_event_t : public event_t
 {
@@ -4486,7 +4486,7 @@ struct regen_event_t : public event_t
   virtual void execute();
 };
 
-// Unique Gear ===============================================================
+// Unique Gear ==============================================================
 
 struct unique_gear_t
 {
@@ -4537,7 +4537,7 @@ struct unique_gear_t
                                   const std::string& item_id=std::string() );
 };
 
-// Enchants ===================================================================
+// Enchants =================================================================
 
 struct enchant_t
 {
@@ -4552,14 +4552,14 @@ struct enchant_t
   static bool download_rsuffix( item_t&, const std::string& rsuffix_id );
 };
 
-// Consumable ================================================================
+// Consumable ===============================================================
 
 struct consumable_t
 {
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
 
-// Up-Time =====================================================================
+// Up-Time ==================================================================
 
 struct uptime_t
 {
@@ -4575,7 +4575,7 @@ struct uptime_t
   const char* name() SC_CONST { return name_str.c_str(); }
 };
 
-// Gain ======================================================================
+// Gain =====================================================================
 
 struct gain_t
 {
@@ -4592,7 +4592,7 @@ struct gain_t
   const char* name() SC_CONST { return name_str.c_str(); }
 };
 
-// Proc ======================================================================
+// Proc =====================================================================
 
 struct proc_t
 {
@@ -4632,7 +4632,7 @@ struct proc_t
 };
 
 
-// Report =====================================================================
+// Report ===================================================================
 
 struct report_t
 {
@@ -4645,7 +4645,7 @@ struct report_t
   static void print_suite( sim_t* );
 };
 
-// Chart ======================================================================
+// Chart ====================================================================
 
 struct chart_t
 {
@@ -4675,7 +4675,7 @@ struct chart_t
   static const char* dps_error( std::string& s, player_t* );
 };
 
-// Log =======================================================================
+// Log ======================================================================
 
 struct log_t
 {
@@ -4685,7 +4685,7 @@ struct log_t
   // Combat Log (unsupported)
 };
 
-// Pseudo Random Number Generation ===========================================
+// Pseudo Random Number Generation ==========================================
 
 struct rng_t
 {
@@ -4713,7 +4713,7 @@ struct rng_t
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };
 
-// String utils =================================================================
+// String utils =============================================================
 
 std::string tolower( const std::string& src );
 std::string proper_option_name( const std::string& full_name );
@@ -4724,7 +4724,7 @@ void replace_str( std::string& str, const std::string& old_str, const std::strin
 bool str_to_float( const std::string& src, double& dest );
 #endif // UNUSED
 
-// Armory ====================================================================
+// Armory ===================================================================
 
 struct armory_t
 {
@@ -4749,7 +4749,7 @@ struct armory_t
   static std::string& format( std::string& name, int format_type = FORMAT_DEFAULT );
 };
 
-// Battle Net ================================================================
+// Battle Net ===============================================================
 
 struct battle_net_t
 {
@@ -4769,7 +4769,7 @@ struct battle_net_t
                               cache::behavior_t b=cache::players() );
 };
 
-// Wowhead  ==================================================================
+// Wowhead  =================================================================
 
 struct wowhead_t
 {
@@ -4800,14 +4800,14 @@ struct wowhead_t
                          bool ptr=false, cache::behavior_t b=cache::items() );
 };
 
-// CharDev  ==================================================================
+// CharDev  =================================================================
 
 struct chardev_t
 {
   static player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_t b=cache::players() );
 };
 
-// MMO Champion ==============================================================
+// MMO Champion =============================================================
 
 struct mmo_champion_t
 {
@@ -4827,7 +4827,7 @@ struct mmo_champion_t
                          cache::behavior_t b=cache::items() );
 };
 
-// Rawr ======================================================================
+// Rawr =====================================================================
 
 struct rawr_t
 {
@@ -4835,7 +4835,7 @@ struct rawr_t
   static player_t* load_player( sim_t*, const std::string& character_filename, const std::string& character_xml );
 };
 
-// Blizzard Community Platform API ===========================================
+// Blizzard Community Platform API ==========================================
 
 namespace bcp_api
 {
@@ -4867,7 +4867,7 @@ namespace bcp_api
   int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t b=cache::items() );
 }
 
-// HTTP Download  ============================================================
+// HTTP Download  ===========================================================
 
 struct http_t
 {
@@ -4895,7 +4895,7 @@ public:
   { format_( url, url ); return url; }
 };
 
-// XML =======================================================================
+// XML ======================================================================
 
 struct xml_t
 {
@@ -4917,7 +4917,7 @@ struct xml_t
 };
 
 
-// Java Script ===============================================================
+// Java Script ==============================================================
 
 struct js_t
 {
@@ -4935,7 +4935,7 @@ struct js_t
 };
 
 
-// Handy Actions =============================================================
+// Handy Actions ============================================================
 
 struct wait_action_base_t : public action_t
 {

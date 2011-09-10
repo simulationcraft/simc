@@ -7,7 +7,7 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// is_scaling_stat ===========================================================
+// is_scaling_stat ==========================================================
 
 static bool is_scaling_stat( sim_t* sim,
                              int    stat )
@@ -35,7 +35,7 @@ static bool is_scaling_stat( sim_t* sim,
   return false;
 }
 
-// stat_may_cap ==============================================================
+// stat_may_cap =============================================================
 
 static bool stat_may_cap( int stat )
 {
@@ -70,7 +70,7 @@ static bool parse_normalize_scale_factors( sim_t* sim,
   return true;
 }
 
-// scaling_t::compare_scale_factors ====================================================
+// scaling_t::compare_scale_factors =========================================
 
 struct compare_scale_factors
 {
@@ -556,7 +556,7 @@ bool scaling_t::has_scale_factors()
   return false;
 }
 
-// scaling_t::scale_over_function ==================================================
+// scaling_t::scale_over_function ===========================================
 
 double scaling_t::scale_over_function( sim_t* s, player_t* p )
 {
@@ -569,7 +569,7 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
 }
 
 
-// scaling_t::scale_over_function_error ==================================================
+// scaling_t::scale_over_function_error =====================================
 
 double scaling_t::scale_over_function_error( sim_t* /* s */, player_t* p )
 {

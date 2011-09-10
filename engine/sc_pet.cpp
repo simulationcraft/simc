@@ -176,7 +176,7 @@ void pet_t::dismiss()
   demise();
 }
 
-// pet_t::assess_damage ==================================================
+// pet_t::assess_damage =====================================================
 
 double pet_t::assess_damage( double            amount,
                              const school_type school,
@@ -192,7 +192,7 @@ double pet_t::assess_damage( double            amount,
   return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
 
-// pet_t::combat_begin ==================================================
+// pet_t::combat_begin ======================================================
 
 void pet_t::combat_begin()
 {

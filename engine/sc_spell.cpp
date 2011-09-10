@@ -9,7 +9,7 @@
 // Spell
 // ==========================================================================
 
-// spell_t::spell_t ==========================================================
+// spell_t::spell_t =========================================================
 
 void spell_t::init_spell_t_()
 {
@@ -58,7 +58,7 @@ spell_t::spell_t( const char* name, const uint32_t id, player_t* p, int t ) :
   init_spell_t_();
 }
 
-// spell_t::haste ============================================================
+// spell_t::haste ===========================================================
 
 double spell_t::haste() SC_CONST
 {
@@ -78,7 +78,7 @@ double spell_t::gcd() SC_CONST
   return t;
 }
 
-// spell_t::execute_time =====================================================
+// spell_t::execute_time ====================================================
 
 double spell_t::execute_time() SC_CONST
 {
@@ -96,7 +96,7 @@ double spell_t::execute_time() SC_CONST
   return t;
 }
 
-// spell_t::player_buff ======================================================
+// spell_t::player_buff =====================================================
 
 void spell_t::player_buff()
 {
@@ -111,7 +111,7 @@ void spell_t::player_buff()
                                        name(), player_hit, player_crit );
 }
 
-// spell_t::target_debuff =====================================================
+// spell_t::target_debuff ===================================================
 
 void spell_t::target_debuff( player_t* t, int dmg_type )
 {
@@ -127,7 +127,7 @@ void spell_t::target_debuff( player_t* t, int dmg_type )
                    name(), target_multiplier, target_hit, target_crit );
 }
 
-// spell_t::miss_chance ======================================================
+// spell_t::miss_chance =====================================================
 
 double spell_t::miss_chance( int delta_level ) SC_CONST
 {
@@ -150,7 +150,7 @@ double spell_t::miss_chance( int delta_level ) SC_CONST
   return miss;
 }
 
-// spell_t::crit_chance ====================================================
+// spell_t::crit_chance =====================================================
 
 double spell_t::crit_chance( int delta_level ) SC_CONST
 {
@@ -229,7 +229,7 @@ void spell_t::execute()
   }
 }
 
-// spell_t::schedule_execute ===============================================
+// spell_t::schedule_execute ================================================
 
 void spell_t::schedule_execute()
 {

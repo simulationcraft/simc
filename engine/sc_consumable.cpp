@@ -147,11 +147,11 @@ struct flask_t : public action_t
     }
 
     // Cap Health / Mana for flasks if they are used outside of combat
-    if ( ! player -> in_combat ) 
+    if ( ! player -> in_combat )
     {
       if ( intellect > 0 )
         player -> resource_gain( RESOURCE_MANA, player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ], gain, this );
-      
+
       if ( stamina > 0 )
         player -> resource_gain( RESOURCE_HEALTH, player -> resource_max[ RESOURCE_HEALTH ] - player -> resource_current[ RESOURCE_HEALTH ] );
     }
@@ -372,7 +372,7 @@ struct food_t : public action_t
     }
 
     // Cap Health / Mana for food if they are used outside of combat
-    if ( ! player -> in_combat ) 
+    if ( ! player -> in_combat )
     {
       if ( intellect > 0 )
         player -> resource_gain( RESOURCE_MANA, player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ], gain, this );

@@ -813,7 +813,7 @@ static void consume_brain_freeze( spell_t* s )
   }
 }
 
-// trigger_brain_freeze ==============================================
+// trigger_brain_freeze =====================================================
 
 static void trigger_brain_freeze( spell_t* s )
 {
@@ -1020,7 +1020,7 @@ static void trigger_replenishment( spell_t* s )
   p -> trigger_replenishment();
 }
 
-// trigger_tier12_mirror_image ====================================================
+// trigger_tier12_mirror_image ==============================================
 
 static void trigger_tier12_mirror_image( spell_t* s )
 {
@@ -1424,7 +1424,7 @@ struct arcane_blast_t : public mage_spell_t
   }
 };
 
-// Arcane Brilliance Spell =================================================
+// Arcane Brilliance Spell ==================================================
 
 struct arcane_brilliance_t : public mage_spell_t
 {
@@ -1598,7 +1598,7 @@ struct blast_wave_t : public mage_spell_t
   }
 };
 
-// Blink Spell ==========================================================
+// Blink Spell ==============================================================
 
 struct blink_t : public mage_spell_t
 {
@@ -1763,7 +1763,7 @@ struct counterspell_t : public mage_spell_t
   }
 };
 
-// Deep Freeze Spell =========================================================
+// Deep Freeze Spell ========================================================
 
 struct deep_freeze_t : public mage_spell_t
 {
@@ -2287,7 +2287,7 @@ struct frostfire_bolt_t : public mage_spell_t
   }
 };
 
-// Frostfire Orb Spell ==========================================================
+// Frostfire Orb Spell ======================================================
 
 struct frostfire_orb_explosion_t : public mage_spell_t
 {
@@ -2714,7 +2714,7 @@ struct pyroblast_t : public mage_spell_t
   }
 };
 
-// Pyroblast! Spell ==========================================================
+// Pyroblast! Spell =========================================================
 
 struct pyroblast_hs_t : public mage_spell_t
 {
@@ -3360,7 +3360,7 @@ void mage_t::init_base()
   diminished_parry_capi = 0.006650;
 }
 
-// mage_t::init_scaling ========================================================
+// mage_t::init_scaling =====================================================
 
 void mage_t::init_scaling()
 {
@@ -3368,7 +3368,7 @@ void mage_t::init_scaling()
   scales_with[ STAT_SPIRIT ] = 0;
 }
 
-// mage_t::init_values ========================================================
+// mage_t::init_values ======================================================
 
 void mage_t::init_values()
 {
@@ -4007,7 +4007,7 @@ bool mage_t::create_profile( std::string& profile_str, int save_type, bool save_
   return true;
 }
 
-// mage_t::copy_from ===================================================
+// mage_t::copy_from ========================================================
 
 void mage_t::copy_from( player_t* source )
 {

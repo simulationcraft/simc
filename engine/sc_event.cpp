@@ -131,7 +131,7 @@ player_ready_event_t::player_ready_event_t( sim_t*    sim,
   sim -> add_event( this, delta_time );
 }
 
-// player_ready_event_t::execute =============================================
+// player_ready_event_t::execute ============================================
 
 void player_ready_event_t::execute()
 {
@@ -163,7 +163,7 @@ action_execute_event_t::action_execute_event_t( sim_t*    sim,
   sim -> add_event( this, time_to_execute );
 }
 
-// action_execute_event_t::execute ===========================================
+// action_execute_event_t::execute ==========================================
 
 void action_execute_event_t::execute()
 {
@@ -197,7 +197,7 @@ dot_tick_event_t::dot_tick_event_t( sim_t* sim,
   sim -> add_event( this, time_to_tick );
 }
 
-// dot_tick_event_t::execute =================================================
+// dot_tick_event_t::execute ================================================
 
 void dot_tick_event_t::execute()
 {
@@ -293,11 +293,11 @@ void action_travel_event_t::execute()
     action -> travel_event = NULL;
 }
 
-// ===========================================================================
+// ==========================================================================
 // Regen Event
-// ===========================================================================
+// ==========================================================================
 
-// regen_event_t::regen_event_t ==============================================
+// regen_event_t::regen_event_t =============================================
 
 regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
 {
@@ -306,7 +306,7 @@ regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
   sim -> add_event( this, sim -> regen_periodicity );
 }
 
-// regen_event_t::execute ====================================================
+// regen_event_t::execute ===================================================
 
 void regen_event_t::execute()
 {

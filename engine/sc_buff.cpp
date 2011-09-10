@@ -392,7 +392,7 @@ buff_t::buff_t( player_t*          p,
     log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );
 }
 
-// buff_t::init_buff_t_ ====================================================
+// buff_t::init_buff_t_ =====================================================
 
 void buff_t::init_buff_t_()
 {
@@ -1144,7 +1144,7 @@ void stat_buff_t::expire()
 // COST_REDUCTION_BUFF
 // ==========================================================================
 
-// cost_reduction_buff_t::cost_reduction_buff_t =================================================
+// cost_reduction_buff_t::cost_reduction_buff_t =============================
 
 cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               const std::string& n,
@@ -1164,7 +1164,7 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
 {
 }
 
-// cost_reduction_buff_t::cost_reduction_buff_t =================================================
+// cost_reduction_buff_t::cost_reduction_buff_t =============================
 
 cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               const uint32_t     id,
@@ -1182,7 +1182,7 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
 {
 }
 
-// cost_reduction_buff_t::bump ========================================================
+// cost_reduction_buff_t::bump ==============================================
 
 void cost_reduction_buff_t::bump( int    stacks,
                                   double value )
@@ -1202,7 +1202,7 @@ void cost_reduction_buff_t::bump( int    stacks,
   else assert( delta == 0 );
 }
 
-// cost_reduction_buff_t::decrement ===================================================
+// cost_reduction_buff_t::decrement =========================================
 
 void cost_reduction_buff_t::decrement( int    stacks,
                                        double /* value */ )
@@ -1221,7 +1221,7 @@ void cost_reduction_buff_t::decrement( int    stacks,
   }
 }
 
-// cost_reduction_buff_t::expire ======================================================
+// cost_reduction_buff_t::expire ============================================
 
 void cost_reduction_buff_t::expire()
 {
@@ -1232,7 +1232,7 @@ void cost_reduction_buff_t::expire()
   }
 }
 
-// cost_reduction_buff_t::refresh ==========================================================
+// cost_reduction_buff_t::refresh ===========================================
 
 void cost_reduction_buff_t::refresh( int    stacks,
                                      double value )

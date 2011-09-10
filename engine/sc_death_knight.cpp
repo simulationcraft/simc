@@ -2071,7 +2071,7 @@ bool death_knight_spell_t::ready()
     return group_runes( player, cost_blood, cost_frost, cost_unholy, use );
 }
 
-// death_knight_spell_t::target_debuff ====================================
+// death_knight_spell_t::target_debuff ======================================
 
 void death_knight_spell_t::target_debuff( player_t* t, int dmg_type )
 {
@@ -4903,7 +4903,7 @@ double death_knight_t::assess_damage( double            amount,
   return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
 
-// death_knight_t::composite_pet_attack_crit ===============================
+// death_knight_t::composite_pet_attack_crit ================================
 
 double death_knight_t::composite_pet_attack_crit()
 {
@@ -4959,7 +4959,7 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
   return m;
 }
 
-// death_knight_t::matching_gear_multiplier ==================================
+// death_knight_t::matching_gear_multiplier =================================
 
 double death_knight_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
@@ -5014,7 +5014,7 @@ double death_knight_t::composite_player_multiplier( const school_type school, ac
   return m;
 }
 
-// death_knight_t::composite_tank_crit ==========================================
+// death_knight_t::composite_tank_crit ======================================
 
 double death_knight_t::composite_tank_crit( const school_type school ) SC_CONST
 {
@@ -5026,7 +5026,7 @@ double death_knight_t::composite_tank_crit( const school_type school ) SC_CONST
   return c;
 }
 
-// death_knight_t::primary_role ====================================================
+// death_knight_t::primary_role =============================================
 
 int death_knight_t::primary_role() SC_CONST
 {

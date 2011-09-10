@@ -31,7 +31,7 @@ struct enemy_t : public player_t
     create_options();
   }
 
-// target_t::combat_begin ====================================================
+// target_t::combat_begin ===================================================
 
   virtual void combat_begin()
   {
@@ -40,7 +40,7 @@ struct enemy_t : public player_t
     if ( sim -> overrides.bleeding ) debuffs.bleeding -> override();
   }
 
-// target_t::primary_role ====================================================
+// target_t::primary_role ===================================================
 
   virtual int primary_role() SC_CONST
   {
@@ -52,7 +52,7 @@ struct enemy_t : public player_t
     return RESOURCE_NONE;
   }
 
-// target_t::base_armor ======================================================
+// target_t::base_armor =====================================================
 
   virtual double base_armor() SC_CONST
   {
@@ -351,7 +351,7 @@ void enemy_t::init_base()
   }
 }
 
-// enemy_t::init_resources =====================================================
+// enemy_t::init_resources ==================================================
 
 void enemy_t::init_resources( bool /* force */ )
 {
@@ -367,7 +367,7 @@ void enemy_t::init_resources( bool /* force */ )
   }
 }
 
-// enemy_t::init_actions =======================================================
+// enemy_t::init_actions ====================================================
 
 void enemy_t::init_actions()
 {
@@ -404,7 +404,7 @@ void enemy_t::init_actions()
     }
 }
 
-// enemy_t::composite_tank_block ===============================================
+// enemy_t::composite_tank_block ============================================
 
 double enemy_t::composite_tank_block() SC_CONST
 {
@@ -415,7 +415,7 @@ double enemy_t::composite_tank_block() SC_CONST
   return b;
 }
 
-// enemy_t::create_options ====================================================
+// enemy_t::create_options ==================================================
 
 void enemy_t::create_options()
 {
@@ -445,7 +445,7 @@ pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& /* p
   return 0;
 }
 
-// enemy_t::create_pets ===================================================
+// enemy_t::create_pets =====================================================
 
 void enemy_t::create_pets()
 {
@@ -458,7 +458,7 @@ void enemy_t::create_pets()
   }
 }
 
-// enemy_t::find_add =========================================================
+// enemy_t::find_add ========================================================
 
 pet_t* enemy_t::find_pet( const std::string& add_name )
 {
@@ -468,7 +468,7 @@ pet_t* enemy_t::find_pet( const std::string& add_name )
 
   return 0;
 }
-// enemy_t::health_percentage() ==============================================
+// enemy_t::health_percentage() =============================================
 
 double enemy_t::health_percentage() SC_CONST
 {
@@ -484,7 +484,7 @@ double enemy_t::health_percentage() SC_CONST
   return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
 }
 
-// enemy_t::recalculate_health ===============================================
+// enemy_t::recalculate_health ==============================================
 
 void enemy_t::recalculate_health()
 {
@@ -509,7 +509,7 @@ void enemy_t::recalculate_health()
   if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, dmg_taken );
 }
 
-// enemy_t::create_expression ================================================
+// enemy_t::create_expression ===============================================
 
 action_expr_t* enemy_t::create_expression( action_t* action,
     const std::string& name_str )

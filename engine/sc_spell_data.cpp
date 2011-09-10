@@ -1110,7 +1110,7 @@ struct spell_race_expr_t : public spell_list_expr_t
 struct spell_attribute_expr_t : public spell_list_expr_t
 {
   spell_attribute_expr_t( sim_t* sim, expr_data_type_t type ) : spell_list_expr_t( sim, "attribute", type ) { }
-  
+
   virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other )
   {
     std::vector<uint32_t> res;
@@ -1118,23 +1118,23 @@ struct spell_attribute_expr_t : public spell_list_expr_t
     // Only for spells
     if ( data_type == DATA_EFFECT || data_type == DATA_TALENT )
       return res;
-    
+
     // Numbered attributes only
     if ( other.result_type != TOK_NUM )
       return res;
-    
+
     uint32_t attridx = ( unsigned ) other.result_num / ( sizeof( unsigned ) * 8 );
     uint32_t flagidx = ( unsigned ) other.result_num % ( sizeof( unsigned ) * 8 );
-    
+
     assert( attridx < 10 && flagidx < 32 );
-    
+
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
       const spell_data_t* spell = sim -> dbc.spell( *i );
-      
+
       if ( ! spell )
         continue;
-      
+
       if ( spell -> _attributes[ attridx ] & ( 1 << flagidx ) )
         res.push_back( *i );
     }

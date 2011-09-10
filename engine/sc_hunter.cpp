@@ -767,7 +767,7 @@ struct hunter_spell_t : public spell_t
 
 namespace { // ANONYMOUS NAMESPACE =========================================
 
-// trigger_go_for_the_throat ===============================================
+// trigger_go_for_the_throat ================================================
 
 static void trigger_go_for_the_throat( attack_t* a )
 {
@@ -883,7 +883,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
   }
 }
 
-// trigger_thrill_of_the_hunt ========================================
+// trigger_thrill_of_the_hunt ===============================================
 
 static void trigger_thrill_of_the_hunt( attack_t* a )
 {
@@ -901,7 +901,7 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
   }
 }
 
-// trigger_tier12_2pc_melee ========================================
+// trigger_tier12_2pc_melee =================================================
 
 static void trigger_tier12_2pc_melee( attack_t* a )
 {
@@ -924,9 +924,9 @@ static void trigger_tier12_2pc_melee( attack_t* a )
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-// =========================================================================
+// ==========================================================================
 // Hunter Pet Attacks
-// =========================================================================
+// ==========================================================================
 
 struct hunter_pet_attack_t : public attack_t
 {
@@ -1012,7 +1012,7 @@ struct hunter_pet_attack_t : public attack_t
   }
 };
 
-// Pet Melee =================================================================
+// Pet Melee ================================================================
 
 struct pet_melee_t : public hunter_pet_attack_t
 {
@@ -1139,7 +1139,7 @@ struct claw_t : public hunter_pet_attack_t
   }
 };
 
-// Devilsaur Monstrous Bite ===================================================
+// Devilsaur Monstrous Bite =================================================
 
 struct monstrous_bite_t : public hunter_pet_attack_t
 {
@@ -1157,7 +1157,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
   }
 };
 
-// Wolverine Bite =============================================================
+// Wolverine Bite ===========================================================
 
 struct wolverine_bite_t : public hunter_pet_attack_t
 {
@@ -1195,7 +1195,7 @@ struct wolverine_bite_t : public hunter_pet_attack_t
   }
 };
 
-// Kill Command (pet) ======================================================
+// Kill Command (pet) =======================================================
 
 struct pet_kill_command_t : public hunter_pet_attack_t
 {
@@ -1248,9 +1248,9 @@ struct pet_kill_command_t : public hunter_pet_attack_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Hunter Pet Spells
-// =========================================================================
+// ==========================================================================
 
 struct hunter_pet_spell_t : public spell_t
 {
@@ -1297,7 +1297,7 @@ struct hunter_pet_spell_t : public spell_t
   }
 };
 
-// Call of the Wild ===========================================================
+// Call of the Wild =========================================================
 
 struct call_of_the_wild_t : public hunter_pet_spell_t
 {
@@ -1324,7 +1324,7 @@ struct call_of_the_wild_t : public hunter_pet_spell_t
   }
 };
 
-// Rabid ======================================================================
+// Rabid ====================================================================
 
 struct rabid_t : public hunter_pet_spell_t
 {
@@ -1348,7 +1348,7 @@ struct rabid_t : public hunter_pet_spell_t
   }
 };
 
-// Roar of Recovery ===========================================================
+// Roar of Recovery =========================================================
 
 struct roar_of_recovery_t : public hunter_pet_spell_t
 {
@@ -1384,11 +1384,11 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
   }
 };
 
-// ============================================================================
+// ==========================================================================
 // Unique Pet Specials
-// ============================================================================
+// ==========================================================================
 
-// Wolf/Devilsaur Furious Howl ================================================
+// Wolf/Devilsaur Furious Howl ==============================================
 
 struct furious_howl_t : public hunter_pet_spell_t
 {
@@ -1418,7 +1418,7 @@ struct furious_howl_t : public hunter_pet_spell_t
   }
 };
 
-// Cat/Spirit Beast Roar of Courage ==========================================
+// Cat/Spirit Beast Roar of Courage =========================================
 
 struct roar_of_courage_t : public hunter_pet_spell_t
 {
@@ -1484,7 +1484,7 @@ struct qiraji_fortitude_t : public hunter_pet_spell_t
 
 };
 
-// Wind Serpent Lightning Breath ==============================================
+// Wind Serpent Lightning Breath ============================================
 
 struct lightning_breath_t : public hunter_pet_spell_t
 {
@@ -1513,7 +1513,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
   }
 };
 
-// Serpent Corrosive Spit  ===================================================
+// Serpent Corrosive Spit  ==================================================
 
 struct corrosive_spit_t : public hunter_pet_spell_t
 {
@@ -1539,7 +1539,7 @@ struct corrosive_spit_t : public hunter_pet_spell_t
   }
 };
 
-// Demoralizing Screech  ===================================================
+// Demoralizing Screech  ====================================================
 
 struct demoralizing_screech_t : public hunter_pet_spell_t
 {
@@ -1598,7 +1598,7 @@ struct ravage_t : public hunter_pet_spell_t
   }
 };
 
-// Fox Tailspin  ===================================================
+// Fox Tailspin  ============================================================
 
 struct tailspin_t : public hunter_pet_spell_t
 {
@@ -1628,7 +1628,7 @@ struct tailspin_t : public hunter_pet_spell_t
   }
 };
 
-// Raptor Tear Armor  ===================================================
+// Raptor Tear Armor  =======================================================
 
 struct tear_armor_t : public hunter_pet_spell_t
 {
@@ -1654,7 +1654,7 @@ struct tear_armor_t : public hunter_pet_spell_t
   }
 };
 
-// Hyena Tendon Rip ===========================================================
+// Hyena Tendon Rip =========================================================
 
 struct tendon_rip_t : public hunter_pet_spell_t
 {
@@ -1724,11 +1724,11 @@ struct froststorm_breath_t : public hunter_pet_spell_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Hunter Attacks
-// =========================================================================
+// ==========================================================================
 
-// hunter_attack_t::cost ===================================================
+// hunter_attack_t::cost ====================================================
 
 double hunter_attack_t::cost() SC_CONST
 {
@@ -1798,7 +1798,7 @@ void hunter_attack_t::player_buff()
     player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect1().percent() );
 }
 
-// Ranged Attack ===========================================================
+// Ranged Attack ============================================================
 
 struct ranged_t : public hunter_attack_t
 {
@@ -1848,7 +1848,7 @@ struct ranged_t : public hunter_attack_t
   }
 };
 
-// Auto Shot =================================================================
+// Auto Shot ================================================================
 
 struct auto_shot_t : public hunter_attack_t
 {
@@ -1887,7 +1887,7 @@ struct auto_shot_t : public hunter_attack_t
 struct aimed_shot_t : public hunter_attack_t
 {
 
-  // Aimed Shot - Master Marksman ====================================================
+  // Aimed Shot - Master Marksman ===========================================
 
   struct aimed_shot_mm_t : public hunter_attack_t
   {
@@ -2040,7 +2040,7 @@ struct aimed_shot_t : public hunter_attack_t
   }
 };
 
-// Arcane Shot Attack =========================================================
+// Arcane Shot Attack =======================================================
 
 struct arcane_shot_t : public hunter_attack_t
 {
@@ -2090,7 +2090,7 @@ struct arcane_shot_t : public hunter_attack_t
   }
 };
 
-// Flaming Arrow Attack =========================================================
+// Flaming Arrow Attack =====================================================
 
 struct flaming_arrow_t : public hunter_attack_t
 {
@@ -2107,7 +2107,7 @@ struct flaming_arrow_t : public hunter_attack_t
   { }
 };
 
-// Black Arrow =================================================================
+// Black Arrow ==============================================================
 
 struct black_arrow_t : public hunter_attack_t
 {
@@ -2154,7 +2154,7 @@ struct black_arrow_t : public hunter_attack_t
   }
 };
 
-// Explosive Trap ============================================================
+// Explosive Trap ===========================================================
 
 struct explosive_trap_effect_t : public hunter_attack_t
 {
@@ -2230,7 +2230,7 @@ struct explosive_trap_t : public hunter_attack_t
   }
 };
 
-// Chimera Shot ================================================================
+// Chimera Shot =============================================================
 
 struct chimera_shot_t : public hunter_attack_t
 {
@@ -2280,7 +2280,7 @@ struct chimera_shot_t : public hunter_attack_t
   }
 };
 
-// Cobra Shot Attack ==========================================================
+// Cobra Shot Attack ========================================================
 
 struct cobra_shot_t : public hunter_attack_t
 {
@@ -2342,7 +2342,7 @@ struct cobra_shot_t : public hunter_attack_t
   }
 };
 
-// Explosive Shot ================================================================
+// Explosive Shot ===========================================================
 
 struct explosive_shot_t : public hunter_attack_t
 {
@@ -2419,7 +2419,7 @@ struct explosive_shot_t : public hunter_attack_t
   }
 };
 
-// Kill Shot =================================================================
+// Kill Shot ================================================================
 
 struct kill_shot_t : public hunter_attack_t
 {
@@ -2464,7 +2464,7 @@ struct kill_shot_t : public hunter_attack_t
   }
 };
 
-// Scatter Shot Attack =========================================================
+// Scatter Shot Attack ======================================================
 
 struct scatter_shot_t : public hunter_attack_t
 {
@@ -2495,7 +2495,7 @@ struct serpent_sting_burst_t : public hunter_attack_t
   }
 
 };
-// Serpent Sting Attack =========================================================
+// Serpent Sting Attack =====================================================
 
 struct serpent_sting_t : public hunter_attack_t
 {
@@ -2577,7 +2577,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
   }
 };
 
-// Multi Shot Attack =========================================================
+// Multi Shot Attack ========================================================
 
 struct multi_shot_t : public hunter_attack_t
 {
@@ -2648,7 +2648,7 @@ struct multi_shot_t : public hunter_attack_t
   }
 };
 
-// Silencing Shot Attack =========================================================
+// Silencing Shot Attack ====================================================
 
 struct silencing_shot_t : public hunter_attack_t
 {
@@ -2669,7 +2669,7 @@ struct silencing_shot_t : public hunter_attack_t
   }
 };
 
-// Steady Shot Attack =========================================================
+// Steady Shot Attack =======================================================
 
 struct steady_shot_t : public hunter_attack_t
 {
@@ -2792,9 +2792,9 @@ struct wild_quiver_trigger_t : public action_callback_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Hunter Spells
-// =========================================================================
+// ==========================================================================
 
 // hunter_spell_t::gcd()
 
@@ -2804,7 +2804,7 @@ double hunter_spell_t::gcd() SC_CONST
   return trigger_gcd;
 }
 
-// hunter_spell_t::cost ===================================================
+// hunter_spell_t::cost =====================================================
 
 double hunter_spell_t::cost() SC_CONST
 {
@@ -2816,7 +2816,7 @@ double hunter_spell_t::cost() SC_CONST
   return c;
 }
 
-// hunter_spell_t::consume_resource ===================================================
+// hunter_spell_t::consume_resource =========================================
 
 void hunter_spell_t::consume_resource()
 {
@@ -2917,7 +2917,7 @@ struct aspect_of_the_fox_t : public hunter_spell_t
   }
 };
 
-// Bestial Wrath =========================================================
+// Bestial Wrath ============================================================
 
 struct bestial_wrath_t : public hunter_spell_t
 {
@@ -2950,7 +2950,7 @@ struct bestial_wrath_t : public hunter_spell_t
   }
 };
 
-// Fervor =============================================================
+// Fervor ===================================================================
 
 struct fervor_t : public hunter_spell_t
 {
@@ -3022,7 +3022,7 @@ struct focus_fire_t : public hunter_spell_t
   }
 };
 
-// Hunter's Mark =========================================================
+// Hunter's Mark ============================================================
 
 struct hunters_mark_t : public hunter_spell_t
 {
@@ -3055,7 +3055,7 @@ struct hunters_mark_t : public hunter_spell_t
   }
 };
 
-// Kill Command =======================================================
+// Kill Command =============================================================
 
 struct kill_command_t : public hunter_spell_t
 {
@@ -3116,7 +3116,7 @@ struct kill_command_t : public hunter_spell_t
   }
 };
 
-// Rapid Fire =========================================================
+// Rapid Fire ===============================================================
 
 struct rapid_fire_t : public hunter_spell_t
 {
@@ -3246,7 +3246,7 @@ struct summon_pet_t : public hunter_spell_t
   }
 };
 
-// Trueshot Aura ===========================================================
+// Trueshot Aura ============================================================
 
 struct trueshot_aura_t : public hunter_spell_t
 {
@@ -3305,7 +3305,7 @@ struct hunter_sniper_training_event_t : public event_t
   }
 };
 
-// hunter_pet_t::create_action =============================================
+// hunter_pet_t::create_action ==============================================
 
 action_t* hunter_pet_t::create_action( const std::string& name,
                                        const std::string& options_str )
@@ -3333,7 +3333,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   return pet_t::create_action( name, options_str );
 }
 
-// hunter_t::create_action ====================================================
+// hunter_t::create_action ==================================================
 
 action_t* hunter_t::create_action( const std::string& name,
                                    const std::string& options_str )
@@ -3367,7 +3367,7 @@ action_t* hunter_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-// hunter_t::create_pet =======================================================
+// hunter_t::create_pet =====================================================
 
 pet_t* hunter_t::create_pet( const std::string& pet_name,
                              const std::string& pet_type )
@@ -3390,7 +3390,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   return 0;
 }
 
-// hunter_t::create_pets ======================================================
+// hunter_t::create_pets ====================================================
 
 void hunter_t::create_pets()
 {
@@ -3476,7 +3476,7 @@ void hunter_t::init_talents()
   player_t::init_talents();
 }
 
-// hunter_t::init_spells ===================================================
+// hunter_t::init_spells ====================================================
 
 void hunter_t::init_spells()
 {
@@ -3513,7 +3513,7 @@ void hunter_t::init_spells()
   sets = new set_bonus_array_t( this, set_bonuses );
 }
 
-// hunter_t::init_spells ===================================================
+// hunter_t::init_spells ====================================================
 
 void hunter_pet_t::init_spells()
 {
@@ -3522,7 +3522,7 @@ void hunter_pet_t::init_spells()
   kill_command = new pet_kill_command_t( this );
 }
 
-// hunter_t::init_base ========================================================
+// hunter_t::init_base ======================================================
 
 void hunter_t::init_base()
 {
@@ -3555,7 +3555,7 @@ void hunter_t::init_base()
   flaming_arrow = new flaming_arrow_t( this );
 }
 
-// hunter_t::init_buffs =======================================================
+// hunter_t::init_buffs =====================================================
 
 void hunter_t::init_buffs()
 {
@@ -3586,7 +3586,7 @@ void hunter_t::init_buffs()
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
 }
 
-// hunter_t::init_gains ======================================================
+// hunter_t::init_gains =====================================================
 
 void hunter_t::init_gains()
 {
@@ -3623,7 +3623,7 @@ void hunter_t::init_position()
   }
 }
 
-// hunter_t::init_procs ======================================================
+// hunter_t::init_procs =====================================================
 
 void hunter_t::init_procs()
 {
@@ -3640,7 +3640,7 @@ void hunter_t::init_procs()
 
 }
 
-// hunter_t::init_rng ========================================================
+// hunter_t::init_rng =======================================================
 
 void hunter_t::init_rng()
 {
@@ -3659,7 +3659,7 @@ void hunter_t::init_rng()
   rng_rabid_power          = get_rng( "rabid_power",                 RNG_DISTRIBUTED );
 }
 
-// hunter_t::init_scaling ====================================================
+// hunter_t::init_scaling ===================================================
 
 void hunter_t::init_scaling()
 {
@@ -3669,7 +3669,7 @@ void hunter_t::init_scaling()
   scales_with[ STAT_EXPERTISE_RATING ] = 0;
 }
 
-// hunter_t::init_unique_gear ================================================
+// hunter_t::init_unique_gear ===============================================
 
 void hunter_t::init_unique_gear()
 {
@@ -3717,7 +3717,7 @@ void hunter_t::init_unique_gear()
   }
 }
 
-// hunter_t::init_actions ====================================================
+// hunter_t::init_actions ===================================================
 
 void hunter_t::init_actions()
 {
@@ -3840,7 +3840,7 @@ void hunter_t::init_actions()
   player_t::init_actions();
 }
 
-// hunter_t::combat_begin =====================================================
+// hunter_t::combat_begin ===================================================
 
 void hunter_t::combat_begin()
 {
@@ -3859,7 +3859,7 @@ void hunter_t::combat_begin()
   }
 }
 
-// hunter_t::reset ===========================================================
+// hunter_t::reset ==========================================================
 
 void hunter_t::reset()
 {
@@ -3870,7 +3870,7 @@ void hunter_t::reset()
   active_aspect         = ASPECT_NONE;
 }
 
-// hunter_t::composite_attack_power ==========================================
+// hunter_t::composite_attack_power =========================================
 
 double hunter_t::composite_attack_power() SC_CONST
 {
@@ -3886,7 +3886,7 @@ double hunter_t::composite_attack_power() SC_CONST
   return ap;
 }
 
-// hunter_t::composite_attack_power_multiplier =================================
+// hunter_t::composite_attack_power_multiplier ==============================
 
 double hunter_t::composite_attack_power_multiplier() SC_CONST
 {
@@ -3924,7 +3924,7 @@ double hunter_t::composite_player_multiplier( const school_type school, action_t
   return m;
 }
 
-// hunter_t::matching_gear_multiplier =====================================
+// hunter_t::matching_gear_multiplier =======================================
 
 double hunter_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
@@ -3934,7 +3934,7 @@ double hunter_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
   return 0.0;
 }
 
-// hunter_t::regen  =======================================================
+// hunter_t::regen  =========================================================
 
 void hunter_t::regen( double periodicity )
 {
@@ -3995,7 +3995,7 @@ bool hunter_t::create_profile( std::string& profile_str, int save_type, bool sav
   return true;
 }
 
-// hunter_t::copy_from ===================================================
+// hunter_t::copy_from ======================================================
 
 void hunter_t::copy_from( player_t* source )
 {

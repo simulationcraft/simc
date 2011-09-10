@@ -38,7 +38,7 @@ static xml_node_t* download_character_talents( sim_t* sim,
 
 } // ANONYMOUS NAMESPACE ===================================================
 
-// battle_net_t::download_player ===========================================
+// battle_net_t::download_player ============================================
 
 player_t* battle_net_t::download_player( sim_t* sim,
                                          const std::string& region,

@@ -53,13 +53,13 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   }
 }
 
-// sequence_t::~sequence_t ===================================================
+// sequence_t::~sequence_t ==================================================
 
 sequence_t::~sequence_t()
 {
 }
 
-// sequence_t::schedule_execute ==============================================
+// sequence_t::schedule_execute =============================================
 
 void sequence_t::schedule_execute()
 {
@@ -68,7 +68,7 @@ void sequence_t::schedule_execute()
   restarted = false;
 }
 
-// sequence_t::reset =========================================================
+// sequence_t::reset ========================================================
 
 void sequence_t::reset()
 {
@@ -88,7 +88,7 @@ void sequence_t::reset()
   restarted = false;
 }
 
-// sequence_t::ready =========================================================
+// sequence_t::ready ========================================================
 
 bool sequence_t::ready()
 {

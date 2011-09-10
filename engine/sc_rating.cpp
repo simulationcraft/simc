@@ -353,7 +353,7 @@ static const _stat_list_t warrior_stats[] =
 
 } // ANONYMOUS NAMESPACE =====================================================
 
-// rating_t::init ============================================================
+// rating_t::init ===========================================================
 
 void rating_t::init( sim_t* sim, dbc_t& dbc, int level, int type )
 {
@@ -397,7 +397,7 @@ void rating_t::init( sim_t* sim, dbc_t& dbc, int level, int type )
   }
 }
 
-// rating_t::interpolate ======================================================
+// rating_t::interpolate ====================================================
 
 double rating_t::interpolate( int    level,
                               double val_60,
@@ -444,7 +444,7 @@ double rating_t::interpolate( int    level,
   return 0;
 }
 
-// rating_t::get_attribute_base ================================================
+// rating_t::get_attribute_base =============================================
 
 double rating_t::get_attribute_base( sim_t* /* sim */, dbc_t& dbc, int level, player_type class_type, race_type race, base_stat_type stat_type )
 {

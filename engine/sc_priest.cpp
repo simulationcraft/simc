@@ -2199,7 +2199,7 @@ struct mind_spike_t : public priest_spell_t
   }
 };
 
-// Mind Sear Spell =========================================================
+// Mind Sear Spell ==========================================================
 
 struct mind_sear_tick_t : public priest_spell_t
 {
@@ -2573,7 +2573,7 @@ struct shadow_word_pain_t : public priest_spell_t
   }
 };
 
-// Shadow Word Pain Spell 2 ===================================================
+// Shadow Word Pain Spell 2 =================================================
 
 struct shadow_word_pain_t_2 : public priest_spell_t
 {
@@ -2693,7 +2693,7 @@ struct vampiric_touch_t : public priest_spell_t
   }
 };
 
-// Vampiric Touch Spell 2 =====================================================
+// Vampiric Touch Spell 2 ===================================================
 
 struct vampiric_touch_t_2 : public priest_spell_t
 {
@@ -4368,7 +4368,7 @@ int priest_t::primary_role() SC_CONST
   return ROLE_SPELL;
 }
 
-// priest_t::composite_armor =========================================
+// priest_t::composite_armor ================================================
 
 double priest_t::composite_armor() SC_CONST
 {
@@ -4380,7 +4380,7 @@ double priest_t::composite_armor() SC_CONST
   return floor( a );
 }
 
-// priest_t::composite_spell_power =========================================
+// priest_t::composite_spell_power ==========================================
 
 double priest_t::composite_spell_power( const school_type school ) SC_CONST
 {
@@ -4392,7 +4392,7 @@ double priest_t::composite_spell_power( const school_type school ) SC_CONST
   return sp;
 }
 
-// priest_t::composite_spell_hit =============================================
+// priest_t::composite_spell_hit ============================================
 
 double priest_t::composite_spell_hit() SC_CONST
 {
@@ -4403,7 +4403,7 @@ double priest_t::composite_spell_hit() SC_CONST
   return hit;
 }
 
-// priest_t::composite_spell_haste =============================================
+// priest_t::composite_spell_haste ==========================================
 
 double priest_t::composite_spell_haste() SC_CONST
 {
@@ -4417,7 +4417,7 @@ double priest_t::composite_spell_haste() SC_CONST
   return h;
 }
 
-// priest_t::composite_player_multiplier =========================================
+// priest_t::composite_player_multiplier ====================================
 
 double priest_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
@@ -4505,7 +4505,7 @@ double priest_t::spirit() SC_CONST
   return spi;
 }
 
-// priest_t::create_action ===================================================
+// priest_t::create_action ==================================================
 
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
@@ -4559,7 +4559,7 @@ action_t* priest_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-// priest_t::create_pet ======================================================
+// priest_t::create_pet =====================================================
 
 pet_t* priest_t::create_pet( const std::string& pet_name,
                              const std::string& /* pet_type */ )
@@ -4575,7 +4575,7 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
   return 0;
 }
 
-// priest_t::create_pets =====================================================
+// priest_t::create_pets ====================================================
 
 void priest_t::create_pets()
 {
@@ -4584,7 +4584,7 @@ void priest_t::create_pets()
   pet_lightwell         = create_pet( "lightwell"         );
 }
 
-// priest_t::init_base =======================================================
+// priest_t::init_base ======================================================
 
 void priest_t::init_base()
 {
@@ -4603,7 +4603,7 @@ void priest_t::init_base()
   diminished_parry_capi = 0.006650;
 }
 
-// priest_t::init_gains ======================================================
+// priest_t::init_gains =====================================================
 
 void priest_t::init_gains()
 {
@@ -4618,7 +4618,7 @@ void priest_t::init_gains()
   gains_divine_fire               = get_gain( "divine_fire" );
 }
 
-// priest_t::init_procs ======================================================
+// priest_t::init_procs =====================================================
 
 void priest_t::init_procs()
 {
@@ -4628,7 +4628,7 @@ void priest_t::init_procs()
   procs_surge_of_light       = get_proc( "surge_of_light" );
 }
 
-// priest_t::init_scaling ====================================================
+// priest_t::init_scaling ===================================================
 
 void priest_t::init_scaling()
 {
@@ -4650,7 +4650,7 @@ void priest_t::init_scaling()
   }
 }
 
-// priest_t::init_uptimes ====================================================
+// priest_t::init_uptimes ===================================================
 
 void priest_t::init_uptimes()
 {
@@ -4685,7 +4685,7 @@ void priest_t::init_uptimes()
   uptimes_test_of_faith = get_uptime( "test_of_faith" );
 }
 
-// priest_t::init_rng ========================================================
+// priest_t::init_rng =======================================================
 
 void priest_t::init_rng()
 {
@@ -4827,7 +4827,7 @@ void priest_t::init_spells()
   sets = new set_bonus_array_t( this, set_bonuses );
 }
 
-// priest_t::init_buffs ======================================================
+// priest_t::init_buffs =====================================================
 
 void priest_t::init_buffs()
 {
@@ -4877,7 +4877,7 @@ void priest_t::init_buffs()
   buffs_cauterizing_flame          = new buff_t( this, "cauterizing_flame",          1                           );
 }
 
-// priest_t::init_actions =====================================================
+// priest_t::init_actions ===================================================
 
 void priest_t::init_actions()
 {
@@ -4925,18 +4925,18 @@ void priest_t::init_actions()
 
     buffer += init_use_profession_actions();
 
-    // Save  & reset buffer ========================================
+    // Save  & reset buffer =================================================
     for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
     {
       action_priority_list_t* a = action_priority_list[i];
       a -> action_list_str += buffer;
     }
     buffer.clear();
-    // =============================================================
+    // ======================================================================
 
     switch ( primary_tree() )
     {
-      // SHADOW =====================================================================================
+      // SHADOW =============================================================
     case TREE_SHADOW:
       if ( level > 80 )
       {
@@ -4964,14 +4964,14 @@ void priest_t::init_actions()
       if ( talents.vampiric_touch -> rank() )
         buffer += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
 
-      // Save  & reset buffer ========================================
+      // Save  & reset buffer ===============================================
       for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
       {
         action_priority_list_t* a = action_priority_list[i];
         a -> action_list_str += buffer;
       }
       buffer.clear();
-      // =============================================================
+      // ====================================================================
 
       if ( talents.vampiric_touch -> rank() )
         list_double_dot += "/vampiric_touch_2,if=(!ticking|dot.vampiric_touch_2.remains<cast_time+2.5)&miss_react";
@@ -4994,14 +4994,14 @@ void priest_t::init_actions()
       if ( level >= 66 )
         buffer += "/shadow_fiend";
 
-      // Save  & reset buffer ========================================
+      // Save  & reset buffer ===============================================
       for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
       {
         action_priority_list_t* a = action_priority_list[i];
         a -> action_list_str += buffer;
       }
       buffer.clear();
-      // =============================================================
+      // ====================================================================
 
         list_double_dot += "/mind_flay_2,if=(dot.shadow_word_pain_2.remains<dot.shadow_word_pain.remains)&miss_react";
 
@@ -5014,13 +5014,13 @@ void priest_t::init_actions()
       if ( talents.dispersion -> rank() )
         buffer += "/dispersion";
       break;
-      // SHADOW END ====================================================================
+      // SHADOW END =========================================================
 
 
-      // DISCIPLINE =====================================================================
+      // DISCIPLINE =========================================================
     case TREE_DISCIPLINE:
 
-      // DAMAGE DISCIPLINE =================================================================
+      // DAMAGE DISCIPLINE ==================================================
       if ( primary_role() != ROLE_HEAL )
       {
           buffer += "/volcanic_potion,if=!in_combat|buff.bloodlust.up|time_to_die<=40";
@@ -5062,9 +5062,9 @@ void priest_t::init_actions()
 
           buffer += "/smite";
       }
-      // DAMAGE DISCIPLINE END =======================================================================
+      // DAMAGE DISCIPLINE END ==============================================
 
-      // HEALER DISCIPLINE ============================================================================
+      // HEALER DISCIPLINE ==================================================
       else
       {
         // DEFAULT
@@ -5133,7 +5133,7 @@ void priest_t::init_actions()
         // PWS END
       }
       break;
-      // HEALER DISCIPLINE END =====================================================================
+      // HEALER DISCIPLINE END ==============================================
 
       // HOLY
     case TREE_HOLY:
@@ -5181,14 +5181,14 @@ void priest_t::init_actions()
       break;
     }
 
-    // Save  & reset buffer ========================================
+    // Save  & reset buffer =================================================
     for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
     {
       action_priority_list_t* a = action_priority_list[i];
       a -> action_list_str += buffer;
     }
     buffer.clear();
-    // =============================================================
+    // ======================================================================
 
     action_list_default = 1;
   }
@@ -5204,7 +5204,7 @@ void priest_t::init_actions()
   }
 }
 
-// priest_t::init_party ======================================================
+// priest_t::init_party =====================================================
 
 void priest_t::init_party()
 {
@@ -5224,7 +5224,7 @@ void priest_t::init_party()
   }
 }
 
-// priest_t::init_values =====================================================
+// priest_t::init_values ====================================================
 
 void priest_t::init_values()
 {
@@ -5332,7 +5332,7 @@ void priest_t::fixup_atonement_stats( const char* trigger_spell_name,
   }
 }
 
-// priest_t::pre_analyze_hook  ===============================================
+// priest_t::pre_analyze_hook  ==============================================
 
 void priest_t::pre_analyze_hook()
 {
@@ -5343,7 +5343,7 @@ void priest_t::pre_analyze_hook()
   }
 }
 
-// priest_t::create_expression =================================================
+// priest_t::create_expression ==============================================
 
 action_expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
 {
@@ -5387,7 +5387,7 @@ action_expr_t* priest_t::create_expression( action_t* a, const std::string& name
   return player_t::create_expression( a, name_str );
 }
 
-// priest_t::resource_gain ===================================================
+// priest_t::resource_gain ==================================================
 
 double priest_t::resource_gain( int       resource,
                                 double    amount,
@@ -5408,7 +5408,7 @@ double priest_t::resource_gain( int       resource,
   return actual_amount;
 }
 
-// priest_t::resource_loss ===================================================
+// priest_t::resource_loss ==================================================
 
 double priest_t::resource_loss( int       resource,
                                 double    amount,
@@ -5579,7 +5579,7 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_typ
   return new priest_t( sim, name, r );
 }
 
-// player_t::priest_init =====================================================
+// player_t::priest_init ====================================================
 
 void player_t::priest_init( sim_t* sim )
 {

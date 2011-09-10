@@ -238,7 +238,7 @@ action_t::~action_t()
     delete interrupt_if_expr;
 }
 
-// action_t::parse_data ====================================================
+// action_t::parse_data =====================================================
 
 void action_t::parse_data()
 {
@@ -403,7 +403,7 @@ option_t* action_t::merge_options( std::vector<option_t>& merged_options,
   return &( merged_options[ 0 ] );
 }
 
-// action_t::parse_options =================================================
+// action_t::parse_options ==================================================
 
 void action_t::parse_options( option_t*          options,
                               const std::string& options_str )
@@ -511,7 +511,7 @@ rank_t* action_t::init_rank( rank_t* rank_list,
   return 0;
 }
 
-// action_t::cost ======================================================
+// action_t::cost ===========================================================
 
 double action_t::cost() SC_CONST
 {
@@ -533,7 +533,7 @@ double action_t::cost() SC_CONST
   return floor( c );
 }
 
-// action_t::gcd =============================================================
+// action_t::gcd ============================================================
 
 double action_t::gcd() SC_CONST
 {
@@ -543,7 +543,7 @@ double action_t::gcd() SC_CONST
   return trigger_gcd;
 }
 
-// action_t::travel_time =====================================================
+// action_t::travel_time ====================================================
 
 double action_t::travel_time()
 {
@@ -568,7 +568,7 @@ double action_t::travel_time()
   return t;
 }
 
-// action_t::player_buff =====================================================
+// action_t::player_buff ====================================================
 
 void action_t::player_buff()
 {
@@ -818,7 +818,7 @@ double action_t::resistance() SC_CONST
   return resist;
 }
 
-// action_t::total_crit_bonus ================================================
+// action_t::total_crit_bonus ===============================================
 
 double action_t::total_crit_bonus() SC_CONST
 {
@@ -833,7 +833,7 @@ double action_t::total_crit_bonus() SC_CONST
   return bonus;
 }
 
-// action_t::total_power =====================================================
+// action_t::total_power ====================================================
 
 double action_t::total_power() SC_CONST
 {
@@ -845,7 +845,7 @@ double action_t::total_power() SC_CONST
   return power;
 }
 
-// action_t::calculate_weapon_damage =========================================
+// action_t::calculate_weapon_damage ========================================
 
 double action_t::calculate_weapon_damage()
 {
@@ -872,7 +872,7 @@ double action_t::calculate_weapon_damage()
   return total_dmg;
 }
 
-// action_t::calculate_tick_damage ===========================================
+// action_t::calculate_tick_damage ==========================================
 
 double action_t::calculate_tick_damage()
 {
@@ -909,7 +909,7 @@ double action_t::calculate_tick_damage()
   return dmg;
 }
 
-// action_t::calculate_direct_damage =========================================
+// action_t::calculate_direct_damage ========================================
 
 double action_t::calculate_direct_damage()
 {
@@ -1082,7 +1082,7 @@ void action_t::tick()
   stats -> add_tick( time_to_tick );
 }
 
-// action_t::last_tick =======================================================
+// action_t::last_tick ======================================================
 
 void action_t::last_tick()
 {
@@ -1094,7 +1094,7 @@ void action_t::last_tick()
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
 }
 
-// action_t::travel ==========================================================
+// action_t::travel =========================================================
 
 void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 {
@@ -1189,7 +1189,7 @@ void action_t::assess_damage( player_t* t,
   stats -> add_result( dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : dmg_type ), dmg_result );
 }
 
-// action_t::additional_damage =============================================
+// action_t::additional_damage ==============================================
 
 void action_t::additional_damage( player_t* t,
                                   double dmg_amount,
@@ -1201,7 +1201,7 @@ void action_t::additional_damage( player_t* t,
   stats -> add_result( dmg_amount, dmg_type, dmg_result );
 }
 
-// action_t::schedule_execute ==============================================
+// action_t::schedule_execute ===============================================
 
 void action_t::schedule_execute()
 {
@@ -1248,7 +1248,7 @@ void action_t::schedule_execute()
   }
 }
 
-// action_t::schedule_tick =================================================
+// action_t::schedule_tick ==================================================
 
 void action_t::schedule_tick()
 {
@@ -1274,7 +1274,7 @@ void action_t::schedule_tick()
   if ( channeled ) player -> channeling = this;
 }
 
-// action_t::schedule_travel ===============================================
+// action_t::schedule_travel ================================================
 
 void action_t::schedule_travel( player_t* t )
 {
@@ -1297,7 +1297,7 @@ void action_t::schedule_travel( player_t* t )
   }
 }
 
-// action_t::reschedule_execute ============================================
+// action_t::reschedule_execute =============================================
 
 void action_t::reschedule_execute( double time )
 {
@@ -1321,7 +1321,7 @@ void action_t::reschedule_execute( double time )
   }
 }
 
-// action_t::refresh_duration ================================================
+// action_t::refresh_duration ===============================================
 
 void action_t::refresh_duration()
 {
@@ -1341,7 +1341,7 @@ void action_t::refresh_duration()
   dot -> recalculate_ready();
 }
 
-// action_t::extend_duration =================================================
+// action_t::extend_duration ================================================
 
 void action_t::extend_duration( int extra_ticks )
 {
@@ -1359,7 +1359,7 @@ void action_t::extend_duration( int extra_ticks )
   dot -> recalculate_ready();
 }
 
-// action_t::extend_duration_seconds =========================================
+// action_t::extend_duration_seconds ========================================
 
 void action_t::extend_duration_seconds( double extra_seconds )
 {
@@ -1406,7 +1406,7 @@ void action_t::extend_duration_seconds( double extra_seconds )
   dot -> recalculate_ready();
 }
 
-// action_t::update_ready ====================================================
+// action_t::update_ready ===================================================
 
 void action_t::update_ready()
 {
@@ -1441,7 +1441,7 @@ void action_t::update_ready()
   }
 }
 
-// action_t::usable_moving ====================================================
+// action_t::usable_moving ==================================================
 
 bool action_t::usable_moving()
 {
@@ -1604,7 +1604,7 @@ void action_t::cancel()
   player -> debuffs.casting -> expire();
 }
 
-// action_t::interrupt =========================================================
+// action_t::interrupt ======================================================
 
 void action_t::interrupt_action()
 {
@@ -1676,7 +1676,7 @@ void action_t::check_spec( int necessary_spec )
   }
 }
 
-// action_t::check_min_level ===================================================
+// action_t::check_min_level ================================================
 
 void action_t::check_min_level( int action_level )
 {

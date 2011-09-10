@@ -125,14 +125,14 @@ bool item_t::heroic() SC_CONST
   return is_heroic;
 }
 
-// item_t::ptr ===========================================================
+// item_t::ptr ==============================================================
 
 bool item_t::ptr() SC_CONST
 {
   return is_ptr;
 }
 
-// item_t::matching_type ===========================================================
+// item_t::matching_type ====================================================
 
 bool item_t::matching_type()
 {
@@ -140,7 +140,7 @@ bool item_t::matching_type()
   return is_matching_type;
 }
 
-// item_t::reforged ===========================================================
+// item_t::reforged =========================================================
 
 bool item_t::reforged() SC_CONST
 {
@@ -474,7 +474,7 @@ bool item_t::decode_stats()
   return true;
 }
 
-// item_t::decode_reforge =====================================================
+// item_t::decode_reforge ===================================================
 
 bool item_t::decode_reforge()
 {
@@ -765,7 +765,7 @@ bool item_t::decode_enchant()
   return true;
 }
 
-// item_t::decode_addon ===================================================
+// item_t::decode_addon =====================================================
 
 bool item_t::decode_addon()
 {
@@ -1265,7 +1265,7 @@ bool item_t::decode_weapon()
   return true;
 }
 
-// item_t::download_slot =============================================================
+// item_t::download_slot ====================================================
 
 bool item_t::download_slot( item_t& item,
                             const std::string& item_id,
@@ -1334,7 +1334,7 @@ bool item_t::download_slot( item_t& item,
   return success;
 }
 
-// item_t::download_item ================================================================
+// item_t::download_item ====================================================
 
 bool item_t::download_item( item_t& item, const std::string& item_id )
 {
@@ -1393,7 +1393,7 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
   return success;
 }
 
-// item_t::download_glyph ================================================================
+// item_t::download_glyph ===================================================
 
 bool item_t::download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id )
 {
@@ -1443,7 +1443,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
   return success;
 }
 
-// item_t::parse_gem ================================================================
+// item_t::parse_gem ========================================================
 
 int item_t::parse_gem( item_t&            item,
                        const std::string& gem_id )

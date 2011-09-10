@@ -848,7 +848,7 @@ static void trigger_flurry( attack_t* a, int stacks )
   }
 }
 
-// trigger_tier12_4pc_melee ========================================
+// trigger_tier12_4pc_melee =================================================
 
 static void trigger_tier12_4pc_melee( attack_t* a )
 {
@@ -1338,7 +1338,7 @@ struct bloodthirst_t : public warrior_attack_t
   }
 };
 
-// Charge ===========================================================
+// Charge ===================================================================
 
 struct charge_t : public warrior_attack_t
 {
@@ -1744,7 +1744,7 @@ struct mortal_strike_t : public warrior_attack_t
   }
 };
 
-// Fiery Attack Attack =========================================================
+// Fiery Attack Attack ======================================================
 
 struct fiery_attack_t : public warrior_attack_t
 {
@@ -2047,7 +2047,7 @@ struct revenge_t : public warrior_attack_t
   }
 };
 
-// Shattering Throw ==============================================================
+// Shattering Throw =========================================================
 
 // TO-DO: Only a shell at the moment. Needs testing for damage etc.
 struct shattering_throw_t : public warrior_attack_t
@@ -3039,7 +3039,7 @@ void warrior_t::init_talents()
   player_t::init_talents();
 }
 
-// warrior_t::init_spells ==================================================
+// warrior_t::init_spells ===================================================
 
 void warrior_t::init_spells()
 {
@@ -3586,7 +3586,7 @@ double warrior_t::composite_tank_block() SC_CONST
   return b;
 }
 
-// warrior_t::composite_tank_crit_block ==========================================
+// warrior_t::composite_tank_crit_block =====================================
 
 double warrior_t::composite_tank_crit_block() SC_CONST
 {
@@ -3600,7 +3600,7 @@ double warrior_t::composite_tank_crit_block() SC_CONST
   return b;
 }
 
-// warrior_t::composite_tank_crit ==========================================
+// warrior_t::composite_tank_crit ===========================================
 
 double warrior_t::composite_tank_crit( const school_type school ) SC_CONST
 {
@@ -3643,7 +3643,7 @@ int warrior_t::primary_role() SC_CONST
   return ROLE_ATTACK;
 }
 
-// warrior_t::assess_damage ==================================================
+// warrior_t::assess_damage =================================================
 
 double warrior_t::assess_damage( double            amount,
                                  const school_type school,
@@ -3713,7 +3713,7 @@ void warrior_t::create_options()
   option_t::copy( options, warrior_options );
 }
 
-// warrior_t::copy_from ===================================================
+// warrior_t::copy_from =====================================================
 
 void warrior_t::copy_from( player_t* source )
 {

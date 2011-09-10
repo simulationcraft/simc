@@ -554,7 +554,7 @@ static const stat_type reforge_stats[] =
   STAT_NONE
 };
 
-// Weapon Stat Proc Callback ==================================================
+// Weapon Stat Proc Callback ================================================
 
 struct weapon_stat_proc_callback_t : public action_callback_t
 {
@@ -583,7 +583,7 @@ struct weapon_stat_proc_callback_t : public action_callback_t
   }
 };
 
-// Weapon Discharge Proc Callback =============================================
+// Weapon Discharge Proc Callback ===========================================
 
 struct weapon_discharge_proc_callback_t : public action_callback_t
 {
@@ -1101,7 +1101,7 @@ bool enchant_t::download_addon( item_t&            item,
   return false;
 }
 
-// enchant_t::download_reforge ===============================================
+// enchant_t::download_reforge ==============================================
 
 bool enchant_t::download_reforge( item_t&            item,
                                   const std::string& reforge_id )
@@ -1121,7 +1121,7 @@ bool enchant_t::download_reforge( item_t&            item,
   return false;
 }
 
-// enchant_t::download_rsuffix ===============================================
+// enchant_t::download_rsuffix ==============================================
 
 bool enchant_t::download_rsuffix( item_t&            item,
                                   const std::string& rsuffix_id )

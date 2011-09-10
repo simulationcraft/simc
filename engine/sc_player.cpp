@@ -7,7 +7,7 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// dark_intent_callback ==================================================
+// dark_intent_callback =====================================================
 
 struct dark_intent_callback_t : public action_callback_t
 {
@@ -93,7 +93,7 @@ struct vengeance_t : public event_t
   }
 };
 
-// has_foreground_actions ================================================
+// has_foreground_actions ===================================================
 
 static bool has_foreground_actions( player_t* p )
 {
@@ -104,7 +104,7 @@ static bool has_foreground_actions( player_t* p )
   return false;
 }
 
-// init_replenish_targets ================================================
+// init_replenish_targets ===================================================
 
 static void init_replenish_targets( sim_t* sim )
 {
@@ -121,7 +121,7 @@ static void init_replenish_targets( sim_t* sim )
   }
 }
 
-// choose_replenish_targets ==============================================
+// choose_replenish_targets =================================================
 
 static void choose_replenish_targets( player_t* provider )
 {
@@ -191,7 +191,7 @@ static void choose_replenish_targets( player_t* provider )
   }
 }
 
-// replenish_raid ========================================================
+// replenish_raid ===========================================================
 
 static void replenish_raid( player_t* provider )
 {
@@ -273,7 +273,7 @@ static bool parse_role_string( sim_t* sim,
 }
 
 
-// parse_world_lag ========================================================
+// parse_world_lag ==========================================================
 
 static bool parse_world_lag( sim_t* sim,
                                const std::string& name,
@@ -294,7 +294,7 @@ static bool parse_world_lag( sim_t* sim,
 }
 
 
-// parse_world_lag ========================================================
+// parse_world_lag ==========================================================
 
 static bool parse_world_lag_stddev( sim_t* sim,
                                const std::string& name,
@@ -314,7 +314,7 @@ static bool parse_world_lag_stddev( sim_t* sim,
   return true;
 }
 
-// parse_brain_lag ========================================================
+// parse_brain_lag ==========================================================
 
 static bool parse_brain_lag( sim_t* sim,
                                const std::string& name,
@@ -333,7 +333,7 @@ static bool parse_brain_lag( sim_t* sim,
 }
 
 
-// parse_brain_lag_stddev ========================================================
+// parse_brain_lag_stddev ===================================================
 
 static bool parse_brain_lag_stddev( sim_t* sim,
                                const std::string& name,
@@ -539,7 +539,7 @@ player_t::player_t( sim_t*             s,
   if ( reaction_stddev == 0 ) reaction_stddev =   reaction_mean * 0.25;
 }
 
-// player_t::~player_t =====================================================
+// player_t::~player_t ======================================================
 
 player_t::~player_t()
 {
@@ -638,7 +638,7 @@ player_t::~player_t()
     delete sets;
 }
 
-// player_t::init ==========================================================
+// player_t::init ===========================================================
 
 bool player_t::init( sim_t* sim )
 {
@@ -754,7 +754,7 @@ bool player_t::init( sim_t* sim )
   return true;
 }
 
-// player_t::init ==========================================================
+// player_t::init ===========================================================
 
 void player_t::init()
 {
@@ -792,7 +792,7 @@ void player_t::init()
   init_stats();
 }
 
-// player_t::init_base =====================================================
+// player_t::init_base ======================================================
 
 void player_t::init_base()
 {
@@ -1055,7 +1055,7 @@ void player_t::init_race()
   }
 }
 
-// player_t::init_racials ======================================================
+// player_t::init_racials ===================================================
 
 void player_t::init_racials()
 {
@@ -1131,7 +1131,7 @@ void player_t::init_attack()
   armor_coeff = a * level + b;
 }
 
-// player_t::init_defense ====================================================
+// player_t::init_defense ===================================================
 
 void player_t::init_defense()
 {
@@ -1161,7 +1161,7 @@ void player_t::init_defense()
   if ( primary_role() == ROLE_TANK ) position = POSITION_FRONT;
 }
 
-// player_t::init_weapon ===================================================
+// player_t::init_weapon ====================================================
 
 void player_t::init_weapon( weapon_t* w )
 {
@@ -1172,21 +1172,21 @@ void player_t::init_weapon( weapon_t* w )
   if ( w -> slot == SLOT_RANGED    ) assert( w -> type > WEAPON_2H && w -> type < WEAPON_RANGED );
 }
 
-// player_t::init_unique_gear ==============================================
+// player_t::init_unique_gear ===============================================
 
 void player_t::init_unique_gear()
 {
   unique_gear_t::init( this );
 }
 
-// player_t::init_enchant ==================================================
+// player_t::init_enchant ===================================================
 
 void player_t::init_enchant()
 {
   enchant_t::init( this );
 }
 
-// player_t::init_resources ================================================
+// player_t::init_resources =================================================
 
 void player_t::init_resources( bool force )
 {
@@ -1245,7 +1245,7 @@ void player_t::init_resources( bool force )
   }
 }
 
-// player_t::init_professions ==============================================
+// player_t::init_professions ===============================================
 
 void player_t::init_professions()
 {
@@ -1294,7 +1294,7 @@ void player_t::init_professions()
   else if ( profession[ PROF_SKINNING ] >=  75 ) initial_attack_crit +=  3.0 / rating.attack_crit;
 }
 
-// Execute Pet Action =========================================================
+// Execute Pet Action =======================================================
 
 struct execute_pet_action_t : public action_t
 {
@@ -1336,7 +1336,7 @@ struct execute_pet_action_t : public action_t
   }
 };
 
-// player_t::init_target ============================================================
+// player_t::init_target ====================================================
 
 void player_t::init_target()
 {
@@ -1350,7 +1350,7 @@ void player_t::init_target()
   }
 }
 
-// player_t::init_use_item_actions ==================================================
+// player_t::init_use_item_actions ==========================================
 
 std::string player_t::init_use_item_actions( const std::string& append )
 {
@@ -1552,7 +1552,7 @@ void player_t::init_actions()
   action_sequence = "";
 }
 
-// player_t::init_rating ===================================================
+// player_t::init_rating ====================================================
 
 void player_t::init_rating()
 {
@@ -1563,7 +1563,7 @@ void player_t::init_rating()
   rating.init( sim, dbc, level, type );
 }
 
-// player_t::init_talents =================================================
+// player_t::init_talents ===================================================
 
 void player_t::init_talents()
 {
@@ -1580,7 +1580,7 @@ void player_t::init_talents()
   specialization = primary_tab();
 }
 
-// player_t::init_glyphs ==================================================
+// player_t::init_glyphs ====================================================
 
 void player_t::init_glyphs()
 {
@@ -1595,14 +1595,14 @@ void player_t::init_glyphs()
   }
 }
 
-// player_t::init_spells =================================================
+// player_t::init_spells ====================================================
 
 void player_t::init_spells()
 {
 
 }
 
-// player_t::init_buffs ====================================================
+// player_t::init_buffs =====================================================
 
 void player_t::init_buffs()
 {
@@ -1650,7 +1650,7 @@ void player_t::init_buffs()
   debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
 }
 
-// player_t::init_gains ====================================================
+// player_t::init_gains =====================================================
 
 void player_t::init_gains()
 {
@@ -1674,20 +1674,20 @@ void player_t::init_gains()
   gains.hymn_of_hope           = get_gain( "hymn_of_hope_max_mana" );
 }
 
-// player_t::init_procs ====================================================
+// player_t::init_procs =====================================================
 
 void player_t::init_procs()
 {
   procs.hat_donor = get_proc( "hat_donor" );
 }
 
-// player_t::init_uptimes ==================================================
+// player_t::init_uptimes ===================================================
 
 void player_t::init_uptimes()
 {
 }
 
-// player_t::init_rng ======================================================
+// player_t::init_rng =======================================================
 
 void player_t::init_rng()
 {
@@ -1700,7 +1700,7 @@ void player_t::init_rng()
   rngs.lag_brain    = get_rng( "lag_brain"    );
 }
 
-// player_t::init_stats ====================================================
+// player_t::init_stats =====================================================
 
 void player_t::init_stats()
 {
@@ -1720,7 +1720,7 @@ void player_t::init_values()
 
 }
 
-// player_t::init_scaling ==================================================
+// player_t::init_scaling ===================================================
 
 void player_t::init_scaling()
 {
@@ -1896,7 +1896,7 @@ item_t* player_t::find_item( const std::string& str )
   return 0;
 }
 
-// player_t::energy_regen_per_second ======================================
+// player_t::energy_regen_per_second ========================================
 
 double player_t::energy_regen_per_second() SC_CONST
 {
@@ -1905,7 +1905,7 @@ double player_t::energy_regen_per_second() SC_CONST
   return r;
 }
 
-// player_t::focus_regen_per_second ======================================
+// player_t::focus_regen_per_second =========================================
 
 double player_t::focus_regen_per_second() SC_CONST
 {
@@ -1914,7 +1914,7 @@ double player_t::focus_regen_per_second() SC_CONST
   return r;
 }
 
-// player_t::composite_attack_haste ========================================
+// player_t::composite_attack_haste =========================================
 
 double player_t::composite_attack_haste() SC_CONST
 {
@@ -1951,7 +1951,7 @@ double player_t::composite_attack_haste() SC_CONST
   return h;
 }
 
-// player_t::composite_attack_speed ========================================
+// player_t::composite_attack_speed =========================================
 
 double player_t::composite_attack_speed() SC_CONST
 {
@@ -1973,7 +1973,7 @@ double player_t::composite_attack_speed() SC_CONST
   return h;
 }
 
-// player_t::composite_attack_power ========================================
+// player_t::composite_attack_power =========================================
 
 double player_t::composite_attack_power() SC_CONST
 {
@@ -1988,7 +1988,7 @@ double player_t::composite_attack_power() SC_CONST
   return ap;
 }
 
-// player_t::composite_attack_crit =========================================
+// player_t::composite_attack_crit ==========================================
 
 double player_t::composite_attack_crit() SC_CONST
 {
@@ -2014,7 +2014,7 @@ double player_t::composite_attack_crit() SC_CONST
   return ac;
 }
 
-// player_t::composite_attack_hit ==========================================
+// player_t::composite_attack_hit ===========================================
 
 double player_t::composite_attack_hit() SC_CONST
 {
@@ -2027,7 +2027,7 @@ double player_t::composite_attack_hit() SC_CONST
   return ah;
 }
 
-// player_t::composite_armor =========================================
+// player_t::composite_armor ================================================
 
 double player_t::composite_armor() SC_CONST
 {
@@ -2071,7 +2071,7 @@ double player_t::composite_spell_resistance( const school_type school ) SC_CONST
   return a;
 }
 
-// player_t::composite_tank_miss ===========================================
+// player_t::composite_tank_miss ============================================
 
 double player_t::composite_tank_miss( const school_type school ) SC_CONST
 {
@@ -2091,7 +2091,7 @@ double player_t::composite_tank_miss( const school_type school ) SC_CONST
   return m;
 }
 
-// player_t::composite_tank_dodge ====================================
+// player_t::composite_tank_dodge ===========================================
 
 double player_t::composite_tank_dodge() SC_CONST
 {
@@ -2102,7 +2102,7 @@ double player_t::composite_tank_dodge() SC_CONST
   return d;
 }
 
-// player_t::composite_tank_parry ====================================
+// player_t::composite_tank_parry ===========================================
 
 double player_t::composite_tank_parry() SC_CONST
 {
@@ -2113,7 +2113,7 @@ double player_t::composite_tank_parry() SC_CONST
   return p;
 }
 
-// player_t::composite_tank_block ===================================
+// player_t::composite_tank_block ===========================================
 
 double player_t::composite_tank_block() SC_CONST
 {
@@ -2122,7 +2122,7 @@ double player_t::composite_tank_block() SC_CONST
   return b;
 }
 
-// player_t::composite_tank_block_reduction ===================================
+// player_t::composite_tank_block_reduction =================================
 
 double player_t::composite_tank_block_reduction() SC_CONST
 {
@@ -2136,21 +2136,21 @@ double player_t::composite_tank_block_reduction() SC_CONST
   return b;
 }
 
-// player_t::composite_tank_crit_block ===================================
+// player_t::composite_tank_crit_block ======================================
 
 double player_t::composite_tank_crit_block() SC_CONST
 {
   return 0;
 }
 
-// player_t::composite_tank_crit ==========================================
+// player_t::composite_tank_crit ============================================
 
 double player_t::composite_tank_crit( const school_type /* school */ ) SC_CONST
 {
   return 0;
 }
 
-// player_t::diminished_dodge ========================================
+// player_t::diminished_dodge ===============================================
 
 double player_t::diminished_dodge() SC_CONST
 {
@@ -2171,7 +2171,7 @@ double player_t::diminished_dodge() SC_CONST
   return loss > 0 ? loss : 0;
 }
 
-// player_t::diminished_parry ========================================
+// player_t::diminished_parry ===============================================
 
 double player_t::diminished_parry() SC_CONST
 {
@@ -2192,7 +2192,7 @@ double player_t::diminished_parry() SC_CONST
   return loss > 0 ? loss : 0;
 }
 
-// player_t::composite_spell_haste ========================================
+// player_t::composite_spell_haste ==========================================
 
 double player_t::composite_spell_haste() SC_CONST
 {
@@ -2235,7 +2235,7 @@ double player_t::composite_spell_haste() SC_CONST
   return h;
 }
 
-// player_t::composite_spell_power ========================================
+// player_t::composite_spell_power ==========================================
 
 double player_t::composite_spell_power( const school_type school ) SC_CONST
 {
@@ -2268,7 +2268,7 @@ double player_t::composite_spell_power( const school_type school ) SC_CONST
   return sp;
 }
 
-// player_t::composite_spell_power_multiplier =============================
+// player_t::composite_spell_power_multiplier ===============================
 
 double player_t::composite_spell_power_multiplier() SC_CONST
 {
@@ -2288,7 +2288,7 @@ double player_t::composite_spell_power_multiplier() SC_CONST
   return m;
 }
 
-// player_t::composite_spell_crit ==========================================
+// player_t::composite_spell_crit ===========================================
 
 double player_t::composite_spell_crit() SC_CONST
 {
@@ -2318,7 +2318,7 @@ double player_t::composite_spell_crit() SC_CONST
   return sc;
 }
 
-// player_t::composite_spell_hit ===========================================
+// player_t::composite_spell_hit ============================================
 
 double player_t::composite_spell_hit() SC_CONST
 {
@@ -2331,14 +2331,14 @@ double player_t::composite_spell_hit() SC_CONST
   return sh;
 }
 
-// player_t::composite_mp5 =================================================
+// player_t::composite_mp5 ==================================================
 
 double player_t::composite_mp5() SC_CONST
 {
   return mp5 + mp5_per_intellect * floor( intellect() );
 }
 
-// player_t::composite_attack_power_multiplier =============================
+// player_t::composite_attack_power_multiplier ==============================
 
 double player_t::composite_attack_power_multiplier() SC_CONST
 {
@@ -2359,7 +2359,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
   return m;
 }
 
-// player_t::composite_attribute_multiplier ================================
+// player_t::composite_attribute_multiplier =================================
 
 double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 {
@@ -2377,7 +2377,7 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
   return m;
 }
 
-// player_t::composite_player_multiplier ================================
+// player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) SC_CONST
 {
@@ -2417,7 +2417,7 @@ double player_t::composite_player_multiplier( const school_type /* school */, ac
   return m;
 }
 
-// player_t::composite_player_td_multiplier ==============================
+// player_t::composite_player_td_multiplier =================================
 
 double player_t::composite_player_td_multiplier( const school_type /* school */, action_t* /* a */ ) SC_CONST
 {
@@ -2428,7 +2428,7 @@ double player_t::composite_player_td_multiplier( const school_type /* school */,
   return m;
 }
 
-// player_t::composite_player_heal_multiplier ================================
+// player_t::composite_player_heal_multiplier ===============================
 
 double player_t::composite_player_heal_multiplier( const school_type /* school */ ) SC_CONST
 {
@@ -2446,7 +2446,7 @@ double player_t::composite_player_heal_multiplier( const school_type /* school *
   return m;
 }
 
-// player_t::composite_player_th_multiplier ==============================
+// player_t::composite_player_th_multiplier =================================
 
 double player_t::composite_player_th_multiplier( const school_type /* school */ ) SC_CONST
 {
@@ -2457,7 +2457,7 @@ double player_t::composite_player_th_multiplier( const school_type /* school */ 
   return m;
 }
 
-// player_t::composite_player_absorb_multiplier ================================
+// player_t::composite_player_absorb_multiplier =============================
 
 double player_t::composite_player_absorb_multiplier( const school_type /* school */ ) SC_CONST
 {
@@ -2475,7 +2475,7 @@ double player_t::composite_player_absorb_multiplier( const school_type /* school
   return m;
 }
 
-// player_t::composite_movement_speed =====================================
+// player_t::composite_movement_speed =======================================
 
 double player_t::composite_movement_speed() SC_CONST
 {
@@ -2511,7 +2511,7 @@ double player_t::composite_movement_speed() SC_CONST
   return speed;
 }
 
-// player_t::strength() ====================================================
+// player_t::strength() =====================================================
 
 double player_t::strength() SC_CONST
 {
@@ -2530,7 +2530,7 @@ double player_t::strength() SC_CONST
   return a;
 }
 
-// player_t::agility() =====================================================
+// player_t::agility() ======================================================
 
 double player_t::agility() SC_CONST
 {
@@ -2549,7 +2549,7 @@ double player_t::agility() SC_CONST
   return a;
 }
 
-// player_t::stamina() =====================================================
+// player_t::stamina() ======================================================
 
 double player_t::stamina() SC_CONST
 {
@@ -2565,7 +2565,7 @@ double player_t::stamina() SC_CONST
   return a;
 }
 
-// player_t::intellect() ===================================================
+// player_t::intellect() ====================================================
 
 double player_t::intellect() SC_CONST
 {
@@ -2576,7 +2576,7 @@ double player_t::intellect() SC_CONST
   return a;
 }
 
-// player_t::spirit() ======================================================
+// player_t::spirit() =======================================================
 
 double player_t::spirit() SC_CONST
 {
@@ -2593,7 +2593,7 @@ double player_t::spirit() SC_CONST
 }
 
 /*
-// player_t::haste_rating() ======================================================
+// player_t::haste_rating() =================================================
 
 double player_t::haste_rating() SC_CONST
 {
@@ -2603,7 +2603,7 @@ double player_t::haste_rating() SC_CONST
 }
 
 
-// player_t::crit_rating() ======================================================
+// player_t::crit_rating() ==================================================
 
 double player_t::crit_rating() SC_CONST
 {
@@ -2613,7 +2613,7 @@ double player_t::crit_rating() SC_CONST
 }
 
 
-// player_t::mastery_rating() ======================================================
+// player_t::mastery_rating() ===============================================
 
 double player_t::mastery_rating() SC_CONST
 {
@@ -2623,7 +2623,7 @@ double player_t::mastery_rating() SC_CONST
 }
 
 
-// player_t::hit_rating() ======================================================
+// player_t::hit_rating() ===================================================
 
 double player_t::hit_rating() SC_CONST
 {
@@ -2633,7 +2633,7 @@ double player_t::hit_rating() SC_CONST
 }
 
 
-// player_t::expertise_rating() ======================================================
+// player_t::expertise_rating() =============================================
 
 double player_t::expertise_rating() SC_CONST
 {
@@ -2643,7 +2643,7 @@ double player_t::expertise_rating() SC_CONST
 }
 
 
-// player_t::dodge_rating() ======================================================
+// player_t::dodge_rating() =================================================
 
 double player_t::dodge_rating() SC_CONST
 {
@@ -2653,7 +2653,7 @@ double player_t::dodge_rating() SC_CONST
 }
 
 
-// player_t::parry_rating() ======================================================
+// player_t::parry_rating() =================================================
 
 double player_t::parry_rating() SC_CONST
 {
@@ -2665,7 +2665,7 @@ double player_t::parry_rating() SC_CONST
 }
 */
 
-// player_t::combat_begin ==================================================
+// player_t::combat_begin ===================================================
 
 void player_t::combat_begin( sim_t* sim )
 {
@@ -2681,7 +2681,7 @@ void player_t::combat_begin( sim_t* sim )
   player_t::warrior_combat_begin     ( sim );
 }
 
-// player_t::combat_begin ==================================================
+// player_t::combat_begin ===================================================
 
 void player_t::combat_begin()
 {
@@ -2733,7 +2733,7 @@ void player_t::combat_begin()
   action_sequence = "";
 }
 
-// player_t::combat_end ====================================================
+// player_t::combat_end =====================================================
 
 void player_t::combat_end( sim_t* sim )
 {
@@ -2749,7 +2749,7 @@ void player_t::combat_end( sim_t* sim )
   player_t::warrior_combat_end     ( sim );
 }
 
-// player_t::combat_end ====================================================
+// player_t::combat_end =====================================================
 
 void player_t::combat_end()
 {
@@ -2775,7 +2775,7 @@ void player_t::combat_end()
   iteration_dpse.push_back( sim -> current_time ? iteration_dmg / sim -> current_time : 0 );
 }
 
-// player_t::reset =========================================================
+// player_t::reset ==========================================================
 
 void player_t::reset()
 {
@@ -3189,7 +3189,7 @@ action_t* player_t::execute_action()
   return action;
 }
 
-// player_t::regen =========================================================
+// player_t::regen ==========================================================
 
 void player_t::regen( double periodicity )
 {
@@ -3272,7 +3272,7 @@ void player_t::regen( double periodicity )
   }
 }
 
-// player_t::resource_loss =================================================
+// player_t::resource_loss ==================================================
 
 double player_t::resource_loss( int       resource,
                                 double    amount,
@@ -3313,7 +3313,7 @@ double player_t::resource_loss( int       resource,
   return actual_amount;
 }
 
-// player_t::resource_gain =================================================
+// player_t::resource_gain ==================================================
 
 double player_t::resource_gain( int       resource,
                                 double    amount,
@@ -3360,7 +3360,7 @@ double player_t::resource_gain( int       resource,
   return actual_amount;
 }
 
-// player_t::resource_available ============================================
+// player_t::resource_available =============================================
 
 bool player_t::resource_available( int    resource,
                                    double cost ) SC_CONST
@@ -3373,7 +3373,7 @@ bool player_t::resource_available( int    resource,
   return resource_current[ resource ] >= cost;
 }
 
-// player_t::recalculate_resource_max ======================================
+// player_t::recalculate_resource_max =======================================
 
 void player_t::recalculate_resource_max( int resource )
 {
@@ -3419,7 +3419,7 @@ void player_t::recalculate_resource_max( int resource )
   }
 }
 
-// player_t::primary_tab ===================================================
+// player_t::primary_tab ====================================================
 
 int player_t::primary_tab()
 {
@@ -3487,14 +3487,14 @@ int player_t::normalize_by() SC_CONST
   return STAT_ATTACK_POWER;
 }
 
-// player_t::health_percentage() ===================================================
+// player_t::health_percentage() ============================================
 
 double player_t::health_percentage() SC_CONST
 {
   return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
 }
 
-// target_t::time_to_die =====================================================
+// target_t::time_to_die ====================================================
 
 double player_t::time_to_die() SC_CONST
 {
@@ -3692,7 +3692,7 @@ void player_t::stat_loss( int       stat,
   }
 }
 
-// player_t::cost_reduction_gain ======================================================
+// player_t::cost_reduction_gain ============================================
 
 void player_t::cost_reduction_gain( int       school,
                                     double    amount,
@@ -3719,7 +3719,7 @@ void player_t::cost_reduction_gain( int       school,
   }
 }
 
-// player_t::cost_reduction_loss ======================================================
+// player_t::cost_reduction_loss ============================================
 
 void player_t::cost_reduction_loss( int       school,
                                     double    amount,
@@ -3928,7 +3928,7 @@ void player_t::register_tick_callback( int64_t mask,
   }
 }
 
-// player_t::register_heal_callback ========================================
+// player_t::register_heal_callback =========================================
 
 void player_t::register_heal_callback( int64_t mask,
                                         action_callback_t* cb )
@@ -3942,7 +3942,7 @@ void player_t::register_heal_callback( int64_t mask,
   }
 }
 
-// player_t::register_harmful_spell_callback ========================================
+// player_t::register_harmful_spell_callback ================================
 
 void player_t::register_harmful_spell_callback( int64_t mask,
                                         action_callback_t* cb )
@@ -3985,7 +3985,7 @@ void player_t::register_direct_damage_callback( int64_t mask,
   }
 }
 
-// player_t::register_tick_heal_callback ==================================
+// player_t::register_tick_heal_callback ====================================
 
 void player_t::register_tick_heal_callback( int64_t mask,
                                             action_callback_t* cb )
@@ -3999,7 +3999,7 @@ void player_t::register_tick_heal_callback( int64_t mask,
   }
 }
 
-// player_t::register_direct_heal_callback ================================
+// player_t::register_direct_heal_callback ==================================
 
 void player_t::register_direct_heal_callback( int64_t mask,
                                               action_callback_t* cb )
@@ -4257,7 +4257,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
   return u;
 }
 
-// player_t::get_rng =======================================================
+// player_t::get_rng ========================================================
 
 rng_t* player_t::get_rng( const std::string& n, int type )
 {
@@ -4286,7 +4286,7 @@ rng_t* player_t::get_rng( const std::string& n, int type )
   return rng;
 }
 
-// player_t::get_player_distance ===========================================
+// player_t::get_player_distance ============================================
 
 double player_t::get_player_distance( player_t* p )
 {
@@ -4298,7 +4298,7 @@ double player_t::get_player_distance( player_t* p )
   return distance;
 }
 
-// player_t::get_position_distance =========================================
+// player_t::get_position_distance ==========================================
 
 double player_t::get_position_distance( double m, double v )
 {
@@ -4417,9 +4417,9 @@ struct stop_moving_t : public action_t
   }
 };
 
-// ===== Racial Abilities ==================================================
+// ===== Racial Abilities ===================================================
 
-// Arcane Torrent ==========================================================
+// Arcane Torrent ===========================================================
 
 struct arcane_torrent_t : public action_t
 {
@@ -4487,7 +4487,7 @@ struct arcane_torrent_t : public action_t
   }
 };
 
-// Berserking ==========================================================
+// Berserking ===============================================================
 
 struct berserking_t : public action_t
 {
@@ -4521,7 +4521,7 @@ struct berserking_t : public action_t
   }
 };
 
-// Blood Fury ==========================================================
+// Blood Fury ===============================================================
 
 struct blood_fury_t : public action_t
 {
@@ -4564,7 +4564,7 @@ struct blood_fury_t : public action_t
   }
 };
 
-// Rocket Barrage =====================================================
+// Rocket Barrage ===========================================================
 
 struct rocket_barrage_t : public spell_t
 {
@@ -4588,7 +4588,7 @@ struct rocket_barrage_t : public spell_t
   }
 };
 
-// Stoneform ==========================================================
+// Stoneform ================================================================
 
 struct stoneform_t : public action_t
 {
@@ -4622,7 +4622,7 @@ struct stoneform_t : public action_t
   }
 };
 
-// Cycle Action ============================================================
+// Cycle Action =============================================================
 
 struct cycle_t : public action_t
 {
@@ -4666,7 +4666,7 @@ struct cycle_t : public action_t
   }
 };
 
-// Lifeblood ===============================================================
+// Lifeblood ================================================================
 
 struct lifeblood_t : public action_t
 {
@@ -4721,7 +4721,7 @@ struct lifeblood_t : public action_t
   }
 };
 
-// Restart Sequence Action =================================================
+// Restart Sequence Action ==================================================
 
 struct restart_sequence_t : public action_t
 {
@@ -4771,7 +4771,7 @@ struct restart_sequence_t : public action_t
   }
 };
 
-// Restore Mana Action =====================================================
+// Restore Mana Action ======================================================
 
 struct restore_mana_t : public action_t
 {
@@ -4804,7 +4804,7 @@ struct restore_mana_t : public action_t
   }
 };
 
-// Snapshot Stats ============================================================
+// Snapshot Stats ===========================================================
 
 struct snapshot_stats_t : public action_t
 {
@@ -4897,7 +4897,7 @@ struct snapshot_stats_t : public action_t
   }
 };
 
-// Wait Fixed Action =========================================================
+// Wait Fixed Action ========================================================
 
 struct wait_fixed_t : public wait_action_base_t
 {
@@ -4926,7 +4926,7 @@ struct wait_fixed_t : public wait_action_base_t
   }
 };
 
-// Wait Until Ready Action ===================================================
+// Wait Until Ready Action ==================================================
 
 struct wait_until_ready_t : public wait_fixed_t
 {
@@ -4964,7 +4964,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name 
 double wait_for_cooldown_t::execute_time() SC_CONST
 { return wait_cd -> remains() + epsilon; }
 
-// Use Item Action ===========================================================
+// Use Item Action ==========================================================
 
 struct use_item_t : public action_t
 {
@@ -5146,7 +5146,7 @@ struct use_item_t : public action_t
   }
 };
 
-// Cancel Buff ================================================================
+// Cancel Buff ==============================================================
 
 struct cancel_buff_t : public action_t
 {
@@ -5230,7 +5230,7 @@ pet_t* player_t::find_pet( const std::string& pet_name )
   return 0;
 }
 
-// player_t::trigger_replenishment ================================================
+// player_t::trigger_replenishment ==========================================
 
 void player_t::trigger_replenishment()
 {
@@ -5247,7 +5247,7 @@ void player_t::trigger_replenishment()
   }
 }
 
-// player_t::parse_talent_trees ===================================================
+// player_t::parse_talent_trees =============================================
 
 bool player_t::parse_talent_trees( const int encoding[ MAX_TALENT_SLOTS ] )
 {
@@ -6168,7 +6168,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
   return true;
 }
 
-// player_t::copy_from =================================================
+// player_t::copy_from ======================================================
 
 void player_t::copy_from( player_t* source )
 {

@@ -5,7 +5,7 @@
 
 #include "simulationcraft.h"
 
-// Unary Operators ===========================================================
+// Unary Operators ==========================================================
 
 struct expr_unary_t : public action_expr_t
 {
@@ -37,7 +37,7 @@ struct expr_unary_t : public action_expr_t
   }
 };
 
-// Binary Operators ==========================================================
+// Binary Operators =========================================================
 
 struct expr_binary_t : public action_expr_t
 {
@@ -85,7 +85,7 @@ struct expr_binary_t : public action_expr_t
           result_num = left -> result_num / right -> result_num;
           break;
         }
-      
+
         case TOK_EQ:
         {
           right_result = right -> evaluate();
@@ -187,7 +187,7 @@ error:
   }
 };
 
-// precedence ================================================================
+// precedence ===============================================================
 
 int expression_t::precedence( int expr_token_type )
 {
@@ -226,7 +226,7 @@ int expression_t::precedence( int expr_token_type )
   return 0;
 }
 
-// is_unary ==================================================================
+// is_unary =================================================================
 
 int expression_t::is_unary( int expr_token_type )
 {
@@ -241,7 +241,7 @@ int expression_t::is_unary( int expr_token_type )
   return false;
 }
 
-// is_binary =================================================================
+// is_binary ================================================================
 
 int expression_t::is_binary( int expr_token_type )
 {
@@ -266,7 +266,7 @@ int expression_t::is_binary( int expr_token_type )
   return false;
 }
 
-// next_token ================================================================
+// next_token ===============================================================
 
 int expression_t::next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str, token_type_t prev_token )
 {
@@ -357,7 +357,7 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
   return TOK_UNKNOWN;
 }
 
-// parse_tokens ==============================================================
+// parse_tokens =============================================================
 
 void expression_t::parse_tokens( action_t* action,
                                  std::vector<expr_token_t>& tokens,
@@ -374,7 +374,7 @@ void expression_t::parse_tokens( action_t* action,
   }
 }
 
-// print_tokens ==============================================================
+// print_tokens =============================================================
 
 void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
@@ -387,7 +387,7 @@ void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
   }
 }
 
-// convert_to_unary ==========================================================
+// convert_to_unary =========================================================
 
 void expression_t::convert_to_unary( action_t* /* action */, std::vector<expr_token_t>& tokens )
 {
@@ -412,7 +412,7 @@ void expression_t::convert_to_unary( action_t* /* action */, std::vector<expr_to
   }
 }
 
-// convert_to_rpn ============================================================
+// convert_to_rpn ===========================================================
 
 bool expression_t::convert_to_rpn( action_t* /* action */, std::vector<expr_token_t>& tokens )
 {
@@ -477,7 +477,7 @@ bool expression_t::convert_to_rpn( action_t* /* action */, std::vector<expr_toke
   return true;
 }
 
-// build_expression_tree =====================================================
+// build_expression_tree ====================================================
 
 static action_expr_t* build_expression_tree( action_t* action,
                                              std::vector<expr_token_t>& tokens )
@@ -543,7 +543,7 @@ exit_label:
   return res;
 }
 
-// action_expr_t::parse ======================================================
+// action_expr_t::parse =====================================================
 
 action_expr_t* action_expr_t::parse( action_t* action,
                                      const std::string& expr_str )

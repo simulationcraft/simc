@@ -1092,7 +1092,7 @@ struct warlock_spell_t : public spell_t
     }
   }
 
-  // trigger_fiery_imp ============================================
+  // trigger_fiery_imp ======================================================
 
   static void trigger_fiery_imp( spell_t* s )
   {
@@ -1110,7 +1110,7 @@ struct warlock_spell_t : public spell_t
     }
   }
 
-  // trigger_tier12_4pc_caster =====================================
+  // trigger_tier12_4pc_caster ==============================================
 
   static void trigger_tier12_4pc_caster( spell_t* s )
   {
@@ -1639,7 +1639,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
 
 struct infernal_pet_t : public warlock_guardian_pet_t
 {
-  // Immolation Damage Spell =====================================================
+  // Immolation Damage Spell ================================================
 
   struct immolation_damage_t : public warlock_pet_spell_t
   {

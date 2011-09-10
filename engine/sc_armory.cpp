@@ -322,7 +322,7 @@ static bool parse_item_stats( item_t& item,
   return true;
 }
 
-// parse_item_reforge =========================================================
+// parse_item_reforge =======================================================
 
 static bool parse_item_reforge( item_t& item,
                                 xml_node_t* /* xml */ )

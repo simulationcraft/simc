@@ -96,7 +96,7 @@ static char parse_token( std::string&            token_str,
   return '\0';
 }
 
-// parse_value =============================================================
+// parse_value ==============================================================
 
 static void parse_value( sim_t*                  sim,
                          js_node_t*              node,

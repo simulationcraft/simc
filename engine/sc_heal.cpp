@@ -129,7 +129,7 @@ void heal_t::player_buff()
                    player_spell_power, player_attack_power, player_multiplier );
 }
 
-// heal_t::target_buff ====================================================
+// heal_t::target_buff ======================================================
 
 void heal_t::target_debuff( player_t* /* t */, int /* dmg_type */ )
 {
@@ -156,7 +156,7 @@ double heal_t::haste() SC_CONST
   return h;
 }
 
-// heal_t::execute ===========================================================
+// heal_t::execute ==========================================================
 
 void heal_t::execute()
 {
@@ -209,7 +209,7 @@ void heal_t::execute()
     }
 }
 
-// heal_t::travel ============================================================
+// heal_t::travel ===========================================================
 
 void heal_t::travel( player_t* t, int travel_result, double travel_heal=0 )
 {
@@ -271,7 +271,7 @@ void heal_t::tick()
   stats -> add_tick( time_to_tick );
 }
 
-// heal_t::calculate_result ==================================================
+// heal_t::calculate_result =================================================
 
 void heal_t::calculate_result()
 {
@@ -293,7 +293,7 @@ void heal_t::calculate_result()
   if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
-// heal_t::calculate_direct_damage ===========================================
+// heal_t::calculate_direct_damage ==========================================
 
 double heal_t::calculate_direct_damage()
 {
@@ -329,7 +329,7 @@ double heal_t::calculate_direct_damage()
   return dmg;
 }
 
-// heal_t::calculate_tick_damage =============================================
+// heal_t::calculate_tick_damage ============================================
 
 double heal_t::calculate_tick_damage()
 {
@@ -361,7 +361,7 @@ double heal_t::calculate_tick_damage()
   return dmg;
 }
 
-// heal_t::assess_damage ========================================================
+// heal_t::assess_damage ====================================================
 
 void heal_t::assess_damage( player_t* t,
                             double heal_amount,
@@ -411,7 +411,7 @@ void heal_t::assess_damage( player_t* t,
   stats -> add_result( heal_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );
 }
 
-// heal_t::last_tick =======================================================
+// heal_t::last_tick ========================================================
 
 void heal_t::last_tick()
 {
@@ -514,7 +514,7 @@ absorb_t::absorb_t( const char* n, player_t* player, const char* sname, int t ) 
   init_absorb_t_();
 }
 
-// absorb_t::absorb_t ======== absorb Constructor by Spell ID =====================
+// absorb_t::absorb_t ======== absorb Constructor by Spell ID ===============
 
 absorb_t::absorb_t( const char* n, player_t* player, const uint32_t id, int t ) :
   spell_t( n, id, player, t )
@@ -522,7 +522,7 @@ absorb_t::absorb_t( const char* n, player_t* player, const uint32_t id, int t ) 
   init_absorb_t_();
 }
 
-// absorb_t::parse_options ====================================================
+// absorb_t::parse_options ==================================================
 
 void absorb_t::parse_options( option_t*          options,
                               const std::string& options_str )
@@ -536,7 +536,7 @@ void absorb_t::parse_options( option_t*          options,
   }
 }
 
-// absorb_t::player_buff ======================================================
+// absorb_t::player_buff ====================================================
 
 void absorb_t::player_buff()
 {
@@ -576,7 +576,7 @@ void absorb_t::player_buff()
                    player_spell_power, player_attack_power, player_multiplier );
 }
 
-// absorb_t::target_debuff ====================================================
+// absorb_t::target_debuff ==================================================
 
 void absorb_t::target_debuff( player_t* /* t */, int /* dmg_type */ )
 {
@@ -594,7 +594,7 @@ void absorb_t::target_debuff( player_t* /* t */, int /* dmg_type */ )
                    target_attack_power, target_spell_power, target_multiplier );
 }
 
-// absorb_t::haste ============================================================
+// absorb_t::haste ==========================================================
 
 double absorb_t::haste() SC_CONST
 {
@@ -603,7 +603,7 @@ double absorb_t::haste() SC_CONST
   return h;
 }
 
-// absorb_t::execute ===========================================================
+// absorb_t::execute ========================================================
 
 void absorb_t::execute()
 {
@@ -655,7 +655,7 @@ void absorb_t::execute()
       }
 }
 
-// absorb_t::travel ============================================================
+// absorb_t::travel =========================================================
 
 void absorb_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
 {
@@ -665,7 +665,7 @@ void absorb_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
   }
 }
 
-// absorb_t::assess_damage =====================================================
+// absorb_t::assess_damage ==================================================
 
 void absorb_t::assess_damage( player_t* t,
                               double    heal_amount,
@@ -692,7 +692,7 @@ void absorb_t::assess_damage( player_t* t,
   stats -> add_result( heal_amount, heal_type, heal_result );
 }
 
-// absorb_t::calculate_result ==================================================
+// absorb_t::calculate_result ===============================================
 
 void absorb_t::calculate_result()
 {
@@ -706,7 +706,7 @@ void absorb_t::calculate_result()
   if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
-// absorb_t::calculate_direct_damage ===========================================
+// absorb_t::calculate_direct_damage ========================================
 
 double absorb_t::calculate_direct_damage()
 {

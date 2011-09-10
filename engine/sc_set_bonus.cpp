@@ -23,7 +23,7 @@ set_bonus_t::set_bonus_t()
   count[ SET_PVP_4PC_CASTER ] = count[ SET_PVP_4PC_MELEE ] = count[ SET_PVP_4PC_TANK ] = count[ SET_PVP_4PC_HEAL ] = -1;
 }
 
-// set_bonus_t::tier11 =======================================================
+// set_bonus_t::tier11 ======================================================
 
 int set_bonus_t::tier11_2pc_caster() SC_CONST { return ( count[ SET_T11_2PC_CASTER ] > 0 || ( count[ SET_T11_2PC_CASTER ] < 0 && count[ SET_T11_CASTER ] >= 2 ) ) ? 1 : 0; }
 
@@ -41,7 +41,7 @@ int set_bonus_t::tier11_2pc_heal() SC_CONST { return ( count[ SET_T11_2PC_HEAL ]
 
 int set_bonus_t::tier11_4pc_heal() SC_CONST { return ( count[ SET_T11_4PC_HEAL ] > 0 || ( count[ SET_T11_4PC_HEAL ] < 0 && count[ SET_T11_HEAL ] >= 4 ) ) ? 1 : 0; }
 
-// set_bonus_t::tier12 =======================================================
+// set_bonus_t::tier12 ======================================================
 
 int set_bonus_t::tier12_2pc_caster() SC_CONST { return ( count[ SET_T12_2PC_CASTER ] > 0 || ( count[ SET_T12_2PC_CASTER ] < 0 && count[ SET_T12_CASTER ] >= 2 ) ) ? 1 : 0; }
 
@@ -59,7 +59,7 @@ int set_bonus_t::tier12_2pc_heal() SC_CONST { return ( count[ SET_T12_2PC_HEAL ]
 
 int set_bonus_t::tier12_4pc_heal() SC_CONST { return ( count[ SET_T12_4PC_HEAL ] > 0 || ( count[ SET_T12_4PC_HEAL ] < 0 && count[ SET_T12_HEAL ] >= 4 ) ) ? 1 : 0; }
 
-// set_bonus_t::tier13 =======================================================
+// set_bonus_t::tier13 ======================================================
 
 int set_bonus_t::tier13_2pc_caster() SC_CONST { return ( count[ SET_T13_2PC_CASTER ] > 0 || ( count[ SET_T13_2PC_CASTER ] < 0 && count[ SET_T13_CASTER ] >= 2 ) ) ? 1 : 0; }
 
@@ -77,7 +77,7 @@ int set_bonus_t::tier13_2pc_heal() SC_CONST { return ( count[ SET_T13_2PC_HEAL ]
 
 int set_bonus_t::tier13_4pc_heal() SC_CONST { return ( count[ SET_T13_4PC_HEAL ] > 0 || ( count[ SET_T13_4PC_HEAL ] < 0 && count[ SET_T13_HEAL ] >= 4 ) ) ? 1 : 0; }
 
-// set_bonus_t::tier14 =======================================================
+// set_bonus_t::tier14 ======================================================
 
 int set_bonus_t::tier14_2pc_caster() SC_CONST { return ( count[ SET_T14_2PC_CASTER ] > 0 || ( count[ SET_T14_2PC_CASTER ] < 0 && count[ SET_T14_CASTER ] >= 2 ) ) ? 1 : 0; }
 
@@ -95,7 +95,7 @@ int set_bonus_t::tier14_2pc_heal() SC_CONST { return ( count[ SET_T14_2PC_HEAL ]
 
 int set_bonus_t::tier14_4pc_heal() SC_CONST { return ( count[ SET_T14_4PC_HEAL ] > 0 || ( count[ SET_T14_4PC_HEAL ] < 0 && count[ SET_T14_HEAL ] >= 4 ) ) ? 1 : 0; }
 
-// set_bonus_t::pvp =======================================================
+// set_bonus_t::pvp =========================================================
 
 int set_bonus_t::pvp_2pc_caster() SC_CONST { return ( count[ SET_PVP_2PC_CASTER ] > 0 || ( count[ SET_PVP_2PC_CASTER ] < 0 && count[ SET_PVP_CASTER ] >= 2 ) ) ? 1 : 0; }
 
@@ -159,7 +159,7 @@ action_expr_t* set_bonus_t::create_expression( action_t* action,
   return 0;
 }
 
-// set_bonus_array_t::set_bonus_array_t ======================================
+// set_bonus_array_t::set_bonus_array_t =====================================
 
 set_bonus_array_t::set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] ) :
   p ( p )

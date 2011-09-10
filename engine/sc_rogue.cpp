@@ -503,7 +503,7 @@ struct rogue_poison_t : public spell_t
 // Static Functions
 // ==========================================================================
 
-// break_stealth ===========================================================
+// break_stealth ============================================================
 
 static void break_stealth( rogue_t* p )
 {
@@ -530,7 +530,7 @@ static void break_stealth( rogue_t* p )
   }
 }
 
-// trigger_apply_poisons ===================================================
+// trigger_apply_poisons ====================================================
 
 static void trigger_apply_poisons( rogue_attack_t* a, weapon_t* we = 0 )
 {
@@ -558,7 +558,7 @@ static void trigger_apply_poisons( rogue_attack_t* a, weapon_t* we = 0 )
   }
 }
 
-// trigger_bandits_guile ===================================================
+// trigger_bandits_guile ====================================================
 
 static void trigger_bandits_guile( rogue_attack_t* a )
 {
@@ -575,7 +575,7 @@ static void trigger_bandits_guile( rogue_attack_t* a )
     p -> buffs_bandits_guile -> trigger( 1, ( (current_stack + 1) / 4 ) * 0.10 );
 }
 
-// trigger_other_poisons ===================================================
+// trigger_other_poisons ====================================================
 
 static void trigger_other_poisons( rogue_t* p, weapon_t* other_w )
 {
@@ -594,7 +594,7 @@ static void trigger_other_poisons( rogue_t* p, weapon_t* other_w )
   }
 }
 
-// trigger_combat_potency ==================================================
+// trigger_combat_potency ===================================================
 
 static void trigger_combat_potency( rogue_attack_t* a )
 {
@@ -610,7 +610,7 @@ static void trigger_combat_potency( rogue_attack_t* a )
   }
 }
 
-// trigger_cut_to_the_chase ================================================
+// trigger_cut_to_the_chase =================================================
 
 static void trigger_cut_to_the_chase( rogue_attack_t* a )
 {
@@ -626,7 +626,7 @@ static void trigger_cut_to_the_chase( rogue_attack_t* a )
     p -> buffs_slice_and_dice -> trigger( COMBO_POINTS_MAX );
 }
 
-// trigger_initiative ======================================================
+// trigger_initiative =======================================================
 
 static void trigger_initiative( rogue_attack_t* a )
 {
@@ -639,7 +639,7 @@ static void trigger_initiative( rogue_attack_t* a )
     p -> combo_points -> add( 1, p -> talents.initiative );
 }
 
-// trigger_energy_refund ===================================================
+// trigger_energy_refund ====================================================
 
 static void trigger_energy_refund( rogue_attack_t* a )
 {
@@ -701,7 +701,7 @@ static void trigger_restless_blades( rogue_attack_t* a )
   p -> cooldowns_killing_spree -> ready   -= reduction;
 }
 
-// trigger_ruthlessness ====================================================
+// trigger_ruthlessness =====================================================
 
 static void trigger_ruthlessness( rogue_attack_t* a )
 {
@@ -720,7 +720,7 @@ static void trigger_ruthlessness( rogue_attack_t* a )
   }
 }
 
-// trigger_seal_fate =======================================================
+// trigger_seal_fate ========================================================
 
 static void trigger_seal_fate( rogue_attack_t* a )
 {
@@ -865,7 +865,7 @@ static void trigger_venomous_wounds( rogue_attack_t* a )
   }
 }
 
-// trigger_tier12_2pc_melee ===========================================================
+// trigger_tier12_2pc_melee =================================================
 
 static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 {
@@ -956,7 +956,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
   }
 }
 
-// trigger_tier12_4pc_melee ================================================
+// trigger_tier12_4pc_melee =================================================
 
 static void trigger_tier12_4pc_melee( attack_t* s )
 {
@@ -1056,9 +1056,9 @@ static void remove_poison_debuff( rogue_t* p )
   t -> debuffs.poisoned -> decrement();
 }
 
-// =========================================================================
+// ==========================================================================
 // Attacks
-// =========================================================================
+// ==========================================================================
 
 double rogue_attack_t::armor() SC_CONST
 {
@@ -1072,7 +1072,7 @@ double rogue_attack_t::armor() SC_CONST
   return a;
 }
 
-// rogue_attack_t::init_ ===================================================
+// rogue_attack_t::init_ ====================================================
 
 void rogue_attack_t::init_rogue_attack_t_()
 {
@@ -1106,7 +1106,7 @@ void rogue_attack_t::init_rogue_attack_t_()
   base_dd_multiplier *= 1.0 + p -> spec_assassins_resolve -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
 }
 
-// rogue_attack_t::parse_options ===========================================
+// rogue_attack_t::parse_options ============================================
 
 void rogue_attack_t::parse_options( option_t*          options,
                                     const std::string& options_str )
@@ -1114,7 +1114,7 @@ void rogue_attack_t::parse_options( option_t*          options,
   attack_t::parse_options( options, options_str );
 }
 
-// rogue_attack_t::parse_options ===========================================
+// rogue_attack_t::parse_options ============================================
 
 void rogue_attack_t::parse_options( const std::string& options_str )
 {
@@ -1125,7 +1125,7 @@ void rogue_attack_t::parse_options( const std::string& options_str )
   parse_options( options, options_str );
 }
 
-// rogue_attack_t::cost ====================================================
+// rogue_attack_t::cost =====================================================
 
 double rogue_attack_t::cost() SC_CONST
 {
@@ -1137,7 +1137,7 @@ double rogue_attack_t::cost() SC_CONST
   return c;
 }
 
-// rogue_attack_t::consume_resource ========================================
+// rogue_attack_t::consume_resource =========================================
 
 void rogue_attack_t::consume_resource()
 {
@@ -1164,7 +1164,7 @@ void rogue_attack_t::consume_resource()
     trigger_energy_refund( this );
 }
 
-// rogue_attack_t::execute =================================================
+// rogue_attack_t::execute ==================================================
 
 void rogue_attack_t::execute()
 {
@@ -1221,7 +1221,7 @@ void rogue_attack_t::execute()
   }
 }
 
-// rogue_attack_t::calculate_weapon_damage ================================
+// rogue_attack_t::calculate_weapon_damage ==================================
 
 double rogue_attack_t::calculate_weapon_damage()
 {
@@ -1239,7 +1239,7 @@ double rogue_attack_t::calculate_weapon_damage()
   return dmg;
 }
 
-// rogue_attack_t::player_buff ============================================
+// rogue_attack_t::player_buff ==============================================
 
 void rogue_attack_t::player_buff()
 {
@@ -1251,7 +1251,7 @@ void rogue_attack_t::player_buff()
     player_crit += p -> buffs_cold_blood -> base_value() / 100.0;
 }
 
-// rogue_attack_t::total_multiplier =======================================
+// rogue_attack_t::total_multiplier =========================================
 
 double rogue_attack_t::total_multiplier() SC_CONST
 {
@@ -1287,7 +1287,7 @@ double rogue_attack_t::total_multiplier() SC_CONST
   return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier * m;
 }
 
-// rogue_attack_t::ready() ================================================
+// rogue_attack_t::ready() ==================================================
 
 bool rogue_attack_t::ready()
 {
@@ -1323,7 +1323,7 @@ bool rogue_attack_t::ready()
   return attack_t::ready();
 }
 
-// rogue_attack_t::assess_damage ===========================================
+// rogue_attack_t::assess_damage ============================================
 
 void rogue_attack_t::assess_damage( player_t* t,
                                     double amount,
@@ -1345,7 +1345,7 @@ void rogue_attack_t::assess_damage( player_t* t,
   }*/
 }
 
-// rogue_attack_t::add_combo_points ========================================
+// rogue_attack_t::add_combo_points =========================================
 
 void rogue_attack_t::add_combo_points()
 {
@@ -1357,7 +1357,7 @@ void rogue_attack_t::add_combo_points()
   }
 }
 
-// rogue_attack_t::add_trigger_buff ========================================
+// rogue_attack_t::add_trigger_buff =========================================
 
 void rogue_attack_t::add_trigger_buff( buff_t* buff )
 {
@@ -1365,7 +1365,7 @@ void rogue_attack_t::add_trigger_buff( buff_t* buff )
     m_buff = buff;
 }
 
-// rogue_attack_t::trigger_buff ===========================================
+// rogue_attack_t::trigger_buff =============================================
 
 void rogue_attack_t::trigger_buff()
 {
@@ -1373,7 +1373,7 @@ void rogue_attack_t::trigger_buff()
     m_buff -> trigger();
 }
 
-// Melee Attack ============================================================
+// Melee Attack =============================================================
 
 struct melee_t : public rogue_attack_t
 {
@@ -1420,7 +1420,7 @@ struct melee_t : public rogue_attack_t
   }
 };
 
-// Auto Attack =============================================================
+// Auto Attack ==============================================================
 
 struct auto_attack_t : public action_t
 {
@@ -1487,7 +1487,7 @@ struct adrenaline_rush_t : public rogue_attack_t
   }
 };
 
-// Ambush ==================================================================
+// Ambush ===================================================================
 
 struct ambush_t : public rogue_attack_t
 {
@@ -1534,7 +1534,7 @@ struct ambush_t : public rogue_attack_t
   }
 };
 
-// Backstab ==================================================================
+// Backstab =================================================================
 
 struct backstab_t : public rogue_attack_t
 {
@@ -1587,7 +1587,7 @@ struct backstab_t : public rogue_attack_t
   }
 };
 
-// Blade Flurry ============================================================
+// Blade Flurry =============================================================
 
 struct blade_flurry_t : public rogue_attack_t
 {
@@ -1600,7 +1600,7 @@ struct blade_flurry_t : public rogue_attack_t
   }
 };
 
-// Cold Blood ==============================================================
+// Cold Blood ===============================================================
 
 struct cold_blood_t : public rogue_attack_t
 {
@@ -1744,7 +1744,7 @@ struct envenom_t : public rogue_attack_t
   }
 };
 
-// Eviscerate ================================================================
+// Eviscerate ===============================================================
 
 struct eviscerate_t : public rogue_attack_t
 {
@@ -2021,7 +2021,7 @@ struct garrote_t : public rogue_attack_t
   }
 };
 
-// Hemorrhage =============================================================
+// Hemorrhage ===============================================================
 
 struct hemorrhage_t : public rogue_attack_t
 {
@@ -2250,7 +2250,7 @@ struct mutilate_t : public rogue_attack_t
   }
 };
 
-// Premeditation =============================================================
+// Premeditation ============================================================
 
 struct premeditation_t : public rogue_attack_t
 {
@@ -2264,7 +2264,7 @@ struct premeditation_t : public rogue_attack_t
   }
 };
 
-// Recuperate ================================================================
+// Recuperate ===============================================================
 
 struct recuperate_t : public rogue_attack_t
 {
@@ -2301,7 +2301,7 @@ struct recuperate_t : public rogue_attack_t
   }
 };
 
-// Revealing Strike ==========================================================
+// Revealing Strike =========================================================
 
 struct revealing_strike_t : public rogue_attack_t
 {
@@ -2616,7 +2616,7 @@ struct shadow_dance_t : public rogue_attack_t
   }
 };
 
-// Tricks of the Trade =======================================================
+// Tricks of the Trade ======================================================
 
 struct tricks_of_the_trade_t : public rogue_attack_t
 {
@@ -2736,11 +2736,11 @@ struct vendetta_t : public rogue_attack_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Poisons
-// =========================================================================
+// ==========================================================================
 
-// rogue_poison_t::total_multiplier =======================================
+// rogue_poison_t::total_multiplier =========================================
 
 double rogue_poison_t::total_multiplier() SC_CONST
 {
@@ -2901,7 +2901,7 @@ struct instant_poison_t : public rogue_poison_t
   }
 };
 
-// Wound Poison ============================================================
+// Wound Poison =============================================================
 
 struct wound_poison_t : public rogue_poison_t
 {
@@ -2966,7 +2966,7 @@ struct wound_poison_t : public rogue_poison_t
   }
 };
 
-// Apply Poison ===========================================================
+// Apply Poison =============================================================
 
 struct apply_poison_t : public action_t
 {
@@ -3058,9 +3058,9 @@ struct apply_poison_t : public action_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Stealth
-// =========================================================================
+// ==========================================================================
 
 struct stealth_t : public spell_t
 {
@@ -3098,9 +3098,9 @@ struct stealth_t : public spell_t
   }
 };
 
-// =========================================================================
+// ==========================================================================
 // Buffs
-// =========================================================================
+// ==========================================================================
 
 struct adrenaline_rush_buff_t : public new_buff_t
 {
@@ -3263,9 +3263,9 @@ struct vendetta_buff_t : public new_buff_t
 
 } // ANONYMOUS NAMESPACE ===================================================
 
-// =========================================================================
+// ==========================================================================
 // Rogue Character Definition
-// =========================================================================
+// ==========================================================================
 
 // rogue_t::composite_attribute_multiplier ==================================
 
@@ -3279,7 +3279,7 @@ double rogue_t::composite_attribute_multiplier( int attr ) SC_CONST
   return m;
 }
 
-// rogue_t::composite_attack_speed ==================================
+// rogue_t::composite_attack_speed ==========================================
 
 double rogue_t::composite_attack_speed() SC_CONST
 {
@@ -3297,7 +3297,7 @@ double rogue_t::composite_attack_speed() SC_CONST
   return h;
 }
 
-// rogue_t::matching_gear_multiplier ==================================
+// rogue_t::matching_gear_multiplier ========================================
 
 double rogue_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
@@ -3334,7 +3334,7 @@ double rogue_t::composite_player_multiplier( const school_type school, action_t*
   return m;
 }
 
-// rogue_t::init_actions ===================================================
+// rogue_t::init_actions ====================================================
 
 void rogue_t::init_actions()
 {
@@ -3540,7 +3540,7 @@ void rogue_t::init_actions()
   player_t::init_actions();
 }
 
-// rogue_t::create_action  =================================================
+// rogue_t::create_action  ==================================================
 
 action_t* rogue_t::create_action( const std::string& name,
                                   const std::string& options_str )
@@ -3581,7 +3581,7 @@ action_t* rogue_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-// rogue_t::create_expression ==============================================
+// rogue_t::create_expression ===============================================
 
 action_expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 {
@@ -3598,7 +3598,7 @@ action_expr_t* rogue_t::create_expression( action_t* a, const std::string& name_
   return player_t::create_expression( a, name_str );
 }
 
-// rogue_t::init_base ========================================================
+// rogue_t::init_base =======================================================
 
 void rogue_t::init_base()
 {
@@ -3619,7 +3619,7 @@ void rogue_t::init_base()
   diminished_parry_capi = 0.006870;
 }
 
-// rogue_t::init_talents ======================================================
+// rogue_t::init_talents ====================================================
 
 void rogue_t::init_talents()
 {
@@ -3677,7 +3677,7 @@ void rogue_t::init_talents()
   player_t::init_talents();
 }
 
-// rogue_t::init_spells ======================================================
+// rogue_t::init_spells =====================================================
 
 void rogue_t::init_spells()
 {
@@ -3732,7 +3732,7 @@ void rogue_t::init_spells()
   sets = new set_bonus_array_t( this, set_bonuses );
 }
 
-// rogue_t::init_gains =======================================================
+// rogue_t::init_gains ======================================================
 
 void rogue_t::init_gains()
 {
@@ -3750,7 +3750,7 @@ void rogue_t::init_gains()
   gains_venomous_vim       = get_gain( "venomous_vim"       );
 }
 
-// rogue_t::init_procs =======================================================
+// rogue_t::init_procs ======================================================
 
 void rogue_t::init_procs()
 {
@@ -3768,7 +3768,7 @@ void rogue_t::init_procs()
   procs_rolled_tier12_2pc_melee  = get_proc( "rolled_burning_wounds" );
 }
 
-// rogue_t::init_uptimes =====================================================
+// rogue_t::init_uptimes ====================================================
 
 void rogue_t::init_uptimes()
 {
@@ -3782,7 +3782,7 @@ void rogue_t::init_uptimes()
   uptimes_poisoned   = get_uptime( "poisoned"   );
 }
 
-// rogue_t::init_rng =========================================================
+// rogue_t::init_rng ========================================================
 
 void rogue_t::init_rng()
 {
@@ -3860,14 +3860,14 @@ void rogue_t::init_buffs()
   buffs_vendetta           = new vendetta_buff_t           ( this, talents.vendetta -> spell_id() );
 }
 
-// rogue_t::init_values ====================================================
+// rogue_t::init_values =====================================================
 
 void rogue_t::init_values()
 {
   player_t::init_values();
 }
 
-// trigger_honor_among_thieves =============================================
+// trigger_honor_among_thieves ==============================================
 
 struct honor_among_thieves_callback_t : public action_callback_t
 {
@@ -3907,7 +3907,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
   }
 };
 
-// rogue_t::register_callbacks ===============================================
+// rogue_t::register_callbacks ==============================================
 
 void rogue_t::register_callbacks()
 {
@@ -3944,7 +3944,7 @@ void rogue_t::register_callbacks()
   }
 }
 
-// rogue_t::combat_begin ===================================================
+// rogue_t::combat_begin ====================================================
 
 void rogue_t::combat_begin()
 {
@@ -3992,7 +3992,7 @@ void rogue_t::reset()
   last_tier12_4pc = -1;
 }
 
-// rogue_t::clear_debuffs ==================================================
+// rogue_t::clear_debuffs ===================================================
 
 void rogue_t::clear_debuffs()
 {
@@ -4002,7 +4002,7 @@ void rogue_t::clear_debuffs()
   combo_points -> clear();
 }
 
-// rogue_t::energy_regen_per_second ========================================
+// rogue_t::energy_regen_per_second =========================================
 
 double rogue_t::energy_regen_per_second() SC_CONST
 {
@@ -4014,7 +4014,7 @@ double rogue_t::energy_regen_per_second() SC_CONST
   return r;
 }
 
-// rogue_t::regen ==========================================================
+// rogue_t::regen ===========================================================
 
 void rogue_t::regen( double periodicity )
 {
@@ -4049,7 +4049,7 @@ void rogue_t::regen( double periodicity )
     uptimes_bandits_guile[ i ] -> update( ( buffs_bandits_guile -> current_stack / 4 - 1 ) == i );
 }
 
-// rogue_t::available ======================================================
+// rogue_t::available =======================================================
 
 double rogue_t::available() SC_CONST
 {
@@ -4061,7 +4061,7 @@ double rogue_t::available() SC_CONST
   return std::max( ( 25 - energy ) / energy_regen_per_second(), 0.1 );
 }
 
-// rogue_t::create_options ================================================
+// rogue_t::create_options ==================================================
 
 static bool parse_combo_points( sim_t* sim,
                                const std::string& name,
@@ -4079,7 +4079,7 @@ static bool parse_combo_points( sim_t* sim,
   return true;
 }
 
-// rogue_t::copy_options ===================================================
+// rogue_t::copy_options ====================================================
 
 void rogue_t::create_options()
 {
@@ -4096,7 +4096,7 @@ void rogue_t::create_options()
   option_t::copy( options, rogue_options );
 }
 
-// rogue_t::create_profile =================================================
+// rogue_t::create_profile ==================================================
 
 bool rogue_t::create_profile( std::string& profile_str, int save_type, bool save_html )
 {
@@ -4120,7 +4120,7 @@ bool rogue_t::create_profile( std::string& profile_str, int save_type, bool save
   return true;
 }
 
-// rogue_t::copy_from ===================================================
+// rogue_t::copy_from =======================================================
 
 void rogue_t::copy_from( player_t* source )
 {
@@ -4130,7 +4130,7 @@ void rogue_t::copy_from( player_t* source )
   tricks_of_the_trade_target = p -> tricks_of_the_trade_target;
 }
 
-// rogue_t::decode_set =====================================================
+// rogue_t::decode_set ======================================================
 
 int rogue_t::decode_set( item_t& item )
 {

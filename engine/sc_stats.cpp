@@ -119,7 +119,7 @@ void stats_t::add_result( double amount,
   timeline_dmg[ index ] += amount;
 }
 
-// stats_t::add_execute =============================================================
+// stats_t::add_execute =====================================================
 
 void stats_t::add_execute( double time )
 {
@@ -135,7 +135,7 @@ void stats_t::add_execute( double time )
   last_execute = sim -> current_time;
 }
 
-// stats_t::add_tick =============================================================
+// stats_t::add_tick ========================================================
 
 void stats_t::add_tick( double time )
 {

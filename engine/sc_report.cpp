@@ -23,7 +23,7 @@ static const char* beta_warnings[] =
 };
 #endif
 
-// simplify_html =============================================================
+// simplify_html ============================================================
 
 static void simplify_html( std::string& buffer )
 {
@@ -54,7 +54,7 @@ static inline void replace_entity( std::string& str, char c, const char* text )
   }
 }
 
-// encode_html ====================================================
+// encode_html ==============================================================
 
 std::string encode_html( const char* str )
 {
@@ -68,7 +68,7 @@ std::string encode_html( const char* str )
   return nstr;
 }
 
-// print_text_action ==============================================================
+// print_text_action ========================================================
 
 static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 {
@@ -162,7 +162,7 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
   util_t::fprintf( file, "\n" );
 }
 
-// print_text_actions =============================================================
+// print_text_actions =======================================================
 
 static void print_text_actions( FILE* file, player_t* p )
 {
@@ -219,7 +219,7 @@ static void print_text_actions( FILE* file, player_t* p )
   }
 }
 
-// print_text_buffs ===============================================================
+// print_text_buffs =========================================================
 
 static void print_text_buffs( FILE* file, player_t* p )
 {
@@ -322,7 +322,7 @@ static void print_text_buffs( FILE* file, player_t* p )
   }
 }
 
-// print_text_buffs ===============================================================
+// print_text_buffs =========================================================
 
 static void print_text_buffs( FILE* file, sim_t* sim )
 {
@@ -388,7 +388,7 @@ static void print_text_buffs( FILE* file, sim_t* sim )
   }
 }
 
-// print_text_core_stats ===========================================================
+// print_text_core_stats ====================================================
 
 static void print_text_core_stats( FILE* file, player_t* p )
 {
@@ -404,7 +404,7 @@ static void print_text_core_stats( FILE* file, player_t* p )
                    p -> resource_buffed[ RESOURCE_MANA   ], p -> resource_max[ RESOURCE_MANA   ] );
 }
 
-// print_text_spell_stats ==========================================================
+// print_text_spell_stats ===================================================
 
 static void print_text_spell_stats( FILE* file, player_t* p )
 {
@@ -418,7 +418,7 @@ static void print_text_spell_stats( FILE* file, player_t* p )
                    p -> buffed_mp5, p -> composite_mp5(), p -> stats.mp5 );
 }
 
-// print_text_attack_stats =========================================================
+// print_text_attack_stats ==================================================
 
 static void print_text_attack_stats( FILE* file, player_t* p )
 {
@@ -432,7 +432,7 @@ static void print_text_attack_stats( FILE* file, player_t* p )
                    100 * ( 1 / p -> buffed_attack_speed - 1 ), 100 * ( 1 / p -> composite_attack_speed() - 1 ), p -> stats.haste_rating );
 }
 
-// print_text_defense_stats =======================================================
+// print_text_defense_stats =================================================
 
 static void print_text_defense_stats( FILE* file, player_t* p )
 {
@@ -446,7 +446,7 @@ static void print_text_defense_stats( FILE* file, player_t* p )
                    100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ) );
 }
 
-// print_text_gains ===============================================================
+// print_text_gains =========================================================
 
 static void print_text_gains( FILE* file, player_t* p )
 {
@@ -475,7 +475,7 @@ static void print_text_gains( FILE* file, player_t* p )
   }
 }
 
-// print_text_pet_gains ===============================================================
+// print_text_pet_gains =====================================================
 
 static void print_text_pet_gains( FILE* file, player_t* p )
 {
@@ -511,7 +511,7 @@ static void print_text_pet_gains( FILE* file, player_t* p )
   }
 }
 
-// print_text_procs ================================================================
+// print_text_procs =========================================================
 
 static void print_text_procs( FILE* file, player_t* p )
 {
@@ -528,7 +528,7 @@ static void print_text_procs( FILE* file, player_t* p )
   }
 }
 
-// print_text_uptime ===============================================================
+// print_text_uptime ========================================================
 
 static void print_text_uptime( FILE* file, player_t* p )
 {
@@ -544,7 +544,7 @@ static void print_text_uptime( FILE* file, player_t* p )
   }
 }
 
-// print_text_waiting ===============================================================
+// print_text_waiting =======================================================
 
 static void print_text_waiting( FILE* file, sim_t* sim )
 {
@@ -567,7 +567,7 @@ static void print_text_waiting( FILE* file, sim_t* sim )
   if ( nobody_waits ) util_t::fprintf( file, "    All players active 100%% of the time.\n" );
 }
 
-// print_text_performance ==========================================================
+// print_text_performance ===================================================
 
 static void print_text_performance( FILE* file, sim_t* sim )
 {
@@ -589,7 +589,7 @@ static void print_text_performance( FILE* file, sim_t* sim )
   sim -> rng -> report( file );
 }
 
-// print_text_scale_factors ========================================================
+// print_text_scale_factors =================================================
 
 static void print_text_scale_factors( FILE* file, sim_t* sim )
 {
@@ -639,7 +639,7 @@ static void print_text_scale_factors( FILE* file, sim_t* sim )
   }
 }
 
-// print_text_scale_factors ========================================================
+// print_text_scale_factors =================================================
 
 static void print_text_scale_factors( FILE* file, player_t* p )
 {
@@ -686,7 +686,7 @@ static void print_text_scale_factors( FILE* file, player_t* p )
   util_t::fprintf( file, "    Wowhead : %s\n", wowhead.c_str() );
 }
 
-// print_text_dps_plots ============================================================
+// print_text_dps_plots =====================================================
 
 static void print_text_dps_plots( FILE* file, player_t* p )
 {
@@ -720,7 +720,7 @@ static void print_text_dps_plots( FILE* file, player_t* p )
   }
 }
 
-// print_text_reference_dps ========================================================
+// print_text_reference_dps =================================================
 
 static void print_text_reference_dps( FILE* file, sim_t* sim )
 {
@@ -838,7 +838,7 @@ static void print_text_hat_donors( FILE* file, sim_t* sim )
   }
 }
 
-// print_text_player =========================================================
+// print_text_player ========================================================
 
 static void print_text_player( FILE* file, player_t* p )
 {
@@ -880,7 +880,7 @@ static void print_text_player( FILE* file, player_t* p )
 
 }
 
-// print_html_contents =======================================================
+// print_html_contents ======================================================
 
 static void print_html_contents( FILE*  file, sim_t* sim )
 {
@@ -1188,7 +1188,7 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    "\t\t</div>\n\n" );
 }
 
-// print_html_raid_summary ===================================================
+// print_html_raid_summary ==================================================
 
 static void print_html_raid_summary( FILE*  file, sim_t* sim )
 {
@@ -1310,7 +1310,7 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
 
 }
 
-// print_html_scale_factors ===================================================
+// print_html_scale_factors =================================================
 
 static void print_html_scale_factors( FILE*  file, sim_t* sim )
 {
@@ -1404,7 +1404,7 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
                    "\t\t</div>\n\n" );
 }
 
-// print_html_auras_buffs ==================================================
+// print_html_auras_buffs ===================================================
 
 static void print_html_auras_buffs( FILE*  file, sim_t* sim )
 {
@@ -1523,7 +1523,7 @@ static void print_html_auras_buffs( FILE*  file, sim_t* sim )
 
 }
 
-// print_html_help_boxes =====================================================
+// print_html_help_boxes ====================================================
 
 static void print_html_help_boxes( FILE*  file, sim_t* sim )
 {
@@ -1818,7 +1818,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t<!-- End Help Boxes -->\n" );
 }
 
-// print_html_action_damage ===================================================
+// print_html_action_damage =================================================
 
 static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
 {
@@ -2165,7 +2165,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
   }
 }
 
-// print_html_action_resource ==================================================
+// print_html_action_resource ===============================================
 
 static void print_html_action_resource( FILE* file, stats_t* s, int j )
 {
@@ -2198,7 +2198,7 @@ static void print_html_action_resource( FILE* file, stats_t* s, int j )
                    s -> rpe );
 }
 
-// print_html_gear ============================================================
+// print_html_gear ==========================================================
 
 static void print_html_gear ( FILE* file, player_t* a )
 {
@@ -2234,7 +2234,7 @@ static void print_html_gear ( FILE* file, player_t* a )
   }
 }
 
-// print_html_profile ============================================================
+// print_html_profile =======================================================
 
 static void print_html_profile ( FILE* file, player_t* a )
 {
@@ -2257,7 +2257,7 @@ static void print_html_profile ( FILE* file, player_t* a )
 }
 
 
-// print_html_stats ============================================================
+// print_html_stats =========================================================
 
 static void print_html_stats ( FILE* file, player_t* a )
 {
@@ -2572,7 +2572,7 @@ static void print_html_stats ( FILE* file, player_t* a )
 }
 
 
-// print_html_talents_player ======================================================
+// print_html_talents_player ================================================
 
 static void print_html_talents( FILE* file, player_t* p )
 {
@@ -2628,7 +2628,7 @@ static void print_html_talents( FILE* file, player_t* p )
 }
 
 
-// print_html_player_scale_factors =========================================================
+// print_html_player_scale_factors ==========================================
 
 static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p )
 {
@@ -2786,7 +2786,7 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
                    "\t\t\t\t</div>\n" );
 }
 
-// print_html_player_action_priority_list =========================================================
+// print_html_player_action_priority_list ===================================
 
 static void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p )
 {
@@ -2854,7 +2854,7 @@ util_t::fprintf( file,
 
 }
 
-// print_html_player_statistics =========================================================
+// print_html_player_statistics =============================================
 
 static void print_html_player_statistics( FILE* file, player_t* p )
 {
@@ -3048,7 +3048,7 @@ static void print_html_player_statistics( FILE* file, player_t* p )
                   dps_error_str.c_str() );
 }
 
-// print_html_player_resources =========================================================
+// print_html_player_resources ==============================================
 
 static void print_html_player_resources( FILE* file, player_t* p )
 {
@@ -3248,7 +3248,7 @@ util_t::fprintf( file,
                  "\t\t\t\t</div>\n" );
 }
 
-// print_html_player_charts =========================================================
+// print_html_player_charts =================================================
 
 static void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
 {
@@ -3415,7 +3415,7 @@ util_t::fprintf( file,
 }
 
 
-// print_html_player_buffs =========================================================
+// print_html_player_buffs ==================================================
 
 static void print_html_player_buffs( FILE* file, player_t* p )
 {
@@ -3590,7 +3590,7 @@ static void print_html_player_buffs( FILE* file, player_t* p )
 }
 
 
-// print_html_player =========================================================
+// print_html_player ========================================================
 
 static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 {
@@ -4158,7 +4158,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
   util_t::fprintf( file, "\n" );
 }
 
-// report_t::print_html ======================================================
+// report_t::print_html =====================================================
 void report_t::print_html( sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_name.size();
@@ -4734,7 +4734,7 @@ void report_t::print_xml( sim_t* sim )
   sim -> errorf( "XML not currently supported.\n" );
 }
 
-// report_t::print_profiles ==================================================
+// report_t::print_profiles =================================================
 
 void report_t::print_profiles( sim_t* sim )
 {
@@ -4825,7 +4825,7 @@ void report_t::print_profiles( sim_t* sim )
   }
 }
 
-// report_t::print_spell_query ===============================================
+// report_t::print_spell_query ==============================================
 
 void report_t::print_spell_query( sim_t* sim )
 {
@@ -4859,7 +4859,7 @@ void report_t::print_spell_query( sim_t* sim )
   }
 }
 
-// report_t::print_suite =====================================================
+// report_t::print_suite ====================================================
 
 void report_t::print_suite( sim_t* sim )
 {
