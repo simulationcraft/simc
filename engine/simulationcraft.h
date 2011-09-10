@@ -4937,14 +4937,25 @@ struct js_t
 
 // Handy Actions =============================================================
 
+struct wait_action_base_t : public action_t
+{
+  static const double epsilon = 0.000001;
+
+  wait_action_base_t( player_t* player, const char* name ) :
+    action_t( ACTION_OTHER, name, player )
+  { trigger_gcd = 0; }
+
+  virtual void execute()
+  { player -> total_waiting += time_to_execute; }
+};
+
 // Wait For Cooldown Action =================================================
 
-struct wait_for_cooldown_t : public action_t
+struct wait_for_cooldown_t : public wait_action_base_t
 {
   cooldown_t* wait_cd;
-  wait_for_cooldown_t( player_t* player, const std::string& cd_name );
+  wait_for_cooldown_t( player_t* player, const char* cd_name );
   virtual double execute_time() SC_CONST;
-  virtual void execute();
 };
 
 

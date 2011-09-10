@@ -4899,12 +4899,12 @@ struct snapshot_stats_t : public action_t
 
 // Wait Fixed Action =========================================================
 
-struct wait_fixed_t : public action_t
+struct wait_fixed_t : public wait_action_base_t
 {
   action_expr_t* time_expr;
 
   wait_fixed_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "wait", player )
+    wait_action_base_t( player, "wait" )
   {
     std::string sec_str = "1.0";
 
@@ -4916,19 +4916,13 @@ struct wait_fixed_t : public action_t
     parse_options( options, options_str );
 
     time_expr = action_expr_t::parse( this, sec_str );
-    trigger_gcd = 0;
   }
 
   virtual double execute_time() SC_CONST
   {
     int result = time_expr -> evaluate();
     assert( result == TOK_NUM ); (void)result;
-    return time_expr -> result_num;
-  }
-
-  virtual void execute()
-  {
-    player -> total_waiting += time_to_execute;
+    return time_expr -> result_num + epsilon;
   }
 };
 
@@ -4956,9 +4950,19 @@ struct wait_until_ready_t : public wait_fixed_t
       if ( remains > 0 && remains < wait ) wait = remains;
     }
 
-    return wait + 0.001;
+    return wait + epsilon;
   }
 };
+
+// Wait For Cooldown Action =================================================
+
+wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name ) :
+  wait_action_base_t( player, ( "wait_for_" + std::string( cd_name ) ).c_str() ),
+  wait_cd( player -> get_cooldown( cd_name ) )
+{}
+
+double wait_for_cooldown_t::execute_time() SC_CONST
+{ return wait_cd -> remains() + epsilon; }
 
 // Use Item Action ===========================================================
 
