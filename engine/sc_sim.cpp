@@ -1608,8 +1608,7 @@ void sim_t::analyze()
   {
     int last = ( int ) floor( iteration_timeline[ i ] );
     int num_buckets = divisor_timeline.size();
-    int delta = 1 + last - num_buckets;
-    if( delta > 0 ) divisor_timeline.insert( divisor_timeline.end(), delta, 0 );
+    if( 1 + last > num_buckets ) divisor_timeline.resize( 1 + last, 0 );
     for( int j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }
 

@@ -115,8 +115,8 @@ void stats_t::add_result( double amount,
   int index = ( int ) ( sim -> current_time );
   if ( index >= num_buckets )
   {
-    timeline_amount.insert( timeline_amount.begin() + num_buckets, index, 0 );
-    num_buckets += index;
+    timeline_amount.resize( index * 2, 0 );
+    num_buckets = index * 2;
   }
 
   timeline_amount[ index ] += amount;
@@ -242,7 +242,7 @@ void stats_t::analyze()
     timeline_amount[ i ] /= sim -> divisor_timeline[ i ];
   }
 
-  timeline_aps.assign( num_buckets, 0 );
+  timeline_aps.reserve( num_buckets);
 
   int max_buckets = std::min( ( int ) player -> total_seconds, ( int ) timeline_amount.size() );
 
@@ -262,8 +262,9 @@ void stats_t::analyze()
       window_size++;
     }
 
-    timeline_aps[ i ] = window_amount / window_size;
+    timeline_aps.push_back( window_amount / window_size );
   }
+  assert( timeline_aps.size() == ( std::size_t ) max_buckets );
 }
 
 // stats_t::merge ===========================================================
@@ -310,4 +311,5 @@ void stats_t::merge( stats_t* other )
   {
     timeline_amount[ i ] += other -> timeline_amount[ i ];
   }
+
 }

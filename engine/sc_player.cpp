@@ -1239,7 +1239,7 @@ void player_t::init_resources( bool force )
         int size = ( int ) ( sim -> max_time * ( 1.0 + sim -> vary_combat_length ) );
         if ( size == 0 ) size = 600; // Default to 10 minutes
         size *= 2;
-        timeline_resource[i].insert( timeline_resource[i].begin(), size, 0 );
+        timeline_resource[i].assign( size, 0 );
       }
     }
   }
@@ -3272,7 +3272,7 @@ void player_t::regen( double periodicity )
     int index = ( int ) sim -> current_time;
     int size = ( int ) timeline_resource[i].size();
 
-    if ( index >= size ) timeline_resource[i].insert( timeline_resource[i].begin() + size, size, 0 );
+    if ( index >= size ) timeline_resource[i].resize( index * 2, 0 );
 
     timeline_resource[i][ index ] += resource_current[ i ] * periodicity;
   }

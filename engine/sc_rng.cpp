@@ -598,9 +598,9 @@ struct distribution_t
   distribution_t( int s ) :
     size( s ), last( s-1 ), total_count( 0 ), actual( 0 ), expected( 0 )
   {
-    chances.insert( chances.begin(), size, 0.0 );
-    values .insert( values .begin(), size, 0.0 );
-    counts .insert( counts .begin(), size, 0   );
+    chances.assign( size, 0.0 );
+    values .assign( size, 0.0 );
+    counts .assign( size, 0   );
   }
 
   virtual ~distribution_t() {}
@@ -646,7 +646,7 @@ struct distribution_t
     for ( int i=0; i <= last; i++ ) sum += chances[ i ];
     util_t::printf( "\tsum: %f\n", sum );
     std::vector<int> rng_counts;
-    rng_counts.insert( rng_counts.begin(), size, 0 );
+    rng_counts.assign( size, 0 );
     for ( int i=0; i < total_count; i++ )
     {
       double p = rng -> real();
