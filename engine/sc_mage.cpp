@@ -2361,7 +2361,7 @@ struct frostfire_orb_t : public mage_spell_t
   {
     mage_spell_t::last_tick();
     mage_t* p = player -> cast_mage();
-    if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> rank() / 3 ) )
+    if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> proc_chance() ) )
     {
       explosion_spell -> execute();
     }
