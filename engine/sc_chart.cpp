@@ -453,6 +453,16 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 
 // chart_t::raid_downtime ===================================================
 
+struct compare_downtime
+{
+  bool operator()( player_t* l, player_t* r ) SC_CONST
+  {
+    return l -> total_waiting > r -> total_waiting;
+  }
+};
+
+// chart_t::raid_downtime ===================================================
+
 const char* chart_t::raid_downtime( std::string& s,
                                     sim_t* sim )
 {
@@ -474,6 +484,8 @@ const char* chart_t::raid_downtime( std::string& s,
 
   int num_waiting = ( int ) waiting_list.size();
   if ( num_waiting == 0 ) return 0;
+
+  std::sort( waiting_list.begin(), waiting_list.end(), compare_downtime() );
 
   char buffer[ 1024 ];
 
@@ -497,7 +509,7 @@ const char* chart_t::raid_downtime( std::string& s,
     snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), waiting ); s += buffer;
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_waiting * 2 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_waiting * 1.9 ); s += buffer;
   s += "&amp;";
   s += "chco=";
   for ( int i=0; i < num_waiting; i++ )
@@ -515,7 +527,7 @@ const char* chart_t::raid_downtime( std::string& s,
     snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> total_waiting / p -> total_seconds, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
   }
   s += "&amp;";
-  s += "chtt=Raid+Down-Time";
+  s += "chtt=Player+Waiting-Time";
   s += "&amp;";
   if ( sim -> print_styles )
   {
@@ -599,7 +611,7 @@ struct compare_dpet
 {
   bool operator()( stats_t* l, stats_t* r ) SC_CONST
   {
-    return l -> dpet > r -> dpet;
+    return l -> apet > r -> apet;
   }
 };
 
@@ -620,8 +632,9 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     for ( stats_t* st = p -> stats_list; st; st = st -> next )
     {
       if ( st -> quiet ) continue;
-      if ( st -> dpet <= 0 ) continue;
-      if ( st -> dpet > ( 5 * p -> dps ) ) continue;
+      if ( st -> apet <= 0 ) continue;
+      if ( st -> apet > ( 5 * p -> dps ) ) continue;
+      if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
 
       stats_list.push_back( st );
     }
@@ -632,7 +645,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
 
   std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
 
-  double max_dpet = stats_list[ 0 ] -> dpet;
+  double max_dpet = stats_list[ 0 ] -> apet;
 
   int max_actions_per_chart = 20;
   int max_charts = 4;
@@ -660,7 +673,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
     for ( int i=0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), st -> dpet ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), st -> apet ); s += buffer;
     }
     s += "&amp;";
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_dpet * 2.5 ); s += buffer;
@@ -680,7 +693,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
       util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
 
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
-                st -> dpet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ), i ); s += buffer;
+                st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ), i ); s += buffer;
     }
     s += "&amp;";
     if ( chart==0 )
@@ -717,8 +730,9 @@ const char* chart_t::action_dpet( std::string& s,
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
     if ( st -> quiet ) continue;
-    if ( st -> dpet <= 0 ) continue;
-    if ( st -> dpet > ( 5 * p -> dps ) ) continue;
+    if ( st -> apet <= 0 ) continue;
+    if ( st -> apet > ( 5 * p -> dps ) ) continue;
+    if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
 
     stats_list.push_back( st );
   }
@@ -728,8 +742,9 @@ const char* chart_t::action_dpet( std::string& s,
     for ( stats_t* st = pet -> stats_list; st; st = st -> next )
     {
       if ( st -> quiet ) continue;
-      if ( st -> dpet <= 0 ) continue;
-      if ( st -> dpet > ( 5 * p -> dps ) ) continue;
+      if ( st -> apet <= 0 ) continue;
+      if ( st -> apet > ( 5 * p -> dps ) ) continue;
+      if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
 
       stats_list.push_back( st );
     }
@@ -753,15 +768,15 @@ const char* chart_t::action_dpet( std::string& s,
     s += "&amp;";
   }
   s += "chd=t:";
-  double max_dpet=0;
+  double max_apet=0;
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), st -> dpet ); s += buffer;
-    if ( st -> dpet > max_dpet ) max_dpet = st -> dpet;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), st -> apet ); s += buffer;
+    if ( st -> apet > max_apet ) max_apet = st -> apet;
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_dpet * 2 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_apet * 2 ); s += buffer;
   s += "&amp;";
   s += "chco=";
   for ( int i=0; i < num_stats; i++ )
@@ -782,7 +797,7 @@ const char* chart_t::action_dpet( std::string& s,
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), st -> dpet, st -> name_str.c_str(), school_color( st -> school ), i ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ), i ); s += buffer;
   }
   s += "&amp;";
   std::string formatted_name = p -> name_str;
@@ -803,11 +818,11 @@ const char* chart_t::action_dpet( std::string& s,
 
 // chart_t::action_dmg ======================================================
 
-struct compare_dmg
+struct compare_amount
 {
   bool operator()( stats_t* l, stats_t* r ) SC_CONST
   {
-    return l -> total_dmg > r -> total_dmg;
+    return l -> total_amount > r -> total_amount;
   }
 };
 
@@ -819,7 +834,7 @@ const char* chart_t::action_dmg( std::string& s,
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
     if ( st -> quiet ) continue;
-    if ( st -> total_dmg <= 0 ) continue;
+    if ( st -> total_amount <= 0 ) continue;
     if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
     stats_list.push_back( st );
   }
@@ -829,7 +844,7 @@ const char* chart_t::action_dmg( std::string& s,
     for ( stats_t* st = pet -> stats_list; st; st = st -> next )
     {
       if ( st -> quiet ) continue;
-      if ( st -> total_dmg <= 0 ) continue;
+      if ( st -> total_amount <= 0 ) continue;
       if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
       stats_list.push_back( st );
     }
@@ -838,7 +853,7 @@ const char* chart_t::action_dmg( std::string& s,
   int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
-  std::sort( stats_list.begin(), stats_list.end(), compare_dmg() );
+  std::sort( stats_list.begin(), stats_list.end(), compare_amount() );
 
   char buffer[ 1024 ];
 
@@ -856,7 +871,7 @@ const char* chart_t::action_dmg( std::string& s,
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> total_dmg / p -> total_dmg ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> total_amount / ( (p -> primary_role() == ROLE_HEAL) ? p -> total_heal : p -> total_dmg ) ); s += buffer;
   }
   s += "&amp;";
   s += "chds=0,100";

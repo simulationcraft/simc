@@ -443,7 +443,7 @@ player_t::player_t( sim_t*             s,
   quiet( 0 ), last_foreground_action( 0 ),
   current_time( 0 ), iteration_seconds( 0 ), total_seconds( 0 ), max_fight_length( 0 ), arise_time( 0 ),
   total_waiting( 0 ), total_foreground_actions( 0 ),
-  iteration_dmg( 0 ), total_dmg( 0 ),
+  iteration_dmg( 0 ), total_dmg( 0 ), iteration_heal( 0 ), total_heal( 0 ),
   dps( 0 ), dpse( 0 ), dps_min( 0 ), dps_max( 0 ),
   dps_std_dev( 0 ), dps_error( 0 ), dps_convergence( 0 ),
   dps_10_percentile( 0 ),dps_90_percentile( 0 ),
@@ -2769,10 +2769,15 @@ void player_t::combat_end()
 
   for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
-    iteration_dmg += pet -> iteration_dmg;
+    iteration_dmg  += pet -> iteration_dmg;
+    iteration_heal += pet -> iteration_heal;
   }
-  iteration_dps.push_back( iteration_seconds ? iteration_dmg / iteration_seconds : 0 );
-  iteration_dpse.push_back( sim -> current_time ? iteration_dmg / sim -> current_time : 0 );
+  bool is_hps = ( primary_role() == ROLE_HEAL );
+  iteration_dps.push_back( iteration_seconds ? ( ( is_hps ? iteration_heal : iteration_dmg ) / iteration_seconds ): 0 );
+  iteration_dpse.push_back( sim -> current_time ? ( ( is_hps ? iteration_heal : iteration_dmg ) / sim -> current_time ): 0 );
+
+  total_dmg += iteration_dmg;
+  total_heal += iteration_heal;
 }
 
 // player_t::reset ==========================================================
@@ -2861,6 +2866,7 @@ void player_t::reset()
   readying = 0;
   in_combat = false;
   iteration_dmg = 0;
+  iteration_heal = 0;
 
   cast_delay_reaction = 0;
   cast_delay_occurred = 0;

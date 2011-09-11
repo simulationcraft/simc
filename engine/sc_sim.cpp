@@ -1285,11 +1285,12 @@ void sim_t::analyze_player( player_t* p )
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
     b -> analyze();
 
-  p -> total_dmg = 0;
   p -> total_seconds /= iterations;
   p -> total_waiting /= iterations;
   p -> total_foreground_actions /= iterations;
   p -> total_dmg_taken /= iterations;
+  p -> total_dmg /= iterations;
+  p -> total_heal /= iterations;
 
   std::vector<stats_t*> stats_list;
 
@@ -1309,12 +1310,9 @@ void sim_t::analyze_player( player_t* p )
 
   int num_stats = ( int ) stats_list.size();
 
-  for ( int i=0, is_hps = ( p -> primary_role() == ROLE_HEAL ); i < num_stats; i++ )
+  for ( int i=0; i < num_stats; i++ )
   {
-    stats_t* s = stats_list[ i ];
-    s -> analyze();
-    if ( ! s -> quiet && ( ( s -> type != STATS_DMG ) == is_hps ) )
-      p -> total_dmg += s -> total_dmg;
+    stats_list[ i ] -> analyze();
   }
 
   // DPS Calculation ========================================================
@@ -1340,8 +1338,9 @@ void sim_t::analyze_player( player_t* p )
   {
     stats_t* s = stats_list[ i ];
 
-    s -> portion_dmg = s -> compound_dmg / p -> total_dmg;
-    s -> portion_dps = s -> portion_dmg * p -> dps;
+    s -> portion_amount = s -> compound_amount / ( ( s -> type == STATS_DMG ) ? p -> total_dmg : p -> total_heal );
+    if ( ( s -> type == STATS_DMG && p -> primary_role() != ROLE_HEAL ) || ( s -> type != STATS_DMG && p -> primary_role() == ROLE_HEAL ) )
+      s -> portion_aps = s -> portion_amount * p -> dps;
   }
 
     // Avoid double-counting of pet damage
@@ -1350,7 +1349,7 @@ void sim_t::analyze_player( player_t* p )
       if ( ! p -> is_enemy() && ! p -> is_add() )
       {
         if ( p -> primary_role() == ROLE_HEAL )
-          total_heal += p -> total_dmg;
+          total_heal += p -> total_heal;
         else
           total_dmg += p -> total_dmg;
       }
@@ -1424,7 +1423,7 @@ void sim_t::analyze_player( player_t* p )
     if ( ( s -> type != STATS_DMG ) == is_hps )
     {
       for ( int j = 0, j_max = std::min( max_buckets, s -> num_buckets ); j < j_max; j++ )
-        p -> timeline_dmg[ j ] += s -> timeline_dmg[ j ];
+        p -> timeline_dmg[ j ] += s -> timeline_amount[ j ];
     }
   }
 

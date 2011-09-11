@@ -72,7 +72,7 @@ std::string encode_html( const char* str )
 
 static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 {
-  if ( s -> num_executes == 0 && s -> total_dmg == 0 ) return;
+  if ( s -> num_executes == 0 && s -> total_amount == 0 ) return;
 
   if( max_name_length == 0 ) max_name_length = 20;
 
@@ -82,38 +82,38 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
                    s -> name_str.c_str(),
                    s -> num_executes,
                    s -> frequency,
-                   s -> dpe,
-                   s -> portion_dmg * 100.0,
-                   s -> dpet,
-                   s -> dpr,
-                   s -> portion_dps );
+                   s -> ape,
+                   s -> portion_amount * 100.0,
+                   s -> apet,
+                   s -> apr,
+                   s -> portion_amount );
 
   if ( s -> num_direct_results > 0 )
   {
     util_t::fprintf( file, "  Miss=%.2f%%", s -> direct_results[ RESULT_MISS ].pct );
   }
 
-  if ( s -> direct_results[ RESULT_HIT ].avg_dmg > 0 )
+  if ( s -> direct_results[ RESULT_HIT ].avg_amount > 0 )
   {
     util_t::fprintf( file, "  Hit=%4.0f|%4.0f|%4.0f",
-                     s -> direct_results[ RESULT_HIT ].avg_dmg,
-                     s -> direct_results[ RESULT_HIT ].min_dmg,
-                     s -> direct_results[ RESULT_HIT ].max_dmg );
+                     s -> direct_results[ RESULT_HIT ].avg_amount,
+                     s -> direct_results[ RESULT_HIT ].min_amount,
+                     s -> direct_results[ RESULT_HIT ].max_amount );
   }
-  if ( s -> direct_results[ RESULT_CRIT ].avg_dmg > 0 )
+  if ( s -> direct_results[ RESULT_CRIT ].avg_amount > 0 )
   {
     util_t::fprintf( file,
                      "  Crit=%5.0f|%5.0f|%5.0f|%.1f%%",
-                     s -> direct_results[ RESULT_CRIT ].avg_dmg,
-                     s -> direct_results[ RESULT_CRIT ].min_dmg,
-                     s -> direct_results[ RESULT_CRIT ].max_dmg,
+                     s -> direct_results[ RESULT_CRIT ].avg_amount,
+                     s -> direct_results[ RESULT_CRIT ].min_amount,
+                     s -> direct_results[ RESULT_CRIT ].max_amount,
                      s -> direct_results[ RESULT_CRIT ].pct );
   }
-  if ( s -> direct_results[ RESULT_GLANCE ].avg_dmg > 0 )
+  if ( s -> direct_results[ RESULT_GLANCE ].avg_amount > 0 )
   {
     util_t::fprintf( file,
                      "  Glance=%4.0f|%.1f%%",
-                     s -> direct_results[ RESULT_GLANCE ].avg_dmg,
+                     s -> direct_results[ RESULT_GLANCE ].avg_amount,
                      s -> direct_results[ RESULT_GLANCE ].pct );
   }
   if ( s -> direct_results[ RESULT_DODGE ].count > 0 )
@@ -131,26 +131,26 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 
   if ( s -> num_ticks > 0 ) util_t::fprintf( file, "  TickCount=%.0f", s -> num_ticks );
 
-  if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 || s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
+  if ( s -> tick_results[ RESULT_HIT ].avg_amount > 0 || s -> tick_results[ RESULT_CRIT ].avg_amount > 0 )
   {
     util_t::fprintf( file, "  MissTick=%.1f%%", s -> tick_results[ RESULT_MISS ].pct );
   }
 
-  if ( s -> tick_results[ RESULT_HIT ].avg_dmg > 0 )
+  if ( s -> tick_results[ RESULT_HIT ].avg_amount > 0 )
   {
     util_t::fprintf( file,
                      "  Tick=%.0f|%.0f|%.0f",
-                     s -> tick_results[ RESULT_HIT ].avg_dmg,
-                     s -> tick_results[ RESULT_HIT ].min_dmg,
-                     s -> tick_results[ RESULT_HIT ].max_dmg );
+                     s -> tick_results[ RESULT_HIT ].avg_amount,
+                     s -> tick_results[ RESULT_HIT ].min_amount,
+                     s -> tick_results[ RESULT_HIT ].max_amount );
   }
-  if ( s -> tick_results[ RESULT_CRIT ].avg_dmg > 0 )
+  if ( s -> tick_results[ RESULT_CRIT ].avg_amount > 0 )
   {
     util_t::fprintf( file,
                      "  CritTick=%.0f|%.0f|%.0f|%.1f%%",
-                     s -> tick_results[ RESULT_CRIT ].avg_dmg,
-                     s -> tick_results[ RESULT_CRIT ].min_dmg,
-                     s -> tick_results[ RESULT_CRIT ].max_dmg,
+                     s -> tick_results[ RESULT_CRIT ].avg_amount,
+                     s -> tick_results[ RESULT_CRIT ].min_amount,
+                     s -> tick_results[ RESULT_CRIT ].max_amount,
                      s -> tick_results[ RESULT_CRIT ].pct );
   }
 
@@ -189,13 +189,13 @@ static void print_text_actions( FILE* file, player_t* p )
 
   int max_length=0;
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
-    if ( s -> total_dmg > 0 )
+    if ( s -> total_amount > 0 )
       if( max_length < ( int ) s -> name_str.length() )
         max_length = ( int ) s -> name_str.length();
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
-    if ( s -> num_executes > 1 || s -> compound_dmg > 0 )
+    if ( s -> num_executes > 1 || s -> compound_amount > 0 )
     {
       print_text_action( file, s, max_length );
     }
@@ -206,7 +206,7 @@ static void print_text_actions( FILE* file, player_t* p )
     bool first=true;
     for ( stats_t* s = pet -> stats_list; s; s = s -> next )
     {
-      if ( s -> num_executes || s -> compound_dmg > 0 )
+      if ( s -> num_executes || s -> compound_amount > 0 )
       {
         if ( first )
         {
@@ -1174,11 +1174,20 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
   util_t::fprintf( file,
                    "\t\t\t\t\t\t</table>\n" );
 
-  if ( sim -> iterations > 1 )
+  // Timeline Distribution Chart
+  if ( sim -> iterations > 1 && ! sim -> timeline_chart.empty() )
   {
     util_t::fprintf( file,
                      "\t\t\t\t\t<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
                      sim -> timeline_chart.c_str() );
+  }
+
+  // Raid Downtime Chart
+  if ( ! sim -> downtime_chart.empty() )
+  {
+    util_t::fprintf( file,
+                     "\t\t\t\t\t<img src=\"%s\" alt=\"Player Downtime Chart\" />\n",
+                     sim -> downtime_chart.c_str() );
   }
 
   // closure
@@ -1871,15 +1880,15 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
                    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
-                   s -> portion_dps,
-                   s -> portion_dmg * 100,
+                   s -> portion_aps,
+                   s -> portion_amount * 100,
                    s -> num_executes,
                    s -> frequency,
-                   s -> dpe,
-                   s -> dpet,
-                   s -> direct_results[ RESULT_HIT  ].avg_dmg,
-                   s -> direct_results[ RESULT_CRIT ].avg_dmg,
-                   s -> direct_results[ RESULT_CRIT ].max_dmg ? s -> direct_results[ RESULT_CRIT ].max_dmg : s -> direct_results[ RESULT_HIT ].max_dmg,
+                   s -> ape,
+                   s -> apet,
+                   s -> direct_results[ RESULT_HIT  ].avg_amount,
+                   s -> direct_results[ RESULT_CRIT ].avg_amount,
+                   s -> direct_results[ RESULT_CRIT ].max_amount ? s -> direct_results[ RESULT_CRIT ].max_amount : s -> direct_results[ RESULT_HIT ].max_amount,
                    s -> direct_results[ RESULT_CRIT ].pct,
                    s -> direct_results[ RESULT_MISS ].pct +
                    s -> direct_results[ RESULT_DODGE  ].pct +
@@ -1887,8 +1896,8 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                    s -> direct_results[ RESULT_GLANCE ].pct,
                    s -> direct_results[ RESULT_BLOCK  ].pct,
                    s -> num_ticks,
-                   s -> tick_results[ RESULT_HIT  ].avg_dmg,
-                   s -> tick_results[ RESULT_CRIT ].avg_dmg,
+                   s -> tick_results[ RESULT_HIT  ].avg_amount,
+                   s -> tick_results[ RESULT_CRIT ].avg_amount,
                    s -> tick_results[ RESULT_CRIT ].pct,
                    s -> tick_results[ RESULT_MISS ].pct +
                    s -> tick_results[ RESULT_DODGE ].pct +
@@ -1933,7 +1942,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                       s -> num_tick_results,
                       s -> etpe,
                       s -> ttpt,
-                      s -> total_dmg );
+                      s -> total_amount );
     util_t::fprintf ( file,
                       "\t\t\t\t\t\t\t\t\t\t</tr>\n"
                       "\t\t\t\t\t\t\t\t\t</table>\n" );
@@ -1977,10 +1986,10 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                             util_t::result_type_string( i ),
                             s -> direct_results[ i  ].count,
                             s -> direct_results[ i  ].pct,
-                            s -> direct_results[ i  ].avg_dmg,
-                            s -> direct_results[ i  ].min_dmg,
-                            s -> direct_results[ i  ].max_dmg,
-                            s -> direct_results[ i  ].total_dmg );
+                            s -> direct_results[ i  ].avg_amount,
+                            s -> direct_results[ i  ].min_amount,
+                            s -> direct_results[ i  ].max_amount,
+                            s -> direct_results[ i  ].total_amount );
         }
       }
 
@@ -2022,10 +2031,10 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                             util_t::result_type_string( i ),
                             s -> tick_results[ i  ].count,
                             s -> tick_results[ i  ].pct,
-                            s -> tick_results[ i  ].avg_dmg,
-                            s -> tick_results[ i  ].min_dmg,
-                            s -> tick_results[ i  ].max_dmg,
-                            s -> tick_results[ i  ].total_dmg );
+                            s -> tick_results[ i  ].avg_amount,
+                            s -> tick_results[ i  ].min_amount,
+                            s -> tick_results[ i  ].max_amount,
+                            s -> tick_results[ i  ].total_amount );
         }
       }
 
@@ -2194,7 +2203,7 @@ static void print_html_action_resource( FILE* file, stats_t* s, int j )
                    s -> name_str.c_str(),
                    util_t::resource_type_string( s -> resource ),
                    s -> resource_portion * 100,
-                   s -> dpr,
+                   s -> apr,
                    s -> rpe );
 }
 
@@ -3261,7 +3270,6 @@ std::string time_spent_str                      = "";
 std::string reforge_dps_str                     = "";
 std::string scaling_dps_str                     = "";
 std::string scale_factors_str                   = "";
-std::string timeline_resource_health_str        = "";
 std::string timeline_dps_str                    = "";
 std::string distribution_dps_str                = "";
 std::string distribution_encounter_timeline_str = "";
@@ -3373,14 +3381,6 @@ if ( ! p -> scale_factors_chart.empty() )
     scale_factors_str = "<span class=\"chart-scale-factors\" title=\"Scale Factors Chart\">" + p -> scale_factors_chart + "</span>\n";
   }
 }
-if ( ! sim -> timeline_chart.empty() )
-{
-  if ( num_players == 1 )
-  {
-    distribution_encounter_timeline_str = "<img src=\"" + sim -> timeline_chart + "\" alt=\"Encounter Timeline Distribution Chart\" />\n";
-  }
-}
-
 util_t::fprintf( file,
                  "\t\t\t\t<div class=\"player-section\">\n"
                  "\t\t\t\t\t<h3 class=\"toggle open\">Charts</h3>\n"
@@ -3396,8 +3396,6 @@ util_t::fprintf( file,
                  "              %s"
                  "              %s"
                  "              %s"
-                 "              %s"
-                 "              %s"
                  "\t\t\t\t\t\t</div>\n"
                  "\t\t\t\t\t\t<div class=\"clear\"></div>\n"
                  "\t\t\t\t\t</div>\n"
@@ -3407,10 +3405,8 @@ util_t::fprintf( file,
                  scaling_dps_str.c_str(),
                  reforge_dps_str.c_str(),
                  scale_factors_str.c_str(),
-                 timeline_resource_health_str.c_str(),
                  timeline_dps_str.c_str(),
                  distribution_dps_str.c_str(),
-                 distribution_encounter_timeline_str.c_str(),
                  time_spent_str.c_str() );
 }
 
@@ -3818,7 +3814,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   i = 0;
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
-    if ( s -> num_executes > 1 || s -> compound_dmg > 0 || sim -> debug )
+    if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
     {
       print_html_action_damage( file, s, p, i );
       i++;
@@ -3832,7 +3828,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
     i = 0;
     for ( stats_t* s = pet -> stats_list; s; s = s -> next )
     {
-      if ( s -> num_executes || s -> compound_dmg > 0 || sim -> debug )
+      if ( s -> num_executes || s -> compound_amount > 0 || sim -> debug )
       {
         if ( first )
         {

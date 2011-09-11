@@ -3364,7 +3364,7 @@ struct player_t
   action_t* last_foreground_action;
   double    current_time, iteration_seconds, total_seconds, max_fight_length, arise_time;
   double    total_waiting, total_foreground_actions;
-  double    iteration_dmg, total_dmg;
+  double    iteration_dmg, total_dmg, iteration_heal, total_heal;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
   double    dps, dpse, dps_min, dps_max, dps_std_dev, dps_error, dps_convergence;
@@ -3957,25 +3957,25 @@ struct stats_t
   double frequency, num_executes, num_ticks;
   double num_direct_results, num_tick_results;
   double total_execute_time, total_tick_time, total_time;
-  double total_dmg, portion_dmg;
-  double dps, portion_dps, dpe, dpet, dpr, rpe, etpe, ttpt;
+  double total_amount, portion_amount;
+  double aps, portion_aps, ape, apet, apr, rpe, etpe, ttpt;
   double total_intervals, num_intervals;
   double last_execute;
 
   std::vector<stats_t*> children;
-  double compound_dmg;
+  double compound_amount;
   double opportunity_cost;
 
   struct stats_results_t
   {
-    double count, min_dmg, max_dmg, avg_dmg, total_dmg, pct;
+    double count, min_amount, max_amount, avg_amount, total_amount, pct;
   };
   stats_results_t direct_results[ RESULT_MAX ];
   stats_results_t   tick_results[ RESULT_MAX ];
 
   int num_buckets;
-  std::vector<double> timeline_dmg;
-  std::vector<double> timeline_dps;
+  std::vector<double> timeline_amount;
+  std::vector<double> timeline_aps;
 
   void add_child( stats_t* child );
   void consume_resource( double r ) { resource_consumed += r; }
