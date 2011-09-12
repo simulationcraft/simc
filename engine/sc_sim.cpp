@@ -1341,6 +1341,8 @@ void sim_t::analyze_player( player_t* p )
     s -> portion_amount = s -> compound_amount / ( ( s -> type == STATS_DMG ) ? p -> total_dmg : p -> total_heal );
     if ( ( s -> type == STATS_DMG && p -> primary_role() != ROLE_HEAL ) || ( s -> type != STATS_DMG && p -> primary_role() == ROLE_HEAL ) )
       s -> portion_aps = s -> portion_amount * p -> dps;
+    else
+      s -> portion_aps = ( s -> portion_amount > 0 ) ? -1.0 : 0;
   }
 
     // Avoid double-counting of pet damage
@@ -1348,10 +1350,8 @@ void sim_t::analyze_player( player_t* p )
     {
       if ( ! p -> is_enemy() && ! p -> is_add() )
       {
-        if ( p -> primary_role() == ROLE_HEAL )
           total_heal += p -> total_heal;
-        else
-          total_dmg += p -> total_dmg;
+          total_dmg  += p -> total_dmg;
       }
     }
 
@@ -1395,7 +1395,7 @@ void sim_t::analyze_player( player_t* p )
   }
 
   double rl = p -> resource_lost[ p -> primary_resource() ];
-  p -> dpr = ( rl > 0 ) ? p -> total_dmg / rl : 0;
+  p -> dpr = ( rl > 0 ) ? ( ( p -> primary_role() == ROLE_HEAL ) ? p -> total_heal : p -> total_dmg ) / rl : -1.0;
 
   p -> rps_loss = p -> resource_lost  [ p -> primary_resource() ] / p -> total_seconds;
   p -> rps_gain = p -> resource_gained[ p -> primary_resource() ] / p -> total_seconds;

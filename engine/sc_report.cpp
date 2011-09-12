@@ -1924,7 +1924,9 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                       "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Tick Results</th>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Execute Time per Execution</th>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Tick Time per  Tick</th>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Damage</th>\n" );
+                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount per Total Time</th>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount per Total Execute Time</th>\n");
     util_t::fprintf ( file,
                       "\t\t\t\t\t\t\t\t\t\t</tr>\n"
                       "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
@@ -1935,6 +1937,8 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                       "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.4f</td>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.4f</td>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n",
                       s -> num_executes,
                       s -> num_direct_results,
@@ -1942,7 +1946,9 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                       s -> num_tick_results,
                       s -> etpe,
                       s -> ttpt,
-                      s -> total_amount );
+                      s -> total_amount,
+                      s -> aps,
+                      s -> apet );
     util_t::fprintf ( file,
                       "\t\t\t\t\t\t\t\t\t\t</tr>\n"
                       "\t\t\t\t\t\t\t\t\t</table>\n" );
@@ -1961,7 +1967,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                         "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average</th>\n"
                         "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
                         "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
-                        "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Damage</th>\n"
+                        "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
                         "\t\t\t\t\t\t\t\t\t\t</tr>\n" );
       for ( int i=RESULT_MAX-1; i >= RESULT_NONE; i-- )
       {
