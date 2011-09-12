@@ -1320,16 +1320,21 @@ void sim_t::analyze_player( player_t* p )
 
   int num_stats = ( int ) stats_list.size();
 
+  if ( ! p -> is_pet() )
+  {
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
     s -> analyze();
 
 
+    s -> timeline_aps.clear();
     s -> timeline_aps.reserve( max_buckets );
     s -> timeline_amount.resize( max_buckets );
     sliding_window_average<10>( s -> timeline_amount.begin(), s -> timeline_amount.end(),
                                 std::back_inserter( s -> timeline_aps ) );
+    assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
+  }
   }
 
 
