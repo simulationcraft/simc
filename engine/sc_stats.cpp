@@ -238,21 +238,12 @@ void stats_t::analyze()
   for ( int i=0; i < max_buckets; i++ )
     timeline_amount[ i ] /= sim -> divisor_timeline[ i ];
 
-  assert( timeline_aps.empty() );
   timeline_aps.reserve( num_buckets );
 
   max_buckets = std::min( num_buckets, ( int ) player -> total_seconds );
-  for ( int i=0; i < max_buckets; i++ )
-  {
-    int left_edge = std::max( 0, i - 10 );
-    int right_edge = std::min( max_buckets, i + 11 );
-
-    double window_amount = 0;
-    for ( int j = left_edge; j < right_edge; ++j )
-      window_amount += timeline_amount[ j ];
-
-    timeline_aps.push_back( window_amount / ( right_edge - left_edge ) );
-  }
+  sliding_window_average<10>( timeline_amount.begin(), timeline_amount.begin() + max_buckets,
+                              std::back_inserter( timeline_aps ) );
+  assert( timeline_aps.size() == ( std::size_t ) max_buckets );
 }
 
 // stats_t::merge ===========================================================

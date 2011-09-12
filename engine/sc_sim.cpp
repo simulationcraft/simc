@@ -1429,46 +1429,8 @@ void sim_t::analyze_player( player_t* p )
   }
 
   p -> timeline_dps.reserve( max_buckets );
-  static const int HALFWINDOW = 10;
-
-  if ( max_buckets >= 2 * HALFWINDOW )
-  {
-    double window_dmg = 0;
-    // Fill right half of sliding window
-    int right_edge = 0;
-    while ( right_edge < HALFWINDOW )
-      window_dmg += p -> timeline_dmg[ right_edge++ ];
-
-    // Fill left half of sliding window
-    while ( right_edge < 2 * HALFWINDOW )
-    {
-      window_dmg += p -> timeline_dmg[ right_edge++ ];
-      p -> timeline_dps.push_back( window_dmg / ( right_edge - 0 ) );
-    }
-
-    // Slide until window hits end of data
-    int left_edge = 0;
-    while ( right_edge < max_buckets )
-    {
-      window_dmg += p -> timeline_dmg[ right_edge++ ];
-      p -> timeline_dps.push_back( window_dmg / ( right_edge - left_edge ) );
-      window_dmg -= p -> timeline_dmg[ left_edge++ ];
-    }
-
-    // Empty right half of sliding window
-    while ( left_edge < max_buckets - HALFWINDOW )
-    {
-      p -> timeline_dps.push_back( window_dmg / ( max_buckets - left_edge ) );
-      window_dmg -= p -> timeline_dmg[ left_edge++ ];
-    }
-  }
-  else
-  {
-    double window_dmg = 0;
-    for ( int i=0; i < max_buckets; i++ )
-      window_dmg += p -> timeline_dmg[ i ];
-    p -> timeline_dps.assign( max_buckets, window_dmg / max_buckets );
-  }
+  sliding_window_average<10>( p -> timeline_dmg.begin(), p -> timeline_dmg.end(),
+                              std::back_inserter( p -> timeline_dps ) );
   assert( p -> timeline_dps.size() == ( std::size_t ) max_buckets );
 
 

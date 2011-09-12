@@ -43,26 +43,27 @@
 #  define PRINTF_ATTRIBUTE(a,b)
 #endif
 
-#include <typeinfo>
-#include <cstdarg>
-#include <cfloat>
-#include <ctime>
-#include <string>
-#include <queue>
-#include <vector>
-#include <list>
-#include <map>
-#include <limits>
 #include <algorithm>
 #include <cassert>
 #include <cctype>
+#include <cfloat>
+#include <cmath>
+#include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cmath>
-#include <sstream>
-#include <cctype>
+#include <ctime>
+#include <iterator>
+#include <limits>
+#include <list>
+#include <map>
 #include <memory>
+#include <numeric>
+#include <queue>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <typeinfo>
 
 #include "data_enums.hh"
 
@@ -4960,6 +4961,54 @@ struct wait_for_cooldown_t : public wait_action_base_t
   virtual double execute_time() SC_CONST;
 };
 
+// Sliding window averager ==================================================
+
+template <int HW, typename In, typename Out>
+Out sliding_window_average( In first, In last, Out out )
+{
+  typedef typename std::iterator_traits<In>::value_type value_t;
+  typedef typename std::iterator_traits<In>::difference_type diff_t;
+  const diff_t n = std::distance( first, last );
+  const diff_t HALFWINDOW = static_cast<diff_t>( HW );
+
+  if ( n >= 2 * HALFWINDOW )
+  {
+    value_t window_sum = value_t();
+
+    // Fill right half of sliding window
+    In right = first;
+    for ( diff_t count = 0; count < HALFWINDOW; ++count )
+      window_sum += *right++;
+
+    // Fill left half of sliding window
+    for ( diff_t count = HALFWINDOW; count < 2 * HALFWINDOW; ++count )
+    {
+      window_sum += *right++;
+      *out++ = window_sum / ( count + 1 );
+    }
+
+    // Slide until window hits end of data
+    while ( right != last )
+    {
+      window_sum += *right++;
+      *out++ = window_sum / ( 2 * HALFWINDOW + 1 );
+      window_sum -= *first++;
+    }
+
+    // Empty right half of sliding window
+    for ( diff_t count = 2 * HALFWINDOW; count > HALFWINDOW; --count )
+    {
+      *out++ = window_sum / count;
+      window_sum -= *first++;
+    }
+  }
+  else {
+    // input is pathologically small compared to window size, just average everything.
+    out = std::fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
+  }
+
+  return out;
+}
 
 #ifdef WHAT_IF
 
