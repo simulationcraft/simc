@@ -309,14 +309,12 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 
   for ( int i=0; i < STAT_MAX; i++ )
   {
-    data_points[ i ].assign( num_players, 0.0 );
-
     for ( int j=0; j < num_players; j++ )
     {
       player_t* p = sim -> players_by_rank[ j ];
 
       data_points[ i ].push_back( ( p -> gear.   get_stat( i ) +
-                                p -> enchant.get_stat( i ) ) * gear_stats_t::stat_mod( i ) );
+                                    p -> enchant.get_stat( i ) ) * gear_stats_t::stat_mod( i ) );
     }
   }
 
