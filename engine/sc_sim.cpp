@@ -1542,15 +1542,37 @@ void sim_t::analyze_player( player_t* p )
   // Death Analysis =========================================================
 
   assert ( p -> death_time.size() == ( std::size_t ) p -> death_count );
+  if ( p -> death_count > 0 )
+  {
   double avg = 0;
   for ( int i = 0; i < p -> death_count; i++ )
   {
     if ( p -> death_time[ i ] < p -> min_death_time )
       p -> min_death_time = p -> death_time[ i ];
+    if ( p -> death_time[ i ] > p -> max_death_time )
+      p -> max_death_time = p -> death_time[ i ];
     avg += p -> death_time[ i ];
   }
   p -> avg_death_time = avg / p -> death_count;
   p -> death_count_pct = 100.0 * p -> death_count / iterations;
+
+  if ( p -> max_death_time > p -> min_death_time )
+  {
+    int num_buckets = 50;
+    double min = p -> min_death_time - 1;
+    double max = p -> max_death_time + 1;
+    double range = max - min;
+
+    p -> distribution_deaths.assign( num_buckets, 0 );
+
+    for ( int i=0; i < iterations; i++ )
+    {
+      int index = ( int ) ( num_buckets * ( p -> death_time[ i ] - min ) / range );
+      p -> distribution_deaths[ index ]++;
+    }
+  }
+  std::sort( p -> death_time.begin(), p -> death_time.end() );
+  }
 
   // Charts =================================================================
 
@@ -1565,6 +1587,7 @@ void sim_t::analyze_player( player_t* p )
   chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
   chart_t::dps_error          ( p -> dps_error_chart,                 p );
   chart_t::distribution_dps   ( p -> distribution_dps_chart,          p );
+  chart_t::distribution_deaths( p -> distribution_deaths_chart,       p );
 }
 
 // sim_t::analyze ===========================================================
@@ -1687,11 +1710,14 @@ void sim_t::merge( sim_t& other_sim )
     p -> total_seconds += other_p -> total_seconds;
     p -> total_waiting += other_p -> total_waiting;
     p -> total_foreground_actions += other_p -> total_foreground_actions;
+    p -> death_count += other_p -> death_count;
 
     std::copy( other_p -> iteration_dps.begin(), other_p -> iteration_dps.end(),
                std::back_inserter( p -> iteration_dps ) );
     std::copy( other_p -> iteration_dpse.begin(), other_p -> iteration_dpse.end(),
                std::back_inserter( p -> iteration_dpse ) );
+    std::copy( other_p -> death_time.begin(), other_p -> death_time.end(),
+                   std::back_inserter( p -> death_time ) );
 
     for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     {

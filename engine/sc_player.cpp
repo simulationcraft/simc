@@ -448,7 +448,7 @@ player_t::player_t( sim_t*             s,
   dps_std_dev( 0 ), dps_error( 0 ), dps_convergence( 0 ),
   dps_10_percentile( 0 ),dps_90_percentile( 0 ),
   dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
-  death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( FLT_MAX ),
+  death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( FLT_MAX ), max_death_time( 0 ),
   dmg_taken( 0.0 ), total_dmg_taken( 0.0 ),
   buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
   // Gear

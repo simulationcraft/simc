@@ -3958,6 +3958,12 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 
   if ( p -> death_count > 0 )
   {
+    std::string distribution_deaths_str                = "";
+    if ( ! p -> distribution_deaths_chart.empty() )
+    {
+      distribution_deaths_str = "<img src=\"" + p -> distribution_deaths_chart + "\" alt=\"Deaths Distribution Chart\" />\n";
+    }
+
     util_t::fprintf( file,
                      "\t\t\t\t\t<div class=\"player-section gains\">\n"
                      "\t\t\t\t\t\t<h3 class=\"toggle\">Deaths</h3>\n"
@@ -3995,7 +4001,16 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                      p -> min_death_time );
 
     util_t::fprintf( file,
-                     "\t\t\t\t\t\t\t\t</table>\n"
+                     "\t\t\t\t\t\t\t\t</table>\n" );
+
+    util_t::fprintf ( file,
+                      "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
+
+    util_t::fprintf ( file,
+                      "\t\t\t\t\t\t\t\t\t%s\n",
+                      distribution_deaths_str.c_str() );
+
+    util_t::fprintf ( file,
                      "\t\t\t\t\t\t\t</div>\n"
                      "\t\t\t\t\t\t</div>\n" );
   }

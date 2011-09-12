@@ -3376,7 +3376,7 @@ struct player_t
   double    dpr, rps_gain, rps_loss;
   int       death_count;
   std::vector<double> death_time;
-  double    avg_death_time, death_count_pct, min_death_time;
+  double    avg_death_time, death_count_pct, min_death_time, max_death_time;
   double    dmg_taken, total_dmg_taken;
   buff_t*   buff_list;
   proc_t*   proc_list;
@@ -3391,13 +3391,14 @@ struct player_t
   std::vector<double> iteration_dps;
   std::vector<double> iteration_dpse;
   std::vector<int> distribution_dps;
+  std::vector<int> distribution_deaths;
   std::vector<double> dps_convergence_error;
   std::string action_sequence;
   std::string action_dpet_chart, action_dmg_chart, time_spent_chart, gains_chart;
   std::vector<std::string> timeline_resource_chart;
   std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
-  std::string reforge_dps_chart, dps_error_chart;
+  std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
   std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_wowreforge_link;
   std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
   std::string save_str;
@@ -4672,6 +4673,7 @@ struct chart_t
   static const char* scaling_dps      ( std::string& s, player_t* );
   static const char* reforge_dps      ( std::string& s, player_t* );
   static const char* distribution_dps ( std::string& s, player_t* );
+  static const char* distribution_deaths ( std::string& s, player_t* );
 
   static const char* gear_weights_lootrank  ( std::string& s, player_t* );
   static const char* gear_weights_wowhead   ( std::string& s, player_t* );

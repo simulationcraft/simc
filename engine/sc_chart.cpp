@@ -1956,6 +1956,77 @@ const char* chart_t::distribution_dps( std::string& s,
   return s.c_str();
 }
 
+// chart_t::distribution_deaths ================================================
+
+const char* chart_t::distribution_deaths( std::string& s,
+                                       player_t* p )
+{
+  int max_buckets = ( int ) p -> distribution_deaths.size();
+
+  if ( ! max_buckets )
+    return 0;
+
+  int count_max=0;
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    if ( p -> distribution_deaths[ i ] > count_max )
+    {
+      count_max = p -> distribution_deaths[ i ];
+    }
+  }
+
+  char buffer[ 1024 ];
+
+  s = get_chart_base_url();
+  s += "chs=525x185";
+  s += "&amp;";
+  s += "cht=bvs";
+  s += "&amp;";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  }
+  else
+  {
+    s += "chf=bg,s,333333";
+  }
+  s += "&amp;";
+  s += "chg=100,100";
+  s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff";
+  s += "&amp;";
+  s += "chd=t:";
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    snprintf( buffer, sizeof( buffer ), "%s%d", ( i?",":"" ), p -> distribution_deaths[ i ] ); s += buffer;
+  }
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chds=0,%d", count_max ); s += buffer;
+  s += "&amp;";
+  s += "chbh=5";
+  s += "&amp;";
+  s += "chxt=x";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|min=%.0f|avg=%.0f|max=%.0f", p -> min_death_time, p -> avg_death_time, p -> max_death_time ); s += buffer;
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( p -> avg_death_time - p -> min_death_time ) / ( p -> max_death_time - p -> min_death_time ) ); s += buffer;
+  s += "&amp;";
+  std::string formatted_name = p -> name_str;
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Deaths+Distribution", formatted_name.c_str() ); s += buffer;
+  s += "&amp;";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
+
+  return s.c_str();
+}
+
 // chart_t::gear_weights_lootrank ===========================================
 
 const char* chart_t::gear_weights_lootrank( std::string& s,
