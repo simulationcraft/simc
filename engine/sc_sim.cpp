@@ -1565,11 +1565,12 @@ void sim_t::analyze_player( player_t* p )
 
     p -> distribution_deaths.assign( num_buckets, 0 );
 
-    for ( int i=0; i < iterations; i++ )
+    for ( int i=0; i < p -> death_count; i++ )
     {
       int index = ( int ) ( num_buckets * ( p -> death_time[ i ] - min ) / range );
       p -> distribution_deaths[ index ]++;
     }
+    assert ( p -> distribution_deaths.size() == ( std::size_t ) num_buckets );
   }
   std::sort( p -> death_time.begin(), p -> death_time.end() );
   }
@@ -1716,8 +1717,7 @@ void sim_t::merge( sim_t& other_sim )
                std::back_inserter( p -> iteration_dps ) );
     std::copy( other_p -> iteration_dpse.begin(), other_p -> iteration_dpse.end(),
                std::back_inserter( p -> iteration_dpse ) );
-    std::copy( other_p -> death_time.begin(), other_p -> death_time.end(),
-                   std::back_inserter( p -> death_time ) );
+    p -> death_time.insert( p -> death_time.end(), other_p -> death_time.begin(), other_p -> death_time.end() );
 
     for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     {
