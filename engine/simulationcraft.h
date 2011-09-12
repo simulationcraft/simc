@@ -3979,6 +3979,7 @@ struct stats_t
 
   std::vector<double> timeline_amount;
   std::vector<double> timeline_aps;
+  std::string timeline_aps_chart;
 
   void add_child( stats_t* child );
   void consume_resource( double r ) { resource_consumed += r; }
@@ -4664,6 +4665,7 @@ struct chart_t
   static const char* gains            ( std::string& s, player_t*, resource_type );
   static const char* timeline_resource( std::string& s, player_t*, int );
   static const char* timeline_dps     ( std::string& s, player_t* );
+  static const char* timeline_stat_dps     ( std::string& s, player_t*, stats_t* );
   static const char* timeline_dps_error( std::string& s, player_t* );
   static const char* scale_factors    ( std::string& s, player_t* );
   static const char* scaling_dps      ( std::string& s, player_t* );

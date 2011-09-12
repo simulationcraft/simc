@@ -863,6 +863,7 @@ void buff_t::reset()
   expire();
   last_start = -1;
   last_trigger = -1;
+  uptime_sum = 0;
 }
 
 // buff_t::merge ============================================================
@@ -871,7 +872,7 @@ void buff_t::merge( buff_t* other )
 {
   start_intervals_sum   += other -> start_intervals_sum;
   trigger_intervals_sum += other -> trigger_intervals_sum;
-  uptime_sum            += other -> uptime_sum;
+  uptime_pct            += other -> uptime_pct;
   up_count              += other -> up_count;
   down_count            += other -> down_count;
   start_intervals       += other -> start_intervals;
@@ -886,11 +887,6 @@ void buff_t::merge( buff_t* other )
 
 void buff_t::analyze()
 {
-  double total_seconds = player ? player -> total_seconds : sim -> total_seconds;
-  if ( total_seconds > 0 )
-  {
-    uptime_pct = 100.0 * uptime_sum / total_seconds;
-  }
   if ( up_count > 0 )
   {
     benefit_pct = 100.0 * up_count / ( up_count + down_count );
@@ -909,6 +905,7 @@ void buff_t::analyze()
   }
   avg_start   =   start_count / ( double ) sim -> iterations;
   avg_refresh = refresh_count / ( double ) sim -> iterations;
+  uptime_pct  /= ( double ) sim -> iterations;
 }
 
 // buff_t::find =============================================================

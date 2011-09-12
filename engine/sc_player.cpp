@@ -2775,6 +2775,11 @@ void player_t::combat_end()
 
   total_dmg += iteration_dmg;
   total_heal += iteration_heal;
+
+  for ( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> uptime_pct += 100.0 * b -> uptime_sum / iteration_seconds;
+  }
 }
 
 // player_t::reset ==========================================================

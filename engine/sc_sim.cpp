@@ -1294,6 +1294,16 @@ void sim_t::analyze_player( player_t* p )
 
   std::vector<stats_t*> stats_list;
 
+  // Pet Chart Adjustement ==================================================
+  int max_buckets = ( int ) p -> max_fight_length;
+
+    // Make the pet graphs the same length as owner's
+  if ( p -> is_pet() )
+  {
+    player_t* o = p -> cast_pet() -> owner;
+    max_buckets = ( int ) o -> max_fight_length;
+  }
+
   // Stats Analysis =========================================================
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
@@ -1312,8 +1322,16 @@ void sim_t::analyze_player( player_t* p )
 
   for ( int i=0; i < num_stats; i++ )
   {
-    stats_list[ i ] -> analyze();
+    stats_t* s = stats_list[ i ];
+    s -> analyze();
+
+
+    s -> timeline_aps.reserve( max_buckets );
+    s -> timeline_amount.resize( max_buckets );
+    sliding_window_average<10>( s -> timeline_amount.begin(), s -> timeline_amount.end(),
+                                std::back_inserter( s -> timeline_aps ) );
   }
+
 
   // DPS Calculation ========================================================
 
@@ -1343,6 +1361,8 @@ void sim_t::analyze_player( player_t* p )
       s -> portion_aps = s -> portion_amount * p -> dps;
     else
       s -> portion_aps = ( s -> portion_amount > 0 ) ? -1.0 : 0;
+
+    chart_t::timeline_stat_dps       ( s -> timeline_aps_chart, p, s );
   }
 
     // Avoid double-counting of pet damage
@@ -1352,6 +1372,8 @@ void sim_t::analyze_player( player_t* p )
       {
           total_heal += p -> total_heal;
           total_dmg  += p -> total_dmg;
+          raid_dps   += ( p -> primary_role() == ROLE_HEAL ) ? 0 : p -> dpse;
+          raid_hps   += ( p -> primary_role() == ROLE_HEAL ) ? p -> dpse : 0;
       }
     }
 
@@ -1365,15 +1387,7 @@ void sim_t::analyze_player( player_t* p )
     targets_by_name.push_back( p );
 
 
-  // Pet Chart Adjustement ==================================================
-  int max_buckets = ( int ) p -> max_fight_length;
 
-    // Make the pet graphs the same length as owner's
-  if ( p -> is_pet() )
-  {
-    player_t* o = p -> cast_pet() -> owner;
-    max_buckets = ( int ) o -> max_fight_length;
-  }
 
   // Resources & Gains ======================================================
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
@@ -1611,8 +1625,6 @@ void sim_t::analyze()
   std::sort( players_by_name.begin(), players_by_name.end(), compare_name() );
   std::sort( targets_by_name.begin(), targets_by_name.end(), compare_name() );
 
-  raid_dps = total_dmg / total_seconds;
-  raid_hps = total_heal / total_seconds;
 
   chart_t::raid_dps     ( dps_charts,     this );
   chart_t::raid_dpet    ( dpet_charts,    this );

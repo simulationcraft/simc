@@ -1630,6 +1630,89 @@ const char* chart_t::timeline_dps( std::string& s,
   return s.c_str();
 }
 
+// chart_t::timeline_dps ====================================================
+
+const char* chart_t::timeline_stat_dps( std::string& s,
+                                   player_t* p, stats_t* st )
+{
+  if ( st -> total_amount <= 0 )
+    return 0;
+
+  int max_buckets = ( int ) st -> timeline_aps.size();
+  int max_points  = 600;
+  int increment   = 1;
+
+  if ( max_buckets > max_points )
+  {
+    increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
+  }
+
+  double dps_max=0;
+  for ( int i=0; i < max_buckets; i++ )
+  {
+    if ( st -> timeline_aps[ i ] > dps_max )
+    {
+      dps_max = st -> timeline_aps[ i ];
+    }
+  }
+  double dps_range  = 60.0;
+  double dps_adjust = dps_range / dps_max;
+
+  char buffer[ 1024 ];
+
+  s = get_chart_base_url();
+  s += "chs=525x185";
+  s += "&amp;";
+  s += "cht=lc";
+  s += "&amp;";
+  s += "chxs=0,ffffff|1,ffffff";
+  s += "&amp;";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+  }
+  else
+  {
+    s += "chf=bg,s,333333";
+  }
+  s += "&amp;";
+  s += "chg=100,20";
+  s += "&amp;";
+  s += "chd=s:";
+  for ( int i=0; i < max_buckets; i += increment )
+  {
+    s += simple_encoding( ( int ) ( st -> timeline_aps[ i ] * dps_adjust ) );
+  }
+  s += "&amp;";
+  if ( ! p -> sim -> print_styles )
+  {
+    s += "chco=FDD017";
+    s += "&amp;";
+  }
+  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", dps_range ); s += buffer;
+  s += "&amp;";
+  s += "chxt=x,y";
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|avg=%.0f|max=%.0f", max_buckets, st -> aps, dps_max ); s += buffer;
+  s += "&amp;";
+  snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * st -> aps / dps_max ); s += buffer;
+  s += "&amp;";
+  std::string formatted_name = st -> name_str;
+  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+APS+Timeline", formatted_name.c_str() ); s += buffer;
+  s += "&amp;";
+  if ( p -> sim -> print_styles )
+  {
+    s += "chts=666666,18";
+  }
+  else
+  {
+    s += "chts=dddddd,18";
+  }
+
+  return s.c_str();
+}
+
 // chart_t::timeline_dps_error ==============================================
 
 const char* chart_t::timeline_dps_error( std::string& s,

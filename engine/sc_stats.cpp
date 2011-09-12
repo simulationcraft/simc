@@ -46,7 +46,7 @@ void stats_t::init()
   if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
   num_buckets *= 2;
 
-  timeline_amount.resize( num_buckets );
+  timeline_amount.reserve( num_buckets );
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {
@@ -114,7 +114,7 @@ void stats_t::add_result( double amount,
 
   int index = ( int ) ( sim -> current_time );
   if ( index >= ( int ) timeline_amount.size() )
-    timeline_amount.resize( index + 1 );
+    timeline_amount.resize( index * 2 );
 
   timeline_amount[ index ] += amount;
 }
@@ -238,12 +238,7 @@ void stats_t::analyze()
   for ( int i=0; i < max_buckets; i++ )
     timeline_amount[ i ] /= sim -> divisor_timeline[ i ];
 
-  timeline_aps.reserve( num_buckets );
 
-  max_buckets = std::min( num_buckets, ( int ) player -> total_seconds );
-  sliding_window_average<10>( timeline_amount.begin(), timeline_amount.begin() + max_buckets,
-                              std::back_inserter( timeline_aps ) );
-  assert( timeline_aps.size() == ( std::size_t ) max_buckets );
 }
 
 // stats_t::merge ===========================================================

@@ -1906,6 +1906,11 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
 
   if ( p -> sim -> report_details )
   {
+    std::string timeline_stat_aps_str                    = "";
+    if ( ! s -> timeline_aps_chart.empty() )
+    {
+        timeline_stat_aps_str = "<img src=\"" + s -> timeline_aps_chart + "\" alt=\"APS Timeline Chart\" />\n";
+    }
     util_t::fprintf( file,
                      "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
                      "\t\t\t\t\t\t\t\t<td colspan=\"20\" class=\"filler\">\n" );
@@ -2048,6 +2053,13 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     }
     util_t::fprintf ( file,
                       "\t\t\t\t\t\t\t\t\t</table>\n" );
+
+    util_t::fprintf ( file,
+                      "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
+
+    util_t::fprintf ( file,
+                      "\t\t\t\t\t\t\t\t\t%s\n",
+                      timeline_stat_aps_str.c_str() );
 
     util_t::fprintf ( file,
                       "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
