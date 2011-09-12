@@ -8,11 +8,25 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
-  name_str( n ), sim( p->sim ), player( p ), next( 0 ), parent( 0 ),
-  school( SCHOOL_NONE ), type( STATS_DMG ), analyzed( false ),
-  initialized( false ), quiet( false ), background( true ), resource( RESOURCE_NONE ),
-  resource_consumed( 0 ), last_execute( -1 )
+  name_str( n ), sim( p -> sim ), player( p ), next( 0 ), parent( 0 ),
+  school( SCHOOL_NONE ), type( STATS_DMG ),
+  analyzed( false ), quiet( false ), background( true ),
+  resource( RESOURCE_NONE ), resource_consumed( 0 ), /* resource_portion( 0 ), */
+  /* frequency( 0 ), */ num_executes( 0 ), num_ticks( 0 ),
+  num_direct_results( 0 ), num_tick_results( 0 ),
+  total_execute_time( 0 ), total_tick_time( 0 ), total_time( 0 ),
+  total_amount( 0 ), portion_amount( 0 ),
+  aps( 0 ), /* portion_aps( 0 ), */ ape( 0 ), apet( 0 ), apr( 0 ),
+  /* rpe( 0 ), */ etpe( 0 ), ttpt( 0 ),
+  total_intervals( 0 ), num_intervals( 0 ),
+  last_execute( -1 ),
+  compound_amount( 0 ), opportunity_cost( 0 )
 {
+  int num_buckets = ( int ) sim -> max_time;
+  if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
+  num_buckets *= 2;
+
+  timeline_amount.reserve( num_buckets );
 }
 
 // stats_t::add_child =======================================================
@@ -31,46 +45,6 @@ void stats_t::add_child( stats_t* child )
   }
   child -> parent = this;
   children.push_back( child );
-}
-
-// stats_t::init ============================================================
-
-void stats_t::init()
-{
-  if ( initialized ) return;
-  initialized = true;
-
-  resource_consumed = 0;
-
-  int num_buckets = ( int ) sim -> max_time;
-  if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
-  num_buckets *= 2;
-
-  timeline_amount.reserve( num_buckets );
-
-  for ( int i=0; i < RESULT_MAX; i++ )
-  {
-    direct_results[ i ].count     = 0;
-    direct_results[ i ].min_amount   = FLT_MAX;
-    direct_results[ i ].max_amount   = 0;
-    direct_results[ i ].avg_amount   = 0;
-    direct_results[ i ].total_amount = 0;
-    direct_results[ i ].pct       = 0;
-
-    tick_results[ i ].count     = 0;
-    tick_results[ i ].min_amount   = FLT_MAX;
-    tick_results[ i ].max_amount   = 0;
-    tick_results[ i ].avg_amount   = 0;
-    tick_results[ i ].total_amount = 0;
-    tick_results[ i ].pct       = 0;
-  }
-
-  num_direct_results = num_tick_results = 0;
-  num_executes = num_ticks = 0;
-  total_execute_time = total_tick_time = total_time = 0;
-  total_amount = portion_amount = compound_amount = opportunity_cost = 0;
-  aps = ape = apet = apr = etpe = ttpt = 0;
-  total_intervals = num_intervals = 0;
 }
 
 // stats_t::reset ===========================================================

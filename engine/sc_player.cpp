@@ -4208,22 +4208,18 @@ proc_t* player_t::get_proc( const std::string& name )
 
 stats_t* player_t::get_stats( const std::string& n, action_t* a )
 {
-  stats_t* stats=0;
+  stats_t* stats;
 
   for ( stats = stats_list; stats; stats = stats -> next )
   {
     if ( stats -> name_str == n )
-    {
-      if ( a ) stats -> action_list.push_back( a );
-      return stats;
-    }
+      break;
   }
 
   if ( ! stats )
   {
     stats = new stats_t( n, this );
-    stats -> init();
-    if ( a ) stats -> action_list.push_back( a );
+
     stats_t** tail= &stats_list;
     while ( *tail && n > ( ( *tail ) -> name_str ) )
     {
@@ -4233,8 +4229,9 @@ stats_t* player_t::get_stats( const std::string& n, action_t* a )
     *tail = stats;
   }
 
-  stats -> player = this;
+  assert( stats -> player == this );
 
+  if ( a ) stats -> action_list.push_back( a );
   return stats;
 }
 

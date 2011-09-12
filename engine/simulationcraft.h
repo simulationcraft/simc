@@ -3953,7 +3953,6 @@ struct stats_t
   stats_type type;
   std::vector<action_t*> action_list;
   bool analyzed;
-  bool initialized;
   bool quiet;
   bool background;
 
@@ -3974,6 +3973,9 @@ struct stats_t
   struct stats_results_t
   {
     double count, min_amount, max_amount, avg_amount, total_amount, pct;
+    stats_results_t() :
+      count( 0 ), min_amount( FLT_MAX ), max_amount( 0 ),
+      avg_amount( 0 ), total_amount( 0 ), pct( 0 ) {}
     void merge( const stats_results_t& other );
   };
   stats_results_t direct_results[ RESULT_MAX ];
@@ -3988,7 +3990,6 @@ struct stats_t
   void add_result( double amount, int dmg_type, int result );
   void add_tick   ( double time );
   void add_execute( double time );
-  void init();
   void reset();
   void analyze();
   void merge( const stats_t* other );
