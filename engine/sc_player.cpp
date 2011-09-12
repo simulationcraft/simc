@@ -5275,11 +5275,11 @@ bool player_t::parse_talent_trees( const int encoding[ MAX_TALENT_SLOTS ] )
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-  assert( talent_string.size() <= MAX_TALENT_SLOTS );
   int encoding[ MAX_TALENT_SLOTS ];
 
-  unsigned int i;
-  for ( i = 0; i < talent_string.size(); i++ )
+  unsigned int i, i_max = std::min( talent_string.size(),
+                                    static_cast<unsigned>( MAX_TALENT_SLOTS ) );
+  for ( i = 0; i < i_max; i++ )
   {
     char c = talent_string[ i ];
     if ( c < '0' || c > '5' )

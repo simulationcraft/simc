@@ -4876,6 +4876,13 @@ namespace bcp_api
   int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t b=cache::items() );
 }
 
+// Wowreforge ===============================================================
+
+namespace wowreforge
+{
+  player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_t b=cache::players() );
+};
+
 // HTTP Download  ===========================================================
 
 struct http_t

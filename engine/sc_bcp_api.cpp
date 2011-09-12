@@ -97,7 +97,8 @@ bool parse_talents( player_t* p, js_node_t* talents )
     p -> sim -> errorf( "BCP API: No talent encoding for player %s.\n", p -> name() );
     return false;
   }
-
+  if ( talent_encoding.size() > MAX_TALENT_SLOTS )
+    talent_encoding.resize( MAX_TALENT_SLOTS );
   if ( ! p -> parse_talents_armory( talent_encoding ) )
   {
     p -> sim -> errorf( "BCP API: Can't parse talent encoding '%s' for player %s.\n", talent_encoding.c_str(), p -> name() );
@@ -116,7 +117,8 @@ bool parse_talents( player_t* p, js_node_t* talents )
 
 bool parse_glyphs( player_t* p, js_node_t* build )
 {
-  static const char* const glyph_type_names[] = { "glyphs/prime", "glyphs/major", "glyphs/minor" };
+  static const char* const glyph_type_names[] = { "glyphs/prime", "glyphs/major",
+                                                  "glyphs/minor", "glyphs/Prime" };
 
   for ( std::size_t i = 0; i < sizeof_array( glyph_type_names ); ++i )
   {
@@ -128,7 +130,14 @@ bool parse_glyphs( player_t* p, js_node_t* build )
         for( std::size_t i = 0; i < children.size(); ++i )
         {
           std::string glyph_name;
-          if ( js_t::get_value( glyph_name, children[ i ], "name" ) )
+          if ( ! js_t::get_value( glyph_name, children[ i ], "name" ) )
+          {
+            std::string glyph_id;
+            if ( js_t::get_value( glyph_id, children[ i ], "item" ) )
+              item_t::download_glyph( p, glyph_name, glyph_id );
+          }
+
+          if ( ! glyph_name.empty() )
           {
             // FIXME: Move this common boilerplate stuff into util_t where all the data
             //        sources can use it instead of cut'n'pasting.
@@ -210,6 +219,128 @@ bool parse_items( player_t* p, js_node_t* items )
   return true;
 }
 
+struct player_spec_t
+{
+  std::string region, server, name, url, origin, talent_spec;
+};
+
+// parse_player =============================================================
+
+player_t*
+parse_player( sim_t*             sim,
+              player_spec_t&     player,
+              cache::behavior_t  caching )
+{
+  sim -> current_slot = 0;
+
+  std::string result;
+  if ( ! http_t::get( result, player.url, caching ) )
+    return 0;
+  // if ( sim -> debug ) util_t::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
+  js_node_t* profile = js_t::create( sim, result );
+  if ( ! profile )
+  {
+    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
+    return 0;
+  }
+  if ( sim -> debug ) js_t::print( profile, sim -> output_file );
+
+  std::string name;
+  if ( js_t::get_value( name, profile, "name"  ) )
+    player.name = name;
+  else
+    name = player.name;
+  if ( player.talent_spec != "active" && ! player.talent_spec.empty() )
+  {
+    name += '_';
+    name += player.talent_spec;
+  }
+  if ( ! name.empty() )
+    sim -> current_name = name;
+
+  int level;
+  if ( ! js_t::get_value( level, profile, "level"  ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+
+  int cid;
+  if ( ! js_t::get_value( cid, profile, "class" ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+  std::string class_name = util_t::player_type_string( util_t::translate_class_id( cid ) );
+
+  int rid;
+  if ( ! js_t::get_value( rid, profile, "race" ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+
+  player_t* p = player_t::create( sim, class_name, name, util_t::translate_race_id( rid ) );
+  sim -> active_player = p;
+  if ( ! p )
+  {
+    sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
+                   class_name.c_str(), name.c_str(), player.url.c_str() );
+    return 0;
+  }
+
+  p -> level = level;
+  p -> region_str = player.region.empty() ? sim -> default_region_str : player.region;
+
+  if ( ! js_t::get_value( p -> server_str, profile, "realm" ) && ! player.server.empty() )
+    p -> server_str = player.server;
+
+  if ( ! player.origin.empty() )
+  {
+    p -> origin_str = player.origin;
+    http_t::format( p -> origin_str );
+  }
+
+  if ( js_t::get_value( p -> thumbnail_url, profile, "thumbnail" ) )
+  {
+    p -> thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
+        p -> region_str + '/' + p -> thumbnail_url;
+    http_t::format( p -> thumbnail_url );
+  }
+
+  parse_profession( p -> professions_str, profile, 0 );
+  parse_profession( p -> professions_str, profile, 1 );
+
+  js_node_t* build = js_t::get_node( profile, "talents" );
+  if ( ! build )
+  {
+    sim -> errorf( "BCP API: Player '%s' from URL '%s' has no talents.\n",
+                   name.c_str(), player.url.c_str() );
+    return 0;
+  }
+
+  build = pick_talents( build, player.talent_spec );
+  if ( ! build )
+  {
+    sim -> errorf( "BCP API: Invalid talent spec '%s' for player '%s'.\n",
+                   player.talent_spec.c_str(), name.c_str() );
+    return 0;
+  }
+  if ( ! parse_talents( p, build ) )
+    return 0;
+
+  if ( ! parse_glyphs( p, build ) )
+    return 0;
+
+  if ( ! parse_items( p, js_t::get_child( profile, "items" ) ) )
+    return 0;
+
+  if ( ! p -> server_str.empty() )
+    p -> armory_extensions( p -> region_str, p -> server_str, player.name, caching );
+
+  return p;
+}
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // bcp_api::download_player =================================================
@@ -221,110 +352,23 @@ player_t* download_player( sim_t*             sim,
                            const std::string& talents,
                            cache::behavior_t  caching )
 {
-  std::string battlenet = "http://" + region + ".battle.net/";
-  std::string url = battlenet + "api/wow/character/" +
-    server + '/' + name + "?fields=talents,items,professions&locale=en_US";
-
-  sim -> current_slot = 0;
   sim -> current_name = name;
 
-  std::string result;
-  if ( ! http_t::get( result, url, caching ) )
-    return 0;
-  // if ( sim -> debug ) util_t::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
-  js_node_t* profile_js = js_t::create( sim, result );
-  if ( ! profile_js )
-  {
-    sim -> errorf( "BCP API: Unable to download player '%s'\n", name.c_str() );
-    return 0;
-  }
-  if ( sim -> debug ) js_t::print( profile_js, sim -> output_file );
+  player_spec_t player;
 
-  std::string name_str;
-  if ( ! js_t::get_value( name_str, profile_js, "name"  ) )
-    name_str = name;
-  if ( talents != "active" )
-  {
-    name_str += '_';
-    name_str += talents;
-  }
-  sim -> current_name = name_str;
+  std::string battlenet = "http://" + region + ".battle.net/";
 
-  int level;
-  if ( ! js_t::get_value( level, profile_js, "level"  ) )
-  {
-    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", url.c_str() );
-    return 0;
-  }
+  player.url = battlenet + "api/wow/character/" +
+    server + '/' + name + "?fields=talents,items,professions&locale=en_US";
+  player.origin = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
 
-  int cid;
-  if ( ! js_t::get_value( cid, profile_js, "class" ) )
-  {
-    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", url.c_str() );
-    return 0;
-  }
-  std::string class_str = util_t::player_type_string( util_t::translate_class_id( cid ) );
+  player.region = region;
+  player.server = server;
+  player.name = name;
 
-  int rid;
-  if ( ! js_t::get_value( rid, profile_js, "race" ) )
-  {
-    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", url.c_str() );
-    return 0;
-  }
+  player.talent_spec = talents;
 
-  player_t* p = player_t::create( sim, class_str, name_str, util_t::translate_race_id( rid ) );
-  sim -> active_player = p;
-  if ( ! p )
-  {
-    sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
-                   class_str.c_str(), name_str.c_str(), url.c_str() );
-    return 0;
-  }
-
-  p -> level = level;
-  p -> region_str = region;
-  if ( ! js_t::get_value( p -> server_str, profile_js, "realm" ) )
-    p -> server_str = server;
-
-  p -> origin_str = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
-  http_t::format( p -> origin_str );
-
-  if ( js_t::get_value( p -> thumbnail_url, profile_js, "thumbnail" ) )
-  {
-    p -> thumbnail_url = battlenet + "static-render/" + region + '/' + p -> thumbnail_url;
-    http_t::format( p -> thumbnail_url );
-  }
-
-  parse_profession( p -> professions_str, profile_js, 0 );
-  parse_profession( p -> professions_str, profile_js, 1 );
-
-  js_node_t* build = js_t::get_node( profile_js, "talents" );
-  if ( ! build )
-  {
-    sim -> errorf( "BCP API: Player '%s' from URL '%s' has no talents.\n",
-                   name_str.c_str(), url.c_str() );
-    return 0;
-  }
-
-  build = pick_talents( build, talents );
-  if ( ! build )
-  {
-    sim -> errorf( "BCP API: Invalid talent spec '%s' for player '%s'.\n",
-                   talents.c_str(), name_str.c_str() );
-    return 0;
-  }
-  if ( ! parse_talents( p, build ) )
-    return 0;
-
-  if ( ! parse_glyphs( p, build ) )
-    return 0;
-
-  if ( ! parse_items( p, js_t::get_child( profile_js, "items" ) ) )
-    return 0;
-
-  p -> armory_extensions( region, server, name, caching );
-
-  return p;
+  return parse_player( sim, player, caching );
 }
 
 namespace { // ANONYMOUS ====================================================
@@ -749,3 +793,21 @@ int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t cachin
 }
 
 } // namespace bcp_api =====================================================
+
+namespace wowreforge { // ==================================================
+
+player_t* download_player( sim_t*             sim,
+                           const std::string& profile_id,
+                           cache::behavior_t  caching )
+{
+  sim -> current_name = profile_id;
+
+  bcp_api::player_spec_t player;
+
+  player.origin = "http://wowreforge.com/Profiles/" + profile_id;
+  player.url = player.origin + "?json";
+
+  return bcp_api::parse_player( sim, player, caching );
+}
+
+} // namespace wowreforge ==================================================

@@ -268,7 +268,7 @@ static bool parse_proxy( sim_t*             sim,
   return false;
 }
 
-// parse_armory =============================================================
+// parse_cache ==============================================================
 
 static bool parse_cache( sim_t*             /* sim */,
                          const std::string& name,
@@ -485,6 +485,20 @@ static bool parse_chardev( sim_t*             sim,
   return sim -> active_player != 0;
 }
 
+// parse_wowreforge =========================================================
+
+static bool parse_wowreforge( sim_t*             sim,
+                              const std::string& name,
+                              const std::string& value )
+{
+  if ( name == "wowreforge" )
+  {
+    sim -> active_player = wowreforge::download_player( sim, value );
+  }
+
+  return sim -> active_player != 0;
+}
+
 // parse_rawr ===============================================================
 
 static bool parse_rawr( sim_t*             sim,
@@ -498,50 +512,6 @@ static bool parse_rawr( sim_t*             sim,
     {
       sim -> errorf( "Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
     }
-  }
-
-  return sim -> active_player != 0;
-}
-
-// parse_bcp_api ============================================================
-
-static bool parse_bcp_api( sim_t*             sim,
-                           const std::string& name,
-                           const std::string& value )
-{
-  if ( name != "bcp" ) return false;
-
-  std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, value, ",." );
-
-  if ( num_splits < 3 )
-  {
-    sim -> errorf( "Expected format is: bcp=region,server,player1,player2,...\n" );
-    return false;
-  }
-
-  const std::string& region = splits[ 0 ];
-  const std::string& server = splits[ 1 ];
-
-  for ( int i=2; i < num_splits; i++ )
-  {
-    std::string talents = "active";
-
-    if ( splits[ i ][ 0 ] == '!' )
-    {
-      splits[ i ].erase( 0, 1 );
-      talents = "inactive";
-    }
-
-    std::string::size_type pos = splits[ i ].find('|');
-    if ( pos != std::string::npos )
-    {
-      talents.assign( splits[ i ], pos + 1, std::string::npos );
-      splits[ i ].erase( pos );
-    }
-
-    sim -> active_player = bcp_api::download_player( sim, region, server, splits[ i ], talents );
-    if ( ! sim -> active_player ) return false;
   }
 
   return sim -> active_player != 0;
@@ -1387,7 +1357,7 @@ void sim_t::analyze_player( player_t* p )
   }
   if ( ! p -> quiet && ( p -> is_enemy() || p -> is_add() ) && ! ( p -> is_pet() && report_pets_separately ) )
     targets_by_name.push_back( p );
-  
+
   // Resources & Gains ======================================================
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -2291,7 +2261,7 @@ void sim_t::create_options()
     { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },
     { "chardev",                          OPT_FUNC,   ( void* ) ::parse_chardev                     },
     { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
-    { "bcp",                              OPT_FUNC,   ( void* ) ::parse_bcp_api                     },
+    { "wowreforge",                       OPT_FUNC,   ( void* ) ::parse_wowreforge                  },
     { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
     { "cache_items",                      OPT_FUNC,   ( void* ) ::parse_cache                       },
     { "cache_players",                    OPT_FUNC,   ( void* ) ::parse_cache                       },
