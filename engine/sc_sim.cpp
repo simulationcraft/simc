@@ -1422,17 +1422,18 @@ void sim_t::analyze_player( player_t* p )
     stats_t* s = stats_list[ i ];
     if ( ( s -> type != STATS_DMG ) == is_hps )
     {
-      for ( int j = 0, j_max = std::min( max_buckets, s -> num_buckets ); j < j_max; j++ )
+      int j_max = std::min( max_buckets, (int) s -> timeline_amount.size() );
+      for ( int j = 0; j < j_max; j++ )
         p -> timeline_dmg[ j ] += s -> timeline_amount[ j ];
     }
   }
 
   p -> timeline_dps.reserve( max_buckets );
-  const int HALFWINDOW = 10;
-  double window_dmg = 0;
+  static const int HALFWINDOW = 10;
 
   if ( max_buckets >= 2 * HALFWINDOW )
   {
+    double window_dmg = 0;
     // Fill right half of sliding window
     int right_edge = 0;
     while ( right_edge < HALFWINDOW )
@@ -1463,6 +1464,7 @@ void sim_t::analyze_player( player_t* p )
   }
   else
   {
+    double window_dmg = 0;
     for ( int i=0; i < max_buckets; i++ )
       window_dmg += p -> timeline_dmg[ i ];
     p -> timeline_dps.assign( max_buckets, window_dmg / max_buckets );

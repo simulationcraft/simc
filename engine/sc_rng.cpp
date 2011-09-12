@@ -590,17 +590,17 @@ struct rng_pre_fill_t : public rng_normalized_t
 
 struct distribution_t
 {
-  int size, last, total_count;
   double actual, expected;
   std::vector<double> chances, values;
   std::vector<int> counts;
+  int last, total_count;
 
-  distribution_t( int s ) :
-    size( s ), last( s-1 ), total_count( 0 ), actual( 0 ), expected( 0 )
+  distribution_t( unsigned int size ) :
+    actual( 0 ), expected( 0 ),
+    chances( size ), values( size ), counts( size ),
+    last( size-1 ), total_count( 0 )
   {
-    chances.assign( size, 0.0 );
-    values .assign( size, 0.0 );
-    counts .assign( size, 0   );
+    assert( size > 0 );
   }
 
   virtual ~distribution_t() {}
@@ -645,8 +645,7 @@ struct distribution_t
     double sum=0;
     for ( int i=0; i <= last; i++ ) sum += chances[ i ];
     util_t::printf( "\tsum: %f\n", sum );
-    std::vector<int> rng_counts;
-    rng_counts.assign( size, 0 );
+    std::vector<int> rng_counts( chances.size() );
     for ( int i=0; i < total_count; i++ )
     {
       double p = rng -> real();
@@ -681,7 +680,7 @@ struct range_distribution_t : public distribution_t
   virtual int next_bucket()
   {
     expected += 0.50;
-    return  distribution_t::next_bucket();
+    return distribution_t::next_bucket();
   }
 };
 
@@ -722,7 +721,7 @@ struct roll_distribution_t : public distribution_t
     double avg_expected = expected / num_rolls;
     if ( avg_fill > 0 && fabs( avg_expected - avg_fill ) < 0.01 ) return;
     double remainder = 1.0;
-    for ( int i=0; i < size; i++ )
+    for ( int i=0, s = ( int ) chances.size(); i < s; i++ )
     {
       last = i;
       values [ i ] = 1.0 - avg_expected * ( i + 1 );

@@ -792,6 +792,8 @@ class noncopyable
 {
 public:
   noncopyable() {} // = default
+  // noncopyable( noncopyable&& ) = default;
+  // noncopyable& operator = ( noncopyable&& ) = default;
 private:
   noncopyable( const noncopyable& ); // = delete
   noncopyable& operator = ( const noncopyable& ); // = delete
@@ -3969,11 +3971,11 @@ struct stats_t
   struct stats_results_t
   {
     double count, min_amount, max_amount, avg_amount, total_amount, pct;
+    void merge( const stats_results_t& other );
   };
   stats_results_t direct_results[ RESULT_MAX ];
   stats_results_t   tick_results[ RESULT_MAX ];
 
-  int num_buckets;
   std::vector<double> timeline_amount;
   std::vector<double> timeline_aps;
 
@@ -3985,7 +3987,7 @@ struct stats_t
   void init();
   void reset();
   void analyze();
-  void merge( stats_t* other );
+  void merge( const stats_t* other );
   stats_t( const std::string& name, player_t* );
 };
 

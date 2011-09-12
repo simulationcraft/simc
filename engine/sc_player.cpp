@@ -1230,18 +1230,15 @@ void player_t::init_resources( bool force )
 
   if ( timeline_resource.empty() )
   {
+    timeline_resource.resize( RESOURCE_MAX );
+    timeline_resource_chart.resize( RESOURCE_MAX );
+
+    int size = ( int ) ( sim -> max_time * ( 1.0 + sim -> vary_combat_length ) );
+    if ( size == 0 ) size = 600; // Default to 10 minutes
+    size *= 2;
+
     for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-    {
-      timeline_resource.push_back(std::vector<double>());
-      timeline_resource_chart.push_back(std::string());
-      if ( timeline_resource[i].empty() )
-      {
-        int size = ( int ) ( sim -> max_time * ( 1.0 + sim -> vary_combat_length ) );
-        if ( size == 0 ) size = 600; // Default to 10 minutes
-        size *= 2;
-        timeline_resource[i].assign( size, 0 );
-      }
-    }
+      timeline_resource[i].assign( size, 0 );
   }
 }
 
@@ -3265,16 +3262,16 @@ void player_t::regen( double periodicity )
     }
   }
 
+  int index = ( int ) sim -> current_time;
+
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( resource_max[ i ] == 0 ) continue;
 
-    int index = ( int ) sim -> current_time;
     int size = ( int ) timeline_resource[i].size();
-
     if ( index >= size ) timeline_resource[i].resize( index * 2, 0 );
 
-    timeline_resource[i][ index ] += resource_current[ i ] * periodicity;
+    timeline_resource[ i ][ index ] += resource_current[ i ] * periodicity;
   }
 }
 

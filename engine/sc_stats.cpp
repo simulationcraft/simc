@@ -23,7 +23,8 @@ void stats_t::add_child( stats_t* child )
   {
     if ( child -> parent != this )
     {
-      sim -> errorf( "stats_t %s already has parent %s, can't parent to %s", child-> name_str.c_str(), child->parent-> name_str.c_str(), name_str.c_str() );
+      sim -> errorf( "stats_t %s already has parent %s, can't parent to %s",
+                     child -> name_str.c_str(), child -> parent -> name_str.c_str(), name_str.c_str() );
       assert( 0 );
     }
     return;
@@ -39,14 +40,13 @@ void stats_t::init()
   if ( initialized ) return;
   initialized = true;
 
-
   resource_consumed = 0;
 
-  num_buckets = ( int ) sim -> max_time;
+  int num_buckets = ( int ) sim -> max_time;
   if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
   num_buckets *= 2;
 
-  timeline_amount.assign( num_buckets, 0 );
+  timeline_amount.resize( num_buckets );
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {
@@ -113,11 +113,8 @@ void stats_t::add_result( double amount,
   if ( amount > r -> max_amount ) r -> max_amount = amount;
 
   int index = ( int ) ( sim -> current_time );
-  if ( index >= num_buckets )
-  {
-    timeline_amount.resize( index * 2, 0 );
-    num_buckets = index * 2;
-  }
+  if ( index >= ( int ) timeline_amount.size() )
+    timeline_amount.resize( index + 1 );
 
   timeline_amount[ index ] += amount;
 }
@@ -236,40 +233,46 @@ void stats_t::analyze()
   ttpt = num_ticks ? total_tick_time / num_ticks : 0;
   etpe = num_executes? ( total_execute_time + ( channeled ? total_tick_time : 0 ) ) / num_executes : 0;
 
-  for ( int i=0; i < num_buckets; i++ )
-  {
-    if( i == ( int ) sim -> divisor_timeline.size() ) break;
+  int num_buckets = ( int ) timeline_amount.size();
+  int max_buckets = std::min( num_buckets, ( int ) sim -> divisor_timeline.size() );
+  for ( int i=0; i < max_buckets; i++ )
     timeline_amount[ i ] /= sim -> divisor_timeline[ i ];
-  }
 
-  timeline_aps.reserve( num_buckets);
+  assert( timeline_aps.empty() );
+  timeline_aps.reserve( num_buckets );
 
-  int max_buckets = std::min( ( int ) player -> total_seconds, ( int ) timeline_amount.size() );
-
+  max_buckets = std::min( num_buckets, ( int ) player -> total_seconds );
   for ( int i=0; i < max_buckets; i++ )
   {
-    double window_amount  = timeline_amount[ i ];
-    int    window_size = 1;
+    int left_edge = std::max( 0, i - 10 );
+    int right_edge = std::min( max_buckets, i + 11 );
 
-    for ( int j=1; ( j <= 10 ) && ( ( i-j ) >=0 ); j++ )
-    {
-      window_amount += timeline_amount[ i-j ];
-      window_size++;
-    }
-    for ( int j=1; ( j <= 10 ) && ( ( i+j ) < max_buckets ); j++ )
-    {
-      window_amount += timeline_amount[ i+j ];
-      window_size++;
-    }
+    double window_amount = 0;
+    for ( int j = left_edge; j < right_edge; ++j )
+      window_amount += timeline_amount[ j ];
 
-    timeline_aps.push_back( window_amount / window_size );
+    timeline_aps.push_back( window_amount / ( right_edge - left_edge ) );
   }
-  assert( timeline_aps.size() == ( std::size_t ) max_buckets );
 }
 
 // stats_t::merge ===========================================================
 
-void stats_t::merge( stats_t* other )
+inline void stats_t::stats_results_t::merge( const stats_results_t& other )
+{
+  if ( other.count != 0 )
+  {
+    count        += other.count;
+    total_amount += other.total_amount;
+
+    if ( other.min_amount < min_amount )
+      min_amount = other.min_amount;
+
+    if ( other.max_amount > max_amount )
+      max_amount = other.max_amount;
+  }
+}
+
+void stats_t::merge( const stats_t* other )
 {
   resource_consumed   += other -> resource_consumed;
   num_direct_results  += other -> num_direct_results;
@@ -282,34 +285,12 @@ void stats_t::merge( stats_t* other )
   opportunity_cost    += other -> opportunity_cost;
 
   for ( int i=0; i < RESULT_MAX; i++ )
-  {
-    if ( other -> direct_results[ i ].count != 0 )
-    {
-      stats_results_t& other_r = other -> direct_results[ i ];
-      stats_results_t&       r =          direct_results[ i ];
+    direct_results[ i ].merge( other -> direct_results[ i ] );
 
-      r.count        += other_r.count;
-      r.total_amount += other_r.total_amount;
+  for ( int i=0; i < RESULT_MAX; i++ )
+    tick_results[ i ].merge( other -> tick_results[ i ] );
 
-      if ( other_r.min_amount < r.min_amount ) r.min_amount = other_r.min_amount;
-      if ( other_r.max_amount > r.max_amount ) r.max_amount = other_r.max_amount;
-    }
-    if ( other -> tick_results[ i ].count != 0 )
-    {
-      stats_results_t& other_r = other -> tick_results[ i ];
-      stats_results_t&       r =          tick_results[ i ];
-
-      r.count     += other_r.count;
-      r.total_amount += other_r.total_amount;
-
-      if ( other_r.min_amount < r.min_amount ) r.min_amount = other_r.min_amount;
-      if ( other_r.max_amount > r.max_amount ) r.max_amount = other_r.max_amount;
-    }
-  }
-
-  for ( int i=0; i < num_buckets && i < other -> num_buckets; i++ )
-  {
+  int i_max = ( int ) std::min( timeline_amount.size(), other -> timeline_amount.size() );
+  for ( int i=0; i < i_max; i++ )
     timeline_amount[ i ] += other -> timeline_amount[ i ];
-  }
-
 }
