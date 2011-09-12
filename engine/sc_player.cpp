@@ -3003,7 +3003,7 @@ void player_t::schedule_ready( double delta_time,
     last_foreground_action -> stats -> total_execute_time += delta_time;
   }
 
-  if ( delta_time == 0 ) delta_time = 0.000001;
+  if ( delta_time == 0 ) delta_time = SC_EPSILON;
 
   readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
 
@@ -4930,7 +4930,7 @@ struct wait_fixed_t : public wait_action_base_t
   {
     int result = time_expr -> evaluate();
     assert( result == TOK_NUM ); (void)result;
-    return time_expr -> result_num + epsilon;
+    return time_expr -> result_num + SC_EPSILON;
   }
 };
 
@@ -4958,7 +4958,7 @@ struct wait_until_ready_t : public wait_fixed_t
       if ( remains > 0 && remains < wait ) wait = remains;
     }
 
-    return wait + epsilon;
+    return wait + SC_EPSILON;
   }
 };
 
@@ -4970,7 +4970,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name 
 {}
 
 double wait_for_cooldown_t::execute_time() SC_CONST
-{ return wait_cd -> remains() + epsilon; }
+{ return wait_cd -> remains() + SC_EPSILON; }
 
 // Use Item Action ==========================================================
 

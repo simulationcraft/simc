@@ -2276,7 +2276,7 @@ double util_t::floor( double X, unsigned int decplaces )
   case 5: return ::floor( X * 100000.0 ) * 0.00001;
   default:
     double mult = 1000000.0;
-    double div = 0.000001;
+    double div = SC_EPSILON;
     for ( unsigned int i = 6; i < decplaces; i++ )
     {
       mult *= 10.0;
@@ -2300,7 +2300,7 @@ double util_t::ceil( double X, unsigned int decplaces )
   case 5: return ::ceil( X * 100000.0 ) * 0.00001;
   default:
     double mult = 1000000.0;
-    double div = 0.000001;
+    double div = SC_EPSILON;
     for ( unsigned int i = 6; i < decplaces; i++ )
     {
       mult *= 10.0;
@@ -2324,7 +2324,7 @@ double util_t::round( double X, unsigned int decplaces )
   case 5: return ::floor( X * 100000.0 + 0.5 ) * 0.00001;
   default:
     double mult = 1000000.0;
-    double div = 0.000001;
+    double div = SC_EPSILON;
     for ( unsigned int i = 6; i < decplaces; i++ )
     {
       mult *= 10.0;

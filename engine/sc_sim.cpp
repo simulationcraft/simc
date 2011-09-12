@@ -787,7 +787,7 @@ sim_t::~sim_t()
 void sim_t::add_event( event_t* e,
                        double   delta_time )
 {
-  if ( delta_time <= 0 ) delta_time = 0.0000001;
+  if ( delta_time <= 0 ) delta_time = SC_EPSILON;
 
   e -> time = current_time + delta_time;
   e -> id   = ++id;

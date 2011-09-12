@@ -96,6 +96,8 @@
 #define SC_USE_PTR ( 1 )
 #define SC_BETA ( 0 )
 
+#define SC_EPSILON 0.000001
+
 // Forward Declarations =====================================================
 
 struct action_t;
@@ -2378,7 +2380,6 @@ struct spell_data_expr_t
   static spell_data_expr_t* parse( sim_t* sim, const std::string& expr_str );
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
-
 
 namespace thread_impl { // ===================================================
 
@@ -4944,10 +4945,8 @@ struct js_t
 
 struct wait_action_base_t : public action_t
 {
-  const double epsilon;
-
   wait_action_base_t( player_t* player, const char* name ) :
-    action_t( ACTION_OTHER, name, player ), epsilon( 0.000001 )
+    action_t( ACTION_OTHER, name, player )
   { trigger_gcd = 0; }
 
   virtual void execute()
