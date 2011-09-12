@@ -4965,7 +4965,7 @@ struct wait_for_cooldown_t : public wait_action_base_t
 // Sliding window averager ==================================================
 
 template <int HW, typename In, typename Out>
-Out sliding_window_average( In first, In last, Out out )
+void sliding_window_average( In first, In last, Out out )
 {
   typedef typename std::iterator_traits<In>::value_type value_t;
   typedef typename std::iterator_traits<In>::difference_type diff_t;
@@ -5005,10 +5005,8 @@ Out sliding_window_average( In first, In last, Out out )
   }
   else {
     // input is pathologically small compared to window size, just average everything.
-    out = std::fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
+    std::fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
   }
-
-  return out;
 }
 
 #ifdef WHAT_IF
