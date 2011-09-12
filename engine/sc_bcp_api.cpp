@@ -117,8 +117,9 @@ bool parse_talents( player_t* p, js_node_t* talents )
 
 bool parse_glyphs( player_t* p, js_node_t* build )
 {
-  static const char* const glyph_type_names[] = { "glyphs/prime", "glyphs/major",
-                                                  "glyphs/minor", "glyphs/Prime" };
+  static const char* const glyph_type_names[] = {
+    "glyphs/prime", "glyphs/major", "glyphs/minor"
+  };
 
   for ( std::size_t i = 0; i < sizeof_array( glyph_type_names ); ++i )
   {
@@ -806,6 +807,7 @@ player_t* download_player( sim_t*             sim,
 
   player.origin = "http://wowreforge.com/Profiles/" + profile_id;
   player.url = player.origin + "?json";
+  player.name = "wowreforge_" + profile_id;
 
   return bcp_api::parse_player( sim, player, caching );
 }
