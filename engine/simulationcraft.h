@@ -4665,7 +4665,7 @@ struct chart_t
   static const char* gains            ( std::string& s, player_t*, resource_type );
   static const char* timeline_resource( std::string& s, player_t*, int );
   static const char* timeline_dps     ( std::string& s, player_t* );
-  static const char* timeline_stat_dps     ( std::string& s, player_t*, stats_t* );
+  static const char* timeline_stat_dps( std::string& s, player_t*, stats_t* );
   static const char* timeline_dps_error( std::string& s, player_t* );
   static const char* scale_factors    ( std::string& s, player_t* );
   static const char* scaling_dps      ( std::string& s, player_t* );
@@ -4944,10 +4944,10 @@ struct js_t
 
 struct wait_action_base_t : public action_t
 {
-  static const double epsilon = 0.000001;
+  const double epsilon;
 
   wait_action_base_t( player_t* player, const char* name ) :
-    action_t( ACTION_OTHER, name, player )
+    action_t( ACTION_OTHER, name, player ), epsilon( 0.000001 )
   { trigger_gcd = 0; }
 
   virtual void execute()

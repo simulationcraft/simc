@@ -237,8 +237,6 @@ void stats_t::analyze()
   int max_buckets = std::min( num_buckets, ( int ) sim -> divisor_timeline.size() );
   for ( int i=0; i < max_buckets; i++ )
     timeline_amount[ i ] /= sim -> divisor_timeline[ i ];
-
-
 }
 
 // stats_t::merge ===========================================================
