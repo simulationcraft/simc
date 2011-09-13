@@ -3279,153 +3279,115 @@ util_t::fprintf( file,
 
 static void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
 {
-  int num_players = ( int ) sim -> players_by_name.size();
+  const unsigned num_players = sim -> players_by_name.size();
 
+  fputs( "\t\t\t\t<div class=\"player-section\">\n"
+         "\t\t\t\t\t<h3 class=\"toggle open\">Charts</h3>\n"
+         "\t\t\t\t\t<div class=\"toggle-content\">\n"
+         "\t\t\t\t\t\t<div class=\"charts charts-left\">\n", file );
 
-std::string action_dpet_str                     = "";
-std::string action_dmg_str                      = "";
-std::string time_spent_str                      = "";
-std::string reforge_dps_str                     = "";
-std::string scaling_dps_str                     = "";
-std::string scale_factors_str                   = "";
-std::string timeline_dps_str                    = "";
-std::string distribution_dps_str                = "";
-std::string distribution_encounter_timeline_str = "";
-
-if ( ! p -> action_dpet_chart.empty() )
-{
-  if ( num_players == 1 )
+  if ( ! p -> action_dpet_chart.empty() )
   {
-    action_dpet_str = "<img src=\"" + p -> action_dpet_chart + "\" alt=\"Action DPET Chart\" />\n";
-  }
-  else
-  {
-    action_dpet_str = "<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">" + p -> action_dpet_chart + "</span>\n";
-  }
-}
-if ( ! p -> action_dmg_chart.empty() )
-{
-  if ( num_players == 1 )
-  {
-    action_dmg_str = "<img src=\"" + p -> action_dmg_chart + "\" alt=\"Action Damage Chart\" />\n";
-  }
-  else
-  {
-    action_dmg_str = "<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">" + p -> action_dmg_chart + "</span>\n";
-  }
-}
-if ( ! p -> time_spent_chart.empty() )
-{
-  if ( num_players == 1 )
-  {
-    time_spent_str = "<img src=\"" + p -> time_spent_chart + "\" alt=\"Time Spent Chart\" />\n";
-  }
-  else
-  {
-    time_spent_str = "<span class=\"chart-time_spent\" title=\"Time Spent Chart\">" + p -> time_spent_chart + "</span>\n";
-  }
-}
-
-if ( ! p -> scaling_dps_chart.empty() )
-{
-  if ( num_players == 1 )
-  {
-    scaling_dps_str = "<img src=\"" + p -> scaling_dps_chart + "\" alt=\"Scaling DPS Chart\" />\n";
-  }
-  else
-  {
-    scaling_dps_str = "<span class=\"chart-scaling-dps\" title=\"Scaling DPS Chart\">" + p -> scaling_dps_chart + "</span>\n";
-  }
-}
-if ( ! p -> reforge_dps_chart.empty() )
-{
-  if ( p -> sim -> reforge_plot -> reforge_plot_stat_indices.size() == 2 )
-  {
+    const char* fmt;
     if ( num_players == 1 )
+      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Action DPET Chart\" />\n";
+    else
+      fmt = "\t\t\t\t\t\t\t<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">%s</span>\n";
+    fprintf( file, fmt, p -> action_dpet_chart.c_str() );
+  }
+
+  if ( ! p -> action_dmg_chart.empty() )
+  {
+    const char* fmt;
+    if ( num_players == 1 )
+      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Action Damage Chart\" />\n";
+    else
+      fmt = "\t\t\t\t\t\t\t<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">%s</span>\n";
+    fprintf( file, fmt, p -> action_dmg_chart.c_str() );
+  }
+
+  if ( ! p -> scaling_dps_chart.empty() )
+  {
+    const char* fmt;
+    if ( num_players == 1 )
+      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Scaling DPS Chart\" />\n";
+    else
+      fmt = "\t\t\t\t\t\t\t<span class=\"chart-scaling-dps\" title=\"Scaling DPS Chart\">%s</span>\n";
+    fprintf( file, fmt, p -> scaling_dps_chart.c_str() );
+  }
+
+  fputs( "\t\t\t\t\t\t</div>\n"
+         "\t\t\t\t\t\t<div class=\"charts\">\n", file );
+
+  if ( ! p -> reforge_dps_chart.empty() )
+  {
+    const char* fmt;
+    if ( p -> sim -> reforge_plot -> reforge_plot_stat_indices.size() == 2 )
     {
-      reforge_dps_str = "<img src=\"" + p -> reforge_dps_chart + "\" alt=\"Reforge DPS Chart\" />\n";
+      if ( num_players == 1 )
+        fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Reforge DPS Chart\" />\n";
+      else
+        fmt = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n";
     }
     else
     {
-      reforge_dps_str = "<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">" + p -> reforge_dps_chart + "</span>\n";
+      if ( true )
+        fmt = "\t\t\t\t\t\t\t%s";
+      else
+      {
+        if ( num_players == 1 )
+          fmt = "\t\t\t\t\t\t\t<iframe>%s</iframe>\n";
+        else
+          fmt = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n";
+      }
     }
+    fprintf( file, fmt, p -> reforge_dps_chart.c_str() );
   }
-  else
+
+  if ( ! p -> scale_factors_chart.empty() )
   {
+    const char* fmt;
     if ( num_players == 1 )
-    {
-//        reforge_dps_str = "<iframe>";
-      reforge_dps_str = p -> reforge_dps_chart;
-//        reforge_dps_str += "</iframe>\n";
-    }
+      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Scale Factors Chart\" />\n";
     else
-    {
-//        reforge_dps_str = "<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">";
-      reforge_dps_str = p -> reforge_dps_chart;
-//        reforge_dps_str += "</span>\n";
-    }
+      fmt = "\t\t\t\t\t\t\t<span class=\"chart-scale-factors\" title=\"Scale Factors Chart\">%s</span>\n";
+    fprintf( file, fmt, p -> scale_factors_chart.c_str() );
   }
-}
-if ( ! p -> timeline_dps_chart.empty() )
-{
-  if ( num_players == 1 )
+
+  if ( ! p -> timeline_dps_chart.empty() )
   {
-    timeline_dps_str = "<img src=\"" + p -> timeline_dps_chart + "\" alt=\"DPS Timeline Chart\" />\n";
+    const char* fmt;
+    if ( num_players == 1 )
+      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"DPS Timeline Chart\" />\n";
+    else
+      fmt = "\t\t\t\t\t\t\t<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">%s</span>\n";
+    fprintf( file, fmt, p -> timeline_dps_chart.c_str() );
   }
-  else
+
+  if ( ! p -> distribution_dps_chart.empty() )
   {
-    timeline_dps_str = "<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">" + p -> timeline_dps_chart + "</span>\n";
+    const char* fmt;
+    if ( num_players == 1 )
+      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"DPS Distribution Chart\" />\n";
+    else
+      fmt = "\t\t\t\t\t\t\t<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">%s</span>\n";
+    fprintf( file, fmt, p -> distribution_dps_chart.c_str() );
   }
-}
-if ( ! p -> distribution_dps_chart.empty() )
-{
-  if ( num_players == 1 )
+
+  if ( ! p -> time_spent_chart.empty() )
   {
-    distribution_dps_str = "<img src=\"" + p -> distribution_dps_chart + "\" alt=\"DPS Distribution Chart\" />\n";
+    const char* fmt;
+    if ( num_players == 1 )
+      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Time Spent Chart\" />\n";
+    else
+      fmt = "\t\t\t\t\t\t\t<span class=\"chart-time-spent\" title=\"Time Spent Chart\">%s</span>\n";
+    fprintf( file, fmt, p -> time_spent_chart.c_str() );
   }
-  else
-  {
-    distribution_dps_str = "<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">" + p -> distribution_dps_chart + "%s</span>\n";
-  }
-}
-if ( ! p -> scale_factors_chart.empty() )
-{
-  if ( num_players == 1 )
-  {
-    scale_factors_str = "<img src=\"" + p -> scale_factors_chart + "\" alt=\"Scale Factors Chart\" />\n";
-  }
-  else
-  {
-    scale_factors_str = "<span class=\"chart-scale-factors\" title=\"Scale Factors Chart\">" + p -> scale_factors_chart + "</span>\n";
-  }
-}
-util_t::fprintf( file,
-                 "\t\t\t\t<div class=\"player-section\">\n"
-                 "\t\t\t\t\t<h3 class=\"toggle open\">Charts</h3>\n"
-                 "\t\t\t\t\t<div class=\"toggle-content\">\n"
-                 "\t\t\t\t\t\t<div class=\"charts charts-left\">\n"
-                 "              %s"
-                 "              %s"
-                 "              %s"
-                 "\t\t\t\t\t\t</div>\n"
-                 "\t\t\t\t\t\t<div class=\"charts\">\n"
-                 "              %s"
-                 "              %s"
-                 "              %s"
-                 "              %s"
-                 "              %s"
-                 "\t\t\t\t\t\t</div>\n"
-                 "\t\t\t\t\t\t<div class=\"clear\"></div>\n"
-                 "\t\t\t\t\t</div>\n"
-                 "\t\t\t\t</div>\n",
-                 action_dpet_str.c_str(),
-                 action_dmg_str.c_str(),
-                 scaling_dps_str.c_str(),
-                 reforge_dps_str.c_str(),
-                 scale_factors_str.c_str(),
-                 timeline_dps_str.c_str(),
-                 distribution_dps_str.c_str(),
-                 time_spent_str.c_str() );
+
+  fputs( "\t\t\t\t\t\t</div>\n"
+         "\t\t\t\t\t\t<div class=\"clear\"></div>\n"
+         "\t\t\t\t\t</div>\n"
+         "\t\t\t\t</div>\n", file );
 }
 
 
