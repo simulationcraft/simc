@@ -918,6 +918,8 @@ const char* chart_t::action_dmg( std::string& s,
 
 // chart_t::spent_time ======================================================
 
+namespace {
+
 struct compare_time
 {
   bool operator()( stats_t* l, stats_t* r ) SC_CONST
@@ -926,7 +928,7 @@ struct compare_time
   }
 };
 
-// chart_t::spent_time
+}
 
 const char* chart_t::time_spent( std::string& s,
                                  player_t* p )
@@ -951,7 +953,7 @@ const char* chart_t::time_spent( std::string& s,
   char buffer[ 1024 ];
 
   s = get_chart_base_url();
-  snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_stats * 10 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chs=525x%d", 200 + num_stats * 10 ); s += buffer;
   s += "&amp;";
   s += "cht=p";
   s += "&amp;";
@@ -989,7 +991,8 @@ const char* chart_t::time_spent( std::string& s,
 
   }
   if ( p -> total_waiting > 0 )
-  { if ( num_stats > 0 )s += ",";
+  {
+    if ( num_stats > 0 ) s += ",";
     s += "ffffff";
   }
   s += "&amp;";
@@ -1000,7 +1003,6 @@ const char* chart_t::time_spent( std::string& s,
     if ( i ) s += "|";
     s += st -> name_str.c_str();
     snprintf( buffer, sizeof( buffer ), " %.1fs", st -> total_time ); s += buffer;
-
   }
   if ( p -> total_waiting > 0 )
   {
