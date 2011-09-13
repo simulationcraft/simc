@@ -52,6 +52,7 @@ void heal_t::init_heal_t_()
   }
 
     valanyr = new valanyr_t( player );
+
 }
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
@@ -408,7 +409,8 @@ void heal_t::assess_damage( player_t* t,
     if ( callbacks ) action_callback_t::trigger( player -> tick_heal_callbacks[ school ], this );
   }
 
-  stats -> add_result( heal_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );
+  stats -> add_result( sim -> report_overheal ? heal_actual : heal_amount, heal_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );
+
 }
 
 // heal_t::last_tick ========================================================
@@ -689,7 +691,7 @@ void absorb_t::assess_damage( player_t* t,
 
   }
 
-  stats -> add_result( heal_amount, heal_type, heal_result );
+  stats -> add_result( heal_actual, heal_amount, heal_type, heal_result );
 }
 
 // absorb_t::calculate_result ===============================================

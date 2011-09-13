@@ -1443,6 +1443,8 @@ static void register_blazing_power( item_t* item )
 
         if ( rng -> roll( 0.10 ) )
         {
+          heal -> heal_target.clear();
+          heal -> heal_target.push_back( heal -> find_lowest_player() );
           heal -> execute();
           proc -> occur();
           cd -> start();
@@ -1502,6 +1504,73 @@ static void register_valanyr( item_t* item )
   p -> register_heal_callback( RESULT_ALL_MASK, new valanyr_callback_t( p )  );
 }
 
+// register_symbiotic_worm ======================================================
+
+static void register_symbiotic_worm( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  struct symbiotic_worm_callback_t : public stat_proc_callback_t
+  {
+    symbiotic_worm_callback_t( player_t* p, bool h ) :
+      stat_proc_callback_t( "symbiotic_worm", p, STAT_MASTERY_RATING, 1, h ? 1089 : 963, 1.0, 10.0, 30.0, 0, false, RNG_DEFAULT, false )
+    {}
+
+    virtual void trigger( action_t* a, void* call_data )
+    {
+      if ( a -> player -> health_percentage() < 35 )
+      {
+        stat_proc_callback_t::trigger( a, call_data );
+      }
+    }
+  };
+
+  stat_proc_callback_t* cb = new symbiotic_worm_callback_t( p, item -> heroic() );
+  p -> register_tick_damage_callback( RESULT_ALL_MASK, cb );
+  p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+}
+
+// register_symbiotic_worm ======================================================
+
+static void register_spidersilk_spindle( item_t* item )
+{
+  player_t* p = item -> player;
+
+
+  item -> unique = true;
+
+  struct spidersilk_spindle_callback_t : public action_callback_t
+  {
+    buff_t* buff;
+    bool heroic;
+    cooldown_t* cd;
+    spidersilk_spindle_callback_t( player_t* p, bool h ) :
+      action_callback_t( p -> sim, p ), heroic( h )
+    {
+      buff = new buff_t( p, heroic ? 97129 : 96945, "loom_of_fate" );
+      buff -> activated = false;
+      cd = listener -> get_cooldown( "spidersilk_spindle" );
+      cd -> duration = 60.0;
+      p -> absorb_buffs.push_back( buff );
+    }
+
+    virtual void trigger( action_t* a, void* /* call_data */ )
+    {
+      if ( cd -> remains() <= 0 && a -> player -> health_percentage() < 35 )
+      {
+        cd -> start();
+        buff -> trigger( 1, buff -> effect1().base_value() );
+      }
+    }
+  };
+
+  action_callback_t* cb = new spidersilk_spindle_callback_t( p, item -> heroic() );
+  p -> register_tick_damage_callback( RESULT_ALL_MASK, cb );
+  p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+}
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -1557,6 +1626,8 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
     if ( ! strcmp( item.name(), "valanyr_hammer_of_ancient_kings"     ) ) register_valanyr                           ( &item );
+    if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
+    if ( ! strcmp( item.name(), "spidersilk_spindle"                  ) ) register_spidersilk_spindle                ( &item );
   }
 }
 

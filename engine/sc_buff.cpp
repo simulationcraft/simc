@@ -65,7 +65,7 @@ buff_t::buff_t( sim_t*             s,
                 int                rt,
                 int                id ) :
   spell_id_t( 0, n.c_str() ),
-  sim( s ), player( 0 ), source( 0 ), name_str( n ),
+  sim( s ), player( 0 ), source( 0 ), initial_source( 0 ), name_str( n ),
   max_stack( ms ), activated( true ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   reverse( r ), constant( false ), quiet( q ), aura_id( id ), rng_type( rt )
 {
@@ -86,7 +86,7 @@ buff_t::buff_t( player_t*          p,
                 int                id,
                 bool               act ) :
   spell_id_t( p, n.c_str() ),
-  sim( p -> sim ), player( p ), source( p ), name_str( n ),
+  sim( p -> sim ), player( p ), source( p ), initial_source( p ), name_str( n ),
   max_stack( ms ), activated( act ), buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   reverse( r ), constant( false ), quiet( q ), aura_id( id ), rng_type( rt )
 {
@@ -116,7 +116,7 @@ void buff_t::init_from_talent_( player_t* /* p */, talent_t* talent )
 buff_t::buff_t( player_t* p,
                 talent_t* talent, ... ) :
   spell_id_t( p, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
-  sim( p -> sim ), player( p ), source( p ), name_str( s_token ),
+  sim( p -> sim ), player( p ), source( p ), initial_source( p ), name_str( s_token ),
   max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
@@ -134,7 +134,7 @@ buff_t::buff_t( player_t* p,
 buff_t::buff_t( player_t* p,
                 talent_t* talent ) :
   spell_id_t( p, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
-  sim( p -> sim ), player( p ), source( p ), name_str( s_token ),
+  sim( p -> sim ), player( p ), source( p ), initial_source( p ), name_str( s_token ),
   max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
@@ -158,7 +158,7 @@ void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
 buff_t::buff_t( player_t*     p,
                 spell_data_t* spell, ... ) :
   spell_id_t( p, spell -> name_cstr(), spell -> id() ),
-  sim( p -> sim ), player( p ), source( p ), name_str( s_token ),
+  sim( p -> sim ), player( p ), source( p ), initial_source( p ), name_str( s_token ),
   max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
@@ -176,7 +176,7 @@ buff_t::buff_t( player_t*     p,
 buff_t::buff_t( player_t*     p,
                 spell_data_t* spell ) :
   spell_id_t( p, spell -> name_cstr(), spell -> id() ),
-  sim( p -> sim ), player( p ), source( p ), name_str( s_token ),
+  sim( p -> sim ), player( p ), source( p ), initial_source( p ), name_str( s_token ),
   max_stack( 0 ), activated( true ), buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   reverse( false ), constant( false ), quiet( false ), rng_type( RNG_CYCLIC )
 {
@@ -308,7 +308,7 @@ buff_t::buff_t( player_t*          p,
                 int                rt,
                 bool               act ) :
   spell_id_t( p, n.c_str(), sname, 0 ),
-  sim( p -> sim ), player( p ), source( 0 ), name_str( n ),
+  sim( p -> sim ), player( p ), source( 0 ), initial_source( 0 ), name_str( n ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
   activated( act ),
   buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
@@ -356,7 +356,7 @@ buff_t::buff_t( player_t*          p,
                 int                rt,
                 bool               act ) :
   spell_id_t( p, n.c_str(), id ),
-  sim( p -> sim ), player( p ), source( 0 ), name_str( n ),
+  sim( p -> sim ), player( p ), source( 0 ), initial_source( 0 ), name_str( n ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
   activated( act ),
   buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),

@@ -15,12 +15,12 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   /* frequency( 0 ), */ num_executes( 0 ), num_ticks( 0 ),
   num_direct_results( 0 ), num_tick_results( 0 ),
   total_execute_time( 0 ), total_tick_time( 0 ), total_time( 0 ),
-  total_amount( 0 ), portion_amount( 0 ),
+  actual_amount( 0 ), total_amount( 0 ), portion_amount( 0 ),
   aps( 0 ), /* portion_aps( 0 ), */ ape( 0 ), apet( 0 ), apr( 0 ),
   /* rpe( 0 ), */ etpe( 0 ), ttpt( 0 ),
   total_intervals( 0 ), num_intervals( 0 ),
   last_execute( -1 ),
-  compound_amount( 0 ), opportunity_cost( 0 )
+  compound_actual( 0 ), compound_amount( 0 ), opportunity_cost( 0 )
 {
   int num_buckets = ( int ) sim -> max_time;
   if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
@@ -56,16 +56,18 @@ void stats_t::reset()
 
 // stats_t::add_result ======================================================
 
-void stats_t::add_result( double amount,
+void stats_t::add_result( double act_amount,
+                          double tot_amount,
                           int    dmg_type,
                           int    result )
 {
-  total_amount += amount;
+  actual_amount += act_amount;
+  total_amount += tot_amount;
 
   if ( type == STATS_DMG )
-    player -> iteration_dmg += amount;
+    player -> iteration_dmg += act_amount;
   else
-    player -> iteration_heal += amount;
+    player -> iteration_heal += act_amount;
 
   stats_results_t* r = 0;
 
@@ -81,16 +83,17 @@ void stats_t::add_result( double amount,
   }
 
   r -> count += 1;
-  r -> total_amount += amount;
+  r -> actual_amount += act_amount;
+  r -> total_amount += tot_amount;
 
-  if ( amount < r -> min_amount ) r -> min_amount = amount;
-  if ( amount > r -> max_amount ) r -> max_amount = amount;
+  if ( act_amount < r -> min_amount ) r -> min_amount = act_amount;
+  if ( act_amount > r -> max_amount ) r -> max_amount = act_amount;
 
   int index = ( int ) ( sim -> current_time );
   if ( index >= ( int ) timeline_amount.size() )
     timeline_amount.resize( index * 2 );
 
-  timeline_amount[ index ] += amount;
+  timeline_amount[ index ] += act_amount;
 }
 
 // stats_t::add_execute =====================================================
@@ -143,19 +146,23 @@ void stats_t::analyze()
     {
       stats_results_t& r = direct_results[ i ];
 
-      r.avg_amount = r.total_amount / r.count;
+      r.avg_amount = r.actual_amount / r.count;
       r.pct = 100.0 * r.count / ( double ) num_direct_results;
+      r.overkill_pct = r.total_amount ? 100.0 * ( r.total_amount - r.actual_amount ) / r.total_amount : 0;
       r.count     /= num_iterations;
       r.total_amount /= num_iterations;
+      r.actual_amount /= num_iterations;
     }
     if ( tick_results[ i ].count != 0 )
     {
       stats_results_t& r = tick_results[ i ];
 
-      r.avg_amount = r.total_amount / r.count;
+      r.avg_amount = r.actual_amount / r.count;
       r.pct = 100.0 * r.count / ( double ) num_tick_results;
+      r.overkill_pct = r.total_amount ? 100.0 * ( r.total_amount - r.actual_amount ) / r.total_amount : 0;
       r.count     /= num_iterations;
       r.total_amount /= num_iterations;
+      r.actual_amount /= num_iterations;
     }
   }
 
@@ -177,10 +184,11 @@ void stats_t::analyze()
 
   total_execute_time /= num_iterations;
   total_tick_time    /= num_iterations;
-  total_amount          /= num_iterations;
+  total_amount       /= num_iterations;
+  actual_amount      /= num_iterations;
   opportunity_cost   /= num_iterations;
 
-  compound_amount = total_amount - opportunity_cost;
+  compound_amount = actual_amount - opportunity_cost;
 
   int num_children = children.size();
   for( int i=0; i < num_children; i++ )
@@ -191,6 +199,7 @@ void stats_t::analyze()
 
   if ( compound_amount > 0 )
   {
+    overkill_pct = total_amount ? 100.0 * ( total_amount - actual_amount ) / total_amount : 0;
     ape  = ( num_executes > 0 ) ? ( compound_amount / num_executes ) : 0;
 
     total_time = total_execute_time + total_tick_time;
@@ -219,8 +228,9 @@ inline void stats_t::stats_results_t::merge( const stats_results_t& other )
 {
   if ( other.count != 0 )
   {
-    count        += other.count;
-    total_amount += other.total_amount;
+    count         += other.count;
+    total_amount  += other.total_amount;
+    actual_amount += other.actual_amount;
 
     if ( other.min_amount < min_amount )
       min_amount = other.min_amount;
@@ -240,6 +250,7 @@ void stats_t::merge( const stats_t* other )
   total_execute_time  += other -> total_execute_time;
   total_tick_time     += other -> total_tick_time;
   total_amount        += other -> total_amount;
+  actual_amount       += other -> actual_amount;
   opportunity_cost    += other -> opportunity_cost;
 
   for ( int i=0; i < RESULT_MAX; i++ )

@@ -2098,6 +2098,7 @@ struct buff_t : public spell_id_t
   sim_t* sim;
   player_t* player;
   player_t* source;
+  player_t* initial_source;
   std::string name_str;
   std::vector<std::string> aura_str;
   std::vector<double> stack_occurrence,stack_react_time;
@@ -2730,6 +2731,7 @@ struct sim_t : private thread_t
   int report_rng;
   int hosted_html;
   int print_styles;
+  int report_overheal;
 
   // Multi-Threading
   int threads;
@@ -2810,6 +2812,7 @@ struct scaling_t
   int    current_scaling_stat, num_scaling_stats, remaining_scaling_stats;
   double    scale_haste_iterations, scale_expertise_iterations, scale_crit_iterations, scale_hit_iterations, scale_mastery_iterations;
   std::string scale_over;
+  std::string scale_over_player;
 
   // Gear delta for determining scale factors
   gear_stats_t stats;
@@ -3202,6 +3205,7 @@ struct player_t
   double      dtr_base_proc_chance;
   double      reaction_mean,reaction_stddev,reaction_nu;
   int         infinite_resource[ RESOURCE_MAX ];
+  std::vector<buff_t*> absorb_buffs;
 
   // Latency
   double      world_lag, world_lag_stddev;
@@ -3482,6 +3486,9 @@ struct player_t
     buff_t* wild_magic_potion_crit;
     buff_t* wild_magic_potion_sp;
     buff_t* blessing_of_ancient_kings;
+    std::vector<buff_t*> power_word_shield;
+    std::vector<buff_t*> divine_aegis;
+
 
     buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
@@ -3961,18 +3968,18 @@ struct stats_t
   double frequency, num_executes, num_ticks;
   double num_direct_results, num_tick_results;
   double total_execute_time, total_tick_time, total_time;
-  double total_amount, portion_amount;
+  double actual_amount, total_amount, portion_amount, overkill_pct;
   double aps, portion_aps, ape, apet, apr, rpe, etpe, ttpt;
   double total_intervals, num_intervals;
   double last_execute;
 
   std::vector<stats_t*> children;
-  double compound_amount;
+  double compound_actual,compound_amount;
   double opportunity_cost;
 
   struct stats_results_t
   {
-    double count, min_amount, max_amount, avg_amount, total_amount, pct;
+    double count, min_amount, max_amount, avg_amount, total_amount, actual_amount, pct, overkill_pct;
     stats_results_t() :
       count( 0 ), min_amount( FLT_MAX ), max_amount( 0 ),
       avg_amount( 0 ), total_amount( 0 ), pct( 0 ) {}
@@ -3987,7 +3994,7 @@ struct stats_t
 
   void add_child( stats_t* child );
   void consume_resource( double r ) { resource_consumed += r; }
-  void add_result( double amount, int dmg_type, int result );
+  void add_result( double act_amount, double tot_amount, int dmg_type, int result );
   void add_tick   ( double time );
   void add_execute( double time );
   void reset();

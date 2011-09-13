@@ -1153,6 +1153,7 @@ void action_t::assess_damage( player_t* t,
                               int    dmg_result )
 {
   double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
+  double actual_amount = t -> infinite_resource[ RESOURCE_HEALTH ] ? dmg_adjusted : std::min( dmg_adjusted, t -> resource_current[ RESOURCE_HEALTH ] );
 
   if ( dmg_type == DMG_DIRECT )
   {
@@ -1186,7 +1187,7 @@ void action_t::assess_damage( player_t* t,
     if ( callbacks ) action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
   }
 
-  stats -> add_result( dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : dmg_type ), dmg_result );
+  stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : dmg_type ), dmg_result );
 }
 
 // action_t::additional_damage ==============================================
@@ -1197,8 +1198,9 @@ void action_t::additional_damage( player_t* t,
                                   int    dmg_result )
 {
   dmg_amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
-  t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
-  stats -> add_result( dmg_amount, dmg_type, dmg_result );
+  double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
+  double actual_amount = std::min( dmg_adjusted, t -> resource_current[ resource ] );
+  stats -> add_result( actual_amount, dmg_amount, dmg_type, dmg_result );
 }
 
 // action_t::schedule_execute ===============================================

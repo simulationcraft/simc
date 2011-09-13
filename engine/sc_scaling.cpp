@@ -112,7 +112,7 @@ scaling_t::scaling_t( sim_t* s ) :
   scale_crit_iterations( 1.0 ),
   scale_hit_iterations( 1.0 ),
   scale_mastery_iterations( 1.0 ),
-  scale_over( "" )
+  scale_over( "" ), scale_over_player( "" )
 {
   create_options();
 }
@@ -533,6 +533,7 @@ void scaling_t::create_options()
     { "scale_hit_iterations",           OPT_FLT,    &( scale_hit_iterations                 ) },
     { "scale_mastery_iterations",       OPT_FLT,    &( scale_mastery_iterations             ) },
     { "scale_over",                     OPT_STRING, &( scale_over                           ) },
+    { "scale_over_player",              OPT_STRING, &( scale_over_player                    ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -561,23 +562,36 @@ bool scaling_t::has_scale_factors()
 double scaling_t::scale_over_function( sim_t* s, player_t* p )
 {
   if ( scale_over == "raid_dps"       ) return s -> raid_dps;
-  if ( scale_over == "deaths"         ) return -100 * p -> death_count_pct;
-  if ( scale_over == "min_death_time" ) return p -> min_death_time * 1000;
-  if ( scale_over == "avg_death_time" ) return p -> avg_death_time * 1000;
-  if ( scale_over == "dmg_taken"      ) return -1.0 * p -> total_dmg_taken;
+
+  player_t* q = 0;
+  if ( ! scale_over_player.empty() )
+    q = s -> find_player( scale_over_player );
+  if ( !q )
+    q = p;
+
+  if ( scale_over == "deaths"         ) return -100 * q -> death_count_pct;
+  if ( scale_over == "min_death_time" ) return q -> min_death_time * 1000;
+  if ( scale_over == "avg_death_time" ) return q -> avg_death_time * 1000;
+  if ( scale_over == "dmg_taken"      ) return -1.0 * q -> total_dmg_taken;
   return p -> dps;
 }
 
 
 // scaling_t::scale_over_function_error =====================================
 
-double scaling_t::scale_over_function_error( sim_t* /* s */, player_t* p )
+double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
 {
   if ( scale_over == "raid_dps"       ) return 0;
   if ( scale_over == "deaths"         ) return 0;
   if ( scale_over == "min_death_time" ) return 0;
   if ( scale_over == "avg_death_time" ) return 0;
   if ( scale_over == "dmg_taken"      ) return 0;
-  return p -> dps_error;
+
+  player_t* q = 0;
+  if ( ! scale_over_player.empty() )
+    q = s -> find_player( scale_over_player );
+  if ( !q )
+    q = p;
+  return q -> dps_error;
 }
 

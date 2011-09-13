@@ -496,24 +496,9 @@ public:
 
 struct priest_heal_t : public heal_t
 {
-  struct divine_aegis_t : public priest_absorb_t
-  {
-    double shield_multiple;
-
-    divine_aegis_t( const char* n, priest_t* p ) :
-      priest_absorb_t( n, p, 47753 ), shield_multiple( 0 )
-    {
-      proc             = true;
-      background       = true;
-      direct_power_mod = 0;
-
-      check_talent( p -> talents.divine_aegis -> rank() );
-      shield_multiple  = p -> talents.divine_aegis -> effect1().percent();
-    }
-  };
-
-  divine_aegis_t* da;
+  stats_t* da_stats;
   bool can_trigger_DA;
+  double shield_multiple;
 
   void trigger_echo_of_light( heal_t* a, player_t* /* t */ )
   {
@@ -583,17 +568,20 @@ struct priest_heal_t : public heal_t
     if ( can_trigger_DA && p -> talents.divine_aegis -> ok() )
     {
       std::string da_name = name_str + "_divine_aegis";
-      da = new divine_aegis_t( da_name.c_str(), p );
-      add_child( da );
+      da_stats = p -> get_stats( da_name.c_str() );
+      da_stats -> type = STATS_ABSORB;
+      da_stats -> school = SCHOOL_HOLY;
+      stats -> add_child( da_stats );
+      shield_multiple = 0.3;
     }
   }
 
   priest_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-    heal_t( n, player, sname, t ), da( 0 ), can_trigger_DA( true )
+    heal_t( n, player, sname, t ), can_trigger_DA( true )
   {}
 
   priest_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-    heal_t( n, player, id, t ), da( 0 ), can_trigger_DA( true )
+    heal_t( n, player, id, t ), can_trigger_DA( true )
   {}
 
   virtual void player_buff()
@@ -648,6 +636,33 @@ struct priest_heal_t : public heal_t
       p -> buffs_borrowed_time -> expire();
   }
 
+  void trigger_divine_aegis( player_t* t, double amount )
+    {
+      priest_t* p = player -> cast_priest();
+
+      if ( ! ( can_trigger_DA && p -> talents.divine_aegis -> ok() ) )
+        return;
+
+      // Get DA buff:
+      buff_t* da = 0;
+      for( unsigned int i = 0; i < t -> buffs.divine_aegis.size(); i++ )
+      {
+        if ( t -> buffs.divine_aegis[i ] -> initial_source == player )
+        {
+          da = t -> buffs.divine_aegis[i ];
+          break;
+        }
+      }
+      assert( da );
+      assert( da_stats );
+
+      double old_amount = da -> value();
+      double new_amount = std::min( t -> resource_current[ RESOURCE_HEALTH ] * 0.4 - old_amount, amount );
+      da -> trigger( 1, old_amount + new_amount);
+      da_stats -> add_result( sim -> report_overheal ? new_amount : amount, amount, STATS_ABSORB, RESULT_HIT );
+      da_stats -> add_execute( 0 );
+    }
+
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     heal_t::travel( t, travel_result, travel_dmg );
@@ -656,12 +671,9 @@ struct priest_heal_t : public heal_t
     if ( travel_dmg > 0 )
     {
       // Divine Aegis
-      if ( da && travel_result == RESULT_CRIT )
+      if ( travel_result == RESULT_CRIT )
       {
-        da -> base_dd_min = da -> base_dd_max = travel_dmg * da -> shield_multiple;
-        da -> heal_target.clear();
-        da -> heal_target.push_back( t );
-        da -> execute();
+        trigger_divine_aegis( t, travel_dmg * shield_multiple );
       }
 
       trigger_echo_of_light( this, t );
@@ -676,12 +688,9 @@ struct priest_heal_t : public heal_t
     heal_t::tick();
 
     // Divine Aegis
-    if ( da && result == RESULT_CRIT )
+    if ( result == RESULT_CRIT )
     {
-      da -> base_dd_min = da -> base_dd_max = tick_dmg * da -> shield_multiple;
-      da -> heal_target.clear();
-      da -> heal_target.push_back( heal_target[0] );
-      da -> execute();
+      trigger_divine_aegis( target, tick_dmg * shield_multiple );
     }
   }
 
@@ -708,6 +717,7 @@ struct priest_heal_t : public heal_t
     if ( p -> talents.strength_of_soul -> rank() && t -> buffs.weakened_soul -> up() )
       t -> buffs.weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect1().base_value() );
   }
+
 };
 
 // Atonement heal ===========================================================
@@ -762,6 +772,7 @@ struct atonement_heal_t : public priest_heal_t
       // num_ticks = 0;
       base_dd_min = base_dd_max = atonement_dmg;
       may_crit = (result == RESULT_CRIT);
+
       execute();
     }
   }
@@ -783,7 +794,7 @@ struct atonement_heal_t : public priest_heal_t
   virtual void execute()
   {
     heal_target.clear();
-    heal_target.push_back( target ? target : find_lowest_player() );
+    heal_target.push_back( find_lowest_player() );
 
     priest_heal_t::execute();
   }
@@ -791,7 +802,7 @@ struct atonement_heal_t : public priest_heal_t
   virtual void tick()
   {
     heal_target.clear();
-    heal_target.push_back( target ? target : find_lowest_player() );
+    heal_target.push_back( find_lowest_player() );
 
     priest_heal_t::tick();
   }
@@ -3488,7 +3499,7 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_heal_t::init();
 
     // PoH crits double the DA percentage.
-    if ( da ) da -> shield_multiple *= 2;
+    shield_multiple *= 2;
   }
 
   virtual void execute()
@@ -3551,13 +3562,11 @@ struct prayer_of_healing_t : public priest_heal_t
       glyph -> execute();
     }
 
+
     // Divine Aegis
-    if ( da && travel_result != RESULT_CRIT )
+    if ( travel_result != RESULT_CRIT )
     {
-      da -> base_dd_min = da -> base_dd_max = travel_dmg * da -> shield_multiple * 0.5;
-      da -> heal_target.clear();
-      da -> heal_target.push_back( t );
-      da -> execute();
+       trigger_divine_aegis( t, travel_dmg * shield_multiple * 0.5 );
     }
   }
 
@@ -3813,6 +3822,7 @@ struct power_word_shield_t : public priest_absorb_t
     if ( p -> glyphs.power_word_shield -> ok() )
     {
       glyph_pws = new glyph_power_word_shield_t( p );
+      glyph_pws -> target = target;
       add_child( glyph_pws );
     }
   }
@@ -3845,15 +3855,30 @@ struct power_word_shield_t : public priest_absorb_t
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * amount, p -> gains_rapture );
       p -> cooldowns_rapture -> start();
     }
+
+
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
-    priest_absorb_t::travel( t, travel_result, travel_dmg );
-
     priest_t* p = player -> cast_priest();
 
     t -> buffs.weakened_soul -> trigger();
+
+    // Get PWS buff:
+    buff_t* pws = 0;
+    for( unsigned int i = 0; i < t -> buffs.power_word_shield.size(); i++ )
+    {
+      if ( t -> buffs.power_word_shield[i ] -> initial_source == player )
+      {
+        pws = t -> buffs.power_word_shield[i ];
+        break;
+       }
+    }
+    assert( pws );
+
+    pws -> trigger( 1, travel_dmg );
+    stats -> add_result( travel_dmg, travel_dmg, STATS_ABSORB, travel_result );
 
     // Glyph
     if ( glyph_pws )
@@ -3943,13 +3968,14 @@ struct penance_heal_t : public priest_heal_t
     cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().seconds();
 
     penance_tick = new penance_heal_tick_t( p );
+    penance_tick -> target = target;
+    penance_tick -> heal_target.clear();
+    penance_tick -> heal_target.push_back( target );
   }
 
   virtual void tick()
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-    penance_tick -> heal_target.clear();
-    penance_tick -> heal_target.push_back( target );
     penance_tick -> execute();
     stats -> add_tick( time_to_tick );
   }
@@ -4847,6 +4873,25 @@ void priest_t::init_buffs()
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
 
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    player_t* p = sim -> actor_list[i];
+
+    if ( talents.divine_aegis -> rank() )
+    {
+      buff_t* b = new buff_t( p, 47753, "divine_aegis" );
+      b -> initial_source = this;
+      p -> buffs.divine_aegis.push_back( b );
+      p -> absorb_buffs.push_back( b );
+    }
+
+
+    buff_t* b  = new buff_t( this, 17, "power_word_shield" );
+    b -> initial_source = this;
+    p -> buffs.power_word_shield.push_back( b );
+    p -> absorb_buffs.push_back( b );
+  }
+
   // Holy
   buffs_chakra_pre                 = new buff_t( this, 14751, "chakra_pre" );
   buffs_chakra_chastise            = new buff_t( this, 81209, "chakra_chastise" );
@@ -5592,6 +5637,7 @@ void player_t::priest_init( sim_t* sim )
     p -> buffs.power_infusion = new      buff_t( p, "power_infusion",             1,  15.0, 0 );
     p -> buffs.inspiration    = new      buff_t( p, "inspiration", 1, 15.0, 0 );
     p -> buffs.weakened_soul  = new      buff_t( p,  6788, "weakened_soul" );
+
   }
 }
 

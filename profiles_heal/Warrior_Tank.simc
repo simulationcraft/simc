@@ -1,124 +1,149 @@
 #!./simc 
 
+report_overheal=1
+
 warrior=Warrior_Tank
-origin="http://eu.battle.net/wow/en/character/eredar/cabane/advanced"
+origin="http://us.battle.net/wow/en/character/jubeithos/cairhien/advanced"
 level=85
-race=human
+race=blood_elf
+position=back
 role=tank
 use_pre_potion=1
-professions=Blacksmithing=525/Jewelcrafting=515
-talents=http://www.wowhead.com/talent#warrior-2200000000000000000030200000000000000000003233221121210212031
-glyphs=devastate/shield_slam/revenge/victory_rush/shockwave/resonating_power/berserker_rage/demoralizing_shout/command
+professions=jewelcrafting=510/leatherworking=502
+talents=http://www.wowhead.com/talent#warrior-1200000000000000000000200000000000000000033223221121210212231
+glyphs=devastate/shield_slam/revenge/cleaving/shockwave/thunder_clap/demoralizing_shout/berserker_rage/command
 actions=flask,type=steelskin
 actions+=/food,type=beer_basted_crocolisk
 actions+=/snapshot_stats
 actions+=/earthen_potion,if=!in_combat|health_pct<35&buff.earthen_potion.down
 actions+=/auto_attack
+actions+=/arcane_torrent
 actions+=/stance,choose=defensive
-actions+=/last_stand,if=health_pct<35
-actions+=/heroic_strike,if=rage>=35
-actions+=/revenge
-actions+=/shockwave
+actions+=/last_stand,if=health<30000
+actions+=/heroic_strike,if=rage>=50
+actions+=/inner_rage,if=rage>=85
+actions+=/berserker_rage
 actions+=/shield_block,sync=shield_slam
 actions+=/shield_slam
+actions+=/thunder_clap,if=dot.rend.remains<=3
+actions+=/rend,if=!ticking
+actions+=/devastate,if=cooldown.shield_slam.remains>1.5
+actions+=/shockwave
+actions+=/concussion_blow
+actions+=/revenge
 actions+=/devastate
 actions+=/battle_shout
-actions+=/berserker_rage
-head=dragon_bone_warhelm,type=plate,ilevel=359,quality=epic,stats=2784armor_113exp_281mastery_512sta_259str,reforge=mastery_dodge,gems=austere_shadowspirit_20exp_20mastery_45sta,enchant=90sta_35dodge
-neck=mountains_mouth,ilevel=333,quality=rare,stats=100mastery_100parry_224sta_149str,reforge=parry_dodge
-shoulders=heaving_plates_of_protection,type=plate,ilevel=359,quality=epic,stats=2570armor_169mastery_129parry_380sta_253str,reforge=parry_dodge,gems=60sta_10mastery,enchant=75sta_25dodge
-shirt=captain_sanders_shirt,ilevel=1
-chest=earthen_chestguard,type=plate,ilevel=359,quality=epic,stats=3426armor_208mastery_168parry_512sta_341str,reforge=parry_dodge,gems=20parry_30sta_101sta_30sta,enchant=55sta
-waist=jumbotron_power_belt,type=plate,ilevel=359,quality=epic,stats=1927armor_139dodge_159mastery_380sta_253str,gems=20mastery_30sta_101sta_15sta
-legs=earthen_legguards,type=plate,ilevel=359,quality=epic,stats=2998armor_188dodge_188parry_512sta_341str,reforge=parry_mastery,gems=20exp_20mastery_101sta_30sta,enchant=85sta_45agi
-feet=gryphon_riders_boots,type=plate,ilevel=359,quality=epic,stats=2355armor_159mastery_139parry_380sta_253str,reforge=parry_dodge,gems=20mastery_30sta_10parry,enchant=30sta
-wrists=sandguard_bracers,type=plate,ilevel=359,quality=epic,stats=1499armor_190dodge_111exp_286sta_136str,gems=60sta,enchant=50dodge
-hands=numbing_handguards,type=plate,ilevel=346,quality=rare,stats=2061armor_130dodge_140mastery_337sta_215str,gems=60sta_60sta_10dodge
-finger1=ring_of_three_lights,heroic=1,ilevel=346,quality=rare,stats=113mastery_113parry_252sta_168str,reforge=parry_dodge
-finger2=permafrost_signet_of_the_rockslab,ilevel=359,quality=epic,stats=285sta_190str_126mastery_126dodge,suffix=-128
-trinket1=leaden_despair,heroic=1,ilevel=346,quality=rare,stats=427sta
-trinket2=figurine__earthen_guardian,ilevel=346,quality=rare,stats=427sta
-back=wrap_of_the_great_turtle,ilevel=359,quality=epic,stats=625armor_127dodge_127mastery_286sta_190str,enchant=250barmor
-main_hand=elementium_fang,heroic=1,ilevel=346,quality=rare,stats=86mastery_86parry_194sta_129str,reforge=parry_hit,weapon=sword_2.60speed_745min_1385max
-off_hand=elementium_earthguard,ilevel=359,quality=epic,stats=11896armor_127hit_127mastery_286sta_190str
-ranged=themios_the_darkbringer,ilevel=359,quality=epic,stats=107agi_72crit_72mastery_161sta,reforge=crit_dodge,weapon=bow_2.90speed_1265min_2350max
-tabard=guild_tabard,ilevel=1
+head=faceguard_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=2943armor_250str_611sta_388parry_166exp,reforge=exp_mastery,gems=austere_shadowspirit_20mastery_30sta_45sta,enchant=90sta_35dodge
+neck=caelestraszs_will,heroic=1,ilevel=379,quality=epic,stats=229str_344sta_138dodge_128mastery,gems=40mastery_15sta
+shoulders=pauldrons_of_roaring_flame,type=plate,ilevel=384,quality=epic,stats=2764armor_223str_480sta_320dodge_142mastery,gems=67mastery_15sta,enchant=45sta_20dodge
+chest=chestguard_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3762armor_420str_689sta_316dodge_271parry,reforge=parry_mastery,gems=20parry_20mastery_67mastery_30sta,enchant=75sta
+waist=uncrushable_belt_of_fury,type=plate,ilevel=378,quality=epic,stats=2037armor_210str_454sta_302mastery_133exp,reforge=exp_dodge,gems=67mastery_20parry_20mastery_15sta
+legs=legguards_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3292armor_420str_689sta_280parry_284mastery,gems=20parry_20mastery_20mastery_30sta_30sta,enchant=145sta_55dodge
+feet=cracked_obsidian_stompers,heroic=1,type=plate,ilevel=391,quality=epic,stats=2586armor_240str_513sta_322dodge_173exp,reforge=dodge_mastery,gems=20mastery_30sta_15sta,enchant=35mastery
+wrists=bracers_of_the_fiery_path,type=plate,ilevel=378,quality=epic,stats=1584armor_207str_341sta_133mastery_149parry,reforge=parry_dodge,gems=20mastery_30sta_15sta,enchant=195sta
+hands=handguards_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=2351armor_322str_513sta_202dodge_231mastery,gems=20parry_20mastery_15sta,enchant=65mastery
+finger1=thecks_emberseal,ilevel=378,quality=epic,stats=173str_341sta_227dodge_115hit,reforge=hit_mastery
+finger2=deflecting_brimstone_band,ilevel=378,quality=epic,stats=227str_341sta_154mastery_148dodge
+trinket1=symbiotic_worm,heroic=1,ilevel=372,quality=epic,stats=544sta
+trinket2=spidersilk_spindle,heroic=1,ilevel=391,quality=epic,stats=433mastery
+back=durable_flamewrath_greatcloak,ilevel=378,quality=epic,stats=695armor_173str_341sta_227parry_115hit,reforge=hit_mastery,enchant=15haste
+main_hand=mandible_of_bethtilac,heroic=1,ilevel=391,quality=epic,stats=197str_296sta_143dodge_112mastery,enchant=windwalk,weapon=sword_2.60speed_1133min_2105max
+off_hand=shard_of_torment,heroic=1,ilevel=391,quality=epic,stats=12421armor_176str_384sta_173parry_166dodge,reforge=parry_mastery,gems=20mastery_30sta_20mastery_30sta_30sta
+ranged=deflecting_star,ilevel=378,quality=epic,stats=97str_192sta_65exp_128parry,reforge=exp_mastery,weapon=thrown_2.10speed_1250min_1875max
+tabard=tabard_of_therazane,ilevel=85
 # Gear Summary
-# gear_strength=3067
-# gear_agility=152
-# gear_stamina=7010
-# gear_expertise_rating=264
-# gear_hit_rating=161
-# gear_crit_rating=44
-# gear_mastery_rating=1920
-# gear_armor=32141
-# gear_bonus_armor=250
-# gear_dodge_rating=1418
-# gear_parry_rating=586
+# gear_strength=3564
+# gear_stamina=8109
+# gear_expertise_rating=392
+# gear_hit_rating=138
+# gear_haste_rating=15
+# gear_mastery_rating=2949
+# gear_armor=34435
+# gear_dodge_rating=2076
+# gear_parry_rating=1460
 # meta_gem=austere_shadowspirit
-# tier11_2pc_tank=1
-# main_hand=elementium_fang,heroic=1,weapon=sword_2.60speed_745min_1385max
-# ranged=themios_the_darkbringer,weapon=bow_2.90speed_1265min_2350max
+# tier12_2pc_tank=1
+# tier12_4pc_tank=1
+# main_hand=mandible_of_bethtilac,heroic=1,weapon=sword_2.60speed_1133min_2105max,enchant=windwalk
+# ranged=deflecting_star,weapon=thrown_2.10speed_1250min_1875max
+
+infinite_health=0
 
 infinite_health=0
 
 priest=Warrior_Tank_Healer
-queue_lag=0.2
-queue_lag_stddev=1.0
-origin="http://chardev.org/?profile=24066"
+origin="http://chardev.org/?profile=174520"
 level=85
-race=night_elf
-#infinite_mana=1
+race=troll
+role=heal
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
-talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
-glyphs=inner_fire/mass_dispel/levitate/power_word_shield/prayer_of_mending/penance
+talents=http://www.wowhead.com/talent#priest-232210021213201312021033002000000000000000200000000000000000000
+glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/prayer_of_healing
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fortitude
 actions+=/inner_fire
 actions+=/snapshot_stats
+actions+=/volcanic_potion,if=!in_combat|buff.bloodlust.react
+actions+=/use_item,name=jaws_of_defeat
+actions+=/shadow_fiend,if=mana_pct<=60
+actions+=/berserking
+actions+=/power_infusion
 actions+=/inner_focus
-actions+=/power_word_shield,target=Warrior_Tank
+actions+=/power_word_shield,if=!cooldown.rapture.remains,target=Warrior_Tank
+actions+=/archangel,if=buff.holy_evangelism.stack>=5&target.Warrior_Tank.health_pct<=70
+actions+=/penance_heal,target=Warrior_Tank,if=buff.grace.down
+actions+=/holy_fire
+actions+=/penance_heal,target=Warrior_Tank,if=target.health_pct<=60
+actions+=/greater_heal,target=Warrior_Tank,if=target.health_pct<=50
+actions+=/greater_heal,target=Warrior_Tank,if=buff.inner_focus.up&buff.divine_fire.down
+actions+=/smite,if=dot.holy_fire.remains>cast_time&buff.holy_evangelism.stack<5&buff.holy_archangel.down&target.Warrior_Tank.health_pct>=70
 actions+=/penance_heal,target=Warrior_Tank,if=target.health_pct<=80
-actions+=/greater_heal,target=Warrior_Tank,if=target.health_pct<70
-actions+=/prayer_of_mending,moving=1,single=1
-actions+=/renew,moving=1
-head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
-neck=wyrmbreakers_amulet,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta
-shoulders=mercurial_mantle,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1009armor_171haste_266int_191spi_429sta,gems=20crit_20int_10int,enchant=50int_25haste
-shirt=red_linen_shirt,ilevel=10
-chest=mercurial_robes,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1346armor_247crit_345int_227spi_578sta
-waist=xtron_duct_tape,heroic=1,type=cloth,ilevel=372,quality=epic,stats=757armor_171crit_266int_191spi_429sta,gems=20crit_20int_40int_10int
-legs=legwraps_of_the_greatest_son,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1177armor_247crit_345int_227spi_578sta,gems=40int_20crit_20int_20crit,enchant=95int_55spi
-feet=treads_of_liquid_ice,heroic=1,type=cloth,ilevel=372,quality=epic,stats=925armor_266int_191mastery_171spi_429sta,gems=20crit_20int_10int,enchant=30sta
-wrists=bracers_of_the_burningeye,heroic=1,type=cloth,ilevel=372,quality=epic,stats=589armor_143haste_215int_143spi_322sta,enchant=50haste
-hands=mercurial_handwraps,heroic=1,type=cloth,ilevel=372,quality=epic,stats=841armor_266int_171mastery_191spi_429sta,gems=20int_20spi_10int,enchant=50haste
-finger1=security_measure_alpha,heroic=1,ilevel=372,quality=epic,stats=143crit_215int_143spi_322sta,enchant=40int
-finger2=planetary_band_of_the_fireflash,heroic=1,ilevel=372,quality=epic,stats=321sta_214int_143crit_143haste,enchant=40int,suffix=130
-trinket1=core_of_ripeness,ilevel=359,quality=epic,stats=321int,use=1926spi_20dur_120cd
-trinket2=fall_of_mortality,heroic=1,ilevel=372,quality=epic,stats=363int
-back=drape_of_the_twins,heroic=1,ilevel=372,quality=epic,stats=673armor_143haste_215int_143spi_322sta,enchant=lightweave_embroidery_old
-main_hand=andoros_fist_of_the_dragon_king,heroic=1,ilevel=372,quality=epic,stats=165int_110mastery_110spi_2207sp_247sta,reforge=mastery_crit,weapon=mace_1.80speed_82min_154max,enchant=power_torrent
-off_hand=scepter_of_ice,heroic=1,ilevel=372,quality=epic,stats=215int_143mastery_143spi_322sta,enchant=100int
-ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81mastery_81spi_181sta
+actions+=/greater_heal,target=Warrior_Tank,if=target.health_pct<=70
+actions+=/renew,target=Warrior_Tank,if=!ticking|remains<tick_time
+actions+=/smite
+head=cowl_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_255spi_229mastery,reforge=mastery_haste,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit
+neck=flowform_choker,ilevel=378,quality=epic,stats=227int_341sta_143haste_115mastery,reforge=mastery_spi,gems=40int_10int
+shoulders=mantle_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1043armor_282int_454sta_201spi_183haste,gems=40int,enchant=50int_25haste
+chest=robes_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1391armor_368int_611sta_261spi_243mastery,reforge=mastery_haste,gems=20int_20haste_20int_20spi_20int,enchant=20all
+waist=majordomos_chain_of_office,type=cloth,ilevel=384,quality=epic,stats=808armor_300int_480sta_182mastery_214haste,reforge=mastery_spi,gems=40int_40int_10int
+legs=legwraps_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1217armor_368int_611sta_291spi_198crit,reforge=crit_haste,gems=40int_20int_20haste_20int,enchant=95int_55spi
+feet=endless_dream_walkers,type=cloth,ilevel=378,quality=epic,stats=956armor_282int_454sta_197spi_187haste,gems=40int_10int,enchant=35mastery
+wrists=firesoul_wristguards,type=cloth,ilevel=378,quality=epic,stats=608armor_227int_341sta_158spi_140haste,enchant=50int
+hands=fingers_of_incineration,type=cloth,ilevel=384,quality=epic,stats=898armor_300int_480sta_215crit_188haste,reforge=crit_spi,gems=40int_10int,enchant=50haste
+finger1=soothing_brimstone_circle,ilevel=378,quality=epic,stats=227int_341sta_156spi_144crit,reforge=crit_haste,enchant=40int
+finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_185spi_127mastery,reforge=mastery_haste,gems=40int_10int,enchant=40int
+trinket1=eye_of_blazing_power,ilevel=378,quality=epic,stats=383int
+trinket2=jaws_of_defeat,ilevel=378,quality=epic,stats=383int,use=onspellcast_110holystorm_costrd_10stack_20dur_120cd
+back=flowing_flamewrath_cape,ilevel=378,quality=epic,stats=695armor_227int_341sta_160spi_137mastery,reforge=mastery_haste,enchant=lightweave_embroidery
+main_hand=kogun_hammer_of_the_firelord,ilevel=384,quality=epic,stats=185int_277sta_134spi_105haste_2467sp,enchant=power_torrent,weapon=mace_2.10speed_428min_797max
+off_hand=goblet_of_anger,ilevel=378,quality=epic,stats=227int_341sta_137spi_160haste,enchant=40int
+ranged=scorchvine_wand,ilevel=378,quality=epic,stats=128int_192sta_86spi_83mastery,reforge=mastery_haste
 # Gear Summary
-# gear_stamina=5839
-# gear_intellect=4993
-# gear_spirit=2510
-# gear_spell_power=2207
-# gear_crit_rating=1470
-# gear_haste_rating=725
-# gear_mastery_rating=652
-# gear_armor=8410
-# meta_gem=revitalizing_shadowspirit
-# tier11_2pc_heal=1
-# tier11_4pc_heal=1
-# back=drape_of_the_twins,heroic=1,enchant=lightweave_embroidery_old
-# main_hand=andoros_fist_of_the_dragon_king,heroic=1,weapon=mace_1.80speed_82min_154max
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=6279
+# gear_intellect=5687
+# gear_spirit=2521
+# gear_spell_power=2467
+# gear_crit_rating=370
+# gear_haste_rating=1896
+# gear_mastery_rating=708
+# gear_armor=8746
+# meta_gem=ember_shadowspirit
+# tier12_2pc_heal=1
+# tier12_4pc_heal=1
+# trinket1=eye_of_blazing_power
+# back=flowing_flamewrath_cape,enchant=lightweave_embroidery
+# main_hand=kogun_hammer_of_the_firelord,weapon=mace_2.10speed_428min_797max,enchant=power_torrent
+
 
 enemy=Overridden_Main_Target
 level=88
 role=tank
+target=Warrior_Tank
 actions+=/snapshot_stats
-actions+=/auto_attack,target=Warrior_Tank,damage=120000,attack_speed=2
+actions+=/auto_attack,damage=280000,attack_speed=2
+actions+=/spell_nuke,damage=100000,cooldown=25
+raid_events+=/distraction,cooldown=30,duration=5,skill=0.5

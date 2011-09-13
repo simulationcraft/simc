@@ -3763,6 +3763,23 @@ double player_t::assess_damage( double            amount,
 {
   double mitigated_amount = target_mitigation( amount, school, dmg_type, result, action );
 
+  int num_absorbs = absorb_buffs.size();
+  double absorbed_amount = 0;
+  if ( num_absorbs > 0 )
+  {
+    for ( int i = 0; i < num_absorbs; i++ )
+    {
+      double buff_value = absorb_buffs[ i ] -> value();
+      double value = std::min( mitigated_amount - absorbed_amount, buff_value );
+      absorbed_amount += value;
+      if ( value == buff_value )
+        absorb_buffs[ i ] -> expire();
+      else
+        absorb_buffs[ i ] -> current_value -= value;
+    }
+  }
+  mitigated_amount -= absorbed_amount;
+
   dmg_taken += mitigated_amount;
   total_dmg_taken += mitigated_amount;
 

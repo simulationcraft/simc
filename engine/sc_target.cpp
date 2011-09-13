@@ -62,6 +62,7 @@ struct enemy_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual void init_base();
   virtual void init_resources( bool force=false );
+  virtual void init_target();
   virtual void init_actions();
   virtual double composite_tank_block() SC_CONST;
   virtual void create_options();
@@ -367,27 +368,45 @@ void enemy_t::init_resources( bool /* force */ )
   }
 }
 
+// enemy_t::init_target ====================================================
+
+void enemy_t::init_target()
+{
+  if ( ! target_str.empty() )
+  {
+    target = sim -> find_player( target_str );
+  }
+
+  if ( target )
+    return;
+
+  for ( player_t* q = sim -> player_list; q; q = q -> next )
+  {
+    if ( q -> primary_role() != ROLE_TANK )
+      continue;
+      target = q;
+    break;
+  }
+
+  if ( ! target )
+  {
+    target = sim -> target;
+  }
+}
+
 // enemy_t::init_actions ====================================================
 
 void enemy_t::init_actions()
 {
+  if ( !is_add() )
+
+
   if ( action_list_str.empty() )
   {
     action_list_str += "/snapshot_stats";
 
-    if ( !is_add() )
-    {
-      for ( player_t* q = sim -> player_list; q; q = q -> next )
-      {
-        if ( q -> primary_role() != ROLE_TANK )
-          continue;
-        if ( !target )
-          target = q;
-        action_list_str += "/auto_attack,target=";
-        action_list_str += q -> name_str;
-        break;
-      }
-    }
+    if ( ! is_add() && target != this )
+      action_list_str += "/auto_attack";
   }
 
   player_t::init_actions();
