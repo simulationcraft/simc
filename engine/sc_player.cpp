@@ -5261,7 +5261,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
   int encoding[ MAX_TALENT_SLOTS ];
 
   unsigned int i, i_max = std::min( talent_string.size(),
-                                    static_cast<unsigned>( MAX_TALENT_SLOTS ) );
+                                    static_cast< size_t >( MAX_TALENT_SLOTS ) );
   for ( i = 0; i < i_max; i++ )
   {
     char c = talent_string[ i ];
