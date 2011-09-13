@@ -1522,7 +1522,7 @@ struct devastate_t : public warrior_attack_t
 
     trigger_sword_and_board( this, result );
 
-    if ( target -> health_percentage() <= 20 )
+    if ( p -> talents.impending_victory -> rank() && target -> health_percentage() <= 20 )
     {
       if ( p -> rng_impending_victory -> roll( p -> talents.impending_victory -> proc_chance() ) )
         p -> buffs_victory_rush -> trigger();
@@ -3424,14 +3424,21 @@ void warrior_t::init_actions()
     {
       action_list_str += "/stance,choose=defensive";
       if ( talents.last_stand -> ok() ) action_list_str += "/last_stand,if=health<30000";
-      action_list_str += "/heroic_strike,if=rage>=35";
-      action_list_str += "/revenge";
-      if ( talents.shockwave -> ok() ) action_list_str += "/shockwave";
+      action_list_str += "/heroic_strike,if=rage>=50";
+      action_list_str += "/inner_rage,if=rage>=85";
+      action_list_str += "/berserker_rage";
+
       action_list_str += "/shield_block,sync=shield_slam";
       action_list_str += "/shield_slam";
+      action_list_str += "/thunder_clap,if=dot.rend.remains<=3";
+      action_list_str += "/rend,if=!ticking";
+      if ( talents.devastate -> ok() ) action_list_str += "/devastate,if=cooldown.shield_slam.remains>1.5";
+      if ( talents.shockwave -> ok() ) action_list_str += "/shockwave";
+      action_list_str += "/concussion_blow";
+      action_list_str += "/revenge";
       if ( talents.devastate -> ok() ) action_list_str += "/devastate";
       action_list_str += "/battle_shout";
-      if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage";
+
     }
 
     // Default
