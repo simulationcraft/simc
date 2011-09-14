@@ -2655,7 +2655,6 @@ struct sim_t : private thread_t
   {
     aura_t* abominations_might;
     aura_t* arcane_tactics;
-    aura_t* battle_shout;
     aura_t* communion;
     aura_t* demonic_pact;
     aura_t* devotion_aura;
@@ -3439,6 +3438,7 @@ struct player_t
   struct buffs_t
   {
     buff_t* arcane_brilliance;
+    buff_t* battle_shout;
     buff_t* berserking;
     buff_t* blessing_of_kings;
     buff_t* blessing_of_might;
@@ -3451,6 +3451,7 @@ struct player_t
     buff_t* dark_intent;
     buff_t* dark_intent_feedback;
     buff_t* destruction_potion;
+    buff_t* commanding_shout;
     buff_t* earthen_potion;
     buff_t* essence_of_the_red;
     buff_t* exhaustion;
@@ -3982,7 +3983,7 @@ struct stats_t
     double count, min_amount, max_amount, avg_amount, total_amount, actual_amount, pct, overkill_pct;
     stats_results_t() :
       count( 0 ), min_amount( FLT_MAX ), max_amount( 0 ),
-      avg_amount( 0 ), total_amount( 0 ), pct( 0 ) {}
+      avg_amount( 0 ), total_amount( 0 ), actual_amount( 0 ), pct( 0 ), overkill_pct( 0 ) {}
     void merge( const stats_results_t& other );
   };
   stats_results_t direct_results[ RESULT_MAX ];

@@ -120,6 +120,7 @@ struct warrior_t : public player_t
   buff_t* buffs_wrecking_crew;
   buff_t* buffs_tier11_4pc_melee;
   buff_t* buffs_tier12_2pc_melee;
+  buff_t* buffs_tier12_4pc_tank;
 
   // Cooldowns
   cooldown_t* cooldowns_colossus_smash;
@@ -134,6 +135,7 @@ struct warrior_t : public player_t
   gain_t* gains_anger_management;
   gain_t* gains_avoided_attacks;
   gain_t* gains_battle_shout;
+  gain_t* gains_commanding_shout;
   gain_t* gains_berserker_rage;
   gain_t* gains_blood_frenzy;
   gain_t* gains_incoming_damage;
@@ -343,6 +345,7 @@ struct warrior_t : public player_t
   virtual double    composite_tank_block() SC_CONST;
   virtual double    composite_tank_crit_block() SC_CONST;
   virtual double    composite_tank_crit( const school_type school ) SC_CONST;
+  virtual double    composite_tank_parry() SC_CONST;
   virtual void      reset();
   virtual void      regen( double periodicity );
   virtual void      create_options();
@@ -681,7 +684,7 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
   struct combust_t : public warrior_attack_t
   {
     combust_t( warrior_t* player ) :
-      warrior_attack_t( "combust", 99240, player )
+      warrior_attack_t( "shield_slam_combust", 99240, player )
     {
       background    = true;
       proc          = true;
@@ -2129,6 +2132,8 @@ struct shield_slam_t : public warrior_attack_t
 
     base_crit        += p -> talents.cruelty -> effect1().percent();
     base_multiplier  *= 1.0  + p -> glyphs.shield_slam -> effect1().percent();
+
+    stats -> add_child( player -> get_stats( "shield_slam_combust" ) );
   }
 
   virtual void player_buff()
@@ -2518,12 +2523,11 @@ struct battle_shout_t : public warrior_spell_t
   {
     parse_options( NULL, options_str );
 
-    //id = 6673;
-
     harmful   = false;
 
     rage_gain = 20 + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
-    cooldown -> duration += p -> talents.booming_voice -> effect1().seconds();
+    cooldown = player -> get_cooldown( "shout" );
+    cooldown -> duration = 10 + spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().seconds();
 
 
     uint32_t id = p -> sets -> set( SET_T12_2PC_MELEE ) -> effect_trigger_spell( 1 );
@@ -2539,11 +2543,57 @@ struct battle_shout_t : public warrior_spell_t
 
     if ( ! sim -> overrides.battle_shout )
     {
-      sim -> auras.battle_shout -> buff_duration = 120 + p -> glyphs.battle -> effect1().seconds();
-      sim -> auras.battle_shout -> trigger( 1, p -> dbc.effect_average( p -> dbc.spell( 6673 ) -> effect1().id(), p -> level ) );
+      for ( player_t* q = sim -> player_list; q; q = q -> next )
+      {
+        q -> buffs.battle_shout -> buff_duration = 120 + p -> glyphs.battle -> effect1().seconds();
+        q -> buffs.battle_shout -> trigger( 1, effect_average( 1 ) );
+      }
+
     }
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
+
+    p -> buffs_tier12_2pc_melee -> trigger( 1, burning_rage_value );
+  }
+};
+
+// Commanding Shout =============================================================
+
+struct commanding_shout_t : public warrior_spell_t
+{
+  double rage_gain;
+  double burning_rage_value;
+
+  commanding_shout_t( warrior_t* p, const std::string& options_str ) :
+      warrior_spell_t( "commanding_shout", "Commanding Shout", p ), burning_rage_value( 0.0 )
+  {
+    parse_options( NULL, options_str );
+
+    harmful   = false;
+
+    rage_gain = 20 + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
+
+    cooldown = player -> get_cooldown( "shout" );
+    cooldown -> duration = spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().seconds();
+
+    uint32_t id = p -> sets -> set( SET_T12_2PC_MELEE ) -> effect_trigger_spell( 1 );
+    spell_data_t* s = spell_data_t::find( id, "Burning Rage", p -> dbc.ptr );
+    burning_rage_value = s -> effect1().percent();
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+
+    warrior_t* p = player -> cast_warrior();
+    for ( player_t* q = sim -> player_list; q; q = q -> next )
+    {
+      q -> buffs.commanding_shout -> buff_duration = 120 /* include commanding glyph */;
+      q -> buffs.commanding_shout -> trigger( 1, effect_average( 1 ) );
+
+    }
+
+    p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_commanding_shout );
 
     p -> buffs_tier12_2pc_melee -> trigger( 1, burning_rage_value );
   }
@@ -2728,6 +2778,23 @@ struct recklessness_t : public warrior_spell_t
 
 // Shield Block =============================================================
 
+struct shield_block_buff_t : public buff_t
+{
+  shield_block_buff_t( warrior_t* p ) :
+    buff_t( p, 2565, "shield_block" )
+  {
+
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+
+    warrior_t* p = player -> cast_warrior();
+
+    p -> buffs_tier12_4pc_tank -> trigger( 1, p -> buffs_tier12_4pc_tank -> effect1().percent() );
+  }
+};
 struct shield_block_t : public warrior_spell_t
 {
   shield_block_t( warrior_t* p, const std::string& options_str ) :
@@ -3193,7 +3260,6 @@ void warrior_t::init_buffs()
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
   buffs_revenge                   = new buff_t( this, "revenge",                   1,  5.0 );
   buffs_rude_interruption         = new buff_t( this, "rude_interruption",         1, 15.0 * talents.rude_interruption ->rank() );
-  buffs_shield_block              = new buff_t( this, "shield_block",              1, 10.0 );
   buffs_sweeping_strikes          = new buff_t( this, "sweeping_strikes",          1, 10.0 );
   buffs_sword_and_board           = new buff_t( this, "sword_and_board",           1,  5.0,   0, talents.sword_and_board -> proc_chance() );
   buffs_taste_for_blood           = new buff_t( this, "taste_for_blood",           1,  9.0, 5.0, talents.taste_for_blood -> proc_chance() );
@@ -3201,7 +3267,9 @@ void warrior_t::init_buffs()
   buffs_victory_rush              = new buff_t( this, "victory_rush",              1, 20.0 );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, 12.0,   0 );
   buffs_tier11_4pc_melee          = new buff_t( this, "tier11_4pc_melee",          3, 30.0,   0, set_bonus.tier11_4pc_melee() );
+  buffs_tier12_4pc_tank           = new buff_t( this, 99243, "flame_wall", set_bonus.tier12_4pc_tank() );
 
+  buffs_shield_block              = new shield_block_buff_t( this );
   switch ( talents.booming_voice -> rank() )
   {
     case 1 : duration = 9.0; break;
@@ -3222,6 +3290,7 @@ void warrior_t::init_gains()
   gains_anger_management       = get_gain( "anger_management"      );
   gains_avoided_attacks        = get_gain( "avoided_attacks"       );
   gains_battle_shout           = get_gain( "battle_shout"          );
+  gains_commanding_shout       = get_gain( "commanding_shout"      );
   gains_berserker_rage         = get_gain( "berserker_rage"        );
   gains_blood_frenzy           = get_gain( "blood_frenzy"          );
   gains_incoming_damage        = get_gain( "incoming_damage"       );
@@ -3619,6 +3688,17 @@ double warrior_t::composite_tank_crit( const school_type school ) SC_CONST
   return c;
 }
 
+// warrior_t::composite_tank_parry ===========================================
+
+double warrior_t::composite_tank_parry() SC_CONST
+{
+  double p = player_t::composite_tank_parry();
+
+  p += buffs_tier12_4pc_tank -> value();
+
+  return p;
+}
+
 // warrior_t::regen =========================================================
 
 void warrior_t::regen( double periodicity )
@@ -3799,7 +3879,6 @@ player_t* player_t::create_warrior( sim_t* sim, const std::string& name, race_ty
 
 void player_t::warrior_init( sim_t* sim )
 {
-  sim -> auras.battle_shout = new aura_t( sim, "battle_shout", 1, 120.0 );
   sim -> auras.rampage      = new aura_t( sim, "rampage",      1, 0.0 );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
@@ -3811,6 +3890,8 @@ void player_t::warrior_init( sim_t* sim )
     p -> debuffs.shattering_throw      = new debuff_t( p, "shattering_throw",      1 );
     p -> debuffs.sunder_armor          = new debuff_t( p, 58567, "sunder_armor" );
     p -> debuffs.thunder_clap          = new debuff_t( p, "thunder_clap",          1, 30.0 );
+    p -> buffs.commanding_shout        = new   buff_t( p, 469, "commanding_shout" );
+    p -> buffs.battle_shout            = new   buff_t( p, 6673, "battle_shout" );
   }
 }
 
@@ -3818,9 +3899,11 @@ void player_t::warrior_init( sim_t* sim )
 
 void player_t::warrior_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.battle_shout )
-    sim -> auras.battle_shout -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 6673 ) -> effect1().id(), sim -> max_player_level ) );
-
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( sim -> overrides.battle_shout )
+      p -> buffs.battle_shout -> override( 1, p -> buffs.battle_shout -> effect_average( 1 ) );
+  }
   if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
 
   for ( player_t* t = sim -> target_list; t; t = t -> next )

@@ -145,7 +145,9 @@ void stats_t::analyze()
     if ( direct_results[ i ].count != 0 )
     {
       stats_results_t& r = direct_results[ i ];
-
+      assert( r.count <= num_direct_results );
+      assert( num_direct_results > 0 );
+      assert( r.count >= 0 );
       r.avg_amount = r.actual_amount / r.count;
       r.pct = 100.0 * r.count / ( double ) num_direct_results;
       r.overkill_pct = r.total_amount ? 100.0 * ( r.total_amount - r.actual_amount ) / r.total_amount : 0;

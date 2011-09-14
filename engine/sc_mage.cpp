@@ -70,6 +70,7 @@ struct mage_t : public player_t
     glyph_t* arcane_barrage;
     glyph_t* arcane_blast;
     glyph_t* arcane_missiles;
+    glyph_t* arcane_power;
     glyph_t* cone_of_cold;
     glyph_t* deep_freeze;
     glyph_t* fireball;
@@ -1615,6 +1616,13 @@ struct blink_t : public mage_spell_t
 
     player -> buffs.stunned -> expire();
   }
+
+  virtual double gcd() SC_CONST
+  {
+    mage_t* p = player -> cast_mage();
+    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return 0;
+    return mage_spell_t::gcd();
+  }
 };
 
 // Cold Snap Spell ==========================================================
@@ -2621,7 +2629,7 @@ struct mirror_image_t : public mage_spell_t
   virtual double gcd() SC_CONST
   {
     mage_t* p = player -> cast_mage();
-    if ( p -> buffs_arcane_power -> check() ) return 0;
+    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return 0;
     return mage_spell_t::gcd();
   }
 };
@@ -3319,6 +3327,7 @@ void mage_t::init_spells()
   glyphs.arcane_blast         = find_glyph( "Glyph of Arcane Blast" );
   glyphs.arcane_brilliance    = find_glyph( "Glyph of Arcane Brilliance" );
   glyphs.arcane_missiles      = find_glyph( "Glyph of Arcane Missiles" );
+  glyphs.arcane_power         = find_glyph( "Glyph of Arcane Power" );
   glyphs.cone_of_cold         = find_glyph( "Glyph of Cone of Cold" );
   glyphs.conjuring            = find_glyph( "Glyph of Conjuring" );
   glyphs.deep_freeze          = find_glyph( "Glyph of Deep Freeze" );

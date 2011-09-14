@@ -2518,7 +2518,7 @@ double player_t::strength() SC_CONST
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
                              sim -> auras.horn_of_winter    -> value() ),
-                   std::max( sim -> auras.battle_shout      -> value(),
+                   std::max( buffs.battle_shout      -> value(),
                              sim -> auras.roar_of_courage   -> value() ) );
   }
 
@@ -2537,7 +2537,7 @@ double player_t::agility() SC_CONST
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
                              sim -> auras.horn_of_winter    -> value() ),
-                   std::max( sim -> auras.battle_shout      -> value(),
+                   std::max( buffs.battle_shout      -> value(),
                              sim -> auras.roar_of_courage   -> value() ) );
   }
 
@@ -3030,7 +3030,11 @@ void player_t::arise()
   if ( sim -> log )
     log_t::output( sim, "%s arises.", name() );
 
-  if ( ! initial_sleeping ) sleeping = 0;
+  if ( ! initial_sleeping )
+    sleeping = 0;
+
+  if ( sleeping)
+    return;
 
   init_resources( true );
 

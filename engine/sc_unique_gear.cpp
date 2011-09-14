@@ -1546,6 +1546,7 @@ static void register_spidersilk_spindle( item_t* item )
     buff_t* buff;
     bool heroic;
     cooldown_t* cd;
+    stats_t* stats;
     spidersilk_spindle_callback_t( player_t* p, bool h ) :
       action_callback_t( p -> sim, p ), heroic( h )
     {
@@ -1554,6 +1555,8 @@ static void register_spidersilk_spindle( item_t* item )
       cd = listener -> get_cooldown( "spidersilk_spindle" );
       cd -> duration = 60.0;
       p -> absorb_buffs.push_back( buff );
+      stats = listener -> get_stats( "loom_of_fate" );
+      stats -> type = STATS_ABSORB;
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1561,7 +1564,11 @@ static void register_spidersilk_spindle( item_t* item )
       if ( cd -> remains() <= 0 && a -> player -> health_percentage() < 35 )
       {
         cd -> start();
-        buff -> trigger( 1, buff -> effect1().base_value() );
+        double amount = buff -> effect1().base_value();
+        buff -> trigger( 1, amount );
+        stats -> add_result( amount, amount, ABSORB, RESULT_HIT );
+        stats -> add_execute( 0 );
+
       }
     }
   };

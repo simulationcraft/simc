@@ -1979,6 +1979,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                         "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
                         "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
                         "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
+                        "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
                         "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %%</th>\n"
                         "\t\t\t\t\t\t\t\t\t\t</tr>\n" );
       for ( int i=RESULT_MAX-1; i >= RESULT_NONE; i-- )
@@ -2000,6 +2001,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                             "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
                             "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
                             "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+                            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
                             "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
                             "\t\t\t\t\t\t\t\t\t\t</tr>\n",
                             util_t::result_type_string( i ),
@@ -2008,6 +2010,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                             s -> direct_results[ i  ].avg_amount,
                             s -> direct_results[ i  ].min_amount,
                             s -> direct_results[ i  ].max_amount,
+                            s -> direct_results[ i  ].actual_amount,
                             s -> direct_results[ i  ].total_amount,
                             s -> direct_results[ i  ].overkill_pct);
         }
