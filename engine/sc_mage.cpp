@@ -1833,7 +1833,10 @@ struct evocation_t : public mage_spell_t
 
   virtual void tick()
   {
+    mage_spell_t::tick();
+
     mage_t* p = player -> cast_mage();
+
     double mana = p -> resource_max[ RESOURCE_MANA ] * effect1().percent();
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_evocation );
   }
