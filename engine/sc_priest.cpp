@@ -496,9 +496,47 @@ public:
 
 struct priest_heal_t : public heal_t
 {
-  stats_t* da_stats;
+
+
+  struct divine_aegis_t : public priest_absorb_t
+    {
+      double shield_multiple;
+
+      divine_aegis_t( const char* n, priest_t* p ) :
+        priest_absorb_t( n, p, 47753 ), shield_multiple( 0 )
+      {
+        proc             = true;
+        background       = true;
+        direct_power_mod = 0;
+
+        check_talent( p -> talents.divine_aegis -> rank() );
+        shield_multiple  = p -> talents.divine_aegis -> effect1().percent();
+
+      }
+
+      virtual void travel( player_t* t, int travel_result, double travel_dmg )
+      {
+        // Get DA buff:
+        buff_t* buff_da = 0;
+        for( unsigned int i = 0; i < t -> buffs.divine_aegis.size(); i++ )
+        {
+          if ( t -> buffs.divine_aegis[i ] -> initial_source == player )
+          {
+            buff_da = t -> buffs.divine_aegis[i ];
+            break;
+          }
+        }
+        assert( buff_da );
+
+        double old_amount = buff_da -> current_value;
+        double new_amount = std::min( t -> resource_current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
+        buff_da -> trigger( 1, old_amount + new_amount);
+        stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, STATS_ABSORB, travel_result );
+      }
+    };
+
   bool can_trigger_DA;
-  double shield_multiple;
+  divine_aegis_t* da;
 
   void trigger_echo_of_light( heal_t* a, player_t* /* t */ )
   {
@@ -568,11 +606,9 @@ struct priest_heal_t : public heal_t
     if ( can_trigger_DA && p -> talents.divine_aegis -> ok() )
     {
       std::string da_name = name_str + "_divine_aegis";
-      da_stats = p -> get_stats( da_name.c_str() );
-      da_stats -> type = STATS_ABSORB;
-      da_stats -> school = SCHOOL_HOLY;
-      stats -> add_child( da_stats );
-      shield_multiple = 0.3;
+      da = new divine_aegis_t( da_name.c_str(), p );
+      add_child( da );
+      da -> target = target;
     }
   }
 
@@ -643,24 +679,11 @@ struct priest_heal_t : public heal_t
       if ( ! ( can_trigger_DA && p -> talents.divine_aegis -> ok() ) )
         return;
 
-      // Get DA buff:
-      buff_t* da = 0;
-      for( unsigned int i = 0; i < t -> buffs.divine_aegis.size(); i++ )
-      {
-        if ( t -> buffs.divine_aegis[i ] -> initial_source == player )
-        {
-          da = t -> buffs.divine_aegis[i ];
-          break;
-        }
-      }
-      assert( da );
-      assert( da_stats );
+      da -> base_dd_min = da -> base_dd_max = amount * da -> shield_multiple;
+      da -> heal_target.clear();
+      da -> heal_target.push_back( t );
+      da -> execute();
 
-      double old_amount = da -> value();
-      double new_amount = std::min( t -> resource_current[ RESOURCE_HEALTH ] * 0.4 - old_amount, amount );
-      da -> trigger( 1, old_amount + new_amount);
-      da_stats -> add_result( sim -> report_overheal ? new_amount : amount, amount, STATS_ABSORB, RESULT_HIT );
-      da_stats -> add_execute( 0 );
     }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -673,7 +696,7 @@ struct priest_heal_t : public heal_t
       // Divine Aegis
       if ( travel_result == RESULT_CRIT )
       {
-        trigger_divine_aegis( t, travel_dmg * shield_multiple );
+        trigger_divine_aegis( t, travel_dmg );
       }
 
       trigger_echo_of_light( this, t );
@@ -690,7 +713,7 @@ struct priest_heal_t : public heal_t
     // Divine Aegis
     if ( result == RESULT_CRIT )
     {
-      trigger_divine_aegis( target, tick_dmg * shield_multiple );
+      trigger_divine_aegis( target, tick_dmg );
     }
   }
 
@@ -3499,7 +3522,7 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_heal_t::init();
 
     // PoH crits double the DA percentage.
-    shield_multiple *= 2;
+    da -> shield_multiple *= 2;
   }
 
   virtual void execute()
@@ -3566,7 +3589,7 @@ struct prayer_of_healing_t : public priest_heal_t
     // Divine Aegis
     if ( travel_result != RESULT_CRIT )
     {
-       trigger_divine_aegis( t, travel_dmg * shield_multiple * 0.5 );
+       trigger_divine_aegis( t, travel_dmg * 0.5 );
     }
   }
 
@@ -3969,13 +3992,13 @@ struct penance_heal_t : public priest_heal_t
 
     penance_tick = new penance_heal_tick_t( p );
     penance_tick -> target = target;
-    penance_tick -> heal_target.clear();
-    penance_tick -> heal_target.push_back( target );
   }
 
   virtual void tick()
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+    penance_tick -> heal_target.clear();
+    penance_tick -> heal_target.push_back( target );
     penance_tick -> execute();
     stats -> add_tick( time_to_tick );
   }
@@ -4876,7 +4899,6 @@ void priest_t::init_buffs()
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-
     if ( talents.divine_aegis -> rank() )
     {
       buff_t* b = new buff_t( p, 47753, "divine_aegis" );
@@ -4884,7 +4906,6 @@ void priest_t::init_buffs()
       p -> buffs.divine_aegis.push_back( b );
       p -> absorb_buffs.push_back( b );
     }
-
 
     buff_t* b  = new buff_t( this, 17, "power_word_shield" );
     b -> initial_source = this;
@@ -4903,6 +4924,7 @@ void priest_t::init_buffs()
   buffs_serenity -> cooldown -> duration = 0;
   // TEST: buffs_serenity -> activated = false;
   buffs_surge_of_light             = new buff_t( this, talents.surge_of_light, NULL );
+  buffs_surge_of_light -> activated = false;
   // TEST: buffs_surge_of_light -> activated = false;
 
   // Shadow
@@ -4912,6 +4934,7 @@ void priest_t::init_buffs()
   buffs_mind_spike                 = new buff_t( this, "mind_spike",                 3, 12.0                     );
   buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
   buffs_shadow_orb                 = new buff_t( this, 77487, "shadow_orb" );
+  buffs_shadow_orb -> activated = false;
   buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1                           );
   buffs_spirit_tap                 = new buff_t( this, "spirit_tap",                 1, 12.0                     );
   buffs_vampiric_embrace           = new buff_t( this, "vampiric_embrace",           1                           );

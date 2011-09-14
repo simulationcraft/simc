@@ -373,7 +373,7 @@ player_t::player_t( sim_t*             s,
   pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
-  reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ),
+  reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ), scale_player( 1 ),
   // Latency
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   brain_lag( -1.0 ), brain_lag_stddev( -1.0 ),
@@ -1769,7 +1769,7 @@ void player_t::init_scaling()
 
     scales_with[ STAT_BLOCK_RATING ] = 0;
 
-    if ( sim -> scaling -> scale_stat != STAT_NONE )
+    if ( sim -> scaling -> scale_stat != STAT_NONE && scales_with[ sim -> scaling -> scale_stat ] && scale_player )
     {
       double v = sim -> scaling -> scale_value;
 
@@ -6260,6 +6260,7 @@ void player_t::create_options()
     { "world_lag_stddev",                     OPT_FUNC,     ( void* ) ::parse_world_lag_stddev          },
     { "brain_lag",                            OPT_FUNC,     ( void* ) ::parse_brain_lag                 },
     { "brain_lag_stddev",                     OPT_FUNC,     ( void* ) ::parse_brain_lag_stddev          },
+    { "scale_player",                         OPT_BOOL,     &( scale_player                           ) },
     // Items
     { "meta_gem",                             OPT_STRING,   &( meta_gem_str                           ) },
     { "items",                                OPT_STRING,   &( items_str                              ) },
