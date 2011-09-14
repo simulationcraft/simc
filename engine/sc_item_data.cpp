@@ -523,7 +523,7 @@ bool item_database_t::parse_enchant( item_t&            item,
   if ( enchant_id.empty() || enchant_id == "none" || enchant_id == "0" ) return true;
 
   long                                    eid = strtol( enchant_id.c_str(), 0, 10 );
-  bool                              has_spell = true;
+  bool                              has_spell = false;
   std::vector<std::string> stats;
 
   const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( eid );
@@ -537,6 +537,7 @@ bool item_database_t::parse_enchant( item_t&            item,
 
   for ( unsigned i = 0; i < 3; i++ )
   {
+    if (item_enchant.ench_type[ i ] == ITEM_ENCHANTMENT_NONE ) continue;
     if ( item_enchant.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
     {
       has_spell = true;
