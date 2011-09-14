@@ -1191,8 +1191,6 @@ void player_t::init_enchant()
 void player_t::init_resources( bool force )
 {
   // The first 20pts of intellect/stamina only provide 1pt of mana/health.
-  // Code simplified on the assumption that the minimum player level is 60.
-  double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : 20;
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
@@ -1210,12 +1208,14 @@ void player_t::init_resources( bool force )
         {
           resource_initial[ i ] *= 1.05;
         }
+        double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( intellect() ) );
         resource_initial[ i ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
         if ( type != PLAYER_GUARDIAN )
           resource_initial[ i ] += buffs.arcane_brilliance -> value();
       }
       if ( i == RESOURCE_HEALTH )
       {
+        double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
         resource_initial[ i ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
 
         if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
@@ -3389,7 +3389,7 @@ bool player_t::resource_available( int    resource,
 
 void player_t::recalculate_resource_max( int resource )
 {
-  double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : 20;
+  // The first 20pts of intellect/stamina only provide 1pt of mana/health.
 
   resource_max[ resource ] = resource_base[ resource ] +
                              gear.resource[ resource ] +
@@ -3409,6 +3409,7 @@ void player_t::recalculate_resource_max( int resource )
       {
         resource_initial[ resource ] *= 1.05;
       }
+      double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( intellect() ) );
       resource_max[ resource ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
       // Arcane Brilliance needs to be done here as a generic resource, otherwise override will
       // not (and did not previously) work
@@ -3418,6 +3419,7 @@ void player_t::recalculate_resource_max( int resource )
     }
     case RESOURCE_HEALTH:
     {
+      double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
       resource_max[ resource ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
 
       if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
