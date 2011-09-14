@@ -3237,8 +3237,8 @@ for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
                        g -> count,
                        g -> actual,
                        g -> actual / g -> count,
-                       overflow_pct,
-                       g -> overflow);
+                       g -> overflow,
+                       overflow_pct );
     }
   }
 }
