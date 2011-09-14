@@ -2590,7 +2590,6 @@ struct commanding_shout_t : public warrior_spell_t
     {
       q -> buffs.commanding_shout -> buff_duration = 120 /* include commanding glyph */;
       q -> buffs.commanding_shout -> trigger( 1, effect_average( 1 ) );
-
     }
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_commanding_shout );

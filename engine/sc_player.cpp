@@ -2518,7 +2518,7 @@ double player_t::strength() SC_CONST
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
                              sim -> auras.horn_of_winter    -> value() ),
-                   std::max( buffs.battle_shout      -> value(),
+                   std::max( buffs.battle_shout             -> value(),
                              sim -> auras.roar_of_courage   -> value() ) );
   }
 
@@ -2537,7 +2537,7 @@ double player_t::agility() SC_CONST
   {
     a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
                              sim -> auras.horn_of_winter    -> value() ),
-                   std::max( buffs.battle_shout      -> value(),
+                   std::max( buffs.battle_shout             -> value(),
                              sim -> auras.roar_of_courage   -> value() ) );
   }
 

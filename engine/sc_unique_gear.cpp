@@ -1538,7 +1538,6 @@ static void register_spidersilk_spindle( item_t* item )
 {
   player_t* p = item -> player;
 
-
   item -> unique = true;
 
   struct spidersilk_spindle_callback_t : public action_callback_t
@@ -1548,7 +1547,7 @@ static void register_spidersilk_spindle( item_t* item )
     cooldown_t* cd;
     stats_t* stats;
     spidersilk_spindle_callback_t( player_t* p, bool h ) :
-      action_callback_t( p -> sim, p ), heroic( h )
+      action_callback_t( p -> sim, p ), heroic( h ), cd ( 0 ), stats( 0 )
     {
       buff = new buff_t( p, heroic ? 97129 : 96945, "loom_of_fate" );
       buff -> activated = false;
@@ -1568,7 +1567,6 @@ static void register_spidersilk_spindle( item_t* item )
         buff -> trigger( 1, amount );
         stats -> add_result( amount, amount, ABSORB, RESULT_HIT );
         stats -> add_execute( 0 );
-
       }
     }
   };

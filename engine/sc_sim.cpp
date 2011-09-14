@@ -1514,35 +1514,35 @@ void sim_t::analyze_player( player_t* p )
   assert ( p -> death_time.size() == ( std::size_t ) p -> death_count );
   if ( p -> death_count > 0 )
   {
-  double avg = 0;
-  for ( int i = 0; i < p -> death_count; i++ )
-  {
-    if ( p -> death_time[ i ] < p -> min_death_time )
-      p -> min_death_time = p -> death_time[ i ];
-    if ( p -> death_time[ i ] > p -> max_death_time )
-      p -> max_death_time = p -> death_time[ i ];
-    avg += p -> death_time[ i ];
-  }
-  p -> avg_death_time = avg / p -> death_count;
-  p -> death_count_pct = 100.0 * p -> death_count / iterations;
-
-  if ( p -> max_death_time > p -> min_death_time )
-  {
-    int num_buckets = 50;
-    double min = p -> min_death_time - 1;
-    double max = p -> max_death_time + 1;
-    double range = max - min;
-
-    p -> distribution_deaths.assign( num_buckets, 0 );
-
-    for ( int i=0; i < p -> death_count; i++ )
+    double avg = 0;
+    for ( int i = 0; i < p -> death_count; i++ )
     {
-      int index = ( int ) ( num_buckets * ( p -> death_time[ i ] - min ) / range );
-      p -> distribution_deaths[ index ]++;
+      if ( p -> death_time[ i ] < p -> min_death_time )
+        p -> min_death_time = p -> death_time[ i ];
+      if ( p -> death_time[ i ] > p -> max_death_time )
+        p -> max_death_time = p -> death_time[ i ];
+      avg += p -> death_time[ i ];
     }
-    assert ( p -> distribution_deaths.size() == ( std::size_t ) num_buckets );
-  }
-  std::sort( p -> death_time.begin(), p -> death_time.end() );
+    p -> avg_death_time = avg / p -> death_count;
+    p -> death_count_pct = 100.0 * p -> death_count / iterations;
+
+    if ( p -> max_death_time > p -> min_death_time )
+    {
+      int num_buckets = 50;
+      double min = p -> min_death_time - 1;
+      double max = p -> max_death_time + 1;
+      double range = max - min;
+
+      p -> distribution_deaths.assign( num_buckets, 0 );
+
+      for ( int i=0; i < p -> death_count; i++ )
+      {
+        int index = ( int ) ( num_buckets * ( p -> death_time[ i ] - min ) / range );
+        p -> distribution_deaths[ index ]++;
+      }
+      assert ( p -> distribution_deaths.size() == ( std::size_t ) num_buckets );
+    }
+    std::sort( p -> death_time.begin(), p -> death_time.end() );
   }
 
   // Charts =================================================================

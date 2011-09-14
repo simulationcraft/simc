@@ -51,8 +51,7 @@ void heal_t::init_heal_t_()
     crit_multiplier *= 1.03;
   }
 
-    valanyr = new valanyr_t( player );
-
+  valanyr = new valanyr_t( player );
 }
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================

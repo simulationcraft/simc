@@ -384,7 +384,7 @@ void enemy_t::init_target()
   {
     if ( q -> primary_role() != ROLE_TANK )
       continue;
-      target = q;
+    target = q;
     break;
   }
 
@@ -399,7 +399,6 @@ void enemy_t::init_target()
 void enemy_t::init_actions()
 {
   if ( !is_add() )
-
 
   if ( action_list_str.empty() )
   {

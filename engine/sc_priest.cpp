@@ -13,7 +13,6 @@ struct remove_dots_event_t;
 
 struct priest_t : public player_t
 {
-
   // Buffs
 
   // Discipline
@@ -193,6 +192,8 @@ struct priest_t : public player_t
   // Procs
   proc_t* procs_shadowy_apparation;
   proc_t* procs_surge_of_light;
+  proc_t* procs_train_of_thought_gh;
+  proc_t* procs_train_of_thought_smite;
 
   // Special
   std::queue<spell_t* > shadowy_apparition_free_list;
@@ -203,6 +204,7 @@ struct priest_t : public player_t
   // Random Number Generators
   rng_t* rng_pain_and_suffering;
   rng_t* rng_cauterizing_flame;
+  rng_t* rng_train_of_thought;
 
   // Pets
   pet_t* pet_shadow_fiend;
@@ -496,44 +498,42 @@ public:
 
 struct priest_heal_t : public heal_t
 {
-
-
   struct divine_aegis_t : public priest_absorb_t
+  {
+    double shield_multiple;
+
+    divine_aegis_t( const char* n, priest_t* p ) :
+      priest_absorb_t( n, p, 47753 ), shield_multiple( 0 )
     {
-      double shield_multiple;
+      check_talent( p -> talents.divine_aegis -> rank() );
 
-      divine_aegis_t( const char* n, priest_t* p ) :
-        priest_absorb_t( n, p, 47753 ), shield_multiple( 0 )
+      proc             = true;
+      background       = true;
+      direct_power_mod = 0;
+
+      shield_multiple  = p -> talents.divine_aegis -> effect1().percent();
+    }
+
+    virtual void travel( player_t* t, int travel_result, double travel_dmg )
+    {
+      // Get DA buff:
+      buff_t* buff_da = 0;
+      for( unsigned int i = 0; i < t -> buffs.divine_aegis.size(); i++ )
       {
-        proc             = true;
-        background       = true;
-        direct_power_mod = 0;
-
-        check_talent( p -> talents.divine_aegis -> rank() );
-        shield_multiple  = p -> talents.divine_aegis -> effect1().percent();
-
-      }
-
-      virtual void travel( player_t* t, int travel_result, double travel_dmg )
-      {
-        // Get DA buff:
-        buff_t* buff_da = 0;
-        for( unsigned int i = 0; i < t -> buffs.divine_aegis.size(); i++ )
+        if ( t -> buffs.divine_aegis[i ] -> initial_source == player )
         {
-          if ( t -> buffs.divine_aegis[i ] -> initial_source == player )
-          {
-            buff_da = t -> buffs.divine_aegis[i ];
-            break;
-          }
+          buff_da = t -> buffs.divine_aegis[i ];
+          break;
         }
-        assert( buff_da );
-
-        double old_amount = buff_da -> current_value;
-        double new_amount = std::min( t -> resource_current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
-        buff_da -> trigger( 1, old_amount + new_amount);
-        stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, STATS_ABSORB, travel_result );
       }
-    };
+      assert( buff_da );
+
+      double old_amount = buff_da -> current_value;
+      double new_amount = std::min( t -> resource_current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
+      buff_da -> trigger( 1, old_amount + new_amount);
+      stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, STATS_ABSORB, travel_result );
+    }
+  };
 
   bool can_trigger_DA;
   divine_aegis_t* da;
@@ -2990,12 +2990,14 @@ struct smite_t : public priest_spell_t
     }
 
     // Train of Thought
-    if ( p -> talents.train_of_thought -> rank() )
+    if ( p -> talents.train_of_thought -> rank() && p -> rng_train_of_thought -> roll( p -> talents.train_of_thought -> rank() / 2 ) )
     {
-      if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> effect2().seconds() )
-        p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> effect2().seconds();
+      if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> spell( 1 ).effect2().seconds() )
+        p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> spell( 1 ).effect2().seconds();
       else
         p -> cooldowns_penance -> reset();
+
+      p -> procs_train_of_thought_smite -> occur();
     }
   }
 
@@ -3396,12 +3398,14 @@ struct greater_heal_t : public priest_heal_t
     // Train of Thought
     // NOTE: Process Train of Thought _before_ Inner Focus: the GH that consumes Inner Focus does not
     //       reduce the cooldown, since Inner Focus doesn't go on cooldown until after it is consumed.
-    if ( p -> talents.train_of_thought -> rank() )
+    if ( p -> talents.train_of_thought -> rank() && p -> rng_train_of_thought -> roll( p -> talents.train_of_thought -> rank() / 2 ) )
     {
       if ( p -> cooldowns_inner_focus -> remains() > p -> talents.train_of_thought -> effect1().base_value() )
         p -> cooldowns_inner_focus -> ready -= p -> talents.train_of_thought -> effect1().base_value();
       else
         p -> cooldowns_inner_focus -> reset();
+
+      p -> procs_train_of_thought_gh -> occur();
     }
 
     // Inner Focus
@@ -3585,11 +3589,10 @@ struct prayer_of_healing_t : public priest_heal_t
       glyph -> execute();
     }
 
-
     // Divine Aegis
     if ( travel_result != RESULT_CRIT )
     {
-       trigger_divine_aegis( t, travel_dmg * 0.5 );
+      trigger_divine_aegis( t, travel_dmg * 0.5 );
     }
   }
 
@@ -3878,8 +3881,6 @@ struct power_word_shield_t : public priest_absorb_t
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * amount, p -> gains_rapture );
       p -> cooldowns_rapture -> start();
     }
-
-
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -4673,8 +4674,10 @@ void priest_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_shadowy_apparation   = get_proc( "shadowy_apparation_proc" );
-  procs_surge_of_light       = get_proc( "surge_of_light" );
+  procs_shadowy_apparation     = get_proc( "shadowy_apparation_proc" );
+  procs_surge_of_light         = get_proc( "surge_of_light" );
+  procs_train_of_thought_gh    = get_proc( "train_of_thought_gh" );
+  procs_train_of_thought_smite = get_proc( "train_of_thought_smite" );
 }
 
 // priest_t::init_scaling ===================================================
@@ -4742,6 +4745,7 @@ void priest_t::init_rng()
 
   rng_pain_and_suffering = get_rng( "pain_and_suffering" );
   rng_cauterizing_flame  = get_rng( "rng_cauterizing_flame" );
+  rng_train_of_thought   = get_rng( "train_of_thought" );
 }
 
 // priest_t::init_talents

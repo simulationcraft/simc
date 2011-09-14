@@ -2837,11 +2837,9 @@ struct festering_strike_t : public death_knight_attack_t
 
 struct frost_fever_t : public death_knight_spell_t
 {
-  frost_fever_t( death_knight_t* player ) :
-    death_knight_spell_t( "frost_fever", 59921, player )
+  frost_fever_t( death_knight_t* p ) :
+    death_knight_spell_t( "frost_fever", 59921, p )
   {
-    death_knight_t* p = player -> cast_death_knight();
-
     base_td          = effect_average( 1 ) * 1.15;
     base_tick_time   = 3.0;
     hasted_ticks     = false;
@@ -3064,10 +3062,9 @@ struct horn_of_winter_t : public death_knight_spell_t
 // FIXME: -3% spell crit suppression? Seems to have the same crit chance as FS in the absence of KM
 struct howling_blast_t : public death_knight_spell_t
 {
-  howling_blast_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "howling_blast", 49184, player )
+  howling_blast_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "howling_blast", 49184, p )
   {
-    death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.howling_blast -> rank() );
 
     parse_options( NULL, options_str );
@@ -3124,7 +3121,7 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
 
     if ( t -> health_percentage() < 35 )
-         player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
+      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
   }
 
   virtual bool ready()
@@ -3208,7 +3205,7 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
 
     if ( t -> health_percentage() < 35 )
-         player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
+      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
   }
 
   virtual bool ready()
