@@ -530,7 +530,7 @@ struct priest_heal_t : public heal_t
 
       double old_amount = buff_da -> current_value;
       double new_amount = std::min( t -> resource_current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
-      buff_da -> trigger( 1, old_amount + new_amount);
+      buff_da -> trigger( 1, old_amount + new_amount );
       stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, STATS_ABSORB, travel_result );
     }
   };
@@ -673,18 +673,18 @@ struct priest_heal_t : public heal_t
   }
 
   void trigger_divine_aegis( player_t* t, double amount )
-    {
-      priest_t* p = player -> cast_priest();
+  {
+    priest_t* p = player -> cast_priest();
 
-      if ( ! ( can_trigger_DA && p -> talents.divine_aegis -> ok() ) )
-        return;
+    if ( ! ( can_trigger_DA && p -> talents.divine_aegis -> ok() ) )
+      return;
 
-      da -> base_dd_min = da -> base_dd_max = amount * da -> shield_multiple;
-      da -> heal_target.clear();
-      da -> heal_target.push_back( t );
-      da -> execute();
+    da -> base_dd_min = da -> base_dd_max = amount * da -> shield_multiple;
+    da -> heal_target.clear();
+    da -> heal_target.push_back( t );
+    da -> execute();
 
-    }
+  }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
@@ -748,7 +748,7 @@ struct priest_heal_t : public heal_t
 struct atonement_heal_t : public priest_heal_t
 {
   atonement_heal_t( const char* n, priest_t* p ) :
-      priest_heal_t( n, p, 81751 )
+    priest_heal_t( n, p, 81751 )
   {
     proc           = true;
     background     = true;
@@ -786,7 +786,7 @@ struct atonement_heal_t : public priest_heal_t
     {
       // num_ticks = 1;
       base_td = atonement_dmg;
-      tick_may_crit = (result == RESULT_CRIT);
+      tick_may_crit = ( result == RESULT_CRIT );
       tick();
     }
     else
@@ -794,7 +794,7 @@ struct atonement_heal_t : public priest_heal_t
       assert( dmg_type == DMG_DIRECT );
       // num_ticks = 0;
       base_dd_min = base_dd_max = atonement_dmg;
-      may_crit = (result == RESULT_CRIT);
+      may_crit = ( result == RESULT_CRIT );
 
       execute();
     }
@@ -2990,7 +2990,8 @@ struct smite_t : public priest_spell_t
     }
 
     // Train of Thought
-    if ( p -> talents.train_of_thought -> rank() && p -> rng_train_of_thought -> roll( p -> talents.train_of_thought -> rank() / 2 ) )
+    if ( p -> talents.train_of_thought -> rank() &&
+         p -> rng_train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
     {
       if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> spell( 1 ).effect2().seconds() )
         p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> spell( 1 ).effect2().seconds();
@@ -3398,7 +3399,8 @@ struct greater_heal_t : public priest_heal_t
     // Train of Thought
     // NOTE: Process Train of Thought _before_ Inner Focus: the GH that consumes Inner Focus does not
     //       reduce the cooldown, since Inner Focus doesn't go on cooldown until after it is consumed.
-    if ( p -> talents.train_of_thought -> rank() && p -> rng_train_of_thought -> roll( p -> talents.train_of_thought -> rank() / 2 ) )
+    if ( p -> talents.train_of_thought -> rank() &&
+         p -> rng_train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
     {
       if ( p -> cooldowns_inner_focus -> remains() > p -> talents.train_of_thought -> effect1().base_value() )
         p -> cooldowns_inner_focus -> ready -= p -> talents.train_of_thought -> effect1().base_value();
@@ -3681,7 +3683,7 @@ struct circle_of_healing_t : public priest_heal_t
       if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( target ) < ( range * range ) )
       {
         heal_target.push_back( q );
-        if( heal_target.size() >= (unsigned) ( p -> glyphs.circle_of_healing -> ok() ? 6 : 5 ) ) break;
+        if( heal_target.size() >= ( unsigned ) ( p -> glyphs.circle_of_healing -> ok() ? 6 : 5 ) ) break;
       }
     }
 
@@ -3834,7 +3836,8 @@ struct power_word_shield_t : public priest_absorb_t
     // down to the GCD.  If the player is 2/2 in Soul Warding, set our
     // cooldown to 0 instead of to 1.0.
     cooldown -> duration += p -> talents.soul_warding -> effect1().seconds();
-    if ( p -> talents.soul_warding -> rank() == 2 ) {
+    if ( p -> talents.soul_warding -> rank() == 2 )
+    {
       cooldown -> duration = 0;
     }
 
@@ -3897,7 +3900,7 @@ struct power_word_shield_t : public priest_absorb_t
       {
         pws = t -> buffs.power_word_shield[i ];
         break;
-       }
+      }
     }
     assert( pws );
 
@@ -5021,14 +5024,14 @@ void priest_t::init_actions()
         buffer += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
       }
 
-        buffer += "/mind_blast";
-        buffer += init_use_racial_actions();
-        buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
+      buffer += "/mind_blast";
+      buffer += init_use_racial_actions();
+      buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
 
       if ( level >= 28 )
         buffer += "/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react";
 
-        buffer += "/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2";
+      buffer += "/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2";
 
       if ( talents.vampiric_touch -> rank() )
         buffer += "|dot.vampiric_touch.remains<cast_time+2.5";
@@ -5048,21 +5051,21 @@ void priest_t::init_actions()
       if ( talents.vampiric_touch -> rank() )
         list_double_dot += "/vampiric_touch_2,if=(!ticking|dot.vampiric_touch_2.remains<cast_time+2.5)&miss_react";
 
-        list_double_dot += "/shadow_word_pain_2,if=(!ticking|dot.shadow_word_pain_2.remains<gcd+0.5)&miss_react";
+      list_double_dot += "/shadow_word_pain_2,if=(!ticking|dot.shadow_word_pain_2.remains<gcd+0.5)&miss_react";
 
 
       if ( talents.archangel -> ok() )
       {
-          buffer += "/archangel,if=buff.dark_evangelism.stack>=5";
+        buffer += "/archangel,if=buff.dark_evangelism.stack>=5";
         if ( talents.vampiric_touch -> rank() )
           buffer += "&dot.vampiric_touch.remains>5";
 
-          buffer += "&dot.devouring_plague.remains>5";
+        buffer += "&dot.devouring_plague.remains>5";
       }
 
-        buffer += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
+      buffer += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
 
-        buffer += "/shadow_word_death,health_percentage<=25";
+      buffer += "/shadow_word_death,health_percentage<=25";
       if ( level >= 66 )
         buffer += "/shadow_fiend";
 
@@ -5075,11 +5078,11 @@ void priest_t::init_actions()
       buffer.clear();
       // ====================================================================
 
-        list_double_dot += "/mind_flay_2,if=(dot.shadow_word_pain_2.remains<dot.shadow_word_pain.remains)&miss_react";
+      list_double_dot += "/mind_flay_2,if=(dot.shadow_word_pain_2.remains<dot.shadow_word_pain.remains)&miss_react";
 
-        buffer += "/shadow_word_death,if=mana_pct<10";
-        buffer += "/mind_flay";
-        buffer += "/shadow_word_death,moving=1";
+      buffer += "/shadow_word_death,if=mana_pct<10";
+      buffer += "/mind_flay";
+      buffer += "/shadow_word_death,moving=1";
       if ( talents.improved_devouring_plague -> rank() )
         buffer += "/devouring_plague,moving=1,if=mana_pct>10";
 
@@ -5095,7 +5098,7 @@ void priest_t::init_actions()
       // DAMAGE DISCIPLINE ==================================================
       if ( primary_role() != ROLE_HEAL )
       {
-          buffer += "/volcanic_potion,if=!in_combat|buff.bloodlust.up|time_to_die<=40";
+        buffer += "/volcanic_potion,if=!in_combat|buff.bloodlust.up|time_to_die<=40";
         if ( race == RACE_BLOOD_ELF )
           buffer += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )
@@ -5117,22 +5120,22 @@ void priest_t::init_actions()
           if ( level >= 28 )
             buffer += "/devouring_plague,if=buff.borrowed_time.up&(remains<3*tick_time|!ticking)";
 
-            buffer += "/shadow_word_pain,if=buff.borrowed_time.up&(remains<2*tick_time|!ticking)";
-            buffer += "/penance,if=buff.borrowed_time.up";
+          buffer += "/shadow_word_pain,if=buff.borrowed_time.up&(remains<2*tick_time|!ticking)";
+          buffer += "/penance,if=buff.borrowed_time.up";
         }
-          buffer += "/holy_fire";
+        buffer += "/holy_fire";
         if ( ! talents.borrowed_time -> ok() )
         {
           if ( level >= 28 )
             buffer += "/devouring_plague,if=remains<tick_time|!ticking";
 
-            buffer += "/shadow_word_pain,if=remains<tick_time|!ticking";
+          buffer += "/shadow_word_pain,if=remains<tick_time|!ticking";
         }
-          buffer += "/penance";
+        buffer += "/penance";
         if ( ! talents.archangel -> ok() )
           buffer += "/mind_blast";
 
-          buffer += "/smite";
+        buffer += "/smite";
       }
       // DAMAGE DISCIPLINE END ==============================================
 
@@ -5140,7 +5143,7 @@ void priest_t::init_actions()
       else
       {
         // DEFAULT
-          list_default += "/mana_potion,if=mana_pct<=75";
+        list_default += "/mana_potion,if=mana_pct<=75";
         if ( race == RACE_BLOOD_ELF )
           list_default  += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )
@@ -5155,14 +5158,14 @@ void priest_t::init_actions()
           list_default += "/inner_focus";
         if ( talents.power_infusion -> ok() )
           list_default += "/power_infusion";
-          list_default += "/power_word_shield";
+        list_default += "/power_word_shield";
         if ( talents.rapture -> ok() )
           list_default += ",if=!cooldown.rapture.remains";
         if ( talents.archangel -> ok() )
           list_default += "/archangel,if=buff.holy_evangelism.stack>=5";
         if ( talents.borrowed_time -> ok() )
         {
-            list_default += "/penance_heal,if=buff.borrowed_time.up";
+          list_default += "/penance_heal,if=buff.borrowed_time.up";
           if ( talents.grace -> ok() )
             list_default += "|buff.grace.down";
         }
@@ -5173,10 +5176,10 @@ void priest_t::init_actions()
           list_default += "/holy_fire";
           if ( talents.atonement -> ok() )
           {
-              list_default += "/smite,if=";
+            list_default += "/smite,if=";
             if ( glyphs.smite -> ok() )
               list_default += "dot.holy_fire.remains>cast_time&";
-              list_default += "buff.holy_evangelism.stack<5&buff.holy_archangel.down";
+            list_default += "buff.holy_evangelism.stack<5&buff.holy_archangel.down";
           }
         }
         list_default += "/penance_heal";
@@ -5184,7 +5187,7 @@ void priest_t::init_actions()
         // DEFAULT END
 
         // PWS
-          list_pws += "/mana_potion,if=mana_pct<=75";
+        list_pws += "/mana_potion,if=mana_pct<=75";
         if ( race == RACE_BLOOD_ELF )
           list_pws  += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )
@@ -5200,7 +5203,7 @@ void priest_t::init_actions()
         if ( talents.power_infusion -> ok() )
           list_pws += "/power_infusion";
 
-          list_pws += "/power_word_shield,ignore_debuff=1";
+        list_pws += "/power_word_shield,ignore_debuff=1";
 
         // PWS END
       }
@@ -5304,8 +5307,8 @@ void priest_t::init_values()
 
   // Discipline/Holy
   constants.meditation_value                = passive_spells.meditation_disc    -> ok() ?
-                                              passive_spells.meditation_disc  -> base_value( E_APPLY_AURA, A_MOD_MANA_REGEN_INTERRUPT ) :
-                                              passive_spells.meditation_holy  -> base_value( E_APPLY_AURA, A_MOD_MANA_REGEN_INTERRUPT );
+      passive_spells.meditation_disc  -> base_value( E_APPLY_AURA, A_MOD_MANA_REGEN_INTERRUPT ) :
+      passive_spells.meditation_holy  -> base_value( E_APPLY_AURA, A_MOD_MANA_REGEN_INTERRUPT );
 
   // Discipline
   constants.twin_disciplines_value          = talents.twin_disciplines          -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
@@ -5389,7 +5392,7 @@ void priest_t::demise()
 // priest_t::fixup_atonement_stats  =========================================
 
 void priest_t::fixup_atonement_stats( const char* trigger_spell_name,
-                                    const char* atonement_spell_name )
+                                      const char* atonement_spell_name )
 {
   if ( stats_t* trigger = get_stats( trigger_spell_name ) )
   {

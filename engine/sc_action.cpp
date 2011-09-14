@@ -182,8 +182,8 @@ void action_t::init_action_t_()
 
   if ( sim -> travel_variance && travel_speed && player -> distance )
   {
-      std::string buffer = name_str + "_travel";
-      rng_travel = player -> get_rng( buffer, RNG_DISTRIBUTED );
+    std::string buffer = name_str + "_travel";
+    rng_travel = player -> get_rng( buffer, RNG_DISTRIBUTED );
   }
 }
 
@@ -1225,28 +1225,28 @@ void action_t::schedule_execute()
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
 
-  if ( special && time_to_execute > 0 && ! proc )
-  {
-    // While an ability is casting, the auto_attack is paused
-    // So we simply reschedule the auto_attack by the ability's casttime
-    double time_to_next_hit;
-    // Mainhand
-    if ( player -> main_hand_attack )
+    if ( special && time_to_execute > 0 && ! proc )
     {
-      time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
-      time_to_next_hit -= sim -> current_time;
-      time_to_next_hit += time_to_execute;
-      player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      // While an ability is casting, the auto_attack is paused
+      // So we simply reschedule the auto_attack by the ability's casttime
+      double time_to_next_hit;
+      // Mainhand
+      if ( player -> main_hand_attack )
+      {
+        time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
+        time_to_next_hit -= sim -> current_time;
+        time_to_next_hit += time_to_execute;
+        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
+      // Offhand
+      if ( player -> off_hand_attack )
+      {
+        time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
+        time_to_next_hit -= sim -> current_time;
+        time_to_next_hit += time_to_execute;
+        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+      }
     }
-    // Offhand
-    if ( player -> off_hand_attack )
-    {
-      time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
-      time_to_next_hit -= sim -> current_time;
-      time_to_next_hit += time_to_execute;
-      player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-    }
-  }
   }
 }
 
@@ -1792,7 +1792,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       virtual int evaluate()
       {
         if ( action -> dot -> miss_time == -1 ||
-             action -> sim -> current_time >= (action -> dot -> miss_time + action -> last_reaction_time ) )
+             action -> sim -> current_time >= ( action -> dot -> miss_time + action -> last_reaction_time ) )
         {
           result_num = 1;
         }
@@ -1815,10 +1815,10 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
         if ( action -> sim -> debug )
         {
           log_t::output( action -> sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f",
-            action -> player -> name_str.c_str(),
-            action -> name_str.c_str(),
-            action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction,
-            action -> sim -> current_time );
+                         action -> player -> name_str.c_str(),
+                         action -> name_str.c_str(),
+                         action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction,
+                         action -> sim -> current_time );
         }
 
         if ( ! action -> player -> cast_delay_occurred ||
