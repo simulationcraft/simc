@@ -274,7 +274,7 @@ struct paladin_t : public player_t
   virtual int       primary_role() SC_CONST;
   virtual void      regen( double periodicity );
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
-  virtual double   *assess_heal( double amount, const school_type school, int type, int result, action_t* a );
+  virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
@@ -2897,11 +2897,11 @@ double paladin_t::assess_damage( double            amount,
   return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
 
-double *paladin_t::assess_heal(  double            amount,
-                                const school_type school,
-                                int               dmg_type,
-                                int               result,
-                                action_t*         action )
+player_t::heal_info_t paladin_t::assess_heal(  double            amount,
+                                               const school_type school,
+                                               int               dmg_type,
+                                               int               result,
+                                               action_t*         action )
 {
   //amount *= 1.0 + p -> buffs_divinity -> value();
 

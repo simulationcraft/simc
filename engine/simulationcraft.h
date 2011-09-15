@@ -3732,7 +3732,8 @@ struct player_t
   virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a=0 );
   virtual double target_mitigation( double amount, const school_type school, int type, int result, action_t* a=0 );
 
-  virtual double *assess_heal( double amount, const school_type school, int type, int result, action_t* a=0 );
+  struct heal_info_t { double actual, amount; };
+  virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a=0 );
 
   virtual void  summon_pet( const char* name, double duration=0 );
   virtual void dismiss_pet( const char* name );

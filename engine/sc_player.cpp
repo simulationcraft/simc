@@ -3860,15 +3860,16 @@ double player_t::target_mitigation( double            amount,
   return mitigated_amount;
 }
 
-double *player_t::assess_heal(  double            amount,
-                                const school_type /* school */,
-                                int               /* dmg_type */,
-                                int               /* result */,
-                                action_t*         action )
+player_t::heal_info_t player_t::assess_heal(  double            amount,
+                                              const school_type /* school */,
+                                              int               /* dmg_type */,
+                                              int               /* result */,
+                                              action_t*         action )
 {
-  double *heal = new double[ 2 ];
-  heal[ 0 ] = resource_gain( RESOURCE_HEALTH, amount, 0, action );
-  heal[ 1 ] = amount;
+  heal_info_t heal;
+
+  heal.amount = resource_gain( RESOURCE_HEALTH, amount, 0, action );
+  heal.actual = amount;
 
   return heal;
 

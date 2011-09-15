@@ -370,7 +370,7 @@ void heal_t::assess_damage( player_t* t,
 {
 
 
-  double *heal = t -> assess_heal( heal_amount, school, heal_type, heal_result, this );
+  player_t::heal_info_t heal = t -> assess_heal( heal_amount, school, heal_type, heal_result, this );
   // Val'Anyr
   if ( valanyr && player -> buffs.blessing_of_ancient_kings -> up() )
   {
@@ -378,8 +378,8 @@ void heal_t::assess_damage( player_t* t,
     valanyr -> execute();
   }
 
-  total_heal   += heal[ 0 ];
-  total_actual += heal[ 1 ];
+  total_heal   += heal.amount;
+  total_actual += heal.actual;
 
   if ( heal_type == HEAL_DIRECT )
   {
@@ -387,7 +387,7 @@ void heal_t::assess_damage( player_t* t,
     {
       log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
                      player -> name(), name(),
-                     t -> name(), heal[ 0 ], heal[ 1 ],
+                     t -> name(), heal.amount, heal.actual,
                      util_t::result_type_string( result ) );
     }
 
@@ -400,14 +400,14 @@ void heal_t::assess_damage( player_t* t,
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
-                     heal_target[0] -> name(), heal[ 0 ], heal[ 1 ],
+                     heal_target[0] -> name(), heal.amount, heal.actual,
                      util_t::result_type_string( result ) );
     }
 
     if ( callbacks ) action_callback_t::trigger( player -> tick_heal_callbacks[ school ], this );
   }
 
-  stats -> add_result( sim -> report_overheal ? heal[ 0 ] : heal[ 1 ], heal[ 1 ], ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );
+  stats -> add_result( sim -> report_overheal ? heal.amount : heal.actual, heal.actual, ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );
 
 }
 
