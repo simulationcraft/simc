@@ -4,6 +4,7 @@ priest=Priest_Disc_Single_T12N_Valanyr
 origin="http://chardev.org/?profile=174520"
 level=85
 race=troll
+position=back
 role=heal
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
@@ -40,7 +41,7 @@ finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_
 trinket1=eye_of_blazing_power,ilevel=378,quality=epic,stats=383int
 trinket2=jaws_of_defeat,ilevel=378,quality=epic,stats=383int,use=onspellcast_110holystorm_costrd_10stack_20dur_120cd
 back=flowing_flamewrath_cape,ilevel=378,quality=epic,stats=695armor_227int_341sta_160spi_137mastery,reforge=mastery_haste,enchant=lightweave_embroidery
-main_hand=valanyr_hammer_of_ancient_kings,ilevel=245,stats=50crit_49haste_777sp_105sta,enchant=power_torrent,weapon=mace_1.80speed_123min_231max
+main_hand=valanyr_hammer_of_ancient_kings,ilevel=245,quality=legendary,stats=50crit_49haste_777sp_105sta,enchant=power_torrent,weapon=mace_1.80speed_123min_231max
 off_hand=goblet_of_anger,ilevel=378,quality=epic,stats=227int_341sta_137spi_160haste,enchant=40int
 ranged=scorchvine_wand,ilevel=378,quality=epic,stats=128int_192sta_86spi_83mastery,reforge=mastery_haste
 # Gear Summary

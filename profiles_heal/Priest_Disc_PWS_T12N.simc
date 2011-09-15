@@ -4,6 +4,7 @@ priest=Priest_Disc_PWS_T12N
 origin="http://chardev.org/?profile=174522"
 level=85
 race=troll
+position=back
 role=heal
 use_pre_potion=1
 professions=enchanting=525/tailoring=525

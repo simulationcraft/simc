@@ -4,6 +4,7 @@ priest=Priest_AAA_Single_T12N
 origin="http://chardev.org/?profile=174520"
 level=85
 race=troll
+position=back
 role=heal
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
@@ -22,7 +23,7 @@ actions+=/power_infusion
 actions+=/inner_focus
 actions+=/power_word_shield,if=!cooldown.rapture.remains
 actions+=/archangel,if=buff.holy_evangelism.stack>=5
-actions+=/penance_heal,if=buff.borrowed_time.up|buff.grace.down
+actions+=/penance_heal,if=buff.borrowed_time.up|debuff.grace.down
 actions+=/greater_heal,if=buff.inner_focus.up
 actions+=/holy_fire
 actions+=/smite,if=dot.holy_fire.remains>cast_time&buff.holy_evangelism.stack<5&buff.holy_archangel.down

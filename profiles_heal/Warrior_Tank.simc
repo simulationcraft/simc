@@ -1,4 +1,4 @@
-#!./simc 
+#!./simc
 
 report_overheal=1
 
@@ -92,7 +92,7 @@ actions+=/power_infusion
 actions+=/inner_focus
 actions+=/power_word_shield,if=!cooldown.rapture.remains,target=Warrior_Tank
 actions+=/archangel,if=buff.holy_evangelism.stack>=5&target.Warrior_Tank.health_pct<=70
-actions+=/penance_heal,target=Warrior_Tank,if=buff.grace.down
+actions+=/penance_heal,target=Warrior_Tank,if=debuff.grace.down
 actions+=/holy_fire
 actions+=/penance_heal,target=Warrior_Tank,if=target.health_pct<=60
 actions+=/greater_heal,target=Warrior_Tank,if=target.health_pct<=50
@@ -159,7 +159,7 @@ actions+=/berserking
 actions+=/power_infusion
 actions+=/inner_focus
 actions+=/power_word_shield,if=!cooldown.rapture.remains,target=Warrior_Tank
-actions+=/penance_heal,target=Warrior_Tank,if=buff.grace.down
+actions+=/penance_heal,target=Warrior_Tank,if=debuff.grace.down
 actions+=/penance_heal,target=Warrior_Tank,if=target.health_pct<=80
 actions+=/greater_heal,target=Warrior_Tank,if=target.health_pct<=70
 actions+=/renew,target=Warrior_Tank,if=!ticking|remains<tick_time
@@ -221,7 +221,7 @@ actions+=/power_infusion
 actions+=/inner_focus
 actions+=/power_word_shield,if=!cooldown.rapture.remains,target=Warrior_Tank
 actions+=/archangel,if=buff.holy_evangelism.stack>=5
-actions+=/penance_heal,if=buff.borrowed_time.up|buff.grace.down,target=Warrior_Tank
+actions+=/penance_heal,if=buff.borrowed_time.up|debuff.grace.down,target=Warrior_Tank
 actions+=/greater_heal,if=buff.inner_focus.up,target=Warrior_Tank
 actions+=/holy_fire
 actions+=/smite,if=dot.holy_fire.remains>cast_time&buff.holy_evangelism.stack<5&buff.holy_archangel.down
