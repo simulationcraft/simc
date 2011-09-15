@@ -368,6 +368,9 @@ void heal_t::assess_damage( player_t* t,
                             int    heal_type,
                             int    heal_result )
 {
+
+
+  double *heal = t -> assess_heal( heal_amount, school, heal_type, heal_result, this );
   // Val'Anyr
   if ( valanyr && player -> buffs.blessing_of_ancient_kings -> up() )
   {
@@ -375,10 +378,8 @@ void heal_t::assess_damage( player_t* t,
     valanyr -> execute();
   }
 
-  double heal_actual = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
-
-  total_heal   += heal_amount;
-  total_actual += heal_actual;
+  total_heal   += heal[ 0 ];
+  total_actual += heal[ 1 ];
 
   if ( heal_type == HEAL_DIRECT )
   {
@@ -386,11 +387,10 @@ void heal_t::assess_damage( player_t* t,
     {
       log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
                      player -> name(), name(),
-                     t -> name(), heal_actual, heal_amount,
+                     t -> name(), heal[ 0 ], heal[ 1 ],
                      util_t::result_type_string( result ) );
     }
 
-    direct_dmg = heal_amount;
     if ( callbacks ) action_callback_t::trigger( player -> direct_heal_callbacks[ school ], this );
   }
   else // HEAL_OVER_TIME
@@ -400,15 +400,14 @@ void heal_t::assess_damage( player_t* t,
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
-                     heal_target[0] -> name(), heal_actual, heal_amount,
+                     heal_target[0] -> name(), heal[ 0 ], heal[ 1 ],
                      util_t::result_type_string( result ) );
     }
 
-    tick_dmg = heal_amount;
     if ( callbacks ) action_callback_t::trigger( player -> tick_heal_callbacks[ school ], this );
   }
 
-  stats -> add_result( sim -> report_overheal ? heal_actual : heal_amount, heal_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );
+  stats -> add_result( sim -> report_overheal ? heal[ 0 ] : heal[ 1 ], heal[ 1 ], ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );
 
 }
 

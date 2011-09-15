@@ -3319,8 +3319,8 @@ double player_t::resource_loss( int       resource,
   if ( action ) action_callback_t::trigger( resource_loss_callbacks[ resource ], action, ( void* ) &actual_amount );
 
   if ( sim -> debug )
-    log_t::output( sim, "Player %s loses %.2f (%.2f) %s",
-                   name(), actual_amount, amount, util_t::resource_type_string( resource ) );
+    log_t::output( sim, "Player %s loses %.2f (%.2f) %s. health pct: %.2f",
+                   name(), actual_amount, amount, util_t::resource_type_string( resource ), health_percentage()  );
 
   return actual_amount;
 }
@@ -3860,6 +3860,19 @@ double player_t::target_mitigation( double            amount,
   return mitigated_amount;
 }
 
+double *player_t::assess_heal(  double            amount,
+                                const school_type /* school */,
+                                int               /* dmg_type */,
+                                int               /* result */,
+                                action_t*         action )
+{
+  double *heal = new double[ 2 ];
+  heal[ 0 ] = resource_gain( RESOURCE_HEALTH, amount, 0, action );
+  heal[ 1 ] = amount;
+
+  return heal;
+
+}
 // player_t::summon_pet =====================================================
 
 void player_t::summon_pet( const char* pet_name,

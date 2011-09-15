@@ -496,7 +496,7 @@ double enemy_t::health_percentage() SC_CONST
   {
     double remainder = std::max( 0.0, ( sim -> expected_time - sim -> current_time ) );
 
-    return ( remainder / sim -> expected_time ) * initial_health_percentage;
+    return ( remainder / sim -> expected_time ) * ( initial_health_percentage - sim -> target_death_pct ) + sim ->  target_death_pct;
   }
 
   return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;

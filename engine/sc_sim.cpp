@@ -945,7 +945,7 @@ void sim_t::combat( int iteration )
     if ( fixed_time || ( target -> resource_base[ RESOURCE_HEALTH ] == 0 ) )
     {
       // The first iteration is always time-limited since we do not yet have inferred health
-      if ( current_time > expected_time * ( 1 - target_death_pct / 100.0 ) )
+      if ( current_time > expected_time )
       {
         // Set this last event as canceled, so asserts dont fire when odd things happen at the
         // tail-end of the simulation iteration

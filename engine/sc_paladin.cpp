@@ -142,10 +142,10 @@ struct paladin_t : public player_t
     // prot
     int ardent_defender;
     int divine_guardian;
-    int divinity;
     int eternal_glory;
     int guarded_by_the_light;
     int vindication;
+    talent_t* divinity;
     talent_t* grand_crusader;
     talent_t* hallowed_ground;
     talent_t* hammer_of_the_righteous;
@@ -273,7 +273,8 @@ struct paladin_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST;
   virtual void      regen( double periodicity );
-  virtual double      assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
+  virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
+  virtual double   *assess_heal( double amount, const school_type school, int type, int result, action_t* a );
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
@@ -378,6 +379,58 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   {
     pet_t::schedule_ready( delta_time, waiting );
     if ( ! melee -> execute_event ) melee -> execute();
+  }
+};
+
+struct paladin_heal_t : public heal_t
+{
+  void _init_paladin_heal_t()
+  {
+    may_crit          = true;
+    tick_may_crit     = true;
+
+    dot_behavior      = DOT_REFRESH;
+    weapon_multiplier = 0.0;
+  }
+  paladin_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+    heal_t( n, player, sname, t )
+  {
+    _init_paladin_heal_t();
+  }
+
+  paladin_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
+    heal_t( n, player, id, t )
+  {
+    _init_paladin_heal_t();
+  }
+
+  virtual void player_buff()
+  {
+    heal_t::player_buff();
+  }
+
+  virtual double cost() SC_CONST
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    if ( resource == RESOURCE_HOLY_POWER )
+    {
+      if ( p -> buffs_divine_purpose -> check() )
+        return 0;
+
+      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
+    }
+
+    return heal_t::cost();
+  }
+
+  virtual void consume_resource()
+  {
+    heal_t::consume_resource();
+
+    paladin_t* p = player -> cast_paladin();
+
+    p -> buffs_divine_purpose -> expire();
   }
 };
 
@@ -530,6 +583,7 @@ struct paladin_attack_t : public attack_t
       p -> buffs_divine_purpose -> expire();
   }
 };
+
 
 // Melee Attack =============================================================
 
@@ -1042,26 +1096,26 @@ struct paladin_seal_t : public paladin_attack_t
 
 // Seal of Insight ==========================================================
 
-struct seal_of_insight_proc_t : public paladin_attack_t
+struct seal_of_insight_proc_t : public paladin_heal_t
 {
   seal_of_insight_proc_t( paladin_t* p ) :
-    paladin_attack_t( "seal_of_insight", 20167, p )
+    paladin_heal_t( "seal_of_insight_proc", p, 20167 )
   {
     background  = true;
     proc        = true;
     trigger_gcd = 0;
 
-    base_attack_power_multiplier = 0.15;
-    base_spell_power_multiplier  = 0.15;
+    target = player;
+    heal_target.clear();
+    heal_target.push_back( target );
 
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
   }
 
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    p -> resource_gain( RESOURCE_HEALTH, total_power() );
+    base_dd_min = base_dd_max = p -> resource_current[ RESOURCE_HOLY_POWER ] * 0.15 * p -> composite_attack_power();
+    paladin_heal_t::execute();
     p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * effect2().resource( RESOURCE_MANA ), p -> gains_seal_of_insight );
   }
 };
@@ -1969,57 +2023,7 @@ struct zealotry_t : public paladin_spell_t
 // Paladin Heals
 // ==========================================================================
 
-struct paladin_heal_t : public heal_t
-{
-  void _init_paladin_heal_t()
-  {
-    may_crit          = true;
-    tick_may_crit     = true;
 
-    dot_behavior      = DOT_REFRESH;
-    weapon_multiplier = 0.0;
-  }
-  paladin_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-    heal_t( n, player, sname, t )
-  {
-    _init_paladin_heal_t();
-  }
-
-  paladin_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-    heal_t( n, player, id, t )
-  {
-    _init_paladin_heal_t();
-  }
-
-  virtual void player_buff()
-  {
-    heal_t::player_buff();
-  }
-
-  virtual double cost() SC_CONST
-  {
-    paladin_t* p = player -> cast_paladin();
-
-    if ( resource == RESOURCE_HOLY_POWER )
-    {
-      if ( p -> buffs_divine_purpose -> check() )
-        return 0;
-
-      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
-    }
-
-    return heal_t::cost();
-  }
-
-  virtual void consume_resource()
-  {
-    heal_t::consume_resource();
-
-    paladin_t* p = player -> cast_paladin();
-
-    p -> buffs_divine_purpose -> expire();
-  }
-};
 
 // Word of Glory Spell
 
@@ -2560,6 +2564,7 @@ void paladin_t::init_talents()
 
 
   // Prot
+  talents.divinity                  = find_talent( "Divinity" );
   talents.seals_of_the_pure         = find_talent( "Seals of the Pure" );
   talents.judgements_of_the_just    = find_talent( "Judgements of the Just" );
   talents.improved_hammer_of_justice= find_talent( "Improved Hammer of Justice" );
@@ -2863,7 +2868,7 @@ double paladin_t::assess_damage( double            amount,
 
   if ( talents.sanctuary -> rank() )
   {
-    amount *= 1.0 - talents.sanctuary -> effect1().percent();
+    amount *= 1.0 + talents.sanctuary -> effect1().percent();
 
     if ( result == RESULT_DODGE || result == RESULT_BLOCK )
     {
@@ -2890,6 +2895,17 @@ double paladin_t::assess_damage( double            amount,
   }
 
   return player_t::assess_damage( amount, school, dmg_type, result, action );
+}
+
+double *paladin_t::assess_heal(  double            amount,
+                                const school_type school,
+                                int               dmg_type,
+                                int               result,
+                                action_t*         action )
+{
+  //amount *= 1.0 + p -> buffs_divinity -> value();
+
+  return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
 
 // paladin_t::get_cooldown ==================================================

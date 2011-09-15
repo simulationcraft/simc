@@ -332,9 +332,9 @@ int attack_t::build_table( double* chances,
   {
     double block_total = block_chance( delta_level ) + target -> composite_tank_block();
 
-    block = block_total * ( 1 - crit_block_chance( delta_level ) - target -> composite_tank_block() );
+    block = block_total * ( 1 - crit_block_chance( delta_level ) - target -> composite_tank_crit_block() );
 
-    crit_block = block_total * ( crit_block_chance( delta_level ) + target -> composite_tank_block() );
+    crit_block = block_total * ( crit_block_chance( delta_level ) + target -> composite_tank_crit_block() );
 
   }
 
