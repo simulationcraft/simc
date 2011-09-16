@@ -2013,9 +2013,9 @@ struct garrote_t : public rogue_attack_t
       player_multiplier *= 1.0 + p -> buffs_shadowstep -> value();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    rogue_attack_t::tick();
+    rogue_attack_t::tick( d );
 
     trigger_venomous_wounds( this );
   }
@@ -2148,9 +2148,9 @@ struct killing_spree_t : public rogue_attack_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
     attack_mh -> execute();
 
@@ -2159,7 +2159,7 @@ struct killing_spree_t : public rogue_attack_t
       attack_oh -> execute();
     }
 
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   // Killing Spree not modified by haste effects
@@ -2286,7 +2286,7 @@ struct recuperate_t : public rogue_attack_t
     p -> buffs_recuperate -> trigger();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* /* d */ )
   {
     rogue_t* p = player -> cast_rogue();
     if ( p -> talents.energetic_recovery -> rank() )
@@ -2398,9 +2398,9 @@ struct rupture_t : public rogue_attack_t
       player_multiplier *= 1.0 + p -> buffs_revealing_strike -> value();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    rogue_attack_t::tick();
+    rogue_attack_t::tick( d );
 
     trigger_venomous_wounds( this );
   }

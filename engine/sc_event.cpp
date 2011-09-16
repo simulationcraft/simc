@@ -217,12 +217,12 @@ void dot_tick_event_t::execute()
   {
     if ( sim -> roll( player -> skill ) )
     {
-      dot -> action -> tick();
+      dot -> action -> tick( dot );
     }
   }
   else // No skill-check required
   {
-    dot -> action -> tick();
+    dot -> action -> tick( dot );
   }
 
   if ( dot -> action -> channeled && ( dot -> ticks() > 0 ) )
@@ -249,6 +249,7 @@ void dot_tick_event_t::execute()
 
   if ( dot -> current_tick == dot -> num_ticks )
   {
+    dot -> time_to_tick = 0;
     dot -> action -> last_tick();
 
     if ( dot -> action -> channeled )
@@ -258,7 +259,7 @@ void dot_tick_event_t::execute()
       player -> schedule_ready( 0 );
     }
   }
-  else dot -> action -> schedule_tick();
+  else dot -> schedule_tick();
 }
 
 // ==========================================================================

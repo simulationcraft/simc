@@ -1369,7 +1369,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
     harmful   = false;
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* /* d */ )
   {
     hunter_t* o = player -> cast_pet() -> owner -> cast_hunter();
     o -> resource_gain( RESOURCE_FOCUS, 10, o -> gains_roar_of_recovery );
@@ -1717,10 +1717,10 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     add_child( tick_spell );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -2137,9 +2137,9 @@ struct black_arrow_t : public hunter_attack_t
     tick_power_mod=extra_coeff();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    hunter_attack_t::tick();
+    hunter_attack_t::tick( d );
     hunter_t* p = player -> cast_hunter();
     if ( p -> buffs_lock_and_load -> trigger( 2 ) ) {
       p -> procs_lock_and_load -> occur();
@@ -2173,9 +2173,9 @@ struct explosive_trap_effect_t : public hunter_attack_t
     crit_bonus = 0.5;
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    hunter_attack_t::tick();
+    hunter_attack_t::tick( d );
     hunter_t* p = player -> cast_hunter();
     if ( p -> buffs_lock_and_load -> trigger( 2 ) )
     {

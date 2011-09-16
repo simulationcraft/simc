@@ -13,7 +13,7 @@
 dot_t::dot_t( const std::string& n, player_t* p ) :
     sim( p -> sim ), player( p ), action( 0 ), name_str( n ), tick_event( 0 ),
     num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-    added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ), next( 0 )
+    added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ),time_to_tick( 0.0 ), next( 0 )
 {}
 
 dot_t::~dot_t()
@@ -71,9 +71,8 @@ void dot_t::extend_duration_seconds( double extra_seconds )
   // Add the added seconds
   duration_left += extra_seconds;
 
-  // Switch to new haste values and calculate resulting ticks
-  // ONLY updates haste, modifiers/spellpower are left untouched.
-  action -> player_haste = action -> total_haste();
+  action -> player_buff();
+
   added_seconds += extra_seconds;
 
   int new_remaining_ticks = action -> hasted_num_ticks( duration_left );
@@ -115,7 +114,6 @@ void dot_t::refresh_duration()
   if ( sim -> log )
     log_t::output( sim, "%s refreshes duration of %s", player -> name(), name() );
 
-
   action -> player_buff();
 
   current_tick = 0;
@@ -141,6 +139,30 @@ void dot_t::reset()
   added_seconds=0.0;
   ready=-1;
   miss_time=-1;
+}
+
+void dot_t::schedule_tick()
+{
+  if ( sim -> debug )
+    log_t::output( sim, "%s schedules tick for %s", player -> name(), name() );
+
+  if ( current_tick == 0 )
+  {
+
+    if ( action -> tick_zero )
+    {
+      time_to_tick = 0;
+      action -> tick( this );
+    }
+  }
+
+  time_to_tick = action -> tick_time();
+
+  tick_event = new ( sim ) dot_tick_event_t( sim, this, time_to_tick );
+
+  ticking = 1;
+
+  if ( action -> channeled ) player -> channeling = action;
 }
 
 int dot_t::ticks()

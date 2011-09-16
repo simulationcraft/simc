@@ -233,7 +233,7 @@ void heal_t::travel( player_t* t, int travel_result, double travel_heal=0 )
     }
     else
     {
-      schedule_tick();
+      dot -> schedule_tick();
     }
     dot -> recalculate_ready();
     if ( sim -> debug )
@@ -244,9 +244,10 @@ void heal_t::travel( player_t* t, int travel_result, double travel_heal=0 )
 
 // heal_t::tick =============================================================
 
-void heal_t::tick()
+void heal_t::tick( dot_t* d )
 {
-  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+  if ( sim -> debug )
+    log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
   result = RESULT_HIT;
 
@@ -268,7 +269,7 @@ void heal_t::tick()
 
   if ( callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
 
-  stats -> add_tick( time_to_tick );
+  stats -> add_tick( d -> time_to_tick );
 }
 
 // heal_t::calculate_result =================================================
@@ -418,7 +419,7 @@ void heal_t::last_tick()
   if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), heal_target[0] -> name() );
 
   dot -> ticking = 0;
-  time_to_tick = 0;
+  dot -> time_to_tick = 0;
 }
 
 // heal_t::find_greatest_difference_player ==================================

@@ -4078,7 +4078,7 @@ struct action_t : public spell_id_t
   stats_t* stats;
   event_t* execute_event;
   event_t* travel_event;
-  double time_to_execute, time_to_tick, time_to_travel, travel_speed;
+  double time_to_execute, time_to_travel, travel_speed;
   int rank_index, bloodlust_active;
   double max_haste;
   double haste_gain_percentage;
@@ -4137,13 +4137,12 @@ struct action_t : public spell_id_t
   virtual double resistance() SC_CONST;
   virtual void   consume_resource();
   virtual void   execute();
-  virtual void   tick();
+  virtual void   tick( dot_t* d );
   virtual void   last_tick();
   virtual void   travel( player_t*, int result, double dmg );
   virtual void   assess_damage( player_t* t, double amount, int dmg_type, int travel_result );
   virtual void   additional_damage( player_t* t, double amount, int dmg_type, int travel_result );
   virtual void   schedule_execute();
-  virtual void   schedule_tick();
   virtual void   schedule_travel( player_t* t );
   virtual void   reschedule_execute( double time );
   virtual void   update_ready();
@@ -4278,7 +4277,7 @@ struct heal_t : public spell_t
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
   virtual void travel( player_t*, int travel_result, double travel_dmg );
-  virtual void tick();
+  virtual void tick( dot_t* d );
   virtual void last_tick();
   virtual player_t* find_greatest_difference_player();
   virtual player_t* find_lowest_player();
@@ -4366,6 +4365,7 @@ struct dot_t
   double added_seconds;
   double ready;
   double miss_time;
+  double time_to_tick;
   dot_t* next;
 
   dot_t() : player(0) {}
@@ -4373,13 +4373,14 @@ struct dot_t
 
   virtual ~dot_t();
 
-  virtual void extend_duration( int extra_ticks, bool cap=false );
-  virtual void extend_duration_seconds( double extra_ticks );
-  virtual void recalculate_ready();
-  virtual void refresh_duration();
-  virtual void reset();
+  virtual void   extend_duration( int extra_ticks, bool cap=false );
+  virtual void   extend_duration_seconds( double extra_ticks );
+  virtual void   recalculate_ready();
+  virtual void   refresh_duration();
+  virtual void   reset();
   virtual double remains();
-  virtual int ticks();
+  virtual void   schedule_tick();
+  virtual int    ticks();
 
   virtual const char* name() { return name_str.c_str(); }
 };

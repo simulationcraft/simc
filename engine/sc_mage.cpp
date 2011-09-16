@@ -1540,10 +1540,10 @@ struct arcane_missiles_t : public mage_spell_t
     p -> buffs_arcane_blast -> expire();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual bool ready()
@@ -1839,9 +1839,9 @@ struct evocation_t : public mage_spell_t
     cooldown -> duration += p -> talents.arcane_flows -> effect2().seconds();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    mage_spell_t::tick();
+    mage_spell_t::tick( d );
 
     mage_t* p = player -> cast_mage();
 
@@ -1991,10 +1991,10 @@ struct flame_orb_t : public mage_spell_t
     add_child( tick_spell );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual void last_tick()
@@ -2289,12 +2289,12 @@ struct frostfire_bolt_t : public mage_spell_t
 
   virtual double total_td_multiplier() SC_CONST { return 1.0; } // No double-dipping!
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     // Ticks don't benefit from Shatter, which checks for fof_frozen
     // So disable it for the ticks, assuming it was set to true in execute
     fof_frozen = false;
-    mage_spell_t::tick();
+    mage_spell_t::tick( d );
   }
 };
 
@@ -2357,10 +2357,10 @@ struct frostfire_orb_t : public mage_spell_t
     add_child( tick_spell );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
 
     // Trigger Brain Freeze
     mage_t* p = player -> cast_mage();

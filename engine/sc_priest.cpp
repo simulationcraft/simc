@@ -706,9 +706,9 @@ struct priest_heal_t : public heal_t
     }
   }
 
-  void tick()
+  void tick( dot_t* d )
   {
-    heal_t::tick();
+    heal_t::tick( d );
 
     // Divine Aegis
     if ( result == RESULT_CRIT )
@@ -754,7 +754,6 @@ struct atonement_heal_t : public priest_heal_t
     background     = true;
     round_base_dmg = false;
 
-    time_to_tick = 0;
 
     // HACK: Setting may_crit = true will force crits.
     may_crit = false;
@@ -787,7 +786,7 @@ struct atonement_heal_t : public priest_heal_t
       // num_ticks = 1;
       base_td = atonement_dmg;
       tick_may_crit = ( result == RESULT_CRIT );
-      tick();
+      tick( dot );
     }
     else
     {
@@ -822,12 +821,12 @@ struct atonement_heal_t : public priest_heal_t
     priest_heal_t::execute();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     heal_target.clear();
     heal_target.push_back( find_lowest_player() );
 
-    priest_heal_t::tick();
+    priest_heal_t::tick( d );
   }
 };
 
@@ -1562,9 +1561,9 @@ struct devouring_plague_t : public priest_spell_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    priest_spell_t::tick();
+    priest_spell_t::tick( d );
 
     priest_t* p = player -> cast_priest();
 
@@ -1606,13 +1605,13 @@ struct dispersion_t : public priest_spell_t
     shadow_fiend = p -> find_pet( "shadow_fiend" );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     priest_t* p = player -> cast_priest();
 
     p -> resource_gain( RESOURCE_MANA, 0.06 * p -> resource_max[ RESOURCE_MANA ], p -> gains_dispersion );
 
-    priest_spell_t::tick();
+    priest_spell_t::tick( d );
   }
 
   virtual bool ready()
@@ -1994,9 +1993,9 @@ struct mind_flay_t : public priest_spell_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    priest_spell_t::tick();
+    priest_spell_t::tick( d );
 
     priest_t* p = player -> cast_priest();
 
@@ -2108,9 +2107,9 @@ struct mind_flay_t_2 : public priest_spell_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    priest_spell_t::tick();
+    priest_spell_t::tick( d );
 
     priest_t* p = player -> cast_priest();
 
@@ -2265,12 +2264,12 @@ struct mind_sear_t : public priest_spell_t
     mind_sear_tick = new mind_sear_tick_t( player );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     if ( mind_sear_tick )
       mind_sear_tick -> execute();
 
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -2323,11 +2322,11 @@ struct penance_t : public priest_spell_t
     tick_spell = new penance_tick_t( p );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     tick_spell -> execute();
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual double cost() SC_CONST
@@ -2583,9 +2582,9 @@ struct shadow_word_pain_t : public priest_spell_t
     player_td_multiplier += p -> glyphs.shadow_word_pain -> ok() ? 0.1 : 0.0;
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    priest_spell_t::tick();
+    priest_spell_t::tick( d );
 
     priest_t* p = player -> cast_priest();
 
@@ -2647,9 +2646,9 @@ struct shadow_word_pain_t_2 : public priest_spell_t
     player_td_multiplier += p -> glyphs.shadow_word_pain -> ok() ? 0.1 : 0.0;
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    priest_spell_t::tick();
+    priest_spell_t::tick( d );
 
     priest_t* p = player -> cast_priest();
 
@@ -2905,11 +2904,11 @@ struct hymn_of_hope_t : public priest_spell_t
     hymn_of_hope_tick = new hymn_of_hope_tick_t( p );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     hymn_of_hope_tick -> execute();
 
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -3998,13 +3997,13 @@ struct penance_heal_t : public priest_heal_t
     penance_tick -> target = target;
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     penance_tick -> heal_target.clear();
     penance_tick -> heal_target.push_back( target );
     penance_tick -> execute();
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual double cost() SC_CONST
@@ -4081,10 +4080,10 @@ struct holy_word_sanctuary_t : public priest_heal_t
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect1().percent();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual bool ready()
@@ -4314,11 +4313,11 @@ struct divine_hymn_t : public priest_heal_t
     add_child( divine_hymn_tick );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     divine_hymn_tick -> execute();
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 

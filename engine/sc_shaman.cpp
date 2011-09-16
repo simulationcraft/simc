@@ -2788,9 +2788,9 @@ struct flame_shock_t : public shaman_spell_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    shaman_spell_t::tick();
+    shaman_spell_t::tick( d );
 
     shaman_t* p = player -> cast_shaman();
     if ( p -> rng_lava_surge -> roll ( p -> talent_lava_surge -> proc_chance() ) )
@@ -2917,10 +2917,10 @@ struct shaman_totem_t : public shaman_spell_t
     p -> totems[ totem ] = 0;
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     if ( sim -> debug )
-      log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+      log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
     player_buff(); // Totems recalculate stats on every "tick"
     target_debuff( target, DMG_DIRECT );
@@ -2943,7 +2943,7 @@ struct shaman_totem_t : public shaman_spell_t
         log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
     }
 
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual double gcd() SC_CONST
@@ -3294,10 +3294,10 @@ struct searing_totem_t : public shaman_totem_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     shaman_t* p = player -> cast_shaman();
-    shaman_totem_t::tick();
+    shaman_totem_t::tick( d );
     if ( result_is_hit() && p -> buffs_searing_flames -> trigger() )
     {
       double new_base_td = tick_dmg;

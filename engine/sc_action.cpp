@@ -115,7 +115,7 @@ void action_t::init_action_t_()
   execute_event                  = NULL;
   travel_event                   = NULL;
   time_to_execute                = 0.0;
-  time_to_tick                   = 0.0;
+
   time_to_travel                 = 0.0;
   travel_speed                   = 0.0;
   rank_index                     = -1;
@@ -1053,9 +1053,9 @@ void action_t::execute()
 
 // action_t::tick ===========================================================
 
-void action_t::tick()
+void action_t::tick( dot_t* d )
 {
-  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
   result = RESULT_HIT;
 
@@ -1079,7 +1079,7 @@ void action_t::tick()
 
   if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
 
-  stats -> add_tick( time_to_tick );
+  stats -> add_tick( d -> time_to_tick );
 }
 
 // action_t::last_tick ======================================================
@@ -1089,7 +1089,7 @@ void action_t::last_tick()
   if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), target -> name() );
 
   dot -> ticking = 0;
-  time_to_tick = 0;
+
 
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
 }
@@ -1127,7 +1127,9 @@ void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
       }
       else
       {
-        schedule_tick();
+        if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> increment();
+
+        dot -> schedule_tick();
       }
       dot -> recalculate_ready();
 
@@ -1250,31 +1252,6 @@ void action_t::schedule_execute()
   }
 }
 
-// action_t::schedule_tick ==================================================
-
-void action_t::schedule_tick()
-{
-  if ( sim -> debug ) log_t::output( sim, "%s schedules tick for %s", player -> name(), name() );
-
-  if ( dot -> current_tick == 0 )
-  {
-    if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> increment();
-
-    if ( tick_zero )
-    {
-      time_to_tick = 0;
-      tick();
-    }
-  }
-
-  time_to_tick = tick_time();
-
-  dot -> tick_event = new ( sim ) dot_tick_event_t( sim, dot, time_to_tick );
-
-  dot -> ticking = 1;
-
-  if ( channeled ) player -> channeling = this;
-}
 
 // action_t::schedule_travel ================================================
 
@@ -1777,7 +1754,7 @@ double action_t::ppm_proc_chance( double PPM ) SC_CONST
   }
   else
   {
-    double time = channeled ? time_to_tick : time_to_execute;
+    double time = channeled ? dot -> time_to_tick : time_to_execute;
 
     if ( time == 0 ) time = player -> base_gcd;
 

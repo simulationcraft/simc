@@ -1286,9 +1286,9 @@ struct bladestorm_t : public warrior_attack_t
       p -> off_hand_attack -> cancel();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    warrior_attack_t::tick();
+    warrior_attack_t::tick( d );
 
     bladestorm_mh -> execute();
 
@@ -1970,9 +1970,9 @@ struct rend_dot_t : public warrior_attack_t
       trigger_blood_frenzy( this );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    warrior_attack_t::tick();
+    warrior_attack_t::tick( d );
 
     warrior_t* p = player -> cast_warrior();
 

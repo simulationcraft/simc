@@ -2130,9 +2130,9 @@ struct lacerate_t : public druid_bear_attack_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    druid_bear_attack_t::tick();
+    druid_bear_attack_t::tick( d );
 
     druid_t* p = player -> cast_druid();
     if ( p -> talents.berserk -> ok() )
@@ -2545,11 +2545,11 @@ struct lifebloom_t : public druid_heal_t
     p -> buffs_lifebloom -> expire();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     druid_t* p = player -> cast_druid();
 
-    druid_heal_t::tick();
+    druid_heal_t::tick( d );
 
     if ( p -> talents.malfurions_gift -> rank() )
     {
@@ -2687,9 +2687,9 @@ struct rejuvenation_t : public druid_heal_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    druid_heal_t::tick();
+    druid_heal_t::tick( d );
 
     trigger_revitalize( this );
   }
@@ -3409,9 +3409,9 @@ struct insect_swarm_t : public druid_spell_t
     druid_spell_t::player_buff();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    druid_spell_t::tick();
+    druid_spell_t::tick( d );
     druid_t* p = player -> cast_druid();
     if ( p -> buffs_shooting_stars -> trigger() )
       starsurge_cd -> reset();
@@ -3517,9 +3517,9 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::player_buff();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    druid_spell_t::tick();
+    druid_spell_t::tick( d );
     druid_t* p = player -> cast_druid();
     if ( p -> buffs_shooting_stars -> trigger() )
       starsurge_cd -> reset();
@@ -3833,9 +3833,9 @@ struct starfall_t : public druid_spell_t
     starfall_star = new starfall_star_t( p );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     starfall_star -> execute();
 
     // If there is at least one additional target around Starfall will
@@ -3843,7 +3843,7 @@ struct starfall_t : public druid_spell_t
     /*target_t* t = target -> cast_target();
     if ( t -> adds_nearby > 0 )
       starfall_star -> execute();*/
-    stats -> add_tick( time_to_tick );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -3994,9 +3994,9 @@ struct sunfire_t : public druid_spell_t
     druid_spell_t::player_buff();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    druid_spell_t::tick();
+    druid_spell_t::tick( d );
     druid_t* p = player -> cast_druid();
     if ( p -> buffs_shooting_stars -> trigger() )
       starsurge_cd -> reset();

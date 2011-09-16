@@ -974,9 +974,9 @@ struct warlock_spell_t : public spell_t
 
   // warlock_spell_t::tick ==================================================
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    spell_t::tick();
+    spell_t::tick( d );
 
     if ( tick_dmg > 0 )
     {
@@ -1392,9 +1392,9 @@ struct felguard_pet_t : public warlock_main_pet_t
       felstorm_tick -> weapon = &( player -> main_hand_weapon );
     }
 
-    virtual void tick()
+    virtual void tick( dot_t* d )
     {
-      warlock_pet_attack_t::tick();
+      warlock_pet_attack_t::tick( d );
       felstorm_tick -> execute();
     }
   };
@@ -1675,9 +1675,9 @@ struct infernal_pet_t : public warlock_guardian_pet_t
       immolation_damage = new immolation_damage_t( p );
     }
 
-    virtual void tick()
+    virtual void tick( dot_t* d )
     {
-      dot -> current_tick = 0; // ticks indefinitely
+      d -> current_tick = 0; // ticks indefinitely
       immolation_damage -> execute();
     }
   };
@@ -2030,9 +2030,9 @@ struct bane_of_doom_t : public warlock_spell_t
     return m;
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    warlock_spell_t::tick();
+    warlock_spell_t::tick( d );
 
     warlock_t* p = player -> cast_warlock();
     double x = effect2().percent() + p -> talent_impending_doom -> effect1().percent();
@@ -2419,10 +2419,10 @@ struct corruption_t : public warlock_spell_t
     player_td_multiplier += p -> talent_improved_corruption -> effect1().percent();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::tick();
+    warlock_spell_t::tick( d );
     p -> buffs_eradication -> trigger();
     if ( p -> buffs_shadow_trance -> trigger() )
       p -> procs_shadow_trance -> occur();
@@ -2515,10 +2515,10 @@ struct drain_life_t : public warlock_spell_t
     player_multiplier *= 1.0 + multiplier;
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::tick();
+    warlock_spell_t::tick( d );
     if ( p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> talent_nightfall -> proc_chance() ) )
       p -> procs_shadow_trance -> occur();
   }
@@ -2544,9 +2544,9 @@ struct drain_soul_t : public warlock_spell_t
     trigger_tier12_4pc_caster( this );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    warlock_spell_t::tick();
+    warlock_spell_t::tick( d );
 
     if ( result_is_hit() )
     {
@@ -2642,10 +2642,10 @@ struct unstable_affliction_t : public warlock_spell_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::tick();
+    warlock_spell_t::tick( d );
     if ( tick_dmg > 0 )
     {
       p -> buffs_tier11_4pc_caster -> trigger( 2 );
@@ -2720,9 +2720,9 @@ struct immolate_t : public warlock_spell_t
     }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    warlock_spell_t::tick();
+    warlock_spell_t::tick( d );
     warlock_t* p = player -> cast_warlock();
     p -> buffs_molten_core -> trigger( 3 );
     if ( tick_dmg > 0 )
@@ -3101,10 +3101,10 @@ struct fel_armor_t : public warlock_spell_t
     warlock_spell_t::execute();
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     warlock_t* p = player -> cast_warlock();
-    dot -> current_tick = 0; // ticks indefinitely
+    d -> current_tick = 0; // ticks indefinitely
     p -> resource_gain( RESOURCE_HEALTH,
                         p -> resource_max[ RESOURCE_HEALTH ] * effect2().percent() * ( 1.0 + p -> talent_demonic_aegis -> effect1().percent() ),
                         p -> gains_fel_armor, this );
@@ -3365,7 +3365,7 @@ struct immolation_aura_t : public warlock_spell_t
     immolation_damage = new immolation_damage_t( p );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
     warlock_t* p = player -> cast_warlock();
     if ( p -> buffs_metamorphosis -> check() )
@@ -3375,7 +3375,7 @@ struct immolation_aura_t : public warlock_spell_t
     else
     {
       // Cancel the aura
-      dot -> current_tick = dot -> num_ticks;
+      d -> current_tick = dot -> num_ticks;
     }
   }
 
@@ -3737,7 +3737,7 @@ struct hellfire_t : public warlock_spell_t
     return p -> talent_inferno -> rank() > 0;
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* /* d */ )
   {
     hellfire_tick -> execute();
   }
@@ -3800,9 +3800,9 @@ struct seed_of_corruption_t : public warlock_spell_t
      }
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    warlock_spell_t::tick();
+    warlock_spell_t::tick( d );
 
     if ( target -> total_dmg - dot_damage_done > effect2().base_value() )
     {
@@ -3849,9 +3849,9 @@ struct rain_of_fire_t : public warlock_spell_t
     add_child( rain_of_fire_tick );
   }
 
-  virtual void tick()
+  virtual void tick( dot_t* d )
   {
-    warlock_spell_t::tick();
+    warlock_spell_t::tick( d );
     rain_of_fire_tick -> execute();
   }
 };
