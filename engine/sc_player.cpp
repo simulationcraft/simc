@@ -678,7 +678,7 @@ bool player_t::init( sim_t* sim )
     if ( sim -> default_actions && ! p -> is_pet() ) p -> action_list_str.clear();
     p -> init();
     if ( ! p -> quiet ) too_quiet = false;
-    if ( p -> primary_role() != ROLE_HEAL && p -> primary_role() != ROLE_TANK && !p -> is_pet() && p -> quiet ) zero_dds = false;
+    if ( p -> primary_role() != ROLE_HEAL && p -> primary_role() != ROLE_TANK && ! p -> is_pet() ) zero_dds = false;
   }
 
   if ( too_quiet && ! sim -> debug )
@@ -1833,6 +1833,7 @@ void player_t::init_scaling()
           double new_speed = ( ranged_weapon.swing_time + v );
 
           double mult = new_speed / ranged_weapon.swing_time;
+
 
           ranged_weapon.min_dmg *= mult;
           ranged_weapon.max_dmg *= mult;
