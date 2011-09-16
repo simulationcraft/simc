@@ -1088,7 +1088,7 @@ struct warlock_spell_t : public spell_t
 
     if ( p -> rng_everlasting_affliction -> roll( p -> talent_everlasting_affliction -> proc_chance() ) )
     {
-      p -> dots_corruption -> action -> refresh_duration();
+      p -> dots_corruption -> refresh_duration();
     }
   }
 
@@ -2558,7 +2558,7 @@ struct drain_soul_t : public warlock_spell_t
         {
           if ( p -> dots_unstable_affliction -> ticking )
           {
-            p -> dots_unstable_affliction -> action -> refresh_duration();
+            p -> dots_unstable_affliction -> refresh_duration();
           }
         }
       }
@@ -2652,15 +2652,6 @@ struct unstable_affliction_t : public warlock_spell_t
     }
   }
 
-  virtual void extend_duration( int extra_ticks )
-  {
-    // Can't extend beyond initial duration.
-    // Assuming this limit is based on current haste, not haste at previous application/extension/refresh.
-
-    int max_extra_ticks = std::max( hasted_num_ticks() - dot -> ticks(), 0 );
-
-    warlock_spell_t::extend_duration( std::min( extra_ticks, max_extra_ticks ) );
-  }
 };
 
 // Haunt Spell ==============================================================
@@ -2740,15 +2731,6 @@ struct immolate_t : public warlock_spell_t
     }
   }
 
-  virtual void extend_duration( int extra_ticks )
-  {
-    // Can't extend beyond initial duration.
-    // Assuming this limit is based on current haste, not haste at previous application/extension/refresh.
-
-    int max_extra_ticks = std::max( hasted_num_ticks() - dot -> ticks(), 0 );
-
-    warlock_spell_t::extend_duration( std::min( extra_ticks, max_extra_ticks ) );
-  }
 };
 
 // Shadowflame DOT Spell ====================================================
@@ -3498,7 +3480,7 @@ struct hand_of_guldan_t : public warlock_spell_t
       {
         if ( p -> rng_cremation -> roll( p -> talent_cremation -> proc_chance() ) )
         {
-          p -> dots_immolate -> action -> refresh_duration();
+          p -> dots_immolate -> refresh_duration();
         }
       }
     }
@@ -3535,8 +3517,8 @@ struct fel_flame_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     if ( result_is_hit( travel_result ) )
     {
-      if ( p -> dots_immolate -> ticking            ) p -> dots_immolate            -> action -> extend_duration( 2 );
-      if ( p -> dots_unstable_affliction -> ticking ) p -> dots_unstable_affliction -> action -> extend_duration( 2 );
+      p -> dots_immolate            -> extend_duration( 2, true );
+      p -> dots_unstable_affliction -> extend_duration( 2, true );
     }
   }
 

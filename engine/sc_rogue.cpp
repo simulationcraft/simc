@@ -1799,7 +1799,7 @@ struct eviscerate_t : public rogue_attack_t
         double chance = p -> talents.serrated_blades -> base_value() / 100.0 * combo_points_spent;
         if ( p -> rng_serrated_blades -> roll( chance ) )
         {
-          p -> dots_rupture -> action -> refresh_duration();
+          p -> dots_rupture -> refresh_duration();
           p -> procs_serrated_blades -> occur();
         }
       }
@@ -2828,7 +2828,7 @@ struct deadly_poison_t : public rogue_poison_t
 
         if ( dot -> ticking )
         {
-          refresh_duration();
+          dot -> refresh_duration();
         }
         else
         {

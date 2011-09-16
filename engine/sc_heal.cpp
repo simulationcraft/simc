@@ -461,25 +461,6 @@ player_t* heal_t::find_lowest_player()
   return max_player;
 }
 
-// heal_t::refresh_duration =================================================
-
-void heal_t::refresh_duration()
-{
-  if ( sim -> log ) log_t::output( sim, "%s refreshes duration of %s", player -> name(), name() );
-
-  // Make sure this DoT is still ticking......
-  assert( dot -> tick_event );
-
-  player_buff();
-  target_debuff( heal_target[0], HEAL_OVER_TIME );
-
-  dot -> action = this;
-  dot -> current_tick = 0;
-  dot -> added_ticks = 0;
-  dot -> num_ticks = hasted_num_ticks();
-  dot -> recalculate_ready();
-}
-
 // ==========================================================================
 // Absorb
 // ==========================================================================

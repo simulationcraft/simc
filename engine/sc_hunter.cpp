@@ -2268,7 +2268,7 @@ struct chimera_shot_t : public hunter_attack_t
     {
       if ( p -> dots_serpent_sting -> ticking )
       {
-        p -> dots_serpent_sting -> action -> refresh_duration();
+        p -> dots_serpent_sting -> refresh_duration();
       }
     }
   }
@@ -2312,7 +2312,7 @@ struct cobra_shot_t : public hunter_attack_t
     if ( result_is_hit() )
     {
       hunter_t* p = player -> cast_hunter();
-      if ( p -> dots_serpent_sting -> ticking ) p -> dots_serpent_sting -> action -> extend_duration( 2 );
+      p -> dots_serpent_sting -> extend_duration( 2 );
       double focus = 9;
       if ( p -> talents.termination -> rank() )
       {

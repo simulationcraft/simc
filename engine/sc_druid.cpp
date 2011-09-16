@@ -835,7 +835,7 @@ static void trigger_empowered_touch( heal_t* a )
   {
     if ( p -> dots_lifebloom -> ticking )
     {
-      p -> dots_lifebloom -> action -> refresh_duration();
+      p -> dots_lifebloom -> refresh_duration();
       if ( p -> buffs_lifebloom -> check() ) p -> buffs_lifebloom -> refresh();
       p -> procs_empowered_touch -> occur();
     }
@@ -1417,7 +1417,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
       // Proc chance is not stored in the talent anymore
       if ( p -> dots_rip -> ticking && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> rank() * 0.50 ) )
       {
-        p -> dots_rip -> action -> refresh_duration();
+        p -> dots_rip -> refresh_duration();
       }
     }
   }
@@ -1778,7 +1778,7 @@ struct shred_t : public druid_cat_attack_t
       {
         // Glyph adds 1/1/2 ticks on execute
         int extra_ticks = ( p -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
-        p -> dots_rip -> action -> extend_duration( extra_ticks );
+        p -> dots_rip -> extend_duration( extra_ticks );
       }
       trigger_infected_wounds( this );
     }
@@ -2631,7 +2631,7 @@ struct regrowth_t : public druid_heal_t
     {
       if ( target -> health_percentage() <= p -> glyphs.regrowth ->effect1().percent() && p -> dots_regrowth -> ticking )
       {
-        p -> dots_regrowth -> action -> refresh_duration();
+        p -> dots_regrowth -> refresh_duration();
       }
     }
   }
@@ -3700,16 +3700,16 @@ struct starfire_t : public druid_spell_t
         if ( p -> dots_moonfire -> ticking )
         {
           if ( p -> dots_moonfire -> added_seconds < 9.0 )
-            p -> dots_moonfire -> action -> extend_duration_seconds( 3.0 );
+            p -> dots_moonfire -> extend_duration_seconds( 3.0 );
           else
-            p -> dots_moonfire -> action -> extend_duration_seconds( 0.0 );
+            p -> dots_moonfire -> extend_duration_seconds( 0.0 );
         }
         else if ( p -> dots_sunfire -> ticking )
         {
           if ( p -> dots_sunfire -> added_seconds < 9.0 )
-            p -> dots_sunfire -> action -> extend_duration_seconds( 3.0 );
+            p -> dots_sunfire -> extend_duration_seconds( 3.0 );
           else
-            p -> dots_sunfire -> action -> extend_duration_seconds( 0.0 );
+            p -> dots_sunfire -> extend_duration_seconds( 0.0 );
         }
       }
 

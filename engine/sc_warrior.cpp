@@ -1726,7 +1726,7 @@ struct mortal_strike_t : public warrior_attack_t
       }
 
       if ( p -> talents.lambs_to_the_slaughter -> rank() && p -> dots_rend -> ticking )
-        p -> dots_rend -> action -> refresh_duration();
+        p -> dots_rend -> refresh_duration();
 
       trigger_tier12_4pc_melee( this );
     }
@@ -2359,7 +2359,7 @@ struct thunder_clap_t : public warrior_attack_t
     p -> buffs_thunderstruck -> trigger();
 
     if ( p -> talents.blood_and_thunder -> rank() && p -> dots_rend && p -> dots_rend ->ticking )
-      p -> dots_rend -> action -> refresh_duration();
+      p -> dots_rend -> refresh_duration();
   }
 };
 

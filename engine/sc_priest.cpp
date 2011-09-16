@@ -573,7 +573,7 @@ struct priest_heal_t : public heal_t
                                                 a -> direct_dmg * p -> composite_mastery() *
                                                 p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) /
                                               p -> heals_echo_of_light -> num_ticks;
-        p -> heals_echo_of_light -> refresh_duration();
+        p -> heals_echo_of_light -> dot -> refresh_duration();
       }
       else
       {
@@ -583,7 +583,7 @@ struct priest_heal_t : public heal_t
                                                 a -> direct_dmg * p -> composite_mastery() *
                                                 p -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) /
                                               p -> heals_echo_of_light -> num_ticks;
-        p -> heals_echo_of_light -> refresh_duration();
+        p -> heals_echo_of_light -> dot -> refresh_duration();
         p -> echo_of_light_merged = true;
       }
     }
@@ -702,7 +702,7 @@ struct priest_heal_t : public heal_t
       trigger_echo_of_light( this, t );
 
       if ( p -> buffs_chakra_serenity -> up() && p -> dots_renew -> ticking )
-        p -> dots_renew -> action -> refresh_duration();
+        p -> dots_renew -> refresh_duration();
     }
   }
 
@@ -2009,7 +2009,7 @@ struct mind_flay_t : public priest_spell_t
       {
         if ( p -> rng_pain_and_suffering -> roll( p -> constants.pain_and_suffering_value ) )
         {
-          p -> dots_shadow_word_pain -> action -> refresh_duration();
+          p -> dots_shadow_word_pain -> refresh_duration();
         }
       }
       if ( result == RESULT_CRIT )
@@ -2123,7 +2123,7 @@ struct mind_flay_t_2 : public priest_spell_t
       {
         if ( p -> rng_pain_and_suffering -> roll( p -> constants.pain_and_suffering_value ) )
         {
-          p -> dots_shadow_word_pain_2 -> action -> refresh_duration();
+          p -> dots_shadow_word_pain_2 -> refresh_duration();
         }
       }
       if ( result == RESULT_CRIT )
@@ -2599,12 +2599,12 @@ struct shadow_word_pain_t : public priest_spell_t
     }
   }
 
-  virtual void refresh_duration()
+  /*virtual void refresh_duration()
   {
     num_ticks++;
     priest_spell_t::refresh_duration();
     num_ticks--;
-  }
+  }*/
 };
 
 // Shadow Word Pain Spell 2 =================================================
@@ -2663,12 +2663,12 @@ struct shadow_word_pain_t_2 : public priest_spell_t
     }
   }
 
-  virtual void refresh_duration()
+  /*virtual void refresh_duration()
   {
     num_ticks++;
     priest_spell_t::refresh_duration();
     num_ticks--;
-  }
+  }*/
 };
 
 // Vampiric Embrace Spell ===================================================

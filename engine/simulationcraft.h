@@ -4146,9 +4146,6 @@ struct action_t : public spell_id_t
   virtual void   schedule_tick();
   virtual void   schedule_travel( player_t* t );
   virtual void   reschedule_execute( double time );
-  virtual void   refresh_duration();
-  virtual void   extend_duration( int extra_ticks );
-  virtual void   extend_duration_seconds( double extra_ticks );
   virtual void   update_ready();
   virtual bool   usable_moving();
   virtual bool   ready();
@@ -4285,8 +4282,6 @@ struct heal_t : public spell_t
   virtual void last_tick();
   virtual player_t* find_greatest_difference_player();
   virtual player_t* find_lowest_player();
-  virtual void refresh_duration();
-
 };
 
 // Absorb ===================================================================
@@ -4362,6 +4357,7 @@ struct cooldown_t
 
 struct dot_t
 {
+  sim_t* sim;
   player_t* player;
   action_t* action;
   std::string name_str;
@@ -4371,33 +4367,20 @@ struct dot_t
   double ready;
   double miss_time;
   dot_t* next;
+
   dot_t() : player(0) {}
-  dot_t( const std::string& n, player_t* p ) :
-    player(p), action(0), name_str(n), tick_event(0),
-    num_ticks(0), current_tick(0), added_ticks(0), ticking(0),
-    added_seconds( 0.0 ), ready(-1), miss_time(-1), next(0) {}
-  virtual ~dot_t() {}
-  virtual void reset() { tick_event=0; current_tick=0; added_ticks=0; ticking=0; added_seconds=0.0; ready=-1; miss_time=-1; }
-  virtual void recalculate_ready()
-  {
-    // Extending a DoT does not interfere with the next tick event.  To determine the
-    // new finish time for the DoT, start from the time of the next tick and add the time
-    // for the remaining ticks to that event.
-    int remaining_ticks = num_ticks - current_tick;
-    ready = 0.001 + tick_event -> time + action -> tick_time() * ( remaining_ticks - 1 );
-  }
-  virtual double remains()
-  {
-    if ( ! action ) return 0;
-    if ( ! ticking ) return 0;
-    return ready - player -> sim -> current_time;
-  }
-  virtual int ticks()
-  {
-    if ( ! action ) return 0;
-    if ( ! ticking ) return 0;
-    return ( num_ticks - current_tick );
-  }
+  dot_t( const std::string& n, player_t* p );
+
+  virtual ~dot_t();
+
+  virtual void extend_duration( int extra_ticks, bool cap=false );
+  virtual void extend_duration_seconds( double extra_ticks );
+  virtual void recalculate_ready();
+  virtual void refresh_duration();
+  virtual void reset();
+  virtual double remains();
+  virtual int ticks();
+
   virtual const char* name() { return name_str.c_str(); }
 };
 
