@@ -82,6 +82,7 @@ SRC = \
 	sc_consumable.cpp \
 	sc_data.cpp \
 	sc_death_knight.cpp \
+	sc_dot.cpp \
 	sc_druid.cpp \
 	sc_enchant.cpp \
 	sc_expressions.cpp \

@@ -53,6 +53,7 @@ SOURCES += engine/sc_const_data.cpp
 SOURCES += engine/sc_consumable.cpp
 SOURCES += engine/sc_data.cpp
 SOURCES += engine/sc_death_knight.cpp
+SOURCES += engine/sc_dot.cpp
 SOURCES += engine/sc_druid.cpp
 SOURCES += engine/sc_enchant.cpp
 SOURCES += engine/sc_event.cpp

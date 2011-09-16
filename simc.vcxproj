@@ -112,6 +112,7 @@
     <ClCompile Include="engine\sc_consumable.cpp" />
     <ClCompile Include="engine\sc_data.cpp" />
     <ClCompile Include="engine\sc_death_knight.cpp" />
+    <ClCompile Include="engine\sc_dot.cpp" />
     <ClCompile Include="engine\sc_druid.cpp" />
     <ClCompile Include="engine\sc_enchant.cpp" />
     <ClCompile Include="engine\sc_event.cpp" />
