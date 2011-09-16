@@ -2142,10 +2142,10 @@ struct lacerate_t : public druid_bear_attack_t
     }
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
     druid_t* p = player -> cast_druid();
-    druid_bear_attack_t::last_tick();
+    druid_bear_attack_t::last_tick( d );
     p -> buffs_lacerate -> expire();
   }
 };
@@ -2536,11 +2536,11 @@ struct lifebloom_t : public druid_heal_t
     p -> trigger_replenishment();
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
     bloom -> execute();
 
-    druid_heal_t::last_tick();
+    druid_heal_t::last_tick( d );
     druid_t* p = player -> cast_druid();
     p -> buffs_lifebloom -> expire();
   }

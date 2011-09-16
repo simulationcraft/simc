@@ -1265,9 +1265,9 @@ struct lightwell_pet_t : public pet_t
       heal_t::execute();
     }
 
-    virtual void last_tick()
+    virtual void last_tick( dot_t* d )
     {
-      heal_t::last_tick();
+      heal_t::last_tick( d );
 
       if ( cast() -> charges <= 0 )
         cast() -> dismiss();

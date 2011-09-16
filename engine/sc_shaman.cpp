@@ -1340,10 +1340,10 @@ struct searing_flames_t : public shaman_spell_t
     return p -> buffs_searing_flames -> stack();
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
     shaman_t* p = player -> cast_shaman();
-    shaman_spell_t::last_tick();
+    shaman_spell_t::last_tick( d );
     p -> buffs_searing_flames -> expire();
   }
 };
@@ -2907,9 +2907,9 @@ struct shaman_totem_t : public shaman_spell_t
     stats -> add_execute( time_to_execute );
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    shaman_spell_t::last_tick();
+    shaman_spell_t::last_tick( d );
 
     shaman_t* p = player -> cast_shaman();
     if ( sim -> log )
@@ -2993,9 +2993,9 @@ struct earth_elemental_totem_t : public shaman_totem_t
     p -> pet_earth_elemental -> summon();
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    shaman_totem_t::last_tick();
+    shaman_totem_t::last_tick( d );
 
     shaman_t* p = player -> cast_shaman();
 
@@ -3041,9 +3041,9 @@ struct fire_elemental_totem_t : public shaman_totem_t
     p -> pet_fire_elemental -> summon();
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    shaman_totem_t::last_tick();
+    shaman_totem_t::last_tick( d );
 
     shaman_t* p = player -> cast_shaman();
 

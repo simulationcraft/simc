@@ -250,7 +250,7 @@ void dot_tick_event_t::execute()
   if ( dot -> current_tick == dot -> num_ticks )
   {
     dot -> time_to_tick = 0;
-    dot -> action -> last_tick();
+    dot -> action -> last_tick( dot );
 
     if ( dot -> action -> channeled )
     {

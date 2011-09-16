@@ -2293,11 +2293,11 @@ struct recuperate_t : public rogue_attack_t
       p -> resource_gain( RESOURCE_ENERGY, p -> talents.energetic_recovery -> base_value(), p -> gains_recuperate );
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
     rogue_t* p = player -> cast_rogue();
     p -> buffs_recuperate -> expire();
-    rogue_attack_t::last_tick();
+    rogue_attack_t::last_tick( d );
   }
 };
 
@@ -2848,9 +2848,9 @@ struct deadly_poison_t : public rogue_poison_t
     return rogue_poison_t::calculate_tick_damage() * p -> buffs_poison_doses -> stack();
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    rogue_poison_t::last_tick();
+    rogue_poison_t::last_tick( d );
 
     rogue_t* p = player -> cast_rogue();
 

@@ -1295,10 +1295,10 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     paladin_attack_t::travel( t, travel_result, travel_dmg );
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
     paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::last_tick();
+    paladin_attack_t::last_tick( d );
     p -> buffs_censure -> expire();
   }
 };

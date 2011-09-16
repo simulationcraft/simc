@@ -1533,10 +1533,10 @@ struct arcane_missiles_t : public mage_spell_t
     p -> buffs_arcane_missiles -> expire();
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
     mage_t* p = player -> cast_mage();
-    mage_spell_t::last_tick();
+    mage_spell_t::last_tick( d );
     p -> buffs_arcane_blast -> expire();
   }
 
@@ -1997,9 +1997,9 @@ struct flame_orb_t : public mage_spell_t
     stats -> add_tick( d -> time_to_tick );
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    mage_spell_t::last_tick();
+    mage_spell_t::last_tick( d );
     mage_t* p = player -> cast_mage();
     if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> proc_chance() ) )
     {
@@ -2241,9 +2241,9 @@ struct frostfire_bolt_t : public mage_spell_t
     dot_stack=0;
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    mage_spell_t::last_tick();
+    mage_spell_t::last_tick( d );
     dot_stack=0;
   }
 
@@ -2368,9 +2368,9 @@ struct frostfire_orb_t : public mage_spell_t
       trigger_brain_freeze( this );
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    mage_spell_t::last_tick();
+    mage_spell_t::last_tick( d );
     mage_t* p = player -> cast_mage();
     if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> proc_chance() ) )
     {
@@ -2469,9 +2469,9 @@ struct living_bomb_t : public mage_spell_t
                                  p -> specializations.flashburn * p -> composite_mastery() );
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    mage_spell_t::last_tick();
+    mage_spell_t::last_tick( d );
     explosion_spell -> execute();
   }
 };

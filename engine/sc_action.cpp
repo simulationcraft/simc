@@ -1084,11 +1084,11 @@ void action_t::tick( dot_t* d )
 
 // action_t::last_tick ======================================================
 
-void action_t::last_tick()
+void action_t::last_tick( dot_t* d )
 {
-  if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), target -> name() );
+  if ( sim -> debug ) log_t::output( sim, "%s fades from %s", d -> name(), target -> name() );
 
-  dot -> ticking = 0;
+  d -> ticking = 0;
 
 
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
@@ -1485,7 +1485,7 @@ void action_t::cancel()
 {
   if ( sim -> debug ) log_t::output( sim, "action %s of %s is canceled", name(), player -> name() );
 
-  if ( dot -> ticking ) last_tick();
+  if ( dot -> ticking ) last_tick( dot );
 
   if ( player -> executing  == this ) player -> executing  = 0;
   if ( player -> channeling == this ) player -> channeling = 0;
@@ -1514,7 +1514,7 @@ void action_t::interrupt_action()
   if ( player -> executing  == this ) player -> executing  = 0;
   if ( player -> channeling == this )
   {
-    if ( dot -> ticking ) last_tick();
+    if ( dot -> ticking ) last_tick( dot );
     player -> channeling = 0;
     event_t::cancel( dot -> tick_event );
     dot -> reset();

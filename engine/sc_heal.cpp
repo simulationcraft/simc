@@ -414,12 +414,12 @@ void heal_t::assess_damage( player_t* t,
 
 // heal_t::last_tick ========================================================
 
-void heal_t::last_tick()
+void heal_t::last_tick( dot_t* d )
 {
-  if ( sim -> debug ) log_t::output( sim, "%s fades from %s", name(), heal_target[0] -> name() );
+  if ( sim -> debug ) log_t::output( sim, "%s fades from %s", d -> name(), heal_target[0] -> name() );
 
-  dot -> ticking = 0;
-  dot -> time_to_tick = 0;
+  d -> ticking = 0;
+  d -> time_to_tick = 0;
 }
 
 // heal_t::find_greatest_difference_player ==================================

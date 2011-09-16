@@ -2864,9 +2864,9 @@ struct frost_fever_t : public death_knight_spell_t
       trigger_brittle_bones( this, t );
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    death_knight_spell_t::last_tick();
+    death_knight_spell_t::last_tick( d );
 
     if ( target -> debuffs.brittle_bones -> check()
          && target -> debuffs.brittle_bones -> source

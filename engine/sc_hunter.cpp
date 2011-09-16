@@ -2539,9 +2539,9 @@ struct serpent_sting_t : public hunter_attack_t
     }
   }
 
-  virtual void last_tick()
+  virtual void last_tick( dot_t* d )
   {
-    hunter_attack_t::last_tick();
+    hunter_attack_t::last_tick( d );
     target -> debuffs.poisoned -> decrement();
   }
 };
