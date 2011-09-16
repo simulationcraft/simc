@@ -2490,6 +2490,8 @@ struct scatter_shot_t : public hunter_attack_t
   }
 };
 
+// Serpent Sting Attack =====================================================
+
 struct serpent_sting_burst_t : public hunter_attack_t
 {
   serpent_sting_burst_t( player_t* player ) :
@@ -2498,9 +2500,7 @@ struct serpent_sting_burst_t : public hunter_attack_t
     proc       = true;
     background = true;
   }
-
 };
-// Serpent Sting Attack =====================================================
 
 struct serpent_sting_t : public hunter_attack_t
 {
@@ -2756,7 +2756,7 @@ struct steady_shot_t : public hunter_attack_t
   }
 };
 
-// Wild Quiver
+// Wild Quiver ==============================================================
 
 struct wild_quiver_shot_t : public ranged_t
 {
@@ -2766,10 +2766,10 @@ struct wild_quiver_shot_t : public ranged_t
     proc = true;
     normalize_weapon_speed=true;
   }
+
   virtual void execute()
   {
     hunter_attack_t::execute();
-
   }
 };
 
@@ -2840,7 +2840,7 @@ void hunter_spell_t::consume_resource()
   }
 }
 
-// Aspect of the Hawk
+// Aspect of the Hawk =======================================================
 
 struct aspect_of_the_hawk_t : public hunter_spell_t
 {
@@ -2883,7 +2883,7 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
   }
 };
 
-// Aspect of the Fox
+// Aspect of the Fox ========================================================
 
 struct aspect_of_the_fox_t : public hunter_spell_t
 {
