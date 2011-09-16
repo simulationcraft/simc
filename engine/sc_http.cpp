@@ -530,7 +530,7 @@ bool http_t::clear_cache( sim_t* sim,
                           const std::string& name,
                           const std::string& value )
 {
-  assert( name == "http_clear_cache" ); (void)name;
+  assert( name == "http_clear_cache" ); ( void )name;
   if ( value != "0" && ! sim -> parent ) cache_clear();
   return true;
 }
@@ -650,7 +650,8 @@ bool http_t::get( std::string&       result,
         else
           http_log << "cold";
         http_log << ": (" << entry.modified << ", " << entry.validated << ')';
-      } else
+      }
+      else
         http_log << "miss";
       if ( caching != cache::ONLY &&
            ( entry.validated == cache::INVALID_ERA ||

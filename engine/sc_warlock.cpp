@@ -23,141 +23,142 @@
 
 namespace pet_stats {
 
-  struct _stat_list_t {
-    int id;
-    double stats[ BASE_STAT_MAX ];
-  };
+struct _stat_list_t
+{
+  int id;
+  double stats[ BASE_STAT_MAX ];
+};
 
-  // Base Stats, same for all pets. Depend on level
-  static const _stat_list_t pet_base_stats[]=
-  {
-          // str, agi,  sta, int, spi,   hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {  453, 883,  353, 159, 225,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 81, {  345, 297,  333, 151, 212,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 80, {  314, 226,  328, 150, 209,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 0, { 0 } }
-  };
+// Base Stats, same for all pets. Depend on level
+static const _stat_list_t pet_base_stats[]=
+{
+  // str, agi,  sta, int, spi,   hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {  453, 883,  353, 159, 225,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  { 81, {  345, 297,  333, 151, 212,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {  314, 226,  328, 150, 209,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
 
-  static const _stat_list_t imp_base_stats[]=
-  {
-          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,  5026, 31607,         0,         0,     0,     0,     0,   0,       0 } },
-    { 80, {    0,   0,    0,   0,    0,  5026, 17628,         0,         0,     0,     0,     0,   0,       0 } },
-    { 0, { 0 } }
-  };
+static const _stat_list_t imp_base_stats[]=
+{
+  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  5026, 31607,         0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  5026, 17628,         0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
 
-  static const _stat_list_t felguard_base_stats[]=
-  {
-          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
-    { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
-    { 0, { 0 } }
-  };
+static const _stat_list_t felguard_base_stats[]=
+{
+  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
 
-  static const _stat_list_t felhunter_base_stats[]=
-  {
-          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
-    { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
-    { 0, { 0 } }
-  };
+static const _stat_list_t felhunter_base_stats[]=
+{
+  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
 
-  static const _stat_list_t succubus_base_stats[]=
-  {
-          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,  5640, 19072,         0,         0,     0,     0,     0,   0,       0 } },
-    { 80, {    0,   0,    0,   0,    0,  4530,  9109,         0,         0,     0,     0,     0,   0,       0 } },
-    { 0, { 0 } }
-  };
+static const _stat_list_t succubus_base_stats[]=
+{
+  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  5640, 19072,         0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  4530,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
 
-  static const _stat_list_t infernal_base_stats[]=
-  {
-          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 0, { 0 } }
-  };
+static const _stat_list_t infernal_base_stats[]=
+{
+  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
 
-  static const _stat_list_t doomguard_base_stats[]=
-  {
-          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 0, { 0 } }
-  };
+static const _stat_list_t doomguard_base_stats[]=
+{
+  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
 
-  static const _stat_list_t ebon_imp_base_stats[]=
-  {
-          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-    { 0, { 0 } }
-  };
+static const _stat_list_t ebon_imp_base_stats[]=
+{
+  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
 
-  static const _stat_list_t voidwalker_base_stats[]=
-  {
-          // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-    { 85, {    0,   0,    0,   0,    0,  6131, 19072,         0,         0,     0,     0,     0,   0,       0 } },
-    { 80, {    0,   0,    0,   0,    0,  6131,  9109,         0,         0,     0,     0,     0,   0,       0 } },
-    { 0, { 0 } }
-  };
+static const _stat_list_t voidwalker_base_stats[]=
+{
+  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  6131, 19072,         0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  6131,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
 
-  struct _weapon_list_t
-  {
-    int id;
-    double min_dmg, max_dmg;
-    double swing_time;
-  };
+struct _weapon_list_t
+{
+  int id;
+  double min_dmg, max_dmg;
+  double swing_time;
+};
 
-  static const _weapon_list_t imp_weapon[]=
-  {
-    { 81, 116.7, 176.7, 2.0 },
-    { 0, 0, 0, 0 }
-  };
-  static const _weapon_list_t felguard_weapon[]=
-  {
-    { 85, 926.3, 926.3, 2.0 },
-    { 81, 848.7, 848.7, 2.0 },
-    { 80, 824.6, 824.6, 2.0 },
-    { 0, 0, 0, 0 }
-  };
-  static const _weapon_list_t felhunter_weapon[]=
-  {
-    { 85, 926.3, 926.3, 2.0 },
-    { 81, 678.4, 1010.4, 2.0 },
-    { 80, 824.6, 824.6, 2.0 },
-    { 0, 0, 0, 0 }
-  };
-  static const _weapon_list_t succubus_weapon[]=
-  {
-    { 85, 926.3, 926.3, 2.0 },
-    { 81, 848.7, 848.7, 2.0 },
-    { 80, 824.6, 824.6, 2.0 },
-    { 0, 0, 0, 0 }
-  };
-  static const _weapon_list_t infernal_weapon[]=
-  {
-    { 85, 1072.0, 1072.0, 2.0 }, //Rough numbers
-    { 80, 924.0, 924.0, 2.0 }, //Rough numbers
-    { 0, 0, 0, 0 }
-  };
-  static const _weapon_list_t doomguard_weapon[]=
-  {
-    { 0, 0, 0, 0 }
-  };
-  static const _weapon_list_t ebon_imp_weapon[]=
-  {
-    { 85, 1110.0, 1110.0, 2.0 }, //Rough numbers
-    { 80, 956.0, 956.0, 2.0 }, //Rough numbers
-    { 0, 0, 0, 0 }
-  };
-  static const _weapon_list_t voidwalker_weapon[]=
-  {
-    { 85, 926.3, 926.3, 2.0 },
-    { 81, 848.7, 848.7, 2.0 },
-    { 80, 824.6, 824.6, 2.0 },
-    { 0, 0, 0, 0 }
-  };
+static const _weapon_list_t imp_weapon[]=
+{
+  { 81, 116.7, 176.7, 2.0 },
+  { 0, 0, 0, 0 }
+};
+static const _weapon_list_t felguard_weapon[]=
+{
+  { 85, 926.3, 926.3, 2.0 },
+  { 81, 848.7, 848.7, 2.0 },
+  { 80, 824.6, 824.6, 2.0 },
+  { 0, 0, 0, 0 }
+};
+static const _weapon_list_t felhunter_weapon[]=
+{
+  { 85, 926.3, 926.3, 2.0 },
+  { 81, 678.4, 1010.4, 2.0 },
+  { 80, 824.6, 824.6, 2.0 },
+  { 0, 0, 0, 0 }
+};
+static const _weapon_list_t succubus_weapon[]=
+{
+  { 85, 926.3, 926.3, 2.0 },
+  { 81, 848.7, 848.7, 2.0 },
+  { 80, 824.6, 824.6, 2.0 },
+  { 0, 0, 0, 0 }
+};
+static const _weapon_list_t infernal_weapon[]=
+{
+  { 85, 1072.0, 1072.0, 2.0 }, //Rough numbers
+  { 80, 924.0, 924.0, 2.0 }, //Rough numbers
+  { 0, 0, 0, 0 }
+};
+static const _weapon_list_t doomguard_weapon[]=
+{
+  { 0, 0, 0, 0 }
+};
+static const _weapon_list_t ebon_imp_weapon[]=
+{
+  { 85, 1110.0, 1110.0, 2.0 }, //Rough numbers
+  { 80, 956.0, 956.0, 2.0 }, //Rough numbers
+  { 0, 0, 0, 0 }
+};
+static const _weapon_list_t voidwalker_weapon[]=
+{
+  { 85, 926.3, 926.3, 2.0 },
+  { 81, 848.7, 848.7, 2.0 },
+  { 80, 824.6, 824.6, 2.0 },
+  { 0, 0, 0, 0 }
+};
 }
 
 
@@ -517,7 +518,7 @@ struct warlock_pet_t : public pet_t
     if ( pet_list )
     {
       for ( int i = 0; pet_list[ i ].id != 0 ; i++ )
-        {
+      {
         if ( level == pet_list[ i ].id )
         {
           r += pet_list[ i ].stats[ stat_type ];
@@ -608,8 +609,8 @@ struct warlock_pet_t : public pet_t
   warlock_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt, bool guardian = false ) :
     pet_t( sim, owner, pet_name, guardian ), pet_type( pt ), damage_modifier( 1.0 )
   {
-    gains_mana_feed = get_gain("mana_feed");
-    procs_mana_feed = get_proc("mana_feed");
+    gains_mana_feed = get_gain( "mana_feed" );
+    procs_mana_feed = get_proc( "mana_feed" );
     stats_avaiable = 0;
     stats2_avaiable = 0;
 
@@ -618,10 +619,10 @@ struct warlock_pet_t : public pet_t
     main_hand_weapon.max_dmg    = get_weapon( level, pet_type, 2 );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = get_weapon( level, pet_type, 3 );
-    if (main_hand_weapon.swing_time == 0 )
+    if ( main_hand_weapon.swing_time == 0 )
     {
-      sim -> errorf( "Pet %s has swingtime == 0.\n", name());
-      assert(0);
+      sim -> errorf( "Pet %s has swingtime == 0.\n", name() );
+      assert( 0 );
     }
   }
 
@@ -646,9 +647,9 @@ struct warlock_pet_t : public pet_t
     base_mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
 
     if ( stats_avaiable != 13 )
-      sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level);
+      sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level );
     if ( stats2_avaiable != 13 )
-      sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level);
+      sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level );
 
     initial_attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
     base_attack_power = -20; // technically, the first 20 str give 0 ap. - tested
@@ -694,12 +695,12 @@ struct warlock_pet_t : public pet_t
   virtual void dismiss()
   {
     pet_t::dismiss();
-        /* Commenting this out for now - we never dismiss the real pet during combat
-        anyway, and we don't want to accidentally turn off DP when guardians are dismissed
+    /* Commenting this out for now - we never dismiss the real pet during combat
+    anyway, and we don't want to accidentally turn off DP when guardians are dismissed
     warlock_t*  o = owner -> cast_warlock();
     if ( o -> talent_demonic_pact -> rank() )
-      sim -> auras.demonic_pact -> expire();
-          */
+    sim -> auras.demonic_pact -> expire();
+      */
   }
 
   virtual double composite_spell_haste() SC_CONST
@@ -896,25 +897,25 @@ struct warlock_spell_t : public spell_t
   }
 
   warlock_spell_t( const char* n, player_t* player, const school_type s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t )
+    spell_t( n, player, RESOURCE_MANA, s, t )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
-      spell_t( s, t )
+    spell_t( s, t )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-      spell_t( n, sname, player, t )
+    spell_t( n, sname, player, t )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-      spell_t( n, id, player, t )
+    spell_t( n, id, player, t )
   {
     _init_warlock_spell_t();
   }
@@ -1040,7 +1041,7 @@ struct warlock_spell_t : public spell_t
 
   // trigger_decimation =====================================================
 
-  static void trigger_decimation( warlock_spell_t* s, int result)
+  static void trigger_decimation( warlock_spell_t* s, int result )
   {
     warlock_t* p = s -> player -> cast_warlock();
     if ( ( result != RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
@@ -1067,7 +1068,7 @@ struct warlock_spell_t : public spell_t
     else
     {
       // The target health percentage is ONLY contained in the Rank-1 version of the talent.
-      if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> spell(1).effect3().base_value() )
+      if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> spell( 1 ).effect3().base_value() )
       {
         return p -> talent_deaths_embrace -> effect2().percent();
       }
@@ -1167,7 +1168,7 @@ struct warlock_pet_attack_t : public attack_t
   }
 
   warlock_pet_attack_t( const char* n, const uint32_t id, player_t* player, int t = TREE_NONE ) :
-      attack_t( n, id, player, t, true )
+    attack_t( n, id, player, t, true )
   {
     may_crit   = true;
     special = true;
@@ -1227,14 +1228,14 @@ struct warlock_pet_spell_t : public spell_t
   }
 
   warlock_pet_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-      spell_t( n, sname, player, t )
+    spell_t( n, sname, player, t )
   {
     may_crit = true;
     crit_multiplier *= 1.33;
   }
 
   warlock_pet_spell_t( const char* n, const uint32_t id, player_t* player, int t = TREE_NONE ) :
-      spell_t( n, id, player, t )
+    spell_t( n, id, player, t )
   {
     may_crit = true;
     crit_multiplier *= 1.33;
@@ -1364,7 +1365,7 @@ struct felguard_pet_t : public warlock_main_pet_t
   struct felstorm_tick_t : public warlock_pet_attack_t
   {
     felstorm_tick_t( player_t* player ) :
-        warlock_pet_attack_t( "felstorm_tick", 89753, player )
+      warlock_pet_attack_t( "felstorm_tick", 89753, player )
     {
       direct_power_mod = 0.33; // hardcoded from the tooltip
       dual        = true;
@@ -1402,12 +1403,12 @@ struct felguard_pet_t : public warlock_main_pet_t
   struct melee_t : public warlock_pet_melee_t
   {
     melee_t( player_t* player ) :
-        warlock_pet_melee_t( player, "melee" )
+      warlock_pet_melee_t( player, "melee" )
     { }
   };
 
   felguard_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_main_pet_t( sim, owner, "felguard", PET_FELGUARD )
+    warlock_main_pet_t( sim, owner, "felguard", PET_FELGUARD )
   {
     damage_modifier = 1.0;
 
@@ -1440,7 +1441,7 @@ struct felguard_pet_t : public warlock_main_pet_t
 
 struct felhunter_pet_t : public warlock_main_pet_t
 {
-   // TODO: Need to add fel intelligence on the warlock while felhunter is out
+  // TODO: Need to add fel intelligence on the warlock while felhunter is out
   struct shadow_bite_t : public warlock_pet_spell_t
   {
     shadow_bite_t( player_t* player ) :
@@ -1476,7 +1477,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
   };
 
   felhunter_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_main_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
+    warlock_main_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
   {
     damage_modifier = 0.8;
 
@@ -1530,7 +1531,7 @@ struct succubus_pet_t : public warlock_main_pet_t
   struct lash_of_pain_t : public warlock_pet_spell_t
   {
     lash_of_pain_t( player_t* player ) :
-        warlock_pet_spell_t( "lash_of_pain", player, "Lash of Pain" )
+      warlock_pet_spell_t( "lash_of_pain", player, "Lash of Pain" )
     {
       warlock_t*  o     = player -> cast_pet() -> owner -> cast_warlock();
       direct_power_mod  = 0.642; // tested in-game as of 2010/12/20
@@ -1570,7 +1571,7 @@ struct succubus_pet_t : public warlock_main_pet_t
   };
 
   succubus_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_main_pet_t( sim, owner, "succubus", PET_SUCCUBUS )
+    warlock_main_pet_t( sim, owner, "succubus", PET_SUCCUBUS )
   {
     damage_modifier = 1.025;
 
@@ -1596,7 +1597,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
   struct torment_t : public warlock_pet_spell_t
   {
     torment_t( player_t* player ) :
-        warlock_pet_spell_t( "torment", player, "Torment" )
+      warlock_pet_spell_t( "torment", player, "Torment" )
     {
       direct_power_mod = 0.512;
     }
@@ -1610,7 +1611,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
   };
 
   voidwalker_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_main_pet_t( sim, owner, "voidwalker", PET_VOIDWALKER )
+    warlock_main_pet_t( sim, owner, "voidwalker", PET_VOIDWALKER )
   {
     damage_modifier = 0.86;
 
@@ -1686,7 +1687,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
     warlock_guardian_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     action_list_str += "/snapshot_stats";
-    if ( level >= 50) action_list_str += "/immolation,if=!ticking";
+    if ( level >= 50 ) action_list_str += "/immolation,if=!ticking";
   }
 
   virtual void init_base()
@@ -1727,7 +1728,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   };
 
   doomguard_pet_t( sim_t* sim, player_t* owner ) :
-      warlock_guardian_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
+    warlock_guardian_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
   { }
 
   virtual void init_base()
@@ -1805,7 +1806,7 @@ struct fiery_imp_pet_t : public pet_t
 
   fiery_imp_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "fiery_imp", true /*guardian*/ ),
-      snapshot_crit( 0 )
+    snapshot_crit( 0 )
   {
     action_list_str += "/snapshot_stats";
     action_list_str += "/flame_blast";
@@ -1861,7 +1862,7 @@ struct fiery_imp_pet_t : public pet_t
 struct coe_debuff_t : public debuff_t
 {
   coe_debuff_t( player_t* t ) : debuff_t( t, "curse_of_elements", 1, 300.0 )
-    {}
+  {}
 
   virtual void expire()
   {
@@ -1949,7 +1950,7 @@ struct bane_of_agony_t : public warlock_spell_t
     base_crit += p -> talent_doom_and_gloom -> effect1().percent();
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
 
-    int extra_ticks = (int) ( p -> glyphs.bane_of_agony -> base_value() / 1000.0 / base_tick_time );
+    int extra_ticks = ( int ) ( p -> glyphs.bane_of_agony -> base_value() / 1000.0 / base_tick_time );
 
     if( extra_ticks > 0 )
     {
@@ -2198,7 +2199,7 @@ struct shadow_bolt_t : public warlock_spell_t
 static void trigger_burning_embers ( spell_t* s, double dmg )
 {
   warlock_t* p;
-  if ( s -> player -> type == WARLOCK)
+  if ( s -> player -> type == WARLOCK )
   {
     p = s -> player -> cast_warlock();
   }
@@ -2319,7 +2320,7 @@ struct death_coil_t : public warlock_spell_t
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
-    warlock_spell_t::travel( t, travel_result, travel_dmg);
+    warlock_spell_t::travel( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
       player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
@@ -2401,8 +2402,8 @@ struct shadowfury_t : public warlock_spell_t
 
 struct corruption_t : public warlock_spell_t
 {
- corruption_t( player_t* player, const std::string& options_str ) :
-   warlock_spell_t( "corruption", player, "Corruption" )
+  corruption_t( player_t* player, const std::string& options_str ) :
+    warlock_spell_t( "corruption", player, "Corruption" )
   {
     parse_options( NULL, options_str );
 
@@ -2802,14 +2803,14 @@ struct conflagrate_t : public warlock_spell_t
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
-   {
-     warlock_t* p = player -> cast_warlock();
-     warlock_spell_t::travel( t, travel_result, travel_dmg );
-     if ( result_is_hit( travel_result ) )
-     {
-       p -> buffs_backdraft -> trigger( 3 );
-     }
-   }
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    if ( result_is_hit( travel_result ) )
+    {
+      p -> buffs_backdraft -> trigger( 3 );
+    }
+  }
 
   virtual bool ready()
   {
@@ -2832,7 +2833,7 @@ struct incinerate_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     warlock_t* p = player -> cast_warlock();
-    base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent());
+    base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent() );
     base_execute_time += p -> talent_emberstorm -> effect3().seconds();
     base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> base_value() );
   }
@@ -3045,7 +3046,7 @@ struct life_tap_t : public warlock_spell_t
     double mana = life * effect2().percent() * ( 1.0 + p -> talent_improved_life_tap -> base_value() / 100.0 );
     p -> resource_loss( RESOURCE_HEALTH, life );
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_life_tap );
-    if ( p -> talent_mana_feed -> rank() && p -> active_pet)
+    if ( p -> talent_mana_feed -> rank() && p -> active_pet )
     {
       p -> active_pet -> resource_gain( RESOURCE_MANA, mana * p -> talent_mana_feed -> effect1().percent(), p -> active_pet -> gains_mana_feed );
     }
@@ -3138,7 +3139,7 @@ struct summon_pet_t : public warlock_spell_t
   }
 
   summon_pet_t( const char* n, player_t* player, int id ) :
-    warlock_spell_t( n, player, id ), pet_name(n), summoning_duration ( 0 )
+    warlock_spell_t( n, player, id ), pet_name( n ), summoning_duration ( 0 )
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -3679,7 +3680,7 @@ struct demon_soul_t : public warlock_spell_t
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
-    if ( ! p ->  active_pet)
+    if ( ! p ->  active_pet )
       return false;
 
     return warlock_spell_t::ready();
@@ -3787,17 +3788,17 @@ struct seed_of_corruption_t : public warlock_spell_t
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
-   {
-     warlock_t* p = player -> cast_warlock();
-     warlock_spell_t::travel( t, travel_result, travel_dmg );
-     if ( result_is_hit( travel_result ) )
-     {
-       dot_damage_done = t -> total_dmg;
-       if ( p -> dots_corruption -> ticking )
-       {
-         p -> dots_corruption -> action -> cancel();
-       }
-     }
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    if ( result_is_hit( travel_result ) )
+    {
+      dot_damage_done = t -> total_dmg;
+      if ( p -> dots_corruption -> ticking )
+      {
+        p -> dots_corruption -> action -> cancel();
+      }
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -3862,7 +3863,7 @@ struct rain_of_fire_t : public warlock_spell_t
 
 void imp_pet_t::firebolt_t::travel( player_t* t, int travel_result, double travel_dmg )
 {
-  warlock_pet_spell_t::travel( t, travel_result, travel_dmg);
+  warlock_pet_spell_t::travel( t, travel_result, travel_dmg );
   warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
 
   if ( result_is_hit( travel_result ) )
@@ -4059,7 +4060,7 @@ void warlock_t::create_pets()
   create_pet( "felhunter" );
   create_pet( "imp"       );
   create_pet( "succubus"  );
-  create_pet( "voidwalker");
+  create_pet( "voidwalker" );
   create_pet( "infernal"  );
   create_pet( "doomguard" );
   pet_ebon_imp = create_pet( "ebon_imp"  );
@@ -4135,7 +4136,8 @@ void warlock_t::init_spells()
   player_t::init_spells();
 
   // New set bonus system
-  uint32_t set_bonuses[N_TIER][N_TIER_BONUS] = {
+  uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 89934, 89935,     0,     0,     0,     0,     0,     0 }, // Tier11
     { 99220, 99229,     0,     0,     0,     0,     0,     0 }, // Tier12
@@ -4151,8 +4153,8 @@ void warlock_t::init_spells()
   passive_spells.cataclysm            = new passive_spell_t( this, "cataclysm", "Cataclysm" );
   passive_spells.nethermancy          = new passive_spell_t( this, "nethermancy", 86091 );
   //Affliction
-  passive_spells.doom_and_gloom       = new passive_spell_t(this, "doom_and_gloom", "Doom and Gloom", talent_doom_and_gloom );
-  passive_spells.pandemic             = new passive_spell_t(this, "pandemic", "Pandemic", talent_pandemic );
+  passive_spells.doom_and_gloom       = new passive_spell_t( this, "doom_and_gloom", "Doom and Gloom", talent_doom_and_gloom );
+  passive_spells.pandemic             = new passive_spell_t( this, "pandemic", "Pandemic", talent_pandemic );
 
   // Mastery
   mastery_spells.fiery_apocalypse     = new mastery_t( this, "fiery_apocalypse", "Fiery Apocalypse", TREE_DESTRUCTION );
@@ -4234,7 +4236,7 @@ void warlock_t::init_buffs()
   buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> base_value() / 100.0 );
 
   buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
-  buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", (talent_improved_soul_fire -> rank() > 0) );
+  buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", ( talent_improved_soul_fire -> rank() > 0 ) );
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul_imp        = new buff_t( this, 79459, "demon_soul_imp" );
   buffs_demon_soul_imp        -> activated = false;
@@ -4410,9 +4412,9 @@ void warlock_t::init_actions()
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
       if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
-      if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
+      if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
-      if ( level >= 75) action_list_str += "/shadowflame";
+      if ( level >= 75 ) action_list_str += "/shadowflame";
       if ( talent_bane -> rank() == 3 )
       {
         action_list_str += "/life_tap,mana_percentage<=35";
@@ -4437,12 +4439,12 @@ void warlock_t::init_actions()
         action_list_str += "/drain_life";
       }
 
-    break;
+      break;
 
     case TREE_DESTRUCTION:
       if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
       action_list_str += "/soulburn,if=buff.bloodlust.down";
-      if ( talent_improved_soul_fire -> ok() && level >= 54)
+      if ( talent_improved_soul_fire -> ok() && level >= 54 )
       {
         action_list_str += "/soul_fire,if=buff.soulburn.up&!in_combat";
       }
@@ -4452,17 +4454,17 @@ void warlock_t::init_actions()
       action_list_str += "/immolate,if=buff.bloodlust.react&buff.bloodlust.remains>32&cooldown.conflagrate.remains<=3&remains<12";
       if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
       action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
-      if ( level >= 75) action_list_str += "/shadowflame";
+      if ( level >= 75 ) action_list_str += "/shadowflame";
       if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
-      if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
-      if ( talent_improved_soul_fire -> ok() && level >= 54)
+      if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
+      if ( talent_improved_soul_fire -> ok() && level >= 54 )
       {
         action_list_str += "/soul_fire,if=((buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time))|buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd))&!in_flight";
       }
       if ( talent_shadowburn -> ok() ) action_list_str += "/shadowburn";
-      if ( level >= 64) action_list_str += "/incinerate"; else action_list_str += "/shadow_bolt";
+      if ( level >= 64 ) action_list_str += "/incinerate"; else action_list_str += "/shadow_bolt";
 
-    break;
+      break;
 
     case TREE_DEMONOLOGY:
       if ( talent_metamorphosis -> ok() )
@@ -4474,7 +4476,7 @@ void warlock_t::init_actions()
           action_list_str += ",if=pet.felguard.active";
       }
       if ( level >= 85 ) action_list_str += "/demon_soul,if=buff.metamorphosis.up";
-      if ( level >= 50) action_list_str += "/summon_doomguard,if=time>10";
+      if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
       action_list_str += "/felguard:felstorm";
       action_list_str += "/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking";
       action_list_str += "/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active";
@@ -4487,21 +4489,21 @@ void warlock_t::init_actions()
       if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
       if ( level >= 75 ) action_list_str += "/shadowflame";
       if ( glyphs.corruption -> ok() ) action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
-      if ( level >= 64) action_list_str += "/incinerate,if=buff.molten_core.react";
-      if ( level >= 54) action_list_str += "/soul_fire,if=buff.decimation.up";
+      if ( level >= 64 ) action_list_str += "/incinerate,if=buff.molten_core.react";
+      if ( level >= 54 ) action_list_str += "/soul_fire,if=buff.decimation.up";
       action_list_str += "/life_tap,if=mana_pct<=30&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felguard.down";
       action_list_str += "/shadow_bolt";
 
-    break;
+      break;
 
-  default:
+    default:
       action_list_str += "/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react";
       action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
       action_list_str += "/immolate,if=(!ticking|remains<(cast_time+tick_time))&miss_react";
-      if ( level >= 50) action_list_str += "/summon_infernal";
-      if ( level >= 64) action_list_str += "/incinerate";else action_list_str += "/shadow_bolt";
+      if ( level >= 50 ) action_list_str += "/summon_infernal";
+      if ( level >= 64 ) action_list_str += "/incinerate"; else action_list_str += "/shadow_bolt";
       if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
-    break;
+      break;
     }
 
     // Movement
@@ -4541,7 +4543,7 @@ action_expr_t* warlock_t::create_expression( action_t* a, const std::string& nam
   {
     struct shards_expr_t : public action_expr_t
     {
-      shards_expr_t( action_t* a) : action_expr_t( a, "shards", TOK_NUM ) {}
+      shards_expr_t( action_t* a ) : action_expr_t( a, "shards", TOK_NUM ) {}
       virtual int evaluate() { result_num = action -> player -> cast_warlock() -> resource_current[ RESOURCE_SOUL_SHARDS ]; return TOK_NUM; }
     };
     return new shards_expr_t( a );

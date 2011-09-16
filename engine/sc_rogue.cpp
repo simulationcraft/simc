@@ -13,7 +13,7 @@
 
 static inline int clamp( int x, int low, int high )
 {
-  return x < low ? low : (x > high ? high : x);
+  return x < low ? low : ( x > high ? high : x );
 }
 
 struct combo_points_t
@@ -73,12 +73,12 @@ struct combo_points_t
   {
     if ( sim -> log )
     {
-      if (action )
+      if ( action )
         log_t::output( sim, "%s spends %d combo_points on %s",
-                       player -> name(), count, action);
+                       player -> name(), count, action );
       else
         log_t::output( sim, "%s loses %d combo_points",
-                       player -> name(), count);
+                       player -> name(), count );
     }
 
     count = 0;
@@ -572,7 +572,7 @@ static void trigger_bandits_guile( rogue_attack_t* a )
     return; // we can't refresh the 15% buff
 
   if ( p -> rng_bandits_guile -> roll( p -> talents.bandits_guile -> rank() / 3.0 ) )
-    p -> buffs_bandits_guile -> trigger( 1, ( (current_stack + 1) / 4 ) * 0.10 );
+    p -> buffs_bandits_guile -> trigger( 1, ( ( current_stack + 1 ) / 4 ) * 0.10 );
 }
 
 // trigger_other_poisons ====================================================
@@ -1091,11 +1091,11 @@ void rogue_attack_t::init_rogue_attack_t_()
   requires_combo_points = false;
 
   if ( player -> dbc.spell( id ) -> effect1().type() == E_ADD_COMBO_POINTS )
-    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect1().base_value();
+    adds_combo_points   = ( int ) player -> dbc.spell( id ) -> effect1().base_value();
   else if ( player -> dbc.spell( id ) -> effect2().type() == E_ADD_COMBO_POINTS )
-    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect2().base_value();
+    adds_combo_points   = ( int ) player -> dbc.spell( id ) -> effect2().base_value();
   else if ( player -> dbc.spell( id ) -> effect3().type() == E_ADD_COMBO_POINTS )
-    adds_combo_points   = (int) player -> dbc.spell( id ) -> effect3().base_value();
+    adds_combo_points   = ( int ) player -> dbc.spell( id ) -> effect3().base_value();
 
   combo_points_spent    = 0;
 
@@ -1308,7 +1308,7 @@ bool rogue_attack_t::ready()
 
   //Killing Spree blocks all rogue actions for duration
   if ( p -> buffs_killing_spree -> check() )
-    if ((special == true) && (proc == false))
+    if ( ( special == true ) && ( proc == false ) )
       return false;
 
   if ( requires_position != POSITION_NONE )
@@ -1512,7 +1512,7 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-     rogue_t* p = player -> cast_rogue();
+    rogue_t* p = player -> cast_rogue();
 
     if ( result_is_hit() )
     {
@@ -1768,7 +1768,7 @@ struct eviscerate_t : public rogue_attack_t
     double max_     = effect_max( 1 );
     double cp_bonus = effect_bonus( 1 );
 
-    for (int i = 0; i < COMBO_POINTS_MAX; i++)
+    for ( int i = 0; i < COMBO_POINTS_MAX; i++ )
     {
       combo_point_dmg_min[ i ] = min_ + cp_bonus * ( i + 1 );
       combo_point_dmg_max[ i ] = max_ + cp_bonus * ( i + 1 );
@@ -2125,7 +2125,7 @@ struct killing_spree_t : public rogue_attack_t
 
   killing_spree_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "killing_spree", p -> talents.killing_spree -> spell_id(), p ),
-    attack_mh(0), attack_oh(0)
+    attack_mh( 0 ), attack_oh( 0 )
   {
     add_trigger_buff( p -> buffs_killing_spree );
 
@@ -2203,7 +2203,7 @@ struct mutilate_t : public rogue_attack_t
   attack_t* oh_strike;
 
   mutilate_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "mutilate", p -> spec_mutilate -> spell_id(), p ), mh_strike(0), oh_strike(0)
+    rogue_attack_t( "mutilate", p -> spec_mutilate -> spell_id(), p ), mh_strike( 0 ), oh_strike( 0 )
   {
     may_crit = false;
 
@@ -2347,7 +2347,7 @@ struct rupture_t : public rogue_attack_t
     double base     = effect_average( 1 );
     double cp_bonus = effect_bonus( 1 );
 
-    for (int i = 0; i < COMBO_POINTS_MAX; i++)
+    for ( int i = 0; i < COMBO_POINTS_MAX; i++ )
       combo_point_dmg[ i ] = base + cp_bonus * ( i + 1 );
 
     parse_options( options_str );
@@ -2375,7 +2375,7 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     if ( result_is_hit( travel_result ) )
-      num_ticks = 3 + combo_points_spent + (int)( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
+      num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
     rogue_attack_t::travel( t, travel_result, travel_dmg );
   }
 
@@ -2595,7 +2595,7 @@ struct preparation_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    int num_cooldowns = (int) cooldown_list.size();
+    int num_cooldowns = ( int ) cooldown_list.size();
     for ( int i = 0; i < num_cooldowns; i++ )
       cooldown_list[ i ] -> reset();
   }
@@ -3067,7 +3067,7 @@ struct stealth_t : public spell_t
   bool used;
 
   stealth_t( rogue_t* p, const std::string& options_str ) :
-    spell_t( "stealth", p ), used(false)
+    spell_t( "stealth", p ), used( false )
   {
     trigger_gcd = 0;
     id = 1784;
@@ -3114,7 +3114,8 @@ struct adrenaline_rush_buff_t : public new_buff_t
   }
 
   virtual bool trigger( int, double, double )
-  { // we keep haste % as current_value
+  {
+    // we keep haste % as current_value
     return new_buff_t::trigger( 1, base_value( E_APPLY_AURA, A_319 ) );
   }
 };
@@ -3328,7 +3329,7 @@ double rogue_t::composite_player_multiplier( const school_type school, action_t*
   double m = player_t::composite_player_multiplier( school, a );
 
   if ( buffs_master_of_subtlety -> check() ||
-    ( spec_master_of_subtlety -> ok() && ( buffs_stealthed -> check() || buffs_vanish -> check() ) ) )
+      ( spec_master_of_subtlety -> ok() && ( buffs_stealthed -> check() || buffs_vanish -> check() ) ) )
     m *= 1.0 + buffs_master_of_subtlety -> value();
 
   return m;
@@ -3474,16 +3475,16 @@ void rogue_t::init_actions()
       }
       if ( hand_enchant_found >= 0 )
       {
-          action_list_str += "/use_item,name=";
-          action_list_str += items[ hand_enchant_found ].name();
-          if ( found_item < 0 )
-          {
-            action_list_str += ",if=buff.shadow_dance.up";
-          }
-          else
-          {
-            action_list_str += ",if=buff.shadow_dance.cooldown_remains>20";
-          }
+        action_list_str += "/use_item,name=";
+        action_list_str += items[ hand_enchant_found ].name();
+        if ( found_item < 0 )
+        {
+          action_list_str += ",if=buff.shadow_dance.up";
+        }
+        else
+        {
+          action_list_str += ",if=buff.shadow_dance.cooldown_remains>20";
+        }
       }
 
       action_list_str += init_use_profession_actions( ( found_item >= 0 ) ? "" : ",if=buff.shadow_dance.up" );
@@ -3884,7 +3885,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
         return;
 
       // doesn't proc from pets (only tested for hunter pets though)
-      if (a -> player -> is_pet() )
+      if ( a -> player -> is_pet() )
         return;
 
       a -> player -> procs.hat_donor -> occur();
@@ -3956,25 +3957,25 @@ void rogue_t::combat_begin()
     {
       struct virtual_hat_event_t : public event_t
       {
-  action_callback_t* callback;
-  double interval;
+        action_callback_t* callback;
+        double interval;
 
-  virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, double i ) :
-    event_t( sim, p ), callback(cb), interval(i)
-  {
-    name = "Virtual HAT Event";
-    double cooldown = 5.0 - p -> talents.honor_among_thieves -> rank();
-    double remainder = interval - cooldown;
-    if ( remainder < 0 ) remainder = 0;
-    double time = cooldown + p -> rng_hat_interval -> range( remainder*0.5, remainder*1.5 ) + 0.01;
-    sim -> add_event( this, time );
-  }
-  virtual void execute()
-  {
-    rogue_t* p = player -> cast_rogue();
-    callback -> trigger( NULL );
-    new ( sim ) virtual_hat_event_t( sim, p, callback, interval );
-  }
+        virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, double i ) :
+          event_t( sim, p ), callback( cb ), interval( i )
+        {
+          name = "Virtual HAT Event";
+          double cooldown = 5.0 - p -> talents.honor_among_thieves -> rank();
+          double remainder = interval - cooldown;
+          if ( remainder < 0 ) remainder = 0;
+          double time = cooldown + p -> rng_hat_interval -> range( remainder*0.5, remainder*1.5 ) + 0.01;
+          sim -> add_event( this, time );
+        }
+        virtual void execute()
+        {
+          rogue_t* p = player -> cast_rogue();
+          callback -> trigger( NULL );
+          new ( sim ) virtual_hat_event_t( sim, p, callback, interval );
+        }
       };
       new ( sim ) virtual_hat_event_t( sim, this, virtual_hat_callback, virtual_hat_interval );
     }
@@ -4064,8 +4065,8 @@ double rogue_t::available() SC_CONST
 // rogue_t::create_options ==================================================
 
 static bool parse_combo_points( sim_t* sim,
-                               const std::string& name,
-                               const std::string& points )
+                                const std::string& name,
+                                const std::string& points )
 {
   if ( name != "initial_combo_points" ) return false;
 

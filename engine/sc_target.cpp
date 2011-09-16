@@ -66,7 +66,7 @@ struct enemy_t : public player_t
   virtual void init_actions();
   virtual double composite_tank_block() SC_CONST;
   virtual void create_options();
-  virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string());
+  virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() );
   virtual void create_pets();
   virtual pet_t* find_pet( const std::string& add_name );
   virtual double health_percentage() SC_CONST;
@@ -399,27 +399,27 @@ void enemy_t::init_target()
 void enemy_t::init_actions()
 {
   if ( !is_add() )
-
-  if ( action_list_str.empty() )
   {
-    action_list_str += "/snapshot_stats";
+    if ( action_list_str.empty() )
+    {
+      action_list_str += "/snapshot_stats";
 
-    if ( ! is_add() && target != this )
-      action_list_str += "/auto_attack";
+      if ( ! is_add() && target != this )
+        action_list_str += "/auto_attack";
+    }
   }
-
   player_t::init_actions();
 
   // Small hack to increase waiting time for target without any actions
   for ( action_t* action = action_list; action; action = action -> next )
-    {
+  {
     if ( action -> background ) continue;
     if ( action -> name_str == "snapshot_stats" ) continue;
     if ( action -> name_str.find( "auto_attack" ) != std::string::npos )
       continue;
     waiting_time = 1.0;
     break;
-    }
+  }
 }
 
 // enemy_t::composite_tank_block ============================================

@@ -1289,13 +1289,13 @@ bool item_t::download_slot( item_t& item,
         has_local = true;
       else if ( src == "wowhead" )
         success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                           rsuffix_id, gem_ids, item.player -> dbc.ptr, cache::ONLY );
+                                            rsuffix_id, gem_ids, item.player -> dbc.ptr, cache::ONLY );
       else if ( src == "ptrhead" )
         success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                           rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cache::ONLY );
+                                            rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cache::ONLY );
       else if ( src == "mmoc" )
         success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                                rsuffix_id, gem_ids, cache::ONLY );
+                                                 rsuffix_id, gem_ids, cache::ONLY );
       else if ( src == "armory" )
         success = armory_t::download_slot( item, item_id, cache::ONLY );
       else if ( src == "bcpapi" )

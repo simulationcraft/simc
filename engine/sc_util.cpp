@@ -974,21 +974,21 @@ const char* util_t::weapon_subclass_string( int subclass )
 {
   switch ( subclass )
   {
-    case ITEM_SUBCLASS_WEAPON_AXE:      return "Axe";
-    case ITEM_SUBCLASS_WEAPON_AXE2:     return "Axe";
-    case ITEM_SUBCLASS_WEAPON_BOW:      return "Bow";
-    case ITEM_SUBCLASS_WEAPON_GUN:      return "Gun";
-    case ITEM_SUBCLASS_WEAPON_MACE:     return "Mace";
-    case ITEM_SUBCLASS_WEAPON_MACE2:    return "Mace";
-    case ITEM_SUBCLASS_WEAPON_POLEARM:  return "Polearm";
-    case ITEM_SUBCLASS_WEAPON_SWORD:    return "Sword";
-    case ITEM_SUBCLASS_WEAPON_SWORD2:   return "Sword";
-    case ITEM_SUBCLASS_WEAPON_STAFF:    return "Staff";
-    case ITEM_SUBCLASS_WEAPON_FIST:     return "Fist Weapon";
-    case ITEM_SUBCLASS_WEAPON_DAGGER:   return "Dagger";
-    case ITEM_SUBCLASS_WEAPON_THROWN:   return "Thrown";
-    case ITEM_SUBCLASS_WEAPON_CROSSBOW: return "Crossbow";
-    case ITEM_SUBCLASS_WEAPON_WAND:     return "Wand";
+  case ITEM_SUBCLASS_WEAPON_AXE:      return "Axe";
+  case ITEM_SUBCLASS_WEAPON_AXE2:     return "Axe";
+  case ITEM_SUBCLASS_WEAPON_BOW:      return "Bow";
+  case ITEM_SUBCLASS_WEAPON_GUN:      return "Gun";
+  case ITEM_SUBCLASS_WEAPON_MACE:     return "Mace";
+  case ITEM_SUBCLASS_WEAPON_MACE2:    return "Mace";
+  case ITEM_SUBCLASS_WEAPON_POLEARM:  return "Polearm";
+  case ITEM_SUBCLASS_WEAPON_SWORD:    return "Sword";
+  case ITEM_SUBCLASS_WEAPON_SWORD2:   return "Sword";
+  case ITEM_SUBCLASS_WEAPON_STAFF:    return "Staff";
+  case ITEM_SUBCLASS_WEAPON_FIST:     return "Fist Weapon";
+  case ITEM_SUBCLASS_WEAPON_DAGGER:   return "Dagger";
+  case ITEM_SUBCLASS_WEAPON_THROWN:   return "Thrown";
+  case ITEM_SUBCLASS_WEAPON_CROSSBOW: return "Crossbow";
+  case ITEM_SUBCLASS_WEAPON_WAND:     return "Wand";
   }
   return "Unknown";
 }
@@ -999,14 +999,14 @@ const char* util_t::weapon_class_string( int class_ )
 {
   switch ( class_ )
   {
-    case INVTYPE_WEAPON:
-      return "One Hand";
-    case INVTYPE_2HWEAPON:
-      return "Two-Hand";
-    case INVTYPE_WEAPONMAINHAND:
-      return "Main Hand";
-    case INVTYPE_WEAPONOFFHAND:
-      return "Off Hand";
+  case INVTYPE_WEAPON:
+    return "One Hand";
+  case INVTYPE_2HWEAPON:
+    return "Two-Hand";
+  case INVTYPE_WEAPONMAINHAND:
+    return "Main Hand";
+  case INVTYPE_WEAPONOFFHAND:
+    return "Off Hand";
   }
   return 0;
 }
@@ -1018,46 +1018,46 @@ const char* util_t::set_item_type_string( int item_set )
   switch ( item_set )
   {
     // Melee sets
-    case 925:   // Death Knight T11
-    case 927:   // Druid T11
-    case 932:   // Paladin T11
-    case 939:   // Shaman T11
-    case 942:   // Warrior T11
-    case 1000:  // Death Knight T12
-    case 1002:  // Druid T12
-    case 1011:  // Paladin T12
-    case 1015:  // Shaman T12
-    case 1017:  // Warrior T12
-      return "Melee";
+  case 925:   // Death Knight T11
+  case 927:   // Druid T11
+  case 932:   // Paladin T11
+  case 939:   // Shaman T11
+  case 942:   // Warrior T11
+  case 1000:  // Death Knight T12
+  case 1002:  // Druid T12
+  case 1011:  // Paladin T12
+  case 1015:  // Shaman T12
+  case 1017:  // Warrior T12
+    return "Melee";
 
     // Tank sets
-    case 926:   // Death Knight T11
-    case 934:   // Paladin T11
-    case 943:   // Warrior T11
-    case 1001:  // Death Knight T12
-    case 1013:  // Paladin T12
-    case 1018:  // Warrior T12
-      return "Tank";
+  case 926:   // Death Knight T11
+  case 934:   // Paladin T11
+  case 943:   // Warrior T11
+  case 1001:  // Death Knight T12
+  case 1013:  // Paladin T12
+  case 1018:  // Warrior T12
+    return "Tank";
 
     // Healer sets
-    case 928:   // Druid T11
-    case 933:   // Paladin T11
-    case 935:   // Priest T11
-    case 938:   // Shaman T11
-    case 1003:  // Druid T12
-    case 1010:  // Priest T12
-    case 1012:  // Paladin T12
-    case 1014:  // Shaman T12
-      return "Healer";
+  case 928:   // Druid T11
+  case 933:   // Paladin T11
+  case 935:   // Priest T11
+  case 938:   // Shaman T11
+  case 1003:  // Druid T12
+  case 1010:  // Priest T12
+  case 1012:  // Paladin T12
+  case 1014:  // Shaman T12
+    return "Healer";
 
     // DPS Caster sets
-    case 929:   // Druid T11
-    case 936:   // Priest T11
-    case 940:   // Shaman T11
-    case 1004:  // Druid T12
-    case 1009:  // Priest T12
-    case 1016:  // Shaman T12
-      return "Caster";
+  case 929:   // Druid T11
+  case 936:   // Priest T11
+  case 940:   // Shaman T11
+  case 1004:  // Druid T12
+  case 1009:  // Priest T12
+  case 1016:  // Shaman T12
+    return "Caster";
   }
   return 0;
 }
@@ -1804,46 +1804,46 @@ slot_type util_t::translate_invtype( int inv_type )
 {
   switch ( inv_type )
   {
-    case INVTYPE_2HWEAPON:
-    case INVTYPE_WEAPON:
-    case INVTYPE_WEAPONMAINHAND:
-      return SLOT_MAIN_HAND;
-    case INVTYPE_WEAPONOFFHAND:
-    case INVTYPE_SHIELD:
-    case INVTYPE_HOLDABLE:
-      return SLOT_OFF_HAND;
-    case INVTYPE_THROWN:
-    case INVTYPE_RELIC:
-    case INVTYPE_RANGED:
-    case INVTYPE_RANGEDRIGHT:
-      return SLOT_RANGED;
-    case INVTYPE_CHEST:
-    case INVTYPE_ROBE:
-      return SLOT_CHEST;
-    case INVTYPE_CLOAK:
-      return SLOT_BACK;
-    case INVTYPE_FEET:
-      return SLOT_FEET;
-    case INVTYPE_FINGER:
-      return SLOT_FINGER_1;
-    case INVTYPE_HANDS:
-      return SLOT_HANDS;
-    case INVTYPE_HEAD:
-      return SLOT_HEAD;
-    case INVTYPE_LEGS:
-      return SLOT_LEGS;
-    case INVTYPE_NECK:
-      return SLOT_NECK;
-    case INVTYPE_SHOULDERS:
-      return SLOT_SHOULDERS;
-    case INVTYPE_TABARD:
-      return SLOT_TABARD;
-    case INVTYPE_TRINKET:
-      return SLOT_TRINKET_1;
-    case INVTYPE_WAIST:
-      return SLOT_WAIST;
-    case INVTYPE_WRISTS:
-      return SLOT_WRISTS;
+  case INVTYPE_2HWEAPON:
+  case INVTYPE_WEAPON:
+  case INVTYPE_WEAPONMAINHAND:
+    return SLOT_MAIN_HAND;
+  case INVTYPE_WEAPONOFFHAND:
+  case INVTYPE_SHIELD:
+  case INVTYPE_HOLDABLE:
+    return SLOT_OFF_HAND;
+  case INVTYPE_THROWN:
+  case INVTYPE_RELIC:
+  case INVTYPE_RANGED:
+  case INVTYPE_RANGEDRIGHT:
+    return SLOT_RANGED;
+  case INVTYPE_CHEST:
+  case INVTYPE_ROBE:
+    return SLOT_CHEST;
+  case INVTYPE_CLOAK:
+    return SLOT_BACK;
+  case INVTYPE_FEET:
+    return SLOT_FEET;
+  case INVTYPE_FINGER:
+    return SLOT_FINGER_1;
+  case INVTYPE_HANDS:
+    return SLOT_HANDS;
+  case INVTYPE_HEAD:
+    return SLOT_HEAD;
+  case INVTYPE_LEGS:
+    return SLOT_LEGS;
+  case INVTYPE_NECK:
+    return SLOT_NECK;
+  case INVTYPE_SHOULDERS:
+    return SLOT_SHOULDERS;
+  case INVTYPE_TABARD:
+    return SLOT_TABARD;
+  case INVTYPE_TRINKET:
+    return SLOT_TRINKET_1;
+  case INVTYPE_WAIST:
+    return SLOT_WAIST;
+  case INVTYPE_WRISTS:
+    return SLOT_WRISTS;
   }
 
   return SLOT_NONE;

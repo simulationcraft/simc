@@ -15,13 +15,13 @@ void* event_freelist_t::allocate( std::size_t size )
 {
   // This override of ::new is ONLY for event_t memory management!
   static const std::size_t SIZE = 2 * sizeof( event_t );
-  assert( SIZE > size ); (void)size;
+  assert( SIZE > size ); ( void )size;
 
   free_event_t* new_event = list;
 
   if ( new_event )
   {
-   list = list -> next;
+    list = list -> next;
   }
   else
   {

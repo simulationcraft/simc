@@ -207,7 +207,7 @@ static bool parse_talent_url( sim_t* sim,
                               const std::string& name,
                               const std::string& url )
 {
-  assert( name == "talents" ); (void)name;
+  assert( name == "talents" ); ( void )name;
 
   player_t* p = sim -> active_player;
 
@@ -265,7 +265,7 @@ static bool parse_role_string( sim_t* sim,
                                const std::string& name,
                                const std::string& value )
 {
-  assert( name == "role" ); (void)name;
+  assert( name == "role" ); ( void )name;
 
   sim -> active_player -> role = util_t::parse_role_type( value );
 
@@ -276,10 +276,10 @@ static bool parse_role_string( sim_t* sim,
 // parse_world_lag ==========================================================
 
 static bool parse_world_lag( sim_t* sim,
-                               const std::string& name,
-                               const std::string& value )
+                             const std::string& name,
+                             const std::string& value )
 {
-  assert( name == "world_lag" ); (void)name;
+  assert( name == "world_lag" ); ( void )name;
 
   sim -> active_player -> world_lag = atof( value.c_str() );
 
@@ -297,10 +297,10 @@ static bool parse_world_lag( sim_t* sim,
 // parse_world_lag ==========================================================
 
 static bool parse_world_lag_stddev( sim_t* sim,
-                               const std::string& name,
-                               const std::string& value )
+                                    const std::string& name,
+                                    const std::string& value )
 {
-  assert( name == "world_lag_stddev" ); (void)name;
+  assert( name == "world_lag_stddev" ); ( void )name;
 
   sim -> active_player -> world_lag_stddev = atof( value.c_str() );
 
@@ -317,10 +317,10 @@ static bool parse_world_lag_stddev( sim_t* sim,
 // parse_brain_lag ==========================================================
 
 static bool parse_brain_lag( sim_t* sim,
-                               const std::string& name,
-                               const std::string& value )
+                             const std::string& name,
+                             const std::string& value )
 {
-  assert( name == "brain_lag" ); (void)name;
+  assert( name == "brain_lag" ); ( void )name;
 
   sim -> active_player -> brain_lag = atof( value.c_str() );
 
@@ -336,10 +336,10 @@ static bool parse_brain_lag( sim_t* sim,
 // parse_brain_lag_stddev ===================================================
 
 static bool parse_brain_lag_stddev( sim_t* sim,
-                               const std::string& name,
-                               const std::string& value )
+                                    const std::string& name,
+                                    const std::string& value )
 {
-  assert( name == "brain_lag_stddev" ); (void)name;
+  assert( name == "brain_lag_stddev" ); ( void )name;
 
   sim -> active_player -> brain_lag_stddev = atof( value.c_str() );
 
@@ -1437,7 +1437,7 @@ void player_t::init_actions()
   {
     action_priority_list_t* chosen_action_list = find_action_priority_list( "default" );
     if ( chosen_action_list )
-          action_list_str = chosen_action_list -> action_list_str;
+      action_list_str = chosen_action_list -> action_list_str;
   }
 
 
@@ -3015,10 +3015,10 @@ void player_t::schedule_ready( double delta_time,
     if ( sim -> debug )
     {
       log_t::output( sim, "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
-        name_str.c_str(),
-        was_executing -> name_str.c_str(),
-        readying -> occurs(),
-        cast_delay_reaction );
+                     name_str.c_str(),
+                     was_executing -> name_str.c_str(),
+                     readying -> occurs(),
+                     cast_delay_reaction );
     }
   }
 }
@@ -3033,7 +3033,7 @@ void player_t::arise()
   if ( ! initial_sleeping )
     sleeping = 0;
 
-  if ( sleeping)
+  if ( sleeping )
     return;
 
   init_resources( true );
@@ -3398,38 +3398,38 @@ void player_t::recalculate_resource_max( int resource )
 
   switch ( resource )
   {
-    case RESOURCE_MANA:
+  case RESOURCE_MANA:
+  {
+    if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
     {
-      if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
-      {
-        resource_max[ resource ] *= 1.02;
-      }
-
-      if ( race == RACE_GNOME )
-      {
-        resource_initial[ resource ] *= 1.05;
-      }
-      double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( intellect() ) );
-      resource_max[ resource ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
-      // Arcane Brilliance needs to be done here as a generic resource, otherwise override will
-      // not (and did not previously) work
-      if ( type != PLAYER_GUARDIAN )
-        resource_max[ resource ] += buffs.arcane_brilliance -> value();
-      break;
+      resource_max[ resource ] *= 1.02;
     }
-    case RESOURCE_HEALTH:
+
+    if ( race == RACE_GNOME )
     {
-      double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
-      resource_max[ resource ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
-
-      if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
-      {
-        // ICC buff.
-        resource_max[ resource ] *= 1.30;
-      }
-      break;
+      resource_initial[ resource ] *= 1.05;
     }
-    default: break;
+    double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( intellect() ) );
+    resource_max[ resource ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
+    // Arcane Brilliance needs to be done here as a generic resource, otherwise override will
+    // not (and did not previously) work
+    if ( type != PLAYER_GUARDIAN )
+      resource_max[ resource ] += buffs.arcane_brilliance -> value();
+    break;
+  }
+  case RESOURCE_HEALTH:
+  {
+    double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
+    resource_max[ resource ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
+
+    if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
+    {
+      // ICC buff.
+      resource_max[ resource ] *= 1.30;
+    }
+    break;
+  }
+  default: break;
   }
 }
 
@@ -3575,7 +3575,7 @@ void player_t::stat_gain( int       stat,
   case STAT_MP5:               stats.mp5               += amount; mp5                       += amount; break;
 
   case STAT_ATTACK_POWER:             stats.attack_power             += amount; temporary.attack_power += temporary_stat * amount; attack_power       += amount;                            break;
-  case STAT_EXPERTISE_RATING:         stats.expertise_rating         += amount; temporary.expertise_rating += temporary_stat * amount;attack_expertise   += amount / rating.expertise;         break;
+  case STAT_EXPERTISE_RATING:         stats.expertise_rating         += amount; temporary.expertise_rating += temporary_stat * amount; attack_expertise   += amount / rating.expertise;         break;
 
   case STAT_HIT_RATING:
     stats.hit_rating += amount;
@@ -3976,7 +3976,7 @@ void player_t::register_tick_callback( int64_t mask,
 // player_t::register_heal_callback =========================================
 
 void player_t::register_heal_callback( int64_t mask,
-                                        action_callback_t* cb )
+                                       action_callback_t* cb )
 {
   for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
@@ -3990,7 +3990,7 @@ void player_t::register_heal_callback( int64_t mask,
 // player_t::register_harmful_spell_callback ================================
 
 void player_t::register_harmful_spell_callback( int64_t mask,
-                                        action_callback_t* cb )
+                                                action_callback_t* cb )
 {
   for ( int64_t i=0; i < RESULT_MAX; i++ )
   {
@@ -4778,7 +4778,7 @@ struct restart_sequence_t : public action_t
 
         if ( ! seq_name_str.empty() )
           if ( seq_name_str != a -> name_str )
-          continue;
+            continue;
 
         seq = dynamic_cast< sequence_t* >( a );
       }
@@ -4946,7 +4946,7 @@ struct wait_fixed_t : public wait_action_base_t
   virtual double execute_time() SC_CONST
   {
     int result = time_expr -> evaluate();
-    assert( result == TOK_NUM ); (void)result;
+    assert( result == TOK_NUM ); ( void )result;
     return time_expr -> result_num + SC_EPSILON;
   }
 };
@@ -5039,8 +5039,8 @@ struct use_item_t : public action_t
       if ( e.cost_reduction && e.school && e.discharge_amount )
       {
         trigger = unique_gear_t::register_cost_reduction_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                     e.school, e.max_stacks, e.discharge_amount,
-                                                     e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, false, e.reverse, 0 );
+                                                               e.school, e.max_stacks, e.discharge_amount,
+                                                               e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, false, e.reverse, 0 );
       }
       else if ( e.stat )
       {
@@ -5800,23 +5800,23 @@ action_expr_t* player_t::create_expression( action_t* a,
 
       switch ( stat )
       {
-        case STAT_STRENGTH:         p_stat = &( a -> player -> temporary.attribute[ ATTR_STRENGTH  ] ); break;
-        case STAT_AGILITY:          p_stat = &( a -> player -> temporary.attribute[ ATTR_AGILITY   ] ); break;
-        case STAT_STAMINA:          p_stat = &( a -> player -> temporary.attribute[ ATTR_STAMINA   ] ); break;
-        case STAT_INTELLECT:        p_stat = &( a -> player -> temporary.attribute[ ATTR_INTELLECT ] ); break;
-        case STAT_SPIRIT:           p_stat = &( a -> player -> temporary.attribute[ ATTR_SPIRIT    ] ); break;
-        case STAT_SPELL_POWER:      p_stat = &( a -> player -> temporary.spell_power                 ); break;
-        case STAT_ATTACK_POWER:     p_stat = &( a -> player -> temporary.attack_power                ); break;
-        case STAT_EXPERTISE_RATING: p_stat = &( a -> player -> temporary.expertise_rating            ); break;
-        case STAT_HIT_RATING:       p_stat = &( a -> player -> temporary.hit_rating                  ); break;
-        case STAT_CRIT_RATING:      p_stat = &( a -> player -> temporary.crit_rating                 ); break;
-        case STAT_HASTE_RATING:     p_stat = &( a -> player -> temporary.haste_rating                ); break;
-        case STAT_ARMOR:            p_stat = &( a -> player -> temporary.armor                       ); break;
-        case STAT_DODGE_RATING:     p_stat = &( a -> player -> temporary.dodge_rating                ); break;
-        case STAT_PARRY_RATING:     p_stat = &( a -> player -> temporary.parry_rating                ); break;
-        case STAT_BLOCK_RATING:     p_stat = &( a -> player -> temporary.block_rating                ); break;
-        case STAT_MASTERY_RATING:   p_stat = &( a -> player -> temporary.mastery_rating              ); break;
-        default: break;
+      case STAT_STRENGTH:         p_stat = &( a -> player -> temporary.attribute[ ATTR_STRENGTH  ] ); break;
+      case STAT_AGILITY:          p_stat = &( a -> player -> temporary.attribute[ ATTR_AGILITY   ] ); break;
+      case STAT_STAMINA:          p_stat = &( a -> player -> temporary.attribute[ ATTR_STAMINA   ] ); break;
+      case STAT_INTELLECT:        p_stat = &( a -> player -> temporary.attribute[ ATTR_INTELLECT ] ); break;
+      case STAT_SPIRIT:           p_stat = &( a -> player -> temporary.attribute[ ATTR_SPIRIT    ] ); break;
+      case STAT_SPELL_POWER:      p_stat = &( a -> player -> temporary.spell_power                 ); break;
+      case STAT_ATTACK_POWER:     p_stat = &( a -> player -> temporary.attack_power                ); break;
+      case STAT_EXPERTISE_RATING: p_stat = &( a -> player -> temporary.expertise_rating            ); break;
+      case STAT_HIT_RATING:       p_stat = &( a -> player -> temporary.hit_rating                  ); break;
+      case STAT_CRIT_RATING:      p_stat = &( a -> player -> temporary.crit_rating                 ); break;
+      case STAT_HASTE_RATING:     p_stat = &( a -> player -> temporary.haste_rating                ); break;
+      case STAT_ARMOR:            p_stat = &( a -> player -> temporary.armor                       ); break;
+      case STAT_DODGE_RATING:     p_stat = &( a -> player -> temporary.dodge_rating                ); break;
+      case STAT_PARRY_RATING:     p_stat = &( a -> player -> temporary.parry_rating                ); break;
+      case STAT_BLOCK_RATING:     p_stat = &( a -> player -> temporary.block_rating                ); break;
+      case STAT_MASTERY_RATING:   p_stat = &( a -> player -> temporary.mastery_rating              ); break;
+      default: break;
       }
 
       if ( p_stat )

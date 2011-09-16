@@ -465,8 +465,8 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   {
     if ( paired_rune -> state == STATE_FULL )
     {
-      gains_rune_type -> add(0, regen_amount * 0.5);
-      gains_rune      -> add(0, regen_amount * 0.5);
+      gains_rune_type -> add( 0, regen_amount * 0.5 );
+      gains_rune      -> add( 0, regen_amount * 0.5 );
     }
     return;
   }
@@ -500,8 +500,8 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
     else
       paired_rune -> state = STATE_REGENERATING;
   }
- gains_rune_type -> add(regen_amount - overflow, overflow);
- gains_rune      -> add(regen_amount - overflow, overflow);
+  gains_rune_type -> add( regen_amount - overflow, overflow );
+  gains_rune      -> add( regen_amount - overflow, overflow );
 
   if ( p -> sim -> debug )
   {
@@ -2478,7 +2478,7 @@ struct blood_tap_t : public death_knight_spell_t
       dk_rune_t& r = p -> _runes.slot[i];
       if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && ! r.is_ready() )
       {
-        p -> gains_blood_tap       -> add(1 - r.value, r.value);
+        p -> gains_blood_tap       -> add( 1 - r.value, r.value );
         // p -> gains_blood_tap_blood -> add(1 - r.value, r.value);
         r.fill_rune();
         rune_was_refreshed = true;
@@ -2494,7 +2494,7 @@ struct blood_tap_t : public death_knight_spell_t
         dk_rune_t& r = p -> _runes.slot[i];
         if ( r.get_type() == RUNE_TYPE_BLOOD && r.is_death() && ! r.is_ready() )
         {
-          p -> gains_blood_tap       -> add(1 - r.value, r.value);
+          p -> gains_blood_tap       -> add( 1 - r.value, r.value );
           // p -> gains_blood_tap_blood -> add(1 - r.value, r.value);
           r.fill_rune();
           rune_was_refreshed = true;
@@ -2790,7 +2790,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
       erw_over += r.value;
       r.fill_rune();
     }
-    p -> gains_empower_rune_weapon -> add(erw_gain, erw_over);
+    p -> gains_empower_rune_weapon -> add( erw_gain, erw_over );
   }
 };
 
@@ -2971,7 +2971,7 @@ struct frost_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
 
     if ( t -> health_percentage() < 35 )
-         player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
+      player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
   }
 };
 
@@ -3652,7 +3652,7 @@ struct presence_t : public death_knight_spell_t
     {
     case PRESENCE_BLOOD:
       p -> buffs_blood_presence  -> trigger();
-    break;
+      break;
     case PRESENCE_FROST:
     {
       double fp_value = p -> dbc.spell( 48266 ) -> effect1().percent();
@@ -5154,11 +5154,11 @@ void death_knight_t::trigger_runic_empowerment()
     int rune_to_regen = depleted_runes[ ( int ) ( sim -> rng -> real() * num_depleted * 0.9999 ) ];
     dk_rune_t* regen_rune = &_runes.slot[rune_to_regen];
     regen_rune -> fill_rune();
-    if      ( regen_rune -> is_blood()  ) gains_runic_empowerment_blood  -> add (1,0);
-    else if ( regen_rune -> is_unholy() ) gains_runic_empowerment_unholy -> add (1,0);
-    else if ( regen_rune -> is_frost()  ) gains_runic_empowerment_frost  -> add (1,0);
+    if      ( regen_rune -> is_blood()  ) gains_runic_empowerment_blood  -> add ( 1,0 );
+    else if ( regen_rune -> is_unholy() ) gains_runic_empowerment_unholy -> add ( 1,0 );
+    else if ( regen_rune -> is_frost()  ) gains_runic_empowerment_frost  -> add ( 1,0 );
 
-    gains_runic_empowerment -> add (1,0);
+    gains_runic_empowerment -> add ( 1,0 );
     if ( sim -> log ) log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
     proc_runic_empowerment -> occur();
   }
@@ -5166,7 +5166,7 @@ void death_knight_t::trigger_runic_empowerment()
   {
     // If there were no available runes to refresh
     proc_runic_empowerment_wasted -> occur();
-    gains_runic_empowerment -> add (0,1);
+    gains_runic_empowerment -> add ( 0,1 );
   }
 }
 

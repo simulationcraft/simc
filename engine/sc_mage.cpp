@@ -358,7 +358,7 @@ struct mage_spell_t : public spell_t
   }
 
   mage_spell_t( const char* n, player_t* player, const school_type s, int t ) :
-      spell_t( n, player, RESOURCE_MANA, s, t )
+    spell_t( n, player, RESOURCE_MANA, s, t )
   {
     _init_mage_spell_t();
   }
@@ -455,7 +455,7 @@ struct water_elemental_pet_t : public pet_t
   };
 
   water_elemental_pet_t( sim_t* sim, player_t* owner ) :
-      pet_t( sim, owner, "water_elemental" )
+    pet_t( sim, owner, "water_elemental" )
   {
     action_list_str = "freeze,if=owner.buff.fingers_of_frost.stack=0/water_bolt";
     create_options();
@@ -738,7 +738,7 @@ struct tier12_mirror_image_pet_t : public pet_t
 
   tier12_mirror_image_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "tier12_mirror_image", true /*guardian*/ ),
-      snapshot_crit( 0 )
+    snapshot_crit( 0 )
   {
     action_list_str += "/snapshot_stats";
     action_list_str += "/fireball";
@@ -1432,7 +1432,7 @@ struct arcane_brilliance_t : public mage_spell_t
   double bonus;
 
   arcane_brilliance_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "arcane_brilliance", 1459, p ), bonus( 0 )
+    mage_spell_t( "arcane_brilliance", 1459, p ), bonus( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -1604,7 +1604,7 @@ struct blast_wave_t : public mage_spell_t
 struct blink_t : public mage_spell_t
 {
   blink_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "blink", 1953, p )
+    mage_spell_t( "blink", 1953, p )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -1632,7 +1632,7 @@ struct cold_snap_t : public mage_spell_t
   std::vector<cooldown_t*> cooldown_list;
 
   cold_snap_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "cold_snap", 11958, p )
+    mage_spell_t( "cold_snap", 11958, p )
   {
     check_talent( p -> talents.cold_snap -> rank() );
     parse_options( NULL, options_str );
@@ -1651,7 +1651,7 @@ struct cold_snap_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    int num_cooldowns = (int) cooldown_list.size();
+    int num_cooldowns = ( int ) cooldown_list.size();
     for ( int i=0; i < num_cooldowns; i++ )
     {
       cooldown_list[ i ] -> reset();
@@ -1664,7 +1664,7 @@ struct cold_snap_t : public mage_spell_t
 struct combustion_t : public mage_spell_t
 {
   combustion_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "combustion", 11129, p )
+    mage_spell_t( "combustion", 11129, p )
   {
     check_talent( p -> talents.combustion -> rank() );
     parse_options( NULL, options_str );
@@ -1883,7 +1883,7 @@ struct evocation_t : public mage_spell_t
 struct fire_blast_t : public mage_spell_t
 {
   fire_blast_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "fire_blast", 2136, p )
+    mage_spell_t( "fire_blast", 2136, p )
   {
     parse_options( NULL, options_str );
     base_crit += p -> talents.improved_fire_blast -> effect1().percent();
@@ -2017,7 +2017,7 @@ struct focus_magic_t : public mage_spell_t
 
   focus_magic_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "focus_magic", 54646, p ),
-    focus_magic_target(0), focus_magic_cb(0)
+    focus_magic_target( 0 ), focus_magic_cb( 0 )
   {
     check_talent( p -> talents.focus_magic -> rank() );
 
@@ -2107,7 +2107,7 @@ struct focus_magic_t : public mage_spell_t
 struct frost_armor_t : public mage_spell_t
 {
   frost_armor_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "frost_armor", 7302, p )
+    mage_spell_t( "frost_armor", 7302, p )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2216,7 +2216,7 @@ struct frostfire_bolt_t : public mage_spell_t
   int dot_stack;
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frostfire_bolt", 44614, p ), dot_stack(0)
+    mage_spell_t( "frostfire_bolt", 44614, p ), dot_stack( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2481,7 +2481,7 @@ struct living_bomb_t : public mage_spell_t
 struct mage_armor_t : public mage_spell_t
 {
   mage_armor_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "mage_armor", 6117, p )
+    mage_spell_t( "mage_armor", 6117, p )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2557,7 +2557,7 @@ struct mana_gem_t : public action_t
   double max;
 
   mana_gem_t( mage_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "mana_gem", p )
+    action_t( ACTION_USE, "mana_gem", p )
   {
     parse_options( NULL, options_str );
 
@@ -2613,7 +2613,7 @@ struct mana_gem_t : public action_t
 struct mirror_image_t : public mage_spell_t
 {
   mirror_image_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "mirror_image", 55342, p )
+    mage_spell_t( "mirror_image", 55342, p )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2639,7 +2639,7 @@ struct mirror_image_t : public mage_spell_t
 struct molten_armor_t : public mage_spell_t
 {
   molten_armor_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "molten_armor", 30482, p )
+    mage_spell_t( "molten_armor", 30482, p )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2668,7 +2668,7 @@ struct molten_armor_t : public mage_spell_t
 struct presence_of_mind_t : public mage_spell_t
 {
   presence_of_mind_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "presence_of_mind", 12043, p )
+    mage_spell_t( "presence_of_mind", 12043, p )
   {
     check_talent( p -> talents.presence_of_mind -> rank() );
 
@@ -2839,7 +2839,7 @@ struct scorch_t : public mage_spell_t
 struct slow_t : public mage_spell_t
 {
   slow_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "slow", 31589, p )
+    mage_spell_t( "slow", 31589, p )
   {
     check_talent( p -> talents.slow -> rank() );
     parse_options( NULL, options_str );
@@ -2897,7 +2897,7 @@ struct time_warp_t : public mage_spell_t
 struct water_elemental_spell_t : public mage_spell_t
 {
   water_elemental_spell_t( mage_t* p, const std::string& options_str ) :
-      mage_spell_t( "water_elemental", 31687, p )
+    mage_spell_t( "water_elemental", 31687, p )
   {
     check_spec( TREE_FROST );
     parse_options( NULL, options_str );
@@ -2934,7 +2934,7 @@ struct choose_rotation_t : public action_t
   double oom_offset;
 
   choose_rotation_t( mage_t* p, const std::string& options_str ) :
-      action_t( ACTION_USE, "choose_rotation", p )
+    action_t( ACTION_USE, "choose_rotation", p )
   {
     cooldown -> duration = 10;
     evocation_target_mana_percentage = 35;
@@ -2983,7 +2983,7 @@ struct choose_rotation_t : public action_t
 
       if ( sim -> log )
       {
-        log_t::output( sim, "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / sim -> current_time ), sim -> target -> time_to_die());
+        log_t::output( sim, "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / sim -> current_time ), sim -> target -> time_to_die() );
       }
 
       if ( force_dps )
@@ -3026,7 +3026,7 @@ struct choose_rotation_t : public action_t
       // In that situation we enter a mps rotation waiting for evocation to come off cooldown or for fight to end.
       // The action list should take into account that it might actually need to do some burn in such a case.
 
-      if (tte < ttd)
+      if ( tte < ttd )
       {
         // We're going until target percentage
         if ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] < evocation_target_mana_percentage / 100.0 )
@@ -3071,7 +3071,7 @@ struct choose_rotation_t : public action_t
 
       if ( ttd < tte + evo_cooldown )
       {
-        if (ttd < tte + final_burn_offset)
+        if ( ttd < tte + final_burn_offset )
         {
           // No more evocations, aim for OOM
           target_time = ttd;
@@ -3303,7 +3303,7 @@ void mage_t::init_spells()
 
   spells.blink = spell_data_t::find( 1953, "Blink", dbc.ptr );
 
-  memset( (void*) &specializations, 0x00, sizeof( specializations_t ) );
+  memset( ( void* ) &specializations, 0x00, sizeof( specializations_t ) );
 
   if ( specialization == MAGE_ARCANE )
   {
@@ -3483,7 +3483,7 @@ void mage_t::init_rng()
   rng_improved_freeze     = get_rng( "improved_freeze"     );
   rng_nether_vortex       = get_rng( "nether_vortex"       );
   rng_tier12_mirror_image = get_rng( "tier12_mirror_image" );
-  rng_mage_armor_start    = get_rng( "rng_mage_armor_start");
+  rng_mage_armor_start    = get_rng( "rng_mage_armor_start" );
 }
 
 // mage_t::init_actions =====================================================
@@ -3498,7 +3498,7 @@ void mage_t::init_actions()
     for ( int i=0; i < SLOT_MAX; i++ )
     {
       item_t& item = items[ i ];
-      if ( strstr( item.name(), "shard_of_woe") )
+      if ( strstr( item.name(), "shard_of_woe" ) )
       {
         has_shard = true;
         break;
@@ -3619,7 +3619,7 @@ void mage_t::init_actions()
         action_list_str += "/berserking,if=buff.arcane_power.up|cooldown.arcane_power.remains>20";
       }
       //Conjure Mana Gem
-      if (! talents.presence_of_mind -> rank() )
+      if ( ! talents.presence_of_mind -> rank() )
       {
         action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>105&mana_gem_charges=0";
       }
@@ -3636,7 +3636,7 @@ void mage_t::init_actions()
       }
       else
       {
-         action_list_str += "/mirror_image";
+        action_list_str += "/mirror_image";
       }
 
       if ( talents.presence_of_mind -> rank() )
@@ -3664,8 +3664,8 @@ void mage_t::init_actions()
       action_list_str += "/mana_gem,if=mana_deficit>12500";
       if ( talents.critical_mass -> rank() ) action_list_str += "/scorch,debuff=1";
       if ( talents.combustion -> rank()   )
-       {
-         action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
+      {
+        action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
       }
       action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";
@@ -3692,16 +3692,16 @@ void mage_t::init_actions()
       {
         action_list_str += "/frostfire_orb,if=target.time_to_die>=12&!ticking";
       }
-      if ( level >= 50) action_list_str += "/mirror_image,if=target.time_to_die>=25";
+      if ( level >= 50 ) action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( race == RACE_TROLL )
       {
         action_list_str += "/berserking,if=buff.icy_veins.down&buff.bloodlust.down";
       }
       if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down";
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze,if=buff.fingers_of_frost.react";
-      if ( talents.brain_freeze -> rank())
+      if ( talents.brain_freeze -> rank() )
       {
-        if ( level >= 56)
+        if ( level >= 56 )
         {
           action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react";
         }
@@ -3913,7 +3913,8 @@ double mage_t::resource_loss( int       resource,
 
 // mage_t::stun =============================================================
 
-void mage_t::stun() {
+void mage_t::stun()
+{
   //TODO: override this to handle Blink
   player_t::stun();
 }
@@ -3945,7 +3946,7 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
   {
     struct mana_gem_charges_expr_t : public action_expr_t
     {
-      mana_gem_charges_expr_t( action_t* a ) : action_expr_t( a, "mana_gem_charges", TOK_NUM ){}
+      mana_gem_charges_expr_t( action_t* a ) : action_expr_t( a, "mana_gem_charges", TOK_NUM ) {}
       virtual int evaluate() { result_num = action -> player -> cast_mage() -> mana_gem_charges; return TOK_NUM; }
     };
     return new mana_gem_charges_expr_t( a );
@@ -3955,7 +3956,7 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
   {
     struct mage_armor_timer_expr_t : public action_expr_t
     {
-      mage_armor_timer_expr_t( action_t* a ) : action_expr_t( a, "mage_armor_timer", TOK_NUM ){}
+      mage_armor_timer_expr_t( action_t* a ) : action_expr_t( a, "mage_armor_timer", TOK_NUM ) {}
       virtual int evaluate() { result_num = action -> player -> cast_mage() -> mage_armor_timer + 5 - action -> sim -> current_time; return TOK_NUM; }
     };
     return new mage_armor_timer_expr_t( a );
@@ -3965,7 +3966,7 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
   {
     struct burn_mps_expr_t : public action_expr_t
     {
-      burn_mps_expr_t( action_t* a ) : action_expr_t( a, "burn_mps", TOK_NUM ){}
+      burn_mps_expr_t( action_t* a ) : action_expr_t( a, "burn_mps", TOK_NUM ) {}
       virtual int evaluate()
       {
         mage_t* p = action -> player -> cast_mage();

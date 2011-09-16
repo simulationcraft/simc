@@ -17,16 +17,16 @@
 
 // heal_t::init_heal_t_ == Heal Constructor Initializations =================
 
-  struct valanyr_t : public absorb_t
+struct valanyr_t : public absorb_t
+{
+  valanyr_t( player_t* player ) :
+    absorb_t( "valanyr", player, 47753 )
   {
-    valanyr_t( player_t* player ) :
-      absorb_t( "valanyr", player, 47753 )
-    {
-      proc             = true;
-      background       = true;
-      direct_power_mod = 0;
-    }
-  };
+    proc             = true;
+    background       = true;
+    direct_power_mod = 0;
+  }
+};
 
 void heal_t::init_heal_t_()
 {
@@ -194,19 +194,19 @@ void heal_t::execute()
 
   // Add options found in spell_t::execute()
   if ( player -> last_foreground_action == this )
-      player -> debuffs.casting -> expire();
+    player -> debuffs.casting -> expire();
 
-    if ( harmful && callbacks )
+  if ( harmful && callbacks )
+  {
+    if ( result != RESULT_NONE )
     {
-      if ( result != RESULT_NONE )
-      {
-        action_callback_t::trigger( player -> heal_callbacks[ result ], this );
-      }
-      if ( ! background ) // OnSpellCast
-      {
-        action_callback_t::trigger( player -> heal_callbacks[ RESULT_NONE ], this );
-      }
+      action_callback_t::trigger( player -> heal_callbacks[ result ], this );
     }
+    if ( ! background ) // OnSpellCast
+    {
+      action_callback_t::trigger( player -> heal_callbacks[ RESULT_NONE ], this );
+    }
+  }
 }
 
 // heal_t::travel ===========================================================
@@ -625,16 +625,16 @@ void absorb_t::execute()
   if ( repeating && ! proc ) schedule_execute();
 
   // Add options found in spell_t::execute()
-    if ( player -> last_foreground_action == this )
-        player -> debuffs.casting -> expire();
+  if ( player -> last_foreground_action == this )
+    player -> debuffs.casting -> expire();
 
-      if ( harmful && callbacks )
-      {
-        if ( ! background ) // OnSpellCast
-        {
-          action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
-        }
-      }
+  if ( harmful && callbacks )
+  {
+    if ( ! background ) // OnSpellCast
+    {
+      action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
+    }
+  }
 }
 
 // absorb_t::travel =========================================================

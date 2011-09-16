@@ -19,7 +19,7 @@ struct sim_signal_handler_t
   static void callback_func( int signal )
   {
     if ( signal == SIGSEGV ||
-        signal == SIGBUS  )
+         signal == SIGBUS  )
     {
       const char* name = ( signal == SIGSEGV ) ? "SIGSEGV" : "SIGBUS";
       if ( global_sim )
@@ -1405,7 +1405,7 @@ void sim_t::analyze_player( player_t* p )
     stats_t* s = stats_list[ i ];
     if ( ( s -> type != STATS_DMG ) == is_hps )
     {
-      int j_max = std::min( max_buckets, (int) s -> timeline_amount.size() );
+      int j_max = std::min( max_buckets, ( int ) s -> timeline_amount.size() );
       for ( int j = 0; j < j_max; j++ )
         p -> timeline_dmg[ j ] += s -> timeline_amount[ j ];
     }

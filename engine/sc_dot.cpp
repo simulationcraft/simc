@@ -9,20 +9,19 @@
 // Dot
 // ==========================================================================
 
-
 dot_t::dot_t( const std::string& n, player_t* p ) :
-    sim( p -> sim ), player( p ), action( 0 ), name_str( n ), tick_event( 0 ),
-    num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-    added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ),time_to_tick( 0.0 ), next( 0 )
+  sim( p -> sim ), player( p ), action( 0 ), name_str( n ), tick_event( 0 ),
+  num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
+  added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ),time_to_tick( 0.0 ), next( 0 )
 {}
 
 dot_t::~dot_t()
 {}
 
+// dot_t::extend_duration ===================================================
 
 void dot_t::extend_duration( int extra_ticks, bool cap )
 {
-
   if ( ! ticking )
     return;
 
@@ -48,6 +47,8 @@ void dot_t::extend_duration( int extra_ticks, bool cap )
   num_ticks += extra_ticks;
   recalculate_ready();
 }
+
+// dot_t::extend_duration_seconds ===========================================
 
 void dot_t::extend_duration_seconds( double extra_seconds )
 {
@@ -94,6 +95,8 @@ void dot_t::extend_duration_seconds( double extra_seconds )
   recalculate_ready();
 }
 
+// dot_t::recalculate_ready =================================================
+
 void dot_t::recalculate_ready()
 {
   // Extending a DoT does not interfere with the next tick event.  To determine the
@@ -102,6 +105,8 @@ void dot_t::recalculate_ready()
   int remaining_ticks = num_ticks - current_tick;
   ready = 0.001 + tick_event -> time + action -> tick_time() * ( remaining_ticks - 1 );
 }
+
+// dot_t::refresh_duration ==================================================
 
 void dot_t::refresh_duration()
 {
@@ -123,12 +128,16 @@ void dot_t::refresh_duration()
   recalculate_ready();
 }
 
+// dot_t::remains ===========================================================
+
 double dot_t::remains()
 {
   if ( ! action ) return 0;
   if ( ! ticking ) return 0;
   return ready - player -> sim -> current_time;
 }
+
+// dot_t::reset =============================================================
 
 void dot_t::reset()
 {
@@ -140,6 +149,8 @@ void dot_t::reset()
   ready=-1;
   miss_time=-1;
 }
+
+// dot_t::schedule_tick =====================================================
 
 void dot_t::schedule_tick()
 {
@@ -164,6 +175,8 @@ void dot_t::schedule_tick()
 
   if ( action -> channeled ) player -> channeling = action;
 }
+
+// dot_t::ticks =============================================================
 
 int dot_t::ticks()
 {

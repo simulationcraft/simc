@@ -457,15 +457,13 @@ struct druid_heal_t : public heal_t
   double additive_factors;
   bool consume_ooc;
 
-  druid_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-    heal_t( n, player, id, t ), additive_factors( 0 ), consume_ooc( false )
+  druid_heal_t( const char* n, druid_t* p, const uint32_t id, int t = TREE_NONE ) :
+    heal_t( n, p, id, t ), additive_factors( 0 ), consume_ooc( false )
   {
     dot_behavior      = DOT_REFRESH;
     may_crit          = true;
     tick_may_crit     = true;
     weapon_multiplier = 0;
-
-    druid_t* p = player -> cast_druid();
 
     if ( p -> primary_tree() == TREE_RESTORATION )
     {
@@ -601,7 +599,7 @@ struct burning_treant_pet_t : public pet_t
 
   burning_treant_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "burning_treant", true /*guardian*/ ),
-      snapshot_crit( 0 )
+    snapshot_crit( 0 )
   {
     action_list_str += "/snapshot_stats";
     action_list_str += "/fireseed";
@@ -1407,7 +1405,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
       {
         double amount = p -> resource_max[ RESOURCE_HEALTH ] *
                         p -> glyphs.ferocious_bite -> effect1().percent() *
-                        ( (int) ( excess_energy + druid_cat_attack_t::cost() ) / 10 );
+                        ( ( int ) ( excess_energy + druid_cat_attack_t::cost() ) / 10 );
         p -> resource_gain( RESOURCE_HEALTH, amount, p -> gains_glyph_ferocious_bite );
       }
     }
@@ -2415,7 +2413,7 @@ void druid_heal_t::player_buff()
     player_multiplier *= 1.0 + p -> spells.symbiosis -> effect1().coeff() * 0.01 * p -> composite_mastery();
   }
 
-  if (p -> buffs_natures_swiftness -> check() && execute_time() > 0 )
+  if ( p -> buffs_natures_swiftness -> check() && execute_time() > 0 )
   {
     player_multiplier *= 1.0 + p -> talents.natures_swiftness -> effect1().percent();
   }
@@ -4643,7 +4641,7 @@ void druid_t::init_buffs()
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().seconds() );
-  buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell(1).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
+  buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell( 1 ).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
   buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
   buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );

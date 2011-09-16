@@ -553,12 +553,12 @@ bool buff_t::trigger( int    stacks,
     // delayed proc will happen.
     if ( delay )
     {
-     buff_delay_t* d = dynamic_cast< buff_delay_t* >( delay );
-     d -> stacks += stacks;
-     d -> value = value;
+      buff_delay_t* d = dynamic_cast< buff_delay_t* >( delay );
+      d -> stacks += stacks;
+      d -> value = value;
     }
     else
-     delay = new ( sim ) buff_delay_t( sim, player, this, stacks, value );
+      delay = new ( sim ) buff_delay_t( sim, player, this, stacks, value );
   }
   else
     execute( stacks, value );

@@ -1909,7 +1909,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     std::string timeline_stat_aps_str                    = "";
     if ( ! s -> timeline_aps_chart.empty() )
     {
-        timeline_stat_aps_str = "<img src=\"" + s -> timeline_aps_chart + "\" alt=\"APS Timeline Chart\" />\n";
+      timeline_stat_aps_str = "<img src=\"" + s -> timeline_aps_chart + "\" alt=\"APS Timeline Chart\" />\n";
     }
     util_t::fprintf( file,
                      "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
@@ -1933,7 +1933,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                       "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %%</th>\n"
                       "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount per Total Time</th>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount per Total Execute Time</th>\n");
+                      "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount per Total Execute Time</th>\n" );
     util_t::fprintf ( file,
                       "\t\t\t\t\t\t\t\t\t\t</tr>\n"
                       "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
@@ -2012,7 +2012,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                             s -> direct_results[ i  ].max_amount,
                             s -> direct_results[ i  ].actual_amount,
                             s -> direct_results[ i  ].total_amount,
-                            s -> direct_results[ i  ].overkill_pct);
+                            s -> direct_results[ i  ].overkill_pct );
         }
       }
 
@@ -2511,15 +2511,15 @@ static void print_html_stats ( FILE* file, player_t* a )
                      a -> stats.haste_rating );
 
     util_t::fprintf( file,
-                      "\t\t\t\t\t\t\t\t\t<tr>\n"
-                      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Swing Speed</th>\n"
-                      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-                      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-                      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-                      "\t\t\t\t\t\t\t\t\t</tr>\n",
-                      100 * ( 1 / a -> buffed_attack_speed - 1 ),
-                      100 * ( 1 / a -> composite_attack_speed() - 1 ),
-                      a -> stats.haste_rating );
+                     "\t\t\t\t\t\t\t\t\t<tr>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Swing Speed</th>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+                     "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+                     "\t\t\t\t\t\t\t\t\t</tr>\n",
+                     100 * ( 1 / a -> buffed_attack_speed - 1 ),
+                     100 * ( 1 / a -> composite_attack_speed() - 1 ),
+                     a -> stats.haste_rating );
 
     util_t::fprintf( file,
                      "\t\t\t\t\t\t\t\t\t<tr class=\"odd\">\n"
@@ -2827,7 +2827,7 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
 static void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p )
 {
 
-util_t::fprintf( file,
+  util_t::fprintf( file,
                    "\t\t\t\t\t\t<div class=\"player-section action-priority-list\">\n"
                    "\t\t\t\t\t\t\t<h3 class=\"toggle\">Action Priority List</h3>\n"
                    "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
@@ -2897,191 +2897,191 @@ static void print_html_player_statistics( FILE* file, player_t* p )
 
 // Statistics & Data Analysis
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t<div class=\"player-section gains\">\n"
-                  "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
-                  "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-                  "\t\t\t\t\t\t\t<table class=\"sc\">\n"
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<th>DPS</th>\n"
-                  "\t\t\t\t\t\t\t\t\t<th></th>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n" );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t<div class=\"player-section gains\">\n"
+                   "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
+                   "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
+                   "\t\t\t\t\t\t\t<table class=\"sc\">\n"
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<th>DPS</th>\n"
+                   "\t\t\t\t\t\t\t\t\t<th></th>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n" );
 
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Sample Data</b></td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n" );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Sample Data</b></td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n" );
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Average</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Average</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps );
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps_std_dev );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps_std_dev );
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps_min );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps_min );
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps_max );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps_max );
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps_max - p -> dps_min );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps_max - p -> dps_min );
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0 );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0 );
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">10th Percentile</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps_10_percentile );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">10th Percentile</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps_10_percentile );
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">90th Percentile</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps_90_percentile );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">90th Percentile</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps_90_percentile );
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 90th Percentile - 10th Percentile )</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps_90_percentile - p -> dps_10_percentile );
-
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Population</b></td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n" );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation of the Average DPS(e)</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dps_error / 2.0 );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">95%% Confidence Intervall</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dpse - p -> dps_error, p -> dpse + p -> dps_error );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized 95%% Confidence Intervall</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dpse ? 100 - p -> dps_error * 100 / p -> dpse : 0, p -> dpse ? 100 + p -> dps_error * 100 / p -> dpse : 0 );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">99.7%% Confidence Intervall</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  p -> dpse - 1.50 * p -> dps_error, p -> dpse + 1.50 * p -> dps_error );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n" );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% DPS Error</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) ) : 0 ) );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% DPS Error</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) ) : 0 ) );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) ) );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) ) );
-
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t<tr>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
-                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                  "\t\t\t\t\t\t\t\t</tr>\n",
-                  ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) ) );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 90th Percentile - 10th Percentile )</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps_90_percentile - p -> dps_10_percentile );
 
 
- util_t::fprintf( file,
-                  "\t\t\t\t\t\t\t\t</table>\n" );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Population</b></td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n" );
 
- std::string timeline_dps_error_str           = "";
- std::string dps_error_str                    = "";
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation of the Average DPS(e)</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dps_error / 2.0 );
 
- char buffer[ 1024 ];
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">95%% Confidence Intervall</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dpse - p -> dps_error, p -> dpse + p -> dps_error );
 
- if ( ! p -> timeline_dps_error_chart.empty() )
- {
-   snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Timeline DPS Error Chart\" />\n", p -> timeline_dps_error_chart.c_str() );
-   timeline_dps_error_str = buffer;
- }
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized 95%% Confidence Intervall</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dpse ? 100 - p -> dps_error * 100 / p -> dpse : 0, p -> dpse ? 100 + p -> dps_error * 100 / p -> dpse : 0 );
 
- util_t::fprintf( file,
-                  "%s\n",
-                  timeline_dps_error_str.c_str() );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">99.7%% Confidence Intervall</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   p -> dpse - 1.50 * p -> dps_error, p -> dpse + 1.50 * p -> dps_error );
 
- if ( ! p -> dps_error_chart.empty() )
- {
-   snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Error Chart\" />\n", p -> dps_error_chart.c_str() );
-   dps_error_str = buffer;
- }
- util_t::fprintf( file,
-                  "%s\n"
-                  "\t\t\t\t\t\t\t</div>\n"
-                  "\t\t\t\t\t\t</div>\n",
-                  dps_error_str.c_str() );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n" );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% DPS Error</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) ) : 0 ) );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% DPS Error</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) ) : 0 ) );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) ) );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) ) );
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                   "\t\t\t\t\t\t\t\t</tr>\n",
+                   ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) ) );
+
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t</table>\n" );
+
+  std::string timeline_dps_error_str           = "";
+  std::string dps_error_str                    = "";
+
+  char buffer[ 1024 ];
+
+  if ( ! p -> timeline_dps_error_chart.empty() )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Timeline DPS Error Chart\" />\n", p -> timeline_dps_error_chart.c_str() );
+    timeline_dps_error_str = buffer;
+  }
+
+  util_t::fprintf( file,
+                   "%s\n",
+                   timeline_dps_error_str.c_str() );
+
+  if ( ! p -> dps_error_chart.empty() )
+  {
+    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Error Chart\" />\n", p -> dps_error_chart.c_str() );
+    dps_error_str = buffer;
+  }
+  util_t::fprintf( file,
+                   "%s\n"
+                   "\t\t\t\t\t\t\t</div>\n"
+                   "\t\t\t\t\t\t</div>\n",
+                   dps_error_str.c_str() );
 }
 
 // print_html_player_resources ==============================================
@@ -3090,131 +3090,90 @@ static void print_html_player_resources( FILE* file, player_t* p )
 {
 // Resources Section
 
-util_t::fprintf( file,
+  util_t::fprintf( file,
+                   "\t\t\t\t<div class=\"player-section gains\">\n"
+                   "\t\t\t\t\t<h3 class=\"toggle\">Resources</h3>\n"
+                   "\t\t\t\t\t<div class=\"toggle-content hide\">\n"
+                   "\t\t\t\t\t\t<table class=\"sc mt\">\n"
+                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t<th class=\"left small\">Resource Usage</th>\n"
+                   "\t\t\t\t\t\t\t\t<th class=\"small\">Type</th>\n"
+                   "\t\t\t\t\t\t\t\t<th class=\"small\">Res%%</th>\n"
+                   "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th class=\"small\">RPE</th>\n"
+                   "\t\t\t\t\t\t\t</tr>\n" );
 
-                 "\t\t\t\t<div class=\"player-section gains\">\n"
-                 "\t\t\t\t\t<h3 class=\"toggle\">Resources</h3>\n"
-                 "\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-                 "\t\t\t\t\t\t<table class=\"sc mt\">\n"
-                 "\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t<th class=\"left small\">Resource Usage</th>\n"
-                 "\t\t\t\t\t\t\t\t<th class=\"small\">Type</th>\n"
-                 "\t\t\t\t\t\t\t\t<th class=\"small\">Res%%</th>\n"
-                 "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
-                 "\t\t\t\t\t\t\t\t<th class=\"small\">RPE</th>\n"
-                 "\t\t\t\t\t\t\t</tr>\n" );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t<th class=\"left small\">%s</th>\n"
+                   "\t\t\t\t\t\t\t\t<td colspan=\"4\" class=\"filler\"></td>\n"
+                   "\t\t\t\t\t\t\t</tr>\n",
+                   p -> name() );
 
-util_t::fprintf( file,
-                 "\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t<th class=\"left small\">%s</th>\n"
-                 "\t\t\t\t\t\t\t\t<td colspan=\"4\" class=\"filler\"></td>\n"
-                 "\t\t\t\t\t\t\t</tr>\n",
-                 p -> name() );
-
-int i = 0;
-for ( stats_t* s = p -> stats_list; s; s = s -> next )
-{
-  if ( s -> rpe > 0 )
-  {
-    print_html_action_resource( file, s, i );
-    i++;
-  }
-}
-
-for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-{
-  bool first=true;
-
-  i = 0;
-  for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+  int i = 0;
+  for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
     if ( s -> rpe > 0 )
     {
-      if ( first )
-      {
-        first = false;
-        util_t::fprintf( file,
-                         "\t\t\t\t\t\t\t<tr>\n"
-                         "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
-                         "\t\t\t\t\t\t\t\t<td colspan=\"4\" class=\"filler\"></td>\n"
-                         "\t\t\t\t\t\t\t</tr>\n",
-                         pet -> name_str.c_str() );
-      }
       print_html_action_resource( file, s, i );
       i++;
     }
   }
-}
 
-util_t::fprintf( file,
-                 "\t\t\t\t\t\t</table>\n"
-               );
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    bool first=true;
+
+    i = 0;
+    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+    {
+      if ( s -> rpe > 0 )
+      {
+        if ( first )
+        {
+          first = false;
+          util_t::fprintf( file,
+                           "\t\t\t\t\t\t\t<tr>\n"
+                           "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
+                           "\t\t\t\t\t\t\t\t<td colspan=\"4\" class=\"filler\"></td>\n"
+                           "\t\t\t\t\t\t\t</tr>\n",
+                           pet -> name_str.c_str() );
+        }
+        print_html_action_resource( file, s, i );
+        i++;
+      }
+    }
+  }
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t</table>\n" );
 
 // Resource Gains Section
-util_t::fprintf( file,
+  util_t::fprintf( file,
 
-                 "\t\t\t\t\t\t<table class=\"sc\">\n"
-                 "\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t<th>Resource Gains</th>\n"
-                 "\t\t\t\t\t\t\t\t<th>Type</th>\n"
-                 "\t\t\t\t\t\t\t\t<th>Count</th>\n"
-                 "\t\t\t\t\t\t\t\t<th>Total</th>\n"
-                 "\t\t\t\t\t\t\t\t<th>Average</th>\n"
-                 "\t\t\t\t\t\t\t\t<th colspan=\"2\">Overflow</th>\n"
-                 "\t\t\t\t\t\t\t</tr>\n" );
-i = 1;
-for ( gain_t* g = p -> gain_list; g; g = g -> next )
-{
-  if ( g -> actual > 0 || g -> overflow > 0 )
-  {
-    double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-    util_t::fprintf( file,
-                     "\t\t\t\t\t\t\t\t<tr" );
-    if ( !( i & 1 ) )
-    {
-      util_t::fprintf( file, " class=\"odd\"" );
-    }
-    util_t::fprintf( file, ">\n" );
-    util_t::fprintf( file,
-                     "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-                     "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-                     "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                     "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                     "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                     "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                     "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
-                     "\t\t\t\t\t\t\t</tr>\n",
-                     g -> name(),
-                     util_t::resource_type_string( g -> type ),
-                     g -> count,
-                     g -> actual,
-                     g -> actual / g -> count,
-                     g -> overflow,
-                     overflow_pct);
-    i++;
-  }
-}
-for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-{
-  if ( pet -> total_seconds <= 0 ) continue;
-  bool first = true;
-  for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+                   "\t\t\t\t\t\t<table class=\"sc\">\n"
+                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t<th>Resource Gains</th>\n"
+                   "\t\t\t\t\t\t\t\t<th>Type</th>\n"
+                   "\t\t\t\t\t\t\t\t<th>Count</th>\n"
+                   "\t\t\t\t\t\t\t\t<th>Total</th>\n"
+                   "\t\t\t\t\t\t\t\t<th>Average</th>\n"
+                   "\t\t\t\t\t\t\t\t<th colspan=\"2\">Overflow</th>\n"
+                   "\t\t\t\t\t\t\t</tr>\n" );
+  i = 1;
+  for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
     if ( g -> actual > 0 || g -> overflow > 0 )
     {
-      if ( first )
-      {
-        first = false;
-        util_t::fprintf( file,
-                         "\t\t\t\t\t\t\t<tr>\n"
-                         "\t\t\t\t\t\t\t\t<th>pet - %s</th>\n"
-                         "\t\t\t\t\t\t\t\t<td colspan=\"6\" class=\"filler\"></td>\n"
-                         "\t\t\t\t\t\t\t</tr>\n",
-                         pet -> name_str.c_str() );
-      }
       double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
       util_t::fprintf( file,
-                       "\t\t\t\t\t\t\t<tr>\n"
+                       "\t\t\t\t\t\t\t\t<tr" );
+      if ( !( i & 1 ) )
+      {
+        util_t::fprintf( file, " class=\"odd\"" );
+      }
+      util_t::fprintf( file, ">\n" );
+      util_t::fprintf( file,
                        "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                        "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                        "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
@@ -3230,58 +3189,97 @@ for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
                        g -> actual / g -> count,
                        g -> overflow,
                        overflow_pct );
+      i++;
     }
   }
-}
-util_t::fprintf( file,
-                 "\t\t\t\t\t\t</table>\n" );
-
-util_t::fprintf( file,
-                 "\t\t\t\t\t\t<div class=\"charts charts-left\">\n" );
-for ( i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
-{
-  // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
-  if ( i == RESOURCE_RUNE_BLOOD || i == RESOURCE_RUNE_UNHOLY || i == RESOURCE_RUNE_FROST ) continue;
-  double total_gain=0;
-  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
-    if ( g -> actual > 0 && g -> type == i )
-      total_gain += g -> actual;
+    if ( pet -> total_seconds <= 0 ) continue;
+    bool first = true;
+    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+    {
+      if ( g -> actual > 0 || g -> overflow > 0 )
+      {
+        if ( first )
+        {
+          first = false;
+          util_t::fprintf( file,
+                           "\t\t\t\t\t\t\t<tr>\n"
+                           "\t\t\t\t\t\t\t\t<th>pet - %s</th>\n"
+                           "\t\t\t\t\t\t\t\t<td colspan=\"6\" class=\"filler\"></td>\n"
+                           "\t\t\t\t\t\t\t</tr>\n",
+                           pet -> name_str.c_str() );
+        }
+        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+        util_t::fprintf( file,
+                         "\t\t\t\t\t\t\t<tr>\n"
+                         "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+                         "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+                         "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                         "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                         "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                         "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                         "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+                         "\t\t\t\t\t\t\t</tr>\n",
+                         g -> name(),
+                         util_t::resource_type_string( g -> type ),
+                         g -> count,
+                         g -> actual,
+                         g -> actual / g -> count,
+                         g -> overflow,
+                         overflow_pct );
+      }
+    }
   }
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t</table>\n" );
 
-  if ( total_gain > 0 )
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t<div class=\"charts charts-left\">\n" );
+  for ( i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
   {
-    chart_t::gains( p -> gains_chart, p, ( resource_type ) i );
-    if ( ! p -> gains_chart.empty() )
+    // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
+    if ( i == RESOURCE_RUNE_BLOOD || i == RESOURCE_RUNE_UNHOLY || i == RESOURCE_RUNE_FROST ) continue;
+    double total_gain=0;
+    for ( gain_t* g = p -> gain_list; g; g = g -> next )
+    {
+      if ( g -> actual > 0 && g -> type == i )
+        total_gain += g -> actual;
+    }
+
+    if ( total_gain > 0 )
+    {
+      chart_t::gains( p -> gains_chart, p, ( resource_type ) i );
+      if ( ! p -> gains_chart.empty() )
+      {
+        util_t::fprintf( file,
+                         "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Gains Chart\" />\n",
+                         p -> gains_chart.c_str() );
+      }
+    }
+  }
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t</div>\n" );
+
+
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t<div class=\"charts\">\n" );
+  for ( int i = RESOURCE_NONE + 1; i < RESOURCE_MAX; i++ )
+  {
+    if ( p -> resource_max[ i ] > 0 && ! p -> timeline_resource_chart[ i ].empty() )
     {
       util_t::fprintf( file,
-                       "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Gains Chart\" />\n",
-                       p -> gains_chart.c_str() );
+                       "\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Timeline Chart\" />\n",
+                       p -> timeline_resource_chart[ i ].c_str() );
     }
   }
-}
-util_t::fprintf( file,
-                 "\t\t\t\t\t\t</div>\n" );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t</div>\n"
+                   "\t\t\t\t\t<div class=\"clear\"></div>\n" );
 
-
-util_t::fprintf( file,
-                 "\t\t\t\t\t\t<div class=\"charts\">\n" );
-for ( int i = RESOURCE_NONE + 1; i < RESOURCE_MAX; i++ )
-{
-  if ( p -> resource_max[ i ] > 0 && ! p -> timeline_resource_chart[ i ].empty() )
-  {
-    util_t::fprintf( file,
-                     "\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Timeline Chart\" />\n",
-                     p -> timeline_resource_chart[ i ].c_str() );
-  }
-}
-util_t::fprintf( file,
-                 "\t\t\t\t\t\t</div>\n"
-                 "\t\t\t\t\t<div class=\"clear\"></div>\n" );
-
-util_t::fprintf( file,
-                 "\t\t\t\t\t</div>\n"
-                 "\t\t\t\t</div>\n" );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t</div>\n"
+                   "\t\t\t\t</div>\n" );
 }
 
 // print_html_player_charts =================================================
@@ -3994,8 +3992,8 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                       distribution_deaths_str.c_str() );
 
     util_t::fprintf ( file,
-                     "\t\t\t\t\t\t\t</div>\n"
-                     "\t\t\t\t\t\t</div>\n" );
+                      "\t\t\t\t\t\t\t</div>\n"
+                      "\t\t\t\t\t\t</div>\n" );
   }
 
 

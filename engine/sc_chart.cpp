@@ -632,7 +632,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
       if ( st -> quiet ) continue;
       if ( st -> apet <= 0 ) continue;
       if ( st -> apet > ( 5 * p -> dps ) ) continue;
-      if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
+      if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
 
       stats_list.push_back( st );
     }
@@ -730,7 +730,7 @@ const char* chart_t::action_dpet( std::string& s,
     if ( st -> quiet ) continue;
     if ( st -> apet <= 0 ) continue;
     if ( st -> apet > ( 5 * p -> dps ) ) continue;
-    if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
+    if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
 
     stats_list.push_back( st );
   }
@@ -742,7 +742,7 @@ const char* chart_t::action_dpet( std::string& s,
       if ( st -> quiet ) continue;
       if ( st -> apet <= 0 ) continue;
       if ( st -> apet > ( 5 * p -> dps ) ) continue;
-      if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
+      if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
 
       stats_list.push_back( st );
     }
@@ -833,7 +833,7 @@ const char* chart_t::action_dmg( std::string& s,
   {
     if ( st -> quiet ) continue;
     if ( st -> total_amount <= 0 ) continue;
-    if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
+    if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
     stats_list.push_back( st );
   }
 
@@ -843,7 +843,7 @@ const char* chart_t::action_dmg( std::string& s,
     {
       if ( st -> quiet ) continue;
       if ( st -> total_amount <= 0 ) continue;
-      if ( (p -> primary_role() == ROLE_HEAL) != (st -> type != STATS_DMG) ) continue;
+      if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
       stats_list.push_back( st );
     }
   }
@@ -869,7 +869,7 @@ const char* chart_t::action_dmg( std::string& s,
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> total_amount / ( (p -> primary_role() == ROLE_HEAL) ? p -> total_heal : p -> total_dmg ) ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> total_amount / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> total_heal : p -> total_dmg ) ); s += buffer;
   }
   s += "&amp;";
   s += "chds=0,100";
@@ -1635,7 +1635,7 @@ const char* chart_t::timeline_dps( std::string& s,
 // chart_t::timeline_dps ====================================================
 
 const char* chart_t::timeline_stat_dps( std::string& s,
-                                   player_t* p, stats_t* st )
+                                        player_t* p, stats_t* st )
 {
   if ( st -> total_amount <= 0 )
     return 0;
@@ -1961,7 +1961,7 @@ const char* chart_t::distribution_dps( std::string& s,
 // chart_t::distribution_deaths ================================================
 
 const char* chart_t::distribution_deaths( std::string& s,
-                                       player_t* p )
+                                          player_t* p )
 {
   int max_buckets = ( int ) p -> distribution_deaths.size();
 
@@ -2321,7 +2321,7 @@ const char* chart_t::gear_weights_pawn( std::string& s,
 // chart_t::timeline_dps_error ==============================================
 
 const char* chart_t::dps_error( std::string& s,
-                                         player_t* p )
+                                player_t* p )
 {
   char buffer[ 1024 ];
 
@@ -2334,7 +2334,7 @@ const char* chart_t::dps_error( std::string& s,
   s += "&amp;";
   s += "chco=FF0000";
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dpse - p -> dps_error * 2, p -> dpse + p -> dps_error * 2, 1 / sqrt ( 0.5 * 3.14 * p -> dps_error * p -> dps_error )); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dpse - p -> dps_error * 2, p -> dpse + p -> dps_error * 2, 1 / sqrt ( 0.5 * 3.14 * p -> dps_error * p -> dps_error ) ); s += buffer;
 
   s += "&amp;";
   if ( p -> sim -> print_styles )

@@ -83,8 +83,8 @@ struct cost_reduction_proc_callback_t : public action_callback_t
   cost_reduction_buff_t* buff;
 
   cost_reduction_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a,
-                                double proc_chance, double duration, double cooldown,
-                                bool refreshes=false, bool reverse=false, int rng_type=RNG_DEFAULT, bool activated=true ) :
+                                  double proc_chance, double duration, double cooldown,
+                                  bool refreshes=false, bool reverse=false, int rng_type=RNG_DEFAULT, bool activated=true ) :
     action_callback_t( p -> sim, p ),
     name_str( n ), school( s ), amount( a )
   {
@@ -129,7 +129,7 @@ struct discharge_proc_callback_t : public action_callback_t
   discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
                              const school_type school, double amount, double scaling,
                              double pc, double cd, bool no_crit, bool no_buffs, bool no_debuffs, int rng_type=RNG_DEFAULT ) :
-                             action_callback_t( p -> sim, p ),
+    action_callback_t( p -> sim, p ),
     name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc ), cooldown( 0 ), discharge_action( 0 ), proc( 0 ), rng( 0 )
   {
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
@@ -249,8 +249,8 @@ struct chance_discharge_proc_callback_t : public action_callback_t
   rng_t* rng;
 
   chance_discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
-                             const school_type school, double amount, double scaling,
-                             double pc, double cd, bool no_crit, bool no_buffs, bool no_debuffs, int rng_type=RNG_DEFAULT ) :
+                                    const school_type school, double amount, double scaling,
+                                    double pc, double cd, bool no_crit, bool no_buffs, bool no_debuffs, int rng_type=RNG_DEFAULT ) :
     action_callback_t( p -> sim, p ),
     name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
   {
@@ -1396,61 +1396,61 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
 static void register_blazing_power( item_t* item )
 {
-    player_t* p = item -> player;
+  player_t* p = item -> player;
 
-    item -> unique = true;
+  item -> unique = true;
 
-    struct blazing_power_heal_t : public heal_t
+  struct blazing_power_heal_t : public heal_t
+  {
+    blazing_power_heal_t( player_t* p, bool heroic ) :
+      heal_t( "blaze_of_life", p, heroic ? 97136 : 96966 )
     {
-      blazing_power_heal_t( player_t* p, bool heroic ) :
-        heal_t( "blaze_of_life", p, heroic ? 97136 : 96966 )
-      {
-        trigger_gcd = 0;
-        background  = true;
-        may_miss = false;
-        may_crit = true;
-        callbacks = false;
-        init();
-      }
-    };
+      trigger_gcd = 0;
+      background  = true;
+      may_miss = false;
+      may_crit = true;
+      callbacks = false;
+      init();
+    }
+  };
 
-    struct blazing_power_callback_t : public action_callback_t
+  struct blazing_power_callback_t : public action_callback_t
+  {
+    heal_t* heal;
+    cooldown_t* cd;
+    proc_t* proc;
+    rng_t* rng;
+
+    blazing_power_callback_t( player_t* p, heal_t* s ) :
+      action_callback_t( p -> sim, p ), heal( s ), proc( 0 ), rng( 0 )
     {
-      heal_t* heal;
-      cooldown_t* cd;
-      proc_t* proc;
-      rng_t* rng;
+      proc = p -> get_proc( "blazing_power" );
+      rng  = p -> get_rng ( "blazing_power" );
+      cd = p -> get_cooldown( "blazing_power_callback" );
+      cd -> duration = 45.0;
+    }
 
-      blazing_power_callback_t( player_t* p, heal_t* s ) :
-        action_callback_t( p -> sim, p ), heal( s )
+    virtual void trigger( action_t* a, void* /* call_data */ )
+    {
+      if (   a -> aoe      ||
+             a -> proc     ||
+             a -> dual     ||
+             ! a -> harmful   )
+        return;
+
+      if ( cd -> remains() > 0 )
+        return;
+
+      if ( rng -> roll( 0.10 ) )
       {
-        proc = p -> get_proc( "blazing_power" );
-        rng  = p -> get_rng ( "blazing_power" );
-        cd = p -> get_cooldown( "blazing_power_callback" );
-        cd -> duration = 45.0;
+        heal -> heal_target.clear();
+        heal -> heal_target.push_back( heal -> find_lowest_player() );
+        heal -> execute();
+        proc -> occur();
+        cd -> start();
       }
-
-      virtual void trigger( action_t* a, void* /* call_data */ )
-      {
-        if (   a -> aoe      ||
-               a -> proc     ||
-               a -> dual     ||
-               ! a -> harmful   )
-          return;
-
-        if ( cd -> remains() > 0 )
-          return;
-
-        if ( rng -> roll( 0.10 ) )
-        {
-          heal -> heal_target.clear();
-          heal -> heal_target.push_back( heal -> find_lowest_player() );
-          heal -> execute();
-          proc -> occur();
-          cd -> start();
-        }
-      }
-    };
+    }
+  };
 
   // FIXME: Observe if it procs of non-direct healing spells
   p -> register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> heroic() ) )  );
@@ -1460,45 +1460,45 @@ static void register_blazing_power( item_t* item )
 
 static void register_valanyr( item_t* item )
 {
-    player_t* p = item -> player;
+  player_t* p = item -> player;
 
-    item -> unique = true;
+  item -> unique = true;
 
-    struct valanyr_callback_t : public action_callback_t
+  struct valanyr_callback_t : public action_callback_t
+  {
+    proc_t* proc;
+    rng_t* rng;
+    cooldown_t* cd;
+
+    valanyr_callback_t( player_t* p ) :
+      action_callback_t( p -> sim, p )
     {
-      proc_t* proc;
-      rng_t* rng;
-      cooldown_t* cd;
+      proc = p -> get_proc( "valanyr" );
+      rng  = p -> get_rng ( "valanyr" );
+      cd = p -> get_cooldown( "valanyr_callback" );
+      cd -> duration = 45.0;
+    }
 
-      valanyr_callback_t( player_t* p ) :
-        action_callback_t( p -> sim, p )
+    virtual void trigger( action_t* a, void* /* call_data */ )
+    {
+      if (   a -> aoe      ||
+             a -> proc     ||
+             a -> dual     ||
+             ! a -> harmful   )
+        return;
+
+      if ( cd -> remains() > 0 )
+        return;
+
+      if ( rng -> roll( 0.10 ) )
       {
-        proc = p -> get_proc( "valanyr" );
-        rng  = p -> get_rng ( "valanyr" );
-        cd = p -> get_cooldown( "valanyr_callback" );
-        cd -> duration = 45.0;
+        listener -> buffs.blessing_of_ancient_kings -> trigger();
+        proc -> occur();
+        cd -> start();
       }
 
-      virtual void trigger( action_t* a, void* /* call_data */ )
-      {
-        if (   a -> aoe      ||
-               a -> proc     ||
-               a -> dual     ||
-               ! a -> harmful   )
-          return;
-
-        if ( cd -> remains() > 0 )
-          return;
-
-        if ( rng -> roll( 0.10 ) )
-        {
-          listener -> buffs.blessing_of_ancient_kings -> trigger();
-          proc -> occur();
-          cd -> start();
-        }
-
-      }
-    };
+    }
+  };
 
   // FIXME: Observe if it procs of non-direct healing spells
   p -> register_heal_callback( RESULT_ALL_MASK, new valanyr_callback_t( p )  );
