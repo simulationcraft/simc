@@ -1458,10 +1458,8 @@ struct arcane_brilliance_t : public mage_spell_t
 
   virtual bool ready()
   {
-    if ( player -> buffs.arcane_brilliance -> current_value < bonus )
-      return true;
-
-    return mage_spell_t::ready();
+    return ( player -> buffs.arcane_brilliance -> current_value < bonus ) &&
+           mage_spell_t::ready();
   }
 };
 
