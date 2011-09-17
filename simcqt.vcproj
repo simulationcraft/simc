@@ -264,6 +264,7 @@
 			<File
 				RelativePath="engine\sc_dot.cpp"
 				>
+			</File>
 			<File
 				RelativePath="engine\sc_druid.cpp"
 				>
