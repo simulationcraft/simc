@@ -2783,6 +2783,71 @@ void player_t::combat_end()
   }
 }
 
+// player_t::merge ==========================================================
+
+void player_t::merge( player_t& other )
+{
+  total_dmg += other.total_dmg;
+  total_heal += other.total_heal;
+  total_seconds += other.total_seconds;
+  total_waiting += other.total_waiting;
+  total_foreground_actions += other.total_foreground_actions;
+  death_count += other.death_count;
+
+  iteration_dps.insert( iteration_dps.end(),
+                        other.iteration_dps.begin(), other.iteration_dps.end() );
+  iteration_dpse.insert( iteration_dpse.end(),
+                         other.iteration_dpse.begin(), other.iteration_dpse.end() );
+  death_time.insert( death_time.end(),
+                     other.death_time.begin(), other.death_time.end() );
+
+  for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  {
+    int num_buckets = ( int ) std::min(       timeline_resource[i].size(),
+                                        other.timeline_resource[i].size() );
+
+    for ( int j=0; j < num_buckets; j++ )
+    {
+      timeline_resource[i][ j ] += other.timeline_resource[i][ j ];
+    }
+  }
+
+  for ( int i=0; i < RESOURCE_MAX; i++ )
+  {
+    resource_lost  [ i ] += other.resource_lost  [ i ];
+    resource_gained[ i ] += other.resource_gained[ i ];
+  }
+
+  for ( buff_t* b = buff_list; b; b = b -> next )
+  {
+    b -> merge( buff_t::find( &other, b -> name() ) );
+  }
+
+  for ( proc_t* proc = proc_list; proc; proc = proc -> next )
+  {
+    proc -> merge( other.get_proc( proc -> name_str ) );
+  }
+
+  for ( gain_t* gain = gain_list; gain; gain = gain -> next )
+  {
+    gain -> merge( other.get_gain( gain -> name_str ) );
+  }
+
+  for ( stats_t* stats = stats_list; stats; stats = stats -> next )
+  {
+    stats -> merge( other.get_stats( stats -> name_str ) );
+  }
+
+  for ( uptime_t* uptime = uptime_list; uptime; uptime = uptime -> next )
+  {
+    uptime -> merge( other.get_uptime( uptime -> name_str ) );
+  }
+
+  for ( std::map<std::string,int>::const_iterator it = other.action_map.begin(),
+        end = other.action_map.end(); it != end; ++it )
+    action_map[ it -> first ] += it -> second;
+}
+
 // player_t::reset ==========================================================
 
 void player_t::reset()

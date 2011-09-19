@@ -785,7 +785,10 @@ enum rating_type {
 
 template <typename T>
 inline void zerofill( T* t )
-{ memset( t, 0, sizeof( *t ) ); }
+{
+  // static_assert( std::is_pod<T>::value, "You cannot use zerofill on a non-pod type." );
+  memset( t, 0, sizeof( *t ) );
+}
 
 template <typename T>
 inline void zerofill( T& t )
@@ -3436,7 +3439,7 @@ struct player_t
   double base_movement_speed;
   double x_position, y_position;
 
-  struct buffs_t
+  struct buffs_base_t
   {
     buff_t* arcane_brilliance;
     buff_t* battle_shout;
@@ -3488,11 +3491,13 @@ struct player_t
     buff_t* wild_magic_potion_crit;
     buff_t* wild_magic_potion_sp;
     buff_t* blessing_of_ancient_kings;
+
+    buffs_base_t() { zerofill( *this ); }
+  };
+  struct buffs_t : public buffs_base_t
+  {
     std::vector<buff_t*> power_word_shield;
     std::vector<buff_t*> divine_aegis;
-
-
-    buffs_t() { memset( (void*) this, 0x0, sizeof( buffs_t ) ); }
   };
   buffs_t buffs;
 
@@ -3537,7 +3542,7 @@ struct player_t
     debuff_t* vindication;
     debuff_t* vulnerable;
 
-    debuffs_t() { memset( (void*) this, 0x0, sizeof( debuffs_t ) ); }
+    debuffs_t() { zerofill( *this ); }
     bool snared();
   };
   debuffs_t debuffs;
@@ -3563,7 +3568,7 @@ struct player_t
     gain_t* vampiric_touch;
     gain_t* water_elemental;
     gain_t* hymn_of_hope;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( gains_t ) ); }
+    void reset() { zerofill( *this ); }
     gains_t() { reset(); }
   };
   gains_t gains;
@@ -3571,7 +3576,7 @@ struct player_t
   struct procs_t
   {
     proc_t* hat_donor;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( procs_t ) ); }
+    void reset() { zerofill( *this ); }
     procs_t() { reset(); }
   };
   procs_t procs;
@@ -3587,7 +3592,7 @@ struct player_t
     rng_t* lag_reaction;
     rng_t* lag_world;
     rng_t* lag_brain;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( rngs_t ) ); }
+    void reset() { zerofill( *this ); }
     rngs_t() { reset(); }
   };
   rngs_t rngs;
@@ -3636,6 +3641,7 @@ struct player_t
   virtual void reset();
   virtual void combat_begin();
   virtual void combat_end();
+  virtual void merge( player_t& other );
 
   virtual double composite_mastery() SC_CONST { return floor( ( mastery * 100.0 ) + 0.5 ) * 0.01; }
 

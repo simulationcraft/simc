@@ -1677,63 +1677,7 @@ void sim_t::merge( sim_t& other_sim )
     player_t* p = actor_list[i];
     player_t* other_p = other_sim.find_player( p -> index );
     assert( other_p );
-
-    p -> total_seconds += other_p -> total_seconds;
-    p -> total_waiting += other_p -> total_waiting;
-    p -> total_foreground_actions += other_p -> total_foreground_actions;
-    p -> death_count += other_p -> death_count;
-
-    std::copy( other_p -> iteration_dps.begin(), other_p -> iteration_dps.end(),
-               std::back_inserter( p -> iteration_dps ) );
-    std::copy( other_p -> iteration_dpse.begin(), other_p -> iteration_dpse.end(),
-               std::back_inserter( p -> iteration_dpse ) );
-    p -> death_time.insert( p -> death_time.end(), other_p -> death_time.begin(), other_p -> death_time.end() );
-
-    for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-    {
-      int num_buckets = ( int ) std::min(       p -> timeline_resource[i].size(),
-                                          other_p -> timeline_resource[i].size() );
-
-      for ( int j=0; j < num_buckets; j++ )
-      {
-        p -> timeline_resource[i][ j ] += other_p -> timeline_resource[i][ j ];
-      }
-    }
-
-    for ( int i=0; i < RESOURCE_MAX; i++ )
-    {
-      p -> resource_lost  [ i ] += other_p -> resource_lost  [ i ];
-      p -> resource_gained[ i ] += other_p -> resource_gained[ i ];
-    }
-
-    for ( buff_t* b = p -> buff_list; b; b = b -> next )
-    {
-      b -> merge( buff_t::find( other_p, b -> name() ) );
-    }
-
-    for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
-    {
-      proc -> merge( other_p -> get_proc( proc -> name_str ) );
-    }
-
-    for ( gain_t* gain = p -> gain_list; gain; gain = gain -> next )
-    {
-      gain -> merge( other_p -> get_gain( gain -> name_str ) );
-    }
-
-    for ( stats_t* stats = p -> stats_list; stats; stats = stats -> next )
-    {
-      stats -> merge( other_p -> get_stats( stats -> name_str ) );
-    }
-
-    for ( uptime_t* uptime = p -> uptime_list; uptime; uptime = uptime -> next )
-    {
-      uptime -> merge( other_p -> get_uptime( uptime -> name_str ) );
-    }
-
-    for ( std::map<std::string,int>::const_iterator it = other_p -> action_map.begin(),
-          end = other_p -> action_map.end(); it != end; ++it )
-      p -> action_map[ it -> first ] += it -> second;
+    p -> merge( *other_p );
   }
 }
 
