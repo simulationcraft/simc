@@ -26,40 +26,42 @@ struct OptionEntry
 static OptionEntry* getBuffOptions()
 {
   static OptionEntry options[] =
-    {
-      { "Toggle All Buffs",      "",                                "Toggle all buffs on/off"                                                    },
-      { "Dark Intent",           "override.dark_intent",            "Dark Intent"                                                                },
-      { "Focus Magic",           "override.focus_magic",            "Focus Magic"                                                                },
-      { "Agility and Strength",  "override.strength_of_earth",      "Horn of Winter\nStrength of Earth Totem"                                    },
-      { "Attack Power (%)",      "override.blessing_of_might",      "Blessing of Might\nAbomination's Might\nTrueshot Aura\nUnleashed Rage"      },
-      { "Bloodlust",             "override.bloodlust",              "Bloodlust\nHeroism"                                                         },
-      { "All Damage",            "override.communion",              "Arcane Tactics\nFerocious Inspiration\nCommunion"                           },
-      { "Intellect",             "override.arcane_brilliance",      "Arcane Intellect"                                                           },
-      { "Critical Strike",       "override.leader_of_the_pack",     "Leader of the Pack\nRampage"                                                },
-      { "Mana Regen",            "override.mana_spring_totem",      "Blessing of Might\nMana Spring Totem"                                       },
-      { "Melee and Ranged Haste",           "override.windfury_totem",         "Improved Icy Talons\nWindfury Totem\nHunting Party"                                        },
-      { "Replenishment",         "override.replenishment",          "Improved Soul Leech\nJudgements of the Wise\nVampiric Touch" },
-      { "Spell Haste",           "override.wrath_of_air",           "Wrath of Air Totem"                                                         },
-      { "Spell Power",           "override.demonic_pact",           "Demonic Pact\nTotemic Wrath"                                                },
-      { "Stamina",               "override.fortitude",              "Power Word: Fortitude"                                                      },
-      { "Stat Multiplier",       "override.blessing_of_kings",      "Blessing of Kings\nMark of the Wild"                                        },
-      { NULL, NULL, NULL }
-    };
+  {
+    { "Toggle All Buffs",       "",                                "Toggle all buffs on/off"                                                                         },
+    { "Dark Intent",            "override.dark_intent",            "Dark Intent"                                                                                     },
+    { "Focus Magic",            "override.focus_magic",            "Focus Magic"                                                                                     },
+    { "Agility and Strength",   "override.strength_of_earth",      "Battle Shout\nHorn of Winter\nRoar of Courage\nStrength of Earth Totem"                          },
+    { "All Damage",             "override.communion",              "Arcane Tactics\nCommunion\nFerocious Inspiration"                                                },
+    { "Armor",                  "override.devotion_aura",          "Devotion Aura\nStoneskin Totem"                                                                  },
+    { "Attack Power (%)",       "override.blessing_of_might",      "Abomination's Might\nBlessing of Might\nTrueshot Aura\nUnleashed Rage"                           },
+    { "Bloodlust",              "override.bloodlust",              "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp"                                                 },
+    { "Critical Strike",        "override.leader_of_the_pack",     "Elemental Oath\nFurious Howl\nHonor Among Thieves\nLeader of the Pack\nRampage\nTerrifying Roar" },
+    { "Mana",                   "override.arcane_brilliance",      "Arcane Brilliance\nFel Intelligence"                                                             },
+    { "Mana Regen",             "override.mana_spring_totem",      "Blessing of Might\nFel Intelligence\nMana Spring Totem"                                          },
+    { "Melee and Ranged Haste", "override.windfury_totem",         "Hunting Party\nImproved Icy Talons\nWindfury Totem"                                              },
+    { "Replenishment",          "override.replenishment",          "Communion\nEnduring Winter\nReviatalize\nSoul Leech\nVampiric Touch"                             },
+    { "Spell Haste",            "override.wrath_of_air",           "Moonkin Form\nShadowform\nWrath of Air Totem"                                                    },
+    { "Spell Power 6%",         "override.arcane_brilliance",      "Arcane Brilliance\nFlametongue Totem"                                                            },
+    { "Spell Power 10%",        "override.demonic_pact",           "Demonic Pact\nTotemic Wrath"                                                                     },
+    { "Stamina",                "override.fortitude",              "Blood Pact\nCommanding Shout\nPower Word: Fortitude\nQiraji Fortitude"                           },
+    { "Stat Multiplier",        "override.blessing_of_kings",      "Blessing of Kings\nEmbrace of the Shale Spider\nMark of the Wild"                                },
+    { NULL, NULL, NULL }
+  };
   return options;
 }
 
 static OptionEntry* getItemSourceOptions()
 {
   static OptionEntry options[] =
-    {
-      { "Local Item Database", "local",   "Use Simulationcraft item database" },
-      { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
-      { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
-      { "Mmo-champion.com",    "mmoc",    "Remote Mmo-champion.com item data source" },
-      { "Blizzard Armory",     "armory",  "Remote item database from Blizzard (DEPRECATED, SHOULD NOT BE USED)" },
-      { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
-      { NULL, NULL, NULL }
-    };
+  {
+    { "Local Item Database", "local",   "Use Simulationcraft item database" },
+    { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
+    { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
+    { "Mmo-champion.com",    "mmoc",    "Remote Mmo-champion.com item data source" },
+    { "Blizzard Armory",     "armory",  "Remote item database from Blizzard (DEPRECATED, SHOULD NOT BE USED)" },
+    { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
+    { NULL, NULL, NULL }
+  };
 
   return options;
 }
@@ -67,84 +69,87 @@ static OptionEntry* getItemSourceOptions()
 static OptionEntry* getDebuffOptions()
 {
   static OptionEntry options[] =
-    {
-      { "Toggle All Debuffs",     "",                               "Toggle all debuffs on/off"                                        },
-      { "Armor Reduction",        "override.sunder_armor",          "Acid Spit\nExpose Armor\nSunder Armor"                            },
-      { "Boss Attack Speed Slow", "override.thunder_clap",          "Icy Touch\nInfected Wounds\nJudgements of the Just\nThunder Clap" },
-      { "Bleed Damage",           "override.mangle",                "Mangle\nTrauma"                                                   },
-      { "Bleeding",               "override.bleeding",              "Rip\nRupture\nPiercing Shots"                                     },
-      { "Physical Damage",        "override.blood_frenzy_physical", "Blood Frenzy\nSavage Combat"                                      },
-      { "Poisoned",               "override.poisoned",              "Deadly Poison\nSerpent Sting"                                     },
-      { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                    },
-      { "Spell Critical Strike",  "override.critical_mass",         "Improved Scorch\nImproved Shadow Bolt\nWinters's Chill"           },
-      { "Spell Damage",           "override.earth_and_moon",        "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger"         },
-      { NULL, NULL, NULL }
-    };
+  {
+    { "Toggle All Debuffs",     "",                               "Toggle all debuffs on/off"                                                                                     },
+    { "Armor Reduction",        "override.sunder_armor",          "Corrosive Spit\nExpose Armor\nFaerie Fire\nSunder Armor\nTear Armor"                                           },
+    { "Bleed Damage",           "override.mangle",                "Blood Frenzy\nGore\nHemorrhage\nMangle\nStampede\nTendon Rip"                                                  },
+    { "Bleeding",               "override.bleeding",              "Rip\nRupture\nPiercing Shots"                                                                                  },
+    { "Physical Damage Done",   "override.demoralizing_roar",     "Curse of Weakness\nDemoralizing Roar\nDemoralizing Shout\nScarlet Fever\nVindication"                          },
+    { "Physical Damage Taken",  "override.blood_frenzy_physical", "Acid Spit\nBlood Frenzy\nBrittle Bones\nRavage\nSavage Combat"                                                 },
+    { "Poisoned",               "override.poisoned",              "Deadly Poison\nSerpent Sting"                                                                                  },
+    { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                                                                 },
+    { "Reduced Attack Speed",   "override.thunder_clap",          "Dust Cloud\nEarth Shock\nFrost Fever\nInfected Wounds\nJudgements of the Just\nTailspin\nThunder Clap\nWaylay" },
+    { "Spell Critical Strike",  "override.critical_mass",         "Critical Mass\nShadow and Flame"                                                                               },
+    { "Spell Damage",           "override.earth_and_moon",        "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger\nFire Breath\nLightning Breath\nMaster Poisoner"      },
+    { NULL, NULL, NULL }
+  };
   return options;
 }
 
 static OptionEntry* getScalingOptions()
 {
   static OptionEntry options[] =
+  {
+    { "Analyze All Stats",                "",         "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
     {
-      { "Analyze All Stats",                "",         "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
-      { "Use Positive Deltas Only",         "",         "Normally Hit/Expertise use negative scale factors to show DPS lost by reducing that stat.\n"
-                                                        "This option forces a positive scale delta, which is useful for classes with soft caps." },
-      { "Analyze Strength",                 "str",      "Calculate scale factors for Strength"                 },
-      { "Analyze Agility",                  "agi",      "Calculate scale factors for Agility"                  },
-      { "Analyze Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
-      { "Analyze Intellect",                "int",      "Calculate scale factors for Intellect"                },
-      { "Analyze Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
-      { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
-      { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
-      { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
-      { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
-      { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
-      { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
-      { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
-      { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
-      { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
-      { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
-      { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
-      { NULL, NULL, NULL }
-    };
+      "Use Positive Deltas Only",         "",         "Normally Hit/Expertise use negative scale factors to show DPS lost by reducing that stat.\n"
+      "This option forces a positive scale delta, which is useful for classes with soft caps."
+    },
+    { "Analyze Strength",                 "str",      "Calculate scale factors for Strength"                 },
+    { "Analyze Agility",                  "agi",      "Calculate scale factors for Agility"                  },
+    { "Analyze Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
+    { "Analyze Intellect",                "int",      "Calculate scale factors for Intellect"                },
+    { "Analyze Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
+    { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
+    { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
+    { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
+    { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
+    { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
+    { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
+    { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
+    { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
+    { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
+    { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
+    { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
+    { NULL, NULL, NULL }
+  };
   return options;
 }
 
 static OptionEntry* getPlotOptions()
 {
   static OptionEntry options[] =
-    {
-      { "Plot DPS per Strength",                 "str",     "Generate DPS curve for Strength"                 },
-      { "Plot DPS per Agility",                  "agi",     "Generate DPS curve for Agility"                  },
-      { "Plot DPS per Stamina",                  "sta",     "Generate DPS curve for Stamina"                  },
-      { "Plot DPS per Intellect",                "int",     "Generate DPS curve for Intellect"                },
-      { "Plot DPS per Spirit",                   "spi",     "Generate DPS curve for Spirit"                   },
-      { "Plot DPS per Spell Power",              "sp",      "Generate DPS curve for Spell Power"              },
-      { "Plot DPS per Attack Power",             "ap",      "Generate DPS curve for Attack Power"             },
-      { "Plot DPS per Expertise Rating",         "exp",     "Generate DPS curve for Expertise Rating"         },
-      { "Plot DPS per Hit Rating",               "hit",     "Generate DPS curve for Hit Rating"               },
-      { "Plot DPS per Crit Rating",              "crit",    "Generate DPS curve for Crit Rating"              },
-      { "Plot DPS per Haste Rating",             "haste",   "Generate DPS curve for Haste Rating"             },
-      { "Plot DPS per Mastery Rating",           "mastery", "Generate DPS curve for Mastery Rating"           },
-      { "Plot DPS per Weapon DPS",               "wdps",    "Generate DPS curve for Weapon DPS"               },
-      { NULL, NULL, NULL }
-    };
+  {
+    { "Plot DPS per Strength",                 "str",     "Generate DPS curve for Strength"                 },
+    { "Plot DPS per Agility",                  "agi",     "Generate DPS curve for Agility"                  },
+    { "Plot DPS per Stamina",                  "sta",     "Generate DPS curve for Stamina"                  },
+    { "Plot DPS per Intellect",                "int",     "Generate DPS curve for Intellect"                },
+    { "Plot DPS per Spirit",                   "spi",     "Generate DPS curve for Spirit"                   },
+    { "Plot DPS per Spell Power",              "sp",      "Generate DPS curve for Spell Power"              },
+    { "Plot DPS per Attack Power",             "ap",      "Generate DPS curve for Attack Power"             },
+    { "Plot DPS per Expertise Rating",         "exp",     "Generate DPS curve for Expertise Rating"         },
+    { "Plot DPS per Hit Rating",               "hit",     "Generate DPS curve for Hit Rating"               },
+    { "Plot DPS per Crit Rating",              "crit",    "Generate DPS curve for Crit Rating"              },
+    { "Plot DPS per Haste Rating",             "haste",   "Generate DPS curve for Haste Rating"             },
+    { "Plot DPS per Mastery Rating",           "mastery", "Generate DPS curve for Mastery Rating"           },
+    { "Plot DPS per Weapon DPS",               "wdps",    "Generate DPS curve for Weapon DPS"               },
+    { NULL, NULL, NULL }
+  };
   return options;
 }
 
 static OptionEntry* getReforgePlotOptions()
 {
   static OptionEntry options[] =
-    {
-      { "Plot Reforge Options for Spirit",            "spi",     "Generate reforge plot data for Spirit"           },
-      { "Plot Reforge Options for Expertise Rating",  "exp",     "Generate reforge plot data for Expertise Rating" },
-      { "Plot Reforge Options for Hit Rating",        "hit",     "Generate reforge plot data for Hit Rating"       },
-      { "Plot Reforge Options for Crit Rating",       "crit",    "Generate reforge plot data for Crit Rating"      },
-      { "Plot Reforge Options for Haste Rating",      "haste",   "Generate reforge plot data for Haste Rating"     },
-      { "Plot Reforge Options for Mastery Rating",    "mastery", "Generate reforge plot data for Mastery Rating"   },
-      { NULL, NULL, NULL }
-    };
+  {
+    { "Plot Reforge Options for Spirit",            "spi",     "Generate reforge plot data for Spirit"           },
+    { "Plot Reforge Options for Expertise Rating",  "exp",     "Generate reforge plot data for Expertise Rating" },
+    { "Plot Reforge Options for Hit Rating",        "hit",     "Generate reforge plot data for Hit Rating"       },
+    { "Plot Reforge Options for Crit Rating",       "crit",    "Generate reforge plot data for Crit Rating"      },
+    { "Plot Reforge Options for Haste Rating",      "haste",   "Generate reforge plot data for Haste Rating"     },
+    { "Plot Reforge Options for Mastery Rating",    "mastery", "Generate reforge plot data for Mastery Rating"   },
+    { NULL, NULL, NULL }
+  };
   return options;
 }
 
@@ -154,7 +159,7 @@ static QString defaultSimulateText()
                   "# Use the Back/Forward buttons to cycle through the script history.\n"
                   "# Use the Up/Down arrow keys to cycle through the command-line history.\n"
                   "#\n"
-                  "# Clicking Simulate will create a simc_gui.simc profile for review.\n");
+                  "# Clicking Simulate will create a simc_gui.simc profile for review.\n" );
 }
 
 static QComboBox* createChoice( int count, ... )
@@ -229,52 +234,52 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   OptionEntry*        plots = getPlotOptions();
   OptionEntry* reforgeplots = getReforgePlotOptions();
 
-  for(int i = 13; i < tokens.count(); i++)
+  for( int i = 13; i < tokens.count(); i++ )
   {
-     QStringList opt_tokens = tokens[ i ].split(':');
+    QStringList opt_tokens = tokens[ i ].split( ':' );
 
-     OptionEntry* options=0;
-     QList<QAbstractButton*>* buttons=0;
+    OptionEntry* options=0;
+    QList<QAbstractButton*>* buttons=0;
 
-     if(      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffs;           buttons = &buff_buttons;        }
-     else if( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffs;         buttons = &debuff_buttons;      }
-     else if( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scaling;         buttons = &scaling_buttons;     }
-     else if( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plots;           buttons = &plot_buttons;        }
-     else if( ! opt_tokens[ 0 ].compare( "reforge_plots"  ) ) { options = reforgeplots;    buttons = &reforgeplot_buttons; }
-     else if( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
-     {
-       QStringList item_db_list = opt_tokens[ 1 ].split('/');
-       QListWidgetItem** items = new QListWidgetItem *[item_db_list.size()];
+    if(      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffs;           buttons = &buff_buttons;        }
+    else if( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffs;         buttons = &debuff_buttons;      }
+    else if( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scaling;         buttons = &scaling_buttons;     }
+    else if( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plots;           buttons = &plot_buttons;        }
+    else if( ! opt_tokens[ 0 ].compare( "reforge_plots"  ) ) { options = reforgeplots;    buttons = &reforgeplot_buttons; }
+    else if( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
+    {
+      QStringList item_db_list = opt_tokens[ 1 ].split( '/' );
+      QListWidgetItem** items = new QListWidgetItem *[item_db_list.size()];
 
-       for ( int opt = 0; opt < item_db_list.size(); opt++ )
-       {
-         for ( int source = 0; itemDbOrder -> count(); source++ )
-         {
+      for ( int opt = 0; opt < item_db_list.size(); opt++ )
+      {
+        for ( int source = 0; itemDbOrder -> count(); source++ )
+        {
           if ( ! item_db_list[ opt ].compare( itemDbOrder -> item( source ) -> data( Qt::UserRole ).toString() ) )
           {
             items[ opt ] = itemDbOrder -> takeItem( source );
             break;
           }
-         }
-       }
+        }
+      }
 
-       for ( int j = 0; j < item_db_list.size(); j++ )
-         itemDbOrder -> addItem( items[ j ] );
+      for ( int j = 0; j < item_db_list.size(); j++ )
+        itemDbOrder -> addItem( items[ j ] );
 
-       delete [] items;
-     }
-     if ( ! options ) continue;
+      delete [] items;
+    }
+    if ( ! options ) continue;
 
-     QStringList opt_value = opt_tokens[ 1 ].split('=');
-     for( int opt=0; options[ opt ].label; opt++ )
-     {
-       if( ! opt_value[ 0 ].compare( options[ opt ].option ) )
-       {
-         buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
-         break;
-       }
-     }
-   }
+    QStringList opt_value = opt_tokens[ 1 ].split( '=' );
+    for( int opt=0; options[ opt ].label; opt++ )
+    {
+      if( ! opt_value[ 0 ].compare( options[ opt ].option ) )
+      {
+        buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
+        break;
+      }
+    }
+  }
 }
 
 QString SimulationCraftWindow::encodeOptions()
@@ -364,7 +369,7 @@ void SimulationCraftWindow::updateSimProgress()
 {
   if( sim )
   {
-    simProgress = (int) ( 100.0 * sim->progress( simPhase ) );
+    simProgress = ( int ) ( 100.0 * sim->progress( simPhase ) );
   }
   else
   {
@@ -434,9 +439,9 @@ void SimulationCraftWindow::saveHistory()
 
     QDataStream out( &file );
     out << QString( HISTORY_VERSION );
-    out << (qint32) width();
-    out << (qint32) height();
-    out << (qint32) ( ( windowState() & Qt::WindowMaximized ) ? 1 : 0 );
+    out << ( qint32 ) width();
+    out << ( qint32 ) height();
+    out << ( qint32 ) ( ( windowState() & Qt::WindowMaximized ) ? 1 : 0 );
     out << simulateCmdLineHistory;
     out << logCmdLineHistory;
     out << resultsCmdLineHistory;
@@ -452,10 +457,10 @@ void SimulationCraftWindow::saveHistory()
 // Widget Creation
 // ==========================================================================
 
-SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
-  : QWidget(parent),
-    historyWidth(0), historyHeight(0), historyMaximized(1),
-    visibleWebView(0), sim(0), simPhase( "%p%" ), simProgress(100), simResults(0)
+SimulationCraftWindow::SimulationCraftWindow( QWidget *parent )
+  : QWidget( parent ),
+    historyWidth( 0 ), historyHeight( 0 ), historyMaximized( 1 ),
+    visibleWebView( 0 ), sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 )
 {
   cmdLineText = "";
 #ifndef Q_WS_MAC
@@ -482,7 +487,7 @@ SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
   createPaperdoll();
 #endif
 
-  connect( mainTab, SIGNAL(currentChanged(int)), this, SLOT(mainTabChanged(int)) );
+  connect( mainTab, SIGNAL( currentChanged( int ) ), this, SLOT( mainTabChanged( int ) ) );
 
   QVBoxLayout* vLayout = new QVBoxLayout();
   vLayout->addWidget( mainTab );
@@ -490,13 +495,13 @@ SimulationCraftWindow::SimulationCraftWindow(QWidget *parent)
   setLayout( vLayout );
 
   timer = new QTimer( this );
-  connect( timer, SIGNAL(timeout()), this, SLOT(updateSimProgress()) );
+  connect( timer, SIGNAL( timeout() ), this, SLOT( updateSimProgress() ) );
 
   importThread = new ImportThread( this );
   simulateThread = new SimulateThread( this );
 
-  connect(   importThread, SIGNAL(finished()), this, SLOT(  importFinished()) );
-  connect( simulateThread, SIGNAL(finished()), this, SLOT(simulateFinished()) );
+  connect(   importThread, SIGNAL( finished() ), this, SLOT(  importFinished() ) );
+  connect( simulateThread, SIGNAL( finished() ), this, SLOT( simulateFinished() ) );
 
   setAcceptDrops( true );
 
@@ -516,11 +521,11 @@ void SimulationCraftWindow::createCmdLine()
   progressBar->setStyle( new QPlastiqueStyle() );
   progressBar->setMaximum( 100 );
   progressBar->setMaximumWidth( 150 );
-  connect( backButton,    SIGNAL(clicked(bool)),   this, SLOT(    backButtonClicked()) );
-  connect( forwardButton, SIGNAL(clicked(bool)),   this, SLOT( forwardButtonClicked()) );
-  connect( mainButton,    SIGNAL(clicked(bool)),   this, SLOT(    mainButtonClicked()) );
-  connect( cmdLine,       SIGNAL(returnPressed()),            this, SLOT( cmdLineReturnPressed()) );
-  connect( cmdLine,       SIGNAL(textEdited(const QString&)), this, SLOT( cmdLineTextEdited(const QString&)) );
+  connect( backButton,    SIGNAL( clicked( bool ) ),   this, SLOT(    backButtonClicked() ) );
+  connect( forwardButton, SIGNAL( clicked( bool ) ),   this, SLOT( forwardButtonClicked() ) );
+  connect( mainButton,    SIGNAL( clicked( bool ) ),   this, SLOT(    mainButtonClicked() ) );
+  connect( cmdLine,       SIGNAL( returnPressed() ),            this, SLOT( cmdLineReturnPressed() ) );
+  connect( cmdLine,       SIGNAL( textEdited( const QString& ) ), this, SLOT( cmdLineTextEdited( const QString& ) ) );
   cmdLineGroupBox = new QGroupBox();
   cmdLineGroupBox->setLayout( cmdLineLayout );
 }
@@ -529,14 +534,14 @@ void SimulationCraftWindow::createWelcomeTab()
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 #ifdef Q_WS_MAC
-  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Welcome"), CFSTR("html"), 0);
+  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Welcome" ), CFSTR( "html" ), 0 );
   if ( fileRef )
   {
-    CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
-    welcomeFile         = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+    welcomeFile         = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
 
-    CFRelease(fileRef);
-    CFRelease(macPath);
+    CFRelease( fileRef );
+    CFRelease( macPath );
   }
 #endif
   QString url = "file:///" + welcomeFile;
@@ -562,11 +567,11 @@ void SimulationCraftWindow::createOptionsTab()
   QAbstractButton* allDebuffs = debuffsButtonGroup->buttons().at( 0 );
   QAbstractButton* allScaling = scalingButtonGroup->buttons().at( 0 );
 
-  connect( armoryRegionChoice, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(armoryRegionChanged(const QString&)) );
+  connect( armoryRegionChoice, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 
-  connect( allBuffs,   SIGNAL(toggled(bool)), this, SLOT(allBuffsChanged(bool))   );
-  connect( allDebuffs, SIGNAL(toggled(bool)), this, SLOT(allDebuffsChanged(bool)) );
-  connect( allScaling, SIGNAL(toggled(bool)), this, SLOT(allScalingChanged(bool)) );
+  connect( allBuffs,   SIGNAL( toggled( bool ) ), this, SLOT( allBuffsChanged( bool ) )   );
+  connect( allDebuffs, SIGNAL( toggled( bool ) ), this, SLOT( allDebuffsChanged( bool ) ) );
+  connect( allScaling, SIGNAL( toggled( bool ) ), this, SLOT( allScalingChanged( bool ) ) );
 }
 
 void SimulationCraftWindow::createGlobalsTab()
@@ -612,7 +617,7 @@ void SimulationCraftWindow::createBuffsTab()
     buffsButtonGroup->addButton( checkBox );
     buffsLayout->addWidget( checkBox );
   }
-  buffsLayout->addStretch(1);
+  buffsLayout->addStretch( 1 );
   QGroupBox* buffsGroupBox = new QGroupBox();
   buffsGroupBox->setLayout( buffsLayout );
 
@@ -633,7 +638,7 @@ void SimulationCraftWindow::createDebuffsTab()
     debuffsButtonGroup->addButton( checkBox );
     debuffsLayout->addWidget( checkBox );
   }
-  debuffsLayout->addStretch(1);
+  debuffsLayout->addStretch( 1 );
   QGroupBox* debuffsGroupBox = new QGroupBox();
   debuffsGroupBox->setLayout( debuffsLayout );
 
@@ -653,7 +658,7 @@ void SimulationCraftWindow::createScalingTab()
     scalingButtonGroup->addButton( checkBox );
     scalingLayout->addWidget( checkBox );
   }
-  scalingLayout->addStretch(1);
+  scalingLayout->addStretch( 1 );
   QGroupBox* scalingGroupBox = new QGroupBox();
   scalingGroupBox->setLayout( scalingLayout );
 
@@ -673,7 +678,7 @@ void SimulationCraftWindow::createPlotsTab()
     plotsButtonGroup->addButton( checkBox );
     plotsLayout->addWidget( checkBox );
   }
-  plotsLayout->addStretch(1);
+  plotsLayout->addStretch( 1 );
   QGroupBox* plotsGroupBox = new QGroupBox();
   plotsGroupBox->setLayout( plotsLayout );
 
@@ -725,9 +730,9 @@ void SimulationCraftWindow::createImportTab()
   historyList->setSortingEnabled( true );
   importTab->addTab( historyList, "History" );
 
-  connect( rawrButton,  SIGNAL(clicked(bool)),                       this, SLOT(rawrButtonClicked()) );
-  connect( historyList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(historyDoubleClicked(QListWidgetItem*)) );
-  connect( importTab,   SIGNAL(currentChanged(int)),                 this, SLOT(importTabChanged(int)) );
+  connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
+  connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
+  connect( importTab,   SIGNAL( currentChanged( int ) ),                 this, SLOT( importTabChanged( int ) ) );
 
   // Commenting out until it is more fleshed out.
   // createCustomTab();
@@ -781,11 +786,11 @@ void SimulationCraftWindow::createBestInSlotTab()
   QDir dir;
   if ( fileRef )
   {
-    CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
-    dir            = QString( CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding()) );
+    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+    dir            = QString( CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() ) );
 
-    CFRelease(fileRef);
-    CFRelease(macPath);
+    CFRelease( fileRef );
+    CFRelease( macPath );
   }
 #endif
   dir.setSorting( QDir::Name );
@@ -823,7 +828,7 @@ void SimulationCraftWindow::createBestInSlotTab()
 
   bisTree->setColumnWidth( 0, 300 );
 
-  connect( bisTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(bisDoubleClicked(QTreeWidgetItem*,int)) );
+  connect( bisTree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*,int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*,int ) ) );
 }
 
 void SimulationCraftWindow::createCustomTab()
@@ -835,26 +840,26 @@ void SimulationCraftWindow::createCustomTab()
   QGroupBox* customGroupBox = new QGroupBox();
   customGroupBox->setLayout( customLayout );
   importTab->addTab( customGroupBox, "Custom Profile" );
-  customLayout->addWidget( createCustomCharData = new QGroupBox(tr("Character Data")), 1 );
-  createCustomCharData->setObjectName(QString::fromUtf8("createCustomCharData"));
+  customLayout->addWidget( createCustomCharData = new QGroupBox( tr( "Character Data" ) ), 1 );
+  createCustomCharData->setObjectName( QString::fromUtf8( "createCustomCharData" ) );
   customLayout->addWidget( createCustomProfileDock = new QTabWidget(), 1 );
-  createCustomProfileDock->setObjectName(QString::fromUtf8("createCustomProfileDock"));
-  createCustomProfileDock->setAcceptDrops(true);
+  createCustomProfileDock->setObjectName( QString::fromUtf8( "createCustomProfileDock" ) );
+  createCustomProfileDock->setAcceptDrops( true );
   customGearTab = new QWidget();
-  customGearTab->setObjectName(QString::fromUtf8("customGearTab"));
-  createCustomProfileDock->addTab(customGearTab, QString());
+  customGearTab->setObjectName( QString::fromUtf8( "customGearTab" ) );
+  createCustomProfileDock->addTab( customGearTab, QString() );
   customTalentsTab = new QWidget();
-  customTalentsTab->setObjectName(QString::fromUtf8("customTalentsTab"));
-  createCustomProfileDock->addTab(customTalentsTab, QString());
+  customTalentsTab->setObjectName( QString::fromUtf8( "customTalentsTab" ) );
+  createCustomProfileDock->addTab( customTalentsTab, QString() );
   customGlyphsTab = new QWidget();
-  customGlyphsTab->setObjectName(QString::fromUtf8("customGlyphsTab"));
-  createCustomProfileDock->addTab(customGlyphsTab, QString());
-  createCustomProfileDock->setTabText(createCustomProfileDock->indexOf(customGearTab), QApplication::translate("createCustomTab", "Gear", 0, QApplication::UnicodeUTF8));
-  createCustomProfileDock->setTabToolTip(createCustomProfileDock->indexOf(customGearTab), QApplication::translate("createCustomTab", "Customise Gear Setup", 0, QApplication::UnicodeUTF8));
-  createCustomProfileDock->setTabText(createCustomProfileDock->indexOf(customTalentsTab), QApplication::translate("createCustomTab", "Talents", 0, QApplication::UnicodeUTF8));
-  createCustomProfileDock->setTabToolTip(createCustomProfileDock->indexOf(customTalentsTab), QApplication::translate("createCustomTab", "Customise Talents", 0, QApplication::UnicodeUTF8));
-  createCustomProfileDock->setTabText(createCustomProfileDock->indexOf(customGlyphsTab), QApplication::translate("createCustomTab", "Glyphs", 0, QApplication::UnicodeUTF8));
-  createCustomProfileDock->setTabToolTip(createCustomProfileDock->indexOf(customGlyphsTab), QApplication::translate("createCustomTab", "Customise Glyphs", 0, QApplication::UnicodeUTF8));
+  customGlyphsTab->setObjectName( QString::fromUtf8( "customGlyphsTab" ) );
+  createCustomProfileDock->addTab( customGlyphsTab, QString() );
+  createCustomProfileDock->setTabText( createCustomProfileDock->indexOf( customGearTab ), QApplication::translate( "createCustomTab", "Gear", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock->setTabToolTip( createCustomProfileDock->indexOf( customGearTab ), QApplication::translate( "createCustomTab", "Customise Gear Setup", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock->setTabText( createCustomProfileDock->indexOf( customTalentsTab ), QApplication::translate( "createCustomTab", "Talents", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock->setTabToolTip( createCustomProfileDock->indexOf( customTalentsTab ), QApplication::translate( "createCustomTab", "Customise Talents", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock->setTabText( createCustomProfileDock->indexOf( customGlyphsTab ), QApplication::translate( "createCustomTab", "Glyphs", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock->setTabToolTip( createCustomProfileDock->indexOf( customGlyphsTab ), QApplication::translate( "createCustomTab", "Customise Glyphs", 0, QApplication::UnicodeUTF8 ) );
 }
 
 void SimulationCraftWindow::createSimulateTab()
@@ -879,7 +884,7 @@ void SimulationCraftWindow::createLogTab()
   logText = new QPlainTextEdit();
   logText->setLineWrapMode( QPlainTextEdit::NoWrap );
   //logText->document()->setDefaultFont( QFont( "fixed" ) );
-  logText->setReadOnly(true);
+  logText->setReadOnly( true );
   logText->setPlainText( "Look here for error messages and simple text-only reporting.\n" );
   mainTab->addTab( logText, "Log" );
 }
@@ -896,14 +901,14 @@ void SimulationCraftWindow::createResultsTab()
   QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
   QString legendFile = "Legend.html";
 #ifdef Q_WS_MAC
-  CFURLRef fileRef    = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("Legend"), CFSTR("html"), 0);
+  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Legend" ), CFSTR( "html" ), 0 );
   if ( fileRef )
   {
-    CFStringRef macPath = CFURLCopyFileSystemPath(fileRef, kCFURLPOSIXPathStyle);
-    legendFile          = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+    legendFile          = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
 
-    CFRelease(fileRef);
-    CFRelease(macPath);
+    CFRelease( fileRef );
+    CFRelease( macPath );
   }
 #endif
 
@@ -921,8 +926,8 @@ void SimulationCraftWindow::createResultsTab()
   resultsTab = new QTabWidget();
   resultsTab->setTabsClosable( true );
   resultsTab->addTab( legendBanner, "Legend" );
-  connect( resultsTab, SIGNAL(currentChanged(int)),    this, SLOT(resultsTabChanged(int))      );
-  connect( resultsTab, SIGNAL(tabCloseRequested(int)), this, SLOT(resultsTabCloseRequest(int)) );
+  connect( resultsTab, SIGNAL( currentChanged( int ) ),    this, SLOT( resultsTabChanged( int ) )      );
+  connect( resultsTab, SIGNAL( tabCloseRequested( int ) ), this, SLOT( resultsTabCloseRequest( int ) ) );
   mainTab->addTab( resultsTab, "Results" );
 }
 
@@ -1027,7 +1032,7 @@ void SimulationCraftWindow::createItemDataSourceSelector( QFormLayout* layout )
 
   itemDbOrder -> setFixedHeight( ( itemDbOrder -> model() -> rowCount() + 1 ) * itemDbOrder -> sizeHintForRow( 0 ) );
 
-  layout->addRow("Item Source Order", itemDbOrder );
+  layout->addRow( "Item Source Order", itemDbOrder );
 }
 
 void SimulationCraftWindow::updateVisibleWebView( SimulationCraftWebView* wv )
@@ -1135,7 +1140,7 @@ void ImportThread::importBattleNet()
       {
         character = tokens[ ++i ];
       }
-      else if( t == "character" && (i<count-2) ) // new battle.net
+      else if( t == "character" && ( i<count-2 ) ) // new battle.net
       {
         server    = tokens[ ++i ];
         character = tokens[ ++i ];
@@ -1194,7 +1199,7 @@ void ImportThread::run()
   case TAB_BATTLE_NET: importBattleNet(); break;
   case TAB_CHAR_DEV:   importCharDev();   break;
   case TAB_RAWR:       importRawr();      break;
-  default: assert(0);
+  default: assert( 0 );
   }
 
   if( player )
@@ -1488,8 +1493,8 @@ void SimulationCraftWindow::simulateFinished()
   {
     // Html results will _ALWAYS_ be utf-8, regardless of the input encoding
     // so read them to the WebView through QTextStream
-    QTextStream s(&file);
-    s.setCodec("UTF-8");
+    QTextStream s( &file );
+    s.setCodec( "UTF-8" );
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
     SimulationCraftWebView* resultsView = new SimulationCraftWebView( this );
     resultsHtml.append( s.readAll() );
@@ -1632,8 +1637,8 @@ void SimulationCraftWindow::backButtonClicked( bool /* checked */ )
 
       QWebHistory* h = visibleWebView->history();
       visibleWebView->history()->clear(); // This is not appearing to work.
-      h->setMaximumItemCount(0);
-      h->setMaximumItemCount(100);
+      h->setMaximumItemCount( 0 );
+      h->setMaximumItemCount( 100 );
     }
     else
     {
@@ -1723,10 +1728,10 @@ void SimulationCraftWindow::mainTabChanged( int index )
     updateVisibleWebView( siteView );
     break;
 #ifdef SC_PAPERDOLL
-    case TAB_PAPERDOLL:
-      break;
+  case TAB_PAPERDOLL:
+    break;
 #endif
-  default: assert(0);
+  default: assert( 0 );
   }
   if( visibleWebView )
   {
@@ -1753,7 +1758,7 @@ void SimulationCraftWindow::importTabChanged( int index )
   }
   else
   {
-    updateVisibleWebView( (SimulationCraftWebView*) importTab->widget( index ) );
+    updateVisibleWebView( ( SimulationCraftWebView* ) importTab->widget( index ) );
   }
 }
 
@@ -1765,7 +1770,7 @@ void SimulationCraftWindow::resultsTabChanged( int index )
   }
   else
   {
-    updateVisibleWebView( (SimulationCraftWebView*) resultsTab->widget( index ) );
+    updateVisibleWebView( ( SimulationCraftWebView* ) resultsTab->widget( index ) );
     QString s = visibleWebView->url().toString();
     if( s == "about:blank" ) s = resultsFileText;
     cmdLine->setText( s );
@@ -1871,7 +1876,7 @@ void PersistentCookieJar::save()
   {
     QDataStream out( &file );
     QList<QNetworkCookie> cookies = allCookies();
-    qint32 count = (qint32) cookies.count();
+    qint32 count = ( qint32 ) cookies.count();
     out << count;
     for( int i=0; i < count; i++ )
     {
