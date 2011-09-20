@@ -25,8 +25,9 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   int num_buckets = ( int ) sim -> max_time;
   if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
   num_buckets *= 2;
+  num_buckets++;
 
-  timeline_amount.reserve( num_buckets );
+  timeline_amount.assign( num_buckets, 0 );
 }
 
 // stats_t::add_child =======================================================
@@ -90,8 +91,12 @@ void stats_t::add_result( double act_amount,
   if ( act_amount > r -> max_amount ) r -> max_amount = act_amount;
 
   int index = ( int ) ( sim -> current_time );
-  if ( index >= ( int ) timeline_amount.size() )
-    timeline_amount.resize( index + 1 );
+
+  // If current time exceeds vector length, increase it by 10% + 1
+  if ( timeline_amount.size() <= ( std::size_t ) index )
+    timeline_amount.resize( ( int ) ( index * 1.1 + 1 ), 0 );
+
+  assert( timeline_amount.size() > ( std::size_t ) index );
 
   timeline_amount[ index ] += act_amount;
 }
