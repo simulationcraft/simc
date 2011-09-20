@@ -91,7 +91,7 @@ void stats_t::add_result( double act_amount,
 
   int index = ( int ) ( sim -> current_time );
   if ( index >= ( int ) timeline_amount.size() )
-    timeline_amount.resize( index * 2 );
+    timeline_amount.resize( index + 1 );
 
   timeline_amount[ index ] += act_amount;
 }

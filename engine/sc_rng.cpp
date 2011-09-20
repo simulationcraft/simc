@@ -387,7 +387,6 @@ struct rng_normalized_t : public rng_t
 
   rng_normalized_t( const std::string& name, rng_t* b, bool avg_range=false, bool avg_gauss=false ) :
     rng_t( name, avg_range, avg_gauss ), base( b ) {}
-  virtual ~rng_normalized_t() {}
 
   virtual double real() { return base -> real(); }
   virtual double range( double min, double max ) { return ( min + max ) / 2.0; }
@@ -416,7 +415,7 @@ struct rng_phase_shift_t : public rng_normalized_t
     }
     range_index = ( int ) real() * 10;
 
-    double gauss_offset[] = { 0.3, 0.5, 0.8, 1.3, 2.1 };
+    static const double gauss_offset[] = { 0.3, 0.5, 0.8, 1.3, 2.1 };
     gauss_distribution.resize( 10 );
     for ( int i=0; i < 5; i++ )
     {
@@ -427,7 +426,6 @@ struct rng_phase_shift_t : public rng_normalized_t
 
     actual_roll = real() - 0.5;
   }
-  virtual ~rng_phase_shift_t() {}
   virtual int type() SC_CONST { return RNG_PHASE_SHIFT; }
 
   virtual double range( double min, double max )
@@ -501,7 +499,6 @@ struct rng_pre_fill_t : public rng_normalized_t
     roll_distribution.resize( 10 );
     roll_index = 10;
   }
-  virtual ~rng_pre_fill_t() {}
   virtual int type() SC_CONST { return RNG_PRE_FILL; }
 
   virtual int roll( double chance )

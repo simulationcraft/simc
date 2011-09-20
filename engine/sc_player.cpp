@@ -3343,8 +3343,9 @@ void player_t::regen( double periodicity )
   {
     if ( resource_max[ i ] == 0 ) continue;
 
-    int size = ( int ) timeline_resource[i].size();
-    if ( index >= size ) timeline_resource[i].resize( index * 2, 0 );
+    int size = ( int ) timeline_resource[ i ].size();
+    if ( index >= size )
+      timeline_resource[ i ].resize( index + 1, 0 );
 
     timeline_resource[ i ][ index ] += resource_current[ i ] * periodicity;
   }

@@ -1990,7 +1990,7 @@ int util_t::string_split( const std::string& str,
 
 void util_t::string_strip_quotes( std::string& str )
 {
-  std::string::size_type pos = str.find_first_of( '"' );
+  std::string::size_type pos = str.find( '"' );
   if ( pos == str.npos ) return;
 
   std::string::iterator dst = str.begin() + pos, src = dst;

@@ -152,18 +152,10 @@ void option_t::add( std::vector<option_t>& options,
 // option_t::copy ===========================================================
 
 void option_t::copy( std::vector<option_t>& opt_vector,
-                     option_t*              opt_array )
+                     const option_t*        opt_array )
 {
-  int vector_size = ( int ) opt_vector.size();
-  int  array_size = 0;
-
-  for ( int i=0; opt_array[ i ].name; i++ ) array_size++;
-  opt_vector.resize( vector_size + array_size );
-
-  for ( int i=0; i < array_size; i++ )
-  {
-    opt_vector[ vector_size + i ]  = opt_array[ i ];
-  }
+  while ( opt_array -> name )
+    opt_vector.push_back( *opt_array++ );
 }
 
 // option_t::parse ==========================================================
@@ -263,20 +255,11 @@ bool option_t::parse( sim_t*                 sim,
 
 bool option_t::parse( sim_t*             sim,
                       const char*        context,
-                      option_t*          options,
+                      const option_t*    options,
                       const std::string& options_str )
 {
-  int num_options=0;
-  while ( options[ num_options ].name ) num_options++;
-
   std::vector<option_t> options_vector;
-  options_vector.resize( num_options );
-
-  for ( int i=0; i < num_options; i++ )
-  {
-    options_vector[ i ] = options[ i ];
-  }
-
+  option_t::copy( options_vector, options );
   return parse( sim, context, options_vector, options_str );
 }
 

@@ -1624,10 +1624,10 @@ struct option_t
   bool parse( sim_t*, const std::string& name, const std::string& value );
 
   static void add( std::vector<option_t>&, const char* name, int type, void* address );
-  static void copy( std::vector<option_t>& opt_vector, option_t* opt_array );
+  static void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
   static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
   static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
-  static bool parse( sim_t*, const char* context, option_t*,              const std::string& options_str );
+  static bool parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
   static bool parse_file( sim_t*, FILE* file );
   static bool parse_line( sim_t*, char* line );
   static bool parse_token( sim_t*, std::string& token );
