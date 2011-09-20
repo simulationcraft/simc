@@ -3223,15 +3223,18 @@ struct readiness_t : public hunter_spell_t
 struct summon_pet_t : public hunter_spell_t
 {
   std::string pet_name;
+  pet_t* pet;
 
   summon_pet_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "summon_pet", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY )
+    hunter_spell_t( "summon_pet", player, SCHOOL_PHYSICAL, TREE_BEAST_MASTERY ),
+    pet( 0 )
   {
     hunter_t* p = player -> cast_hunter();
     pet_name = ( options_str.size() > 0 ) ? options_str : p -> summon_pet_str;
     harmful = false;
     trigger_gcd = 0;
-    if ( ! p -> find_pet( pet_name ) )
+    pet = p -> find_pet( pet_name );
+    if ( ! pet )
     {
       sim -> errorf( "Player %s unable to find pet %s for summons.\n", p -> name(), pet_name.c_str() );
       sim -> cancel();
@@ -3240,14 +3243,17 @@ struct summon_pet_t : public hunter_spell_t
 
   virtual void execute()
   {
-    player -> summon_pet( pet_name.c_str() );
+    pet -> summon();
   }
 
   virtual bool ready()
   {
     hunter_t* p = player -> cast_hunter();
-    if ( p -> active_pet ) return false;
-    return true;
+
+    if ( p -> active_pet == pet )
+      return false;
+
+    return hunter_spell_t::ready();
   }
 };
 

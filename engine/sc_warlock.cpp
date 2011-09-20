@@ -3126,32 +3126,41 @@ struct summon_pet_t : public warlock_spell_t
 {
   std::string pet_name;
   double summoning_duration;
+  pet_t* pet;
 
-  summon_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str ) :
-    warlock_spell_t( n, player, sname ), pet_name( n ), summoning_duration ( 0 )
+  void _init_summon_pet_t()
   {
-    parse_options( NULL, options_str );
-
     warlock_t* p = player -> cast_warlock();
     harmful = false;
     base_execute_time += p -> talent_master_summoner -> effect1().seconds();
     base_cost         *= 1.0 + p -> talent_master_summoner -> effect2().percent();
+
+    pet = p -> find_pet( pet_name );
+    if ( ! pet )
+    {
+      sim -> errorf( "Player %s unable to find pet %s for summons.\n", p -> name(), pet_name.c_str() );
+      sim -> cancel();
+    }
   }
 
-  summon_pet_t( const char* n, player_t* player, int id ) :
-    warlock_spell_t( n, player, id ), pet_name( n ), summoning_duration ( 0 )
+  summon_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str="" ) :
+    warlock_spell_t( n, player, sname ), pet_name( n ), summoning_duration ( 0 ), pet( 0 )
   {
-    warlock_t* p = player -> cast_warlock();
+    parse_options( NULL, options_str );
+    _init_summon_pet_t();
+  }
 
-    harmful = false;
-    base_execute_time += p -> talent_master_summoner -> effect1().seconds();
-    base_cost         *= 1.0 + p -> talent_master_summoner -> effect2().percent();
+  summon_pet_t( const char* n, player_t* player, int id, const std::string& options_str="" ) :
+    warlock_spell_t( n, player, id ), pet_name( n ), summoning_duration ( 0 ), pet( 0 )
+  {
+    parse_options( NULL, options_str );
+    _init_summon_pet_t();
   }
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
-    p -> summon_pet( pet_name.c_str(), summoning_duration );
+    pet -> summon( summoning_duration );
+
     warlock_spell_t::execute();
   }
 };
@@ -3160,10 +3169,9 @@ struct summon_pet_t : public warlock_spell_t
 
 struct summon_main_pet_t : public summon_pet_t
 {
-  std::string pet_name;
 
   summon_main_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str ) :
-    summon_pet_t( n, player, sname, options_str ), pet_name( n )
+    summon_pet_t( n, player, sname, options_str )
   { }
 
   virtual void schedule_execute()

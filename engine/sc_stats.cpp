@@ -25,9 +25,8 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   int num_buckets = ( int ) sim -> max_time;
   if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
   num_buckets *= 2;
-  num_buckets++;
 
-  timeline_amount.assign( num_buckets, 0 );
+  timeline_amount.reserve( num_buckets );
 }
 
 // stats_t::add_child =======================================================
@@ -63,7 +62,7 @@ void stats_t::add_result( double act_amount,
                           int    result )
 {
   actual_amount += act_amount;
-  total_amount += tot_amount;
+  total_amount  += tot_amount;
 
   if ( type == STATS_DMG )
     player -> iteration_dmg += act_amount;
@@ -92,11 +91,8 @@ void stats_t::add_result( double act_amount,
 
   int index = ( int ) ( sim -> current_time );
 
-  // If current time exceeds vector length, increase it by 10% + 1
   if ( timeline_amount.size() <= ( std::size_t ) index )
-    timeline_amount.resize( ( int ) ( index * 1.1 + 1 ), 0 );
-
-  assert( timeline_amount.size() > ( std::size_t ) index );
+    timeline_amount.resize( index + 1  );
 
   timeline_amount[ index ] += act_amount;
 }
@@ -150,9 +146,7 @@ void stats_t::analyze()
     if ( direct_results[ i ].count != 0 )
     {
       stats_results_t& r = direct_results[ i ];
-      assert( r.count <= num_direct_results );
-      assert( num_direct_results > 0 );
-      assert( r.count >= 0 );
+
       r.avg_amount = r.actual_amount / r.count;
       r.pct = 100.0 * r.count / ( double ) num_direct_results;
       r.overkill_pct = r.total_amount ? 100.0 * ( r.total_amount - r.actual_amount ) / r.total_amount : 0;
@@ -173,10 +167,10 @@ void stats_t::analyze()
     }
   }
 
-  resource_consumed /= num_iterations;
+  resource_consumed  /= num_iterations;
 
-  num_executes /= num_iterations;
-  num_ticks    /= num_iterations;
+  num_executes       /= num_iterations;
+  num_ticks          /= num_iterations;
 
   num_direct_results /= num_iterations;
   num_tick_results   /= num_iterations;
