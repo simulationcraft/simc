@@ -82,6 +82,7 @@ static bool parse_ptr( sim_t*             sim,
   sim -> dbc.ptr = atoi( value.c_str() ) != 0;
 #else
   sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
+  if ( value.length() ) {}
 #endif
 
   return true;

@@ -36,18 +36,18 @@ static unsigned             idx_td_size[2]     = { 0, 0 };
 const char* dbc_t::build_level( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? "14492" : "14480";
+  return ptr ? "14545" : "14545";
 #else
-  return "14480";
+  return "14545";
 #endif
 }
 
 const char* dbc_t::wow_version( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? "4.2.2" : "4.2.0";
+  return ptr ? "4.2.2" : "4.2.2";
 #else
-  return "4.2.0";
+  return "4.2.2";
 #endif
 }
 
