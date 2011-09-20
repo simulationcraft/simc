@@ -3430,7 +3430,7 @@ struct player_t
   gear_stats_t scaling_error;
   gear_stats_t scaling_delta_dps;
   gear_stats_t scaling_compare_error;
-  double       scaling_lag;
+  double       scaling_lag, scaling_lag_error;
   int          scales_with[ STAT_MAX ];
   double       over_cap[ STAT_MAX ];
   std::vector<int> scaling_stats; // sorting vector

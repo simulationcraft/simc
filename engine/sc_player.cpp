@@ -455,7 +455,7 @@ player_t::player_t( sim_t*             s,
   sets( 0 ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   // Scaling
-  scaling_lag( 0 ),
+  scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
   base_movement_speed( 7.0 ), x_position( 0.0 ), y_position( 0.0 ),
 

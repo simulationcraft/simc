@@ -633,7 +633,7 @@ static void print_text_scale_factors( FILE* file, sim_t* sim )
       util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalize_by() ), sim -> report_precision, p -> scaling.get_stat( p -> normalize_by() ) );
     }
 
-    if ( sim -> scaling -> scale_lag ) util_t::fprintf( file, "  ms Lag=%.*f", sim -> report_precision, p -> scaling_lag );
+    if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, "  ms Lag=%.*f(%.*f)", p -> sim -> report_precision, p -> scaling_lag, p -> sim -> report_precision, p -> scaling_lag_error );
 
     util_t::fprintf( file, "\n" );
   }
@@ -666,7 +666,7 @@ static void print_text_scale_factors( FILE* file, player_t* p )
   {
     util_t::fprintf( file, "  DPS/%s=%.*f", util_t::stat_type_abbrev( p -> normalize_by() ), p -> sim -> report_precision, p -> scaling.get_stat( p -> normalize_by() ) );
   }
-  if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, "  ms Lag=%.*f", p -> sim -> report_precision, p -> scaling_lag );
+  if ( p -> sim -> scaling -> scale_lag ) util_t::fprintf( file, "  ms Lag=%.*f(%.*f)", p -> sim -> report_precision, p -> scaling_lag, p -> sim -> report_precision, p -> scaling_lag_error );
 
   util_t::fprintf( file, "\n" );
 
@@ -2754,6 +2754,11 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
                            "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
                            p -> sim -> report_precision,
                            p -> scaling_error.get_stat( i ) );
+      if ( p -> sim -> scaling -> scale_lag )
+              util_t::fprintf( file,
+                               "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                               p -> sim -> report_precision,
+                               p -> scaling_lag_error );
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t</tr>\n" );
       util_t::fprintf( file,

@@ -302,6 +302,14 @@ void scaling_t::analyze_stats()
 
       double score = ( delta_score - ref_score ) / divisor;
       double error = sqrt ( delta_error * delta_error + ref_error * ref_error );
+
+      if ( scale_factor_noise > 0 &&
+           scale_factor_noise < error / fabs( delta_score - ref_score ) )
+      {
+        sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for %s (error is >%.0f%% delta score)\n",
+                       p -> name(), sim -> iterations, util_t::stat_type_string( i ), scale_factor_noise * 100.0 );
+      }
+
       error = fabs( error / divisor );
 
       if ( center )
@@ -313,13 +321,6 @@ void scaling_t::analyze_stats()
       {
         score /= 10.0;
         error /= 10.0;
-      }
-
-      if ( scale_factor_noise > 0 &&
-           scale_factor_noise < ref_error / fabs( delta_score - ref_score ) )
-      {
-        sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for %s (error is >%.0f%% delta score)\n",
-                       p -> name(), sim -> iterations, util_t::stat_type_string( i ), scale_factor_noise * 100.0 );
       }
 
       p -> scaling.set_stat( i, score );
@@ -393,21 +394,22 @@ void scaling_t::analyze_lag()
     double delta_score = scale_over_function( delta_sim, delta_p );
     double   ref_score = scale_over_function(   ref_sim,   ref_p );
 
-    //double delta_error = scale_over_function_error( delta_sim, delta_p );
-    double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
+    double delta_error = scale_over_function_error( delta_sim, delta_p );
+    double ref_error = scale_over_function_error(   ref_sim,   ref_p );
+    double error = sqrt ( delta_error * delta_error + ref_error * ref_error );
 
     double score = ( delta_score - ref_score ) / divisor;
 
-    if ( scale_factor_noise <= 0 ||
-         scale_factor_noise > ref_error / fabs( delta_score - ref_score ) )
-    {
-      p -> scaling_lag = score;
-    }
-    else
-    {
-      sim -> errorf( "Player %s given insufficient iterations (%d) to calculate scale factor for lag\n",
-                     p -> name(), sim -> iterations );
-    }
+
+
+    if ( scale_factor_noise > 0 &&
+         scale_factor_noise < error / fabs( delta_score - ref_score ) )
+      sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for lag (error is >%.0f%% delta score)\n",
+                           p -> name(), sim -> iterations, scale_factor_noise * 100.0 );
+
+    error = fabs( error / divisor );
+    p -> scaling_lag = score;
+    p -> scaling_lag_error = error;
   }
 
   if ( ref_sim != sim ) delete ref_sim;
