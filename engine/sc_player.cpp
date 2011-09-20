@@ -5575,7 +5575,7 @@ void player_t::create_glyphs()
 
   for( int i=0; i < num_glyphs; i++ )
   {
-    glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ], "", ptr ) ) );
+    glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ], ptr ) ) );
   }
 }
 
