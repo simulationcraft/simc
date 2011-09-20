@@ -2646,7 +2646,7 @@ void paladin_t::init_spells()
   glyphs.templars_verdict         = find_glyph( "Glyph of Templar's Verdict" );
 
   // Tier Bonuses
-  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     {     0,     0, 90298, 90299, 90301, 90306,     0,     0 }, // Tier11

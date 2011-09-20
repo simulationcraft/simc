@@ -926,7 +926,7 @@ talent_data_t* talent_data_t::nil()
   return &nil_td;
 }
 
-spell_data_t* spell_data_t::find( unsigned spell_id, const std::string& confirmation, bool ptr )
+spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
 {
   if ( spell_id == 0 ) return spell_data_t::nil();
 
@@ -936,7 +936,6 @@ spell_data_t* spell_data_t::find( unsigned spell_id, const std::string& confirma
   {
     if( spell_data[ i ].id() == spell_id )
     {
-      if( ! confirmation.empty() ) assert( confirmation == spell_data[ i ].name_cstr() );
       return spell_data + i;
     }
   }
@@ -953,6 +952,14 @@ spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
       return spelleffect_data + i;
 
   return 0;
+}
+
+spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, bool ptr )
+{
+  if ( spell_id == 0 ) return spell_data_t::nil();
+  spell_data_t* sd = find( spell_id, ptr );
+  if ( sd ) assert( ! strcmp( confirmation, sd -> name_cstr() ) );
+  return sd;
 }
 
 talent_data_t* talent_data_t::find( unsigned id, const std::string& confirmation, bool ptr )

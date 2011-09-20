@@ -4409,7 +4409,7 @@ void death_knight_t::init_spells()
   glyphs.scourge_strike  = find_glyph( "Glyph of Scourge Strike" );
 
   // Tier Bonuses
-  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     {     0,     0, 90457, 90459, 90454, 90456,     0,     0 }, // Tier11

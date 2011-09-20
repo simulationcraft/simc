@@ -3722,7 +3722,7 @@ void rogue_t::init_spells()
   glyphs.tricks_of_the_trade = find_glyph( "Glyph of Tricks of the Trade" );
   glyphs.vendetta            = find_glyph( "Glyph of Vendetta"            );
 
-  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     {     0,     0, 90460, 90473,     0,     0,     0,     0 }, // Tier11

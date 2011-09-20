@@ -3342,7 +3342,7 @@ void mage_t::init_spells()
   glyphs.molten_armor         = find_glyph( "Glyph of Molten Armor" );
   glyphs.pyroblast            = find_glyph( "Glyph of Pyroblast" );
 
-  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 90290, 90291,     0,     0,     0,     0,     0,     0 }, // Tier11

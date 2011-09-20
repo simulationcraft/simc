@@ -378,36 +378,20 @@ int spelleffect_data_t::die_sides() SC_CONST
   return _die_sides;
 }
 
-const char* talent_data_t::name_cstr() SC_CONST
-{
-  return _name;
-}
-
-bool talent_data_t::is_used() SC_CONST
-{
-  return ( ( _flags & 0x01 ) == 0x01 );
-}
-
 void talent_data_t::set_used( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x01 );
-  _flags |= value ? 0x01 : 0x00;
-}
-
-bool talent_data_t::is_enabled() SC_CONST
-{
-  return ( ( _flags & 0x02 ) == 0x00 );
+  if ( value )
+    _flags |= FLAG_USED;
+  else
+    _flags &= ~FLAG_USED;
 }
 
 void talent_data_t::set_enabled( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x02 );
-  _flags |= value ? 0x00 : 0x02;
-}
-
-uint32_t talent_data_t::tab_page() SC_CONST
-{
-  return _tab_page;
+  if ( value )
+    _flags &= ~FLAG_DISABLED;
+  else
+    _flags |= FLAG_DISABLED;
 }
 
 bool talent_data_t::is_class( player_type c ) SC_CONST
@@ -430,36 +414,6 @@ bool talent_data_t::is_pet( pet_type_t p ) SC_CONST
   return ( ( _m_pet & mask ) == mask );
 }
 
-uint32_t talent_data_t::depends_id() SC_CONST
-{
-  return _dependance;
-}
-
-uint32_t talent_data_t::depends_rank() SC_CONST
-{
-  return _depend_rank + 1;
-}
-
-uint32_t talent_data_t::col() SC_CONST
-{
-  return _col;
-}
-
-uint32_t talent_data_t::row() SC_CONST
-{
-  return _row;
-}
-
-unsigned talent_data_t::mask_class() SC_CONST
-{
-  return _m_class;
-}
-
-unsigned talent_data_t::mask_pet() SC_CONST
-{
-  return _m_pet;
-}
-
 uint32_t talent_data_t::rank_spell_id( uint32_t rank ) SC_CONST
 {
   assert( rank <= MAX_RANK );
@@ -472,14 +426,12 @@ uint32_t talent_data_t::rank_spell_id( uint32_t rank ) SC_CONST
 
 uint32_t talent_data_t::max_rank() SC_CONST
 {
-  uint32_t i = 0;
+  uint32_t i;
 
   for ( i = 0; i < MAX_RANK; i++ )
   {
     if ( _rank_id[ i ] == 0 )
-    {
-      return i;
-    }
+      break;
   }
 
   return i;

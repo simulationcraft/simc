@@ -780,19 +780,30 @@ enum rating_type {
 };
 
 // Type utilities and simple meta-programming tools =========================
-
-#define sizeof_array( x ) ( sizeof( x ) / sizeof( x[ 0 ] ) )
+template <typename T, std::size_t N>
+inline std::size_t sizeof_array( T (&)[N] )
+{ return N; }
 
 template <typename T>
-inline void zerofill( T* t )
+inline void zerofill( T* t, std::size_t n )
 {
   // static_assert( std::is_pod<T>::value, "You cannot use zerofill on a non-pod type." );
-  memset( t, 0, sizeof( *t ) );
+  memset( t, 0, n * sizeof( *t ) );
 }
 
 template <typename T>
 inline void zerofill( T& t )
-{ zerofill( &t ); }
+{
+  // static_assert( std::is_pod<T>::value, "You cannot use zerofill on a non-pod type." );
+  memset( &t, 0, sizeof( t ) );
+}
+
+template <typename T, std::size_t N>
+inline void zerofill( T (&t)[N] )
+{
+  // static_assert( std::is_pod<T>::value, "You cannot use zerofill on a non-pod type." );
+  memset( &t, 0, sizeof( t ) );
+}
 
 class noncopyable
 {
@@ -1286,8 +1297,9 @@ struct spell_data_t {
   const spelleffect_data_t& effect3() const { return *_effect3; }
 
   static spell_data_t* nil();
-  static spell_data_t* find( unsigned, const std::string& confirmation = std::string(), bool ptr = false );
   static spell_data_t* find( const std::string& name, bool ptr = false );
+  static spell_data_t* find( unsigned id, bool ptr = false );
+  static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
   static spell_data_t* list( bool ptr = false );
   static void          link( bool ptr = false );
 
@@ -1374,15 +1386,15 @@ struct spelleffect_data_t {
   void                       set_used( bool value );
   void                       set_enabled( bool value );
 
-  inline unsigned            id() SC_CONST { return _id; }
+  unsigned                   id() SC_CONST { return _id; }
   unsigned                   index() SC_CONST;
   uint32_t                   spell_id() SC_CONST;
   uint32_t                   spell_effect_num() SC_CONST;
   effect_type_t              type() SC_CONST;
   effect_subtype_t           subtype() SC_CONST;
-  inline int32_t             base_value() SC_CONST { return _base_value; }
-  inline int32_t             misc_value1() SC_CONST { return _misc_value; }
-  inline int32_t             misc_value2() SC_CONST { return _misc_value_2; }
+  int32_t                    base_value() SC_CONST { return _base_value; }
+  int32_t                    misc_value1() SC_CONST { return _misc_value; }
+  int32_t                    misc_value2() SC_CONST { return _misc_value_2; }
   uint32_t                   trigger_spell_id() SC_CONST;
   double                     chain_multiplier() SC_CONST;
 
@@ -1410,7 +1422,11 @@ struct spelleffect_data_t {
   }
 };
 
-struct talent_data_t {
+struct talent_data_t
+{
+  static const unsigned FLAG_USED = 0x01;
+  static const unsigned FLAG_DISABLED = 0x02;
+
   const char * _name;        // Talent name
   unsigned     _id;          // Talent id
   unsigned     _flags;       // Unused for now, 0x00 for all
@@ -1421,7 +1437,7 @@ struct talent_data_t {
   unsigned     _depend_rank; // Requires this rank of depended talent
   unsigned     _col;         // Talent column
   unsigned     _row;         // Talent row
-  unsigned     _rank_id[3];  // Talent spell rank identifiers for ranks 1..3
+  unsigned     _rank_id[MAX_RANK]; // Talent spell rank identifiers for ranks 1..3
 
   // Pointers for runtime linking
   spell_data_t* spell1;
@@ -1434,34 +1450,41 @@ struct talent_data_t {
   static talent_data_t* list( bool ptr = false );
   static void           link( bool ptr = false );
 
-  bool                  is_used() SC_CONST;
-  bool                  is_enabled() SC_CONST;
+  bool                  is_used() const { return ( _flags & FLAG_USED ) != 0; }
+  bool                  is_enabled() const { return ( _flags & FLAG_DISABLED ) == 0; }
   void                  set_used( bool value );
   void                  set_enabled( bool value );
 
-  inline unsigned       id() SC_CONST { return _id; }
-  const char*           name_cstr() SC_CONST;
-  uint32_t              tab_page() SC_CONST;
+  inline unsigned       id() const { return _id; }
+  const char*           name_cstr() const { return _name; }
+  uint32_t              tab_page() const { return _tab_page; }
   bool                  is_class( player_type c ) SC_CONST;
   bool                  is_pet( pet_type_t p ) SC_CONST;
-  uint32_t              depends_id() SC_CONST;
-  uint32_t              depends_rank() SC_CONST;
-  uint32_t              col() SC_CONST;
-  uint32_t              row() SC_CONST;
+  uint32_t              depends_id() const { return _dependance; }
+  uint32_t              depends_rank() const { return _depend_rank + 1; }
+
+  uint32_t              col() const { return _col; }
+  uint32_t              row() const { return _row; }
   uint32_t              rank_spell_id( uint32_t rank ) SC_CONST;
-  unsigned              mask_class() SC_CONST;
-  unsigned              mask_pet() SC_CONST;
+  unsigned              mask_class() const { return _m_class; }
+  unsigned              mask_pet() const { return _m_pet; }
 
   uint32_t              max_rank() SC_CONST;
+
+  spell_data_t& spell( unsigned r )
+  {
+    if ( r == 0 ) return *spell1;
+    if ( r == 1 ) return *spell2;
+    if ( r == 2 ) return *spell3;
+    return *spell_data_t::nil();
+  }
 };
 
 struct dbc_t
 {
   bool ptr;
 
-  dbc_t() : ptr( false ) { }
-  dbc_t( bool ptr ) : ptr( ptr ) { }
-  dbc_t( const dbc_t& other ) : ptr( other.ptr ) { }
+  dbc_t( bool ptr=false ) : ptr( ptr ) { }
 
   // Static Initialization
   static void init();
@@ -1950,9 +1973,8 @@ struct talent_t : spell_id_t
   talent_data_t& data() { return *td; }
   spell_data_t& spell( unsigned r=0 )
   {
-    if ( r == 1 ) return *( td -> spell1 );
-    if ( r == 2 ) return *( td -> spell2 );
-    if ( r == 3 ) return *( td -> spell3 );
+    if ( r >= 1 && r - 1 < MAX_RANK )
+      return td -> spell( r - 1 );
     return *sd;
   }
   const spelleffect_data_t& effect1() const { return sd -> effect1(); }
@@ -1964,22 +1986,18 @@ struct talent_t : spell_id_t
 
 struct active_spell_t : public spell_id_t
 {
-  active_spell_t( const active_spell_t& copy ) : spell_id_t( copy ) { }
-  active_spell_t( player_t* player = 0, const char* t_name = 0 ) : spell_id_t( player, t_name ) { }
+  active_spell_t( player_t* player = 0, const char* t_name = 0 ) : spell_id_t( player, t_name ) {}
   active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent = 0 );
   active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent = 0 );
-  virtual ~active_spell_t() {}
 };
 
 // Passive Spell ID class
 
 struct passive_spell_t : public spell_id_t
 {
-  passive_spell_t( const passive_spell_t& copy ) : spell_id_t( copy ) { }
-  passive_spell_t( player_t* player = 0, const char* t_name = 0 ) : spell_id_t( player, t_name ) { }
+  passive_spell_t( player_t* player = 0, const char* t_name = 0 ) : spell_id_t( player, t_name ) {}
   passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent = 0 );
   passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent = 0 );
-  virtual ~passive_spell_t() {}
 };
 
 struct glyph_t : public spell_id_t
@@ -1987,14 +2005,13 @@ struct glyph_t : public spell_id_t
   // Future trimmed down access
   spell_data_t* sd;
   spell_data_t* sd_enabled;
-  int enabled() { return ( sd == sd_enabled ) ? 1 : 0; }
 
   glyph_t( player_t* p, spell_data_t* sd );
-  virtual ~glyph_t() {}
 
   virtual bool enable( bool override_value = true );
+  bool enabled() const { return ( sd == sd_enabled ); }
 
-  const spell_data_t& spell() { return *sd_enabled; }
+  const spell_data_t& spell() const { return *sd_enabled; }
   const spelleffect_data_t& effect1() const { return sd_enabled -> effect1(); }
   const spelleffect_data_t& effect2() const { return sd_enabled -> effect2(); }
   const spelleffect_data_t& effect3() const { return sd_enabled -> effect3(); }
@@ -2004,11 +2021,9 @@ struct mastery_t : public spell_id_t
 {
   int m_tree;
 
-  mastery_t( const mastery_t& copy ) : spell_id_t( copy ), m_tree( copy.m_tree ) { }
   mastery_t( player_t* player = 0, const char* t_name = 0 ) : spell_id_t( player, t_name ) { }
   mastery_t( player_t* player, const char* t_name, const uint32_t id, int tree );
   mastery_t( player_t* player, const char* t_name, const char* s_name, int tree );
-  virtual ~mastery_t() {}
 
   std::string to_str() SC_CONST;
 
@@ -3167,16 +3182,19 @@ struct set_bonus_t
 
 struct set_bonus_array_t
 {
-  const spell_id_t* set_bonuses[ SET_MAX ];
-  const spell_id_t* default_value;
-  player_t*         p;
+private:
+  const std::auto_ptr<spell_id_t> default_value;
+  std::auto_ptr<spell_id_t> set_bonuses[ SET_MAX ];
+  player_t* p;
 
-  set_bonus_array_t( player_t* p, uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
-  virtual ~set_bonus_array_t();
+  spell_id_t* create_set_bonus( uint32_t spell_id );
 
-  virtual bool              has_set_bonus( set_type s ) SC_CONST;
-  virtual const spell_id_t* set( set_type s ) SC_CONST;
-  virtual const spell_id_t* create_set_bonus( player_t* p, uint32_t spell_id ) SC_CONST;
+public:
+  set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
+  ~set_bonus_array_t();
+
+  bool              has_set_bonus( set_type s ) const;
+  const spell_id_t* set( set_type s ) const;
 };
 
 // Player ===================================================================
@@ -3928,7 +3946,9 @@ struct pet_t : public player_t
   bool summoned;
   pet_type_t pet_type;
 
+private:
   void init_pet_t_();
+public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_type_t pt, bool guardian=false );
 
@@ -3942,7 +3962,6 @@ struct pet_t : public player_t
   virtual double stamina() SC_CONST;
   virtual double intellect() SC_CONST;
 
-  virtual void init();
   virtual void init_base();
   virtual void init_talents();
   virtual void init_target();
@@ -3953,7 +3972,6 @@ struct pet_t : public player_t
   virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a=0 );
   virtual void combat_begin();
 
-  virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual const char* name() SC_CONST { return full_name_str.c_str(); }
   virtual const char* id();
 };
@@ -3992,7 +4010,7 @@ struct stats_t
   {
     double count, min_amount, max_amount, avg_amount, total_amount, actual_amount, pct, overkill_pct;
     stats_results_t() :
-      count( 0 ), min_amount( FLT_MAX ), max_amount( 0 ),
+      count( 0 ), min_amount( std::numeric_limits<double>::max() ), max_amount( 0 ),
       avg_amount( 0 ), total_amount( 0 ), actual_amount( 0 ), pct( 0 ), overkill_pct( 0 ) {}
     void merge( const stats_results_t& other );
   };

@@ -3507,7 +3507,7 @@ void hunter_t::init_spells()
   glyphs.trap_launcher  = find_glyph( "Glyph of Trap Launcher"  );
   glyphs.kill_command   = find_glyph( "Glyph of Kill Command"   );
 
-  static uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P     H2P    H4P
     {     0,     0, 89923, 96411,     0,     0,     0,     0 }, // Tier11

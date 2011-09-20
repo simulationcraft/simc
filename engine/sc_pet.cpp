@@ -15,7 +15,7 @@ void pet_t::init_pet_t_()
 {
   target = owner -> target;
   level = owner -> level;
-  full_name_str = owner -> name_str + "_" + name_str;
+  full_name_str = owner -> name_str + '_' + name_str;
 
   pet_t** last = &( owner -> pet_list );
   while ( *last ) last = &( ( *last ) -> next_pet );
@@ -53,14 +53,6 @@ pet_t::pet_t( sim_t*             s,
   init_pet_t_();
 }
 
-// pet_t::create_action =====================================================
-
-action_t* pet_t::create_action( const std::string& name,
-                                const std::string& options_str )
-{
-  return player_t::create_action( name, options_str );
-}
-
 // pet_t::stamina ===========================================================
 
 double pet_t::stamina() SC_CONST
@@ -94,18 +86,10 @@ const char* pet_t::id()
   return id_str.c_str();
 }
 
-// pet_t::init ==============================================================
-
-void pet_t::init()
-{
-  player_t::init();
-}
-
 // pet_t::init_base =========================================================
 
 void pet_t::init_base()
-{
-}
+{}
 
 // pet_t::init_target =======================================================
 
@@ -149,7 +133,7 @@ void pet_t::summon( double duration )
   {
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, player_t* p, double duration ) : event_t( sim, p )
+      expiration_t( sim_t* sim, pet_t* p, double duration ) : event_t( sim, p )
       {
         sim -> add_event( this, duration );
       }
@@ -184,9 +168,7 @@ double pet_t::assess_damage( double            amount,
                              int               result,
                              action_t*         action )
 {
-  if ( ! action )
-    amount *= 0.10;
-  else if ( action -> aoe )
+  if ( ! action || action -> aoe )
     amount *= 0.10;
 
   return player_t::assess_damage( amount, school, dmg_type, result, action );
