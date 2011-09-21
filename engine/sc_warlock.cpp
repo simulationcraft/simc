@@ -2557,10 +2557,7 @@ struct drain_soul_t : public warlock_spell_t
       {
         if ( ( target -> health_percentage() < effect3().base_value() ) && ( p -> rng_pandemic -> roll( p -> talent_pandemic -> rank() * 0.5 ) ) )
         {
-          if ( p -> dots_unstable_affliction -> ticking )
-          {
-            p -> dots_unstable_affliction -> refresh_duration();
-          }
+          p -> dots_unstable_affliction -> refresh_duration();
         }
       }
     }

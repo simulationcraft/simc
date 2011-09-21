@@ -4643,7 +4643,7 @@ void priest_t::init_base()
   player_t::init_base();
 
   base_attack_power = -10;
-  attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + passive_spells.enlightenment -> effect_base_value( 1 ) / 100.0;
+  attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + passive_spells.enlightenment -> effect1().percent();
 
   initial_attack_power_per_strength = 1.0;
   initial_spell_power_per_intellect = 1.0;
@@ -5313,8 +5313,8 @@ void priest_t::init_values()
   constants.holy_concentration_value        = talents.holy_concentration        -> effect1().percent();
 
   // Shadow Core
-  constants.shadow_power_damage_value       = passive_spells.shadow_power       -> effect_base_value( 1 ) / 100.0;
-  constants.shadow_power_crit_value         = passive_spells.shadow_power       -> effect_base_value( 2 ) / 100.0;
+  constants.shadow_power_damage_value       = passive_spells.shadow_power       -> effect1().percent();
+  constants.shadow_power_crit_value         = passive_spells.shadow_power       -> effect2().percent();
   constants.shadow_orb_proc_value           = mastery_spells.shadow_orb_power   -> proc_chance();
   constants.shadow_orb_mastery_value        = mastery_spells.shadow_orb_power   -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
 
@@ -5332,7 +5332,7 @@ void priest_t::init_values()
                                               talents.veiled_shadows            -> effect2().seconds() +
                                               ( set_bonus.tier12_2pc_caster() ? -75.0 : 0.0 );
 
-  constants.max_shadowy_apparitions         = passive_spells.shadowy_apparition_num -> effect_base_value( 1 );
+  constants.max_shadowy_apparitions         = passive_spells.shadowy_apparition_num -> effect1().base_value();
 
   mana_regen_while_casting = constants.meditation_value + constants.holy_concentration_value;
 }
