@@ -4987,15 +4987,7 @@ void priest_t::init_actions()
 
     buffer += "/snapshot_stats";
 
-    int num_items = ( int ) items.size();
-    for ( int i=0; i < num_items; i++ )
-    {
-      if ( items[ i ].use.active() )
-      {
-        buffer += "/use_item,name=";
-        buffer += items[ i ].name();
-      }
-    }
+    buffer += init_use_item_actions();
 
     buffer += init_use_profession_actions();
 

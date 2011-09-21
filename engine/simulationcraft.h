@@ -1938,6 +1938,11 @@ struct spell_id_t
   static uint32_t get_school_mask( const school_type s );
   static school_type get_school_type( const uint32_t mask );
   static bool is_school( const school_type s, const school_type s2 );
+
+  const spell_data_t& spell() const { return ( ok() ? *s_data : *spell_data_t::nil() ); }
+  const spelleffect_data_t& effect1() const { return ( ok() ? s_data -> effect1(): *spelleffect_data_t::nil() ); }
+  const spelleffect_data_t& effect2() const { return ( ok() ? s_data -> effect2(): *spelleffect_data_t::nil() ); }
+  const spelleffect_data_t& effect3() const { return ( ok() ? s_data -> effect3(): *spelleffect_data_t::nil() ); }
 private:
 };
 
