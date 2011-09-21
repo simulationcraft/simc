@@ -1147,7 +1147,7 @@ struct claw_t : public hunter_pet_attack_t
       c *= 1.0 + p -> talents.wild_hunt -> effect2().percent();
 
     if ( p -> buffs_sic_em -> check() )
-      c -= basec * o -> talents.sic_em -> effect1().percent();
+      c += basec * o -> talents.sic_em -> effect1().percent();
 
     if ( c < 0 )
       c = 0;

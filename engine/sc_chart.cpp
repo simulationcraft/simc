@@ -2372,7 +2372,7 @@ const char* chart_t::dps_error( std::string& s,
   s += "chd=t:-1";
 
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.4f:%.4f,0", 4 * std_dev - p -> dps_error, 4 * std_dev + p -> dps_error ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.0f:%.0f,0", std::max( 4 * std_dev - p -> dps_error, 0.0 ), floor( std::min( 4 * std_dev + p -> dps_error, 8* std_dev ) ) ); s += buffer;
 
 
   return s.c_str();
