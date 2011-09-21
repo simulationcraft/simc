@@ -3001,7 +3001,7 @@ static void print_html_player_statistics( FILE* file, player_t* p )
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation of the Average DPS(e)</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dps_error / 2.0 );
+                   p -> dps_std_dev / sqrt( ( float ) p -> sim -> iterations ));
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
@@ -3028,35 +3028,35 @@ static void print_html_player_statistics( FILE* file, player_t* p )
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% DPS Error</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( p -> dps ? ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) ) : 0 ) );
+                   ( int ) ( p -> dps ? ( ( p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 0.01 * p -> dps * 0.01 * p -> dps) ) ) : 0 ) );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% DPS Error</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( p -> dps ? ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) ) : 0 ) );
+                   ( int ) ( p -> dps ? ( ( p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 0.001 * p -> dps * 0.001 * p -> dps ) ) ) : 0 ) );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 30 ) ) ) );
+                   ( int ) ( 2.0 * p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 30 * 30 ) ) );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 15 ) ) ) );
+                   ( int ) ( 2.0 * p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 15 * 15 ) ) );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) * ( sqrt( 2.0 ) * 2 * p -> dps_std_dev / ( 3 ) ) ) );
+                   ( int ) (  2.0 * p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 3 * 3) ) );
 
 
   util_t::fprintf( file,
