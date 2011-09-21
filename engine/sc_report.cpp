@@ -1090,6 +1090,12 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    sim -> threads < 1 ? 1 : sim -> threads );
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+                   "\t\t\t\t\t\t\t\t<th>Confidence:</th>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.0f%%</td>\n"
+                   "\t\t\t\t\t\t\t</tr>\n",
+                   sim -> confidence * 100.0 );
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Fight Length:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.0f - %.0f</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",

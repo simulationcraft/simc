@@ -575,6 +575,7 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
   if ( scale_over == "min_death_time" ) return q -> min_death_time * 1000;
   if ( scale_over == "avg_death_time" ) return q -> avg_death_time * 1000;
   if ( scale_over == "dmg_taken"      ) return -1.0 * q -> total_dmg_taken;
+  if ( scale_over == "dtps"           ) return -1.0 * q -> dtps;
   return p -> dps;
 }
 
@@ -594,6 +595,8 @@ double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
     q = s -> find_player( scale_over_player );
   if ( !q )
     q = p;
+  if ( scale_over == "dtps" ) return q -> dtps_error;
+
   return q -> dps_error;
 }
 

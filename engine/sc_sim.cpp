@@ -620,6 +620,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
   channel_lag( 0.250 ), channel_lag_stddev( 0 ),
   queue_gcd_reduction( 0.032 ), strict_gcd_queue( 0 ),
+  confidence( 0.95),
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 0.25 ),
   current_time( 0 ), max_time( 450 ), expected_time( 0 ), vary_combat_length( 0.2 ),
@@ -1308,18 +1309,22 @@ void sim_t::analyze_player( player_t* p )
 
   // DPS Calculation ========================================================
 
-  assert( p -> iteration_dps.size() == ( std::size_t ) iterations );
+  assert( p -> iteration_dps.size()  == ( std::size_t ) iterations );
+  assert( p -> iteration_dtps.size() == ( std::size_t ) iterations );
   assert( p -> iteration_dpse.size() == ( std::size_t ) iterations );
 
-  p -> dps = p -> dpse = 0;
+  p -> dps = p -> dpse = p -> dtps = 0;
 
   for ( int i=0; i < iterations; i++ )
   {
     p -> dps  += p -> iteration_dps[ i ];
     p -> dpse += p -> iteration_dpse[ i ];
+    p -> dtps += p -> iteration_dtps[ i ];
   }
   p -> dps  /= iterations;
   p -> dpse /= iterations;
+  p -> dtps /= iterations;
+
 
   if ( p -> quiet ) return;
 
@@ -1428,7 +1433,7 @@ void sim_t::analyze_player( player_t* p )
     double i_dps = p -> iteration_dps[ i ];
     if ( p -> dps_min > i_dps ) p -> dps_min = i_dps;
     if ( p -> dps_max < i_dps ) p -> dps_max = i_dps;
-    double delta = i_dps - p -> dpse;
+    double delta = i_dps - p -> dps;
     p -> dps_std_dev += delta * delta;
   }
 
@@ -1437,7 +1442,22 @@ void sim_t::analyze_player( player_t* p )
 
   if ( iterations > 1 ) p -> dps_std_dev /= ( iterations - 1 );
   p -> dps_std_dev = sqrt( p -> dps_std_dev );
-  p -> dps_error = 2.0 * p -> dps_std_dev / sqrt( ( float ) iterations );
+  p -> dps_error = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 ) * p -> dps_std_dev / sqrt( ( float ) iterations );
+
+  // DTPS Error ==============================================================
+
+  p -> dtps_error = 0.0;
+
+  for ( int i=0; i < iterations; i++ )
+  {
+    double i_dtps = p -> iteration_dtps[ i ];
+    double delta = i_dtps - p -> dtps;
+    p -> dtps_error += delta * delta;
+  }
+
+  if ( iterations > 1 ) p -> dtps_error /= ( iterations - 1 );
+  p -> dtps_error = sqrt( p -> dtps_error );
+  p -> dtps_error = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 ) * p -> dtps_error / sqrt( ( float ) iterations );
 
   // Error Convergence ======================================================
 
@@ -1466,7 +1486,7 @@ void sim_t::analyze_player( player_t* p )
 
     for ( int i=0; i < iterations; i++ )
     {
-      p -> dps_convergence_error.push_back( 2.0 * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
+      p -> dps_convergence_error.push_back( rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 ) * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
 
       double delta = p -> iteration_dps[ i ] - convergence_dps;
       double delta_squared = delta * delta;
@@ -1480,7 +1500,7 @@ void sim_t::analyze_player( player_t* p )
 
   if ( convergence_iterations > 1 ) convergence_std_dev /= convergence_iterations;
   convergence_std_dev = sqrt( convergence_std_dev );
-  double convergence_error = 2.0 * convergence_std_dev;
+  double convergence_error = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 ) * convergence_std_dev;
   if ( convergence_iterations > 1 ) convergence_error /= sqrt( ( float ) convergence_iterations );
 
   if ( convergence_error > 0 )
@@ -2053,6 +2073,7 @@ void sim_t::create_options()
     { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
     { "ptr",                              OPT_FUNC,   ( void* ) ::parse_ptr                         },
     { "threads",                          OPT_INT,    &( threads                                  ) },
+    { "confidence",                       OPT_FLT,    &( confidence                               ) },
 
     { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
     { "item_db_source",                   OPT_FUNC,   ( void* ) ::parse_item_sources                },
@@ -2439,6 +2460,11 @@ int sim_t::main( int argc, char** argv )
     {
       util_t::fprintf( output_file, "\n |vary_combat_length| >= 1.0, overriding to 0.0.\n" );
       vary_combat_length = 0.0;
+    }
+    if ( confidence <= 0.0 || confidence >= 1.0 )
+    {
+      util_t::fprintf( output_file, "\nInvalid confidence, reseting to 0.95.\n" );
+      confidence = 0.95;
     }
 
     util_t::fprintf( output_file,

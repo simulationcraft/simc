@@ -449,7 +449,7 @@ player_t::player_t( sim_t*             s,
   dps_10_percentile( 0 ),dps_90_percentile( 0 ),
   dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
   death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( 1.0E+50 ), max_death_time( 0 ),
-  dmg_taken( 0.0 ), total_dmg_taken( 0.0 ),
+  dmg_taken( 0.0 ), total_dmg_taken( 0.0 ), dtps( 0.0 ), dtps_error( 0.0 ),
   buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
   // Gear
   sets( 0 ),
@@ -1707,6 +1707,7 @@ void player_t::init_stats()
   }
 
   iteration_dps.reserve( sim -> iterations );
+  iteration_dtps.reserve( sim -> iterations );
   iteration_dpse.reserve( sim -> iterations );
 }
 
@@ -1769,7 +1770,7 @@ void player_t::init_scaling()
 
     scales_with[ STAT_BLOCK_RATING ] = 0;
 
-    if ( sim -> scaling -> scale_stat != STAT_NONE && scales_with[ sim -> scaling -> scale_stat ] && scale_player )
+    if ( sim -> scaling -> scale_stat != STAT_NONE && scale_player )
     {
       double v = sim -> scaling -> scale_value;
 
@@ -2773,6 +2774,7 @@ void player_t::combat_end()
   bool is_hps = ( primary_role() == ROLE_HEAL );
   iteration_dps.push_back( iteration_seconds ? ( ( is_hps ? iteration_heal : iteration_dmg ) / iteration_seconds ): 0 );
   iteration_dpse.push_back( sim -> current_time ? ( ( is_hps ? iteration_heal : iteration_dmg ) / sim -> current_time ): 0 );
+  iteration_dtps.push_back( iteration_seconds ? dmg_taken / iteration_seconds : 0 );
 
   total_dmg += iteration_dmg;
   total_heal += iteration_heal;
@@ -2796,6 +2798,8 @@ void player_t::merge( player_t& other )
 
   iteration_dps.insert( iteration_dps.end(),
                         other.iteration_dps.begin(), other.iteration_dps.end() );
+  iteration_dtps.insert( iteration_dtps.end(),
+                        other.iteration_dtps.begin(), other.iteration_dtps.end() );
   iteration_dpse.insert( iteration_dpse.end(),
                          other.iteration_dpse.begin(), other.iteration_dpse.end() );
   death_time.insert( death_time.end(),

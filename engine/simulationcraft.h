@@ -2540,6 +2540,7 @@ struct sim_t : private thread_t
   double      channel_lag, channel_lag_stddev;
   double      queue_gcd_reduction;
   int         strict_gcd_queue;
+  double      confidence;
     // Latency
   double      world_lag, world_lag_stddev;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
@@ -3407,7 +3408,7 @@ struct player_t
   int       death_count;
   std::vector<double> death_time;
   double    avg_death_time, death_count_pct, min_death_time, max_death_time;
-  double    dmg_taken, total_dmg_taken;
+  double    dmg_taken, total_dmg_taken, dtps, dtps_error;
   buff_t*   buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;
@@ -3419,6 +3420,7 @@ struct player_t
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
   std::vector<double> iteration_dps;
+  std::vector<double> iteration_dtps;
   std::vector<double> iteration_dpse;
   std::vector<int> distribution_dps;
   std::vector<int> distribution_deaths;
@@ -4743,6 +4745,8 @@ struct rng_t
   virtual double exgauss( double mean, double stddev, double nu );
   virtual void   seed( uint32_t start );
   virtual void   report( FILE* );
+  virtual double stdnormal_cdf(double u);
+  virtual double stdnormal_inv(double p);
 
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };
