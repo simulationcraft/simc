@@ -2325,6 +2325,8 @@ const char* chart_t::dps_error( std::string& s,
 {
   char buffer[ 1024 ];
 
+  double std_dev = p -> dps_std_dev / sqrt( ( float ) p -> sim -> iterations );
+
   s = get_chart_base_url();
   s += "chs=525x185";
   s += "&amp;";
@@ -2334,7 +2336,7 @@ const char* chart_t::dps_error( std::string& s,
   s += "&amp;";
   s += "chco=FF0000";
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dps - p -> dps_error * 2, p -> dps + p -> dps_error * 2, 1 / sqrt ( 0.5 * 3.14 * p -> dps_error * p -> dps_error ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dps - std_dev * 4, p -> dps + std_dev * 4, 1 / sqrt ( 0.5 * 3.14 * std_dev * std_dev ) ); s += buffer;
 
   s += "&amp;";
   if ( p -> sim -> print_styles )
@@ -2364,13 +2366,13 @@ const char* chart_t::dps_error( std::string& s,
     s += "chts=dddddd,18";
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.0f,%.0f,1,100*exp(-(x-%.0f)^2/(2*%.0f^2))", p -> dps - p -> dps_error * 2, p -> dps + p -> dps_error * 2, p -> dps, p -> dps_error / 2 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.0f,%.0f,1,100*exp(-(x-%.0f)^2/(2*%.0f^2))", p -> dps - std_dev * 4, p -> dps + std_dev * 4, p -> dps, std_dev ); s += buffer;
 
   s += "&amp;";
   s += "chd=t:-1";
 
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.4f:%.4f,0", p -> dps_error, p -> dps_error * 3 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.4f:%.4f,0", 4 * std_dev - p -> dps_error, 4 * std_dev + p -> dps_error ); s += buffer;
 
 
   return s.c_str();

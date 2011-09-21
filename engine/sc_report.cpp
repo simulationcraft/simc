@@ -1653,9 +1653,10 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t<div id=\"help-error\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Error</h3>\n"
-                   "\t\t\t\t<p>Estimator for the 95%% confidence intervall.</p>\n"
+                   "\t\t\t\t<p>Estimator for the %.2f%% confidence intervall.</p>\n"
                    "\t\t\t</div>\n"
-                   "\t\t</div>\n" );
+                   "\t\t</div>\n",
+                   sim -> confidence * 100.0 );
 
   util_t::fprintf( file,
                    "\t\t<div id=\"help-glance-pct\">\n"
@@ -2793,7 +2794,7 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
                        p -> gear_weights_wowreforge_link.c_str() );
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-                       "\t\t\t\t\t\t\t\t<th>Stat Ranking ( 95%% confidence )</th>\n"
+                       "\t\t\t\t\t\t\t\t<th>Stat Ranking</th>\n"
                        "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
                        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
                        "\t\t\t\t\t\t\t\t\t\t<li>",
