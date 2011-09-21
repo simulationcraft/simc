@@ -297,7 +297,6 @@ struct hunter_pet_t : public pet_t
   buff_t* buffs_owls_focus;
   buff_t* buffs_rabid;
   buff_t* buffs_rabid_power_stack;
-  buff_t* buffs_savage_rend;
   buff_t* buffs_sic_em;
   buff_t* buffs_wolverine_bite;
 
@@ -480,23 +479,21 @@ struct hunter_pet_t : public pet_t
   virtual void init_buffs()
   {
     pet_t::init_buffs();
-    buffs_bestial_wrath     = new buff_t( this, "bestial_wrath",     1, 10.0 );
+    buffs_bestial_wrath     = new buff_t( this, 19574, "bestial_wrath" );
     buffs_call_of_the_wild  = new buff_t( this, 53434, "call_of_the_wild" );
     buffs_culling_the_herd  = new buff_t( this, 70893, "culling_the_herd" );
     buffs_frenzy            = new buff_t( this, "frenzy",            5, 10.0 );
-    buffs_owls_focus        = new buff_t( this, "owls_focus",        1,  8.0, 0.0, talents.owls_focus->rank() * 0.15 );
-    buffs_rabid             = new buff_t( this, "rabid",             1, 20.0 );
-    buffs_rabid_power_stack = new buff_t( this, "rabid_power_stack", 1,    0, 0.0 );
-    buffs_savage_rend       = new buff_t( this, "savage_rend",       1, 30.0 );
-    buffs_sic_em            = new buff_t( this, "sic_em", 1, 12.0 );
+    buffs_owls_focus        = new buff_t( this, 53515, "owls_focus", talents.owls_focus-> proc_chance() );
+    buffs_rabid             = new buff_t( this, 53401, "rabid" );
+    buffs_rabid_power_stack = new buff_t( this, 53403, "rabid_power_stack" );
+    buffs_sic_em            = new buff_t( this, 89388, "sic_em" );
     buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, 10.0, 0.0 );
-
-    buffs_culling_the_herd -> current_value = talents.culling_the_herd -> rank();
   }
 
   virtual void init_gains()
   {
     pet_t::init_gains();
+
     gains_fervor            = get_gain( "fervor"            );
     gains_focus_fire        = get_gain( "focus_fire"        );
     gains_go_for_the_throat = get_gain( "go_for_the_throat" );
@@ -547,20 +544,11 @@ struct hunter_pet_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual double composite_armor() SC_CONST
-  {
-    double a = player_t::composite_armor();
-
-    a *= 1.05; // 3.1 change: # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
-
-    return a;
-  }
-
   virtual double composite_attack_power() SC_CONST
   {
     hunter_t* o = owner -> cast_hunter();
 
-    double ap = player_t::composite_attack_power();
+    double ap = pet_t::composite_attack_power();
 
     ap += o -> composite_attack_power() * 0.425;
 
@@ -569,9 +557,9 @@ struct hunter_pet_t : public pet_t
 
   virtual double composite_attack_power_multiplier() SC_CONST
   {
-    double mult = player_t::composite_attack_power_multiplier();
+    double mult = pet_t::composite_attack_power_multiplier();
 
-    mult *= 1.0 + buffs_rabid_power_stack -> stack() * 0.05;
+    mult *= 1.0 + buffs_rabid_power_stack -> stack() * buffs_rabid_power_stack -> effect1().percent();
 
     if ( buffs_call_of_the_wild -> up() )
       mult *= 1.0 + buffs_call_of_the_wild -> effect1().percent();
@@ -583,7 +571,7 @@ struct hunter_pet_t : public pet_t
   {
     hunter_t* o = owner -> cast_hunter();
 
-    double ac = attack_crit + attack_crit_per_agility * agility();
+    double ac = pet_t::composite_attack_crit();
 
     ac += o -> composite_attack_crit();
 
@@ -601,7 +589,7 @@ struct hunter_pet_t : public pet_t
     if ( o -> buffs.bloodlust -> up() )
       h *= 1.30;
 
-    h *= 1.0 + o -> buffs_rapid_fire -> value();
+    h *= 1.0 + o -> buffs_rapid_fire -> check() * o -> buffs_rapid_fire -> current_value;
 
     return h;
   }
@@ -609,12 +597,15 @@ struct hunter_pet_t : public pet_t
   virtual double composite_attack_hit() SC_CONST
   {
     hunter_t* o = owner -> cast_hunter();
-    return o -> composite_attack_hit(); // Hunter pets' hit does not round down in cataclysm and scales with Heroic Presence (as of 12/21)
+
+    // Hunter pets' hit does not round down in cataclysm and scales with Heroic Presence (as of 12/21)
+    return o -> composite_attack_hit();
   }
 
   virtual double composite_attack_expertise() SC_CONST
   {
     hunter_t* o = owner -> cast_hunter();
+
     return ( ( 100.0 * o -> attack_hit ) * 26.0 / 8.0 ) / 100.0;
   }
 
@@ -626,42 +617,48 @@ struct hunter_pet_t : public pet_t
   virtual void summon( double duration=0 )
   {
     hunter_t* o = owner -> cast_hunter();
-    pet_t::summon( duration );
-    o -> active_pet = this;
-  }
 
-  virtual void dismiss()
-  {
-    hunter_t* o = owner -> cast_hunter();
-    pet_t::dismiss();
-    o -> active_pet = 0;
+    pet_t::summon( duration );
+
+    o -> active_pet = this;
   }
 
   virtual void demise()
   {
     hunter_t* o = owner -> cast_hunter();
+
     pet_t::demise();
+
     o -> active_pet = 0;
+  }
+
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+  {
+    double m = pet_t::composite_player_multiplier( school, a );
+
+    hunter_t*     o = owner -> cast_hunter();
+
+    if ( o -> passive_spells.master_of_beasts -> ok() )
+    {
+      m *= 1.0 + 1.7 / 100.0 * o -> composite_mastery();
+    }
+
+    m *= 1.0 + talents.shark_attack -> effect1().percent();
+
+    return m;
   }
 
   virtual int primary_resource() SC_CONST { return RESOURCE_FOCUS; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
 
-  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
-  {
-    double m = pet_t::composite_player_multiplier( school, a );
-    hunter_t*     o = owner -> cast_hunter();
-    if ( o -> passive_spells.master_of_beasts -> ok() )
-    {
-      m *= 1.0 + 1.7 / 100.0 * o -> composite_mastery();
-    }
-    m *= 1.0 + talents.shark_attack -> rank() * 0.03;
-    return m;
-  }
-
-  virtual void      init_spells();
+  virtual void init_spells();
 };
+
+
+namespace { // ANONYMOUS NAMESPACE =========================================
+
+
 
 // ==========================================================================
 // Hunter Attack
@@ -764,8 +761,6 @@ struct hunter_spell_t : public spell_t
   virtual double cost() SC_CONST;
   virtual void consume_resource();
 };
-
-namespace { // ANONYMOUS NAMESPACE =========================================
 
 // trigger_go_for_the_throat ================================================
 
@@ -922,7 +917,6 @@ static void trigger_tier12_2pc_melee( attack_t* a )
   }
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Hunter Pet Attacks
@@ -3315,6 +3309,9 @@ struct hunter_sniper_training_event_t : public event_t
     new ( sim ) hunter_sniper_training_event_t( p );
   }
 };
+
+} // ANONYMOUS NAMESPACE ====================================================
+
 
 // hunter_pet_t::create_action ==============================================
 
