@@ -2991,6 +2991,9 @@ struct wild_quiver_trigger_t : public action_callback_t
 
 double hunter_spell_t::gcd() SC_CONST
 {
+  if ( ! harmful && ! player -> in_combat )
+    return 0;
+
   // Hunter gcd unaffected by haste
   return trigger_gcd;
 }
@@ -3138,7 +3141,7 @@ struct bestial_wrath_t : public hunter_spell_t
     parse_options( NULL, options_str );
     check_talent( p -> talents.bestial_wrath -> rank() );
 
-    cooldown -> duration += p -> glyphs.bestial_wrath -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += p -> glyphs.bestial_wrath -> effect1().seconds();
     cooldown -> duration *=  ( 1.0 + p -> talents.longevity -> effect1().percent() );
     harmful = false;
   }
@@ -3180,6 +3183,8 @@ struct fervor_t : public hunter_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+
+    trigger_gcd = 0;
   }
 
   virtual void execute()
@@ -3968,14 +3973,14 @@ void hunter_t::init_actions()
       action_list_str += "/kill_command";
 
       if ( talents.fervor -> ok() )
-        action_list_str += "/fervor,if=focus<=20";
+        action_list_str += "/fervor,if=focus<=37";
       if ( talents.focus_fire -> ok() )
       {
         action_list_str += "/focus_fire,five_stacks=1";
         if ( talents.the_beast_within -> ok() )
           action_list_str += ",if=!buff.beast_within.up";
       }
-      action_list_str += "/arcane_shot,if=focus>=90|buff.beast_within.up";
+      action_list_str += "/arcane_shot,if=focus>=59|buff.beast_within.up";
       if ( level >= 81 )
         action_list_str += "/cobra_shot";
       else

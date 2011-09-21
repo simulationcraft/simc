@@ -1837,7 +1837,7 @@ struct mind_blast_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    cooldown -> duration -= p -> talents.improved_mind_blast -> rank() * 0.5;
+    cooldown -> duration += p -> talents.improved_mind_blast -> effect1().seconds();
 
     for( int i=0; i < 4; i++ )
     {
@@ -2186,7 +2186,7 @@ struct mind_spike_t : public priest_spell_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration  = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -2984,7 +2984,7 @@ struct smite_t : public priest_spell_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
       p -> cooldowns_chakra -> start();
     }
 
@@ -3141,7 +3141,7 @@ struct _heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3214,7 +3214,7 @@ struct flash_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3333,7 +3333,7 @@ struct binding_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3428,7 +3428,7 @@ struct greater_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3568,7 +3568,7 @@ struct prayer_of_healing_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3784,7 +3784,7 @@ struct prayer_of_mending_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration -= p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
       p -> cooldowns_chakra -> start();
     }
   }
