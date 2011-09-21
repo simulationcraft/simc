@@ -3939,10 +3939,10 @@ void hunter_t::init_actions()
     action_list_str += "/summon_pet";
     if ( talents.trueshot_aura -> rank() )
       action_list_str += "/trueshot_aura";
+    action_list_str += "/snapshot_stats";
     action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
     if ( glyphs.rapid_fire -> ok() )
       action_list_str += "|buff.rapid_fire.react";
-    action_list_str += "/snapshot_stats";
 
     action_list_str += "/auto_shot";
     action_list_str += "/aspect_of_the_hawk,moving=0";
