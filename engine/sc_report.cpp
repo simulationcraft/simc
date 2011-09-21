@@ -1091,7 +1091,7 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Confidence:</th>\n"
-                   "\t\t\t\t\t\t\t\t<td>%.0f%%</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.2f%%</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> confidence * 100.0 );
   util_t::fprintf( file,
@@ -3004,24 +3004,17 @@ static void print_html_player_statistics( FILE* file, player_t* p )
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">95%% Confidence Intervall</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dpse - p -> dps_error, p -> dpse + p -> dps_error );
+                   p -> sim -> confidence * 100.0, p -> dps - p -> dps_error, p -> dps + p -> dps_error );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized 95%% Confidence Intervall</td>\n"
+                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dpse ? 100 - p -> dps_error * 100 / p -> dpse : 0, p -> dpse ? 100 + p -> dps_error * 100 / p -> dpse : 0 );
-
-  util_t::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"left\">99.7%% Confidence Intervall</td>\n"
-                   "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
-                   "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> dpse - 1.50 * p -> dps_error, p -> dpse + 1.50 * p -> dps_error );
+                   p -> sim -> confidence * 100.0, p -> dps ? 100 - p -> dps_error * 100 / p -> dps : 0, p -> dps ? 100 + p -> dps_error * 100 / p -> dps : 0 );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
@@ -3034,14 +3027,14 @@ static void print_html_player_statistics( FILE* file, player_t* p )
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% DPS Error</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dpse ) ) ) : 0 ) );
+                   ( int ) ( p -> dps ? ( ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.01 * p -> dps ) ) ) : 0 ) );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% DPS Error</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( p -> dpse ? ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dpse ) ) ) : 0 ) );
+                   ( int ) ( p -> dps ? ( ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) * ( 2 * p -> dps_std_dev / ( 0.001 * p -> dps ) ) ) : 0 ) );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"

@@ -2350,7 +2350,8 @@ const char* chart_t::dps_error( std::string& s,
   s += "&amp;";
   s += "chxl=1:|DPS|3:|p";
   s += "&amp;";
-  s += "chtt=95%25+Confidence+Interval";
+  snprintf( buffer, sizeof( buffer ), "chtt=%.2f%%25+Confidence+Interval", p -> sim -> confidence * 100.0 ); s += buffer;
+
   s += "&amp;";
   s += "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
   s += "&amp;";
@@ -2369,7 +2370,7 @@ const char* chart_t::dps_error( std::string& s,
   s += "chd=t:-1";
 
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.0f:%.0f,0", p -> dps_error, p -> dps_error * 3 ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.4f:%.4f,0", p -> dps_error, p -> dps_error * 3 ); s += buffer;
 
 
   return s.c_str();
