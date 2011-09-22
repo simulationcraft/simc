@@ -8,24 +8,6 @@ chardev=18129 name=Priest_Shadow_T11H actions= save=Priest_Shadow_T11H.simc
 
 
 chardev=18129
-talents=http://www.wowhead.com/talent#bcGoZfuRrRkbkMdo0o
-role=dps
-glyphs=penance/smite/shadow_word_pain/divine_accuracy
-name=Priest_Holy_Smite_AA_T11H
-actions= 
-save=Priest_Holy_Smite_AA_T11H.simc
-
-
-chardev=18129
-talents=http://www.wowhead.com/talent#bcZfuRrRkbkMdoRb0b
-role=dps
-glyphs=penance/smite/shadow_word_pain/divine_accuracy
-name=Priest_Holy_Smite_TF_T11H 
-actions= 
-save=Priest_Holy_Smite_TF_T11H.simc
-
-
-chardev=18129
 talents=http://www.wowhead.com/talent#bcGszRsbcRMo0hZhb0b
 role=dps
 glyphs=penance/smite/shadow_word_pain/divine_accuracy

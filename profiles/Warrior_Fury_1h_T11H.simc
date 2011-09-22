@@ -35,7 +35,7 @@ neck=rage_of_ages,heroic=1,ilevel=372,quality=epic,stats=215str_322sta_143master
 shoulders=earthen_pauldrons,heroic=1,type=plate,ilevel=372,quality=epic,stats=2669armor_266str_429sta_191haste_171hit,reforge=hit_crit,gems=40str_10haste,enchant=50str_25crit
 chest=earthen_battleplate,heroic=1,type=plate,ilevel=372,quality=epic,stats=3559armor_345str_578sta_257crit_217haste,reforge=haste_mastery,gems=40str_20str_20hit_20str,enchant=20all
 waist=belt_of_absolute_zero,heroic=1,type=plate,ilevel=372,quality=epic,stats=2002armor_266str_429sta_191crit_171hit,reforge=hit_exp,gems=40str_67str_10hit
-legs=earthen_legplates,heroic=1,type=plate,ilevel=372,quality=epic,stats=3114armor_345str_578sta_257mastery_217hit,reforge=mastery_crit,gems=40str_40str,enchant=190ap_55crit
+legs=earthen_legplates,heroic=1,type=plate,ilevel=372,quality=epic,stats=3114armor_345str_578sta_257mastery_217hit,reforge=mastery_crit,gems=40str_40str,enchant=55crit_190ap
 feet=massacre_treads,heroic=1,type=plate,ilevel=372,quality=epic,stats=2447armor_266str_429sta_171exp_191mastery,reforge=mastery_crit,gems=40str,enchant=50mastery
 wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_229str_344sta_113haste_153crit,reforge=haste_exp,gems=20str_20crit_67str_10str,enchant=50str
 hands=plated_fists_of_provocation,heroic=1,type=plate,ilevel=372,quality=epic,stats=2224armor_266str_429sta_191crit_171haste,gems=20str_20crit_67str_10crit,enchant=50str

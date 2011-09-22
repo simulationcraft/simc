@@ -28,9 +28,9 @@ actions+=/serpent_sting,if=!ticking
 actions+=/kill_shot
 actions+=/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up
 actions+=/kill_command
-actions+=/fervor,if=focus<=20
+actions+=/fervor,if=focus<=37
 actions+=/focus_fire,five_stacks=1,if=!buff.beast_within.up
-actions+=/arcane_shot,if=focus>=90|buff.beast_within.up
+actions+=/arcane_shot,if=focus>=59|buff.beast_within.up
 actions+=/cobra_shot
 head=lightningcharged_headguard,type=mail,ilevel=359,quality=epic,stats=1977armor_281agi_512sta_228crit_168mastery,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
 neck=necklace_of_strife,ilevel=359,quality=epic,stats=190agi_286sta_127mastery_127haste,reforge=haste_crit

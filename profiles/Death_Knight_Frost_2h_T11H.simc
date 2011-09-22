@@ -4,6 +4,7 @@ deathknight=Death_Knight_Frost_2h_T11H
 origin="http://chardev.org/?profile=143058"
 level=85
 race=orc
+position=back
 role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
@@ -44,7 +45,7 @@ neck=caelestraszs_will,heroic=1,ilevel=379,quality=epic,stats=229str_344sta_138d
 shoulders=magma_plated_pauldrons,heroic=1,type=plate,ilevel=372,quality=epic,stats=2669armor_266str_429sta_191haste_171hit,gems=40str_10haste,enchant=50str_25crit
 chest=battleplate_of_ancient_kings,heroic=1,type=plate,ilevel=372,quality=epic,stats=3559armor_345str_578sta_257haste_217exp,reforge=exp_hit,gems=40str_40str,enchant=20all
 waist=sky_strider_belt_of_the_faultline,heroic=1,type=plate,ilevel=372,quality=epic,stats=2002armor_429sta_266str_180haste_180mastery,reforge=mastery_exp,gems=40str_67str,suffix=223
-legs=magma_plated_legplates,heroic=1,type=plate,ilevel=372,quality=epic,stats=3114armor_345str_578sta_257mastery_217hit,reforge=hit_haste,gems=40str_40str,enchant=190ap_55crit
+legs=magma_plated_legplates,heroic=1,type=plate,ilevel=372,quality=epic,stats=3114armor_345str_578sta_257mastery_217hit,reforge=hit_haste,gems=40str_40str,enchant=55crit_190ap
 feet=massacre_treads,heroic=1,type=plate,ilevel=372,quality=epic,stats=2447armor_266str_429sta_171exp_191mastery,reforge=mastery_haste,gems=40str,enchant=50haste
 wrists=bracers_of_the_matredor,heroic=1,type=plate,ilevel=379,quality=epic,stats=1589armor_229str_344sta_113haste_153crit,reforge=crit_hit,gems=40str_67str,enchant=50str
 hands=magma_plated_gauntlets,heroic=1,type=plate,ilevel=372,quality=epic,stats=2224armor_266str_429sta_191haste_171mastery,reforge=mastery_hit,gems=40str_67str,enchant=50str

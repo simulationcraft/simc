@@ -35,7 +35,7 @@ neck=rage_of_ages,ilevel=359,quality=epic,stats=190str_286sta_127mastery_127hit
 shoulders=reinforced_sapphirium_pauldrons,type=plate,ilevel=359,quality=epic,stats=2570armor_233str_380sta_169haste_149hit,reforge=haste_mastery,gems=40str_10haste,enchant=50str_25crit
 chest=reinforced_sapphirium_battleplate,type=plate,ilevel=359,quality=epic,stats=3426armor_301str_512sta_228crit_188haste,reforge=haste_mastery,gems=40str_20str_20hit_20str,enchant=20all
 waist=belt_of_the_ferocious_wolf,type=plate,ilevel=359,quality=epic,stats=1927armor_233str_380sta_169mastery_149crit,reforge=crit_exp,gems=40str_67str
-legs=reinforced_sapphirium_legplates,type=plate,ilevel=359,quality=epic,stats=2998armor_301str_512sta_228mastery_188hit,gems=40str_40str,enchant=190ap_55crit
+legs=reinforced_sapphirium_legplates,type=plate,ilevel=359,quality=epic,stats=2998armor_301str_512sta_228mastery_188hit,gems=40str_40str,enchant=55crit_190ap
 feet=massacre_treads,type=plate,ilevel=359,quality=epic,stats=2355armor_233str_380sta_149exp_169mastery,gems=40str,enchant=50mastery
 wrists=electron_inductor_coils,type=plate,ilevel=359,quality=epic,stats=1499armor_190str_286sta_127haste_127hit,reforge=haste_mastery,gems=67str,enchant=50str
 hands=reinforced_sapphirium_gauntlets,type=plate,ilevel=359,quality=epic,stats=2141armor_233str_380sta_169haste_149mastery,reforge=haste_hit,gems=40str_67str,enchant=50str

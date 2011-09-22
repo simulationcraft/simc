@@ -49,7 +49,7 @@ neck=necklace_of_strife,heroic=1,ilevel=372,quality=epic,stats=215agi_322sta_143
 shoulders=stormriders_spaulders,heroic=1,type=leather,ilevel=372,quality=epic,stats=1328armor_266agi_429sta_171crit_191haste,reforge=haste_mastery,gems=40agi,enchant=50agi_25mastery
 chest=sark_of_the_unwatched,heroic=1,type=leather,ilevel=372,quality=epic,stats=1771armor_345agi_578sta_227crit_247mastery,gems=40agi_40agi,enchant=20all
 waist=belt_of_the_fallen_brood,heroic=1,type=leather,ilevel=379,quality=epic,stats=1028armor_266agi_458sta_204crit_164mastery,gems=20agi_20hit_40agi_67agi_20agi
-legs=stormriders_legguards,heroic=1,type=leather,ilevel=372,quality=epic,stats=1550armor_345agi_578sta_217crit_257mastery,gems=20agi_20mastery_20agi_20hit_20agi,enchant=190ap_55crit
+legs=stormriders_legguards,heroic=1,type=leather,ilevel=372,quality=epic,stats=1550armor_345agi_578sta_217crit_257mastery,gems=20agi_20mastery_20agi_20hit_20agi,enchant=55crit_190ap
 feet=storm_riders_boots,heroic=1,type=leather,ilevel=372,quality=epic,stats=1218armor_266agi_429sta_191mastery_171haste,reforge=haste_crit,gems=40agi,enchant=35mastery
 wrists=parasitic_bands,heroic=1,type=leather,ilevel=372,quality=epic,stats=775armor_215agi_322sta_143crit_143mastery,gems=67agi,enchant=50agi
 hands=stormriders_grips,heroic=1,type=leather,ilevel=372,quality=epic,stats=1107armor_266agi_429sta_191haste_171hit,reforge=haste_mastery,gems=40agi_67agi_10haste,enchant=65mastery

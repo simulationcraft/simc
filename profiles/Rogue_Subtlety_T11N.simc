@@ -9,7 +9,7 @@ role=attack
 use_pre_potion=1
 professions=engineering=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#rogue-023003000000000000000200000000000000000332031321310012321
-glyphs=backstab/hemorrhage/slice_and_dice/feint/sprint/tricks_of_the_trade/blurred_speed/poisons/safe_fall
+glyphs=expose_armor/backstab/shadow_dance/slice_and_dice
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/apply_poison,main_hand=instant,off_hand=deadly
@@ -21,7 +21,7 @@ actions+=/kick
 actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee
 actions+=/pool_energy,for_next=1
 actions+=/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down
-actions+=/use_item,name=wind_dancers_gloves,if=buff.shadow_dance.up
+actions+=/use_item,name=wind_dancers_gloves,if=buff.shadow_dance.up,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/pool_energy,for_next=1
 actions+=/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up
@@ -42,7 +42,7 @@ neck=necklace_of_strife,ilevel=359,quality=epic,stats=190agi_286sta_127mastery_1
 shoulders=wind_dancers_spaulders,type=leather,ilevel=359,quality=epic,stats=1252armor_233agi_380sta_149crit_169haste,reforge=crit_exp,gems=67agi,enchant=50agi_25mastery
 chest=wind_dancers_tunic,type=leather,ilevel=359,quality=epic,stats=1669armor_301agi_512sta_228haste_188exp,gems=67agi_20agi_20hit_20agi,enchant=20all
 waist=dispersing_belt,type=leather,ilevel=359,quality=epic,stats=939armor_233agi_380sta_169haste_149crit,reforge=crit_exp,gems=40agi_67agi
-legs=aberrations_leggings,type=leather,ilevel=359,quality=epic,stats=1460armor_301agi_512sta_228crit_188haste,reforge=haste_exp,gems=40agi_40agi,enchant=190ap_55crit
+legs=aberrations_leggings,type=leather,ilevel=359,quality=epic,stats=1460armor_301agi_512sta_228crit_188haste,reforge=haste_exp,gems=40agi_40agi,enchant=55crit_190ap
 feet=treads_of_fleeting_joy,type=leather,ilevel=359,quality=epic,stats=1148armor_233agi_380sta_149crit_169haste,reforge=crit_exp,gems=40agi,enchant=25agi
 wrists=parasitic_bands,type=leather,ilevel=359,quality=epic,stats=730armor_190agi_286sta_127crit_127mastery,reforge=mastery_haste,enchant=50agi
 hands=wind_dancers_gloves,type=leather,ilevel=359,quality=epic,stats=1043armor_233agi_380sta_169haste_149hit,reforge=hit_exp,gems=40agi_10haste,enchant=50haste,addon=synapse_springs

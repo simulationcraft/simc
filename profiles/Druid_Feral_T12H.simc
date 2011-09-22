@@ -47,7 +47,7 @@ neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi
 shoulders=obsidian_arborweave_spaulders,heroic=1,type=leather,ilevel=391,quality=epic,stats=1446armor_322agi_513sta_180crit_244mastery,reforge=mastery_haste,gems=40agi,enchant=50agi_25mastery
 chest=obsidian_arborweave_raiment,heroic=1,type=leather,ilevel=391,quality=epic,stats=1928armor_420agi_689sta_253exp_311crit,reforge=exp_haste,gems=40agi_40agi_20agi,enchant=20all
 waist=riplimbs_lost_collar,heroic=1,type=leather,ilevel=391,quality=epic,stats=1084armor_322agi_513sta_244crit_180exp,reforge=exp_haste,gems=40agi_67agi
-legs=cinderweb_leggings,heroic=1,type=leather,ilevel=391,quality=epic,stats=1687armor_420agi_689sta_320mastery_244haste,gems=40agi_20agi_20mastery_20agi,enchant=190ap_55crit
+legs=cinderweb_leggings,heroic=1,type=leather,ilevel=391,quality=epic,stats=1687armor_420agi_689sta_320mastery_244haste,gems=40agi_20agi_20mastery_20agi,enchant=55crit_190ap
 feet=sandals_of_leaping_coals,heroic=1,type=leather,ilevel=391,quality=epic,stats=1325armor_322agi_513sta_260mastery_153crit,reforge=mastery_haste,gems=40agi_10agi,enchant=35agi
 wrists=flickering_wristbands_of_the_zephyr,heroic=1,type=leather,ilevel=391,quality=epic,stats=843armor_384sta_256agi_170haste_170mastery,reforge=haste_crit,gems=67agi,enchant=50agi,suffix=136
 hands=obsidian_arborweave_grips,heroic=1,type=leather,ilevel=391,quality=epic,stats=1205armor_322agi_513sta_231haste_202crit,reforge=crit_mastery,gems=40agi_67agi,enchant=65mastery

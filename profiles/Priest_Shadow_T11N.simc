@@ -46,7 +46,7 @@ hands=brackish_gloves,type=cloth,ilevel=359,quality=epic,stats=782armor_233int_3
 finger1=signet_of_the_fifth_circle,ilevel=359,quality=epic,stats=190int_286sta_127mastery_127haste
 finger2=planetary_band_of_the_undertow,ilevel=359,quality=epic,stats=285sta_190int_126haste_126spi,suffix=131
 trinket1=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_spi,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-trinket2=theralions_mirror,ilevel=359,quality=epic,stats=321int,equip=onspellcast_1926mastery_10%_20dur_100cd
+trinket2=theralions_mirror,ilevel=359,quality=epic,stats=321int,equip=onharmfulspellcast_1926mastery_10%_20dur_100cd
 back=ritssyns_ruminous_drape,ilevel=359,quality=epic,stats=625armor_170int_286sta_127mastery_107haste,reforge=mastery_spi,gems=20int_20haste_10int,enchant=lightweave_embroidery
 main_hand=incineratus,ilevel=359,quality=epic,stats=146int_219sta_97mastery_97haste_1954sp,enchant=power_torrent,weapon=dagger_1.80speed_291min_541max
 off_hand=book_of_binding_will,ilevel=359,quality=epic,stats=190int_286sta_127haste_127hit,enchant=40int

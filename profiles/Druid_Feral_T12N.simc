@@ -47,7 +47,7 @@ neck=choker_of_the_vanquished_lord,ilevel=384,quality=epic,stats=240agi_360sta_1
 shoulders=obsidian_arborweave_spaulders,type=leather,ilevel=378,quality=epic,stats=1365armor_282agi_454sta_157crit_216mastery,reforge=mastery_haste,gems=40agi,enchant=50agi_25mastery
 chest=obsidian_arborweave_raiment,type=leather,ilevel=378,quality=epic,stats=1820armor_368agi_611sta_221exp_275crit,reforge=exp_haste,gems=40agi_40agi_20agi,enchant=20all
 waist=flamebinding_girdle,type=leather,ilevel=378,quality=epic,stats=1024armor_282agi_454sta_211haste_167hit,reforge=hit_crit,gems=40agi_67agi
-legs=cinderweb_leggings,type=leather,ilevel=378,quality=epic,stats=1592armor_368agi_611sta_284mastery_212haste,gems=67agi_20agi_20mastery_20agi,enchant=190ap_55crit
+legs=cinderweb_leggings,type=leather,ilevel=378,quality=epic,stats=1592armor_368agi_611sta_284mastery_212haste,gems=67agi_20agi_20mastery_20agi,enchant=55crit_190ap
 feet=treads_of_the_craft,type=leather,ilevel=378,quality=epic,stats=1251armor_282agi_454sta_197haste_187mastery,reforge=mastery_crit,gems=40agi_10agi,enchant=35agi
 wrists=flamebinder_bracers,type=leather,ilevel=378,quality=epic,stats=796armor_227agi_341sta_154exp_148crit,reforge=exp_haste,gems=67agi,enchant=50agi
 hands=obsidian_arborweave_grips,type=leather,ilevel=378,quality=epic,stats=1137armor_282agi_454sta_205haste_177crit,gems=40agi_67agi,enchant=65mastery

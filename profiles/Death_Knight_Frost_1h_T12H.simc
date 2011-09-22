@@ -4,6 +4,7 @@ deathknight=Death_Knight_Frost_1h_T12H
 origin="Death_Knight_CharDevSync.simc"
 level=85
 race=orc
+position=back
 role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525

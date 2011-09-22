@@ -35,7 +35,7 @@ neck=stoneheart_choker,ilevel=378,quality=epic,stats=227str_341sta_137exp_160cri
 shoulders=immolation_pauldrons,type=plate,ilevel=378,quality=epic,stats=2716armor_282str_454sta_211crit_167haste,reforge=haste_mastery,gems=40str,enchant=50str_25crit
 chest=breastplate_of_shifting_visions,type=plate,ilevel=378,quality=epic,stats=3622armor_368str_611sta_265mastery_233haste,reforge=haste_crit,gems=67str_20str_20hit_20str,enchant=20all
 waist=cinch_of_the_flaming_ember,type=plate,ilevel=378,quality=epic,stats=2037armor_282str_454sta_133hit_230crit,reforge=crit_mastery,gems=40str_67str
-legs=immolation_legplates,type=plate,ilevel=378,quality=epic,stats=3169armor_368str_611sta_274mastery_227crit,reforge=crit_hit,gems=67str_20str_20mastery_20str,enchant=190ap_55crit
+legs=immolation_legplates,type=plate,ilevel=378,quality=epic,stats=3169armor_368str_611sta_274mastery_227crit,reforge=crit_hit,gems=67str_20str_20mastery_20str,enchant=55crit_190ap
 feet=arachnaflame_treads,type=plate,ilevel=378,quality=epic,stats=2490armor_282str_454sta_202crit_182haste,reforge=haste_mastery,gems=40str_10str,enchant=50mastery
 wrists=gigantiform_bracers,type=plate,ilevel=378,quality=epic,stats=1584armor_227str_341sta_115hit_173mastery,gems=40str,enchant=50str
 hands=immolation_gauntlets,type=plate,ilevel=378,quality=epic,stats=2264armor_282str_454sta_178hit_182mastery,gems=40str_40str,enchant=50str
