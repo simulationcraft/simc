@@ -1830,7 +1830,7 @@ struct mind_blast_t : public priest_spell_t
 {
   stats_t* orb_stats[ 4 ];
 
-  mind_blast_t( player_t* player, const std::string& options_str ) :
+  mind_blast_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "mind_blast", player, "Mind Blast" )
   {
     parse_options( NULL, options_str );
@@ -1839,6 +1839,11 @@ struct mind_blast_t : public priest_spell_t
 
     cooldown -> duration += p -> talents.improved_mind_blast -> effect1().seconds();
 
+    if ( ! dtr )
+    {
+      dtr_action = new mind_blast_t( player, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void init()
@@ -2459,7 +2464,7 @@ struct shadow_word_death_t : public priest_spell_t
   double mb_min_wait;
   double mb_max_wait;
 
-  shadow_word_death_t( priest_t* p, const std::string& options_str ) :
+  shadow_word_death_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "shadow_word_death", p, "Shadow Word: Death" ), mb_min_wait( 0 ), mb_max_wait( 0 )
   {
     option_t options[] =
@@ -2472,6 +2477,12 @@ struct shadow_word_death_t : public priest_spell_t
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
+
+    if ( ! dtr )
+    {
+      dtr_action = new shadow_word_death_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual double cost() SC_CONST
@@ -2490,7 +2501,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    p -> was_sub_25 = p -> glyphs.shadow_word_death -> ok() && ( ! p -> buffs_glyph_of_shadow_word_death -> check() ) &&
+    p -> was_sub_25 = ! is_dtr_action && p -> glyphs.shadow_word_death -> ok() && ( ! p -> buffs_glyph_of_shadow_word_death -> check() ) &&
                       ( target -> health_percentage() <= 25 );
 
     priest_spell_t::execute();
@@ -4585,27 +4596,13 @@ action_t* priest_t::create_action( const std::string& name,
   // Damage
   if ( name == "devouring_plague"       ) return new devouring_plague_t      ( this, options_str );
   if ( name == "holy_fire"              ) return new holy_fire_t             ( this, options_str );
-  if ( name == "mind_blast"             )
-    {
-    action_t* dtr = new mind_blast_t( this, options_str );
-    dtr -> is_dtr_action = true;
-    action_t* a = new mind_blast_t( this, options_str );
-    a -> dtr_action = dtr;
-    return a;
-    }
+  if ( name == "mind_blast"             ) return new mind_blast_t            ( this, options_str );
   if ( name == "mind_flay"              ) return new mind_flay_t             ( this, options_str );
   if ( name == "mind_flay_2"            ) return new mind_flay_t_2           ( this, options_str );
   if ( name == "mind_spike"             ) return new mind_spike_t            ( this, options_str );
   if ( name == "mind_sear"              ) return new mind_sear_t             ( this, options_str );
   if ( name == "penance"                ) return new penance_t               ( this, options_str );
-  if ( name == "shadow_word_death"      )
-        {
-        action_t* dtr = new shadow_word_death_t( this, options_str );
-        dtr -> is_dtr_action = true;
-        action_t* a = new shadow_word_death_t( this, options_str );
-        a -> dtr_action = dtr;
-        return a;
-        }
+  if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( this, options_str );
   if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( this, options_str );
   if ( name == "shadow_word_pain_2"     ) return new shadow_word_pain_t_2    ( this, options_str );
   if ( name == "smite"                  ) return new smite_t                 ( this, options_str );
