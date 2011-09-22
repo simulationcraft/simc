@@ -187,37 +187,47 @@ double rng_t::stdnormal_cdf( double u )
  };
  register double y, z;
 
- if (_isnan(u))
-  return 0;
- if (!_finite(u))
+ if ( u == std::numeric_limits<double>::quiet_NaN() )
+  return std::numeric_limits<double>::quiet_NaN();
+
+ if ( u == std::numeric_limits<double>::infinity() )
   return (u < 0 ? 0.0 : 1.0);
- y = fabs(u);
-    if (y <= 0.46875* sqrt( 2.0 ) ) {
+
+ y = fabs( u );
+
+ if (y <= 0.46875* sqrt( 2.0 ) )
+ {
   /* evaluate erf() for |u| <= sqrt(2)*0.46875 */
-  z = y*y;
-  y = u*((((a[0]*z+a[1])*z+a[2])*z+a[3])*z+a[4])
+  z = y * y;
+  y = u * ((((a[0]*z+a[1])*z+a[2])*z+a[3])*z+a[4])
        /((((b[0]*z+b[1])*z+b[2])*z+b[3])*z+b[4]);
-  return 0.5+y;
+  return 0.5 + y;
  }
- z = exp(-y*y/2)/2;
- if (y <= 4.0) {
+
+ z = exp(-y * y / 2 ) / 2;
+
+ if (y <= 4.0)
+ {
   /* evaluate erfc() for sqrt(2)*0.46875 <= |u| <= sqrt(2)*4.0 */
-  y = y/ sqrt( 2.0 );
+  y = y / sqrt( 2.0 );
   y =
 ((((((((c[0]*y+c[1])*y+c[2])*y+c[3])*y+c[4])*y+c[5])*y+c[6])*y+c[7])*y+c[8])
 
 
 /((((((((d[0]*y+d[1])*y+d[2])*y+d[3])*y+d[4])*y+d[5])*y+d[6])*y+d[7])*y+d[8]);
 
-  y = z*y;
-    } else {
+  y = z * y;
+ }
+ else
+ {
   /* evaluate erfc() for |u| > sqrt(2)*4.0 */
-  z = z* sqrt( 2.0 ) /y;
-  y = 2/(y*y);
+  z = z * sqrt( 2.0 ) / y;
+  y = 2 / ( y * y );
         y = y*(((((p[0]*y+p[1])*y+p[2])*y+p[3])*y+p[4])*y+p[5])
     /(((((q[0]*y+q[1])*y+q[2])*y+q[3])*y+q[4])*y+q[5]);
         y = z*( 1.0 / sqrt ( M_PI ) - y);
-    }
+ }
+
  return (u < 0.0 ? y : 1-y);
 };
 
@@ -257,29 +267,37 @@ double rng_t::stdnormal_inv(double p)
 
  register double q, t, u;
 
- if (_isnan(p) || p > 1.0 || p < 0.0)
-  return 0;
- if (p == 0.0)
-  return 0;
- if (p == 1.0)
-  return  0;
- q = std::min(p,1-p);
- if (q > 0.02425) {
+ if ( p == std::numeric_limits<double>::quiet_NaN() || p > 1.0 || p < 0.0)
+   return std::numeric_limits<double>::quiet_NaN();
+
+  if (p == 0.0)
+   return - std::numeric_limits<double>::infinity();
+
+  if (p == 1.0)
+   return std::numeric_limits<double>::infinity();
+
+ q = std::min( p, 1 - p );
+
+ if (q > 0.02425)
+ {
   /* Rational approximation for central region. */
-  u = q-0.5;
-  t = u*u;
-  u = u*(((((a[0]*t+a[1])*t+a[2])*t+a[3])*t+a[4])*t+a[5])
+  u = q - 0.5;
+  t = u * u;
+  u = u * (((((a[0]*t+a[1])*t+a[2])*t+a[3])*t+a[4])*t+a[5])
     /(((((b[0]*t+b[1])*t+b[2])*t+b[3])*t+b[4])*t+1);
- } else {
+ }
+ else
+ {
   /* Rational approximation for tail region. */
   t = sqrt(-2*log(q));
   u = (((((c[0]*t+c[1])*t+c[2])*t+c[3])*t+c[4])*t+c[5])
    /((((d[0]*t+d[1])*t+d[2])*t+d[3])*t+1);
  }
+
  /* The relative error of the approximation has absolute value less
     than 1.15e-9.  One iteration of Halley's rational method (third
     order) gives full machine precision... */
- t = stdnormal_cdf(u)-q;    /* error */
+ t = stdnormal_cdf( u ) - q;    /* error */
  t = t * 2.0 / sqrt( M_PI ) *exp(u*u/2);   /* f(u)/df(u) */
  u = u-t/(1+u*t/2);     /* Halley's method */
 
