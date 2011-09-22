@@ -16,7 +16,7 @@ OPENSSL_PATH =
 
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W
-OPTS       = -O3
+OPTS       = -O3 -ffast-math
 BITS       = 32
 
 ifeq (64,${BITS})
@@ -28,7 +28,6 @@ endif
 ifeq (UNIX,${OS})
 CPP_FLAGS += -D_stricmp=strcasecmp
 LINK_LIBS += -lpthread
-OPTS      += -ffast-math
 AR         = ar
 COPY       = cp
 REMOVE     = rm -f
