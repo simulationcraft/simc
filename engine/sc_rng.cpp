@@ -190,7 +190,7 @@ double rng_t::stdnormal_cdf( double u )
  if (!_finite(u))
   return (u < 0 ? 0.0 : 1.0);
  y = fabs(u);
-    if (y <= 0.46875*M_SQRT2) {
+    if (y <= 0.46875* sqrt( 2.0 ) ) {
   /* evaluate erf() for |u| <= sqrt(2)*0.46875 */
   z = y*y;
   y = u*((((a[0]*z+a[1])*z+a[2])*z+a[3])*z+a[4])
