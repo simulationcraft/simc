@@ -1378,10 +1378,11 @@ std::string player_t::init_use_profession_actions( const std::string& append )
   if ( profession[ PROF_HERBALISM ] >= 450 )
   {
     buffer += "/lifeblood";
-  }
-  if ( ! append.empty() )
-  {
-    buffer += append;
+
+    if ( ! append.empty() )
+    {
+      buffer += append;
+    }
   }
 
   return buffer;
@@ -1392,20 +1393,24 @@ std::string player_t::init_use_profession_actions( const std::string& append )
 std::string player_t::init_use_racial_actions( const std::string& append )
 {
   std::string buffer;
+  bool race_action_found = false;
 
   if ( race == RACE_ORC )
   {
     buffer += "/blood_fury";
+    race_action_found = true;
   }
   else if ( race == RACE_TROLL )
   {
     buffer += "/berserking";
+    race_action_found = true;
   }
   else if ( race == RACE_BLOOD_ELF )
   {
     buffer += "/arcane_torrent";
+    race_action_found = true;
   }
-  if ( ! append.empty() )
+  if ( race_action_found && ! append.empty() )
   {
     buffer += append;
   }
@@ -5928,7 +5933,10 @@ action_expr_t* player_t::create_expression( action_t* a,
     }
     else if ( splits[ 0 ] == "dot" )
     {
-      dot_t* dot = get_dot( splits[ 1 ] );
+      dot_t* dot = 0;
+      dot = get_dot( splits[ 1 ] );
+      if ( ! dot )
+        return 0;
       if ( splits[ 2 ] == "duration" )
       {
         struct duration_expr_t : public action_expr_t
