@@ -21,7 +21,7 @@ actions+=/kick
 actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee
 actions+=/pool_energy,for_next=1
 actions+=/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down
-actions+=/use_item,name=wind_dancers_gloves,if=buff.shadow_dance.up,if=buff.shadow_dance.up
+actions+=/use_item,name=wind_dancers_gloves,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/pool_energy,for_next=1
 actions+=/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up
