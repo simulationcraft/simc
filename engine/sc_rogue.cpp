@@ -89,6 +89,7 @@ struct combo_points_t
     assert( count > 0 );
     return cp_list[ count - 1 ];
   }
+
   double rank( double cp1, double cp2, double cp3, double cp4, double cp5 ) SC_CONST
   {
     double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
@@ -108,7 +109,7 @@ struct combo_points_t
 //  Review: Energy Regen (how Adrenaline rush stacks with Blade Flurry / haste)
 // ==========================================================================
 
-enum poison_type_t { POISON_NONE=0, ANESTHETIC_POISON, DEADLY_POISON, INSTANT_POISON, WOUND_POISON };
+enum poison_type_t { POISON_NONE=0, DEADLY_POISON, INSTANT_POISON, WOUND_POISON };
 
 struct rogue_t : public player_t
 {
@@ -143,7 +144,6 @@ struct rogue_t : public player_t
   new_buff_t* buffs_shadowstep;
   new_buff_t* buffs_slice_and_dice;
   new_buff_t* buffs_vendetta;
-
 
   stat_buff_t* buffs_tier12_4pc_crit;
   stat_buff_t* buffs_tier12_4pc_haste;
@@ -198,7 +198,6 @@ struct rogue_t : public player_t
   uptime_t* uptimes_poisoned;
 
   // Random Number Generation
-  rng_t* rng_anesthetic_poison;
   rng_t* rng_bandits_guile;
   rng_t* rng_combat_potency;
   rng_t* rng_cut_to_the_chase;
@@ -3308,7 +3307,6 @@ double rogue_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
   return 0.0;
 }
 
-
 // rogue_t::composite_attack_power_multiplier ===============================
 
 double rogue_t::composite_attack_power_multiplier() SC_CONST
@@ -3789,7 +3787,6 @@ void rogue_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_anesthetic_poison     = get_rng( "anesthetic_poison"     );
   rng_bandits_guile         = get_rng( "bandits_guile"         );
   rng_combat_potency        = get_rng( "combat_potency"        );
   rng_cut_to_the_chase      = get_rng( "cut_to_the_chase"      );
