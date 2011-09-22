@@ -373,7 +373,7 @@ player_t::player_t( sim_t*             s,
   pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
-  reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ), scale_player( 1 ),
+  reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ), scale_player( 1 ), has_dtr( false ),
   // Latency
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   brain_lag( -1.0 ), brain_lag_stddev( -1.0 ),
@@ -912,6 +912,10 @@ void player_t::init_items()
   }
 
   set_bonus.init( this );
+
+  // Detect DTR
+  if ( find_item( "dragonwrath_tarecgosas_rest" ) )
+    has_dtr = true;
 }
 
 // player_t::init_meta_gem ==================================================

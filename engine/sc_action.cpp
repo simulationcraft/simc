@@ -530,6 +530,9 @@ double action_t::cost() SC_CONST
     if ( player -> buffs.power_infusion -> check() ) c *= 0.80;
   }
 
+  if ( is_dtr_action )
+    c = 0;
+
   if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_cost, c, util_t::resource_type_string( resource ) );
 
   return floor( c );

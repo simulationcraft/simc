@@ -3235,6 +3235,7 @@ struct player_t
   int         infinite_resource[ RESOURCE_MAX ];
   std::vector<buff_t*> absorb_buffs;
   int         scale_player;
+  bool        has_dtr;
 
   // Latency
   double      world_lag, world_lag_stddev;

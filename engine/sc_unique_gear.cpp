@@ -1360,9 +1360,6 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
       if ( chance <= 0 )
         return;
 
-      // Make sure we don't have any dot actions.
-      assert( a -> num_ticks <= 0 );
-
       if ( rng -> roll( chance ) )
       {
         if ( sim -> log )
@@ -1400,9 +1397,9 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     // Should probably be re-done when all the Tier 12 sets are available.
     case TREE_BALANCE:      chance *= 1.004; break;
     case TREE_ARCANE:       chance *= 1.009; break;
-    case TREE_FIRE:         chance *= 1.020; break;
-    case TREE_FROST:        chance *= 1.063; break;
-    case TREE_SHADOW:       chance *= 1.010; break;
+    case TREE_FIRE:         chance *= 1.021; break;
+    case TREE_FROST:        chance *= 1.023; break;
+    case TREE_SHADOW:       chance *= 1.360; break;
     case TREE_ELEMENTAL:    chance *= 1.029; break;
     case TREE_AFFLICTION:   chance *= 1.061; break;
     case TREE_DEMONOLOGY:   chance *= 1.089; break;

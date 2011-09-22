@@ -1320,13 +1320,19 @@ double mage_spell_t::total_crit() SC_CONST
 
 struct arcane_barrage_t : public mage_spell_t
 {
-  arcane_barrage_t( mage_t* p, const std::string& options_str ) :
+  arcane_barrage_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "arcane_barrage", 44425, p )
   {
     check_spec( TREE_ARCANE );
     parse_options( NULL, options_str );
     base_multiplier *= 1.0 + p -> glyphs.arcane_barrage -> effect1().percent();
     consumes_arcane_blast = true;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new arcane_barrage_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 };
 
@@ -1334,7 +1340,7 @@ struct arcane_barrage_t : public mage_spell_t
 
 struct arcane_blast_t : public mage_spell_t
 {
-  arcane_blast_t( mage_t* p, const std::string& options_str ) :
+  arcane_blast_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "arcane_blast", 30451, p )
   {
     parse_options( NULL, options_str );
@@ -1342,6 +1348,12 @@ struct arcane_blast_t : public mage_spell_t
     if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new arcane_blast_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual double cost() SC_CONST

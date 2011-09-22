@@ -1839,7 +1839,7 @@ struct mind_blast_t : public priest_spell_t
 
     cooldown -> duration += p -> talents.improved_mind_blast -> effect1().seconds();
 
-    if ( ! dtr )
+    if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new mind_blast_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
@@ -2478,7 +2478,7 @@ struct shadow_word_death_t : public priest_spell_t
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
-    if ( ! dtr )
+    if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new shadow_word_death_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
