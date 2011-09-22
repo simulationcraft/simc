@@ -146,6 +146,8 @@ void rng_t::report( FILE* file )
 
 // rng_t::stdnormal_cdf ==
 
+// Source of the next 2 functions: http://home.online.no/~pjacklam/notes/invnorm/
+
 /*
  * The standard normal CDF, for one random variable.
  *
@@ -200,7 +202,7 @@ double rng_t::stdnormal_cdf( double u )
  z = exp(-y*y/2)/2;
  if (y <= 4.0) {
   /* evaluate erfc() for sqrt(2)*0.46875 <= |u| <= sqrt(2)*4.0 */
-  y = y/M_SQRT2;
+  y = y/ sqrt( 2.0 );
   y =
 ((((((((c[0]*y+c[1])*y+c[2])*y+c[3])*y+c[4])*y+c[5])*y+c[6])*y+c[7])*y+c[8])
 
@@ -210,11 +212,11 @@ double rng_t::stdnormal_cdf( double u )
   y = z*y;
     } else {
   /* evaluate erfc() for |u| > sqrt(2)*4.0 */
-  z = z*M_SQRT2/y;
+  z = z* sqrt( 2.0 ) /y;
   y = 2/(y*y);
         y = y*(((((p[0]*y+p[1])*y+p[2])*y+p[3])*y+p[4])*y+p[5])
     /(((((q[0]*y+q[1])*y+q[2])*y+q[3])*y+q[4])*y+q[5]);
-        y = z*(0.564189583547756286948-y);
+        y = z*( 1.0 / sqrt ( M_PI ) - y);
     }
  return (u < 0.0 ? y : 1-y);
 };
@@ -278,7 +280,7 @@ double rng_t::stdnormal_inv(double p)
     than 1.15e-9.  One iteration of Halley's rational method (third
     order) gives full machine precision... */
  t = stdnormal_cdf(u)-q;    /* error */
- t = t*2.50662827463100050242*exp(u*u/2);   /* f(u)/df(u) */
+ t = t * 2.0 / sqrt( M_PI ) *exp(u*u/2);   /* f(u)/df(u) */
  u = u-t/(1+u*t/2);     /* Halley's method */
 
  return (p > 0.5 ? -u : u);

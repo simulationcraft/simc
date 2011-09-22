@@ -2336,7 +2336,7 @@ const char* chart_t::dps_error( std::string& s,
   s += "&amp;";
   s += "chco=FF0000";
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dps - std_dev * 4, p -> dps + std_dev * 4, 1 / sqrt ( 0.5 * 3.14 * std_dev * std_dev ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dps - std_dev * 4, p -> dps + std_dev * 4, 1 / sqrt ( 0.5 * M_PI * std_dev * std_dev ) ); s += buffer;
 
   s += "&amp;";
   if ( p -> sim -> print_styles )
