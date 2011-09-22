@@ -1424,7 +1424,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   action_callback_t* cb_dd = new dragonwrath_tarecgosas_rest_dd_callback_t( p, chance );
 
   p -> register_tick_damage_callback( SCHOOL_SPELL_MASK, cb );
-  p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, cb_dd );
+  p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, DTR_DD_ENABLED ? cb_dd : cb );
 }
 
 // register_blazing_power ===================================================
