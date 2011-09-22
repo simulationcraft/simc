@@ -4132,6 +4132,9 @@ struct action_t : public spell_id_t
   std::string target_str;
   std::string label_str;
   double last_reaction_time;
+  action_t* dtr_action;
+  bool is_dtr_action;
+  bool can_trigger_dtr;
 
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const active_spell_t& s, int t=TREE_NONE, bool special=false );
@@ -4215,6 +4218,8 @@ struct action_t : public spell_id_t
   virtual action_expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM ) SC_CONST;
+
+  virtual double dtr_proc_chance() SC_CONST;
 
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 

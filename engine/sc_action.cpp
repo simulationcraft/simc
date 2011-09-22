@@ -144,6 +144,8 @@ void action_t::init_action_t_()
   target_str                     = "";
   label_str                      = "";
   last_reaction_time             = 0.0;
+  dtr_action                     = 0;
+  is_dtr_action                  = false;
 
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
@@ -231,10 +233,10 @@ action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, 
 
 action_t::~action_t()
 {
-  if ( if_expr )
+  if ( if_expr && ! is_dtr_action )
     delete if_expr;
 
-  if ( interrupt_if_expr )
+  if ( interrupt_if_expr && ! is_dtr_action )
     delete interrupt_if_expr;
 }
 
@@ -1359,6 +1361,9 @@ bool action_t::ready()
 {
   player_t* t = target;
 
+  if ( is_dtr_action )
+    assert( 0 );
+
   if ( player -> skill < 1.0 )
     if ( ! sim -> roll( player -> skill ) )
       return false;
@@ -1455,7 +1460,7 @@ void action_t::init()
     }
   }
 
-  if ( ! if_expr_str.empty() )
+  if ( ! if_expr_str.empty() && ! is_dtr_action )
   {
     if_expr = action_expr_t::parse( this, if_expr_str );
   }
@@ -1463,6 +1468,15 @@ void action_t::init()
   if ( ! interrupt_if_expr_str.empty() )
   {
     interrupt_if_expr = action_expr_t::parse( this, interrupt_if_expr_str );
+  }
+
+  if ( is_dtr_action )
+  {
+    cooldown = player -> get_cooldown( name_str + "_DTR" );
+    cooldown -> duration = 0;
+
+    stats = player -> get_stats( name_str + "_DTR", this );
+    background = true;
   }
 
   initialized = true;
@@ -1797,4 +1811,17 @@ int action_t::hasted_num_ticks( double d ) SC_CONST
     return ( int ) ceil ( n - 0.5 );
 
   return ( int ) floor( n + 0.5 );
+}
+
+// action_t::dtr_proc_chance() ===
+
+double action_t::dtr_proc_chance() SC_CONST
+{
+  // Get base proc chance from player
+  double p = 0.1;
+
+  if ( is_dtr_action )
+    p = 0;
+
+  return p;
 }

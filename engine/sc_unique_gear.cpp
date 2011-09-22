@@ -1338,6 +1338,43 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     }
   };
 
+  struct dragonwrath_tarecgosas_rest_dd_callback_t : public action_callback_t
+  {
+    rng_t* rng;
+    double chance;
+
+    dragonwrath_tarecgosas_rest_dd_callback_t( player_t* p, double pc ) :
+      action_callback_t( p -> sim, p ), rng( 0 ), chance( pc )
+    {
+      rng = p -> get_rng( "dragonwrath_tarecgosas_rest_dd" );
+    }
+
+    virtual void trigger( action_t* a, void* /* call_data */ )
+    {
+      if ( a -> is_dtr_action )
+        return;
+
+      if ( ! a -> dtr_action )
+        return;
+
+      if ( chance <= 0 )
+        return;
+
+      // Make sure we don't have any dot actions.
+      assert( a -> num_ticks <= 0 );
+
+      if ( rng -> roll( chance ) )
+      {
+        if ( sim -> log )
+        {
+          log_t::output( sim, "%s action %s procs Dragonwrath Tarecgosas Rest.", a -> player -> name(), a -> name() );
+        }
+        new ( sim ) action_execute_event_t( sim, a -> dtr_action, 0 /* Add DTR Proc Delay here */ );
+      }
+
+    }
+  };
+
   double chance = 0.10;
 
   if ( p -> sim -> dtr_proc_chance >= 0.0 )
@@ -1387,9 +1424,10 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   }
 
   action_callback_t* cb = new dragonwrath_tarecgosas_rest_callback_t( p, chance );
+  action_callback_t* cb_dd = new dragonwrath_tarecgosas_rest_dd_callback_t( p, chance );
 
   p -> register_tick_damage_callback( SCHOOL_SPELL_MASK, cb );
-  p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, cb );
+  p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, cb_dd );
 }
 
 // register_blazing_power ===================================================

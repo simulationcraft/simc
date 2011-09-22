@@ -1839,11 +1839,18 @@ struct mind_blast_t : public priest_spell_t
 
     cooldown -> duration += p -> talents.improved_mind_blast -> effect1().seconds();
 
+  }
+
+  virtual void init()
+  {
+    priest_t* p = player -> cast_priest();
+
     for( int i=0; i < 4; i++ )
     {
-      std::string str = "mind_blast_";
-      orb_stats[ i ] = p -> get_stats( str + ( char ) ( i + ( int ) '0' ), this );
+      std::string str = name_str + "_";
+      orb_stats[ i ] = p -> get_stats( str + ( char ) ( i + ( int ) '0' ) + ( is_dtr_action ? "_DTR" : "" ), this );
     }
+    priest_spell_t::init();
   }
 
   virtual void execute()
@@ -4578,13 +4585,27 @@ action_t* priest_t::create_action( const std::string& name,
   // Damage
   if ( name == "devouring_plague"       ) return new devouring_plague_t      ( this, options_str );
   if ( name == "holy_fire"              ) return new holy_fire_t             ( this, options_str );
-  if ( name == "mind_blast"             ) return new mind_blast_t            ( this, options_str );
+  if ( name == "mind_blast"             )
+    {
+    action_t* dtr = new mind_blast_t( this, options_str );
+    dtr -> is_dtr_action = true;
+    action_t* a = new mind_blast_t( this, options_str );
+    a -> dtr_action = dtr;
+    return a;
+    }
   if ( name == "mind_flay"              ) return new mind_flay_t             ( this, options_str );
   if ( name == "mind_flay_2"            ) return new mind_flay_t_2           ( this, options_str );
   if ( name == "mind_spike"             ) return new mind_spike_t            ( this, options_str );
   if ( name == "mind_sear"              ) return new mind_sear_t             ( this, options_str );
   if ( name == "penance"                ) return new penance_t               ( this, options_str );
-  if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( this, options_str );
+  if ( name == "shadow_word_death"      )
+        {
+        action_t* dtr = new shadow_word_death_t( this, options_str );
+        dtr -> is_dtr_action = true;
+        action_t* a = new shadow_word_death_t( this, options_str );
+        a -> dtr_action = dtr;
+        return a;
+        }
   if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( this, options_str );
   if ( name == "shadow_word_pain_2"     ) return new shadow_word_pain_t_2    ( this, options_str );
   if ( name == "smite"                  ) return new smite_t                 ( this, options_str );
