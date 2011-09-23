@@ -20,8 +20,9 @@
 // Warlock
 // ==========================================================================
 
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
-namespace pet_stats {
+namespace pet_stats { // ====================================================
 
 struct _stat_list_t
 {
@@ -30,7 +31,7 @@ struct _stat_list_t
 };
 
 // Base Stats, same for all pets. Depend on level
-static const _stat_list_t pet_base_stats[]=
+const _stat_list_t pet_base_stats[]=
 {
   // str, agi,  sta, int, spi,   hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
   { 85, {  453, 883,  353, 159, 225,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
@@ -39,7 +40,7 @@ static const _stat_list_t pet_base_stats[]=
   { 0, { 0 } }
 };
 
-static const _stat_list_t imp_base_stats[]=
+const _stat_list_t imp_base_stats[]=
 {
   // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
   { 85, {    0,   0,    0,   0,    0,  5026, 31607,         0,         0,     0,     0,     0,   0,       0 } },
@@ -47,7 +48,7 @@ static const _stat_list_t imp_base_stats[]=
   { 0, { 0 } }
 };
 
-static const _stat_list_t felguard_base_stats[]=
+const _stat_list_t felguard_base_stats[]=
 {
   // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
   { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
@@ -55,7 +56,7 @@ static const _stat_list_t felguard_base_stats[]=
   { 0, { 0 } }
 };
 
-static const _stat_list_t felhunter_base_stats[]=
+const _stat_list_t felhunter_base_stats[]=
 {
   // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
   { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
@@ -63,7 +64,7 @@ static const _stat_list_t felhunter_base_stats[]=
   { 0, { 0 } }
 };
 
-static const _stat_list_t succubus_base_stats[]=
+const _stat_list_t succubus_base_stats[]=
 {
   // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
   { 85, {    0,   0,    0,   0,    0,  5640, 19072,         0,         0,     0,     0,     0,   0,       0 } },
@@ -71,7 +72,7 @@ static const _stat_list_t succubus_base_stats[]=
   { 0, { 0 } }
 };
 
-static const _stat_list_t infernal_base_stats[]=
+const _stat_list_t infernal_base_stats[]=
 {
   // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
   { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
@@ -79,7 +80,7 @@ static const _stat_list_t infernal_base_stats[]=
   { 0, { 0 } }
 };
 
-static const _stat_list_t doomguard_base_stats[]=
+const _stat_list_t doomguard_base_stats[]=
 {
   // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
   { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
@@ -87,7 +88,7 @@ static const _stat_list_t doomguard_base_stats[]=
   { 0, { 0 } }
 };
 
-static const _stat_list_t ebon_imp_base_stats[]=
+const _stat_list_t ebon_imp_base_stats[]=
 {
   // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
   { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
@@ -95,7 +96,7 @@ static const _stat_list_t ebon_imp_base_stats[]=
   { 0, { 0 } }
 };
 
-static const _stat_list_t voidwalker_base_stats[]=
+const _stat_list_t voidwalker_base_stats[]=
 {
   // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
   { 85, {    0,   0,    0,   0,    0,  6131, 19072,         0,         0,     0,     0,     0,   0,       0 } },
@@ -110,62 +111,70 @@ struct _weapon_list_t
   double swing_time;
 };
 
-static const _weapon_list_t imp_weapon[]=
+const _weapon_list_t imp_weapon[]=
 {
   { 81, 116.7, 176.7, 2.0 },
   { 0, 0, 0, 0 }
 };
-static const _weapon_list_t felguard_weapon[]=
+
+const _weapon_list_t felguard_weapon[]=
 {
   { 85, 926.3, 926.3, 2.0 },
   { 81, 848.7, 848.7, 2.0 },
   { 80, 824.6, 824.6, 2.0 },
   { 0, 0, 0, 0 }
 };
-static const _weapon_list_t felhunter_weapon[]=
+
+const _weapon_list_t felhunter_weapon[]=
 {
   { 85, 926.3, 926.3, 2.0 },
   { 81, 678.4, 1010.4, 2.0 },
   { 80, 824.6, 824.6, 2.0 },
   { 0, 0, 0, 0 }
 };
-static const _weapon_list_t succubus_weapon[]=
+
+const _weapon_list_t succubus_weapon[]=
 {
   { 85, 926.3, 926.3, 2.0 },
   { 81, 848.7, 848.7, 2.0 },
   { 80, 824.6, 824.6, 2.0 },
   { 0, 0, 0, 0 }
 };
-static const _weapon_list_t infernal_weapon[]=
+
+const _weapon_list_t infernal_weapon[]=
 {
   { 85, 1072.0, 1072.0, 2.0 }, //Rough numbers
   { 80, 924.0, 924.0, 2.0 }, //Rough numbers
   { 0, 0, 0, 0 }
 };
-static const _weapon_list_t doomguard_weapon[]=
+
+const _weapon_list_t doomguard_weapon[]=
 {
   { 0, 0, 0, 0 }
 };
-static const _weapon_list_t ebon_imp_weapon[]=
+
+const _weapon_list_t ebon_imp_weapon[]=
 {
   { 85, 1110.0, 1110.0, 2.0 }, //Rough numbers
   { 80, 956.0, 956.0, 2.0 }, //Rough numbers
   { 0, 0, 0, 0 }
 };
-static const _weapon_list_t voidwalker_weapon[]=
+
+const _weapon_list_t voidwalker_weapon[]=
 {
   { 85, 926.3, 926.3, 2.0 },
   { 81, 848.7, 848.7, 2.0 },
   { 80, 824.6, 824.6, 2.0 },
   { 0, 0, 0, 0 }
 };
-}
 
-
+} // namespace pet_stats ====================================================
 
 struct warlock_pet_t;
 struct warlock_main_pet_t;
 struct warlock_guardian_pet_t;
+
+} // ANONYMOUS namespace ====================================================
 
 struct warlock_t : public player_t
 {
@@ -459,6 +468,8 @@ struct warlock_t : public player_t
     return dots;
   }
 };
+
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Warlock Pet
@@ -879,14 +890,13 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 
 };
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
-
 // ==========================================================================
 // Warlock Spell
 // ==========================================================================
 
 struct warlock_spell_t : public spell_t
 {
+private:
   void _init_warlock_spell_t()
   {
     may_crit      = true;
@@ -896,6 +906,7 @@ struct warlock_spell_t : public spell_t
     crit_multiplier *= 1.33;
   }
 
+public:
   warlock_spell_t( const char* n, player_t* player, const school_type s, int t ) :
     spell_t( n, player, RESOURCE_MANA, s, t )
   {
@@ -1189,7 +1200,7 @@ struct warlock_pet_attack_t : public attack_t
 
 // trigger_mana_feed ========================================================
 
-static void trigger_mana_feed( action_t* s, double travel_result )
+void trigger_mana_feed( action_t* s, double travel_result )
 {
   warlock_pet_t* a = ( warlock_pet_t* ) s -> player -> cast_pet();
   warlock_t* p = a -> owner -> cast_warlock();
@@ -2202,7 +2213,7 @@ struct shadow_bolt_t : public warlock_spell_t
 
 // Trigger Burning Embers ===================================================
 
-static void trigger_burning_embers ( spell_t* s, double dmg )
+void trigger_burning_embers ( spell_t* s, double dmg )
 {
   warlock_t* p;
   if ( s -> player -> type == WARLOCK )
@@ -3934,8 +3945,6 @@ struct rain_of_fire_t : public warlock_spell_t
   }
 };
 
-} // ANONYMOUS NAMESPACE ====================================================
-
 // imp_pet_t::fire_bolt_t::execute ==========================================
 
 void imp_pet_t::firebolt_t::travel( player_t* t, int travel_result, double travel_dmg )
@@ -3950,6 +3959,8 @@ void imp_pet_t::firebolt_t::travel( player_t* t, int travel_result, double trave
     trigger_mana_feed ( this, travel_result );
   }
 }
+
+} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Warlock Character Definition
