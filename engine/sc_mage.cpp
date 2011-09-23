@@ -1674,7 +1674,7 @@ struct cold_snap_t : public mage_spell_t
 
 struct combustion_t : public mage_spell_t
 {
-  combustion_t( mage_t* p, const std::string& options_str ) :
+  combustion_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "combustion", 11129, p )
   {
     check_talent( p -> talents.combustion -> rank() );
@@ -1683,6 +1683,12 @@ struct combustion_t : public mage_spell_t
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     num_ticks      = 10;
     base_tick_time = 1.0;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new combustion_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -1786,7 +1792,7 @@ struct counterspell_t : public mage_spell_t
 
 struct deep_freeze_t : public mage_spell_t
 {
-  deep_freeze_t( mage_t* p, const std::string& options_str ) :
+  deep_freeze_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "deep_freeze", 71757, p )
   {
     parse_options( NULL, options_str );
@@ -1798,6 +1804,12 @@ struct deep_freeze_t : public mage_spell_t
     fof_frozen = true;
     base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effect1().percent();
     trigger_gcd = p -> base_gcd;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new deep_freeze_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -1893,12 +1905,18 @@ struct evocation_t : public mage_spell_t
 
 struct fire_blast_t : public mage_spell_t
 {
-  fire_blast_t( mage_t* p, const std::string& options_str ) :
+  fire_blast_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "fire_blast", 2136, p )
   {
     parse_options( NULL, options_str );
     base_crit += p -> talents.improved_fire_blast -> effect1().percent();
     may_hot_streak = true;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new fire_blast_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 };
 
@@ -1906,7 +1924,7 @@ struct fire_blast_t : public mage_spell_t
 
 struct fireball_t : public mage_spell_t
 {
-  fireball_t( mage_t* p, const std::string& options_str ) :
+  fireball_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "fireball", 133, p )
   {
     parse_options( NULL, options_str );
@@ -1915,6 +1933,12 @@ struct fireball_t : public mage_spell_t
     if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new fireball_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual double cost() SC_CONST
@@ -2146,7 +2170,7 @@ struct frost_armor_t : public mage_spell_t
 
 struct frostbolt_t : public mage_spell_t
 {
-  frostbolt_t( mage_t* p, const std::string& options_str ) :
+  frostbolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "frostbolt", 116, p )
   {
     parse_options( NULL, options_str );
@@ -2157,6 +2181,12 @@ struct frostbolt_t : public mage_spell_t
     base_multiplier *= 1.0 + p -> specializations.frost3;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new frostbolt_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void schedule_execute()
@@ -2226,7 +2256,7 @@ struct frostfire_bolt_t : public mage_spell_t
 {
   int dot_stack;
 
-  frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
+  frostfire_bolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "frostfire_bolt", 44614, p ), dot_stack( 0 )
   {
     parse_options( NULL, options_str );
@@ -2244,6 +2274,12 @@ struct frostfire_bolt_t : public mage_spell_t
     if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new frostfire_bolt_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void reset()
@@ -2394,13 +2430,19 @@ struct frostfire_orb_t : public mage_spell_t
 
 struct ice_lance_t : public mage_spell_t
 {
-  ice_lance_t( mage_t* p, const std::string& options_str ) :
+  ice_lance_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "ice_lance", 30455, p )
   {
     parse_options( NULL, options_str );
     base_multiplier *= 1.0 + p -> glyphs.ice_lance -> effect1().percent();
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     fof_frozen = true;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new ice_lance_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void player_buff()
@@ -2713,7 +2755,7 @@ struct presence_of_mind_t : public mage_spell_t
 
 struct pyroblast_t : public mage_spell_t
 {
-  pyroblast_t( mage_t* p, const std::string& options_str ) :
+  pyroblast_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "pyroblast", 11366, p )
   {
     check_spec( TREE_FIRE );
@@ -2722,6 +2764,12 @@ struct pyroblast_t : public mage_spell_t
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new pyroblast_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -2740,7 +2788,7 @@ struct pyroblast_t : public mage_spell_t
 
 struct pyroblast_hs_t : public mage_spell_t
 {
-  pyroblast_hs_t( mage_t* p, const std::string& options_str ) :
+  pyroblast_hs_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "pyroblast_hs", 92315, p )
   {
     check_spec( TREE_FIRE );
@@ -2749,6 +2797,12 @@ struct pyroblast_hs_t : public mage_spell_t
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     dot = p -> get_dot( "pyroblast" );
     dot_behavior = DOT_REFRESH;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new pyroblast_hs_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -2789,7 +2843,7 @@ struct scorch_t : public mage_spell_t
 {
   int debuff;
 
-  scorch_t( mage_t* p, const std::string& options_str ) :
+  scorch_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "scorch", 2948, p ), debuff( 0 )
   {
     option_t options[] =
@@ -2807,6 +2861,12 @@ struct scorch_t : public mage_spell_t
 
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new scorch_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual bool usable_moving()

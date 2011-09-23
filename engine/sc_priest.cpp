@@ -1709,7 +1709,7 @@ struct fortitude_t : public priest_spell_t
 
 struct holy_fire_t : public priest_spell_t
 {
-  holy_fire_t( player_t* player, const std::string& options_str ) :
+  holy_fire_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "holy_fire", player, "Holy Fire" )
   {
     parse_options( NULL, options_str );
@@ -1721,6 +1721,12 @@ struct holy_fire_t : public priest_spell_t
     base_hit += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
 
     can_trigger_atonement = true;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new holy_fire_t( player, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -2178,10 +2184,16 @@ struct mind_flay_t_2 : public priest_spell_t
 
 struct mind_spike_t : public priest_spell_t
 {
-  mind_spike_t( player_t* player, const std::string& options_str ) :
+  mind_spike_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "mind_spike", player, "Mind Spike" )
   {
     parse_options( NULL, options_str );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new mind_spike_t( player, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -2971,7 +2983,7 @@ struct chakra_t : public priest_spell_t
 
 struct smite_t : public priest_spell_t
 {
-  smite_t( priest_t* p, const std::string& options_str ) :
+  smite_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "smite", p, "Smite" )
   {
     parse_options( NULL, options_str );
@@ -2980,6 +2992,12 @@ struct smite_t : public priest_spell_t
     base_hit          += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
 
     can_trigger_atonement = true;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new smite_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()

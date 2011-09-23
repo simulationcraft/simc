@@ -2344,13 +2344,19 @@ struct death_coil_t : public warlock_spell_t
 
 struct shadowburn_t : public warlock_spell_t
 {
-  shadowburn_t( player_t* player, const std::string& options_str ) :
+  shadowburn_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     warlock_spell_t( "shadowburn", player, "Shadowburn" )
   {
     warlock_t* p = player -> cast_warlock();
     check_talent( p -> talent_shadowburn -> rank() );
 
     parse_options( NULL, options_str );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new shadowburn_t( player, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -2668,7 +2674,7 @@ struct unstable_affliction_t : public warlock_spell_t
 
 struct haunt_t : public warlock_spell_t
 {
-  haunt_t( player_t* player, const std::string& options_str ) :
+  haunt_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     warlock_spell_t( "Haunt", player, "Haunt" )
   {
     warlock_t* p = player -> cast_warlock();
@@ -2678,6 +2684,12 @@ struct haunt_t : public warlock_spell_t
 
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
     direct_power_mod = 0.5577;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new haunt_t( player, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )

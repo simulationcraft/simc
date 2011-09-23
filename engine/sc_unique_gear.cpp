@@ -1396,14 +1396,15 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     // Until we get actual numbers adjust each spec's chance based off testing done against Tier 11 sets.
     // Should probably be re-done when all the Tier 12 sets are available.
     case TREE_BALANCE:      chance *= 1.004; break;
-    case TREE_ARCANE:       chance *= 1.009; break;
-    case TREE_FIRE:         chance *= 1.021; break;
-    case TREE_FROST:        chance *= 1.023; break;
-    case TREE_SHADOW:       chance *= 1.360; break;
+    case TREE_ARCANE:       chance *= 1.3; break;
+    case TREE_FIRE:         chance *= 1.3; break;
+    case TREE_FROST:        chance *= 1.3; break;
+    case TREE_SHADOW:
+    case TREE_DISCIPLINE:   chance *= 1.36; break;
     case TREE_ELEMENTAL:    chance *= 1.029; break;
-    case TREE_AFFLICTION:   chance *= 1.061; break;
-    case TREE_DEMONOLOGY:   chance *= 1.089; break;
-    case TREE_DESTRUCTION:  chance *= 1.066; break;
+    case TREE_AFFLICTION:   chance *= 1.4; break;
+    case TREE_DEMONOLOGY:   chance *= 1.4; break;
+    case TREE_DESTRUCTION:  chance *= 1.4; break;
     default:
       // Get a real spec...
       break;
