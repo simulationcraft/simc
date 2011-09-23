@@ -956,9 +956,11 @@ spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 
 spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, bool ptr )
 {
+  ( void )confirmation;
   if ( spell_id == 0 ) return spell_data_t::nil();
   spell_data_t* sd = find( spell_id, ptr );
-  if ( sd ) assert( ! strcmp( confirmation, sd -> name_cstr() ) );
+  if ( sd )
+    assert( ! strcmp( confirmation, sd -> name_cstr() ) );
   return sd;
 }
 
