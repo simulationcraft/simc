@@ -3192,12 +3192,14 @@ struct fel_armor_t : public warlock_spell_t
 
 struct summon_pet_t : public warlock_spell_t
 {
-  std::string pet_name;
   double summoning_duration;
   pet_t* pet;
 
-  void _init_summon_pet_t()
+private:
+  void _init_summon_pet_t( const std::string& options_str, const char* pet_name )
   {
+    parse_options( NULL, options_str );
+
     warlock_t* p = player -> cast_warlock();
     harmful = false;
     base_execute_time += p -> talent_master_summoner -> effect1().seconds();
@@ -3206,23 +3208,22 @@ struct summon_pet_t : public warlock_spell_t
     pet = p -> find_pet( pet_name );
     if ( ! pet )
     {
-      sim -> errorf( "Player %s unable to find pet %s for summons.\n", p -> name(), pet_name.c_str() );
+      sim -> errorf( "Player %s unable to find pet %s for summons.\n", p -> name(), pet_name );
       sim -> cancel();
     }
   }
 
+public:
   summon_pet_t( const char* n, player_t* player, const char* sname, const std::string& options_str="" ) :
-    warlock_spell_t( n, player, sname ), pet_name( n ), summoning_duration ( 0 ), pet( 0 )
+    warlock_spell_t( n, player, sname ), summoning_duration ( 0 ), pet( 0 )
   {
-    parse_options( NULL, options_str );
-    _init_summon_pet_t();
+    _init_summon_pet_t( options_str, n );
   }
 
   summon_pet_t( const char* n, player_t* player, int id, const std::string& options_str="" ) :
-    warlock_spell_t( n, player, id ), pet_name( n ), summoning_duration ( 0 ), pet( 0 )
+    warlock_spell_t( n, player, id ), summoning_duration ( 0 ), pet( 0 )
   {
-    parse_options( NULL, options_str );
-    _init_summon_pet_t();
+    _init_summon_pet_t( options_str, n );
   }
 
   virtual void execute()
@@ -3255,9 +3256,8 @@ struct summon_main_pet_t : public summon_pet_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if ( p -> active_pet )
-      if ( p -> active_pet -> name_str == pet_name )
-        return false;
+    if ( p -> active_pet == pet )
+      return false;
 
     return summon_pet_t::ready();
   }
@@ -4419,9 +4419,9 @@ void warlock_t::init_actions()
 
     // Flask
     if ( level >= 80 )
-      action_list_str += "/flask,type=draconic_mind";
+      action_list_str = "flask,type=draconic_mind";
     else if ( level >= 75 )
-      action_list_str += "/flask,type=frost_wyrm";
+      action_list_str = "flask,type=frost_wyrm";
 
     // Food
     if ( level >= 80 ) action_list_str += "/food,type=seafood_magnifique_feast";
