@@ -7,7 +7,7 @@ QT += core gui network webkit
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 
 win32 {
-  LIBS += libwsock32 libwininet
+  LIBS += -lwininet
   RC_FILE += simcqt.rc
 
   # OpenSSL stuff:
