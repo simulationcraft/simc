@@ -26,12 +26,12 @@ actions+=/summon_doomguard,if=time>10
 actions+=/felguard:felstorm
 actions+=/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking
 actions+=/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active
-actions+=/immolation_aura,if=buff.metamorphosis.remains>10
 actions+=/immolate,if=!ticking&target.time_to_die>=4&miss_react
-actions+=/hand_of_guldan
-actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react&cooldown.demon_soul.remains>30
+actions+=/bane_of_doom,if=(!ticking|(buff.metamorphosis.up&remains<45))&target.time_to_die>=15&miss_react
 actions+=/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react
 actions+=/shadowflame
+actions+=/hand_of_guldan
+actions+=/immolation_aura,if=buff.metamorphosis.remains>10
 actions+=/shadow_bolt,if=buff.shadow_trance.react
 actions+=/incinerate,if=buff.molten_core.react
 actions+=/soul_fire,if=buff.decimation.up

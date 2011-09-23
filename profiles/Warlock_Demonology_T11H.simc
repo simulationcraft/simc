@@ -25,13 +25,13 @@ actions+=/summon_doomguard,if=time>10
 actions+=/felguard:felstorm
 actions+=/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking
 actions+=/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active
-actions+=/immolation_aura,if=buff.metamorphosis.remains>10
 actions+=/immolate,if=!ticking&target.time_to_die>=4&miss_react
-actions+=/hand_of_guldan
-actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
+actions+=/bane_of_doom,if=(!ticking|(buff.metamorphosis.up&remains<45))&target.time_to_die>=15&miss_react
 actions+=/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react
 actions+=/fel_flame,if=buff.tier11_4pc_caster.react
 actions+=/shadowflame
+actions+=/hand_of_guldan
+actions+=/immolation_aura,if=buff.metamorphosis.remains>10
 actions+=/incinerate,if=buff.molten_core.react
 actions+=/soul_fire,if=buff.decimation.up
 actions+=/life_tap,if=mana_pct<=30&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felguard.down

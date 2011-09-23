@@ -4568,14 +4568,20 @@ void warlock_t::init_actions()
       action_list_str += "/felguard:felstorm";
       action_list_str += "/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking";
       action_list_str += "/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active";
-      if ( level >= 60 ) action_list_str += "/immolation_aura,if=buff.metamorphosis.remains>10";
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
-      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
-      if ( level >= 20 && has_mwc ) action_list_str += "&cooldown.demon_soul.remains>30";
+      if ( level >= 20 )
+      {
+        action_list_str += "/bane_of_doom,if=(!ticking";
+        if ( talent_metamorphosis -> ok() )
+          action_list_str += "|(buff.metamorphosis.up&remains<45)";
+        action_list_str += ")&target.time_to_die>=15&miss_react";
+        // if ( has_mwc ) action_list_str += "&cooldown.demon_soul.remains>30";
+      }
       action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
       if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
       if ( level >= 75 ) action_list_str += "/shadowflame";
+      if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
+      if ( level >= 60 ) action_list_str += "/immolation_aura,if=buff.metamorphosis.remains>10";
       if ( glyphs.corruption -> ok() ) action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
       if ( level >= 64 ) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54 ) action_list_str += "/soul_fire,if=buff.decimation.up";
