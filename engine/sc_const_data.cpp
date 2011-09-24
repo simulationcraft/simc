@@ -1,3 +1,8 @@
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
 #include "simulationcraft.h"
 
 #include "sc_scale_data.inc"
@@ -16,93 +21,123 @@
 #include "sc_item_data_ptr.inc"
 #endif
 
-static spell_data_t         nil_sd;
-static spelleffect_data_t   nil_sed;
-static talent_data_t        nil_td;
-static random_suffix_data_t nil_rsd;
-static item_enchantment_data_t nil_ied;
-static gem_property_data_t nil_gpd;
+namespace { // ANONYMOUS namespace ==========================================
 
-/* Indices for spell related quick access */
-static spell_data_t**       idx_sd[2]          = { 0, 0 };
-static unsigned             idx_sd_size[2]     = { 0, 0 };
+spell_data_t         nil_sd;
+spelleffect_data_t   nil_sed;
+talent_data_t        nil_td;
+random_suffix_data_t nil_rsd;
+item_enchantment_data_t nil_ied;
+gem_property_data_t nil_gpd;
 
-static spelleffect_data_t** idx_sed[2]         = { 0, 0 };
-static unsigned             idx_sed_size[2]    = { 0, 0 };
+// Indices for constant-time access to spells, effects, and talents by id.
+template <typename T>
+class dbc_index_t
+{
+private:
+  typedef std::vector<T*> index_t;
+  index_t idx[2];
 
-static talent_data_t**      idx_td[2]          = { 0, 0 };
-static unsigned             idx_td_size[2]     = { 0, 0 };
+  void populate( index_t& i, T* data );
+
+public:
+  void init();
+
+  bool initialized( bool ptr = false ) const
+  { return ! idx[ ptr ].empty(); }
+
+  T** index( bool ptr ) { return &idx[ ptr ][ 0 ]; }
+  typename index_t::size_type size( bool ptr ) const { return idx[ ptr ].size(); }
+
+  T* get( bool ptr, unsigned id ) const;
+};
+
+template <typename T>
+void dbc_index_t<T>::init()
+{
+  assert( ! initialized( false ) );
+  populate( idx[ false ], T::list( false ) );
+  if ( SC_USE_PTR )
+    populate( idx[ true ], T::list( true ) );
+}
+
+template <typename T>
+void dbc_index_t<T>::populate( index_t& idx, T* list )
+{
+  unsigned max_id = 0;
+  for ( T* p = list; p -> id(); ++p )
+  {
+    if ( max_id < p -> id() )
+      max_id = p -> id();
+  }
+
+  idx.assign( max_id + 1, T::nil() );
+  for ( T* p = list; p -> id(); ++p )
+    idx[ p -> id() ] = p;
+}
+
+template <typename T>
+T* dbc_index_t<T>::get( bool ptr, unsigned id ) const
+{
+  assert( initialized( ptr ) );
+  if ( id < idx[ ptr ].size() )
+    return idx[ ptr ][ id ];
+  else
+    return T::nil();
+}
+
+dbc_index_t<spell_data_t> idx_sd;
+dbc_index_t<spelleffect_data_t> idx_sed;
+dbc_index_t<talent_data_t> idx_td;
+
+} // ANONYMOUS namespace ====================================================
 
 const char* dbc_t::build_level( bool ptr )
-{
-  ( void )ptr;
-#if SC_USE_PTR
-  return ptr ? "14545" : "14545";
-#else
-  return "14545";
-#endif
-}
+{ return ( SC_USE_PTR && ptr ) ? "14545" : "14545"; }
 
 const char* dbc_t::wow_version( bool ptr )
-{
-  ( void )ptr;
-#if SC_USE_PTR
-  return ptr ? "4.2.2" : "4.2.2";
-#else
-  return "4.2.2";
-#endif
-}
+{ return ( SC_USE_PTR && ptr ) ? "4.2.2" : "4.2.2"; }
 
 void dbc_t::init()
 {
-  memset( &nil_sd,  0x00, sizeof( spell_data_t )            );
-  memset( &nil_sed, 0x00, sizeof( spelleffect_data_t )      );
-  memset( &nil_td,  0x00, sizeof( talent_data_t )           );
-  memset( &nil_rsd, 0x00, sizeof( random_suffix_data_t )    );
-  memset( &nil_ied, 0x00, sizeof( item_enchantment_data_t ) );
-  memset( &nil_gpd, 0x00, sizeof( gem_property_data_t )     );
-
+  zerofill( nil_sd );
   nil_sd._effect1 = &nil_sed;
   nil_sd._effect2 = &nil_sed;
   nil_sd._effect3 = &nil_sed;
 
+  zerofill( nil_sed );
   nil_sed._spell         = &nil_sd;
   nil_sed._trigger_spell = &nil_sd;
 
+  zerofill( nil_td );
   nil_td.spell1 = &nil_sd;
   nil_td.spell2 = &nil_sd;
   nil_td.spell3 = &nil_sd;
 
+  zerofill( nil_rsd );
+  zerofill( nil_ied );
+  zerofill( nil_gpd );
+
+  idx_sd.init();
+  idx_sed.init();
+  idx_td.init();
+
   spell_data_t::link( false );
   spelleffect_data_t::link( false );
   talent_data_t::link( false );
-  create_spell_data_index( false );
-  create_spelleffect_data_index( false );
-  create_talent_data_index( false );
 
-#if SC_USE_PTR
-  spell_data_t::link( true );
-  spelleffect_data_t::link( true );
-  talent_data_t::link( true );
-  create_spell_data_index( true );
-  create_spelleffect_data_index( true );
-  create_talent_data_index( true );
-#endif
+  if ( SC_USE_PTR )
+  {
+    spell_data_t::link( true );
+    spelleffect_data_t::link( true );
+    talent_data_t::link( true );
+  }
 }
 
-void dbc_t::de_init()
-{
-  if ( idx_sd[ 0 ]  ) delete [] idx_sd[ 0 ];
-  if ( idx_sd[ 1 ]  ) delete [] idx_sd[ 1 ];
-  if ( idx_td[ 0 ]  ) delete [] idx_td[ 0 ];
-  if ( idx_td[ 1 ]  ) delete [] idx_td[ 1 ];
-  if ( idx_sed[ 0 ] ) delete [] idx_sed[ 0 ];
-  if ( idx_sed[ 1 ] ) delete [] idx_sed[ 1 ];
-}
-
-int dbc_t::glyphs( std::vector<unsigned>& glyph_ids, int cid, bool ptr )
+std::vector<unsigned> dbc_t::glyphs( int cid, bool ptr )
 {
   ( void )ptr;
+  std::vector<unsigned> glyph_ids;
 
   for( int i=0; i < GLYPH_MAX; i++ )
   {
@@ -118,127 +153,7 @@ int dbc_t::glyphs( std::vector<unsigned>& glyph_ids, int cid, bool ptr )
     }
   }
 
-  return glyph_ids.size();
-}
-
-spell_data_t** dbc_t::spell_data_index() SC_CONST
-{
-  return idx_sd[ ptr ];
-}
-
-unsigned dbc_t::spell_data_index_size() SC_CONST
-{
-  return idx_sd_size[ ptr ];
-}
-
-void dbc_t::create_spell_data_index( bool ptr )
-{
-  unsigned max_id = 0;
-
-  if ( idx_sd[ ptr ] ) return;
-
-  for ( spell_data_t* s = spell_data_t::list( ptr ); s -> id(); s++ )
-  {
-    if ( s -> id() > max_id )
-    {
-      max_id = s -> id();
-    }
-  }
-
-  if ( max_id >= 1000000 )
-  {
-    return;
-  }
-
-  idx_sd_size[ ptr ] = max_id + 1;
-  idx_sd[ ptr ]      = new spell_data_t*[ max_id + 1 ];
-
-  memset( idx_sd[ ptr ], 0, sizeof( spell_data_t* ) * max_id + 1 );
-
-  for ( spell_data_t* s = spell_data_t::list( ptr ); s -> id(); s++ )
-  {
-    idx_sd[ ptr ][ s -> id() ] = s;
-  }
-}
-
-void dbc_t::create_spelleffect_data_index( bool ptr )
-{
-  unsigned max_id = 0;
-
-  if ( idx_sed[ ptr ] ) return;
-
-  for ( const spelleffect_data_t* e = spelleffect_data_t::list( ptr ); e -> id(); e++ )
-  {
-    if ( e -> id() > max_id )
-    {
-      max_id = e -> id();
-    }
-  }
-
-  if ( max_id >= 1000000 )
-  {
-    return;
-  }
-
-  idx_sed_size[ ptr ] = max_id + 1;
-  idx_sed[ ptr ]      = new spelleffect_data_t*[ max_id + 1 ];
-
-  memset( idx_sed[ ptr ], 0, sizeof( spelleffect_data_t* ) * max_id + 1 );
-
-  for ( spelleffect_data_t* e = spelleffect_data_t::list( ptr ); e -> id(); e++ )
-  {
-    idx_sed[ ptr ][ e -> id() ] = e;
-  }
-}
-
-spelleffect_data_t** dbc_t::spelleffect_data_index() SC_CONST
-{
-  return idx_sed[ ptr ];
-}
-
-unsigned dbc_t::spelleffect_data_index_size() SC_CONST
-{
-  return idx_sed_size[ ptr ];
-}
-
-void dbc_t::create_talent_data_index( bool ptr )
-{
-  unsigned max_id = 0;
-
-  if ( idx_td[ ptr ] ) return;
-
-  for ( const talent_data_t* t = talent_data_t::list( ptr ); t -> id(); t++ )
-  {
-    if ( t -> id() > max_id )
-    {
-      max_id = t -> id();
-    }
-  }
-
-  if ( max_id >= 1000000 )
-  {
-    return;
-  }
-
-  idx_td_size[ ptr ] = max_id + 1;
-  idx_td[ ptr ]      = new talent_data_t*[ max_id + 1 ];
-
-  memset( idx_td[ ptr ], 0, sizeof( talent_data_t* ) * max_id + 1 );
-
-  for ( talent_data_t* t = talent_data_t::list( ptr ); t -> id(); t++ )
-  {
-    idx_td[ ptr ][ t -> id() ] = t;
-  }
-}
-
-talent_data_t** dbc_t::talent_data_index() SC_CONST
-{
-  return idx_td[ ptr ];
-}
-
-unsigned dbc_t::talent_data_index_size() SC_CONST
-{
-  return idx_td_size[ ptr ];
+  return glyph_ids;
 }
 
 double dbc_t::melee_crit_base( player_type t ) SC_CONST
@@ -777,29 +692,14 @@ const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) SC
   return nil_ied;
 }
 
-const spell_data_t* dbc_t::spell( unsigned spell_id ) SC_CONST
-{
-#if SC_USE_PTR
-  if ( spell_id > ( ptr ? __ptr_spell_data[ PTR_SPELL_SIZE - 1 ].id() : __spell_data[ SPELL_SIZE - 1 ].id() ) ) return &nil_sd;
-#else
-  if ( spell_id > __spell_data[ SPELL_SIZE - 1 ].id() ) return &nil_sd;
-#endif
-  if ( ! idx_sd[ ptr ][ spell_id ] )
-    return &nil_sd;
-  return idx_sd[ ptr ][ spell_id ];
-}
+const spell_data_t* dbc_t::spell( unsigned spell_id ) const
+{ return idx_sd.get( ptr, spell_id ); }
 
-const spelleffect_data_t* dbc_t::effect( unsigned effect_id ) SC_CONST
-{
-#if SC_USE_PTR
-  if ( effect_id > ( ptr ? __ptr_spelleffect_data[ __PTR_SPELLEFFECT_SIZE - 1 ].id() : __spelleffect_data[ __SPELLEFFECT_SIZE - 1 ].id() ) ) return &nil_sed;
-#else
-  if ( effect_id > __spelleffect_data[ __SPELLEFFECT_SIZE - 1 ].id() ) return &nil_sed;
-#endif
-  if ( ! idx_sed[ ptr ][ effect_id ] )
-    return &nil_sed;
-  return idx_sed[ ptr ][ effect_id ];
-}
+const spelleffect_data_t* dbc_t::effect( unsigned effect_id ) const
+{ return idx_sed.get( ptr, effect_id ); }
+
+const talent_data_t* dbc_t::talent( unsigned talent_id ) const
+{ return idx_td.get( ptr, talent_id ); }
 
 const item_data_t* dbc_t::item( unsigned item_id ) SC_CONST
 {
@@ -833,7 +733,6 @@ const item_data_t* dbc_t::items( bool ptr )
 #endif
 }
 
-
 size_t dbc_t::n_items( bool ptr )
 {
   ( void )ptr;
@@ -843,19 +742,6 @@ size_t dbc_t::n_items( bool ptr )
 #else
   return ITEM_SIZE;
 #endif
-}
-
-
-const talent_data_t* dbc_t::talent( unsigned talent_id ) SC_CONST
-{
-#if SC_USE_PTR
-  if ( talent_id > ( ptr ? __ptr_talent_data[ PTR_TALENT_SIZE - 1 ].id() : __talent_data[ TALENT_SIZE - 1 ].id() ) ) return &nil_td;
-#else
-  if ( talent_id > __talent_data[ TALENT_SIZE - 1 ].id() ) return &nil_td;
-#endif
-  if ( ! idx_td[ ptr ][ talent_id ] )
-    return &nil_td;
-  return idx_td[ ptr ][ talent_id ];
 }
 
 const gem_property_data_t& dbc_t::gem_property( unsigned gem_id ) SC_CONST
@@ -912,72 +798,29 @@ talent_data_t* talent_data_t::list( bool ptr )
 }
 
 spell_data_t* spell_data_t::nil()
-{
-  return &nil_sd;
-}
+{ return &nil_sd; }
 
 spelleffect_data_t* spelleffect_data_t::nil()
-{
-  return &nil_sed;
-}
+{ return &nil_sed; }
 
 talent_data_t* talent_data_t::nil()
-{
-  return &nil_td;
-}
+{ return &nil_td; }
 
 spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
 {
-  if ( spell_id == 0 ) return spell_data_t::nil();
-
-  spell_data_t* spell_data = spell_data_t::list( ptr );
-
-  for( int i = 0; spell_data[ i ].name_cstr(); i++ )
-  {
-    if( spell_data[ i ].id() == spell_id )
-    {
-      return spell_data + i;
-    }
-  }
-
-  return 0;
-}
-
-spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
-{
-  spelleffect_data_t* spelleffect_data = spelleffect_data_t::list( ptr );
-
-  for( int i=0; spelleffect_data[ i ].id(); i++ )
-    if( spelleffect_data[ i ].id() == id )
-      return spelleffect_data + i;
-
-  return 0;
+  spell_data_t* p = idx_sd.get( ptr, spell_id );
+  if ( p == nil() )
+    p = 0;
+  return p;
 }
 
 spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, bool ptr )
 {
   ( void )confirmation;
-  if ( spell_id == 0 ) return spell_data_t::nil();
-  spell_data_t* sd = find( spell_id, ptr );
-  if ( sd )
-    assert( ! strcmp( confirmation, sd -> name_cstr() ) );
-  return sd;
-}
 
-talent_data_t* talent_data_t::find( unsigned id, const std::string& confirmation, bool ptr )
-{
-  talent_data_t* talent_data = talent_data_t::list( ptr );
-
-  for( int i=0; talent_data[ i ].name_cstr(); i++ )
-  {
-    if( talent_data[ i ].id() == id )
-    {
-      if( ! confirmation.empty() ) assert( confirmation == talent_data[ i ].name_cstr() );
-      return talent_data + i;
-    }
-  }
-
-  return 0;
+  spell_data_t* p = find( spell_id, ptr );
+  assert( p && ! strcmp( confirmation, p -> name_cstr() ) );
+  return p;
 }
 
 spell_data_t* spell_data_t::find( const std::string& name, bool ptr )
@@ -991,13 +834,36 @@ spell_data_t* spell_data_t::find( const std::string& name, bool ptr )
   return 0;
 }
 
+spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
+{
+  spelleffect_data_t* p = idx_sed.get( ptr, id );
+  if ( p == nil() )
+    p = 0;
+  return p;
+}
+
+talent_data_t* talent_data_t::find( unsigned id, bool ptr )
+{
+  talent_data_t* p = idx_td.get( ptr, id );
+  if ( p == nil() )
+    p = 0;
+  return p;
+}
+
+talent_data_t* talent_data_t::find( unsigned id, const std::string& confirmation, bool ptr )
+{
+  ( void )confirmation;
+
+  talent_data_t* p = find( id, ptr );
+  assert( p && confirmation == p -> name_cstr() );
+  return p;
+}
+
 talent_data_t* talent_data_t::find( const std::string& name, bool ptr )
 {
-  talent_data_t* talent_data = talent_data_t::list( ptr );
-
-  for( int i=0; talent_data[ i ].name_cstr(); i++ )
-    if( name == talent_data[ i ].name_cstr() )
-      return talent_data + i;
+  for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
+    if( name == p -> name_cstr() )
+      return p;
 
   return 0;
 }
@@ -1006,101 +872,39 @@ void spell_data_t::link( bool ptr )
 {
   spell_data_t* spell_data = spell_data_t::list( ptr );
 
-  spelleffect_data_t* spelleffect_data = spelleffect_data_t::list( ptr );
-
   for( int i = 0; spell_data[ i ].name_cstr(); i++ )
   {
     spell_data_t& sd = spell_data[ i ];
-
-    spelleffect_data_t** effects[] = { &( sd._effect1 ), &( sd._effect2 ), &( sd._effect3 ) };
-
-    for( int j=0; j < 3; j++ )
-    {
-      unsigned id = sd._effect[ j ];
-      spelleffect_data_t** addr = effects[ j ];
-      *addr = spelleffect_data_t::nil();
-      if( id > 0 )
-      {
-        for( int k=0; spelleffect_data[ k ].id(); k++ )
-        {
-          if( id == spelleffect_data[ k ].id() )
-          {
-            *addr = spelleffect_data + k;
-            break;
-          }
-        }
-      }
-    }
+    sd._effect1 = idx_sed.get( ptr, sd._effect[ 0 ] );
+    sd._effect2 = idx_sed.get( ptr, sd._effect[ 1 ] );
+    sd._effect3 = idx_sed.get( ptr, sd._effect[ 2 ] );
   }
 }
 
 void spelleffect_data_t::link( bool ptr )
 {
-  spell_data_t* spell_data = spell_data_t::list( ptr );
-
   spelleffect_data_t* spelleffect_data = spelleffect_data_t::list( ptr );
 
   for( int i=0; spelleffect_data[ i ].id(); i++ )
   {
     spelleffect_data_t& ed = spelleffect_data[ i ];
 
-    ed._spell         = spell_data_t::nil();
-    ed._trigger_spell = spell_data_t::nil();
-
-    if( ed.spell_id() > 0 )
-    {
-      for( int j=0; spell_data[ j ].name_cstr(); j++ )
-      {
-        if( ed.spell_id() == spell_data[ j ].id() )
-        {
-          ed._spell = spell_data + j;
-          break;
-        }
-      }
-    }
-    if( ed.trigger_spell_id() > 0 )
-    {
-      for( int j=0; spell_data[ j ].name_cstr(); j++ )
-      {
-        if( ed.trigger_spell_id() == spell_data[ j ].id() )
-        {
-          ed._trigger_spell = spell_data + j;
-          break;
-        }
-      }
-    }
+    ed._spell         = idx_sd.get( ptr, ed.spell_id() );
+    ed._trigger_spell = idx_sd.get( ptr, ed.trigger_spell_id() );
   }
 }
 
 void talent_data_t::link( bool ptr )
 {
-  spell_data_t* spell_data = spell_data_t::list( ptr );
-
   talent_data_t* talent_data = talent_data_t::list( ptr );
 
   for( int i=0; talent_data[ i ].name_cstr(); i++ )
   {
     talent_data_t& td = talent_data[ i ];
 
-    spell_data_t** rank_spells[] = { &( td.spell1 ), &( td.spell2 ), &( td.spell3 ) };
-
-    for( int j=0; j < 3; j++ )
-    {
-      unsigned id = td._rank_id[ j ];
-      spell_data_t** addr = rank_spells[ j ];
-      *addr = spell_data_t::nil();
-      if( id > 0 )
-      {
-        for( int k = 0; spell_data[ k ].name_cstr(); k++ )
-        {
-          if( id == spell_data[ k ].id() )
-          {
-            *addr = spell_data + k;
-            break;
-          }
-        }
-      }
-    }
+    td.spell1 = idx_sd.get( ptr, td._rank_id[ 0 ] );
+    td.spell2 = idx_sd.get( ptr, td._rank_id[ 1 ] );
+    td.spell3 = idx_sd.get( ptr, td._rank_id[ 2 ] );
   }
 }
 

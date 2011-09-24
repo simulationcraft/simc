@@ -5583,13 +5583,10 @@ talent_t* player_t::find_talent( const std::string& n,
 
 void player_t::create_glyphs()
 {
-  std::vector<unsigned> glyph_ids;
-  int num_glyphs = dbc_t::glyphs( glyph_ids, util_t::class_id( type ), ptr );
+  std::vector<unsigned> glyph_ids = dbc_t::glyphs( util_t::class_id( type ), ptr );
 
-  for( int i=0; i < num_glyphs; i++ )
-  {
+  for( int i=0, n=glyph_ids.size(); i < n; i++ )
     glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ], ptr ) ) );
-  }
 }
 
 // player_t::find_glyph =====================================================

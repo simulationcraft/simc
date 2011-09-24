@@ -1449,6 +1449,7 @@ struct talent_data_t
   spell_data_t* spell3;
 
   static talent_data_t* nil();
+  static talent_data_t* find( unsigned, bool ptr = false );
   static talent_data_t* find( unsigned, const std::string& confirmation = std::string(), bool ptr = false );
   static talent_data_t* find( const std::string& name, bool ptr = false );
   static talent_data_t* list( bool ptr = false );
@@ -1492,27 +1493,14 @@ struct dbc_t
 
   // Static Initialization
   static void init();
-  static void de_init();
-  static int glyphs( std::vector<unsigned>& glyph_ids, int cid, bool ptr = false );
+  static void de_init() {}
+  static std::vector<unsigned> glyphs( int cid, bool ptr = false );
 
   static const char* build_level( bool ptr = false );
   static const char* wow_version( bool ptr = false );
-  static void        create_spell_data_index( bool ptr = false );
-  static void        create_spelleffect_data_index( bool ptr = false );
-  static void        create_talent_data_index( bool ptr = false );
 
   static const item_data_t* items( bool ptr = false );
   static std::size_t        n_items( bool ptr = false );
-
-  // Index access
-  spell_data_t** spell_data_index() SC_CONST;
-  unsigned spell_data_index_size() SC_CONST;
-
-  spelleffect_data_t** spelleffect_data_index() SC_CONST;
-  unsigned spelleffect_data_index_size() SC_CONST;
-
-  talent_data_t** talent_data_index() SC_CONST;
-  unsigned talent_data_index_size() SC_CONST;
 
   // Game data table access
   double melee_crit_base( player_type t ) SC_CONST;
@@ -1544,9 +1532,9 @@ struct dbc_t
   double combat_rating( unsigned combat_rating_id, unsigned level ) SC_CONST;
   double oct_combat_rating( unsigned combat_rating_id, player_type t ) SC_CONST;
 
-  const spell_data_t*            spell( unsigned spell_id ) SC_CONST;
-  const spelleffect_data_t*      effect( unsigned effect_id ) SC_CONST;
-  const talent_data_t*           talent( unsigned talent_id ) SC_CONST;
+  const spell_data_t*            spell( unsigned spell_id ) const;
+  const spelleffect_data_t*      effect( unsigned effect_id ) const;
+  const talent_data_t*           talent( unsigned talent_id ) const;
   const item_data_t*             item( unsigned item_id ) SC_CONST;
 
   const random_suffix_data_t&    random_suffix( unsigned suffix_id ) SC_CONST;
