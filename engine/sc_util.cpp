@@ -1555,7 +1555,7 @@ bool util_t::parse_origin( std::string& region_str,
   return true;
 }
 
-// util_t::class_id_max =====================================================
+// util_t::class_id_mask ====================================================
 
 int util_t::class_id_mask( int type )
 {
