@@ -75,6 +75,7 @@ struct paladin_t : public player_t
   gain_t* gains_hp_pursuit_of_justice;
   gain_t* gains_hp_tower_of_radiance;
   gain_t* gains_hp_zealotry;
+  gain_t* gains_hp_judgement;
 
   // Cooldowns
   cooldown_t* cooldowns_avengers_shield;
@@ -555,6 +556,10 @@ struct paladin_attack_t : public attack_t
     if ( school == SCHOOL_HOLY )
     {
       player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
+    }
+    if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
+    {
+      player_multiplier *= 1.12;
     }
   }
 
@@ -1437,6 +1442,11 @@ struct judgement_t : public paladin_attack_t
       p -> buffs_divine_purpose -> trigger();
       p -> buffs_judgements_of_the_pure -> trigger();
       p -> buffs_sacred_duty-> trigger();
+
+      if ( p -> set_bonus.tier13_2pc_melee() && sim -> rng -> roll( 0.5 ) )
+      {
+        p -> resource_gain( RESOURCE_HOLY_POWER, 1, p -> gains_hp_judgement );
+      }
     }
 
     p -> buffs_judgements_of_the_bold -> trigger();
@@ -1585,6 +1595,10 @@ struct paladin_spell_t : public spell_t
     if ( school == SCHOOL_HOLY )
     {
       player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
+    }
+    if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
+    {
+      player_multiplier *= 1.12;
     }
   }
 
@@ -2250,6 +2264,7 @@ void paladin_t::init_gains()
   gains_hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
   gains_hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
   gains_hp_zealotry                 = get_gain( "holy_power_zealotry" );
+  gains_hp_judgement                = get_gain( "holy_power_judgement" );
 }
 
 // paladin_t::init_procs ====================================================
