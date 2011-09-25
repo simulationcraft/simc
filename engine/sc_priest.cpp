@@ -49,6 +49,7 @@ struct priest_t : public player_t
   buff_t* buffs_indulgence_of_the_penitent;
   buff_t* buffs_divine_fire;
   buff_t* buffs_cauterizing_flame;
+  buff_t* buffs_tier13_2pc_heal;
 
   // Talents
 
@@ -205,6 +206,7 @@ struct priest_t : public player_t
   rng_t* rng_pain_and_suffering;
   rng_t* rng_cauterizing_flame;
   rng_t* rng_train_of_thought;
+  rng_t* rng_tier13_4pc_heal;
 
   // Pets
   pet_t* pet_shadow_fiend;
@@ -478,6 +480,31 @@ public:
     player_multiplier *= 1.0 + ( p -> composite_mastery() * p -> mastery_spells.shield_discipline -> ok() * 2.5 / 100.0 );
   }
 
+  virtual double cost() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+
+    double c = absorb_t::cost();
+
+    // PTR
+    // Needs testing
+    c *= 1.0 + p -> buffs_tier13_2pc_heal -> check() * -0.25;
+    c  = floor( c );
+
+    return c;
+  }
+
+  virtual void consume_resource()
+  {
+    absorb_t::consume_resource();
+
+    priest_t* p = player -> cast_priest();
+
+    // PTR
+    // Needs testing
+    p -> buffs_tier13_2pc_heal -> up();
+  }
+
   virtual void execute()
   {
     absorb_t::execute();
@@ -657,6 +684,31 @@ struct priest_heal_t : public heal_t
       else
         p -> uptimes_test_of_faith -> update( false );
     }
+  }
+
+  virtual double cost() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+
+    double c = heal_t::cost();
+
+    // PTR
+    // Needs testing
+    c *= 1.0 + p -> buffs_tier13_2pc_heal -> check() * -0.25;
+    c  = floor( c );
+
+    return c;
+  }
+
+  virtual void consume_resource()
+  {
+    heal_t::consume_resource();
+
+    priest_t* p = player -> cast_priest();
+
+    // PTR
+    // Needs testing
+    p -> buffs_tier13_2pc_heal -> up();
   }
 
   virtual void execute()
@@ -1065,9 +1117,14 @@ struct shadow_fiend_pet_t : public pet_t
       priest_t* o = p -> owner -> cast_priest();
 
       if ( result_is_hit( travel_result ) )
+      {
+        if ( o -> set_bonus.tier13_4pc_caster() )
+          o -> buffs_shadow_orb  -> trigger( 3, 1, o -> constants.shadow_orb_proc_value + o -> constants.harnessed_shadows_value );
+
         o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] *
                             p -> mana_leech -> effect_base_value( 1 ) / 100.0,
                             o -> gains_shadow_fiend );
+      }
     }
 
     void player_buff()
@@ -1417,6 +1474,7 @@ struct shadowy_apparition_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     priest_spell_t::travel( t, result, dmg );
+
 
     // PTR
     // Needs testing
@@ -2424,7 +2482,13 @@ struct power_infusion_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
+    priest_t* p = player -> cast_priest();
+
     power_infusion_target -> buffs.power_infusion -> trigger();
+
+    // PTR
+    // Needs testing
+    p -> buffs_tier13_2pc_heal -> trigger();
   }
 
   virtual bool ready()
@@ -2512,6 +2576,9 @@ struct shadow_word_death_t : public priest_spell_t
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
+
+    base_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.55;
+
     // PTR
     // Needs testing
     if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
@@ -2561,6 +2628,7 @@ struct shadow_word_death_t : public priest_spell_t
     priest_spell_t::travel( t, travel_result, travel_dmg );
 
     double health_loss = travel_dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.20 );
+
 
     // PTR
     // Needs testing
@@ -3928,6 +3996,20 @@ struct power_word_shield_t : public priest_absorb_t
     }
   }
 
+  virtual void player_buff()
+  {
+    priest_t* p = player -> cast_priest();
+
+    priest_absorb_t::player_buff();
+
+    // PTR
+    // Needs testing
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_heal() )
+      if ( p -> rng_tier13_4pc_heal -> roll( 0.1 ) )
+        player_multiplier *= 2.0;
+
+  }
+
   virtual double cost() SC_CONST
   {
     priest_t* p = player -> cast_priest();
@@ -4151,6 +4233,11 @@ struct holy_word_sanctuary_t : public priest_heal_t
     tick_spell = new holy_word_sanctuary_tick_t( p );
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect1().percent();
+
+    // PTR
+    // Needs testing
+    if ( p -> dbc.ptr )
+      cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
   }
 
   virtual void tick( dot_t* d )
@@ -4183,6 +4270,11 @@ struct holy_word_chastise_t : public priest_spell_t
     base_cost  = floor( base_cost );
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect1().percent();
+
+    // PTR
+    // Needs testing
+    if ( p -> dbc.ptr )
+      cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
   }
 
   virtual bool ready()
@@ -4217,6 +4309,11 @@ struct holy_word_serenity_t : public priest_heal_t
     base_cost  = floor( base_cost );
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect1().percent();
+
+    // PTR
+    // Needs testing
+    if ( p -> dbc.ptr )
+      cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
   }
 
   virtual void execute()
@@ -4325,6 +4422,10 @@ struct lightwell_t : public spell_t
     priest_t* p = player -> cast_priest();
 
     spell_t::execute();
+
+    // PTR
+    // Needs testing
+    p -> buffs_tier13_2pc_heal -> trigger();
 
     p -> pet_lightwell -> get_cooldown( "lightwell_renew" ) -> duration = consume_interval;
     p -> pet_lightwell -> summon( duration() );
@@ -4821,6 +4922,7 @@ void priest_t::init_rng()
   rng_pain_and_suffering = get_rng( "pain_and_suffering" );
   rng_cauterizing_flame  = get_rng( "rng_cauterizing_flame" );
   rng_train_of_thought   = get_rng( "train_of_thought" );
+  rng_tier13_4pc_heal    = get_rng( "tier13_4pc_heal" );
 }
 
 // priest_t::init_talents
@@ -4975,6 +5077,7 @@ void priest_t::init_buffs()
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
+  buffs_tier13_2pc_heal            = new buff_t( this, "tier13_2pc_heal", 1, ( primary_tree() == TREE_DISCIPLINE ) ? 10.0 : 15.0, dbc.ptr ? set_bonus.tier13_2pc_heal() : 0.0 );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
