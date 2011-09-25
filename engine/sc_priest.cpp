@@ -1092,6 +1092,21 @@ struct shadow_fiend_pet_t : public pet_t
         tier12_flame_attack_spell -> execute();
       }
     }
+
+    virtual void travel( player_t* t, int result, double dmg )
+    {
+      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+      priest_t* o = p -> owner -> cast_priest();
+
+      attack_t::travel( t, result, dmg );
+
+      // PTR
+      // Needs testing
+      if ( o -> dbc.ptr && o -> set_bonus.tier13_4pc_caster() )
+      {
+        o -> buffs_shadow_orb -> trigger( 3, 1, 1.0 );
+      }
+    }
   };
 
   double bad_spell_power;
@@ -1402,6 +1417,13 @@ struct shadowy_apparition_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     priest_spell_t::travel( t, result, dmg );
+
+    // PTR
+    // Needs testing
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+    {
+      p -> buffs_shadow_orb -> trigger( 3, 1, 1.0 );
+    }
 
     // Cleanup. Re-add to free list.
     p -> shadowy_apparition_active_list.remove( this );
@@ -2490,6 +2512,13 @@ struct shadow_word_death_t : public priest_spell_t
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
+    // PTR
+    // Needs testing
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+    {
+      base_multiplier *= 1.0 + 0.55;
+    }
+
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new shadow_word_death_t( p, options_str, true );
@@ -2533,9 +2562,17 @@ struct shadow_word_death_t : public priest_spell_t
 
     double health_loss = travel_dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.20 );
 
+    // PTR
+    // Needs testing
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+    {
+      health_loss *= 0.0;
+    }
+
     p -> resource_loss( RESOURCE_HEALTH, health_loss );
 
-    if ( ( health_loss > 0.0 ) && p -> talents.masochism -> rank() )
+    // PTR needs testing to see if 2pc T13 can still proc masochism or not. For now assume it cannot.
+    if ( ( ( health_loss > 0.0 ) || ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )  ) && p -> talents.masochism -> rank() )
     {
       p -> resource_gain( RESOURCE_MANA, 0.04 * p -> talents.masochism -> rank() * p -> resource_max[ RESOURCE_MANA ], p -> gains_masochism );
     }
@@ -4912,6 +4949,7 @@ void priest_t::init_spells()
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 89915, 89922,     0,     0,     0,     0,     0,     0 }, // Tier11
     { 99154, 99157,     0,     0,     0,     0, 99134, 99135 }, // Tier12
+    {     0,     0,     0,     0,     0,     0,     0,     0 }, // Tier13
     {     0,     0,     0,     0,     0,     0,     0,     0 },
   };
 
@@ -4977,7 +5015,7 @@ void priest_t::init_buffs()
   buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
   buffs_shadow_orb                 = new buff_t( this, 77487, "shadow_orb" );
   buffs_shadow_orb -> activated = false;
-  buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1                           );
+  buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1, 15.0                     );
   buffs_spirit_tap                 = new buff_t( this, "spirit_tap",                 1, 12.0                     );
   buffs_vampiric_embrace           = new buff_t( this, "vampiric_embrace",           1                           );
 

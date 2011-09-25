@@ -2,7 +2,7 @@
 
 #define PTR_ITEM_SIZE (4467)
 
-// 4467 items, ilevel 318-410, wow build level 14492
+// 4467 items, ilevel 318-410, wow build level 14545
 static struct item_data_t __ptr_item_data[] = {
   {    38, "Recruit's Shirt"                                      , "inv_shirt_05"                          , 0x00000000, 0x00002000,    1,   0,    0,    0,  1,  4,  4,  0,  0,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   {    45, "Squire's Shirt"                                       , "inv_shirt_01"                          , 0x00000000, 0x00002000,    1,   0,    0,    0,  1,  4,  4,  0,  0,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }, {    0,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
@@ -1320,7 +1320,7 @@ static struct item_data_t __ptr_item_data[] = {
   { 58181, "Fluid Death"                                          , "ability_vehicle_liquidpyrite_blue"     , 0x00081000, 0x00002000,  359,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {  31,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  321,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 92105,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 58182, "Bedrock Talisman"                                     , "inv_misc_armorkit_21"                  , 0x00081000, 0x00002000,  359,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {  50,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, { 1285,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 92234,     0,     0,     0,     0 }, {   1,   0,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 58183, "Soul Casket"                                          , "inv_misc_enggizmos_12"                 , 0x00081000, 0x00002000,  359,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {  49,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  321,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 91019,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {  120000,      -1,      -1,      -1,      -1 }, {  20000,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
-  { 58184, "Core of Ripeness"                                     , "inv_misc_cat_trinket04"                , 0x00081000, 0x00002000,  359,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  321,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 91155,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {  120000,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
+  { 58184, "Core of Ripeness"                                     , "inv_misc_cat_trinket04"                , 0x00081000, 0x00002000,  359,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  321,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 91155,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {  120000,      -1,      -1,      -1,      -1 }, {  20000,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 58185, "Band of Bees"                                         , "inv_misc_pearlring1"                   , 0x00081000, 0x00002000,  359,  85,    0,    0,  4, 11,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   4,   7,  36,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  190,  286,  127,  127,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   1,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 58186, "Skullcracker Ring"                                    , "inv_jewelry_ring_47"                   , 0x00080008, 0x00002000,  346,  85,    0,    0,  3, 11,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   3,   7,  32,  36,  -1,  -1,  -1,  -1,  -1,  -1 }, {  168,  252,  112,  112,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   1,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 58187, "Ring of the Battle Anthem"                            , "inv_jewelry_ring_82"                   , 0x00081000, 0x00002000,  359,  85,    0,    0,  4, 11,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   4,   7,  13,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  190,  286,  127,  127,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
@@ -4197,7 +4197,7 @@ static struct item_data_t __ptr_item_data[] = {
   { 71335, "Coren's Chilled Chromium Coaster"                     , "inv_jewelry_talisman_08"               , 0x00001000, 0x00002000,  365,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0x0003ffff, 0xffffffff, {  32,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  340,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 101288,     0,     0,     0,     0 }, {   1,   1,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 71336, "Petrified Pickled Egg"                                , "inv_egg_02"                            , 0x00001000, 0x00002000,  365,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0x0003ffff, 0xffffffff, {   5,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  340,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 101290,     0,     0,     0,     0 }, {   1,   1,   0,   0,   0 }, {       0,      -1,      -1,      -1,      -1 }, {      0,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 71337, "Mithril Stopwatch"                                    , "inv_misc_pocketwatch_02"               , 0x00001000, 0x00002000,  365,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {  32,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  340,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 101292,     0,     0,     0,     0 }, {   1,   1,   0,   0,   0 }, {      -1,       0,  120000,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
-  { 71338, "Brawler's Trophy"                                     , "inv_misc_bone_08"                      , 0x00001000, 0x00002000,  365,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {  13,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  340,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 101293,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {  120000,  180000,  120000,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
+  { 71338, "Brawler's Trophy"                                     , "inv_misc_bone_08"                      , 0x00001000, 0x00002000,  365,  85,    0,    0,  4, 12,  4,  0,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {  13,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1 }, {  340,    0,    0,    0,    0,    0,    0,    0,    0,    0 }, { 101293,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {  120000,  180000,  120000,      -1,      -1 }, {  20000,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 71340, "Gatekeeper's Embrace"                                 , "inv_chest_mail_raidshaman_j_01"        , 0x00000000, 0x00002000,  378,  85,    0,    0,  4, 20,  4,  3,  1,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,   6,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  368,  611,  279,  217,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   2,   4,   0 },    0,  4144,    0,    0 },
   { 71341, "Glowing Wing Bracers"                                 , "inv_bracer_leather_raiddruid_j_01"     , 0x00000000, 0x00002000,  378,  85,    0,    0,  4,  9,  4,  2,  2,     0, 0.000000,    0.000, 0xffffffff, 0xffffffff, {   5,   7,   6,  36,  -1,  -1,  -1,  -1,  -1,  -1 }, {  227,  341,  154,  148,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   0,   0,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   0,   0,   0 },    0,     0,    0,    0 },
   { 71342, "Casque of Flame"                                      , "inv_helmet_plate_raidpaladin_j_01"     , 0x00001000, 0x00002000,  378,  85,    0,    0,  4,  1,  4,  4,  1,     0, 0.000000,    0.000, 0x0003ffff, 0x7fffffff, {   5,   7,   6,  49,  -1,  -1,  -1,  -1,  -1,  -1 }, {  348,  611,  258,  211,    0,    0,    0,    0,    0,    0 }, {     0,     0,     0,     0,     0 }, {   1,   1,   0,   0,   0 }, {      -1,      -1,      -1,      -1,      -1 }, {     -1,     -1,     -1,     -1,     -1 }, {   1,   2,   0 },    0,  4150,    0,    0 },
@@ -4477,7 +4477,7 @@ static struct item_data_t __ptr_item_data[] = {
 
 #define PTR_RAND_PROP_POINTS_SIZE (410)
 
-// Random property points for item levels 1-410, wow build 14492
+// Random property points for item levels 1-410, wow build 14545
 static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
   {   1, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 } },
   {   2, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 }, {    0,    0,    0,    0,    0 } },
@@ -4894,7 +4894,7 @@ static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
 
 #define PTR_RAND_SUFFIX_SIZE (261)
 
-// Random "cataclysm" item suffixes, wow build 14492
+// Random "cataclysm" item suffixes, wow build 14545
 static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
   {    5, "of the Monkey"       , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
   {    6, "of the Eagle"        , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
@@ -5162,7 +5162,7 @@ static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
 
 #define PTR_SPELL_ITEM_ENCH_SIZE (3014)
 
-// Item enchantment data, wow build 14492
+// Item enchantment data, wow build 14545
 static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   {    1,  9, "Rockbiter 3"            ,     0,    0,   0, {   6,   0,   0 }, {    6,    0,    0 }, {     0,     0,     0 } },
   {    2,  9, "Frostbrand"             ,     0,    0,   0, {   1,   0,   0 }, {    0,    0,    0 }, {  8034,     0,     0 } },
@@ -8181,7 +8181,7 @@ static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   {    0,  0, 0                        ,     0,    0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {     0,     0,     0 } },
 };
 
-// Item armor values data from ItemArmorQuality.dbc, ilevels 1-410, wow build 14492
+// Item armor values data from ItemArmorQuality.dbc, ilevels 1-410, wow build 14545
 static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   {    1, {    0.900000,    0.950000,    1.000000,    1.100000,    1.370000,    1.370000,    1.370000 } },
   {    2, {    0.900000,    0.950000,    1.000000,    1.100000,    1.370000,    1.370000,    1.370000 } },
@@ -8596,7 +8596,7 @@ static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorShield.dbc, ilevels 1-410, wow build 14492
+// Item armor values data from ItemArmorShield.dbc, ilevels 1-410, wow build 14545
 static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   {    1, {        28.0,        57.0,        91.0,       153.0,       199.0,       199.0,       199.0 } },
   {    2, {        57.0,        86.0,       119.0,       181.0,       234.0,       234.0,       234.0 } },
@@ -9011,7 +9011,7 @@ static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorTotal.dbc, ilevels 1-410, wow build 14492
+// Item armor values data from ItemArmorTotal.dbc, ilevels 1-410, wow build 14545
 static struct item_armor_type_data_t __ptr_itemarmortotal_data[] = {
   {    1, {    82.915703,   126.601997,   206.376007,   310.082001 } },
   {    2, {    97.447304,   148.789001,   242.544998,   364.425995 } },
@@ -9427,7 +9427,7 @@ static struct item_armor_type_data_t __ptr_itemarmortotal_data[] = {
 };
 
 
-// Inventory type based armor multipliers, wow build 14492
+// Inventory type based armor multipliers, wow build 14545
 static struct item_armor_type_data_t __ptr_armor_slot_data[] = {
   {   1, {    0.130000,    0.130000,    0.130000,    0.130000 } },
   {   2, {    0.000000,    0.000000,    0.000000,    0.000000 } },
@@ -9456,7 +9456,7 @@ static struct item_armor_type_data_t __ptr_armor_slot_data[] = {
 };
 
 
-// Item damage data from ItemDamageOneHand.dbc, ilevels 1-410, wow build 14492
+// Item damage data from ItemDamageOneHand.dbc, ilevels 1-410, wow build 14545
 static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   {    1, {    0.761456,    0.780158,    1.269090,    3.899070,    6.957370,    6.957370,    6.957370 } },
   {    2, {    0.991986,    1.016350,    1.653310,    4.443200,    7.401560,    7.401560,    7.401560 } },
@@ -9871,7 +9871,7 @@ static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-410, wow build 14492
+// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-410, wow build 14545
 static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   {    1, {    0.380728,    0.390079,    0.634547,    1.949538,    3.478684,    3.478684,    3.478684 } },
   {    2, {    0.495993,    0.508175,    0.826655,    2.221599,    3.700778,    3.700778,    3.700778 } },
@@ -10286,7 +10286,7 @@ static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageRanged.dbc, ilevels 1-410, wow build 14492
+// Item damage data from ItemDamageRanged.dbc, ilevels 1-410, wow build 14545
 static struct item_scale_data_t __ptr_itemdamageranged_data[] = {
   {    1, {    0.989892,    1.014210,    1.649820,    5.068800,    9.044580,    9.044580,    9.044580 } },
   {    2, {    1.289580,    1.321260,    2.149300,    5.776160,    9.622030,    9.622030,    9.622030 } },
@@ -10701,7 +10701,7 @@ static struct item_scale_data_t __ptr_itemdamageranged_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageThrown.dbc, ilevels 1-410, wow build 14492
+// Item damage data from ItemDamageThrown.dbc, ilevels 1-410, wow build 14545
 static struct item_scale_data_t __ptr_itemdamagethrown_data[] = {
   {    1, {    0.990000,    1.014000,    1.650000,    5.069000,    9.045000,    9.045000,    9.045000 } },
   {    2, {    1.290000,    1.321000,    2.149000,    5.776000,    9.622000,    9.622000,    9.622000 } },
@@ -11116,7 +11116,7 @@ static struct item_scale_data_t __ptr_itemdamagethrown_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageWand.dbc, ilevels 1-410, wow build 14492
+// Item damage data from ItemDamageWand.dbc, ilevels 1-410, wow build 14545
 static struct item_scale_data_t __ptr_itemdamagewand_data[] = {
   {    1, {    1.177165,    2.256540,    2.911347,    5.354722,    9.678668,    9.678668,    9.678668 } },
   {    2, {    1.327749,    2.545198,    3.283769,    5.772976,   10.560000,   10.560000,   10.560000 } },
@@ -11531,7 +11531,7 @@ static struct item_scale_data_t __ptr_itemdamagewand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-410, wow build 14492
+// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-410, wow build 14545
 static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   {    1, {    0.989892,    1.014205,    1.649821,    5.068797,    9.044580,    9.044580,    9.044580 } },
   {    2, {    1.289582,    1.321256,    2.149303,    5.776158,    9.622025,    9.622025,    9.622025 } },
@@ -11946,7 +11946,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-410, wow build 14492
+// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-410, wow build 14545
 static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
   {    1, {    0.380728,    0.390079,    0.634547,    1.949538,    3.478684,    3.478684,    3.478684 } },
   {    2, {    0.495993,    0.508175,    0.826655,    2.221599,    3.700778,    3.700778,    3.700778 } },
@@ -12362,7 +12362,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
 };
 
 
-// Gem properties, wow build 14492
+// Gem properties, wow build 14545
 static struct gem_property_data_t __ptr_gem_property_data[] = {
   {     2,  2686,   2 },
   {     3,  2687,   8 },
