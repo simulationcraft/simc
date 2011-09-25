@@ -64,6 +64,8 @@ struct shaman_t : public player_t
   buff_t* buffs_spiritwalkers_grace;
   buff_t* buffs_stormfire;
   buff_t* buffs_stormstrike;
+  buff_t* buffs_tier13_2pc_caster;
+  buff_t* buffs_tier13_4pc_caster;
   buff_t* buffs_unleash_flame;
   buff_t* buffs_unleash_wind;
   buff_t* buffs_water_shield;
@@ -431,6 +433,41 @@ struct spirit_wolf_pet_t : public pet_t
       // two wolves. Verified using paper doll damage range values on a
       // level 85 enhancement shaman, with and without Glyph
       base_multiplier *= 1.49835 * 2.0;
+    }
+    
+    virtual void execute()
+    {
+      shaman_t* o = player -> cast_pet() -> owner -> cast_shaman();
+      
+      attack_t::execute();
+      
+      // Two independent chances to proc it since we model 2 wolf pets as 1 ..
+      if ( result_is_hit() && o -> set_bonus.tier13_4pc_melee() )
+      {
+        if ( sim -> roll( 0.45 ) )
+        {
+          int   mwstack = o -> buffs_maelstrom_weapon -> check();
+          if ( o -> buffs_maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
+          {
+            if ( mwstack == o -> buffs_maelstrom_weapon -> max_stack )
+              o -> procs_wasted_mw -> occur();
+
+            o -> procs_maelstrom_weapon -> occur();
+          }
+        }
+
+        if ( sim -> roll( 0.45 ) )
+        {
+          int   mwstack = o -> buffs_maelstrom_weapon -> check();
+          if ( o -> buffs_maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
+          {
+            if ( mwstack == o -> buffs_maelstrom_weapon -> max_stack )
+              o -> procs_wasted_mw -> occur();
+
+            o -> procs_maelstrom_weapon -> occur();
+          }
+        }
+      }
     }
   };
 
@@ -2168,6 +2205,16 @@ struct chain_lightning_t : public shaman_spell_t
     aoe = ( 2 + glyph_targets );
   }
 
+  virtual void player_buff()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    shaman_spell_t::player_buff();
+    
+    if ( p -> set_bonus.tier13_2pc_melee() )
+      player_multiplier *= 1.20;
+  }
+
   virtual void execute()
   {
     shaman_t* p = player -> cast_shaman();
@@ -2185,7 +2232,11 @@ struct chain_lightning_t : public shaman_spell_t
       double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 ) / 3.0;
 
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
+      {
         overload -> execute();
+        if ( p -> set_bonus.tier13_4pc_caster() )
+          p -> buffs_tier13_4pc_caster -> trigger();
+      }
     }
   }
 
@@ -2240,6 +2291,8 @@ struct elemental_mastery_t : public shaman_spell_t
 
     p -> buffs_elemental_mastery_insta -> trigger();
     p -> buffs_elemental_mastery       -> trigger();
+    if ( p -> set_bonus.tier13_2pc_caster() )
+      p -> buffs_tier13_2pc_caster     -> trigger();
   }
 };
 
@@ -2388,7 +2441,11 @@ struct lava_burst_t : public shaman_spell_t
       double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
 
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
+      {
         overload -> execute();
+        if ( p -> set_bonus.tier13_4pc_caster() )
+          p -> buffs_tier13_4pc_caster -> trigger();
+      }
     }
   }
 };
@@ -2426,6 +2483,16 @@ struct lightning_bolt_t : public shaman_spell_t
       p -> talent_convection -> mod_additive( P_RESOURCE_COST );
 
     overload            = new lightning_bolt_overload_t( player );
+  }
+  
+  virtual void player_buff()
+  {
+    shaman_t* p = player -> cast_shaman();
+
+    shaman_spell_t::player_buff();
+    
+    if ( p -> set_bonus.tier13_2pc_melee() )
+      player_multiplier *= 1.20;
   }
 
   virtual void execute()
@@ -2476,7 +2543,11 @@ struct lightning_bolt_t : public shaman_spell_t
       double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
 
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
+      {
         overload -> execute();
+        if ( p -> set_bonus.tier13_4pc_caster() )
+          p -> buffs_tier13_4pc_caster -> trigger();
+      }
 
       if ( p -> talent_telluric_currents -> rank() )
       {
@@ -4134,6 +4205,9 @@ void shaman_t::init_buffs()
   buffs_unleash_flame           = new unleash_flame_buff_t   ( this );
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );
   buffs_water_shield            = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),             "water_shield"          );
+  
+  buffs_tier13_2pc_caster       = new stat_buff_t            ( this, "tier13_2pc_caster", STAT_MASTERY_RATING, 400.0, 1, 15.0, 0 );
+  buffs_tier13_4pc_caster       = new stat_buff_t            ( this, "tier13_4pc_caster", STAT_HASTE_RATING, 200.0, 3, 4.0, 0 );
 }
 
 // shaman_t::init_gains =====================================================
