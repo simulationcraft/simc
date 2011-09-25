@@ -6,13 +6,13 @@
 #include "simulationcraft.h"
 #include "utf8.h"
 
-#if SC_SIGACTION
+#ifdef SC_SIGACTION
 #include <signal.h>
 #endif
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-#if SC_SIGACTION
+#ifdef SC_SIGACTION
 // POSIX-only signal handler ================================================
 
 struct sim_signal_handler_t
@@ -2461,7 +2461,7 @@ int sim_t::main( int argc, char** argv )
       util_t::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );
     }
-    if ( abs( vary_combat_length) >= 1.0 )
+    if ( abs( vary_combat_length ) >= 1.0 )
     {
       util_t::fprintf( output_file, "\n |vary_combat_length| >= 1.0, overriding to 0.0.\n" );
       vary_combat_length = 0.0;
@@ -2523,20 +2523,3 @@ int sim_t::errorf( const char* format, ... )
   error_list.push_back( buffer );
   return retcode;
 }
-
-// ==========================================================================
-// Utility to make sure memory allocation not happening during iteration.
-// ==========================================================================
-
-#if 0
-void* operator new ( std::size_t size )
-{
-  if ( iterating ) assert( 0 );
-  return malloc( size );
-}
-
-void operator delete ( void *p )
-{
-  free( p );
-}
-#endif

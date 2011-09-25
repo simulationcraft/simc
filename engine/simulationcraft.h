@@ -17,7 +17,7 @@
 #  endif
 #else
 #  define DIRECTORY_DELIMITER "/"
-#  define SC_SIGACTION 1
+#  define SC_SIGACTION
 #endif
 
 // Switching of using 'const'-flag on methods possible ======================
