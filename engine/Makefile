@@ -26,7 +26,6 @@ endif
 
 # Any UNIX platform
 ifeq (UNIX,${OS})
-CPP_FLAGS += -D_stricmp=strcasecmp
 LINK_LIBS += -lpthread
 AR         = ar
 COPY       = cp
@@ -70,15 +69,15 @@ endif
 
 SRC = \
 	simulationcraft.h \
-  data_definitions.hh \
-  data_enums.hh \
-  utf8.h \
+	data_definitions.hh \
+	data_enums.hh \
+	utf8.h \
 	sc_action.cpp \
 	sc_armory.cpp \
 	sc_attack.cpp \
 	sc_battle_net.cpp \
-  sc_bcp_api.cpp \
-  sc_buff.cpp \
+	sc_bcp_api.cpp \
+	sc_buff.cpp \
 	sc_chardev.cpp \
 	sc_chart.cpp \
 	sc_const_data.cpp \
