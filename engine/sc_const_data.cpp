@@ -793,7 +793,8 @@ spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, b
   ( void )confirmation;
 
   spell_data_t* p = find( spell_id, ptr );
-  assert( p && ! strcmp( confirmation, p -> name_cstr() ) );
+  if ( ! p ) return nil();
+  assert( ! strcmp( confirmation, p -> name_cstr() ) );
   return p;
 }
 
@@ -827,6 +828,7 @@ talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool 
   ( void )confirmation;
 
   talent_data_t* p = find( id, ptr );
+  if ( ! p ) return nil();
   assert( p && ! strcmp( confirmation, p -> name_cstr() ) );
   return p;
 }
