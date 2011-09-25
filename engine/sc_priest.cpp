@@ -486,6 +486,12 @@ public:
 
     double c = absorb_t::cost();
 
+    if ( base_execute_time <= 0.0 )
+    {
+      c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
+      c  = floor( c );
+    }
+
     // PTR
     // Needs testing
     c *= 1.0 + p -> buffs_tier13_2pc_heal -> check() * -0.25;
@@ -500,6 +506,8 @@ public:
 
     priest_t* p = player -> cast_priest();
 
+    if ( base_execute_time <= 0.0 )
+      p -> buffs_inner_will -> up();
     // PTR
     // Needs testing
     p -> buffs_tier13_2pc_heal -> up();
@@ -692,6 +700,12 @@ struct priest_heal_t : public heal_t
 
     double c = heal_t::cost();
 
+    if ( base_execute_time <= 0.0 )
+    {
+      c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
+      c  = floor( c );
+    }
+
     // PTR
     // Needs testing
     c *= 1.0 + p -> buffs_tier13_2pc_heal -> check() * -0.25;
@@ -706,6 +720,8 @@ struct priest_heal_t : public heal_t
 
     priest_t* p = player -> cast_priest();
 
+    if ( base_execute_time <= 0.0 )
+      p -> buffs_inner_will -> up();
     // PTR
     // Needs testing
     p -> buffs_tier13_2pc_heal -> up();
@@ -957,6 +973,31 @@ public:
       p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
       p -> uptimes_holy_evangelism[ i ] -> update( i == p -> buffs_holy_evangelism -> stack() );
     }
+  }
+
+  virtual double cost() SC_CONST
+  {
+    priest_t* p = player -> cast_priest();
+
+    double c = spell_t::cost();
+
+    if ( base_execute_time <= 0.0 )
+    {
+      c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
+      c  = floor( c );
+    }
+
+    return c;
+  }
+
+  virtual void consume_resource()
+  {
+    spell_t::consume_resource();
+
+    priest_t* p = player -> cast_priest();
+
+    if ( base_execute_time <= 0.0 )
+      p -> buffs_inner_will -> up();
   }
 
   virtual void execute()
@@ -1601,18 +1642,6 @@ struct devouring_plague_t : public priest_spell_t
     }
   }
 
-  virtual double cost() SC_CONST
-  {
-    double c = priest_spell_t::cost();
-
-    priest_t* p = player -> cast_priest();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
-  }
-
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
@@ -1876,16 +1905,12 @@ struct inner_fire_t : public priest_spell_t
 
 struct inner_will_t : public priest_spell_t
 {
-  double value;
-
   inner_will_t( player_t* player, const std::string& options_str ) :
-    priest_spell_t( "inner_will", player, "Inner Will" ), value( 0.0 )
+    priest_spell_t( "inner_will", player, "Inner Will" )
   {
     parse_options( NULL, options_str );
 
     harmful = false;
-
-    value = mod_additive( P_RESOURCE_COST );
   }
 
   virtual void execute()
@@ -1896,7 +1921,7 @@ struct inner_will_t : public priest_spell_t
 
     p -> buffs_inner_fire -> expire();
 
-    p -> buffs_inner_will -> trigger( 1, -value );
+    p -> buffs_inner_will -> trigger();
   }
 
   virtual bool ready()
@@ -2521,18 +2546,6 @@ struct shadow_form_t : public priest_spell_t
     base_cost  = floor( base_cost );
   }
 
-  virtual double cost() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-
-    double c = priest_spell_t::cost();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
-  }
-
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
@@ -2591,18 +2604,6 @@ struct shadow_word_death_t : public priest_spell_t
       dtr_action = new shadow_word_death_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
-  }
-
-  virtual double cost() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-
-    double c = priest_spell_t::cost();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
   }
 
   virtual void execute()
@@ -2694,18 +2695,6 @@ struct shadow_word_pain_t : public priest_spell_t
     stats -> children.push_back( player -> get_stats( "shadowy_apparition", this ) );
   }
 
-  virtual double cost() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-
-    double c = priest_spell_t::cost();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
-  }
-
   virtual void player_buff()
   {
     priest_t* p = player -> cast_priest();
@@ -2756,18 +2745,6 @@ struct shadow_word_pain_t_2 : public priest_spell_t
     base_cost  = floor( base_cost );
 
     stats -> children.push_back( player -> get_stats( "shadowy_apparition", this ) );
-  }
-
-  virtual double cost() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-
-    double c = priest_spell_t::cost();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
   }
 
   virtual void player_buff()
@@ -3222,18 +3199,6 @@ struct renew_t : public priest_heal_t
       dt -> heal_target.push_back( t );
       dt -> execute();
     }
-  }
-
-  virtual double cost() SC_CONST
-  {
-    double c = priest_heal_t::cost();
-
-    priest_t* p = player -> cast_priest();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
   }
 
   virtual void player_buff()
@@ -3794,18 +3759,6 @@ struct circle_of_healing_t : public priest_heal_t
     base_cost  = floor( base_cost );
   }
 
-  virtual double cost() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-
-    double c = priest_heal_t::cost();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
-  }
-
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
@@ -3880,18 +3833,6 @@ struct prayer_of_mending_t : public priest_heal_t
 
     if ( p -> buffs_chakra_sanctuary -> up() )
       player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect1().percent();
-  }
-
-  virtual double cost() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-
-    double c = priest_heal_t::cost();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
   }
 
   virtual void execute()
@@ -4008,18 +3949,6 @@ struct power_word_shield_t : public priest_absorb_t
       if ( p -> rng_tier13_4pc_heal -> roll( 0.1 ) )
         player_multiplier *= 2.0;
 
-  }
-
-  virtual double cost() SC_CONST
-  {
-    priest_t* p = player -> cast_priest();
-
-    double c = priest_absorb_t::cost();
-
-    c *= 1.0 - p -> buffs_inner_will -> value();
-    c  = floor( c );
-
-    return c;
   }
 
   virtual void execute()
