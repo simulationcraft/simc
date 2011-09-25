@@ -307,7 +307,7 @@ bool spell_id_t::initialize( const char* s_name )
     break;
   }
 
-  s_enabled = s_data -> is_enabled() & s_data -> is_level( s_player -> level );
+  s_enabled = s_data -> is_enabled() && s_data -> is_level( s_player -> level );
 
   // Warn if the player is enabling a spell that the player has no level for
   /*

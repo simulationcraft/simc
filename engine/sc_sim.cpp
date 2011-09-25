@@ -6,54 +6,63 @@
 #include "simulationcraft.h"
 #include "utf8.h"
 
+#if SC_SIGACTION
+#include <signal.h>
+#endif
+
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-
+#if SC_SIGACTION
 // POSIX-only signal handler ================================================
 
-#if SIGACTION
 struct sim_signal_handler_t
 {
   static sim_t* global_sim;
 
-  static void callback_func( int signal )
+  static void sigint( int )
   {
-    if ( signal == SIGSEGV ||
-         signal == SIGBUS  )
+    if ( global_sim )
     {
-      const char* name = ( signal == SIGSEGV ) ? "SIGSEGV" : "SIGBUS";
-      if ( global_sim )
-      {
-        fprintf( stderr, "sim_signal_handler:  %s!  Seed=%d  Iteration=%d\n", name, global_sim -> seed, global_sim -> current_iteration );
-        fflush( stderr );
-      }
-      exit( 0 );
-    }
-    else if ( signal == SIGINT )
-    {
-      if ( global_sim )
-      {
-        if ( global_sim -> canceled ) exit( 0 );
-        global_sim -> cancel();
-      }
+      if ( global_sim -> canceled ) exit( 0 );
+      global_sim -> cancel();
     }
   }
-  static void init( sim_t* sim )
+
+  static void callback( int signal )
   {
+    if ( global_sim )
+    {
+      const char* name = strsignal( signal );
+      fprintf( stderr, "sim_signal_handler: %s! Seed=%d Iteration=%d\n",
+               name, global_sim -> seed, global_sim -> current_iteration );
+      fflush( stderr );
+    }
+    exit( 0 );
+  }
+
+  sim_signal_handler_t( sim_t* sim )
+  {
+    assert ( ! global_sim );
     global_sim = sim;
     struct sigaction sa;
     sigemptyset( &sa.sa_mask );
     sa.sa_flags = 0;
-    sa.sa_handler = callback_func;
+
+    sa.sa_handler = callback;
     sigaction( SIGSEGV, &sa, 0 );
+
+    sa.sa_handler = sigint;
     sigaction( SIGINT,  &sa, 0 );
   }
+
+  ~sim_signal_handler_t()
+  { global_sim = 0; }
 };
 sim_t* sim_signal_handler_t::global_sim = 0;
 #else
 struct sim_signal_handler_t
 {
-  static void init( sim_t* ) {}
+  sim_signal_handler_t( sim_t* ) {}
 };
 #endif
 
@@ -78,12 +87,10 @@ static bool parse_ptr( sim_t*             sim,
 {
   if ( name != "ptr" ) return false;
 
-#if SC_USE_PTR
-  sim -> dbc.ptr = atoi( value.c_str() ) != 0;
-#else
-  sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
-  if ( value.length() ) {}
-#endif
+  if ( SC_USE_PTR )
+    sim -> dbc.ptr = atoi( value.c_str() ) != 0;
+  else
+    sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
 
   return true;
 }
@@ -2416,12 +2423,10 @@ double sim_t::progress( std::string& phase )
 
 int sim_t::main( int argc, char** argv )
 {
-  sim_signal_handler_t::init( this );
+  sim_signal_handler_t handler( this );
 
   thread_t::init();
-
   http_t::cache_load();
-
   dbc_t::init();
 
   if ( ! parse_options( argc, argv ) )
@@ -2487,9 +2492,6 @@ int sim_t::main( int argc, char** argv )
   if ( output_file != stdout ) fclose( output_file );
 
   http_t::cache_save();
-
-  sim_signal_handler_t::init( 0 );
-
   thread_t::de_init();
   dbc_t::de_init();
 

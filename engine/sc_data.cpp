@@ -1,44 +1,45 @@
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
 #include "simulationcraft.h"
 
-const char* spell_data_t::name_cstr() SC_CONST
+// ==========================================================================
+// Spell Data
+// ==========================================================================
+
+spell_data_nil_t spell_data_nil_t::singleton;
+
+spell_data_nil_t::spell_data_nil_t()
 {
-  return _name;
+  zerofill( static_cast<spell_data_t&>( *this ) );
+  _effect1 = _effect2 = _effect3 = spelleffect_data_t::nil();
 }
 
-bool spell_data_t::is_used() SC_CONST
-{
-  return _flags & 0x01;
-}
+// spell_data_t::set_used ===================================================
 
 void spell_data_t::set_used( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x01 );
-  _flags |= value ? 0x01 : 0x00;
+  if ( value )
+    _flags |= FLAG_USED;
+  else
+    _flags &= ~FLAG_USED;
 }
 
-bool spell_data_t::is_enabled() SC_CONST
-{
-  return ( ( _flags & 0x02 ) == 0x00 );
-}
-
+// spell_data_t::set_enabled ================================================
 
 void spell_data_t::set_enabled( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x02 );
-  _flags |= value ? 0x02 : 0x00;
+  if ( value )
+    _flags &= ~FLAG_DISABLED;
+  else
+    _flags |= FLAG_DISABLED;
 }
 
-double spell_data_t::missile_speed() SC_CONST
-{
-  return _prj_speed;
-}
+// spell_data_t::power_type =================================================
 
-uint32_t spell_data_t::school_mask() SC_CONST
-{
-  return _school;
-}
-
-resource_type spell_data_t::power_type() SC_CONST
+resource_type spell_data_t::power_type() const
 {
   switch ( _power_type )
   {
@@ -61,55 +62,28 @@ resource_type spell_data_t::power_type() SC_CONST
   return RESOURCE_NONE;
 }
 
-bool spell_data_t::is_class( player_type c ) SC_CONST
+// spell_data_t::is_class ===================================================
+
+bool spell_data_t::is_class( player_type c ) const
 {
-  uint32_t mask, mask2;
-
-  mask = util_t::class_id_mask( c );
-  mask2 = _class_mask;
-
-  if ( mask2 == 0x0 )
+  if ( ! _class_mask )
     return true;
 
-  return ( ( mask2 & mask ) == mask );
+  unsigned mask = util_t::class_id_mask( c );
+  return ( _class_mask & mask ) == mask;
 }
 
-bool spell_data_t::is_race( race_type r ) SC_CONST
+// spell_data_t::is_race ====================================================
+
+bool spell_data_t::is_race( race_type r ) const
 {
-  uint32_t mask, mask2;
-
-  mask = util_t::race_mask( r );
-  mask2 = _race_mask;
-
-  return ( ( mask2 & mask ) == mask );
+  unsigned mask = util_t::race_mask( r );
+  return ( _race_mask & mask ) == mask;
 }
 
-bool spell_data_t::is_level( uint32_t level ) SC_CONST
-{
-  return ( level >= _spell_level );
-}
+// spell_data_t::scaling_class ==============================================
 
-uint32_t spell_data_t::level() SC_CONST
-{
-  return _spell_level;
-}
-
-uint32_t spell_data_t::max_level() SC_CONST
-{
-  return _max_level;
-}
-
-uint32_t spell_data_t::class_mask() SC_CONST
-{
-  return _class_mask;
-}
-
-uint32_t spell_data_t::race_mask() SC_CONST
-{
-  return _race_mask;
-}
-
-player_type spell_data_t::scaling_class() SC_CONST
+player_type spell_data_t::scaling_class() const
 {
   switch ( _scaling_type )
   {
@@ -126,256 +100,104 @@ player_type spell_data_t::scaling_class() SC_CONST
   case 11: return DRUID;
   default: break;
   }
+
   return PLAYER_NONE;
 }
 
-double spell_data_t::min_range() SC_CONST
-{
-  return _min_range;
-}
+// spell_data_t::cost =======================================================
 
-double spell_data_t::max_range() SC_CONST
+double spell_data_t::cost() const
 {
-  return _max_range;
-}
-
-bool spell_data_t::in_range( double range ) SC_CONST
-{
-  return ( ( range >= _min_range ) && ( range <= _max_range ) );
-}
-
-double spell_data_t::cooldown() SC_CONST
-{
-  return _cooldown / 1000.0;
-}
-
-double spell_data_t::gcd() SC_CONST
-{
-  return _gcd / 1000.0;
-}
-
-uint32_t spell_data_t::category() SC_CONST
-{
-  return _category;
-}
-
-double spell_data_t::duration() SC_CONST
-{
-  return _duration / 1000.0;
-}
-
-double spell_data_t::cost() SC_CONST
-{
-  double divisor = 1.0;
+  double divisor;
 
   switch ( _power_type )
   {
-  case POWER_MANA:        divisor = 100.0; break;
-  case POWER_RAGE:        divisor =  10.0; break;
-  case POWER_RUNIC_POWER: divisor =  10.0; break;
+  case POWER_MANA:
+    divisor = 100;
+    break;
+  case POWER_RAGE:
+  case POWER_RUNIC_POWER:
+    divisor = 10;
+    break;
+  default:
+    divisor = 1;
+    break;
   }
 
-  return ( double ) _cost / divisor;
+  return _cost / divisor;
 }
 
-uint32_t spell_data_t::rune_cost() SC_CONST
-{
-  return _rune_cost;
-}
+// spell_data_t::cast_time ==================================================
 
-double spell_data_t::runic_power_gain() SC_CONST
+double spell_data_t::cast_time( uint32_t level ) const
 {
-  return _runic_power_gain / 10.0;
-}
-
-uint32_t spell_data_t::max_stacks() SC_CONST
-{
-  return _max_stack;
-}
-
-uint32_t spell_data_t::initial_stacks() SC_CONST
-{
-  return _proc_charges;
-}
-
-double spell_data_t::proc_chance() SC_CONST
-{
-  return _proc_chance / 100.0;
-}
-
-double spell_data_t::cast_time( uint32_t level ) SC_CONST
-{
-  int min_cast = _cast_min;
-  int max_cast = _cast_max;
-  int div_cast = _cast_div;
-
-  if ( div_cast < 0 )
+  if ( _cast_div < 0 )
   {
-    if ( min_cast < 0 )
-      return 0.0;
-
-    return ( double ) min_cast;
+    if ( _cast_min < 0 )
+      return 0;
+    return _cast_min;
   }
 
-  if ( level >= ( uint32_t ) div_cast )
-    return max_cast / 1000.0;
+  if ( level >= static_cast<uint32_t>( _cast_div ) )
+    return _cast_max / 1000.0;
 
-  return ( 1.0 * min_cast + ( 1.0 * max_cast - min_cast ) * ( level - 1 ) / ( 1.0 * div_cast - 1 ) ) / 1000.0;
+  return ( _cast_min + ( _cast_max - _cast_min ) * ( level - 1 ) / ( double )( _cast_div - 1 ) ) / 1000.0;
 }
 
-uint32_t spell_data_t::effect_id( uint32_t effect_num ) SC_CONST
+// spell_data_t::flags ======================================================
+
+bool spell_data_t::flags( spell_attribute_t f ) const
 {
-  assert( ( effect_num >= 1 ) && ( effect_num <= MAX_EFFECTS ) );
-
-  return _effect[ effect_num - 1 ];
-}
-
-bool spell_data_t::flags( spell_attribute_t f ) SC_CONST
-{
-  uint32_t index, bit, mask;
-
-  index = ( ( ( uint32_t ) f ) >> 8 ) & 0x000000FF;
-  bit = ( ( uint32_t ) f ) & 0x0000001F;
-  mask = ( 1 << bit );
+  unsigned bit = static_cast<unsigned>( f ) & 0x1Fu;
+  unsigned index = ( static_cast<unsigned>( f ) >> 8 ) & 0xFFu;
+  uint32_t mask = 1u << bit;
 
   assert( index < NUM_SPELL_FLAGS );
 
-  return ( ( _attributes[ index ] & mask ) == mask );
+  return ( _attributes[ index ] & mask ) != 0;
 }
 
-const char* spell_data_t::desc() SC_CONST
-{
-  return _desc;
-}
+// ==========================================================================
+// Spell Effect Data
+// ==========================================================================
 
-const char* spell_data_t::tooltip() SC_CONST
-{
-  return _tooltip;
-}
+spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 
-double spell_data_t::scaling_multiplier() SC_CONST
+spelleffect_data_nil_t::spelleffect_data_nil_t()
 {
-  return _c_scaling;
-}
-
-double spell_data_t::extra_coeff() SC_CONST
-{
-  return _extra_coeff;
-}
-
-unsigned spell_data_t::scaling_threshold() SC_CONST
-{
-  return _c_scaling_level;
-}
-
-bool spelleffect_data_t::is_used() SC_CONST
-{
-  return ( ( _flags & 0x01 ) == 0x01 );
+  zerofill( static_cast<spelleffect_data_t&>( *this ) );
+  _spell         = spell_data_t::nil();
+  _trigger_spell = spell_data_t::nil();
 }
 
 void spelleffect_data_t::set_used( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x01 );
-  _flags |= value ? 0x01 : 0x00;
-}
-
-bool spelleffect_data_t::is_enabled() SC_CONST
-{
-  return ( ( _flags & 0x02 ) == 0x02 );
+  if ( value )
+    _flags |= FLAG_USED;
+  else
+    _flags &= ~FLAG_USED;
 }
 
 void spelleffect_data_t::set_enabled( bool value )
 {
-  _flags &= ( uint32_t ) ~( ( uint32_t ) 0x02 );
-  _flags |= value ? 0x02 : 0x00;
+  if ( value )
+    _flags |= FLAG_ENABLED;
+  else
+    _flags &= ~FLAG_ENABLED;
 }
 
-uint32_t spelleffect_data_t::spell_id() SC_CONST
-{
-  return _spell_id;
-}
+// ==========================================================================
+// Talent Data
+// ==========================================================================
 
-unsigned spelleffect_data_t::index() SC_CONST
-{
-  return _index;
-}
+talent_data_nil_t talent_data_nil_t::singleton;
 
-uint32_t spelleffect_data_t::spell_effect_num() SC_CONST
+talent_data_nil_t::talent_data_nil_t()
 {
-  return _index;
-}
-
-effect_type_t spelleffect_data_t::type() SC_CONST
-{
-  return _type;
-}
-
-effect_subtype_t spelleffect_data_t::subtype() SC_CONST
-{
-  return _subtype;
-}
-
-uint32_t spelleffect_data_t::trigger_spell_id() SC_CONST
-{
-  if ( _trigger_spell_id < 0 )
-    return 0;
-
-  return ( uint32_t ) _trigger_spell_id;
-}
-
-double spelleffect_data_t::chain_multiplier() SC_CONST
-{
-  return _m_chain;
-}
-
-double spelleffect_data_t::m_average() SC_CONST
-{
-  return _m_avg;
-}
-
-double spelleffect_data_t::m_delta() SC_CONST
-{
-  return _m_delta;
-}
-
-double spelleffect_data_t::m_unk() SC_CONST
-{
-  return _m_unk;
-}
-
-double spelleffect_data_t::coeff() SC_CONST
-{
-  return _coeff;
-}
-
-double spelleffect_data_t::period() SC_CONST
-{
-  return _amplitude / 1000.0;
-}
-
-double spelleffect_data_t::radius() SC_CONST
-{
-  return _radius;
-}
-
-double spelleffect_data_t::radius_max() SC_CONST
-{
-  return _radius_max;
-}
-
-double spelleffect_data_t::pp_combo_points() SC_CONST
-{
-  return _pp_combo_points;
-}
-
-double spelleffect_data_t::real_ppl() SC_CONST
-{
-  return _real_ppl;
-}
-
-int spelleffect_data_t::die_sides() SC_CONST
-{
-  return _die_sides;
+  zerofill( static_cast<talent_data_t&>( *this ) );
+  spell1 = spell_data_t::nil();
+  spell2 = spell_data_t::nil();
+  spell3 = spell_data_t::nil();
 }
 
 void talent_data_t::set_used( bool value )
@@ -394,7 +216,7 @@ void talent_data_t::set_enabled( bool value )
     _flags |= FLAG_DISABLED;
 }
 
-bool talent_data_t::is_class( player_type c ) SC_CONST
+bool talent_data_t::is_class( player_type c ) const
 {
   unsigned mask = util_t::class_id_mask( c );
 
@@ -404,7 +226,7 @@ bool talent_data_t::is_class( player_type c ) SC_CONST
   return ( ( _m_class & mask ) == mask );
 }
 
-bool talent_data_t::is_pet( pet_type_t p ) SC_CONST
+bool talent_data_t::is_pet( pet_type_t p ) const
 {
   unsigned mask = util_t::pet_mask( p );
 
@@ -414,7 +236,7 @@ bool talent_data_t::is_pet( pet_type_t p ) SC_CONST
   return ( ( _m_pet & mask ) == mask );
 }
 
-uint32_t talent_data_t::rank_spell_id( uint32_t rank ) SC_CONST
+unsigned talent_data_t::rank_spell_id( unsigned rank ) const
 {
   assert( rank <= MAX_RANK );
 
@@ -424,9 +246,9 @@ uint32_t talent_data_t::rank_spell_id( uint32_t rank ) SC_CONST
   return _rank_id[ rank - 1 ];
 }
 
-uint32_t talent_data_t::max_rank() SC_CONST
+unsigned talent_data_t::max_rank() const
 {
-  uint32_t i;
+  unsigned i;
 
   for ( i = 0; i < MAX_RANK; i++ )
   {

@@ -23,9 +23,6 @@
 
 namespace { // ANONYMOUS namespace ==========================================
 
-spell_data_t         nil_sd;
-spelleffect_data_t   nil_sed;
-talent_data_t        nil_td;
 random_suffix_data_t nil_rsd;
 item_enchantment_data_t nil_ied;
 gem_property_data_t nil_gpd;
@@ -100,20 +97,6 @@ const char* dbc_t::wow_version( bool ptr )
 
 void dbc_t::init()
 {
-  zerofill( nil_sd );
-  nil_sd._effect1 = &nil_sed;
-  nil_sd._effect2 = &nil_sed;
-  nil_sd._effect3 = &nil_sed;
-
-  zerofill( nil_sed );
-  nil_sed._spell         = &nil_sd;
-  nil_sed._trigger_spell = &nil_sd;
-
-  zerofill( nil_td );
-  nil_td.spell1 = &nil_sd;
-  nil_td.spell2 = &nil_sd;
-  nil_td.spell3 = &nil_sd;
-
   zerofill( nil_rsd );
   zerofill( nil_ied );
   zerofill( nil_gpd );
@@ -797,15 +780,6 @@ talent_data_t* talent_data_t::list( bool ptr )
 #endif
 }
 
-spell_data_t* spell_data_t::nil()
-{ return &nil_sd; }
-
-spelleffect_data_t* spelleffect_data_t::nil()
-{ return &nil_sed; }
-
-talent_data_t* talent_data_t::nil()
-{ return &nil_td; }
-
 spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
 {
   spell_data_t* p = idx_sd.get( ptr, spell_id );
@@ -823,13 +797,11 @@ spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, b
   return p;
 }
 
-spell_data_t* spell_data_t::find( const std::string& name, bool ptr )
+spell_data_t* spell_data_t::find( const char* name, bool ptr )
 {
-  spell_data_t* spell_data = spell_data_t::list( ptr );
-
-  for( int i=0; spell_data[ i ].name_cstr(); i++ )
-    if( name == spell_data[ i ].name_cstr() )
-      return spell_data + i;
+  for( spell_data_t* p = spell_data_t::list( ptr ); p -> name_cstr(); ++p )
+    if( ! strcmp ( name, p -> name_cstr() ) )
+      return p;
 
   return 0;
 }
@@ -850,19 +822,19 @@ talent_data_t* talent_data_t::find( unsigned id, bool ptr )
   return p;
 }
 
-talent_data_t* talent_data_t::find( unsigned id, const std::string& confirmation, bool ptr )
+talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool ptr )
 {
   ( void )confirmation;
 
   talent_data_t* p = find( id, ptr );
-  assert( p && confirmation == p -> name_cstr() );
+  assert( p && ! strcmp( confirmation, p -> name_cstr() ) );
   return p;
 }
 
-talent_data_t* talent_data_t::find( const std::string& name, bool ptr )
+talent_data_t* talent_data_t::find( const char* name, bool ptr )
 {
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
-    if( name == p -> name_cstr() )
+    if( ! strcmp( name, p -> name_cstr() ) )
       return p;
 
   return 0;

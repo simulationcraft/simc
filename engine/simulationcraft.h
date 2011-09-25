@@ -15,10 +15,9 @@
 #  ifndef UNICODE
 #    define UNICODE
 #  endif
-#  define SIGACTION 0
 #else
 #  define DIRECTORY_DELIMITER "/"
-#  define SIGACTION 1
+#  define SC_SIGACTION 1
 #endif
 
 // Switching of using 'const'-flag on methods possible ======================
@@ -60,10 +59,10 @@
 #include <memory>
 #include <numeric>
 #include <queue>
-#include <string>
-#include <vector>
 #include <sstream>
+#include <string>
 #include <typeinfo>
+#include <vector>
 
 #include "data_enums.hh"
 
@@ -72,10 +71,6 @@
 #  if !defined(CLOCKS_PER_SEC)
 #    define CLOCKS_PER_SEC 1000000
 #  endif
-#endif
-
-#if SIGACTION
-#include <signal.h>
 #endif
 
 #if defined( NO_THREADS )
@@ -96,7 +91,6 @@
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 #define DTR_DD_ENABLED ( 1 )
-
 #define SC_EPSILON ( 0.000001 )
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )
@@ -446,14 +440,12 @@ enum slot_type   // these enum values match armory settings
 };
 
 // Tiers 11..14 + PVP
-#ifndef N_TIER
 #define N_TIER 5
-#endif
 
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
-#ifndef N_TIER_BONUS
 #define N_TIER_BONUS 8
-#endif
+
+typedef uint32_t set_bonus_description_t[N_TIER][N_TIER_BONUS];
 
 enum set_type
 {
@@ -480,6 +472,7 @@ enum set_type
   SET_PVP_HEAL,   SET_PVP_2PC_HEAL,   SET_PVP_4PC_HEAL,
   SET_MAX
 };
+// static_assert( SET_MAX == N_TIER * 3 * N_TIER_BONUS / 2 );
 
 enum gem_type
 {
@@ -791,21 +784,21 @@ inline std::size_t sizeof_array( T (&)[N] )
 template <typename T>
 inline void zerofill( T* t, std::size_t n )
 {
-  // static_assert( std::is_pod<T>::value, "You cannot use zerofill on a non-pod type." );
+  // static_assert( std::is_standard_layout<T>::value, "You cannot use zerofill on this type." );
   memset( t, 0, n * sizeof( *t ) );
 }
 
 template <typename T>
 inline void zerofill( T& t )
 {
-  // static_assert( std::is_pod<T>::value, "You cannot use zerofill on a non-pod type." );
+  // static_assert( std::is_standard_layout<T>::value, "You cannot use zerofill on this type." );
   memset( &t, 0, sizeof( t ) );
 }
 
 template <typename T, std::size_t N>
 inline void zerofill( T (&t)[N] )
 {
-  // static_assert( std::is_pod<T>::value, "You cannot use zerofill on a non-pod type." );
+  // static_assert( std::is_standard_layout<T>::value, "You cannot use zerofill on this type." );
   memset( &t, 0, sizeof( t ) );
 }
 
@@ -891,13 +884,13 @@ inline void items( behavior_t b )
 }
 
 struct stat_data_t {
-  double      strength;
-  double      agility;
-  double      stamina;
-  double      intellect;
-  double      spirit;
-  double      base_health;
-  double      base_resource;
+  double strength;
+  double agility;
+  double stamina;
+  double intellect;
+  double spirit;
+  double base_health;
+  double base_resource;
 };
 
 #define DEFAULT_MISC_VALUE std::numeric_limits<int>::min()
@@ -1237,59 +1230,65 @@ enum spell_attribute_t {
 
 // DBC related classes ======================================================
 
-struct spell_data_t {
-  const char * _name;               // Spell name from Spell.dbc stringblock (enGB)
-  unsigned     _id;                 // Spell ID in dbc
-  unsigned     _flags;              // Unused for now, 0x00 for all
-  double       _prj_speed;          // Projectile Speed
-  unsigned     _school;             // Spell school mask
-  int          _power_type;         // Resource type
-  unsigned     _class_mask;         // Class mask for spell
-  unsigned     _race_mask;          // Racial mask for the spell
-  int          _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array, 0 disabled
-  double       _extra_coeff;        // An "extra" coefficient (used for some spells to indicate AP based coefficient)
+struct spell_data_t
+{
+private:
+  static const unsigned FLAG_USED = 1;
+  static const unsigned FLAG_DISABLED = 2;
+
+public:
+  const char* _name;               // Spell name from Spell.dbc stringblock (enGB)
+  unsigned    _id;                 // Spell ID in dbc
+  unsigned    _flags;              // Unused for now, 0x00 for all
+  double      _prj_speed;          // Projectile Speed
+  unsigned    _school;             // Spell school mask
+  int         _power_type;         // Resource type
+  unsigned    _class_mask;         // Class mask for spell
+  unsigned    _race_mask;          // Racial mask for the spell
+  int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array, 0 disabled
+  double      _extra_coeff;        // An "extra" coefficient (used for some spells to indicate AP based coefficient)
   // SpellLevels.dbc
-  unsigned     _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
-  unsigned     _max_level;          // Maximum level for scaling
+  unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
+  unsigned    _max_level;          // Maximum level for scaling
   // SpellRange.dbc
-  double       _min_range;          // Minimum range in yards
-  double       _max_range;          // Maximum range in yards
+  double      _min_range;          // Minimum range in yards
+  double      _max_range;          // Maximum range in yards
   // SpellCooldown.dbc
-  unsigned     _cooldown;           // Cooldown in milliseconds
-  unsigned     _gcd;                // GCD in milliseconds
+  unsigned    _cooldown;           // Cooldown in milliseconds
+  unsigned    _gcd;                // GCD in milliseconds
   // SpellCategories.dbc
-  unsigned     _category;           // Spell category (for shared cooldowns, effects?)
+  unsigned    _category;           // Spell category (for shared cooldowns, effects?)
   // SpellDuration.dbc
-  double       _duration;           // Spell duration in milliseconds
+  double      _duration;           // Spell duration in milliseconds
   // SpellPower.dbc
-  unsigned     _cost;               // Resource cost
+  unsigned    _cost;               // Resource cost
   // SpellRuneCost.dbc
-  unsigned     _rune_cost;          // Bitmask of rune cost 0x1, 0x2 = Blood | 0x4, 0x8 = Unholy | 0x10, 0x20 = Frost
-  unsigned     _runic_power_gain;   // Amount of runic power gained ( / 10 )
+  unsigned    _rune_cost;          // Bitmask of rune cost 0x1, 0x2 = Blood | 0x4, 0x8 = Unholy | 0x10, 0x20 = Frost
+  unsigned    _runic_power_gain;   // Amount of runic power gained ( / 10 )
   // SpellAuraOptions.dbc
-  unsigned     _max_stack;          // Maximum stack size for spell
-  unsigned     _proc_chance;        // Spell proc chance in percent
-  unsigned     _proc_charges;       // Per proc charge amount
+  unsigned    _max_stack;          // Maximum stack size for spell
+  unsigned    _proc_chance;        // Spell proc chance in percent
+  unsigned    _proc_charges;       // Per proc charge amount
   // SpellEquippedItems.dbc
-  unsigned     _equipped_class;
-  unsigned     _equipped_invtype_mask;
-  unsigned     _equipped_subclass_mask;
+  unsigned    _equipped_class;
+  unsigned    _equipped_invtype_mask;
+  unsigned    _equipped_subclass_mask;
   // SpellScaling.dbc
-  int          _cast_min;           // Minimum casting time in milliseconds
-  int          _cast_max;           // Maximum casting time in milliseconds
-  int          _cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
-  double       _c_scaling;          // A scaling multiplier for level based scaling
-  unsigned     _c_scaling_level;    // A scaling divisor for level based scaling
+  int         _cast_min;           // Minimum casting time in milliseconds
+  int         _cast_max;           // Maximum casting time in milliseconds
+  int         _cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
+  double      _c_scaling;          // A scaling multiplier for level based scaling
+  unsigned    _c_scaling_level;    // A scaling divisor for level based scaling
   // SpellEffect.dbc
-  unsigned     _effect[3];          // Effect identifiers
+  unsigned    _effect[MAX_EFFECTS];// Effect identifiers
   // Spell.dbc flags
-  unsigned     _attributes[10];     // Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
-  const char * _desc;               // Spell.dbc description stringblock
-  const char * _tooltip;            // Spell.dbc tooltip stringblock
+  unsigned    _attributes[NUM_SPELL_FLAGS];// Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
+  const char* _desc;               // Spell.dbc description stringblock
+  const char* _tooltip;            // Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char * _desc_vars;          // Spell description variable stringblock, if present
+  const char* _desc_vars;          // Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char * _icon;
+  const char* _icon;
 
   // Pointers for runtime linking
   spelleffect_data_t* _effect1;
@@ -1300,56 +1299,91 @@ struct spell_data_t {
   const spelleffect_data_t& effect2() const { return *_effect2; }
   const spelleffect_data_t& effect3() const { return *_effect3; }
 
+  bool                 is_used() const { return _flags & FLAG_USED; }
+  void                 set_used( bool value );
+
+  bool                 is_enabled() const { return ! ( _flags & FLAG_DISABLED ); }
+  void                 set_enabled( bool value );
+
+  unsigned             id() const { return _id; }
+  uint32_t             school_mask() const { return _school; }
+  resource_type        power_type() const;
+
+  bool                 is_class( player_type c ) const;
+  uint32_t             class_mask() const { return _class_mask; }
+
+  bool                 is_race( race_type r ) const;
+  uint32_t             race_mask() const { return _race_mask; }
+
+  bool                 is_level( uint32_t level ) const { return level >= _spell_level; }
+  uint32_t             level() const { return _spell_level; }
+  uint32_t             max_level() const { return _max_level; }
+
+  player_type          scaling_class() const;
+
+  double               missile_speed() const { return _prj_speed; }
+  double               min_range() const { return _min_range; }
+  double               max_range() const { return _max_range; }
+  bool                 in_range( double range ) const { return range >= _min_range && range <= _max_range; }
+
+  double               cooldown() const { return _cooldown / 1000.0; }
+  double               duration() const { return _duration / 1000.0; }
+  double               gcd() const { return _gcd / 1000.0; }
+  double               cast_time( uint32_t level ) const;
+
+  uint32_t             category() const { return _category; }
+
+  double               cost() const;
+  uint32_t             rune_cost() const { return _rune_cost; }
+  double               runic_power_gain() const { return _runic_power_gain / 10.0; }
+
+  uint32_t             max_stacks() const { return _max_stack; }
+  uint32_t             initial_stacks() const { return _proc_charges; }
+
+  double               proc_chance() const { return _proc_chance / 100.0; }
+
+  uint32_t             effect_id( uint32_t effect_num ) const
+  {
+    assert( effect_num >= 1 && effect_num <= MAX_EFFECTS );
+    return _effect[ effect_num - 1 ];
+  }
+
+  bool                 flags( spell_attribute_t f ) const;
+
+  const char*          name_cstr() const { return _name; }
+  const char*          desc() const { return _desc; }
+  const char*          tooltip() const { return _tooltip; }
+
+  double               scaling_multiplier() const { return _c_scaling; }
+  unsigned             scaling_threshold() const { return _c_scaling_level; }
+  double               extra_coeff() const { return _extra_coeff; }
+
   static spell_data_t* nil();
-  static spell_data_t* find( const std::string& name, bool ptr = false );
+  static spell_data_t* find( const char* name, bool ptr = false );
   static spell_data_t* find( unsigned id, bool ptr = false );
   static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
   static spell_data_t* list( bool ptr = false );
   static void          link( bool ptr = false );
-
-  bool                 is_used() SC_CONST;
-  bool                 is_enabled() SC_CONST;
-  void                 set_used( bool value );
-  void                 set_enabled( bool value );
-
-  inline unsigned      id() SC_CONST { return _id; }
-  double               missile_speed() SC_CONST;
-  uint32_t             school_mask() SC_CONST;
-  resource_type        power_type() SC_CONST;
-  bool                 is_class( player_type c ) SC_CONST;
-  bool                 is_race( race_type r ) SC_CONST;
-  bool                 is_level( uint32_t level ) SC_CONST;
-  uint32_t             level() SC_CONST;
-  uint32_t             max_level() SC_CONST;
-  uint32_t             class_mask() SC_CONST;
-  uint32_t             race_mask() SC_CONST;
-  player_type          scaling_class() SC_CONST;
-  double               min_range() SC_CONST;
-  double               max_range() SC_CONST;
-  bool                 in_range( double range ) SC_CONST;
-  double               cooldown() SC_CONST;
-  double               gcd() SC_CONST;
-  uint32_t             category() SC_CONST;
-  double               duration() SC_CONST;
-  double               cost() SC_CONST;
-  uint32_t             rune_cost() SC_CONST;
-  double               runic_power_gain() SC_CONST;
-  uint32_t             max_stacks() SC_CONST;
-  uint32_t             initial_stacks() SC_CONST;
-  double               proc_chance() SC_CONST;
-  double               cast_time( uint32_t level ) SC_CONST;
-  uint32_t             effect_id( uint32_t effect_num ) SC_CONST;
-  bool                 flags( spell_attribute_t f ) SC_CONST;
-  const char*          name_cstr() SC_CONST;
-  const char*          desc() SC_CONST;
-  const char*          tooltip() SC_CONST;
-  double               scaling_multiplier() SC_CONST;
-  unsigned             scaling_threshold() SC_CONST;
-  double               extra_coeff() SC_CONST;
 };
 
+class spell_data_nil_t : public spell_data_t
+{
+public:
+  spell_data_nil_t();
+  static spell_data_nil_t singleton;
+};
+
+inline spell_data_t* spell_data_t::nil()
+{ return &spell_data_nil_t::singleton; }
+
 // SpellEffect.dbc
-struct spelleffect_data_t {
+struct spelleffect_data_t
+{
+private:
+  static const unsigned int FLAG_USED = 1;
+  static const unsigned int FLAG_ENABLED = 2;
+
+public:
   unsigned         _id;              // Effect id
   unsigned         _flags;           // Unused for now, 0x00 for all
   unsigned         _spell_id;        // Spell this effect belongs to
@@ -1380,57 +1414,86 @@ struct spelleffect_data_t {
   spell_data_t*    _spell;
   spell_data_t*    _trigger_spell;
 
-  static spelleffect_data_t* nil();
-  static spelleffect_data_t* find( unsigned, bool ptr = false );
-  static spelleffect_data_t* list( bool ptr = false );
-  static void                link( bool ptr = false );
-
-  bool                       is_used() SC_CONST;
-  bool                       is_enabled() SC_CONST;
+  bool                       is_used() const { return ( _flags & FLAG_USED ) != 0; }
   void                       set_used( bool value );
+
+  bool                       is_enabled() const { return ( _flags & FLAG_ENABLED ) != 0; }
   void                       set_enabled( bool value );
 
-  unsigned                   id() SC_CONST { return _id; }
-  unsigned                   index() SC_CONST;
-  uint32_t                   spell_id() SC_CONST;
-  uint32_t                   spell_effect_num() SC_CONST;
-  effect_type_t              type() SC_CONST;
-  effect_subtype_t           subtype() SC_CONST;
-  int32_t                    base_value() SC_CONST { return _base_value; }
-  int32_t                    misc_value1() SC_CONST { return _misc_value; }
-  int32_t                    misc_value2() SC_CONST { return _misc_value_2; }
-  uint32_t                   trigger_spell_id() SC_CONST;
-  double                     chain_multiplier() SC_CONST;
+  unsigned                   id() const { return _id; }
+  unsigned                   index() const { return _index; }
+  unsigned                   spell_id() const { return _spell_id; }
+  unsigned                   spell_effect_num() const { return _index; }
 
-  double                     m_average() SC_CONST;
-  double                     m_delta() SC_CONST;
-  double                     m_unk() SC_CONST;
-  double                     coeff() SC_CONST;
-  double                     period() SC_CONST;
-  double                     radius() SC_CONST;
-  double                     radius_max() SC_CONST;
-  double                     pp_combo_points() SC_CONST;
-  double                     real_ppl() SC_CONST;
-  int                        die_sides() SC_CONST;
+  effect_type_t              type() const { return _type; }
+  effect_subtype_t           subtype() const { return _subtype; }
 
-  spell_data_t& spell()   const { return *_spell; }
-  spell_data_t& trigger() const { return *_trigger_spell; }
+  int                        base_value() const { return _base_value; }
   double percent() const { return _base_value / 100.0; }
   double seconds() const { return _base_value / 1000.0; }
   double resource( int type ) const
   {
-    if( type == RESOURCE_RUNIC ) return _base_value / 10.0;
-    if( type == RESOURCE_RAGE  ) return _base_value / 10.0;
-    if( type == RESOURCE_MANA  ) return _base_value / 100.0;
-    return _base_value;
+    switch( type )
+    {
+    case RESOURCE_RUNIC:
+    case RESOURCE_RAGE:
+      return _base_value / 10.0;
+    case RESOURCE_MANA:
+      return _base_value / 100.0;
+    default:
+      return _base_value;
+    }
   }
+
+  int                        misc_value1() const { return _misc_value; }
+  int                        misc_value2() const { return _misc_value_2; }
+
+  unsigned                   trigger_spell_id() const { return _trigger_spell_id >= 0 ? _trigger_spell_id : 0; }
+  double                     chain_multiplier() const { return _m_chain; }
+
+  double                     m_average() const { return _m_avg; }
+  double                     m_delta() const { return _m_delta; }
+  double                     m_unk() const { return _m_unk; }
+
+  double                     coeff() const { return _coeff; }
+
+  double                     period() const { return _amplitude / 1000.0; }
+
+  double                     radius() const { return _radius; }
+  double                     radius_max() const { return _radius_max; }
+
+  double                     pp_combo_points() const { return _pp_combo_points; }
+
+  double                     real_ppl() const { return _real_ppl; }
+
+  int                        die_sides() const { return _die_sides; }
+
+  spell_data_t& spell()   const { return *_spell; }
+  spell_data_t& trigger() const { return *_trigger_spell; }
+
+  static spelleffect_data_t* nil();
+  static spelleffect_data_t* find( unsigned, bool ptr = false );
+  static spelleffect_data_t* list( bool ptr = false );
+  static void                link( bool ptr = false );
 };
+
+class spelleffect_data_nil_t : public spelleffect_data_t
+{
+public:
+  spelleffect_data_nil_t();
+  static spelleffect_data_nil_t singleton;
+};
+
+inline spelleffect_data_t* spelleffect_data_t::nil()
+{ return &spelleffect_data_nil_t::singleton; }
 
 struct talent_data_t
 {
+private:
   static const unsigned FLAG_USED = 0x01;
   static const unsigned FLAG_DISABLED = 0x02;
 
+public:
   const char * _name;        // Talent name
   unsigned     _id;          // Talent id
   unsigned     _flags;       // Unused for now, 0x00 for all
@@ -1448,13 +1511,6 @@ struct talent_data_t
   spell_data_t* spell2;
   spell_data_t* spell3;
 
-  static talent_data_t* nil();
-  static talent_data_t* find( unsigned, bool ptr = false );
-  static talent_data_t* find( unsigned, const std::string& confirmation = std::string(), bool ptr = false );
-  static talent_data_t* find( const std::string& name, bool ptr = false );
-  static talent_data_t* list( bool ptr = false );
-  static void           link( bool ptr = false );
-
   bool                  is_used() const { return ( _flags & FLAG_USED ) != 0; }
   bool                  is_enabled() const { return ( _flags & FLAG_DISABLED ) == 0; }
   void                  set_used( bool value );
@@ -1462,19 +1518,19 @@ struct talent_data_t
 
   inline unsigned       id() const { return _id; }
   const char*           name_cstr() const { return _name; }
-  uint32_t              tab_page() const { return _tab_page; }
-  bool                  is_class( player_type c ) SC_CONST;
-  bool                  is_pet( pet_type_t p ) SC_CONST;
-  uint32_t              depends_id() const { return _dependance; }
-  uint32_t              depends_rank() const { return _depend_rank + 1; }
+  unsigned              tab_page() const { return _tab_page; }
+  bool                  is_class( player_type c ) const;
+  bool                  is_pet( pet_type_t p ) const;
+  unsigned              depends_id() const { return _dependance; }
+  unsigned              depends_rank() const { return _depend_rank + 1; }
 
-  uint32_t              col() const { return _col; }
-  uint32_t              row() const { return _row; }
-  uint32_t              rank_spell_id( uint32_t rank ) SC_CONST;
+  unsigned              col() const { return _col; }
+  unsigned              row() const { return _row; }
+  unsigned              rank_spell_id( unsigned rank ) const;
   unsigned              mask_class() const { return _m_class; }
   unsigned              mask_pet() const { return _m_pet; }
 
-  uint32_t              max_rank() SC_CONST;
+  unsigned              max_rank() const;
 
   spell_data_t& spell( unsigned r )
   {
@@ -1483,7 +1539,24 @@ struct talent_data_t
     if ( r == 2 ) return *spell3;
     return *spell_data_t::nil();
   }
+
+  static talent_data_t* nil();
+  static talent_data_t* find( unsigned, bool ptr = false );
+  static talent_data_t* find( unsigned, const char* confirmation, bool ptr = false );
+  static talent_data_t* find( const char* name, bool ptr = false );
+  static talent_data_t* list( bool ptr = false );
+  static void           link( bool ptr = false );
 };
+
+class talent_data_nil_t : public talent_data_t
+{
+public:
+  talent_data_nil_t();
+  static talent_data_nil_t singleton;
+};
+
+inline talent_data_t* talent_data_t::nil()
+{ return &talent_data_nil_t::singleton; }
 
 struct dbc_t
 {
