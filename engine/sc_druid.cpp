@@ -3745,6 +3745,18 @@ struct starfire_t : public druid_spell_t
       }
     }
   }
+  
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    druid_spell_t::target_debuff( t, dmg_type );
+
+    druid_t* p = player -> cast_druid();
+
+    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire, 
+    // Starsurge, and Wrath spells against that target by 3%.
+    if ( p -> dots_insect_swarm -> ticking )
+      target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
+  }
 
   virtual bool ready()
   {
@@ -3879,6 +3891,14 @@ struct starsurge_t : public druid_spell_t
       // else it is towards p -> eclipse_bar_direction
       int gain = effect2().base_value();
       if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
+      
+      // Balance, 4P -- Starsurge generates 100% extra Lunar 
+      // or Solar energy while Eclipse is not active.
+      if ( p -> set_bonus.tier13_4pc_caster() )
+      {
+        if ( ! p -> buffs_eclipse_lunar -> check() && p -> buffs_eclipse_solar -> check() )
+          gain *= 2;
+      }
 
       //trigger_eclipse_energy_gain( this, gain );
       trigger_eclipse_gain_delay( this, gain );
@@ -4267,6 +4287,18 @@ struct wrath_t : public druid_spell_t
 
     if ( p -> buffs_tree_of_life -> check() )
       player_multiplier *= 1.30;
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    druid_spell_t::target_debuff( t, dmg_type );
+
+    druid_t* p = player -> cast_druid();
+
+    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire, 
+    // Starsurge, and Wrath spells against that target by 3%.
+    if ( p -> dots_insect_swarm -> ticking )
+      target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
   }
 
   virtual void travel( player_t* t, int    travel_result,
