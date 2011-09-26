@@ -27,7 +27,7 @@ random_suffix_data_t nil_rsd;
 item_enchantment_data_t nil_ied;
 gem_property_data_t nil_gpd;
 
-// Indices for constant-time access to spells, effects, and talents by id.
+// Indices to provide constant-time access to spells, effects, and talents by id.
 template <typename T>
 class dbc_index_t
 {
@@ -42,9 +42,6 @@ public:
 
   bool initialized( bool ptr = false ) const
   { return ! idx[ ptr ].empty(); }
-
-  T** index( bool ptr ) { return &idx[ ptr ][ 0 ]; }
-  typename index_t::size_type size( bool ptr ) const { return idx[ ptr ].size(); }
 
   T* get( bool ptr, unsigned id ) const;
 };
@@ -675,15 +672,6 @@ const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) SC
   return nil_ied;
 }
 
-const spell_data_t* dbc_t::spell( unsigned spell_id ) const
-{ return idx_sd.get( ptr, spell_id ); }
-
-const spelleffect_data_t* dbc_t::effect( unsigned effect_id ) const
-{ return idx_sed.get( ptr, effect_id ); }
-
-const talent_data_t* dbc_t::talent( unsigned talent_id ) const
-{ return idx_td.get( ptr, talent_id ); }
-
 const item_data_t* dbc_t::item( unsigned item_id ) SC_CONST
 {
   ( void )ptr;
@@ -781,19 +769,13 @@ talent_data_t* talent_data_t::list( bool ptr )
 }
 
 spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
-{
-  spell_data_t* p = idx_sd.get( ptr, spell_id );
-  if ( p == nil() )
-    p = 0;
-  return p;
-}
+{ return idx_sd.get( ptr, spell_id ); }
 
 spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, bool ptr )
 {
   ( void )confirmation;
 
   spell_data_t* p = find( spell_id, ptr );
-  if ( ! p ) return nil();
   assert( ! strcmp( confirmation, p -> name_cstr() ) );
   return p;
 }
@@ -808,28 +790,17 @@ spell_data_t* spell_data_t::find( const char* name, bool ptr )
 }
 
 spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
-{
-  spelleffect_data_t* p = idx_sed.get( ptr, id );
-  if ( p == nil() )
-    p = 0;
-  return p;
-}
+{ return idx_sed.get( ptr, id ); }
 
 talent_data_t* talent_data_t::find( unsigned id, bool ptr )
-{
-  talent_data_t* p = idx_td.get( ptr, id );
-  if ( p == nil() )
-    p = 0;
-  return p;
-}
+{ return idx_td.get( ptr, id ); }
 
 talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool ptr )
 {
   ( void )confirmation;
 
   talent_data_t* p = find( id, ptr );
-  if ( ! p ) return nil();
-  assert( p && ! strcmp( confirmation, p -> name_cstr() ) );
+  assert( ! strcmp( confirmation, p -> name_cstr() ) );
   return p;
 }
 
@@ -849,9 +820,9 @@ void spell_data_t::link( bool ptr )
   for( int i = 0; spell_data[ i ].name_cstr(); i++ )
   {
     spell_data_t& sd = spell_data[ i ];
-    sd._effect1 = idx_sed.get( ptr, sd._effect[ 0 ] );
-    sd._effect2 = idx_sed.get( ptr, sd._effect[ 1 ] );
-    sd._effect3 = idx_sed.get( ptr, sd._effect[ 2 ] );
+    sd._effect1 = spelleffect_data_t::find( sd._effect[ 0 ], ptr );
+    sd._effect2 = spelleffect_data_t::find( sd._effect[ 1 ], ptr );
+    sd._effect3 = spelleffect_data_t::find( sd._effect[ 2 ], ptr );
   }
 }
 
@@ -863,8 +834,8 @@ void spelleffect_data_t::link( bool ptr )
   {
     spelleffect_data_t& ed = spelleffect_data[ i ];
 
-    ed._spell         = idx_sd.get( ptr, ed.spell_id() );
-    ed._trigger_spell = idx_sd.get( ptr, ed.trigger_spell_id() );
+    ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
+    ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
   }
 }
 
@@ -876,9 +847,9 @@ void talent_data_t::link( bool ptr )
   {
     talent_data_t& td = talent_data[ i ];
 
-    td.spell1 = idx_sd.get( ptr, td._rank_id[ 0 ] );
-    td.spell2 = idx_sd.get( ptr, td._rank_id[ 1 ] );
-    td.spell3 = idx_sd.get( ptr, td._rank_id[ 2 ] );
+    td.spell1 = spell_data_t::find( td._rank_id[ 0 ], ptr );
+    td.spell2 = spell_data_t::find( td._rank_id[ 1 ], ptr );
+    td.spell3 = spell_data_t::find( td._rank_id[ 2 ], ptr );
   }
 }
 

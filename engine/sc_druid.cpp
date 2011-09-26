@@ -3745,14 +3745,14 @@ struct starfire_t : public druid_spell_t
       }
     }
   }
-  
+
   virtual void target_debuff( player_t* t, int dmg_type )
   {
     druid_spell_t::target_debuff( t, dmg_type );
 
     druid_t* p = player -> cast_druid();
 
-    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire, 
+    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
     // Starsurge, and Wrath spells against that target by 3%.
     if ( p -> dots_insect_swarm -> ticking )
       target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
@@ -3891,8 +3891,8 @@ struct starsurge_t : public druid_spell_t
       // else it is towards p -> eclipse_bar_direction
       int gain = effect2().base_value();
       if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
-      
-      // Balance, 4P -- Starsurge generates 100% extra Lunar 
+
+      // Balance, 4P -- Starsurge generates 100% extra Lunar
       // or Solar energy while Eclipse is not active.
       if ( p -> set_bonus.tier13_4pc_caster() )
       {
@@ -4295,7 +4295,7 @@ struct wrath_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
 
-    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire, 
+    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
     // Starsurge, and Wrath spells against that target by 3%.
     if ( p -> dots_insect_swarm -> ticking )
       target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
@@ -4582,8 +4582,13 @@ void druid_t::init_spells()
   spells.total_eclipse   = spell_data_t::find( 77492, "Total Eclipse",   dbc.ptr );
   spells.vengeance       = spell_data_t::find( 84840, "Vengeance",       dbc.ptr );
 
-  unsigned primal_madness_ids[] = { 0, 80879, 80886 };
-  spells.primal_madness_cat = spell_data_t::find( primal_madness_ids[ talents.primal_madness -> rank() ], "Primal Madness", dbc.ptr );
+  if ( talents.primal_madness -> rank() )
+  {
+    spells.primal_madness_cat = spell_data_t::find( talents.primal_madness -> rank() > 1 ? 80886 : 80879,
+                                                   "Primal Madness", dbc.ptr );
+  }
+  else
+    spells.primal_madness_cat = spell_data_t::nil();
 
   // Glyphs
   glyphs.berserk          = find_glyph( "Glyph of Berserk" );

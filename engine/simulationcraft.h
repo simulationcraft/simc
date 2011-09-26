@@ -1236,6 +1236,9 @@ private:
   static const unsigned FLAG_USED = 1;
   static const unsigned FLAG_DISABLED = 2;
 
+  friend class dbc_t;
+  static void link( bool ptr );
+
 public:
   const char* _name;               // Spell name from Spell.dbc stringblock (enGB)
   unsigned    _id;                 // Spell ID in dbc
@@ -1363,7 +1366,6 @@ public:
   static spell_data_t* find( unsigned id, bool ptr = false );
   static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
   static spell_data_t* list( bool ptr = false );
-  static void          link( bool ptr = false );
 };
 
 class spell_data_nil_t : public spell_data_t
@@ -1605,9 +1607,9 @@ struct dbc_t
   double combat_rating( unsigned combat_rating_id, unsigned level ) SC_CONST;
   double oct_combat_rating( unsigned combat_rating_id, player_type t ) SC_CONST;
 
-  const spell_data_t*            spell( unsigned spell_id ) const;
-  const spelleffect_data_t*      effect( unsigned effect_id ) const;
-  const talent_data_t*           talent( unsigned talent_id ) const;
+  const spell_data_t*            spell( unsigned spell_id ) const { return spell_data_t::find( spell_id, ptr ); }
+  const spelleffect_data_t*      effect( unsigned effect_id ) const { return spelleffect_data_t::find( effect_id, ptr ); }
+  const talent_data_t*           talent( unsigned talent_id ) const { return talent_data_t::find( talent_id, ptr ); }
   const item_data_t*             item( unsigned item_id ) SC_CONST;
 
   const random_suffix_data_t&    random_suffix( unsigned suffix_id ) SC_CONST;
