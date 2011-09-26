@@ -3292,16 +3292,10 @@ struct obliterate_offhand_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::execute();
 
     if ( result_is_hit() )
     {
-      if ( p -> buffs_rime -> trigger() )
-      {
-        p -> cooldowns_howling_blast -> reset();
-        update_ready();
-      }
       if ( flaming_torment )
       {
         flaming_torment -> base_dd_min = direct_dmg;
