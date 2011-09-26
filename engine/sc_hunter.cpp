@@ -39,6 +39,7 @@ struct hunter_t : public player_t
   buff_t* buffs_sniper_training;
   buff_t* buffs_trueshot_aura;
   buff_t* buffs_tier12_4pc;
+  buff_t* buffs_tier13_4pc;
 
   // Cooldowns
   cooldown_t* cooldowns_glyph_kill_shot;
@@ -187,6 +188,7 @@ struct hunter_t : public player_t
   action_t* flaming_arrow;
 
   double merge_piercing_shots;
+  double tier13_4pc_proc_chance;
 
   hunter_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, HUNTER, name, r )
   {
@@ -217,6 +219,8 @@ struct hunter_t : public player_t
     default_distance = 40;
     base_gcd = 1.0;
     flaming_arrow = NULL;
+
+    tier13_4pc_proc_chance = 1.0;
 
     create_talents();
     create_glyphs();
@@ -727,6 +731,7 @@ struct hunter_attack_t : public attack_t
 
   virtual double cost() SC_CONST;
   virtual void   consume_resource();
+  virtual void travel( player_t* t, int travel_result, double travel_dmg );
   virtual double execute_time() SC_CONST;
   virtual double swing_haste() SC_CONST;
   virtual void   player_buff();
@@ -1818,9 +1823,21 @@ void hunter_attack_t::consume_resource()
     {
       p -> gains_tier12_4pc -> add( amount );
       p -> gains_tier12_4pc -> type = RESOURCE_FOCUS;
-      p -> buffs_tier12_4pc -> expire();
+      if ( ! p -> bugs )
+        p -> buffs_tier12_4pc -> expire();
     }
   }
+}
+
+void hunter_attack_t::travel( player_t* t, int travel_result, double travel_dmg )
+{
+  attack_t::travel( t, travel_result, travel_dmg );
+
+  hunter_t* p = player -> cast_hunter();
+
+  // http://elitistjerks.com/f74/t112408-cataclysm_4_2_marksmanship_guide/p23/#post2012391
+  if ( p -> bugs )
+    p -> buffs_tier12_4pc -> expire();
 }
 
 // hunter_attack_t::swing_haste =============================================
@@ -2196,6 +2213,10 @@ struct arcane_shot_t : public hunter_attack_t
     {
       p -> buffs_cobra_strikes -> trigger( 2 );
 
+      // PTR
+      // Needs testing
+      p -> buffs_tier13_4pc -> trigger();
+
       if ( result == RESULT_CRIT && p -> active_pet )
       {
         p -> active_pet -> buffs_sic_em -> trigger();
@@ -2204,6 +2225,17 @@ struct arcane_shot_t : public hunter_attack_t
 
     p -> buffs_lock_and_load -> up();
     p -> buffs_lock_and_load -> decrement();
+  }
+
+  virtual void consume_resource()
+  {
+    hunter_attack_t::consume_resource();
+
+    hunter_t* p = player -> cast_hunter();
+
+    // http://elitistjerks.com/f74/t112408-cataclysm_4_2_marksmanship_guide/p23/#post2012407
+    if ( p -> bugs )
+      p -> buffs_tier12_4pc -> expire();
   }
 };
 
@@ -2427,6 +2459,11 @@ struct cobra_shot_t : public hunter_attack_t
       base_execute_time -= 0.2;
 
     focus_gain = p -> dbc.spell( 77443 ) -> effect1().base_value();
+
+    // PTR
+    // Needs testing
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() )
+      focus_gain *= 2.0;
   }
 
   virtual bool usable_moving()
@@ -2860,6 +2897,11 @@ struct steady_shot_t : public hunter_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
 
     focus_gain = p -> dbc.spell( 77443 ) -> effect1().base_value();
+
+    // PTR
+    // Needs testing
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() )
+      focus_gain *= 2.0;
   }
 
   virtual void trigger_improved_steady_shot()
@@ -3837,6 +3879,7 @@ void hunter_t::init_buffs()
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, 0, 0, 1, true );
 
   buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
+  buffs_tier13_4pc                  = new buff_t( this, "tier13_4pc", 1, 10.0, 0, tier13_4pc_proc_chance * set_bonus.tier13_4pc_melee() );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
@@ -4118,6 +4161,7 @@ double hunter_t::composite_attack_haste() SC_CONST
   h *= 1.0 / ( 1.0 + talents.pathing -> effect1().percent() );
   h *= 1.0 / ( 1.0 + buffs_focus_fire -> value() );
   h *= 1.0 / ( 1.0 + buffs_rapid_fire -> value() );
+  h *= 1.0 / ( 1.0 + buffs_tier13_4pc -> up() * 0.25 );
   return h;
 }
 
@@ -4169,6 +4213,7 @@ void hunter_t::create_options()
   {
     { "summon_pet", OPT_STRING, &( summon_pet_str  ) },
     { "merge_piercing_shots", OPT_FLT, &( merge_piercing_shots ) },
+    { "tier13_4pc_proc_chance", OPT_FLT, &( tier13_4pc_proc_chance ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
