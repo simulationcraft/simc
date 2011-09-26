@@ -2211,7 +2211,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     shaman_spell_t::player_buff();
     
-    if ( p -> set_bonus.tier13_2pc_melee() )
+    if ( p -> set_bonus.tier13_2pc_melee() && p -> buffs_maelstrom_weapon -> up() )
       player_multiplier *= 1.20;
   }
 
@@ -2491,7 +2491,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     shaman_spell_t::player_buff();
     
-    if ( p -> set_bonus.tier13_2pc_melee() )
+    if ( p -> set_bonus.tier13_2pc_melee() && p -> buffs_maelstrom_weapon -> up() )
       player_multiplier *= 1.20;
   }
 
