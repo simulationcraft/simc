@@ -3896,7 +3896,7 @@ struct starsurge_t : public druid_spell_t
       // or Solar energy while Eclipse is not active.
       if ( p -> set_bonus.tier13_4pc_caster() )
       {
-        if ( ! p -> buffs_eclipse_lunar -> check() && p -> buffs_eclipse_solar -> check() )
+        if ( ! p -> buffs_eclipse_lunar -> check() && ! p -> buffs_eclipse_solar -> check() )
           gain *= 2;
       }
 
