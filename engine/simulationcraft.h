@@ -1560,8 +1560,9 @@ public:
 inline talent_data_t* talent_data_t::nil()
 { return &talent_data_nil_t::singleton; }
 
-struct dbc_t
+class dbc_t
 {
+public:
   bool ptr;
 
   dbc_t( bool ptr=false ) : ptr( ptr ) { }
