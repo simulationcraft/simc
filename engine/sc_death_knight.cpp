@@ -2159,7 +2159,8 @@ struct melee_t : public death_knight_attack_t
     {
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
-        p -> buffs_sudden_doom -> trigger( 1, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
+        int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.4 ) ) ? 2 : 1;
+        p -> buffs_sudden_doom -> trigger( stacks, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
       }
 
       // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
@@ -3370,7 +3371,8 @@ struct obliterate_t : public death_knight_attack_t
       {
         p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC ), p -> gains_chill_of_the_grave );
       }
-      if ( p -> buffs_rime -> trigger() )
+      int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.6 ) ) ? 2 : 1;
+      if ( p -> buffs_rime -> trigger( stacks ) )
       {
         p -> cooldowns_howling_blast -> reset();
         update_ready();
