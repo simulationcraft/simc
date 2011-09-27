@@ -108,7 +108,7 @@ struct base_stats_t;
 struct buff_t;
 struct callback_t;
 struct cooldown_t;
-struct dbc_t;
+class dbc_t;
 struct death_knight_t;
 struct druid_t;
 struct dot_t;
