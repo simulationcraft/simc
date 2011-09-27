@@ -9,7 +9,7 @@
 // Mage
 // ==========================================================================
 
-enum { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
+enum rotation_t { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
 struct mage_t : public player_t
 {
@@ -45,14 +45,18 @@ struct mage_t : public player_t
   buff_t* buffs_missile_barrage;
   buff_t* buffs_molten_armor;
   buff_t* buffs_presence_of_mind;
+  buff_t* buffs_tier13_2pc;
 
   // Cooldowns
+  cooldown_t* cooldowns_arcane_power;
+  cooldown_t* cooldowns_combustion;
   cooldown_t* cooldowns_deep_freeze;
-  cooldown_t* cooldowns_fire_blast;
   cooldown_t* cooldowns_early_frost;
+  cooldown_t* cooldowns_evocation;
+  cooldown_t* cooldowns_fire_blast;
+  cooldown_t* cooldowns_icy_veins;
   cooldown_t* cooldowns_mana_gem;
   cooldown_t* cooldowns_tier12_mirror_image;
-  cooldown_t* cooldowns_evocation;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -268,11 +272,14 @@ struct mage_t : public player_t
     dots_pyroblast      = get_dot( "pyroblast"      );
 
     // Cooldowns
-    cooldowns_deep_freeze = get_cooldown( "deep_freeze" );
-    cooldowns_fire_blast  = get_cooldown( "fire_blast"  );
-    cooldowns_early_frost = get_cooldown( "early_frost" );
-    cooldowns_evocation   = get_cooldown( "evocation"   );
-    cooldowns_mana_gem    = get_cooldown( "mana_gem"    );
+    cooldowns_arcane_power = get_cooldown( "arcane_power" );
+    cooldowns_combustion   = get_cooldown( "combustion"   );
+    cooldowns_deep_freeze  = get_cooldown( "deep_freeze"  );
+    cooldowns_early_frost  = get_cooldown( "early_frost"  );
+    cooldowns_evocation    = get_cooldown( "evocation"    );
+    cooldowns_fire_blast   = get_cooldown( "fire_blast"   );
+    cooldowns_icy_veins    = get_cooldown( "icy_veins"    );
+    cooldowns_mana_gem     = get_cooldown( "mana_gem"     );
     cooldowns_tier12_mirror_image = get_cooldown( "tier12_mirror_image" );
     cooldowns_tier12_mirror_image -> duration = 45.0;
 
@@ -1168,6 +1175,18 @@ void mage_spell_t::execute()
   {
     p -> buffs_arcane_missiles -> trigger();
   }
+
+  // PTR - Needs testing
+  if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+  {
+    if ( p -> buffs_tier13_2pc -> trigger() && p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+    {
+      // Assuming this is done with each trigger, even if you're already stacked to 10
+      p -> cooldowns_arcane_power -> ready -= 3.0;
+      p -> cooldowns_combustion   -> ready -= 4.0;
+      p -> cooldowns_icy_veins    -> ready -= 6.0;
+    }
+  }
 }
 
 // mage_spell_t::execute_time ===============================================
@@ -1566,6 +1585,24 @@ struct arcane_missiles_t : public mage_spell_t
   }
 };
 
+// Arcane Power Buff ========================================================
+
+struct arcane_power_buff_t : public buff_t
+{
+  arcane_power_buff_t( player_t* p ) :
+    buff_t( p, p -> cast_mage() -> spells.arcane_power, NULL )
+  {
+    cooldown -> duration = 0; // CD is managed by the spell
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+    mage_t* p = player -> cast_mage();
+    p -> buffs_tier13_2pc -> expire();
+  }
+};
+
 // Arcane Power Spell =======================================================
 
 struct arcane_power_t : public mage_spell_t
@@ -1576,6 +1613,7 @@ struct arcane_power_t : public mage_spell_t
     check_talent( p -> talents.arcane_power -> rank() );
     parse_options( NULL, options_str );
     harmful = false;
+    cooldown = p -> cooldowns_arcane_power;
     cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect1().percent();
   }
 
@@ -1683,6 +1721,7 @@ struct combustion_t : public mage_spell_t
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     num_ticks      = 10;
     base_tick_time = 1.0;
+    cooldown = p -> cooldowns_combustion;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1710,6 +1749,13 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( p -> dots_living_bomb    ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
     base_td += calculate_dot_dps( p -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
     mage_spell_t::execute();
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    mage_spell_t::last_tick( d );
+    mage_t* p = player -> cast_mage();
+    p -> buffs_tier13_2pc -> expire();
   }
 
   virtual double total_td_multiplier() SC_CONST { return 1.0; } // No double-dipping!
@@ -2457,6 +2503,24 @@ struct ice_lance_t : public mage_spell_t
   }
 };
 
+// Icy Veins Buff ===========================================================
+
+struct icy_veins_buff_t : public buff_t
+{
+  icy_veins_buff_t( player_t* p ) :
+    buff_t( p, p -> cast_mage() -> spells.icy_veins, NULL )
+  {
+    cooldown -> duration = 0; // CD is managed by the spell
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+    mage_t* p = player -> cast_mage();
+    p -> buffs_tier13_2pc -> expire();
+  }
+};
+
 // Icy Veins Spell ==========================================================
 
 struct icy_veins_t : public mage_spell_t
@@ -2466,6 +2530,7 @@ struct icy_veins_t : public mage_spell_t
   {
     check_talent( p -> talents.icy_veins -> rank() );
     parse_options( NULL, options_str );
+    cooldown = p -> cooldowns_icy_veins;
     cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect1().percent();
   }
 
@@ -3474,13 +3539,13 @@ void mage_t::init_buffs()
 
   buffs_arcane_blast         = new buff_t( this, spells.arcane_blast,          NULL );
   buffs_arcane_missiles      = new buff_t( this, spells.arcane_missiles,       "chance", 0.40, NULL );
-  buffs_arcane_power         = new buff_t( this, spells.arcane_power,          "cooldown", 0.0, NULL ); // CD managed in action
+  buffs_arcane_power         = new arcane_power_buff_t( this );
   buffs_brain_freeze         = new buff_t( this, talents.brain_freeze,         NULL );
   buffs_clearcasting         = new buff_t( this, talents.arcane_concentration, "cooldown", 15.0, NULL );
   buffs_fingers_of_frost     = new buff_t( this, talents.fingers_of_frost,     "chance", talents.fingers_of_frost->effect1().percent(), NULL );
   buffs_frost_armor          = new buff_t( this, spells.frost_armor,           NULL );
   buffs_hot_streak           = new buff_t( this, spells.hot_streak,            NULL );
-  buffs_icy_veins            = new buff_t( this, spells.icy_veins,             "cooldown", 0.0, NULL ); // CD managed in action
+  buffs_icy_veins            = new icy_veins_buff_t( this );
   buffs_improved_mana_gem    = new buff_t( this, talents.improved_mana_gem,    "duration", 15.0, NULL );
   buffs_invocation           = new buff_t( this, talents.invocation,           NULL );
   buffs_mage_armor           = new mage_armor_buff_t( this );
@@ -3490,6 +3555,8 @@ void mage_t::init_buffs()
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_presence_of_mind     = new buff_t( this, "presence_of_mind",     1 );
+  
+  buffs_tier13_2pc           = new stat_buff_t( this, "tier13_2pc", STAT_HASTE_RATING, 50.0, 10, 30.0, 0, ( dbc.ptr && set_bonus.tier13_2pc_caster() ) ? 0.3 : 0 );
 }
 
 // mage_t::init_gains =======================================================

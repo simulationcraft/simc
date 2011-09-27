@@ -802,7 +802,7 @@ void buff_t::expire()
 
   if ( sim -> target -> resource_base[ RESOURCE_HEALTH ] == 0 ||
        sim -> target -> resource_current[ RESOURCE_HEALTH ] > 0 )
-    if ( !overridden )
+    if ( ! overridden )
     {
       constant = false;
     }
