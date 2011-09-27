@@ -130,6 +130,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_shadow_infusion;
   buff_t* buffs_sudden_doom;
   buff_t* buffs_tier11_4pc_melee;
+  buff_t* buffs_tier13_4pc_melee;
   buff_t* buffs_unholy_presence;
 
   // Cooldowns
@@ -4744,12 +4745,13 @@ void death_knight_t::init_buffs()
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_killing_machine     = new buff_t( this, "killing_machine",                                    1,  30.0,  0.0, 0.0 ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost",                                    1,  20.0 );
-  buffs_rime                = new buff_t( this, "rime",                                               1,  30.0,  0.0, talents.rime -> proc_chance() );
+  buffs_rime                = new buff_t( this, "rime", ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 2 : 1, 30.0, 0.0, talents.rime -> proc_chance() );
   buffs_runic_corruption    = new buff_t( this, "runic_corruption",                                   1,   3.0,  0.0, talents.runic_corruption -> effect1().percent() );
   buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  20.0,  0.0, talents.scent_of_blood -> proc_chance() );
   buffs_shadow_infusion     = new buff_t( this, "shadow_infusion",                                    5,  30.0,  0.0, talents.shadow_infusion -> proc_chance() );
-  buffs_sudden_doom         = new buff_t( this, "sudden_doom",                                        1,  10.0,  0.0, 1.0 );
+  buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 2 : 1, 10.0, 0.0, 1.0 );
   buffs_tier11_4pc_melee    = new buff_t( this, "tier11_4pc_melee",                                   3,  30.0,  0.0, set_bonus.tier11_4pc_melee() );
+  buffs_tier13_4pc_melee    = new stat_buff_t( this, "tier13_4pc_melee", STAT_MASTERY_RATING, 710, 1, 12.0 );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
 
   struct bloodworms_buff_t : public buff_t
@@ -5133,6 +5135,10 @@ void death_knight_t::trigger_runic_empowerment()
     {
       buffs_runic_corruption -> trigger();
     }
+
+    if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
+      buffs_tier13_4pc_melee -> trigger( 1, 1, 0.40 );
+
     return;
   }
 
@@ -5162,6 +5168,9 @@ void death_knight_t::trigger_runic_empowerment()
     proc_runic_empowerment_wasted -> occur();
     gains_runic_empowerment -> add ( 0,1 );
   }
+
+  if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
+    buffs_tier13_4pc_melee -> trigger( 1, 1, 0.25 );
 }
 
 // player_t implementations =================================================
