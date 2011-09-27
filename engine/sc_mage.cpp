@@ -1509,7 +1509,7 @@ struct arcane_explosion_t : public mage_spell_t
 
 struct arcane_missiles_tick_t : public mage_spell_t
 {
-  arcane_missiles_tick_t( mage_t* p ) :
+  arcane_missiles_tick_t( mage_t* p, bool dtr=false ) :
     mage_spell_t( "arcane_missiles_tick", 7268, p )
   {
     dual        = true;
@@ -1518,6 +1518,12 @@ struct arcane_missiles_tick_t : public mage_spell_t
     base_crit  += p -> glyphs.arcane_missiles -> effect1().percent();
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     stats = player -> get_stats( "arcane_missiles", this );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new arcane_missiles_tick_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 };
 
@@ -2024,12 +2030,18 @@ struct flame_orb_explosion_t : public mage_spell_t
 
 struct flame_orb_tick_t : public mage_spell_t
 {
-  flame_orb_tick_t( mage_t* p ) :
+  flame_orb_tick_t( mage_t* p, bool dtr=false ) :
     mage_spell_t( "flame_orb_tick", 82739, p )
   {
     background = true;
     direct_tick = true;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect2().percent();
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new flame_orb_tick_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -2404,12 +2416,18 @@ struct frostfire_orb_explosion_t : public mage_spell_t
 
 struct frostfire_orb_tick_t : public mage_spell_t
 {
-  frostfire_orb_tick_t( mage_t* p ) :
+  frostfire_orb_tick_t( mage_t* p, bool dtr=false ) :
     mage_spell_t( "frostfire_orb_tick", 84721, p )
   {
     background = true;
     direct_tick = true;
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new frostfire_orb_tick_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -2549,13 +2567,19 @@ struct icy_veins_t : public mage_spell_t
 
 struct living_bomb_explosion_t : public mage_spell_t
 {
-  living_bomb_explosion_t( mage_t* p ) :
+  living_bomb_explosion_t( mage_t* p, bool dtr=false ) :
     mage_spell_t( "living_bomb_explosion", 44461, p )
   {
     aoe = -1;
     background = true;
     base_multiplier *= 1.0 + ( p -> glyphs.living_bomb    -> effect1().percent() +
                                p -> talents.critical_mass -> effect2().percent() );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new living_bomb_explosion_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 };
 
