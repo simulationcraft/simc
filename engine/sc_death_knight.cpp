@@ -3197,7 +3197,7 @@ struct icy_touch_t : public death_knight_spell_t
       trigger_ebon_plaguebringer( this );
     }
 
-    p -> buffs_rime -> expire();
+    p -> buffs_rime -> decrement();
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -5139,7 +5139,7 @@ void death_knight_t::trigger_runic_empowerment()
     }
 
     if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
-      buffs_tier13_4pc_melee -> trigger( 1, 1, 0.40 );
+      buffs_tier13_4pc_melee -> trigger( 1, 0, 0.40 );
 
     return;
   }
@@ -5163,6 +5163,9 @@ void death_knight_t::trigger_runic_empowerment()
     gains_runic_empowerment -> add ( 1,0 );
     if ( sim -> log ) log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
     proc_runic_empowerment -> occur();
+
+    if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
+      buffs_tier13_4pc_melee -> trigger( 1, 0, 0.25 );
   }
   else
   {
@@ -5171,8 +5174,6 @@ void death_knight_t::trigger_runic_empowerment()
     gains_runic_empowerment -> add ( 0,1 );
   }
 
-  if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
-    buffs_tier13_4pc_melee -> trigger( 1, 1, 0.25 );
 }
 
 // player_t implementations =================================================
