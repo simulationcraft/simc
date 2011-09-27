@@ -1586,7 +1586,7 @@ struct ravage_t : public druid_cat_attack_t
 
     druid_cat_attack_t::execute();
 
-    p -> buffs_stampede_cat -> expire();
+    p -> buffs_stampede_cat -> decrement();
     requires_stealth = true;
 
     if ( result_is_hit() )

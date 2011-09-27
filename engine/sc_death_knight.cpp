@@ -3113,7 +3113,7 @@ struct howling_blast_t : public death_knight_spell_t
         p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC ), p -> gains_chill_of_the_grave );
       }
     }
-    p -> buffs_rime -> expire();
+    p -> buffs_rime -> decrement();
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
