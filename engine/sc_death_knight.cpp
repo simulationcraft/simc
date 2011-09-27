@@ -2159,7 +2159,7 @@ struct melee_t : public death_knight_attack_t
     {
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
-        int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.4 ) ) ? 2 : 1;
+        int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.3 ) ) ? 2 : 1;
         p -> buffs_sudden_doom -> trigger( stacks, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
       }
 
