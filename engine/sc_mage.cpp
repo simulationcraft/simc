@@ -48,13 +48,10 @@ struct mage_t : public player_t
   buff_t* buffs_tier13_2pc;
 
   // Cooldowns
-  cooldown_t* cooldowns_arcane_power;
-  cooldown_t* cooldowns_combustion;
   cooldown_t* cooldowns_deep_freeze;
   cooldown_t* cooldowns_early_frost;
   cooldown_t* cooldowns_evocation;
   cooldown_t* cooldowns_fire_blast;
-  cooldown_t* cooldowns_icy_veins;
   cooldown_t* cooldowns_mana_gem;
   cooldown_t* cooldowns_tier12_mirror_image;
 
@@ -272,14 +269,11 @@ struct mage_t : public player_t
     dots_pyroblast      = get_dot( "pyroblast"      );
 
     // Cooldowns
-    cooldowns_arcane_power = get_cooldown( "arcane_power" );
-    cooldowns_combustion   = get_cooldown( "combustion"   );
-    cooldowns_deep_freeze  = get_cooldown( "deep_freeze"  );
-    cooldowns_early_frost  = get_cooldown( "early_frost"  );
-    cooldowns_evocation    = get_cooldown( "evocation"    );
-    cooldowns_fire_blast   = get_cooldown( "fire_blast"   );
-    cooldowns_icy_veins    = get_cooldown( "icy_veins"    );
-    cooldowns_mana_gem     = get_cooldown( "mana_gem"     );
+    cooldowns_deep_freeze  = get_cooldown( "deep_freeze" );
+    cooldowns_early_frost  = get_cooldown( "early_frost" );
+    cooldowns_evocation    = get_cooldown( "evocation"   );
+    cooldowns_fire_blast   = get_cooldown( "fire_blast"  );
+    cooldowns_mana_gem     = get_cooldown( "mana_gem"    );
     cooldowns_tier12_mirror_image = get_cooldown( "tier12_mirror_image" );
     cooldowns_tier12_mirror_image -> duration = 45.0;
 
@@ -1176,17 +1170,7 @@ void mage_spell_t::execute()
     p -> buffs_arcane_missiles -> trigger();
   }
 
-  // PTR - Needs testing
-  if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
-  {
-    if ( p -> buffs_tier13_2pc -> trigger() && p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-    {
-      // Assuming this is done with each trigger, even if you're already stacked to 10
-      p -> cooldowns_arcane_power -> ready -= 3.0;
-      p -> cooldowns_combustion   -> ready -= 4.0;
-      p -> cooldowns_icy_veins    -> ready -= 6.0;
-    }
-  }
+  p -> buffs_tier13_2pc -> trigger();
 }
 
 // mage_spell_t::execute_time ===============================================
@@ -1589,8 +1573,8 @@ struct arcane_missiles_t : public mage_spell_t
 
 struct arcane_power_buff_t : public buff_t
 {
-  arcane_power_buff_t( player_t* p ) :
-    buff_t( p, p -> cast_mage() -> spells.arcane_power, NULL )
+  arcane_power_buff_t( mage_t* p ) :
+    buff_t( p, p -> spells.arcane_power, NULL )
   {
     cooldown -> duration = 0; // CD is managed by the spell
   }
@@ -1607,19 +1591,25 @@ struct arcane_power_buff_t : public buff_t
 
 struct arcane_power_t : public mage_spell_t
 {
+  double orig_duration;
+
   arcane_power_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_power", 12042, p )
+    mage_spell_t( "arcane_power", 12042, p ), orig_duration( 0 )
   {
     check_talent( p -> talents.arcane_power -> rank() );
     parse_options( NULL, options_str );
     harmful = false;
-    cooldown = p -> cooldowns_arcane_power;
     cooldown -> duration *= 1.0 + p -> talents.arcane_flows -> effect1().percent();
+    orig_duration = cooldown -> duration;
   }
 
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
+
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 3.0;
+
     mage_spell_t::execute();
     p -> buffs_arcane_power -> trigger( 1, effect1().percent() );
   }
@@ -1712,8 +1702,10 @@ struct cold_snap_t : public mage_spell_t
 
 struct combustion_t : public mage_spell_t
 {
+  double orig_duration;
+
   combustion_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "combustion", 11129, p )
+    mage_spell_t( "combustion", 11129, p ), orig_duration( 0 )
   {
     check_talent( p -> talents.combustion -> rank() );
     parse_options( NULL, options_str );
@@ -1721,7 +1713,8 @@ struct combustion_t : public mage_spell_t
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     num_ticks      = 10;
     base_tick_time = 1.0;
-    cooldown = p -> cooldowns_combustion;
+
+    orig_duration = cooldown -> duration;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1748,6 +1741,10 @@ struct combustion_t : public mage_spell_t
     base_td += ignite_dmg;
     base_td += calculate_dot_dps( p -> dots_living_bomb    ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
     base_td += calculate_dot_dps( p -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
+
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 4.0;
+
     mage_spell_t::execute();
   }
 
@@ -2507,8 +2504,8 @@ struct ice_lance_t : public mage_spell_t
 
 struct icy_veins_buff_t : public buff_t
 {
-  icy_veins_buff_t( player_t* p ) :
-    buff_t( p, p -> cast_mage() -> spells.icy_veins, NULL )
+  icy_veins_buff_t( mage_t* p ) :
+    buff_t( p, p -> spells.icy_veins, NULL )
   {
     cooldown -> duration = 0; // CD is managed by the spell
   }
@@ -2525,19 +2522,23 @@ struct icy_veins_buff_t : public buff_t
 
 struct icy_veins_t : public mage_spell_t
 {
+  double orig_duration;
+
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "icy_veins", 12472, p )
+    mage_spell_t( "icy_veins", 12472, p ), orig_duration( 0 )
   {
     check_talent( p -> talents.icy_veins -> rank() );
     parse_options( NULL, options_str );
-    cooldown = p -> cooldowns_icy_veins;
     cooldown -> duration *= 1.0 + p -> talents.ice_floes -> effect1().percent();
+    orig_duration = cooldown -> duration;
   }
 
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 6.0;
     consume_resource();
     update_ready();
     p -> buffs_icy_veins -> trigger();
@@ -2653,8 +2654,8 @@ struct mage_armor_buff_t : public buff_t
     }
   };
 
-  mage_armor_buff_t( player_t* p ) :
-    buff_t ( p, p -> cast_mage() -> spells.mage_armor, NULL )
+  mage_armor_buff_t( mage_t* p ) :
+    buff_t( p, p -> spells.mage_armor, NULL )
   {}
 
   virtual void start( int stacks, double value )
