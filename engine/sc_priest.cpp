@@ -52,7 +52,6 @@ struct priest_t : public player_t
   buff_t* buffs_tier13_2pc_heal;
 
   // Talents
-
   struct talents_list_t
   {
     // Discipline
@@ -116,7 +115,7 @@ struct priest_t : public player_t
   };
   talents_list_t talents;
 
-
+  // Passive Spells
   struct passive_spells_t
   {
     // Discipline
@@ -134,7 +133,7 @@ struct priest_t : public player_t
   };
   passive_spells_t passive_spells;
 
-
+  // Mastery Spells
   struct mastery_spells_t
   {
     mastery_t* shield_discipline;
@@ -143,7 +142,7 @@ struct priest_t : public player_t
   };
   mastery_spells_t mastery_spells;
 
-
+  // Active Spells
   struct active_spells_t
   {
     active_spell_t* mind_spike;
@@ -2090,7 +2089,7 @@ struct mind_flay_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( cut_for_mb )
-      if ( p -> get_cooldown( "mind_blast" ) -> remains() <= ( 2 * base_tick_time * haste() ) )
+      if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
         num_ticks = 2;
 
     priest_spell_t::execute();
@@ -2204,7 +2203,7 @@ struct mind_flay_t_2 : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( cut_for_mb )
-      if ( p -> get_cooldown( "mind_blast" ) -> remains() <= ( 2 * base_tick_time * haste() ) )
+      if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
         num_ticks = 2;
 
     priest_spell_t::execute();
@@ -4074,7 +4073,7 @@ struct penance_heal_t : public priest_heal_t
     base_tick_time = 1.0;
     hasted_ticks   = false;
 
-    cooldown = player -> get_cooldown( "penance" );
+    cooldown = p -> cooldowns_penance;
     cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().seconds();
 
     penance_tick = new penance_heal_tick_t( p );
