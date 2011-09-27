@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_Arms_T12H
-origin="http://chardev.org/?profile=238565"
+origin="http://chardev.org/?profile=238580"
 level=85
 race=worgen
 position=back
@@ -38,15 +38,15 @@ actions+=/slam,if=(cooldown.mortal_strike.remains>=1.5&(rage>=35|buff.deadly_cal
 actions+=/battle_shout,if=rage<20
 head=greathelm_of_the_voracious_maw,heroic=1,type=plate,ilevel=391,quality=epic,stats=3057armor_400str_689sta_320mastery_224crit,gems=reverberating_shadowspirit_20str_20hit_30str,enchant=60str_35mastery
 neck=necklace_of_fetishes,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_188crit_142hit
-shoulders=pauldrons_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=2822armor_322str_513sta_223crit_210haste,reforge=haste_mastery,gems=67str,enchant=50str_25crit
+shoulders=pauldrons_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=2822armor_322str_513sta_223crit_210haste,reforge=haste_hit,gems=67str,enchant=50str_25crit
 chest=battleplate_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3762armor_420str_689sta_297crit_263hit,gems=20str_20crit_20str_20crit_20str,enchant=20all
 waist=uncrushable_belt_of_fury,heroic=1,type=plate,ilevel=391,quality=epic,stats=2116armor_240str_513sta_342mastery_153exp,reforge=mastery_crit,gems=40str_67str
 legs=legplates_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=3292armor_420str_689sta_316exp_251crit,reforge=exp_mastery,gems=67str_40str_20str,enchant=55crit_190ap
-feet=warboots_of_mighty_lords,type=plate,ilevel=378,quality=epic,stats=2490armor_282str_454sta_197crit_187hit,gems=40str_10str,enchant=35mastery
+feet=arachnaflame_treads,heroic=1,type=plate,ilevel=391,quality=epic,stats=2586armor_322str_513sta_228crit_208haste,reforge=haste_hit,gems=40str_10str
 wrists=earthcrack_bracers,heroic=1,type=plate,ilevel=391,quality=epic,stats=1646armor_256str_384sta_158haste_178crit,reforge=haste_exp,gems=40str,enchant=50str
-hands=gauntlets_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=2351armor_322str_513sta_209hit_227mastery,reforge=hit_exp,gems=40str_40str,enchant=50str
-finger1=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,gems=40str_10str
-finger2=alysrazors_band,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_171exp_124haste,reforge=exp_crit,gems=40str_10str
+hands=gauntlets_of_the_molten_giant,heroic=1,type=plate,ilevel=391,quality=epic,stats=2351armor_322str_513sta_209hit_227mastery,reforge=mastery_crit,gems=40str_40str,enchant=50str
+finger1=obsidian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236str_384sta_195crit_110hit,reforge=hit_mastery,gems=40str_10str
+finger2=alysrazors_band,heroic=1,ilevel=391,quality=epic,stats=256str_384sta_171exp_124haste,reforge=haste_crit,gems=40str_10str
 trinket1=apparatus_of_khazgoroth,heroic=1,ilevel=391,quality=epic,stats=433str
 trinket2=vessel_of_acceleration,heroic=1,ilevel=397,quality=epic,stats=458str,equip=onattackcrit_93crit_5stack_20dur
 back=bladed_flamewrath_cover,ilevel=378,quality=epic,stats=695armor_227str_341sta_173haste_115exp,reforge=haste_crit,enchant=65crit
@@ -54,18 +54,18 @@ main_hand=sulfuras_the_extinguished_hand,heroic=1,ilevel=397,quality=epic,stats=
 ranged=giantslicer,heroic=1,ilevel=391,quality=epic,stats=145str_217sta_92exp_99hit,weapon=thrown_2.10speed_1410min_2116max
 tabard=renowned_guild_tabard,ilevel=1,quality=epic
 # Gear Summary
-# gear_strength=6184
+# gear_strength=6224
 # gear_agility=20
-# gear_stamina=6904
+# gear_stamina=6963
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=799
-# gear_hit_rating=947
-# gear_crit_rating=2544
-# gear_haste_rating=449
-# gear_mastery_rating=1295
-# gear_armor=22231
+# gear_expertise_rating=784
+# gear_hit_rating=966
+# gear_crit_rating=2646
+# gear_haste_rating=525
+# gear_mastery_rating=1130
+# gear_armor=22327
 # meta_gem=reverberating_shadowspirit
 # tier12_2pc_melee=1
 # tier12_4pc_melee=1
