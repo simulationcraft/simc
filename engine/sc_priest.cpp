@@ -5005,7 +5005,7 @@ void priest_t::init_buffs()
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
-  buffs_tier13_2pc_heal            = new buff_t( this, "tier13_2pc_heal", 1, ( primary_tree() == TREE_DISCIPLINE ) ? 10.0 : 15.0, dbc.ptr ? set_bonus.tier13_2pc_heal() : 0.0 );
+  buffs_tier13_2pc_heal            = new buff_t( this, "tier13_2pc_heal", 1, 0, ( primary_tree() == TREE_DISCIPLINE ) ? 10.0 : 15.0, dbc.ptr ? set_bonus.tier13_2pc_heal() : 0.0 );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {

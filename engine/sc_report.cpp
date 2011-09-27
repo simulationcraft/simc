@@ -2241,7 +2241,7 @@ static void print_html_action_resource( FILE* file, stats_t* s, int j )
                    "\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
                    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
                    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-                   "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+                   "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    s -> name_str.c_str(),
                    util_t::resource_type_string( s -> resource ),
