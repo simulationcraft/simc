@@ -130,6 +130,7 @@ struct rogue_t : public player_t
   buff_t* buffs_shiv;
   buff_t* buffs_stealthed;
   buff_t* buffs_tier11_4pc;
+  buff_t* buffs_tier13_2pc;
   buff_t* buffs_vanish;
 
   new_buff_t* buffs_adrenaline_rush;
@@ -823,6 +824,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
     }
 
     p -> tricks_of_the_trade_target = 0;
+    p -> buffs_tier13_2pc -> trigger();
   }
 }
 
@@ -1130,8 +1132,13 @@ double rogue_attack_t::cost() SC_CONST
 {
   double c = attack_t::cost();
 
+  rogue_t* p = player -> cast_rogue();
+ 
   if ( c <= 0 )
     return 0;
+
+  if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && p -> buffs_tier13_2pc -> up() )
+    c *= 0.8;
 
   return c;
 }
@@ -2610,6 +2617,8 @@ struct shadow_dance_t : public rogue_attack_t
     add_trigger_buff( p -> buffs_shadow_dance );
 
     p -> buffs_shadow_dance -> buff_duration += p -> glyphs.shadow_dance -> mod_additive( P_DURATION );
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
+      p -> buffs_shadow_dance -> buff_duration += 2.0;
 
     parse_options( options_str );
   }
@@ -2676,6 +2685,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     }
 
     trigger_tier12_4pc_melee( this );
+    p -> buffs_tier13_2pc -> trigger();
   }
 
   virtual bool ready()
@@ -3110,6 +3120,8 @@ struct adrenaline_rush_buff_t : public new_buff_t
     // and because of restless blades have to remove it here
     cooldown -> duration = 0;
     buff_duration += p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION );
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
+      buff_duration += 3.0;
   }
 
   virtual bool trigger( int, double, double )
@@ -3253,6 +3265,8 @@ struct vendetta_buff_t : public new_buff_t
     new_buff_t( p, "vendetta", id )
   {
     buff_duration *= 1.0 + p -> glyphs.vendetta -> mod_additive( P_DURATION );
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
+      buff_duration += 9.0;
   }
 
   virtual bool trigger( int, double, double )
@@ -3382,7 +3396,7 @@ void rogue_t::init_actions()
       action_list_str += init_use_racial_actions();
 
       /* Putting this here for now but there is likely a better place to put it */
-      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
+      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee|set_bonus.tier13_2pc_melee";
 
       action_list_str += "/garrote";
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
@@ -3417,7 +3431,7 @@ void rogue_t::init_actions()
       action_list_str += init_use_racial_actions();
 
       /* Putting this here for now but there is likely a better place to put it */
-      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
+      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee|set_bonus.tier13_2pc_melee";
 
       // TODO: Add Blade Flurry
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
@@ -3437,7 +3451,7 @@ void rogue_t::init_actions()
     else if ( primary_tree() == TREE_SUBTLETY )
     {
       /* Putting this here for now but there is likely a better place to put it */
-      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee";
+      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee|set_bonus.tier13_2pc_melee";
 
       if ( talents.shadow_dance -> rank() )
       {
@@ -3837,6 +3851,7 @@ void rogue_t::init_buffs()
   buffs_shiv               = new buff_t( this, "shiv",          1  );
   buffs_stealthed          = new buff_t( this, "stealthed",     1  );
   buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
+  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1,  6.0, 0.0, ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
   buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
 
   buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );
