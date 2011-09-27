@@ -1338,7 +1338,8 @@ struct feral_charge_cat_t : public druid_cat_attack_t
 
     druid_cat_attack_t::execute();
 
-    p -> buffs_stampede_cat -> trigger( 1, stampede_cost_reduction );
+    int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() ) ? 2 : 1;
+    p -> buffs_stampede_cat -> trigger( stacks, stampede_cost_reduction );
   }
 
   virtual bool ready()
@@ -1410,7 +1411,8 @@ struct ferocious_bite_t : public druid_cat_attack_t
       }
     }
 
-    if ( result_is_hit() && target -> health_percentage() <= p -> talents.blood_in_the_water -> base_value() )
+    double health_percentage = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() ) ? 60.0 : p -> talents.blood_in_the_water -> base_value();
+    if ( result_is_hit() && target -> health_percentage() <= health_percentage )
     {
       // Proc chance is not stored in the talent anymore
       if ( p -> dots_rip -> ticking && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> rank() * 0.50 ) )
@@ -4680,7 +4682,7 @@ void druid_t::init_buffs()
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().seconds() );
   buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell( 1 ).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
   buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
-  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
+  buffs_stampede_cat       = new buff_t( this, "stampede_cat", ( dbc.ptr && set_bonus.tier13_4pc_melee() ) ? 2 : 1, 10.0, 0, talents.stampede -> ok() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
   buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 1.0, true );
@@ -4873,6 +4875,7 @@ void druid_t::init_actions()
       }
       else
       {
+        std::string bitw_hp = ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? "60" : "25";
         if ( level > 80 )
         {
           action_list_str += "flask,type=winds";
@@ -4923,12 +4926,14 @@ void druid_t::init_actions()
 
         if ( talents.blood_in_the_water -> rank() )
         {
-          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=1&dot.rip.ticking&dot.rip.remains<=1&target.health_pct<=25";
-          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.ticking&target.health_pct<=25";
+          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=1&dot.rip.ticking&dot.rip.remains<=1&target.health_pct<=" + bitw_hp;
+          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.ticking&target.health_pct<=" + bitw_hp;
         }
         action_list_str += use_str;
         action_list_str += init_use_profession_actions();
-        action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&target.health_pct>25";
+        action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        if ( talents.blood_in_the_water -> rank() )
+          action_list_str += "&target.health_pct>" + bitw_hp;
         action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
         action_list_str += "/rake,if=target.time_to_die>=8.5&buff.tigers_fury.up&dot.rake.remains<9.0&(!dot.rake.ticking|dot.rake.multiplier<multiplier)";
