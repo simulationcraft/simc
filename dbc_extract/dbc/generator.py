@@ -344,6 +344,9 @@ class ItemDataGenerator(DataGenerator):
         # found in Item-sparse.db2/Item.db2 client files
         if self._options.item_cache_dir != '': 
             for i in [ 'Item-sparse.adb', 'Item.adb' ]:
+                if not os.access(os.path.abspath(os.path.join(self._options.item_cache_dir, i)), os.R_OK):
+                    continue
+                
                 dbcname = i[0:i.find('.')].replace('-', '_').lower()
                 setattr(self, '_%s_cache' % dbcname, 
                     parser.DBCParser(self._options, os.path.abspath(os.path.join(self._options.item_cache_dir, i))))
@@ -887,6 +890,9 @@ class SpellDataGenerator(DataGenerator):
         # found in Item-sparse.db2 client file
         if self._options.item_cache_dir != '': 
             for i in [ 'Item-sparse.adb' ]:
+                if not os.access(os.path.abspath(os.path.join(self._options.item_cache_dir, i)), os.R_OK ):
+                    continue
+
                 dbcname = i[0:i.find('.')].replace('-', '_').lower()
                 setattr(self, '_%s_cache' % dbcname, 
                         parser.DBCParser(self._options, os.path.abspath(os.path.join(self._options.item_cache_dir, i))))

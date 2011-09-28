@@ -43,6 +43,16 @@ _DIFF_DATA = {
             ( 'unk_14040', _ADD_FIELD, 'index' ),
         ],
     },
+    14732: {
+        'SpellPower.dbc' : [
+            ( ( 'unk_14732', '%f' ), _ADD_FIELD, 'unk_12759' ),
+        ],
+        'Item-sparse.db2' : [
+            ( ( 'unk_14732_2', '%f' ), _ADD_FIELD, 'flags_2'   ),
+            ( ( 'unk_14732', '%f' ), _ADD_FIELD, 'flags_2'   ),
+            ( 'max_durability', _REMOVE_FIELD ) # Figure out what actually got removed
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for 12604, as that's our first DBC/DB2 data version
@@ -285,7 +295,7 @@ _DBC_FIELDS = {
           'id', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'
     ],
     'SpellPower.dbc' : [
-          'id', ( 'cost', '%6u' ), 'cost_pl', ( 'cost_perc', '%3u' ), 'per_second',
+          'id', ( 'cost', '%6d' ), 'cost_pl', ( 'cost_perc', '%3d' ), 'per_second',
           'id_display'
     ],
     'SpellRadius.dbc' : [

@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (64)
 #define PTR_CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 14545
+// Class based active abilities, wow build 14732
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -860,7 +860,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 14545
+// Talent tree specialization abilities, wow build 14732
 static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1118,7 +1118,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_TALENT_TABS][PTR_TREE_SPECI
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 14545
+// Class mastery abilities, wow build 14732
 static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1203,7 +1203,7 @@ static unsigned __ptr_class_mastery_ability_data[][PTR_CLASS_MASTERY_ABILITY_SIZ
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 14545
+// Racial abilities, wow build 14732
 static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1836,7 +1836,7 @@ static unsigned __ptr_race_ability_data[][CLASS_SIZE][PTR_RACE_ABILITY_SIZE] = {
 
 #define PTR_GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 14545
+// Glyph spells for classes, wow build 14732
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2333,6 +2333,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
     // Prime Glyphs (16 spells)
     {
       62969, // Glyph of Berserk
+      54815, // Glyph of Bloodletting
       54830, // Glyph of Insect Swarm
       94382, // Glyph of Lacerate
       54826, // Glyph of Lifebloom
@@ -2342,7 +2343,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       54754, // Glyph of Rejuvenation
       54818, // Glyph of Rip
       63055, // Glyph of Savage Roar
-      54815, // Glyph of Shred
       54845, // Glyph of Starfire
       62971, // Glyph of Starsurge
       54824, // Glyph of Swiftmend
@@ -2358,7 +2358,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (11)
 
-// Tier item set bonuses for class, wow build 14545
+// Tier item set bonuses for class, wow build 14732
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
