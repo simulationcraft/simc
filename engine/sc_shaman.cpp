@@ -375,7 +375,6 @@ struct shaman_spell_t : public spell_t
   virtual void   execute();
   virtual void   player_buff();
   virtual double haste() SC_CONST;
-  virtual void   schedule_execute();
   virtual bool   usable_moving()
   {
     shaman_t* p = player -> cast_shaman();
