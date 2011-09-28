@@ -4907,8 +4907,14 @@ void priest_t::init_talents()
   talents.chakra                      = find_talent( "Chakra" );
   talents.revelations                 = find_talent( "Revelations" );
   talents.test_of_faith               = find_talent( "Test of Faith" );
-  talents.state_of_mind               = find_talent( "State of Mind" );
-  talents.heavenly_voice              = find_talent( "Heavenly Voice" );
+  if ( dbc.ptr )
+  {
+    talents.heavenly_voice              = find_talent( "Heavenly Voice" );
+  }
+  else
+  {
+    talents.state_of_mind               = find_talent( "State of Mind" );
+  }
   talents.circle_of_healing           = find_talent( "Circle of Healing" );
 
   // Shadow
