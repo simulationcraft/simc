@@ -1242,11 +1242,7 @@ struct lava_burst_overload_t : public shaman_spell_t
     // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use
     // a _DIFFERENT_ effect in shamanism, that has 75% of the shamanism
     // "real" effect
-    if ( p -> spec_shamanism -> ok() )
-    {
-//      direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
-      direct_power_mod  += 0.32 * 0.75; // HOTFIX 26 Jul 11
-    }
+    direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
@@ -1280,11 +1276,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use
     // a _DIFFERENT_ effect in shamanism, that has 75% of the shamanism
     // "real" effect
-    if ( p -> spec_shamanism -> ok() )
-    {
-//      direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
-      direct_power_mod  += 0.32 * 0.75; // HOTFIX 26 Jul 11
-    }
+    direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
 
     // Elemental fury
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
@@ -1318,11 +1310,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use
     // a _DIFFERENT_ effect in shamanism, that has 75% of the shamanism
     // "real" effect
-    if ( p -> spec_shamanism -> ok() )
-    {
-//      direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
-      direct_power_mod  += 0.32 * 0.75; // HOTFIX 26 Jul 11
-    }
+    direct_power_mod  += p -> spec_shamanism -> effect_base_value( 2 ) / 100.0;
 
     // Elemental fury
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
@@ -1793,7 +1781,7 @@ struct lava_lash_t : public shaman_attack_t
     flametongue_bonus   = base_value( E_DUMMY ) / 100.0;
 
     // Searing flames bonus to base weapon damage
-    sf_bonus            = p -> talent_improved_lava_lash -> base_value( E_APPLY_AURA, A_DUMMY ) / 100.0+
+    sf_bonus            = p -> talent_improved_lava_lash -> base_value( E_APPLY_AURA, A_DUMMY ) / 100.0 +
                           p -> sets -> set( SET_T12_2PC_MELEE ) -> base_value() / 100.0;
   }
 
@@ -1826,7 +1814,7 @@ struct lava_lash_t : public shaman_attack_t
 
     // Second group, Improved Lava Lash + Glyph of Lava Lash + T11 2Piece bonus
     player_multiplier *= 1.0 + p -> glyph_lava_lash -> mod_additive( P_GENERIC ) +
-                               p -> talent_improved_lava_lash -> mod_additive( P_GENERIC ) +
+                               ( ( ! p -> dbc.ptr ) ? p -> talent_improved_lava_lash -> mod_additive( P_GENERIC ) : 0 ) +
                                p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
   }
 
@@ -2105,31 +2093,6 @@ void shaman_spell_t::execute()
   }
 }
 
-// shaman_spell_t::execute ==================================================
-
-void shaman_spell_t::schedule_execute()
-{
-  if ( sim -> log )
-  {
-    log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
-  }
-
-  time_to_execute = execute_time();
-
-  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
-
-  if ( ! background )
-  {
-    player -> executing = this;
-    player -> gcd_ready = sim -> current_time + gcd();
-    if( player -> action_queued && sim -> strict_gcd_queue )
-    {
-      player -> gcd_ready -= sim -> queue_gcd_reduction;
-    }
-  }
-}
-
-
 // ==========================================================================
 // Shaman Spells
 // ==========================================================================
@@ -2183,13 +2146,10 @@ struct chain_lightning_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
 
     maelstrom          = true;
-    if ( p -> spec_shamanism -> ok() )
-    {
-//      direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
-      direct_power_mod += 0.32; // HOTFIX 26 Jul 11
-    }
+    direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
     base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
+    cooldown -> duration += p -> spec_elemental_fury -> mod_additive( P_COOLDOWN );
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
@@ -2373,11 +2333,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
 
     // Shamanism
-    if ( p -> spec_shamanism -> ok() )
-    {
-//      direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
-      direct_power_mod += 0.32; // HOTFIX 26 Jul 11
-    }
+    direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
     base_execute_time   += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
     base_cost_reduction += p -> talent_convection -> mod_additive( P_RESOURCE_COST );
     m_additive          +=
@@ -2463,11 +2419,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     maelstrom          = true;
     // Shamanism
-    if ( p -> spec_shamanism -> ok() )
-    {
-//      direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
-      direct_power_mod += 0.32; // HOTFIX 26 Jul 11
-    }
+    direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
     base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
     // Elemental fury
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
@@ -3524,6 +3476,7 @@ struct flametongue_weapon_t : public shaman_spell_t
 
     // Spell damage scaling is defined in "Flametongue Weapon (Passive), id 10400"
     bonus_power  = p -> dbc.effect_average( p -> dbc.spell( 10400 ) -> effect2().id(), p -> level );
+    if ( p -> dbc.ptr ) bonus_power /= 100.0;
     bonus_power *= 1.0 + p -> talent_elemental_weapons -> effect1().percent();
     harmful      = false;
     may_miss     = false;
@@ -4525,16 +4478,30 @@ double shaman_t::composite_attack_crit() SC_CONST
 
 double shaman_t::composite_spell_power( const school_type school ) SC_CONST
 {
-  double sp = player_t::composite_spell_power( school );
+  double sp = 0;
+  
+  if ( ! dbc.ptr )
+  {
+    sp = player_t::composite_spell_power( school );
 
-  if ( primary_tree() == TREE_ENHANCEMENT )
-    sp += composite_attack_power_multiplier() * composite_attack_power() * spec_mental_quickness -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER );
+    if ( primary_tree() == TREE_ENHANCEMENT )
+      sp += composite_attack_power_multiplier() * composite_attack_power() * spec_mental_quickness -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER );
 
-  if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    sp += main_hand_weapon.buff_value;
+    if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+      sp += main_hand_weapon.buff_value;
 
-  if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    sp += off_hand_weapon.buff_value;
+    if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+      sp += off_hand_weapon.buff_value;
+  }
+  else
+  {
+    if ( primary_tree() == TREE_ENHANCEMENT )
+      sp = composite_attack_power_multiplier() * composite_attack_power() * spec_mental_quickness -> base_value( E_APPLY_AURA, A_366 ) / 100.0;
+    else
+    {
+      sp = player_t::composite_spell_power( school );
+    }
+  }
 
   return sp;
 }
@@ -4547,7 +4514,16 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
 
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     m *= 1.0 + composite_mastery() * mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
+    
+  if ( dbc.ptr )
+  {
+    if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+      m *= 1.0 + main_hand_weapon.buff_value;
 
+    if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+      m *= 1.0 + off_hand_weapon.buff_value;
+  }
+  
   return m;
 }
 
