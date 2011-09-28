@@ -1484,10 +1484,18 @@ struct maim_t : public druid_cat_attack_t
 
 struct mangle_cat_t : public druid_cat_attack_t
 {
+  int extend_rip;
+
   mangle_cat_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( "mangle_cat", 33876, p )
+    druid_cat_attack_t( "mangle_cat", 33876, p ),
+    extend_rip( 0 )
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "extend_rip", OPT_BOOL, &extend_rip },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
 
     adds_combo_points = 1; // Not picked up from the DBC
     base_multiplier  *= 1.0 + p -> glyphs.mangle -> mod_additive( P_GENERIC );
@@ -1501,6 +1509,16 @@ struct mangle_cat_t : public druid_cat_attack_t
       druid_t* p = player -> cast_druid();
       target -> debuffs.mangle -> trigger();
       target -> debuffs.mangle -> source = p;
+
+      if ( p -> glyphs.shred -> enabled() &&
+           p -> dots_rip -> ticking  &&
+           p -> dots_rip -> added_ticks < 4 )
+      {
+        // Glyph adds 1/1/2 ticks on execute
+        int extra_ticks = ( p -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
+        p -> dots_rip -> extend_duration( extra_ticks );
+      }
+
       trigger_infected_wounds( this );
       p -> buffs_t11_4pc_melee -> trigger();
     }
@@ -1510,6 +1528,19 @@ struct mangle_cat_t : public druid_cat_attack_t
   {
     druid_cat_attack_t::travel( t, travel_result, travel_dmg );
     trigger_tier12_2pc_melee( this, direct_dmg );
+  }
+
+  virtual bool ready()
+  {
+    druid_t* p = player -> cast_druid();
+
+    if ( extend_rip )
+      if ( ! p -> glyphs.shred -> enabled() ||
+           ! p -> dots_rip -> ticking ||
+           ( p -> dots_rip -> added_ticks == 4 ) )
+        return false;
+
+    return druid_cat_attack_t::ready();
   }
 };
 
@@ -4610,7 +4641,7 @@ void druid_t::init_spells()
   glyphs.rejuvenation     = find_glyph( "Glyph of Rejuvenation" );
   glyphs.rip              = find_glyph( "Glyph of Rip" );
   glyphs.savage_roar      = find_glyph( "Glyph of Savage Roar" );
-  glyphs.shred            = find_glyph( "Glyph of Shred" );
+  glyphs.shred            = dbc.ptr ? find_glyph( "Glyph of Bloodletting" ) : find_glyph( "Glyph of Shred" );
   glyphs.starfall         = find_glyph( "Glyph of Starfall" );
   glyphs.starfire         = find_glyph( "Glyph of Starfire" );
   glyphs.starsurge        = find_glyph( "Glyph of Starsurge" );

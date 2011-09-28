@@ -91,6 +91,7 @@ struct priest_t : public player_t
     talent_t* revelations;
     talent_t* test_of_faith;
     talent_t* state_of_mind;
+    talent_t* heavenly_voice;
     talent_t* circle_of_healing;
 
     // Shadow
@@ -2314,7 +2315,7 @@ struct mind_spike_t : public priest_spell_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration  = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3101,7 +3102,7 @@ struct smite_t : public priest_spell_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
 
@@ -3246,7 +3247,7 @@ struct _heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3319,7 +3320,7 @@ struct flash_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3438,7 +3439,7 @@ struct binding_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3533,7 +3534,7 @@ struct greater_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3673,7 +3674,7 @@ struct prayer_of_healing_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3865,7 +3866,7 @@ struct prayer_of_mending_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += p -> talents.state_of_mind -> effect1().seconds();
+      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -4367,7 +4368,14 @@ struct divine_hymn_tick_t : public priest_heal_t
   divine_hymn_tick_t( player_t* player ) :
     priest_heal_t( "divine_hymn_tick", player, 64844 )
   {
+    priest_t* p = player -> cast_priest();
+
     background  = true;
+
+    if ( p -> dbc.ptr ) 
+    {
+      base_multiplier *= 1.0 + p -> talents.heavenly_voice -> effect1().percent();
+    }
   }
 
   virtual void execute()
@@ -4410,6 +4418,11 @@ struct divine_hymn_t : public priest_heal_t
 
     harmful = false;
     channeled = true;
+
+    if ( p -> dbc.ptr )
+    {
+      cooldown -> duration += p -> talents.heavenly_voice -> effect2().seconds();
+    }
 
     divine_hymn_tick = new divine_hymn_tick_t( p );
     add_child( divine_hymn_tick );
@@ -4895,6 +4908,7 @@ void priest_t::init_talents()
   talents.revelations                 = find_talent( "Revelations" );
   talents.test_of_faith               = find_talent( "Test of Faith" );
   talents.state_of_mind               = find_talent( "State of Mind" );
+  talents.heavenly_voice              = find_talent( "Heavenly Voice" );
   talents.circle_of_healing           = find_talent( "Circle of Healing" );
 
   // Shadow
