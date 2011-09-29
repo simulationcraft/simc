@@ -220,7 +220,7 @@ struct hunter_t : public player_t
     base_gcd = 1.0;
     flaming_arrow = NULL;
 
-    tier13_4pc_proc_chance = 1.0;
+    tier13_4pc_proc_chance = 0.40;
 
     create_talents();
     create_glyphs();
@@ -4045,13 +4045,13 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
       if ( ! glyphs.arcane_shot -> ok() )
-        action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.up|target.health_pct>90";
+        action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.react|target.health_pct>90";
       else
       {
-        action_list_str += "/aimed_shot,if=target.health_pct>90|buff.rapid_fire.up|buff.bloodlust.up";
+        action_list_str += "/aimed_shot,if=target.health_pct>90|buff.rapid_fire.up|buff.bloodlust.react";
         if ( race == RACE_TROLL )
           action_list_str += "|buff.berserking.up";
-        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.up";
+        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.react";
         if ( race == RACE_TROLL )
           action_list_str += "&!buff.berserking.up)";
         else
@@ -4071,7 +4071,7 @@ void hunter_t::init_actions()
       action_list_str += "/explosive_shot,if=(remains<tick_time+travel_time)&!in_flight";
       if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
       action_list_str += "/kill_shot";
-      action_list_str += "/arcane_shot,if=focus>=70&buff.lock_and_load.down";
+      action_list_str += "/arcane_shot,if=focus>=70&!buff.lock_and_load.react";
       if ( level >=81 )
         action_list_str += "/cobra_shot";
       else

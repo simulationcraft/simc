@@ -627,7 +627,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
   channel_lag( 0.250 ), channel_lag_stddev( 0 ),
   queue_gcd_reduction( 0.032 ), strict_gcd_queue( 0 ),
-  confidence( 0.95),
+  confidence( 0.95), confidence_estimator( 0.0 ),
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 0.25 ),
   current_time( 0 ), max_time( 450 ), expected_time( 0 ), vary_combat_length( 0.2 ),
@@ -1447,9 +1447,13 @@ void sim_t::analyze_player( player_t* p )
   if ( p -> dps_min >= 1.0E+50 ) p -> dps_min = 0.0;
   if ( p -> dps_max < 0.0      ) p -> dps_max = 0.0;
 
-  if ( iterations > 1 ) p -> dps_std_dev /= ( iterations - 1 );
+  if ( iterations > 1 )
+  {
+    p -> dps_std_dev /= ( iterations - 1 );
+  }
+
   p -> dps_std_dev = sqrt( p -> dps_std_dev );
-  p -> dps_error = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 ) * p -> dps_std_dev / sqrt( ( float ) iterations );
+  p -> dps_error = confidence_estimator * p -> dps_std_dev / sqrt( ( float ) iterations );
 
   // DTPS Error ==============================================================
 
@@ -1464,7 +1468,7 @@ void sim_t::analyze_player( player_t* p )
 
   if ( iterations > 1 ) p -> dtps_error /= ( iterations - 1 );
   p -> dtps_error = sqrt( p -> dtps_error );
-  p -> dtps_error = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 ) * p -> dtps_error / sqrt( ( float ) iterations );
+  p -> dtps_error = confidence_estimator * p -> dtps_error / sqrt( ( float ) iterations );
 
   // Error Convergence ======================================================
 
@@ -1493,7 +1497,7 @@ void sim_t::analyze_player( player_t* p )
 
     for ( int i=0; i < iterations; i++ )
     {
-      p -> dps_convergence_error.push_back( rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 ) * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
+      p -> dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
 
       double delta = p -> iteration_dps[ i ] - convergence_dps;
       double delta_squared = delta * delta;
@@ -1507,7 +1511,7 @@ void sim_t::analyze_player( player_t* p )
 
   if ( convergence_iterations > 1 ) convergence_std_dev /= convergence_iterations;
   convergence_std_dev = sqrt( convergence_std_dev );
-  double convergence_error = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 ) * convergence_std_dev;
+  double convergence_error = confidence_estimator * convergence_std_dev;
   if ( convergence_iterations > 1 ) convergence_error /= sqrt( ( float ) convergence_iterations );
 
   if ( convergence_error > 0 )
@@ -1617,6 +1621,8 @@ void sim_t::analyze()
   total_dmg = 0;
   total_heal = 0;
   total_seconds /= iterations;
+
+  confidence_estimator = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
   for ( unsigned int i = 0; i < actor_list.size(); i++ )
     analyze_player( actor_list[i] );

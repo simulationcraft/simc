@@ -2608,6 +2608,7 @@ struct sim_t : private thread_t
   double      queue_gcd_reduction;
   int         strict_gcd_queue;
   double      confidence;
+  double      confidence_estimator;
     // Latency
   double      world_lag, world_lag_stddev;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
