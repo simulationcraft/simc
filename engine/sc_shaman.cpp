@@ -4114,7 +4114,10 @@ void shaman_t::init_scaling()
     scales_with[ STAT_HIT_RATING2           ] = 1;
     scales_with[ STAT_SPIRIT                ] = 0;
     if ( dbc.ptr )
+    {
       scales_with[ STAT_SPELL_POWER         ] = 0;
+      scales_with[ STAT_INTELLECT           ] = 0;
+    }
   }
 
   // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
