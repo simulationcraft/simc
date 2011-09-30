@@ -2635,12 +2635,11 @@ struct shadow_word_death_t : public priest_spell_t
     // Needs testing
     if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
     {
-      health_loss *= 0.0;
+      health_loss *= 0.05;
     }
 
     p -> resource_loss( RESOURCE_HEALTH, health_loss );
 
-    // PTR needs testing to see if 2pc T13 can still proc masochism or not. For now assume it cannot.
     if ( ( ( health_loss > 0.0 ) || ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )  ) && p -> talents.masochism -> rank() )
     {
       p -> resource_gain( RESOURCE_MANA, 0.04 * p -> talents.masochism -> rank() * p -> resource_max[ RESOURCE_MANA ], p -> gains_masochism );
