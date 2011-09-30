@@ -4161,7 +4161,7 @@ double hunter_t::composite_attack_haste() SC_CONST
   h *= 1.0 / ( 1.0 + talents.pathing -> effect1().percent() );
   h *= 1.0 / ( 1.0 + buffs_focus_fire -> value() );
   h *= 1.0 / ( 1.0 + buffs_rapid_fire -> value() );
-  h *= 1.0 / ( 1.0 + buffs_tier13_4pc -> up() * 0.25 );
+  h *= 1.0 / ( 1.0 + buffs_tier13_4pc -> up() * 0.30 );
   return h;
 }
 

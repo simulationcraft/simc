@@ -4160,8 +4160,8 @@ void shaman_t::init_buffs()
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );
   buffs_water_shield            = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),             "water_shield"          );
   
-  buffs_tier13_2pc_caster       = new stat_buff_t            ( this, "tier13_2pc_caster", STAT_MASTERY_RATING, 400.0, 1, 15.0, 0 );
-  buffs_tier13_4pc_caster       = new stat_buff_t            ( this, "tier13_4pc_caster", STAT_HASTE_RATING, 200.0, 3, 4.0, 0 );
+  buffs_tier13_2pc_caster       = new stat_buff_t            ( this, "tier13_2pc_caster", STAT_MASTERY_RATING, 2000.0, 1, 15.0, 0 );
+  buffs_tier13_4pc_caster       = new stat_buff_t            ( this, "tier13_4pc_caster", STAT_HASTE_RATING, 250.0, 3, 4.0, 0 );
 }
 
 // shaman_t::init_gains =====================================================

@@ -1169,8 +1169,6 @@ void mage_spell_t::execute()
   {
     p -> buffs_arcane_missiles -> trigger();
   }
-
-  p -> buffs_tier13_2pc -> trigger();
 }
 
 // mage_spell_t::execute_time ===============================================
@@ -1411,12 +1409,16 @@ struct arcane_blast_t : public mage_spell_t
     }
     mage_spell_t::execute();
     p -> buffs_arcane_blast -> trigger();
-    if ( ! target -> debuffs.snared() )
+    if ( result_is_hit() )
     {
-      if ( p -> rng_nether_vortex -> roll( p -> talents.nether_vortex -> proc_chance() ) )
+      p -> buffs_tier13_2pc -> trigger( 1, -1, 1 );
+      if ( ! target -> debuffs.snared() )
       {
-        target -> debuffs.slow -> trigger();
-        target -> debuffs.slow -> source = p;
+        if ( p -> rng_nether_vortex -> roll( p -> talents.nether_vortex -> proc_chance() ) )
+        {
+          target -> debuffs.slow -> trigger();
+          target -> debuffs.slow -> source = p;
+        }
       }
     }
     trigger_tier12_mirror_image( this );
@@ -1614,7 +1616,7 @@ struct arcane_power_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 3.0;
+      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 7.0;
 
     mage_spell_t::execute();
     p -> buffs_arcane_power -> trigger( 1, effect1().percent() );
@@ -2009,9 +2011,12 @@ struct fireball_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
     consume_brain_freeze( this );
     trigger_tier12_mirror_image( this );
+    if ( result_is_hit() )
+      p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
   }
 };
 
@@ -2257,10 +2262,12 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
     if ( result_is_hit() )
     {
       trigger_replenishment( this );
+      p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
       if ( result == RESULT_CRIT )
       {
         /* mage_t* p = player -> cast_mage();

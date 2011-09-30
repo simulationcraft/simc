@@ -1443,7 +1443,7 @@ struct judgement_t : public paladin_attack_t
       p -> buffs_judgements_of_the_pure -> trigger();
       p -> buffs_sacred_duty-> trigger();
 
-      if ( p -> set_bonus.tier13_2pc_melee() && sim -> rng -> roll( 0.5 ) )
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() )
       {
         p -> resource_gain( RESOURCE_HOLY_POWER, 1, p -> gains_hp_judgement );
       }

@@ -1634,24 +1634,6 @@ struct execute_t : public warrior_attack_t
 
     return warrior_attack_t::ready();
   }
-
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
-  {
-    warrior_attack_t::travel( t, travel_result, travel_dmg );
-
-    warrior_t* p = player -> cast_warrior();
-
-    // PTR
-    // Needs testing
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() && travel_result == RESULT_CRIT )
-      {
-        if ( sim -> rng -> roll( 0.20 ) )
-        {
-          p -> procs_tier13_4pc_melee -> occur();
-          p -> buffs_colossus_smash -> refresh();
-        }
-      }
-  }
 };
 
 // Heroic Strike ============================================================
@@ -1777,6 +1759,12 @@ struct mortal_strike_t : public warrior_attack_t
         p -> dots_rend -> refresh_duration();
 
       trigger_tier12_4pc_melee( this );
+
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
+      {
+        p -> buffs_colossus_smash -> trigger();
+        p -> procs_tier13_4pc_melee -> occur();
+      }
     }
   }
 
@@ -1959,6 +1947,13 @@ struct raging_blow_t : public warrior_attack_t
       if ( oh_attack )
       {
         oh_attack -> execute();
+      }
+      
+      // PTR - is this triggered per attack or once
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
+      {
+        p -> buffs_colossus_smash -> trigger();
+        p -> procs_tier13_4pc_melee -> occur();
       }
     }
     p -> buffs_tier11_4pc_melee -> trigger();
