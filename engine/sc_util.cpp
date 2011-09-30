@@ -1326,8 +1326,10 @@ const char* util_t::stat_type_string( int stat )
 
   case STAT_ATTACK_POWER:             return "attack_power";
   case STAT_EXPERTISE_RATING:         return "expertise_rating";
+  case STAT_EXPERTISE_RATING2:        return "inverse_expertise_rating";
 
   case STAT_HIT_RATING:   return "hit_rating";
+  case STAT_HIT_RATING2:  return "inverse_hit_rating";
   case STAT_CRIT_RATING:  return "crit_rating";
   case STAT_HASTE_RATING: return "haste_rating";
 
@@ -1377,8 +1379,10 @@ const char* util_t::stat_type_abbrev( int stat )
 
   case STAT_ATTACK_POWER:             return "AP";
   case STAT_EXPERTISE_RATING:         return "Exp";
+  case STAT_EXPERTISE_RATING2:        return "InvExp";
 
   case STAT_HIT_RATING:   return "Hit";
+  case STAT_HIT_RATING2:  return "InvHit";
   case STAT_CRIT_RATING:  return "Crit";
   case STAT_HASTE_RATING: return "Haste";
 

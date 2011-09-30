@@ -44,8 +44,10 @@ void gear_stats_t::add_stat( int    stat,
 
   case STAT_ATTACK_POWER:             attack_power             += value; break;
   case STAT_EXPERTISE_RATING:         expertise_rating         += value; break;
+  case STAT_EXPERTISE_RATING2:        expertise_rating2        += value; break;
 
   case STAT_HIT_RATING:   hit_rating   += value; break;
+  case STAT_HIT_RATING2:  hit_rating2  += value; break;
   case STAT_CRIT_RATING:  crit_rating  += value; break;
   case STAT_HASTE_RATING: haste_rating += value; break;
 
@@ -107,8 +109,10 @@ void gear_stats_t::set_stat( int    stat,
 
   case STAT_ATTACK_POWER:             attack_power             = value; break;
   case STAT_EXPERTISE_RATING:         expertise_rating         = value; break;
+  case STAT_EXPERTISE_RATING2:        expertise_rating2        = value; break;
 
   case STAT_HIT_RATING:   hit_rating   = value; break;
+  case STAT_HIT_RATING2:  hit_rating2  = value; break;
   case STAT_CRIT_RATING:  crit_rating  = value; break;
   case STAT_HASTE_RATING: haste_rating = value; break;
 
@@ -169,8 +173,10 @@ double gear_stats_t::get_stat( int stat ) SC_CONST
 
   case STAT_ATTACK_POWER:             return attack_power;
   case STAT_EXPERTISE_RATING:         return expertise_rating;
+  case STAT_EXPERTISE_RATING2:        return expertise_rating2;
 
   case STAT_HIT_RATING:   return hit_rating;
+  case STAT_HIT_RATING2:  return hit_rating2;
   case STAT_CRIT_RATING:  return crit_rating;
   case STAT_HASTE_RATING: return haste_rating;
 

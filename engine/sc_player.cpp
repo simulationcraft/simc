@@ -1760,6 +1760,7 @@ void player_t::init_scaling()
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
     scales_with[ STAT_EXPERTISE_RATING         ] = attack || tank;
+    scales_with[ STAT_EXPERTISE_RATING2        ] = ( attack || tank ) && position == POSITION_FRONT;
 
     scales_with[ STAT_HIT_RATING                ] = 1;
     scales_with[ STAT_CRIT_RATING               ] = 1;
@@ -1796,9 +1797,14 @@ void player_t::init_scaling()
       case STAT_MP5:               initial_mp5                       += v; break;
 
       case STAT_ATTACK_POWER:             initial_attack_power       += v;                            break;
-      case STAT_EXPERTISE_RATING:         initial_attack_expertise   += v / rating.expertise;         break;
+
+      case STAT_EXPERTISE_RATING:
+      case STAT_EXPERTISE_RATING2:
+        initial_attack_expertise   += v / rating.expertise;
+        break;
 
       case STAT_HIT_RATING:
+      case STAT_HIT_RATING2:
         initial_attack_hit += v / rating.attack_hit;
         initial_spell_hit  += v / rating.spell_hit;
         break;

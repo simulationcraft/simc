@@ -169,11 +169,21 @@ void scaling_t::init_deltas()
     stats.expertise_rating =  scale_delta_multiplier * ( smooth_scale_factors ? -100 : -200 );
     if ( positive_scale_delta ) stats.expertise_rating *= -1;
   }
+  if ( stats.expertise_rating2 == 0 )
+  {
+    stats.expertise_rating2 =  scale_delta_multiplier * ( smooth_scale_factors ? 100 : 200 );
+    if ( positive_scale_delta ) stats.expertise_rating2 *= -1;
+  }
 
   if ( stats.hit_rating == 0 )
   {
     stats.hit_rating = scale_delta_multiplier * ( smooth_scale_factors ? -150 : -300 );
     if ( positive_scale_delta ) stats.hit_rating *= -1;
+  }
+  if ( stats.hit_rating2 == 0 )
+  {
+    stats.hit_rating2 = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
+    if ( positive_scale_delta ) stats.hit_rating2 *= -1;
   }
 
   if ( stats.crit_rating  == 0 ) stats.crit_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
