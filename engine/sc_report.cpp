@@ -1065,9 +1065,7 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
 {
 
   util_t::fprintf( file,
-                   "\t\t\t\t<div id=\"sim-info\" class=\"section" );
-  util_t::fprintf( file, " grouped-first" );
-  util_t::fprintf( file, "\">\n" );
+                   "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n" );
 
   util_t::fprintf( file,
                    "\t\t\t\t\t<h2 class=\"toggle\">Simulation Information</h2>\n"
