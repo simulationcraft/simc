@@ -3909,6 +3909,9 @@ struct starsurge_t : public druid_spell_t
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+      cooldown -> duration -= 5.0;
+
     starfall_cd = p -> get_cooldown( "starfall" );
   }
 
@@ -3924,14 +3927,6 @@ struct starsurge_t : public druid_spell_t
       // else it is towards p -> eclipse_bar_direction
       int gain = effect2().base_value();
       if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
-
-      // Balance, 4P -- Starsurge generates 100% extra Lunar
-      // or Solar energy while Eclipse is not active.
-      if ( p -> set_bonus.tier13_4pc_caster() )
-      {
-        if ( ! p -> buffs_eclipse_lunar -> check() && ! p -> buffs_eclipse_solar -> check() )
-          gain *= 2;
-      }
 
       //trigger_eclipse_energy_gain( this, gain );
       trigger_eclipse_gain_delay( this, gain );
