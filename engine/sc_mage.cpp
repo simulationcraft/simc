@@ -1408,10 +1408,15 @@ struct arcane_blast_t : public mage_spell_t
       p -> uptimes_arcane_blast[ i ] -> update( i == p -> buffs_arcane_blast -> stack() );
     }
     mage_spell_t::execute();
+
     p -> buffs_arcane_blast -> trigger();
+
     if ( result_is_hit() )
     {
-      p -> buffs_tier13_2pc -> trigger( 1, -1, 1 );
+      // PTR
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+        p -> buffs_tier13_2pc -> trigger( 1, -1, 1 );
+
       if ( ! target -> debuffs.snared() )
       {
         if ( p -> rng_nether_vortex -> roll( p -> talents.nether_vortex -> proc_chance() ) )
@@ -2016,7 +2021,11 @@ struct fireball_t : public mage_spell_t
     consume_brain_freeze( this );
     trigger_tier12_mirror_image( this );
     if ( result_is_hit() )
-      p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
+    {
+      // PTR
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+        p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
+    }
   }
 };
 
@@ -2267,7 +2276,11 @@ struct frostbolt_t : public mage_spell_t
     if ( result_is_hit() )
     {
       trigger_replenishment( this );
-      p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
+
+      // PTR
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+        p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
+
       if ( result == RESULT_CRIT )
       {
         /* mage_t* p = player -> cast_mage();
@@ -3588,7 +3601,7 @@ void mage_t::init_buffs()
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_presence_of_mind     = new buff_t( this, "presence_of_mind",     1 );
   
-  buffs_tier13_2pc           = new stat_buff_t( this, "tier13_2pc", STAT_HASTE_RATING, 50.0, 10, 30.0, 0, ( dbc.ptr && set_bonus.tier13_2pc_caster() ) ? 0.3 : 0 );
+  buffs_tier13_2pc           = new stat_buff_t( this, "tier13_2pc", STAT_HASTE_RATING, 50.0, 10, 30.0 );
 }
 
 // mage_t::init_gains =======================================================
