@@ -1510,7 +1510,7 @@ struct mangle_cat_t : public druid_cat_attack_t
       target -> debuffs.mangle -> trigger();
       target -> debuffs.mangle -> source = p;
 
-      if ( p -> glyphs.shred -> enabled() &&
+      if ( p -> dbc.ptr && p -> glyphs.shred -> enabled() &&
            p -> dots_rip -> ticking  &&
            p -> dots_rip -> added_ticks < 4 )
       {
@@ -1534,7 +1534,7 @@ struct mangle_cat_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    if ( extend_rip )
+    if ( p -> dbc.ptr && extend_rip )
       if ( ! p -> glyphs.shred -> enabled() ||
            ! p -> dots_rip -> ticking ||
            ( p -> dots_rip -> added_ticks == 4 ) )
