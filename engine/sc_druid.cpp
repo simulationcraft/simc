@@ -62,9 +62,10 @@ struct druid_t : public player_t
   buff_t* buffs_tree_of_life;
 
   // Cooldowns
-  cooldown_t* cooldowns_mangle_bear;
-  cooldown_t* cooldowns_fury_swipes;
   cooldown_t* cooldowns_burning_treant;
+  cooldown_t* cooldowns_fury_swipes;
+  cooldown_t* cooldowns_mangle_bear;
+  cooldown_t* cooldowns_starsurge;
 
   // DoTs
   dot_t* dots_insect_swarm;
@@ -278,10 +279,11 @@ struct druid_t : public player_t
     eclipse_wrath_count   = 0;
     eclipse_bar_direction = 0;
 
-    cooldowns_mangle_bear = get_cooldown( "mangle_bear" );
-    cooldowns_fury_swipes = get_cooldown( "fury_swipes" );
     cooldowns_burning_treant = get_cooldown( "burning_treant" );
     cooldowns_burning_treant -> duration = 45.0;
+    cooldowns_fury_swipes    = get_cooldown( "fury_swipes"    );
+    cooldowns_mangle_bear    = get_cooldown( "mangle_bear"    );
+    cooldowns_starsurge      = get_cooldown( "starsurge"      );
 
     dots_insect_swarm = get_dot( "insect_swarm" );
     dots_lacerate     = get_dot( "lacerate"     );
@@ -2146,7 +2148,7 @@ struct lacerate_t : public druid_bear_attack_t
     tick_power_mod       = 0.00369;
     dot_behavior         = DOT_REFRESH;
     base_crit           += p -> glyphs.lacerate -> mod_additive( P_CRIT );
-    mangle_bear_cooldown = p -> get_cooldown( "mangle_bear" );
+    mangle_bear_cooldown = p -> cooldowns_mangle_bear;
   }
 
   virtual void execute()
@@ -3429,7 +3431,7 @@ struct insect_swarm_t : public druid_spell_t
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
 
-    starsurge_cd = p -> get_cooldown( "starsurge" );
+    starsurge_cd = p -> cooldowns_starsurge;
   }
 
   virtual void player_buff()
@@ -3525,7 +3527,7 @@ struct moonfire_t : public druid_spell_t
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
 
-    starsurge_cd = p -> get_cooldown( "starsurge" );
+    starsurge_cd = p -> cooldowns_starsurge;
   }
 
   virtual void player_buff()
@@ -4017,7 +4019,7 @@ struct sunfire_t : public druid_spell_t
     if ( p -> set_bonus.tier11_2pc_caster() )
       base_crit += 0.05;
 
-    starsurge_cd = p -> get_cooldown( "starsurge" );
+    starsurge_cd = p -> cooldowns_starsurge;
   }
 
   virtual void player_buff()
