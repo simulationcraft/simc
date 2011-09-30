@@ -1426,6 +1426,7 @@ struct arcane_blast_t : public mage_spell_t
         }
       }
     }
+
     trigger_tier12_mirror_image( this );
   }
 
@@ -1621,7 +1622,7 @@ struct arcane_power_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 7.0;
+      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 7.0 * (1.0 + p -> talents.arcane_flows -> effect1().percent());
 
     mage_spell_t::execute();
     p -> buffs_arcane_power -> trigger( 1, effect1().percent() );
@@ -2576,7 +2577,7 @@ struct icy_veins_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 6.0;
+      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 6.0 * (1.0 + p -> talents.ice_floes -> effect1().percent());
     consume_resource();
     update_ready();
     p -> buffs_icy_veins -> trigger();
@@ -3807,14 +3808,28 @@ void mage_t::init_actions()
         action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>105&mana_gem_charges=0";
       }
       //Mana Gem
-      action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4";
+      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+      {
+        action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4&buff.tier13_2pc.stack>=7&(cooldown.arcane_power.remains<=0|target.time_to_die<=50)";
+      }
+      else
+      {
+        action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4";
+      }
       //Choose Rotation
       action_list_str += "/choose_rotation,cooldown=1,force_dps=1,if=buff.improved_mana_gem.up&dpm=1&cooldown.evocation.remains+15<target.time_to_die";
       action_list_str += "/choose_rotation,cooldown=1,force_dpm=1,if=cooldown.evocation.remains<=20&dps=1&mana_pct<22&(target.time_to_die>60|burn_mps*((target.time_to_die-5)-cooldown.evocation.remains)>max_mana_nonproc)&cooldown.evocation.remains+15<target.time_to_die";
       //Arcane Power
       if ( talents.arcane_power -> rank() )
       {
-        action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50";
+        if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+        {
+          action_list_str += "/arcane_power,if=(buff.improved_mana_gem.up&buff.tier13_2pc.stack>=9)|(buff.tier13_2pc.stack>=10&cooldown.mana_gem.remains>30&cooldown.evocation.remains>10)|target.time_to_die<=50";
+        }
+        else
+        {
+          action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50";
+        }
         action_list_str += "/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)";
       }
       else
@@ -3829,7 +3844,14 @@ void mage_t::init_actions()
         action_list_str += "/arcane_blast,if=buff.presence_of_mind.up";
       }
 
-      action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|buff.improved_mana_gem.up|cooldown.mana_gem.remains<5)&mana_pct>=22)";
+      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+      {
+        action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|buff.improved_mana_gem.up|cooldown.mana_gem.remains<5)&mana_pct>=22)|(buff.arcane_power.up&mana_pct_nonproc>88)";
+      }
+      else
+      {
+        action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|buff.improved_mana_gem.up|cooldown.mana_gem.remains<5)&mana_pct>=22)";
+      }
       action_list_str += "/arcane_blast,if=buff.arcane_blast.remains<0.8&buff.arcane_blast.stack=4";
       action_list_str += "/arcane_missiles,if=mana_pct_nonproc<92&buff.arcane_missiles.react&mage_armor_timer<=2";
       action_list_str += "/arcane_missiles,if=mana_pct_nonproc<93&buff.arcane_missiles.react&mage_armor_timer>2";
@@ -4168,6 +4190,21 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
       }
     };
     return new burn_mps_expr_t( a );
+  }
+
+  if ( name_str == "regen_mps" )
+  {
+    struct regen_mps_expr_t : public action_expr_t
+    {
+      regen_mps_expr_t( action_t* a ) : action_expr_t( a, "regen_mps", TOK_NUM ){}
+      virtual int evaluate() 
+      { 
+        mage_t* p = action -> player -> cast_mage();
+        result_num = ( p -> rotation.mana_gain / action -> sim -> current_time ); 
+        return TOK_NUM; 
+      }
+    };
+    return new regen_mps_expr_t( a );
   }
 
   return player_t::create_expression( a, name_str );
