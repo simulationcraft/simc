@@ -646,6 +646,15 @@ void buff_t::decrement( int    stacks,
   {
     current_stack -= stacks;
     if ( value >= 0 ) current_value = value;
+
+    for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
+    {
+      if ( ( int ) i != current_stack )
+        stack_uptime[ i ] -> update_uptime( false );
+      else
+        stack_uptime[ i ] -> update_uptime( true );
+    }
+
     if ( sim -> debug )
       log_t::output( sim, "buff %s decremented by %d to %d stacks",
                      name(), stacks, current_stack );
