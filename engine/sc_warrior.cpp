@@ -496,14 +496,6 @@ static void trigger_deep_wounds( action_t* a )
         id = 12834;
         init(); // required since construction occurs after player_t::init()
       }
-      virtual void target_debuff( player_t* t, int dmg_type )
-      {
-        warrior_attack_t::target_debuff( t, dmg_type );
-        // Deep Wounds doesn't benefit from Blood Frenzy or Savage Combat despite being a Bleed so disable it.
-        if ( t -> debuffs.blood_frenzy_bleed  -> check() ||
-             t -> debuffs.savage_combat       -> check() )
-          target_multiplier /= 1.04;
-      }
       virtual double total_td_multiplier() SC_CONST { return target_multiplier; }
       virtual double travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
       virtual void travel( player_t* t, int travel_result, double deep_wounds_dmg )
@@ -519,7 +511,7 @@ static void trigger_deep_wounds( action_t* a )
 
     p -> active_deep_wounds = new deep_wounds_t( p );
   }
-
+  
   if ( a -> weapon )
     p -> active_deep_wounds -> weapon = a -> weapon;
   else
@@ -535,6 +527,9 @@ static void trigger_deep_wounds( action_t* a )
   double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage() *
                              p -> active_deep_wounds -> weapon_multiplier *
                              p -> active_deep_wounds -> player_multiplier );
+
+  // Correct for the off hand penalty applied in calculate_weapon_damage()
+  if ( p -> active_deep_wounds -> weapon -> slot == SLOT_OFF_HAND ) deep_wounds_dmg *= 2;
 
   dot_t* dot = p -> active_deep_wounds -> dot;
 
@@ -3791,7 +3786,7 @@ void warrior_t::regen( double periodicity )
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
 
-  uptimes_rage_cap -> update_uptime( resource_current[ RESOURCE_RAGE ] ==
+  uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                               resource_max    [ RESOURCE_RAGE] );
 }
 
