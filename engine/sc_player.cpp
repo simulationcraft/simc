@@ -458,8 +458,7 @@ player_t::player_t( sim_t*             s,
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
   base_movement_speed( 7.0 ), x_position( 0.0 ), y_position( 0.0 ),
-
-  rng_list( 0 )
+  buffs(), debuffs(), gains(), procs(), rng_list( 0 ), rngs()
 {
   sim -> actor_list.push_back( this );
 
@@ -4421,36 +4420,25 @@ rng_t* player_t::get_rng( const std::string& n, int type )
   return rng;
 }
 
-// player_t::get_player_distance ============================================
-
-double player_t::get_player_distance( player_t* p )
-{
-  // Euclidean Distance *Squared* as sqrt() is slow
-  double distance = 0;
-
-  distance = ( ( p -> x_position - this -> x_position ) * ( p -> x_position - this -> x_position ) + ( p -> y_position - this -> y_position ) * ( p -> y_position - this -> y_position ) );
-
-  return distance;
-}
-
 // player_t::get_position_distance ==========================================
 
-double player_t::get_position_distance( double m, double v )
+double player_t::get_position_distance( double m, double v ) const
 {
-  // Euclidean Distance *Squared* as sqrt() is slow
-  double distance = 0;
-
-  distance = ( ( this -> x_position - m ) * ( this -> x_position - m ) + ( this -> y_position - v ) * ( this -> y_position - v ) );
-
-  return distance;
+  // Square of Euclidean distance since sqrt() is slow
+  double delta_x = this -> x_position - m;
+  double delta_y = this -> y_position - v;
+  return delta_x * delta_x + delta_y * delta_y;
 }
 
-// player_t::get_action_priority_list( const std::string& name ) ============
+// player_t::get_player_distance ============================================
 
-action_priority_list_t* player_t::get_action_priority_list( const std::string& name )
+double player_t::get_player_distance( const player_t* p ) const
+{ return get_position_distance( p -> x_position, p -> y_position ); }
+
+// player_t::find_action_priority_list( const std::string& name ) ===========
+
+action_priority_list_t* player_t::find_action_priority_list( const std::string& name )
 {
-  action_priority_list_t* a;
-
   for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
   {
     action_priority_list_t* a = action_priority_list[i];
@@ -4458,27 +4446,20 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
       return a;
   }
 
-  a = new action_priority_list_t( name, this );
-
-  action_priority_list.push_back( a );
-
-  return a;
+  return 0;
 }
 
-// player_t::find_action_priority_list( const std::string& name ) ===========
+// player_t::get_action_priority_list( const std::string& name ) ============
 
-action_priority_list_t* player_t::find_action_priority_list( const std::string& name )
+action_priority_list_t* player_t::get_action_priority_list( const std::string& name )
 {
-  action_priority_list_t* a;
-
-  for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
+  action_priority_list_t* a = find_action_priority_list( name );
+  if ( !a )
   {
-    a = action_priority_list[i];
-    if ( a -> name_str == name )
-      return a;
+    a = new action_priority_list_t( name, this );
+    action_priority_list.push_back( a );
   }
-
-  return 0;
+  return a;
 }
 
 // player_t::debuffs_t::snared ==============================================

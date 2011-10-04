@@ -3275,7 +3275,7 @@ public:
 
 // Player ===================================================================
 
-struct player_t
+struct player_t : public noncopyable
 {
   sim_t*      sim;
   bool        ptr;
@@ -3535,7 +3535,7 @@ struct player_t
   double base_movement_speed;
   double x_position, y_position;
 
-  struct buffs_base_t
+  struct buffs_t
   {
     buff_t* arcane_brilliance;
     buff_t* battle_shout;
@@ -3587,11 +3587,6 @@ struct player_t
     buff_t* wild_magic_potion_crit;
     buff_t* wild_magic_potion_sp;
     buff_t* blessing_of_ancient_kings;
-
-    buffs_base_t() { zerofill( *this ); }
-  };
-  struct buffs_t : public buffs_base_t
-  {
     std::vector<buff_t*> power_word_shield;
     std::vector<buff_t*> divine_aegis;
   };
@@ -3638,7 +3633,6 @@ struct player_t
     debuff_t* vindication;
     debuff_t* vulnerable;
 
-    debuffs_t() { zerofill( *this ); }
     bool snared();
   };
   debuffs_t debuffs;
@@ -3664,16 +3658,14 @@ struct player_t
     gain_t* vampiric_touch;
     gain_t* water_elemental;
     gain_t* hymn_of_hope;
-    void reset() { zerofill( *this ); }
-    gains_t() { reset(); }
+    void reset() { *this = gains_t(); }
   };
   gains_t gains;
 
   struct procs_t
   {
     proc_t* hat_donor;
-    void reset() { zerofill( *this ); }
-    procs_t() { reset(); }
+    void reset() { *this = procs_t(); }
   };
   procs_t procs;
 
@@ -3688,11 +3680,9 @@ struct player_t
     rng_t* lag_reaction;
     rng_t* lag_world;
     rng_t* lag_brain;
-    void reset() { zerofill( *this ); }
-    rngs_t() { reset(); }
+    void reset() { *this = rngs_t(); }
   };
   rngs_t rngs;
-
 
   player_t( sim_t* sim, player_type type, const std::string& name, race_type race_type = RACE_NONE );
 
@@ -3861,7 +3851,6 @@ struct player_t
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
 
-
   virtual void create_talents();
   virtual void create_glyphs();
 
@@ -3894,17 +3883,17 @@ struct player_t
 
   static player_t* create( sim_t* sim, const std::string& type, const std::string& name, race_type r = RACE_NONE );
 
-  static player_t * create_death_knight( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_druid       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_hunter      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_mage        ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_paladin     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_priest      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_rogue       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_shaman      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_warlock     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_warrior     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
-  static player_t * create_enemy       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_death_knight( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_druid       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_hunter      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_mage        ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_paladin     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_priest      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_rogue       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_shaman      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_warlock     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_warrior     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_enemy       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
 
   // Raid-wide aura/buff/debuff maintenance
   static bool init        ( sim_t* sim );
@@ -4003,8 +3992,8 @@ struct player_t
   stats_t*    get_stats   ( const std::string& name, action_t* action=0 );
   uptime_t*   get_uptime  ( const std::string& name );
   rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );
-  double      get_player_distance( player_t* p );
-  double      get_position_distance( double m=0, double v=0 );
+  double      get_player_distance( const player_t* p ) const;
+  double      get_position_distance( double m=0, double v=0 ) const;
   action_priority_list_t* get_action_priority_list( const std::string& name );
 
   // Opportunity to perform any stat fixups before analysis
@@ -4673,29 +4662,48 @@ struct consumable_t
 
 struct uptime_t
 {
-  std::string name_str;
-  sim_t* sim;
-  uptime_t* next;
   double last_start;
   double uptime_sum;
-  int up,down;
+
+  sim_t* sim;
+
+  int up, down;
+
+  uptime_t* next;
+
   double uptime, uptime_benefit;
-  uptime_t( sim_t* s, const std::string& n ) : name_str( n ), sim( s ), last_start( -1.0 ), uptime_sum( 0.0 ), up( 0 ), down( 0 ), uptime( 0.0 ), uptime_benefit( 0.0 ) {}
-  virtual ~uptime_t() {}
-  void update( bool is_up ) { update_benefit( is_up ); }
-  void update( int is_up ) { update_benefit( is_up ); }
-  void   update_uptime( bool is_up )
+  std::string name_str;
+
+  uptime_t( sim_t* s, const std::string& n ) :
+    last_start( -1.0 ), uptime_sum( 0.0 ), uptime( 0.0 ), uptime_benefit( 0.0 ),
+    name_str( n ), sim( s ), up( 0 ), down( 0 ) {}
+
+  void update_uptime( int is_up )
   {
-    if ( is_up ) { if ( last_start < 0 ) last_start = sim -> current_time; }
-    else {  if ( last_start >= 0 ) { uptime_sum += sim -> current_time - last_start; last_start = -1.0; } }
+    if ( is_up )
+    {
+      if ( last_start < 0 ) last_start = sim -> current_time;
+    }
+    else if ( last_start >= 0 )
+    {
+      uptime_sum += sim -> current_time - last_start; last_start = -1.0;
+    }
   }
-  void update_uptime( int  is_up ) { update_uptime( is_up ? true : false ); }
-  void update_benefit( bool is_up ) { if ( is_up ) up++; else down++; }
-  void update_benefit( int is_up ) { update_benefit( is_up ? true : false ); }
+
+  void update_benefit( int is_up ) { if ( is_up ) up++; else down++; }
+  void update( int is_up ) { update_benefit( is_up ); }
+
+  const char* name() const { return name_str.c_str(); }
+
   void reset() { last_start = -1.0; }
-  void analyze() { uptime = uptime_sum / sim -> iterations / sim -> total_seconds; if ( up != 0 ) uptime_benefit = 1.0 * up / ( down + up ); }
-  virtual void   merge( uptime_t* other ) { uptime_sum += other -> uptime_sum; up += other -> up; down += other -> down; }
-  const char* name() SC_CONST { return name_str.c_str(); }
+  void analyze()
+  {
+    uptime = uptime_sum / sim -> iterations / sim -> total_seconds;
+    if ( up != 0 )
+      uptime_benefit = 1.0 * up / ( down + up );
+  }
+  void merge( const uptime_t* other )
+  { uptime_sum += other -> uptime_sum; up += other -> up; down += other -> down; }
 };
 
 // Gain =====================================================================
