@@ -5049,7 +5049,7 @@ void death_knight_t::regen( double periodicity )
   }
 
   uptimes_rp_cap -> update_uptime( resource_current[ RESOURCE_RUNIC ] ==
-                            resource_max    [ RESOURCE_RUNIC] );
+                                   resource_max    [ RESOURCE_RUNIC] );
 }
 
 // death_knight_t::create_options ===========================================

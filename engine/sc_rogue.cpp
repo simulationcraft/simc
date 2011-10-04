@@ -4057,7 +4057,7 @@ void rogue_t::regen( double periodicity )
   }
 
   uptimes_energy_cap -> update_uptime( resource_current[ RESOURCE_ENERGY ] ==
-                                resource_max    [ RESOURCE_ENERGY ] );
+                                       resource_max    [ RESOURCE_ENERGY ] );
 
   for ( int i = 0; i < 3; i++ )
     uptimes_bandits_guile[ i ] -> update( ( buffs_bandits_guile -> current_stack / 4 - 1 ) == i );

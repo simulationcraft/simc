@@ -290,8 +290,8 @@ void buff_t::init()
     std::vector<char> buffer( name_str.size() + 16 );
     for ( int i=0; i <= max_stack; i++ )
     {
-    snprintf( &buffer[ 0 ], buffer.size(), "%s_%d", name_str.c_str(), i );
-    stack_uptime.push_back( new uptime_t( sim, &buffer[ 0 ] ) );
+      snprintf( &buffer[ 0 ], buffer.size(), "%s_%d", name_str.c_str(), i );
+      stack_uptime.push_back( new uptime_t( sim, &buffer[ 0 ] ) );
     }
 
     for ( int i=1; i <= max_stack; i++ )
@@ -442,8 +442,8 @@ void buff_t::init_buff_t_()
     stack_uptime.clear();
     for ( int i=0; i <= max_stack; i++ )
     {
-    snprintf( &buffer[ 0 ], buffer.size(), "%s_%d", name_str.c_str(), i );
-    stack_uptime.push_back( new uptime_t( sim, &buffer[ 0 ] ) );
+      snprintf( &buffer[ 0 ], buffer.size(), "%s_%d", name_str.c_str(), i );
+      stack_uptime.push_back( new uptime_t( sim, &buffer[ 0 ] ) );
     }
 
     for ( int i=1; i <= max_stack; i++ )
@@ -770,7 +770,7 @@ void buff_t::bump( int    stacks,
 
     for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
     {
-      if ( (int) i != current_stack )
+      if ( ( int ) i != current_stack )
         stack_uptime[ i ] -> update_uptime( false );
       else
         stack_uptime[ i ] -> update_uptime( true );
@@ -782,8 +782,6 @@ void buff_t::bump( int    stacks,
     {
       stack_occurrence[ i ] = sim -> current_time;
       stack_react_time[ i ] = sim -> current_time + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
-
-
     }
   }
 }

@@ -2183,7 +2183,6 @@ struct gear_stats_t
   static double stat_mod( int stat );
 };
 
-
 // Buffs ====================================================================
 
 struct buff_t : public spell_id_t

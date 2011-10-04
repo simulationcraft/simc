@@ -3509,17 +3509,15 @@ static void print_html_player_buffs( FILE* file, player_t* p )
         if ( u -> uptime > 0 )
         {
           util_t::fprintf( file,
-              "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s:</span>%.1f%%</li>\n",
-
+                           "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s:</span>%.1f%%</li>\n",
                            u -> name(),
                            u -> uptime * 100.0 );
         }
       }
       util_t::fprintf( file,
-      "\t\t\t\t\t\t\t\t\t</ul>\n"
-      "\t\t\t\t\t\t\t\t</td>\n" );
-      util_t::fprintf( file,
-      "\t\t\t\t\t\t\t\t</tr>\n" );
+                       "\t\t\t\t\t\t\t\t\t</ul>\n"
+                       "\t\t\t\t\t\t\t\t</td>\n"
+                       "\t\t\t\t\t\t\t</tr>\n" );
     }
   }
   util_t::fprintf( file,

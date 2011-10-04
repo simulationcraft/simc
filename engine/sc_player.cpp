@@ -4449,7 +4449,6 @@ double player_t::get_position_distance( double m, double v )
 
 action_priority_list_t* player_t::get_action_priority_list( const std::string& name )
 {
-
   action_priority_list_t* a;
 
   for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
@@ -4470,7 +4469,6 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
 
 action_priority_list_t* player_t::find_action_priority_list( const std::string& name )
 {
-
   action_priority_list_t* a;
 
   for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
@@ -4586,7 +4584,7 @@ struct arcane_torrent_t : public action_t
       break;
     }
 
-    if( gain > 0 )
+    if ( gain > 0 )
       player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
 
     update_ready();
@@ -4594,7 +4592,7 @@ struct arcane_torrent_t : public action_t
 
   virtual bool ready()
   {
-    if( ! action_t::ready() )
+    if ( ! action_t::ready() )
       return false;
 
     if ( player -> race != RACE_BLOOD_ELF )
