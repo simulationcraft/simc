@@ -4675,8 +4675,8 @@ struct uptime_t
   std::string name_str;
 
   uptime_t( sim_t* s, const std::string& n ) :
-    last_start( -1.0 ), uptime_sum( 0.0 ), uptime( 0.0 ), uptime_benefit( 0.0 ),
-    name_str( n ), sim( s ), up( 0 ), down( 0 ) {}
+    last_start( -1.0 ), uptime_sum( 0.0 ), sim( s ), up( 0 ), down( 0 ),
+    uptime( 0.0 ), uptime_benefit( 0.0 ), name_str( n ) {}
 
   void update_uptime( int is_up )
   {
