@@ -1023,23 +1023,23 @@ void warrior_attack_t::player_buff()
   if ( weapon && weapon -> group() == WEAPON_2H )
     player_multiplier *= 1.0 + p -> spec.two_handed_weapon_specialization -> effect_base_value( 1 ) / 100.0;
 
-  if ( p -> dual_wield() && school == SCHOOL_PHYSICAL )
+  if ( p -> dual_wield() && ( school == SCHOOL_PHYSICAL || SCHOOL_BLEED ) )
     player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 3 ) / 100.0;
 
   // --- Enrages ---
 
-  if ( school == SCHOOL_PHYSICAL )
+  if ( school == SCHOOL_PHYSICAL || SCHOOL_BLEED )
     player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
 
-  if ( school == SCHOOL_PHYSICAL )
+  if ( school == SCHOOL_PHYSICAL || SCHOOL_BLEED )
     player_multiplier *= 1.0 + p -> buffs_enrage -> value();
 
-  if ( school == SCHOOL_PHYSICAL && p -> buffs_bastion_of_defense -> up() )
+  if ( ( school == SCHOOL_PHYSICAL || SCHOOL_BLEED ) && p -> buffs_bastion_of_defense -> up() )
     player_multiplier *= 1.0 + p -> talents.bastion_of_defense -> rank() * 0.05;
 
   // --- Passive Talents ---
 
-  if ( school == SCHOOL_PHYSICAL )
+  if ( school == SCHOOL_PHYSICAL || SCHOOL_BLEED )
     player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
 
   if ( p -> talents.single_minded_fury -> ok() && p -> dual_wield() )
@@ -3700,7 +3700,7 @@ double warrior_t::composite_player_multiplier( const school_type school, action_
     m *= 1.0 + buffs_berserker_stance -> effect1().percent();
   }
 
-  if ( school == SCHOOL_PHYSICAL && buffs_tier12_2pc_melee -> check() )
+  if ( ( school == SCHOOL_PHYSICAL || SCHOOL_BLEED ) && buffs_tier12_2pc_melee -> check() )
   {
     m *= 1.0 + buffs_tier12_2pc_melee -> value();
   }
