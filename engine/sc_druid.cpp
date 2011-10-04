@@ -5118,7 +5118,7 @@ void druid_t::regen( double periodicity )
     if ( buffs_enrage -> up() )
       resource_gain( RESOURCE_RAGE, 1.0 * periodicity, gains_enrage );
 
-    uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
+    uptimes_rage_cap -> update_uptime( resource_current[ RESOURCE_RAGE ] ==
                                 resource_max    [ RESOURCE_RAGE ] );
   }
 

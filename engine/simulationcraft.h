@@ -2210,6 +2210,7 @@ struct buff_t : public spell_id_t
   rng_t* rng;
   cooldown_t* cooldown;
   buff_t* next;
+  std::vector<uptime_t*> stack_uptime;
 
   buff_t() : sim( 0 ) {}
   virtual ~buff_t() {}
@@ -4674,14 +4675,27 @@ struct consumable_t
 struct uptime_t
 {
   std::string name_str;
-  uint64_t up, down;
+  sim_t* sim;
   uptime_t* next;
-  uptime_t( const std::string& n ) : name_str( n ), up( 0 ), down( 0 ) {}
+  double last_start;
+  double uptime_sum;
+  int up,down;
+  double uptime, uptime_benefit;
+  uptime_t( sim_t* s, const std::string& n ) : name_str( n ), sim( s ), last_start( -1.0 ), uptime_sum( 0.0 ), up( 0 ), down( 0 ), uptime( 0.0 ), uptime_benefit( 0.0 ) {}
   virtual ~uptime_t() {}
-  void   update( bool is_up ) { if ( is_up ) up++; else down++; }
-  void   update( int  is_up ) { update( is_up ? true : false ); }
-  double percentage() SC_CONST { return ( up==0 ) ? 0 : ( 100.0*up/( up+down ) ); }
-  virtual void   merge( uptime_t* other ) { up += other -> up; down += other -> down; }
+  void update( bool is_up ) { update_benefit( is_up ); }
+  void update( int is_up ) { update_benefit( is_up ); }
+  void   update_uptime( bool is_up )
+  {
+    if ( is_up ) { if ( last_start < 0 ) last_start = sim -> current_time; }
+    else {  if ( last_start >= 0 ) { uptime_sum += sim -> current_time - last_start; last_start = -1.0; } }
+  }
+  void update_uptime( int  is_up ) { update_uptime( is_up ? true : false ); }
+  void update_benefit( bool is_up ) { if ( is_up ) up++; else down++; }
+  void update_benefit( int is_up ) { update_benefit( is_up ? true : false ); }
+  void reset() { last_start = -1.0; }
+  void analyze() { uptime = uptime_sum / sim -> iterations / sim -> total_seconds; if ( up != 0 ) uptime_benefit = 1.0 * up / ( down + up ); }
+  virtual void   merge( uptime_t* other ) { uptime_sum += other -> uptime_sum; up += other -> up; down += other -> down; }
   const char* name() SC_CONST { return name_str.c_str(); }
 };
 

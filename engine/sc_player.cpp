@@ -2947,6 +2947,11 @@ void player_t::reset()
     b -> reset();
   }
 
+  for ( uptime_t* u = uptime_list; u; u = u -> next )
+  {
+    u -> reset();
+  }
+
   last_foreground_action = 0;
   current_time = 0;
 
@@ -4372,7 +4377,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
       return u;
   }
 
-  u = new uptime_t( name );
+  u = new uptime_t( sim, name );
 
   uptime_t** tail = &uptime_list;
 

@@ -185,8 +185,6 @@ struct priest_t : public player_t
   // Uptimes
   uptime_t* uptimes_mind_spike[ 4 ];
   uptime_t* uptimes_dark_flames;
-  uptime_t* uptimes_dark_evangelism[ 6 ];
-  uptime_t* uptimes_holy_evangelism[ 6 ];
   uptime_t* uptimes_shadow_orb[ 4 ];
   uptime_t* uptimes_test_of_faith;
 
@@ -959,19 +957,6 @@ public:
     {
       std::string n = "atonement_" + name_str;
       atonement = new atonement_heal_t( n.c_str(), p );
-    }
-  }
-
-  virtual void player_buff()
-  {
-    spell_t::player_buff();
-
-    priest_t* p = player -> cast_priest();
-
-    for ( int i=0; i < 6; i++ )
-    {
-      p -> uptimes_dark_evangelism[ i ] -> update( i == p -> buffs_dark_evangelism -> stack() );
-      p -> uptimes_holy_evangelism[ i ] -> update( i == p -> buffs_holy_evangelism -> stack() );
     }
   }
 
@@ -4830,20 +4815,6 @@ void priest_t::init_uptimes()
   uptimes_mind_spike[ 3 ] = get_uptime( "mind_spike_3" );
 
   uptimes_dark_flames     = get_uptime( "dark_flames" );
-
-  uptimes_dark_evangelism[ 0 ] = get_uptime( "dark_evangelism_0" );
-  uptimes_dark_evangelism[ 1 ] = get_uptime( "dark_evangelism_1" );
-  uptimes_dark_evangelism[ 2 ] = get_uptime( "dark_evangelism_2" );
-  uptimes_dark_evangelism[ 3 ] = get_uptime( "dark_evangelism_3" );
-  uptimes_dark_evangelism[ 4 ] = get_uptime( "dark_evangelism_4" );
-  uptimes_dark_evangelism[ 5 ] = get_uptime( "dark_evangelism_5" );
-
-  uptimes_holy_evangelism[ 0 ] = get_uptime( "holy_evangelism_0" );
-  uptimes_holy_evangelism[ 1 ] = get_uptime( "holy_evangelism_1" );
-  uptimes_holy_evangelism[ 2 ] = get_uptime( "holy_evangelism_2" );
-  uptimes_holy_evangelism[ 3 ] = get_uptime( "holy_evangelism_3" );
-  uptimes_holy_evangelism[ 4 ] = get_uptime( "holy_evangelism_4" );
-  uptimes_holy_evangelism[ 5 ] = get_uptime( "holy_evangelism_5" );
 
   uptimes_shadow_orb[ 0 ] = get_uptime( "shadow_orb_0" );
   uptimes_shadow_orb[ 1 ] = get_uptime( "shadow_orb_1" );

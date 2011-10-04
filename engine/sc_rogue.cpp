@@ -4056,7 +4056,7 @@ void rogue_t::regen( double periodicity )
     }
   }
 
-  uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
+  uptimes_energy_cap -> update_uptime( resource_current[ RESOURCE_ENERGY ] ==
                                 resource_max    [ RESOURCE_ENERGY ] );
 
   for ( int i = 0; i < 3; i++ )

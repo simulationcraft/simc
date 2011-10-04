@@ -288,6 +288,12 @@ void buff_t::init()
     aura_str.resize( max_stack + 1 );
 
     std::vector<char> buffer( name_str.size() + 16 );
+    for ( int i=0; i <= max_stack; i++ )
+    {
+    snprintf( &buffer[ 0 ], buffer.size(), "%s_%d", name_str.c_str(), i );
+    stack_uptime.push_back( new uptime_t( sim, &buffer[ 0 ] ) );
+    }
+
     for ( int i=1; i <= max_stack; i++ )
     {
       snprintf( &buffer[ 0 ], buffer.size(), "%s(%d)", name_str.c_str(), i );
@@ -433,6 +439,13 @@ void buff_t::init_buff_t_()
     aura_str.resize( max_stack + 1 );
 
     std::vector<char> buffer( name_str.size() + 16 );
+    stack_uptime.clear();
+    for ( int i=0; i <= max_stack; i++ )
+    {
+    snprintf( &buffer[ 0 ], buffer.size(), "%s_%d", name_str.c_str(), i );
+    stack_uptime.push_back( new uptime_t( sim, &buffer[ 0 ] ) );
+    }
+
     for ( int i=1; i <= max_stack; i++ )
     {
       sprintf( &buffer[ 0 ], "%s(%d)", name_str.c_str(), i );
@@ -755,12 +768,21 @@ void buff_t::bump( int    stacks,
     if ( current_stack > max_stack )
       current_stack = max_stack;
 
+    for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
+    {
+      if ( (int) i != current_stack )
+        stack_uptime[ i ] -> update_uptime( false );
+      else
+        stack_uptime[ i ] -> update_uptime( true );
+    }
+
     aura_gain();
 
     for( int i=before_stack+1; i <= current_stack; i++ )
     {
       stack_occurrence[ i ] = sim -> current_time;
       stack_react_time[ i ] = sim -> current_time + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
+
 
     }
   }
@@ -805,6 +827,9 @@ void buff_t::expire()
     {
       constant = false;
     }
+
+  for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
+    stack_uptime[ i ] -> update_uptime( false );
 }
 
 // buff_t::predict ==========================================================
@@ -863,6 +888,9 @@ void buff_t::reset()
   last_start = -1;
   last_trigger = -1;
   uptime_sum = 0;
+
+  for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
+    stack_uptime[ i ] -> reset();
 }
 
 // buff_t::merge ============================================================
@@ -905,6 +933,9 @@ void buff_t::analyze()
   avg_start   =   start_count / ( double ) sim -> iterations;
   avg_refresh = refresh_count / ( double ) sim -> iterations;
   uptime_pct  /= ( double ) sim -> iterations;
+
+  for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
+    stack_uptime[ i ] -> analyze();
 }
 
 // buff_t::find =============================================================

@@ -536,10 +536,10 @@ static void print_text_uptime( FILE* file, player_t* p )
 
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
-    if ( u -> percentage() > 0 )
+    if ( u -> uptime > 0 )
     {
       if( first ) util_t::fprintf( file, "  Up-Times:\n" ); first = false;
-      util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> percentage(), u -> name() );
+      util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> uptime * 100.0, u -> name() );
     }
   }
 }
@@ -3490,8 +3490,7 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                        "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
                        "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
                        "\t\t\t\t\t\t\t\t\t</ul>\n"
-                       "\t\t\t\t\t\t\t\t</td>\n"
-                       "\t\t\t\t\t\t\t</tr>\n",
+                       "\t\t\t\t\t\t\t\t</td>\n",
                        b -> s_id,
                        b -> cooldown -> name_str.c_str(),
                        b -> tooltip(),
@@ -3499,10 +3498,32 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                        b -> buff_duration,
                        b -> cooldown -> duration,
                        b -> default_chance * 100 );
+
+      util_t::fprintf( file,
+      "\t\t\t\t\t\t\t\t<td colspan=\"7\" class=\"filler\">\n"
+      "\t\t\t\t\t\t\t\t\t<h4>Stack Uptimes</h4>\n"
+      "\t\t\t\t\t\t\t\t\t<ul>\n" );
+      for ( unsigned int i= 0; i < b -> stack_uptime.size(); i++ )
+      {
+        uptime_t* u = b -> stack_uptime[ i ];
+        if ( u -> uptime > 0 )
+        {
+          util_t::fprintf( file,
+              "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s:</span>%.1f%%</li>\n",
+
+                           u -> name(),
+                           u -> uptime * 100.0 );
+        }
+      }
+      util_t::fprintf( file,
+      "\t\t\t\t\t\t\t\t\t</ul>\n"
+      "\t\t\t\t\t\t\t\t</td>\n" );
+      util_t::fprintf( file,
+      "\t\t\t\t\t\t\t\t</tr>\n" );
     }
   }
   util_t::fprintf( file,
-                   "\t\t\t\t\t\t</table>\n" );
+                   "\t\t\t\t\t\t\t</table>\n" );
 
   // constant buffs
   if ( !p -> is_pet() )
@@ -3856,12 +3877,13 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                    "\t\t\t\t\t\t\t<table class=\"sc\">\n"
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<th></th>\n"
-                   "\t\t\t\t\t\t\t\t\t<th>%%</th>\n"
+                   "\t\t\t\t\t\t\t\t\t<th>Uptime %%</th>\n"
+                   "\t\t\t\t\t\t\t\t\t<th>Benefit %%</th>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n" );
   i = 1;
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
-    if ( u -> percentage() > 0 )
+    if ( u -> uptime > 0 || u -> uptime_benefit > 0 )
     {
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr" );
@@ -3873,9 +3895,11 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+                       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
                        u -> name(),
-                       u -> percentage() );
+                       u -> uptime * 100.0,
+                       u -> uptime_benefit * 100.0 );
       i++;
     }
   }

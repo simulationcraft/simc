@@ -5048,7 +5048,7 @@ void death_knight_t::regen( double periodicity )
     _runes.slot[i].regen_rune( this, periodicity );
   }
 
-  uptimes_rp_cap -> update( resource_current[ RESOURCE_RUNIC ] ==
+  uptimes_rp_cap -> update_uptime( resource_current[ RESOURCE_RUNIC ] ==
                             resource_max    [ RESOURCE_RUNIC] );
 }
 
