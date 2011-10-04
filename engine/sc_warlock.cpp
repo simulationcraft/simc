@@ -2481,9 +2481,9 @@ struct drain_life_t : public warlock_spell_t
     may_crit     = false;
   }
 
-  virtual void execute()
+  virtual void last_tick( dot_t* d)
   {
-    warlock_spell_t::execute();
+    warlock_spell_t::last_tick( d );
     warlock_t* p = player -> cast_warlock();
     if ( p -> buffs_soulburn -> check() )
     {
