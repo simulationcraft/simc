@@ -438,17 +438,21 @@ void buff_t::init_buff_t_()
     stack_react_time.resize( max_stack + 1 );
     aura_str.resize( max_stack + 1 );
 
-    std::vector<char> buffer( name_str.size() + 16 );
+    std::size_t n = name_str.size();
+    const std::size_t extra = 16;
+    std::vector<char> buffer( n + extra );
+    memcpy( &buffer[ 0 ], name_str.data(), n );
+
     stack_uptime.clear();
     for ( int i=0; i <= max_stack; i++ )
     {
-      snprintf( &buffer[ 0 ], buffer.size(), "%s_%d", name_str.c_str(), i );
+      snprintf( &buffer[ n ], extra, "_%d", i );
       stack_uptime.push_back( new uptime_t( sim, &buffer[ 0 ] ) );
     }
 
     for ( int i=1; i <= max_stack; i++ )
     {
-      sprintf( &buffer[ 0 ], "%s(%d)", name_str.c_str(), i );
+      snprintf( &buffer[ n ], extra, "(%d)", i );
       aura_str[ i ] = &buffer[ 0 ];
     }
   }
