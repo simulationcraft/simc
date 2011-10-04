@@ -528,9 +528,6 @@ static void trigger_deep_wounds( action_t* a )
                              p -> active_deep_wounds -> weapon_multiplier *
                              p -> active_deep_wounds -> player_multiplier );
 
-  // Correct for the off hand penalty applied in calculate_weapon_damage()
-  if ( p -> active_deep_wounds -> weapon -> slot == SLOT_OFF_HAND ) deep_wounds_dmg *= 2;
-
   dot_t* dot = p -> active_deep_wounds -> dot;
 
   if ( dot -> ticking )
