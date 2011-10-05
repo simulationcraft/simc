@@ -538,6 +538,16 @@ static void print_text_uptime( FILE* file, player_t* p )
   {
     if ( u -> uptime > 0 )
     {
+      if( first ) util_t::fprintf( file, "  Benefits:\n" ); first = false;
+      util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> uptime * 100.0, u -> name() );
+    }
+  }
+
+  first=true;
+  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  {
+    if ( u -> uptime > 0 )
+    {
       if( first ) util_t::fprintf( file, "  Up-Times:\n" ); first = false;
       util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> uptime * 100.0, u -> name() );
     }

@@ -1166,7 +1166,7 @@ struct melee_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> primary_tree() == TREE_FURY )
-      player_multiplier *= 1.0 + p -> spec.precision -> effect_base_value( 3 ) / 100.0;
+      player_multiplier *= 1.0 + p -> spec.precision -> effect3().percent();
   }
 };
 
@@ -1248,8 +1248,6 @@ struct bladestorm_t : public warrior_attack_t
     check_talent( p -> talents.bladestorm -> rank() );
 
     parse_options( NULL, options_str );
-
-    //id = 46924;
 
     aoe       = -1;
     harmful   = false;
@@ -1413,9 +1411,7 @@ struct cleave_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    //id = 845;
-
-    direct_power_mod = 0.4496;
+    direct_power_mod = 0.45;
     base_dd_min      = 6;
     base_dd_max      = 6;
 
@@ -1447,7 +1443,7 @@ struct cleave_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
+    cooldown -> duration = spell_id_t::cooldown() * ( 1.0 + p -> buffs_inner_rage -> effect1().percent() );
 
     warrior_attack_t::update_ready();
   }
@@ -1615,11 +1611,7 @@ struct execute_t : public warrior_attack_t
     // Can't be derived by parse_data() for now.
     direct_power_mod = 0.0437 * max_consumed;
 
-    if ( p -> buffs_lambs_to_the_slaughter -> up() )
-    {
-      int stack = p -> buffs_lambs_to_the_slaughter -> check();
-      player_multiplier *= 1.0 + stack * 0.10;
-    }
+    player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack() * 0.10;
   }
 
   virtual bool ready()
@@ -1705,7 +1697,7 @@ struct heroic_strike_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    cooldown -> duration = ( p -> buffs_inner_rage -> check() ? 1.5 : 3.0 );
+    cooldown -> duration = spell_id_t::cooldown() * ( 1.0 + p -> buffs_inner_rage -> effect1().percent() );
 
     warrior_attack_t::update_ready();
   }
@@ -1857,8 +1849,6 @@ struct pummel_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    //id = 6552;
-
     base_cost *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
@@ -1893,7 +1883,7 @@ struct raging_blow_attack_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     player_multiplier *= 1.0 + p -> composite_mastery() *
-                               p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
+                               p -> mastery.unshackled_fury -> effect3().base_value() / 10000.0;
   }
 };
 
@@ -2000,7 +1990,9 @@ struct rend_dot_t : public warrior_attack_t
 
   virtual void execute()
   {
-    base_td = base_td_init + calculate_weapon_damage() * 0.25;
+    base_td = base_td_init;
+    if ( weapon )
+      base_td += sim -> range( weapon -> min_dmg, weapon -> max_dmg ) * 0.25 + weapon -> swing_time * weapon_power_mod * total_attack_power() / 6.0;
 
     warrior_attack_t::execute();
 

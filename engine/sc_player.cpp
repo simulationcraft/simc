@@ -2872,9 +2872,14 @@ void player_t::merge( player_t& other )
     stats -> merge( other.get_stats( stats -> name_str ) );
   }
 
-  for ( benefit_t* uptime = benefit_list; uptime; uptime = uptime -> next )
+  for ( uptime_t* uptime = uptime_list; uptime; uptime = uptime -> next )
   {
-    uptime -> merge( other.get_benefit( uptime -> name_str ) );
+    uptime -> merge( other.get_uptime( uptime -> name_str ) );
+  }
+
+  for ( benefit_t* benefit = benefit_list; benefit; benefit = benefit -> next )
+  {
+    benefit -> merge( other.get_benefit( benefit -> name_str ) );
   }
 
   for ( std::map<std::string,int>::const_iterator it = other.action_map.begin(),
