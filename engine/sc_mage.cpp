@@ -238,10 +238,10 @@ struct mage_t : public player_t
   talents_list_t talents;
 
   // Up-Times
-  uptime_t* uptimes_arcane_blast[ 5 ];
-  uptime_t* uptimes_dps_rotation;
-  uptime_t* uptimes_dpm_rotation;
-  uptime_t* uptimes_water_elemental;
+  benefit_t* uptimes_arcane_blast[ 5 ];
+  benefit_t* uptimes_dps_rotation;
+  benefit_t* uptimes_dpm_rotation;
+  benefit_t* uptimes_water_elemental;
 
   int mana_gem_charges;
   double mage_armor_timer;
@@ -296,7 +296,7 @@ struct mage_t : public player_t
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_uptimes();
+  virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      combat_begin();
@@ -3639,9 +3639,9 @@ void mage_t::init_procs()
 
 // mage_t::init_uptimes =====================================================
 
-void mage_t::init_uptimes()
+void mage_t::init_benefits()
 {
-  player_t::init_uptimes();
+  player_t::init_benefits();
 
   uptimes_arcane_blast[ 0 ]    = get_uptime( "arcane_blast_0"  );
   uptimes_arcane_blast[ 1 ]    = get_uptime( "arcane_blast_1"  );

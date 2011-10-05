@@ -648,16 +648,12 @@ void buff_t::decrement( int    stacks,
   }
   else
   {
+    double old_stack = current_stack;
     current_stack -= stacks;
     if ( value >= 0 ) current_value = value;
 
-    for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
-    {
-      if ( ( int ) i != current_stack )
-        stack_uptime[ i ] -> update_uptime( false );
-      else
-        stack_uptime[ i ] -> update_uptime( true );
-    }
+    stack_uptime[ old_stack ] -> update( false );
+    stack_uptime[ current_stack ] -> update( true );
 
     if ( sim -> debug )
       log_t::output( sim, "buff %s decremented by %d to %d stacks",
@@ -781,13 +777,8 @@ void buff_t::bump( int    stacks,
     if ( current_stack > max_stack )
       current_stack = max_stack;
 
-    for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
-    {
-      if ( ( int ) i != current_stack )
-        stack_uptime[ i ] -> update_uptime( false );
-      else
-        stack_uptime[ i ] -> update_uptime( true );
-    }
+    stack_uptime[ before_stack ] -> update( false );
+    stack_uptime[ current_stack ] -> update( true );
 
     aura_gain();
 
@@ -840,7 +831,7 @@ void buff_t::expire()
     }
 
   for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> update_uptime( false );
+    stack_uptime[ i ] -> update( false );
 }
 
 // buff_t::predict ==========================================================
@@ -899,9 +890,6 @@ void buff_t::reset()
   last_start = -1;
   last_trigger = -1;
   uptime_sum = 0;
-
-  for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> reset();
 }
 
 // buff_t::merge ============================================================

@@ -316,7 +316,7 @@ struct warlock_t : public player_t
   gain_t* gains_mana_feed;
 
   // Uptimes
-  uptime_t* uptimes_backdraft[ 4 ];
+  benefit_t* uptimes_backdraft[ 4 ];
 
   // Procs
   proc_t* procs_empowered_imp;
@@ -416,7 +416,7 @@ struct warlock_t : public player_t
   virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_gains();
-  virtual void      init_uptimes();
+  virtual void      init_benefits();
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
@@ -4359,9 +4359,9 @@ void warlock_t::init_gains()
 
 // warlock_t::init_uptimes ==================================================
 
-void warlock_t::init_uptimes()
+void warlock_t::init_benefits()
 {
-  player_t::init_uptimes();
+  player_t::init_benefits();
 
   uptimes_backdraft[ 0 ]  = get_uptime( "backdraft_0" );
   uptimes_backdraft[ 1 ]  = get_uptime( "backdraft_1" );

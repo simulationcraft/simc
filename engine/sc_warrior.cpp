@@ -284,7 +284,7 @@ struct warrior_t : public player_t
   talents_t talents;
 
   // Up-Times
-  uptime_t* uptimes_rage_cap;
+  benefit_t* uptimes_rage_cap;
 
   action_t* fiery_attack;
 
@@ -333,7 +333,7 @@ struct warrior_t : public player_t
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_uptimes();
+  virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      combat_begin();
@@ -3395,9 +3395,9 @@ void warrior_t::init_procs()
 
 // warrior_t::init_uptimes ==================================================
 
-void warrior_t::init_uptimes()
+void warrior_t::init_benefits()
 {
-  player_t::init_uptimes();
+  player_t::init_benefits();
 
   uptimes_rage_cap    = get_uptime( "rage_cap" );
 }
@@ -3786,7 +3786,7 @@ void warrior_t::regen( double periodicity )
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
   }
 
-  uptimes_rage_cap -> update_uptime( resource_current[ RESOURCE_RAGE ] ==
+  uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                                      resource_max    [ RESOURCE_RAGE] );
 }
 

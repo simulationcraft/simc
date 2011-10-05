@@ -1271,7 +1271,7 @@ void sim_t::analyze_player( player_t* p )
   p -> total_dmg /= iterations;
   p -> total_heal /= iterations;
 
-  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
     u -> analyze();
 
   std::vector<stats_t*> stats_list;

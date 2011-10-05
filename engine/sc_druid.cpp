@@ -180,8 +180,8 @@ struct druid_t : public player_t
   int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
 
   // Up-Times
-  uptime_t* uptimes_energy_cap;
-  uptime_t* uptimes_rage_cap;
+  benefit_t* uptimes_energy_cap;
+  benefit_t* uptimes_rage_cap;
 
   // Talents
   struct talents_t
@@ -318,7 +318,7 @@ struct druid_t : public player_t
   virtual void      init_scaling();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_uptimes();
+  virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      combat_begin();
@@ -4817,9 +4817,9 @@ void druid_t::init_procs()
 
 // druid_t::init_uptimes ====================================================
 
-void druid_t::init_uptimes()
+void druid_t::init_benefits()
 {
-  player_t::init_uptimes();
+  player_t::init_benefits();
 
   uptimes_energy_cap   = get_uptime( "energy_cap" );
   uptimes_rage_cap     = get_uptime( "rage_cap"   );
@@ -5118,7 +5118,7 @@ void druid_t::regen( double periodicity )
     if ( buffs_enrage -> up() )
       resource_gain( RESOURCE_RAGE, 1.0 * periodicity, gains_enrage );
 
-    uptimes_rage_cap -> update_uptime( resource_current[ RESOURCE_RAGE ] ==
+    uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                                        resource_max    [ RESOURCE_RAGE ] );
   }
 

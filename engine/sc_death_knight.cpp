@@ -308,7 +308,7 @@ struct death_knight_t : public player_t
   talents_t talents;
 
   // Uptimes
-  uptime_t* uptimes_rp_cap;
+  benefit_t* uptimes_rp_cap;
 
   double tier12_4pc_melee_value;
 
@@ -365,7 +365,7 @@ struct death_knight_t : public player_t
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_resources( bool force );
-  virtual void      init_uptimes();
+  virtual void      init_benefits();
   double composite_pet_attack_crit();
   virtual double    composite_armor_multiplier() SC_CONST;
   virtual double    composite_attack_haste() SC_CONST;
@@ -4841,9 +4841,9 @@ void death_knight_t::init_resources( bool force )
 
 // death_knight_t::init_uptimes =============================================
 
-void death_knight_t::init_uptimes()
+void death_knight_t::init_benefits()
 {
-  player_t::init_uptimes();
+  player_t::init_benefits();
 
   uptimes_rp_cap = get_uptime( "rp_cap" );
 }
@@ -5048,7 +5048,7 @@ void death_knight_t::regen( double periodicity )
     _runes.slot[i].regen_rune( this, periodicity );
   }
 
-  uptimes_rp_cap -> update_uptime( resource_current[ RESOURCE_RUNIC ] ==
+  uptimes_rp_cap -> update( resource_current[ RESOURCE_RUNIC ] ==
                                    resource_max    [ RESOURCE_RUNIC] );
 }
 

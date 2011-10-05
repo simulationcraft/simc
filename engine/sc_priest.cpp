@@ -183,10 +183,10 @@ struct priest_t : public player_t
   gain_t* gains_divine_fire;
 
   // Uptimes
-  uptime_t* uptimes_mind_spike[ 4 ];
-  uptime_t* uptimes_dark_flames;
-  uptime_t* uptimes_shadow_orb[ 4 ];
-  uptime_t* uptimes_test_of_faith;
+  benefit_t* uptimes_mind_spike[ 4 ];
+  benefit_t* uptimes_dark_flames;
+  benefit_t* uptimes_shadow_orb[ 4 ];
+  benefit_t* uptimes_test_of_faith;
 
   // Procs
   proc_t* procs_shadowy_apparation;
@@ -368,7 +368,7 @@ struct priest_t : public player_t
   // Character Definition
   virtual void      init_base();
   virtual void      init_gains();
-  virtual void      init_uptimes();
+  virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_talents();
   virtual void      init_spells();
@@ -4805,9 +4805,9 @@ void priest_t::init_scaling()
 
 // priest_t::init_uptimes ===================================================
 
-void priest_t::init_uptimes()
+void priest_t::init_benefits()
 {
-  player_t::init_uptimes();
+  player_t::init_benefits();
 
   uptimes_mind_spike[ 0 ] = get_uptime( "mind_spike_0" );
   uptimes_mind_spike[ 1 ] = get_uptime( "mind_spike_1" );
@@ -4816,10 +4816,10 @@ void priest_t::init_uptimes()
 
   uptimes_dark_flames     = get_uptime( "dark_flames" );
 
-  uptimes_shadow_orb[ 0 ] = get_uptime( "shadow_orb_0" );
-  uptimes_shadow_orb[ 1 ] = get_uptime( "shadow_orb_1" );
-  uptimes_shadow_orb[ 2 ] = get_uptime( "shadow_orb_2" );
-  uptimes_shadow_orb[ 3 ] = get_uptime( "shadow_orb_3" );
+  uptimes_shadow_orb[ 0 ] = get_uptime( "Percentage of Mind Blasts benefiting from 0 Shadow Orbs" );
+  uptimes_shadow_orb[ 1 ] = get_uptime( "Percentage of Mind Blasts benefiting from 1 Shadow Orbs" );
+  uptimes_shadow_orb[ 2 ] = get_uptime( "Percentage of Mind Blasts benefiting from 2 Shadow Orbs" );
+  uptimes_shadow_orb[ 3 ] = get_uptime( "Percentage of Mind Blasts benefiting from 3 Shadow Orbs" );
 
   uptimes_test_of_faith = get_uptime( "test_of_faith" );
 }

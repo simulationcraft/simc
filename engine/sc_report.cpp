@@ -534,7 +534,7 @@ static void print_text_uptime( FILE* file, player_t* p )
 {
   bool first=true;
 
-  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
   {
     if ( u -> uptime > 0 )
     {
@@ -3869,19 +3869,18 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   print_html_player_buffs( file, p );
 
   util_t::fprintf( file,
-                   "\t\t\t\t\t<div class=\"player-section uptimes\">\n"
-                   "\t\t\t\t\t\t<h3 class=\"toggle\">Uptimes</h3>\n"
+                   "\t\t\t\t\t<div class=\"player-section benefits\">\n"
+                   "\t\t\t\t\t\t<h3 class=\"toggle\">Benefits</h3>\n"
                    "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
                    "\t\t\t\t\t\t\t<table class=\"sc\">\n"
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<th></th>\n"
-                   "\t\t\t\t\t\t\t\t\t<th>Uptime %%</th>\n"
-                   "\t\t\t\t\t\t\t\t\t<th>Benefit %%</th>\n"
+                   "\t\t\t\t\t\t\t\t\t<th>%%</th>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n" );
   i = 1;
-  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
   {
-    if ( u -> uptime > 0 || u -> uptime_benefit > 0 )
+    if ( u -> uptime > 0 )
     {
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr" );
@@ -3893,11 +3892,9 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
-                       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
                        u -> name(),
-                       u -> uptime * 100.0,
-                       u -> uptime_benefit * 100.0 );
+                       u -> uptime * 100.0 );
       i++;
     }
   }

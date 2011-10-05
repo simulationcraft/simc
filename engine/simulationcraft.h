@@ -105,6 +105,7 @@ struct action_priority_list_t;
 struct alias_t;
 struct attack_t;
 struct base_stats_t;
+struct benefit_t;
 struct buff_t;
 struct callback_t;
 struct cooldown_t;
@@ -3484,7 +3485,7 @@ struct player_t : public noncopyable
   proc_t*   proc_list;
   gain_t*   gain_list;
   stats_t*  stats_list;
-  uptime_t* uptime_list;
+  benefit_t* benefit_list;
   std::vector<double> dps_plot_data[ STAT_MAX ];
   std::vector<std::vector<double> > reforge_plot_data;
   std::vector<std::vector<double> > timeline_resource;
@@ -3718,7 +3719,7 @@ struct player_t : public noncopyable
   virtual void init_buffs();
   virtual void init_gains();
   virtual void init_procs();
-  virtual void init_uptimes();
+  virtual void init_benefits();
   virtual void init_rng();
   virtual void init_stats();
   virtual void init_values();
@@ -3990,7 +3991,7 @@ struct player_t : public noncopyable
   gain_t*     get_gain    ( const std::string& name );
   proc_t*     get_proc    ( const std::string& name );
   stats_t*    get_stats   ( const std::string& name, action_t* action=0 );
-  uptime_t*   get_uptime  ( const std::string& name );
+  benefit_t*   get_uptime  ( const std::string& name );
   rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );
   double      get_player_distance( const player_t* p ) const;
   double      get_position_distance( double m=0, double v=0 ) const;
@@ -4658,7 +4659,37 @@ struct consumable_t
   static action_t* create_action( player_t*, const std::string& name, const std::string& options );
 };
 
-// Up-Time ==================================================================
+// Benefit ==================================================================
+
+struct benefit_t
+{
+  sim_t* sim;
+
+  int up, down;
+
+  benefit_t* next;
+
+  double uptime;
+  std::string name_str;
+
+  benefit_t( sim_t* s, const std::string& n ) :
+    sim( s ), up( 0 ), down( 0 ),
+    uptime( 0.0 ), name_str( n ) {}
+
+  void update( int is_up ) { if ( is_up ) up++; else down++; }
+
+  const char* name() const { return name_str.c_str(); }
+
+  void analyze()
+  {
+    if ( up != 0 )
+      uptime = 1.0 * up / ( down + up );
+  }
+  void merge( const benefit_t* other )
+  { up += other -> up; down += other -> down; }
+};
+
+// Uptime ==================================================================
 
 struct uptime_t
 {
@@ -4667,18 +4698,16 @@ struct uptime_t
 
   sim_t* sim;
 
-  int up, down;
-
   uptime_t* next;
 
-  double uptime, uptime_benefit;
+  double uptime;
   std::string name_str;
 
   uptime_t( sim_t* s, const std::string& n ) :
-    last_start( -1.0 ), uptime_sum( 0.0 ), sim( s ), up( 0 ), down( 0 ),
-    uptime( 0.0 ), uptime_benefit( 0.0 ), name_str( n ) {}
+    last_start( -1.0 ), uptime_sum( 0.0 ), sim( s ),
+    uptime( 0.0 ), name_str( n ) {}
 
-  void update_uptime( int is_up )
+  void update( int is_up )
   {
     if ( is_up )
     {
@@ -4690,20 +4719,15 @@ struct uptime_t
     }
   }
 
-  void update_benefit( int is_up ) { if ( is_up ) up++; else down++; }
-  void update( int is_up ) { update_benefit( is_up ); }
-
   const char* name() const { return name_str.c_str(); }
 
   void reset() { last_start = -1.0; }
   void analyze()
   {
     uptime = uptime_sum / sim -> iterations / sim -> total_seconds;
-    if ( up != 0 )
-      uptime_benefit = 1.0 * up / ( down + up );
   }
   void merge( const uptime_t* other )
-  { uptime_sum += other -> uptime_sum; up += other -> up; down += other -> down; }
+  { uptime_sum += other -> uptime_sum; }
 };
 
 // Gain =====================================================================

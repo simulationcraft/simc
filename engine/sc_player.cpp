@@ -450,7 +450,7 @@ player_t::player_t( sim_t*             s,
   dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
   death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( 1.0E+50 ), max_death_time( 0 ),
   dmg_taken( 0.0 ), total_dmg_taken( 0.0 ), dtps( 0.0 ), dtps_error( 0.0 ),
-  buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), uptime_list( 0 ),
+  buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ),
   // Gear
   sets( 0 ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
@@ -562,9 +562,9 @@ player_t::~player_t()
     stats_list = s -> next;
     delete s;
   }
-  while ( uptime_t* u = uptime_list )
+  while ( benefit_t* u = benefit_list )
   {
-    uptime_list = u -> next;
+    benefit_list = u -> next;
     delete u;
   }
   while ( rng_t* r = rng_list )
@@ -786,7 +786,7 @@ void player_t::init()
   init_actions();
   init_gains();
   init_procs();
-  init_uptimes();
+  init_benefits();
   init_rng();
   init_stats();
 }
@@ -1688,7 +1688,7 @@ void player_t::init_procs()
 
 // player_t::init_uptimes ===================================================
 
-void player_t::init_uptimes()
+void player_t::init_benefits()
 {
 }
 
@@ -2858,7 +2858,7 @@ void player_t::merge( player_t& other )
     stats -> merge( other.get_stats( stats -> name_str ) );
   }
 
-  for ( uptime_t* uptime = uptime_list; uptime; uptime = uptime -> next )
+  for ( benefit_t* uptime = benefit_list; uptime; uptime = uptime -> next )
   {
     uptime -> merge( other.get_uptime( uptime -> name_str ) );
   }
@@ -2944,11 +2944,6 @@ void player_t::reset()
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> reset();
-  }
-
-  for ( uptime_t* u = uptime_list; u; u = u -> next )
-  {
-    u -> reset();
   }
 
   last_foreground_action = 0;
@@ -4366,19 +4361,19 @@ stats_t* player_t::get_stats( const std::string& n, action_t* a )
 
 // player_t::get_uptime =====================================================
 
-uptime_t* player_t::get_uptime( const std::string& name )
+benefit_t* player_t::get_uptime( const std::string& name )
 {
-  uptime_t* u=0;
+  benefit_t* u=0;
 
-  for ( u = uptime_list; u; u = u -> next )
+  for ( u = benefit_list; u; u = u -> next )
   {
     if ( u -> name_str == name )
       return u;
   }
 
-  u = new uptime_t( sim, name );
+  u = new benefit_t( sim, name );
 
-  uptime_t** tail = &uptime_list;
+  benefit_t** tail = &benefit_list;
 
   while ( *tail && name > ( ( *tail ) -> name_str ) )
   {

@@ -194,9 +194,9 @@ struct rogue_t : public player_t
   proc_t* procs_rolled_tier12_2pc_melee;
 
   // Up-Times
-  uptime_t* uptimes_bandits_guile[ 3 ];
-  uptime_t* uptimes_energy_cap;
-  uptime_t* uptimes_poisoned;
+  benefit_t* uptimes_bandits_guile[ 3 ];
+  benefit_t* uptimes_energy_cap;
+  benefit_t* uptimes_poisoned;
 
   // Random Number Generation
   rng_t* rng_bandits_guile;
@@ -379,7 +379,7 @@ struct rogue_t : public player_t
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_uptimes();
+  virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      init_buffs();
@@ -3783,9 +3783,9 @@ void rogue_t::init_procs()
 
 // rogue_t::init_uptimes ====================================================
 
-void rogue_t::init_uptimes()
+void rogue_t::init_benefits()
 {
-  player_t::init_uptimes();
+  player_t::init_benefits();
 
   uptimes_bandits_guile[ 0 ] = get_uptime( "shallow_insight" );
   uptimes_bandits_guile[ 1 ] = get_uptime( "moderate_insight" );
@@ -4056,7 +4056,7 @@ void rogue_t::regen( double periodicity )
     }
   }
 
-  uptimes_energy_cap -> update_uptime( resource_current[ RESOURCE_ENERGY ] ==
+  uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                        resource_max    [ RESOURCE_ENERGY ] );
 
   for ( int i = 0; i < 3; i++ )

@@ -309,7 +309,7 @@ struct hunter_pet_t : public pet_t
   gain_t* gains_go_for_the_throat;
 
   // Uptimes
-  uptime_t* uptimes_wild_hunt;
+  benefit_t* uptimes_wild_hunt;
 
   hunter_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
     pet_t( sim, owner, pet_name, pt )
@@ -502,9 +502,9 @@ struct hunter_pet_t : public pet_t
     gains_go_for_the_throat = get_gain( "go_for_the_throat" );
   }
 
-  virtual void init_uptimes()
+  virtual void init_benefits()
   {
-    pet_t::init_uptimes();
+    pet_t::init_benefits();
 
     uptimes_wild_hunt  = get_uptime( "wild_hunt" );
   }
