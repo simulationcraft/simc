@@ -1669,11 +1669,10 @@ struct devouring_plague_t : public priest_spell_t
 
 struct dispersion_t : public priest_spell_t
 {
-  pet_t* shadow_fiend;
   int low_mana;
 
   dispersion_t( player_t* player, const std::string& options_str ) :
-    priest_spell_t( "dispersion", player, "Dispersion" ), shadow_fiend( 0 ), low_mana( 0 )
+    priest_spell_t( "dispersion", player, "Dispersion" ), low_mana( 0 )
   {
     option_t options[] =
     {
@@ -1686,7 +1685,6 @@ struct dispersion_t : public priest_spell_t
 
     check_talent( p -> talents.dispersion -> rank() );
 
-    base_execute_time = 0.0;
     base_tick_time    = 1.0;
     num_ticks         = 6;
 
@@ -1694,9 +1692,7 @@ struct dispersion_t : public priest_spell_t
     harmful           = false;
     tick_may_crit     = false;
 
-    if ( p -> glyphs.dispersion -> ok() ) cooldown -> duration -= 45;
-
-    shadow_fiend = p -> find_pet( "shadow_fiend" );
+    cooldown -> duration += p -> glyphs.dispersion -> effect1().seconds();
   }
 
   virtual void tick( dot_t* d )
@@ -1718,7 +1714,7 @@ struct dispersion_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( ! shadow_fiend -> sleeping ) return false;
+    if ( ! p -> pet_shadow_fiend -> sleeping ) return false;
 
     double sf_cooldown_remains  = p -> cooldowns_shadow_fiend -> remains();
     double sf_cooldown_duration = p -> cooldowns_shadow_fiend -> duration;
@@ -1812,7 +1808,7 @@ struct holy_fire_t : public priest_spell_t
 
     base_execute_time += p -> talents.divine_fury -> effect1().seconds();
 
-    base_hit += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
+    base_hit += p -> glyphs.divine_accuracy -> effect1().percent();
 
     can_trigger_atonement = true;
 
@@ -1997,9 +1993,10 @@ struct mind_blast_t : public priest_spell_t
   virtual void player_buff()
   {
     priest_t* p = player -> cast_priest();
-    double m = 1.0;
 
     priest_spell_t::player_buff();
+
+    double m = 1.0;
 
     if ( p -> set_bonus.tier12_4pc_caster() )
     {
@@ -2036,7 +2033,7 @@ struct mind_blast_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    a *= 1 - ( p -> buffs_mind_melt -> check() * ( p -> talents.mind_melt -> rank() * 0.25 ) );
+    a *= 1 + ( p -> buffs_mind_melt -> check() * p -> talents.mind_melt -> effect2().percent() );
 
     return a;
   }
@@ -2095,10 +2092,7 @@ struct mind_flay_t : public priest_spell_t
 
     player_td_multiplier += p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
 
-    if ( p -> glyphs.mind_flay -> ok() )
-    {
-      player_td_multiplier += 0.10;
-    }
+    player_td_multiplier += p -> glyphs.mind_flay -> effect1().percent();
   }
 
   virtual void tick( dot_t* d )
@@ -2209,10 +2203,7 @@ struct mind_flay_t_2 : public priest_spell_t
 
     player_td_multiplier += p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
 
-    if ( p -> glyphs.mind_flay -> ok() )
-    {
-      player_td_multiplier += 0.10;
-    }
+    player_td_multiplier += p -> glyphs.mind_flay -> effect1().percent();
   }
 
   virtual void tick( dot_t* d )
@@ -2627,7 +2618,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     if ( ( ( health_loss > 0.0 ) || ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )  ) && p -> talents.masochism -> rank() )
     {
-      p -> resource_gain( RESOURCE_MANA, 0.04 * p -> talents.masochism -> rank() * p -> resource_max[ RESOURCE_MANA ], p -> gains_masochism );
+      p -> resource_gain( RESOURCE_MANA, p -> talents.masochism -> effect1().percent() * p -> resource_max[ RESOURCE_MANA ], p -> gains_masochism );
     }
   }
 
@@ -2637,9 +2628,10 @@ struct shadow_word_death_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    if ( p -> talents.mind_melt -> rank() && ( target -> health_percentage() <= 25 ) )
-      player_multiplier *= 1.0 + p -> talents.mind_melt -> rank() * 0.15;
+    if ( p -> talents.mind_melt -> rank() && ( target -> health_percentage() <= p -> talents.mind_melt-> spell( 1 ).effect3().base_value() ) )
+      player_multiplier *= 1.0 + p -> talents.mind_melt -> effect1().percent();
 
+    // Hardcoded into the tooltip
     if ( target -> health_percentage() <= 25 )
       player_multiplier *= 3.0;
 
@@ -2687,7 +2679,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     player_td_multiplier += p -> constants.improved_shadow_word_pain_value;
 
-    player_td_multiplier += p -> glyphs.shadow_word_pain -> ok() ? 0.1 : 0.0;
+    player_td_multiplier += p -> glyphs.shadow_word_pain -> effect1().percent();
   }
 
   virtual void tick( dot_t* d )
@@ -2696,22 +2688,13 @@ struct shadow_word_pain_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    // Shadowy Apparation
     trigger_shadowy_apparition( p );
 
-    // Shadow Orb
     if ( result_is_hit() )
     {
       p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
     }
   }
-
-  /*virtual void refresh_duration()
-  {
-    num_ticks++;
-    priest_spell_t::refresh_duration();
-    num_ticks--;
-  }*/
 };
 
 // Shadow Word Pain Spell 2 =================================================
@@ -2739,7 +2722,7 @@ struct shadow_word_pain_t_2 : public priest_spell_t
 
     player_td_multiplier += p -> constants.improved_shadow_word_pain_value;
 
-    player_td_multiplier += p -> glyphs.shadow_word_pain -> ok() ? 0.1 : 0.0;
+    player_td_multiplier += p -> glyphs.shadow_word_pain -> effect1().percent();
   }
 
   virtual void tick( dot_t* d )
@@ -2748,22 +2731,13 @@ struct shadow_word_pain_t_2 : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    // Shadowy Apparation
     trigger_shadowy_apparition( p );
 
-    // Shadow Orb
     if ( result_is_hit() )
     {
       p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
     }
   }
-
-  /*virtual void refresh_duration()
-  {
-    num_ticks++;
-    priest_spell_t::refresh_duration();
-    num_ticks--;
-  }*/
 };
 
 // Vampiric Embrace Spell ===================================================
@@ -2900,14 +2874,14 @@ struct archangel_t : public priest_spell_t
 
     if ( p -> buffs_holy_evangelism -> up() && delta > 0 )
     {
-      cooldown -> duration = p -> dbc.effect( p -> dbc.spell( 87151 ) -> effect2().id() ) -> base_value();
+      cooldown -> duration = effect2().base_value();
       p -> buffs_holy_archangel -> trigger( 1, p -> constants.holy_archangel_value * p -> buffs_holy_evangelism -> stack() );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_holy_evangelism -> expire();
     }
     else if ( p -> buffs_dark_evangelism -> up() && delta < 0 )
     {
-      cooldown -> duration = p -> dbc.effect( p -> dbc.spell( 87151 ) -> effect3().id() ) -> base_value();
+      cooldown -> duration =effect3().base_value();
       p -> buffs_dark_archangel -> trigger( 1, p -> buffs_dark_evangelism -> stack() );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_dark_evangelism -> expire();
@@ -2976,7 +2950,7 @@ struct hymn_of_hope_tick_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    p -> resource_gain( RESOURCE_MANA, 0.02 * p -> resource_max[ RESOURCE_MANA ], p -> gains_hymn_of_hope );
+    p -> resource_gain( RESOURCE_MANA, effect1().percent() * p -> resource_max[ RESOURCE_MANA ], p -> gains_hymn_of_hope );
 
     // Hymn of Hope only adds +x% of the current_max mana, it doesn't change if afterwards max_mana changes.
     p -> buffs.hymn_of_hope -> trigger();
@@ -3055,7 +3029,7 @@ struct smite_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     base_execute_time += p -> talents.divine_fury -> effect1().seconds();
-    base_hit          += p -> glyphs.divine_accuracy -> ok() ? 0.18 : 0.0;
+    base_hit += p -> glyphs.divine_accuracy -> effect1().percent();
 
     can_trigger_atonement = true;
 
@@ -3946,9 +3920,7 @@ struct power_word_shield_t : public priest_absorb_t
     // Rapture
     if ( p -> cooldowns_rapture -> remains() == 0 && p -> talents.rapture -> rank() )
     {
-      // FIX-ME: Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
-      double amount = util_t::talent_rank( p -> talents.rapture -> rank(), 3, 0.02, 0.05, 0.07 );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * amount, p -> gains_rapture );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.rapture -> effect1().percent(), p -> gains_rapture );
       p -> cooldowns_rapture -> start();
     }
   }
@@ -4526,7 +4498,7 @@ double priest_t::composite_armor() SC_CONST
   double a = player_t::composite_armor();
 
   if ( buffs_inner_fire -> up() )
-    a *= 1.0 + buffs_inner_fire -> base_value( E_APPLY_AURA, A_MOD_RESISTANCE_PCT ) / 100.0 * ( 1.0 + glyphs.inner_fire -> ok() * 0.5 );
+    a *= 1.0 + buffs_inner_fire -> base_value( E_APPLY_AURA, A_MOD_RESISTANCE_PCT ) / 100.0 * ( 1.0 + glyphs.inner_fire -> effect1().percent() );
 
   return floor( a );
 }
