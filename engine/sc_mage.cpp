@@ -3643,14 +3643,14 @@ void mage_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_arcane_blast[ 0 ]    = get_uptime( "arcane_blast_0"  );
-  uptimes_arcane_blast[ 1 ]    = get_uptime( "arcane_blast_1"  );
-  uptimes_arcane_blast[ 2 ]    = get_uptime( "arcane_blast_2"  );
-  uptimes_arcane_blast[ 3 ]    = get_uptime( "arcane_blast_3"  );
-  uptimes_arcane_blast[ 4 ]    = get_uptime( "arcane_blast_4"  );
-  uptimes_dps_rotation         = get_uptime( "dps_rotation"    );
-  uptimes_dpm_rotation         = get_uptime( "dpm_rotation"    );
-  uptimes_water_elemental      = get_uptime( "water_elemental" );
+  uptimes_arcane_blast[ 0 ]    = get_benefit( "arcane_blast_0"  );
+  uptimes_arcane_blast[ 1 ]    = get_benefit( "arcane_blast_1"  );
+  uptimes_arcane_blast[ 2 ]    = get_benefit( "arcane_blast_2"  );
+  uptimes_arcane_blast[ 3 ]    = get_benefit( "arcane_blast_3"  );
+  uptimes_arcane_blast[ 4 ]    = get_benefit( "arcane_blast_4"  );
+  uptimes_dps_rotation         = get_benefit( "dps_rotation"    );
+  uptimes_dpm_rotation         = get_benefit( "dpm_rotation"    );
+  uptimes_water_elemental      = get_benefit( "water_elemental" );
 }
 
 // mage_t::init_rng =========================================================

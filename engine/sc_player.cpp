@@ -450,7 +450,7 @@ player_t::player_t( sim_t*             s,
   dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
   death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( 1.0E+50 ), max_death_time( 0 ),
   dmg_taken( 0.0 ), total_dmg_taken( 0.0 ), dtps( 0.0 ), dtps_error( 0.0 ),
-  buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ),
+  buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ),
   // Gear
   sets( 0 ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
@@ -561,6 +561,11 @@ player_t::~player_t()
   {
     stats_list = s -> next;
     delete s;
+  }
+  while ( uptime_t* u = uptime_list )
+  {
+    uptime_list = u -> next;
+    delete u;
   }
   while ( benefit_t* u = benefit_list )
   {
@@ -786,6 +791,7 @@ void player_t::init()
   init_actions();
   init_gains();
   init_procs();
+  init_uptimes();
   init_benefits();
   init_rng();
   init_stats();
@@ -1688,9 +1694,17 @@ void player_t::init_procs()
 
 // player_t::init_uptimes ===================================================
 
-void player_t::init_benefits()
+void player_t::init_uptimes()
 {
+  char buffer[100];
+  snprintf( buffer, sizeof( buffer ), "%s_cap", util_t::resource_type_string( primary_resource() ) );
+  primary_resource_cap = get_uptime( buffer );
 }
+
+// player_t::init_benefits ===================================================
+
+void player_t::init_benefits()
+{ }
 
 // player_t::init_rng =======================================================
 
@@ -2860,7 +2874,7 @@ void player_t::merge( player_t& other )
 
   for ( benefit_t* uptime = benefit_list; uptime; uptime = uptime -> next )
   {
-    uptime -> merge( other.get_uptime( uptime -> name_str ) );
+    uptime -> merge( other.get_benefit( uptime -> name_str ) );
   }
 
   for ( std::map<std::string,int>::const_iterator it = other.action_map.begin(),
@@ -3383,6 +3397,9 @@ double player_t::resource_loss( int       resource,
   if ( sleeping )
     return 0;
 
+  if ( resource == primary_resource() )
+    primary_resource_cap -> update( false );
+
   double actual_amount;
 
   if ( infinite_resource[ resource ] == 0 || is_enemy() )
@@ -3429,6 +3446,9 @@ double player_t::resource_gain( int       resource,
     resource_current[ resource ] += actual_amount;
     resource_gained [ resource ] += actual_amount;
   }
+
+  if ( resource == primary_resource() && resource_max[ resource ] <= resource_current[ resource ] )
+    primary_resource_cap -> update( true );
 
   if ( source )
   {
@@ -4359,9 +4379,9 @@ stats_t* player_t::get_stats( const std::string& n, action_t* a )
   return stats;
 }
 
-// player_t::get_uptime =====================================================
+// player_t::get_benefit =====================================================
 
-benefit_t* player_t::get_uptime( const std::string& name )
+benefit_t* player_t::get_benefit( const std::string& name )
 {
   benefit_t* u=0;
 
@@ -4374,6 +4394,33 @@ benefit_t* player_t::get_uptime( const std::string& name )
   u = new benefit_t( sim, name );
 
   benefit_t** tail = &benefit_list;
+
+  while ( *tail && name > ( ( *tail ) -> name_str ) )
+  {
+    tail = &( ( *tail ) -> next );
+  }
+
+  u -> next = *tail;
+  *tail = u;
+
+  return u;
+}
+
+// player_t::get_uptime =====================================================
+
+uptime_t* player_t::get_uptime( const std::string& name )
+{
+  uptime_t* u=0;
+
+  for ( u = uptime_list; u; u = u -> next )
+  {
+    if ( u -> name_str == name )
+      return u;
+  }
+
+  u = new uptime_t( sim, name );
+
+  uptime_t** tail = &uptime_list;
 
   while ( *tail && name > ( ( *tail ) -> name_str ) )
   {

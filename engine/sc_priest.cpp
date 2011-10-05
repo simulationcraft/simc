@@ -4781,19 +4781,19 @@ void priest_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_mind_spike[ 0 ] = get_uptime( "mind_spike_0" );
-  uptimes_mind_spike[ 1 ] = get_uptime( "mind_spike_1" );
-  uptimes_mind_spike[ 2 ] = get_uptime( "mind_spike_2" );
-  uptimes_mind_spike[ 3 ] = get_uptime( "mind_spike_3" );
+  uptimes_mind_spike[ 0 ] = get_benefit( "mind_spike_0" );
+  uptimes_mind_spike[ 1 ] = get_benefit( "mind_spike_1" );
+  uptimes_mind_spike[ 2 ] = get_benefit( "mind_spike_2" );
+  uptimes_mind_spike[ 3 ] = get_benefit( "mind_spike_3" );
 
-  uptimes_dark_flames     = get_uptime( "dark_flames" );
+  uptimes_dark_flames     = get_benefit( "dark_flames" );
 
-  uptimes_shadow_orb[ 0 ] = get_uptime( "Percentage of Mind Blasts benefiting from 0 Shadow Orbs" );
-  uptimes_shadow_orb[ 1 ] = get_uptime( "Percentage of Mind Blasts benefiting from 1 Shadow Orbs" );
-  uptimes_shadow_orb[ 2 ] = get_uptime( "Percentage of Mind Blasts benefiting from 2 Shadow Orbs" );
-  uptimes_shadow_orb[ 3 ] = get_uptime( "Percentage of Mind Blasts benefiting from 3 Shadow Orbs" );
+  uptimes_shadow_orb[ 0 ] = get_benefit( "Percentage of Mind Blasts benefiting from 0 Shadow Orbs" );
+  uptimes_shadow_orb[ 1 ] = get_benefit( "Percentage of Mind Blasts benefiting from 1 Shadow Orbs" );
+  uptimes_shadow_orb[ 2 ] = get_benefit( "Percentage of Mind Blasts benefiting from 2 Shadow Orbs" );
+  uptimes_shadow_orb[ 3 ] = get_benefit( "Percentage of Mind Blasts benefiting from 3 Shadow Orbs" );
 
-  uptimes_test_of_faith = get_uptime( "test_of_faith" );
+  uptimes_test_of_faith = get_benefit( "test_of_faith" );
 }
 
 // priest_t::init_rng =======================================================

@@ -1274,6 +1274,9 @@ void sim_t::analyze_player( player_t* p )
   for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
     u -> analyze();
 
+  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+    u -> analyze();
+
   std::vector<stats_t*> stats_list;
 
   // Pet Chart Adjustment ===================================================

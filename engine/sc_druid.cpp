@@ -4821,8 +4821,8 @@ void druid_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_energy_cap   = get_uptime( "energy_cap" );
-  uptimes_rage_cap     = get_uptime( "rage_cap"   );
+  uptimes_energy_cap   = get_benefit( "energy_cap" );
+  uptimes_rage_cap     = get_benefit( "rage_cap"   );
 }
 
 // druid_t::init_rng ========================================================

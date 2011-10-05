@@ -3415,6 +3415,7 @@ struct player_t : public noncopyable
   double  resource_buffed [ RESOURCE_MAX ];
   double  mana_per_intellect;
   double  health_per_stamina;
+  uptime_t* primary_resource_cap;
 
   // Replenishment
   std::vector<player_t*> replenishment_targets;
@@ -3486,6 +3487,7 @@ struct player_t : public noncopyable
   gain_t*   gain_list;
   stats_t*  stats_list;
   benefit_t* benefit_list;
+  uptime_t* uptime_list;
   std::vector<double> dps_plot_data[ STAT_MAX ];
   std::vector<std::vector<double> > reforge_plot_data;
   std::vector<std::vector<double> > timeline_resource;
@@ -3719,6 +3721,7 @@ struct player_t : public noncopyable
   virtual void init_buffs();
   virtual void init_gains();
   virtual void init_procs();
+  virtual void init_uptimes();
   virtual void init_benefits();
   virtual void init_rng();
   virtual void init_stats();
@@ -3991,7 +3994,8 @@ struct player_t : public noncopyable
   gain_t*     get_gain    ( const std::string& name );
   proc_t*     get_proc    ( const std::string& name );
   stats_t*    get_stats   ( const std::string& name, action_t* action=0 );
-  benefit_t*   get_uptime  ( const std::string& name );
+  benefit_t*  get_benefit ( const std::string& name );
+  uptime_t*   get_uptime  ( const std::string& name );
   rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );
   double      get_player_distance( const player_t* p ) const;
   double      get_position_distance( double m=0, double v=0 ) const;

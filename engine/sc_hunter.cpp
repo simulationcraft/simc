@@ -506,7 +506,7 @@ struct hunter_pet_t : public pet_t
   {
     pet_t::init_benefits();
 
-    uptimes_wild_hunt  = get_uptime( "wild_hunt" );
+    uptimes_wild_hunt  = get_benefit( "wild_hunt" );
   }
 
   virtual void init_actions()

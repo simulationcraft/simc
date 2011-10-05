@@ -3787,12 +3787,12 @@ void rogue_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_bandits_guile[ 0 ] = get_uptime( "shallow_insight" );
-  uptimes_bandits_guile[ 1 ] = get_uptime( "moderate_insight" );
-  uptimes_bandits_guile[ 2 ] = get_uptime( "deep_insight" );
+  uptimes_bandits_guile[ 0 ] = get_benefit( "shallow_insight" );
+  uptimes_bandits_guile[ 1 ] = get_benefit( "moderate_insight" );
+  uptimes_bandits_guile[ 2 ] = get_benefit( "deep_insight" );
 
-  uptimes_energy_cap = get_uptime( "energy_cap" );
-  uptimes_poisoned   = get_uptime( "poisoned"   );
+  uptimes_energy_cap = get_benefit( "energy_cap" );
+  uptimes_poisoned   = get_benefit( "poisoned"   );
 }
 
 // rogue_t::init_rng ========================================================

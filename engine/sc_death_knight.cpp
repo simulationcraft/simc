@@ -4845,7 +4845,7 @@ void death_knight_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_rp_cap = get_uptime( "rp_cap" );
+  uptimes_rp_cap = get_benefit( "rp_cap" );
 }
 
 // death_knight_t::reset ====================================================

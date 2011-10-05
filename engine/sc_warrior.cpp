@@ -3399,7 +3399,7 @@ void warrior_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_rage_cap    = get_uptime( "rage_cap" );
+  uptimes_rage_cap    = get_benefit( "rage_cap" );
 }
 
 // warrior_t::init_rng ======================================================

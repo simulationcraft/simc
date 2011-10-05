@@ -3870,11 +3870,11 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
 
   util_t::fprintf( file,
                    "\t\t\t\t\t<div class=\"player-section benefits\">\n"
-                   "\t\t\t\t\t\t<h3 class=\"toggle\">Benefits</h3>\n"
+                   "\t\t\t\t\t\t<h3 class=\"toggle\">Benefits & Uptimes</h3>\n"
                    "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
                    "\t\t\t\t\t\t\t<table class=\"sc\">\n"
                    "\t\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t\t<th></th>\n"
+                   "\t\t\t\t\t\t\t\t\t<th>Benefits</th>\n"
                    "\t\t\t\t\t\t\t\t\t<th>%%</th>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n" );
   i = 1;
@@ -3898,6 +3898,32 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
       i++;
     }
   }
+  util_t::fprintf( file,
+  "\t\t\t\t\t\t\t\t<tr>\n"
+  "\t\t\t\t\t\t\t\t\t<th>Uptimes</th>\n"
+  "\t\t\t\t\t\t\t\t\t<th>%%</th>\n"
+  "\t\t\t\t\t\t\t\t</tr>\n" );
+  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  {
+    if ( u -> uptime > 0 )
+    {
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t\t<tr" );
+      if ( !( i & 1 ) )
+      {
+        util_t::fprintf( file, " class=\"odd\"" );
+      }
+      util_t::fprintf( file, ">\n" );
+      util_t::fprintf( file,
+                       "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+                       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+                       "\t\t\t\t\t\t\t\t</tr>\n",
+                       u -> name(),
+                       u -> uptime * 100.0 );
+      i++;
+    }
+  }
+
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t</table>\n"
                    "\t\t\t\t\t\t</div>\n"

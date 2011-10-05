@@ -4383,10 +4383,10 @@ void warlock_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_backdraft[ 0 ]  = get_uptime( "backdraft_0" );
-  uptimes_backdraft[ 1 ]  = get_uptime( "backdraft_1" );
-  uptimes_backdraft[ 2 ]  = get_uptime( "backdraft_2" );
-  uptimes_backdraft[ 3 ]  = get_uptime( "backdraft_3" );
+  uptimes_backdraft[ 0 ]  = get_benefit( "backdraft_0" );
+  uptimes_backdraft[ 1 ]  = get_benefit( "backdraft_1" );
+  uptimes_backdraft[ 2 ]  = get_benefit( "backdraft_2" );
+  uptimes_backdraft[ 3 ]  = get_benefit( "backdraft_3" );
 }
 
 // warlock_t::init_procs ====================================================
