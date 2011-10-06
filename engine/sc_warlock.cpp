@@ -749,7 +749,7 @@ struct warlock_pet_t : public pet_t
 
   virtual double composite_attack_crit() SC_CONST
   {
-   double ac owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
+   double ac = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
     // According to Issue 881, FM on the owner doesn't increase pet crit, only when cast directly on the pet. 28/09/11
     if ( owner -> buffs.focus_magic -> check() )
