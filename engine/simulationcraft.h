@@ -2193,7 +2193,6 @@ struct buff_t : public spell_id_t
   player_t* source;
   player_t* initial_source;
   std::string name_str;
-  std::vector<std::string> aura_str;
   std::vector<double> stack_occurrence,stack_react_time;
   int current_stack, max_stack;
   bool activated;

@@ -281,24 +281,15 @@ void buff_t::init()
   next = *tail;
   *tail = this;
 
+  stack_uptime.clear();
   if( max_stack >= 0 )
   {
     stack_occurrence.resize( max_stack + 1 );
     stack_react_time.resize( max_stack + 1 );
-    aura_str.resize( max_stack + 1 );
 
+    char empty = '\0';
     for ( int i=0; i <= max_stack; i++ )
-    {
-      stack_uptime.push_back( new uptime_t( sim, name() + util_t::to_string( i ) ) );
-    }
-
-
-    std::vector<char> buffer( name_str.size() + 16 );
-    for ( int i=1; i <= max_stack; i++ )
-    {
-      snprintf( &buffer[ 0 ], buffer.size(), "%s(%d)", name_str.c_str(), i );
-      aura_str[ i ] = &buffer[ 0 ];
-    }
+      stack_uptime.push_back( new uptime_t( sim, &empty ) );
   }
 }
 
@@ -432,29 +423,16 @@ void buff_t::init_buff_t_()
   expiration = 0;
   delay = 0;
 
+  stack_uptime.clear();
   if( max_stack >= 0 )
   {
     stack_occurrence.resize( max_stack + 1 );
     stack_react_time.resize( max_stack + 1 );
-    aura_str.resize( max_stack + 1 );
 
-    std::size_t n = name_str.size();
-    const std::size_t extra = 16;
-    std::vector<char> buffer( n + extra );
-    memcpy( &buffer[ 0 ], name_str.data(), n );
+    char empty = '\0';
 
-    stack_uptime.clear();
     for ( int i=0; i <= max_stack; i++ )
-    {
-      snprintf( &buffer[ n ], extra, "_%d", i );
-      stack_uptime.push_back( new uptime_t( sim, &buffer[ 0 ] ) );
-    }
-
-    for ( int i=1; i <= max_stack; i++ )
-    {
-      snprintf( &buffer[ n ], extra, "(%d)", i );
-      aura_str[ i ] = &buffer[ 0 ];
-    }
+      stack_uptime.push_back( new uptime_t( sim, &empty ) );
   }
 }
 
@@ -853,7 +831,14 @@ void buff_t::aura_gain()
 {
   if ( sim -> log )
   {
-    const char* s = ( max_stack < 0 ) ? name() : aura_str[ current_stack ].c_str();
+    size_t alen = name_str.size() + 16;
+    char an[alen];
+    const char* s = name();
+    if ( max_stack >= 0 )
+    {
+      snprintf( an, alen, "%s_%d", name(), current_stack );
+      s = an;
+    }
 
     if ( player )
     {
