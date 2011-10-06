@@ -54,6 +54,7 @@ struct druid_t : public player_t
   buff_t* buffs_survival_instincts;
   buff_t* buffs_t11_4pc_caster;
   buff_t* buffs_t11_4pc_melee;
+  buff_t* buffs_t13_4pc_melee;
   buff_t* buffs_wild_mushroom;
   buff_t* buffs_berserk;
   buff_t* buffs_primal_madness_bear;
@@ -1340,8 +1341,7 @@ struct feral_charge_cat_t : public druid_cat_attack_t
 
     druid_cat_attack_t::execute();
 
-    int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() ) ? 2 : 1;
-    p -> buffs_stampede_cat -> trigger( stacks, stampede_cost_reduction );
+    p -> buffs_stampede_cat -> trigger( 1, stampede_cost_reduction );
   }
 
   virtual bool ready()
@@ -1620,7 +1620,9 @@ struct ravage_t : public druid_cat_attack_t
     druid_cat_attack_t::execute();
 
     p -> buffs_stampede_cat -> decrement();
+    p -> buffs_t13_4pc_melee -> decrement();
     requires_stealth = true;
+    requires_position = POSITION_BACK;
 
     if ( result_is_hit() )
       trigger_infected_wounds( this );
@@ -1636,6 +1638,9 @@ struct ravage_t : public druid_cat_attack_t
 
     c *= 1.0 - p -> buffs_stampede_cat -> value();
 
+    if ( p -> buffs_t13_4pc_melee -> up() )
+      return 0;
+
     return c;
   }
 
@@ -1643,7 +1648,7 @@ struct ravage_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
     attack_t::consume_resource();
-    if ( p -> buffs_omen_of_clarity -> up() && ! p -> buffs_stampede_cat -> check() )
+    if ( p -> buffs_omen_of_clarity -> up() && ! p -> buffs_stampede_cat -> check() && ! p -> buffs_t13_4pc_melee -> check() )
     {
       // Treat the savings like a energy gain.
       double amount = attack_t::cost();
@@ -1675,6 +1680,12 @@ struct ravage_t : public druid_cat_attack_t
     if ( p -> buffs_stampede_cat -> check() )
     {
       requires_stealth = false;
+    }
+
+    if ( p -> buffs_t13_4pc_melee -> check() )
+    {
+      requires_stealth = false;
+      requires_position = POSITION_NONE;
     }
 
     return druid_cat_attack_t::ready();
@@ -1913,6 +1924,7 @@ struct tigers_fury_t : public druid_cat_attack_t
     {
       p -> resource_gain( RESOURCE_ENERGY, p -> talents.king_of_the_jungle -> effect2().resource( RESOURCE_ENERGY ), p -> gains_tigers_fury );
     }
+    p -> buffs_t13_4pc_melee -> trigger();
   }
 
   virtual bool ready()
@@ -4710,9 +4722,10 @@ void druid_t::init_buffs()
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().seconds() );
   buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell( 1 ).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
   buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
-  buffs_stampede_cat       = new buff_t( this, "stampede_cat", ( dbc.ptr && set_bonus.tier13_4pc_melee() ) ? 2 : 1, 10.0, 0, talents.stampede -> ok() );
+  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
+  buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1,  10.0,     0, ( dbc.ptr && set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
   buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 1.0, true );
 
   // buff_t ( sim, id, name, chance, cooldown, quiet, reverse, rng_type )

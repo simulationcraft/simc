@@ -3879,7 +3879,7 @@ void hunter_t::init_buffs()
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, 0, 0, 1, true );
 
   buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
-  buffs_tier13_4pc                  = new buff_t( this, "tier13_4pc", 1, 10.0, 0, tier13_4pc_proc_chance * set_bonus.tier13_4pc_melee() );
+  buffs_tier13_4pc                  = new buff_t( this, "tier13_4pc", 1, 15.0, 0, tier13_4pc_proc_chance * set_bonus.tier13_4pc_melee() );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );

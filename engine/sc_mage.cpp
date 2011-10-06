@@ -1757,7 +1757,7 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( p -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
 
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 4.0;
+      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 3.0;
 
     mage_spell_t::execute();
   }
@@ -2394,6 +2394,12 @@ struct frostfire_bolt_t : public mage_spell_t
     mage_spell_t::execute();
     consume_brain_freeze( this );
     trigger_tier12_mirror_image( this );
+    if ( result_is_hit() )
+    {
+      // PTR
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+        p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
+    }
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
