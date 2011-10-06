@@ -314,7 +314,6 @@ struct priest_t : public player_t
   int    use_mind_blast;
   int    recast_mind_blast;
   bool   was_sub_25;
-  int    double_dot;
 
   remove_dots_event_t* remove_dots_event;
 
@@ -330,7 +329,6 @@ struct priest_t : public player_t
     echo_of_light_merged                 = false;
 
     use_shadow_word_death                = 0;
-    double_dot                           = 0;
     use_mind_blast                       = 1;
     recast_mind_blast                    = 0;
     heals_echo_of_light                  = 0;
@@ -5162,10 +5160,6 @@ void priest_t::init_actions()
     action_list_default = 1;
   }
 
-  // Backwards compatability for the "double_dot" option
-  if ( choose_action_list.empty() && action_list_str.empty() && double_dot )
-    choose_action_list = "double_dot";
-
   player_t::init_actions();
 
   for( action_t* a = action_list; a; a = a -> next )
@@ -5345,15 +5339,6 @@ action_expr_t* priest_t::create_expression( action_t* a, const std::string& name
     };
     return new use_shadow_word_death_expr_t( a );
   }
-  if ( name_str == "double_dot" )
-  {
-    struct double_dot_expr_t : public action_expr_t
-    {
-      double_dot_expr_t( action_t* a ) : action_expr_t( a, "double_dot" ) { result_type = TOK_NUM; }
-      virtual int evaluate() { result_num = action -> player -> cast_priest() -> double_dot; return TOK_NUM; }
-    };
-    return new double_dot_expr_t( a );
-  }
 
   return player_t::create_expression( a, name_str );
 }
@@ -5427,7 +5412,7 @@ void priest_t::create_options()
   option_t priest_options[] =
   {
     { "atonement_target",        OPT_STRING, &( atonement_target_str      ) },
-    { "double_dot",              OPT_BOOL,   &( double_dot                ) },
+    { "double_dot",              OPT_DEPRECATED, ( void* ) "action_list=double_dot"   },
     { "power_infusion_target",   OPT_STRING, &( power_infusion_target_str ) },
     { "use_mind_blast",          OPT_INT,    &( use_mind_blast            ) },
     { "use_shadow_word_death",   OPT_BOOL,   &( use_shadow_word_death     ) },
@@ -5448,7 +5433,7 @@ bool priest_t::create_profile( std::string& profile_str, int save_type, bool sav
   {
     if ( ! power_infusion_target_str.empty() ) profile_str += "power_infusion_target=" + power_infusion_target_str + "\n";
     if ( ! atonement_target_str.empty() ) profile_str += "atonement_target=" + atonement_target_str + "\n";
-    if ( ( use_shadow_word_death ) || ( use_mind_blast != 1 ) || ( double_dot ) )
+    if ( ( use_shadow_word_death ) || ( use_mind_blast != 1 ) )
     {
       profile_str += "## Variables\n";
     }
@@ -5459,10 +5444,6 @@ bool priest_t::create_profile( std::string& profile_str, int save_type, bool sav
     if ( use_mind_blast != 1 )
     {
       profile_str += "use_mind_blast=" + util_t::to_string( use_mind_blast ) + "\n";
-    }
-    if ( double_dot )
-    {
-      profile_str += "double_dot=1\n";
     }
   }
 
@@ -5481,7 +5462,6 @@ void priest_t::copy_from( player_t* source )
   atonement_target_str      = p -> atonement_target_str;
   use_shadow_word_death     = p -> use_shadow_word_death;
   use_mind_blast            = p -> use_mind_blast;
-  double_dot                = p -> double_dot;
 }
 
 // priest_t::decode_set =====================================================
