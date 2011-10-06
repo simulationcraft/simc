@@ -2212,7 +2212,7 @@ struct buff_t : public spell_id_t
   std::vector<uptime_t*> stack_uptime;
 
   buff_t() : sim( 0 ) {}
-  virtual ~buff_t() {}
+  virtual ~buff_t();
 
   // Raid Aura
   buff_t( sim_t*, const std::string& name,
