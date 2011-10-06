@@ -749,7 +749,6 @@ struct priest_heal_t : public heal_t
     da -> heal_target.clear();
     da -> heal_target.push_back( t );
     da -> execute();
-
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )

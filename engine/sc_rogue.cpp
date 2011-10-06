@@ -4075,7 +4075,7 @@ double rogue_t::available() SC_CONST
   return std::max( ( 25 - energy ) / energy_regen_per_second(), 0.1 );
 }
 
-// rogue_t::create_options ==================================================
+// rogue_t::parse_combo_points ==============================================
 
 static bool parse_combo_points( sim_t* sim,
                                 const std::string& name,

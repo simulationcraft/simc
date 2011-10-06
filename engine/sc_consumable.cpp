@@ -44,7 +44,7 @@ struct flask_t : public action_t
     {
       sim -> errorf( "Player %s attempting to use flask of type '%s', which is not supported.\n",
                    player -> name(), type_str.c_str() );
-      background = true;
+      sim -> cancel();
     }
     gain = p -> get_gain( "flask" );
   }
