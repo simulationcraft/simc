@@ -4806,11 +4806,13 @@ void report_t::print_xml( sim_t* sim )
 
 void report_t::print_profiles( sim_t* sim )
 {
+  int k = 0;
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
     if ( p -> is_pet() ) continue;
 
+    k++;
     FILE* file = NULL;
 
     if ( !p -> save_gear_str.empty() ) // Save gear
@@ -4899,11 +4901,15 @@ void report_t::print_profiles( sim_t* sim )
     FILE* file = NULL;
 
     std::string filename = "Raid_Summary.simc";
-    std::string player_str = "#Raid Summary\n\n";
+    std::string player_str = "#Raid Summary\n";
+    player_str += "# Contains ";
+    player_str += util_t::to_string( k );
+    player_str += " Players.\n\n";
 
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[ i ];
+      if ( p -> is_pet() ) continue;
 
       std::string file_name = p -> save_str;
       std::string profile_name;
@@ -4915,7 +4921,7 @@ void report_t::print_profiles( sim_t* sim )
         file_name += " Spec: ";
         file_name += p -> primary_tree_name();
         file_name += " Role: ";
-        file_name += p -> primary_role();
+        file_name += util_t::role_type_string( p -> primary_role() );
         file_name += "\n";
         profile_name += sim -> save_prefix_str;
         profile_name += p -> name_str;
