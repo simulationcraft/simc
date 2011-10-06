@@ -31,3 +31,5 @@ ipch
 *.pro.user.*
 simc_http_log.txt
 log.txt
+bin
+int
