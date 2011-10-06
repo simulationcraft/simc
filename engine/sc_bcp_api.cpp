@@ -664,8 +664,13 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
       sim -> errorf( "BCP API: Failed to download player '%s' trying Wowhead instead\n", cname.c_str() );
       player = wowhead_t::download_player( sim, region, server, cname, "active", caching );
       if ( !player )
-        return false;
+        sim -> errorf( "Wowhead: Failed to download player '%s'\n", cname.c_str() );
+      // Just ignore invalid players
     }
+
+    //  Small throttle
+    thread_t::sleep( sim -> bcp_api_throttle );
+
   }
 
   return true;

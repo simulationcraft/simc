@@ -394,6 +394,9 @@ static bool parse_armory( sim_t*             sim,
     if ( ! option_t::parse( sim, "guild", options, guild_options ) )
       return false;
 
+    // Save Raid Summary file when guilds are downloaded
+    sim -> save_raid_summary = 1;
+
     std::vector<int> ranks_list;
     if ( ! ranks_str.empty() )
     {
@@ -654,10 +657,10 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( -60 ),
   path_str( "." ), output_file( stdout ),
-  armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
+  armory_throttle( 5 ), current_throttle( 5 ),bcp_api_throttle( 1 ), debug_exp( 0 ),
   // Report
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
-  report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
+  report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ), save_raid_summary( 0 ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),
   spell_query( 0 )
@@ -2125,6 +2128,7 @@ void sim_t::create_options()
     { "output",                           OPT_STRING, &( output_file_str                          ) },
     { "path",                             OPT_STRING, &( path_str                                 ) },
     { "path+",                            OPT_APPEND, &( path_str                                 ) },
+    { "save_raid_summary",                OPT_BOOL,   &( save_raid_summary                        ) },
     // Overrides"
     { "override.abominations_might",      OPT_BOOL,   &( overrides.abominations_might             ) },
     { "override.arcane_brilliance",       OPT_BOOL,   &( overrides.arcane_brilliance              ) },

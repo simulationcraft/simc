@@ -4891,6 +4891,60 @@ void report_t::print_profiles( sim_t* sim )
     fprintf( file, "%s", profile_str.c_str() );
     fclose( file );
   }
+
+  // Save overview file for Guild downloads
+  //if ( /* guild parse */ )
+  if ( sim -> save_raid_summary )
+  {
+    FILE* file = NULL;
+
+    std::string filename = "Raid_Summary.simc";
+    std::string player_str = "#Raid Summary\n\n";
+
+    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[ i ];
+
+      std::string file_name = p -> save_str;
+      std::string profile_name;
+
+      if ( file_name.empty() && sim -> save_profiles )
+      {
+        file_name  = "# Player: ";
+        file_name += p -> name_str;
+        file_name += " Spec: ";
+        file_name += p -> primary_tree_name();
+        file_name += " Role: ";
+        file_name += p -> primary_role();
+        file_name += "\n";
+        profile_name += sim -> save_prefix_str;
+        profile_name += p -> name_str;
+        if ( sim -> save_talent_str != 0 )
+        {
+          profile_name += "_";
+          profile_name += p -> primary_tree_name();
+        }
+        profile_name += sim -> save_suffix_str;
+        profile_name += ".simc";
+        util_t::urlencode( util_t::format_text( profile_name, sim -> input_is_utf8 ) );
+        file_name += profile_name;
+        file_name += "\n\n";
+      }
+      player_str += file_name;
+    }
+
+
+    file = fopen( filename.c_str(), "w" );
+    if ( ! file )
+    {
+      sim -> errorf( "Unable to save overview profile %s\n", filename.c_str() );
+    }
+    else
+    {
+      fprintf( file, "%s", player_str.c_str() );
+      fclose( file );
+    }
+  }
 }
 
 // report_t::print_spell_query ==============================================

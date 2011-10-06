@@ -2817,6 +2817,7 @@ struct sim_t : private thread_t
   FILE* output_file;
   int armory_throttle;
   int current_throttle;
+  int bcp_api_throttle;
   int debug_exp;
   int report_precision;
   int report_pets_separately;
@@ -2826,6 +2827,7 @@ struct sim_t : private thread_t
   int hosted_html;
   int print_styles;
   int report_overheal;
+  int save_raid_summary;
 
   // Multi-Threading
   int threads;
