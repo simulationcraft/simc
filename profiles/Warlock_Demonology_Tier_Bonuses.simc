@@ -1,7 +1,7 @@
 default_actions=1
-Warlock_Demonology_T12N.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier11_2pc_caster=0 tier11_4pc_caster=0
-Warlock_Demonology_T12N.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier11_2pc_caster=1 tier11_4pc_caster=0 name=Warlock_Demonology_2PT11
-Warlock_Demonology_T12N.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier11_2pc_caster=1 tier11_4pc_caster=1 name=Warlock_Demonology_4PT11
-Warlock_Demonology_T12N.simc tier12_2pc_caster=1 tier12_4pc_caster=0 tier11_2pc_caster=1 tier11_4pc_caster=0 name=Warlock_Demonology_2PT11_2PT12
-Warlock_Demonology_T12N.simc tier12_2pc_caster=1 tier12_4pc_caster=0 tier11_2pc_caster=0 tier11_4pc_caster=0 name=Warlock_Demonology_2PT12
-Warlock_Demonology_T12N.simc tier12_2pc_caster=1 tier12_4pc_caster=1 tier11_2pc_caster=0 tier11_4pc_caster=0 name=Warlock_Demonology_4PT12
+Tier12N\Warlock_Demonology_T12N.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier11_2pc_caster=0 tier11_4pc_caster=0
+Tier12N\Warlock_Demonology_T12N.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier11_2pc_caster=1 tier11_4pc_caster=0 name=Warlock_Demonology_2PT11
+Tier12N\Warlock_Demonology_T12N.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier11_2pc_caster=1 tier11_4pc_caster=1 name=Warlock_Demonology_4PT11
+Tier12N\Warlock_Demonology_T12N.simc tier12_2pc_caster=1 tier12_4pc_caster=0 tier11_2pc_caster=1 tier11_4pc_caster=0 name=Warlock_Demonology_2PT11_2PT12
+Tier12N\Warlock_Demonology_T12N.simc tier12_2pc_caster=1 tier12_4pc_caster=0 tier11_2pc_caster=0 tier11_4pc_caster=0 name=Warlock_Demonology_2PT12
+Tier12N\Warlock_Demonology_T12N.simc tier12_2pc_caster=1 tier12_4pc_caster=1 tier11_2pc_caster=0 tier11_4pc_caster=0 name=Warlock_Demonology_4PT12
