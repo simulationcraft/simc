@@ -287,13 +287,13 @@ void buff_t::init()
     stack_react_time.resize( max_stack + 1 );
     aura_str.resize( max_stack + 1 );
 
-    std::vector<char> buffer( name_str.size() + 16 );
     for ( int i=0; i <= max_stack; i++ )
     {
-      snprintf( &buffer[ 0 ], buffer.size(), "%s_%d", name_str.c_str(), i );
-      stack_uptime.push_back( new uptime_t( sim, &buffer[ 0 ] ) );
+      stack_uptime.push_back( new uptime_t( sim, name() + util_t::to_string( i ) ) );
     }
 
+
+    std::vector<char> buffer( name_str.size() + 16 );
     for ( int i=1; i <= max_stack; i++ )
     {
       snprintf( &buffer[ 0 ], buffer.size(), "%s(%d)", name_str.c_str(), i );
@@ -907,6 +907,8 @@ void buff_t::merge( buff_t* other )
   refresh_count         += other -> refresh_count;
   trigger_attempts      += other -> trigger_attempts;
   trigger_successes     += other -> trigger_successes;
+  for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
+    stack_uptime[ i ] -> merge ( other -> stack_uptime[ i ] );
 }
 
 // buff_t::analyze ==========================================================
