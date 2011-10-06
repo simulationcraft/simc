@@ -850,8 +850,7 @@ void buff_t::predict()
 void buff_t::aura_gain()
 {
   if ( sim -> log )
-  {
-    size_t alen = name_str.size() + 16;
+  {    
     char an[ 128 ];
     const char* s = name();
     if ( max_stack >= 0 )
