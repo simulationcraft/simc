@@ -4666,20 +4666,18 @@ struct consumable_t
 
 // Benefit ==================================================================
 
-struct benefit_t
+struct benefit_t : public noncopyable
 {
-  sim_t* sim;
-
   int up, down;
 
-  benefit_t* next;
+  double ratio;
 
-  double uptime;
+  benefit_t* next;
   std::string name_str;
 
-  benefit_t( sim_t* s, const std::string& n ) :
-    sim( s ), up( 0 ), down( 0 ),
-    uptime( 0.0 ), name_str( n ) {}
+  explicit benefit_t( const std::string& n ) :
+    up( 0 ), down( 0 ),
+    ratio( 0.0 ), name_str( n ) {}
 
   void update( int is_up ) { if ( is_up ) up++; else down++; }
 
@@ -4688,15 +4686,16 @@ struct benefit_t
   void analyze()
   {
     if ( up != 0 )
-      uptime = 1.0 * up / ( down + up );
+      ratio = 1.0 * up / ( down + up );
   }
+
   void merge( const benefit_t* other )
   { up += other -> up; down += other -> down; }
 };
 
 // Uptime ==================================================================
 
-struct uptime_t
+struct uptime_t : public noncopyable
 {
   double last_start;
   double uptime_sum;
@@ -4728,9 +4727,7 @@ struct uptime_t
 
   void reset() { last_start = -1.0; }
   void analyze()
-  {
-    uptime = uptime_sum / sim -> iterations / sim -> total_seconds;
-  }
+  { uptime = uptime_sum / sim -> iterations / sim -> total_seconds; }
   void merge( const uptime_t* other )
   { uptime_sum += other -> uptime_sum; }
 };

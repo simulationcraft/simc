@@ -536,10 +536,10 @@ static void print_text_uptime( FILE* file, player_t* p )
 
   for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
   {
-    if ( u -> uptime > 0 )
+    if ( u -> ratio > 0 )
     {
       if( first ) util_t::fprintf( file, "  Benefits:\n" ); first = false;
-      util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> uptime * 100.0, u -> name() );
+      util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> ratio * 100.0, u -> name() );
     }
   }
 
@@ -3893,7 +3893,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
   i = 1;
   for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
   {
-    if ( u -> uptime > 0 )
+    if ( u -> ratio > 0 )
     {
       util_t::fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr" );
@@ -3907,7 +3907,7 @@ static void print_html_player( FILE* file, sim_t* sim, player_t* p, int j )
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
                        u -> name(),
-                       u -> uptime * 100.0 );
+                       u -> ratio * 100.0 );
       i++;
     }
   }

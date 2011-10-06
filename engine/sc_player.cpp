@@ -4400,7 +4400,7 @@ benefit_t* player_t::get_benefit( const std::string& name )
       return u;
   }
 
-  u = new benefit_t( sim, name );
+  u = new benefit_t( name );
 
   benefit_t** tail = &benefit_list;
 
