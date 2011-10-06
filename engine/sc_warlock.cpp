@@ -718,6 +718,11 @@ struct warlock_pet_t : public pet_t
   {
     double h = player_t::composite_spell_haste();
     h *= owner -> spell_haste;
+
+    // According to Issue 881, DI on the owner doesn't increase pet haste, only when cast directly on the pet. 28/09/11
+    if ( owner -> buffs.dark_intent -> check() )
+      h *= 1.03;
+
     return h;
   }
 
@@ -744,12 +749,24 @@ struct warlock_pet_t : public pet_t
 
   virtual double composite_attack_crit() SC_CONST
   {
-    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
+   double ac owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
+
+    // According to Issue 881, FM on the owner doesn't increase pet crit, only when cast directly on the pet. 28/09/11
+    if ( owner -> buffs.focus_magic -> check() )
+      ac -= 0.03;
+
+    return ac;
   }
 
   virtual double composite_spell_crit() SC_CONST
   {
-    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
+    double sc = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
+
+    // According to Issue 881, FM on the owner doesn't increase pet crit, only when cast directly on the pet. 28/09/11
+    if ( owner -> buffs.focus_magic -> check() )
+      sc -= 0.03;
+
+    return sc;
   }
 };
 
