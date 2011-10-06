@@ -720,8 +720,8 @@ static void print_text_dps_plots( FILE* file, player_t* p )
     if ( ! pd.empty() )
     {
       util_t::fprintf( file, "    DPS(%s)=", util_t::stat_type_abbrev( i ) );
-      int num_points = pd.size();
-      for( int j=0; j < num_points; j++ )
+      size_t num_points = pd.size();
+      for( size_t j=0; j < num_points; j++ )
       {
         util_t::fprintf( file, "%s%.0f", ( j?"|":"" ), pd[ j ] );
       }
@@ -2098,12 +2098,14 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                       "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
     // Action Details
     std::vector<std::string> processed_actions;
-    for ( int i = s -> action_list.size()-1; i >= 0; i-- )
+    size_t size = s -> action_list.size();
+    for ( int i = 0; i < size; i++ )
     {
       action_t* a = s -> action_list[ i ];
 
       bool found = false;
-      for ( int j = processed_actions.size()-1; j >= 0 && !found; j-- )
+      size_t size = processed_actions.size();
+      for ( int j = 0; j < size && !found; j++ )
         if ( processed_actions[ j ] == a -> name() )
           found = true;
       if( found ) continue;
@@ -2648,7 +2650,7 @@ static void print_html_talents( FILE* file, player_t* p )
 
     for ( int i = 0; i < MAX_TALENT_TREES; i++ )
     {
-      int tree_size = p -> talent_trees[ i ].size();
+      size_t tree_size = p -> talent_trees[ i ].size();
 
       if ( tree_size == 0 )
         continue;
@@ -2664,7 +2666,7 @@ static void print_html_talents( FILE* file, player_t* p )
 
 
 
-      for ( int j=0; j < tree_size; j++ )
+      for ( size_t j=0; j < tree_size; j++ )
       {
         talent_t* t = p -> talent_trees[ i ][ j ];
 
@@ -2807,7 +2809,7 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
                        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
                        "\t\t\t\t\t\t\t\t\t\t<li>",
                        colspan );
-      int num_scaling_stats = p -> scaling_stats.size();
+      size_t num_scaling_stats = p -> scaling_stats.size();
       for ( int i=0; i < num_scaling_stats; i++ )
       {
         if ( i > 0 )
@@ -3299,7 +3301,7 @@ static void print_html_player_resources( FILE* file, player_t* p )
 
 static void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
 {
-  const unsigned num_players = sim -> players_by_name.size();
+  const size_t num_players = sim -> players_by_name.size();
 
   fputs( "\t\t\t\t<div class=\"player-section\">\n"
          "\t\t\t\t\t<h3 class=\"toggle open\">Charts</h3>\n"
@@ -4507,8 +4509,8 @@ void report_t::print_html( sim_t* sim )
   {
     util_t::fprintf( file,
                      "\t\t<pre>\n" );
-    int num_errors = sim -> error_list.size();
-    for( int i=0; i < num_errors; i++ )
+    size_t num_errors = sim -> error_list.size();
+    for( size_t i=0; i < num_errors; i++ )
       util_t::fprintf( file,
                        "      %s\n", sim -> error_list[ i ].c_str() );
     util_t::fprintf( file,

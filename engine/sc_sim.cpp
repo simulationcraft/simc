@@ -1613,11 +1613,11 @@ void sim_t::analyze()
   int max_buckets = ( int ) max_fight_length + 1;
   divisor_timeline.assign( max_buckets, 0 );
 
-  int num_timelines = iteration_timeline.size();
-  for ( int i=0; i < num_timelines; i++ )
+  size_t num_timelines = iteration_timeline.size();
+  for ( size_t i=0; i < num_timelines; i++ )
   {
     int last = ( int ) floor( iteration_timeline[ i ] );
-    int num_buckets = divisor_timeline.size();
+    size_t num_buckets = divisor_timeline.size();
     if ( 1 + last > num_buckets ) divisor_timeline.resize( 1 + last, 0 );
     for ( int j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }

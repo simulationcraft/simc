@@ -134,8 +134,8 @@ player_t* battle_net_t::download_player( sim_t* sim,
   {
     race_str = race_str.substr( pos + 1 );
     race_str = util_t::format_text( util_t::urldecode( race_str ), sim -> input_is_utf8 );
-    int size = race_str.size();
-    for ( int i=0; i < size; i++ ) if ( race_str[ i ] == '-' ) race_str[ i ] = '_';
+    size_t size = race_str.size();
+    for ( size_t i=0; i < size; i++ ) if ( race_str[ i ] == '-' ) race_str[ i ] = '_';
   }
 
   armory_t::format( type_str );

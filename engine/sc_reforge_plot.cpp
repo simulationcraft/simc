@@ -134,7 +134,7 @@ void reforge_plot_t::analyze_stats()
   generate_stat_mods( stat_mods, reforge_plot_stat_indices, 0,
                       cur_stat_mods );
 
-  num_stat_combos = stat_mods.size();
+  num_stat_combos = static_cast<int>(stat_mods.size());
 
   if ( reforge_plot_debug )
   {

@@ -943,7 +943,7 @@ const char* chart_t::time_spent( std::string& s,
 
     stats_list.push_back( st );
   }
-  int num_stats = stats_list.size();
+  size_t num_stats = stats_list.size();
 
   if ( num_stats == 0 && p -> total_waiting == 0 )
     return 0;
@@ -1132,7 +1132,7 @@ const char* chart_t::scale_factors( std::string& s,
     }
   }
 
-  int num_scaling_stats = scaling_stats.size();
+  size_t num_scaling_stats = scaling_stats.size();
   if ( num_scaling_stats == 0 ) return 0;
 
   std::sort( scaling_stats.begin(), scaling_stats.end(), compare_scale_factors( p ) );
@@ -1218,8 +1218,8 @@ const char* chart_t::scaling_dps( std::string& s,
   for ( int i=0; i < STAT_MAX; i++ )
   {
     std::vector<double>& pd = p -> dps_plot_data[ i ];
-    int size = pd.size();
-    for ( int j=0; j < size; j++ )
+    size_t size = pd.size();
+    for ( size_t j=0; j < size; j++ )
     {
       if ( pd[ j ] > max_dps ) max_dps = pd[ j ];
       if ( pd[ j ] < min_dps ) min_dps = pd[ j ];
@@ -1251,7 +1251,7 @@ const char* chart_t::scaling_dps( std::string& s,
   {
     if ( ! stat_color( i ) ) continue;
     std::vector<double>& pd = p -> dps_plot_data[ i ];
-    int size = pd.size();
+    size_t size = pd.size();
     if ( size != num_points ) continue;
     if ( ! first ) s += "|";
     for ( int j=0; j < size; j++ )
@@ -1281,7 +1281,7 @@ const char* chart_t::scaling_dps( std::string& s,
   for ( int i=0; i < STAT_MAX; i++ )
   {
     if ( ! stat_color( i ) ) continue;
-    int size = p -> dps_plot_data[ i ].size();
+    size_t size = p -> dps_plot_data[ i ].size();
     if ( size != num_points ) continue;
     if ( ! first ) s += "|";
     s += util_t::stat_type_abbrev( i );
@@ -1298,7 +1298,7 @@ const char* chart_t::scaling_dps( std::string& s,
   for ( int i=0; i < STAT_MAX; i++ )
   {
     if ( ! stat_color( i ) ) continue;
-    int size = p -> dps_plot_data[ i ].size();
+    size_t size = p -> dps_plot_data[ i ].size();
     if ( size != num_points ) continue;
     if ( ! first ) s += ",";
     first = false;
@@ -1362,7 +1362,7 @@ const char* chart_t::reforge_dps( std::string& s,
   if ( pd.size() == 0 )
     return 0;
 
-  int num_stats = pd[ 0 ].size() - 1;
+  size_t num_stats = pd[ 0 ].size() - 1;
   if ( num_stats != 3 && num_stats != 2 )
   {
     p -> sim -> errorf( "You must choose 2 or 3 stats to generate a reforge plot.\n" );

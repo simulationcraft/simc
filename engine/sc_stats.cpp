@@ -129,7 +129,7 @@ void stats_t::analyze()
   analyzed = true;
 
   bool channeled = false;
-  int num_actions = action_list.size();
+  size_t num_actions = action_list.size();
   for ( int i=0; i < num_actions; i++ )
   {
     action_t* a = action_list[ i ];
@@ -191,7 +191,7 @@ void stats_t::analyze()
 
   compound_amount = actual_amount - opportunity_cost;
 
-  int num_children = children.size();
+  size_t num_children = children.size();
   for( int i=0; i < num_children; i++ )
   {
     children[ i ] -> analyze();

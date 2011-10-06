@@ -646,7 +646,7 @@ void buff_t::decrement( int    stacks,
   }
   else
   {
-    double old_stack = current_stack;
+    int old_stack = current_stack;
     current_stack -= stacks;
     if ( value >= 0 ) current_value = value;
 
@@ -851,6 +851,7 @@ void buff_t::aura_gain()
 {
   if ( sim -> log )
   {
+    size_t alen = name_str.size() + 16;
     char an[ 128 ];
     const char* s = name();
     if ( max_stack >= 0 )

@@ -443,8 +443,11 @@ struct hunter_pet_t : public pet_t
 
     int total_points = 0;
     for( int i=0; i < MAX_TALENT_TREES; i++ )
-      for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
+    {
+      size_t size = talent_trees[i].size();
+      for( size_t j=0; j < size; j++ )
         total_points += talent_trees[ i ][ j ] -> rank();
+    }
 
     // default pet talents
     if ( total_points == 0 )

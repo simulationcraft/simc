@@ -244,7 +244,8 @@ static bool parse_talent_url( sim_t* sim,
   else
   {
     bool all_digits = true;
-    for( int i=url.size()-1; i >= 0 && all_digits; i-- )
+    size_t size = url.size();
+    for( size_t i=0; i < url.size() && all_digits; i++ )
       if( ! isdigit( url[ i ] ) )
         all_digits = false;
 
@@ -616,19 +617,22 @@ player_t::~player_t()
   {
     // FIXME! This cannot be done until we use refcounts.
     // FIXME! I see the same callback pointer being registered multiple times.
-    for( int i=all_callbacks.size()-1; i >= 0; i-- )
+    size_t size = all_callbacks.size();
+    for( size_t i=0; i < size; i++ )
       delete all_callbacks[ i ];
   }
   all_callbacks.clear();
 
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
-    for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
+    size_t talent_trees_size = talent_trees[i].size();
+    for( size_t j=0; j < talent_trees_size; j++ )
       delete talent_trees[ i ][ j ];
     talent_trees[ i ].clear();
   }
 
-  for( int i=glyphs.size()-1; i >= 0; i-- )
+  size_t size=glyphs.size();
+  for( size_t i=0; i < size; i++ )
     delete glyphs[ i ];
   glyphs.clear();
 
@@ -1582,7 +1586,8 @@ void player_t::init_talents()
   {
     talent_tab_points[ i ] = 0;
 
-    for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
+    size_t size=talent_trees[ i ].size();
+    for( size_t j=0; j < size; j++ )
     {
       talent_tab_points[ i ] += talent_trees[ i ][ j ] -> rank();
     }
@@ -3885,7 +3890,7 @@ double player_t::assess_damage( double            amount,
 {
   double mitigated_amount = target_mitigation( amount, school, dmg_type, result, action );
 
-  int num_absorbs = absorb_buffs.size();
+  size_t num_absorbs = absorb_buffs.size();
   double absorbed_amount = 0;
   if ( num_absorbs > 0 )
   {
@@ -5403,9 +5408,9 @@ bool player_t::parse_talent_trees( const int encoding[ MAX_TALENT_SLOTS ] )
 
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
-    int tree_size = talent_trees[ i ].size();
+    size_t tree_size = talent_trees[ i ].size();
 
-    for( int j=0; j < tree_size; j++ )
+    for( size_t j=0; j < tree_size; j++ )
     {
       talent_trees[ i ][ j ] -> set_rank( encoding[ index++ ] );
     }
@@ -5420,7 +5425,8 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 {
   int encoding[ MAX_TALENT_SLOTS ];
 
-  unsigned int i, i_max = std::min( talent_string.size(),
+  size_t i;
+  size_t i_max = std::min( talent_string.size(),
                                     static_cast< size_t >( MAX_TALENT_SLOTS ) );
   for ( i = 0; i < i_max; i++ )
   {
@@ -5468,7 +5474,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   for( int i=0; i < MAX_TALENT_TREES; i++ ) tree_count[ i ] = 0;
 
   int tree = 0;
-  int count = 0;
+  size_t count = 0;
 
   for ( unsigned int i=1; i < talent_string.length(); i++ )
   {
@@ -5606,7 +5612,8 @@ talent_t* player_t::find_talent( const std::string& n,
     if( tree != TALENT_TAB_NONE && tree != i )
       continue;
 
-    for( int j=talent_trees[ i ].size()-1; j >= 0; j-- )
+    size_t size=talent_trees[ i ].size();
+    for( size_t j=0; j < size; j++ )
     {
       talent_t* t = talent_trees[ i ][ j ];
 
@@ -5628,7 +5635,8 @@ void player_t::create_glyphs()
 {
   std::vector<unsigned> glyph_ids = dbc_t::glyphs( util_t::class_id( type ), ptr );
 
-  for( int i=0, n=glyph_ids.size(); i < n; i++ )
+  size_t size=glyph_ids.size();
+  for( size_t i=0; i < size; i++ )
     glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ], ptr ) ) );
 }
 
@@ -5636,7 +5644,8 @@ void player_t::create_glyphs()
 
 glyph_t* player_t::find_glyph( const std::string& n )
 {
-  for( int i=glyphs.size()-1; i >= 0; i-- )
+  size_t size=glyphs.size();
+  for( size_t i=0; i < size; i++ )
   {
     glyph_t* g = glyphs[ i ];
     if( n == g -> sd -> name_cstr() ) return g;

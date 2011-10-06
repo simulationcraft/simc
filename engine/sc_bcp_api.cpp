@@ -441,7 +441,7 @@ bool download_item_data( item_t& item, item_info_t& item_data,
     {
       std::vector<js_node_t*> nodes;
       js_t::get_children( nodes, classes );
-      for ( unsigned i = 0, n = nodes.size(); i < n; ++i )
+      for ( size_t i = 0, n = nodes.size(); i < n; ++i )
       {
         int cid;
         if ( js_t::get_value( cid, nodes[ i ] ) )
@@ -455,7 +455,7 @@ bool download_item_data( item_t& item, item_info_t& item_data,
     {
       std::vector<js_node_t*> nodes;
       js_t::get_children( nodes, races );
-      for ( unsigned i = 0, n = nodes.size(); i < n; ++i )
+      for ( size_t i = 0, n = nodes.size(); i < n; ++i )
       {
         int rid;
         if ( js_t::get_value( rid, nodes[ i ] ) )
@@ -469,7 +469,7 @@ bool download_item_data( item_t& item, item_info_t& item_data,
     {
       std::vector<js_node_t*> nodes;
       js_t::get_children( nodes, stats );
-      for ( unsigned i = 0, n = std::min( nodes.size(), sizeof_array( item_data.stat_type ) ); i < n; ++i )
+      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item_data.stat_type ) ); i < n; ++i )
       {
         if ( ! js_t::get_value( item_data.stat_type[ i ], nodes[ i ], "stat" ) ) throw( "bonus stat" );
         if ( ! js_t::get_value( item_data.stat_val[ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
@@ -480,7 +480,7 @@ bool download_item_data( item_t& item, item_info_t& item_data,
     {
       std::vector<js_node_t*> nodes;
       js_t::get_children( nodes, sockets );
-      for ( unsigned i = 0, n = std::min( nodes.size(), sizeof_array( item_data.socket_color ) ); i < n; ++i )
+      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item_data.socket_color ) ); i < n; ++i )
       {
         std::string color;
         if ( js_t::get_value( color, nodes[ i ], "type" ) )

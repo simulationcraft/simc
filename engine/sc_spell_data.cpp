@@ -1204,7 +1204,7 @@ static spell_data_expr_t* build_expression_tree( sim_t*                     sim,
   std::vector<spell_data_expr_t*> stack;
   spell_data_expr_t* res = 0;
 
-  int num_tokens = tokens.size();
+  size_t num_tokens = tokens.size();
   for( int i=0; i < num_tokens; i++ )
   {
     expr_token_t& t= tokens[ i ];

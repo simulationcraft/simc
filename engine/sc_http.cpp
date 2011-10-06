@@ -153,7 +153,7 @@ static bool download( url_cache_entry_t& entry,
   std::wstring wURL;
   utf8::utf8to16( url.begin(), url.end(), std::back_inserter( wURL ) );
 
-  InetWrapper hFile( InternetOpenUrl( hINet, wURL.c_str(), wHeaders.data(), wHeaders.length(),
+  InetWrapper hFile( InternetOpenUrl( hINet, wURL.c_str(), wHeaders.data(), static_cast<DWORD>(wHeaders.length()),
                                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
   if ( ! hFile )
     return false;
@@ -598,7 +598,7 @@ void http_t::cache_save()
       if ( p -> second.validated == cache::INVALID_ERA )
         continue;
 
-      uint32_t size = p -> first.size();
+      size_t size = p -> first.size();
       file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
       file.write( p -> first.data(), size );
 

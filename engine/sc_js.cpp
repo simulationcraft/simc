@@ -366,13 +366,13 @@ int js_t::get_value( std::vector<std::string>& value,
   js_node_t* node = split_path( root, path );
   if ( ! node ) return 0;
   if ( node -> children.empty() ) return 0;
-  int size = node -> children.size();
+  size_t size = node -> children.size();
   value.resize( size );
-  for( int i=0; i < size; i++ )
+  for( size_t i=0; i < size; i++ )
   {
     value[ i ] = node -> children[ i ] -> value;
   }
-  return size;
+  return static_cast<int>(size);
 }
 
 // js_t::get_name ===========================================================

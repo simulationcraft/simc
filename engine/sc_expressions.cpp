@@ -379,8 +379,8 @@ void expression_t::parse_tokens( action_t* action,
 void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
   log_t::output( sim, "tokens:\n" );
-  int num_tokens = tokens.size();
-  for ( int i=0; i < num_tokens; i++ )
+  size_t num_tokens = tokens.size();
+  for ( size_t i=0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
     log_t::output( sim,  "%2d  '%s'\n", t.type, t.label.c_str() );
@@ -391,8 +391,8 @@ void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 
 void expression_t::convert_to_unary( action_t* /* action */, std::vector<expr_token_t>& tokens )
 {
-  int num_tokens = tokens.size();
-  for ( int i=0; i < num_tokens; i++ )
+  size_t num_tokens = tokens.size();
+  for ( size_t i=0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
 
@@ -418,8 +418,8 @@ bool expression_t::convert_to_rpn( action_t* /* action */, std::vector<expr_toke
 {
   std::vector<expr_token_t> rpn, stack;
 
-  int num_tokens = tokens.size();
-  for ( int i=0; i < num_tokens; i++ )
+  size_t num_tokens = tokens.size();
+  for ( size_t i=0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
 
@@ -485,8 +485,8 @@ static action_expr_t* build_expression_tree( action_t* action,
   std::vector<action_expr_t*> stack;
   action_expr_t* res = 0;
 
-  int num_tokens = tokens.size();
-  for( int i=0; i < num_tokens; i++ )
+  size_t num_tokens = tokens.size();
+  for( size_t i=0; i < num_tokens; i++ )
   {
     expr_token_t& t= tokens[ i ];
 
