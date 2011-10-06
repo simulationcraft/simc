@@ -164,9 +164,7 @@ bool option_t::parse( sim_t*             sim,
                       const std::string& n,
                       const std::string& v )
 {
-  if ( ! name ) return false;
-
-  if ( n == name )
+  if ( name && n == name )
   {
     switch ( type )
     {
@@ -191,8 +189,11 @@ bool option_t::parse( sim_t*             sim,
     case OPT_DEPRECATED:
       sim -> errorf( "Option '%s' has been deprecated.\n", name );
       if ( address ) sim -> errorf( "Please use option '%s' instead.\n", ( char* ) address );
-      exit( 0 );
-    default: assert( 0 );
+      sim -> cancel();
+      break;
+    default:
+      assert( 0 );
+      return false;
     }
     return true;
   }
