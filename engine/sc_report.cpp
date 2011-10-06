@@ -3516,11 +3516,10 @@ static void print_html_player_buffs( FILE* file, player_t* p )
       for ( unsigned int i= 0; i < b -> stack_uptime.size(); i++ )
       {
         uptime_t* u = b -> stack_uptime[ i ];
-        size_t blen = b -> name_str.size() + 16;
-        char bn[ blen ];
+        char bn[ 128 ];
         if ( u -> uptime > 0 )
         {
-          snprintf( bn, blen, "%s_%d", b -> name(), i );
+          snprintf( bn, sizeof( bn ), "%s_%d", b -> name(), i );
           util_t::fprintf( file,
                            "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s:</span>%.1f%%</li>\n",
                            bn,
