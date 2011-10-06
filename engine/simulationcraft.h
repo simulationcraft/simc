@@ -3306,6 +3306,7 @@ struct player_t : public noncopyable
   std::vector<buff_t*> absorb_buffs;
   int         scale_player;
   bool        has_dtr;
+  double      avg_ilvl;
 
   // Latency
   double      world_lag, world_lag_stddev;

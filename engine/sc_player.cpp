@@ -374,7 +374,7 @@ player_t::player_t( sim_t*             s,
   pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
-  reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ), scale_player( 1 ), has_dtr( false ),
+  reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ), scale_player( 1 ), has_dtr( false ), avg_ilvl( 0 ),
   // Latency
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   brain_lag( -1.0 ), brain_lag_stddev( -1.0 ),
@@ -876,6 +876,8 @@ void player_t::init_items()
       return;
     }
 
+    avg_ilvl += item.ilevel;
+
     slots[ item.slot ] = item.matching_type();
 
     for ( int j=0; j < STAT_MAX; j++ )
@@ -883,6 +885,8 @@ void player_t::init_items()
       item_stats.add_stat( j, item.stats.get_stat( j ) );
     }
   }
+
+  avg_ilvl /= num_items;
 
   switch ( type )
   {
@@ -1704,9 +1708,8 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
-  char buffer[100];
-  snprintf( buffer, sizeof( buffer ), "%s_cap", util_t::resource_type_string( primary_resource() ) );
-  primary_resource_cap = get_uptime( buffer );
+
+  primary_resource_cap = get_uptime( util_t::resource_type_string( primary_resource() ) + (std::string) "_cap" );
 }
 
 // player_t::init_benefits ===================================================

@@ -665,14 +665,57 @@ sim_t::sim_t( sim_t* p, int index ) :
   threads( 0 ), thread_index( index ),
   spell_query( 0 )
 {
+
   path_str += "|profiles";
   path_str += "|profiles_heal";
+  path_str += "|profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier13H";
+  path_str += "|profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier13N";
+  path_str += "|profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier12H";
+  path_str += "|profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier12N";
+  path_str += "|profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier11H";
+
+
   path_str += "|..";
   path_str += DIRECTORY_DELIMITER;
   path_str += "profiles";
   path_str += "|..";
   path_str += DIRECTORY_DELIMITER;
   path_str += "profiles_heal";
+  path_str += "|..";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier13H";
+  path_str += "|..";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier13N";
+  path_str += "|..";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier12H";
+  path_str += "|..";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier12N";
+  path_str += "|..";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "Tier11H";
 
   // Initialize the default item database source order
   const char* dbsources[] = { "local", "wowhead", "mmoc", "armory", "ptrhead" };
