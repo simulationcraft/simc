@@ -2188,28 +2188,28 @@ struct gear_stats_t
 
 struct buff_t : public spell_id_t
 {
-  sim_t* sim;
-  player_t* player;
-  player_t* source;
-  player_t* initial_source;
-  std::string name_str;
-  std::vector<double> stack_occurrence,stack_react_time;
-  int current_stack, max_stack;
-  bool activated;
   double current_value, react, buff_duration, buff_cooldown, default_chance;
   double last_start, last_trigger, start_intervals_sum, trigger_intervals_sum, uptime_sum;
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
   double uptime_pct, benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
-  bool reverse, constant, quiet, overridden;
-  int aura_id;
+  std::string name_str;
+  std::vector<double> stack_occurrence, stack_react_time;
+  std::vector<uptime_t*> stack_uptime;
+  sim_t* sim;
+  player_t* player;
+  player_t* source;
+  player_t* initial_source;
   event_t* expiration;
   event_t* delay;
-  int rng_type;
   rng_t* rng;
   cooldown_t* cooldown;
   buff_t* next;
-  std::vector<uptime_t*> stack_uptime;
+  int current_stack, max_stack;
+  int aura_id;
+  int rng_type;
+  bool activated;
+  bool reverse, constant, quiet, overridden;
 
   buff_t() : sim( 0 ) {}
   virtual ~buff_t();
@@ -2272,15 +2272,17 @@ public:
   virtual void reset();
   virtual void aura_gain();
   virtual void aura_loss();
-  virtual void merge( buff_t* other_buff );
+  virtual void merge( const buff_t* other_buff );
   virtual void analyze();
   virtual void init();
   virtual void parse_options( va_list vap );
-  virtual const char* name() { return name_str.c_str(); }
+
+  const char* name() { return name_str.c_str(); }
 
   action_expr_t* create_expression( action_t*, const std::string& type );
   std::string    to_str() SC_CONST;
 
+  static buff_t* find(   buff_t*, const std::string& name );
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
 
@@ -2293,8 +2295,9 @@ public:
 
 struct stat_buff_t : public buff_t
 {
-  int stat;
   double amount;
+  int stat;
+
   stat_buff_t( player_t*, const std::string& name,
                int stat, double amount,
                int max_stack=1, double buff_duration=0, double buff_cooldown=0,
@@ -2302,7 +2305,7 @@ struct stat_buff_t : public buff_t
   stat_buff_t( player_t*, const uint32_t id, const std::string& name,
                  int stat, double amount,
                  double chance=1.0, double buff_cooldown=-1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
-  virtual ~stat_buff_t() { };
+
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
@@ -2310,8 +2313,8 @@ struct stat_buff_t : public buff_t
 
 struct cost_reduction_buff_t : public buff_t
 {
-  int school;
   double amount;
+  int school;
   bool refreshes;
 
   cost_reduction_buff_t( player_t*, const std::string& name,
@@ -2321,7 +2324,7 @@ struct cost_reduction_buff_t : public buff_t
   cost_reduction_buff_t( player_t*, const uint32_t id, const std::string& name,
                          int school, double amount,
                          double chance=1.0, double buff_cooldown=-1.0, bool refreshes=false, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
-  virtual ~cost_reduction_buff_t() { };
+
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
@@ -2375,9 +2378,9 @@ enum token_type_t {
 
 struct new_buff_t : public buff_t
 {
-  int                       default_stack_charge;
   const spelleffect_data_t* e_data[MAX_EFFECTS];
   const spelleffect_data_t* single;
+  int                       default_stack_charge;
 
   new_buff_t( player_t*, const std::string&, uint32_t, double override_chance = 0.0, bool quiet = false, bool reverse = false, int rng_type = RNG_CYCLIC );
 
@@ -5171,6 +5174,10 @@ void sliding_window_average( In first, In last, Out out )
     std::fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
   }
 }
+
+inline buff_t* buff_t::find( sim_t* s, const std::string& name ) { return find( s -> buff_list, name ); }
+inline buff_t* buff_t::find( player_t* p, const std::string& name ) { return find( p -> buff_list, name ); }
+
 
 #ifdef WHAT_IF
 
