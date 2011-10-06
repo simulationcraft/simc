@@ -731,7 +731,6 @@ struct hunter_attack_t : public attack_t
 
   virtual double cost() SC_CONST;
   virtual void   consume_resource();
-  virtual void travel( player_t* t, int travel_result, double travel_dmg );
   virtual double execute_time() SC_CONST;
   virtual double swing_haste() SC_CONST;
   virtual void   player_buff();
@@ -1823,21 +1822,9 @@ void hunter_attack_t::consume_resource()
     {
       p -> gains_tier12_4pc -> add( amount );
       p -> gains_tier12_4pc -> type = RESOURCE_FOCUS;
-      if ( ! p -> bugs )
-        p -> buffs_tier12_4pc -> expire();
+      p -> buffs_tier12_4pc -> expire();
     }
   }
-}
-
-void hunter_attack_t::travel( player_t* t, int travel_result, double travel_dmg )
-{
-  attack_t::travel( t, travel_result, travel_dmg );
-
-  hunter_t* p = player -> cast_hunter();
-
-  // http://elitistjerks.com/f74/t112408-cataclysm_4_2_marksmanship_guide/p23/#post2012391
-  if ( p -> bugs )
-    p -> buffs_tier12_4pc -> expire();
 }
 
 // hunter_attack_t::swing_haste =============================================
@@ -2225,17 +2212,6 @@ struct arcane_shot_t : public hunter_attack_t
 
     p -> buffs_lock_and_load -> up();
     p -> buffs_lock_and_load -> decrement();
-  }
-
-  virtual void consume_resource()
-  {
-    hunter_attack_t::consume_resource();
-
-    hunter_t* p = player -> cast_hunter();
-
-    // http://elitistjerks.com/f74/t112408-cataclysm_4_2_marksmanship_guide/p23/#post2012407
-    if ( p -> bugs )
-      p -> buffs_tier12_4pc -> expire();
   }
 };
 
