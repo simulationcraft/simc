@@ -3897,7 +3897,7 @@ double player_t::assess_damage( double            amount,
   double absorbed_amount = 0;
   if ( num_absorbs > 0 )
   {
-    for ( int i = 0; i < num_absorbs; i++ )
+    for ( size_t i = 0; i < num_absorbs; i++ )
     {
       double buff_value = absorb_buffs[ i ] -> value();
       double value = std::min( mitigated_amount - absorbed_amount, buff_value );
@@ -5534,7 +5534,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   if ( sim -> debug )
   {
     std::string str_out;
-    for ( int i = 0; i < count; i++ ) str_out += ( char )encoding[i];
+    for ( size_t i = 0; i < count; i++ ) str_out += ( char )encoding[i];
     util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.c_str() );
   }
 

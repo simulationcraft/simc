@@ -1662,7 +1662,7 @@ void sim_t::analyze()
     int last = ( int ) floor( iteration_timeline[ i ] );
     size_t num_buckets = divisor_timeline.size();
     if ( 1 + last > num_buckets ) divisor_timeline.resize( 1 + last, 0 );
-    for ( int j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
+    for ( size_t j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }
 
   // buff_t::analyze must be called before total_seconds is normalized via iteration count
@@ -1691,7 +1691,7 @@ void sim_t::analyze()
 
     distribution_timeline.assign( num_buckets, 0 );
 
-    for ( int i=1; i < num_timelines-1; i++ )
+    for ( size_t i=1; i < num_timelines-1; i++ )
     {
       int index = ( int ) ( num_buckets * ( iteration_timeline[ i ] - min ) / range );
       distribution_timeline[ index ]++;

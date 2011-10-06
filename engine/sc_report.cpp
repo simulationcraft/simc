@@ -2099,13 +2099,13 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     // Action Details
     std::vector<std::string> processed_actions;
     size_t size = s -> action_list.size();
-    for ( int i = 0; i < size; i++ )
+    for ( size_t i = 0; i < size; i++ )
     {
       action_t* a = s -> action_list[ i ];
 
       bool found = false;
       size_t size = processed_actions.size();
-      for ( int j = 0; j < size && !found; j++ )
+      for ( size_t j = 0; j < size && !found; j++ )
         if ( processed_actions[ j ] == a -> name() )
           found = true;
       if( found ) continue;
@@ -2810,7 +2810,7 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
                        "\t\t\t\t\t\t\t\t\t\t<li>",
                        colspan );
       size_t num_scaling_stats = p -> scaling_stats.size();
-      for ( int i=0; i < num_scaling_stats; i++ )
+      for ( size_t i=0; i < num_scaling_stats; i++ )
       {
         if ( i > 0 )
         {

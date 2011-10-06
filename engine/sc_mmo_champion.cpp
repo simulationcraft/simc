@@ -266,7 +266,7 @@ static bool parse_item_stats( item_t&     item,
   get_tti_value( descriptions, node, "tti-stat"  );
   get_tti_value( descriptions, node, "tti-stats" );
   size_t num_descriptions = descriptions.size();
-  for ( int i=0; i < num_descriptions; i++ )
+  for ( size_t i=0; i < num_descriptions; i++ )
   {
     armory_t::fuzzy_stats( item.armory_stats_str, descriptions[ i ] );
   }

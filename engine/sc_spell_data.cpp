@@ -1205,7 +1205,7 @@ static spell_data_expr_t* build_expression_tree( sim_t*                     sim,
   spell_data_expr_t* res = 0;
 
   size_t num_tokens = tokens.size();
-  for( int i=0; i < num_tokens; i++ )
+  for( size_t i=0; i < num_tokens; i++ )
   {
     expr_token_t& t= tokens[ i ];
 

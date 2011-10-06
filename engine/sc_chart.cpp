@@ -963,7 +963,7 @@ const char* chart_t::time_spent( std::string& s,
     s += "&amp;";
   }
   s += "chd=t:";
-  for ( int i=0; i < num_stats; i++ )
+  for ( size_t i=0; i < num_stats; i++ )
   {
     snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * stats_list[ i ] -> total_time / p -> total_seconds ); s += buffer;
   }
@@ -977,7 +977,7 @@ const char* chart_t::time_spent( std::string& s,
   s += "chdls=ffffff";
   s += "&amp;";
   s += "chco=";
-  for ( int i=0; i < num_stats; i++ )
+  for ( size_t i=0; i < num_stats; i++ )
   {
     if ( i ) s += ",";
 
@@ -997,7 +997,7 @@ const char* chart_t::time_spent( std::string& s,
   }
   s += "&amp;";
   s += "chl=";
-  for ( int i=0; i < num_stats; i++ )
+  for ( size_t i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
     if ( i ) s += "|";
@@ -1154,13 +1154,13 @@ const char* chart_t::scale_factors( std::string& s,
     s += "&amp;";
   }
   snprintf( buffer, sizeof( buffer ), "chd=t%i:" , 1 ); s += buffer;
-  for ( int i=0; i < num_scaling_stats; i++ )
+  for ( size_t i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
-  for ( int i=0; i < num_scaling_stats; i++ )
+  for ( size_t i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - p -> scaling_error.get_stat( scaling_stats[ i ] );
     if ( factor < 0 )
@@ -1168,7 +1168,7 @@ const char* chart_t::scale_factors( std::string& s,
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
-  for ( int i=0; i < num_scaling_stats; i++ )
+  for ( size_t i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + p -> scaling_error.get_stat( scaling_stats[ i ] );
     if ( factor < 0 )
@@ -1183,7 +1183,7 @@ const char* chart_t::scale_factors( std::string& s,
   s += "&amp;";
   s += "chm=";
   snprintf( buffer, sizeof( buffer ), "E,FF0000,1:0,,1:20|" ); s += buffer;
-  for ( int i=0; i < num_scaling_stats; i++ )
+  for ( size_t i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util_t::stat_type_abbrev( scaling_stats[ i ] );
@@ -1254,7 +1254,7 @@ const char* chart_t::scaling_dps( std::string& s,
     size_t size = pd.size();
     if ( size != num_points ) continue;
     if ( ! first ) s += "|";
-    for ( int j=0; j < size; j++ )
+    for ( size_t j=0; j < size; j++ )
     {
       snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j?",":"" ), pd[ j ] ); s += buffer;
     }
