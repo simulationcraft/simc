@@ -217,14 +217,14 @@ static bool parse_talent_url( sim_t* sim,
 
   if ( url.find( "worldofwarcraft" ) != url.npos )
   {
-    if ( ( cut_pt = url.find_first_of( "=" ) ) != url.npos )
+    if ( ( cut_pt = url.find_first_of( '=' ) ) != url.npos )
     {
       return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
     }
   }
   else if ( url.find( "wowarmory" ) != url.npos )
   {
-    if ( ( cut_pt = url.find_last_of( "=" ) ) != url.npos )
+    if ( ( cut_pt = url.find_last_of( '=' ) ) != url.npos )
     {
       return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
     }
@@ -233,7 +233,7 @@ static bool parse_talent_url( sim_t* sim,
   {
     if ( ( cut_pt = url.find_first_of( "#=" ) ) != url.npos )
     {
-      std::string::size_type cut_pt2 = url.find_first_of( "-", cut_pt + 1 );
+      std::string::size_type cut_pt2 = url.find_first_of( '-', cut_pt + 1 );
       // Add support for http://www.wowhead.com/talent#priest-033211000000000000000000000000000000000000322032210201222100231
       if ( cut_pt2 != url.npos )
         return p -> parse_talents_armory( url.substr( cut_pt2 + 1 ) );
@@ -244,7 +244,6 @@ static bool parse_talent_url( sim_t* sim,
   else
   {
     bool all_digits = true;
-    size_t size = url.size();
     for( size_t i=0; i < url.size() && all_digits; i++ )
       if( ! isdigit( url[ i ] ) )
         all_digits = false;
