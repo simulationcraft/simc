@@ -15,21 +15,6 @@ bool pred_ci ( char a, char b )
   return std::tolower( a ) == std::tolower( b );
 }
 
-// vfprintf_helper ==========================================================
-
-int vfprintf_helper( FILE *stream, const char *format, va_list args )
-{
-  char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
-  setlocale( LC_CTYPE, "" );
-
-  int retcode = vfprintf( stream, format, args );
-
-  setlocale( LC_CTYPE, p_locale );
-  free( p_locale );
-
-  return retcode;
-}
-
 } // ANONYMOUS namespace ====================================================
 
 // util_t::str_compare_ci ===================================================
@@ -2012,8 +1997,14 @@ std::string util_t::to_string( int i )
 
 std::string util_t::to_string( int64_t i )
 {
+#ifdef WIN32
+  // C99 is hard!
+  const char* fmt = "%I64d";
+#else
+  const char* fmt = "%lld";
+#endif
   char buffer[ 64 ];
-  snprintf( buffer, sizeof( buffer ), "%ld", i );
+  snprintf( buffer, sizeof( buffer ), fmt, i );
   return std::string( buffer );
 }
 
@@ -2083,6 +2074,21 @@ int64_t util_t::parse_date( const std::string& month_day_year )
   return atoi( buffer.c_str() );
 }
 
+// util_t::vfprintf_helper ==================================================
+
+int util_t::vfprintf_helper( FILE *stream, const char *format, va_list args )
+{
+  char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
+  setlocale( LC_CTYPE, "" );
+
+  int retcode = vfprintf( stream, format, args );
+
+  setlocale( LC_CTYPE, p_locale );
+  free( p_locale );
+
+  return retcode;
+}
+
 // util_t::fprintf ==========================================================
 
 int util_t::fprintf( FILE *stream, const char *format,  ... )
@@ -2097,14 +2103,6 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
-// util_t::vfprintf =========================================================
-
-int util_t::vfprintf( FILE *stream, const char *format, va_list fmtargs )
-{
-  int retcode = vfprintf_helper( stream, format, fmtargs );
-  return retcode;
-}
-
 // util_t::printf ===========================================================
 
 int util_t::printf( const char *format,  ... )
@@ -2116,14 +2114,6 @@ int util_t::printf( const char *format,  ... )
 
   va_end( fmtargs );
 
-  return retcode;
-}
-
-// util_t::vprintf ==========================================================
-
-int util_t::vprintf( const char *format, va_list fmtargs )
-{
-  int retcode = vfprintf_helper( stdout, format, fmtargs );
   return retcode;
 }
 

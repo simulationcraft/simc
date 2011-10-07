@@ -32,16 +32,6 @@
 #  include <stdint.h>
 #endif
 
-#if defined(__GNUC__)
-#  define likely(x)       __builtin_expect((x),1)
-#  define unlikely(x)     __builtin_expect((x),0)
-#  define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
-#else
-#  define likely(x) (x)
-#  define unlikely(x) (x)
-#  define PRINTF_ATTRIBUTE(a,b)
-#endif
-
 #include <algorithm>
 #include <cassert>
 #include <cctype>
@@ -83,6 +73,16 @@
 #include <pthread.h>
 #include <unistd.h>
 #endif
+
+#if defined(__GNUC__)
+#  define likely(x)       __builtin_expect((x),1)
+#  define unlikely(x)     __builtin_expect((x),0)
+#else
+#  define likely(x) (x)
+#  define unlikely(x) (x)
+#  define __attribute__(x)
+#endif
+#define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 
 #include "data_definitions.hh"
 
@@ -1777,6 +1777,7 @@ private:
   static void html_special_char_decode_( std::string& str );
   static void tolower_( std::string& );
   static void string_split_( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes );
+  static int vfprintf_helper( FILE *stream, const char *format, va_list fmtargs );
 
 public:
   static double talent_rank( int num, int max, double increment );
@@ -1879,10 +1880,12 @@ public:
   static int64_t milliseconds();
   static int64_t parse_date( const std::string& month_day_year );
 
-  static int printf( const char *format,  ... ) PRINTF_ATTRIBUTE(1,2);
-  static int vprintf( const char *format,  va_list fmtargs );
-  static int fprintf( FILE *stream, const char *format,  ... ) PRINTF_ATTRIBUTE(2,3);
-  static int vfprintf( FILE *stream, const char *format,  va_list fmtargs );
+  static int printf( const char *format, ... ) PRINTF_ATTRIBUTE(1,2);
+  static int fprintf( FILE *stream, const char *format, ... ) PRINTF_ATTRIBUTE(2,3);
+  static int vfprintf( FILE *stream, const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE(2,0)
+  { return vfprintf_helper( stream, format, fmtargs ); }
+  static int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE(1,0)
+  { return vfprintf( stdout, format, fmtargs ); }
 
   static std::string& str_to_utf8( std::string& str ) { str_to_utf8_( str ); return str; }
   static std::string& str_to_latin1( std::string& str ) { str_to_latin1_( str ); return str; }
@@ -1907,7 +1910,7 @@ public:
 
   static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
 
-  static int snprintf( char* buf, size_t size, const char* fmt, ... );
+  static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE(3,4);
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form
