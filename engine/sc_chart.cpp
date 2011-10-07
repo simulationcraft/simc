@@ -1231,7 +1231,7 @@ const char* chart_t::scaling_dps( std::string& s,
   int range = p -> sim -> plot -> dps_plot_points / 2;
   const int start = 0;	// start and end only used for dps_plot_positive
   const int end = 2 * range;
-  int num_points = 1 + 2*range;
+  size_t num_points = 1 + 2*range;
 
   char buffer[ 1024 ];
 
