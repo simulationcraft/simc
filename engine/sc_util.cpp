@@ -199,29 +199,21 @@ char* util_t::dup( const char *value )
 }
 
 #ifdef _MSC_VER
-#undef snprintf
-// snprintf =================================================================
+// vsnprintf ================================================================
 
-int snprintf( char* buf, size_t size, const char* fmt, ... )
+#undef vsnprintf
+int vsnprintf( char* buf, size_t size, const char* fmt, va_list ap )
 {
   if ( buf && size )
   {
-    va_list ap;
-    va_start( ap, fmt );
     int rval = _vsnprintf( buf, size, fmt, ap );
-    va_end( ap );
-    if ( rval < 0 || static_cast<unsigned>( rval ) < size )
+    if ( rval < 0 || static_cast<size_t>( rval ) < size )
       return rval;
 
     buf[ size - 1 ] = '\0';
   }
 
-  va_list ap;
-  va_start( ap, fmt );
-  int rval = _vscprintf( fmt, ap );
-  va_end( ap );
-
-  return rval;
+  return _vscprintf( fmt, ap );
 }
 #endif
 
@@ -2105,6 +2097,8 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
+// util_t::vfprintf =========================================================
+
 int util_t::vfprintf( FILE *stream, const char *format, va_list fmtargs )
 {
   int retcode = vfprintf_helper( stream, format, fmtargs );
@@ -2125,11 +2119,27 @@ int util_t::printf( const char *format,  ... )
   return retcode;
 }
 
+// util_t::vprintf ==========================================================
+
 int util_t::vprintf( const char *format, va_list fmtargs )
 {
   int retcode = vfprintf_helper( stdout, format, fmtargs );
   return retcode;
 }
+
+// util_t::snprintf =========================================================
+
+int util_t::snprintf( char* buf, size_t size, const char* fmt, ... )
+{
+  va_list ap;
+  va_start( ap, fmt );
+  int rval = ::vsnprintf( buf, size, fmt, ap );
+  va_end( ap );
+  if ( rval >= 0 )
+    assert( static_cast<size_t>( rval ) < size );
+  return rval;
+}
+
 
 // util_t::str_to_utf8_ =====================================================
 

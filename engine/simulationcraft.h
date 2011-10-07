@@ -1751,8 +1751,19 @@ struct talent_translation_t
 
 #ifdef _MSC_VER
 // C99-compliant snprintf - MSVC _snprintf is NOT the same.
+
+#undef vsnprintf
+int vsnprintf( char* buf, size_t size, const char* fmt, va_list ap );
+
 #undef snprintf
-int snprintf( char* buf, size_t size, const char* fmt, ... );
+inline int snprintf( char* buf, size_t size, const char* fmt, ... )
+{
+  va_list ap;
+  va_start( ap, fmt );
+  int rval = vsnprintf( buf, size, fmt, ap );
+  va_end( ap );
+  return rval;
+}
 #endif
 
 struct util_t
@@ -1895,6 +1906,8 @@ public:
   static double round( double X, unsigned int decplaces = 0 );
 
   static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
+
+  static int snprintf( char* buf, size_t size, const char* fmt, ... );
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form
