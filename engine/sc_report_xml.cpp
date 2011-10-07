@@ -53,7 +53,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
       va_list fmtargs;
       va_start( fmtargs, format );
 
-      int retcode = util_t::fprintf(file, format, fmtargs);
+      int retcode = util_t::vfprintf(file, format, fmtargs);
 
       va_end(fmtargs);
 
@@ -174,6 +174,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
   // report_t::print_xml ======================================================
 
   static const int PRINT_XML_PRECISION = 4;
+  static void print_xml_errors( sim_t* sim, xml_writer_t & writer);
   static void print_xml_raid_events( sim_t* sim, xml_writer_t & writer );
   static void print_xml_roster( sim_t* sim, xml_writer_t & writer );
   static void print_xml_targets( sim_t* sim, xml_writer_t & writer );
@@ -191,6 +192,22 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
   static void print_xml_player_gains( xml_writer_t & writer, player_t * p );
   static void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p );
   static void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
+
+  static void print_xml_errors( sim_t* sim, xml_writer_t & writer)
+  {
+    size_t num_errors = sim -> error_list.size();
+    if(num_errors > 0)
+    {
+      writer.begin_tag("errors");
+      for( size_t i=0; i < num_errors; i++ )
+      {
+        writer.begin_tag("error");
+        writer.print_attribute("message", sim -> error_list[ i ]);
+        writer.end_tag(); // </error>
+      }
+      writer.end_tag(); // </errors>
+    }
+  }
 
   static void print_xml_raid_events( sim_t* sim, xml_writer_t & writer )
   {
@@ -725,7 +742,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
         writer.print_attribute("start", util_t::to_string( b -> avg_start, 1 ));
         writer.print_attribute("refresh", util_t::to_string( b -> avg_refresh, 1 ));
         writer.print_attribute("interval", util_t::to_string( b -> avg_start_interval, 1 ));
-        writer.print_attribute("start", util_t::to_string( b -> avg_trigger_interval, 1 ));
+        writer.print_attribute("trigger", util_t::to_string( b -> avg_trigger_interval, 1 ));
         writer.print_attribute("uptime", util_t::to_string( b -> uptime_pct, 0 ));
 
         if( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
@@ -828,11 +845,19 @@ void report_t::print_xml( sim_t* sim )
   writer.init_document( sim -> xml_stylesheet_file_str );
   writer.begin_tag("simulationcraft");
 
+  writer.print_attribute("major_version", SC_MAJOR_VERSION);
+  writer.print_attribute("minor_version", SC_MINOR_VERSION);
+  writer.print_attribute("wow_version", dbc_t::wow_version( sim -> dbc.ptr ));
+  writer.print_attribute("ptr", sim -> dbc.ptr ? "true" : "false");
+  writer.print_attribute("wow_build", dbc_t::build_level( sim -> dbc.ptr ));
+
 #if SC_BETA
 
   writer.print_attribute("beta", "true");
 
 #endif
+
+  print_xml_errors( sim, writer );
 
   print_xml_raid_events( sim, writer );
   print_xml_roster( sim, writer );

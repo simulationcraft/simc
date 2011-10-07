@@ -1869,9 +1869,9 @@ public:
   static int64_t parse_date( const std::string& month_day_year );
 
   static int printf( const char *format,  ... ) PRINTF_ATTRIBUTE(1,2);
-  static int printf( const char *format,  va_list fmtargs );
+  static int vprintf( const char *format,  va_list fmtargs );
   static int fprintf( FILE *stream, const char *format,  ... ) PRINTF_ATTRIBUTE(2,3);
-  static int fprintf( FILE *stream, const char *format,  va_list fmtargs );
+  static int vfprintf( FILE *stream, const char *format,  va_list fmtargs );
 
   static std::string& str_to_utf8( std::string& str ) { str_to_utf8_( str ); return str; }
   static std::string& str_to_latin1( std::string& str ) { str_to_latin1_( str ); return str; }

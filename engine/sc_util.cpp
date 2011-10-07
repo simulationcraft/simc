@@ -2105,7 +2105,7 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
-int util_t::fprintf( FILE *stream, const char *format, va_list fmtargs )
+int util_t::vfprintf( FILE *stream, const char *format, va_list fmtargs )
 {
   int retcode = vfprintf_helper( stream, format, fmtargs );
   return retcode;
@@ -2125,7 +2125,7 @@ int util_t::printf( const char *format,  ... )
   return retcode;
 }
 
-int util_t::printf( const char *format, va_list fmtargs )
+int util_t::vprintf( const char *format, va_list fmtargs )
 {
   int retcode = vfprintf_helper( stdout, format, fmtargs );
   return retcode;
