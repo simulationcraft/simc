@@ -149,7 +149,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     {
       std::string value = input;
       sanitize(value);
-      fprintf("%s", value);
+      fprintf("%s", value.c_str());
     }
 
     std::string sanitize(const std::string & input) {
@@ -177,11 +177,11 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
   static void print_xml_raid_events( sim_t* sim, xml_writer_t & writer );
   static void print_xml_roster( sim_t* sim, xml_writer_t & writer );
   static void print_xml_targets( sim_t* sim, xml_writer_t & writer );
-  static void print_xml_player( sim_t* sim, xml_writer_t & writer, player_t * p, player_t * owner);
   static void print_xml_buffs( sim_t* sim, xml_writer_t & writer );
   static void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer );
   static void print_xml_performance( sim_t* sim, xml_writer_t & writer );
 
+  static void print_xml_player( xml_writer_t & writer, player_t * p, player_t * owner);
   static void print_xml_player_stats( xml_writer_t & writer, player_t * p );
   static void print_xml_player_attribute( xml_writer_t & writer, const std::string& attribute, double initial, double gear, double buffed);
   static void print_xml_player_actions( xml_writer_t & writer, player_t* p );
@@ -223,11 +223,11 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     int num_players = ( int ) sim -> players_by_rank.size();
     for ( int i = 0; i < num_players; ++i ) {
       player_t * current_player = sim -> players_by_name[ i ];
-      print_xml_player( sim, writer, current_player, NULL );
+      print_xml_player( writer, current_player, NULL );
       for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
       {
         if ( pet -> summoned )
-          print_xml_player( sim, writer, pet, current_player );
+          print_xml_player( writer, pet, current_player );
       }
     }
 
@@ -244,18 +244,18 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     for( size_t i = 0; i < count; ++i )
     {
       player_t * current_player = sim -> targets_by_name[ i ];
-      print_xml_player( sim, writer, current_player, NULL );
+      print_xml_player( writer, current_player, NULL );
       for ( pet_t* pet = current_player -> pet_list; pet; pet = pet -> next_pet )
       {
         if ( pet -> summoned )
-          print_xml_player( sim, writer, pet, current_player );
+          print_xml_player( writer, pet, current_player );
       }
     }
 
     writer.end_tag(); // </targets>
   }
 
-  static void print_xml_player( sim_t* sim, xml_writer_t & writer, player_t * p, player_t * owner)
+  static void print_xml_player( xml_writer_t & writer, player_t * p, player_t * owner)
   {
     writer.begin_tag("player");
     writer.print_attribute("name", p -> name());
@@ -790,16 +790,16 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
   {
     writer.begin_tag("performance");
 
-    writer.print_tag("total_events", util_t::to_string(( long ) sim -> total_events_processed));
-    writer.print_tag("max_event_queue", util_t::to_string(( long ) sim -> max_events_remaining));
+    writer.print_tag("total_events", util_t::to_string(sim -> total_events_processed));
+    writer.print_tag("max_event_queue", util_t::to_string(sim -> max_events_remaining));
     writer.print_tag("target_health", util_t::to_string(sim -> target -> resource_base[ RESOURCE_HEALTH ], 0));
     writer.print_tag("sim_seconds", util_t::to_string(sim -> iterations * sim -> total_seconds, 0));
     writer.print_tag("cpu_seconds", util_t::to_string(sim -> elapsed_cpu_seconds, 3));
     writer.print_tag("speed_up", util_t::to_string(sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds, 0));
     writer.begin_tag("rng");
-    writer.print_attribute("roll", util_t::to_string(( ( sim -> rng -> expected_roll  == 0 ) ? 1.0 : sim -> rng -> actual_roll  / sim -> rng -> expected_roll  ), 6));
-    writer.print_attribute("range", util_t::to_string(( ( ( sim -> rng -> expected_range == 0 ) ? 1.0 : sim -> rng -> actual_range / sim -> rng -> expected_range ), 6)));
-    writer.print_attribute("gauss", util_t::to_string(( ( ( sim -> rng -> expected_gauss == 0 ) ? 1.0 : sim -> rng -> actual_gauss / sim -> rng -> expected_gauss ), 6)));
+    writer.print_attribute("roll", util_t::to_string(( sim -> rng -> expected_roll  == 0 ) ? 1.0 : ( sim -> rng -> actual_roll  / sim -> rng -> expected_roll  ), 6));
+    writer.print_attribute("range", util_t::to_string(( ( sim -> rng -> expected_range == 0 ) ? 1.0 : ( sim -> rng -> actual_range / sim -> rng -> expected_range ), 6)));
+    writer.print_attribute("gauss", util_t::to_string(( ( sim -> rng -> expected_gauss == 0 ) ? 1.0 : ( sim -> rng -> actual_gauss / sim -> rng -> expected_gauss ), 6)));
     writer.end_tag(); // </rng>
 
     writer.end_tag(); // </performance>

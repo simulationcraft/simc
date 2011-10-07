@@ -2018,6 +2018,15 @@ std::string util_t::to_string( int i )
 
 // util_t::to_string ========================================================
 
+std::string util_t::to_string( int64_t i )
+{
+  char buffer[ 64 ];
+  snprintf( buffer, sizeof( buffer ), "%ld", i );
+  return std::string( buffer );
+}
+
+// util_t::to_string ========================================================
+
 std::string util_t::to_string( double f, int precision )
 {
   char buffer[ 64 ];
