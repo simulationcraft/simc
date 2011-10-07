@@ -1369,9 +1369,9 @@ const char* chart_t::reforge_dps( std::string& s,
     return 0;
   }
 
-  for ( int i=0; i < ( int ) pd.size(); i++ )
+  for ( size_t i=0; i < pd.size(); i++ )
   {
-    assert( num_stats < ( int ) pd[ i ].size() );
+    assert( num_stats < pd[ i ].size() );
     if ( pd[ i ][ num_stats ] < min_dps )
       min_dps = pd[ i ][ num_stats ];
     if ( pd[ i ][ num_stats ] > max_dps )
