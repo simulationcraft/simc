@@ -217,6 +217,10 @@
     <ClCompile Include="engine\sc_rawr.cpp" />
     <ClCompile Include="engine\sc_reforge_plot.cpp" />
     <ClCompile Include="engine\sc_report.cpp" />
+    <ClCompile Include="engine\sc_report_html_player.cpp" />
+    <ClCompile Include="engine\sc_report_html_sim.cpp" />
+    <ClCompile Include="engine\sc_report_text.cpp" />
+    <ClCompile Include="engine\sc_report_xml.cpp" />
     <ClCompile Include="engine\sc_rng.cpp" />
     <ClCompile Include="engine\sc_rogue.cpp" />
     <ClCompile Include="engine\sc_scaling.cpp" />

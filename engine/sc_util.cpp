@@ -2096,6 +2096,12 @@ int util_t::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
+int util_t::fprintf( FILE *stream, const char *format, va_list fmtargs )
+{
+  int retcode = vfprintf_helper( stream, format, fmtargs );
+  return retcode;
+}
+
 // util_t::printf ===========================================================
 
 int util_t::printf( const char *format,  ... )
@@ -2107,6 +2113,12 @@ int util_t::printf( const char *format,  ... )
 
   va_end( fmtargs );
 
+  return retcode;
+}
+
+int util_t::printf( const char *format, va_list fmtargs )
+{
+  int retcode = vfprintf_helper( stdout, format, fmtargs );
   return retcode;
 }
 

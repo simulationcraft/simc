@@ -1868,7 +1868,9 @@ public:
   static int64_t parse_date( const std::string& month_day_year );
 
   static int printf( const char *format,  ... ) PRINTF_ATTRIBUTE(1,2);
+  static int printf( const char *format,  va_list fmtargs );
   static int fprintf( FILE *stream, const char *format,  ... ) PRINTF_ATTRIBUTE(2,3);
+  static int fprintf( FILE *stream, const char *format,  va_list fmtargs );
 
   static std::string& str_to_utf8( std::string& str ) { str_to_utf8_( str ); return str; }
   static std::string& str_to_latin1( std::string& str ) { str_to_latin1_( str ); return str; }
@@ -2812,7 +2814,8 @@ struct sim_t : private thread_t
   std::vector<int> distribution_timeline;
   std::vector<int> divisor_timeline;
   std::string timeline_chart;
-  std::string output_file_str, html_file_str,  xml_file_str;
+  std::string output_file_str, html_file_str;
+  std::string xml_file_str, xml_stylesheet_file_str;
   std::string path_str;
   std::deque<std::string> active_files;
   std::vector<std::string> error_list;
