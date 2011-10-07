@@ -48,7 +48,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     bool ready() const { return file != NULL; }
     void set_tabulation(std::string & tabulation) { this->tabulation = tabulation; }
 
-    int fprintf(const char * format, ...) const PRINTF_ATTRIBUTE(1,2)
+    int fprintf(const char *format, ...) const PRINTF_ATTRIBUTE(2,3)
     {
       va_list fmtargs;
       va_start( fmtargs, format );
@@ -798,8 +798,8 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     writer.print_tag("speed_up", util_t::to_string(sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds, 0));
     writer.begin_tag("rng");
     writer.print_attribute("roll", util_t::to_string(( sim -> rng -> expected_roll  == 0 ) ? 1.0 : ( sim -> rng -> actual_roll  / sim -> rng -> expected_roll  ), 6));
-    writer.print_attribute("range", util_t::to_string(( ( sim -> rng -> expected_range == 0 ) ? 1.0 : ( sim -> rng -> actual_range / sim -> rng -> expected_range ), 6)));
-    writer.print_attribute("gauss", util_t::to_string(( ( sim -> rng -> expected_gauss == 0 ) ? 1.0 : ( sim -> rng -> actual_gauss / sim -> rng -> expected_gauss ), 6)));
+    writer.print_attribute("range", util_t::to_string( ( sim -> rng -> expected_range == 0 ) ? 1.0 : ( sim -> rng -> actual_range / sim -> rng -> expected_range ), 6));
+    writer.print_attribute("gauss", util_t::to_string( ( sim -> rng -> expected_gauss == 0 ) ? 1.0 : ( sim -> rng -> actual_gauss / sim -> rng -> expected_gauss ), 6));
     writer.end_tag(); // </rng>
 
     writer.end_tag(); // </performance>
