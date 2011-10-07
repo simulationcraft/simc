@@ -441,7 +441,7 @@ struct spirit_wolf_pet_t : public pet_t
       attack_t::execute();
       
       // Two independent chances to proc it since we model 2 wolf pets as 1 ..
-      if ( result_is_hit() && o -> set_bonus.tier13_4pc_melee() )
+      if ( player -> dbc.ptr && result_is_hit() && o -> set_bonus.tier13_4pc_melee() )
       {
         if ( sim -> roll( 0.45 ) )
         {
@@ -1133,7 +1133,7 @@ static void trigger_flametongue_weapon( attack_t* a )
   // Add a very slight cooldown to flametongue weapon to prevent overly good results
   // when using FT/FT combo and near-synced attacks. This should model in-game results
   // decently as well. See EJ Shaman forum for more information.
-  p -> cooldowns_flametongue_weapon -> start( 0.15 );
+  if ( ! p -> dbc.ptr ) p -> cooldowns_flametongue_weapon -> start( 0.15 );
 
   ft -> execute();
 }
@@ -2170,7 +2170,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     shaman_spell_t::player_buff();
     
-    if ( p -> set_bonus.tier13_2pc_melee() && p -> buffs_maelstrom_weapon -> up() )
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && p -> buffs_maelstrom_weapon -> up() )
       player_multiplier *= 1.20;
   }
 
@@ -2193,7 +2193,7 @@ struct chain_lightning_t : public shaman_spell_t
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
       {
         overload -> execute();
-        if ( p -> set_bonus.tier13_4pc_caster() )
+        if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
           p -> buffs_tier13_4pc_caster -> trigger();
       }
     }
@@ -2250,7 +2250,7 @@ struct elemental_mastery_t : public shaman_spell_t
 
     p -> buffs_elemental_mastery_insta -> trigger();
     p -> buffs_elemental_mastery       -> trigger();
-    if ( p -> set_bonus.tier13_2pc_caster() )
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
       p -> buffs_tier13_2pc_caster     -> trigger();
   }
 };
@@ -2398,7 +2398,7 @@ struct lava_burst_t : public shaman_spell_t
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
       {
         overload -> execute();
-        if ( p -> set_bonus.tier13_4pc_caster() )
+        if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
           p -> buffs_tier13_4pc_caster -> trigger();
       }
     }
@@ -2442,7 +2442,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     shaman_spell_t::player_buff();
     
-    if ( p -> set_bonus.tier13_2pc_melee() && p -> buffs_maelstrom_weapon -> up() )
+    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && p -> buffs_maelstrom_weapon -> up() )
       player_multiplier *= 1.20;
   }
 
@@ -2496,7 +2496,7 @@ struct lightning_bolt_t : public shaman_spell_t
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
       {
         overload -> execute();
-        if ( p -> set_bonus.tier13_4pc_caster() )
+        if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
           p -> buffs_tier13_4pc_caster -> trigger();
       }
 
@@ -4520,12 +4520,11 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     m *= 1.0 + composite_mastery() * mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
     
-  if ( dbc.ptr )
+  if ( school != SCHOOL_PHYSICAL && dbc.ptr )
   {
     if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + main_hand_weapon.buff_value;
-
-    if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+    else if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + off_hand_weapon.buff_value;
   }
   
@@ -4535,12 +4534,19 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
 double shaman_t::composite_spell_crit() SC_CONST
 {
   double v = player_t::composite_spell_crit();
+  if ( ! dbc.ptr )
+  {
+    if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+      v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
 
-  if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
-
-  if ( off_hand_weapon.type != WEAPON_NONE && off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
+    if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+      v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
+  }
+  else
+  {
+    if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE || off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+      v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
+  }
 
   return v;
 }
