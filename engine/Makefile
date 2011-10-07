@@ -110,6 +110,10 @@ SRC = \
 	sc_rating.cpp \
 	sc_rawr.cpp \
 	sc_reforge_plot.cpp \
+	sc_report_html_player.cpp \
+	sc_report_html_sim.cpp \
+	sc_report_text.cpp \
+	sc_report_xml.cpp \
 	sc_report.cpp \
 	sc_rng.cpp \
 	sc_rogue.cpp \

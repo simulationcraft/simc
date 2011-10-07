@@ -4798,10 +4798,12 @@ struct proc_t
 struct report_t
 {
   static void encode_html( std::string& buffer );
+  static std::string encode_html( const char* str );
   static void print_spell_query( sim_t* );
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );
+  static void print_html_player( FILE*, player_t*, int );
   static void print_xml( sim_t* );
   static void print_suite( sim_t* );
 };
