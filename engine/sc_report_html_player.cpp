@@ -1963,7 +1963,7 @@ static void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_
 
 // print_html_player_abilities ========================================================
 
-static void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, int i, std::string& n )
+static void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, std::string& n )
 {
 
   // Abilities Section
@@ -2004,7 +2004,7 @@ static void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, in
                      n.c_str(),
                      p -> dps );
 
-    i = 0;
+    int i = 0;
     for ( stats_t* s = p -> stats_list; s; s = s -> next )
     {
       if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
@@ -2050,7 +2050,7 @@ static void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, in
 
 // print_html_player_benefits_uptimes ========================================================
 
-static void print_html_player_benefits_uptimes( FILE* file, player_t* p, int i )
+static void print_html_player_benefits_uptimes( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
                     "\t\t\t\t\t<div class=\"player-section benefits\">\n"
@@ -2061,7 +2061,7 @@ static void print_html_player_benefits_uptimes( FILE* file, player_t* p, int i )
                     "\t\t\t\t\t\t\t\t\t<th>Benefits</th>\n"
                     "\t\t\t\t\t\t\t\t\t<th>%%</th>\n"
                     "\t\t\t\t\t\t\t\t</tr>\n" );
-   i = 1;
+   int i = 1;
    for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
    {
      if ( u -> ratio > 0 )
@@ -2116,7 +2116,7 @@ static void print_html_player_benefits_uptimes( FILE* file, player_t* p, int i )
 
 // print_html_player_procs ========================================================
 
-static void print_html_player_procs( FILE* file, player_t* p, int i )
+static void print_html_player_procs( FILE* file, player_t* p )
 {
   // Procs Section
    util_t::fprintf( file,
@@ -2129,7 +2129,7 @@ static void print_html_player_procs( FILE* file, player_t* p, int i )
                     "\t\t\t\t\t\t\t\t\t<th>Count</th>\n"
                     "\t\t\t\t\t\t\t\t\t<th>Interval</th>\n"
                     "\t\t\t\t\t\t\t\t</tr>\n" );
-   i = 1;
+   int i = 1;
    for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
    {
      if ( proc -> count > 0 )
@@ -2290,11 +2290,10 @@ static void print_html_player_gear_weights( FILE* file, player_t* p )
 
 // print_html_player_ ========================================================
 
-static void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j )
+static void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 {
   std::string n = p -> name();
   util_t::format_text( n, true );
-  int i;
 
 
   print_html_player_description( file, sim, p, j, n );
@@ -2305,15 +2304,15 @@ static void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j )
 
   print_html_player_charts( file, sim, p );
 
-  print_html_player_abilities( file, sim, p, i, n );
+  print_html_player_abilities( file, sim, p, n );
 
   print_html_player_resources( file, p );
 
   print_html_player_buffs( file, p );
 
-  print_html_player_benefits_uptimes( file, p, i );
+  print_html_player_benefits_uptimes( file, p );
 
-  print_html_player_procs( file, p, i );
+  print_html_player_procs( file, p );
 
   print_html_player_deaths( file, p );
 
@@ -2343,7 +2342,7 @@ static void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j )
 
 // report_t::print_html_player ====================================================
 
-void report_t::print_html_player( FILE* file, player_t* p, int j )
+void report_t::print_html_player( FILE* file, player_t* p, int j=0 )
 {
   print_html_player_( file, p -> sim, p, j );
 }

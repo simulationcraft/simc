@@ -964,37 +964,11 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t<!-- End Help Boxes -->\n" );
 }
 
+// print_html_styles ====================================================
 
-} // ANONYMOUS NAMESPACE ====================================================
-
-
-// report_t::print_html =====================================================
-void report_t::print_html( sim_t* sim )
+static void print_html_styles( FILE*  file, sim_t* sim )
 {
-  int num_players = ( int ) sim -> players_by_name.size();
 
-  if ( num_players == 0 ) return;
-  if ( sim -> total_seconds == 0 ) return;
-  if ( sim -> html_file_str.empty() ) return;
-
-  FILE* file = fopen( sim -> html_file_str.c_str(), "w" );
-  if ( ! file )
-  {
-    sim -> errorf( "Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
-    return;
-  }
-
-  util_t::fprintf( file,
-                   "<!DOCTYPE html>\n\n" );
-  util_t::fprintf( file,
-                   "<html>\n\n" );
-
-  util_t::fprintf( file,
-                   "\t<head>\n\n" );
-  util_t::fprintf( file,
-                   "\t\t<title>Simulationcraft Results</title>\n\n" );
-  util_t::fprintf( file,
-                   "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n\n" );
 
   // Styles
   // If file is being hosted on simulationcraft.org, link to the local
@@ -1006,7 +980,7 @@ void report_t::print_html( sim_t* sim )
                      "\t\t\t@import url('http://www.simulationcraft.org/css/styles.css');\n"
                      "\t\t</style>\n"
                      "\t\t<style type=\"text/css\" media=\"print\">\n"
-                     "\t\t	@import url('http://www.simulationcraft.org/css/styles-print.css');\n"
+                     "\t\t  @import url('http://www.simulationcraft.org/css/styles-print.css');\n"
                      "\t\t</style>\n" );
   }
   else if ( sim -> print_styles )
@@ -1237,6 +1211,94 @@ void report_t::print_html( sim_t* sim )
                      "\t\t</style>\n" );
   }
 
+}
+
+// print_html_masthead ====================================================
+
+static void print_html_masthead( FILE*  file, sim_t* sim )
+{
+
+  // Begin masthead section
+   util_t::fprintf( file,
+                    "\t\t<div id=\"masthead\" class=\"section section-open\">\n\n" );
+
+   util_t::fprintf( file,
+                    "\t\t\t<h1><a href=\"http://code.google.com/p/simulationcraft/\">SimulationCraft %s-%s</a></h1>\n"
+                    "\t\t\t<h2>for World of Warcraft %s %s (build level %s)</h2>\n\n",
+                    SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( sim -> dbc.ptr ) );
+
+   time_t rawtime;
+   time ( &rawtime );
+
+   util_t::fprintf( file,
+                    "\t\t\t<ul class=\"params\">\n" );
+   util_t::fprintf( file,
+                    "\t\t\t\t<li><b>Timestamp:</b> %s</li>\n",
+                    ctime( &rawtime ) );
+   util_t::fprintf( file,
+                    "\t\t\t\t<li><b>Iterations:</b> %d</li>\n",
+                    sim -> iterations );
+
+   if ( sim -> vary_combat_length > 0.0 )
+   {
+     double min_length = sim -> max_time * ( 1 - sim -> vary_combat_length );
+     double max_length = sim -> max_time * ( 1 + sim -> vary_combat_length );
+     util_t::fprintf( file,
+                      "\t\t\t\t<li class=\"linked\"><a href=\"#help-fight-length\" class=\"help\"><b>Fight Length:</b> %.0f - %.0f</a></li>\n",
+                      min_length,
+                      max_length );
+   }
+   else
+   {
+     util_t::fprintf( file,
+                      "\t\t\t\t<li><b>Fight Length:</b> %.0f</li>\n",
+                      sim -> max_time );
+   }
+   util_t::fprintf( file,
+                    "\t\t\t\t<li><b>Fight Style:</b> %s</li>\n",
+                    sim -> fight_style.c_str() );
+   util_t::fprintf( file,
+                    "\t\t\t</ul>\n" );
+   util_t::fprintf( file,
+                    "\t\t\t<div class=\"clear\"></div>\n\n"
+                    "\t\t</div>\n\n" );
+   // End masthead section
+
+}
+
+} // ANONYMOUS NAMESPACE ====================================================
+
+
+// report_t::print_html =====================================================
+void report_t::print_html( sim_t* sim )
+{
+  int num_players = ( int ) sim -> players_by_name.size();
+
+  if ( num_players == 0 ) return;
+  if ( sim -> total_seconds == 0 ) return;
+  if ( sim -> html_file_str.empty() ) return;
+
+  FILE* file = fopen( sim -> html_file_str.c_str(), "w" );
+  if ( ! file )
+  {
+    sim -> errorf( "Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
+    return;
+  }
+
+  util_t::fprintf( file,
+                   "<!DOCTYPE html>\n\n" );
+  util_t::fprintf( file,
+                   "<html>\n\n" );
+
+  util_t::fprintf( file,
+                   "\t<head>\n\n" );
+  util_t::fprintf( file,
+                   "\t\t<title>Simulationcraft Results</title>\n\n" );
+  util_t::fprintf( file,
+                   "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n\n" );
+
+  print_html_styles( file, sim );
+
   util_t::fprintf( file,
                    "\t</head>\n\n" );
 
@@ -1264,51 +1326,7 @@ void report_t::print_html( sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n\n" );
 
-  // Begin masthead section
-  util_t::fprintf( file,
-                   "\t\t<div id=\"masthead\" class=\"section section-open\">\n\n" );
-
-  util_t::fprintf( file,
-                   "\t\t\t<h1><a href=\"http://code.google.com/p/simulationcraft/\">SimulationCraft %s-%s</a></h1>\n"
-                   "\t\t\t<h2>for World of Warcraft %s %s (build level %s)</h2>\n\n",
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( sim -> dbc.ptr ) );
-
-  time_t rawtime;
-  time ( &rawtime );
-
-  util_t::fprintf( file,
-                   "\t\t\t<ul class=\"params\">\n" );
-  util_t::fprintf( file,
-                   "\t\t\t\t<li><b>Timestamp:</b> %s</li>\n",
-                   ctime( &rawtime ) );
-  util_t::fprintf( file,
-                   "\t\t\t\t<li><b>Iterations:</b> %d</li>\n",
-                   sim -> iterations );
-
-  if ( sim -> vary_combat_length > 0.0 )
-  {
-    double min_length = sim -> max_time * ( 1 - sim -> vary_combat_length );
-    double max_length = sim -> max_time * ( 1 + sim -> vary_combat_length );
-    util_t::fprintf( file,
-                     "\t\t\t\t<li class=\"linked\"><a href=\"#help-fight-length\" class=\"help\"><b>Fight Length:</b> %.0f - %.0f</a></li>\n",
-                     min_length,
-                     max_length );
-  }
-  else
-  {
-    util_t::fprintf( file,
-                     "\t\t\t\t<li><b>Fight Length:</b> %.0f</li>\n",
-                     sim -> max_time );
-  }
-  util_t::fprintf( file,
-                   "\t\t\t\t<li><b>Fight Style:</b> %s</li>\n",
-                   sim -> fight_style.c_str() );
-  util_t::fprintf( file,
-                   "\t\t\t</ul>\n" );
-  util_t::fprintf( file,
-                   "\t\t\t<div class=\"clear\"></div>\n\n"
-                   "\t\t</div>\n\n" );
-  // End masthead section
+ print_html_masthead( file, sim );
 
 #if SC_BETA
   util_t::fprintf( file,
