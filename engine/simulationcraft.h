@@ -4849,8 +4849,7 @@ struct chart_t
   static const char* scale_factors    ( std::string& s, player_t* );
   static const char* scaling_dps      ( std::string& s, player_t* );
   static const char* reforge_dps      ( std::string& s, player_t* );
-  static const char* distribution_dps ( std::string& s, player_t* );
-  static const char* distribution_deaths ( std::string& s, player_t* );
+  static const char* distribution ( std::string& s, player_t*, std::vector<int>, const char*, double, double, double );
 
   static const char* gear_weights_lootrank  ( std::string& s, player_t* );
   static const char* gear_weights_wowhead   ( std::string& s, player_t* );

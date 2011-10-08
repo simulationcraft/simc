@@ -1641,8 +1641,8 @@ void sim_t::analyze_player( player_t* p )
   chart_t::timeline_dps       ( p -> timeline_dps_chart,              p );
   chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
   chart_t::dps_error          ( p -> dps_error_chart,                 p );
-  chart_t::distribution_dps   ( p -> distribution_dps_chart,          p );
-  chart_t::distribution_deaths( p -> distribution_deaths_chart,       p );
+  chart_t::distribution   ( p -> distribution_dps_chart, p, p -> distribution_dps, "DPS", p -> dps, p -> dps_min, p -> dps_max );
+  chart_t::distribution   ( p -> distribution_deaths_chart, p, p -> distribution_dps, "Death", p -> avg_death_time, p -> min_death_time, p -> max_death_time );
 }
 
 // sim_t::analyze ===========================================================
