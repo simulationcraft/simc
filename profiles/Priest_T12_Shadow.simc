@@ -8,15 +8,15 @@ normalize_scale_factors=1
 
 iterations=30000
 
-Tier12N\Priest_Shadow_T12N.simc
-Tier12N\Priest_Shadow_T12N_2dot.simc
-Tier12N\Priest_Shadow_T12N_DTR.simc
-Tier12N\Priest_Shadow_T12N_DTR_2dot.simc
+Priest_Shadow_T12N.simc
+Priest_Shadow_T12N_2dot.simc
+Priest_Shadow_T12N_DTR.simc
+Priest_Shadow_T12N_DTR_2dot.simc
 
 
-Tier12H\Priest_Shadow_T12H.simc
-Tier12H\Priest_Shadow_T12H_2dot.simc
-Tier12H\Priest_Shadow_T12H_DTR.simc
-Tier12H\Priest_Shadow_T12H_DTR_2dot.simc
-Tier12H\Priest_Shadow_T12H_DTR_noRag.simc
-Tier12H\Priest_Shadow_T12H_DTR_noRag_2dot.simc
+Priest_Shadow_T12H.simc
+Priest_Shadow_T12H_2dot.simc
+Priest_Shadow_T12H_DTR.simc
+Priest_Shadow_T12H_DTR_2dot.simc
+Priest_Shadow_T12H_DTR_noRag.simc
+Priest_Shadow_T12H_DTR_noRag_2dot.simc
