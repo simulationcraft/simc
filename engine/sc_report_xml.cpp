@@ -72,8 +72,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     }
 
     void init_document(const std::string & stylesheet_file) {
-      if(current_state != NONE)
-        return;
+      assert( current_state == NONE );
 
       printf("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
       if(!stylesheet_file.empty()) {
@@ -84,10 +83,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     }
 
     void begin_tag(const std::string & tag) {
-      if(current_state == NONE)
-        return;
-
-      std::string new_tag = tag;
+      assert( current_state != NONE );
 
       if(current_state != TEXT) {
         printf(">");
@@ -102,8 +98,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     }
 
     void end_tag() {
-      if(current_state == NONE)
-        return;
+      assert( current_state != NONE );
 
       std::string tag = current_tags.back();
       current_tags.pop_back();
@@ -120,42 +115,34 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
     void print_attribute(const std::string & name, const std::string & value)
     {
-      if(current_state == NONE)
-        return;
+      assert( current_state != NONE );
 
       if(current_state == TAG)
       {
-        std::string str = value;
-        str = sanitize(str);
-        printf(" %s=\"%s\"", name.c_str(), str.c_str());
+        printf(" %s=\"%s\"", name.c_str(), sanitize( value ).c_str());
       }
     }
 
     void print_tag(const std::string & name, const std::string & inner_value)
     {
-      if(current_state == NONE)
-        return;
+      assert( current_state != NONE );
 
       if(current_state != TEXT) {
         printf(">");
       }
 
-      std::string str = inner_value;
-      sanitize(str);
-      printf("\n%s<%s>%s</%s>", indentation.c_str(), name.c_str(), str.c_str(), name.c_str());
+      printf("\n%s<%s>%s</%s>", indentation.c_str(), name.c_str(), sanitize( inner_value ).c_str(), name.c_str());
 
       current_state = TEXT;
     }
 
     void print_text(const std::string & input)
     {
-      std::string value = input;
-      sanitize(value);
-      printf("%s", value.c_str());
+      printf("%s", sanitize( input ).c_str());
     }
 
     static std::string sanitize(std::string v) {
-      const replacement replacements[] = {
+      static const replacement replacements[] = {
         { '&', "&amp;" },
         { '"', "&quot;" },
         { '<', "&lt;" },
