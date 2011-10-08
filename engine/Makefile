@@ -117,6 +117,7 @@ SRC = \
 	sc_report.cpp \
 	sc_rng.cpp \
 	sc_rogue.cpp \
+	sc_sample_data.cpp \
 	sc_shaman.cpp \
 	sc_scaling.cpp \
 	sc_sequence.cpp \

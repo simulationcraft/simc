@@ -444,13 +444,12 @@ player_t::player_t( sim_t*             s,
   current_time( 0 ), iteration_seconds( 0 ), total_seconds( 0 ), max_fight_length( 0 ), arise_time( 0 ),
   total_waiting( 0 ), total_foreground_actions( 0 ),
   iteration_dmg( 0 ), total_dmg( 0 ), iteration_heal( 0 ), total_heal( 0 ),
-  dps( 0 ), dpse( 0 ), dps_min( 0 ), dps_max( 0 ),
-  dps_std_dev( 0 ), dps_error( 0 ), dps_convergence( 0 ),
-  dps_10_percentile( 0 ),dps_90_percentile( 0 ),
+  dps_error( 0 ), dps_convergence( 0 ),
   dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
   death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( 1.0E+50 ), max_death_time( 0 ),
-  dmg_taken( 0.0 ), total_dmg_taken( 0.0 ), dtps( 0.0 ), dtps_error( 0.0 ),
+  dmg_taken( 0.0 ), total_dmg_taken( 0.0 ), dtps_error( 0.0 ),
   buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ),
+  iteration_dps(),iteration_dtps(), iteration_dpse(),
   // Gear
   sets( 0 ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
@@ -536,6 +535,7 @@ player_t::player_t( sim_t*             s,
   }
 
   if ( reaction_stddev == 0 ) reaction_stddev =   reaction_mean * 0.25;
+
 }
 
 // player_t::~player_t ======================================================
@@ -1738,9 +1738,9 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  iteration_dps.reserve( sim -> iterations );
-  iteration_dtps.reserve( sim -> iterations );
-  iteration_dpse.reserve( sim -> iterations );
+  iteration_dps.data.reserve( sim -> iterations );
+  iteration_dtps.data.reserve( sim -> iterations );
+  iteration_dpse.data.reserve( sim -> iterations );
 }
 
 // player_t::init_values ====================================================
@@ -2813,9 +2813,9 @@ void player_t::combat_end()
     iteration_heal += pet -> iteration_heal;
   }
   bool is_hps = ( primary_role() == ROLE_HEAL );
-  iteration_dps.push_back( iteration_seconds ? ( ( is_hps ? iteration_heal : iteration_dmg ) / iteration_seconds ): 0 );
-  iteration_dpse.push_back( sim -> current_time ? ( ( is_hps ? iteration_heal : iteration_dmg ) / sim -> current_time ): 0 );
-  iteration_dtps.push_back( iteration_seconds ? dmg_taken / iteration_seconds : 0 );
+  iteration_dps.data.push_back( iteration_seconds ? ( ( is_hps ? iteration_heal : iteration_dmg ) / iteration_seconds ): 0 );
+  iteration_dpse.data.push_back( sim -> current_time ? ( ( is_hps ? iteration_heal : iteration_dmg ) / sim -> current_time ): 0 );
+  iteration_dtps.data.push_back( iteration_seconds ? dmg_taken / iteration_seconds : 0 );
 
   total_dmg += iteration_dmg;
   total_heal += iteration_heal;
@@ -2837,12 +2837,10 @@ void player_t::merge( player_t& other )
   total_foreground_actions += other.total_foreground_actions;
   death_count += other.death_count;
 
-  iteration_dps.insert( iteration_dps.end(),
-                        other.iteration_dps.begin(), other.iteration_dps.end() );
-  iteration_dtps.insert( iteration_dtps.end(),
-                        other.iteration_dtps.begin(), other.iteration_dtps.end() );
-  iteration_dpse.insert( iteration_dpse.end(),
-                         other.iteration_dpse.begin(), other.iteration_dpse.end() );
+  iteration_dps.merge( other.iteration_dps );
+  iteration_dtps.merge( other.iteration_dtps );
+  iteration_dpse.merge( other.iteration_dpse );
+
   death_time.insert( death_time.end(),
                      other.death_time.begin(), other.death_time.end() );
 

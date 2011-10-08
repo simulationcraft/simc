@@ -85,6 +85,7 @@ SOURCES += engine/sc_report_xml.cpp
 SOURCES += engine/sc_report.cpp
 SOURCES += engine/sc_rng.cpp
 SOURCES += engine/sc_rogue.cpp
+SOURCES += engine/sc_sample_data.cpp
 SOURCES += engine/sc_scaling.cpp
 SOURCES += engine/sc_sequence.cpp
 SOURCES += engine/sc_set_bonus.cpp

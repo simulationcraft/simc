@@ -435,8 +435,8 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
       util_t::fprintf( file,
                        "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
                        p -> name(),
-                       ( ( p -> dps_max - p -> dps_min ) / 2 ),
-                       p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0 );
+                       ( ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2 ),
+                       p -> iteration_dps.mean ? ( ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2 ) * 100 / p -> iteration_dps.mean : 0 );
     }
     util_t::fprintf( file,
                      "\t\t\t\t\t</ul>\n" );

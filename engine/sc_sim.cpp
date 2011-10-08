@@ -660,7 +660,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   armory_throttle( 5 ), current_throttle( 5 ),bcp_api_throttle( 0 ), debug_exp( 0 ),
   // Report
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
-  report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ), save_raid_summary( 0 ),
+  report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
+  save_raid_summary( 0 ), extended_statistics( 0 ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),
   spell_query( 0 )
@@ -1277,7 +1278,7 @@ struct compare_dps
 {
   bool operator()( player_t* l, player_t* r ) SC_CONST
   {
-    return l -> dps > r -> dps;
+    return l -> iteration_dps.mean > r -> iteration_dps.mean;
   }
 };
 
@@ -1368,21 +1369,15 @@ void sim_t::analyze_player( player_t* p )
 
   // DPS Calculation ========================================================
 
-  assert( p -> iteration_dps.size()  == ( std::size_t ) iterations );
-  assert( p -> iteration_dtps.size() == ( std::size_t ) iterations );
-  assert( p -> iteration_dpse.size() == ( std::size_t ) iterations );
+  assert( p -> iteration_dps.data.size()  == ( std::size_t ) iterations );
+  assert( p -> iteration_dtps.data.size() == ( std::size_t ) iterations );
+  assert( p -> iteration_dpse.data.size() == ( std::size_t ) iterations );
 
-  p -> dps = p -> dpse = p -> dtps = 0;
+  // sample_data_t::analyze(calc_sum,calc_mean,calc_min,calc_max,calc_variance,calc_median,calc_base_error,sort )
 
-  for ( int i=0; i < iterations; i++ )
-  {
-    p -> dps  += p -> iteration_dps[ i ];
-    p -> dpse += p -> iteration_dpse[ i ];
-    p -> dtps += p -> iteration_dtps[ i ];
-  }
-  p -> dps  /= iterations;
-  p -> dpse /= iterations;
-  p -> dtps /= iterations;
+  p -> iteration_dps.analyze( true, true, true, true, true, false, true, true );
+  p -> iteration_dpse.analyze( true, true, true, true, true, false, true, true );
+  p -> iteration_dtps.analyze( true, true, true, true, true, false, true, true );
 
 
   if ( p -> quiet ) return;
@@ -1395,11 +1390,11 @@ void sim_t::analyze_player( player_t* p )
 
     s -> portion_amount = s -> compound_amount / ( ( s -> type == STATS_DMG ) ? p -> total_dmg : p -> total_heal );
     if ( ( s -> type == STATS_DMG && p -> primary_role() != ROLE_HEAL ) || ( s -> type != STATS_DMG && p -> primary_role() == ROLE_HEAL ) )
-      s -> portion_aps = s -> portion_amount * p -> dps;
+      s -> portion_aps = s -> portion_amount * p -> iteration_dps.mean;
     else
       s -> portion_aps = ( s -> portion_amount > 0 ) ? -1.0 : 0;
 
-    chart_t::timeline_stat_dps( s -> timeline_aps_chart, p, s );
+    chart_t::timeline( s -> timeline_aps_chart, p, s -> timeline_aps, ( s -> name_str + " APS" ).c_str(), s -> aps );
   }
 
   // Avoid double-counting of pet damage
@@ -1409,8 +1404,8 @@ void sim_t::analyze_player( player_t* p )
     {
       total_heal += p -> total_heal;
       total_dmg  += p -> total_dmg;
-      raid_dps   += ( p -> primary_role() == ROLE_HEAL ) ? 0 : p -> dpse;
-      raid_hps   += ( p -> primary_role() == ROLE_HEAL ) ? p -> dpse : 0;
+      raid_dps   += ( p -> primary_role() == ROLE_HEAL ) ? 0 : p -> iteration_dpse.mean;
+      raid_hps   += ( p -> primary_role() == ROLE_HEAL ) ? p -> iteration_dpse.mean : 0;
     }
   }
 
@@ -1483,44 +1478,11 @@ void sim_t::analyze_player( player_t* p )
 
   // DPS Error ==============================================================
 
-  p -> dps_min = +1.0E+50;
-  p -> dps_max = -1.0E+50;
-  p -> dps_std_dev = 0.0;
-
-  for ( int i=0; i < iterations; i++ )
-  {
-    double i_dps = p -> iteration_dps[ i ];
-    if ( p -> dps_min > i_dps ) p -> dps_min = i_dps;
-    if ( p -> dps_max < i_dps ) p -> dps_max = i_dps;
-    double delta = i_dps - p -> dps;
-    p -> dps_std_dev += delta * delta;
-  }
-
-  if ( p -> dps_min >= 1.0E+50 ) p -> dps_min = 0.0;
-  if ( p -> dps_max < 0.0      ) p -> dps_max = 0.0;
-
-  if ( iterations > 1 )
-  {
-    p -> dps_std_dev /= ( iterations - 1 );
-  }
-
-  p -> dps_std_dev = sqrt( p -> dps_std_dev );
-  p -> dps_error = confidence_estimator * p -> dps_std_dev / sqrt( ( float ) iterations );
+  p -> dps_error = p -> iteration_dps.mean_std_dev * confidence_estimator;
 
   // DTPS Error ==============================================================
 
-  p -> dtps_error = 0.0;
-
-  for ( int i=0; i < iterations; i++ )
-  {
-    double i_dtps = p -> iteration_dtps[ i ];
-    double delta = i_dtps - p -> dtps;
-    p -> dtps_error += delta * delta;
-  }
-
-  if ( iterations > 1 ) p -> dtps_error /= ( iterations - 1 );
-  p -> dtps_error = sqrt( p -> dtps_error );
-  p -> dtps_error = confidence_estimator * p -> dtps_error / sqrt( ( float ) iterations );
+  p -> dtps_error = p -> iteration_dtps.mean_std_dev * confidence_estimator;
 
   // Error Convergence ======================================================
 
@@ -1534,7 +1496,7 @@ void sim_t::analyze_player( player_t* p )
   {
     for ( int i=0; i < iterations; i += convergence_scale )
     {
-      double i_dps = p -> iteration_dps[ i ];
+      double i_dps = p -> iteration_dps.data[ i ];
       convergence_dps += i_dps;
       if ( convergence_min > i_dps ) convergence_min = i_dps;
       if ( convergence_max < i_dps ) convergence_max = i_dps;
@@ -1551,7 +1513,7 @@ void sim_t::analyze_player( player_t* p )
     {
       p -> dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
 
-      double delta = p -> iteration_dps[ i ] - convergence_dps;
+      double delta = p -> iteration_dps.data[ i ] - convergence_dps;
       double delta_squared = delta * delta;
 
       sum_of_squares += delta_squared;
@@ -1571,27 +1533,22 @@ void sim_t::analyze_player( player_t* p )
 
   // DPS Statistics =========================================================
 
-  if ( p -> dps_max > p -> dps_min )
+  if ( p -> iteration_dps.max > p -> iteration_dps.min )
   {
     int num_buckets = 50;
-    double min = p -> dps_min - 1;
-    double max = p -> dps_max + 1;
+    double min = p -> iteration_dps.min - 1;
+    double max = p -> iteration_dps.max + 1;
     double range = max - min;
 
     p -> distribution_dps.assign( num_buckets, 0 );
 
     for ( int i=0; i < iterations; i++ )
     {
-      double i_dps = p -> iteration_dps[ i ];
+      double i_dps = p -> iteration_dps.data[ i ];
       int index = ( int ) ( num_buckets * ( i_dps - min ) / range );
       p -> distribution_dps[ index ]++;
     }
   }
-
-  std::sort( p -> iteration_dps.begin(), p -> iteration_dps.end() );
-
-  p -> dps_10_percentile = p -> iteration_dps[ p -> iteration_dps.size() / 10 ];
-  p -> dps_90_percentile = p -> iteration_dps[ 9 * p -> iteration_dps.size() / 10 ];
 
   // Death Analysis =========================================================
 
@@ -1636,12 +1593,12 @@ void sim_t::analyze_player( player_t* p )
   chart_t::time_spent         ( p -> time_spent_chart,                p );
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    chart_t::timeline_resource( p -> timeline_resource_chart[i],      p, i );
+    chart_t::timeline( p -> timeline_resource_chart[i],      p, p -> timeline_resource[i], ( util_t::urlencode( util_t::str_to_utf8( p -> name_str ) ) + " " + util_t::resource_type_string( i ) ).c_str(), 0, chart_t::resource_color( i ) );
   }
-  chart_t::timeline_dps       ( p -> timeline_dps_chart,              p );
+  chart_t::timeline       ( p -> timeline_dps_chart,              p, p -> timeline_dps, ( util_t::urlencode( util_t::str_to_utf8( p -> name_str ) ) + " DPS" ).c_str(), p -> iteration_dps.mean );
   chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
   chart_t::dps_error          ( p -> dps_error_chart,                 p );
-  chart_t::distribution   ( p -> distribution_dps_chart, p, p -> distribution_dps, "DPS", p -> dps, p -> dps_min, p -> dps_max );
+  chart_t::distribution   ( p -> distribution_dps_chart, p, p -> distribution_dps, "DPS", p -> iteration_dps.mean, p -> iteration_dps.min, p -> iteration_dps.max );
   chart_t::distribution   ( p -> distribution_deaths_chart, p, p -> distribution_dps, "Death", p -> avg_death_time, p -> min_death_time, p -> max_death_time );
 }
 
@@ -2334,6 +2291,7 @@ void sim_t::create_options()
     { "report_details",                   OPT_BOOL,   &( report_details                           ) },
     { "report_rng",                       OPT_BOOL,   &( report_rng                               ) },
     { "report_overheal",                  OPT_BOOL,   &( report_overheal                          ) },
+    { "extended_statistics",              OPT_BOOL,   &( extended_statistics                      ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

@@ -166,7 +166,7 @@ static void print_text_actions( FILE* file, player_t* p )
       {
         if ( first )
         {
-          util_t::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> dps );
+          util_t::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> iteration_dps.mean );
           first = false;
         }
         print_text_action( file, s, max_length );
@@ -716,7 +716,7 @@ static void print_text_reference_dps( FILE* file, sim_t* sim )
   }
 
   util_t::fprintf( file, "  %-*s", max_length, ref_p -> name() );
-  util_t::fprintf( file, "  %.0f", ref_p -> dps );
+  util_t::fprintf( file, "  %.0f", ref_p -> iteration_dps.mean );
 
   if ( sim -> scaling -> has_scale_factors() )
   {
@@ -739,9 +739,9 @@ static void print_text_reference_dps( FILE* file, sim_t* sim )
     {
       util_t::fprintf( file, "  %-*s", max_length, p -> name() );
 
-      bool over = ( p -> dps > ref_p -> dps );
+      bool over = ( p -> iteration_dps.mean > ref_p -> iteration_dps.mean );
 
-      double ratio = 100.0 * fabs( p -> dps - ref_p -> dps ) / ref_p -> dps;
+      double ratio = 100.0 * fabs( p -> iteration_dps.mean - ref_p -> iteration_dps.mean ) / ref_p -> iteration_dps.mean;
 
       util_t::fprintf( file, "  %c%.0f%%", ( over ? '+' : '-' ), ratio );
 
@@ -815,9 +815,9 @@ static void print_text_player( FILE* file, player_t* p )
                    util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
   util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%  Convergence=%.1f%%",
-                   p -> dps,
-                   p -> dps_error, p -> dps ? p -> dps_error * 100 / p -> dps : 0,
-                   ( p -> dps_max - p -> dps_min ) / 2.0 , p -> dps ? ( ( p -> dps_max - p -> dps_min ) / 2 ) * 100 / p -> dps : 0,
+                   p -> iteration_dps.mean,
+                   p -> dps_error, p -> iteration_dps.mean ? p -> dps_error * 100 / p -> iteration_dps.mean : 0,
+                   ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2.0 , p -> iteration_dps.mean ? ( ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2 ) * 100 / p -> iteration_dps.mean : 0,
                    p -> dps_convergence * 100 );
 
   if ( p -> rps_loss > 0 )
@@ -890,7 +890,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = sim -> players_by_rank[ i ];
-      util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps, 100 * p -> total_dmg / sim -> total_dmg, p -> name() );
+      util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> iteration_dps.mean, 100 * p -> total_dmg / sim -> total_dmg, p -> name() );
     }
   }
 

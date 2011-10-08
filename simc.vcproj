@@ -391,6 +391,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_sample_data.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_scale_data.inc"
 			>
 		</File>

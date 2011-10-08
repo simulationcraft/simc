@@ -146,6 +146,7 @@ struct sim_t;
 struct spell_t;
 struct spell_data_t;
 struct spelleffect_data_t;
+struct sample_data_t;
 struct heal_t;
 struct stats_t;
 struct talent_t;
@@ -2850,6 +2851,7 @@ struct sim_t : private thread_t
   int print_styles;
   int report_overheal;
   int save_raid_summary;
+  int extended_statistics;
 
   // Multi-Threading
   int threads;
@@ -3298,6 +3300,55 @@ public:
   const spell_id_t* set( set_type s ) const;
 };
 
+// Statistical Sample Data
+
+struct sample_data_t
+{
+  std::vector<double> data;
+
+  // Analyzed Results
+  double sum;
+  double mean;
+  double min;
+  double max;
+  double variance;
+  double std_dev;
+  int    mean_point;
+  double median;
+  double mean_std_dev;
+
+  // Analyze Options
+  bool calculate_sum;
+  bool calculate_mean;
+  bool calculate_min;
+  bool calculate_max;
+  bool calculate_variance;
+  bool calculate_median;
+  bool calculate_mean_std_dev;
+  bool sort;
+
+  bool analyzed;
+  bool sorted;
+
+  sample_data_t();
+
+  void analyze(
+      bool calc_sum=false,
+      bool calc_mean=false,
+      bool calc_min=false,
+      bool calc_max=false,
+      bool calc_variance=false,
+      bool calc_median=false,
+      bool calc_base_error=false,
+      bool s=false );
+
+  double percentile( double );
+
+  void sort_data();
+
+  void merge( sample_data_t& );
+};
+
 // Player ===================================================================
 
 struct player_t : public noncopyable
@@ -3500,13 +3551,12 @@ struct player_t : public noncopyable
   double    iteration_dmg, total_dmg, iteration_heal, total_heal;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
-  double    dps, dpse, dps_min, dps_max, dps_std_dev, dps_error, dps_convergence;
-  double    dps_10_percentile,dps_90_percentile;
+  double    dps_error, dps_convergence;
   double    dpr, rps_gain, rps_loss;
   int       death_count;
   std::vector<double> death_time;
   double    avg_death_time, death_count_pct, min_death_time, max_death_time;
-  double    dmg_taken, total_dmg_taken, dtps, dtps_error;
+  double    dmg_taken, total_dmg_taken, dtps_error;
   buff_t*   buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;
@@ -3518,9 +3568,9 @@ struct player_t : public noncopyable
   std::vector<std::vector<double> > timeline_resource;
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
-  std::vector<double> iteration_dps;
-  std::vector<double> iteration_dtps;
-  std::vector<double> iteration_dpse;
+  sample_data_t iteration_dps;
+  sample_data_t iteration_dtps;
+  sample_data_t iteration_dpse;
   std::vector<int> distribution_dps;
   std::vector<int> distribution_deaths;
   std::vector<double> dps_convergence_error;
@@ -4842,9 +4892,7 @@ struct chart_t
   static const char* action_dmg       ( std::string& s, player_t* );
   static const char* time_spent       ( std::string& s, player_t* );
   static const char* gains            ( std::string& s, player_t*, resource_type );
-  static const char* timeline_resource( std::string& s, player_t*, int );
-  static const char* timeline_dps     ( std::string& s, player_t* );
-  static const char* timeline_stat_dps( std::string& s, player_t*, stats_t* );
+  static const char* timeline         ( std::string& s, player_t*, std::vector<double>, const char*, double avg=0, const char* color="FDD017" );
   static const char* timeline_dps_error( std::string& s, player_t* );
   static const char* scale_factors    ( std::string& s, player_t* );
   static const char* scaling_dps      ( std::string& s, player_t* );
@@ -4857,6 +4905,8 @@ struct chart_t
   static const char* gear_weights_pawn      ( std::string& s, player_t*, bool hit_expertise=true );
 
   static const char* dps_error( std::string& s, player_t* );
+
+  static const char* resource_color( int type );
 };
 
 // Log ======================================================================

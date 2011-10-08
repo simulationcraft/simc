@@ -269,9 +269,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     writer.print_tag("player_type", util_t::player_type_string( p->type ));
     writer.print_tag("talent_tree", util_t::talent_tree_string( p -> primary_tree() ));
     writer.begin_tag("dps");
-    writer.print_attribute("value", util_t::to_string(p -> dps, PRINT_XML_PRECISION));
+    writer.print_attribute("value", util_t::to_string(p -> iteration_dps.mean, PRINT_XML_PRECISION));
     writer.print_attribute("error", util_t::to_string(p -> dps_error, PRINT_XML_PRECISION));
-    writer.print_attribute("range", util_t::to_string(( p -> dps_max - p -> dps_min ) / 2.0, PRINT_XML_PRECISION));
+    writer.print_attribute("range", util_t::to_string(( p -> iteration_dps.max - p -> iteration_dps.min ) / 2.0, PRINT_XML_PRECISION));
     writer.print_attribute("convergence", util_t::to_string(p -> dps_convergence, PRINT_XML_PRECISION));
     writer.end_tag(); // </dps>
 
