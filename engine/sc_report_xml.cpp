@@ -7,9 +7,11 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-  static inline void replace_entity( std::string& str, const char * old_value, const char * new_value )
+  struct replacement { char from; const char* to; };
+
+  static inline void replace_entity( std::string& str, char old_value, const char* new_value )
   {
-    std::size_t len = strlen(new_value);
+    std::size_t len = strlen( new_value );
     std::string::size_type pos = 0;
     while ( ( pos = str.find( old_value, pos ) ) != str.npos )
     {
@@ -118,7 +120,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
     void print_attribute(const std::string & name, const std::string & value)
     {
-      if(current_state == NONE) 
+      if(current_state == NONE)
         return;
 
       if(current_state == TAG)
@@ -152,20 +154,16 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
       fprintf("%s", value.c_str());
     }
 
-    std::string sanitize(const std::string & input) {
-      const char * replacements[][2] = {
-        { "&", "&amp;" },
-        { "\"", "&quot;" },
-        { "<", "&lt;" },
-        { ">", "&gt;" },
-        { "", "" },
+    static std::string sanitize(std::string v) {
+      const replacement replacements[] = {
+        { '&', "&amp;" },
+        { '"', "&quot;" },
+        { '<', "&lt;" },
+        { '>', "&gt;" },
       };
-      std::string v = input;
 
-      int index = -1;
-      while(replacements[++index][0][0] != 0) {
-        replace_entity(v, replacements[index][0], replacements[index][1]);
-      }
+      for ( unsigned int i = 0; i < sizeof_array( replacements ); ++i )
+        replace_entity(v, replacements[i].from, replacements[i].to);
 
       return v;
     }
