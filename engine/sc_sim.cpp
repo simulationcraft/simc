@@ -657,7 +657,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( -60 ),
   path_str( "." ), output_file( stdout ),
-  armory_throttle( 5 ), current_throttle( 5 ),bcp_api_throttle( 1 ), debug_exp( 0 ),
+  armory_throttle( 5 ), current_throttle( 5 ),bcp_api_throttle( 0 ), debug_exp( 0 ),
   // Report
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ), save_raid_summary( 0 ),

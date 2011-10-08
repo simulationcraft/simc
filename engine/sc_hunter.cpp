@@ -189,6 +189,7 @@ struct hunter_t : public player_t
 
   double merge_piercing_shots;
   double tier13_4pc_proc_chance;
+  double tier13_4pc_cooldown;
 
   hunter_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, HUNTER, name, r )
   {
@@ -221,6 +222,7 @@ struct hunter_t : public player_t
     flaming_arrow = NULL;
 
     tier13_4pc_proc_chance = 0.40;
+    tier13_4pc_cooldown = 0.0;
 
     create_talents();
     create_glyphs();
@@ -3858,10 +3860,13 @@ void hunter_t::init_buffs()
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, 0, 0, 1, true );
 
   buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
-  buffs_tier13_4pc                  = new buff_t( this, "tier13_4pc", 1, 15.0, 0, tier13_4pc_proc_chance * set_bonus.tier13_4pc_melee() );
+  buffs_tier13_4pc                  = new buff_t( this, "tier13_4pc", 1, 15.0, tier13_4pc_cooldown, tier13_4pc_proc_chance * set_bonus.tier13_4pc_melee() );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
+
+  // buff_t( player, name, max_stack, duration, cd, chance )
+  // buff_t( player, id, name, chance, cd )
 }
 
 // hunter_t::init_gains =====================================================
@@ -4193,6 +4198,7 @@ void hunter_t::create_options()
     { "summon_pet", OPT_STRING, &( summon_pet_str  ) },
     { "merge_piercing_shots", OPT_FLT, &( merge_piercing_shots ) },
     { "tier13_4pc_proc_chance", OPT_FLT, &( tier13_4pc_proc_chance ) },
+    { "tier13_4pc_cooldown", OPT_FLT, &( tier13_4pc_cooldown ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
