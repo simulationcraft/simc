@@ -4,22 +4,9 @@
 // ==========================================================================
 
 #include "simulationcraft.h"
+#include <stack>
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
-
-  struct replacement { char from; const char* to; };
-
-  static inline void replace_entity( std::string& str, char old_value, const char* new_value )
-  {
-    std::size_t len = strlen( new_value );
-    std::string::size_type pos = 0;
-    while ( ( pos = str.find( old_value, pos ) ) != str.npos )
-    {
-      str.replace( pos, 1, new_value );
-      pos += len;
-    }
-  }
-
 
   class xml_writer_t
   {
@@ -28,10 +15,23 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     enum state {
       NONE, TAG, TEXT
     };
-    std::deque<std::string> current_tags;
+    std::stack<std::string> current_tags;
     std::string tabulation;
     state current_state;
     std::string indentation;
+
+    struct replacement { char from; const char* to; };
+
+    static void replace_entity( std::string& str, char old_value, const char* new_value )
+    {
+      std::size_t len = strlen( new_value );
+      std::string::size_type pos = 0;
+      while ( ( pos = str.find( old_value, pos ) ) != str.npos )
+      {
+        str.replace( pos, 1, new_value );
+        pos += len;
+      }
+    }
 
   public:
     xml_writer_t(const std::string & filename)
@@ -91,7 +91,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
       printf("\n%s<%s", indentation.c_str(), tag.c_str());
 
-      current_tags.push_back(tag);
+      current_tags.push(tag);
       rebuild_indentation();
 
       current_state = TAG;
@@ -100,8 +100,8 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     void end_tag() {
       assert( current_state != NONE );
 
-      std::string tag = current_tags.back();
-      current_tags.pop_back();
+      std::string tag = current_tags.top();
+      current_tags.pop();
       rebuild_indentation();
 
       if(current_state == TAG) {
