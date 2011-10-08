@@ -50,12 +50,12 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     bool ready() const { return file != NULL; }
     void set_tabulation(std::string & tabulation) { this->tabulation = tabulation; }
 
-    int fprintf(const char *format, ...) const PRINTF_ATTRIBUTE(2,3)
+    int printf(const char *format, ...) const PRINTF_ATTRIBUTE(2,3)
     {
       va_list fmtargs;
       va_start( fmtargs, format );
 
-      int retcode = util_t::vfprintf(file, format, fmtargs);
+      int retcode = vfprintf(file, format, fmtargs);
 
       va_end(fmtargs);
 
@@ -75,9 +75,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
       if(current_state != NONE)
         return;
 
-      fprintf("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+      printf("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
       if(!stylesheet_file.empty()) {
-        fprintf("<?xml-stylesheet type=\"text/xml\" href=\"%s\"?>", stylesheet_file.c_str());
+        printf("<?xml-stylesheet type=\"text/xml\" href=\"%s\"?>", stylesheet_file.c_str());
       }
 
       current_state = TEXT;
@@ -90,10 +90,10 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
       std::string new_tag = tag;
 
       if(current_state != TEXT) {
-        fprintf(">");
+        printf(">");
       }
 
-      fprintf("\n%s<%s", indentation.c_str(), tag.c_str());
+      printf("\n%s<%s", indentation.c_str(), tag.c_str());
 
       current_tags.push_back(tag);
       rebuild_indentation();
@@ -110,9 +110,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
       rebuild_indentation();
 
       if(current_state == TAG) {
-        fprintf("/>");
+        printf("/>");
       } else if(current_state == TEXT) {
-        fprintf("\n%s</%s>", indentation.c_str(), tag.c_str());
+        printf("\n%s</%s>", indentation.c_str(), tag.c_str());
       }
 
       current_state = TEXT;
@@ -127,7 +127,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
       {
         std::string str = value;
         str = sanitize(str);
-        fprintf(" %s=\"%s\"", name.c_str(), str.c_str());
+        printf(" %s=\"%s\"", name.c_str(), str.c_str());
       }
     }
 
@@ -137,12 +137,12 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
         return;
 
       if(current_state != TEXT) {
-        fprintf(">");
+        printf(">");
       }
 
       std::string str = inner_value;
       sanitize(str);
-      fprintf("\n%s<%s>%s</%s>", indentation.c_str(), name.c_str(), str.c_str(), name.c_str());
+      printf("\n%s<%s>%s</%s>", indentation.c_str(), name.c_str(), str.c_str(), name.c_str());
 
       current_state = TEXT;
     }
@@ -151,7 +151,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     {
       std::string value = input;
       sanitize(value);
-      fprintf("%s", value.c_str());
+      printf("%s", value.c_str());
     }
 
     static std::string sanitize(std::string v) {
