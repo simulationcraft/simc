@@ -29,7 +29,7 @@ talent_t::talent_t( player_t* player, talent_data_t* _td ) :
 
 talent_t::~talent_t()
 {
-  for ( int i = 0; i < MAX_RANK; i++ )
+  for ( size_t i = 0; i < sizeof_array( t_rank_spells ); i++ )
   {
     if ( t_rank_spells[ i ] != this && t_rank_spells[ i ] != t_default_rank )
       delete t_rank_spells[ i ];
@@ -207,15 +207,6 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
 {
   initialize( s_name );
   armory_t::format( s_token, FORMAT_ASCII_MASK );
-}
-
-spell_id_t::spell_id_t( const spell_id_t& copy ) :
-  s_type( copy.s_type ), s_id( copy.s_id ), s_data( copy.s_data ), s_enabled( copy.s_enabled ),
-  s_player( copy.s_player ), s_overridden( copy.s_overridden ),
-  s_token( copy.s_token ), s_required_talent( copy.s_required_talent ), s_single( copy.s_single ),
-  s_tree( copy.s_tree )
-{
-  memcpy( s_effects, copy.s_effects, sizeof( s_effects ) );
 }
 
 spell_id_t::~spell_id_t()

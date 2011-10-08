@@ -1952,7 +1952,7 @@ struct spell_id_t
   int                        s_tree;
 
   // Construction & deconstruction
-  spell_id_t( const spell_id_t& copy );
+  // spell_id_t( const spell_id_t& copy ) = default;
   spell_id_t( player_t* player = 0, const char* t_name = 0 );
   spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent = 0 );
   spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent = 0 );
@@ -1960,7 +1960,7 @@ struct spell_id_t
 
   // Generic spell data initialization
   bool initialize( const char* s_name = 0 );
-  virtual bool enable( bool override_value = false );
+  virtual bool enable( bool override_value );
 
   // Spell data object validity check
   virtual bool ok() SC_CONST;
