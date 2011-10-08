@@ -2081,7 +2081,7 @@ int util_t::vfprintf_helper( FILE *stream, const char *format, va_list args )
   char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
   setlocale( LC_CTYPE, "" );
 
-  int retcode = vfprintf( stream, format, args );
+  int retcode = ::vfprintf( stream, format, args );
 
   setlocale( LC_CTYPE, p_locale );
   free( p_locale );
