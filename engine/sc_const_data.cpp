@@ -27,7 +27,54 @@ random_suffix_data_t nil_rsd;
 item_enchantment_data_t nil_ied;
 gem_property_data_t nil_gpd;
 
-// Indices to provide constant-time access to spells, effects, and talents by id.
+#if 1
+// Indices to provide log time, constant space access to spells, effects, and talents by id.
+template <typename T>
+class dbc_index_t
+{
+private:
+  typedef std::pair<T*,T*> index_t;
+  index_t idx[2];
+
+  void populate( index_t& idx, T* list )
+  {
+    idx.first = list;
+    for ( unsigned last_id = 0; list -> id(); last_id = list -> id(), ++list )
+      assert( list -> id() > last_id );
+    idx.second = list;
+  }
+
+  struct id_compare
+  {
+    bool operator () ( const T& t, unsigned int id ) const
+    { return t.id() < id; }
+  };
+
+public:
+  dbc_index_t() : idx() {}
+
+  void init()
+  {
+    assert( ! initialized( false ) );
+    populate( idx[ false ], T::list( false ) );
+    if ( SC_USE_PTR )
+      populate( idx[ true ], T::list( true ) );
+  }
+
+  bool initialized( bool ptr = false ) const
+  { return idx[ ptr ].first != 0; }
+
+  T* get( bool ptr, unsigned id ) const
+  {
+    assert( initialized( ptr ) );
+    T* p = std::lower_bound( idx[ ptr].first, idx[ ptr ].second, id, id_compare() );
+    if ( p != idx[ ptr ].second && p -> id() == id )
+      return p;
+    return T::nil();
+  }
+};
+#else
+// Indices to provide constant time, linear space access to spells, effects, and talents by id.
 template <typename T>
 class dbc_index_t
 {
@@ -35,50 +82,42 @@ private:
   typedef std::vector<T*> index_t;
   index_t idx[2];
 
-  void populate( index_t& i, T* data );
+  void populate( index_t& idx, T* list )
+  {
+    unsigned max_id = 0;
+    for ( T* p = list; p -> id(); ++p )
+    {
+      if ( max_id < p -> id() )
+        max_id = p -> id();
+    }
+
+    idx.assign( max_id + 1, T::nil() );
+    for ( T* p = list; p -> id(); ++p )
+      idx[ p -> id() ] = p;
+  }
 
 public:
-  void init();
+  void init()
+  {
+    assert( ! initialized( false ) );
+    populate( idx[ false ], T::list( false ) );
+    if ( SC_USE_PTR )
+      populate( idx[ true ], T::list( true ) );
+  }
 
   bool initialized( bool ptr = false ) const
   { return ! idx[ ptr ].empty(); }
 
-  T* get( bool ptr, unsigned id ) const;
-};
-
-template <typename T>
-void dbc_index_t<T>::init()
-{
-  assert( ! initialized( false ) );
-  populate( idx[ false ], T::list( false ) );
-  if ( SC_USE_PTR )
-    populate( idx[ true ], T::list( true ) );
-}
-
-template <typename T>
-void dbc_index_t<T>::populate( index_t& idx, T* list )
-{
-  unsigned max_id = 0;
-  for ( T* p = list; p -> id(); ++p )
+  T* get( bool ptr, unsigned id ) const
   {
-    if ( max_id < p -> id() )
-      max_id = p -> id();
+    assert( initialized( ptr ) );
+    if ( id < idx[ ptr ].size() )
+      return idx[ ptr ][ id ];
+    else
+      return T::nil();
   }
-
-  idx.assign( max_id + 1, T::nil() );
-  for ( T* p = list; p -> id(); ++p )
-    idx[ p -> id() ] = p;
-}
-
-template <typename T>
-T* dbc_index_t<T>::get( bool ptr, unsigned id ) const
-{
-  assert( initialized( ptr ) );
-  if ( id < idx[ ptr ].size() )
-    return idx[ ptr ][ id ];
-  else
-    return T::nil();
-}
+};
+#endif
 
 dbc_index_t<spell_data_t> idx_sd;
 dbc_index_t<spelleffect_data_t> idx_sed;
@@ -94,10 +133,6 @@ const char* dbc_t::wow_version( bool ptr )
 
 void dbc_t::init()
 {
-  zerofill( nil_rsd );
-  zerofill( nil_ied );
-  zerofill( nil_gpd );
-
   idx_sd.init();
   idx_sed.init();
   idx_td.init();
