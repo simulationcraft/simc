@@ -377,7 +377,7 @@ namespace { // ANONYMOUS ====================================================
 struct item_info_t : public item_data_t
 {
   std::string name_str, icon_str;
-  item_info_t() { zerofill( static_cast<item_data_t&>( *this ) ); }
+  item_info_t() : item_data_t() {}
 };
 
 bool download_item_data( item_t& item, item_info_t& item_data,

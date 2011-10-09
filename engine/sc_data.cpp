@@ -11,11 +11,8 @@
 
 spell_data_nil_t spell_data_nil_t::singleton;
 
-spell_data_nil_t::spell_data_nil_t()
-{
-  zerofill( static_cast<spell_data_t&>( *this ) );
-  _effect1 = _effect2 = _effect3 = spelleffect_data_t::nil();
-}
+spell_data_nil_t::spell_data_nil_t() : spell_data_t()
+{ _effect1 = _effect2 = _effect3 = spelleffect_data_t::nil(); }
 
 // spell_data_t::set_used ===================================================
 
@@ -163,12 +160,9 @@ bool spell_data_t::flags( spell_attribute_t f ) const
 
 spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 
-spelleffect_data_nil_t::spelleffect_data_nil_t()
-{
-  zerofill( static_cast<spelleffect_data_t&>( *this ) );
-  _spell         = spell_data_t::nil();
-  _trigger_spell = spell_data_t::nil();
-}
+spelleffect_data_nil_t::spelleffect_data_nil_t() :
+  spelleffect_data_t()
+{ _spell = _trigger_spell = spell_data_t::nil(); }
 
 void spelleffect_data_t::set_used( bool value )
 {
@@ -192,13 +186,9 @@ void spelleffect_data_t::set_enabled( bool value )
 
 talent_data_nil_t talent_data_nil_t::singleton;
 
-talent_data_nil_t::talent_data_nil_t()
-{
-  zerofill( static_cast<talent_data_t&>( *this ) );
-  spell1 = spell_data_t::nil();
-  spell2 = spell_data_t::nil();
-  spell3 = spell_data_t::nil();
-}
+talent_data_nil_t::talent_data_nil_t() :
+  talent_data_t()
+{ spell1 = spell2 = spell3 = spell_data_t::nil(); }
 
 void talent_data_t::set_used( bool value )
 {

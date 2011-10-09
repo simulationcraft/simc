@@ -283,21 +283,16 @@ void buff_t::init()
   next = *tail;
   *tail = this;
 
-  if ( stack_uptime.size() > 0 )
-  {
-      for ( size_t i = 0; i < stack_uptime.size(); i++ )
-          delete stack_uptime[ i ];
-      stack_uptime.clear();
-  }
+  dispose( stack_uptime );
+  stack_uptime.clear();
 
   if( max_stack >= 0 )
   {
     stack_occurrence.resize( max_stack + 1 );
     stack_react_time.resize( max_stack + 1 );
 
-    char empty = '\0';
     for ( int i=0; i <= max_stack; i++ )
-      stack_uptime.push_back( new uptime_t( sim, &empty ) );
+      stack_uptime.push_back( new uptime_t( sim, "" ) );
   }
 }
 
@@ -432,8 +427,7 @@ void buff_t::init_buff_t_()
   expiration = 0;
   delay = 0;
 
-  for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    delete stack_uptime[ i ];
+  dispose( stack_uptime );
   stack_uptime.clear();
 
   if ( max_stack >= 0 )
@@ -447,10 +441,7 @@ void buff_t::init_buff_t_()
 }
 
 buff_t::~buff_t()
-{
-  for ( size_t i = 0; i < stack_uptime.size(); ++i )
-    delete stack_uptime[ i ];
-}
+{ dispose( stack_uptime ); }
 
 // buff_t::may_react ========================================================
 

@@ -479,40 +479,36 @@ player_t::player_t( sim_t*             s,
 
   if ( is_pet() ) skill = 1.0;
 
-  for ( int i=0; i < SCHOOL_MAX; i++ ) spell_resistance[ i ] = 0;
+  fill( spell_resistance, 0 );
 
-  for ( int i=0; i < ATTRIBUTE_MAX; i++ )
-  {
-    attribute[ i ] = attribute_base[ i ] = attribute_initial[ i ] = 0;
-    attribute_multiplier[ i ] = attribute_multiplier_initial[ i ] = 1.0;
-    attribute_buffed[ i ] = 0;
-  }
+  fill( attribute, 0 );
+  fill( attribute_base, 0 );
+  fill( attribute_initial, 0 );
+  fill( attribute_buffed, 0 );
 
-  for ( int i=0; i < RESOURCE_MAX; i++ )
-  {
-    infinite_resource[ i ] = false;
-  }
+  fill( attribute_multiplier, 1 );
+  fill( attribute_multiplier_initial, 1 );
+
+  fill( infinite_resource, false );
   infinite_resource[ RESOURCE_HEALTH ] = true;
 
-  for ( int i=0; i < SCHOOL_MAX; i++ )
-  {
-    initial_spell_power[ i ] = spell_power[ i ] = 0;
-    initial_resource_reduction[ i ] = resource_reduction[ i ] = 0;
-  }
+  fill( initial_spell_power, 0 );
+  fill( spell_power, 0 );
+  fill( resource_reduction, 0 );
+  fill( initial_resource_reduction, 0 );
 
-  for ( int i=0; i < RESOURCE_MAX; i++ )
-  {
-    resource_base[ i ] = resource_initial[ i ] = resource_max[ i ] = resource_current[ i ] = 0;
-    resource_lost[ i ] = resource_gained[ i ] = 0;
-    resource_buffed[ i ] = 0;
-  }
+  fill( resource_base, 0 );
+  fill( resource_initial, 0 );
+  fill( resource_max, 0 );
+  fill( resource_current, 0 );
+  fill( resource_lost, 0 );
+  fill( resource_gained, 0 );
+  fill( resource_buffed, 0 );
 
-  for ( int i=0; i < PROFESSION_MAX; i++ ) profession[ i ] = 0;
-  for ( int i=0; i < STAT_MAX; i++ )
-  {
-    scales_with[ i ] = 0;
-    over_cap[ i ] = 0;
-  }
+  fill( profession, 0 );
+
+  fill( scales_with, 0 );
+  fill( over_cap, 0 );
 
   items.resize( SLOT_MAX );
   for ( int i=0; i < SLOT_MAX; i++ )
@@ -528,14 +524,10 @@ player_t::player_t( sim_t*             s,
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
 
-  for ( int i=0; i < MAX_TALENT_TREES; i++ )
-  {
-    talent_tab_points[ i ] = 0;
-    tree_type[ i ] = TREE_NONE;
-  }
+  fill( talent_tab_points, 0 );
+  fill( tree_type, TREE_NONE );
 
-  if ( reaction_stddev == 0 ) reaction_stddev =   reaction_mean * 0.25;
-
+  if ( reaction_stddev == 0 ) reaction_stddev = reaction_mean * 0.25;
 }
 
 // player_t::~player_t ======================================================
@@ -592,57 +584,21 @@ player_t::~player_t()
     cooldown_list = d -> next;
     delete d;
   }
-  for ( int i=0; i < RESOURCE_MAX; i++ )
-  {
-    resource_gain_callbacks[ i ].clear();
-    resource_loss_callbacks[ i ].clear();
-  }
-  for ( int i=0; i < RESULT_MAX; i++ )
-  {
-    attack_callbacks[ i ].clear();
-    spell_callbacks[ i ].clear();
-    tick_callbacks[ i ].clear();
-  }
-  for ( int i=0; i < SCHOOL_MAX; i++ )
-  {
-    tick_damage_callbacks[ i ].clear();
-    tick_heal_callbacks  [ i ].clear();
-
-    direct_damage_callbacks[ i ].clear();
-    direct_heal_callbacks  [ i ].clear();
-  }
 
   if ( false )
   {
     // FIXME! This cannot be done until we use refcounts.
     // FIXME! I see the same callback pointer being registered multiple times.
-    size_t size = all_callbacks.size();
-    for( size_t i=0; i < size; i++ )
-      delete all_callbacks[ i ];
-  }
-  all_callbacks.clear();
-
-  for( int i=0; i < MAX_TALENT_TREES; i++ )
-  {
-    size_t talent_trees_size = talent_trees[i].size();
-    for( size_t j=0; j < talent_trees_size; j++ )
-      delete talent_trees[ i ][ j ];
-    talent_trees[ i ].clear();
+    dispose( all_callbacks );
   }
 
-  size_t size=glyphs.size();
-  for( size_t i=0; i < size; i++ )
-    delete glyphs[ i ];
-  glyphs.clear();
+  for( size_t i=0; i < sizeof_array( talent_trees ); i++ )
+    dispose( talent_trees[ i ] );
 
-  while ( spell_list.size() )
-  {
-    spell_id_t* s = spell_list.back();
-    spell_list.pop_back();
-    delete s;
-  }
-  if ( sets )
-    delete sets;
+  dispose( glyphs );
+  dispose( spell_list );
+
+  delete sets;
 }
 
 // player_t::init ===========================================================

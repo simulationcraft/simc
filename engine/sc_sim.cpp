@@ -721,7 +721,7 @@ sim_t::sim_t( sim_t* p, int index ) :
 
   // Initialize the default item database source order
   static const char* const dbsources[] = { "local", "bcpapi", "wowhead", "mmoc", "armory", "ptrhead" };
-  item_db_sources.assign( dbsources, dbsources + sizeof_array( dbsources ) );
+  item_db_sources.assign( begin( dbsources ), end( dbsources ) );
 
   scaling = new scaling_t( this );
   plot    = new    plot_t( this );
@@ -793,17 +793,8 @@ sim_t::~sim_t()
   delete plot;
   delete reforge_plot;
 
-  int num_events = ( int ) raid_events.size();
-  for ( int i=0; i < num_events; i++ )
-  {
-    delete raid_events[ i ];
-  }
-
-  int num_children = ( int ) children.size();
-  for ( int i=0; i < num_children; i++ )
-  {
-    delete children[ i ];
-  }
+  dispose( raid_events );
+  dispose( children );
 
   delete[] timing_wheel;
   delete spell_query;
@@ -1208,7 +1199,7 @@ bool sim_t::init()
   wheel_mask--;
 
   // The timing wheel represents an array of event lists: Each time slice has an event list.
-  if ( timing_wheel ) delete [] timing_wheel;
+  delete[] timing_wheel;
   timing_wheel= new event_t*[wheel_size];
   memset( timing_wheel,0,sizeof( event_t* )*wheel_size );
 
@@ -1708,8 +1699,7 @@ void sim_t::merge( sim_t& other_sim )
 
   if ( max_events_remaining < other_sim.max_events_remaining ) max_events_remaining = other_sim.max_events_remaining;
 
-  std::copy( other_sim.iteration_timeline.begin(), other_sim.iteration_timeline.end(),
-             std::back_inserter( iteration_timeline ) );
+  copy( other_sim.iteration_timeline, std::back_inserter( iteration_timeline ) );
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {

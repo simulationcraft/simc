@@ -778,31 +778,11 @@ enum rating_type {
   RATING_MAX
 };
 
-// Type utilities and simple meta-programming tools =========================
+
+// Type utilities and generic programming tools =============================
 template <typename T, std::size_t N>
 inline std::size_t sizeof_array( T (&)[N] )
 { return N; }
-
-template <typename T>
-inline void zerofill( T* t, std::size_t n )
-{
-  // static_assert( std::is_standard_layout<T>::value, "You cannot use zerofill on this type." );
-  memset( t, 0, n * sizeof( *t ) );
-}
-
-template <typename T>
-inline void zerofill( T& t )
-{
-  // static_assert( std::is_standard_layout<T>::value, "You cannot use zerofill on this type." );
-  memset( &t, 0, sizeof( t ) );
-}
-
-template <typename T, std::size_t N>
-inline void zerofill( T (&t)[N] )
-{
-  // static_assert( std::is_standard_layout<T>::value, "You cannot use zerofill on this type." );
-  memset( &t, 0, sizeof( t ) );
-}
 
 class noncopyable
 {
@@ -821,6 +801,107 @@ private:
   // nonmoveable( nonmoveable&& ) = delete;
   // nonmoveable& operator = ( nonmoveable&& ) = delete;
 };
+
+// Machinery for range-based generic algorithms =============================
+
+template <typename T>
+struct range_traits
+{
+  typedef typename T::iterator iterator;
+  static iterator begin( T& t ) { return t.begin(); }
+  static iterator end( T& t ) { return t.end(); }
+};
+
+template <typename T>
+struct range_traits<const T>
+{
+  typedef typename T::const_iterator iterator;
+  static iterator begin( const T& t ) { return t.begin(); }
+  static iterator end( const T& t ) { return t.end(); }
+};
+
+template <typename T, size_t N>
+struct range_traits<T[N]>
+{
+  typedef T* iterator;
+  static iterator begin( T (&t)[N] ) { return &t[0]; }
+  static iterator end( T (&t)[N] ) { return begin( t ) + N; }
+};
+
+template <typename T, size_t N>
+struct range_traits<const T[N]>
+{
+  typedef const T* iterator;
+  static iterator begin( const T (&t)[N] ) { return &t[0]; }
+  static iterator end( const T (&t)[N] ) { return begin( t ) + N; }
+};
+
+template <typename T>
+struct range_value
+{
+  typedef typename std::iterator_traits<typename range_traits<T>::iterator>::value_type type;
+};
+
+template <typename T>
+inline typename range_traits<T>::iterator begin( T& t )
+{ return range_traits<T>::begin( t ); }
+
+template <typename T>
+inline typename range_traits<const T>::iterator cbegin( const T& t )
+{ return begin( t ); }
+
+template <typename T>
+inline typename range_traits<T>::iterator end( T& t )
+{ return range_traits<T>::end( t ); }
+
+template <typename T>
+inline typename range_traits<const T>::iterator cend( const T& t )
+{ return end( t ); }
+
+// Range-based standard algorithms ==========================================
+
+template <typename Range>
+inline void fill( Range& r, const typename range_value<Range>::type& t )
+{ std::fill( begin( r ), end( r ), t ); }
+
+template <typename Range, typename Out>
+inline Out copy( const Range& r, Out o )
+{ return std::copy( begin( r ), end( r ), o ); }
+
+struct null_disposer_t
+{
+  template <typename T>
+  void operator () ( T* ) const {}
+};
+
+struct delete_disposer_t
+{
+  template <typename T>
+  void operator () ( T* t ) const { delete t; }
+};
+
+template <typename I, typename D>
+void dispose( I first, I last, D disposer )
+{
+  while ( first != last )
+  {
+    I tmp = first++;
+    disposer( *tmp );
+  }
+}
+
+template <typename I>
+inline void dispose( I first, I last )
+{ dispose( first, last, delete_disposer_t() ); }
+
+template <typename C, typename D>
+inline void dispose( C& c, D disposer )
+{ dispose( begin( c ), end( c ), disposer ); }
+
+template <typename C>
+inline void dispose( C& c )
+{ dispose( c, delete_disposer_t() ); }
+
 
 // Cache Control ============================================================
 

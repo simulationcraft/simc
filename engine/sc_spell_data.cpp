@@ -1245,13 +1245,7 @@ static spell_data_expr_t* build_expression_tree( sim_t*                     sim,
   res = stack.back();
   stack.pop_back();
 exit_label:
-  while ( stack.size() )
-  {
-    spell_data_expr_t* s = stack.back();
-
-    stack.pop_back();
-    delete s;
-  }
+  dispose( stack );
   return res;
 }
 

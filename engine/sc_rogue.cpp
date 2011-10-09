@@ -368,10 +368,7 @@ struct rogue_t : public player_t
   }
 
   ~rogue_t()
-  {
-    if ( combo_points )
-      delete combo_points;
-  }
+  { delete combo_points; }
 
   // Character Definition
   virtual void      init_talents();
@@ -1133,7 +1130,7 @@ double rogue_attack_t::cost() SC_CONST
   double c = attack_t::cost();
 
   rogue_t* p = player -> cast_rogue();
- 
+
   if ( c <= 0 )
     return 0;
 
