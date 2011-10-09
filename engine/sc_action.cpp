@@ -159,8 +159,7 @@ void action_t::init_action_t_()
   while ( *last ) last = &( ( *last ) -> next );
   *last = this;
 
-  for ( int i=0; i < RESULT_MAX; i++ ) rng[ i ] = 0;
-
+  fill( rng, 0 );
 
   cooldown = player -> get_cooldown( name_str );
   dot      = player -> get_dot     ( name_str );
@@ -183,10 +182,7 @@ void action_t::init_action_t_()
   }
 
   if ( sim -> travel_variance && travel_speed && player -> distance )
-  {
-    std::string buffer = name_str + "_travel";
-    rng_travel = player -> get_rng( buffer, RNG_DISTRIBUTED );
-  }
+    rng_travel = player -> get_rng( name_str + "_travel", RNG_DISTRIBUTED );
 }
 
 action_t::action_t( int               ty,
@@ -233,10 +229,10 @@ action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, 
 
 action_t::~action_t()
 {
-  if ( if_expr && ! is_dtr_action )
+  if ( ! is_dtr_action )
     delete if_expr;
 
-  if ( interrupt_if_expr && ! is_dtr_action )
+  if ( ! is_dtr_action )
     delete interrupt_if_expr;
 }
 
@@ -380,31 +376,6 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
   }
 }
 
-// action_t::merge_options ==================================================
-
-option_t* action_t::merge_options( std::vector<option_t>& merged_options,
-                                   option_t*              options1,
-                                   option_t*              options2 )
-{
-  merged_options.clear();
-
-  if ( options1 )
-  {
-    for ( int i=0; options1[ i ].name; i++ ) merged_options.push_back( options1[ i ] );
-  }
-
-  if ( options2 )
-  {
-    for ( int i=0; options2[ i ].name; i++ ) merged_options.push_back( options2[ i ] );
-  }
-
-  option_t null_option;
-  null_option.name = 0;
-  merged_options.push_back( null_option );
-
-  return &( merged_options[ 0 ] );
-}
-
 // action_t::parse_options ==================================================
 
 void action_t::parse_options( option_t*          options,
@@ -435,7 +406,7 @@ void action_t::parse_options( option_t*          options,
   };
 
   std::vector<option_t> merged_options;
-  merge_options( merged_options, options, base_options );
+  option_t::merge( merged_options, options, base_options );
 
   std::string::size_type cut_pt = options_str.find_first_of( ":" );
 

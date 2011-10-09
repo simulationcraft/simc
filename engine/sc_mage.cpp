@@ -1056,7 +1056,7 @@ void mage_spell_t::parse_options( option_t*          options,
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
-  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+  spell_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
 }
 
 // mage_spell_t::ready ======================================================
@@ -3607,7 +3607,7 @@ void mage_t::init_buffs()
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
   buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
   buffs_presence_of_mind     = new buff_t( this, "presence_of_mind",     1 );
-  
+
   buffs_tier13_2pc           = new stat_buff_t( this, "tier13_2pc", STAT_HASTE_RATING, 50.0, 10, 30.0 );
 }
 
@@ -4203,11 +4203,11 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
     struct regen_mps_expr_t : public action_expr_t
     {
       regen_mps_expr_t( action_t* a ) : action_expr_t( a, "regen_mps", TOK_NUM ){}
-      virtual int evaluate() 
-      { 
+      virtual int evaluate()
+      {
         mage_t* p = action -> player -> cast_mage();
-        result_num = ( p -> rotation.mana_gain / action -> sim -> current_time ); 
-        return TOK_NUM; 
+        result_num = ( p -> rotation.mana_gain / action -> sim -> current_time );
+        return TOK_NUM;
       }
     };
     return new regen_mps_expr_t( a );

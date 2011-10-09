@@ -394,3 +394,25 @@ bool option_t::parse_token( sim_t*       sim,
 
   return true;
 }
+
+// option_t::merge ==========================================================
+
+namespace {
+inline void merge_some( std::vector<option_t>& out, const option_t* in )
+{
+  if ( ! in ) return;
+  while ( in -> name )
+    out.push_back( *in++ );
+}
+}
+
+option_t* option_t::merge( std::vector<option_t>& merged_options,
+                           const option_t*        options1,
+                           const option_t*        options2 )
+{
+  merged_options.clear();
+  merge_some( merged_options, options1 );
+  merge_some( merged_options, options2 );
+  merged_options.push_back( option_t() );
+  return &merged_options[ 0 ];
+}

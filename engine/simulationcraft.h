@@ -1805,6 +1805,7 @@ struct option_t
   static bool parse_file( sim_t*, FILE* file );
   static bool parse_line( sim_t*, char* line );
   static bool parse_token( sim_t*, std::string& token );
+  static option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
 };
 
 // Talent Translation =======================================================
@@ -4352,7 +4353,6 @@ struct action_t : public spell_id_t
   virtual void      parse_data();
   virtual void      parse_effect_data( int spell_id, int effect_nr );
   virtual void      parse_options( option_t*, const std::string& options_str );
-  virtual option_t* merge_options( std::vector<option_t>&, option_t*, option_t* );
   virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
 
 

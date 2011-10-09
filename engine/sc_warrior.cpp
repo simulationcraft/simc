@@ -511,7 +511,7 @@ static void trigger_deep_wounds( action_t* a )
 
     p -> active_deep_wounds = new deep_wounds_t( p );
   }
-  
+
   if ( a -> weapon )
     p -> active_deep_wounds -> weapon = a -> weapon;
   else
@@ -986,7 +986,7 @@ void warrior_attack_t::parse_options( option_t* options, const std::string& opti
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
-  attack_t::parse_options( merge_options( merged_options, base_options, options ), options_str );
+  attack_t::parse_options( option_t::merge( merged_options, base_options, options ), options_str );
 }
 
 // warrior_attack_t::calculate_weapon_damage ================================
@@ -1933,7 +1933,7 @@ struct raging_blow_t : public warrior_attack_t
       {
         oh_attack -> execute();
       }
-      
+
       // PTR - is this triggered per attack or once
       if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
       {
@@ -2568,7 +2568,7 @@ void warrior_spell_t::parse_options( option_t* options, const std::string& optio
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
-  spell_t::parse_options( merge_options( merged_options, base_options, options ), options_str );
+  spell_t::parse_options( option_t::merge( merged_options, base_options, options ), options_str );
 }
 
 // Battle Shout =============================================================

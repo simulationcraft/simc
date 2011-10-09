@@ -1138,7 +1138,7 @@ void druid_cat_attack_t::parse_options( option_t*          options,
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
-  attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+  attack_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
 }
 
 // druid_cat_attack_t::cost =================================================
@@ -1950,7 +1950,7 @@ void druid_bear_attack_t::parse_options( option_t*          options,
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
-  attack_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+  attack_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
 }
 
 // druid_bear_attack_t::cost ================================================
@@ -2868,7 +2868,7 @@ void druid_spell_t::parse_options( option_t*          options,
     { NULL, OPT_UNKNOWN, NULL }
   };
   std::vector<option_t> merged_options;
-  spell_t::parse_options( merge_options( merged_options, options, base_options ), options_str );
+  spell_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
 }
 
 // druid_spell_t::cost_reduction ============================================
