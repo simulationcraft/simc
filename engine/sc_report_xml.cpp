@@ -123,6 +123,16 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
       }
     }
 
+    void print_attribute_unescaped(const std::string & name, const std::string & value)
+    {
+      assert( current_state != NONE );
+
+      if(current_state == TAG)
+      {
+        printf(" %s=\"%s\"", name.c_str(), value.c_str());
+      }
+    }
+
     void print_tag(const std::string & name, const std::string & inner_value)
     {
       assert( current_state != NONE );
@@ -138,7 +148,15 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
     void print_text(const std::string & input)
     {
-      printf("%s", sanitize( input ).c_str());
+      assert( current_state != NONE );
+
+      if(current_state != TEXT) {
+        printf(">");
+      }
+
+      printf("\n%s", sanitize( input ).c_str());
+
+      current_state = TEXT;
     }
 
     static std::string sanitize(std::string v) {
@@ -166,8 +184,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
   static void print_xml_buffs( sim_t* sim, xml_writer_t & writer );
   static void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer );
   static void print_xml_performance( sim_t* sim, xml_writer_t & writer );
+  static void print_xml_summary( sim_t* sim, xml_writer_t & writer );
+  static void print_xml_player( sim_t* sim, xml_writer_t & writer, player_t * p, player_t * owner);
 
-  static void print_xml_player( xml_writer_t & writer, player_t * p, player_t * owner);
   static void print_xml_player_stats( xml_writer_t & writer, player_t * p );
   static void print_xml_player_attribute( xml_writer_t & writer, const std::string& attribute, double initial, double gear, double buffed);
   static void print_xml_player_actions( xml_writer_t & writer, player_t* p );
@@ -177,6 +196,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
   static void print_xml_player_gains( xml_writer_t & writer, player_t * p );
   static void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p );
   static void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
+  static void print_xml_player_charts( xml_writer_t & writer, player_t * p );
 
   static void print_xml_errors( sim_t* sim, xml_writer_t & writer)
   {
@@ -202,7 +222,6 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
       std::vector<std::string> raid_event_names;
       int num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
-      writer.print_attribute("count", util_t::to_string( num_raid_events ));
 
       for ( int i=0; i < num_raid_events; i++ )
       {
@@ -220,16 +239,14 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
   {
     writer.begin_tag("players");
 
-    writer.print_attribute("report_pets_separately", sim -> report_pets_separately ? "true" : "false");
-
     int num_players = ( int ) sim -> players_by_rank.size();
     for ( int i = 0; i < num_players; ++i ) {
       player_t * current_player = sim -> players_by_name[ i ];
-      print_xml_player( writer, current_player, NULL );
+      print_xml_player( sim, writer, current_player, NULL );
       for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
       {
         if ( pet -> summoned )
-          print_xml_player( writer, pet, current_player );
+          print_xml_player( sim, writer, pet, current_player );
       }
     }
 
@@ -240,24 +257,22 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
   {
     writer.begin_tag("targets");
 
-    writer.print_attribute("report_pets_separately", sim -> report_pets_separately ? "true" : "false" );
-
     size_t count = sim -> targets_by_name.size();
     for( size_t i = 0; i < count; ++i )
     {
       player_t * current_player = sim -> targets_by_name[ i ];
-      print_xml_player( writer, current_player, NULL );
+      print_xml_player( sim, writer, current_player, NULL );
       for ( pet_t* pet = current_player -> pet_list; pet; pet = pet -> next_pet )
       {
         if ( pet -> summoned )
-          print_xml_player( writer, pet, current_player );
+          print_xml_player( sim, writer, pet, current_player );
       }
     }
 
     writer.end_tag(); // </targets>
   }
 
-  static void print_xml_player( xml_writer_t & writer, player_t * p, player_t * owner)
+  static void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_t * owner)
   {
     writer.begin_tag("player");
     writer.print_attribute("name", p -> name());
@@ -267,9 +282,14 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     writer.print_tag("level", util_t::to_string( p -> level ) );
     writer.print_tag("race", p -> race_str.c_str());
     writer.print_tag("player_type", util_t::player_type_string( p->type ));
+    if( p -> is_pet() )
+      writer.print_tag("pet_type", util_t::pet_type_string( p -> cast_pet() -> pet_type ));
     writer.print_tag("talent_tree", util_t::talent_tree_string( p -> primary_tree() ));
+    writer.print_tag("primary_role", util_t::role_type_string( p -> primary_role() ));
+    writer.print_tag("position", p -> position_str );
     writer.begin_tag("dps");
     writer.print_attribute("value", util_t::to_string(p -> iteration_dps.mean, PRINT_XML_PRECISION));
+    writer.print_attribute("effective", util_t::to_string(p -> iteration_dpse.mean, PRINT_XML_PRECISION));
     writer.print_attribute("error", util_t::to_string(p -> dps_error, PRINT_XML_PRECISION));
     writer.print_attribute("range", util_t::to_string(( p -> iteration_dps.max - p -> iteration_dps.min ) / 2.0, PRINT_XML_PRECISION));
     writer.print_attribute("convergence", util_t::to_string(p -> dps_convergence, PRINT_XML_PRECISION));
@@ -282,10 +302,12 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
       writer.print_attribute("rps_loss", util_t::to_string(p -> rps_loss, PRINT_XML_PRECISION));
       writer.print_attribute("rps_gain", util_t::to_string(p -> rps_gain, PRINT_XML_PRECISION));
       writer.print_attribute("resource", util_t::resource_type_string( p -> primary_resource() ));
-      writer.print_attribute("waiting", util_t::to_string(100.0 * p -> total_waiting / p -> total_seconds, PRINT_XML_PRECISION));
-      writer.print_attribute("apm", util_t::to_string(60.0 * p -> total_foreground_actions / p -> total_seconds, PRINT_XML_PRECISION));
       writer.end_tag(); // </dpr>
     }
+
+    writer.print_tag("waiting_time_pct", util_t::to_string(p -> total_seconds ? 100.0 * p -> total_waiting / p -> total_seconds : 0, PRINT_XML_PRECISION));
+    writer.print_tag("apm", util_t::to_string(p -> total_seconds ? 60.0 * p -> total_foreground_actions / p -> total_seconds : 0, PRINT_XML_PRECISION));
+    writer.print_tag("active_time_pct", util_t::to_string(sim -> total_seconds ? p -> total_seconds / sim -> total_seconds * 100.0 : 0, PRINT_XML_PRECISION));
 
     if ( p -> origin_str.compare( "unknown" ) )
       writer.print_tag("origin", p -> origin_str.c_str() );
@@ -302,6 +324,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     print_xml_player_gains( writer, p );
     print_xml_player_scale_factors( writer, p );
     print_xml_player_dps_plots( writer, p );
+    print_xml_player_charts( writer, p );
 
     writer.end_tag(); // </player>
   }
@@ -623,7 +646,8 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
     writer.begin_tag("scale_factors");
 
-    gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
+    gear_stats_t& sf = p -> scaling;
+    gear_stats_t& sf_norm = p -> scaling_normalized;
 
     writer.begin_tag("weights");
 
@@ -634,9 +658,31 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
         writer.begin_tag("stat");
         writer.print_attribute("name", util_t::stat_type_abbrev( i ));
         writer.print_attribute("value", util_t::to_string(sf.get_stat( i ), p -> sim -> report_precision));
+        writer.print_attribute("normalized", util_t::to_string(sf_norm.get_stat( i ), p -> sim -> report_precision));
         writer.print_attribute("scaling_error", util_t::to_string(p -> scaling_error.get_stat( i ), p -> sim -> report_precision));
+        writer.print_attribute("delta", util_t::to_string(p -> sim -> scaling -> stats.get_stat( i )));
+
         writer.end_tag(); // </stat>
       }
+    }
+
+    size_t num_scaling_stats = p -> scaling_stats.size();
+    for ( size_t i=0; i < num_scaling_stats; i++ )
+    {
+      writer.begin_tag("scaling_stat");
+      writer.print_attribute("name", util_t::stat_type_abbrev( p -> scaling_stats[ i ] ));
+      writer.print_attribute("index", util_t::to_string((int64_t)i));
+
+      if ( i > 0 )
+      {
+        if ( ( ( p -> scaling.get_stat( p -> scaling_stats[ i - 1 ] ) - p -> scaling.get_stat( p -> scaling_stats[ i ] ) )
+          > sqrt ( p -> scaling_compare_error.get_stat( p -> scaling_stats[ i - 1 ] ) * p -> scaling_compare_error.get_stat( p -> scaling_stats[ i - 1 ] ) / 4 + p -> scaling_compare_error.get_stat( p -> scaling_stats[ i ] ) * p -> scaling_compare_error.get_stat( p -> scaling_stats[ i ] ) / 4 ) * 2 ) )
+          writer.print_attribute("relative_to_previous", ">");
+        else
+          writer.print_attribute("relative_to_previous", "=");
+      }
+
+      writer.end_tag(); // </scaling_stat>
     }
 
     writer.end_tag(); // </weights>
@@ -657,15 +703,28 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     }
 
 
-    //std::string lootrank   = p -> gear_weights_lootrank_link;
+    std::string lootrank   = p -> gear_weights_lootrank_link;
     std::string wowhead    = p -> gear_weights_wowhead_link;
-    //std::string wowreforge = p -> gear_weights_wowreforge_link;
+    std::string wowreforge = p -> gear_weights_wowreforge_link;
     //std::string pawn_std   = p -> gear_weights_pawn_std_string;
     //std::string pawn_alt   = p -> gear_weights_pawn_alt_string;
 
     writer.begin_tag("link");
-    writer.print_attribute("type", "wowhead");
-    writer.print_attribute("href", wowhead);
+    writer.print_attribute("name", "wowhead");
+    writer.print_attribute("type", "ranking");
+    writer.print_attribute_unescaped("href", wowhead);
+    writer.end_tag(); // </link>
+
+    writer.begin_tag("link");
+    writer.print_attribute("name", "lootrank");
+    writer.print_attribute("type", "ranking");
+    writer.print_attribute("href", lootrank);
+    writer.end_tag(); // </link>
+
+    writer.begin_tag("link");
+    writer.print_attribute("name", "wowreforge");
+    writer.print_attribute("type", "optimizer");
+    writer.print_attribute("href", wowreforge);
     writer.end_tag(); // </link>
 
     writer.end_tag(); // </scale_factors>
@@ -707,6 +766,77 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     }
 
     writer.end_tag(); // </dps_plot_data>
+  }
+
+  static void print_xml_player_charts( xml_writer_t & writer, player_t * p )
+  {
+    writer.begin_tag("charts");
+
+    if( ! p -> action_dpet_chart.empty() )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "dpet");
+      writer.print_attribute_unescaped("href", p -> action_dmg_chart);
+      writer.end_tag(); // </chart>
+    }
+
+    if( ! p -> action_dmg_chart.empty() )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "dmg");
+      writer.print_attribute_unescaped("href", p -> action_dmg_chart);
+      writer.end_tag(); // </chart>
+    }
+
+    if( ! p -> scaling_dps_chart.empty() )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "scaling_dps");
+      writer.print_attribute_unescaped("href", p -> scaling_dps_chart);
+      writer.end_tag(); // </chart>
+    }
+
+    if( ! p -> reforge_dps_chart.empty() )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "reforge_dps");
+      writer.print_attribute_unescaped("href", p -> reforge_dps_chart);
+      writer.end_tag(); // </chart>
+    }
+
+    if( ! p -> scale_factors_chart.empty() )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "scale_factors");
+      writer.print_attribute_unescaped("href", p -> scale_factors_chart);
+      writer.end_tag(); // </chart>
+    }
+
+    if( ! p -> timeline_dps_chart.empty() )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "timeline_dps");
+      writer.print_attribute_unescaped("href", p -> timeline_dps_chart);
+      writer.end_tag(); // </chart>
+    }
+
+    if( ! p -> distribution_dps_chart.empty() )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "distribution_dps");
+      writer.print_attribute_unescaped("href", p -> distribution_dps_chart);
+      writer.end_tag(); // </chart>
+    }
+
+    if( ! p -> time_spent_chart.empty() )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "time_spent");
+      writer.print_attribute_unescaped("href", p -> time_spent_chart);
+      writer.end_tag(); // </chart>
+    }
+
+    writer.end_tag(); // </charts>
   }
 
   static void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
@@ -807,6 +937,77 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     writer.end_tag(); // </performance>
   }
 
+  static void print_xml_config( sim_t* sim, xml_writer_t & writer )
+  {
+    writer.begin_tag("config");
+    time_t rawtime;
+    time ( &rawtime );
+
+    writer.print_tag("timestamp", ctime( &rawtime ));
+    writer.print_tag("iterations", util_t::to_string(sim -> iterations));
+
+    double min_length = sim -> max_time * ( 1 - sim -> vary_combat_length );
+    double max_length = sim -> max_time * ( 1 + sim -> vary_combat_length );
+    writer.begin_tag("fight_length");
+    if ( sim -> vary_combat_length > 0.0 )
+      writer.print_attribute("min", util_t::to_string(min_length, 0));
+    writer.print_attribute("max", util_t::to_string(max_length, 0));
+    writer.end_tag(); // </fight_length>
+
+    writer.print_tag("fight_style", sim -> fight_style);
+    writer.print_tag("has_scale_factors", sim -> scaling -> has_scale_factors() ? "true" : "false" );
+    writer.print_tag("report_pets_separately", sim -> report_pets_separately ? "true" : "false");
+    writer.print_tag("normalize_scale_factors", sim -> scaling ->normalize_scale_factors ? "true" : "false");
+
+    writer.end_tag(); // </config>
+  }
+
+  static void print_xml_summary( sim_t* sim, xml_writer_t & writer )
+  {
+    writer.begin_tag("summary");
+    writer.begin_tag("dmg");
+    writer.print_attribute("total", util_t::to_string(sim -> total_dmg, 0));
+    writer.print_attribute("dps", util_t::to_string(sim -> raid_dps, 0));
+    writer.end_tag(); // </dmg>
+    if( sim -> total_heal > 0 ) {
+      writer.begin_tag("heal");
+      writer.print_attribute("total", util_t::to_string(sim -> total_heal, 0));
+      writer.print_attribute("hps", util_t::to_string(sim -> raid_hps, 0));
+      writer.end_tag(); // </heal>
+    }
+
+    int count = ( int ) sim -> dps_charts.size();
+    writer.begin_tag("charts");
+    for ( int i=0; i < count; i++ )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "dps");
+      writer.print_attribute_unescaped("img_src", sim -> dps_charts[ i ]);
+      writer.end_tag(); // </chart>
+    }
+    count = ( int ) sim -> gear_charts.size();
+    for ( int i=0; i < count; i++ )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "gear");
+      writer.print_attribute_unescaped("img_src", sim -> gear_charts[ i ]);
+      writer.end_tag(); // </chart>
+    }
+    count = ( int ) sim -> dpet_charts.size();
+    for ( int i=0; i < count; i++ )
+    {
+      writer.begin_tag("chart");
+      writer.print_attribute("type", "dpet");
+      writer.print_attribute_unescaped("img_src", sim -> dpet_charts[ i ]);
+      writer.end_tag(); // </chart>
+    }
+    writer.end_tag();
+
+    print_xml_raid_events( sim, writer );
+
+    writer.end_tag(); // </summary>
+  }
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 
@@ -842,7 +1043,8 @@ void report_t::print_xml( sim_t* sim )
 
 #endif
 
-  print_xml_errors( sim, writer );
+  print_xml_config( sim, writer );
+  print_xml_summary( sim, writer );
 
   print_xml_raid_events( sim, writer );
   print_xml_roster( sim, writer );
@@ -851,6 +1053,8 @@ void report_t::print_xml( sim_t* sim )
   print_xml_buffs( sim, writer );
   print_xml_hat_donors( sim, writer );
   print_xml_performance( sim, writer );
+
+  print_xml_errors( sim, writer );
 
   writer.end_tag(); // </simulationcraft>
 }
