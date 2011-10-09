@@ -254,7 +254,7 @@ struct stun_event_t : public raid_event_t
       if ( p -> sleeping ) continue;
       if ( ! p -> buffs.stunned -> check() )
       {
-        // Don't schedule_ready players who are already working, like pet's auto-summoned during the stun event ( ebon imp ).
+        // Don't schedule_ready players who are already working, like pets auto-summoned during the stun event ( ebon imp ).
         if ( ! p -> readying )
           p -> schedule_ready();
       }

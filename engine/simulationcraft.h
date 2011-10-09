@@ -15,7 +15,6 @@
 #  ifndef UNICODE
 #    define UNICODE
 #  endif
-#  pragma warning( disable : 4351 )
 #else
 #  define DIRECTORY_DELIMITER "/"
 #  define SC_SIGACTION

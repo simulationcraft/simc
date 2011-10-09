@@ -1303,8 +1303,9 @@ new_buff_t::new_buff_t( player_t*          p,
                         bool               reverse,
                         int                rt ) :
   buff_t( p, n, 1, 0, 0, override_chance, quiet, reverse, rt, id ),
-  e_data(), single( 0 ), default_stack_charge( 1 )
+  single( 0 ), default_stack_charge( 1 )
 {
+  fill( e_data, 0 );
   const spell_data_t* spell = p -> dbc.spell( id );
 
   // Find some stuff for the buff, generically
