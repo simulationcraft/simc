@@ -868,6 +868,14 @@ template <typename Range, typename Out>
 inline Out copy( const Range& r, Out o )
 { return std::copy( begin( r ), end( r ), o ); }
 
+template <typename Range>
+inline void sort( Range& r )
+{ std::sort( begin( r ), end( r ) ); }
+
+template <typename Range, typename Comp>
+inline void sort( Range& r, Comp c )
+{ std::sort( begin( r ), end( r ), c ); }
+
 struct null_disposer_t
 {
   template <typename T>

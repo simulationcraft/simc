@@ -461,7 +461,7 @@ const char* chart_t::raid_downtime( std::string& s,
   int num_waiting = ( int ) waiting_list.size();
   if ( num_waiting == 0 ) return 0;
 
-  std::sort( waiting_list.begin(), waiting_list.end(), compare_downtime() );
+  sort( waiting_list, compare_downtime() );
 
   char buffer[ 1024 ];
 
@@ -619,7 +619,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
   int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
-  std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
+  sort( stats_list, compare_dpet() );
 
   double max_dpet = stats_list[ 0 ] -> apet;
 
@@ -729,7 +729,7 @@ const char* chart_t::action_dpet( std::string& s,
   int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
-  std::sort( stats_list.begin(), stats_list.end(), compare_dpet() );
+  sort( stats_list, compare_dpet() );
 
   char buffer[ 1024 ];
 
@@ -829,7 +829,7 @@ const char* chart_t::action_dmg( std::string& s,
   int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
-  std::sort( stats_list.begin(), stats_list.end(), compare_amount() );
+  sort( stats_list, compare_amount() );
 
   char buffer[ 1024 ];
 
@@ -900,7 +900,7 @@ namespace {
 
 struct compare_time
 {
-  bool operator()( stats_t* l, stats_t* r ) SC_CONST
+  bool operator()( const stats_t* l, const stats_t* r ) const
   {
     return l -> total_time > r -> total_time;
   }
@@ -921,12 +921,13 @@ const char* chart_t::time_spent( std::string& s,
 
     stats_list.push_back( st );
   }
-  size_t num_stats = stats_list.size();
 
+  assert( stats_list.size() <= static_cast<std::size_t>( std::numeric_limits<int>::max() ) );
+  int num_stats = static_cast<int>( stats_list.size() );
   if ( num_stats == 0 && p -> total_waiting == 0 )
     return 0;
 
-  std::sort( stats_list.begin(), stats_list.end(), compare_time() );
+  sort( stats_list, compare_time() );
 
   char buffer[ 1024 ];
 
@@ -941,7 +942,7 @@ const char* chart_t::time_spent( std::string& s,
     s += "&amp;";
   }
   s += "chd=t:";
-  for ( size_t i=0; i < num_stats; i++ )
+  for ( int i=0; i < num_stats; i++ )
   {
     snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * stats_list[ i ] -> total_time / p -> total_seconds ); s += buffer;
   }
@@ -955,18 +956,17 @@ const char* chart_t::time_spent( std::string& s,
   s += "chdls=ffffff";
   s += "&amp;";
   s += "chco=";
-  for ( size_t i=0; i < num_stats; i++ )
+  for ( int i=0; i < num_stats; i++ )
   {
     if ( i ) s += ",";
 
-    std::string school = school_color( stats_list[ i ] -> school );
-    if ( school.empty() )
+    const char* school = school_color( stats_list[ i ] -> school );
+    if ( ! *school )
     {
       p -> sim -> errorf( "chart_t::time_spent assertion error! School unknown, stats %s from %s.\n", stats_list[ i ] -> name_str.c_str(), p -> name() );
       assert( 0 );
     }
     s += school;
-
   }
   if ( p -> total_waiting > 0 )
   {
@@ -975,7 +975,7 @@ const char* chart_t::time_spent( std::string& s,
   }
   s += "&amp;";
   s += "chl=";
-  for ( size_t i=0; i < num_stats; i++ )
+  for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
     if ( i ) s += "|";
@@ -1033,7 +1033,7 @@ const char* chart_t::gains( std::string& s,
   int num_gains = ( int ) gains_list.size();
   if ( num_gains == 0 ) return 0;
 
-  std::sort( gains_list.begin(), gains_list.end(), compare_gain() );
+  sort( gains_list, compare_gain() );
 
   char buffer[ 1024 ];
 
@@ -1088,10 +1088,10 @@ struct compare_scale_factors
 {
   player_t* player;
   compare_scale_factors( player_t* p ) : player( p ) {}
-  bool operator()( const int& l, const int& r ) SC_CONST
+  bool operator()( int l, int r ) const
   {
-    return( player -> scaling.get_stat( l ) >
-            player -> scaling.get_stat( r ) );
+    return player -> scaling.get_stat( l ) >
+           player -> scaling.get_stat( r );
   }
 };
 
@@ -1100,20 +1100,17 @@ const char* chart_t::scale_factors( std::string& s,
 {
   std::vector<int> scaling_stats;
 
-  for( int i=0; i < STAT_MAX; i++ )
+  for( int i=0; i < ( int ) sizeof_array( p -> scales_with ); ++i )
   {
-    if( p -> scales_with[ i ] )
-    {
-      double s = p -> scaling.get_stat( i );
-
-      if ( s > 0 ) scaling_stats.push_back( i );
-    }
+    if( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0 )
+      scaling_stats.push_back( i );
   }
 
-  size_t num_scaling_stats = scaling_stats.size();
+  assert( scaling_stats.size() <= static_cast<std::size_t>( std::numeric_limits<int>::max() ) );
+  int num_scaling_stats = static_cast<int>( scaling_stats.size() );
   if ( num_scaling_stats == 0 ) return 0;
 
-  std::sort( scaling_stats.begin(), scaling_stats.end(), compare_scale_factors( p ) );
+  sort( scaling_stats, compare_scale_factors( p ) );
 
   double max_scale_factor = p -> scaling.get_stat( scaling_stats[ 0 ] );
 
@@ -1132,13 +1129,13 @@ const char* chart_t::scale_factors( std::string& s,
     s += "&amp;";
   }
   snprintf( buffer, sizeof( buffer ), "chd=t%i:" , 1 ); s += buffer;
-  for ( size_t i=0; i < num_scaling_stats; i++ )
+  for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
-  for ( size_t i=0; i < num_scaling_stats; i++ )
+  for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - p -> scaling_error.get_stat( scaling_stats[ i ] );
     if ( factor < 0 )
@@ -1146,7 +1143,7 @@ const char* chart_t::scale_factors( std::string& s,
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
-  for ( size_t i=0; i < num_scaling_stats; i++ )
+  for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + p -> scaling_error.get_stat( scaling_stats[ i ] );
     if ( factor < 0 )
@@ -1161,7 +1158,7 @@ const char* chart_t::scale_factors( std::string& s,
   s += "&amp;";
   s += "chm=";
   snprintf( buffer, sizeof( buffer ), "E,FF0000,1:0,,1:20|" ); s += buffer;
-  for ( size_t i=0; i < num_scaling_stats; i++ )
+  for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util_t::stat_type_abbrev( scaling_stats[ i ] );
@@ -1191,9 +1188,9 @@ const char* chart_t::scale_factors( std::string& s,
 const char* chart_t::scaling_dps( std::string& s,
                                   player_t* p )
 {
-  double max_dps=0, min_dps=FLT_MAX;
+  double max_dps=0, min_dps=std::numeric_limits<double>::max();
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( size_t i=0; i < sizeof_array( p -> dps_plot_data ); ++i )
   {
     std::vector<double>& pd = p -> dps_plot_data[ i ];
     size_t size = pd.size();
@@ -1203,13 +1200,13 @@ const char* chart_t::scaling_dps( std::string& s,
       if ( pd[ j ] < min_dps ) min_dps = pd[ j ];
     }
   }
-  if ( max_dps == 0 ) return 0;
+  if ( max_dps <= 0 ) return 0;
 
   double step = p -> sim -> plot -> dps_plot_step;
   int range = p -> sim -> plot -> dps_plot_points / 2;
   const int start = 0;	// start and end only used for dps_plot_positive
   const int end = 2 * range;
-  size_t num_points = 1 + 2*range;
+  size_t num_points = 1 + 2 * range;
 
   char buffer[ 1024 ];
 
@@ -1994,12 +1991,12 @@ const char* chart_t::gear_weights_pawn( std::string& s,
 {
   std::vector<int> stats;
   for ( int i=0; i < STAT_MAX; i++ ) stats.push_back( i );
-  std::sort( stats.begin(), stats.end(), compare_stat_scale_factors( p ) );
+  sort( stats, compare_stat_scale_factors( p ) );
 
   char buffer[ 1024 ];
   bool first = true;
 
-  s = "";
+  s.clear();
   snprintf( buffer, sizeof( buffer ), "( Pawn: v1: \"%s\": ", p -> name() );
   s += buffer;
 
@@ -2118,20 +2115,25 @@ const char* chart_t::resource_color( int type )
 {
   switch ( type )
   {
-  case RESOURCE_HEALTH:       return class_color( HUNTER );
-  case RESOURCE_MANA:         return class_color( SHAMAN );
-  case RESOURCE_RAGE:         return class_color( DEATH_KNIGHT );
-  case RESOURCE_ENERGY:       return class_text_color( ROGUE );
-  case RESOURCE_FOCUS:        return class_text_color( ROGUE );
-  case RESOURCE_RUNIC:        return class_color( DEATH_KNIGHT );
-  case RESOURCE_RUNE:         return class_color( DEATH_KNIGHT );
-  case RESOURCE_RUNE_BLOOD:   return class_color( DEATH_KNIGHT );
-  case RESOURCE_RUNE_UNHOLY:  return class_color( HUNTER );
-  case RESOURCE_RUNE_FROST:   return class_color( SHAMAN );
-  case RESOURCE_HOLY_POWER:   return class_color( PALADIN );
-  case RESOURCE_SOUL_SHARDS:  return class_color( WARLOCK );
-  case RESOURCE_NONE:         return "000000";
-  default: return "000000";
+  case RESOURCE_HEALTH:
+  case RESOURCE_RUNE_UNHOLY: return class_color( HUNTER );
+
+  case RESOURCE_RUNE_FROST:
+  case RESOURCE_MANA:        return class_color( SHAMAN );
+
+  case RESOURCE_ENERGY:
+  case RESOURCE_FOCUS:       return class_text_color( ROGUE );
+
+  case RESOURCE_RAGE:
+  case RESOURCE_RUNIC:
+  case RESOURCE_RUNE:
+  case RESOURCE_RUNE_BLOOD:  return class_color( DEATH_KNIGHT );
+
+  case RESOURCE_HOLY_POWER:  return class_color( PALADIN );
+
+  case RESOURCE_SOUL_SHARDS: return class_color( WARLOCK );
+
+  case RESOURCE_NONE:
+  default:                   return "000000";
   }
-  return 0;
 }
