@@ -1370,15 +1370,15 @@ void sim_t::analyze_player( player_t* p )
 
   // DPS Calculation ========================================================
 
-  assert( p -> iteration_dps.data.size()  == ( std::size_t ) iterations );
-  assert( p -> iteration_dtps.data.size() == ( std::size_t ) iterations );
-  assert( p -> iteration_dpse.data.size() == ( std::size_t ) iterations );
+  assert( p -> iteration_dps.size()  == ( std::size_t ) iterations );
+  assert( p -> iteration_dtps.size() == ( std::size_t ) iterations );
+  assert( p -> iteration_dpse.size() == ( std::size_t ) iterations );
 
   // sample_data_t::analyze(calc_sum,calc_mean,calc_min,calc_max,calc_variance,calc_median,calc_base_error,sort )
 
-  p -> iteration_dps.analyze( true, true, true, true, true, false, true, true );
-  p -> iteration_dpse.analyze( true, true, true, true, true, false, true, true );
-  p -> iteration_dtps.analyze( true, true, true, true, true, false, true, true );
+  p -> iteration_dps.analyze( true, true, true );
+  p -> iteration_dpse.analyze( true, true, true );
+  p -> iteration_dtps.analyze( true, true, true );
 
 
   if ( p -> quiet ) return;
@@ -1497,7 +1497,7 @@ void sim_t::analyze_player( player_t* p )
   {
     for ( int i=0; i < iterations; i += convergence_scale )
     {
-      double i_dps = p -> iteration_dps.data[ i ];
+      double i_dps = p -> iteration_dps[ i ];
       convergence_dps += i_dps;
       if ( convergence_min > i_dps ) convergence_min = i_dps;
       if ( convergence_max < i_dps ) convergence_max = i_dps;
@@ -1514,7 +1514,7 @@ void sim_t::analyze_player( player_t* p )
     {
       p -> dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
 
-      double delta = p -> iteration_dps.data[ i ] - convergence_dps;
+      double delta = p -> iteration_dps[ i ] - convergence_dps;
       double delta_squared = delta * delta;
 
       sum_of_squares += delta_squared;
@@ -1545,7 +1545,7 @@ void sim_t::analyze_player( player_t* p )
 
     for ( int i=0; i < iterations; i++ )
     {
-      double i_dps = p -> iteration_dps.data[ i ];
+      double i_dps = p -> iteration_dps[ i ];
       int index = ( int ) ( num_buckets * ( i_dps - min ) / range );
       p -> distribution_dps[ index ]++;
     }

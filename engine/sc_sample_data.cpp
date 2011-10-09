@@ -7,86 +7,63 @@
 
 // sample_data_t::sample_data_t =============================================
 
-  sample_data_t::sample_data_t( )
-  {
-    data.clear();
-    sum = std::numeric_limits<double>::quiet_NaN();
-    mean = std::numeric_limits<double>::quiet_NaN();
-    min = std::numeric_limits<double>::quiet_NaN();
-    max = std::numeric_limits<double>::quiet_NaN();
-    variance = std::numeric_limits<double>::quiet_NaN();
-    std_dev = std::numeric_limits<double>::quiet_NaN();
-    median = std::numeric_limits<double>::quiet_NaN();
+  sample_data_t::sample_data_t( ):
+  sum(std::numeric_limits<double>::quiet_NaN()),mean(std::numeric_limits<double>::quiet_NaN()),
+  min(std::numeric_limits<double>::quiet_NaN()),max(std::numeric_limits<double>::quiet_NaN()),
+  variance(std::numeric_limits<double>::quiet_NaN()),std_dev(std::numeric_limits<double>::quiet_NaN()),
+  median(std::numeric_limits<double>::quiet_NaN()),
 
+  calculate_basics( true ),calculate_variance(false),sort(false),
 
-    calculate_sum         = false;
-    calculate_mean        = false;
-    calculate_min         = false;
-    calculate_max         = false;
-    calculate_variance    = false;
-    calculate_median      = false;
-    calculate_mean_std_dev  = false;
-    sort                  = false;
+  analyzed(),sorted()
 
-    analyzed  = false;
-    sorted    = false;
-  }
+  { }
 
 // sample_data_t::analyze =============================================
 
   void sample_data_t::analyze(
-      bool calc_sum,
-      bool calc_mean,
-      bool calc_min,
-      bool calc_max,
+      bool calc_basics,
       bool calc_variance,
-      bool calc_median,
-      bool calc_base_error,
       bool s)
   {
     if ( analyzed )
       return;
     analyzed = true;
 
-    calculate_sum = calc_sum;
-    calculate_mean = calc_mean;
-    calculate_min = calc_min;
-    calculate_max = calc_max;
-    calculate_variance = calc_variance;
-    calculate_median = calc_median;
-    calculate_mean_std_dev = calc_base_error;
-    sort = s;
+    if ( calc_basics ) calculate_basics = true;
+    if ( calc_variance ) calculate_variance = true;
+    if ( s ) sort = true;
 
 
     // Enable necessary pre-calculations
-    if ( calculate_mean_std_dev )
-      calculate_variance = true;
 
     if ( calculate_variance )
-      calculate_mean = true;
+      calculate_basics = true;
 
-    if ( calculate_median )
-      sort = true;
+    int sample_size = size();
 
-
-    int sample_size = data.size();
+    if ( sample_size == 0 )
+      return;
 
     // Calculate Sum, Mean, Min, Max
-    if ( calculate_mean || calculate_sum || calculate_min )
+    if ( calculate_basics )
     {
-      if ( calculate_sum ) sum = 0;
-      if ( calculate_min ) min = std::numeric_limits<double>::max();
-      if ( calculate_max ) max = 0;
+      sum = 0;
+      min = std::numeric_limits<double>::max();
+      max = 0;
 
       for ( int i=0; i < sample_size; i++ )
       {
-        double i_data = data[ i ];
-        if ( calculate_sum ) sum  += i_data;
-        if ( calculate_min ) if ( i_data < min ) min = i_data;
-        if ( calculate_max ) if ( i_data > max ) max = i_data;
+        double i_data = (*this)[ i ];
+        sum  += i_data;
+        if ( i_data < min ) min = i_data;
+        if ( i_data > max ) max = i_data;
       }
 
-      if ( calculate_mean ) mean = sum / sample_size;
+      mean = sum / sample_size;
+
+      if ( min == std::numeric_limits<double>::max() )
+        min = std::numeric_limits<double>::quiet_NaN();
     }
 
     // Calculate Variance
@@ -95,7 +72,7 @@
       variance = 0;
       for ( int i=0; i < sample_size; i++ )
       {
-        double delta = data[ i ] - mean;
+        double delta = (*this)[ i ] - mean;
         variance += delta * delta;
       }
 
@@ -105,25 +82,21 @@
       }
 
       std_dev = sqrt( variance );
+
+      // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
+      mean_std_dev = std_dev / sqrt ( sample_size );
     }
 
-    // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
-    if ( calculate_mean_std_dev )
-      mean_std_dev = std_dev / sqrt ( sample_size );
 
     // Sort Data
     if ( sort )
     {
       sort_data();
-    }
 
-    // Calculate True Median
-    if ( calculate_median )
-    {
       if ( sample_size % 2 == 1 )
-        median = data[ ( sample_size - 1 )/ 2];
+        median = (*this)[ ( sample_size - 1 )/ 2];
       else
-        median = ( data[ sample_size / 2 - 1] + data[sample_size / 2] ) / 2.0;
+        median = ( (*this)[ sample_size / 2 - 1] + (*this)[sample_size / 2] ) / 2.0;
     }
 
   }
@@ -134,19 +107,24 @@
   {
     assert( x >= 0 && x <= 1.0 );
 
+    int sample_size = size();
+
+    if ( sample_size == 0 )
+      return std::numeric_limits<double>::quiet_NaN();
+
     sort_data();
 
     // Should be improved to use linear interpolation
-    return data[ x * ( data.size() - 1)  ];
+    return (*this)[ (int) ( x * ( sample_size - 1 ) ) ];
   }
 
 // sample_data_t::sort_data =============================================
 
   void sample_data_t::sort_data()
   {
-    if ( ! sorted )
+    if ( ! sorted && size() > 0)
     {
-      std::sort( data.begin(), data.end() );
+      std::sort( begin(), end() );
       sorted = true;
     }
   }
@@ -155,6 +133,6 @@
 
   void sample_data_t::merge( sample_data_t& other )
   {
-    data.insert( data.end(),
-                 other.data.begin(), other.data.end() );
+    insert( end(),
+                 other.begin(), other.end() );
   }

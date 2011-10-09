@@ -1738,9 +1738,9 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  iteration_dps.data.reserve( sim -> iterations );
-  iteration_dtps.data.reserve( sim -> iterations );
-  iteration_dpse.data.reserve( sim -> iterations );
+  iteration_dps.reserve( sim -> iterations );
+  iteration_dtps.reserve( sim -> iterations );
+  iteration_dpse.reserve( sim -> iterations );
 }
 
 // player_t::init_values ====================================================
@@ -2813,9 +2813,9 @@ void player_t::combat_end()
     iteration_heal += pet -> iteration_heal;
   }
   bool is_hps = ( primary_role() == ROLE_HEAL );
-  iteration_dps.data.push_back( iteration_seconds ? ( ( is_hps ? iteration_heal : iteration_dmg ) / iteration_seconds ): 0 );
-  iteration_dpse.data.push_back( sim -> current_time ? ( ( is_hps ? iteration_heal : iteration_dmg ) / sim -> current_time ): 0 );
-  iteration_dtps.data.push_back( iteration_seconds ? dmg_taken / iteration_seconds : 0 );
+  iteration_dps.push_back( iteration_seconds ? ( ( is_hps ? iteration_heal : iteration_dmg ) / iteration_seconds ): 0 );
+  iteration_dpse.push_back( sim -> current_time ? ( ( is_hps ? iteration_heal : iteration_dmg ) / sim -> current_time ): 0 );
+  iteration_dtps.push_back( iteration_seconds ? dmg_taken / iteration_seconds : 0 );
 
   total_dmg += iteration_dmg;
   total_heal += iteration_heal;

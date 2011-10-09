@@ -3300,10 +3300,8 @@ public:
 
 // Statistical Sample Data
 
-struct sample_data_t
+struct sample_data_t : std::vector<double>
 {
-  std::vector<double> data;
-
   // Analyzed Results
   double sum;
   double mean;
@@ -3316,13 +3314,8 @@ struct sample_data_t
   double mean_std_dev;
 
   // Analyze Options
-  bool calculate_sum;
-  bool calculate_mean;
-  bool calculate_min;
-  bool calculate_max;
+  bool calculate_basics;
   bool calculate_variance;
-  bool calculate_median;
-  bool calculate_mean_std_dev;
   bool sort;
 
   bool analyzed;
@@ -3331,13 +3324,8 @@ struct sample_data_t
   sample_data_t();
 
   void analyze(
-      bool calc_sum=false,
-      bool calc_mean=false,
-      bool calc_min=false,
-      bool calc_max=false,
+      bool calc_basics=true,
       bool calc_variance=false,
-      bool calc_median=false,
-      bool calc_base_error=false,
       bool s=false );
 
   double percentile( double );
