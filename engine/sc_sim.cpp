@@ -1580,18 +1580,41 @@ void sim_t::analyze_player( player_t* p )
 
   // Charts =================================================================
 
-  chart_t::action_dpet        ( p -> action_dpet_chart,               p );
-  chart_t::action_dmg         ( p -> action_dmg_chart,                p );
-  chart_t::time_spent         ( p -> time_spent_chart,                p );
+  chart_t::action_dpet       ( p -> action_dpet_chart,               p );
+  chart_t::action_dmg        ( p -> action_dmg_chart,                p );
+  chart_t::time_spent        ( p -> time_spent_chart,                p );
+
+  std::string encoded_name;
+  http_t::format( encoded_name, p -> name_str );
+
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    chart_t::timeline( p -> timeline_resource_chart[i],      p, p -> timeline_resource[i], ( util_t::urlencode( util_t::str_to_utf8( p -> name_str ) ) + " " + util_t::resource_type_string( i ) ).c_str(), 0, chart_t::resource_color( i ) );
+    chart_t::timeline        ( p -> timeline_resource_chart[i],      p,
+                               p -> timeline_resource[i],
+                               ( encoded_name + ' ' + util_t::resource_type_string( i ) ).c_str(),
+                               0,
+                               chart_t::resource_color( i ) );
   }
-  chart_t::timeline       ( p -> timeline_dps_chart,              p, p -> timeline_dps, ( util_t::urlencode( util_t::str_to_utf8( p -> name_str ) ) + " DPS" ).c_str(), p -> iteration_dps.mean );
-  chart_t::timeline_dps_error ( p -> timeline_dps_error_chart,        p );
-  chart_t::dps_error          ( p -> dps_error_chart,                 p );
-  chart_t::distribution   ( p -> distribution_dps_chart, p, p -> distribution_dps, "DPS", p -> iteration_dps.mean, p -> iteration_dps.min, p -> iteration_dps.max );
-  chart_t::distribution   ( p -> distribution_deaths_chart, p, p -> distribution_dps, "Death", p -> avg_death_time, p -> min_death_time, p -> max_death_time );
+
+  chart_t::timeline          ( p -> timeline_dps_chart,              p,
+                               p -> timeline_dps,
+                               ( encoded_name + " DPS" ).c_str(),
+                               p -> iteration_dps.mean );
+
+  chart_t::timeline_dps_error( p -> timeline_dps_error_chart,        p );
+  chart_t::dps_error         ( p -> dps_error_chart,                 p );
+
+  chart_t::distribution      ( p -> distribution_dps_chart,          p,
+                               p -> distribution_dps, "DPS",
+                               p -> iteration_dps.mean,
+                               p -> iteration_dps.min,
+                               p -> iteration_dps.max );
+
+  chart_t::distribution      ( p -> distribution_deaths_chart,       p,
+                               p -> distribution_dps, "Death",
+                               p -> avg_death_time,
+                               p -> min_death_time,
+                               p -> max_death_time );
 }
 
 // sim_t::analyze ===========================================================

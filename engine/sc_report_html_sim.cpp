@@ -33,10 +33,9 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     }
   }
 
-  fprintf( file,
-                   "\t\t<div id=\"table-of-contents\" class=\"section section-open\">\n"
-                   "\t\t\t<h2 class=\"toggle open\">Table of Contents</h2>\n"
-                   "\t\t\t<div class=\"toggle-content\">\n" );
+  fputs( "\t\t<div id=\"table-of-contents\" class=\"section section-open\">\n"
+         "\t\t\t<h2 class=\"toggle open\">Table of Contents</h2>\n"
+         "\t\t\t<div class=\"toggle-content\">\n", file );
 
   // set number of columns
   int n;         // number of columns
@@ -64,8 +63,6 @@ static void print_html_contents( FILE*  file, sim_t* sim )
 
   int pi = 0;    // player counter
   int ab = 0;    // auras and debuffs link added yet?
-  char buffer[ 1024 ];
-  std::string cols [ 3 ];
   for ( int i=0; i < n; i++ )
   {
     int cs;    // column size
@@ -88,18 +85,19 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     {
       cs = ( int ) ( c - 2 * ceil( 1.0 * c / n ) );
     }
+
+    fprintf( file,
+            "\t\t\t\t<ul class=\"toc %s\">\n",
+            toc_class );
+
     int ci = 1;    // in-column counter
-    snprintf( buffer, sizeof( buffer ),
-              "\t\t\t\t<ul class=\"toc %s\">\n",
-              toc_class );
-    cols[i] += buffer;
     if ( i == 0 )
     {
-      cols[i] += "\t\t\t\t\t<li><a href=\"#raid-summary\">Raid Summary</a></li>\n";
+      fputs( "\t\t\t\t\t<li><a href=\"#raid-summary\">Raid Summary</a></li>\n", file );
       ci++;
       if ( sim -> scaling -> has_scale_factors() )
       {
-        cols[i] += "\t\t\t\t\t<li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n";
+        fputs( "\t\t\t\t\t<li><a href=\"#raid-scale-factors\">Scale Factors</a></li>\n", file );
         ci++;
       }
     }
@@ -108,41 +106,37 @@ static void print_html_contents( FILE*  file, sim_t* sim )
       if ( pi < ( int ) sim -> players_by_name.size() )
       {
         player_t* p = sim -> players_by_name[ pi ];
-        snprintf( buffer, sizeof( buffer ),
-                  "\t\t\t\t\t<li><a href=\"#%s\">%s</a>",
-                  p -> name(),
-                  p -> name() );
-        cols[i] += buffer;
+        fprintf( file,
+                 "\t\t\t\t\t<li><a href=\"#%s\">%s</a>",
+                 p -> name(), p -> name() );
         ci++;
         if ( sim -> report_pets_separately )
         {
-          cols[i] += "\n\t\t\t\t\t\t<ul>\n";
+          fputs( "\n\t\t\t\t\t\t<ul>\n", file );
           for ( pet_t* pet = sim -> players_by_name[ pi ] -> pet_list; pet; pet = pet -> next_pet )
           {
             if ( pet -> summoned )
             {
-              snprintf( buffer, sizeof( buffer ),
-                        "\t\t\t\t\t\t\t<li><a href=\"#%s\">%s</a></li>\n",
-                        pet -> name(),
-                        pet -> name() );
-              cols[i] += buffer;
+              fprintf( file,
+                       "\t\t\t\t\t\t\t<li><a href=\"#%s\">%s</a></li>\n",
+                       pet -> name(), pet -> name() );
               ci++;
             }
           }
-          cols[i] += "\t\t\t\t\t\t</ul>";
+          fputs( "\t\t\t\t\t\t</ul>", file );
         }
-        cols[i] += "</li>\n";
+        fputs( "</li>\n", file );
         pi++;
       }
       if ( pi == ( int ) sim -> players_by_name.size() )
       {
         if ( ab == 0 )
         {
-          cols[i] += "\t\t\t\t\t\t<li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n";
+          fputs( "\t\t\t\t\t\t<li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n", file );
           ab = 1;
         }
         ci++;
-        cols[i] += "\t\t\t\t\t\t<li><a href=\"#sim-info\">Simulation Information</a></li>\n";
+        fputs( "\t\t\t\t\t\t<li><a href=\"#sim-info\">Simulation Information</a></li>\n", file );
         ci++;
       }
       if ( sim -> report_targets && ab > 0 )
@@ -157,26 +151,21 @@ static void print_html_contents( FILE*  file, sim_t* sim )
           if ( pi < ( int ) sim -> targets_by_name.size() )
           {
             player_t* p = sim -> targets_by_name[ pi ];
-            snprintf( buffer, sizeof( buffer ),
-                      "\t\t\t\t\t<li><a href=\"#%s\">%s</a></li>\n",
-                      p -> name(),
-                      p -> name() );
-            cols[i] += buffer;
+            fprintf( file,
+                     "\t\t\t\t\t<li><a href=\"#%s\">%s</a></li>\n",
+                     p -> name(), p -> name() );
           }
           ci++;
           pi++;
         }
       }
     }
-    cols[i] += "\t\t\t\t</ul>\n";
+    fputs( "\t\t\t\t</ul>\n", file );
   }
-  for ( int i=0; i < n; i++ )
-    fprintf( file, "%s", cols[i].c_str() );
 
-  fprintf( file,
-                   "\t\t\t\t<div class=\"clear\"></div>\n"
-                   "\t\t\t</div>\n\n"
-                   "\t\t</div>\n\n" );
+  fputs( "\t\t\t\t<div class=\"clear\"></div>\n"
+         "\t\t\t</div>\n\n"
+         "\t\t</div>\n\n", file );
 }
 
 
