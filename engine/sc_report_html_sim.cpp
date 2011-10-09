@@ -12,7 +12,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static void print_html_contents( FILE*  file, sim_t* sim )
 {
-  int c = 2;     // total number of TOC entries
+  size_t c = 2;     // total number of TOC entries
   if ( sim -> scaling -> has_scale_factors() )
     ++c;
 

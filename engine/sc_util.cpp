@@ -186,8 +186,7 @@ char* util_t::dup( const char *value )
 #ifdef _MSC_VER
 // vsnprintf ================================================================
 
-#undef vsnprintf
-int vsnprintf( char* buf, size_t size, const char* fmt, va_list ap )
+int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
 {
   if ( buf && size )
   {

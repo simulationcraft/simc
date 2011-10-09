@@ -15,6 +15,7 @@
 #  ifndef UNICODE
 #    define UNICODE
 #  endif
+#  pragma warning( disable : 4351 )
 #else
 #  define DIRECTORY_DELIMITER "/"
 #  define SC_SIGACTION
@@ -848,7 +849,7 @@ inline typename range_traits<T>::iterator begin( T& t )
 
 template <typename T>
 inline typename range_traits<const T>::iterator cbegin( const T& t )
-{ return begin( t ); }
+{ return ::begin( t ); }
 
 template <typename T>
 inline typename range_traits<T>::iterator end( T& t )
@@ -856,25 +857,25 @@ inline typename range_traits<T>::iterator end( T& t )
 
 template <typename T>
 inline typename range_traits<const T>::iterator cend( const T& t )
-{ return end( t ); }
+{ return ::end( t ); }
 
 // Range-based standard algorithms ==========================================
 
 template <typename Range>
 inline void fill( Range& r, const typename range_value<Range>::type& t )
-{ std::fill( begin( r ), end( r ), t ); }
+{ std::fill( ::begin( r ), ::end( r ), t ); }
 
 template <typename Range, typename Out>
 inline Out copy( const Range& r, Out o )
-{ return std::copy( begin( r ), end( r ), o ); }
+{ return std::copy( ::begin( r ), ::end( r ), o ); }
 
 template <typename Range>
 inline void sort( Range& r )
-{ std::sort( begin( r ), end( r ) ); }
+{ std::sort( ::begin( r ), ::end( r ) ); }
 
 template <typename Range, typename Comp>
 inline void sort( Range& r, Comp c )
-{ std::sort( begin( r ), end( r ), c ); }
+{ std::sort( ::begin( r ), ::end( r ), c ); }
 
 struct null_disposer_t
 {
@@ -904,7 +905,7 @@ inline void dispose( I first, I last )
 
 template <typename C, typename D>
 inline void dispose( C& c, D disposer )
-{ dispose( begin( c ), end( c ), disposer ); }
+{ dispose( ::begin( c ), ::end( c ), disposer ); }
 
 template <typename C>
 inline void dispose( C& c )
@@ -1844,7 +1845,8 @@ struct talent_translation_t
 // C99-compliant snprintf - MSVC _snprintf is NOT the same.
 
 #undef vsnprintf
-int vsnprintf( char* buf, size_t size, const char* fmt, va_list ap );
+int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap );
+#define vsnprintf vsnprintf_simc
 
 #undef snprintf
 inline int snprintf( char* buf, size_t size, const char* fmt, ... )

@@ -1536,10 +1536,10 @@ const char* chart_t::timeline( std::string& s,
                                double avg,
                                const char* color )
 {
-  static const int max_points = 600;
+  static const size_t max_points = 600;
   static const double timeline_range  = 60.0;
 
-  int max_buckets = timeline_data.size();
+  size_t max_buckets = timeline_data.size();
   int increment = ( ( max_buckets > max_points ) ?
                      ( ( int ) floor( ( double ) max_buckets / max_points ) + 1 ) :
                      1 );
@@ -1571,7 +1571,7 @@ const char* chart_t::timeline( std::string& s,
   s += "chg=100,20";
   s += "&amp;";
   s += "chd=s:";
-  for ( int i=0; i < max_buckets; i += increment )
+  for ( size_t i=0; i < max_buckets; i += increment )
   {
     s += simple_encoding( ( int ) ( timeline_data[ i ] * timeline_adjust ) );
   }

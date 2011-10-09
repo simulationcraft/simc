@@ -40,7 +40,7 @@
     if ( calculate_variance )
       calculate_basics = true;
 
-    int sample_size = size();
+    size_t sample_size = size();
 
     if ( sample_size == 0 )
       return;
@@ -52,7 +52,7 @@
       min = std::numeric_limits<double>::max();
       max = 0;
 
-      for ( int i=0; i < sample_size; i++ )
+      for ( size_t i=0; i < sample_size; i++ )
       {
         double i_data = (*this)[ i ];
         sum  += i_data;
@@ -70,7 +70,7 @@
     if ( calculate_variance )
     {
       variance = 0;
-      for ( int i=0; i < sample_size; i++ )
+      for ( size_t i=0; i < sample_size; i++ )
       {
         double delta = (*this)[ i ] - mean;
         variance += delta * delta;
@@ -84,7 +84,7 @@
       std_dev = sqrt( variance );
 
       // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
-      mean_std_dev = std_dev / sqrt ( sample_size );
+      mean_std_dev = std_dev / sqrt ( (double) sample_size );
     }
 
 
@@ -107,7 +107,7 @@
   {
     assert( x >= 0 && x <= 1.0 );
 
-    int sample_size = size();
+    size_t sample_size = size();
 
     if ( sample_size == 0 )
       return std::numeric_limits<double>::quiet_NaN();
