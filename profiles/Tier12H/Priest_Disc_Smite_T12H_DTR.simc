@@ -1,7 +1,7 @@
 #!./simc 
 
 priest=Priest_Disc_Smite_T12H_DTR
-origin="Priest_CharDevSync.simc"
+origin="generate_Priest_T12H.simc"
 level=85
 race=troll
 position=back

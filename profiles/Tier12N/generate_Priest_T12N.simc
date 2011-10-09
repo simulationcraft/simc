@@ -55,7 +55,7 @@ off_hand=empty
 ranged=trail_of_embers,id=71151,reforge=hit_mastery
 trinket1=necromantic_focus,id=68982
 trinket2=darkmoon_card_volcano,id=62047,reforge=mastery_haste
-double_dot=1
+action_list=double_dot
 save=Priest_Shadow_T12N_DTR_2dot.simc
 
 
@@ -111,6 +111,6 @@ off_hand=goblet_of_anger,id=71022,enchant=40int
 ranged=trail_of_embers,id=71151
 trinket1=necromantic_focus,id=68982
 trinket2=darkmoon_card_volcano,id=62047,reforge=mastery_haste
-double_dot=1
+action_list=double_dot
 save=Priest_Shadow_T12N_2dot.simc
 

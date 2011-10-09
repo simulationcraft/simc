@@ -1,7 +1,7 @@
 #!./simc 
 
 priest=Priest_Shadow_T12N_DTR_2dot
-origin="Priest_CharDevSync.simc"
+origin="generate_Priest_T12N.simc"
 level=85
 race=troll
 position=back
@@ -71,5 +71,3 @@ ranged=trail_of_embers,ilevel=378,quality=epic,stats=128int_192sta_79hit_89haste
 # tier12_4pc_caster=1
 # back=rippling_flamewrath_drape,enchant=lightweave_embroidery
 # main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2502min_3754max,enchant=power_torrent
-## Variables
-double_dot=1
