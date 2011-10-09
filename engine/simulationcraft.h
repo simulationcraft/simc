@@ -2763,7 +2763,6 @@ struct sim_t : private thread_t
     int vindication;
     int windfury_totem;
     int wrath_of_air;
-    overrides_t() { memset( ( void* ) this, 0x0, sizeof( overrides_t ) ); }
   };
   overrides_t overrides;
 
@@ -2795,7 +2794,6 @@ struct sim_t : private thread_t
     aura_t* unleashed_rage;
     aura_t* windfury_totem;
     aura_t* wrath_of_air;
-    auras_t() { memset( (void*) this, 0x0, sizeof( auras_t ) ); }
   };
   auras_t auras;
 

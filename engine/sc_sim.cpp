@@ -642,22 +642,23 @@ sim_t::sim_t( sim_t* p, int index ) :
   optimal_raid( 0 ), log( 0 ), debug( 0 ), save_profiles( 0 ), default_actions( 0 ),
   normalized_stat( STAT_NONE ),
   default_region_str( "us" ),
-  save_prefix_str( "save_" ), save_suffix_str( "" ),
+  save_prefix_str( "save_" ),
   save_talent_str( 0 ),
-  input_is_utf8( false ), main_target_str( "" ),
+  input_is_utf8( false ),
   dtr_proc_chance( -1.0 ),
-  target_death_pct( 0 ), target_level( -1 ), target_race( "" ), target_adds( 0 ),
+  target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
   rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
   smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
-  fight_style( "Patchwerk" ), buff_list( 0 ), aura_delay( 0.15 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
+  fight_style( "Patchwerk" ), overrides(), auras(),
+  buff_list( 0 ), aura_delay( 0.15 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
   raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
   total_seconds( 0 ), elapsed_cpu_seconds( 0 ), max_fight_length( 0 ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( -60 ),
   path_str( "." ), output_file( stdout ),
-  armory_throttle( 5 ), current_throttle( 5 ),bcp_api_throttle( 0 ), debug_exp( 0 ),
+  armory_throttle( 5 ), current_throttle( 5 ), bcp_api_throttle( 0 ), debug_exp( 0 ),
   // Report
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
@@ -719,8 +720,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   path_str += "Tier11H";
 
   // Initialize the default item database source order
-  const char* dbsources[] = { "local", "wowhead", "mmoc", "armory", "ptrhead" };
-  item_db_sources = std::vector<std::string>( dbsources, dbsources + sizeof( dbsources ) / sizeof( const char* ) );
+  static const char* const dbsources[] = { "local", "bcpapi", "wowhead", "mmoc", "armory", "ptrhead" };
+  item_db_sources.assign( dbsources, dbsources + sizeof_array( dbsources ) );
 
   scaling = new scaling_t( this );
   plot    = new    plot_t( this );
