@@ -1533,26 +1533,24 @@ const char* chart_t::reforge_dps( std::string& s,
 // chart_t::timeline_dps ====================================================
 
 const char* chart_t::timeline( std::string& s,
-                                   player_t* p, std::vector<double> timeline_data, const char* timeline_name="", double avg, const char* color )
+                               player_t* p,
+                               const std::vector<double>& timeline_data,
+                               const char* timeline_name,
+                               double avg,
+                               const char* color )
 {
-  int max_buckets = ( int ) timeline_data.size();
-  int max_points  = 600;
-  int increment   = 1;
+  static const int max_points = 600;
+  static const double timeline_range  = 60.0;
 
-  if ( max_buckets > max_points )
-  {
-    increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
-  }
+  int max_buckets = timeline_data.size();
+  int increment = ( ( max_buckets > max_points ) ?
+                     ( ( int ) floor( ( double ) max_buckets / max_points ) + 1 ) :
+                     1 );
 
-  double timeline_max=0;
-  for ( int i=0; i < max_buckets; i++ )
-  {
-    if ( timeline_data[ i ] > timeline_max )
-    {
-      timeline_max = timeline_data[ i ];
-    }
-  }
-  double timeline_range  = 60.0;
+  double timeline_max = ( max_buckets ?
+                           *std::max_element( timeline_data.begin(), timeline_data.end() ) :
+                           0 );
+
   double timeline_adjust = timeline_range / timeline_max;
 
   char buffer[ 1024 ];
@@ -1700,21 +1698,17 @@ const char* chart_t::timeline_dps_error( std::string& s,
 // chart_t::distribution_dps ================================================
 
 const char* chart_t::distribution( std::string& s,
-                                       player_t* p, std::vector<int> dist_data, const char* distribution_name="", double avg=0, double min=0, double max=0 )
+                                   player_t* p,
+                                   const std::vector<int>& dist_data,
+                                   const char* distribution_name,
+                                   double avg, double min, double max )
 {
   int max_buckets = ( int ) dist_data.size();
 
   if ( ! max_buckets )
     return 0;
 
-  int count_max=0;
-  for ( int i=0; i < max_buckets; i++ )
-  {
-    if ( dist_data[ i ] > count_max )
-    {
-      count_max = dist_data[ i ];
-    }
-  }
+  int count_max = *std::max_element( dist_data.begin(), dist_data.end() );
 
   char buffer[ 1024 ];
 
@@ -1908,7 +1902,7 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
     case STAT_CRIT_RATING:              id = 96;  break;
     case STAT_HASTE_RATING:             id = 103; break;
     case STAT_ARMOR:                    id = 41;  break;
-    case STAT_MASTERY_RATING:                  id = 170; break;
+    case STAT_MASTERY_RATING:           id = 170; break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
     }
