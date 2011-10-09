@@ -12,46 +12,35 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static void print_html_contents( FILE*  file, sim_t* sim )
 {
-  int i;         // reusable counter
-  double n;      // number of columns
-  double c = 2;  // total number of TOC entries
-  int pi = 0;    // player counter
-  int ci = 0;    // in-column counter
-  int cs = 0;    // column size
-  int ab = 0;    // auras and debuffs link added yet?
-  std::string toc_class; // css class
-  char buffer[ 1024 ];
-
+  int c = 2;     // total number of TOC entries
   if ( sim -> scaling -> has_scale_factors() )
-  {
-    c++;
-  }
-  int num_players = ( int ) sim -> players_by_name.size();
+    ++c;
+
+  const int num_players = ( int ) sim -> players_by_name.size();
   c += num_players;
-  for ( i=0; i < num_players; i++ )
+  if ( sim -> report_targets )
+    c += sim -> targets_by_name.size();
+
+  if ( sim -> report_pets_separately )
   {
-    if ( sim -> report_pets_separately )
+    for ( int i=0; i < num_players; i++ )
     {
       for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
       {
         if ( pet -> summoned )
-        {
-          c++;
-        }
+          ++c;
       }
     }
   }
-  if ( sim -> report_targets )
-  {
-    c += ( int ) sim -> targets_by_name.size();
-  }
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"table-of-contents\" class=\"section section-open\">\n"
                    "\t\t\t<h2 class=\"toggle open\">Table of Contents</h2>\n"
                    "\t\t\t<div class=\"toggle-content\">\n" );
 
   // set number of columns
+  int n;         // number of columns
+  const char* toc_class; // css class
   if ( c < 6 )
   {
     n = 1;
@@ -72,9 +61,14 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     n = 3;
     toc_class = "toc-narrow";
   }
+
+  int pi = 0;    // player counter
+  int ab = 0;    // auras and debuffs link added yet?
+  char buffer[ 1024 ];
   std::string cols [ 3 ];
-  for ( i=0; i < n; i++ )
+  for ( int i=0; i < n; i++ )
   {
+    int cs;    // column size
     if ( i == 0 )
     {
       cs = ( int ) ceil( 1.0 * c / n );
@@ -94,10 +88,10 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     {
       cs = ( int ) ( c - 2 * ceil( 1.0 * c / n ) );
     }
-    ci = 1;
+    int ci = 1;    // in-column counter
     snprintf( buffer, sizeof( buffer ),
               "\t\t\t\t<ul class=\"toc %s\">\n",
-              toc_class.c_str() );
+              toc_class );
     cols[i] += buffer;
     if ( i == 0 )
     {
@@ -176,12 +170,10 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     }
     cols[i] += "\t\t\t\t</ul>\n";
   }
-  for ( i=0; i < n; i++ )
-  {
-    util_t::fprintf( file, "%s", cols[i].c_str() );
-  }
+  for ( int i=0; i < n; i++ )
+    fprintf( file, "%s", cols[i].c_str() );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<div class=\"clear\"></div>\n"
                    "\t\t\t</div>\n\n"
                    "\t\t</div>\n\n" );
@@ -194,89 +186,89 @@ static void print_html_contents( FILE*  file, sim_t* sim )
 static void print_html_sim_summary( FILE*  file, sim_t* sim )
 {
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t<h2 class=\"toggle\">Simulation Information</h2>\n"
                    "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t<table class=\"sc mt\">\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Iterations:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%d</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> iterations );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Threads:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%d</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> threads < 1 ? 1 : sim -> threads );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Confidence:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.2f%%</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> confidence * 100.0 );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Fight Length:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.0f - %.0f</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> iteration_timeline[ 0 ],
                    sim -> iteration_timeline [sim -> iteration_timeline.size() - 1 ] );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th><h2>Performance:</h2></th>\n"
                    "\t\t\t\t\t\t\t\t<td></td>\n"
                    "\t\t\t\t\t\t\t</tr>\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Total Events Processed:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%ld</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    ( long ) sim -> total_events_processed );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Max Event Queue:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%ld</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    ( long ) sim -> max_events_remaining );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Sim Seconds:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> iterations * sim -> total_seconds );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> elapsed_cpu_seconds );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th><h2>Settings:</h2></th>\n"
                    "\t\t\t\t\t\t\t\t<td></td>\n"
                    "\t\t\t\t\t\t\t</tr>\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>World Lag:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
                    sim -> world_lag * 1000.0, sim -> world_lag_stddev * 1000.0 );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>Queue Lag:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
@@ -284,19 +276,19 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    sim -> queue_lag * 1000.0, sim -> queue_lag_stddev * 1000.0 );
   if ( sim -> strict_gcd_queue )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                      "\t\t\t\t\t\t\t\t<th>GCD Lag:</th>\n"
                      "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
                      "\t\t\t\t\t\t\t</tr>\n",
                      sim -> gcd_lag * 1000.0, sim -> gcd_lag_stddev * 1000.0 );
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                      "\t\t\t\t\t\t\t\t<th>Channel Lag:</th>\n"
                      "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
                      "\t\t\t\t\t\t\t</tr>\n",
                      sim -> channel_lag * 1000.0, sim -> channel_lag_stddev * 1000.0 );
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                      "\t\t\t\t\t\t\t\t<th>Queue GCD Reduction:</th>\n"
                      "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
@@ -305,13 +297,13 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
   }
 
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t</table>\n" );
 
   // Timeline Distribution Chart
   if ( sim -> iterations > 1 && ! sim -> timeline_chart.empty() )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
                      sim -> timeline_chart.c_str() );
   }
@@ -319,13 +311,13 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
   // Raid Downtime Chart
   if ( ! sim -> downtime_chart.empty() )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t<img src=\"%s\" alt=\"Player Downtime Chart\" />\n",
                      sim -> downtime_chart.c_str() );
   }
 
   // closure
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<div class=\"clear\"></div>\n"
                    "\t\t\t</div>\n"
                    "\t\t</div>\n\n" );
@@ -335,55 +327,55 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
 
 static void print_html_raid_summary( FILE*  file, sim_t* sim )
 {
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"raid-summary\" class=\"section section-open\">\n\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t<h2 class=\"toggle open\">Raid Summary</h2>\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t<div class=\"toggle-content\">\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t<ul class=\"params\">\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<li><b>Raid Damage:</b> %.0f</li>\n",
                    sim -> total_dmg );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<li><b>Raid DPS:</b> %.0f</li>\n",
                    sim -> raid_dps );
   if ( sim -> total_heal > 0 )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t<li><b>Raid Heal:</b> %.0f</li>\n",
                      sim -> total_heal );
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t<li><b>Raid HPS:</b> %.0f</li>\n",
                      sim -> raid_hps );
   }
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t</ul><p>&nbsp;</p>\n" );
 
   assert( sim ->  dps_charts.size() == sim -> gear_charts.size() );
 
   // Left side charts: dps, gear, timeline, raid events
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<div class=\"charts charts-left\">\n" );
   int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t<a href=\"#help-dps\" class=\"help\"><img src=\"%s\" alt=\"DPS Chart\" /></a>\n",
                      sim -> dps_charts[ i ].c_str() );
   }
   count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t<img src=\"%s\" alt=\"Gear Chart\" />\n",
                      sim -> gear_charts[ i ].c_str() );
   }
 
   if ( ! sim -> raid_events_str.empty() )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t<table>\n"
                      "\t\t\t\t\t\t<tr>\n"
                      "\t\t\t\t\t\t\t<th></th>\n"
@@ -393,33 +385,33 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
     int num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
     for ( int i=0; i < num_raid_events; i++ )
     {
-      util_t::fprintf( file,
+      fprintf( file,
                        "\t\t\t\t\t\t<tr" );
       if ( ( i & 1 ) )
       {
-        util_t::fprintf( file, " class=\"odd\"" );
+        fprintf( file, " class=\"odd\"" );
       }
-      util_t::fprintf( file, ">\n" );
-      util_t::fprintf( file,
+      fprintf( file, ">\n" );
+      fprintf( file,
                        "\t\t\t\t\t\t\t<th class=\"right\">%d</th>\n"
                        "\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                        "\t\t\t\t\t\t</tr>\n",
                        i,
                        raid_event_names[ i ].c_str() );
     }
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t</table>\n" );
   }
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t</div>\n" );
 
   // Right side charts: dpet
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<div class=\"charts\">\n" );
   count = ( int ) sim -> dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t<img src=\"%s\" alt=\"DPET Chart\" />\n",
                      sim -> dpet_charts[ i ].c_str() );
   }
@@ -427,26 +419,26 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
   // RNG chart
   if ( sim -> report_rng )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t<ul>\n" );
     for ( int i=0; i < ( int ) sim -> players_by_name.size(); i++ )
     {
       player_t* p = sim -> players_by_name[ i ];
-      util_t::fprintf( file,
+      fprintf( file,
                        "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
                        p -> name(),
                        ( ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2 ),
                        p -> iteration_dps.mean ? ( ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2 ) * 100 / p -> iteration_dps.mean : 0 );
     }
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t</ul>\n" );
   }
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t</div>\n" );
 
   // closure
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<div class=\"clear\"></div>\n"
                    "\t\t\t</div>\n"
                    "\t\t</div>\n\n" );
@@ -462,12 +454,12 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
   if ( sim -> report_precision < 0 )
     sim -> report_precision = 2;
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"raid-scale-factors\" class=\"section grouped-first\">\n\n"
                    "\t\t\t<h2 class=\"toggle\">DPS Scale Factors (dps increase per unit stat)</h2>\n"
                    "\t\t\t<div class=\"toggle-content hide\">\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<table class=\"sc\">\n" );
 
   std::string buffer;
@@ -482,32 +474,32 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
     {
       prev_type = p -> type;
 
-      util_t::fprintf( file,
+      fprintf( file,
                        "\t\t\t\t\t<tr>\n"
                        "\t\t\t\t\t\t<th class=\"left small\">Profile</th>\n" );
       for ( int i=0; i < STAT_MAX; i++ )
       {
         if ( sim -> scaling -> stats.get_stat( i ) != 0 )
         {
-          util_t::fprintf( file,
+          fprintf( file,
                            "\t\t\t\t\t\t<th class=\"small\">%s</th>\n",
                            util_t::stat_type_abbrev( i ) );
         }
       }
-      util_t::fprintf( file,
+      fprintf( file,
                        "\t\t\t\t\t\t<th class=\"small\">wowhead</th>\n"
                        "\t\t\t\t\t\t<th class=\"small\">lootrank</th>\n"
                        "\t\t\t\t\t</tr>\n" );
     }
 
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t<tr" );
     if ( ( i & 1 ) )
     {
-      util_t::fprintf( file, " class=\"odd\"" );
+      fprintf( file, " class=\"odd\"" );
     }
-    util_t::fprintf( file, ">\n" );
-    util_t::fprintf( file,
+    fprintf( file, ">\n" );
+    fprintf( file,
                      "\t\t\t\t\t\t<td class=\"left small\">%s</td>\n",
                      p -> name() );
     for ( int j=0; j < STAT_MAX; j++ )
@@ -516,33 +508,33 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
       {
         if ( p -> scaling.get_stat( j ) == 0 )
         {
-          util_t::fprintf( file, "\t\t\t\t\t\t<td class=\"small\">-</td>\n" );
+          fprintf( file, "\t\t\t\t\t\t<td class=\"small\">-</td>\n" );
         }
         else
         {
-          util_t::fprintf( file,
+          fprintf( file,
                            "\t\t\t\t\t\t<td class=\"small\">%.*f</td>\n",
                            sim -> report_precision,
                            p -> scaling.get_stat( j ) );
         }
       }
     }
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t\t<td class=\"small\"><a href=\"%s\"> wowhead </a></td>\n"
                      "\t\t\t\t\t\t<td class=\"small\"><a href=\"%s\"> lootrank</a></td>\n"
                      "\t\t\t\t\t</tr>\n",
                      p -> gear_weights_wowhead_link.c_str(),
                      p -> gear_weights_lootrank_link.c_str() );
   }
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t</table>\n" );
   if ( sim -> iterations < 10000 )
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t<div class=\"alert\">\n"
                      "\t\t\t\t\t<h3>Warning</h3>\n"
                      "\t\t\t\t\t<p>Scale Factors generated using less than 10,000 iterations will vary from run to run.</p>\n"
                      "\t\t\t\t</div>\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t</div>\n"
                    "\t\t</div>\n\n" );
 }
@@ -567,25 +559,25 @@ static void print_html_auras_buffs( FILE*  file, sim_t* sim )
     }
   }
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t<div id=\"auras-buffs\" class=\"section" );
   if ( num_players == 1 )
   {
-    util_t::fprintf( file, " grouped-first" );
+    fprintf( file, " grouped-first" );
   }
   if ( !sim -> report_targets )
   {
-    util_t::fprintf ( file, " final grouped-last" );
+    fprintf ( file, " final grouped-last" );
   }
-  util_t::fprintf ( file, "\">\n" );
-  util_t::fprintf ( file,
+  fprintf ( file, "\">\n" );
+  fprintf ( file,
                     "\t\t\t\t\t<h2 class=\"toggle\">Auras/Buffs</h2>\n"
                     "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
 
   if ( show_dyn > 0 )
   {
     i = 0;
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t\t\t<table class=\"sc mb\">\n"
                      "\t\t\t\t\t\t\t\t<tr>\n"
                      "\t\t\t\t\t\t\t\t\t<th class=\"left\">Dynamic Buff</th>\n"
@@ -601,14 +593,14 @@ static void print_html_auras_buffs( FILE*  file, sim_t* sim )
       if ( b -> quiet || ! b -> start_count || b -> constant )
         continue;
 
-      util_t::fprintf( file,
+      fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr" );
       if ( ( i & 1 ) )
       {
-        util_t::fprintf( file, " class=\"odd\"" );
+        fprintf( file, " class=\"odd\"" );
       }
-      util_t::fprintf( file, ">\n" );
-      util_t::fprintf( file,
+      fprintf( file, ">\n" );
+      fprintf( file,
                        "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
@@ -626,14 +618,14 @@ static void print_html_auras_buffs( FILE*  file, sim_t* sim )
                        b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
       i++;
     }
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t\t\t</table>\n" );
   }
 
   if ( show_con > 0 )
   {
     i = 0;
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t\t\t<table class=\"sc\">\n"
                      "\t\t\t\t\t\t\t\t<tr>\n"
                      "\t\t\t\t\t\t\t\t\t<th class=\"left\">Constant Buff</th>\n"
@@ -643,24 +635,24 @@ static void print_html_auras_buffs( FILE*  file, sim_t* sim )
       if ( b -> quiet || ! b -> start_count || ! b -> constant )
         continue;
 
-      util_t::fprintf( file,
+      fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr class=\"left" );
       if ( ( i & 1 ) )
       {
-        util_t::fprintf( file, " odd" );
+        fprintf( file, " odd" );
       }
-      util_t::fprintf( file, "\">\n" );
-      util_t::fprintf( file,
+      fprintf( file, "\">\n" );
+      fprintf( file,
                        "\t\t\t\t\t\t\t\t\t<td>%s</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
                        b -> name() );
       i++;
     }
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t\t\t\t</table>\n" );
   }
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t\t\t\t</div>\n"
                    "\t\t\t\t\t</div>\n\n" );
 
@@ -672,10 +664,10 @@ static void print_html_auras_buffs( FILE*  file, sim_t* sim )
 
 static void print_html_help_boxes( FILE*  file, sim_t* sim )
 {
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<!-- Help Boxes -->\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-apm\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>APM</h3>\n"
@@ -683,7 +675,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-constant-buffs\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Constant Buffs</h3>\n"
@@ -691,7 +683,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-count\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Count</h3>\n"
@@ -699,7 +691,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-crit\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Crit</h3>\n"
@@ -707,7 +699,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-crit-pct\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Crit%%</h3>\n"
@@ -715,7 +707,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-dodge-pct\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Dodge%%</h3>\n"
@@ -723,7 +715,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-dpe\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>DPE</h3>\n"
@@ -731,7 +723,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-dpet\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>DPET</h3>\n"
@@ -739,7 +731,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-dpr\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>DPR</h3>\n"
@@ -747,7 +739,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-dps\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>DPS</h3>\n"
@@ -755,7 +747,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-dpse\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Effective DPS</h3>\n"
@@ -763,7 +755,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-dps-pct\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>DPS%%</h3>\n"
@@ -771,7 +763,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-dynamic-buffs\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Dynamic Buffs</h3>\n"
@@ -779,7 +771,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-error\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Error</h3>\n"
@@ -788,7 +780,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t</div>\n",
                    sim -> confidence * 100.0 );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-glance-pct\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>G%%</h3>\n"
@@ -796,7 +788,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-block-pct\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>G%%</h3>\n"
@@ -804,7 +796,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-hit\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Hit</h3>\n"
@@ -812,7 +804,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-interval\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Interval</h3>\n"
@@ -820,7 +812,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-max\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Max</h3>\n"
@@ -828,7 +820,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-miss-pct\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>M%%</h3>\n"
@@ -836,7 +828,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-origin\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Origin</h3>\n"
@@ -844,7 +836,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-parry-pct\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Parry%%</h3>\n"
@@ -852,7 +844,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-range\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Range</h3>\n"
@@ -860,7 +852,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-rps-in\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>RPS In</h3>\n"
@@ -868,7 +860,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-rps-out\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>RPS Out</h3>\n"
@@ -876,7 +868,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-scale-factors\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Scale Factors</h3>\n"
@@ -884,7 +876,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-ticks\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Ticks</h3>\n"
@@ -892,7 +884,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-ticks-crit\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>T-Crit</h3>\n"
@@ -900,7 +892,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-ticks-crit-pct\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>T-Crit%%</h3>\n"
@@ -908,7 +900,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-ticks-hit\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>T-Hit</h3>\n"
@@ -916,7 +908,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-ticks-miss-pct\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>T-M%%</h3>\n"
@@ -924,7 +916,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-ticks-uptime\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>UpTime%%</h3>\n"
@@ -932,7 +924,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-timeline-distribution\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Timeline Distribution</h3>\n"
@@ -940,7 +932,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-fight-length\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Fight Length</h3>\n"
@@ -952,7 +944,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    sim -> max_time,
                    sim -> vary_combat_length );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"help-waiting\">\n"
                    "\t\t\t<div class=\"help-box\">\n"
                    "\t\t\t\t<h3>Waiting</h3>\n"
@@ -960,7 +952,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
                    "\t\t\t</div>\n"
                    "\t\t</div>\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<!-- End Help Boxes -->\n" );
 }
 
@@ -975,7 +967,7 @@ static void print_html_styles( FILE*  file, sim_t* sim )
   // stylesheet; otherwise, embed the styles.
   if ( sim -> hosted_html )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t<style type=\"text/css\" media=\"screen\">\n"
                      "\t\t\t@import url('http://www.simulationcraft.org/css/styles.css');\n"
                      "\t\t</style>\n"
@@ -985,7 +977,7 @@ static void print_html_styles( FILE*  file, sim_t* sim )
   }
   else if ( sim -> print_styles )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t<style type=\"text/css\" media=\"all\">\n"
                      "\t\t\t* {border: none;margin: 0;padding: 0; }\n"
                      "\t\t\tbody {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background-color: #f9f9f9;color: #333;text-align: center; }\n"
@@ -1090,7 +1082,7 @@ static void print_html_styles( FILE*  file, sim_t* sim )
   }
   else
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t<style type=\"text/css\" media=\"all\">\n"
                      "\t\t\t* {border: none;margin: 0;padding: 0; }\n"
                      "\t\t\tbody {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background: #261307;color: #FFF;text-align: center; }\n"
@@ -1219,10 +1211,10 @@ static void print_html_masthead( FILE*  file, sim_t* sim )
 {
 
   // Begin masthead section
-   util_t::fprintf( file,
+   fprintf( file,
                     "\t\t<div id=\"masthead\" class=\"section section-open\">\n\n" );
 
-   util_t::fprintf( file,
+   fprintf( file,
                     "\t\t\t<h1><a href=\"http://code.google.com/p/simulationcraft/\">SimulationCraft %s-%s</a></h1>\n"
                     "\t\t\t<h2>for World of Warcraft %s %s (build level %s)</h2>\n\n",
                     SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( sim -> dbc.ptr ) );
@@ -1230,12 +1222,12 @@ static void print_html_masthead( FILE*  file, sim_t* sim )
    time_t rawtime;
    time ( &rawtime );
 
-   util_t::fprintf( file,
+   fprintf( file,
                     "\t\t\t<ul class=\"params\">\n" );
-   util_t::fprintf( file,
+   fprintf( file,
                     "\t\t\t\t<li><b>Timestamp:</b> %s</li>\n",
                     ctime( &rawtime ) );
-   util_t::fprintf( file,
+   fprintf( file,
                     "\t\t\t\t<li><b>Iterations:</b> %d</li>\n",
                     sim -> iterations );
 
@@ -1243,23 +1235,23 @@ static void print_html_masthead( FILE*  file, sim_t* sim )
    {
      double min_length = sim -> max_time * ( 1 - sim -> vary_combat_length );
      double max_length = sim -> max_time * ( 1 + sim -> vary_combat_length );
-     util_t::fprintf( file,
+     fprintf( file,
                       "\t\t\t\t<li class=\"linked\"><a href=\"#help-fight-length\" class=\"help\"><b>Fight Length:</b> %.0f - %.0f</a></li>\n",
                       min_length,
                       max_length );
    }
    else
    {
-     util_t::fprintf( file,
+     fprintf( file,
                       "\t\t\t\t<li><b>Fight Length:</b> %.0f</li>\n",
                       sim -> max_time );
    }
-   util_t::fprintf( file,
+   fprintf( file,
                     "\t\t\t\t<li><b>Fight Style:</b> %s</li>\n",
                     sim -> fight_style.c_str() );
-   util_t::fprintf( file,
+   fprintf( file,
                     "\t\t\t</ul>\n" );
-   util_t::fprintf( file,
+   fprintf( file,
                     "\t\t\t<div class=\"clear\"></div>\n\n"
                     "\t\t</div>\n\n" );
    // End masthead section
@@ -1285,40 +1277,40 @@ void report_t::print_html( sim_t* sim )
     return;
   }
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "<!DOCTYPE html>\n\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "<html>\n\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t<head>\n\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<title>Simulationcraft Results</title>\n\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n\n" );
 
   print_html_styles( file, sim );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t</head>\n\n" );
 
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t<body>\n\n" );
 
   if( ! sim -> error_list.empty() )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t<pre>\n" );
     size_t num_errors = sim -> error_list.size();
     for( size_t i=0; i < num_errors; i++ )
-      util_t::fprintf( file,
+      fprintf( file,
                        "      %s\n", sim -> error_list[ i ].c_str() );
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t</pre>\n\n" );
   }
 
   // Prints div wrappers for help popups
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"active-help\">\n"
                    "\t\t\t<div id=\"active-help-dynamic\">\n"
                    "\t\t\t\t<div class=\"help-box\"></div>\n"
@@ -1329,25 +1321,25 @@ void report_t::print_html( sim_t* sim )
  print_html_masthead( file, sim );
 
 #if SC_BETA
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t<div id=\"notice\" class=\"section section-open\">\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t\t<h2>Beta Release</h2>\n" );
   int ii = 0;
   if ( beta_warnings[ 0 ] )
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t<ul>\n" );
   while ( beta_warnings[ ii ] )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t\t<li>%s</li>\n",
                      beta_warnings[ ii ] );
     ii++;
   }
   if ( beta_warnings[ 0 ] )
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t\t</ul>\n" );
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t\t</div>\n\n" );
 #endif
 
@@ -1407,21 +1399,21 @@ void report_t::print_html( sim_t* sim )
   print_html_help_boxes( file, sim );
 
   // jQuery
-  util_t::fprintf ( file,
+  fprintf ( file,
                     "\t\t<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n" );
 
   // Toggles, image load-on-demand, etc. Load from simulationcraft.org if
   // hosted_html=1, otherwise embed
   if ( sim -> hosted_html )
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t<script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/ga.js\"></script>\n"
                      "\t\t<script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/rep.js\"></script>\n"
                      "\t\t<script type=\"text/javascript\" src=\"http://static.wowhead.com/widgets/power.js\"></script>\n" );
   }
   else
   {
-    util_t::fprintf( file,
+    fprintf( file,
                      "\t\t<script type=\"text/javascript\">\n"
                      "\t\t\tjQuery.noConflict();\n"
                      "\t\t\tjQuery(document).ready(function($) {\n"
@@ -1542,7 +1534,7 @@ void report_t::print_html( sim_t* sim )
                      "\t\t\t});\n"
                      "\t\t</script>\n\n" );
   }
-  util_t::fprintf( file,
+  fprintf( file,
                    "\t</body>\n\n"
                    "</html>\n" );
 
