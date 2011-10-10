@@ -11,12 +11,10 @@ sample_data_t::sample_data_t( bool s ):
   sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),mean( std::numeric_limits<double>::quiet_NaN() ),
   min( std::numeric_limits<double>::quiet_NaN() ),max( std::numeric_limits<double>::quiet_NaN() ),
   variance( std::numeric_limits<double>::quiet_NaN() ),std_dev( std::numeric_limits<double>::quiet_NaN() ),
-  median( std::numeric_limits<double>::quiet_NaN() ),
+  median( std::numeric_limits<double>::quiet_NaN() ), mean_std_dev( std::numeric_limits<double>::quiet_NaN() ),
   simple( s ), count( 0 ),
-  analyzed(),sorted()
+  analyzed( false ),sorted( false )
 {
-  if ( simple )
-    assign( 1, 0 );
 }
 
 // sample_data_t::analyze =============================================
@@ -27,7 +25,6 @@ void sample_data_t::add( double x )
 
   if ( simple )
   {
-    std::vector<double>::back() = x; // Save current value so that it can still get used.
     sum += x;
   }
   else

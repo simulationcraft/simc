@@ -2568,11 +2568,10 @@ struct sample_data_t : std::vector<double>
   double max;
   double variance;
   double std_dev;
-  int    mean_point;
   double median;
   double mean_std_dev;
   std::vector<int> distribution;
-  bool simple;
+  const bool simple;
   int count;
 
   bool analyzed;
