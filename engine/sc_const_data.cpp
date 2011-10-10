@@ -48,6 +48,10 @@ private:
   {
     bool operator () ( const T& t, unsigned int id ) const
     { return t.id() < id; }
+    bool operator () ( unsigned int id, const T& t ) const
+    { return id < t.id(); }
+    bool operator () ( const T& l, const T& r ) const
+    { return l.id() < r.id(); }
   };
 
 public:
