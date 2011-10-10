@@ -2594,9 +2594,9 @@ struct sample_data_t : std::vector<double>
 
   void merge( sample_data_t& );
 
-  virtual void push_back( double ) { assert( 0 ); }
+  void push_back( double ) { assert( 0 ); }
 
-  virtual void clear() { count = 0; std::vector<double>::clear(); }
+  void clear() { count = 0; std::vector<double>::clear(); }
 
 protected:
   void create_distribution( unsigned int num_buckets=50 );
