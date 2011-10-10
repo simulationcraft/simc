@@ -7,38 +7,59 @@
 
 // sample_data_t::sample_data_t =============================================
 
-  sample_data_t::sample_data_t( ):
-  sum(std::numeric_limits<double>::quiet_NaN()),mean(std::numeric_limits<double>::quiet_NaN()),
+  sample_data_t::sample_data_t( bool s ):
+  sum(s ? 0 : std::numeric_limits<double>::quiet_NaN()),mean(std::numeric_limits<double>::quiet_NaN()),
   min(std::numeric_limits<double>::quiet_NaN()),max(std::numeric_limits<double>::quiet_NaN()),
   variance(std::numeric_limits<double>::quiet_NaN()),std_dev(std::numeric_limits<double>::quiet_NaN()),
   median(std::numeric_limits<double>::quiet_NaN()),
-
-  calculate_basics( true ),calculate_variance(false),sort(false),
+  simple( s ), count( 0 ),
 
   analyzed(),sorted()
 
-  { }
+  {
+    if ( simple )
+      assign( 1, 0 );
+  }
+
+
+// sample_data_t::analyze =============================================
+
+  void sample_data_t::add( double x )
+  {
+    count++;
+
+
+    if ( simple )
+    {
+      std::vector<double>::back() = x; // Save current value so that it can still get used.
+      sum += x;
+    }
+    else
+      std::vector<double>::push_back( x );
+  }
+
 
 // sample_data_t::analyze =============================================
 
   void sample_data_t::analyze(
       bool calc_basics,
       bool calc_variance,
-      bool s)
+      bool s,
+      unsigned int create_dist )
   {
     if ( analyzed )
       return;
     analyzed = true;
 
-    if ( calc_basics ) calculate_basics = true;
-    if ( calc_variance ) calculate_variance = true;
-    if ( s ) sort = true;
 
+    if ( simple )
+    {
+      mean = sum / count;
+      return;
+    }
+    else
+      assert( (std::size_t) count == size() );
 
-    // Enable necessary pre-calculations
-
-    if ( calculate_variance )
-      calculate_basics = true;
 
     size_t sample_size = size();
 
@@ -46,7 +67,7 @@
       return;
 
     // Calculate Sum, Mean, Min, Max
-    if ( calculate_basics )
+    if ( calc_basics || calc_variance || create_dist || create_dist > 0 )
     {
       sum = 0;
       min = std::numeric_limits<double>::max();
@@ -67,7 +88,7 @@
     }
 
     // Calculate Variance
-    if ( calculate_variance )
+    if ( calc_variance )
     {
       variance = 0;
       for ( size_t i=0; i < sample_size; i++ )
@@ -89,7 +110,7 @@
 
 
     // Sort Data
-    if ( sort )
+    if ( s )
     {
       sort_data();
 
@@ -99,13 +120,45 @@
         median = ( (*this)[ sample_size / 2 - 1] + (*this)[sample_size / 2] ) / 2.0;
     }
 
+    if ( create_dist > 0 )
+      create_distribution( create_dist );
+
   }
+
+// sample_data_t::create_dist =============================================
+
+  void sample_data_t::create_distribution( unsigned int num_buckets )
+  {
+    if ( simple )
+      return;
+
+    assert( analyzed );
+
+    if ( size() == 0 )
+      return;
+
+    if ( max > min )
+    {
+      double range = max - min + 2;
+
+      distribution.assign( num_buckets, 0 );
+      for ( unsigned int i=0; i < size(); i++ )
+      {
+        int index = ( int ) ( num_buckets * ( (*this)[ i ] - min + 1 ) / range );
+        distribution[ index ]++;
+      }
+    }
+  }
+
 
 // sample_data_t::percentile =============================================
 
   double sample_data_t::percentile( double x )
   {
     assert( x >= 0 && x <= 1.0 );
+
+    if ( simple )
+      return std::numeric_limits<double>::quiet_NaN();
 
     size_t sample_size = size();
 
@@ -129,10 +182,16 @@
     }
   }
 
+
 // sample_data_t::merge =============================================
 
   void sample_data_t::merge( sample_data_t& other )
   {
-    insert( end(),
-                 other.begin(), other.end() );
+
+    count += other.count;
+
+    if ( simple )
+      sum += other.sum;
+    else
+      insert( end(), other.begin(), other.end() );
   }

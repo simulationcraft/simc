@@ -189,22 +189,40 @@ static const char* extended_encoding( int number )
 
 // chart_t::raid_dps ========================================================
 
-int chart_t::raid_dps( std::vector<std::string>& images,
-                       sim_t* sim )
+int chart_t::raid_aps( std::vector<std::string>& images,
+                       sim_t* sim,
+                       std::vector<player_t*> players_by_aps,
+                       bool dps )
 {
-  int num_players = ( int ) sim -> players_by_rank.size();
+  int num_players = ( int ) players_by_aps.size();
 
   if ( num_players == 0 )
     return 0;
 
-  double max_dps = sim -> players_by_rank[ 0 ] -> iteration_dps.mean;
+  double max_aps = 0;
+  if ( dps )
+    max_aps = players_by_aps[ 0 ] -> dps.mean;
+  else
+    max_aps = players_by_aps[ 0 ] -> hps.mean;
 
   std::string s;
   char buffer[ 1024 ];
   bool first = true;
 
-  std::vector<player_t*> player_list = sim -> players_by_rank;
+  std::vector<player_t*> player_list = players_by_aps;
   int max_players = MAX_PLAYERS_PER_CHART;
+
+  // Ommit Player with 0 DPS/HPS
+  for ( int i=0; i < num_players; i++ )
+  {
+    player_t* p = player_list[ i ];
+    if ( dps ? p -> dps.mean <= 0 : p -> hps.mean <=0 )
+    {
+      player_list.resize( i );
+      break;
+    }
+  }
+  num_players = player_list.size();
 
   while ( true )
   {
@@ -227,10 +245,10 @@ int chart_t::raid_dps( std::vector<std::string>& images,
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), p -> iteration_dps.mean ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean ); s += buffer;
     }
     s += "&amp;";
-    snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_dps * 2.5 ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_aps * 2.5 ); s += buffer;
     s += "&amp;";
     s += "chco=";
     for ( int i=0; i < num_players; i++ )
@@ -245,12 +263,12 @@ int chart_t::raid_dps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       std::string formatted_name;
       http_t::format( formatted_name, p -> name_str );
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), p -> iteration_dps.mean, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
     }
     s += "&amp;";
     if ( first )
     {
-      s += "chtt=DPS+Ranking";
+      snprintf( buffer, sizeof( buffer ), "chtt=%s Ranking", dps ? "DPS " : "HPS" ); s += buffer;
       s += "&amp;";
     }
     if ( sim -> print_styles )
@@ -278,7 +296,7 @@ int chart_t::raid_dps( std::vector<std::string>& images,
 int chart_t::raid_gear( std::vector<std::string>& images,
                         sim_t* sim )
 {
-  int num_players = ( int ) sim -> players_by_rank.size();
+  int num_players = ( int ) sim -> players_by_dps.size();
 
   if ( num_players == 0 )
     return 0;
@@ -289,7 +307,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   {
     for ( int j=0; j < num_players; j++ )
     {
-      player_t* p = sim -> players_by_rank[ j ];
+      player_t* p = sim -> players_by_dps[ j ];
 
       data_points[ i ].push_back( ( p -> gear.   get_stat( i ) +
                                     p -> enchant.get_stat( i ) ) * gear_stats_t::stat_mod( i ) );
@@ -312,7 +330,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   char buffer[ 1024 ];
   bool first;
 
-  std::vector<player_t*> player_list = sim -> players_by_rank;
+  std::vector<player_t*> player_list = sim -> players_by_dps;
   int max_players = MAX_PLAYERS_PER_CHART;
 
   while ( true )
@@ -433,7 +451,7 @@ struct compare_downtime
 {
   bool operator()( player_t* l, player_t* r ) SC_CONST
   {
-    return l -> total_waiting > r -> total_waiting;
+    return l -> waiting_time.mean > r -> waiting_time.mean;
   }
 };
 
@@ -452,7 +470,7 @@ const char* chart_t::raid_downtime( std::string& s,
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
-    if ( ( p -> total_waiting / p -> total_seconds ) > 0.01 )
+    if ( ( p -> waiting_time.mean / p -> fight_length.mean ) > 0.01 )
     {
       waiting_list.push_back( p );
     }
@@ -480,7 +498,7 @@ const char* chart_t::raid_downtime( std::string& s,
   for ( int i=0; i < num_waiting; i++ )
   {
     player_t* p = waiting_list[ i ];
-    double waiting = 100.0 * p -> total_waiting / p -> total_seconds;
+    double waiting = 100.0 * p -> waiting_time.mean / p -> fight_length.mean;
     if ( waiting > max_waiting ) max_waiting = waiting;
     snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), waiting ); s += buffer;
   }
@@ -500,74 +518,10 @@ const char* chart_t::raid_downtime( std::string& s,
     player_t* p = waiting_list[ i ];
     std::string formatted_name = p -> name_str;
     util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> total_waiting / p -> total_seconds, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
   }
   s += "&amp;";
   s += "chtt=Player+Waiting-Time";
-  s += "&amp;";
-  if ( sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
-
-  return s.c_str();
-}
-
-// chart_t::raid_timeline ===================================================
-
-const char* chart_t::raid_timeline( std::string& s,
-                                    sim_t* sim )
-{
-  int max_buckets = ( int ) sim -> distribution_timeline.size();
-  if ( max_buckets == 0 ) return 0;
-
-  int count_max=0;
-  for ( int i=0; i < max_buckets; i++ )
-  {
-    if ( sim -> distribution_timeline[ i ] > count_max )
-    {
-      count_max = sim -> distribution_timeline[ i ];
-    }
-  }
-
-  double min = sim -> iteration_timeline.front();
-  double max = sim -> iteration_timeline.back();
-
-  char buffer[ 1024 ];
-
-  s = get_chart_base_url();
-  s += "chs=525x130";
-  s += "&amp;";
-  s += "cht=bvs";
-  s += "&amp;";
-  s += "chxs=0,ffffff|1,ffffff";
-  s += "&amp;";
-  if ( ! sim -> print_styles )
-  {
-    s += "chf=bg,s,333333";
-    s += "&amp;";
-  }
-  s += "chd=t:";
-  for ( int i=0; i < max_buckets; i++ )
-  {
-    snprintf( buffer, sizeof( buffer ), "%s%d", ( i?",":"" ), sim -> distribution_timeline[ i ] ); s += buffer;
-  }
-  s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chds=0,%d", count_max ); s += buffer;
-  s += "&amp;";
-  s += "chbh=5";
-  s += "&amp;";
-  s += "chxt=x";
-  s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxl=0:|min=%.0f|avg=%.0f|max=%.0f", min, sim -> max_time, max ); s += buffer;
-  s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( sim -> max_time - min ) / ( max - min ) ); s += buffer;
-  s += "&amp;";
-  s += "chtt=Timeline+Distribution";
   s += "&amp;";
   if ( sim -> print_styles )
   {
@@ -594,7 +548,7 @@ struct compare_dpet
 int chart_t::raid_dpet( std::vector<std::string>& images,
                         sim_t* sim )
 {
-  int num_players = ( int ) sim -> players_by_rank.size();
+  int num_players = ( int ) sim -> players_by_dps.size();
 
   if ( num_players == 0 )
     return 0;
@@ -603,13 +557,13 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
 
   for ( int i=0; i < num_players; i++ )
   {
-    player_t* p = sim -> players_by_rank[ i ];
+    player_t* p = sim -> players_by_dps[ i ];
 
     for ( stats_t* st = p -> stats_list; st; st = st -> next )
     {
       if ( st -> quiet ) continue;
       if ( st -> apet <= 0 ) continue;
-      if ( st -> apet > ( 5 * p -> iteration_dps.mean ) ) continue;
+      if ( st -> apet > ( 5 * p -> dps.mean ) ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
 
       stats_list.push_back( st );
@@ -707,7 +661,7 @@ const char* chart_t::action_dpet( std::string& s,
   {
     if ( st -> quiet ) continue;
     if ( st -> apet <= 0 ) continue;
-    if ( st -> apet > ( 5 * p -> iteration_dps.mean ) ) continue;
+    if ( st -> apet > ( 5 * p -> dps.mean ) ) continue;
     if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
 
     stats_list.push_back( st );
@@ -719,7 +673,7 @@ const char* chart_t::action_dpet( std::string& s,
     {
       if ( st -> quiet ) continue;
       if ( st -> apet <= 0 ) continue;
-      if ( st -> apet > ( 5 * p -> iteration_dps.mean ) ) continue;
+      if ( st -> apet > ( 5 * p -> dps.mean ) ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
 
       stats_list.push_back( st );
@@ -847,7 +801,7 @@ const char* chart_t::action_dmg( std::string& s,
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> total_amount / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> total_heal : p -> total_dmg ) ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> total_amount / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> heal.mean : p -> dmg.mean ) ); s += buffer;
   }
   s += "&amp;";
   s += "chds=0,100";
@@ -924,7 +878,7 @@ const char* chart_t::time_spent( std::string& s,
 
   assert( stats_list.size() <= static_cast<std::size_t>( std::numeric_limits<int>::max() ) );
   int num_stats = static_cast<int>( stats_list.size() );
-  if ( num_stats == 0 && p -> total_waiting == 0 )
+  if ( num_stats == 0 && p -> waiting_time.mean == 0 )
     return 0;
 
   sort( stats_list, compare_time() );
@@ -944,11 +898,11 @@ const char* chart_t::time_spent( std::string& s,
   s += "chd=t:";
   for ( int i=0; i < num_stats; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * stats_list[ i ] -> total_time / p -> total_seconds ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * stats_list[ i ] -> total_time / p -> fight_length.mean ); s += buffer;
   }
-  if ( p -> total_waiting > 0 )
+  if ( p -> waiting_time.mean > 0 )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? ",":"" ), 100.0 * p -> total_waiting / p -> total_seconds ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? ",":"" ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean ); s += buffer;
   }
   s += "&amp;";
   s += "chds=0,100";
@@ -968,7 +922,7 @@ const char* chart_t::time_spent( std::string& s,
     }
     s += school;
   }
-  if ( p -> total_waiting > 0 )
+  if ( p -> waiting_time.mean > 0 )
   {
     if ( num_stats > 0 ) s += ",";
     s += "ffffff";
@@ -982,11 +936,11 @@ const char* chart_t::time_spent( std::string& s,
     s += st -> name_str.c_str();
     snprintf( buffer, sizeof( buffer ), " %.1fs", st -> total_time ); s += buffer;
   }
-  if ( p -> total_waiting > 0 )
+  if ( p -> waiting_time.mean > 0 )
   {
     if ( num_stats > 0 )s += "|";
     s += "waiting";
-    snprintf( buffer, sizeof( buffer ), " %.1fs", p -> total_waiting ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), " %.1fs", p -> waiting_time.mean ); s += buffer;
   }
   s += "&amp;";
   std::string formatted_name = p -> name();
@@ -1242,14 +1196,14 @@ const char* chart_t::scaling_dps( std::string& s,
   s += "&amp;";
   if ( ! p -> sim -> plot -> dps_plot_positive )
   {
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range*step ), ( -range*step )/2, ( +range*step )/2, ( +range*step ), min_dps, p -> iteration_dps.mean, max_dps ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range*step ), ( -range*step )/2, ( +range*step )/2, ( +range*step ), min_dps, p -> dps.mean, max_dps ); s += buffer;
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( start + ( 1.0/4 )*end )*step, ( start + ( 2.0/4 )*end )*step, ( start + ( 3.0/4 )*end )*step, ( start + end )*step, min_dps, p -> iteration_dps.mean, max_dps ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( start + ( 1.0/4 )*end )*step, ( start + ( 2.0/4 )*end )*step, ( start + ( 3.0/4 )*end )*step, ( start + end )*step, min_dps, p -> dps.mean, max_dps ); s += buffer;
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> iteration_dps.mean - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> dps.mean - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
   s += "&amp;";
   s += "chdl=";
   first = true;
@@ -1394,12 +1348,12 @@ const char* chart_t::reforge_dps( std::string& s,
     s += "&amp;";
     s += "chxt=x,y,x";
     s += "&amp;";
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%d|0|%%2b%d|%%2b%d|1:|%.0f|%.0f|%.0f", ( -range ), ( -range )/2, ( +range )/2, ( +range ), min_dps, p -> iteration_dps.mean, max_dps );
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%d|0|%%2b%d|%%2b%d|1:|%.0f|%.0f|%.0f", ( -range ), ( -range )/2, ( +range )/2, ( +range ), min_dps, p -> dps.mean, max_dps );
     s += buffer;
     snprintf( buffer, sizeof( buffer ), "|2:|%s||%s", util_t::stat_type_string( stat_indices[ 1 ] ), util_t::stat_type_string( stat_indices[ 0 ] ) );
     s += buffer;
     s += "&amp;";
-    snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> iteration_dps.mean - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> dps.mean - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
     s += "&amp;";
     if ( ! p -> sim -> print_styles )
     {
@@ -1695,7 +1649,7 @@ const char* chart_t::timeline_dps_error( std::string& s,
 // chart_t::distribution_dps ================================================
 
 const char* chart_t::distribution( std::string& s,
-                                   player_t* p,
+                                   sim_t* sim,
                                    const std::vector<int>& dist_data,
                                    const char* distribution_name,
                                    double avg, double min, double max )
@@ -1714,7 +1668,7 @@ const char* chart_t::distribution( std::string& s,
   s += "&amp;";
   s += "cht=bvs";
   s += "&amp;";
-  if ( p -> sim -> print_styles )
+  if ( sim -> print_styles )
   {
     s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
   }
@@ -1743,11 +1697,9 @@ const char* chart_t::distribution( std::string& s,
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( avg - min ) / ( max - min ) ); s += buffer;
   s += "&amp;";
-  std::string formatted_name = p -> name_str;
-  util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Distribution", formatted_name.c_str(), distribution_name ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Distribution", distribution_name ); s += buffer;
   s += "&amp;";
-  if ( p -> sim -> print_styles )
+  if ( sim -> print_styles )
   {
     s += "chts=666666,18";
   }
@@ -2056,7 +2008,7 @@ const char* chart_t::dps_error( std::string& s,
 {
   char buffer[ 1024 ];
 
-  double std_dev = p -> iteration_dps.mean_std_dev;
+  double std_dev = p -> dps.mean_std_dev;
 
   s = get_chart_base_url();
   s += "chs=525x185";
@@ -2067,7 +2019,7 @@ const char* chart_t::dps_error( std::string& s,
   s += "&amp;";
   s += "chco=FF0000";
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> iteration_dps.mean - std_dev * 4, p -> iteration_dps.mean + std_dev * 4, 1 / ( std_dev * sqrt ( 0.5 * M_PI ) ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dps.mean - std_dev * 4, p -> dps.mean + std_dev * 4, 1 / ( std_dev * sqrt ( 0.5 * M_PI ) ) ); s += buffer;
 
   s += "&amp;";
   if ( p -> sim -> print_styles )
@@ -2097,7 +2049,7 @@ const char* chart_t::dps_error( std::string& s,
     s += "chts=dddddd,18";
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.0f,%.0f,%.8f,100*exp(-(x-%.0f)^2/(2*%.0f^2))", p -> iteration_dps.mean - std_dev * 4, p -> iteration_dps.mean + std_dev * 4, 1 / std_dev, p -> iteration_dps.mean, std_dev ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.0f,%.0f,%.8f,100*exp(-(x-%.0f)^2/(2*%.0f^2))", p -> dps.mean - std_dev * 4, p -> dps.mean + std_dev * 4, 1 / std_dev, p -> dps.mean, std_dev ); s += buffer;
 
   s += "&amp;";
   s += "chd=t:-1";

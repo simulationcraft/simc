@@ -3910,7 +3910,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t::travel( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
-      dot_damage_done = t -> total_dmg;
+      dot_damage_done = t -> dmg_taken.back();
       if ( p -> dots_corruption -> ticking )
       {
         p -> dots_corruption -> action -> cancel();
@@ -3922,7 +3922,7 @@ struct seed_of_corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( target -> total_dmg - dot_damage_done > effect2().base_value() )
+    if ( target -> dmg_taken.back() - dot_damage_done > effect2().base_value() )
     {
       dot_damage_done=0.0;
       seed_of_corruption_aoe -> execute();

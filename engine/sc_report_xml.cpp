@@ -239,7 +239,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
   {
     writer.begin_tag("players");
 
-    int num_players = ( int ) sim -> players_by_rank.size();
+    int num_players = ( int ) sim -> players_by_dps.size();
     for ( int i = 0; i < num_players; ++i ) {
       player_t * current_player = sim -> players_by_name[ i ];
       print_xml_player( sim, writer, current_player, NULL );
@@ -288,10 +288,10 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     writer.print_tag("primary_role", util_t::role_type_string( p -> primary_role() ));
     writer.print_tag("position", p -> position_str );
     writer.begin_tag("dps");
-    writer.print_attribute("value", util_t::to_string(p -> iteration_dps.mean, PRINT_XML_PRECISION));
-    writer.print_attribute("effective", util_t::to_string(p -> iteration_dpse.mean, PRINT_XML_PRECISION));
+    writer.print_attribute("value", util_t::to_string(p -> dps.mean, PRINT_XML_PRECISION));
+    writer.print_attribute("effective", util_t::to_string(p -> dpse.mean, PRINT_XML_PRECISION));
     writer.print_attribute("error", util_t::to_string(p -> dps_error, PRINT_XML_PRECISION));
-    writer.print_attribute("range", util_t::to_string(( p -> iteration_dps.max - p -> iteration_dps.min ) / 2.0, PRINT_XML_PRECISION));
+    writer.print_attribute("range", util_t::to_string(( p -> dps.max - p -> dps.min ) / 2.0, PRINT_XML_PRECISION));
     writer.print_attribute("convergence", util_t::to_string(p -> dps_convergence, PRINT_XML_PRECISION));
     writer.end_tag(); // </dps>
 
@@ -305,9 +305,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
       writer.end_tag(); // </dpr>
     }
 
-    writer.print_tag("waiting_time_pct", util_t::to_string(p -> total_seconds ? 100.0 * p -> total_waiting / p -> total_seconds : 0, PRINT_XML_PRECISION));
-    writer.print_tag("apm", util_t::to_string(p -> total_seconds ? 60.0 * p -> total_foreground_actions / p -> total_seconds : 0, PRINT_XML_PRECISION));
-    writer.print_tag("active_time_pct", util_t::to_string(sim -> total_seconds ? p -> total_seconds / sim -> total_seconds * 100.0 : 0, PRINT_XML_PRECISION));
+    writer.print_tag("waiting_time_pct", util_t::to_string(p -> fight_length.mean ? 100.0 * p -> waiting_time.mean / p -> fight_length.mean : 0, PRINT_XML_PRECISION));
+    writer.print_tag("apm", util_t::to_string(p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0, PRINT_XML_PRECISION));
+    writer.print_tag("active_time_pct", util_t::to_string(sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0, PRINT_XML_PRECISION));
 
     if ( p -> origin_str.compare( "unknown" ) )
       writer.print_tag("origin", p -> origin_str.c_str() );
@@ -517,7 +517,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
         if ( s -> total_tick_time > 0 )
         {
           writer.begin_tag("uptime");
-          writer.print_attribute("pct", util_t::to_string(100.0 * s -> total_tick_time / s -> player -> total_seconds, 1));
+          writer.print_attribute("pct", util_t::to_string(100.0 * s -> total_tick_time / s -> player -> fight_length.mean, 1));
           writer.end_tag();
         }
 
@@ -925,9 +925,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
     writer.print_tag("total_events", util_t::to_string(sim -> total_events_processed));
     writer.print_tag("max_event_queue", util_t::to_string(sim -> max_events_remaining));
     writer.print_tag("target_health", util_t::to_string(sim -> target -> resource_base[ RESOURCE_HEALTH ], 0));
-    writer.print_tag("sim_seconds", util_t::to_string(sim -> iterations * sim -> total_seconds, 0));
+    writer.print_tag("sim_seconds", util_t::to_string(sim -> iterations * sim -> simulation_length.mean, 0));
     writer.print_tag("cpu_seconds", util_t::to_string(sim -> elapsed_cpu_seconds, 3));
-    writer.print_tag("speed_up", util_t::to_string(sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds, 0));
+    writer.print_tag("speed_up", util_t::to_string(sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu_seconds, 0));
     writer.begin_tag("rng");
     writer.print_attribute("roll", util_t::to_string(( sim -> rng -> expected_roll  == 0 ) ? 1.0 : ( sim -> rng -> actual_roll  / sim -> rng -> expected_roll  ), 6));
     writer.print_attribute("range", util_t::to_string( ( sim -> rng -> expected_range == 0 ) ? 1.0 : ( sim -> rng -> actual_range / sim -> rng -> expected_range ), 6));
@@ -1018,7 +1018,7 @@ void report_t::print_xml( sim_t* sim )
   int num_players = ( int ) sim -> players_by_name.size();
 
   if ( num_players == 0 ) return;
-  if ( sim -> total_seconds == 0 ) return;
+  if ( sim -> simulation_length.mean == 0 ) return;
   if ( sim -> xml_file_str.empty() ) return;
 
   xml_writer_t writer( sim -> xml_file_str.c_str() );

@@ -83,7 +83,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                    s -> tick_results[ RESULT_MISS ].pct +
                    s -> tick_results[ RESULT_DODGE ].pct +
                    s -> tick_results[ RESULT_PARRY ].pct,
-                   100 * s -> total_tick_time / s -> player -> total_seconds );
+                   100 * s -> total_tick_time / s -> player -> fight_length.mean );
 
   if ( p -> sim -> report_details )
   {
@@ -430,7 +430,7 @@ static void print_html_action_resource( FILE* file, stats_t* s, int j )
 
 static void print_html_gear ( FILE* file, player_t* a )
 {
-  if ( a -> total_seconds > 0 )
+  if ( a -> fight_length.mean > 0 )
   {
     fprintf( file,
                      "\t\t\t\t\t\t<div class=\"player-section gear\">\n"
@@ -466,7 +466,7 @@ static void print_html_gear ( FILE* file, player_t* a )
 
 static void print_html_profile ( FILE* file, player_t* a )
 {
-  if ( a -> total_seconds > 0 )
+  if ( a -> fight_length.mean > 0 )
   {
     std::string profile_str;
     a -> create_profile( profile_str, SAVE_ALL, true );
@@ -492,7 +492,7 @@ static void print_html_stats ( FILE* file, player_t* a )
   std::string n = a -> name();
   util_t::format_text( n, true );
 
-  if ( a -> total_seconds > 0 )
+  if ( a -> fight_length.mean > 0 )
   {
     fprintf( file,
                      "\t\t\t\t\t\t<div class=\"player-section stats\">\n"
@@ -807,7 +807,7 @@ static void print_html_talents( FILE* file, player_t* p )
   std::string n = p -> name();
   util_t::format_text( n, true );
 
-  if ( p -> total_seconds > 0 )
+  if ( p -> fight_length.mean > 0 )
   {
     fprintf( file,
                      "\t\t\t\t\t\t<div class=\"player-section talents\">\n"
@@ -1107,63 +1107,63 @@ static void print_html_player_statistics( FILE* file, player_t* p )
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Average</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.mean );
+                   p -> dps.mean );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.std_dev );
+                   p -> dps.std_dev );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.min );
+                   p -> dps.min );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.max );
+                   p -> dps.max );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.max - p -> iteration_dps.min );
+                   p -> dps.max - p -> dps.min );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.mean ? ( ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2 ) * 100 / p -> iteration_dps.mean : 0 );
+                   p -> dps.mean ? ( ( p -> dps.max - p -> dps.min ) / 2 ) * 100 / p -> dps.mean : 0 );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">10th Percentile</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.percentile( 0.1 ) );
+                   p -> dps.percentile( 0.1 ) );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">90th Percentile</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.percentile( 0.9 ) );
+                   p -> dps.percentile( 0.9 ) );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 90th Percentile - 10th Percentile )</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.percentile( 0.9 ) - p -> iteration_dps.percentile( 0.1 ) );
+                   p -> dps.percentile( 0.9 ) - p -> dps.percentile( 0.1 ) );
 
 
   fprintf( file,
@@ -1177,21 +1177,21 @@ static void print_html_player_statistics( FILE* file, player_t* p )
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation of the Average DPS(e)</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> iteration_dps.std_dev / sqrt( ( float ) p -> sim -> iterations ));
+                   p -> dps.std_dev / sqrt( ( float ) p -> sim -> iterations ));
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> sim -> confidence * 100.0, p -> iteration_dps.mean - p -> dps_error, p -> iteration_dps.mean + p -> dps_error );
+                   p -> sim -> confidence * 100.0, p -> dps.mean - p -> dps_error, p -> dps.mean + p -> dps_error );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   p -> sim -> confidence * 100.0, p -> iteration_dps.mean ? 100 - p -> dps_error * 100 / p -> iteration_dps.mean : 0, p -> iteration_dps.mean ? 100 + p -> dps_error * 100 / p -> iteration_dps.mean : 0 );
+                   p -> sim -> confidence * 100.0, p -> dps.mean ? 100 - p -> dps_error * 100 / p -> dps.mean : 0, p -> dps.mean ? 100 + p -> dps_error * 100 / p -> dps.mean : 0 );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
@@ -1204,14 +1204,14 @@ static void print_html_player_statistics( FILE* file, player_t* p )
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% DPS Error</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( p -> iteration_dps.mean ? ( ( p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 0.01 * p -> iteration_dps.mean * 0.01 * p -> iteration_dps.mean) ) ) : 0 ) );
+                   ( int ) ( p -> dps.mean ? ( ( p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 0.01 * p -> dps.mean * 0.01 * p -> dps.mean) ) ) : 0 ) );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% DPS Error</td>\n"
                    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                    "\t\t\t\t\t\t\t\t</tr>\n",
-                   ( int ) ( p -> iteration_dps.mean ? ( ( p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 0.001 * p -> iteration_dps.mean * 0.001 * p -> iteration_dps.mean ) ) ) : 0 ) );
+                   ( int ) ( p -> dps.mean ? ( ( p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 0.001 * p -> dps.mean * 0.001 * p -> dps.mean ) ) ) : 0 ) );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t\t<tr>\n"
@@ -1375,7 +1375,7 @@ static void print_html_player_resources( FILE* file, player_t* p )
   }
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
-    if ( pet -> total_seconds <= 0 ) continue;
+    if ( pet -> fight_length.mean <= 0 ) continue;
     bool first = true;
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
     {
@@ -1812,9 +1812,14 @@ static void print_html_player_description( FILE* file, sim_t* sim, player_t* p, 
      fprintf( file, " open" );
    }
 
-   fprintf( file, "\">%s&nbsp;:&nbsp;%.0fdps</h2>\n",
+   if ( p -> dps.mean >= p -> hps.mean )
+     fprintf( file, "\">%s&nbsp;:&nbsp;%.0f dps</h2>\n",
                     n.c_str(),
-                    p -> iteration_dps.mean );
+                    p -> dps.mean );
+   else
+     fprintf( file, "\">%s&nbsp;:&nbsp;%.0f hps</h2>\n",
+                    n.c_str(),
+                    p -> hps.mean );
 
    fprintf( file,
                     "\t\t\t<div class=\"toggle-content" );
@@ -1868,11 +1873,22 @@ static void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_
   fprintf( file,
                    "\t\t\t\t\t<div class=\"toggle-content\">\n"
                    "\t\t\t\t\t\t<table class=\"sc\">\n"
-                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t<tr>\n" );
+  // Damage
+  if ( p -> dps.mean > 0 )
+  util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">DPS(e)</a></th>\n"
-                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">Error</a></th>\n"
-                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DPS Error</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n" );
+  // Heal
+  if ( p -> hps.mean > 0 )
+  util_t::fprintf( file,
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">HPS(e)</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">HPR</a></th>\n" );
+  util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th>Resource</th>\n"
@@ -1880,11 +1896,32 @@ static void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th>Active</th>\n"
                    "\t\t\t\t\t\t\t</tr>\n"
-                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t<tr>\n" );
+  // Damage
+  if ( p -> dps.mean > 0 )
+  util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
+                   p -> dps.mean,
+                   p -> dpse.mean,
+                   p -> dps_error,
+                   p -> dps.mean ? p -> dps_error * 100 / p -> dps.mean : 0,
+                   p -> dpr);
+  // Heal
+  if ( p -> hps.mean > 0 )
+  util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
+                   p -> hps.mean,
+                   p -> hpse.mean,
+                   p -> hps_error,
+                   p -> hps.mean ? p -> hps_error * 100 / p -> hps.mean : 0,
+                   p -> hpr);
+  util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%s</td>\n"
@@ -1893,17 +1930,12 @@ static void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_
                    "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n"
                    "\t\t\t\t\t\t</table>\n",
-                   p -> iteration_dps.mean,
-                   p -> iteration_dpse.mean,
-                   p -> dps_error,
-                   p -> iteration_dps.mean ? p -> dps_error * 100 / p -> iteration_dps.mean : 0,
-                   p -> dpr,
                    p -> rps_loss,
                    p -> rps_gain,
                    util_t::resource_type_string( p -> primary_resource() ),
-                   p -> total_seconds ? 100.0 * p -> total_waiting / p -> total_seconds : 0,
-                   p -> total_seconds ? 60.0 * p -> total_foreground_actions / p -> total_seconds : 0,
-                   sim -> total_seconds ? p -> total_seconds / sim -> total_seconds * 100.0 : 0 );
+                   p -> fight_length.mean ? 100.0 * p -> waiting_time.mean / p -> fight_length.mean : 0,
+                   p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0,
+                   sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0 );
 
   // Spec and gear
   if ( ! p -> is_pet() )
@@ -2002,7 +2034,7 @@ static void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, st
                      "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
                      "\t\t\t\t\t\t\t</tr>\n",
                      n.c_str(),
-                     p -> iteration_dps.mean );
+                     p -> dps.mean );
 
     int i = 0;
     for ( stats_t* s = p -> stats_list; s; s = s -> next )
@@ -2033,8 +2065,8 @@ static void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, st
                              "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
                              "\t\t\t\t\t\t\t</tr>\n",
                              pet -> name_str.c_str(),
-                             pet -> iteration_dps.mean,
-                             pet -> iteration_dpse.mean );
+                             pet -> dps.mean,
+                             pet -> dpse.mean );
           }
           print_html_action_damage( file, s, p, i );
           i++;
@@ -2167,7 +2199,7 @@ static void print_html_player_deaths( FILE* file, player_t* p )
 {
   // Death Analysis
 
-    if ( p -> death_count > 0 )
+    if ( p -> deaths.size() > 0 )
     {
       std::string distribution_deaths_str                = "";
       if ( ! p -> distribution_deaths_chart.empty() )
@@ -2190,38 +2222,38 @@ static void print_html_player_deaths( FILE* file, player_t* p )
                        "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
-                       p -> death_count );
+                       (int) p -> deaths.size() );
 
       fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count pct</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
-                       p -> death_count_pct );
+                       (double) p -> deaths.size() / p -> sim -> iterations );
       fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"left\">avg death time</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
-                       p -> avg_death_time );
+                       p -> deaths.mean );
       fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"left\">min death time</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
-                       p -> min_death_time );
+                       p -> deaths.min );
       fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"left\">max death time</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
-                       p -> max_death_time );
+                       p -> deaths.max );
       fprintf( file,
                        "\t\t\t\t\t\t\t\t<tr>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"left\">dmg taken</td>\n"
                        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                        "\t\t\t\t\t\t\t\t</tr>\n",
-                       p -> total_dmg_taken );
+                       p -> dmg_taken.mean );
 
       fprintf( file,
                        "\t\t\t\t\t\t\t\t</table>\n" );

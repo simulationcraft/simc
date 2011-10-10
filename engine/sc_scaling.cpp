@@ -581,13 +581,13 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
   if ( !q )
     q = p;
 
-  if ( scale_over == "deaths"         ) return -100 * q -> death_count_pct;
-  if ( scale_over == "min_death_time" ) return q -> min_death_time * 1000;
-  if ( scale_over == "avg_death_time" ) return q -> avg_death_time * 1000;
-  if ( scale_over == "dmg_taken"      ) return -1.0 * q -> total_dmg_taken;
-  if ( scale_over == "dtps"           ) return -1.0 * q -> iteration_dtps.mean;
-  if ( scale_over == "stddev"         ) return q -> iteration_dps.std_dev;
-  return p -> iteration_dps.mean;
+  if ( scale_over == "deaths"         ) return -100 * q -> deaths.size() / s -> iterations;
+  if ( scale_over == "min_death_time" ) return q -> deaths.min * 1000;
+  if ( scale_over == "avg_death_time" ) return q -> deaths.mean * 1000;
+  if ( scale_over == "dmg_taken"      ) return -1.0 * q -> dmg_taken.mean;
+  if ( scale_over == "dtps"           ) return -1.0 * q -> dtps.mean;
+  if ( scale_over == "stddev"         ) return q -> dps.std_dev;
+  return p -> dps.mean;
 }
 
 
@@ -596,7 +596,6 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
 double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
 {
   if ( scale_over == "raid_dps"       ) return 0;
-  if ( scale_over == "deaths"         ) return 0;
   if ( scale_over == "min_death_time" ) return 0;
   if ( scale_over == "avg_death_time" ) return 0;
   if ( scale_over == "dmg_taken"      ) return 0;
@@ -607,7 +606,8 @@ double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
     q = s -> find_player( scale_over_player );
   if ( !q )
     q = p;
-  if ( scale_over == "dtps" ) return q -> dtps_error;
+  if ( scale_over == "dtps"   ) return q -> dtps_error;
+  if ( scale_over == "deaths" ) return q -> deaths_error;
 
   return q -> dps_error;
 }

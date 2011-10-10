@@ -195,7 +195,7 @@ void reforge_plot_t::analyze_stats()
       if ( delta_sim )
       {
         player_t* delta_p = delta_sim -> find_player( p -> name() );
-        delta_result[ stat_mods[ i ].size() ] = delta_p -> iteration_dps.mean;
+        delta_result[ stat_mods[ i ].size() ] = delta_p -> dps.mean;
         p -> reforge_plot_data.push_back( delta_result );
       }
     }

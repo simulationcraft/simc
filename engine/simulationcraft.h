@@ -2550,6 +2550,55 @@ struct action_expr_t
   static action_expr_t* parse( action_t*, const std::string& expr_str );
 };
 
+
+// Statistical Sample Data
+
+struct sample_data_t : std::vector<double>
+{
+  // Analyzed Results
+  double sum;
+  double mean;
+  double min;
+  double max;
+  double variance;
+  double std_dev;
+  int    mean_point;
+  double median;
+  double mean_std_dev;
+  std::vector<int> distribution;
+  bool simple;
+  int count;
+
+  bool analyzed;
+  bool sorted;
+
+  sample_data_t( bool s=false);
+
+  void add( double );
+
+  void analyze(
+      bool calc_basics=true,
+      bool calc_variance=false,
+      bool s=false,
+      unsigned int create_dist=0);
+
+
+  double percentile( double );
+
+  void sort_data();
+
+  void merge( sample_data_t& );
+
+  virtual void push_back( double ){ assert( 0 ); }
+
+  virtual void clear(){ count = 0; std::vector<double>::clear(); }
+
+protected:
+  void create_distribution( unsigned int num_buckets=50 );
+
+
+};
+
 struct spell_data_expr_t
 {
   std::string name_str;
@@ -2907,18 +2956,19 @@ struct sim_t : private thread_t
   scaling_t* scaling;
   plot_t*    plot;
   reforge_plot_t* reforge_plot;
-  double     raid_dps, total_dmg, raid_hps, total_heal, total_seconds, elapsed_cpu_seconds, max_fight_length;
+  double     raid_dps, total_dmg, raid_hps, total_heal, elapsed_cpu_seconds;
+  sample_data_t simulation_length;
   int        report_progress;
   int        bloodlust_percent, bloodlust_time;
   std::string reference_player_str;
-  std::vector<player_t*> players_by_rank;
+  std::vector<player_t*> players_by_dps;
+  std::vector<player_t*> players_by_hps;
   std::vector<player_t*> players_by_name;
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
-  std::vector<std::string> dps_charts, gear_charts, dpet_charts;
+  std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
   std::string downtime_chart;
   std::vector<double> iteration_timeline;
-  std::vector<int> distribution_timeline;
   std::vector<int> divisor_timeline;
   std::string timeline_chart;
   std::string output_file_str, html_file_str;
@@ -3389,43 +3439,6 @@ public:
   const spell_id_t* set( set_type s ) const;
 };
 
-// Statistical Sample Data
-
-struct sample_data_t : std::vector<double>
-{
-  // Analyzed Results
-  double sum;
-  double mean;
-  double min;
-  double max;
-  double variance;
-  double std_dev;
-  int    mean_point;
-  double median;
-  double mean_std_dev;
-
-  // Analyze Options
-  bool calculate_basics;
-  bool calculate_variance;
-  bool sort;
-
-  bool analyzed;
-  bool sorted;
-
-  sample_data_t();
-
-  void analyze(
-      bool calc_basics=true,
-      bool calc_variance=false,
-      bool s=false );
-
-  double percentile( double );
-
-  void sort_data();
-
-  void merge( sample_data_t& );
-};
-
 // Player ===================================================================
 
 struct player_t : public noncopyable
@@ -3623,17 +3636,15 @@ struct player_t : public noncopyable
   // Reporting
   int       quiet;
   action_t* last_foreground_action;
-  double    current_time, iteration_seconds, total_seconds, max_fight_length, arise_time;
-  double    total_waiting, total_foreground_actions;
-  double    iteration_dmg, total_dmg, iteration_heal, total_heal;
+  double    current_time, iteration_fight_length,arise_time;
+  sample_data_t fight_length, waiting_time, executed_foreground_actions;
+  double    iteration_waiting_time, iteration_executed_foreground_actions;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
-  double    dps_error, dps_convergence;
-  double    dpr, rps_gain, rps_loss;
-  int       death_count;
-  std::vector<double> death_time;
-  double    avg_death_time, death_count_pct, min_death_time, max_death_time;
-  double    dmg_taken, total_dmg_taken, dtps_error;
+  double    rps_gain, rps_loss;
+  sample_data_t deaths;
+  double    deaths_error;
+
   buff_t*   buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;
@@ -3643,14 +3654,32 @@ struct player_t : public noncopyable
   std::vector<double> dps_plot_data[ STAT_MAX ];
   std::vector<std::vector<double> > reforge_plot_data;
   std::vector<std::vector<double> > timeline_resource;
+
+  // Damage
+  double iteration_dmg, iteration_dmg_taken;
+  double dps_error, dpr, dtps_error;
+  sample_data_t dmg;
+  sample_data_t compound_dmg;
+  sample_data_t dps;
+  sample_data_t dpse;
+  sample_data_t dtps;
+  sample_data_t dmg_taken;
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
-  sample_data_t iteration_dps;
-  sample_data_t iteration_dtps;
-  sample_data_t iteration_dpse;
-  std::vector<int> distribution_dps;
-  std::vector<int> distribution_deaths;
   std::vector<double> dps_convergence_error;
+  double    dps_convergence;
+
+  // Heal
+  double iteration_heal,iteration_heal_taken;
+  double hps_error,hpr;
+  sample_data_t heal;
+  sample_data_t compound_heal;
+  sample_data_t hps;
+  sample_data_t hpse;
+  sample_data_t htps;
+  sample_data_t heal_taken;
+
+
   std::string action_sequence;
   std::string action_dpet_chart, action_dmg_chart, time_spent_chart, gains_chart;
   std::vector<std::string> timeline_resource_chart;
@@ -4877,7 +4906,7 @@ struct uptime_t : public noncopyable
 
   void reset() { last_start = -1.0; }
   void analyze()
-  { uptime = uptime_sum / sim -> iterations / sim -> total_seconds; }
+  { uptime = uptime_sum / sim -> iterations / sim -> simulation_length.mean; }
   void merge( const uptime_t* other )
   { uptime_sum += other -> uptime_sum; }
 };
@@ -4958,12 +4987,11 @@ struct report_t
 
 struct chart_t
 {
-  static int raid_dps ( std::vector<std::string>& images, sim_t* );
+  static int raid_aps ( std::vector<std::string>& images, sim_t*, std::vector<player_t*>, bool dps );
   static int raid_dpet( std::vector<std::string>& images, sim_t* );
   static int raid_gear( std::vector<std::string>& images, sim_t* );
 
   static const char* raid_downtime    ( std::string& s, sim_t* );
-  static const char* raid_timeline    ( std::string& s, sim_t* );
   static const char* action_dpet      ( std::string& s, player_t* );
   static const char* action_dmg       ( std::string& s, player_t* );
   static const char* time_spent       ( std::string& s, player_t* );
@@ -4973,7 +5001,7 @@ struct chart_t
   static const char* scale_factors    ( std::string& s, player_t* );
   static const char* scaling_dps      ( std::string& s, player_t* );
   static const char* reforge_dps      ( std::string& s, player_t* );
-  static const char* distribution ( std::string& s, player_t*, const std::vector<int>&, const char*, double, double, double );
+  static const char* distribution ( std::string& s, sim_t*, const std::vector<int>&, const char*, double, double, double );
 
   static const char* gear_weights_lootrank  ( std::string& s, player_t* );
   static const char* gear_weights_wowhead   ( std::string& s, player_t* );
@@ -5263,7 +5291,7 @@ struct wait_action_base_t : public action_t
   { trigger_gcd = 0; }
 
   virtual void execute()
-  { player -> total_waiting += time_to_execute; }
+  { player -> iteration_waiting_time += time_to_execute; }
 };
 
 // Wait For Cooldown Action =================================================

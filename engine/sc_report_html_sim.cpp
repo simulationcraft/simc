@@ -179,7 +179,7 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n" );
 
   fprintf( file,
-                   "\t\t\t\t\t<h2 class=\"toggle\">Simulation Information</h2>\n"
+                   "\t\t\t\t\t<h2 class=\"toggle\">Simulation & Raid Information</h2>\n"
                    "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
 
   fprintf( file,
@@ -232,7 +232,7 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    "\t\t\t\t\t\t\t\t<th>Sim Seconds:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
-                   sim -> iterations * sim -> total_seconds );
+                   sim -> iterations * sim -> simulation_length.mean );
   fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                    "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
@@ -244,7 +244,7 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                    "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
                    "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
                    "\t\t\t\t\t\t\t</tr>\n",
-                   sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
+                   sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu_seconds );
 
   fprintf( file,
                    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
@@ -289,6 +289,10 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
   fprintf( file,
                    "\t\t\t\t\t\t</table>\n" );
 
+  // Left side charts: dps, gear, timeline, raid events
+
+  fprintf( file,
+                    "\t\t\t\t<div class=\"charts charts-left\">\n" );
   // Timeline Distribution Chart
   if ( sim -> iterations > 1 && ! sim -> timeline_chart.empty() )
   {
@@ -296,7 +300,14 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                      "\t\t\t\t\t<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
                      sim -> timeline_chart.c_str() );
   }
-
+  // Gear Charts
+  int count = ( int ) sim -> gear_charts.size();
+  for ( int i=0; i < count; i++ )
+  {
+    fprintf( file,
+                     "\t\t\t\t\t<img src=\"%s\" alt=\"Gear Chart\" />\n",
+                     sim -> gear_charts[ i ].c_str() );
+  }
   // Raid Downtime Chart
   if ( ! sim -> downtime_chart.empty() )
   {
@@ -304,6 +315,26 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
                      "\t\t\t\t\t<img src=\"%s\" alt=\"Player Downtime Chart\" />\n",
                      sim -> downtime_chart.c_str() );
   }
+
+  fprintf( file,
+                   "\t\t\t\t</div>\n" );
+
+  // Right side charts: dpet
+  fprintf( file,
+                   "\t\t\t\t<div class=\"charts\">\n" );
+  count = ( int ) sim -> dpet_charts.size();
+    for ( int i=0; i < count; i++ )
+    {
+      fprintf( file,
+                       "\t\t\t\t\t<img src=\"%s\" alt=\"DPET Chart\" />\n",
+                       sim -> dpet_charts[ i ].c_str() );
+    }
+
+
+
+  fprintf( file,
+                   "\t\t\t\t</div>\n" );
+
 
   // closure
   fprintf( file,
@@ -344,7 +375,7 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
 
   assert( sim ->  dps_charts.size() == sim -> gear_charts.size() );
 
-  // Left side charts: dps, gear, timeline, raid events
+  // Left side charts: dps, timeline, raid events
   fprintf( file,
                    "\t\t\t\t<div class=\"charts charts-left\">\n" );
   int count = ( int ) sim -> dps_charts.size();
@@ -354,13 +385,7 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
                      "\t\t\t\t\t<a href=\"#help-dps\" class=\"help\"><img src=\"%s\" alt=\"DPS Chart\" /></a>\n",
                      sim -> dps_charts[ i ].c_str() );
   }
-  count = ( int ) sim -> dps_charts.size();
-  for ( int i=0; i < count; i++ )
-  {
-    fprintf( file,
-                     "\t\t\t\t\t<img src=\"%s\" alt=\"Gear Chart\" />\n",
-                     sim -> gear_charts[ i ].c_str() );
-  }
+
 
   if ( ! sim -> raid_events_str.empty() )
   {
@@ -397,14 +422,14 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
   // Right side charts: dpet
   fprintf( file,
                    "\t\t\t\t<div class=\"charts\">\n" );
-  count = ( int ) sim -> dpet_charts.size();
+
+  count = ( int ) sim -> hps_charts.size();
   for ( int i=0; i < count; i++ )
   {
     fprintf( file,
-                     "\t\t\t\t\t<img src=\"%s\" alt=\"DPET Chart\" />\n",
-                     sim -> dpet_charts[ i ].c_str() );
+                     "\t\t\t\t\t<a href=\"#help-dps\" class=\"help\"><img src=\"%s\" alt=\"HPS Chart\" /></a>\n",
+                     sim -> hps_charts[ i ].c_str() );
   }
-
   // RNG chart
   if ( sim -> report_rng )
   {
@@ -416,8 +441,8 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
       fprintf( file,
                        "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
                        p -> name(),
-                       ( ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2 ),
-                       p -> iteration_dps.mean ? ( ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2 ) * 100 / p -> iteration_dps.mean : 0 );
+                       ( ( p -> dps.max - p -> dps.min ) / 2 ),
+                       p -> dps.mean ? ( ( p -> dps.max - p -> dps.min ) / 2 ) * 100 / p -> dps.mean : 0 );
     }
     fprintf( file,
                      "\t\t\t\t\t</ul>\n" );
@@ -1256,7 +1281,7 @@ void report_t::print_html( sim_t* sim )
   int num_players = ( int ) sim -> players_by_name.size();
 
   if ( num_players == 0 ) return;
-  if ( sim -> total_seconds == 0 ) return;
+  if ( sim -> simulation_length.mean == 0 ) return;
   if ( sim -> html_file_str.empty() ) return;
 
   FILE* file = fopen( sim -> html_file_str.c_str(), "w" );

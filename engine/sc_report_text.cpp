@@ -112,7 +112,7 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 
   if ( s -> total_tick_time > 0 )
   {
-    util_t::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time / s -> player -> total_seconds  );
+    util_t::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time / s -> player -> fight_length.mean  );
   }
 
   util_t::fprintf( file, "\n" );
@@ -166,7 +166,7 @@ static void print_text_actions( FILE* file, player_t* p )
       {
         if ( first )
         {
-          util_t::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> iteration_dps.mean );
+          util_t::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> dps.mean );
           first = false;
         }
         print_text_action( file, s, max_length );
@@ -437,7 +437,7 @@ static void print_text_pet_gains( FILE* file, player_t* p )
 {
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
-    if ( pet -> total_dmg <= 0 ) continue;
+    if ( pet -> dmg.mean <= 0 ) continue;
 
     int max_length = 0;
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
@@ -523,10 +523,10 @@ static void print_text_waiting( FILE* file, sim_t* sim )
     if ( p -> quiet )
       continue;
 
-    if ( p -> total_waiting )
+    if ( p -> waiting_time.mean )
     {
       nobody_waits = false;
-      util_t::fprintf( file, "    %4.1f%% : %s\n", 100.0 * p -> total_waiting / p -> total_seconds,  p -> name() );
+      util_t::fprintf( file, "    %4.1f%% : %s\n", 100.0 * p -> waiting_time.mean / p -> fight_length.mean,  p -> name() );
     }
   }
 
@@ -548,9 +548,9 @@ static void print_text_performance( FILE* file, sim_t* sim )
                    ( long ) sim -> total_events_processed,
                    ( long ) sim -> max_events_remaining,
                    sim -> target -> resource_base[ RESOURCE_HEALTH ],
-                   sim -> iterations * sim -> total_seconds,
+                   sim -> iterations * sim -> simulation_length.mean,
                    sim -> elapsed_cpu_seconds,
-                   sim -> iterations * sim -> total_seconds / sim -> elapsed_cpu_seconds );
+                   sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu_seconds );
 
   sim -> rng -> report( file );
 }
@@ -705,18 +705,18 @@ static void print_text_reference_dps( FILE* file, sim_t* sim )
     return;
   }
 
-  int num_players = ( int ) sim -> players_by_rank.size();
+  int num_players = ( int ) sim -> players_by_dps.size();
   int max_length=0;
 
   for ( int i=0; i < num_players; i++ )
   {
-    player_t* p = sim -> players_by_rank[ i ];
+    player_t* p = sim -> players_by_dps[ i ];
     int length = ( int ) strlen( p -> name() );
     if ( length > max_length ) max_length = length;
   }
 
   util_t::fprintf( file, "  %-*s", max_length, ref_p -> name() );
-  util_t::fprintf( file, "  %.0f", ref_p -> iteration_dps.mean );
+  util_t::fprintf( file, "  %.0f", ref_p -> dps.mean );
 
   if ( sim -> scaling -> has_scale_factors() )
   {
@@ -733,15 +733,15 @@ static void print_text_reference_dps( FILE* file, sim_t* sim )
 
   for ( int i=0; i < num_players; i++ )
   {
-    player_t* p = sim -> players_by_rank[ i ];
+    player_t* p = sim -> players_by_dps[ i ];
 
     if ( p != ref_p )
     {
       util_t::fprintf( file, "  %-*s", max_length, p -> name() );
 
-      bool over = ( p -> iteration_dps.mean > ref_p -> iteration_dps.mean );
+      bool over = ( p -> dps.mean > ref_p -> dps.mean );
 
-      double ratio = 100.0 * fabs( p -> iteration_dps.mean - ref_p -> iteration_dps.mean ) / ref_p -> iteration_dps.mean;
+      double ratio = 100.0 * fabs( p -> dps.mean - ref_p -> dps.mean ) / ref_p -> dps.mean;
 
       util_t::fprintf( file, "  %c%.0f%%", ( over ? '+' : '-' ), ratio );
 
@@ -815,16 +815,16 @@ static void print_text_player( FILE* file, player_t* p )
                    util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
   util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%  Convergence=%.1f%%",
-                   p -> iteration_dps.mean,
-                   p -> dps_error, p -> iteration_dps.mean ? p -> dps_error * 100 / p -> iteration_dps.mean : 0,
-                   ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2.0 , p -> iteration_dps.mean ? ( ( p -> iteration_dps.max - p -> iteration_dps.min ) / 2 ) * 100 / p -> iteration_dps.mean : 0,
+                   p -> dps.mean,
+                   p -> dps_error, p -> dps.mean ? p -> dps_error * 100 / p -> dps.mean : 0,
+                   ( p -> dps.max - p -> dps.min ) / 2.0 , p -> dps.mean ? ( ( p -> dps.max - p -> dps.min ) / 2 ) * 100 / p -> dps.mean : 0,
                    p -> dps_convergence * 100 );
 
   if ( p -> rps_loss > 0 )
   {
     util_t::fprintf( file, "  DPR=%.1f  RPS-Out=%.1f RPS-In=%.1f  Resource=(%s) Waiting=%.1f ApM=%.1f",
                      p -> dpr, p -> rps_loss, p -> rps_gain,
-                     util_t::resource_type_string( p -> primary_resource() ), 100.0 * p -> total_waiting / p -> total_seconds, 60.0 * p -> total_foreground_actions / p -> total_seconds  );
+                     util_t::resource_type_string( p -> primary_resource() ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean, 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean  );
   }
 
   util_t::fprintf( file, "\n" );
@@ -854,7 +854,7 @@ static void print_text_player( FILE* file, player_t* p )
 
 void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 {
-  if ( sim -> total_seconds == 0 ) return;
+  if ( sim -> simulation_length.mean == 0 ) return;
 
 #if SC_BETA
   util_t::fprintf( file, "\n\n*** Beta Release ***\n" );
@@ -881,7 +881,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     util_t::fprintf( file, "\n" );
   }
 
-  int num_players = ( int ) sim -> players_by_rank.size();
+  int num_players = ( int ) sim -> players_by_dps.size();
 
   if ( detail )
   {
@@ -889,8 +889,8 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     util_t::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps );
     for ( int i=0; i < num_players; i++ )
     {
-      player_t* p = sim -> players_by_rank[ i ];
-      util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> iteration_dps.mean, 100 * p -> total_dmg / sim -> total_dmg, p -> name() );
+      player_t* p = sim -> players_by_dps[ i ];
+      util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean, 100 * p -> dmg.mean / sim -> total_dmg, p -> name() );
     }
   }
 

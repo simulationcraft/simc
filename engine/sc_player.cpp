@@ -441,15 +441,24 @@ player_t::player_t( sim_t*             s,
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
-  current_time( 0 ), iteration_seconds( 0 ), total_seconds( 0 ), max_fight_length( 0 ), arise_time( 0 ),
-  total_waiting( 0 ), total_foreground_actions( 0 ),
-  iteration_dmg( 0 ), total_dmg( 0 ), iteration_heal( 0 ), total_heal( 0 ),
-  dps_error( 0 ), dps_convergence( 0 ),
-  dpr( 0 ), rps_gain( 0 ), rps_loss( 0 ),
-  death_count( 0 ), avg_death_time( 0.0 ), death_count_pct( 0.0 ), min_death_time( 1.0E+50 ), max_death_time( 0 ),
-  dmg_taken( 0.0 ), total_dmg_taken( 0.0 ), dtps_error( 0.0 ),
+  current_time( 0 ), iteration_fight_length( 0 ), arise_time( 0 ),
+  fight_length(), waiting_time( true ), executed_foreground_actions( true ),
+  iteration_waiting_time( 0 ), iteration_executed_foreground_actions( 0 ),
+  rps_gain( 0 ), rps_loss( 0 ),
+  deaths(), deaths_error( 0 ),
   buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ),
-  iteration_dps(),iteration_dtps(), iteration_dpse(),
+
+    // Damage
+    iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
+    dps_error( 0 ), dpr( 0 ), dtps_error( 0 ),
+    dmg( true ), compound_dmg( true ), dps(), dpse(), dtps(), dmg_taken( true ),
+    dps_convergence( 0 ),
+
+    // Heal
+    iteration_heal( 0 ),iteration_heal_taken( 0 ),
+    hps_error( 0 ), hpr( 0 ),
+    heal( true ), compound_heal( true ), hps(), hpse(), htps(), heal_taken( true ),
+
   // Gear
   sets( 0 ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
@@ -1694,9 +1703,17 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  iteration_dps.reserve( sim -> iterations );
-  iteration_dtps.reserve( sim -> iterations );
-  iteration_dpse.reserve( sim -> iterations );
+  dmg.reserve         ( sim -> iterations );
+  compound_dmg.reserve( sim -> iterations );
+  dps.reserve         ( sim -> iterations );
+  dpse.reserve        ( sim -> iterations );
+  dtps.reserve        ( sim -> iterations );
+
+  heal.reserve         ( sim -> iterations );
+  compound_heal.reserve( sim -> iterations );
+  hps.reserve         ( sim -> iterations );
+  hpse.reserve        ( sim -> iterations );
+  htps.reserve        ( sim -> iterations );
 }
 
 // player_t::init_values ====================================================
@@ -2683,7 +2700,13 @@ void player_t::combat_begin()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
 
-  iteration_seconds = 0;
+  iteration_fight_length = 0;
+  iteration_waiting_time = 0;
+  iteration_executed_foreground_actions = 0;
+  iteration_dmg = 0;
+  iteration_heal = 0;
+  iteration_dmg_taken = 0;
+  iteration_heal_taken = 0;
 
   if ( ! is_pet() && ! is_add() )
   {
@@ -2758,27 +2781,43 @@ void player_t::combat_end()
   else if ( is_pet() )
     cast_pet() -> dismiss();
 
-  total_seconds += iteration_seconds;
+  fight_length.add( iteration_fight_length );
 
-  if ( iteration_seconds > max_fight_length )
-    max_fight_length = iteration_seconds;
+  executed_foreground_actions.add( iteration_executed_foreground_actions );
+  waiting_time.add( iteration_waiting_time );
 
+  // DMG
+  dmg.add( iteration_dmg );
   for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
-    iteration_dmg  += pet -> iteration_dmg;
+    iteration_dmg += pet -> iteration_dmg;
+  }
+  compound_dmg.add( iteration_dmg );
+
+  dps.add( iteration_fight_length ? iteration_dmg / iteration_fight_length : 0 );
+  dpse.add( sim -> current_time ? iteration_dmg / sim -> current_time : 0 );
+
+  // Heal
+  heal.add( iteration_heal );
+  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
+  {
     iteration_heal += pet -> iteration_heal;
   }
-  bool is_hps = ( primary_role() == ROLE_HEAL );
-  iteration_dps.push_back( iteration_seconds ? ( ( is_hps ? iteration_heal : iteration_dmg ) / iteration_seconds ): 0 );
-  iteration_dpse.push_back( sim -> current_time ? ( ( is_hps ? iteration_heal : iteration_dmg ) / sim -> current_time ): 0 );
-  iteration_dtps.push_back( iteration_seconds ? dmg_taken / iteration_seconds : 0 );
+  compound_heal.add( iteration_heal );
 
-  total_dmg += iteration_dmg;
-  total_heal += iteration_heal;
+  hps.add( iteration_fight_length ? iteration_heal / iteration_fight_length : 0 );
+  hpse.add( sim -> current_time ? iteration_heal / current_time : 0 );
+
+
+  dmg_taken.add( iteration_dmg_taken );
+  dtps.add( iteration_fight_length ? iteration_dmg_taken / iteration_fight_length : 0 );
+
+  heal_taken.add( iteration_heal_taken );
+  htps.add( iteration_fight_length ? iteration_heal_taken / iteration_fight_length : 0 );
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
-    b -> uptime_pct += 100.0 * b -> uptime_sum / iteration_seconds;
+    b -> uptime_pct += iteration_fight_length ? 100.0 * b -> uptime_sum / iteration_fight_length : 0;
   }
 }
 
@@ -2786,19 +2825,25 @@ void player_t::combat_end()
 
 void player_t::merge( player_t& other )
 {
-  total_dmg += other.total_dmg;
-  total_heal += other.total_heal;
-  total_seconds += other.total_seconds;
-  total_waiting += other.total_waiting;
-  total_foreground_actions += other.total_foreground_actions;
-  death_count += other.death_count;
+  fight_length.merge( other.fight_length );
+  waiting_time.merge( other.waiting_time );
+  executed_foreground_actions.merge( other.executed_foreground_actions );
 
-  iteration_dps.merge( other.iteration_dps );
-  iteration_dtps.merge( other.iteration_dtps );
-  iteration_dpse.merge( other.iteration_dpse );
+  dmg.merge( other.dmg );
+  compound_dmg.merge( other.compound_dmg );
+  dps.merge( other.dps );
+  dtps.merge( other.dtps );
+  dpse.merge( other.dpse );
+  dmg_taken.merge( other.dmg_taken );
 
-  death_time.insert( death_time.end(),
-                     other.death_time.begin(), other.death_time.end() );
+  heal.merge( other.heal );
+  compound_heal.merge( other.compound_heal );
+  hps.merge( other.hps );
+  htps.merge( other.htps );
+  hpse.merge( other.hpse );
+  heal_taken.merge( other.heal_taken );
+
+  deaths.merge( other.deaths );
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -2866,7 +2911,7 @@ void player_t::reset()
   sleeping = 1;
   events = 0;
 
-  dmg_taken = 0;
+  iteration_dmg_taken = 0;
 
   stats = initial_stats;
 
@@ -2937,7 +2982,6 @@ void player_t::reset()
   channeling = 0;
   readying = 0;
   in_combat = false;
-  iteration_dmg = 0;
   iteration_heal = 0;
 
   cast_delay_reaction = 0;
@@ -3013,7 +3057,7 @@ void player_t::schedule_ready( double delta_time,
 
   if ( waiting )
   {
-    total_waiting += delta_time;
+    iteration_waiting_time += delta_time;
   }
   else
   {
@@ -3129,7 +3173,7 @@ void player_t::demise()
   readying = 0;
 
   assert( arise_time >= 0 );
-  iteration_seconds += ( sim -> current_time - arise_time );
+  iteration_fight_length += ( sim -> current_time - arise_time );
   arise_time = -1;
 
   for( buff_t* b = buff_list; b; b = b -> next )
@@ -3262,7 +3306,7 @@ action_t* player_t::execute_action()
   if ( action )
   {
     action -> schedule_execute();
-    total_foreground_actions++;
+    iteration_executed_foreground_actions++;
     if ( action -> marker ) action_sequence += action -> marker;
     if ( ! action -> label_str.empty() )
       action_map[ action -> label_str ] += 1;
@@ -3595,7 +3639,7 @@ double player_t::time_to_die() SC_CONST
   // expressions
   if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= 1.0 )
   {
-    return sim -> current_time * resource_current[ RESOURCE_HEALTH ] / dmg_taken;
+    return sim -> current_time * resource_current[ RESOURCE_HEALTH ] / iteration_dmg_taken;
   }
   else
   {
@@ -3863,8 +3907,7 @@ double player_t::assess_damage( double            amount,
   }
   mitigated_amount -= absorbed_amount;
 
-  dmg_taken += mitigated_amount;
-  total_dmg_taken += mitigated_amount;
+  iteration_dmg_taken += mitigated_amount;
 
   double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount );
 
@@ -3872,8 +3915,7 @@ double player_t::assess_damage( double            amount,
   {
     if ( !sleeping )
     {
-      death_count++;
-      death_time.push_back( current_time );
+      deaths.add( current_time );
     }
     if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
     demise();
@@ -3947,6 +3989,8 @@ player_t::heal_info_t player_t::assess_heal(  double            amount,
 
   heal.amount = resource_gain( RESOURCE_HEALTH, amount, 0, action );
   heal.actual = amount;
+
+  iteration_heal_taken += amount;
 
   return heal;
 

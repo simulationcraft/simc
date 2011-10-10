@@ -153,11 +153,11 @@ void plot_t::analyze_stats()
         {
           player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-          p -> dps_plot_data[ i ].push_back( delta_p -> iteration_dps.mean );
+          p -> dps_plot_data[ i ].push_back( delta_p -> dps.mean );
         }
         else
         {
-          p -> dps_plot_data[ i ].push_back( p -> iteration_dps.mean );
+          p -> dps_plot_data[ i ].push_back( p -> dps.mean );
         }
       }
 

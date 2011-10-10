@@ -510,7 +510,7 @@ void enemy_t::recalculate_health()
 
   if ( initial_health == 0 ) // first iteration
   {
-    initial_health = dmg_taken * ( sim -> expected_time / sim -> current_time );
+    initial_health = iteration_dmg_taken * ( sim -> expected_time / sim -> current_time );
   }
   else
   {
@@ -524,7 +524,7 @@ void enemy_t::recalculate_health()
     initial_health *= factor;
   }
 
-  if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, dmg_taken );
+  if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, iteration_dmg_taken );
 }
 
 // enemy_t::create_expression ===============================================
