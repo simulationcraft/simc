@@ -7,6 +7,197 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data, const std::string& name )
+{
+  // Print Statistics of a Sample Data Container
+
+  assert( data.analyzed );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t<table class=\"sc\">\n"
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<th class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"sample=%s\">%s</a></th>\n"
+             "\t\t\t\t\t\t\t\t\t<th></th>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n", name.c_str(), name.c_str() );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
+             "\t\t\t\t\t\t\t\t<td colspan=\"2\" class=\"filler\">\n" );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t<table class=\"details\">\n" );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Sample Data</b></td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n" );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.count );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.mean );
+
+    if ( !data.simple )
+    {
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.min );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.max );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.max - data.min );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.mean ? ( (data.max - data.min ) / 2 ) * 100 / data.mean : 0 );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.std_dev );
+
+    if ( data.sorted )
+    {
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">10th Percentile</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.percentile( 0.1 ) );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">90th Percentile</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.percentile( 0.9 ) );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 90th Percentile - 10th Percentile )</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.percentile( 0.9 ) - data.percentile( 0.1 ) );
+    }
+
+    if ( data.mean_std_dev == std::numeric_limits<double>::quiet_NaN() )
+    {
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n" );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.mean_std_dev );
+
+    double mean_error = data.mean_std_dev * p -> sim -> confidence_estimator;
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             p -> sim -> confidence * 100.0,
+             data.mean - mean_error,
+             data.mean + mean_error );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             p -> sim -> confidence * 100.0,
+             data.mean ? 100 - mean_error * 100 / data.mean : 0,
+             data.mean ? 100 + mean_error * 100 / data.mean : 0 );
+
+
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n" );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.count ) / ( 0.01 * data.mean * 0.01 * data.mean ) ) ) : 0 ) );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.count ) / ( 0.001 * data.mean * 0.001 * p -> dps.mean ) ) ) : 0 ) );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.count ) / ( 30 * 30 ) ) );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.count ) / ( 15 * 15 ) ) );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.count ) / ( 3 * 3 ) ) );
+    }
+
+    }
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t</table>\n" );
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t</td>\n"
+             "\t\t\t\t\t\t\t</tr>\n" );
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t</table>\n" );
+
+}
 
 // print_html_action_damage =================================================
 
@@ -1088,155 +1279,11 @@ static void print_html_player_statistics( FILE* file, player_t* p )
   fprintf( file,
            "\t\t\t\t\t<div class=\"player-section gains\">\n"
            "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
-           "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-           "\t\t\t\t\t\t\t<table class=\"sc\">\n"
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<th>DPS</th>\n"
-           "\t\t\t\t\t\t\t\t\t<th></th>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n" );
+           "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
 
+  print_html_sample_data( file, p, p -> dps, "DPS" );
 
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Sample Data</b></td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n" );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Average</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.mean );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.std_dev );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.min );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.max );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.max - p -> dps.min );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.mean ? ( ( p -> dps.max - p -> dps.min ) / 2 ) * 100 / p -> dps.mean : 0 );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">10th Percentile</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.percentile( 0.1 ) );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">90th Percentile</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.percentile( 0.9 ) );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 90th Percentile - 10th Percentile )</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.percentile( 0.9 ) - p -> dps.percentile( 0.1 ) );
-
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Population</b></td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n" );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation of the Average DPS(e)</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> dps.std_dev / sqrt( ( float ) p -> sim -> iterations ) );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> sim -> confidence * 100.0, p -> dps.mean - p -> dps_error, p -> dps.mean + p -> dps_error );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           p -> sim -> confidence * 100.0, p -> dps.mean ? 100 - p -> dps_error * 100 / p -> dps.mean : 0, p -> dps.mean ? 100 + p -> dps_error * 100 / p -> dps.mean : 0 );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n" );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% DPS Error</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           ( int ) ( p -> dps.mean ? ( ( p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 0.01 * p -> dps.mean * 0.01 * p -> dps.mean ) ) ) : 0 ) );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% DPS Error</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           ( int ) ( p -> dps.mean ? ( ( p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 0.001 * p -> dps.mean * 0.001 * p -> dps.mean ) ) ) : 0 ) );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           ( int ) ( 2.0 * p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 30 * 30 ) ) );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           ( int ) ( 2.0 * p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 15 * 15 ) ) );
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           ( int ) (  2.0 * p -> dps_error * p -> dps_error * ( ( float ) p -> sim -> iterations ) / ( 3 * 3 ) ) );
-
-
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t</table>\n" );
+  print_html_sample_data( file, p, p -> hps, "HPS" );
 
   std::string timeline_dps_error_str           = "";
   std::string dps_error_str                    = "";
@@ -2198,7 +2245,7 @@ static void print_html_player_deaths( FILE* file, player_t* p )
 {
   // Death Analysis
 
-  if ( p -> deaths.size() > 0 )
+  if ( p -> deaths.count > 0 )
   {
     std::string distribution_deaths_str                = "";
     if ( ! p -> distribution_deaths_chart.empty() )
@@ -2221,14 +2268,14 @@ static void print_html_player_deaths( FILE* file, player_t* p )
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             ( int ) p -> deaths.size() );
+             ( int ) p -> deaths.count );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count pct</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             ( double ) p -> deaths.size() / p -> sim -> iterations );
+             ( double ) p -> deaths.count / p -> sim -> iterations );
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">avg death time</td>\n"

@@ -305,8 +305,8 @@ void scaling_t::analyze_stats()
       double delta_score = scale_over_function( delta_sim, delta_p );
       double   ref_score = scale_over_function(   ref_sim,   ref_p );
 
-      double delta_error = scale_over_function_error( delta_sim, delta_p );
-      double   ref_error = scale_over_function_error(   ref_sim,   ref_p );
+      double delta_error = scale_over_function_error( delta_sim, delta_p ) * delta_sim -> confidence_estimator;
+      double   ref_error = scale_over_function_error(   ref_sim,   ref_p ) * ref_sim -> confidence_estimator;
 
       p -> scaling_delta_dps.set_stat( i, delta_score );
 
@@ -581,12 +581,16 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
   if ( !q )
     q = p;
 
-  if ( scale_over == "deaths"         ) return -100 * q -> deaths.size() / s -> iterations;
+  if ( scale_over == "deaths"         ) return -100 * q -> deaths.count / s -> iterations;
   if ( scale_over == "min_death_time" ) return q -> deaths.min * 1000;
   if ( scale_over == "avg_death_time" ) return q -> deaths.mean * 1000;
   if ( scale_over == "dmg_taken"      ) return -1.0 * q -> dmg_taken.mean;
   if ( scale_over == "dtps"           ) return -1.0 * q -> dtps.mean;
   if ( scale_over == "stddev"         ) return q -> dps.std_dev;
+
+  if ( ( q -> primary_role() == ROLE_HEAL || scale_over =="hps" ) && scale_over != "dps" )
+    return p -> hps.mean;
+
   return p -> dps.mean;
 }
 
@@ -598,7 +602,6 @@ double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
   if ( scale_over == "raid_dps"       ) return 0;
   if ( scale_over == "min_death_time" ) return 0;
   if ( scale_over == "avg_death_time" ) return 0;
-  if ( scale_over == "dmg_taken"      ) return 0;
   if ( scale_over == "stddev"         ) return 0;
 
   player_t* q = 0;
@@ -606,9 +609,13 @@ double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
     q = s -> find_player( scale_over_player );
   if ( !q )
     q = p;
-  if ( scale_over == "dtps"   ) return q -> dtps_error;
-  if ( scale_over == "deaths" ) return q -> deaths_error;
+  if ( scale_over == "dtps"   ) return q -> dtps.mean_std_dev;
+  if ( scale_over == "deaths" ) return q -> deaths.mean_std_dev;
+  if ( scale_over == "dmg_taken"      ) return q -> dmg_taken.mean_std_dev;
 
-  return q -> dps_error;
+  if ( ( q -> primary_role() == ROLE_HEAL || scale_over =="hps" ) && scale_over != "dps" )
+    return p -> hps.mean_std_dev;
+
+  return q -> dps.mean_std_dev;
 }
 

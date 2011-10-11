@@ -28,7 +28,7 @@ void sample_data_t::add( double x )
     sum += x;
   }
   else
-    std::vector<double>::push_back( x );
+    data.push_back( x );
 }
 
 
@@ -51,10 +51,10 @@ void sample_data_t::analyze(
     return;
   }
   else
-    assert( ( std::size_t ) count == size() );
+    assert( ( std::size_t ) count == data.size() );
 
 
-  size_t sample_size = size();
+  size_t sample_size = data.size();
 
   if ( sample_size == 0 )
     return;
@@ -68,7 +68,7 @@ void sample_data_t::analyze(
 
     for ( size_t i=0; i < sample_size; i++ )
     {
-      double i_data = ( *this )[ i ];
+      double i_data = data[ i ];
       sum  += i_data;
       if ( i_data < min ) min = i_data;
       if ( i_data > max ) max = i_data;
@@ -86,7 +86,7 @@ void sample_data_t::analyze(
     variance = 0;
     for ( size_t i=0; i < sample_size; i++ )
     {
-      double delta = ( *this )[ i ] - mean;
+      double delta = data[ i ] - mean;
       variance += delta * delta;
     }
 
@@ -108,9 +108,9 @@ void sample_data_t::analyze(
     sort_data();
 
     if ( sample_size % 2 == 1 )
-      median = ( *this )[ ( sample_size - 1 )/ 2];
+      median = data[ ( sample_size - 1 )/ 2];
     else
-      median = ( ( *this )[ sample_size / 2 - 1] + ( *this )[sample_size / 2] ) / 2.0;
+      median = ( data[ sample_size / 2 - 1] + data[sample_size / 2] ) / 2.0;
   }
 
   if ( create_dist > 0 )
@@ -127,7 +127,7 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
 
   assert( analyzed );
 
-  if ( size() == 0 )
+  if ( data.size() == 0 )
     return;
 
   if ( max > min )
@@ -135,9 +135,9 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
     double range = max - min + 2;
 
     distribution.assign( num_buckets, 0 );
-    for ( unsigned int i=0; i < size(); i++ )
+    for ( unsigned int i=0; i < data.size(); i++ )
     {
-      int index = ( int ) ( num_buckets * ( ( *this )[ i ] - min + 1 ) / range );
+      int index = ( int ) ( num_buckets * ( data[ i ] - min + 1 ) / range );
       distribution[ index ]++;
     }
   }
@@ -152,7 +152,7 @@ double sample_data_t::percentile( double x )
   if ( simple )
     return std::numeric_limits<double>::quiet_NaN();
 
-  size_t sample_size = size();
+  size_t sample_size = data.size();
 
   if ( sample_size == 0 )
     return std::numeric_limits<double>::quiet_NaN();
@@ -160,16 +160,16 @@ double sample_data_t::percentile( double x )
   sort_data();
 
   // Should be improved to use linear interpolation
-  return ( *this )[ ( int ) ( x * ( sample_size - 1 ) ) ];
+  return data[ ( int ) ( x * ( sample_size - 1 ) ) ];
 }
 
 // sample_data_t::sort_data =============================================
 
 void sample_data_t::sort_data()
 {
-  if ( ! sorted && size() > 0 )
+  if ( ! sorted && data.size() > 0 )
   {
-    std::sort( begin(), end() );
+    std::sort( data.begin(), data.end() );
     sorted = true;
   }
 }
@@ -184,5 +184,5 @@ void sample_data_t::merge( sample_data_t& other )
   if ( simple )
     sum += other.sum;
   else
-    insert( end(), other.begin(), other.end() );
+    data.insert( data.end(), other.data.begin(), other.data.end() );
 }

@@ -16,7 +16,7 @@ OPENSSL_PATH =
 
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W
-OPTS       = -O3 -ffast-math
+OPTS       = -O3
 BITS       = 32
 
 ifeq (64,${BITS})

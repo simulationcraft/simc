@@ -654,7 +654,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   buff_list( 0 ), aura_delay( 0.15 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
   raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
-  elapsed_cpu_seconds( 0 ), simulation_length(),
+  elapsed_cpu_seconds( 0 ), simulation_length( false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( -60 ),
   path_str( "." ), output_file( stdout ),
@@ -662,7 +662,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   // Report
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
-  save_raid_summary( 0 ), extended_statistics( 0 ),
+  save_raid_summary( 0 ), statistics_level( 1 ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),
   spell_query( 0 )
@@ -1394,6 +1394,17 @@ void sim_t::analyze_player( player_t* p )
       assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
 
       chart_t::timeline( s -> timeline_aps_chart, p, s -> timeline_aps, ( s -> name_str + " APS" ).c_str(), s -> aps );
+
+      if ( s -> type == STATS_DMG )
+      {
+        s -> portion_amount = s -> compound_amount / p -> compound_dmg.mean;
+        s -> portion_aps = s -> portion_amount * p -> dps.mean;
+      }
+      else
+      {
+        s -> portion_amount = s -> compound_amount / p -> compound_heal.mean;
+        s -> portion_aps = s -> portion_amount * p -> hps.mean;
+      }
     }
   }
 
@@ -1489,7 +1500,7 @@ void sim_t::analyze_player( player_t* p )
   {
     for ( int i=0; i < iterations; i += convergence_scale )
     {
-      double i_dps = p -> dps[ i ];
+      double i_dps = p -> dps.data[ i ];
       convergence_dps += i_dps;
       if ( convergence_min > i_dps ) convergence_min = i_dps;
       if ( convergence_max < i_dps ) convergence_max = i_dps;
@@ -1506,7 +1517,7 @@ void sim_t::analyze_player( player_t* p )
     {
       p -> dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
 
-      double delta = p -> dps[ i ] - convergence_dps;
+      double delta = p -> dps.data[ i ] - convergence_dps;
       double delta_squared = delta * delta;
 
       sum_of_squares += delta_squared;
@@ -2239,7 +2250,7 @@ void sim_t::create_options()
     { "report_details",                   OPT_BOOL,   &( report_details                           ) },
     { "report_rng",                       OPT_BOOL,   &( report_rng                               ) },
     { "report_overheal",                  OPT_BOOL,   &( report_overheal                          ) },
-    { "extended_statistics",              OPT_BOOL,   &( extended_statistics                      ) },
+    { "statistics_level",                 OPT_INT,    &( statistics_level                         ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

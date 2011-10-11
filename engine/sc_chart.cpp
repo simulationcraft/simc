@@ -224,6 +224,9 @@ int chart_t::raid_aps( std::vector<std::string>& images,
   }
   num_players = player_list.size();
 
+  if ( num_players == 0 )
+    return 0;
+
   while ( true )
   {
     if ( num_players > max_players ) num_players = max_players;
@@ -1092,6 +1095,8 @@ const char* chart_t::scale_factors( std::string& s,
   for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - p -> scaling_error.get_stat( scaling_stats[ i ] );
+    if ( ( factor * 0 ) != 0 )
+      factor = 0;
     if ( factor < 0 )
       factor = 0;
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
@@ -1100,6 +1105,8 @@ const char* chart_t::scale_factors( std::string& s,
   for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + p -> scaling_error.get_stat( scaling_stats[ i ] );
+    if ( ( factor * 0 ) != 0 )
+      factor = 0;
     if ( factor < 0 )
       factor = 0;
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
@@ -1539,7 +1546,7 @@ const char* chart_t::timeline( std::string& s,
   s += "&amp;";
   s += "chxt=x,y";
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|avg=%.0f|max=%.0f", max_buckets, avg, timeline_max ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|avg=%.0f|max=%.0f", (int) max_buckets, avg, timeline_max ); s += buffer;
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * avg / timeline_max ); s += buffer;
   s += "&amp;";

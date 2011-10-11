@@ -2559,8 +2559,9 @@ struct action_expr_t
 
 // Statistical Sample Data
 
-struct sample_data_t : std::vector<double>
+struct sample_data_t
 {
+  std::vector<double> data;
   // Analyzed Results
   double sum;
   double mean;
@@ -2577,7 +2578,7 @@ struct sample_data_t : std::vector<double>
   bool analyzed;
   bool sorted;
 
-  sample_data_t( bool s=false );
+  sample_data_t( bool s=true );
 
   void add( double );
 
@@ -2594,9 +2595,7 @@ struct sample_data_t : std::vector<double>
 
   void merge( sample_data_t& );
 
-  void push_back( double ) { assert( 0 ); }
-
-  void clear() { count = 0; std::vector<double>::clear(); }
+  void clear() { count = 0; data.clear(); distribution.clear(); }
 
 protected:
   void create_distribution( unsigned int num_buckets=50 );
@@ -2995,7 +2994,7 @@ struct sim_t : private thread_t
   int print_styles;
   int report_overheal;
   int save_raid_summary;
-  int extended_statistics;
+  int statistics_level;
 
   // Multi-Threading
   int threads;

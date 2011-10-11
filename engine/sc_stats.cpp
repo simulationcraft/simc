@@ -221,17 +221,6 @@ void stats_t::analyze()
   int max_buckets = std::min( num_buckets, ( int ) sim -> divisor_timeline.size() );
   for ( int i=0; i < max_buckets; i++ )
     timeline_amount[ i ] /= sim -> divisor_timeline[ i ];
-
-  if ( type == STATS_DMG )
-  {
-    portion_amount = compound_amount / player -> compound_dmg.mean;
-    portion_aps = portion_amount * player -> dps.mean;
-  }
-  else
-  {
-    portion_amount = compound_amount / player -> compound_heal.mean;
-    portion_aps = portion_amount * player -> hps.mean;
-  }
 }
 
 // stats_t::merge ===========================================================

@@ -442,7 +442,7 @@ player_t::player_t( sim_t*             s,
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
   current_time( 0 ), iteration_fight_length( 0 ), arise_time( 0 ),
-  fight_length(), waiting_time( true ), executed_foreground_actions( true ),
+  fight_length( false ), waiting_time( true ), executed_foreground_actions( true ),
   iteration_waiting_time( 0 ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
   deaths(), deaths_error( 0 ),
@@ -451,13 +451,17 @@ player_t::player_t( sim_t*             s,
     // Damage
     iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
     dps_error( 0 ), dpr( 0 ), dtps_error( 0 ),
-    dmg( true ), compound_dmg( true ), dps(), dpse(), dtps(), dmg_taken( true ),
+    dmg( s -> statistics_level < 2 ), compound_dmg( s -> statistics_level < 2 ),
+    dps( s -> statistics_level < 1 ), dpse( s -> statistics_level < 2 ),
+    dtps( s -> statistics_level < 2), dmg_taken( s -> statistics_level < 2 ),
     dps_convergence( 0 ),
 
     // Heal
     iteration_heal( 0 ),iteration_heal_taken( 0 ),
     hps_error( 0 ), hpr( 0 ),
-    heal( true ), compound_heal( true ), hps(), hpse(), htps(), heal_taken( true ),
+    heal( s -> statistics_level < 2 ), compound_heal( s -> statistics_level < 2 ),
+    hps( s -> statistics_level < 1), hpse( s -> statistics_level < 2),
+    htps( s -> statistics_level < 2), heal_taken(s -> statistics_level < 2 ),
 
   // Gear
   sets( 0 ),
@@ -1703,17 +1707,21 @@ void player_t::init_stats()
     resource_lost[ i ] = resource_gained[ i ] = 0;
   }
 
-  dmg.reserve         ( sim -> iterations );
-  compound_dmg.reserve( sim -> iterations );
-  dps.reserve         ( sim -> iterations );
-  dpse.reserve        ( sim -> iterations );
-  dtps.reserve        ( sim -> iterations );
+  fight_length.data.reserve         ( sim -> iterations );
+  waiting_time.data.reserve         ( sim -> iterations );
+  executed_foreground_actions.data.reserve         ( sim -> iterations );
 
-  heal.reserve         ( sim -> iterations );
-  compound_heal.reserve( sim -> iterations );
-  hps.reserve         ( sim -> iterations );
-  hpse.reserve        ( sim -> iterations );
-  htps.reserve        ( sim -> iterations );
+  dmg.data.reserve         ( sim -> iterations );
+  compound_dmg.data.reserve( sim -> iterations );
+  dps.data.reserve         ( sim -> iterations );
+  dpse.data.reserve        ( sim -> iterations );
+  dtps.data.reserve        ( sim -> iterations );
+
+  heal.data.reserve         ( sim -> iterations );
+  compound_heal.data.reserve( sim -> iterations );
+  hps.data.reserve         ( sim -> iterations );
+  hpse.data.reserve        ( sim -> iterations );
+  htps.data.reserve        ( sim -> iterations );
 }
 
 // player_t::init_values ====================================================
