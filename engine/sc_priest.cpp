@@ -2654,10 +2654,15 @@ struct vampiric_touch_t : public priest_spell_t
 
 struct shadow_fiend_spell_t : public priest_spell_t
 {
-  shadow_fiend_spell_t( player_t* player, const std::string& options_str ) :
-    priest_spell_t( "shadow_fiend", player, "Shadowfiend" )
+  shadow_fiend_spell_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "shadow_fiend", p, "Shadowfiend" )
   {
     parse_options( NULL, options_str );
+
+    cooldown = p -> cooldowns_shadow_fiend;    
+    cooldown -> duration = p -> active_spells.shadow_fiend -> cooldown() +
+                           p -> talents.veiled_shadows -> effect2().seconds() +
+                           ( p -> set_bonus.tier12_2pc_caster() ? -75.0 : 0.0 );
 
     harmful = false;
   }
@@ -5226,10 +5231,6 @@ void priest_t::init_values()
   constants.harnessed_shadows_value         = talents.harnessed_shadows         -> effect1().percent();
   constants.pain_and_suffering_value        = talents.pain_and_suffering        -> proc_chance();
   constants.devouring_plague_health_mod     = 0.15;
-
-  cooldowns_shadow_fiend -> duration        = active_spells.shadow_fiend        -> cooldown() +
-                                              talents.veiled_shadows            -> effect2().seconds() +
-                                              ( set_bonus.tier12_2pc_caster() ? -75.0 : 0.0 );
 
   constants.max_shadowy_apparitions         = passive_spells.shadowy_apparition_num -> effect1().base_value();
 
