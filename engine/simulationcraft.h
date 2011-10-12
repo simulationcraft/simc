@@ -804,113 +804,116 @@ private:
   // nonmoveable& operator = ( nonmoveable&& ) = delete;
 };
 
-// Machinery for range-based generic algorithms =============================
-
-template <typename T>
-struct range_traits
-{
-  typedef typename T::iterator iterator;
-  static iterator begin( T& t ) { return t.begin(); }
-  static iterator end( T& t ) { return t.end(); }
-};
-
-template <typename T>
-struct range_traits<const T>
-{
-  typedef typename T::const_iterator iterator;
-  static iterator begin( const T& t ) { return t.begin(); }
-  static iterator end( const T& t ) { return t.end(); }
-};
-
-template <typename T, size_t N>
-struct range_traits<T[N]>
-{
-  typedef T* iterator;
-  static iterator begin( T ( &t )[N] ) { return &t[0]; }
-  static iterator end( T ( &t )[N] ) { return begin( t ) + N; }
-};
-
-template <typename T, size_t N>
-struct range_traits<const T[N]>
-{
-  typedef const T* iterator;
-  static iterator begin( const T ( &t )[N] ) { return &t[0]; }
-  static iterator end( const T ( &t )[N] ) { return begin( t ) + N; }
-};
-
-template <typename T>
-struct range_value
-{
-  typedef typename std::iterator_traits<typename range_traits<T>::iterator>::value_type type;
-};
-
-template <typename T>
-inline typename range_traits<T>::iterator begin( T& t )
-{ return range_traits<T>::begin( t ); }
-
-template <typename T>
-inline typename range_traits<const T>::iterator cbegin( const T& t )
-{ return ::begin( t ); }
-
-template <typename T>
-inline typename range_traits<T>::iterator end( T& t )
-{ return range_traits<T>::end( t ); }
-
-template <typename T>
-inline typename range_traits<const T>::iterator cend( const T& t )
-{ return ::end( t ); }
-
-// Range-based standard algorithms ==========================================
-
-template <typename Range>
-inline void fill( Range& r, const typename range_value<Range>::type& t )
-{ std::fill( ::begin( r ), ::end( r ), t ); }
-
-template <typename Range, typename Out>
-inline Out copy( const Range& r, Out o )
-{ return std::copy( ::begin( r ), ::end( r ), o ); }
-
-template <typename Range>
-inline void sort( Range& r )
-{ std::sort( ::begin( r ), ::end( r ) ); }
-
-template <typename Range, typename Comp>
-inline void sort( Range& r, Comp c )
-{ std::sort( ::begin( r ), ::end( r ), c ); }
-
-struct null_disposer_t
-{
-  template <typename T>
-  void operator () ( T* ) const {}
-};
-
 struct delete_disposer_t
 {
   template <typename T>
   void operator () ( T* t ) const { delete t; }
 };
 
+template <typename T>
+struct iterator_type
+{ typedef typename T::iterator type; };
+
+template <typename T>
+struct iterator_type<const T>
+{ typedef typename T::const_iterator type; };
+
+// Generic algorithms =======================================================
+
+template <typename I>
+inline void fill( I first, I last, typename std::iterator_traits<I>::value_type& t )
+{ std::fill( first, last, t ); }
+
 template <typename I, typename D>
 void dispose( I first, I last, D disposer )
 {
   while ( first != last )
-  {
-    I tmp = first++;
-    disposer( *tmp );
-  }
+    disposer( *first++ );
 }
 
 template <typename I>
 inline void dispose( I first, I last )
 { dispose( first, last, delete_disposer_t() ); }
 
-template <typename C, typename D>
-inline void dispose( C& c, D disposer )
-{ dispose( ::begin( c ), ::end( c ), disposer ); }
 
-template <typename C>
-inline void dispose( C& c )
-{ dispose( c, delete_disposer_t() ); }
+// Machinery for range-based generic algorithms =============================
+
+namespace range { // ========================================================
+
+template <typename T>
+struct traits
+{
+  typedef typename iterator_type<T>::type iterator;
+  static iterator begin( T& t ) { return t.begin(); }
+  static iterator end( T& t ) { return t.end(); }
+};
+
+template <typename T, size_t N>
+struct traits<T[N]>
+{
+  typedef T* iterator;
+  static iterator begin( T ( &t )[N] ) { return &t[0]; }
+  static iterator end( T ( &t )[N] ) { return begin( t ) + N; }
+};
+
+template <typename T>
+struct traits< std::pair<T,T> >
+{
+  typedef T iterator;
+  static iterator begin( const std::pair<T,T>& t ) { return t.first; }
+  static iterator end( const std::pair<T,T>& t ) { return t.second; }
+};
+
+template <typename T>
+struct value_type
+{
+  typedef typename std::iterator_traits<typename traits<T>::iterator>::value_type type;
+};
+
+template <typename T>
+inline typename traits<T>::iterator begin( T& t )
+{ return traits<T>::begin( t ); }
+
+template <typename T>
+inline typename traits<const T>::iterator cbegin( const T& t )
+{ return range::begin( t ); }
+
+template <typename T>
+inline typename traits<T>::iterator end( T& t )
+{ return traits<T>::end( t ); }
+
+template <typename T>
+inline typename traits<const T>::iterator cend( const T& t )
+{ return range::end( t ); }
+
+
+// Range-based generic algorithms ===========================================
+
+template <typename Range, typename Out>
+inline Out copy( const Range& r, Out o )
+{ return std::copy( range::begin( r ), range::end( r ), o ); }
+
+template <typename Range>
+inline Range& sort( Range& r )
+{ std::sort( range::begin( r ), range::end( r ) ); return r; }
+
+template <typename Range, typename Comp>
+inline Range& sort( Range& r, Comp c )
+{ std::sort( range::begin( r ), range::end( r ), c ); return r; }
+
+template <typename Range>
+inline Range& fill( Range& r, typename range::value_type<Range>::type const& t )
+{ std::fill( range::begin( r ), range::end( r ), t ); return r; }
+
+template <typename Range, typename D>
+inline Range& dispose( Range& r, D disposer )
+{ dispose( range::begin( r ), range::end( r ), disposer ); return r; }
+
+template <typename Range>
+inline Range& dispose( Range& r )
+{ return dispose( r, delete_disposer_t() ); }
+
+} // namespace range ========================================================
 
 
 // Cache Control ============================================================

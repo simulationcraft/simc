@@ -159,7 +159,7 @@ void action_t::init_action_t_()
   while ( *last ) last = &( ( *last ) -> next );
   *last = this;
 
-  fill( rng, 0 );
+  range::fill( rng, 0 );
 
   cooldown = player -> get_cooldown( name_str );
   dot      = player -> get_dot     ( name_str );

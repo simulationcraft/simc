@@ -283,7 +283,7 @@ void buff_t::init()
   next = *tail;
   *tail = this;
 
-  dispose( stack_uptime );
+  range::dispose( stack_uptime );
   stack_uptime.clear();
 
   if( max_stack >= 0 )
@@ -427,7 +427,7 @@ void buff_t::init_buff_t_()
   expiration = 0;
   delay = 0;
 
-  dispose( stack_uptime );
+  range::dispose( stack_uptime );
   stack_uptime.clear();
 
   if ( max_stack >= 0 )
@@ -441,7 +441,7 @@ void buff_t::init_buff_t_()
 }
 
 buff_t::~buff_t()
-{ dispose( stack_uptime ); }
+{ range::dispose( stack_uptime ); }
 
 // buff_t::may_react ========================================================
 
@@ -1305,7 +1305,7 @@ new_buff_t::new_buff_t( player_t*          p,
   buff_t( p, n, 1, 0, 0, override_chance, quiet, reverse, rt, id ),
   single( 0 ), default_stack_charge( 1 )
 {
-  fill( e_data, 0 );
+  range::fill( e_data, 0 );
   const spell_data_t* spell = p -> dbc.spell( id );
 
   // Find some stuff for the buff, generically

@@ -482,7 +482,7 @@ const char* chart_t::raid_downtime( std::string& s,
   int num_waiting = ( int ) waiting_list.size();
   if ( num_waiting == 0 ) return 0;
 
-  sort( waiting_list, compare_downtime() );
+  range::sort( waiting_list, compare_downtime() );
 
   char buffer[ 1024 ];
 
@@ -576,7 +576,7 @@ int chart_t::raid_dpet( std::vector<std::string>& images,
   int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
-  sort( stats_list, compare_dpet() );
+  range::sort( stats_list, compare_dpet() );
 
   double max_dpet = stats_list[ 0 ] -> apet;
 
@@ -686,7 +686,7 @@ const char* chart_t::action_dpet( std::string& s,
   int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
-  sort( stats_list, compare_dpet() );
+  range::sort( stats_list, compare_dpet() );
 
   char buffer[ 1024 ];
 
@@ -786,7 +786,7 @@ const char* chart_t::action_dmg( std::string& s,
   int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 ) return 0;
 
-  sort( stats_list, compare_amount() );
+  range::sort( stats_list, compare_amount() );
 
   char buffer[ 1024 ];
 
@@ -884,7 +884,7 @@ const char* chart_t::time_spent( std::string& s,
   if ( num_stats == 0 && p -> waiting_time.mean == 0 )
     return 0;
 
-  sort( stats_list, compare_time() );
+  range::sort( stats_list, compare_time() );
 
   char buffer[ 1024 ];
 
@@ -990,7 +990,7 @@ const char* chart_t::gains( std::string& s,
   int num_gains = ( int ) gains_list.size();
   if ( num_gains == 0 ) return 0;
 
-  sort( gains_list, compare_gain() );
+  range::sort( gains_list, compare_gain() );
 
   char buffer[ 1024 ];
 
@@ -1067,7 +1067,7 @@ const char* chart_t::scale_factors( std::string& s,
   int num_scaling_stats = static_cast<int>( scaling_stats.size() );
   if ( num_scaling_stats == 0 ) return 0;
 
-  sort( scaling_stats, compare_scale_factors( p ) );
+  range::sort( scaling_stats, compare_scale_factors( p ) );
 
   double max_scale_factor = p -> scaling.get_stat( scaling_stats[ 0 ] );
 
@@ -1937,10 +1937,10 @@ struct compare_stat_scale_factors
 {
   player_t* player;
   compare_stat_scale_factors( player_t* p ) : player( p ) {}
-  bool operator()( const int& l, const int& r ) SC_CONST
+  bool operator()( int l, int r ) const
   {
     return( player -> scaling.get_stat( l ) >
-    player -> scaling.get_stat( r ) );
+            player -> scaling.get_stat( r ) );
   }
 };
 
@@ -1950,7 +1950,7 @@ const char* chart_t::gear_weights_pawn( std::string& s,
 {
   std::vector<int> stats;
   for ( int i=0; i < STAT_MAX; i++ ) stats.push_back( i );
-  sort( stats, compare_stat_scale_factors( p ) );
+  range::sort( stats, compare_stat_scale_factors( p ) );
 
   char buffer[ 1024 ];
   bool first = true;

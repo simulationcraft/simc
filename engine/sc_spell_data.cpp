@@ -1245,7 +1245,7 @@ static spell_data_expr_t* build_expression_tree( sim_t*                     sim,
   res = stack.back();
   stack.pop_back();
 exit_label:
-  dispose( stack );
+  range::dispose( stack );
   return res;
 }
 

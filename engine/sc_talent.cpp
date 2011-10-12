@@ -20,7 +20,7 @@ talent_t::talent_t( player_t* player, talent_data_t* _td ) :
   spell_id_t* default_rank = new spell_id_t;
   t_default_rank = default_rank;
   default_rank -> s_enabled = false;
-  fill( t_rank_spells, default_rank );
+  range::fill( t_rank_spells, default_rank );
 
   t_data = player -> dbc.talent( td -> id() );
   t_enabled = t_data -> is_enabled();

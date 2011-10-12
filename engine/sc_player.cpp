@@ -492,36 +492,36 @@ player_t::player_t( sim_t*             s,
 
   if ( is_pet() ) skill = 1.0;
 
-  fill( spell_resistance, 0 );
+  range::fill( spell_resistance, 0 );
 
-  fill( attribute, 0 );
-  fill( attribute_base, 0 );
-  fill( attribute_initial, 0 );
-  fill( attribute_buffed, 0 );
+  range::fill( attribute, 0 );
+  range::fill( attribute_base, 0 );
+  range::fill( attribute_initial, 0 );
+  range::fill( attribute_buffed, 0 );
 
-  fill( attribute_multiplier, 1 );
-  fill( attribute_multiplier_initial, 1 );
+  range::fill( attribute_multiplier, 1 );
+  range::fill( attribute_multiplier_initial, 1 );
 
-  fill( infinite_resource, false );
+  range::fill( infinite_resource, false );
   infinite_resource[ RESOURCE_HEALTH ] = true;
 
-  fill( initial_spell_power, 0 );
-  fill( spell_power, 0 );
-  fill( resource_reduction, 0 );
-  fill( initial_resource_reduction, 0 );
+  range::fill( initial_spell_power, 0 );
+  range::fill( spell_power, 0 );
+  range::fill( resource_reduction, 0 );
+  range::fill( initial_resource_reduction, 0 );
 
-  fill( resource_base, 0 );
-  fill( resource_initial, 0 );
-  fill( resource_max, 0 );
-  fill( resource_current, 0 );
-  fill( resource_lost, 0 );
-  fill( resource_gained, 0 );
-  fill( resource_buffed, 0 );
+  range::fill( resource_base, 0 );
+  range::fill( resource_initial, 0 );
+  range::fill( resource_max, 0 );
+  range::fill( resource_current, 0 );
+  range::fill( resource_lost, 0 );
+  range::fill( resource_gained, 0 );
+  range::fill( resource_buffed, 0 );
 
-  fill( profession, 0 );
+  range::fill( profession, 0 );
 
-  fill( scales_with, 0 );
-  fill( over_cap, 0 );
+  range::fill( scales_with, 0 );
+  range::fill( over_cap, 0 );
 
   items.resize( SLOT_MAX );
   for ( int i=0; i < SLOT_MAX; i++ )
@@ -537,8 +537,8 @@ player_t::player_t( sim_t*             s,
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
 
-  fill( talent_tab_points, 0 );
-  fill( tree_type, TREE_NONE );
+  range::fill( talent_tab_points, 0 );
+  range::fill( tree_type, TREE_NONE );
 
   if ( reaction_stddev == 0 ) reaction_stddev = reaction_mean * 0.25;
 }
@@ -602,14 +602,14 @@ player_t::~player_t()
   {
     // FIXME! This cannot be done until we use refcounts.
     // FIXME! I see the same callback pointer being registered multiple times.
-    dispose( all_callbacks );
+    range::dispose( all_callbacks );
   }
 
   for( size_t i=0; i < sizeof_array( talent_trees ); i++ )
-    dispose( talent_trees[ i ] );
+    range::dispose( talent_trees[ i ] );
 
-  dispose( glyphs );
-  dispose( spell_list );
+  range::dispose( glyphs );
+  range::dispose( spell_list );
 
   delete sets;
 }
