@@ -459,7 +459,7 @@ static void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       writer.print_attribute( "dpe_percent", util_t::to_string( s -> portion_amount * 100.0, 0 ) );
       writer.print_attribute( "dpet", util_t::to_string( s -> apet, 0 ) );
       writer.print_attribute( "apr", util_t::to_string( s -> apr, 1 ) );
-      writer.print_attribute( "pdps", util_t::to_string( s -> portion_aps, 0 ) );
+      writer.print_attribute( "pdps", util_t::to_string( s -> portion_aps.mean, 0 ) );
       if( s -> num_direct_results > 0 )
       {
         writer.begin_tag( "miss" );

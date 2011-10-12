@@ -2596,7 +2596,7 @@ struct sample_data_t
 
   void sort_data();
 
-  void merge( sample_data_t& );
+  void merge( const sample_data_t& );
 
   void clear() { count = 0; data.clear(); distribution.clear(); }
 
@@ -4258,9 +4258,12 @@ struct stats_t
   double num_direct_results, num_tick_results;
   double total_execute_time, total_tick_time, total_time;
   double actual_amount, total_amount, portion_amount, overkill_pct;
-  double aps, portion_aps, ape, apet, apr, rpe, etpe, ttpt;
+  double aps, ape, apet, apr, rpe, etpe, ttpt;
   double total_intervals, num_intervals;
   double last_execute;
+  double iteration_amount;
+  sample_data_t portion_aps;
+  std::string aps_distribution_chart;
 
   std::vector<stats_t*> children;
   double compound_actual,compound_amount;
@@ -4286,6 +4289,7 @@ struct stats_t
   void add_result( double act_amount, double tot_amount, int dmg_type, int result );
   void add_tick   ( double time );
   void add_execute( double time );
+  void combat_end();
   void reset();
   void analyze();
   void merge( const stats_t* other );

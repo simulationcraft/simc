@@ -16,10 +16,11 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   num_direct_results( 0 ), num_tick_results( 0 ),
   total_execute_time( 0 ), total_tick_time( 0 ), total_time( 0 ),
   actual_amount( 0 ), total_amount( 0 ), portion_amount( 0 ),
-  aps( 0 ), /* portion_aps( 0 ), */ ape( 0 ), apet( 0 ), apr( 0 ),
+  aps( 0 ), ape( 0 ), apet( 0 ), apr( 0 ),
   /* rpe( 0 ), */ etpe( 0 ), ttpt( 0 ),
   total_intervals( 0 ), num_intervals( 0 ),
   last_execute( -1 ),
+  iteration_amount( 0 ), portion_aps( p -> sim -> statistics_level < 3 ),
   compound_actual( 0 ), compound_amount( 0 ), opportunity_cost( 0 )
 {
   int num_buckets = ( int ) sim -> max_time;
@@ -52,6 +53,7 @@ void stats_t::add_child( stats_t* child )
 void stats_t::reset()
 {
   last_execute = -1;
+  iteration_amount = 0;
 }
 
 // stats_t::add_result ======================================================
@@ -63,6 +65,7 @@ void stats_t::add_result( double act_amount,
 {
   actual_amount += act_amount;
   total_amount  += tot_amount;
+  iteration_amount += act_amount;
 
   if ( type == STATS_DMG )
     player -> iteration_dmg += act_amount;
@@ -121,6 +124,17 @@ void stats_t::add_tick( double time )
   total_tick_time += time;
 }
 
+// stats_t::combat_end ========================================================
+
+void stats_t::combat_end()
+{
+  for( size_t i=0; i < children.size(); i++ )
+  {
+    iteration_amount += children[ i ] -> iteration_amount;
+  }
+  portion_aps.add( iteration_amount / player -> iteration_fight_length );
+}
+
 // stats_t::analyze =========================================================
 
 void stats_t::analyze()
@@ -166,6 +180,8 @@ void stats_t::analyze()
       r.actual_amount /= num_iterations;
     }
   }
+
+  portion_aps.analyze( true, true, true, 50 );
 
   resource_consumed  /= num_iterations;
 
@@ -253,6 +269,8 @@ void stats_t::merge( const stats_t* other )
   total_amount        += other -> total_amount;
   actual_amount       += other -> actual_amount;
   opportunity_cost    += other -> opportunity_cost;
+
+  portion_aps.merge( other -> portion_aps );
 
   for ( int i=0; i < RESULT_MAX; i++ )
     direct_results[ i ].merge( other -> direct_results[ i ] );

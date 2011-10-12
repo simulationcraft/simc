@@ -42,7 +42,7 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
                    s -> portion_amount * 100.0,
                    s -> apet,
                    s -> apr,
-                   s -> portion_aps );
+                   s -> portion_aps.mean );
 
   if ( s -> num_direct_results > 0 )
   {

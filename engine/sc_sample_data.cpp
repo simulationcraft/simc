@@ -176,7 +176,7 @@ void sample_data_t::sort_data()
 
 // sample_data_t::merge =============================================
 
-void sample_data_t::merge( sample_data_t& other )
+void sample_data_t::merge( const sample_data_t& other )
 {
 
   count += other.count;

@@ -1394,16 +1394,15 @@ void sim_t::analyze_player( player_t* p )
       assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
 
       chart_t::timeline( s -> timeline_aps_chart, p, s -> timeline_aps, ( s -> name_str + " APS" ).c_str(), s -> aps );
+      chart_t::distribution( s -> aps_distribution_chart,this, s -> portion_aps.distribution, ( s -> name_str + " APS" ).c_str(), s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
 
       if ( s -> type == STATS_DMG )
       {
         s -> portion_amount = s -> compound_amount / p -> compound_dmg.mean;
-        s -> portion_aps = s -> portion_amount * p -> dps.mean;
       }
       else
       {
         s -> portion_amount = s -> compound_amount / p -> compound_heal.mean;
-        s -> portion_aps = s -> portion_amount * p -> hps.mean;
       }
     }
   }

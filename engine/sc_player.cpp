@@ -2708,13 +2708,6 @@ void player_t::combat_begin()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
 
-  iteration_fight_length = 0;
-  iteration_waiting_time = 0;
-  iteration_executed_foreground_actions = 0;
-  iteration_dmg = 0;
-  iteration_heal = 0;
-  iteration_dmg_taken = 0;
-  iteration_heal_taken = 0;
 
   if ( ! is_pet() && ! is_add() )
   {
@@ -2827,6 +2820,9 @@ void player_t::combat_end()
   {
     b -> uptime_pct += iteration_fight_length ? 100.0 * b -> uptime_sum / iteration_fight_length : 0;
   }
+
+  for ( stats_t* s = stats_list; s; s = s -> next )
+    s -> combat_end();
 }
 
 // player_t::merge ==========================================================
@@ -2862,10 +2858,7 @@ void player_t::merge( player_t& other )
     {
       timeline_resource[i][ j ] += other.timeline_resource[i][ j ];
     }
-  }
 
-  for ( int i=0; i < RESOURCE_MAX; i++ )
-  {
     resource_lost  [ i ] += other.resource_lost  [ i ];
     resource_gained[ i ] += other.resource_gained[ i ];
   }
@@ -2919,7 +2912,13 @@ void player_t::reset()
   sleeping = 1;
   events = 0;
 
+  iteration_fight_length = 0;
+  iteration_waiting_time = 0;
+  iteration_executed_foreground_actions = 0;
+  iteration_dmg = 0;
+  iteration_heal = 0;
   iteration_dmg_taken = 0;
+  iteration_heal_taken = 0;
 
   stats = initial_stats;
 

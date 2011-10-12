@@ -252,7 +252,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
            "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
            "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
-           s -> portion_aps,
+           s -> portion_aps.mean,
            s -> portion_amount * 100,
            s -> num_executes,
            s -> frequency,
@@ -282,6 +282,11 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     if ( ! s -> timeline_aps_chart.empty() )
     {
       timeline_stat_aps_str = "<img src=\"" + s -> timeline_aps_chart + "\" alt=\"APS Timeline Chart\" />\n";
+    }
+    std::string aps_distribution_str                    = "";
+    if ( ! s -> aps_distribution_chart.empty() )
+    {
+      aps_distribution_str = "<img src=\"" + s -> aps_distribution_chart + "\" alt=\"APS Distribution Chart\" />\n";
     }
     fprintf( file,
              "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
@@ -450,6 +455,9 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     fprintf ( file,
               "\t\t\t\t\t\t\t\t\t%s\n",
               timeline_stat_aps_str.c_str() );
+    fprintf ( file,
+              "\t\t\t\t\t\t\t\t\t%s\n",
+              aps_distribution_str.c_str() );
 
     fprintf ( file,
               "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
