@@ -444,7 +444,7 @@ bool battle_net_t::download_guild( sim_t* sim,
     if ( ( max_rank > 0 ) && ( c_rank > max_rank ) )
       continue;
 
-    if ( ( ranks.size() > 0 ) && ( std::find( ranks.begin(), ranks.end(), c_rank ) == ranks.end() ) )
+    if ( ! ranks.empty() && ( range::find( ranks, c_rank ) == ranks.end() ) )
       continue;
 
     if ( player_filter != PLAYER_NONE )
@@ -457,7 +457,7 @@ bool battle_net_t::download_guild( sim_t* sim,
   int num_characters = ( int ) character_names.size();
   if ( num_characters > 0 )
   {
-    std::sort( character_names.begin(), character_names.end() );
+    range::sort( character_names );
 
     for ( int i = 0; i < num_characters; i++ )
     {

@@ -74,9 +74,9 @@ static bool parse_normalize_scale_factors( sim_t* sim,
 
 struct compare_scale_factors
 {
-  player_t* player;
-  compare_scale_factors( player_t* p ) : player( p ) {}
-  bool operator()( const int& l, const int& r ) SC_CONST
+  const player_t* player;
+  compare_scale_factors( const player_t* p ) : player( p ) {}
+  bool operator()( int l, int r ) const
   {
     return( player -> scaling.get_stat( l ) >
             player -> scaling.get_stat( r ) );
@@ -500,7 +500,7 @@ void scaling_t::analyze()
         if ( s > 0 ) p -> scaling_stats.push_back( i );
       }
     }
-    std::sort( p -> scaling_stats.begin(), p -> scaling_stats.end(), compare_scale_factors( p ) );
+    range::sort( p -> scaling_stats, compare_scale_factors( p ) );
 
   }
 

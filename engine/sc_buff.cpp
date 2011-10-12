@@ -825,12 +825,8 @@ void buff_t::expire()
 void buff_t::predict()
 {
   // Guarantee that may_react() will return true if the buff is present.
-
-  for( int i=0; i <= current_stack; i++ )
-  {
-    stack_occurrence[ i ] = -1;
-    stack_react_time[ i ] = -1;
-  }
+  fill( &stack_occurrence[ 0 ], &stack_occurrence[ current_stack + 1 ], -1 );
+  fill( &stack_react_time[ 0 ], &stack_react_time[ current_stack + 1 ], -1 );
 }
 
 // buff_t::aura_gain ========================================================
@@ -899,6 +895,8 @@ void buff_t::merge( const buff_t* other )
   refresh_count         += other -> refresh_count;
   trigger_attempts      += other -> trigger_attempts;
   trigger_successes     += other -> trigger_successes;
+
+  assert( stack_uptime.size() == other -> stack_uptime.size() );
   for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> merge ( other -> stack_uptime[ i ] );
 }

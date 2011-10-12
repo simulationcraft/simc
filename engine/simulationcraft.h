@@ -785,7 +785,7 @@ enum rating_type
 
 // Type utilities and generic programming tools =============================
 template <typename T, std::size_t N>
-inline std::size_t sizeof_array( T ( & )[N] )
+inline std::size_t sizeof_array( const T ( & )[N] )
 { return N; }
 
 class noncopyable
@@ -823,8 +823,17 @@ struct iterator_type<const T>
 // Generic algorithms =======================================================
 
 template <typename I>
-inline void fill( I first, I last, typename std::iterator_traits<I>::value_type& t )
+inline void fill( I first, I last, typename std::iterator_traits<I>::value_type const& t )
 { std::fill( first, last, t ); }
+
+template <typename I>
+inline void fill_n( I first, typename std::iterator_traits<I>::difference_type n,
+                    typename std::iterator_traits<I>::value_type const& t )
+{ std::fill_n( first, n, t ); }
+
+template <typename I>
+inline I find( I first, I last, typename std::iterator_traits<I>::value_type const& t )
+{ return std::find( first, last, t ); }
 
 template <typename I, typename D>
 void dispose( I first, I last, D disposer )
@@ -837,11 +846,56 @@ template <typename I>
 inline void dispose( I first, I last )
 { dispose( first, last, delete_disposer_t() ); }
 
+template <unsigned HW, typename In, typename Out>
+void sliding_window_average( In first, In last, Out out )
+{
+  typedef typename std::iterator_traits<In>::value_type value_t;
+  typedef typename std::iterator_traits<In>::difference_type diff_t;
+  const diff_t n = std::distance( first, last );
+  const diff_t HALFWINDOW = static_cast<diff_t>( HW );
+
+  if ( n >= 2 * HALFWINDOW )
+  {
+    value_t window_sum = value_t();
+
+    // Fill right half of sliding window
+    In right = first;
+    for ( diff_t count = 0; count < HALFWINDOW; ++count )
+      window_sum += *right++;
+
+    // Fill left half of sliding window
+    for ( diff_t count = HALFWINDOW; count < 2 * HALFWINDOW; ++count )
+    {
+      window_sum += *right++;
+      *out++ = window_sum / ( count + 1 );
+    }
+
+    // Slide until window hits end of data
+    while ( right != last )
+    {
+      window_sum += *right++;
+      *out++ = window_sum / ( 2 * HALFWINDOW + 1 );
+      window_sum -= *first++;
+    }
+
+    // Empty right half of sliding window
+    for ( diff_t count = 2 * HALFWINDOW; count > HALFWINDOW; --count )
+    {
+      *out++ = window_sum / count;
+      window_sum -= *first++;
+    }
+  }
+  else
+  {
+    // input is pathologically small compared to window size, just average everything.
+    fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
+  }
+}
+
 
 // Machinery for range-based generic algorithms =============================
 
 namespace range { // ========================================================
-
 template <typename T>
 struct traits
 {
@@ -860,6 +914,14 @@ struct traits<T[N]>
 
 template <typename T>
 struct traits< std::pair<T,T> >
+{
+  typedef T iterator;
+  static iterator begin( const std::pair<T,T>& t ) { return t.first; }
+  static iterator end( const std::pair<T,T>& t ) { return t.second; }
+};
+
+template <typename T>
+struct traits< const std::pair<T,T> >
 {
   typedef T iterator;
   static iterator begin( const std::pair<T,T>& t ) { return t.first; }
@@ -888,12 +950,78 @@ template <typename T>
 inline typename traits<const T>::iterator cend( const T& t )
 { return range::end( t ); }
 
-
 // Range-based generic algorithms ===========================================
 
 template <typename Range, typename Out>
 inline Out copy( const Range& r, Out o )
 { return std::copy( range::begin( r ), range::end( r ), o ); }
+
+template <typename Range, typename D>
+inline Range& dispose( Range& r, D disposer )
+{ dispose( range::begin( r ), range::end( r ), disposer ); return r; }
+
+template <typename Range>
+inline Range& dispose( Range& r )
+{ return dispose( r, delete_disposer_t() ); }
+
+template <typename Range>
+inline Range& fill( Range& r, typename range::value_type<Range>::type const& t )
+{ std::fill( range::begin( r ), range::end( r ), t ); return r; }
+
+template <typename Range>
+inline typename range::traits<Range>::iterator
+find( Range& r, typename range::value_type<Range>::type const& t )
+{ return std::find( range::begin( r ), range::end( r ), t ); }
+
+template <typename Range, typename F>
+inline F for_each( Range& r, F f )
+{ return std::for_each( range::begin( r ), range::end( r ), f ); }
+
+template <typename Range1, typename Range2, typename Out>
+inline Out set_difference( const Range1& left, const Range2& right, Out o )
+{
+  return std::set_difference( range::begin( left ), range::end( left ),
+                              range::begin( right ), range::end( right ), o );
+}
+
+template <typename Range1, typename Range2, typename Out, typename Compare>
+inline Out set_difference( const Range1& left, const Range2& right, Out o, Compare c )
+{
+  return std::set_difference( range::begin( left ), range::end( left ),
+                              range::begin( right ), range::end( right ), o, c );
+}
+
+template <typename Range1, typename Range2, typename Out>
+inline Out set_intersection( const Range1& left, const Range2& right, Out o )
+{
+  return std::set_intersection( range::begin( left ), range::end( left ),
+                                range::begin( right ), range::end( right ), o );
+}
+
+template <typename Range1, typename Range2, typename Out, typename Compare>
+inline Out set_intersection( const Range1& left, const Range2& right, Out o, Compare c )
+{
+  return std::set_intersection( range::begin( left ), range::end( left ),
+                                range::begin( right ), range::end( right ), o, c );
+}
+
+template <typename Range1, typename Range2, typename Out>
+inline Out set_union( const Range1& left, const Range2& right, Out o )
+{
+  return std::set_union( range::begin( left ), range::end( left ),
+                         range::begin( right ), range::end( right ), o );
+}
+
+template <typename Range1, typename Range2, typename Out, typename Compare>
+inline Out set_union( const Range1& left, const Range2& right, Out o, Compare c )
+{
+  return std::set_union( range::begin( left ), range::end( left ),
+                         range::begin( right ), range::end( right ), o, c );
+}
+
+template <unsigned HW, typename Range, typename Out>
+inline Range& sliding_window_average( Range& r, Out out )
+{ ::sliding_window_average<HW>( range::begin( r ), range::end( r ), out ); return r; }
 
 template <typename Range>
 inline Range& sort( Range& r )
@@ -904,16 +1032,12 @@ inline Range& sort( Range& r, Comp c )
 { std::sort( range::begin( r ), range::end( r ), c ); return r; }
 
 template <typename Range>
-inline Range& fill( Range& r, typename range::value_type<Range>::type const& t )
-{ std::fill( range::begin( r ), range::end( r ), t ); return r; }
+inline typename range::traits<Range>::iterator unique( Range& r )
+{ return std::unique( range::begin( r ), range::end( r ) ); }
 
-template <typename Range, typename D>
-inline Range& dispose( Range& r, D disposer )
-{ dispose( range::begin( r ), range::end( r ), disposer ); return r; }
-
-template <typename Range>
-inline Range& dispose( Range& r )
-{ return dispose( r, delete_disposer_t() ); }
+template <typename Range, typename Comp>
+inline typename range::traits<Range>::iterator unique( Range& r, Comp c )
+{ return std::unique( range::begin( r ), range::end( r ), c ); }
 
 } // namespace range ========================================================
 
@@ -2270,6 +2394,7 @@ struct raid_event_t
 
 // Gear Stats ===============================================================
 
+namespace internal {
 struct gear_stats_t
 {
   double attribute[ ATTRIBUTE_MAX ];
@@ -2294,8 +2419,12 @@ struct gear_stats_t
   double parry_rating;
   double block_rating;
   double mastery_rating;
+};
+}
 
-  gear_stats_t() { memset( ( void* ) this, 0x00, sizeof( gear_stats_t ) ); }
+struct gear_stats_t : public internal::gear_stats_t
+{
+  gear_stats_t() : internal::gear_stats_t() {}
 
   void   add_stat( int stat, double value );
   void   set_stat( int stat, double value );
@@ -2553,7 +2682,7 @@ struct action_expr_t
   action_expr_t( action_t* a, const std::string& n, int t=TOK_UNKNOWN ) : action( a ), name_str( n ), result_type( t ), result_num( 0 ) {}
   action_expr_t( action_t* a, const std::string& n, double       constant_value ) : action( a ), name_str( n ) { result_type = TOK_NUM; result_num = constant_value; }
   action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action( a ), name_str( n ) { result_type = TOK_STR; result_str = constant_value; }
-  virtual ~action_expr_t() { name_str.clear(); result_str.clear(); };
+  virtual ~action_expr_t() {}
   virtual int evaluate() { return result_type; }
   virtual const char* name() { return name_str.c_str(); }
   virtual bool success() { return ( evaluate() == TOK_NUM ) && ( result_num != 0 ); }
@@ -2626,7 +2755,7 @@ struct spell_data_expr_t
   spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_type = TOK_NUM; result_num = constant_value; }
   spell_data_expr_t( sim_t* sim, const std::string& n, std::string& constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_type = TOK_STR; result_str = constant_value; }
   spell_data_expr_t( sim_t* sim, const std::string& n, std::vector<uint32_t>& constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_type = TOK_SPELL_LIST; result_spell_list = constant_value; }
-  virtual ~spell_data_expr_t() { name_str.clear(); result_str.clear(); };
+  virtual ~spell_data_expr_t() {}
   virtual int evaluate() { return result_type; }
   virtual const char* name() { return name_str.c_str(); }
 
@@ -2990,7 +3119,6 @@ struct sim_t : private thread_t
   FILE* output_file;
   int armory_throttle;
   int current_throttle;
-  int bcp_api_throttle;
   int debug_exp;
   int report_precision;
   int report_pets_separately;
@@ -3214,6 +3342,7 @@ struct event_compare_t
 
 // Gear Rating Conversions ==================================================
 
+namespace internal {
 struct rating_t
 {
   double  spell_haste,  spell_hit,  spell_crit;
@@ -3222,7 +3351,12 @@ struct rating_t
   double expertise;
   double dodge, parry, block;
   double mastery;
-  rating_t() { memset( this, 0x00, sizeof( rating_t ) ); }
+};
+}
+
+struct rating_t : public internal::rating_t
+{
+  rating_t() : internal::rating_t() {}
   void init( sim_t*, dbc_t& pData, int level, int type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
   static double get_attribute_base( sim_t*, dbc_t& pData, int level, player_type class_type, race_type race, base_stat_type stat_type );
@@ -4402,13 +4536,15 @@ struct action_t : public spell_id_t
   bool is_dtr_action;
   bool can_trigger_dtr;
 
+private:
+  void init_action_t_();
+
+public:
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
   action_t( int type, const active_spell_t& s, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const char* sname, player_t* p=0, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, int t=TREE_NONE, bool special=false );
   virtual ~action_t();
-
-  void init_action_t_();
 
   virtual void      parse_data();
   virtual void      parse_effect_data( int spell_id, int effect_nr );
@@ -4501,11 +4637,14 @@ struct attack_t : public action_t
 {
   double base_expertise, player_expertise, target_expertise;
 
+private:
+  void init_attack_t_();
+
+public:
   attack_t( const active_spell_t& s, int t=TREE_NONE, bool special=false );
   attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   attack_t( const char* name, const char* sname, player_t* p, int t = TREE_NONE, bool special=false );
   attack_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE, bool special=false );
-  void init_attack_t_();
 
   // Attack Overrides
   virtual double haste() SC_CONST;
@@ -4533,11 +4672,14 @@ struct attack_t : public action_t
 
 struct spell_t : public action_t
 {
+private:
+  void init_spell_t_();
+
+public:
   spell_t( const active_spell_t& s, int t=TREE_NONE );
   spell_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE );
   spell_t( const char* name, const char* sname, player_t* p, int t = TREE_NONE );
   spell_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE );
-  void init_spell_t_();
 
   // Spell Overrides
   virtual double haste() SC_CONST;
@@ -4565,7 +4707,10 @@ struct heal_t : public spell_t
   // Reporting
   double total_heal, total_actual;
 
+private:
   void init_heal_t_();
+
+public:
   heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE );
   heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE );
 
@@ -4595,7 +4740,10 @@ struct absorb_t : public spell_t
   // Reporting
   double total_heal, total_actual;
 
+private:
   void init_absorb_t_();
+
+public:
   absorb_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE );
   absorb_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE );
 
@@ -4621,7 +4769,7 @@ struct sequence_t : public action_t
   bool restarted;
 
   sequence_t( player_t*, const std::string& sub_action_str );
-  virtual ~sequence_t();
+
   virtual void schedule_execute();
   virtual void reset();
   virtual bool ready();
@@ -4709,6 +4857,7 @@ struct action_callback_t
   virtual void reset() {}
   virtual void activate() { active=true; }
   virtual void deactivate() { active=false; }
+
   static void trigger( std::vector<action_callback_t*>& v, action_t* a, void* call_data=0 )
   {
     if ( ! a -> player -> in_combat ) return;
@@ -4725,6 +4874,7 @@ struct action_callback_t
       }
     }
   }
+
   static void reset( std::vector<action_callback_t*>& v )
   {
     std::size_t size = v.size();
@@ -4954,17 +5104,23 @@ struct gain_t
 
 struct proc_t
 {
-  sim_t* sim;
-  player_t* player;
-  std::string name_str;
   double count;
-  double frequency;
+  double last_proc;
   double interval_sum;
   double interval_count;
-  double last_proc;
+
+  double frequency;
+  sim_t* sim;
+
+  player_t* player;
+  std::string name_str;
   proc_t* next;
+
   proc_t( sim_t* s, const std::string& n ) :
-    sim( s ), player( 0 ), name_str( n ), count( 0 ), frequency( 0 ), interval_sum( 0 ), interval_count( 0 ), last_proc( 0 ), next( 0 ) {}
+    count( 0 ), last_proc( 0 ), interval_sum( 0 ), interval_count( 0 ),
+    frequency( 0 ), sim( s ), player( 0 ), name_str( n ), next( 0 )
+  {}
+
   void occur()
   {
     count++;
@@ -4975,18 +5131,21 @@ struct proc_t
     }
     last_proc = sim -> current_time;
   }
-  void merge( proc_t* other )
+
+  void merge( const proc_t* other )
   {
     count          += other -> count;
     interval_sum   += other -> interval_sum;
     interval_count += other -> interval_count;
   }
-  void analyze( sim_t* sim )
+
+  void analyze( const sim_t* sim )
   {
     count /= sim -> iterations;
     if ( interval_count > 0 ) frequency = interval_sum / interval_count;
   }
-  const char* name() SC_CONST { return name_str.c_str(); }
+
+  const char* name() const { return name_str.c_str(); }
 };
 
 
@@ -5324,54 +5483,6 @@ struct wait_for_cooldown_t : public wait_action_base_t
   wait_for_cooldown_t( player_t* player, const char* cd_name );
   virtual double execute_time() SC_CONST;
 };
-
-// Sliding window averager ==================================================
-
-template <int HW, typename In, typename Out>
-void sliding_window_average( In first, In last, Out out )
-{
-  typedef typename std::iterator_traits<In>::value_type value_t;
-  typedef typename std::iterator_traits<In>::difference_type diff_t;
-  const diff_t n = std::distance( first, last );
-  const diff_t HALFWINDOW = static_cast<diff_t>( HW );
-
-  if ( n >= 2 * HALFWINDOW )
-  {
-    value_t window_sum = value_t();
-
-    // Fill right half of sliding window
-    In right = first;
-    for ( diff_t count = 0; count < HALFWINDOW; ++count )
-      window_sum += *right++;
-
-    // Fill left half of sliding window
-    for ( diff_t count = HALFWINDOW; count < 2 * HALFWINDOW; ++count )
-    {
-      window_sum += *right++;
-      *out++ = window_sum / ( count + 1 );
-    }
-
-    // Slide until window hits end of data
-    while ( right != last )
-    {
-      window_sum += *right++;
-      *out++ = window_sum / ( 2 * HALFWINDOW + 1 );
-      window_sum -= *first++;
-    }
-
-    // Empty right half of sliding window
-    for ( diff_t count = 2 * HALFWINDOW; count > HALFWINDOW; --count )
-    {
-      *out++ = window_sum / count;
-      window_sum -= *first++;
-    }
-  }
-  else
-  {
-    // input is pathologically small compared to window size, just average everything.
-    std::fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
-  }
-}
 
 inline buff_t* buff_t::find( sim_t* s, const std::string& name ) { return find( s -> buff_list, name ); }
 inline buff_t* buff_t::find( player_t* p, const std::string& name ) { return find( p -> buff_list, name ); }

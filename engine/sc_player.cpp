@@ -1285,11 +1285,9 @@ struct execute_pet_action_t : public action_t
   std::string action_str;
 
   execute_pet_action_t( player_t* player, pet_t* p, const std::string& as, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "execute_pet_action", player )
+    action_t( ACTION_OTHER, "execute_pet_action", player ), pet_action( 0 ), pet( p ), action_str( as )
   {
     parse_options( NULL, options_str );
-    pet = p;
-    action_str = as;
     trigger_gcd = 0;
   }
 
@@ -5547,9 +5545,11 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
 // player_t::create_talents =================================================
 
+namespace {
+
 struct compare_talents
 {
-  bool operator()( const talent_t* left, const talent_t* right ) SC_CONST
+  bool operator()( const talent_t* left, const talent_t* right ) const
   {
     const talent_data_t* l = left  -> t_data;
     const talent_data_t* r = right -> t_data;
@@ -5569,6 +5569,8 @@ struct compare_talents
     return ( l -> tab_page() < r -> tab_page() );
   }
 };
+
+}
 
 void player_t::create_talents()
 {
@@ -5605,7 +5607,7 @@ void player_t::create_talents()
   for( int i=0; i < MAX_TALENT_TREES; i++ )
   {
     std::vector<talent_t*>& tree = talent_trees[ i ];
-    if( ! tree.empty() ) std::sort( tree.begin(), tree.end(), compare_talents() );
+    if( ! tree.empty() ) range::sort( tree, compare_talents() );
   }
 }
 

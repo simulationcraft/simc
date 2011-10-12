@@ -19,7 +19,7 @@ struct sdata_field_t
   std::string        name;
 };
 
-static sdata_field_t _talent_data_fields[] =
+static const sdata_field_t _talent_data_fields[] =
 {
   { SD_TYPE_STR,      "name"          },
   { SD_TYPE_UNSIGNED, "id",           },
@@ -36,7 +36,7 @@ static sdata_field_t _talent_data_fields[] =
   { SD_TYPE_UNSIGNED, ""              },
 };
 
-static sdata_field_t _effect_data_fields[] =
+static const sdata_field_t _effect_data_fields[] =
 {
   { SD_TYPE_UNSIGNED, "id"             },
   { SD_TYPE_UNSIGNED, "flags"          },
@@ -61,7 +61,7 @@ static sdata_field_t _effect_data_fields[] =
   { SD_TYPE_INT,      "damage_range"   },
 };
 
-static sdata_field_t _spell_data_fields[] =
+static const sdata_field_t _spell_data_fields[] =
 {
   { SD_TYPE_STR,      "name"          },
   { SD_TYPE_UNSIGNED, "id",           },
@@ -110,7 +110,7 @@ static sdata_field_t _spell_data_fields[] =
   { SD_TYPE_STR,      ""              },
 };
 
-static std::string _class_strings[] =
+static const std::string _class_strings[] =
 {
   "",
   "warrior",
@@ -126,7 +126,7 @@ static std::string _class_strings[] =
   "druid"
 };
 
-static std::string _race_strings[] =
+static const std::string _race_strings[] =
 {
   "",
   "human",
@@ -144,7 +144,7 @@ static std::string _race_strings[] =
   "worgen",
 };
 
-static std::string _pet_class_strings[] =
+static const std::string _pet_class_strings[] =
 {
   "",
   "cunning",
@@ -391,8 +391,7 @@ struct spell_list_expr_t : public spell_data_expr_t
       return TOK_UNKNOWN;
     }
 
-    std::sort( result_spell_list.begin(), result_spell_list.end() );
-    std::unique( result_spell_list.begin(), result_spell_list.end() );
+    result_spell_list.resize( range::unique( range::sort( result_spell_list ) ) - result_spell_list.begin() );
 
     return TOK_SPELL_LIST;
   }
@@ -408,14 +407,9 @@ struct spell_list_expr_t : public spell_data_expr_t
       sim -> errorf( "Unsupported right side operand '%s' (%d) for operator &",
                      other.name_str.c_str(),
                      other.result_type );
-      return std::vector<uint32_t>();
     }
-
-    for ( std::vector<uint32_t>::const_iterator i = other.result_spell_list.begin(); i != other.result_spell_list.end(); i++ )
-    {
-      if ( std::find( result_spell_list.begin(), result_spell_list.end(), *i ) != result_spell_list.end() )
-        res.push_back( *i );
-    }
+    else
+      range::set_intersection( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
 
     return res;
   }
@@ -423,7 +417,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   // Merge two spell lists, uniqueing entries
   virtual std::vector<uint32_t> operator|( const spell_data_expr_t& other )
   {
-    std::vector<uint32_t> res( result_spell_list.size() + other.result_spell_list.size() );
+    std::vector<uint32_t> res;
 
     // Only or two spell lists together
     if ( other.result_type != TOK_SPELL_LIST )
@@ -431,14 +425,9 @@ struct spell_list_expr_t : public spell_data_expr_t
       sim -> errorf( "Unsupported right side operand '%s' (%d) for operator |",
                      other.name_str.c_str(),
                      other.result_type );
-      return std::vector<uint32_t>();
     }
-
-    std::merge( result_spell_list.begin(), result_spell_list.end(),
-                other.result_spell_list.begin(), other.result_spell_list.end(),
-                res.begin() );
-
-    std::unique( res.begin(), res.end() );
+    else
+      range::set_union( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
 
     return res;
   }
@@ -454,14 +443,9 @@ struct spell_list_expr_t : public spell_data_expr_t
       sim -> errorf( "Unsupported right side operand '%s' (%d) for operator -",
                      other.name_str.c_str(),
                      other.result_type );
-      return std::vector<uint32_t>();
     }
-
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
-    {
-      if ( std::find( other.result_spell_list.begin(), other.result_spell_list.end(), *i ) == other.result_spell_list.end() )
-        res.push_back( *i );
-    }
+    else
+      range::set_difference( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
 
     return res;
   }
@@ -528,7 +512,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   spell_data_filter_expr_t( sim_t* sim, expr_data_type_t type, const std::string& f_name, bool eq = false ) :
     spell_list_expr_t( sim, f_name, type, eq ), offset( 0 ), field_type( SD_TYPE_INT )
   {
-    sdata_field_t      * fields = 0;
+    const sdata_field_t      * fields = 0;
     unsigned             fsize;
     if ( type == DATA_TALENT )
     {
@@ -664,7 +648,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return false;
   }
 
-  virtual std::vector<uint32_t>& build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, token_type_t t ) SC_CONST
+  void build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, token_type_t t ) SC_CONST
   {
     char* p_data = 0;
 
@@ -681,7 +665,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
           else
             p_data = 0;
 
-          if ( p_data && std::find( res.begin(), res.end(), *i ) == res.end() && compare( p_data, other, t ) )
+          if ( p_data && range::find( res, *i ) == res.end() && compare( p_data, other, t ) )
             res.push_back( *i );
         }
       }
@@ -694,12 +678,10 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         else
           p_data = reinterpret_cast< char* > ( const_cast< spell_data_t* >( sim -> dbc.spell( *i ) ) );
 
-        if ( p_data && std::find( res.begin(), res.end(), *i ) == res.end() && compare( p_data, other, t ) )
+        if ( p_data && range::find( res, *i ) == res.end() && compare( p_data, other, t ) )
           res.push_back( *i );
       }
     }
-
-    return res;
   }
 
   virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other )
@@ -713,10 +695,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      result_type,
                      other.name_str.c_str(),
                      other.result_type );
-      return res;
     }
+    else
+      build_list( res, other, TOK_EQ );
 
-    return build_list( res, other, TOK_EQ );
+    return res;
   }
 
   virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& other )
@@ -730,10 +713,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      result_type,
                      other.name_str.c_str(),
                      other.result_type );
-      return res;
     }
+    else
+      build_list( res, other, TOK_NOTEQ );
 
-    return build_list( res, other, TOK_NOTEQ );
+    return res;
   }
 
   virtual std::vector<uint32_t> operator<( const spell_data_expr_t& other )
@@ -749,10 +733,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      other.name_str.c_str(),
                      other.result_type,
                      name_str.c_str() );
-      return res;
     }
+    else
+      build_list( res, other, TOK_LT );
 
-    return build_list( res, other, TOK_LT );
+    return res;
   }
 
   virtual std::vector<uint32_t> operator<=( const spell_data_expr_t& other )
@@ -768,10 +753,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      other.name_str.c_str(),
                      other.result_type,
                      name_str.c_str() );
-      return res;
     }
+    else
+      build_list( res, other, TOK_LTEQ );
 
-    return build_list( res, other, TOK_LTEQ );
+    return res;
   }
 
   virtual std::vector<uint32_t> operator>( const spell_data_expr_t& other )
@@ -787,10 +773,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      other.name_str.c_str(),
                      other.result_type,
                      name_str.c_str() );
-      return res;
     }
+    else
+      build_list( res, other, TOK_GT );
 
-    return build_list( res, other, TOK_GT );
+    return res;
   }
 
   virtual std::vector<uint32_t> operator>=( const spell_data_expr_t& other )
@@ -806,10 +793,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      other.name_str.c_str(),
                      other.result_type,
                      name_str.c_str() );
-      return res;
     }
+    else
+      build_list( res, other, TOK_GTEQ );
 
-    return build_list( res, other, TOK_GTEQ );
+    return res;
   }
 
   virtual std::vector<uint32_t> in( const spell_data_expr_t& other )
@@ -824,10 +812,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      other.name_str.c_str(),
                      other.result_type,
                      name_str.c_str() );
-      return res;
     }
+    else
+      build_list( res, other, TOK_IN );
 
-    return build_list( res, other, TOK_IN );
+    return res;
   }
 
   virtual std::vector<uint32_t> not_in( const spell_data_expr_t& other )
@@ -842,10 +831,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      other.name_str.c_str(),
                      other.result_type,
                      name_str.c_str() );
-      return res;
     }
+    else
+      build_list( res, other, TOK_NOTIN );
 
-    return build_list( res, other, TOK_NOTIN );
+    return res;
   }
 };
 
@@ -1198,22 +1188,42 @@ struct spell_school_expr_t : public spell_list_expr_t
   }
 };
 
-static spell_data_expr_t* build_expression_tree( sim_t*                     sim,
-    std::vector<expr_token_t>& tokens )
+template <typename Container, typename Disposer=delete_disposer_t>
+class auto_dispose_t : public Container
 {
-  std::vector<spell_data_expr_t*> stack;
-  spell_data_expr_t* res = 0;
+private:
+  template <typename D>
+  void dispose_( D disposer )
+  { range::dispose( *this, disposer ); }
+
+  void dispose_()
+  { dispose_( Disposer() ); }
+
+public:
+  ~auto_dispose_t() { dispose_(); }
+
+  using Container::clear;
+
+  void dispose()
+  { dispose_(); clear(); }
+
+  template <typename D>
+  void dispose( D disposer )
+  { dispose_( disposer ); clear(); }
+};
+
+static spell_data_expr_t* build_expression_tree( sim_t* sim,
+                                                 const std::vector<expr_token_t>& tokens )
+{
+  auto_dispose_t< std::vector<spell_data_expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
   for( size_t i=0; i < num_tokens; i++ )
   {
-    expr_token_t& t= tokens[ i ];
+    const expr_token_t& t= tokens[ i ];
 
     if ( t.type == TOK_NUM )
-    {
-      spell_data_expr_t* ex = new spell_data_expr_t( sim, t.label, atof( t.label.c_str() ) );
-      stack.push_back( ex );
-    }
+      stack.push_back( new spell_data_expr_t( sim, t.label, atof( t.label.c_str() ) ) );
     else if ( t.type == TOK_STR )
     {
       spell_data_expr_t* e = spell_data_expr_t::create_spell_expression( sim, t.label );
@@ -1221,31 +1231,28 @@ static spell_data_expr_t* build_expression_tree( sim_t*                     sim,
       if ( ! e )
       {
         sim -> errorf( "Unable to decode expression function '%s'\n", t.label.c_str() );
-        goto exit_label;
+        return 0;
       }
       stack.push_back( e );
     }
     else if ( expression_t::is_binary( t.type ) )
     {
       if ( stack.size() < 2 )
-        goto exit_label;
+        return 0;
       spell_data_expr_t* right = stack.back(); stack.pop_back();
       spell_data_expr_t* left  = stack.back(); stack.pop_back();
       if ( ! left || ! right )
-        goto exit_label;
+        return 0;
       stack.push_back( new sd_expr_binary_t( sim, t.label, t.type, left, right ) );
     }
   }
 
-  if ( stack.size() != 1 )
+  spell_data_expr_t* res = 0;
+  if ( stack.size() == 1 )
   {
-    goto exit_label;
+    res = stack.back();
+    stack.pop_back();
   }
-
-  res = stack.back();
-  stack.pop_back();
-exit_label:
-  range::dispose( stack );
   return res;
 }
 
@@ -1336,8 +1343,8 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
       return new spell_rune_expr_t( sim, data_type );
     else
     {
-      sdata_field_t* s = 0;
-      sdata_field_t* fields = 0;
+      const sdata_field_t* s = 0;
+      const sdata_field_t* fields = 0;
       unsigned       fsize;
       if ( data_type == DATA_TALENT )
       {

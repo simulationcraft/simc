@@ -9,7 +9,7 @@
 
 set_bonus_t::set_bonus_t()
 {
-  memset( ( void* ) this, 0x00, sizeof( set_bonus_t ) );
+  range::fill( count, 0 );
 
   count[ SET_T11_2PC_CASTER ] = count[ SET_T11_2PC_MELEE ] = count[ SET_T11_2PC_TANK ] = count[ SET_T11_2PC_HEAL ] = -1;
   count[ SET_T11_4PC_CASTER ] = count[ SET_T11_4PC_MELEE ] = count[ SET_T11_4PC_TANK ] = count[ SET_T11_4PC_HEAL ] = -1;

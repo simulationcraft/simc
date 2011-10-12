@@ -179,9 +179,9 @@ double sample_data_t::percentile( double x )
 
 void sample_data_t::sort_data()
 {
-  if ( ! sorted && data.size() > 0 )
+  if ( ! sorted )
   {
-    std::sort( data.begin(), data.end() );
+    range::sort( data );
     sorted = true;
   }
 }
@@ -190,9 +190,9 @@ void sample_data_t::sort_data()
 
 void sample_data_t::merge( const sample_data_t& other )
 {
-
   count += other.count;
 
+  // assert( simple == other.simple );
   if ( simple )
     sum += other.sum;
   else

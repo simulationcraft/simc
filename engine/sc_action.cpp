@@ -141,8 +141,6 @@ void action_t::init_action_t_()
   sync_action                    = NULL;
   next                           = NULL;
   marker                         = 0;
-  target_str                     = "";
-  label_str                      = "";
   last_reaction_time             = 0.0;
   dtr_action                     = 0;
   is_dtr_action                  = false;
@@ -230,10 +228,10 @@ action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, 
 action_t::~action_t()
 {
   if ( ! is_dtr_action )
+  {
     delete if_expr;
-
-  if ( ! is_dtr_action )
     delete interrupt_if_expr;
+  }
 }
 
 // action_t::parse_data =====================================================

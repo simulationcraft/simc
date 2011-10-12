@@ -658,7 +658,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( -60 ),
   path_str( "." ), output_file( stdout ),
-  armory_throttle( 5 ), current_throttle( 5 ), bcp_api_throttle( 0 ), debug_exp( 0 ),
+  armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
   // Report
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
@@ -1389,8 +1389,7 @@ void sim_t::analyze_player( player_t* p )
       s -> timeline_aps.clear();
       s -> timeline_aps.reserve( max_buckets );
       s -> timeline_amount.resize( max_buckets );
-      sliding_window_average<10>( s -> timeline_amount.begin(), s -> timeline_amount.end(),
-                                  std::back_inserter( s -> timeline_aps ) );
+      range::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( s -> timeline_aps ) );
       assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
 
       chart_t::timeline( s -> timeline_aps_chart, p, s -> timeline_aps, ( s -> name_str + " APS" ).c_str(), s -> aps );
@@ -1483,8 +1482,8 @@ void sim_t::analyze_player( player_t* p )
   }
 
   p -> timeline_dps.reserve( max_buckets );
-  sliding_window_average<10>( p -> timeline_dmg.begin(), p -> timeline_dmg.end(),
-                              std::back_inserter( p -> timeline_dps ) );
+  range::sliding_window_average<10>( p -> timeline_dmg,
+                                     std::back_inserter( p -> timeline_dps ) );
   assert( p -> timeline_dps.size() == ( std::size_t ) max_buckets );
 
   // Error Convergence ======================================================
@@ -1607,10 +1606,10 @@ void sim_t::analyze()
     analyze_player( actor_list[i] );
 
 
-  std::sort( players_by_dps.begin(), players_by_dps.end(), compare_dps()  );
-  std::sort( players_by_hps.begin(), players_by_hps.end(), compare_hps()  );
-  std::sort( players_by_name.begin(), players_by_name.end(), compare_name() );
-  std::sort( targets_by_name.begin(), targets_by_name.end(), compare_name() );
+  range::sort( players_by_dps, compare_dps() );
+  range::sort( players_by_hps, compare_hps() );
+  range::sort( players_by_name, compare_name() );
+  range::sort( targets_by_name, compare_name() );
 
   chart_t::raid_aps     ( dps_charts,     this, players_by_dps, true );
   chart_t::raid_aps     ( hps_charts,     this, players_by_hps, false );

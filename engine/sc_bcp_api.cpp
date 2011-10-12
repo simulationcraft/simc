@@ -642,7 +642,7 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
     int rank;
     if ( ! js_t::get_value( rank, characters[ i ], "rank" ) ||
         ( ( max_rank > 0 ) && ( rank > max_rank ) ) ||
-        ( ! ranks.empty() && std::find( ranks.begin(), ranks.end(), rank ) == ranks.end() ) )
+        ( ! ranks.empty() && range::find( ranks, rank ) == ranks.end() ) )
       continue;
 
     std::string cname;
@@ -652,7 +652,7 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
 
   if ( names.empty() ) return true;
 
-  std::sort( names.begin(), names.end() );
+  range::sort( names );
 
   for ( std::size_t i = 0, n = names.size(); i < n; ++i )
   {
@@ -667,10 +667,6 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
         sim -> errorf( "Wowhead: Failed to download player '%s'\n", cname.c_str() );
       // Just ignore invalid players
     }
-
-    //  Small throttle
-    thread_t::sleep( sim -> bcp_api_throttle );
-
   }
 
   return true;

@@ -895,7 +895,7 @@ static void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
 
 struct compare_hat_donor_interval
 {
-  bool operator()( player_t* l, player_t* r ) SC_CONST
+  bool operator()( const player_t* l, const player_t* r ) const
   {
     return( l -> procs.hat_donor -> frequency < r -> procs.hat_donor -> frequency );
   }
@@ -916,7 +916,7 @@ static void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
   int num_donors = ( int ) hat_donors.size();
   if( num_donors )
   {
-    std::sort( hat_donors.begin(), hat_donors.end(), compare_hat_donor_interval()  );
+    range::sort( hat_donors, compare_hat_donor_interval()  );
 
     writer.begin_tag( "honor_among_thieves" );
 

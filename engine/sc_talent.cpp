@@ -180,17 +180,11 @@ uint32_t talent_t::rank() SC_CONST
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
   s_type( T_SPELL ), s_id( 0 ), s_data( 0 ), s_enabled( false ), s_player( player ),
-  s_overridden( false ), s_required_talent( 0 ), s_single( 0 ), s_tree( -1 )
+  s_overridden( false ), s_token( t_name ? t_name : "" ),
+  s_required_talent( 0 ), s_single( 0 ), s_tree( -1 )
 {
-  if ( ! t_name )
-    s_token = "";
-  else
-    s_token = t_name;
-
   armory_t::format( s_token, FORMAT_ASCII_MASK );
-
-  // Dummy constructor for old-style
-  memset( s_effects, 0, sizeof( s_effects ) );
+  range::fill( s_effects, 0 );
 }
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
@@ -212,29 +206,22 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
 spell_id_t::~spell_id_t()
 {
   if ( s_player )
-  {
     s_player -> spell_list.remove( this );
-  }
 }
 
 bool spell_id_t::initialize( const char* s_name )
 {
-  player_type player_class;
-  uint32_t n_effects       = 0;
+  range::fill( s_effects, 0 );
 
   assert( s_player && s_player -> sim );
 
-  memset( s_effects, 0, sizeof( s_effects ) );
-
-  player_class = s_player -> type;
-
   // For pets, find stuff based on owner class, as that's how our spell lists
   // are structured
+  player_type player_class;
   if ( s_player -> is_pet() )
-  {
-    const pet_t* pet = s_player -> cast_pet();
-    player_class = pet -> owner -> type;
-  }
+    player_class = s_player -> cast_pet() -> owner -> type;
+  else
+    player_class = s_player -> type;
 
   // Search using spell name to find the spell type
   if ( ! s_id )
@@ -318,6 +305,7 @@ bool spell_id_t::initialize( const char* s_name )
   }
 
   // Map s_effects, figure out if this is a s_single-effect spell
+  uint32_t n_effects = 0;
   for ( int i = 0; i < MAX_EFFECTS; i++ )
   {
     if ( ! s_data -> _effect[ i ] )

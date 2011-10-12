@@ -5,7 +5,7 @@
 
 #include "simulationcraft.h"
 
-namespace {  // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // is_number ================================================================
 
@@ -712,7 +712,7 @@ bool armory_t::download_guild( sim_t* sim,
       if ( ( max_rank > 0 ) && ( character_rank > max_rank ) )
         continue;
 
-      if ( ( ranks.size() > 0 ) && ( std::find( ranks.begin(), ranks.end(), character_rank ) == ranks.end() ) )
+      if ( ( ! ranks.empty() ) && ( range::find( ranks, character_rank ) == ranks.end() ) )
         continue;
 
       int player_type = util_t::translate_class_id( character_cid );
@@ -728,7 +728,7 @@ bool armory_t::download_guild( sim_t* sim,
   num_characters = ( int ) character_names.size();
   if ( num_characters > 0 )
   {
-    std::sort( character_names.begin(), character_names.end() );
+    range::sort( character_names );
 
     for ( int i=0; i < num_characters; i++ )
     {

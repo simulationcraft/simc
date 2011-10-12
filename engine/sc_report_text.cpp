@@ -7,21 +7,19 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-
-static void simplify_html( std::string& buffer )
+void simplify_one( std::string& s, const char* from, char to )
 {
-  for ( std::string::size_type pos = buffer.find( "&lt;", 0 ); pos != std::string::npos; pos = buffer.find( "&lt;", pos ) )
-  {
-    buffer.replace( pos, 4, "<" );
-  }
-  for ( std::string::size_type pos = buffer.find( "&gt;", 0 ); pos != std::string::npos; pos = buffer.find( "&gt;", pos ) )
-  {
-    buffer.replace( pos, 4, ">" );
-  }
-  for ( std::string::size_type pos = buffer.find( "&amp;", 0 ); pos != std::string::npos; pos = buffer.find( "&amp;", pos ) )
-  {
-    buffer.replace( pos, 5, "&" );
-  }
+  std::size_t len = strlen( from );
+  std::string::size_type pos = 0;
+  while ( ( pos = s.find( from, pos ) ) != s.npos )
+    s.replace( pos, len, 1, to );
+}
+
+void simplify_html( std::string& buffer )
+{
+  simplify_one( buffer, "&lt;", '<' );
+  simplify_one( buffer, "&gt;", '>' );
+  simplify_one( buffer, "&amp;", '&' );
 }
 
 // print_text_action ========================================================
@@ -768,13 +766,17 @@ static void print_text_reference_dps( FILE* file, sim_t* sim )
   }
 }
 
+namespace {
+
 struct compare_hat_donor_interval
 {
-  bool operator()( player_t* l, player_t* r ) SC_CONST
+  bool operator()( player_t* l, player_t* r ) const
   {
-    return( l -> procs.hat_donor -> frequency < r -> procs.hat_donor -> frequency );
+    return ( l -> procs.hat_donor -> frequency < r -> procs.hat_donor -> frequency );
   }
 };
+
+}
 
 static void print_text_hat_donors( FILE* file, sim_t* sim )
 {
@@ -791,7 +793,7 @@ static void print_text_hat_donors( FILE* file, sim_t* sim )
   int num_donors = ( int ) hat_donors.size();
   if( num_donors )
   {
-    std::sort( hat_donors.begin(), hat_donors.end(), compare_hat_donor_interval()  );
+    range::sort( hat_donors, compare_hat_donor_interval()  );
 
     util_t::fprintf( file, "\nHonor Among Thieves Donor Report:\n" );
 
