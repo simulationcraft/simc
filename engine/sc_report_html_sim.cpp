@@ -33,9 +33,9 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     }
   }
 
-  fputs( "\t\t<div id=\"table-of-contents\" class=\"section section-open\">\n"
-         "\t\t\t<h2 class=\"toggle open\">Table of Contents</h2>\n"
-         "\t\t\t<div class=\"toggle-content\">\n", file );
+  fputs( "\t\t<div id=\"table-of-contents\" class=\"section\">\n"
+         "\t\t\t<h2 class=\"toggle\">Table of Contents</h2>\n"
+         "\t\t\t<div class=\"toggle-content hide\">\n", file );
 
   // set number of columns
   int n;         // number of columns
@@ -375,17 +375,17 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
 
   assert( sim ->  dps_charts.size() == sim -> gear_charts.size() );
 
-  // Left side charts: dps, timeline, raid events
+  // Left side charts: dps, raid events
   fprintf( file,
            "\t\t\t\t<div class=\"charts charts-left\">\n" );
   int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
+    fprintf( file, "\t\t\t\t\t<map id='DPSMAP%d' name='DPSMAP%d'></map>\n", i, i );
     fprintf( file,
-             "\t\t\t\t\t<a href=\"#help-dps\" class=\"help\"><img src=\"%s\" alt=\"DPS Chart\" /></a>\n",
-             sim -> dps_charts[ i ].c_str() );
+             "\t\t\t\t\t<img id='DPSIMG%d' src=\"%s\" alt=\"DPS Chart\" />\n",
+             i, sim -> dps_charts[ i ].c_str() );
   }
-
 
   if ( ! sim -> raid_events_str.empty() )
   {
@@ -419,16 +419,17 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
   fprintf( file,
            "\t\t\t\t</div>\n" );
 
-  // Right side charts: dpet
+  // Right side charts: hps
   fprintf( file,
            "\t\t\t\t<div class=\"charts\">\n" );
 
   count = ( int ) sim -> hps_charts.size();
   for ( int i=0; i < count; i++ )
   {
+    fprintf( file, "\t\t\t\t\t<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", i, i );
     fprintf( file,
-             "\t\t\t\t\t<a href=\"#help-dps\" class=\"help\"><img src=\"%s\" alt=\"HPS Chart\" /></a>\n",
-             sim -> hps_charts[ i ].c_str() );
+             "\t\t\t\t\t<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
+             i, sim -> hps_charts[ i ].c_str() );
   }
   // RNG chart
   if ( sim -> report_rng )
@@ -456,6 +457,86 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
            "\t\t\t\t<div class=\"clear\"></div>\n"
            "\t\t\t</div>\n"
            "\t\t</div>\n\n" );
+
+}
+
+// print_html_raid_imagemaps ==================================================
+
+static void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps)
+{
+  std::vector<player_t*> player_list = (dps) ? sim -> players_by_dps : sim -> players_by_hps;
+  int start = num * MAX_PLAYERS_PER_CHART;
+  unsigned int end = start + MAX_PLAYERS_PER_CHART;
+
+  for ( unsigned int i=0; i < player_list.size(); i++ )
+  {
+    player_t* p = player_list[ i ];
+    if ( dps ? p -> dps.mean <= 0 : p -> hps.mean <=0 )
+    {
+      player_list.resize( i );
+      break;
+    }
+  }
+
+  if ( end > player_list.size() ) end = player_list.size();
+
+  fprintf( file, "\t\t\tn = [" );
+  for ( int i=end-1; i >= start; i-- )
+  {
+    fprintf( file, "\"%s\"", player_list[i] -> name_str.c_str() );
+    if (i != start) fprintf( file, ", " );
+  }
+  fprintf( file, "];\n" );
+
+  char imgid[8];
+  snprintf( imgid, 8, "%sIMG%d", (dps) ? "DPS" : "HPS", num );
+  char mapid[8];
+  snprintf( mapid, 8, "%sMAP%d", (dps) ? "DPS" : "HPS", num );
+
+  fprintf( file, "\t\t\tu = document.getElementById('%s').src;\n"
+                 "\t\t\tgetMap(u, n, function(mapStr) {\n"
+                 "\t\t\t\tdocument.getElementById('%s').innerHTML += mapStr;\n"
+                 "\t\t\t\t$j('#%s').attr('usemap','#%s');\n"
+                 "\t\t\t\t$j('#%s area').click(function(e) {\n"
+                 "\t\t\t\t\tanchor = $j(this).attr('href');\n"
+                 "\t\t\t\t\ttarget = $j(anchor).children('h2:first');\n"
+                 "\t\t\t\t\topen_anchor(target);\n"
+                 "\t\t\t\t});\n"
+                 "\t\t\t});\n\n",
+                 imgid, mapid, imgid, mapid, mapid );
+}
+
+static void print_html_raid_imagemaps( FILE*  file, sim_t* sim )
+{
+
+  fprintf( file, "\t\t<script type=\"text/javascript\">\n"
+                 "\t\t\tvar $j = jQuery.noConflict();\n"
+                 "\t\t\tfunction getMap(url, names, mapWrite) {\n"
+                 "\t\t\t\t$j.getJSON(url + '&chof=json&callback=?', function(jsonObj) {\n"
+                 "\t\t\t\t\tvar area = false;\n"
+                 "\t\t\t\t\tvar chart = jsonObj.chartshape;\n"
+                 "\t\t\t\t\tvar mapStr = '';\n"
+                 "\t\t\t\t\tfor (var i = 0; i < chart.length; i++) {\n"
+                 "\t\t\t\t\t\tarea = chart[i];\n"
+                 "\t\t\t\t\t\tmapStr += \"\\n  <area name='\" + area.name + \"' shape='\" + area.type + \"' coords='\" + area.coords.join(\",\") + \"' href='#\" + names[i] + \"'  title='\" + names[i] + \"'>\";\n"
+                 "\t\t\t\t\t}\n"
+                 "\t\t\t\t\tmapWrite(mapStr);\n"
+                 "\t\t\t\t});\n"
+                 "\t\t\t}\n\n" );
+
+  int count = ( int ) sim -> dps_charts.size();
+  for ( int i=0; i < count; i++ )
+  {
+    print_html_raid_imagemap(file, sim, i, true);
+  }
+
+  count = ( int ) sim -> hps_charts.size();
+  for ( int i=0; i < count; i++ )
+  {
+    print_html_raid_imagemap(file, sim, i, false);
+  }
+
+  fprintf( file, "\t\t</script>\n" );
 
 }
 
@@ -1541,6 +1622,9 @@ void report_t::print_html( sim_t* sim )
              "\t\t\t});\n"
              "\t\t</script>\n\n" );
   }
+
+  if ( num_players > 1 ) print_html_raid_imagemaps( file, sim );
+
   fprintf( file,
            "\t</body>\n\n"
            "</html>\n" );

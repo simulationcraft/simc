@@ -7,8 +7,6 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-#define MAX_PLAYERS_PER_CHART 20
-
 // Colors returned by this function are defined as http://www.wowpedia.org/Class_colors
 static const char* class_color( int type )
 {
