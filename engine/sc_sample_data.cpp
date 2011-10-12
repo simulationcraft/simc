@@ -7,12 +7,12 @@
 
 // sample_data_t::sample_data_t =============================================
 
-sample_data_t::sample_data_t( bool s ):
+sample_data_t::sample_data_t( const bool s, const bool mm ):
   sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),mean( std::numeric_limits<double>::quiet_NaN() ),
-  min( std::numeric_limits<double>::quiet_NaN() ),max( std::numeric_limits<double>::quiet_NaN() ),
+  min( std::numeric_limits<double>::infinity() ),max( -std::numeric_limits<double>::infinity() ),
   variance( std::numeric_limits<double>::quiet_NaN() ),std_dev( std::numeric_limits<double>::quiet_NaN() ),
   median( std::numeric_limits<double>::quiet_NaN() ), mean_std_dev( std::numeric_limits<double>::quiet_NaN() ),
-  simple( s ), count( 0 ),
+  simple( s ), min_max( mm ), count( 0 ),
   analyzed( false ),sorted( false )
 {
 }
@@ -23,8 +23,20 @@ void sample_data_t::add( double x )
 {
   count++;
 
+  x += tmp;
+
+  tmp = 0;
+
   if ( simple )
   {
+    if ( min_max )
+    {
+      if ( x < min )
+        min = x;
+      if ( x > max )
+        max = x;
+    }
+
     sum += x;
   }
   else

@@ -2567,6 +2567,7 @@ struct action_expr_t
 struct sample_data_t
 {
   std::vector<double> data;
+  double tmp;
   // Analyzed Results
   double sum;
   double mean;
@@ -2578,14 +2579,15 @@ struct sample_data_t
   double mean_std_dev;
   std::vector<int> distribution;
   const bool simple;
+  const bool min_max;
   int count;
 
   bool analyzed;
   bool sorted;
 
-  sample_data_t( bool s=true );
+  sample_data_t( bool s=true, bool mm=false );
 
-  void add( double );
+  void add( double x=0 );
 
   void analyze(
     bool calc_basics=true,
@@ -4273,11 +4275,18 @@ struct stats_t
 
   struct stats_results_t
   {
-    double count, min_amount, max_amount, avg_amount, total_amount, actual_amount, pct, overkill_pct;
+    sample_data_t actual_amount, total_amount,iteration_actual_amount, iteration_total_amount,count,avg_actual_amount;
+    double pct, overkill_pct;
     stats_results_t() :
-      count( 0 ), min_amount( std::numeric_limits<double>::max() ), max_amount( 0 ),
-      avg_amount( 0 ), total_amount( 0 ), actual_amount( 0 ), pct( 0 ), overkill_pct( 0 ) {}
+      actual_amount( false, true ), total_amount(),
+      iteration_actual_amount(), iteration_total_amount(), count(), avg_actual_amount( false, true ),
+      pct( 0 ), overkill_pct( 0 )
+    { // Keep non hidden reported numbers clean
+      count.mean = 0;
+      actual_amount.mean = 0; actual_amount.max=0;
+      avg_actual_amount.mean = 0; }
     void merge( const stats_results_t& other );
+    void combat_end();
   };
   stats_results_t direct_results[ RESULT_MAX ];
   stats_results_t   tick_results[ RESULT_MAX ];

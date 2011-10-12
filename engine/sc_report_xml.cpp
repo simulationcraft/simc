@@ -466,37 +466,37 @@ static void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         writer.print_attribute( "pct", util_t::to_string( s -> direct_results[ RESULT_MISS ].pct, 1 ) );
         writer.end_tag();
       }
-      if( s -> direct_results[ RESULT_HIT ].avg_amount > 0 )
+      if( s -> direct_results[ RESULT_HIT ].avg_actual_amount.mean > 0 )
       {
         writer.begin_tag( "hit" );
-        writer.print_attribute( "avg", util_t::to_string( s -> direct_results[ RESULT_HIT ].avg_amount, 0 ) );
-        writer.print_attribute( "min", util_t::to_string( s -> direct_results[ RESULT_HIT ].min_amount, 0 ) );
-        writer.print_attribute( "max", util_t::to_string( s -> direct_results[ RESULT_HIT ].max_amount, 0 ) );
+        writer.print_attribute( "avg", util_t::to_string( s -> direct_results[ RESULT_HIT ].avg_actual_amount.mean, 0 ) );
+        writer.print_attribute( "min", util_t::to_string( s -> direct_results[ RESULT_HIT ].actual_amount.min, 0 ) );
+        writer.print_attribute( "max", util_t::to_string( s -> direct_results[ RESULT_HIT ].actual_amount.max, 0 ) );
         writer.end_tag(); // </hit>
       }
-      if ( s -> direct_results[ RESULT_CRIT ].avg_amount > 0 )
+      if ( s -> direct_results[ RESULT_CRIT ].avg_actual_amount.mean > 0 )
       {
         writer.begin_tag( "crit" );
-        writer.print_attribute( "avg", util_t::to_string( s -> direct_results[ RESULT_CRIT ].avg_amount, 0 ) );
-        writer.print_attribute( "min", util_t::to_string( s -> direct_results[ RESULT_CRIT ].min_amount, 0 ) );
-        writer.print_attribute( "max", util_t::to_string( s -> direct_results[ RESULT_CRIT ].max_amount, 0 ) );
+        writer.print_attribute( "avg", util_t::to_string( s -> direct_results[ RESULT_CRIT ].avg_actual_amount.mean, 0 ) );
+        writer.print_attribute( "min", util_t::to_string( s -> direct_results[ RESULT_CRIT ].actual_amount.min, 0 ) );
+        writer.print_attribute( "max", util_t::to_string( s -> direct_results[ RESULT_CRIT ].actual_amount.max, 0 ) );
         writer.print_attribute( "pct", util_t::to_string( s -> direct_results[ RESULT_CRIT ].pct, 1 ) );
         writer.end_tag(); // </crit>
       }
-      if ( s -> direct_results[ RESULT_GLANCE ].avg_amount > 0 )
+      if ( s -> direct_results[ RESULT_GLANCE ].avg_actual_amount.mean > 0 )
       {
         writer.begin_tag( "glance" );
-        writer.print_attribute( "avg", util_t::to_string( s -> direct_results[ RESULT_GLANCE ].avg_amount, 0 ) );
+        writer.print_attribute( "avg", util_t::to_string( s -> direct_results[ RESULT_GLANCE ].avg_actual_amount.mean, 0 ) );
         writer.print_attribute( "pct", util_t::to_string( s -> direct_results[ RESULT_GLANCE ].pct, 1 ) );
         writer.end_tag(); // </glance>
       }
-      if ( s -> direct_results[ RESULT_DODGE ].count > 0 )
+      if ( s -> direct_results[ RESULT_DODGE ].count.mean > 0 )
       {
         writer.begin_tag( "dodge" );
         writer.print_attribute( "pct", util_t::to_string( s -> direct_results[ RESULT_DODGE ].pct, 1 ) );
         writer.end_tag();
       }
-      if ( s -> direct_results[ RESULT_PARRY ].count > 0 )
+      if ( s -> direct_results[ RESULT_PARRY ].count.mean > 0 )
       {
         writer.begin_tag( "parry" );
         writer.print_attribute( "pct", util_t::to_string( s -> direct_results[ RESULT_PARRY ].pct, 1 ) );
@@ -508,26 +508,26 @@ static void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         writer.print_attribute( "count", util_t::to_string( s -> num_ticks ) );
         writer.end_tag();
       }
-      if ( s -> tick_results[ RESULT_HIT ].avg_amount > 0 || s -> tick_results[ RESULT_CRIT ].avg_amount > 0 )
+      if ( s -> tick_results[ RESULT_HIT ].avg_actual_amount.mean > 0 || s -> tick_results[ RESULT_CRIT ].avg_actual_amount.mean > 0 )
       {
         writer.begin_tag( "miss_tick" );
         writer.print_attribute( "pct", util_t::to_string( s -> tick_results[ RESULT_MISS ].pct, 1 ) );
         writer.end_tag();
       }
-      if ( s -> tick_results[ RESULT_HIT ].avg_amount > 0 )
+      if ( s -> tick_results[ RESULT_HIT ].avg_actual_amount.mean > 0 )
       {
         writer.begin_tag( "tick" );
-        writer.print_attribute( "avg", util_t::to_string( s -> tick_results[ RESULT_HIT ].avg_amount, 0 ) );
-        writer.print_attribute( "min", util_t::to_string( s -> tick_results[ RESULT_HIT ].min_amount, 0 ) );
-        writer.print_attribute( "max", util_t::to_string( s -> tick_results[ RESULT_HIT ].max_amount, 0 ) );
+        writer.print_attribute( "avg", util_t::to_string( s -> tick_results[ RESULT_HIT ].avg_actual_amount.mean, 0 ) );
+        writer.print_attribute( "min", util_t::to_string( s -> tick_results[ RESULT_HIT ].actual_amount.min, 0 ) );
+        writer.print_attribute( "max", util_t::to_string( s -> tick_results[ RESULT_HIT ].actual_amount.max, 0 ) );
         writer.end_tag();
       }
-      if ( s -> tick_results[ RESULT_CRIT ].avg_amount > 0 )
+      if ( s -> tick_results[ RESULT_CRIT ].avg_actual_amount.mean > 0 )
       {
         writer.begin_tag( "crit_tick" );
-        writer.print_attribute( "avg", util_t::to_string( s -> tick_results[ RESULT_CRIT ].avg_amount, 0 ) );
-        writer.print_attribute( "min", util_t::to_string( s -> tick_results[ RESULT_CRIT ].min_amount, 0 ) );
-        writer.print_attribute( "max", util_t::to_string( s -> tick_results[ RESULT_CRIT ].max_amount, 0 ) );
+        writer.print_attribute( "avg", util_t::to_string( s -> tick_results[ RESULT_CRIT ].avg_actual_amount.mean, 0 ) );
+        writer.print_attribute( "min", util_t::to_string( s -> tick_results[ RESULT_CRIT ].actual_amount.min, 0 ) );
+        writer.print_attribute( "max", util_t::to_string( s -> tick_results[ RESULT_CRIT ].actual_amount.max, 0 ) );
         writer.print_attribute( "pct", util_t::to_string( s -> tick_results[ RESULT_CRIT ].pct, 1 ) );
         writer.end_tag();
       }

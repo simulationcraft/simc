@@ -49,36 +49,36 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
     util_t::fprintf( file, "  Miss=%.2f%%", s -> direct_results[ RESULT_MISS ].pct );
   }
 
-  if ( s -> direct_results[ RESULT_HIT ].avg_amount > 0 )
+  if ( s -> direct_results[ RESULT_HIT ].avg_actual_amount.mean > 0 )
   {
     util_t::fprintf( file, "  Hit=%4.0f|%4.0f|%4.0f",
-                     s -> direct_results[ RESULT_HIT ].avg_amount,
-                     s -> direct_results[ RESULT_HIT ].min_amount,
-                     s -> direct_results[ RESULT_HIT ].max_amount );
+                     s -> direct_results[ RESULT_HIT ].avg_actual_amount.mean,
+                     s -> direct_results[ RESULT_HIT ].actual_amount.min,
+                     s -> direct_results[ RESULT_HIT ].actual_amount.max );
   }
-  if ( s -> direct_results[ RESULT_CRIT ].avg_amount > 0 )
+  if ( s -> direct_results[ RESULT_CRIT ].avg_actual_amount.mean > 0 )
   {
     util_t::fprintf( file,
                      "  Crit=%5.0f|%5.0f|%5.0f|%.1f%%",
-                     s -> direct_results[ RESULT_CRIT ].avg_amount,
-                     s -> direct_results[ RESULT_CRIT ].min_amount,
-                     s -> direct_results[ RESULT_CRIT ].max_amount,
+                     s -> direct_results[ RESULT_CRIT ].avg_actual_amount.mean,
+                     s -> direct_results[ RESULT_CRIT ].actual_amount.min,
+                     s -> direct_results[ RESULT_CRIT ].actual_amount.max,
                      s -> direct_results[ RESULT_CRIT ].pct );
   }
-  if ( s -> direct_results[ RESULT_GLANCE ].avg_amount > 0 )
+  if ( s -> direct_results[ RESULT_GLANCE ].avg_actual_amount.mean > 0 )
   {
     util_t::fprintf( file,
                      "  Glance=%4.0f|%.1f%%",
-                     s -> direct_results[ RESULT_GLANCE ].avg_amount,
+                     s -> direct_results[ RESULT_GLANCE ].avg_actual_amount.mean,
                      s -> direct_results[ RESULT_GLANCE ].pct );
   }
-  if ( s -> direct_results[ RESULT_DODGE ].count > 0 )
+  if ( s -> direct_results[ RESULT_DODGE ].count.mean > 0 )
   {
     util_t::fprintf( file,
                      "  Dodge=%.1f%%",
                      s -> direct_results[ RESULT_DODGE ].pct );
   }
-  if ( s -> direct_results[ RESULT_PARRY ].count > 0 )
+  if ( s -> direct_results[ RESULT_PARRY ].count.mean > 0 )
   {
     util_t::fprintf( file,
                      "  Parry=%.1f%%",
@@ -87,26 +87,26 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 
   if ( s -> num_ticks > 0 ) util_t::fprintf( file, "  TickCount=%.0f", s -> num_ticks );
 
-  if ( s -> tick_results[ RESULT_HIT ].avg_amount > 0 || s -> tick_results[ RESULT_CRIT ].avg_amount > 0 )
+  if ( s -> tick_results[ RESULT_HIT ].avg_actual_amount.mean > 0 || s -> tick_results[ RESULT_CRIT ].avg_actual_amount.mean > 0 )
   {
     util_t::fprintf( file, "  MissTick=%.1f%%", s -> tick_results[ RESULT_MISS ].pct );
   }
 
-  if ( s -> tick_results[ RESULT_HIT ].avg_amount > 0 )
+  if ( s -> tick_results[ RESULT_HIT ].avg_actual_amount.mean > 0 )
   {
     util_t::fprintf( file,
                      "  Tick=%.0f|%.0f|%.0f",
-                     s -> tick_results[ RESULT_HIT ].avg_amount,
-                     s -> tick_results[ RESULT_HIT ].min_amount,
-                     s -> tick_results[ RESULT_HIT ].max_amount );
+                     s -> tick_results[ RESULT_HIT ].avg_actual_amount.mean,
+                     s -> tick_results[ RESULT_HIT ].actual_amount.min,
+                     s -> tick_results[ RESULT_HIT ].avg_actual_amount.max );
   }
-  if ( s -> tick_results[ RESULT_CRIT ].avg_amount > 0 )
+  if ( s -> tick_results[ RESULT_CRIT ].avg_actual_amount.mean > 0 )
   {
     util_t::fprintf( file,
                      "  CritTick=%.0f|%.0f|%.0f|%.1f%%",
-                     s -> tick_results[ RESULT_CRIT ].avg_amount,
-                     s -> tick_results[ RESULT_CRIT ].min_amount,
-                     s -> tick_results[ RESULT_CRIT ].max_amount,
+                     s -> tick_results[ RESULT_CRIT ].avg_actual_amount.mean,
+                     s -> tick_results[ RESULT_CRIT ].actual_amount.min,
+                     s -> tick_results[ RESULT_CRIT ].actual_amount.max,
                      s -> tick_results[ RESULT_CRIT ].pct );
   }
 
