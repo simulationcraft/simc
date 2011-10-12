@@ -4646,6 +4646,14 @@ void death_knight_t::init_enchant()
       trigger_gcd = 0;
       init();
     }
+
+    void target_debuff( player_t* t, int dmg_type )
+    {
+      death_knight_spell_t::target_debuff( t, dmg_type );
+      death_knight_t* p = player -> cast_death_knight();
+
+      target_multiplier /= 1.0 + p -> buffs_rune_of_razorice -> stack() * 0.02;
+    }
   };
 
   struct razorice_callback_t : public action_callback_t
@@ -4658,6 +4666,7 @@ void death_knight_t::init_enchant()
       action_callback_t( p -> sim, p ), slot( s ), buff( b ), razorice_damage_proc( 0 )
     {
       razorice_damage_proc = new razorice_spell_t( p );
+
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
