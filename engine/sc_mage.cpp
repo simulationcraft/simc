@@ -1135,7 +1135,9 @@ void mage_spell_t::execute()
 
   if ( consumes_arcane_blast ) p -> buffs_arcane_blast -> expire();
 
-  p -> buffs_arcane_potency -> decrement();
+  if ( ( base_dd_max > 0 || base_td > 0 ) && ! background )
+    p -> buffs_arcane_potency -> decrement();
+
   if ( ! channeled && spell_t::execute_time() > 0 )
     p -> buffs_presence_of_mind -> expire();
 
@@ -1559,6 +1561,8 @@ struct arcane_missiles_t : public mage_spell_t
     mage_spell_t::execute();
     p -> buffs_arcane_missiles -> up();
     p -> buffs_arcane_missiles -> expire();
+
+    p -> buffs_arcane_potency -> decrement();
   }
 
   virtual void last_tick( dot_t* d )
@@ -2106,6 +2110,9 @@ struct flame_orb_t : public mage_spell_t
   {
     mage_spell_t::last_tick( d );
     mage_t* p = player -> cast_mage();
+
+    p -> buffs_arcane_potency -> decrement();
+
     if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> proc_chance() ) )
     {
       explosion_spell -> execute();
@@ -2507,6 +2514,9 @@ struct frostfire_orb_t : public mage_spell_t
   {
     mage_spell_t::last_tick( d );
     mage_t* p = player -> cast_mage();
+
+    p -> buffs_arcane_potency -> decrement();
+
     if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> proc_chance() ) )
     {
       explosion_spell -> execute();
