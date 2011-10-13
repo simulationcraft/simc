@@ -194,7 +194,15 @@ void sample_data_t::merge( const sample_data_t& other )
 
   // assert( simple == other.simple );
   if ( simple )
+  {
     sum += other.sum;
+
+    if ( min_max )
+    {
+      if ( other.min < min ) min = other.min;
+      if ( other.max > max ) max = other.max;
+    }
+  }
   else
     data.insert( data.end(), other.data.begin(), other.data.end() );
 }

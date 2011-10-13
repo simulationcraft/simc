@@ -103,10 +103,10 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
-             "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 90th Percentile - 10th Percentile )</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             data.percentile( 0.9 ) - data.percentile( 0.1 ) );
+             data.percentile( 0.95 ) - data.percentile( 0.05 ) );
     }
 
     if ( data.mean_std_dev == std::numeric_limits<double>::quiet_NaN() )
