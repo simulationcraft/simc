@@ -1223,12 +1223,6 @@ bool sim_t::init()
   else
     target = player_t::create( this, "enemy", "Fluffy_Pillow" );
 
-  // Target overrides
-  for ( player_t* t = target_list; t; t = t -> next )
-  {
-    if ( target_level >= 0 )
-      t -> level = target_level;
-  }
 
   if ( max_player_level < 0 )
   {
@@ -2053,7 +2047,6 @@ void sim_t::create_options()
     { "ptr",                              OPT_FUNC,   ( void* ) ::parse_ptr                         },
     { "threads",                          OPT_INT,    &( threads                                  ) },
     { "confidence",                       OPT_FLT,    &( confidence                               ) },
-
     { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
     { "item_db_source",                   OPT_FUNC,   ( void* ) ::parse_item_sources                },
     { "proxy",                            OPT_FUNC,   ( void* ) ::parse_proxy                       },

@@ -61,6 +61,7 @@ struct enemy_t : public player_t
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
+  virtual void init();
   virtual void init_base();
   virtual void init_resources( bool force=false );
   virtual void init_target();
@@ -312,6 +313,18 @@ action_t* enemy_t::create_action( const std::string& name,
   if ( name == "summon_add"              ) return new               summon_add_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+// enemy_t::init =======================================================
+
+void enemy_t::init()
+{
+  level = sim -> max_player_level + 3;
+
+  if ( sim -> target_level >= 0 )
+    level = sim -> target_level;
+
+  player_t::init();
 }
 
 // enemy_t::init_base =======================================================
