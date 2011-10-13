@@ -1,7 +1,7 @@
 #!./simc 
 
 warlock=Warlock_Affliction_T12H
-origin="http://chardev.org/?profile=193644"
+origin="http://chardev.org/?profile=251969"
 level=85
 race=orc
 position=back
@@ -47,7 +47,7 @@ hands=fingers_of_incineration,heroic=1,type=cloth,ilevel=397,quality=epic,stats=
 finger1=crystal_prison_band,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183mastery_150crit,reforge=mastery_hit,enchant=40int
 finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,gems=40int_10int,enchant=40int
 trinket1=rune_of_zeth,ilevel=378,quality=epic,stats=383crit,reforge=crit_hit,use=1277int_15dur_60cd
-trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
+trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_3300.7nature_15%_10stack_2.5cd_chance
 back=wings_of_flame,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_162crit_176mastery,reforge=mastery_hit,enchant=lightweave_embroidery
 main_hand=shoravon_greatstaff_of_annihilation,heroic=1,ilevel=397,quality=epic,stats=466int_730sta_357mastery_249crit_2786sp,reforge=mastery_hit,gems=40int_10int,enchant=power_torrent,weapon=staff_2.90speed_764min_1146max
 ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hit_101haste
@@ -55,13 +55,13 @@ ranged=trail_of_embers,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_89hi
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=7144
-# gear_intellect=5466
+# gear_intellect=5924
 # gear_spirit=21
 # gear_spell_power=2786
 # gear_hit_rating=1746
 # gear_crit_rating=1507
-# gear_haste_rating=2324
-# gear_mastery_rating=1164
+# gear_haste_rating=2196
+# gear_mastery_rating=971
 # gear_armor=9372
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
