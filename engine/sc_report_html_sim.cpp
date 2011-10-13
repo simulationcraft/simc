@@ -439,11 +439,12 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
     for ( int i=0; i < ( int ) sim -> players_by_name.size(); i++ )
     {
       player_t* p = sim -> players_by_name[ i ];
+      double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2.0;
       fprintf( file,
                "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
                p -> name(),
-               ( ( p -> dps.max - p -> dps.min ) / 2 ),
-               p -> dps.mean ? ( ( p -> dps.max - p -> dps.min ) / 2 ) * 100 / p -> dps.mean : 0 );
+               range,
+               p -> dps.mean ? ( range * 100 / p -> dps.mean ) : 0 );
     }
     fprintf( file,
              "\t\t\t\t\t</ul>\n" );
