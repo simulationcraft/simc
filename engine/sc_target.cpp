@@ -18,7 +18,8 @@ struct enemy_t : public player_t
   enemy_t( sim_t* s, const std::string& n, race_type r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
-    fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ), waiting_time( std::min( (int) floor( s -> max_time ), s -> wheel_seconds ) )
+    fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
+    waiting_time( 1.0 )
 
   {
     player_t** last = &( sim -> target_list );
@@ -317,6 +318,10 @@ action_t* enemy_t::create_action( const std::string& name,
 
 void enemy_t::init_base()
 {
+  waiting_time = std::min( (int) floor( sim -> max_time ), sim -> wheel_seconds );
+  if ( waiting_time < 1.0 )
+    waiting_time = 1.0;
+
   health_per_stamina = 10;
 
   base_attack_crit = 0.05;
