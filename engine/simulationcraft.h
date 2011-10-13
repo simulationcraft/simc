@@ -4432,8 +4432,8 @@ struct stats_t
     sample_data_t actual_amount, total_amount,iteration_actual_amount, iteration_total_amount,count,avg_actual_amount;
     double pct, overkill_pct;
     stats_results_t() :
-      actual_amount( false, true ), total_amount(),
-      iteration_actual_amount(), iteration_total_amount(), count(), avg_actual_amount( false, true ),
+      actual_amount( true, true ), total_amount(),
+      iteration_actual_amount(), iteration_total_amount(), count(), avg_actual_amount( true, true ),
       pct( 0 ), overkill_pct( 0 )
     { // Keep non hidden reported numbers clean
       count.mean = 0;

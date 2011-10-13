@@ -4663,7 +4663,6 @@ void warlock_t::reset()
 
   // Active
   active_pet = 0;
-  spells_burning_embers       = 0;
 }
 
 // warlock_t::create_expression =============================================
