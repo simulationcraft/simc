@@ -192,7 +192,7 @@ int chart_t::raid_aps( std::vector<std::string>& images,
                        std::vector<player_t*> players_by_aps,
                        bool dps )
 {
-  int num_players = ( int ) players_by_aps.size();
+  int num_players = static_cast<int>( players_by_aps.size() );
 
   if ( num_players == 0 )
     return 0;
@@ -220,7 +220,7 @@ int chart_t::raid_aps( std::vector<std::string>& images,
       break;
     }
   }
-  num_players = player_list.size();
+  num_players = static_cast<int>( player_list.size() );
 
   if ( num_players == 0 )
     return 0;

@@ -478,7 +478,7 @@ static void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps)
     }
   }
 
-  if ( end > player_list.size() ) end = player_list.size();
+  if ( end > player_list.size() ) end = static_cast<unsigned>( player_list.size() );
 
   fprintf( file, "\t\t\tn = [" );
   for ( int i=end-1; i >= start; i-- )
@@ -489,9 +489,9 @@ static void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps)
   fprintf( file, "];\n" );
 
   char imgid[8];
-  snprintf( imgid, 8, "%sIMG%d", (dps) ? "DPS" : "HPS", num );
+  util_t::snprintf( imgid, sizeof(imgid), "%sIMG%d", (dps) ? "DPS" : "HPS", num );
   char mapid[8];
-  snprintf( mapid, 8, "%sMAP%d", (dps) ? "DPS" : "HPS", num );
+  util_t::snprintf( mapid, sizeof(mapid), "%sMAP%d", (dps) ? "DPS" : "HPS", num );
 
   fprintf( file, "\t\t\tu = document.getElementById('%s').src;\n"
                  "\t\t\tgetMap(u, n, function(mapStr) {\n"
