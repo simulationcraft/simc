@@ -1392,8 +1392,8 @@ void sim_t::analyze_player( player_t* p )
       range::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( s -> timeline_aps ) );
       assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
 
-      chart_t::timeline( s -> timeline_aps_chart, p, s -> timeline_aps, ( s -> name_str + " APS" ).c_str(), s -> aps );
-      chart_t::distribution( s -> aps_distribution_chart,this, s -> portion_aps.distribution, ( s -> name_str + " APS" ).c_str(), s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
+      chart_t::timeline( s -> timeline_aps_chart, p, s -> timeline_aps, s -> name_str + " APS", s -> aps );
+      chart_t::distribution( s -> aps_distribution_chart,this, s -> portion_aps.distribution, s -> name_str + " APS", s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
 
       if ( s -> type == STATS_DMG )
       {
@@ -1547,27 +1547,27 @@ void sim_t::analyze_player( player_t* p )
   {
     chart_t::timeline        ( p -> timeline_resource_chart[i],      p,
                                p -> timeline_resource[i],
-                               ( encoded_name + ' ' + util_t::resource_type_string( i ) ).c_str(),
+                               encoded_name + ' ' + util_t::resource_type_string( i ),
                                0,
                                chart_t::resource_color( i ) );
   }
 
   chart_t::timeline          ( p -> timeline_dps_chart,              p,
                                p -> timeline_dps,
-                               ( encoded_name + " DPS" ).c_str(),
+                               encoded_name + " DPS",
                                p -> dps.mean );
 
   chart_t::timeline_dps_error( p -> timeline_dps_error_chart,        p );
   chart_t::dps_error         ( p -> dps_error_chart,                 p );
 
   chart_t::distribution      ( p -> distribution_dps_chart,          this,
-                               p -> dps.distribution, ( encoded_name + "DPS" ).c_str(),
+                               p -> dps.distribution, encoded_name + " DPS",
                                p -> dps.mean,
                                p -> dps.min,
                                p -> dps.max );
 
   chart_t::distribution      ( p -> distribution_deaths_chart,       this,
-                               p -> deaths.distribution, ( encoded_name + "Death" ).c_str(),
+                               p -> deaths.distribution, encoded_name + " Death",
                                p -> deaths.mean,
                                p -> deaths.min,
                                p -> deaths.max );

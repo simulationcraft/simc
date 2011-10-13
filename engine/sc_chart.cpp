@@ -1491,7 +1491,7 @@ const char* chart_t::reforge_dps( std::string& s,
 const char* chart_t::timeline( std::string& s,
                                player_t* p,
                                const std::vector<double>& timeline_data,
-                               const char* timeline_name,
+                               const std::string& timeline_name,
                                double avg,
                                const char* color )
 {
@@ -1549,7 +1549,7 @@ const char* chart_t::timeline( std::string& s,
   snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * avg / timeline_max ); s += buffer;
   s += "&amp;";
 
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Timeline", timeline_name ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Timeline", timeline_name.c_str() ); s += buffer;
   s += "&amp;";
   if ( p -> sim -> print_styles )
   {
@@ -1656,7 +1656,7 @@ const char* chart_t::timeline_dps_error( std::string& s,
 const char* chart_t::distribution( std::string& s,
                                    sim_t* sim,
                                    const std::vector<int>& dist_data,
-                                   const char* distribution_name,
+                                   const std::string& distribution_name,
                                    double avg, double min, double max )
 {
   int max_buckets = ( int ) dist_data.size();
@@ -1702,7 +1702,7 @@ const char* chart_t::distribution( std::string& s,
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( avg - min ) / ( max - min ) ); s += buffer;
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Distribution", distribution_name ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+Distribution", distribution_name.c_str() ); s += buffer;
   s += "&amp;";
   if ( sim -> print_styles )
   {

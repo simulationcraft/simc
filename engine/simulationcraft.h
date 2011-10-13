@@ -5197,12 +5197,12 @@ struct chart_t
   static const char* action_dmg       ( std::string& s, player_t* );
   static const char* time_spent       ( std::string& s, player_t* );
   static const char* gains            ( std::string& s, player_t*, resource_type );
-  static const char* timeline         ( std::string& s, player_t*, const std::vector<double>&, const char*, double avg=0, const char* color="FDD017" );
+  static const char* timeline         ( std::string& s, player_t*, const std::vector<double>&, const std::string&, double avg=0, const char* color="FDD017" );
   static const char* timeline_dps_error( std::string& s, player_t* );
   static const char* scale_factors    ( std::string& s, player_t* );
   static const char* scaling_dps      ( std::string& s, player_t* );
   static const char* reforge_dps      ( std::string& s, player_t* );
-  static const char* distribution ( std::string& s, sim_t*, const std::vector<int>&, const char*, double, double, double );
+  static const char* distribution ( std::string& s, sim_t*, const std::vector<int>&, const std::string&, double, double, double );
 
   static const char* gear_weights_lootrank  ( std::string& s, player_t* );
   static const char* gear_weights_wowhead   ( std::string& s, player_t* );
