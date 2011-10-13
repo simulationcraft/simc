@@ -9,11 +9,11 @@
 :: If you build SimC with MSVC 2008, then you need to use dlls from Qt-Framework 
 :: If you build SimC with the Qt SDK, then you need to use dlls from Qt-SDK
 :: As of this writing, the default locations from which to gather the dlls are:
-:: Qt-SDK: C:\Qt\2010.05\qt
-:: Qt-Framework: C:\Qt\4.7.1
+:: Qt-SDK: c:\QtSDK\Desktop\Qt\4.7.4\mingw
+:: Qt-Framework: C:\Qt\4.7.4
 
 :: Update the qt_dir as necessary
-set qt_dir=c:\qt\4.7.1
+set qt_dir=c:\QtSDK\Desktop\Qt\4.7.4\mingw
 
 :: IMPORTANT NOTE FOR DEBUGGING
 :: This script will ONLY copy the optimized Qt dlls
@@ -22,7 +22,7 @@ set qt_dir=c:\qt\4.7.1
 :: This script needs to be smarter if you wish to use the interactive debugger in the Qt SDK
 :: The debug Qt dlls are named: Qt___d4.dll
 
-REM Removing existing dlls
+:: Removing existing dlls
 del /q imageformats
 del /q phonon4.dll 
 del /q QtCore4.dll
@@ -30,12 +30,26 @@ del /q QtGui4.dll
 del /q QtNetwork4.dll
 del /q QtWebKit4.dll
 del /q QtXmlPatterns4.dll
+del /q mingwm10.dll
+del /q libgcc_s_dw2-1.dll
+del /q libeay32.dll
+del /q libssl32.dll
+del /q ssleay32.dll
 
-REM Copying new dlls
+:: Copying new dlls
 xcopy /I %qt_dir%\plugins\imageformats imageformats
 xcopy %qt_dir%\bin\phonon4.dll 
 xcopy %qt_dir%\bin\QtCore4.dll
 xcopy %qt_dir%\bin\QtGui4.dll
 xcopy %qt_dir%\bin\QtNetwork4.dll
 xcopy %qt_dir%\bin\QtWebKit4.dll
-xcopy %qt_dir%\bin\QtXmlPatterns4.dll
+:: xcopy %qt_dir%\bin\QtXmlPatterns4.dll
+
+:: Copy MingW runtime DLLs
+xcopy %qt_dir%\bin\mingwm10.dll
+xcopy %qt_dir%\bin\libgcc_s_dw2-1.dll
+
+:: Copy OpenSSL DLLs
+xcopy %qt_dir%\bin\libeay32.dll
+xcopy %qt_dir%\bin\libssl32.dll
+xcopy %qt_dir%\bin\ssleay32.dll
