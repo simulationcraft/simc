@@ -131,7 +131,7 @@ void stats_t::combat_end()
   {
     iteration_amount += children[ i ] -> iteration_amount;
   }
-  portion_aps.add( iteration_amount / player -> iteration_fight_length );
+  portion_aps.add( player -> iteration_fight_length ? iteration_amount / player -> iteration_fight_length : 0 );
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {
