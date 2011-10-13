@@ -1,7 +1,7 @@
 #!./simc 
 
 rogue=Rogue_Assassination_T12H
-origin="Rogue_CharDevSync.simc"
+origin="generate_Rogue_T12H.simc"
 level=85
 race=troll
 position=back
@@ -20,7 +20,7 @@ actions+=/stealth
 actions+=/kick
 actions+=/use_item,name=dark_phoenix_gloves
 actions+=/berserking
-actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee
+actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee|set_bonus.tier13_2pc_melee
 actions+=/garrote
 actions+=/slice_and_dice,if=buff.slice_and_dice.down
 actions+=/rupture,if=!ticking&time<6

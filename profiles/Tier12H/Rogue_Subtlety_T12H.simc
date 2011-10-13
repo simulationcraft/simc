@@ -1,7 +1,7 @@
 #!./simc 
 
 rogue=Rogue_Subtlety_T12H
-origin="Rogue_CharDevSync.simc"
+origin="generate_Rogue_T12H.simc"
 level=85
 race=troll
 position=back
@@ -18,7 +18,7 @@ actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<30
 actions+=/auto_attack
 actions+=/stealth
 actions+=/kick
-actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee
+actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee|set_bonus.tier13_2pc_melee
 actions+=/pool_energy,for_next=1
 actions+=/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down
 actions+=/use_item,name=dark_phoenix_gloves,if=buff.shadow_dance.up
