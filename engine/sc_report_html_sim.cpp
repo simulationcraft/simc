@@ -518,6 +518,7 @@ static void print_html_raid_imagemaps( FILE*  file, sim_t* sim )
                  "\t\t\t\t\tvar mapStr = '';\n"
                  "\t\t\t\t\tfor (var i = 0; i < chart.length; i++) {\n"
                  "\t\t\t\t\t\tarea = chart[i];\n"
+                 "\t\t\t\t\t\tarea.coords[2] = 523;\n"
                  "\t\t\t\t\t\tmapStr += \"\\n  <area name='\" + area.name + \"' shape='\" + area.type + \"' coords='\" + area.coords.join(\",\") + \"' href='#\" + names[i] + \"'  title='\" + names[i] + \"'>\";\n"
                  "\t\t\t\t\t}\n"
                  "\t\t\t\t\tmapWrite(mapStr);\n"
