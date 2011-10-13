@@ -255,13 +255,12 @@ void stats_t::analyze()
 
 inline void stats_t::stats_results_t::merge( const stats_results_t& other )
 {
-  count.merge( other.count);
-  iteration_total_amount.merge( other.iteration_total_amount);
-  iteration_actual_amount.merge( other.iteration_actual_amount);
+  count.merge( other.count );
+  iteration_total_amount.merge( other.iteration_total_amount );
+  iteration_actual_amount.merge( other.iteration_actual_amount );
   avg_actual_amount.merge( other.avg_actual_amount );
   actual_amount.merge( other.actual_amount );
-  total_amount.merge( other.actual_amount );
-
+  total_amount.merge( other.total_amount );
 }
 
 // stats_results_t::combat_end ===========================================================

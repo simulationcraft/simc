@@ -2422,7 +2422,7 @@ struct gear_stats_t
   double mastery_rating;
 
   gear_stats_t() :
-    spell_power( 0 ), spell_penetration( 0 ), mp5( 0 ), attack_power( 0 ), 
+    spell_power( 0 ), spell_penetration( 0 ), mp5( 0 ), attack_power( 0 ),
     expertise_rating( 0 ), expertise_rating2( 0 ), hit_rating( 0 ),
     hit_rating2( 0 ), crit_rating( 0 ), haste_rating( 0 ), weapon_dps( 0 ),
     weapon_speed( 0 ), weapon_offhand_dps( 0 ), weapon_offhand_speed( 0 ),
@@ -2748,8 +2748,6 @@ struct sample_data_t
 
 protected:
   void create_distribution( unsigned int num_buckets=50 );
-
-
 };
 
 struct spell_data_expr_t
@@ -3364,9 +3362,9 @@ struct rating_t
   double expertise;
   double dodge, parry, block;
   double mastery;
-  
-  rating_t() : 
-    spell_haste( 0 ), spell_hit( 0 ), spell_crit( 0 ), attack_haste( 0 ), 
+
+  rating_t() :
+    spell_haste( 0 ), spell_hit( 0 ), spell_crit( 0 ), attack_haste( 0 ),
     attack_hit( 0 ), attack_crit( 0 ), ranged_haste( 0 ), ranged_hit( 0 ),
     ranged_crit( 0 ), expertise( 0 ), dodge( 0 ), parry( 0 ), block( 0 ),
     mastery( 0 )

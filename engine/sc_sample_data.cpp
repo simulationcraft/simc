@@ -75,11 +75,9 @@ void sample_data_t::analyze(
   // Calculate Sum, Mean, Min, Max
   if ( calc_basics || calc_variance || create_dist || create_dist > 0 )
   {
-    sum = 0;
-    min = std::numeric_limits<double>::max();
-    max = 0;
+    sum = min = max = data[ 0 ];
 
-    for ( size_t i=0; i < sample_size; i++ )
+    for ( size_t i=1; i < sample_size; i++ )
     {
       double i_data = data[ i ];
       sum  += i_data;
@@ -88,9 +86,6 @@ void sample_data_t::analyze(
     }
 
     mean = sum / sample_size;
-
-    if ( min == std::numeric_limits<double>::max() )
-      min = std::numeric_limits<double>::quiet_NaN();
   }
 
   // Calculate Variance
@@ -151,6 +146,7 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
     for ( unsigned int i=0; i < data.size(); i++ )
     {
       int index = ( int ) ( num_buckets * ( data[ i ] - min + 1 ) / range );
+      assert( 0 <= index && static_cast<size_t>( index ) < distribution.size() );
       distribution[ index ]++;
     }
   }
@@ -162,18 +158,13 @@ double sample_data_t::percentile( double x )
 {
   assert( x >= 0 && x <= 1.0 );
 
-  if ( simple )
-    return std::numeric_limits<double>::quiet_NaN();
-
-  size_t sample_size = data.size();
-
-  if ( sample_size == 0 )
+  if ( simple || data.empty() )
     return std::numeric_limits<double>::quiet_NaN();
 
   sort_data();
 
   // Should be improved to use linear interpolation
-  return data[ ( int ) ( x * ( sample_size - 1 ) ) ];
+  return data[ ( int ) ( x * ( data.size() - 1 ) ) ];
 }
 
 // sample_data_t::sort_data =============================================
@@ -193,7 +184,8 @@ void sample_data_t::merge( const sample_data_t& other )
 {
   count += other.count;
 
-  // assert( simple == other.simple );
+  assert( simple == other.simple );
+
   if ( simple )
   {
     sum += other.sum;
