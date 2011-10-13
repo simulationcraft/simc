@@ -18,14 +18,11 @@ sample_data_t::sample_data_t( const bool s, const bool mm ):
 {
 }
 
-// sample_data_t::analyze =============================================
+// sample_data_t::analyze ===================================================
 
 void sample_data_t::add( double x )
 {
-  count++;
-
   x += tmp;
-
   tmp = 0;
 
   if ( simple )
@@ -39,13 +36,14 @@ void sample_data_t::add( double x )
     }
 
     sum += x;
+    ++count;
   }
   else
     data.push_back( x );
 }
 
 
-// sample_data_t::analyze =============================================
+// sample_data_t::analyze ===================================================
 
 void sample_data_t::analyze(
   bool calc_basics,
@@ -63,12 +61,9 @@ void sample_data_t::analyze(
     mean = sum / count;
     return;
   }
-  else
-    assert( ( std::size_t ) count == data.size() );
-
 
   size_t sample_size = data.size();
-
+  count = static_cast<int>( sample_size );
   if ( sample_size == 0 )
     return;
 
@@ -113,7 +108,7 @@ void sample_data_t::analyze(
   // Sort Data
   if ( s )
   {
-    sort_data();
+    sort();
 
     if ( sample_size % 2 == 1 )
       median = data[ ( sample_size - 1 )/ 2];
@@ -126,7 +121,7 @@ void sample_data_t::analyze(
 
 }
 
-// sample_data_t::create_dist =============================================
+// sample_data_t::create_dist ===============================================
 
 void sample_data_t::create_distribution( unsigned int num_buckets )
 {
@@ -152,24 +147,26 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
   }
 }
 
-// sample_data_t::percentile =============================================
+// sample_data_t::percentile ================================================
 
 double sample_data_t::percentile( double x )
 {
   assert( x >= 0 && x <= 1.0 );
 
-  if ( simple || data.empty() )
+  if ( data.empty() )
     return std::numeric_limits<double>::quiet_NaN();
 
-  sort_data();
+  assert( ! simple );
+
+  sort();
 
   // Should be improved to use linear interpolation
   return data[ ( int ) ( x * ( data.size() - 1 ) ) ];
 }
 
-// sample_data_t::sort_data =============================================
+// sample_data_t::sort ======================================================
 
-void sample_data_t::sort_data()
+void sample_data_t::sort()
 {
   if ( ! sorted )
   {
@@ -178,16 +175,15 @@ void sample_data_t::sort_data()
   }
 }
 
-// sample_data_t::merge =============================================
+// sample_data_t::merge =====================================================
 
 void sample_data_t::merge( const sample_data_t& other )
 {
-  count += other.count;
-
   assert( simple == other.simple );
 
   if ( simple )
   {
+    count += other.count;
     sum += other.sum;
 
     if ( min_max )

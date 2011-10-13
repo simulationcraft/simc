@@ -2729,6 +2729,9 @@ struct sample_data_t
 
   sample_data_t( bool s=true, bool mm=false );
 
+  void reserve( std::size_t capacity )
+  { if ( ! simple ) data.reserve( capacity ); }
+
   void add( double x=0 );
 
   void analyze(
@@ -2737,14 +2740,13 @@ struct sample_data_t
     bool s=false,
     unsigned int create_dist=0 );
 
-
   double percentile( double );
 
-  void sort_data();
+  void sort();
 
   void merge( const sample_data_t& );
 
-  void clear() { count = 0; data.clear(); distribution.clear(); }
+  void clear() { count = 0; sum = 0; data.clear(); distribution.clear(); }
 
 protected:
   void create_distribution( unsigned int num_buckets=50 );

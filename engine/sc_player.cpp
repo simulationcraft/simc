@@ -1700,26 +1700,24 @@ void player_t::init_rng()
 
 void player_t::init_stats()
 {
-  for ( int i=0; i < RESOURCE_MAX; i++ )
-  {
-    resource_lost[ i ] = resource_gained[ i ] = 0;
-  }
+  range::fill( resource_lost, 0 );
+  range::fill( resource_gained, 0 );
 
-  fight_length.data.reserve         ( sim -> iterations );
-  waiting_time.data.reserve         ( sim -> iterations );
-  executed_foreground_actions.data.reserve         ( sim -> iterations );
+  fight_length.reserve( sim -> iterations );
+  waiting_time.reserve( sim -> iterations );
+  executed_foreground_actions.reserve( sim -> iterations );
 
-  dmg.data.reserve         ( sim -> iterations );
-  compound_dmg.data.reserve( sim -> iterations );
-  dps.data.reserve         ( sim -> iterations );
-  dpse.data.reserve        ( sim -> iterations );
-  dtps.data.reserve        ( sim -> iterations );
+  dmg.reserve( sim -> iterations );
+  compound_dmg.reserve( sim -> iterations );
+  dps.reserve( sim -> iterations );
+  dpse.reserve( sim -> iterations );
+  dtps.reserve( sim -> iterations );
 
-  heal.data.reserve         ( sim -> iterations );
-  compound_heal.data.reserve( sim -> iterations );
-  hps.data.reserve         ( sim -> iterations );
-  hpse.data.reserve        ( sim -> iterations );
-  htps.data.reserve        ( sim -> iterations );
+  heal.reserve( sim -> iterations );
+  compound_heal.reserve( sim -> iterations );
+  hps.reserve( sim -> iterations );
+  hpse.reserve( sim -> iterations );
+  htps.reserve( sim -> iterations );
 }
 
 // player_t::init_values ====================================================
