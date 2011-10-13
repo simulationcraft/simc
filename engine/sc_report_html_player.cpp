@@ -89,17 +89,17 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
     {
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
-             "\t\t\t\t\t\t\t\t\t<td class=\"left\">10th Percentile</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             data.percentile( 0.1 ) );
+             data.percentile( 0.05 ) );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
-             "\t\t\t\t\t\t\t\t\t<td class=\"left\">90th Percentile</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             data.percentile( 0.9 ) );
+             data.percentile( 0.95 ) );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
@@ -1946,6 +1946,7 @@ static void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">DPS(e)</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DPS Error</a></th>\n"
+                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DPS Range</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n" );
   // Heal
   if ( p -> hps.mean > 0 )
@@ -1953,6 +1954,7 @@ static void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">HPS(e)</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
+                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">HPS Range</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">HPR</a></th>\n" );
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
@@ -1965,28 +1967,40 @@ static void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_
                    "\t\t\t\t\t\t\t<tr>\n" );
   // Damage
   if ( p -> dps.mean > 0 )
+  {
+    double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2;
     util_t::fprintf( file,
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
+                     "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
                      p -> dps.mean,
                      p -> dpse.mean,
                      p -> dps_error,
                      p -> dps.mean ? p -> dps_error * 100 / p -> dps.mean : 0,
+                     range,
+                     p -> dps.mean ? range / p -> dps.mean * 100.0 : 0,
                      p -> dpr );
+  }
   // Heal
   if ( p -> hps.mean > 0 )
+  {
+    double range = ( p -> hps.percentile( 0.95 ) - p -> hps.percentile( 0.05 ) ) / 2;
     util_t::fprintf( file,
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
+                     "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
                      p -> hps.mean,
                      p -> hpse.mean,
                      p -> hps_error,
                      p -> hps.mean ? p -> hps_error * 100 / p -> hps.mean : 0,
+                     range,
+                     p -> hps.mean ? range / p -> hps.mean * 100.0 : 0,
                      p -> hpr );
+  }
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
