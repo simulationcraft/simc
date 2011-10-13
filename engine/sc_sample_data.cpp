@@ -8,6 +8,7 @@
 // sample_data_t::sample_data_t =============================================
 
 sample_data_t::sample_data_t( const bool s, const bool mm ):
+  tmp( 0 ),
   sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),mean( std::numeric_limits<double>::quiet_NaN() ),
   min( std::numeric_limits<double>::infinity() ),max( -std::numeric_limits<double>::infinity() ),
   variance( std::numeric_limits<double>::quiet_NaN() ),std_dev( std::numeric_limits<double>::quiet_NaN() ),
