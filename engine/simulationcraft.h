@@ -50,6 +50,7 @@
 #include <numeric>
 #include <queue>
 #include <sstream>
+#include <stack>
 #include <string>
 #include <typeinfo>
 #include <vector>
@@ -3114,7 +3115,7 @@ struct sim_t : private thread_t
   std::string output_file_str, html_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
   std::string path_str;
-  std::deque<std::string> active_files;
+  std::stack<std::string> active_files;
   std::vector<std::string> error_list;
   FILE* output_file;
   int armory_throttle;

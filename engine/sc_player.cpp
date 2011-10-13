@@ -535,7 +535,7 @@ player_t::player_t( sim_t*             s,
   off_hand_weapon.slot = SLOT_OFF_HAND;
   ranged_weapon.slot = SLOT_RANGED;
 
-  if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.back();
+  if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.top();
 
   range::fill( talent_tab_points, 0 );
   range::fill( tree_type, TREE_NONE );
