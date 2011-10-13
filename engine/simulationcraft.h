@@ -2701,7 +2701,6 @@ struct action_expr_t
 struct sample_data_t
 {
   std::vector<double> data;
-  double tmp;
   // Analyzed Results
   double sum;
   double mean;
@@ -4416,12 +4415,12 @@ struct stats_t
 
   struct stats_results_t
   {
-    sample_data_t actual_amount, total_amount,iteration_actual_amount, iteration_total_amount,count,avg_actual_amount;
-    double pct, overkill_pct;
+    sample_data_t actual_amount, total_amount,fight_actual_amount, fight_total_amount,count,avg_actual_amount;
+    double iteration_count, iteration_actual_amount, iteration_total_amount,pct, overkill_pct;
     stats_results_t() :
       actual_amount( true, true ), total_amount(),
-      iteration_actual_amount(), iteration_total_amount(), count(), avg_actual_amount( true, true ),
-      pct( 0 ), overkill_pct( 0 )
+      fight_actual_amount(), fight_total_amount(), count(), avg_actual_amount( true, true ),
+      iteration_count( 0 ), iteration_actual_amount( 0 ), iteration_total_amount( 0 ), pct( 0 ), overkill_pct( 0 )
     { // Keep non hidden reported numbers clean
       count.mean = 0;
       actual_amount.mean = 0; actual_amount.max=0;

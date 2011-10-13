@@ -85,11 +85,11 @@ void stats_t::add_result( double act_amount,
     num_tick_results++;
   }
 
-  r -> count.tmp += 1;
+  r -> iteration_count += 1;
   r -> actual_amount.add( act_amount );
   r -> total_amount.add( tot_amount );
-  r -> iteration_actual_amount.tmp += act_amount;
-  r -> iteration_total_amount.tmp += tot_amount;
+  r -> iteration_actual_amount += act_amount;
+  r -> iteration_total_amount += tot_amount;
 
   int index = ( int ) ( sim -> current_time );
 
@@ -174,11 +174,11 @@ void stats_t::analyze()
       r.avg_actual_amount.analyze();
       r.count.analyze();
       r.pct = 100.0 * r.count.mean / ( double ) num_direct_results;
-      r.iteration_total_amount.analyze();
-      r.iteration_actual_amount.analyze();
+      r.fight_total_amount.analyze();
+      r.fight_actual_amount.analyze();
       r.actual_amount.analyze();
       r.total_amount.analyze();
-      r.overkill_pct = r.iteration_total_amount.mean ? 100.0 * ( r.iteration_total_amount.mean - r.iteration_actual_amount.mean ) / r.iteration_total_amount.mean : 0;
+      r.overkill_pct = r.fight_total_amount.mean ? 100.0 * ( r.fight_total_amount.mean - r.fight_actual_amount.mean ) / r.fight_total_amount.mean : 0;
     }
 
     tick_results[ i ].count.analyze();
@@ -188,11 +188,11 @@ void stats_t::analyze()
 
       r.avg_actual_amount.analyze();
       r.pct = 100.0 * r.count.mean / ( double ) num_tick_results;
-      r.iteration_total_amount.analyze();
-      r.iteration_actual_amount.analyze();
+      r.fight_total_amount.analyze();
+      r.fight_actual_amount.analyze();
       r.actual_amount.analyze();
       r.total_amount.analyze();
-      r.overkill_pct = r.iteration_total_amount.mean ? 100.0 * ( r.iteration_total_amount.mean - r.iteration_actual_amount.mean ) / r.iteration_total_amount.mean : 0;
+      r.overkill_pct = r.fight_total_amount.mean ? 100.0 * ( r.fight_total_amount.mean - r.fight_actual_amount.mean ) / r.fight_total_amount.mean : 0;
     }
   }
 
@@ -256,8 +256,8 @@ void stats_t::analyze()
 inline void stats_t::stats_results_t::merge( const stats_results_t& other )
 {
   count.merge( other.count );
-  iteration_total_amount.merge( other.iteration_total_amount );
-  iteration_actual_amount.merge( other.iteration_actual_amount );
+  fight_total_amount.merge( other.fight_total_amount );
+  fight_actual_amount.merge( other.fight_actual_amount );
   avg_actual_amount.merge( other.avg_actual_amount );
   actual_amount.merge( other.actual_amount );
   total_amount.merge( other.total_amount );
@@ -267,10 +267,14 @@ inline void stats_t::stats_results_t::merge( const stats_results_t& other )
 
 inline void stats_t::stats_results_t::combat_end()
 {
-  avg_actual_amount.add( count.tmp ? iteration_actual_amount.tmp / count.tmp : 0 );
-  count.add();
-  iteration_actual_amount.add();
-  iteration_total_amount.add();
+  avg_actual_amount.add( iteration_count ? iteration_actual_amount / iteration_count : 0 );
+  count.add( iteration_count );
+  fight_actual_amount.add( iteration_actual_amount);
+  fight_total_amount.add(  iteration_total_amount );
+
+  iteration_count = 0;
+  iteration_actual_amount = 0;
+  iteration_total_amount = 0;
 }
 
 // stats_t::merge ===========================================================

@@ -393,8 +393,8 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                     s -> direct_results[ i  ].avg_actual_amount.mean,
                     s -> direct_results[ i  ].avg_actual_amount.min,
                     s -> direct_results[ i  ].avg_actual_amount.max,
-                    s -> direct_results[ i  ].iteration_actual_amount.mean,
-                    s -> direct_results[ i  ].iteration_total_amount.mean,
+                    s -> direct_results[ i  ].fight_actual_amount.mean,
+                    s -> direct_results[ i  ].fight_total_amount.mean,
                     s -> direct_results[ i  ].overkill_pct );
         }
       }
@@ -450,8 +450,8 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                     s -> tick_results[ i  ].avg_actual_amount.mean,
                     s -> tick_results[ i  ].avg_actual_amount.min,
                     s -> tick_results[ i  ].avg_actual_amount.max,
-                    s -> tick_results[ i  ].iteration_actual_amount.mean,
-                    s -> tick_results[ i  ].iteration_total_amount.mean,
+                    s -> tick_results[ i  ].fight_actual_amount.mean,
+                    s -> tick_results[ i  ].fight_total_amount.mean,
                     s -> tick_results[ i  ].overkill_pct );
         }
       }
