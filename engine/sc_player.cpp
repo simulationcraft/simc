@@ -470,7 +470,7 @@ player_t::player_t( sim_t*             s,
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
   base_movement_speed( 7.0 ), x_position( 0.0 ), y_position( 0.0 ),
-  buffs(), debuffs(), gains(), procs(), rng_list( 0 ), rngs()
+  buffs( buffs_t() ), debuffs( debuffs_t() ), gains( gains_t() ), procs( procs_t() ), rng_list( 0 ), rngs( rngs_t() )
 {
   sim -> actor_list.push_back( this );
 

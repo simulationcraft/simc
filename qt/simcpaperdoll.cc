@@ -1253,7 +1253,7 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
           ed.enchant = spell;
           ed.item_enchant = item_enchant;
 
-          if ( std::find( m_enchants.begin(), m_enchants.end(), ed ) == m_enchants.end() )
+          if ( range::find( m_enchants, ed ) == m_enchants.end() )
             m_enchants.push_back( ed );
 
           break;
@@ -1275,7 +1275,7 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
       ed.enchant = s;
       ed.item_enchant = item_enchant;
 
-      if ( std::find( m_enchants.begin(), m_enchants.end(), ed ) == m_enchants.end() )
+      if ( range::find( m_enchants, ed ) == m_enchants.end() )
         m_enchants.push_back( ed );
     }
   }

@@ -823,6 +823,9 @@ struct iterator_type<const T>
 
 // Generic algorithms =======================================================
 
+// Wrappers for std::fill, std::fill_n, and std::find that perform any type
+// conversions for t at the callsite instead of per assignement in the
+// loop body.
 template <typename I>
 inline void fill( I first, I last, typename std::iterator_traits<I>::value_type const& t )
 { std::fill( first, last, t ); }
@@ -847,11 +850,11 @@ template <typename I>
 inline void dispose( I first, I last )
 { dispose( first, last, delete_disposer_t() ); }
 
-template <unsigned HW, typename In, typename Out>
-void sliding_window_average( In first, In last, Out out )
+template <unsigned HW, typename Fwd, typename Out>
+void sliding_window_average( Fwd first, Fwd last, Out out )
 {
-  typedef typename std::iterator_traits<In>::value_type value_t;
-  typedef typename std::iterator_traits<In>::difference_type diff_t;
+  typedef typename std::iterator_traits<Fwd>::value_type value_t;
+  typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
   const diff_t n = std::distance( first, last );
   const diff_t HALFWINDOW = static_cast<diff_t>( HW );
 
@@ -860,7 +863,7 @@ void sliding_window_average( In first, In last, Out out )
     value_t window_sum = value_t();
 
     // Fill right half of sliding window
-    In right = first;
+    Fwd right = first;
     for ( diff_t count = 0; count < HALFWINDOW; ++count )
       window_sum += *right++;
 
@@ -2420,24 +2423,13 @@ struct gear_stats_t
   double parry_rating;
   double block_rating;
   double mastery_rating;
-
-  gear_stats_t() :
-    spell_power( 0 ), spell_penetration( 0 ), mp5( 0 ), attack_power( 0 ),
-    expertise_rating( 0 ), expertise_rating2( 0 ), hit_rating( 0 ),
-    hit_rating2( 0 ), crit_rating( 0 ), haste_rating( 0 ), weapon_dps( 0 ),
-    weapon_speed( 0 ), weapon_offhand_dps( 0 ), weapon_offhand_speed( 0 ),
-    armor( 0 ), bonus_armor( 0 ), dodge_rating( 0 ), parry_rating( 0 ),
-    block_rating( 0 ), mastery_rating( 0 )
-  {
-    fill_n( attribute, ATTRIBUTE_MAX, 0 );
-    fill_n( resource, RESOURCE_MAX, 0 );
-  }
 };
 }
 
 struct gear_stats_t : public internal::gear_stats_t
 {
-  gear_stats_t() : internal::gear_stats_t() {}
+  typedef internal::gear_stats_t base_t;
+  gear_stats_t() : base_t( base_t() ) {}
 
   void   add_stat( int stat, double value );
   void   set_stat( int stat, double value );
@@ -3364,19 +3356,14 @@ struct rating_t
   double expertise;
   double dodge, parry, block;
   double mastery;
-
-  rating_t() :
-    spell_haste( 0 ), spell_hit( 0 ), spell_crit( 0 ), attack_haste( 0 ),
-    attack_hit( 0 ), attack_crit( 0 ), ranged_haste( 0 ), ranged_hit( 0 ),
-    ranged_crit( 0 ), expertise( 0 ), dodge( 0 ), parry( 0 ), block( 0 ),
-    mastery( 0 )
-  { }
 };
 }
 
 struct rating_t : public internal::rating_t
 {
-  rating_t() : internal::rating_t() {}
+  typedef internal::rating_t base_t;
+  rating_t() : base_t( base_t() ) {}
+
   void init( sim_t*, dbc_t& pData, int level, int type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
   static double get_attribute_base( sim_t*, dbc_t& pData, int level, player_type class_type, race_type race, base_stat_type stat_type );
