@@ -4408,10 +4408,11 @@ void death_knight_t::init_spells()
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    {     0,     0, 90457, 90459, 90454, 90456,     0,     0 }, // Tier11
-    {     0,     0, 98970, 98996, 98956, 98966,     0,     0 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
+    {     0,     0,  90457,  90459,  90454,  90456,     0,     0 }, // Tier11
+    {     0,     0,  98970,  98996,  98956,  98966,     0,     0 }, // Tier12
+    {     0,     0, 105609, 105646, 105552, 105587,     0,     0 }, // Tier13
+    {     0,     0,      0,      0,      0,      0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -5127,6 +5128,24 @@ int death_knight_t::decode_set( item_t& item )
     if ( is_tank  ) return SET_T12_TANK;
   }
 
+  if ( strstr( s, "necrotic_boneplate" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "breastplate"   ) ||
+                      strstr( s, "greaves"       ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee ) return SET_T13_MELEE;
+    if ( is_tank  ) return SET_T13_TANK;
+  }
+  
   return SET_NONE;
 }
 

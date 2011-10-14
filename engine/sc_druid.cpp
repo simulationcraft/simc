@@ -4663,10 +4663,11 @@ void druid_t::init_spells()
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    { 90160, 90163, 90162, 90165,     0,     0,     0,     0 }, // Tier11
-    { 99019, 99049, 99001, 99009,     0,     0, 99013, 99015 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
+    {  90160,  90163,  90162,  90165,     0,     0,      0,      0 }, // Tier11
+    {  99019,  99049,  99001,  99009,     0,     0,  99013,  99015 }, // Tier12
+    { 105722, 105717, 105725, 105735,     0,     0, 105715, 105770 }, // Tier13
+    {      0,     0,      0,       0,     0,     0,      0,      0 }, 
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -5422,6 +5423,30 @@ int druid_t::decode_set( item_t& item )
                       strstr( s, "grips"        ) );
     if ( is_caster ) return SET_T12_CASTER;
     if ( is_melee  ) return SET_T12_MELEE;
+  }
+
+  if ( strstr( s, "deep_earth" ) )
+  {
+    bool is_caster = ( strstr( s, "cover"         ) ||
+                       strstr( s, "shoulderwraps" ) ||
+                       strstr( s, "vestment"      ) ||
+                       strstr( s, "leggings"      ) ||
+                       strstr( s, "gloves"        ) );
+
+    bool is_melee = ( strstr( s, "headpiece"      ) ||
+                      strstr( s, "spaulders"      ) ||
+                      strstr( s, "raiment"        ) ||
+                      strstr( s, "legguards"      ) ||
+                      strstr( s, "grips"          ) );
+
+    bool is_healer = ( strstr( s, "helm"          ) ||
+                       strstr( s, "mantle"        ) ||
+                       strstr( s, "robes"         ) ||
+                       strstr( s, "legwraps"      ) ||
+                       strstr( s, "handwraps"     ) );
+    if ( is_caster ) return SET_T13_CASTER;
+    if ( is_melee  ) return SET_T13_MELEE;
+    if ( is_healer ) return SET_T13_HEAL;
   }
 
   return SET_NONE;

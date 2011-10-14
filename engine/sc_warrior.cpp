@@ -3212,10 +3212,11 @@ void warrior_t::init_spells()
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    {     0,     0, 90293, 90295, 90296, 90297,     0,     0 }, // Tier11
-    {     0,     0, 99234, 99238, 99239, 99242,     0,     0 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
+    {     0,     0,  90293,  90295,  90296,  90297,     0,     0 }, // Tier11
+    {     0,     0,  99234,  99238,  99239,  99242,     0,     0 }, // Tier12
+    {     0,     0, 105797, 105907, 105908, 105911,     0,     0 }, // Tier13
+    {     0,     0,      0,      0,      0,      0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -3927,6 +3928,24 @@ int warrior_t::decode_set( item_t& item )
 
     if ( is_melee ) return SET_T12_MELEE;
     if ( is_tank  ) return SET_T12_TANK;
+  }
+
+  if ( strstr( s, "colossal_dragonplate" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "battleplate"   ) ||
+                      strstr( s, "legplates"     ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee ) return SET_T13_MELEE;
+    if ( is_tank  ) return SET_T13_TANK;
   }
 
   return SET_NONE;

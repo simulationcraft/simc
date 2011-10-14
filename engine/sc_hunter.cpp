@@ -3783,10 +3783,11 @@ void hunter_t::init_spells()
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P     H2P    H4P
-    {     0,     0, 89923, 96411,     0,     0,     0,     0 }, // Tier11
-    {     0,     0, 99057, 99059,     0,     0,     0,     0 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    //  C2P    C4P     M2P     M4P    T2P    T4P     H2P    H4P
+    {     0,     0,  89923,  96411,     0,     0,     0,     0 }, // Tier11
+    {     0,     0,  99057,  99059,     0,     0,     0,     0 }, // Tier12
+    {     0,     0, 105732, 105921,     0,     0,     0,     0 }, // Tier13
+    {     0,     0,      0,      0,     0,     0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4435,7 +4436,8 @@ int hunter_t::decode_set( item_t& item )
   const char* s = item.name();
 
   if ( strstr( s, "lightningcharged"      ) ) return SET_T11_MELEE;
-  if ( strstr( s, "flamewakers"          ) ) return SET_T12_MELEE;
+  if ( strstr( s, "flamewakers"           ) ) return SET_T12_MELEE;
+  if ( strstr( s, "wyrmstalkers"          ) ) return SET_T13_MELEE;
 
   return SET_NONE;
 }

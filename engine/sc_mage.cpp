@@ -4300,8 +4300,9 @@ int mage_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "firelord"            ) ) return SET_T11_CASTER;
-  if ( strstr( s, "firehawk"            ) ) return SET_T12_CASTER;
+  if ( strstr( s, "firelord"      ) ) return SET_T11_CASTER;
+  if ( strstr( s, "firehawk"      ) ) return SET_T12_CASTER;
+  if ( strstr( s, "time_lords_"   ) ) return SET_T13_CASTER;
 
   // PVP Season 9-10
   if ( strstr( s, "vicious_gladiators"  ) ) return SET_PVP_CASTER;

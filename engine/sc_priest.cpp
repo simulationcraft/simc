@@ -4778,11 +4778,11 @@ void priest_t::init_spells()
   // T11: H2P = 89910, H4P = 89911
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    { 89915, 89922,     0,     0,     0,     0,     0,     0 }, // Tier11
-    { 99154, 99157,     0,     0,     0,     0, 99134, 99135 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 }, // Tier13
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    //   C2P     C4P    M2P    M4P    T2P    T4P     H2P     H4P
+    {  89915,  89922,     0,     0,     0,     0,      0,      0 }, // Tier11
+    {  99154,  99157,     0,     0,     0,     0,  99134,  99135 }, // Tier12
+    { 105843, 105844,     0,     0,     0,     0, 105827, 105832 }, // Tier13
+    {      0,      0,     0,     0,     0,     0,      0,      0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -5515,6 +5515,23 @@ int priest_t::decode_set( item_t& item )
                   strstr( s, "handwraps"     ) ||
                   strstr( s, "legwraps"      ) );
     if ( is_healer ) return SET_T12_HEAL;
+  }
+
+  if ( strstr( s, "_of_dying_light" ) )
+  {
+    is_caster = ( strstr( s, "hood"          ) ||
+                  strstr( s, "shoulderwraps" ) ||
+                  strstr( s, "vestment"      ) ||
+                  strstr( s, "gloves"        ) ||
+                  strstr( s, "leggings"      ) );
+    if ( is_caster ) return SET_T13_CASTER;
+
+    is_healer = ( strstr( s, "cowl"          ) ||
+                  strstr( s, "mantle"        ) ||
+                  strstr( s, "robes"         ) ||
+                  strstr( s, "handwraps"     ) ||
+                  strstr( s, "legwraps"      ) );
+    if ( is_healer ) return SET_T13_HEAL;
   }
 
   return SET_NONE;

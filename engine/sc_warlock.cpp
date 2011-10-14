@@ -4249,9 +4249,10 @@ void warlock_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    { 89934, 89935,     0,     0,     0,     0,     0,     0 }, // Tier11
-    { 99220, 99229,     0,     0,     0,     0,     0,     0 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    {  89934,  89935,     0,     0,     0,     0,     0,     0 }, // Tier11
+    {  99220,  99229,     0,     0,     0,     0,     0,     0 }, // Tier12
+    { 105888, 105787,     0,     0,     0,     0,     0,     0 }, // Tier13
+    {      0,      0,     0,     0,     0,     0,     0,     0 },
   };
   sets                        = new set_bonus_array_t( this, set_bonuses );
 
@@ -4722,8 +4723,9 @@ int warlock_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "shadowflame"  ) ) return SET_T11_CASTER;
-  if ( strstr( s, "balespiders"  ) ) return SET_T12_CASTER;
+  if ( strstr( s, "shadowflame"             ) ) return SET_T11_CASTER;
+  if ( strstr( s, "balespiders"             ) ) return SET_T12_CASTER;
+  if ( strstr( s, "_of_the_faceless_shroud" ) ) return SET_T13_CASTER;
 
   return SET_NONE;
 }
