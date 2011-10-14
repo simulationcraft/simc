@@ -2940,7 +2940,6 @@ struct incinerate_t : public warlock_spell_t
     {
       p -> buffs_backdraft -> decrement();
     }
-    trigger_impending_doom( this );
 
     trigger_tier12_4pc_caster( this );
   }
@@ -2948,11 +2947,12 @@ struct incinerate_t : public warlock_spell_t
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_spell_t::travel( t, travel_result, travel_dmg );
-    trigger_decimation( this, travel_result );
 
     warlock_t* p = player -> cast_warlock();
     if ( result_is_hit( travel_result ) )
     {
+      trigger_decimation( this, travel_result );
+      trigger_impending_doom( this );
       t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> proc_chance() );
     }
   }
@@ -3099,6 +3099,7 @@ struct soul_fire_t : public warlock_spell_t
     {
       warlock_t* p = player -> cast_warlock();
       trigger_decimation( this, travel_result );
+      if ( p -> ptr ) trigger_impending_doom( this );
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
 
