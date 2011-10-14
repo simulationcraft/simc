@@ -1761,7 +1761,7 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( p -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
 
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 3.0;
+      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 5.0;
 
     mage_spell_t::execute();
   }
@@ -2593,7 +2593,7 @@ struct icy_veins_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 6.0 * (1.0 + p -> talents.ice_floes -> effect1().percent());
+      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 10.0 * (1.0 + p -> talents.ice_floes -> effect1().percent());
     consume_resource();
     update_ready();
     p -> buffs_icy_veins -> trigger();
@@ -2907,6 +2907,10 @@ struct pyroblast_t : public mage_spell_t
     {
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
+
+      // PTR
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+        p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
 };
@@ -2944,6 +2948,10 @@ struct pyroblast_hs_t : public mage_spell_t
     {
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
+
+      // PTR
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+        p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
 
