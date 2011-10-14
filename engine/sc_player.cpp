@@ -37,7 +37,7 @@ struct hymn_of_hope_buff_t : public buff_t
 
     // Extra Mana is only added at the start, not on refresh. Tested 20/01/2011.
     // Extra Mana is set by current max_mana, doesn't change when max_mana changes.
-    mana_gain = player -> resource_max[ RESOURCE_MANA ] * 0.15;
+    mana_gain = player -> resource_max[ RESOURCE_MANA ] * effect2().percent();
     player -> stat_gain( STAT_MAX_MANA, mana_gain, player -> gains.hymn_of_hope );
   }
 
@@ -2788,6 +2788,7 @@ void player_t::combat_end()
 
   // DMG
   dmg.add( iteration_dmg );
+  sim -> iteration_dmg += iteration_dmg;
   for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
     iteration_dmg += pet -> iteration_dmg;
@@ -2799,6 +2800,7 @@ void player_t::combat_end()
 
   // Heal
   heal.add( iteration_heal );
+  sim -> iteration_heal += iteration_heal;
   for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
     iteration_heal += pet -> iteration_heal;

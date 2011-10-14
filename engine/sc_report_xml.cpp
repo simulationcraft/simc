@@ -1103,13 +1103,13 @@ static void print_xml_summary( sim_t* sim, xml_writer_t & writer )
   writer.end_tag();
 
   writer.begin_tag( "dmg" );
-  writer.print_attribute( "total", util_t::to_string( sim -> total_dmg, 0 ) );
-  writer.print_attribute( "dps", util_t::to_string( sim -> raid_dps, 0 ) );
+  writer.print_attribute( "total", util_t::to_string( sim -> total_dmg.mean, 0 ) );
+  writer.print_attribute( "dps", util_t::to_string( sim -> raid_dps.mean, 0 ) );
   writer.end_tag(); // </dmg>
 
   writer.begin_tag( "heal" );
-  writer.print_attribute( "total", util_t::to_string( sim -> total_heal, 0 ) );
-  writer.print_attribute( "hps", util_t::to_string( sim -> raid_hps, 0 ) );
+  writer.print_attribute( "total", util_t::to_string( sim -> total_heal.mean, 0 ) );
+  writer.print_attribute( "hps", util_t::to_string( sim -> raid_hps.mean, 0 ) );
   writer.end_tag(); // </heal>
 
   print_xml_raid_events( sim, writer );

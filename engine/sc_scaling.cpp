@@ -573,7 +573,7 @@ bool scaling_t::has_scale_factors()
 
 double scaling_t::scale_over_function( sim_t* s, player_t* p )
 {
-  if ( scale_over == "raid_dps"       ) return s -> raid_dps;
+  if ( scale_over == "raid_dps"       ) return s -> raid_dps.mean;
 
   player_t* q = 0;
   if ( ! scale_over_player.empty() )
@@ -599,7 +599,7 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
 
 double scaling_t::scale_over_function_error( sim_t* s, player_t* p )
 {
-  if ( scale_over == "raid_dps"       ) return 0;
+  if ( scale_over == "raid_dps"       ) return s -> raid_dps.mean_std_dev;
   if ( scale_over == "min_death_time" ) return 0;
   if ( scale_over == "avg_death_time" ) return 0;
   if ( scale_over == "stddev"         ) return 0;

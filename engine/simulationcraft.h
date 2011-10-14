@@ -3103,8 +3103,8 @@ struct sim_t : private thread_t
   scaling_t* scaling;
   plot_t*    plot;
   reforge_plot_t* reforge_plot;
-  double     raid_dps, total_dmg, raid_hps, total_heal, elapsed_cpu_seconds;
-  sample_data_t simulation_length;
+  double     elapsed_cpu_seconds, iteration_dmg, iteration_heal;
+  sample_data_t raid_dps, total_dmg, raid_hps, total_heal, simulation_length;
   int        report_progress;
   int        bloodlust_percent, bloodlust_time;
   std::string reference_player_str;

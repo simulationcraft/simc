@@ -653,8 +653,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   fight_style( "Patchwerk" ), overrides(), auras(),
   buff_list( 0 ), aura_delay( 0.15 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
-  raid_dps( 0 ), total_dmg( 0 ), raid_hps( 0 ), total_heal( 0 ),
-  elapsed_cpu_seconds( 0 ), simulation_length( false ),
+  elapsed_cpu_seconds( 0 ), iteration_dmg( 0 ), iteration_heal( 0 ),
+  raid_dps(), total_dmg(), raid_hps(), total_heal(), simulation_length( false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( -60 ),
   path_str( "." ), output_file( stdout ),
@@ -1054,6 +1054,7 @@ void sim_t::reset()
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
   id = 0;
   current_time = last_event = 0;
+  iteration_dmg = iteration_heal = 0;
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> reset();
@@ -1160,6 +1161,11 @@ void sim_t::combat_end()
   {
     b -> expire();
   }
+
+  total_dmg.add( iteration_dmg );
+  raid_dps.add( current_time ? iteration_dmg / current_time : 0 );
+  total_heal.add( iteration_heal );
+  raid_hps.add( current_time ? iteration_heal / current_time : 0 );
 }
 
 // sim_t::init ==============================================================
@@ -1401,15 +1407,6 @@ void sim_t::analyze_player( player_t* p )
   }
 
 
-  if ( ! p -> is_enemy() && ! p -> is_add() )
-  {
-    total_heal += p -> compound_heal.mean;
-    total_dmg  += p -> compound_dmg.mean;
-    raid_dps   += p -> dpse.mean;
-    raid_hps   += p -> hpse.mean;
-  }
-
-
   // Actor Lists ============================================================
   if (  ! p -> quiet && ! p -> is_enemy() && ! p -> is_add() && ! ( p -> is_pet() && report_pets_separately ) )
   {
@@ -1591,8 +1588,10 @@ void sim_t::analyze()
   for ( buff_t* b = buff_list; b; b = b -> next )
     b -> analyze();
 
-  total_dmg = 0;
-  total_heal = 0;
+  total_dmg.analyze();
+  raid_dps.analyze();
+  total_heal.analyze();
+  raid_hps.analyze();
 
   confidence_estimator = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
@@ -1656,6 +1655,10 @@ void sim_t::merge( sim_t& other_sim )
   total_events_processed += other_sim.total_events_processed;
 
   simulation_length.merge( other_sim.simulation_length );
+  total_dmg.merge( other_sim.total_dmg );
+  raid_dps.merge( other_sim.raid_dps );
+  total_heal.merge( other_sim.total_heal );
+  raid_hps.merge( other_sim.raid_hps );
 
   if ( max_events_remaining < other_sim.max_events_remaining ) max_events_remaining = other_sim.max_events_remaining;
 

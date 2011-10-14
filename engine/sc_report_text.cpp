@@ -888,11 +888,11 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
   if ( detail )
   {
     util_t::fprintf( file, "\nDPS Ranking:\n" );
-    util_t::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps );
+    util_t::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps.mean );
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = sim -> players_by_dps[ i ];
-      util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean, 100 * p -> dmg.mean / sim -> total_dmg, p -> name() );
+      util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean, 100 * p -> dpse.mean / sim -> raid_dps.mean, p -> name() );
     }
   }
 

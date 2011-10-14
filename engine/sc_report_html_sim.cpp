@@ -357,18 +357,18 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
            "\t\t\t<ul class=\"params\">\n" );
   fprintf( file,
            "\t\t\t\t<li><b>Raid Damage:</b> %.0f</li>\n",
-           sim -> total_dmg );
+           sim -> total_dmg.mean );
   fprintf( file,
            "\t\t\t\t<li><b>Raid DPS:</b> %.0f</li>\n",
-           sim -> raid_dps );
-  if ( sim -> total_heal > 0 )
+           sim -> raid_dps.mean );
+  if ( sim -> total_heal.mean > 0 )
   {
     fprintf( file,
              "\t\t\t\t<li><b>Raid Heal:</b> %.0f</li>\n",
-             sim -> total_heal );
+             sim -> total_heal.mean );
     fprintf( file,
              "\t\t\t\t<li><b>Raid HPS:</b> %.0f</li>\n",
-             sim -> raid_hps );
+             sim -> raid_hps.mean );
   }
   fprintf( file,
            "\t\t\t</ul><p>&nbsp;</p>\n" );
