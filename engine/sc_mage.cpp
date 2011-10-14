@@ -120,6 +120,8 @@ struct mage_t : public player_t
 
     spell_data_t* blink;
 
+    spell_data_t* stolen_time;
+
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   };
   spells_t spells;
@@ -1626,7 +1628,9 @@ struct arcane_power_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 7.0 * (1.0 + p -> talents.arcane_flows -> effect1().percent());
+      cooldown -> duration = orig_duration + 
+        p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect1().seconds() *
+        (1.0 + p -> talents.arcane_flows -> effect1().percent());
 
     mage_spell_t::execute();
     p -> buffs_arcane_power -> trigger( 1, effect1().percent() );
@@ -1761,7 +1765,7 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( p -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
 
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 5.0;
+      cooldown -> duration = orig_duration + p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect2().seconds();
 
     mage_spell_t::execute();
   }
@@ -2593,7 +2597,9 @@ struct icy_veins_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration - p -> buffs_tier13_2pc -> check() * 10.0 * (1.0 + p -> talents.ice_floes -> effect1().percent());
+      cooldown -> duration = orig_duration +
+        p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect3().seconds() *
+        (1.0 + p -> talents.ice_floes -> effect1().percent());
     consume_resource();
     update_ready();
     p -> buffs_icy_veins -> trigger();
@@ -3509,6 +3515,8 @@ void mage_t::init_spells()
 
   spells.blink = spell_data_t::find( 1953, "Blink", dbc.ptr );
 
+  spells.stolen_time = spell_data_t::find( 105791, "Stolen Time", dbc.ptr );
+
   memset( ( void* ) &specializations, 0x00, sizeof( specializations_t ) );
 
   if ( specialization == MAGE_ARCANE )
@@ -3552,9 +3560,10 @@ void mage_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    { 90290, 90291,     0,     0,     0,     0,     0,     0 }, // Tier11
-    { 99061, 99064,     0,     0,     0,     0,     0,     0 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    {  90290,  90291,     0,     0,     0,     0,     0,     0 }, // Tier11
+    {  99061,  99064,     0,     0,     0,     0,     0,     0 }, // Tier12
+    { 105788, 105790,     0,     0,     0,     0,     0,     0 }, // Tier13
+    {      0,      0,     0,     0,     0,     0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );

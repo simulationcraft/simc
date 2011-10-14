@@ -2008,7 +2008,7 @@ struct mind_blast_t : public priest_spell_t
     {
       if ( p -> dots_shadow_word_pain -> ticking && p -> dots_vampiric_touch -> ticking && p -> dots_devouring_plague -> ticking )
       {
-        m += p -> dark_flames ? p -> dark_flames -> effect1().percent() : 0.25;
+        m += p -> dark_flames -> effect1().percent();
         p -> uptimes_dark_flames -> update( 1 );
       }
       else
