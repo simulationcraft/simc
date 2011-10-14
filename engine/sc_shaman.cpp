@@ -441,9 +441,9 @@ struct spirit_wolf_pet_t : public pet_t
       attack_t::execute();
       
       // Two independent chances to proc it since we model 2 wolf pets as 1 ..
-      if ( player -> dbc.ptr && result_is_hit() && o -> set_bonus.tier13_4pc_melee() )
+      if ( player -> dbc.ptr && result_is_hit() )
       {
-        if ( sim -> roll( 0.45 ) )
+        if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effect1().percent() ) )
         {
           int   mwstack = o -> buffs_maelstrom_weapon -> check();
           if ( o -> buffs_maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
@@ -455,7 +455,7 @@ struct spirit_wolf_pet_t : public pet_t
           }
         }
 
-        if ( sim -> roll( 0.45 ) )
+        if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effect1().percent() ) )
         {
           int   mwstack = o -> buffs_maelstrom_weapon -> check();
           if ( o -> buffs_maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
@@ -1251,6 +1251,23 @@ struct lava_burst_overload_t : public shaman_spell_t
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE ) +
       p -> talent_lava_flows -> mod_additive( P_CRIT_DAMAGE );
   }
+  
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+    
+
+    if ( result_is_hit() )
+    {
+      shaman_t* p = player -> cast_shaman();
+      if ( p -> dbc.ptr && 
+          p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+      {
+        p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
+      }
+
+    }
+  }
 
   virtual void player_buff()
   {
@@ -1282,6 +1299,23 @@ struct lightning_bolt_overload_t : public shaman_spell_t
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC );
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+    
+    
+    if ( result_is_hit() )
+    {
+      shaman_t* p = player -> cast_shaman();
+      if ( p -> dbc.ptr && 
+          p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+      {
+        p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
+      }
+      
+    }
   }
 
   virtual void travel( player_t* t, int travel_result, double travel_dmg )
@@ -1331,6 +1365,13 @@ struct chain_lightning_overload_t : public shaman_spell_t
     if ( result_is_hit() )
     {
       trigger_rolling_thunder( this );
+      
+      shaman_t* p = player -> cast_shaman();
+      if ( p -> dbc.ptr && 
+           p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+      {
+        p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();          
+      }
     }
   }
 };
@@ -2046,11 +2087,26 @@ void shaman_spell_t::execute()
     if ( school == SCHOOL_FIRE )
       p -> buffs_unleash_flame -> expire();
 
-    if ( p -> cooldowns_t12_2pc_caster -> remains() == 0 &&
-         p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+    if ( ! p -> dbc.ptr )
     {
-      p -> cooldowns_fire_elemental_totem -> reset();
-      p -> cooldowns_t12_2pc_caster -> start( 105.0 );
+      if ( p -> cooldowns_t12_2pc_caster -> remains() == 0 &&
+           p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+      {
+        p -> cooldowns_fire_elemental_totem -> reset();
+        p -> cooldowns_t12_2pc_caster -> start( 105.0 );
+      }
+    }
+    else
+    {
+      if ( p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+      {
+        //log_t::output( sim, "%f %d %f %f", 
+        //              p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance(), 
+        //             p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value(),
+        //              p -> sim -> current_time,
+        //              p -> cooldowns_fire_elemental_totem -> ready );
+        p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
+      }
     }
   }
 
@@ -2170,8 +2226,8 @@ struct chain_lightning_t : public shaman_spell_t
 
     shaman_spell_t::player_buff();
     
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && p -> buffs_maelstrom_weapon -> up() )
-      player_multiplier *= 1.20;
+    if ( p -> dbc.ptr && p -> buffs_maelstrom_weapon -> up() )
+      player_multiplier *= 1.0 + p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent();
   }
 
   virtual void execute()
@@ -2442,8 +2498,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
     shaman_spell_t::player_buff();
     
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && p -> buffs_maelstrom_weapon -> up() )
-      player_multiplier *= 1.20;
+    if ( p -> dbc.ptr && p -> buffs_maelstrom_weapon -> up() )
+      player_multiplier *= 1.0 + p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent();
   }
 
   virtual void execute()
@@ -4029,10 +4085,11 @@ void shaman_t::init_spells()
   // New set bonus system
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    { 90503, 90505, 90501, 90502,     0,     0,     0,     0 }, // Tier11
-    { 99204, 99206, 99209, 99213,     0,     0, 99190, 99195 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
+    {  90503,  90505,  90501,  90502,     0,     0,      0,      0 }, // Tier11
+    {  99204,  99206,  99209,  99213,     0,     0,  99190,  99195 }, // Tier12
+    { 105780, 105816, 105866, 105872,     0,     0, 105764, 105876 }, // Tier13
+    {      0,      0,      0,      0,     0,     0,      0,      0 },
   };
 
   player_t::init_spells();
@@ -4164,8 +4221,9 @@ void shaman_t::init_buffs()
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );
   buffs_water_shield            = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),             "water_shield"          );
   
-  buffs_tier13_2pc_caster       = new stat_buff_t            ( this, "tier13_2pc_caster", STAT_MASTERY_RATING, 2000.0, 1, 15.0, 0 );
-  buffs_tier13_4pc_caster       = new stat_buff_t            ( this, "tier13_4pc_caster", STAT_HASTE_RATING, 250.0, 3, 4.0, 0 );
+  // Elemental Tier13 set bonuses
+  buffs_tier13_2pc_caster       = new stat_buff_t            ( this, 105779, "tier13_2pc_caster", STAT_MASTERY_RATING, dbc.spell( 105779 ) -> effect1().base_value() );
+  buffs_tier13_4pc_caster       = new stat_buff_t            ( this, 105821, "tier13_4pc_caster", STAT_HASTE_RATING,   dbc.spell( 105821 ) -> effect1().base_value() );
 }
 
 // shaman_t::init_gains =====================================================
