@@ -236,6 +236,15 @@ struct rogue_t : public player_t
   mastery_t* mastery_main_gauche;    // done
   mastery_t* mastery_executioner;    // XXX done as additive
 
+  // Spell Data
+  struct spells_t
+  {
+    spell_data_t* tier13_4pc;
+
+    spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
+  };
+  spells_t spells;
+
   // Talents
   struct talents_list_t
   {
@@ -2615,7 +2624,7 @@ struct shadow_dance_t : public rogue_attack_t
 
     p -> buffs_shadow_dance -> buff_duration += p -> glyphs.shadow_dance -> mod_additive( P_DURATION );
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
-      p -> buffs_shadow_dance -> buff_duration += 2.0;
+      p -> buffs_shadow_dance -> buff_duration += p -> spells.tier13_4pc -> effect1().seconds();
 
     parse_options( options_str );
   }
@@ -3118,7 +3127,7 @@ struct adrenaline_rush_buff_t : public new_buff_t
     cooldown -> duration = 0;
     buff_duration += p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION );
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
-      buff_duration += 3.0;
+      buff_duration += p -> spells.tier13_4pc -> effect2().seconds();
   }
 
   virtual bool trigger( int, double, double )
@@ -3263,7 +3272,7 @@ struct vendetta_buff_t : public new_buff_t
   {
     buff_duration *= 1.0 + p -> glyphs.vendetta -> mod_additive( P_DURATION );
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
-      buff_duration += 9.0;
+      buff_duration += p -> spells.tier13_4pc -> effect3().seconds();
   }
 
   virtual bool trigger( int, double, double )
@@ -3710,6 +3719,8 @@ void rogue_t::init_spells()
   mastery_potent_poisons  = new mastery_t( this, "potent_poisons",     76803, TREE_ASSASSINATION );
   mastery_main_gauche     = new mastery_t( this, "main_gauche",        76806, TREE_COMBAT );
   mastery_executioner     = new mastery_t( this, "executioner",        76808, TREE_SUBTLETY );
+
+  spells.tier13_4pc       = spell_data_t::find( 105865, "Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta)", dbc.ptr );
 
   glyphs.adrenaline_rush     = find_glyph( "Glyph of Adrenaline Rush"     );
   glyphs.ambush              = find_glyph( "Glyph of Ambush"              );
