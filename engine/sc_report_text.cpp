@@ -26,7 +26,7 @@ void simplify_html( std::string& buffer )
 
 static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 {
-  if ( s -> num_executes == 0 && s -> total_amount == 0 ) return;
+  if ( s -> num_executes == 0 && s -> total_amount.mean == 0 ) return;
 
   if( max_name_length == 0 ) max_name_length = 20;
 
@@ -143,7 +143,7 @@ static void print_text_actions( FILE* file, player_t* p )
 
   int max_length=0;
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
-    if ( s -> total_amount > 0 )
+    if ( s -> total_amount.mean > 0 )
       if( max_length < ( int ) s -> name_str.length() )
         max_length = ( int ) s -> name_str.length();
 
@@ -237,7 +237,7 @@ static void print_text_buffs( FILE* file, player_t* p )
     {
       util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
                        max_length, b -> name(), b -> avg_start, b -> avg_refresh,
-                       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
+                       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
 
       if( b -> benefit_pct > 0 &&
           b -> benefit_pct < 100 )
@@ -262,7 +262,7 @@ static void print_text_buffs( FILE* file, player_t* p )
 
         util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
                          max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
-                         b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
+                         b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
 
         if( b -> benefit_pct > 0 &&
             b -> benefit_pct < 100 )
@@ -325,7 +325,7 @@ static void print_text_buffs( FILE* file, sim_t* sim )
     {
       util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-5.1f  interval=%5.1f|%-5.1f  uptime=%2.0f%%",
                        max_length, b -> name(), b -> avg_start, b -> avg_refresh,
-                       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct );
+                       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
 
       if( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
       {

@@ -484,8 +484,8 @@ static void print_xml_player_actions( xml_writer_t & writer, player_t* p )
 
       writer.print_tag("etpe", util_t::to_string(s -> etpe));
       writer.print_tag("ttpt", util_t::to_string(s -> ttpt));
-      writer.print_tag("actual_amount", util_t::to_string(s -> actual_amount));
-      writer.print_tag("total_amount", util_t::to_string(s -> total_amount));
+      writer.print_tag("actual_amount", util_t::to_string(s -> actual_amount.mean));
+      writer.print_tag("total_amount", util_t::to_string(s -> total_amount.mean));
       writer.print_tag("overkill_pct", util_t::to_string(s -> overkill_pct));
       writer.print_tag("aps", util_t::to_string(s -> aps));
       writer.print_tag("apet", util_t::to_string(s -> apet));
@@ -595,7 +595,7 @@ static void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
       writer.print_attribute( "refresh", util_t::to_string( b -> avg_refresh, 1 ) );
       writer.print_attribute( "interval", util_t::to_string( b -> avg_start_interval, 1 ) );
       writer.print_attribute( "trigger", util_t::to_string( b -> avg_trigger_interval, 1 ) );
-      writer.print_attribute( "uptime", util_t::to_string( b -> uptime_pct, 0 ) );
+      writer.print_attribute( "uptime", util_t::to_string( b -> uptime_pct.mean, 0 ) );
 
       if( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
       {
@@ -905,7 +905,7 @@ static void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
       writer.print_attribute( "refresh", util_t::to_string( b -> avg_refresh, 1 ) );
       writer.print_attribute( "interval", util_t::to_string( b -> avg_start_interval, 1 ) );
       writer.print_attribute( "trigger", util_t::to_string( b -> avg_trigger_interval, 1 ) );
-      writer.print_attribute( "uptime", util_t::to_string( b -> uptime_pct, 0 ) );
+      writer.print_attribute( "uptime", util_t::to_string( b -> uptime_pct.mean, 0 ) );
 
       if( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
       {

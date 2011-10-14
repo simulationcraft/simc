@@ -711,8 +711,8 @@ static void print_html_auras_buffs( FILE*  file, sim_t* sim )
                b -> avg_refresh,
                b -> avg_start_interval,
                b -> avg_trigger_interval,
-               b -> uptime_pct,
-               b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct );
+               b -> uptime_pct.mean,
+               b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct.mean );
       i++;
     }
     fprintf( file,

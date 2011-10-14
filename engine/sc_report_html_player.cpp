@@ -332,8 +332,8 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
               s -> num_tick_results,
               s -> etpe,
               s -> ttpt,
-              s -> actual_amount,
-              s -> total_amount,
+              s -> actual_amount.mean,
+              s -> total_amount.mean,
               s -> overkill_pct,
               s -> aps,
               s -> apet );
@@ -1716,8 +1716,8 @@ static void print_html_player_buffs( FILE* file, player_t* p )
              b -> avg_refresh,
              b -> avg_start_interval,
              b -> avg_trigger_interval,
-             b -> uptime_pct,
-             ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct ) );
+             b -> uptime_pct.mean,
+             ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct.mean ) );
 
     if ( p -> sim -> report_details )
     {

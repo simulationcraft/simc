@@ -753,7 +753,7 @@ struct compare_amount
 {
   bool operator()( stats_t* l, stats_t* r ) SC_CONST
   {
-    return l -> total_amount > r -> total_amount;
+    return l -> actual_amount.mean > r -> actual_amount.mean;
   }
 };
 
@@ -765,7 +765,7 @@ const char* chart_t::action_dmg( std::string& s,
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
     if ( st -> quiet ) continue;
-    if ( st -> total_amount <= 0 ) continue;
+    if ( st -> total_amount.mean <= 0 ) continue;
     if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
     stats_list.push_back( st );
   }
@@ -775,7 +775,7 @@ const char* chart_t::action_dmg( std::string& s,
     for ( stats_t* st = pet -> stats_list; st; st = st -> next )
     {
       if ( st -> quiet ) continue;
-      if ( st -> total_amount <= 0 ) continue;
+      if ( st -> total_amount.mean <= 0 ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
       stats_list.push_back( st );
     }
@@ -802,7 +802,7 @@ const char* chart_t::action_dmg( std::string& s,
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> total_amount / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> heal.mean : p -> dmg.mean ) ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> actual_amount.mean / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> heal.mean : p -> dmg.mean ) ); s += buffer;
   }
   s += "&amp;";
   s += "chds=0,100";

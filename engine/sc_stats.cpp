@@ -15,12 +15,13 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   /* frequency( 0 ), */ num_executes( 0 ), num_ticks( 0 ),
   num_direct_results( 0 ), num_tick_results( 0 ),
   total_execute_time( 0 ), total_tick_time( 0 ), total_time( 0 ),
-  actual_amount( 0 ), total_amount( 0 ), portion_amount( 0 ),
+  portion_amount( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), apr( 0 ),
   /* rpe( 0 ), */ etpe( 0 ), ttpt( 0 ),
   total_intervals( 0 ), num_intervals( 0 ),
   last_execute( -1 ),
-  iteration_amount( 0 ), portion_aps( p -> sim -> statistics_level < 3 ),
+  iteration_actual_amount( 0 ), actual_amount( p -> sim -> statistics_level < 3 ),
+  total_amount( p -> sim -> statistics_level < 3 ),portion_aps( p -> sim -> statistics_level < 3 ),
   compound_actual( 0 ), compound_amount( 0 ), opportunity_cost( 0 )
 {
   int num_buckets = ( int ) sim -> max_time;
@@ -53,7 +54,8 @@ void stats_t::add_child( stats_t* child )
 void stats_t::reset()
 {
   last_execute = -1;
-  iteration_amount = 0;
+  iteration_actual_amount = 0;
+  iteration_total_amount = 0;
 }
 
 // stats_t::add_result ======================================================
@@ -63,9 +65,8 @@ void stats_t::add_result( double act_amount,
                           int    dmg_type,
                           int    result )
 {
-  actual_amount += act_amount;
-  total_amount  += tot_amount;
-  iteration_amount += act_amount;
+  iteration_actual_amount += act_amount;
+  iteration_total_amount += tot_amount;
 
   if ( type == STATS_DMG )
     player -> iteration_dmg += act_amount;
@@ -127,11 +128,16 @@ void stats_t::add_tick( double time )
 
 void stats_t::combat_end()
 {
+  actual_amount.add( iteration_actual_amount );
+  total_amount.add( iteration_total_amount );
+
+
+
   for( size_t i=0; i < children.size(); i++ )
   {
-    iteration_amount += children[ i ] -> iteration_amount;
+    iteration_actual_amount += children[ i ] -> iteration_actual_amount;
   }
-  portion_aps.add( player -> iteration_fight_length ? iteration_amount / player -> iteration_fight_length : 0 );
+  portion_aps.add( player -> iteration_fight_length ? iteration_actual_amount / player -> iteration_fight_length : 0 );
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {
@@ -213,11 +219,11 @@ void stats_t::analyze()
 
   total_execute_time /= num_iterations;
   total_tick_time    /= num_iterations;
-  total_amount       /= num_iterations;
-  actual_amount      /= num_iterations;
+  total_amount.analyze();
+  actual_amount.analyze();
   opportunity_cost   /= num_iterations;
 
-  compound_amount = actual_amount - opportunity_cost;
+  compound_amount = actual_amount.mean - opportunity_cost;
 
   size_t num_children = children.size();
   for( size_t i=0; i < num_children; i++ )
@@ -228,7 +234,7 @@ void stats_t::analyze()
 
   if ( compound_amount > 0 )
   {
-    overkill_pct = total_amount ? 100.0 * ( total_amount - actual_amount ) / total_amount : 0;
+    overkill_pct = total_amount.mean ? 100.0 * ( total_amount.mean - actual_amount.mean ) / total_amount.mean : 0;
     ape  = ( num_executes > 0 ) ? ( compound_amount / num_executes ) : 0;
 
     total_time = total_execute_time + total_tick_time;
@@ -288,10 +294,10 @@ void stats_t::merge( const stats_t* other )
   num_ticks           += other -> num_ticks;
   total_execute_time  += other -> total_execute_time;
   total_tick_time     += other -> total_tick_time;
-  total_amount        += other -> total_amount;
-  actual_amount       += other -> actual_amount;
   opportunity_cost    += other -> opportunity_cost;
 
+  total_amount.merge( other -> total_amount );
+  actual_amount.merge( other -> actual_amount );
   portion_aps.merge( other -> portion_aps );
 
   for ( int i=0; i < RESULT_MAX; i++ )

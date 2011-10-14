@@ -2783,6 +2783,9 @@ void player_t::combat_end()
   executed_foreground_actions.add( iteration_executed_foreground_actions );
   waiting_time.add( iteration_waiting_time );
 
+  for ( stats_t* s = stats_list; s; s = s -> next )
+    s -> combat_end();
+
   // DMG
   dmg.add( iteration_dmg );
   for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
@@ -2814,11 +2817,9 @@ void player_t::combat_end()
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
-    b -> uptime_pct += iteration_fight_length ? 100.0 * b -> uptime_sum / iteration_fight_length : 0;
+    b -> uptime_pct.add( iteration_fight_length ? 100.0 * b -> iteration_uptime_sum / iteration_fight_length : 0 );
   }
 
-  for ( stats_t* s = stats_list; s; s = s -> next )
-    s -> combat_end();
 }
 
 // player_t::merge ==========================================================

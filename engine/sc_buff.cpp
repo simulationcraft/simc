@@ -64,7 +64,8 @@ buff_t::buff_t( sim_t*             s,
   buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   name_str( n ), sim( s ), player( 0 ), source( 0 ), initial_source( 0 ),
   max_stack( ms ), aura_id( id ), rng_type( rt ),
-  activated( true ), reverse( r ), constant( false ), quiet( q )
+  activated( true ), reverse( r ), constant( false ), quiet( q ),
+  uptime_pct()
 {
   init();
 }
@@ -86,7 +87,8 @@ buff_t::buff_t( player_t*          p,
   buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   name_str( n ), sim( p -> sim ), player( p ), source( p ), initial_source( p ),
   max_stack( ms ), aura_id( id ), rng_type( rt ),
-  activated( act ), reverse( r ), constant( false ), quiet( q )
+  activated( act ), reverse( r ), constant( false ), quiet( q ),
+  uptime_pct()
 {
   init();
 }
@@ -117,7 +119,8 @@ buff_t::buff_t( player_t* p,
   buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
   name_str( s_token ), sim( p -> sim ), player( p ), source( p ), initial_source( p ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),
-  activated( true ), reverse( false ), constant( false ), quiet( false )
+  activated( true ), reverse( false ), constant( false ), quiet( false ),
+  uptime_pct()
 {
   init_from_talent_( p, talent );
 
@@ -136,7 +139,8 @@ buff_t::buff_t( player_t* p,
   buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ), name_str( s_token ),
   sim( p -> sim ), player( p ), source( p ), initial_source( p ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),
-  activated( true ), reverse( false ), constant( false ), quiet( false )
+  activated( true ), reverse( false ), constant( false ), quiet( false ),
+  uptime_pct()
 {
   init_from_talent_( p, talent );
   init();
@@ -161,7 +165,8 @@ buff_t::buff_t( player_t*     p,
   buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ), name_str( s_token ),
   sim( p -> sim ), player( p ), source( p ), initial_source( p ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),
-  activated( true ), reverse( false ), constant( false ), quiet( false )
+  activated( true ), reverse( false ), constant( false ), quiet( false ),
+  uptime_pct()
 {
   init_from_spell_( p, spell );
 
@@ -180,7 +185,8 @@ buff_t::buff_t( player_t*     p,
   buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ), name_str( s_token ),
   sim( p -> sim ), player( p ), source( p ), initial_source( p ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),
-  activated( true ), reverse( false ), constant( false ), quiet( false )
+  activated( true ), reverse( false ), constant( false ), quiet( false ),
+  uptime_pct()
 {
   init_from_spell_( p, spell );
   init();
@@ -237,7 +243,7 @@ void buff_t::init()
   last_trigger = -1;
   start_intervals_sum = 0;
   trigger_intervals_sum = 0;
-  uptime_sum = 0;
+  iteration_uptime_sum = 0;
   up_count = 0;
   down_count = 0;
   start_intervals = 0;
@@ -246,7 +252,6 @@ void buff_t::init()
   refresh_count = 0;
   trigger_attempts = 0;
   trigger_successes = 0;
-  uptime_pct = 0;
   benefit_pct = 0;
   trigger_pct = 0;
   avg_start_interval = 0;
@@ -314,7 +319,8 @@ buff_t::buff_t( player_t*          p,
   sim( p -> sim ), player( p ), source( 0 ), initial_source( 0 ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
   aura_id( 0 ), rng_type( rt ),
-  activated( act ), reverse( r ), constant( false ), quiet( q )
+  activated( act ), reverse( r ), constant( false ), quiet( q ),
+  uptime_pct()
 {
   init_buff_t_();
 
@@ -362,7 +368,8 @@ buff_t::buff_t( player_t*          p,
   name_str( n ), sim( p -> sim ), player( p ), source( 0 ), initial_source( 0 ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
   aura_id( 0 ), rng_type( rt ),
-  activated( act ), reverse( r ), constant( false ), quiet( q )
+  activated( act ), reverse( r ), constant( false ), quiet( q ),
+  uptime_pct()
 {
   init_buff_t_();
 
@@ -406,7 +413,7 @@ void buff_t::init_buff_t_()
   last_trigger = -1;
   start_intervals_sum = 0;
   trigger_intervals_sum = 0;
-  uptime_sum = 0;
+  iteration_uptime_sum = 0;
   up_count = 0;
   down_count = 0;
   start_intervals = 0;
@@ -415,7 +422,6 @@ void buff_t::init_buff_t_()
   refresh_count = 0;
   trigger_attempts = 0;
   trigger_successes = 0;
-  uptime_pct = 0;
   benefit_pct = 0;
   trigger_pct = 0;
   avg_start_interval = 0;
@@ -806,7 +812,7 @@ void buff_t::expire()
   if ( last_start >= 0 )
   {
     double current_time = player ? ( player -> current_time ) : ( sim -> current_time );
-    uptime_sum += current_time - last_start;
+    iteration_uptime_sum += current_time - last_start;
   }
 
   if ( sim -> target -> resource_base[ RESOURCE_HEALTH ] == 0 ||
@@ -877,7 +883,7 @@ void buff_t::reset()
   expire();
   last_start = -1;
   last_trigger = -1;
-  uptime_sum = 0;
+  iteration_uptime_sum = 0;
 }
 
 // buff_t::merge ============================================================
@@ -886,7 +892,6 @@ void buff_t::merge( const buff_t* other )
 {
   start_intervals_sum   += other -> start_intervals_sum;
   trigger_intervals_sum += other -> trigger_intervals_sum;
-  uptime_pct            += other -> uptime_pct;
   up_count              += other -> up_count;
   down_count            += other -> down_count;
   start_intervals       += other -> start_intervals;
@@ -895,6 +900,8 @@ void buff_t::merge( const buff_t* other )
   refresh_count         += other -> refresh_count;
   trigger_attempts      += other -> trigger_attempts;
   trigger_successes     += other -> trigger_successes;
+
+  uptime_pct.merge( other -> uptime_pct );
 
   assert( stack_uptime.size() == other -> stack_uptime.size() );
   for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
@@ -923,7 +930,7 @@ void buff_t::analyze()
   }
   avg_start   =   start_count / ( double ) sim -> iterations;
   avg_refresh = refresh_count / ( double ) sim -> iterations;
-  uptime_pct  /= ( double ) sim -> iterations;
+  uptime_pct.analyze();
 
   for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> analyze();

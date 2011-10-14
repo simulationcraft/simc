@@ -2439,15 +2439,63 @@ struct gear_stats_t : public internal::gear_stats_t
   static double stat_mod( int stat );
 };
 
+
+// Statistical Sample Data
+
+struct sample_data_t
+{
+  std::vector<double> data;
+  // Analyzed Results
+  double sum;
+  double mean;
+  double min;
+  double max;
+  double variance;
+  double std_dev;
+  double median;
+  double mean_std_dev;
+  std::vector<int> distribution;
+  const bool simple;
+  const bool min_max;
+  int count;
+
+  bool analyzed;
+  bool sorted;
+
+  sample_data_t( bool s=true, bool mm=false );
+
+  void reserve( std::size_t capacity )
+  { if ( ! simple ) data.reserve( capacity ); }
+
+  void add( double x=0 );
+
+  void analyze(
+    bool calc_basics=true,
+    bool calc_variance=false,
+    bool s=false,
+    unsigned int create_dist=0 );
+
+  double percentile( double );
+
+  void sort();
+
+  void merge( const sample_data_t& );
+
+  void clear() { count = 0; sum = 0; data.clear(); distribution.clear(); }
+
+protected:
+  void create_distribution( unsigned int num_buckets=50 );
+};
+
 // Buffs ====================================================================
 
 struct buff_t : public spell_id_t
 {
   double current_value, react, buff_duration, buff_cooldown, default_chance;
-  double last_start, last_trigger, start_intervals_sum, trigger_intervals_sum, uptime_sum;
+  double last_start, last_trigger, start_intervals_sum, trigger_intervals_sum, iteration_uptime_sum;
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
-  double uptime_pct, benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
+  double benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
   std::string name_str;
   std::vector<double> stack_occurrence, stack_react_time;
   std::vector<uptime_t*> stack_uptime;
@@ -2465,6 +2513,7 @@ struct buff_t : public spell_id_t
   int rng_type;
   bool activated;
   bool reverse, constant, quiet, overridden;
+  sample_data_t uptime_pct;
 
   buff_t() : sim( 0 ) {}
   virtual ~buff_t();
@@ -2696,53 +2745,6 @@ struct action_expr_t
   static action_expr_t* parse( action_t*, const std::string& expr_str );
 };
 
-
-// Statistical Sample Data
-
-struct sample_data_t
-{
-  std::vector<double> data;
-  // Analyzed Results
-  double sum;
-  double mean;
-  double min;
-  double max;
-  double variance;
-  double std_dev;
-  double median;
-  double mean_std_dev;
-  std::vector<int> distribution;
-  const bool simple;
-  const bool min_max;
-  int count;
-
-  bool analyzed;
-  bool sorted;
-
-  sample_data_t( bool s=true, bool mm=false );
-
-  void reserve( std::size_t capacity )
-  { if ( ! simple ) data.reserve( capacity ); }
-
-  void add( double x=0 );
-
-  void analyze(
-    bool calc_basics=true,
-    bool calc_variance=false,
-    bool s=false,
-    unsigned int create_dist=0 );
-
-  double percentile( double );
-
-  void sort();
-
-  void merge( const sample_data_t& );
-
-  void clear() { count = 0; sum = 0; data.clear(); distribution.clear(); }
-
-protected:
-  void create_distribution( unsigned int num_buckets=50 );
-};
 
 struct spell_data_expr_t
 {
@@ -4402,12 +4404,12 @@ struct stats_t
   double frequency, num_executes, num_ticks;
   double num_direct_results, num_tick_results;
   double total_execute_time, total_tick_time, total_time;
-  double actual_amount, total_amount, portion_amount, overkill_pct;
+  double portion_amount, overkill_pct;
   double aps, ape, apet, apr, rpe, etpe, ttpt;
   double total_intervals, num_intervals;
   double last_execute;
-  double iteration_amount;
-  sample_data_t portion_aps;
+  double iteration_actual_amount, iteration_total_amount;
+  sample_data_t actual_amount, total_amount, portion_aps;
   std::string aps_distribution_chart;
 
   std::vector<stats_t*> children;
