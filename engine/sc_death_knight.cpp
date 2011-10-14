@@ -4667,7 +4667,6 @@ void death_knight_t::init_enchant()
       action_callback_t( p -> sim, p ), slot( s ), buff( b ), razorice_damage_proc( 0 )
     {
       razorice_damage_proc = new razorice_spell_t( p );
-
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -4682,8 +4681,6 @@ void death_knight_t::init_enchant()
       // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
       buff -> trigger();
 
-      razorice_damage_proc -> base_dd_min = w -> min_dmg;
-      razorice_damage_proc -> base_dd_max = w -> max_dmg;
       razorice_damage_proc -> execute();
     }
   };
