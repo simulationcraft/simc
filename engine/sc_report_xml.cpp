@@ -1016,15 +1016,15 @@ static void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 
   writer.print_tag( "confidence", util_t::to_string( sim -> confidence * 100.0 ));
 
-  // double min_length = sim -> max_time * ( 1 - sim -> vary_combat_length );
-  double min_length = sim -> iteration_timeline[ 0 ];
-  // double max_length = sim -> max_time * ( 1 + sim -> vary_combat_length );
-  double max_length = sim -> iteration_timeline[ sim -> iteration_timeline.size() - 1 ];
-  writer.begin_tag( "fight_length" );
-  if ( sim -> vary_combat_length > 0.0 )
-    writer.print_attribute( "min", util_t::to_string( min_length, 0 ) );
-  writer.print_attribute( "max", util_t::to_string( max_length, 0 ) );
-  writer.end_tag(); // </fight_length>
+  writer.begin_tag( "simulation_length" );
+  writer.print_attribute( "mean", util_t::to_string( sim -> simulation_length.mean, 0 ) );
+  if ( !sim -> fixed_time )
+  {
+    writer.print_attribute( "min", util_t::to_string( sim -> simulation_length.min, 0 ) );
+    writer.print_attribute( "max", util_t::to_string( sim -> simulation_length.max, 0 ) );
+  }
+  writer.print_attribute( "total", util_t::to_string( sim -> simulation_length.sum, 0 ) );
+  writer.end_tag(); // </simulation_length>
 
   writer.begin_tag("events");
   writer.print_attribute("processed", util_t::to_string( sim -> total_events_processed ));
@@ -1033,7 +1033,6 @@ static void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 
   writer.print_tag( "fight_style", sim -> fight_style );
 
-  writer.print_tag( "simulation_length", util_t::to_string( sim -> iterations * sim -> simulation_length.mean ));
   writer.print_tag( "elapsed_cpu_sec", util_t::to_string( sim -> elapsed_cpu_seconds ));
 
   writer.begin_tag("lag");
