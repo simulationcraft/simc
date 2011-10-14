@@ -10,8 +10,8 @@ if (($patch == 'nil') || preg_match('/[^a-zA-Z0-9_\.]/', $file)) {
 }
 if ($file == '.html') $file = 'Raid_T11_372.html';
 $string = file_get_contents("$patch/$file", false, NULL, -1, 200000);
-if (preg_match_all('/<img src="(http:\/\/[0-9]\.chart\.apis\.google\.com.*?)"/', $string, $m)) {
-	$chart = htmlspecialchars_decode($m[1][$number]);
+if (preg_match_all('/("|>)(http:\/\/[0-9]\.chart\.apis\.google\.com.*?)("|<)/', $string, $m)) {
+    $chart = htmlspecialchars_decode($m[2][$number]);
 	$chart = str_replace('DPS  Ranking', $patch[0] . '.' . $patch[1] . '.' . $patch[2] . '+' . str_replace('_', '+', $array[0]), $chart);
 	if (preg_match('/chd=t:([\|0-9]+)/', $chart, $m)) {
 		$array = explode('|', $m[1]);
