@@ -2102,6 +2102,7 @@ public:
   static void string_strip_quotes( std::string& str );
 
   static std::string to_string( int i );
+  static std::string to_string( unsigned int i );
   static std::string to_string( int64_t i );
   static std::string to_string( double f );
   static std::string to_string( double f, int precision );

@@ -1994,6 +1994,15 @@ std::string util_t::to_string( int i )
 
 // util_t::to_string ========================================================
 
+std::string util_t::to_string( unsigned int i )
+{
+  char buffer[ 64 ];
+  snprintf( buffer, sizeof( buffer ), "%u", i );
+  return std::string( buffer );
+}
+
+// util_t::to_string ========================================================
+
 std::string util_t::to_string( int64_t i )
 {
 #ifdef WIN32
