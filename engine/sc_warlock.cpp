@@ -2272,7 +2272,10 @@ void trigger_burning_embers ( spell_t* s, double dmg )
 
     int num_ticks = p -> spells_burning_embers -> num_ticks;
 
-    double cap = ( 0.5 * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_MAX ) + p -> talent_burning_embers -> effect_min( 2 ) ) / num_ticks;
+    double spmod = ( p -> ptr ) ? 0.7 : 0.425;
+
+    //FIXME: The 1.2 modifier to the adder was experimentally observed on live realms 2011/10/14
+    double cap = ( spmod * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_MAX ) + p -> talent_burning_embers -> effect_min( 2 ) * 1.2 ) / num_ticks;
 
     p -> spells_burning_embers -> base_td += ( dmg * p -> talent_burning_embers -> effect1().percent() ) / num_ticks;
 
