@@ -220,6 +220,7 @@ struct warlock_t : public player_t
   buff_t* buffs_searing_pain_soulburn;
   buff_t* buffs_tier11_4pc_caster;
   buff_t* buffs_tier12_4pc_caster;
+  buff_t* buffs_tier13_4pc_caster;
 
   // Cooldowns
   cooldown_t* cooldowns_metamorphosis;
@@ -314,6 +315,7 @@ struct warlock_t : public player_t
   gain_t* gains_soul_leech;
   gain_t* gains_soul_leech_health;
   gain_t* gains_mana_feed;
+  gain_t* gains_tier13_4pc;
 
   // Uptimes
   benefit_t* uptimes_backdraft[ 4 ];
@@ -432,6 +434,7 @@ struct warlock_t : public player_t
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
+  virtual double    composite_spell_power_multiplier() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
@@ -3057,7 +3060,13 @@ struct soul_fire_t : public warlock_spell_t
     if ( p -> buffs_empowered_imp -> check() )
       p -> buffs_empowered_imp -> expire();
     else if ( p -> buffs_soulburn -> check() )
+    {
       p -> buffs_soulburn -> expire();
+      if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+      {
+        p -> resource_gain( RESOURCE_SOUL_SHARDS, 1, p -> gains_tier13_4pc );
+      }
+    }
 
     trigger_tier12_4pc_caster( this );
   }
@@ -3367,7 +3376,14 @@ struct summon_infernal_t : public summon_pet_t
   {
     warlock_t* p = player -> cast_warlock();
 
+    cooldown -> duration += ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
+
     summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
+    summoning_duration += ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() ) ? 
+      ( p -> talent_summon_felguard -> ok() ? 
+        p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) : 
+        p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) 
+      ) : 0.0;
     infernal_awakening = new infernal_awakening_t( p );
   }
 
@@ -3392,6 +3408,11 @@ struct summon_doomguard2_t : public summon_pet_t
     harmful = false;
     background = true;
     summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
+    summoning_duration += ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() ) ? 
+      ( p -> talent_summon_felguard -> ok() ? 
+        p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) : 
+        p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) 
+      ) : 0.0;
   }
 
   virtual void execute()
@@ -3414,6 +3435,8 @@ struct summon_doomguard_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     parse_options( NULL, options_str );
+
+    cooldown -> duration += ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
 
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p );
@@ -3742,7 +3765,10 @@ struct soulburn_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
     if ( p -> use_pre_soulburn || p -> in_combat )
+    {
       p -> buffs_soulburn -> trigger();
+      if ( p -> dbc.ptr ) p -> buffs_tier13_4pc_caster -> trigger();
+    }
     warlock_spell_t::execute();
   }
 };
@@ -3997,6 +4023,18 @@ double warlock_t::composite_spell_power( const school_type school ) SC_CONST
   sp += buffs_fel_armor -> value();
 
   return sp;
+}
+
+double warlock_t::composite_spell_power_multiplier() SC_CONST
+{
+  double m = player_t::composite_spell_power_multiplier();
+
+  if ( dbc.ptr && buffs_tier13_4pc_caster -> up() )
+  {
+    m *= 1.0 + dbc.spell( sets -> set ( SET_T13_4PC_CASTER ) -> effect_trigger_spell( 1 ) ) -> effect1().percent();
+  }
+
+  return m;
 }
 
 // warlock_t::composite_player_multiplier ===================================
@@ -4364,6 +4402,8 @@ void warlock_t::init_buffs()
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
   buffs_tier11_4pc_caster     = new buff_t( this, sets -> set ( SET_T11_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier11_4pc_caster", sets -> set ( SET_T11_4PC_CASTER ) -> proc_chance() );
   buffs_tier12_4pc_caster     = new buff_t( this, sets -> set ( SET_T12_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier12_4pc_caster", sets -> set ( SET_T12_4PC_CASTER ) -> proc_chance() );
+  if ( dbc.ptr )
+    buffs_tier13_4pc_caster     = new buff_t( this, sets -> set ( SET_T13_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier13_4pc_caster", sets -> set ( SET_T13_4PC_CASTER ) -> proc_chance() );
 }
 
 // warlock_t::init_gains ====================================================
@@ -4378,6 +4418,7 @@ void warlock_t::init_gains()
   gains_mana_feed         = get_gain( "mana_feed"         );
   gains_soul_leech        = get_gain( "soul_leech"        );
   gains_soul_leech_health = get_gain( "soul_leech_health" );
+  gains_tier13_4pc        = get_gain( "tier13_4pc"        );
 }
 
 // warlock_t::init_uptimes ==================================================
