@@ -2100,11 +2100,6 @@ void shaman_spell_t::execute()
     {
       if ( p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
       {
-        //log_t::output( sim, "%f %d %f %f", 
-        //              p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance(), 
-        //             p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value(),
-        //              p -> sim -> current_time,
-        //              p -> cooldowns_fire_elemental_totem -> ready );
         p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
       }
     }
