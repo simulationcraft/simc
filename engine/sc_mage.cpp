@@ -3515,7 +3515,10 @@ void mage_t::init_spells()
 
   spells.blink = spell_data_t::find( 1953, "Blink", dbc.ptr );
 
-  spells.stolen_time = spell_data_t::find( 105791, "Stolen Time", dbc.ptr );
+  if ( dbc.ptr )
+  {
+    spells.stolen_time = spell_data_t::find( 105791, "Stolen Time", dbc.ptr );
+  }
 
   memset( ( void* ) &specializations, 0x00, sizeof( specializations_t ) );
 

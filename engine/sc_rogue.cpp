@@ -3721,8 +3721,11 @@ void rogue_t::init_spells()
   mastery_main_gauche     = new mastery_t( this, "main_gauche",        76806, TREE_COMBAT );
   mastery_executioner     = new mastery_t( this, "executioner",        76808, TREE_SUBTLETY );
 
-  spells.tier13_2pc       = spell_data_t::find( 105864, "Tricks of Time", dbc.ptr );
-  spells.tier13_4pc       = spell_data_t::find( 105865, "Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta)", dbc.ptr );
+  if ( dbc.ptr )
+  {
+    spells.tier13_2pc       = spell_data_t::find( 105864, "Tricks of Time", dbc.ptr );
+    spells.tier13_4pc       = spell_data_t::find( 105865, "Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta)", dbc.ptr );
+  }
 
   glyphs.adrenaline_rush     = find_glyph( "Glyph of Adrenaline Rush"     );
   glyphs.ambush              = find_glyph( "Glyph of Ambush"              );
@@ -3747,9 +3750,10 @@ void rogue_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    {     0,     0, 90460, 90473,     0,     0,     0,     0 }, // Tier11
-    {     0,     0, 99174, 99175,     0,     0,     0,     0 }, // Tier12
-    {     0,     0,     0,     0,     0,     0,     0,     0 },
+    {     0,     0,  90460,  90473,     0,     0,     0,     0 }, // Tier11
+    {     0,     0,  99174,  99175,     0,     0,     0,     0 }, // Tier12
+    {     0,     0, 105849, 105865,     0,     0,     0,     0 }, // Tier13
+    {     0,     0,      0,      0,     0,     0,     0,     0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4172,6 +4176,7 @@ int rogue_t::decode_set( item_t& item )
 
   if ( strstr( s, "wind_dancers" ) ) return SET_T11_MELEE;
   if ( strstr( s, "dark_phoenix" ) ) return SET_T12_MELEE;
+  if ( strstr( s, "blackfang_battleweave" ) ) return SET_T13_MELEE;
 
   return SET_NONE;
 }
