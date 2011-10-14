@@ -239,6 +239,7 @@ struct rogue_t : public player_t
   // Spell Data
   struct spells_t
   {
+    spell_data_t* tier13_2pc;
     spell_data_t* tier13_4pc;
 
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
@@ -1144,7 +1145,7 @@ double rogue_attack_t::cost() SC_CONST
     return 0;
 
   if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && p -> buffs_tier13_2pc -> up() )
-    c *= 0.8;
+    c *= 1.0 + p -> spells.tier13_2pc -> effect1().percent();
 
   return c;
 }
@@ -3720,6 +3721,7 @@ void rogue_t::init_spells()
   mastery_main_gauche     = new mastery_t( this, "main_gauche",        76806, TREE_COMBAT );
   mastery_executioner     = new mastery_t( this, "executioner",        76808, TREE_SUBTLETY );
 
+  spells.tier13_2pc       = spell_data_t::find( 105864, "Tricks of Time", dbc.ptr );
   spells.tier13_4pc       = spell_data_t::find( 105865, "Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta)", dbc.ptr );
 
   glyphs.adrenaline_rush     = find_glyph( "Glyph of Adrenaline Rush"     );
@@ -3860,7 +3862,8 @@ void rogue_t::init_buffs()
   buffs_shiv               = new buff_t( this, "shiv",          1  );
   buffs_stealthed          = new buff_t( this, "stealthed",     1  );
   buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
-  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1,  6.0, 0.0, ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
+
+  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, dbc.ptr ? spells.tier13_2pc -> duration() : 6.0, 0.0, ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
   buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
 
   buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );
