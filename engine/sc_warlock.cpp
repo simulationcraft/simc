@@ -812,11 +812,7 @@ struct warlock_main_pet_t : public warlock_pet_t
       m  *= 1.05;
     }
 
-    //FIXME: Remove when 4.3 goes live
-    double mastery_value = o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
-    if ( ptr ) mastery_value = 250.0;
-
-    m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * mastery_value / 10000.0 );
+    m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * o -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
 
     return m;
   }
@@ -1792,12 +1788,8 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
     {
       m  *= 1.05;
     }
-
-    //FIXME: Remove when 4.3 goes live
-    double mastery_value = o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
-    if ( ptr ) mastery_value = 250.0;
     
-    double mastery_gain = ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * mastery_value / 10000.0 );
+    double mastery_gain = ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * o -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
     
     //FIXME: Remove when 4.3 goes live
     if ( ! ptr ) mastery_gain *= 3;
@@ -4013,14 +4005,10 @@ double warlock_t::composite_player_multiplier( const school_type school, action_
 {
   double player_multiplier = player_t::composite_player_multiplier( school, a );
 
-  //FIXME: Remove when 4.3 goes live
-  double mastery_value = mastery_spells.master_demonologist -> effect_base_value( 3 );
-  if ( ptr ) mastery_value = 250.0;
-
   if ( buffs_metamorphosis -> up() )
   {
     player_multiplier *= 1.0 + buffs_metamorphosis -> effect3().percent()
-                         + ( buffs_metamorphosis -> value() * mastery_value / 10000.0 );
+                         + ( buffs_metamorphosis -> value() * mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
   }
 
   player_multiplier *= 1.0 + ( talent_demonic_pact -> effect3().percent() );
@@ -4033,18 +4021,14 @@ double warlock_t::composite_player_multiplier( const school_type school, action_
   double fire_multiplier   = 1.0;
   double shadow_multiplier = 1.0;
 
-  //FIXME: Remove when 4.3 goes live
-  double dk_value = passive_spells.demonic_knowledge -> effect_base_value( 1 );
-  if ( ptr && dk_value != 0 ) dk_value = 20.0;
-
   // Fire
   fire_multiplier *= 1.0 + ( passive_spells.cataclysm -> effect_base_value( 1 ) * 0.01 );
   if ( mastery_spells.fiery_apocalypse -> ok() )
     fire_multiplier *= 1.0 + ( composite_mastery() * mastery_spells.fiery_apocalypse -> effect_base_value( 2 ) / 10000.0 );
-  fire_multiplier *= 1.0 +  dk_value * 0.01 ;
+  fire_multiplier *= 1.0 + passive_spells.demonic_knowledge -> effect_base_value( 1 ) * 0.01 ;
 
   // Shadow
-  shadow_multiplier *= 1.0 + ( dk_value * 0.01 );
+  shadow_multiplier *= 1.0 + ( passive_spells.demonic_knowledge -> effect_base_value( 1 ) * 0.01 );
   shadow_multiplier *= 1.0 + ( passive_spells.shadow_mastery -> effect_base_value( 1 ) * 0.01 );
 
   if ( buffs_improved_soul_fire -> up() )
