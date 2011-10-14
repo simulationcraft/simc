@@ -8,7 +8,7 @@ position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#priest-033213011213200312021003000000000000000000302000200000000000000
+talents=http://www.wowhead.com/talent#priest-033213011013200312021003000000000000000000302000200000000000000
 glyphs=penance/smite/shadow_word_pain/divine_accuracy
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
