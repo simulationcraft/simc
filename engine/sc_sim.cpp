@@ -1146,6 +1146,7 @@ void sim_t::combat_end()
 
   for ( player_t* t = target_list; t; t = t -> next )
   {
+    if ( t -> is_add() ) continue;
     t -> combat_end();
   }
   player_t::combat_end( this );
@@ -1154,6 +1155,7 @@ void sim_t::combat_end()
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
+    if ( p -> is_pet() ) continue;
     p -> combat_end();
   }
 

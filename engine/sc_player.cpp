@@ -2769,6 +2769,11 @@ void player_t::combat_end( sim_t* sim )
 
 void player_t::combat_end()
 {
+  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
+  {
+    pet -> combat_end();
+  }
+
   if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s", name() );
 
   if ( ! is_pet() )
