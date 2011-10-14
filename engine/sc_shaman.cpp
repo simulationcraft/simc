@@ -1821,7 +1821,7 @@ struct lava_lash_t : public shaman_attack_t
     flametongue_bonus   = base_value( E_DUMMY ) / 100.0;
 
     // Searing flames bonus to base weapon damage
-    sf_bonus            = p -> talent_improved_lava_lash -> base_value( E_APPLY_AURA, A_DUMMY ) / 100.0 +
+    sf_bonus            = p -> talent_improved_lava_lash -> effect2().percent() + 
                           p -> sets -> set( SET_T12_2PC_MELEE ) -> base_value() / 100.0;
   }
 
@@ -1854,7 +1854,7 @@ struct lava_lash_t : public shaman_attack_t
 
     // Second group, Improved Lava Lash + Glyph of Lava Lash + T11 2Piece bonus
     player_multiplier *= 1.0 + p -> glyph_lava_lash -> mod_additive( P_GENERIC ) +
-                               ( ( ! p -> dbc.ptr ) ? p -> talent_improved_lava_lash -> mod_additive( P_GENERIC ) : 0 ) +
+                               p -> talent_improved_lava_lash -> effect1().percent() +
                                p -> sets -> set( SET_T11_2PC_MELEE ) -> mod_additive( P_GENERIC );
   }
 
