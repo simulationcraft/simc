@@ -2462,15 +2462,7 @@ struct shadow_word_death_t : public priest_spell_t
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
-
-    base_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.55;
-
-    // PTR
-    // Needs testing
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
-    {
-      base_multiplier *= 1.0 + 0.55;
-    }
+    base_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2503,12 +2495,11 @@ struct shadow_word_death_t : public priest_spell_t
 
     double health_loss = travel_dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.20 );
 
-
     // PTR
     // Needs testing
     if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
     {
-      health_loss *= 0.05;
+      health_loss *= 1.0 - p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) / 100.0;
     }
 
     p -> resource_loss( RESOURCE_HEALTH, health_loss );
