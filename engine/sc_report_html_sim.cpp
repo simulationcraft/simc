@@ -1580,7 +1580,6 @@ void report_t::print_html( sim_t* sim )
              "\t\t\t\t\t\t} else {\n"
              "\t\t\t\t\t\t\tsection.prev().removeClass('grouped-last');\n"
              "\t\t\t\t\t\t}\n"
-             "\t\t\t\t\t\twindow.scrollTo(0,$('#raid-summary').position().top);\n"
              "\t\t\t\t\t}\n"
              "\t\t\t\t\t$(this).next('.toggle-content').toggle(150);\n"
              "\t\t\t\t\t$(this).prev('.toggle-thumbnail').toggleClass('hide');\n"
