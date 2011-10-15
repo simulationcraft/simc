@@ -1402,9 +1402,9 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     case TREE_SHADOW:
     case TREE_DISCIPLINE:   chance *= 1.36; break;
     case TREE_ELEMENTAL:    chance *= 1.029; break;
-    case TREE_AFFLICTION:   chance *= 1.4; break;
-    case TREE_DEMONOLOGY:   chance *= 1.4; break;
-    case TREE_DESTRUCTION:  chance *= 1.4; break;
+    case TREE_AFFLICTION:   chance = 1 / 6; break;
+    case TREE_DEMONOLOGY:   chance = 1 / 6; break;
+    case TREE_DESTRUCTION:  chance = 1 / 6; break;
     default:
       // Get a real spec...
       break;
