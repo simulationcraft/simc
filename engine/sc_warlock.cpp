@@ -1223,14 +1223,14 @@ struct warlock_pet_attack_t : public attack_t
 
 // trigger_mana_feed ========================================================
 
-void trigger_mana_feed( action_t* s, double travel_result )
+void trigger_mana_feed( action_t* s, double impact_result )
 {
   warlock_pet_t* a = ( warlock_pet_t* ) s -> player -> cast_pet();
   warlock_t* p = a -> owner -> cast_warlock();
 
   if ( p -> talent_mana_feed -> rank() )
   {
-    if ( travel_result == RESULT_CRIT )
+    if ( impact_result == RESULT_CRIT )
     {
       double mana = p -> resource_max[ RESOURCE_MANA ] * p -> talent_mana_feed -> effect3().percent();
       if ( p -> active_pet -> pet_type == PET_FELGUARD || p -> active_pet -> pet_type == PET_FELHUNTER ) mana *= 4;
@@ -1323,7 +1323,7 @@ struct imp_pet_t : public warlock_main_pet_t
       }
     }
 
-    virtual void impact( player_t* t, int travel_result, double travel_dmg );
+    virtual void impact( player_t* t, int impact_result, double travel_dmg );
   };
 
   imp_pet_t( sim_t* sim, player_t* owner ) :
@@ -1502,11 +1502,11 @@ struct felhunter_pet_t : public warlock_main_pet_t
       player_multiplier *= 1.0 + o -> active_dots() * effect3().percent();
     }
 
-    virtual void impact( player_t* t, int travel_result, double travel_dmg )
+    virtual void impact( player_t* t, int impact_result, double travel_dmg )
     {
-      warlock_pet_spell_t::impact( t, travel_result, travel_dmg );
-      if ( result_is_hit( travel_result ) )
-        trigger_mana_feed ( this, travel_result );
+      warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
+      if ( result_is_hit( impact_result ) )
+        trigger_mana_feed ( this, impact_result );
     }
   };
 
@@ -1578,11 +1578,11 @@ struct succubus_pet_t : public warlock_main_pet_t
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
-    virtual void impact( player_t* t, int travel_result, double travel_dmg )
+    virtual void impact( player_t* t, int impact_result, double travel_dmg )
     {
-      warlock_pet_spell_t::impact( t, travel_result, travel_dmg );
-      if ( result_is_hit( travel_result ) )
-        trigger_mana_feed ( this, travel_result );
+      warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
+      if ( result_is_hit( impact_result ) )
+        trigger_mana_feed ( this, impact_result );
     }
 
     virtual void player_buff()
@@ -1636,11 +1636,11 @@ struct voidwalker_pet_t : public warlock_main_pet_t
       direct_power_mod = 0.512;
     }
 
-    virtual void impact( player_t* t, int travel_result, double travel_dmg )
+    virtual void impact( player_t* t, int impact_result, double travel_dmg )
     {
-      warlock_pet_spell_t::impact( t, travel_result, travel_dmg );
-      if ( result_is_hit( travel_result ) )
-        trigger_mana_feed ( this, travel_result ); // untested
+      warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
+      if ( result_is_hit( impact_result ) )
+        trigger_mana_feed ( this, impact_result ); // untested
     }
   };
 
@@ -2215,13 +2215,13 @@ struct shadow_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
-    if ( result_is_hit( travel_result ) )
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
-      trigger_decimation( this, travel_result );
+      trigger_decimation( this, impact_result );
       trigger_impending_doom( this );
       p -> buffs_shadow_embrace -> trigger();
       t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> proc_chance() );
@@ -2351,10 +2351,10 @@ struct chaos_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
-    if ( result_is_hit( travel_result ) )
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
       trigger_soul_leech( this );
     }
@@ -2373,10 +2373,10 @@ struct death_coil_t : public warlock_spell_t
     binary = true;
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
-    if ( result_is_hit( travel_result ) )
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
       player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
     }
@@ -2402,10 +2402,10 @@ struct shadowburn_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
-    if ( result_is_hit( travel_result ) )
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
       trigger_soul_leech( this );
     }
@@ -2523,10 +2523,10 @@ struct drain_life_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
-    if ( result_is_hit( travel_result ) )
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
       trigger_everlasting_affliction( this );
     }
@@ -2735,10 +2735,10 @@ struct haunt_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
-    if ( result_is_hit( travel_result ) )
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
       warlock_t* p = player -> cast_warlock();
       p -> buffs_haunted -> trigger();
@@ -2884,11 +2884,11 @@ struct conflagrate_t : public warlock_spell_t
     warlock_spell_t::execute();
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
-    if ( result_is_hit( travel_result ) )
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
       p -> buffs_backdraft -> trigger( 3 );
     }
@@ -2947,14 +2947,14 @@ struct incinerate_t : public warlock_spell_t
     trigger_tier12_4pc_caster( this );
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
 
     warlock_t* p = player -> cast_warlock();
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
-      trigger_decimation( this, travel_result );
+      trigger_decimation( this, impact_result );
       trigger_impending_doom( this );
       t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> proc_chance() );
     }
@@ -3100,14 +3100,14 @@ struct soul_fire_t : public warlock_spell_t
     return t;
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       warlock_t* p = player -> cast_warlock();
-      trigger_decimation( this, travel_result );
+      trigger_decimation( this, impact_result );
       if ( p -> ptr ) trigger_impending_doom( this );
       trigger_soul_leech( this );
       trigger_burning_embers( this, travel_dmg );
@@ -3602,12 +3602,12 @@ struct hand_of_guldan_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       p -> buffs_hand_of_guldan -> trigger();
       trigger_impending_doom( this );
@@ -3652,12 +3652,12 @@ struct fel_flame_t : public warlock_spell_t
     p -> buffs_tier11_4pc_caster -> decrement();
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
 
     warlock_t* p = player -> cast_warlock();
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       p -> dots_immolate            -> extend_duration( 2, true );
       p -> dots_unstable_affliction -> extend_duration( 2, true );
@@ -3931,11 +3931,11 @@ struct seed_of_corruption_t : public warlock_spell_t
     base_crit += p -> talent_everlasting_affliction -> effect2().percent();
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::impact( t, travel_result, travel_dmg );
-    if ( result_is_hit( travel_result ) )
+    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
       dot_damage_done = t -> iteration_dmg_taken;
       if ( p -> dots_corruption -> ticking )
@@ -4003,16 +4003,16 @@ struct rain_of_fire_t : public warlock_spell_t
 
 // imp_pet_t::fire_bolt_t::execute ==========================================
 
-void imp_pet_t::firebolt_t::impact( player_t* t, int travel_result, double travel_dmg )
+void imp_pet_t::firebolt_t::impact( player_t* t, int impact_result, double travel_dmg )
 {
-  warlock_pet_spell_t::impact( t, travel_result, travel_dmg );
+  warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
   warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
 
-  if ( result_is_hit( travel_result ) )
+  if ( result_is_hit( impact_result ) )
   {
     if ( o -> buffs_empowered_imp -> trigger() ) o -> procs_empowered_imp -> occur();
     trigger_burning_embers ( this, travel_dmg );
-    trigger_mana_feed ( this, travel_result );
+    trigger_mana_feed ( this, impact_result );
   }
 }
 

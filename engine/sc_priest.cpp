@@ -554,7 +554,7 @@ struct priest_heal_t : public heal_t
       shield_multiple  = p -> talents.divine_aegis -> effect1().percent();
     }
 
-    virtual void impact( player_t* t, int travel_result, double travel_dmg )
+    virtual void impact( player_t* t, int impact_result, double travel_dmg )
     {
       // Get DA buff:
       buff_t* buff_da = 0;
@@ -571,7 +571,7 @@ struct priest_heal_t : public heal_t
       double old_amount = buff_da -> current_value;
       double new_amount = std::min( t -> resource_current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
       buff_da -> trigger( 1, old_amount + new_amount );
-      stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, STATS_ABSORB, travel_result );
+      stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, STATS_ABSORB, impact_result );
     }
   };
 
@@ -758,15 +758,15 @@ struct priest_heal_t : public heal_t
     da -> execute();
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    heal_t::impact( t, travel_result, travel_dmg );
+    heal_t::impact( t, impact_result, travel_dmg );
     priest_t* p = player -> cast_priest();
 
     if ( travel_dmg > 0 )
     {
       // Divine Aegis
-      if ( travel_result == RESULT_CRIT )
+      if ( impact_result == RESULT_CRIT )
       {
         trigger_divine_aegis( t, travel_dmg );
       }
@@ -1004,13 +1004,13 @@ public:
   virtual void assess_damage( player_t* t,
                               double amount,
                               int    dmg_type,
-                              int    travel_result )
+                              int    impact_result )
   {
     priest_t* p = player -> cast_priest();
 
-    spell_t::assess_damage( t, amount, dmg_type, travel_result );
+    spell_t::assess_damage( t, amount, dmg_type, impact_result );
 
-    if ( p -> buffs_vampiric_embrace -> up() && result_is_hit( travel_result ) )
+    if ( p -> buffs_vampiric_embrace -> up() && result_is_hit( impact_result ) )
     {
       double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
       p -> resource_gain( RESOURCE_HEALTH, a * 0.06, p -> gains.vampiric_embrace );
@@ -1042,7 +1042,7 @@ public:
     }
 
     if ( atonement )
-      atonement -> trigger( amount, dmg_type, travel_result );
+      atonement -> trigger( amount, dmg_type, impact_result );
   }
 
   static void trigger_shadowy_apparition( player_t* player );
@@ -1141,14 +1141,14 @@ struct shadow_fiend_pet_t : public pet_t
       }
     }
 
-    void assess_damage( player_t* t, double amount, int dmg_type, int travel_result )
+    void assess_damage( player_t* t, double amount, int dmg_type, int impact_result )
     {
-      attack_t::assess_damage( t, amount, dmg_type, travel_result );
+      attack_t::assess_damage( t, amount, dmg_type, impact_result );
 
       shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
       priest_t* o = p -> owner -> cast_priest();
 
-      if ( result_is_hit( travel_result ) )
+      if ( result_is_hit( impact_result ) )
       {
         if ( o -> set_bonus.tier13_4pc_caster() )
           o -> buffs_shadow_orb  -> trigger( 3, 1, o -> constants.shadow_orb_proc_value + o -> constants.harnessed_shadows_value );
@@ -2193,13 +2193,13 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double dmg )
+  virtual void impact( player_t* t, int impact_result, double dmg )
   {
     priest_t* p = player -> cast_priest();
 
-    priest_spell_t::impact( t, travel_result, dmg );
+    priest_spell_t::impact( t, impact_result, dmg );
 
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       for ( int i=0; i < 4; i++ )
       {
@@ -2487,11 +2487,11 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     priest_t* p = player -> cast_priest();
 
-    priest_spell_t::impact( t, travel_result, travel_dmg );
+    priest_spell_t::impact( t, impact_result, travel_dmg );
 
     double health_loss = travel_dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.20 );
 
@@ -2972,9 +2972,9 @@ struct renew_t : public priest_heal_t
       trigger_gcd += p -> talents.rapid_renewal -> effect1().seconds();
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    priest_heal_t::impact( t, travel_result, travel_dmg );
+    priest_heal_t::impact( t, impact_result, travel_dmg );
 
     // Divine Touch
     if ( dt )
@@ -3038,11 +3038,11 @@ struct _heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    priest_heal_t::impact( t, travel_result, travel_dmg );
+    priest_heal_t::impact( t, impact_result, travel_dmg );
 
-    trigger_inspiration( travel_result, t );
+    trigger_inspiration( impact_result, t );
 
     trigger_grace( t );
     trigger_strength_of_soul( t );
@@ -3111,11 +3111,11 @@ struct flash_heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    priest_heal_t::impact( t, travel_result, travel_dmg );
+    priest_heal_t::impact( t, impact_result, travel_dmg );
 
-    trigger_inspiration( travel_result, t );
+    trigger_inspiration( impact_result, t );
 
     trigger_grace( t );
     trigger_strength_of_soul( t );
@@ -3230,11 +3230,11 @@ struct binding_heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    priest_heal_t::impact( t, travel_result, travel_dmg );
+    priest_heal_t::impact( t, impact_result, travel_dmg );
 
-    trigger_inspiration( travel_result, t );
+    trigger_inspiration( impact_result, t );
   }
 
   virtual void player_buff()
@@ -3325,11 +3325,11 @@ struct greater_heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    priest_heal_t::impact( t, travel_result, travel_dmg );
+    priest_heal_t::impact( t, impact_result, travel_dmg );
 
-    trigger_inspiration( travel_result, t );
+    trigger_inspiration( impact_result, t );
 
     trigger_grace( t );
     trigger_strength_of_soul( t );
@@ -3465,11 +3465,11 @@ struct prayer_of_healing_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    priest_heal_t::impact( t, travel_result, travel_dmg );
+    priest_heal_t::impact( t, impact_result, travel_dmg );
 
-    trigger_inspiration( travel_result, t );
+    trigger_inspiration( impact_result, t );
 
     // Glyph
     if ( glyph )
@@ -3483,7 +3483,7 @@ struct prayer_of_healing_t : public priest_heal_t
     }
 
     // Divine Aegis
-    if ( travel_result != RESULT_CRIT )
+    if ( impact_result != RESULT_CRIT )
     {
       trigger_divine_aegis( t, travel_dmg * 0.5 );
     }
@@ -3569,11 +3569,11 @@ struct circle_of_healing_t : public priest_heal_t
     priest_heal_t::execute();
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    priest_heal_t::impact( t, travel_result, travel_dmg );
+    priest_heal_t::impact( t, impact_result, travel_dmg );
 
-    trigger_inspiration( travel_result, t );
+    trigger_inspiration( impact_result, t );
   }
 
   virtual void player_buff()
@@ -3753,7 +3753,7 @@ struct power_word_shield_t : public priest_absorb_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     priest_t* p = player -> cast_priest();
 
@@ -3772,7 +3772,7 @@ struct power_word_shield_t : public priest_absorb_t
     assert( pws );
 
     pws -> trigger( 1, travel_dmg );
-    stats -> add_result( travel_dmg, travel_dmg, STATS_ABSORB, travel_result );
+    stats -> add_result( travel_dmg, travel_dmg, STATS_ABSORB, impact_result );
 
     // Glyph
     if ( glyph_pws )
@@ -3821,11 +3821,11 @@ struct penance_heal_tick_t : public priest_heal_t
     p -> buffs_indulgence_of_the_penitent -> trigger();
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    priest_heal_t::impact( t, travel_result, travel_dmg );
+    priest_heal_t::impact( t, impact_result, travel_dmg );
 
-    trigger_inspiration( travel_result, t );
+    trigger_inspiration( impact_result, t );
     trigger_grace( t );
   }
 

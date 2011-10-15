@@ -1068,13 +1068,13 @@ void action_t::last_tick( dot_t* d )
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
 }
 
-// action_t::travel =========================================================
+// action_t::impact =========================================================
 
-void action_t::impact( player_t* t, int travel_result, double travel_dmg=0 )
+void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
 {
-  assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
+  assess_damage( t, travel_dmg, DMG_DIRECT, impact_result );
 
-  if ( result_is_hit( travel_result ) )
+  if ( result_is_hit( impact_result ) )
   {
     if ( num_ticks > 0 )
     {
@@ -1116,7 +1116,7 @@ void action_t::impact( player_t* t, int travel_result, double travel_dmg=0 )
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util_t::result_type_string( travel_result ) );
+      log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util_t::result_type_string( impact_result ) );
     }
   }
 }
@@ -1225,7 +1225,6 @@ void action_t::schedule_execute()
     }
   }
 }
-
 
 // action_t::schedule_travel ================================================
 

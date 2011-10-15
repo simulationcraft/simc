@@ -2590,7 +2590,6 @@ public:
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
 
-
   const spelleffect_data_t& effect1() const { return s_data -> effect1(); }
   const spelleffect_data_t& effect2() const { return s_data -> effect2(); }
   const spelleffect_data_t& effect3() const { return s_data -> effect3(); }
@@ -4566,8 +4565,8 @@ public:
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
   virtual void   impact( player_t*, int result, double dmg );
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int travel_result );
-  virtual void   additional_damage( player_t* t, double amount, int dmg_type, int travel_result );
+  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int impact_result );
+  virtual void   additional_damage( player_t* t, double amount, int dmg_type, int impact_result );
   virtual void   schedule_execute();
   virtual void   schedule_travel( player_t* t );
   virtual void   reschedule_execute( double time );
@@ -4709,11 +4708,11 @@ public:
   virtual double haste() SC_CONST;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
-                              int    dmg_type, int travel_result );
+                              int    dmg_type, int impact_result );
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
-  virtual void impact( player_t*, int travel_result, double travel_dmg );
+  virtual void impact( player_t*, int impact_result, double travel_dmg );
   virtual void tick( dot_t* d );
   virtual void last_tick( dot_t* d );
   virtual player_t* find_greatest_difference_player();
@@ -4742,10 +4741,10 @@ public:
   virtual double haste() SC_CONST;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
-                              int    dmg_type, int travel_result );
+                              int    dmg_type, int impact_result );
   virtual void calculate_result();
   virtual double calculate_direct_damage();
-  virtual void impact( player_t*, int travel_result, double travel_dmg );
+  virtual void impact( player_t*, int impact_result, double travel_dmg );
 
 };
 
@@ -5597,7 +5596,7 @@ struct ability_t : public action_t
       {
         ticker_t* ticker = get_ticker( result.target );  // caches aura_slot
         ticker -> trigger( this, result.ticker );
-        // ticker_t::trigger() handles dot work in existing action_t::travel()
+        // ticker_t::trigger() handles dot work in existing action_t::impact()
       }
     }
     else

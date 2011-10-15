@@ -244,7 +244,6 @@ void buff_t::init_buff_shared()
     for ( int i=0; i <= max_stack; i++ )
       stack_uptime.push_back( new uptime_t( sim, "" ) );
   }
-
 }
 // buff_t::init =============================================================
 
@@ -276,8 +275,6 @@ void buff_t::init()
   }
   next = *tail;
   *tail = this;
-
-
 }
 
 // buff_t::buff_t ===========================================================
@@ -381,8 +378,9 @@ void buff_t::init_buff_t_()
   }
   next = *tail;
   *tail = this;
-
 }
+
+// buff_t::~buff_t ==========================================================
 
 buff_t::~buff_t()
 { range::dispose( stack_uptime ); }

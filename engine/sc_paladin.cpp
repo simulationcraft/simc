@@ -689,9 +689,9 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
       dot_behavior  = DOT_REFRESH;
       init();
     }
-    virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
+    virtual void impact( player_t* t, int impact_result, double total_dot_dmg )
     {
-      paladin_attack_t::impact( t, travel_result, 0 );
+      paladin_attack_t::impact( t, impact_result, 0 );
       int nticks = dot -> num_ticks;
       base_td = total_dot_dmg / nticks;
     }
@@ -864,9 +864,9 @@ struct crusader_strike_t : public paladin_attack_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    paladin_attack_t::impact( t, travel_result, travel_dmg );
+    paladin_attack_t::impact( t, impact_result, travel_dmg );
     trigger_tier12_2pc_melee( this, direct_dmg );
   }
 
@@ -1291,14 +1291,14 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     player_multiplier *= p() -> buffs_censure -> stack();
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg=0 )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg=0 )
   {
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       p() -> buffs_censure -> trigger();
       player_buff(); // update with new stack of the debuff
     }
-    paladin_attack_t::impact( t, travel_result, travel_dmg );
+    paladin_attack_t::impact( t, impact_result, travel_dmg );
   }
 
   virtual void last_tick( dot_t* d )
@@ -2383,10 +2383,8 @@ int paladin_t::decode_set( item_t& item )
     if ( is_heal   ) return SET_T13_HEAL;
   }
 
-
   if ( strstr( s, "gladiators_ornamented_"  ) ) return SET_PVP_HEAL;
   if ( strstr( s, "gladiators_scaled_"      ) ) return SET_PVP_MELEE;
-
 
   return SET_NONE;
 }

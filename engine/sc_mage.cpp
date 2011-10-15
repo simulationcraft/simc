@@ -384,7 +384,7 @@ struct mage_spell_t : public spell_t
   virtual double haste() SC_CONST;
   virtual void   execute();
   virtual double execute_time() SC_CONST;
-  virtual void   impact( player_t* t, int travel_result, double travel_dmg );
+  virtual void   impact( player_t* t, int impact_result, double travel_dmg );
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
@@ -925,9 +925,9 @@ static void trigger_ignite( spell_t* s, double dmg )
       dot_behavior  = DOT_REFRESH;
       init();
     }
-    virtual void travel( player_t* t, int travel_result, double ignite_dmg )
+    virtual void impact( player_t* t, int impact_result, double ignite_dmg )
     {
-      mage_spell_t::impact( t, travel_result, 0 );
+      mage_spell_t::impact( t, impact_result, 0 );
 
       // FIXME: Is a is_hit check necessary here?
       base_td = ignite_dmg / dot -> num_ticks;
@@ -1191,20 +1191,20 @@ double mage_spell_t::execute_time() SC_CONST
 
 // mage_spell_t::travel =====================================================
 
-void mage_spell_t::impact( player_t* t, int travel_result, double travel_dmg )
+void mage_spell_t::impact( player_t* t, int impact_result, double travel_dmg )
 {
   mage_t* p = player -> cast_mage();
 
-  spell_t::impact( t, travel_result, travel_dmg );
+  spell_t::impact( t, impact_result, travel_dmg );
 
-  if ( travel_result == RESULT_CRIT )
+  if ( impact_result == RESULT_CRIT )
   {
     trigger_ignite( this, direct_dmg );
   }
 
   if( may_chill )
   {
-    if( result_is_hit( travel_result ) )
+    if( result_is_hit( impact_result ) )
     {
       p -> buffs_fingers_of_frost -> trigger();
     }
@@ -2067,10 +2067,10 @@ struct flame_orb_tick_t : public mage_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     // Ticks don't trigger ignite
-    spell_t::impact( t, travel_result, travel_dmg );
+    spell_t::impact( t, impact_result, travel_dmg );
     // Trigger Missiles here because the background action wouldn't trigger them otherwise
     mage_t* p = player -> cast_mage();
     if ( ! p -> talents.hot_streak   -> ok() &&
@@ -2413,18 +2413,18 @@ struct frostfire_bolt_t : public mage_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     mage_t* p = player -> cast_mage();
 
-    if ( p -> glyphs.frostfire -> ok() && result_is_hit( travel_result ) )
+    if ( p -> glyphs.frostfire -> ok() && result_is_hit( impact_result ) )
     {
       if( dot_stack < 3 ) dot_stack++;
       result = RESULT_HIT;
       double dot_dmg = calculate_direct_damage() * 0.03;
       base_td = dot_stack * dot_dmg / num_ticks;
     }
-    mage_spell_t::impact( t, travel_result, travel_dmg );
+    mage_spell_t::impact( t, impact_result, travel_dmg );
   }
 
   virtual double total_td_multiplier() SC_CONST { return 1.0; } // No double-dipping!
@@ -2468,14 +2468,14 @@ struct frostfire_orb_tick_t : public mage_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     // Ticks don't trigger ignite
-    spell_t::impact( t, travel_result, travel_dmg );
+    spell_t::impact( t, impact_result, travel_dmg );
 
     mage_t* p = player -> cast_mage();
 
-    if( may_chill && result_is_hit( travel_result ) )
+    if( may_chill && result_is_hit( impact_result ) )
       p -> buffs_fingers_of_frost -> trigger();
   }
 };

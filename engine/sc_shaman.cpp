@@ -1319,11 +1319,11 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    spell_t::impact( t, travel_result, travel_dmg );
+    spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       trigger_rolling_thunder( this );
     }
@@ -2437,13 +2437,13 @@ struct lava_burst_t : public shaman_spell_t
       base_multiplier = 1.0 + m_additive;
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     shaman_t* p = player -> cast_shaman();
 
-    spell_t::impact( t, travel_result, travel_dmg );
+    spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 );
 
@@ -2533,13 +2533,13 @@ struct lightning_bolt_t : public shaman_spell_t
     return cr;
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     shaman_t* p = player -> cast_shaman();
 
-    spell_t::impact( t, travel_result, travel_dmg );
+    spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       trigger_rolling_thunder( this );
 

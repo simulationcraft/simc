@@ -468,7 +468,7 @@ struct rogue_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int travel_result );
+  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int impact_result );
   virtual double total_multiplier() SC_CONST;
   virtual double armor() SC_CONST;
 
@@ -897,9 +897,9 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
       dot_behavior  = DOT_REFRESH;
       init();
     }
-    virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
+    virtual void impact( player_t* t, int impact_result, double total_dot_dmg )
     {
-      rogue_attack_t::impact( t, travel_result, 0 );
+      rogue_attack_t::impact( t, impact_result, 0 );
 
       base_td = total_dot_dmg / dot -> num_ticks;
     }
@@ -1341,9 +1341,9 @@ bool rogue_attack_t::ready()
 void rogue_attack_t::assess_damage( player_t* t,
                                     double amount,
                                     int    dmg_type,
-                                    int travel_result )
+                                    int impact_result )
 {
-  attack_t::assess_damage( t, amount, dmg_type, travel_result );
+  attack_t::assess_damage( t, amount, dmg_type, impact_result );
 
   /*rogue_t* p = player -> cast_rogue();
 
@@ -1354,7 +1354,7 @@ void rogue_attack_t::assess_damage( player_t* t,
     target_t* q = t -> cast_target();
 
     if ( p -> buffs_blade_flurry -> up() && q -> adds_nearby )
-      attack_t::additional_damage( q, amount, dmg_type, travel_result );
+      attack_t::additional_damage( q, amount, dmg_type, impact_result );
   }*/
 }
 
@@ -2384,12 +2384,12 @@ struct rupture_t : public rogue_attack_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     rogue_t* p = player -> cast_rogue();
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
       num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
-    rogue_attack_t::impact( t, travel_result, travel_dmg );
+    rogue_attack_t::impact( t, impact_result, travel_dmg );
   }
 
   virtual void player_buff()

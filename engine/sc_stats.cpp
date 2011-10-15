@@ -34,8 +34,6 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   actual_amount.reserve( sim -> iterations );
   total_amount.reserve( sim -> iterations );
   portion_aps.reserve( sim -> iterations );
-
-
 }
 
 // stats_t::add_child =======================================================
@@ -263,7 +261,6 @@ void stats_t::analyze()
 
 // stats_results_t::merge ===========================================================
 
-
 stats_t::stats_results_t::stats_results_t( sim_t* s ) :
   actual_amount( s -> statistics_level < 8, true ),
   total_amount(),
@@ -276,7 +273,6 @@ stats_t::stats_results_t::stats_results_t( sim_t* s ) :
   iteration_total_amount( 0 ),
   pct( 0 ),
   overkill_pct( 0 )
-
 { // Keep non hidden reported numbers clean
   count.mean = 0;
   actual_amount.mean = 0; actual_amount.max=0;

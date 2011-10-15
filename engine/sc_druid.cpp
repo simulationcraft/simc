@@ -1058,9 +1058,9 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
       dot_behavior  = DOT_REFRESH;
       init();
     }
-    virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
+    virtual void impact( player_t* t, int impact_result, double total_dot_dmg )
     {
-      druid_cat_attack_t::impact( t, travel_result, 0 );
+      druid_cat_attack_t::impact( t, impact_result, 0 );
 
       base_td = total_dot_dmg / dot -> num_ticks;
     }
@@ -1519,18 +1519,17 @@ struct mangle_cat_t : public druid_cat_attack_t
         int extra_ticks = ( p -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
         p -> dots_rip -> extend_duration( extra_ticks );
       }
-
-      trigger_infected_wounds( this );
       p -> buffs_t11_4pc_melee -> trigger();
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    druid_cat_attack_t::impact( t, travel_result, travel_dmg );
-    trigger_tier12_2pc_melee( this, direct_dmg );
-    if ( result_is_hit( travel_result ) )
+    druid_cat_attack_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
+      trigger_infected_wounds( this );
+      trigger_tier12_2pc_melee( this, direct_dmg );
       t -> debuffs.mangle -> trigger();
       t -> debuffs.mangle -> source = player;
     }
@@ -1832,9 +1831,9 @@ struct shred_t : public druid_cat_attack_t
     }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    druid_cat_attack_t::impact( t, travel_result, travel_dmg );
+    druid_cat_attack_t::impact( t, impact_result, travel_dmg );
     trigger_tier12_2pc_melee( this, direct_dmg );
   }
 
@@ -2223,18 +2222,18 @@ struct mangle_bear_t : public druid_bear_attack_t
     aoe = 0;
     if ( p -> buffs_berserk -> up() )
       cooldown -> reset();
-    if ( result_is_hit() )
-    {
-      target -> debuffs.mangle -> trigger();
-      target -> debuffs.mangle -> source = p;
-      trigger_infected_wounds( this );
-    }
   }
 
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    druid_bear_attack_t::impact( t, travel_result, travel_dmg );
-    trigger_tier12_2pc_melee( this, direct_dmg );
+    druid_bear_attack_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
+    {
+      target -> debuffs.mangle -> trigger();
+      target -> debuffs.mangle -> source = player;
+      trigger_infected_wounds( this );
+      trigger_tier12_2pc_melee( this, direct_dmg );
+    }
   }
 };
 
@@ -2266,9 +2265,9 @@ struct maul_t : public druid_bear_attack_t
       trigger_infected_wounds( this );
     }
   }
-  virtual void impact( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    druid_bear_attack_t::impact( t, travel_result, travel_dmg );
+    druid_bear_attack_t::impact( t, impact_result, travel_dmg );
     trigger_tier12_2pc_melee( this, direct_dmg );
   }
 
@@ -3933,13 +3932,13 @@ struct starsurge_t : public druid_spell_t
     starfall_cd = p -> get_cooldown( "starfall" );
   }
 
-  virtual void impact( player_t* t, int    travel_result,
+  virtual void impact( player_t* t, int impact_result,
                        double travel_dmg )
   {
     druid_t* p = player -> cast_druid();
-    druid_spell_t::impact( t, travel_result, travel_dmg );
+    druid_spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       // gain is positive for p -> eclipse_bar_direction==0
       // else it is towards p -> eclipse_bar_direction
@@ -4347,12 +4346,12 @@ struct wrath_t : public druid_spell_t
       target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
   }
 
-  virtual void impact( player_t* t, int    travel_result,
+  virtual void impact( player_t* t, int impact_result,
                        double travel_dmg )
   {
     druid_t* p = player -> cast_druid();
-    druid_spell_t::impact( t, travel_result, travel_dmg );
-    if ( result_is_hit( travel_result ) )
+    druid_spell_t::impact( t, impact_result, travel_dmg );
+    if ( result_is_hit( impact_result ) )
     {
       trigger_earth_and_moon( this );
 
