@@ -133,18 +133,18 @@ struct rogue_t : public player_t
   buff_t* buffs_tier13_2pc;
   buff_t* buffs_vanish;
 
-  new_buff_t* buffs_adrenaline_rush;
-  new_buff_t* buffs_blade_flurry;
-  new_buff_t* buffs_cold_blood;
-  new_buff_t* buffs_envenom;
-  new_buff_t* buffs_find_weakness;
-  new_buff_t* buffs_killing_spree;
-  new_buff_t* buffs_master_of_subtlety;
-  new_buff_t* buffs_revealing_strike;
-  new_buff_t* buffs_shadow_dance;
-  new_buff_t* buffs_shadowstep;
-  new_buff_t* buffs_slice_and_dice;
-  new_buff_t* buffs_vendetta;
+  buff_t* buffs_adrenaline_rush;
+  buff_t* buffs_blade_flurry;
+  buff_t* buffs_cold_blood;
+  buff_t* buffs_envenom;
+  buff_t* buffs_find_weakness;
+  buff_t* buffs_killing_spree;
+  buff_t* buffs_master_of_subtlety;
+  buff_t* buffs_revealing_strike;
+  buff_t* buffs_shadow_dance;
+  buff_t* buffs_shadowstep;
+  buff_t* buffs_slice_and_dice;
+  buff_t* buffs_vendetta;
 
   stat_buff_t* buffs_tier12_4pc_crit;
   stat_buff_t* buffs_tier12_4pc_haste;
@@ -3118,10 +3118,10 @@ struct stealth_t : public spell_t
 // Buffs
 // ==========================================================================
 
-struct adrenaline_rush_buff_t : public new_buff_t
+struct adrenaline_rush_buff_t : public buff_t
 {
   adrenaline_rush_buff_t( rogue_t* p, uint32_t id ) :
-    new_buff_t( p, "adrenaline_rush", id )
+    buff_t( p, id, "adrenaline_rush" )
   {
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
@@ -3134,14 +3134,14 @@ struct adrenaline_rush_buff_t : public new_buff_t
   virtual bool trigger( int, double, double )
   {
     // we keep haste % as current_value
-    return new_buff_t::trigger( 1, base_value( E_APPLY_AURA, A_319 ) );
+    return buff_t::trigger( 1, base_value( E_APPLY_AURA, A_319 ) );
   }
 };
 
-struct envenom_buff_t : public new_buff_t
+struct envenom_buff_t : public buff_t
 {
   envenom_buff_t( rogue_t* p ) :
-    new_buff_t( p, "envenom", 32645 ) { }
+    buff_t( p, 32645, "envenom" ) { }
 
   virtual bool trigger( int cp, double, double )
   {
@@ -3150,17 +3150,17 @@ struct envenom_buff_t : public new_buff_t
     if ( remains_lt( new_duration ) )
     {
       buff_duration = new_duration;
-      return new_buff_t::trigger();
+      return buff_t::trigger();
     }
     else
       return false;
   }
 };
 
-struct find_weakness_buff_t : public new_buff_t
+struct find_weakness_buff_t : public buff_t
 {
   find_weakness_buff_t( rogue_t* p, uint32_t id ) :
-    new_buff_t( p, "find_weakness", id )
+    buff_t( p, id, "find_weakness" )
   {
     if ( ! p -> dbc.spell( id ) )
       return;
@@ -3173,14 +3173,14 @@ struct find_weakness_buff_t : public new_buff_t
 
   virtual bool trigger( int, double, double )
   {
-    return new_buff_t::trigger( 1, base_value() / 100.0 );
+    return buff_t::trigger( 1, effect1().percent() );
   }
 };
 
-struct killing_spree_buff_t : public new_buff_t
+struct killing_spree_buff_t : public buff_t
 {
   killing_spree_buff_t( rogue_t* p, uint32_t id ) :
-    new_buff_t( p, "killing_spree", id )
+    buff_t( p, id, "killing_spree" )
   {
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
@@ -3194,28 +3194,28 @@ struct killing_spree_buff_t : public new_buff_t
     double value = 0.20; // XXX
     value += p -> glyphs.killing_spree -> mod_additive( P_EFFECT_3 ) / 100.0;
 
-    return new_buff_t::trigger( 1, value );
+    return buff_t::trigger( 1, value );
   }
 };
 
-struct master_of_subtlety_buff_t : public new_buff_t
+struct master_of_subtlety_buff_t : public buff_t
 {
   master_of_subtlety_buff_t( rogue_t* p, uint32_t id ) :
-    new_buff_t( p, "master_of_subtlety", id )
+    buff_t( p, id, "master_of_subtlety" )
   {
     buff_duration = 6.0;
   }
 
   virtual bool trigger( int, double, double )
   {
-    return new_buff_t::trigger( 1, base_value() / 100.0 );
+    return buff_t::trigger( 1, effect1().percent() );
   }
 };
 
-struct revealing_strike_buff_t : public new_buff_t
+struct revealing_strike_buff_t : public buff_t
 {
   revealing_strike_buff_t( rogue_t* p, uint32_t id ) :
-    new_buff_t( p, "revealing_strike", id ) { }
+    buff_t( p, id, "revealing_strike" ) { }
 
   virtual bool trigger( int, double, double )
   {
@@ -3224,27 +3224,27 @@ struct revealing_strike_buff_t : public new_buff_t
     double value = base_value( E_APPLY_AURA, A_DUMMY ) / 100.0;
     value += p -> glyphs.revealing_strike -> mod_additive( P_EFFECT_3 ) / 100.0;
 
-    return new_buff_t::trigger( 1, value );
+    return buff_t::trigger( 1, value );
   }
 };
 
-struct shadowstep_buff_t : public new_buff_t
+struct shadowstep_buff_t : public buff_t
 {
   shadowstep_buff_t( rogue_t* p, uint32_t id ) :
-    new_buff_t( p, "shadowstep", id ) { }
+    buff_t( p, id, "shadowstep" ) { }
 
   virtual bool trigger( int, double, double )
   {
-    return new_buff_t::trigger( 1, base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER ) );
+    return buff_t::trigger( 1, base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER ) );
   }
 };
 
-struct slice_and_dice_buff_t : public new_buff_t
+struct slice_and_dice_buff_t : public buff_t
 {
   uint32_t id;
 
   slice_and_dice_buff_t( rogue_t* p ) :
-    new_buff_t( p, "slice_and_dice", 5171 ), id( 5171 ) { }
+    buff_t( p, 5171, "slice_and_dice" ), id( 5171 ) { }
 
   virtual bool trigger( int cp, double, double )
   {
@@ -3258,7 +3258,7 @@ struct slice_and_dice_buff_t : public new_buff_t
     if ( remains_lt( new_duration ) )
     {
       buff_duration = new_duration;
-      return new_buff_t::trigger( 1,
+      return buff_t::trigger( 1,
         base_value( E_APPLY_AURA, A_319 ) * ( 1.0 + p -> composite_mastery() * p -> mastery_executioner -> effect_coeff( 1 ) / 100.0 ) );
     }
     else
@@ -3266,10 +3266,10 @@ struct slice_and_dice_buff_t : public new_buff_t
   }
 };
 
-struct vendetta_buff_t : public new_buff_t
+struct vendetta_buff_t : public buff_t
 {
   vendetta_buff_t( rogue_t* p, uint32_t id ) :
-    new_buff_t( p, "vendetta", id )
+    buff_t( p, id, "vendetta" )
   {
     buff_duration *= 1.0 + p -> glyphs.vendetta -> mod_additive( P_DURATION );
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
@@ -3278,7 +3278,7 @@ struct vendetta_buff_t : public new_buff_t
 
   virtual bool trigger( int, double, double )
   {
-    return new_buff_t::trigger( 1, base_value( E_APPLY_AURA, A_MOD_DAMAGE_FROM_CASTER ) );
+    return buff_t::trigger( 1, base_value( E_APPLY_AURA, A_MOD_DAMAGE_FROM_CASTER ) );
   }
 };
 
@@ -3874,9 +3874,9 @@ void rogue_t::init_buffs()
   buffs_tier12_4pc_crit    = new stat_buff_t( this, "fiery_devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration() );
   buffs_tier12_4pc_mastery = new stat_buff_t( this, "master_of_flames",  STAT_MASTERY_RATING, 0.0, 1, dbc.spell( 99188 ) -> duration() );
 
-  buffs_blade_flurry       = new new_buff_t( this, "blade_flurry",   spec_blade_flurry -> spell_id() );
-  buffs_cold_blood         = new new_buff_t( this, "cold_blood",     talents.cold_blood -> spell_id() );
-  buffs_shadow_dance       = new new_buff_t( this, "shadow_dance",   talents.shadow_dance -> spell_id() );
+  buffs_blade_flurry       = new buff_t( this,   spec_blade_flurry -> spell_id(), "blade_flurry" );
+  buffs_cold_blood         = new buff_t( this,     talents.cold_blood -> spell_id(), "cold_blood" );
+  buffs_shadow_dance       = new buff_t( this,   talents.shadow_dance -> spell_id(), "shadow_dance" );
 
   buffs_adrenaline_rush    = new adrenaline_rush_buff_t    ( this, talents.adrenaline_rush -> spell_id() );
   buffs_envenom            = new envenom_buff_t            ( this );
