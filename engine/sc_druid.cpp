@@ -1529,8 +1529,11 @@ struct mangle_cat_t : public druid_cat_attack_t
   {
     druid_cat_attack_t::travel( t, travel_result, travel_dmg );
     trigger_tier12_2pc_melee( this, direct_dmg );
-    t -> debuffs.mangle -> trigger();
-    t -> debuffs.mangle -> source = player;
+    if ( result_is_hit( travel_result ) )
+    {
+      t -> debuffs.mangle -> trigger();
+      t -> debuffs.mangle -> source = player;
+    }
   }
 
   virtual bool ready()
