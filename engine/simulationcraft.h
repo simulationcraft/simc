@@ -4420,19 +4420,12 @@ struct stats_t
   {
     sample_data_t actual_amount, total_amount,fight_actual_amount, fight_total_amount,count,avg_actual_amount;
     double iteration_count, iteration_actual_amount, iteration_total_amount,pct, overkill_pct;
-    stats_results_t() :
-      actual_amount( true, true ), total_amount(),
-      fight_actual_amount(), fight_total_amount(), count(), avg_actual_amount( true, true ),
-      iteration_count( 0 ), iteration_actual_amount( 0 ), iteration_total_amount( 0 ), pct( 0 ), overkill_pct( 0 )
-    { // Keep non hidden reported numbers clean
-      count.mean = 0;
-      actual_amount.mean = 0; actual_amount.max=0;
-      avg_actual_amount.mean = 0; }
+    stats_results_t( sim_t* s );
     void merge( const stats_results_t& other );
     void combat_end();
   };
-  stats_results_t direct_results[ RESULT_MAX ];
-  stats_results_t   tick_results[ RESULT_MAX ];
+  std::vector<stats_results_t> direct_results;
+  std::vector<stats_results_t>   tick_results;
 
   std::vector<double> timeline_amount;
   std::vector<double> timeline_aps;

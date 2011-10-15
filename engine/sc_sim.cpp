@@ -1259,6 +1259,12 @@ bool sim_t::init()
 
   if ( report_precision < 0 ) report_precision = 3;
 
+  raid_dps.reserve( iterations );
+  total_dmg.reserve( iterations );
+  raid_hps.reserve( iterations );
+  total_heal.reserve( iterations );
+  simulation_length.reserve( iterations );
+
   return canceled ? false : true;
 }
 

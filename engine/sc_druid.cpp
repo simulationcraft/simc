@@ -1509,8 +1509,6 @@ struct mangle_cat_t : public druid_cat_attack_t
     if ( result_is_hit() )
     {
       druid_t* p = player -> cast_druid();
-      target -> debuffs.mangle -> trigger();
-      target -> debuffs.mangle -> source = p;
 
       if ( p -> dbc.ptr && p -> glyphs.shred -> enabled() &&
            p -> dots_rip -> ticking  &&
@@ -1530,6 +1528,8 @@ struct mangle_cat_t : public druid_cat_attack_t
   {
     druid_cat_attack_t::travel( t, travel_result, travel_dmg );
     trigger_tier12_2pc_melee( this, direct_dmg );
+    t -> debuffs.mangle -> trigger();
+    t -> debuffs.mangle -> source = player;
   }
 
   virtual bool ready()

@@ -22,13 +22,20 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   last_execute( -1 ),
   iteration_actual_amount( 0 ), actual_amount( p -> sim -> statistics_level < 3 ),
   total_amount( p -> sim -> statistics_level < 3 ),portion_aps( p -> sim -> statistics_level < 3 ),
-  compound_actual( 0 ), compound_amount( 0 ), opportunity_cost( 0 )
+  compound_actual( 0 ), compound_amount( 0 ), opportunity_cost( 0 ),
+  direct_results( RESULT_MAX, stats_results_t( p -> sim ) ), tick_results( RESULT_MAX, stats_results_t( p -> sim ) )
 {
   int num_buckets = ( int ) sim -> max_time;
   if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
   num_buckets *= 2;
 
   timeline_amount.reserve( num_buckets );
+
+  actual_amount.reserve( sim -> iterations );
+  total_amount.reserve( sim -> iterations );
+  portion_aps.reserve( sim -> iterations );
+
+
 }
 
 // stats_t::add_child =======================================================
@@ -252,6 +259,35 @@ void stats_t::analyze()
   int max_buckets = std::min( num_buckets, ( int ) sim -> divisor_timeline.size() );
   for ( int i=0; i < max_buckets; i++ )
     timeline_amount[ i ] /= sim -> divisor_timeline[ i ];
+}
+
+// stats_results_t::merge ===========================================================
+
+
+stats_t::stats_results_t::stats_results_t( sim_t* s ) :
+  actual_amount( s -> statistics_level < 8, true ),
+  total_amount(),
+  fight_actual_amount(),
+  fight_total_amount(),
+  count( s -> statistics_level < 8 ),
+  avg_actual_amount( s -> statistics_level < 8, true ),
+  iteration_count( 0 ),
+  iteration_actual_amount( 0 ),
+  iteration_total_amount( 0 ),
+  pct( 0 ),
+  overkill_pct( 0 )
+
+{ // Keep non hidden reported numbers clean
+  count.mean = 0;
+  actual_amount.mean = 0; actual_amount.max=0;
+  avg_actual_amount.mean = 0;
+
+  actual_amount.reserve( s -> iterations );
+  total_amount.reserve( s -> iterations );
+  fight_actual_amount.reserve( s -> iterations );
+  fight_total_amount.reserve( s -> iterations );
+  count.reserve( s -> iterations );
+  avg_actual_amount.reserve( s -> iterations );
 }
 
 // stats_results_t::merge ===========================================================
