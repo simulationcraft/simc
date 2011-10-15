@@ -2534,7 +2534,6 @@ private:
   void init_from_spell_( player_t*, spell_data_t* );
 public:
   buff_t( player_t*, talent_t*, ... );
-  buff_t( player_t*, spell_data_t* );
   buff_t( player_t*, spell_data_t*, ... );
 
   // Player Buff as spell_id_t by name
@@ -2577,7 +2576,9 @@ public:
   virtual void aura_loss();
   virtual void merge( const buff_t* other_buff );
   virtual void analyze();
-  virtual void init();
+  void init_buff_shared();
+  void init();
+  void init_buff_t_();
   virtual void parse_options( va_list vap );
 
   const char* name() { return name_str.c_str(); }
@@ -2589,7 +2590,6 @@ public:
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
 
-  void init_buff_t_();
 
   const spelleffect_data_t& effect1() const { return s_data -> effect1(); }
   const spelleffect_data_t& effect2() const { return s_data -> effect2(); }

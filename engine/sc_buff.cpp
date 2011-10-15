@@ -162,21 +162,6 @@ buff_t::buff_t( player_t*     p,
   init();
 }
 
-// buff_t::buff_t ===========================================================
-
-buff_t::buff_t( player_t*     p,
-                spell_data_t* spell ) :
-  spell_id_t( p, spell -> name_cstr(), spell -> id() ),
-  buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ), name_str( s_token ),
-  sim( p -> sim ), player( p ), source( p ), initial_source( p ),
-  max_stack( 0 ), rng_type( RNG_CYCLIC ),
-  activated( true ), reverse( false ), constant( false ), quiet( false ),
-  uptime_pct()
-{
-  init_from_spell_( p, spell );
-  init();
-}
-
 // buff_t::parse_options ====================================================
 
 void buff_t::parse_options( va_list vap )
@@ -218,9 +203,9 @@ void buff_t::parse_options( va_list vap )
   va_end( vap );
 }
 
-// buff_t::init =============================================================
+// buff_t::init_buff_shared =============================================================
 
-void buff_t::init()
+void buff_t::init_buff_shared()
 {
   current_stack = 0;
   current_value = 0;
@@ -248,6 +233,25 @@ void buff_t::init()
   expiration = 0;
   delay = 0;
 
+  range::dispose( stack_uptime );
+  stack_uptime.clear();
+
+  if ( max_stack >= 0 )
+  {
+    stack_occurrence.resize( max_stack + 1 );
+    stack_react_time.resize( max_stack + 1 );
+
+    for ( int i=0; i <= max_stack; i++ )
+      stack_uptime.push_back( new uptime_t( sim, "" ) );
+  }
+
+}
+// buff_t::init =============================================================
+
+void buff_t::init()
+{
+  init_buff_shared();
+
   buff_t** tail=0;
 
   if( player )
@@ -273,17 +277,7 @@ void buff_t::init()
   next = *tail;
   *tail = this;
 
-  range::dispose( stack_uptime );
-  stack_uptime.clear();
 
-  if( max_stack >= 0 )
-  {
-    stack_occurrence.resize( max_stack + 1 );
-    stack_react_time.resize( max_stack + 1 );
-
-    for ( int i=0; i <= max_stack; i++ )
-      stack_uptime.push_back( new uptime_t( sim, "" ) );
-  }
 }
 
 // buff_t::buff_t ===========================================================
@@ -323,14 +317,7 @@ buff_t::buff_t( player_t*          p,
     cooldown -> duration = sim -> wheel_seconds - 2.0;
 
   rng = player -> get_rng( n, rng_type );
-  buff_t** tail = &(  player -> buff_list );
 
-  while ( *tail && name_str > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-  next = *tail;
-  *tail = this;
 
   if ( sim -> debug )
     log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );
@@ -372,14 +359,6 @@ buff_t::buff_t( player_t*          p,
     cooldown -> duration = sim -> wheel_seconds - 2.0;
 
   rng = player -> get_rng( n, rng_type );
-  buff_t** tail = &(  player -> buff_list );
-
-  while ( *tail && name_str > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-  next = *tail;
-  *tail = this;
 
   if ( sim -> debug )
     log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );
@@ -392,43 +371,17 @@ void buff_t::init_buff_t_()
   // FIXME! For the love of all that is holy.... FIXME!
   // This routine will disappear once data-access rework is complete
 
-  current_stack = 0;
-  current_value = 0;
-  last_start = -1;
-  last_trigger = -1;
-  start_intervals_sum = 0;
-  trigger_intervals_sum = 0;
-  iteration_uptime_sum = 0;
-  up_count = 0;
-  down_count = 0;
-  start_intervals = 0;
-  trigger_intervals = 0;
-  start_count = 0;
-  refresh_count = 0;
-  trigger_attempts = 0;
-  trigger_successes = 0;
-  benefit_pct = 0;
-  trigger_pct = 0;
-  avg_start_interval = 0;
-  avg_trigger_interval = 0;
-  avg_start = 0;
-  avg_refresh = 0;
-  constant = false;
-  overridden = false;
-  expiration = 0;
-  delay = 0;
+  init_buff_shared();
 
-  range::dispose( stack_uptime );
-  stack_uptime.clear();
+  buff_t** tail = &(  player -> buff_list );
 
-  if ( max_stack >= 0 )
+  while ( *tail && name_str > ( ( *tail ) -> name_str ) )
   {
-    stack_occurrence.resize( max_stack + 1 );
-    stack_react_time.resize( max_stack + 1 );
-
-    for ( int i=0; i <= max_stack; i++ )
-      stack_uptime.push_back( new uptime_t( sim, "" ) );
+    tail = &( ( *tail ) -> next );
   }
+  next = *tail;
+  *tail = this;
+
 }
 
 buff_t::~buff_t()
