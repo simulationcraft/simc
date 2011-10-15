@@ -765,6 +765,7 @@ struct ancient_fury_t : public paladin_attack_t
   {
     // TODO meteor stuff
     background = true;
+    callbacks  = false;
   }
 
   virtual void execute()

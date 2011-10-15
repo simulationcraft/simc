@@ -1142,8 +1142,6 @@ void sim_t::combat_end()
 
   total_events_processed += events_processed;
 
-  flush_events();
-
   for ( player_t* t = target_list; t; t = t -> next )
   {
     if ( t -> is_add() ) continue;
@@ -1168,6 +1166,8 @@ void sim_t::combat_end()
   raid_dps.add( current_time ? iteration_dmg / current_time : 0 );
   total_heal.add( iteration_heal );
   raid_hps.add( current_time ? iteration_heal / current_time : 0 );
+
+  flush_events();
 }
 
 // sim_t::init ==============================================================
