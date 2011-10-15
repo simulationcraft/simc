@@ -72,7 +72,7 @@ void event_t::reschedule( double new_time )
 
   if ( sim -> debug ) log_t::output( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time );
 
-  if ( ! strcmp( name, "Rabid Expiration" ) ) assert( false );
+//  if ( ! strcmp( name, "Rabid Expiration" ) ) assert( false );
 }
 
 // event_t::cancel_ =========================================================
