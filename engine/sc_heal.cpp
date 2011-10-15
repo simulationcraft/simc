@@ -209,7 +209,7 @@ void heal_t::execute()
   }
 }
 
-// heal_t::travel ===========================================================
+// heal_t::impact ===========================================================
 
 void heal_t::impact( player_t* t, int impact_result, double travel_heal=0 )
 {
@@ -637,7 +637,7 @@ void absorb_t::execute()
   }
 }
 
-// absorb_t::travel =========================================================
+// absorb_t::impact =========================================================
 
 void absorb_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
 {

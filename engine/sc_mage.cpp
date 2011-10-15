@@ -1189,7 +1189,7 @@ double mage_spell_t::execute_time() SC_CONST
   return t;
 }
 
-// mage_spell_t::travel =====================================================
+// mage_spell_t::impact =====================================================
 
 void mage_spell_t::impact( player_t* t, int impact_result, double travel_dmg )
 {
