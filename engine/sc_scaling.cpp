@@ -581,7 +581,7 @@ double scaling_t::scale_over_function( sim_t* s, player_t* p )
   if ( !q )
     q = p;
 
-  if ( scale_over == "deaths"         ) return -100 * q -> deaths.count / s -> iterations;
+  if ( scale_over == "deaths"         ) return -100 * q -> deaths.size() / s -> iterations;
   if ( scale_over == "min_death_time" ) return q -> deaths.min * 1000;
   if ( scale_over == "avg_death_time" ) return q -> deaths.mean * 1000;
   if ( scale_over == "dmg_taken"      ) return -1.0 * q -> dmg_taken.mean;

@@ -2457,10 +2457,12 @@ struct sample_data_t
   std::vector<int> distribution;
   const bool simple;
   const bool min_max;
+private:
   int count;
 
-  bool analyzed;
+  bool is_analyzed;
   bool sorted;
+public:
 
   sample_data_t( bool s=true, bool mm=false );
 
@@ -2468,6 +2470,9 @@ struct sample_data_t
   { if ( ! simple ) data.reserve( capacity ); }
 
   void add( double x=0 );
+
+  bool analyzed() const { return is_analyzed; }
+  int size() const { if ( simple ) return count; return (int) data.size(); }
 
   void analyze(
     bool calc_basics=true,
@@ -2477,13 +2482,12 @@ struct sample_data_t
 
   double percentile( double );
 
-  void sort();
-
   void merge( const sample_data_t& );
 
   void clear() { count = 0; sum = 0; data.clear(); distribution.clear(); }
 
-protected:
+private:
+  void sort();
   void create_distribution( unsigned int num_buckets=50 );
 };
 
@@ -4405,7 +4409,8 @@ struct stats_t
   struct stats_results_t
   {
     sample_data_t actual_amount, total_amount,fight_actual_amount, fight_total_amount,count,avg_actual_amount;
-    double iteration_count, iteration_actual_amount, iteration_total_amount,pct, overkill_pct;
+    int iteration_count;
+    double iteration_actual_amount, iteration_total_amount,pct, overkill_pct;
     stats_results_t( sim_t* s );
     void merge( const stats_results_t& other );
     void combat_end();

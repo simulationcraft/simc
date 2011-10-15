@@ -11,7 +11,7 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
 {
   // Print Statistics of a Sample Data Container
 
-  assert( data.analyzed );
+  assert( data.analyzed() );
 
     fprintf( file,
              "\t\t\t\t\t\t\t<table class=\"sc\">\n"
@@ -38,7 +38,7 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             data.count );
+             data.size() );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
@@ -85,8 +85,6 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
              "\t\t\t\t\t\t\t\t</tr>\n",
              data.std_dev );
 
-    if ( data.sorted )
-    {
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
@@ -107,7 +105,6 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
              data.percentile( 0.95 ) - data.percentile( 0.05 ) );
-    }
 
     if ( data.mean_std_dev == std::numeric_limits<double>::quiet_NaN() )
     {
@@ -157,35 +154,35 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.count ) / ( 0.01 * data.mean * 0.01 * data.mean ) ) ) : 0 ) );
+             ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.01 * data.mean * 0.01 * data.mean ) ) ) : 0 ) );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.count ) / ( 0.001 * data.mean * 0.001 * p -> dps.mean ) ) ) : 0 ) );
+             ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean * 0.001 * p -> dps.mean ) ) ) : 0 ) );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.count ) / ( 30 * 30 ) ) );
+             ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 30 * 30 ) ) );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.count ) / ( 15 * 15 ) ) );
+             ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 15 * 15 ) ) );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.count ) / ( 3 * 3 ) ) );
+             ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 3 * 3 ) ) );
     }
 
     }
@@ -2279,7 +2276,7 @@ static void print_html_player_deaths( FILE* file, player_t* p )
 {
   // Death Analysis
 
-  if ( p -> deaths.count > 0 )
+  if ( p -> deaths.size() > 0 )
   {
     std::string distribution_deaths_str                = "";
     if ( ! p -> distribution_deaths_chart.empty() )
@@ -2302,14 +2299,14 @@ static void print_html_player_deaths( FILE* file, player_t* p )
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             ( int ) p -> deaths.count );
+             ( int ) p -> deaths.size() );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count pct</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
-             ( double ) p -> deaths.count / p -> sim -> iterations );
+             ( double ) p -> deaths.size() / p -> sim -> iterations );
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">avg death time</td>\n"

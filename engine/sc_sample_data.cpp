@@ -13,7 +13,7 @@ sample_data_t::sample_data_t( const bool s, const bool mm ):
   variance( std::numeric_limits<double>::quiet_NaN() ),std_dev( std::numeric_limits<double>::quiet_NaN() ),
   median( std::numeric_limits<double>::quiet_NaN() ), mean_std_dev( std::numeric_limits<double>::quiet_NaN() ),
   simple( s ), min_max( mm ), count( 0 ),
-  analyzed( false ),sorted( false )
+  is_analyzed( false ),sorted( false )
 {
 }
 
@@ -48,9 +48,9 @@ void sample_data_t::analyze(
   bool s,
   unsigned int create_dist )
 {
-  if ( analyzed )
+  if ( is_analyzed )
     return;
-  analyzed = true;
+  is_analyzed = true;
 
 
   if ( simple )
@@ -125,7 +125,7 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
   if ( simple )
     return;
 
-  assert( analyzed );
+  assert( is_analyzed );
 
   if ( data.size() == 0 )
     return;
