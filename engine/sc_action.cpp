@@ -1070,7 +1070,7 @@ void action_t::last_tick( dot_t* d )
 
 // action_t::travel =========================================================
 
-void action_t::travel( player_t* t, int travel_result, double travel_dmg=0 )
+void action_t::impact( player_t* t, int travel_result, double travel_dmg=0 )
 {
   assess_damage( t, travel_dmg, DMG_DIRECT, travel_result );
 
@@ -1237,7 +1237,7 @@ void action_t::schedule_travel( player_t* t )
 
   if ( time_to_travel == 0 )
   {
-    travel( t, result, direct_dmg );
+    impact( t, result, direct_dmg );
   }
   else
   {

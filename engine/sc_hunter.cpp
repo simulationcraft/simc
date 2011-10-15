@@ -828,7 +828,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
     }
     virtual void travel( player_t* t, int travel_result, double piercing_shots_dmg )
     {
-      attack_t::travel( t, travel_result, 0 );
+      attack_t::impact( t, travel_result, 0 );
 
       // FIXME: Is a is_hit check necessary here?
       base_td = piercing_shots_dmg / dot -> num_ticks;
@@ -1560,9 +1560,9 @@ struct lightning_breath_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_pet_spell_t::travel( t, travel_result, travel_dmg );
+    hunter_pet_spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
     {
@@ -1591,9 +1591,9 @@ struct corrosive_spit_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_pet_spell_t::travel( t, travel_result, travel_dmg );
+    hunter_pet_spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
       t -> debuffs.corrosive_spit -> trigger( 1, -1*effect1().base_value() );
@@ -1616,9 +1616,9 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_pet_spell_t::travel( t, travel_result, travel_dmg );
+    hunter_pet_spell_t::impact( t, travel_result, travel_dmg );
 
     //TODO: Is actually an aoe ability
     if ( result_is_hit( travel_result ) )
@@ -1647,9 +1647,9 @@ struct ravage_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_pet_spell_t::travel( t, travel_result, travel_dmg );
+    hunter_pet_spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
     {
@@ -1677,9 +1677,9 @@ struct tailspin_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_pet_spell_t::travel( t, travel_result, travel_dmg );
+    hunter_pet_spell_t::impact( t, travel_result, travel_dmg );
 
     //TODO: Is actually an aoe ability
     if ( result_is_hit( travel_result ) )
@@ -1708,9 +1708,9 @@ struct tear_armor_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_pet_spell_t::travel( t, travel_result, travel_dmg );
+    hunter_pet_spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
     {
@@ -1735,9 +1735,9 @@ struct tendon_rip_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_pet_spell_t::travel( t, travel_result, travel_dmg );
+    hunter_pet_spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
     {
@@ -2041,9 +2041,9 @@ struct aimed_shot_t : public hunter_attack_t
       p -> buffs_master_marksman_fire -> expire();
     }
 
-    virtual void travel( player_t* t, int travel_result, double travel_dmg )
+    virtual void impact( player_t* t, int travel_result, double travel_dmg )
     {
-      hunter_attack_t::travel( t, travel_result, travel_dmg );
+      hunter_attack_t::impact( t, travel_result, travel_dmg );
 
       if ( travel_result == RESULT_CRIT )
         trigger_piercing_shots( this, travel_dmg );
@@ -2151,9 +2151,9 @@ struct aimed_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_attack_t::travel( t, travel_result, travel_dmg );
+    hunter_attack_t::impact( t, travel_result, travel_dmg );
 
     if ( travel_result == RESULT_CRIT )
       trigger_piercing_shots( this, travel_dmg );
@@ -2410,9 +2410,9 @@ struct chimera_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_attack_t::travel( t, travel_result, travel_dmg );
+    hunter_attack_t::impact( t, travel_result, travel_dmg );
 
     if ( travel_result == RESULT_CRIT )
       trigger_piercing_shots( this, travel_dmg );
@@ -2475,9 +2475,9 @@ struct cobra_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_attack_t::travel( t, travel_result, travel_dmg );
+    hunter_attack_t::impact( t, travel_result, travel_dmg );
 
     trigger_tier12_2pc_melee( this );
   }
@@ -2707,9 +2707,9 @@ struct serpent_sting_t : public hunter_attack_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_attack_t::travel( t, travel_result, travel_dmg );
+    hunter_attack_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
       t -> debuffs.poisoned -> increment();
@@ -2755,9 +2755,9 @@ struct serpent_sting_spread_t : public serpent_sting_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_attack_t::travel( t, travel_result, travel_dmg );
+    hunter_attack_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
       t -> debuffs.poisoned -> increment();
@@ -2797,12 +2797,12 @@ struct multi_shot_t : public hunter_attack_t
       p -> buffs_bombardment -> expire();
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
     hunter_t* p = player -> cast_hunter();
     //target_t* q = t -> cast_target();
 
-    hunter_attack_t::travel( t, travel_result, travel_dmg );
+    hunter_attack_t::impact( t, travel_result, travel_dmg );
     int crit_occurred = 0;
 
     if( result_is_hit( travel_result ) )
@@ -2893,11 +2893,11 @@ struct steady_shot_t : public hunter_attack_t
     p -> buffs_pre_improved_steady_shot -> trigger( 1 );
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
     hunter_t* p = player -> cast_hunter();
 
-    hunter_attack_t::travel( t, travel_result, travel_dmg );
+    hunter_attack_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) && ! p -> buffs_master_marksman_fire -> check() )
     {
@@ -3293,9 +3293,9 @@ struct hunters_mark_t : public hunter_spell_t
     harmful = false;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    hunter_spell_t::travel( t, travel_result, travel_dmg );
+    hunter_spell_t::impact( t, travel_result, travel_dmg );
 
     t -> debuffs.hunters_mark -> trigger( 1, ap_bonus );
     t -> debuffs.hunters_mark -> source = player;

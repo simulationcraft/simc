@@ -899,7 +899,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     }
     virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
     {
-      rogue_attack_t::travel( t, travel_result, 0 );
+      rogue_attack_t::impact( t, travel_result, 0 );
 
       base_td = total_dot_dmg / dot -> num_ticks;
     }
@@ -2384,12 +2384,12 @@ struct rupture_t : public rogue_attack_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
     rogue_t* p = player -> cast_rogue();
     if ( result_is_hit( travel_result ) )
       num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
-    rogue_attack_t::travel( t, travel_result, travel_dmg );
+    rogue_attack_t::impact( t, travel_result, travel_dmg );
   }
 
   virtual void player_buff()

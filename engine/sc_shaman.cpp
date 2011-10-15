@@ -1319,9 +1319,9 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    spell_t::travel( t, travel_result, travel_dmg );
+    spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
     {
@@ -2437,11 +2437,11 @@ struct lava_burst_t : public shaman_spell_t
       base_multiplier = 1.0 + m_additive;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
     shaman_t* p = player -> cast_shaman();
 
-    spell_t::travel( t, travel_result, travel_dmg );
+    spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
     {
@@ -2533,11 +2533,11 @@ struct lightning_bolt_t : public shaman_spell_t
     return cr;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
     shaman_t* p = player -> cast_shaman();
 
-    spell_t::travel( t, travel_result, travel_dmg );
+    spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
     {

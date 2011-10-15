@@ -4565,7 +4565,7 @@ public:
   virtual void   execute();
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
-  virtual void   travel( player_t*, int result, double dmg );
+  virtual void   impact( player_t*, int result, double dmg );
   virtual void   assess_damage( player_t* t, double amount, int dmg_type, int travel_result );
   virtual void   additional_damage( player_t* t, double amount, int dmg_type, int travel_result );
   virtual void   schedule_execute();
@@ -4713,7 +4713,7 @@ public:
   virtual void calculate_result();
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
-  virtual void travel( player_t*, int travel_result, double travel_dmg );
+  virtual void impact( player_t*, int travel_result, double travel_dmg );
   virtual void tick( dot_t* d );
   virtual void last_tick( dot_t* d );
   virtual player_t* find_greatest_difference_player();
@@ -4745,7 +4745,7 @@ public:
                               int    dmg_type, int travel_result );
   virtual void calculate_result();
   virtual double calculate_direct_damage();
-  virtual void travel( player_t*, int travel_result, double travel_dmg );
+  virtual void impact( player_t*, int travel_result, double travel_dmg );
 
 };
 
@@ -5578,7 +5578,7 @@ struct ability_t : public action_t
     update_ready();
     // "cast" callbacks
   }
-  virtual void travel( result_t& result )
+  virtual void impact( result_t& result )
   {
     if( result.hit )
     {

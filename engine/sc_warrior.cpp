@@ -501,7 +501,7 @@ static void trigger_deep_wounds( action_t* a )
       virtual double travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
       virtual void travel( player_t* t, int travel_result, double deep_wounds_dmg )
       {
-        warrior_attack_t::travel( t, travel_result, 0 );
+        warrior_attack_t::impact( t, travel_result, 0 );
         if ( result_is_hit( travel_result ) )
         {
           base_td = deep_wounds_dmg / dot -> num_ticks;
@@ -695,7 +695,7 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
 
     virtual void travel( player_t* t, int travel_result, double total_dot_dmg )
     {
-      warrior_attack_t::travel( t, travel_result, 0 );
+      warrior_attack_t::impact( t, travel_result, 0 );
 
       base_td = total_dot_dmg / dot -> num_ticks;
     }
@@ -1533,9 +1533,9 @@ struct devastate_t : public warrior_attack_t
     target_dd_adder = t -> debuffs.sunder_armor -> stack() * effect_average( 2 );
   }
 
-  virtual void travel( player_t* t, int travel_result, double dmg )
+  virtual void impact( player_t* t, int travel_result, double dmg )
   {
-    warrior_attack_t::travel( t, travel_result, dmg );
+    warrior_attack_t::impact( t, travel_result, dmg );
 
     t -> debuffs.sunder_armor -> trigger();
   }
@@ -2080,9 +2080,9 @@ struct revenge_t : public warrior_attack_t
     trigger_sword_and_board( this, result );
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warrior_attack_t::travel( t, travel_result, travel_dmg );
+    warrior_attack_t::impact( t, travel_result, travel_dmg );
 
     warrior_t* p = player -> cast_warrior();
 
@@ -2229,9 +2229,9 @@ struct shield_slam_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warrior_attack_t::travel( t, travel_result, travel_dmg );
+    warrior_attack_t::impact( t, travel_result, travel_dmg );
     trigger_tier12_2pc_tank( this, direct_dmg );
   }
 };

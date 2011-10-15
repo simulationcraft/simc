@@ -1323,7 +1323,7 @@ struct imp_pet_t : public warlock_main_pet_t
       }
     }
 
-    virtual void travel( player_t* t, int travel_result, double travel_dmg );
+    virtual void impact( player_t* t, int travel_result, double travel_dmg );
   };
 
   imp_pet_t( sim_t* sim, player_t* owner ) :
@@ -1502,9 +1502,9 @@ struct felhunter_pet_t : public warlock_main_pet_t
       player_multiplier *= 1.0 + o -> active_dots() * effect3().percent();
     }
 
-    virtual void travel( player_t* t, int travel_result, double travel_dmg )
+    virtual void impact( player_t* t, int travel_result, double travel_dmg )
     {
-      warlock_pet_spell_t::travel( t, travel_result, travel_dmg );
+      warlock_pet_spell_t::impact( t, travel_result, travel_dmg );
       if ( result_is_hit( travel_result ) )
         trigger_mana_feed ( this, travel_result );
     }
@@ -1578,9 +1578,9 @@ struct succubus_pet_t : public warlock_main_pet_t
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
-    virtual void travel( player_t* t, int travel_result, double travel_dmg )
+    virtual void impact( player_t* t, int travel_result, double travel_dmg )
     {
-      warlock_pet_spell_t::travel( t, travel_result, travel_dmg );
+      warlock_pet_spell_t::impact( t, travel_result, travel_dmg );
       if ( result_is_hit( travel_result ) )
         trigger_mana_feed ( this, travel_result );
     }
@@ -1636,9 +1636,9 @@ struct voidwalker_pet_t : public warlock_main_pet_t
       direct_power_mod = 0.512;
     }
 
-    virtual void travel( player_t* t, int travel_result, double travel_dmg )
+    virtual void impact( player_t* t, int travel_result, double travel_dmg )
     {
-      warlock_pet_spell_t::travel( t, travel_result, travel_dmg );
+      warlock_pet_spell_t::impact( t, travel_result, travel_dmg );
       if ( result_is_hit( travel_result ) )
         trigger_mana_feed ( this, travel_result ); // untested
     }
@@ -2215,10 +2215,10 @@ struct shadow_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
       trigger_decimation( this, travel_result );
@@ -2351,9 +2351,9 @@ struct chaos_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
       trigger_soul_leech( this );
@@ -2373,9 +2373,9 @@ struct death_coil_t : public warlock_spell_t
     binary = true;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
       player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
@@ -2402,9 +2402,9 @@ struct shadowburn_t : public warlock_spell_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
       trigger_soul_leech( this );
@@ -2523,9 +2523,9 @@ struct drain_life_t : public warlock_spell_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
       trigger_everlasting_affliction( this );
@@ -2735,9 +2735,9 @@ struct haunt_t : public warlock_spell_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
       warlock_t* p = player -> cast_warlock();
@@ -2884,10 +2884,10 @@ struct conflagrate_t : public warlock_spell_t
     warlock_spell_t::execute();
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
       p -> buffs_backdraft -> trigger( 3 );
@@ -2947,9 +2947,9 @@ struct incinerate_t : public warlock_spell_t
     trigger_tier12_4pc_caster( this );
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
 
     warlock_t* p = player -> cast_warlock();
     if ( result_is_hit( travel_result ) )
@@ -3100,9 +3100,9 @@ struct soul_fire_t : public warlock_spell_t
     return t;
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
     {
@@ -3602,10 +3602,10 @@ struct hand_of_guldan_t : public warlock_spell_t
     }
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
     {
@@ -3652,9 +3652,9 @@ struct fel_flame_t : public warlock_spell_t
     p -> buffs_tier11_4pc_caster -> decrement();
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
 
     warlock_t* p = player -> cast_warlock();
     if ( result_is_hit( travel_result ) )
@@ -3931,10 +3931,10 @@ struct seed_of_corruption_t : public warlock_spell_t
     base_crit += p -> talent_everlasting_affliction -> effect2().percent();
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::travel( t, travel_result, travel_dmg );
+    warlock_spell_t::impact( t, travel_result, travel_dmg );
     if ( result_is_hit( travel_result ) )
     {
       dot_damage_done = t -> iteration_dmg_taken;
@@ -4003,9 +4003,9 @@ struct rain_of_fire_t : public warlock_spell_t
 
 // imp_pet_t::fire_bolt_t::execute ==========================================
 
-void imp_pet_t::firebolt_t::travel( player_t* t, int travel_result, double travel_dmg )
+void imp_pet_t::firebolt_t::impact( player_t* t, int travel_result, double travel_dmg )
 {
-  warlock_pet_spell_t::travel( t, travel_result, travel_dmg );
+  warlock_pet_spell_t::impact( t, travel_result, travel_dmg );
   warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
 
   if ( result_is_hit( travel_result ) )

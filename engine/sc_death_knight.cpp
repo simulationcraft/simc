@@ -2859,9 +2859,9 @@ struct frost_fever_t : public death_knight_spell_t
     init(); // Not a real action
   }
 
-  virtual void travel( player_t* t, int travel_result, double travel_dmg )
+  virtual void impact( player_t* t, int travel_result, double travel_dmg )
   {
-    death_knight_spell_t::travel( t, travel_result, travel_dmg );
+    death_knight_spell_t::impact( t, travel_result, travel_dmg );
 
     if ( result_is_hit( travel_result ) )
       trigger_brittle_bones( this, t );
