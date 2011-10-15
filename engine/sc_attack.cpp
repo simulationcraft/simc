@@ -230,7 +230,6 @@ double attack_t::miss_chance( int delta_level ) SC_CONST
   }
   else
   {
-
     // FIXME: needs testing
     if ( delta_level >= 0 )
       return 0.05 + delta_level * 0.02;
@@ -335,7 +334,6 @@ int attack_t::build_table( double* chances,
     block = block_total * ( 1 - crit_block_chance( delta_level ) - target -> composite_tank_crit_block() );
 
     crit_block = block_total * ( crit_block_chance( delta_level ) + target -> composite_tank_crit_block() );
-
   }
 
   if ( may_crit && ! special ) // Specials are 2-roll calculations

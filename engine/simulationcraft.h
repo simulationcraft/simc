@@ -4613,8 +4613,6 @@ public:
 
   virtual double ppm_proc_chance( double PPM ) SC_CONST;
 
-  virtual double dtr_proc_chance() SC_CONST;
-
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
   // Move to ability_t in future
@@ -4828,6 +4826,8 @@ struct dot_t
 
   virtual const char* name() { return name_str.c_str(); }
 };
+
+// Action Callback ==========================================================
 
 struct action_callback_t
 {

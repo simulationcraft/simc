@@ -467,7 +467,6 @@ bool buff_t::trigger( action_t* a,
   return trigger( stacks, value, chance );
 }
 
-
 // buff_t::trigger ==========================================================
 
 bool buff_t::trigger( int    stacks,
@@ -509,6 +508,8 @@ bool buff_t::trigger( int    stacks,
 
   return true;
 }
+
+// buff_t::execute ==========================================================
 
 void buff_t::execute( int stacks, double value )
 {
@@ -882,6 +883,8 @@ buff_t* buff_t::find( buff_t* b, const std::string& name_str )
   return b;
 }
 
+// buff_t::to_str ===========================================================
+
 std::string buff_t::to_str() SC_CONST
 {
   std::ostringstream s;
@@ -1048,12 +1051,13 @@ void stat_buff_t::bump( int    stacks,
   }
   buff_t::bump( stacks );
   double delta = amount * current_stack - current_value;
-  if( delta > 0 )
+  if ( delta > 0 )
   {
     player -> stat_gain( stat, delta, 0, 0, buff_duration > 0 );
     current_value += delta;
   }
-  else assert( delta == 0 );
+  else
+    assert( delta == 0 );
 }
 
 // stat_buff_t::decrement ===================================================
@@ -1085,7 +1089,6 @@ void stat_buff_t::expire()
     buff_t::expire();
   }
 }
-
 
 // ==========================================================================
 // COST_REDUCTION_BUFF
@@ -1214,7 +1217,6 @@ debuff_t::debuff_t( player_t*          p,
                     int                rng_type,
                     int                id ) :
   buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id )
-
 {
 }
 
@@ -1227,6 +1229,5 @@ debuff_t::debuff_t( player_t*          p,
                     bool               r,
                     int                rt ) :
   buff_t( p, id, n, chance, cd, q, r, rt )
-
 {
 }

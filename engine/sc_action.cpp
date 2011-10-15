@@ -1064,7 +1064,6 @@ void action_t::last_tick( dot_t* d )
 
   d -> ticking = 0;
 
-
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
 }
 
@@ -1409,7 +1408,7 @@ bool action_t::ready()
 
 void action_t::init()
 {
-  if ( initialized )return;
+  if ( initialized ) return;
 
   std::string buffer;
   for ( int i=0; i < RESULT_MAX; i++ )
@@ -1744,7 +1743,7 @@ double action_t::ppm_proc_chance( double PPM ) SC_CONST
 
     if ( time == 0 ) time = player -> base_gcd;
 
-    return( PPM * time / 60.0 );
+    return ( PPM * time / 60.0 );
   }
 }
 
@@ -1783,17 +1782,4 @@ int action_t::hasted_num_ticks( double d ) SC_CONST
     return ( int ) ceil ( n - 0.5 );
 
   return ( int ) floor( n + 0.5 );
-}
-
-// action_t::dtr_proc_chance() ===
-
-double action_t::dtr_proc_chance() SC_CONST
-{
-  // Get base proc chance from player
-  double p = 0.1;
-
-  if ( is_dtr_action )
-    p = 0;
-
-  return p;
 }

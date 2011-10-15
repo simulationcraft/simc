@@ -108,7 +108,7 @@ void spell_t::player_buff()
   player_crit = p -> composite_spell_crit();
 
   if ( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f crit=%.2f",
-                                       name(), player_hit, player_crit );
+                                     name(), player_hit, player_crit );
 }
 
 // spell_t::target_debuff ===================================================
@@ -117,9 +117,8 @@ void spell_t::target_debuff( player_t* t, int dmg_type )
 {
   action_t::target_debuff( t, dmg_type );
 
-
-  int crit_debuff = std::max( t -> debuffs.critical_mass        -> stack() * 5,
-                              t -> debuffs.shadow_and_flame     -> stack() * 5 );
+  int crit_debuff = std::max( t -> debuffs.critical_mass    -> stack() * 5,
+                              t -> debuffs.shadow_and_flame -> stack() * 5 );
   target_crit += crit_debuff * 0.01;
 
   if ( sim -> debug )
