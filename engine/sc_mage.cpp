@@ -918,7 +918,10 @@ static void trigger_ignite( spell_t* s, double dmg )
       mage_spell_t( "ignite", 12654, player )
     {
       background    = true;
-      proc          = true;
+
+      // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
+      // proc          = false;
+
       may_resist    = true;
       tick_may_crit = false;
       hasted_ticks  = false;
@@ -1737,6 +1740,8 @@ struct combustion_t : public mage_spell_t
     base_tick_time = 1.0;
 
     orig_duration = cooldown -> duration;
+
+    may_trigger_dtr = false;
 
     if ( ! dtr && player -> has_dtr )
     {
