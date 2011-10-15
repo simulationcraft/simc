@@ -3168,7 +3168,7 @@ struct find_weakness_buff_t : public buff_t
     // Duration is specified in the actual debuff (or is it a buff?) placed on the target
     buff_duration = p -> dbc.spell( 91021 ) -> duration();
 
-    init_buff_t_();
+    init_buff_shared();
   }
 
   virtual bool trigger( int, double, double )

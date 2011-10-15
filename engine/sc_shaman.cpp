@@ -3813,7 +3813,7 @@ struct lightning_shield_buff_t : public buff_t
       max_stack = ( int ) s -> talent_rolling_thunder -> base_value( E_APPLY_AURA, A_PROC_TRIGGER_SPELL );
 
     // Reinit because of max_stack change
-    init_buff_t_();
+    init_buff_shared();
   }
 };
 
@@ -3832,7 +3832,7 @@ struct searing_flames_buff_t : public buff_t
     max_stack          = p -> dbc.spell( 77661 ) -> max_stacks();
 
     // Reinit because of max_stack change
-    init_buff_t_();
+    init_buff_shared();
   }
 };
 
