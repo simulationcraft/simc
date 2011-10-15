@@ -815,7 +815,9 @@ struct warlock_main_pet_t : public warlock_pet_t
       m  *= 1.05;
     }
 
-    m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * o -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
+    double mastery_value = (ptr) ? 230 : o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
+
+    m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * mastery_value / 10000.0 );
 
     return m;
   }
@@ -1791,8 +1793,10 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
     {
       m  *= 1.05;
     }
+
+    double mastery_value = (ptr) ? 230 : o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
     
-    double mastery_gain = ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * o -> mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
+    double mastery_gain = ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * mastery_value / 10000.0 );
     
     //FIXME: Remove when 4.3 goes live
     if ( ! ptr ) mastery_gain *= 3;
@@ -4046,10 +4050,12 @@ double warlock_t::composite_player_multiplier( const school_type school, action_
 {
   double player_multiplier = player_t::composite_player_multiplier( school, a );
 
+  double mastery_value = (ptr) ? 230 : mastery_spells.master_demonologist -> effect_base_value( 3 );
+
   if ( buffs_metamorphosis -> up() )
   {
     player_multiplier *= 1.0 + buffs_metamorphosis -> effect3().percent()
-                         + ( buffs_metamorphosis -> value() * mastery_spells.master_demonologist -> effect_base_value( 3 ) / 10000.0 );
+                         + ( buffs_metamorphosis -> value() * mastery_value / 10000.0 );
   }
 
   player_multiplier *= 1.0 + ( talent_demonic_pact -> effect3().percent() );
