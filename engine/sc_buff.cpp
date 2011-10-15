@@ -131,21 +131,6 @@ buff_t::buff_t( player_t* p,
   init();
 }
 
-// buff_t::buff_t ===========================================================
-
-buff_t::buff_t( player_t* p,
-                talent_t* talent ) :
-  spell_id_t( p, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
-  buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ), name_str( s_token ),
-  sim( p -> sim ), player( p ), source( p ), initial_source( p ),
-  max_stack( 0 ), rng_type( RNG_CYCLIC ),
-  activated( true ), reverse( false ), constant( false ), quiet( false ),
-  uptime_pct()
-{
-  init_from_talent_( p, talent );
-  init();
-}
-
 // buff_t::init_from_spell_ =================================================
 
 void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )

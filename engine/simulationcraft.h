@@ -2533,7 +2533,6 @@ private:
   void init_from_talent_( player_t*, talent_t* );
   void init_from_spell_( player_t*, spell_data_t* );
 public:
-  buff_t( player_t*, talent_t* );
   buff_t( player_t*, talent_t*, ... );
   buff_t( player_t*, spell_data_t* );
   buff_t( player_t*, spell_data_t*, ... );
