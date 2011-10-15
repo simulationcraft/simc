@@ -417,6 +417,7 @@ struct warlock_t : public player_t
   virtual void      init_base();
   virtual void      init_scaling();
   virtual void      init_buffs();
+  virtual void      init_values();
   virtual void      init_gains();
   virtual void      init_benefits();
   virtual void      init_procs();
@@ -4415,6 +4416,19 @@ void warlock_t::init_buffs()
     buffs_tier13_4pc_caster     = new buff_t( this, sets -> set ( SET_T13_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier13_4pc_caster", sets -> set ( SET_T13_4PC_CASTER ) -> proc_chance() );
 }
 
+// warlock_t::init_values ======================================================
+
+void warlock_t::init_values()
+{
+  player_t::init_values();
+
+  if ( set_bonus.pvp_2pc_caster() )
+    attribute_initial[ ATTR_INTELLECT ] += 70;
+
+  if ( set_bonus.pvp_4pc_caster() )
+    attribute_initial[ ATTR_INTELLECT ] += 90;
+}
+
 // warlock_t::init_gains ====================================================
 
 void warlock_t::init_gains()
@@ -4776,6 +4790,8 @@ int warlock_t::decode_set( item_t& item )
   if ( strstr( s, "shadowflame"             ) ) return SET_T11_CASTER;
   if ( strstr( s, "balespiders"             ) ) return SET_T12_CASTER;
   if ( strstr( s, "_of_the_faceless_shroud" ) ) return SET_T13_CASTER;
+
+  if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
 }

@@ -2383,13 +2383,10 @@ int paladin_t::decode_set( item_t& item )
     if ( is_heal   ) return SET_T13_HEAL;
   }
 
-  // PVP Season 9-10 Heal
-  if ( strstr( s, "vicious_gladiators_ornamented"  ) ) return SET_PVP_HEAL;
-  if ( strstr( s, "ruthless_gladiators_ornamented" ) ) return SET_PVP_HEAL;
 
-  // PVP Season 9-10 Hybrid
-  if ( strstr( s, "vicious_gladiators_scaled"  ) ) return SET_PVP_MELEE;
-  if ( strstr( s, "ruthless_gladiators_scaled" ) ) return SET_PVP_MELEE;
+  if ( strstr( s, "gladiators_ornamented_"  ) ) return SET_PVP_HEAL;
+  if ( strstr( s, "gladiators_scaled_"      ) ) return SET_PVP_MELEE;
+
 
   return SET_NONE;
 }

@@ -316,6 +316,7 @@ struct druid_t : public player_t
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_buffs();
+  virtual void      init_values();
   virtual void      init_scaling();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -4759,6 +4760,31 @@ void druid_t::init_buffs()
   buffs_stealthed    = new buff_t( this, 5215,  "stealthed" );
 }
 
+// druid_t::init_values ====================================================
+
+void druid_t::init_values()
+{
+  player_t::init_values();
+
+  if ( set_bonus.pvp_2pc_caster() )
+    attribute_initial[ ATTR_INTELLECT ] += 70;
+
+  if ( set_bonus.pvp_4pc_caster() )
+    attribute_initial[ ATTR_INTELLECT ] += 90;
+
+  if ( set_bonus.pvp_2pc_heal() )
+    attribute_initial[ ATTR_INTELLECT ] += 70;
+
+  if ( set_bonus.pvp_4pc_heal() )
+    attribute_initial[ ATTR_INTELLECT ] += 90;
+
+  if ( set_bonus.pvp_2pc_melee() )
+    attribute_initial[ ATTR_AGILITY ]   += 70;
+
+  if ( set_bonus.pvp_4pc_melee() )
+    attribute_initial[ ATTR_AGILITY ]   += 90;
+}
+
 // druid_t::init_scaling ====================================================
 
 void druid_t::init_scaling()
@@ -5448,6 +5474,10 @@ int druid_t::decode_set( item_t& item )
     if ( is_melee  ) return SET_T13_MELEE;
     if ( is_healer ) return SET_T13_HEAL;
   }
+
+  if ( strstr( s, "_gladiators_kodohide_"   ) )   return SET_PVP_HEAL;
+  if ( strstr( s, "_gladiators_wyrmhide_"   ) )   return SET_PVP_CASTER;
+  if ( strstr( s, "_gladiators_dragonhide_" ) )   return SET_PVP_MELEE;
 
   return SET_NONE;
 }

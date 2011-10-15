@@ -2550,9 +2550,9 @@ public:
   // Use up() where the presence of the buff affects the action mechanics.
 
   int    check() { return current_stack; }
-  bool   up()    { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
-  int    stack() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
-  double value() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  inline bool   up()    { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
+  inline int    stack() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
+  inline double value() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
   double remains();
   bool   remains_gt( double time );
   bool   remains_lt( double time );

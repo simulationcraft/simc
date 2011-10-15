@@ -331,6 +331,7 @@ struct warrior_t : public player_t
   virtual void      init_base();
   virtual void      init_scaling();
   virtual void      init_buffs();
+  virtual void      init_values();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_benefits();
@@ -3349,6 +3350,19 @@ void warrior_t::init_buffs()
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
 }
 
+// warrior_t::init_values ====================================================
+
+void warrior_t::init_values()
+{
+  player_t::init_values();
+
+  if ( set_bonus.pvp_2pc_melee() )
+    attribute_initial[ ATTR_STRENGTH ]   += 70;
+
+  if ( set_bonus.pvp_4pc_melee() )
+    attribute_initial[ ATTR_STRENGTH ]   += 90;
+}
+
 // warrior_t::init_gains ====================================================
 
 void warrior_t::init_gains()
@@ -3947,6 +3961,8 @@ int warrior_t::decode_set( item_t& item )
     if ( is_melee ) return SET_T13_MELEE;
     if ( is_tank  ) return SET_T13_TANK;
   }
+
+  if ( strstr( s, "_gladiators_plate_"   ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
 }

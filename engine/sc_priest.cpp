@@ -5226,6 +5226,18 @@ void priest_t::init_values()
   constants.max_shadowy_apparitions         = passive_spells.shadowy_apparition_num -> effect1().base_value();
 
   mana_regen_while_casting = constants.meditation_value + constants.holy_concentration_value;
+
+  if ( set_bonus.pvp_2pc_caster() )
+    attribute_initial[ ATTR_INTELLECT ] += 70;
+
+  if ( set_bonus.pvp_4pc_caster() )
+    attribute_initial[ ATTR_INTELLECT ] += 90;
+
+  if ( set_bonus.pvp_2pc_heal() )
+    attribute_initial[ ATTR_INTELLECT ] += 70;
+
+  if ( set_bonus.pvp_4pc_heal() )
+    attribute_initial[ ATTR_INTELLECT ] += 90;
 }
 
 // priest_t::reset ==========================================================
@@ -5524,6 +5536,9 @@ int priest_t::decode_set( item_t& item )
                   strstr( s, "legwraps"      ) );
     if ( is_healer ) return SET_T13_HEAL;
   }
+
+  if ( strstr( s, "_gladiators_mooncloth_" ) ) return SET_PVP_HEAL;
+  if ( strstr( s, "_gladiators_satin_"     ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
 }

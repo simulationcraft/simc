@@ -3894,6 +3894,12 @@ void rogue_t::init_buffs()
 void rogue_t::init_values()
 {
   player_t::init_values();
+
+  if ( set_bonus.pvp_2pc_melee() )
+    attribute_initial[ ATTR_AGILITY ]   += 70;
+
+  if ( set_bonus.pvp_4pc_melee() )
+    attribute_initial[ ATTR_AGILITY ]   += 90;
 }
 
 // trigger_honor_among_thieves ==============================================
@@ -4177,6 +4183,8 @@ int rogue_t::decode_set( item_t& item )
   if ( strstr( s, "wind_dancers" ) ) return SET_T11_MELEE;
   if ( strstr( s, "dark_phoenix" ) ) return SET_T12_MELEE;
   if ( strstr( s, "blackfang_battleweave" ) ) return SET_T13_MELEE;
+
+  if ( strstr( s, "_gladiators_leather_" ) )  return SET_PVP_CASTER;
 
   return SET_NONE;
 }

@@ -234,6 +234,7 @@ struct hunter_t : public player_t
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_buffs();
+  virtual void      init_values();
   virtual void      init_gains();
   virtual void      init_position();
   virtual void      init_procs();
@@ -3870,6 +3871,19 @@ void hunter_t::init_buffs()
   // buff_t( player, id, name, chance, cd )
 }
 
+// hunter_t::init_values ====================================================
+
+void hunter_t::init_values()
+{
+  player_t::init_values();
+
+  if ( set_bonus.pvp_2pc_melee() )
+    attribute_initial[ ATTR_AGILITY ]   += 70;
+
+  if ( set_bonus.pvp_4pc_melee() )
+    attribute_initial[ ATTR_AGILITY ]   += 90;
+}
+
 // hunter_t::init_gains =====================================================
 
 void hunter_t::init_gains()
@@ -4438,6 +4452,8 @@ int hunter_t::decode_set( item_t& item )
   if ( strstr( s, "lightningcharged"      ) ) return SET_T11_MELEE;
   if ( strstr( s, "flamewakers"           ) ) return SET_T12_MELEE;
   if ( strstr( s, "wyrmstalkers"          ) ) return SET_T13_MELEE;
+
+  if ( strstr( s, "_gladiators_chain_" ) )    return SET_PVP_MELEE;
 
   return SET_NONE;
 }
