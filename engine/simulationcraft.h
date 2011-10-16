@@ -5105,17 +5105,20 @@ struct buff_uptime_t : public uptime_common_t
 
 struct gain_t
 {
-  std::string name_str;
   double actual, overflow, count;
+
+  std::string name_str;
   resource_type type;
-  int id;
   gain_t* next;
-  gain_t( const std::string& n, int id_=0 ) :
-    name_str( n ), actual( 0 ), overflow( 0 ), count( 0 ), type( RESOURCE_NONE ), id( id_ ) {}
+
+  gain_t( const std::string& n ) :
+    actual( 0 ), overflow( 0 ), count( 0 ), name_str( n ), type( RESOURCE_NONE )
+  {}
+
   void add( double a, double o=0 ) { actual += a; overflow += o; count++; }
-  void merge( gain_t* other ) { actual += other -> actual; overflow += other -> overflow; count += other -> count; }
-  void analyze( sim_t* sim ) { actual /= sim -> iterations; overflow /= sim -> iterations; count /= sim -> iterations; }
-  const char* name() SC_CONST { return name_str.c_str(); }
+  void merge( const gain_t* other ) { actual += other -> actual; overflow += other -> overflow; count += other -> count; }
+  void analyze( const sim_t* sim ) { actual /= sim -> iterations; overflow /= sim -> iterations; count /= sim -> iterations; }
+  const char* name() const { return name_str.c_str(); }
 };
 
 // Proc =====================================================================
