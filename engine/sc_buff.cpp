@@ -576,12 +576,12 @@ void buff_t::decrement( int    stacks,
   }
   else
   {
-    stack_uptime[ current_stack ] -> update( false );
+    if ( max_stack >= 0 ) stack_uptime[ current_stack ] -> update( false );
 
     current_stack -= stacks;
     if ( value >= 0 ) current_value = value;
 
-    stack_uptime[ current_stack ] -> update( true );
+    if ( max_stack >= 0 ) stack_uptime[ current_stack ] -> update( true );
 
     if ( sim -> debug )
       log_t::output( sim, "buff %s decremented by %d to %d stacks",
