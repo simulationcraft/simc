@@ -1746,15 +1746,13 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                "\t\t\t\t\t\t\t\t\t<ul>\n" );
       for ( unsigned int i= 0; i < b -> stack_uptime.size(); i++ )
       {
-        uptime_t* u = b -> stack_uptime[ i ];
-        char bn[ 128 ];
-        if ( u -> uptime > 0 )
+        double uptime = b -> stack_uptime[ i ].uptime;
+        if ( uptime > 0 )
         {
-          snprintf( bn, sizeof( bn ), "%s_%d", b -> name(), i );
           fprintf( file,
-                   "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s:</span>%.1f%%</li>\n",
-                   bn,
-                   u -> uptime * 100.0 );
+                   "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s_%d:</span>%.1f%%</li>\n",
+                   b -> name(), i,
+                   uptime * 100.0 );
         }
       }
       fprintf( file,

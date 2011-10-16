@@ -624,7 +624,7 @@ void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
     if ( u -> uptime > 0 )
     {
       writer.begin_tag( "uptime" );
-      writer.print_attribute( "name", u -> name() );
+      writer.print_attribute( "name", u -> name_str );
       writer.print_attribute( "pct", util_t::to_string( u -> uptime * 100.0, 1 ) );
       writer.end_tag();
     }

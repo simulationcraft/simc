@@ -233,16 +233,11 @@ void buff_t::init_buff_shared()
   expiration = 0;
   delay = 0;
 
-  range::dispose( stack_uptime );
-  stack_uptime.clear();
-
   if ( max_stack >= 0 )
   {
     stack_occurrence.resize( max_stack + 1 );
     stack_react_time.resize( max_stack + 1 );
-
-    for ( int i=0; i <= max_stack; i++ )
-      stack_uptime.push_back( new uptime_t( sim, "" ) );
+    stack_uptime.resize( max_stack + 1, buff_uptime_t( sim ) );
   }
 }
 // buff_t::init =============================================================
@@ -383,9 +378,7 @@ void buff_t::init_buff_t_()
 // buff_t::~buff_t ==========================================================
 
 buff_t::~buff_t()
-{
-  range::dispose( stack_uptime );
-}
+{}
 
 // buff_t::combat_begin ==========================================================
 
@@ -595,12 +588,14 @@ void buff_t::decrement( int    stacks,
   }
   else
   {
-    if ( max_stack >= 0 ) stack_uptime[ current_stack ] -> update( false );
+    if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
+      stack_uptime[ current_stack ].update( false );
 
     current_stack -= stacks;
     if ( value >= 0 ) current_value = value;
 
-    if ( max_stack >= 0 ) stack_uptime[ current_stack ] -> update( true );
+    if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
+      stack_uptime[ current_stack ].update( true );
 
     if ( sim -> debug )
       log_t::output( sim, "buff %s decremented by %d to %d stacks",
@@ -718,13 +713,13 @@ void buff_t::bump( int    stacks,
   else if ( current_stack < max_stack )
   {
     int before_stack = current_stack;
-    stack_uptime[ current_stack ] -> update( false );
+    stack_uptime[ current_stack ].update( false );
 
     current_stack += stacks;
     if ( current_stack > max_stack )
       current_stack = max_stack;
 
-    stack_uptime[ current_stack ] -> update( true );
+    stack_uptime[ current_stack ].update( true );
 
     aura_gain();
 
@@ -779,7 +774,7 @@ void buff_t::expire()
     }
 
   for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> update( false );
+    stack_uptime[ i ].update( false );
 }
 
 // buff_t::predict ==========================================================
@@ -860,7 +855,7 @@ void buff_t::merge( const buff_t* other )
 
   assert( stack_uptime.size() == other -> stack_uptime.size() );
   for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> merge ( other -> stack_uptime[ i ] );
+    stack_uptime[ i ].merge ( other -> stack_uptime[ i ] );
 }
 
 // buff_t::analyze ==========================================================
@@ -888,7 +883,7 @@ void buff_t::analyze()
   uptime_pct.analyze();
 
   for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> analyze();
+    stack_uptime[ i ].analyze();
 }
 
 // buff_t::find =============================================================

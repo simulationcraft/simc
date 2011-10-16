@@ -2905,7 +2905,7 @@ void player_t::merge( player_t& other )
 
   for ( uptime_t* uptime = uptime_list; uptime; uptime = uptime -> next )
   {
-    uptime -> merge( other.get_uptime( uptime -> name_str ) );
+    uptime -> merge( *other.get_uptime( uptime -> name_str ) );
   }
 
   for ( benefit_t* benefit = benefit_list; benefit; benefit = benefit -> next )

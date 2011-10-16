@@ -110,6 +110,7 @@ struct attack_t;
 struct base_stats_t;
 struct benefit_t;
 struct buff_t;
+struct buff_uptime_t;
 struct callback_t;
 struct cooldown_t;
 class dbc_t;
@@ -2508,7 +2509,7 @@ struct buff_t : public spell_id_t
   double benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
   std::string name_str;
   std::vector<double> stack_occurrence, stack_react_time;
-  std::vector<uptime_t*> stack_uptime;
+  std::vector<buff_uptime_t> stack_uptime;
   sim_t* sim;
   player_t* player;
   player_t* source;
@@ -5049,42 +5050,56 @@ struct benefit_t : public noncopyable
 
 // Uptime ==================================================================
 
-struct uptime_t : public noncopyable
+struct uptime_common_t
 {
   double last_start;
   double uptime_sum;
-
   sim_t* sim;
 
-  uptime_t* next;
-
   double uptime;
-  std::string name_str;
 
-  uptime_t( sim_t* s, const std::string& n ) :
-    last_start( -1.0 ), uptime_sum( 0.0 ), sim( s ),
-    uptime( 0.0 ), name_str( n ) {}
+  uptime_common_t( sim_t* s ) :
+    last_start( -1 ), uptime_sum( 0 ), sim( s ),
+    uptime( std::numeric_limits<double>::quiet_NaN() )
+  {}
 
-  void update( int is_up )
+  void update( bool is_up )
   {
     if ( is_up )
     {
-      if ( last_start < 0 ) last_start = sim -> current_time;
+      if ( last_start < 0 )
+        last_start = sim -> current_time;
     }
     else if ( last_start >= 0 )
     {
-      uptime_sum += sim -> current_time - last_start; last_start = -1.0;
+      uptime_sum += sim -> current_time - last_start;
+      last_start = -1;
     }
   }
 
-  const char* name() const { return name_str.c_str(); }
+  void reset() { last_start = -1; }
 
-  void reset() { last_start = -1.0; }
   void analyze()
   { uptime = uptime_sum / sim -> iterations / sim -> simulation_length.mean; }
-  void merge( const uptime_t* other )
-  { uptime_sum += other -> uptime_sum; }
+
+  void merge( const uptime_common_t& other )
+  { uptime_sum += other.uptime_sum; }
 };
+
+struct uptime_t : public uptime_common_t
+{
+  std::string name_str;
+  uptime_t* next;
+
+  uptime_t( sim_t* s, const std::string& n ) :
+    uptime_common_t( s ), name_str( n )
+  {}
+
+  const char* name() const { return name_str.c_str(); }
+};
+
+struct buff_uptime_t : public uptime_common_t
+{ buff_uptime_t( sim_t* s ) : uptime_common_t( s ) {} };
 
 // Gain =====================================================================
 
