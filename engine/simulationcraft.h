@@ -2590,6 +2590,8 @@ public:
   void init();
   void init_buff_t_();
   virtual void parse_options( va_list vap );
+  virtual void combat_begin();
+  virtual void combat_end();
 
   const char* name() { return name_str.c_str(); }
 
@@ -4348,6 +4350,7 @@ struct pet_t : public player_t
   double summon_time;
   bool summoned;
   pet_type_t pet_type;
+  event_t* expiration;
 
 private:
   void init_pet_t_();
@@ -4433,6 +4436,7 @@ struct stats_t
   void add_result( double act_amount, double tot_amount, int dmg_type, int result );
   void add_tick   ( double time );
   void add_execute( double time );
+  void combat_begin();
   void combat_end();
   void reset();
   void analyze();

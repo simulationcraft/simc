@@ -16,6 +16,7 @@ void pet_t::init_pet_t_()
   target = owner -> target;
   level = owner -> level;
   full_name_str = owner -> name_str + '_' + name_str;
+  expiration = 0;
 
   pet_t** last = &( owner -> pet_list );
   while ( *last ) last = &( ( *last ) -> next_pet );
@@ -111,6 +112,7 @@ void pet_t::reset()
 {
   player_t::reset();
   summon_time = 0;
+  expiration = 0;
 }
 
 // pet_t::summon ============================================================
@@ -140,10 +142,11 @@ void pet_t::summon( double duration )
 
       virtual void execute()
       {
+        player -> cast_pet() -> expiration = 0;
         if ( ! player -> sleeping ) player -> cast_pet() -> dismiss();
       }
     };
-    new ( sim ) expiration_t( sim, this, duration );
+    expiration = new ( sim ) expiration_t( sim, this, duration );
   }
 
   arise();
@@ -156,6 +159,12 @@ void pet_t::dismiss()
   if ( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
 
   owner -> active_pets--;
+
+  if ( expiration )
+  {
+    event_t::cancel( expiration );
+    expiration = 0;
+  }
 
   demise();
 }

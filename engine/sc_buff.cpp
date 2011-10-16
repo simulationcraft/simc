@@ -383,7 +383,26 @@ void buff_t::init_buff_t_()
 // buff_t::~buff_t ==========================================================
 
 buff_t::~buff_t()
-{ range::dispose( stack_uptime ); }
+{
+  range::dispose( stack_uptime );
+}
+
+// buff_t::combat_begin ==========================================================
+
+void buff_t::combat_begin()
+{
+  iteration_uptime_sum = 0;
+}
+
+// buff_t::combat_end ==========================================================
+
+void buff_t::combat_end()
+{
+  if ( player )
+    uptime_pct.add( player -> iteration_fight_length ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length : 0 );
+  else
+    uptime_pct.add( sim -> current_time ? 100.0 * iteration_uptime_sum / sim -> current_time : 0 );
+}
 
 // buff_t::may_react ========================================================
 
@@ -820,7 +839,6 @@ void buff_t::reset()
   expire();
   last_start = -1;
   last_trigger = -1;
-  iteration_uptime_sum = 0;
 }
 
 // buff_t::merge ============================================================

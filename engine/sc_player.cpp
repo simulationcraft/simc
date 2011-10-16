@@ -2747,6 +2747,20 @@ void player_t::combat_begin()
     new ( sim ) vengeance_t( this );
 
   action_sequence = "";
+
+  iteration_fight_length = 0;
+  iteration_waiting_time = 0;
+  iteration_executed_foreground_actions = 0;
+  iteration_dmg = 0;
+  iteration_heal = 0;
+  iteration_dmg_taken = 0;
+  iteration_heal_taken = 0;
+
+  for ( buff_t* b = buff_list; b; b = b -> next )
+    b -> combat_begin();
+
+  for ( stats_t* s = stats_list; s; s = s -> next )
+    s -> combat_begin();
 }
 
 // player_t::combat_end =====================================================
@@ -2774,8 +2788,6 @@ void player_t::combat_end()
     pet -> combat_end();
   }
 
-  if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s", name() );
-
   if ( ! is_pet() )
   {
     demise();
@@ -2800,8 +2812,12 @@ void player_t::combat_end()
   }
   compound_dmg.add( iteration_dmg );
 
+  assert( sim -> current_time > 0  );
+
   dps.add( iteration_fight_length ? iteration_dmg / iteration_fight_length : 0 );
   dpse.add( sim -> current_time ? iteration_dmg / sim -> current_time : 0 );
+
+  if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time, iteration_fight_length );
 
   // Heal
   heal.add( iteration_heal );
@@ -2824,7 +2840,7 @@ void player_t::combat_end()
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
-    b -> uptime_pct.add( iteration_fight_length ? 100.0 * b -> iteration_uptime_sum / iteration_fight_length : 0 );
+    b -> combat_end();
   }
 
 }
@@ -2915,14 +2931,6 @@ void player_t::reset()
 
   sleeping = 1;
   events = 0;
-
-  iteration_fight_length = 0;
-  iteration_waiting_time = 0;
-  iteration_executed_foreground_actions = 0;
-  iteration_dmg = 0;
-  iteration_heal = 0;
-  iteration_dmg_taken = 0;
-  iteration_heal_taken = 0;
 
   stats = initial_stats;
 
@@ -3180,12 +3188,13 @@ void player_t::demise()
   if ( sim -> log )
     log_t::output( sim, "%s demises.", name() );
 
-  sleeping = 1;
-  readying = 0;
 
   assert( arise_time >= 0 );
   iteration_fight_length += ( sim -> current_time - arise_time );
   arise_time = -1;
+
+  sleeping = 1;
+  readying = 0;
 
   for( buff_t* b = buff_list; b; b = b -> next )
   {

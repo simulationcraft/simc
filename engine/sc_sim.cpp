@@ -1054,7 +1054,6 @@ void sim_t::reset()
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
   id = 0;
   current_time = last_event = 0;
-  iteration_dmg = iteration_heal = 0;
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> reset();
@@ -1077,6 +1076,8 @@ void sim_t::combat_begin()
   if ( debug ) log_t::output( this, "Combat Begin" );
 
   reset();
+
+  iteration_dmg = iteration_heal = 0;
 
   for ( player_t* t = target_list; t; t = t -> next )
   {
@@ -1160,6 +1161,7 @@ void sim_t::combat_end()
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> expire();
+    b -> combat_end();
   }
 
   total_dmg.add( iteration_dmg );

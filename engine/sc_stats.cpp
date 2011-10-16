@@ -59,8 +59,6 @@ void stats_t::add_child( stats_t* child )
 void stats_t::reset()
 {
   last_execute = -1;
-  iteration_actual_amount = 0;
-  iteration_total_amount = 0;
 }
 
 // stats_t::add_result ======================================================
@@ -121,6 +119,15 @@ void stats_t::add_tick( double time )
 {
   num_ticks++;
   total_tick_time += time;
+}
+
+// stats_t::combat_begin ========================================================
+
+void stats_t::combat_begin()
+{
+
+  iteration_actual_amount = 0;
+  iteration_total_amount = 0;
 }
 
 // stats_t::combat_end ========================================================
