@@ -1402,9 +1402,9 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     case TREE_SHADOW:
     case TREE_DISCIPLINE:   chance *= 1.36; break;
     case TREE_ELEMENTAL:    chance *= 1.029; break;
-    case TREE_AFFLICTION:   chance = 1 / 6; break;
-    case TREE_DEMONOLOGY:   chance = 1 / 6; break;
-    case TREE_DESTRUCTION:  chance = 1 / 6; break;
+    case TREE_AFFLICTION:   chance = 1.0 / 6.0; break;
+    case TREE_DEMONOLOGY:   chance = 1.0 / 6.0; break;
+    case TREE_DESTRUCTION:  chance = 1.0 / 6.0; break;
     default:
       // Get a real spec...
       break;
@@ -1934,7 +1934,6 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( int           
   return cb;
 }
 
-
 // ==========================================================================
 // unique_gear_t::register_stat_discharge_proc
 // ==========================================================================
@@ -2277,7 +2276,6 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "vengeance_of_the_forsaken"  ) e = ( heroic ? "OnAttackHit_250AP_5Stack_20Dur_120Cd" : "OnAttackHit_215AP_5Stack_20Dur_120Cd" );
   else if ( name == "victors_call"               ) e = ( heroic ? "OnAttackHit_250AP_5Stack_20Dur_120Cd" : "OnAttackHit_215AP_5Stack_20Dur_120Cd" );
   else if ( name == "nevermelting_ice_crystal"   ) e = "OnSpellCrit_184Crit_5Stack_20Dur_180Cd_reverse";
-
 
   // Engineering Tinkers
   else if ( name == "pyrorocket"                   ) e = "1165Fire_45Cd";  // temporary for backwards compatibility
