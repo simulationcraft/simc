@@ -59,3 +59,6 @@ trinket1=darkmoon_card_volcano
 copy=moonwell_chalice
 trinket1=moonwell_chalice
 modify_action=metamorphosis,if=buff.moonwell_chalice.up
+
+copy=mithril_stopwatch
+trinket1=mithril_stopwatch
