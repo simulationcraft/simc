@@ -21,18 +21,22 @@ private:
   state current_state;
   std::string indentation;
 
-  struct replacement { char from; const char* to; };
-
-  static void replace_entity( std::string& str, char old_value, const char* new_value )
+  struct replacement
   {
-    std::size_t len = strlen( new_value );
-    std::string::size_type pos = 0;
-    while ( ( pos = str.find( old_value, pos ) ) != str.npos )
+    char from;
+    const char* to;
+
+    void operator()( std::string& str ) const
     {
-      str.replace( pos, 1, new_value );
-      pos += len;
+      std::size_t len = strlen( to );
+      std::string::size_type pos = 0;
+      while ( ( pos = str.find( from, pos ) ) != str.npos )
+      {
+        str.replace( pos, 1, to );
+        pos += len;
+      }
     }
-  }
+  };
 
 public:
   xml_writer_t( const std::string & filename )
@@ -50,7 +54,15 @@ public:
   }
 
   bool ready() const { return file != NULL; }
-  void set_tabulation( std::string & tabulation ) { this->tabulation = tabulation; }
+
+  void set_tabulation( const std::string & tabulation_ )
+  {
+    int n = indentation.size() / tabulation.size();
+    tabulation = tabulation_;
+    indentation.clear();
+    while ( --n >= 0 )
+      indentation += tabulation;
+  }
 
   int printf( const char *format, ... ) const PRINTF_ATTRIBUTE( 2,3 )
   {
@@ -62,16 +74,6 @@ public:
     va_end( fmtargs );
 
     return retcode;
-  }
-
-  void rebuild_indentation()
-  {
-    size_t size = current_tags.size();
-    indentation.clear();
-    for( size_t i = 0; i < size; i++ )
-    {
-      indentation.append( tabulation );
-    }
   }
 
   void init_document( const std::string & stylesheet_file )
@@ -99,7 +101,7 @@ public:
     printf( "\n%s<%s", indentation.c_str(), tag.c_str() );
 
     current_tags.push( tag );
-    rebuild_indentation();
+    indentation += tabulation;
 
     current_state = TAG;
   }
@@ -107,10 +109,13 @@ public:
   void end_tag()
   {
     assert( current_state != NONE );
+    assert( ! current_tags.empty() );
+    assert( indentation.size() == tabulation.size() * current_tags.size() );
 
     std::string tag = current_tags.top();
     current_tags.pop();
-    rebuild_indentation();
+
+    indentation.resize( indentation.size() - tabulation.size() );
 
     if( current_state == TAG )
     {
@@ -125,14 +130,7 @@ public:
   }
 
   void print_attribute( const std::string & name, const std::string & value )
-  {
-    assert( current_state != NONE );
-
-    if( current_state == TAG )
-    {
-      printf( " %s=\"%s\"", name.c_str(), sanitize( value ).c_str() );
-    }
-  }
+  { print_attribute_unescaped( name, sanitize( value ) ); }
 
   void print_attribute_unescaped( const std::string & name, const std::string & value )
   {
@@ -183,7 +181,7 @@ public:
     };
 
     for ( unsigned int i = 0; i < sizeof_array( replacements ); ++i )
-      replace_entity( v, replacements[i].from, replacements[i].to );
+      replacements[ i ]( v );
 
     return v;
   }
@@ -191,29 +189,29 @@ public:
 
 // report_t::print_xml ======================================================
 
-static void print_xml_errors( sim_t* sim, xml_writer_t & writer );
-static void print_xml_raid_events( sim_t* sim, xml_writer_t & writer );
-static void print_xml_roster( sim_t* sim, xml_writer_t & writer );
-static void print_xml_targets( sim_t* sim, xml_writer_t & writer );
-static void print_xml_buffs( sim_t* sim, xml_writer_t & writer );
-static void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer );
-static void print_xml_performance( sim_t* sim, xml_writer_t & writer );
-static void print_xml_summary( sim_t* sim, xml_writer_t & writer );
-static void print_xml_player( sim_t* sim, xml_writer_t & writer, player_t * p, player_t * owner );
+void print_xml_errors( sim_t* sim, xml_writer_t & writer );
+void print_xml_raid_events( sim_t* sim, xml_writer_t & writer );
+void print_xml_roster( sim_t* sim, xml_writer_t & writer );
+void print_xml_targets( sim_t* sim, xml_writer_t & writer );
+void print_xml_buffs( sim_t* sim, xml_writer_t & writer );
+void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer );
+void print_xml_performance( sim_t* sim, xml_writer_t & writer );
+void print_xml_summary( sim_t* sim, xml_writer_t & writer );
+void print_xml_player( sim_t* sim, xml_writer_t & writer, player_t * p, player_t * owner );
 
-static void print_xml_player_stats( xml_writer_t & writer, player_t * p );
-static void print_xml_player_attribute( xml_writer_t & writer, const std::string& attribute, double initial, double gear, double buffed );
-static void print_xml_player_actions( xml_writer_t & writer, player_t* p );
-static void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p );
-static void print_xml_player_buffs( xml_writer_t & writer, player_t * p );
-static void print_xml_player_uptime( xml_writer_t & writer, player_t * p );
-static void print_xml_player_procs( xml_writer_t & writer, player_t * p );
-static void print_xml_player_gains( xml_writer_t & writer, player_t * p );
-static void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p );
-static void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
-static void print_xml_player_charts( xml_writer_t & writer, player_t * p );
+void print_xml_player_stats( xml_writer_t & writer, player_t * p );
+void print_xml_player_attribute( xml_writer_t & writer, const std::string& attribute, double initial, double gear, double buffed );
+void print_xml_player_actions( xml_writer_t & writer, player_t* p );
+void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p );
+void print_xml_player_buffs( xml_writer_t & writer, player_t * p );
+void print_xml_player_uptime( xml_writer_t & writer, player_t * p );
+void print_xml_player_procs( xml_writer_t & writer, player_t * p );
+void print_xml_player_gains( xml_writer_t & writer, player_t * p );
+void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p );
+void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
+void print_xml_player_charts( xml_writer_t & writer, player_t * p );
 
-static void print_xml_errors( sim_t* sim, xml_writer_t & writer )
+void print_xml_errors( sim_t* sim, xml_writer_t & writer )
 {
   size_t num_errors = sim -> error_list.size();
   if( num_errors > 0 )
@@ -229,7 +227,7 @@ static void print_xml_errors( sim_t* sim, xml_writer_t & writer )
   }
 }
 
-static void print_xml_raid_events( sim_t* sim, xml_writer_t & writer )
+void print_xml_raid_events( sim_t* sim, xml_writer_t & writer )
 {
   if ( ! sim -> raid_events_str.empty() )
   {
@@ -250,7 +248,7 @@ static void print_xml_raid_events( sim_t* sim, xml_writer_t & writer )
   }
 }
 
-static void print_xml_roster( sim_t* sim, xml_writer_t & writer )
+void print_xml_roster( sim_t* sim, xml_writer_t & writer )
 {
   writer.begin_tag( "players" );
 
@@ -269,7 +267,7 @@ static void print_xml_roster( sim_t* sim, xml_writer_t & writer )
   writer.end_tag(); // </players>
 }
 
-static void print_xml_targets( sim_t* sim, xml_writer_t & writer )
+void print_xml_targets( sim_t* sim, xml_writer_t & writer )
 {
   writer.begin_tag( "targets" );
 
@@ -288,7 +286,7 @@ static void print_xml_targets( sim_t* sim, xml_writer_t & writer )
   writer.end_tag(); // </targets>
 }
 
-static void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_t * owner )
+void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_t * owner )
 {
   writer.begin_tag( "player" );
   writer.print_attribute( "name", p -> name() );
@@ -351,7 +349,7 @@ static void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, 
   writer.end_tag(); // </player>
 }
 
-static void print_xml_player_stats( xml_writer_t & writer, player_t * p )
+void print_xml_player_stats( xml_writer_t & writer, player_t * p )
 {
   print_xml_player_attribute( writer, "strength",
                               p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ], p -> attribute_buffed[ ATTR_STRENGTH  ] );
@@ -415,7 +413,7 @@ static void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   writer.end_tag(); // </resource>
 }
 
-static void print_xml_player_attribute( xml_writer_t & writer, const std::string & attribute, double initial, double gear, double buffed )
+void print_xml_player_attribute( xml_writer_t & writer, const std::string & attribute, double initial, double gear, double buffed )
 {
   writer.begin_tag( "attribute" );
   writer.print_attribute( "name", attribute );
@@ -425,7 +423,7 @@ static void print_xml_player_attribute( xml_writer_t & writer, const std::string
   writer.end_tag(); // </attribute>
 }
 
-static void print_xml_player_actions( xml_writer_t & writer, player_t* p )
+void print_xml_player_actions( xml_writer_t & writer, player_t* p )
 {
   writer.begin_tag( "glyphs" );
   std::vector<std::string> glyph_names;
@@ -580,7 +578,7 @@ static void print_xml_player_actions( xml_writer_t & writer, player_t* p )
   print_xml_player_action_definitions( writer, p );
 }
 
-static void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
+void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "buffs" );
 
@@ -612,7 +610,7 @@ static void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
   writer.end_tag(); // </buffs>
 }
 
-static void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
+void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "benefits" );
 
@@ -646,7 +644,7 @@ static void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
   writer.end_tag(); // </uptimes>
 }
 
-static void print_xml_player_procs( xml_writer_t & writer, player_t * p )
+void print_xml_player_procs( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "procs" );
 
@@ -665,7 +663,7 @@ static void print_xml_player_procs( xml_writer_t & writer, player_t * p )
   writer.end_tag(); // </procs>
 }
 
-static void print_xml_player_gains( xml_writer_t & writer, player_t * p )
+void print_xml_player_gains( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "gains" );
 
@@ -686,7 +684,7 @@ static void print_xml_player_gains( xml_writer_t & writer, player_t * p )
   writer.end_tag();
 }
 
-static void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p )
+void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p )
 {
   if ( ! p -> sim -> scaling -> has_scale_factors() ) return;
 
@@ -781,7 +779,7 @@ static void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p 
   writer.end_tag(); // </scale_factors>
 }
 
-static void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
+void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
 {
   sim_t* sim = p -> sim;
 
@@ -819,7 +817,7 @@ static void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
   writer.end_tag(); // </dps_plot_data>
 }
 
-static void print_xml_player_charts( xml_writer_t & writer, player_t * p )
+void print_xml_player_charts( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "charts" );
 
@@ -890,7 +888,7 @@ static void print_xml_player_charts( xml_writer_t & writer, player_t * p )
   writer.end_tag(); // </charts>
 }
 
-static void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
+void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
 {
   writer.begin_tag( "buffs" );
 
@@ -935,7 +933,7 @@ struct compare_hat_donor_interval
   }
 };
 
-static void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
+void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
 {
   std::vector<player_t*> hat_donors;
 
@@ -969,7 +967,7 @@ static void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
   }
 }
 
-static void print_xml_performance( sim_t* sim, xml_writer_t & writer )
+void print_xml_performance( sim_t* sim, xml_writer_t & writer )
 {
   writer.begin_tag( "performance" );
 
@@ -988,7 +986,7 @@ static void print_xml_performance( sim_t* sim, xml_writer_t & writer )
   writer.end_tag(); // </performance>
 }
 
-static void print_xml_config( sim_t* sim, xml_writer_t & writer )
+void print_xml_config( sim_t* sim, xml_writer_t & writer )
 {
   writer.begin_tag( "config" );
 
@@ -1002,7 +1000,7 @@ static void print_xml_config( sim_t* sim, xml_writer_t & writer )
   writer.end_tag(); // </config>
 }
 
-static void print_xml_summary( sim_t* sim, xml_writer_t & writer )
+void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 {
   writer.begin_tag( "summary" );
 
@@ -1117,7 +1115,7 @@ static void print_xml_summary( sim_t* sim, xml_writer_t & writer )
   writer.end_tag(); // </summary>
 }
 
-static void print_xml_get_action_list(sim_t* sim, player_t* p, std::map<int, action_t*> & all_actions)
+void print_xml_get_action_list(sim_t* sim, player_t* p, std::map<int, action_t*> & all_actions)
 {
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
@@ -1145,7 +1143,7 @@ static void print_xml_get_action_list(sim_t* sim, player_t* p, std::map<int, act
   }
 }
 
-static void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
+void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag("action_definitions");
 
