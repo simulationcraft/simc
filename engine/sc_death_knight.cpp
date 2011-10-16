@@ -4506,43 +4506,65 @@ void death_knight_t::init_actions()
       action_list_str += "/death_coil";
       break;
     case TREE_FROST:
+    {
       action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( talents.pillar_of_frost -> rank() )
       {
         action_list_str += "/pillar_of_frost";
       }
-      action_list_str += "/blood_tap,if=death!=2";
+      action_list_str += "/blood_tap,if=death!=2&death.cooldown_remains>2.0";
       // Try and time a better ghoul
-      action_list_str += "/raise_dead,if=buff.rune_of_the_fallen_crusader.react";
-      if ( has_hor )
-        action_list_str += "&buff.heart_of_rage.react";
+      //action_list_str += "/raise_dead,if=buff.rune_of_the_fallen_crusader.react";
+      //if ( has_hor )
+        //action_list_str += "&buff.heart_of_rage.react";
       action_list_str += "/raise_dead,time>=15";
+      // priority:
+      // Diseases
+      // Obliterate if 2 rune pair are capped, or there is no candidate for RE
+      // FS if RP > 110 - avoid RP capping (value varies. going with 110)
+      // Rime
+      // OBL if any pair are capped
+      // FS to avoid RP capping (maxRP - OBL rp generation + GCD generation. Lets say 100)
+      // OBL
+      // FS
+      // HB (it turns out when resource starved using a lonely death/frost rune to generate RP/FS/RE is better than waiting for OBL
+
+      // optimal timing for diseases depends on points in epidemic, and if using improved blood tap
+      // players with only 2 points in epidemic want a 0 second refresh to avoid two PS in one minute instead of 1
+      // IBT players use 2 PS every minute
+      std::string drefresh = "0";
+      if ( talents.improved_blood_tap -> rank() )
+        drefresh = "2";
+      if ( talents.epidemic -> rank() == 3 )
+        drefresh = "1";
+      if ( talents.epidemic -> rank() == 2 )
+        drefresh = "0";
       if ( level > 81 )
-        action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
-      action_list_str += "/howling_blast,if=dot.frost_fever.remains<=2";
-      action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
-      action_list_str += "/obliterate,if=frost=2|unholy=2";
-      action_list_str += "/obliterate,if=death=2";
-      action_list_str += "/obliterate,if=buff.killing_machine.react"; // All 3 are seperated for Sample Sequence
-      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=120&buff.killing_machine.react";
-      action_list_str +="/frost_strike,if=runic_power>=90&!buff.bloodlust.react";
-      action_list_str +="/frost_strike,if=runic_power>=95";
-      if ( talents.howling_blast -> rank() )
-      {
-        if ( talents.rime -> rank() )
-          action_list_str += "/howling_blast,if=buff.rime.react";
-        action_list_str += "/howling_blast,if=(death+unholy)=0&!buff.bloodlust.react";
-      }
+        action_list_str += "/outbreak,if=dot.frost_fever.remains<=" + drefresh + "|dot.blood_plague.remains<=" + drefresh;
+      action_list_str += "/howling_blast,if=dot.frost_fever.remains<=" + drefresh;
+      action_list_str += "/plague_strike,if=dot.blood_plague.remains<=" + drefresh;
+      action_list_str += "/obliterate,if=death>=1&frost>=1&unholy>=1";
+      action_list_str += "/obliterate,if=(death=2&frost=2)|(death=2&unholy=2)|(frost=2|unholy=2)";
+      // XXX TODO 110 is based on MAXRP - FSCost + a little, as a break point. should be varialble based on RPM GoFS etc
+      action_list_str += "/frost_strike,if=runic_power>=110";
+      if ( talents.howling_blast -> rank() && talents.rime -> rank() )
+        action_list_str += "/howling_blast,if=buff.rime.react";
+      action_list_str += "/obliterate,if=(death=2|unholy=2|frost=2)";
+      action_list_str += "/frost_strike,if=runic_power>=100";
       action_list_str += "/obliterate";
       action_list_str += "/empower_rune_weapon,if=target.time_to_die<=45";
-      action_list_str += "/frost_strike";
+      action_list_str +="/frost_strike";
       if ( talents.howling_blast -> rank() )
         action_list_str += "/howling_blast";
-      action_list_str += "/blood_tap";
-      action_list_str += "/empower_rune_weapon";
+      // avoid using ERW if runes are almost ready
+      action_list_str += "/empower_rune_weapon,if=(blood.cooldown_remains+frost.cooldown_remains+unholy.cooldown_remains)>8";
       action_list_str += "/horn_of_winter";
+      // add in goblin rocket barrage when nothing better to do. 40dps or so.
+      if ( race == RACE_GOBLIN )
+        action_list_str += "/rocket_barrage";
       break;
+    }
     case TREE_UNHOLY:
       action_list_str += "/raise_dead";
       action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
