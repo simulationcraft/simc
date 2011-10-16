@@ -25,17 +25,6 @@ private:
   {
     char from;
     const char* to;
-
-    void operator()( std::string& str ) const
-    {
-      std::size_t len = strlen( to );
-      std::string::size_type pos = 0;
-      while ( ( pos = str.find( from, pos ) ) != str.npos )
-      {
-        str.replace( pos, 1, to );
-        pos += len;
-      }
-    }
   };
 
 public:
@@ -181,7 +170,7 @@ public:
     };
 
     for ( unsigned int i = 0; i < sizeof_array( replacements ); ++i )
-      replacements[ i ]( v );
+      util_t::replace_all( v, replacements[ i ].from, replacements[ i ].to );
 
     return v;
   }

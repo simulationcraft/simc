@@ -2006,6 +2006,8 @@ private:
   static void html_special_char_decode_( std::string& str );
   static void tolower_( std::string& );
   static void string_split_( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes );
+  static void replace_all_( std::string&, const char* from, char to );
+  static void replace_all_( std::string&, char from, const char* to );
   static int vfprintf_helper( FILE *stream, const char *format, va_list fmtargs );
 
 public:
@@ -2100,6 +2102,10 @@ public:
   { string_split_( results, str, delim, allow_quotes ); return static_cast<int>( results.size() ); }
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
   static void string_strip_quotes( std::string& str );
+  static std::string& replace_all( std::string& s, const char* from, char to )
+  { replace_all_( s, from, to ); return s; }
+  static std::string& replace_all( std::string& s, char from, const char* to )
+  { replace_all_( s, from, to ); return s; }
 
   static std::string to_string( int i );
   static std::string to_string( unsigned int i );

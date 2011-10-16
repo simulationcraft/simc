@@ -53,18 +53,9 @@ static int create_children( sim_t* sim, xml_node_t* root, const std::string& inp
 
 static void simplify_xml( std::string& buffer )
 {
-  for ( std::string::size_type pos = buffer.find( "&lt;", 0 ); pos != std::string::npos; pos = buffer.find( "&lt;", pos ) )
-  {
-    buffer.replace( pos, 4, "<" );
-  }
-  for ( std::string::size_type pos = buffer.find( "&gt;", 0 ); pos != std::string::npos; pos = buffer.find( "&gt;", pos ) )
-  {
-    buffer.replace( pos, 4, ">" );
-  }
-  for ( std::string::size_type pos = buffer.find( "&amp;", 0 ); pos != std::string::npos; pos = buffer.find( "&amp;", pos ) )
-  {
-    buffer.replace( pos, 5, "&" );
-  }
+  util_t::replace_all( buffer, "&lt;", '<' );
+  util_t::replace_all( buffer, "&gt;", '>' );
+  util_t::replace_all( buffer, "&amp;", '&' );
 }
 
 // is_white_space ===========================================================

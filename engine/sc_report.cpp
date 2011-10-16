@@ -23,20 +23,6 @@ static const char* beta_warnings[] =
 };
 #endif
 
-// replace_entity ===========================================================
-
-static inline void replace_entity( std::string& str, char c, const char* text )
-{
-  std::size_t len = strlen( text );
-  std::string::size_type pos = 0;
-  while ( ( pos = str.find( c, pos ) ) != str.npos )
-  {
-    str.replace( pos, 1, text );
-    pos += len;
-  }
-}
-
-
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -47,27 +33,23 @@ static inline void replace_entity( std::string& str, char c, const char* text )
 
 void report_t::encode_html( std::string& buffer )
 {
-  replace_entity( buffer, '&', "&amp;" );
-  replace_entity( buffer, '<', "&lt;" );
-  replace_entity( buffer, '>', "&gt;" );
+  util_t::replace_all( buffer, '&', "&amp;" );
+  util_t::replace_all( buffer, '<', "&lt;" );
+  util_t::replace_all( buffer, '>', "&gt;" );
 }
-
-
-// encode_html ==============================================================
 
 std::string report_t::encode_html( const char* str )
 {
-  if ( str == 0 ) return "";
+  std::string nstr;
 
-  std::string nstr( str );
-  replace_entity( nstr, '&', "&amp;" );
-  replace_entity( nstr, '<', "&lt;" );
-  replace_entity( nstr, '>', "&gt;" );
+  if ( str )
+  {
+    nstr = str;
+    encode_html( nstr );
+  }
 
   return nstr;
 }
-
-
 
 // report_t::print_profiles =================================================
 

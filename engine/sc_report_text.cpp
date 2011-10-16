@@ -7,19 +7,11 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-void simplify_one( std::string& s, const char* from, char to )
-{
-  std::size_t len = strlen( from );
-  std::string::size_type pos = 0;
-  while ( ( pos = s.find( from, pos ) ) != s.npos )
-    s.replace( pos, len, 1, to );
-}
-
 void simplify_html( std::string& buffer )
 {
-  simplify_one( buffer, "&lt;", '<' );
-  simplify_one( buffer, "&gt;", '>' );
-  simplify_one( buffer, "&amp;", '&' );
+  util_t::replace_all( buffer, "&lt;", '<' );
+  util_t::replace_all( buffer, "&gt;", '>' );
+  util_t::replace_all( buffer, "&amp;", '&' );
 }
 
 // print_text_action ========================================================

@@ -1983,6 +1983,35 @@ void util_t::string_strip_quotes( std::string& str )
   str.resize( dst - str.begin() );
 }
 
+// util_t::replace_all ======================================================
+
+void util_t::replace_all_( std::string& s, const char* from, char to )
+{
+  std::string::size_type pos = s.find( from );
+  if ( pos != s.npos )
+  {
+    std::size_t len = std::strlen( from );
+    do
+      s.replace( pos, len, 1, to );
+    while ( ( pos = s.find( from, pos ) ) != s.npos );
+  }
+}
+
+void util_t::replace_all_( std::string& s, char from, const char* to )
+{
+  std::string::size_type pos;
+  if ( ( pos = s.find( from ) ) != s.npos )
+  {
+    std::size_t len = std::strlen( to );
+    do
+    {
+      s.replace( pos, 1, to, len );
+      pos += len;
+    }
+    while ( ( pos = s.find( from, pos ) ) != s.npos );
+  }
+}
+
 // util_t::to_string ========================================================
 
 std::string util_t::to_string( int i )
