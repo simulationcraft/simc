@@ -2812,8 +2812,6 @@ void player_t::combat_end()
   }
   compound_dmg.add( iteration_dmg );
 
-  assert( sim -> current_time > 0  );
-
   dps.add( iteration_fight_length ? iteration_dmg / iteration_fight_length : 0 );
   dpse.add( sim -> current_time ? iteration_dmg / sim -> current_time : 0 );
 
