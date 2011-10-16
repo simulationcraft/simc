@@ -1084,6 +1084,9 @@ void sim_t::combat_begin()
     t -> combat_begin();
   }
 
+  for ( buff_t* b = buff_list; b; b = b -> next )
+    b -> combat_begin();
+
   player_t::combat_begin( this );
 
   raid_event_t::combat_begin( this );
