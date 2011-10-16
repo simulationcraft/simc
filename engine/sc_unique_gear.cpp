@@ -2130,7 +2130,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "mark_of_defiance"                    ) e = "OnSpellHit_150Mana_15%_15Cd";
   else if ( name == "mirror_of_truth"                     ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
   else if ( name == "mithril_pocketwatch"                 ) e = "OnSpellCast_590SP_10%_10Dur_45Cd";
-  else if ( name == "mithril_stopwatch"                   ) e = "OnSpellCast_2040SP_10%_10Dur_50Cd"; // FIXME: Confirm ICD
+  else if ( name == "mithril_stopwatch"                   ) e = "OnSpellCast_2040SP_10%_10Dur_45Cd"; // FIXME: Confirm ICD
   else if ( name == "mjolnir_runestone"                   ) e = "OnAttackHit_665Haste_15%_10Dur_45Cd";
   else if ( name == "muradins_spyglass"                   ) e = ( heroic ? "OnSpellDamage_20SP_10Stack_10Dur" : "OnSpellDamage_18SP_10Stack_10Dur" );
   else if ( name == "necromantic_focus"                   ) e = ( heroic ? "OnSpellTickDamage_44Mastery_10Stack_10Dur" : "OnSpellTickDamage_39Mastery_10Stack_10Dur" );
