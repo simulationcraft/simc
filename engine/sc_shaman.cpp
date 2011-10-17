@@ -262,6 +262,7 @@ struct shaman_t : public player_t
   virtual double    composite_spell_hit() SC_CONST;
   virtual double    composite_spell_crit() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
+  virtual double    composite_spell_power_multiplier() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual void      create_options();
@@ -4588,6 +4589,16 @@ double shaman_t::composite_spell_power( const school_type school ) SC_CONST
   }
 
   return sp;
+}
+
+// shaman_t::composite_spell_power_multiplier ===============================
+
+double shaman_t::composite_spell_power_multiplier() SC_CONST
+{
+  if ( dbc.ptr && primary_tree() == TREE_ENHANCEMENT )
+    return 1.0;
+
+  return player_t::composite_spell_power_multiplier();
 }
 
 // shaman_t::composite_player_multiplier ====================================
