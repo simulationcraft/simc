@@ -1056,6 +1056,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 
   size_t count = sim -> dps_charts.size();
   writer.begin_tag( "charts" );
+  writer.print_attribute( "max_players_per_chart", util_t::to_string( MAX_PLAYERS_PER_CHART ) );
   for ( size_t i=0; i < count; i++ )
   {
     writer.begin_tag( "chart" );
@@ -1098,6 +1099,30 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
   writer.print_attribute( "total", util_t::to_string( sim -> total_heal.mean, 0 ) );
   writer.print_attribute( "hps", util_t::to_string( sim -> raid_hps.mean, 0 ) );
   writer.end_tag(); // </heal>
+
+  writer.begin_tag( "player_by_dps" );
+  count = sim -> players_by_dps.size();
+  for( size_t i = 0; i < count; i++ ) {
+    player_t* p = sim -> players_by_dps[ i ];
+    writer.begin_tag( "player" );
+    writer.print_attribute( "name", p -> name() );
+    writer.print_attribute( "index", util_t::to_string( i ) );
+    writer.print_attribute( "dps", util_t::to_string( p -> dps.mean ) );
+    writer.end_tag(); // </player>
+  }
+  writer.end_tag(); // </player_by_dps>
+
+  writer.begin_tag( "player_by_hps" );
+  count = sim -> players_by_dps.size();
+  for( size_t i = 0; i < count; i++ ) {
+    player_t* p = sim -> players_by_dps[ i ];
+    writer.begin_tag( "player" );
+    writer.print_attribute( "name", p -> name() );
+    writer.print_attribute( "index", util_t::to_string( i ) );
+    writer.print_attribute( "hps", util_t::to_string( p -> hps.mean ) );
+    writer.end_tag(); // </player>
+  }
+  writer.end_tag(); // </player_by_hps>
 
   print_xml_raid_events( sim, writer );
 
