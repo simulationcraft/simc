@@ -653,11 +653,11 @@ struct priest_heal_t : public heal_t
   }
 
   priest_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
-    heal_t( n, player, sname, t ), can_trigger_DA( true )
+    heal_t( n, player, sname, t ), can_trigger_DA( true ), da()
   {}
 
   priest_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
-    heal_t( n, player, id, t ), can_trigger_DA( true )
+    heal_t( n, player, id, t ), can_trigger_DA( true ), da()
   {}
 
   virtual void player_buff()
@@ -2650,7 +2650,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown = p -> cooldowns_shadow_fiend;    
+    cooldown = p -> cooldowns_shadow_fiend;
     cooldown -> duration = p -> active_spells.shadow_fiend -> cooldown() +
                            p -> talents.veiled_shadows -> effect2().seconds() +
                            ( p -> set_bonus.tier12_2pc_caster() ? -75.0 : 0.0 );
@@ -3419,7 +3419,7 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_heal_t::init();
 
     // PoH crits double the DA percentage.
-    da -> shield_multiple *= 2;
+    if ( da ) da -> shield_multiple *= 2;
   }
 
   virtual void execute()
