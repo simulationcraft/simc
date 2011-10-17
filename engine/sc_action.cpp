@@ -314,21 +314,19 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
     switch ( effect -> subtype() )
     {
     case A_PERIODIC_DAMAGE:
+      if ( school == SCHOOL_PHYSICAL )
+        school = stats -> school = SCHOOL_BLEED;
+    case A_PERIODIC_LEECH:
+    case A_PERIODIC_HEAL:
       tick_power_mod   = effect -> coeff();
       base_td_init     = player -> dbc.effect_average( effect -> id(), player -> level );
       base_td          = base_td_init;
-      base_tick_time   = effect -> period();
-      num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
-      if ( school == SCHOOL_PHYSICAL )
-        school = stats -> school = SCHOOL_BLEED;
-      break;
-    case A_PERIODIC_LEECH:
-      tick_power_mod   = effect -> coeff();
-      base_td_init     = player -> dbc.effect_min ( effect -> id(), player -> level );
-      base_td          = base_td_init;
-      base_tick_time   = effect -> period();
-      num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
-      break;
+    case A_PERIODIC_ENERGIZE:
+    case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+    case A_PERIODIC_HEALTH_FUNNEL:
+    case A_PERIODIC_MANA_LEECH:
+    case A_PERIODIC_DAMAGE_PERCENT:
+    case A_PERIODIC_DUMMY:
     case A_PERIODIC_TRIGGER_SPELL:
       base_tick_time   = effect -> period();
       num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
@@ -337,13 +335,6 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
       direct_power_mod = effect -> coeff();
       base_dd_min      = player -> dbc.effect_min( effect -> id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( effect -> id(), player -> level );
-      break;
-    case A_PERIODIC_HEAL:
-      tick_power_mod   = effect -> coeff();
-      base_td_init     = player -> dbc.effect_min( effect -> id(), player -> level );
-      base_td          = base_td_init;
-      base_tick_time   = effect -> period();
-      num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
       break;
     case A_ADD_FLAT_MODIFIER:
       switch ( effect -> misc_value1() )
