@@ -4467,23 +4467,12 @@ void death_knight_t::init_actions()
     }
     action_list_str +="/army_of_the_dead";
     action_list_str += "/snapshot_stats";
-    int num_items = ( int ) items.size();
-    bool has_hor = false;
 
     action_list_str += init_use_item_actions( ",time>=10" );
 
     action_list_str += init_use_profession_actions();
 
     action_list_str += init_use_racial_actions( ",time>=10" );
-
-    for ( int i=0; i < num_items; i++ )
-    {
-      // check for Heart of Rage
-      if ( strstr( items[ i ].name(), "heart_of_rage" ) )
-      {
-        has_hor = true;
-      }
-    }
 
     switch ( primary_tree() )
     {
@@ -4514,11 +4503,25 @@ void death_knight_t::init_actions()
         action_list_str += "/pillar_of_frost";
       }
       action_list_str += "/blood_tap,if=death!=2&death.cooldown_remains>2.0";
-      // Try and time a better ghoul
-      //action_list_str += "/raise_dead,if=buff.rune_of_the_fallen_crusader.react";
-      //if ( has_hor )
-        //action_list_str += "&buff.heart_of_rage.react";
-      action_list_str += "/raise_dead,time>=15";
+      if ( false )
+      {
+        // Try and time a better ghoul
+        bool has_heart_of_rage = false;
+        for ( int i=0, n=items.size(); i < n; i++ )
+        {
+          // check for Heart of Rage
+          if ( strstr( items[ i ].name(), "heart_of_rage" ) )
+          {
+            has_heart_of_rage = true;
+            break;
+          }
+        }
+        action_list_str += "/raise_dead,if=buff.rune_of_the_fallen_crusader.react";
+        if ( has_heart_of_rage )
+          action_list_str += "&buff.heart_of_rage.react";
+      }
+      else
+        action_list_str += "/raise_dead,time>=15";
       // priority:
       // Diseases
       // Obliterate if 2 rune pair are capped, or there is no candidate for RE
@@ -5180,7 +5183,7 @@ int death_knight_t::decode_set( item_t& item )
   }
 
   if ( strstr( s, "_gladiators_dreadplate_" ) ) return SET_PVP_MELEE;
-  
+
   return SET_NONE;
 }
 
