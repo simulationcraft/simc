@@ -639,14 +639,12 @@ struct priest_heal_t : public heal_t
 
   virtual void init()
   {
-    priest_t* p = player -> cast_priest();
-
     heal_t::init();
 
+    priest_t* p = player -> cast_priest();
     if ( can_trigger_DA && p -> talents.divine_aegis -> ok() )
     {
-      std::string da_name = name_str + "_divine_aegis";
-      da = new divine_aegis_t( da_name.c_str(), p );
+      da = new divine_aegis_t( ( name_str + "_divine_aegis" ).c_str(), p );
       add_child( da );
       da -> target = target;
     }
@@ -747,15 +745,13 @@ struct priest_heal_t : public heal_t
 
   void trigger_divine_aegis( player_t* t, double amount )
   {
-    priest_t* p = player -> cast_priest();
-
-    if ( ! ( can_trigger_DA && p -> talents.divine_aegis -> ok() ) )
-      return;
-
-    da -> base_dd_min = da -> base_dd_max = amount * da -> shield_multiple;
-    da -> heal_target.clear();
-    da -> heal_target.push_back( t );
-    da -> execute();
+    if ( da )
+    {
+      da -> base_dd_min = da -> base_dd_max = amount * da -> shield_multiple;
+      da -> heal_target.clear();
+      da -> heal_target.push_back( t );
+      da -> execute();
+    }
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
