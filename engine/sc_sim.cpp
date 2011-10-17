@@ -1498,7 +1498,7 @@ void sim_t::analyze_player( player_t* p )
   double convergence_max = -1.0E+50;
   double convergence_std_dev = 0;
 
-  if ( iterations > 1 && convergence_scale > 1 )
+  if ( iterations > 1 && convergence_scale > 1 && !p -> dps.simple )
   {
     for ( int i=0; i < iterations; i += convergence_scale )
     {

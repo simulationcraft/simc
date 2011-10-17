@@ -25,7 +25,7 @@ macx {
 COMPILER_CHECK_CXX = $$replace(QMAKE_CXX,'.*g\\+\\+'.*,'g++')
 
 contains(COMPILER_CHECK_CXX,'g++') {
-  QMAKE_CXXFLAGS += 
+  QMAKE_CXXFLAGS += -ffast-math
 }
 
 INCLUDEPATH += engine

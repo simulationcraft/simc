@@ -1093,20 +1093,12 @@ const char* chart_t::scale_factors( std::string& s,
   for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - p -> scaling_error.get_stat( scaling_stats[ i ] );
-    if ( ( factor * 0 ) != 0 )
-      factor = 0;
-    if ( factor < 0 )
-      factor = 0;
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
   for ( int i=0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + p -> scaling_error.get_stat( scaling_stats[ i ] );
-    if ( ( factor * 0 ) != 0 )
-      factor = 0;
-    if ( factor < 0 )
-      factor = 0;
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "&amp;";
