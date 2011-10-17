@@ -468,10 +468,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     apparatus_of_khazgoroth_callback_t( player_t* p, bool h ) :
       action_callback_t( p -> sim, p ), heroic( h )
     {
-      double amount = heroic ? 1725 : 1530;
-
-      // It's actually doing more than the tooltip says.
-      amount = heroic ? 2865 : 2540;
+      double amount = heroic ? 2865 : 2540;
 
       apparatus_of_khazgoroth = new buff_t( p, "apparatus_of_khazgoroth", 5, 30.0, 0.0, 1, true ); // TODO: Duration, cd, etc.?
       apparatus_of_khazgoroth -> activated = false;
