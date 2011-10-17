@@ -698,7 +698,7 @@ class SpellDataGenerator(DataGenerator):
         (),
         (), 
         ( ( 54158, 0 ), ( 90174, 0 ), ( 99092, 0 ), ),     # Paladin "Judgement" damage portion on some Seals. Tier 12 2pc effect
-        ( ( 99058, 0 ), ), # Hunter T12 2pc.
+        ( ( 99058, 0 ), ( 83381, 0 ), ), # Hunter T12 2pc, Kill Command base dmg
         ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ), ( 99173, 0 ), ( 99186, 0 ), ( 99187, 0 ), ( 99188, 0 ), ), # Rogue poison effects, Tier 12 bonus spells
         ( ( 63619, 4 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ( 94472, 0 ), ( 99156, 4 ), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs, Atonement Crit, sfiend tier12 bonus
         ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 4 ), ( 99000, 0 ), ), # DK Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike. Tier 12 4pc spell.
