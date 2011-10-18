@@ -1233,7 +1233,7 @@ static bool trigger_static_shock ( attack_t* a )
 
 struct lava_burst_overload_t : public shaman_spell_t
 {
-  lava_burst_overload_t( player_t* player ) :
+  lava_burst_overload_t( player_t* player, bool dtr=false ) :
     shaman_spell_t( "lava_burst_overload", 77451, player )
   {
     shaman_t* p          = player -> cast_shaman();
@@ -1252,6 +1252,12 @@ struct lava_burst_overload_t : public shaman_spell_t
     crit_bonus_multiplier *= 1.0 +
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE ) +
       p -> talent_lava_flows -> mod_additive( P_CRIT_DAMAGE );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new lava_burst_overload_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
   
   virtual void execute()
@@ -1284,7 +1290,7 @@ struct lava_burst_overload_t : public shaman_spell_t
 
 struct lightning_bolt_overload_t : public shaman_spell_t
 {
-  lightning_bolt_overload_t( player_t* player ) :
+  lightning_bolt_overload_t( player_t* player, bool dtr=false ) :
     shaman_spell_t( "lightning_bolt_overload", 45284, player )
   {
     shaman_t* p          = player -> cast_shaman();
@@ -1301,6 +1307,12 @@ struct lightning_bolt_overload_t : public shaman_spell_t
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new lightning_bolt_overload_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -1335,7 +1347,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
 {
   int glyph_targets;
 
-  chain_lightning_overload_t( player_t* player ) :
+  chain_lightning_overload_t( player_t* player, bool dtr=false ) :
     shaman_spell_t( "chain_lightning_overload", 45297, player ), glyph_targets( 0 )
   {
     shaman_t* p          = player -> cast_shaman();
@@ -1358,6 +1370,12 @@ struct chain_lightning_overload_t : public shaman_spell_t
 
     base_add_multiplier = 0.7;
     aoe = ( 2 + glyph_targets );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new chain_lightning_overload_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -1419,7 +1437,7 @@ struct lightning_charge_t : public shaman_spell_t
 {
   int consume_threshold;
 
-  lightning_charge_t( player_t* player, const std::string& n ) :
+  lightning_charge_t( player_t* player, const std::string& n, bool dtr=false ) :
     shaman_spell_t( n.c_str(), 26364, player ), consume_threshold( 0 )
   {
     // Use the same name "lightning_shield" to make sure the cost of refreshing the shield is included with the procs.
@@ -1432,6 +1450,12 @@ struct lightning_charge_t : public shaman_spell_t
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     consume_threshold = ( int ) p -> talent_fulmination -> base_value();
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new lightning_charge_t( p, n, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void player_buff()
@@ -2378,7 +2402,7 @@ struct lava_burst_t : public shaman_spell_t
   lava_burst_overload_t* overload;
   double                m_additive;
 
-  lava_burst_t( player_t* player, const std::string& options_str ) :
+  lava_burst_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "lava_burst", "Lava Burst", player, options_str ),
     m_additive( 0 )
   {
@@ -2398,6 +2422,12 @@ struct lava_burst_t : public shaman_spell_t
       p -> talent_lava_flows -> mod_additive( P_CRIT_DAMAGE );
 
     overload            = new lava_burst_overload_t( player );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new lava_burst_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -2464,7 +2494,7 @@ struct lightning_bolt_t : public shaman_spell_t
 {
   lightning_bolt_overload_t* overload;
 
-  lightning_bolt_t( player_t* player, const std::string& options_str ) :
+  lightning_bolt_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "lightning_bolt", "Lightning Bolt", player, options_str )
   {
     shaman_t* p = player -> cast_shaman();
@@ -2487,6 +2517,12 @@ struct lightning_bolt_t : public shaman_spell_t
       p -> talent_convection -> mod_additive( P_RESOURCE_COST );
 
     overload            = new lightning_bolt_overload_t( player );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new lightning_bolt_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
   
   virtual void player_buff()
@@ -2759,7 +2795,7 @@ struct earth_shock_t : public shaman_spell_t
 {
   int consume_threshold;
 
-  earth_shock_t( player_t* player, const std::string& options_str ) :
+  earth_shock_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "earth_shock", "Earth Shock", player, options_str ), consume_threshold( 0 )
   {
     shaman_t* p = player -> cast_shaman();
@@ -2781,6 +2817,12 @@ struct earth_shock_t : public shaman_spell_t
     }
 
     consume_threshold     = ( int ) p -> talent_fulmination -> base_value();
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new earth_shock_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -2811,7 +2853,7 @@ struct flame_shock_t : public shaman_spell_t
   double m_dd_additive,
          m_td_additive;
 
-  flame_shock_t( player_t* player, const std::string& options_str ) :
+  flame_shock_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "flame_shock", "Flame Shock", player, options_str ), m_dd_additive( 0 ), m_td_additive( 0 )
   {
     shaman_t* p = player -> cast_shaman();
@@ -2842,6 +2884,14 @@ struct flame_shock_t : public shaman_spell_t
     {
       trigger_gcd         = 1.0;
       min_gcd             = 1.0;
+    }
+
+    may_trigger_dtr = false; // Disable the dot ticks procing DTR
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new flame_shock_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
     }
   }
 

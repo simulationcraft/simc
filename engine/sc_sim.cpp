@@ -1325,11 +1325,11 @@ void sim_t::analyze_player( player_t* p )
 
   p -> deaths.analyze( true, true, true, 50 );
 
-  p -> fight_length.analyze();
+  p -> fight_length.analyze( true, true );
   p -> waiting_time.analyze();
   p -> executed_foreground_actions.analyze();
 
-  p -> dmg.analyze();
+  p -> dmg.analyze( true, true );
   p -> compound_dmg.analyze();
   p -> dps.analyze( true, true, true, 50 );
   p -> dpse.analyze();

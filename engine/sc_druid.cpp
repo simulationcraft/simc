@@ -3524,7 +3524,7 @@ struct moonfire_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
 
-  moonfire_t( druid_t* player, const std::string& options_str ) :
+  moonfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
     druid_spell_t( "moonfire", 8921, player ),
     starsurge_cd( 0 )
   {
@@ -3543,6 +3543,14 @@ struct moonfire_t : public druid_spell_t
       base_crit += 0.05;
 
     starsurge_cd = p -> cooldowns_starsurge;
+
+    may_trigger_dtr = false; // Disable the dot ticks procing DTR
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new moonfire_t( player, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void player_buff()
@@ -3714,7 +3722,7 @@ struct starfire_t : public druid_spell_t
   std::string prev_str;
   int extend_moonfire;
 
-  starfire_t( druid_t* p, const std::string& options_str ) :
+  starfire_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
     druid_spell_t( "starfire", 2912, p ),
     extend_moonfire( 0 )
   {
@@ -3730,6 +3738,12 @@ struct starfire_t : public druid_spell_t
 
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new starfire_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
@@ -3848,7 +3862,7 @@ struct starfire_t : public druid_spell_t
 
 struct starfall_star_t : public druid_spell_t
 {
-  starfall_star_t( druid_t* player ) :
+  starfall_star_t( druid_t* player, bool dtr=false ) :
     druid_spell_t( "starfall_star", 50288, player )
   {
     druid_t* p = player -> cast_druid();
@@ -3860,6 +3874,12 @@ struct starfall_star_t : public druid_spell_t
 
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new starfall_star_t( player, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void player_buff()
@@ -3913,7 +3933,7 @@ struct starsurge_t : public druid_spell_t
 {
   cooldown_t* starfall_cd;
 
-  starsurge_t( druid_t* player, const std::string& options_str ) :
+  starsurge_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
     druid_spell_t( "starsurge", 78674, player ),
     starfall_cd( 0 )
   {
@@ -3930,6 +3950,12 @@ struct starsurge_t : public druid_spell_t
       cooldown -> duration -= 5.0;
 
     starfall_cd = p -> get_cooldown( "starfall" );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new starsurge_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void impact( player_t* t, int impact_result,
@@ -4015,7 +4041,7 @@ struct sunfire_t : public druid_spell_t
 
   // Identical to moonfire, except damage type and usability
 
-  sunfire_t( druid_t* player, const std::string& options_str ) :
+  sunfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
     druid_spell_t( "sunfire", 93402, player ),
     starsurge_cd( 0 )
   {
@@ -4035,6 +4061,14 @@ struct sunfire_t : public druid_spell_t
       base_crit += 0.05;
 
     starsurge_cd = p -> cooldowns_starsurge;
+
+    may_trigger_dtr = false; // Disable the dot ticks procing DTR
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new sunfire_t( player, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void player_buff()
@@ -4294,7 +4328,7 @@ struct wrath_t : public druid_spell_t
 {
   std::string prev_str;
 
-  wrath_t( druid_t* p, const std::string& options_str ) :
+  wrath_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
     druid_spell_t( "wrath", 5176, p )
   {
     option_t options[] =
@@ -4307,6 +4341,12 @@ struct wrath_t : public druid_spell_t
     base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new wrath_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual double execute_time() SC_CONST

@@ -11,9 +11,10 @@ sample_data_t::sample_data_t( const bool s, const bool mm ):
   sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),mean( std::numeric_limits<double>::quiet_NaN() ),
   min( std::numeric_limits<double>::infinity() ),max( -std::numeric_limits<double>::infinity() ),
   variance( std::numeric_limits<double>::quiet_NaN() ),std_dev( std::numeric_limits<double>::quiet_NaN() ),
-  median( std::numeric_limits<double>::quiet_NaN() ), mean_std_dev( std::numeric_limits<double>::quiet_NaN() ),
+  mean_std_dev( std::numeric_limits<double>::quiet_NaN() ),
   simple( s ), min_max( mm ), count( 0 ),
-  is_analyzed( false ),sorted( false )
+  analyzed_basics( false ),analyzed_variance( false ),
+  created_dist( false ), is_sorted( false )
 {
 }
 
@@ -48,10 +49,29 @@ void sample_data_t::analyze(
   bool s,
   unsigned int create_dist )
 {
-  if ( is_analyzed )
-    return;
-  is_analyzed = true;
+  if ( calc_basics )
+    analyze_basics();
 
+  // Calculate Variance
+  if ( calc_variance )
+    analyze_variance();
+
+  // Sort Data
+  if ( s )
+    sort();
+
+  if ( create_dist > 0 )
+    create_distribution( create_dist );
+
+}
+
+// sample_data_t::analyze_basics ===============================================
+
+void sample_data_t::analyze_basics()
+{
+  if ( analyzed_basics )
+    return;
+  analyzed_basics = true;
 
   if ( simple )
   {
@@ -60,72 +80,72 @@ void sample_data_t::analyze(
   }
 
   size_t sample_size = data.size();
-  count = static_cast<int>( sample_size );
   if ( sample_size == 0 )
     return;
 
   // Calculate Sum, Mean, Min, Max
-  if ( calc_basics || calc_variance || create_dist || create_dist > 0 )
+  sum = min = max = data[ 0 ];
+
+  for ( size_t i=1; i < sample_size; i++ )
   {
-    sum = min = max = data[ 0 ];
-
-    for ( size_t i=1; i < sample_size; i++ )
-    {
-      double i_data = data[ i ];
-      sum  += i_data;
-      if ( i_data < min ) min = i_data;
-      if ( i_data > max ) max = i_data;
-    }
-
-    mean = sum / sample_size;
+    double i_data = data[ i ];
+    sum  += i_data;
+    if ( i_data < min ) min = i_data;
+    if ( i_data > max ) max = i_data;
   }
 
-  // Calculate Variance
-  if ( calc_variance )
+  mean = sum / sample_size;
+}
+
+// sample_data_t::analyze_variance ===============================================
+
+void sample_data_t::analyze_variance()
+{
+  if ( analyzed_variance )
+    return;
+  analyzed_variance = true;
+
+  if ( simple )
+    return;
+
+  analyze_basics();
+
+  size_t sample_size = data.size();
+
+  if ( sample_size == 0 )
+    return;
+
+  variance = 0;
+  for ( size_t i=0; i < sample_size; i++ )
   {
-    variance = 0;
-    for ( size_t i=0; i < sample_size; i++ )
-    {
-      double delta = data[ i ] - mean;
-      variance += delta * delta;
-    }
-
-    if ( sample_size > 1 )
-    {
-      variance /= ( sample_size - 1 );
-    }
-
-    std_dev = sqrt( variance );
-
-    // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
-    mean_std_dev = std_dev / sqrt ( ( double ) sample_size );
+    double delta = data[ i ] - mean;
+    variance += delta * delta;
   }
 
-
-  // Sort Data
-  if ( s )
+  if ( sample_size > 1 )
   {
-    sort();
-
-    if ( sample_size % 2 == 1 )
-      median = data[ ( sample_size - 1 )/ 2];
-    else
-      median = ( data[ sample_size / 2 - 1] + data[sample_size / 2] ) / 2.0;
+    variance /= ( sample_size - 1 );
   }
 
-  if ( create_dist > 0 )
-    create_distribution( create_dist );
+  std_dev = sqrt( variance );
 
+  // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
+  mean_std_dev = std_dev / sqrt ( ( double ) sample_size );
 }
 
 // sample_data_t::create_dist ===============================================
 
 void sample_data_t::create_distribution( unsigned int num_buckets )
 {
+  if ( created_dist )
+    return;
+  created_dist = true;
+
   if ( simple )
     return;
 
-  assert( is_analyzed );
+  if ( !basics_analyzed() )
+    return;
 
   if ( data.size() == 0 )
     return;
@@ -150,10 +170,11 @@ double sample_data_t::percentile( double x )
 {
   assert( x >= 0 && x <= 1.0 );
 
-  if ( data.empty() )
+  if ( simple )
     return std::numeric_limits<double>::quiet_NaN();
 
-  assert( ! simple );
+  if ( data.empty() )
+    return std::numeric_limits<double>::quiet_NaN();
 
   sort();
 
@@ -165,10 +186,10 @@ double sample_data_t::percentile( double x )
 
 void sample_data_t::sort()
 {
-  if ( ! sorted )
+  if ( ! is_sorted )
   {
     range::sort( data );
-    sorted = true;
+    is_sorted = true;
   }
 }
 
@@ -191,4 +212,39 @@ void sample_data_t::merge( const sample_data_t& other )
   }
   else
     data.insert( data.end(), other.data.begin(), other.data.end() );
+}
+
+// sample_data_t::merge =====================================================
+
+
+double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_data_t& y )
+{
+  if ( x.simple || y.simple )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  if ( x.data.size() != y.data.size() )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  if ( ! x.basics_analyzed() || ! y.basics_analyzed() )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  if ( ! x.variance_analyzed() || ! y.variance_analyzed() )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  if ( ! x.std_dev <= 0 || ! y.std_dev <= 0 )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  double corr = 0;
+
+  for( size_t i=0; i < x.data.size(); i++ )
+  {
+    corr += ( x.data[ i ] - x.mean ) * ( y.data[ i ] - y.mean );
+  }
+  if ( x.data.size() > 1 )
+    corr /= ( x.data.size() - 1 );
+
+  corr /= x.std_dev;
+  corr /= y.std_dev;
+
+  return corr;
 }

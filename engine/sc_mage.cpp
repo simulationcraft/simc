@@ -1741,7 +1741,7 @@ struct combustion_t : public mage_spell_t
 
     orig_duration = cooldown -> duration;
 
-    may_trigger_dtr = false;
+    may_trigger_dtr = false; // Disable the dot ticks procing DTR
 
     if ( ! dtr && player -> has_dtr )
     {

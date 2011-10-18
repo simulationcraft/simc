@@ -2459,7 +2459,6 @@ struct sample_data_t
   double max;
   double variance;
   double std_dev;
-  double median;
   double mean_std_dev;
   std::vector<int> distribution;
   const bool simple;
@@ -2467,8 +2466,10 @@ struct sample_data_t
 private:
   int count;
 
-  bool is_analyzed;
-  bool sorted;
+  bool analyzed_basics;
+  bool analyzed_variance;
+  bool created_dist;
+  bool is_sorted;
 public:
 
   sample_data_t( bool s=true, bool mm=false );
@@ -2478,14 +2479,26 @@ public:
 
   void add( double x=0 );
 
-  bool analyzed() const { return is_analyzed; }
+  bool basics_analyzed() const { return analyzed_basics; }
+  bool variance_analyzed() const { return analyzed_variance; }
+  bool distribution_created() const { return created_dist; }
+  bool sorted() const { return is_sorted; }
   int size() const { if ( simple ) return count; return (int) data.size(); }
 
   void analyze(
     bool calc_basics=true,
-    bool calc_variance=false,
-    bool s=false,
+    bool calc_variance=true,
+    bool s=true,
     unsigned int create_dist=0 );
+
+
+  void analyze_basics();
+
+  void analyze_variance();
+
+  void sort();
+
+  void create_distribution( unsigned int num_buckets=50 );
 
   double percentile( double );
 
@@ -2493,9 +2506,7 @@ public:
 
   void clear() { count = 0; sum = 0; data.clear(); distribution.clear(); }
 
-private:
-  void sort();
-  void create_distribution( unsigned int num_buckets=50 );
+  static double pearson_correlation( const sample_data_t&, const sample_data_t& );
 };
 
 // Buffs ====================================================================
@@ -3791,7 +3802,8 @@ struct player_t : public noncopyable
   action_t* last_foreground_action;
   double    current_time, iteration_fight_length,arise_time;
   sample_data_t fight_length, waiting_time, executed_foreground_actions;
-  double    iteration_waiting_time, iteration_executed_foreground_actions;
+  double    iteration_waiting_time;
+  int       iteration_executed_foreground_actions;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
   double    rps_gain, rps_loss;

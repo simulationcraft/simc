@@ -11,8 +11,6 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
 {
   // Print Statistics of a Sample Data Container
 
-  assert( data.analyzed() );
-
     fprintf( file,
              "\t\t\t\t\t\t\t<table class=\"sc\">\n"
              "\t\t\t\t\t\t\t\t<tr>\n"
@@ -20,6 +18,8 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
              "\t\t\t\t\t\t\t\t\t<th></th>\n"
              "\t\t\t\t\t\t\t\t</tr>\n", name.c_str(), name.c_str() );
 
+    if ( data.basics_analyzed() )
+    {
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
              "\t\t\t\t\t\t\t\t<td colspan=\"2\" class=\"filler\">\n" );
@@ -47,7 +47,7 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
              "\t\t\t\t\t\t\t\t</tr>\n",
              data.mean );
 
-    if ( !data.simple )
+    if ( !data.simple || data.min_max )
     {
 
     fprintf( file,
@@ -77,7 +77,8 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
              data.mean ? ( (data.max - data.min ) / 2 ) * 100 / data.mean : 0 );
-
+    if ( data.variance_analyzed() )
+    {
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
@@ -105,9 +106,6 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
              data.percentile( 0.95 ) - data.percentile( 0.05 ) );
-
-    if ( data.mean_std_dev == std::numeric_limits<double>::quiet_NaN() )
-    {
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr>\n"
@@ -183,6 +181,7 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
              ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 3 * 3 ) ) );
+    }
     }
 
     }
