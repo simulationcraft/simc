@@ -2014,54 +2014,6 @@ void util_t::replace_all_( std::string& s, char from, const char* to )
 
 // util_t::to_string ========================================================
 
-std::string util_t::to_string( int i )
-{
-  char buffer[ 64 ];
-  snprintf( buffer, sizeof( buffer ), "%d", i );
-  return std::string( buffer );
-}
-
-// util_t::to_string ========================================================
-
-std::string util_t::to_string( unsigned int i )
-{
-  char buffer[ 64 ];
-  snprintf( buffer, sizeof( buffer ), "%u", i );
-  return std::string( buffer );
-}
-
-// util_t::to_string ========================================================
-
-std::string util_t::to_string( int64_t i )
-{
-#ifdef WIN32
-  // C99 is hard!
-  const char* fmt = "%I64d";
-#else
-  const char* fmt = "%lld";
-#endif
-  char buffer[ 64 ];
-  snprintf( buffer, sizeof( buffer ), fmt, i );
-  return std::string( buffer );
-}
-
-// util_t::to_string ========================================================
-
-std::string util_t::to_string( uint64_t i )
-{
-#ifdef WIN32
-  // C99 is hard!
-  const char* fmt = "%I64u";
-#else
-  const char* fmt = "%llu";
-#endif
-  char buffer[ 64 ];
-  snprintf( buffer, sizeof( buffer ), fmt, i );
-  return std::string( buffer );
-}
-
-// util_t::to_string ========================================================
-
 std::string util_t::to_string( double f, int precision )
 {
   char buffer[ 64 ];
