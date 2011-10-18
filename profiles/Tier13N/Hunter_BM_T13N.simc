@@ -32,42 +32,40 @@ actions+=/fervor,if=focus<=37
 actions+=/focus_fire,five_stacks=1,if=!buff.beast_within.up
 actions+=/arcane_shot,if=focus>=59|buff.beast_within.up
 actions+=/cobra_shot
-head=flamewakers_headguard,heroic=1,type=mail,ilevel=391,quality=epic,stats=2214armor_400agi_689sta_278crit_272haste,gems=agile_shadowspirit_20agi_20crit_30agi,enchant=60agi_35haste
-neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=mastery_crit
-shoulders=flamewakers_spaulders,heroic=1,type=mail,ilevel=391,quality=epic,stats=2044armor_322agi_513sta_235mastery_194haste,reforge=mastery_crit,gems=67agi_10mastery,enchant=50agi_25mastery
-chest=flamewakers_tunic,heroic=1,type=mail,ilevel=391,quality=epic,stats=2725armor_420agi_689sta_276mastery_291crit,reforge=mastery_hit,gems=67agi_20agi_20crit_20agi,enchant=20all
+head=wyrmstalkers_headguard,type=mail,ilevel=397,quality=epic,stats=2261armor_426agi_730sta_346crit_210mastery,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
+neck=valorous_necklace_of_smoke_signals,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176hit
+shoulders=wyrmstalkers_spaulders,type=mail,ilevel=397,quality=epic,stats=2087armor_321agi_542sta_242crit_193haste,gems=67agi_50agi_20agi,enchant=50agi_25mastery
+chest=wyrmstalkers_tunic,type=mail,ilevel=397,quality=epic,stats=2783armor_426agi_730sta_288haste_294hit,gems=67agi_50agi_20agi_20crit_30agi,enchant=20all
 waist=firearrow_belt,heroic=1,type=mail,ilevel=391,quality=epic,stats=1533armor_322agi_513sta_205mastery_221haste,reforge=mastery_crit,gems=67agi_40agi
-legs=flamewakers_legguards,heroic=1,type=mail,ilevel=391,quality=epic,stats=2385armor_420agi_689sta_316hit_242haste,reforge=haste_crit,gems=40agi_40agi,enchant=190ap_55crit
+legs=wyrmstalkers_legguards,type=mail,ilevel=397,quality=epic,stats=2435armor_426agi_730sta_308crit_280mastery,gems=50agi_50agi_50agi_30agi,enchant=190ap_55crit
 feet=decimation_treads,heroic=1,type=mail,ilevel=391,quality=epic,stats=1874armor_321agi_513sta_199hit_227crit,gems=40agi_10agi,enchant=35agi
-wrists=hidebound_chains,heroic=1,type=mail,ilevel=391,quality=epic,stats=1192armor_256agi_384sta_195haste_130hit,enchant=50agi
-hands=flamewakers_gloves,heroic=1,type=mail,ilevel=391,quality=epic,stats=1703armor_322agi_513sta_231crit_202haste,gems=20agi_20crit_10agi,enchant=20agi
-finger1=viridian_signet_of_the_avengers,ilevel=391,quality=epic,stats=236agi_384sta_181haste_134mastery,reforge=mastery_crit,gems=40agi_10agi,enchant=40agi
-finger2=splintered_brimstone_seal,heroic=1,ilevel=391,quality=epic,stats=256agi_384sta_178mastery_158crit,reforge=mastery_hit,enchant=40agi
-trinket1=matrix_restabilizer,heroic=1,ilevel=397,quality=epic,stats=458agi
-trinket2=the_hungerer,heroic=1,ilevel=391,quality=epic,stats=433agi,equip=onattackhit_1730haste_100%_15dur_60cd
-back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=mastery_crit,gems=40agi_40agi_20agi,enchant=22agi
-main_hand=ranseur_of_hatred,heroic=1,ilevel=391,quality=epic,stats=460agi_689sta_320crit_284haste,enchant=130agi,weapon=polearm_3.60speed_2418min_3628max
-ranged=arathar_the_eye_of_flame,heroic=1,ilevel=397,quality=epic,stats=153agi_230sta_108crit_92haste,enchant=gnomish_xray,weapon=bow_3.00speed_1865min_3464max
+wrists=valorous_bracers,type=mail,ilevel=397,quality=epic,stats=1218armor_271agi_406sta_189hit_167mastery,enchant=50agi
+hands=wyrmstalkers_gloves,type=mail,ilevel=397,quality=epic,stats=1739armor_341agi_542sta_205hit_247haste,gems=50agi_10agi,enchant=20agi
+finger1=horrific_loop,ilevel=397,quality=epic,stats=251agi_406sta_179crit_157haste,gems=50agi_10agi,enchant=40agi
+finger2=horrific_seal,ilevel=397,quality=epic,stats=271agi_406sta_172exp_186mastery,enchant=40agi
+trinket1=horrific_seed_the_second,ilevel=397,quality=epic,stats=458agi,equip=onattackhit_6042physical_15%_45cd
+trinket2=horrific_seed,ilevel=397,quality=epic,stats=458agi,equip=onattackhit_2904haste_15%_20dur_45cd
+back=valorous_sleek_flamewrath_cloak,ilevel=397,quality=epic,stats=769armor_271agi_406sta_186haste_172crit,enchant=22agi
+main_hand=horrific_polearm,ilevel=403,quality=epic,stats=652agi_772sta,enchant=130agi,weapon=polearm_3.50speed_2629min_3945max
+ranged=horrific_arbalest,ilevel=397,quality=epic,stats=153agi_230sta_116crit_78haste,enchant=gnomish_xray,weapon=crossbow_2.90speed_2060min_3091max
 # Gear Summary
 # gear_strength=20
-# gear_agility=6453
-# gear_stamina=7000
+# gear_agility=7001
+# gear_stamina=7352
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_hit_rating=984
-# gear_crit_rating=2168
-# gear_haste_rating=2005
-# gear_mastery_rating=827
-# gear_armor=16415
+# gear_expertise_rating=172
+# gear_hit_rating=1063
+# gear_crit_rating=1747
+# gear_haste_rating=1588
+# gear_mastery_rating=991
+# gear_armor=16699
 # meta_gem=agile_shadowspirit
-tier12_2pc_melee=0
-tier12_4pc_melee=0
-tier13_2pc_melee=1
-tier13_4pc_melee=1
-# trinket1=matrix_restabilizer,heroic=1
-# main_hand=ranseur_of_hatred,heroic=1,weapon=polearm_3.60speed_2418min_3628max
-# ranged=arathar_the_eye_of_flame,heroic=1,weapon=bow_3.00speed_1865min_3464max,enchant=gnomish_xray
+# tier13_2pc_melee=1
+# tier13_4pc_melee=1
+# main_hand=horrific_polearm,weapon=polearm_3.50speed_2629min_3945max
+# ranged=horrific_arbalest,weapon=crossbow_2.90speed_2060min_3091max,enchant=gnomish_xray
 pet=cat,cat
 talents=200000030300003010122000000000000000000000000000000000000000000
 active=owner

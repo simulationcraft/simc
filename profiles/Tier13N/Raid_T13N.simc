@@ -1,10 +1,9 @@
 #!simc
 
-ptr=1
+optimal_raid=1
 
-# Hunter Tier13 Non Heroic
+# Raid Tier13 Non Heroic
 
 Hunter_MM_T13N.simc
 Hunter_SV_T13N.simc
 Hunter_BM_T13N.simc
-

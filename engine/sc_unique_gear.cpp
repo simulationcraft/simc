@@ -1609,6 +1609,75 @@ static void register_spidersilk_spindle( item_t* item )
   p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
 }
 
+// register_apparatus_of_khazgoroth =========================================
+
+static void register_horrific_polearm( item_t* item )
+{
+  player_t* p = item -> player;
+
+  item -> unique = true;
+  bool heroic = item -> heroic();
+
+  struct horrific_polearm_callback_t : public action_callback_t
+  {
+    bool heroic;
+    buff_t* fury_of_the_beast;
+    stat_buff_t* fury_of_the_beast_stack;
+
+    // Event
+    struct horrific_polearm_event_t : public event_t
+    {
+      buff_t* buff;
+      buff_t* buff_stack;
+
+      horrific_polearm_event_t ( player_t* player,buff_t* b, buff_t* q ) :
+        event_t( player -> sim, player ), buff( b ), buff_stack( q )
+      {
+        name = "horrific_polearm";
+        sim -> add_event( this, 1.0 );
+      }
+
+      virtual void execute()
+      {
+        if ( buff -> check() && buff_stack -> check() < buff_stack -> max_stack )
+        {
+          buff_stack -> buff_duration = buff -> remains(); // hack instead of overriding fury_of_the_beast::expire()
+          buff_stack -> trigger();
+          new ( sim ) horrific_polearm_event_t( player, buff, buff_stack );
+        }
+      }
+    };
+
+    horrific_polearm_callback_t( player_t* p, bool h ) :
+      action_callback_t( p -> sim, p ), heroic( h )
+    {
+      double amount = heroic ? 500 : 500; // FIXME: add heroic amount
+
+      fury_of_the_beast = new buff_t( p, 108011, "fury_of_the_beast", 0.15 );
+      fury_of_the_beast -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
+      fury_of_the_beast_stack  = new stat_buff_t( p, 108016, "fury_of_the_beast_stack", STAT_CRIT_RATING, amount );
+      fury_of_the_beast_stack -> activated = false;
+    }
+
+    virtual void trigger( action_t* a, void* /* call_data */ )
+    {
+      if( ! a -> weapon ) return;
+      if( a -> proc ) return;
+
+      if( fury_of_the_beast -> cooldown -> remains() > 0 ) return;
+
+      if( fury_of_the_beast -> trigger() )
+      {
+        // FIXME: check if the stacking buff ticks at 0s or 1s
+        new ( sim ) horrific_polearm_event_t( listener, fury_of_the_beast, fury_of_the_beast_stack );
+
+      }
+    }
+  };
+
+  p -> register_attack_callback( RESULT_CRIT_MASK, new horrific_polearm_callback_t( p, heroic ) );
+}
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -1666,6 +1735,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "valanyr_hammer_of_ancient_kings"     ) ) register_valanyr                           ( &item );
     if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
     if ( ! strcmp( item.name(), "spidersilk_spindle"                  ) ) register_spidersilk_spindle                ( &item );
+    if ( ! strcmp( item.name(), "horrific_polearm"                    ) ) register_horrific_polearm                  ( &item );
   }
 }
 
@@ -2157,6 +2227,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellHit_132SP_5%_10Dur";
   else if ( name == "fall_of_mortality"                   ) e = ( heroic ? "OnHealCast_2178Spi_15Dur_75Cd" : "OnHealCast_1926Spi_15Dur_75Cd" );
   else if ( name == "darkmoon_card_tsunami"               ) e = "OnHeal_80Spi_5Stack_20Dur";
+  else if ( name == "horrific_seed"                       ) e = "OnAttackHit_2904Haste_15%_20Dur_45Cd"; // FIXME: Confirm ICD
 
   // Some Normal/Heroic items have same name
   else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( heroic ? "OnSpellTickDamage_1206SP_30%_20Dur_100Cd" : "OnSpellTickDamage_1073SP_30%_20Dur_100Cd" );
@@ -2176,6 +2247,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "timbals_crystal"                     ) e = "OnSpellTickDamage_380Shadow_10%_15Cd";
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
+  else if ( name == "horrific_seed_the_second"            ) e = "OnAttackHit_6042Physical_15%_45Cd"; // Confirm ICD
 
   // Variable Stack Discharge Procs
   else if ( name == "variable_pulse_lightning_capacitor"  ) e = ( heroic ? "OnSpellCrit_3300.7Nature_15%_10Stack_2.5Cd_chance" : "OnSpellCrit_2926.3Nature_15%_10Stack_2.5Cd_chance" );

@@ -219,7 +219,7 @@ struct hunter_t : public player_t
     flaming_arrow = NULL;
 
     tier13_4pc_proc_chance = dbc.ptr ? dbc.spell( 105921 )-> proc_chance() : 0;
-    tier13_4pc_cooldown = 0.0;
+    tier13_4pc_cooldown = 45.0;
 
     create_talents();
     create_glyphs();
@@ -3869,7 +3869,7 @@ void hunter_t::init_buffs()
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, 0, 0, 1, true );
 
   buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
-  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", tier13_4pc_cooldown, tier13_4pc_proc_chance * set_bonus.tier13_4pc_melee() );
+  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", tier13_4pc_proc_chance * set_bonus.tier13_4pc_melee(), tier13_4pc_cooldown );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
@@ -4050,6 +4050,13 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3";
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
+      if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
+      {
+        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
+        action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up|target.health_pct>90";
+      }
+      else
+      {
       if ( ! glyphs.arcane_shot -> ok() )
         action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.react|target.health_pct>90";
       else
@@ -4062,6 +4069,7 @@ void hunter_t::init_actions()
           action_list_str += "&!buff.berserking.up)";
         else
           action_list_str += ")";
+      }
       }
       action_list_str += "/steady_shot";
       break;
