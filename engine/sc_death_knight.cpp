@@ -3378,9 +3378,8 @@ struct obliterate_t : public death_knight_attack_t
         // REVIEW: given we have set buffs_rime to have 2 stacks if a T13 2 piece is present, we now need to ensure
         // we don't let it stack to 2 if the 2 piece didn't proc. Best way I can think to do this is decrementing,
         // but am unsure if that negatively affects proc statistics.
-        if ( stacks == 1 && p -> buffs_rime -> stack() == 2 &&  sim -> log )
+        if ( stacks == 1 && p -> buffs_rime -> stack() == 2 )
           p -> buffs_rime -> decrement();
-        if ( stacks == 1 && p -> buffs_rime -> stack() == 2 &&  sim -> log ) log_t::output( sim, "BUG: 2 stacks of rime without T13 2 piece proc. Should not happen.");
 
 
         p -> cooldowns_howling_blast -> reset();
