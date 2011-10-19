@@ -2164,7 +2164,7 @@ struct melee_t : public death_knight_attack_t
         // Ensure that if we have 1 that we only refresh, not add another stack
         int new_stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.3 ) ) ? 2 : 1;
 
-        if ( weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) )
+        if ( sim -> roll( weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) ) )
         {
           // If we're proccing 2 or we have 0 stacks, trigger like normal
           if ( ! p -> dbc.ptr || new_stacks == 2 || p -> buffs_sudden_doom -> check() == 0 )
