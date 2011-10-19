@@ -1091,9 +1091,10 @@ public:
 
     if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
 
-    if ( p -> bugs )
+    if ( ! p -> ptr && p -> bugs )
     {
       // Tested on live 2010/07/10 to be 35% as opposed to the tooltip's stated 25%
+      // Tested on PTR  2011/10/19 to be fixed
       if ( s -> target -> health_percentage() <= 35 )
       {
         return p -> talent_deaths_embrace -> effect2().percent();
@@ -1102,7 +1103,7 @@ public:
     else
     {
       // The target health percentage is ONLY contained in the Rank-1 version of the talent.
-      if ( s -> target -> health_percentage() < p -> talent_deaths_embrace -> spell( 1 ).effect3().base_value() )
+      if ( s -> target -> health_percentage() <= p -> talent_deaths_embrace -> spell( 1 ).effect3().base_value() )
       {
         return p -> talent_deaths_embrace -> effect2().percent();
       }
@@ -2063,7 +2064,7 @@ struct bane_of_doom_t : public warlock_spell_t
     double m = warlock_spell_t::total_td_multiplier();
 
     warlock_t* p = player -> cast_warlock();
-    if ( p -> bugs && p -> buffs_shadow_embrace -> check() )
+    if ( ! p -> ptr && p -> bugs && p -> buffs_shadow_embrace -> check() )
     {
       m /= 1.0 + p -> buffs_shadow_embrace -> check() * p -> buffs_shadow_embrace -> effect1().percent();
     }
