@@ -2161,7 +2161,12 @@ struct melee_t : public death_knight_attack_t
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
         int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.3 ) ) ? 2 : 1;
-        p -> buffs_sudden_doom -> trigger( stacks, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) );
+        if (p -> buffs_sudden_doom -> trigger( stacks, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) ) ) {
+          // verify only 1 stack if T13 2 piece didn't proc
+          if ( stacks < 2 && p -> buffs_sudden_doom -> stack() ==2 )
+            p -> buffs_sudden_doom -> decrement();
+        }
+
       }
 
       // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
@@ -3377,8 +3382,8 @@ struct obliterate_t : public death_knight_attack_t
       {
         // REVIEW: given we have set buffs_rime to have 2 stacks if a T13 2 piece is present, we now need to ensure
         // we don't let it stack to 2 if the 2 piece didn't proc. Best way I can think to do this is decrementing,
-        // but am unsure if that negatively affects proc statistics.
-        if ( stacks == 1 && p -> buffs_rime -> stack() == 2 )
+        // but am unsure if that negatively affects proc statistics. Same with sudden_doom -> trigger
+        if ( stacks < 2 && p -> buffs_rime -> stack() == 2 )
           p -> buffs_rime -> decrement();
 
 
