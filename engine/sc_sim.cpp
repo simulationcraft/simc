@@ -650,7 +650,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
   smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
-  fight_style( "Patchwerk" ), overrides(), auras(),
+  fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
   buff_list( 0 ), aura_delay( 0.15 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
   elapsed_cpu_seconds( 0 ), iteration_dmg( 0 ), iteration_heal( 0 ),
