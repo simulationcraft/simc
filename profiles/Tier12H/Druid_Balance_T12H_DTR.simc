@@ -1,15 +1,15 @@
 #!./simc 
 
 druid=Druid_Balance_T12H_DTR
-origin="Druid_CharDevSync.simc"
+origin="http://chardev.org/?profile=256655"
 level=85
 race=troll
 position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#druid-332312211202021110310000000000000000000000220321000000000000000
-glyphs=focus/rebirth/starfall/mark_of_the_wild/unburdened_rebirth/dash/wrath/insect_swarm/moonfire
+talents=http://www.wowhead.com/talent#druid-332302211230121112010100000000000000000000020331000000000000000
+glyphs=monsoon/rebirth/starfall/unburdened_rebirth/moonfire/insect_swarm/wrath
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/mark_of_the_wild
@@ -41,32 +41,33 @@ actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1
 actions+=/sunfire,moving=1
 head=obsidian_arborweave_cover,heroic=1,type=leather,ilevel=391,quality=epic,stats=1566armor_400int_689sta_246haste_301mastery,gems=burning_shadowspirit_20int_20haste_30int,enchant=60int_35crit
-neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,gems=67int_10int
-shoulders=obsidian_arborweave_shoulderwraps,heroic=1,type=leather,ilevel=391,quality=epic,stats=1446armor_322int_513sta_231crit_195mastery,reforge=crit_spi,gems=40int_10int,enchant=50int_25haste
-chest=obsidian_arborweave_vestment,heroic=1,type=leather,ilevel=391,quality=epic,stats=1928armor_420int_689sta_269haste_301mastery,gems=67int_67int,enchant=20all
-waist=firescar_sash,type=leather,ilevel=378,quality=epic,stats=1024armor_282int_454sta_208crit_172haste,reforge=crit_spi,gems=20int_20spi_10int
-legs=firecat_leggings,heroic=1,type=leather,ilevel=391,quality=epic,stats=1687armor_420int_689sta_269spi_295haste,reforge=spi_mastery,gems=20int_20spi_20int_20spi_20int,enchant=95int_55spi
-feet=phoenixdown_treads,heroic=1,type=leather,ilevel=391,quality=epic,stats=1325armor_322int_513sta_241spi_185mastery,reforge=spi_haste,gems=20int_20haste_10int,enchant=35mastery
+neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_spi,gems=50int_10int
+shoulders=flickering_shoulderpads_of_the_feverflare,heroic=1,type=leather,ilevel=391,quality=epic,stats=1446armor_512sta_321int_218haste_218mastery,gems=20int_20haste_10int,enchant=50int_25haste,suffix=285
+chest=obsidian_arborweave_vestment,heroic=1,type=leather,ilevel=391,quality=epic,stats=1928armor_420int_689sta_269haste_301mastery,gems=20int_20spi_20int_20spi_20int,enchant=20all
+waist=firescar_sash,type=leather,ilevel=378,quality=epic,stats=1024armor_282int_454sta_208crit_172haste,reforge=crit_spi,gems=20int_20spi_40int_10int
+legs=obsidian_arborweave_leggings,heroic=1,type=leather,ilevel=391,quality=epic,stats=1687armor_420int_689sta_300crit_282spi,reforge=crit_haste,gems=40int_40int_20int,enchant=95int_55spi
+feet=phoenixdown_treads,heroic=1,type=leather,ilevel=391,quality=epic,stats=1325armor_322int_513sta_241spi_185mastery,reforge=mastery_haste,gems=20int_20haste_10int,enchant=35mastery
 wrists=glowing_wing_bracers,heroic=1,type=leather,ilevel=391,quality=epic,stats=843armor_256int_384sta_173spi_166haste,enchant=50int
 hands=obsidian_arborweave_gloves,heroic=1,type=leather,ilevel=391,quality=epic,stats=1205armor_322int_513sta_231haste_202spi,gems=20int_20haste_10int,enchant=50haste
-finger1=crystalline_brimstone_ring,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_183hit_150mastery,reforge=mastery_haste
-finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit
+finger1=crystalline_brimstone_ring,ilevel=378,quality=epic,stats=227int_341sta_162hit_133mastery,reforge=hit_haste
+finger2=infernal_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_173haste_146hit,reforge=hit_mastery,gems=40int_10int
 trinket1=necromantic_focus,heroic=1,ilevel=391,quality=epic,stats=433int,equip=onspelltickdamage_44mastery_10stack_10dur
-trinket2=darkmoon_card_volcano,ilevel=359,quality=epic,stats=321mastery,reforge=mastery_haste,equip=onspelldamage_1200+10fire_1600int_30%_12dur_45cd
-back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_209int_344sta_153mastery_133haste,reforge=mastery_spi,gems=20haste_20int_10int,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
+trinket2=variable_pulse_lightning_capacitor,heroic=1,ilevel=397,quality=epic,stats=458int,equip=onspellcrit_3300.7nature_15%_10stack_2.5cd_chance
+back=shroud_of_endless_grief,heroic=1,ilevel=379,quality=epic,stats=699armor_209int_344sta_153mastery_133haste,reforge=mastery_spi,gems=20int_20haste_10int,enchant=lightweave_embroidery
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
 ranged=soulflame_vial,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_101mastery_89haste,gems=40int
+tabard=ironforge_tabard,ilevel=1
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=6907
-# gear_intellect=5715
-# gear_spirit=1054
+# gear_stamina=6863
+# gear_intellect=6192
+# gear_spirit=1231
 # gear_spell_power=2786
-# gear_hit_rating=643
-# gear_crit_rating=299
-# gear_haste_rating=2647
-# gear_mastery_rating=1733
+# gear_hit_rating=500
+# gear_crit_rating=340
+# gear_haste_rating=2564
+# gear_mastery_rating=1430
 # gear_armor=11723
 # meta_gem=burning_shadowspirit
 # tier12_2pc_caster=1
