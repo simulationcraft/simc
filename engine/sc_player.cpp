@@ -442,7 +442,7 @@ player_t::player_t( sim_t*             s,
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
   current_time( 0 ), iteration_fight_length( 0 ), arise_time( 0 ),
-  fight_length( false ), waiting_time( true ), executed_foreground_actions( s -> statistics_level < 2 ),
+  fight_length( s -> statistics_level < 2, true ), waiting_time( true ), executed_foreground_actions( s -> statistics_level < 3 ),
   iteration_waiting_time( 0 ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
   deaths(), deaths_error( 0 ),
