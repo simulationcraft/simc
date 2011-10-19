@@ -3375,6 +3375,14 @@ struct obliterate_t : public death_knight_attack_t
       int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.6 ) ) ? 2 : 1;
       if ( p -> buffs_rime -> trigger( stacks ) )
       {
+        // REVIEW: given we have set buffs_rime to have 2 stacks if a T13 2 piece is present, we now need to ensure
+        // we don't let it stack to 2 if the 2 piece didn't proc. Best way I can think to do this is decrementing,
+        // but am unsure if that negatively affects proc statistics.
+        if ( stacks == 1 && p -> buffs_rime -> stack() == 2 &&  sim -> log )
+          p -> buffs_rime -> decrement();
+        if ( stacks == 1 && p -> buffs_rime -> stack() == 2 &&  sim -> log ) log_t::output( sim, "BUG: 2 stacks of rime without T13 2 piece proc. Should not happen.");
+
+
         p -> cooldowns_howling_blast -> reset();
         update_ready();
       }
@@ -4503,6 +4511,8 @@ void death_knight_t::init_actions()
         action_list_str += "/pillar_of_frost";
       }
       action_list_str += "/blood_tap,if=death!=2&death.cooldown_remains>2.0";
+      // this results in a dps loss. which is odd, it probalby shouldn't. although it only ever affects the very first ghoul summon
+      // leaving it here until further testing.
       if ( false )
       {
         // Try and time a better ghoul
@@ -4520,8 +4530,8 @@ void death_knight_t::init_actions()
         if ( has_heart_of_rage )
           action_list_str += "&buff.heart_of_rage.react";
       }
-      else
-        action_list_str += "/raise_dead,time>=15";
+
+      action_list_str += "/raise_dead,time>=15";
       // priority:
       // Diseases
       // Obliterate if 2 rune pair are capped, or there is no candidate for RE
