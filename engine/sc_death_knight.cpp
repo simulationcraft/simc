@@ -2160,13 +2160,24 @@ struct melee_t : public death_knight_attack_t
     {
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
-        int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.3 ) ) ? 2 : 1;
-        if (p -> buffs_sudden_doom -> trigger( stacks, -1, weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) ) ) {
-          // verify only 1 stack if T13 2 piece didn't proc
-          if ( stacks < 2 && p -> buffs_sudden_doom -> stack() ==2 )
-            p -> buffs_sudden_doom -> decrement();
-        }
+        // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
+        // Ensure that if we have 1 that we only refresh, not add another stack
+        int new_stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.3 ) ) ? 2 : 1;
 
+        if ( weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) )
+        {
+          // If we're proccing 2 or we have 0 stacks, trigger like normal
+          if ( ! p -> dbc.ptr || new_stacks == 2 || p -> buffs_sudden_doom -> check() == 0 )
+          {
+            p -> buffs_sudden_doom -> trigger( new_stacks );
+          }
+          // Refresh the 1 stack we already have
+          // refresh( 0 ) means we don't add any stacks
+          else
+          {
+            p -> buffs_sudden_doom -> refresh( 0 );
+          }
+        }
       }
 
       // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
@@ -3377,19 +3388,29 @@ struct obliterate_t : public death_knight_attack_t
       {
         p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC ), p -> gains_chill_of_the_grave );
       }
-      int stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.6 ) ) ? 2 : 1;
-      if ( p -> buffs_rime -> trigger( stacks ) )
-      {
-        // REVIEW: given we have set buffs_rime to have 2 stacks if a T13 2 piece is present, we now need to ensure
-        // we don't let it stack to 2 if the 2 piece didn't proc. Best way I can think to do this is decrementing,
-        // but am unsure if that negatively affects proc statistics. Same with sudden_doom -> trigger
-        if ( stacks < 2 && p -> buffs_rime -> stack() == 2 )
-          p -> buffs_rime -> decrement();
 
+      // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
+      // Ensure that if we have 1 that we only refresh, not add another stack
+      int new_stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( 0.6 ) ) ? 2 : 1;
+
+      if ( sim -> roll( p -> talents.rime -> proc_chance() ) )
+      {
+        // If we're proccing 2 or we have 0 stacks, trigger like normal
+        if ( ! p -> dbc.ptr || new_stacks == 2 || p -> buffs_rime -> check() == 0 )
+        {
+          p -> buffs_rime -> trigger( new_stacks );
+        }
+        // Refresh the 1 stack we already have
+        // refresh( 0 ) means we don't add any stacks
+        else
+        {
+          p -> buffs_rime -> refresh( 0 );
+        }
 
         p -> cooldowns_howling_blast -> reset();
         update_ready();
       }
+
       if ( flaming_torment )
       {
         flaming_torment -> base_dd_min = direct_dmg;
@@ -4795,7 +4816,7 @@ void death_knight_t::init_buffs()
   buffs_frost_presence      = new buff_t( this, "frost_presence" );
   buffs_killing_machine     = new buff_t( this, "killing_machine",                                    1,  30.0,  0.0, 0.0 ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost",                                    1,  20.0 );
-  buffs_rime                = new buff_t( this, "rime", ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 2 : 1, 30.0, 0.0, talents.rime -> proc_chance() );
+  buffs_rime                = new buff_t( this, "rime", ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 2 : 1, 30.0, 0.0, 1.0 ); // Trigger controls proc chance
   buffs_runic_corruption    = new buff_t( this, "runic_corruption",                                   1,   3.0,  0.0, talents.runic_corruption -> effect1().percent() );
   buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  20.0,  0.0, talents.scent_of_blood -> proc_chance() );
   buffs_shadow_infusion     = new buff_t( this, "shadow_infusion",                                    5,  30.0,  0.0, talents.shadow_infusion -> proc_chance() );

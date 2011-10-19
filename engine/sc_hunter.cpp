@@ -2610,11 +2610,9 @@ struct kill_shot_t : public hunter_attack_t
 
     if ( p -> glyphs.kill_shot -> ok() )
     {
-
       cooldowns_glyph_kill_shot = p -> get_cooldown( "cooldowns_glyph_kill_shot" );
       cooldowns_glyph_kill_shot -> duration = p -> dbc.spell( 90967 ) -> duration();
     }
-
 
     normalize_weapon_speed = true;
   }
