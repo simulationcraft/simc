@@ -400,7 +400,7 @@ struct hunter_pet_t : public pet_t
     initial_attack_power_per_strength = 2.0;
     initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5, 0.01/243.6 );
 
-    base_attack_crit = 0.046; // Crit rate on gearless, talentless pet tested at 6.4%. Need further testing for confirmation.
+    base_attack_crit = 0.05; // Assume 5% base crit as for most other pets. 19/10/2011
 
     resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
     resource_base[ RESOURCE_FOCUS ] = 100 + o -> talents.kindred_spirits -> effect1().resource( RESOURCE_FOCUS );
@@ -4003,7 +4003,6 @@ void hunter_t::init_actions()
     action_list_str += "/aspect_of_the_fox,moving=1";
     action_list_str += init_use_item_actions();
     action_list_str += init_use_profession_actions();
-    action_list_str += init_use_racial_actions();
     action_list_str += "/explosive_trap,if=target.adds>0";
 
 
@@ -4011,24 +4010,24 @@ void hunter_t::init_actions()
     {
     // BEAST MASTERY
     case TREE_BEAST_MASTERY:
+      if ( talents.focus_fire -> ok() )
+      {
+        action_list_str += "/focus_fire,five_stacks=1";
+      }
+      action_list_str += "/serpent_sting,if=!ticking";
 
+      action_list_str += init_use_racial_actions();
       if ( talents.bestial_wrath -> rank() )
         action_list_str += "/bestial_wrath,if=focus>60";
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/cobra_shot,if=target.adds>5";
-      action_list_str += "/serpent_sting,if=!ticking";
       action_list_str += "/kill_shot";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
       action_list_str += "/kill_command";
 
       if ( talents.fervor -> ok() )
         action_list_str += "/fervor,if=focus<=37";
-      if ( talents.focus_fire -> ok() )
-      {
-        action_list_str += "/focus_fire,five_stacks=1";
-        if ( talents.the_beast_within -> ok() )
-          action_list_str += ",if=!buff.beast_within.up";
-      }
+
       action_list_str += "/arcane_shot,if=focus>=59|buff.beast_within.up";
       if ( level >= 81 )
         action_list_str += "/cobra_shot";
@@ -4040,6 +4039,7 @@ void hunter_t::init_actions()
     // MAKRMANSHIP
     case TREE_MARKSMANSHIP:
 
+      action_list_str += init_use_racial_actions();
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
       action_list_str += "/serpent_sting,if=!ticking&target.health_pct<=90";
@@ -4078,6 +4078,7 @@ void hunter_t::init_actions()
     // SURVIVAL
     case TREE_SURVIVAL:
 
+      action_list_str += init_use_racial_actions();
       action_list_str += "/multi_shot,if=target.adds>2";
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking";
