@@ -33,7 +33,7 @@ static void print_html_contents( FILE*  file, sim_t* sim )
     }
   }
 
-  fputs( "\t\t<div id=\"table-of-contents\" class=\"section\">\n"
+  fputs( "\t\t<div id=\"table-of-contents\" class=\"section grouped-first grouped-last\">\n"
          "\t\t\t<h2 class=\"toggle\">Table of Contents</h2>\n"
          "\t\t\t<div class=\"toggle-content hide\">\n", file );
 
