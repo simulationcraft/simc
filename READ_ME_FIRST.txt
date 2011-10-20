@@ -26,18 +26,15 @@ What is in the Install?
 
 Windows Platforms:
 (1) simc.exe => Command-line simulation executable
-(2) simcqt.exe => Alpha-level graphic user-interface.  Accepts drag-n-drop of .simc profiles.
-(3) vcredist_x86.exe => Installs C++ runtime libraries (some Windows platforms already have this).
-(4) Win32OpenSSL_Light-0_9_8q.exe => OpenSSL for Qt (some Windows platforms already have this).
-(5) Examples.simc => Reference documentation for the many parameters
-(6) Legend.html => Glossary for simulation output
-(7) phonon4.dll and Qt*.dll => dlls necessary for simcqt.exe to run
+(2) SimulationCraft.exe => Basic graphic user-interface.  Accepts drag-n-drop of .simc profiles.
+(3) Win32OpenSSL_Light-1_0_0e.exe => OpenSSL for Qt (some Windows platforms already have this).
+(4) Legend.html => Glossary for simulation output
+(5) phonon4.dll and Qt*.dll => dlls necessary for simcqt.exe to run
 
 Posix Platforms: (Linux, OSX, etc)
 (1) simc => Command-line simulation executable
 (2) simcqt.exe => Alpha-level graphic user-interface.
-(3) Examples.simc => Reference documentation for the many parameters
-(4) Legend.html => Glossary for simulation output
+(3) Legend.html => Glossary for simulation output
 
 =============================================================================================
 
@@ -72,12 +69,15 @@ A starter's guide can be found here: http://code.google.com/p/simulationcraft/wi
 
 What about a Graphic User Interface?
 
-There is a beta-level GUI built using Qt that is now being bundled with the CLI version.
+There is a basic GUI built using Qt that is now being bundled with the CLI version.
 If you associate the .simc extension with the simcqt.exe executable you will be able to 
 simply double-click your config files.  Alternatively, you can simply drag-and-drop a 
-config file on top of simcqt.exe.  It will load the config and allow you to set up 
+config file on top of SimulationCraft.exe.  It will load the config and allow you to set up 
 different options, such as calculating scale factors, after which you press "Simulate!" 
 to start it running.
+
+In order to run this on Windows, you may have install OpenSSL.  The OpenSSL installer was
+included in the zip download: Win32OpenSSL_Light-0_9_8k.exe
 
 =============================================================================================
 
@@ -87,12 +87,3 @@ Detailed information on the many parameters can be found in the online documenta
 http://code.google.com/p/simulationcraft/wiki/TextualConfigurationInterface
 
 =============================================================================================
-
-Graphic User Interface
-
-simcqt.exe is an alpha-level graphic user-interface using Qt.  It is a very light-weight
-wrapper that aids profile downloads, script building, and simulation results management.
-
-In order to run this on Windows, you may have install OpenSSL.  The OpenSSL installer was
-included in the zip download: Win32OpenSSL_Light-0_9_8k.exe
-
