@@ -808,9 +808,11 @@ static void print_text_player( FILE* file, player_t* p )
                    util_t::player_type_string( p -> type ),
                    util_t::talent_tree_string( p -> primary_tree() ), p -> level );
 
-  util_t::fprintf( file, "  DPS: %.1f  Error=%.1f/%.1f%%  Range=%.0f/%.1f%%  Convergence=%.1f%%",
+  util_t::fprintf( file, "  DPS: %.1f  DPS-Error=%.1f/%.1f%% HPS: %.1f HPS-Error=%.1f/%.1f%% DPS-Range=%.0f/%.1f%%  DPS-Convergence=%.1f%%",
                    p -> dps.mean,
                    p -> dps_error, p -> dps.mean ? p -> dps_error * 100 / p -> dps.mean : 0,
+                   p -> hps.mean,
+                   p -> hps_error, p -> hps.mean ? p -> hps_error * 100 / p -> hps.mean : 0,
                    ( p -> dps.max - p -> dps.min ) / 2.0 , p -> dps.mean ? ( ( p -> dps.max - p -> dps.min ) / 2 ) * 100 / p -> dps.mean : 0,
                    p -> dps_convergence * 100 );
 
@@ -884,7 +886,20 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = sim -> players_by_dps[ i ];
+      if ( p -> dps.mean <= 0 ) continue;
       util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean, sim -> raid_dps.mean ? 100 * p -> dpse.mean / sim -> raid_dps.mean : 0, p -> name() );
+    }
+
+    if ( sim -> players_by_hps.size() > 0 )
+    {
+      util_t::fprintf( file, "\nHPS Ranking:\n" );
+      util_t::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_hps.mean );
+      for ( size_t i=0; i < sim -> players_by_hps.size(); i++ )
+      {
+        player_t* p = sim -> players_by_hps[ i ];
+        if ( p -> hps.mean <= 0 ) continue;
+        util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> hps.mean, sim -> raid_hps.mean ? 100 * p -> hpse.mean / sim -> raid_hps.mean : 0, p -> name() );
+      }
     }
   }
 
