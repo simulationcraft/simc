@@ -5176,6 +5176,9 @@ struct use_item_t : public action_t
       return;
     }
 
+    name_str = name_str + "_" + item_name;
+    stats = player ->  get_stats( name_str, this );
+
     item_t::special_effect_t& e = item -> use;
 
     use_name = e.name_str.empty() ? item_name : e.name_str;
@@ -5300,6 +5303,9 @@ struct use_item_t : public action_t
       lockout( buff -> buff_duration );
     }
     else assert( false );
+
+    // Enable to report use_item ability
+    //if ( ! dual ) stats -> add_execute( time_to_execute );
 
     update_ready();
   }
