@@ -4234,7 +4234,6 @@ void shaman_t::init_scaling()
       attribute_initial[ ATTR_SPIRIT ] -= v * 2;
     }
   }
-
 }
 
 // shaman_t::init_buffs =====================================================

@@ -478,10 +478,10 @@ struct druid_heal_t : public heal_t
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
   virtual double cost_reduction() SC_CONST;
+  virtual void   execute();
   virtual double execute_time() SC_CONST;
   virtual double haste() SC_CONST;
   virtual void   player_buff();
-  virtual void   schedule_execute();
 };
 
 // ==========================================================================
@@ -927,6 +927,9 @@ static void trigger_living_seed( heal_t* a )
 
       init();
     }
+
+    virtual void player_buff()
+    { } // no double dipping
   };
 
   if ( ! p -> active_living_seed ) p -> active_living_seed = new living_seed_t( p );
@@ -2423,6 +2426,20 @@ double druid_heal_t::cost_reduction() SC_CONST
   return cr;
 }
 
+// druid_heal_t::execute ====================================================
+
+void druid_heal_t::execute()
+{
+  druid_t* p = player -> cast_druid();
+
+  heal_t::execute();
+
+  if ( base_execute_time > 0 )
+  {
+    p -> buffs_natures_swiftness -> expire();
+  }
+}
+
 // druid_heal_t::execute_time ===============================================
 
 double druid_heal_t::execute_time() SC_CONST
@@ -2463,23 +2480,9 @@ void druid_heal_t::player_buff()
     player_multiplier *= 1.0 + p -> spells.symbiosis -> effect1().coeff() * 0.01 * p -> composite_mastery();
   }
 
-  if ( p -> buffs_natures_swiftness -> check() && execute_time() > 0 )
+  if ( p -> buffs_natures_swiftness -> check() && base_execute_time > 0 )
   {
-    player_multiplier *= 1.0 + p -> talents.natures_swiftness -> effect1().percent();
-  }
-}
-
-// druid_heal_t::schedule_execute ===========================================
-
-void druid_heal_t::schedule_execute()
-{
-  druid_t* p = player -> cast_druid();
-
-  heal_t::schedule_execute();
-
-  if ( base_execute_time > 0 )
-  {
-    p -> buffs_natures_swiftness -> expire();
+    player_multiplier *= 1.0 + p -> talents.natures_swiftness -> effect2().percent();
   }
 }
 
@@ -3675,11 +3678,10 @@ struct druids_swiftness_t : public druid_spell_t
   cooldown_t* sub_cooldown;
   dot_t*      sub_dot;
 
-  druids_swiftness_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_swiftness", 17116, player ),
+  druids_swiftness_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "natures_swiftness", 17116, p ),
     sub_cooldown( 0 ), sub_dot( 0 )
   {
-    druid_t* p = player -> cast_druid();
     check_talent( p -> talents.natures_swiftness -> rank() );
 
     parse_options( NULL, options_str );
@@ -4781,7 +4783,8 @@ void druid_t::init_buffs()
   buffs_lifebloom          = new buff_t( this, dbc.class_ability_id( type, "Lifebloom" ), "lifebloom", 1.0, 0 );
   buffs_lifebloom -> buff_duration = 11.0; // Override duration so the bloom works correctly
   buffs_lunar_shower       = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
-  buffs_natures_swiftness  = new buff_t( this, talents.natures_swiftness -> spell_id(), "natures_swiftness" );
+  buffs_natures_swiftness  = new buff_t( this, talents.natures_swiftness ->spell_id(), "natures_swiftness" );
+  buffs_natures_swiftness -> cooldown -> duration = 0;// CD is handled by the ability
   buffs_savage_defense     = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
   buffs_shooting_stars     = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   buffs_survival_instincts = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
