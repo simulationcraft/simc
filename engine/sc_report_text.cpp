@@ -884,7 +884,7 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = sim -> players_by_dps[ i ];
-      util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean, 100 * p -> dpse.mean / sim -> raid_dps.mean, p -> name() );
+      util_t::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean, sim -> raid_dps.mean ? 100 * p -> dpse.mean / sim -> raid_dps.mean : 0, p -> name() );
     }
   }
 

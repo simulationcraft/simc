@@ -1410,11 +1410,11 @@ void sim_t::analyze_player( player_t* p )
 
       if ( s -> type == STATS_DMG )
       {
-        s -> portion_amount = s -> compound_amount / p -> compound_dmg.mean;
+        s -> portion_amount = p -> compound_dmg.mean ? s -> compound_amount / p -> compound_dmg.mean : 0 ;
       }
       else
       {
-        s -> portion_amount = s -> compound_amount / p -> compound_heal.mean;
+        s -> portion_amount = p -> compound_heal.mean ? s -> compound_amount / p -> compound_heal.mean : 0;
       }
     }
   }
