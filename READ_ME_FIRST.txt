@@ -27,7 +27,7 @@ What is in the Install?
 Windows Platforms:
 (1) simc.exe => Command-line simulation executable
 (2) SimulationCraft.exe => Basic graphic user-interface.  Accepts drag-n-drop of .simc profiles.
-(3) Win32OpenSSL_Light-1_0_0e.exe => OpenSSL for Qt (some Windows platforms already have this).
+(3) Win32OpenSSL_Light-*.exe => OpenSSL for Qt (some Windows platforms already have this).
 (4) Legend.html => Glossary for simulation output
 (5) phonon4.dll and Qt*.dll => dlls necessary for simcqt.exe to run
 
@@ -44,6 +44,8 @@ SimulationCraft is a parameter-driven command-line tool.  What this means is tha
 simply double-click the simc executable.  Parameters are specified in a generic parm=value
 format.
 
+A starter's guide can be found here: http://code.google.com/p/simulationcraft/wiki/StartersGuide
+
 Consider typing the following at a command-line prompt:
 simc.exe armoy=us,Llane,Segv iterations=10000 calculate_scale_factors=1 html=Segv.html
 Here we invoke the executable and pass four parm=value pairs.
@@ -55,15 +57,14 @@ html => Segv.html
 Since that is painful to type over and over again, it is convenient to put all of the 
 parm=value pairs into a script file, one parm=value pair per line.
 
-When using the armory= or wowhead= options to download a profile, the save= parm can be
+When using the armory=, wowhead=, etc. options to download a profile, the save= parm can be
 used to generate a script: 
 simc.exe armory=us,Llane,Segv save=Segv.simc
 simc.exe wowhead=14320165 save=Paladin_T9_05_11_55.simc
+simc.exe chardev=83984325 save=Bob.simc
 
 Unix users will find that these generated script files can be marked as executable and
 then simply be invoked directly via #! magic.
-
-A starter's guide can be found here: http://code.google.com/p/simulationcraft/wiki/StartersGuide
 
 =============================================================================================
 
@@ -77,7 +78,7 @@ different options, such as calculating scale factors, after which you press "Sim
 to start it running.
 
 In order to run this on Windows, you may have install OpenSSL.  The OpenSSL installer was
-included in the zip download: Win32OpenSSL_Light-0_9_8k.exe
+included in the zip download: Win32OpenSSL_Light-*.exe
 
 =============================================================================================
 
