@@ -1564,11 +1564,22 @@ void sim_t::analyze_player( player_t* p )
   chart_t::timeline_dps_error( p -> timeline_dps_error_chart,        p );
   chart_t::dps_error         ( p -> dps_error_chart,                 p );
 
+  if ( p -> primary_role() == ROLE_HEAL )
+  {
+    chart_t::distribution      ( p -> distribution_dps_chart,          this,
+                                 p -> hps.distribution, encoded_name + " HPS",
+                                 p -> hps.mean,
+                                 p -> hps.min,
+                                 p -> hps.max );
+  }
+  else
+  {
   chart_t::distribution      ( p -> distribution_dps_chart,          this,
                                p -> dps.distribution, encoded_name + " DPS",
                                p -> dps.mean,
                                p -> dps.min,
                                p -> dps.max );
+  }
 
   chart_t::distribution      ( p -> distribution_deaths_chart,       this,
                                p -> deaths.distribution, encoded_name + " Death",
