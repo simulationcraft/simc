@@ -36,6 +36,7 @@ struct druid_t : public player_t
   buff_t* buffs_eclipse_solar;
   buff_t* buffs_enrage;
   buff_t* buffs_glyph_of_innervate;
+  buff_t* buffs_harmony;
   buff_t* buffs_lacerate;
   buff_t* buffs_lifebloom;
   buff_t* buffs_lunar_shower;
@@ -167,7 +168,7 @@ struct druid_t : public player_t
     spell_data_t* primal_madness_cat;
     spell_data_t* razor_claws;
     spell_data_t* savage_defender; // NYI
-    spell_data_t* symbiosis;
+    spell_data_t* harmony;
     spell_data_t* total_eclipse;
     spell_data_t* vengeance;
 
@@ -364,7 +365,7 @@ struct druid_t : public player_t
     return combo_point_rank( cp_list );
   }
 
-  bool hot_counter( player_t* t )
+  bool hot_ticking( player_t* t )
   {
     if ( ( t -> find_dot( "regrowth"     ) && t -> find_dot( "regrowth"     ) -> ticking ) ||
          ( t -> find_dot( "rejuvenation" ) && t -> find_dot( "rejuvenation" ) -> ticking ) ||
@@ -2438,6 +2439,11 @@ void druid_heal_t::execute()
   {
     p -> buffs_natures_swiftness -> expire();
   }
+
+  if ( direct_dmg > 0 && ! background )
+  {
+    p -> buffs_harmony -> trigger( 1, p -> spells.harmony -> effect1().coeff() * 0.01 * p -> composite_mastery() ); 
+  }
 }
 
 // druid_heal_t::execute_time ===============================================
@@ -2474,10 +2480,14 @@ void druid_heal_t::player_buff()
   player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> effect1().percent();
   player_multiplier *= 1.0 + p -> buffs_tree_of_life -> value();
 
-  // FIXME: This is the old mastery
-  if ( p -> primary_tree() == TREE_RESTORATION && p -> hot_counter( p ) )
+  if ( p -> primary_tree() == TREE_RESTORATION && direct_dmg > 0 )
   {
-    player_multiplier *= 1.0 + p -> spells.symbiosis -> effect1().coeff() * 0.01 * p -> composite_mastery();
+    player_multiplier *= 1.0 + p -> spells.harmony -> effect1().coeff() * 0.01 * p -> composite_mastery();
+  }
+  
+  if ( tick_dmg > 0 )
+  {
+    player_multiplier *= 1.0 + p -> buffs_harmony -> value();
   }
 
   if ( p -> buffs_natures_swiftness -> check() && base_execute_time > 0 )
@@ -2646,7 +2656,7 @@ struct nourish_t : public druid_heal_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( p -> hot_counter( t ) )
+    if ( p -> hot_ticking( t ) )
       target_multiplier *= 1.20;
   }
 };
@@ -2825,6 +2835,8 @@ struct tranquility_t : public druid_heal_t
     // Healing is in spell effect 1
     parse_effect_data( this -> effect_trigger_spell( 1 ), 1 ); // Initial Hit
     parse_effect_data( this -> effect_trigger_spell( 1 ), 2 ); // HoT
+
+    // FIXME: The hot should stack
 
     cooldown -> duration += p -> talents.malfurions_gift -> mod_additive( P_COOLDOWN );
   }
@@ -4665,7 +4677,7 @@ void druid_t::init_spells()
   spells.moonfury        = spell_data_t::find( 16913, "Moonfury",        dbc.ptr );
   spells.razor_claws     = spell_data_t::find( 77493, "Razor Claws",     dbc.ptr );
   spells.savage_defender = spell_data_t::find( 77494, "Savage Defender", dbc.ptr );
-  spells.symbiosis       = spell_data_t::find( 77495, "Harmony",         dbc.ptr );
+  spells.harmony         = spell_data_t::find( 77495, "Harmony",         dbc.ptr );
   spells.total_eclipse   = spell_data_t::find( 77492, "Total Eclipse",   dbc.ptr );
   spells.vengeance       = spell_data_t::find( 84840, "Vengeance",       dbc.ptr );
 
@@ -4779,6 +4791,7 @@ void druid_t::init_buffs()
   buffs_eclipse_lunar      = new buff_t( this, 48518, "lunar_eclipse" );
   buffs_eclipse_solar      = new buff_t( this, 48517, "solar_eclipse" );
   buffs_enrage             = new buff_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
+  buffs_harmony            = new buff_t( this, 100977, "harmony" );
   buffs_lacerate           = new buff_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
   buffs_lifebloom          = new buff_t( this, dbc.class_ability_id( type, "Lifebloom" ), "lifebloom", 1.0, 0 );
   buffs_lifebloom -> buff_duration = 11.0; // Override duration so the bloom works correctly
