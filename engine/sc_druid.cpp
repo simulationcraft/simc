@@ -2834,7 +2834,7 @@ struct wild_growth_t : public druid_heal_t
   wild_growth_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "wild_growth", p, 48438 )
   {
-    check_talent( p -> talents.tree_of_life -> ok() );
+    check_talent( p -> talents.wild_growth -> ok() );
 
     parse_options( NULL, options_str );
 
