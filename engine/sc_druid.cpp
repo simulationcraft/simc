@@ -2435,14 +2435,14 @@ void druid_heal_t::execute()
 
   heal_t::execute();
 
-  if ( base_execute_time > 0 )
+  if ( base_execute_time > 0 && p -> buffs_natures_swiftness -> up() )
   {
     p -> buffs_natures_swiftness -> expire();
   }
 
   if ( direct_dmg > 0 && ! background )
   {
-    p -> buffs_harmony -> trigger( 1, p -> spells.harmony -> effect1().coeff() * 0.01 * p -> composite_mastery() ); 
+    p -> buffs_harmony -> trigger( 1, p -> spells.harmony -> effect1().coeff() * 0.01 * p -> composite_mastery() );
   }
 }
 
@@ -2484,7 +2484,7 @@ void druid_heal_t::player_buff()
   {
     player_multiplier *= 1.0 + p -> spells.harmony -> effect1().coeff() * 0.01 * p -> composite_mastery();
   }
-  
+
   if ( tick_dmg > 0 )
   {
     player_multiplier *= 1.0 + p -> buffs_harmony -> value();
@@ -4724,7 +4724,7 @@ void druid_t::init_spells()
     {  90160,  90163,  90162,  90165,     0,     0,      0,      0 }, // Tier11
     {  99019,  99049,  99001,  99009,     0,     0,  99013,  99015 }, // Tier12
     { 105722, 105717, 105725, 105735,     0,     0, 105715, 105770 }, // Tier13
-    {      0,     0,      0,       0,     0,     0,      0,      0 }, 
+    {      0,     0,      0,       0,     0,     0,      0,      0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
