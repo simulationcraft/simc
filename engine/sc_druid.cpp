@@ -1512,10 +1512,14 @@ struct frenzied_regeneration_buff_t : public buff_t
     {
       struct frenzied_regeneration_event_t : public event_t
       {
-        frenzied_regeneration_event_t ( player_t* player ) :
-          event_t( player -> sim, player, "frenzied_regeneration_heal" )
+        stats_t* rage_stats;
+
+        frenzied_regeneration_event_t ( druid_t* p ) :
+          event_t( player -> sim, p, "frenzied_regeneration_heal" ),
+          rage_stats( 0 )
         {
           sim -> add_event( this, 1.0 );
+          rage_stats = p -> get_stats( "frenzied_regeneration" );
         }
 
         virtual void execute()
@@ -1529,11 +1533,12 @@ struct frenzied_regeneration_buff_t : public buff_t
             double rage_health = rage_consumed * health_pct * p -> resource_max[ RESOURCE_HEALTH ];
             p -> resource_gain( RESOURCE_HEALTH, rage_health, p -> gains_frenzied_regeneration );
             p -> resource_loss( RESOURCE_RAGE, rage_consumed );
-            new ( sim ) frenzied_regeneration_event_t( player );
+            rage_stats -> consume_resource( rage_consumed );
+            new ( sim ) frenzied_regeneration_event_t( p );
           }
         }
       };
-      new ( sim ) frenzied_regeneration_event_t( player );
+      new ( sim ) frenzied_regeneration_event_t( p );
     }
     else
     {
