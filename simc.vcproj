@@ -363,6 +363,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_report.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_report_html_player.cpp"
 			>
 		</File>
@@ -376,10 +380,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_report_xml.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_report.cpp"
 			>
 		</File>
 		<File

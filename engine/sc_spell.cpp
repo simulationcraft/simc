@@ -155,10 +155,7 @@ double spell_t::crit_chance( int delta_level ) SC_CONST
 {
   double chance = total_crit();
 
-  if ( ! player -> is_pet() && delta_level > 2 )
-  {
-    chance -= delta_level * 0.006;
-  }
+  (void) delta_level;
 
   return chance;
 }
