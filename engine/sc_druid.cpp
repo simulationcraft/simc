@@ -35,6 +35,7 @@ struct druid_t : public player_t
   buff_t* buffs_eclipse_lunar;
   buff_t* buffs_eclipse_solar;
   buff_t* buffs_enrage;
+  buff_t* buffs_frenzied_regeneration;
   buff_t* buffs_glyph_of_innervate;
   buff_t* buffs_harmony;
   buff_t* buffs_lacerate;
@@ -87,6 +88,7 @@ struct druid_t : public player_t
   gain_t* gains_energy_refund;
   gain_t* gains_enrage;
   gain_t* gains_euphoria;
+  gain_t* gains_frenzied_regeneration;
   gain_t* gains_glyph_of_innervate;
   gain_t* gains_glyph_ferocious_bite;
   gain_t* gains_incoming_damage;
@@ -107,6 +109,7 @@ struct druid_t : public player_t
     glyph_t* berserk;
     glyph_t* ferocious_bite;
     glyph_t* focus;
+    glyph_t* frenzied_regeneration;
     glyph_t* healing_touch;
     glyph_t* innervate;
     glyph_t* insect_swarm;
@@ -1487,6 +1490,100 @@ struct ferocious_bite_t : public druid_cat_attack_t
     {
       player_crit += p -> talents.rend_and_tear -> effect2().percent();
     }
+  }
+};
+
+// Frenzied Regeneration Buff ===============================================
+
+struct frenzied_regeneration_buff_t : public buff_t
+{
+  int health_gain;
+
+  frenzied_regeneration_buff_t( druid_t* p ) :
+    buff_t( p, 22842, "frenzied_regeneration" ), health_gain( 0 )
+  { }
+
+  virtual void start( int stacks, double value )
+  {
+    druid_t* p = player -> cast_druid();
+
+    // Kick off rage to health 'hot'
+    if ( ! p -> glyphs.frenzied_regeneration -> ok() )
+    {
+      struct frenzied_regeneration_event_t : public event_t
+      {
+        frenzied_regeneration_event_t ( player_t* player ) :
+          event_t( player -> sim, player, "frenzied_regeneration_heal" )
+        {
+          sim -> add_event( this, 1.0 );
+        }
+
+        virtual void execute()
+        {
+          druid_t* p = player -> cast_druid();
+
+          if ( p -> buffs_frenzied_regeneration -> check() )
+          {
+            int rage_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 10.0 );
+            double health_pct = ( p -> dbc.ptr ) ? p -> dbc.spell( 22842 ) -> effect1().percent() / 100 : 0.30 / 100; // Value is really 30, fixed on PTR
+            double rage_health = rage_consumed * health_pct * p -> resource_max[ RESOURCE_HEALTH ];
+            p -> resource_gain( RESOURCE_HEALTH, rage_health, p -> gains_frenzied_regeneration );
+            p -> resource_loss( RESOURCE_RAGE, rage_consumed );
+            new ( sim ) frenzied_regeneration_event_t( player );
+          }
+        }
+      };
+      new ( sim ) frenzied_regeneration_event_t( player );
+    }
+    else
+    {
+      // FIXME: Glyph should increase healing received
+    }
+
+    double health_pct = ( p -> dbc.ptr ) ? effect2().percent() : 0.30; // Value is really 30, fixed on PTR
+
+    health_gain = ( int ) floor( player -> resource_max[ RESOURCE_HEALTH ] * health_pct );
+    p -> stat_gain( STAT_MAX_HEALTH, health_gain );
+
+    // Ability also heals to 30% if not at that amount
+    if ( p -> resource_current[ RESOURCE_HEALTH ] < health_gain )
+    {
+      p -> resource_gain( RESOURCE_HEALTH, health_gain - p -> resource_current[ RESOURCE_HEALTH ], p -> gains_frenzied_regeneration );
+    }
+
+    buff_t::start( stacks, value );
+  }
+
+  virtual void expire()
+  {
+    druid_t* p = player -> cast_druid();
+    p -> stat_loss( STAT_MAX_HEALTH, health_gain );
+
+    buff_t::expire();
+  }
+};
+
+// Frenzied Regeneration ====================================================
+
+struct frenzied_regeneration_t : public druid_bear_attack_t
+{
+  frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
+    druid_bear_attack_t( "frenzied_regeneration", 22842, p )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+
+    num_ticks = 0; // No need for this to tick, handled in the buff
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = player -> cast_druid();
+
+    druid_bear_attack_t::execute();
+
+    p -> buffs_frenzied_regeneration -> trigger();
   }
 };
 
@@ -4551,6 +4648,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "feral_charge_bear"      ) return new      feral_charge_bear_t( this, options_str );
   if ( name == "feral_charge_cat"       ) return new       feral_charge_cat_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
+  if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
   if ( name == "insect_swarm"           ) return new           insect_swarm_t( this, options_str );
   if ( name == "innervate"              ) return new              innervate_t( this, options_str );
@@ -4719,32 +4817,33 @@ void druid_t::init_spells()
     spells.primal_madness_cat = spell_data_t::nil();
 
   // Glyphs
-  glyphs.berserk          = find_glyph( "Glyph of Berserk" );
-  glyphs.ferocious_bite   = find_glyph( "Glyph of Ferocious Bite" );
-  glyphs.focus            = find_glyph( "Glyph of Focus" );
-  glyphs.healing_touch    = find_glyph( "Glyph of Healing Touch" );
-  glyphs.innervate        = find_glyph( "Glyph of Innervate" );
-  glyphs.insect_swarm     = find_glyph( "Glyph of Insect Swarm" );
-  glyphs.lacerate         = find_glyph( "Glyph of Lacerate" );
-  glyphs.lifebloom        = find_glyph( "Glyph of Lifebloom" );
-  glyphs.mangle           = find_glyph( "Glyph of Mangle" );
-  glyphs.mark_of_the_wild = find_glyph( "Glyph of Mark of the Wild" );
-  glyphs.maul             = find_glyph( "Glyph of Maul" );
-  glyphs.monsoon          = find_glyph( "Glyph of Monsoon" );
-  glyphs.moonfire         = find_glyph( "Glyph of Moonfire" );
-  glyphs.regrowth         = find_glyph( "Glyph of Regrowth" );
-  glyphs.rejuvenation     = find_glyph( "Glyph of Rejuvenation" );
-  glyphs.rip              = find_glyph( "Glyph of Rip" );
-  glyphs.savage_roar      = find_glyph( "Glyph of Savage Roar" );
-  glyphs.shred            = dbc.ptr ? find_glyph( "Glyph of Bloodletting" ) : find_glyph( "Glyph of Shred" );
-  glyphs.starfall         = find_glyph( "Glyph of Starfall" );
-  glyphs.starfire         = find_glyph( "Glyph of Starfire" );
-  glyphs.starsurge        = find_glyph( "Glyph of Starsurge" );
-  glyphs.swiftmend        = find_glyph( "Glyph of Swiftmend" );
-  glyphs.tigers_fury      = find_glyph( "Glyph of Tiger's Fury" );
-  glyphs.typhoon          = find_glyph( "Glyph of Typhoon" );
-  glyphs.wild_growth      = find_glyph( "Glyph of Wild Growth" );
-  glyphs.wrath            = find_glyph( "Glyph of Wrath" );
+  glyphs.berserk               = find_glyph( "Glyph of Berserk" );
+  glyphs.ferocious_bite        = find_glyph( "Glyph of Ferocious Bite" );
+  glyphs.focus                 = find_glyph( "Glyph of Focus" );
+  glyphs.frenzied_regeneration = find_glyph( "Glyph of Frenzied Regeneration" );
+  glyphs.healing_touch         = find_glyph( "Glyph of Healing Touch" );
+  glyphs.innervate             = find_glyph( "Glyph of Innervate" );
+  glyphs.insect_swarm          = find_glyph( "Glyph of Insect Swarm" );
+  glyphs.lacerate              = find_glyph( "Glyph of Lacerate" );
+  glyphs.lifebloom             = find_glyph( "Glyph of Lifebloom" );
+  glyphs.mangle                = find_glyph( "Glyph of Mangle" );
+  glyphs.mark_of_the_wild      = find_glyph( "Glyph of Mark of the Wild" );
+  glyphs.maul                  = find_glyph( "Glyph of Maul" );
+  glyphs.monsoon               = find_glyph( "Glyph of Monsoon" );
+  glyphs.moonfire              = find_glyph( "Glyph of Moonfire" );
+  glyphs.regrowth              = find_glyph( "Glyph of Regrowth" );
+  glyphs.rejuvenation          = find_glyph( "Glyph of Rejuvenation" );
+  glyphs.rip                   = find_glyph( "Glyph of Rip" );
+  glyphs.savage_roar           = find_glyph( "Glyph of Savage Roar" );
+  glyphs.shred                 = dbc.ptr ? find_glyph( "Glyph of Bloodletting" ) : find_glyph( "Glyph of Shred" );
+  glyphs.starfall              = find_glyph( "Glyph of Starfall" );
+  glyphs.starfire              = find_glyph( "Glyph of Starfire" );
+  glyphs.starsurge             = find_glyph( "Glyph of Starsurge" );
+  glyphs.swiftmend             = find_glyph( "Glyph of Swiftmend" );
+  glyphs.tigers_fury           = find_glyph( "Glyph of Tiger's Fury" );
+  glyphs.typhoon               = find_glyph( "Glyph of Typhoon" );
+  glyphs.wild_growth           = find_glyph( "Glyph of Wild Growth" );
+  glyphs.wrath                 = find_glyph( "Glyph of Wrath" );
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -4816,21 +4915,23 @@ void druid_t::init_buffs()
   buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 1.0, true );
 
   // buff_t ( sim, id, name, chance, cooldown, quiet, reverse, rng_type )
-  buffs_barkskin           = new buff_t( this, 22812, "barkskin" );
-  buffs_eclipse_lunar      = new buff_t( this, 48518, "lunar_eclipse" );
-  buffs_eclipse_solar      = new buff_t( this, 48517, "solar_eclipse" );
-  buffs_enrage             = new buff_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
-  buffs_harmony            = new buff_t( this, 100977, "harmony" );
-  buffs_lacerate           = new buff_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
-  buffs_lifebloom          = new buff_t( this, dbc.class_ability_id( type, "Lifebloom" ), "lifebloom", 1.0, 0 );
+  buffs_barkskin              = new buff_t( this, 22812, "barkskin" );
+  buffs_eclipse_lunar         = new buff_t( this, 48518, "lunar_eclipse" );
+  buffs_eclipse_solar         = new buff_t( this, 48517, "solar_eclipse" );
+  buffs_enrage                = new buff_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
+  buffs_frenzied_regeneration = new frenzied_regeneration_buff_t( this );
+  buffs_frenzied_regeneration -> cooldown -> duration = 0; //CD is handled by the ability
+  buffs_harmony               = new buff_t( this, 100977, "harmony" );
+  buffs_lacerate              = new buff_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
+  buffs_lifebloom             = new buff_t( this, dbc.class_ability_id( type, "Lifebloom" ), "lifebloom", 1.0, 0 );
   buffs_lifebloom -> buff_duration = 11.0; // Override duration so the bloom works correctly
-  buffs_lunar_shower       = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
-  buffs_natures_swiftness  = new buff_t( this, talents.natures_swiftness ->spell_id(), "natures_swiftness" );
+  buffs_lunar_shower          = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
+  buffs_natures_swiftness     = new buff_t( this, talents.natures_swiftness ->spell_id(), "natures_swiftness" );
   buffs_natures_swiftness -> cooldown -> duration = 0;// CD is handled by the ability
-  buffs_savage_defense     = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
-  buffs_shooting_stars     = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
-  buffs_survival_instincts = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
-  buffs_tree_of_life       = new buff_t( this, talents.tree_of_life, NULL );
+  buffs_savage_defense        = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
+  buffs_shooting_stars        = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
+  buffs_survival_instincts    = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
+  buffs_tree_of_life          = new buff_t( this, talents.tree_of_life, NULL );
   buffs_tree_of_life -> buff_duration += talents.natural_shapeshifter -> mod_additive( P_DURATION );
 
   buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
@@ -4905,23 +5006,24 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_bear_melee           = get_gain( "bear_melee"           );
-  gains_energy_refund        = get_gain( "energy_refund"        );
-  gains_enrage               = get_gain( "enrage"               );
-  gains_euphoria             = get_gain( "euphoria"             );
-  gains_glyph_ferocious_bite = get_gain( "glyph_ferocious_bite" );
-  gains_glyph_of_innervate   = get_gain( "glyph_of_innervate"   );
-  gains_incoming_damage      = get_gain( "incoming_damage"      );
-  gains_lotp_health          = get_gain( "lotp_health"          );
-  gains_lotp_mana            = get_gain( "lotp_mana"            );
-  gains_moonkin_form         = get_gain( "moonkin_form"         );
-  gains_natural_reaction     = get_gain( "natural_reaction"     );
-  gains_omen_of_clarity      = get_gain( "omen_of_clarity"      );
-  gains_primal_fury          = get_gain( "primal_fury"          );
-  gains_primal_madness       = get_gain( "primal_madness"       );
-  gains_revitalize           = get_gain( "revitalize"           );
-  gains_tigers_fury          = get_gain( "tigers_fury"          );
-  gains_heartfire            = get_gain( "heartfire"            );
+  gains_bear_melee            = get_gain( "bear_melee"            );
+  gains_energy_refund         = get_gain( "energy_refund"         );
+  gains_enrage                = get_gain( "enrage"                );
+  gains_euphoria              = get_gain( "euphoria"              );
+  gains_frenzied_regeneration = get_gain( "frenzied_regeneration" );
+  gains_glyph_ferocious_bite  = get_gain( "glyph_ferocious_bite"  );
+  gains_glyph_of_innervate    = get_gain( "glyph_of_innervate"    );
+  gains_incoming_damage       = get_gain( "incoming_damage"       );
+  gains_lotp_health           = get_gain( "lotp_health"           );
+  gains_lotp_mana             = get_gain( "lotp_mana"             );
+  gains_moonkin_form          = get_gain( "moonkin_form"          );
+  gains_natural_reaction      = get_gain( "natural_reaction"      );
+  gains_omen_of_clarity       = get_gain( "omen_of_clarity"       );
+  gains_primal_fury           = get_gain( "primal_fury"           );
+  gains_primal_madness        = get_gain( "primal_madness"        );
+  gains_revitalize            = get_gain( "revitalize"            );
+  gains_tigers_fury           = get_gain( "tigers_fury"           );
+  gains_heartfire             = get_gain( "heartfire"             );
 }
 
 // druid_t::init_procs ======================================================
