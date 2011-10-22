@@ -963,7 +963,7 @@ static void trigger_lotp( action_t* a )
     return;
 
   // Has to do damage and can't be a proc
-  if ( ( a -> direct_dmg && a -> direct_dmg <= 0 ) || ( a -> tick_dmg && a -> tick_dmg <= 0 ) || a -> proc )
+  if ( ( a -> direct_dmg <= 0 && a -> tick_dmg <= 0 ) || a -> proc )
     return;
 
   p -> resource_gain( RESOURCE_HEALTH,
@@ -998,7 +998,7 @@ static void trigger_primal_fury( druid_bear_attack_t* a )
     return;
 
   // Has to do damage and can't be a proc
-  if ( ( a -> direct_dmg && a -> direct_dmg <= 0 ) || ( a -> tick_dmg && a -> tick_dmg <= 0 ) || a -> proc )
+  if ( ( a -> direct_dmg <= 0 && a -> tick_dmg <= 0 ) || a -> proc )
     return;
 
   const spell_data_t* primal_fury = p -> dbc.spell( p -> talents.primal_fury -> effect1().trigger_spell_id() );
