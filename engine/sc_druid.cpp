@@ -66,6 +66,7 @@ struct druid_t : public player_t
   // Cooldowns
   cooldown_t* cooldowns_burning_treant;
   cooldown_t* cooldowns_fury_swipes;
+  cooldown_t* cooldowns_lotp;
   cooldown_t* cooldowns_mangle_bear;
   cooldown_t* cooldowns_starsurge;
 
@@ -89,6 +90,8 @@ struct druid_t : public player_t
   gain_t* gains_glyph_of_innervate;
   gain_t* gains_glyph_ferocious_bite;
   gain_t* gains_incoming_damage;
+  gain_t* gains_lotp_health;
+  gain_t* gains_lotp_mana;
   gain_t* gains_moonkin_form;
   gain_t* gains_natural_reaction;
   gain_t* gains_omen_of_clarity;
@@ -284,6 +287,7 @@ struct druid_t : public player_t
     cooldowns_burning_treant = get_cooldown( "burning_treant" );
     cooldowns_burning_treant -> duration = 45.0;
     cooldowns_fury_swipes    = get_cooldown( "fury_swipes"    );
+    cooldowns_lotp           = get_cooldown( "lotp"           );
     cooldowns_mangle_bear    = get_cooldown( "mangle_bear"    );
     cooldowns_starsurge      = get_cooldown( "starsurge"      );
 
@@ -943,6 +947,29 @@ static void trigger_living_seed( heal_t* a )
   p -> active_living_seed -> execute();
 };
 
+// trigger_lotp =============================================================
+
+static void trigger_lotp( action_t* a )
+{
+  druid_t* p = a -> player -> cast_druid();
+
+  if ( ! p -> talents.leader_of_the_pack -> ok() )
+    return;
+
+  if ( p -> cooldowns_lotp -> remains() > 0 )
+    return;
+
+  p -> resource_gain( RESOURCE_HEALTH,
+                      p -> resource_max[ RESOURCE_HEALTH ] * p -> dbc.spell( 24932 ) -> effect2().percent(),
+                      p -> gains_lotp_health );
+
+  p -> resource_gain( RESOURCE_MANA,
+                      p -> resource_max[ RESOURCE_MANA ] * p -> talents.leader_of_the_pack -> effect1().percent(),
+                      p -> gains_lotp_mana );  
+
+  p -> cooldowns_lotp -> start( 6.0 );
+};
+
 // trigger_omen_of_clarity ==================================================
 
 static void trigger_omen_of_clarity( action_t* a )
@@ -1201,6 +1228,7 @@ void druid_cat_attack_t::execute()
 
     if ( result == RESULT_CRIT )
     {
+      trigger_lotp( this );
       trigger_primal_fury( this );
     }
   }
@@ -1998,6 +2026,7 @@ void druid_bear_attack_t::execute()
   {
     if ( result == RESULT_CRIT )
     {
+      trigger_lotp( this );
       trigger_primal_fury( this );
       druid_t* p = player -> cast_druid();
       p -> buffs_savage_defense -> trigger( 1, p -> composite_attack_power() * 0.35 );
@@ -4883,6 +4912,8 @@ void druid_t::init_gains()
   gains_glyph_ferocious_bite = get_gain( "glyph_ferocious_bite" );
   gains_glyph_of_innervate   = get_gain( "glyph_of_innervate"   );
   gains_incoming_damage      = get_gain( "incoming_damage"      );
+  gains_lotp_health          = get_gain( "lotp_health"          );
+  gains_lotp_mana            = get_gain( "lotp_mana"            );
   gains_moonkin_form         = get_gain( "moonkin_form"         );
   gains_natural_reaction     = get_gain( "natural_reaction"     );
   gains_omen_of_clarity      = get_gain( "omen_of_clarity"      );
