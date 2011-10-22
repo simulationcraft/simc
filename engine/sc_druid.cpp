@@ -962,6 +962,10 @@ static void trigger_lotp( action_t* a )
   if ( p -> cooldowns_lotp -> remains() > 0 )
     return;
 
+  // Has to do damage and can't be a proc
+  if ( ( a -> direct_dmg && a -> direct_dmg <= 0 ) || ( a -> tick_dmg && a -> tick_dmg <= 0 ) || a -> proc )
+    return;
+
   p -> resource_gain( RESOURCE_HEALTH,
                       p -> resource_max[ RESOURCE_HEALTH ] * p -> dbc.spell( 24932 ) -> effect2().percent(),
                       p -> gains_lotp_health );
@@ -991,6 +995,10 @@ static void trigger_primal_fury( druid_bear_attack_t* a )
   druid_t* p = a -> player -> cast_druid();
 
   if ( ! p -> talents.primal_fury -> rank() )
+    return;
+
+  // Has to do damage and can't be a proc
+  if ( ( a -> direct_dmg && a -> direct_dmg <= 0 ) || ( a -> tick_dmg && a -> tick_dmg <= 0 ) || a -> proc )
     return;
 
   const spell_data_t* primal_fury = p -> dbc.spell( p -> talents.primal_fury -> effect1().trigger_spell_id() );
@@ -1515,7 +1523,7 @@ struct frenzied_regeneration_buff_t : public buff_t
         stats_t* rage_stats;
 
         frenzied_regeneration_event_t ( druid_t* p ) :
-          event_t( player -> sim, p, "frenzied_regeneration_heal" ),
+          event_t( p -> sim, p, "frenzied_regeneration_heal" ),
           rage_stats( 0 )
         {
           sim -> add_event( this, 1.0 );
