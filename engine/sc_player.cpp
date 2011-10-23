@@ -2805,7 +2805,8 @@ void player_t::combat_end()
 
   // DMG
   dmg.add( iteration_dmg );
-  sim -> iteration_dmg += iteration_dmg;
+  if ( ! is_enemy() && ! is_add() )
+    sim -> iteration_dmg += iteration_dmg;
   for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
     iteration_dmg += pet -> iteration_dmg;
@@ -2819,7 +2820,8 @@ void player_t::combat_end()
 
   // Heal
   heal.add( iteration_heal );
-  sim -> iteration_heal += iteration_heal;
+  if ( ! is_enemy() && ! is_add() )
+    sim -> iteration_heal += iteration_heal;
   for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
     iteration_heal += pet -> iteration_heal;
@@ -2999,7 +3001,6 @@ void player_t::reset()
   channeling = 0;
   readying = 0;
   in_combat = false;
-  iteration_heal = 0;
 
   cast_delay_reaction = 0;
   cast_delay_occurred = 0;
