@@ -357,6 +357,7 @@ struct druid_t : public player_t
   virtual int       primary_resource() SC_CONST;
   virtual int       primary_role() SC_CONST;
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
+  virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
   virtual double    intellect() const;
 
   // Utilities
@@ -5783,6 +5784,18 @@ double druid_t::assess_damage( double            amount,
 
   return amount;
 }
+
+player_t::heal_info_t druid_t::assess_heal(  double            amount,
+                                             const school_type school,
+                                             int               dmg_type,
+                                             int               result,
+                                             action_t*         action )
+{
+    amount *= 1.0 + buffs_frenzied_regeneration -> check() * glyphs.frenzied_regeneration -> effect1().percent();
+
+  return player_t::assess_heal( amount, school, dmg_type, result, action );
+}
+
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS

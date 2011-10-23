@@ -2945,7 +2945,8 @@ player_t::heal_info_t paladin_t::assess_heal(  double            amount,
                                                int               result,
                                                action_t*         action )
 {
-  //amount *= 1.0 + p -> buffs_divinity -> value();
+
+  amount *= 1.0 + talents.divinity -> effect1().percent();
 
   return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
