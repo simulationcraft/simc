@@ -68,6 +68,7 @@ SOURCES += engine/sc_js.cpp
 SOURCES += engine/sc_log.cpp
 SOURCES += engine/sc_mage.cpp
 SOURCES += engine/sc_mmo_champion.cpp
+SOURCES += engine/sc_monk.cpp
 SOURCES += engine/sc_option.cpp
 SOURCES += engine/sc_paladin.cpp
 SOURCES += engine/sc_pet.cpp

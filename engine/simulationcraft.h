@@ -126,6 +126,7 @@ struct hunter_t;
 struct item_t;
 struct js_node_t;
 struct mage_t;
+struct monk_t;
 struct option_t;
 struct paladin_t;
 struct pet_t;
@@ -172,6 +173,7 @@ enum race_type
   // Player Races
   RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN,
   RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN,
+  RACE_PANDAREN,
   RACE_MAX
 };
 
@@ -179,7 +181,7 @@ enum player_type
 {
   PLAYER_SPECIAL_SCALE=-1,
   PLAYER_NONE=0,
-  DEATH_KNIGHT, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
+  DEATH_KNIGHT, DRUID, HUNTER, MAGE, MONK, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
   PLAYER_PET, PLAYER_GUARDIAN,
   ENEMY, ENEMY_ADD,
   PLAYER_MAX
@@ -4238,6 +4240,7 @@ struct player_t : public noncopyable
   static player_t* create_druid       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
   static player_t* create_hunter      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
   static player_t* create_mage        ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  static player_t* create_monk        ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
   static player_t* create_paladin     ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
   static player_t* create_priest      ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
   static player_t* create_rogue       ( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
@@ -4270,6 +4273,11 @@ struct player_t : public noncopyable
   static void mage_init        ( sim_t* sim );
   static void mage_combat_begin( sim_t* sim );
   static void mage_combat_end  ( sim_t* /* sim */ ) {}
+
+  // Raid-wide Monk buff maintenance
+  static void monk_init        ( sim_t* sim );
+  static void monk_combat_begin( sim_t* sim );
+  static void monk_combat_end  ( sim_t* /* sim */ ) {}
 
   // Raid-wide Paladin buff maintenance
   static void paladin_init        ( sim_t* sim );
@@ -4314,6 +4322,7 @@ struct player_t : public noncopyable
   druid_t       * cast_druid       () { assert( type == DRUID        ); return ( druid_t       * ) this; }
   hunter_t      * cast_hunter      () { assert( type == HUNTER       ); return ( hunter_t      * ) this; }
   mage_t        * cast_mage        () { assert( type == MAGE         ); return ( mage_t        * ) this; }
+  monk_t        * cast_monk        () { assert( type == MONK         ); return ( monk_t        * ) this; }
   paladin_t     * cast_paladin     () { assert( type == PALADIN      ); return ( paladin_t     * ) this; }
   priest_t      * cast_priest      () { assert( type == PRIEST       ); return ( priest_t      * ) this; }
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }

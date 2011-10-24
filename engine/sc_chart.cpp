@@ -17,6 +17,7 @@ static const char* class_color( int type )
   case DRUID:        return "FF7D0A";
   case HUNTER:       return "336600";
   case MAGE:         return "69CCF0";
+  case MONK:         return "CEF6F5";
   case PALADIN:      return "F58CBA";
   case PRIEST:       return "C0C0C0";
   case ROGUE:        return "FFF569";

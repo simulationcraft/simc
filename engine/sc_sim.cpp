@@ -2213,6 +2213,7 @@ void sim_t::create_options()
     { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                      },
     { "hunter",                           OPT_FUNC,   ( void* ) ::parse_player                      },
     { "mage",                             OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "monk",                             OPT_FUNC,   ( void* ) ::parse_player                      },
     { "priest",                           OPT_FUNC,   ( void* ) ::parse_player                      },
     { "paladin",                          OPT_FUNC,   ( void* ) ::parse_player                      },
     { "rogue",                            OPT_FUNC,   ( void* ) ::parse_player                      },

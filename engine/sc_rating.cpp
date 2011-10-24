@@ -31,6 +31,7 @@ static const _stat_list_t race_stats[] =
   { RACE_DRAENEI,   { 21, 17, 20, 20, 22, 0.0 } },
   { RACE_WORGEN,    { 23, 22, 20, 16, 19, 0.0 } },
   { RACE_GOBLIN,    { 17, 22, 20, 23, 20, 0.0 } },
+  { RACE_PANDAREN,  {  0,  0,  0,  0,  0, 0.0 } }, // FIXME: Add Data
   { RACE_NONE, { 0 } }
 };
 

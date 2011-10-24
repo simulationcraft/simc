@@ -100,6 +100,7 @@ SRC = \
 	sc_mage.cpp \
 	sc_main.cpp \
 	sc_mmo_champion.cpp \
+	sc_monk.cpp \
 	sc_option.cpp \
 	sc_paladin.cpp \
 	sc_pet.cpp \

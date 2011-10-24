@@ -24,6 +24,7 @@
     <ClCompile Include="engine\sc_mage.cpp" />
     <ClCompile Include="engine\sc_main.cpp" />
     <ClCompile Include="engine\sc_mmo_champion.cpp" />
+    <ClCompile Include="engine\sc_monk.cpp" />
     <ClCompile Include="engine\sc_option.cpp" />
     <ClCompile Include="engine\sc_paladin.cpp" />
     <ClCompile Include="engine\sc_pet.cpp" />

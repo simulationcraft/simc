@@ -634,6 +634,7 @@ bool player_t::init( sim_t* sim )
   player_t::druid_init       ( sim );
   player_t::hunter_init      ( sim );
   player_t::mage_init        ( sim );
+  player_t::monk_init        ( sim );
   player_t::paladin_init     ( sim );
   player_t::priest_init      ( sim );
   player_t::rogue_init       ( sim );
@@ -2690,6 +2691,7 @@ void player_t::combat_begin( sim_t* sim )
   player_t::druid_combat_begin       ( sim );
   player_t::hunter_combat_begin      ( sim );
   player_t::mage_combat_begin        ( sim );
+  player_t::monk_combat_begin        ( sim );
   player_t::paladin_combat_begin     ( sim );
   player_t::priest_combat_begin      ( sim );
   player_t::rogue_combat_begin       ( sim );
@@ -2771,6 +2773,7 @@ void player_t::combat_end( sim_t* sim )
   player_t::druid_combat_end       ( sim );
   player_t::hunter_combat_end      ( sim );
   player_t::mage_combat_end        ( sim );
+  player_t::monk_combat_end        ( sim );
   player_t::paladin_combat_end     ( sim );
   player_t::priest_combat_end      ( sim );
   player_t::rogue_combat_end       ( sim );
@@ -6604,6 +6607,10 @@ player_t* player_t::create( sim_t*             sim,
   else if ( type == "mage" )
   {
     return player_t::create_mage( sim, name, r );
+  }
+  else if ( type == "monk" )
+  {
+    return player_t::create_monk( sim, name, r );
   }
   else if ( type == "priest" )
   {

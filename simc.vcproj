@@ -323,6 +323,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_monk.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_option.cpp"
 			>
 		</File>

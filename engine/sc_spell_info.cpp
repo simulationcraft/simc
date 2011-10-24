@@ -16,6 +16,7 @@ static const struct { const char* name; player_type pt; } _class_map[] =
   { "Death Knight", DEATH_KNIGHT },
   { "Shaman", SHAMAN },
   { "Mage", MAGE },
+  { "Monk", MONK },
   { "Warlock", WARLOCK },
   { 0, PLAYER_NONE },
   { "Druid", DRUID },
@@ -38,6 +39,7 @@ static const char * _race_strings[] =
   "Draenei",
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   "Worgen",
+  "Pandaren",
   0
 };
 

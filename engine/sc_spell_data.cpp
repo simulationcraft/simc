@@ -121,6 +121,7 @@ static const std::string _class_strings[] =
   "deathknight",
   "shaman",
   "mage",
+  "monk",
   "warlock",
   "",
   "druid"
