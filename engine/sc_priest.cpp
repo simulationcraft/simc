@@ -3539,6 +3539,13 @@ struct circle_of_healing_t : public priest_heal_t
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
+
+    // FIXME: PTR
+    if ( p -> dbc.ptr )
+    {
+      base_cost *= 1.0 + p -> glyphs.circle_of_healing -> effect2().percent();
+      base_cost  = floor( base_cost );
+    }
   }
 
   virtual void execute()
@@ -4145,8 +4152,11 @@ struct lightwell_t : public spell_t
 
 struct divine_hymn_tick_t : public priest_heal_t
 {
+  size_t target_count;
+
   divine_hymn_tick_t( player_t* player ) :
-    priest_heal_t( "divine_hymn_tick", player, 64844 )
+    priest_heal_t( "divine_hymn_tick", player, 64844 ),
+    target_count( 0 )
   {
     priest_t* p = player -> cast_priest();
 
@@ -4168,7 +4178,7 @@ struct divine_hymn_tick_t : public priest_heal_t
       if ( !q -> is_pet() && q != heal_target[0] )
       {
         heal_target.push_back( q );
-        if ( heal_target.size() >= 3 ) break;
+        if ( heal_target.size() >= target_count ) break;
       }
     }
 
@@ -4205,6 +4215,7 @@ struct divine_hymn_t : public priest_heal_t
     }
 
     divine_hymn_tick = new divine_hymn_tick_t( p );
+    divine_hymn_tick -> target_count = effect2().base_value();
     add_child( divine_hymn_tick );
   }
 
