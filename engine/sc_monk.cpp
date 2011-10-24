@@ -295,7 +295,7 @@ int monk_t::primary_role() SC_CONST
 
 // player_t::create_monk  ===================================================
 
-player_t* player_t::create_monk( sim_t* sim, const std::string& name, race_type r )
+player_t* player_t::create_monk( sim_t* sim, const std::string& /* name */ , race_type /* r */ )
 {
   sim -> errorf( "Monk Module isn't available at the moment." );
 
