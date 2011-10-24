@@ -231,9 +231,6 @@ double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_
   if ( ! x.variance_analyzed() || ! y.variance_analyzed() )
     return std::numeric_limits<double>::quiet_NaN();
 
-  if ( ! x.std_dev <= 0 || ! y.std_dev <= 0 )
-    return std::numeric_limits<double>::quiet_NaN();
-
   double corr = 0;
 
   for( size_t i=0; i < x.data.size(); i++ )
