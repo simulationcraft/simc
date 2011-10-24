@@ -11,13 +11,64 @@
 
 struct monk_t : public player_t
 {
+  // Buffs
+  //buff_t* buffs_<buffname>;
+
+  // Gains
+  //gain_t* gains_<gainname>;
+
+  // Procs
+  //proc_t* procs_<procname>;
+
+  // Talents
+  struct talents_t
+  {
+    // TREE_MONK_TANK
+    //talent_t* <talentname>;
+
+    // TREE_MONK_DAMAGE
+
+    // TREE_MONK_HEAL
+
+    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
+  };
+  talents_t talents;
+
+  // Passives
+  struct passives_t
+  {
+    // TREE_MONK_TANK
+    // spell_id_t* mastery/passive spells
+
+    // TREE_MONK_DAMAGE
+
+    // TREE_MONK_HEAL
+
+    passives_t() { memset( ( void* ) this, 0x0, sizeof( passives_t ) ); }
+  };
+  passives_t passives;
+
+  // Glyphs
+  struct glyphs_t
+  {
+    // Prime
+    //glyph_t* <glyphname>;
+
+    // Major
+
+    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
+  };
+  glyphs_t glyphs;
 
   monk_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
     player_t( sim, MONK, name, ( r == RACE_NONE ) ? RACE_PANDAREN : r )
   {
 
-    distance = 3;
-    default_distance = 3;
+    // FIXME
+    tree_type[ MONK_TANKSPEC    ] = TREE_MONK_TANK;
+    tree_type[ MONK_DAMAGESPEC  ] = TREE_MONK_DAMAGE;
+    tree_type[ MONK_HEALSPEC    ] = TREE_MONK_HEAL;
+
 
     create_talents();
     create_glyphs();
@@ -38,7 +89,7 @@ struct monk_t : public player_t
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_NONE; }
-  virtual int       primary_role() SC_CONST     { return ROLE_HYBRID; }
+  virtual int       primary_role() SC_CONST;
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -61,7 +112,7 @@ action_t* monk_t::create_action( const std::string& name,
                                  const std::string& options_str )
 {
   // Add Abilities
-  //if ( name == "<abilityname>"    ) return new          ability_t( this, options_str );
+  //if ( name == "<abilityname>"    ) return new          <ability>_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -72,8 +123,12 @@ void monk_t::init_talents()
 {
   player_t::init_talents();
 
-  // Add Talents, separated by Spec!
+  // TREE_MONK_TANK
   //talents.<name>        = find_talent( "<talentname>" );
+
+  // TREE_MONK_DAMAGE
+
+  // TREE_MONK_HEAL
 
 }
 
@@ -102,6 +157,11 @@ void monk_t::init_spells()
 void monk_t::init_base()
 {
   player_t::init_base();
+
+  int tree = primary_tree();
+
+  default_distance = (tree == TREE_MONK_HEAL ) ? 40 : 3;
+  distance = default_distance;
 
   // FIXME: Add defensive constants
   //diminished_kfactor    = 0;
@@ -207,6 +267,28 @@ int monk_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// monk_t::primary_role ==================================================
+
+int monk_t::primary_role() SC_CONST
+{
+  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
+    return ROLE_HYBRID;
+
+  if ( player_t::primary_role() == ROLE_TANK  )
+    return ROLE_TANK;
+
+  if ( player_t::primary_role() == ROLE_HEAL )
+    return ROLE_HEAL;
+
+  if ( primary_tree() == TREE_MONK_TANK )
+    return ROLE_TANK;
+
+  if ( primary_tree() == TREE_MONK_HEAL )
+    return ROLE_HEAL;
+
+  return ROLE_HYBRID;
+}
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -218,6 +300,7 @@ player_t* player_t::create_monk( sim_t* sim, const std::string& name, race_type 
   sim -> errorf( "Monk Module isn't available at the moment." );
 
   //return new monk_t( sim, name, r );
+
   return NULL;
 }
 
