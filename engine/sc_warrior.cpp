@@ -158,6 +158,7 @@ struct warrior_t : public player_t
     glyph_t* colossus_smash;
     glyph_t* command;
     glyph_t* devastate;
+    glyph_t* furious_sundering;
     glyph_t* heroic_throw;
     glyph_t* mortal_strike;
     glyph_t* overpower;
@@ -1492,6 +1493,32 @@ struct concussion_blow_t : public warrior_attack_t
   }
 };
 
+// Demoralizing Shout =======================================================
+
+struct demoralizing_shout_t : public warrior_attack_t
+{
+  demoralizing_shout_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "demoralizing_shout", 1160, p )
+  {
+    parse_options( NULL, options_str );
+
+    may_dodge  = false;
+    may_parry  = false;
+    may_block  = false;
+    may_glance = false;
+  }
+
+  virtual void impact( player_t* t, int impact_result, double dmg )
+  {
+    warrior_attack_t::impact( t, impact_result, dmg );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      t -> debuffs.demoralizing_shout -> trigger();
+    }
+  }
+};
+
 // Devastate ================================================================
 
 struct devastate_t : public warrior_attack_t
@@ -2390,6 +2417,31 @@ struct slam_t : public warrior_attack_t
   }
 };
 
+// Sunder Armor =============================================================
+
+struct sunder_armor_t : public warrior_attack_t
+{
+  sunder_armor_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "sunder_armor", 7386, p )
+  {
+    parse_options( NULL, options_str );
+
+    base_cost *= 1.0 + p -> glyphs.furious_sundering -> effect1().percent();
+
+    // TODO: Glyph of Sunder armor applies affect to nearby target
+  }
+
+  virtual void impact( player_t* t, int impact_result, double dmg )
+  {
+    warrior_attack_t::impact( t, impact_result, dmg );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      t -> debuffs.sunder_armor -> trigger();
+    }
+  }
+};
+
 // Thunder Clap =============================================================
 
 struct thunder_clap_t : public warrior_attack_t
@@ -2398,8 +2450,6 @@ struct thunder_clap_t : public warrior_attack_t
     warrior_attack_t( "thunder_clap", "Thunder Clap", p )
   {
     parse_options( NULL, options_str );
-
-    //id = 6343;
 
     aoe               = -1;
     may_dodge         = false;
@@ -3065,40 +3115,42 @@ struct buff_last_stand_t : public buff_t
 action_t* warrior_t::create_action( const std::string& name,
                                     const std::string& options_str )
 {
-  if ( name == "auto_attack"      ) return new auto_attack_t     ( this, options_str );
-  if ( name == "battle_shout"     ) return new battle_shout_t    ( this, options_str );
-  if ( name == "berserker_rage"   ) return new berserker_rage_t  ( this, options_str );
-  if ( name == "bladestorm"       ) return new bladestorm_t      ( this, options_str );
-  if ( name == "bloodthirst"      ) return new bloodthirst_t     ( this, options_str );
-  if ( name == "charge"           ) return new charge_t          ( this, options_str );
-  if ( name == "cleave"           ) return new cleave_t          ( this, options_str );
-  if ( name == "colossus_smash"   ) return new colossus_smash_t  ( this, options_str );
-  if ( name == "concussion_blow"  ) return new concussion_blow_t ( this, options_str );
-  if ( name == "deadly_calm"      ) return new deadly_calm_t     ( this, options_str );
-  if ( name == "death_wish"       ) return new death_wish_t      ( this, options_str );
-  if ( name == "devastate"        ) return new devastate_t       ( this, options_str );
-  if ( name == "execute"          ) return new execute_t         ( this, options_str );
-  if ( name == "heroic_strike"    ) return new heroic_strike_t   ( this, options_str );
-  if ( name == "inner_rage"       ) return new inner_rage_t      ( this, options_str );
-  if ( name == "last_stand"       ) return new last_stand_t      ( this, options_str );
-  if ( name == "mortal_strike"    ) return new mortal_strike_t   ( this, options_str );
-  if ( name == "overpower"        ) return new overpower_t       ( this, options_str );
-  if ( name == "pummel"           ) return new pummel_t          ( this, options_str );
-  if ( name == "raging_blow"      ) return new raging_blow_t     ( this, options_str );
-  if ( name == "recklessness"     ) return new recklessness_t    ( this, options_str );
-  if ( name == "rend"             ) return new rend_t            ( this, options_str );
-  if ( name == "revenge"          ) return new revenge_t         ( this, options_str );
-  if ( name == "shattering_throw" ) return new shattering_throw_t( this, options_str );
-  if ( name == "shield_bash"      ) return new shield_bash_t     ( this, options_str );
-  if ( name == "shield_block"     ) return new shield_block_t    ( this, options_str );
-  if ( name == "shield_slam"      ) return new shield_slam_t     ( this, options_str );
-  if ( name == "shockwave"        ) return new shockwave_t       ( this, options_str );
-  if ( name == "slam"             ) return new slam_t            ( this, options_str );
-  if ( name == "stance"           ) return new stance_t          ( this, options_str );
-  if ( name == "sweeping_strikes" ) return new sweeping_strikes_t( this, options_str );
-  if ( name == "thunder_clap"     ) return new thunder_clap_t    ( this, options_str );
-  if ( name == "victory_rush"     ) return new victory_rush_t    ( this, options_str );
-  if ( name == "whirlwind"        ) return new whirlwind_t       ( this, options_str );
+  if ( name == "auto_attack"        ) return new auto_attack_t        ( this, options_str );
+  if ( name == "battle_shout"       ) return new battle_shout_t       ( this, options_str );
+  if ( name == "berserker_rage"     ) return new berserker_rage_t     ( this, options_str );
+  if ( name == "bladestorm"         ) return new bladestorm_t         ( this, options_str );
+  if ( name == "bloodthirst"        ) return new bloodthirst_t        ( this, options_str );
+  if ( name == "charge"             ) return new charge_t             ( this, options_str );
+  if ( name == "cleave"             ) return new cleave_t             ( this, options_str );
+  if ( name == "colossus_smash"     ) return new colossus_smash_t     ( this, options_str );
+  if ( name == "concussion_blow"    ) return new concussion_blow_t    ( this, options_str );
+  if ( name == "deadly_calm"        ) return new deadly_calm_t        ( this, options_str );
+  if ( name == "death_wish"         ) return new death_wish_t         ( this, options_str );
+  if ( name == "demoralizing_shout" ) return new demoralizing_shout_t ( this, options_str );
+  if ( name == "devastate"          ) return new devastate_t          ( this, options_str );
+  if ( name == "execute"            ) return new execute_t            ( this, options_str );
+  if ( name == "heroic_strike"      ) return new heroic_strike_t      ( this, options_str );
+  if ( name == "inner_rage"         ) return new inner_rage_t         ( this, options_str );
+  if ( name == "last_stand"         ) return new last_stand_t         ( this, options_str );
+  if ( name == "mortal_strike"      ) return new mortal_strike_t      ( this, options_str );
+  if ( name == "overpower"          ) return new overpower_t          ( this, options_str );
+  if ( name == "pummel"             ) return new pummel_t             ( this, options_str );
+  if ( name == "raging_blow"        ) return new raging_blow_t        ( this, options_str );
+  if ( name == "recklessness"       ) return new recklessness_t       ( this, options_str );
+  if ( name == "rend"               ) return new rend_t               ( this, options_str );
+  if ( name == "revenge"            ) return new revenge_t            ( this, options_str );
+  if ( name == "shattering_throw"   ) return new shattering_throw_t   ( this, options_str );
+  if ( name == "shield_bash"        ) return new shield_bash_t        ( this, options_str );
+  if ( name == "shield_block"       ) return new shield_block_t       ( this, options_str );
+  if ( name == "shield_slam"        ) return new shield_slam_t        ( this, options_str );
+  if ( name == "shockwave"          ) return new shockwave_t          ( this, options_str );
+  if ( name == "slam"               ) return new slam_t               ( this, options_str );
+  if ( name == "stance"             ) return new stance_t             ( this, options_str );
+  if ( name == "sunder_armor"       ) return new sunder_armor_t       ( this, options_str );
+  if ( name == "sweeping_strikes"   ) return new sweeping_strikes_t   ( this, options_str );
+  if ( name == "thunder_clap"       ) return new thunder_clap_t       ( this, options_str );
+  if ( name == "victory_rush"       ) return new victory_rush_t       ( this, options_str );
+  if ( name == "whirlwind"          ) return new whirlwind_t          ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3198,6 +3250,7 @@ void warrior_t::init_spells()
   glyphs.colossus_smash      = find_glyph( "Glyph of Colossus Smash" );
   glyphs.command             = find_glyph( "Glyph of Command" );
   glyphs.devastate           = find_glyph( "Glyph of Devastate" );
+  glyphs.furious_sundering   = find_glyph( "Glyph of Furious Sundering" );
   glyphs.heroic_throw        = find_glyph( "Glyph of Heroic Throw" );
   glyphs.mortal_strike       = find_glyph( "Glyph of Mortal Strike" );
   glyphs.overpower           = find_glyph( "Glyph of Overpower" );
