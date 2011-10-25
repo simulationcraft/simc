@@ -398,7 +398,7 @@ player_t::player_t( sim_t*             s,
   spell_crit_per_intellect( 0 ),  initial_spell_crit_per_intellect( 0 ),
   mp5_per_intellect( 0 ),
   mana_regen_base( 0 ), mana_regen_while_casting( 0 ),
-  base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ),
+  base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
   last_cast( 0 ),
   // Attack Mechanics
   base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),       buffed_attack_power( 0 ),
@@ -1662,6 +1662,7 @@ void player_t::init_gains()
   gains.vampiric_touch         = get_gain( "vampiric_touch" );
   gains.water_elemental        = get_gain( "water_elemental" );
   gains.hymn_of_hope           = get_gain( "hymn_of_hope_max_mana" );
+  gains.chi_regen              = get_gain( "chi_regen" );
 }
 
 // player_t::init_procs =====================================================
@@ -1925,6 +1926,16 @@ double player_t::energy_regen_per_second() SC_CONST
 double player_t::focus_regen_per_second() SC_CONST
 {
   double r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
+
+  return r;
+}
+
+// player_t::chi_regen_per_second ========================================
+
+double player_t::chi_regen_per_second() SC_CONST
+{
+  // FIXME: Just assuming it scale with haste right now.
+  double r = base_chi_regen_per_second * ( 1.0 / composite_attack_haste() );
 
   return r;
 }
@@ -3348,6 +3359,13 @@ void player_t::regen( double periodicity )
     double energy_regen = periodicity * energy_regen_per_second();
 
     resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
+  }
+
+  else if ( resource_type == RESOURCE_CHI )
+  {
+    double chi_regen = periodicity * chi_regen_per_second();
+
+    resource_gain( RESOURCE_CHI, chi_regen, gains.chi_regen );
   }
 
   else if ( resource_type == RESOURCE_FOCUS )

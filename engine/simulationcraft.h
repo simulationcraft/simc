@@ -296,7 +296,8 @@ enum resource_type
   RESOURCE_NONE=0,
   RESOURCE_HEALTH, RESOURCE_MANA,  RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_FOCUS, RESOURCE_RUNIC,
   RESOURCE_RUNE, RESOURCE_HAPPINESS, RESOURCE_SOUL_SHARDS, RESOURCE_ECLIPSE, RESOURCE_HOLY_POWER,
-  RESOURCE_RUNE_BLOOD, RESOURCE_RUNE_UNHOLY, RESOURCE_RUNE_FROST, RESOURCE_CHI, RESOURCE_MAX
+  RESOURCE_RUNE_BLOOD, RESOURCE_RUNE_UNHOLY, RESOURCE_RUNE_FROST,
+  RESOURCE_CHI, RESOURCE_LIGHT_FORCE,RESOURCE_DARK_FORCE, RESOURCE_MAX
 };
 
 enum result_type
@@ -3699,6 +3700,7 @@ struct player_t : public noncopyable
   double mana_regen_while_casting;
   double base_energy_regen_per_second;
   double base_focus_regen_per_second;
+  double base_chi_regen_per_second;
   double resource_reduction[ SCHOOL_MAX ], initial_resource_reduction[ SCHOOL_MAX ];
   double last_cast;
 
@@ -4012,6 +4014,7 @@ struct player_t : public noncopyable
     gain_t* vampiric_touch;
     gain_t* water_elemental;
     gain_t* hymn_of_hope;
+    gain_t* chi_regen;
     void reset() { *this = gains_t(); }
   };
   gains_t gains;
@@ -4088,6 +4091,7 @@ struct player_t : public noncopyable
 
   virtual double energy_regen_per_second() SC_CONST;
   virtual double focus_regen_per_second() SC_CONST;
+  virtual double chi_regen_per_second() SC_CONST;
   virtual double composite_attack_haste() SC_CONST;
   virtual double composite_attack_speed() SC_CONST;
   virtual double composite_attack_power() SC_CONST;
