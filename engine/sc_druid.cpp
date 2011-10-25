@@ -1537,7 +1537,7 @@ struct frenzied_regeneration_buff_t : public buff_t
 
           if ( p -> buffs_frenzied_regeneration -> check() )
           {
-            int rage_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 10.0 );
+            int rage_consumed = ( int ) ( std::min( p -> resource_current[ RESOURCE_RAGE ], 10.0 ) );
             double health_pct = ( p -> dbc.ptr ) ? p -> dbc.spell( 22842 ) -> effect1().percent() / 100 : 0.30 / 100; // Value is really 30, fixed on PTR
             double rage_health = rage_consumed * health_pct * p -> resource_max[ RESOURCE_HEALTH ];
             p -> resource_gain( RESOURCE_HEALTH, rage_health, p -> gains_frenzied_regeneration );
