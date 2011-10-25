@@ -82,6 +82,7 @@ struct warrior_t : public player_t
 
   // Active
   action_t* active_deep_wounds;
+  action_t* active_retaliation;
   action_t* active_opportunity_strike;
   int       active_stance;
   action_t* active_tier12_2pc_tank;
@@ -109,6 +110,7 @@ struct warrior_t : public player_t
   buff_t* buffs_meat_cleaver;
   buff_t* buffs_overpower;
   buff_t* buffs_recklessness;
+  buff_t* buffs_retaliation;
   buff_t* buffs_revenge;
   buff_t* buffs_rude_interruption;
   buff_t* buffs_shield_block;
@@ -592,6 +594,43 @@ static void trigger_rage_gain( attack_t* a )
   p -> resource_gain( RESOURCE_RAGE,
                       rage_gain,
                       w -> slot == SLOT_OFF_HAND ? p -> gains_melee_off_hand : p -> gains_melee_main_hand );
+}
+
+// trigger_retaliation ======================================================
+
+static void trigger_retaliation( warrior_t* p, int school, int result )
+{
+  if ( ! p -> buffs_retaliation -> up() )
+    return;
+
+  if ( school != SCHOOL_PHYSICAL )
+    return;
+
+  if ( ! ( result == RESULT_HIT || result == RESULT_CRIT || result == RESULT_BLOCK ) )
+    return;
+
+  if ( ! p -> active_retaliation )
+  {
+    struct retaliation_strike_t : public warrior_attack_t
+    {
+      retaliation_strike_t( warrior_t* p ) :
+        warrior_attack_t( "retaliation_strike", p )
+      {
+        background = true;
+        proc = true;
+        trigger_gcd = 0;
+        weapon = &( p -> main_hand_weapon );
+        weapon_multiplier = 1.0;
+
+        init();
+      }
+    };
+
+    p -> active_retaliation = new retaliation_strike_t( p );
+  }
+
+  p -> active_retaliation -> execute();
+  p -> buffs_retaliation -> decrement();
 }
 
 // trigger_strikes_of_opportunity ===========================================
@@ -2886,6 +2925,28 @@ struct recklessness_t : public warrior_spell_t
   }
 };
 
+// Retaliation ==============================================================
+
+struct retaliation_t : public warrior_spell_t
+{
+  retaliation_t( warrior_t* p,  const std::string& options_str ) : 
+    warrior_spell_t( "retaliation", 20230, p )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+
+     warrior_t* p = player -> cast_warrior();
+
+     p -> buffs_retaliation -> trigger( 20 );
+  }
+};
+
 // Shield Block =============================================================
 
 struct shield_block_buff_t : public buff_t
@@ -3133,6 +3194,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "raging_blow"        ) return new raging_blow_t        ( this, options_str );
   if ( name == "recklessness"       ) return new recklessness_t       ( this, options_str );
   if ( name == "rend"               ) return new rend_t               ( this, options_str );
+  if ( name == "retaliation"        ) return new retaliation_t        ( this, options_str );
   if ( name == "revenge"            ) return new revenge_t            ( this, options_str );
   if ( name == "shattering_throw"   ) return new shattering_throw_t   ( this, options_str );
   if ( name == "shield_bash"        ) return new shield_bash_t        ( this, options_str );
@@ -3174,7 +3236,6 @@ void warrior_t::init_talents()
   talents.war_academy             = find_talent( "War Academy" );
   talents.wrecking_crew           = find_talent( "Wrecking Crew" );
 
-
   // Fury
   talents.battle_trance           = find_talent( "Battle Trance" );
   talents.bloodsurge              = find_talent( "Bloodsurge" );
@@ -3192,7 +3253,6 @@ void warrior_t::init_talents()
   talents.rude_interruption       = find_talent( "Rude Interruption" );
   talents.single_minded_fury      = find_talent( "Single-Minded Fury" );
   talents.titans_grip             = find_talent( "Titan's Grip" );
-
 
   // Prot
   talents.incite                  = find_talent( "Incite" );
@@ -3301,8 +3361,6 @@ void warrior_t::init_base()
   if ( primary_tree() == TREE_PROTECTION )
     vengeance_enabled = true;
 
-
-
   if ( talents.toughness -> ok() )
     initial_armor_multiplier *= 1.0 + talents.toughness -> effect1().percent();
 
@@ -3317,7 +3375,6 @@ void warrior_t::init_base()
   }
 
   base_gcd = 1.5;
-
 
   fiery_attack = new fiery_attack_t( this );
 }
@@ -3373,6 +3430,7 @@ void warrior_t::init_buffs()
   buffs_last_stand                = new buff_last_stand_t( this, 12976, "last_stand" );
   buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, 10.0,  0, talents.meat_cleaver -> proc_chance() );
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
+  buffs_retaliation               = new buff_t( this, 20230, "retaliation" );
   buffs_revenge                   = new buff_t( this, "revenge",                   1,  5.0 );
   buffs_rude_interruption         = new buff_t( this, "rude_interruption",         1, 15.0 * talents.rude_interruption ->rank() );
   buffs_sweeping_strikes          = new buff_t( this, "sweeping_strikes",          1, 10.0 );
@@ -3638,7 +3696,6 @@ void warrior_t::init_actions()
       action_list_str += "/revenge";
       if ( talents.devastate -> ok() ) action_list_str += "/devastate";
       action_list_str += "/battle_shout";
-
     }
 
     // Default
@@ -3907,6 +3964,8 @@ double warrior_t::assess_damage( double            amount,
       }
     }
   }
+
+  trigger_retaliation( this, school, result );
 
   // Defensive Stance
   if ( active_stance == STANCE_DEFENSE && buffs_defensive_stance -> up() )
