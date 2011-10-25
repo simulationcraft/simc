@@ -211,167 +211,172 @@ struct food_t : public action_t
     if ( sim -> log ) log_t::output( sim, "%s uses Food %s", p -> name(), util_t::food_type_string( type ) );
     p -> food = type;
     double intellect = 0, stamina = 0;
+
+    double food_stat_multiplier = 1.0;
+    if ( p -> race == RACE_PANDAREN )
+      food_stat_multiplier = 2.0;
+
     switch ( type )
     {
     case FOOD_BAKED_ROCKFISH:
-      p -> stat_gain( STAT_CRIT_RATING, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_CRIT_RATING, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_BASILISK_LIVERDOG:
-      p -> stat_gain( STAT_HASTE_RATING, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_HASTE_RATING, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_BEER_BASTED_CROCOLISK:
-      p -> stat_gain( STAT_STRENGTH, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_BLACKBELLY_SUSHI:
-      p -> stat_gain( STAT_PARRY_RATING, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_PARRY_RATING, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_BLACKENED_BASILISK:
-      p -> stat_gain( STAT_SPELL_POWER, 23 );
-      p -> stat_gain( STAT_SPIRIT, 20 );
+      p -> stat_gain( STAT_SPELL_POWER, 23 * food_stat_multiplier );
+      p -> stat_gain( STAT_SPIRIT, 20 * food_stat_multiplier );
       break;
     case FOOD_BLACKENED_DRAGONFIN:
-      p -> stat_gain( STAT_AGILITY, 40 );
-      stamina = 40; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_AGILITY, 40 * food_stat_multiplier );
+      stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_CROCOLISK_AU_GRATIN:
-      p -> stat_gain( STAT_EXPERTISE_RATING, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_EXPERTISE_RATING, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_CRUNCHY_SERPENT:
-      p -> stat_gain( STAT_SPELL_POWER, 23 );
-      p -> stat_gain( STAT_SPIRIT, 20 );
+      p -> stat_gain( STAT_SPELL_POWER, 23 * food_stat_multiplier );
+      p -> stat_gain( STAT_SPIRIT, 20 * food_stat_multiplier );
       break;
     case FOOD_DELICIOUS_SAGEFISH_TAIL:
-      p -> stat_gain( STAT_SPIRIT, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_SPIRIT, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_DRAGONFIN_FILET:
-      p -> stat_gain( STAT_STRENGTH, 40 );
-      stamina = 40; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_STRENGTH, 40 * food_stat_multiplier );
+      stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_FISH_FEAST:
-      p -> stat_gain( STAT_ATTACK_POWER, 80 );
-      p -> stat_gain( STAT_SPELL_POWER,  46 );
-      stamina = 40; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_ATTACK_POWER, 80 * food_stat_multiplier );
+      p -> stat_gain( STAT_SPELL_POWER,  46 * food_stat_multiplier );
+      stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_FORTUNE_COOKIE:
       if ( p -> stats.dodge_rating > 0 )
       {
-        p -> stat_gain( STAT_DODGE_RATING, 90 );
+        p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
       }
       else if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
       {
         if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
         {
-          p -> stat_gain( STAT_STRENGTH, 90 );
+          p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
         }
         else
         {
-          p -> stat_gain( STAT_AGILITY, 90 );
+          p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
         }
       }
       else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
-        intellect = 90; p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
+        intellect = 90 * food_stat_multiplier; p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
       }
       else
       {
-        p -> stat_gain( STAT_AGILITY, 90 );
+        p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
       }
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_GOLDEN_FISHSTICKS:
-      p -> stat_gain( STAT_SPELL_POWER, 23 );
-      p -> stat_gain( STAT_SPIRIT, 20 );
+      p -> stat_gain( STAT_SPELL_POWER, 23 * food_stat_multiplier );
+      p -> stat_gain( STAT_SPIRIT, 20 * food_stat_multiplier );
       break;
     case FOOD_GREAT_FEAST:
-      p -> stat_gain( STAT_ATTACK_POWER, 60 );
-      p -> stat_gain( STAT_SPELL_POWER,  35 );
-      stamina = 30; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_ATTACK_POWER, 60 * food_stat_multiplier );
+      p -> stat_gain( STAT_SPELL_POWER,  35 * food_stat_multiplier );
+      stamina = 30 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_GRILLED_DRAGON:
-      p -> stat_gain( STAT_HIT_RATING, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_HIT_RATING, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_HEARTY_RHINO:
-      p -> stat_gain( STAT_CRIT_RATING, 40 );
-      stamina = 40; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_CRIT_RATING, 40 * food_stat_multiplier );
+      stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_IMPERIAL_MANTA_STEAK:
     case FOOD_VERY_BURNT_WORG:
-      p -> stat_gain( STAT_HASTE_RATING, 40 );
-      stamina = 40; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_HASTE_RATING, 40 * food_stat_multiplier );
+      stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_LAVASCALE_FILLET:
-      p -> stat_gain( STAT_MASTERY_RATING, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_MASTERY_RATING, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_MEGA_MAMMOTH_MEAL:
     case FOOD_POACHED_NORTHERN_SCULPIN:
-      p -> stat_gain( STAT_ATTACK_POWER, 80 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_ATTACK_POWER, 80 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_MUSHROOM_SAUCE_MUDFISH:
-      p -> stat_gain( STAT_DODGE_RATING, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_POACHED_BLUEFISH:
-      p -> stat_gain( STAT_SPELL_POWER, 23 );
-      p -> stat_gain( STAT_SPIRIT, 20 );
+      p -> stat_gain( STAT_SPELL_POWER, 23 * food_stat_multiplier );
+      p -> stat_gain( STAT_SPIRIT, 20 * food_stat_multiplier );
       break;
     case FOOD_RHINOLICIOUS_WORMSTEAK:
-      p -> stat_gain( STAT_EXPERTISE_RATING, 40 );
-      stamina = 40; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_EXPERTISE_RATING, 40 * food_stat_multiplier );
+      stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_SEAFOOD_MAGNIFIQUE_FEAST:
       if ( p -> stats.dodge_rating > 0 )
       {
-        p -> stat_gain( STAT_DODGE_RATING, 90 );
+        p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
       }
       else if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
       {
         if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
         {
-          p -> stat_gain( STAT_STRENGTH, 90 );
+          p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
         }
         else
         {
-          p -> stat_gain( STAT_AGILITY, 90 );
+          p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
         }
       }
       else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
-        intellect = 90; p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
+        intellect = 90 * food_stat_multiplier; p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
       }
       else
       {
-        p -> stat_gain( STAT_AGILITY, 90 );
+        p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
       }
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_SEVERED_SAGEFISH_HEAD:
-      intellect = 90; p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      intellect = 90 * food_stat_multiplier; p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_SKEWERED_EEL:
-      p -> stat_gain( STAT_AGILITY, 90 );
-      stamina = 90; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
+      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_SMOKED_SALMON:
-      p -> stat_gain( STAT_SPELL_POWER, 35 );
-      stamina = 40; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_SPELL_POWER, 35 * food_stat_multiplier );
+      stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_SNAPPER_EXTREME:
-      p -> stat_gain( STAT_HIT_RATING, 40 );
-      stamina = 40; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_HIT_RATING, 40 * food_stat_multiplier );
+      stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_TENDER_SHOVELTUSK_STEAK:
-      p -> stat_gain( STAT_SPELL_POWER, 46 );
-      stamina = 40; p -> stat_gain( STAT_STAMINA, stamina );
+      p -> stat_gain( STAT_SPELL_POWER, 46 * food_stat_multiplier );
+      stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     default: assert( 0 );
     }

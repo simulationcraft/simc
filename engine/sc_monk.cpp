@@ -65,9 +65,9 @@ struct monk_t : public player_t
   {
 
     // FIXME
-    tree_type[ MONK_TANKSPEC    ] = TREE_MONK_TANK;
-    tree_type[ MONK_DAMAGESPEC  ] = TREE_MONK_DAMAGE;
-    tree_type[ MONK_HEALSPEC    ] = TREE_MONK_HEAL;
+    tree_type[ MONK_BREWMASTER    ] = TREE_BREWMASTER;
+    tree_type[ MONK_WINDWALKER  ] = TREE_WINDWALKER;
+    tree_type[ MONK_MISTWEAVER    ] = TREE_MISTWEAVER;
 
 
     create_talents();
@@ -86,9 +86,10 @@ struct monk_t : public player_t
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
+  virtual void      combat_begin();
   virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_NONE; }
+  virtual int       primary_resource() SC_CONST { return RESOURCE_CHI; }
   virtual int       primary_role() SC_CONST;
 };
 
@@ -98,7 +99,69 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // Monk Abilities
 // ==========================================================================
 
+struct monk_attack_t : public attack_t
+{
 
+  monk_attack_t( const char* n, uint32_t id, monk_t* p, int t=TREE_NONE, bool special = true ) :
+    attack_t( n, id, p, t, special )
+  {
+    _init_monk_attack_t();
+  }
+
+  monk_attack_t( const char* n, const char* s_name, monk_t* p ) :
+    attack_t( n, s_name, p, TREE_NONE, true )
+  {
+    _init_monk_attack_t();
+  }
+
+  void _init_monk_attack_t()
+  {
+    may_crit   = true;
+    may_glance = false;
+  }
+};
+
+struct monk_spell_t : public spell_t
+{
+
+  monk_spell_t( const char* n, uint32_t id, monk_t* p ) :
+    spell_t( n, id, p )
+  {
+    _init_monk_spell_t();
+  }
+
+  monk_spell_t( const char* n, const char* s_name, monk_t* p ) :
+    spell_t( n, s_name, p )
+  {
+    _init_monk_spell_t();
+  }
+
+  void _init_monk_spell_t()
+  {
+    may_crit   = true;
+  }
+};
+
+struct monk_heal_t : public heal_t
+{
+
+  monk_heal_t( const char* n, uint32_t id, monk_t* p ) :
+    heal_t( n, p, id )
+  {
+    _init_monk_heal_t();
+  }
+
+  monk_heal_t( const char* n, const char* s_name, monk_t* p ) :
+    heal_t( n, p, s_name )
+  {
+    _init_monk_heal_t();
+  }
+
+  void _init_monk_heal_t()
+  {
+    may_crit   = true;
+  }
+};
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -146,7 +209,7 @@ void monk_t::init_spells()
     {      0,      0,     0,     0,     0,     0,     0,     0 }, // Tier11
     {      0,      0,     0,     0,     0,     0,     0,     0 }, // Tier12
     {      0,      0,     0,     0,     0,     0,     0,     0 }, // Tier13
-    {      0,      0,     0,     0,     0,     0,     0,     0 },
+    {      0,      0,     0,     0,     0,     0,     0,     0 }, // Tier14
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -160,8 +223,10 @@ void monk_t::init_base()
 
   int tree = primary_tree();
 
-  default_distance = (tree == TREE_MONK_HEAL ) ? 40 : 3;
+  default_distance = (tree == TREE_MISTWEAVER ) ? 40 : 3;
   distance = default_distance;
+
+  resource_base[  RESOURCE_CHI  ] = 100; // FIXME: placeholder
 
   // FIXME: Add defensive constants
   //diminished_kfactor    = 0;
@@ -234,12 +299,26 @@ void monk_t::init_actions()
   player_t::init_actions();
 }
 
+// monk_t::combat_begin ==================================================
+
+void monk_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  // Start with 0 Chi
+  resource_current[ RESOURCE_CHI ] = 0;
+}
+
 // monk_t::matching_gear_multiplier =========================================
 
 double monk_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
-  // ADD Attribute Multipliers by Spec
-  if ( attr == ATTRIBUTE_NONE )
+  if( primary_tree() == TREE_MISTWEAVER )
+  {
+    if ( attr == ATTR_INTELLECT )
+      return 0.05;
+  }
+  else if( attr == ATTR_AGILITY )
     return 0.05;
 
   return 0.0;
@@ -280,10 +359,10 @@ int monk_t::primary_role() SC_CONST
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
 
-  if ( primary_tree() == TREE_MONK_TANK )
+  if ( primary_tree() == TREE_BREWMASTER )
     return ROLE_TANK;
 
-  if ( primary_tree() == TREE_MONK_HEAL )
+  if ( primary_tree() == TREE_MISTWEAVER )
     return ROLE_HEAL;
 
   return ROLE_HYBRID;
@@ -306,20 +385,16 @@ player_t* player_t::create_monk( sim_t* sim, const std::string& /* name */ , rac
 
 // player_t::monk_init ======================================================
 
-void player_t::monk_init( sim_t* sim )
+void player_t::monk_init( sim_t* /* sim */ )
 {
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  {
-
-  }
+  //for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  //{}
 }
 
 // player_t::monk_combat_begin ==============================================
 
-void player_t::monk_combat_begin( sim_t* sim )
+void player_t::monk_combat_begin( sim_t* /* sim */ )
 {
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-
-  }
+  //for ( player_t* p = sim -> player_list; p; p = p -> next )
+  //{}
 }
