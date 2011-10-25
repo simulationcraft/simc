@@ -2512,7 +2512,6 @@ struct thrash_t : public druid_bear_attack_t
     druid_bear_attack_t( "thrash", 77758, p )
   {
     parse_options( NULL, options_str );
-    check_min_level( 81 );
 
     aoe               = -1;
     direct_power_mod  = 0.0982;

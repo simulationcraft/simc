@@ -2823,11 +2823,7 @@ struct inner_rage_t : public warrior_spell_t
   inner_rage_t( warrior_t* p, const std::string& options_str ) :
     warrior_spell_t( "inner_rage", "Inner Rage", p )
   {
-    check_min_level( 56 );
-
     parse_options( NULL, options_str );
-
-    //id = 1134;
 
     harmful = false;
 

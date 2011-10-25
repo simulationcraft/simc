@@ -2493,7 +2493,6 @@ struct frostfire_orb_t : public mage_spell_t
   frostfire_orb_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_orb", 92283, p )
   {
-    check_min_level( 81 );
     parse_options( NULL, options_str );
 
     school = SCHOOL_FROSTFIRE; // set as Fire in DBC, coloring the report chart wrong

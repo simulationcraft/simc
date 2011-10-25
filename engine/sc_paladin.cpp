@@ -1981,7 +1981,6 @@ struct inquisition_t : public paladin_spell_t
   inquisition_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "inquisition", "Inquisition", p ), base_duration( 0 )
   {
-    check_min_level( 81 );
 
     parse_options( NULL, options_str );
 
