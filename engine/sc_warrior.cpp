@@ -2148,8 +2148,7 @@ struct shattering_throw_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    //id = 64382;
-
+    direct_power_mod = extra_coeff();
     stancemask = STANCE_BATTLE;
   }
 
@@ -4043,7 +4042,7 @@ void player_t::warrior_init( sim_t* sim )
     p -> debuffs.blood_frenzy_bleed    = new debuff_t( p, "blood_frenzy_bleed",    1, 60.0 );
     p -> debuffs.blood_frenzy_physical = new debuff_t( p, "blood_frenzy_physical", 1, 60.0 );
     p -> debuffs.demoralizing_shout    = new debuff_t( p, "demoralizing_shout",    1, 30.0 );
-    p -> debuffs.shattering_throw      = new debuff_t( p, "shattering_throw",      1 );
+    p -> debuffs.shattering_throw      = new debuff_t( p, 64382, "shattering_throw" );
     p -> debuffs.sunder_armor          = new debuff_t( p, 58567, "sunder_armor" );
     p -> debuffs.thunder_clap          = new debuff_t( p, "thunder_clap",          1, 30.0 );
     p -> buffs.commanding_shout        = new   buff_t( p, 469, "commanding_shout" );
