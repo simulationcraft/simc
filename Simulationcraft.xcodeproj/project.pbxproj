@@ -23,6 +23,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		443DC0201456B5C100C57D19 /* sc_monk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 443DC01E1456B5C100C57D19 /* sc_monk.cpp */; };
+		443DC0211456B5C100C57D19 /* sc_sample_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */; };
+		443DC0231456B66E00C57D19 /* sc_monk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 443DC01E1456B5C100C57D19 /* sc_monk.cpp */; };
+		443DC0241456B66E00C57D19 /* sc_sample_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */; };
 		6E1CCD8013E8955C007451E8 /* sc_bcp_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E1CCD7E13E89540007451E8 /* sc_bcp_api.cpp */; };
 		6E1CCD8113E8956D007451E8 /* sc_bcp_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E1CCD7E13E89540007451E8 /* sc_bcp_api.cpp */; };
 		6E392F5413969FCC00649B6A /* Simcraft2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6E392F5313969FCC00649B6A /* Simcraft2.icns */; };
@@ -467,6 +471,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		443DC01E1456B5C100C57D19 /* sc_monk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_monk.cpp; path = engine/sc_monk.cpp; sourceTree = "<group>"; };
+		443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_sample_data.cpp; path = engine/sc_sample_data.cpp; sourceTree = "<group>"; };
 		6E1CCD7E13E89540007451E8 /* sc_bcp_api.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = sc_bcp_api.cpp; path = engine/sc_bcp_api.cpp; sourceTree = "<group>"; };
 		6E392F3213969ECE00649B6A /* SimulationCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimulationCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E392F5313969FCC00649B6A /* Simcraft2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Simcraft2.icns; path = qt/icon/Simcraft2.icns; sourceTree = "<group>"; };
@@ -935,6 +941,7 @@
 				6EF70BB0143F287400F521D5 /* sc_report_text.cpp */,
 				6EF70BB1143F287400F521D5 /* sc_report_xml.cpp */,
 				6EC618D8139677F0006B7A89 /* sc_rng.cpp */,
+				443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */,
 				6EC618DA139677F0006B7A89 /* sc_scaling.cpp */,
 				6EC618DB139677F0006B7A89 /* sc_sequence.cpp */,
 				6EC618DC139677F0006B7A89 /* sc_set_bonus.cpp */,
@@ -962,6 +969,7 @@
 				6EC618BF139677F0006B7A89 /* sc_druid.cpp */,
 				6EC618C6139677F0006B7A89 /* sc_hunter.cpp */,
 				6EC618CB139677F0006B7A89 /* sc_mage.cpp */,
+				443DC01E1456B5C100C57D19 /* sc_monk.cpp */,
 				6EC618CE139677F0006B7A89 /* sc_paladin.cpp */,
 				6EC618D2139677F0006B7A89 /* sc_priest.cpp */,
 				6EC618D9139677F0006B7A89 /* sc_rogue.cpp */,
@@ -1332,6 +1340,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				443DC0231456B66E00C57D19 /* sc_monk.cpp in Sources */,
+				443DC0241456B66E00C57D19 /* sc_sample_data.cpp in Sources */,
 				6E392F6D1396A0AC00649B6A /* sc_action.cpp in Sources */,
 				6E392F6E1396A0AC00649B6A /* sc_armory.cpp in Sources */,
 				6E392F6F1396A0AC00649B6A /* sc_attack.cpp in Sources */,
@@ -1471,6 +1481,8 @@
 				6EF70BB4143F287400F521D5 /* sc_report_html_sim.cpp in Sources */,
 				6EF70BB6143F287400F521D5 /* sc_report_text.cpp in Sources */,
 				6EF70BB8143F287400F521D5 /* sc_report_xml.cpp in Sources */,
+				443DC0201456B5C100C57D19 /* sc_monk.cpp in Sources */,
+				443DC0211456B5C100C57D19 /* sc_sample_data.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
