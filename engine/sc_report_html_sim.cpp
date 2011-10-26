@@ -373,8 +373,6 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
   fprintf( file,
            "\t\t\t</ul><p>&nbsp;</p>\n" );
 
-  assert( sim ->  dps_charts.size() == sim -> gear_charts.size() );
-
   // Left side charts: dps, raid events
   fprintf( file,
            "\t\t\t\t<div class=\"charts charts-left\">\n" );

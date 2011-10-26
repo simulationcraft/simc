@@ -203,7 +203,7 @@ bool monk_attack_t::ready()
 struct jab_t : public monk_attack_t
 {
   jab_t( monk_t* p, const std::string& options_str ) :
-  monk_attack_t( "jab", (uint32_t) 0, p )
+  monk_attack_t( "jab", "Jab", p )
   {
     parse_options( 0, options_str );
     resource = RESOURCE_CHI;
@@ -225,7 +225,7 @@ struct jab_t : public monk_attack_t
 struct tiger_palm_t : public monk_attack_t
 {
   tiger_palm_t( monk_t* p, const std::string& options_str ) :
-  monk_attack_t( "tiger_palm", (uint32_t) 0, p )
+  monk_attack_t( "tiger_palm", "Tiger Palm", p )
   {
     parse_options( 0, options_str );
     resource = RESOURCE_LIGHT_FORCE;
@@ -248,7 +248,7 @@ struct tiger_palm_t : public monk_attack_t
 struct blackout_kick_t : public monk_attack_t
 {
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
-  monk_attack_t( "blackout_kick", (uint32_t) 0, p )
+  monk_attack_t( "blackout_kick", "Blackout Kick", p )
   {
     parse_options( 0, options_str );
     resource = RESOURCE_DARK_FORCE;
@@ -264,6 +264,7 @@ struct spinning_crane_kick_tick_t : public monk_attack_t
     background  = true;
     dual        = true;
     direct_tick = true;
+    aoe = -1;
 
     stats = player -> get_stats( "spinning_crane_kick", this );
   }
@@ -274,7 +275,7 @@ struct spinning_crane_kick_t : public monk_attack_t
   spinning_crane_kick_tick_t* spinning_crane_kick_tick;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ) :
-  monk_attack_t( "spinning_crane_kick", (uint32_t) 0, p ),
+  monk_attack_t( "spinning_crane_kick", "Spinning Crane Kick", p ),
   spinning_crane_kick_tick( 0 )
   {
     parse_options( 0, options_str );
@@ -663,7 +664,7 @@ int monk_t::primary_role() SC_CONST
 
 // player_t::create_monk  ===================================================
 
-player_t* player_t::create_monk( sim_t* sim, const std::string& /* name */ , race_type /* r */ )
+player_t* player_t::create_monk( sim_t* sim, const std::string& /* name */, race_type /* r */ )
 {
   sim -> errorf( "Monk Module isn't available at the moment." );
 
