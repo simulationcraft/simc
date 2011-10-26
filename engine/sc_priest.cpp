@@ -72,6 +72,7 @@ struct priest_t : public player_t
     talent_t* borrowed_time;
     talent_t* strength_of_soul;
     talent_t* divine_aegis;
+    talent_t* pain_suppression;
     talent_t* train_of_thought;
     talent_t* grace;
     talent_t* power_word_barrier;
@@ -214,9 +215,8 @@ struct priest_t : public player_t
   pet_t* pet_lightwell;
 
   // Options
-  std::string power_infusion_target_str;
   std::string atonement_target_str;
-
+  
   // Mana Resource Tracker
   struct mana_resource_t
   {
@@ -2271,6 +2271,34 @@ struct mind_sear_t : public priest_spell_t
   }
 };
 
+// Pain Supression ==========================================================
+
+struct pain_suppression_t : public priest_spell_t
+{
+  pain_suppression_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "pain_suppression", p, 33206 )
+  {
+    check_talent( p -> talents.pain_suppression -> ok() );
+
+    parse_options( NULL, options_str );
+
+    // If we don't specify a target, it's defaulted to the mob, so default to the player instead
+    if ( target -> is_enemy() || target -> is_add() )
+    {
+      target = p;
+    }
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    target -> buffs.pain_supression -> trigger();
+  }
+};
+
 // Penance Spell ============================================================
 
 struct penance_t : public priest_spell_t
@@ -2343,33 +2371,20 @@ struct penance_t : public priest_spell_t
 
 struct power_infusion_t : public priest_spell_t
 {
-  player_t* power_infusion_target;
-
   power_infusion_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "power_infusion", p, "Power Infusion" ), power_infusion_target( 0 )
+    priest_spell_t( "power_infusion", p, "Power Infusion" )
   {
     check_talent( p -> talents.power_infusion -> rank() );
 
-    std::string target_str = p -> power_infusion_target_str;
+    parse_options( NULL, options_str );
 
-    option_t options[] =
+    // If we don't specify a target, it's defaulted to the mob, so default to the player instead
+    if ( target -> is_enemy() || target -> is_add() )
     {
-      { "target", OPT_STRING, &target_str },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+      target = p;
+    }
 
     harmful = false;
-
-    if ( target_str.empty() )
-    {
-      power_infusion_target = p;
-    }
-    else
-    {
-      power_infusion_target = sim -> find_player( target_str );
-      assert ( power_infusion_target != 0 );
-    }
   }
 
   virtual void execute()
@@ -2378,7 +2393,7 @@ struct power_infusion_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    power_infusion_target -> buffs.power_infusion -> trigger();
+    target -> buffs.power_infusion -> trigger();
 
     // PTR
     // Needs testing
@@ -2387,13 +2402,10 @@ struct power_infusion_t : public priest_spell_t
 
   virtual bool ready()
   {
-    if ( power_infusion_target == 0 )
+    if ( target -> buffs.bloodlust -> check() )
       return false;
 
-    if ( power_infusion_target -> buffs.bloodlust -> check() )
-      return false;
-
-    if ( power_infusion_target -> buffs.power_infusion -> check() )
+    if ( target -> buffs.power_infusion -> check() )
       return false;
 
     return priest_spell_t::ready();
@@ -3686,7 +3698,6 @@ struct glyph_power_word_shield_t : public priest_heal_t
   }
 };
 
-// Weakened Soul doesn't block PW:S yet to enable shield spam simulations
 struct power_word_shield_t : public priest_absorb_t
 {
   glyph_power_word_shield_t* glyph_pws;
@@ -3737,7 +3748,6 @@ struct power_word_shield_t : public priest_absorb_t
     if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_heal() )
       if ( p -> rng_tier13_4pc_heal -> roll( 0.1 ) )
         player_multiplier *= 2.0;
-
   }
 
   virtual void execute()
@@ -3766,9 +3776,9 @@ struct power_word_shield_t : public priest_absorb_t
     buff_t* pws = 0;
     for( unsigned int i = 0; i < t -> buffs.power_word_shield.size(); i++ )
     {
-      if ( t -> buffs.power_word_shield[i ] -> initial_source == player )
+      if ( t -> buffs.power_word_shield[ i ] -> initial_source == player )
       {
-        pws = t -> buffs.power_word_shield[i ];
+        pws = t -> buffs.power_word_shield[ i ];
         break;
       }
     }
@@ -4469,53 +4479,50 @@ action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
   // Misc
+  if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
+  if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
   if ( name == "dispersion"             ) return new dispersion_t            ( this, options_str );
   if ( name == "fortitude"              ) return new fortitude_t             ( this, options_str );
+  if ( name == "hymn_of_hope"           ) return new hymn_of_hope_t          ( this, options_str );
   if ( name == "inner_fire"             ) return new inner_fire_t            ( this, options_str );
+  if ( name == "inner_focus"            ) return new inner_focus_t           ( this, options_str );
+  if ( name == "inner_will"             ) return new inner_will_t            ( this, options_str );
+  if ( name == "pain_suppression"       ) return new pain_suppression_t      ( this, options_str );
   if ( name == "power_infusion"         ) return new power_infusion_t        ( this, options_str );
   if ( name == "shadow_form"            ) return new shadow_form_t           ( this, options_str );
   if ( name == "vampiric_embrace"       ) return new vampiric_embrace_t      ( this, options_str );
-  if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
-  if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
-  if ( name == "inner_will"             ) return new inner_will_t            ( this, options_str );
-  if ( name == "inner_focus"            ) return new inner_focus_t           ( this, options_str );
-  if ( name == "hymn_of_hope"           ) return new hymn_of_hope_t          ( this, options_str );
 
   // Damage
   if ( name == "devouring_plague"       ) return new devouring_plague_t      ( this, options_str );
   if ( name == "holy_fire"              ) return new holy_fire_t             ( this, options_str );
   if ( name == "mind_blast"             ) return new mind_blast_t            ( this, options_str );
   if ( name == "mind_flay"              ) return new mind_flay_t             ( this, options_str );
-  if ( name == "mind_flay_2"            ) return new mind_flay_t             ( this, options_str,
-                                                                               "mind_flay_2", dots_shadow_word_pain_2 );
+  if ( name == "mind_flay_2"            ) return new mind_flay_t             ( this, options_str, "mind_flay_2", dots_shadow_word_pain_2 );
   if ( name == "mind_spike"             ) return new mind_spike_t            ( this, options_str );
   if ( name == "mind_sear"              ) return new mind_sear_t             ( this, options_str );
   if ( name == "penance"                ) return new penance_t               ( this, options_str );
   if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( this, options_str );
   if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( this, options_str );
-  if ( name == "shadow_word_pain_2"     ) return new shadow_word_pain_t      ( this, options_str,
-                                                                               "shadow_word_pain_2" );
+  if ( name == "shadow_word_pain_2"     ) return new shadow_word_pain_t      ( this, options_str, "shadow_word_pain_2" );
   if ( name == "smite"                  ) return new smite_t                 ( this, options_str );
   if ( name == "shadow_fiend"           ) return new shadow_fiend_spell_t    ( this, options_str );
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
-  if ( name == "vampiric_touch_2"       ) return new vampiric_touch_t        ( this, options_str,
-                                                                               "vampiric_touch_2" );
-
+  if ( name == "vampiric_touch_2"       ) return new vampiric_touch_t        ( this, options_str, "vampiric_touch_2" );
 
   // Heals
-  if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
-  if ( name == "heal"                   ) return new _heal_t                 ( this, options_str );
-  if ( name == "flash_heal"             ) return new flash_heal_t            ( this, options_str );
   if ( name == "binding_heal"           ) return new binding_heal_t          ( this, options_str );
-  if ( name == "greater_heal"           ) return new greater_heal_t          ( this, options_str );
-  if ( name == "prayer_of_healing"      ) return new prayer_of_healing_t     ( this, options_str );
   if ( name == "circle_of_healing"      ) return new circle_of_healing_t     ( this, options_str );
-  if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( this, options_str );
-  if ( name == "power_word_shield"      ) return new power_word_shield_t     ( this, options_str );
-  if ( name == "penance_heal"           ) return new penance_heal_t          ( this, options_str );
+  if ( name == "divine_hymn"            ) return new divine_hymn_t           ( this, options_str );
+  if ( name == "flash_heal"             ) return new flash_heal_t            ( this, options_str );
+  if ( name == "greater_heal"           ) return new greater_heal_t          ( this, options_str );
+  if ( name == "heal"                   ) return new _heal_t                 ( this, options_str );
   if ( name == "holy_word"              ) return new holy_word_t             ( this, options_str );
   if ( name == "lightwell"              ) return new lightwell_t             ( this, options_str );
-  if ( name == "divine_hymn"            ) return new divine_hymn_t           ( this, options_str );
+  if ( name == "penance_heal"           ) return new penance_heal_t          ( this, options_str );
+  if ( name == "power_word_shield"      ) return new power_word_shield_t     ( this, options_str );
+  if ( name == "prayer_of_healing"      ) return new prayer_of_healing_t     ( this, options_str );
+  if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( this, options_str );
+  if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4665,7 +4672,7 @@ void priest_t::init_talents()
   talents.borrowed_time               = find_talent( "Borrowed Time" );
   talents.strength_of_soul            = find_talent( "Strength of Soul" );
   talents.divine_aegis                = find_talent( "Divine Aegis" );
-  // Pain Supression
+  talents.pain_suppression            = find_talent( "Pain Suppression" );
   talents.train_of_thought            = find_talent( "Train of Thought" );
   talents.grace                       = find_talent( "Grace" );
   talents.power_word_barrier          = find_talent( "Power Word: Barrier" );
@@ -5424,7 +5431,6 @@ void priest_t::create_options()
   {
     { "atonement_target",        OPT_STRING, &( atonement_target_str      ) },
     { "double_dot",              OPT_DEPRECATED, ( void* ) "action_list=double_dot"   },
-    { "power_infusion_target",   OPT_STRING, &( power_infusion_target_str ) },
     { "use_mind_blast",          OPT_INT,    &( use_mind_blast            ) },
     { "use_shadow_word_death",   OPT_BOOL,   &( use_shadow_word_death     ) },
 
@@ -5442,7 +5448,6 @@ bool priest_t::create_profile( std::string& profile_str, int save_type, bool sav
 
   if ( save_type == SAVE_ALL )
   {
-    if ( ! power_infusion_target_str.empty() ) profile_str += "power_infusion_target=" + power_infusion_target_str + "\n";
     if ( ! atonement_target_str.empty() ) profile_str += "atonement_target=" + atonement_target_str + "\n";
     if ( ( use_shadow_word_death ) || ( use_mind_blast != 1 ) )
     {
@@ -5469,7 +5474,6 @@ void priest_t::copy_from( player_t* source )
 
   priest_t* p = source -> cast_priest();
 
-  power_infusion_target_str = p -> power_infusion_target_str;
   atonement_target_str      = p -> atonement_target_str;
   use_shadow_word_death     = p -> use_shadow_word_death;
   use_mind_blast            = p -> use_mind_blast;
@@ -5570,10 +5574,12 @@ void player_t::priest_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.fortitude      = new stat_buff_t( p, "fortitude", STAT_STAMINA, floor( sim -> dbc.effect_average( sim -> dbc.spell( 79104 ) -> effect1().id(), sim -> max_player_level ) ), ! p -> is_pet() );
-    p -> buffs.power_infusion = new      buff_t( p, "power_infusion", 1, 15.0, 0 );
-    p -> buffs.inspiration    = new      buff_t( p, "inspiration", 1, 15.0, 0 );
-    p -> buffs.weakened_soul  = new      buff_t( p, 6788, "weakened_soul" );
+    p -> buffs.fortitude        = new stat_buff_t( p, "fortitude", STAT_STAMINA, floor( sim -> dbc.effect_average( sim -> dbc.spell( 79104 ) -> effect1().id(), sim -> max_player_level ) ), ! p -> is_pet() );
+    p -> buffs.pain_supression  = new      buff_t( p, 33206, "pain_supression" );
+    p -> buffs.pain_supression -> cooldown -> duration = 0; // Handled by the ability
+    p -> buffs.power_infusion   = new      buff_t( p, "power_infusion", 1, 15.0, 0 );
+    p -> buffs.inspiration      = new      buff_t( p, "inspiration", 1, 15.0, 0 );
+    p -> buffs.weakened_soul    = new      buff_t( p, 6788, "weakened_soul" );
   }
 }
 

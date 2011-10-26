@@ -3927,6 +3927,7 @@ struct player_t : public noncopyable
     buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
+    buff_t* pain_supression;
     buff_t* power_infusion;
     buff_t* replenishment;
     buff_t* raid_movement;
