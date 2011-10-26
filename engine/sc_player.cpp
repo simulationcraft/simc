@@ -3945,9 +3945,15 @@ double player_t::assess_damage( double            amount,
     // This can only save the target, if the damage is less than 200% of the target's health as of 4.0.6
     if ( buffs.guardian_spirit -> check() && actual_amount <= ( resource_max[ RESOURCE_HEALTH] * 2 ) )
     {
+      // Just assume that this is used so rarely that a strcmp hack will do
+      stats_t* s = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
+      double amount = resource_max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> effect2().percent();
+      resource_gain( RESOURCE_HEALTH, amount );
+      if ( s )
+        s -> add_result( amount, amount, HEAL_DIRECT, RESULT_HIT );
+
+
       buffs.guardian_spirit -> expire();
-      // FIXME: This should be done as a proper heal, so the casting priest gets the credit for saving the day
-      resource_gain( RESOURCE_HEALTH, resource_max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> effect2().percent() );
     }
     else
     {

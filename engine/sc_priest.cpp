@@ -3322,6 +3322,8 @@ struct guardian_spirit_t : public priest_heal_t
     // The absorb listed isn't a real absorb
     base_dd_min = base_dd_max = 0;
 
+    harmful = false;
+
     cooldown -> duration += p -> glyphs.guardian_spirit -> effect1().seconds();
   }
 

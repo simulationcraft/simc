@@ -30,7 +30,9 @@ struct valanyr_t : public absorb_t
 
 void heal_t::init_heal_t_()
 {
-  target = player;
+  target = player -> target;
+  if ( target -> is_enemy() || target -> is_add() )
+    target = player;
   heal_target.push_back( target );
 
   total_heal = total_actual = 0;
@@ -477,7 +479,9 @@ player_t* heal_t::find_lowest_player()
 
 void absorb_t::init_absorb_t_()
 {
-  target = player;
+  target = player -> target;
+  if ( target -> is_enemy() || target -> is_add() )
+    target = player;
   heal_target.push_back( target );
 
   total_heal = total_actual = 0;
