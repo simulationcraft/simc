@@ -118,7 +118,6 @@ struct melee_t : public attack_t
   melee_t( const char* name, player_t* player ) :
     attack_t( name, player, RESOURCE_MANA, SCHOOL_PHYSICAL )
   {
-
     may_crit    = true;
     background  = true;
     repeating   = true;
@@ -126,7 +125,6 @@ struct melee_t : public attack_t
     base_cost   = 0;
     base_dd_min = 120000;
     base_execute_time = 2.0;
-
   }
 };
 
@@ -310,10 +308,10 @@ struct summon_add_t : public spell_t
 action_t* enemy_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
-  if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
-  if ( name == "spell_nuke"              ) return new               spell_nuke_t( this, options_str );
-  if ( name == "spell_aoe"               ) return new               spell_aoe_t( this, options_str );
-  if ( name == "summon_add"              ) return new               summon_add_t( this, options_str );
+  if ( name == "auto_attack" ) return new auto_attack_t( this, options_str );
+  if ( name == "spell_nuke"  ) return new  spell_nuke_t( this, options_str );
+  if ( name == "spell_aoe"   ) return new   spell_aoe_t( this, options_str );
+  if ( name == "summon_add"  ) return new  summon_add_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }

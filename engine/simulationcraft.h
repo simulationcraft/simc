@@ -3966,6 +3966,7 @@ struct player_t : public noncopyable
     debuff_t* ebon_plaguebringer;
     debuff_t* expose_armor;
     debuff_t* faerie_fire;
+    debuff_t* forbearance;
     debuff_t* hemorrhage;
     debuff_t* hunters_mark;
     debuff_t* infected_wounds;

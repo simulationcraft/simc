@@ -59,6 +59,7 @@ struct paladin_t : public player_t
 
   // Gains
   gain_t* gains_divine_plea;
+  gain_t* gains_glyph_loh;
   gain_t* gains_judgements_of_the_bold;
   gain_t* gains_judgements_of_the_wise;
   gain_t* gains_sanctuary;
@@ -207,8 +208,10 @@ struct paladin_t : public player_t
     glyph_t* consecration;
     glyph_t* divine_plea;
     glyph_t* divine_protection;
+    glyph_t* divinity;
     glyph_t* focused_shield;
     glyph_t* hammer_of_wrath;
+    glyph_t* lay_on_hands;
 
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -2136,7 +2139,7 @@ struct divine_light_t : public paladin_heal_t
   }
 };
 
-// Lay on Hands Spell
+// Lay on Hands Spell =======================================================
 
 struct lay_on_hands_t : public paladin_heal_t
 {
@@ -2144,10 +2147,37 @@ struct lay_on_hands_t : public paladin_heal_t
     paladin_heal_t( "lay_on_hands", p, "Lay on Hands" )
   {
     parse_options( NULL, options_str );
+
+    cooldown -> duration += p -> glyphs.lay_on_hands -> effect1().seconds();
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+    
+    // Heal is based on paladin's current max health
+    base_dd_min = base_dd_max = p -> resource_max[ RESOURCE_HEALTH ];
+
+    paladin_heal_t::execute();    
+
+    target -> debuffs.forbearance -> trigger();
+
+    if ( p -> glyphs.divinity -> ok() )
+      p -> resource_gain( RESOURCE_MANA,
+                          p -> resource_max[ RESOURCE_MANA ] * p -> glyphs.divinity -> effect1().percent(),
+                          p -> gains_glyph_loh );
+  }
+
+  virtual bool ready()
+  {
+    if ( target -> debuffs.forbearance -> check() )
+      return false;
+
+    return paladin_heal_t::ready();
   }
 };
 
-} // ANONYMOUS NAMESPACE ===================================================
+} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Paladin Character Definition
@@ -2273,6 +2303,7 @@ void paladin_t::init_gains()
   player_t::init_gains();
 
   gains_divine_plea            = get_gain( "divine_plea"            );
+  gains_glyph_loh              = get_gain( "glyph_of_lay_on_hands"  );
   gains_judgements_of_the_wise = get_gain( "judgements_of_the_wise" );
   gains_judgements_of_the_bold = get_gain( "judgements_of_the_bold" );
   gains_sanctuary              = get_gain( "sanctuary"              );
@@ -2703,12 +2734,14 @@ void paladin_t::init_spells()
   glyphs.divine_favor             = find_glyph( "Glyph of Divine Favor" );
   glyphs.divine_plea              = find_glyph( "Glyph of Divine Plea" );
   glyphs.divine_protection        = find_glyph( "Glyph of Divine Protection" );
+  glyphs.divinity                 = find_glyph( "Glyph of Divinity" );
   glyphs.exorcism                 = find_glyph( "Glyph of Exorcism" );
   glyphs.focused_shield           = find_glyph( "Glyph of Focused Shield" );
   glyphs.hammer_of_the_righteous  = find_glyph( "Glyph of Hammer of the Righteous" );
   glyphs.hammer_of_wrath          = find_glyph( "Glyph of Hammer of Wrath" );
   glyphs.holy_shock               = find_glyph( "Glyph of Holy Shock" );
   glyphs.judgement                = find_glyph( "Glyph of Judgement" );
+  glyphs.lay_on_hands             = find_glyph( "Glyph of Lay on Hands" );
   glyphs.seal_of_truth            = find_glyph( "Glyph of Seal of Truth" );
   glyphs.shield_of_the_righteous  = find_glyph( "Glyph of Shield of the Righteous" );
   glyphs.templars_verdict         = find_glyph( "Glyph of Templar's Verdict" );
@@ -3106,6 +3139,7 @@ void player_t::paladin_init( sim_t* sim )
     p -> buffs.blessing_of_kings        = new buff_t( p, "blessing_of_kings",       ! p -> is_pet() );
     p -> buffs.blessing_of_might        = new buff_t( p, "blessing_of_might",       ! p -> is_pet() );
     p -> buffs.blessing_of_might_regen  = new buff_t( p, "blessing_of_might_regen", ! p -> is_pet() );
+    p -> debuffs.forbearance            = new debuff_t( p, 25771, "forbearance" );
     p -> debuffs.judgements_of_the_just = new debuff_t( p, "judgements_of_the_just", 1, 20.0 );
     p -> debuffs.vindication            = new debuff_t( p, "vindication",            1, 30.0 );
   }
