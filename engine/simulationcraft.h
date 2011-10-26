@@ -91,7 +91,6 @@
 #define SC_MINOR_VERSION "4"
 #define SC_USE_PTR ( 1 )
 #define SC_BETA ( 0 )
-#define DTR_DD_ENABLED ( 1 )
 #define SC_EPSILON ( 0.000001 )
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )
