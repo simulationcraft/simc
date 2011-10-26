@@ -96,6 +96,7 @@ struct priest_t : public player_t
     talent_t* state_of_mind;
     talent_t* heavenly_voice;
     talent_t* circle_of_healing;
+    talent_t* guardian_spirit;
 
     // Shadow
     talent_t* darkness;
@@ -234,22 +235,23 @@ struct priest_t : public player_t
   // Glyphs
   struct glyphs_t
   {
+    glyph_t* circle_of_healing;
     glyph_t* dispersion;
     glyph_t* divine_accuracy;
+    glyph_t* guardian_spirit;
     glyph_t* holy_nova;
     glyph_t* inner_fire;
+    glyph_t* lightwell;
     glyph_t* mind_flay;
     glyph_t* penance;
-    glyph_t* spirit_tap;
+    glyph_t* power_word_shield;
+    glyph_t* prayer_of_healing;
+    glyph_t* prayer_of_mending;
+    glyph_t* renew;
     glyph_t* shadow_word_death;
     glyph_t* shadow_word_pain;
     glyph_t* smite;
-    glyph_t* renew;
-    glyph_t* power_word_shield;
-    glyph_t* prayer_of_healing;
-    glyph_t* lightwell;
-    glyph_t* circle_of_healing;
-    glyph_t* prayer_of_mending;
+    glyph_t* spirit_tap;
   };
   glyphs_t glyphs;
 
@@ -3306,6 +3308,31 @@ struct flash_heal_t : public priest_heal_t
   }
 };
 
+// Guardian Spirit ==========================================================
+
+struct guardian_spirit_t : public priest_heal_t
+{
+  guardian_spirit_t( priest_t* p, const std::string& options_str ) :
+    priest_heal_t( "guardian_spirit", p, "Guardian Spirit" )
+  {
+    check_talent( p -> talents.guardian_spirit -> ok() );
+
+    parse_options( NULL, options_str );
+
+    // The absorb listed isn't a real absorb
+    base_dd_min = base_dd_max = 0;
+
+    cooldown -> duration += p -> glyphs.guardian_spirit -> effect1().seconds();
+  }
+
+  virtual void execute()
+  {
+    priest_heal_t::execute();
+
+    target -> buffs.guardian_spirit -> trigger();
+    target -> buffs.guardian_spirit -> source = player;
+  }
+};
 
 // Greater Heal Spell =======================================================
 
@@ -4541,6 +4568,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "divine_hymn"            ) return new divine_hymn_t           ( this, options_str );
   if ( name == "flash_heal"             ) return new flash_heal_t            ( this, options_str );
   if ( name == "greater_heal"           ) return new greater_heal_t          ( this, options_str );
+  if ( name == "guardian_spirit"        ) return new guardian_spirit_t       ( this, options_str );
   if ( name == "heal"                   ) return new _heal_t                 ( this, options_str );
   if ( name == "holy_word"              ) return new holy_word_t             ( this, options_str );
   if ( name == "lightwell"              ) return new lightwell_t             ( this, options_str );
@@ -4679,7 +4707,8 @@ void priest_t::init_rng()
   rng_tier13_4pc_heal    = get_rng( "tier13_4pc_heal" );
 }
 
-// priest_t::init_talents
+// priest_t::init_talents ===================================================
+
 void priest_t::init_talents()
 {
   // Discipline
@@ -4729,6 +4758,7 @@ void priest_t::init_talents()
     talents.state_of_mind               = find_talent( "State of Mind" );
   }
   talents.circle_of_healing           = find_talent( "Circle of Healing" );
+  talents.guardian_spirit             = find_talent( "Guardian Spirit" );
 
   // Shadow
   talents.darkness                    = find_talent( "Darkness" );
@@ -4788,22 +4818,23 @@ void priest_t::init_spells()
   dark_flames                   = spell_data_t::find( 99158, "Dark Flames", dbc.ptr );
 
   // Glyphs
+  glyphs.circle_of_healing  = find_glyph( "Glyph of Circle of Healing" );
   glyphs.dispersion         = find_glyph( "Glyph of Dispersion" );
   glyphs.divine_accuracy    = find_glyph( "Glyph of Divine Accuracy" );
+  glyphs.guardian_spirit    = find_glyph( "Glyph of Guardian Spirit" );
   glyphs.holy_nova          = find_glyph( "Glyph of Holy Nova" );
   glyphs.inner_fire         = find_glyph( "Glyph of Inner Fire" );
+  glyphs.lightwell          = find_glyph( "Glyph of Lightwell" );
   glyphs.mind_flay          = find_glyph( "Glyph of Mind Flay" );
   glyphs.penance            = find_glyph( "Glyph of Penance" );
-  glyphs.spirit_tap         = find_glyph( "Glyph of Spirit Tap" );
+  glyphs.power_word_shield  = find_glyph( "Glyph of Power Word: Shield" );
+  glyphs.prayer_of_healing  = find_glyph( "Glyph of Prayer of Healing" );
+  glyphs.prayer_of_mending  = find_glyph( "Glyph of Prayer of Mending" );
+  glyphs.renew              = find_glyph( "Glyph of Renew" );
   glyphs.shadow_word_death  = find_glyph( "Glyph of Shadow Word: Death" );
   glyphs.shadow_word_pain   = find_glyph( "Glyph of Shadow Word: Pain" );
   glyphs.smite              = find_glyph( "Glyph of Smite" );
-  glyphs.renew              = find_glyph( "Glyph of Renew" );
-  glyphs.power_word_shield  = find_glyph( "Glyph of Power Word: Shield" );
-  glyphs.prayer_of_healing  = find_glyph( "Glyph of Prayer of Healing" );
-  glyphs.lightwell          = find_glyph( "Glyph of Lightwell" );
-  glyphs.circle_of_healing  = find_glyph( "Glyph of Circle of Healing" );
-  glyphs.prayer_of_mending  = find_glyph( "Glyph of Prayer of Mending" );
+  glyphs.spirit_tap         = find_glyph( "Glyph of Spirit Tap" );
 
   // Set Bonuses
   // T11: H2P = 89910, H4P = 89911
@@ -5601,8 +5632,8 @@ void player_t::priest_init( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     p -> buffs.fortitude        = new stat_buff_t( p, "fortitude", STAT_STAMINA, floor( sim -> dbc.effect_average( sim -> dbc.spell( 79104 ) -> effect1().id(), sim -> max_player_level ) ), ! p -> is_pet() );
-    p -> buffs.pain_supression  = new      buff_t( p, 33206, "pain_supression" );
-    p -> buffs.pain_supression -> cooldown -> duration = 0; // Handled by the ability
+    p -> buffs.guardian_spirit  = new      buff_t( p, 47788, "guardian_spirit", 1.0, 0 ); // Let the ability handle the CD
+    p -> buffs.pain_supression  = new      buff_t( p, 33206, "pain_supression", 1.0, 0 ); // Let the ability handle the CD
     p -> buffs.power_infusion   = new      buff_t( p, "power_infusion", 1, 15.0, 0 );
     p -> buffs.inspiration      = new      buff_t( p, "inspiration", 1, 15.0, 0 );
     p -> buffs.weakened_soul    = new      buff_t( p, 6788, "weakened_soul" );

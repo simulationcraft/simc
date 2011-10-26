@@ -3942,12 +3942,22 @@ double player_t::assess_damage( double            amount,
 
   if ( resource_current[ RESOURCE_HEALTH ] <= 0 && !is_enemy() && infinite_resource[ RESOURCE_HEALTH ] == 0 )
   {
-    if ( ! sleeping )
+    // This can only save the target, if the damage is less than 200% of the target's health as of 4.0.6
+    if ( buffs.guardian_spirit -> check() && actual_amount <= ( resource_max[ RESOURCE_HEALTH] * 2 ) )
     {
-      deaths.add( current_time );
+      buffs.guardian_spirit -> expire();
+      // FIXME: This should be done as a proper heal, so the casting priest gets the credit for saving the day
+      resource_gain( RESOURCE_HEALTH, resource_max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> effect2().percent() );
     }
-    if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
-    demise();
+    else
+    {
+      if ( ! sleeping )
+      {
+        deaths.add( current_time );
+      }
+      if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
+      demise();
+    }
   }
 
   if ( vengeance_enabled )
@@ -4017,6 +4027,9 @@ player_t::heal_info_t player_t::assess_heal(  double            amount,
                                               action_t*         action )
 {
   heal_info_t heal;
+
+  if ( buffs.guardian_spirit -> up() )
+    amount *= 1.0 + buffs.guardian_spirit -> effect1().percent();
 
   heal.amount = resource_gain( RESOURCE_HEALTH, amount, 0, action );
   heal.actual = amount;

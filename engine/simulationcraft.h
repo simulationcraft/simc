@@ -3916,6 +3916,7 @@ struct player_t : public noncopyable
     buff_t* furious_howl;
     buff_t* golemblood_potion;
     buff_t* grace;
+    buff_t* guardian_spirit;
     buff_t* hellscreams_warsong;
     buff_t* heroic_presence;
     buff_t* hymn_of_hope;
