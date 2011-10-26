@@ -46,6 +46,7 @@ struct paladin_t : public player_t
   buff_t* buffs_divine_plea;
   buff_t* buffs_divine_protection;
   buff_t* buffs_divine_purpose;
+  buff_t* buffs_divine_shield;
   buff_t* buffs_grand_crusader;
   buff_t* buffs_holy_shield;
   buff_t* buffs_inquisition;
@@ -565,6 +566,11 @@ struct paladin_attack_t : public attack_t
     if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
     {
       player_multiplier *= 1.12;
+    }
+
+    if ( p -> buffs_divine_shield -> up() )
+    {
+      player_multiplier *= 1.0 + p -> buffs_divine_shield -> effect1().percent();
     }
   }
 
@@ -1606,6 +1612,11 @@ struct paladin_spell_t : public spell_t
     {
       player_multiplier *= 1.12;
     }
+
+    if ( p -> buffs_divine_shield -> up() )
+    {
+      player_multiplier *= 1.0 + p -> buffs_divine_shield -> effect1().percent();
+    }
   }
 
   virtual void execute()
@@ -1802,6 +1813,39 @@ struct divine_protection_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p -> buffs_divine_protection -> trigger();
+  }
+};
+
+// Divine Shield ============================================================
+
+struct divine_shield_t : public paladin_spell_t
+{
+  divine_shield_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "divine_shield", "Divine Shield", p )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    paladin_spell_t::execute();
+
+    // Technically this should also drop you from the mob's threat table,
+    // but we'll assume the MT isn't using it for now
+    p -> buffs_divine_shield -> trigger();
+    p -> debuffs.forbearance -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( player -> debuffs.forbearance -> check() )
+      return false;
+
+    return paladin_spell_t::ready();
   }
 };
 
@@ -2195,6 +2239,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_favor"              ) return new divine_favor_t             ( this, options_str );
   if ( name == "divine_plea"               ) return new divine_plea_t              ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
+  if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "exorcism"                  ) return new exorcism_t                 ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
@@ -2459,6 +2504,7 @@ void paladin_t::init_buffs()
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
   buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
+  buffs_divine_shield          = new buff_t( this,   642, "divine_shield", 1.0, 0 ); // Let the ability handle the CD
   buffs_grand_crusader         = new buff_t( this, talents.grand_crusader -> effect_trigger_spell( 1 ), "grand_crusader", talents.grand_crusader -> proc_chance() );
   buffs_holy_shield            = new buff_t( this, 20925, "holy_shield" );
   buffs_inquisition            = new buff_t( this, 84963, "inquisition" );
@@ -2967,6 +3013,14 @@ double paladin_t::assess_damage( double            amount,
                                  int               result,
                                  action_t*         action )
 {
+  if ( buffs_divine_shield -> up() )
+  {
+    amount = 0;
+    
+    // Return out, as you don't get to benefit from anything else
+    return player_t::assess_damage( amount, school, dmg_type, result, action );
+  }
+
   if ( buffs_divine_protection -> up() )
   {
     if ( school == SCHOOL_PHYSICAL )
