@@ -1412,6 +1412,12 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     break;
   }
 
+  // FIXME: 4.3 PTR nerf seems to be roughly a halving of the proc chance - only tested warlocks so far, 2011/10/26
+  if ( p -> ptr )
+  {
+    chance *= 0.5;
+  }
+
   // Allow for override
   if ( p -> dtr_proc_chance >= 0.0 )
   {
