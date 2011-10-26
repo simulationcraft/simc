@@ -44,6 +44,7 @@ struct paladin_t : public player_t
   buff_t* buffs_censure;
   buff_t* buffs_divine_favor;
   buff_t* buffs_divine_plea;
+  buff_t* buffs_divine_protection;
   buff_t* buffs_divine_purpose;
   buff_t* buffs_grand_crusader;
   buff_t* buffs_holy_shield;
@@ -205,6 +206,7 @@ struct paladin_t : public player_t
     glyph_t* ascetic_crusader;
     glyph_t* consecration;
     glyph_t* divine_plea;
+    glyph_t* divine_protection;
     glyph_t* focused_shield;
     glyph_t* hammer_of_wrath;
 
@@ -1777,6 +1779,29 @@ struct divine_plea_t : public paladin_spell_t
   }
 };
 
+// Divine Protection ========================================================
+
+struct divine_protection_t : public paladin_spell_t
+{
+  divine_protection_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "divine_protection", "Divine Protection", p )
+  {
+    parse_options( NULL, options_str );
+
+    cooldown -> duration += p -> talents.paragon_of_virtue -> effect1().seconds();
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    paladin_spell_t::execute();
+
+    p -> buffs_divine_protection -> trigger();
+  }
+};
+
 // Exorcism =================================================================
 
 struct exorcism_t : public paladin_spell_t
@@ -2139,6 +2164,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
   if ( name == "divine_favor"              ) return new divine_favor_t             ( this, options_str );
   if ( name == "divine_plea"               ) return new divine_plea_t              ( this, options_str );
+  if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "exorcism"                  ) return new exorcism_t                 ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
@@ -2400,6 +2426,7 @@ void paladin_t::init_buffs()
   buffs_censure                = new buff_t( this, 31803, "censure" );
   buffs_divine_favor           = new buff_t( this, "divine_favor",           1, spells.divine_favor -> duration() + glyphs.divine_favor -> mod_additive( P_DURATION ) );
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
+  buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
   buffs_grand_crusader         = new buff_t( this, talents.grand_crusader -> effect_trigger_spell( 1 ), "grand_crusader", talents.grand_crusader -> proc_chance() );
   buffs_holy_shield            = new buff_t( this, 20925, "holy_shield" );
@@ -2675,6 +2702,7 @@ void paladin_t::init_spells()
   glyphs.crusader_strike          = find_glyph( "Glyph of Crusader Strike" );
   glyphs.divine_favor             = find_glyph( "Glyph of Divine Favor" );
   glyphs.divine_plea              = find_glyph( "Glyph of Divine Plea" );
+  glyphs.divine_protection        = find_glyph( "Glyph of Divine Protection" );
   glyphs.exorcism                 = find_glyph( "Glyph of Exorcism" );
   glyphs.focused_shield           = find_glyph( "Glyph of Focused Shield" );
   glyphs.hammer_of_the_righteous  = find_glyph( "Glyph of Hammer of the Righteous" );
@@ -2906,6 +2934,17 @@ double paladin_t::assess_damage( double            amount,
                                  int               result,
                                  action_t*         action )
 {
+  if ( buffs_divine_protection -> up() )
+  {
+    if ( school == SCHOOL_PHYSICAL )
+    {
+      amount *= 1.0 + buffs_divine_protection -> effect2().percent() + glyphs.divine_protection -> effect1().percent();
+    }
+    else
+    {
+      amount *= 1.0 + buffs_divine_protection -> effect3().percent() + glyphs.divine_protection -> effect2().percent();
+    }
+  }
 
   if ( talents.sanctuary -> rank() )
   {
@@ -2937,6 +2976,8 @@ double paladin_t::assess_damage( double            amount,
 
   return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
+
+// paladin_t::assess_heal ===================================================
 
 player_t::heal_info_t paladin_t::assess_heal(  double            amount,
                                                const school_type school,
