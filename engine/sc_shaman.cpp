@@ -2122,13 +2122,6 @@ void shaman_spell_t::execute()
         p -> cooldowns_t12_2pc_caster -> start( 105.0 );
       }
     }
-    else
-    {
-      if ( p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
-      {
-        p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
-      }
-    }
   }
 
   // Record maelstrom weapon stack usage
@@ -2544,6 +2537,10 @@ struct lightning_bolt_t : public shaman_spell_t
     p -> buffs_elemental_mastery_insta -> expire();
 
     p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
+    if ( p -> dbc.ptr && p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+    {
+      p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
+    }
   }
 
   virtual double execute_time() SC_CONST
