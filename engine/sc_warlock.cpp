@@ -1430,8 +1430,9 @@ struct felguard_pet_t : public warlock_main_pet_t
 
     virtual void tick( dot_t* d )
     {
-      warlock_pet_attack_t::tick( d );
       felstorm_tick -> execute();
+
+      stats -> add_tick( d -> time_to_tick );
     }
   };
 
