@@ -802,6 +802,7 @@ void player_t::init_items()
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, items_str, "/" );
+  int num_ilvl_items = 0;
   for ( int i=0; i < num_splits; i++ )
   {
     if ( find_item( splits[ i ] ) )
@@ -845,7 +846,11 @@ void player_t::init_items()
       return;
     }
 
-    avg_ilvl += item.ilevel;
+    if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD && item.active() )
+    {
+      avg_ilvl += item.ilevel;
+      num_ilvl_items++;
+    }
 
     slots[ item.slot ] = item.matching_type();
 
@@ -855,7 +860,8 @@ void player_t::init_items()
     }
   }
 
-  avg_ilvl /= num_items;
+  if ( num_ilvl_items > 1 )
+    avg_ilvl /= num_ilvl_items;
 
   switch ( type )
   {

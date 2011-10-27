@@ -646,8 +646,9 @@ static void print_html_gear ( FILE* file, player_t* a )
              "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
              "\t\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t\t<th></th>\n"
-             "\t\t\t\t\t\t\t\t\t\t<th>Encoded</th>\n"
-             "\t\t\t\t\t\t\t\t\t</tr>\n" );
+             "\t\t\t\t\t\t\t\t\t\t<th>Average Item Level: %.2f</th>\n"
+             "\t\t\t\t\t\t\t\t\t</tr>\n",
+             a -> avg_ilvl );
 
     for ( int i=0; i < SLOT_MAX; i++ )
     {
