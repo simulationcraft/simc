@@ -53,6 +53,11 @@ _DIFF_DATA = {
             ( 'max_durability', _REMOVE_FIELD ) # Figure out what actually got removed
         ]
     },
+    14890: {
+        'Item-sparse.db2' : [
+            ( ( 'unk_14890' ), _ADD_FIELD, 'unk_14732_2'   ),
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for 12604, as that's our first DBC/DB2 data version

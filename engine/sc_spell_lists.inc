@@ -2354,7 +2354,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 };
 
 #define TIER_BONUSES_SIZE (6)
-#define TIER_BONUSES_MAX_TIER (3)
+#define TIER_BONUSES_MAX_TIER (4)
 
 #define TIER_BONUSES_TIER_BASE (11)
 
@@ -2386,6 +2386,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
           0,
     },
+    {
+          0,
+    },
   },
   // Tier bonuses for Paladin
   {
@@ -2410,6 +2413,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
           0,
     },
+    {
+          0,
+    },
   },
   // Tier bonuses for Hunter
   {
@@ -2428,6 +2434,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
           0,
     },
+    {
+          0,
+    },
   },
   // Tier bonuses for Rogue
   {
@@ -2441,6 +2450,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
       99174, // Vestments of the Dark Phoenix - 2 Piece Bonus (Item - Rogue T12 2P Bonus)
       99175, // Vestments of the Dark Phoenix - 4 Piece Bonus (Item - Rogue T12 4P Bonus)
+          0,
+    },
+    {
           0,
     },
     {
@@ -2468,6 +2480,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
           0,
     },
+    {
+          0,
+    },
   },
   // Tier bonuses for Death Knight
   {
@@ -2485,6 +2500,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       98966, // Elementium Deathplate Battlearmor - 4 Piece Bonus (Item - Death Knight T12 Blood 4P Bonus)
       98970, // Elementium Deathplate Battlegear - 2 Piece Bonus (Item - Death Knight T12 DPS 2P Bonus)
       98996, // Elementium Deathplate Battlegear - 4 Piece Bonus (Item - Death Knight T12 DPS 4P Bonus)
+          0,
+    },
+    {
           0,
     },
     {
@@ -2514,6 +2532,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
           0,
     },
+    {
+          0,
+    },
   },
   // Tier bonuses for Mage
   {
@@ -2532,6 +2553,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
           0,
     },
+    {
+          0,
+    },
   },
   // Tier bonuses for Warlock
   {
@@ -2545,6 +2569,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
       99220, // Balespider's Burning Vestments - 2 Piece Bonus (Item - Warlock T12 2P Bonus)
       99229, // Balespider's Burning Vestments - 4 Piece Bonus (Item - Warlock T12 4P Bonus)
+          0,
+    },
+    {
           0,
     },
     {
@@ -2575,6 +2602,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99015, // Obsidian Arborweave Vestments - 4 Piece Bonus (Item - Druid T12 Restoration 4P Bonus)
       99019, // Obsidian Arborweave Regalia - 2 Piece Bonus (Item - Druid T12 Balance 2P Bonus)
       99049, // Obsidian Arborweave Regalia - 4 Piece Bonus (Item - Druid T12 Balance 4P Bonus)
+    },
+    {
+          0,
     },
     {
           0,
