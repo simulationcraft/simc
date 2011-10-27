@@ -201,6 +201,7 @@ struct paladin_t : public player_t
     glyph_t* hammer_of_the_righteous;
     glyph_t* holy_shock;
     glyph_t* judgement;
+    glyph_t* seal_of_insight;
     glyph_t* seal_of_truth;
     glyph_t* shield_of_the_righteous;
     glyph_t* templars_verdict;
@@ -477,6 +478,9 @@ struct paladin_heal_t : public heal_t
     {
       player_crit += p -> buffs_divine_favor -> effect2().percent();
     }
+
+    if ( p -> active_seal == SEAL_OF_INSIGHT && p -> glyphs.seal_of_insight -> ok() )
+      player_multiplier *= 1.0 + p -> glyphs.seal_of_insight -> effect1().percent();
   }
 };
 
@@ -1171,7 +1175,6 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     target = player;
     heal_target.clear();
     heal_target.push_back( target );
-
   }
 
   virtual void execute()
@@ -2967,6 +2970,7 @@ void paladin_t::init_spells()
   glyphs.holy_shock               = find_glyph( "Glyph of Holy Shock" );
   glyphs.judgement                = find_glyph( "Glyph of Judgement" );
   glyphs.lay_on_hands             = find_glyph( "Glyph of Lay on Hands" );
+  glyphs.seal_of_insight          = find_glyph( "Glyph of Seal of Insight" );
   glyphs.seal_of_truth            = find_glyph( "Glyph of Seal of Truth" );
   glyphs.shield_of_the_righteous  = find_glyph( "Glyph of Shield of the Righteous" );
   glyphs.templars_verdict         = find_glyph( "Glyph of Templar's Verdict" );
