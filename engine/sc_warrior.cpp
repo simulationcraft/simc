@@ -94,6 +94,7 @@ struct warrior_t : public player_t
   buff_t* buffs_berserker_rage;
   buff_t* buffs_berserker_stance;
   buff_t* buffs_bloodsurge;
+  buff_t* buffs_bloodthirst;
   buff_t* buffs_colossus_smash;
   buff_t* buffs_deadly_calm;
   buff_t* buffs_death_wish;
@@ -1339,12 +1340,54 @@ struct bladestorm_t : public warrior_attack_t
   virtual double swing_haste() SC_CONST { return 1.0; }
 };
 
+// Bloodthirst Heal ==============================================================
+
+struct bloodthirst_heal_t : public heal_t
+{
+  bloodthirst_heal_t( warrior_t* p ) :
+    heal_t( "bloodthirst_heal", p, "Bloodthirst" )
+  {
+    // Add Field Dressing Talent, warrior heal etc.
+
+    // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
+
+    resource = RESOURCE_NONE;
+    background= true;
+
+  }
+};
+
+struct bloodthirst_buff_callback_t : public action_callback_t
+    {
+      buff_t* buff;
+      bloodthirst_heal_t* bloodthirst_heal;
+
+      bloodthirst_buff_callback_t( warrior_t* p, buff_t* b ) :
+        action_callback_t( p -> sim, p ), buff( b )
+      {
+        bloodthirst_heal = new bloodthirst_heal_t( p );
+      }
+      virtual void trigger( action_t* a , void* /* call_data */ )
+      {
+
+        if ( buff -> check() && a -> weapon && a -> direct_dmg > 0 )
+        {
+
+          bloodthirst_heal -> base_dd_min = bloodthirst_heal -> base_dd_max = bloodthirst_heal -> effect2().base_value() / 1000.0 * a -> direct_dmg;
+          bloodthirst_heal -> execute();
+          buff -> decrement( 1 );
+        }
+      }
+    };
+
+
 // Bloodthirst ==============================================================
 
 struct bloodthirst_t : public warrior_attack_t
 {
   bloodthirst_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "bloodthirst", "Bloodthirst", p )
+
   {
     check_spec( TREE_FURY );
 
@@ -1360,6 +1403,7 @@ struct bloodthirst_t : public warrior_attack_t
     base_multiplier   *= 1.0 + p -> glyphs.bloodthirst -> effect1().percent()
                              + p -> set_bonus.tier11_2pc_melee() * 0.05;
     base_crit         += p -> talents.cruelty -> effect1().percent();
+
   }
 
   virtual void execute()
@@ -1369,6 +1413,8 @@ struct bloodthirst_t : public warrior_attack_t
     if ( result_is_hit() )
     {
       warrior_t* p = player -> cast_warrior();
+
+      p -> buffs_bloodthirst -> trigger( 3 );
 
       p -> buffs_battle_trance -> trigger();
 
@@ -3414,6 +3460,7 @@ void warrior_t::init_buffs()
   buffs_berserker_rage            = new buff_t( this, "berserker_rage",            1, 10.0 );
   buffs_berserker_stance          = new buff_t( this, 7381, "berserker_stance" );
   buffs_bloodsurge                = new buff_t( this, "bloodsurge",                1, 10.0,   0, talents.bloodsurge -> proc_chance() );
+  buffs_bloodthirst               = new buff_t( this, 23885, "bloodthirst" );
   buffs_colossus_smash            = new buff_t( this, "colossus_smash",            1,  6.0 );
   buffs_deadly_calm               = new buff_t( this, "deadly_calm",               1, 10.0 );
   buffs_death_wish                = new buff_t( this, "death_wish",                1, 30.0 );
@@ -3452,6 +3499,9 @@ void warrior_t::init_buffs()
   default: duration = 12.0; break;
   }
   buffs_tier12_2pc_melee          = new buff_t( this, "tier12_2pc_melee",          1, duration,   0, set_bonus.tier12_2pc_melee() );
+
+  register_direct_damage_callback( SCHOOL_ATTACK_MASK, new bloodthirst_buff_callback_t( this, buffs_bloodthirst ) );
+
 
   // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
 }
