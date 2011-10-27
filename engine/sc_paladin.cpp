@@ -42,6 +42,7 @@ struct paladin_t : public player_t
   buff_t* buffs_ancient_power;
   buff_t* buffs_avenging_wrath;
   buff_t* buffs_censure;
+  buff_t* buffs_conviction;
   buff_t* buffs_daybreak;
   buff_t* buffs_divine_favor;
   buff_t* buffs_divine_plea;
@@ -439,6 +440,16 @@ struct paladin_heal_t : public heal_t
     return heal_t::cost();
   }
 
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    heal_t::execute();
+
+    if ( result == RESULT_CRIT && direct_dmg > 0 )
+      p -> buffs_conviction -> trigger();
+  }
+
   virtual double haste() SC_CONST
   {
     double h = spell_t::haste();
@@ -456,6 +467,11 @@ struct paladin_heal_t : public heal_t
     paladin_t* p = player -> cast_paladin();
 
     heal_t::player_buff();
+
+    if ( p -> buffs_conviction -> up() )
+    {
+      player_multiplier *= 1.0 + p -> buffs_conviction -> effect2().percent();
+    }
 
     if ( p -> buffs_divine_favor -> up() )
     {
@@ -574,6 +590,9 @@ struct paladin_attack_t : public attack_t
           pa -> procs_wasted_divine_purpose -> occur();
         }
       }
+
+      if ( result == RESULT_CRIT && direct_dmg > 0 )
+        pa -> buffs_conviction -> trigger();
     }
   }
 
@@ -589,6 +608,11 @@ struct paladin_attack_t : public attack_t
     if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
     {
       player_multiplier *= 1.12;
+    }
+    
+    if ( p -> buffs_conviction -> up() )
+    {
+      player_multiplier *= 1.0 + p -> buffs_conviction -> effect1().percent();
     }
 
     if ( p -> buffs_divine_shield -> up() )
@@ -622,7 +646,6 @@ struct paladin_attack_t : public attack_t
       p -> buffs_divine_purpose -> expire();
   }
 };
-
 
 // Melee Attack =============================================================
 
@@ -1649,9 +1672,10 @@ struct paladin_spell_t : public spell_t
     spell_t::execute();
     if ( result_is_hit() )
     {
+      paladin_t* pa = player -> cast_paladin();
+
       if ( trigger_dp )
       {
-        paladin_t* pa = player -> cast_paladin();
         bool already_up = pa -> buffs_divine_purpose -> check() != 0;
         bool triggered = pa -> buffs_divine_purpose -> trigger();
         if ( already_up && triggered )
@@ -1659,6 +1683,8 @@ struct paladin_spell_t : public spell_t
           pa -> procs_wasted_divine_purpose -> occur();
         }
       }
+      if ( result == RESULT_CRIT && direct_dmg > 0 )
+        pa -> buffs_conviction -> trigger();
     }
   }
 
@@ -1689,6 +1715,11 @@ struct paladin_spell_t : public spell_t
     if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
     {
       player_multiplier *= 1.12;
+    }
+
+    if ( p -> buffs_conviction -> up() )
+    {
+      player_multiplier *= 1.0 + p -> buffs_conviction -> effect1().percent();
     }
 
     if ( p -> buffs_divine_shield -> up() )
@@ -2646,6 +2677,7 @@ void paladin_t::init_buffs()
   buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
   buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
   buffs_censure                = new buff_t( this, 31803, "censure" );
+  buffs_conviction             = new buff_t( this, talents.conviction -> effect1().trigger_spell_id(), "conviction" );
   buffs_daybreak               = new buff_t( this, talents.daybreak -> effect_trigger_spell( 1 ), "daybreak", talents.daybreak -> proc_chance() );
   buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, 0 ); // Let the ability handle the CD
   buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().seconds();
