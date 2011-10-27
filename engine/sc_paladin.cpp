@@ -28,6 +28,7 @@ struct paladin_t : public player_t
 {
   // Active
   int       active_seal;
+  action_t* active_enlightened_judgements;
   action_t* active_flames_of_the_faithful_proc;
   action_t* active_hand_of_light_proc;
   action_t* active_seal_of_insight_proc;
@@ -230,16 +231,16 @@ struct paladin_t : public player_t
     tree_type[ PALADIN_PROTECTION  ] = TREE_PROTECTION;
     tree_type[ PALADIN_RETRIBUTION ] = TREE_RETRIBUTION;
 
+    active_enlightened_judgements      = 0;
+    active_flames_of_the_faithful_proc = 0;
+    active_hand_of_light_proc          = 0;
     active_seal = SEAL_NONE;
-
     active_seals_of_command_proc       = 0;
     active_seal_of_justice_proc        = 0;
     active_seal_of_insight_proc        = 0;
     active_seal_of_righteousness_proc  = 0;
     active_seal_of_truth_proc          = 0;
     active_seal_of_truth_dot           = 0;
-    active_flames_of_the_faithful_proc = 0;
-    active_hand_of_light_proc          = 0;
     ancient_fury_explosion             = 0;
 
     cooldowns_avengers_shield = get_cooldown( "avengers_shield" );
@@ -296,6 +297,16 @@ struct paladin_t : public player_t
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
+
+// trigger_enlightened_judgements ===========================================
+
+static void trigger_enlightened_judgements( paladin_t* p )
+{
+  if ( ! p -> talents.enlightened_judgements -> rank() )
+    return;
+
+
+}
 
 // trigger_hand_of_light ====================================================
 
@@ -1745,7 +1756,8 @@ struct avenging_wrath_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    cooldown -> duration += p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN )
+                            + p -> talents.paragon_of_virtue -> effect1().seconds();
   }
 
   virtual void execute()
