@@ -171,7 +171,7 @@ void action_t::init_action_t_()
 
   const spell_data_t* spell = player -> dbc.spell( id );
 
-  if ( id && spell && ! spell -> is_level( player -> level ) && spell -> level() <= MAX_LEVEL )
+  if ( id && spell && s_type == T_CLASS && ! spell -> is_level( player -> level ) && spell -> level() <= MAX_LEVEL )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n",
                    player -> name(), name(), player -> level, spell -> level() );
