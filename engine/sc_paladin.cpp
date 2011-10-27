@@ -42,6 +42,7 @@ struct paladin_t : public player_t
   buff_t* buffs_ancient_power;
   buff_t* buffs_avenging_wrath;
   buff_t* buffs_censure;
+  buff_t* buffs_daybreak;
   buff_t* buffs_divine_favor;
   buff_t* buffs_divine_plea;
   buff_t* buffs_divine_protection;
@@ -49,6 +50,7 @@ struct paladin_t : public player_t
   buff_t* buffs_divine_shield;
   buff_t* buffs_grand_crusader;
   buff_t* buffs_holy_shield;
+  buff_t* buffs_infusion_of_light;
   buff_t* buffs_inquisition;
   buff_t* buffs_judgements_of_the_bold;
   buff_t* buffs_judgements_of_the_pure;
@@ -2145,9 +2147,7 @@ struct zealotry_t : public paladin_spell_t
 // Paladin Heals
 // ==========================================================================
 
-
-
-// Word of Glory Spell
+// Word of Glory Spell ======================================================
 
 struct word_of_glory_t : public paladin_heal_t
 {
@@ -2182,7 +2182,7 @@ struct word_of_glory_t : public paladin_heal_t
   }
 };
 
-// Holy Light Spell
+// Holy Light Spell =========================================================
 
 struct holy_light_t : public paladin_heal_t
 {
@@ -2193,9 +2193,74 @@ struct holy_light_t : public paladin_heal_t
 
     base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
   }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    paladin_heal_t::execute();
+
+    p -> buffs_daybreak -> trigger();
+    p -> buffs_infusion_of_light -> expire();
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    double t = paladin_heal_t::execute_time();
+
+    if ( p -> buffs_infusion_of_light -> up() )
+      t += p -> buffs_infusion_of_light -> effect1().seconds();
+
+    return t;
+  }
 };
 
-// Flash of Light Spell
+// Holy Shock Heal Spell ====================================================
+
+struct holy_shock_heal_t : public paladin_heal_t
+{
+  double cd_duration;
+
+  holy_shock_heal_t( paladin_t* p, const std::string& options_str ) : 
+    paladin_heal_t( "holy_shock_heal", p, 20473 ), cd_duration( 0 )
+  {
+    check_spec( TREE_HOLY );
+
+    parse_options( NULL, options_str );
+
+    // Heal info is in 25914
+    parse_effect_data( 25914, 1 );
+
+    base_crit += p -> glyphs.holy_shock -> effect1().percent()
+                 + p -> talents.infusion_of_light -> effect2().percent();
+
+    cd_duration = cooldown -> duration;
+  }
+  
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    if ( p -> buffs_daybreak -> up() )
+      cooldown -> duration = 0;
+
+    paladin_heal_t::execute();
+
+    p -> resource_gain( RESOURCE_HOLY_POWER,
+                        p -> dbc.spell( 25914 ) -> effect2().base_value(),
+                        p -> gains_hp_holy_shock );
+
+    p -> buffs_daybreak -> expire();
+    cooldown -> duration = cd_duration;
+
+    if ( result == RESULT_CRIT )
+      p -> buffs_infusion_of_light -> trigger();
+  }
+};
+
+// Flash of Light Spell =====================================================
 
 struct flash_of_light_t : public paladin_heal_t
 {
@@ -2204,9 +2269,31 @@ struct flash_of_light_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
   }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    paladin_heal_t::execute();
+
+    p -> buffs_daybreak -> trigger();
+    p -> buffs_infusion_of_light -> expire();
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    double t = paladin_heal_t::execute_time();
+
+    if ( p -> buffs_infusion_of_light -> up() )
+      t += p -> buffs_infusion_of_light -> effect1().seconds();
+
+    return t;
+  }
 };
 
-// Divine Light Spell
+// Divine Light Spell =======================================================
 
 struct divine_light_t : public paladin_heal_t
 {
@@ -2216,6 +2303,28 @@ struct divine_light_t : public paladin_heal_t
     parse_options( NULL, options_str );
 
     base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    paladin_heal_t::execute();
+
+    p -> buffs_daybreak -> trigger();
+    p -> buffs_infusion_of_light -> expire();
+  }
+  
+  virtual double execute_time() SC_CONST
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    double t = paladin_heal_t::execute_time();
+
+    if ( p -> buffs_infusion_of_light -> up() )
+      t += p -> buffs_infusion_of_light -> effect1().seconds();
+
+    return t;
   }
 };
 
@@ -2283,6 +2392,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "holy_shield"               ) return new holy_shield_t              ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
+  if ( name == "holy_shock_heal"           ) return new holy_shock_heal_t          ( this, options_str );
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "inquisition"               ) return new inquisition_t              ( this, options_str );
@@ -2536,6 +2646,7 @@ void paladin_t::init_buffs()
   buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
   buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
   buffs_censure                = new buff_t( this, 31803, "censure" );
+  buffs_daybreak               = new buff_t( this, 88819, "daybreak", talents.daybreak -> proc_chance() );
   buffs_divine_favor           = new buff_t( this, 31842, "divine_favor", 1.0, 0 ); // Let the ability handle the CD
   buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().seconds();
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
@@ -2544,6 +2655,7 @@ void paladin_t::init_buffs()
   buffs_divine_shield          = new buff_t( this,   642, "divine_shield", 1.0, 0 ); // Let the ability handle the CD
   buffs_grand_crusader         = new buff_t( this, talents.grand_crusader -> effect_trigger_spell( 1 ), "grand_crusader", talents.grand_crusader -> proc_chance() );
   buffs_holy_shield            = new buff_t( this, 20925, "holy_shield" );
+  buffs_infusion_of_light      = new buff_t( this, talents.infusion_of_light -> effect_trigger_spell( 1 ), "infusion_of_light" ); 
   buffs_inquisition            = new buff_t( this, 84963, "inquisition" );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", ( primary_tree() == TREE_RETRIBUTION ? 1 : 0 ) );
   buffs_judgements_of_the_pure = new buff_t( this, talents.judgements_of_the_pure -> effect_trigger_spell( 1 ), "judgements_of_the_pure", talents.judgements_of_the_pure -> proc_chance() );
