@@ -3947,11 +3947,10 @@ double player_t::assess_damage( double            amount,
     {
       // Just assume that this is used so rarely that a strcmp hack will do
       stats_t* s = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
-      double amount = resource_max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> effect2().percent();
+      double gs_amount = resource_max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> effect2().percent();
       resource_gain( RESOURCE_HEALTH, amount );
       if ( s )
-        s -> add_result( amount, amount, HEAL_DIRECT, RESULT_HIT );
-
+        s -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
 
       buffs.guardian_spirit -> expire();
     }
