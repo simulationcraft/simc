@@ -44,7 +44,7 @@ struct priest_t : public player_t
   buff_t* buffs_shadow_form;
   buff_t* buffs_shadow_orb;
   buff_t* buffs_shadowfiend;
-  buff_t* buffs_spirit_tap;
+  buff_t* buffs_glyph_of_spirit_tap;
   buff_t* buffs_vampiric_embrace;
 
   // Set Bonus
@@ -1930,7 +1930,7 @@ struct inner_will_t : public priest_spell_t
 struct pain_suppression_t : public priest_spell_t
 {
   pain_suppression_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "pain_suppression", p, 33206 )
+    priest_spell_t( "pain_suppression", p, "Pain Suppression" )
   {
     check_talent( p -> talents.pain_suppression -> ok() );
 
@@ -3609,7 +3609,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
 struct holy_word_chastise_t : public priest_spell_t
 {
   holy_word_chastise_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "holy_word_chastise", p, 88625 )
+    priest_spell_t( "holy_word_chastise", p, "Holy Word: Chastise" )
   {
     parse_options( NULL, options_str );
 
@@ -3745,12 +3745,12 @@ struct holy_word_t : public priest_spell_t
 
 // Lightwell Spell ==========================================================
 
-struct lightwell_t : public spell_t
+struct lightwell_t : public priest_spell_t
 {
   double consume_interval;
 
   lightwell_t( priest_t* p, const std::string& options_str ) :
-    spell_t( "lightwell", 724, p ), consume_interval( 10 )
+    priest_spell_t( "lightwell", p, "Lightwell" ), consume_interval( 10 )
   {
     option_t options[] =
     {
@@ -3768,7 +3768,7 @@ struct lightwell_t : public spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    spell_t::execute();
+    priest_spell_t::execute();
 
     // PTR
     // Needs testing
@@ -3827,7 +3827,7 @@ struct penance_heal_t : public priest_heal_t
   penance_heal_tick_t* penance_tick;
 
   penance_heal_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "penance_heal", p, 47540 ), penance_tick( 0 )
+    priest_heal_t( "penance_heal", p, "Penance" ), penance_tick( 0 )
   {
     check_spec( TREE_DISCIPLINE );
 
@@ -3889,7 +3889,7 @@ struct power_word_shield_t : public priest_absorb_t
   int ignore_debuff;
 
   power_word_shield_t( priest_t* p, const std::string& options_str ) :
-    priest_absorb_t( "power_word_shield", p, 17 ), glyph_pws( 0 ), ignore_debuff( 0 )
+    priest_absorb_t( "power_word_shield", p, "Power Word: Shield" ), glyph_pws( 0 ), ignore_debuff( 0 )
   {
     option_t options[] =
     {
@@ -4859,7 +4859,7 @@ void priest_t::init_buffs()
   player_t::init_buffs();
 
   // Discipline
-  buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect_trigger_spell( 1 ), "borrowed_time", talents.borrowed_time -> rank() );
+  buffs_borrowed_time              = new buff_t( this, talents.borrowed_time -> effect1().trigger_spell_id(), "borrowed_time", talents.borrowed_time -> rank() );
   // TEST: buffs_borrowed_time -> activated = false;
   buffs_dark_evangelism            = new buff_t( this, talents.evangelism -> rank() == 2 ? 87118 : 87117, "dark_evangelism", talents.evangelism -> rank() );
   buffs_dark_evangelism -> activated = false;
@@ -4867,7 +4867,7 @@ void priest_t::init_buffs()
   buffs_holy_evangelism -> activated = false;
   buffs_dark_archangel             = new buff_t( this, 87153, "dark_archangel" );
   buffs_holy_archangel             = new buff_t( this, 81700, "holy_archangel" );
-  buffs_inner_fire                 = new buff_t( this,   588, "inner_fire"                                              );
+  buffs_inner_fire                 = new buff_t( this, "inner_fire", "Inner Fire" );
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
@@ -4895,7 +4895,7 @@ void priest_t::init_buffs()
   buffs_chakra_chastise            = new buff_t( this, 81209, "chakra_chastise" );
   buffs_chakra_sanctuary           = new buff_t( this, 81206, "chakra_sanctuary" );
   buffs_chakra_serenity            = new buff_t( this, 81208, "chakra_serenity" );
-  buffs_serendipity                = new buff_t( this, talents.serendipity -> effect_trigger_spell( 1 ), "serendipity", talents.serendipity -> rank() );
+  buffs_serendipity                = new buff_t( this, talents.serendipity -> effect1().trigger_spell_id(), "serendipity", talents.serendipity -> rank() );
   // TEST: buffs_serendipity -> activated = false;
   buffs_serenity                   = new buff_t( this, 88684, "serenity" );
   buffs_serenity -> cooldown -> duration = 0;
@@ -4907,14 +4907,14 @@ void priest_t::init_buffs()
   // Shadow
   buffs_empowered_shadow           = new buff_t( this, 95799, "empowered_shadow" );
   buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, 6.0                      );
-  buffs_mind_melt                  = new buff_t( this, "mind_melt"                 );
+  buffs_mind_melt                  = new buff_t( this, talents.mind_melt -> effect2().trigger_spell_id(), "mind_melt"                 );
   buffs_mind_spike                 = new buff_t( this, "mind_spike",                 3, 12.0                     );
-  buffs_shadow_form                = new buff_t( this, "shadow_form",                1                           );
-  buffs_shadow_orb                 = new buff_t( this, 77487, "shadow_orb" );
+  buffs_shadow_form                = new buff_t( this, "shadow_form", "Shadowform" );
+  buffs_shadow_orb                 = new buff_t( this, passive_spells.shadow_orbs -> effect1().trigger_spell_id(), "shadow_orb" );
   buffs_shadow_orb -> activated = false;
-  buffs_shadowfiend                = new buff_t( this, "shadowfiend",                1, 15.0                     );
-  buffs_spirit_tap                 = new buff_t( this, "spirit_tap",                 1, 12.0                     );
-  buffs_vampiric_embrace           = new buff_t( this, "vampiric_embrace",           1                           );
+  buffs_shadowfiend                = new buff_t( this, "shadowfiend", 1, 15.0 ); // Pet Tracking Buff
+  buffs_glyph_of_spirit_tap        = new buff_t( this, 81301, "glyph_of_spirit_tap" ); // FIXME: implement actual mechanics
+  buffs_vampiric_embrace           = new buff_t( this, talents.vampiric_embrace );
 
   // Set Bonus
   buffs_indulgence_of_the_penitent = new buff_t( this, 89913, "indulgence_of_the_penitent", set_bonus.tier11_4pc_heal() );
