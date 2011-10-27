@@ -112,7 +112,6 @@ struct paladin_t : public player_t
   // Spells
   struct spells_t
   {
-    active_spell_t* divine_favor;
     active_spell_t* guardian_of_ancient_kings_ret;
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   } spells;
@@ -141,7 +140,6 @@ struct paladin_t : public player_t
     talent_t* tower_of_radiance;
     talent_t* blessed_life;
     talent_t* light_of_dawn;
-
 
     // prot
     int ardent_defender;
@@ -389,6 +387,10 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   }
 };
 
+// ==========================================================================
+// Paladin Heal
+// ==========================================================================
+
 struct paladin_heal_t : public heal_t
 {
   void _init_paladin_heal_t()
@@ -411,9 +413,13 @@ struct paladin_heal_t : public heal_t
     _init_paladin_heal_t();
   }
 
-  virtual void player_buff()
+  virtual void consume_resource()
   {
-    heal_t::player_buff();
+    heal_t::consume_resource();
+
+    paladin_t* p = player -> cast_paladin();
+
+    p -> buffs_divine_purpose -> expire();
   }
 
   virtual double cost() SC_CONST
@@ -431,13 +437,28 @@ struct paladin_heal_t : public heal_t
     return heal_t::cost();
   }
 
-  virtual void consume_resource()
+  virtual double haste() SC_CONST
   {
-    heal_t::consume_resource();
+    double h = spell_t::haste();
 
     paladin_t* p = player -> cast_paladin();
 
-    p -> buffs_divine_purpose -> expire();
+    if ( p -> buffs_divine_favor -> up() )
+      h *= 1.0 / ( 1.0 + p -> buffs_divine_favor -> effect1().percent() );
+    
+    return h;
+  }
+
+  virtual void player_buff()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    heal_t::player_buff();
+
+    if ( p -> buffs_divine_favor -> up() )
+    {
+      player_crit += p -> buffs_divine_favor -> effect2().percent();
+    }
   }
 };
 
@@ -1595,6 +1616,61 @@ struct paladin_spell_t : public spell_t
   {
     return static_cast<paladin_t*>( player );
   }
+  
+  virtual void consume_resource()
+  {
+    spell_t::consume_resource();
+
+    paladin_t* p = player -> cast_paladin();
+
+    if ( resource == RESOURCE_HOLY_POWER )
+      p -> buffs_divine_purpose -> expire();
+  }
+
+  virtual double cost() SC_CONST
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    if ( resource == RESOURCE_HOLY_POWER )
+    {
+      if ( p -> buffs_divine_purpose -> check() )
+        return 0;
+
+      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
+    }
+
+    return spell_t::cost();
+  }
+
+  virtual void execute()
+  {
+    spell_t::execute();
+    if ( result_is_hit() )
+    {
+      if ( trigger_dp )
+      {
+        paladin_t* pa = player -> cast_paladin();
+        bool already_up = pa -> buffs_divine_purpose -> check() != 0;
+        bool triggered = pa -> buffs_divine_purpose -> trigger();
+        if ( already_up && triggered )
+        {
+          pa -> procs_wasted_divine_purpose -> occur();
+        }
+      }
+    }
+  }
+
+  virtual double haste() SC_CONST
+  {
+    double h = spell_t::haste();
+
+    paladin_t* p = player -> cast_paladin();
+
+    if ( p -> buffs_divine_favor -> up() )
+      h *= 1.0 / ( 1.0 + p -> buffs_divine_favor -> effect1().percent() );
+    
+    return h;
+  }
 
   virtual void player_buff()
   {
@@ -1617,49 +1693,9 @@ struct paladin_spell_t : public spell_t
     {
       player_multiplier *= 1.0 + p -> buffs_divine_shield -> effect1().percent();
     }
-  }
 
-  virtual void execute()
-  {
-    spell_t::execute();
-    if ( result_is_hit() )
-    {
-      if ( trigger_dp )
-      {
-        paladin_t* pa = player -> cast_paladin();
-        bool already_up = pa -> buffs_divine_purpose -> check() != 0;
-        bool triggered = pa -> buffs_divine_purpose -> trigger();
-        if ( already_up && triggered )
-        {
-          pa -> procs_wasted_divine_purpose -> occur();
-        }
-      }
-    }
-  }
-
-  virtual double cost() SC_CONST
-  {
-    paladin_t* p = player -> cast_paladin();
-
-    if ( resource == RESOURCE_HOLY_POWER )
-    {
-      if ( p -> buffs_divine_purpose -> check() )
-        return 0;
-
-      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
-    }
-
-    return spell_t::cost();
-  }
-
-  virtual void consume_resource()
-  {
-    spell_t::consume_resource();
-
-    paladin_t* p = player -> cast_paladin();
-
-    if ( resource == RESOURCE_HOLY_POWER )
-      p -> buffs_divine_purpose -> expire();
+    if ( p -> buffs_divine_favor -> up() )
+      player_crit += p -> buffs_divine_favor -> effect2().percent();
   }
 };
 
@@ -1745,8 +1781,8 @@ struct consecration_t : public paladin_spell_t
 
 struct divine_favor_t : public paladin_spell_t
 {
-  divine_favor_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "divine_favor", "Divine Favor", p )
+  divine_favor_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "divine_favor", "Divine Favor", p )
   {
     check_talent( p -> talents.divine_favor -> rank() );
 
@@ -1758,8 +1794,9 @@ struct divine_favor_t : public paladin_spell_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
+
+    paladin_spell_t::execute();
+
     p -> buffs_divine_favor -> trigger();
   }
 };
@@ -2053,7 +2090,6 @@ struct inquisition_t : public paladin_spell_t
   inquisition_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "inquisition", "Inquisition", p ), base_duration( 0 )
   {
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -2500,7 +2536,8 @@ void paladin_t::init_buffs()
   buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
   buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
   buffs_censure                = new buff_t( this, 31803, "censure" );
-  buffs_divine_favor           = new buff_t( this, "divine_favor",           1, spells.divine_favor -> duration() + glyphs.divine_favor -> mod_additive( P_DURATION ) );
+  buffs_divine_favor           = new buff_t( this, 31842, "divine_favor", 1.0, 0 ); // Let the ability handle the CD
+  buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().seconds();
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
   buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
@@ -2706,7 +2743,6 @@ void paladin_t::init_talents()
   talents.blessed_life              = find_talent( "Blessed Life" );
   talents.light_of_dawn             = find_talent( "Light of Dawn" );
 
-
   // Prot
   talents.divinity                  = find_talent( "Divinity" );
   talents.seals_of_the_pure         = find_talent( "Seals of the Pure" );
@@ -2757,7 +2793,6 @@ void paladin_t::init_spells()
   player_t::init_spells();
 
   // Spells
-  spells.divine_favor                  = new active_spell_t( this, "divine_favor", "Divine Favor", talents.divine_favor );
   spells.guardian_of_ancient_kings_ret = new active_spell_t( this, "guardian_of_ancient_kings", 86698 );
 
   // Passives
