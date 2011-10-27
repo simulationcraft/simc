@@ -138,6 +138,7 @@ void player_ready_event_t::execute()
   if ( ! player -> execute_action() )
   {
     double x = player -> available();
+
     player -> schedule_ready( x, true );
     // Waiting Debug
     //if ( sim -> debug )
@@ -173,6 +174,8 @@ void action_execute_event_t::execute()
   if ( ! action -> background &&
        ! player -> channeling )
   {
+    if( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s\n", action -> name() );
+
     player -> schedule_ready( 0 );
   }
 }

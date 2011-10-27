@@ -3062,7 +3062,11 @@ void player_t::reset()
 void player_t::schedule_ready( double delta_time,
                                bool   waiting )
 {
-  assert( ! readying );
+  if ( readying )
+  {
+    sim -> errorf( "\nplayer_t::schedule_ready assertion error: readying == true ( player %s )\n", name() );
+    assert( 0 );
+  }
   action_t* was_executing = ( channeling ? channeling : executing );
 
   executing = 0;
