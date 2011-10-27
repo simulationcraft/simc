@@ -1373,7 +1373,7 @@ struct bloodthirst_buff_callback_t : public action_callback_t
         if ( buff -> check() && a -> weapon && a -> direct_dmg > 0 )
         {
 
-          bloodthirst_heal -> base_dd_min = bloodthirst_heal -> base_dd_max = bloodthirst_heal -> effect2().base_value() / 1000.0 * a -> direct_dmg;
+          bloodthirst_heal -> base_dd_min = bloodthirst_heal -> base_dd_max = bloodthirst_heal -> effect2().base_value() / 100000.0 * a -> player -> resource_max[ RESOURCE_HEALTH ];
           bloodthirst_heal -> execute();
           buff -> decrement( 1 );
         }
