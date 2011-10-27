@@ -298,42 +298,6 @@ struct paladin_t : public player_t
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// trigger_enlightened_judgements ===========================================
-
-static void trigger_enlightened_judgements( paladin_t* p )
-{
-  if ( ! p -> talents.enlightened_judgements -> rank() )
-    return;
-
-
-}
-
-// trigger_hand_of_light ====================================================
-
-static void trigger_hand_of_light( action_t* a )
-{
-  paladin_t* p = a -> player -> cast_paladin();
-
-  if ( p -> primary_tree() == TREE_RETRIBUTION )
-  {
-    p -> active_hand_of_light_proc -> base_dd_max = p -> active_hand_of_light_proc-> base_dd_min = a -> direct_dmg;
-    p -> active_hand_of_light_proc -> execute();
-  }
-}
-
-// trigger_grand_crusader ===================================================
-
-static void trigger_grand_crusader( action_t* a )
-{
-  paladin_t* p = a -> player -> cast_paladin();
-
-  if ( a -> sim -> roll( p -> talents.grand_crusader -> proc_chance() ) )
-  {
-    p -> cooldowns_avengers_shield -> reset();
-    p -> buffs_grand_crusader -> trigger();
-  }
-}
-
 // Guardian of Ancient Kings Pet ============================================
 
 // TODO: melee attack
@@ -661,6 +625,59 @@ struct paladin_attack_t : public attack_t
       p -> buffs_divine_purpose -> expire();
   }
 };
+
+// trigger_enlightened_judgements ===========================================
+
+static void trigger_enlightened_judgements( paladin_t* p )
+{
+  if ( ! p -> talents.enlightened_judgements -> rank() )
+    return;
+
+  if ( ! p -> active_enlightened_judgements )
+  {
+    struct enlightened_judgements_t : public paladin_heal_t
+    {
+      enlightened_judgements_t( paladin_t* p ) :
+        paladin_heal_t( "enlightened_judgements", p, p -> talents.enlightened_judgements -> effect1().trigger_spell_id() )
+      {
+        background = true;
+        proc = true;
+        trigger_gcd = 0;
+
+        init();
+      }
+    };
+    p -> active_enlightened_judgements = new enlightened_judgements_t( p );
+  }
+
+  p -> active_enlightened_judgements -> execute();
+}
+
+// trigger_hand_of_light ====================================================
+
+static void trigger_hand_of_light( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if ( p -> primary_tree() == TREE_RETRIBUTION )
+  {
+    p -> active_hand_of_light_proc -> base_dd_max = p -> active_hand_of_light_proc-> base_dd_min = a -> direct_dmg;
+    p -> active_hand_of_light_proc -> execute();
+  }
+}
+
+// trigger_grand_crusader ===================================================
+
+static void trigger_grand_crusader( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if ( a -> sim -> roll( p -> talents.grand_crusader -> proc_chance() ) )
+  {
+    p -> cooldowns_avengers_shield -> reset();
+    p -> buffs_grand_crusader -> trigger();
+  }
+}
 
 // Melee Attack =============================================================
 
@@ -1501,6 +1518,8 @@ struct judgement_t : public paladin_attack_t
     seal -> cooldown    = cooldown;
     seal -> trigger_gcd = trigger_gcd;
     seal -> execute();
+
+    trigger_enlightened_judgements( p );
 
     if ( seal -> result_is_hit() )
     {
@@ -2931,12 +2950,11 @@ void paladin_t::init_talents()
   talents.sanctified_wrath   = find_talent( "Sanctified Wrath" );
   talents.inquiry_of_faith   = find_talent( "Inquiry of Faith" );
   talents.zealotry           = find_talent( "Zealotry" );
-
+  
   // NYI
   talents.ardent_defender = 0 ;
   talents.aura_mastery = 0;
   talents.blessed_life = 0;
-  talents.enlightened_judgements = 0;
   talents.eternal_glory = 0;
   talents.eye_for_an_eye = 0;
   talents.guarded_by_the_light = 0;
