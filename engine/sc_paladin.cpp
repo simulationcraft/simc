@@ -2646,8 +2646,8 @@ void paladin_t::init_buffs()
   buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
   buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
   buffs_censure                = new buff_t( this, 31803, "censure" );
-  buffs_daybreak               = new buff_t( this, 88819, "daybreak", talents.daybreak -> proc_chance() );
-  buffs_divine_favor           = new buff_t( this, 31842, "divine_favor", 1.0, 0 ); // Let the ability handle the CD
+  buffs_daybreak               = new buff_t( this, talents.daybreak -> effect_trigger_spell( 1 ), "daybreak", talents.daybreak -> proc_chance() );
+  buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, 0 ); // Let the ability handle the CD
   buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().seconds();
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
   buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, 0 ); // Let the ability handle the CD
@@ -2661,7 +2661,7 @@ void paladin_t::init_buffs()
   buffs_judgements_of_the_pure = new buff_t( this, talents.judgements_of_the_pure -> effect_trigger_spell( 1 ), "judgements_of_the_pure", talents.judgements_of_the_pure -> proc_chance() );
   buffs_judgements_of_the_wise = new buff_t( this, 31930, "judgements_of_the_wise", ( primary_tree() == TREE_PROTECTION ? 1 : 0 ) );
   buffs_reckoning              = new buff_t( this, talents.reckoning -> effect_trigger_spell( 1 ), "reckoning", talents.reckoning -> proc_chance() );
-  buffs_sacred_duty            = new buff_t( this, 85433, "sacred_duty", talents.sacred_duty -> proc_chance() );
+  buffs_sacred_duty            = new buff_t( this, talents.sacred_duty -> effect_trigger_spell( 1 ), "sacred_duty", talents.sacred_duty -> proc_chance() );
   buffs_the_art_of_war         = new buff_t( this, talents.the_art_of_war -> effect_trigger_spell( 1 ), "the_art_of_war",  talents.the_art_of_war -> proc_chance() );
   buffs_zealotry               = new buff_t( this, talents.zealotry -> spell_id(), "zealotry", 1 );
 }
