@@ -1777,7 +1777,8 @@ struct avenging_wrath_t : public paladin_spell_t
 
     harmful = false;
     cooldown -> duration += p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN )
-                            + p -> talents.paragon_of_virtue -> effect1().seconds();
+                            + p -> talents.paragon_of_virtue -> effect1().seconds()
+                            + p -> talents.shield_of_the_templar -> effect3().seconds();
   }
 
   virtual void execute()
@@ -1889,7 +1890,7 @@ struct divine_plea_t : public paladin_spell_t
 
     p -> buffs_divine_plea -> trigger();
 
-    int hopo = ( int ) p -> talents.shield_of_the_templar -> mod_additive( P_EFFECT_3 );
+    int hopo = ( int ) p -> talents.shield_of_the_templar -> effect2().resource( RESOURCE_HOLY_POWER );
     if ( hopo )
     {
       p -> resource_gain( RESOURCE_HOLY_POWER, hopo,
@@ -2069,6 +2070,8 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     : paladin_spell_t( "guardian_of_ancient_kings", 86150, p )
   {
     parse_options( NULL, options_str );
+
+    cooldown -> duration += p -> talents.shield_of_the_templar -> effect1().seconds();
   }
 
   virtual void execute()
