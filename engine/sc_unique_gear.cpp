@@ -1622,7 +1622,7 @@ static void register_symbiotic_worm( item_t* item )
 
     virtual void trigger( action_t* a, void* call_data )
     {
-      if ( a -> player -> health_percentage() < 35 )
+      if ( listener -> health_percentage() < 35 )
       {
         stat_proc_callback_t::trigger( a, call_data );
       }
@@ -1630,8 +1630,7 @@ static void register_symbiotic_worm( item_t* item )
   };
 
   stat_proc_callback_t* cb = new symbiotic_worm_callback_t( p, item -> heroic() );
-  p -> register_tick_damage_callback( RESULT_ALL_MASK, cb );
-  p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+  p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
 // register_indomitable_ride ======================================================
@@ -1708,9 +1707,9 @@ static void register_spidersilk_spindle( item_t* item )
       stats -> type = STATS_ABSORB;
     }
 
-    virtual void trigger( action_t* a, void* /* call_data */ )
+    virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
-      if ( cd -> remains() <= 0 && a -> player -> health_percentage() < 35 )
+      if ( cd -> remains() <= 0 && listener -> health_percentage() < 35 )
       {
         cd -> start();
         double amount = buff -> effect1().base_value();
@@ -1722,8 +1721,7 @@ static void register_spidersilk_spindle( item_t* item )
   };
 
   action_callback_t* cb = new spidersilk_spindle_callback_t( p, item -> heroic() );
-  p -> register_tick_damage_callback( RESULT_ALL_MASK, cb );
-  p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+  p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
 // register_apparatus_of_khazgoroth =========================================

@@ -3470,7 +3470,7 @@ double player_t::resource_loss( int       resource,
     last_cast = sim -> current_time;
   }
 
-  if ( action ) action_callback_t::trigger( resource_loss_callbacks[ resource ], action, ( void* ) &actual_amount );
+  action_callback_t::trigger( resource_loss_callbacks[ resource ], action, ( void* ) &actual_amount );
 
   if ( sim -> debug )
     log_t::output( sim, "Player %s loses %.2f (%.2f) %s. health pct: %.2f",
@@ -3515,7 +3515,7 @@ double player_t::resource_gain( int       resource,
     source -> add( actual_amount, amount - actual_amount );
   }
 
-  if ( action ) action_callback_t::trigger( resource_gain_callbacks[ resource ], action, ( void* ) &actual_amount );
+  action_callback_t::trigger( resource_gain_callbacks[ resource ], action, ( void* ) &actual_amount );
 
   if ( sim -> log )
   {

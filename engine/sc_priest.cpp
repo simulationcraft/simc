@@ -2597,7 +2597,7 @@ struct shadow_word_death_t : public priest_spell_t
       health_loss *= 1.0 - p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) / 100.0;
     }
 
-    p -> resource_loss( RESOURCE_HEALTH, health_loss );
+    p -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
 
     if ( ( ( health_loss > 0.0 ) || ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )  ) && p -> talents.masochism -> rank() )
     {
