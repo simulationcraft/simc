@@ -2711,7 +2711,7 @@ void paladin_t::init_buffs()
   buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
   buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
   buffs_censure                = new buff_t( this, 31803, "censure" );
-  buffs_conviction             = new buff_t( this, talents.conviction -> effect1().trigger_spell_id(), "conviction" );
+  buffs_conviction             = new buff_t( this, talents.conviction -> effect1().trigger_spell_id(), "conviction", talents.conviction -> rank() );
   buffs_daybreak               = new buff_t( this, talents.daybreak -> effect_trigger_spell( 1 ), "daybreak", talents.daybreak -> proc_chance() );
   buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, 0 ); // Let the ability handle the CD
   buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().seconds();
