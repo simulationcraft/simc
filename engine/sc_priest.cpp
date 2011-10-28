@@ -4914,7 +4914,7 @@ void priest_t::init_buffs()
   buffs_shadow_orb -> activated = false;
   buffs_shadowfiend                = new buff_t( this, "shadowfiend", 1, 15.0 ); // Pet Tracking Buff
   buffs_glyph_of_spirit_tap        = new buff_t( this, 81301, "glyph_of_spirit_tap" ); // FIXME: implement actual mechanics
-  buffs_vampiric_embrace           = new buff_t( this, talents.vampiric_embrace );
+  buffs_vampiric_embrace           = new buff_t( this, talents.vampiric_embrace, NULL );
 
   // Set Bonus
   buffs_indulgence_of_the_penitent = new buff_t( this, 89913, "indulgence_of_the_penitent", set_bonus.tier11_4pc_heal() );
