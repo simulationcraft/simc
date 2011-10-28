@@ -3948,7 +3948,7 @@ double player_t::assess_damage( double            amount,
 
   iteration_dmg_taken += mitigated_amount;
 
-  double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount );
+  double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount, action );
 
   if ( resource_current[ RESOURCE_HEALTH ] <= 0 && !is_enemy() && infinite_resource[ RESOURCE_HEALTH ] == 0 )
   {
