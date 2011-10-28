@@ -1236,13 +1236,6 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     hunter_t*     o = p -> owner -> cast_hunter();
     background = true;
     proc=true;
-    trigger_gcd = 0.0;
-    stats->school = SCHOOL_PHYSICAL;
-    school = SCHOOL_PHYSICAL;
-
-    //base damage from http://elitistjerks.com/f74/t110306-hunter_faq_cataclysm_edition_read_before_asking_questions/
-    base_dd_min = 926;
-    base_dd_max = 926;
 
     base_crit += o -> talents.improved_kill_command -> effect1().percent();
   }
