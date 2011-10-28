@@ -646,7 +646,8 @@ struct army_ghoul_pet_t : public pet_t
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
     // Pets don't seem to inherit their master's crit at the moment.
-    snapshot_crit     = o -> composite_pet_attack_crit();
+    // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
+    snapshot_crit     = o -> dbc.ptr ? o -> composite_attack_crit() : o -> composite_pet_attack_crit();
     snapshot_haste    = o -> composite_attack_haste();
     snapshot_speed    = o -> composite_attack_speed();
     snapshot_hit      = o -> composite_attack_hit();
@@ -1370,21 +1371,25 @@ struct ghoul_pet_t : public pet_t
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
     // Pets don't seem to inherit their master's crit at the moment.
-    snapshot_crit     = o -> composite_pet_attack_crit();
+    // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
+    snapshot_crit     = o -> dbc.ptr ? o -> composite_attack_crit() : o -> composite_pet_attack_crit();
     snapshot_haste    = o -> composite_attack_haste();
     snapshot_speed    = o -> composite_attack_speed();
     snapshot_hit      = o -> composite_attack_hit();
     snapshot_strength = o -> strength();
   }
 
+  // Pets don't seem to inherit their master's crit at the moment.
+  // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
   virtual double composite_attack_crit() SC_CONST
   {
     death_knight_t* o = owner -> cast_death_knight();
 
     // Perma Ghouls are updated constantly
+
     if ( o -> primary_tree() == TREE_UNHOLY )
     {
-      return o -> composite_pet_attack_crit();
+      return o -> dbc.ptr ? snapshot_crit : o -> composite_pet_attack_crit();
     }
     else
     {
