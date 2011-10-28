@@ -1208,9 +1208,9 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    base_dd_min = base_dd_max = p -> resource_current[ RESOURCE_HOLY_POWER ] * 0.15 * p -> composite_attack_power();
+    base_dd_min = base_dd_max = ( p -> spell_power[ SCHOOL_HOLY ] * 0.15 ) + ( 0.15 * p -> composite_attack_power() );
     paladin_heal_t::execute();
-    p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * effect2().resource( RESOURCE_MANA ), p -> gains_seal_of_insight );
+    p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * effect2().resource( RESOURCE_MANA ), p -> gains_seal_of_insight );
   }
 };
 
@@ -1229,6 +1229,7 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
     base_multiplier *= 1.0 + p -> talents.wrath_of_the_lightbringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.judgement -> mod_additive( P_GENERIC );
 
+    base_dd_min = base_dd_max    = 1.0;
     direct_power_mod             = 1.0;
     base_spell_power_multiplier  = 0.25;
     base_attack_power_multiplier = 0.16;
