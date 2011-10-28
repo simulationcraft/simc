@@ -2234,6 +2234,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "fall_of_mortality"                   ) e = ( heroic ? "OnHealCast_2178Spi_15Dur_75Cd" : "OnHealCast_1926Spi_15Dur_75Cd" );
   else if ( name == "darkmoon_card_tsunami"               ) e = "OnHeal_80Spi_5Stack_20Dur";
   else if ( name == "horrific_seed"                       ) e = "OnAttackHit_2904Haste_15%_20Dur_45Cd"; // FIXME: Confirm ICD
+  // 4.3
+  else if ( name == "will_of_unbinding"                   ) e = ( heroic ? "OnHarmfulSpellCast_99Int_100%_10Dur_10Stack" : "OnHarmfulSpellCast_88Int_100%_10Dur_10Stack" );
+  else if ( name == "insignia_of_the_corrupted_mind"      ) e = ( heroic ? "OnDamage_3278Haste_15%_20Dur_75Cd" : "OnDamage_2904Haste_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
 
   // Some Normal/Heroic items have same name
   else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( heroic ? "OnSpellTickDamage_1206SP_30%_20Dur_100Cd" : "OnSpellTickDamage_1073SP_30%_20Dur_100Cd" );
@@ -2254,6 +2257,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
   else if ( name == "horrific_seed_the_second"            ) e = "OnAttackHit_6042Physical_15%_45Cd"; // Confirm ICD
+  else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnSpellDamage_11937Shadow_15%_45Cd" : "OnSpellDamage_10575Shadow_15%_45Cd" ); // Confirm ICD, AoE?
+
 
   // Variable Stack Discharge Procs
   else if ( name == "variable_pulse_lightning_capacitor"  ) e = ( heroic ? "OnSpellCrit_3300.7Nature_15%_10Stack_2.5Cd_chance" : "OnSpellCrit_2926.3Nature_15%_10Stack_2.5Cd_chance" );
@@ -2344,6 +2349,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "talisman_of_resurgence"       ) e = "599SP_20Dur_120Cd";
   else if ( name == "unsolvable_riddle"            ) e = "1605Agi_20Dur_120Cd";
   else if ( name == "wrathstone"                   ) e = "856AP_20Dur_120Cd";
+  else if ( name == "bottled_wishes"               ) e = ( heroic ? "2585SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnSpellCast_57Haste_8Stack_20Dur_120Cd" );
