@@ -50,6 +50,7 @@ struct paladin_t : public player_t
   buff_t* buffs_divine_protection;
   buff_t* buffs_divine_purpose;
   buff_t* buffs_divine_shield;
+  buff_t* buffs_gotak_prot;
   buff_t* buffs_grand_crusader;
   buff_t* buffs_holy_shield;
   buff_t* buffs_infusion_of_light;
@@ -2077,10 +2078,13 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    update_ready();
+
+    paladin_spell_t::execute();
+
     if ( p -> primary_tree() == TREE_RETRIBUTION )
       p -> guardian_of_ancient_kings -> summon( p -> spells.guardian_of_ancient_kings_ret -> duration() );
+    else if ( p -> primary_tree() == TREE_PROTECTION )
+      p -> buffs_gotak_prot -> trigger();
   }
 };
 
@@ -2723,6 +2727,7 @@ void paladin_t::init_buffs()
   buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
   buffs_divine_shield          = new buff_t( this,   642, "divine_shield", 1.0, 0 ); // Let the ability handle the CD
+  buffs_gotak_prot             = new buff_t( this, 86659, "guardian_of_the_ancient_kings" );
   buffs_grand_crusader         = new buff_t( this, talents.grand_crusader -> effect_trigger_spell( 1 ), "grand_crusader", talents.grand_crusader -> proc_chance() );
   buffs_holy_shield            = new buff_t( this, 20925, "holy_shield" );
   buffs_infusion_of_light      = new buff_t( this, talents.infusion_of_light -> effect_trigger_spell( 1 ), "infusion_of_light" ); 
@@ -3237,6 +3242,9 @@ double paladin_t::assess_damage( double            amount,
     // Return out, as you don't get to benefit from anything else
     return player_t::assess_damage( amount, school, dmg_type, result, action );
   }
+
+  if ( buffs_gotak_prot -> up() )
+    amount *= 1.0 + dbc.spell( 86657 ) -> effect2().percent(); // Value of the buff is stored in another spell
 
   if ( buffs_divine_protection -> up() )
   {
