@@ -2237,6 +2237,10 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   // 4.3
   else if ( name == "will_of_unbinding"                   ) e = ( heroic ? "OnHarmfulSpellCast_99Int_100%_10Dur_10Stack" : "OnHarmfulSpellCast_88Int_100%_10Dur_10Stack" );
   else if ( name == "insignia_of_the_corrupted_mind"      ) e = ( heroic ? "OnDamage_3278Haste_15%_20Dur_75Cd" : "OnDamage_2904Haste_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
+  else if ( name == "eye_of_unmaking"                     ) e = ( heroic ? "OnAttackHit_99Str_100%_10Dur_10Stack" : "OnAttackHit_88Str_100%_10Dur_10Stack" );
+  else if ( name == "wrath_of_unchaining"                 ) e = ( heroic ? "OnAttackHit_99Agi_100%_10Dur_10Stack" : "OnAttackHit_88Agi_100%_10Dur_10Stack" );
+  else if ( name == "creche_of_the_final_dragon"          ) e = ( heroic ? "OnDamage_3278Crit_15%_20Dur_75Cd" : "OnDamage_2904Crit_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
+  else if ( name == "starcatcher_compass"                 ) e = ( heroic ? "OnDamage_3278Haste_15%_20Dur_75Cd" : "OnDamage_2904Haste_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
 
   // Some Normal/Heroic items have same name
   else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( heroic ? "OnSpellTickDamage_1206SP_30%_20Dur_100Cd" : "OnSpellTickDamage_1073SP_30%_20Dur_100Cd" );
@@ -2257,7 +2261,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
   else if ( name == "horrific_seed_the_second"            ) e = "OnAttackHit_6042Physical_15%_45Cd"; // Confirm ICD
-  else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnSpellDamage_11937Shadow_15%_45Cd" : "OnSpellDamage_10575Shadow_15%_45Cd" ); // Confirm ICD, AoE?
+  else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnHarmfulSpellHit_11937Shadow_15%_45Cd" : "OnHarmfulSpellHit_10575Shadow_15%_45Cd" ); // Confirm ICD, AoE?
+  else if ( name == "bone-link_fetish"                    ) e = ( heroic ? "OnAttackHit_12788Physical_15%_45Cd" : "OnAttackHit_11329Physical_15%_45Cd" ); // Confirm ICD, AoE?
+  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_17051Physical_15%_45Cd" : "OnAttackHit_15106Physical_15%_45Cd" ); // Confirm ICD, AoE?
 
 
   // Variable Stack Discharge Procs
@@ -2350,6 +2356,8 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "unsolvable_riddle"            ) e = "1605Agi_20Dur_120Cd";
   else if ( name == "wrathstone"                   ) e = "856AP_20Dur_120Cd";
   else if ( name == "bottled_wishes"               ) e = ( heroic ? "2585SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
+  else if ( name == "kiroptyric_sigil"             ) e = ( heroic ? "2585Agi_15Dur_90Cd" : "2290Agi_15Dur_90Cd" );
+  else if ( name == "rotting_skull"                ) e = ( heroic ? "2585Str_15Dur_90Cd" : "2290Str_15Dur_90Cd" );
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnSpellCast_57Haste_8Stack_20Dur_120Cd" );
