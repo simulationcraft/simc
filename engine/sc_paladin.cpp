@@ -670,7 +670,7 @@ static void trigger_beacon_of_light( heal_t* h )
   p -> active_beacon_of_light -> base_dd_max = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> effect1().percent();
 
   // Holy light heals for 100% instead of 50%
-  if ( h -> name_str == "holy_light" )
+  if ( util_t::str_compare_ci( h -> name_str, "holy_light" ) )
   {
     p -> active_beacon_of_light -> base_dd_min *= 2.0;
     p -> active_beacon_of_light -> base_dd_max *= 2.0;
@@ -758,6 +758,26 @@ static void trigger_protector_of_the_innocent( paladin_t* p )
   }
 
   p -> active_protector_of_the_innocent -> execute();
+}
+
+// trigger_tower_of_radiance ================================================
+
+static void trigger_tower_of_radiance( heal_t* h )
+{
+  paladin_t* p = h -> player -> cast_paladin();
+
+  if ( ! h -> target -> buffs.beacon_of_light -> check() )
+    return;
+
+  if ( ! p -> talents.tower_of_radiance -> rank() )
+    return;
+
+  if ( p -> sim -> roll( p -> talents.tower_of_radiance -> rank() / 3.0 ) )
+  {
+    p -> resource_gain( RESOURCE_HOLY_POWER,
+                        p -> dbc.spell( p -> talents.tower_of_radiance -> effect1().trigger_spell_id() ) -> effect1().resource( RESOURCE_HOLY_POWER ),
+                        p -> gains_hp_tower_of_radiance );
+  }
 }
 
 // Melee Attack =============================================================
@@ -2374,6 +2394,7 @@ struct divine_light_t : public paladin_heal_t
 
     p -> buffs_daybreak -> trigger();
     p -> buffs_infusion_of_light -> expire();
+    trigger_tower_of_radiance( this );
   }
   
   virtual double execute_time() SC_CONST
@@ -2407,6 +2428,7 @@ struct flash_of_light_t : public paladin_heal_t
 
     p -> buffs_daybreak -> trigger();
     p -> buffs_infusion_of_light -> expire();
+    trigger_tower_of_radiance( this );
   }
 
   virtual double execute_time() SC_CONST
