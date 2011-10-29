@@ -1175,7 +1175,7 @@ struct gargoyle_pet_t : public pet_t
 
   gargoyle_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "gargoyle", true ),
-    snapshot_haste(0), snapshot_spell_crit(0), snapshot_power(0)
+    snapshot_haste(1), snapshot_spell_crit(0), snapshot_power(0)
   {
   }
 
@@ -1212,7 +1212,11 @@ struct gargoyle_pet_t : public pet_t
     snapshot_power      = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
     // Pets don't seem to inherit their master's crit at the moment.
     // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
-    snapshot_spell_crit = o -> dbc.ptr ? o -> composite_spell_crit() : o -> composite_pet_attack_crit();
+    // TODO: it can crit on live, but not 5%, or 7% or even 12% with spell crit debuff.
+    // Not sure what the % is, but 2-6% with 5% crit debuff seems on par. Hord to crunch numbers with samples of 30/60 hits.
+    // for now, for live, going with 0 base crit %, but boosted by crit debuff.
+    //snapshot_spell_crit = o -> dbc.ptr ? o -> composite_spell_crit() : o -> composite_pet_attack_crit();
+    snapshot_spell_crit = o -> dbc.ptr ? o -> composite_spell_crit() : 0;
 
   }
 
