@@ -3894,6 +3894,7 @@ struct player_t : public noncopyable
   {
     buff_t* arcane_brilliance;
     buff_t* battle_shout;
+    buff_t* beacon_of_light;
     buff_t* berserking;
     buff_t* blessing_of_kings;
     buff_t* blessing_of_might;

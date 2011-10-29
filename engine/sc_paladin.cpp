@@ -28,7 +28,8 @@ struct paladin_t : public player_t
 {
   // Active
   int       active_seal;
-  action_t* active_enlightened_judgements;
+  heal_t*   active_beacon_of_light;
+  heal_t*   active_enlightened_judgements;
   action_t* active_flames_of_the_faithful_proc;
   action_t* active_hand_of_light_proc;
   heal_t*   active_protector_of_the_innocent;
@@ -224,6 +225,7 @@ struct paladin_t : public player_t
   };
   glyphs_t glyphs;
 
+  player_t* beacon_target;
   int ret_pvp_gloves;
 
   paladin_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PALADIN, name, r )
@@ -234,6 +236,7 @@ struct paladin_t : public player_t
     tree_type[ PALADIN_PROTECTION  ] = TREE_PROTECTION;
     tree_type[ PALADIN_RETRIBUTION ] = TREE_RETRIBUTION;
 
+    active_beacon_of_light             = 0;
     active_enlightened_judgements      = 0;
     active_flames_of_the_faithful_proc = 0;
     active_hand_of_light_proc          = 0;
@@ -249,6 +252,7 @@ struct paladin_t : public player_t
 
     cooldowns_avengers_shield = get_cooldown( "avengers_shield" );
 
+    beacon_target = 0;
     ret_pvp_gloves = -1;
 
     create_talents();
@@ -430,7 +434,7 @@ struct paladin_heal_t : public heal_t
 
     if ( p -> buffs_divine_favor -> up() )
       h *= 1.0 / ( 1.0 + p -> buffs_divine_favor -> effect1().percent() );
-    
+
     return h;
   }
 
@@ -623,6 +627,54 @@ struct paladin_attack_t : public attack_t
     if ( resource == RESOURCE_HOLY_POWER )
       p -> buffs_divine_purpose -> expire();
   }
+};
+
+// trigger_beacon_of_light ==================================================
+
+static void trigger_beacon_of_light( heal_t* h )
+{
+  paladin_t* p = h -> player -> cast_paladin();
+
+  if ( ! p -> beacon_target )
+    return;
+  
+  if ( ! p -> beacon_target -> buffs.beacon_of_light -> up() )
+    return;
+
+  if ( h -> proc )
+    return;
+
+  if ( ! p -> active_beacon_of_light )
+  {
+    struct beacon_of_light_heal_t : public heal_t
+    {
+      beacon_of_light_heal_t( paladin_t* p ) :
+        heal_t( "beacon_of_light_heal", p, 53652 )
+      {
+        background = true;
+        may_crit = false;
+        proc = true;
+        trigger_gcd = 0;
+
+        target = p -> beacon_target;
+
+        init();
+      }
+    };
+    p -> active_beacon_of_light = new beacon_of_light_heal_t( p );
+  }
+  
+  p -> active_beacon_of_light -> base_dd_min = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> effect1().percent();
+  p -> active_beacon_of_light -> base_dd_max = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> effect1().percent();
+
+  // Holy light heals for 100% instead of 50%
+  if ( h -> name_str == "holy_light" )
+  {
+    p -> active_beacon_of_light -> base_dd_min *= 2.0;
+    p -> active_beacon_of_light -> base_dd_max *= 2.0;
+  }
+
+  p -> active_beacon_of_light -> execute();
 };
 
 // trigger_enlightened_judgements ===========================================
@@ -2260,7 +2312,43 @@ void paladin_heal_t::execute()
 
   if ( target != p )
     trigger_protector_of_the_innocent( p );
+
+  if ( target != p -> beacon_target )
+    trigger_beacon_of_light( this );
 }
+
+// Beacon of Light ==========================================================
+
+struct beacon_of_light_t : public paladin_heal_t
+{
+  beacon_of_light_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "beacon_of_light", p, "Beacon of Light" )
+  {
+    check_talent( p -> talents.beacon_of_light -> ok() );
+
+    parse_options( NULL, options_str );
+
+    // Target is required for Beacon
+    if ( target_str.empty() )
+    {
+      sim -> errorf( "Warning couldn't find %s for %s's Beacon of Light", target_str.c_str(), p -> name() );
+      sim -> cancel();
+    }
+
+    // Remove the 'dot'
+    num_ticks = 0;
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    paladin_heal_t::execute();
+
+    p -> beacon_target = target;
+    target -> buffs.beacon_of_light -> trigger();
+  }
+};
 
 // Divine Light Spell =======================================================
 
@@ -2296,7 +2384,6 @@ struct divine_light_t : public paladin_heal_t
     return t;
   }
 };
-
 
 // Flash of Light Spell =====================================================
 
@@ -2505,6 +2592,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "auto_attack"               ) return new auto_attack_t              ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
+  if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
   if ( name == "divine_favor"              ) return new divine_favor_t             ( this, options_str );
@@ -3469,6 +3557,7 @@ void player_t::paladin_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
+    p -> buffs.beacon_of_light          = new buff_t( p, 53563, "beacon_of_light" );
     p -> buffs.blessing_of_kings        = new buff_t( p, "blessing_of_kings",       ! p -> is_pet() );
     p -> buffs.blessing_of_might        = new buff_t( p, "blessing_of_might",       ! p -> is_pet() );
     p -> buffs.blessing_of_might_regen  = new buff_t( p, "blessing_of_might_regen", ! p -> is_pet() );
