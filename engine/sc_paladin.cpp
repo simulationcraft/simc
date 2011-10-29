@@ -460,6 +460,8 @@ struct paladin_heal_t : public heal_t
       player_crit += p -> buffs_divine_favor -> effect2().percent();
     }
 
+    player_multiplier *= 1.0 + p -> talents.divinity -> effect2().percent();
+
     if ( p -> active_seal == SEAL_OF_INSIGHT && p -> glyphs.seal_of_insight -> ok() )
       player_multiplier *= 1.0 + p -> glyphs.seal_of_insight -> effect1().percent();
   }
