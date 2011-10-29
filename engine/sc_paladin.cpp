@@ -110,6 +110,7 @@ struct paladin_t : public player_t
   pet_t* guardian_of_ancient_kings;
 
   // Procs
+  proc_t* procs_eternal_glory;
   proc_t* procs_parry_haste;
   proc_t* procs_munched_tier12_2pc_melee;
   proc_t* procs_rolled_tier12_2pc_melee;
@@ -151,10 +152,10 @@ struct paladin_t : public player_t
     // prot
     int ardent_defender;
     int divine_guardian;
-    int eternal_glory;
     int guarded_by_the_light;
     int vindication;
     talent_t* divinity;
+    talent_t* eternal_glory;
     talent_t* grand_crusader;
     talent_t* hallowed_ground;
     talent_t* hammer_of_the_righteous;
@@ -2650,6 +2651,19 @@ struct word_of_glory_t : public paladin_heal_t
     }
   }
 
+  virtual void consume_resource()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    if ( sim -> roll( p -> talents.eternal_glory -> effect1().percent() / 1.0 ) )
+    {
+      p -> procs_eternal_glory -> occur();
+      return;
+    }
+
+    paladin_heal_t::consume_resource();
+  }
+
   virtual void player_buff()
   {
     paladin_heal_t::player_buff();
@@ -2828,6 +2842,7 @@ void paladin_t::init_procs()
 {
   player_t::init_procs();
 
+  procs_eternal_glory            = get_proc( "eternal_glory"                  );
   procs_parry_haste              = get_proc( "parry_haste"                    );
   procs_munched_tier12_2pc_melee = get_proc( "munched_flames_of_the_faithful" );
   procs_rolled_tier12_2pc_melee  = get_proc( "rolled_flames_of_the_faithful"  );
@@ -3167,6 +3182,7 @@ void paladin_t::init_talents()
   // Prot
   talents.divinity                  = find_talent( "Divinity" );
   talents.seals_of_the_pure         = find_talent( "Seals of the Pure" );
+  talents.eternal_glory             = find_talent( "Eternal Glory" );
   talents.judgements_of_the_just    = find_talent( "Judgements of the Just" );
   talents.improved_hammer_of_justice= find_talent( "Improved Hammer of Justice" );
   talents.hallowed_ground           = find_talent( "Hallowed Ground" );
@@ -3198,7 +3214,6 @@ void paladin_t::init_talents()
   talents.ardent_defender = 0 ;
   talents.aura_mastery = 0;
   talents.blessed_life = 0;
-  talents.eternal_glory = 0;
   talents.eye_for_an_eye = 0;
   talents.guarded_by_the_light = 0;
   talents.improved_judgement = 0;
