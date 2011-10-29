@@ -2331,7 +2331,7 @@ struct beacon_of_light_t : public paladin_heal_t
     // Target is required for Beacon
     if ( target_str.empty() )
     {
-      sim -> errorf( "Warning couldn't find %s for %s's Beacon of Light", target_str.c_str(), p -> name() );
+      sim -> errorf( "Warning %s's \"%s\" needs a target", p -> name(), name() );
       sim -> cancel();
     }
 
