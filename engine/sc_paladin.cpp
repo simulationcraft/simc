@@ -219,6 +219,7 @@ struct paladin_t : public player_t
     glyph_t* focused_shield;
     glyph_t* hammer_of_wrath;
     glyph_t* lay_on_hands;
+    glyph_t* light_of_dawn;
     glyph_t* long_word;
 
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
@@ -2598,6 +2599,30 @@ struct lay_on_hands_t : public paladin_heal_t
   }
 };
 
+// Light of Dawn ============================================================
+
+struct light_of_dawn_t : public paladin_heal_t
+{
+  light_of_dawn_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "light_of_dawn", p, "Light of Dawn" )
+  {
+    check_talent( p -> talents.light_of_dawn -> ok() );
+
+    parse_options( NULL, options_str );
+
+    aoe = ( p -> glyphs.light_of_dawn -> ok() ) ? 6 : 5;
+  }
+
+  virtual void player_buff()
+  {
+    paladin_heal_t::player_buff();
+
+    paladin_t* p = player -> cast_paladin();
+
+    player_multiplier *= p -> holy_power_stacks();
+  }
+};
+
 // Word of Glory Spell ======================================================
 
 struct word_of_glory_t : public paladin_heal_t
@@ -2676,6 +2701,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "inquisition"               ) return new inquisition_t              ( this, options_str );
   if ( name == "judgement"                 ) return new judgement_t                ( this, options_str );
+  if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "zealotry"                  ) return new zealotry_t                 ( this, options_str );
@@ -3215,6 +3241,7 @@ void paladin_t::init_spells()
   glyphs.holy_shock               = find_glyph( "Glyph of Holy Shock" );
   glyphs.judgement                = find_glyph( "Glyph of Judgement" );
   glyphs.lay_on_hands             = find_glyph( "Glyph of Lay on Hands" );
+  glyphs.light_of_dawn            = find_glyph( "Glyph of Light of Dawn" );
   glyphs.long_word                = find_glyph( "Glyph of the Long Word" );
   glyphs.seal_of_insight          = find_glyph( "Glyph of Seal of Insight" );
   glyphs.seal_of_truth            = find_glyph( "Glyph of Seal of Truth" );
