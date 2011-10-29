@@ -611,6 +611,8 @@ struct paladin_attack_t : public attack_t
     {
       player_multiplier *= 1.0 + p -> buffs_divine_shield -> effect1().percent();
     }
+
+    player_multiplier *= 1.0 + p -> buffs_selfless -> value();
   }
 
   virtual double cost() SC_CONST
@@ -1898,6 +1900,8 @@ struct paladin_spell_t : public spell_t
 
     if ( p -> buffs_divine_favor -> up() )
       player_crit += p -> buffs_divine_favor -> effect2().percent();
+
+    player_multiplier *= 1.0 + p -> buffs_selfless -> value();
   }
 };
 
