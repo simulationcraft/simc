@@ -62,6 +62,7 @@ struct paladin_t : public player_t
   buff_t* buffs_judgements_of_the_wise;
   buff_t* buffs_reckoning;
   buff_t* buffs_sacred_duty;
+  buff_t* buffs_selfless;
   buff_t* buffs_the_art_of_war;
   buff_t* buffs_zealotry;
 
@@ -152,11 +153,11 @@ struct paladin_t : public player_t
     // prot
     int ardent_defender;
     int divine_guardian;
-    int guarded_by_the_light;
     int vindication;
     talent_t* divinity;
     talent_t* eternal_glory;
     talent_t* grand_crusader;
+    talent_t* guarded_by_the_light;
     talent_t* hallowed_ground;
     talent_t* hammer_of_the_righteous;
     talent_t* holy_shield;
@@ -179,7 +180,6 @@ struct paladin_t : public player_t
     int long_arm_of_the_law;
     int pursuit_of_justice;
     int repentance;
-    int selfless_healer;
     talent_t* communion;
     talent_t* crusade;
     talent_t* divine_purpose;
@@ -189,6 +189,7 @@ struct paladin_t : public player_t
     talent_t* sanctified_wrath;
     talent_t* sanctity_of_battle;
     talent_t* seals_of_command;
+    talent_t* selfless_healer;
     talent_t* the_art_of_war;
     talent_t* zealotry;
 
@@ -2666,6 +2667,9 @@ struct word_of_glory_t : public paladin_heal_t
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier  = 0.0;
 
+    base_crit += p -> talents.rule_of_law -> effect1().percent();
+    cooldown -> duration += p -> talents.selfless_healer -> effect3().seconds();
+
     if ( p -> glyphs.long_word -> ok() )
     {
       base_multiplier *= 1.0 + p -> glyphs.long_word -> effect1().percent();
@@ -2692,6 +2696,15 @@ struct word_of_glory_t : public paladin_heal_t
     paladin_heal_t::consume_resource();
   }
 
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    p -> buffs_selfless -> trigger( 1, p -> talents.selfless_healer -> effect2().percent() * p -> holy_power_stacks() );
+
+    paladin_heal_t::execute();
+  }
+
   virtual void player_buff()
   {
     paladin_heal_t::player_buff();
@@ -2701,6 +2714,11 @@ struct word_of_glory_t : public paladin_heal_t
     player_multiplier *= p -> holy_power_stacks();
 
     player_multiplier *= 1.0 + p -> glyphs.word_of_glory -> effect1().percent();
+
+    if ( target == p )
+      player_multiplier *= 1.0 + p -> talents.guarded_by_the_light -> effect1().percent();
+    else
+      player_multiplier *= 1.0 + p -> talents.selfless_healer -> effect1().percent();
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -3017,6 +3035,7 @@ void paladin_t::init_buffs()
   buffs_judgements_of_the_wise = new buff_t( this, 31930, "judgements_of_the_wise", ( primary_tree() == TREE_PROTECTION ? 1 : 0 ) );
   buffs_reckoning              = new buff_t( this, talents.reckoning -> effect_trigger_spell( 1 ), "reckoning", talents.reckoning -> proc_chance() );
   buffs_sacred_duty            = new buff_t( this, talents.sacred_duty -> effect_trigger_spell( 1 ), "sacred_duty", talents.sacred_duty -> proc_chance() );
+  buffs_selfless               = new buff_t( this, 90811, "selfless", talents.selfless_healer -> rank() );
   buffs_the_art_of_war         = new buff_t( this, talents.the_art_of_war -> effect_trigger_spell( 1 ), "the_art_of_war",  talents.the_art_of_war -> proc_chance() );
   buffs_zealotry               = new buff_t( this, talents.zealotry -> spell_id(), "zealotry", 1 );
 }
@@ -3223,6 +3242,7 @@ void paladin_t::init_talents()
   talents.shield_of_the_righteous   = find_talent( "Shield of the Righteous" );
   talents.grand_crusader            = find_talent( "Grand Crusader" );
   talents.holy_shield               = find_talent( "Holy Shield" );
+  talents.guarded_by_the_light      = find_talent( "Guarded by the Light" );
   talents.sacred_duty               = find_talent( "Sacred Duty" );
   talents.shield_of_the_templar     = find_talent( "Shield of the Templar" );
   talents.reckoning                 = find_talent( "Reckoning" );
@@ -3238,6 +3258,7 @@ void paladin_t::init_talents()
   talents.seals_of_command   = find_talent( "Seals of Command" );
   talents.divine_purpose     = find_talent( "Divine Purpose" );
   talents.sanctified_wrath   = find_talent( "Sanctified Wrath" );
+  talents.selfless_healer    = find_talent( "Selfless Healer" );
   talents.inquiry_of_faith   = find_talent( "Inquiry of Faith" );
   talents.zealotry           = find_talent( "Zealotry" );
   
@@ -3246,7 +3267,6 @@ void paladin_t::init_talents()
   talents.aura_mastery = 0;
   talents.blessed_life = 0;
   talents.eye_for_an_eye = 0;
-  talents.guarded_by_the_light = 0;
   talents.improved_judgement = 0;
   talents.long_arm_of_the_law = 0;
   talents.vindication = 0;
