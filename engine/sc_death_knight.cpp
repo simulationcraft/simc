@@ -1158,29 +1158,23 @@ struct gargoyle_pet_t : public pet_t
   // FIXME: Did any of these stats change?
   struct gargoyle_strike_t : public spell_t
   {
-    gargoyle_strike_t( player_t* player ) :
-      spell_t( "gargoyle_strike", player, RESOURCE_NONE, SCHOOL_NATURE )
+    gargoyle_strike_t( pet_t* pet ) :
+      spell_t( "gargoyle_strike", 51963, pet )
     {
       // FIX ME!
       // Resist (can be partial)? Scaling?
-      background  = true;
-      repeating   = true;
       may_crit    = true;
-
-      id = 51963;
-      parse_data();
 
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
-      if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
+      if ( pet -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
   };
 
-  gargoyle_strike_t* gargoyle_strike;
   double snapshot_haste, snapshot_spell_crit, snapshot_power;
 
   gargoyle_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "gargoyle", true ), gargoyle_strike( 0 ),
+    pet_t( sim, owner, "gargoyle", true ),
     snapshot_haste(0), snapshot_spell_crit(0), snapshot_power(0)
   {
   }
@@ -1194,11 +1188,19 @@ struct gargoyle_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ] = 0;
     attribute_base[ ATTR_SPIRIT    ] = 0;
 
-    gargoyle_strike = new gargoyle_strike_t( this );
+    action_list_str = "/snapshot_stats/gargoyle_strike";
   }
   virtual double composite_spell_haste() SC_CONST { return snapshot_haste; }
   virtual double composite_attack_power() SC_CONST { return snapshot_power; }
   virtual double composite_spell_crit() SC_CONST { return snapshot_spell_crit; }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
 
   virtual void summon( double duration=0 )
   {
@@ -1212,7 +1214,26 @@ struct gargoyle_pet_t : public pet_t
     // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
     snapshot_spell_crit = o -> dbc.ptr ? o -> composite_spell_crit() : o -> composite_pet_attack_crit();
 
-    gargoyle_strike -> schedule_execute(); // Kick-off repeating attack
+  }
+
+  virtual void arise()
+  {
+    if ( sim -> log )
+      log_t::output( sim, "%s arises.", name() );
+
+    if ( ! initial_sleeping )
+      sleeping = 0;
+
+    if ( sleeping )
+      return;
+
+    init_resources( true );
+
+    readying = 0;
+
+    arise_time = sim -> current_time;
+
+    schedule_ready( 3.0 ); // Gargoyle pet is idle for the first 3 seconds.
   }
 };
 
@@ -3930,6 +3951,10 @@ struct summon_gargoyle_t : public death_knight_spell_t
     check_talent( p -> talents.summon_gargoyle -> rank() );
     rp_gain = 0.0;  // For some reason, the inc file thinks we gain RP for this spell
     parse_options( NULL, options_str );
+
+    harmful = false;
+    num_ticks = 0;
+    base_tick_time = 0.0;
   }
 
   virtual void execute()
@@ -3939,7 +3964,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
     // action. This comes off it's 30 second duration for active time. Effectively
     // it casts for 27 seconds.
     death_knight_t* p = player -> cast_death_knight();
-    p -> active_gargoyle -> summon( 27.0 );
+    p -> active_gargoyle -> summon( 30.0 );
   }
 };
 
