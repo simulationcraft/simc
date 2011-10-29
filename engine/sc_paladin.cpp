@@ -210,9 +210,11 @@ struct paladin_t : public player_t
     glyph_t* seal_of_truth;
     glyph_t* shield_of_the_righteous;
     glyph_t* templars_verdict;
+    glyph_t* word_of_glory;
 
     // major
     glyph_t* ascetic_crusader;
+    glyph_t* beacon_of_light;
     glyph_t* consecration;
     glyph_t* divine_plea;
     glyph_t* divine_protection;
@@ -222,6 +224,7 @@ struct paladin_t : public player_t
     glyph_t* lay_on_hands;
     glyph_t* light_of_dawn;
     glyph_t* long_word;
+    glyph_t* rebuke;
 
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -1295,6 +1298,29 @@ struct paladin_seal_t : public paladin_attack_t
   }
 };
 
+// Rebuke ===================================================================
+
+struct rebuke_t : public paladin_attack_t
+{
+  rebuke_t( paladin_t* p, const std::string& options_str ) :
+    paladin_attack_t( "rebuke", "Rebuke", p )
+  {
+    parse_options( NULL, options_str );
+
+    base_cost *= 1.0 + p -> glyphs.rebuke -> effect1().percent();
+
+    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+  }
+
+  virtual bool ready()
+  {
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+
+    return paladin_attack_t::ready();
+  }
+};
+
 // Seal of Insight ==========================================================
 
 struct seal_of_insight_proc_t : public paladin_heal_t
@@ -2363,6 +2389,8 @@ struct beacon_of_light_t : public paladin_heal_t
       sim -> cancel();
     }
 
+    base_cost *= 1.0 - p -> glyphs.beacon_of_light -> effect1().percent();
+
     // Remove the 'dot'
     num_ticks = 0;
   }
@@ -2671,6 +2699,8 @@ struct word_of_glory_t : public paladin_heal_t
     paladin_t* p = player -> cast_paladin();
 
     player_multiplier *= p -> holy_power_stacks();
+
+    player_multiplier *= 1.0 + p -> glyphs.word_of_glory -> effect1().percent();
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -2718,6 +2748,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "inquisition"               ) return new inquisition_t              ( this, options_str );
   if ( name == "judgement"                 ) return new judgement_t                ( this, options_str );
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
+  if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "zealotry"                  ) return new zealotry_t                 ( this, options_str );
@@ -3245,6 +3276,7 @@ void paladin_t::init_spells()
 
   // Glyphs
   glyphs.ascetic_crusader         = find_glyph( "Glyph of the Ascetic Crusader" );
+  glyphs.beacon_of_light          = find_glyph( "Glyph of Beacon of Light" );
   glyphs.consecration             = find_glyph( "Glyph of Consecration" );
   glyphs.crusader_strike          = find_glyph( "Glyph of Crusader Strike" );
   glyphs.divine_favor             = find_glyph( "Glyph of Divine Favor" );
@@ -3260,10 +3292,12 @@ void paladin_t::init_spells()
   glyphs.lay_on_hands             = find_glyph( "Glyph of Lay on Hands" );
   glyphs.light_of_dawn            = find_glyph( "Glyph of Light of Dawn" );
   glyphs.long_word                = find_glyph( "Glyph of the Long Word" );
+  glyphs.rebuke                   = find_glyph( "Glyph of Rebuke" );
   glyphs.seal_of_insight          = find_glyph( "Glyph of Seal of Insight" );
   glyphs.seal_of_truth            = find_glyph( "Glyph of Seal of Truth" );
   glyphs.shield_of_the_righteous  = find_glyph( "Glyph of Shield of the Righteous" );
   glyphs.templars_verdict         = find_glyph( "Glyph of Templar's Verdict" );
+  glyphs.word_of_glory            = find_glyph( "Glyph of Word of Glory" );
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
