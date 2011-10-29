@@ -1374,6 +1374,14 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
 
     cooldown -> duration = 8;
   }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+    paladin_attack_t::execute();
+    if ( ! p -> dbc.ptr )
+      p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.15, p -> gains_seal_of_insight );
+  }
 };
 
 // Seal of Justice ==========================================================
@@ -2538,10 +2546,16 @@ struct holy_radiance_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
     
+    // FIXME: This is revamped on the PTR
+
     // FIXME: This is an AoE Hot, which isn't supported currently
     aoe = effect2().base_value();
 
-    cooldown -> duration += p -> talents.speed_of_light -> effect3().seconds();
+    if ( p -> dbc.ptr )
+      base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
+
+    if ( ! p -> dbc.ptr )
+      cooldown -> duration += p -> talents.speed_of_light -> effect3().seconds();
 
     hot = new holy_radiance_hot_t( p, effect1().trigger_spell_id() );
   }
@@ -2551,6 +2565,32 @@ struct holy_radiance_t : public paladin_heal_t
     paladin_heal_t::tick( d );
 
     hot -> execute();
+  }
+
+  virtual void execute()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    paladin_heal_t::execute();
+
+    if ( p -> dbc.ptr )
+    {
+      p -> buffs_infusion_of_light -> expire();
+      if ( p -> talents.tower_of_radiance -> rank() )
+        p -> resource_gain( RESOURCE_HOLY_POWER, 1, p -> gains_hp_tower_of_radiance );
+    }
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    double t = paladin_heal_t::execute_time();
+
+    if ( p -> dbc.ptr && p -> buffs_infusion_of_light -> up() )
+      t += p -> buffs_infusion_of_light -> effect1().seconds();
+
+    return t;
   }
 };
 
@@ -2647,6 +2687,8 @@ struct light_of_dawn_t : public paladin_heal_t
     parse_options( NULL, options_str );
 
     aoe = ( p -> glyphs.light_of_dawn -> ok() ) ? 6 : 5;
+    if ( p -> dbc.ptr )
+      aoe++;
   }
 
   virtual void player_buff()
@@ -3513,7 +3555,13 @@ double paladin_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 
 void paladin_t::regen( double periodicity )
 {
+  double orig_mrwc = mana_regen_while_casting;
+  if ( dbc.ptr && buffs_judgements_of_the_pure -> up() )
+    mana_regen_while_casting *= 1.0 + buffs_judgements_of_the_pure -> effect2().percent();
+
   player_t::regen( periodicity );
+
+  mana_regen_while_casting = orig_mrwc;
 
   if ( buffs_divine_plea -> up() )
   {
