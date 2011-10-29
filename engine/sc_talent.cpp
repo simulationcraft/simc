@@ -335,7 +335,6 @@ bool spell_id_t::initialize( const char* s_name )
   return true;
 }
 
-
 bool spell_id_t::enable( bool override_value )
 {
   assert( s_player && s_player -> sim );
@@ -379,7 +378,6 @@ std::string spell_id_t::to_str() SC_CONST
 
   return s.str();
 }
-
 
 const char* spell_id_t::real_name() SC_CONST
 {

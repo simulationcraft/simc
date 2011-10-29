@@ -1598,7 +1598,6 @@ static void register_valanyr( item_t* item )
         proc -> occur();
         cd -> start();
       }
-
     }
   };
 

@@ -3920,6 +3920,7 @@ struct player_t : public noncopyable
     buff_t* hellscreams_warsong;
     buff_t* heroic_presence;
     buff_t* hymn_of_hope;
+    buff_t* illuminated_healing;
     buff_t* indestructible_potion;
     buff_t* innervate;
     buff_t* inspiration;

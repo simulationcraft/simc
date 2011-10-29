@@ -9,9 +9,6 @@
 // Paladin
 // ==========================================================================
 
-namespace
-{
-
 enum seal_type_t
 {
   SEAL_NONE=0,
@@ -22,8 +19,6 @@ enum seal_type_t
   SEAL_MAX
 };
 
-}
-
 struct paladin_t : public player_t
 {
   // Active
@@ -32,6 +27,7 @@ struct paladin_t : public player_t
   heal_t*   active_enlightened_judgements;
   action_t* active_flames_of_the_faithful_proc;
   action_t* active_hand_of_light_proc;
+  absorb_t* active_illuminated_healing;
   heal_t*   active_protector_of_the_innocent;
   action_t* active_seal_of_insight_proc;
   action_t* active_seal_of_justice_proc;
@@ -96,13 +92,16 @@ struct paladin_t : public player_t
   {
     mastery_t* divine_bulwark;
     mastery_t* hand_of_light;
+    mastery_t* illuminated_healing;
     passive_spell_t* judgements_of_the_bold; // passive stuff is hidden here because spells
     passive_spell_t* judgements_of_the_wise; // can only have three effects
+    passive_spell_t* meditation;
     passive_spell_t* plate_specialization;
     passive_spell_t* sheath_of_light;
     passive_spell_t* touched_by_the_light;
     passive_spell_t* two_handed_weapon_spec;
     passive_spell_t* vengeance;
+    passive_spell_t* walk_in_the_light;
     passives_t() { memset( ( void* ) this, 0x0, sizeof( passives_t ) ); }
   };
   passives_t passives;
@@ -246,6 +245,7 @@ struct paladin_t : public player_t
     active_enlightened_judgements      = 0;
     active_flames_of_the_faithful_proc = 0;
     active_hand_of_light_proc          = 0;
+    active_illuminated_healing         = 0;
     active_protector_of_the_innocent   = 0;
     active_seal = SEAL_NONE;
     active_seals_of_command_proc       = 0;
@@ -394,6 +394,7 @@ struct paladin_heal_t : public heal_t
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
   }
+
   paladin_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
     heal_t( n, player, sname, t )
   {
@@ -466,6 +467,8 @@ struct paladin_heal_t : public heal_t
     }
 
     player_multiplier *= 1.0 + p -> talents.divinity -> effect2().percent();
+
+    player_multiplier *= 1.0 + p -> passives.walk_in_the_light -> effect1().percent();
 
     if ( p -> active_seal == SEAL_OF_INSIGHT && p -> glyphs.seal_of_insight -> ok() )
       player_multiplier *= 1.0 + p -> glyphs.seal_of_insight -> effect1().percent();
@@ -740,6 +743,45 @@ static void trigger_hand_of_light( action_t* a )
     p -> active_hand_of_light_proc -> base_dd_max = p -> active_hand_of_light_proc-> base_dd_min = a -> direct_dmg;
     p -> active_hand_of_light_proc -> execute();
   }
+}
+
+// trigger_illuminated_healing ==============================================
+
+static void trigger_illuminated_healing( heal_t* h )
+{
+  if ( h -> direct_dmg <= 0 )
+    return;
+
+  if ( h -> proc )
+    return;
+
+  paladin_t* p = h -> player -> cast_paladin();
+
+  if ( ! p -> active_illuminated_healing )
+  {
+    struct illuminated_healing_t : public absorb_t
+    {
+      illuminated_healing_t( paladin_t* p ) :
+        absorb_t( "illuminated_healing", p, 86273 )
+      {
+        background = true;
+        proc = true;
+        trigger_gcd = 0;
+
+        init();
+      }
+    };
+    p -> active_illuminated_healing = new illuminated_healing_t( p );
+  }
+
+  // FIXME: This should stack when the buff is present already
+
+  double bubble_value = p -> passives.illuminated_healing -> effect2().base_value() / 10000.0 
+                        * p -> composite_mastery()
+                        * h -> direct_dmg;
+
+  p -> active_illuminated_healing -> base_dd_min = p -> active_illuminated_healing -> base_dd_max = bubble_value;
+  p -> active_illuminated_healing -> execute();
 }
 
 // trigger_protector_of_the_innocent ========================================
@@ -2382,6 +2424,8 @@ void paladin_heal_t::execute()
 
   if ( target != p -> beacon_target )
     trigger_beacon_of_light( this );
+
+  trigger_illuminated_healing( this );
 }
 
 // Beacon of Light ==========================================================
@@ -2714,7 +2758,10 @@ struct word_of_glory_t : public paladin_heal_t
     base_spell_power_multiplier  = 0.0;
 
     base_crit += p -> talents.rule_of_law -> effect1().percent();
-    cooldown -> duration += p -> talents.selfless_healer -> effect3().seconds();
+    cooldown -> duration += p -> talents.selfless_healer -> effect3().seconds()
+                            + p -> passives.walk_in_the_light -> effect3().seconds();
+
+    base_multiplier *= 1.0 + p -> passives.meditation -> effect2().percent();
 
     if ( p -> glyphs.long_word -> ok() )
     {
@@ -2877,7 +2924,7 @@ void paladin_t::init_base()
   case TREE_HOLY:
     base_attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgements
     base_spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgements
-    mana_regen_while_casting = 0.50;
+    mana_regen_while_casting = passives.meditation -> effect1().percent();
     break;
 
   case TREE_PROTECTION:
@@ -3330,8 +3377,10 @@ void paladin_t::init_spells()
   // Passives
   passives.divine_bulwark         = new mastery_t( this, "divine_bulwark", "Divine Bulwark", TREE_PROTECTION );
   passives.hand_of_light          = new mastery_t( this, "hand_of_light", "Hand of Light", TREE_RETRIBUTION );
+  passives.illuminated_healing    = new mastery_t( this, "illuminated_healing", "Illuminated Healing", TREE_HOLY );
   passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", "Judgements of the Bold" );
   passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", "Judgements of the Wise" );
+  passives.meditation             = new passive_spell_t( this, "meditation", "Medidation" );
   passives.plate_specialization   = new passive_spell_t( this, "plate_specialization", 86525 );
   passives.sheath_of_light        = new passive_spell_t( this, "sheath_of_light", "Sheath of Light" );
   passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light" );
@@ -3339,6 +3388,7 @@ void paladin_t::init_spells()
   passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance" );
   if ( passives.vengeance -> ok() )
     vengeance_enabled = true;
+  passives.walk_in_the_light      = new passive_spell_t( this, "walk_in_the_light", "Walk in the Light" );
 
   // Glyphs
   glyphs.ascetic_crusader         = find_glyph( "Glyph of the Ascetic Crusader" );
@@ -3776,6 +3826,7 @@ void player_t::paladin_init( sim_t* sim )
     p -> buffs.blessing_of_kings        = new buff_t( p, "blessing_of_kings",       ! p -> is_pet() );
     p -> buffs.blessing_of_might        = new buff_t( p, "blessing_of_might",       ! p -> is_pet() );
     p -> buffs.blessing_of_might_regen  = new buff_t( p, "blessing_of_might_regen", ! p -> is_pet() );
+    p -> buffs.illuminated_healing      = new buff_t( p, 86273, "illuminated_healing" );
     p -> debuffs.forbearance            = new debuff_t( p, 25771, "forbearance" );
     p -> debuffs.judgements_of_the_just = new debuff_t( p, "judgements_of_the_just", 1, 20.0 );
     p -> debuffs.vindication            = new debuff_t( p, "vindication",            1, 30.0 );
