@@ -1868,6 +1868,10 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 
   double unholy_blight_dmg = death_coil_dmg * p -> talents.unholy_blight -> effect1().percent();
 
+  // http://code.google.com/p/simulationcraft/issues/detail?id=939
+  if (p -> bugs)
+    unholy_blight_dmg *= 0.75;
+
   dot_t* dot = p -> active_unholy_blight -> dot;
 
   if ( dot -> ticking )
@@ -3960,7 +3964,6 @@ struct summon_gargoyle_t : public death_knight_spell_t
   virtual void execute()
   {
     death_knight_spell_t::execute();
-
     death_knight_t* p = player -> cast_death_knight();
 
     p -> active_gargoyle -> summon( p -> dbc.spell( effect3().trigger_spell_id() ) -> duration() );
