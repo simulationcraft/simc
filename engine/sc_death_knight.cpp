@@ -1233,7 +1233,7 @@ struct gargoyle_pet_t : public pet_t
 
     arise_time = sim -> current_time;
 
-    schedule_ready( 3.0 ); // Gargoyle pet is idle for the first 3 seconds.
+    schedule_ready( 3.0, true ); // Gargoyle pet is idle for the first 3 seconds.
   }
 };
 
@@ -3960,11 +3960,10 @@ struct summon_gargoyle_t : public death_knight_spell_t
   virtual void execute()
   {
     death_knight_spell_t::execute();
-    // Examining logs shows 3 seconds between summoning and the gargoyles first
-    // action. This comes off it's 30 second duration for active time. Effectively
-    // it casts for 27 seconds.
+
     death_knight_t* p = player -> cast_death_knight();
-    p -> active_gargoyle -> summon( 30.0 );
+
+    p -> active_gargoyle -> summon( p -> dbc.spell( effect3().trigger_spell_id() ) -> duration() );
   }
 };
 
