@@ -445,6 +445,9 @@ struct paladin_heal_t : public heal_t
 
     heal_t::player_buff();
 
+    if ( p -> buffs_avenging_wrath -> up() )
+      player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> effect2().percent();
+
     if ( p -> buffs_conviction -> up() )
     {
       player_multiplier *= 1.0 + p -> buffs_conviction -> effect2().percent();
@@ -1778,16 +1781,16 @@ struct avenging_wrath_t : public paladin_spell_t
 
     harmful = false;
     cooldown -> duration += p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN )
-                            + p -> talents.paragon_of_virtue -> effect1().seconds()
+                            + p -> talents.paragon_of_virtue -> effect2().seconds()
                             + p -> talents.shield_of_the_templar -> effect3().seconds();
   }
 
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    consume_resource();
-    update_ready();
+
+    paladin_spell_t::execute();
+
     p -> buffs_avenging_wrath -> trigger( 1, effect1().percent() );
   }
 };
