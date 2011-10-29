@@ -218,6 +218,7 @@ struct paladin_t : public player_t
     glyph_t* focused_shield;
     glyph_t* hammer_of_wrath;
     glyph_t* lay_on_hands;
+    glyph_t* long_word;
 
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -2261,38 +2262,72 @@ void paladin_heal_t::execute()
     trigger_protector_of_the_innocent( p );
 }
 
-// Word of Glory Spell ======================================================
+// Divine Light Spell =======================================================
 
-struct word_of_glory_t : public paladin_heal_t
+struct divine_light_t : public paladin_heal_t
 {
-  word_of_glory_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "word_of_glory", p, "Word of Glory" )
+  divine_light_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "divine_light", p, "Divine Light" )
   {
     parse_options( NULL, options_str );
 
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier  = 0.0;
-
-    // !Glyph deactivates the hot.
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
   }
 
-  virtual void player_buff()
+  virtual void execute()
   {
-    paladin_heal_t::player_buff();
-
     paladin_t* p = player -> cast_paladin();
 
-    player_multiplier *= p -> holy_power_stacks();
+    paladin_heal_t::execute();
+
+    p -> buffs_daybreak -> trigger();
+    p -> buffs_infusion_of_light -> expire();
+  }
+  
+  virtual double execute_time() SC_CONST
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    double t = paladin_heal_t::execute_time();
+
+    if ( p -> buffs_infusion_of_light -> up() )
+      t += p -> buffs_infusion_of_light -> effect1().seconds();
+
+    return t;
+  }
+};
+
+
+// Flash of Light Spell =====================================================
+
+struct flash_of_light_t : public paladin_heal_t
+{
+  flash_of_light_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "flash_of_light", p, "Flash of Light" )
+  {
+    parse_options( NULL, options_str );
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type )
+  virtual void execute()
   {
-    paladin_heal_t::target_debuff( t, dmg_type );
-
     paladin_t* p = player -> cast_paladin();
 
-    if ( t -> health_percentage() <= 35 )
-      player_crit += p -> talents.last_word -> effect1().percent();
+    paladin_heal_t::execute();
+
+    p -> buffs_daybreak -> trigger();
+    p -> buffs_infusion_of_light -> expire();
+  }
+
+  virtual double execute_time() SC_CONST
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    double t = paladin_heal_t::execute_time();
+
+    if ( p -> buffs_infusion_of_light -> up() )
+      t += p -> buffs_infusion_of_light -> effect1().seconds();
+
+    return t;
   }
 };
 
@@ -2374,74 +2409,6 @@ struct holy_shock_heal_t : public paladin_heal_t
   }
 };
 
-// Flash of Light Spell =====================================================
-
-struct flash_of_light_t : public paladin_heal_t
-{
-  flash_of_light_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "flash_of_light", p, "Flash of Light" )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual void execute()
-  {
-    paladin_t* p = player -> cast_paladin();
-
-    paladin_heal_t::execute();
-
-    p -> buffs_daybreak -> trigger();
-    p -> buffs_infusion_of_light -> expire();
-  }
-
-  virtual double execute_time() SC_CONST
-  {
-    paladin_t* p = player -> cast_paladin();
-
-    double t = paladin_heal_t::execute_time();
-
-    if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().seconds();
-
-    return t;
-  }
-};
-
-// Divine Light Spell =======================================================
-
-struct divine_light_t : public paladin_heal_t
-{
-  divine_light_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "divine_light", p, "Divine Light" )
-  {
-    parse_options( NULL, options_str );
-
-    base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
-  }
-
-  virtual void execute()
-  {
-    paladin_t* p = player -> cast_paladin();
-
-    paladin_heal_t::execute();
-
-    p -> buffs_daybreak -> trigger();
-    p -> buffs_infusion_of_light -> expire();
-  }
-  
-  virtual double execute_time() SC_CONST
-  {
-    paladin_t* p = player -> cast_paladin();
-
-    double t = paladin_heal_t::execute_time();
-
-    if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().seconds();
-
-    return t;
-  }
-};
-
 // Lay on Hands Spell =======================================================
 
 struct lay_on_hands_t : public paladin_heal_t
@@ -2477,6 +2444,51 @@ struct lay_on_hands_t : public paladin_heal_t
       return false;
 
     return paladin_heal_t::ready();
+  }
+};
+
+// Word of Glory Spell ======================================================
+
+struct word_of_glory_t : public paladin_heal_t
+{
+  word_of_glory_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "word_of_glory", p, "Word of Glory" )
+  {
+    parse_options( NULL, options_str );
+
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier  = 0.0;
+
+    if ( p -> glyphs.long_word -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> glyphs.long_word -> effect1().percent();
+    }
+    else
+    {
+      // Hot is built into the spell, but only becomes active with the glyph
+      base_td = 0;
+      base_tick_time = 0;
+      num_ticks = 0;
+    }
+  }
+
+  virtual void player_buff()
+  {
+    paladin_heal_t::player_buff();
+
+    paladin_t* p = player -> cast_paladin();
+
+    player_multiplier *= p -> holy_power_stacks();
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    paladin_heal_t::target_debuff( t, dmg_type );
+
+    paladin_t* p = player -> cast_paladin();
+
+    if ( t -> health_percentage() <= 35 )
+      player_crit += p -> talents.last_word -> effect1().percent();
   }
 };
 
@@ -3050,6 +3062,7 @@ void paladin_t::init_spells()
   glyphs.holy_shock               = find_glyph( "Glyph of Holy Shock" );
   glyphs.judgement                = find_glyph( "Glyph of Judgement" );
   glyphs.lay_on_hands             = find_glyph( "Glyph of Lay on Hands" );
+  glyphs.long_word                = find_glyph( "Glyph of the Long Word" );
   glyphs.seal_of_insight          = find_glyph( "Glyph of Seal of Insight" );
   glyphs.seal_of_truth            = find_glyph( "Glyph of Seal of Truth" );
   glyphs.shield_of_the_righteous  = find_glyph( "Glyph of Shield of the Righteous" );
