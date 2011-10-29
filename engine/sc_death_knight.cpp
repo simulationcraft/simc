@@ -1154,6 +1154,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
 struct gargoyle_pet_t : public pet_t
 {
+
   // FIXME: Did any of these stats change?
   struct gargoyle_strike_t : public spell_t
   {
@@ -1164,7 +1165,7 @@ struct gargoyle_pet_t : public pet_t
       // Resist (can be partial)? Scaling?
       background  = true;
       repeating   = true;
-      may_crit    = false;
+      may_crit    = true;
 
       id = 51963;
       parse_data();
@@ -1176,11 +1177,11 @@ struct gargoyle_pet_t : public pet_t
   };
 
   gargoyle_strike_t* gargoyle_strike;
-  double haste_snapshot, power_snapshot;
+  double snapshot_haste, snapshot_spell_crit, snapshot_power;
 
   gargoyle_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "gargoyle", true ), gargoyle_strike( 0 ), haste_snapshot( 1.0 ),
-    power_snapshot( 0.0 )
+    pet_t( sim, owner, "gargoyle", true ), gargoyle_strike( 0 ),
+    snapshot_haste(0), snapshot_spell_crit(0), snapshot_power(0)
   {
   }
 
@@ -1195,17 +1196,22 @@ struct gargoyle_pet_t : public pet_t
 
     gargoyle_strike = new gargoyle_strike_t( this );
   }
-  virtual double composite_spell_haste() SC_CONST { return haste_snapshot; }
-  virtual double composite_attack_power() SC_CONST { return power_snapshot; }
+  virtual double composite_spell_haste() SC_CONST { return snapshot_haste; }
+  virtual double composite_attack_power() SC_CONST { return snapshot_power; }
+  virtual double composite_spell_crit() SC_CONST { return snapshot_spell_crit; }
 
   virtual void summon( double duration=0 )
   {
     pet_t::summon( duration );
     // Haste etc. are taken at the time of summoning
     death_knight_t* o = owner -> cast_death_knight();
-    haste_snapshot = o -> composite_attack_speed();
 
-    power_snapshot = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
+    snapshot_haste      = o -> composite_attack_speed();
+    snapshot_power      = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
+    // Pets don't seem to inherit their master's crit at the moment.
+    // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
+    snapshot_spell_crit = o -> dbc.ptr ? o -> composite_spell_crit() : o -> composite_pet_attack_crit();
+
     gargoyle_strike -> schedule_execute(); // Kick-off repeating attack
   }
 };
@@ -3929,12 +3935,11 @@ struct summon_gargoyle_t : public death_knight_spell_t
   virtual void execute()
   {
     death_knight_spell_t::execute();
-    // Examining logs show gargoyls take 4.5-5.5 seconds before they
-    // can begin casting, so rather than the tooltip's 30s duration,
-    // let's use 25s.  This still probably overestimates and assumes
-    // no meleeing, which gargoyles sometimes choose to do.
+    // Examining logs shows 3 seconds between summoning and the gargoyles first
+    // action. This comes off it's 30 second duration for active time. Effectively
+    // it casts for 27 seconds.
     death_knight_t* p = player -> cast_death_knight();
-    p -> active_gargoyle -> summon( 25.0 );
+    p -> active_gargoyle -> summon( 27.0 );
   }
 };
 
