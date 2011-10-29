@@ -435,6 +435,8 @@ struct paladin_heal_t : public heal_t
     if ( p -> buffs_divine_favor -> up() )
       h *= 1.0 / ( 1.0 + p -> buffs_divine_favor -> effect1().percent() );
 
+    h *= 1.0 / ( 1.0 + p -> talents.speed_of_light -> effect1().percent() );
+
     return h;
   }
 
@@ -1811,6 +1813,8 @@ struct paladin_spell_t : public spell_t
     if ( p -> buffs_divine_favor -> up() )
       h *= 1.0 / ( 1.0 + p -> buffs_divine_favor -> effect1().percent() );
     
+    h *= 1.0 / ( 1.0 + p -> talents.speed_of_light -> effect1().percent() );
+
     return h;
   }
 
@@ -2453,6 +2457,44 @@ struct holy_light_t : public paladin_heal_t
   }
 };
 
+// Holy Radiance ============================================================
+
+struct holy_radiance_hot_t : public paladin_heal_t
+{
+  holy_radiance_hot_t( paladin_t* p, uint32_t spell_id ) :
+    paladin_heal_t( "holy_radiance", p, spell_id )
+  {
+    background = true;
+    dual = true;
+    direct_tick = true;
+  }
+};
+
+struct holy_radiance_t : public paladin_heal_t
+{
+  holy_radiance_hot_t* hot;
+
+  holy_radiance_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "holy_radiance", p, "Holy Radiance" )
+  {
+    parse_options( NULL, options_str );
+    
+    // FIXME: This is an AoE Hot, which isn't supported currently
+    aoe = effect2().base_value();
+
+    cooldown -> duration += p -> talents.speed_of_light -> effect3().seconds();
+
+    hot = new holy_radiance_hot_t( p, effect1().trigger_spell_id() );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    paladin_heal_t::tick( d );
+
+    hot -> execute();
+  }
+};
+
 // Holy Shock Heal Spell ====================================================
 
 struct holy_shock_heal_t : public paladin_heal_t
@@ -2604,6 +2646,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
+  if ( name == "holy_radiance"             ) return new holy_radiance_t            ( this, options_str );
   if ( name == "holy_shield"               ) return new holy_shield_t              ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
   if ( name == "holy_shock_heal"           ) return new holy_shock_heal_t          ( this, options_str );
