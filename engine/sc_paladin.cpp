@@ -31,6 +31,7 @@ struct paladin_t : public player_t
   action_t* active_enlightened_judgements;
   action_t* active_flames_of_the_faithful_proc;
   action_t* active_hand_of_light_proc;
+  heal_t*   active_protector_of_the_innocent;
   action_t* active_seal_of_insight_proc;
   action_t* active_seal_of_justice_proc;
   action_t* active_seal_of_righteousness_proc;
@@ -235,6 +236,7 @@ struct paladin_t : public player_t
     active_enlightened_judgements      = 0;
     active_flames_of_the_faithful_proc = 0;
     active_hand_of_light_proc          = 0;
+    active_protector_of_the_innocent   = 0;
     active_seal = SEAL_NONE;
     active_seals_of_command_proc       = 0;
     active_seal_of_justice_proc        = 0;
@@ -417,15 +419,7 @@ struct paladin_heal_t : public heal_t
     return heal_t::cost();
   }
 
-  virtual void execute()
-  {
-    paladin_t* p = player -> cast_paladin();
-
-    heal_t::execute();
-
-    if ( result == RESULT_CRIT && direct_dmg > 0 )
-      p -> buffs_conviction -> trigger();
-  }
+  virtual void execute();
 
   virtual double haste() SC_CONST
   {
@@ -657,6 +651,19 @@ static void trigger_enlightened_judgements( paladin_t* p )
   p -> active_enlightened_judgements -> execute();
 }
 
+// trigger_grand_crusader ===================================================
+
+static void trigger_grand_crusader( action_t* a )
+{
+  paladin_t* p = a -> player -> cast_paladin();
+
+  if ( a -> sim -> roll( p -> talents.grand_crusader -> proc_chance() ) )
+  {
+    p -> cooldowns_avengers_shield -> reset();
+    p -> buffs_grand_crusader -> trigger();
+  }
+}
+
 // trigger_hand_of_light ====================================================
 
 static void trigger_hand_of_light( action_t* a )
@@ -670,17 +677,32 @@ static void trigger_hand_of_light( action_t* a )
   }
 }
 
-// trigger_grand_crusader ===================================================
+// trigger_protector_of_the_innocent ========================================
 
-static void trigger_grand_crusader( action_t* a )
+static void trigger_protector_of_the_innocent( paladin_t* p )
 {
-  paladin_t* p = a -> player -> cast_paladin();
+  if ( ! p -> talents.protector_of_the_innocent -> rank() )
+    return;
 
-  if ( a -> sim -> roll( p -> talents.grand_crusader -> proc_chance() ) )
+  if ( ! p -> active_protector_of_the_innocent )
   {
-    p -> cooldowns_avengers_shield -> reset();
-    p -> buffs_grand_crusader -> trigger();
+    struct protector_of_the_innocent_t : public paladin_heal_t
+    {
+      protector_of_the_innocent_t( paladin_t* p ) :
+        paladin_heal_t( "protector_of_the_innocent", p, p -> talents.protector_of_the_innocent -> effect1().trigger_spell_id() )
+      {
+        background = true;
+        proc = true;
+        trigger_gcd = 0;
+
+        init();
+      }
+    };
+
+    p -> active_protector_of_the_innocent = new protector_of_the_innocent_t( p );
   }
+
+  p -> active_protector_of_the_innocent -> execute();
 }
 
 // Melee Attack =============================================================
@@ -981,6 +1003,7 @@ struct crusader_strike_t : public paladin_attack_t
 struct divine_storm_t : public paladin_attack_t
 {
   double base_cooldown;
+
   divine_storm_t( paladin_t* p, const std::string& options_str )
     : paladin_attack_t( "divine_storm", "Divine Storm", p ), base_cooldown( 0 )
   {
@@ -2222,6 +2245,21 @@ struct zealotry_t : public paladin_spell_t
 // ==========================================================================
 // Paladin Heals
 // ==========================================================================
+
+// paladin_heal_t::execute ==================================================
+
+void paladin_heal_t::execute()
+{
+  paladin_t* p = player -> cast_paladin();
+
+  heal_t::execute();
+
+  if ( result == RESULT_CRIT && direct_dmg > 0 )
+    p -> buffs_conviction -> trigger();
+
+  if ( target != p )
+    trigger_protector_of_the_innocent( p );
+}
 
 // Word of Glory Spell ======================================================
 
