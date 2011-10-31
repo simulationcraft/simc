@@ -2691,7 +2691,7 @@ struct death_coil_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.23; // FIXME: is it 23%, 27% (tooltip with glyph) or 30% ( tooltip without glyph) ?, 31/10/2011
+    direct_power_mod = 0.23; // issue510. tooltips updated in 4.3 (ptr)
     base_dd_min      = p -> dbc.effect_min( effect_id( 1 ), p -> level );
     base_dd_max      = p -> dbc.effect_max( effect_id( 1 ), p -> level );
 
