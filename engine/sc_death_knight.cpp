@@ -1259,8 +1259,7 @@ struct ghoul_pet_t : public pet_t
 
     virtual bool ready()
     {
-      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
+      death_knight_t* o = player -> cast_pet() -> owner -> cast_death_knight();
 
       if ( ! o -> buffs_dark_transformation -> check() )
         return false;
@@ -1680,14 +1679,12 @@ static void trigger_blood_caked_blade( action_t* a )
   if ( ! p -> talents.blood_caked_blade -> rank() )
     return;
 
-  double chance = p -> talents.blood_caked_blade -> rank() * 0.10;
-
-  if ( p -> rng_blood_caked_blade -> roll( chance ) )
+  if ( p -> rng_blood_caked_blade -> roll( p -> talents.blood_caked_blade -> proc_chance() ) )
   {
     struct bcb_t : public death_knight_attack_t
     {
-      bcb_t( death_knight_t* player ) :
-        death_knight_attack_t( "blood_caked_blade", player -> talents.blood_caked_blade -> spell_id(), player )
+      bcb_t( death_knight_t* p ) :
+        death_knight_attack_t( "blood_caked_blade", p -> talents.blood_caked_blade -> spell_id(), p )
       {
         may_crit       = false;
         background     = true;
@@ -1718,6 +1715,7 @@ static void trigger_blood_caked_blade( action_t* a )
 static void trigger_brittle_bones( spell_t* s, player_t* t )
 {
   death_knight_t* p = s -> player -> cast_death_knight();
+
   if ( ! p -> talents.brittle_bones -> rank() )
     return;
 
@@ -1732,9 +1730,10 @@ static void trigger_brittle_bones( spell_t* s, player_t* t )
 
 // Trigger Ebon Plaguebringer ===============================================
 
-static void trigger_ebon_plaguebringer( action_t* a )
+static void trigger_ebon_plaguebringer( action_t* a, player_t* t )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
+
   if ( ! p -> talents.ebon_plaguebringer -> rank() )
     return;
 
@@ -1745,11 +1744,11 @@ static void trigger_ebon_plaguebringer( action_t* a )
     return;
 
   double duration = 21.0 + p -> talents.epidemic -> effect1().seconds();
-  if ( a -> target -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
+  if ( t -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
   {
-    a -> target -> debuffs.ebon_plaguebringer -> buff_duration = duration;
-    a -> target -> debuffs.ebon_plaguebringer -> trigger( 1, 8.0 );
-    a -> target -> debuffs.ebon_plaguebringer -> source = p;
+    t -> debuffs.ebon_plaguebringer -> buff_duration = duration;
+    t -> debuffs.ebon_plaguebringer -> trigger( 1, 8.0 );
+    t -> debuffs.ebon_plaguebringer -> source = p;
   }
 }
 
@@ -1879,7 +1878,7 @@ bool death_knight_attack_t::ready()
     return false;
 
   if ( requires_weapon )
-    if ( ! weapon || weapon->group() == WEAPON_RANGED )
+    if ( ! weapon || weapon -> group() == WEAPON_RANGED )
       return false;
 
   return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
@@ -2128,7 +2127,9 @@ struct melee_t : public death_knight_attack_t
 
       if ( p -> rng_might_of_the_frozen_wastes -> roll( p -> talents.might_of_the_frozen_wastes -> proc_chance() ) )
       {
-        p -> resource_gain( RESOURCE_RUNIC, p -> dbc.spell( 81331 ) -> effect1().resource( RESOURCE_RUNIC ), p -> gains_might_of_the_frozen_wastes );
+        p -> resource_gain( RESOURCE_RUNIC,
+                            p -> dbc.spell( p -> talents.might_of_the_frozen_wastes -> effect1().trigger_spell_id() ) -> effect1().resource( RESOURCE_RUNIC ),
+                            p -> gains_might_of_the_frozen_wastes );
       }
     }
   }
@@ -2772,7 +2773,7 @@ struct festering_strike_t : public death_knight_attack_t
       p -> dots_blood_plague -> extend_duration( 2 );
       p -> dots_frost_fever  -> extend_duration( 2 );
       if ( p -> dots_blood_plague -> ticking || p -> dots_frost_fever -> ticking )
-        trigger_ebon_plaguebringer( this );
+        trigger_ebon_plaguebringer( this, target );
     }
   }
 
@@ -3130,7 +3131,7 @@ struct icy_touch_t : public death_knight_spell_t
       }
       if ( p -> frost_fever )
         p -> frost_fever -> execute();
-      trigger_ebon_plaguebringer( this );
+      trigger_ebon_plaguebringer( this, target );
     }
 
     p -> buffs_rime -> decrement();
@@ -3506,7 +3507,7 @@ struct plague_strike_t : public death_knight_attack_t
       if ( ! p -> blood_plague ) p -> blood_plague = new blood_plague_t( p );
 
       p -> blood_plague -> execute();
-      trigger_ebon_plaguebringer( this );
+      trigger_ebon_plaguebringer( this, target );
     }
 
     if ( oh_attack )
@@ -3659,16 +3660,37 @@ struct raise_dead_t : public death_knight_spell_t
 
 // Rune Strike ==============================================================
 
+struct rune_strike_offhand_t : public death_knight_attack_t
+{
+  rune_strike_offhand_t( death_knight_t* p ) :
+    death_knight_attack_t( "rune_strike_offhand", 66217, p )
+  {
+    background       = true;
+    weapon           = &( p -> off_hand_weapon );
+
+    base_crit       += p -> glyphs.rune_strike -> effect1().percent();
+    direct_power_mod = 0.15;
+    may_dodge = may_block = may_parry = false;
+  }
+
+};
+
 struct rune_strike_t : public death_knight_attack_t
 {
+  attack_t* oh_attack;
+
   rune_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "rune_strike", "Rune Strike", p )
+    death_knight_attack_t( "rune_strike", "Rune Strike", p ),
+    oh_attack( 0 )
   {
     parse_options( NULL, options_str );
 
     base_crit       += p -> glyphs.rune_strike -> effect1().percent();
     direct_power_mod = 0.15;
     may_dodge = may_block = may_parry = false;
+
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+          oh_attack = new rune_strike_offhand_t( p );
   }
 
   virtual void execute()
@@ -3682,23 +3704,13 @@ struct rune_strike_t : public death_knight_attack_t
       p -> trigger_runic_empowerment();
     }
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( oh_attack )
     {
       if ( p -> rng_threat_of_thassarian -> roll ( p -> talents.threat_of_thassarian -> effect1().percent() ) )
       {
-        weapon = &( p -> off_hand_weapon );
-        death_knight_attack_t::execute();
+        oh_attack -> execute();
       }
     }
-  }
-
-  virtual bool ready()
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    if ( ! p -> buffs_blood_presence -> check() )
-      return false;
-
-    return death_knight_attack_t::ready();
   }
 };
 
