@@ -150,7 +150,6 @@ struct death_knight_t : public player_t
   gain_t* gains_improved_frost_presence;
   gain_t* gains_might_of_the_frozen_wastes;
   gain_t* gains_power_refund;
-  gain_t* gains_rune_abilities;
   gain_t* gains_scent_of_blood;
   gain_t* gains_tier12_2pc_melee;
   gain_t* gains_rune;
@@ -1441,6 +1440,7 @@ struct death_knight_attack_t : public attack_t
   double convert_runes;
   double m_dd_additive; // Multipler for Direct Damage that are all additive with each other
   bool   use[RUNE_SLOT_MAX];
+  gain_t* rp_gains;
 
   death_knight_attack_t( const char* n, death_knight_t* p, bool special = false ) :
     attack_t( n, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, special ),
@@ -1480,6 +1480,8 @@ struct death_knight_attack_t : public attack_t
 
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
       m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
+
+    rp_gains = player -> get_gain( "runic_power_gain_" + name_str );
   }
 
   virtual void   reset();
@@ -1502,6 +1504,7 @@ struct death_knight_spell_t : public spell_t
   int    cost_unholy;
   double convert_runes;
   bool   use[RUNE_SLOT_MAX];
+  gain_t* rp_gains;
 
   death_knight_spell_t( const char* n, uint32_t id, death_knight_t* p ) :
     spell_t( n, id, p ),
@@ -1528,6 +1531,8 @@ struct death_knight_spell_t : public spell_t
 
     base_spell_power_multiplier = 0;
     base_attack_power_multiplier = 1;
+
+    rp_gains = player -> get_gain( "runic_power_gain_" + name_str );
   }
 
   virtual void   reset();
@@ -1811,7 +1816,7 @@ void death_knight_attack_t::consume_resource()
                             rp_gain * p -> talents.improved_frost_presence -> effect1().percent(),
                             p -> gains_improved_frost_presence );
       }
-      p -> resource_gain( RESOURCE_RUNIC, rp_gain, p -> gains_rune_abilities );
+      p -> resource_gain( RESOURCE_RUNIC, rp_gain, rp_gains );
     }
   }
   else
@@ -1941,7 +1946,7 @@ void death_knight_spell_t::consume_resource()
                             rp_gain * p -> talents.improved_frost_presence -> effect1().percent(),
                             p -> gains_improved_frost_presence );
       }
-      p -> resource_gain( RESOURCE_RUNIC, rp_gain, p -> gains_rune_abilities );
+      p -> resource_gain( RESOURCE_RUNIC, rp_gain, rp_gains );
     }
   }
   else
@@ -2225,19 +2230,11 @@ struct army_of_the_dead_t : public death_knight_spell_t
       p -> active_army_ghoul -> summon( 40.0 );
     }
   }
-  virtual void consume_resource()
-  {
-    if ( ! player -> in_combat ) death_knight_spell_t::consume_resource();
-  }
-
-  virtual double gcd() SC_CONST
-  {
-    return player -> in_combat ? death_knight_spell_t::gcd() : 0;
-  }
 
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
+
     if ( p -> active_army_ghoul && ! p -> active_army_ghoul -> sleeping )
       return false;
 
@@ -2262,10 +2259,13 @@ struct blood_boil_t : public death_knight_spell_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
+
+    death_knight_t* p = player -> cast_death_knight();
+
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_blood_boil -> execute();
+
     if( p -> buffs_crimson_scourge -> up() )
       p -> buffs_crimson_scourge -> expire();
   }
@@ -2273,6 +2273,7 @@ struct blood_boil_t : public death_knight_spell_t
   virtual void target_debuff( player_t* t, int dmg_type )
   {
     death_knight_spell_t::target_debuff( t, dmg_type );
+
     death_knight_t* p = player -> cast_death_knight();
 
     base_dd_adder = ( p -> diseases( t ) ? 95 : 0 );
@@ -2365,11 +2366,12 @@ struct blood_strike_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::execute();
 
     if ( oh_attack )
     {
+      death_knight_t* p = player -> cast_death_knight();
+
       if ( p -> rng_threat_of_thassarian -> roll ( p -> talents.threat_of_thassarian -> effect1().percent() ) )
       {
         oh_attack -> execute();
@@ -2379,8 +2381,9 @@ struct blood_strike_t : public death_knight_attack_t
 
   virtual void target_debuff( player_t* t, int dmg_type )
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
+
+    death_knight_t* p = player -> cast_death_knight();
 
     target_multiplier *= 1 + p -> diseases( t ) * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
@@ -2475,14 +2478,6 @@ struct bone_shield_t : public death_knight_spell_t
     harmful = false;
   }
 
-  virtual double cost() SC_CONST
-  {
-    if ( player -> in_combat )
-      return death_knight_spell_t::cost();
-
-    return 0;
-  }
-
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -2510,11 +2505,6 @@ struct bone_shield_t : public death_knight_spell_t
       death_knight_spell_t::execute();
     }
   }
-
-  virtual double gcd() SC_CONST
-  {
-    return player -> in_combat ? death_knight_spell_t::gcd() : 0;
-  }
 };
 
 // Dancing Rune Weapon ======================================================
@@ -2531,10 +2521,12 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
+
+    death_knight_t* p = player -> cast_death_knight();
+
     p -> buffs_dancing_rune_weapon -> trigger();
-    p -> active_dancing_rune_weapon -> summon( p -> dbc.spell( id ) -> duration() );
+    p -> active_dancing_rune_weapon -> summon( duration() );
   }
 };
 
@@ -2669,14 +2661,11 @@ struct death_strike_t : public death_knight_attack_t
     base_multiplier *= 1 + p -> talents.improved_death_strike -> mod_additive( P_GENERIC );
   }
 
-  virtual void consume_resource() { }
-
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
-    death_knight_attack_t::consume_resource();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_death_strike -> execute();
@@ -2750,14 +2739,11 @@ struct festering_strike_t : public death_knight_attack_t
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> mod_additive( P_GENERIC );
   }
 
-  virtual void consume_resource() { }
-
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
-    death_knight_attack_t::consume_resource();
 
     if ( result_is_hit() )
     {
@@ -3662,14 +3648,11 @@ struct rune_strike_t : public death_knight_attack_t
     may_dodge = may_block = may_parry = false;
   }
 
-  virtual void consume_resource() { }
-
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
     weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
-    death_knight_attack_t::consume_resource();
 
     if ( result_is_hit() )
     {
@@ -4795,7 +4778,6 @@ void death_knight_t::init_gains()
   gains_improved_frost_presence          = get_gain( "improved_frost_presence"    );
   gains_might_of_the_frozen_wastes       = get_gain( "might_of_the_frozen_wastes" );
   gains_power_refund                     = get_gain( "power_refund"               );
-  gains_rune_abilities                   = get_gain( "rune_abilities"             );
   gains_scent_of_blood                   = get_gain( "scent_of_blood"             );
   gains_tier12_2pc_melee                 = get_gain( "tier12_2pc_melee"           );
   gains_rune                             = get_gain( "rune_regen_all"             );

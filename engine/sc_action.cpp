@@ -290,6 +290,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
     // Direct Damage
   case E_HEAL:
   case E_SCHOOL_DAMAGE:
+  case E_HEALTH_LEECH:
     direct_power_mod = effect -> coeff();
     base_dd_min      = player -> dbc.effect_min( effect -> id(), player -> level );
     base_dd_max      = player -> dbc.effect_max( effect -> id(), player -> level );
