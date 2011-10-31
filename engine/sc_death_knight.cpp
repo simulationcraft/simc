@@ -1841,8 +1841,6 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 
   assert( p -> active_unholy_blight );
 
-
-
   double unholy_blight_dmg = death_coil_dmg * p -> talents.unholy_blight -> effect1().percent();
 
   // http://code.google.com/p/simulationcraft/issues/detail?id=939
@@ -3079,7 +3077,7 @@ struct horn_of_winter_t : public death_knight_spell_t
 struct howling_blast_t : public death_knight_spell_t
 {
   howling_blast_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "howling_blast", "Hownling Blast", p )
+    death_knight_spell_t( "howling_blast", "Howling Blast", p )
   {
     check_talent( p -> talents.howling_blast -> rank() );
 
@@ -3920,7 +3918,6 @@ struct unholy_blight_t : public death_knight_spell_t
      may_resist     = false;
      may_miss       = false;
      hasted_ticks   = false;
-
    }
 
    void target_debuff( player_t* /* t */, int /* dmg_type */ )
