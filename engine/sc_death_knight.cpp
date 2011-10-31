@@ -229,6 +229,7 @@ struct death_knight_t : public player_t
   rng_t* rng_blood_caked_blade;
   rng_t* rng_might_of_the_frozen_wastes;
   rng_t* rng_threat_of_thassarian;
+  rng_t* rng_butchery_start;
 
   // Runes
   struct runes_t
@@ -2646,10 +2647,27 @@ struct death_coil_t : public death_knight_spell_t
 
 // Death Strike =============================================================
 
+struct death_strike_offhand_t : public death_knight_attack_t
+{
+  death_strike_offhand_t( death_knight_t* p ) :
+    death_knight_attack_t( "death_strike_offhand", 66188, p )
+  {
+    background       = true;
+    weapon           = &( p -> off_hand_weapon );
+
+    base_crit       +=     p -> talents.improved_death_strike -> mod_additive( P_CRIT );
+    base_multiplier *= 1 + p -> talents.improved_death_strike -> mod_additive( P_GENERIC );
+  }
+
+};
+
 struct death_strike_t : public death_knight_attack_t
 {
+  attack_t* oh_attack;
+
   death_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "death_strike", "Death Strike", p )
+    death_knight_attack_t( "death_strike", "Death Strike", p ),
+    oh_attack( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2659,6 +2677,9 @@ struct death_strike_t : public death_knight_attack_t
 
     base_crit       +=     p -> talents.improved_death_strike -> mod_additive( P_CRIT );
     base_multiplier *= 1 + p -> talents.improved_death_strike -> mod_additive( P_GENERIC );
+
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      oh_attack = new death_strike_offhand_t( p );
   }
 
   virtual void execute()
@@ -2670,12 +2691,11 @@ struct death_strike_t : public death_knight_attack_t
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_death_strike -> execute();
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( oh_attack )
     {
       if ( p -> rng_threat_of_thassarian -> roll ( p -> talents.threat_of_thassarian -> effect1().percent() ) )
       {
-        weapon = &( p -> off_hand_weapon );
-        death_knight_attack_t::execute();
+        oh_attack -> execute();
       }
     }
   }
@@ -2725,8 +2745,11 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
 struct festering_strike_t : public death_knight_attack_t
 {
+  attack_t* oh_attack;
+
   festering_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "festering_strike", "Festering Strike", p )
+    death_knight_attack_t( "festering_strike", "Festering Strike", p ),
+    oh_attack( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2742,7 +2765,6 @@ struct festering_strike_t : public death_knight_attack_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
 
     if ( result_is_hit() )
@@ -2753,6 +2775,7 @@ struct festering_strike_t : public death_knight_attack_t
         trigger_ebon_plaguebringer( this );
     }
   }
+
 };
 
 // Frost Fever ==============================================================
@@ -3873,6 +3896,26 @@ struct unholy_frenzy_t : public spell_t
   }
 };
 
+struct butchery_event_t : public event_t
+  {
+  butchery_event_t( player_t* player, double tick_time ) :
+      event_t( player -> sim, player, "butchery_regen" )
+    {
+      if ( tick_time < 0 ) tick_time = 0;
+      if ( tick_time > 5 ) tick_time = 5;
+      sim -> add_event( this, tick_time );
+    }
+
+    virtual void execute()
+    {
+      death_knight_t* p = player -> cast_death_knight();
+
+      p -> resource_gain( RESOURCE_RUNIC, p -> talents.butchery -> effect2().base_value() / 10.0 , p -> gains_butchery );
+
+      new ( sim ) butchery_event_t( player, 5.0 );
+    }
+  };
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -4174,7 +4217,6 @@ void death_knight_t::init()
     }
   }
 
-
 }
 
 // death_knight_t::init_rng =================================================
@@ -4186,6 +4228,7 @@ void death_knight_t::init_rng()
   rng_blood_caked_blade          = get_rng( "blood_caked_blade"          );
   rng_might_of_the_frozen_wastes = get_rng( "might_of_the_frozen_wastes" );
   rng_threat_of_thassarian       = get_rng( "threat_of_thassarian"       );
+  rng_butchery_start             = get_rng( "butchery_start"             );
 }
 
 // death_knight_t::init_defense =============================================
@@ -4856,6 +4899,9 @@ void death_knight_t::combat_begin()
   double am_value = talents.abominations_might -> effect1().percent();
   if ( am_value > 0 && am_value >= sim -> auras.abominations_might -> current_value )
     sim -> auras.abominations_might -> trigger( 1, am_value );
+
+  double d = rng_butchery_start -> real() * 5.0; // FIXME: Does it start at a random point, or exactly when entering combat?
+  new ( sim ) butchery_event_t( this, d );
 }
 
 // death_knight_t::assess_damage ============================================
@@ -5023,9 +5069,6 @@ int death_knight_t::primary_role() SC_CONST
 void death_knight_t::regen( double periodicity )
 {
   player_t::regen( periodicity );
-
-  if ( talents.butchery -> rank() )
-    resource_gain( RESOURCE_RUNIC, ( talents.butchery -> effect2().resource( RESOURCE_RUNIC ) / 5.0 * periodicity ), gains_butchery );
 
   if ( set_bonus.tier12_2pc_melee() && sim -> auras.horn_of_winter -> check() )
     resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity, gains_tier12_2pc_melee );
