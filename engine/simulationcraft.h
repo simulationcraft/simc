@@ -2565,12 +2565,12 @@ public:
 
   // Player Buff as spell_id_t by name
   buff_t( player_t*, const std::string& name, const char* sname,
-          double chance=-1, double duration=-1.0,
+          double chance=-1, double cd=-1.0,
           bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
 
   // Player Buff as spell_id_t by id
   buff_t( player_t*, const uint32_t id, const std::string& name,
-          double chance=-1, double duration=-1.0,
+          double chance=-1, double cd=-1.0,
           bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.

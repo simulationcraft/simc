@@ -187,7 +187,6 @@ struct hunter_t : public player_t
   action_t* flaming_arrow;
 
   double merge_piercing_shots;
-  double tier13_4pc_proc_chance;
   double tier13_4pc_cooldown;
 
   hunter_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, HUNTER, name, r )
@@ -218,7 +217,6 @@ struct hunter_t : public player_t
     base_gcd = 1.0;
     flaming_arrow = NULL;
 
-    tier13_4pc_proc_chance = dbc.ptr ? dbc.spell( 105921 )-> proc_chance() : 0;
     tier13_4pc_cooldown = 45.0;
 
     create_talents();
@@ -943,7 +941,6 @@ struct hunter_pet_attack_t : public attack_t
   void _init_hunter_pet_attack_t()
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
     may_crit = true;
 
     base_crit += p -> talents.spiders_bite -> effect1().percent();
@@ -1280,7 +1277,6 @@ struct hunter_pet_spell_t : public spell_t
   void _init_hunter_pet_spell_t()
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t* o = p -> owner -> cast_hunter();
 
     base_crit += p -> talents.spiders_bite -> effect1().percent();
 
@@ -3854,7 +3850,7 @@ void hunter_t::init_buffs()
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, 0, 0, 1, true );
 
   buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
-  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", tier13_4pc_proc_chance * set_bonus.tier13_4pc_melee(), tier13_4pc_cooldown );
+  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", sets -> set( SET_T13_4PC_MELEE ) -> proc_chance(), tier13_4pc_cooldown );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
@@ -4214,7 +4210,6 @@ void hunter_t::create_options()
   {
     { "summon_pet", OPT_STRING, &( summon_pet_str  ) },
     { "merge_piercing_shots", OPT_FLT, &( merge_piercing_shots ) },
-    { "tier13_4pc_proc_chance", OPT_FLT, &( tier13_4pc_proc_chance ) },
     { "tier13_4pc_cooldown", OPT_FLT, &( tier13_4pc_cooldown ) },
     { NULL, OPT_UNKNOWN, NULL }
   };

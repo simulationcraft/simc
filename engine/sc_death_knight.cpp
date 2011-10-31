@@ -4726,17 +4726,17 @@ void death_knight_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( player, name, max_stack, duration, cd, chance, quiet, reverse, rng_type, aura_id, activated )
-  // buff_t( player, id, name, chance, cd )
-  // buff_t( player, name, spellname, chance, cd )
+  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
+  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
+  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
 
   buffs_blood_presence      = new buff_t( this, "blood_presence", "Blood Presence" );
   buffs_bone_shield         = new buff_t( this, "bone_shield", "Bone Shield" );
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", "Dancing Rune Weapon", -1, -1.0, true ); // quiet=true
   buffs_dark_transformation = new buff_t( this, "dark_transformation", "Dark Transformation" );
-  buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer_track",
-                                          1, 21.0 + talents.epidemic -> effect1().seconds(), 0.0, 1.0, true );
+  buffs_ebon_plaguebringer  = new buff_t( this, 65142, "ebon_plaguebringer_track", -1, -1, true );
+  buffs_ebon_plaguebringer -> buff_duration += talents.epidemic -> effect1().seconds();
   buffs_frost_presence      = new buff_t( this, "frost_presence", "Frost Presence" );
   buffs_killing_machine     = new buff_t( this, 51124, "killing_machine" ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost", "Pillar of Frost" );
@@ -5220,9 +5220,9 @@ void player_t::death_knight_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.unholy_frenzy        = new   buff_t( p, "unholy_frenzy",      1, 30.0 );
+    p -> buffs.unholy_frenzy        = new   buff_t( p, 49016, "unholy_frenzy" );
     p -> debuffs.brittle_bones      = new debuff_t( p, "brittle_bones",      1 );
-    p -> debuffs.ebon_plaguebringer = new debuff_t( p, "ebon_plague",        1, 15.0 );
+    p -> debuffs.ebon_plaguebringer = new debuff_t( p, 65142, "ebon_plaguebringer" );
     p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, 21.0 );
   }
 }

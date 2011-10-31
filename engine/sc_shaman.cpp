@@ -422,8 +422,6 @@ struct spirit_wolf_pet_t : public pet_t
       repeating = true;
       may_crit = true;
 
-      pet_t* p = player -> cast_pet();
-
       // Wolves have a base multiplier of 1.49835 approximately, and there are
       // two wolves. Verified using paper doll damage range values on a
       // level 85 enhancement shaman, with and without Glyph
