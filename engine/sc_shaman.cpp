@@ -424,12 +424,6 @@ struct spirit_wolf_pet_t : public pet_t
 
       pet_t* p = player -> cast_pet();
 
-      // Orc Command Racial
-      if ( p -> owner -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-
       // Wolves have a base multiplier of 1.49835 approximately, and there are
       // two wolves. Verified using paper doll damage range values on a
       // level 85 enhancement shaman, with and without Glyph
@@ -601,7 +595,6 @@ struct earth_elemental_pet_t : public pet_t
       weapon_power_mod  = 0.098475 / base_execute_time;
 
       base_attack_power_multiplier = 0;
-      if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 
     virtual double swing_haste() SC_CONST

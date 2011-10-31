@@ -946,9 +946,6 @@ struct hunter_pet_attack_t : public attack_t
     hunter_t*     o = p -> owner -> cast_hunter();
     may_crit = true;
 
-    if ( o -> race == RACE_ORC )
-      base_multiplier *= 1.05;
-
     base_crit += p -> talents.spiders_bite -> effect1().percent();
 
     // Assume happy pet
@@ -1284,9 +1281,6 @@ struct hunter_pet_spell_t : public spell_t
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t* o = p -> owner -> cast_hunter();
-
-    if ( o -> race == RACE_ORC )
-      base_multiplier *= 1.05;
 
     base_crit += p -> talents.spiders_bite -> effect1().percent();
 

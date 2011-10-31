@@ -807,14 +807,9 @@ struct warlock_main_pet_t : public warlock_pet_t
 
   virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
   {
-    double m = player_t::composite_player_multiplier( school, a );
+    double m = warlock_pet_t::composite_player_multiplier( school, a );
 
     warlock_t* o = owner -> cast_warlock();
-
-    if ( o -> race == RACE_ORC )
-    {
-      m  *= 1.05;
-    }
 
     double mastery_value = (ptr) ? 230 : o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
 
@@ -825,7 +820,7 @@ struct warlock_main_pet_t : public warlock_pet_t
 
   virtual double composite_mp5() SC_CONST
   {
-    double h = player_t::composite_mp5();
+    double h = warlock_pet_t::composite_mp5();
     h += mp5_per_intellect * owner -> intellect();
     return h;
   }
@@ -902,7 +897,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 
   virtual double composite_spell_power_multiplier() SC_CONST
   {
-    double m = pet_t::composite_spell_power_multiplier();
+    double m = warlock_pet_t::composite_spell_power_multiplier();
     warlock_t* o = owner -> cast_warlock();
 
     // Guardians normally don't gain demonic pact, but when they provide it they also provide it to themselves

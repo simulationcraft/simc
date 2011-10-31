@@ -540,34 +540,29 @@ struct dancing_rune_weapon_pet_t : public pet_t
     return drw_disease_count;
   }
 
-  struct drw_blood_boil_t : public spell_t
+  struct drw_spell_t : public spell_t
   {
-    drw_blood_boil_t( player_t* player ) :
-      spell_t( "blood_boil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
+    drw_spell_t( const char* n, uint32_t id, dancing_rune_weapon_pet_t* p ) :
+      spell_t( n, id, p )
+    { }
+  };
+
+  struct drw_blood_boil_t : public drw_spell_t
+  {
+    drw_blood_boil_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "blood_boil", 48721, p )
     {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 48721;
-      parse_data();
-
       background       = true;
       trigger_gcd      = 0;
       aoe              = -1;
       may_crit         = true;
       direct_power_mod = 0.06;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
     }
-
 
     void target_debuff( player_t* t, int dmg_type )
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-      spell_t::target_debuff( t, dmg_type );
+      drw_spell_t::target_debuff( t, dmg_type );
 
       base_dd_adder = ( p -> drw_diseases( t ) ? 95 : 0 );
       direct_power_mod  = 0.06 + ( p -> drw_diseases( t ) ? 0.035 : 0 );
@@ -576,16 +571,12 @@ struct dancing_rune_weapon_pet_t : public pet_t
     virtual bool ready() { return false; }
   };
 
-  struct drw_blood_plague_t : public spell_t
+  struct drw_blood_plague_t : public drw_spell_t
   {
-    drw_blood_plague_t( player_t* player ) :
-      spell_t( "blood_plague", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_UNHOLY )
+    drw_blood_plague_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "blood_plague", 59879, p )
     {
-      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 59879;
-      parse_data();
 
       background         = true;
       base_tick_time     = 3.0;
@@ -593,28 +584,18 @@ struct dancing_rune_weapon_pet_t : public pet_t
       direct_power_mod  *= 0.055 * 1.15;
       may_miss           = false;
       hasted_ticks       = false;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-
     }
 
     virtual bool ready() { return false; }
 
   };
 
-  struct drw_death_coil_t : public spell_t
+  struct drw_death_coil_t : public drw_spell_t
   {
-    drw_death_coil_t( player_t* player ) :
-      spell_t( "death_coil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
+    drw_death_coil_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "death_coil", 47541, p )
     {
-      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 47541;
-      parse_data();
 
       background  = true;
       trigger_gcd = 0;
@@ -626,49 +607,44 @@ struct dancing_rune_weapon_pet_t : public pet_t
       if ( o -> set_bonus.tier11_2pc_melee() )
         base_crit     += 0.05;
 
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
     }
     virtual bool ready() { return false; }
   };
 
-  struct drw_death_strike_t : public attack_t
+  struct drw_attack_t : public attack_t
   {
-    drw_death_strike_t( player_t* player ) :
-      attack_t( "death_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
-    {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
+    drw_attack_t( const char* n, uint32_t id, dancing_rune_weapon_pet_t* p, bool special=false ) :
+      attack_t( n, id, p, 0, special )
+    { }
 
-      id = 49998;
-      parse_data();
+    drw_attack_t( const char* n, dancing_rune_weapon_pet_t* p, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special = false ) :
+       attack_t( n, p, r, s, t, special )
+    { }
+  };
+
+  struct drw_death_strike_t : public drw_attack_t
+  {
+    drw_death_strike_t( dancing_rune_weapon_pet_t* p ) :
+      drw_attack_t( "death_strike", 49998, p, true )
+    {
+      death_knight_t* o = p -> owner -> cast_death_knight();
 
       background  = true;
       trigger_gcd = 0;
       base_crit       +=     o -> talents.improved_death_strike -> rank() * 0.10; // Hotfix 20 Jul 2011
       base_multiplier *= 1 + o -> talents.improved_death_strike -> rank() * 0.40; // Hotfix 20 Jul 2011
 
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
     }
 
     virtual bool ready() { return false; }
   };
 
-  struct drw_frost_fever_t : public spell_t
+  struct drw_frost_fever_t : public drw_spell_t
   {
-    drw_frost_fever_t( player_t* player ) :
-      spell_t( "frost_fever", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
+    drw_frost_fever_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "frost_fever", 59921, p )
     {
-      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 59921;
-      parse_data();
 
       background        = true;
       trigger_gcd       = 0;
@@ -678,44 +654,29 @@ struct dancing_rune_weapon_pet_t : public pet_t
       num_ticks         = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
       direct_power_mod *= 0.055 * 1.15;
       base_multiplier  *= 1.0 + o -> glyphs.icy_touch -> effect1().percent();
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
     }
 
     virtual bool ready()     { return false; }
   };
 
-  struct drw_heart_strike_t : public attack_t
+  struct drw_heart_strike_t : public drw_attack_t
   {
-    drw_heart_strike_t( player_t* player ) :
-      attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
+    drw_heart_strike_t( dancing_rune_weapon_pet_t* p ) :
+      drw_attack_t( "heart_strike", 55050, p )
     {
-      pet_t* p = player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 55050;
-      parse_data();
 
       background          = true;
       aoe                 = 2;
       base_add_multiplier = 0.75;
       trigger_gcd         = 0;
       base_multiplier    *= 1 + o -> glyphs.heart_strike -> ok() * 0.30;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-
     }
 
     void target_debuff( player_t* t, int dmg_type )
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-      attack_t::target_debuff( t, dmg_type );
+      drw_attack_t::target_debuff( t, dmg_type );
 
       target_multiplier *= 1 + p -> drw_diseases( t ) * 0.1;
     }
@@ -723,32 +684,21 @@ struct dancing_rune_weapon_pet_t : public pet_t
     virtual bool ready() { return false; }
   };
 
-  struct drw_icy_touch_t : public spell_t
+  struct drw_icy_touch_t : public drw_spell_t
   {
-    drw_icy_touch_t( player_t* player ) :
-      spell_t( "icy_touch", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
+    drw_icy_touch_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "icy_touch", 45477, p )
     {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 45477;
-      parse_data();
-
       background       = true;
       trigger_gcd      = 0;
       direct_power_mod = 0.2;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
     }
 
     virtual void execute()
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
 
-      spell_t::execute();
+      drw_spell_t::execute();
 
       if ( result_is_hit() )
       {
@@ -761,43 +711,33 @@ struct dancing_rune_weapon_pet_t : public pet_t
     virtual bool ready() { return false; }
   };
 
-  struct drw_pestilence_t : public spell_t
+  struct drw_pestilence_t : public drw_spell_t
   {
-    drw_pestilence_t( player_t* player ) :
-      spell_t( "pestilence", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
+    drw_pestilence_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "pestilence", 50842, p )
     {
       trigger_gcd = 0;
+      background = true;
     }
 
     virtual bool ready() { return false; }
   };
 
-  struct drw_plague_strike_t : public attack_t
+  struct drw_plague_strike_t : public drw_attack_t
   {
-    drw_plague_strike_t( player_t* player ) :
-      attack_t( "plague_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+    drw_plague_strike_t( dancing_rune_weapon_pet_t* p ) :
+      drw_attack_t( "plague_strike", 45462, p, true )
     {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 45462;
-      parse_data();
-
       background       = true;
       trigger_gcd      = 0;
       may_crit         = true;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
     }
 
     virtual void execute()
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
 
-      attack_t::execute();
+      drw_attack_t::execute();
 
       if ( result_is_hit() )
       {
@@ -810,12 +750,11 @@ struct dancing_rune_weapon_pet_t : public pet_t
     virtual bool ready() { return false; }
   };
 
-  struct drw_melee_t : public attack_t
+  struct drw_melee_t : public drw_attack_t
   {
-    drw_melee_t( player_t* player ) :
-      attack_t( "drw_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+    drw_melee_t( dancing_rune_weapon_pet_t* p ) :
+      drw_attack_t( "drw_melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
-      pet_t* p = player -> cast_pet();
       weapon            = &( p -> owner -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       base_dd_min       = 2; // FIXME: Should these be set?
@@ -824,11 +763,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background        = true;
       repeating         = true;
       weapon_power_mod *= 2.0; //Attack power scaling is unaffected by the DRW 50% penalty.
-
-      if ( p -> owner -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
     }
   };
 
@@ -883,11 +817,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double composite_attack_speed() SC_CONST       { return speed_snapshot; }
   virtual double composite_attack_power() SC_CONST       { return attack_power; }
   virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
-  virtual double composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST
-  {
-    double m = player_t::composite_player_multiplier( school, a );
-    return m;
-  }
 
   virtual void summon( double duration=0 )
   {
@@ -937,7 +866,6 @@ struct army_ghoul_pet_t : public pet_t
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
       base_multiplier *= 8.0; // 8 ghouls
-      if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 
     army_ghoul_pet_attack_t( const char* n, army_ghoul_pet_t* p, const resource_type r=RESOURCE_ENERGY, bool special=true ) :
@@ -1092,14 +1020,6 @@ struct bloodworms_pet_t : public pet_t
       may_crit    = true;
       background  = true;
       repeating   = true;
-
-      pet_t* p = player -> cast_pet();
-
-      // Orc Command Racial
-      if ( p -> owner -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
     }
   };
 
@@ -1158,7 +1078,6 @@ struct gargoyle_pet_t : public pet_t
 
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
-      if ( pet -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
   };
 
@@ -1259,7 +1178,6 @@ struct ghoul_pet_t : public pet_t
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
-      if ( p -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 
     ghoul_pet_attack_t( const char* n, uint32_t id, ghoul_pet_t* p, bool special=true ) :
@@ -1267,7 +1185,6 @@ struct ghoul_pet_t : public pet_t
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
-      if ( p -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 
     virtual void player_buff()

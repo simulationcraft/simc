@@ -192,3 +192,18 @@ void pet_t::combat_begin()
 
   player_t::combat_begin();
 }
+
+// pet_t::composite_player_multiplier ======================================================
+
+double pet_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+{
+  double m = player_t::composite_player_multiplier( school, a );
+
+  // FIXME: check if Guardian Pets benefit from it or not.
+  if ( owner -> race == RACE_ORC )
+  {
+    m  *= 1.05;
+  }
+
+  return m;
+}

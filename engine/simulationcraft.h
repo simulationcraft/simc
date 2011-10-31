@@ -4397,6 +4397,7 @@ public:
   virtual double composite_attack_expertise() SC_CONST { return floor( floor( 100.0 * owner -> attack_hit ) * 26.0 / 8.0 ) / 100.0; }
   virtual double composite_attack_hit()       SC_CONST { return floor( 100.0 * owner -> composite_attack_hit() ) / 100.0; }
   virtual double composite_spell_hit()        SC_CONST { return floor( 100.0 * owner -> composite_spell_hit() ) / 100.0;  }
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST;
 
   virtual double stamina() SC_CONST;
   virtual double intellect() SC_CONST;
