@@ -599,7 +599,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       background  = true;
       trigger_gcd = 0;
-      direct_power_mod = 0.3 * 0.85; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
+      direct_power_mod = 0.23; // issue510. tooltips updated in 4.3 (ptr)
       base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level );
       base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
       base_multiplier *= 1 + o -> glyphs.death_coil -> effect1().percent();
