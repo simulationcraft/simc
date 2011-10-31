@@ -859,7 +859,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_SWORD_2H;
     main_hand_weapon.min_dmg    = 685; // FIXME: Should these be hardcoded?
     main_hand_weapon.max_dmg    = 975;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 3.3;
   }
 
@@ -926,28 +925,38 @@ struct army_ghoul_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 228; // FIXME: Needs further testing
     main_hand_weapon.max_dmg    = 323; // FIXME: Needs further testing
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
-    action_list_str = "auto_attack/claw";
+    action_list_str = "snapshot_stats/auto_attack/claw";
   }
 
   struct army_ghoul_pet_attack_t : public attack_t
   {
-    army_ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, bool special=true ) :
-      attack_t( n, player, r, SCHOOL_PHYSICAL, TREE_NONE, special )
+    void _init_army_ghoul_pet_attack_t()
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
       base_multiplier *= 8.0; // 8 ghouls
       if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
+
+    army_ghoul_pet_attack_t( const char* n, army_ghoul_pet_t* p, const resource_type r=RESOURCE_ENERGY, bool special=true ) :
+      attack_t( n, p, r, SCHOOL_PHYSICAL, TREE_NONE, special )
+    {
+      _init_army_ghoul_pet_attack_t();
+    }
+
+    army_ghoul_pet_attack_t( const char* n, uint32_t id, army_ghoul_pet_t* p, bool special=true ) :
+      attack_t( n, id, p, TREE_NONE, special )
+    {
+      _init_army_ghoul_pet_attack_t();
+    }
   };
 
   struct army_ghoul_pet_melee_t : public army_ghoul_pet_attack_t
   {
-    army_ghoul_pet_melee_t( player_t* player ) :
-      army_ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, false )
+    army_ghoul_pet_melee_t( army_ghoul_pet_t* p ) :
+      army_ghoul_pet_attack_t( "melee", p, RESOURCE_NONE, false )
     {
       base_execute_time = weapon -> swing_time;
       background        = true;
@@ -958,13 +967,11 @@ struct army_ghoul_pet_t : public pet_t
 
   struct army_ghoul_pet_auto_attack_t : public army_ghoul_pet_attack_t
   {
-    army_ghoul_pet_auto_attack_t( player_t* player ) :
-      army_ghoul_pet_attack_t( "auto_attack", player )
+    army_ghoul_pet_auto_attack_t( army_ghoul_pet_t* p ) :
+      army_ghoul_pet_attack_t( "auto_attack", p )
     {
-      army_ghoul_pet_t* p = ( army_ghoul_pet_t* ) player -> cast_pet();
-
       weapon = &( p -> main_hand_weapon );
-      p -> main_hand_attack = new army_ghoul_pet_melee_t( player );
+      p -> main_hand_attack = new army_ghoul_pet_melee_t( p );
       trigger_gcd = 0;
     }
 
@@ -983,11 +990,9 @@ struct army_ghoul_pet_t : public pet_t
 
   struct army_ghoul_pet_claw_t : public army_ghoul_pet_attack_t
   {
-    army_ghoul_pet_claw_t( player_t* player ) :
-      army_ghoul_pet_attack_t( "claw", player )
+    army_ghoul_pet_claw_t( army_ghoul_pet_t* p ) :
+      army_ghoul_pet_attack_t( "claw", 91776, p )
     {
-      id = 91776;
-      parse_data();
       weapon_power_mod  = 0.0055 / weapon -> swing_time; // FIXME: Needs further testing
     }
   };
@@ -1036,35 +1041,20 @@ struct army_ghoul_pet_t : public pet_t
     snapshot_strength = o -> strength();
   }
 
-  virtual double composite_attack_crit() SC_CONST
-  {
-    return snapshot_crit;
-  }
-
   virtual double composite_attack_expertise() SC_CONST
   {
     return ( ( 100.0 * snapshot_hit ) * 26.0 / 8.0 ) / 100.0; // Hit gains equal to expertise
   }
 
-  virtual double composite_attack_speed() SC_CONST
-  {
-    return snapshot_speed;
-  }
+  virtual double composite_attack_crit() SC_CONST { return snapshot_crit; }
 
-  virtual double composite_attack_haste() SC_CONST
-  {
-    return snapshot_haste;
-  }
+  virtual double composite_attack_speed() SC_CONST { return snapshot_speed; }
 
-  virtual double composite_attack_hit() SC_CONST
-  {
-    return snapshot_hit;
-  }
+  virtual double composite_attack_haste() SC_CONST { return snapshot_haste; }
 
-  virtual int primary_resource() SC_CONST
-  {
-    return RESOURCE_ENERGY;
-  }
+  virtual double composite_attack_hit() SC_CONST { return snapshot_hit; }
+
+  virtual int primary_resource() SC_CONST { return RESOURCE_ENERGY; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
@@ -1121,7 +1111,6 @@ struct bloodworms_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 20;
     main_hand_weapon.max_dmg    = 20;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
   }
 
@@ -2722,12 +2711,8 @@ struct death_coil_t : public death_knight_spell_t
 
     if ( p -> buffs_sudden_doom -> check() ) return 0;
 
-    double c = death_knight_spell_t::cost();
+    return death_knight_spell_t::cost();
 
-    if ( p -> buffs_runic_corruption -> check() )
-      c += p -> talents.runic_corruption -> effect2().percent() / 10.0;
-
-    return c;
   }
 
   void execute()
@@ -3902,7 +3887,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
   summon_gargoyle_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "summon_gargoyle", "Summon Gargoyle", p )
   {
- check_talent( p -> talents.summon_gargoyle -> rank() );
+    check_talent( p -> talents.summon_gargoyle -> rank() );
     rp_gain = 0.0;  // For some reason, the inc file thinks we gain RP for this spell
     parse_options( NULL, options_str );
 
