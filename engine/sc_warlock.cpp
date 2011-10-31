@@ -2927,7 +2927,16 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    base_dd_adder = ( p -> dots_immolate -> ticking ? ( base_dd_min + base_dd_max ) / 12.0 : 0 );
+    if ( p -> ptr )
+    {
+      if ( p -> dots_immolate -> ticking ) {
+        base_dd_adder = ( sim -> range( base_dd_min, base_dd_max ) + direct_power_mod * total_power() ) / 6;
+      }
+    }
+    else
+    {
+      base_dd_adder = ( p -> dots_immolate -> ticking ? ( base_dd_min + base_dd_max ) / 12.0 : 0 );
+    }
 
     warlock_spell_t::execute();
 
