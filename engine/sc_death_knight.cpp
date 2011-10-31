@@ -389,7 +389,7 @@ struct death_knight_t : public player_t
   virtual int       primary_role() SC_CONST;
   virtual void      trigger_runic_empowerment();
 
-  int diseases()
+  int diseases( player_t* /* t */ )
   {
     int disease_count = 0;
     if ( buffs_ebon_plaguebringer -> check() ) disease_count++;
@@ -532,7 +532,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   dot_t* dots_drw_blood_plague;
   dot_t* dots_drw_frost_fever;
 
-  int drw_diseases()
+  int drw_diseases( player_t* /* t */ )
   {
     int drw_disease_count = 0;
     if ( dots_drw_blood_plague -> ticking ) drw_disease_count++;
@@ -563,12 +563,14 @@ struct dancing_rune_weapon_pet_t : public pet_t
       }
     }
 
-    virtual void execute()
+
+    void target_debuff( player_t* t, int dmg_type )
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-      base_dd_adder = ( p -> drw_diseases() ? 95 : 0 );
-      direct_power_mod  = 0.06 + ( p -> drw_diseases() ? 0.035 : 0 );
-      spell_t::execute();
+      spell_t::target_debuff( t, dmg_type );
+
+      base_dd_adder = ( p -> drw_diseases( t ) ? 95 : 0 );
+      direct_power_mod  = 0.06 + ( p -> drw_diseases( t ) ? 0.035 : 0 );
     }
 
     virtual bool ready() { return false; }
@@ -715,7 +717,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
       attack_t::target_debuff( t, dmg_type );
 
-      target_multiplier *= 1 + p -> drw_diseases() * 0.1;
+      target_multiplier *= 1 + p -> drw_diseases( t ) * 0.1;
     }
 
     virtual bool ready() { return false; }
@@ -1552,6 +1554,15 @@ struct death_knight_attack_t : public attack_t
     _init_dk_attack();
   }
 
+  death_knight_attack_t( const char* n, const char* sname, death_knight_t* p ) :
+    attack_t( n, sname, p, 0, true ),
+    requires_weapon( true ),
+    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
+    m_dd_additive( 0 )
+  {
+    _init_dk_attack();
+  }
+
   void _init_dk_attack()
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -1595,6 +1606,13 @@ struct death_knight_spell_t : public spell_t
 
   death_knight_spell_t( const char* n, uint32_t id, death_knight_t* p ) :
     spell_t( n, id, p ),
+    cost_blood( 0 ), cost_frost( 0 ), cost_unholy( 0 ), convert_runes( 0 )
+  {
+    _init_dk_spell();
+  }
+
+  death_knight_spell_t( const char* n, const char* sname, death_knight_t* p ) :
+    spell_t( n, sname, p ),
     cost_blood( 0 ), cost_frost( 0 ), cost_unholy( 0 ), convert_runes( 0 )
   {
     _init_dk_spell();
@@ -1778,7 +1796,7 @@ static void trigger_blood_caked_blade( action_t* a )
         death_knight_attack_t::target_debuff( t, dmg_type );
         death_knight_t* p = player -> cast_death_knight();
 
-        target_multiplier *= 0.25 + p -> diseases() * 0.125;
+        target_multiplier *= 0.25 + p -> diseases( t ) * 0.125;
       }
     };
 
@@ -2104,15 +2122,12 @@ void death_knight_spell_t::target_debuff( player_t* t, int dmg_type )
 struct flaming_torment_t : public death_knight_spell_t
 {
   flaming_torment_t( const char* n, death_knight_t* player ) :
-    death_knight_spell_t( n, player, RESOURCE_NONE, SCHOOL_FIRE )
+    death_knight_spell_t( n, 99000, player )
   {
     background       = true;
     may_miss         = false;
     proc             = true;
     may_crit         = false;
-    direct_power_mod = 0.0;
-    trigger_gcd      = false;
-    school           = SCHOOL_FIRE;
   }
 
   virtual double calculate_direct_damage()
@@ -2279,7 +2294,7 @@ struct auto_attack_t : public death_knight_attack_t
 struct army_of_the_dead_t : public death_knight_spell_t
 {
   army_of_the_dead_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "army_of_the_dead", 42650, player )
+    death_knight_spell_t( "army_of_the_dead", "Army of the Dead", player )
   {
     parse_options( NULL, options_str );
 
@@ -2339,26 +2354,33 @@ struct army_of_the_dead_t : public death_knight_spell_t
 struct blood_boil_t : public death_knight_spell_t
 {
   blood_boil_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "blood_boil", 48721, p )
+    death_knight_spell_t( "blood_boil", "Blood Boil", p )
   {
     parse_options( NULL, options_str );
 
     aoe                = -1;
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
-    direct_power_mod   = 0.08;
+    direct_power_mod   = 0.08; // hardcoded into tooltip, 31/10/2011
     player_multiplier *= 1.0 + p -> talents.crimson_scourge -> mod_additive( P_GENERIC );
   }
 
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    base_dd_adder = ( p -> diseases() ? 95 : 0 );
-    direct_power_mod  = 0.08 + ( p -> diseases() ? 0.035 : 0 );
     death_knight_spell_t::execute();
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_blood_boil -> execute();
     if( p -> buffs_crimson_scourge -> up() )
       p -> buffs_crimson_scourge -> expire();
+  }
+
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    death_knight_spell_t::target_debuff( t, dmg_type );
+    death_knight_t* p = player -> cast_death_knight();
+
+    base_dd_adder = ( p -> diseases( t ) ? 95 : 0 );
+    direct_power_mod  = 0.08 + ( p -> diseases( t ) ? 0.035 : 0 );
   }
 
   virtual bool ready()
@@ -2424,7 +2446,7 @@ struct blood_strike_offhand_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
+    target_multiplier *= 1 + p -> diseases( t ) * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
 };
 
@@ -2433,7 +2455,7 @@ struct blood_strike_t : public death_knight_attack_t
   attack_t* oh_attack;
 
   blood_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "blood_strike", 45902, player ), oh_attack( 0 )
+    death_knight_attack_t( "blood_strike", "Blood Strike", player ), oh_attack( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2470,7 +2492,7 @@ struct blood_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
+    target_multiplier *= 1 + p -> diseases( t ) * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
 };
 
@@ -2479,7 +2501,7 @@ struct blood_strike_t : public death_knight_attack_t
 struct blood_tap_t : public death_knight_spell_t
 {
   blood_tap_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "blood_tap", 45529, player )
+    death_knight_spell_t( "blood_tap", "Blood Tap", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2555,7 +2577,7 @@ struct blood_tap_t : public death_knight_spell_t
 struct bone_shield_t : public death_knight_spell_t
 {
   bone_shield_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "bone_shield", 49222, player )
+    death_knight_spell_t( "bone_shield", "Bone Shield", player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.bone_shield -> rank() );
@@ -2613,7 +2635,7 @@ struct bone_shield_t : public death_knight_spell_t
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
   dancing_rune_weapon_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "dancing_rune_weapon", 49028, player )
+    death_knight_spell_t( "dancing_rune_weapon", "Dancing Rune Weapon", player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.dancing_rune_weapon -> rank() );
@@ -2635,7 +2657,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 struct dark_transformation_t : public death_knight_spell_t
 {
   dark_transformation_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "dark_transformation", 63560, player )
+    death_knight_spell_t( "dark_transformation", "Dark Transformation", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2673,7 +2695,7 @@ struct dark_transformation_t : public death_knight_spell_t
 struct death_and_decay_t : public death_knight_spell_t
 {
   death_and_decay_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "death_and_decay", 43265, player )
+    death_knight_spell_t( "death_and_decay", "Death and Decay", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2698,17 +2720,19 @@ struct death_and_decay_t : public death_knight_spell_t
 struct death_coil_t : public death_knight_spell_t
 {
   death_coil_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "death_coil", 47541, player )
+    death_knight_spell_t( "death_coil", "Death Coil", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.23;
+    direct_power_mod = 0.23; // FIXME: is it 23%, 27% (tooltip with glyph) or 30% ( tooltip without glyph) ?, 31/10/2011
     base_dd_min      = p -> dbc.effect_min( effect_id( 1 ), p -> level );
     base_dd_max      = p -> dbc.effect_max( effect_id( 1 ), p -> level );
+
     base_multiplier *= 1 + p -> talents.morbidity -> effect1().percent()
                        + p -> glyphs.death_coil -> effect1().percent();
+
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit     += 0.05;
 
@@ -2755,7 +2779,7 @@ struct death_coil_t : public death_knight_spell_t
 struct death_strike_t : public death_knight_attack_t
 {
   death_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "death_strike", 49998, player )
+    death_knight_attack_t( "death_strike", "Death Strike", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2837,7 +2861,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 struct festering_strike_t : public death_knight_attack_t
 {
   festering_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "festering_strike", 85948, player )
+    death_knight_attack_t( "festering_strike", "Festering Strike", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2955,7 +2979,7 @@ struct frost_strike_t : public death_knight_attack_t
   attack_t* oh_attack;
 
   frost_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "frost_strike", 49143, player ), oh_attack( 0 )
+    death_knight_attack_t( "frost_strike", "Frost Strike", player ), oh_attack( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_spec( TREE_FROST );
@@ -3017,7 +3041,7 @@ struct frost_strike_t : public death_knight_attack_t
 struct heart_strike_t : public death_knight_attack_t
 {
   heart_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "heart_strike", 55050, player )
+    death_knight_attack_t( "heart_strike", "Heart Strike", player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_spec( TREE_BLOOD );
@@ -3052,7 +3076,7 @@ struct heart_strike_t : public death_knight_attack_t
 
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases() * effect3().percent();
+    target_multiplier *= 1 + p -> diseases( t ) * effect3().percent();
   }
 };
 
@@ -3100,7 +3124,7 @@ struct horn_of_winter_t : public death_knight_spell_t
 struct howling_blast_t : public death_knight_spell_t
 {
   howling_blast_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "howling_blast", 49184, p )
+    death_knight_spell_t( "howling_blast", "Hownling Blast", p )
   {
     check_talent( p -> talents.howling_blast -> rank() );
 
@@ -3182,7 +3206,7 @@ struct howling_blast_t : public death_knight_spell_t
 struct icy_touch_t : public death_knight_spell_t
 {
   icy_touch_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "icy_touch", 45477, player )
+    death_knight_spell_t( "icy_touch", "Icy Touch", player )
   {
     parse_options( NULL, options_str );
 
@@ -3266,7 +3290,7 @@ struct icy_touch_t : public death_knight_spell_t
 struct mind_freeze_t : public death_knight_spell_t
 {
   mind_freeze_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "mind_freeze", 47528, player )
+    death_knight_spell_t( "mind_freeze", "Mind Freeze", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3292,7 +3316,7 @@ struct mind_freeze_t : public death_knight_spell_t
 struct necrotic_strike_t : public death_knight_attack_t
 {
   necrotic_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "necrotic_strike", 73975, player )
+    death_knight_attack_t( "necrotic_strike", "Necrotic Strike", player )
   {
     parse_options( NULL, options_str );
 
@@ -3355,7 +3379,7 @@ struct obliterate_offhand_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases() * 0.125;
+    target_multiplier *= 1 + p -> diseases( t ) * 0.125;
 
     if ( t -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
@@ -3368,7 +3392,7 @@ struct obliterate_t : public death_knight_attack_t
   flaming_torment_t* flaming_torment;
 
   obliterate_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "obliterate", 49020, player ), oh_attack( 0 ), flaming_torment( 0 )
+    death_knight_attack_t( "obliterate", "Obliterate", player ), oh_attack( 0 ), flaming_torment( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3466,7 +3490,7 @@ struct obliterate_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases() * 0.125;
+    target_multiplier *= 1 + p -> diseases( t ) * 0.125;
 
     if ( t -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
@@ -3478,7 +3502,7 @@ struct obliterate_t : public death_knight_attack_t
 struct outbreak_t : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "outbreak", 77575, player )
+    death_knight_spell_t( "outbreak", "Outbreak", player )
   {
     parse_options( NULL, options_str );
 
@@ -3514,7 +3538,7 @@ struct outbreak_t : public death_knight_spell_t
 struct pestilence_t : public death_knight_spell_t
 {
   pestilence_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "pestilence", 50842, player )
+    death_knight_spell_t( "pestilence", "Pestilence", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3541,7 +3565,7 @@ struct pestilence_t : public death_knight_spell_t
 struct pillar_of_frost_t : public death_knight_spell_t
 {
   pillar_of_frost_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "pillar_of_frost", 51271, p )
+    death_knight_spell_t( "pillar_of_frost", "Pillar of Frost", p )
   {
     check_talent( p -> talents.pillar_of_frost -> rank() );
 
@@ -3592,7 +3616,7 @@ struct plague_strike_t : public death_knight_attack_t
   attack_t* oh_attack;
 
   plague_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "plague_strike", 45462, player ), oh_attack( 0 )
+    death_knight_attack_t( "plague_strike", "Plague Strike", player ), oh_attack( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3638,7 +3662,7 @@ struct presence_t : public death_knight_spell_t
 {
   int switch_to_presence;
   presence_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "presence", 0, player ), switch_to_presence( 0 )
+    death_knight_spell_t( "presence", (uint32_t) 0, player ), switch_to_presence( 0 )
   {
     std::string presence_str;
     option_t options[] =
@@ -3737,7 +3761,7 @@ struct presence_t : public death_knight_spell_t
 struct raise_dead_t : public death_knight_spell_t
 {
   raise_dead_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "raise_dead", 46584, player )
+    death_knight_spell_t( "raise_dead", "Raise Dead", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3777,7 +3801,7 @@ struct raise_dead_t : public death_knight_spell_t
 struct rune_strike_t : public death_knight_attack_t
 {
   rune_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "rune_strike", 56815, player )
+    death_knight_attack_t( "rune_strike", "Rune Strike", player )
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -3834,18 +3858,16 @@ struct scourge_strike_t : public death_knight_attack_t
     flaming_torment_t* flaming_torment;
 
     scourge_strike_shadow_t( death_knight_t* player ) :
-      death_knight_spell_t( "scourge_strike_shadow", player, RESOURCE_NONE, SCHOOL_SHADOW ), flaming_torment( 0 )
+      death_knight_spell_t( "scourge_strike_shadow", 70890, player ), flaming_torment( 0 )
     {
       death_knight_t* p = player -> cast_death_knight();
       check_spec( TREE_UNHOLY );
 
-      id = 70890;  // not in inc files?  hmm
       weapon = &( player -> main_hand_weapon );
       may_miss = may_parry = may_dodge = false;
       may_crit          = false;
       proc              = true;
       background        = true;
-      trigger_gcd       = 0;
       weapon_multiplier = 0;
       base_multiplier  *= 1.0 + p -> glyphs.scourge_strike -> effect1().percent();
 
@@ -3863,7 +3885,7 @@ struct scourge_strike_t : public death_knight_attack_t
 
       death_knight_t* p = player -> cast_death_knight();
 
-      target_multiplier = p -> diseases() * 0.18;
+      target_multiplier = p -> diseases( t ) * 0.18;
 
       if ( t -> debuffs.earth_and_moon -> up() || t -> debuffs.ebon_plaguebringer -> up() || t -> debuffs.curse_of_elements -> up() )
         target_multiplier *= 1.08;
@@ -3886,7 +3908,7 @@ struct scourge_strike_t : public death_knight_attack_t
   };
 
   scourge_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "scourge_strike", 55090, player ),
+    death_knight_attack_t( "scourge_strike", "Scourge Strike", player ),
     scourge_strike_shadow( 0 ), flaming_torment( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
@@ -3931,7 +3953,7 @@ struct scourge_strike_t : public death_knight_attack_t
 struct summon_gargoyle_t : public death_knight_spell_t
 {
   summon_gargoyle_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_spell_t( "summon_gargoyle", 49206, player )
+    death_knight_spell_t( "summon_gargoyle", "Summon Gargoyle", player )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.summon_gargoyle -> rank() );
@@ -3988,7 +4010,7 @@ struct unholy_frenzy_t : public spell_t
   player_t* unholy_frenzy_target;
 
   unholy_frenzy_t( player_t* player, const std::string& options_str ) :
-    spell_t( "unholy_frenzy", 49016, player ), unholy_frenzy_target( 0 )
+    spell_t( "unholy_frenzy", "Unholy Frenzy", player ), unholy_frenzy_target( 0 )
   {
     death_knight_t* p = player -> cast_death_knight();
     check_talent( p -> talents.unholy_frenzy -> rank() );
