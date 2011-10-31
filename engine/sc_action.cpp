@@ -978,7 +978,11 @@ void action_t::consume_resource()
 
 void action_t::execute()
 {
-  assert( initialized );
+  if ( ! initialized )
+  {
+    sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
+    assert( 0 );
+  }
 
   if ( sim -> log && ! dual )
   {

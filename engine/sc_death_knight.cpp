@@ -5,10 +5,7 @@
 
 #include "simulationcraft.h"
 
-struct army_ghoul_pet_t;
-struct bloodworms_pet_t;
 struct dancing_rune_weapon_pet_t;
-struct ghoul_pet_t;
 
 // ==========================================================================
 // Death Knight Runes
@@ -525,6 +522,389 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   }
 }
 
+
+// ==========================================================================
+// Dancing Rune Weapon
+// ==========================================================================
+
+struct dancing_rune_weapon_pet_t : public pet_t
+{
+  dot_t* dots_drw_blood_plague;
+  dot_t* dots_drw_frost_fever;
+
+  int drw_diseases()
+  {
+    int drw_disease_count = 0;
+    if ( dots_drw_blood_plague -> ticking ) drw_disease_count++;
+    if ( dots_drw_frost_fever  -> ticking ) drw_disease_count++;
+    return drw_disease_count;
+  }
+
+  struct drw_blood_boil_t : public spell_t
+  {
+    drw_blood_boil_t( player_t* player ) :
+      spell_t( "blood_boil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      id = 48721;
+      parse_data();
+
+      background       = true;
+      trigger_gcd      = 0;
+      aoe              = -1;
+      may_crit         = true;
+      direct_power_mod = 0.06;
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+    }
+
+    virtual void execute()
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      base_dd_adder = ( p -> drw_diseases() ? 95 : 0 );
+      direct_power_mod  = 0.06 + ( p -> drw_diseases() ? 0.035 : 0 );
+      spell_t::execute();
+    }
+
+    virtual bool ready() { return false; }
+  };
+
+  struct drw_blood_plague_t : public spell_t
+  {
+    drw_blood_plague_t( player_t* player ) :
+      spell_t( "blood_plague", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_UNHOLY )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      id = 59879;
+      parse_data();
+
+      background         = true;
+      base_tick_time     = 3.0;
+      num_ticks          = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
+      direct_power_mod  *= 0.055 * 1.15;
+      may_miss           = false;
+      hasted_ticks       = false;
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+
+    }
+
+    virtual bool ready() { return false; }
+
+  };
+
+  struct drw_death_coil_t : public spell_t
+  {
+    drw_death_coil_t( player_t* player ) :
+      spell_t( "death_coil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      id = 47541;
+      parse_data();
+
+      background  = true;
+      trigger_gcd = 0;
+      direct_power_mod = 0.3 * 0.85; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
+      base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level );
+      base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
+      base_multiplier *= 1 + o -> glyphs.death_coil -> effect1().percent();
+
+      if ( o -> set_bonus.tier11_2pc_melee() )
+        base_crit     += 0.05;
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+    }
+    virtual bool ready() { return false; }
+  };
+
+  struct drw_death_strike_t : public attack_t
+  {
+    drw_death_strike_t( player_t* player ) :
+      attack_t( "death_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      id = 49998;
+      parse_data();
+
+      background  = true;
+      trigger_gcd = 0;
+      base_crit       +=     o -> talents.improved_death_strike -> rank() * 0.10; // Hotfix 20 Jul 2011
+      base_multiplier *= 1 + o -> talents.improved_death_strike -> rank() * 0.40; // Hotfix 20 Jul 2011
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+    }
+
+    virtual bool ready() { return false; }
+  };
+
+  struct drw_frost_fever_t : public spell_t
+  {
+    drw_frost_fever_t( player_t* player ) :
+      spell_t( "frost_fever", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      id = 59921;
+      parse_data();
+
+      background        = true;
+      trigger_gcd       = 0;
+      base_tick_time    = 3.0;
+      hasted_ticks      = false;
+      may_miss          = false;
+      num_ticks         = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
+      direct_power_mod *= 0.055 * 1.15;
+      base_multiplier  *= 1.0 + o -> glyphs.icy_touch -> effect1().percent();
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+    }
+
+    virtual bool ready()     { return false; }
+  };
+
+  struct drw_heart_strike_t : public attack_t
+  {
+    drw_heart_strike_t( player_t* player ) :
+      attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      id = 55050;
+      parse_data();
+
+      background          = true;
+      aoe                 = 2;
+      base_add_multiplier = 0.75;
+      trigger_gcd         = 0;
+      base_multiplier    *= 1 + o -> glyphs.heart_strike -> ok() * 0.30;
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+
+    }
+
+    void target_debuff( player_t* t, int dmg_type )
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+      attack_t::target_debuff( t, dmg_type );
+
+      target_multiplier *= 1 + p -> drw_diseases() * 0.1;
+    }
+
+    virtual bool ready() { return false; }
+  };
+
+  struct drw_icy_touch_t : public spell_t
+  {
+    drw_icy_touch_t( player_t* player ) :
+      spell_t( "icy_touch", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      id = 45477;
+      parse_data();
+
+      background       = true;
+      trigger_gcd      = 0;
+      direct_power_mod = 0.2;
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+    }
+
+    virtual void execute()
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+
+      spell_t::execute();
+
+      if ( result_is_hit() )
+      {
+        if ( ! p -> drw_frost_fever )
+          p -> drw_frost_fever = new drw_frost_fever_t( p );
+        p -> drw_frost_fever -> execute();
+      }
+    }
+
+    virtual bool ready() { return false; }
+  };
+
+  struct drw_pestilence_t : public spell_t
+  {
+    drw_pestilence_t( player_t* player ) :
+      spell_t( "pestilence", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
+    {
+      trigger_gcd = 0;
+    }
+
+    virtual bool ready() { return false; }
+  };
+
+  struct drw_plague_strike_t : public attack_t
+  {
+    drw_plague_strike_t( player_t* player ) :
+      attack_t( "plague_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
+    {
+      pet_t* p = player -> cast_pet();
+      death_knight_t* o = p -> owner -> cast_death_knight();
+
+      id = 45462;
+      parse_data();
+
+      background       = true;
+      trigger_gcd      = 0;
+      may_crit         = true;
+
+      if ( o -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+    }
+
+    virtual void execute()
+    {
+      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
+
+      attack_t::execute();
+
+      if ( result_is_hit() )
+      {
+        if ( ! p -> drw_blood_plague )
+          p -> drw_blood_plague = new drw_blood_plague_t( p );
+        p -> drw_blood_plague -> execute();
+      }
+    }
+
+    virtual bool ready() { return false; }
+  };
+
+  struct drw_melee_t : public attack_t
+  {
+    drw_melee_t( player_t* player ) :
+      attack_t( "drw_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+    {
+      pet_t* p = player -> cast_pet();
+      weapon            = &( p -> owner -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      base_dd_min       = 2; // FIXME: Should these be set?
+      base_dd_max       = 322;
+      may_crit          = true;
+      background        = true;
+      repeating         = true;
+      weapon_power_mod *= 2.0; //Attack power scaling is unaffected by the DRW 50% penalty.
+
+      if ( p -> owner -> race == RACE_ORC )
+      {
+        base_multiplier *= 1.05;
+      }
+    }
+  };
+
+  double snapshot_spell_crit, snapshot_attack_crit, haste_snapshot, speed_snapshot;
+  spell_t*  drw_blood_boil;
+  spell_t*  drw_blood_plague;
+  spell_t*  drw_death_coil;
+  attack_t* drw_death_strike;
+  spell_t*  drw_frost_fever;
+  attack_t* drw_heart_strike;
+  spell_t*  drw_icy_touch;
+  spell_t*  drw_pestilence;
+  attack_t* drw_plague_strike;
+  attack_t* drw_melee;
+
+  dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
+    pet_t( sim, owner, "dancing_rune_weapon", true ),
+    dots_drw_blood_plague( 0 ), dots_drw_frost_fever( 0 ),
+    snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ),
+    haste_snapshot( 1.0 ), speed_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
+    drw_death_coil( 0 ), drw_death_strike( 0 ), drw_frost_fever( 0 ),
+    drw_heart_strike( 0 ), drw_icy_touch( 0 ), drw_pestilence( 0 ),
+    drw_plague_strike( 0 ), drw_melee( 0 )
+  {
+    dots_drw_blood_plague  = get_dot( "blood_plague" );
+    dots_drw_frost_fever   = get_dot( "frost_fever" );
+
+    main_hand_weapon.type       = WEAPON_SWORD_2H;
+    main_hand_weapon.min_dmg    = 685; // FIXME: Should these be hardcoded?
+    main_hand_weapon.max_dmg    = 975;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = 3.3;
+  }
+
+  virtual void init_base()
+  {
+    // Everything stays at zero.
+    // DRW uses a snapshot of the DKs stats when summoned.
+    drw_blood_boil    = new drw_blood_boil_t   ( this );
+    drw_blood_plague  = new drw_blood_plague_t ( this );
+    drw_death_coil    = new drw_death_coil_t   ( this );
+    drw_death_strike  = new drw_death_strike_t ( this );
+    drw_frost_fever   = new drw_frost_fever_t  ( this );
+    drw_heart_strike  = new drw_heart_strike_t ( this );
+    drw_icy_touch     = new drw_icy_touch_t    ( this );
+    drw_pestilence    = new drw_pestilence_t   ( this );
+    drw_plague_strike = new drw_plague_strike_t( this );
+    drw_melee         = new drw_melee_t        ( this );
+  }
+
+  virtual double composite_attack_crit() SC_CONST        { return snapshot_attack_crit; }
+  virtual double composite_attack_haste() SC_CONST       { return haste_snapshot; }
+  virtual double composite_attack_speed() SC_CONST       { return speed_snapshot; }
+  virtual double composite_attack_power() SC_CONST       { return attack_power; }
+  virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
+  virtual double composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST
+  {
+    double m = player_t::composite_player_multiplier( school, a );
+    return m;
+  }
+
+  virtual void summon( double duration=0 )
+  {
+    death_knight_t* o = owner -> cast_death_knight();
+    pet_t::summon( duration );
+    snapshot_spell_crit  = o -> composite_spell_crit();
+    snapshot_attack_crit = o -> composite_attack_crit();
+    haste_snapshot       = o -> composite_attack_haste();
+    speed_snapshot       = o -> composite_attack_speed();
+    attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
+    drw_melee -> schedule_execute();
+  }
+};
+
+
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
+
 // ==========================================================================
 // Guardians
 // ==========================================================================
@@ -769,386 +1149,6 @@ struct bloodworms_pet_t : public pet_t
 };
 
 // ==========================================================================
-// Dancing Rune Weapon
-// ==========================================================================
-
-struct dancing_rune_weapon_pet_t : public pet_t
-{
-  dot_t* dots_drw_blood_plague;
-  dot_t* dots_drw_frost_fever;
-
-  int drw_diseases()
-  {
-    int drw_disease_count = 0;
-    if ( dots_drw_blood_plague -> ticking ) drw_disease_count++;
-    if ( dots_drw_frost_fever  -> ticking ) drw_disease_count++;
-    return drw_disease_count;
-  }
-
-  struct drw_blood_boil_t : public spell_t
-  {
-    drw_blood_boil_t( player_t* player ) :
-      spell_t( "blood_boil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
-    {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 48721;
-      parse_data();
-
-      background       = true;
-      trigger_gcd      = 0;
-      aoe              = -1;
-      may_crit         = true;
-      direct_power_mod = 0.06;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-    }
-
-    virtual void execute()
-    {
-      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-      base_dd_adder = ( p -> drw_diseases() ? 95 : 0 );
-      direct_power_mod  = 0.06 + ( p -> drw_diseases() ? 0.035 : 0 );
-      spell_t::execute();
-    }
-
-    virtual bool ready() { return false; }
-  };
-
-  struct drw_blood_plague_t : public spell_t
-  {
-    drw_blood_plague_t( player_t* player ) :
-      spell_t( "blood_plague", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_UNHOLY )
-    {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 59879;
-      parse_data();
-
-      background         = true;
-      base_tick_time     = 3.0;
-      num_ticks          = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
-      direct_power_mod  *= 0.055 * 1.15;
-      may_miss           = false;
-      hasted_ticks       = false;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-
-      init();
-    }
-
-    virtual bool ready() { return false; }
-
-  };
-
-  struct drw_death_coil_t : public spell_t
-  {
-    drw_death_coil_t( player_t* player ) :
-      spell_t( "death_coil", player, RESOURCE_NONE, SCHOOL_SHADOW, TREE_BLOOD )
-    {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 47541;
-      parse_data();
-
-      background  = true;
-      trigger_gcd = 0;
-      direct_power_mod = 0.3 * 0.85; // FIX-ME: From Feb 9th Hotfix. Test to confirm value.
-      base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level );
-      base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
-      base_multiplier *= 1 + o -> glyphs.death_coil -> effect1().percent();
-
-      if ( o -> set_bonus.tier11_2pc_melee() )
-        base_crit     += 0.05;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-    }
-    virtual bool ready() { return false; }
-  };
-
-  struct drw_death_strike_t : public attack_t
-  {
-    drw_death_strike_t( player_t* player ) :
-      attack_t( "death_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
-    {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 49998;
-      parse_data();
-
-      background  = true;
-      trigger_gcd = 0;
-      base_crit       +=     o -> talents.improved_death_strike -> rank() * 0.10; // Hotfix 20 Jul 2011
-      base_multiplier *= 1 + o -> talents.improved_death_strike -> rank() * 0.40; // Hotfix 20 Jul 2011
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-    }
-
-    virtual bool ready() { return false; }
-  };
-
-  struct drw_frost_fever_t : public spell_t
-  {
-    drw_frost_fever_t( player_t* player ) :
-      spell_t( "frost_fever", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
-    {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 59921;
-      parse_data();
-
-      background        = true;
-      trigger_gcd       = 0;
-      base_tick_time    = 3.0;
-      hasted_ticks      = false;
-      may_miss          = false;
-      num_ticks         = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
-      direct_power_mod *= 0.055 * 1.15;
-      base_multiplier  *= 1.0 + o -> glyphs.icy_touch -> effect1().percent();
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-    }
-
-    virtual bool ready()     { return false; }
-  };
-
-  struct drw_heart_strike_t : public attack_t
-  {
-    drw_heart_strike_t( player_t* player ) :
-      attack_t( "heart_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
-    {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 55050;
-      parse_data();
-
-      background          = true;
-      aoe                 = 2;
-      base_add_multiplier = 0.75;
-      trigger_gcd         = 0;
-      base_multiplier    *= 1 + o -> glyphs.heart_strike -> ok() * 0.30;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-
-      init();
-    }
-
-    void target_debuff( player_t* t, int dmg_type )
-    {
-      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-      attack_t::target_debuff( t, dmg_type );
-
-      target_multiplier *= 1 + p -> drw_diseases() * 0.1;
-    }
-
-    virtual bool ready() { return false; }
-  };
-
-  struct drw_icy_touch_t : public spell_t
-  {
-    drw_icy_touch_t( player_t* player ) :
-      spell_t( "icy_touch", player, RESOURCE_NONE, SCHOOL_FROST, TREE_FROST )
-    {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 45477;
-      parse_data();
-
-      background       = true;
-      trigger_gcd      = 0;
-      direct_power_mod = 0.2;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-    }
-
-    virtual void execute()
-    {
-      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-
-      spell_t::execute();
-
-      if ( result_is_hit() )
-      {
-        if ( ! p -> drw_frost_fever )
-          p -> drw_frost_fever = new drw_frost_fever_t( p );
-        p -> drw_frost_fever -> execute();
-      }
-    }
-
-    virtual bool ready() { return false; }
-  };
-
-  struct drw_pestilence_t : public spell_t
-  {
-    drw_pestilence_t( player_t* player ) :
-      spell_t( "pestilence", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD )
-    {
-      trigger_gcd = 0;
-    }
-
-    virtual bool ready() { return false; }
-  };
-
-  struct drw_plague_strike_t : public attack_t
-  {
-    drw_plague_strike_t( player_t* player ) :
-      attack_t( "plague_strike", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_BLOOD, true )
-    {
-      pet_t* p = player -> cast_pet();
-      death_knight_t* o = p -> owner -> cast_death_knight();
-
-      id = 45462;
-      parse_data();
-
-      background       = true;
-      trigger_gcd      = 0;
-      may_crit         = true;
-
-      if ( o -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-    }
-
-    virtual void execute()
-    {
-      dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-
-      attack_t::execute();
-
-      if ( result_is_hit() )
-      {
-        if ( ! p -> drw_blood_plague )
-          p -> drw_blood_plague = new drw_blood_plague_t( p );
-        p -> drw_blood_plague -> execute();
-      }
-    }
-
-    virtual bool ready() { return false; }
-  };
-
-  struct drw_melee_t : public attack_t
-  {
-    drw_melee_t( player_t* player ) :
-      attack_t( "drw_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
-    {
-      pet_t* p = player -> cast_pet();
-      weapon            = &( p -> owner -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      base_dd_min       = 2; // FIXME: Should these be set?
-      base_dd_max       = 322;
-      may_crit          = true;
-      background        = true;
-      repeating         = true;
-      weapon_power_mod *= 2.0; //Attack power scaling is unaffected by the DRW 50% penalty.
-
-      if ( p -> owner -> race == RACE_ORC )
-      {
-        base_multiplier *= 1.05;
-      }
-    }
-  };
-
-  double snapshot_spell_crit, snapshot_attack_crit, haste_snapshot, speed_snapshot;
-  spell_t*  drw_blood_boil;
-  spell_t*  drw_blood_plague;
-  spell_t*  drw_death_coil;
-  attack_t* drw_death_strike;
-  spell_t*  drw_frost_fever;
-  attack_t* drw_heart_strike;
-  spell_t*  drw_icy_touch;
-  spell_t*  drw_pestilence;
-  attack_t* drw_plague_strike;
-  attack_t* drw_melee;
-
-  dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "dancing_rune_weapon", true ),
-    dots_drw_blood_plague( 0 ), dots_drw_frost_fever( 0 ),
-    snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ),
-    haste_snapshot( 1.0 ), speed_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
-    drw_death_coil( 0 ), drw_death_strike( 0 ), drw_frost_fever( 0 ),
-    drw_heart_strike( 0 ), drw_icy_touch( 0 ), drw_pestilence( 0 ),
-    drw_plague_strike( 0 ), drw_melee( 0 )
-  {
-    dots_drw_blood_plague  = get_dot( "blood_plague" );
-    dots_drw_frost_fever   = get_dot( "frost_fever" );
-
-    main_hand_weapon.type       = WEAPON_SWORD_2H;
-    main_hand_weapon.min_dmg    = 685; // FIXME: Should these be hardcoded?
-    main_hand_weapon.max_dmg    = 975;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 3.3;
-  }
-
-  virtual void init_base()
-  {
-    // Everything stays at zero.
-    // DRW uses a snapshot of the DKs stats when summoned.
-    drw_blood_boil    = new drw_blood_boil_t   ( this );
-    drw_blood_plague  = new drw_blood_plague_t ( this );
-    drw_death_coil    = new drw_death_coil_t   ( this );
-    drw_death_strike  = new drw_death_strike_t ( this );
-    drw_frost_fever   = new drw_frost_fever_t  ( this );
-    drw_heart_strike  = new drw_heart_strike_t ( this );
-    drw_icy_touch     = new drw_icy_touch_t    ( this );
-    drw_pestilence    = new drw_pestilence_t   ( this );
-    drw_plague_strike = new drw_plague_strike_t( this );
-    drw_melee         = new drw_melee_t        ( this );
-  }
-
-  virtual double composite_attack_crit() SC_CONST        { return snapshot_attack_crit; }
-  virtual double composite_attack_haste() SC_CONST       { return haste_snapshot; }
-  virtual double composite_attack_speed() SC_CONST       { return speed_snapshot; }
-  virtual double composite_attack_power() SC_CONST       { return attack_power; }
-  virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
-  virtual double composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST
-  {
-    double m = player_t::composite_player_multiplier( school, a );
-    return m;
-  }
-
-  virtual void summon( double duration=0 )
-  {
-    death_knight_t* o = owner -> cast_death_knight();
-    pet_t::summon( duration );
-    snapshot_spell_crit  = o -> composite_spell_crit();
-    snapshot_attack_crit = o -> composite_attack_crit();
-    haste_snapshot       = o -> composite_attack_haste();
-    speed_snapshot       = o -> composite_attack_speed();
-    attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
-    drw_melee -> schedule_execute();
-  }
-};
-
-// ==========================================================================
 // Gargoyle
 // ==========================================================================
 
@@ -1256,7 +1256,6 @@ struct ghoul_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 622.43; // should be exact as of 4.2
     main_hand_weapon.max_dmg    = 933.64; // should be exact as of 4.2
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = 2.0;
 
     action_list_str = "auto_attack/sweeping_claws/claw";
@@ -1264,34 +1263,43 @@ struct ghoul_pet_t : public pet_t
 
   struct ghoul_pet_attack_t : public attack_t
   {
-    ghoul_pet_attack_t( const char* n, player_t* player, const resource_type r=RESOURCE_ENERGY, bool special=true ) :
-      attack_t( n, player, r, SCHOOL_PHYSICAL, TREE_NONE, special )
+    ghoul_pet_attack_t( const char* n, ghoul_pet_t* p, const resource_type r=RESOURCE_ENERGY, bool special=true ) :
+      attack_t( n, p, r, SCHOOL_PHYSICAL, TREE_NONE, special )
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
-      if ( player -> cast_pet() -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
+      if ( p -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
+    }
+
+    ghoul_pet_attack_t( const char* n, uint32_t id, ghoul_pet_t* p, bool special=true ) :
+      attack_t( n, id, p, 0, special )
+    {
+      weapon = &( player -> main_hand_weapon );
+      may_crit = true;
+      if ( p -> owner -> race == RACE_ORC ) base_multiplier *= 1.05;
     }
 
     virtual void player_buff()
     {
       attack_t::player_buff();
+
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
-      if ( o -> buffs_shadow_infusion -> check() )
+
+
+      player_multiplier *= 1.0 + o -> buffs_shadow_infusion -> stack() * o -> buffs_shadow_infusion -> effect1().percent();
+
+      if ( o -> buffs_dark_transformation -> up() )
       {
-        player_multiplier *= 1.0 + o -> buffs_shadow_infusion -> stack() * 0.06;
-      }
-      if ( o -> buffs_dark_transformation -> check() )
-      {
-        player_multiplier *= 1.6;
+        player_multiplier *= 1.0 + o -> buffs_dark_transformation -> effect1().percent();
       }
     }
   };
 
   struct ghoul_pet_melee_t : public ghoul_pet_attack_t
   {
-    ghoul_pet_melee_t( player_t* player ) :
-      ghoul_pet_attack_t( "melee", player, RESOURCE_NONE, false )
+    ghoul_pet_melee_t( ghoul_pet_t* p ) :
+      ghoul_pet_attack_t( "melee", p, RESOURCE_NONE, false )
     {
       base_execute_time = weapon -> swing_time;
       background        = true;
@@ -1302,13 +1310,11 @@ struct ghoul_pet_t : public pet_t
 
   struct ghoul_pet_auto_attack_t : public ghoul_pet_attack_t
   {
-    ghoul_pet_auto_attack_t( player_t* player ) :
-      ghoul_pet_attack_t( "auto_attack", player )
+    ghoul_pet_auto_attack_t( ghoul_pet_t* p ) :
+      ghoul_pet_attack_t( "auto_attack", p )
     {
-      ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
-
       weapon = &( p -> main_hand_weapon );
-      p -> main_hand_attack = new ghoul_pet_melee_t( player );
+      p -> main_hand_attack = new ghoul_pet_melee_t( p );
       trigger_gcd = 0;
     }
 
@@ -1327,23 +1333,19 @@ struct ghoul_pet_t : public pet_t
 
   struct ghoul_pet_claw_t : public ghoul_pet_attack_t
   {
-    ghoul_pet_claw_t( player_t* player ) :
-      ghoul_pet_attack_t( "claw", player )
+    ghoul_pet_claw_t( ghoul_pet_t* p ) :
+      ghoul_pet_attack_t( "claw", 91776, p )
     {
-      id = 91776;
-      parse_data();
       weapon_power_mod = 0.120 / weapon -> swing_time; // should be exact as of 4.2
     }
   };
 
   struct ghoul_pet_sweeping_claws_t : public ghoul_pet_attack_t
   {
-    ghoul_pet_sweeping_claws_t( player_t* player ) :
-      ghoul_pet_attack_t( "sweeping_claws", player )
+    ghoul_pet_sweeping_claws_t( ghoul_pet_t* p ) :
+      ghoul_pet_attack_t( "sweeping_claws", 91778, p )
     {
-      id = 91778;
       aoe = 2;
-      parse_data();
       weapon_power_mod = 0.120 / weapon -> swing_time; // Copied from claw, but seems Ok
     }
 
@@ -1511,16 +1513,13 @@ struct ghoul_pet_t : public pet_t
   {
     double energy = resource_current[ RESOURCE_ENERGY ];
 
+    // Cheapest Ability need 40 Energy
     if ( energy > 40 )
       return 0.1;
 
     return std::max( ( 40 - energy ) / energy_regen_per_second(), 0.1 );
   }
 };
-
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
-
 // ==========================================================================
 // Death Knight Attack
 // ==========================================================================
@@ -1556,15 +1555,17 @@ struct death_knight_attack_t : public attack_t
   void _init_dk_attack()
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+
     may_crit   = true;
     may_glance = false;
+
     death_knight_t* p = player -> cast_death_knight();
+
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
       m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
   }
 
   virtual void   reset();
-
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
@@ -1611,7 +1612,6 @@ struct death_knight_spell_t : public spell_t
   }
 
   virtual void   reset();
-
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
@@ -1629,8 +1629,7 @@ static void extract_rune_cost( const spell_id_t* spell, int* cost_blood, int* co
   // costs a blood rune, 'b' is whether it costs an unholy rune, and 'a'
   // is whether it costs a frost rune.
 
-  uint32_t spell_id = spell -> spell_id();
-  if ( spell_id == 0 ) return;
+  if ( ! spell -> ok() ) return;
 
   uint32_t rune_cost = spell -> rune_cost();
   *cost_blood  =        rune_cost & 0x1;
@@ -1772,7 +1771,6 @@ static void trigger_blood_caked_blade( action_t* a )
         base_dd_min = base_dd_max = 0.01;
         weapon = &( player -> main_hand_weapon );
         normalize_weapon_speed = false;
-        init();
       }
 
       virtual void target_debuff( player_t* t, int dmg_type )
@@ -1821,7 +1819,7 @@ static void trigger_ebon_plaguebringer( action_t* a )
   if ( a -> sim -> overrides.ebon_plaguebringer )
     return;
 
-  double duration = 21.0 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 3, 9, 12 );
+  double duration = 21.0 + p -> talents.epidemic -> effect1().seconds();
   if ( a -> target -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
   {
     a -> target -> debuffs.ebon_plaguebringer -> buff_duration = duration;
@@ -1839,41 +1837,14 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
   if ( ! p -> talents.unholy_blight -> rank() )
     return;
 
-  struct unholy_blight_t : public death_knight_spell_t
-  {
-    unholy_blight_t( death_knight_t* player ) :
-      death_knight_spell_t( "unholy_blight", player -> talents.unholy_blight -> spell_id(), player )
-    {
-      base_tick_time = 1.0;
-      num_ticks      = 10;
-      background     = true;
-      proc           = true;
-      may_crit       = false;
-      may_resist     = false;
-      may_miss       = false;
-      hasted_ticks   = false;
+  assert( p -> active_unholy_blight );
 
-      init();
-    }
 
-    void target_debuff( player_t* /* t */, int /* dmg_type */ )
-    {
-      // no debuff effect
-    }
-
-    void player_buff()
-    {
-      // no buffs
-    }
-  };
-
-  if ( ! p -> active_unholy_blight )
-    p -> active_unholy_blight = new unholy_blight_t( p );
 
   double unholy_blight_dmg = death_coil_dmg * p -> talents.unholy_blight -> effect1().percent();
 
   // http://code.google.com/p/simulationcraft/issues/detail?id=939
-  if (p -> bugs)
+  if ( p -> bugs )
     unholy_blight_dmg *= 0.75;
 
   dot_t* dot = p -> active_unholy_blight -> dot;
@@ -1897,6 +1868,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 void death_knight_attack_t::reset()
 {
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+
   action_t::reset();
 }
 
@@ -1905,6 +1877,7 @@ void death_knight_attack_t::reset()
 void death_knight_attack_t::consume_resource()
 {
   death_knight_t* p = player -> cast_death_knight();
+
   if ( rp_gain > 0 )
   {
     if ( result_is_hit() )
@@ -2014,7 +1987,7 @@ void death_knight_attack_t::target_debuff( player_t* t, int dmg_type )
 
   if ( school == SCHOOL_FROST  )
   {
-    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> stack() * 0.02;
+    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> stack() * p -> buffs_rune_of_razorice -> effect1().percent();
   }
 }
 
@@ -2122,7 +2095,7 @@ void death_knight_spell_t::target_debuff( player_t* t, int dmg_type )
 
   if ( school == SCHOOL_FROST  )
   {
-    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> stack() * 0.02;
+    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> stack() * p -> buffs_rune_of_razorice -> effect1().percent();
   }
 }
 
@@ -2222,7 +2195,7 @@ struct melee_t : public death_knight_attack_t
 
       // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
       double chance = weapon -> proc_chance_on_swing( util_t::talent_rank( p -> talents.killing_machine -> rank(), 3, 1, 3, 5 ) );
-      if ( p -> buffs_killing_machine -> trigger( 1, 1.0, chance ) )
+      if ( p -> buffs_killing_machine -> trigger( 1, p -> buffs_killing_machine -> effect1().percent(), chance ) )
         p -> buffs_tier11_4pc_melee -> trigger();
 
       if ( p -> dots_blood_plague && p -> dots_blood_plague -> ticking )
@@ -2427,7 +2400,6 @@ struct blood_plague_t : public death_knight_spell_t
     may_miss         = false;
     may_crit         = false;
     hasted_ticks     = false;
-    init(); // Not a real action
   }
 };
 
@@ -2689,7 +2661,7 @@ struct dark_transformation_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_shadow_infusion -> check() != 5 )
+    if ( p -> buffs_shadow_infusion -> check() != p -> buffs_shadow_infusion -> max_stack )
       return false;
 
     return death_knight_spell_t::ready();
@@ -2747,8 +2719,15 @@ struct death_coil_t : public death_knight_spell_t
   virtual double cost() SC_CONST
   {
     death_knight_t* p = player -> cast_death_knight();
+
     if ( p -> buffs_sudden_doom -> check() ) return 0;
-    return death_knight_spell_t::cost();
+
+    double c = death_knight_spell_t::cost();
+
+    if ( p -> buffs_runic_corruption -> check() )
+      c += p -> talents.runic_corruption -> effect2().percent() / 10.0;
+
+    return c;
   }
 
   void execute()
@@ -2912,7 +2891,6 @@ struct frost_fever_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> talents.ebon_plaguebringer -> effect1().percent();
     base_multiplier *= 1.0 + p -> glyphs.icy_touch -> effect1().percent()
                        + p -> talents.virulence -> effect1().percent();
-    init(); // Not a real action
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
@@ -3974,6 +3952,35 @@ struct summon_gargoyle_t : public death_knight_spell_t
   }
 };
 
+// Unholy Blight ====================================================
+
+struct unholy_blight_t : public death_knight_spell_t
+ {
+   unholy_blight_t( death_knight_t* player ) :
+     death_knight_spell_t( "unholy_blight", player -> talents.unholy_blight -> spell_id(), player )
+   {
+     base_tick_time = 1.0;
+     num_ticks      = 10;
+     background     = true;
+     proc           = true;
+     may_crit       = false;
+     may_resist     = false;
+     may_miss       = false;
+     hasted_ticks   = false;
+
+   }
+
+   void target_debuff( player_t* /* t */, int /* dmg_type */ )
+   {
+     // no debuff effect
+   }
+
+   void player_buff()
+   {
+     // no buffs
+   }
+ };
+
 // Unholy Frenzy ============================================================
 
 struct unholy_frenzy_t : public spell_t
@@ -4317,6 +4324,8 @@ void death_knight_t::init()
       }
     }
   }
+
+
 }
 
 // death_knight_t::init_rng =================================================
@@ -4324,6 +4333,7 @@ void death_knight_t::init()
 void death_knight_t::init_rng()
 {
   player_t::init_rng();
+
   rng_blood_caked_blade          = get_rng( "blood_caked_blade"          );
   rng_might_of_the_frozen_wastes = get_rng( "might_of_the_frozen_wastes" );
   rng_threat_of_thassarian       = get_rng( "threat_of_thassarian"       );
@@ -4683,7 +4693,12 @@ void death_knight_t::init_actions()
     action_list_default = 1;
   }
 
+
+  if ( talents.unholy_blight -> rank() )
+    active_unholy_blight = new unholy_blight_t( this );
+
   player_t::init_actions();
+
 }
 
 // death_knight_t::init_enchant =============================================
@@ -4747,7 +4762,6 @@ void death_knight_t::init_enchant()
       background  = true;
       proc        = true;
       trigger_gcd = 0;
-      init();
     }
 
     void target_debuff( player_t* t, int dmg_type )
@@ -4755,7 +4769,7 @@ void death_knight_t::init_enchant()
       death_knight_spell_t::target_debuff( t, dmg_type );
       death_knight_t* p = player -> cast_death_knight();
 
-      target_multiplier /= 1.0 + p -> buffs_rune_of_razorice -> stack() * 0.02;
+      target_multiplier /= 1.0 + p -> buffs_rune_of_razorice -> check() * p -> buffs_rune_of_razorice -> effect1().percent();
     }
   };
 
@@ -4788,7 +4802,7 @@ void death_knight_t::init_enchant()
   };
 
   buffs_rune_of_cinderglacier       = new buff_t( this, "rune_of_cinderglacier",       2, 30.0 );
-  buffs_rune_of_razorice            = new buff_t( this, "rune_of_razorice",            5, 20.0 );
+  buffs_rune_of_razorice            = new buff_t( this, 51714, "rune_of_razorice" );
   buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0 );
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
@@ -4846,25 +4860,28 @@ void death_knight_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( sim, name, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs_blood_presence      = new buff_t( this, 48263, "blood_presence" );
-  buffs_bone_shield         = new buff_t( this, "bone_shield",                                        4, 300.0 );
+  // buff_t( player, name, max_stack, duration, cd, chance, quiet, reverse, rng_type, aura_id, activated )
+  // buff_t( player, id, name, chance, cd )
+  // buff_t( player, name, spellname, chance, cd )
+
+  buffs_blood_presence      = new buff_t( this, "blood_presence", "Blood Presence" );
+  buffs_bone_shield         = new buff_t( this, "bone_shield", "Bone Shield" );
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
-  buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon",                                1,  12.0,  0.0, 1.0, true );
-  buffs_dark_transformation = new buff_t( this, "dark_transformation",                                1,  30.0 );
+  buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", "Dancing Rune Weapon", -1, -1.0, true ); // quiet=true
+  buffs_dark_transformation = new buff_t( this, "dark_transformation", "Dark Transformation" );
   buffs_ebon_plaguebringer  = new buff_t( this, "ebon_plaguebringer_track",
-                                          1, 21.0 + util_t::talent_rank( talents.epidemic -> rank(), 3, 3, 9, 12 ), 0.0, 1.0, true );
-  buffs_frost_presence      = new buff_t( this, "frost_presence" );
-  buffs_killing_machine     = new buff_t( this, "killing_machine",                                    1,  30.0,  0.0, 0.0 ); // PPM based!
-  buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost",                                    1,  20.0 );
+                                          1, 21.0 + talents.epidemic -> effect1().seconds(), 0.0, 1.0, true );
+  buffs_frost_presence      = new buff_t( this, "frost_presence", "Frost Presence" );
+  buffs_killing_machine     = new buff_t( this, 51124, "killing_machine" ); // PPM based!
+  buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost", "Pillar of Frost" );
   buffs_rime                = new buff_t( this, "rime", ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 2 : 1, 30.0, 0.0, 1.0 ); // Trigger controls proc chance
-  buffs_runic_corruption    = new buff_t( this, "runic_corruption",                                   1,   3.0,  0.0, talents.runic_corruption -> effect1().percent() );
+  buffs_runic_corruption    = new buff_t( this, 51460, "runic_corruption" );
   buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  20.0,  0.0, talents.scent_of_blood -> proc_chance() );
-  buffs_shadow_infusion     = new buff_t( this, "shadow_infusion",                                    5,  30.0,  0.0, talents.shadow_infusion -> proc_chance() );
+  buffs_shadow_infusion     = new buff_t( this, 91342, "shadow_infusion", talents.shadow_infusion -> proc_chance() );
   buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 2 : 1, 10.0, 0.0, 1.0 );
   buffs_tier11_4pc_melee    = new buff_t( this, "tier11_4pc_melee",                                   3,  30.0,  0.0, set_bonus.tier11_4pc_melee() );
   buffs_tier13_4pc_melee    = new stat_buff_t( this, "tier13_4pc_melee", STAT_MASTERY_RATING, 710, 1, 12.0 );
-  buffs_unholy_presence     = new buff_t( this, "unholy_presence" );
+  buffs_unholy_presence     = new buff_t( this, "unholy_presence", "Unholy Presence" );
 
   struct bloodworms_buff_t : public buff_t
   {
