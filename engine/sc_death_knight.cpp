@@ -1481,7 +1481,7 @@ struct death_knight_attack_t : public attack_t
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
       m_dd_additive += p -> talents.might_of_the_frozen_wastes -> effect3().percent();
 
-    rp_gains = player -> get_gain( "runic_power_gain_" + name_str );
+    rp_gains = player -> get_gain( "rp_" + name_str );
   }
 
   virtual void   reset();
@@ -1532,7 +1532,7 @@ struct death_knight_spell_t : public spell_t
     base_spell_power_multiplier = 0;
     base_attack_power_multiplier = 1;
 
-    rp_gains = player -> get_gain( "runic_power_gain_" + name_str );
+    rp_gains = player -> get_gain( "rp_" + name_str );
   }
 
   virtual void   reset();
