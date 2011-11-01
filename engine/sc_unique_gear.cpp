@@ -1723,31 +1723,31 @@ static void register_spidersilk_spindle( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// register_apparatus_of_khazgoroth =========================================
+// register_fury_of_the_beast =========================================
 
-static void register_horrific_polearm( item_t* item )
+static void register_fury_of_the_beast( item_t* item )
 {
   player_t* p = item -> player;
 
   item -> unique = true;
   bool heroic = item -> heroic();
 
-  struct horrific_polearm_callback_t : public action_callback_t
+  struct fury_of_the_beast_callback_t : public action_callback_t
   {
     bool heroic;
     buff_t* fury_of_the_beast;
     stat_buff_t* fury_of_the_beast_stack;
 
     // Event
-    struct horrific_polearm_event_t : public event_t
+    struct fury_of_the_beast_event_t : public event_t
     {
       buff_t* buff;
       buff_t* buff_stack;
 
-      horrific_polearm_event_t ( player_t* player,buff_t* b, buff_t* q ) :
+      fury_of_the_beast_event_t ( player_t* player,buff_t* b, buff_t* q ) :
         event_t( player -> sim, player ), buff( b ), buff_stack( q )
       {
-        name = "horrific_polearm";
+        name = "fury_of_the_beast";
         sim -> add_event( this, 1.0 );
       }
 
@@ -1757,15 +1757,15 @@ static void register_horrific_polearm( item_t* item )
         {
           buff_stack -> buff_duration = buff -> remains(); // hack instead of overriding fury_of_the_beast::expire()
           buff_stack -> trigger();
-          new ( sim ) horrific_polearm_event_t( player, buff, buff_stack );
+          new ( sim ) fury_of_the_beast_event_t( player, buff, buff_stack );
         }
       }
     };
 
-    horrific_polearm_callback_t( player_t* p, bool h ) :
+    fury_of_the_beast_callback_t( player_t* p, bool h ) :
       action_callback_t( p -> sim, p ), heroic( h )
     {
-      double amount = heroic ? 500 : 500; // FIXME: add heroic amount
+      double amount = heroic ? 120 : 107;
 
       fury_of_the_beast = new buff_t( p, 108011, "fury_of_the_beast", 0.15 );
       fury_of_the_beast -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
@@ -1783,13 +1783,66 @@ static void register_horrific_polearm( item_t* item )
       if( fury_of_the_beast -> trigger() )
       {
         // FIXME: check if the stacking buff ticks at 0s or 1s
-        new ( sim ) horrific_polearm_event_t( listener, fury_of_the_beast, fury_of_the_beast_stack );
+        new ( sim ) fury_of_the_beast_event_t( listener, fury_of_the_beast, fury_of_the_beast_stack );
 
       }
     }
   };
 
-  p -> register_attack_callback( RESULT_CRIT_MASK, new horrific_polearm_callback_t( p, heroic ) );
+  p -> register_attack_callback( RESULT_CRIT_MASK, new fury_of_the_beast_callback_t( p, heroic ) );
+}
+
+// register_souldrinker ==========================================
+
+static void register_souldrinker( item_t* item )
+{
+  player_t* p = item -> player;
+
+  bool heroic = item -> heroic();
+
+  struct souldrinker_spell_t : public spell_t
+  {
+    souldrinker_spell_t( player_t* p, bool h ) :
+      spell_t( "souldrinker", h ? 109831 : 108022, p )
+    {
+      trigger_gcd = 0;
+      background  = true;
+      may_miss = false;
+      may_crit = false;
+      proc=true;
+      init();
+    }
+    virtual void execute()
+    {
+      base_dd_min = base_dd_max = effect1().percent() / 10.0 * player -> resource_max[ RESOURCE_HEALTH ];
+      spell_t::execute();
+    }
+    virtual void player_buff() { }
+    virtual double total_dd_multiplier() SC_CONST { return 1.0; }
+  };
+
+  struct souldrinker_callback_t : public action_callback_t
+  {
+    spell_t* spell;
+    rng_t* rng;
+
+    souldrinker_callback_t( player_t* p, spell_t* s ) :
+      action_callback_t( p -> sim, p ), spell( s )
+    {
+      rng  = p -> get_rng ( "souldrinker", RNG_DEFAULT );
+    }
+
+    virtual void trigger( action_t* /* a */, void* /* call_data */ )
+    {
+      // FIXME: Does it have an ICD or not?
+      if ( rng -> roll( 0.15 ) )
+      {
+        spell -> execute();
+      }
+    }
+  };
+
+  p -> register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic ) ) );
 }
 
 // ==========================================================================
@@ -1849,9 +1902,10 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "valanyr_hammer_of_ancient_kings"     ) ) register_valanyr                           ( &item );
     if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
     if ( ! strcmp( item.name(), "spidersilk_spindle"                  ) ) register_spidersilk_spindle                ( &item );
-    if ( ! strcmp( item.name(), "horrific_polearm"                    ) ) register_horrific_polearm                  ( &item );
+    if ( ! strcmp( item.name(), "kiril_fury_of_beasts"                ) ) register_fury_of_the_beast                 ( &item );
     if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
     if ( ! strcmp( item.name(), "indomitable_ride"                    ) ) register_indomitable_ride                  ( &item );
+    if ( ! strcmp( item.name(), "souldrinker"                         ) ) register_souldrinker                       ( &item );
 
   }
 }
