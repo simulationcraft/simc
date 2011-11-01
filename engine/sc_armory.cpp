@@ -237,7 +237,21 @@ static bool parse_item_heroic( item_t& item,
   return true;
 }
 
-// parse_item_heroic ========================================================
+// parse_item_lfr ===========================================================
+
+static bool parse_item_lfr( item_t& item, xml_node_t* node )
+{
+  // FIXME: Armory currently doesn't have a flag for LFR
+  return true;
+
+  if ( ! xml_t::get_value( item.armory_lfr_str, node, "raid-finder/." ) ) item.armory_lfr_str = "";
+
+  armory_t::format( item.armory_lfr_str );
+
+  return true;
+}
+
+// parse_item_armor_type ====================================================
 
 static bool parse_item_armor_type( item_t& item,
                                    xml_node_t* node )
@@ -1002,6 +1016,12 @@ bool armory_t::download_slot( item_t& item,
     return false;
   }
 
+  if ( ! parse_item_lfr( item, slot_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse LFR flag for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    return false;
+  } 
+
   if ( ! parse_item_armor_type( item, slot_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse armor type for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
@@ -1072,6 +1092,12 @@ bool armory_t::download_item( item_t& item,
   if ( ! parse_item_heroic( item, item_xml ) )
   {
     item.sim -> errorf( "Player %s unable to parse heroic flag for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_lfr( item, item_xml ) )
+  {
+    item.sim -> errorf( "Player %s unable to parse LFR flag for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
   }
 

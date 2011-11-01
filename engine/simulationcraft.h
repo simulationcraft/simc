@@ -3415,7 +3415,7 @@ struct item_t
   sim_t* sim;
   player_t* player;
   int slot, quality, ilevel;
-  bool unique, unique_enchant, unique_addon, is_heroic, is_ptr, is_matching_type, is_reforged;
+  bool unique, unique_enchant, unique_addon, is_heroic, is_lfr, is_ptr, is_matching_type, is_reforged;
   stat_type reforged_from;
   stat_type reforged_to;
 
@@ -3430,6 +3430,7 @@ struct item_t
   std::string option_use_str;
   std::string option_weapon_str;
   std::string option_heroic_str;
+  std::string option_lfr_str;
   std::string option_armor_type_str;
   std::string option_reforge_str;
   std::string option_random_suffix_str;
@@ -3447,6 +3448,7 @@ struct item_t
   std::string armory_addon_str;
   std::string armory_weapon_str;
   std::string armory_heroic_str;
+  std::string armory_lfr_str;
   std::string armory_armor_type_str;
   std::string armory_reforge_str;
   std::string armory_ilevel_str;
@@ -3464,6 +3466,7 @@ struct item_t
   std::string encoded_use_str;
   std::string encoded_weapon_str;
   std::string encoded_heroic_str;
+  std::string encoded_lfr_str;
   std::string encoded_armor_type_str;
   std::string encoded_reforge_str;
   std::string encoded_ilevel_str;
@@ -3498,10 +3501,12 @@ struct item_t
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
 
-  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ), unique_addon( false ), is_heroic( false ), is_matching_type( false ), is_reforged( false ) {}
+  item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
+    unique_addon( false ), is_heroic( false ), is_lfr( false ), is_matching_type( false ), is_reforged( false ) {}
   item_t( player_t*, const std::string& options_str );
   bool active() SC_CONST;
   bool heroic() SC_CONST;
+  bool lfr() SC_CONST;
   bool ptr() SC_CONST;
   bool reforged() SC_CONST;
   bool matching_type();
@@ -3519,6 +3524,7 @@ struct item_t
   bool decode_special( special_effect_t&, const std::string& encoding );
   bool decode_weapon();
   bool decode_heroic();
+  bool decode_lfr();
   bool decode_armor_type();
   bool decode_reforge();
   bool decode_random_suffix();

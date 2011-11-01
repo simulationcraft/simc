@@ -362,6 +362,46 @@ static bool parse_item_heroic( item_t&     item,
   return true;
 }
 
+// parse_item_lfr ===========================================================
+
+static bool parse_item_lfr( item_t&     item,
+                            xml_node_t* node )
+{
+  // FIXME: Wowhead currently doesn't have a flag set for LFR items
+  return true;
+
+  std::string info_str;
+  item.armory_lfr_str = "";
+
+  if ( ! xml_t::get_value( info_str, node, "json/cdata" ) )
+    return false;
+
+  std::string temp_info_str = info_str;
+
+  util_t::string_strip_quotes( temp_info_str );
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, temp_info_str, "," );
+
+  for ( int i=0; i < num_splits; i++ )
+  {
+    std::string type_str, value_str;
+
+    if ( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
+    {
+      if ( type_str == "raid_finder"   )
+      {
+        item.armory_lfr_str = value_str;
+        break;
+      }
+    }
+  }
+
+  armory_t::format( item.armory_lfr_str );
+
+  return true;
+}
+
 // parse_item_quality =======================================================
 
 static bool parse_item_quality( item_t&     item,
@@ -619,6 +659,12 @@ bool wowhead_t::download_item( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_lfr( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine LFR flag for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_armor_type( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine armor type for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
@@ -683,6 +729,12 @@ bool wowhead_t::download_slot( item_t&            item,
   if ( ! parse_item_heroic( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine heroic flag for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_lfr( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine LFR flag for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 

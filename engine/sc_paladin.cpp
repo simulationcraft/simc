@@ -756,7 +756,8 @@ static void trigger_illuminated_healing( heal_t* h )
     return;
 
   paladin_t* p = h -> player -> cast_paladin();
-
+  
+  // FIXME: Each player can have their own bubble, so this should probably be a vector as well
   if ( ! p -> active_illuminated_healing )
   {
     struct illuminated_healing_t : public absorb_t

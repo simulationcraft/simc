@@ -369,6 +369,27 @@ static bool parse_item_heroic( item_t&     item,
   return true;
 }
 
+// parse_item_lfr ==========================================================
+
+static bool parse_item_lfr( item_t& item, xml_node_t* node )
+{
+  // FIXME: MMOC currently doesn't have a flag for LFR
+  return true;
+
+  item.armory_lfr_str = "";
+
+  std::vector<std::string> descriptions;
+  get_tti_value( descriptions, node, "tti-raid-finder"  );
+
+  if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
+  {
+    item.armory_lfr_str = "1";
+    armory_t::format( item.armory_lfr_str );
+  }
+
+  return true;
+}
+
 // parse_item_armor_type ====================================================
 
 static bool parse_item_armor_type( item_t&     item,
@@ -538,6 +559,12 @@ bool mmo_champion_t::download_item( item_t&            item,
     return false;
   }
 
+  if ( ! parse_item_lfr( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine LFR flag for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
   if ( ! parse_item_level( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine item level for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
@@ -601,6 +628,12 @@ bool mmo_champion_t::download_slot( item_t&            item,
   if ( ! parse_item_heroic( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine heroic flag for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
+    return false;
+  }
+
+  if ( ! parse_item_lfr( item, node ) )
+  {
+    item.sim -> errorf( "Player %s unable to determine LFR flag for item '%s' at slot %s.\n", p -> name(), item.name(), item.slot_name() );
     return false;
   }
 

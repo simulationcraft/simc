@@ -508,6 +508,8 @@ bool download_item_data( item_t& item, item_info_t& item_data,
       // FIXME: set item_data.flags_1 to ITEM_FLAG_HEROIC as appropriate.
     }
 
+    // FIXME: LFR tag is not available from BCP API.
+ 
     // socket bonus is not available from BCP API.
     {
       // FIXME: set item_data.id_socket_bonus appropriately.

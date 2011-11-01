@@ -117,6 +117,21 @@ bool parse_item_heroic( item_t& item, const item_data_t* item_data )
   return true;
 }
 
+bool parse_item_lfr( item_t& item, const item_data_t* item_data )
+{
+  // FIXME: Item Flag doesn't exist currently for LFR items in DBC Data
+  return true;
+
+  assert( item_data );
+
+  item.armory_lfr_str.clear();
+
+  //if ( item_data -> flags_1 & ITEM_FLAG_LFR )
+  //  item.armory_lfr_str = "1";
+
+  return true;
+}
+
 bool parse_item_armor_type( item_t& item, const item_data_t* item_data )
 {
   assert( item_data );
@@ -215,11 +230,12 @@ void log_item( const item_t& item )
 {
   if ( item.sim -> debug )
   {
-    log_t::output( item.sim, "item_db: n=[%s] q=[%s] l=[%s] h=[%s] a=[%s] s=[%s] w=[%s] g=[%s] e=[%s] r=[%s] rs=[%s] a=[%s]",
+    log_t::output( item.sim, "item_db: n=[%s] q=[%s] l=[%s] h=[%s] lf=[%s] a=[%s] s=[%s] w=[%s] g=[%s] e=[%s] r=[%s] rs=[%s] a=[%s]",
                    item.armory_name_str.c_str(),
                    item.armory_quality_str.c_str(),
                    item.armory_ilevel_str.c_str(),
                    item.armory_heroic_str.c_str(),
+                   item.armory_lfr_str.c_str(),
                    item.armory_armor_type_str.c_str(),
                    item.armory_stats_str.c_str(),
                    item.armory_weapon_str.c_str(),
@@ -614,6 +630,7 @@ bool item_database_t::load_item_from_data( item_t& item, const item_data_t* item
   parse_item_quality( item, item_data );
   parse_item_level( item, item_data );
   parse_item_heroic( item, item_data );
+  parse_item_lfr( item, item_data );
   parse_item_armor_type( item, item_data );
   parse_item_stats( item, item_data );
   parse_weapon_type( item, item_data );
