@@ -2679,15 +2679,16 @@ struct death_strike_t : public death_knight_attack_t
     base_crit       +=     p -> talents.improved_death_strike -> mod_additive( P_CRIT );
     base_multiplier *= 1 + p -> talents.improved_death_strike -> mod_additive( P_GENERIC );
 
+    weapon = &( p -> main_hand_weapon );
+
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new death_strike_offhand_t( p );
   }
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
-    weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+    death_knight_t* p = player -> cast_death_knight();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_death_strike -> execute();
@@ -3341,9 +3342,8 @@ struct obliterate_t : public death_knight_attack_t
     }
 
     if ( p -> buffs_killing_machine -> check() )
-    {
       p -> proc_oblit_killing_machine -> occur();
-    }
+
     p -> buffs_killing_machine -> expire();
 
   }
@@ -3423,6 +3423,7 @@ struct pestilence_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
+
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_pestilence -> execute();
   }
@@ -3440,6 +3441,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
+
     harmful = false;
   }
 
@@ -3447,6 +3449,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
+
     p -> buffs_pillar_of_frost -> trigger( 1, p -> talents.pillar_of_frost -> effect1().percent() );
   }
 };
@@ -3489,6 +3492,7 @@ struct plague_strike_t : public death_knight_attack_t
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     weapon = &( p -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> effect1().percent();
+
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new plague_strike_offhand_t( p );
   }
@@ -3499,14 +3503,14 @@ struct plague_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
-    {
       p -> active_dancing_rune_weapon -> drw_plague_strike -> execute();
-    }
+
     if ( result_is_hit() )
     {
       if ( ! p -> blood_plague ) p -> blood_plague = new blood_plague_t( p );
 
       p -> blood_plague -> execute();
+
       trigger_ebon_plaguebringer( this, target );
     }
 
@@ -3587,22 +3591,23 @@ struct presence_t : public death_knight_spell_t
 
     switch ( p -> active_presence )
     {
-    case PRESENCE_BLOOD:
-      p -> buffs_blood_presence  -> trigger();
+      case PRESENCE_BLOOD:
+        p -> buffs_blood_presence  -> trigger();
       break;
-    case PRESENCE_FROST:
-    {
-      double fp_value = p -> dbc.spell( 48266 ) -> effect1().percent();
-      if ( p -> talents.improved_frost_presence -> rank() )
-        fp_value += p -> talents.improved_frost_presence -> effect2().percent();
-      p -> buffs_frost_presence -> trigger( 1, fp_value );
-    }
-    break;
-    case PRESENCE_UNHOLY:
-      p -> buffs_unholy_presence -> trigger( 1, 0.10 + p -> talents.improved_unholy_presence -> effect2().percent() );
-      p -> base_gcd = 1.0;
+      case PRESENCE_FROST:
+      {
+        double fp_value = p -> dbc.spell( 48266 ) -> effect1().percent();
+        if ( p -> talents.improved_frost_presence -> rank() )
+          fp_value += p -> talents.improved_frost_presence -> effect2().percent();
+        p -> buffs_frost_presence -> trigger( 1, fp_value );
+      }
+      break;
+      case PRESENCE_UNHOLY:
+        p -> buffs_unholy_presence -> trigger( 1, 0.10 + p -> talents.improved_unholy_presence -> effect2().percent() );
+        p -> base_gcd = 1.0;
       break;
     }
+
     p -> reset_gcd();
 
     consume_resource();
@@ -3613,6 +3618,7 @@ struct presence_t : public death_knight_spell_t
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
+
     if ( p -> active_presence == switch_to_presence )
       return false;
 
@@ -3630,27 +3636,23 @@ struct raise_dead_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> primary_tree() == TREE_UNHOLY )
-    {
       cooldown -> duration += p -> spells.master_of_ghouls -> effect1().seconds();
-    }
+
     harmful = false;
   }
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
-    p -> active_ghoul -> summon( ( p -> primary_tree() == TREE_UNHOLY ) ? 0.0 : 60.0 );
-  }
+    death_knight_t* p = player -> cast_death_knight();
 
-  virtual double gcd() SC_CONST
-  {
-    return player -> in_combat ? death_knight_spell_t::gcd() : 0;
+    p -> active_ghoul -> summon( ( p -> primary_tree() == TREE_UNHOLY ) ? 0.0 : p -> dbc.spell( effect1().base_value() ) -> duration() );
   }
 
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
+
     if ( p -> active_ghoul && ! p -> active_ghoul -> sleeping )
       return false;
 
@@ -3689,15 +3691,17 @@ struct rune_strike_t : public death_knight_attack_t
     direct_power_mod = 0.15;
     may_dodge = may_block = may_parry = false;
 
+
+    weapon = &( p -> main_hand_weapon );
+
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
-          oh_attack = new rune_strike_offhand_t( p );
+      oh_attack = new rune_strike_offhand_t( p );
   }
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
-    weapon = &( p -> main_hand_weapon );
     death_knight_attack_t::execute();
+    death_knight_t* p = player -> cast_death_knight();
 
     if ( result_is_hit() )
     {
@@ -3870,29 +3874,18 @@ struct unholy_blight_t : public death_knight_spell_t
 
 struct unholy_frenzy_t : public spell_t
 {
-  player_t* unholy_frenzy_target;
-
   unholy_frenzy_t( death_knight_t* p, const std::string& options_str ) :
-    spell_t( "unholy_frenzy", "Unholy Frenzy", p ), unholy_frenzy_target( 0 )
+    spell_t( "unholy_frenzy", "Unholy Frenzy", p )
   {
     check_talent( p -> talents.unholy_frenzy -> rank() );
 
     std::string target_str = p -> unholy_frenzy_target_str;
-    option_t options[] =
-    {
-      { "target", OPT_STRING, &target_str },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
-    if ( target_str.empty() )
+    // If we don't specify a target, it's defaulted to the mob, so default to the player instead
+    if ( target -> is_enemy() || target -> is_add() )
     {
-      unholy_frenzy_target = p;
-    }
-    else
-    {
-      unholy_frenzy_target = sim -> find_player( target_str );
-      assert ( unholy_frenzy_target != 0 );
+      target = p;
     }
 
     harmful = false;
@@ -3901,10 +3894,8 @@ struct unholy_frenzy_t : public spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(),name() );
-    consume_resource();
-    update_ready();
-    unholy_frenzy_target -> buffs.unholy_frenzy -> trigger( 1 );
+    spell_t::execute();
+    target -> buffs.unholy_frenzy -> trigger( 1 );
   }
 };
 
@@ -3922,9 +3913,12 @@ struct butchery_event_t : public event_t
     {
       death_knight_t* p = player -> cast_death_knight();
 
-      p -> resource_gain( RESOURCE_RUNIC, p -> talents.butchery -> effect2().base_value() / 10.0 , p -> gains_butchery );
+      // p -> talents.butchery -> effect2().base_value() / 10.0 == p -> talents.butchery -> rank()
+      // Just work with hardcoded numbers here. With rank 1 you gain 1 RP every 5s
+      // with rank 2 you gain 1 RP every 2.5s
+      p -> resource_gain( RESOURCE_RUNIC, 1, p -> gains_butchery );
 
-      new ( sim ) butchery_event_t( player, 5.0 );
+      new ( sim ) butchery_event_t( player, 5.0 / p -> talents.butchery -> rank()  );
     }
   };
 
@@ -4178,6 +4172,7 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
 double death_knight_t::composite_attack_haste() SC_CONST
 {
   double haste = player_t::composite_attack_haste();
+
   haste *= 1.0 / ( 1.0 + buffs_unholy_presence -> value() );
 
   return haste;
@@ -4206,15 +4201,15 @@ void death_knight_t::init()
 {
   player_t::init();
 
-  if ( pet_t* ghoul = find_pet( "ghoul" ) )
+  if ( active_ghoul )
   {
     if ( primary_tree() == TREE_UNHOLY )
     {
-      ghoul -> type = PLAYER_PET;
+      active_ghoul -> type = PLAYER_PET;
     }
     else
     {
-      ghoul -> type = PLAYER_GUARDIAN;
+      active_ghoul -> type = PLAYER_GUARDIAN;
     }
   }
 
@@ -4228,7 +4223,6 @@ void death_knight_t::init()
       }
     }
   }
-
 }
 
 // death_knight_t::init_rng =================================================
@@ -4262,9 +4256,7 @@ void death_knight_t::init_base()
                       talents.brittle_bones      -> effect2().percent() );
 
   if ( primary_tree() == TREE_UNHOLY )
-  {
     str_mult += spells.unholy_might -> effect1().percent();
-  }
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
 
@@ -4285,6 +4277,7 @@ void death_knight_t::init_base()
     vengeance_enabled = true;
 
   resource_base[ RESOURCE_RUNIC ] = 100;
+
   if ( talents.runic_power_mastery -> rank() )
     resource_base[ RESOURCE_RUNIC ] += talents.runic_power_mastery -> effect1().resource( RESOURCE_RUNIC );
 
@@ -4374,11 +4367,7 @@ void death_knight_t::init_spells()
   spells.plate_specialization = spell_data_t::find( 86524, "Plate Specialization", dbc.ptr );
   spells.runic_empowerment    = spell_data_t::find( 81229, "Runic Empowerment",    dbc.ptr );
 
-  spell_data_t* tier12_4pc_melee_spell = spell_data_t::find( 98996, "Item - Death Knight T12 DPS 4P Bonus", dbc.ptr );
-  if ( tier12_4pc_melee_spell )
-  {
-    tier12_4pc_melee_value = tier12_4pc_melee_spell -> effect1().percent();
-  }
+
 
   // Glyphs
   glyphs.death_and_decay = find_glyph( "Glyph of Death and Decay" );
@@ -4405,6 +4394,8 @@ void death_knight_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
+
+  tier12_4pc_melee_value = sets -> set( SET_T12_4PC_MELEE ) -> effect1().percent();
 }
 
 // death_knight_t::init_use_racial_actions ==================================
@@ -4438,22 +4429,49 @@ void death_knight_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str  = "flask,type=titanic_strength";
-    action_list_str += "/food,type=beer_basted_crocolisk";
-    if ( ( primary_tree() == TREE_FROST && main_hand_weapon.group() == WEAPON_2H )
-         || primary_tree() == TREE_UNHOLY )
+
+    int tree = primary_tree();
+    if ( tree == TREE_FROST || tree == TREE_UNHOLY || ( tree == TREE_BLOOD && primary_role() != ROLE_TANK ) )
     {
-      action_list_str += "/presence,choose=unholy"; // 2H Frost/Unholy
+      // Flask
+      if ( level >= 80 )
+        action_list_str += "/flask,type=titanic_strength";
+      else if ( level >= 75 )
+        action_list_str += "/flask,type=endless_rage";
+
+      // Food
+      if ( level >= 80 )
+        action_list_str += "/food,type=beer_basted_crocolisk";
+      else if ( level >= 70 )
+        action_list_str += "/food,type=dragonfin_filet";
+
+      // Stance
+      if ( tree == TREE_FROST && !main_hand_weapon.group() == WEAPON_2H )
+        action_list_str += "/presence,choose=unholy";
+      else
+        action_list_str += "/presence,choose=unholy";
+
     }
-    else if ( primary_tree() == TREE_BLOOD && role == ROLE_TANK )
+    else if ( tree == TREE_BLOOD && primary_role() == ROLE_TANK )
     {
-      action_list_str += "/presence,choose=blood"; // Blood
+      // Flask
+      if ( level >= 80 )
+        action_list_str += "/flask,type=steelskin";
+      else if ( level >= 75 )
+        action_list_str += "/flask,type=stoneblood";
+
+      // Food
+      if ( level >= 80 )
+        action_list_str += "/food,type=beer_basted_crocolisk";
+      else if ( level >= 70 )
+        action_list_str += "/food,type=dragonfin_filet";
+
+      // Stance
+      action_list_str += "/presence,choose=blood";
     }
-    else // 1H Frost/Blood DPS
-    {
-      action_list_str += "/presence,choose=unholy";
-    }
+
     action_list_str +="/army_of_the_dead";
+
     action_list_str += "/snapshot_stats";
 
     action_list_str += init_use_item_actions( ",time>=10" );
@@ -4462,7 +4480,7 @@ void death_knight_t::init_actions()
 
     action_list_str += init_use_racial_actions( ",time>=10" );
 
-    switch ( primary_tree() )
+    switch ( tree )
     {
     case TREE_BLOOD:
       action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
@@ -4594,6 +4612,7 @@ void death_knight_t::init_actions()
       break;
     default: break;
     }
+
     action_list_default = 1;
   }
 
@@ -4753,9 +4772,7 @@ void death_knight_t::init_scaling()
   }
 
   if ( primary_role() == ROLE_TANK )
-  {
     scales_with[ STAT_PARRY_RATING ] = 1;
-  }
 }
 
 // death_knight_t::init_buffs ===============================================
@@ -4912,8 +4929,7 @@ void death_knight_t::combat_begin()
   if ( am_value > 0 && am_value >= sim -> auras.abominations_might -> current_value )
     sim -> auras.abominations_might -> trigger( 1, am_value );
 
-  double d = rng_butchery_start -> real() * 5.0; // FIXME: Does it start at a random point, or exactly when entering combat?
-  new ( sim ) butchery_event_t( this, d );
+  new ( sim ) butchery_event_t( this, 5.0 / talents.butchery -> rank() );
 }
 
 // death_knight_t::assess_damage ============================================
@@ -4925,14 +4941,10 @@ double death_knight_t::assess_damage( double            amount,
                                       action_t*         action )
 {
   if ( buffs_blood_presence -> check() )
-  {
     amount *= 1.0 - dbc.spell( 61261 ) -> effect1().percent();
-  }
 
   if ( result != RESULT_MISS )
-  {
     buffs_scent_of_blood -> trigger();
-  }
 
   return player_t::assess_damage( amount, school, dmg_type, result, action );
 }
@@ -4952,9 +4964,7 @@ double death_knight_t::composite_armor_multiplier() SC_CONST
   double a = player_t::composite_armor_multiplier();
 
   if ( buffs_blood_presence -> check() )
-  {
     a += buffs_blood_presence -> effect1().percent();
-  }
 
   return a;
 }
@@ -4965,9 +4975,8 @@ double death_knight_t::composite_attack_power() SC_CONST
 {
   double ap = player_t::composite_attack_power();
   if ( talents.bladed_armor -> rank() )
-  {
     ap += composite_armor() / talents.bladed_armor -> effect1().base_value();
-  }
+
   if ( buffs_tier11_4pc_melee -> check() )
     ap *= 1.0 + buffs_tier11_4pc_melee -> stack() / 100.0;
 
@@ -5015,7 +5024,9 @@ double death_knight_t::matching_gear_multiplier( const attribute_type attr ) SC_
 double death_knight_t::composite_spell_hit() SC_CONST
 {
   double hit = player_t::composite_spell_hit();
+
   hit += .09; // Not in Runic Empowerment's data yet
+
   return hit;
 }
 
@@ -5036,14 +5047,13 @@ double death_knight_t::composite_tank_parry() SC_CONST
 double death_knight_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
 {
   double m = player_t::composite_player_multiplier( school, a );
+
   // Factor flat multipliers here so they effect procs, grenades, etc.
   m *= 1.0 + buffs_frost_presence -> value();
   m *= 1.0 + buffs_bone_shield -> value();
 
   if ( primary_tree() == TREE_UNHOLY && school == SCHOOL_SHADOW )
-  {
     m *= 1.0 + spells.dreadblade -> effect1().coeff() * 0.01 * composite_mastery();
-  }
 
   return m;
 }
@@ -5086,9 +5096,7 @@ void death_knight_t::regen( double periodicity )
     resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity, gains_tier12_2pc_melee );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-  {
     _runes.slot[i].regen_rune( this, periodicity );
-  }
 
   uptimes_rp_cap -> update( resource_current[ RESOURCE_RUNIC ] ==
                                    resource_max    [ RESOURCE_RUNIC] );
@@ -5193,13 +5201,9 @@ void death_knight_t::trigger_runic_empowerment()
   if ( talents.runic_corruption -> rank() )
   {
     if ( buffs_runic_corruption -> check() )
-    {
       buffs_runic_corruption -> extend_duration( this, 3 );
-    }
     else
-    {
       buffs_runic_corruption -> trigger();
-    }
 
     if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
       buffs_tier13_4pc_melee -> trigger( 1, 0, 0.40 );
@@ -5268,11 +5272,14 @@ void player_t::death_knight_init( sim_t* sim )
 
 void player_t::death_knight_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.abominations_might  ) sim -> auras.abominations_might  -> override( 1, 0.10 );
+  if ( sim -> overrides.abominations_might  )
+    sim -> auras.abominations_might  -> override( 1, 0.10 );
+
   if ( sim -> overrides.horn_of_winter      )
     sim -> auras.horn_of_winter      -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 57330 ) -> effect1().id(), sim -> max_player_level ) );
 
-  if ( sim -> overrides.improved_icy_talons ) sim -> auras.improved_icy_talons -> override( 1, 0.10 );
+  if ( sim -> overrides.improved_icy_talons )
+    sim -> auras.improved_icy_talons -> override( 1, 0.10 );
 
   for ( player_t* t = sim -> target_list; t; t = t -> next )
   {

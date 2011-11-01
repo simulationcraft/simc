@@ -3830,6 +3830,10 @@ void hunter_t::init_buffs()
 {
   player_t::init_buffs();
 
+  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
+  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
+  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
+
   buffs_aspect_of_the_hawk          = new buff_t( this, 13165, "aspect_of_the_hawk" );
   buffs_beast_within                = new buff_t( this, 34471, "beast_within", talents.the_beast_within -> rank() );
   buffs_bombardment                 = new buff_t( this, talents.bombardment -> rank() == 2 ? 35110 : talents.bombardment -> rank() == 1 ? 35104 : 0, "bombardment" );
@@ -3854,9 +3858,6 @@ void hunter_t::init_buffs()
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
-
-  // buff_t( player, name, max_stack, duration, cd, chance )
-  // buff_t( player, id, name, chance, cd )
 }
 
 // hunter_t::init_values ====================================================
