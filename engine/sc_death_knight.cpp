@@ -3405,6 +3405,15 @@ struct pillar_of_frost_t : public death_knight_spell_t
 
     p -> buffs_pillar_of_frost -> trigger( 1, p -> talents.pillar_of_frost -> effect1().percent() );
   }
+
+  bool ready()
+  {
+    if ( ! spell_t::ready() )
+      return false;
+
+    // Always activate runes, even pre-combat.
+    return group_runes( player, cost_blood, cost_frost, cost_unholy, use );
+  }
 };
 
 // Plague Strike ============================================================
