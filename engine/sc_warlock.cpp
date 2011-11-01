@@ -2262,6 +2262,7 @@ void trigger_burning_embers ( spell_t* s, double dmg )
         background = true;
         tick_may_crit = false;
         hasted_ticks = false;
+        may_trigger_dtr = false;
         init();
       }
 
