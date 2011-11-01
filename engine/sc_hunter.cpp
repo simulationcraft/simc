@@ -785,7 +785,7 @@ static void trigger_go_for_the_throat( attack_t* a )
   p -> active_pet -> resource_gain( RESOURCE_FOCUS, p -> talents.go_for_the_throat -> effect1().base_value(), p -> active_pet -> gains_go_for_the_throat );
 }
 
-// trigger_piercing_shots ==
+// trigger_piercing_shots ===================================================
 
 static void trigger_piercing_shots( action_t* a, double dmg )
 {
@@ -839,7 +839,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
 
-    virtual double total_td_multiplier() SC_CONST { return 1.0; }
+    virtual double total_td_multiplier() SC_CONST { return target_multiplier; }
   };
 
   double piercing_shots_dmg = p -> talents.piercing_shots -> effect1().percent() * dmg;
