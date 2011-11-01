@@ -127,6 +127,7 @@ buff_t::buff_t( player_t* p,
   va_list vap;
   va_start( vap, talent );
   parse_options( vap );
+  va_end( vap );
 
   init();
 }
@@ -158,6 +159,7 @@ buff_t::buff_t( player_t*     p,
   va_list vap;
   va_start( vap, spell );
   parse_options( vap );
+  va_end( vap );
 
   init();
 }
