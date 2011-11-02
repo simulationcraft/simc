@@ -230,7 +230,7 @@ void log_item( const item_t& item )
 {
   if ( item.sim -> debug )
   {
-    log_t::output( item.sim, "item_db: n=[%s] q=[%s] l=[%s] h=[%s] lf=[%s] a=[%s] s=[%s] w=[%s] g=[%s] e=[%s] r=[%s] rs=[%s] a=[%s]",
+    log_t::output( item.sim, "item_db: n=[%s] q=[%s] l=[%s] h=[%s] rf=[%s] a=[%s] s=[%s] w=[%s] g=[%s] e=[%s] r=[%s] rs=[%s] a=[%s]",
                    item.armory_name_str.c_str(),
                    item.armory_quality_str.c_str(),
                    item.armory_ilevel_str.c_str(),

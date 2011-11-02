@@ -1797,19 +1797,19 @@ static void register_fury_of_the_beast( item_t* item )
 static void register_souldrinker( item_t* item )
 {
   player_t* p = item -> player;
-
   bool heroic = item -> heroic();
+  bool lfr    = item -> lfr();
 
   struct souldrinker_spell_t : public spell_t
   {
-    souldrinker_spell_t( player_t* p, bool h ) :
-      spell_t( "souldrinker", h ? 109831 : 108022, p )
+    souldrinker_spell_t( player_t* p, bool h, bool lfr ) :
+      spell_t( "souldrinker", h ? 109831 : lfr ? 78488 : 108022, p )
     {
       trigger_gcd = 0;
-      background  = true;
+      background = true;
       may_miss = false;
       may_crit = false;
-      proc=true;
+      proc = true;
       init();
     }
     virtual void execute()
@@ -1842,7 +1842,7 @@ static void register_souldrinker( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic ) ) );
+  p -> register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic, lfr ) ) );
 }
 
 // ==========================================================================
