@@ -4157,6 +4157,18 @@ struct starsurge_t : public druid_spell_t
     else
       return druid_spell_t::ready();
   }
+  
+  virtual void target_debuff( player_t* t, int dmg_type )
+  {
+    druid_spell_t::target_debuff( t, dmg_type );
+
+    druid_t* p = player -> cast_druid();
+
+    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
+    // Starsurge, and Wrath spells against that target by 3%.
+    if ( p -> dots_insect_swarm -> ticking )
+      target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
+  }
 };
 
 // Stealth ==================================================================
