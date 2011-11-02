@@ -1505,8 +1505,8 @@ static void register_windward_heart( item_t* item )
 
   struct windward_heart_heal_t : public heal_t
   {
-    windward_heart_heal_t( player_t* p, bool heroic ) :
-      heal_t( "windward", p, heroic ? 109825 : 108000 )
+    windward_heart_heal_t( player_t* p, bool heroic, bool lfr ) :
+      heal_t( "windward", p, heroic ? 109825 : lfr ? 109822 : 108000 )
     {
       trigger_gcd = 0;
       background  = true;
@@ -1555,7 +1555,7 @@ static void register_windward_heart( item_t* item )
     }
   };
 
-  p -> register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> heroic() ) )  );
+  p -> register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> heroic(), item -> lfr() ) )  );
 }
 
 // register_valanyr =========================================================
@@ -1643,11 +1643,11 @@ static void register_indomitable_ride( item_t* item )
   struct indomitable_ride_callback_t : public action_callback_t
   {
     buff_t* buff;
-    bool heroic;
+    bool heroic, lfr;
     cooldown_t* cd;
     stats_t* stats;
-    indomitable_ride_callback_t( player_t* p, bool h ) :
-      action_callback_t( p -> sim, p ), heroic( h ), cd ( 0 ), stats( 0 )
+    indomitable_ride_callback_t( player_t* p, bool h, bool l ) :
+      action_callback_t( p -> sim, p ), heroic( h ), lfr( l ), cd ( 0 ), stats( 0 )
     {
       // Looks like there is no spell_id_t for the buff
       buff = new buff_t( p, "indomitable_ride", 1, 6.0 );
@@ -1664,7 +1664,7 @@ static void register_indomitable_ride( item_t* item )
       if ( cd -> remains() <= 0 && listener -> health_percentage() < 50 )
       {
         cd -> start();
-        double amount = 0.50;
+        double amount = heroic ? 0.56 : lfr ? 0.43 : 0.50;
         if ( call_data )
           amount *= *((double *) call_data);
         else
@@ -1676,7 +1676,7 @@ static void register_indomitable_ride( item_t* item )
     }
   };
 
-  action_callback_t* cb = new indomitable_ride_callback_t( p, item -> heroic() );
+  action_callback_t* cb = new indomitable_ride_callback_t( p, item -> heroic(), item -> lfr() );
   p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
@@ -1691,13 +1691,12 @@ static void register_spidersilk_spindle( item_t* item )
   struct spidersilk_spindle_callback_t : public action_callback_t
   {
     buff_t* buff;
-    bool heroic;
     cooldown_t* cd;
     stats_t* stats;
     spidersilk_spindle_callback_t( player_t* p, bool h ) :
-      action_callback_t( p -> sim, p ), heroic( h ), cd ( 0 ), stats( 0 )
+      action_callback_t( p -> sim, p ), cd ( 0 ), stats( 0 )
     {
-      buff = new buff_t( p, heroic ? 97129 : 96945, "loom_of_fate" );
+      buff = new buff_t( p, h ? 97129 : 96945, "loom_of_fate" );
       buff -> activated = false;
       cd = listener -> get_cooldown( "spidersilk_spindle" );
       cd -> duration = 60.0;
@@ -1730,11 +1729,9 @@ static void register_fury_of_the_beast( item_t* item )
   player_t* p = item -> player;
 
   item -> unique = true;
-  bool heroic = item -> heroic();
 
   struct fury_of_the_beast_callback_t : public action_callback_t
   {
-    bool heroic;
     buff_t* fury_of_the_beast;
     stat_buff_t* fury_of_the_beast_stack;
 
@@ -1762,14 +1759,14 @@ static void register_fury_of_the_beast( item_t* item )
       }
     };
 
-    fury_of_the_beast_callback_t( player_t* p, bool h ) :
-      action_callback_t( p -> sim, p ), heroic( h )
+    fury_of_the_beast_callback_t( player_t* p, bool h, bool lfr ) :
+      action_callback_t( p -> sim, p )
     {
-      double amount = heroic ? 120 : 107;
+      double amount = h ? 120 : lfr ? 95 : 107; // Amount saved in the stat buff
 
-      fury_of_the_beast = new buff_t( p, 108011, "fury_of_the_beast", 0.15 );
+      fury_of_the_beast = new buff_t( p, h ? 109864 : lfr ? 109861 : 108011, "fury_of_the_beast", 0.15 );
       fury_of_the_beast -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
-      fury_of_the_beast_stack  = new stat_buff_t( p, 108016, "fury_of_the_beast_stack", STAT_CRIT_RATING, amount );
+      fury_of_the_beast_stack  = new stat_buff_t( p, h ? 109863 : lfr ? 109860 : 108016, "fury_of_the_beast_stack", STAT_CRIT_RATING, amount );
       fury_of_the_beast_stack -> activated = false;
     }
 
@@ -1789,7 +1786,7 @@ static void register_fury_of_the_beast( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_CRIT_MASK, new fury_of_the_beast_callback_t( p, heroic ) );
+  p -> register_attack_callback( RESULT_CRIT_MASK, new fury_of_the_beast_callback_t( p, item -> heroic(), item -> lfr() ) );
 }
 
 // register_souldrinker ==========================================
@@ -2316,6 +2313,7 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( item_t& i,
 bool unique_gear_t::get_equip_encoding( std::string&       encoding,
                                         const std::string& name,
                                         const bool         heroic,
+                                        const bool         lfr,
                                         const bool         /* ptr */,
                                         const std::string& /* id */ )
 {
@@ -2400,16 +2398,16 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "darkmoon_card_tsunami"               ) e = "OnHeal_80Spi_5Stack_20Dur";
   else if ( name == "horrific_seed"                       ) e = "OnAttackHit_2904Haste_15%_20Dur_45Cd"; // FIXME: Confirm ICD
   // 4.3
-  else if ( name == "will_of_unbinding"                   ) e = ( heroic ? "OnHarmfulSpellCast_99Int_100%_10Dur_10Stack" : "OnHarmfulSpellCast_88Int_100%_10Dur_10Stack" );
-  else if ( name == "insignia_of_the_corrupted_mind"      ) e = ( heroic ? "OnDamage_3278Haste_15%_20Dur_75Cd" : "OnDamage_2904Haste_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
-  else if ( name == "eye_of_unmaking"                     ) e = ( heroic ? "OnAttackHit_99Str_100%_10Dur_10Stack" : "OnAttackHit_88Str_100%_10Dur_10Stack" );
-  else if ( name == "wrath_of_unchaining"                 ) e = ( heroic ? "OnAttackHit_99Agi_100%_10Dur_10Stack" : "OnAttackHit_88Agi_100%_10Dur_10Stack" );
-  else if ( name == "creche_of_the_final_dragon"          ) e = ( heroic ? "OnDamage_3278Crit_15%_20Dur_75Cd" : "OnDamage_2904Crit_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
-  else if ( name == "starcatcher_compass"                 ) e = ( heroic ? "OnDamage_3278Haste_15%_20Dur_75Cd" : "OnDamage_2904Haste_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
-  else if ( name == "heart_of_unliving"                   ) e = ( heroic ? "OnHealCast_99Spi_100%_10Dur_10Stack" : "OnHealCast_88Spi_100%_10Dur_10Stack" );
-  else if ( name == "resolve_of_undying"                  ) e = ( heroic ? "OnAttackHit_99Dodge_100%_10Dur_10Stack" : "OnAttackHit_88Dodge_100%_10Dur_10Stack" );
-  else if ( name == "seal_of_the_seven_signs"             ) e = ( heroic ? "OnHeal_3278Haste_15%_20Dur_75Cd" : "OnHeal_2904Haste_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
-  else if ( name == "soulshifter_vortex"                 ) e = ( heroic ? "OnDamage_3278Mastery_15%_20Dur_75Cd" : "OnDamage_2904Mastery_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
+  else if ( name == "will_of_unbinding"                   ) e = ( heroic ? "OnHarmfulSpellCast_99Int_100%_10Dur_10Stack" : lfr ? "OnHarmfulSpellCast_78Int_100%_10Dur_10Stack" : "OnHarmfulSpellCast_88Int_100%_10Dur_10Stack" );
+  else if ( name == "eye_of_unmaking"                     ) e = ( heroic ? "OnAttackHit_99Str_100%_10Dur_10Stack" : lfr ? "OnAttackHit_78Str_100%_10Dur_10Stack" : "OnAttackHit_88Str_100%_10Dur_10Stack" );
+  else if ( name == "wrath_of_unchaining"                 ) e = ( heroic ? "OnAttackHit_99Agi_100%_10Dur_10Stack" : lfr ? "OnAttackHit_78Agi_100%_10Dur_10Stack" : "OnAttackHit_88Agi_100%_10Dur_10Stack" );
+  else if ( name == "heart_of_unliving"                   ) e = ( heroic ? "OnHealCast_99Spi_100%_10Dur_10Stack" : lfr ? "OnHealCast_78Spi_100%_10Dur_10Stack" : "OnHealCast_88Spi_100%_10Dur_10Stack" );
+  else if ( name == "resolve_of_undying"                  ) e = ( heroic ? "OnAttackHit_99Dodge_100%_10Dur_10Stack" : lfr ? "OnAttackHit_99Dodge_100%_10Dur_10Stack" : "OnAttackHit_88Dodge_100%_10Dur_10Stack" );
+  else if ( name == "creche_of_the_final_dragon"          ) e = ( heroic ? "OnDamage_3278Crit_15%_20Dur_75Cd" : lfr ? "OnDamage_2573Crit_15%_20Dur_75Cd" : "OnDamage_2904Crit_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
+  else if ( name == "starcatcher_compass"                 ) e = ( heroic ? "OnDamage_3278Haste_15%_20Dur_75Cd" : lfr ? "OnDamage_2573Haste_15%_20Dur_75Cd" : "OnDamage_2904Haste_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
+  else if ( name == "seal_of_the_seven_signs"             ) e = ( heroic ? "OnHeal_3278Haste_15%_20Dur_75Cd" : lfr ? "OnHeal_2573Haste_15%_20Dur_75Cd" : "OnHeal_2904Haste_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
+  else if ( name == "soulshifter_vortex"                  ) e = ( heroic ? "OnDamage_3278Mastery_15%_20Dur_75Cd" : lfr ? "OnDamage_2573Mastery_15%_20Dur_75Cd" : "OnDamage_2904Mastery_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
+  else if ( name == "insignia_of_the_corrupted_mind"      ) e = ( heroic ? "OnDamage_3278Haste_15%_20Dur_75Cd" : lfr ? "OnDamage_2573Haste_15%_20Dur_75Cd" : "OnDamage_2904Haste_15%_20Dur_75Cd" ); // FIXME: CD, just a guessed placeholder right now
 
   // Some Normal/Heroic items have same name
   else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( heroic ? "OnSpellTickDamage_1206SP_30%_20Dur_100Cd" : "OnSpellTickDamage_1073SP_30%_20Dur_100Cd" );
@@ -2429,10 +2427,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "timbals_crystal"                     ) e = "OnSpellTickDamage_380Shadow_10%_15Cd";
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
-  else if ( name == "horrific_seed_the_second"            ) e = "OnAttackHit_6042Physical_15%_45Cd"; // Confirm ICD
-  else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnHarmfulSpellHit_11937Shadow_15%_45Cd" : "OnHarmfulSpellHit_10575Shadow_15%_45Cd" ); // Confirm ICD, AoE?
-  else if ( name == "bone-link_fetish"                    ) e = ( heroic ? "OnAttackHit_12788Physical_15%_45Cd" : "OnAttackHit_11329Physical_15%_45Cd" ); // Confirm ICD, AoE?
-  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_17051Physical_15%_45Cd" : "OnAttackHit_15106Physical_15%_45Cd" ); // Confirm ICD, AoE?
+  else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnHarmfulSpellHit_11937Shadow_15%_45Cd" : lfr ? "OnHarmfulSpellHit_9369Shadow_15%_45Cd" : "OnHarmfulSpellHit_10575Shadow_15%_45Cd" ); // Confirm ICD, AoE?
+  else if ( name == "bone-link_fetish"                    ) e = ( heroic ? "OnAttackHit_12788Physical_15%_45Cd" : lfr ? "OnAttackHit_10037Physical_15%_45Cd" : "OnAttackHit_11329Physical_15%_45Cd" ); // Confirm ICD, AoE?
+  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_17051Physical_15%_45Cd" : lfr ? "OnAttackHit_13383Physical_15%_45Cd" : "OnAttackHit_15106Physical_15%_45Cd" ); // Confirm ICD
 
 
   // Variable Stack Discharge Procs
@@ -2476,6 +2473,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 bool unique_gear_t::get_use_encoding( std::string&       encoding,
                                       const std::string& name,
                                       const bool         heroic,
+                                      const bool         lfr,
                                       const bool         /* ptr */,
                                       const std::string& /* id */ )
 {
@@ -2524,11 +2522,12 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
   else if ( name == "talisman_of_resurgence"       ) e = "599SP_20Dur_120Cd";
   else if ( name == "unsolvable_riddle"            ) e = "1605Agi_20Dur_120Cd";
   else if ( name == "wrathstone"                   ) e = "856AP_20Dur_120Cd";
-  else if ( name == "bottled_wishes"               ) e = ( heroic ? "2585SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
-  else if ( name == "kiroptyric_sigil"             ) e = ( heroic ? "2585Agi_15Dur_90Cd" : "2290Agi_15Dur_90Cd" );
-  else if ( name == "rotting_skull"                ) e = ( heroic ? "2585Str_15Dur_90Cd" : "2290Str_15Dur_90Cd" );
-  else if ( name == "fire_of_the_deep"             ) e = ( heroic ? "2585Dodge_15Dur_90Cd" : "2290Dodge_15Dur_90Cd" );
-  else if ( name == "reflection_of_the_light"      ) e = ( heroic ? "2585SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
+  // 4.3
+  else if ( name == "bottled_wishes"               ) e = ( heroic ? "2585SP_15Dur_90Cd" : lfr ? "2029SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
+  else if ( name == "kiroptyric_sigil"             ) e = ( heroic ? "2585Agi_15Dur_90Cd" : lfr ? "2029Agi_15Dur_90Cd" : "2290Agi_15Dur_90Cd" );
+  else if ( name == "rotting_skull"                ) e = ( heroic ? "2585Str_15Dur_90Cd" : lfr ? "2029Str_15Dur_90Cd" : "2290Str_15Dur_90Cd" );
+  else if ( name == "fire_of_the_deep"             ) e = ( heroic ? "2585Dodge_15Dur_90Cd" : lfr ? "2029Dodge_15Dur_90Cd" : "2290Dodge_15Dur_90Cd" );
+  else if ( name == "reflection_of_the_light"      ) e = ( heroic ? "2585SP_15Dur_90Cd" : lfr ? "2029SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnSpellCast_57Haste_8Stack_20Dur_120Cd" );

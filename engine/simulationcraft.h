@@ -5025,12 +5025,14 @@ struct unique_gear_t
   static bool get_equip_encoding( std::string& encoding,
                                   const std::string& item_name,
                                   const bool         item_heroic,
+                                  const bool         item_lfr,
                                   const bool         ptr,
                                   const std::string& item_id=std::string() );
 
   static bool get_use_encoding  ( std::string& encoding,
                                   const std::string& item_name,
-                                  const bool         item_heroic,
+                                  const bool         heroic,
+                                  const bool         lfr,
                                   const bool         ptr,
                                   const std::string& item_id=std::string() );
 };
