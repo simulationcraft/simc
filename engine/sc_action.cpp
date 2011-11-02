@@ -1202,7 +1202,7 @@ void action_t::schedule_execute()
       // So we simply reschedule the auto_attack by the ability's casttime
       double time_to_next_hit;
       // Mainhand
-      if ( player -> main_hand_attack )
+      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
         time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
         time_to_next_hit -= sim -> current_time;
@@ -1210,7 +1210,7 @@ void action_t::schedule_execute()
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
       // Offhand
-      if ( player -> off_hand_attack )
+      if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
       {
         time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
         time_to_next_hit -= sim -> current_time;
