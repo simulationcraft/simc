@@ -1397,11 +1397,11 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     case TREE_FIRE:         chance *= 1.3; break;
     case TREE_FROST:        chance *= 1.3; break;
     case TREE_SHADOW:
-    case TREE_DISCIPLINE:   chance *= 1.36; break;
-    case TREE_ELEMENTAL:    chance = 1.0 / 6.0; break; // Needs more data
-    case TREE_AFFLICTION:   chance = 1.0 / 6.0; break;
-    case TREE_DEMONOLOGY:   chance = 1.0 / 6.0; break;
-    case TREE_DESTRUCTION:  chance = 1.0 / 6.0; break;
+    case TREE_DISCIPLINE:   chance = 0.136; break;
+    case TREE_ELEMENTAL:    chance = 0.17; break; // Needs more data
+    case TREE_AFFLICTION:   chance = 0.17; break;
+    case TREE_DEMONOLOGY:   chance = 0.17; break;
+    case TREE_DESTRUCTION:  chance = 0.17; break;
     default:
       // Get a real spec...
       break;
@@ -1415,7 +1415,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   // FIXME: 4.3 PTR nerf seems to be roughly a halving of the proc chance - only tested warlocks so far, 2011/10/26
   if ( p -> ptr )
   {
-    chance *= 0.5;
+    chance *= 0.67;
   }
 
   // Allow for override
