@@ -1803,7 +1803,7 @@ static void register_souldrinker( item_t* item )
   struct souldrinker_spell_t : public spell_t
   {
     souldrinker_spell_t( player_t* p, bool h, bool lfr ) :
-      spell_t( "souldrinker", h ? 109831 : lfr ? 78488 : 108022, p )
+      spell_t( "souldrinker", h ? 109831 : lfr ? 109828 : 108022, p )
     {
       trigger_gcd = 0;
       background = true;
