@@ -86,6 +86,7 @@ struct warrior_t : public player_t
   action_t* active_opportunity_strike;
   int       active_stance;
   action_t* active_tier12_2pc_tank;
+  action_t* fiery_attack;
 
   // Buffs
   buff_t* buffs_bastion_of_defense;
@@ -282,15 +283,12 @@ struct warrior_t : public player_t
     talent_t* sword_and_board;
     talent_t* shockwave;
 
-
     talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
   };
   talents_t talents;
 
   // Up-Times
   benefit_t* uptimes_rage_cap;
-
-  action_t* fiery_attack;
 
   warrior_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
     player_t( sim, WARRIOR, name, r )
@@ -306,6 +304,7 @@ struct warrior_t : public player_t
     active_opportunity_strike = 0;
     active_tier12_2pc_tank    = 0;
     active_stance             = STANCE_BATTLE;
+    fiery_attack = NULL;
 
     // Cooldowns
     cooldowns_colossus_smash         = get_cooldown( "colossus_smash"         );
@@ -318,7 +317,6 @@ struct warrior_t : public player_t
 
     instant_flurry_haste = 1;
     initial_rage = 0;
-    fiery_attack = NULL;
 
     distance = 3;
     default_distance = 3;
@@ -405,7 +403,6 @@ struct warrior_attack_t : public attack_t
   }
 
   virtual double armor() SC_CONST;
-
   virtual void   consume_resource();
   virtual double cost() SC_CONST;
   virtual void   execute();
@@ -413,7 +410,6 @@ struct warrior_attack_t : public attack_t
   virtual void   player_buff();
   virtual bool   ready();
   virtual void   assess_damage( player_t* t, double amount, int dmg_type, int impact_result );
-  virtual void   parse_options( option_t* options, const std::string& options_str );
 };
 
 
@@ -471,35 +467,18 @@ static void trigger_bloodsurge( action_t* a )
 
 // Deep Wounds ==============================================================
 
-
-// trigger_deep_wounds ======================================================
-
-static void trigger_deep_wounds( action_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-  sim_t*   sim = a -> sim;
-
-  if ( ! p -> talents.deep_wounds -> ok() )
-    return;
-
-  if ( ! p -> active_deep_wounds )
-  {
-    struct deep_wounds_t : public warrior_attack_t
+struct deep_wounds_t : public warrior_attack_t
     {
       deep_wounds_t( warrior_t* p ) :
-        warrior_attack_t( "deep_wounds", p, SCHOOL_BLEED, TREE_ARMS )
+        warrior_attack_t( "deep_wounds", 12721, p )
       {
         background = true;
-        trigger_gcd = 0;
-        weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16;
+        weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16; // hardcoded into tooltip, 02/11/2011
         may_crit = false;
-        base_tick_time = 1.0;
-        num_ticks = 6;
         tick_may_crit = false;
         hasted_ticks  = false;
+        tick_power_mod = 0;
         dot_behavior  = DOT_REFRESH;
-        id = 12834;
-        init(); // required since construction occurs after player_t::init()
       }
       virtual double total_td_multiplier() SC_CONST { return target_multiplier; }
       virtual double travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
@@ -514,8 +493,18 @@ static void trigger_deep_wounds( action_t* a )
       }
     };
 
-    p -> active_deep_wounds = new deep_wounds_t( p );
-  }
+// trigger_deep_wounds ======================================================
+
+static void trigger_deep_wounds( action_t* a )
+{
+  warrior_t* p = a -> player -> cast_warrior();
+  sim_t*   sim = a -> sim;
+
+  if ( ! p -> talents.deep_wounds -> ok() )
+    return;
+
+  assert ( p -> active_deep_wounds );
+
 
   if ( a -> weapon )
     p -> active_deep_wounds -> weapon = a -> weapon;
@@ -590,7 +579,7 @@ static void trigger_rage_gain( attack_t* a )
   if ( w -> slot == SLOT_OFF_HAND )
     rage_gain /= 2.0;
 
-  rage_gain *= 1.0 + p -> spec.anger_management -> effect_base_value( 2 ) / 100.0;
+  rage_gain *= 1.0 + p -> spec.anger_management -> effect2().percent();
 
   p -> resource_gain( RESOURCE_RAGE,
                       rage_gain,
@@ -636,6 +625,15 @@ static void trigger_retaliation( warrior_t* p, int school, int result )
 
 // trigger_strikes_of_opportunity ===========================================
 
+struct opportunity_strike_t : public warrior_attack_t
+{
+  opportunity_strike_t( warrior_t* p ) :
+    warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
+  {
+    background = true;
+  }
+};
+
 static void trigger_strikes_of_opportunity( attack_t* a )
 {
   if ( a -> proc )
@@ -649,30 +647,18 @@ static void trigger_strikes_of_opportunity( attack_t* a )
   if ( p -> cooldowns_strikes_of_opportunity -> remains() > 0 )
     return;
 
-  double chance = p -> composite_mastery() * p -> mastery.strikes_of_opportunity -> effect_base_value( 2 ) / 10000.0;
+  double chance = p -> composite_mastery() * p -> mastery.strikes_of_opportunity -> effect2().percent() / 100.0;
 
   if ( ! p -> rng_strikes_of_opportunity -> roll( chance ) )
     return;
 
   p -> cooldowns_strikes_of_opportunity -> start( 0.5 );
 
+  assert( p -> active_opportunity_strike );
+
   if ( p -> sim -> debug )
     log_t::output( p -> sim, "Opportunity Strike procced from %s", a -> name() );
 
-  if ( ! p -> active_opportunity_strike )
-  {
-    struct opportunity_strike_t : public warrior_attack_t
-    {
-      opportunity_strike_t( warrior_t* p ) :
-        warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
-      {
-        background = true;
-        init();
-      }
-    };
-
-    p -> active_opportunity_strike = new opportunity_strike_t( p );
-  }
 
   p -> procs_strikes_of_opportunity -> occur();
   p -> active_opportunity_strike -> execute();
@@ -821,7 +807,7 @@ static void trigger_enrage( attack_t* a )
 
   if ( p -> mastery.unshackled_fury -> ok() )
   {
-    enrage_value *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
+    enrage_value *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect3().percent() / 100.0;
   }
 
   p -> buffs_enrage -> trigger( 1, enrage_value );
@@ -904,7 +890,7 @@ static void trigger_tier12_4pc_melee( attack_t* a )
 
   assert( p -> fiery_attack );
 
-  if ( p -> rng_fiery_attack -> roll( p -> sets->set( SET_T12_4PC_MELEE ) -> proc_chance() ) )
+  if ( p -> rng_fiery_attack -> roll( p -> sets -> set( SET_T12_4PC_MELEE ) -> proc_chance() ) )
   {
     p -> procs_fiery_attack -> occur();
     p -> fiery_attack -> execute();
@@ -949,10 +935,16 @@ void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type, 
 
 double warrior_attack_t::cost() SC_CONST
 {
-  warrior_t* p = player -> cast_warrior();
   double c = attack_t::cost();
-  if ( p -> buffs_deadly_calm -> check()              ) c  = 0;
-  if ( p -> buffs_battle_trance -> check() && c > 5   ) c  = 0;
+
+  warrior_t* p = player -> cast_warrior();
+
+  if ( p -> buffs_deadly_calm -> check() )
+    c  = 0;
+
+  if ( p -> buffs_battle_trance -> check() && c > 5 )
+    c  = 0;
+
   return c;
 }
 
@@ -960,9 +952,8 @@ double warrior_attack_t::cost() SC_CONST
 
 void warrior_attack_t::consume_resource()
 {
-  warrior_t* p = player -> cast_warrior();
-
   attack_t::consume_resource();
+  warrior_t* p = player -> cast_warrior();
 
   p -> buffs_deadly_calm -> up();
 
@@ -976,7 +967,6 @@ void warrior_attack_t::consume_resource()
   }
 
   // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
-
   if ( resource_consumed > 0 && ! aoe && result_is_miss() )
   {
     double rage_restored = resource_consumed * 0.80;
@@ -989,14 +979,11 @@ void warrior_attack_t::consume_resource()
 void warrior_attack_t::execute()
 {
   attack_t::execute();
-
   warrior_t* p = player -> cast_warrior();
 
   // Battle Trance only is effective+consumed if action cost was >5
   if ( base_cost > 5 && p -> buffs_battle_trance -> up() )
-  {
     p -> buffs_battle_trance -> expire();
-  }
 
   if ( proc ) return;
 
@@ -1009,26 +996,12 @@ void warrior_attack_t::execute()
     trigger_enrage( this );
 
     if ( result == RESULT_CRIT )
-    {
       trigger_deep_wounds( this );
-    }
   }
   else if ( result == RESULT_DODGE  )
   {
     p -> buffs_overpower -> trigger();
   }
-}
-
-// warrior_attack_t::parse_options ==========================================
-
-void warrior_attack_t::parse_options( option_t* options, const std::string& options_str )
-{
-  option_t base_options[] =
-  {
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-  std::vector<option_t> merged_options;
-  attack_t::parse_options( option_t::merge( merged_options, base_options, options ), options_str );
 }
 
 // warrior_attack_t::calculate_weapon_damage ================================
@@ -1044,9 +1017,7 @@ double warrior_attack_t::calculate_weapon_damage()
   warrior_t* p = player -> cast_warrior();
 
   if ( weapon -> slot == SLOT_OFF_HAND )
-  {
     dmg *= 1.0 + p -> spec.dual_wield_specialization -> effect_base_value( 2 ) / 100.0;
-  }
 
   return dmg;
 }
@@ -1056,12 +1027,11 @@ double warrior_attack_t::calculate_weapon_damage()
 void warrior_attack_t::player_buff()
 {
   attack_t::player_buff();
+  warrior_t* p = player -> cast_warrior();
 
   // FIXME: much of this can be moved to base for efficiency, but we need
   // to be careful to get the add_percent_mod effect ordering in the
   // abilities right.
-
-  warrior_t* p = player -> cast_warrior();
 
   // --- Specializations --
 
@@ -1135,12 +1105,12 @@ struct melee_t : public warrior_attack_t
   int sync_weapons;
 
   melee_t( const char* name, warrior_t* p, int sw ) :
-    warrior_attack_t( name, p, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
+    warrior_attack_t( name, p, SCHOOL_PHYSICAL, TREE_NONE, false ),
+    sync_weapons( sw )
   {
     may_glance      = true;
     background      = true;
     repeating       = true;
-
     trigger_gcd     = 0;
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
@@ -1153,9 +1123,9 @@ struct melee_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> buffs_flurry -> up() )
-      h *= 1.0 / ( 1.0 + p -> buffs_flurry -> base_value() / 100.0 );
+      h *= 1.0 / ( 1.0 + p -> buffs_flurry -> effect1().percent() );
 
-    if ( p -> buffs_executioner_talent -> up() )
+    if ( p -> buffs_executioner_talent -> check() )
       h *= 1.0 / ( 1.0 + p -> buffs_executioner_talent -> stack() *
                    p -> buffs_executioner_talent -> effect1().percent() );
 
@@ -1204,7 +1174,6 @@ struct melee_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
-
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> primary_tree() == TREE_FURY )
@@ -1296,7 +1265,7 @@ struct bladestorm_t : public warrior_attack_t
     channeled = true;
     tick_zero = true;
 
-    cooldown -> duration += p -> glyphs.bladestorm -> base_value() / 1000.0;
+    cooldown -> duration += p -> glyphs.bladestorm -> effect1().seconds();
 
     bladestorm_mh = new bladestorm_tick_t( p, "bladestorm_mh" );
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
@@ -1394,7 +1363,7 @@ struct bloodthirst_t : public warrior_attack_t
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
 
-    direct_power_mod   = effect_min( 1 ) / 100.0;
+    direct_power_mod   = effect_average( 1 ) / 100.0;
     base_dd_min        = 0.0;
     base_dd_max        = 0.0;
     base_multiplier   *= 1.0 + p -> glyphs.bloodthirst -> effect1().percent()
@@ -1448,7 +1417,6 @@ struct charge_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_juggernaut -> trigger();
@@ -1579,7 +1547,7 @@ struct concussion_blow_t : public warrior_attack_t
 struct demoralizing_shout_t : public warrior_attack_t
 {
   demoralizing_shout_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "demoralizing_shout", 1160, p )
+    warrior_attack_t( "demoralizing_shout", "Demoralizing Shout", p )
   {
     parse_options( NULL, options_str );
 
@@ -1699,7 +1667,6 @@ struct execute_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     if ( result_is_hit() && p -> rng_executioner_talent -> roll( p -> talents.executioner -> proc_chance() ) )
@@ -1720,7 +1687,9 @@ struct execute_t : public warrior_attack_t
     // Can't be derived by parse_data() for now.
     direct_power_mod = 0.0437 * max_consumed;
 
-    player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack() * 0.10;
+    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> ok() ?
+                              ( p -> buffs_lambs_to_the_slaughter -> stack()
+                             * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 );
   }
 
   virtual bool ready()
@@ -1747,14 +1716,13 @@ struct heroic_strike_t : public warrior_attack_t
 
     base_crit        += p -> talents.incite -> effect1().percent();
     base_dd_min       = base_dd_max = 8;
-    direct_power_mod  = 0.6;
+    direct_power_mod  = 0.6; // Hardcoded into tooltip, 02/11/2011
   }
 
   virtual double cost() SC_CONST
   {
-    warrior_t* p = player -> cast_warrior();
-
     double c = warrior_attack_t::cost();
+    warrior_t* p = player -> cast_warrior();
 
     // PTR
     // Needs testing
@@ -1769,7 +1737,6 @@ struct heroic_strike_t : public warrior_attack_t
   virtual void consume_resource()
   {
     warrior_attack_t::consume_resource();
-
     warrior_t* p = player -> cast_warrior();
 
     // PTR
@@ -1781,7 +1748,6 @@ struct heroic_strike_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> buffs_incite -> check() )
@@ -1795,7 +1761,6 @@ struct heroic_strike_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
-
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> buffs_incite -> up() )
@@ -1873,8 +1838,9 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p -> buffs_juggernaut -> up() )
       player_crit += p -> buffs_juggernaut -> effect1().percent();
 
-
-    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 )
+    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> ok() ?
+                              ( p -> buffs_lambs_to_the_slaughter -> stack()
+                             * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 )
                              + additive_multipliers;
   }
 };
@@ -1932,10 +1898,10 @@ struct overpower_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
-
     warrior_t* p = player -> cast_warrior();
 
-    player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack() * 0.10;
+    player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack()
+                             * p -> buffs_lambs_to_the_slaughter -> effect1().percent();
   }
 
   virtual bool ready()
@@ -1988,7 +1954,6 @@ struct raging_blow_attack_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
-
     warrior_t* p = player -> cast_warrior();
 
     player_multiplier *= 1.0 + p -> composite_mastery() *
@@ -2032,7 +1997,6 @@ struct raging_blow_t : public warrior_attack_t
   virtual void execute()
   {
     attack_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     if ( result_is_hit() )
@@ -2112,7 +2076,6 @@ struct rend_dot_t : public warrior_attack_t
   virtual void tick( dot_t* d )
   {
     warrior_attack_t::tick( d );
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_taste_for_blood -> trigger();
@@ -2180,7 +2143,6 @@ struct revenge_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_revenge -> expire();
@@ -2191,7 +2153,6 @@ struct revenge_t : public warrior_attack_t
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
-
     warrior_t* p = player -> cast_warrior();
 
     // PTR
@@ -2259,8 +2220,6 @@ struct shield_bash_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    //id = 72;
-
     base_cost *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
@@ -2317,7 +2276,6 @@ struct shield_slam_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_sword_and_board -> expire();
@@ -2364,7 +2322,6 @@ struct shockwave_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_thunderstruck -> expire();
@@ -2373,7 +2330,6 @@ struct shockwave_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
-
     warrior_t* p = player -> cast_warrior();
 
     player_multiplier *= 1.0 + p -> buffs_thunderstruck -> stack() *
@@ -2406,7 +2362,6 @@ struct slam_attack_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
-
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> buffs_juggernaut -> up() )
@@ -2415,7 +2370,9 @@ struct slam_attack_t : public warrior_attack_t
     if ( p -> buffs_bloodsurge -> up() )
       player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect1().percent();
 
-    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> stack() * 0.10 )
+    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> ok() ?
+                              ( p -> buffs_lambs_to_the_slaughter -> stack()
+                             * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 )
                              + additive_multipliers;
   }
 };
@@ -2475,7 +2432,6 @@ struct slam_t : public warrior_attack_t
   virtual void execute()
   {
     attack_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     if ( result_is_hit() )
@@ -2544,12 +2500,11 @@ struct thunder_clap_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_thunderstruck -> trigger();
 
-    if ( p -> talents.blood_and_thunder -> rank() && p -> dots_rend && p -> dots_rend ->ticking )
+    if ( p -> talents.blood_and_thunder -> rank() && p -> dots_rend && p -> dots_rend -> ticking )
       p -> dots_rend -> refresh_duration();
   }
 };
@@ -2562,8 +2517,6 @@ struct whirlwind_t : public warrior_attack_t
     warrior_attack_t( "whirlwind", "Whirlwind", p )
   {
     parse_options( NULL, options_str );
-
-    //id = 1680;
 
     aoe               = -1;
     stancemask        = STANCE_BERSERKER;
@@ -2596,7 +2549,6 @@ struct whirlwind_t : public warrior_attack_t
   virtual void player_buff()
   {
     warrior_attack_t::player_buff();
-
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> buffs_meat_cleaver -> up() )
@@ -2615,8 +2567,6 @@ struct victory_rush_t : public warrior_attack_t
     warrior_attack_t( "victory_rush", "Victory Rush", p )
   {
     parse_options( NULL, options_str );
-
-    //id = 34428;
 
     base_multiplier *= 1.0 + p -> talents.war_academy -> effect1().percent();
   }
@@ -2666,7 +2616,6 @@ struct warrior_spell_t : public spell_t
 
   virtual double gcd() SC_CONST;
   virtual bool   ready();
-  virtual void   parse_options( option_t* options, const std::string& options_str );
 };
 
 // warrior_spell_t::gcd =====================================================
@@ -2690,18 +2639,6 @@ bool warrior_spell_t::ready()
   return spell_t::ready();
 }
 
-// warrior_spell_t::parse_options() =========================================
-
-void warrior_spell_t::parse_options( option_t* options, const std::string& options_str )
-{
-  option_t base_options[] =
-  {
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-  std::vector<option_t> merged_options;
-  spell_t::parse_options( option_t::merge( merged_options, base_options, options ), options_str );
-}
-
 // Battle Shout =============================================================
 
 struct battle_shout_t : public warrior_spell_t
@@ -2716,7 +2653,7 @@ struct battle_shout_t : public warrior_spell_t
 
     harmful   = false;
 
-    rage_gain = 20 + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
+    rage_gain = p -> dbc.spell( effect3().trigger_spell_id() ) -> effect1().resource( RESOURCE_RAGE ) + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
     cooldown = player -> get_cooldown( "shout" );
     cooldown -> duration = 10 + spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().seconds();
 
@@ -2738,7 +2675,7 @@ struct battle_shout_t : public warrior_spell_t
     {
       for ( player_t* q = sim -> player_list; q; q = q -> next )
       {
-        q -> buffs.battle_shout -> buff_duration = 120 + p -> glyphs.battle -> effect1().seconds();
+        q -> buffs.battle_shout -> buff_duration = duration() + p -> glyphs.battle -> effect1().seconds();
         q -> buffs.battle_shout -> trigger( 1, effect_average( 1 ) );
       }
 
@@ -2818,7 +2755,7 @@ struct berserker_rage_t : public warrior_spell_t
     if ( p -> glyphs.berserker_rage -> ok() )
     {
       double ragegain = 5.0;
-      ragegain *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
+      ragegain *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect3().percent() / 100.0;
       p -> resource_gain( RESOURCE_RAGE, ragegain, p -> gains_berserker_rage );
     }
 
@@ -2843,7 +2780,6 @@ struct deadly_calm_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_deadly_calm -> trigger();
@@ -2886,11 +2822,10 @@ struct death_wish_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     enrage_bonus = p -> talents.death_wish -> effect1().percent();
-    enrage_bonus *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect_base_value( 3 ) / 10000.0;
+    enrage_bonus *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effect3().percent() / 100.0;
 
     p -> buffs_death_wish -> trigger( 1, enrage_bonus );
     p -> buffs_enrage -> expire();
@@ -2907,29 +2842,14 @@ struct inner_rage_t : public warrior_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-
-    cooldown -> duration = 1.5;
   }
 
   virtual void execute()
   {
+    warrior_spell_t::execute();
     warrior_t* p = player -> cast_warrior();
-
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     p -> buffs_inner_rage -> trigger();
-
-    update_ready();
-  }
-
-  virtual bool ready()
-  {
-    warrior_t* p = player -> cast_warrior();
-
-    if ( p -> resource_current[ RESOURCE_RAGE ] < 75.0 )
-      return false;
-
-    return warrior_spell_t::ready();
   }
 };
 
@@ -2950,7 +2870,6 @@ struct recklessness_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_recklessness -> trigger( 3 );
@@ -2982,7 +2901,6 @@ struct retaliation_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
-
      warrior_t* p = player -> cast_warrior();
 
      p -> buffs_retaliation -> trigger( 20 );
@@ -2995,14 +2913,11 @@ struct shield_block_buff_t : public buff_t
 {
   shield_block_buff_t( warrior_t* p ) :
     buff_t( p, 2565, "shield_block" )
-  {
-
-  }
+  { }
 
   virtual void expire()
   {
     buff_t::expire();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_tier12_4pc_tank -> trigger( 1, p -> buffs_tier12_4pc_tank -> effect1().percent() );
@@ -3015,8 +2930,6 @@ struct shield_block_t : public warrior_spell_t
   {
     parse_options( NULL, options_str );
 
-    //id = 2565;
-
     harmful = false;
 
     if ( p -> talents.shield_mastery -> ok() )
@@ -3026,7 +2939,6 @@ struct shield_block_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_shield_block -> trigger();
@@ -3135,8 +3047,6 @@ struct sweeping_strikes_t : public warrior_spell_t
 
     parse_options( NULL, options_str );
 
-    //id = 12328;
-
     harmful = false;
 
     base_cost *= 1.0 + p -> glyphs.sweeping_strikes -> effect1().percent();
@@ -3147,7 +3057,6 @@ struct sweeping_strikes_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_sweeping_strikes -> trigger();
@@ -3171,7 +3080,6 @@ struct last_stand_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
-
     warrior_t* p = player -> cast_warrior();
 
     p -> buffs_last_stand -> trigger();
@@ -3181,10 +3089,10 @@ struct last_stand_t : public warrior_spell_t
 struct buff_last_stand_t : public buff_t
 {
   int health_gain;
+
   buff_last_stand_t( warrior_t* p, const uint32_t id, const std::string& n ) :
-    buff_t( p, id, n ),
-    health_gain( 0 )
-  {}
+    buff_t( p, id, n ), health_gain( 0 )
+  { }
 
   virtual bool trigger( int stacks, double value, double chance )
   {
@@ -3361,6 +3269,16 @@ void warrior_t::init_spells()
   glyphs.sweeping_strikes    = find_glyph( "Glyph of Sweeping Strikes" );
   glyphs.victory_rush        = find_glyph( "Glyph of Victory Rush" );
 
+  // Active spells
+  if ( talents.deep_wounds -> ok() )
+    active_deep_wounds = new deep_wounds_t( this );
+
+  if ( mastery.strikes_of_opportunity -> ok() )
+    active_opportunity_strike = new opportunity_strike_t( this );
+
+  fiery_attack = new fiery_attack_t( this );
+
+
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
@@ -3417,8 +3335,6 @@ void warrior_t::init_base()
   }
 
   base_gcd = 1.5;
-
-  fiery_attack = new fiery_attack_t( this );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -3472,7 +3388,7 @@ void warrior_t::init_buffs()
   buffs_inner_rage                = new buff_t( this, 1134, "inner_rage" );
   buffs_overpower                 = new buff_t( this, "overpower",                 1,  6.0, 1.5 );
   buffs_juggernaut                = new buff_t( this, 65156, "juggernaut", talents.juggernaut -> proc_chance() ); //added by hellord
-  buffs_lambs_to_the_slaughter    = new buff_t( this, "lambs_to_the_slaughter",    3, 15.0, 0, talents.lambs_to_the_slaughter -> proc_chance() );
+  buffs_lambs_to_the_slaughter    = new buff_t( this, talents.lambs_to_the_slaughter -> effect1().trigger_spell_id(), "lambs_to_the_slaughter", talents.lambs_to_the_slaughter -> proc_chance() );
   buffs_last_stand                = new buff_last_stand_t( this, 12976, "last_stand" );
   buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, 10.0,  0, talents.meat_cleaver -> proc_chance() );
   buffs_recklessness              = new buff_t( this, "recklessness",              3, 12.0 );
@@ -3766,13 +3682,10 @@ void warrior_t::combat_begin()
   resource_current[ RESOURCE_RAGE ] = std::min( initial_rage, 100 );
 
   if ( active_stance == STANCE_BATTLE && ! buffs_battle_stance -> check() )
-  {
     buffs_battle_stance -> trigger();
-  }
+
   if ( talents.rampage -> ok() )
-  {
     sim -> auras.rampage -> trigger();
-  }
 }
 
 // warrior_t::reset =========================================================
@@ -3780,6 +3693,7 @@ void warrior_t::combat_begin()
 void warrior_t::reset()
 {
   player_t::reset();
+
   active_stance = STANCE_BATTLE;
 }
 
@@ -3940,9 +3854,7 @@ void warrior_t::regen( double periodicity )
   player_t::regen( periodicity );
 
   if ( spec.anger_management -> ok() )
-  {
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
-  }
 
   uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                                      resource_max    [ RESOURCE_RAGE] );
@@ -3980,6 +3892,8 @@ double warrior_t::assess_damage( double            amount,
     double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ];
     resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
   }
+
+
   if ( result == RESULT_BLOCK )
   {
     if ( talents.shield_specialization -> ok() )
@@ -3987,6 +3901,8 @@ double warrior_t::assess_damage( double            amount,
       resource_gain( RESOURCE_RAGE, 5.0 * talents.shield_specialization -> rank(), gains_shield_specialization );
     }
   }
+
+
   if ( result == RESULT_BLOCK ||
        result == RESULT_DODGE ||
        result == RESULT_PARRY )
@@ -3994,6 +3910,8 @@ double warrior_t::assess_damage( double            amount,
     buffs_bastion_of_defense -> trigger();
     buffs_revenge -> trigger();
   }
+
+
   if ( result == RESULT_PARRY )
   {
     buffs_hold_the_line -> trigger();
@@ -4042,6 +3960,7 @@ void warrior_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
   warrior_t* p = source -> cast_warrior();
+
   initial_rage            = p -> initial_rage;
   instant_flurry_haste    = p -> instant_flurry_haste;
 }
