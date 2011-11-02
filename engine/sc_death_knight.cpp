@@ -4461,7 +4461,7 @@ void death_knight_t::init_actions()
       {
         action_list_str += "/pillar_of_frost";
       }
-      action_list_str += "/blood_tap,if=death!=2&death.cooldown_remains>2.0";
+      action_list_str += "/blood_tap,if=death.cooldown_remains>2.0";
       // this results in a dps loss. which is odd, it probalby shouldn't. although it only ever affects the very first ghoul summon
       // leaving it here until further testing.
       if ( false )
