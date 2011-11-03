@@ -332,7 +332,7 @@
 			outputFiles = (
 				"${DERIVED_SOURCES_DIR}/moc_${INPUT_FILE_BASE}.cpp",
 			);
-			script = "if [ -x /Developer/Tools/qt/moc ]; then\n   QT_MOC_PATH='/Developer/Tools/qt/moc'\nelse\n   QT_MOC_PATH='moc'\nfi\n${QT_MOC_PATH} ${QT_DEFINES} ${QT_INCLUDES} ${INPUT_FILE_PATH} -o ${DERIVED_SOURCES_DIR}/moc_${INPUT_FILE_BASE}.cpp";
+			script = "if [ -x /Developer/Tools/qt/moc ]; then\n   QT_MOC_PATH='/Developer/Tools/qt/moc'\nelse\n   QT_MOC_PATH='moc'\nfi\n${QT_MOC_PATH} ${QT_DEFINES} ${QT_INCLUDES} \"${INPUT_FILE_PATH}\" -o \"${DERIVED_SOURCES_DIR}/moc_${INPUT_FILE_BASE}.cpp\"";
 		};
 /* End PBXBuildRule section */
 
@@ -1305,7 +1305,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -f $TARGET_BUILD_DIR/$PRODUCT_NAME $PROJECT_DIR\n";
+			shellScript = "cp -f \"$TARGET_BUILD_DIR/$PRODUCT_NAME\" \"$PROJECT_DIR\"\n";
 		};
 		6E677C6F1396AC910041537A /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1331,7 +1331,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -rf $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME $PROJECT_DIR";
+			shellScript = "cp -rf \"$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME\" \"$PROJECT_DIR\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
