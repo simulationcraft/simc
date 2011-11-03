@@ -4404,11 +4404,7 @@ void death_knight_t::init_actions()
         action_list_str += "/food,type=dragonfin_filet";
 
       // Stance
-      if ( tree == TREE_FROST && !main_hand_weapon.group() == WEAPON_2H )
-        action_list_str += "/presence,choose=unholy";
-      else
-        action_list_str += "/presence,choose=unholy";
-
+      action_list_str += "/presence,choose=unholy";
     }
     else if ( tree == TREE_BLOOD && primary_role() == ROLE_TANK )
     {
