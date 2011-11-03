@@ -711,6 +711,9 @@ class SpellDataGenerator(DataGenerator):
         ( ( 85692, 4 ), ( 99226, 4 ), ),     # Warlock doomguard "Doom Bolt", Tier 12 bonus spell
         (),
         ( ( 81070, 0 ), ( 99002, 0 ), ( 99026, 4 ) ),     # Euphoria mana feed for Balance droods, Tier 12 2pc Feral Fiery Claws. Tier 12 2pc Balance attack.
+		( ( 109871, 0 ), ( 109869, 0 ), ( 109867, 0 ) ), #No'Kaled, the Elements of Death - LFR, only one spell is listed for each weapon
+		( ( 107785, 0 ), ( 107789, 0 ), ( 107787, 0 ) ), #No'Kaled, the Elements of Death - Normal
+		( ( 109872, 0 ), ( 109870, 0 ), ( 109868, 0 ) ), #No'Kaled, the Elements of Death - Heroic
     ]
 
     # Class specific item sets, T11, T12 i guess ...
