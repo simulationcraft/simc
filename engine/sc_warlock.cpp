@@ -4684,7 +4684,7 @@ void warlock_t::init_actions()
       if ( level >= 64 ) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54 ) action_list_str += "/soul_fire,if=buff.decimation.up";
       action_list_str += "/life_tap,if=mana_pct<=30&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felguard.down";
-      action_list_str += "/shadow_bolt";
+      action_list_str += ( talent_bane -> ok() ) ? "/shadow_bolt" : "/incinerate";
 
       break;
 
