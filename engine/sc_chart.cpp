@@ -666,7 +666,7 @@ const char* chart_t::action_dpet( std::string& s,
   {
     if ( st -> quiet ) continue;
     if ( st -> apet <= 0 ) continue;
-    if ( st -> apet > ( 5 * p -> dps.mean ) ) continue;
+    if ( st -> apet > ( 5 * ( ( p -> primary_role() == ROLE_HEAL ) ? p -> hps.mean : p -> dps.mean ) ) ) continue;
     if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
 
     stats_list.push_back( st );
@@ -678,7 +678,7 @@ const char* chart_t::action_dpet( std::string& s,
     {
       if ( st -> quiet ) continue;
       if ( st -> apet <= 0 ) continue;
-      if ( st -> apet > ( 5 * p -> dps.mean ) ) continue;
+      if ( st -> apet > ( 5 * ( ( p -> primary_role() == ROLE_HEAL ) ? p -> hps.mean : p -> dps.mean ) ) ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
 
       stats_list.push_back( st );

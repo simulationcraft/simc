@@ -236,6 +236,7 @@ struct hunter_t : public player_t
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      init_actions();
+  virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
   virtual double    composite_attack_power() SC_CONST;
@@ -2955,6 +2956,7 @@ struct wild_quiver_shot_t : public ranged_t
     repeating   = false;
     proc = true;
     normalize_weapon_speed=true;
+    init();
   }
 
   virtual void execute()
@@ -3816,11 +3818,6 @@ void hunter_t::init_base()
   diminished_dodge_capi = 0.006870;
   diminished_parry_capi = 0.006870;
 
-  if ( passive_spells.wild_quiver -> ok() )
-  {
-    register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new wild_quiver_shot_t( this ) ) );
-  }
-
   flaming_arrow = new flaming_arrow_t( this );
 }
 
@@ -4090,6 +4087,18 @@ void hunter_t::init_actions()
   }
 
   player_t::init_actions();
+}
+
+// hunter_t::register_callbacks ==============================================
+
+void hunter_t::register_callbacks()
+{
+  player_t::register_callbacks();
+
+  if ( passive_spells.wild_quiver -> ok() )
+  {
+    register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new wild_quiver_shot_t( this ) ) );
+  }
 }
 
 // hunter_t::combat_begin ===================================================

@@ -4742,8 +4742,6 @@ struct heal_t : public spell_t
 {
   std::vector<player_t*> heal_target;
 
-  spell_t* valanyr;
-
   // Reporting
   double total_heal, total_actual;
 

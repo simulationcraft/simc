@@ -339,6 +339,7 @@ struct warrior_t : public player_t
   virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_actions();
+  virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual double    composite_attack_power_multiplier() SC_CONST;
   virtual double    composite_attack_hit() SC_CONST;
@@ -1321,6 +1322,7 @@ struct bloodthirst_heal_t : public heal_t
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     resource = RESOURCE_NONE;
     background= true;
+    init();
   }
 };
 
@@ -3414,8 +3416,6 @@ void warrior_t::init_buffs()
   default: duration = 12.0; break;
   }
   buffs_tier12_2pc_melee          = new buff_t( this, "tier12_2pc_melee",          1, duration,   0, set_bonus.tier12_2pc_melee() );
-
-  register_direct_damage_callback( SCHOOL_ATTACK_MASK, new bloodthirst_buff_callback_t( this, buffs_bloodthirst ) );
 }
 
 // warrior_t::init_values ====================================================
@@ -3686,6 +3686,15 @@ void warrior_t::combat_begin()
 
   if ( talents.rampage -> ok() )
     sim -> auras.rampage -> trigger();
+}
+
+// warrior_t::register_callbacks ==============================================
+
+void warrior_t::register_callbacks()
+{
+  player_t::register_callbacks();
+
+  register_direct_damage_callback( SCHOOL_ATTACK_MASK, new bloodthirst_buff_callback_t( this, buffs_bloodthirst ) );
 }
 
 // warrior_t::reset =========================================================

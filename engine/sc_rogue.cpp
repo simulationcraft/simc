@@ -3309,10 +3309,10 @@ double rogue_t::composite_attack_speed() SC_CONST
   if ( talents.lightning_reflexes -> rank() )
     h *= 1.0 / ( 1.0 + talents.lightning_reflexes -> effect2().percent() );
 
-  if ( buffs_slice_and_dice -> up() )
+  if ( buffs_slice_and_dice -> check() )
     h *= 1.0 / ( 1.0 + buffs_slice_and_dice -> value() );
 
-  if ( buffs_adrenaline_rush -> up() )
+  if ( buffs_adrenaline_rush -> check() )
     h *= 1.0 / ( 1.0 + buffs_adrenaline_rush -> value() );
 
   return h;
@@ -4024,6 +4024,7 @@ void rogue_t::combat_begin()
 void rogue_t::reset()
 {
   player_t::reset();
+
   expirations_.reset();
   tricks_of_the_trade_target = 0;
   combo_points -> clear();

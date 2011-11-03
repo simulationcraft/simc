@@ -17,17 +17,6 @@
 
 // heal_t::init_heal_t_ == Heal Constructor Initializations =================
 
-struct valanyr_t : public absorb_t
-{
-  valanyr_t( player_t* player ) :
-    absorb_t( "valanyr", player, 47753 )
-  {
-    proc             = true;
-    background       = true;
-    direct_power_mod = 0;
-  }
-};
-
 void heal_t::init_heal_t_()
 {
   target = player -> target;
@@ -48,18 +37,17 @@ void heal_t::init_heal_t_()
   crit_bonus = 1.0;
 
   crit_multiplier = 1.0;
+
   if ( player -> meta_gem == META_REVITALIZING_SHADOWSPIRIT )
   {
     crit_multiplier *= 1.03;
   }
-
-  valanyr = new valanyr_t( player );
 }
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
 
 heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
-  spell_t( n, sname, player, t ), valanyr( 0 )
+  spell_t( n, sname, player, t )
 {
   init_heal_t_();
 }
@@ -67,7 +55,7 @@ heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
 // heal_t::heal_t ======== Heal Constructor by Spell ID =====================
 
 heal_t::heal_t( const char* n, player_t* player, const uint32_t id, int t ) :
-  spell_t( n, id, player, t ), valanyr( 0 )
+  spell_t( n, id, player, t )
 {
   init_heal_t_();
 }
@@ -162,6 +150,12 @@ double heal_t::haste() SC_CONST
 
 void heal_t::execute()
 {
+  if ( ! initialized )
+  {
+    sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
+    assert( 0 );
+  }
+
   if ( sim -> log && ! dual )
   {
     log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(),
@@ -374,12 +368,6 @@ void heal_t::assess_damage( player_t* t,
 
 
   player_t::heal_info_t heal = t -> assess_heal( heal_amount, school, heal_type, heal_result, this );
-  // Val'Anyr
-  if ( valanyr && player -> buffs.blessing_of_ancient_kings -> up() )
-  {
-    valanyr -> base_dd_min = valanyr -> base_dd_max = heal_amount * 0.15;
-    valanyr -> execute();
-  }
 
   total_heal   += heal.amount;
   total_actual += heal.actual;
@@ -593,6 +581,12 @@ double absorb_t::haste() SC_CONST
 
 void absorb_t::execute()
 {
+  if ( ! initialized )
+  {
+    sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
+    assert( 0 );
+  }
+
   if ( sim -> log && ! dual )
   {
     log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(),

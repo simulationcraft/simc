@@ -831,7 +831,7 @@ struct army_ghoul_pet_t : public pet_t
   double snapshot_crit, snapshot_haste, snapshot_speed, snapshot_hit, snapshot_strength;
 
   army_ghoul_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "army_of_the_dead" ),
+    pet_t( sim, owner, "army_of_the_dead", true ),
     snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_speed( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1053,7 +1053,7 @@ struct gargoyle_pet_t : public pet_t
   struct gargoyle_strike_t : public spell_t
   {
     gargoyle_strike_t( pet_t* pet ) :
-      spell_t( "gargoyle_strike", 51963, pet )
+      spell_t( "gargoyle_strike", 51963, pet, true )
     {
       // FIX ME!
       // Resist (can be partial)? Scaling?
@@ -1143,7 +1143,7 @@ struct ghoul_pet_t : public pet_t
   double snapshot_crit, snapshot_haste, snapshot_speed, snapshot_hit, snapshot_strength;
 
   ghoul_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "ghoul" ),
+    pet_t( sim, owner, "ghoul", true ),
     snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_speed( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1253,6 +1253,11 @@ struct ghoul_pet_t : public pet_t
 
   virtual void init_base()
   {
+    death_knight_t* o = owner -> cast_death_knight();
+    assert( o -> primary_tree() != TREE_NONE );
+    if ( primary_tree() == TREE_UNHOLY )
+      type = PLAYER_PET;
+
     // Value for the ghoul of a naked worgen as of 4.2
     attribute_base[ ATTR_STRENGTH  ] = 476;
     attribute_base[ ATTR_AGILITY   ] = 3343;
@@ -4633,7 +4638,6 @@ void death_knight_t::init_enchant()
       may_resist  = true;
       background  = true;
       proc        = true;
-      trigger_gcd = 0;
     }
 
     void target_debuff( player_t* t, int dmg_type )
