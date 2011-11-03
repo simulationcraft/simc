@@ -4,16 +4,15 @@ optimal_raid=1
 
 Death_Knight_Frost_1h_T12H.simc
 Death_Knight_Frost_2h_T12H.simc
-Death_Knight_Unholy_1h_T12H.simc
-Death_Knight_Unholy_2h_T12H.simc
-Death_Knight_Unholy_2h_T12H_crit.simc
+#Death_Knight_Unholy_1h_T12H.simc
+Death_Knight_Unholy_2h_T12H_PTR.simc
 
 Druid_Balance_T12H.simc
 #Druid_Balance_T12H_DTR.simc
 Druid_Feral_T12H.simc glyphs=rip/bloodletting/berserk
 
 Hunter_MM_T12H.simc
-Hunter_MM_T12H_Arcane.simc
+#Hunter_MM_T12H_Arcane.simc
 Hunter_SV_T12H.simc
 Hunter_BM_T12H.simc
 
@@ -36,13 +35,13 @@ Rogue_Combat_T12H.simc
 Rogue_Subtlety_T12H.simc
 
 Shaman_Elemental_T12H.simc
-Shaman_Elemental_T12H_GoUL.simc
+#Shaman_Elemental_T12H_GoUL.simc
 #Shaman_Elemental_T12H_DTR.simc
 #Shaman_Elemental_T12H_ul_DTR.simc
 #Shaman_Elemental_T12H_T11H4P.simc
 #Shaman_Elemental_T12H_T11H4P_DTR.simc
 Shaman_Enhancement_T12H.simc
-Shaman_Enhancement_T12H_Caster.simc
+#Shaman_Enhancement_T12H_Caster.simc
 
 Warlock_Affliction_T12H.simc
 Warlock_Demonology_T12H_PTR.simc
