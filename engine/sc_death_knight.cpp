@@ -2560,7 +2560,7 @@ struct death_and_decay_t : public death_knight_spell_t
     tick_power_mod   = 0.064;
     base_td          = p -> dbc.effect_average( effect1().id(), p -> level );
     base_tick_time   = 1.0;
-    num_ticks        = 10;
+    num_ticks        = 11;
     tick_may_crit    = true;
     tick_zero        = true;
     hasted_ticks     = false;
