@@ -1365,7 +1365,6 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
         }
         new ( sim ) action_execute_event_t( sim, a -> dtr_action, 0 /* Add DTR Proc Delay here */ );
       }
-
     }
   };
 
@@ -1471,10 +1470,10 @@ static void register_blazing_power( item_t* item )
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
-      if (   a -> aoe      ||
-             a -> proc     ||
-             a -> dual     ||
-             ! a -> harmful   )
+      if ( a -> aoe      ||
+           a -> proc     ||
+           a -> dual     ||
+           ! a -> harmful   )
         return;
 
       if ( cd -> remains() > 0 )
@@ -1495,7 +1494,7 @@ static void register_blazing_power( item_t* item )
   p -> register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> heroic() ) )  );
 }
 
-// register_blazing_power ===================================================
+// register_windward_heart ==================================================
 
 static void register_windward_heart( item_t* item )
 {
@@ -1605,7 +1604,7 @@ static void register_valanyr( item_t* item )
   p -> register_heal_callback( RESULT_ALL_MASK, new valanyr_callback_t( p )  );
 }
 
-// register_symbiotic_worm ======================================================
+// register_symbiotic_worm ==================================================
 
 static void register_symbiotic_worm( item_t* item )
 {
@@ -1632,7 +1631,7 @@ static void register_symbiotic_worm( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// register_indomitable_ride ======================================================
+// register_indomitable_ride ================================================
 
 static void register_indomitable_ride( item_t* item )
 {
@@ -1680,7 +1679,7 @@ static void register_indomitable_ride( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// register_spidersilk_spindle ======================================================
+// register_spidersilk_spindle ==============================================
 
 static void register_spidersilk_spindle( item_t* item )
 {
@@ -1722,7 +1721,7 @@ static void register_spidersilk_spindle( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// register_fury_of_the_beast =========================================
+// register_fury_of_the_beast ===============================================
 
 static void register_fury_of_the_beast( item_t* item )
 {
@@ -1789,7 +1788,55 @@ static void register_fury_of_the_beast( item_t* item )
   p -> register_attack_callback( RESULT_CRIT_MASK, new fury_of_the_beast_callback_t( p, item -> heroic(), item -> lfr() ) );
 }
 
-// register_souldrinker ==========================================
+// register_rathrak =========================================================
+
+static void register_rathrak( item_t* item )
+{
+  player_t* p = item -> player;
+  bool heroic = item -> heroic();
+  bool lfr    = item -> lfr();
+  uint32_t trigger_spell_id = heroic ? 109854 : lfr ? 109851 : 107831;
+
+  struct rathrak_poison_t : public spell_t
+  {
+    rathrak_poison_t( player_t* p, uint32_t spell_id ) :
+      spell_t( "rathrak", spell_id, p )
+    {
+      trigger_gcd = 0;
+      background = true;
+      may_miss = false; // FIXME: Verfiy this
+      may_crit = false; // FIXME: Verfiy this
+      proc = true;
+      init();
+    }
+    // FIXME does this double dip in talents/masterys/etc?    
+  };
+
+  struct rathrak_callback_t : public action_callback_t
+  {
+    spell_t* spell;
+    rng_t* rng;
+
+    rathrak_callback_t( player_t* p, spell_t* s ) :
+      action_callback_t( p -> sim, p ), spell( s )
+    {
+      rng  = p -> get_rng ( "rathrak", RNG_DEFAULT );
+    }
+
+    virtual void trigger( action_t* /* a */, void* /* call_data */ )
+    {
+      // FIXME: Does it have an ICD or not?
+      if ( rng -> roll( 0.15 ) )
+      { 
+        spell -> execute();
+      }
+    }
+  };
+  // FIXME: Does this proc from ticks too?
+  p -> register_harmful_spell_callback( RESULT_HIT_MASK, new rathrak_callback_t( p, new rathrak_poison_t( p, trigger_spell_id ) ) );
+}
+
+// register_souldrinker =====================================================
 
 static void register_souldrinker( item_t* item )
 {
@@ -1883,27 +1930,27 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "deathbringers_will"                  ) ) register_deathbringers_will                ( &item );
     if ( ! strcmp( item.name(), "deaths_choice"                       ) ) register_deaths_choice                     ( &item );
     if ( ! strcmp( item.name(), "deaths_verdict"                      ) ) register_deaths_choice                     ( &item );
+    if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "empowered_deathbringer"              ) ) register_empowered_deathbringer            ( &item );
-    if ( ! strcmp( item.name(), "raging_deathbringer"                 ) ) register_raging_deathbringer               ( &item );
+    if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
     if ( ! strcmp( item.name(), "fury_of_angerforge"                  ) ) register_fury_of_angerforge                ( &item );
     if ( ! strcmp( item.name(), "heart_of_ignacious"                  ) ) register_heart_of_ignacious                ( &item );
+    if ( ! strcmp( item.name(), "indomitable_ride"                    ) ) register_indomitable_ride                  ( &item );
+    if ( ! strcmp( item.name(), "kiril_fury_of_beasts"                ) ) register_fury_of_the_beast                 ( &item );
     if ( ! strcmp( item.name(), "matrix_restabilizer"                 ) ) register_matrix_restabilizer               ( &item );
     if ( ! strcmp( item.name(), "nibelung"                            ) ) register_nibelung                          ( &item );
+    if ( ! strcmp( item.name(), "raging_deathbringer"                 ) ) register_raging_deathbringer               ( &item );
+    if ( ! strcmp( item.name(), "rathrak_the_poisonous_mind"          ) ) register_rathrak                           ( &item );
     if ( ! strcmp( item.name(), "shadowmourne"                        ) ) register_shadowmourne                      ( &item );
     if ( ! strcmp( item.name(), "shard_of_woe"                        ) ) register_shard_of_woe                      ( &item );
     if ( ! strcmp( item.name(), "sorrowsong"                          ) ) register_sorrowsong                        ( &item );
+    if ( ! strcmp( item.name(), "souldrinker"                         ) ) register_souldrinker                       ( &item );
+    if ( ! strcmp( item.name(), "spidersilk_spindle"                  ) ) register_spidersilk_spindle                ( &item );
+    if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
     if ( ! strcmp( item.name(), "tiny_abomination_in_a_jar"           ) ) register_tiny_abom                         ( &item );
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
-    if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
-    if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
     if ( ! strcmp( item.name(), "valanyr_hammer_of_ancient_kings"     ) ) register_valanyr                           ( &item );
-    if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
-    if ( ! strcmp( item.name(), "spidersilk_spindle"                  ) ) register_spidersilk_spindle                ( &item );
-    if ( ! strcmp( item.name(), "kiril_fury_of_beasts"                ) ) register_fury_of_the_beast                 ( &item );
     if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
-    if ( ! strcmp( item.name(), "indomitable_ride"                    ) ) register_indomitable_ride                  ( &item );
-    if ( ! strcmp( item.name(), "souldrinker"                         ) ) register_souldrinker                       ( &item );
-
   }
 }
 
