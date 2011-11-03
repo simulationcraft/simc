@@ -1902,8 +1902,9 @@ struct overpower_t : public warrior_attack_t
     warrior_attack_t::player_buff();
     warrior_t* p = player -> cast_warrior();
 
-    player_multiplier *= 1.0 + p -> buffs_lambs_to_the_slaughter -> stack()
-                             * p -> buffs_lambs_to_the_slaughter -> effect1().percent();
+    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> ok() ?
+                              ( p -> buffs_lambs_to_the_slaughter -> stack()
+                              * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 );
   }
 
   virtual bool ready()
