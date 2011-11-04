@@ -694,8 +694,14 @@ class SpellDataGenerator(DataGenerator):
     # tuples, e.g. general = 0, talent_tab0..2 = 1..3 and pets as a whole
     # are 4. General spells do not appear in class activated lists, even if
     # they pass the "activated" check
+    # The first tuple in the list is for non-class related, generic spells that are whitelisted,
+    # without a category
     _spell_id_list = [
-        (),
+        (
+         109871, 109869, 109867,    # No'Kaled the Elements of Death - LFR
+         107785, 107789, 107787,    # No'Kaled the Elements of Death - Normal
+         109872, 109870, 109868,    # No'Kaled the Elements of Death - Heroic
+        ),
         (), 
         ( ( 54158, 0 ), ( 90174, 0 ), ( 99092, 0 ), ),     # Paladin "Judgement" damage portion on some Seals. Tier 12 2pc effect
         ( ( 99058, 0 ), ( 83381, 0 ), ), # Hunter T12 2pc, Kill Command base dmg
@@ -711,12 +717,9 @@ class SpellDataGenerator(DataGenerator):
         ( ( 85692, 4 ), ( 99226, 4 ), ),     # Warlock doomguard "Doom Bolt", Tier 12 bonus spell
         (),
         ( ( 81070, 0 ), ( 99002, 0 ), ( 99026, 4 ) ),     # Euphoria mana feed for Balance droods, Tier 12 2pc Feral Fiery Claws. Tier 12 2pc Balance attack.
-#        ( ( 109871, 0 ), ( 109869, 0 ), ( 109867, 0 ) ), #No'Kaled, the Elements of Death - LFR, only one spell is listed for each weapon
-#        ( ( 107785, 0 ), ( 107789, 0 ), ( 107787, 0 ) ), #No'Kaled, the Elements of Death - Normal
-#        ( ( 109872, 0 ), ( 109870, 0 ), ( 109868, 0 ) ), #No'Kaled, the Elements of Death - Heroic
     ]
 
-    # Class specific item sets, T11, T12 i guess ...
+    # Class specific item sets, T11, T12, T13
     _item_set_list = [
         (),
         ( ( 942, 943 ), ( 1017, 1018 ), ( 1073, 1074, ), ), # Warrior
@@ -1323,8 +1326,26 @@ class SpellDataGenerator(DataGenerator):
                             'effect_list': v['effect_list']
                         }
         
-        # Last, get the explicitly defined spells in _spell_id_list on a class basis
-        for cls in xrange(0, len(SpellDataGenerator._spell_id_list)):
+        # Last, get the explicitly defined spells in _spell_id_list on a class basis and the 
+        # generic spells from SpellDataGenerator._spell_id_list[0]
+        for generic_spell_id in SpellDataGenerator._spell_id_list[0]:
+            filter_list = { }
+            lst = self.generate_spell_filter_list(generic_spell_id, 0, 0, 0, filter_list)
+            if not lst:
+                continue
+            
+            for k, v in lst.iteritems():
+                if ids.get(k):
+                    ids[k]['mask_class'] |= v['mask_class']
+                    ids[k]['mask_race'] |= v['mask_race']
+                else:
+                    ids[k] = { 
+                        'mask_class': v['mask_class'], 
+                        'mask_race' : v['mask_race'], 
+                        'effect_list': v['effect_list'] 
+                }
+
+        for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
             for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
                 filter_list = { }
                 lst = self.generate_spell_filter_list(spell_tuple[0], self._class_masks[cls], 0, 0, filter_list)
@@ -1888,7 +1909,7 @@ class SpellListGenerator(SpellDataGenerator):
                 else:
                     ids[id] = { 'mask_class': talent_tab.mask_class or 0x04 }
         """
-        for cls in xrange(0, len(SpellDataGenerator._spell_id_list)):
+        for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
             for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
                 # Skip spells with zero tree, as they dont exist
                 if spell_tuple[1] == 0:
