@@ -322,16 +322,18 @@ void scaling_t::analyze_stats()
 
       error = fabs( error / divisor );
 
+      if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
+      {
+        score /= 10.0;
+        error /= 10.0;
+        delta_error /= 10.0;
+      }
+
       if ( center )
         p -> scaling_compare_error.set_stat( i, error );
       else
         p -> scaling_compare_error.set_stat( i, delta_error / divisor );
 
-      if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
-      {
-        score /= 10.0;
-        error /= 10.0;
-      }
 
       p -> scaling.set_stat( i, score );
       p -> scaling_error.set_stat( i, error );

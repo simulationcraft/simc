@@ -2468,6 +2468,8 @@ struct sample_data_t
   std::vector<int> distribution;
   const bool simple;
   const bool min_max;
+
+friend struct sim_t;
 private:
   int count;
 
@@ -3951,7 +3953,6 @@ struct player_t : public noncopyable
     buff_t* weakened_soul;
     buff_t* wild_magic_potion_crit;
     buff_t* wild_magic_potion_sp;
-    buff_t* blessing_of_ancient_kings;
     std::vector<buff_t*> power_word_shield;
     std::vector<buff_t*> divine_aegis;
   };

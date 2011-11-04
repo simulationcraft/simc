@@ -3619,6 +3619,8 @@ void warrior_t::init_actions()
       if ( talents.death_wish -> ok() ) action_list_str += "/death_wish";
       action_list_str += "/cleave,if=target.adds>0";
       action_list_str += "/whirlwind,if=target.adds>0";
+      if ( set_bonus.tier13_2pc_melee() )
+        action_list_str += "/inner_rage,if=rage>=80";
       action_list_str += "/heroic_strike,if=((rage>=85&target.health_pct>=20)|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&((rage>=50&target.health_pct>=20)|(rage>=75&target.health_pct<20))))";
       action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
       if ( level >= 81 ) action_list_str += "/colossus_smash";

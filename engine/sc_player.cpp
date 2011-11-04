@@ -1600,8 +1600,6 @@ void player_t::init_spells()
 void player_t::init_buffs()
 {
   buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
-  buffs.blessing_of_ancient_kings = new buff_t( this, 64411, "blessing_of_ancient_kings"    );
-  buffs.blessing_of_ancient_kings -> buff_duration = 15.0; // FIXME: remove once buff is in dbc
   buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1,  4.0 );
   buffs.corruption_absolute       = new buff_t( this, 82170, "corruption_absolute"          );
   buffs.dark_intent               = new buff_t( this, 85767, "dark_intent"                  );
