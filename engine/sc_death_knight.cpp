@@ -429,7 +429,6 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   if ( state == STATE_DEPLETED &&   paired_rune -> state == STATE_REGENERATING ) return;
   if ( state == STATE_FULL     && ! ( paired_rune -> state == STATE_FULL )     ) return;
 
-
   // Base rune regen rate is 10 seconds; we want the per-second regen
   // rate, so divide by 10.0.  Haste is a multiplier (so 30% haste
   // means composite_attack_haste is 1/1.3), so we invert it.  Haste
