@@ -1229,7 +1229,6 @@ static void register_fury_of_the_beast( item_t* item )
       {
         // FIXME: check if the stacking buff ticks at 0s or 1s
         new ( sim ) fury_of_the_beast_event_t( listener, fury_of_the_beast, fury_of_the_beast_stack );
-
       }
     }
   };
@@ -1989,7 +1988,6 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
 
-
   // Discharge Procs
   else if ( name == "bandits_insignia"                    ) e = "OnAttackHit_1880Arcane_15%_45Cd";
   else if ( name == "darkmoon_card_hurricane"             ) e = "OnAttackHit_-7000Nature_1PPM_nocrit_nobuffs";
@@ -2009,7 +2007,6 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
   // Variable Stack Discharge Procs
   else if ( name == "variable_pulse_lightning_capacitor"  ) e = ( heroic ? "OnSpellCrit_3300.7Nature_15%_10Stack_2.5Cd_chance" : "OnSpellCrit_2926.3Nature_15%_10Stack_2.5Cd_chance" );
-
 
   // Enchants
   else if ( name == "lightweave_old"                      ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";

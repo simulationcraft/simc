@@ -612,7 +612,7 @@ void SimulationCraftWindow::createBuffsTab()
   for( int i=0; buffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
-    if ( i>1 ) checkBox->setChecked( true );
+    if ( i>2 ) checkBox->setChecked( true );
     checkBox->setToolTip( buffs[ i ].tooltip );
     buffsButtonGroup->addButton( checkBox );
     buffsLayout->addWidget( checkBox );

@@ -1253,7 +1253,7 @@ const char* chart_t::scaling_dps( std::string& s,
   return s.c_str();
 }
 
-// chart_t::reforge_dps =====================================================
+// ternary_coords ===========================================================
 
 std::vector<double> ternary_coords( std::vector<double> xyz )
 {
@@ -1263,6 +1263,8 @@ std::vector<double> ternary_coords( std::vector<double> xyz )
   result[1] = xyz[ 2 ]/2.0 * sqrt( 3.0 );
   return result;
 }
+
+// color_temperature_gradient ===============================================
 
 std::string color_temperature_gradient( double n, double min, double range )
 {
@@ -1280,6 +1282,8 @@ std::string color_temperature_gradient( double n, double min, double range )
 
   return result;
 }
+
+// chart_t::reforge_dps =====================================================
 
 const char* chart_t::reforge_dps( std::string& s,
                                   player_t* p )
