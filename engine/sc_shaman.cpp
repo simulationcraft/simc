@@ -377,6 +377,7 @@ struct shaman_spell_t : public spell_t
   virtual void   execute();
   virtual void   player_buff();
   virtual double haste() SC_CONST;
+  virtual void   schedule_execute();
   virtual bool   usable_moving()
   {
     shaman_t* p = player -> cast_shaman();
@@ -2149,6 +2150,30 @@ void shaman_spell_t::execute()
         time_to_next_hit = player -> off_hand_attack -> execute_time();
         player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
+    }
+  }
+}
+
+// shaman_spell_t::schedule_execute =========================================
+
+void shaman_spell_t::schedule_execute()
+{
+  if ( sim -> log )
+  {
+    log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
+  }
+
+  time_to_execute = execute_time();
+
+  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
+
+  if ( ! background )
+  {
+    player -> executing = this;
+    player -> gcd_ready = sim -> current_time + gcd();
+    if( player -> action_queued && sim -> strict_gcd_queue )
+    {
+      player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
   }
 }
