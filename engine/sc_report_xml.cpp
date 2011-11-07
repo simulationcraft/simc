@@ -492,7 +492,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
             writer.print_attribute( "pct", util_t::to_string(s -> direct_results[ i ].pct) );
             writer.print_attribute( "min", util_t::to_string(s -> direct_results[ i ].actual_amount.min) );
             writer.print_attribute( "max", util_t::to_string(s -> direct_results[ i ].actual_amount.max) );
-            writer.print_attribute( "avg", util_t::to_string(s -> direct_results[ i ].avg_actual_amount.mean) );
+            writer.print_attribute( "avg", util_t::to_string(s -> direct_results[ i ].actual_amount.mean) );
             writer.print_attribute( "avg_min", util_t::to_string(s -> direct_results[ i ].avg_actual_amount.min) );
             writer.print_attribute( "avg_max", util_t::to_string(s -> direct_results[ i ].avg_actual_amount.max) );
             writer.print_attribute( "actual", util_t::to_string(s -> direct_results[ i ].fight_actual_amount.mean) );
@@ -520,7 +520,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
             writer.print_attribute( "pct", util_t::to_string(s -> tick_results[ i ].pct) );
             writer.print_attribute( "min", util_t::to_string(s -> tick_results[ i ].actual_amount.min) );
             writer.print_attribute( "max", util_t::to_string(s -> tick_results[ i ].actual_amount.max) );
-            writer.print_attribute( "avg", util_t::to_string(s -> tick_results[ i ].avg_actual_amount.mean) );
+            writer.print_attribute( "avg", util_t::to_string(s -> tick_results[ i ].actual_amount.mean) );
             writer.print_attribute( "avg_min", util_t::to_string(s -> tick_results[ i ].avg_actual_amount.min) );
             writer.print_attribute( "avg_max", util_t::to_string(s -> tick_results[ i ].avg_actual_amount.max) );
             writer.print_attribute( "actual", util_t::to_string(s -> tick_results[ i ].fight_actual_amount.mean) );
