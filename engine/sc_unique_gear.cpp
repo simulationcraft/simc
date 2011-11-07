@@ -888,9 +888,9 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     // Until we get actual numbers adjust each spec's chance based off testing done against Tier 11 sets.
     // Should probably be re-done when all the Tier 12 sets are available.
     case TREE_BALANCE:      chance = 0.11; break; // http://elitistjerks.com/f73/t110353-balance_cataclysm_4_2_a/p13/#post1998686
-    case TREE_ARCANE:       chance *= 1.3; break;
-    case TREE_FIRE:         chance *= 1.3; break;
-    case TREE_FROST:        chance *= 1.3; break;
+    case TREE_ARCANE:       chance *= 1.25; break;
+    case TREE_FIRE:         chance *= 1.25; break;
+    case TREE_FROST:        chance *= 1.25; break;
     case TREE_SHADOW:
     case TREE_DISCIPLINE:   chance = 0.136; break;
     case TREE_ELEMENTAL:    chance = 0.17; break; // Needs more data
