@@ -2514,7 +2514,7 @@ struct explosive_shot_t : public hunter_attack_t
     crit_bonus = 0.5;
     crit_bonus_multiplier *= 2.0;
 
-    tick_power_mod = 0.232; // hardcoded into tooltip
+    tick_power_mod = p -> dbc.ptr ? 0.273 : 0.232; // hardcoded into tooltip
     tick_zero = true;
 
     consumes_tier12_4pc = true;
