@@ -32,19 +32,19 @@ actions+=/kill_shot
 actions+=/arcane_shot,if=focus>=70&!buff.lock_and_load.react
 actions+=/cobra_shot
 head=wyrmstalkers_headguard,heroic=1,type=mail,ilevel=410,quality=epic,stats=2366armor_489agi_824sta_393crit_242mastery,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
-neck=cameo_of_terrible_memories,heroic=1,ilevel=410,quality=epic,stats=306agi_459sta_207haste_199hit
-shoulders=wyrmstalkers_spaulders,heroic=1,type=mail,ilevel=410,quality=epic,stats=2184armor_368agi_611sta_274crit_222haste,gems=50agi_50agi_20agi,enchant=50agi_25mastery
-chest=wyrmstalkers_tunic,heroic=1,type=mail,ilevel=410,quality=epic,stats=2912armor_489agi_824sta_328haste_337hit,gems=50agi_50agi_25agi_25crit_30agi,enchant=20all
+neck=cameo_of_terrible_memories,heroic=1,ilevel=410,quality=epic,stats=306agi_459sta_207haste_199hit,reforge=haste_crit
+shoulders=wyrmstalkers_spaulders,heroic=1,type=mail,ilevel=410,quality=epic,stats=2184armor_368agi_611sta_274crit_222haste,reforge=haste_hit,gems=50agi_50agi_20agi,enchant=50agi_25mastery
+chest=wyrmstalkers_tunic,heroic=1,type=mail,ilevel=410,quality=epic,stats=2912armor_489agi_824sta_328haste_337hit,reforge=haste_crit,gems=50agi_50agi_25agi_25crit_30agi,enchant=20all
 waist=belt_of_the_beloved_companion,heroic=1,type=mail,ilevel=410,quality=epic,stats=1638armor_368agi_611sta_287crit_197haste,gems=50agi_50agi_20agi
 legs=wyrmstalkers_legguards,heroic=1,type=mail,ilevel=410,quality=epic,stats=2548armor_489agi_824sta_350crit_322mastery,gems=50agi_50agi_50agi_30agi,enchant=190ap_55crit
-feet=treads_of_dormant_dreams,heroic=1,type=mail,ilevel=410,quality=epic,stats=2002armor_368agi_611sta_242haste_254crit,gems=50agi_50agi_20agi,enchant=35agi
+feet=treads_of_dormant_dreams,heroic=1,type=mail,ilevel=410,quality=epic,stats=2002armor_368agi_611sta_242haste_254crit,reforge=haste_hit,gems=50agi_50agi_20agi,enchant=35agi
 wrists=bracers_of_looming_darkness,heroic=1,type=mail,ilevel=410,quality=epic,stats=1274armor_286agi_459sta_180crit_200mastery,gems=50agi_10agi,enchant=50agi
-hands=wyrmstalkers_gloves,heroic=1,type=mail,ilevel=410,quality=epic,stats=1820armor_388agi_611sta_233hit_280haste,gems=50agi_10agi,enchant=20agi,addon=synapse_springs
-finger1=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_203crit_179haste,gems=50agi_10agi,enchant=40agi
-finger2=emergency_descent_loop,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_169mastery_209haste,gems=25agi_25crit_10agi,enchant=40agi
+hands=wyrmstalkers_gloves,heroic=1,type=mail,ilevel=410,quality=epic,stats=1820armor_388agi_611sta_233hit_280haste,reforge=haste_crit,gems=50agi_10agi,enchant=20agi,addon=synapse_springs
+finger1=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_203crit_179haste,reforge=haste_mastery,gems=50agi_10agi,enchant=40agi
+finger2=emergency_descent_loop,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_169mastery_209haste,reforge=haste_crit,gems=25agi_25crit_10agi,enchant=40agi
 trinket1=starcatcher_compass,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=ondamage_3278haste_15%_20dur_75cd
 trinket2=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99agi_100%_10dur_10stack
-back=batwing_cloak,heroic=1,ilevel=410,quality=epic,stats=822armor_306agi_459sta_210haste_194crit,enchant=22agi
+back=batwing_cloak,heroic=1,ilevel=410,quality=epic,stats=822armor_306agi_459sta_210haste_194crit,reforge=haste_mastery,enchant=22agi
 main_hand=kiril_fury_of_beasts,heroic=1,ilevel=416,quality=epic,stats=581agi_871sta,enchant=130agi,weapon=polearm_3.50speed_2968min_4453max
 ranged=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=gnomish_xray,weapon=bow_3.00speed_2226min_4135max
 # Gear Summary
@@ -54,10 +54,10 @@ ranged=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_hit_rating=769
-# gear_crit_rating=2240
-# gear_haste_rating=2109
-# gear_mastery_rating=958
+# gear_hit_rating=953
+# gear_crit_rating=2648
+# gear_haste_rating=1362
+# gear_mastery_rating=1113
 # gear_armor=17566
 # meta_gem=agile_shadowspirit
 # tier13_2pc_melee=1
