@@ -927,6 +927,12 @@ struct army_ghoul_pet_t : public pet_t
     base_energy_regen_per_second  = 10;
   }
 
+  virtual double energy_regen_per_second() SC_CONST
+  {
+    // Doesn't benefit from haste
+    return base_energy_regen_per_second;
+  }
+
   virtual double strength() SC_CONST
   {
     death_knight_t* o = owner -> cast_death_knight();
@@ -1272,6 +1278,12 @@ struct ghoul_pet_t : public pet_t
 
     resource_base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
+  }
+
+  virtual double energy_regen_per_second() SC_CONST
+  {
+    // Doesn't benefit from haste
+    return base_energy_regen_per_second;
   }
 
   virtual double strength() SC_CONST
