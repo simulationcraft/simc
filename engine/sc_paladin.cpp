@@ -602,7 +602,7 @@ struct paladin_attack_t : public attack_t
     }
     if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
     {
-      player_multiplier *= 1.12;
+      player_multiplier *= 1.18;
     }
     
     if ( p -> buffs_conviction -> up() )
