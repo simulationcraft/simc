@@ -1309,10 +1309,12 @@ static void register_nokaled( item_t* item )
       rng -> average_range = false; // Otherwise we'll always get the mean
     }
 
-    virtual void trigger( action_t* /* a */, void* /* call_data */ )
+    virtual void trigger( action_t* a, void* /* call_data */ )
     {
+      if ( a -> special ) return;
+      
       // FIXME: Does it have an ICD or not? If not, it's quite OP
-      if ( rng -> roll( 0.15 ) )
+      if ( rng -> roll( 0.065 ) )
       { 
         spells[ ( int ) ( rng -> range( 0.0, 2.999 ) ) ] -> execute();
       }
