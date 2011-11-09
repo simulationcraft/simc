@@ -1240,9 +1240,9 @@ static void register_fury_of_the_beast( item_t* item )
 
 static void register_nokaled( item_t* item )
 {
-  player_t* p = item -> player;
-  bool heroic = item -> heroic();
-  bool lfr    = item -> lfr();
+  player_t* p   = item -> player;
+  bool heroic   = item -> heroic();
+  bool lfr      = item -> lfr();
                                       //Fire  Frost   Shadow
   static uint32_t    lfr_spells[] = { 109871, 109869, 109867 };
   static uint32_t normal_spells[] = { 107785, 107789, 107787 };
@@ -1252,6 +1252,7 @@ static void register_nokaled( item_t* item )
 
   struct nokaled_callback_t : public action_callback_t
   {
+    double chance;
     spell_t* spells[3];
     rng_t* rng;
     
@@ -1264,7 +1265,7 @@ static void register_nokaled( item_t* item )
         trigger_gcd = 0;
         background = true;
         may_miss = false; 
-        may_crit = false;
+        may_crit = true;
         proc = true;
         init();
       }
@@ -1278,7 +1279,7 @@ static void register_nokaled( item_t* item )
         trigger_gcd = 0;
         background = true;
         may_miss = false; 
-        may_crit = false;
+        may_crit = true;
         proc = true;
         init();
       }
@@ -1292,14 +1293,14 @@ static void register_nokaled( item_t* item )
         trigger_gcd = 0;
         background = true;
         may_miss = false; 
-        may_crit = false;
+        may_crit = true;
         proc = true;
         init();
       }
     };
 
     nokaled_callback_t( player_t* p, uint32_t ids[] ) :
-      action_callback_t( p -> sim, p )
+      action_callback_t( p -> sim, p ), chance( 0 )
     {
       spells[ 0 ] = new   nokaled_fire_t( p, ids[ 0 ] );
       spells[ 1 ] = new  nokaled_frost_t( p, ids[ 1 ] );
@@ -1307,6 +1308,8 @@ static void register_nokaled( item_t* item )
 
       rng = p -> get_rng ( "nokaled" );
       rng -> average_range = false; // Otherwise we'll always get the mean
+      
+      chance = p -> dbc.spell( 107786 ) -> proc_chance();
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1314,7 +1317,7 @@ static void register_nokaled( item_t* item )
       if ( a -> special ) return;
       
       // FIXME: Does it have an ICD or not? If not, it's quite OP
-      if ( rng -> roll( 0.065 ) )
+      if ( rng -> roll( chance ) )
       { 
         spells[ ( int ) ( rng -> range( 0.0, 2.999 ) ) ] -> execute();
       }
