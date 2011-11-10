@@ -6019,17 +6019,40 @@ action_expr_t* player_t::create_expression( action_t* a,
         struct temporary_stat_expr_t : public action_expr_t
         {
           int attr;
+          int stat_type;
           double& stat;
-          temporary_stat_expr_t( action_t* a, double* p_stat, int attr ) : action_expr_t( a, "temporary_stat", TOK_NUM ), attr( attr ), stat( *p_stat ) { }
+          temporary_stat_expr_t( action_t* a, double* p_stat, int stat_type, int attr ) : 
+            action_expr_t( a, "temporary_stat", TOK_NUM ), attr( attr ), stat_type( stat_type ), stat( *p_stat ) { }
 
           virtual int evaluate() { 
             result_num = stat;
             if ( attr != -1 )
               result_num *= action -> player -> composite_attribute_multiplier( attr ); 
+            else if ( stat_type == STAT_SPELL_POWER )
+            {
+              result_num += action -> player -> temporary.attribute[ ATTR_INTELLECT ] *
+                            action -> player -> composite_attribute_multiplier( ATTR_INTELLECT ) *
+                            action -> player -> spell_power_per_intellect;
+              
+              result_num *= action -> player -> composite_spell_power_multiplier();
+              //log_t::output( action -> sim, "temporary_bonus.spell_power=%f", result_num );
+            }
+            else if ( stat_type == STAT_ATTACK_POWER )
+            {
+              result_num += action -> player -> temporary.attribute[ ATTR_STRENGTH ] *
+                            action -> player -> composite_attribute_multiplier( ATTR_STRENGTH ) *
+                            action -> player -> attack_power_per_strength + 
+                            action -> player -> temporary.attribute[ ATTR_AGILITY ] *
+                            action -> player -> composite_attribute_multiplier( ATTR_AGILITY ) *
+                            action -> player -> attack_power_per_agility;
+              
+              result_num *= action -> player -> composite_attack_power_multiplier();
+            }
+            
             return TOK_NUM; 
           }
         };
-        return new temporary_stat_expr_t( a, p_stat, attr );
+        return new temporary_stat_expr_t( a, p_stat, stat, attr );
       }
     }
   }
