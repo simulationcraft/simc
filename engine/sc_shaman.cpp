@@ -4602,18 +4602,49 @@ void shaman_t::moving()
 {
   // Spiritwalker's Grace complicates things, as you can cast it while casting
   // anything. So, to model that, if a raid move event comes, we need to check
-  // if we can trigger Spiritwalker's Grace. If so, execute it, to allow the
-  // currently executing cast to finish.
+  // if we can trigger Spiritwalker's Grace. If so, conditionally execute it, to 
+  // allow the currently executing cast to finish.
   if ( level == 85 )
   {
     action_t* swg = find_action( "spiritwalkers_grace" );
 
-    if ( swg && swg -> ready() && executing )
+    // We need to bypass swg -> ready() check here, so whip up a special 
+    // readiness check that only checks for player skill, cooldown and resource
+    // availability
+    if ( swg &&
+         executing && 
+         sim -> roll( skill ) &&
+         swg -> cooldown -> remains() == 0 &&
+         resource_available( swg -> resource, swg -> cost() ) )
     {
-      if ( sim -> log )
-        log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
-                       executing -> name_str.c_str() );
-      swg -> execute();
+      // Elemental has to do some additional checking here
+      if ( primary_tree() == TREE_ELEMENTAL )
+      {
+        // Elemental executes SWG mid-cast during a movement event, if
+        // 1) The profile does not have Glyph of Unleashed Lightning and is executing
+        //    a Lighting Bolt
+        // 2) The profile does not have Tier12 4PC set bonus and is executing a
+        //    Lava Burst
+        // 3) The profile is casting Chain Lightning
+        if ( ( ! glyph_unleashed_lightning -> ok() && executing -> id == 403 ) ||
+             ( ! set_bonus.tier12_4pc_caster() && executing -> id == 51505 ) ||
+             executing -> id == 421 )
+        {
+          if ( sim -> log )
+            log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
+                          executing -> name_str.c_str() );
+          swg -> execute();
+        }
+      }
+      // Other trees blindly execute Spiritwalker's Grace if there's a spell cast 
+      // executing during movement event
+      else
+      {
+        swg -> execute();
+        if ( sim -> log )
+          log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
+                        executing -> name_str.c_str() );
+      }
     }
     else
     {
