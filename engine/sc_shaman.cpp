@@ -4409,6 +4409,7 @@ void shaman_t::init_actions()
   bool has_lightweave         = false;
   bool has_fiery_quintessence = false;
   bool has_will_of_unbinding  = false;
+  bool has_bottled_wishes     = false;
 
   // Detect some stuff so we can figure out how much int should be used to summon FE
   for ( int i = 0; i < SLOT_MAX; i++ )
@@ -4419,6 +4420,8 @@ void shaman_t::init_actions()
       has_fiery_quintessence = true;
     else if ( util_t::str_compare_ci( items[ i ].name(), "will_of_unbinding" ) )
       has_will_of_unbinding = true;
+    else if ( util_t::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
+      has_bottled_wishes = true;
     else if ( util_t::str_compare_ci( items[ i ].encoded_enchant_str, "power_torrent" ) )
       has_power_torrent = true;
     else if ( util_t::str_compare_ci( items[ i ].encoded_enchant_str, "lightweave_embroidery" ) )
@@ -4476,11 +4479,11 @@ void shaman_t::init_actions()
     }
     else
     {
-      int int_threshold = 0;
+      int sp_threshold = 0;
       if ( set_bonus.tier12_2pc_caster() )
-        int_threshold = ( has_power_torrent || has_lightweave ) ? ( ( has_dmc_volcano ) ? 1600 : 500 ) : 0;
+        sp_threshold = ( ( has_power_torrent || has_lightweave ) ? ( ( has_dmc_volcano ) ? 1600 : 500 ) : 0 ) + has_will_of_unbinding * 700;
       else
-        int_threshold = ( has_power_torrent || has_lightweave ) * 500 + has_dmc_volcano * 1600 + has_will_of_unbinding * 700;
+        sp_threshold = ( has_power_torrent || has_lightweave ) * 500 + has_dmc_volcano * 1600 + has_will_of_unbinding * 700;
 
       action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
 
@@ -4496,15 +4499,24 @@ void shaman_t::init_actions()
       {
         if ( ! items[ i ].use.active() ) continue;
 
-        if ( ! util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
+        // Fiery Quintessence / Bottled Wishes are aligned to fire elemental and 
+        // only used when the required temporary int threshold is exceeded
+        if ( util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) ||
+             util_t::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
+        {
+          action_list_str += "/use_item,name=" + 
+                             std::string( items[ i ].name() ) + 
+                             ",if=(cooldown.fire_elemental_totem.remains" + 
+                             ( ( set_bonus.tier12_2pc_caster() ) ? "<25" : "=0" ) + 
+                             "&temporary_bonus.spell_power>=" + 
+                             util_t::to_string( sp_threshold ) + 
+                             ")|set_bonus.tier12_2pc_caster=0";
+        }
+        else
         {
           action_list_str += "/use_item,name=";
           action_list_str += items[ i ].name();
         }
-        // Fiery quintessence is aligned to fire elemental and only used when the required temporary int
-        // threshold is exceeded
-        else
-          action_list_str += "/use_item,name=fiery_quintessence,if=cooldown.fire_elemental_totem.remains=0&temporary_bonus.intellect>=" + util_t::to_string( int_threshold );
       }
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions();
@@ -4537,36 +4549,45 @@ void shaman_t::init_actions()
       //    - Will of Unbinding (all versions are a temporary int buff of 700 int)
       // 2) If the profile hase Fiery Quintessence, align Fire Elemental summoning always with FQ (and require an 
       //    additional 1100 temporary int)
-      // 3) If the profile uses pre-potting, make sure we try to use the FE during potion, so that 
-      //    all the other temporary int buffs are also up
-      int_threshold += has_fiery_quintessence * 1100;
+      // 3) If the profile hase Bottled Wishes, align Fire Elemental summoning always with BW (and require an 
+      //    additional 2290 temporary spell power)
+      // 4) If the profile uses pre-potting, make sure we try to use the FE during potion, so that 
+      //    all the other temporary int/sp buffs are also up
+      sp_threshold += has_fiery_quintessence * 1149;
+      sp_threshold += has_bottled_wishes * 2290;
       if ( set_bonus.tier12_2pc_caster() )
       {
-        if ( int_threshold > 0 )
+        if ( sp_threshold > 0 )
         {
           if ( use_pre_potion )
           {
-            action_list_str += "/fire_elemental_totem,if=buff.volcanic_potion.up&temporary_bonus.intellect>=" + util_t::to_string( int_threshold + 1200 ) + "&(!ticking|remains<25)";
-            action_list_str += "/fire_elemental_totem,if=!buff.volcanic_potion.up&temporary_bonus.intellect>=" + util_t::to_string( int_threshold ) + "&(!ticking|remains<25)";
+            action_list_str += "/fire_elemental_totem,if=buff.volcanic_potion.up&temporary_bonus.spell_power>=" + 
+                               util_t::to_string( sp_threshold + 1200 ) + "&(!ticking|remains<25)";
+            action_list_str += "/fire_elemental_totem,if=!buff.volcanic_potion.up&temporary_bonus.spell_power>=" + 
+                               util_t::to_string( sp_threshold ) + "&(!ticking|remains<25)";
           }
           else
-            action_list_str += "/fire_elemental_totem,if=temporary_bonus.intellect>=" + util_t::to_string( int_threshold ) + "&(!ticking|remains<25)";
+            action_list_str += "/fire_elemental_totem,if=temporary_bonus.spell_power>=" + 
+                               util_t::to_string( sp_threshold ) + "&(!ticking|remains<25)";
         }
         else
           action_list_str += "/fire_elemental_totem,if=!ticking";
       }
       else
       {
-        if ( int_threshold > 0 )
+        if ( sp_threshold > 0 )
         {
           if ( use_pre_potion )
           {
-            action_list_str += "/fire_elemental_totem,if=!ticking&buff.volcanic_potion.up&temporary_bonus.intellect>=" + util_t::to_string( int_threshold + 1200 );
-            action_list_str += "/fire_elemental_totem,if=!ticking&!buff.volcanic_potion.up&temporary_bonus.intellect>=" + util_t::to_string( int_threshold );
+            action_list_str += "/fire_elemental_totem,if=!ticking&buff.volcanic_potion.up&temporary_bonus.spell_power>=" + 
+                               util_t::to_string( sp_threshold + 1200 );
+            action_list_str += "/fire_elemental_totem,if=!ticking&!buff.volcanic_potion.up&temporary_bonus.spell_power>=" + 
+                               util_t::to_string( sp_threshold );
           }
           else
           {
-            action_list_str += "/fire_elemental_totem,if=!ticking&temporary_bonus.intellect>=" + util_t::to_string( int_threshold );
+            action_list_str += "/fire_elemental_totem,if=!ticking&temporary_bonus.spell_power>=" +
+                               util_t::to_string( sp_threshold );
           }
         }
         else
