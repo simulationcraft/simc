@@ -1,7 +1,7 @@
 #!./simc 
 
 shaman=Shaman_Enhancement_T12H
-origin="Shaman_CharDevSync.simc"
+origin="generate_Shaman_T12H.simc"
 level=85
 race=orc
 position=back

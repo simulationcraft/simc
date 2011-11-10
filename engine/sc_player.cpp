@@ -5991,38 +5991,45 @@ action_expr_t* player_t::create_expression( action_t* a,
     if ( stat != STAT_NONE )
     {
       double* p_stat = 0;
+      int attr = -1;
 
       switch ( stat )
       {
-      case STAT_STRENGTH:         p_stat = &( a -> player -> temporary.attribute[ ATTR_STRENGTH  ] ); break;
-      case STAT_AGILITY:          p_stat = &( a -> player -> temporary.attribute[ ATTR_AGILITY   ] ); break;
-      case STAT_STAMINA:          p_stat = &( a -> player -> temporary.attribute[ ATTR_STAMINA   ] ); break;
-      case STAT_INTELLECT:        p_stat = &( a -> player -> temporary.attribute[ ATTR_INTELLECT ] ); break;
-      case STAT_SPIRIT:           p_stat = &( a -> player -> temporary.attribute[ ATTR_SPIRIT    ] ); break;
-      case STAT_SPELL_POWER:      p_stat = &( a -> player -> temporary.spell_power                 ); break;
-      case STAT_ATTACK_POWER:     p_stat = &( a -> player -> temporary.attack_power                ); break;
-      case STAT_EXPERTISE_RATING: p_stat = &( a -> player -> temporary.expertise_rating            ); break;
-      case STAT_HIT_RATING:       p_stat = &( a -> player -> temporary.hit_rating                  ); break;
-      case STAT_CRIT_RATING:      p_stat = &( a -> player -> temporary.crit_rating                 ); break;
-      case STAT_HASTE_RATING:     p_stat = &( a -> player -> temporary.haste_rating                ); break;
-      case STAT_ARMOR:            p_stat = &( a -> player -> temporary.armor                       ); break;
-      case STAT_DODGE_RATING:     p_stat = &( a -> player -> temporary.dodge_rating                ); break;
-      case STAT_PARRY_RATING:     p_stat = &( a -> player -> temporary.parry_rating                ); break;
-      case STAT_BLOCK_RATING:     p_stat = &( a -> player -> temporary.block_rating                ); break;
-      case STAT_MASTERY_RATING:   p_stat = &( a -> player -> temporary.mastery_rating              ); break;
-      default: break;
+        case STAT_STRENGTH:         p_stat = &( a -> player -> temporary.attribute[ ATTR_STRENGTH  ] ); attr = ATTR_STRENGTH;  break;
+        case STAT_AGILITY:          p_stat = &( a -> player -> temporary.attribute[ ATTR_AGILITY   ] ); attr = ATTR_AGILITY;   break;
+        case STAT_STAMINA:          p_stat = &( a -> player -> temporary.attribute[ ATTR_STAMINA   ] ); attr = ATTR_STAMINA;   break;
+        case STAT_INTELLECT:        p_stat = &( a -> player -> temporary.attribute[ ATTR_INTELLECT ] ); attr = ATTR_INTELLECT; break;
+        case STAT_SPIRIT:           p_stat = &( a -> player -> temporary.attribute[ ATTR_SPIRIT    ] ); attr = ATTR_SPIRIT;    break;
+        case STAT_SPELL_POWER:      p_stat = &( a -> player -> temporary.spell_power                 ); break;
+        case STAT_ATTACK_POWER:     p_stat = &( a -> player -> temporary.attack_power                ); break;
+        case STAT_EXPERTISE_RATING: p_stat = &( a -> player -> temporary.expertise_rating            ); break;
+        case STAT_HIT_RATING:       p_stat = &( a -> player -> temporary.hit_rating                  ); break;
+        case STAT_CRIT_RATING:      p_stat = &( a -> player -> temporary.crit_rating                 ); break;
+        case STAT_HASTE_RATING:     p_stat = &( a -> player -> temporary.haste_rating                ); break;
+        case STAT_ARMOR:            p_stat = &( a -> player -> temporary.armor                       ); break;
+        case STAT_DODGE_RATING:     p_stat = &( a -> player -> temporary.dodge_rating                ); break;
+        case STAT_PARRY_RATING:     p_stat = &( a -> player -> temporary.parry_rating                ); break;
+        case STAT_BLOCK_RATING:     p_stat = &( a -> player -> temporary.block_rating                ); break;
+        case STAT_MASTERY_RATING:   p_stat = &( a -> player -> temporary.mastery_rating              ); break;
+        default: break;
       }
 
       if ( p_stat )
       {
         struct temporary_stat_expr_t : public action_expr_t
         {
+          int attr;
           double& stat;
-          temporary_stat_expr_t( action_t* a, double* p_stat ) : action_expr_t( a, "temporary_stat", TOK_NUM ), stat( *p_stat ) { }
+          temporary_stat_expr_t( action_t* a, double* p_stat, int attr ) : action_expr_t( a, "temporary_stat", TOK_NUM ), attr( attr ), stat( *p_stat ) { }
 
-          virtual int evaluate() { result_num = stat; return TOK_NUM; }
+          virtual int evaluate() { 
+            result_num = stat;
+            if ( attr != -1 )
+              result_num *= action -> player -> composite_attribute_multiplier( attr ); 
+            return TOK_NUM; 
+          }
         };
-        return new temporary_stat_expr_t( a, p_stat );
+        return new temporary_stat_expr_t( a, p_stat, attr );
       }
     }
   }

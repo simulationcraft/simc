@@ -2806,6 +2806,26 @@ struct unleash_elements_t : public shaman_spell_t
 
 struct earth_shock_t : public shaman_spell_t
 {
+  struct lightning_charge_delay_t : public event_t
+  {
+    buff_t* buff;
+    int consume_stacks;
+    int consume_threshold;
+    
+    lightning_charge_delay_t( sim_t* sim, player_t* p, buff_t* b, int consume, int consume_threshold ) :
+    event_t( sim, p ), buff( b ), consume_stacks( consume ), consume_threshold( consume_threshold )
+    {
+      name = "lightning_charge_delay_t";
+      sim -> add_event( this, 0.001 );
+    }
+    
+    void execute()
+    {
+      if ( ( buff -> check() - consume_threshold ) > 0 ) 
+        buff -> decrement( consume_stacks );
+    }
+  };
+  
   int consume_threshold;
 
   earth_shock_t( player_t* player, const std::string& options_str, bool dtr=false ) :
@@ -2849,10 +2869,11 @@ struct earth_shock_t : public shaman_spell_t
     if ( result_is_hit() )
     {
       int consuming_stacks = p -> buffs_lightning_shield -> stack() - consume_threshold;
-      if ( consuming_stacks > 0 )
+      if ( consuming_stacks > 0 && ! is_dtr_action )
       {
         p -> active_lightning_charge -> execute();
-        p -> buffs_lightning_shield  -> decrement( consuming_stacks );
+        if ( ! is_dtr_action ) new ( p -> sim ) lightning_charge_delay_t( p -> sim, p, p -> buffs_lightning_shield, consuming_stacks, consume_threshold );
+        //if ( ! is_dtr_action ) p -> buffs_lightning_shield -> decrement( consuming_stacks );
         p -> procs_fulmination[ consuming_stacks ] -> occur();
       }
     }
@@ -3533,7 +3554,7 @@ struct wrath_of_air_totem_t : public shaman_totem_t
 
   virtual bool ready()
   {
-    if ( sim -> overrides.windfury_totem == 1 || sim -> auras.wrath_of_air -> check() )
+    if ( sim -> overrides.wrath_of_air == 1 || sim -> auras.wrath_of_air -> check() )
       return false;
 
     return shaman_totem_t::ready();
@@ -4387,6 +4408,7 @@ void shaman_t::init_actions()
   bool has_dmc_volcano        = false;
   bool has_lightweave         = false;
   bool has_fiery_quintessence = false;
+  bool has_will_of_unbinding  = false;
 
   // Detect some stuff so we can figure out how much int should be used to summon FE
   for ( int i = 0; i < SLOT_MAX; i++ )
@@ -4395,6 +4417,8 @@ void shaman_t::init_actions()
       has_dmc_volcano = true;
     else if ( util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
       has_fiery_quintessence = true;
+    else if ( util_t::str_compare_ci( items[ i ].name(), "will_of_unbinding" ) )
+      has_will_of_unbinding = true;
     else if ( util_t::str_compare_ci( items[ i ].encoded_enchant_str, "power_torrent" ) )
       has_power_torrent = true;
     else if ( util_t::str_compare_ci( items[ i ].encoded_enchant_str, "lightweave_embroidery" ) )
@@ -4456,15 +4480,14 @@ void shaman_t::init_actions()
       if ( set_bonus.tier12_2pc_caster() )
         int_threshold = ( has_power_torrent || has_lightweave ) ? ( ( has_dmc_volcano ) ? 1600 : 500 ) : 0;
       else
-        int_threshold = ( has_power_torrent || has_lightweave ) * 500 + has_dmc_volcano * 1600 + has_fiery_quintessence * 1100;
+        int_threshold = ( has_power_torrent || has_lightweave ) * 500 + has_dmc_volcano * 1600 + has_will_of_unbinding * 700;
 
       action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
 
       action_list_str += "/flametongue_weapon,weapon=main/lightning_shield";
       action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       action_list_str += "/snapshot_stats";
-      action_list_str += "/volcanic_potion,if=!in_combat";
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
 
       action_list_str += "/wind_shear";
       action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
@@ -4478,7 +4501,8 @@ void shaman_t::init_actions()
           action_list_str += "/use_item,name=";
           action_list_str += items[ i ].name();
         }
-        // Fiery quintessence is aligned to fire elmeental
+        // Fiery quintessence is aligned to fire elemental and only used when the required temporary int
+        // threshold is exceeded
         else
           action_list_str += "/use_item,name=fiery_quintessence,if=cooldown.fire_elemental_totem.remains=0&temporary_bonus.intellect>=" + util_t::to_string( int_threshold );
       }
@@ -4498,35 +4522,67 @@ void shaman_t::init_actions()
       if ( ! glyph_unleashed_lightning -> ok() )
         action_list_str += "/unleash_elements,moving=1";
       action_list_str += "/flame_shock,if=!ticking|ticks_remain<2";
-      // Unleash elements for elemental is a downgrade in dps ...
-      //if ( level >= 81 )
-      //  action_list_str += "/unleash_elements";
-      if ( level >= 75 ) action_list_str += "/lava_burst,if=dot.flame_shock.remains>(cast_time+travel_time)";
+      if ( level >= 75 ) action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time";
       if ( talent_fulmination -> rank() )
       {
         action_list_str += "/earth_shock,if=buff.lightning_shield.react=9";
         action_list_str += "/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
       }
-
+      
+      // Fire elemental summoning logic
+      // 1) Make sure we fully use some commonly used temporary int bonuses of the profile, calculating the following 
+      // additively as a sum of temporary intellect buffs on the profile during iteration
+      //    - Power Torrent or Lightweave Embroidery is up (either being up is counted as a temporary int buff of 500)
+      //    - DMC: Volcano (temporary int buff of 1600)
+      //    - Will of Unbinding (all versions are a temporary int buff of 700 int)
+      // 2) If the profile hase Fiery Quintessence, align Fire Elemental summoning always with FQ (and require an 
+      //    additional 1100 temporary int)
+      // 3) If the profile uses pre-potting, make sure we try to use the FE during potion, so that 
+      //    all the other temporary int buffs are also up
       int_threshold += has_fiery_quintessence * 1100;
       if ( set_bonus.tier12_2pc_caster() )
       {
         if ( int_threshold > 0 )
-          action_list_str += "/fire_elemental_totem,if=temporary_bonus.intellect>=" + util_t::to_string( int_threshold ) + "&(!ticking|remains<25)";
+        {
+          if ( use_pre_potion )
+          {
+            action_list_str += "/fire_elemental_totem,if=buff.volcanic_potion.up&temporary_bonus.intellect>=" + util_t::to_string( int_threshold + 1200 ) + "&(!ticking|remains<25)";
+            action_list_str += "/fire_elemental_totem,if=!buff.volcanic_potion.up&temporary_bonus.intellect>=" + util_t::to_string( int_threshold ) + "&(!ticking|remains<25)";
+          }
+          else
+            action_list_str += "/fire_elemental_totem,if=temporary_bonus.intellect>=" + util_t::to_string( int_threshold ) + "&(!ticking|remains<25)";
+        }
         else
           action_list_str += "/fire_elemental_totem,if=!ticking";
       }
       else
       {
         if ( int_threshold > 0 )
-          action_list_str += "/fire_elemental_totem,if=!ticking&temporary_bonus.intellect>=" + util_t::to_string( int_threshold );
+        {
+          if ( use_pre_potion )
+          {
+            action_list_str += "/fire_elemental_totem,if=!ticking&buff.volcanic_potion.up&temporary_bonus.intellect>=" + util_t::to_string( int_threshold + 1200 );
+            action_list_str += "/fire_elemental_totem,if=!ticking&!buff.volcanic_potion.up&temporary_bonus.intellect>=" + util_t::to_string( int_threshold );
+          }
+          else
+          {
+            action_list_str += "/fire_elemental_totem,if=!ticking&temporary_bonus.intellect>=" + util_t::to_string( int_threshold );
+          }
+        }
         else
           action_list_str += "/fire_elemental_totem,if=!ticking";
       }
 
       action_list_str += "/earth_elemental_totem,if=!ticking";
       action_list_str += "/searing_totem";
-      action_list_str += "/spiritwalkers_grace,moving=1";
+
+      if ( glyph_unleashed_lightning -> ok() )
+      {
+        action_list_str += "/spiritwalkers_grace,moving=1,if=cooldown.lava_burst.remains=0&set_bonus.tier12_4pc_caster=0";
+      }
+      else
+        action_list_str += "/spiritwalkers_grace,moving=1";
+
       action_list_str += "/chain_lightning,if=target.adds>2";
       if ( ! ( set_bonus.tier11_4pc_caster() || level > 80 ) )
         action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1";
