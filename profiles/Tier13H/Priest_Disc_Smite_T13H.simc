@@ -20,9 +20,10 @@ actions+=/shadow_fiend,if=mana_pct<=60
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active&mana_pct<=20
 actions+=/berserking
 actions+=/power_infusion
+actions+=/archangel,if=buff.holy_evangelism.stack>=5
 actions+=/power_word_shield,if=!cooldown.rapture.remains
-actions+=/devouring_plague,if=buff.borrowed_time.up&remains<3*tick_time|!ticking
-actions+=/shadow_word_pain,if=buff.borrowed_time.up&remains<2*tick_time|!ticking
+actions+=/devouring_plague,if=buff.borrowed_time.up&(remains<3*tick_time|!ticking)
+actions+=/shadow_word_pain,if=buff.borrowed_time.up&(remains<2*tick_time|!ticking)
 actions+=/penance,if=buff.borrowed_time.up
 actions+=/holy_fire
 actions+=/penance
