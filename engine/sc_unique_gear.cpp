@@ -1450,8 +1450,8 @@ static void register_titahk( item_t* item )
 
   struct titahk_callback_t : public action_callback_t
   {
-    rng_t* rng;
     double proc_chance;
+    rng_t* rng;
     buff_t* buff_self;
     buff_t* buff_radius; // This buff should be in 20 yards radius but it is contained only on the player for simulation.
 
