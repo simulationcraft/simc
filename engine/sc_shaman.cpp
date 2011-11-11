@@ -831,7 +831,7 @@ struct fire_elemental_pet_t : public pet_t
       aoe                  = -1;
       may_crit             = true;
       direct_power_mod     = player -> dbc.spell( 12470 ) -> effect1().coeff();
-      cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 20.0 );
+      cooldown -> duration = fe -> rng_ability_cooldown -> range( 30.0, 60.0 );
 
       // 207 = 80
       base_cost            = player -> level * 2.750;
@@ -846,7 +846,7 @@ struct fire_elemental_pet_t : public pet_t
     {
       fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
       // Randomize next cooldown duration here
-      cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 20.0 );
+      cooldown -> duration = fe -> rng_ability_cooldown -> range( 30.0, 60.0 );
 
       fire_elemental_spell_t::execute();
     }
@@ -863,7 +863,7 @@ struct fire_elemental_pet_t : public pet_t
       base_cost            = ( player -> level ) * 3.554;
       base_execute_time    = 0;
       direct_power_mod     = player -> dbc.spell( 57984 ) -> effect1().coeff();
-      cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 20.0 );
+      cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 7.0 );
 
       base_dd_min        = 276;
       base_dd_max        = 321;
@@ -878,7 +878,7 @@ struct fire_elemental_pet_t : public pet_t
     {
       fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
       // Randomize next cooldown duration here
-      cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 20.0 );
+      cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 7.0 );
 
       fire_elemental_spell_t::execute();
     }
@@ -984,6 +984,7 @@ struct fire_elemental_pet_t : public pet_t
     main_hand_weapon.swing_time      = 2.0;
 
     rng_ability_cooldown             = get_rng( "fire_elemental_ability_cooldown" );
+    rng_ability_cooldown -> average_range = 0;
 
     cooldown_fire_nova               = get_cooldown( "fire_nova" );
     cooldown_fire_blast              = get_cooldown( "fire_blast" );
@@ -2181,7 +2182,7 @@ struct chain_lightning_t : public shaman_spell_t
   int      glyph_targets;
   chain_lightning_overload_t* overload;
 
-  chain_lightning_t( player_t* player, const std::string& options_str ) :
+  chain_lightning_t( player_t* player, const std::string& options_str, bool dtr = false ) :
     shaman_spell_t( "chain_lightning", "Chain Lightning", player, options_str ),
     glyph_targets( 0 )
   {
@@ -2205,6 +2206,12 @@ struct chain_lightning_t : public shaman_spell_t
 
     base_add_multiplier = 0.7;
     aoe = ( 2 + glyph_targets );
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new chain_lightning_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void player_buff()
