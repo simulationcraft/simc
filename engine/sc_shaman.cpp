@@ -1252,23 +1252,6 @@ struct lava_burst_overload_t : public shaman_spell_t
     }
   }
   
-  virtual void execute()
-  {
-    shaman_spell_t::execute();
-    
-
-    if ( result_is_hit() )
-    {
-      shaman_t* p = player -> cast_shaman();
-      if ( p -> dbc.ptr && 
-          p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
-      {
-        p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
-      }
-
-    }
-  }
-
   virtual void player_buff()
   {
     shaman_spell_t::player_buff();
@@ -1304,23 +1287,6 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     {
       dtr_action = new lightning_bolt_overload_t( p, true );
       dtr_action -> is_dtr_action = true;
-    }
-  }
-
-  virtual void execute()
-  {
-    shaman_spell_t::execute();
-    
-    
-    if ( result_is_hit() )
-    {
-      shaman_t* p = player -> cast_shaman();
-      if ( p -> dbc.ptr && 
-          p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
-      {
-        p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
-      }
-      
     }
   }
 
@@ -1375,16 +1341,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     if ( result_is_hit() )
-    {
       trigger_rolling_thunder( this );
-      
-      shaman_t* p = player -> cast_shaman();
-      if ( p -> dbc.ptr && 
-           p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
-      {
-        p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();          
-      }
-    }
   }
 };
 
