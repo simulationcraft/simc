@@ -1428,6 +1428,59 @@ static void register_souldrinker( item_t* item )
   p -> register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic, lfr ) ) );
 }
 
+// register_titahk
+static void register_titahk( item_t* item )
+{
+  player_t* p = item -> player;
+  bool heroic = item -> heroic();
+  bool lfr    = item -> lfr();
+
+  static uint32_t    lfr_spell = 109843;
+  static uint32_t normal_spell = 107805;
+  static uint32_t heroic_spell = 109846;
+  static uint32_t    lfr_buff  = 109842;
+  static uint32_t normal_buff  = 107804;
+  static uint32_t heroic_buff  = 109844;
+
+  uint32_t spell_id = heroic ? heroic_spell : lfr ? lfr_spell : normal_spell;
+  uint32_t buff_id = heroic ? heroic_buff : lfr ? lfr_buff : normal_buff;
+
+  const spell_data_t* spell = p -> dbc.spell(spell_id);
+  const spell_data_t* buff  = p -> dbc.spell(buff_id);
+
+  struct titahk_callback_t : public action_callback_t
+  {
+    rng_t* rng;
+    double proc_chance;
+    buff_t* buff_self;
+    buff_t* buff_radius; // This buff should be in 20 yards radius but it is contained only on the player for simulation.
+
+    titahk_callback_t( player_t* p, const spell_data_t* spell, const spell_data_t* buff ) :
+      action_callback_t( p -> sim, p ),
+        proc_chance(spell -> proc_chance()),
+        rng( p -> get_rng( "titahk", RNG_DEFAULT ) )
+    {
+      double duration = buff -> duration();
+      buff_self   = new stat_buff_t(p, "titahk_self", STAT_HASTE_RATING, buff ->effect1().base_value(), 1, duration);
+      buff_radius = new stat_buff_t(p, "titahk_aoe",  STAT_HASTE_RATING, buff ->effect2().base_value(), 1, duration); // TODO: Apply aoe buff to other players?
+    }
+
+    virtual void trigger( action_t* /* a */, void* /* call_data */ )
+    {
+      // FIXME: Does this have an ICD?
+      if( rng -> roll( proc_chance ))
+      {
+        buff_self->trigger();
+        buff_radius->trigger();
+      }
+    }
+  };
+
+  action_callback_t* cb = new titahk_callback_t( p, spell, buff );
+
+  p -> register_spell_callback( SCHOOL_SPELL_MASK, cb ); 
+}
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -1481,6 +1534,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
     if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
+	if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
   }
 }
 
