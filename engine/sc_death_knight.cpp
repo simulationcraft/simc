@@ -1260,7 +1260,7 @@ struct ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     assert( o -> primary_tree() != TREE_NONE );
-    if ( primary_tree() == TREE_UNHOLY )
+    if ( o -> primary_tree() == TREE_UNHOLY )
       type = PLAYER_PET;
 
     // Value for the ghoul of a naked worgen as of 4.2

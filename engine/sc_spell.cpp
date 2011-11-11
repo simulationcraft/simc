@@ -160,7 +160,7 @@ double spell_t::crit_chance( int delta_level ) SC_CONST
   return chance;
 }
 
-// spell_t::caclulate_result ================================================
+// spell_t::calculate_result ================================================
 
 void spell_t::calculate_result()
 {
