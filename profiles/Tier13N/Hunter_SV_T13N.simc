@@ -42,22 +42,22 @@ wrists=dragonbelly_bracers,type=mail,ilevel=397,quality=epic,stats=1218armor_271
 hands=wyrmstalkers_gloves,type=mail,ilevel=397,quality=epic,stats=1739armor_341agi_542sta_205hit_247haste,gems=50agi_10agi,enchant=20agi,addon=synapse_springs
 finger1=signet_of_grasping_mouths,ilevel=397,quality=epic,stats=251agi_406sta_179crit_157haste,gems=50agi_10agi,enchant=40agi
 finger2=seal_of_primordial_shadow,ilevel=397,quality=epic,stats=251agi_406sta_162exp_176mastery,enchant=40agi
-trinket1=vial_of_shadows,ilevel=397,quality=epic,stats=458agi,equip=onattackhit_15106physical_15%_45cd
+trinket1=vial_of_shadows,ilevel=397,quality=epic,stats=458agi,equip=onattackhit_15106+90physical_15%_45cd
 trinket2=starcatcher_compass,ilevel=397,quality=epic,stats=458agi,equip=ondamage_2904haste_15%_20dur_75cd
-back=batwing_cloak,ilevel=397,quality=epic,stats=769armor_271agi_406sta_186haste_172crit,enchant=22agi
+back=batwing_cloak,ilevel=397,quality=epic,stats=769armor_251agi_406sta_176haste_162crit,enchant=22agi
 main_hand=kiril_fury_of_beasts,ilevel=403,quality=epic,stats=514agi_772sta,enchant=130agi,weapon=polearm_3.50speed_2629min_3945max
 ranged=horrifying_horn_arbalest,ilevel=397,quality=epic,stats=153agi_230sta_116crit_78haste,enchant=gnomish_xray,weapon=crossbow_2.90speed_2060min_3091max
 # Gear Summary
 # gear_strength=20
-# gear_agility=6792
+# gear_agility=6772
 # gear_stamina=7352
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=162
 # gear_hit_rating=1063
-# gear_crit_rating=1747
-# gear_haste_rating=1588
+# gear_crit_rating=1737
+# gear_haste_rating=1578
 # gear_mastery_rating=981
 # gear_armor=16699
 # meta_gem=agile_shadowspirit
