@@ -1250,13 +1250,15 @@ static void register_nokaled( item_t* item )
 
   uint32_t* spell_ids = heroic ? heroic_spells : lfr ? lfr_spells : normal_spells;
 
+  uint32_t proc_spell_id = heroic ? 109873 : lfr ? 109866 : 107786;
+
   struct nokaled_callback_t : public action_callback_t
   {
     double chance;
     spell_t* spells[3];
     rng_t* rng;
 
-    // FIXME: Verfiy if spells can crit/miss and if they benefit from mastery, talents, etc.
+    // FIXME: Verify if spells can miss and if they benefit from mastery, talents, etc.
     struct nokaled_fire_t : public spell_t
     {
       nokaled_fire_t( player_t* p, uint32_t spell_id ) :
@@ -1299,8 +1301,8 @@ static void register_nokaled( item_t* item )
       }
     };
 
-    nokaled_callback_t( player_t* p, uint32_t ids[] ) :
-      action_callback_t( p -> sim, p ), chance( 0 )
+    nokaled_callback_t( player_t* p, uint32_t ids[], uint32_t proc_spell_id ) :
+      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() )
     {
       spells[ 0 ] = new   nokaled_fire_t( p, ids[ 0 ] );
       spells[ 1 ] = new  nokaled_frost_t( p, ids[ 1 ] );
@@ -1308,8 +1310,6 @@ static void register_nokaled( item_t* item )
 
       rng = p -> get_rng ( "nokaled" );
       rng -> average_range = false; // Otherwise we'll always get the mean
-
-      chance = p -> dbc.spell( 107786 ) -> proc_chance();
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1324,7 +1324,7 @@ static void register_nokaled( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new nokaled_callback_t( p, spell_ids ) );
+  p -> register_attack_callback( RESULT_HIT_MASK, new nokaled_callback_t( p, spell_ids, proc_spell_id ) );
 }
 
 // register_rathrak =========================================================
