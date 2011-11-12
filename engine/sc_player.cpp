@@ -7,6 +7,31 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
+// compare_talents ==========================================================
+
+struct compare_talents
+{
+  bool operator()( const talent_t* left, const talent_t* right ) const
+  {
+    const talent_data_t* l = left  -> t_data;
+    const talent_data_t* r = right -> t_data;
+
+    if( l -> tab_page() == r -> tab_page() )
+    {
+      if( l -> row() == r -> row() )
+      {
+        if( l -> col() == r -> col() )
+        {
+          return ( l -> id() > r -> id() ); // not a typo: Dive comes before Dash in pet talent string!
+        }
+        return ( l -> col() < r -> col() );
+      }
+      return ( l -> row() < r -> row() );
+    }
+    return ( l -> tab_page() < r -> tab_page() );
+  }
+};
+
 // dark_intent_callback =====================================================
 
 struct dark_intent_callback_t : public action_callback_t
@@ -48,7 +73,7 @@ struct hymn_of_hope_buff_t : public buff_t
   }
 };
 
-// Event Vengeance
+// Event Vengeance ==========================================================
 
 struct vengeance_t : public event_t
 {
@@ -353,7 +378,6 @@ static bool parse_brain_lag_stddev( sim_t* sim,
 
 } // ANONYMOUS NAMESPACE ===================================================
 
-
 // ==========================================================================
 // Player
 // ==========================================================================
@@ -364,7 +388,7 @@ player_t::player_t( sim_t*             s,
                     player_type        t,
                     const std::string& n,
                     race_type          r ) :
-  sim( s ), ptr( s -> dbc.ptr ), name_str( n ),
+  sim( s ), name_str( n ),
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ),
@@ -2373,7 +2397,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
     {
       //FIXME: Since we don't currently model the difference between ranged and melee
       //       attack power, this ugly hack just checks if the player is a hunter instead.
-      m *= ( ptr && type != HUNTER ) ? 1.20 : 1.10;
+      m *= ( dbc.ptr && type != HUNTER ) ? 1.20 : 1.10;
     }
     else if ( ! is_enemy() && ! is_add() )
     {
@@ -5598,37 +5622,10 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
 // player_t::create_talents =================================================
 
-namespace {
-
-struct compare_talents
-{
-  bool operator()( const talent_t* left, const talent_t* right ) const
-  {
-    const talent_data_t* l = left  -> t_data;
-    const talent_data_t* r = right -> t_data;
-
-    if( l -> tab_page() == r -> tab_page() )
-    {
-      if( l -> row() == r -> row() )
-      {
-        if( l -> col() == r -> col() )
-        {
-          return ( l -> id() > r -> id() ); // not a typo: Dive comes before Dash in pet talent string!
-        }
-        return ( l -> col() < r -> col() );
-      }
-      return ( l -> row() < r -> row() );
-    }
-    return ( l -> tab_page() < r -> tab_page() );
-  }
-};
-
-}
-
 void player_t::create_talents()
 {
   int cid_mask = util_t::class_id_mask( type );
-  talent_data_t* talent_data = talent_data_t::list( ptr );
+  talent_data_t* talent_data = talent_data_t::list( dbc.ptr );
 
   for( int i=0; talent_data[ i ].name_cstr(); i++ )
   {
@@ -5695,11 +5692,11 @@ talent_t* player_t::find_talent( const std::string& n,
 
 void player_t::create_glyphs()
 {
-  std::vector<unsigned> glyph_ids = dbc_t::glyphs( util_t::class_id( type ), ptr );
+  std::vector<unsigned> glyph_ids = dbc_t::glyphs( util_t::class_id( type ), dbc.ptr );
 
   size_t size=glyph_ids.size();
   for( size_t i=0; i < size; i++ )
-    glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ], ptr ) ) );
+    glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ], dbc.ptr ) ) );
 }
 
 // player_t::find_glyph =====================================================
@@ -5715,7 +5712,7 @@ glyph_t* player_t::find_glyph( const std::string& n )
   }
 
   sim -> errorf( "\nPlayer %s unable to find glyph %s\n", name(), n.c_str() );
-//sim -> cancel();
+
   return 0;
 }
 

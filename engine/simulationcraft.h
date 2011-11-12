@@ -3621,7 +3621,6 @@ public:
 struct player_t : public noncopyable
 {
   sim_t*      sim;
-  bool        ptr;
   std::string name_str, talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   player_t*   next;

@@ -1634,7 +1634,7 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= 1.0 + p -> buffs_censure -> stack() * ( p -> ptr ? 0.20 : 0.10 );
+    player_multiplier *= 1.0 + p -> buffs_censure -> stack() * ( p -> dbc.ptr ? 0.20 : 0.10 );
   }
 };
 
@@ -3204,14 +3204,14 @@ void paladin_t::init_actions()
       if ( level >= 81 )
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(holy_power=3|buff.divine_purpose.react)";
       action_list_str += "/crusader_strike,if=holy_power<3";  // CS before TV if <3 power, even with DP up
-      if ( ptr )
+      if ( dbc.ptr )
         action_list_str += "/judgement,if=set_bonus.tier13_2pc_melee&holy_power<3";
       action_list_str += "/templars_verdict,if=buff.divine_purpose.react";
       action_list_str += "/templars_verdict,if=holy_power=3";
-      if ( ! ptr )
+      if ( ! dbc.ptr )
         action_list_str += "/hammer_of_wrath";
       action_list_str += "/exorcism,if=buff.the_art_of_war.react";
-      if ( ptr )
+      if ( dbc.ptr )
         action_list_str += "/hammer_of_wrath";
       action_list_str += "/judgement";
       action_list_str += "/holy_wrath";

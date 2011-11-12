@@ -808,7 +808,7 @@ struct warlock_main_pet_t : public warlock_pet_t
 
     warlock_t* o = owner -> cast_warlock();
 
-    double mastery_value = (ptr) ? 230 : o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
+    double mastery_value = ( dbc.ptr ) ? 230 : o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
 
     m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * mastery_value / 10000.0 );
 
@@ -1083,7 +1083,7 @@ public:
 
     if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
 
-    if ( ! p -> ptr && p -> bugs )
+    if ( ! p -> dbc.ptr && p -> bugs )
     {
       // Tested on live 2010/07/10 to be 35% as opposed to the tooltip's stated 25%
       // Tested on PTR  2011/10/19 to be fixed
@@ -1789,12 +1789,12 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       m  *= 1.05;
     }
 
-    double mastery_value = (ptr) ? 230 : o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
+    double mastery_value = ( dbc.ptr ) ? 230 : o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
     
     double mastery_gain = ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * mastery_value / 10000.0 );
     
     //FIXME: Remove when 4.3 goes live
-    if ( ! ptr ) mastery_gain *= 3;
+    if ( ! dbc.ptr ) mastery_gain *= 3;
     
     m *= 1.0 + mastery_gain;
 
@@ -2053,7 +2053,7 @@ struct bane_of_doom_t : public warlock_spell_t
     double m = warlock_spell_t::total_td_multiplier();
     warlock_t* p = player -> cast_warlock();
 
-    if ( ! p -> ptr && p -> bugs && p -> buffs_shadow_embrace -> check() )
+    if ( ! p -> dbc.ptr && p -> bugs && p -> buffs_shadow_embrace -> check() )
     {
       m /= 1.0 + p -> buffs_shadow_embrace -> check() * p -> buffs_shadow_embrace -> effect1().percent();
     }
@@ -2269,7 +2269,7 @@ void trigger_burning_embers ( spell_t* s, double dmg )
 
     int num_ticks = p -> spells_burning_embers -> num_ticks;
 
-    double spmod = ( p -> ptr ) ? 0.7 : 0.425;
+    double spmod = ( p -> dbc.ptr ) ? 0.7 : 0.425;
 
     //FIXME: The 1.2 modifier to the adder was experimentally observed on live realms 2011/10/14
     double cap = ( spmod * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_MAX ) + p -> talent_burning_embers -> effect_min( 2 ) * 1.2 ) / num_ticks;
@@ -2921,7 +2921,7 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if ( p -> ptr )
+    if ( p -> dbc.ptr )
     {
       if ( p -> dots_immolate -> ticking ) {
         base_dd_adder = ( sim -> range( base_dd_min, base_dd_max ) + direct_power_mod * total_power() ) / 6;
@@ -3109,7 +3109,7 @@ struct soul_fire_t : public warlock_spell_t
 
       trigger_decimation( this, impact_result );
 
-      if ( p -> ptr ) trigger_impending_doom( this );
+      if ( p -> dbc.ptr ) trigger_impending_doom( this );
 
       trigger_soul_leech( this );
 
@@ -3194,7 +3194,7 @@ struct fel_armor_t : public warlock_spell_t
     // Model the passive health tick.....
     // FIXME: For PTR need to add new healing mechanic
 #if 0
-    if ( ! p -> ptr )
+    if ( ! p -> dbc.ptr )
     {
       base_tick_time = effect_period( 2 );
       num_ticks = 1;
@@ -4062,7 +4062,7 @@ double warlock_t::composite_player_multiplier( const school_type school, action_
 {
   double player_multiplier = player_t::composite_player_multiplier( school, a );
 
-  double mastery_value = (ptr) ? 230 : mastery_spells.master_demonologist -> effect_base_value( 3 );
+  double mastery_value = ( dbc.ptr ) ? 230 : mastery_spells.master_demonologist -> effect_base_value( 3 );
 
   if ( buffs_metamorphosis -> up() )
   {

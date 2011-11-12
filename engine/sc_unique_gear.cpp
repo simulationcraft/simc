@@ -908,7 +908,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   }
 
   // FIXME: 4.3 PTR nerf seems to be roughly a halving of the proc chance - only tested warlocks so far, 2011/10/26
-  if ( p -> ptr )
+  if ( p -> dbc.ptr )
   {
     chance *= 0.67;
   }

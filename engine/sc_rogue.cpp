@@ -2203,7 +2203,7 @@ struct mutilate_strike_t : public rogue_attack_t
 
     rogue_t* p = player -> cast_rogue();
 
-    if ( target -> debuffs.poisoned && ! p -> ptr )
+    if ( target -> debuffs.poisoned && ! p -> dbc.ptr )
       player_multiplier *= 1.20; // XXX: I'm sure it's there somehwere; or not
 
     p -> uptimes_poisoned -> update( target -> debuffs.poisoned > 0 );
