@@ -1258,7 +1258,7 @@ static void register_nokaled( item_t* item )
     spell_t* spells[3];
     rng_t* rng;
 
-    // FIXME: Verify if spells can miss and if they benefit from mastery, talents, etc.
+    // FIXME: Verify if spells can miss
     struct nokaled_fire_t : public spell_t
     {
       nokaled_fire_t( player_t* p, uint32_t spell_id ) :
@@ -1314,9 +1314,6 @@ static void register_nokaled( item_t* item )
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
-      if ( a -> special ) return;
-
-      // FIXME: Does it have an ICD or not? If not, it's quite OP
       if ( rng -> roll( chance ) )
       {
         spells[ ( int ) ( rng -> range( 0.0, 2.999 ) ) ] -> execute();
