@@ -1114,7 +1114,7 @@ static void register_indomitable_pride( item_t* item )
         cd -> start();
         double amount = heroic ? 0.56 : lfr ? 0.43 : 0.50;
         if ( call_data )
-          amount *= *((double *) call_data);
+          amount *= *( ( double * ) call_data );
         else
           assert( 0 );
         buff -> trigger( 1, amount );
@@ -1255,7 +1255,7 @@ static void register_nokaled( item_t* item )
     double chance;
     spell_t* spells[3];
     rng_t* rng;
-    
+
     // FIXME: Verfiy if spells can crit/miss and if they benefit from mastery, talents, etc.
     struct nokaled_fire_t : public spell_t
     {
@@ -1264,7 +1264,7 @@ static void register_nokaled( item_t* item )
       {
         trigger_gcd = 0;
         background = true;
-        may_miss = false; 
+        may_miss = false;
         may_crit = true;
         proc = true;
         init();
@@ -1278,7 +1278,7 @@ static void register_nokaled( item_t* item )
       {
         trigger_gcd = 0;
         background = true;
-        may_miss = false; 
+        may_miss = false;
         may_crit = true;
         proc = true;
         init();
@@ -1292,7 +1292,7 @@ static void register_nokaled( item_t* item )
       {
         trigger_gcd = 0;
         background = true;
-        may_miss = false; 
+        may_miss = false;
         may_crit = true;
         proc = true;
         init();
@@ -1308,17 +1308,17 @@ static void register_nokaled( item_t* item )
 
       rng = p -> get_rng ( "nokaled" );
       rng -> average_range = false; // Otherwise we'll always get the mean
-      
+
       chance = p -> dbc.spell( 107786 ) -> proc_chance();
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
       if ( a -> special ) return;
-      
+
       // FIXME: Does it have an ICD or not? If not, it's quite OP
       if ( rng -> roll( chance ) )
-      { 
+      {
         spells[ ( int ) ( rng -> range( 0.0, 2.999 ) ) ] -> execute();
       }
     }
@@ -1348,7 +1348,7 @@ static void register_rathrak( item_t* item )
       proc = true;
       init();
     }
-    // FIXME does this double dip in talents/masterys/etc?    
+    // FIXME does this double dip in talents/masterys/etc?
   };
 
   struct rathrak_callback_t : public action_callback_t
@@ -1366,7 +1366,7 @@ static void register_rathrak( item_t* item )
     {
       // FIXME: Does it have an ICD or not?
       if ( rng -> roll( 0.15 ) )
-      { 
+      {
         spell -> execute();
       }
     }
@@ -1428,25 +1428,19 @@ static void register_souldrinker( item_t* item )
   p -> register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic, lfr ) ) );
 }
 
-// register_titahk
+// register_titahk ==========================================================
+
 static void register_titahk( item_t* item )
 {
   player_t* p = item -> player;
   bool heroic = item -> heroic();
   bool lfr    = item -> lfr();
 
-  static uint32_t    lfr_spell = 109843;
-  static uint32_t normal_spell = 107805;
-  static uint32_t heroic_spell = 109846;
-  static uint32_t    lfr_buff  = 109842;
-  static uint32_t normal_buff  = 107804;
-  static uint32_t heroic_buff  = 109844;
+  uint32_t spell_id = heroic ? 109846 : lfr ? 109843 : 107805;
+  uint32_t buff_id = p -> dbc.spell( spell_id ) -> effect1().trigger_spell_id();
 
-  uint32_t spell_id = heroic ? heroic_spell : lfr ? lfr_spell : normal_spell;
-  uint32_t buff_id = heroic ? heroic_buff : lfr ? lfr_buff : normal_buff;
-
-  const spell_data_t* spell = p -> dbc.spell(spell_id);
-  const spell_data_t* buff  = p -> dbc.spell(buff_id);
+  const spell_data_t* spell = p -> dbc.spell( spell_id );
+  const spell_data_t* buff  = p -> dbc.spell( buff_id );
 
   struct titahk_callback_t : public action_callback_t
   {
@@ -1457,28 +1451,26 @@ static void register_titahk( item_t* item )
 
     titahk_callback_t( player_t* p, const spell_data_t* spell, const spell_data_t* buff ) :
       action_callback_t( p -> sim, p ),
-        proc_chance(spell -> proc_chance()),
-        rng( p -> get_rng( "titahk", RNG_DEFAULT ) )
+      proc_chance( spell -> proc_chance() ),
+      rng( p -> get_rng( "titahk" ) )
     {
       double duration = buff -> duration();
-      buff_self   = new stat_buff_t(p, "titahk_self", STAT_HASTE_RATING, buff ->effect1().base_value(), 1, duration);
-      buff_radius = new stat_buff_t(p, "titahk_aoe",  STAT_HASTE_RATING, buff ->effect2().base_value(), 1, duration); // TODO: Apply aoe buff to other players?
+      buff_self   = new stat_buff_t( p, "titahk_self", STAT_HASTE_RATING, buff -> effect1().base_value(), 1, duration );
+      buff_radius = new stat_buff_t( p, "titahk_aoe",  STAT_HASTE_RATING, buff -> effect2().base_value(), 1, duration ); // FIXME: Apply aoe buff to other players
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
       // FIXME: Does this have an ICD?
-      if( rng -> roll( proc_chance ))
+      if( rng -> roll( proc_chance ) )
       {
-        buff_self->trigger();
-        buff_radius->trigger();
+        buff_self -> trigger();
+        buff_radius -> trigger();
       }
     }
   };
 
-  action_callback_t* cb = new titahk_callback_t( p, spell, buff );
-
-  p -> register_spell_callback( SCHOOL_SPELL_MASK, cb ); 
+  p -> register_spell_callback( SCHOOL_SPELL_MASK, new titahk_callback_t( p, spell, buff ) );
 }
 
 // ==========================================================================
@@ -1534,7 +1526,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
     if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
-	if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
+    if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
   }
 }
 
@@ -2058,7 +2050,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
   else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnHarmfulSpellHit_11937Shadow_15%_45Cd" : lfr ? "OnHarmfulSpellHit_9369Shadow_15%_45Cd" : "OnHarmfulSpellHit_10575Shadow_15%_45Cd" ); // Confirm ICD, AoE?
   else if ( name == "bone-link_fetish"                    ) e = ( heroic ? "OnAttackHit_12788Physical_15%_45Cd" : lfr ? "OnAttackHit_10037Physical_15%_45Cd" : "OnAttackHit_11329Physical_15%_45Cd" ); // Confirm ICD, AoE?
-  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_17051Physical_15%_45Cd" : lfr ? "OnAttackHit_13383Physical_15%_45Cd" : "OnAttackHit_15106Physical_15%_45Cd" ); // Confirm ICD
+  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_17051Physical+101.6_15%_45Cd" : lfr ? "OnAttackHit_13383+79.7Physical_15%_45Cd" : "OnAttackHit_15106Physical+90_15%_45Cd" ); // Confirm ICD
   else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "reign_of_the_dead"                   ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "solace_of_the_defeated"              ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
