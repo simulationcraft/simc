@@ -1972,6 +1972,11 @@ double player_t::composite_attack_haste() SC_CONST
     {
       h *= 1.0 / ( 1.0 + 0.01 );
     }
+
+    if ( buffs.berserking -> up() )
+    {
+      h *= 1.0 / ( 1.0 + buffs.berserking -> effect1().percent() );
+    }
   }
 
   return h;
@@ -1982,14 +1987,6 @@ double player_t::composite_attack_haste() SC_CONST
 double player_t::composite_attack_speed() SC_CONST
 {
   double h = composite_attack_haste();
-
-  if ( type != PLAYER_GUARDIAN )
-  {
-    if ( buffs.berserking -> up() )
-    {
-      h *= 1.0 / ( 1.0 + 0.20 );
-    }
-  }
 
   if ( ! is_enemy() && ! is_add() )
     h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party       -> value(),
@@ -2242,7 +2239,7 @@ double player_t::composite_spell_haste() SC_CONST
       h *= 1.0 / ( 1.0 + 1.0 );
 
     if ( buffs.berserking -> up() )
-      h *= 1.0 / ( 1.0 + 0.20 );
+      h *= 1.0 / ( 1.0 + buffs.berserking -> effect1().percent() );
 
     if ( ! is_pet() && ! is_enemy() && ! is_add() )
     {
