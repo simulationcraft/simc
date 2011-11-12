@@ -1314,6 +1314,9 @@ static void register_nokaled( item_t* item )
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
+      if ( a -> proc )
+        return;
+
       if ( rng -> roll( chance ) )
       {
         spells[ ( int ) ( rng -> range( 0.0, 2.999 ) ) ] -> execute();
