@@ -2050,7 +2050,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
   else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnHarmfulSpellHit_11937Shadow_15%_45Cd" : lfr ? "OnHarmfulSpellHit_9369Shadow_15%_45Cd" : "OnHarmfulSpellHit_10575Shadow_15%_45Cd" ); // Confirm ICD, AoE?
   else if ( name == "bone-link_fetish"                    ) e = ( heroic ? "OnAttackHit_12788Physical_15%_45Cd" : lfr ? "OnAttackHit_10037Physical_15%_45Cd" : "OnAttackHit_11329Physical_15%_45Cd" ); // Confirm ICD, AoE?
-  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_17051Physical+101.6_15%_45Cd" : lfr ? "OnAttackHit_13383+79.7Physical_15%_45Cd" : "OnAttackHit_15106Physical+90_15%_45Cd" ); // Confirm ICD
+  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_17051Physical+101.6_15%_45Cd" : lfr ? "OnAttackHit_13383+79.7Physical_15%_45Cd" : "OnAttackHit_15106+90Physical_15%_45Cd" ); // Confirm ICD
   else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "reign_of_the_dead"                   ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "solace_of_the_defeated"              ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
