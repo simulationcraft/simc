@@ -3955,15 +3955,7 @@ void mage_t::init_actions()
       }
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.stack>1";
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd";
-      if ( glyphs.frostbolt -> ok() )
-      {
-        action_list_str += "/frostbolt";
-      }
-      else
-      {
-        action_list_str += "/frostbolt,if=!cooldown.early_frost.remains";
-        action_list_str += "/frostfire_bolt";
-      }
+      action_list_str += "/frostbolt";
       action_list_str += "/ice_lance,moving=1"; // when moving
       action_list_str += "/fire_blast,moving=1"; // when moving
     }
