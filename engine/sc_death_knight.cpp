@@ -4521,7 +4521,7 @@ void death_knight_t::init_actions()
       action_list_str += "/howling_blast,if=dot.frost_fever.remains<=" + drefresh;
       action_list_str += "/plague_strike,if=dot.blood_plague.remains<=" + drefresh;
       action_list_str += "/obliterate,if=death>=1&frost>=1&unholy>=1";
-      action_list_str += "/obliterate,if=(death=2&frost=2)|(death=2&unholy=2)|(frost=2|unholy=2)";
+      action_list_str += "/obliterate,if=(death=2&frost=2)|(death=2&unholy=2)|(frost=2&unholy=2)";
       // XXX TODO 110 is based on MAXRP - FSCost + a little, as a break point. should be varialble based on RPM GoFS etc
       action_list_str += "/frost_strike,if=runic_power>=110";
       if ( talents.howling_blast -> rank() && talents.rime -> rank() )
