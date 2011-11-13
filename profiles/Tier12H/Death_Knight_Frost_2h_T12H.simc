@@ -19,13 +19,13 @@ actions+=/use_item,name=elementium_deathplate_gauntlets,time>=10
 actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
 actions+=/pillar_of_frost
-actions+=/blood_tap,if=death!=2&death.cooldown_remains>2.0
+actions+=/blood_tap,if=death.cooldown_remains>2.0
 actions+=/raise_dead,time>=15
 actions+=/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2
 actions+=/howling_blast,if=dot.frost_fever.remains<=2
 actions+=/plague_strike,if=dot.blood_plague.remains<=2
 actions+=/obliterate,if=death>=1&frost>=1&unholy>=1
-actions+=/obliterate,if=(death=2&frost=2)|(death=2&unholy=2)|(frost=2|unholy=2)
+actions+=/obliterate,if=(death=2&frost=2)|(death=2&unholy=2)|(frost=2&unholy=2)
 actions+=/frost_strike,if=runic_power>=110
 actions+=/howling_blast,if=buff.rime.react
 actions+=/obliterate,if=(death=2|unholy=2|frost=2)
