@@ -1063,6 +1063,8 @@ struct gargoyle_pet_t : public pet_t
       // FIX ME!
       // Resist (can be partial)? Scaling?
       may_crit    = true;
+      trigger_gcd = true;
+      min_gcd     = 1.5; // issue961
 
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
