@@ -780,6 +780,7 @@ void player_t::init()
   init_weapon( &main_hand_weapon );
   init_weapon( &off_hand_weapon );
   init_weapon( &ranged_weapon );
+  init_professions_bonus();
   init_unique_gear();
   init_enchant();
   init_scaling();
@@ -1287,6 +1288,13 @@ void player_t::init_professions()
 
     profession[ prof_type ] = prof_value;
   }
+}
+
+// player_t::init_professions_bonus =========================================
+
+void player_t::init_professions_bonus()
+{
+  // This has to be called after init_attack() and init_core()
 
   // Miners gain additional stamina
   if      ( profession[ PROF_MINING ] >= 525 ) attribute_initial[ ATTR_STAMINA ] += 120.0;
@@ -1298,13 +1306,41 @@ void player_t::init_professions()
   else if ( profession[ PROF_MINING ] >=  75 ) attribute_initial[ ATTR_STAMINA ] +=   3.0;
 
   // Skinners gain additional crit rating
-  if      ( profession[ PROF_SKINNING ] >= 525 ) initial_attack_crit += 80.0 / rating.attack_crit;
-  else if ( profession[ PROF_SKINNING ] >= 450 ) initial_attack_crit += 40.0 / rating.attack_crit;
-  else if ( profession[ PROF_SKINNING ] >= 375 ) initial_attack_crit += 20.0 / rating.attack_crit;
-  else if ( profession[ PROF_SKINNING ] >= 300 ) initial_attack_crit += 12.0 / rating.attack_crit;
-  else if ( profession[ PROF_SKINNING ] >= 225 ) initial_attack_crit +=  9.0 / rating.attack_crit;
-  else if ( profession[ PROF_SKINNING ] >= 150 ) initial_attack_crit +=  6.0 / rating.attack_crit;
-  else if ( profession[ PROF_SKINNING ] >=  75 ) initial_attack_crit +=  3.0 / rating.attack_crit;
+  if      ( profession[ PROF_SKINNING ] >= 525 )
+  {
+    initial_attack_crit += 80.0 / rating.attack_crit;
+    initial_spell_crit += 80.0 / rating.spell_crit;
+  }
+  else if ( profession[ PROF_SKINNING ] >= 450 )
+  {
+    initial_attack_crit += 40.0 / rating.attack_crit;
+    initial_spell_crit += 40.0 / rating.spell_crit;
+  }
+  else if ( profession[ PROF_SKINNING ] >= 375 )
+  {
+    initial_attack_crit += 20.0 / rating.attack_crit;
+    initial_spell_crit += 20.0 / rating.spell_crit;
+  }
+  else if ( profession[ PROF_SKINNING ] >= 300 )
+  {
+    initial_attack_crit += 12.0 / rating.attack_crit;
+    initial_spell_crit += 12.0 / rating.spell_crit;
+  }
+  else if ( profession[ PROF_SKINNING ] >= 225 )
+  {
+    initial_attack_crit +=  9.0 / rating.attack_crit;
+    initial_spell_crit +=  9.0 / rating.spell_crit;
+  }
+  else if ( profession[ PROF_SKINNING ] >= 150 )
+  {
+    initial_attack_crit +=  6.0 / rating.attack_crit;
+    initial_spell_crit +=  6.0 / rating.spell_crit;
+  }
+  else if ( profession[ PROF_SKINNING ] >=  75 )
+  {
+    initial_attack_crit +=  3.0 / rating.attack_crit;
+    initial_spell_crit +=  3.0 / rating.spell_crit;
+  }
 }
 
 // Execute Pet Action =======================================================

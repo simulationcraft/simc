@@ -4074,6 +4074,7 @@ struct player_t : public noncopyable
   virtual void init_enchant();
   virtual void init_resources( bool force = false );
   virtual void init_professions();
+  virtual void init_professions_bonus();
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
   virtual std::string init_use_profession_actions( const std::string& append = std::string() );
   virtual std::string init_use_racial_actions( const std::string& append = std::string() );
