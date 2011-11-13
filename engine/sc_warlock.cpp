@@ -198,6 +198,7 @@ struct warlock_t : public player_t
   // Buffs
   buff_t* buffs_backdraft;
   buff_t* buffs_decimation;
+  buff_t* buffs_demon_armor;
   buff_t* buffs_demonic_empowerment;
   buff_t* buffs_empowered_imp;
   buff_t* buffs_eradication;
@@ -431,6 +432,7 @@ struct warlock_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
   virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
+  virtual double    composite_armor() SC_CONST;
   virtual double    composite_spell_power( const school_type school ) SC_CONST;
   virtual double    composite_spell_power_multiplier() SC_CONST;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
@@ -906,6 +908,26 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 };
 
 // ==========================================================================
+// Warlock Heal
+// ==========================================================================
+
+struct warlock_heal_t : public heal_t
+{
+  warlock_heal_t( const char* n, warlock_t* p, const uint32_t id ) :
+    heal_t( n, p, id )
+  { }
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    heal_t::player_buff();
+
+    player_multiplier *= 1.0 + p -> buffs_demon_armor -> value();
+  }
+};
+
+// ==========================================================================
 // Warlock Spell
 // ==========================================================================
 
@@ -945,10 +967,6 @@ public:
   {
     _init_warlock_spell_t();
   }
-
-  // ========================================================================
-  // Warlock Spell
-  // ========================================================================
 
   // warlock_spell_t::haste =================================================
 
@@ -2496,10 +2514,69 @@ struct corruption_t : public warlock_spell_t
 
 // Drain Life Spell =========================================================
 
+struct drain_life_heal_t : public warlock_heal_t
+{
+  drain_life_heal_t( warlock_t* p ) :
+    warlock_heal_t( "drain_life_heal", p, 89653 )
+  {
+    background = true;
+    may_miss = false;
+    base_dd_min = base_dd_max = 0; // Is parsed as 2
+    init();
+  }
+
+  virtual void execute()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    double heal_pct = effect1().percent();
+
+    if ( ( p -> resource_current[ RESOURCE_HEALTH ] / p -> resource_max[ RESOURCE_HEALTH ] ) <= 0.25 )
+      heal_pct += p -> talent_deaths_embrace -> effect1().percent();
+
+    base_dd_min = base_dd_max = p -> resource_max[ RESOURCE_HEALTH ] * heal_pct;
+    warlock_heal_t::execute();
+  }
+
+  virtual void player_buff()
+  {
+    warlock_t* p = player -> cast_warlock();
+    warlock_heal_t::player_buff();
+
+    double min_multiplier[] = { 0, 0.03, 0.06 };
+    double max_multiplier [3] = {0};
+    if ( p -> bugs )
+    {
+      max_multiplier[0] =  0.00;
+      max_multiplier[1] =  0.12;
+      max_multiplier[2] =  0.24;
+    }
+    else
+    {
+      max_multiplier[0] =  0.00;
+      max_multiplier[1] =  0.09;
+      max_multiplier[2] =  0.18;
+    }
+
+    assert( p -> talent_soul_siphon -> rank() <= 2 );
+
+    double min = min_multiplier[ p -> talent_soul_siphon -> rank() ];
+    double max = max_multiplier[ p -> talent_soul_siphon -> rank() ];
+
+    double multiplier = p -> affliction_effects() * min;
+
+    if ( multiplier > max ) multiplier = max;
+
+    player_multiplier *= 1.0 + multiplier;
+  }
+};
+
 struct drain_life_t : public warlock_spell_t
 {
+  drain_life_heal_t* heal;
+
   drain_life_t( warlock_t* p, const std::string& options_str ) :
-    warlock_spell_t( "drain_life", p, "Drain Life" )
+    warlock_spell_t( "drain_life", p, "Drain Life" ), heal( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2507,6 +2584,8 @@ struct drain_life_t : public warlock_spell_t
     binary       = true;
     hasted_ticks = false;
     may_crit     = false;
+
+    heal = new drain_life_heal_t( p );
   }
 
   virtual void last_tick( dot_t* d)
@@ -2576,6 +2655,8 @@ struct drain_life_t : public warlock_spell_t
 
     if ( p -> buffs_shadow_trance -> trigger( 1, 1.0, p -> talent_nightfall -> proc_chance() ) )
       p -> procs_shadow_trance -> occur();
+
+    heal -> execute();
   }
 };
 
@@ -3171,6 +3252,38 @@ struct life_tap_t : public warlock_spell_t
     if ( trigger > 0 )
       if ( p -> resource_current[ RESOURCE_MANA ] > trigger )
         return false;
+
+    return warlock_spell_t::ready();
+  }
+};
+
+// Demon Armor ==============================================================
+
+struct demon_armor_t : public warlock_spell_t
+{
+  demon_armor_t( warlock_t* p, const std::string& options_str ) :
+    warlock_spell_t( "demon_armor", p, "Demon Armor" )
+  {
+    parse_options( NULL, options_str );
+   
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    warlock_spell_t::execute();
+
+    p -> buffs_demon_armor -> trigger( 1, effect2().percent() + p -> talent_demonic_aegis -> effect1().percent() );
+  }
+
+  virtual bool ready()
+  {
+    warlock_t* p = player -> cast_warlock();
+
+    if ( p -> buffs_demon_armor -> check() )
+      return false;
 
     return warlock_spell_t::ready();
   }
@@ -4033,6 +4146,18 @@ void imp_pet_t::firebolt_t::impact( player_t* t, int impact_result, double trave
 // Warlock Character Definition
 // ==========================================================================
 
+// warlock_t::composite_armor ===============================================
+
+double warlock_t::composite_armor() SC_CONST
+{
+  double a = player_t::composite_armor();
+
+  if ( buffs_demon_armor -> up() )
+    a += buffs_demon_armor ->effect1().base_value();
+
+  return a;
+}
+
 // warlock_t::composite_spell_power =========================================
 
 double warlock_t::composite_spell_power( const school_type school ) SC_CONST
@@ -4043,6 +4168,8 @@ double warlock_t::composite_spell_power( const school_type school ) SC_CONST
 
   return sp;
 }
+
+// warlock_t::composite_spell_power_multiplier ==============================
 
 double warlock_t::composite_spell_power_multiplier() SC_CONST
 {
@@ -4162,6 +4289,7 @@ action_t* warlock_t::create_action( const std::string& name,
   if ( name == "bane_of_doom"        ) return new        bane_of_doom_t( this, options_str );
   if ( name == "curse_of_elements"   ) return new   curse_of_elements_t( this, options_str );
   if ( name == "death_coil"          ) return new          death_coil_t( this, options_str );
+  if ( name == "demon_armor"         ) return new         demon_armor_t( this, options_str );
   if ( name == "demonic_empowerment" ) return new demonic_empowerment_t( this, options_str );
   if ( name == "drain_life"          ) return new          drain_life_t( this, options_str );
   if ( name == "drain_soul"          ) return new          drain_soul_t( this, options_str );
@@ -4398,6 +4526,7 @@ void warlock_t::init_buffs()
 
   buffs_backdraft             = new buff_t( this, talent_backdraft -> effect_trigger_spell( 1 ), "backdraft" );
   buffs_decimation            = new buff_t( this, talent_decimation -> effect_trigger_spell( 1 ), "decimation", talent_decimation -> ok() );
+  buffs_demon_armor           = new buff_t( this,   687, "demon_armor" );
   buffs_demonic_empowerment   = new buff_t( this, "demonic_empowerment",   1 );
   buffs_empowered_imp         = new buff_t( this, 47283, "empowered_imp", talent_empowered_imp -> effect1().percent() );
   buffs_eradication           = new buff_t( this, talent_eradication -> effect_trigger_spell( 1 ), "eradication", talent_eradication -> proc_chance() );
