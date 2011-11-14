@@ -44,7 +44,7 @@ shoulders=backbreaker_spaulders,heroic=1,type=plate,ilevel=416,quality=epic,stat
 chest=necrotic_boneplate_breastplate,heroic=1,type=plate,ilevel=410,quality=epic,stats=3977armor_489str_824sta_358haste_311hit,reforge=hit_exp,gems=40str_40str_20str_20hit_30str,enchant=20all
 waist=runescriven_demon_collar,heroic=1,type=plate,ilevel=410,quality=epic,stats=2237armor_368str_611sta_271mastery_218haste,reforge=mastery_exp,gems=40str_40str_40str_20str
 legs=necrotic_boneplate_greaves,heroic=1,type=plate,ilevel=410,quality=epic,stats=3480armor_489str_824sta_366mastery_288haste,gems=67str_67str_67str,enchant=55crit_190ap
-feet=treads_of_crushed_flesh,heroic=1,type=plate,ilevel=410,quality=epic,stats=2734armor_368str_611sta_259mastery_237crit,reforge=crit_haste,gems=40str_40str_20str,enchant=50haste
+feet=treads_of_crushed_flesh,heroic=1,type=plate,ilevel=410,quality=epic,stats=2734armor_368str_611sta_259mastery_237crit,reforge=crit_hit,gems=40str_40str_20str,enchant=50haste
 wrists=rockhide_bracers,heroic=1,type=plate,ilevel=410,quality=epic,stats=1740armor_286str_459sta_159mastery_219crit,reforge=crit_haste,gems=40str_10str,enchant=50str
 hands=necrotic_boneplate_gauntlets,heroic=1,type=plate,ilevel=410,quality=epic,stats=2486armor_388str_611sta_284crit_232mastery,reforge=crit_haste,gems=40str_40str_10str,enchant=synapse_springs,addon=50str
 finger1=breathstealer_band,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_194haste_194mastery,reforge=mastery_exp,gems=40str_10str
@@ -63,9 +63,9 @@ ranged=gutripper_shard,heroic=1,ilevel=410,quality=epic,stats=172str_259sta_104m
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=785
-# gear_hit_rating=575
+# gear_hit_rating=669
 # gear_crit_rating=1609
-# gear_haste_rating=2376
+# gear_haste_rating=2282
 # gear_mastery_rating=2169
 # gear_armor=23742
 # meta_gem=reverberating_shadowspirit
