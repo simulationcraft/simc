@@ -5601,7 +5601,20 @@ int priest_t::decode_set( item_t& item )
                   strstr( s, "vestment"      ) ||
                   strstr( s, "gloves"        ) ||
                   strstr( s, "leggings"      ) );
+
+    /* FIX-ME: Kludge due to caster shoulders and chests have the wrong name */
+    const char* t = item.encoded_stats_str.c_str();
+
+    if ( ( ( item.slot == SLOT_SHOULDERS ) && strstr( t, "crit"  ) ) ||
+         ( ( item.slot == SLOT_CHEST     ) && strstr( t, "haste" ) ) )
+    {
+      is_caster = 1;
+    }
+
     if ( is_caster ) return SET_T13_CASTER;
+
+
+
 
     is_healer = ( strstr( s, "cowl"          ) ||
                   strstr( s, "mantle"        ) ||
