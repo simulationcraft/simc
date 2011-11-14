@@ -439,6 +439,8 @@ void scaling_t::analyze_gear_weights()
   {
     if ( p -> quiet ) continue;
 
+    if ( p -> is_pet() ) continue;
+
     chart_t::gear_weights_lootrank  ( p -> gear_weights_lootrank_link,   p );
     chart_t::gear_weights_wowhead   ( p -> gear_weights_wowhead_link,    p );
     chart_t::gear_weights_wowreforge( p -> gear_weights_wowreforge_link, p );
