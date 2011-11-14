@@ -4550,9 +4550,9 @@ void death_knight_t::init_actions()
       if ( talents.unholy_frenzy -> rank() )
         action_list_str += "/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45";
       if ( level > 81 )
-        action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
-      action_list_str += "/icy_touch,if=dot.frost_fever.remains<3";
-      action_list_str += "/plague_strike,if=dot.blood_plague.remains<3";
+        action_list_str += "/outbreak,if=dot.frost_fever.remains<2|dot.blood_plague.remains<2";
+      action_list_str += "/icy_touch,if=dot.frost_fever.remains<2";
+      action_list_str += "/plague_strike,if=dot.blood_plague.remains<2";
       if ( talents.dark_transformation -> rank() )
         action_list_str += "/dark_transformation";
       if ( talents.summon_gargoyle -> rank() )
@@ -4561,9 +4561,7 @@ void death_knight_t::init_actions()
         action_list_str += "/summon_gargoyle,if=buff.bloodlust.react";
         action_list_str += "/summon_gargoyle,if=buff.unholy_frenzy.react";
       }
-      action_list_str += "/death_and_decay,if=death=4";
       action_list_str += "/death_and_decay,if=unholy=2";
-      action_list_str += "/scourge_strike,if=death=4";
       action_list_str += "/scourge_strike,if=unholy=2";
       action_list_str += "/festering_strike,if=blood=2&frost=2";
       action_list_str += "/death_coil,if=runic_power>90";
@@ -4573,8 +4571,8 @@ void death_knight_t::init_actions()
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
       action_list_str += "/death_coil";
-      action_list_str += "/blood_tap,if=unholy=0&inactive_death=1";
-      action_list_str += "/empower_rune_weapon,if=unholy=0";
+      action_list_str += "/blood_tap";
+      action_list_str += "/empower_rune_weapon";
       action_list_str += "/horn_of_winter";
       break;
     default: break;
