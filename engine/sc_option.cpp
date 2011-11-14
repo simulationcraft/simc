@@ -41,7 +41,7 @@ static FILE* open_file( sim_t* sim, const std::string& name )
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, sim -> path_str, ",;|" );
 
-  for( int i=0; i < num_splits; i++ )
+  for ( int i=0; i < num_splits; i++ )
   {
     buffer = splits[ i ];
     buffer += DIRECTORY_DELIMITER;

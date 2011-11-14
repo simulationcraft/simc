@@ -2579,9 +2579,9 @@ public:
   // Use up() where the presence of the buff affects the action mechanics.
 
   int    check() { return current_stack; }
-  inline bool   up()    { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
-  inline int    stack() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
-  inline double value() { if( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  inline bool   up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
+  inline int    stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
+  inline double value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
   double remains();
   bool   remains_gt( double time );
   bool   remains_lt( double time );
@@ -5636,13 +5636,13 @@ struct ability_t : public action_t
     actor_t* targets[ AOE_CAP ];
     int num_targets = area_of_effect( targets );
     results.resize( num_targets );
-    for( int i=0; i < num_targets; i++ )
+    for ( int i=0; i < num_targets; i++ )
     {
       calculate_result( results[ i ], targets[ i ] );
       // "result" callbacks
     }
     consume_resource();
-    for( int i=0; i < num_targets; i++ )
+    for ( int i=0; i < num_targets; i++ )
     {
       schedule_travel( results[ i ] );
     }
@@ -5651,7 +5651,7 @@ struct ability_t : public action_t
   }
   virtual void impact( result_t& result )
   {
-    if( result.hit )
+    if ( result.hit )
     {
       if ( result.amount > 0 )
       {
@@ -5659,7 +5659,7 @@ struct ability_t : public action_t
         {
           assess_damage( result );
         }
-        else if( healing )
+        else if ( healing )
         {
           assess_healing( result );
         }

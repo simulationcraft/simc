@@ -2001,7 +2001,7 @@ struct bane_of_agony_t : public warlock_spell_t
 
     int extra_ticks = ( int ) ( p -> glyphs.bane_of_agony -> base_value() / 1000.0 / base_tick_time );
 
-    if( extra_ticks > 0 )
+    if ( extra_ticks > 0 )
     {
       // after patch 3.0.8, the added ticks are double the base damage
 
@@ -2294,7 +2294,7 @@ void trigger_burning_embers ( spell_t* s, double dmg )
 
     p -> spells_burning_embers -> base_td += ( dmg * p -> talent_burning_embers -> effect1().percent() ) / num_ticks;
 
-    if( p -> spells_burning_embers -> base_td > cap ) p -> spells_burning_embers -> base_td = cap;
+    if ( p -> spells_burning_embers -> base_td > cap ) p -> spells_burning_embers -> base_td = cap;
 
     p -> spells_burning_embers -> execute();
   }
@@ -3246,7 +3246,7 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     if (  max_mana_pct > 0 )
-      if( ( 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ) > max_mana_pct )
+      if ( ( 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ) > max_mana_pct )
         return false;
 
     if ( trigger > 0 )
@@ -3685,7 +3685,7 @@ struct demonic_empowerment_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    if( p -> active_pet -> pet_type == PET_FELGUARD )
+    if ( p -> active_pet -> pet_type == PET_FELGUARD )
       p -> active_pet -> buffs.stunned -> expire();
   }
 

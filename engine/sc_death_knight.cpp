@@ -485,7 +485,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   {
     // we shouldn't ever overflow the paired rune, but take care just in case
     paired_rune -> value += overflow;
-    if( paired_rune -> value > 1.0 )
+    if ( paired_rune -> value > 1.0 )
     {
       overflow = paired_rune -> value - 1.0;
       paired_rune -> value = 1.0;
@@ -2268,7 +2268,7 @@ struct blood_boil_t : public death_knight_spell_t
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_blood_boil -> execute();
 
-    if( p -> buffs_crimson_scourge -> up() )
+    if ( p -> buffs_crimson_scourge -> up() )
       p -> buffs_crimson_scourge -> expire();
   }
 
@@ -2871,7 +2871,7 @@ struct frost_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::execute();
 
-    if( result_is_hit() )
+    if ( result_is_hit() )
       p -> trigger_runic_empowerment();
 
     if ( oh_attack )

@@ -568,10 +568,10 @@ struct weapon_stat_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
-    if( ! all_damage && a -> proc ) return;
-    if( weapon && a -> weapon != weapon ) return;
+    if ( ! all_damage && a -> proc ) return;
+    if ( weapon && a -> weapon != weapon ) return;
 
-    if( PPM > 0 )
+    if ( PPM > 0 )
     {
       buff -> trigger( 1, 0, weapon -> proc_chance_on_swing( PPM ) ); // scales with haste
     }
@@ -633,14 +633,14 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
-    if( a -> proc ) return;
-    if( weapon && a -> weapon != weapon ) return;
+    if ( a -> proc ) return;
+    if ( weapon && a -> weapon != weapon ) return;
 
     if ( cooldown -> remains() > 0 )
       return;
 
     double chance = fixed_chance;
-    if( weapon && PPM > 0 )
+    if ( weapon && PPM > 0 )
       chance = weapon -> proc_chance_on_swing( PPM ); // scales with haste
 
     if ( chance > 0 )
@@ -797,14 +797,14 @@ void enchant_t::init( player_t* p )
       }
       virtual void trigger( action_t* /* a */, void* /* call_data */ )
       {
-        if( s_buff -> cooldown -> remains() > 0 ) return;
-        if( ! s_buff -> rng -> roll( 0.15 ) ) return;
-        if( mh_buff && mh_buff -> check() )
+        if ( s_buff -> cooldown -> remains() > 0 ) return;
+        if ( ! s_buff -> rng -> roll( 0.15 ) ) return;
+        if ( mh_buff && mh_buff -> check() )
         {
           mh_buff -> trigger();
           s_buff -> cooldown -> start();
         }
-        else if( oh_buff && oh_buff -> check() )
+        else if ( oh_buff && oh_buff -> check() )
         {
           oh_buff -> trigger();
           s_buff -> cooldown -> start();
@@ -1004,15 +1004,15 @@ bool enchant_t::get_reforge_encoding( std::string& name,
   int start = 0;
   int target = atoi( reforge_id.c_str() );
   target %= 56;
-  if( target == 0 ) target = 56;
-  else if( target <= start ) return false;
+  if ( target == 0 ) target = 56;
+  else if ( target <= start ) return false;
 
-  for( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
+  for ( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
   {
-    for( int j=0; reforge_stats[ j ] != STAT_NONE; j++ )
+    for ( int j=0; reforge_stats[ j ] != STAT_NONE; j++ )
     {
-      if( i == j ) continue;
-      if( ++start == target )
+      if ( i == j ) continue;
+      if ( ++start == target )
       {
         std::string source_stat = util_t::stat_type_abbrev( reforge_stats[ i ] );
         std::string target_stat = util_t::stat_type_abbrev( reforge_stats[ j ] );
@@ -1034,23 +1034,23 @@ int enchant_t::get_reforge_id( stat_type stat_from,
                                stat_type stat_to )
 {
   int index_from;
-  for( index_from=0; reforge_stats[ index_from ] != STAT_NONE; index_from++ )
+  for ( index_from=0; reforge_stats[ index_from ] != STAT_NONE; index_from++ )
     if ( reforge_stats[ index_from ] == stat_from )
       break;
 
   int index_to;
-  for( index_to=0; reforge_stats[ index_to ] != STAT_NONE; index_to++ )
+  for ( index_to=0; reforge_stats[ index_to ] != STAT_NONE; index_to++ )
     if ( reforge_stats[ index_to ] == stat_to )
       break;
 
   int id=0;
-  for( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
+  for ( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
   {
-    for( int j=0; reforge_stats[ j ] != STAT_NONE; j++ )
+    for ( int j=0; reforge_stats[ j ] != STAT_NONE; j++ )
     {
-      if( i == j ) continue;
+      if ( i == j ) continue;
       id++;
-      if( index_from == i &&
+      if ( index_from == i &&
           index_to   == j )
       {
         return id;

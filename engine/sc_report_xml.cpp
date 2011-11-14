@@ -36,7 +36,7 @@ public:
 
   ~xml_writer_t()
   {
-    if( file )
+    if ( file )
     {
       fclose( file );
     }
@@ -70,7 +70,7 @@ public:
     assert( current_state == NONE );
 
     printf( "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" );
-    if( !stylesheet_file.empty() )
+    if ( !stylesheet_file.empty() )
     {
       printf( "<?xml-stylesheet type=\"text/xml\" href=\"%s\"?>", stylesheet_file.c_str() );
     }
@@ -82,7 +82,7 @@ public:
   {
     assert( current_state != NONE );
 
-    if( current_state != TEXT )
+    if ( current_state != TEXT )
     {
       printf( ">" );
     }
@@ -106,11 +106,11 @@ public:
 
     indentation.resize( indentation.size() - tabulation.size() );
 
-    if( current_state == TAG )
+    if ( current_state == TAG )
     {
       printf( "/>" );
     }
-    else if( current_state == TEXT )
+    else if ( current_state == TEXT )
     {
       printf( "\n%s</%s>", indentation.c_str(), tag.c_str() );
     }
@@ -125,7 +125,7 @@ public:
   {
     assert( current_state != NONE );
 
-    if( current_state == TAG )
+    if ( current_state == TAG )
     {
       printf( " %s=\"%s\"", name.c_str(), value.c_str() );
     }
@@ -135,7 +135,7 @@ public:
   {
     assert( current_state != NONE );
 
-    if( current_state != TEXT )
+    if ( current_state != TEXT )
     {
       printf( ">" );
     }
@@ -149,7 +149,7 @@ public:
   {
     assert( current_state != NONE );
 
-    if( current_state != TEXT )
+    if ( current_state != TEXT )
     {
       printf( ">" );
     }
@@ -203,10 +203,10 @@ void print_xml_player_charts( xml_writer_t & writer, player_t * p );
 void print_xml_errors( sim_t* sim, xml_writer_t & writer )
 {
   size_t num_errors = sim -> error_list.size();
-  if( num_errors > 0 )
+  if ( num_errors > 0 )
   {
     writer.begin_tag( "errors" );
-    for( size_t i=0; i < num_errors; i++ )
+    for ( size_t i=0; i < num_errors; i++ )
     {
       writer.begin_tag( "error" );
       writer.print_attribute( "message", sim -> error_list[ i ] );
@@ -261,7 +261,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
   writer.begin_tag( "targets" );
 
   size_t count = sim -> targets_by_name.size();
-  for( size_t i = 0; i < count; ++i )
+  for ( size_t i = 0; i < count; ++i )
   {
     player_t * current_player = sim -> targets_by_name[ i ];
     print_xml_player( sim, writer, current_player, NULL );
@@ -279,14 +279,14 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
 {
   writer.begin_tag( "player" );
   writer.print_attribute( "name", p -> name() );
-  if( owner )
+  if ( owner )
     writer.print_attribute( "owner", owner -> name() );
   writer.print_tag( "type", p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player" );
   writer.print_tag( "level", util_t::to_string( p -> level ) );
   writer.print_tag( "race", p -> race_str.c_str() );
   writer.begin_tag( "class" );
   writer.print_attribute("type", util_t::player_type_string( p->type ) );
-  if( p -> is_pet() )
+  if ( p -> is_pet() )
     writer.print_attribute( "subtype", util_t::pet_type_string( p -> cast_pet() -> pet_type ) );
   writer.end_tag(); // </class>
   writer.print_tag( "talent_tree", util_t::talent_tree_string( p -> primary_tree() ) );
@@ -463,7 +463,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       writer.print_attribute("apr", util_t::to_string( s -> apr ));
       writer.print_attribute("pdps", util_t::to_string( s -> portion_aps.mean ));
 
-      if( ! s -> timeline_aps_chart.empty() ) {
+      if ( ! s -> timeline_aps_chart.empty() ) {
         writer.begin_tag("chart");
         writer.print_attribute("type", "timeline_aps");
         writer.print_attribute("href", s -> timeline_aps_chart );
@@ -478,14 +478,14 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       writer.print_tag("aps", util_t::to_string(s -> aps));
       writer.print_tag("apet", util_t::to_string(s -> apet));
 
-      if( s -> num_direct_results > 0 )
+      if ( s -> num_direct_results > 0 )
       {
         writer.begin_tag("direct_results");
         writer.print_attribute("count", util_t::to_string(s -> num_direct_results));
 
         for ( int i=RESULT_MAX-1; i >= RESULT_NONE; i-- )
         {
-          if( s -> direct_results[ i ].count.mean ) {
+          if ( s -> direct_results[ i ].count.mean ) {
             writer.begin_tag( "result" );
             writer.print_attribute( "type", util_t::result_type_string( i ) );
             writer.print_attribute( "count", util_t::to_string(s -> direct_results[ i ].count.mean) );
@@ -513,7 +513,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
 
         for ( int i=RESULT_MAX-1; i >= RESULT_NONE; i-- )
         {
-          if( s -> tick_results[ i ].count.mean ) {
+          if ( s -> tick_results[ i ].count.mean ) {
             writer.begin_tag( "result" );
             writer.print_attribute( "type", util_t::result_type_string( i ) );
             writer.print_attribute( "count", util_t::to_string(s -> tick_results[ i ].count.mean) );
@@ -551,10 +551,10 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         for ( size_t j = 0; j < size && !found; j++ )
           if ( processed_actions[ j ] == a -> name() )
             found = true;
-        if( found ) continue;
+        if ( found ) continue;
         processed_actions.push_back( a -> name() );
 
-        if( a -> target ) {
+        if ( a -> target ) {
           writer.print_tag("target", a -> target -> name());
         }
       }
@@ -588,7 +588,7 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
       writer.print_attribute( "trigger", util_t::to_string( b -> avg_trigger_interval, 1 ) );
       writer.print_attribute( "uptime", util_t::to_string( b -> uptime_pct.mean, 0 ) );
 
-      if( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
+      if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
       {
         writer.print_attribute( "benefit", util_t::to_string( b -> benefit_pct ) );
       }
@@ -786,7 +786,7 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
   writer.print_attribute( "max", util_t::to_string( max, 1 ) );
   writer.print_attribute( "points", util_t::to_string( points ) );
 
-  for( int i=0; i < STAT_MAX; i++ )
+  for ( int i=0; i < STAT_MAX; i++ )
   {
     std::vector<double>& pd = p -> dps_plot_data[ i ];
 
@@ -795,7 +795,7 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
       writer.begin_tag( "dps" );
       writer.print_attribute( "stat", util_t::stat_type_abbrev( i ) );
       size_t num_points = pd.size();
-      for( size_t j=0; j < num_points; j++ )
+      for ( size_t j=0; j < num_points; j++ )
       {
         writer.print_tag( "value", util_t::to_string( pd[ j ], 0 ) );
       }
@@ -810,7 +810,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "charts" );
 
-  if( ! p -> action_dpet_chart.empty() )
+  if ( ! p -> action_dpet_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dpet" );
@@ -818,7 +818,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t * p )
     writer.end_tag(); // </chart>
   }
 
-  if( ! p -> action_dmg_chart.empty() )
+  if ( ! p -> action_dmg_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dmg" );
@@ -826,7 +826,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t * p )
     writer.end_tag(); // </chart>
   }
 
-  if( ! p -> scaling_dps_chart.empty() )
+  if ( ! p -> scaling_dps_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "scaling_dps" );
@@ -834,7 +834,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t * p )
     writer.end_tag(); // </chart>
   }
 
-  if( ! p -> reforge_dps_chart.empty() )
+  if ( ! p -> reforge_dps_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "reforge_dps" );
@@ -842,7 +842,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t * p )
     writer.end_tag(); // </chart>
   }
 
-  if( ! p -> scale_factors_chart.empty() )
+  if ( ! p -> scale_factors_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "scale_factors" );
@@ -850,7 +850,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t * p )
     writer.end_tag(); // </chart>
   }
 
-  if( ! p -> timeline_dps_chart.empty() )
+  if ( ! p -> timeline_dps_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "timeline_dps" );
@@ -858,7 +858,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t * p )
     writer.end_tag(); // </chart>
   }
 
-  if( ! p -> distribution_dps_chart.empty() )
+  if ( ! p -> distribution_dps_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "distribution_dps" );
@@ -866,7 +866,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_t * p )
     writer.end_tag(); // </chart>
   }
 
-  if( ! p -> time_spent_chart.empty() )
+  if ( ! p -> time_spent_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "time_spent" );
@@ -898,12 +898,12 @@ void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
       writer.print_attribute( "trigger", util_t::to_string( b -> avg_trigger_interval, 1 ) );
       writer.print_attribute( "uptime", util_t::to_string( b -> uptime_pct.mean, 0 ) );
 
-      if( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
+      if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
       {
         writer.print_attribute( "benefit", util_t::to_string( b -> benefit_pct ) );
       }
 
-      if( b -> trigger_pct > 0 && b -> trigger_pct < 100 )
+      if ( b -> trigger_pct > 0 && b -> trigger_pct < 100 )
       {
         writer.print_attribute( "trigger_pct", util_t::to_string( b -> trigger_pct ) );
       }
@@ -930,18 +930,18 @@ void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
-    if( p -> procs.hat_donor -> count )
+    if ( p -> procs.hat_donor -> count )
       hat_donors.push_back( p );
   }
 
   int num_donors = ( int ) hat_donors.size();
-  if( num_donors )
+  if ( num_donors )
   {
     range::sort( hat_donors, compare_hat_donor_interval()  );
 
     writer.begin_tag( "honor_among_thieves" );
 
-    for( int i=0; i < num_donors; i++ )
+    for ( int i=0; i < num_donors; i++ )
     {
       writer.begin_tag( "donors" );
       player_t* p = hat_donors[ i ];
@@ -1034,7 +1034,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
   writer.print_attribute( "stddev", util_t::to_string(sim -> queue_lag_stddev * 1000.0) );
   writer.end_tag(); // </lag>
 
-  if( sim -> strict_gcd_queue )
+  if ( sim -> strict_gcd_queue )
   {
     writer.begin_tag("lag");
     writer.print_attribute("type", "gcd");
@@ -1102,7 +1102,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 
   writer.begin_tag( "player_by_dps" );
   count = sim -> players_by_dps.size();
-  for( size_t i = 0; i < count; i++ ) {
+  for ( size_t i = 0; i < count; i++ ) {
     player_t* p = sim -> players_by_dps[ i ];
     writer.begin_tag( "player" );
     writer.print_attribute( "name", p -> name() );
@@ -1114,7 +1114,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 
   writer.begin_tag( "player_by_hps" );
   count = sim -> players_by_dps.size();
-  for( size_t i = 0; i < count; i++ ) {
+  for ( size_t i = 0; i < count; i++ ) {
     player_t* p = sim -> players_by_dps[ i ];
     writer.begin_tag( "player" );
     writer.print_attribute( "name", p -> name() );
@@ -1147,9 +1147,9 @@ void print_xml_get_action_list(sim_t* sim, player_t* p, std::map<int, action_t*>
         for ( size_t j = 0; j < size && !found; j++ )
           if ( processed_actions[ j ] == a -> name() )
             found = true;
-        if( found ) continue;
+        if ( found ) continue;
         processed_actions.push_back( a -> name() );
-        if(all_actions.find( a -> id ) == all_actions.end()) { // Not found.
+        if (all_actions.find( a -> id ) == all_actions.end()) { // Not found.
           all_actions[ a -> id ] = a;
         }
       }
@@ -1177,7 +1177,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         for ( size_t j = 0; j < size && !found; j++ )
           if ( processed_actions[ j ] == a -> name() )
             found = true;
-        if( found ) continue;
+        if ( found ) continue;
         processed_actions.push_back( a -> name() );
 
         writer.begin_tag( "action_detail" );
@@ -1195,15 +1195,15 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         writer.end_tag(); // </cooldown>
         writer.print_tag("base_execute_time", util_t::to_string( a -> base_execute_time ));
         writer.print_tag("base_crit", util_t::to_string( a -> base_crit ));
-        if( a -> target ) {
+        if ( a -> target ) {
           writer.print_tag("target", a -> target -> name());
         }
-        if( a -> tooltip() ) {
+        if ( a -> tooltip() ) {
           writer.print_tag("tooltip", a -> tooltip());
         }
         writer.print_tag("description", report_t::encode_html( a -> desc() ));
 
-        if( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
+        if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
         {
           writer.begin_tag("direct_damage");
           writer.print_tag("may_crit", a -> may_crit ? "true" : "false");
@@ -1215,7 +1215,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.end_tag(); // </direct_damage>
         }
 
-        if( a -> num_ticks )
+        if ( a -> num_ticks )
         {
           writer.begin_tag("damage_over_time");
           writer.print_tag("tick_may_crit", a -> tick_may_crit ? "true" : "false");
@@ -1238,7 +1238,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.print_tag("runic_power_gain", util_t::to_string( a -> rp_gain ));
           writer.end_tag(); // </runes>
         }
-        if( a -> weapon )
+        if ( a -> weapon )
         {
           writer.begin_tag("weapon");
           writer.print_tag("normalize_speed", a -> normalize_weapon_speed ? "true" : "false");
@@ -1269,7 +1269,7 @@ void report_t::print_xml( sim_t* sim )
   if ( sim -> xml_file_str.empty() ) return;
 
   xml_writer_t writer( sim -> xml_file_str.c_str() );
-  if( !writer.ready() )
+  if ( !writer.ready() )
   {
     sim -> errorf( "Unable to open xml file '%s'\n", sim -> xml_file_str.c_str() );
     return;

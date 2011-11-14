@@ -1507,26 +1507,26 @@ bool util_t::parse_origin( std::string& region_str,
   std::vector<std::string> tokens;
   int num_tokens = util_t::string_split( tokens, origin_str, "/:.?&=" );
 
-  for( int i=0; i < num_tokens; i++ )
+  for ( int i=0; i < num_tokens; i++ )
   {
     std::string& t = tokens[ i ];
 
-    if( t == "http" )
+    if ( t == "http" )
     {
       if ( ( i+1 ) >= num_tokens ) return false;
       region_str = tokens[ ++i ];
     }
-    else if( t == "r" ) // old armory
+    else if ( t == "r" ) // old armory
     {
       if ( ( i+1 ) >= num_tokens ) return false;
       server_str = tokens[ ++i ];
     }
-    else if( t == "n" || t == "cn" ) // old armory
+    else if ( t == "n" || t == "cn" ) // old armory
     {
       if ( ( i+1 ) >= num_tokens ) return false;
       name_str = tokens[ ++i ];
     }
-    else if( t == "character" ) // new battle.net
+    else if ( t == "character" ) // new battle.net
     {
       if ( ( i+2 ) >= num_tokens ) return false;
       server_str = tokens[ ++i ];
@@ -1546,7 +1546,7 @@ bool util_t::parse_origin( std::string& region_str,
 int util_t::class_id_mask( int type )
 {
   int cid = class_id( type );
-  if( cid <= 0 ) return 0;
+  if ( cid <= 0 ) return 0;
   return 1 << ( cid - 1 );
 }
 
@@ -2373,7 +2373,7 @@ double util_t::round( double X, unsigned int decplaces )
 
 void util_t::tolower_( std::string& str )
 {
-  for( std::string::size_type i = 0, n = str.length(); i < n; ++i )
+  for ( std::string::size_type i = 0, n = str.length(); i < n; ++i )
     str[i] = ::tolower( str[i] );
 }
 
@@ -2385,7 +2385,7 @@ void util_t::tolower_( std::string& str )
 std::string tolower( const std::string& src )
 {
   std::string dest;
-  for( std::string::size_type i = 0, n = src.length(); i < n; ++i )
+  for ( std::string::size_type i = 0, n = src.length(); i < n; ++i )
     dest.push_back( tolower( src[ i ] ) );
   return dest;
 }

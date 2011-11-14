@@ -17,11 +17,11 @@ static bool is_plot_stat( sim_t* sim,
     std::vector<std::string> stat_list;
     int num_stats = util_t::string_split( stat_list, sim -> plot -> dps_plot_stat_str, ",:;/|" );
     bool found = false;
-    for( int i=0; i < num_stats && ! found; i++ )
+    for ( int i=0; i < num_stats && ! found; i++ )
     {
       found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
     }
-    if( ! found ) return false;
+    if ( ! found ) return false;
   }
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
@@ -103,7 +103,7 @@ void plot_t::analyze_stats()
 
     current_plot_stat = i;
 
-    if( sim -> report_progress )
+    if ( sim -> report_progress )
     {
       util_t::fprintf( stdout, "\nGenerating DPS Plot for %s...\n", util_t::stat_type_string( i ) );
       fflush( stdout );
@@ -124,7 +124,7 @@ void plot_t::analyze_stats()
       end = - start;
     }
 
-    for( int j = start; j <= end; j++ )
+    for ( int j = start; j <= end; j++ )
     {
       if ( sim -> canceled ) break;
 

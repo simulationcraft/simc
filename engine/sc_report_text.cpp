@@ -20,7 +20,7 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 {
   if ( s -> num_executes == 0 && s -> total_amount.mean == 0 ) return;
 
-  if( max_name_length == 0 ) max_name_length = 20;
+  if ( max_name_length == 0 ) max_name_length = 20;
 
   util_t::fprintf( file,
                    "    %-*s  Count=%5.1f|%5.2fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
@@ -136,7 +136,7 @@ static void print_text_actions( FILE* file, player_t* p )
   int max_length=0;
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
     if ( s -> total_amount.mean > 0 )
-      if( max_length < ( int ) s -> name_str.length() )
+      if ( max_length < ( int ) s -> name_str.length() )
         max_length = ( int ) s -> name_str.length();
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
@@ -180,7 +180,7 @@ static void print_text_buffs( FILE* file, player_t* p )
     if ( b -> constant )
     {
       int length = ( int ) strlen( b -> name() );
-      if( ( total_length + length ) > 100 )
+      if ( ( total_length + length ) > 100 )
       {
         if ( ! first )
           util_t::fprintf( file, "\n" );
@@ -231,7 +231,7 @@ static void print_text_buffs( FILE* file, player_t* p )
                        max_length, b -> name(), b -> avg_start, b -> avg_refresh,
                        b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
 
-      if( b -> benefit_pct > 0 &&
+      if ( b -> benefit_pct > 0 &&
           b -> benefit_pct < 100 )
       {
         util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
@@ -256,7 +256,7 @@ static void print_text_buffs( FILE* file, player_t* p )
                          max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
                          b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
 
-        if( b -> benefit_pct > 0 &&
+        if ( b -> benefit_pct > 0 &&
             b -> benefit_pct < 100 )
         {
           util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
@@ -283,7 +283,7 @@ static void print_text_buffs( FILE* file, sim_t* sim )
     if ( b -> constant )
     {
       int length = ( int ) strlen( b -> name() );
-      if( ( total_length + length ) > 100 )
+      if ( ( total_length + length ) > 100 )
       {
         util_t::fprintf( file, "\n  Constant:" );
         prefix = ' ';
@@ -319,7 +319,7 @@ static void print_text_buffs( FILE* file, sim_t* sim )
                        max_length, b -> name(), b -> avg_start, b -> avg_refresh,
                        b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
 
-      if( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
+      if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
       {
         util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
       }
@@ -405,7 +405,7 @@ static void print_text_gains( FILE* file, player_t* p )
       if ( length > max_length ) max_length = length;
     }
   }
-  if( max_length == 0 ) return;
+  if ( max_length == 0 ) return;
 
   util_t::fprintf( file, "  Gains:\n" );
 
@@ -438,7 +438,7 @@ static void print_text_pet_gains( FILE* file, player_t* p )
         if ( length > max_length ) max_length = length;
       }
     }
-    if( max_length > 0 )
+    if ( max_length > 0 )
     {
       util_t::fprintf( file, "  Pet \"%s\" Gains:\n", pet -> name_str.c_str() );
 
@@ -484,7 +484,7 @@ static void print_text_uptime( FILE* file, player_t* p )
   {
     if ( u -> ratio > 0 )
     {
-      if( first ) util_t::fprintf( file, "  Benefits:\n" ); first = false;
+      if ( first ) util_t::fprintf( file, "  Benefits:\n" ); first = false;
       util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> ratio * 100.0, u -> name() );
     }
   }
@@ -494,7 +494,7 @@ static void print_text_uptime( FILE* file, player_t* p )
   {
     if ( u -> uptime > 0 )
     {
-      if( first ) util_t::fprintf( file, "  Up-Times:\n" ); first = false;
+      if ( first ) util_t::fprintf( file, "  Up-Times:\n" ); first = false;
       util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> uptime * 100.0, u -> name() );
     }
   }
@@ -659,7 +659,7 @@ static void print_text_dps_plots( FILE* file, player_t* p )
 
   util_t::fprintf( file, "  DPS Plot Data ( min=%.1f max=%.1f points=%d )\n", min, max, points );
 
-  for( int i=0; i < STAT_MAX; i++ )
+  for ( int i=0; i < STAT_MAX; i++ )
   {
     std::vector<double>& pd = p -> dps_plot_data[ i ];
 
@@ -667,7 +667,7 @@ static void print_text_dps_plots( FILE* file, player_t* p )
     {
       util_t::fprintf( file, "    DPS(%s)=", util_t::stat_type_abbrev( i ) );
       size_t num_points = pd.size();
-      for( size_t j=0; j < num_points; j++ )
+      for ( size_t j=0; j < num_points; j++ )
       {
         util_t::fprintf( file, "%s%.0f", ( j?"|":"" ), pd[ j ] );
       }
@@ -778,18 +778,18 @@ static void print_text_hat_donors( FILE* file, sim_t* sim )
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
-    if( p -> procs.hat_donor -> count )
+    if ( p -> procs.hat_donor -> count )
       hat_donors.push_back( p );
   }
 
   int num_donors = ( int ) hat_donors.size();
-  if( num_donors )
+  if ( num_donors )
   {
     range::sort( hat_donors, compare_hat_donor_interval()  );
 
     util_t::fprintf( file, "\nHonor Among Thieves Donor Report:\n" );
 
-    for( int i=0; i < num_donors; i++ )
+    for ( int i=0; i < num_donors; i++ )
     {
       player_t* p = hat_donors[ i ];
       proc_t* proc = p -> procs.hat_donor;

@@ -110,7 +110,7 @@ player_t* chardev_t::download_player( sim_t* sim,
 
   for ( int i=0; i < SLOT_MAX; i++ )
   {
-    if( sim -> canceled ) return 0;
+    if ( sim -> canceled ) return 0;
     sim -> current_slot = i;
     item_t& item = p -> items[ i ];
 
@@ -119,7 +119,7 @@ player_t* chardev_t::download_player( sim_t* sim,
 
     std::string item_id;
     js_t::get_value( item_id, slot_node, "0/0" );
-    if( item_id.empty() ) continue;
+    if ( item_id.empty() ) continue;
 
     std::string enchant_id, addon_id, gem_ids[ 3 ];
     js_t::get_value( gem_ids[ 0 ], slot_node, "1/0" );
@@ -157,7 +157,7 @@ player_t* chardev_t::download_player( sim_t* sim,
       }
     }
 
-    if( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
+    if ( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
       return 0;
   }
 
@@ -192,7 +192,7 @@ player_t* chardev_t::download_player( sim_t* sim,
       if      ( glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
       else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
       armory_t::format( glyph_name );
-      if( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
+      if ( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
     }
   }

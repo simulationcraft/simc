@@ -158,16 +158,16 @@ std::vector<unsigned> dbc_t::glyphs( int cid, bool ptr )
   ( void )ptr;
   std::vector<unsigned> glyph_ids;
 
-  for( int i=0; i < GLYPH_MAX; i++ )
+  for ( int i=0; i < GLYPH_MAX; i++ )
   {
-    for( int j=0; j < GLYPH_ABILITIES_SIZE; j++ )
+    for ( int j=0; j < GLYPH_ABILITIES_SIZE; j++ )
     {
 #if SC_USE_PTR
       unsigned id = ptr ? __ptr_glyph_abilities_data[ cid ][ i ][ j ] : __glyph_abilities_data[ cid ][ i ][ j ];
 #else
       unsigned id = __glyph_abilities_data[ cid ][ i ][ j ];
 #endif
-      if( ! id ) break;
+      if ( ! id ) break;
       glyph_ids.push_back( id );
     }
   }
@@ -821,8 +821,8 @@ spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, b
 
 spell_data_t* spell_data_t::find( const char* name, bool ptr )
 {
-  for( spell_data_t* p = spell_data_t::list( ptr ); p -> name_cstr(); ++p )
-    if( ! strcmp ( name, p -> name_cstr() ) )
+  for ( spell_data_t* p = spell_data_t::list( ptr ); p -> name_cstr(); ++p )
+    if ( ! strcmp ( name, p -> name_cstr() ) )
       return p;
 
   return 0;
@@ -846,7 +846,7 @@ talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool 
 talent_data_t* talent_data_t::find( const char* name, bool ptr )
 {
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
-    if( ! strcmp( name, p -> name_cstr() ) )
+    if ( ! strcmp( name, p -> name_cstr() ) )
       return p;
 
   return 0;
@@ -856,7 +856,7 @@ void spell_data_t::link( bool ptr )
 {
   spell_data_t* spell_data = spell_data_t::list( ptr );
 
-  for( int i = 0; spell_data[ i ].name_cstr(); i++ )
+  for ( int i = 0; spell_data[ i ].name_cstr(); i++ )
   {
     spell_data_t& sd = spell_data[ i ];
     sd._effect1 = spelleffect_data_t::find( sd._effect[ 0 ], ptr );
@@ -869,7 +869,7 @@ void spelleffect_data_t::link( bool ptr )
 {
   spelleffect_data_t* spelleffect_data = spelleffect_data_t::list( ptr );
 
-  for( int i=0; spelleffect_data[ i ].id(); i++ )
+  for ( int i=0; spelleffect_data[ i ].id(); i++ )
   {
     spelleffect_data_t& ed = spelleffect_data[ i ];
 
@@ -882,7 +882,7 @@ void talent_data_t::link( bool ptr )
 {
   talent_data_t* talent_data = talent_data_t::list( ptr );
 
-  for( int i=0; talent_data[ i ].name_cstr(); i++ )
+  for ( int i=0; talent_data[ i ].name_cstr(); i++ )
   {
     talent_data_t& td = talent_data[ i ];
 

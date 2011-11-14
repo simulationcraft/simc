@@ -131,7 +131,7 @@ void pet_t::summon( double duration )
   summon_time = sim -> current_time;
   summoned = true;
 
-  if( duration > 0 )
+  if ( duration > 0 )
   {
     struct expiration_t : public event_t
     {

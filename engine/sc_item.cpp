@@ -303,7 +303,7 @@ bool item_t::init()
     }
   }
 
-  if( encoded_name_str != "empty" &&
+  if ( encoded_name_str != "empty" &&
       encoded_name_str != "none" )
   {
     id_str                    = armory_id_str;
@@ -416,7 +416,7 @@ bool item_t::decode_armor_type()
   default:
     break;
   }
-  if( encoded_name_str == "empty" ||
+  if ( encoded_name_str == "empty" ||
       encoded_name_str == "none"  ||
       encoded_name_str == "" )
   {
@@ -724,7 +724,7 @@ bool item_t::decode_enchant()
 {
   if ( encoded_enchant_str == "none" ) return true;
 
-  if( encoded_enchant_str == "berserking"       ||
+  if ( encoded_enchant_str == "berserking"       ||
       encoded_enchant_str == "executioner"      ||
       encoded_enchant_str == "mongoose"         ||
       encoded_enchant_str == "avalanche"        ||
@@ -754,7 +754,7 @@ bool item_t::decode_enchant()
   }
 
   std::string use_str;
-  if( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_enchant = true;
     use.name_str = encoded_enchant_str;
@@ -762,7 +762,7 @@ bool item_t::decode_enchant()
   }
 
   std::string equip_str;
-  if( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_enchant = true;
     enchant.name_str = encoded_enchant_str;
@@ -797,14 +797,14 @@ bool item_t::decode_addon()
 {
   if ( encoded_addon_str == "none" ) return true;
 
-  if( encoded_addon_str == "synapse_springs" )
+  if ( encoded_addon_str == "synapse_springs" )
   {
     unique_addon = true;
     return true;
   }
 
   std::string use_str;
-  if( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_addon = true;
     use.name_str = encoded_addon_str;
@@ -812,7 +812,7 @@ bool item_t::decode_addon()
   }
 
   std::string equip_str;
-  if( unique_gear_t::get_equip_encoding( equip_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear_t::get_equip_encoding( equip_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_addon = true;
     addon.name_str = encoded_addon_str;
@@ -868,7 +868,7 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.discharge_amount = t.value;
 
       std::vector<std::string> splits;
-      if( 2 == util_t::string_split( splits, t.value_str, "+" ) )
+      if ( 2 == util_t::string_split( splits, t.value_str, "+" ) )
       {
         effect.discharge_amount  = atof( splits[ 0 ].c_str() );
         effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;

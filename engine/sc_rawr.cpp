@@ -588,8 +588,8 @@ player_t* rawr_t::load_player( sim_t* sim,
       if ( sd )
       {
         std::string glyph_name = sd -> name_cstr();
-        if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-        else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+        if (      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+        else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
         armory_t::format( glyph_name );
         if ( p -> glyphs_str.size() ) p -> glyphs_str += "/";
         p -> glyphs_str += glyph_name;
@@ -604,7 +604,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   for ( int i=0; i < SLOT_MAX; i++ )
   {
     sim -> current_slot = i;
-    if( sim -> canceled ) return 0;
+    if ( sim -> canceled ) return 0;
 
     const char* slot_name = translate_inventory_id( i );
     if ( ! slot_name ) continue;

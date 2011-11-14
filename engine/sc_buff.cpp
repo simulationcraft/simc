@@ -97,10 +97,10 @@ buff_t::buff_t( player_t*          p,
 
 void buff_t::init_from_talent_( player_t* /* p */, talent_t* talent )
 {
-  if( talent -> rank() )
+  if ( talent -> rank() )
   {
     default_chance = talent -> sd -> proc_chance();
-    if( default_chance <= 0 ) default_chance = 1.0;
+    if ( default_chance <= 0 ) default_chance = 1.0;
 
     spell_data_t* spell = talent -> trigger ? talent -> trigger : talent -> sd;
 
@@ -171,33 +171,33 @@ void buff_t::parse_options( va_list vap )
   while ( true )
   {
     const char* parm = ( const char * ) va_arg( vap, const char * );
-    if( ! parm ) break;
+    if ( ! parm ) break;
 
-    if( ! strcmp( parm, "stacks" ) )
+    if ( ! strcmp( parm, "stacks" ) )
     {
       max_stack = ( int ) va_arg( vap, int );
     }
-    else if( ! strcmp( parm, "chance" ) )
+    else if ( ! strcmp( parm, "chance" ) )
     {
       default_chance = ( double ) va_arg( vap, double );
     }
-    else if( ! strcmp( parm, "duration" ) )
+    else if ( ! strcmp( parm, "duration" ) )
     {
       buff_duration = ( double ) va_arg( vap, double );
     }
-    else if( ! strcmp( parm, "cooldown" ) )
+    else if ( ! strcmp( parm, "cooldown" ) )
     {
       buff_cooldown = ( double ) va_arg( vap, double );
     }
-    else if( ! strcmp( parm, "reverse" ) )
+    else if ( ! strcmp( parm, "reverse" ) )
     {
       reverse = va_arg( vap, int ) ? true : false;
     }
-    else if( ! strcmp( parm, "quiet" ) )
+    else if ( ! strcmp( parm, "quiet" ) )
     {
       quiet = va_arg( vap, int ) ? true : false;
     }
-    else if( ! strcmp( parm, "rng" ) )
+    else if ( ! strcmp( parm, "rng" ) )
     {
       rng_type = ( int ) va_arg( vap, int );
     }
@@ -250,7 +250,7 @@ void buff_t::init()
 
   buff_t** tail=0;
 
-  if( player )
+  if ( player )
   {
     cooldown = player -> get_cooldown( "buff_" + name_str );
     rng = player -> get_rng( name_str, rng_type );
@@ -1159,7 +1159,7 @@ void cost_reduction_buff_t::bump( int    stacks,
   }
   buff_t::bump( stacks );
   double delta = amount * current_stack - current_value;
-  if( delta > 0 )
+  if ( delta > 0 )
   {
     player -> cost_reduction_gain( school, delta );
     current_value += delta;

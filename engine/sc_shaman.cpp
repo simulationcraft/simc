@@ -1413,7 +1413,7 @@ struct lightning_charge_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     shaman_spell_t::player_buff();
 
-    if( consume_threshold > 0 )
+    if ( consume_threshold > 0 )
     {
       // Don't use stack() here so we don't count the occurence twice
       // together with trigger_fulmination()
@@ -1739,7 +1739,7 @@ struct auto_attack_t : public shaman_attack_t
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if( p -> primary_tree() != TREE_ENHANCEMENT ) return;
+      if ( p -> primary_tree() != TREE_ENHANCEMENT ) return;
       p -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
@@ -2129,7 +2129,7 @@ void shaman_spell_t::schedule_execute()
   {
     player -> executing = this;
     player -> gcd_ready = sim -> current_time + gcd();
-    if( player -> action_queued && sim -> strict_gcd_queue )
+    if ( player -> action_queued && sim -> strict_gcd_queue )
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
@@ -3209,7 +3209,7 @@ struct flametongue_totem_t : public shaman_totem_t
 
   virtual bool ready()
   {
-    if( sim -> auras.flametongue_totem -> check() )
+    if ( sim -> auras.flametongue_totem -> check() )
       return false;
 
     return shaman_totem_t::ready();
@@ -3488,7 +3488,7 @@ struct windfury_totem_t : public shaman_totem_t
 
   virtual bool ready()
   {
-    if( sim -> overrides.windfury_totem == 1 || sim -> auras.windfury_totem -> check() )
+    if ( sim -> overrides.windfury_totem == 1 || sim -> auras.windfury_totem -> check() )
       return false;
 
     return shaman_totem_t::ready();
@@ -4223,7 +4223,7 @@ void shaman_t::init_scaling()
   }
 
   // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
-  if( talent_elemental_precision -> rank() && sim -> scaling -> scale_stat == STAT_SPIRIT )
+  if ( talent_elemental_precision -> rank() && sim -> scaling -> scale_stat == STAT_SPIRIT )
   {
     double v = sim -> scaling -> scale_value;
     if ( ! sim -> scaling -> positive_scale_delta )

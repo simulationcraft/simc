@@ -368,7 +368,7 @@ int js_t::get_value( std::vector<std::string>& value,
   if ( node -> children.empty() ) return 0;
   size_t size = node -> children.size();
   value.resize( size );
-  for( size_t i=0; i < size; i++ )
+  for ( size_t i=0; i < size; i++ )
   {
     value[ i ] = node -> children[ i ] -> value;
   }

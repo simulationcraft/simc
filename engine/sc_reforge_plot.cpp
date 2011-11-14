@@ -17,11 +17,11 @@ static bool is_plot_stat( sim_t* sim,
     std::vector<std::string> stat_list;
     int num_stats = util_t::string_split( stat_list, sim -> reforge_plot -> reforge_plot_stat_str, ",:;/|" );
     bool found = false;
-    for( int i=0; i < num_stats && ! found; i++ )
+    for ( int i=0; i < num_stats && ! found; i++ )
     {
       found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
     }
-    if( ! found ) return false;
+    if ( ! found ) return false;
   }
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
@@ -218,7 +218,7 @@ void reforge_plot_t::analyze()
 
   analyze_stats();
 
-  if( ! reforge_plot_output_file_str.empty() )
+  if ( ! reforge_plot_output_file_str.empty() )
   {
     FILE* f = fopen( reforge_plot_output_file_str.c_str(), "w" );
     if ( f )

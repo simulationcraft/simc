@@ -612,8 +612,8 @@ bool wowhead_t::download_glyph( player_t*          player,
     return false;
   }
 
-  if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-  else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+  if (      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+  else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
   armory_t::format( glyph_name );
   return true;
 }
@@ -958,7 +958,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if ( builds ) // !!! NEW FORMAT !!!
   {
     js_node_t* build = js_t::get_node( builds, ( active_talents ? "1" : "0" ) );
-    if( ! build )
+    if ( ! build )
     {
       sim -> errorf( "Player %s unable to access talent/glyph build from profile.\n", p -> name() );
       return 0;
@@ -1042,7 +1042,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   for ( int i=0; i < SLOT_MAX; i++ )
   {
     sim -> current_slot = i;
-    if( sim -> canceled ) return 0;
+    if ( sim -> canceled ) return 0;
 
     std::vector<std::string> inventory_data;
     if ( js_t::get_value( inventory_data, profile_js, translate_inventory_id( i ) ) )

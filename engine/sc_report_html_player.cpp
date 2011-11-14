@@ -487,7 +487,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
       for ( size_t j = 0; j < size && !found; j++ )
         if ( processed_actions[ j ] == a -> name() )
           found = true;
-      if( found ) continue;
+      if ( found ) continue;
       processed_actions.push_back( a -> name() );
 
       fprintf ( file,
@@ -527,7 +527,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 a -> target ? a -> target -> name() : "",
                 a -> tooltip(),
                 report_t::encode_html( a -> desc() ).c_str() );
-      if( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
+      if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
       {
         fprintf ( file,
                   "\t\t\t\t\t\t\t\t\t\t<h5>Direct Damage</h5>\n"
@@ -542,7 +542,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                   a -> base_dd_min,
                   a -> base_dd_max );
       }
-      if( a -> num_ticks )
+      if ( a -> num_ticks )
       {
         fprintf ( file,
                   "\t\t\t\t\t\t\t\t\t\t<h5>Damage Over Time</h5>\n"
@@ -581,7 +581,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                   ( a -> rune_cost() >> 2 ) & 0x1,
                   a -> rp_gain );
       }
-      if( a -> weapon )
+      if ( a -> weapon )
       {
         fprintf ( file,
                   "\t\t\t\t\t\t\t\t\t\t<h5>Weapon</h5>\n"
@@ -1261,7 +1261,7 @@ static void print_html_player_action_priority_list( FILE* file, sim_t* sim, play
   fprintf( file,
            "\t\t\t\t\t\t\t\t</table>\n" );
 
-  if( ! p -> action_sequence.empty() )
+  if ( ! p -> action_sequence.empty() )
   {
     std::string& seq = p -> action_sequence;
     if ( seq.size() > 0 )
@@ -1686,7 +1686,7 @@ static void print_html_player_buffs( FILE* file, player_t* p )
     buff_t* b = dynamic_buffs[ i ];
 
     std::string buff_name;
-    if( b -> player && b -> player -> is_pet() )
+    if ( b -> player && b -> player -> is_pet() )
     {
       buff_name += b -> player -> name_str + '-';
     }

@@ -606,8 +606,8 @@ void raid_event_t::parse_options( option_t*          options,
     sim -> cancel();
   }
 
-  if( cooldown > 0 && cooldown_stddev == 0 ) cooldown_stddev = 0.10 * cooldown;
-  if( duration > 0 && duration_stddev == 0 ) duration_stddev = 0.10 * duration;
+  if ( cooldown > 0 && cooldown_stddev == 0 ) cooldown_stddev = 0.10 * cooldown;
+  if ( duration > 0 && duration_stddev == 0 ) duration_stddev = 0.10 * duration;
 }
 
 // raid_event_t::create =====================================================

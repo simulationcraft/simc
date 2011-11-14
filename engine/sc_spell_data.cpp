@@ -1219,7 +1219,7 @@ static spell_data_expr_t* build_expression_tree( sim_t* sim,
   auto_dispose_t< std::vector<spell_data_expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
-  for( size_t i=0; i < num_tokens; i++ )
+  for ( size_t i=0; i < num_tokens; i++ )
   {
     const expr_token_t& t= tokens[ i ];
 
@@ -1396,7 +1396,7 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 
   if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
 
-  if( ! expression_t::convert_to_rpn( 0, tokens ) )
+  if ( ! expression_t::convert_to_rpn( 0, tokens ) )
   {
     sim -> errorf( "Unable to convert %s into RPN\n", expr_str.c_str() );
     sim -> cancel();

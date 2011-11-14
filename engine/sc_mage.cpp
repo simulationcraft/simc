@@ -250,7 +250,7 @@ struct mage_t : public player_t
 
   mage_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, MAGE, name, r )
   {
-    if( race == RACE_NONE ) race = RACE_UNDEAD;
+    if ( race == RACE_NONE ) race = RACE_UNDEAD;
 
     tree_type[ MAGE_ARCANE ] = TREE_ARCANE;
     tree_type[ MAGE_FIRE   ] = TREE_FIRE;
@@ -688,7 +688,7 @@ struct mirror_image_pet_t : public pet_t
 
   virtual double composite_spell_power( const school_type school ) SC_CONST
   {
-    if( school == SCHOOL_ARCANE )
+    if ( school == SCHOOL_ARCANE )
     {
       return snapshot_arcane_sp * 0.75;
     }
@@ -794,7 +794,7 @@ struct tier12_mirror_image_pet_t : public pet_t
 
 static double calculate_dot_dps( dot_t* dot )
 {
-  if( ! dot -> ticking ) return 0;
+  if ( ! dot -> ticking ) return 0;
 
   action_t* a = dot -> action;
 
@@ -841,7 +841,7 @@ static void trigger_hot_streak( mage_spell_t* s )
   sim_t* sim = s -> sim;
   mage_t*  p = s -> player -> cast_mage();
 
-  if( ! s -> may_hot_streak )
+  if ( ! s -> may_hot_streak )
     return;
 
   if ( ! p -> talents.hot_streak -> rank() )
@@ -870,12 +870,12 @@ static void trigger_hot_streak( mage_spell_t* s )
       hot_streak_chance += 0.3; // From testing on the PTR and also the consensus of the EJ thread.
     }
 
-    if( hot_streak_chance > 0 && p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance ) )
+    if ( hot_streak_chance > 0 && p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance ) )
     {
       p -> procs_hotstreak -> occur();
       p -> buffs_hot_streak_crits -> expire();
     }
-    else if( p -> talents.improved_hot_streak -> rank() )
+    else if ( p -> talents.improved_hot_streak -> rank() )
     {
       p -> buffs_hot_streak_crits -> trigger();
 
@@ -965,7 +965,7 @@ static void trigger_ignite( spell_t* s, double dmg )
     ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
   }
 
-  if( ( 4.0 + sim -> aura_delay ) < dot -> remains() )
+  if ( ( 4.0 + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
     p -> procs_munched_ignite -> occur();
@@ -1203,9 +1203,9 @@ void mage_spell_t::impact( player_t* t, int impact_result, double travel_dmg )
     trigger_ignite( this, direct_dmg );
   }
 
-  if( may_chill )
+  if ( may_chill )
   {
-    if( result_is_hit( impact_result ) )
+    if ( result_is_hit( impact_result ) )
     {
       p -> buffs_fingers_of_frost -> trigger();
     }
@@ -2245,7 +2245,7 @@ struct frost_armor_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    if( p -> buffs_frost_armor -> check() ) return false;
+    if ( p -> buffs_frost_armor -> check() ) return false;
     return mage_spell_t::ready();
   }
 };
@@ -2261,7 +2261,7 @@ struct frostbolt_t : public mage_spell_t
     base_crit += p -> glyphs.frostbolt -> effect1().percent();
     may_chill = true;
     may_brain_freeze = true;
-    if( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
+    if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     base_multiplier *= 1.0 + p -> specializations.frost3;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
@@ -2333,7 +2333,7 @@ struct frostbolt_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     if ( p -> talents.early_frost -> rank() )
-      if( ! p -> cooldowns_early_frost -> remains() )
+      if ( ! p -> cooldowns_early_frost -> remains() )
         return 1.0;
 
     return mage_spell_t::gcd();
@@ -2422,7 +2422,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p -> glyphs.frostfire -> ok() && result_is_hit( impact_result ) )
     {
-      if( dot_stack < 3 ) dot_stack++;
+      if ( dot_stack < 3 ) dot_stack++;
       result = RESULT_HIT;
       double dot_dmg = calculate_direct_damage() * 0.03;
       base_td = dot_stack * dot_dmg / num_ticks;
@@ -2478,7 +2478,7 @@ struct frostfire_orb_tick_t : public mage_spell_t
 
     mage_t* p = player -> cast_mage();
 
-    if( may_chill && result_is_hit( impact_result ) )
+    if ( may_chill && result_is_hit( impact_result ) )
       p -> buffs_fingers_of_frost -> trigger();
   }
 };
@@ -2688,7 +2688,7 @@ struct mage_armor_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    if( p -> buffs_mage_armor -> check() ) return false;
+    if ( p -> buffs_mage_armor -> check() ) return false;
     return mage_spell_t::ready();
   }
 };
@@ -2846,7 +2846,7 @@ struct molten_armor_t : public mage_spell_t
   virtual bool ready()
   {
     mage_t* p = player -> cast_mage();
-    if( p -> buffs_molten_armor -> check() ) return false;
+    if ( p -> buffs_molten_armor -> check() ) return false;
     return mage_spell_t::ready();
   }
 };
@@ -2911,7 +2911,7 @@ struct pyroblast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
@@ -2952,7 +2952,7 @@ struct pyroblast_hs_t : public mage_spell_t
       p -> buffs_hot_streak -> expire();
     }
     mage_spell_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;

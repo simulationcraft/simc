@@ -441,10 +441,10 @@ struct hunter_pet_t : public pet_t
     pet_t::init_talents();
 
     int total_points = 0;
-    for( int i=0; i < MAX_TALENT_TREES; i++ )
+    for ( int i=0; i < MAX_TALENT_TREES; i++ )
     {
       size_t size = talent_trees[i].size();
-      for( size_t j=0; j < size; j++ )
+      for ( size_t j=0; j < size; j++ )
         total_points += talent_trees[ i ][ j ] -> rank();
     }
 
@@ -464,7 +464,7 @@ struct hunter_pet_t : public pet_t
         talents.shark_attack     -> set_rank( 1, true );
         talents.wild_hunt        -> set_rank( 1, true );
 
-        if( owner -> cast_hunter() -> talents.beast_mastery -> rank() )
+        if ( owner -> cast_hunter() -> talents.beast_mastery -> rank() )
         {
           talents.shark_attack -> set_rank( 2, true );
           talents.wild_hunt    -> set_rank( 2, true );
@@ -519,11 +519,11 @@ struct hunter_pet_t : public pet_t
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
 
-      if( talents.call_of_the_wild -> rank() )
+      if ( talents.call_of_the_wild -> rank() )
       {
         action_list_str += "/call_of_the_wild";
       }
-      if( talents.roar_of_recovery -> rank() )
+      if ( talents.roar_of_recovery -> rank() )
       {
         action_list_str += "/roar_of_recovery,if=!buff.bloodlust.up";
       }
@@ -863,7 +863,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
     piercing_shots_dmg += p -> active_piercing_shots -> base_td * dot -> ticks();
   }
 
-  if( ( 8.0 + sim -> aura_delay ) < dot -> remains() )
+  if ( ( 8.0 + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Piercing Shots due to Max Piercing Shots Duration.", p -> name() );
     p -> procs_munched_piercing_shots -> occur();
@@ -1973,7 +1973,7 @@ struct aimed_shot_t : public hunter_attack_t
     {
       hunter_t* p = player -> cast_hunter();
       check_spec ( TREE_MARKSMANSHIP );
-      if( ! options_str.empty() ) parse_options( NULL, options_str );
+      if ( ! options_str.empty() ) parse_options( NULL, options_str );
 
       // Don't know why these values aren't 0 in the database.
       base_cost = 0;
@@ -2344,7 +2344,7 @@ struct explosive_trap_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( trap_launcher )
+    if ( trap_launcher )
       return 20.0 + p -> glyphs.trap_launcher -> effect1().resource( RESOURCE_FOCUS );
 
     return hunter_attack_t::cost();
@@ -2770,7 +2770,7 @@ struct multi_shot_t : public hunter_attack_t
     aoe = -1;
 
     normalize_weapon_speed = true;
-    if( p -> talents.serpent_spread -> rank() )
+    if ( p -> talents.serpent_spread -> rank() )
       spread_sting = new serpent_sting_spread_t( player, options_str );
 
     consumes_tier12_4pc = true;
@@ -2781,7 +2781,7 @@ struct multi_shot_t : public hunter_attack_t
     hunter_attack_t::execute();
     hunter_t* p = player -> cast_hunter();
 
-    if( p -> buffs_bombardment -> up() )
+    if ( p -> buffs_bombardment -> up() )
       p -> buffs_bombardment -> expire();
   }
 
@@ -2793,22 +2793,22 @@ struct multi_shot_t : public hunter_attack_t
     hunter_attack_t::impact( t, impact_result, travel_dmg );
     int crit_occurred = 0;
 
-    if( result_is_hit( impact_result ) )
+    if ( result_is_hit( impact_result ) )
     {
-      if( spread_sting )
+      if ( spread_sting )
         spread_sting -> execute();
-      if( impact_result == RESULT_CRIT )
+      if ( impact_result == RESULT_CRIT )
         crit_occurred++;
-      /*for( int i=0; i < q -> adds_nearby; i++ ) {
+      /*for ( int i=0; i < q -> adds_nearby; i++ ) {
         // Calculate a result for each nearby add to determine whether to proc
         // bombardment
         int delta_level = q -> level - p -> level;
-        if( sim -> real() <= crit_chance( delta_level ) )
+        if ( sim -> real() <= crit_chance( delta_level ) )
           crit_occurred++;
       }*/
     }
 
-    if( p -> talents.bombardment -> rank() && crit_occurred )
+    if ( p -> talents.bombardment -> rank() && crit_occurred )
       p -> buffs_bombardment -> trigger();
   }
 
@@ -2816,7 +2816,7 @@ struct multi_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if( p -> buffs_bombardment -> check() )
+    if ( p -> buffs_bombardment -> check() )
       return base_cost * ( 1 + p -> buffs_bombardment -> effect1().percent() );
 
     return hunter_attack_t::cost();
@@ -3258,7 +3258,7 @@ struct focus_fire_t : public hunter_spell_t
     if ( ! p -> active_pet )
       return false;
 
-    if( ! p -> active_pet -> buffs_frenzy -> check() )
+    if ( ! p -> active_pet -> buffs_frenzy -> check() )
       return false;
 
     if ( five_stacks && p -> active_pet -> buffs_frenzy -> check() < 5 )
@@ -3664,7 +3664,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
 
 void hunter_t::create_pets()
 {
-  if( ! pet_list )
+  if ( ! pet_list )
   {
     create_pet( "cat",          "cat"          );
     create_pet( "devilsaur",    "devilsaur"    );
@@ -4233,14 +4233,14 @@ bool hunter_t::create_profile( std::string& profile_str, int save_type, bool sav
 {
   player_t::create_profile( profile_str, save_type, save_html );
 
-  for( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
+  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
     hunter_pet_t* p = ( hunter_pet_t* ) pet;
 
-    if( pet -> talents_str.empty() )
+    if ( pet -> talents_str.empty() )
     {
-      for( int j=0; j < MAX_TALENT_TREES; j++ )
-        for( int k=0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
+      for ( int j=0; j < MAX_TALENT_TREES; j++ )
+        for ( int k=0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
           pet -> talents_str += ( char ) ( pet -> talent_trees[ j ][ k ] -> rank() + ( int ) '0' );
     }
 
@@ -4274,9 +4274,9 @@ void hunter_t::copy_from( player_t* source )
 
     hp -> parse_talents_armory( pet -> talents_str );
 
-    for( int i = 0; i < MAX_TALENT_TREES; i++ )
+    for ( int i = 0; i < MAX_TALENT_TREES; i++ )
     {
-      for( int j = 0; j < ( int ) hp -> talent_trees[ i ].size(); j++ )
+      for ( int j = 0; j < ( int ) hp -> talent_trees[ i ].size(); j++ )
       {
         hp -> talents_str += ( char ) ( hp -> talent_trees[ i ][ j ] -> rank() + ( int ) '0' );
       }
@@ -4319,7 +4319,7 @@ void hunter_t::armory_extensions( const std::string& region,
 
   xml_node_t* pet_script_xml = xml_t::get_node( pet_list_xml, "script", "type", "text/javascript" );
 
-  if( ! pet_script_xml )
+  if ( ! pet_script_xml )
   {
     sim -> errorf( "Hunter %s unable to download pet data from Armory\n", name() );
     sim -> cancel();
@@ -4327,18 +4327,18 @@ void hunter_t::armory_extensions( const std::string& region,
   }
 
   std::string cdata_str;
-  if( xml_t::get_value( cdata_str, pet_script_xml, "cdata" ) )
+  if ( xml_t::get_value( cdata_str, pet_script_xml, "cdata" ) )
   {
     std::string::size_type pos = cdata_str.find( '{' );
-    if( pos != std::string::npos ) cdata_str.erase( 0, pos+1 );
+    if ( pos != std::string::npos ) cdata_str.erase( 0, pos+1 );
     pos = cdata_str.rfind( '}' );
-    if( pos != std::string::npos ) cdata_str.erase( pos );
+    if ( pos != std::string::npos ) cdata_str.erase( pos );
 
     js_node_t* pet_js = js_t::create( sim, cdata_str );
     pet_js = js_t::get_node( pet_js, "Pet.data" );
     if ( sim -> debug ) js_t::print( pet_js, sim -> output_file );
 
-    if( ! pet_js )
+    if ( ! pet_js )
     {
       sim -> errorf( "\nHunter %s unable to download pet data from Armory\n", name() );
       sim -> cancel();
@@ -4347,12 +4347,12 @@ void hunter_t::armory_extensions( const std::string& region,
 
     std::vector<js_node_t*> pet_records;
     int num_pets = js_t::get_children( pet_records, pet_js );
-    for( int i=0; i < num_pets; i++ )
+    for ( int i=0; i < num_pets; i++ )
     {
       std::string pet_name, pet_talents;
       int pet_level, pet_family;
 
-      if( ! js_t::get_value( pet_name,    pet_records[ i ], "name"     ) ||
+      if ( ! js_t::get_value( pet_name,    pet_records[ i ], "name"     ) ||
           ! js_t::get_value( pet_talents, pet_records[ i ], "build"    ) ||
           ! js_t::get_value( pet_level,   pet_records[ i ], "level"    ) ||
           ! js_t::get_value( pet_family,  pet_records[ i ], "familyId" ) )
@@ -4379,13 +4379,13 @@ void hunter_t::armory_extensions( const std::string& region,
       // Pets can have zero talents also, we should probably support it.
       /*
       bool all_zeros = true;
-      for( int j=pet_talents.size()-1; j >=0 && all_zeros; j-- )
-        if( pet_talents[ j ] != '0' )
+      for ( int j=pet_talents.size()-1; j >=0 && all_zeros; j-- )
+        if ( pet_talents[ j ] != '0' )
           all_zeros = false;
-      if( all_zeros ) continue;
+      if ( all_zeros ) continue;
       */
 
-      if( pet_family > num_families || pet_types[ pet_family ] == PET_NONE )
+      if ( pet_family > num_families || pet_types[ pet_family ] == PET_NONE )
       {
         sim -> errorf( "\nHunter %s unable to decode pet %s family id %d\n", name(), pet_name.c_str(), pet_family );
         continue;
@@ -4396,9 +4396,9 @@ void hunter_t::armory_extensions( const std::string& region,
       pet -> parse_talents_armory( pet_talents );
 
       pet -> talents_str.clear();
-      for( int j=0; j < MAX_TALENT_TREES; j++ )
+      for ( int j=0; j < MAX_TALENT_TREES; j++ )
       {
-        for( int k=0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
+        for ( int k=0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
         {
           pet -> talents_str += ( char ) ( pet -> talent_trees[ j ][ k ] -> rank() + ( int ) '0' );
         }

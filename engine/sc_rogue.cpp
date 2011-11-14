@@ -934,7 +934,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_melee -> base_td * dot -> ticks();
   }
 
-  if( ( p -> dbc.spell( 99173 )  -> duration() + sim -> aura_delay ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99173 )  -> duration() + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Burning Wounds due to Max Duration.", p -> name() );
     p -> procs_munched_tier12_2pc_melee -> occur();
@@ -1240,7 +1240,7 @@ double rogue_attack_t::calculate_weapon_damage()
 {
   double dmg = attack_t::calculate_weapon_damage();
 
-  if( dmg == 0 ) return 0;
+  if ( dmg == 0 ) return 0;
 
   rogue_t* p = player -> cast_rogue();
 
@@ -2243,7 +2243,7 @@ struct mutilate_t : public rogue_attack_t
   virtual void execute()
   {
     attack_t::execute();
-    if( result_is_hit() )
+    if ( result_is_hit() )
     {
       mh_strike -> execute();
       oh_strike -> execute();

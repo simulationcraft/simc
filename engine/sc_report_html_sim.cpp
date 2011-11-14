@@ -565,7 +565,7 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
   {
     player_t* p = sim -> players_by_name[ i ];
 
-    if( p -> type != prev_type )
+    if ( p -> type != prev_type )
     {
       prev_type = p -> type;
 
@@ -1383,12 +1383,12 @@ void report_t::print_html( sim_t* sim )
   fprintf( file,
            "\t<body>\n\n" );
 
-  if( ! sim -> error_list.empty() )
+  if ( ! sim -> error_list.empty() )
   {
     fprintf( file,
              "\t\t<pre>\n" );
     size_t num_errors = sim -> error_list.size();
-    for( size_t i=0; i < num_errors; i++ )
+    for ( size_t i=0; i < num_errors; i++ )
       fprintf( file,
                "      %s\n", sim -> error_list[ i ].c_str() );
     fprintf( file,

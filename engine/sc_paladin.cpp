@@ -969,7 +969,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     total_dot_dmg += p -> active_flames_of_the_faithful_proc -> base_td * dot -> ticks();
   }
 
-  if( ( p -> dbc.spell( 99092 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99092 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Flames of the Faithful due to Max Duration.", p -> name() );
     p -> procs_munched_tier12_2pc_melee -> occur();
@@ -1739,7 +1739,7 @@ struct judgement_t : public paladin_attack_t
   virtual bool ready()
   {
     action_t* seal = active_seal();
-    if( ! seal ) return false;
+    if ( ! seal ) return false;
     return paladin_attack_t::ready();
   }
 };
@@ -3844,8 +3844,8 @@ void player_t::paladin_combat_begin( sim_t* sim )
   double devo = sim -> dbc.effect_average( sim -> dbc.spell( 465   ) -> effect1().id(), sim -> max_player_level );
   double bow  = sim -> dbc.effect_average( sim -> dbc.spell( 79101 ) -> effect3().id(), sim -> max_player_level );
 
-  if( sim -> overrides.communion     ) sim -> auras.communion     -> override();
-  if( sim -> overrides.devotion_aura ) sim -> auras.devotion_aura -> override( 1, devo );
+  if ( sim -> overrides.communion     ) sim -> auras.communion     -> override();
+  if ( sim -> overrides.devotion_aura ) sim -> auras.devotion_aura -> override( 1, devo );
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {

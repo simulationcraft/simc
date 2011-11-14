@@ -163,7 +163,7 @@ static xml_node_t* create_node( sim_t*                  sim,
   }
   else
   {
-    if( sim )
+    if ( sim )
     {
       int start = std::min( 0, ( ( int ) index - 32 ) );
       sim -> errorf( "Unexpected character '%c' at index=%d node=%s context=%s\n",
@@ -209,7 +209,7 @@ static int create_children( sim_t*                  sim,
           std::string::size_type finish = input.find( "]]", index );
           if ( finish == std::string::npos )
           {
-            if( sim )
+            if ( sim )
             {
               sim -> errorf( "Unexpected EOF at index %d (%s)\n", ( int ) index, root -> name() );
               sim -> errorf( "%s\n", input.c_str() );
@@ -230,7 +230,7 @@ static int create_children( sim_t*                  sim,
       else
       {
         xml_node_t* n = create_node( sim, input, index );
-        if( ! n ) return 0;
+        if ( ! n ) return 0;
         root -> children.push_back( n );
       }
     }
@@ -264,7 +264,7 @@ static int create_children( sim_t*                  sim,
 static xml_node_t* search_tree( xml_node_t*        root,
                                 const std::string& name_str )
 {
-  if( ! root ) return 0;
+  if ( ! root ) return 0;
 
   if ( name_str.empty() || name_str == root -> name_str )
     return root;
@@ -286,7 +286,7 @@ static xml_node_t* search_tree( xml_node_t*        root,
                                 const std::string& parm_name,
                                 const std::string& parm_value )
 {
-  if( ! root ) return 0;
+  if ( ! root ) return 0;
 
   if ( name_str.empty() || name_str == root -> name_str )
   {
@@ -353,7 +353,7 @@ xml_node_t* xml_t::get( sim_t*             sim,
   auto_lock_t lock( xml_mutex );
 
   xml_cache_t::iterator p = xml_cache.find( url );
-  if( p != xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )
+  if ( p != xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )
     return p -> second.root;
 
   std::string result;
@@ -404,7 +404,7 @@ xml_node_t* xml_t::create( sim_t* sim, FILE* input )
 xml_node_t* xml_t::get_child( xml_node_t*        root,
                               const std::string& name_str )
 {
-  if( ! root ) return 0;
+  if ( ! root ) return 0;
   int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
@@ -421,7 +421,7 @@ int xml_t::get_children( std::vector<xml_node_t*>& nodes,
                          xml_node_t*               root,
                          const std::string&        name_str )
 {
-  if( ! root ) return 0;
+  if ( ! root ) return 0;
   int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
   {
@@ -440,7 +440,7 @@ int xml_t::get_children( std::vector<xml_node_t*>& nodes,
 xml_node_t* xml_t::get_node( xml_node_t*        root,
                              const std::string& path )
 {
-  if( ! root ) return 0;
+  if ( ! root ) return 0;
 
   if ( path.empty() || path == root -> name_str )
     return root;
@@ -460,7 +460,7 @@ xml_node_t* xml_t::get_node( xml_node_t*        root,
                              const std::string& parm_name,
                              const std::string& parm_value )
 {
-  if( ! root ) return 0;
+  if ( ! root ) return 0;
 
   std::string name_str;
   xml_node_t* node = split_path( root, name_str, path );
@@ -476,7 +476,7 @@ int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
                       xml_node_t*               root,
                       const std::string&        path )
 {
-  if( ! root ) return 0;
+  if ( ! root ) return 0;
 
   if ( path.empty() || path == root -> name_str )
   {
@@ -505,7 +505,7 @@ int xml_t::get_nodes( std::vector<xml_node_t*>& nodes,
                       const std::string& parm_name,
                       const std::string& parm_value )
 {
-  if( ! root ) return 0;
+  if ( ! root ) return 0;
 
   if ( path.empty() || path == root -> name_str )
   {

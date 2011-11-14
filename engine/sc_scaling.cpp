@@ -17,11 +17,11 @@ static bool is_scaling_stat( sim_t* sim,
     std::vector<std::string> stat_list;
     int num_stats = util_t::string_split( stat_list, sim -> scaling -> scale_only_str, ",:;/|" );
     bool found = false;
-    for( int i=0; i < num_stats && ! found; i++ )
+    for ( int i=0; i < num_stats && ! found; i++ )
     {
       found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
     }
-    if( ! found ) return false;
+    if ( ! found ) return false;
   }
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
@@ -200,7 +200,7 @@ void scaling_t::init_deltas()
   if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = scale_delta_multiplier * ( smooth_scale_factors ? 50 : 100 );
   if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = scale_delta_multiplier * ( smooth_scale_factors ? 50 : 100 );
 
-  if( sim -> weapon_speed_scale_factors )
+  if ( sim -> weapon_speed_scale_factors )
   {
     if ( stats.weapon_speed          == 0 ) stats.weapon_speed = 0.2;
     if ( stats.weapon_offhand_speed  == 0 ) stats.weapon_offhand_speed  = 0.2;
@@ -232,7 +232,7 @@ void scaling_t::analyze_stats()
   baseline_sim = sim;
   if ( smooth_scale_factors )
   {
-    if( sim -> report_progress )
+    if ( sim -> report_progress )
     {
       util_t::fprintf( stdout, "\nGenerating smooth baseline...\n" );
       fflush( stdout );
@@ -370,7 +370,7 @@ void scaling_t::analyze_lag()
   int num_players = ( int ) sim -> players_by_name.size();
   if ( num_players == 0 ) return;
 
-  if( sim -> report_progress )
+  if ( sim -> report_progress )
   {
     util_t::fprintf( stdout, "\nGenerating scale factors for lag...\n" );
     fflush( stdout );
@@ -495,9 +495,9 @@ void scaling_t::analyze()
     chart_t::scale_factors( p -> scale_factors_chart, p );
 
     // Sort scaling results
-    for( int i=0; i < STAT_MAX; i++ )
+    for ( int i=0; i < STAT_MAX; i++ )
     {
-      if( p -> scales_with[ i ] )
+      if ( p -> scales_with[ i ] )
       {
         double s = p -> scaling.get_stat( i );
 

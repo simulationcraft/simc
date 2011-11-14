@@ -40,7 +40,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
 
 void stats_t::add_child( stats_t* child )
 {
-  if( child -> parent )
+  if ( child -> parent )
   {
     if ( child -> parent != this )
     {
@@ -142,7 +142,7 @@ void stats_t::combat_end()
   else
     player -> iteration_heal += iteration_actual_amount;
 
-  for( size_t i=0; i < children.size(); i++ )
+  for ( size_t i=0; i < children.size(); i++ )
   {
     iteration_actual_amount += children[ i ] -> iteration_actual_amount;
   }
@@ -235,7 +235,7 @@ void stats_t::analyze()
   compound_amount = actual_amount.mean - opportunity_cost;
 
   size_t num_children = children.size();
-  for( size_t i=0; i < num_children; i++ )
+  for ( size_t i=0; i < num_children; i++ )
   {
     children[ i ] -> analyze();
     compound_amount += children[ i ] -> compound_amount;

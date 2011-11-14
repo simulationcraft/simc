@@ -560,7 +560,7 @@ struct priest_heal_t : public heal_t
     {
       // Get DA buff:
       buff_t* buff_da = 0;
-      for( unsigned int i = 0; i < t -> buffs.divine_aegis.size(); i++ )
+      for ( unsigned int i = 0; i < t -> buffs.divine_aegis.size(); i++ )
       {
         if ( t -> buffs.divine_aegis[i ] -> initial_source == player )
         {
@@ -815,7 +815,7 @@ struct atonement_heal_t : public priest_heal_t
     may_crit = false;
     base_crit = 1.0;
 
-    if( ! p -> atonement_target_str.empty() )
+    if ( ! p -> atonement_target_str.empty() )
       target = sim -> find_player( p -> atonement_target_str.c_str() );
   }
 
@@ -943,7 +943,7 @@ public:
 
     priest_t* p = player -> cast_priest();
 
-    if( can_trigger_atonement && p -> talents.atonement -> rank() )
+    if ( can_trigger_atonement && p -> talents.atonement -> rank() )
     {
       std::string n = "atonement_" + name_str;
       atonement = new atonement_heal_t( n.c_str(), p );
@@ -2209,7 +2209,7 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    for( int i=0; i < 4; i++ )
+    for ( int i=0; i < 4; i++ )
     {
       std::string str = name_str + "_";
       orb_stats[ i ] = p -> get_stats( str + ( char ) ( i + ( int ) '0' ) + ( is_dtr_action ? "_DTR" : "" ), this );
@@ -3096,7 +3096,7 @@ struct circle_of_healing_t : public priest_heal_t
       if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( target ) < ( range * range ) )
       {
         heal_target.push_back( q );
-        if( heal_target.size() >= ( unsigned ) ( p -> glyphs.circle_of_healing -> ok() ? 6 : 5 ) ) break;
+        if ( heal_target.size() >= ( unsigned ) ( p -> glyphs.circle_of_healing -> ok() ? 6 : 5 ) ) break;
       }
     }
 
@@ -3959,7 +3959,7 @@ struct power_word_shield_t : public priest_absorb_t
 
     // Get PWS buff:
     buff_t* pws = 0;
-    for( unsigned int i = 0; i < t -> buffs.power_word_shield.size(); i++ )
+    for ( unsigned int i = 0; i < t -> buffs.power_word_shield.size(); i++ )
     {
       if ( t -> buffs.power_word_shield[ i ] -> initial_source == player )
       {
@@ -5235,7 +5235,7 @@ void priest_t::init_actions()
 
   player_t::init_actions();
 
-  for( action_t* a = action_list; a; a = a -> next )
+  for ( action_t* a = action_list; a; a = a -> next )
   {
     double c = a -> cost();
     if ( c > max_mana_cost ) max_mana_cost = c;

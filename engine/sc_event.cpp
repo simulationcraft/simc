@@ -174,7 +174,7 @@ void action_execute_event_t::execute()
   if ( ! action -> background &&
        ! player -> channeling )
   {
-    if( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s\n", action -> name() );
+    if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s\n", action -> name() );
 
     player -> schedule_ready( 0 );
   }
@@ -238,7 +238,7 @@ void dot_tick_event_t::execute()
     if ( dot -> action -> interrupt )
     {
       // Interrupt if any higher priority action is ready.
-      for( action_t* a = player -> action_list; a != dot -> action; a = a -> next )
+      for ( action_t* a = player -> action_list; a != dot -> action; a = a -> next )
       {
         if ( a -> background ) continue;
         if ( a -> ready() )
@@ -257,7 +257,7 @@ void dot_tick_event_t::execute()
 
     if ( dot -> action -> channeled )
     {
-      if( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
+      if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
 
       player -> schedule_ready( 0 );
     }

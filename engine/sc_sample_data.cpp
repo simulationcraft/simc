@@ -233,7 +233,7 @@ double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_
 
   double corr = 0;
 
-  for( size_t i=0; i < x.data.size(); i++ )
+  for ( size_t i=0; i < x.data.size(); i++ )
   {
     corr += ( x.data[ i ] - x.mean ) * ( y.data[ i ] - y.mean );
   }

@@ -146,7 +146,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   race_type r = util_t::parse_race_type( race_str );
 
-  if( ! talents_description.empty() && ( talents_description != "active" ) )
+  if ( ! talents_description.empty() && ( talents_description != "active" ) )
   {
     name_str += "_" + talents_description;
   }
@@ -172,7 +172,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   std::vector<xml_node_t*> profession_nodes;
   int num_professions = xml_t::get_nodes( profession_nodes, profession_list_node, "li" );
 
-  for( int i=0; i < num_professions; i++ )
+  for ( int i=0; i < num_professions; i++ )
   {
     std::string key_str, value_str;
 
@@ -184,15 +184,15 @@ player_t* battle_net_t::download_player( sim_t* sim,
     }
   }
 
-  if( ! talents_xml )
+  if ( ! talents_xml )
   {
     xml_node_t* summary_talents_node = xml_t::get_node( sheet_xml, "div", "class", "summary-talents" );
     std::vector<xml_node_t*> talent_nodes;
     int num_talents = xml_t::get_nodes( talent_nodes, summary_talents_node, "li" );
-    for( int i=0; i < num_talents; i++ )
+    for ( int i=0; i < num_talents; i++ )
     {
       xml_node_t* anchor_node = xml_t::get_node( talent_nodes[ i ], "a" );
-      if( ! anchor_node ) continue;
+      if ( ! anchor_node ) continue;
 
       std::string href_str;
       xml_t::get_value( href_str, anchor_node, "href" );
@@ -201,7 +201,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
       std::string active_str;
       bool active = ( xml_t::get_value( active_str, anchor_node, "class" ) && active_str == "active" );
 
-      if( ( util_t::str_compare_ci( talents_description,   "active" ) &&   active ) ||
+      if ( ( util_t::str_compare_ci( talents_description,   "active" ) &&   active ) ||
           ( util_t::str_compare_ci( talents_description, "inactive" ) && ! active ) )
       {
         talents_xml = download_character_talents( sim, region, server, name, ( primary ? "primary" : "secondary" ), caching );
@@ -209,10 +209,10 @@ player_t* battle_net_t::download_player( sim_t* sim,
       }
 
       std::string build_str;
-      if( xml_t::get_value( build_str, xml_t::get_node( anchor_node, "span", "class", "name" ), "." ) )
+      if ( xml_t::get_value( build_str, xml_t::get_node( anchor_node, "span", "class", "name" ), "." ) )
       {
         armory_t::format( build_str );
-        if( util_t::str_compare_ci( talents_description, build_str ) )
+        if ( util_t::str_compare_ci( talents_description, build_str ) )
         {
           talents_xml = download_character_talents( sim, region, server, name, ( primary ? "primary" : "secondary" ), caching );
           break;
@@ -221,7 +221,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
     }
   }
 
-  if( ! talents_xml )
+  if ( ! talents_xml )
   {
     sim -> errorf( "Unable to get talent summary for character %s|%s|%s (%s) from the Armory: Is the Armory down or throttled?\n",
                    region.c_str(), server.c_str(), name.c_str(), talents_description.c_str() );
@@ -241,7 +241,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   std::string talents_encoding;
 
   std::string cdata_str;
-  if( xml_t::get_value( cdata_str, build_script_node, "cdata" ) )
+  if ( xml_t::get_value( cdata_str, build_script_node, "cdata" ) )
   {
     std::string::size_type start = cdata_str.find( "build:" ) + 8;
     std::string::size_type end   = cdata_str.find( "\"", start );
@@ -270,7 +270,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
   // Hack to get a non-item id based glyph identification working, at least for the english
   // speaking locale. Not much we can do about koKR for example.
   int num_glyphs = xml_t::get_nodes( glyph_nodes, character_glyphs_node, "li", "class", "filled" );
-  for( int i=0; i < num_glyphs; i++ )
+  for ( int i=0; i < num_glyphs; i++ )
   {
     if ( ! xml_t::get_value( glyph_id, xml_t::get_node( glyph_nodes[ i ], "a" ), "href" ) )
     {
@@ -281,11 +281,11 @@ player_t* battle_net_t::download_player( sim_t* sim,
       }
       else
       {
-        if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-        else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+        if (      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+        else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
         armory_t::format( glyph_name );
 
-        if( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
+        if ( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
         p -> glyphs_str += glyph_name;
       }
 
@@ -305,7 +305,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
     if ( item_t::download_glyph( p, glyph_name, glyph_id ) )
     {
-      if( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
+      if ( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
     }
   }
@@ -314,7 +314,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
 
   for ( int i=0; i < SLOT_MAX; i++ )
   {
-    if( sim -> canceled ) return 0;
+    if ( sim -> canceled ) return 0;
     sim -> current_slot = i;
     item_t& item = p -> items[ i ];
 
@@ -336,33 +336,33 @@ player_t* battle_net_t::download_player( sim_t* sim,
     int num_tokens = util_t::string_split( tokens, data_item_str, "&=" );
 
     std::string enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids[ 3 ];
-    for( int i=0; i < num_tokens-1; i += 2 )
+    for ( int i=0; i < num_tokens-1; i += 2 )
     {
       std::string& name  = tokens[ i ];
       std::string& value = tokens[ i+1 ];
 
       if     ( name == "i"  ) id_str       = value;
-      else if( name == "e"  ) enchant_id   = value;
-      else if( name == "ee" ) addon_id     = value;
-      else if( name == "re" ) reforge_id   = value;
-      else if( name == "r"  ) rsuffix_id   = value;
+      else if ( name == "e"  ) enchant_id   = value;
+      else if ( name == "ee" ) addon_id     = value;
+      else if ( name == "re" ) reforge_id   = value;
+      else if ( name == "r"  ) rsuffix_id   = value;
     }
 
     xml_node_t* sockets_root_node = xml_t::get_node( slot_node, "span", "class", "sockets" );
     std::vector<xml_node_t*> socket_nodes;
     int num_sockets = xml_t::get_children( socket_nodes, sockets_root_node );
 
-    for( int i=0; i < num_sockets; i++ )
+    for ( int i=0; i < num_sockets; i++ )
     {
       std::string href_str;
       xml_t::get_value( href_str, xml_t::get_node( socket_nodes[ i ], "a" ), "href" );
       std::string::size_type index = href_str.rfind( "/" );
-      if( index != std::string::npos ) gem_ids[ i ] = href_str.substr( index+1 );
+      if ( index != std::string::npos ) gem_ids[ i ] = href_str.substr( index+1 );
     }
 
-    if( ! id_str.empty() )
+    if ( ! id_str.empty() )
     {
-      if( ! item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
+      if ( ! item_t::download_slot( item, id_str, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
       {
         return 0;
       }

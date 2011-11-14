@@ -533,7 +533,7 @@ static void trigger_deep_wounds( action_t* a )
     deep_wounds_dmg += p -> active_deep_wounds -> base_td * dot -> ticks();
   }
 
-  if( ( 6.0 + sim -> aura_delay ) < dot -> remains() )
+  if ( ( 6.0 + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
     p -> procs_munched_deep_wounds -> occur();
@@ -761,7 +761,7 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_tank -> base_td * dot -> ticks();
   }
 
-  if( ( p -> dbc.spell( 99240 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99240 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Combust due to Combust duration.", p -> name() );
     p -> procs_munched_tier12_2pc_tank -> occur();
@@ -849,7 +849,7 @@ static void trigger_flurry( attack_t* a, int stacks )
 
   // This mess would be a lot easier if we could give a time instead of
   // a delta to reschedule_execute().
-  if( p -> main_hand_attack )
+  if ( p -> main_hand_attack )
   {
     event_t* mhe = p -> main_hand_attack -> execute_event;
     if ( mhe )
@@ -862,7 +862,7 @@ static void trigger_flurry( attack_t* a, int stacks )
       p -> main_hand_attack -> reschedule_execute( delta );
     }
   }
-  if( p -> off_hand_attack )
+  if ( p -> off_hand_attack )
   {
     event_t* ohe = p -> off_hand_attack -> execute_event;
     if ( ohe )

@@ -1029,8 +1029,8 @@ glyph_t::glyph_t( player_t* player, spell_data_t* _sd ) :
   sd( _sd ), sd_enabled( spell_data_t::nil() )
 {
   initialize( sd -> name_cstr() );
-  if( s_token.substr( 0, 9 ) == "glyph_of_" ) s_token.erase( 0, 9 );
-  if( s_token.substr( 0, 7 ) == "glyph__"   ) s_token.erase( 0, 7 );
+  if ( s_token.substr( 0, 9 ) == "glyph_of_" ) s_token.erase( 0, 9 );
+  if ( s_token.substr( 0, 7 ) == "glyph__"   ) s_token.erase( 0, 7 );
   s_enabled = false;
 }
 

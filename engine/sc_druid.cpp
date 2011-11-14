@@ -1142,7 +1142,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_melee -> base_td * dot -> ticks();
   }
 
-  if( ( p -> dbc.spell( 99002 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99002 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Fiery Claws due to Max Fiery Claws Duration.", p -> name() );
     p -> procs_munched_tier12_2pc_melee -> occur();
@@ -3956,7 +3956,7 @@ struct starfire_t : public druid_spell_t
         {
           if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
           {
-            if( !( p -> bugs && p -> eclipse_bar_value > 35 ) )
+            if ( !( p -> bugs && p -> eclipse_bar_value > 35 ) )
             {
               gain *= 2;
             }
@@ -5025,7 +5025,7 @@ void druid_t::init_scaling()
     scales_with[ STAT_SPIRIT ] = 0;
 
   // Balance of Power treats Spirit like Spell Hit Rating
-  if( talents.balance_of_power -> rank() && sim -> scaling -> scale_stat == STAT_SPIRIT )
+  if ( talents.balance_of_power -> rank() && sim -> scaling -> scale_stat == STAT_SPIRIT )
   {
     double v = sim -> scaling -> scale_value;
     if ( ! sim -> scaling -> positive_scale_delta )

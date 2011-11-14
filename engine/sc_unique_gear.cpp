@@ -178,7 +178,7 @@ struct discharge_proc_callback_t : public action_callback_t
     cooldown = p -> get_cooldown( name_str );
     cooldown -> duration = cd;
 
-    if( amount > 0 )
+    if ( amount > 0 )
     {
       discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school, no_crit, no_buffs, no_debuffs );
     }
@@ -300,7 +300,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
     cooldown = p -> get_cooldown( name_str );
     cooldown -> duration = cd;
 
-    if( amount > 0 )
+    if ( amount > 0 )
     {
       discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school, no_crit, no_buffs, no_debuffs );
     }
@@ -480,15 +480,15 @@ static void register_apparatus_of_khazgoroth( item_t* item )
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
-      if( ! a -> weapon ) return;
-      if( a -> proc ) return;
+      if ( ! a -> weapon ) return;
+      if ( a -> proc ) return;
 
-      if( apparatus_of_khazgoroth -> trigger() )
+      if ( apparatus_of_khazgoroth -> trigger() )
       {
-        if( blessing_of_khazgoroth -> cooldown -> remains() > 0 ) return;
+        if ( blessing_of_khazgoroth -> cooldown -> remains() > 0 ) return;
 
         // FIXME: This really should be a /use action
-        if( apparatus_of_khazgoroth -> check() == 5 )
+        if ( apparatus_of_khazgoroth -> check() == 5 )
         {
           // Highest of Crits/Master/haste is chosen
           blessing_of_khazgoroth -> stat = STAT_CRIT_RATING;
@@ -571,15 +571,15 @@ static void register_fury_of_angerforge( item_t* item )
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
-      if( ! a -> weapon ) return;
-      if( a -> proc ) return;
+      if ( ! a -> weapon ) return;
+      if ( a -> proc ) return;
 
-      if( raw_fury -> trigger() )
+      if ( raw_fury -> trigger() )
       {
-        if( blackwing_dragonkin -> cooldown -> remains() > 0 ) return;
+        if ( blackwing_dragonkin -> cooldown -> remains() > 0 ) return;
 
         // FIXME: This really should be a /use action
-        if( raw_fury -> check() == 5 )
+        if ( raw_fury -> check() == 5 )
         {
           raw_fury -> expire();
           blackwing_dragonkin -> trigger();
@@ -613,9 +613,9 @@ static void register_heart_of_ignacious( item_t* item )
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
       buff -> trigger();
-      if( buff -> stack() == buff -> max_stack )
+      if ( buff -> stack() == buff -> max_stack )
       {
-        if( haste_buff -> trigger( buff -> max_stack ) )
+        if ( haste_buff -> trigger( buff -> max_stack ) )
         {
           buff -> expire();
         }
@@ -780,10 +780,10 @@ static void register_tyrandes_favorite_doll( item_t* item )
       double mana_spent = *( ( double* ) call_data );
 
       mana_stored += mana_spent * 0.20;
-      if( mana_stored > max_mana ) mana_stored = max_mana;
+      if ( mana_stored > max_mana ) mana_stored = max_mana;
 
       // FIXME! For now trigger as soon as the cooldown is up.
-      if( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= 0 ) )
+      if ( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= 0 ) )
       {
         discharge_spell -> execute();
         a -> player -> resource_gain( RESOURCE_MANA, mana_stored, gain_source, discharge_spell );
@@ -1220,12 +1220,12 @@ static void register_fury_of_the_beast( item_t* item )
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
-      if( ! a -> weapon ) return;
-      if( a -> proc ) return;
+      if ( ! a -> weapon ) return;
+      if ( a -> proc ) return;
 
-      if( fury_of_the_beast -> cooldown -> remains() > 0 ) return;
+      if ( fury_of_the_beast -> cooldown -> remains() > 0 ) return;
 
-      if( fury_of_the_beast -> trigger() )
+      if ( fury_of_the_beast -> trigger() )
       {
         // FIXME: check if the stacking buff ticks at 0s or 1s
         new ( sim ) fury_of_the_beast_event_t( listener, fury_of_the_beast, fury_of_the_beast_stack );
@@ -1343,8 +1343,8 @@ static void register_rathrak( item_t* item )
     {
       trigger_gcd = 0;
       background = true;
-      may_miss = false; // FIXME: Verfiy this
-      may_crit = false; // FIXME: Verfiy this
+      may_miss = false; // FIXME: Verify this
+      may_crit = false; // FIXME: Verify this
       proc = true;
       init();
     }
@@ -1462,7 +1462,7 @@ static void register_titahk( item_t* item )
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
       // FIXME: Does this have an ICD?
-      if( rng -> roll( proc_chance ) )
+      if ( rng -> roll( proc_chance ) )
       {
         buff_self -> trigger();
         buff_radius -> trigger();

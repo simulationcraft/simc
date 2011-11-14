@@ -332,7 +332,7 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
     return TOK_STR;
   }
 
-  if( isdigit( c ) || c == '-' )
+  if ( isdigit( c ) || c == '-' )
   {
     c = expr_str[ current_index ];
     while( isdigit( c ) || c == '.' )
@@ -486,7 +486,7 @@ static action_expr_t* build_expression_tree( action_t* action,
   action_expr_t* res = 0;
 
   size_t num_tokens = tokens.size();
-  for( size_t i=0; i < num_tokens; i++ )
+  for ( size_t i=0; i < num_tokens; i++ )
   {
     expr_token_t& t= tokens[ i ];
 
@@ -560,7 +560,7 @@ action_expr_t* action_expr_t::parse( action_t* action,
 
   if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
 
-  if( ! expression_t::convert_to_rpn( action, tokens ) )
+  if ( ! expression_t::convert_to_rpn( action, tokens ) )
   {
     action -> sim -> errorf( "%s-%s: Unable to convert %s into RPN\n", action -> player -> name(), action -> name(), expr_str.c_str() );
     action -> sim -> cancel();
@@ -585,7 +585,7 @@ action_expr_t* action_expr_t::parse( action_t* action,
 
 int main( int argc, char** argv )
 {
-  for( int i=1; i < argc; i++ )
+  for ( int i=1; i < argc; i++ )
   {
     std::vector<expr_token_t> tokens;
 
@@ -593,14 +593,14 @@ int main( int argc, char** argv )
     convert_to_unary( NULL, tokens );
     print_tokens( tokens );
 
-    if( convert_to_rpn( NULL, tokens ) )
+    if ( convert_to_rpn( NULL, tokens ) )
     {
       printf( "rpn:\n" );
       print_tokens( tokens );
 
       action_expr_t* expr = build_expression_tree( 0, tokens );
 
-      if( expr )
+      if ( expr )
       {
         printf( "evaluate:\n" );
         std::string buffer;

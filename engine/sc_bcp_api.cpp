@@ -128,7 +128,7 @@ bool parse_glyphs( player_t* p, js_node_t* build )
       std::vector<js_node_t*> children;
       if ( js_t::get_children( children, glyphs ) > 0 )
       {
-        for( std::size_t i = 0; i < children.size(); ++i )
+        for ( std::size_t i = 0; i < children.size(); ++i )
         {
           std::string glyph_name;
           if ( ! js_t::get_value( glyph_name, children[ i ], "name" ) )
@@ -142,8 +142,8 @@ bool parse_glyphs( player_t* p, js_node_t* build )
           {
             // FIXME: Move this common boilerplate stuff into util_t where all the data
             //        sources can use it instead of cut'n'pasting.
-            if(      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-            else if( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
+            if (      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
+            else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
             armory_t::format( glyph_name );
 
             if ( p -> glyphs_str.length() )

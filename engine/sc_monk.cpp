@@ -593,12 +593,12 @@ void monk_t::init_resources( bool force )
 
 double monk_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 {
-  if( primary_tree() == TREE_MISTWEAVER )
+  if ( primary_tree() == TREE_MISTWEAVER )
   {
     if ( attr == ATTR_INTELLECT )
       return 0.05;
   }
-  else if( attr == ATTR_AGILITY )
+  else if ( attr == ATTR_AGILITY )
     return 0.05;
 
   return 0.0;

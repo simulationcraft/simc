@@ -818,7 +818,7 @@ player_t* armory_t::download_player( sim_t* sim,
 
   race_type r = util_t::parse_race_type( race_str );
 
-  if( ! talents_description.empty() && ( talents_description != "active" ) )
+  if ( ! talents_description.empty() && ( talents_description != "active" ) )
   {
     name_str += '_' + talents_description;
   }
@@ -950,7 +950,7 @@ player_t* armory_t::download_player( sim_t* sim,
   for ( int i=0; i < num_items; i++ )
   {
     sim -> current_slot = i;
-    if( sim -> canceled ) return 0;
+    if ( sim -> canceled ) return 0;
 
     std::string id_str;
     int slot;
