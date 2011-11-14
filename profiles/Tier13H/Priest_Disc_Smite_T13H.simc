@@ -40,7 +40,7 @@ hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1
 finger1=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,gems=50int_10int
 finger2=seal_of_the_grand_architect,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_184hit_200haste,reforge=hit_crit,gems=25int_25haste_10int
 trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
-trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_100cd
+trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_75cd
 back=woundlicker_cover,heroic=1,ilevel=410,quality=epic,stats=822armor_306int_459sta_219spi_179haste,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
 off_hand=empty

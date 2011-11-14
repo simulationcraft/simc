@@ -923,7 +923,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if ( num_realm > 0 ) p -> server_str = realm_data[ 0 ];
 
   int user_id=0;
-  if ( js_t::get_value( user_id, profile_js, "source" ) && ( user_id != 0 ) )
+  if ( js_t::get_value( user_id, profile_js, "id" ) && ( user_id != 0 ) )
   {
     p -> origin_str = "http://www.wowhead.com/profile=" + id;
   }
