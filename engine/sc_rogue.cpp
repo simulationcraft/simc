@@ -453,6 +453,13 @@ struct rogue_attack_t : public attack_t
     init_rogue_attack_t_();
   }
 
+  rogue_attack_t( const char* n, const char* sn, rogue_t* p, bool simple = false ) :
+    attack_t( n, sn, p, 0, true ),
+    simple( simple ), m_buff( 0 ), adds_combo_points( 0 )
+  {
+    init_rogue_attack_t_();
+  }
+
   void init_rogue_attack_t_();
 
   virtual double cost() SC_CONST;
@@ -1220,7 +1227,7 @@ double rogue_attack_t::calculate_weapon_damage()
 
   if ( weapon -> slot == SLOT_OFF_HAND && p -> spec_ambidexterity -> ok() )
   {
-    dmg *= 1.0 + p -> spec_ambidexterity -> base_value( E_APPLY_AURA, A_MOD_OFFHAND_DAMAGE_PCT );
+    dmg *= 1.0 + p -> spec_ambidexterity -> effect1().percent();
   }
 
   return dmg;
@@ -1235,7 +1242,7 @@ void rogue_attack_t::player_buff()
   rogue_t* p = player -> cast_rogue();
 
   if ( p -> buffs_cold_blood -> check() )
-    player_crit += p -> buffs_cold_blood -> base_value() / 100.0;
+    player_crit += p -> buffs_cold_blood -> effect1().percent();
 }
 
 // rogue_attack_t::total_multiplier =========================================
@@ -1254,22 +1261,20 @@ double rogue_attack_t::total_multiplier() SC_CONST
   // dynamic damage modifiers:
 
   // Bandit's Guile (combat) - affects all damage done by rogue, stacks are reset when you strike other target with sinister strike/revealing strike
-  if ( p -> buffs_bandits_guile -> check() )
-    m *= 1.0 + p -> buffs_bandits_guile -> value();
+  m *= 1.0 + p -> buffs_bandits_guile -> value();
 
   // Killing Spree (combat) - affects all direct damage (but you cannot use specials while it is up)
   // affects deadly poison ticks
   // Exception: DOESN'T affect rupture/garrote ticks
-  if ( p -> buffs_killing_spree -> check() && affected_by_killing_spree )
+  if ( affected_by_killing_spree )
     m *= 1.0 + p -> buffs_killing_spree -> value();
 
   // Sanguinary Vein (subtlety) - dynamically increases all damage as long as target is bleeding
   if ( target -> debuffs.bleeding -> check() )
-    m *= 1.0 + p -> talents.sanguinary_vein -> base_value() / 100.0;
+    m *= 1.0 + p -> talents.sanguinary_vein -> effect1().percent();
 
   // Vendetta (Assassination) - dynamically increases all damage as long as target is affected by Vendetta
-  if ( p -> buffs_vendetta -> check() )
-    m *= 1.0 + p -> buffs_vendetta -> value();
+  m *= 1.0 + p -> buffs_vendetta -> value();
 
   return ( base_multiplier + add_mult ) * player_multiplier * target_multiplier * m;
 }
@@ -1306,7 +1311,6 @@ bool rogue_attack_t::ready()
     if ( ! weapon || weapon -> type != requires_weapon )
       return false;
 
-
   return attack_t::ready();
 }
 
@@ -1323,7 +1327,7 @@ void rogue_attack_t::assess_damage( player_t* t,
 
   // XXX: review, as not all of the damage is 'flurried' to an additional target
   // dots for example don't as far as I remember
-  if ( t -> is_enemy())
+  if ( t -> is_enemy() )
   {
     target_t* q = t -> cast_target();
 
@@ -1468,6 +1472,8 @@ struct adrenaline_rush_t : public rogue_attack_t
   adrenaline_rush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "adrenaline_rush", p -> talents.adrenaline_rush -> spell_id(), p, true )
   {
+    check_talent( p -> talents.adrenaline_rush -> ok() );
+
     add_trigger_buff( p -> buffs_adrenaline_rush );
 
     parse_options( NULL, options_str );
@@ -1479,8 +1485,10 @@ struct adrenaline_rush_t : public rogue_attack_t
 struct ambush_t : public rogue_attack_t
 {
   ambush_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "ambush", 8676, p )
+    rogue_attack_t( "ambush", "Ambush", p )
   {
+    parse_options( NULL, options_str );
+
     requires_position      = POSITION_BACK;
     requires_stealth       = true;
 
@@ -1488,11 +1496,9 @@ struct ambush_t : public rogue_attack_t
       weapon_multiplier   *= 1.447; // It'is in the description.
 
     base_cost             += p -> talents.slaughter_from_the_shadows -> effect1().resource( RESOURCE_ENERGY );
-    base_multiplier       *= 1.0 + ( p -> talents.improved_ambush -> mod_additive( P_GENERIC ) +
-                                     p -> talents.opportunity     -> mod_additive( P_GENERIC ) );
-    base_crit             += p -> talents.improved_ambush -> mod_additive( P_CRIT );
-
-    parse_options( NULL, options_str );
+    base_multiplier       *= 1.0 + ( p -> talents.improved_ambush -> effect2().percent() +
+                                     p -> talents.opportunity     -> effect1().percent() );
+    base_crit             += p -> talents.improved_ambush -> effect1().percent(); 
   }
 
   virtual void execute()
@@ -1516,8 +1522,7 @@ struct ambush_t : public rogue_attack_t
 
     rogue_t* p = player -> cast_rogue();
 
-    if ( p -> buffs_shadowstep -> check() )
-      player_multiplier *= 1.0 + p -> buffs_shadowstep -> value();
+    player_multiplier *= 1.0 + p -> buffs_shadowstep -> value();
   }
 };
 
@@ -2610,7 +2615,7 @@ struct shadow_dance_t : public rogue_attack_t
 struct tricks_of_the_trade_t : public rogue_attack_t
 {
   tricks_of_the_trade_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "tricks_target", 57934, p )
+    rogue_attack_t( "tricks_target", 57934, p, true )
   {
     parse_options( NULL, options_str );
 
@@ -2626,8 +2631,6 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     {
       target = p;
     }
-
-    simple = true;
   }
 
   virtual void execute()
