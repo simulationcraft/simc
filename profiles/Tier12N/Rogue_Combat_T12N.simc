@@ -1,7 +1,7 @@
 #!./simc 
 
 rogue=Rogue_Combat_T12N
-origin="Rogue_CharDevSync.simc"
+origin="generate_Rogue_T12N.simc"
 level=85
 race=troll
 position=back
@@ -19,7 +19,7 @@ actions+=/auto_attack
 actions+=/kick
 actions+=/use_item,name=dark_phoenix_gloves
 actions+=/berserking
-actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee
+actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee|set_bonus.tier13_2pc_melee
 actions+=/slice_and_dice,if=buff.slice_and_dice.down
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down
@@ -67,6 +67,3 @@ ranged=arathar_the_eye_of_flame,ilevel=384,quality=epic,stats=135agi_203sta_95cr
 # main_hand=gatecrasher,weapon=axe_2.60speed_1004min_1865max,enchant=landslide
 # off_hand=alysras_razor,weapon=dagger_1.40speed_540min_1004max,enchant=landslide
 # ranged=arathar_the_eye_of_flame,weapon=bow_3.00speed_1652min_3069max,enchant=gnomish_xray
-# A value of 'other' implies some unspecified target.
-# A value of 'self' implies swapping with another Rogue.
-tricks_of_the_trade_target=other

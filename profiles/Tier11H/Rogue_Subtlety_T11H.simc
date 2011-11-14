@@ -78,6 +78,3 @@ ranged=dragonheart_piercer,heroic=1,ilevel=372,quality=epic,stats=121agi_181sta_
 # A negative value will make the Rogue use a programmed default interval.
 # A zero value will disable virtual HAT procs and assume a real raid is being simulated.
 virtual_hat_interval=-1
-# A value of 'other' implies some unspecified target.
-# A value of 'self' implies swapping with another Rogue.
-tricks_of_the_trade_target=other

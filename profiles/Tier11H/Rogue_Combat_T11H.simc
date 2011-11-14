@@ -64,6 +64,3 @@ ranged=dragonheart_piercer,heroic=1,ilevel=372,quality=epic,stats=121agi_181sta_
 # main_hand=crulkorak_the_lightnings_arc,heroic=1,weapon=axe_2.60speed_949min_1764max,enchant=landslide
 # off_hand=uhnagh_fash_the_darkest_betrayal,heroic=1,weapon=dagger_1.40speed_511min_950max,enchant=landslide
 # ranged=dragonheart_piercer,heroic=1,weapon=crossbow_3.00speed_1688min_2533max
-# A value of 'other' implies some unspecified target.
-# A value of 'self' implies swapping with another Rogue.
-tricks_of_the_trade_target=other

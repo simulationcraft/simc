@@ -71,6 +71,3 @@ ranged=arathar_the_eye_of_flame,heroic=1,ilevel=397,quality=epic,stats=153agi_23
 # main_hand=avools_incendiary_shanker,heroic=1,weapon=dagger_1.80speed_784min_1458max,enchant=landslide
 # off_hand=alysras_razor,heroic=1,weapon=dagger_1.40speed_610min_1134max,enchant=landslide
 # ranged=arathar_the_eye_of_flame,heroic=1,weapon=bow_3.00speed_1865min_3464max,enchant=gnomish_xray
-# A value of 'other' implies some unspecified target.
-# A value of 'self' implies swapping with another Rogue.
-tricks_of_the_trade_target=other

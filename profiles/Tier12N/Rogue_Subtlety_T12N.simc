@@ -1,7 +1,7 @@
 #!./simc 
 
 rogue=Rogue_Subtlety_T12N
-origin="Rogue_CharDevSync.simc"
+origin="generate_Rogue_T12N.simc"
 level=85
 race=troll
 position=back
@@ -18,7 +18,7 @@ actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<30
 actions+=/auto_attack
 actions+=/stealth
 actions+=/kick
-actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee
+actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee|set_bonus.tier13_2pc_melee
 actions+=/pool_energy,for_next=1
 actions+=/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down
 actions+=/use_item,name=dark_phoenix_gloves,if=buff.shadow_dance.up
@@ -79,6 +79,3 @@ ranged=arathar_the_eye_of_flame,ilevel=384,quality=epic,stats=135agi_203sta_95cr
 # A negative value will make the Rogue use a programmed default interval.
 # A zero value will disable virtual HAT procs and assume a real raid is being simulated.
 virtual_hat_interval=-1
-# A value of 'other' implies some unspecified target.
-# A value of 'self' implies swapping with another Rogue.
-tricks_of_the_trade_target=other

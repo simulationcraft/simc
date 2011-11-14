@@ -79,6 +79,3 @@ ranged=arathar_the_eye_of_flame,heroic=1,ilevel=397,quality=epic,stats=153agi_23
 # A negative value will make the Rogue use a programmed default interval.
 # A zero value will disable virtual HAT procs and assume a real raid is being simulated.
 virtual_hat_interval=-1
-# A value of 'other' implies some unspecified target.
-# A value of 'self' implies swapping with another Rogue.
-tricks_of_the_trade_target=other

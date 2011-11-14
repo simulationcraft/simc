@@ -115,7 +115,6 @@ void action_t::init_action_t_()
   execute_event                  = NULL;
   travel_event                   = NULL;
   time_to_execute                = 0.0;
-
   time_to_travel                 = 0.0;
   travel_speed                   = 0.0;
   rank_index                     = -1;
