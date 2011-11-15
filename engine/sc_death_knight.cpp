@@ -2766,8 +2766,8 @@ struct festering_strike_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
-      p -> dots_blood_plague -> extend_duration( 2 );
-      p -> dots_frost_fever  -> extend_duration( 2 );
+      p -> dots_blood_plague -> extend_duration( 8 );
+      p -> dots_frost_fever  -> extend_duration( 8 );
       if ( p -> dots_blood_plague -> ticking || p -> dots_frost_fever -> ticking )
         trigger_ebon_plaguebringer( this, target );
     }
