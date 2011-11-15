@@ -4864,7 +4864,7 @@ struct dot_t
   virtual ~dot_t();
 
   virtual void   extend_duration( int extra_ticks, bool cap=false );
-  virtual void   extend_duration_seconds( double extra_ticks );
+  virtual void   extend_duration_seconds( double extra_seconds );
   virtual void   recalculate_ready();
   virtual void   refresh_duration();
   virtual void   reset();

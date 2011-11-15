@@ -2742,11 +2742,8 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
 struct festering_strike_t : public death_knight_attack_t
 {
-  attack_t* oh_attack;
-
   festering_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "festering_strike", "Festering Strike", p ),
-    oh_attack( 0 )
+    death_knight_attack_t( "festering_strike", "Festering Strike", p )
   {
     parse_options( NULL, options_str );
 
@@ -2772,7 +2769,6 @@ struct festering_strike_t : public death_knight_attack_t
         trigger_ebon_plaguebringer( this, target );
     }
   }
-
 };
 
 // Frost Fever ==============================================================
