@@ -238,13 +238,16 @@ struct death_knight_t : public player_t
 
     runes_t()
     {
-      for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-      {
-        slot[i].type = RUNE_TYPE_BLOOD + ( i >> 1 );
-        slot[i].paired_rune = &( slot[i ^ 1] ); // xor!
-        slot[i].slot_number = i;
-      }
-
+      // 6 runes, paired blood, frost and unholy
+      slot[0].type = slot[1].type = RUNE_TYPE_BLOOD;
+      slot[2].type = slot[3].type = RUNE_TYPE_FROST;
+      slot[4].type = slot[5].type = RUNE_TYPE_UNHOLY;
+      // each rune pair is paired with each other
+      slot[0].paired_rune = &slot[1]; slot[1].paired_rune = &slot[0];
+      slot[2].paired_rune = &slot[3]; slot[3].paired_rune = &slot[2];
+      slot[4].paired_rune = &slot[5]; slot[5].paired_rune = &slot[4];
+      // give each rune a slot number
+      for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) { slot[i].slot_number = i; }
     }
     void reset() { for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].reset(); }
   };
