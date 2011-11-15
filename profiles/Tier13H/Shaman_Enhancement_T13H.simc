@@ -52,14 +52,14 @@ hands=sporebeard_gauntlets,heroic=1,type=mail,ilevel=410,quality=epic,stats=1820
 finger1=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_203crit_179haste,reforge=crit_mastery,enchant=40agi
 finger2=seal_of_primordial_shadow,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_184exp_200mastery,enchant=40agi
 trinket1=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99agi_100%_10dur_10stack
-trinket2=starcatcher_compass,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=ondamage_3278haste_15%_20dur_75cd
+trinket2=matrix_restabilizer,heroic=1,ilevel=397,quality=epic,stats=458agi
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,gems=50agi_50agi_20agi,enchant=22agi
 main_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=249agi_373sta,enchant=landslide,weapon=axe_2.60speed_1431min_2658max
 off_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=249agi_373sta,enchant=landslide,weapon=axe_2.60speed_1431min_2658max
 ranged=ripfang_relic,ilevel=397,quality=epic,stats=153agi_230sta_104crit_99exp,reforge=crit_mastery,gems=50agi
 # Gear Summary
 # gear_strength=20
-# gear_agility=6973
+# gear_agility=6914
 # gear_stamina=8079
 # gear_intellect=20
 # gear_spirit=20
@@ -73,5 +73,6 @@ ranged=ripfang_relic,ilevel=397,quality=epic,stats=153agi_230sta_104crit_99exp,r
 # meta_gem=agile_shadowspirit
 # tier13_2pc_melee=1
 # tier13_4pc_melee=1
+# trinket2=matrix_restabilizer,heroic=1
 # main_hand=nokaled_the_elements_of_death,heroic=1,weapon=axe_2.60speed_1431min_2658max,enchant=landslide
 # off_hand=nokaled_the_elements_of_death,heroic=1,weapon=axe_2.60speed_1431min_2658max,enchant=landslide
