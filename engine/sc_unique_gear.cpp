@@ -2048,8 +2048,8 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "timbals_crystal"                     ) e = "OnSpellTickDamage_380Shadow_10%_15Cd";
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
-  else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnHarmfulSpellHit_11937Shadow_15%_45Cd" : lfr ? "OnHarmfulSpellHit_9369Shadow_15%_45Cd" : "OnHarmfulSpellHit_10575Shadow_15%_45Cd" ); // Confirm ICD, AoE?
-  else if ( name == "bone-link_fetish"                    ) e = ( heroic ? "OnAttackHit_12788Physical_15%_45Cd" : lfr ? "OnAttackHit_10037Physical_15%_45Cd" : "OnAttackHit_11329Physical_15%_45Cd" ); // Confirm ICD, AoE?
+  else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnHarmfulSpellHit_11937+105.8Shadow_15%_45Cd" : lfr ? "OnHarmfulSpellHit_9369+83.1Shadow_15%_45Cd" : "OnHarmfulSpellHit_10575+93.8Shadow_15%_45Cd" ); // Confirm ICD, AoE?
+  else if ( name == "bone-link_fetish"                    ) e = ( heroic ? "OnAttackHit_12788+76.2Physical_15%_45Cd" : lfr ? "OnAttackHit_10037+59.8Physical_15%_45Cd" : "OnAttackHit_11329+67.5Physical_15%_45Cd" ); // Confirm ICD, AoE?
   else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_17051+101.6Physical_15%_45Cd" : lfr ? "OnAttackHit_13383+79.7Physical_15%_45Cd" : "OnAttackHit_15106+90Physical_15%_45Cd" ); // Confirm ICD
   else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "reign_of_the_dead"                   ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
