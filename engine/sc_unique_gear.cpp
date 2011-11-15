@@ -1243,6 +1243,7 @@ static void register_nokaled( item_t* item )
   player_t* p   = item -> player;
   bool heroic   = item -> heroic();
   bool lfr      = item -> lfr();
+  int slot      = item -> slot;
                                       //Fire  Frost   Shadow
   static uint32_t    lfr_spells[] = { 109871, 109869, 109867 };
   static uint32_t normal_spells[] = { 107785, 107789, 107787 };
@@ -1257,6 +1258,7 @@ static void register_nokaled( item_t* item )
     double chance;
     spell_t* spells[3];
     rng_t* rng;
+    int slot;
 
     // FIXME: Verify if spells can miss
     struct nokaled_fire_t : public spell_t
@@ -1301,8 +1303,9 @@ static void register_nokaled( item_t* item )
       }
     };
 
-    nokaled_callback_t( player_t* p, uint32_t ids[], uint32_t proc_spell_id ) :
-      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() )
+    nokaled_callback_t( player_t* p, uint32_t ids[], uint32_t proc_spell_id, int slot ) :
+      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() ),
+      slot( slot )
     {
       spells[ 0 ] = new   nokaled_fire_t( p, ids[ 0 ] );
       spells[ 1 ] = new  nokaled_frost_t( p, ids[ 1 ] );
@@ -1317,6 +1320,10 @@ static void register_nokaled( item_t* item )
       if ( a -> proc )
         return;
 
+      // Only attacks from the weapon that have No'Kaled can trigger it
+      if ( a -> weapon -> slot != slot )
+        return;
+
       if ( rng -> roll( chance ) )
       {
         spells[ ( int ) ( rng -> range( 0.0, 2.999 ) ) ] -> execute();
@@ -1324,7 +1331,7 @@ static void register_nokaled( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new nokaled_callback_t( p, spell_ids, proc_spell_id ) );
+  p -> register_attack_callback( RESULT_HIT_MASK, new nokaled_callback_t( p, spell_ids, proc_spell_id, slot ) );
 }
 
 // register_rathrak =========================================================
