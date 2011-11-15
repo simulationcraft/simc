@@ -3977,21 +3977,23 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
           death_knight_t* dk = action -> player -> cast_death_knight();
           const dk_rune_t* rune = 0;
 
+          // pick an appropriate slot based on the rune type. *2 -1 is good enough.
+          int s = r * 2 - 1;
           if ( r != RUNE_TYPE_DEATH )
           {
-            if ( ( ! dk -> _runes.slot[ r ].is_death() && dk -> _runes.slot[ r ].is_ready() ) ||
-                 ( ! dk -> _runes.slot[ r ].paired_rune -> is_death() && dk -> _runes.slot[ r ].paired_rune -> is_ready() ) )
+            if ( ( ! dk -> _runes.slot[ s ].is_death() && dk -> _runes.slot[ s ].is_ready() ) ||
+                 ( ! dk -> _runes.slot[ s ].paired_rune -> is_death() && dk -> _runes.slot[ s ].paired_rune -> is_ready() ) )
             {
               result_num = 0;
               return TOK_NUM;
             }
 
             // Neither is up, choose the non-death rune that's regenerating.
-            if ( ! dk -> _runes.slot[ r ].is_death() && dk -> _runes.slot[ r ].is_regenerating() )
-              rune = &( dk -> _runes.slot[ r ] );
-            else if ( ! dk -> _runes.slot[ r ].paired_rune -> is_death() &&
-                      dk -> _runes.slot[ r ].paired_rune -> is_regenerating() )
-              rune = dk -> _runes.slot[ r ].paired_rune;
+            if ( ! dk -> _runes.slot[ s ].is_death() && dk -> _runes.slot[ s ].is_regenerating() )
+              rune = &( dk -> _runes.slot[ s ] );
+            else if ( ! dk -> _runes.slot[ s ].paired_rune -> is_death() &&
+                      dk -> _runes.slot[ s ].paired_rune -> is_regenerating() )
+              rune = dk -> _runes.slot[ s ].paired_rune;
           }
           else
           {
