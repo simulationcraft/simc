@@ -3,39 +3,33 @@ default_actions=1
 trinket1=empty
 trinket2=empty
 
-copy=Normal_Will_of_Unbinding
+copy=Will+of+Unbinding
 trinket1=will_of_unbinding
 
-copy=LFR_Will_of_Unbinding
+copy=Will+of+Unbinding+(LFR)
 trinket1=will_of_unbinding,lfr=1
 
-copy=Heroic_Will_of_Unbinding
+copy=Will+of+Unbinding+(Heroic)
 trinket1=will_of_unbinding,heroic=1
 
-copy=Normal_Bottled_Wishes
+copy=Bottled_Wishes
 trinket1=bottled_wishes
 
-copy=LFR_Bottled_Wishes
-trinket1=bottled_wishes,lfr=1
-
-copy=Heroic_Bottled_Wishes
-trinket1=bottled_wishes,heroic=1
-
-copy=Normal_Cunning_of_the_Cruel
+copy=Cunning+of+the+Cruel
 trinket1=cunning_of_the_cruel
 
-copy=LFR_Cunning_of_the_Cruel
+copy=Cunning+of+the+Cruel+(LFR)
 trinket1=cunning_of_the_cruel,lfr=1
 
-copy=Heroic_Cunning_of_the_Cruel
+copy=Cunning+of+the+Cruel+(Heroic)
 trinket1=cunning_of_the_cruel,heroic=1
 
-copy=Normal_Insignia_of_the_Corrupted_Mind
+copy=Insignia+of+the+Corrupted+Mind
 trinket1=insignia_of_the_corrupted_mind
 
-copy=LFR_Insignia_of_the_Corrupted_Mind
+copy=Insignia+of+the+Corrupted+Mind+(LFR)
 trinket1=insignia_of_the_corrupted_mind,lfr=1
 
-copy=Heroic_Insignia_of_the_Corrupted_Mind
+copy=Insignia+of+the+Corrupted+Mind+(Heroic)
 trinket1=insignia_of_the_corrupted_mind,heroic=1
 
