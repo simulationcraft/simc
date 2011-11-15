@@ -772,6 +772,9 @@ void SimulationCraftWindow::createBestInSlotTab()
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
   for( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
+    // Ignore the Monk for now
+    if ( i == MONK ) continue;
+
     QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util_t::player_type_string( i ) ) );
     bisTree->addTopLevelItem( top );
     for( int j=0; j < TIER_MAX; j++ )
