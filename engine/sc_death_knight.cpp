@@ -4443,15 +4443,12 @@ void death_knight_t::init_actions()
 
     action_list_str += "/snapshot_stats";
 
-    action_list_str += init_use_item_actions( ",time>=10" );
-
-    action_list_str += init_use_profession_actions();
-
-    action_list_str += init_use_racial_actions( ",time>=10" );
-
     switch ( tree )
     {
     case TREE_BLOOD:
+      action_list_str += init_use_item_actions( ",time>=10" );
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions( ",time>=10" );
       action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( talents.bone_shield -> rank() )
@@ -4471,6 +4468,9 @@ void death_knight_t::init_actions()
       break;
     case TREE_FROST:
     {
+      action_list_str += init_use_item_actions( ",time>=10" );
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions( ",time>=10" );
       action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( talents.pillar_of_frost -> rank() )
@@ -4546,6 +4546,9 @@ void death_knight_t::init_actions()
       break;
     }
     case TREE_UNHOLY:
+      action_list_str += init_use_item_actions( ",time>=2" );
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions( ",time>=2" );
       action_list_str += "/raise_dead";
       action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
