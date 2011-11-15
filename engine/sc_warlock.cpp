@@ -4762,10 +4762,18 @@ void warlock_t::init_actions()
 
     case TREE_DESTRUCTION:
       if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
-      action_list_str += "/soulburn,if=buff.bloodlust.down";
-      if ( talent_improved_soul_fire -> ok() && level >= 54 )
+      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
       {
-        action_list_str += "/soul_fire,if=buff.soulburn.up&!in_combat";
+        action_list_str += "/soulburn";
+        action_list_str += "/soul_fire,if=buff.soulburn.up";
+      }
+      else
+      {
+        action_list_str += "/soulburn,if=buff.bloodlust.down";
+        if ( talent_improved_soul_fire -> ok() && level >= 54 )
+        {
+          action_list_str += "/soul_fire,if=buff.soulburn.up&!in_combat";
+        }
       }
       if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8";
       action_list_str += "/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react";
@@ -4799,6 +4807,11 @@ void warlock_t::init_actions()
       action_list_str += "/felguard:felstorm";
       action_list_str += "/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking";
       action_list_str += "/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active";
+      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+      {
+        action_list_str += "/soulburn,if=cooldown.metamorphosis.remains>60";
+        action_list_str += "/soul_fire,if=buff.soulburn.up&cooldown.metamorphosis.remains>60";
+      }
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
       if ( level >= 20 )
       {
