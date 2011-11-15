@@ -3,62 +3,62 @@ default_actions=1
 trinket1=empty
 trinket2=empty
 
-copy=stump_of_time
+copy=Stump+of+Time
 trinket1=stump_of_time
 
-copy=rune_of_zeth
+copy=Rune+of+Zeth
 trinket1=rune_of_zeth
 
-copy=theralions_mirror
+copy=Theralion's+Mirror
 trinket1=theralions_mirror
 modify_action=summon_doomguard,if=buff.theralions_mirror.up
 
-copy=witching_hourglass
+copy=Witching+Hourglass
 trinket1=witching_hourglass,heroic=1
 
-copy=Htheralions_mirror
+copy=Theralion's+Mirror+(Heroic)
 trinket1=theralions_mirror,heroic=1
 modify_action=summon_doomguard,if=buff.theralions_mirror.up
 
-copy=Hheart_of_ignacious
+copy=Heart+of+Ignacious+(Heroic)
 trinket1=heart_of_ignacious,heroic=1
 
-copy=heart_of_ignacious
+copy=Heart+of+Ignacious
 trinket1=heart_of_ignacious
 
-copy=Hnecromantic_focus
+copy=Necromantic+Focus+(Heroic)
 trinket1=necromantic_focus,heroic=1
 
-copy=necromantic_focus
+copy=Necromantic+Focus
 trinket1=necromantic_focus
 
-copy=Hvariable_pulse_lightning_capacitor
+copy=Variable+Pulse+Lightning+Capacitor+(Heroic)
 trinket1=variable_pulse_lightning_capacitor,heroic=1
 
-copy=variable_pulse_lightning_capacitor
+copy=Variable+Pulse+Lightning+Capacitor
 trinket1=variable_pulse_lightning_capacitor
 
-copy=bell_of_enraging_resonance
+copy=Bell+of+Enraging+Resonance
 trinket1=bell_of_enraging_resonance
 
-copy=Hbell_of_enraging_resonance
+copy=Bell+of+Enraging+Resonance+(Heroic)
 trinket1=bell_of_enraging_resonance,heroic=1
 
-copy=figurine__jeweled_serpent
+copy=Figurine+-+Jeweled+Serpent
 trinket1=figurine__jeweled_serpent
 
-copy=soul_casket
+copy=Soul+Casket
 trinket1=soul_casket
 
-copy=anhuurs_hymnal
+copy=Anhuur's+Hymnal+(Heroic)
 trinket1=anhuurs_hymnal,heroic=1
 
-copy=darkmoon_card_volcano
+copy=Darkmoon+Card:+Volcano
 trinket1=darkmoon_card_volcano
 
-copy=moonwell_chalice
+copy=Moonwell+Chalice
 trinket1=moonwell_chalice
 modify_action=metamorphosis,if=buff.moonwell_chalice.up
 
-copy=mithril_stopwatch
+copy=Mithril+Stopwatch
 trinket1=mithril_stopwatch
