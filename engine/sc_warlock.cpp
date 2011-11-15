@@ -4809,8 +4809,8 @@ void warlock_t::init_actions()
       action_list_str += "/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active";
       if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
       {
-        action_list_str += "/soulburn,if=cooldown.metamorphosis.remains>60";
-        action_list_str += "/soul_fire,if=buff.soulburn.up&cooldown.metamorphosis.remains>60";
+        action_list_str += "/soulburn,if=pet.felhunter.active&cooldown.metamorphosis.remains>60";
+        action_list_str += "/soul_fire,if=pet.felhunter.active&buff.soulburn.up&cooldown.metamorphosis.remains>60";
       }
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
       if ( level >= 20 )
