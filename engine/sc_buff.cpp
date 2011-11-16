@@ -235,6 +235,8 @@ void buff_t::init_buff_shared()
   expiration = 0;
   delay = 0;
 
+  buff_duration = std::min( buff_duration, sim -> wheel_seconds - 2.0 );
+
   if ( max_stack >= 0 )
   {
     stack_occurrence.resize( max_stack + 1 );
@@ -262,9 +264,7 @@ void buff_t::init()
     rng = sim -> get_rng( name_str, rng_type );
     tail = &( sim -> buff_list );
   }
-
-  buff_duration        = std::min( buff_duration, sim -> wheel_seconds - 2.0 );
-  cooldown -> duration = std::min( buff_cooldown, sim -> wheel_seconds - 2.0 );
+  cooldown -> duration = buff_cooldown;
 
   while ( *tail && name_str > ( ( *tail ) -> name_str ) )
   {
@@ -286,7 +286,7 @@ buff_t::buff_t( player_t*          p,
                 int                rt,
                 bool               act ) :
   spell_id_t( p, n.c_str(), sname, 0 ),
-  buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
+  buff_duration( duration() ),
   default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   name_str( n ),
   sim( p -> sim ), player( p ), source( 0 ), initial_source( 0 ),
@@ -307,9 +307,6 @@ buff_t::buff_t( player_t*          p,
     cooldown -> duration = cd;
   }
 
-  if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
-    cooldown -> duration = sim -> wheel_seconds - 2.0;
-
   rng = player -> get_rng( n, rng_type );
 
 
@@ -329,7 +326,7 @@ buff_t::buff_t( player_t*          p,
                 int                rt,
                 bool               act ) :
   spell_id_t( p, n.c_str(), id ),
-  buff_duration( ( duration() > ( p -> sim -> wheel_seconds - 2.0 ) ) ?  ( p -> sim -> wheel_seconds - 2.0 ) : duration() ),
+  buff_duration( duration() ),
   default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   name_str( n ), sim( p -> sim ), player( p ), source( 0 ), initial_source( 0 ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
@@ -348,9 +345,6 @@ buff_t::buff_t( player_t*          p,
   {
     cooldown -> duration = cd;
   }
-
-  if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
-    cooldown -> duration = sim -> wheel_seconds - 2.0;
 
   rng = player -> get_rng( n, rng_type );
 
@@ -764,8 +758,7 @@ void buff_t::expire()
   aura_loss();
   if ( last_start >= 0 )
   {
-    double current_time = player ? ( player -> current_time ) : ( sim -> current_time );
-    iteration_uptime_sum += current_time - last_start;
+    iteration_uptime_sum += sim -> current_time - last_start;
   }
 
   if ( sim -> target -> resource_base[ RESOURCE_HEALTH ] == 0 ||

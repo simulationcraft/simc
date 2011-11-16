@@ -111,7 +111,6 @@ void pet_t::init_talents()
 void pet_t::reset()
 {
   player_t::reset();
-  summon_time = 0;
   expiration = 0;
 }
 
@@ -128,7 +127,6 @@ void pet_t::summon( double duration )
 
   owner -> active_pets++;
 
-  summon_time = sim -> current_time;
   summoned = true;
 
   if ( duration > 0 )

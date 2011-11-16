@@ -2521,7 +2521,8 @@ public:
 struct buff_t : public spell_id_t
 {
   double current_value, react, buff_duration, buff_cooldown, default_chance;
-  double last_start, last_trigger, start_intervals_sum, trigger_intervals_sum, iteration_uptime_sum;
+  double last_start;
+  double last_trigger, start_intervals_sum, trigger_intervals_sum, iteration_uptime_sum;
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
   double benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
@@ -3813,7 +3814,7 @@ struct player_t : public noncopyable
   // Reporting
   int       quiet;
   action_t* last_foreground_action;
-  double    current_time, iteration_fight_length,arise_time;
+  double    iteration_fight_length,arise_time;
   sample_data_t fight_length, waiting_time, executed_foreground_actions;
   double    iteration_waiting_time;
   int       iteration_executed_foreground_actions;
@@ -4387,7 +4388,6 @@ struct pet_t : public player_t
   pet_t* next_pet;
   double stamina_per_owner;
   double intellect_per_owner;
-  double summon_time;
   bool summoned;
   pet_type_t pet_type;
   event_t* expiration;

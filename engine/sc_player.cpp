@@ -462,7 +462,7 @@ player_t::player_t( sim_t*             s,
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
-  current_time( 0 ), iteration_fight_length( 0 ), arise_time( 0 ),
+  iteration_fight_length( 0 ), arise_time( 0 ),
   fight_length( s -> statistics_level < 2, true ), waiting_time( true ), executed_foreground_actions( s -> statistics_level < 3 ),
   iteration_waiting_time( 0 ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
@@ -2883,7 +2883,7 @@ void player_t::combat_end()
   compound_heal.add( iteration_heal );
 
   hps.add( iteration_fight_length ? iteration_heal / iteration_fight_length : 0 );
-  hpse.add( sim -> current_time ? iteration_heal / current_time : 0 );
+  hpse.add( sim -> current_time ? iteration_heal / sim -> current_time : 0 );
 
   dmg_taken.add( iteration_dmg_taken );
   dtps.add( iteration_fight_length ? iteration_dmg_taken / iteration_fight_length : 0 );
@@ -3047,7 +3047,6 @@ void player_t::reset()
   }
 
   last_foreground_action = 0;
-  current_time = 0;
 
   executing = 0;
   channeling = 0;
@@ -3190,8 +3189,6 @@ void player_t::schedule_ready( double delta_time,
   {
     last_foreground_action -> stats -> total_execute_time += delta_time;
   }
-
-  if ( delta_time == 0 ) delta_time = SC_EPSILON;
 
   readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
 
@@ -4013,7 +4010,7 @@ double player_t::assess_damage( double            amount,
     {
       if ( ! sleeping )
       {
-        deaths.add( current_time );
+        deaths.add( sim -> current_time );
       }
       if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
       demise();
@@ -5071,7 +5068,6 @@ struct snapshot_stats_t : public action_t
     action_t( ACTION_OTHER, "snapshot_stats", player ), attack( 0 ), spell( 0 )
   {
     parse_options( NULL, options_str );
-    base_execute_time = 0.001; // Needs to be non-zero to ensure all the buffs have been setup.
     trigger_gcd = 0;
   }
 
@@ -5178,7 +5174,11 @@ struct wait_fixed_t : public wait_action_base_t
   {
     int result = time_expr -> evaluate();
     assert( result == TOK_NUM ); ( void )result;
-    return time_expr -> result_num + SC_EPSILON;
+    double wait = time_expr -> result_num;
+
+    if ( wait <= 0 ) wait = player -> available();
+
+    return wait;
   }
 };
 
@@ -5206,7 +5206,9 @@ struct wait_until_ready_t : public wait_fixed_t
       if ( remains > 0 && remains < wait ) wait = remains;
     }
 
-    return wait + SC_EPSILON;
+    if ( wait <= 0 ) wait = player -> available();
+
+    return wait;
   }
 };
 
@@ -5218,7 +5220,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name 
 {}
 
 double wait_for_cooldown_t::execute_time() SC_CONST
-{ return wait_cd -> remains() + SC_EPSILON; }
+{ return wait_cd -> remains(); }
 
 // Use Item Action ==========================================================
 

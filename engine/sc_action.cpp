@@ -241,8 +241,6 @@ void action_t::parse_data()
   {
     base_execute_time    = spell -> cast_time( player -> level );
     cooldown -> duration = spell -> cooldown();
-    if ( cooldown -> duration > ( sim -> wheel_seconds - 2.0 ) )
-      cooldown -> duration = sim -> wheel_seconds - 2.0;
     range                = spell -> max_range();
     travel_speed         = spell -> missile_speed();
     trigger_gcd          = spell -> gcd();

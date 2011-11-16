@@ -206,10 +206,11 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
   fprintf( file,
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>Fight Length:</th>\n"
-           "\t\t\t\t\t\t\t\t<td>%.0f - %.0f</td>\n"
+           "\t\t\t\t\t\t\t\t<td>%.0f - %.0f ( %.1f )</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
-           sim -> iteration_timeline[ 0 ],
-           sim -> iteration_timeline [sim -> iteration_timeline.size() - 1 ] );
+           sim -> simulation_length.min,
+           sim -> simulation_length.max,
+           sim -> simulation_length.mean );
   fprintf( file,
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th><h2>Performance:</h2></th>\n"
