@@ -4782,7 +4782,7 @@ void warlock_t::init_actions()
       if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
       action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
       if ( level >= 75 ) action_list_str += "/shadowflame";
-      if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt";
+      if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt,if=cast_time>0.9";
       if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
       if ( talent_improved_soul_fire -> ok() && level >= 54 )
       {
