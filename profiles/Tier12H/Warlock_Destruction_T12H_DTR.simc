@@ -29,7 +29,7 @@ actions+=/immolate,if=buff.bloodlust.react&buff.bloodlust.remains>32&cooldown.co
 actions+=/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react
 actions+=/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react
 actions+=/shadowflame
-actions+=/chaos_bolt
+actions+=/chaos_bolt,if=cast_time>0.9
 actions+=/summon_doomguard,if=time>10
 actions+=/soul_fire,if=((buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time))|buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd))&!in_flight
 actions+=/shadowburn
