@@ -4663,9 +4663,16 @@ void warlock_t::init_actions()
 
     // Choose Pet
     if ( primary_tree() == TREE_DESTRUCTION )
+    {
       action_list_str += "/summon_imp";
+    }
     else if ( primary_tree() == TREE_DEMONOLOGY )
-      action_list_str += "/summon_felguard,if=cooldown.demon_soul.remains<5&cooldown.metamorphosis.remains<5&!pet.felguard.active";
+    {
+      if ( has_mwc )
+        action_list_str += "/summon_felguard,if=cooldown.demon_soul.remains<5&cooldown.metamorphosis.remains<5&!pet.felguard.active";
+      else
+        action_list_str += "/summon_felguard,if=!in_combat";
+    }
     else if ( primary_tree() == TREE_AFFLICTION )
     {
       if ( glyphs.lash_of_pain -> ok() )
@@ -4797,20 +4804,23 @@ void warlock_t::init_actions()
       if ( talent_metamorphosis -> ok() )
       {
         action_list_str += "/metamorphosis";
-        if ( has_mwc )
-          action_list_str += ",if=buff.moonwell_chalice.up&pet.felguard.active";
-        else
-          action_list_str += ",if=pet.felguard.active";
+        if ( has_mwc ) action_list_str += ",if=buff.moonwell_chalice.up&pet.felguard.active";
       }
-      if ( level >= 85 ) action_list_str += "/demon_soul,if=buff.metamorphosis.up";
+      if ( level >= 85 ) 
+      {
+        action_list_str += "/demon_soul";
+        if ( has_mwc ) action_list_str += ",if=buff.metamorphosis.up";
+      }
       if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
       action_list_str += "/felguard:felstorm";
       action_list_str += "/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking";
       action_list_str += "/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active";
       if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
       {
-        action_list_str += "/soulburn,if=pet.felhunter.active&cooldown.metamorphosis.remains>60";
-        action_list_str += "/soul_fire,if=pet.felhunter.active&buff.soulburn.up&cooldown.metamorphosis.remains>60";
+        action_list_str += "/soulburn,if=pet.felhunter.active";
+        if ( has_mwc ) action_list_str += "&cooldown.metamorphosis.remains>60";
+        action_list_str += "/soul_fire,if=pet.felhunter.active&buff.soulburn.up";
+        if ( has_mwc ) action_list_str += "&cooldown.metamorphosis.remains>60";
       }
       action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
       if ( level >= 20 )
@@ -4819,7 +4829,6 @@ void warlock_t::init_actions()
         if ( talent_metamorphosis -> ok() )
           action_list_str += "|(buff.metamorphosis.up&remains<45)";
         action_list_str += ")&target.time_to_die>=15&miss_react";
-        // if ( has_mwc ) action_list_str += "&cooldown.demon_soul.remains>30";
       }
       action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
       if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
