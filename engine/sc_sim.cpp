@@ -805,6 +805,9 @@ sim_t::~sim_t()
 void sim_t::add_event( event_t* e,
                        double   delta_time )
 {
+  if ( delta_time < 0 )
+    delta_time = 0;
+
   e -> time = current_time + delta_time;
   e -> id   = ++id;
 
