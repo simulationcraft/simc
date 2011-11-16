@@ -351,7 +351,7 @@ bool item_t::init()
   {
     if ( ( slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 ) && ! ( player -> profession[ PROF_ENCHANTING ] > 0 ) )
     {
-      sim -> errorf( "Player %s at slot %s has a ring enchant without the enchanting profession'\n",
+      sim -> errorf( "Player %s's ring at slot %s has a ring enchant without the enchanting profession\n",
                      player -> name(), slot_name() );
     }
     else

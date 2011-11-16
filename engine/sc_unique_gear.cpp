@@ -766,8 +766,10 @@ static void register_tyrandes_favorite_doll( item_t* item )
     double mana_stored;
     spell_t* discharge_spell;
     gain_t* gain_source;
+    player_t* player;
 
-    tyrandes_callback_t( player_t* p ) : action_callback_t( p -> sim, p ), max_mana( 4200 ), mana_stored( 0 )
+    tyrandes_callback_t( player_t* p ) :
+      action_callback_t( p -> sim, p ), max_mana( 4200 ), mana_stored( 0 ), player( p )
     {
       discharge_spell = new tyrandes_spell_t( p, max_mana );
       gain_source = p -> get_gain( "tyrandes_doll" );
@@ -775,7 +777,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
 
     virtual void reset() { action_callback_t::reset(); mana_stored=0; }
 
-    virtual void trigger( action_t* a, void* call_data )
+    virtual void trigger( action_t* /* a */, void* call_data )
     {
       double mana_spent = *( ( double* ) call_data );
 
@@ -786,7 +788,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
       if ( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= 0 ) )
       {
         discharge_spell -> execute();
-        a -> player -> resource_gain( RESOURCE_MANA, mana_stored, gain_source, discharge_spell );
+        player -> resource_gain( RESOURCE_MANA, mana_stored, gain_source, discharge_spell );
         mana_stored = 0;
       }
     }

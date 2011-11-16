@@ -5331,7 +5331,6 @@ void druid_t::init_actions()
   }
 
   player_t::init_actions();
-
 }
 
 // druid_t::reset ===========================================================
@@ -5724,7 +5723,6 @@ int druid_t::primary_role() SC_CONST
   }
 
   return ROLE_NONE;
-
 }
 
 // druid_t::primary_resource ================================================
