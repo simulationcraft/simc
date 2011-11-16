@@ -5297,16 +5297,7 @@ void druid_t::init_actions()
 
       if ( primary_tree() == TREE_BALANCE )
       {
-        if ( set_bonus.tier12_4pc_caster() )
-        {
-          // This has been suggested as superior, will need to test once we have a complete Tier 12 profile
-          // starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up
-          action_list_str += "/starsurge,if=!((eclipse<=-84&eclipse_dir=-1)|(eclipse>=75&eclipse_dir=1))";
-        }
-        else
-        {
-          action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
-        }
+        action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
       }
       action_list_str += "/innervate,if=mana_pct<50";
       if ( talents.force_of_nature -> rank() )

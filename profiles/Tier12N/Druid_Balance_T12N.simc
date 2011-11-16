@@ -1,7 +1,7 @@
 #!./simc 
 
 druid=Druid_Balance_T12N
-origin="Druid_CharDevSync.simc"
+origin="generate_Druid_T12N.simc"
 level=85
 race=troll
 position=back
@@ -26,7 +26,7 @@ actions+=/typhoon,moving=1
 actions+=/starfall,if=buff.lunar_eclipse.up
 actions+=/sunfire,if=(ticks_remain<2&!dot.moonfire.remains>0)|(eclipse<15&dot.sunfire.remains<7)
 actions+=/moonfire,if=buff.lunar_eclipse.up&((ticks_remain<2&!dot.sunfire.remains>0)|(eclipse>-20&dot.moonfire.remains<7))
-actions+=/starsurge,if=!((eclipse<=-84&eclipse_dir=-1)|(eclipse>=75&eclipse_dir=1))
+actions+=/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up
 actions+=/innervate,if=mana_pct<50
 actions+=/treants,time>=5
 actions+=/starfire,if=eclipse_dir=1&eclipse<75
