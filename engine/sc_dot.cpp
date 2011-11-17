@@ -10,12 +10,9 @@
 // ==========================================================================
 
 dot_t::dot_t( const std::string& n, player_t* p ) :
-  sim( p -> sim ), player( p ), action( 0 ), name_str( n ), tick_event( 0 ),
+  sim( p -> sim ), player( p ), action( 0 ), tick_event( 0 ), next( 0 ),
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-  added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ),time_to_tick( 0.0 ), next( 0 )
-{}
-
-dot_t::~dot_t()
+  added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ),time_to_tick( 0.0 ), name_str( n )
 {}
 
 // dot_t::extend_duration ===================================================

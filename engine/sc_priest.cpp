@@ -389,20 +389,20 @@ struct priest_t : public player_t
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST;
-  virtual double    composite_armor() SC_CONST;
-  virtual double    composite_spell_power( const school_type school ) SC_CONST;
-  virtual double    composite_spell_hit() SC_CONST;
-  virtual double    composite_spell_haste() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double    composite_player_heal_multiplier( const school_type school ) SC_CONST;
-  virtual double    composite_movement_speed() SC_CONST;
+  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual int       primary_role() const;
+  virtual double    composite_armor() const;
+  virtual double    composite_spell_power( const school_type school ) const;
+  virtual double    composite_spell_hit() const;
+  virtual double    composite_spell_haste() const;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    composite_player_heal_multiplier( const school_type school ) const;
+  virtual double    composite_movement_speed() const;
 
-  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
 
-  virtual double    spirit() SC_CONST;
+  virtual double    spirit() const;
 
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
@@ -411,8 +411,8 @@ struct priest_t : public player_t
 
   virtual double    target_mitigation( double amount, const school_type school, int type, int result, action_t* a=0 );
 
-  virtual double    empowered_shadows_amount() SC_CONST;
-  virtual double    shadow_orb_amount() SC_CONST;
+  virtual double    empowered_shadows_amount() const;
+  virtual double    shadow_orb_amount() const;
 
   void fixup_atonement_stats( const char* trigger_spell_name, const char* atonement_spell_name );
   virtual void pre_analyze_hook();
@@ -487,7 +487,7 @@ public:
     player_multiplier *= 1.0 + ( p -> composite_mastery() * p -> mastery_spells.shield_discipline -> ok() * 2.5 / 100.0 );
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     priest_t* p = player -> cast_priest();
 
@@ -685,7 +685,7 @@ struct priest_heal_t : public heal_t
     }
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     priest_t* p = player -> cast_priest();
 
@@ -855,7 +855,7 @@ struct atonement_heal_t : public priest_heal_t
     }
   }
 
-  virtual double total_crit_bonus() SC_CONST
+  virtual double total_crit_bonus() const
   {
     return 0;
   }
@@ -950,7 +950,7 @@ public:
     }
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     priest_t* p = player -> cast_priest();
 
@@ -1238,7 +1238,7 @@ struct shadow_fiend_pet_t : public pet_t
     buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration() );
   }
 
-  virtual double composite_spell_power( const school_type school ) SC_CONST
+  virtual double composite_spell_power( const school_type school ) const
   {
     priest_t* p = owner -> cast_priest();
 
@@ -1252,17 +1252,17 @@ struct shadow_fiend_pet_t : public pet_t
     return sp;
   }
 
-  virtual double composite_attack_hit() SC_CONST
+  virtual double composite_attack_hit() const
   {
     return owner -> composite_spell_hit();
   }
 
-  virtual double composite_attack_expertise() SC_CONST
+  virtual double composite_attack_expertise() const
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
 
-  virtual double composite_attack_crit() SC_CONST
+  virtual double composite_attack_crit() const
   {
     double c = pet_t::composite_attack_crit();
 
@@ -2294,7 +2294,7 @@ struct mind_blast_t : public priest_spell_t
     target_crit       += p -> buffs_mind_spike -> value() * p -> buffs_mind_spike -> check();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double a = priest_spell_t::execute_time();
 
@@ -2778,7 +2778,7 @@ struct holy_fire_t : public priest_spell_t
     player_multiplier *= 1.0 + ( p -> buffs_holy_evangelism -> stack() * p -> buffs_holy_evangelism -> effect1().percent() );
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     double c = priest_spell_t::cost();
 
@@ -2846,7 +2846,7 @@ struct penance_t : public priest_spell_t
     stats -> add_tick( d -> time_to_tick );
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     double c = priest_spell_t::cost();
 
@@ -2928,7 +2928,7 @@ struct smite_t : public priest_spell_t
       player_multiplier *= 1.0 + p -> glyphs.smite -> effect1().percent();
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     double c = priest_spell_t::cost();
 
@@ -3044,7 +3044,7 @@ struct binding_heal_t : public priest_heal_t
       player_crit += p -> buffs_inner_focus -> effect2().percent();
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     priest_t* p = player -> cast_priest();
 
@@ -3282,7 +3282,7 @@ struct flash_heal_t : public priest_heal_t
       player_crit += p -> talents.renewed_hope -> effect1().percent();
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     double c = priest_heal_t::cost();
 
@@ -3297,7 +3297,7 @@ struct flash_heal_t : public priest_heal_t
     return c;
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     priest_t* p = player -> cast_priest();
 
@@ -3431,7 +3431,7 @@ struct greater_heal_t : public priest_heal_t
       player_crit += p -> talents.renewed_hope -> effect1().percent();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     priest_t* p = player -> cast_priest();
 
@@ -3443,7 +3443,7 @@ struct greater_heal_t : public priest_heal_t
     return c;
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     priest_t* p = player -> cast_priest();
 
@@ -3856,7 +3856,7 @@ struct penance_heal_t : public priest_heal_t
     stats -> add_tick( d -> time_to_tick );
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     double c = priest_heal_t::cost();
 
@@ -4114,7 +4114,7 @@ struct prayer_of_healing_t : public priest_heal_t
       player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect1().percent();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     priest_t* p = player -> cast_priest();
 
@@ -4126,7 +4126,7 @@ struct prayer_of_healing_t : public priest_heal_t
     return c;
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     priest_t* p = player -> cast_priest();
 
@@ -4343,7 +4343,7 @@ struct tier12_heal_2pc_buff_t : public buff_t
 
 // priest_t::empowered_shadows_amount
 
-double priest_t::empowered_shadows_amount() SC_CONST
+double priest_t::empowered_shadows_amount() const
 {
   double a = shadow_orb_amount();
 
@@ -4354,7 +4354,7 @@ double priest_t::empowered_shadows_amount() SC_CONST
 
 // priest_t::shadow_orb_amount
 
-double priest_t::shadow_orb_amount() SC_CONST
+double priest_t::shadow_orb_amount() const
 {
   double a = composite_mastery() * constants.shadow_orb_mastery_value;
 
@@ -4373,7 +4373,7 @@ void priest_t::trigger_cauterizing_flame()
 
 // priest_t::primary_role
 
-int priest_t::primary_role() SC_CONST
+int priest_t::primary_role() const
 {
   switch( player_t::primary_role() )
   {
@@ -4393,7 +4393,7 @@ int priest_t::primary_role() SC_CONST
 
 // priest_t::composite_armor ================================================
 
-double priest_t::composite_armor() SC_CONST
+double priest_t::composite_armor() const
 {
   double a = player_t::composite_armor();
 
@@ -4405,7 +4405,7 @@ double priest_t::composite_armor() SC_CONST
 
 // priest_t::composite_spell_power ==========================================
 
-double priest_t::composite_spell_power( const school_type school ) SC_CONST
+double priest_t::composite_spell_power( const school_type school ) const
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -4417,7 +4417,7 @@ double priest_t::composite_spell_power( const school_type school ) SC_CONST
 
 // priest_t::composite_spell_hit ============================================
 
-double priest_t::composite_spell_hit() SC_CONST
+double priest_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
@@ -4428,7 +4428,7 @@ double priest_t::composite_spell_hit() SC_CONST
 
 // priest_t::composite_spell_haste ==========================================
 
-double priest_t::composite_spell_haste() SC_CONST
+double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
@@ -4442,7 +4442,7 @@ double priest_t::composite_spell_haste() SC_CONST
 
 // priest_t::composite_player_multiplier ====================================
 
-double priest_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+double priest_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4468,7 +4468,7 @@ double priest_t::composite_player_multiplier( const school_type school, action_t
   return m;
 }
 
-double priest_t::composite_player_td_multiplier( const school_type school, action_t* a ) SC_CONST
+double priest_t::composite_player_td_multiplier( const school_type school, action_t* a ) const
 {
   double player_multiplier = player_t::composite_player_td_multiplier( school, a );
 
@@ -4484,7 +4484,7 @@ double priest_t::composite_player_td_multiplier( const school_type school, actio
 
 // priest_t::composite_player_heal_multiplier ===============================
 
-double priest_t::composite_player_heal_multiplier( const school_type school ) SC_CONST
+double priest_t::composite_player_heal_multiplier( const school_type school ) const
 {
   double m = player_t::composite_player_heal_multiplier( school );
 
@@ -4496,7 +4496,7 @@ double priest_t::composite_player_heal_multiplier( const school_type school ) SC
 
 // priest_t::composite_movement_speed =======================================
 
-double priest_t::composite_movement_speed() SC_CONST
+double priest_t::composite_movement_speed() const
 {
   double speed = player_t::composite_movement_speed();
 
@@ -4508,7 +4508,7 @@ double priest_t::composite_movement_speed() SC_CONST
 
 // priest_t::matching_gear_multiplier =======================================
 
-double priest_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
+double priest_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;
@@ -4518,7 +4518,7 @@ double priest_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 
 // priest_t::spirit =========================================================
 
-double priest_t::spirit() SC_CONST
+double priest_t::spirit() const
 {
   double spi = player_t::spirit();
 

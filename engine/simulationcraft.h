@@ -20,12 +20,6 @@
 #  define SC_SIGACTION
 #endif
 
-// Switching of using 'const'-flag on methods possible ======================
-// Results of the sim should always be the same, no matter if this is set to:
-// #define SC_CONST const    -OR-
-// #define SC_CONST
-#define SC_CONST const
-
 #if defined( _MSC_VER )
 #  include "../vs/stdint.h"
 #else
@@ -106,7 +100,6 @@ struct action_expr_t;
 struct action_priority_list_t;
 struct alias_t;
 struct attack_t;
-struct base_stats_t;
 struct benefit_t;
 struct buff_t;
 struct buff_uptime_t;
@@ -134,7 +127,6 @@ struct plot_t;
 struct priest_t;
 struct proc_t;
 struct raid_event_t;
-struct rank_t;
 struct rating_t;
 struct reforge_plot_t;
 struct report_t;
@@ -1812,105 +1804,105 @@ public:
   static std::size_t        n_items( bool ptr = false );
 
   // Game data table access
-  double melee_crit_base( player_type t ) SC_CONST;
-  double melee_crit_base( pet_type_t t ) SC_CONST;
-  double spell_crit_base( player_type t ) SC_CONST;
-  double spell_crit_base( pet_type_t t ) SC_CONST;
-  double dodge_base( player_type t ) SC_CONST;
-  double dodge_base( pet_type_t t ) SC_CONST;
-  double regen_base( player_type t, unsigned level ) SC_CONST;
-  double regen_base( pet_type_t t, unsigned level ) SC_CONST;
-  stat_data_t& attribute_base( player_type t, unsigned level ) SC_CONST;
-  stat_data_t& attribute_base( pet_type_t t, unsigned level ) SC_CONST;
-  stat_data_t& race_base( race_type r ) SC_CONST;
-  stat_data_t& race_base( pet_type_t t ) SC_CONST;
+  double melee_crit_base( player_type t ) const;
+  double melee_crit_base( pet_type_t t ) const;
+  double spell_crit_base( player_type t ) const;
+  double spell_crit_base( pet_type_t t ) const;
+  double dodge_base( player_type t ) const;
+  double dodge_base( pet_type_t t ) const;
+  double regen_base( player_type t, unsigned level ) const;
+  double regen_base( pet_type_t t, unsigned level ) const;
+  stat_data_t& attribute_base( player_type t, unsigned level ) const;
+  stat_data_t& attribute_base( pet_type_t t, unsigned level ) const;
+  stat_data_t& race_base( race_type r ) const;
+  stat_data_t& race_base( pet_type_t t ) const;
 
-  double spell_scaling( player_type t, unsigned level ) SC_CONST;
-  double melee_crit_scaling( player_type t, unsigned level ) SC_CONST;
-  double melee_crit_scaling( pet_type_t t, unsigned level ) SC_CONST;
-  double spell_crit_scaling( player_type t, unsigned level ) SC_CONST;
-  double spell_crit_scaling( pet_type_t t, unsigned level ) SC_CONST;
-  double dodge_scaling( player_type t, unsigned level ) SC_CONST;
-  double dodge_scaling( pet_type_t t, unsigned level ) SC_CONST;
+  double spell_scaling( player_type t, unsigned level ) const;
+  double melee_crit_scaling( player_type t, unsigned level ) const;
+  double melee_crit_scaling( pet_type_t t, unsigned level ) const;
+  double spell_crit_scaling( player_type t, unsigned level ) const;
+  double spell_crit_scaling( pet_type_t t, unsigned level ) const;
+  double dodge_scaling( player_type t, unsigned level ) const;
+  double dodge_scaling( pet_type_t t, unsigned level ) const;
 
-  double regen_spirit( player_type t, unsigned level ) SC_CONST;
-  double regen_spirit( pet_type_t t, unsigned level ) SC_CONST;
-  double oct_regen_mp( player_type t, unsigned level ) SC_CONST;
-  double oct_regen_mp( pet_type_t t, unsigned level ) SC_CONST;
+  double regen_spirit( player_type t, unsigned level ) const;
+  double regen_spirit( pet_type_t t, unsigned level ) const;
+  double oct_regen_mp( player_type t, unsigned level ) const;
+  double oct_regen_mp( pet_type_t t, unsigned level ) const;
 
-  double combat_rating( unsigned combat_rating_id, unsigned level ) SC_CONST;
-  double oct_combat_rating( unsigned combat_rating_id, player_type t ) SC_CONST;
+  double combat_rating( unsigned combat_rating_id, unsigned level ) const;
+  double oct_combat_rating( unsigned combat_rating_id, player_type t ) const;
 
   const spell_data_t*            spell( unsigned spell_id ) const { return spell_data_t::find( spell_id, ptr ); }
   const spelleffect_data_t*      effect( unsigned effect_id ) const { return spelleffect_data_t::find( effect_id, ptr ); }
   const talent_data_t*           talent( unsigned talent_id ) const { return talent_data_t::find( talent_id, ptr ); }
-  const item_data_t*             item( unsigned item_id ) SC_CONST;
+  const item_data_t*             item( unsigned item_id ) const;
 
-  const random_suffix_data_t&    random_suffix( unsigned suffix_id ) SC_CONST;
-  const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) SC_CONST;
-  const gem_property_data_t&     gem_property( unsigned gem_id ) SC_CONST;
+  const random_suffix_data_t&    random_suffix( unsigned suffix_id ) const;
+  const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const;
+  const gem_property_data_t&     gem_property( unsigned gem_id ) const;
 
-  const random_prop_data_t&      random_property( unsigned ilevel ) SC_CONST;
-  const item_scale_data_t&       item_damage_1h( unsigned ilevel ) SC_CONST;
-  const item_scale_data_t&       item_damage_2h( unsigned ilevel ) SC_CONST;
-  const item_scale_data_t&       item_damage_caster_1h( unsigned ilevel ) SC_CONST;
-  const item_scale_data_t&       item_damage_caster_2h( unsigned ilevel ) SC_CONST;
-  const item_scale_data_t&       item_damage_ranged( unsigned ilevel ) SC_CONST;
-  const item_scale_data_t&       item_damage_thrown( unsigned ilevel ) SC_CONST;
-  const item_scale_data_t&       item_damage_wand( unsigned ilevel ) SC_CONST;
+  const random_prop_data_t&      random_property( unsigned ilevel ) const;
+  const item_scale_data_t&       item_damage_1h( unsigned ilevel ) const;
+  const item_scale_data_t&       item_damage_2h( unsigned ilevel ) const;
+  const item_scale_data_t&       item_damage_caster_1h( unsigned ilevel ) const;
+  const item_scale_data_t&       item_damage_caster_2h( unsigned ilevel ) const;
+  const item_scale_data_t&       item_damage_ranged( unsigned ilevel ) const;
+  const item_scale_data_t&       item_damage_thrown( unsigned ilevel ) const;
+  const item_scale_data_t&       item_damage_wand( unsigned ilevel ) const;
 
-  const item_scale_data_t&       item_armor_quality( unsigned ilevel ) SC_CONST;
-  const item_scale_data_t&       item_armor_shield( unsigned ilevel ) SC_CONST;
-  const item_armor_type_data_t&  item_armor_total( unsigned ilevel ) SC_CONST;
-  const item_armor_type_data_t&  item_armor_inv_type( unsigned inv_type ) SC_CONST;
+  const item_scale_data_t&       item_armor_quality( unsigned ilevel ) const;
+  const item_scale_data_t&       item_armor_shield( unsigned ilevel ) const;
+  const item_armor_type_data_t&  item_armor_total( unsigned ilevel ) const;
+  const item_armor_type_data_t&  item_armor_inv_type( unsigned inv_type ) const;
 
   // Derived data access
-  unsigned class_ability( unsigned class_id, unsigned tree_id, unsigned n ) SC_CONST;
-  unsigned class_ability_tree_size() SC_CONST;
-  unsigned class_ability_size() SC_CONST;
+  unsigned class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
+  unsigned class_ability_tree_size() const;
+  unsigned class_ability_size() const;
 
-  unsigned race_ability( unsigned race_id, unsigned class_id, unsigned n ) SC_CONST;
-  unsigned race_ability_size() SC_CONST;
+  unsigned race_ability( unsigned race_id, unsigned class_id, unsigned n ) const;
+  unsigned race_ability_size() const;
 
-  unsigned specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) SC_CONST;
-  unsigned specialization_ability_tree_size() SC_CONST;
-  unsigned specialization_ability_size() SC_CONST;
+  unsigned specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
+  unsigned specialization_ability_tree_size() const;
+  unsigned specialization_ability_size() const;
 
-  unsigned mastery_ability( unsigned class_id, unsigned n ) SC_CONST;
-  unsigned mastery_ability_size() SC_CONST;
+  unsigned mastery_ability( unsigned class_id, unsigned n ) const;
+  unsigned mastery_ability_size() const;
 
-  unsigned glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n ) SC_CONST;
-  unsigned glyph_spell_size() SC_CONST;
+  unsigned glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n ) const;
+  unsigned glyph_spell_size() const;
 
-  unsigned set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) SC_CONST;
-  unsigned set_bonus_spell_size() SC_CONST;
+  unsigned set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) const;
+  unsigned set_bonus_spell_size() const;
 
   // Helper methods
-  double   weapon_dps( unsigned item_id ) SC_CONST;
+  double   weapon_dps( unsigned item_id ) const;
 
-  double   effect_average( unsigned effect_id, unsigned level ) SC_CONST;
-  double   effect_delta( unsigned effect_id, unsigned level ) SC_CONST;
+  double   effect_average( unsigned effect_id, unsigned level ) const;
+  double   effect_delta( unsigned effect_id, unsigned level ) const;
 
-  double   effect_min( unsigned effect_id, unsigned level ) SC_CONST;
-  double   effect_max( unsigned effect_id, unsigned level ) SC_CONST;
-  double   effect_bonus( unsigned effect_id, unsigned level ) SC_CONST;
+  double   effect_min( unsigned effect_id, unsigned level ) const;
+  double   effect_max( unsigned effect_id, unsigned level ) const;
+  double   effect_bonus( unsigned effect_id, unsigned level ) const;
 
-  unsigned class_ability_id( player_type c, const char* spell_name, int tree = -1 ) SC_CONST;
-  unsigned race_ability_id( player_type c, race_type r, const char* spell_name ) SC_CONST;
-  unsigned specialization_ability_id( player_type c, const char* spell_name, int tree = -1 ) SC_CONST;
-  unsigned mastery_ability_id( player_type c, const char* spell_name ) SC_CONST;
-  unsigned glyph_spell_id( player_type c, const char* spell_name ) SC_CONST;
-  unsigned set_bonus_spell_id( player_type c, const char* spell_name, int tier = -1 ) SC_CONST;
+  unsigned class_ability_id( player_type c, const char* spell_name, int tree = -1 ) const;
+  unsigned race_ability_id( player_type c, race_type r, const char* spell_name ) const;
+  unsigned specialization_ability_id( player_type c, const char* spell_name, int tree = -1 ) const;
+  unsigned mastery_ability_id( player_type c, const char* spell_name ) const;
+  unsigned glyph_spell_id( player_type c, const char* spell_name ) const;
+  unsigned set_bonus_spell_id( player_type c, const char* spell_name, int tier = -1 ) const;
 
-  int      class_ability_tree( player_type c, uint32_t spell_id ) SC_CONST;
-  int      specialization_ability_tree( player_type c, uint32_t spell_id ) SC_CONST;
+  int      class_ability_tree( player_type c, uint32_t spell_id ) const;
+  int      specialization_ability_tree( player_type c, uint32_t spell_id ) const;
 
-  bool     is_class_ability( uint32_t spell_id ) SC_CONST;
-  bool     is_race_ability( uint32_t spell_id ) SC_CONST;
-  bool     is_specialization_ability( uint32_t spell_id ) SC_CONST;
-  bool     is_mastery_ability( uint32_t spell_id ) SC_CONST;
-  bool     is_glyph_spell( uint32_t spell_id ) SC_CONST;
-  bool     is_set_bonus_spell( uint32_t spell_id ) SC_CONST;
+  bool     is_class_ability( uint32_t spell_id ) const;
+  bool     is_race_ability( uint32_t spell_id ) const;
+  bool     is_specialization_ability( uint32_t spell_id ) const;
+  bool     is_mastery_ability( uint32_t spell_id ) const;
+  bool     is_glyph_spell( uint32_t spell_id ) const;
+  bool     is_set_bonus_spell( uint32_t spell_id ) const;
 
   // Static helper methods
   static double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
@@ -2144,8 +2136,6 @@ public:
   static bool str_in_str_ci ( const std::string& l, const std::string& r );
   static bool str_prefix_ci ( const std::string& str, const std::string& prefix );
 
-  static void add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b );
-
   static double floor( double X, unsigned int decplaces = 0 );
   static double ceil( double X, unsigned int decplaces = 0 );
   static double round( double X, unsigned int decplaces = 0 );
@@ -2205,64 +2195,64 @@ struct spell_id_t
   virtual bool enable( bool override_value );
 
   // Spell data object validity check
-  virtual bool ok() SC_CONST;
+  virtual bool ok() const;
 
   // Spell state output
-  std::string to_str() SC_CONST;
+  std::string to_str() const;
 
   // Access methods
-  virtual uint32_t spell_id() SC_CONST { return ( s_player && s_data ) ? s_id : 0; }
-  virtual const char* real_name() SC_CONST;
-  virtual const std::string token() SC_CONST;
-  virtual double missile_speed() SC_CONST;
-  virtual uint32_t school_mask() SC_CONST;
-  virtual school_type get_school_type() SC_CONST;
-  virtual resource_type power_type() SC_CONST;
-  virtual double min_range() SC_CONST;
-  virtual double max_range() SC_CONST;
-  virtual double extra_coeff() SC_CONST;
-  virtual bool in_range() SC_CONST;
-  virtual double cooldown() SC_CONST;
-  virtual double gcd() SC_CONST;
-  virtual uint32_t category() SC_CONST;
-  virtual double duration() SC_CONST;
-  virtual double cost() SC_CONST;
-  virtual uint32_t rune_cost() SC_CONST;
-  virtual double runic_power_gain() SC_CONST;
-  virtual uint32_t max_stacks() SC_CONST;
-  virtual uint32_t initial_stacks() SC_CONST;
-  virtual double proc_chance() SC_CONST;
-  virtual double cast_time() SC_CONST;
-  virtual uint32_t effect_id( uint32_t effect_num ) SC_CONST;
-  virtual bool flags( spell_attribute_t f ) SC_CONST;
-  virtual const char* desc() SC_CONST;
-  virtual const char* tooltip() SC_CONST;
-  virtual int32_t effect_type( uint32_t effect_num ) SC_CONST;
-  virtual int32_t effect_subtype( uint32_t effect_num ) SC_CONST;
-  virtual int32_t effect_base_value( uint32_t effect_num ) SC_CONST;
-  virtual int32_t effect_misc_value1( uint32_t effect_num ) SC_CONST;
-  virtual int32_t effect_misc_value2( uint32_t effect_num ) SC_CONST;
-  virtual uint32_t effect_trigger_spell( uint32_t effect_num ) SC_CONST;
-  virtual double effect_chain_multiplier( uint32_t effect_num ) SC_CONST;
-  virtual double effect_average( uint32_t effect_num ) SC_CONST;
-  virtual double effect_delta( uint32_t effect_num ) SC_CONST;
-  virtual double effect_bonus( uint32_t effect_num ) SC_CONST;
-  virtual double effect_min( uint32_t effect_num ) SC_CONST;
-  virtual double effect_max( uint32_t effect_num ) SC_CONST;
-  virtual double effect_coeff( uint32_t effect_num ) SC_CONST;
-  virtual double effect_period( uint32_t effect_num ) SC_CONST;
-  virtual double effect_radius( uint32_t effect_num ) SC_CONST;
-  virtual double effect_radius_max( uint32_t effect_num ) SC_CONST;
-  virtual double effect_pp_combo_points( uint32_t effect_num ) SC_CONST;
-  virtual double effect_real_ppl( uint32_t effect_num ) SC_CONST;
-  virtual int    effect_die_sides( uint32_t effect_num ) SC_CONST;
+  virtual uint32_t spell_id() const { return ( s_player && s_data ) ? s_id : 0; }
+  virtual const char* real_name() const;
+  virtual const std::string token() const;
+  virtual double missile_speed() const;
+  virtual uint32_t school_mask() const;
+  virtual school_type get_school_type() const;
+  virtual resource_type power_type() const;
+  virtual double min_range() const;
+  virtual double max_range() const;
+  virtual double extra_coeff() const;
+  virtual bool in_range() const;
+  virtual double cooldown() const;
+  virtual double gcd() const;
+  virtual uint32_t category() const;
+  virtual double duration() const;
+  virtual double cost() const;
+  virtual uint32_t rune_cost() const;
+  virtual double runic_power_gain() const;
+  virtual uint32_t max_stacks() const;
+  virtual uint32_t initial_stacks() const;
+  virtual double proc_chance() const;
+  virtual double cast_time() const;
+  virtual uint32_t effect_id( uint32_t effect_num ) const;
+  virtual bool flags( spell_attribute_t f ) const;
+  virtual const char* desc() const;
+  virtual const char* tooltip() const;
+  virtual int32_t effect_type( uint32_t effect_num ) const;
+  virtual int32_t effect_subtype( uint32_t effect_num ) const;
+  virtual int32_t effect_base_value( uint32_t effect_num ) const;
+  virtual int32_t effect_misc_value1( uint32_t effect_num ) const;
+  virtual int32_t effect_misc_value2( uint32_t effect_num ) const;
+  virtual uint32_t effect_trigger_spell( uint32_t effect_num ) const;
+  virtual double effect_chain_multiplier( uint32_t effect_num ) const;
+  virtual double effect_average( uint32_t effect_num ) const;
+  virtual double effect_delta( uint32_t effect_num ) const;
+  virtual double effect_bonus( uint32_t effect_num ) const;
+  virtual double effect_min( uint32_t effect_num ) const;
+  virtual double effect_max( uint32_t effect_num ) const;
+  virtual double effect_coeff( uint32_t effect_num ) const;
+  virtual double effect_period( uint32_t effect_num ) const;
+  virtual double effect_radius( uint32_t effect_num ) const;
+  virtual double effect_radius_max( uint32_t effect_num ) const;
+  virtual double effect_pp_combo_points( uint32_t effect_num ) const;
+  virtual double effect_real_ppl( uint32_t effect_num ) const;
+  virtual int    effect_die_sides( uint32_t effect_num ) const;
 
   // Generalized access API
-  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
+  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) const;
 
   // Return an additive modifier from the spell (E_APPLY_AURA -> A_ADD_PCT_MODIFIER|A_ADD_FLAT_MODIFIER ),
   // based on the property of the modifier (as defined by misc_value)
-  virtual double mod_additive( property_type_t = P_MAX ) SC_CONST;
+  virtual double mod_additive( property_type_t = P_MAX ) const;
 
   // Spell data specific static methods
   static uint32_t get_school_mask( const school_type s );
@@ -2290,14 +2280,14 @@ struct talent_t : spell_id_t
   talent_t( player_t* p, talent_data_t* td );
   virtual ~talent_t();
   virtual bool set_rank( uint32_t value, bool overridden = false );
-  virtual bool ok() SC_CONST;
-  std::string to_str() SC_CONST;
-  virtual uint32_t rank() SC_CONST;
+  virtual bool ok() const;
+  std::string to_str() const;
+  virtual uint32_t rank() const;
 
-  virtual uint32_t spell_id() SC_CONST;
-  virtual uint32_t max_rank() SC_CONST;
-  virtual uint32_t rank_spell_id( const uint32_t r ) SC_CONST;
-  virtual const spell_id_t* rank_spell( uint32_t r = 0 ) SC_CONST;
+  virtual uint32_t spell_id() const;
+  virtual uint32_t max_rank() const;
+  virtual uint32_t rank_spell_id( const uint32_t r ) const;
+  virtual const spell_id_t* rank_spell( uint32_t r = 0 ) const;
 
   // Future trimmed down access
   talent_data_t* td;
@@ -2360,13 +2350,13 @@ struct mastery_t : public spell_id_t
   mastery_t( player_t* player, const char* t_name, const uint32_t id, int tree );
   mastery_t( player_t* player, const char* t_name, const char* s_name, int tree );
 
-  std::string to_str() SC_CONST;
+  std::string to_str() const;
 
-  virtual bool ok() SC_CONST;
+  virtual bool ok() const;
   virtual double base_value( effect_type_t type = E_MAX,
                              effect_subtype_t sub_type = A_MAX,
                              int misc_value = DEFAULT_MISC_VALUE,
-                             int misc_value2 = DEFAULT_MISC_VALUE ) SC_CONST;
+                             int misc_value2 = DEFAULT_MISC_VALUE ) const;
 };
 
 // Raid Event
@@ -2394,14 +2384,14 @@ struct raid_event_t
   raid_event_t( sim_t*, const char* name );
   virtual ~raid_event_t() {}
 
-  virtual double cooldown_time() SC_CONST;
-  virtual double duration_time() SC_CONST;
+  virtual double cooldown_time() const;
+  virtual double duration_time() const;
   virtual void schedule();
   virtual void reset();
   virtual void start();
   virtual void finish();
   virtual void parse_options( option_t*, const std::string& options_str );
-  virtual const char* name() SC_CONST { return name_str.c_str(); }
+  virtual const char* name() const { return name_str.c_str(); }
   static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
   static void init( sim_t* );
   static void reset( sim_t* );
@@ -2446,7 +2436,7 @@ struct gear_stats_t : public internal::gear_stats_t
 
   void   add_stat( int stat, double value );
   void   set_stat( int stat, double value );
-  double get_stat( int stat ) SC_CONST;
+  double get_stat( int stat ) const;
   void   print( FILE* );
   static double stat_mod( int stat );
 };
@@ -2616,7 +2606,7 @@ public:
   const char* name() { return name_str.c_str(); }
 
   action_expr_t* create_expression( action_t*, const std::string& type );
-  std::string    to_str() SC_CONST;
+  std::string    to_str() const;
 
   static buff_t* find(   buff_t*, const std::string& name );
   static buff_t* find(    sim_t*, const std::string& name );
@@ -3330,8 +3320,8 @@ public:
   {
     if ( ! name ) name = "unknown";
   }
-  double occurs()  SC_CONST { return ( reschedule_time != 0 ) ? reschedule_time : time; }
-  double remains() SC_CONST { return occurs() - sim -> current_time; }
+  double occurs()  const { return ( reschedule_time != 0 ) ? reschedule_time : time; }
+  double remains() const { return occurs() - sim -> current_time; }
   virtual void reschedule( double new_time );
   virtual void execute() = 0;
   virtual ~event_t() {}
@@ -3355,14 +3345,6 @@ public:
 
   static void operator delete( void* p, sim_t* sim )
   { sim -> free_list.deallocate( p ); }
-};
-
-struct event_compare_t
-{
-  bool operator () ( event_t* lhs, event_t* rhs ) SC_CONST
-  {
-    return( lhs -> time == rhs -> time ) ? ( lhs -> id > rhs -> id ) : ( lhs -> time > rhs -> time );
-  }
 };
 
 // Gear Rating Conversions ==================================================
@@ -3403,9 +3385,9 @@ struct weapon_t
   double buff_value;
   double bonus_dmg;
 
-  int    group() SC_CONST;
-  double normalized_weapon_speed() SC_CONST;
-  double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 ) SC_CONST;
+  int    group() const;
+  double normalized_weapon_speed() const;
+  double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 ) const;
 
   weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, school_type s=SCHOOL_PHYSICAL ) :
     type( t ), school( s ), damage( d ), min_dmg( d ), max_dmg( d ), swing_time( st ), slot( SLOT_NONE ), buff_type( 0 ), buff_value( 0 ), bonus_dmg( 0 ) { }
@@ -3507,16 +3489,16 @@ struct item_t
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
     unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( false ), is_matching_type( false ), is_reforged( false ) {}
   item_t( player_t*, const std::string& options_str );
-  bool active() SC_CONST;
-  bool heroic() SC_CONST;
-  bool lfr() SC_CONST;
-  bool ptr() SC_CONST;
-  bool reforged() SC_CONST;
+  bool active() const;
+  bool heroic() const;
+  bool lfr() const;
+  bool ptr() const;
+  bool reforged() const;
   bool matching_type();
-  const char* name() SC_CONST;
-  const char* slot_name() SC_CONST;
+  const char* name() const;
+  const char* slot_name() const;
   const char* armor_type();
-  weapon_t* weapon() SC_CONST;
+  weapon_t* weapon() const;
   bool init();
   bool parse_options();
   void encode_options();
@@ -3583,18 +3565,19 @@ struct item_database_t
 struct set_bonus_t
 {
   int count[ SET_MAX ];
-  int tier11_2pc_caster() SC_CONST; int tier11_2pc_melee() SC_CONST; int tier11_2pc_tank() SC_CONST; int tier11_2pc_heal() SC_CONST;
-  int tier11_4pc_caster() SC_CONST; int tier11_4pc_melee() SC_CONST; int tier11_4pc_tank() SC_CONST; int tier11_4pc_heal() SC_CONST;
-  int tier12_2pc_caster() SC_CONST; int tier12_2pc_melee() SC_CONST; int tier12_2pc_tank() SC_CONST; int tier12_2pc_heal() SC_CONST;
-  int tier12_4pc_caster() SC_CONST; int tier12_4pc_melee() SC_CONST; int tier12_4pc_tank() SC_CONST; int tier12_4pc_heal() SC_CONST;
-  int tier13_2pc_caster() SC_CONST; int tier13_2pc_melee() SC_CONST; int tier13_2pc_tank() SC_CONST; int tier13_2pc_heal() SC_CONST;
-  int tier13_4pc_caster() SC_CONST; int tier13_4pc_melee() SC_CONST; int tier13_4pc_tank() SC_CONST; int tier13_4pc_heal() SC_CONST;
-  int tier14_2pc_caster() SC_CONST; int tier14_2pc_melee() SC_CONST; int tier14_2pc_tank() SC_CONST; int tier14_2pc_heal() SC_CONST;
-  int tier14_4pc_caster() SC_CONST; int tier14_4pc_melee() SC_CONST; int tier14_4pc_tank() SC_CONST; int tier14_4pc_heal() SC_CONST;
-  int pvp_2pc_caster() SC_CONST; int pvp_2pc_melee() SC_CONST; int pvp_2pc_tank() SC_CONST; int pvp_2pc_heal() SC_CONST;
-  int pvp_4pc_caster() SC_CONST; int pvp_4pc_melee() SC_CONST; int pvp_4pc_tank() SC_CONST; int pvp_4pc_heal() SC_CONST;
-  int decode( player_t*, item_t& item ) SC_CONST;
+  int tier11_2pc_caster() const; int tier11_2pc_melee() const; int tier11_2pc_tank() const; int tier11_2pc_heal() const;
+  int tier11_4pc_caster() const; int tier11_4pc_melee() const; int tier11_4pc_tank() const; int tier11_4pc_heal() const;
+  int tier12_2pc_caster() const; int tier12_2pc_melee() const; int tier12_2pc_tank() const; int tier12_2pc_heal() const;
+  int tier12_4pc_caster() const; int tier12_4pc_melee() const; int tier12_4pc_tank() const; int tier12_4pc_heal() const;
+  int tier13_2pc_caster() const; int tier13_2pc_melee() const; int tier13_2pc_tank() const; int tier13_2pc_heal() const;
+  int tier13_4pc_caster() const; int tier13_4pc_melee() const; int tier13_4pc_tank() const; int tier13_4pc_heal() const;
+  int tier14_2pc_caster() const; int tier14_2pc_melee() const; int tier14_2pc_tank() const; int tier14_2pc_heal() const;
+  int tier14_4pc_caster() const; int tier14_4pc_melee() const; int tier14_4pc_tank() const; int tier14_4pc_heal() const;
+  int pvp_2pc_caster() const; int pvp_2pc_melee() const; int pvp_2pc_tank() const; int pvp_2pc_heal() const;
+  int pvp_4pc_caster() const; int pvp_4pc_melee() const; int pvp_4pc_tank() const; int pvp_4pc_heal() const;
+  int decode( player_t*, item_t& item ) const;
   bool init( player_t* );
+
   set_bonus_t();
 
   action_expr_t* create_expression( action_t*, const std::string& type );
@@ -3611,7 +3594,6 @@ private:
 
 public:
   set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
-  ~set_bonus_array_t();
 
   bool              has_set_bonus( set_type s ) const;
   const spell_id_t* set( set_type s ) const;
@@ -4056,7 +4038,7 @@ struct player_t : public noncopyable
 
   virtual ~player_t();
 
-  virtual const char* name() SC_CONST { return name_str.c_str(); }
+  virtual const char* name() const { return name_str.c_str(); }
 
   virtual void init();
   virtual void init_glyphs();
@@ -4099,63 +4081,63 @@ struct player_t : public noncopyable
   virtual void combat_end();
   virtual void merge( player_t& other );
 
-  virtual double composite_mastery() SC_CONST { return floor( ( mastery * 100.0 ) + 0.5 ) * 0.01; }
+  virtual double composite_mastery() const { return floor( ( mastery * 100.0 ) + 0.5 ) * 0.01; }
 
-  virtual double energy_regen_per_second() SC_CONST;
-  virtual double focus_regen_per_second() SC_CONST;
-  virtual double chi_regen_per_second() SC_CONST;
-  virtual double composite_attack_haste() SC_CONST;
-  virtual double composite_attack_speed() SC_CONST;
-  virtual double composite_attack_power() SC_CONST;
-  virtual double composite_attack_crit() SC_CONST;
-  virtual double composite_attack_expertise() SC_CONST { return attack_expertise; }
-  virtual double composite_attack_hit() SC_CONST;
+  virtual double energy_regen_per_second() const;
+  virtual double focus_regen_per_second() const;
+  virtual double chi_regen_per_second() const;
+  virtual double composite_attack_haste() const;
+  virtual double composite_attack_speed() const;
+  virtual double composite_attack_power() const;
+  virtual double composite_attack_crit() const;
+  virtual double composite_attack_expertise() const { return attack_expertise; }
+  virtual double composite_attack_hit() const;
 
-  virtual double composite_spell_haste() SC_CONST;
-  virtual double composite_spell_power( const school_type school ) SC_CONST;
-  virtual double composite_spell_crit() SC_CONST;
-  virtual double composite_spell_hit() SC_CONST;
-  virtual double composite_spell_penetration() SC_CONST { return spell_penetration; }
-  virtual double composite_mp5() SC_CONST;
+  virtual double composite_spell_haste() const;
+  virtual double composite_spell_power( const school_type school ) const;
+  virtual double composite_spell_crit() const;
+  virtual double composite_spell_hit() const;
+  virtual double composite_spell_penetration() const { return spell_penetration; }
+  virtual double composite_mp5() const;
 
 
-  virtual double composite_armor()                 SC_CONST;
-  virtual double composite_armor_multiplier()      SC_CONST;
-  virtual double composite_spell_resistance( const school_type school ) SC_CONST;
-  virtual double composite_tank_miss( const school_type school ) SC_CONST;
-  virtual double composite_tank_dodge()            SC_CONST;
-  virtual double composite_tank_parry()            SC_CONST;
-  virtual double composite_tank_block()            SC_CONST;
-  virtual double composite_tank_block_reduction()  SC_CONST;
-  virtual double composite_tank_crit_block()            SC_CONST;
-  virtual double composite_tank_crit( const school_type school ) SC_CONST;
+  virtual double composite_armor()                 const;
+  virtual double composite_armor_multiplier()      const;
+  virtual double composite_spell_resistance( const school_type school ) const;
+  virtual double composite_tank_miss( const school_type school ) const;
+  virtual double composite_tank_dodge()            const;
+  virtual double composite_tank_parry()            const;
+  virtual double composite_tank_block()            const;
+  virtual double composite_tank_block_reduction()  const;
+  virtual double composite_tank_crit_block()            const;
+  virtual double composite_tank_crit( const school_type school ) const;
 
-  virtual double diminished_dodge()             SC_CONST;
-  virtual double diminished_parry()             SC_CONST;
+  virtual double diminished_dodge()             const;
+  virtual double diminished_parry()             const;
 
-  virtual double composite_attack_power_multiplier() SC_CONST;
-  virtual double composite_spell_power_multiplier() SC_CONST;
-  virtual double composite_attribute_multiplier( int attr ) SC_CONST;
+  virtual double composite_attack_power_multiplier() const;
+  virtual double composite_spell_power_multiplier() const;
+  virtual double composite_attribute_multiplier( int attr ) const;
 
-  virtual double matching_gear_multiplier( const attribute_type /* attr */ ) SC_CONST { return 0; }
+  virtual double matching_gear_multiplier( const attribute_type /* attr */ ) const { return 0; }
 
-  virtual double composite_player_multiplier   ( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double composite_player_dd_multiplier( const school_type /* school */, action_t* /* a */ = NULL ) SC_CONST { return 1; }
-  virtual double composite_player_td_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
+  virtual double composite_player_multiplier   ( const school_type school, action_t* a = NULL ) const;
+  virtual double composite_player_dd_multiplier( const school_type /* school */, action_t* /* a */ = NULL ) const { return 1; }
+  virtual double composite_player_td_multiplier( const school_type school, action_t* a = NULL ) const;
 
-  virtual double composite_player_heal_multiplier   ( const school_type school ) SC_CONST;
-  virtual double composite_player_dh_multiplier( const school_type /* school */ ) SC_CONST { return 1; }
-  virtual double composite_player_th_multiplier( const school_type school ) SC_CONST;
+  virtual double composite_player_heal_multiplier   ( const school_type school ) const;
+  virtual double composite_player_dh_multiplier( const school_type /* school */ ) const { return 1; }
+  virtual double composite_player_th_multiplier( const school_type school ) const;
 
-  virtual double composite_player_absorb_multiplier   ( const school_type school ) SC_CONST;
+  virtual double composite_player_absorb_multiplier   ( const school_type school ) const;
 
-  virtual double composite_movement_speed() SC_CONST;
+  virtual double composite_movement_speed() const;
 
-  virtual double strength() SC_CONST;
-  virtual double agility() SC_CONST;
-  virtual double stamina() SC_CONST;
-  virtual double intellect() SC_CONST;
-  virtual double spirit() SC_CONST;
+  virtual double strength() const;
+  virtual double agility() const;
+  virtual double stamina() const;
+  virtual double intellect() const;
+  virtual double spirit() const;
 
   virtual void      interrupt();
   virtual void      halt();
@@ -4165,7 +4147,7 @@ struct player_t : public noncopyable
   virtual void      schedule_ready( double delta_time=0, bool waiting=false );
   virtual void      arise();
   virtual void      demise();
-  virtual double    available() SC_CONST { return 0.1; }
+  virtual double    available() const { return 0.1; }
   virtual action_t* execute_action();
 
   virtual std::string print_action_map( int iterations, int precision );
@@ -4174,17 +4156,17 @@ struct player_t : public noncopyable
   virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
   virtual double resource_loss( int resource, double amount, action_t* a=0 );
   virtual void   recalculate_resource_max( int resource );
-  virtual bool   resource_available( int resource, double cost ) SC_CONST;
-  virtual int    primary_resource() SC_CONST { return RESOURCE_NONE; }
-  virtual int    primary_role() SC_CONST;
-  virtual int    primary_tree() SC_CONST;
+  virtual bool   resource_available( int resource, double cost ) const;
+  virtual int    primary_resource() const { return RESOURCE_NONE; }
+  virtual int    primary_role() const;
+  virtual int    primary_tree() const;
   virtual int    primary_tab();
-  virtual const char* primary_tree_name() SC_CONST;
-  virtual int    normalize_by() SC_CONST;
+  virtual const char* primary_tree_name() const;
+  virtual int    normalize_by() const;
 
-  virtual double health_percentage() SC_CONST;
-  virtual double time_to_die() SC_CONST;
-  virtual double total_reaction_time() SC_CONST;
+  virtual double health_percentage() const;
+  virtual double time_to_die() const;
+  virtual double total_reaction_time() const;
 
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
   virtual void stat_loss( int stat, double amount, action_t* a=0, bool temporary=false );
@@ -4332,9 +4314,9 @@ struct player_t : public noncopyable
   static void enemy_combat_begin( sim_t* sim );
   static void enemy_combat_end  ( sim_t* /* sim */ ) {}
 
-  bool is_pet() SC_CONST { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
-  bool is_enemy() SC_CONST { return type == ENEMY; }
-  bool is_add() SC_CONST { return type == ENEMY_ADD; }
+  inline bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
+  inline bool is_enemy() const { return type == ENEMY; }
+  inline bool is_add() const { return type == ENEMY_ADD; }
 
   death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }
   druid_t       * cast_druid       () { assert( type == DRUID        ); return ( druid_t       * ) this; }
@@ -4350,12 +4332,12 @@ struct player_t : public noncopyable
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
   enemy_t       * cast_enemy       () { assert( type == ENEMY        ); return ( enemy_t       * ) this; }
 
-  bool      in_gcd() SC_CONST { return gcd_ready > sim -> current_time; }
+  bool      in_gcd() const { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
   item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
   double    mana_regen_per_second();
-  bool      dual_wield() SC_CONST { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
+  bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name, double value=0 );
   void      aura_loss( const char* name, double value=0 );
 
@@ -4401,13 +4383,13 @@ public:
   // Pets gain their owners' hit rating, but it rounds down to a
   // percentage.  Also, heroic presence does not contribute to pet
   // expertise, so we use raw attack_hit.
-  virtual double composite_attack_expertise() SC_CONST { return floor( floor( 100.0 * owner -> attack_hit ) * 26.0 / 8.0 ) / 100.0; }
-  virtual double composite_attack_hit()       SC_CONST { return floor( 100.0 * owner -> composite_attack_hit() ) / 100.0; }
-  virtual double composite_spell_hit()        SC_CONST { return floor( 100.0 * owner -> composite_spell_hit() ) / 100.0;  }
-  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST;
+  virtual double composite_attack_expertise() const { return floor( floor( 100.0 * owner -> attack_hit ) * 26.0 / 8.0 ) / 100.0; }
+  virtual double composite_attack_hit()       const { return floor( 100.0 * owner -> composite_attack_hit() ) / 100.0; }
+  virtual double composite_spell_hit()        const { return floor( 100.0 * owner -> composite_spell_hit() ) / 100.0;  }
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) const;
 
-  virtual double stamina() SC_CONST;
-  virtual double intellect() SC_CONST;
+  virtual double stamina() const;
+  virtual double intellect() const;
 
   virtual void init_base();
   virtual void init_talents();
@@ -4419,7 +4401,7 @@ public:
   virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a=0 );
   virtual void combat_begin();
 
-  virtual const char* name() SC_CONST { return full_name_str.c_str(); }
+  virtual const char* name() const { return full_name_str.c_str(); }
   virtual const char* id();
 };
 
@@ -4472,6 +4454,8 @@ struct stats_t
   std::vector<double> timeline_aps;
   std::string timeline_aps_chart;
 
+  stats_t( const std::string& name, player_t* );
+
   void add_child( stats_t* child );
   void consume_resource( double r ) { resource_consumed += r; }
   void add_result( double act_amount, double tot_amount, int dmg_type, int result );
@@ -4482,25 +4466,6 @@ struct stats_t
   void reset();
   void analyze();
   void merge( const stats_t* other );
-  stats_t( const std::string& name, player_t* );
-};
-
-// Rank =====================================================================
-
-struct rank_t
-{
-  int level, index;
-  double dd_min, dd_max, tick, cost;
-};
-
-// Base Stats ===============================================================
-
-struct base_stats_t
-{
-  int level;
-  double health, mana;
-  double strength, agility, stamina, intellect, spirit;
-  double spell_crit, melee_crit;
 };
 
 // Action ===================================================================
@@ -4556,7 +4521,7 @@ struct action_t : public spell_id_t
   event_t* execute_event;
   event_t* travel_event;
   double time_to_execute, time_to_travel, travel_speed;
-  int rank_index, bloodlust_active;
+  int bloodlust_active;
   double max_haste;
   double haste_gain_percentage;
   double min_current_time, max_current_time;
@@ -4590,32 +4555,29 @@ public:
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, int t=TREE_NONE, bool special=false );
   virtual ~action_t();
 
-  virtual void      parse_data();
-  virtual void      parse_effect_data( int spell_id, int effect_nr );
-  virtual void      parse_options( option_t*, const std::string& options_str );
-  virtual rank_t*   init_rank( rank_t* rank_list, int id=0 );
-
-
-  virtual double cost() SC_CONST;
-  virtual double total_haste() SC_CONST  { return haste();           }
-  virtual double haste() SC_CONST        { return 1.0;               }
-  virtual double gcd() SC_CONST;
-  virtual double execute_time() SC_CONST { return base_execute_time; }
-  virtual double tick_time() SC_CONST;
-  virtual int    hasted_num_ticks( double d=-1 ) SC_CONST;
+  virtual void   parse_data();
+  virtual void   parse_effect_data( int spell_id, int effect_nr );
+  virtual void   parse_options( option_t*, const std::string& options_str );
+  virtual double cost() const;
+  virtual double total_haste() const  { return haste();           }
+  virtual double haste() const        { return 1.0;               }
+  virtual double gcd() const;
+  virtual double execute_time() const { return base_execute_time; }
+  virtual double tick_time() const;
+  virtual int    hasted_num_ticks( double d=-1 ) const;
   virtual double travel_time();
   virtual void   player_buff();
   virtual void   player_tick() {}
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual void   snapshot();
   virtual void   calculate_result() { assert( 0 ); }
-  virtual bool   result_is_hit ( int r=RESULT_UNKNOWN ) SC_CONST;
-  virtual bool   result_is_miss( int r=RESULT_UNKNOWN ) SC_CONST;
+  virtual bool   result_is_hit ( int r=RESULT_UNKNOWN ) const;
+  virtual bool   result_is_miss( int r=RESULT_UNKNOWN ) const;
   virtual double calculate_direct_damage();
   virtual double calculate_tick_damage();
   virtual double calculate_weapon_damage();
-  virtual double armor() SC_CONST;
-  virtual double resistance() SC_CONST;
+  virtual double armor() const;
+  virtual double resistance() const;
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   tick( dot_t* d );
@@ -4636,32 +4598,32 @@ public:
   virtual void   check_talent( int talent_rank );
   virtual void   check_spec( int necessary_spec );
   virtual void   check_race( int race );
-  virtual const char* name() SC_CONST { return name_str.c_str(); }
+  virtual const char* name() const { return name_str.c_str(); }
 
-  virtual double   miss_chance( int /* delta_level */ ) SC_CONST { return 0; }
-  virtual double  dodge_chance( int /* delta_level */ ) SC_CONST { return 0; }
-  virtual double  parry_chance( int /* delta_level */ ) SC_CONST { return 0; }
-  virtual double glance_chance( int /* delta_level */ ) SC_CONST { return 0; }
-  virtual double  block_chance( int /* delta_level */ ) SC_CONST { return 0; }
-  virtual double   crit_chance( int /* delta_level */ ) SC_CONST { return 0; }
+  virtual double   miss_chance( int /* delta_level */ ) const { return 0; }
+  virtual double  dodge_chance( int /* delta_level */ ) const { return 0; }
+  virtual double  parry_chance( int /* delta_level */ ) const { return 0; }
+  virtual double glance_chance( int /* delta_level */ ) const { return 0; }
+  virtual double  block_chance( int /* delta_level */ ) const { return 0; }
+  virtual double   crit_chance( int /* delta_level */ ) const { return 0; }
 
-  virtual double total_multiplier() SC_CONST { return   base_multiplier * player_multiplier * target_multiplier; }
-  virtual double total_hit() SC_CONST        { return   base_hit        + player_hit        + target_hit;        }
-  virtual double total_crit() SC_CONST       { return   base_crit       + player_crit       + target_crit;       }
-  virtual double total_crit_bonus() SC_CONST;
+  virtual double total_multiplier() const { return   base_multiplier * player_multiplier * target_multiplier; }
+  virtual double total_hit() const        { return   base_hit        + player_hit        + target_hit;        }
+  virtual double total_crit() const       { return   base_crit       + player_crit       + target_crit;       }
+  virtual double total_crit_bonus() const;
 
-  virtual double total_spell_power() SC_CONST  { return floor( ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier  ); }
-  virtual double total_attack_power() SC_CONST { return floor( ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier ); }
-  virtual double total_power() SC_CONST;
+  virtual double total_spell_power() const  { return floor( ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier  ); }
+  virtual double total_attack_power() const { return floor( ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier ); }
+  virtual double total_power() const;
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
 
-  virtual double total_dd_multiplier() SC_CONST { return total_multiplier() * base_dd_multiplier * player_dd_multiplier; }
-  virtual double total_td_multiplier() SC_CONST { return total_multiplier() * base_td_multiplier * player_td_multiplier; }
+  virtual double total_dd_multiplier() const { return total_multiplier() * base_dd_multiplier * player_dd_multiplier; }
+  virtual double total_td_multiplier() const { return total_multiplier() * base_td_multiplier * player_td_multiplier; }
 
   virtual action_expr_t* create_expression( const std::string& name );
 
-  virtual double ppm_proc_chance( double PPM ) SC_CONST;
+  virtual double ppm_proc_chance( double PPM ) const;
 
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
@@ -4688,25 +4650,25 @@ public:
   attack_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE, bool special=false );
 
   // Attack Overrides
-  virtual double haste() SC_CONST;
-  virtual double total_haste() SC_CONST  { return swing_haste();           }
-  virtual double swing_haste() SC_CONST;
-  virtual double execute_time() SC_CONST;
+  virtual double haste() const;
+  virtual double total_haste() const  { return swing_haste();           }
+  virtual double swing_haste() const;
+  virtual double execute_time() const;
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual int    build_table( double* chances, int* results );
   virtual void   calculate_result();
   virtual void   execute();
 
-  virtual double total_expertise() SC_CONST;
+  virtual double total_expertise() const;
 
-  virtual double   miss_chance( int delta_level ) SC_CONST;
-  virtual double  dodge_chance( int delta_level ) SC_CONST;
-  virtual double  parry_chance( int delta_level ) SC_CONST;
-  virtual double glance_chance( int delta_level ) SC_CONST;
-  virtual double  block_chance( int delta_level ) SC_CONST;
-  virtual double  crit_block_chance( int delta_level ) SC_CONST;
-  virtual double   crit_chance( int delta_level ) SC_CONST;
+  virtual double   miss_chance( int delta_level ) const;
+  virtual double  dodge_chance( int delta_level ) const;
+  virtual double  parry_chance( int delta_level ) const;
+  virtual double glance_chance( int delta_level ) const;
+  virtual double  block_chance( int delta_level ) const;
+  virtual double  crit_block_chance( int delta_level ) const;
+  virtual double   crit_chance( int delta_level ) const;
 };
 
 // Spell ====================================================================
@@ -4723,16 +4685,16 @@ public:
   spell_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE );
 
   // Spell Overrides
-  virtual double haste() SC_CONST;
-  virtual double gcd() SC_CONST;
-  virtual double execute_time() SC_CONST;
+  virtual double haste() const;
+  virtual double gcd() const;
+  virtual double execute_time() const;
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual void   calculate_result();
   virtual void   execute();
 
-  virtual double miss_chance( int delta_level ) SC_CONST;
-  virtual double crit_chance( int delta_level ) SC_CONST;
+  virtual double miss_chance( int delta_level ) const;
+  virtual double crit_chance( int delta_level ) const;
 
   virtual void   schedule_execute();
 };
@@ -4756,7 +4718,7 @@ public:
   virtual void parse_options( option_t* options, const std::string& options_str );
   virtual void player_buff();
   virtual void target_debuff( player_t* t, int dmg_type );
-  virtual double haste() SC_CONST;
+  virtual double haste() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                               int    dmg_type, int impact_result );
@@ -4766,8 +4728,8 @@ public:
   virtual void impact( player_t*, int impact_result, double travel_dmg );
   virtual void tick( dot_t* d );
   virtual void last_tick( dot_t* d );
-  virtual player_t* find_greatest_difference_player();
-  virtual player_t* find_lowest_player();
+  player_t* find_greatest_difference_player();
+  player_t* find_lowest_player();
 };
 
 // Absorb ===================================================================
@@ -4789,7 +4751,7 @@ public:
   virtual void parse_options( option_t* options, const std::string& options_str );
   virtual void player_buff();
   virtual void target_debuff( player_t* t, int dmg_type );
-  virtual double haste() SC_CONST;
+  virtual double haste() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                               int    dmg_type, int impact_result );
@@ -4825,8 +4787,10 @@ struct cooldown_t
   double duration;
   double ready;
   cooldown_t* next;
+
   cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( 0 ), ready( -1 ), next( 0 ) {}
   cooldown_t( const std::string& n, sim_t* s ) : sim( s ), player( 0 ), name_str( n ), duration( 0 ), ready( -1 ), next( 0 ) {}
+
   void reset() { ready=-1; }
   void start( double override=-1, double delay=0 )
   {
@@ -4849,30 +4813,28 @@ struct dot_t
   sim_t* sim;
   player_t* player;
   action_t* action;
-  std::string name_str;
   event_t* tick_event;
+  dot_t* next;
   int num_ticks, current_tick, added_ticks, ticking;
   double added_seconds;
   double ready;
   double miss_time;
   double time_to_tick;
-  dot_t* next;
+  std::string name_str;
 
   dot_t() : player( 0 ) {}
   dot_t( const std::string& n, player_t* p );
 
-  virtual ~dot_t();
+  void   extend_duration( int extra_ticks, bool cap=false );
+  void   extend_duration_seconds( double extra_seconds );
+  void   recalculate_ready();
+  void   refresh_duration();
+  void   reset();
+  double remains();
+  void   schedule_tick();
+  int    ticks();
 
-  virtual void   extend_duration( int extra_ticks, bool cap=false );
-  virtual void   extend_duration_seconds( double extra_seconds );
-  virtual void   recalculate_ready();
-  virtual void   refresh_duration();
-  virtual void   reset();
-  virtual double remains();
-  virtual void   schedule_tick();
-  virtual int    ticks();
-
-  virtual const char* name() { return name_str.c_str(); }
+  const char* name() { return name_str.c_str(); }
 };
 
 // Action Callback ==========================================================
@@ -5280,16 +5242,16 @@ struct rng_t
   rng_t( const std::string& n, bool avg_range=false, bool avg_gauss=false );
   virtual ~rng_t() {}
 
-  virtual int    type() SC_CONST { return RNG_STANDARD; }
+  virtual int    type() const { return RNG_STANDARD; }
   virtual double real();
   virtual int    roll( double chance );
   virtual double range( double min, double max );
   virtual double gauss( double mean, double stddev );
-  virtual double exgauss( double mean, double stddev, double nu );
+  double exgauss( double mean, double stddev, double nu );
   virtual void   seed( uint32_t start );
-  virtual void   report( FILE* );
-  virtual double stdnormal_cdf( double u );
-  virtual double stdnormal_inv( double p );
+  void   report( FILE* );
+  static double stdnormal_cdf( double u );
+  static double stdnormal_inv( double p );
 
   static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
 };
@@ -5541,7 +5503,7 @@ struct wait_for_cooldown_t : public wait_action_base_t
 {
   cooldown_t* wait_cd;
   wait_for_cooldown_t( player_t* player, const char* cd_name );
-  virtual double execute_time() SC_CONST;
+  virtual double execute_time() const;
 };
 
 inline buff_t* buff_t::find( sim_t* s, const std::string& name ) { return find( s -> buff_list, name ); }

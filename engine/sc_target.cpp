@@ -43,19 +43,19 @@ struct enemy_t : public player_t
 
 // target_t::primary_role ===================================================
 
-  virtual int primary_role() SC_CONST
+  virtual int primary_role() const
   {
     return ROLE_TANK;
   }
 
-  virtual int primary_resource() SC_CONST
+  virtual int primary_resource() const
   {
     return RESOURCE_NONE;
   }
 
 // target_t::base_armor =====================================================
 
-  virtual double base_armor() SC_CONST
+  virtual double base_armor() const
   {
     return armor;
   }
@@ -66,16 +66,16 @@ struct enemy_t : public player_t
   virtual void init_resources( bool force=false );
   virtual void init_target();
   virtual void init_actions();
-  virtual double composite_tank_block() SC_CONST;
+  virtual double composite_tank_block() const;
   virtual void create_options();
   virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() );
   virtual void create_pets();
   virtual pet_t* find_pet( const std::string& add_name );
-  virtual double health_percentage() SC_CONST;
+  virtual double health_percentage() const;
   virtual void combat_end();
   virtual void recalculate_health();
   virtual action_expr_t* create_expression( action_t* action, const std::string& type );
-  virtual double available() SC_CONST { return waiting_time; }
+  virtual double available() const { return waiting_time; }
 };
 
 // ==========================================================================
@@ -101,7 +101,7 @@ struct enemy_add_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual int primary_resource() SC_CONST
+  virtual int primary_resource() const
   {
     return RESOURCE_HEALTH;
   }
@@ -443,7 +443,7 @@ void enemy_t::init_actions()
 
 // enemy_t::composite_tank_block ============================================
 
-double enemy_t::composite_tank_block() SC_CONST
+double enemy_t::composite_tank_block() const
 {
   double b = player_t::composite_tank_block();
 
@@ -508,7 +508,7 @@ pet_t* enemy_t::find_pet( const std::string& add_name )
 
 // enemy_t::health_percentage() =============================================
 
-double enemy_t::health_percentage() SC_CONST
+double enemy_t::health_percentage() const
 {
   if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
 

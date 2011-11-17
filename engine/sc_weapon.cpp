@@ -11,7 +11,7 @@
 
 // weapon_t::group ==========================================================
 
-int weapon_t::group() SC_CONST
+int weapon_t::group() const
 {
   switch ( type )
   {
@@ -47,7 +47,7 @@ int weapon_t::group() SC_CONST
 
 // weapon_t::normalized_weapon_speed ========================================
 
-double weapon_t::normalized_weapon_speed() SC_CONST
+double weapon_t::normalized_weapon_speed() const
 {
   int g = group();
 
@@ -63,7 +63,7 @@ double weapon_t::normalized_weapon_speed() SC_CONST
 // weapon_t::proc_chance_on_swing ===========================================
 
 double weapon_t::proc_chance_on_swing( double PPM,
-                                       double adjusted_swing_time ) SC_CONST
+                                       double adjusted_swing_time ) const
 {
   if ( adjusted_swing_time == 0 ) adjusted_swing_time = swing_time;
 

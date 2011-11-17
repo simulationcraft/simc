@@ -257,21 +257,21 @@ struct shaman_t : public player_t
   virtual void      init_actions();
   virtual void      moving();
   virtual void      clear_debuffs();
-  virtual double    composite_attack_crit() SC_CONST;
-  virtual double    composite_attack_hit() SC_CONST;
-  virtual double    composite_spell_hit() SC_CONST;
-  virtual double    composite_spell_crit() SC_CONST;
-  virtual double    composite_spell_power( const school_type school ) SC_CONST;
-  virtual double    composite_spell_power_multiplier() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
+  virtual double    composite_attack_crit() const;
+  virtual double    composite_attack_hit() const;
+  virtual double    composite_spell_hit() const;
+  virtual double    composite_spell_crit() const;
+  virtual double    composite_spell_power( const school_type school ) const;
+  virtual double    composite_spell_power_multiplier() const;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST;
+  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual int       primary_role() const;
   virtual void      combat_begin();
 
   // Event Tracking
@@ -305,9 +305,9 @@ struct shaman_attack_t : public attack_t
   }
 
   virtual void execute();
-  virtual double cost() SC_CONST;
+  virtual double cost() const;
   virtual void player_buff();
-  virtual double cost_reduction() SC_CONST;
+  virtual double cost_reduction() const;
   virtual void consume_resource();
 };
 
@@ -368,15 +368,15 @@ struct shaman_spell_t : public spell_t
     may_crit = true;
   }
 
-  virtual bool   is_direct_damage() SC_CONST { return base_dd_min > 0 && base_dd_max > 0; }
-  virtual bool   is_periodic_damage() SC_CONST { return base_td > 0; };
-  virtual double cost() SC_CONST;
-  virtual double cost_reduction() SC_CONST;
+  virtual bool   is_direct_damage() const { return base_dd_min > 0 && base_dd_max > 0; }
+  virtual bool   is_periodic_damage() const { return base_td > 0; };
+  virtual double cost() const;
+  virtual double cost_reduction() const;
   virtual void   consume_resource();
-  virtual double execute_time() SC_CONST;
+  virtual double execute_time() const;
   virtual void   execute();
   virtual void   player_buff();
-  virtual double haste() SC_CONST;
+  virtual double haste() const;
   virtual void   schedule_execute();
   virtual bool   usable_moving()
   {
@@ -495,7 +495,7 @@ struct spirit_wolf_pet_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual double composite_attack_power() SC_CONST
+  virtual double composite_attack_power() const
   {
     shaman_t* o         = owner -> cast_shaman();
     double ap           = pet_t::composite_attack_power();
@@ -511,27 +511,27 @@ struct spirit_wolf_pet_t : public pet_t
     melee -> execute(); // Kick-off repeating attack
   }
 
-  virtual double composite_attribute_multiplier( int attr ) SC_CONST
+  virtual double composite_attribute_multiplier( int attr ) const
   {
     return attribute_multiplier[ attr ];
   }
 
-  virtual double strength() SC_CONST
+  virtual double strength() const
   {
     return attribute[ ATTR_STRENGTH ];
   }
 
-  virtual double agility() SC_CONST
+  virtual double agility() const
   {
     return attribute[ ATTR_AGILITY ];
   }
 
-  virtual double composite_attack_power_multiplier() SC_CONST
+  virtual double composite_attack_power_multiplier() const
   {
     return attack_power_multiplier;
   }
 
-  virtual double composite_player_multiplier( const school_type, action_t* ) SC_CONST
+  virtual double composite_player_multiplier( const school_type, action_t* ) const
   {
     return 1.0;
   }
@@ -545,7 +545,7 @@ struct earth_elemental_pet_t : public pet_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
     virtual void execute() { player -> distance = 1; }
-    virtual double execute_time() SC_CONST { return ( player -> distance / 10.0 ); }
+    virtual double execute_time() const { return ( player -> distance / 10.0 ); }
     virtual bool ready() { return ( player -> distance > 1 ); }
     virtual bool usable_moving() { return true; }
   };
@@ -596,21 +596,21 @@ struct earth_elemental_pet_t : public pet_t
       base_attack_power_multiplier = 0;
     }
 
-    virtual double swing_haste() SC_CONST
+    virtual double swing_haste() const
     {
       return 1.0;
     }
 
-    virtual double    available() SC_CONST { return sim -> max_time; }
+    virtual double    available() const { return sim -> max_time; }
 
     // Earth elemental scales purely with spell power
-    virtual double total_attack_power() SC_CONST
+    virtual double total_attack_power() const
     {
       return player -> composite_spell_power( SCHOOL_MAX );
     }
 
     // Melee swings have a ~3% crit rate on boss level mobs
-    virtual double crit_chance( int /* delta_level */ ) SC_CONST
+    virtual double crit_chance( int /* delta_level */ ) const
     {
       return 0.03;
     }
@@ -643,7 +643,7 @@ struct earth_elemental_pet_t : public pet_t
     action_list_str = "travel/auto_attack,moving=0";
   }
 
-  virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int primary_resource() const { return RESOURCE_MANA; }
 
   virtual void regen( double /* periodicity */ ) { }
 
@@ -667,22 +667,22 @@ struct earth_elemental_pet_t : public pet_t
   }
 
 
-  virtual double composite_spell_power( const school_type ) SC_CONST
+  virtual double composite_spell_power( const school_type ) const
   {
     return owner_sp;
   }
 
-  virtual double composite_attack_power() SC_CONST
+  virtual double composite_attack_power() const
   {
     return 0.0;
   }
 
-  virtual double composite_attack_hit() SC_CONST
+  virtual double composite_attack_hit() const
   {
     return owner -> composite_spell_hit();
   }
 
-  virtual double composite_attack_expertise() SC_CONST
+  virtual double composite_attack_expertise() const
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
@@ -697,7 +697,7 @@ struct earth_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) SC_CONST
+  virtual double composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) const
   {
     double m = 1.0;
 
@@ -742,9 +742,9 @@ struct fire_elemental_pet_t : public pet_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
     virtual void execute() { player -> distance = 1; }
-    virtual double execute_time() SC_CONST { return ( player -> distance / 10.0 ); }
+    virtual double execute_time() const { return ( player -> distance / 10.0 ); }
     virtual bool ready() { return ( player -> distance > 1 ); }
-    virtual double gcd() SC_CONST { return 0.0; }
+    virtual double gcd() const { return 0.0; }
     virtual bool usable_moving() { return true; }
   };
 
@@ -761,7 +761,7 @@ struct fire_elemental_pet_t : public pet_t
       crit_bonus_multiplier = 2.0;
     }
 
-    virtual double total_spell_power() SC_CONST
+    virtual double total_spell_power() const
     {
       double sp  = 0.0;
       pet_t* pet = player -> cast_pet();
@@ -907,7 +907,7 @@ struct fire_elemental_pet_t : public pet_t
       base_crit                    = 0.015;
     }
 
-    virtual double total_spell_power() SC_CONST
+    virtual double total_spell_power() const
     {
       double sp  = 0.0;
 
@@ -995,7 +995,7 @@ struct fire_elemental_pet_t : public pet_t
     fire_shield                      = new fire_shield_t( this );
   }
 
-  virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int primary_resource() const { return RESOURCE_MANA; }
 
   virtual void regen( double periodicity )
   {
@@ -1033,27 +1033,27 @@ struct fire_elemental_pet_t : public pet_t
     o -> buffs_fire_elemental -> expire();
   }
 
-  virtual double intellect() SC_CONST
+  virtual double intellect() const
   {
     return owner_int;
   }
 
-  virtual double composite_spell_power( const school_type ) SC_CONST
+  virtual double composite_spell_power( const school_type ) const
   {
     return owner_sp;
   }
 
-  virtual double composite_attack_power() SC_CONST
+  virtual double composite_attack_power() const
   {
     return 0.0;
   }
 
-  virtual double composite_attack_hit() SC_CONST
+  virtual double composite_attack_hit() const
   {
     return owner -> composite_spell_hit();
   }
 
-  virtual double composite_attack_expertise() SC_CONST
+  virtual double composite_attack_expertise() const
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
@@ -1069,7 +1069,7 @@ struct fire_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) SC_CONST
+  virtual double composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) const
   {
     double m = 1.0;
 
@@ -1369,7 +1369,7 @@ struct searing_flames_t : public shaman_spell_t
   // Don't double dip
   virtual void target_debuff( player_t* /* t */, int /* dmg_type */ ) { }
 
-  virtual double total_td_multiplier() SC_CONST
+  virtual double total_td_multiplier() const
   {
     shaman_t* p = player -> cast_shaman();
     return p -> buffs_searing_flames -> stack();
@@ -1493,7 +1493,7 @@ struct windfury_weapon_attack_t : public shaman_attack_t
     player_attack_power += weapon -> buff_value;
   }
 
-  virtual double proc_chance() SC_CONST
+  virtual double proc_chance() const
   {
     shaman_t* p      = player -> cast_shaman();
 
@@ -1621,7 +1621,7 @@ void shaman_attack_t::player_buff()
 
 // shaman_attack_t::cost_reduction ==========================================
 
-double shaman_attack_t::cost_reduction() SC_CONST
+double shaman_attack_t::cost_reduction() const
 {
   shaman_t* p = player -> cast_shaman();
   double   cr = 0.0;
@@ -1634,7 +1634,7 @@ double shaman_attack_t::cost_reduction() SC_CONST
 
 // shaman_attack_t::cost ====================================================
 
-double shaman_attack_t::cost() SC_CONST
+double shaman_attack_t::cost() const
 {
   double    c = attack_t::cost();
   c *= 1.0 + cost_reduction();
@@ -1662,7 +1662,7 @@ struct melee_t : public shaman_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual double swing_haste() SC_CONST
+  virtual double swing_haste() const
   {
     shaman_t* p = player -> cast_shaman();
     double h = attack_t::swing_haste();
@@ -1675,7 +1675,7 @@ struct melee_t : public shaman_attack_t
     return h;
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double t = shaman_attack_t::execute_time();
     if ( ! player -> in_combat )
@@ -1941,7 +1941,7 @@ struct stormstrike_t : public shaman_attack_t
 
 // shaman_spell_t::haste ====================================================
 
-double shaman_spell_t::haste() SC_CONST
+double shaman_spell_t::haste() const
 {
   shaman_t* p = player -> cast_shaman();
   double h = spell_t::haste();
@@ -1953,7 +1953,7 @@ double shaman_spell_t::haste() SC_CONST
 
 // shaman_spell_t::cost_reduction ===========================================
 
-double shaman_spell_t::cost_reduction() SC_CONST
+double shaman_spell_t::cost_reduction() const
 {
   shaman_t* p = player -> cast_shaman();
   double   cr = base_cost_reduction;
@@ -1972,7 +1972,7 @@ double shaman_spell_t::cost_reduction() SC_CONST
 
 // shaman_spell_t::cost =====================================================
 
-double shaman_spell_t::cost() SC_CONST
+double shaman_spell_t::cost() const
 {
   double    c = spell_t::cost();
 
@@ -1994,7 +1994,7 @@ void shaman_spell_t::consume_resource()
 
 // shaman_spell_t::execute_time =============================================
 
-double shaman_spell_t::execute_time() SC_CONST
+double shaman_spell_t::execute_time() const
 {
   shaman_t* p = player -> cast_shaman();
   if ( p -> buffs_natures_swiftness -> up() && school == SCHOOL_NATURE && base_execute_time < 10.0 )
@@ -2249,7 +2249,7 @@ struct chain_lightning_t : public shaman_spell_t
     }
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double t    = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -2262,7 +2262,7 @@ struct chain_lightning_t : public shaman_spell_t
     return t;
   }
 
-  double cost_reduction() SC_CONST
+  double cost_reduction() const
   {
     shaman_t* p = player -> cast_shaman();
     double   cr = shaman_spell_t::cost_reduction();
@@ -2412,7 +2412,7 @@ struct lava_burst_t : public shaman_spell_t
       p -> buffs_lava_surge -> expire();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -2523,7 +2523,7 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
@@ -2537,7 +2537,7 @@ struct lightning_bolt_t : public shaman_spell_t
     return t;
   }
 
-  virtual double cost_reduction() SC_CONST
+  virtual double cost_reduction() const
   {
     shaman_t* p = player -> cast_shaman();
     double   cr = shaman_spell_t::cost_reduction();
@@ -3069,7 +3069,7 @@ struct shaman_totem_t : public shaman_spell_t
     stats -> add_tick( d -> time_to_tick );
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     if ( harmful )
       return shaman_spell_t::gcd();
@@ -3402,7 +3402,7 @@ struct searing_totem_t : public shaman_totem_t
     }
   }
 
-  virtual double total_spell_power() SC_CONST
+  virtual double total_spell_power() const
   {
     if ( ! player -> bugs )
       return shaman_totem_t::total_spell_power();
@@ -3615,7 +3615,7 @@ struct flametongue_weapon_t : public shaman_spell_t
     return false;
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     return player -> in_combat ? shaman_spell_t::gcd() : 0;
   }
@@ -3703,7 +3703,7 @@ struct windfury_weapon_t : public shaman_spell_t
     return false;
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     return player -> in_combat ? shaman_spell_t::gcd() : 0;
   }
@@ -3747,7 +3747,7 @@ struct lightning_shield_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     return player -> in_combat ? shaman_spell_t::gcd() : 0;
   }
@@ -3793,7 +3793,7 @@ struct water_shield_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     return player -> in_combat ? shaman_spell_t::gcd() : 0;
   }
@@ -3842,7 +3842,7 @@ struct elemental_devastation_t : public buff_t
     s_single = s_effects[ 0 ];
   }
 
-  virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
+  virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) const
   {
     return buff_t::base_value( type, sub_type, misc_value, misc_value2 ) / 100.0;
   }
@@ -3898,12 +3898,12 @@ struct unleash_elements_buff_t : public buff_t
     bonus       = s -> talent_elemental_weapons -> effect2().percent();
   }
 
-  virtual double mod_additive( property_type_t p_type ) SC_CONST
+  virtual double mod_additive( property_type_t p_type ) const
   {
     return buff_t::mod_additive( p_type ) * ( 1.0 + bonus );
   }
 
-  virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
+  virtual double base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) const
   {
     return buff_t::base_value( type, sub_type, misc_value, misc_value2 ) * ( 1.0 + bonus );
   }
@@ -4651,7 +4651,7 @@ void shaman_t::moving()
 
 // shaman_t::matching_gear_multiplier =======================================
 
-double shaman_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
+double shaman_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   if ( primary_tree() == TREE_ENHANCEMENT )
   {
@@ -4668,7 +4668,7 @@ double shaman_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 }
 
 // shaman_t::composite_spell_hit ============================================
-double shaman_t::composite_attack_hit() SC_CONST
+double shaman_t::composite_attack_hit() const
 {
   double hit = player_t::composite_attack_hit();
 
@@ -4679,7 +4679,7 @@ double shaman_t::composite_attack_hit() SC_CONST
 
 // shaman_t::composite_spell_hit ============================================
 
-double shaman_t::composite_spell_hit() SC_CONST
+double shaman_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
@@ -4691,7 +4691,7 @@ double shaman_t::composite_spell_hit() SC_CONST
 
 // shaman_t::composite_attack_crit ==========================================
 
-double shaman_t::composite_attack_crit() SC_CONST
+double shaman_t::composite_attack_crit() const
 {
   double crit = player_t::composite_attack_crit();
 
@@ -4703,7 +4703,7 @@ double shaman_t::composite_attack_crit() SC_CONST
 
 // shaman_t::composite_spell_power ==========================================
 
-double shaman_t::composite_spell_power( const school_type school ) SC_CONST
+double shaman_t::composite_spell_power( const school_type school ) const
 {
   double sp = 0;
   
@@ -4735,7 +4735,7 @@ double shaman_t::composite_spell_power( const school_type school ) SC_CONST
 
 // shaman_t::composite_spell_power_multiplier ===============================
 
-double shaman_t::composite_spell_power_multiplier() SC_CONST
+double shaman_t::composite_spell_power_multiplier() const
 {
   if ( dbc.ptr && primary_tree() == TREE_ENHANCEMENT )
     return 1.0;
@@ -4745,7 +4745,7 @@ double shaman_t::composite_spell_power_multiplier() SC_CONST
 
 // shaman_t::composite_player_multiplier ====================================
 
-double shaman_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+double shaman_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4763,7 +4763,7 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
   return m;
 }
 
-double shaman_t::composite_spell_crit() SC_CONST
+double shaman_t::composite_spell_crit() const
 {
   double v = player_t::composite_spell_crit();
   if ( ! dbc.ptr )
@@ -4901,7 +4901,7 @@ int shaman_t::decode_set( item_t& item )
 
 // shaman_t::primary_role ===================================================
 
-int shaman_t::primary_role() SC_CONST
+int shaman_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;

@@ -2281,22 +2281,6 @@ void util_t::html_special_char_decode_( std::string& str )
   }
 }
 
-// util_t::add_base_stats ===================================================
-
-void util_t::add_base_stats( base_stats_t& result, base_stats_t& a, base_stats_t b )
-{
-  result.level      = a.level      + b.level;
-  result.health     = a.health     + b.health;
-  result.mana       = a.mana       + b.mana;
-  result.strength   = a.strength   + b.strength;
-  result.agility    = a.agility    + b.agility;
-  result.stamina    = a.stamina    + b.stamina;
-  result.intellect  = a.intellect  + b.intellect;
-  result.spirit     = a.spirit     + b.spirit;
-  result.spell_crit = a.spell_crit + b.spell_crit;
-  result.melee_crit = a.melee_crit + b.melee_crit;
-}
-
 // util_t::floor ============================================================
 
 double util_t::floor( double X, unsigned int decplaces )

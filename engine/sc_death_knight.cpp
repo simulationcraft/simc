@@ -44,14 +44,14 @@ struct dk_rune_t
 
   dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ) {}
 
-  bool is_death()        SC_CONST { return ( type & RUNE_TYPE_DEATH ) != 0                ; }
-  bool is_blood()        SC_CONST { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_BLOOD  ; }
-  bool is_unholy()       SC_CONST { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_UNHOLY ; }
-  bool is_frost()        SC_CONST { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_FROST  ; }
-  bool is_ready()        SC_CONST { return state == STATE_FULL                            ; }
-  bool is_depleted()     SC_CONST { return state == STATE_DEPLETED                        ; }
-  bool is_regenerating() SC_CONST { return state == STATE_REGENERATING                    ; }
-  int  get_type()        SC_CONST { return type & RUNE_TYPE_MASK                          ; }
+  bool is_death()        const { return ( type & RUNE_TYPE_DEATH ) != 0                ; }
+  bool is_blood()        const { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_BLOOD  ; }
+  bool is_unholy()       const { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_UNHOLY ; }
+  bool is_frost()        const { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_FROST  ; }
+  bool is_ready()        const { return state == STATE_FULL                            ; }
+  bool is_depleted()     const { return state == STATE_DEPLETED                        ; }
+  bool is_regenerating() const { return state == STATE_REGENERATING                    ; }
+  int  get_type()        const { return type & RUNE_TYPE_MASK                          ; }
 
   void regen_rune( player_t* p, double periodicity );
 
@@ -367,16 +367,16 @@ struct death_knight_t : public player_t
   virtual void      init_resources( bool force );
   virtual void      init_benefits();
   double            composite_pet_attack_crit();
-  virtual double    composite_armor_multiplier() SC_CONST;
-  virtual double    composite_attack_haste() SC_CONST;
-  virtual double    composite_attack_hit() SC_CONST;
-  virtual double    composite_attack_power() SC_CONST;
-  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
-  virtual double    composite_spell_hit() SC_CONST;
-  virtual double    composite_tank_parry() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double    composite_tank_crit( const school_type school ) SC_CONST;
+  virtual double    composite_armor_multiplier() const;
+  virtual double    composite_attack_haste() const;
+  virtual double    composite_attack_hit() const;
+  virtual double    composite_attack_power() const;
+  virtual double    composite_attribute_multiplier( int attr ) const;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    composite_spell_hit() const;
+  virtual double    composite_tank_parry() const;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    composite_tank_crit( const school_type school ) const;
   virtual void      regen( double periodicity );
   virtual void      reset();
   virtual double    assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
@@ -387,8 +387,8 @@ struct death_knight_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_RUNIC; }
-  virtual int       primary_role() SC_CONST;
+  virtual int       primary_resource() const { return RESOURCE_RUNIC; }
+  virtual int       primary_role() const;
   virtual void      trigger_runic_empowerment();
 
   int diseases( player_t* /* t */ )
@@ -797,11 +797,11 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_melee         = new drw_melee_t        ( this );
   }
 
-  virtual double composite_attack_crit() SC_CONST        { return snapshot_attack_crit; }
-  virtual double composite_attack_haste() SC_CONST       { return haste_snapshot; }
-  virtual double composite_attack_speed() SC_CONST       { return speed_snapshot; }
-  virtual double composite_attack_power() SC_CONST       { return attack_power; }
-  virtual double composite_spell_crit() SC_CONST         { return snapshot_spell_crit;  }
+  virtual double composite_attack_crit() const        { return snapshot_attack_crit; }
+  virtual double composite_attack_haste() const       { return haste_snapshot; }
+  virtual double composite_attack_speed() const       { return speed_snapshot; }
+  virtual double composite_attack_power() const       { return attack_power; }
+  virtual double composite_spell_crit() const         { return snapshot_spell_crit;  }
 
   virtual void summon( double duration=0 )
   {
@@ -930,13 +930,13 @@ struct army_ghoul_pet_t : public pet_t
     base_energy_regen_per_second  = 10;
   }
 
-  virtual double energy_regen_per_second() SC_CONST
+  virtual double energy_regen_per_second() const
   {
     // Doesn't benefit from haste
     return base_energy_regen_per_second;
   }
 
-  virtual double strength() SC_CONST
+  virtual double strength() const
   {
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
@@ -960,20 +960,20 @@ struct army_ghoul_pet_t : public pet_t
     snapshot_strength = o -> strength();
   }
 
-  virtual double composite_attack_expertise() SC_CONST
+  virtual double composite_attack_expertise() const
   {
     return ( ( 100.0 * snapshot_hit ) * 26.0 / 8.0 ) / 100.0; // Hit gains equal to expertise
   }
 
-  virtual double composite_attack_crit() SC_CONST { return snapshot_crit; }
+  virtual double composite_attack_crit() const { return snapshot_crit; }
 
-  virtual double composite_attack_speed() SC_CONST { return snapshot_speed; }
+  virtual double composite_attack_speed() const { return snapshot_speed; }
 
-  virtual double composite_attack_haste() SC_CONST { return snapshot_haste; }
+  virtual double composite_attack_haste() const { return snapshot_haste; }
 
-  virtual double composite_attack_hit() SC_CONST { return snapshot_hit; }
+  virtual double composite_attack_hit() const { return snapshot_hit; }
 
-  virtual int primary_resource() SC_CONST { return RESOURCE_ENERGY; }
+  virtual int primary_resource() const { return RESOURCE_ENERGY; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
@@ -983,7 +983,7 @@ struct army_ghoul_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  double available() SC_CONST
+  double available() const
   {
     double energy = resource_current[ RESOURCE_ENERGY ];
 
@@ -1047,7 +1047,7 @@ struct bloodworms_pet_t : public pet_t
     melee -> schedule_execute();
   }
 
-  virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int primary_resource() const { return RESOURCE_MANA; }
 };
 
 // ==========================================================================
@@ -1093,9 +1093,9 @@ struct gargoyle_pet_t : public pet_t
 
     action_list_str = "/snapshot_stats/gargoyle_strike";
   }
-  virtual double composite_spell_haste() SC_CONST { return snapshot_haste; }
-  virtual double composite_attack_power() SC_CONST { return snapshot_power; }
-  virtual double composite_spell_crit() SC_CONST { return snapshot_spell_crit; }
+  virtual double composite_spell_haste() const { return snapshot_haste; }
+  virtual double composite_attack_power() const { return snapshot_power; }
+  virtual double composite_spell_crit() const { return snapshot_spell_crit; }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -1285,13 +1285,13 @@ struct ghoul_pet_t : public pet_t
     base_energy_regen_per_second  = 10;
   }
 
-  virtual double energy_regen_per_second() SC_CONST
+  virtual double energy_regen_per_second() const
   {
     // Doesn't benefit from haste
     return base_energy_regen_per_second;
   }
 
-  virtual double strength() SC_CONST
+  virtual double strength() const
   {
     death_knight_t* o = owner -> cast_death_knight();
     double a = attribute[ ATTR_STRENGTH ];
@@ -1325,7 +1325,7 @@ struct ghoul_pet_t : public pet_t
 
   // Pets don't seem to inherit their master's crit at the moment.
   // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
-  virtual double composite_attack_crit() SC_CONST
+  virtual double composite_attack_crit() const
   {
     death_knight_t* o = owner -> cast_death_knight();
 
@@ -1341,7 +1341,7 @@ struct ghoul_pet_t : public pet_t
     }
   }
 
-  virtual double composite_attack_expertise() SC_CONST
+  virtual double composite_attack_expertise() const
   {
     death_knight_t* o = owner -> cast_death_knight();
 
@@ -1356,7 +1356,7 @@ struct ghoul_pet_t : public pet_t
     }
   }
 
-  virtual double composite_attack_haste() SC_CONST
+  virtual double composite_attack_haste() const
   {
     // Ghouls receive 100% of their master's haste.
     // http://elitistjerks.com/f72/t42606-pet_discussion_garg_aotd_ghoul/
@@ -1373,7 +1373,7 @@ struct ghoul_pet_t : public pet_t
     }
   }
 
-  virtual double composite_attack_speed() SC_CONST
+  virtual double composite_attack_speed() const
   {
     // Ghouls receive 100% of their master's haste.
     // http://elitistjerks.com/f72/t42606-pet_discussion_garg_aotd_ghoul/
@@ -1390,7 +1390,7 @@ struct ghoul_pet_t : public pet_t
     }
   }
 
-  virtual double composite_attack_hit() SC_CONST
+  virtual double composite_attack_hit() const
   {
     death_knight_t* o = owner -> cast_death_knight();
 
@@ -1406,7 +1406,7 @@ struct ghoul_pet_t : public pet_t
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
-  virtual int primary_resource() SC_CONST
+  virtual int primary_resource() const
   {
     return RESOURCE_ENERGY;
   }
@@ -1420,7 +1420,7 @@ struct ghoul_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  double available() SC_CONST
+  double available() const
   {
     double energy = resource_current[ RESOURCE_ENERGY ];
 
@@ -1493,7 +1493,7 @@ struct death_knight_attack_t : public attack_t
   virtual void   execute();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual double swing_haste() SC_CONST;
+  virtual double swing_haste() const;
   virtual void   target_debuff( player_t* t, int dmg_type );
 };
 
@@ -1889,7 +1889,7 @@ bool death_knight_attack_t::ready()
 
 // death_knight_attack_t::swing_haste() =====================================
 
-double death_knight_attack_t::swing_haste() SC_CONST
+double death_knight_attack_t::swing_haste() const
 {
   double haste = attack_t::swing_haste();
   death_knight_t* p = player -> cast_death_knight();
@@ -2073,7 +2073,7 @@ struct melee_t : public death_knight_attack_t
       base_hit -= 0.19;
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double t = death_knight_attack_t::execute_time();
     if ( ! player -> in_combat )
@@ -2613,7 +2613,7 @@ struct death_coil_t : public death_knight_spell_t
       base_cost += p -> talents.runic_corruption -> mod_additive( P_RESOURCE_COST ) / 10.0;
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2978,7 +2978,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     player -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_horn_of_winter );
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     return player -> in_combat ? death_knight_spell_t::gcd() : 0;
   }
@@ -3005,7 +3005,7 @@ struct howling_blast_t : public death_knight_spell_t
 
   virtual void consume_resource() {}
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     // Rime also prevents getting RP because there are no runes used!
     death_knight_t* p = player -> cast_death_knight();
@@ -3080,7 +3080,7 @@ struct icy_touch_t : public death_knight_spell_t
 
   virtual void consume_resource() {}
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     // Rime also prevents getting RP because there are no runes used!
     death_knight_t* p = player -> cast_death_knight();
@@ -3543,7 +3543,7 @@ struct presence_t : public death_knight_spell_t
     resource    = RESOURCE_RUNIC;
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     death_knight_t* p = player -> cast_death_knight();
 
@@ -4140,7 +4140,7 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
 
 // death_knight_t::composite_attack_haste() =================================
 
-double death_knight_t::composite_attack_haste() SC_CONST
+double death_knight_t::composite_attack_haste() const
 {
   double haste = player_t::composite_attack_haste();
 
@@ -4151,7 +4151,7 @@ double death_knight_t::composite_attack_haste() SC_CONST
 
 // death_knight_t::composite_attack_hit() ===================================
 
-double death_knight_t::composite_attack_hit() SC_CONST
+double death_knight_t::composite_attack_hit() const
 {
   double hit = player_t::composite_attack_hit();
 
@@ -4923,7 +4923,7 @@ double death_knight_t::composite_pet_attack_crit()
 
 // death_knight_t::composite_armor_multiplier ===============================
 
-double death_knight_t::composite_armor_multiplier() SC_CONST
+double death_knight_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
@@ -4935,7 +4935,7 @@ double death_knight_t::composite_armor_multiplier() SC_CONST
 
 // death_knight_t::composite_attack_power ===================================
 
-double death_knight_t::composite_attack_power() SC_CONST
+double death_knight_t::composite_attack_power() const
 {
   double ap = player_t::composite_attack_power();
   if ( talents.bladed_armor -> rank() )
@@ -4949,7 +4949,7 @@ double death_knight_t::composite_attack_power() SC_CONST
 
 // death_knight_t::composite_attribute_multiplier ===========================
 
-double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
+double death_knight_t::composite_attribute_multiplier( int attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -4968,7 +4968,7 @@ double death_knight_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // death_knight_t::matching_gear_multiplier =================================
 
-double death_knight_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
+double death_knight_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   int tree = primary_tree();
 
@@ -4985,7 +4985,7 @@ double death_knight_t::matching_gear_multiplier( const attribute_type attr ) SC_
 
 // death_knight_t::composite_spell_hit ======================================
 
-double death_knight_t::composite_spell_hit() SC_CONST
+double death_knight_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
@@ -4996,7 +4996,7 @@ double death_knight_t::composite_spell_hit() SC_CONST
 
 // death_knight_t::composite_tank_parry =====================================
 
-double death_knight_t::composite_tank_parry() SC_CONST
+double death_knight_t::composite_tank_parry() const
 {
   double parry = player_t::composite_tank_parry();
 
@@ -5008,7 +5008,7 @@ double death_knight_t::composite_tank_parry() SC_CONST
 
 // death_knight_t::composite_player_multiplier ==============================
 
-double death_knight_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+double death_knight_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -5024,7 +5024,7 @@ double death_knight_t::composite_player_multiplier( const school_type school, ac
 
 // death_knight_t::composite_tank_crit ======================================
 
-double death_knight_t::composite_tank_crit( const school_type school ) SC_CONST
+double death_knight_t::composite_tank_crit( const school_type school ) const
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -5036,7 +5036,7 @@ double death_knight_t::composite_tank_crit( const school_type school ) SC_CONST
 
 // death_knight_t::primary_role =============================================
 
-int death_knight_t::primary_role() SC_CONST
+int death_knight_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;

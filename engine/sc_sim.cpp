@@ -1285,7 +1285,7 @@ bool sim_t::init()
 
 struct compare_dps
 {
-  bool operator()( player_t* l, player_t* r ) SC_CONST
+  bool operator()( player_t* l, player_t* r ) const
   {
     return l -> dps.mean > r -> dps.mean;
   }
@@ -1295,7 +1295,7 @@ struct compare_dps
 
 struct compare_hps
 {
-  bool operator()( player_t* l, player_t* r ) SC_CONST
+  bool operator()( player_t* l, player_t* r ) const
   {
     return l -> hps.mean > r -> hps.mean;
   }
@@ -1305,7 +1305,7 @@ struct compare_hps
 
 struct compare_name
 {
-  bool operator()( player_t* l, player_t* r ) SC_CONST
+  bool operator()( player_t* l, player_t* r ) const
   {
     if ( l -> type != r -> type )
     {

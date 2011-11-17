@@ -117,7 +117,6 @@ void action_t::init_action_t_()
   time_to_execute                = 0.0;
   time_to_travel                 = 0.0;
   travel_speed                   = 0.0;
-  rank_index                     = -1;
   bloodlust_active               = 0;
   max_haste                      = 0.0;
   haste_gain_percentage          = 0.0;
@@ -380,7 +379,6 @@ void action_t::parse_options( option_t*          options,
     { "interrupt",              OPT_BOOL,   &interrupt             },
     { "invulnerable",           OPT_BOOL,   &invulnerable          },
     { "moving",                 OPT_BOOL,   &moving                },
-    { "rank",                   OPT_INT,    &rank_index            },
     { "sync",                   OPT_STRING, &sync_str              },
     { "time<",                  OPT_FLT,    &max_current_time      },
     { "time>",                  OPT_FLT,    &min_current_time      },
@@ -427,53 +425,9 @@ void action_t::parse_options( option_t*          options,
   }
 }
 
-// action_t::init_rank ======================================================
-
-rank_t* action_t::init_rank( rank_t* rank_list,
-                             int     id_override )
-{
-  if ( resource == RESOURCE_MANA )
-  {
-    for ( int i=0; rank_list[ i ].level; i++ )
-    {
-      rank_t& r = rank_list[ i ];
-
-      // Look for ranks in which the cost of an action is a percentage of base mana
-      if ( r.cost > 0 && r.cost < 1 )
-      {
-        r.cost *= player -> resource_base[ RESOURCE_MANA ];
-      }
-    }
-  }
-
-  for ( int i=0; rank_list[ i ].level; i++ )
-  {
-    if ( ( rank_index <= 0 && player -> level >= rank_list[ i ].level ) ||
-         ( rank_index >  0 &&      rank_index == rank_list[ i ].index  ) )
-    {
-      rank_t* rank = &( rank_list[ i ] );
-
-      base_dd_min  = rank -> dd_min;
-      base_dd_max  = rank -> dd_max;
-      base_td_init = rank -> tick;
-      base_td      = base_td_init;
-      base_cost    = rank -> cost;
-
-      if ( id_override ) id = id_override;
-
-      return rank;
-    }
-  }
-
-  sim -> errorf( "%s unable to find valid rank for %s\n", player -> name(), name() );
-  sim -> cancel();
-
-  return 0;
-}
-
 // action_t::cost ===========================================================
 
-double action_t::cost() SC_CONST
+double action_t::cost() const
 {
   if ( ! harmful && ! player -> in_combat )
     return 0;
@@ -498,7 +452,7 @@ double action_t::cost() SC_CONST
 
 // action_t::gcd ============================================================
 
-double action_t::gcd() SC_CONST
+double action_t::gcd() const
 {
   if ( ! harmful && ! player -> in_combat )
     return 0;
@@ -683,7 +637,7 @@ void action_t::snapshot()
 
 // action_t::result_is_hit ==================================================
 
-bool action_t::result_is_hit( int r ) SC_CONST
+bool action_t::result_is_hit( int r ) const
 {
   if ( r == RESULT_UNKNOWN ) r = result;
 
@@ -697,7 +651,7 @@ bool action_t::result_is_hit( int r ) SC_CONST
 
 // action_t::result_is_miss =================================================
 
-bool action_t::result_is_miss( int r ) SC_CONST
+bool action_t::result_is_miss( int r ) const
 {
   if ( r == RESULT_UNKNOWN ) r = result;
 
@@ -709,14 +663,14 @@ bool action_t::result_is_miss( int r ) SC_CONST
 
 // action_t::armor ==========================================================
 
-double action_t::armor() SC_CONST
+double action_t::armor() const
 {
   return target -> composite_armor();
 }
 
 // action_t::resistance =====================================================
 
-double action_t::resistance() SC_CONST
+double action_t::resistance() const
 {
   if ( ! may_resist ) return 0;
 
@@ -783,7 +737,7 @@ double action_t::resistance() SC_CONST
 
 // action_t::total_crit_bonus ===============================================
 
-double action_t::total_crit_bonus() SC_CONST
+double action_t::total_crit_bonus() const
 {
   double bonus = ( ( 1.0 + crit_bonus ) * crit_multiplier - 1.0 ) * crit_bonus_multiplier;
 
@@ -798,7 +752,7 @@ double action_t::total_crit_bonus() SC_CONST
 
 // action_t::total_power ====================================================
 
-double action_t::total_power() SC_CONST
+double action_t::total_power() const
 {
   double power=0;
 
@@ -1712,7 +1666,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
 
 // action_t::ppm_proc_chance ================================================
 
-double action_t::ppm_proc_chance( double PPM ) SC_CONST
+double action_t::ppm_proc_chance( double PPM ) const
 {
   if ( weapon )
   {
@@ -1730,7 +1684,7 @@ double action_t::ppm_proc_chance( double PPM ) SC_CONST
 
 // action_t::tick_time ======================================================
 
-double action_t::tick_time() SC_CONST
+double action_t::tick_time() const
 {
   double t = base_tick_time;
   if ( channeled || hasted_ticks )
@@ -1742,7 +1696,7 @@ double action_t::tick_time() SC_CONST
 
 // action_t::hasted_num_ticks ===============================================
 
-int action_t::hasted_num_ticks( double d ) SC_CONST
+int action_t::hasted_num_ticks( double d ) const
 {
   if ( ! hasted_ticks ) return num_ticks;
 

@@ -563,7 +563,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     }
   }
 
-  virtual bool compare( char* data, const spell_data_expr_t& other, token_type_t t ) SC_CONST
+  virtual bool compare( char* data, const spell_data_expr_t& other, token_type_t t ) const
   {
     const int      *int_v;
     int             oint_v;
@@ -649,7 +649,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return false;
   }
 
-  void build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, token_type_t t ) SC_CONST
+  void build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, token_type_t t ) const
   {
     char* p_data = 0;
 

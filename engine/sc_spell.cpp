@@ -60,14 +60,14 @@ spell_t::spell_t( const char* name, const uint32_t id, player_t* p, int t ) :
 
 // spell_t::haste ===========================================================
 
-double spell_t::haste() SC_CONST
+double spell_t::haste() const
 {
   return player -> composite_spell_haste();
 }
 
 // spell_t::gcd =============================================================
 
-double spell_t::gcd() SC_CONST
+double spell_t::gcd() const
 {
   double t = action_t::gcd();
   if ( t == 0 ) return 0;
@@ -80,7 +80,7 @@ double spell_t::gcd() SC_CONST
 
 // spell_t::execute_time ====================================================
 
-double spell_t::execute_time() SC_CONST
+double spell_t::execute_time() const
 {
   double t = base_execute_time;
 
@@ -128,7 +128,7 @@ void spell_t::target_debuff( player_t* t, int dmg_type )
 
 // spell_t::miss_chance =====================================================
 
-double spell_t::miss_chance( int delta_level ) SC_CONST
+double spell_t::miss_chance( int delta_level ) const
 {
   double miss=0;
 
@@ -151,7 +151,7 @@ double spell_t::miss_chance( int delta_level ) SC_CONST
 
 // spell_t::crit_chance =====================================================
 
-double spell_t::crit_chance( int delta_level ) SC_CONST
+double spell_t::crit_chance( int delta_level ) const
 {
   double chance = total_crit();
 

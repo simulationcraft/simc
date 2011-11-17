@@ -175,7 +175,7 @@ std::vector<unsigned> dbc_t::glyphs( int cid, bool ptr )
   return glyph_ids;
 }
 
-double dbc_t::melee_crit_base( player_type t ) SC_CONST
+double dbc_t::melee_crit_base( player_type t ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -188,12 +188,12 @@ double dbc_t::melee_crit_base( player_type t ) SC_CONST
 #endif
 }
 
-double dbc_t::melee_crit_base( pet_type_t t ) SC_CONST
+double dbc_t::melee_crit_base( pet_type_t t ) const
 {
   return melee_crit_base( util_t::pet_class_type( t ) );
 }
 
-double dbc_t::spell_crit_base( player_type t ) SC_CONST
+double dbc_t::spell_crit_base( player_type t ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -206,12 +206,12 @@ double dbc_t::spell_crit_base( player_type t ) SC_CONST
 #endif
 }
 
-double dbc_t::spell_crit_base( pet_type_t t ) SC_CONST
+double dbc_t::spell_crit_base( pet_type_t t ) const
 {
   return spell_crit_base( util_t::pet_class_type( t ) );
 }
 
-double dbc_t::dodge_base( player_type t ) SC_CONST
+double dbc_t::dodge_base( player_type t ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -224,12 +224,12 @@ double dbc_t::dodge_base( player_type t ) SC_CONST
 #endif
 }
 
-double dbc_t::dodge_base( pet_type_t t ) SC_CONST
+double dbc_t::dodge_base( pet_type_t t ) const
 {
   return dodge_base( util_t::pet_class_type( t ) );
 }
 
-stat_data_t& dbc_t::race_base( race_type r ) SC_CONST
+stat_data_t& dbc_t::race_base( race_type r ) const
 {
   uint32_t race_id = util_t::race_id( r );
 
@@ -242,12 +242,12 @@ stat_data_t& dbc_t::race_base( race_type r ) SC_CONST
 #endif
 }
 
-stat_data_t& dbc_t::race_base( pet_type_t /* r */ ) SC_CONST
+stat_data_t& dbc_t::race_base( pet_type_t /* r */ ) const
 {
   return race_base( RACE_NONE );
 }
 
-double dbc_t::spell_scaling( player_type t, unsigned level ) SC_CONST
+double dbc_t::spell_scaling( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -260,7 +260,7 @@ double dbc_t::spell_scaling( player_type t, unsigned level ) SC_CONST
 #endif
 }
 
-double dbc_t::melee_crit_scaling( player_type t, unsigned level ) SC_CONST
+double dbc_t::melee_crit_scaling( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -273,12 +273,12 @@ double dbc_t::melee_crit_scaling( player_type t, unsigned level ) SC_CONST
 #endif
 }
 
-double dbc_t::melee_crit_scaling( pet_type_t t, unsigned level ) SC_CONST
+double dbc_t::melee_crit_scaling( pet_type_t t, unsigned level ) const
 {
   return melee_crit_scaling( util_t::pet_class_type( t ), level );
 }
 
-double dbc_t::spell_crit_scaling( player_type t, unsigned level ) SC_CONST
+double dbc_t::spell_crit_scaling( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -291,12 +291,12 @@ double dbc_t::spell_crit_scaling( player_type t, unsigned level ) SC_CONST
 #endif
 }
 
-double dbc_t::spell_crit_scaling( pet_type_t t, unsigned level ) SC_CONST
+double dbc_t::spell_crit_scaling( pet_type_t t, unsigned level ) const
 {
   return spell_crit_scaling( util_t::pet_class_type( t ), level );
 }
 
-double dbc_t::dodge_scaling( player_type t, unsigned level ) SC_CONST
+double dbc_t::dodge_scaling( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -309,12 +309,12 @@ double dbc_t::dodge_scaling( player_type t, unsigned level ) SC_CONST
 #endif
 }
 
-double dbc_t::dodge_scaling( pet_type_t t, unsigned level ) SC_CONST
+double dbc_t::dodge_scaling( pet_type_t t, unsigned level ) const
 {
   return dodge_scaling( util_t::pet_class_type( t ), level );
 }
 
-double dbc_t::regen_base( player_type t, unsigned level ) SC_CONST
+double dbc_t::regen_base( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -327,12 +327,12 @@ double dbc_t::regen_base( player_type t, unsigned level ) SC_CONST
 #endif
 }
 
-double dbc_t::regen_base( pet_type_t t, unsigned level ) SC_CONST
+double dbc_t::regen_base( pet_type_t t, unsigned level ) const
 {
   return regen_base( util_t::pet_class_type( t ), level );
 }
 
-double dbc_t::regen_spirit( player_type t, unsigned level ) SC_CONST
+double dbc_t::regen_spirit( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -345,12 +345,12 @@ double dbc_t::regen_spirit( player_type t, unsigned level ) SC_CONST
 #endif
 }
 
-double dbc_t::regen_spirit( pet_type_t t, unsigned level ) SC_CONST
+double dbc_t::regen_spirit( pet_type_t t, unsigned level ) const
 {
   return regen_spirit( util_t::pet_class_type( t ), level );
 }
 
-stat_data_t& dbc_t::attribute_base( player_type t, unsigned level ) SC_CONST
+stat_data_t& dbc_t::attribute_base( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -363,12 +363,12 @@ stat_data_t& dbc_t::attribute_base( player_type t, unsigned level ) SC_CONST
 #endif
 }
 
-stat_data_t& dbc_t::attribute_base( pet_type_t t, unsigned level ) SC_CONST
+stat_data_t& dbc_t::attribute_base( pet_type_t t, unsigned level ) const
 {
   return attribute_base( util_t::pet_class_type( t ), level );
 }
 
-double dbc_t::oct_regen_mp( player_type t, unsigned level ) SC_CONST
+double dbc_t::oct_regen_mp( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -381,12 +381,12 @@ double dbc_t::oct_regen_mp( player_type t, unsigned level ) SC_CONST
 #endif
 }
 
-double dbc_t::oct_regen_mp( pet_type_t t, unsigned level ) SC_CONST
+double dbc_t::oct_regen_mp( pet_type_t t, unsigned level ) const
 {
   return oct_regen_mp( util_t::pet_class_type( t ), level );
 }
 
-double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) SC_CONST
+double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 {
   assert( combat_rating_id < RATING_MAX && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -397,7 +397,7 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) SC_CONS
 #endif
 }
 
-double dbc_t::oct_combat_rating( unsigned combat_rating_id, player_type t ) SC_CONST
+double dbc_t::oct_combat_rating( unsigned combat_rating_id, player_type t ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
@@ -410,7 +410,7 @@ double dbc_t::oct_combat_rating( unsigned combat_rating_id, player_type t ) SC_C
 #endif
 }
 
-unsigned dbc_t::class_ability( unsigned class_id, unsigned tree_id, unsigned n ) SC_CONST
+unsigned dbc_t::class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
 {
   assert( class_id < CLASS_SIZE && tree_id < CLASS_ABILITY_TREE_SIZE && n < CLASS_ABILITY_SIZE );
 
@@ -422,7 +422,7 @@ unsigned dbc_t::class_ability( unsigned class_id, unsigned tree_id, unsigned n )
 #endif
 }
 
-unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) SC_CONST
+unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) const
 {
   assert( race_id < 24 && class_id < CLASS_SIZE && n < RACE_ABILITY_SIZE );
 
@@ -434,7 +434,7 @@ unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) 
 #endif
 }
 
-unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) SC_CONST
+unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
 {
   assert( class_id < CLASS_SIZE && tree_id < MAX_TALENT_TABS && n < specialization_ability_size() );
 
@@ -446,7 +446,7 @@ unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, uns
 #endif
 }
 
-unsigned dbc_t::mastery_ability( unsigned class_id, unsigned n ) SC_CONST
+unsigned dbc_t::mastery_ability( unsigned class_id, unsigned n ) const
 {
   assert( class_id < CLASS_SIZE && n < mastery_ability_size() );
 
@@ -458,7 +458,7 @@ unsigned dbc_t::mastery_ability( unsigned class_id, unsigned n ) SC_CONST
 #endif
 }
 
-unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n ) SC_CONST
+unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n ) const
 {
   assert( class_id < CLASS_SIZE && glyph_type < GLYPH_MAX && n < glyph_spell_size() );
 
@@ -470,7 +470,7 @@ unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n 
 #endif
 }
 
-unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) SC_CONST
+unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) const
 {
 #if SC_USE_PTR
   assert( class_id < CLASS_SIZE && tier < (unsigned) ( ptr ? PTR_TIER_BONUSES_MAX_TIER : TIER_BONUSES_MAX_TIER ) && n < set_bonus_spell_size() );
@@ -482,7 +482,7 @@ unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) 
 #endif
 }
 
-unsigned dbc_t::class_ability_tree_size() SC_CONST
+unsigned dbc_t::class_ability_tree_size() const
 {
 #if SC_USE_PTR
   return ptr ? PTR_CLASS_ABILITY_TREE_SIZE : CLASS_ABILITY_TREE_SIZE;
@@ -491,7 +491,7 @@ unsigned dbc_t::class_ability_tree_size() SC_CONST
 #endif
 }
 
-unsigned dbc_t::class_ability_size() SC_CONST
+unsigned dbc_t::class_ability_size() const
 {
 #if SC_USE_PTR
   return ptr ? PTR_CLASS_ABILITY_SIZE : CLASS_ABILITY_SIZE;
@@ -500,7 +500,7 @@ unsigned dbc_t::class_ability_size() SC_CONST
 #endif
 }
 
-unsigned dbc_t::race_ability_size() SC_CONST
+unsigned dbc_t::race_ability_size() const
 {
 #if SC_USE_PTR
   return ptr ? PTR_RACE_ABILITY_SIZE : RACE_ABILITY_SIZE;
@@ -509,7 +509,7 @@ unsigned dbc_t::race_ability_size() SC_CONST
 #endif
 }
 
-unsigned dbc_t::specialization_ability_size() SC_CONST
+unsigned dbc_t::specialization_ability_size() const
 {
 #if SC_USE_PTR
   return ptr ? PTR_TREE_SPECIALIZATION_SIZE : TREE_SPECIALIZATION_SIZE;
@@ -518,7 +518,7 @@ unsigned dbc_t::specialization_ability_size() SC_CONST
 #endif
 }
 
-unsigned dbc_t::mastery_ability_size() SC_CONST
+unsigned dbc_t::mastery_ability_size() const
 {
 #if SC_USE_PTR
   return ptr ? PTR_CLASS_MASTERY_ABILITY_SIZE : CLASS_MASTERY_ABILITY_SIZE;
@@ -527,7 +527,7 @@ unsigned dbc_t::mastery_ability_size() SC_CONST
 #endif
 }
 
-unsigned dbc_t::glyph_spell_size() SC_CONST
+unsigned dbc_t::glyph_spell_size() const
 {
 #if SC_USE_PTR
   return ptr ? PTR_GLYPH_ABILITIES_SIZE : GLYPH_ABILITIES_SIZE;
@@ -536,7 +536,7 @@ unsigned dbc_t::glyph_spell_size() SC_CONST
 #endif
 }
 
-unsigned dbc_t::set_bonus_spell_size() SC_CONST
+unsigned dbc_t::set_bonus_spell_size() const
 {
 #if SC_USE_PTR
   return ptr ? PTR_TIER_BONUSES_SIZE : TIER_BONUSES_SIZE;
@@ -545,7 +545,7 @@ unsigned dbc_t::set_bonus_spell_size() SC_CONST
 #endif
 }
 
-const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) SC_CONST
+const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -556,7 +556,7 @@ const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) SC_CONST
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) SC_CONST
+const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -567,7 +567,7 @@ const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) SC_CONST
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_damage_2h( unsigned ilevel ) SC_CONST
+const item_scale_data_t& dbc_t::item_damage_2h( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -578,7 +578,7 @@ const item_scale_data_t& dbc_t::item_damage_2h( unsigned ilevel ) SC_CONST
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_damage_caster_1h( unsigned ilevel ) SC_CONST
+const item_scale_data_t& dbc_t::item_damage_caster_1h( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -589,7 +589,7 @@ const item_scale_data_t& dbc_t::item_damage_caster_1h( unsigned ilevel ) SC_CONS
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) SC_CONST
+const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -600,7 +600,7 @@ const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) SC_CONS
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_damage_ranged( unsigned ilevel ) SC_CONST
+const item_scale_data_t& dbc_t::item_damage_ranged( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -610,7 +610,7 @@ const item_scale_data_t& dbc_t::item_damage_ranged( unsigned ilevel ) SC_CONST
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_damage_thrown( unsigned ilevel ) SC_CONST
+const item_scale_data_t& dbc_t::item_damage_thrown( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -621,7 +621,7 @@ const item_scale_data_t& dbc_t::item_damage_thrown( unsigned ilevel ) SC_CONST
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_damage_wand( unsigned ilevel ) SC_CONST
+const item_scale_data_t& dbc_t::item_damage_wand( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -632,7 +632,7 @@ const item_scale_data_t& dbc_t::item_damage_wand( unsigned ilevel ) SC_CONST
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) SC_CONST
+const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -643,7 +643,7 @@ const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) SC_CONST
 #endif
 }
 
-const item_scale_data_t& dbc_t::item_armor_shield( unsigned ilevel ) SC_CONST
+const item_scale_data_t& dbc_t::item_armor_shield( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -654,7 +654,7 @@ const item_scale_data_t& dbc_t::item_armor_shield( unsigned ilevel ) SC_CONST
 #endif
 }
 
-const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) SC_CONST
+const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
@@ -665,7 +665,7 @@ const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) SC_CONS
 #endif
 }
 
-const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) SC_CONST
+const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) const
 {
   assert( inv_type > 0 && inv_type <= 23 );
 #if SC_USE_PTR
@@ -675,7 +675,7 @@ const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) SC
 #endif
 }
 
-const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) SC_CONST
+const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) const
 {
 #if SC_USE_PTR
   const random_suffix_data_t* p = ptr ? __ptr_rand_suffix_data : __rand_suffix_data;
@@ -693,7 +693,7 @@ const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) SC_CONST
   return nil_rsd;
 }
 
-const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) SC_CONST
+const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) const
 {
 #if SC_USE_PTR
   const item_enchantment_data_t* p = ptr ? __ptr_spell_item_ench_data : __spell_item_ench_data;
@@ -711,7 +711,7 @@ const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) SC
   return nil_ied;
 }
 
-const item_data_t* dbc_t::item( unsigned item_id ) SC_CONST
+const item_data_t* dbc_t::item( unsigned item_id ) const
 {
   ( void )ptr;
 
@@ -754,7 +754,7 @@ size_t dbc_t::n_items( bool ptr )
 #endif
 }
 
-const gem_property_data_t& dbc_t::gem_property( unsigned gem_id ) SC_CONST
+const gem_property_data_t& dbc_t::gem_property( unsigned gem_id ) const
 {
   ( void )ptr;
 
@@ -894,7 +894,7 @@ void talent_data_t::link( bool ptr )
 
 /* Generic helper methods */
 
-double dbc_t::effect_average( unsigned effect_id, unsigned level ) SC_CONST
+double dbc_t::effect_average( unsigned effect_id, unsigned level ) const
 {
   const spelleffect_data_t* e = effect( effect_id );
 
@@ -921,7 +921,7 @@ double dbc_t::effect_average( unsigned effect_id, unsigned level ) SC_CONST
     return e -> base_value();
 }
 
-double dbc_t::effect_delta( unsigned effect_id, unsigned level ) SC_CONST
+double dbc_t::effect_delta( unsigned effect_id, unsigned level ) const
 {
   if ( ! effect_id )
     return 0.0;
@@ -944,7 +944,7 @@ double dbc_t::effect_delta( unsigned effect_id, unsigned level ) SC_CONST
   return 0;
 }
 
-double dbc_t::effect_bonus( unsigned effect_id, unsigned level ) SC_CONST
+double dbc_t::effect_bonus( unsigned effect_id, unsigned level ) const
 {
   if ( ! effect_id )
     return 0.0;
@@ -967,7 +967,7 @@ double dbc_t::effect_bonus( unsigned effect_id, unsigned level ) SC_CONST
   return 0;
 }
 
-double dbc_t::effect_min( unsigned effect_id, unsigned level ) SC_CONST
+double dbc_t::effect_min( unsigned effect_id, unsigned level ) const
 {
   if ( ! effect_id )
     return 0.0;
@@ -1008,7 +1008,7 @@ double dbc_t::effect_min( unsigned effect_id, unsigned level ) SC_CONST
   return result;
 }
 
-double dbc_t::effect_max( unsigned effect_id, unsigned level ) SC_CONST
+double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
 {
   if ( ! effect_id )
     return 0.0;
@@ -1050,7 +1050,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) SC_CONST
   return result;
 }
 
-unsigned dbc_t::class_ability_id( player_type c, const char* spell_name, int tree ) SC_CONST
+unsigned dbc_t::class_ability_id( player_type c, const char* spell_name, int tree ) const
 {
   uint32_t cid = util_t::class_id( c );
   unsigned spell_id;
@@ -1095,12 +1095,12 @@ unsigned dbc_t::class_ability_id( player_type c, const char* spell_name, int tre
 }
 
 // TODO: Implement racial spell fetch at some point
-unsigned dbc_t::race_ability_id( player_type /* c */, race_type /* r */, const char* /* spell_name */ ) SC_CONST
+unsigned dbc_t::race_ability_id( player_type /* c */, race_type /* r */, const char* /* spell_name */ ) const
 {
   return 0;
 }
 
-unsigned dbc_t::specialization_ability_id( player_type c, const char* spell_name, int tab_name ) SC_CONST
+unsigned dbc_t::specialization_ability_id( player_type c, const char* spell_name, int tab_name ) const
 {
   unsigned cid = util_t::class_id( c );
   unsigned spell_id;
@@ -1142,7 +1142,7 @@ unsigned dbc_t::specialization_ability_id( player_type c, const char* spell_name
   return 0;
 }
 
-int dbc_t::specialization_ability_tree( player_type c, uint32_t spell_id ) SC_CONST
+int dbc_t::specialization_ability_tree( player_type c, uint32_t spell_id ) const
 {
   uint32_t cid = util_t::class_id( c );
 
@@ -1158,7 +1158,7 @@ int dbc_t::specialization_ability_tree( player_type c, uint32_t spell_id ) SC_CO
   return -1;
 }
 
-int dbc_t::class_ability_tree( player_type c, uint32_t spell_id ) SC_CONST
+int dbc_t::class_ability_tree( player_type c, uint32_t spell_id ) const
 {
   uint32_t cid = util_t::class_id( c );
 
@@ -1174,7 +1174,7 @@ int dbc_t::class_ability_tree( player_type c, uint32_t spell_id ) SC_CONST
   return -1;
 }
 
-unsigned dbc_t::glyph_spell_id( player_type c, const char* spell_name ) SC_CONST
+unsigned dbc_t::glyph_spell_id( player_type c, const char* spell_name ) const
 {
   unsigned cid = util_t::class_id( c );
   unsigned spell_id;
@@ -1199,7 +1199,7 @@ unsigned dbc_t::glyph_spell_id( player_type c, const char* spell_name ) SC_CONST
   return 0;
 }
 
-unsigned dbc_t::set_bonus_spell_id( player_type c, const char* name, int tier ) SC_CONST
+unsigned dbc_t::set_bonus_spell_id( player_type c, const char* name, int tier ) const
 {
   unsigned cid = util_t::class_id( c );
   unsigned spell_id;
@@ -1228,7 +1228,7 @@ unsigned dbc_t::set_bonus_spell_id( player_type c, const char* name, int tier ) 
   return 0;
 }
 
-unsigned dbc_t::mastery_ability_id( player_type c, const char* spell_name ) SC_CONST
+unsigned dbc_t::mastery_ability_id( player_type c, const char* spell_name ) const
 {
   uint32_t cid = util_t::class_id( c );
   uint32_t spell_id;
@@ -1250,7 +1250,7 @@ unsigned dbc_t::mastery_ability_id( player_type c, const char* spell_name ) SC_C
   return 0;
 }
 
-bool dbc_t::is_class_ability( uint32_t spell_id ) SC_CONST
+bool dbc_t::is_class_ability( uint32_t spell_id ) const
 {
   for ( unsigned cls = 0; cls < 12; cls++ )
   {
@@ -1267,12 +1267,12 @@ bool dbc_t::is_class_ability( uint32_t spell_id ) SC_CONST
   return false;
 }
 
-bool dbc_t::is_race_ability( uint32_t /* spell_id */ ) SC_CONST
+bool dbc_t::is_race_ability( uint32_t /* spell_id */ ) const
 {
   return false;
 }
 
-bool dbc_t::is_specialization_ability( uint32_t spell_id ) SC_CONST
+bool dbc_t::is_specialization_ability( uint32_t spell_id ) const
 {
   for ( unsigned cls = 0; cls < 12; cls++ )
   {
@@ -1289,7 +1289,7 @@ bool dbc_t::is_specialization_ability( uint32_t spell_id ) SC_CONST
   return false;
 }
 
-bool dbc_t::is_mastery_ability( uint32_t spell_id ) SC_CONST
+bool dbc_t::is_mastery_ability( uint32_t spell_id ) const
 {
   for ( unsigned int cls = 0; cls < 12; cls++ )
   {
@@ -1303,7 +1303,7 @@ bool dbc_t::is_mastery_ability( uint32_t spell_id ) SC_CONST
   return false;
 }
 
-bool dbc_t::is_glyph_spell( uint32_t spell_id ) SC_CONST
+bool dbc_t::is_glyph_spell( uint32_t spell_id ) const
 {
   for ( unsigned cls = 0; cls < 12; cls++ )
   {
@@ -1320,7 +1320,7 @@ bool dbc_t::is_glyph_spell( uint32_t spell_id ) SC_CONST
   return false;
 }
 
-bool dbc_t::is_set_bonus_spell( uint32_t spell_id ) SC_CONST
+bool dbc_t::is_set_bonus_spell( uint32_t spell_id ) const
 {
   for ( unsigned cls = 0; cls < 12; cls++ )
   {
@@ -1337,7 +1337,7 @@ bool dbc_t::is_set_bonus_spell( uint32_t spell_id ) SC_CONST
   return false;
 }
 
-double dbc_t::weapon_dps( unsigned item_id ) SC_CONST
+double dbc_t::weapon_dps( unsigned item_id ) const
 {
   const item_data_t* item_data = item( item_id );
 

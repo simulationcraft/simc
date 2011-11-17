@@ -893,7 +893,7 @@ buff_t* buff_t::find( buff_t* b, const std::string& name_str )
 
 // buff_t::to_str ===========================================================
 
-std::string buff_t::to_str() SC_CONST
+std::string buff_t::to_str() const
 {
   std::ostringstream s;
 

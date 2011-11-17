@@ -311,15 +311,15 @@ struct mage_t : public player_t
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
-  virtual double    composite_armor_multiplier() SC_CONST;
-  virtual double    composite_mastery() SC_CONST;
-  virtual double    composite_spell_crit() SC_CONST;
-  virtual double    composite_spell_haste() SC_CONST;
-  virtual double    composite_spell_power( const school_type school ) SC_CONST;
-  virtual double    composite_spell_resistance( const school_type school ) SC_CONST;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
+  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual int       primary_role() const     { return ROLE_SPELL; }
+  virtual double    composite_armor_multiplier() const;
+  virtual double    composite_mastery() const;
+  virtual double    composite_spell_crit() const;
+  virtual double    composite_spell_haste() const;
+  virtual double    composite_spell_power( const school_type school ) const;
+  virtual double    composite_spell_resistance( const school_type school ) const;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
   virtual void      stun();
 
   // Event Tracking
@@ -380,15 +380,15 @@ struct mage_spell_t : public spell_t
 
   virtual void   parse_options( option_t*, const std::string& );
   virtual bool   ready();
-  virtual double cost() SC_CONST;
-  virtual double haste() SC_CONST;
+  virtual double cost() const;
+  virtual double haste() const;
   virtual void   execute();
-  virtual double execute_time() SC_CONST;
+  virtual double execute_time() const;
   virtual void   impact( player_t* t, int impact_result, double travel_dmg );
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
-  virtual double total_crit() SC_CONST;
+  virtual double total_crit() const;
   virtual double hot_streak_crit() { return player_crit; }
 };
 
@@ -476,7 +476,7 @@ struct water_elemental_pet_t : public pet_t
     mana_per_intellect = 5;
   }
 
-  virtual double composite_spell_haste() SC_CONST
+  virtual double composite_spell_haste() const
   {
     double h = player_t::composite_spell_haste();
     h *= owner -> spell_haste;
@@ -686,7 +686,7 @@ struct mirror_image_pet_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual double composite_spell_power( const school_type school ) SC_CONST
+  virtual double composite_spell_power( const school_type school ) const
   {
     if ( school == SCHOOL_ARCANE )
     {
@@ -756,12 +756,12 @@ struct tier12_mirror_image_pet_t : public pet_t
     }
   }
 
-  virtual double composite_spell_crit() SC_CONST
+  virtual double composite_spell_crit() const
   {
     return snapshot_crit;
   }
 
-  virtual double composite_spell_haste() SC_CONST
+  virtual double composite_spell_haste() const
   {
     return 1.0;
   }
@@ -937,7 +937,7 @@ static void trigger_ignite( spell_t* s, double dmg )
     {
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
-    virtual double total_td_multiplier() SC_CONST { return 1.0; }
+    virtual double total_td_multiplier() const { return 1.0; }
   };
 
   double ignite_dmg = dmg * p -> talents.ignite -> effect1().percent();
@@ -1081,7 +1081,7 @@ bool mage_spell_t::ready()
 
 // mage_spell_t::cost =======================================================
 
-double mage_spell_t::cost() SC_CONST
+double mage_spell_t::cost() const
 {
   mage_t* p = player -> cast_mage();
 
@@ -1107,7 +1107,7 @@ double mage_spell_t::cost() SC_CONST
 
 // mage_spell_t::haste ======================================================
 
-double mage_spell_t::haste() SC_CONST
+double mage_spell_t::haste() const
 {
   mage_t* p = player -> cast_mage();
   double h = spell_t::haste();
@@ -1178,7 +1178,7 @@ void mage_spell_t::execute()
 
 // mage_spell_t::execute_time ===============================================
 
-double mage_spell_t::execute_time() SC_CONST
+double mage_spell_t::execute_time() const
 {
   mage_t* p = player -> cast_mage();
 
@@ -1304,7 +1304,7 @@ void mage_spell_t::target_debuff( player_t* t, int dmg_type )
 
 // mage_spell_t::total_crit =================================================
 
-double mage_spell_t::total_crit() SC_CONST
+double mage_spell_t::total_crit() const
 {
   mage_t* p = player -> cast_mage();
 
@@ -1362,7 +1362,7 @@ struct arcane_blast_t : public mage_spell_t
     }
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     mage_t* p = player -> cast_mage();
 
@@ -1435,7 +1435,7 @@ struct arcane_blast_t : public mage_spell_t
     trigger_tier12_mirror_image( this );
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     mage_t* p = player -> cast_mage();
     double t = mage_spell_t::execute_time();
@@ -1679,7 +1679,7 @@ struct blink_t : public mage_spell_t
     player -> buffs.stunned -> expire();
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return 0;
@@ -1780,7 +1780,7 @@ struct combustion_t : public mage_spell_t
     p -> buffs_tier13_2pc -> expire();
   }
 
-  virtual double total_td_multiplier() SC_CONST { return 1.0; } // No double-dipping!
+  virtual double total_td_multiplier() const { return 1.0; } // No double-dipping!
 };
 
 // Cone of Cold Spell =======================================================
@@ -2009,7 +2009,7 @@ struct fireball_t : public mage_spell_t
     }
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
@@ -2018,7 +2018,7 @@ struct fireball_t : public mage_spell_t
     return mage_spell_t::cost();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
@@ -2314,7 +2314,7 @@ struct frostbolt_t : public mage_spell_t
     trigger_tier12_mirror_image( this );
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     mage_t* p = player -> cast_mage();
     double ct = mage_spell_t::execute_time();
@@ -2328,7 +2328,7 @@ struct frostbolt_t : public mage_spell_t
     return ct;
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     mage_t* p = player -> cast_mage();
 
@@ -2384,7 +2384,7 @@ struct frostfire_bolt_t : public mage_spell_t
     dot_stack=0;
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
@@ -2393,7 +2393,7 @@ struct frostfire_bolt_t : public mage_spell_t
     return mage_spell_t::cost();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
@@ -2430,7 +2430,7 @@ struct frostfire_bolt_t : public mage_spell_t
     mage_spell_t::impact( t, impact_result, travel_dmg );
   }
 
-  virtual double total_td_multiplier() SC_CONST { return 1.0; } // No double-dipping!
+  virtual double total_td_multiplier() const { return 1.0; } // No double-dipping!
 
   virtual void tick( dot_t* d )
   {
@@ -2814,7 +2814,7 @@ struct mirror_image_t : public mage_spell_t
     p -> pet_mirror_image_3 -> summon();
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return 0;
@@ -2963,7 +2963,7 @@ struct pyroblast_hs_t : public mage_spell_t
     }
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_hot_streak -> check() )
@@ -2971,7 +2971,7 @@ struct pyroblast_hs_t : public mage_spell_t
     return mage_spell_t::cost();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_hot_streak -> check() )
@@ -3968,7 +3968,7 @@ void mage_t::init_actions()
 
 // mage_t::composite_armor_multiplier =======================================
 
-double mage_t::composite_armor_multiplier() SC_CONST
+double mage_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
@@ -3982,7 +3982,7 @@ double mage_t::composite_armor_multiplier() SC_CONST
 
 // mage_t::composite_mastery ================================================
 
-double mage_t::composite_mastery() SC_CONST
+double mage_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
@@ -3993,7 +3993,7 @@ double mage_t::composite_mastery() SC_CONST
 
 // mage_t::composite_spell_crit =============================================
 
-double mage_t::composite_spell_crit() SC_CONST
+double mage_t::composite_spell_crit() const
 {
   double c = player_t::composite_spell_crit();
 
@@ -4014,7 +4014,7 @@ double mage_t::composite_spell_crit() SC_CONST
 
 // mage_t::composite_spell_haste ============================================
 
-double mage_t::composite_spell_haste() SC_CONST
+double mage_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
@@ -4028,7 +4028,7 @@ double mage_t::composite_spell_haste() SC_CONST
 
 // mage_t::composite_spell_power ============================================
 
-double mage_t::composite_spell_power( const school_type school ) SC_CONST
+double mage_t::composite_spell_power( const school_type school ) const
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -4042,7 +4042,7 @@ double mage_t::composite_spell_power( const school_type school ) SC_CONST
 
 // mage_t::composite_spell_resistance =======================================
 
-double mage_t::composite_spell_resistance( const school_type school ) SC_CONST
+double mage_t::composite_spell_resistance( const school_type school ) const
 {
   double sr = player_t::composite_spell_resistance( school );
 
@@ -4060,7 +4060,7 @@ double mage_t::composite_spell_resistance( const school_type school ) SC_CONST
 
 // mage_t::matching_gear_multiplier =========================================
 
-double mage_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
+double mage_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;

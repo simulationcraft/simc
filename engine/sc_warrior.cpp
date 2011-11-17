@@ -341,24 +341,24 @@ struct warrior_t : public player_t
   virtual void      init_actions();
   virtual void      register_callbacks();
   virtual void      combat_begin();
-  virtual double    composite_attack_power_multiplier() SC_CONST;
-  virtual double    composite_attack_hit() SC_CONST;
-  virtual double    composite_attack_crit() SC_CONST;
-  virtual double    composite_mastery() SC_CONST;
-  virtual double    composite_attack_haste() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
-  virtual double    composite_tank_block() SC_CONST;
-  virtual double    composite_tank_crit_block() SC_CONST;
-  virtual double    composite_tank_crit( const school_type school ) SC_CONST;
-  virtual double    composite_tank_parry() SC_CONST;
+  virtual double    composite_attack_power_multiplier() const;
+  virtual double    composite_attack_hit() const;
+  virtual double    composite_attack_crit() const;
+  virtual double    composite_mastery() const;
+  virtual double    composite_attack_haste() const;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    composite_tank_block() const;
+  virtual double    composite_tank_crit_block() const;
+  virtual double    composite_tank_crit( const school_type school ) const;
+  virtual double    composite_tank_parry() const;
   virtual void      reset();
   virtual void      regen( double periodicity );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_RAGE; }
-  virtual int       primary_role() SC_CONST;
+  virtual int       primary_resource() const { return RESOURCE_RAGE; }
+  virtual int       primary_role() const;
   virtual double    assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
   virtual void      copy_from( player_t* source );
 };
@@ -403,9 +403,9 @@ struct warrior_attack_t : public attack_t
     // normalize_weapon_speed is set correctly by parse_data now
   }
 
-  virtual double armor() SC_CONST;
+  virtual double armor() const;
   virtual void   consume_resource();
-  virtual double cost() SC_CONST;
+  virtual double cost() const;
   virtual void   execute();
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
@@ -481,7 +481,7 @@ struct deep_wounds_t : public warrior_attack_t
         tick_power_mod = 0;
         dot_behavior  = DOT_REFRESH;
       }
-      virtual double total_td_multiplier() SC_CONST { return target_multiplier; }
+      virtual double total_td_multiplier() const { return target_multiplier; }
       virtual double travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
       virtual void impact( player_t* t, int impact_result, double deep_wounds_dmg )
       {
@@ -747,7 +747,7 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
                        name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
     }
 
-    virtual double total_td_multiplier() SC_CONST { return 1.0; }
+    virtual double total_td_multiplier() const { return 1.0; }
   };
 
   double total_dot_dmg = dmg * p -> dbc.spell( 99239 ) -> effect1().percent();
@@ -902,7 +902,7 @@ static void trigger_tier12_4pc_melee( attack_t* a )
 // Warrior Attacks
 // ==========================================================================
 
-double warrior_attack_t::armor() SC_CONST
+double warrior_attack_t::armor() const
 {
   warrior_t* p = player -> cast_warrior();
 
@@ -934,7 +934,7 @@ void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type, 
 
 // warrior_attack_t::cost ===================================================
 
-double warrior_attack_t::cost() SC_CONST
+double warrior_attack_t::cost() const
 {
   double c = attack_t::cost();
 
@@ -1117,7 +1117,7 @@ struct melee_t : public warrior_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual double swing_haste() SC_CONST
+  virtual double swing_haste() const
   {
     double h = warrior_attack_t::swing_haste();
 
@@ -1133,7 +1133,7 @@ struct melee_t : public warrior_attack_t
     return h;
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double t = warrior_attack_t::execute_time();
 
@@ -1306,8 +1306,8 @@ struct bladestorm_t : public warrior_attack_t
   }
 
   // Bladestorm is not modified by haste effects
-  virtual double haste() SC_CONST { return 1.0; }
-  virtual double swing_haste() SC_CONST { return 1.0; }
+  virtual double haste() const { return 1.0; }
+  virtual double swing_haste() const { return 1.0; }
 };
 
 // Bloodthirst Heal ==============================================================
@@ -1721,7 +1721,7 @@ struct heroic_strike_t : public warrior_attack_t
     direct_power_mod  = 0.6; // Hardcoded into tooltip, 02/11/2011
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     double c = warrior_attack_t::cost();
     warrior_t* p = player -> cast_warrior();
@@ -2287,7 +2287,7 @@ struct shield_slam_t : public warrior_attack_t
       p -> buffs_battle_trance -> trigger();
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -2409,10 +2409,10 @@ struct slam_t : public warrior_attack_t
     }
   }
 
-  virtual double haste() SC_CONST { return 1.0; }
-  virtual double swing_haste() SC_CONST { return 1.0; }
+  virtual double haste() const { return 1.0; }
+  virtual double swing_haste() const { return 1.0; }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -2422,7 +2422,7 @@ struct slam_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -2617,13 +2617,13 @@ struct warrior_spell_t : public spell_t
   {
   }
 
-  virtual double gcd() SC_CONST;
+  virtual double gcd() const;
   virtual bool   ready();
 };
 
 // warrior_spell_t::gcd =====================================================
 
-double warrior_spell_t::gcd() SC_CONST
+double warrior_spell_t::gcd() const
 {
   // Unaffected by haste
   return trigger_gcd;
@@ -3012,7 +3012,7 @@ struct stance_t : public warrior_spell_t
     update_ready();
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     warrior_t* p = player -> cast_warrior();
 
@@ -3711,7 +3711,7 @@ void warrior_t::reset()
 
 // warrior_t::composite_attack_power_multiplier =============================
 
-double warrior_t::composite_attack_power_multiplier() SC_CONST
+double warrior_t::composite_attack_power_multiplier() const
 {
   double mult = player_t::composite_attack_power_multiplier();
 
@@ -3722,7 +3722,7 @@ double warrior_t::composite_attack_power_multiplier() SC_CONST
 
 // warrior_t::composite_attack_hit ==========================================
 
-double warrior_t::composite_attack_hit() SC_CONST
+double warrior_t::composite_attack_hit() const
 {
   double ah = player_t::composite_attack_hit();
 
@@ -3733,7 +3733,7 @@ double warrior_t::composite_attack_hit() SC_CONST
 
 // warrior_t::composite_attack_crit =========================================
 
-double warrior_t::composite_attack_crit() SC_CONST
+double warrior_t::composite_attack_crit() const
 {
   double c = player_t::composite_attack_crit();
 
@@ -3744,7 +3744,7 @@ double warrior_t::composite_attack_crit() SC_CONST
 
 // warrior_t::composite_mastery =============================================
 
-double warrior_t::composite_mastery() SC_CONST
+double warrior_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
@@ -3755,7 +3755,7 @@ double warrior_t::composite_mastery() SC_CONST
 
 // warrior_t::composite_attack_haste ========================================
 
-double warrior_t::composite_attack_haste() SC_CONST
+double warrior_t::composite_attack_haste() const
 {
   double h = player_t::composite_attack_haste();
 
@@ -3773,7 +3773,7 @@ double warrior_t::composite_attack_haste() SC_CONST
 
 // warrior_t::composite_player_multiplier ===================================
 
-double warrior_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+double warrior_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3797,7 +3797,7 @@ double warrior_t::composite_player_multiplier( const school_type school, action_
 
 // warrior_t::matching_gear_multiplier ======================================
 
-double warrior_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
+double warrior_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   if ( ( attr == ATTR_STRENGTH ) && ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY ) )
     return 0.05;
@@ -3810,7 +3810,7 @@ double warrior_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 
 // warrior_t::composite_tank_block ==========================================
 
-double warrior_t::composite_tank_block() SC_CONST
+double warrior_t::composite_tank_block() const
 {
   double b = player_t::composite_tank_block();
 
@@ -3824,7 +3824,7 @@ double warrior_t::composite_tank_block() SC_CONST
 
 // warrior_t::composite_tank_crit_block =====================================
 
-double warrior_t::composite_tank_crit_block() SC_CONST
+double warrior_t::composite_tank_crit_block() const
 {
   double b = player_t::composite_tank_crit_block();
 
@@ -3838,7 +3838,7 @@ double warrior_t::composite_tank_crit_block() SC_CONST
 
 // warrior_t::composite_tank_crit ===========================================
 
-double warrior_t::composite_tank_crit( const school_type school ) SC_CONST
+double warrior_t::composite_tank_crit( const school_type school ) const
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -3850,7 +3850,7 @@ double warrior_t::composite_tank_crit( const school_type school ) SC_CONST
 
 // warrior_t::composite_tank_parry ===========================================
 
-double warrior_t::composite_tank_parry() SC_CONST
+double warrior_t::composite_tank_parry() const
 {
   double p = player_t::composite_tank_parry();
 
@@ -3874,7 +3874,7 @@ void warrior_t::regen( double periodicity )
 
 // warrior_t::primary_role() ================================================
 
-int warrior_t::primary_role() SC_CONST
+int warrior_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;

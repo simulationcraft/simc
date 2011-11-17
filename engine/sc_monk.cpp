@@ -93,10 +93,10 @@ struct monk_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      init_resources( bool force=false );
-  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST;
-  virtual int       primary_role() SC_CONST;
+  virtual int       primary_resource() const;
+  virtual int       primary_role() const;
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -591,7 +591,7 @@ void monk_t::init_resources( bool force )
 
 // monk_t::matching_gear_multiplier =========================================
 
-double monk_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
+double monk_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   if ( primary_tree() == TREE_MISTWEAVER )
   {
@@ -628,7 +628,7 @@ int monk_t::decode_set( item_t& item )
 
 // monk_t::primary_role ==================================================
 
-int monk_t::primary_resource() SC_CONST
+int monk_t::primary_resource() const
 {
   // FIXME: change to healing stance
   if ( primary_tree() == TREE_MISTWEAVER )
@@ -639,7 +639,7 @@ int monk_t::primary_resource() SC_CONST
 
 // monk_t::primary_role ==================================================
 
-int monk_t::primary_role() SC_CONST
+int monk_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
     return ROLE_HYBRID;

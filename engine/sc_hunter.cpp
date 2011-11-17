@@ -239,18 +239,18 @@ struct hunter_t : public player_t
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
-  virtual double    composite_attack_power() SC_CONST;
-  virtual double    composite_attack_power_multiplier() SC_CONST;
-  virtual double    composite_attack_haste() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
+  virtual double    composite_attack_power() const;
+  virtual double    composite_attack_power_multiplier() const;
+  virtual double    composite_attack_haste() const;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_FOCUS; }
-  virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
+  virtual int       primary_resource() const { return RESOURCE_FOCUS; }
+  virtual int       primary_role() const     { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_t );
@@ -549,7 +549,7 @@ struct hunter_pet_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual double composite_attack_power() SC_CONST
+  virtual double composite_attack_power() const
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -560,7 +560,7 @@ struct hunter_pet_t : public pet_t
     return ap;
   }
 
-  virtual double composite_attack_power_multiplier() SC_CONST
+  virtual double composite_attack_power_multiplier() const
   {
     double mult = pet_t::composite_attack_power_multiplier();
 
@@ -572,7 +572,7 @@ struct hunter_pet_t : public pet_t
     return mult;
   }
 
-  virtual double composite_attack_crit() SC_CONST
+  virtual double composite_attack_crit() const
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -583,7 +583,7 @@ struct hunter_pet_t : public pet_t
     return ac;
   }
 
-  virtual double composite_attack_haste() SC_CONST
+  virtual double composite_attack_haste() const
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -599,7 +599,7 @@ struct hunter_pet_t : public pet_t
     return h;
   }
 
-  virtual double composite_attack_hit() SC_CONST
+  virtual double composite_attack_hit() const
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -607,14 +607,14 @@ struct hunter_pet_t : public pet_t
     return o -> composite_attack_hit();
   }
 
-  virtual double composite_attack_expertise() SC_CONST
+  virtual double composite_attack_expertise() const
   {
     hunter_t* o = owner -> cast_hunter();
 
     return ( ( 100.0 * o -> attack_hit ) * 26.0 / 8.0 ) / 100.0;
   }
 
-  virtual double composite_spell_hit() SC_CONST
+  virtual double composite_spell_hit() const
   {
     return composite_attack_hit() * 17.0 / 8.0;
   }
@@ -637,7 +637,7 @@ struct hunter_pet_t : public pet_t
     o -> active_pet = 0;
   }
 
-  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) const
   {
     double m = pet_t::composite_player_multiplier( school, a );
 
@@ -653,7 +653,7 @@ struct hunter_pet_t : public pet_t
     return m;
   }
 
-  virtual int primary_resource() SC_CONST { return RESOURCE_FOCUS; }
+  virtual int primary_resource() const { return RESOURCE_FOCUS; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
 
@@ -731,10 +731,10 @@ struct hunter_attack_t : public attack_t
     }
   }
 
-  virtual double cost() SC_CONST;
+  virtual double cost() const;
   virtual void   consume_resource();
-  virtual double execute_time() SC_CONST;
-  virtual double swing_haste() SC_CONST;
+  virtual double execute_time() const;
+  virtual double swing_haste() const;
   virtual void   player_buff();
 };
 
@@ -766,8 +766,8 @@ struct hunter_spell_t : public spell_t
     _init_hunter_spell_t();
   }
 
-  virtual double gcd() SC_CONST;
-  virtual double cost() SC_CONST;
+  virtual double gcd() const;
+  virtual double cost() const;
   virtual void consume_resource();
 };
 
@@ -840,7 +840,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
 
-    virtual double total_td_multiplier() SC_CONST { return target_multiplier; }
+    virtual double total_td_multiplier() const { return target_multiplier; }
   };
 
   double piercing_shots_dmg = p -> talents.piercing_shots -> effect1().percent() * dmg;
@@ -964,7 +964,7 @@ struct hunter_pet_attack_t : public attack_t
     _init_hunter_pet_attack_t();
   }
 
-  virtual double swing_haste() SC_CONST
+  virtual double swing_haste() const
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t* o = p -> owner -> cast_hunter();
@@ -1136,7 +1136,7 @@ struct claw_t : public hunter_pet_attack_t
     p -> buffs_sic_em -> up();
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t* o     = p -> owner -> cast_hunter();
@@ -1777,7 +1777,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
 
 // hunter_attack_t::cost ====================================================
 
-double hunter_attack_t::cost() SC_CONST
+double hunter_attack_t::cost() const
 {
   hunter_t* p = player -> cast_hunter();
 
@@ -1816,7 +1816,7 @@ void hunter_attack_t::consume_resource()
 
 // hunter_attack_t::swing_haste =============================================
 
-double hunter_attack_t::swing_haste() SC_CONST
+double hunter_attack_t::swing_haste() const
 {
   hunter_t* p = player -> cast_hunter();
 
@@ -1830,7 +1830,7 @@ double hunter_attack_t::swing_haste() SC_CONST
 
 // hunter_attack_t::execute_time ============================================
 
-double hunter_attack_t::execute_time() SC_CONST
+double hunter_attack_t::execute_time() const
 {
   double t = attack_t::execute_time();
 
@@ -1883,7 +1883,7 @@ struct ranged_t : public hunter_attack_t
     special = false;
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     if ( ! player -> in_combat )
       return 0.01;
@@ -1947,7 +1947,7 @@ struct auto_shot_t : public hunter_attack_t
     return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double h = 1.0;
 
@@ -2064,7 +2064,7 @@ struct aimed_shot_t : public hunter_attack_t
     consumes_tier12_4pc = true;
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2074,7 +2074,7 @@ struct aimed_shot_t : public hunter_attack_t
     return hunter_attack_t::cost();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2165,7 +2165,7 @@ struct arcane_shot_t : public hunter_attack_t
     consumes_tier12_4pc = true;
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2340,7 +2340,7 @@ struct explosive_trap_t : public hunter_attack_t
     trap_effect -> execute();
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2520,7 +2520,7 @@ struct explosive_shot_t : public hunter_attack_t
     consumes_tier12_4pc = true;
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2812,7 +2812,7 @@ struct multi_shot_t : public hunter_attack_t
       p -> buffs_bombardment -> trigger();
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -3003,7 +3003,7 @@ struct wild_quiver_trigger_t : public action_callback_t
 
 // hunter_spell_t::gcd()
 
-double hunter_spell_t::gcd() SC_CONST
+double hunter_spell_t::gcd() const
 {
   if ( ! harmful && ! player -> in_combat )
     return 0;
@@ -3014,7 +3014,7 @@ double hunter_spell_t::gcd() SC_CONST
 
 // hunter_spell_t::cost =====================================================
 
-double hunter_spell_t::cost() SC_CONST
+double hunter_spell_t::cost() const
 {
   hunter_t* p = player -> cast_hunter();
 
@@ -3325,7 +3325,7 @@ struct kill_command_t : public hunter_spell_t
     consumes_tier12_4pc = true;
   }
 
-  virtual double cost() SC_CONST
+  virtual double cost() const
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -4133,7 +4133,7 @@ void hunter_t::reset()
 
 // hunter_t::composite_attack_power =========================================
 
-double hunter_t::composite_attack_power() SC_CONST
+double hunter_t::composite_attack_power() const
 {
   double ap = player_t::composite_attack_power();
 
@@ -4146,7 +4146,7 @@ double hunter_t::composite_attack_power() SC_CONST
 
 // hunter_t::composite_attack_power_multiplier ==============================
 
-double hunter_t::composite_attack_power_multiplier() SC_CONST
+double hunter_t::composite_attack_power_multiplier() const
 {
   double mult = player_t::composite_attack_power_multiplier();
 
@@ -4160,7 +4160,7 @@ double hunter_t::composite_attack_power_multiplier() SC_CONST
 
 // hunter_t::composite_attack_haste =========================================
 
-double hunter_t::composite_attack_haste() SC_CONST
+double hunter_t::composite_attack_haste() const
 {
   double h = player_t::composite_attack_haste();
 
@@ -4174,7 +4174,7 @@ double hunter_t::composite_attack_haste() SC_CONST
 
 // hunter_t::composite_player_multiplier ====================================
 
-double hunter_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+double hunter_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4187,7 +4187,7 @@ double hunter_t::composite_player_multiplier( const school_type school, action_t
 
 // hunter_t::matching_gear_multiplier =======================================
 
-double hunter_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
+double hunter_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   if ( attr == ATTR_AGILITY )
     return 0.05;

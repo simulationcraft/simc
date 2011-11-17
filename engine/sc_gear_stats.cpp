@@ -141,7 +141,7 @@ void gear_stats_t::set_stat( int    stat,
 
 // gear_stats_t::get_stat ===================================================
 
-double gear_stats_t::get_stat( int stat ) SC_CONST
+double gear_stats_t::get_stat( int stat ) const
 {
   switch ( stat )
   {

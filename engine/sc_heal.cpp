@@ -139,7 +139,7 @@ void heal_t::target_debuff( player_t* /* t */, int /* dmg_type */ )
 
 // heal_t::haste ============================================================
 
-double heal_t::haste() SC_CONST
+double heal_t::haste() const
 {
   double h = spell_t::haste();
 
@@ -570,7 +570,7 @@ void absorb_t::target_debuff( player_t* /* t */, int /* dmg_type */ )
 
 // absorb_t::haste ==========================================================
 
-double absorb_t::haste() SC_CONST
+double absorb_t::haste() const
 {
   double h = spell_t::haste();
 

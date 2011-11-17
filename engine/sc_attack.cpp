@@ -90,21 +90,21 @@ attack_t::attack_t( const char* name, const uint32_t id, player_t* p, int t, boo
 
 // attack_t::swing_haste ====================================================
 
-double attack_t::swing_haste() SC_CONST
+double attack_t::swing_haste() const
 {
   return player -> composite_attack_speed();
 }
 
 // attack_t::haste ==========================================================
 
-double attack_t::haste() SC_CONST
+double attack_t::haste() const
 {
   return player -> composite_attack_haste();
 }
 
 // attack_t::execute_time ===================================================
 
-double attack_t::execute_time() SC_CONST
+double attack_t::execute_time() const
 {
   if ( base_execute_time == 0 ) return 0;
 
@@ -201,7 +201,7 @@ void attack_t::target_debuff( player_t* t, int dmg_type )
 
 // attack_t::total_expertise ================================================
 
-double attack_t::total_expertise() SC_CONST
+double attack_t::total_expertise() const
 {
   double e = base_expertise + player_expertise + target_expertise;
 
@@ -214,7 +214,7 @@ double attack_t::total_expertise() SC_CONST
 
 // attack_t::miss_chance ====================================================
 
-double attack_t::miss_chance( int delta_level ) SC_CONST
+double attack_t::miss_chance( int delta_level ) const
 {
   if ( target -> is_enemy() || target -> is_add() )
   {
@@ -240,14 +240,14 @@ double attack_t::miss_chance( int delta_level ) SC_CONST
 
 // attack_t::dodge_chance ===================================================
 
-double attack_t::dodge_chance( int delta_level ) SC_CONST
+double attack_t::dodge_chance( int delta_level ) const
 {
   return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
 }
 
 // attack_t::parry_chance ===================================================
 
-double attack_t::parry_chance( int delta_level ) SC_CONST
+double attack_t::parry_chance( int delta_level ) const
 {
   // Tested on 03.03.2011 with a data set for delta_level = 5 which gave 22%
   if ( delta_level > 2 )
@@ -258,14 +258,14 @@ double attack_t::parry_chance( int delta_level ) SC_CONST
 
 // attack_t::glance_chance ==================================================
 
-double attack_t::glance_chance( int delta_level ) SC_CONST
+double attack_t::glance_chance( int delta_level ) const
 {
   return (  delta_level  + 1 ) * 0.06;
 }
 
 // attack_t::block_chance ===================================================
 
-double attack_t::block_chance( int /* delta_level */ ) SC_CONST
+double attack_t::block_chance( int /* delta_level */ ) const
 {
   // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
   // % is 5%, and not 5% + delta_level * 0.5%.
@@ -277,7 +277,7 @@ double attack_t::block_chance( int /* delta_level */ ) SC_CONST
 
 // attack_t::crit_block_chance ==============================================
 
-double attack_t::crit_block_chance( int /* delta_level */ ) SC_CONST
+double attack_t::crit_block_chance( int /* delta_level */ ) const
 {
   // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
   // % is 5%, and not 5% + delta_level * 0.5%.
@@ -289,7 +289,7 @@ double attack_t::crit_block_chance( int /* delta_level */ ) SC_CONST
 
 // attack_t::crit_chance ====================================================
 
-double attack_t::crit_chance( int delta_level ) SC_CONST
+double attack_t::crit_chance( int delta_level ) const
 {
   double chance = total_crit();
 

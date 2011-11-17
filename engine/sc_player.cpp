@@ -1964,7 +1964,7 @@ item_t* player_t::find_item( const std::string& str )
 
 // player_t::energy_regen_per_second ========================================
 
-double player_t::energy_regen_per_second() SC_CONST
+double player_t::energy_regen_per_second() const
 {
   double r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
 
@@ -1973,7 +1973,7 @@ double player_t::energy_regen_per_second() SC_CONST
 
 // player_t::focus_regen_per_second =========================================
 
-double player_t::focus_regen_per_second() SC_CONST
+double player_t::focus_regen_per_second() const
 {
   double r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
 
@@ -1982,7 +1982,7 @@ double player_t::focus_regen_per_second() SC_CONST
 
 // player_t::chi_regen_per_second ========================================
 
-double player_t::chi_regen_per_second() SC_CONST
+double player_t::chi_regen_per_second() const
 {
   // FIXME: Just assuming it scale with haste right now.
   double r = base_chi_regen_per_second * ( 1.0 / composite_attack_haste() );
@@ -1992,7 +1992,7 @@ double player_t::chi_regen_per_second() SC_CONST
 
 // player_t::composite_attack_haste =========================================
 
-double player_t::composite_attack_haste() SC_CONST
+double player_t::composite_attack_haste() const
 {
   double h = attack_haste;
 
@@ -2035,7 +2035,7 @@ double player_t::composite_attack_haste() SC_CONST
 
 // player_t::composite_attack_speed =========================================
 
-double player_t::composite_attack_speed() SC_CONST
+double player_t::composite_attack_speed() const
 {
   double h = composite_attack_haste();
 
@@ -2049,7 +2049,7 @@ double player_t::composite_attack_speed() SC_CONST
 
 // player_t::composite_attack_power =========================================
 
-double player_t::composite_attack_power() SC_CONST
+double player_t::composite_attack_power() const
 {
   double ap = attack_power;
 
@@ -2064,7 +2064,7 @@ double player_t::composite_attack_power() SC_CONST
 
 // player_t::composite_attack_crit ==========================================
 
-double player_t::composite_attack_crit() SC_CONST
+double player_t::composite_attack_crit() const
 {
   double ac = attack_crit + attack_crit_per_agility * agility();
 
@@ -2090,7 +2090,7 @@ double player_t::composite_attack_crit() SC_CONST
 
 // player_t::composite_attack_hit ===========================================
 
-double player_t::composite_attack_hit() SC_CONST
+double player_t::composite_attack_hit() const
 {
   double ah = attack_hit;
 
@@ -2103,7 +2103,7 @@ double player_t::composite_attack_hit() SC_CONST
 
 // player_t::composite_armor ================================================
 
-double player_t::composite_armor() SC_CONST
+double player_t::composite_armor() const
 {
   double a = armor;
 
@@ -2129,7 +2129,7 @@ double player_t::composite_armor() SC_CONST
 
 // player_t::composite_armor_multiplier =====================================
 
-double player_t::composite_armor_multiplier() SC_CONST
+double player_t::composite_armor_multiplier() const
 {
   double a = armor_multiplier;
 
@@ -2138,7 +2138,7 @@ double player_t::composite_armor_multiplier() SC_CONST
 
 // player_t::composite_spell_resistance =====================================
 
-double player_t::composite_spell_resistance( const school_type school ) SC_CONST
+double player_t::composite_spell_resistance( const school_type school ) const
 {
   double a = spell_resistance[ school ];
 
@@ -2147,7 +2147,7 @@ double player_t::composite_spell_resistance( const school_type school ) SC_CONST
 
 // player_t::composite_tank_miss ============================================
 
-double player_t::composite_tank_miss( const school_type school ) SC_CONST
+double player_t::composite_tank_miss( const school_type school ) const
 {
   double m = 0;
 
@@ -2167,7 +2167,7 @@ double player_t::composite_tank_miss( const school_type school ) SC_CONST
 
 // player_t::composite_tank_dodge ===========================================
 
-double player_t::composite_tank_dodge() SC_CONST
+double player_t::composite_tank_dodge() const
 {
   double d = dodge;
 
@@ -2178,7 +2178,7 @@ double player_t::composite_tank_dodge() SC_CONST
 
 // player_t::composite_tank_parry ===========================================
 
-double player_t::composite_tank_parry() SC_CONST
+double player_t::composite_tank_parry() const
 {
   double p = parry;
 
@@ -2189,7 +2189,7 @@ double player_t::composite_tank_parry() SC_CONST
 
 // player_t::composite_tank_block ===========================================
 
-double player_t::composite_tank_block() SC_CONST
+double player_t::composite_tank_block() const
 {
   double b = block;
 
@@ -2198,7 +2198,7 @@ double player_t::composite_tank_block() SC_CONST
 
 // player_t::composite_tank_block_reduction =================================
 
-double player_t::composite_tank_block_reduction() SC_CONST
+double player_t::composite_tank_block_reduction() const
 {
   double b = block_reduction;
 
@@ -2212,21 +2212,21 @@ double player_t::composite_tank_block_reduction() SC_CONST
 
 // player_t::composite_tank_crit_block ======================================
 
-double player_t::composite_tank_crit_block() SC_CONST
+double player_t::composite_tank_crit_block() const
 {
   return 0;
 }
 
 // player_t::composite_tank_crit ============================================
 
-double player_t::composite_tank_crit( const school_type /* school */ ) SC_CONST
+double player_t::composite_tank_crit( const school_type /* school */ ) const
 {
   return 0;
 }
 
 // player_t::diminished_dodge ===============================================
 
-double player_t::diminished_dodge() SC_CONST
+double player_t::diminished_dodge() const
 {
   if ( diminished_kfactor == 0 || diminished_dodge_capi == 0 ) return 0;
 
@@ -2247,7 +2247,7 @@ double player_t::diminished_dodge() SC_CONST
 
 // player_t::diminished_parry ===============================================
 
-double player_t::diminished_parry() SC_CONST
+double player_t::diminished_parry() const
 {
   if ( diminished_kfactor == 0 || diminished_parry_capi == 0 ) return 0;
 
@@ -2268,7 +2268,7 @@ double player_t::diminished_parry() SC_CONST
 
 // player_t::composite_spell_haste ==========================================
 
-double player_t::composite_spell_haste() SC_CONST
+double player_t::composite_spell_haste() const
 {
   double h = spell_haste;
 
@@ -2311,7 +2311,7 @@ double player_t::composite_spell_haste() SC_CONST
 
 // player_t::composite_spell_power ==========================================
 
-double player_t::composite_spell_power( const school_type school ) SC_CONST
+double player_t::composite_spell_power( const school_type school ) const
 {
   double sp = spell_power[ school ];
 
@@ -2344,7 +2344,7 @@ double player_t::composite_spell_power( const school_type school ) SC_CONST
 
 // player_t::composite_spell_power_multiplier ===============================
 
-double player_t::composite_spell_power_multiplier() SC_CONST
+double player_t::composite_spell_power_multiplier() const
 {
   double m = spell_power_multiplier;
   if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
@@ -2364,7 +2364,7 @@ double player_t::composite_spell_power_multiplier() SC_CONST
 
 // player_t::composite_spell_crit ===========================================
 
-double player_t::composite_spell_crit() SC_CONST
+double player_t::composite_spell_crit() const
 {
   double sc = spell_crit + spell_crit_per_intellect * intellect();
 
@@ -2394,7 +2394,7 @@ double player_t::composite_spell_crit() SC_CONST
 
 // player_t::composite_spell_hit ============================================
 
-double player_t::composite_spell_hit() SC_CONST
+double player_t::composite_spell_hit() const
 {
   double sh = spell_hit;
 
@@ -2407,14 +2407,14 @@ double player_t::composite_spell_hit() SC_CONST
 
 // player_t::composite_mp5 ==================================================
 
-double player_t::composite_mp5() SC_CONST
+double player_t::composite_mp5() const
 {
   return mp5 + mp5_per_intellect * floor( intellect() );
 }
 
 // player_t::composite_attack_power_multiplier ==============================
 
-double player_t::composite_attack_power_multiplier() SC_CONST
+double player_t::composite_attack_power_multiplier() const
 {
   double m = attack_power_multiplier;
 
@@ -2437,7 +2437,7 @@ double player_t::composite_attack_power_multiplier() SC_CONST
 
 // player_t::composite_attribute_multiplier =================================
 
-double player_t::composite_attribute_multiplier( int attr ) SC_CONST
+double player_t::composite_attribute_multiplier( int attr ) const
 {
   double m = attribute_multiplier[ attr ];
 
@@ -2455,7 +2455,7 @@ double player_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) SC_CONST
+double player_t::composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) const
 {
   double m = 1.0;
 
@@ -2495,7 +2495,7 @@ double player_t::composite_player_multiplier( const school_type /* school */, ac
 
 // player_t::composite_player_td_multiplier =================================
 
-double player_t::composite_player_td_multiplier( const school_type /* school */, action_t* /* a */ ) SC_CONST
+double player_t::composite_player_td_multiplier( const school_type /* school */, action_t* /* a */ ) const
 {
   double m = 1.0;
 
@@ -2506,7 +2506,7 @@ double player_t::composite_player_td_multiplier( const school_type /* school */,
 
 // player_t::composite_player_heal_multiplier ===============================
 
-double player_t::composite_player_heal_multiplier( const school_type /* school */ ) SC_CONST
+double player_t::composite_player_heal_multiplier( const school_type /* school */ ) const
 {
   double m = 1.0;
 
@@ -2524,7 +2524,7 @@ double player_t::composite_player_heal_multiplier( const school_type /* school *
 
 // player_t::composite_player_th_multiplier =================================
 
-double player_t::composite_player_th_multiplier( const school_type /* school */ ) SC_CONST
+double player_t::composite_player_th_multiplier( const school_type /* school */ ) const
 {
   double m = 1.0;
 
@@ -2535,7 +2535,7 @@ double player_t::composite_player_th_multiplier( const school_type /* school */ 
 
 // player_t::composite_player_absorb_multiplier =============================
 
-double player_t::composite_player_absorb_multiplier( const school_type /* school */ ) SC_CONST
+double player_t::composite_player_absorb_multiplier( const school_type /* school */ ) const
 {
   double m = 1.0;
 
@@ -2553,7 +2553,7 @@ double player_t::composite_player_absorb_multiplier( const school_type /* school
 
 // player_t::composite_movement_speed =======================================
 
-double player_t::composite_movement_speed() SC_CONST
+double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
@@ -2589,7 +2589,7 @@ double player_t::composite_movement_speed() SC_CONST
 
 // player_t::strength() =====================================================
 
-double player_t::strength() SC_CONST
+double player_t::strength() const
 {
   double a = attribute[ ATTR_STRENGTH ];
 
@@ -2608,7 +2608,7 @@ double player_t::strength() SC_CONST
 
 // player_t::agility() ======================================================
 
-double player_t::agility() SC_CONST
+double player_t::agility() const
 {
   double a = attribute[ ATTR_AGILITY ];
 
@@ -2627,7 +2627,7 @@ double player_t::agility() SC_CONST
 
 // player_t::stamina() ======================================================
 
-double player_t::stamina() SC_CONST
+double player_t::stamina() const
 {
   double a = attribute[ ATTR_STAMINA ];
 
@@ -2643,7 +2643,7 @@ double player_t::stamina() SC_CONST
 
 // player_t::intellect() ====================================================
 
-double player_t::intellect() SC_CONST
+double player_t::intellect() const
 {
   double a = attribute[ ATTR_INTELLECT ];
 
@@ -2654,7 +2654,7 @@ double player_t::intellect() SC_CONST
 
 // player_t::spirit() =======================================================
 
-double player_t::spirit() SC_CONST
+double player_t::spirit() const
 {
   double a = attribute[ ATTR_SPIRIT ];
 
@@ -2671,7 +2671,7 @@ double player_t::spirit() SC_CONST
 /*
 // player_t::haste_rating() =================================================
 
-double player_t::haste_rating() SC_CONST
+double player_t::haste_rating() const
 {
   double a = stats.haste_rating;
 
@@ -2680,7 +2680,7 @@ double player_t::haste_rating() SC_CONST
 
 // player_t::crit_rating() ==================================================
 
-double player_t::crit_rating() SC_CONST
+double player_t::crit_rating() const
 {
   double a = stats.crit_rating;
 
@@ -2689,7 +2689,7 @@ double player_t::crit_rating() SC_CONST
 
 // player_t::mastery_rating() ===============================================
 
-double player_t::mastery_rating() SC_CONST
+double player_t::mastery_rating() const
 {
   double a = stats.mastery_rating;
 
@@ -2698,7 +2698,7 @@ double player_t::mastery_rating() SC_CONST
 
 // player_t::hit_rating() ===================================================
 
-double player_t::hit_rating() SC_CONST
+double player_t::hit_rating() const
 {
   double a = stats.hit_rating;
 
@@ -2707,7 +2707,7 @@ double player_t::hit_rating() SC_CONST
 
 // player_t::expertise_rating() =============================================
 
-double player_t::expertise_rating() SC_CONST
+double player_t::expertise_rating() const
 {
   double a = stats.expertise_rating;
 
@@ -2716,7 +2716,7 @@ double player_t::expertise_rating() SC_CONST
 
 // player_t::dodge_rating() =================================================
 
-double player_t::dodge_rating() SC_CONST
+double player_t::dodge_rating() const
 {
   double a = stats.dodge_rating;
 
@@ -2725,7 +2725,7 @@ double player_t::dodge_rating() SC_CONST
 
 // player_t::parry_rating() =================================================
 
-double player_t::parry_rating() SC_CONST
+double player_t::parry_rating() const
 {
   double a = stats.parry_rating;
 
@@ -3434,7 +3434,7 @@ void player_t::regen( double periodicity )
 
     if ( buffs.replenishment -> up() )
     {
-      double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0010 / 1.0;
+      double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0010;
 
       resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
     }
@@ -3574,7 +3574,7 @@ double player_t::resource_gain( int       resource,
 // player_t::resource_available =============================================
 
 bool player_t::resource_available( int    resource,
-                                   double cost ) SC_CONST
+                                   double cost ) const
 {
   if ( resource == RESOURCE_NONE || cost <= 0 || infinite_resource[ resource ] == 1 )
   {
@@ -3657,21 +3657,21 @@ int player_t::primary_tab()
 
 // player_t::primary_role ===================================================
 
-int player_t::primary_role() SC_CONST
+int player_t::primary_role() const
 {
   return role;
 }
 
 // player_t::primary_tree_name ==============================================
 
-const char* player_t::primary_tree_name() SC_CONST
+const char* player_t::primary_tree_name() const
 {
   return util_t::talent_tree_string( primary_tree() );
 }
 
 // player_t::primary_tree ===================================================
 
-int player_t::primary_tree() SC_CONST
+int player_t::primary_tree() const
 {
   if ( specialization == TALENT_TAB_NONE )
     return TREE_NONE;
@@ -3681,7 +3681,7 @@ int player_t::primary_tree() SC_CONST
 
 // player_t::normalize_by ===================================================
 
-int player_t::normalize_by() SC_CONST
+int player_t::normalize_by() const
 {
   if ( sim -> normalized_stat != STAT_NONE )
   {
@@ -3702,14 +3702,14 @@ int player_t::normalize_by() SC_CONST
 
 // player_t::health_percentage() ============================================
 
-double player_t::health_percentage() SC_CONST
+double player_t::health_percentage() const
 {
   return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
 }
 
 // target_t::time_to_die ====================================================
 
-double player_t::time_to_die() SC_CONST
+double player_t::time_to_die() const
 {
   // FIXME: Someone can figure out a better way to do this, for now, we NEED to
   // wait a minimum gcd before starting to estimate fight duration based on health,
@@ -3727,7 +3727,7 @@ double player_t::time_to_die() SC_CONST
 
 // player_t::total_reaction_time ============================================
 
-double player_t::total_reaction_time() SC_CONST
+double player_t::total_reaction_time() const
 {
   return rngs.lag_reaction -> exgauss( reaction_mean, reaction_stddev, reaction_nu );
 }
@@ -5170,7 +5170,7 @@ struct wait_fixed_t : public wait_action_base_t
     time_expr = action_expr_t::parse( this, sec_str );
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     int result = time_expr -> evaluate();
     assert( result == TOK_NUM ); ( void )result;
@@ -5190,7 +5190,7 @@ struct wait_until_ready_t : public wait_fixed_t
     wait_fixed_t( player, options_str )
   {}
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double wait = wait_fixed_t::execute_time();
     double remains = 0;
@@ -5219,7 +5219,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name 
   wait_cd( player -> get_cooldown( cd_name ) )
 {}
 
-double wait_for_cooldown_t::execute_time() SC_CONST
+double wait_for_cooldown_t::execute_time() const
 { return wait_cd -> remains(); }
 
 // Use Item Action ==========================================================

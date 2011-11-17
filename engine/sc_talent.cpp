@@ -38,7 +38,7 @@ talent_t::~talent_t()
   delete t_default_rank;
 }
 
-bool talent_t::ok() SC_CONST
+bool talent_t::ok() const
 {
   if ( ! s_player || ! t_data )
     return false;
@@ -46,7 +46,7 @@ bool talent_t::ok() SC_CONST
   return ( ( t_rank > 0 ) && spell_id_t::ok() && ( t_enabled ) );
 }
 
-std::string talent_t::to_str() SC_CONST
+std::string talent_t::to_str() const
 {
   std::ostringstream s;
 
@@ -61,7 +61,7 @@ std::string talent_t::to_str() SC_CONST
 
 // talent_t::get_spell_id ===================================================
 
-uint32_t talent_t::spell_id( ) SC_CONST
+uint32_t talent_t::spell_id( ) const
 {
   assert( s_player -> sim && ( t_rank <= 3 ) );
 
@@ -137,7 +137,7 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
   return true;
 }
 
-uint32_t talent_t::max_rank() SC_CONST
+uint32_t talent_t::max_rank() const
 {
   if ( ! s_player || ! t_data || ! t_data->id() )
     return 0;
@@ -145,7 +145,7 @@ uint32_t talent_t::max_rank() SC_CONST
   return t_data -> max_rank();
 }
 
-uint32_t talent_t::rank_spell_id( const uint32_t r ) SC_CONST
+uint32_t talent_t::rank_spell_id( const uint32_t r ) const
 {
   if ( ! s_player || ! t_data || ! t_data->id() )
     return 0;
@@ -153,7 +153,7 @@ uint32_t talent_t::rank_spell_id( const uint32_t r ) SC_CONST
   return t_data -> rank_spell_id( r );
 }
 
-const spell_id_t* talent_t::rank_spell( uint32_t r ) SC_CONST
+const spell_id_t* talent_t::rank_spell( uint32_t r ) const
 {
   assert( r <= max_rank() );
 
@@ -164,7 +164,7 @@ const spell_id_t* talent_t::rank_spell( uint32_t r ) SC_CONST
   return t_rank_spells[ r - 1 ];
 }
 
-uint32_t talent_t::rank() SC_CONST
+uint32_t talent_t::rank() const
 {
   if ( ! ok() )
     return 0;
@@ -345,7 +345,7 @@ bool spell_id_t::enable( bool override_value )
   return true;
 }
 
-bool spell_id_t::ok() SC_CONST
+bool spell_id_t::ok() const
 {
   bool res = s_enabled;
 
@@ -361,7 +361,7 @@ bool spell_id_t::ok() SC_CONST
   return res;
 }
 
-std::string spell_id_t::to_str() SC_CONST
+std::string spell_id_t::to_str() const
 {
   std::ostringstream s;
 
@@ -379,7 +379,7 @@ std::string spell_id_t::to_str() SC_CONST
   return s.str();
 }
 
-const char* spell_id_t::real_name() SC_CONST
+const char* spell_id_t::real_name() const
 {
   if ( ! s_player || ! s_data || ! s_id )
     return 0;
@@ -387,7 +387,7 @@ const char* spell_id_t::real_name() SC_CONST
   return s_data -> name_cstr();
 }
 
-const std::string spell_id_t::token() SC_CONST
+const std::string spell_id_t::token() const
 {
   if ( ! s_player || ! s_data || ! s_id )
     return 0;
@@ -395,7 +395,7 @@ const std::string spell_id_t::token() SC_CONST
   return s_token;
 }
 
-double spell_id_t::missile_speed() SC_CONST
+double spell_id_t::missile_speed() const
 {
   if ( ! ok() )
     return 0.0;
@@ -403,7 +403,7 @@ double spell_id_t::missile_speed() SC_CONST
   return s_data -> missile_speed();
 }
 
-uint32_t spell_id_t::school_mask() SC_CONST
+uint32_t spell_id_t::school_mask() const
 {
   if ( ! ok() )
     return 0;
@@ -499,7 +499,7 @@ school_type spell_id_t::get_school_type( const uint32_t mask )
   }
 }
 
-school_type spell_id_t::get_school_type() SC_CONST
+school_type spell_id_t::get_school_type() const
 {
   if ( ! ok() )
     return SCHOOL_NONE;
@@ -507,7 +507,7 @@ school_type spell_id_t::get_school_type() SC_CONST
   return get_school_type( school_mask() );
 }
 
-resource_type spell_id_t::power_type() SC_CONST
+resource_type spell_id_t::power_type() const
 {
   if ( ! ok() )
     return RESOURCE_NONE;
@@ -515,7 +515,7 @@ resource_type spell_id_t::power_type() SC_CONST
   return s_data -> power_type();
 }
 
-double spell_id_t::min_range() SC_CONST
+double spell_id_t::min_range() const
 {
   if ( ! ok() )
     return 0.0;
@@ -523,7 +523,7 @@ double spell_id_t::min_range() SC_CONST
   return s_data -> min_range();
 }
 
-double spell_id_t::max_range() SC_CONST
+double spell_id_t::max_range() const
 {
   if ( ! ok() )
     return 0.0;
@@ -531,7 +531,7 @@ double spell_id_t::max_range() SC_CONST
   return s_data -> max_range();
 }
 
-double spell_id_t::extra_coeff() SC_CONST
+double spell_id_t::extra_coeff() const
 {
   if ( ! ok() )
     return 0.0;
@@ -539,7 +539,7 @@ double spell_id_t::extra_coeff() SC_CONST
   return s_data -> extra_coeff();
 }
 
-bool spell_id_t::in_range() SC_CONST
+bool spell_id_t::in_range() const
 {
   if ( ! ok() )
     return false;
@@ -547,7 +547,7 @@ bool spell_id_t::in_range() SC_CONST
   return s_data -> in_range( s_player -> distance );
 }
 
-double spell_id_t::cooldown() SC_CONST
+double spell_id_t::cooldown() const
 {
   if ( ! ok() )
     return 0.0;
@@ -560,7 +560,7 @@ double spell_id_t::cooldown() SC_CONST
   return d;
 }
 
-double spell_id_t::gcd() SC_CONST
+double spell_id_t::gcd() const
 {
   if ( ! ok() )
     return 0.0;
@@ -568,7 +568,7 @@ double spell_id_t::gcd() SC_CONST
   return s_data -> gcd();
 }
 
-uint32_t spell_id_t::category() SC_CONST
+uint32_t spell_id_t::category() const
 {
   if ( ! ok() )
     return 0;
@@ -576,7 +576,7 @@ uint32_t spell_id_t::category() SC_CONST
   return s_data -> category();
 }
 
-double spell_id_t::duration() SC_CONST
+double spell_id_t::duration() const
 {
   if ( ! ok() )
     return 0.0;
@@ -589,7 +589,7 @@ double spell_id_t::duration() SC_CONST
   return d;
 }
 
-double spell_id_t::cost() SC_CONST
+double spell_id_t::cost() const
 {
   if ( ! ok() )
     return 0.0;
@@ -597,7 +597,7 @@ double spell_id_t::cost() SC_CONST
   return s_data -> cost();
 }
 
-uint32_t spell_id_t::rune_cost() SC_CONST
+uint32_t spell_id_t::rune_cost() const
 {
   if ( ! ok() )
     return 0;
@@ -605,7 +605,7 @@ uint32_t spell_id_t::rune_cost() SC_CONST
   return s_data -> rune_cost();
 }
 
-double spell_id_t::runic_power_gain() SC_CONST
+double spell_id_t::runic_power_gain() const
 {
   if ( ! ok() )
     return 0.0;
@@ -613,7 +613,7 @@ double spell_id_t::runic_power_gain() SC_CONST
   return s_data -> runic_power_gain();
 }
 
-uint32_t spell_id_t::max_stacks() SC_CONST
+uint32_t spell_id_t::max_stacks() const
 {
   if ( ! ok() )
     return 0;
@@ -621,7 +621,7 @@ uint32_t spell_id_t::max_stacks() SC_CONST
   return s_data -> max_stacks();
 }
 
-uint32_t spell_id_t::initial_stacks() SC_CONST
+uint32_t spell_id_t::initial_stacks() const
 {
   if ( ! ok() )
     return 0;
@@ -629,7 +629,7 @@ uint32_t spell_id_t::initial_stacks() SC_CONST
   return s_data -> initial_stacks();
 }
 
-double spell_id_t::proc_chance() SC_CONST
+double spell_id_t::proc_chance() const
 {
   if ( ! ok() )
     return 0.0;
@@ -637,7 +637,7 @@ double spell_id_t::proc_chance() SC_CONST
   return s_data -> proc_chance();
 }
 
-double spell_id_t::cast_time() SC_CONST
+double spell_id_t::cast_time() const
 {
   if ( ! ok() )
     return 0.0;
@@ -645,7 +645,7 @@ double spell_id_t::cast_time() SC_CONST
   return s_data -> cast_time( s_player -> level );
 }
 
-uint32_t spell_id_t::effect_id( uint32_t effect_num ) SC_CONST
+uint32_t spell_id_t::effect_id( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0;
@@ -653,7 +653,7 @@ uint32_t spell_id_t::effect_id( uint32_t effect_num ) SC_CONST
   return s_data -> effect_id( effect_num );
 }
 
-bool spell_id_t::flags( spell_attribute_t f ) SC_CONST
+bool spell_id_t::flags( spell_attribute_t f ) const
 {
   if ( ! ok() )
     return false;
@@ -661,7 +661,7 @@ bool spell_id_t::flags( spell_attribute_t f ) SC_CONST
   return s_data -> flags( f );
 }
 
-const char* spell_id_t::desc() SC_CONST
+const char* spell_id_t::desc() const
 {
   if ( ! ok() )
     return 0;
@@ -669,7 +669,7 @@ const char* spell_id_t::desc() SC_CONST
   return s_data -> desc();
 }
 
-const char* spell_id_t::tooltip() SC_CONST
+const char* spell_id_t::tooltip() const
 {
   if ( ! ok() )
     return 0;
@@ -677,7 +677,7 @@ const char* spell_id_t::tooltip() SC_CONST
   return s_data -> tooltip();
 }
 
-int32_t spell_id_t::effect_type( uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_type( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0;
@@ -687,7 +687,7 @@ int32_t spell_id_t::effect_type( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> type();
 }
 
-int32_t spell_id_t::effect_subtype( uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_subtype( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0;
@@ -697,7 +697,7 @@ int32_t spell_id_t::effect_subtype( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> subtype();
 }
 
-int32_t spell_id_t::effect_base_value( uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_base_value( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0;
@@ -707,7 +707,7 @@ int32_t spell_id_t::effect_base_value( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> base_value();
 }
 
-int32_t spell_id_t::effect_misc_value1( uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_misc_value1( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0;
@@ -717,7 +717,7 @@ int32_t spell_id_t::effect_misc_value1( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> misc_value1();
 }
 
-int32_t spell_id_t::effect_misc_value2( uint32_t effect_num ) SC_CONST
+int32_t spell_id_t::effect_misc_value2( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0;
@@ -727,7 +727,7 @@ int32_t spell_id_t::effect_misc_value2( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> misc_value2();
 }
 
-uint32_t spell_id_t::effect_trigger_spell( uint32_t effect_num ) SC_CONST
+uint32_t spell_id_t::effect_trigger_spell( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0;
@@ -737,7 +737,7 @@ uint32_t spell_id_t::effect_trigger_spell( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> trigger_spell_id();
 }
 
-double spell_id_t::effect_chain_multiplier( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_chain_multiplier( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0;
@@ -747,7 +747,7 @@ double spell_id_t::effect_chain_multiplier( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> chain_multiplier();
 }
 
-double spell_id_t::effect_average( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_average( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -757,7 +757,7 @@ double spell_id_t::effect_average( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect_average( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_delta( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_delta( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -767,7 +767,7 @@ double spell_id_t::effect_delta( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect_delta( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_bonus( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_bonus( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -777,7 +777,7 @@ double spell_id_t::effect_bonus( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect_bonus( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_min( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_min( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -787,7 +787,7 @@ double spell_id_t::effect_min( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect_min( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_max( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_max( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -797,7 +797,7 @@ double spell_id_t::effect_max( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect_max( effect_id, s_player -> level );
 }
 
-double spell_id_t::effect_coeff( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_coeff( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -807,7 +807,7 @@ double spell_id_t::effect_coeff( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> coeff();
 }
 
-double spell_id_t::effect_period( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_period( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -817,7 +817,7 @@ double spell_id_t::effect_period( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> period();
 }
 
-double spell_id_t::effect_radius( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_radius( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -827,7 +827,7 @@ double spell_id_t::effect_radius( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> radius();
 }
 
-double spell_id_t::effect_radius_max( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_radius_max( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -837,7 +837,7 @@ double spell_id_t::effect_radius_max( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> radius_max();
 }
 
-double spell_id_t::effect_pp_combo_points( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_pp_combo_points( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -847,7 +847,7 @@ double spell_id_t::effect_pp_combo_points( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> pp_combo_points();
 }
 
-double spell_id_t::effect_real_ppl( uint32_t effect_num ) SC_CONST
+double spell_id_t::effect_real_ppl( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -857,7 +857,7 @@ double spell_id_t::effect_real_ppl( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> real_ppl();
 }
 
-int spell_id_t::effect_die_sides( uint32_t effect_num ) SC_CONST
+int spell_id_t::effect_die_sides( uint32_t effect_num ) const
 {
   if ( ! ok() )
     return 0;
@@ -867,7 +867,7 @@ int spell_id_t::effect_die_sides( uint32_t effect_num ) SC_CONST
   return s_player -> dbc.effect( effect_id ) -> die_sides();
 }
 
-double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
+double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -902,7 +902,7 @@ double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, in
   return 0.0;
 }
 
-double spell_id_t::mod_additive( property_type_t p_type ) SC_CONST
+double spell_id_t::mod_additive( property_type_t p_type ) const
 {
   // Move this somewhere sane, here for now
   static const double property_flat_divisor[] = {
@@ -1064,17 +1064,17 @@ mastery_t::mastery_t( player_t* player, const char* t_name, const char* s_name, 
     log_t::output( s_player -> sim, "Mastery status: %s", to_str().c_str() );
 }
 
-bool mastery_t::ok() SC_CONST
+bool mastery_t::ok() const
 {
   return spell_id_t::ok() && ( s_player -> primary_tree() == m_tree );
 }
 
-double mastery_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) SC_CONST
+double mastery_t::base_value( effect_type_t type, effect_subtype_t sub_type, int misc_value, int misc_value2 ) const
 {
   return spell_id_t::base_value( type, sub_type, misc_value, misc_value2 ) / 10000.0;
 }
 
-std::string mastery_t::to_str() SC_CONST
+std::string mastery_t::to_str() const
 {
   std::ostringstream s;
 

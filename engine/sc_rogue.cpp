@@ -84,13 +84,13 @@ struct combo_points_t
     count = 0;
   }
 
-  double rank( double* cp_list ) SC_CONST
+  double rank( double* cp_list ) const
   {
     assert( count > 0 );
     return cp_list[ count - 1 ];
   }
 
-  double rank( double cp1, double cp2, double cp3, double cp4, double cp5 ) SC_CONST
+  double rank( double cp1, double cp2, double cp3, double cp4, double cp5 ) const
   {
     double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
     return rank( cp_list );
@@ -391,23 +391,23 @@ struct rogue_t : public player_t
   virtual void      combat_begin();
   virtual void      reset();
   virtual void      clear_debuffs();
-  virtual double    energy_regen_per_second() SC_CONST;
+  virtual double    energy_regen_per_second() const;
   virtual void      regen( double periodicity );
-  virtual double    available() SC_CONST;
+  virtual double    available() const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_expr_t* create_expression( action_t* a, const std::string& name_str );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_ENERGY; }
-  virtual int       primary_role() SC_CONST     { return ROLE_ATTACK; }
+  virtual int       primary_resource() const { return RESOURCE_ENERGY; }
+  virtual int       primary_role() const     { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
 
-  virtual double    composite_attribute_multiplier( int attr ) SC_CONST;
-  virtual double    composite_attack_speed() SC_CONST;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
-  virtual double    composite_attack_power_multiplier() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
+  virtual double    composite_attribute_multiplier( int attr ) const;
+  virtual double    composite_attack_speed() const;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    composite_attack_power_multiplier() const;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
 };
 
 namespace // ANONYMOUS NAMESPACE ============================================
@@ -462,15 +462,15 @@ struct rogue_attack_t : public attack_t
 
   void init_rogue_attack_t_();
 
-  virtual double cost() SC_CONST;
+  virtual double cost() const;
   virtual void   consume_resource();
   virtual void   execute();
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
   virtual void   assess_damage( player_t* t, double amount, int dmg_type, int impact_result );
-  virtual double total_multiplier() SC_CONST;
-  virtual double armor() SC_CONST;
+  virtual double total_multiplier() const;
+  virtual double armor() const;
 
   void add_combo_points();
   void add_trigger_buff( buff_t* buff );
@@ -503,7 +503,7 @@ struct rogue_poison_t : public spell_t
     base_attack_power_multiplier = 1.0;
   }
 
-  virtual double total_multiplier() SC_CONST;
+  virtual double total_multiplier() const;
 };
 
 // ==========================================================================
@@ -922,7 +922,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
         log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
                        name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
     }
-    virtual double total_td_multiplier() SC_CONST { return 1.0; }
+    virtual double total_td_multiplier() const { return 1.0; }
   };
 
   double total_dot_dmg = dmg * p -> dbc.spell( 99173 ) -> effect1().percent();
@@ -1069,7 +1069,7 @@ static void remove_poison_debuff( rogue_t* p )
 // Attacks
 // ==========================================================================
 
-double rogue_attack_t::armor() SC_CONST
+double rogue_attack_t::armor() const
 {
   rogue_t* p = player -> cast_rogue();
 
@@ -1116,7 +1116,7 @@ void rogue_attack_t::init_rogue_attack_t_()
 
 // rogue_attack_t::cost =====================================================
 
-double rogue_attack_t::cost() SC_CONST
+double rogue_attack_t::cost() const
 {
   double c = attack_t::cost();
 
@@ -1247,7 +1247,7 @@ void rogue_attack_t::player_buff()
 
 // rogue_attack_t::total_multiplier =========================================
 
-double rogue_attack_t::total_multiplier() SC_CONST
+double rogue_attack_t::total_multiplier() const
 {
   // we have to overwrite it because Executioner is additive with talents
   rogue_t* p = player -> cast_rogue();
@@ -1384,7 +1384,7 @@ struct melee_t : public rogue_attack_t
       base_hit -= 0.19;
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double t = rogue_attack_t::execute_time();
 
@@ -1690,7 +1690,7 @@ struct envenom_t : public rogue_attack_t
       player_crit += 1.0;
   }
 
-  virtual double total_multiplier() SC_CONST
+  virtual double total_multiplier() const
   {
     // we have to overwrite it because Potent Poisons is additive with talents
     rogue_t* p = player -> cast_rogue();
@@ -2155,8 +2155,8 @@ struct killing_spree_t : public rogue_attack_t
   }
 
   // Killing Spree not modified by haste effects
-  virtual double haste() SC_CONST { return 1.0; }
-  virtual double swing_haste() SC_CONST { return 1.0; }
+  virtual double haste() const { return 1.0; }
+  virtual double swing_haste() const { return 1.0; }
 };
 
 // Mutilate =================================================================
@@ -2534,7 +2534,7 @@ struct pool_energy_t : public action_t
       log_t::output( sim, "%s performs %s", player -> name(), name() );
   }
 
-  virtual double gcd() SC_CONST
+  virtual double gcd() const
   {
     return wait;
   }
@@ -2692,7 +2692,7 @@ struct vendetta_t : public rogue_attack_t
 
 // rogue_poison_t::total_multiplier =========================================
 
-double rogue_poison_t::total_multiplier() SC_CONST
+double rogue_poison_t::total_multiplier() const
 {
   // we have to overwrite it because Potent Poisons is additive with talents
   rogue_t* p = player -> cast_rogue();
@@ -3224,7 +3224,7 @@ struct vendetta_buff_t : public buff_t
 
 // rogue_t::composite_attribute_multiplier ==================================
 
-double rogue_t::composite_attribute_multiplier( int attr ) SC_CONST
+double rogue_t::composite_attribute_multiplier( int attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -3236,7 +3236,7 @@ double rogue_t::composite_attribute_multiplier( int attr ) SC_CONST
 
 // rogue_t::composite_attack_speed ==========================================
 
-double rogue_t::composite_attack_speed() SC_CONST
+double rogue_t::composite_attack_speed() const
 {
   double h = player_t::composite_attack_speed();
 
@@ -3254,7 +3254,7 @@ double rogue_t::composite_attack_speed() SC_CONST
 
 // rogue_t::matching_gear_multiplier ========================================
 
-double rogue_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
+double rogue_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   if ( attr == ATTR_AGILITY )
     return 0.05;
@@ -3264,7 +3264,7 @@ double rogue_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
 
 // rogue_t::composite_attack_power_multiplier ===============================
 
-double rogue_t::composite_attack_power_multiplier() SC_CONST
+double rogue_t::composite_attack_power_multiplier() const
 {
   double m = player_t::composite_attack_power_multiplier();
 
@@ -3277,7 +3277,7 @@ double rogue_t::composite_attack_power_multiplier() SC_CONST
 
 // rogue_t::composite_player_multiplier =====================================
 
-double rogue_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+double rogue_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3976,7 +3976,7 @@ void rogue_t::clear_debuffs()
 
 // rogue_t::energy_regen_per_second =========================================
 
-double rogue_t::energy_regen_per_second() SC_CONST
+double rogue_t::energy_regen_per_second() const
 {
   double r = player_t::energy_regen_per_second();
 
@@ -4023,7 +4023,7 @@ void rogue_t::regen( double periodicity )
 
 // rogue_t::available =======================================================
 
-double rogue_t::available() SC_CONST
+double rogue_t::available() const
 {
   double energy = resource_current[ RESOURCE_ENERGY ];
 

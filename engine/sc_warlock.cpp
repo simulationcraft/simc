@@ -430,14 +430,14 @@ struct warlock_t : public player_t
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() SC_CONST { return RESOURCE_MANA; }
-  virtual int       primary_role() SC_CONST     { return ROLE_SPELL; }
-  virtual double    composite_armor() SC_CONST;
-  virtual double    composite_spell_power( const school_type school ) SC_CONST;
-  virtual double    composite_spell_power_multiplier() SC_CONST;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) SC_CONST;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) SC_CONST;
+  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual int       primary_role() const     { return ROLE_SPELL; }
+  virtual double    composite_armor() const;
+  virtual double    composite_spell_power( const school_type school ) const;
+  virtual double    composite_spell_power_multiplier() const;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
 
   // Event Tracking
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -717,7 +717,7 @@ struct warlock_pet_t : public pet_t
       */
   }
 
-  virtual double composite_spell_haste() SC_CONST
+  virtual double composite_spell_haste() const
   {
     double h = player_t::composite_spell_haste();
     h *= owner -> spell_haste;
@@ -729,28 +729,28 @@ struct warlock_pet_t : public pet_t
     return h;
   }
 
-  virtual double composite_attack_haste() SC_CONST
+  virtual double composite_attack_haste() const
   {
     double h = player_t::composite_attack_haste();
     h *= owner -> spell_haste;
     return h;
   }
 
-  virtual double composite_spell_power( const school_type school ) SC_CONST
+  virtual double composite_spell_power( const school_type school ) const
   {
     double sp = pet_t::composite_spell_power( school );
     sp += owner -> composite_spell_power( school ) * ( level / 80.0 ) * 0.5 * owner -> composite_spell_power_multiplier();
     return sp;
   }
 
-  virtual double composite_attack_power() SC_CONST
+  virtual double composite_attack_power() const
   {
     double ap = pet_t::composite_attack_power();
     ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80.0 ) * owner -> composite_spell_power_multiplier();
     return ap;
   }
 
-  virtual double composite_attack_crit() SC_CONST
+  virtual double composite_attack_crit() const
   {
    double ac = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
@@ -761,7 +761,7 @@ struct warlock_pet_t : public pet_t
     return ac;
   }
 
-  virtual double composite_spell_crit() SC_CONST
+  virtual double composite_spell_crit() const
   {
     double sc = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
@@ -797,14 +797,14 @@ struct warlock_main_pet_t : public warlock_pet_t
     o -> active_pet = 0;
   }
 
-  virtual double composite_attack_expertise() SC_CONST
+  virtual double composite_attack_expertise() const
   {
     return owner -> spell_hit * 26.0 / 17.0;
   }
 
-  virtual int primary_resource() SC_CONST { return RESOURCE_MANA; }
+  virtual int primary_resource() const { return RESOURCE_MANA; }
 
-  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) const
   {
     double m = warlock_pet_t::composite_player_multiplier( school, a );
 
@@ -817,7 +817,7 @@ struct warlock_main_pet_t : public warlock_pet_t
     return m;
   }
 
-  virtual double composite_mp5() SC_CONST
+  virtual double composite_mp5() const
   {
     double h = warlock_pet_t::composite_mp5();
     h += mp5_per_intellect * owner -> intellect();
@@ -849,52 +849,52 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     snapshot_mastery = owner -> composite_mastery();
   }
 
-  virtual double composite_attack_crit() SC_CONST
+  virtual double composite_attack_crit() const
   {
     return snapshot_crit;
   }
 
-  virtual double composite_attack_expertise() SC_CONST
+  virtual double composite_attack_expertise() const
   {
     return 0;
   }
 
-  virtual double composite_attack_haste() SC_CONST
+  virtual double composite_attack_haste() const
   {
     return snapshot_haste * player_t::composite_attack_haste();
   }
 
-  virtual double composite_attack_hit() SC_CONST
+  virtual double composite_attack_hit() const
   {
     return 0;
   }
 
-  virtual double composite_attack_power() SC_CONST
+  virtual double composite_attack_power() const
   {
     double ap = pet_t::composite_attack_power();
     ap += snapshot_sp * ( level / 80.0 ) * owner -> composite_spell_power_multiplier();
     return ap;
   }
 
-  virtual double composite_spell_crit() SC_CONST
+  virtual double composite_spell_crit() const
   {
     return snapshot_crit;
   }
 
-  virtual double composite_spell_haste() SC_CONST
+  virtual double composite_spell_haste() const
   {
     // FIXME: Needs testing, but Doomguard seems to not scale with our haste after 4.1 or so
     return 1.0;
   }
 
-  virtual double composite_spell_power( const school_type school ) SC_CONST
+  virtual double composite_spell_power( const school_type school ) const
   {
     double sp = pet_t::composite_spell_power( school );
     sp += snapshot_sp * ( level / 80.0 ) * 0.5;
     return sp;
   }
 
-  virtual double composite_spell_power_multiplier() SC_CONST
+  virtual double composite_spell_power_multiplier() const
   {
     double m = warlock_pet_t::composite_spell_power_multiplier();
     warlock_t* o = owner -> cast_warlock();
@@ -970,7 +970,7 @@ public:
 
   // warlock_spell_t::haste =================================================
 
-  virtual double haste() SC_CONST
+  virtual double haste() const
   {
     warlock_t* p = player -> cast_warlock();
     double h = spell_t::haste();
@@ -1031,7 +1031,7 @@ public:
 
   // warlock_spell_t::total_td_multiplier ===================================
 
-  virtual double total_td_multiplier() SC_CONST
+  virtual double total_td_multiplier() const
   {
     double shadow_td_multiplier = 1.0;
     warlock_t* p = player -> cast_warlock();
@@ -1794,7 +1794,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   }
 
 
-  virtual double composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+  virtual double composite_player_multiplier( const school_type school, action_t* a ) const
   {
     //FIXME: This is all untested, but seems to match what people are reporting in forums
 
@@ -1833,9 +1833,9 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
     action_list_str += "/snapshot_stats";
   }
 
-  virtual double    available() SC_CONST { return sim -> max_time; }
+  virtual double    available() const { return sim -> max_time; }
 
-  virtual double composite_attack_power() SC_CONST
+  virtual double composite_attack_power() const
   {
     return 0;
   }
@@ -1875,12 +1875,12 @@ struct fiery_imp_pet_t : public pet_t
     }
   }
 
-  virtual double composite_spell_crit() SC_CONST
+  virtual double composite_spell_crit() const
   {
     return snapshot_crit;
   }
 
-  virtual double composite_spell_haste() SC_CONST
+  virtual double composite_spell_haste() const
   {
     return 1.0;
   }
@@ -2066,7 +2066,7 @@ struct bane_of_doom_t : public warlock_spell_t
     }
   }
 
-  virtual double total_td_multiplier() SC_CONST
+  virtual double total_td_multiplier() const
   {
     double m = warlock_spell_t::total_td_multiplier();
     warlock_t* p = player -> cast_warlock();
@@ -2166,7 +2166,7 @@ struct shadow_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double h = warlock_spell_t::execute_time();
     warlock_t* p = player -> cast_warlock();
@@ -2323,7 +2323,7 @@ struct chaos_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     double h = warlock_spell_t::execute_time();
     warlock_t* p = player -> cast_warlock();
@@ -2605,7 +2605,7 @@ struct drain_life_t : public warlock_spell_t
       trigger_everlasting_affliction( this );
   }
 
-  virtual double tick_time() SC_CONST
+  virtual double tick_time() const
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::tick_time();
@@ -3051,7 +3051,7 @@ struct incinerate_t : public warlock_spell_t
     }
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     warlock_t* p = player -> cast_warlock();
     double h = warlock_spell_t::execute_time();
@@ -3152,7 +3152,7 @@ struct soul_fire_t : public warlock_spell_t
     trigger_tier12_4pc_caster( this );
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     warlock_t* p = player -> cast_warlock();
     double t = warlock_spell_t::execute_time();
@@ -3413,7 +3413,7 @@ struct summon_main_pet_t : public summon_pet_t
     return summon_pet_t::ready();
   }
 
-  virtual double execute_time() SC_CONST
+  virtual double execute_time() const
   {
     warlock_t* p = player -> cast_warlock();
 
@@ -4141,7 +4141,7 @@ void imp_pet_t::firebolt_t::impact( player_t* t, int impact_result, double trave
 
 // warlock_t::composite_armor ===============================================
 
-double warlock_t::composite_armor() SC_CONST
+double warlock_t::composite_armor() const
 {
   double a = player_t::composite_armor();
 
@@ -4153,7 +4153,7 @@ double warlock_t::composite_armor() SC_CONST
 
 // warlock_t::composite_spell_power =========================================
 
-double warlock_t::composite_spell_power( const school_type school ) SC_CONST
+double warlock_t::composite_spell_power( const school_type school ) const
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -4164,7 +4164,7 @@ double warlock_t::composite_spell_power( const school_type school ) SC_CONST
 
 // warlock_t::composite_spell_power_multiplier ==============================
 
-double warlock_t::composite_spell_power_multiplier() SC_CONST
+double warlock_t::composite_spell_power_multiplier() const
 {
   double m = player_t::composite_spell_power_multiplier();
 
@@ -4178,7 +4178,7 @@ double warlock_t::composite_spell_power_multiplier() SC_CONST
 
 // warlock_t::composite_player_multiplier ===================================
 
-double warlock_t::composite_player_multiplier( const school_type school, action_t* a ) SC_CONST
+double warlock_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
   double player_multiplier = player_t::composite_player_multiplier( school, a );
 
@@ -4240,7 +4240,7 @@ double warlock_t::composite_player_multiplier( const school_type school, action_
 
 // warlock_t::composite_player_td_multiplier ================================
 
-double warlock_t::composite_player_td_multiplier( const school_type school, action_t* a ) SC_CONST
+double warlock_t::composite_player_td_multiplier( const school_type school, action_t* a ) const
 {
   double player_multiplier = player_t::composite_player_td_multiplier( school, a );
 
@@ -4262,7 +4262,7 @@ double warlock_t::composite_player_td_multiplier( const school_type school, acti
 
 // warlock_t::matching_gear_multiplier ======================================
 
-double warlock_t::matching_gear_multiplier( const attribute_type attr ) SC_CONST
+double warlock_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   if ( ( attr == ATTR_INTELLECT ) && passive_spells.nethermancy -> ok() )
     return ( passive_spells.nethermancy -> effect_base_value( 1 ) * 0.01 );

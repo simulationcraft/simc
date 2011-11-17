@@ -1410,7 +1410,7 @@ static void register_souldrinker( item_t* item )
       spell_t::execute();
     }
     virtual void player_buff() { }
-    virtual double total_dd_multiplier() SC_CONST { return 1.0; }
+    virtual double total_dd_multiplier() const { return 1.0; }
   };
 
   struct souldrinker_callback_t : public action_callback_t
