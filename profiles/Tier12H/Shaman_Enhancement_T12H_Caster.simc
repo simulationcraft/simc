@@ -18,8 +18,7 @@ actions+=/strength_of_earth_totem
 actions+=/windfury_totem
 actions+=/mana_spring_totem
 actions+=/lightning_shield
-actions+=/tolvir_potion,if=!in_combat
-actions+=/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40
 actions+=/snapshot_stats
 actions+=/auto_attack
 actions+=/wind_shear

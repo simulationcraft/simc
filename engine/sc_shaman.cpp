@@ -4402,13 +4402,13 @@ void shaman_t::init_actions()
       if ( off_hand_weapon.type != WEAPON_NONE )
         action_list_str += "/flametongue_weapon,weapon=off";
       action_list_str += "/strength_of_earth_totem/windfury_totem/mana_spring_totem/lightning_shield";
-      action_list_str += "/tolvir_potion,if=!in_combat";
-      action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
       action_list_str += "/wind_shear";
       action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
-      action_list_str += "/flame_shock,previous_action=lava_burst,if=buff.unleash_flame.up";
+      if ( ! dbc.ptr ) 
+        action_list_str += "/flame_shock,previous_action=lava_burst,if=buff.unleash_flame.up";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
@@ -4427,11 +4427,15 @@ void shaman_t::init_actions()
       action_list_str += "/searing_totem";
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       action_list_str += "/lava_lash";
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
+      if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
+        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
+      else
+        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
       if ( level > 80 )
       {
         action_list_str += "/unleash_elements";
-        action_list_str += "/lava_burst,if=cooldown.shock.remains<cast_time&dot.flame_shock.remains>cast_time+travel_time&buff.unleash_flame.remains>cast_time";
+        if ( ! dbc.ptr ) 
+          action_list_str += "/lava_burst,if=cooldown.shock.remains<cast_time&dot.flame_shock.remains>cast_time+travel_time&buff.unleash_flame.remains>cast_time";
       }
       action_list_str += "/flame_shock,if=!ticking|buff.unleash_flame.up";
       action_list_str += "/earth_shock";

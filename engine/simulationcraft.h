@@ -3505,7 +3505,7 @@ struct item_t
   } use, equip, enchant, addon;
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_NONE ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
-    unique_addon( false ), is_heroic( false ), is_lfr( false ), is_matching_type( false ), is_reforged( false ) {}
+    unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( false ), is_matching_type( false ), is_reforged( false ) {}
   item_t( player_t*, const std::string& options_str );
   bool active() SC_CONST;
   bool heroic() SC_CONST;

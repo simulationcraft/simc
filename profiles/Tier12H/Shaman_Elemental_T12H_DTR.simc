@@ -28,8 +28,8 @@ actions+=/flame_shock,if=!ticking|ticks_remain<2
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time
 actions+=/earth_shock,if=buff.lightning_shield.react=9
 actions+=/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
-actions+=/fire_elemental_totem,if=buff.volcanic_potion.up&temporary_bonus.intellect>=2800&(!ticking|remains<25)
-actions+=/fire_elemental_totem,if=!buff.volcanic_potion.up&temporary_bonus.intellect>=1600&(!ticking|remains<25)
+actions+=/fire_elemental_totem,if=buff.volcanic_potion.up&temporary_bonus.spell_power>=2800&(!ticking|remains<25)
+actions+=/fire_elemental_totem,if=!buff.volcanic_potion.up&temporary_bonus.spell_power>=1600&(!ticking|remains<25)
 actions+=/earth_elemental_totem,if=!ticking
 actions+=/searing_totem
 actions+=/spiritwalkers_grace,moving=1
