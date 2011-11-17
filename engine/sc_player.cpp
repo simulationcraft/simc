@@ -2476,7 +2476,7 @@ double player_t::composite_player_multiplier( const school_type /* school */, ac
       m *= 1.0 + buffs.tricks_of_the_trade -> value();
     }
 
-    if ( ! is_pet() && ! is_enemy() && ! is_add() )
+    if ( ! is_enemy() && ! is_add() )
       if ( sim -> auras.ferocious_inspiration -> up() ||
            sim -> auras.communion             -> up() ||
            sim -> auras.arcane_tactics        -> up() )
