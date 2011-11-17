@@ -845,7 +845,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     // Guardians use snapshots
     snapshot_crit = owner -> composite_spell_crit();
     snapshot_haste = owner -> composite_spell_haste();
-    snapshot_sp = owner -> composite_spell_power( SCHOOL_MAX ); // Get the max SP for simplicity
+    snapshot_sp = floor( owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() );
     snapshot_mastery = owner -> composite_mastery();
   }
 
