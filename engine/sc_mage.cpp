@@ -413,7 +413,7 @@ struct water_elemental_pet_t : public pet_t
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_spell_power = player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) * 0.4;
+      player_spell_power = player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) * player -> cast_pet() -> owner -> composite_spell_power_multiplier() * 0.4;
       player_crit = player -> cast_pet() -> owner -> composite_spell_crit(); // Needs testing, but closer than before
     }
 
@@ -450,7 +450,7 @@ struct water_elemental_pet_t : public pet_t
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_spell_power = player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) * 0.4;
+      player_spell_power = player -> cast_pet() -> owner -> composite_spell_power( SCHOOL_FROST ) * player -> cast_pet() -> owner -> composite_spell_power_multiplier() * 0.4;
       player_crit = player -> cast_pet() -> owner -> composite_spell_crit(); // Needs testing, but closer than before
     }
   };

@@ -576,7 +576,7 @@ struct treants_pet_t : public pet_t
   virtual double composite_attack_power() SC_CONST
   {
     double ap = pet_t::composite_attack_power();
-    ap += 0.57 * owner -> composite_spell_power( SCHOOL_MAX );
+    ap += 0.57 * owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
     return ap;
   }
 

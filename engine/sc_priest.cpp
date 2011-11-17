@@ -1247,7 +1247,7 @@ struct shadow_fiend_pet_t : public pet_t
     if ( bad_swing )
       sp = bad_spell_power;
     else
-      sp = p -> composite_spell_power( school );
+      sp = p -> composite_spell_power( school ) * p -> composite_spell_power_multiplier();
 
     return sp;
   }
@@ -1384,7 +1384,7 @@ struct lightwell_pet_t : public pet_t
     priest_t* p = owner -> cast_priest();
 
     spell_haste = p -> spell_haste;
-    spell_power[ SCHOOL_HOLY ] = p -> composite_spell_power( SCHOOL_HOLY );
+    spell_power[ SCHOOL_HOLY ] = p -> composite_spell_power( SCHOOL_HOLY ) * p -> composite_spell_power_multiplier();
 
     charges = 10 + p -> glyphs.lightwell -> effect1().base_value();
 
