@@ -890,7 +890,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   virtual double composite_spell_power( const school_type school ) SC_CONST
   {
     double sp = pet_t::composite_spell_power( school );
-    sp += snapshot_sp * ( level / 80.0 ) * 0.5 * owner -> composite_spell_power_multiplier();
+    sp += snapshot_sp * ( level / 80.0 ) * 0.5;
     return sp;
   }
 
@@ -2290,7 +2290,7 @@ void trigger_burning_embers ( spell_t* s, double dmg )
     double spmod = ( p -> dbc.ptr ) ? 0.7 : 0.425;
 
     //FIXME: The 1.2 modifier to the adder was experimentally observed on live realms 2011/10/14
-    double cap = ( spmod * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_MAX ) + p -> talent_burning_embers -> effect_min( 2 ) * 1.2 ) / num_ticks;
+    double cap = ( spmod * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_FIRE ) * p -> composite_spell_power_multiplier() + p -> talent_burning_embers -> effect_min( 2 ) * 1.2 ) / num_ticks;
 
     p -> spells_burning_embers -> base_td += ( dmg * p -> talent_burning_embers -> effect1().percent() ) / num_ticks;
 
