@@ -15,7 +15,6 @@ actions+=/food,type=seafood_magnifique_feast
 actions+=/fel_armor
 actions+=/summon_felguard,if=!in_combat
 actions+=/dark_intent
-actions+=/soulburn,if=!in_combat
 actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.metamorphosis.up|!in_combat

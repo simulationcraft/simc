@@ -4683,7 +4683,7 @@ void warlock_t::init_actions()
       action_list_str += "/dark_intent";
 
     // Pre soulburn
-    if ( use_pre_soulburn )
+    if ( use_pre_soulburn && ( primary_tree() != TREE_DEMONOLOGY || !dbc.ptr || !set_bonus.tier13_4pc_caster() ) )
       action_list_str += "/soulburn,if=!in_combat";
 
     // Snapshot Stats
