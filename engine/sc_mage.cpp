@@ -1907,7 +1907,7 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    cooldown -> duration += p -> glyphs.dragons_breath -> effect1().percent();
+    cooldown -> duration += p -> glyphs.dragons_breath -> effect1().seconds();
   }
 };
 
