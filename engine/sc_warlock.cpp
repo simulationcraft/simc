@@ -4726,11 +4726,7 @@ void warlock_t::init_actions()
 
     case TREE_AFFLICTION:
       if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
-      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
-      {
-        action_list_str += "/soulburn";
-        action_list_str += "/soul_fire,if=buff.soulburn.up";
-      }
+      if ( dbc.ptr && set_bonus.tier13_4pc_caster() ) action_list_str += "/soulburn";
       action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
       action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
@@ -4739,6 +4735,7 @@ void warlock_t::init_actions()
       if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( level >= 75 ) action_list_str += "/shadowflame";
+      if ( dbc.ptr && set_bonus.tier13_4pc_caster() ) action_list_str += "/soul_fire,if=buff.soulburn.up";
       if ( talent_bane -> rank() == 3 )
       {
         action_list_str += "/life_tap,mana_percentage<=35";
@@ -4773,7 +4770,7 @@ void warlock_t::init_actions()
       if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
       {
         action_list_str += "/soulburn";
-        action_list_str += "/soul_fire,if=buff.soulburn.up";
+        action_list_str += "/soul_fire,if=buff.soulburn.up&!in_combat";
       }
       else
       {
@@ -4792,6 +4789,7 @@ void warlock_t::init_actions()
       if ( level >= 75 ) action_list_str += "/shadowflame";
       if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt,if=cast_time>0.9";
       if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
+      if ( dbc.ptr && set_bonus.tier13_4pc_caster() ) action_list_str += "/soul_fire,if=buff.soulburn.up";
       if ( talent_improved_soul_fire -> ok() && level >= 54 )
       {
         action_list_str += "/soul_fire,if=((buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time))|buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd))&!in_flight";
