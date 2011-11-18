@@ -2143,6 +2143,8 @@ public:
   static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
 
   static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
+
+  static int32_t magicnumber_doubletoint( double );
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form
@@ -4152,7 +4154,7 @@ struct player_t : public noncopyable
 
   virtual std::string print_action_map( int iterations, int precision );
 
-  virtual void   regen( double periodicity=2.0 );
+  virtual void   regen( double periodicity=0.25 );
   virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
   virtual double resource_loss( int resource, double amount, action_t* a=0 );
   virtual void   recalculate_resource_max( int resource );
@@ -4333,17 +4335,16 @@ struct player_t : public noncopyable
   enemy_t       * cast_enemy       () { assert( type == ENEMY        ); return ( enemy_t       * ) this; }
 
   bool      in_gcd() const { return gcd_ready > sim -> current_time; }
-  bool      recent_cast();
+  bool      recent_cast() const;
   item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
-  double    mana_regen_per_second();
   bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   void      aura_gain( const char* name, double value=0 );
   void      aura_loss( const char* name, double value=0 );
 
-  cooldown_t* find_cooldown( const std::string& name );
-  dot_t*      find_dot     ( const std::string& name );
-  action_priority_list_t* find_action_priority_list( const std::string& name );
+  cooldown_t* find_cooldown( const std::string& name ) const;
+  dot_t*      find_dot     ( const std::string& name ) const;
+  action_priority_list_t* find_action_priority_list( const std::string& name ) const;
 
   cooldown_t* get_cooldown( const std::string& name );
   dot_t*      get_dot     ( const std::string& name );
@@ -4383,7 +4384,7 @@ public:
   // Pets gain their owners' hit rating, but it rounds down to a
   // percentage.  Also, heroic presence does not contribute to pet
   // expertise, so we use raw attack_hit.
-  virtual double composite_attack_expertise() const { return floor( floor( 100.0 * owner -> attack_hit ) * 26.0 / 8.0 ) / 100.0; }
+  virtual double composite_attack_expertise() const { return floor( floor( 100.0 * owner -> attack_hit ) * ( 26.0 / 8.0 ) ) / 100.0; }
   virtual double composite_attack_hit()       const { return floor( 100.0 * owner -> composite_attack_hit() ) / 100.0; }
   virtual double composite_spell_hit()        const { return floor( 100.0 * owner -> composite_spell_hit() ) / 100.0;  }
   virtual double composite_player_multiplier( const school_type school, action_t* a ) const;
@@ -4443,7 +4444,9 @@ struct stats_t
     sample_data_t actual_amount, total_amount,fight_actual_amount, fight_total_amount,count,avg_actual_amount;
     int iteration_count;
     double iteration_actual_amount, iteration_total_amount,pct, overkill_pct;
+
     stats_results_t( sim_t* s );
+
     void merge( const stats_results_t& other );
     void combat_end();
   };
@@ -4473,7 +4476,7 @@ struct stats_t
 struct action_t : public spell_id_t
 {
   sim_t* sim;
-  int type;
+  const int type;
   std::string name_str;
   player_t* player;
   player_t* target;

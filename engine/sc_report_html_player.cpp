@@ -503,6 +503,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">range:</span>%.1f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
+                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">min_gcd:</span>%.4f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_cost:</span>%.1f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
@@ -520,6 +521,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 a -> range,
                 a -> travel_speed,
                 a -> trigger_gcd,
+                a -> min_gcd,
                 a -> base_cost,
                 a -> cooldown -> duration,
                 a -> base_execute_time,

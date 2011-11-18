@@ -30,7 +30,6 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   num_buckets *= 2;
 
   timeline_amount.reserve( num_buckets );
-
   actual_amount.reserve( sim -> iterations );
   total_amount.reserve( sim -> iterations );
   portion_aps.reserve( sim -> iterations );
@@ -89,7 +88,7 @@ void stats_t::add_result( double act_amount,
   r -> iteration_actual_amount += act_amount;
   r -> iteration_total_amount += tot_amount;
 
-  int index = ( int ) ( sim -> current_time );
+  int index = util_t::magicnumber_doubletoint( sim -> current_time );
 
   if ( timeline_amount.size() <= ( std::size_t ) index )
     timeline_amount.resize( index + 1  );

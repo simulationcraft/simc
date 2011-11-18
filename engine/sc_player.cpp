@@ -3388,7 +3388,7 @@ action_t* player_t::execute_action()
 
 // player_t::regen ==========================================================
 
-void player_t::regen( double periodicity )
+void player_t::regen( const double periodicity )
 {
   int resource_type = primary_resource();
 
@@ -3463,7 +3463,7 @@ void player_t::regen( double periodicity )
     }
   }
 
-  int index = ( int ) sim -> current_time;
+  int index = util_t::magicnumber_doubletoint( sim -> current_time );
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -4289,7 +4289,7 @@ void player_t::recalculate_haste()
 
 // player_t::recent_cast ====================================================
 
-bool player_t::recent_cast()
+bool player_t::recent_cast() const
 {
   return ( last_cast > 0 ) && ( ( last_cast + 5.0 ) > sim -> current_time );
 }
@@ -4328,7 +4328,7 @@ void player_t::aura_loss( const char* aura_name , double /* value */ )
 
 // player_t::find_cooldown ==================================================
 
-cooldown_t* player_t::find_cooldown( const std::string& name )
+cooldown_t* player_t::find_cooldown( const std::string& name ) const
 {
   for ( cooldown_t* c = cooldown_list; c; c = c -> next )
   {
@@ -4341,12 +4341,26 @@ cooldown_t* player_t::find_cooldown( const std::string& name )
 
 // player_t::find_dot =======================================================
 
-dot_t* player_t::find_dot( const std::string& name )
+dot_t* player_t::find_dot( const std::string& name ) const
 {
   for ( dot_t* d = dot_list; d; d = d -> next )
   {
     if ( d -> name_str == name )
       return d;
+  }
+
+  return 0;
+}
+
+// player_t::find_action_priority_list( const std::string& name ) ===========
+
+action_priority_list_t* player_t::find_action_priority_list( const std::string& name ) const
+{
+  for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
+  {
+    action_priority_list_t* a = action_priority_list[i];
+    if ( a -> name_str == name )
+      return a;
   }
 
   return 0;
@@ -4590,20 +4604,6 @@ double player_t::get_position_distance( double m, double v ) const
 
 double player_t::get_player_distance( const player_t* p ) const
 { return get_position_distance( p -> x_position, p -> y_position ); }
-
-// player_t::find_action_priority_list( const std::string& name ) ===========
-
-action_priority_list_t* player_t::find_action_priority_list( const std::string& name )
-{
-  for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
-  {
-    action_priority_list_t* a = action_priority_list[i];
-    if ( a -> name_str == name )
-      return a;
-  }
-
-  return 0;
-}
 
 // player_t::get_action_priority_list( const std::string& name ) ============
 
