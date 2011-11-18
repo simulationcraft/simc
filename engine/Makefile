@@ -15,7 +15,7 @@ OS         = UNIX
 OPENSSL_PATH =
 
 CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual -W
+CPP_FLAGS  = -Wall -Woverloaded-virtual -W -Wno-strict-aliasing
 OPTS       = -O3 -fomit-frame-pointer -ffast-math
 BITS       = 32
 

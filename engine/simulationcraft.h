@@ -51,6 +51,16 @@
 
 #include "data_enums.hh"
 
+#if defined( _MSC_VER )
+# define finline                     __forceinline
+# define SC_FINLINE_EXT
+#elif defined( __GNUC__ )
+# define finline                     inline
+# define SC_FINLINE_EXT              __attribute__((always_inline))
+#endif
+
+#include "xs_Float/xs_Float.h"
+
 #if __BSD_VISIBLE
 #  include <netinet/in.h>
 #  if !defined(CLOCKS_PER_SEC)
@@ -2144,8 +2154,37 @@ public:
 
   static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
 
-  static int32_t magicnumber_doubletoint( double );
+  static int32_t DoubleToInt( double d ) SC_FINLINE_EXT;
+  static int32_t FloorToInt ( double d ) SC_FINLINE_EXT;
+  static int32_t CeilToInt  ( double d ) SC_FINLINE_EXT;
+  static int32_t RoundToInt ( double d ) SC_FINLINE_EXT;
+  static int32_t CRoundToInt( double d ) SC_FINLINE_EXT;
 };
+
+finline int32_t util_t::DoubleToInt( double d )
+{
+  return xs_ToInt( d );
+}
+
+finline int32_t util_t::FloorToInt( double d )
+{
+  return xs_FloorToInt( d );
+}
+  
+finline int32_t util_t::CeilToInt( double d )
+{
+  return xs_CeilToInt( d );
+}
+
+finline int32_t util_t::RoundToInt( double d )
+{
+  return xs_RoundToInt( d );
+}
+
+finline int32_t util_t::CRoundToInt( double d )
+{
+  return xs_CRoundToInt( d );
+}
 
 // Spell information struct, holding static functions to output spell data in a human readable form
 

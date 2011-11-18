@@ -88,7 +88,7 @@ void stats_t::add_result( double act_amount,
   r -> iteration_actual_amount += act_amount;
   r -> iteration_total_amount += tot_amount;
 
-  int index = util_t::magicnumber_doubletoint( sim -> current_time );
+  int index = util_t::DoubleToInt( sim -> current_time );
 
   if ( timeline_amount.size() <= ( std::size_t ) index )
     timeline_amount.resize( index + 1  );

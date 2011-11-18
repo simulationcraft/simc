@@ -2361,21 +2361,6 @@ void util_t::tolower_( std::string& str )
     str[i] = ::tolower( str[i] );
 }
 
-int32_t util_t::magicnumber_doubletoint( double d )
-{
-  // Thanks to http://stackoverflow.com/questions/429632/how-to-speed-up-floating-point-to-integer-number-conversion/429812#429812
-
-  // Explanation at
-  // http://stereopsis.com/sree/fpu2006.html
-  union Cast
-  {
-     double d;
-     int32_t l;
-   };
-  volatile Cast c;
-  c.d = d + 6755399441055744.0;
-  return c.l;
-}
 //-------------------------------
 // std::STRING   utils
 //-------------------------------
