@@ -4726,6 +4726,11 @@ void warlock_t::init_actions()
 
     case TREE_AFFLICTION:
       if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
+      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+      {
+        action_list_str += "/soulburn";
+        action_list_str += "/soul_fire,if=buff.soulburn.up";
+      }
       action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
       action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
@@ -4737,15 +4742,18 @@ void warlock_t::init_actions()
       if ( talent_bane -> rank() == 3 )
       {
         action_list_str += "/life_tap,mana_percentage<=35";
-        if ( glyphs.lash_of_pain -> ok() )
+        if ( ! dbc.ptr || ! set_bonus.tier13_4pc_caster() )
         {
-          action_list_str += "/soulburn,if=buff.demon_soul_succubus.down";
+          if ( glyphs.lash_of_pain -> ok() )
+          {
+            action_list_str += "/soulburn,if=buff.demon_soul_succubus.down";
+          }
+          else
+          {
+            action_list_str += "/soulburn,if=buff.demon_soul_felhunter.down";
+          }
+          action_list_str += "/soul_fire,if=buff.soulburn.up";
         }
-        else
-        {
-          action_list_str += "/soulburn,if=buff.demon_soul_felhunter.down";
-        }
-        action_list_str += "/soul_fire,if=buff.soulburn.up";
         if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
         action_list_str += "/shadow_bolt";
       }

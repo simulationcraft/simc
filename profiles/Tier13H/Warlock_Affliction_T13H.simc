@@ -20,6 +20,8 @@ actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
 actions+=/demon_soul
+actions+=/soulburn
+actions+=/soul_fire,if=buff.soulburn.up
 actions+=/corruption,if=(!ticking|remains<tick_time)&miss_react
 actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
 actions+=/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react
@@ -28,8 +30,6 @@ actions+=/summon_doomguard,if=time>10
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
 actions+=/shadowflame
 actions+=/life_tap,mana_percentage<=35
-actions+=/soulburn,if=buff.demon_soul_felhunter.down
-actions+=/soul_fire,if=buff.soulburn.up
 actions+=/shadow_bolt
 actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
 actions+=/fel_flame,moving=1
