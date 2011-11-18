@@ -59,7 +59,7 @@
 # define SC_FINLINE_EXT              __attribute__((always_inline))
 #endif
 
-#include "xs_Float/xs_Float.h"
+#include "xs_float/xs_Float.h"
 
 #if __BSD_VISIBLE
 #  include <netinet/in.h>
