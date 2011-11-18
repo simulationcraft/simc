@@ -1065,6 +1065,7 @@ struct gargoyle_pet_t : public pet_t
     {
       // FIX ME!
       // Resist (can be partial)? Scaling?
+      trigger_gcd = 1.5;
       may_crit    = true;
       min_gcd     = 1.5; // issue961
 
