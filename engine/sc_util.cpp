@@ -2370,7 +2370,7 @@ int32_t util_t::magicnumber_doubletoint( double d )
   union Cast
   {
      double d;
-     long l;
+     int32_t l;
    };
   volatile Cast c;
   c.d = d + 6755399441055744.0;
