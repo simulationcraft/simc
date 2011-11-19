@@ -518,6 +518,10 @@
 			RelativePath=".\engine\utf8.h"
 			>
 		</File>
+		<File
+			RelativePath=".\engine\xs_float\xs_Float.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

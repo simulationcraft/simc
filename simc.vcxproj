@@ -254,6 +254,7 @@
   <ItemGroup>
     <None Include="engine\data_definitions.hh" />
     <None Include="engine\data_enums.hh" />
+    <None Include="engine\xs_float\xs_Float.h" />
     <None Include="engine\utf8.h" />
     <None Include="engine\utf8\checked.h" />
     <None Include="engine\utf8\core.h" />
