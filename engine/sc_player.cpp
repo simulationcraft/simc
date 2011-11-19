@@ -3463,7 +3463,7 @@ void player_t::regen( const double periodicity )
     }
   }
 
-  int index = util_t::DoubleToInt( sim -> current_time );
+  int index = (int) sim -> current_time;
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
