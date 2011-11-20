@@ -1353,9 +1353,10 @@ static void register_rathrak( item_t* item )
       trigger_gcd = 0;
       background = true;
       may_miss = false; // FIXME: Verify this
-      may_crit = false; // FIXME: Verify this
+      may_crit = true; 
       proc = true;
       init();
+      cooldown -> duration = 17.0; // FIXME: Verify this. Got 17.188sec after 545 procs.
     }
     // FIXME does this double dip in talents/masterys/etc?
   };
@@ -1373,14 +1374,13 @@ static void register_rathrak( item_t* item )
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
-      // FIXME: Does it have an ICD or not?
-      if ( rng -> roll( 0.15 ) )
+      if ( ( spell -> cooldown -> remains() <= 0.0 ) && rng -> roll( 0.15 ) )
       {
         spell -> execute();
       }
     }
   };
-  // FIXME: Does this proc from ticks too?
+
   p -> register_harmful_spell_callback( RESULT_HIT_MASK, new rathrak_callback_t( p, new rathrak_poison_t( p, trigger_spell_id ) ) );
 }
 
@@ -1465,13 +1465,15 @@ static void register_titahk( item_t* item )
     {
       double duration = buff -> duration();
       buff_self   = new stat_buff_t( p, "titahk_self", STAT_HASTE_RATING, buff -> effect1().base_value(), 1, duration );
+      buff_self -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
       buff_radius = new stat_buff_t( p, "titahk_aoe",  STAT_HASTE_RATING, buff -> effect2().base_value(), 1, duration ); // FIXME: Apply aoe buff to other players
+      buff_radius -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
       // FIXME: Does this have an ICD?
-      if ( rng -> roll( proc_chance ) )
+      if ( ( buff_self -> cooldown -> remains() <= 0.0 ) && rng -> roll( proc_chance ) )
       {
         buff_self -> trigger();
         buff_radius -> trigger();

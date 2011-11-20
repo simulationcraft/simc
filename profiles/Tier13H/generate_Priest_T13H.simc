@@ -55,7 +55,7 @@ main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_
 save=Priest_Shadow_T13H.simc
 
 wowhead=33773674
-name=Priest_Shadow_T13H_noDTR
+name=Priest_Shadow_T13H_titahk
 professions=tailoring=525/blacksmithing=525
 head=hood_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_spi,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
 shoulders=mantle_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=crit_spi,gems=50int_50int_20int,enchant=50int_25haste
@@ -68,8 +68,25 @@ hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1
 finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,reforge=haste_spi,gems=50int_10int
 finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,reforge=haste_mastery,gems=50int_10int
 back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,gems=50int_10int,enchant=lightweave_embroidery
-save=Priest_Shadow_T13H_noDTR.simc
+save=Priest_Shadow_T13H_titahk.simc
 
+
+wowhead=33823547
+name=Priest_Shadow_T13H_rathrak
+professions=tailoring=525/blacksmithing=525
+head=hood_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_spi,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
+shoulders=mantle_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=crit_haste,gems=50int_50int_20int,enchant=50int_25haste
+chest=robes_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307spi_362haste,gems=50int_50int_25int_25haste_30int,enchant=20all
+waist=cord_of_the_slain_champion,heroic=1,type=cloth,ilevel=410,quality=epic,stats=925armor_368int_611sta_247crit_256haste,reforge=crit_spi,gems=50int_50int_50int_20int
+legs=leggings_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1439armor_489int_824sta_331mastery_341haste,reforge=mastery_spi,gems=50int_50int_25int_25haste_30int,enchant=95int_55spi
+feet=janglespur_jackboots,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1130armor_368int_611sta_248crit_256haste,reforge=crit_spi,gems=50int_50int_20int,enchant=35mastery
+wrists=bracers_of_the_banished,heroic=1,type=cloth,ilevel=410,quality=epic,stats=719armor_286int_459sta_184mastery_200haste,gems=50int_50int_10int,enchant=50int
+hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1059armor_391int_647sta_291haste_238crit,reforge=crit_spi,gems=50int_50int_50int_20int,enchant=65mastery
+finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,reforge=mastery_spi,gems=50int_10int
+finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,gems=50int_10int
+back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,gems=50int_10int,enchant=lightweave_embroidery
+off_hand=ledger_of_revolting_rituals,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_197spi_189haste,gems=50int_10int,enchant=40int
+save=Priest_Shadow_T13H_rathrak.simc
 
 wowhead=33771407
 name=Priest_Shadow_T13H_2dot
@@ -90,7 +107,7 @@ action_list=double_dot
 save=Priest_Shadow_T13H_2dot.simc
 
 wowhead=33773674
-name=Priest_Shadow_T13H_noDTR_2dot
+name=Priest_Shadow_T13H_titahk_2dot
 professions=tailoring=525/blacksmithing=525
 head=hood_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_spi,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
 shoulders=mantle_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=crit_spi,gems=50int_50int_20int,enchant=50int_25haste
@@ -104,4 +121,23 @@ finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_1
 finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,reforge=haste_mastery,gems=50int_10int
 back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,gems=50int_10int,enchant=lightweave_embroidery
 action_list=double_dot
-save=Priest_Shadow_T13H_noDTR_2dot.simc
+save=Priest_Shadow_T13H_titahk_2dot.simc
+
+
+wowhead=33823547
+name=Priest_Shadow_T13H_rathrak_2dot
+professions=tailoring=525/blacksmithing=525
+head=hood_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_spi,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
+shoulders=mantle_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=crit_haste,gems=50int_50int_20int,enchant=50int_25haste
+chest=robes_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307spi_362haste,gems=50int_50int_25int_25haste_30int,enchant=20all
+waist=cord_of_the_slain_champion,heroic=1,type=cloth,ilevel=410,quality=epic,stats=925armor_368int_611sta_247crit_256haste,reforge=crit_spi,gems=50int_50int_50int_20int
+legs=leggings_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1439armor_489int_824sta_331mastery_341haste,reforge=mastery_spi,gems=50int_50int_25int_25haste_30int,enchant=95int_55spi
+feet=janglespur_jackboots,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1130armor_368int_611sta_248crit_256haste,reforge=crit_spi,gems=50int_50int_20int,enchant=35mastery
+wrists=bracers_of_the_banished,heroic=1,type=cloth,ilevel=410,quality=epic,stats=719armor_286int_459sta_184mastery_200haste,gems=50int_50int_10int,enchant=50int
+hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1059armor_391int_647sta_291haste_238crit,reforge=crit_spi,gems=50int_50int_50int_20int,enchant=65mastery
+finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,reforge=mastery_spi,gems=50int_10int
+finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,gems=50int_10int
+back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,gems=50int_10int,enchant=lightweave_embroidery
+off_hand=ledger_of_revolting_rituals,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_197spi_189haste,gems=50int_10int,enchant=40int
+action_list=double_dot
+save=Priest_Shadow_T13H_rathrak_2dot.simc
