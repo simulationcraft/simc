@@ -46,6 +46,7 @@ ifeq (WINDOWS,${OS})
 MODULE_EXT = .exe
 CPP_FLAGS += -DUNICODE
 LINK_LIBS  = -lws2_32 -lwininet
+LINK_FLAGS += -static
 COPY       = copy
 REMOVE     = del /f
 PATHSEP    = \\
@@ -53,10 +54,6 @@ AR         = ar
 # MinGW W32
 ifeq (32,${BITS})
 CPP_FLAGS += -malign-double
-endif
-# MinGW W64
-ifeq (64,${BITS})
-LINK_FLAGS += -static
 endif
 endif
 

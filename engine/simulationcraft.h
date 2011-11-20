@@ -790,7 +790,6 @@ enum rating_type
   RATING_MAX
 };
 
-
 // Type utilities and generic programming tools =============================
 template <typename T, std::size_t N>
 inline std::size_t sizeof_array( const T ( & )[N] )
@@ -2500,7 +2499,6 @@ struct sample_data_t
   const bool simple;
   const bool min_max;
 
-friend struct sim_t;
 private:
   int count;
 

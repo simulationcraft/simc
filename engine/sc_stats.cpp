@@ -25,11 +25,12 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   compound_actual( 0 ), compound_amount( 0 ), opportunity_cost( 0 ),
   direct_results( RESULT_MAX, stats_results_t( p -> sim ) ), tick_results( RESULT_MAX, stats_results_t( p -> sim ) )
 {
-  int num_buckets = ( int ) sim -> max_time;
-  if ( num_buckets == 0 ) num_buckets = 600; // Default to 10 minutes
-  num_buckets *= 2;
+  int size = ( int ) ( sim -> max_time * ( 1.0 + sim -> vary_combat_length ) );
+  if ( size <= 0 )size = 600; // Default to 10 minutes
+  size *= 2;
+  size += 3; // Buffer against rounding.
 
-  timeline_amount.reserve( num_buckets );
+  timeline_amount.assign( size, 0 );
   actual_amount.reserve( sim -> iterations );
   total_amount.reserve( sim -> iterations );
   portion_aps.reserve( sim -> iterations );
@@ -88,10 +89,8 @@ void stats_t::add_result( double act_amount,
   r -> iteration_actual_amount += act_amount;
   r -> iteration_total_amount += tot_amount;
 
-  int index = (int) sim -> current_time;
+  int index = (int) ( sim -> current_time );
 
-  if ( timeline_amount.size() <= ( std::size_t ) index )
-    timeline_amount.resize( index + 1  );
 
   timeline_amount[ index ] += act_amount;
 }
