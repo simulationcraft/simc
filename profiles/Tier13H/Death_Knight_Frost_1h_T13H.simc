@@ -49,7 +49,7 @@ hands=necrotic_boneplate_gauntlets,heroic=1,type=plate,ilevel=410,quality=epic,s
 finger1=breathstealer_band,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_194haste_194mastery,reforge=mastery_exp,gems=50str_10str
 finger2=curled_twilight_claw,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_225mastery_143hit,reforge=mastery_haste,gems=50str_10str
 trinket1=eye_of_unmaking,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99str_100%_10dur_10stack
-trinket2=bonelink_fetish,heroic=1,ilevel=410,quality=epic,stats=517str
+trinket2=creche_of_the_final_dragon,heroic=1,ilevel=410,quality=epic,stats=517str,equip=ondamage_3278crit_15%_20dur_115cd
 back=dreamcrusher_drape,ilevel=397,quality=epic,stats=769armor_251str_406sta_196crit_127hit,reforge=crit_haste,enchant=65crit
 main_hand=hand_of_morchok,heroic=1,ilevel=410,quality=epic,stats=215str_353sta_137mastery_157crit,reforge=crit_haste,gems=50str_10str,enchant=rune_of_razorice,weapon=axe_2.60speed_1353min_2513max
 off_hand=hand_of_morchok,heroic=1,ilevel=410,quality=epic,stats=215str_353sta_137mastery_157crit,reforge=crit_haste,gems=50str_10str,enchant=rune_of_the_fallen_crusader,weapon=axe_2.60speed_1353min_2513max

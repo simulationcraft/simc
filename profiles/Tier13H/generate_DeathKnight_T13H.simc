@@ -24,7 +24,8 @@ hands=necrotic_boneplate_gauntlets,id=78670,enchant=synapse_springs,addon=50str,
 finger1=breathstealer_band,id=78492,reforge=mastery_exp,gems=50str_10str
 finger2=curled_twilight_claw,id=78432,reforge=mastery_haste,gems=50str_10str
 trinket1=eye_of_unmaking,id=77997
-trinket2=bonelink_fetish,id=78002
+#trinket2=bonelink_fetish,id=78002
+trinket2=creche_of_the_final_dragon,id=77992
 back=dreamcrusher_drape,id=77097,enchant=65crit,reforge=crit_haste
 main_hand=hand_of_morchok,id=78371,enchant=rune_of_razorice,reforge=crit_haste,gems=50str_10str
 off_hand=hand_of_morchok,id=78371,enchant=rune_of_the_fallen_crusader,reforge=crit_haste,gems=50str_10str
@@ -53,8 +54,9 @@ wrists=rockhide_bracers,id=78373,enchant=50str,reforge=mastery_haste,gems=50str_
 hands=necrotic_boneplate_gauntlets,id=78670,enchant=synapse_springs,addon=50str,reforge=mastery_haste,gems=50str_50str_50str_10str
 finger1=breathstealer_band,id=78492,reforge=mastery_crit,gems=50str_10str
 finger2=curled_twilight_claw,id=78432,reforge=mastery_crit,gems=50str_10str
-trinket1=bonelink_fetish,id=78002
-trinket2=eye_of_unmaking,id=77997
+trinket1=eye_of_unmaking,id=77997
+#trinket2=bonelink_fetish,id=78002
+trinket2=creche_of_the_final_dragon,id=77992
 back=dreamcrusher_drape,id=77097,enchant=65crit
 #main_hand=experimental_specimen_slicer,id=78403,enchant=rune_of_the_fallen_crusader,reforge=mastery_haste,gems=50str_10str
 main_hand=Ataraxis_cudgel_of_the_warmaster,id=78445,enchant=rune_of_the_fallen_crusader,gems=50str_10str

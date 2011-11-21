@@ -50,8 +50,8 @@ wrists=rockhide_bracers,heroic=1,type=plate,ilevel=410,quality=epic,stats=1740ar
 hands=necrotic_boneplate_gauntlets,heroic=1,type=plate,ilevel=410,quality=epic,stats=2486armor_388str_611sta_284crit_232mastery,reforge=mastery_haste,gems=50str_50str_50str_10str,enchant=synapse_springs,addon=50str
 finger1=breathstealer_band,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_194haste_194mastery,reforge=mastery_crit,gems=50str_10str
 finger2=curled_twilight_claw,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_225mastery_143hit,reforge=mastery_crit,gems=50str_10str
-trinket1=bonelink_fetish,heroic=1,ilevel=410,quality=epic,stats=517str
-trinket2=eye_of_unmaking,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99str_100%_10dur_10stack
+trinket1=eye_of_unmaking,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99str_100%_10dur_10stack
+trinket2=creche_of_the_final_dragon,heroic=1,ilevel=410,quality=epic,stats=517str,equip=ondamage_3278crit_15%_20dur_115cd
 back=dreamcrusher_drape,ilevel=397,quality=epic,stats=769armor_251str_406sta_196crit_127hit,enchant=65crit
 main_hand=ataraxis_cudgel_of_the_warmaster,heroic=1,ilevel=410,quality=epic,stats=529str_824sta_362crit_347haste,gems=50str_10str,enchant=rune_of_the_fallen_crusader,weapon=mace2h_3.60speed_2887min_4331max
 ranged=gutripper_shard,ilevel=397,quality=epic,stats=153str_230sta_92mastery_108haste,reforge=mastery_hit,gems=50str
