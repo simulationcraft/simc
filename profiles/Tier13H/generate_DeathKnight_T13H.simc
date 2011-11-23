@@ -38,18 +38,16 @@ race=orc
 position=back
 role=attack
 use_pre_potion=1
-#professions=jewelcrafting=525/engineering=525
 professions=blacksmithing=525/engineering=525
 talents=http://www.wowhead.com/talent#jbGZbZshcdfzuMRu
 glyphs=antimagic_shell/blood_boil/pestilence/blood_tap/deaths_embrace/horn_of_winter/death_coil/scourge_strike/raise_dead
 head=necrotic_boneplate_helmet,id=78687,enchant=60str_35mastery,reforge=exp_crit,gems=reverberating_shadowspirit_40str_30str
 neck=necklace_of_black_dragons_teeth,id=77090
 shoulders=backbreaker_spaulders,id=78465,enchant=50str_25crit,reforge=mastery_haste,gems=50str_50str_20str
-chest=necrotic_boneplate_breastplate,id=78659,reforge=haste_crit,enchant=20all,gems=50str_50str_25str_25hit_30str
+chest=necrotic_boneplate_breastplate,id=78659,enchant=20all,gems=50str_50str_25str_25hit_30str
 waist=runescriven_demon_collar,id=78416,reforge=mastery_crit,gems=50str_50str_50str_20str
 legs=necrotic_boneplate_greaves,id=78707,enchant=55crit_190ap,reforge=mastery_hit,gems=50str_50str_50str
 feet=treads_of_crushed_flesh,id=78389,enchant=50haste,reforge=mastery_haste,gems=50str_50str_20str
-#wrists=rockhide_bracers,id=78373,enchant=50str,reforge=mastery_haste,gems=50str_10str
 wrists=rockhide_bracers,id=78373,enchant=50str,reforge=mastery_haste,gems=50str_50str_10str
 hands=necrotic_boneplate_gauntlets,id=78670,enchant=synapse_springs,addon=50str,reforge=mastery_haste,gems=50str_50str_50str_10str
 finger1=breathstealer_band,id=78492,reforge=mastery_crit,gems=50str_10str
@@ -58,7 +56,6 @@ trinket1=eye_of_unmaking,id=77997
 #trinket2=bonelink_fetish,id=78002
 trinket2=creche_of_the_final_dragon,id=77992
 back=dreamcrusher_drape,id=77097,enchant=65crit
-#main_hand=experimental_specimen_slicer,id=78403,enchant=rune_of_the_fallen_crusader,reforge=mastery_haste,gems=50str_10str
 main_hand=Ataraxis_cudgel_of_the_warmaster,id=78445,enchant=rune_of_the_fallen_crusader,gems=50str_10str
 ranged=gutripper_shard,id=77081,reforge=mastery_hit,gems=50str
 save=Death_Knight_Unholy_2h_T13H.simc
