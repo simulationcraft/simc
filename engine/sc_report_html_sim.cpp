@@ -1487,7 +1487,7 @@ void report_t::print_html( sim_t* sim )
 
   // jQuery
   fprintf ( file,
-            "\t\t<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js\"></script>\n" );
+            "\t\t<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>\n" );
 
   // Toggles, image load-on-demand, etc. Load from simulationcraft.org if
   // hosted_html=1, otherwise embed
