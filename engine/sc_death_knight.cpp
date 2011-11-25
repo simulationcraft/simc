@@ -5259,7 +5259,7 @@ double death_knight_t::runes_cooldown_all(rune_type rt, bool include_death, int 
   double max = 0;
   for ( int i = 0; i < RUNE_SLOT_MAX; i+=2 )
   {
-    int total = 0;
+    double total = 0;
     dk_rune_t* r = &_runes.slot[i];
     if (( ( rt == RUNE_TYPE_DEATH && r -> is_death() ) || r -> get_type() == rt ) && !r -> is_ready() )
     {
