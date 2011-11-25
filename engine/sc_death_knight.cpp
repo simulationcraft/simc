@@ -5199,7 +5199,8 @@ int death_knight_t::runes_count(rune_type rt, bool include_death, int position)
       {
         if ( ++rpc == position )
         {
-          result = 1;
+          if ( r -> is_ready() ) 
+            result = 1;
           break;
         }
       }
