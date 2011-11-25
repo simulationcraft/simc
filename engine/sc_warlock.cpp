@@ -3889,6 +3889,12 @@ struct soulburn_t : public warlock_spell_t
     {
       p -> buffs_soulburn -> trigger();
       if ( p -> dbc.ptr ) p -> buffs_tier13_4pc_caster -> trigger();
+      // If this was a pre-combat soulburn, ensure we model the 3 seconds needed to regenerate the soul shard
+      if ( ! p -> in_combat )
+      {
+        p -> buffs_soulburn -> extend_duration( p, -3 );
+        if ( p -> dbc.ptr && p -> buffs_tier13_4pc_caster -> check() ) p -> buffs_tier13_4pc_caster -> extend_duration( p, -3 );
+      }
     }
 
     warlock_spell_t::execute();
@@ -4683,7 +4689,7 @@ void warlock_t::init_actions()
       action_list_str += "/dark_intent";
 
     // Pre soulburn
-    if ( use_pre_soulburn && ( primary_tree() != TREE_DEMONOLOGY || !dbc.ptr || !set_bonus.tier13_4pc_caster() ) )
+    if ( use_pre_soulburn && ( !dbc.ptr || !set_bonus.tier13_4pc_caster() ) )
       action_list_str += "/soulburn,if=!in_combat";
 
     // Snapshot Stats
