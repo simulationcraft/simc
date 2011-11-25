@@ -23,7 +23,7 @@ const char *rune_symbols = "!bfu!!";
 
 #define RUNIC_POWER_REFUND  0.9
 
-// These macros simplify using the result of counu_runes(), which
+// These macros simplify using the result of count_runes(), which
 // returns a number of the form 0x000AABBCC where AA is the number of
 // Unholy runes, BB is the number of Frost runes, and CC is the number
 // of Blood runes.
