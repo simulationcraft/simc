@@ -1784,7 +1784,7 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
   {
     unholy_blight_dmg += p -> active_unholy_blight -> base_td * dot -> ticks();
 
-    p -> active_unholy_blight -> cancel();
+    p -> active_unholy_blight -> dot -> cancel();
   }
   p -> active_unholy_blight -> base_td = unholy_blight_dmg / p -> active_unholy_blight -> num_ticks;
   p -> active_unholy_blight -> execute();

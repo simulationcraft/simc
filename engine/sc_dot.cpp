@@ -14,6 +14,17 @@ dot_t::dot_t( const std::string& n, player_t* p ) :
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
   added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ),time_to_tick( 0.0 ), name_str( n )
 {}
+// dot_t::cancel ===================================================
+
+void dot_t::cancel()
+{
+  if ( ! ticking )
+    return;
+
+  action -> last_tick( this );
+  event_t::cancel( tick_event );
+  reset();
+}
 
 // dot_t::extend_duration ===================================================
 

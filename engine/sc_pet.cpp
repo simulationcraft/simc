@@ -129,6 +129,13 @@ void pet_t::summon( double duration )
 
   summoned = true;
 
+  // Take care of remaining expiration
+  if ( expiration )
+  {
+    event_t::cancel( expiration );
+    expiration = 0;
+  }
+
   if ( duration > 0 )
   {
     struct expiration_t : public event_t

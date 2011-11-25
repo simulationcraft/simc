@@ -2022,7 +2022,7 @@ struct bane_of_agony_t : public warlock_spell_t
     {
       if ( p -> dots_bane_of_doom -> ticking )
       {
-        p -> dots_bane_of_doom -> action -> cancel();
+        p -> dots_bane_of_doom -> cancel();
       }
       else if ( p -> buffs_bane_of_havoc -> up() )
       {
@@ -2057,7 +2057,7 @@ struct bane_of_doom_t : public warlock_spell_t
     {
       if ( p -> dots_bane_of_agony -> ticking )
       {
-        p -> dots_bane_of_agony -> action -> cancel();
+        p -> dots_bane_of_agony -> cancel();
       }
       else if ( p -> buffs_bane_of_havoc -> up() )
       {
@@ -2117,11 +2117,11 @@ struct bane_of_havoc_t : public warlock_spell_t
 
       if ( p -> dots_bane_of_agony -> ticking )
       {
-        p -> dots_bane_of_agony -> action -> cancel();
+        p -> dots_bane_of_agony -> cancel();
       }
       else if ( p -> dots_bane_of_doom -> ticking )
       {
-        p -> dots_bane_of_doom -> action -> cancel();
+        p -> dots_bane_of_doom -> cancel();
       }
     }
   }
@@ -2769,7 +2769,7 @@ struct unstable_affliction_t : public warlock_spell_t
 
     if ( result_is_hit() )
       if ( p -> dots_immolate -> ticking )
-        p -> dots_immolate -> action -> cancel();
+        p -> dots_immolate -> cancel();
   }
 
   virtual void tick( dot_t* d )
@@ -2857,7 +2857,7 @@ struct immolate_t : public warlock_spell_t
       warlock_t* p = player -> cast_warlock();
       if ( p -> dots_unstable_affliction -> ticking )
       {
-        p -> dots_unstable_affliction -> action -> cancel();
+        p -> dots_unstable_affliction -> cancel();
       }
     }
   }
@@ -4061,7 +4061,7 @@ struct seed_of_corruption_t : public warlock_spell_t
       dot_damage_done = t -> iteration_dmg_taken;
       if ( p -> dots_corruption -> ticking )
       {
-        p -> dots_corruption -> action -> cancel();
+        p -> dots_corruption -> cancel();
       }
     }
   }

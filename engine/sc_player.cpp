@@ -3120,6 +3120,9 @@ void player_t::schedule_ready( double delta_time,
   }
   action_t* was_executing = ( channeling ? channeling : executing );
 
+  if ( sleeping )
+    return;
+
   executing = 0;
   channeling = 0;
   action_queued = false;
@@ -3129,7 +3132,7 @@ void player_t::schedule_ready( double delta_time,
   double gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if ( gcd_adjust > 0 ) delta_time += gcd_adjust;
 
-  if ( waiting )
+  if ( unlikely( waiting ) )
   {
     iteration_waiting_time += delta_time;
   }
@@ -3246,7 +3249,12 @@ void player_t::demise()
   arise_time = -1;
 
   sleeping = 1;
-  readying = 0;
+  if ( readying )
+  {
+    event_t::cancel( readying );
+    readying = 0;
+  }
+
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
@@ -3259,7 +3267,7 @@ void player_t::demise()
     a -> cancel();
   }
 
-  sim -> cancel_events( this );
+  //sim -> cancel_events( this );
 
   for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {
@@ -3327,7 +3335,7 @@ void player_t::clear_debuffs()
 
   for ( action_t* a = action_list; a; a = a -> next )
   {
-    if ( a -> dot -> ticking ) a -> cancel();
+    if ( a -> dot -> ticking ) a -> dot -> cancel();
   }
 }
 

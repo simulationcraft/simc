@@ -367,7 +367,7 @@ struct hunter_pet_t : public pet_t
     case PET_WORM:         return NULL;
     case PET_BAT:          return NULL;
     case PET_BIRD_OF_PREY: return NULL;
-    case PET_CHIMERA:      return NULL;
+    case PET_CHIMERA:      return "froststorm_breath";
     case PET_DRAGONHAWK:   return "lightning_breath";
     case PET_NETHER_RAY:   return NULL;
     case PET_RAVAGER:      return "ravage";

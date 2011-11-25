@@ -2162,7 +2162,14 @@ public:
 
 finline int32_t util_t::DoubleToInt( double d )
 {
-  return xs_ToInt( d );
+  union Cast
+  {
+  double d;
+  int32_t l;
+  };
+  volatile Cast c;
+  c.d = d + 6755399441055744.0;
+  return c.l;
 }
 
 finline int32_t util_t::FloorToInt( double d )
@@ -4865,6 +4872,7 @@ struct dot_t
   dot_t() : player( 0 ) {}
   dot_t( const std::string& n, player_t* p );
 
+  void   cancel();
   void   extend_duration( int extra_ticks, bool cap=false );
   void   extend_duration_seconds( double extra_seconds );
   void   recalculate_ready();

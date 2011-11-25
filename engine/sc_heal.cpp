@@ -213,7 +213,7 @@ void heal_t::impact( player_t* t, int impact_result, double travel_heal=0 )
 
   if ( num_ticks > 0 )
   {
-    if ( dot_behavior != DOT_REFRESH ) cancel();
+    if ( dot_behavior != DOT_REFRESH ) dot -> cancel();
     dot -> action = this;
     dot -> num_ticks = hasted_num_ticks();
     dot -> current_tick = 0;

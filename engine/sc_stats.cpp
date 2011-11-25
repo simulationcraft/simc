@@ -102,8 +102,8 @@ void stats_t::add_execute( double time )
   num_executes++;
   total_execute_time += time;
 
-  if ( last_execute > 0 &&
-       last_execute != sim -> current_time )
+  if ( likely( last_execute > 0 &&
+       last_execute != sim -> current_time ) )
   {
     num_intervals++;
     total_intervals += sim -> current_time - last_execute;

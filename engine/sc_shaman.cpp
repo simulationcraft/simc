@@ -1810,7 +1810,7 @@ struct lava_lash_t : public shaman_attack_t
     {
       p -> buffs_searing_flames -> expire();
       if ( p -> active_searing_flames_dot )
-        p -> active_searing_flames_dot -> cancel();
+        p -> active_searing_flames_dot -> dot -> cancel();
 
       trigger_static_shock( this );
     }
@@ -3014,7 +3014,10 @@ struct shaman_totem_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
 
     if ( p -> totems[ totem ] )
+    {
       p -> totems[ totem ] -> cancel();
+      p -> totems[ totem ] -> dot -> cancel();
+    }
 
     if ( sim -> log )
       log_t::output( sim, "%s performs %s", player -> name(), name() );

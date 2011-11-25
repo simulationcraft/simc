@@ -312,9 +312,6 @@ struct priest_t : public player_t
   };
   power_mod_t power_mod;
 
-  int    use_shadow_word_death;
-  int    use_mind_blast;
-  int    recast_mind_blast;
   bool   was_sub_25;
 
   remove_dots_event_t* remove_dots_event;
@@ -330,13 +327,10 @@ struct priest_t : public player_t
     was_sub_25                           = false;
     echo_of_light_merged                 = false;
 
-    use_shadow_word_death                = 0;
-    use_mind_blast                       = 1;
-    recast_mind_blast                    = 0;
-    heals_echo_of_light                  = 0;
+    heals_echo_of_light                  = NULL;
 
-    distance                             = 40;
-    default_distance                     = 40;
+    distance                             = 40.0;
+    default_distance                     = 40.0;
 
     max_mana_cost                        = 0.0;
 
@@ -356,11 +350,11 @@ struct priest_t : public player_t
     cooldowns_inner_focus                = get_cooldown( "inner_focus" );
     cooldowns_penance                    = get_cooldown( "penance" );
 
-    pet_shadow_fiend                     = 0;
-    pet_cauterizing_flame                = 0;
-    pet_lightwell                        = 0;
+    pet_shadow_fiend                     = NULL;
+    pet_cauterizing_flame                = NULL;
+    pet_lightwell                        = NULL;
 
-    remove_dots_event                    = 0;
+    remove_dots_event                    = NULL;
 
     create_talents();
     create_glyphs();
@@ -404,8 +398,6 @@ struct priest_t : public player_t
 
   virtual double    spirit() const;
 
-  virtual action_expr_t* create_expression( action_t*, const std::string& name );
-
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
 
@@ -431,7 +423,7 @@ private:
   {
     if ( dot -> ticking )
     {
-      dot -> action -> cancel();
+      dot -> cancel();
       dot -> reset();
     }
   }
@@ -1403,8 +1395,6 @@ struct cauterizing_flame_pet_t : public pet_t
     cauterizing_flame_heal_t( player_t* player ) :
       heal_t( "cauterizing_flame_heal", player, 99152 )
     {
-      // HACK: Travel events are canceled on demise, so lie about travel
-      travel_speed = 0;
       cooldown -> duration = 1;
     }
 
@@ -1681,7 +1671,9 @@ struct dispersion_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    p -> resource_gain( RESOURCE_MANA, 0.06 * p -> resource_max[ RESOURCE_MANA ], p -> gains_dispersion );
+    double regen_amount = p -> dbc.spell( 49766 ) -> effect1().percent() * p -> resource_max[ RESOURCE_MANA ];
+
+    p -> resource_gain( RESOURCE_MANA, regen_amount, p -> gains_dispersion );
 
     priest_spell_t::tick( d );
   }
@@ -2250,8 +2242,6 @@ struct mind_blast_t : public priest_spell_t
 
     if ( result_is_hit() )
     {
-      p -> recast_mind_blast = 0;
-
       if ( p -> dots_vampiric_touch -> ticking )
         p -> trigger_replenishment();
     }
@@ -2723,16 +2713,6 @@ struct vampiric_touch_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
     may_crit   = false;
-  }
-
-  virtual void execute()
-  {
-    priest_spell_t::execute();
-
-    priest_t* p = player -> cast_priest();
-
-    if ( result_is_hit() )
-      p -> recast_mind_blast = 1;
   }
 };
 
@@ -4839,11 +4819,10 @@ void priest_t::init_spells()
   glyphs.spirit_tap         = find_glyph( "Glyph of Spirit Tap" );
 
   // Set Bonuses
-  // T11: H2P = 89910, H4P = 89911
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //   C2P     C4P    M2P    M4P    T2P    T4P     H2P     H4P
-    {  89915,  89922,     0,     0,     0,     0,      0,      0 }, // Tier11
+    {  89915,  89922,     0,     0,     0,     0,  89910,  89911 }, // Tier11
     {  99154,  99157,     0,     0,     0,     0,  99134,  99135 }, // Tier12
     { 105843, 105844,     0,     0,     0,     0, 105827, 105832 }, // Tier13
     {      0,      0,     0,     0,     0,     0,      0,      0 },
@@ -5251,14 +5230,12 @@ void priest_t::init_party()
   if ( party == 0 )
     return;
 
-  player_t* p = sim -> player_list;
-  while ( p )
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( ( p != this ) && ( p -> party == party ) && ( ! p -> quiet ) && ( ! p -> is_pet() ) )
     {
       party_list.push_back( p );
     }
-    p = p -> next;
   }
 }
 
@@ -5337,8 +5314,6 @@ void priest_t::reset()
     priest_spell_t::add_more_shadowy_apparitions( this );
   }
 
-  recast_mind_blast = 0;
-
   echo_of_light_merged = false;
 
   was_sub_25 = false;
@@ -5387,41 +5362,6 @@ void priest_t::pre_analyze_hook()
     fixup_atonement_stats( "smite", "atonement_smite" );
     fixup_atonement_stats( "holy_fire", "atonement_holy_fire" );
   }
-}
-
-// priest_t::create_expression ==============================================
-
-action_expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
-{
-  if ( name_str == "recast_mind_blast" )
-  {
-    struct recast_mind_blast_expr_t : public action_expr_t
-    {
-      recast_mind_blast_expr_t( action_t* a ) : action_expr_t( a, "recast_mind_blast" ) { result_type = TOK_NUM; }
-      virtual int evaluate() { result_num = action -> player -> cast_priest() -> recast_mind_blast; return TOK_NUM; }
-    };
-    return new recast_mind_blast_expr_t( a );
-  }
-  if ( name_str == "use_mind_blast" )
-  {
-    struct use_mind_blast_expr_t : public action_expr_t
-    {
-      use_mind_blast_expr_t( action_t* a ) : action_expr_t( a, "use_mind_blast" ) { result_type = TOK_NUM; }
-      virtual int evaluate() { result_num = action -> player -> cast_priest() -> use_mind_blast; return TOK_NUM; }
-    };
-    return new use_mind_blast_expr_t( a );
-  }
-  if ( name_str == "use_shadow_word_death" )
-  {
-    struct use_shadow_word_death_expr_t : public action_expr_t
-    {
-      use_shadow_word_death_expr_t( action_t* a ) : action_expr_t( a, "use_shadow_word_death" ) { result_type = TOK_NUM; }
-      virtual int evaluate() { result_num = action -> player -> cast_priest() -> use_shadow_word_death; return TOK_NUM; }
-    };
-    return new use_shadow_word_death_expr_t( a );
-  }
-
-  return player_t::create_expression( a, name_str );
 }
 
 // priest_t::resource_gain ==================================================
@@ -5473,12 +5413,12 @@ double priest_t::target_mitigation( double            amount,
 
   if ( buffs_shadow_form -> check() )
   {
-    amount *= 0.85;
+    amount *= 1.0 + buffs_shadow_form -> effect3().percent();
   }
 
   if ( talents.inner_sanctum -> rank() )
   {
-    amount *= 1.0 - talents.inner_sanctum -> rank() * 0.02;
+    amount *= 1.0 - talents.inner_sanctum -> effect1().percent();
   }
 
   return amount;
@@ -5494,9 +5434,6 @@ void priest_t::create_options()
   {
     { "atonement_target",        OPT_STRING, &( atonement_target_str      ) },
     { "double_dot",              OPT_DEPRECATED, ( void* ) "action_list=double_dot"   },
-    { "use_mind_blast",          OPT_INT,    &( use_mind_blast            ) },
-    { "use_shadow_word_death",   OPT_BOOL,   &( use_shadow_word_death     ) },
-
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -5511,19 +5448,8 @@ bool priest_t::create_profile( std::string& profile_str, int save_type, bool sav
 
   if ( save_type == SAVE_ALL )
   {
-    if ( ! atonement_target_str.empty() ) profile_str += "atonement_target=" + atonement_target_str + "\n";
-    if ( ( use_shadow_word_death ) || ( use_mind_blast != 1 ) )
-    {
-      profile_str += "## Variables\n";
-    }
-    if ( use_shadow_word_death )
-    {
-      profile_str += "use_shadow_word_death=1\n";
-    }
-    if ( use_mind_blast != 1 )
-    {
-      profile_str += "use_mind_blast=" + util_t::to_string( use_mind_blast ) + "\n";
-    }
+    if ( ! atonement_target_str.empty() )
+      profile_str += "atonement_target=" + atonement_target_str + "\n";
   }
 
   return true;
@@ -5535,11 +5461,9 @@ void priest_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  priest_t* p = source -> cast_priest();
+  priest_t* source_p = source -> cast_priest();
 
-  atonement_target_str      = p -> atonement_target_str;
-  use_shadow_word_death     = p -> use_shadow_word_death;
-  use_mind_blast            = p -> use_mind_blast;
+  atonement_target_str      = source_p -> atonement_target_str;
 }
 
 // priest_t::decode_set =====================================================

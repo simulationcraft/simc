@@ -811,7 +811,7 @@ void sim_t::add_event( event_t* e,
   e -> time = current_time + delta_time;
   e -> id   = ++id;
 
-  if ( ! ( delta_time <= wheel_seconds ) )
+  if ( unlikely( ! ( delta_time <= wheel_seconds ) ) )
   {
     errorf( "sim_t::add_event assertion error! delta_time > wheel_seconds, event %s from %s.\n", e -> name, e -> player ? e -> player -> name() : "no-one" );
     assert( 0 );
@@ -896,7 +896,11 @@ void sim_t::flush_events()
         // not technically matter
         e -> canceled = 1;
         e -> player -> events--;
-        assert( e -> player -> events >= 0 );
+        if( e -> player -> events < 0 )
+        {
+          errorf( "sim_t::flush_events assertion error! flushing event %s leaves negative event count for user %s.\n", e -> name, e -> player -> name() );
+          assert( 0 );
+        }
       }
       timing_wheel[ i ] = e -> next;
       delete e;
@@ -1034,11 +1038,11 @@ void sim_t::combat( int iteration )
       }
     }
 
-    if ( e -> canceled )
+    if ( unlikely( e -> canceled ) )
     {
       if ( debug ) log_t::output( this, "Canceled event: %s", e -> name );
     }
-    else if ( e -> reschedule_time > e -> time )
+    else if ( unlikely( e -> reschedule_time > e -> time ) )
     {
       reschedule_event( e );
       continue;

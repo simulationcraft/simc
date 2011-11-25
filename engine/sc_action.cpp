@@ -145,7 +145,7 @@ void action_t::init_action_t_()
 
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
-  if ( ! player -> initialized )
+  if ( unlikely( ! player -> initialized ) )
   {
     sim -> errorf( "Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
     sim -> cancel();
@@ -176,9 +176,6 @@ void action_t::init_action_t_()
 
     background = true; // prevent action from being executed
   }
-
-  if ( sim -> travel_variance && travel_speed && player -> distance )
-    rng_travel = player -> get_rng( name_str + "_travel", RNG_DISTRIBUTED );
 }
 
 action_t::action_t( int               ty,
@@ -270,10 +267,10 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
     return;
   }
 
-  const spell_data_t* spell = player -> dbc.spell( spell_id );
-  const spelleffect_data_t* effect = player -> dbc.effect( spell -> effect_id( effect_nr ) );
-
   assert( spell );
+
+  const spelleffect_data_t* effects[4] = { 0, spell -> _effect1, spell -> _effect2, spell -> _effect3 };
+  const spelleffect_data_t* effect = effects[ effect_nr ];
 
   if ( ! effect )
   {
@@ -474,11 +471,6 @@ double action_t::travel_time()
 
   if ( v )
   {
-    if ( ! rng_travel )
-    {
-      std::string buffer = name_str + "_travel";
-      rng_travel = player -> get_rng( buffer, RNG_DISTRIBUTED );
-    }
     t = rng_travel -> gauss( t, v );
   }
 
@@ -672,7 +664,8 @@ double action_t::armor() const
 
 double action_t::resistance() const
 {
-  if ( ! may_resist ) return 0;
+  if ( ! may_resist )
+    return 0;
 
   player_t* t = target;
   double resist=0;
@@ -814,7 +807,8 @@ double action_t::calculate_tick_damage()
     dmg *= 1.0 - resistance();
   }
 
-  if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
+  if ( ! sim -> average_range )
+    dmg = floor( dmg + sim -> real() );
 
   if ( sim -> debug )
   {
@@ -894,8 +888,6 @@ double action_t::calculate_direct_damage()
     dmg *= 1.0 - resistance();
   }
 
-
-
   if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
 
   if ( sim -> debug )
@@ -930,7 +922,7 @@ void action_t::consume_resource()
 
 void action_t::execute()
 {
-  if ( ! initialized )
+  if ( unlikely( ! initialized ) )
   {
     sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
     assert( 0 );
@@ -1024,7 +1016,7 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
   {
     if ( num_ticks > 0 )
     {
-      if ( dot_behavior != DOT_REFRESH ) cancel();
+      if ( dot_behavior != DOT_REFRESH ) dot -> cancel();
       dot -> action = this;
       dot -> num_ticks = hasted_num_ticks();
       dot -> current_tick = 0;
@@ -1278,7 +1270,7 @@ bool action_t::ready()
 {
   player_t* t = target;
 
-  if ( is_dtr_action )
+  if ( unlikely( is_dtr_action ) )
     assert( 0 );
 
   if ( player -> skill < 1.0 )
@@ -1317,7 +1309,7 @@ bool action_t::ready()
   if ( sync_action && ! sync_action -> ready() )
     return false;
 
-  if ( t -> sleeping )
+  if ( unlikely( t -> sleeping ) )
     return false;
 
   if ( target -> debuffs.invulnerable -> check() )
@@ -1387,6 +1379,9 @@ void action_t::init()
     interrupt_if_expr = action_expr_t::parse( this, interrupt_if_expr_str );
   }
 
+  if ( sim -> travel_variance && travel_speed && player -> distance )
+    rng_travel = player -> get_rng( name_str + "_travel", RNG_DISTRIBUTED );
+
   if ( is_dtr_action )
   {
     cooldown = player -> get_cooldown( name_str + "_DTR" );
@@ -1417,15 +1412,17 @@ void action_t::cancel()
 {
   if ( sim -> debug ) log_t::output( sim, "action %s of %s is canceled", name(), player -> name() );
 
-  if ( dot -> ticking ) last_tick( dot );
+  if ( channeled && dot -> ticking )
+  {
+    last_tick( dot );
+    event_t::cancel( dot -> tick_event );
+    dot -> reset();
+  }
 
   if ( player -> executing  == this ) player -> executing  = 0;
   if ( player -> channeling == this ) player -> channeling = 0;
 
   event_t::cancel( execute_event );
-  event_t::cancel( dot -> tick_event );
-
-  dot -> reset();
 
   player -> debuffs.casting -> expire();
 }

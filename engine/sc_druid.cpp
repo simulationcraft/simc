@@ -2457,7 +2457,7 @@ struct pulverize_t : public druid_bear_attack_t
       if ( p -> dots_lacerate -> ticking )
       {
         p -> buffs_pulverize -> trigger( 1, p -> buffs_lacerate -> stack() * 0.03 );
-        p -> dots_lacerate -> action -> cancel();
+        p -> dots_lacerate -> cancel();
         p -> buffs_lacerate -> expire();
       }
     }
@@ -2934,20 +2934,20 @@ struct swiftmend_t : public druid_heal_t
       {
         if ( p -> dots_regrowth -> remains() > p -> dots_rejuvenation -> remains() )
         {
-          p -> dots_rejuvenation -> action -> cancel();
+          p -> dots_rejuvenation -> cancel();
         }
         else
         {
-          p -> dots_regrowth -> action -> cancel();
+          p -> dots_regrowth -> cancel();
         }
       }
       else if ( p -> dots_regrowth -> ticking )
       {
-        p -> dots_regrowth -> action -> cancel();
+        p -> dots_regrowth -> cancel();
       }
       else if ( p -> dots_rejuvenation -> ticking )
       {
-        p -> dots_rejuvenation -> action -> cancel();
+        p -> dots_rejuvenation -> cancel();
       }
     }
 
@@ -3754,7 +3754,7 @@ struct moonfire_t : public druid_spell_t
     if ( result_is_hit() )
     {
       if ( p -> dots_sunfire -> ticking )
-        p -> dots_sunfire -> action -> cancel();
+        p -> dots_sunfire -> cancel();
 
       if ( p -> talents.lunar_shower -> rank() )
       {
@@ -4288,7 +4288,7 @@ struct sunfire_t : public druid_spell_t
     if ( result_is_hit() )
     {
       if ( p -> dots_moonfire -> ticking )
-        p -> dots_moonfire -> action -> cancel();
+        p -> dots_moonfire -> cancel();
 
       if ( p -> talents.lunar_shower -> rank() )
       {

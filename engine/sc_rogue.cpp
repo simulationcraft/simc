@@ -373,7 +373,9 @@ struct rogue_t : public player_t
   }
 
   ~rogue_t()
-  { delete combo_points; }
+  {
+    delete combo_points;
+  }
 
   // Character Definition
   virtual void      init_talents();
@@ -488,8 +490,8 @@ struct rogue_poison_t : public spell_t
   {
     proc             = true;
     background       = true;
-    base_cost        = 0;
-    trigger_gcd      = 0;
+    base_cost        = 0.0;
+    trigger_gcd      = 0.0;
     may_crit         = true;
     tick_may_crit    = true;
     hasted_ticks     = false;
@@ -574,7 +576,7 @@ static void trigger_bandits_guile( rogue_attack_t* a )
   if ( ! p -> talents.bandits_guile -> rank() )
     return;
 
-  int current_stack = p -> buffs_bandits_guile -> current_stack;
+  int current_stack = p -> buffs_bandits_guile -> check();
   if ( current_stack == p -> buffs_bandits_guile -> max_stack )
     return; // we can't refresh the 15% buff
 
@@ -1660,7 +1662,7 @@ struct envenom_t : public rogue_attack_t
         p -> buffs_poison_doses -> decrement( doses_consumed );
 
       if ( ! p -> buffs_poison_doses -> check() )
-        p -> active_deadly_poison -> cancel();
+        p -> active_deadly_poison -> dot -> cancel();
 
       trigger_cut_to_the_chase( this );
       trigger_restless_blades( this );
