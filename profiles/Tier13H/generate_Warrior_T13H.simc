@@ -4,7 +4,8 @@
 
 # Gear Source: http://elitistjerks.com/f81/t126928-fury_4_3_bis/
 
-# Fix Arms profile, seems to massively underperform right now
+# Warning: Profiles currently contain unobtainable heroic Valor items. Please do not generate!
+
 warrior=Warrior_Arms_T13H
 level=85
 race=worgen

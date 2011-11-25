@@ -7,16 +7,16 @@ optimal_raid=1
 Death_Knight_Frost_1h_T13H.simc	
 Death_Knight_Unholy_2h_T13H.simc
 
-Hunter_MM_T13H.simc
-Hunter_SV_T13H.simc
-Hunter_BM_T13H.simc
+#Hunter_MM_T13H.simc
+#Hunter_SV_T13H.simc
+#Hunter_BM_T13H.simc
 
 Shaman_Elemental_T13H.simc
 Shaman_Enhancement_T13H.simc
 
-Warrior_Arms_T13H.simc
-Warrior_Fury_1h_T13H.simc
-Warrior_Fury_2h_T13H.simc
+#Warrior_Arms_T13H.simc
+#Warrior_Fury_1h_T13H.simc
+#Warrior_Fury_2h_T13H.simc
 
 Priest_Disc_Smite_T13H.simc
 Priest_Shadow_T13H.simc
