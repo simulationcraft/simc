@@ -367,7 +367,7 @@ struct hunter_pet_t : public pet_t
     case PET_WORM:         return NULL;
     case PET_BAT:          return NULL;
     case PET_BIRD_OF_PREY: return NULL;
-    case PET_CHIMERA:      return "froststorm_breath";
+    case PET_CHIMERA:      return NULL;
     case PET_DRAGONHAWK:   return "lightning_breath";
     case PET_NETHER_RAY:   return NULL;
     case PET_RAVAGER:      return "ravage";
@@ -1733,19 +1733,23 @@ struct tendon_rip_t : public hunter_pet_spell_t
 
 // Chimera Froststorm Breath ================================================
 
-struct froststorm_breath_tick_t : public hunter_pet_spell_t
-{
-  froststorm_breath_tick_t( player_t* player ) :
-    hunter_pet_spell_t( "froststorm_breath_tick", player, 95725 )
-  {
-    direct_power_mod = 0.24; // hardcoded into tooltip, 17/10/2011
-    background  = true;
-    direct_tick = true;
-  }
-};
+
 
 struct froststorm_breath_t : public hunter_pet_spell_t
 {
+  struct froststorm_breath_tick_t : public hunter_pet_spell_t
+  {
+    froststorm_breath_tick_t( player_t* player ) :
+      hunter_pet_spell_t( "froststorm_breath_tick", player, 95725 )
+    {
+      direct_power_mod = 0.24; // hardcoded into tooltip, 17/10/2011
+      background  = true;
+      direct_tick = true;
+
+      stats = player -> get_stats( "froststorm_breath", this );
+    }
+  };
+
   froststorm_breath_tick_t* tick_spell;
 
   froststorm_breath_t( player_t* player, const std::string& options_str ) :
@@ -1753,6 +1757,8 @@ struct froststorm_breath_t : public hunter_pet_spell_t
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     hunter_t*     o = p -> owner -> cast_hunter();
+
+    channeled = true;
 
     parse_options( NULL, options_str );
 
