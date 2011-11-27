@@ -3818,7 +3818,7 @@ void mage_t::init_actions()
     {
       action_list_str += "/berserking";
     }
-    else if ( race == RACE_BLOOD_ELF )
+    else if ( race == RACE_BLOOD_ELF && primary_tree() != TREE_ARCANE )
     {
       action_list_str += "/arcane_torrent,if=mana_pct<91";
     }
@@ -3846,6 +3846,10 @@ void mage_t::init_actions()
       if ( ! talents.presence_of_mind -> rank() )
       {
         action_list_str += "/conjure_mana_gem,if=cooldown.evocation.remains<20&target.time_to_die>105&mana_gem_charges=0";
+      }
+      if ( race == RACE_BLOOD_ELF )
+      {
+        action_list_str += "/arcane_torrent,if=mana_pct<91&(buff.arcane_power.up|target.time_to_die<120)";
       }
       //Mana Gem
       if ( dbc.ptr && set_bonus.tier13_4pc_caster() )

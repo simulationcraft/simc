@@ -1,7 +1,7 @@
 #!./simc 
 
 mage=Mage_Arcane_T12N
-origin="Mage_CharDevSync.simc"
+origin="generate_Mage_T12N.simc"
 level=85
 race=gnome
 position=back
