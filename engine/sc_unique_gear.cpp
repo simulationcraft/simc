@@ -1238,6 +1238,65 @@ static void register_fury_of_the_beast( item_t* item )
   p -> register_attack_callback( RESULT_CRIT_MASK, new fury_of_the_beast_callback_t( p, item -> heroic(), item -> lfr() ) );
 }
 
+// register_gurthalak =======================================================
+
+static void register_gurthalak( item_t* item )
+{
+  player_t* p   = item -> player;
+  bool heroic   = item -> heroic();
+  bool lfr      = item -> lfr();
+
+  uint32_t spell_id = heroic ? 68044 : lfr ? 52586 : 68043;
+
+  // Currently it appears all of the spawns are using the same spell id
+  if ( p -> bugs ) spell_id = 52586;
+
+  uint32_t proc_spell_id = heroic ? 109839 : lfr ? 109841 : 107810;
+
+  struct gurthalak_callback_t : public action_callback_t
+  {
+    double chance;
+    spell_t* spell;
+    rng_t* rng;
+
+    // FIXME: Verify if spell can miss
+    struct gurthalak_t : public spell_t
+    {
+      gurthalak_t( player_t* p, uint32_t spell_id ) :
+        spell_t( "gurthalak_voice_of_the_deeps", spell_id, p )
+      {
+        trigger_gcd = 0;
+        background = true;
+        may_miss = false;
+        may_crit = true;
+        proc = true;
+        init();
+      }
+    };
+
+    gurthalak_callback_t( player_t* p, uint32_t id, uint32_t proc_spell_id ) :
+      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() )
+    {
+      spell = new gurthalak_t( p, id );
+
+      rng = p -> get_rng ( "gurthalak" );
+    }
+
+    virtual void trigger( action_t* a, void* /* call_data */ )
+    {
+      if ( a -> proc )
+        return;
+
+      if ( rng -> roll( chance ) )
+      {
+        spell -> execute();
+      }
+    }
+  };
+
+  p -> register_attack_callback( RESULT_HIT_MASK, new gurthalak_callback_t( p, spell_id, proc_spell_id ) );
+}
+
 // register_nokaled =========================================================
 
 static void register_nokaled( item_t* item )
@@ -1524,6 +1583,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
     if ( ! strcmp( item.name(), "fury_of_angerforge"                  ) ) register_fury_of_angerforge                ( &item );
+    if ( ! strcmp( item.name(), "gurthalak_voice_of_the_deeps"        ) ) register_gurthalak                         ( &item );
     if ( ! strcmp( item.name(), "heart_of_ignacious"                  ) ) register_heart_of_ignacious                ( &item );
     if ( ! strcmp( item.name(), "indomitable_pride"                   ) ) register_indomitable_pride                 ( &item );
     if ( ! strcmp( item.name(), "kiril_fury_of_beasts"                ) ) register_fury_of_the_beast                 ( &item );
