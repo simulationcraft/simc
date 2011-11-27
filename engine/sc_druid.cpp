@@ -4234,7 +4234,7 @@ struct sunfire_t : public druid_spell_t
 
   // Identical to moonfire, except damage type and usability
 
-  sunfire_t( druid_t* p, const std::string& options_str, bool dtr=false, const char* name = "starfire", dot_t* mf_=0  ) :
+  sunfire_t( druid_t* p, const std::string& options_str, bool dtr=false, const char* name = "sunfire", dot_t* mf_=0  ) :
     druid_spell_t( name, 93402, p ),
     starsurge_cd( 0 ), mf( mf_ ? mf_ : p -> dots_moonfire )
   {
