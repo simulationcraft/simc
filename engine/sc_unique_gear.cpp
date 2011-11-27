@@ -1172,6 +1172,68 @@ static void register_spidersilk_spindle( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
+// register_bone_link_fetish ================================================
+
+static void register_bone_link_fetish( item_t* item )
+{
+  player_t* p   = item -> player;
+  bool heroic   = item -> heroic();
+  bool lfr      = item -> lfr();
+
+  uint32_t spell_id = heroic ? 109755 : lfr ? 109753 : 107998;
+
+  struct bone_link_fetish_callback_t : public action_callback_t
+  {
+    double chance;
+    attack_t* attack;
+    cooldown_t* cooldown;
+    rng_t* rng;
+
+    struct whirling_maw_t : public attack_t
+    {
+      whirling_maw_t( player_t* p, uint32_t spell_id ) :
+        attack_t( "bone_link_fetish", spell_id, p )
+      {
+        trigger_gcd = 0;
+        background = true;
+        may_miss = false;
+        may_crit = true;
+        proc = true;
+        aoe = -1;
+        init();
+      }
+    };
+
+    bone_link_fetish_callback_t( player_t* p, uint32_t id ) :
+      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( id ) -> proc_chance() )
+    {
+      attack = new whirling_maw_t( p, p -> dbc.spell( id ) -> effect1().trigger_spell_id() );
+
+      cooldown = p -> get_cooldown( "bone_link_fetish" );
+      cooldown -> duration = 25.0; // 25 second ICD
+
+      rng = p -> get_rng ( "bone_link_fetish" );
+    }
+
+    virtual void trigger( action_t* a, void* /* call_data */ )
+    {
+      if ( a -> proc )
+        return;
+
+      if ( cooldown -> remains() > 0 )
+        return;
+
+      if ( rng -> roll( chance ) )
+      {
+        attack -> execute();
+        cooldown -> start();
+      }
+    }
+  };
+
+  p -> register_attack_callback( RESULT_HIT_MASK, new bone_link_fetish_callback_t( p, spell_id ) );
+}
+
 // register_fury_of_the_beast ===============================================
 
 static void register_fury_of_the_beast( item_t* item )
@@ -1579,6 +1641,7 @@ void unique_gear_t::init( player_t* p )
     }
 
     if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
+    if ( ! strcmp( item.name(), "bone_link_fetish"                    ) ) register_bone_link_fetish                  ( &item );
     if ( ! strcmp( item.name(), "darkmoon_card_greatness"             ) ) register_darkmoon_card_greatness           ( &item );
     if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
