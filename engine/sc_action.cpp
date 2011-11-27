@@ -1657,6 +1657,24 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       return buff -> create_expression( this, splits[ 2 ] );
     }
   }
+  else if ( num_splits == 2 )
+  {
+    if ( splits[ 0 ] == "prev" )
+    {
+      struct prev_expr_t : public action_expr_t
+      {
+        std::string prev_action;
+        prev_expr_t( action_t* a, const std::string& prev_action ) : action_expr_t( a, "prev", TOK_NUM ), prev_action( prev_action ) {}
+        virtual int evaluate()
+        {
+          result_num = ( action -> player -> last_foreground_action ) ? action -> player -> last_foreground_action -> name_str == prev_action : 0;
+          return TOK_NUM;
+        }
+      };
+
+      return new prev_expr_t( this, splits[ 1 ] );
+    }
+  }
 
   return player -> create_expression( this, name_str );
 }
