@@ -3848,6 +3848,7 @@ void hunter_t::init_buffs()
   buffs_killing_streak              = new buff_t( this, "killing_streak", 1, 8, 0, talents.killing_streak -> ok() );
   buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, 0, 0, 1.0, true );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect1().percent() );
+  if ( dbc.ptr && bugs ) buffs_lock_and_load -> cooldown -> duration = 10.0; // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
   buffs_master_marksman_fire        = new buff_t( this, 82926, "master_marksman_fire", 1 );
   buffs_sniper_training             = new buff_t( this, talents.sniper_training -> rank() == 3 ? 64420 : talents.sniper_training -> rank() == 2 ? 64419 : talents.sniper_training -> rank() == 1 ? 64418 : 0, "sniper_training", talents.sniper_training -> rank() );
