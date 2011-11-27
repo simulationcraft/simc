@@ -644,6 +644,161 @@ struct paladin_attack_t : public attack_t
   }
 };
 
+// ==========================================================================
+// Paladin Spells
+// ==========================================================================
+
+struct paladin_spell_t : public spell_t
+{
+  bool trigger_dp;
+
+  paladin_spell_t( const char* n, paladin_t* p, const school_type s=SCHOOL_HOLY, int t=TREE_NONE )
+    : spell_t( n, p, RESOURCE_MANA, s, t ), trigger_dp( false )
+  {
+    initialize_();
+  }
+
+  paladin_spell_t( const char* n, uint32_t id, paladin_t* p )
+    : spell_t( n, id, p ), trigger_dp( false )
+  {
+    initialize_();
+  }
+
+  paladin_spell_t( const char *n, const char *sname, paladin_t* p )
+    : spell_t( n, sname, p ), trigger_dp( false )
+  {
+    initialize_();
+  }
+
+  void initialize_()
+  {
+    base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
+  }
+
+  paladin_t* p() const
+  {
+    return static_cast<paladin_t*>( player );
+  }
+  
+  virtual void consume_resource()
+  {
+    spell_t::consume_resource();
+
+    paladin_t* p = player -> cast_paladin();
+
+    if ( resource == RESOURCE_HOLY_POWER )
+      p -> buffs_divine_purpose -> expire();
+  }
+
+  virtual double cost() const
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    if ( resource == RESOURCE_HOLY_POWER )
+    {
+      if ( p -> buffs_divine_purpose -> check() )
+        return 0;
+
+      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
+    }
+
+    return spell_t::cost();
+  }
+
+  virtual void execute()
+  {
+    spell_t::execute();
+    if ( result_is_hit() )
+    {
+      paladin_t* pa = player -> cast_paladin();
+
+      if ( trigger_dp )
+      {
+        bool already_up = pa -> buffs_divine_purpose -> check() != 0;
+        bool triggered = pa -> buffs_divine_purpose -> trigger();
+        if ( already_up && triggered )
+        {
+          pa -> procs_wasted_divine_purpose -> occur();
+        }
+      }
+      if ( result == RESULT_CRIT && direct_dmg > 0 )
+        pa -> buffs_conviction -> trigger();
+    }
+  }
+
+  virtual double haste() const
+  {
+    double h = spell_t::haste();
+
+    paladin_t* p = player -> cast_paladin();
+
+    if ( p -> buffs_divine_favor -> up() )
+      h *= 1.0 / ( 1.0 + p -> buffs_divine_favor -> effect1().percent() );
+    
+    h *= 1.0 / ( 1.0 + p -> talents.speed_of_light -> effect1().percent() );
+
+    return h;
+  }
+
+  virtual void player_buff()
+  {
+    paladin_t* p = player -> cast_paladin();
+
+    spell_t::player_buff();
+
+    player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
+
+    if ( school == SCHOOL_HOLY )
+    {
+      player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
+    }
+    if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
+    {
+      player_multiplier *= 1.12;
+    }
+
+    if ( p -> buffs_conviction -> up() )
+    {
+      player_multiplier *= 1.0 + p -> buffs_conviction -> effect1().percent();
+    }
+
+    if ( p -> buffs_divine_shield -> up() )
+    {
+      player_multiplier *= 1.0 + p -> buffs_divine_shield -> effect1().percent();
+    }
+
+    if ( p -> buffs_divine_favor -> up() )
+      player_crit += p -> buffs_divine_favor -> effect2().percent();
+
+    player_multiplier *= 1.0 + p -> buffs_selfless -> value();
+  }
+};
+
+// Righteous Flames ( Prot Tier 12 2pc ) ====================================
+
+struct righteous_flames_t : public paladin_spell_t
+{
+  righteous_flames_t( paladin_t* player ) :
+    paladin_spell_t( "righteous_flames", 99075, player )
+  {
+    background       = true;
+    may_miss         = false;
+    proc             = true;
+    may_crit         = false;
+    school = SCHOOL_FIRE; // FIXME: This can be removed once the DBC files are regened
+  }
+
+  virtual double calculate_direct_damage()
+  {
+    paladin_t* p = player -> cast_paladin();
+    double dmg = base_dd_min * p -> sets -> set( SET_T12_2PC_TANK ) -> effect1().percent();
+
+    dmg *= 1.0 - resistance();
+
+    return dmg;
+  }
+};
+
 // trigger_beacon_of_light ==================================================
 
 static void trigger_beacon_of_light( heal_t* h )
@@ -1748,8 +1903,10 @@ struct judgement_t : public paladin_attack_t
 
 struct shield_of_the_righteous_t : public paladin_attack_t
 {
-  shield_of_the_righteous_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "shield_of_the_righteous", "Shield of the Righteous", p )
+  righteous_flames_t* righteous_flames;
+
+  shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
+    paladin_attack_t( "shield_of_the_righteous", "Shield of the Righteous", p )
   {
     check_talent( p -> talents.shield_of_the_righteous -> rank() );
 
@@ -1764,6 +1921,12 @@ struct shield_of_the_righteous_t : public paladin_attack_t
 
     direct_power_mod = extra_coeff();
     base_multiplier *= 1.0 + p -> glyphs.shield_of_the_righteous -> mod_additive( P_GENERIC );
+
+    if ( p -> set_bonus.tier12_2pc_tank() )
+    {
+      righteous_flames = new righteous_flames_t( "righteous_flames", p );
+      add_child( righteous_flames );
+    }
   }
 
   virtual void execute()
@@ -1771,7 +1934,14 @@ struct shield_of_the_righteous_t : public paladin_attack_t
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::execute();
     if ( result_is_hit() )
+    {
       p -> buffs_sacred_duty -> expire();
+      if ( righteous_flames )
+      {
+        righteous_flames -> base_dd_min = direct_dmg;
+        righteous_flames -> execute();
+      }
+    }
   }
 
   virtual void player_buff()
@@ -1823,136 +1993,6 @@ struct templars_verdict_t : public paladin_attack_t
     {
       trigger_hand_of_light( this );
     }
-  }
-};
-
-// ==========================================================================
-// Paladin Spells
-// ==========================================================================
-
-struct paladin_spell_t : public spell_t
-{
-  bool trigger_dp;
-
-  paladin_spell_t( const char* n, paladin_t* p, const school_type s=SCHOOL_HOLY, int t=TREE_NONE )
-    : spell_t( n, p, RESOURCE_MANA, s, t ), trigger_dp( false )
-  {
-    initialize_();
-  }
-
-  paladin_spell_t( const char* n, uint32_t id, paladin_t* p )
-    : spell_t( n, id, p ), trigger_dp( false )
-  {
-    initialize_();
-  }
-
-  paladin_spell_t( const char *n, const char *sname, paladin_t* p )
-    : spell_t( n, sname, p ), trigger_dp( false )
-  {
-    initialize_();
-  }
-
-  void initialize_()
-  {
-    base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
-  }
-
-  paladin_t* p() const
-  {
-    return static_cast<paladin_t*>( player );
-  }
-  
-  virtual void consume_resource()
-  {
-    spell_t::consume_resource();
-
-    paladin_t* p = player -> cast_paladin();
-
-    if ( resource == RESOURCE_HOLY_POWER )
-      p -> buffs_divine_purpose -> expire();
-  }
-
-  virtual double cost() const
-  {
-    paladin_t* p = player -> cast_paladin();
-
-    if ( resource == RESOURCE_HOLY_POWER )
-    {
-      if ( p -> buffs_divine_purpose -> check() )
-        return 0;
-
-      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
-    }
-
-    return spell_t::cost();
-  }
-
-  virtual void execute()
-  {
-    spell_t::execute();
-    if ( result_is_hit() )
-    {
-      paladin_t* pa = player -> cast_paladin();
-
-      if ( trigger_dp )
-      {
-        bool already_up = pa -> buffs_divine_purpose -> check() != 0;
-        bool triggered = pa -> buffs_divine_purpose -> trigger();
-        if ( already_up && triggered )
-        {
-          pa -> procs_wasted_divine_purpose -> occur();
-        }
-      }
-      if ( result == RESULT_CRIT && direct_dmg > 0 )
-        pa -> buffs_conviction -> trigger();
-    }
-  }
-
-  virtual double haste() const
-  {
-    double h = spell_t::haste();
-
-    paladin_t* p = player -> cast_paladin();
-
-    if ( p -> buffs_divine_favor -> up() )
-      h *= 1.0 / ( 1.0 + p -> buffs_divine_favor -> effect1().percent() );
-    
-    h *= 1.0 / ( 1.0 + p -> talents.speed_of_light -> effect1().percent() );
-
-    return h;
-  }
-
-  virtual void player_buff()
-  {
-    paladin_t* p = player -> cast_paladin();
-
-    spell_t::player_buff();
-
-    player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
-
-    if ( school == SCHOOL_HOLY )
-    {
-      player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
-    }
-    if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
-    {
-      player_multiplier *= 1.12;
-    }
-
-    if ( p -> buffs_conviction -> up() )
-    {
-      player_multiplier *= 1.0 + p -> buffs_conviction -> effect1().percent();
-    }
-
-    if ( p -> buffs_divine_shield -> up() )
-    {
-      player_multiplier *= 1.0 + p -> buffs_divine_shield -> effect1().percent();
-    }
-
-    if ( p -> buffs_divine_favor -> up() )
-      player_crit += p -> buffs_divine_favor -> effect2().percent();
-
-    player_multiplier *= 1.0 + p -> buffs_selfless -> value();
   }
 };
 
