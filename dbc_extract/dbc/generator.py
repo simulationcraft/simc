@@ -703,7 +703,7 @@ class SpellDataGenerator(DataGenerator):
          109872, 109870, 109868,    # No'Kaled the Elements of Death - Heroic
         ),
         (), 
-        ( ( 54158, 0 ), ( 90174, 0 ), ( 99092, 0 ), ),     # Paladin "Judgement" damage portion on some Seals. Tier 12 2pc effect
+        ( ( 54158, 0 ), ( 90174, 0 ), ( 99092, 0 ), ( 99075, 0 ), ),     # Paladin "Judgement" damage portion on some Seals. Melee Tier 12 2pc effect. Prot T12 2pc spell.
         ( ( 99058, 0 ), ( 83381, 0 ), ), # Hunter T12 2pc, Kill Command base dmg
         ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ), ( 99173, 0 ), ( 99186, 0 ), ( 99187, 0 ), ( 99188, 0 ), ), # Rogue poison effects, Tier 12 bonus spells
         ( ( 63619, 4 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ( 94472, 0 ), ( 99156, 4 ), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs, Atonement Crit, sfiend tier12 bonus
