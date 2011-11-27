@@ -701,6 +701,7 @@ class SpellDataGenerator(DataGenerator):
          109871, 109869, 109867,    # No'Kaled the Elements of Death - LFR
          107785, 107789, 107787,    # No'Kaled the Elements of Death - Normal
          109872, 109870, 109868,    # No'Kaled the Elements of Death - Heroic
+          52586,  68043,  68044,    # Gurthalak, Voice of the Deeps - LFR, N, H
         ),
         (), 
         ( ( 54158, 0 ), ( 90174, 0 ), ( 99092, 0 ), ( 99075, 0 ), ),     # Paladin "Judgement" damage portion on some Seals. Melee Tier 12 2pc effect. Prot T12 2pc spell.
