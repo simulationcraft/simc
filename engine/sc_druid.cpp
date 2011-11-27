@@ -73,14 +73,20 @@ struct druid_t : public player_t
 
   // DoTs
   dot_t* dots_insect_swarm;
+  dot_t* dots_insect_swarm2;
+  dot_t* dots_insect_swarm3;
   dot_t* dots_lacerate;
   dot_t* dots_lifebloom;
   dot_t* dots_moonfire;
+  dot_t* dots_moonfire2;
+  dot_t* dots_moonfire3;
   dot_t* dots_rake;
   dot_t* dots_regrowth;
   dot_t* dots_rejuvenation;
   dot_t* dots_rip;
   dot_t* dots_sunfire;
+  dot_t* dots_sunfire2;
+  dot_t* dots_sunfire3;
   dot_t* dots_wild_growth;
 
   // Gains
@@ -294,16 +300,22 @@ struct druid_t : public player_t
     cooldowns_mangle_bear    = get_cooldown( "mangle_bear"    );
     cooldowns_starsurge      = get_cooldown( "starsurge"      );
 
-    dots_insect_swarm = get_dot( "insect_swarm" );
-    dots_lacerate     = get_dot( "lacerate"     );
-    dots_lifebloom    = get_dot( "lifebloom"    );
-    dots_moonfire     = get_dot( "moonfire"     );
-    dots_rake         = get_dot( "rake"         );
-    dots_regrowth     = get_dot( "regrowth"     );
-    dots_rejuvenation = get_dot( "rejuvenation" );
-    dots_rip          = get_dot( "rip"          );
-    dots_sunfire      = get_dot( "sunfire"      );
-    dots_wild_growth  = get_dot( "wild_growth"  );
+    dots_insect_swarm  = get_dot( "insect_swarm"  );
+    dots_insect_swarm2 = get_dot( "insect_swarm2" );
+    dots_insect_swarm3 = get_dot( "insect_swarm3" );
+    dots_lacerate      = get_dot( "lacerate"      );
+    dots_lifebloom     = get_dot( "lifebloom"     );
+    dots_moonfire      = get_dot( "moonfire"      );
+    dots_moonfire2     = get_dot( "moonfire2"     );
+    dots_moonfire3     = get_dot( "moonfire3"     );
+    dots_rake          = get_dot( "rake"          );
+    dots_regrowth      = get_dot( "regrowth"      );
+    dots_rejuvenation  = get_dot( "rejuvenation"  );
+    dots_rip           = get_dot( "rip"           );
+    dots_sunfire       = get_dot( "sunfire"       );
+    dots_sunfire2      = get_dot( "sunfire2"      );
+    dots_sunfire3      = get_dot( "sunfire3"      );
+    dots_wild_growth   = get_dot( "wild_growth"   );
 
     cat_melee_attack = 0;
     bear_melee_attack = 0;
@@ -3589,8 +3601,8 @@ struct insect_swarm_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
 
-  insect_swarm_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "insect_swarm", 5570, p ),
+  insect_swarm_t( druid_t* p, const std::string& options_str, const char* name = "insect_swarm" ) :
+    druid_spell_t( name, 5570, p ),
     starsurge_cd( 0 )
   {
     parse_options( NULL, options_str );
@@ -3684,10 +3696,11 @@ struct mark_of_the_wild_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
+  dot_t* sf;
 
-  moonfire_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "moonfire", 8921, p ),
-    starsurge_cd( 0 )
+  moonfire_t( druid_t* p, const std::string& options_str, bool dtr=false, const char* name = "moonfire", dot_t* sf_=0 ) :
+    druid_spell_t( name, 8921, p ),
+    starsurge_cd( 0 ), sf( sf_ ? sf_ : p -> dots_sunfire )
   {
     parse_options( NULL, options_str );
 
@@ -3753,8 +3766,8 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      if ( p -> dots_sunfire -> ticking )
-        p -> dots_sunfire -> cancel();
+      if ( sf -> ticking )
+        sf -> cancel();
 
       if ( p -> talents.lunar_shower -> rank() )
       {
@@ -3884,10 +3897,13 @@ struct starfire_t : public druid_spell_t
 {
   std::string prev_str;
   int extend_moonfire;
+  dot_t* is;
+  dot_t* mf;
+  dot_t* sf;
 
-  starfire_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "starfire", 2912, p ),
-    extend_moonfire( 0 )
+  starfire_t( druid_t* p, const std::string& options_str, bool dtr=false, const char* name = "starfire", dot_t* is_ = 0, dot_t* mf_ = 0, dot_t* sf_ = 0 ) :
+    druid_spell_t( name, 2912, p ),
+    extend_moonfire( 0 ), is( is_ ? is_ : p -> dots_insect_swarm ), mf( mf_ ? mf_ : p -> dots_moonfire ), sf( sf_ ? sf_ : p -> dots_sunfire )
   {
     option_t options[] =
     {
@@ -3922,19 +3938,19 @@ struct starfire_t : public druid_spell_t
 
       if ( p -> glyphs.starfire -> enabled() )
       {
-        if ( p -> dots_moonfire -> ticking )
+        if ( mf -> ticking )
         {
-          if ( p -> dots_moonfire -> added_seconds < 9.0 )
-            p -> dots_moonfire -> extend_duration_seconds( 3.0 );
+          if ( mf -> added_seconds < 9.0 )
+            mf -> extend_duration_seconds( 3.0 );
           else
-            p -> dots_moonfire -> extend_duration_seconds( 0.0 );
+            mf -> extend_duration_seconds( 0.0 );
         }
-        else if ( p -> dots_sunfire -> ticking )
+        else if ( sf -> ticking )
         {
-          if ( p -> dots_sunfire -> added_seconds < 9.0 )
-            p -> dots_sunfire -> extend_duration_seconds( 3.0 );
+          if ( sf -> added_seconds < 9.0 )
+            sf -> extend_duration_seconds( 3.0 );
           else
-            p -> dots_sunfire -> extend_duration_seconds( 0.0 );
+            sf -> extend_duration_seconds( 0.0 );
         }
       }
 
@@ -3956,7 +3972,7 @@ struct starfire_t : public druid_spell_t
         {
           if ( p -> rng_euphoria -> roll( p -> talents.euphoria -> effect1().percent() ) )
           {
-            if ( !( p -> bugs && p -> eclipse_bar_value > 35 ) )
+            if ( ! ( p -> bugs && p -> eclipse_bar_value > 35 ) )
             {
               gain *= 2;
             }
@@ -3980,7 +3996,7 @@ struct starfire_t : public druid_spell_t
 
     // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
     // Starsurge, and Wrath spells against that target by 3%.
-    if ( p -> dots_insect_swarm -> ticking )
+    if ( is -> ticking )
       target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
   }
 
@@ -3993,14 +4009,14 @@ struct starfire_t : public druid_spell_t
       if ( ! p -> glyphs.starfire -> enabled() )
         return false;
 
-      if ( p -> dots_moonfire -> ticking )
+      if ( mf -> ticking )
       {
-        if ( p -> dots_moonfire -> added_seconds > 8 )
+        if ( mf -> added_seconds > 8 )
           return false;
       }
-      else if ( p -> dots_sunfire -> ticking )
+      else if ( sf -> ticking )
       {
-        if ( p -> dots_sunfire -> added_seconds > 8 )
+        if ( sf -> added_seconds > 8 )
           return false;
       }
       else
@@ -4214,12 +4230,13 @@ struct stealth_t : public spell_t
 struct sunfire_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
+  dot_t* mf;
 
   // Identical to moonfire, except damage type and usability
 
-  sunfire_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "sunfire", 93402, p ),
-    starsurge_cd( 0 )
+  sunfire_t( druid_t* p, const std::string& options_str, bool dtr=false, const char* name = "starfire", dot_t* mf_=0  ) :
+    druid_spell_t( name, 93402, p ),
+    starsurge_cd( 0 ), mf( mf_ ? mf_ : p -> dots_moonfire )
   {
     check_talent( p -> talents.sunfire -> rank() );
 
@@ -4287,8 +4304,8 @@ struct sunfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      if ( p -> dots_moonfire -> ticking )
-        p -> dots_moonfire -> cancel();
+      if ( mf -> ticking )
+        mf -> cancel();
 
       if ( p -> talents.lunar_shower -> rank() )
       {
@@ -4506,7 +4523,7 @@ struct wrath_t : public druid_spell_t
   std::string prev_str;
 
   wrath_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "wrath", 5176, p )
+    druid_spell_t( "wrath", 5176, p ), prev_str( "" )
   {
     option_t options[] =
     {
@@ -4689,6 +4706,8 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
   if ( name == "insect_swarm"           ) return new           insect_swarm_t( this, options_str );
+  if ( name == "insect_swarm2"          ) return new           insect_swarm_t( this, options_str, "insect_swarm2" );
+  if ( name == "insect_swarm3"          ) return new           insect_swarm_t( this, options_str, "insect_swarm3" );
   if ( name == "innervate"              ) return new              innervate_t( this, options_str );
   if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
   if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
@@ -4698,6 +4717,8 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "mark_of_the_wild"       ) return new       mark_of_the_wild_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
+  if ( name == "moonfire2"              ) return new               moonfire_t( this, options_str, false, "moonfire2", dots_sunfire2 );
+  if ( name == "moonfire3"              ) return new               moonfire_t( this, options_str, false, "moonfire3", dots_sunfire3 );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
   if ( name == "nourish"                ) return new                nourish_t( this, options_str );
@@ -4713,10 +4734,14 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
   if ( name == "skull_bash_cat"         ) return new         skull_bash_cat_t( this, options_str );
   if ( name == "starfire"               ) return new               starfire_t( this, options_str );
+  if ( name == "starfire2"              ) return new               starfire_t( this, options_str, false, "starfire2", dots_insect_swarm2, dots_moonfire2, dots_sunfire2 );
+  if ( name == "starfire3"              ) return new               starfire_t( this, options_str, false, "starfire3", dots_insect_swarm3, dots_moonfire3, dots_sunfire3 );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
   if ( name == "stealth"                ) return new                stealth_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
+  if ( name == "sunfire2"               ) return new                sunfire_t( this, options_str, false, "sunfire2",dots_moonfire2 );
+  if ( name == "sunfire3"               ) return new                sunfire_t( this, options_str, false, "sunfire3",dots_moonfire3 );
   if ( name == "survival_instincts"     ) return new     survival_instincts_t( this, options_str );
   if ( name == "swipe_bear"             ) return new             swipe_bear_t( this, options_str );
   if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );

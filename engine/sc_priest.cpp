@@ -2314,9 +2314,9 @@ struct mind_flay_t : public priest_spell_t
 
     option_t options[] =
     {
-      { "cut_for_mb",            OPT_BOOL, &cut_for_mb            },
-      { "mb_wait",               OPT_FLT,  &mb_wait               },
-      { "swp_refresh",           OPT_BOOL, &swp_refresh           },
+      { "cut_for_mb",  OPT_BOOL, &cut_for_mb  },
+      { "mb_wait",     OPT_FLT,  &mb_wait     },
+      { "swp_refresh", OPT_BOOL, &swp_refresh },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
