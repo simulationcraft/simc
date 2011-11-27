@@ -3895,7 +3895,6 @@ struct druids_swiftness_t : public druid_spell_t
 
 struct starfire_t : public druid_spell_t
 {
-  std::string prev_str;
   int extend_moonfire;
   dot_t* is;
   dot_t* mf;
@@ -3907,8 +3906,7 @@ struct starfire_t : public druid_spell_t
   {
     option_t options[] =
     {
-      { "extendmf", OPT_BOOL,   &extend_moonfire },
-      { "prev",     OPT_STRING, &prev_str        },
+      { "extendmf", OPT_BOOL, &extend_moonfire },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -4020,15 +4018,6 @@ struct starfire_t : public druid_spell_t
           return false;
       }
       else
-        return false;
-    }
-
-    if ( ! prev_str.empty() )
-    {
-      if ( ! p -> last_foreground_action )
-        return false;
-
-      if ( p -> last_foreground_action -> name_str != prev_str )
         return false;
     }
 
@@ -4520,17 +4509,10 @@ struct wild_mushroom_detonate_t : public druid_spell_t
 
 struct wrath_t : public druid_spell_t
 {
-  std::string prev_str;
-
   wrath_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "wrath", 5176, p ), prev_str( "" )
+    druid_spell_t( "wrath", 5176, p )
   {
-    option_t options[] =
-    {
-      { "prev",    OPT_STRING, &prev_str    },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
     if ( p -> primary_tree() == TREE_BALANCE )
@@ -4660,22 +4642,6 @@ struct wrath_t : public druid_spell_t
       p -> procs_wrong_eclipse_wrath -> occur();
 
     trigger_burning_treant( this );
-  }
-
-  virtual bool ready()
-  {
-    druid_t* p = player -> cast_druid();
-
-    if ( ! prev_str.empty() )
-    {
-      if ( ! p -> last_foreground_action )
-        return false;
-
-      if ( p -> last_foreground_action -> name_str != prev_str )
-        return false;
-    }
-
-    return druid_spell_t::ready();
   }
 };
 
@@ -5332,16 +5298,16 @@ void druid_t::init_actions()
       if ( set_bonus.tier12_4pc_caster() )
       {
         action_list_str += "/starfire,if=eclipse_dir=1&eclipse<75";
-        action_list_str += "/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-84";
+        action_list_str += "/starfire,if=prev.wrath=1&eclipse_dir=-1&eclipse<-84";
         action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-84";
-        action_list_str += "/wrath,prev=starfire,if=eclipse_dir=1&eclipse>=75";
+        action_list_str += "/wrath,if=prev.starfire=1&eclipse_dir=1&eclipse>=75";
       }
       else
       {
         action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
-        action_list_str += "/starfire,prev=wrath,if=eclipse_dir=-1&eclipse<-87";
+        action_list_str += "/starfire,if=prev.wrath=1&eclipse_dir=-1&eclipse<-87";
         action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-87";
-        action_list_str += "/wrath,prev=starfire,if=eclipse_dir=1&eclipse>=80";
+        action_list_str += "/wrath,if=prev.starfire=1&eclipse_dir=1&eclipse>=80";
       }
       action_list_str += "/starfire,if=eclipse_dir=1";
       action_list_str += "/wrath,if=eclipse_dir=-1";
