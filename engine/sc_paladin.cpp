@@ -1924,7 +1924,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
 
     if ( p -> set_bonus.tier12_2pc_tank() )
     {
-      righteous_flames = new righteous_flames_t( "righteous_flames", p );
+      righteous_flames = new righteous_flames_t( p );
       add_child( righteous_flames );
     }
   }
