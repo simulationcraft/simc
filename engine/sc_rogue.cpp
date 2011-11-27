@@ -3350,11 +3350,10 @@ void rogue_t::init_actions()
       }
       if ( talents.vendetta -> rank() )
       {
-        action_list_str += "/rupture,if=!ticking&time<6";
+        action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&time<6";
         action_list_str += "/vendetta";
       }
-      // XXX tweak Rupture/Envenom priorities to raise Rupture (and Envenom) uptime
-      action_list_str += "/rupture,if=!ticking&buff.slice_and_dice.remains>6";
+      action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6";
       if ( talents.cold_blood -> rank() )
         action_list_str += "/cold_blood,sync=envenom";
       action_list_str += "/envenom,if=combo_points>=4&buff.envenom.down";

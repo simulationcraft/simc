@@ -22,9 +22,9 @@ actions+=/berserking
 actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee|set_bonus.tier13_2pc_melee
 actions+=/garrote
 actions+=/slice_and_dice,if=buff.slice_and_dice.down
-actions+=/rupture,if=!ticking&time<6
+actions+=/rupture,if=(!ticking|ticks_remain<2)&time<6
 actions+=/vendetta
-actions+=/rupture,if=!ticking&buff.slice_and_dice.remains>6
+actions+=/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6
 actions+=/cold_blood,sync=envenom
 actions+=/envenom,if=combo_points>=4&buff.envenom.down
 actions+=/envenom,if=combo_points>=4&energy>90
