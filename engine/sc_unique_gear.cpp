@@ -1172,9 +1172,9 @@ static void register_spidersilk_spindle( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// register_bone_link_fetish ================================================
+// register_bonelink_fetish ================================================
 
-static void register_bone_link_fetish( item_t* item )
+static void register_bonelink_fetish( item_t* item )
 {
   player_t* p   = item -> player;
   bool heroic   = item -> heroic();
@@ -1182,7 +1182,7 @@ static void register_bone_link_fetish( item_t* item )
 
   uint32_t spell_id = heroic ? 109755 : lfr ? 109753 : 107998;
 
-  struct bone_link_fetish_callback_t : public action_callback_t
+  struct bonelink_fetish_callback_t : public action_callback_t
   {
     double chance;
     attack_t* attack;
@@ -1192,7 +1192,7 @@ static void register_bone_link_fetish( item_t* item )
     struct whirling_maw_t : public attack_t
     {
       whirling_maw_t( player_t* p, uint32_t spell_id ) :
-        attack_t( "bone_link_fetish", spell_id, p )
+        attack_t( "bonelink_fetish", spell_id, p )
       {
         trigger_gcd = 0;
         background = true;
@@ -1204,15 +1204,15 @@ static void register_bone_link_fetish( item_t* item )
       }
     };
 
-    bone_link_fetish_callback_t( player_t* p, uint32_t id ) :
+    bonelink_fetish_callback_t( player_t* p, uint32_t id ) :
       action_callback_t( p -> sim, p ), chance( p -> dbc.spell( id ) -> proc_chance() )
     {
       attack = new whirling_maw_t( p, p -> dbc.spell( id ) -> effect1().trigger_spell_id() );
 
-      cooldown = p -> get_cooldown( "bone_link_fetish" );
+      cooldown = p -> get_cooldown( "bonelink_fetish" );
       cooldown -> duration = 25.0; // 25 second ICD
 
-      rng = p -> get_rng ( "bone_link_fetish" );
+      rng = p -> get_rng ( "bonelink_fetish" );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1231,7 +1231,7 @@ static void register_bone_link_fetish( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new bone_link_fetish_callback_t( p, spell_id ) );
+  p -> register_attack_callback( RESULT_HIT_MASK, new bonelink_fetish_callback_t( p, spell_id ) );
 }
 
 // register_fury_of_the_beast ===============================================
@@ -1641,7 +1641,7 @@ void unique_gear_t::init( player_t* p )
     }
 
     if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
-    if ( ! strcmp( item.name(), "bone_link_fetish"                    ) ) register_bone_link_fetish                  ( &item );
+    if ( ! strcmp( item.name(), "bonelink_fetish"                     ) ) register_bonelink_fetish                   ( &item );
     if ( ! strcmp( item.name(), "darkmoon_card_greatness"             ) ) register_darkmoon_card_greatness           ( &item );
     if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
