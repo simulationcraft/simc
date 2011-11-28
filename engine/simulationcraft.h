@@ -4896,7 +4896,8 @@ struct action_callback_t
   bool allow_item_procs;
   bool allow_procs;
 
-  action_callback_t( sim_t* s, player_t* l, bool ap=false, bool aip=false, bool asp=false ) : sim( s ), listener( l ), active( true ), allow_self_procs( asp ), allow_item_procs( aip ), allow_procs( ap )
+  action_callback_t( sim_t* s, player_t* l, bool ap=false, bool aip=false, bool asp=false ) :
+    sim( s ), listener( l ), active( true ), allow_self_procs( asp ), allow_item_procs( aip ), allow_procs( ap )
   {
     if ( l )
     {

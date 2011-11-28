@@ -913,6 +913,10 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   if ( p -> dbc.ptr )
   {
     chance *= 0.67;
+
+    // Moonkin was nerfed to 8% http://elitistjerks.com/f73/t114017-balance_wrathcalcs/p14/#post2041883 and followup posts
+    if ( p -> primary_tree() == TREE_BALANCE )
+      chance = 0.08;
   }
 
   // Allow for override
