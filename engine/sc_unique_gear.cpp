@@ -1335,7 +1335,7 @@ static void register_gurthalak( item_t* item )
         hasted_ticks = false;
         proc = true;
         base_attack_power_multiplier = 1.0;
-        base_spell_power_multiplier = 1.0;
+        base_spell_power_multiplier = 0;
         init();
       }
 
