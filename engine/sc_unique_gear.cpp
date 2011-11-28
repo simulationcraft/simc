@@ -1331,9 +1331,20 @@ static void register_gurthalak( item_t* item )
         trigger_gcd = 0;
         background = true;
         may_miss = false;
-        may_crit = true;
+        tick_may_crit = true;
+        hasted_ticks = false;
         proc = true;
+        base_attack_power_multiplier = 1.0;
+        base_spell_power_multiplier = 1.0;
         init();
+      }
+
+      virtual void player_buff()
+      {
+        spell_t::player_buff();
+
+        // Doesn't appear to inherit any of the player's crit, crit debuff still works
+        player_crit = 0;
       }
     };
 
