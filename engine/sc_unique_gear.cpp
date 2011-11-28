@@ -1172,7 +1172,7 @@ static void register_spidersilk_spindle( item_t* item )
   p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// register_bonelink_fetish ================================================
+// register_bonelink_fetish =================================================
 
 static void register_bonelink_fetish( item_t* item )
 {
@@ -1200,6 +1200,7 @@ static void register_bonelink_fetish( item_t* item )
         may_crit = true;
         proc = true;
         aoe = -1;
+        direct_power_mod = extra_coeff();
         init();
       }
     };

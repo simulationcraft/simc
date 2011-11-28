@@ -785,7 +785,6 @@ struct righteous_flames_t : public paladin_spell_t
     may_miss         = false;
     proc             = true;
     may_crit         = false;
-    school = SCHOOL_FIRE; // FIXME: This can be removed once the DBC files are regened
   }
 
   virtual double calculate_direct_damage()
