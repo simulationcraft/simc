@@ -19,6 +19,7 @@ struct hunter_t : public player_t
   hunter_pet_t* active_pet;
   int           active_aspect;
   action_t*     active_piercing_shots;
+  action_t*     active_vishanka;
 
   // Buffs
   buff_t* buffs_aspect_of_the_hawk;
@@ -43,6 +44,7 @@ struct hunter_t : public player_t
 
   // Cooldowns
   cooldown_t* cooldowns_explosive_shot;
+  cooldown_t* cooldowns_vishanka;
 
   // Custom Parameters
   std::string summon_pet_str;
@@ -188,6 +190,7 @@ struct hunter_t : public player_t
 
   double merge_piercing_shots;
   double tier13_4pc_cooldown;
+  uint32_t vishanka;
 
   hunter_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, HUNTER, name, r )
   {
@@ -201,11 +204,13 @@ struct hunter_t : public player_t
     active_pet             = 0;
     active_aspect          = ASPECT_NONE;
     active_piercing_shots  = 0;
+    active_vishanka        = 0;
 
     merge_piercing_shots = 0;
 
     // Cooldowns
     cooldowns_explosive_shot = get_cooldown( "explosive_shot " );
+    cooldowns_vishanka       = get_cooldown( "vishanka"        );
 
     // Dots
     dots_serpent_sting = get_dot( "serpent_sting" );
@@ -218,6 +223,7 @@ struct hunter_t : public player_t
     flaming_arrow = NULL;
 
     tier13_4pc_cooldown = 45.0;
+    vishanka = 0;
 
     create_talents();
     create_glyphs();
@@ -266,7 +272,6 @@ struct hunter_t : public player_t
 
 struct hunter_pet_t : public pet_t
 {
-
   action_t* kill_command;
 
   struct talents_t
@@ -660,10 +665,7 @@ struct hunter_pet_t : public pet_t
   virtual void init_spells();
 };
 
-
 namespace { // ANONYMOUS NAMESPACE =========================================
-
-
 
 // ==========================================================================
 // Hunter Attack
@@ -716,23 +718,9 @@ struct hunter_attack_t : public attack_t
     }
   }
 
-  virtual void execute()
-  {
-    attack_t::execute();
-    hunter_t* p = player -> cast_hunter();
-
-    if ( p -> talents.improved_steady_shot -> rank() )
-      trigger_improved_steady_shot();
-
-    if ( p -> buffs_pre_improved_steady_shot -> stack() == 2 )
-    {
-      p -> buffs_improved_steady_shot -> trigger();
-      p -> buffs_pre_improved_steady_shot -> expire();
-    }
-  }
-
   virtual double cost() const;
   virtual void   consume_resource();
+  virtual void   execute();
   virtual double execute_time() const;
   virtual double swing_haste() const;
   virtual void   player_buff();
@@ -932,6 +920,46 @@ static void trigger_tier12_2pc_melee( attack_t* a )
   }
 }
 
+// trigger_vishanka =========================================================
+
+static void trigger_vishanka( attack_t* a )
+{
+  hunter_t* p = a -> player -> cast_hunter();
+
+  if ( ! p -> vishanka )
+    return;
+
+  if ( p -> cooldowns_vishanka -> remains() > 0 )
+    return;
+
+  if ( ! p -> active_vishanka )
+  {
+    struct vishanka_t : public hunter_attack_t
+    {
+      vishanka_t( hunter_t* p, uint32_t id ) :
+        hunter_attack_t( "vishanka_jaws_of_the_earth", p, id )
+      {
+        background  = true;
+        proc        = true;
+        trigger_gcd = 0;
+        init();
+
+        // FIX ME: Can this crit, miss, etc?
+      }
+    };
+
+    uint32_t id = p -> dbc.spell( p -> vishanka ) -> effect1().trigger_spell_id();
+    
+    p -> active_vishanka = new vishanka_t( p, id );
+  }
+
+  if ( a -> sim -> roll( p -> dbc.spell( p -> vishanka ) -> proc_chance() ) )
+  {
+    p -> active_vishanka -> execute();
+    p -> cooldowns_vishanka -> duration = 2.0; // Assume a ICD until testing proves one way or another
+    p -> cooldowns_vishanka -> start();
+  }
+}
 
 // ==========================================================================
 // Hunter Pet Attacks
@@ -1733,8 +1761,6 @@ struct tendon_rip_t : public hunter_pet_spell_t
 
 // Chimera Froststorm Breath ================================================
 
-
-
 struct froststorm_breath_t : public hunter_pet_spell_t
 {
   struct froststorm_breath_tick_t : public hunter_pet_spell_t
@@ -1800,6 +1826,8 @@ double hunter_attack_t::cost() const
 
   return c;
 }
+ 
+// hunter_attack_t::consume_resouce =========================================
 
 void hunter_attack_t::consume_resource()
 {
@@ -1820,18 +1848,24 @@ void hunter_attack_t::consume_resource()
   }
 }
 
-// hunter_attack_t::swing_haste =============================================
+// hunter_attack_t::execute =================================================
 
-double hunter_attack_t::swing_haste() const
+void hunter_attack_t::execute()
 {
+  attack_t::execute();
   hunter_t* p = player -> cast_hunter();
 
-  double h = attack_t::swing_haste();
+  if ( p -> talents.improved_steady_shot -> rank() )
+    trigger_improved_steady_shot();
 
-  if ( p -> buffs_improved_steady_shot -> up() )
-    h *= 1.0/ ( 1.0 + p -> talents.improved_steady_shot -> effect1().percent() );
+  if ( p -> buffs_pre_improved_steady_shot -> stack() == 2 )
+  {
+    p -> buffs_improved_steady_shot -> trigger();
+    p -> buffs_pre_improved_steady_shot -> expire();
+  }
 
-  return h;
+  if ( result_is_hit() )
+    trigger_vishanka( this );
 }
 
 // hunter_attack_t::execute_time ============================================
@@ -1862,6 +1896,20 @@ void hunter_attack_t::player_buff()
 
   if ( p -> buffs_culling_the_herd -> up() )
     player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect1().percent() );
+}
+
+// hunter_attack_t::swing_haste =============================================
+
+double hunter_attack_t::swing_haste() const
+{
+  hunter_t* p = player -> cast_hunter();
+
+  double h = attack_t::swing_haste();
+
+  if ( p -> buffs_improved_steady_shot -> up() )
+    h *= 1.0/ ( 1.0 + p -> talents.improved_steady_shot -> effect1().percent() );
+
+  return h;
 }
 
 // Ranged Attack ============================================================
@@ -4452,6 +4500,15 @@ void hunter_t::armory_extensions( const std::string& region,
 
 int hunter_t::decode_set( item_t& item )
 {
+  const char* s = item.name();
+
+  // Check for Vishanka, Jaws of the Earth
+  if ( item.slot == SLOT_RANGED && strstr( s, "vishanka_jaws_of_the_earth" ) )
+  {
+    // Store the spell id, not just if we have it or not
+    vishanka = item.heroic() ? 109859 : item.lfr() ? 109857 : 107822;
+  }
+
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&
        item.slot != SLOT_CHEST     &&
@@ -4460,9 +4517,7 @@ int hunter_t::decode_set( item_t& item )
   {
     return SET_NONE;
   }
-
-  const char* s = item.name();
-
+  
   if ( strstr( s, "lightningcharged"      ) ) return SET_T11_MELEE;
   if ( strstr( s, "flamewakers"           ) ) return SET_T12_MELEE;
   if ( strstr( s, "wyrmstalkers"          ) ) return SET_T13_MELEE;
