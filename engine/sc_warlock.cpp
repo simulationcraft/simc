@@ -2946,7 +2946,7 @@ struct conflagrate_t : public warlock_spell_t
 
     action_t* a = p -> dots_immolate -> action;
 
-    double periodic_dmg = a -> base_td + a -> total_power() * a -> tick_power_mod;
+    double periodic_dmg = a -> base_td + total_power() * a -> tick_power_mod;
 
     int periodic_ticks = p -> dots_immolate -> action -> hasted_num_ticks();
 
