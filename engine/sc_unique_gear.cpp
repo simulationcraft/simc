@@ -1197,6 +1197,7 @@ static void register_bonelink_fetish( item_t* item )
         trigger_gcd = 0;
         background = true;
         may_miss = false;
+        may_glance = false;
         may_crit = true;
         proc = true;
         aoe = -1;
