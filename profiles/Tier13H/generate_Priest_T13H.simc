@@ -34,6 +34,7 @@ trinket1=foo,id=77995
 trinket2=foo,id=77991
 tier13_2pc_heal=0
 tier13_2pc_caster=1
+modify_action=archangel,if=0
 save=Priest_Disc_Smite_T13H.simc
 
 
