@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior=Warrior_Fury_2h_T12H
-origin="Warrior_CharDevSync.simc"
+origin="generate_Warrior_T12H.simc"
 level=85
 race=worgen
 position=back
