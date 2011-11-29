@@ -793,6 +793,8 @@ void player_t::init()
 
 void player_t::init_base()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing base for player (%s)", name() );
+
   attribute_base[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_STRENGTH );
   attribute_base[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_AGILITY );
   attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_STAMINA );
@@ -818,6 +820,8 @@ void player_t::init_base()
 void player_t::init_items()
 {
   if ( is_pet() ) return;
+
+  if ( sim -> debug ) log_t::output( sim, "Initializing items for player (%s)", name() );
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, items_str, "/" );
@@ -931,6 +935,8 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util_t::parse_meta_gem_type( meta_gem_str );
 
+  if ( sim -> debug ) log_t::output( sim, "Initializing meta-gem for player (%s)", name() );
+
   if      ( meta_gem == META_AGILE_SHADOWSPIRIT         ) item_stats.attribute[ ATTR_AGILITY ] += 54;
   else if ( meta_gem == META_AUSTERE_EARTHSIEGE         ) item_stats.attribute[ ATTR_STAMINA ] += 32;
   else if ( meta_gem == META_AUSTERE_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_STAMINA ] += 81;
@@ -1014,6 +1020,8 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 
 void player_t::init_core()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing core for player (%s)", name() );
+
   initial_stats.  hit_rating = gear.  hit_rating + enchant.  hit_rating + ( is_pet() ? 0 : sim -> enchant.  hit_rating );
   initial_stats. crit_rating = gear. crit_rating + enchant. crit_rating + ( is_pet() ? 0 : sim -> enchant. crit_rating );
   initial_stats.haste_rating = gear.haste_rating + enchant.haste_rating + ( is_pet() ? 0 : sim -> enchant.haste_rating );
@@ -1034,6 +1042,8 @@ void player_t::init_core()
 
 void player_t::init_position()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing position for player (%s)", name() );
+
   if ( position_str.empty() )
   {
     position_str = util_t::position_type_string( position );
@@ -1056,6 +1066,8 @@ void player_t::init_position()
 
 void player_t::init_race()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing race for player (%s)", name() );
+
   if ( race_str.empty() )
   {
     race_str = util_t::race_type_string( race );
@@ -1070,6 +1082,8 @@ void player_t::init_race()
 
 void player_t::init_racials()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing racials for player (%s)", name() );
+
   if ( race == RACE_GNOME )
   {
     mana_per_intellect *= 1.05;
@@ -1080,6 +1094,8 @@ void player_t::init_racials()
 
 void player_t::init_spell()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing spells for player (%s)", name() );
+
   initial_stats.spell_power       = gear.spell_power       + enchant.spell_power       + ( is_pet() ? 0 : sim -> enchant.spell_power );
   initial_stats.spell_penetration = gear.spell_penetration + enchant.spell_penetration + ( is_pet() ? 0 : sim -> enchant.spell_penetration );
   initial_stats.mp5               = gear.mp5               + enchant.mp5               + ( is_pet() ? 0 : sim -> enchant.mp5 );
@@ -1115,6 +1131,8 @@ void player_t::init_spell()
 
 void player_t::init_attack()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing attack for player (%s)", name() );
+
   initial_stats.attack_power     = gear.attack_power     + enchant.attack_power     + ( is_pet() ? 0 : sim -> enchant.attack_power );
   initial_stats.expertise_rating = gear.expertise_rating + enchant.expertise_rating + ( is_pet() ? 0 : sim -> enchant.expertise_rating );
 
@@ -1146,6 +1164,8 @@ void player_t::init_attack()
 
 void player_t::init_defense()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing defense for player (%s)", name() );
+
   if ( type != ENEMY && type != ENEMY_ADD )
     base_dodge = dbc.dodge_base( type );
 
@@ -1187,6 +1207,7 @@ void player_t::init_weapon( weapon_t* w )
 
 void player_t::init_unique_gear()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing unique gear for player (%s)", name() );
   unique_gear_t::init( this );
 }
 
@@ -1194,6 +1215,7 @@ void player_t::init_unique_gear()
 
 void player_t::init_enchant()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing enchants for player (%s)", name() );
   enchant_t::init( this );
 }
 
@@ -1201,6 +1223,7 @@ void player_t::init_enchant()
 
 void player_t::init_resources( bool force )
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing resources for player (%s)", name() );
   // The first 20pts of intellect/stamina only provide 1pt of mana/health.
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
@@ -1260,6 +1283,8 @@ void player_t::init_professions()
 {
   if ( professions_str.empty() ) return;
 
+  if ( sim -> debug ) log_t::output( sim, "Initializing professions for player (%s)", name() );
+
   std::vector<std::string> splits;
   int size = util_t::string_split( splits, professions_str, ",/" );
 
@@ -1289,6 +1314,8 @@ void player_t::init_professions()
 
 void player_t::init_professions_bonus()
 {
+  if ( sim -> debug ) log_t::output( sim, "Initializing professions bonuses for player (%s)", name() );
+
   // This has to be called after init_attack() and init_core()
 
   // Miners gain additional stamina
