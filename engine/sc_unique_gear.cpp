@@ -1457,6 +1457,10 @@ static void register_nokaled( item_t* item )
       if ( a -> proc )
         return;
 
+      // Have to have a weapon to trigger
+      if ( ! a -> weapon )
+        return;
+
       // Only attacks from the weapon that have No'Kaled can trigger it
       if ( a -> weapon -> slot != slot )
         return;
