@@ -810,7 +810,7 @@ struct warlock_main_pet_t : public warlock_pet_t
 
     warlock_t* o = owner -> cast_warlock();
 
-    double mastery_value = ( dbc.ptr ) ? 230 : o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
+    double mastery_value = o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
 
     m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * mastery_value / 10000.0 );
 
@@ -1101,22 +1101,11 @@ public:
 
     if ( ! p -> talent_deaths_embrace -> rank() ) return 0;
 
-    if ( ! p -> dbc.ptr && p -> bugs )
+
+    // The target health percentage is ONLY contained in the Rank-1 version of the talent.
+    if ( s -> target -> health_percentage() <= p -> talent_deaths_embrace -> spell( 1 ).effect3().base_value() )
     {
-      // Tested on live 2010/07/10 to be 35% as opposed to the tooltip's stated 25%
-      // Tested on PTR  2011/10/19 to be fixed
-      if ( s -> target -> health_percentage() <= 35 )
-      {
-        return p -> talent_deaths_embrace -> effect2().percent();
-      }
-    }
-    else
-    {
-      // The target health percentage is ONLY contained in the Rank-1 version of the talent.
-      if ( s -> target -> health_percentage() <= p -> talent_deaths_embrace -> spell( 1 ).effect3().base_value() )
-      {
-        return p -> talent_deaths_embrace -> effect2().percent();
-      }
+      return p -> talent_deaths_embrace -> effect2().percent();
     }
 
     return 0;
@@ -1807,13 +1796,10 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       m  *= 1.05;
     }
 
-    double mastery_value = ( dbc.ptr ) ? 230 : o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
+    double mastery_value = o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
     
     double mastery_gain = ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * mastery_value / 10000.0 );
-    
-    //FIXME: Remove when 4.3 goes live
-    if ( ! dbc.ptr ) mastery_gain *= 3;
-    
+       
     m *= 1.0 + mastery_gain;
 
     return m;
@@ -2066,19 +2052,6 @@ struct bane_of_doom_t : public warlock_spell_t
     }
   }
 
-  virtual double total_td_multiplier() const
-  {
-    double m = warlock_spell_t::total_td_multiplier();
-    warlock_t* p = player -> cast_warlock();
-
-    if ( ! p -> dbc.ptr && p -> bugs && p -> buffs_shadow_embrace -> check() )
-    {
-      m /= 1.0 + p -> buffs_shadow_embrace -> check() * p -> buffs_shadow_embrace -> effect1().percent();
-    }
-
-    return m;
-  }
-
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
@@ -2287,7 +2260,7 @@ void trigger_burning_embers ( spell_t* s, double dmg )
 
     int num_ticks = p -> spells_burning_embers -> num_ticks;
 
-    double spmod = ( p -> dbc.ptr ) ? 0.7 : 0.425;
+    double spmod = 0.7;
 
     //FIXME: The 1.2 modifier to the adder was experimentally observed on live realms 2011/10/14
     double cap = ( spmod * p -> talent_burning_embers -> rank() * p -> composite_spell_power( SCHOOL_FIRE ) * p -> composite_spell_power_multiplier() + p -> talent_burning_embers -> effect_min( 2 ) * 1.2 ) / num_ticks;
@@ -3143,7 +3116,7 @@ struct soul_fire_t : public warlock_spell_t
     else if ( p -> buffs_soulburn -> check() )
     {
       p -> buffs_soulburn -> expire();
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+      if ( p -> set_bonus.tier13_4pc_caster() )
       {
         p -> resource_gain( RESOURCE_SOUL_SHARDS, 1, p -> gains_tier13_4pc );
       }
@@ -3183,7 +3156,7 @@ struct soul_fire_t : public warlock_spell_t
 
       trigger_decimation( this, impact_result );
 
-      if ( p -> dbc.ptr ) trigger_impending_doom( this );
+      trigger_impending_doom( this );
 
       trigger_soul_leech( this );
 
@@ -3493,10 +3466,10 @@ struct summon_infernal_t : public summon_pet_t
     summon_pet_t( "infernal", p, "Summon Infernal", options_str ),
     infernal_awakening( 0 )
   {
-    cooldown -> duration += ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
+    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
 
     summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
-    summoning_duration += ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() ) ? 
+    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ? 
       ( p -> talent_summon_felguard -> ok() ? 
         p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) : 
         p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) 
@@ -3527,7 +3500,7 @@ struct summon_doomguard2_t : public summon_pet_t
     harmful = false;
     background = true;
     summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
-    summoning_duration += ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() ) ? 
+    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ? 
       ( p -> talent_summon_felguard -> ok() ? 
         p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) : 
         p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) 
@@ -3556,7 +3529,7 @@ struct summon_doomguard_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
+    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
 
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p );
@@ -3888,12 +3861,12 @@ struct soulburn_t : public warlock_spell_t
     if ( p -> use_pre_soulburn || p -> in_combat )
     {
       p -> buffs_soulburn -> trigger();
-      if ( p -> dbc.ptr ) p -> buffs_tier13_4pc_caster -> trigger();
+      p -> buffs_tier13_4pc_caster -> trigger();
       // If this was a pre-combat soulburn, ensure we model the 3 seconds needed to regenerate the soul shard
       if ( ! p -> in_combat )
       {
         p -> buffs_soulburn -> extend_duration( p, -3 );
-        if ( p -> dbc.ptr && p -> buffs_tier13_4pc_caster -> check() ) p -> buffs_tier13_4pc_caster -> extend_duration( p, -3 );
+        if ( p -> buffs_tier13_4pc_caster -> check() ) p -> buffs_tier13_4pc_caster -> extend_duration( p, -3 );
       }
     }
 
@@ -4174,7 +4147,7 @@ double warlock_t::composite_spell_power_multiplier() const
 {
   double m = player_t::composite_spell_power_multiplier();
 
-  if ( dbc.ptr && buffs_tier13_4pc_caster -> up() )
+  if ( buffs_tier13_4pc_caster -> up() )
   {
     m *= 1.0 + dbc.spell( sets -> set ( SET_T13_4PC_CASTER ) -> effect_trigger_spell( 1 ) ) -> effect1().percent();
   }
@@ -4188,7 +4161,7 @@ double warlock_t::composite_player_multiplier( const school_type school, action_
 {
   double player_multiplier = player_t::composite_player_multiplier( school, a );
 
-  double mastery_value = ( dbc.ptr ) ? 230 : mastery_spells.master_demonologist -> effect_base_value( 3 );
+  double mastery_value = mastery_spells.master_demonologist -> effect_base_value( 3 );
 
   if ( buffs_metamorphosis -> up() )
   {
@@ -4555,8 +4528,7 @@ void warlock_t::init_buffs()
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
   buffs_tier11_4pc_caster     = new buff_t( this, sets -> set ( SET_T11_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier11_4pc_caster", sets -> set ( SET_T11_4PC_CASTER ) -> proc_chance() );
   buffs_tier12_4pc_caster     = new buff_t( this, sets -> set ( SET_T12_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier12_4pc_caster", sets -> set ( SET_T12_4PC_CASTER ) -> proc_chance() );
-  if ( dbc.ptr )
-    buffs_tier13_4pc_caster     = new buff_t( this, sets -> set ( SET_T13_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier13_4pc_caster", sets -> set ( SET_T13_4PC_CASTER ) -> proc_chance() );
+  buffs_tier13_4pc_caster     = new buff_t( this, sets -> set ( SET_T13_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier13_4pc_caster", sets -> set ( SET_T13_4PC_CASTER ) -> proc_chance() );
 }
 
 // warlock_t::init_values ======================================================
@@ -4689,7 +4661,7 @@ void warlock_t::init_actions()
       action_list_str += "/dark_intent";
 
     // Pre soulburn
-    if ( use_pre_soulburn && ( !dbc.ptr || !set_bonus.tier13_4pc_caster() ) )
+    if ( use_pre_soulburn && !set_bonus.tier13_4pc_caster() )
       action_list_str += "/soulburn,if=!in_combat";
 
     // Snapshot Stats
@@ -4732,7 +4704,7 @@ void warlock_t::init_actions()
 
     case TREE_AFFLICTION:
       if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
-      if ( dbc.ptr && set_bonus.tier13_4pc_caster() ) action_list_str += "/soulburn";
+      if ( set_bonus.tier13_4pc_caster() ) action_list_str += "/soulburn";
       action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
       action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
@@ -4741,11 +4713,11 @@ void warlock_t::init_actions()
       if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( level >= 75 ) action_list_str += "/shadowflame";
-      if ( dbc.ptr && set_bonus.tier13_4pc_caster() ) action_list_str += "/soul_fire,if=buff.soulburn.up";
+      if ( set_bonus.tier13_4pc_caster() ) action_list_str += "/soul_fire,if=buff.soulburn.up";
       if ( talent_bane -> rank() == 3 )
       {
         action_list_str += "/life_tap,mana_percentage<=35";
-        if ( ! dbc.ptr || ! set_bonus.tier13_4pc_caster() )
+        if ( ! set_bonus.tier13_4pc_caster() )
         {
           if ( glyphs.lash_of_pain -> ok() )
           {
@@ -4773,7 +4745,7 @@ void warlock_t::init_actions()
 
     case TREE_DESTRUCTION:
       if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
-      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+      if ( set_bonus.tier13_4pc_caster() )
       {
         action_list_str += "/soulburn";
         action_list_str += "/soul_fire,if=buff.soulburn.up&!in_combat";
@@ -4795,7 +4767,7 @@ void warlock_t::init_actions()
       if ( level >= 75 ) action_list_str += "/shadowflame";
       if ( talent_chaos_bolt -> ok() ) action_list_str += "/chaos_bolt,if=cast_time>0.9";
       if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
-      if ( dbc.ptr && set_bonus.tier13_4pc_caster() ) action_list_str += "/soul_fire,if=buff.soulburn.up";
+      if ( set_bonus.tier13_4pc_caster() ) action_list_str += "/soul_fire,if=buff.soulburn.up";
       if ( talent_improved_soul_fire -> ok() && level >= 54 )
       {
         action_list_str += "/soul_fire,if=((buff.empowered_imp.react&buff.empowered_imp.remains<(buff.improved_soul_fire.remains+action.soul_fire.travel_time))|buff.improved_soul_fire.remains<(cast_time+travel_time+action.incinerate.cast_time+gcd))&!in_flight";
@@ -4820,7 +4792,7 @@ void warlock_t::init_actions()
       action_list_str += "/felguard:felstorm";
       action_list_str += "/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking";
       action_list_str += "/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active";
-      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+      if ( set_bonus.tier13_4pc_caster() )
       {
         action_list_str += "/soulburn,if=pet.felhunter.active";
         if ( has_mwc ) action_list_str += "&cooldown.metamorphosis.remains>60";

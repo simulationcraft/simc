@@ -91,9 +91,9 @@
 
 #include "data_definitions.hh"
 
-#define SC_MAJOR_VERSION "422"
-#define SC_MINOR_VERSION "7"
-#define SC_USE_PTR ( 1 )
+#define SC_MAJOR_VERSION "430"
+#define SC_MINOR_VERSION "1"
+#define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 #define SC_EPSILON ( 0.000001 )
 #ifndef M_PI
@@ -115,7 +115,7 @@ struct buff_t;
 struct buff_uptime_t;
 struct callback_t;
 struct cooldown_t;
-class dbc_t;
+class  dbc_t;
 struct death_knight_t;
 struct druid_t;
 struct dot_t;

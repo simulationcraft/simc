@@ -1,6 +1,6 @@
 #define TALENT_SIZE (660)
 
-// 660 talents, wow build 14545
+// 660 talents, wow build 15005
 static struct talent_data_t __talent_data[] = {
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 }, 0, 0, 0 },
   { "Lightning Reflexes"                ,   186, 0x00,  1, 0x008, 0x0,     0,  0,  0,  2, { 13712, 13788, 13789 }, 0, 0, 0 },
@@ -619,7 +619,7 @@ static struct talent_data_t __talent_data[] = {
   { "Energetic Recovery"                , 11665, 0x00,  2, 0x008, 0x0,     0,  0,  0,  2, { 79150, 79151, 79152 }, 0, 0, 0 },
   { "Lightwell"                         , 11666, 0x00,  1, 0x010, 0x0,     0,  0,  2,  2, {   724,     0,     0 }, 0, 0, 0 },
   { "Chakra"                            , 11667, 0x00,  1, 0x010, 0x0,  9577,  1,  1,  4, { 14751,     0,     0 }, 0, 0, 0 },
-  { "State of Mind"                     , 11668, 0x00,  1, 0x010, 0x0, 11667,  0,  1,  5, { 87430, 87431,     0 }, 0, 0, 0 },
+  { "Heavenly Voice"                    , 11668, 0x00,  1, 0x010, 0x0, 11667,  0,  1,  5, { 87430, 87431,     0 }, 0, 0, 0 },
   { "Desperate Prayer"                  , 11669, 0x00,  1, 0x010, 0x0,     0,  0,  1,  1, { 19236,     0,     0 }, 0, 0, 0 },
   { "Spirit of Redemption"              , 11670, 0x00,  1, 0x010, 0x0,     0,  0,  2,  3, { 20711,     0,     0 }, 0, 0, 0 },
   { "Blessed Resilience"                , 11672, 0x00,  1, 0x010, 0x0,     0,  0,  3,  4, { 33142, 33145,     0 }, 0, 0, 0 },

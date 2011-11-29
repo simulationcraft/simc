@@ -1571,14 +1571,6 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
 
     cooldown -> duration = 8;
   }
-
-  virtual void execute()
-  {
-    paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::execute();
-    if ( ! p -> dbc.ptr )
-      p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * 0.15, p -> gains_seal_of_insight );
-  }
 };
 
 // Seal of Justice ==========================================================
@@ -1788,7 +1780,7 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= 1.0 + p -> buffs_censure -> stack() * ( p -> dbc.ptr ? 0.20 : 0.10 );
+    player_multiplier *= 1.0 + p -> buffs_censure -> stack() * 0.20;
   }
 };
 
@@ -1875,7 +1867,7 @@ struct judgement_t : public paladin_attack_t
       p -> buffs_judgements_of_the_pure -> trigger();
       p -> buffs_sacred_duty-> trigger();
 
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() )
+      if ( p -> set_bonus.tier13_2pc_melee() )
       {
         p -> resource_gain( RESOURCE_HOLY_POWER, 1, p -> gains_hp_judgement );
       }
@@ -2630,16 +2622,10 @@ struct holy_radiance_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
     
-    // FIXME: This is revamped on the PTR
-
-    // FIXME: This is an AoE Hot, which isn't supported currently
+     // FIXME: This is an AoE Hot, which isn't supported currently
     aoe = effect2().base_value();
 
-    if ( p -> dbc.ptr )
-      base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
-
-    if ( ! p -> dbc.ptr )
-      cooldown -> duration += p -> talents.speed_of_light -> effect3().seconds();
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
 
     hot = new holy_radiance_hot_t( p, effect1().trigger_spell_id() );
   }
@@ -2657,12 +2643,9 @@ struct holy_radiance_t : public paladin_heal_t
 
     paladin_heal_t::execute();
 
-    if ( p -> dbc.ptr )
-    {
-      p -> buffs_infusion_of_light -> expire();
-      if ( p -> talents.tower_of_radiance -> rank() )
-        p -> resource_gain( RESOURCE_HOLY_POWER, 1, p -> gains_hp_tower_of_radiance );
-    }
+    p -> buffs_infusion_of_light -> expire();
+    if ( p -> talents.tower_of_radiance -> rank() )
+      p -> resource_gain( RESOURCE_HOLY_POWER, 1, p -> gains_hp_tower_of_radiance );
   }
 
   virtual double execute_time() const
@@ -2671,7 +2654,7 @@ struct holy_radiance_t : public paladin_heal_t
 
     double t = paladin_heal_t::execute_time();
 
-    if ( p -> dbc.ptr && p -> buffs_infusion_of_light -> up() )
+    if ( p -> buffs_infusion_of_light -> up() )
       t += p -> buffs_infusion_of_light -> effect1().seconds();
 
     return t;
@@ -2771,8 +2754,7 @@ struct light_of_dawn_t : public paladin_heal_t
     parse_options( NULL, options_str );
 
     aoe = ( p -> glyphs.light_of_dawn -> ok() ) ? 6 : 5;
-    if ( p -> dbc.ptr )
-      aoe++;
+    aoe++;
   }
 
   virtual void player_buff()
@@ -3243,15 +3225,11 @@ void paladin_t::init_actions()
       if ( level >= 81 )
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(holy_power=3|buff.divine_purpose.react)";
       action_list_str += "/crusader_strike,if=holy_power<3";  // CS before TV if <3 power, even with DP up
-      if ( dbc.ptr )
-        action_list_str += "/judgement,if=set_bonus.tier13_2pc_melee&holy_power<3";
+      action_list_str += "/judgement,if=set_bonus.tier13_2pc_melee&holy_power<3";
       action_list_str += "/templars_verdict,if=buff.divine_purpose.react";
       action_list_str += "/templars_verdict,if=holy_power=3";
-      if ( ! dbc.ptr )
-        action_list_str += "/hammer_of_wrath";
       action_list_str += "/exorcism,if=buff.the_art_of_war.react";
-      if ( dbc.ptr )
-        action_list_str += "/hammer_of_wrath";
+      action_list_str += "/hammer_of_wrath";
       action_list_str += "/judgement";
       action_list_str += "/holy_wrath";
       action_list_str += "/consecration,if=mana>17000";  // Consecration is expensive, only use if we have plenty of mana
@@ -3649,7 +3627,7 @@ double paladin_t::matching_gear_multiplier( const attribute_type attr ) const
 void paladin_t::regen( double periodicity )
 {
   double orig_mrwc = mana_regen_while_casting;
-  if ( dbc.ptr && buffs_judgements_of_the_pure -> up() )
+  if ( buffs_judgements_of_the_pure -> up() )
     mana_regen_while_casting *= 1.0 + buffs_judgements_of_the_pure -> effect2().percent();
 
   player_t::regen( periodicity );

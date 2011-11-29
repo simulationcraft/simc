@@ -2452,7 +2452,7 @@ double player_t::composite_attack_power_multiplier() const
     {
       //FIXME: Since we don't currently model the difference between ranged and melee
       //       attack power, this ugly hack just checks if the player is a hunter instead.
-      m *= ( dbc.ptr && type != HUNTER ) ? 1.20 : 1.10;
+      m *= ( type != HUNTER ) ? 1.20 : 1.10;
     }
     else if ( ! is_enemy() && ! is_add() )
     {

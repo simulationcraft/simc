@@ -2095,9 +2095,6 @@ struct aimed_shot_t : public hunter_attack_t
     check_spec ( TREE_MARKSMANSHIP );
     parse_options( NULL, options_str );
 
-    if ( ! p -> dbc.ptr ) // In 4.3 tooltip correctly reflects 2.9s
-      base_execute_time = 2.90;
-
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
     normalize_weapon_speed = true;
@@ -2241,7 +2238,6 @@ struct arcane_shot_t : public hunter_attack_t
     {
       p -> buffs_cobra_strikes -> trigger( 2 );
 
-      // PTR
       // Needs testing
       p -> buffs_tier13_4pc -> trigger();
 
@@ -2472,17 +2468,13 @@ struct cobra_shot_t : public hunter_attack_t
 
     direct_power_mod = 0.017; // hardcoded into tooltip
 
-    if ( ! p -> dbc.ptr ) // In 4.3 tooltip correctly reflects 2s
-      base_execute_time = 2.0;
-
     if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
       base_execute_time -= 0.2;
 
     focus_gain = p -> dbc.spell( 77443 ) -> effect1().base_value();
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() )
+    if ( p -> set_bonus.tier13_2pc_melee() )
       focus_gain *= 2.0;
   }
 
@@ -2568,7 +2560,7 @@ struct explosive_shot_t : public hunter_attack_t
     crit_bonus = 0.5;
     crit_bonus_multiplier *= 2.0;
 
-    tick_power_mod = p -> dbc.ptr ? 0.273 : 0.232; // hardcoded into tooltip
+    tick_power_mod = 0.273; // hardcoded into tooltip
     tick_zero = true;
 
     consumes_tier12_4pc = true;
@@ -2912,9 +2904,6 @@ struct steady_shot_t : public hunter_attack_t
 
     direct_power_mod = 0.021; // hardcoded into tooltip
 
-    if ( ! p -> dbc.ptr ) // In 4.3 tooltip correctly reflects 2s
-      base_execute_time = 2.0;
-
     if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
       base_execute_time -= 0.2;
 
@@ -2923,9 +2912,8 @@ struct steady_shot_t : public hunter_attack_t
 
     focus_gain = p -> dbc.spell( 77443 ) -> effect1().base_value();
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() )
+    if ( p -> set_bonus.tier13_2pc_melee() )
       focus_gain *= 2.0;
   }
 
@@ -3896,7 +3884,7 @@ void hunter_t::init_buffs()
   buffs_killing_streak              = new buff_t( this, "killing_streak", 1, 8, 0, talents.killing_streak -> ok() );
   buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, 0, 0, 1.0, true );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect1().percent() );
-  if ( dbc.ptr && bugs ) buffs_lock_and_load -> cooldown -> duration = 10.0; // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
+  if ( bugs ) buffs_lock_and_load -> cooldown -> duration = 10.0; // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
   buffs_master_marksman_fire        = new buff_t( this, 82926, "master_marksman_fire", 1 );
   buffs_sniper_training             = new buff_t( this, talents.sniper_training -> rank() == 3 ? 64420 : talents.sniper_training -> rank() == 2 ? 64419 : talents.sniper_training -> rank() == 1 ? 64418 : 0, "sniper_training", talents.sniper_training -> rank() );
@@ -4084,7 +4072,7 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3";
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
-      if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
+      if ( set_bonus.tier13_4pc_melee() )
       {
         action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
         action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up|target.health_pct>90";
@@ -4222,8 +4210,7 @@ double hunter_t::composite_attack_haste() const
   h *= 1.0 / ( 1.0 + talents.pathing -> effect1().percent() );
   h *= 1.0 / ( 1.0 + buffs_focus_fire -> value() );
   h *= 1.0 / ( 1.0 + buffs_rapid_fire -> value() );
-  if ( dbc.ptr )
-    h *= 1.0 / ( 1.0 + buffs_tier13_4pc -> up() * buffs_tier13_4pc -> effect1().percent() );
+  h *= 1.0 / ( 1.0 + buffs_tier13_4pc -> up() * buffs_tier13_4pc -> effect1().percent() );
   return h;
 }
 

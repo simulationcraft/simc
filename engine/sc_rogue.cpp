@@ -1135,7 +1135,7 @@ double rogue_attack_t::cost() const
   if ( c <= 0 )
     return 0;
 
-  if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && p -> buffs_tier13_2pc -> up() )
+  if ( p -> set_bonus.tier13_2pc_melee() && p -> buffs_tier13_2pc -> up() )
     c *= 1.0 + p -> spells.tier13_2pc -> effect1().percent();
 
   return c;
@@ -2209,9 +2209,6 @@ struct mutilate_strike_t : public rogue_attack_t
 
     rogue_t* p = player -> cast_rogue();
 
-    if ( target -> debuffs.poisoned && ! p -> dbc.ptr )
-      player_multiplier *= 1.20; // XXX: I'm sure it's there somehwere; or not
-
     p -> uptimes_poisoned -> update( target -> debuffs.poisoned > 0 );
   }
 };
@@ -2634,7 +2631,7 @@ struct shadow_dance_t : public rogue_attack_t
     add_trigger_buff( p -> buffs_shadow_dance );
 
     p -> buffs_shadow_dance -> buff_duration += p -> glyphs.shadow_dance -> mod_additive( P_DURATION );
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
+    if ( p -> set_bonus.tier13_4pc_melee() )
       p -> buffs_shadow_dance -> buff_duration += p -> spells.tier13_4pc -> effect1().seconds();
 
     parse_options( NULL, options_str );
@@ -3092,7 +3089,7 @@ struct adrenaline_rush_buff_t : public buff_t
     // and because of restless blades have to remove it here
     cooldown -> duration = 0;
     buff_duration += p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION );
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
+    if ( p -> set_bonus.tier13_4pc_melee() )
       buff_duration += p -> spells.tier13_4pc -> effect2().seconds();
   }
 
@@ -3237,7 +3234,7 @@ struct vendetta_buff_t : public buff_t
     buff_t( p, id, "vendetta" )
   {
     buff_duration *= 1.0 + p -> glyphs.vendetta -> mod_additive( P_DURATION );
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() )
+    if ( p -> set_bonus.tier13_4pc_melee() )
       buff_duration += p -> spells.tier13_4pc -> effect3().seconds();
   }
 
@@ -3685,11 +3682,8 @@ void rogue_t::init_spells()
   mastery_main_gauche     = new mastery_t( this, "main_gauche",        76806, TREE_COMBAT );
   mastery_executioner     = new mastery_t( this, "executioner",        76808, TREE_SUBTLETY );
 
-  if ( dbc.ptr )
-  {
-    spells.tier13_2pc       = spell_data_t::find( 105864, "Tricks of Time", dbc.ptr );
-    spells.tier13_4pc       = spell_data_t::find( 105865, "Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta)", dbc.ptr );
-  }
+  spells.tier13_2pc       = spell_data_t::find( 105864, "Tricks of Time", dbc.ptr );
+  spells.tier13_4pc       = spell_data_t::find( 105865, "Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta)", dbc.ptr );
 
   glyphs.adrenaline_rush     = find_glyph( "Glyph of Adrenaline Rush"     );
   glyphs.ambush              = find_glyph( "Glyph of Ambush"              );
@@ -3848,7 +3842,7 @@ void rogue_t::init_buffs()
   buffs_stealthed          = new buff_t( this, "stealthed",     1  );
   buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
 
-  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, dbc.ptr ? spells.tier13_2pc -> duration() : 6.0, 0.0, ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
+  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, spells.tier13_2pc -> duration(), 0.0, ( set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
   buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
 
   buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );

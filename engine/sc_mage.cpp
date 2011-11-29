@@ -1418,8 +1418,7 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( result_is_hit() )
     {
-      // PTR
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+      if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 1 );
 
       if ( ! target -> debuffs.snared() )
@@ -1628,7 +1627,7 @@ struct arcane_power_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
 
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+    if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + 
         p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect1().seconds() *
         (1.0 + p -> talents.arcane_flows -> effect1().percent());
@@ -1739,7 +1738,7 @@ struct combustion_t : public mage_spell_t
 
     orig_duration = cooldown -> duration;
 
-    may_trigger_dtr = p -> dbc.ptr; // Disable the dot ticks procing DTR, fixed on PTR
+    may_trigger_dtr = true;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1767,7 +1766,7 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( p -> dots_living_bomb    ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
     base_td += calculate_dot_dps( p -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
 
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+    if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect2().seconds();
 
     mage_spell_t::execute();
@@ -2034,8 +2033,7 @@ struct fireball_t : public mage_spell_t
     trigger_tier12_mirror_image( this );
     if ( result_is_hit() )
     {
-      // PTR
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+      if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
@@ -2292,8 +2290,7 @@ struct frostbolt_t : public mage_spell_t
     {
       trigger_replenishment( this );
 
-      // PTR
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+      if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
 
       if ( result == RESULT_CRIT )
@@ -2410,8 +2407,7 @@ struct frostfire_bolt_t : public mage_spell_t
     trigger_tier12_mirror_image( this );
     if ( result_is_hit() )
     {
-      // PTR
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+      if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
@@ -2598,7 +2594,7 @@ struct icy_veins_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+    if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration +
         p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect3().seconds() *
         (1.0 + p -> talents.ice_floes -> effect1().percent());
@@ -2916,8 +2912,7 @@ struct pyroblast_t : public mage_spell_t
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
 
-      // PTR
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+      if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
@@ -2957,8 +2952,7 @@ struct pyroblast_hs_t : public mage_spell_t
       target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
       target -> debuffs.critical_mass -> source = p;
 
-      // PTR
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+      if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
@@ -3517,10 +3511,7 @@ void mage_t::init_spells()
 
   spells.blink = spell_data_t::find( 1953, "Blink", dbc.ptr );
 
-  if ( dbc.ptr )
-  {
-    spells.stolen_time = spell_data_t::find( 105791, "Stolen Time", dbc.ptr );
-  }
+  spells.stolen_time = spell_data_t::find( 105791, "Stolen Time", dbc.ptr );
 
   memset( ( void* ) &specializations, 0x00, sizeof( specializations_t ) );
 
@@ -3852,7 +3843,7 @@ void mage_t::init_actions()
         action_list_str += "/arcane_torrent,if=mana_pct<91&(buff.arcane_power.up|target.time_to_die<120)";
       }
       //Mana Gem
-      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+      if ( set_bonus.tier13_4pc_caster() )
       {
         action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4&buff.tier13_2pc.stack>=7&(cooldown.arcane_power.remains<=0|target.time_to_die<=50)";
       }
@@ -3866,7 +3857,7 @@ void mage_t::init_actions()
       //Arcane Power
       if ( talents.arcane_power -> rank() )
       {
-        if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+        if ( set_bonus.tier13_4pc_caster() )
         {
           action_list_str += "/arcane_power,if=(buff.improved_mana_gem.up&buff.tier13_2pc.stack>=9)|(buff.tier13_2pc.stack>=10&cooldown.mana_gem.remains>30&cooldown.evocation.remains>10)|target.time_to_die<=50";
         }
@@ -3888,7 +3879,7 @@ void mage_t::init_actions()
         action_list_str += "/arcane_blast,if=buff.presence_of_mind.up";
       }
 
-      if ( dbc.ptr && set_bonus.tier13_4pc_caster() )
+      if ( set_bonus.tier13_4pc_caster() )
       {
         action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|buff.improved_mana_gem.up|cooldown.mana_gem.remains<5)&mana_pct>=22)|(buff.arcane_power.up&mana_pct_nonproc>88)";
       }

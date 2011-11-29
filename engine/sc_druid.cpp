@@ -1468,7 +1468,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
       }
     }
 
-    double health_percentage = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() ) ? 60.0 : p -> talents.blood_in_the_water -> base_value();
+    double health_percentage = ( p -> set_bonus.tier13_2pc_melee() ) ? 60.0 : p -> talents.blood_in_the_water -> base_value();
     if ( result_is_hit() && target -> health_percentage() <= health_percentage )
     {
       // Proc chance is not stored in the talent anymore
@@ -1545,7 +1545,7 @@ struct frenzied_regeneration_buff_t : public buff_t
           if ( p -> buffs_frenzied_regeneration -> check() )
           {
             int rage_consumed = ( int ) ( std::min( p -> resource_current[ RESOURCE_RAGE ], 10.0 ) );
-            double health_pct = ( p -> dbc.ptr ) ? p -> dbc.spell( 22842 ) -> effect1().percent() / 100 : 0.30 / 100; // Value is really 30, fixed on PTR
+            double health_pct = p -> dbc.spell( 22842 ) -> effect1().percent() / 100;
             double rage_health = rage_consumed * health_pct * p -> resource_max[ RESOURCE_HEALTH ];
             p -> resource_gain( RESOURCE_HEALTH, rage_health, p -> gains_frenzied_regeneration );
             p -> resource_loss( RESOURCE_RAGE, rage_consumed );
@@ -1561,7 +1561,7 @@ struct frenzied_regeneration_buff_t : public buff_t
       // FIXME: Glyph should increase healing received
     }
 
-    double health_pct = ( p -> dbc.ptr ) ? effect2().percent() : 0.30; // Value is really 30, fixed on PTR
+    double health_pct = effect2().percent(); 
 
     health_gain = ( int ) floor( player -> resource_max[ RESOURCE_HEALTH ] * health_pct );
     p -> stat_gain( STAT_MAX_HEALTH, health_gain );
@@ -1660,7 +1660,7 @@ struct mangle_cat_t : public druid_cat_attack_t
     {
       druid_t* p = player -> cast_druid();
 
-      if ( p -> dbc.ptr && p -> glyphs.shred -> enabled() &&
+      if ( p -> glyphs.shred -> enabled() &&
            p -> dots_rip -> ticking  &&
            p -> dots_rip -> added_ticks < 4 )
       {
@@ -1689,7 +1689,7 @@ struct mangle_cat_t : public druid_cat_attack_t
   {
     druid_t* p = player -> cast_druid();
 
-    if ( p -> dbc.ptr && extend_rip )
+    if ( extend_rip )
       if ( ! p -> glyphs.shred -> enabled() ||
            ! p -> dots_rip -> ticking ||
            ( p -> dots_rip -> added_ticks == 4 ) )
@@ -1864,7 +1864,7 @@ struct rip_t : public druid_cat_attack_t
     may_crit              = false;
     base_multiplier      *= 1.0 + p -> glyphs.rip -> mod_additive( P_TICK_DAMAGE );
 
-    dot_behavior          = DOT_REFRESH; // Tested on PTR server.
+    dot_behavior          = DOT_REFRESH; 
   }
 
   virtual void execute()
@@ -4110,7 +4110,7 @@ struct starsurge_t : public druid_spell_t
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+    if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration -= 5.0;
 
     starfall_cd = p -> get_cooldown( "starfall" );
@@ -4864,7 +4864,7 @@ void druid_t::init_spells()
   glyphs.rejuvenation          = find_glyph( "Glyph of Rejuvenation" );
   glyphs.rip                   = find_glyph( "Glyph of Rip" );
   glyphs.savage_roar           = find_glyph( "Glyph of Savage Roar" );
-  glyphs.shred                 = dbc.ptr ? find_glyph( "Glyph of Bloodletting" ) : find_glyph( "Glyph of Shred" );
+  glyphs.shred                 = find_glyph( "Glyph of Bloodletting" );
   glyphs.starfall              = find_glyph( "Glyph of Starfall" );
   glyphs.starfire              = find_glyph( "Glyph of Starfire" );
   glyphs.starsurge             = find_glyph( "Glyph of Starsurge" );
@@ -4940,7 +4940,7 @@ void druid_t::init_buffs()
   buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
   buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
   buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
-  buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1,  10.0,     0, ( dbc.ptr && set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
+  buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1,  10.0,     0, ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
   buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 1.0, true );
 
   // buff_t ( sim, id, name, chance, cooldown, quiet, reverse, rng_type )
@@ -5161,7 +5161,7 @@ void druid_t::init_actions()
       }
       else
       {
-        std::string bitw_hp = ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? "60" : "25";
+        std::string bitw_hp = ( set_bonus.tier13_2pc_melee() ) ? "60" : "25";
         if ( level > 80 )
         {
           action_list_str += "flask,type=winds";

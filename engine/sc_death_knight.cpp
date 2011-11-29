@@ -597,7 +597,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       background  = true;
       trigger_gcd = 0;
-      direct_power_mod = 0.23; // issue510. tooltips updated in 4.3 (ptr)
+      direct_power_mod = 0.23; 
       base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level ); // Values are saved in a not automatically parsed sub-effect
       base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
       base_multiplier *= 1 + o -> glyphs.death_coil -> effect1().percent();
@@ -958,7 +958,7 @@ struct army_ghoul_pet_t : public pet_t
     pet_t::summon( duration );
     // Pets don't seem to inherit their master's crit at the moment.
     // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
-    snapshot_crit     = o -> dbc.ptr ? o -> composite_attack_crit() : o -> composite_pet_attack_crit();
+    snapshot_crit     = o -> composite_attack_crit();
     snapshot_haste    = o -> composite_attack_haste();
     snapshot_speed    = o -> composite_attack_speed();
     snapshot_hit      = o -> composite_attack_hit();
@@ -1124,7 +1124,7 @@ struct gargoyle_pet_t : public pet_t
     // Not sure what the % is, but 2-6% with 5% crit debuff seems on par. Hord to crunch numbers with samples of 30/60 hits.
     // for now, for live, going with 0 base crit %, but boosted by crit debuff.
     //snapshot_spell_crit = o -> dbc.ptr ? o -> composite_spell_crit() : o -> composite_pet_attack_crit();
-    snapshot_spell_crit = o -> dbc.ptr ? o -> composite_spell_crit() : 0;
+    snapshot_spell_crit = o -> composite_spell_crit();
 
   }
 
@@ -1321,7 +1321,7 @@ struct ghoul_pet_t : public pet_t
     pet_t::summon( duration );
     // Pets don't seem to inherit their master's crit at the moment.
     // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
-    snapshot_crit     = o -> dbc.ptr ? o -> composite_attack_crit() : o -> composite_pet_attack_crit();
+    snapshot_crit     = o -> composite_attack_crit();
     snapshot_haste    = o -> composite_attack_haste();
     snapshot_speed    = o -> composite_attack_speed();
     snapshot_hit      = o -> composite_attack_hit();
@@ -1338,7 +1338,7 @@ struct ghoul_pet_t : public pet_t
 
     if ( o -> primary_tree() == TREE_UNHOLY )
     {
-      return o -> dbc.ptr ? snapshot_crit : o -> composite_pet_attack_crit();
+      return snapshot_crit;
     }
     else
     {
@@ -2101,12 +2101,12 @@ struct melee_t : public death_knight_attack_t
       {
         // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
         // Ensure that if we have 1 that we only refresh, not add another stack
-        int new_stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent() ) ) ? 2 : 1;
+        int new_stacks = ( p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent() ) ) ? 2 : 1;
 
         if ( sim -> roll( weapon -> proc_chance_on_swing( p -> talents.sudden_doom -> rank() ) ) )
         {
           // If we're proccing 2 or we have 0 stacks, trigger like normal
-          if ( ! p -> dbc.ptr || new_stacks == 2 || p -> buffs_sudden_doom -> check() == 0 )
+          if ( new_stacks == 2 || p -> buffs_sudden_doom -> check() == 0 )
           {
             p -> buffs_sudden_doom -> trigger( new_stacks );
           }
@@ -2606,7 +2606,7 @@ struct death_coil_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.23; // issue510. tooltips updated in 4.3 (ptr)
+    direct_power_mod = 0.23;
     base_dd_min      = p -> dbc.effect_min( effect_id( 1 ), p -> level );
     base_dd_max      = p -> dbc.effect_max( effect_id( 1 ), p -> level );
 
@@ -3291,12 +3291,12 @@ struct obliterate_t : public death_knight_attack_t
 
       // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
       // Ensure that if we have 1 that we only refresh, not add another stack
-      int new_stacks = ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effect2().percent() ) ) ? 2 : 1;
+      int new_stacks = ( p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effect2().percent() ) ) ? 2 : 1;
 
       if ( sim -> roll( p -> talents.rime -> proc_chance() ) )
       {
         // If we're proccing 2 or we have 0 stacks, trigger like normal
-        if ( ! p -> dbc.ptr || new_stacks == 2 || p -> buffs_rime -> check() == 0 )
+        if ( new_stacks == 2 || p -> buffs_rime -> check() == 0 )
         {
           p -> buffs_rime -> trigger( new_stacks );
         }
@@ -4729,11 +4729,11 @@ void death_knight_t::init_buffs()
   buffs_frost_presence      = new buff_t( this, "frost_presence", "Frost Presence" );
   buffs_killing_machine     = new buff_t( this, 51124, "killing_machine" ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost", "Pillar of Frost" );
-  buffs_rime                = new buff_t( this, "rime", ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 2 : 1, 30.0, 0.0, 1.0 ); // Trigger controls proc chance
+  buffs_rime                = new buff_t( this, "rime", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, 30.0, 0.0, 1.0 ); // Trigger controls proc chance
   buffs_runic_corruption    = new buff_t( this, 51460, "runic_corruption" );
   buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  20.0,  0.0, talents.scent_of_blood -> proc_chance() );
   buffs_shadow_infusion     = new buff_t( this, 91342, "shadow_infusion", talents.shadow_infusion -> proc_chance() );
-  buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( dbc.ptr && set_bonus.tier13_2pc_melee() ) ? 2 : 1, 10.0, 0.0, 1.0 );
+  buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, 10.0, 0.0, 1.0 );
   buffs_tier11_4pc_melee    = new buff_t( this, 90507, "tier11_4pc_melee", set_bonus.tier11_4pc_melee() );
   buffs_tier13_4pc_melee    = new stat_buff_t( this, 105647, "tier13_4pc_melee", STAT_MASTERY_RATING, dbc.spell( 105647 ) -> effect1().base_value() );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence", "Unholy Presence" );
@@ -5139,7 +5139,7 @@ void death_knight_t::trigger_runic_empowerment()
     else
       buffs_runic_corruption -> trigger();
 
-    if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
+    if ( set_bonus.tier13_4pc_melee() )
       buffs_tier13_4pc_melee -> trigger( 1, 0, 0.40 );
 
     return;
@@ -5165,7 +5165,7 @@ void death_knight_t::trigger_runic_empowerment()
     if ( sim -> log ) log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
     proc_runic_empowerment -> occur();
 
-    if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
+    if ( set_bonus.tier13_4pc_melee() )
       buffs_tier13_4pc_melee -> trigger( 1, 0, 0.25 );
   }
   else

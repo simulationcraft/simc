@@ -436,7 +436,7 @@ struct spirit_wolf_pet_t : public pet_t
       attack_t::execute();
       
       // Two independent chances to proc it since we model 2 wolf pets as 1 ..
-      if ( player -> dbc.ptr && result_is_hit() )
+      if ( result_is_hit() )
       {
         if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effect1().percent() ) )
         {
@@ -1125,10 +1125,6 @@ static void trigger_flametongue_weapon( attack_t* a )
     ft -> base_attack_power_multiplier = 0;
   }
 
-  // Add a very slight cooldown to flametongue weapon to prevent overly good results
-  // when using FT/FT combo and near-synced attacks. This should model in-game results
-  // decently as well. See EJ Shaman forum for more information.
-  if ( ! p -> dbc.ptr ) p -> cooldowns_flametongue_weapon -> start( 0.15 );
 
   ft -> execute();
 }
@@ -2062,16 +2058,6 @@ void shaman_spell_t::execute()
 
     if ( school == SCHOOL_FIRE )
       p -> buffs_unleash_flame -> expire();
-
-    if ( ! p -> dbc.ptr )
-    {
-      if ( p -> cooldowns_t12_2pc_caster -> remains() == 0 &&
-           p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
-      {
-        p -> cooldowns_fire_elemental_totem -> reset();
-        p -> cooldowns_t12_2pc_caster -> start( 105.0 );
-      }
-    }
   }
 
   // Record maelstrom weapon stack usage
@@ -2220,7 +2206,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     shaman_spell_t::player_buff();
     
-    if ( p -> dbc.ptr && p -> buffs_maelstrom_weapon -> up() )
+    if ( p -> buffs_maelstrom_weapon -> up() )
       player_multiplier *= 1.0 + p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent();
   }
 
@@ -2243,7 +2229,7 @@ struct chain_lightning_t : public shaman_spell_t
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
       {
         overload -> execute();
-        if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+        if ( p -> set_bonus.tier13_4pc_caster() )
           p -> buffs_tier13_4pc_caster -> trigger();
       }
     }
@@ -2300,7 +2286,7 @@ struct elemental_mastery_t : public shaman_spell_t
 
     p -> buffs_elemental_mastery_insta -> trigger();
     p -> buffs_elemental_mastery       -> trigger();
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+    if ( p -> set_bonus.tier13_2pc_caster() )
       p -> buffs_tier13_2pc_caster     -> trigger();
   }
 };
@@ -2454,7 +2440,7 @@ struct lava_burst_t : public shaman_spell_t
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
       {
         overload -> execute();
-        if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+        if ( p -> set_bonus.tier13_4pc_caster() )
           p -> buffs_tier13_4pc_caster -> trigger();
       }
     }
@@ -2504,7 +2490,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     shaman_spell_t::player_buff();
     
-    if ( p -> dbc.ptr && p -> buffs_maelstrom_weapon -> up() )
+    if ( p -> buffs_maelstrom_weapon -> up() )
       player_multiplier *= 1.0 + p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent();
   }
 
@@ -2517,7 +2503,7 @@ struct lightning_bolt_t : public shaman_spell_t
     p -> buffs_elemental_mastery_insta -> expire();
 
     p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
-    if ( p -> dbc.ptr && p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
+    if ( p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
       p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
     }
@@ -2562,7 +2548,7 @@ struct lightning_bolt_t : public shaman_spell_t
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
       {
         overload -> execute();
-        if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+        if ( p -> set_bonus.tier13_4pc_caster() )
           p -> buffs_tier13_4pc_caster -> trigger();
       }
 
@@ -3579,7 +3565,7 @@ struct flametongue_weapon_t : public shaman_spell_t
 
     // Spell damage scaling is defined in "Flametongue Weapon (Passive), id 10400"
     bonus_power  = p -> dbc.effect_average( p -> dbc.spell( 10400 ) -> effect2().id(), p -> level );
-    if ( p -> dbc.ptr ) bonus_power /= 100.0;
+    bonus_power /= 100.0;
     bonus_power *= 1.0 + p -> talent_elemental_weapons -> effect1().percent();
     harmful      = false;
     may_miss     = false;
@@ -4218,11 +4204,8 @@ void shaman_t::init_scaling()
     scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors;
     scales_with[ STAT_HIT_RATING2           ] = 1;
     scales_with[ STAT_SPIRIT                ] = 0;
-    if ( dbc.ptr )
-    {
-      scales_with[ STAT_SPELL_POWER         ] = 0;
-      scales_with[ STAT_INTELLECT           ] = 0;
-    }
+    scales_with[ STAT_SPELL_POWER           ] = 0;
+    scales_with[ STAT_INTELLECT             ] = 0;
   }
 
   // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
@@ -4410,8 +4393,6 @@ void shaman_t::init_actions()
       action_list_str += "/auto_attack";
       action_list_str += "/wind_shear";
       action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
-      if ( ! dbc.ptr ) 
-        action_list_str += "/flame_shock,previous_action=lava_burst,if=buff.unleash_flame.up";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
@@ -4430,15 +4411,13 @@ void shaman_t::init_actions()
       action_list_str += "/searing_totem";
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       action_list_str += "/lava_lash";
-      if ( dbc.ptr && set_bonus.tier13_4pc_melee() )
+      if ( set_bonus.tier13_4pc_melee() )
         action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
       else
         action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
       if ( level > 80 )
       {
         action_list_str += "/unleash_elements";
-        if ( ! dbc.ptr ) 
-          action_list_str += "/lava_burst,if=cooldown.shock.remains<cast_time&dot.flame_shock.remains>cast_time+travel_time&buff.unleash_flame.remains>cast_time";
       }
       action_list_str += "/flame_shock,if=!ticking|buff.unleash_flame.up";
       action_list_str += "/earth_shock";
@@ -4710,27 +4689,11 @@ double shaman_t::composite_spell_power( const school_type school ) const
 {
   double sp = 0;
   
-  if ( ! dbc.ptr )
-  {
-    sp = player_t::composite_spell_power( school );
-
-    if ( primary_tree() == TREE_ENHANCEMENT )
-      sp += composite_attack_power_multiplier() * composite_attack_power() * spec_mental_quickness -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER );
-
-    if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-      sp += main_hand_weapon.buff_value;
-
-    if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-      sp += off_hand_weapon.buff_value;
-  }
+  if ( primary_tree() == TREE_ENHANCEMENT )
+    sp = composite_attack_power_multiplier() * composite_attack_power() * spec_mental_quickness -> base_value( E_APPLY_AURA, A_366 ) / 100.0;
   else
   {
-    if ( primary_tree() == TREE_ENHANCEMENT )
-      sp = composite_attack_power_multiplier() * composite_attack_power() * spec_mental_quickness -> base_value( E_APPLY_AURA, A_366 ) / 100.0;
-    else
-    {
-      sp = player_t::composite_spell_power( school );
-    }
+    sp = player_t::composite_spell_power( school );
   }
 
   return sp;
@@ -4740,7 +4703,7 @@ double shaman_t::composite_spell_power( const school_type school ) const
 
 double shaman_t::composite_spell_power_multiplier() const
 {
-  if ( dbc.ptr && primary_tree() == TREE_ENHANCEMENT )
+  if ( primary_tree() == TREE_ENHANCEMENT )
     return 1.0;
 
   return player_t::composite_spell_power_multiplier();
@@ -4755,7 +4718,7 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
     m *= 1.0 + composite_mastery() * mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
     
-  if ( school != SCHOOL_PHYSICAL && dbc.ptr )
+  if ( school != SCHOOL_PHYSICAL )
   {
     if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + main_hand_weapon.buff_value;
@@ -4769,19 +4732,9 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
 double shaman_t::composite_spell_crit() const
 {
   double v = player_t::composite_spell_crit();
-  if ( ! dbc.ptr )
-  {
-    if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-      v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
 
-    if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-      v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
-  }
-  else
-  {
-    if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE || off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-      v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
-  }
+  if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE || off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+    v += glyph_flametongue_weapon -> mod_additive( P_EFFECT_3 ) / 100.0;
 
   return v;
 }

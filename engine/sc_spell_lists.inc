@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (64)
 #define CLASS_ABILITY_TREE_SIZE (4)
 
-// Class based active abilities, wow build 14545
+// Class based active abilities, wow build 15005
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -93,8 +93,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // Holy tree, 17 abilities
+    // Holy tree, 18 abilities
     {
+      31821, // Aura Mastery
       53563, // Beacon of Light
        4987, // Cleanse
       19746, // Concentration Aura
@@ -114,12 +115,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       85673, // Word of Glory
           0,
     },
-    // Protection tree, 21 abilities
+    // Protection tree, 22 abilities
     {
       31850, // Ardent Defender
       31935, // Avenger's Shield
       20217, // Blessing of Kings
         465, // Devotion Aura
+      70940, // Divine Guardian
         498, // Divine Protection
         642, // Divine Shield
       86150, // Guardian of Ancient Kings
@@ -163,7 +165,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // Beast Mastery tree, 19 abilities
+    // Beast Mastery tree, 20 abilities
     {
        5118, // Aspect of the Cheetah
       82661, // Aspect of the Fox
@@ -178,6 +180,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       83244, // Call Pet 4
       83245, // Call Pet 5
       82726, // Fervor
+      82692, // Focus Fire
       19577, // Intimidation
       34026, // Kill Command
         136, // Mend Pet
@@ -205,7 +208,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       19801, // Tranquilizing Shot
           0,
     },
-    // Survival tree, 18 abilities
+    // Survival tree, 19 abilities
     {
        3674, // Black Arrow
       51753, // Camouflage
@@ -214,6 +217,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       19263, // Deterrence
       53301, // Explosive Shot
       13813, // Explosive Trap (Fire)
+       5384, // Feign Death
        1499, // Freezing Trap (Frost)
       13809, // Ice Trap (Frost)
       13795, // Immolation Trap (Fire)
@@ -297,10 +301,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Rogue
   {
-    // Assassination tree, 16 abilities
+    // Assassination tree, 17 abilities
     {
        8676, // Ambush
        1833, // Cheap Shot
+      14177, // Cold Blood
        2818, // Deadly Poison
       26679, // Deadly Throw
       51722, // Dismantle
@@ -335,7 +340,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        1752, // Sinister Strike
           0,
     },
-    // Subtlety tree, 12 abilities
+    // Subtlety tree, 13 abilities
     {
        2094, // Blind
       31224, // Cloak of Shadows
@@ -344,6 +349,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       14185, // Preparation
       73981, // Redirect
        6770, // Sap
+      51713, // Shadow Dance
       36554, // Shadowstep
       76577, // Smoke Bomb
        1784, // Stealth
@@ -431,7 +437,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // Blood tree, 15 abilities
+    // Blood tree, 16 abilities
     {
       48721, // Blood Boil
       48263, // Blood Presence
@@ -448,6 +454,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       50842, // Pestilence
       48982, // Rune Tap
       47476, // Strangulate
+      55233, // Vampiric Blood
           0,
     },
     // Frost tree, 14 abilities
@@ -860,7 +867,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (4)
 
-// Talent tree specialization abilities, wow build 14545
+// Talent tree specialization abilities, wow build 15005
 static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1118,7 +1125,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
 
 #define CLASS_MASTERY_ABILITY_SIZE (4)
 
-// Class mastery abilities, wow build 14545
+// Class mastery abilities, wow build 15005
 static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
   {
         0,
@@ -1203,7 +1210,7 @@ static unsigned __class_mastery_ability_data[][CLASS_MASTERY_ABILITY_SIZE] = {
 #define CLASS_SIZE (12)
 #endif
 
-// Racial abilities, wow build 14545
+// Racial abilities, wow build 15005
 static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1367,7 +1374,11 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
           0,
     },
     {     0, },
-    {     0, },
+    // Racial abilities for Mage class
+    {
+      21009, // Elusiveness
+          0,
+    },
     {     0, },
     {     0, },
     // Racial abilities for Druid class
@@ -1836,7 +1847,7 @@ static unsigned __race_ability_data[][CLASS_SIZE][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (18)
 
-// Glyph spells for classes, wow build 14545
+// Glyph spells for classes, wow build 15005
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2064,12 +2075,13 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       63237, // Glyph of Spirit Tap
           0,
     },
-    // Minor Glyphs (6 spells)
+    // Minor Glyphs (7 spells)
     {
       57985, // Glyph of Fading
       58009, // Glyph of Fortitude
       57987, // Glyph of Levitate
       57986, // Glyph of Shackle Undead
+      107906, // Glyph of Shadow
       58015, // Glyph of Shadow Protection
       58228, // Glyph of Shadowfiend
           0,
@@ -2333,6 +2345,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     // Prime Glyphs (16 spells)
     {
       62969, // Glyph of Berserk
+      54815, // Glyph of Bloodletting
       54830, // Glyph of Insect Swarm
       94382, // Glyph of Lacerate
       54826, // Glyph of Lifebloom
@@ -2342,7 +2355,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       54754, // Glyph of Rejuvenation
       54818, // Glyph of Rip
       63055, // Glyph of Savage Roar
-      54815, // Glyph of Shred
       54845, // Glyph of Starfire
       62971, // Glyph of Starsurge
       54824, // Glyph of Swiftmend
@@ -2358,7 +2370,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (11)
 
-// Tier item set bonuses for class, wow build 14545
+// Tier item set bonuses for class, wow build 15005
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -2383,7 +2395,12 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99242, // Molten Giant Battleplate - 4 Piece Bonus (Item - Warrior T12 Protection 4P Bonus)
           0,
     },
+    // Tier 13 bonuses (4 spells)
     {
+      105797, // Colossal Dragonplate Battlegear - 2 Piece Bonus (Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage))
+      105907, // Colossal Dragonplate Battlegear - 4 Piece Bonus (Item - Warrior T13 Arms and Fury 4P Bonus (Colossus Smash))
+      105908, // Colossal Dragonplate Armor - 2 Piece Bonus (Item - Warrior T13 Protection 2P Bonus (Revenge))
+      105911, // Colossal Dragonplate Armor - 4 Piece Bonus (Item - Warrior T13 Protection 4P Bonus (Shield Wall))
           0,
     },
     {
@@ -2410,8 +2427,14 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99093, // Battleplate of Immolation - 2 Piece Bonus (Item - Paladin T12 Retribution 2P Bonus)
       99116, // Battleplate of Immolation - 4 Piece Bonus (Item - Paladin T12 Retribution 4P Bonus)
     },
+    // Tier 13 bonuses (6 spells)
     {
-          0,
+      105743, // Regalia of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Holy 2P Bonus (Divine Favor))
+      105744, // Armor of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Protection 4P Bonus (Divine Guardian))
+      105765, // Battleplate of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Retribution 2P Bonus (Judgement))
+      105798, // Regalia of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Holy 4P Bonus (Holy Radiance))
+      105800, // Armor of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Protection 2P Bonus (Judgement))
+      105820, // Battleplate of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Retribution 4P Bonus (Zealotry))
     },
     {
           0,
@@ -2431,7 +2454,10 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99059, // Flamewaker's Battlegear - 4 Piece Bonus (Item - Hunter T12 4P Bonus)
           0,
     },
+    // Tier 13 bonuses (2 spells)
     {
+      105732, // Wyrmstalker Battlegear - 2 Piece Bonus (Item - Hunter T13 2P Bonus (Steady Shot and Cobra Shot))
+      105921, // Wyrmstalker Battlegear - 4 Piece Bonus (Item - Hunter T13 4P Bonus (Arcane Shot))
           0,
     },
     {
@@ -2452,7 +2478,10 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99175, // Vestments of the Dark Phoenix - 4 Piece Bonus (Item - Rogue T12 4P Bonus)
           0,
     },
+    // Tier 13 bonuses (2 spells)
     {
+      105849, // Blackfang Battleweave - 2 Piece Bonus (Item - Rogue T13 2P Bonus (Tricks of the Trade))
+      105865, // Blackfang Battleweave - 4 Piece Bonus (Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta))
           0,
     },
     {
@@ -2477,7 +2506,12 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99157, // Regalia of the Cleansing Flame - 4 Piece Bonus (Item - Priest T12 Shadow 4P Bonus)
           0,
     },
+    // Tier 13 bonuses (4 spells)
     {
+      105827, // Vestments of Dying Light - 2 Piece Bonus (Item - Priest T13 Healer 2P Bonus (Power Infusion and Lightwell))
+      105832, // Vestments of Dying Light - 4 Piece Bonus (Item - Priest T13 Healer 4P Bonus (Holy Word and Power Word: Shield))
+      105843, // Regalia of Dying Light - 2 Piece Bonus (Item - Priest T13 Shadow 2P Bonus (Shadow Word: Death))
+      105844, // Regalia of Dying Light - 4 Piece Bonus (Item - Priest T13 Shadow 4P Bonus (Shadowfiend and Shadowy Apparition))
           0,
     },
     {
@@ -2502,7 +2536,12 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       98996, // Elementium Deathplate Battlegear - 4 Piece Bonus (Item - Death Knight T12 DPS 4P Bonus)
           0,
     },
+    // Tier 13 bonuses (4 spells)
     {
+      105552, // Necrotic Boneplate Armor - 2 Piece Bonus (Item - Death Knight T13 Blood 2P Bonus)
+      105587, // Necrotic Boneplate Armor - 4 Piece Bonus (Item - Death Knight T13 Blood 4P Bonus)
+      105609, // Necrotic Boneplate Battlegear - 2 Piece Bonus (Item - Death Knight T13 DPS 2P Bonus)
+      105646, // Necrotic Boneplate Battlegear - 4 Piece Bonus (Item - Death Knight T13 DPS 4P Bonus)
           0,
     },
     {
@@ -2529,8 +2568,14 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99209, // Volcanic Battlegear - 2 Piece Bonus (Item - Shaman T12 Enhancement 2P Bonus)
       99213, // Volcanic Battlegear - 4 Piece Bonus (Item - Shaman T12 Enhancement 4P Bonus)
     },
+    // Tier 13 bonuses (6 spells)
     {
-          0,
+      105764, // Spiritwalker's Vestments - 2 Piece Bonus (Item - Shaman T13 Restoration 2P Bonus (Mana Tide))
+      105780, // Spiritwalker's Regalia - 2 Piece Bonus (Item - Shaman T13 Elemental 2P Bonus (Elemental Mastery))
+      105816, // Spiritwalker's Regalia - 4 Piece Bonus (Item - Shaman T13 Elemental 4P Bonus (Elemental Overload))
+      105866, // Spiritwalker's Battlegear - 2 Piece Bonus (Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon))
+      105872, // Spiritwalker's Battlegear - 4 Piece Bonus (Item - Shaman T13 Enhancement 4P Bonus (Feral Spirits))
+      105876, // Spiritwalker's Vestments - 4 Piece Bonus (Item - Shaman T13 Restoration 4P Bonus (Spiritwalker's Grace))
     },
     {
           0,
@@ -2550,7 +2595,10 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99064, // Firehawk Robes of Conflagration - 4 Piece Bonus (Item - Mage T12 4P Bonus)
           0,
     },
+    // Tier 13 bonuses (2 spells)
     {
+      105788, // Time Lord's Regalia - 2 Piece Bonus (Item - Mage T13 2P Bonus (Haste Rating))
+      105790, // Time Lord's Regalia - 4 Piece Bonus (Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins))
           0,
     },
     {
@@ -2571,7 +2619,10 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99229, // Balespider's Burning Vestments - 4 Piece Bonus (Item - Warlock T12 4P Bonus)
           0,
     },
+    // Tier 13 bonuses (2 spells)
     {
+      105787, // Vestments of the Faceless Shroud - 4 Piece Bonus (Item - Warlock T13 4P Bonus (Soulburn))
+      105888, // Vestments of the Faceless Shroud - 2 Piece Bonus (Item - Warlock T13 2P Bonus (Doomguard and Infernal))
           0,
     },
     {
@@ -2603,8 +2654,14 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       99019, // Obsidian Arborweave Regalia - 2 Piece Bonus (Item - Druid T12 Balance 2P Bonus)
       99049, // Obsidian Arborweave Regalia - 4 Piece Bonus (Item - Druid T12 Balance 4P Bonus)
     },
+    // Tier 13 bonuses (6 spells)
     {
-          0,
+      105715, // Deep Earth Vestments - 2 Piece Bonus (Item - Druid T13 Restoration 2P Bonus (Innervate))
+      105717, // Deep Earth Regalia - 4 Piece Bonus (Item - Druid T13 Balance 4P Bonus (Starsurge))
+      105722, // Deep Earth Regalia - 2 Piece Bonus (Item - Druid T13 Balance 2P Bonus (Insect Swarm))
+      105725, // Deep Earth Battlegarb - 2 Piece Bonus (Item - Druid T13 Feral 2P Bonus (Savage Defense and Blood In The Water))
+      105735, // Deep Earth Battlegarb - 4 Piece Bonus (Item - Druid T13 Feral 4P Bonus (Frenzied Regeneration and Stampede))
+      105770, // Deep Earth Vestments - 4 Piece Bonus (Item - Druid T13 Restoration 4P Bonus (Rejuvenation))
     },
     {
           0,

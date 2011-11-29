@@ -909,15 +909,12 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     break;
   }
 
-  // FIXME: 4.3 PTR nerf seems to be roughly a halving of the proc chance - only tested warlocks so far, 2011/10/26
-  if ( p -> dbc.ptr )
-  {
-    chance *= 0.67;
+  // 4.3 PTR nerf seems to be roughly a 2/3rding of the proc chance - only tested warlocks so far, 2011/10/26
+  chance *= 0.67;
 
-    // Moonkin was nerfed to 8% http://elitistjerks.com/f73/t114017-balance_wrathcalcs/p14/#post2041883 and followup posts
-    if ( p -> primary_tree() == TREE_BALANCE )
-      chance = 0.08;
-  }
+  // Moonkin was nerfed to 8% http://elitistjerks.com/f73/t114017-balance_wrathcalcs/p14/#post2041883 and followup posts
+  if ( p -> primary_tree() == TREE_BALANCE )
+    chance = 0.08;
 
   // Allow for override
   if ( p -> dtr_proc_chance >= 0.0 )

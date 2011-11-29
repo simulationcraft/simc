@@ -1726,9 +1726,8 @@ struct heroic_strike_t : public warrior_attack_t
     double c = warrior_attack_t::cost();
     warrior_t* p = player -> cast_warrior();
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() && p -> buffs_inner_rage -> check() )
+    if ( p -> set_bonus.tier13_2pc_melee() && p -> buffs_inner_rage -> check() )
     {
       c -= 10.0;
     }
@@ -1741,9 +1740,8 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t::consume_resource();
     warrior_t* p = player -> cast_warrior();
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_melee() )
+    if ( p -> set_bonus.tier13_2pc_melee() )
       p -> buffs_inner_rage -> up();
   }
 
@@ -1823,7 +1821,7 @@ struct mortal_strike_t : public warrior_attack_t
 
       trigger_tier12_4pc_melee( this );
 
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
+      if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
       {
         p -> buffs_colossus_smash -> trigger();
         p -> procs_tier13_4pc_melee -> occur();
@@ -2011,7 +2009,7 @@ struct raging_blow_t : public warrior_attack_t
       }
 
       // PTR - is this triggered per attack or once
-      if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
+      if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
       {
         p -> buffs_colossus_smash -> trigger();
         p -> procs_tier13_4pc_melee -> occur();
@@ -2134,9 +2132,8 @@ struct revenge_t : public warrior_attack_t
       base_add_multiplier = p -> talents.improved_revenge -> rank() * 0.50;
     }
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_tank() )
+    if ( p -> set_bonus.tier13_2pc_tank() )
     {
       absorb_stats = p -> get_stats( name_str + "_tier13_2pc" );
       absorb_stats -> type = STATS_ABSORB;
@@ -2158,7 +2155,6 @@ struct revenge_t : public warrior_attack_t
     warrior_attack_t::impact( t, impact_result, travel_dmg );
     warrior_t* p = player -> cast_warrior();
 
-    // PTR
     // Needs testing
     if ( absorb_stats )
     {

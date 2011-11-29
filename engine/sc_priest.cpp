@@ -491,7 +491,6 @@ public:
       c  = floor( c );
     }
 
-    // PTR
     // Needs testing
     c *= 1.0 + p -> buffs_tier13_2pc_heal -> check() * -0.25;
     c  = floor( c );
@@ -507,7 +506,6 @@ public:
 
     if ( base_execute_time <= 0.0 )
       p -> buffs_inner_will -> up();
-    // PTR
     // Needs testing
     p -> buffs_tier13_2pc_heal -> up();
   }
@@ -689,7 +687,6 @@ struct priest_heal_t : public heal_t
       c  = floor( c );
     }
 
-    // PTR
     // Needs testing
     c *= 1.0 + p -> buffs_tier13_2pc_heal -> check() * -0.25;
     c  = floor( c );
@@ -705,7 +702,6 @@ struct priest_heal_t : public heal_t
 
     if ( base_execute_time <= 0.0 )
       p -> buffs_inner_will -> up();
-    // PTR
     // Needs testing
     p -> buffs_tier13_2pc_heal -> up();
   }
@@ -1157,9 +1153,8 @@ struct shadow_fiend_pet_t : public pet_t
 
       attack_t::impact( t, result, dmg );
 
-      // PTR
       // Needs testing
-      if ( o -> dbc.ptr && o -> set_bonus.tier13_4pc_caster() )
+      if ( o -> set_bonus.tier13_4pc_caster() )
       {
         o -> buffs_shadow_orb -> trigger( 3, 1, 1.0 );
       }
@@ -1474,9 +1469,8 @@ struct shadowy_apparition_t : public priest_spell_t
     priest_spell_t::impact( t, result, dmg );
 
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_caster() )
+    if ( p -> set_bonus.tier13_4pc_caster() )
     {
       p -> buffs_shadow_orb -> trigger( 3, 1, 1.0 );
     }
@@ -1973,7 +1967,6 @@ struct power_infusion_t : public priest_spell_t
 
     target -> buffs.power_infusion -> trigger();
 
-    // PTR
     // Needs testing
     p -> buffs_tier13_2pc_heal -> trigger();
   }
@@ -2439,7 +2432,6 @@ struct mind_spike_t : public priest_spell_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration  = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -2580,16 +2572,15 @@ struct shadow_word_death_t : public priest_spell_t
 
     double health_loss = travel_dmg * ( 1.0 - p -> talents.pain_and_suffering -> rank() * 0.20 );
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )
+    if ( p -> set_bonus.tier13_2pc_caster() )
     {
       health_loss *= 1.0 - p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) / 100.0;
     }
 
     p -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
 
-    if ( ( ( health_loss > 0.0 ) || ( p -> dbc.ptr && p -> set_bonus.tier13_2pc_caster() )  ) && p -> talents.masochism -> rank() )
+    if ( ( ( health_loss > 0.0 ) || ( p -> set_bonus.tier13_2pc_caster() )  ) && p -> talents.masochism -> rank() )
     {
       p -> resource_gain( RESOURCE_MANA, p -> talents.masochism -> effect1().percent() * p -> resource_max[ RESOURCE_MANA ], p -> gains_masochism );
     }
@@ -2879,7 +2870,6 @@ struct smite_t : public priest_spell_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
 
@@ -3002,7 +2992,6 @@ struct binding_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3051,12 +3040,8 @@ struct circle_of_healing_t : public priest_heal_t
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost  = floor( base_cost );
 
-    // FIXME: PTR
-    if ( p -> dbc.ptr )
-    {
-      base_cost *= 1.0 + p -> glyphs.circle_of_healing -> effect2().percent();
-      base_cost  = floor( base_cost );
-    }
+    base_cost *= 1.0 + p -> glyphs.circle_of_healing -> effect2().percent();
+    base_cost  = floor( base_cost );
   }
 
   virtual void execute()
@@ -3115,10 +3100,7 @@ struct divine_hymn_tick_t : public priest_heal_t
 
     background  = true;
 
-    if ( p -> dbc.ptr )
-    {
-      base_multiplier *= 1.0 + p -> talents.heavenly_voice -> effect1().percent();
-    }
+    base_multiplier *= 1.0 + p -> talents.heavenly_voice -> effect1().percent();
   }
 
   virtual void execute()
@@ -3162,10 +3144,7 @@ struct divine_hymn_t : public priest_heal_t
     harmful = false;
     channeled = true;
 
-    if ( p -> dbc.ptr )
-    {
-      cooldown -> duration += p -> talents.heavenly_voice -> effect2().seconds();
-    }
+    cooldown -> duration += p -> talents.heavenly_voice -> effect2().seconds();
 
     divine_hymn_tick = new divine_hymn_tick_t( p );
     divine_hymn_tick -> target_count = effect2().base_value();
@@ -3227,7 +3206,6 @@ struct flash_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3376,7 +3354,6 @@ struct greater_heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3474,7 +3451,6 @@ struct _heal_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3561,10 +3537,8 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect1().percent();
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr )
-      cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
+    cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
   }
 
   virtual void tick( dot_t* d )
@@ -3598,10 +3572,8 @@ struct holy_word_chastise_t : public priest_spell_t
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect1().percent();
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr )
-      cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
+    cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
   }
 
   virtual bool ready()
@@ -3637,10 +3609,8 @@ struct holy_word_serenity_t : public priest_heal_t
 
     cooldown -> duration *= 1.0 + p -> talents.tome_of_light -> effect1().percent();
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr )
-      cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
+    cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
   }
 
   virtual void execute()
@@ -3750,7 +3720,6 @@ struct lightwell_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    // PTR
     // Needs testing
     p -> buffs_tier13_2pc_heal -> trigger();
 
@@ -3908,9 +3877,8 @@ struct power_word_shield_t : public priest_absorb_t
 
     priest_absorb_t::player_buff();
 
-    // PTR
     // Needs testing
-    if ( p -> dbc.ptr && p -> set_bonus.tier13_4pc_heal() )
+    if ( p -> set_bonus.tier13_4pc_heal() )
       if ( p -> rng_tier13_4pc_heal -> roll( 0.1 ) )
         player_multiplier *= 2.0;
   }
@@ -4052,7 +4020,6 @@ struct prayer_of_healing_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -4187,7 +4154,6 @@ struct prayer_of_mending_t : public priest_heal_t
 
       p -> cooldowns_chakra -> reset();
       p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> duration += ( ! p -> dbc.ptr ) ? p -> talents.state_of_mind -> effect1().seconds() : 0.0;
       p -> cooldowns_chakra -> start();
     }
   }
@@ -4731,14 +4697,7 @@ void priest_t::init_talents()
   talents.chakra                      = find_talent( "Chakra" );
   talents.revelations                 = find_talent( "Revelations" );
   talents.test_of_faith               = find_talent( "Test of Faith" );
-  if ( dbc.ptr )
-  {
-    talents.heavenly_voice              = find_talent( "Heavenly Voice" );
-  }
-  else
-  {
-    talents.state_of_mind               = find_talent( "State of Mind" );
-  }
+  talents.heavenly_voice              = find_talent( "Heavenly Voice" );
   talents.circle_of_healing           = find_talent( "Circle of Healing" );
   talents.guardian_spirit             = find_talent( "Guardian Spirit" );
 
@@ -4854,7 +4813,7 @@ void priest_t::init_buffs()
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
-  buffs_tier13_2pc_heal            = new buff_t( this, "tier13_2pc_heal", 1, 0, ( primary_tree() == TREE_DISCIPLINE ) ? 10.0 : 15.0, dbc.ptr ? set_bonus.tier13_2pc_heal() : 0.0 );
+  buffs_tier13_2pc_heal            = new buff_t( this, "tier13_2pc_heal", 1, 0, ( primary_tree() == TREE_DISCIPLINE ) ? 10.0 : 15.0, set_bonus.tier13_2pc_heal() );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
