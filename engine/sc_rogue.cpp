@@ -3869,9 +3869,9 @@ void rogue_t::init_buffs()
   // buffs_fof_p3            = new stat_buff_t( this, 109939, "legendary_daggers_p3", STAT_AGILITY, dbc.spell( 109939 ) -> effect1().base_value(), fof_p3 );
   // buffs_fof_fod           = new buff_t( this, 109949, "legendary_daggers", fof_p3 );
   // None of the buffs are currently in the DBC, so define them manually for now
-  buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, 30.0, 0, fof_p1 ); // Chance appears as 100% in DBC
-  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, 30.0, 0, fof_p2 );
-  buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, 30.0, 0, fof_p3 );
+  buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, 30.0, 4.0, fof_p1 ); // Chance appears as 100% in DBC
+  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, 30.0, 4.0, fof_p2 ); // Early reports indicate a 4 second ICD on the stacking buff
+  buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, 30.0, 4.0, fof_p3 );
   buffs_fof_fod           = new buff_t( this, "legendary_daggers", 1, 6.0, 0, fof_p3 );
 }
 
