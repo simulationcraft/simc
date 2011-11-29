@@ -3937,7 +3937,12 @@ void mage_t::init_actions()
       {
         action_list_str += "/berserking,if=buff.icy_veins.down&buff.bloodlust.down";
       }
-      if ( talents.icy_veins -> rank() ) action_list_str += "/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down";
+      if ( talents.icy_veins -> rank() )
+      {
+        action_list_str += "/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down";
+        if ( set_bonus.tier13_2pc_caster() && set_bonus.tier13_4pc_caster())
+          action_list_str += "&(buff.tier13_2pc.stack>7|cooldown.cold_snap.remains<22)";
+      }
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze,if=buff.fingers_of_frost.react";
       if ( talents.brain_freeze -> rank() )
       {

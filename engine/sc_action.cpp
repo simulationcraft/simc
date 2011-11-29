@@ -1218,7 +1218,6 @@ void action_t::update_ready()
   double delay = 0;
   if ( cooldown -> duration > 0 && ! dual )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 
     if ( ! background && ! proc )
     {
@@ -1231,6 +1230,8 @@ void action_t::update_ready()
     }
 
     cooldown -> start( -1, delay );
+
+    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready );
   }
   if ( num_ticks )
   {
