@@ -113,6 +113,7 @@ struct druid_t : public player_t
   struct glyphs_t
   {
     glyph_t* berserk;
+    glyph_t* bloodletting;
     glyph_t* ferocious_bite;
     glyph_t* focus;
     glyph_t* frenzied_regeneration;
@@ -130,7 +131,6 @@ struct druid_t : public player_t
     glyph_t* rejuvenation;
     glyph_t* rip;
     glyph_t* savage_roar;
-    glyph_t* shred;
     glyph_t* starfall;
     glyph_t* starfire;
     glyph_t* starsurge;
@@ -1660,7 +1660,7 @@ struct mangle_cat_t : public druid_cat_attack_t
     {
       druid_t* p = player -> cast_druid();
 
-      if ( p -> glyphs.shred -> enabled() &&
+      if ( p -> glyphs.bloodletting -> enabled() &&
            p -> dots_rip -> ticking  &&
            p -> dots_rip -> added_ticks < 4 )
       {
@@ -1690,7 +1690,7 @@ struct mangle_cat_t : public druid_cat_attack_t
     druid_t* p = player -> cast_druid();
 
     if ( extend_rip )
-      if ( ! p -> glyphs.shred -> enabled() ||
+      if ( ! p -> glyphs.bloodletting -> enabled() ||
            ! p -> dots_rip -> ticking ||
            ( p -> dots_rip -> added_ticks == 4 ) )
         return false;
@@ -1973,7 +1973,7 @@ struct shred_t : public druid_cat_attack_t
 
     if ( result_is_hit() )
     {
-      if ( p -> glyphs.shred -> enabled() &&
+      if ( p -> glyphs.bloodletting -> enabled() &&
            p -> dots_rip -> ticking  &&
            p -> dots_rip -> added_ticks < 4 )
       {
@@ -2009,7 +2009,7 @@ struct shred_t : public druid_cat_attack_t
     druid_t* p = player -> cast_druid();
 
     if ( extend_rip )
-      if ( ! p -> glyphs.shred -> enabled() ||
+      if ( ! p -> glyphs.bloodletting -> enabled() ||
            ! p -> dots_rip -> ticking ||
            ( p -> dots_rip -> added_ticks == 4 ) )
         return false;
@@ -4847,6 +4847,7 @@ void druid_t::init_spells()
 
   // Glyphs
   glyphs.berserk               = find_glyph( "Glyph of Berserk" );
+  glyphs.bloodletting          = find_glyph( "Glyph of Bloodletting" );
   glyphs.ferocious_bite        = find_glyph( "Glyph of Ferocious Bite" );
   glyphs.focus                 = find_glyph( "Glyph of Focus" );
   glyphs.frenzied_regeneration = find_glyph( "Glyph of Frenzied Regeneration" );
@@ -4864,7 +4865,6 @@ void druid_t::init_spells()
   glyphs.rejuvenation          = find_glyph( "Glyph of Rejuvenation" );
   glyphs.rip                   = find_glyph( "Glyph of Rip" );
   glyphs.savage_roar           = find_glyph( "Glyph of Savage Roar" );
-  glyphs.shred                 = find_glyph( "Glyph of Bloodletting" );
   glyphs.starfall              = find_glyph( "Glyph of Starfall" );
   glyphs.starfire              = find_glyph( "Glyph of Starfire" );
   glyphs.starsurge             = find_glyph( "Glyph of Starsurge" );

@@ -29,3 +29,4 @@ ranged=soulflame_vial,id=71148,gems=40int
 save=Druid_Balance_T12N.simc
 
 chardev=211252 save=Druid_Feral_T12N.simc name=Druid_Feral_T12N
+glyphs=rip/bloodletting/berserk

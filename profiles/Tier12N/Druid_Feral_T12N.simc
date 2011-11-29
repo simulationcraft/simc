@@ -9,7 +9,7 @@ role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#druid-000000000000000000002320322312011021222301020301000000000000000
-glyphs=rip/shred/berserk
+glyphs=rip/bloodletting/berserk
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
 actions+=/mark_of_the_wild
