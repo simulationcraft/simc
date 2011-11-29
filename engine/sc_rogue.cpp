@@ -149,6 +149,12 @@ struct rogue_t : public player_t
   stat_buff_t* buffs_tier12_4pc_haste;
   stat_buff_t* buffs_tier12_4pc_mastery;
 
+  // Legendary buffs
+  buff_t* buffs_fof_fod; // Fangs of the Destroyer
+  buff_t* buffs_fof_p1; // Phase 1
+  buff_t* buffs_fof_p2;
+  buff_t* buffs_fof_p3;
+
   // Cooldowns
   cooldown_t* cooldowns_adrenaline_rush;
   cooldown_t* cooldowns_honor_among_thieves;
@@ -329,6 +335,7 @@ struct rogue_t : public player_t
   // Options
   double      virtual_hat_interval;
 
+  uint32_t fof_p1, fof_p2, fof_p3;
   int last_tier12_4pc;
 
   rogue_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, ROGUE, name, r )
@@ -347,6 +354,7 @@ struct rogue_t : public player_t
     active_main_gauche      = 0;
     active_tier12_2pc_melee = 0;
 
+    fof_p1 = fof_p2 = fof_p3 = 0;
     last_tier12_4pc = -1;
 
     combo_points = new combo_points_t( this );
@@ -1152,6 +1160,9 @@ void rogue_attack_t::consume_resource()
       combo_points_spent = p -> combo_points -> count;
 
       p -> combo_points -> clear( name() );
+
+      if ( p -> buffs_fof_fod -> up() )
+        p -> combo_points -> add( 5, "legendary_daggers" );
     }
 
     trigger_ruthlessness( this );
@@ -1408,8 +1419,22 @@ struct melee_t : public rogue_attack_t
         trigger_combat_potency( this );
       }
       p -> buffs_tier11_4pc -> trigger();
-    }
 
+      p -> buffs_fof_p1 -> trigger();
+      p -> buffs_fof_p2 -> trigger();
+      if ( ! p -> buffs_fof_fod -> check() )
+        p -> buffs_fof_p3 -> trigger();
+
+      // Assuming that you get a 5% chance per buff over 30 to proc Fury of the Destroyer, so that upon reaching 50, you'd trigger it automatically
+      if ( p -> buffs_fof_p3 -> check() > 30 )
+      {
+        if ( p -> buffs_fof_fod -> trigger( 1, -1, ( p -> buffs_fof_p3 -> check() - 30 ) * 0.05 ) )
+        {
+          p -> buffs_fof_p3 -> expire();
+          p -> combo_points -> add( 5, "legendary_daggers" );
+        }
+      }
+    }
   }
 };
 
@@ -2460,6 +2485,10 @@ struct sinister_strike_t : public rogue_attack_t
 
     if ( p -> set_bonus.tier11_2pc_melee() )
       base_crit += .05;
+
+    // Legendary buff increases SS damage
+    if ( p -> fof_p1 || p -> fof_p2 || p -> fof_p3 )
+      base_multiplier *= 1.45; // FIX ME: once dbc data exists 1.0 + p -> dbc.spell( 110211 ) -> effect1().percent();
 
     parse_options( NULL, options_str );
   }
@@ -3790,6 +3819,20 @@ void rogue_t::init_scaling()
 
 void rogue_t::init_buffs()
 {
+  // Handle the Legendary here, as it's called after init_items()
+  if ( find_item( "vengeance" ) && find_item( "fear" ) )
+  {
+    fof_p1 = 1;
+  }
+  else if ( find_item( "the_sleeper" ) && find_item( "the_dreamer" ) )
+  {
+    fof_p2 = 1;
+  }
+  else if ( find_item( "golad_twilight_of_aspects" ) && find_item( "tiriosh_nightmare_of_ages" ) )
+  {
+    fof_p3 = 1;
+  }
+
   player_t::init_buffs();
 
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
@@ -3812,9 +3855,9 @@ void rogue_t::init_buffs()
   buffs_tier12_4pc_crit    = new stat_buff_t( this, "fiery_devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration() );
   buffs_tier12_4pc_mastery = new stat_buff_t( this, "master_of_flames",  STAT_MASTERY_RATING, 0.0, 1, dbc.spell( 99188 ) -> duration() );
 
-  buffs_blade_flurry       = new buff_t( this,   spec_blade_flurry -> spell_id(), "blade_flurry" );
-  buffs_cold_blood         = new buff_t( this,     talents.cold_blood -> spell_id(), "cold_blood" );
-  buffs_shadow_dance       = new buff_t( this,   talents.shadow_dance -> spell_id(), "shadow_dance" );
+  buffs_blade_flurry       = new buff_t( this, spec_blade_flurry -> spell_id(), "blade_flurry" );
+  buffs_cold_blood         = new buff_t( this, talents.cold_blood -> spell_id(), "cold_blood" );
+  buffs_shadow_dance       = new buff_t( this, talents.shadow_dance -> spell_id(), "shadow_dance" );
 
   buffs_adrenaline_rush    = new adrenaline_rush_buff_t    ( this, talents.adrenaline_rush -> spell_id() );
   buffs_envenom            = new envenom_buff_t            ( this );
@@ -3825,6 +3868,17 @@ void rogue_t::init_buffs()
   buffs_shadowstep         = new shadowstep_buff_t         ( this, spec_shadowstep -> effect_trigger_spell( 1 ) );
   buffs_slice_and_dice     = new slice_and_dice_buff_t     ( this );
   buffs_vendetta           = new vendetta_buff_t           ( this, talents.vendetta -> spell_id() );
+
+  // Legendary buffs
+  // buffs_fof_p1            = new stat_buff_t( this, 109959, "legendary_daggers_p1", STAT_AGILITY, dbc.spell( 109959 ) -> effect1().base_value(), fof_p1 );
+  // buffs_fof_p2            = new stat_buff_t( this, 109955, "legendary_daggers_p2", STAT_AGILITY, dbc.spell( 109955 ) -> effect1().base_value(), fof_p2 );
+  // buffs_fof_p3            = new stat_buff_t( this, 109939, "legendary_daggers_p3", STAT_AGILITY, dbc.spell( 109939 ) -> effect1().base_value(), fof_p3 );
+  // buffs_fof_fod           = new buff_t( this, 109949, "legendary_daggers", fof_p3 );
+  // None of the buffs are currently in the DBC, so define them manually for now
+  buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, 30.0, 0, fof_p1 ); // Chance appears as 100% in DBC
+  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, 30.0, 0, fof_p2 );
+  buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, 30.0, 0, fof_p3 );
+  buffs_fof_fod           = new buff_t( this, "legendary_daggers", 1, 6.0, 0, fof_p3 );
 }
 
 // rogue_t::init_values =====================================================
