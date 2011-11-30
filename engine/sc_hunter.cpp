@@ -956,7 +956,7 @@ static void trigger_vishanka( attack_t* a )
   if ( a -> sim -> roll( p -> dbc.spell( p -> vishanka ) -> proc_chance() ) )
   {
     p -> active_vishanka -> execute();
-    p -> cooldowns_vishanka -> duration = 2.0; // Assume a ICD until testing proves one way or another
+    p -> cooldowns_vishanka -> duration = 15.0; // Assume a ICD until testing proves one way or another
     p -> cooldowns_vishanka -> start();
   }
 }
