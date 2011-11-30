@@ -842,7 +842,6 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
       t -> buffs.tricks_of_the_trade -> trigger( 1, value / 100.0 );
     }
 
-    p -> buffs_tier13_2pc -> trigger();
   }
 }
 
