@@ -142,6 +142,7 @@ struct rogue_t : public player_t
   buff_t* buffs_stealthed;
   buff_t* buffs_tier11_4pc;
   buff_t* buffs_tier13_2pc;
+  buff_t* buffs_tot_trigger;
   buff_t* buffs_vanish;
   buff_t* buffs_vendetta;
 
@@ -827,6 +828,9 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 {
   rogue_t* p = a -> player -> cast_rogue();
 
+  if ( ! p -> buffs_tot_trigger -> check() )
+    return;
+
   player_t* t = a -> target;
 
   if ( t )
@@ -841,7 +845,8 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
       t -> buffs.tricks_of_the_trade -> buff_duration = duration;
       t -> buffs.tricks_of_the_trade -> trigger( 1, value / 100.0 );
     }
-
+    
+    p -> buffs_tot_trigger -> expire();
   }
 }
 
@@ -2642,19 +2647,16 @@ struct shadow_dance_t : public rogue_attack_t
 struct tricks_of_the_trade_t : public rogue_attack_t
 {
   tricks_of_the_trade_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "tricks_target", 57934, p, true )
+    rogue_attack_t( "tricks_of_the_trade", 57934, p, true )
   {
     parse_options( NULL, options_str );
 
     if ( p -> glyphs.tricks_of_the_trade -> ok() )
       base_cost = 0;
 
-    // If we don't specify a target, it's defaulted to the mob, so default to the player instead
-    if ( target -> is_enemy() || target -> is_add() )
-    {
-      target = p;
-    }
-    else if ( target_str == "self" ) // This is no longer needed, only for backwards compatibility
+    // Target is the mob by default, which is the same as the old behavior of "other"
+
+    if ( target_str == "self" ) // This is only for backwards compatibility
     {
       target = p;
     }
@@ -2668,6 +2670,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
 
     trigger_tier12_4pc_melee( this );
     p -> buffs_tier13_2pc -> trigger();
+    p -> buffs_tot_trigger -> trigger();
   }
 };
 
@@ -3840,8 +3843,8 @@ void rogue_t::init_buffs()
   buffs_shiv               = new buff_t( this, "shiv",          1  );
   buffs_stealthed          = new buff_t( this, "stealthed",     1  );
   buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
-
   buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, spells.tier13_2pc -> duration(), 0.0, ( set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
+  buffs_tot_trigger        = new buff_t( this, 57934, "tricks_of_the_trade_trigger", -1, -1, true );
   buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
 
   buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );
