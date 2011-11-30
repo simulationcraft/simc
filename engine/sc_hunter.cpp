@@ -222,7 +222,7 @@ struct hunter_t : public player_t
     base_gcd = 1.0;
     flaming_arrow = NULL;
 
-    tier13_4pc_cooldown = 45.0;
+    tier13_4pc_cooldown = 105.0;
     vishanka = 0;
 
     create_talents();
