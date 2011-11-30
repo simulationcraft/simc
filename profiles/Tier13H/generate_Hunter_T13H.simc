@@ -50,6 +50,7 @@ save=Hunter_MM_T13H.simc
 wowhead=33905673
 name=Hunter_SV_T13H
 professions=blacksmithing=525/engineering=525
+glyphs=arcane_shot/explosive_shot/kill_shot
 head=wyrmstalkers_headguard,heroic=1,type=mail,ilevel=410,quality=epic,stats=2366armor_489agi_824sta_393crit_242mastery,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
 neck=cameo_of_terrible_memories,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176hit,reforge=haste_crit
 shoulders=wyrmstalkers_spaulders,heroic=1,type=mail,ilevel=410,quality=epic,stats=2184armor_368agi_611sta_274crit_222haste,reforge=haste_mastery,gems=50agi_50agi_20agi,enchant=50agi_25mastery
@@ -65,6 +66,6 @@ trinket1=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_
 trinket2=starcatcher_compass,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=ondamage_3278haste_15%_20dur_115cd
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=hit_crit,gems=50agi_50agi_20agi,enchant=22agi
 main_hand=kiril_fury_of_beasts,heroic=1,ilevel=416,quality=epic,stats=581agi_871sta,enchant=130agi,weapon=polearm_3.50speed_2968min_4453max
-ranged=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=gnomish_xray,weapon=bow_3.00speed_2226min_4135max
+ranged=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=flintlockes_woodchucker,weapon=bow_3.00speed_2226min_4135max
 save=Hunter_SV_T13H.simc
 
