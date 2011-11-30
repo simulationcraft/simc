@@ -1336,6 +1336,7 @@ static void register_gurthalak( item_t* item )
         tick_may_crit = true;
         hasted_ticks = false;
         proc = true;
+        num_ticks = 11; // Casts between 3-4 mind flays of 3 ticks each with each spawn, average appears to be 11 ticks cast
         base_attack_power_multiplier = 1.0;
         base_spell_power_multiplier = 0;
         init();
