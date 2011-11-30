@@ -111,6 +111,7 @@ static OptionEntry* getScalingOptions()
     { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
     { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
     { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
+    { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
     { NULL, NULL, NULL }
   };
   return options;
