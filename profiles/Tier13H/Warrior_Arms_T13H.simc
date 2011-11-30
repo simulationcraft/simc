@@ -23,8 +23,8 @@ actions+=/deadly_calm,if=rage<30
 actions+=/sweeping_strikes,if=target.adds>0
 actions+=/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up
 actions+=/cleave,if=target.adds>0
-actions+=/inner_rage,if=!buff.deadly_calm.up&rage>80&cooldown.deadly_calm.remains>15
-actions+=/heroic_strike,if=((rage>=85&target.health_pct>=20)|buff.deadly_calm.up|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&((rage>=50&target.health_pct>=20)|(rage>=75&target.health_pct<20))))
+actions+=/inner_rage,if=target.adds=0&!buff.deadly_calm.up&cooldown.deadly_calm.remains>15&((rage>=75&target.health_pct>=20)|((buff.incite.up|buff.colossus_smash.up)&((rage>=40&target.health_pct>=20)|(rage>=65&target.health_pct<20))))
+actions+=/heroic_strike,if=(((rage>=85|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=75))&target.health_pct>=20)|buff.deadly_calm.up|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&(((rage>=50|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=40))&target.health_pct>=20)|((rage>=75|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=65))&target.health_pct<20))))
 actions+=/overpower,if=buff.taste_for_blood.remains<=1.5
 actions+=/mortal_strike,if=target.health_pct>20|rage>=30
 actions+=/execute,if=buff.battle_trance.up
