@@ -390,11 +390,11 @@ struct death_knight_t : public player_t
   virtual int       primary_resource() const { return RESOURCE_RUNIC; }
   virtual int       primary_role() const;
   virtual void      trigger_runic_empowerment();
-  virtual int       runes_count(rune_type rt, bool include_death, int position);
-  virtual double    runes_cooldown_any(rune_type rt, bool include_death, int position);
-  virtual double    runes_cooldown_all(rune_type rt, bool include_death, int position);
-  virtual double    runes_cooldown_time(dk_rune_t* r);
-  virtual bool      runes_depleted(rune_type rt, int position);
+  virtual int       runes_count( rune_type rt, bool include_death, int position );
+  virtual double    runes_cooldown_any( rune_type rt, bool include_death, int position );
+  virtual double    runes_cooldown_all( rune_type rt, bool include_death, int position );
+  virtual double    runes_cooldown_time( dk_rune_t* r );
+  virtual bool      runes_depleted( rune_type rt, int position );
 
   int diseases( player_t* /* t */ )
   {
@@ -597,7 +597,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       background  = true;
       trigger_gcd = 0;
-      direct_power_mod = 0.23; 
+      direct_power_mod = 0.23;
       base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level ); // Values are saved in a not automatically parsed sub-effect
       base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
       base_multiplier *= 1 + o -> glyphs.death_coil -> effect1().percent();
@@ -613,7 +613,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     { }
 
     drw_attack_t( const char* n, dancing_rune_weapon_pet_t* p, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special = false ) :
-       attack_t( n, p, r, s, t, special )
+      attack_t( n, p, r, s, t, special )
     { }
 
     virtual bool ready() { return false; }
@@ -1083,7 +1083,7 @@ struct gargoyle_pet_t : public pet_t
 
   gargoyle_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "gargoyle", true ),
-    snapshot_haste(1), snapshot_spell_crit(0), snapshot_power(0)
+    snapshot_haste( 1 ), snapshot_spell_crit( 0 ), snapshot_power( 0 )
   {
   }
 
@@ -3512,7 +3512,7 @@ struct presence_t : public death_knight_spell_t
 {
   int switch_to_presence;
   presence_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "presence", (uint32_t) 0, p ), switch_to_presence( 0 )
+    death_knight_spell_t( "presence", ( uint32_t ) 0, p ), switch_to_presence( 0 )
   {
     std::string presence_str;
     option_t options[] =
@@ -3573,20 +3573,20 @@ struct presence_t : public death_knight_spell_t
 
     switch ( p -> active_presence )
     {
-      case PRESENCE_BLOOD:
-        p -> buffs_blood_presence  -> trigger();
+    case PRESENCE_BLOOD:
+      p -> buffs_blood_presence  -> trigger();
       break;
-      case PRESENCE_FROST:
-      {
-        double fp_value = p -> dbc.spell( 48266 ) -> effect1().percent();
-        if ( p -> talents.improved_frost_presence -> rank() )
-          fp_value += p -> talents.improved_frost_presence -> effect2().percent();
-        p -> buffs_frost_presence -> trigger( 1, fp_value );
-      }
-      break;
-      case PRESENCE_UNHOLY:
-        p -> buffs_unholy_presence -> trigger( 1, 0.10 + p -> talents.improved_unholy_presence -> effect2().percent() );
-        p -> base_gcd = 1.0;
+    case PRESENCE_FROST:
+    {
+      double fp_value = p -> dbc.spell( 48266 ) -> effect1().percent();
+      if ( p -> talents.improved_frost_presence -> rank() )
+        fp_value += p -> talents.improved_frost_presence -> effect2().percent();
+      p -> buffs_frost_presence -> trigger( 1, fp_value );
+    }
+    break;
+    case PRESENCE_UNHOLY:
+      p -> buffs_unholy_presence -> trigger( 1, 0.10 + p -> talents.improved_unholy_presence -> effect2().percent() );
+      p -> base_gcd = 1.0;
       break;
     }
 
@@ -3820,30 +3820,30 @@ struct summon_gargoyle_t : public death_knight_spell_t
 // Unholy Blight ====================================================
 
 struct unholy_blight_t : public death_knight_spell_t
- {
-   unholy_blight_t( death_knight_t* p ) :
-     death_knight_spell_t( "unholy_blight", p -> talents.unholy_blight -> spell_id(), p )
-   {
-     base_tick_time = 1.0;
-     num_ticks      = 10;
-     background     = true;
-     proc           = true;
-     may_crit       = false;
-     may_resist     = false;
-     may_miss       = false;
-     hasted_ticks   = false;
-   }
+{
+  unholy_blight_t( death_knight_t* p ) :
+    death_knight_spell_t( "unholy_blight", p -> talents.unholy_blight -> spell_id(), p )
+  {
+    base_tick_time = 1.0;
+    num_ticks      = 10;
+    background     = true;
+    proc           = true;
+    may_crit       = false;
+    may_resist     = false;
+    may_miss       = false;
+    hasted_ticks   = false;
+  }
 
-   void target_debuff( player_t* /* t */, int /* dmg_type */ )
-   {
-     // no debuff effect
-   }
+  void target_debuff( player_t* /* t */, int /* dmg_type */ )
+  {
+    // no debuff effect
+  }
 
-   void player_buff()
-   {
-     // no buffs
-   }
- };
+  void player_buff()
+  {
+    // no buffs
+  }
+};
 
 // Unholy Frenzy ============================================================
 
@@ -3875,27 +3875,27 @@ struct unholy_frenzy_t : public spell_t
 };
 
 struct butchery_event_t : public event_t
-  {
+{
   butchery_event_t( player_t* player, double tick_time ) :
-      event_t( player -> sim, player, "butchery_regen" )
-    {
-      if ( tick_time < 0 ) tick_time = 0;
-      if ( tick_time > 5 ) tick_time = 5;
-      sim -> add_event( this, tick_time );
-    }
+    event_t( player -> sim, player, "butchery_regen" )
+  {
+    if ( tick_time < 0 ) tick_time = 0;
+    if ( tick_time > 5 ) tick_time = 5;
+    sim -> add_event( this, tick_time );
+  }
 
-    virtual void execute()
-    {
-      death_knight_t* p = player -> cast_death_knight();
+  virtual void execute()
+  {
+    death_knight_t* p = player -> cast_death_knight();
 
-      // p -> talents.butchery -> effect2().base_value() / 10.0 == p -> talents.butchery -> rank()
-      // Just work with hardcoded numbers here. With rank 1 you gain 1 RP every 5s
-      // with rank 2 you gain 1 RP every 2.5s
-      p -> resource_gain( RESOURCE_RUNIC, 1, p -> gains_butchery );
+    // p -> talents.butchery -> effect2().base_value() / 10.0 == p -> talents.butchery -> rank()
+    // Just work with hardcoded numbers here. With rank 1 you gain 1 RP every 5s
+    // with rank 2 you gain 1 RP every 2.5s
+    p -> resource_gain( RESOURCE_RUNIC, 1, p -> gains_butchery );
 
-      new ( sim ) butchery_event_t( player, 5.0 / p -> talents.butchery -> rank()  );
-    }
-  };
+    new ( sim ) butchery_event_t( player, 5.0 / p -> talents.butchery -> rank()  );
+  }
+};
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -3955,27 +3955,30 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
 
-  if ( util_t::str_compare_ci( splits[ 0 ], "rune" ) ) {
+  if ( util_t::str_compare_ci( splits[ 0 ], "rune" ) )
+  {
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = true; // whether to include death runes
-    switch ( splits[ 1 ][0] ) {
-      case 'B': include_death = false;
-      case 'b': rt = RUNE_TYPE_BLOOD; break;
-      case 'U': include_death = false;
-      case 'u': rt = RUNE_TYPE_UNHOLY; break;
-      case 'F': include_death = false;
-      case 'f': rt = RUNE_TYPE_FROST; break;
-      case 'D': include_death = false;
-      case 'd': rt = RUNE_TYPE_DEATH; break;
+    switch ( splits[ 1 ][0] )
+    {
+    case 'B': include_death = false;
+    case 'b': rt = RUNE_TYPE_BLOOD; break;
+    case 'U': include_death = false;
+    case 'u': rt = RUNE_TYPE_UNHOLY; break;
+    case 'F': include_death = false;
+    case 'f': rt = RUNE_TYPE_FROST; break;
+    case 'D': include_death = false;
+    case 'd': rt = RUNE_TYPE_DEATH; break;
     }
     int position = 0; // any
-    switch(splits[1][splits[1].size()-1]) {
-      case '1': position = 1; break;  
-      case '2': position = 2; break;
+    switch( splits[1][splits[1].size()-1] )
+    {
+    case '1': position = 1; break;
+    case '2': position = 2; break;
     }
 
     int act = 0;
-    if (num_splits == 3 && util_t::str_compare_ci( splits[ 2 ], "cooldown_remains" ) )
+    if ( num_splits == 3 && util_t::str_compare_ci( splits[ 2 ], "cooldown_remains" ) )
       act = 1;
     else if ( num_splits == 3 && util_t::str_compare_ci( splits[ 2 ], "cooldown_remains_all" ) )
       act = 2;
@@ -3989,25 +3992,26 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
       int position;
       int myaction; // -1 count, 0 cooldown remains, 1 cooldown_remains_all
 
-      rune_inspection_expr_t( action_t* a, rune_type r, bool include_death, int position, int myaction)
+      rune_inspection_expr_t( action_t* a, rune_type r, bool include_death, int position, int myaction )
         : action_expr_t( a, "rune_evaluation", TOK_NUM ), r( r ),
-          include_death(include_death), position(position), myaction(myaction)
+          include_death( include_death ), position( position ), myaction( myaction )
       { }
 
-      virtual int evaluate() {
+      virtual int evaluate()
+      {
         death_knight_t* dk = action -> player -> cast_death_knight();
-        switch(myaction) {
-          case 0: result_num = dk -> runes_count(r, include_death, position); break;
-          case 1: result_num = dk -> runes_cooldown_any(r, include_death, position); break;
-          case 2: result_num = dk -> runes_cooldown_all(r, include_death, position); break;
-          case 3: result_num = dk -> runes_depleted(r, position); break;
+        switch( myaction )
+        {
+        case 0: result_num = dk -> runes_count( r, include_death, position ); break;
+        case 1: result_num = dk -> runes_cooldown_any( r, include_death, position ); break;
+        case 2: result_num = dk -> runes_cooldown_all( r, include_death, position ); break;
+        case 3: result_num = dk -> runes_depleted( r, position ); break;
         }
         return TOK_NUM;
       }
     };
-    return new rune_inspection_expr_t(a, rt, include_death, position, act);
+    return new rune_inspection_expr_t( a, rt, include_death, position, act );
   }
-
   else if ( num_splits == 2 )
   {
     rune_type rt = RUNE_TYPE_NONE;
@@ -4030,7 +4034,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
         virtual int evaluate()
         {
           death_knight_t* dk = action -> player -> cast_death_knight();
-          result_num = dk -> runes_cooldown_any(r, true, 0);
+          result_num = dk -> runes_cooldown_any( r, true, 0 );
           return TOK_NUM;
         }
       };
@@ -4053,16 +4057,15 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
     struct rune_expr_t : public action_expr_t
     {
       rune_type r;
-      rune_expr_t( action_t* a, rune_type r) : action_expr_t(a, "rune", TOK_NUM), r( r ) { }
+      rune_expr_t( action_t* a, rune_type r ) : action_expr_t( a, "rune", TOK_NUM ), r( r ) { }
       virtual int evaluate()
       {
-        result_num = action -> player -> cast_death_knight() -> runes_count(r, false, 0); return TOK_NUM;
+        result_num = action -> player -> cast_death_knight() -> runes_count( r, false, 0 ); return TOK_NUM;
       }
     };
-    if (rt) return new rune_expr_t( a, rt );
+    if ( rt ) return new rune_expr_t( a, rt );
 
-
-    if (name_str == "inactive_death" )
+    if ( name_str == "inactive_death" )
     {
       struct death_expr_t : public action_expr_t
       {
@@ -4556,7 +4559,6 @@ void death_knight_t::init_actions()
   }
 
   player_t::init_actions();
-
 }
 
 // death_knight_t::init_enchant =============================================
@@ -5033,7 +5035,7 @@ void death_knight_t::regen( double periodicity )
     _runes.slot[i].regen_rune( this, periodicity );
 
   uptimes_rp_cap -> update( resource_current[ RESOURCE_RUNIC ] ==
-                                   resource_max    [ RESOURCE_RUNIC] );
+                            resource_max    [ RESOURCE_RUNIC] );
 }
 
 // death_knight_t::create_options ===========================================
@@ -5174,39 +5176,41 @@ void death_knight_t::trigger_runic_empowerment()
     proc_runic_empowerment_wasted -> occur();
     gains_runic_empowerment -> add ( 0,1 );
   }
-
 }
 
 // death_knight_t rune inspections ==========================================
 
+// death_knight_t::runes_count ==============================================
 // how many runes of type rt are available
-int death_knight_t::runes_count(rune_type rt, bool include_death, int position)
+int death_knight_t::runes_count( rune_type rt, bool include_death, int position )
 {
   int result = 0;
   // positional checks first
   if ( position > 0 && ( rt == RUNE_TYPE_BLOOD || rt == RUNE_TYPE_FROST || rt == RUNE_TYPE_UNHOLY ) )
   {
-    dk_rune_t* r = &_runes.slot[((rt-1)*2) + ( position - 1 ) ];
+    dk_rune_t* r = &_runes.slot[( ( rt-1 )*2 ) + ( position - 1 ) ];
     if ( r -> is_ready() )
       result = 1;
   }
-  else {
+  else
+  {
     int rpc = 0;
-    for ( int i = 0; i < RUNE_SLOT_MAX; i++ ) {
+    for ( int i = 0; i < RUNE_SLOT_MAX; i++ )
+    {
       dk_rune_t* r = &_runes.slot[ i ];
       // query a specific position death rune.
       if ( position != 0 && rt == RUNE_TYPE_DEATH && r -> is_death() )
       {
         if ( ++rpc == position )
         {
-          if ( r -> is_ready() ) 
+          if ( r -> is_ready() )
             result = 1;
           break;
         }
       }
       // just count the runes
-      else if ( ( ( (include_death || rt == RUNE_TYPE_DEATH) && r -> is_death()) || ( r -> get_type() == rt ) ) 
-          && r -> is_ready() )
+      else if ( ( ( ( include_death || rt == RUNE_TYPE_DEATH ) && r -> is_death() ) || ( r -> get_type() == rt ) )
+                && r -> is_ready() )
       {
         result++;
       }
@@ -5215,7 +5219,9 @@ int death_knight_t::runes_count(rune_type rt, bool include_death, int position)
   return result;
 }
 
-double death_knight_t::runes_cooldown_any(rune_type rt, bool include_death, int position)
+// death_knight_t::runes_cooldown_any =======================================
+
+double death_knight_t::runes_cooldown_any( rune_type rt, bool include_death, int position )
 {
   dk_rune_t* rune = 0;
   int rpc = 0;
@@ -5224,9 +5230,9 @@ double death_knight_t::runes_cooldown_any(rune_type rt, bool include_death, int 
     dk_rune_t* r = &_runes.slot[i];
     if ( position == 0 && include_death && r -> is_death() && r -> is_ready() )
       return 0;
-    if ( position == 0 && r -> get_type() == rt && r -> is_ready() ) 
+    if ( position == 0 && r -> get_type() == rt && r -> is_ready() )
       return 0;
-    if ( ( (include_death && r -> is_death()) || (r -> get_type() == rt) ) )
+    if ( ( ( include_death && r -> is_death() ) || ( r -> get_type() == rt ) ) )
     {
       if ( position != 0 && ++rpc == position )
       {
@@ -5238,21 +5244,23 @@ double death_knight_t::runes_cooldown_any(rune_type rt, bool include_death, int 
     }
   }
 
-  assert(rune);
+  assert( rune );
 
-  double time = this -> runes_cooldown_time(rune);
+  double time = this -> runes_cooldown_time( rune );
   // if it was a  specified rune and is depleted, we have to add its paired rune to the time
   if ( rune -> is_depleted() )
-    time += this -> runes_cooldown_time(rune -> paired_rune);
+    time += this -> runes_cooldown_time( rune -> paired_rune );
 
   return time;
 }
 
-double death_knight_t::runes_cooldown_all(rune_type rt, bool include_death, int position)
-{ 
+// death_knight_t::runes_cooldown_all =======================================
+
+double death_knight_t::runes_cooldown_all( rune_type rt, bool include_death, int position )
+{
   // if they specified position then they only get 1 answer. duh. handled in the other function
   if ( position > 0 )
-  return this -> runes_cooldown_any(rt, include_death, position);
+    return this -> runes_cooldown_any( rt, include_death, position );
 
   // find all matching runes. total the pairs. Return the highest number.
 
@@ -5261,14 +5269,14 @@ double death_knight_t::runes_cooldown_all(rune_type rt, bool include_death, int 
   {
     double total = 0;
     dk_rune_t* r = &_runes.slot[i];
-    if (( ( rt == RUNE_TYPE_DEATH && r -> is_death() ) || r -> get_type() == rt ) && !r -> is_ready() )
+    if ( ( ( rt == RUNE_TYPE_DEATH && r -> is_death() ) || r -> get_type() == rt ) && !r -> is_ready() )
     {
-      total += this->runes_cooldown_time(r);
+      total += this->runes_cooldown_time( r );
     }
     r = r -> paired_rune;
-    if (( ( rt == RUNE_TYPE_DEATH && r -> is_death() ) || r -> get_type() == rt ) && !r -> is_ready() )
+    if ( ( ( rt == RUNE_TYPE_DEATH && r -> is_death() ) || r -> get_type() == rt ) && !r -> is_ready() )
     {
-      total += this->runes_cooldown_time(r);
+      total += this->runes_cooldown_time( r );
     }
     if ( max < total )
       max = total;
@@ -5276,7 +5284,9 @@ double death_knight_t::runes_cooldown_all(rune_type rt, bool include_death, int 
   return max;
 }
 
-double death_knight_t::runes_cooldown_time(dk_rune_t* rune)
+// death_knight_t::runes_cooldown_time ======================================
+
+double death_knight_t::runes_cooldown_time( dk_rune_t* rune )
 {
   double result_num;
   death_knight_t* dk = this -> cast_death_knight();
@@ -5288,11 +5298,13 @@ double death_knight_t::runes_cooldown_time(dk_rune_t* rune)
   if ( dk -> buffs_runic_corruption -> check() )
     runes_per_second *= 1.0 + ( dk -> talents.runic_corruption -> effect1().percent() );
   result_num = ( 1.0 - rune -> value ) / runes_per_second;
-  return result_num;
 
+  return result_num;
 }
 
-bool death_knight_t::runes_depleted(rune_type rt, int position)
+// death_knight_t::runes_depleted ===========================================
+
+bool death_knight_t::runes_depleted( rune_type rt, int position )
 {
   dk_rune_t* rune = 0;
   int rpc = 0;
@@ -5300,17 +5312,21 @@ bool death_knight_t::runes_depleted(rune_type rt, int position)
   for ( int i = 0; i < RUNE_SLOT_MAX; i++ )
   {
     dk_rune_t* r = &_runes.slot[i];
-    if ( r -> get_type() == rt && ++rpc == position ) 
+    if ( r -> get_type() == rt && ++rpc == position )
     {
       rune = r;
       break;
     }
   }
-  if ( !rune ) return false;
+  if ( ! rune ) return false;
   return rune -> is_depleted();
 }
 
-// player_t implementations =================================================
+// ==========================================================================
+// player_t implementations
+// ==========================================================================
+
+// player_t::create_death_knight ============================================
 
 player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, race_type r )
 {
