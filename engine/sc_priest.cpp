@@ -5017,23 +5017,17 @@ void priest_t::init_actions()
         if ( talents.archangel -> ok() )
           buffer += "/archangel,if=buff.holy_evangelism.stack>=5";
         if ( talents.rapture -> ok() )
-          buffer += "/power_word_shield,if=!cooldown.rapture.remains";
+          buffer += "/power_word_shield,if=buff.weakened_soul.down";
+
+        if ( level >= 28 )
+          buffer += "/devouring_plague,if=miss_react&(remains<tick_time|!ticking)";
+
+        buffer += "/shadow_word_pain,if=miss_react&(remains<tick_time|!ticking)";
+
         if ( talents.borrowed_time -> ok() )
-        {
-          if ( level >= 28 )
-            buffer += "/devouring_plague,if=buff.borrowed_time.up&(remains<3*tick_time|!ticking)";
-
-          buffer += "/shadow_word_pain,if=buff.borrowed_time.up&(remains<2*tick_time|!ticking)";
           buffer += "/penance,if=buff.borrowed_time.up";
-        }
-        buffer += "/holy_fire";
-        if ( ! talents.borrowed_time -> ok() )
-        {
-          if ( level >= 28 )
-            buffer += "/devouring_plague,if=remains<tick_time|!ticking";
 
-          buffer += "/shadow_word_pain,if=remains<tick_time|!ticking";
-        }
+        buffer += "/holy_fire";
         buffer += "/penance";
         if ( ! talents.archangel -> ok() )
           buffer += "/mind_blast";
