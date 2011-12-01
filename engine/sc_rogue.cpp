@@ -2331,6 +2331,10 @@ struct revealing_strike_t : public rogue_attack_t
     add_trigger_buff( p -> buffs_revealing_strike );
 
     parse_options( NULL, options_str );
+
+    // Legendary buff increases RS damage
+    if ( p -> fof_p1 || p -> fof_p2 || p -> fof_p3 )
+      base_multiplier *= 1.45; // FIX ME: once dbc data exists 1.0 + p -> dbc.spell( 110211 ) -> effect1().percent();
   }
 
   virtual void execute()
