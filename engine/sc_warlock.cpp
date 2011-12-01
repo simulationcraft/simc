@@ -3675,8 +3675,6 @@ struct hand_of_guldan_t : public warlock_spell_t
   {
     check_talent( p -> talent_hand_of_guldan -> rank() );
 
-    may_miss = false;
-
     parse_options( NULL, options_str );
 
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;

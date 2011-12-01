@@ -469,30 +469,30 @@ static void trigger_bloodsurge( action_t* a )
 // Deep Wounds ==============================================================
 
 struct deep_wounds_t : public warrior_attack_t
+{
+  deep_wounds_t( warrior_t* p ) :
+    warrior_attack_t( "deep_wounds", 12721, p )
+  {
+    background = true;
+    weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16; // hardcoded into tooltip, 02/11/2011
+    may_crit = false;
+    tick_may_crit = false;
+    hasted_ticks  = false;
+    tick_power_mod = 0;
+    dot_behavior  = DOT_REFRESH;
+  }
+  virtual double total_td_multiplier() const { return target_multiplier; }
+  virtual double travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
+  virtual void impact( player_t* t, int impact_result, double deep_wounds_dmg )
+  {
+    warrior_attack_t::impact( t, impact_result, 0 );
+    if ( result_is_hit( impact_result ) )
     {
-      deep_wounds_t( warrior_t* p ) :
-        warrior_attack_t( "deep_wounds", 12721, p )
-      {
-        background = true;
-        weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16; // hardcoded into tooltip, 02/11/2011
-        may_crit = false;
-        tick_may_crit = false;
-        hasted_ticks  = false;
-        tick_power_mod = 0;
-        dot_behavior  = DOT_REFRESH;
-      }
-      virtual double total_td_multiplier() const { return target_multiplier; }
-      virtual double travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
-      virtual void impact( player_t* t, int impact_result, double deep_wounds_dmg )
-      {
-        warrior_attack_t::impact( t, impact_result, 0 );
-        if ( result_is_hit( impact_result ) )
-        {
-          base_td = deep_wounds_dmg / dot -> num_ticks;
-          trigger_blood_frenzy( this );
-        }
-      }
-    };
+      base_td = deep_wounds_dmg / dot -> num_ticks;
+      trigger_blood_frenzy( this );
+    }
+  }
+};
 
 // trigger_deep_wounds ======================================================
 
@@ -505,7 +505,6 @@ static void trigger_deep_wounds( action_t* a )
     return;
 
   assert ( p -> active_deep_wounds );
-
 
   if ( a -> weapon )
     p -> active_deep_wounds -> weapon = a -> weapon;
