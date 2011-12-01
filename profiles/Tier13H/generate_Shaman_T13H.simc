@@ -23,7 +23,7 @@ hands=sporebeard_gauntlets,id=78362,gems=50agi_50agi_20agi,enchant=65mastery,ref
 finger1=signet_of_grasping_mouths,id=78413,enchant=40agi,reforge=crit_mastery
 finger2=seal_of_primordial_shadow,id=78489,enchant=40agi
 trinket1=wrath_of_unchaining,id=77994
-trinket2=matrix_restabilizer,id=69150
+trinket2=vial_of_shadows,id=77999
 back=dreadfire_drape,id=71415,enchant=22agi,gems=50agi_50agi_20agi
 main_hand=nokaled_the_elements_of_death,id=78472,enchant=landslide
 off_hand=nokaled_the_elements_of_death,id=78472,enchant=landslide
