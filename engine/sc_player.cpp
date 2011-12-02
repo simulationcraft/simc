@@ -2047,11 +2047,6 @@ double player_t::composite_attack_haste() const
       if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
     }
 
-    if ( race == RACE_GOBLIN )
-    {
-      h *= 1.0 / ( 1.0 + 0.01 );
-    }
-
     if ( buffs.berserking -> up() )
     {
       h *= 1.0 / ( 1.0 + buffs.berserking -> effect1().percent() );
@@ -2066,6 +2061,11 @@ double player_t::composite_attack_haste() const
 double player_t::composite_attack_speed() const
 {
   double h = composite_attack_haste();
+
+  if ( race == RACE_GOBLIN )
+  {
+    h *= 1.0 / ( 1.0 + 0.01 );
+  }
 
   if ( ! is_enemy() && ! is_add() )
     h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party       -> value(),
