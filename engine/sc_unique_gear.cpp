@@ -167,7 +167,8 @@ struct discharge_proc_callback_t : public action_callback_t
         may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
-        may_dodge = may_parry = ( s == SCHOOL_PHYSICAL && ! no_crit );
+        may_dodge = ( s == SCHOOL_PHYSICAL && ! no_crit );
+        may_parry = ( s == SCHOOL_PHYSICAL && ! no_crit && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT ) );
         may_glance = false;
         background  = true;
         no_buffs = nb;
@@ -290,7 +291,8 @@ struct chance_discharge_proc_callback_t : public action_callback_t
         may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
-        may_dodge = may_parry = ( s == SCHOOL_PHYSICAL && ! no_crit );
+        may_dodge = ( s == SCHOOL_PHYSICAL && ! no_crit );
+        may_parry = ( s == SCHOOL_PHYSICAL && ! no_crit && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT ) );
         may_glance = false;
         background  = true;
         no_buffs = nb;
@@ -415,7 +417,8 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
-        may_dodge = may_parry = ( s == SCHOOL_PHYSICAL && ! no_crit );
+        may_dodge = ( s == SCHOOL_PHYSICAL && ! no_crit );
+        may_parry = ( s == SCHOOL_PHYSICAL && ! no_crit && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT ) );
         may_glance = false;
         background  = true;
         no_buffs = nb;
