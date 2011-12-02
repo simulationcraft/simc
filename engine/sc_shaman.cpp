@@ -319,6 +319,7 @@ struct shaman_spell_t : public spell_t
 {
   double base_cost_reduction;
   bool   maelstrom;
+  bool   overload;
   bool   is_totem;
 
   std::string previous_action_str;
@@ -340,7 +341,7 @@ struct shaman_spell_t : public spell_t
 
   /* Class spell data based construction, spell name in s_name */
   shaman_spell_t( const char* n, const char* s_name, player_t* p, const std::string& options_str = std::string() ) :
-    spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), is_totem( false ),
+    spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), overload( false ), is_totem( false ),
     previous_action_match( 0 )
   {
     option_t options[] =
@@ -1226,7 +1227,7 @@ struct lava_burst_overload_t : public shaman_spell_t
     shaman_spell_t( "lava_burst_overload", 77451, player )
   {
     shaman_t* p          = player -> cast_shaman();
-    proc                 = true;
+    overload             = true;
     background           = true;
 
     // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use
@@ -1266,7 +1267,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     shaman_spell_t( "lightning_bolt_overload", 45284, player )
   {
     shaman_t* p          = player -> cast_shaman();
-    proc                 = true;
+    overload             = true;
     background           = true;
 
     // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use
@@ -1306,7 +1307,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     shaman_spell_t( "chain_lightning_overload", 45297, player ), glyph_targets( 0 )
   {
     shaman_t* p          = player -> cast_shaman();
-    proc                 = true;
+    overload             = true;
     background           = true;
 
     // Shamanism, NOTE NOTE NOTE, elemental overloaded abilities use
@@ -2051,7 +2052,8 @@ void shaman_spell_t::execute()
         if ( p -> talent_elemental_devastation -> rank() )
           p -> buffs_elemental_devastation -> trigger();
 
-        if ( p -> talent_elemental_focus -> rank() )
+        // Overloads dont trigger elemental focus
+        if ( ! overload && p -> talent_elemental_focus -> rank() )
           p -> buffs_elemental_focus -> trigger( p -> buffs_elemental_focus -> initial_stacks() );
       }
     }
@@ -4411,10 +4413,7 @@ void shaman_t::init_actions()
       action_list_str += "/searing_totem";
       if ( talent_stormstrike -> rank() ) action_list_str += "/stormstrike";
       action_list_str += "/lava_lash";
-      if ( set_bonus.tier13_4pc_melee() )
-        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
-      else
-        action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
+      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
       if ( level > 80 )
       {
         action_list_str += "/unleash_elements";
