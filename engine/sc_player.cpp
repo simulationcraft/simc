@@ -2149,9 +2149,6 @@ double player_t::composite_armor() const
                        debuffs.tear_armor -> check() * debuffs.tear_armor -> value() * 0.01 ) ) ) )
              - debuffs.shattering_throw -> stack() * 0.20;
 
-  if ( buffs.stoneform -> up() )
-    a *= 1.10;
-
   return a;
 }
 
@@ -4000,6 +3997,9 @@ double player_t::assess_damage( double            amount,
 
   if ( buffs.pain_supression -> up() )
     amount *= 1.0 + buffs.pain_supression -> effect1().percent();
+
+  if ( buffs.stoneform -> up() )
+    amount *= 1.0 + buffs.stoneform -> effect1().percent();
 
   double mitigated_amount = target_mitigation( amount, school, dmg_type, result, action );
 

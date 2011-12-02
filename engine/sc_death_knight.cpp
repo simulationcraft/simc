@@ -354,7 +354,6 @@ struct death_knight_t : public player_t
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_actions();
-  virtual std::string init_use_racial_actions( const std::string& append = std::string() );
   virtual void      init_enchant();
   virtual void      init_rng();
   virtual void      init_defense();
@@ -4342,24 +4341,6 @@ void death_knight_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
-}
-
-// death_knight_t::init_use_racial_actions ==================================
-
-std::string death_knight_t::init_use_racial_actions( const std::string& append )
-{
-  std::string buffer;
-
-  if ( race == RACE_DWARF )
-  {
-    if ( talents.bladed_armor -> rank() > 0 ) buffer += "/stoneform" + append;
-  }
-  else
-  {
-    buffer = player_t::init_use_racial_actions( append );
-  }
-
-  return buffer;
 }
 
 // death_knight_t::init_actions =============================================
