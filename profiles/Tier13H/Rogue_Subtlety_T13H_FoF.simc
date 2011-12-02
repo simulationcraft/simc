@@ -51,8 +51,8 @@ finger2=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_
 trinket1=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99agi_100%_10dur_10stack
 trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-17051+101.6physical_15%_25cd
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=hit_haste,gems=50agi_50agi_20agi,enchant=22agi
-main_hand=golad_twilight_of_aspects,ilevel=416,quality=legendary,stats=229agi_373sta_156crit_150haste_148hit,reforge=hit_mastery,gems=50agi_10agi,enchant=landslide,weapon=dagger_1.80speed_991min_1840max
-off_hand=tiriosh_nightmare_of_ages,ilevel=416,quality=legendary,stats=229agi_373sta_154haste_150mastery_149exp,reforge=mastery_crit,gems=50agi_10agi,enchant=landslide,weapon=dagger_1.40speed_771min_1431max
+main_hand=golad_twilight_of_aspects,ilevel=416,quality=legendary,stats=229agi_156crit_150haste_148hit_373sta,reforge=hit_mastery,gems=50agi_10agi,enchant=landslide,weapon=dagger_1.80speed_990min_1840max
+off_hand=tiriosh_nightmare_of_ages,ilevel=416,quality=legendary,stats=229agi_149exp_154haste_150mastery_373sta,reforge=mastery_crit,gems=50agi_10agi,enchant=landslide,weapon=dagger_1.40speed_770min_1432max
 ranged=horrifying_horn_arbalest,heroic=1,ilevel=410,quality=epic,stats=172agi_259sta_131crit_87haste,enchant=gnomish_xray,weapon=crossbow_2.90speed_2325min_3489max
 # Gear Summary
 # gear_strength=20
@@ -71,8 +71,8 @@ ranged=horrifying_horn_arbalest,heroic=1,ilevel=410,quality=epic,stats=172agi_25
 # tier13_2pc_melee=1
 # tier13_4pc_melee=1
 # hands=blackfang_battleweave_gloves,heroic=1,addon=synapse_springs
-# main_hand=golad_twilight_of_aspects,weapon=dagger_1.80speed_991min_1840max,enchant=landslide
-# off_hand=tiriosh_nightmare_of_ages,weapon=dagger_1.40speed_771min_1431max,enchant=landslide
+# main_hand=golad_twilight_of_aspects,weapon=dagger_1.80speed_990min_1840max,enchant=landslide
+# off_hand=tiriosh_nightmare_of_ages,weapon=dagger_1.40speed_770min_1432max,enchant=landslide
 # ranged=horrifying_horn_arbalest,heroic=1,weapon=crossbow_2.90speed_2325min_3489max,enchant=gnomish_xray
 # These values represent the avg HAT donor interval of the raid.
 # A negative value will make the Rogue use a programmed default interval.

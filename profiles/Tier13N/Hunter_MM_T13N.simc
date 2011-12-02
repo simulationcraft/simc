@@ -17,10 +17,10 @@ actions+=/summon_pet
 actions+=/trueshot_aura
 actions+=/snapshot_stats
 actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60|buff.rapid_fire.react
-actions+=/auto_shot
+actions+=/use_item,name=wyrmstalkers_gloves
 actions+=/aspect_of_the_hawk,moving=0
 actions+=/aspect_of_the_fox,moving=1
-actions+=/use_item,name=wyrmstalkers_gloves
+actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
 actions+=/berserking
 actions+=/multi_shot,if=target.adds>5
@@ -46,8 +46,8 @@ wrists=dragonbelly_bracers,type=mail,ilevel=397,quality=epic,stats=1218armor_271
 hands=wyrmstalkers_gloves,type=mail,ilevel=397,quality=epic,stats=1739armor_341agi_542sta_205hit_247haste,gems=50agi_10agi,enchant=20agi,addon=synapse_springs
 finger1=signet_of_grasping_mouths,ilevel=397,quality=epic,stats=251agi_406sta_179crit_157haste,gems=50agi_10agi,enchant=40agi
 finger2=seal_of_primordial_shadow,ilevel=397,quality=epic,stats=251agi_406sta_162exp_176mastery,enchant=40agi
-trinket1=vial_of_shadows,ilevel=397,quality=epic,stats=458agi,equip=onattackhit_15106+90physical_15%_45cd
-trinket2=starcatcher_compass,ilevel=397,quality=epic,stats=458agi,equip=ondamage_2904haste_15%_20dur_75cd
+trinket1=vial_of_shadows,ilevel=397,quality=epic,stats=458agi,equip=onattackhit_-15106+90physical_15%_25cd
+trinket2=starcatcher_compass,ilevel=397,quality=epic,stats=458agi,equip=ondamage_2904haste_15%_20dur_115cd
 back=batwing_cloak,ilevel=397,quality=epic,stats=769armor_251agi_406sta_176haste_162crit,enchant=22agi
 main_hand=kiril_fury_of_beasts,ilevel=403,quality=epic,stats=514agi_772sta,enchant=130agi,weapon=polearm_3.50speed_2629min_3945max
 ranged=horrifying_horn_arbalest,ilevel=397,quality=epic,stats=153agi_230sta_116crit_78haste,enchant=gnomish_xray,weapon=crossbow_2.90speed_2060min_3091max

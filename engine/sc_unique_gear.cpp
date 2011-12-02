@@ -167,7 +167,8 @@ struct discharge_proc_callback_t : public action_callback_t
         may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
-        may_dodge = may_parry = may_glance = false;
+        may_dodge = may_parry = ( s == SCHOOL_PHYSICAL && ! no_crit );
+        may_glance = false;
         background  = true;
         no_buffs = nb;
         no_debuffs = nd;
@@ -289,7 +290,8 @@ struct chance_discharge_proc_callback_t : public action_callback_t
         may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
-        may_dodge = may_parry = may_glance = false;
+        may_dodge = may_parry = ( s == SCHOOL_PHYSICAL && ! no_crit );
+        may_glance = false;
         background  = true;
         no_buffs = nb;
         no_debuffs = nd;
@@ -369,7 +371,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   stat_discharge_proc_callback_t( const std::string& n, player_t* p,
                                   int stat, int max_stacks, double stat_amount,
                                   const school_type school, double discharge_amount, double discharge_scaling,
-                                  double proc_chance, double duration, double cooldown, bool no_crits, bool no_buffs, bool no_debuffs, bool activated=true ) :
+                                  double proc_chance, double duration, double cooldown, bool no_crit, bool no_buffs, bool no_debuffs, bool activated=true ) :
     action_callback_t( p -> sim, p ), name_str( n )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
@@ -380,7 +382,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
     struct discharge_spell_t : public spell_t
     {
-      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crits, bool nb, bool nd ) :
+      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
         spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
@@ -390,7 +392,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         base_dd_max = amount;
         may_trigger_dtr = false;
         direct_power_mod = scaling;
-        may_crit = ( s != SCHOOL_DRAIN ) && ! no_crits;
+        may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
         background  = true;
         no_buffs = nb;
         no_debuffs = nd;
@@ -402,7 +404,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     {
       bool no_buffs;
 
-      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crits, bool nb, bool nd ) :
+      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool no_crit, bool nb, bool nd ) :
         attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
@@ -412,8 +414,9 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         base_dd_max = amount;
         may_trigger_dtr = false;
         direct_power_mod = scaling;
-        may_crit = ( s != SCHOOL_DRAIN ) && ! no_crits;
-        may_dodge = may_parry = may_glance = false;
+        may_crit = ( s != SCHOOL_DRAIN ) && ! no_crit;
+        may_dodge = may_parry = ( s == SCHOOL_PHYSICAL && ! no_crit );
+        may_glance = false;
         background  = true;
         no_buffs = nb;
         no_debuffs = nd;
@@ -423,11 +426,11 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
     if ( discharge_amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str.c_str(), p, discharge_amount, discharge_scaling, school, no_crits, no_buffs, no_debuffs );
+      discharge_action = new discharge_spell_t( name_str.c_str(), p, discharge_amount, discharge_scaling, school, no_crit, no_buffs, no_debuffs );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str.c_str(), p, -discharge_amount, discharge_scaling, school, no_crits, no_buffs, no_debuffs );
+      discharge_action = new discharge_attack_t( name_str.c_str(), p, -discharge_amount, discharge_scaling, school, no_crit, no_buffs, no_debuffs );
     }
   }
 
@@ -1821,13 +1824,13 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
                                                            double             scaling,
                                                            double             proc_chance,
                                                            double             cooldown,
-                                                           bool               no_crits,
+                                                           bool               no_crit,
                                                            bool               no_buffs,
                                                            bool               no_debuffs,
                                                            int                rng_type )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
-                                                         no_crits, no_buffs, no_debuffs, rng_type );
+                                                         no_crit, no_buffs, no_debuffs, rng_type );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -1890,13 +1893,13 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( int           
                                                                   double             scaling,
                                                                   double             proc_chance,
                                                                   double             cooldown,
-                                                                  bool               no_crits,
+                                                                  bool               no_crit,
                                                                   bool               no_buffs,
                                                                   bool               no_debuffs,
                                                                   int                rng_type )
 {
   action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
-                                                                no_crits, no_buffs, no_debuffs, rng_type );
+                                                                no_crit, no_buffs, no_debuffs, rng_type );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -1962,12 +1965,12 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( int             
                                                                 double             proc_chance,
                                                                 double             duration,
                                                                 double             cooldown,
-                                                                bool               no_crits,
+                                                                bool               no_crit,
                                                                 bool               no_buffs,
                                                                 bool               no_debuffs )
 {
   action_callback_t* cb = new stat_discharge_proc_callback_t( name, player, stat, max_stacks, stat_amount, school, min_dmg, max_dmg, proc_chance,
-                                                              duration, cooldown, no_crits, no_buffs, no_debuffs, type == PROC_NONE );
+                                                              duration, cooldown, no_crit, no_buffs, no_debuffs, type == PROC_NONE );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -2224,7 +2227,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_800Mana_30%_15Dur_45Cd";       // TO-DO: Confirm ICD.
   else if ( name == "swordguard_embroidery_old"           ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
   else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
-  else if ( name == "flintlockes_woodchucker"             ) e = "OnAttackHit_1100Physical_300Agi_10%_10Dur_40Cd"; // TO-DO: Confirm ICD.
+  else if ( name == "flintlockes_woodchucker"             ) e = "OnAttackHit_1100Physical_300Agi_10%_10Dur_40Cd_nocrit"; // TO-DO: Confirm ICD.
 
   // DK Runeforges
   else if ( name == "rune_of_cinderglacier"               ) e = "custom";

@@ -50,7 +50,7 @@ trinket1=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_
 trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-17051+101.6physical_15%_25cd
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=hit_crit,gems=50agi_50agi_20agi,enchant=22agi
 main_hand=kiril_fury_of_beasts,heroic=1,ilevel=416,quality=epic,stats=581agi_871sta,enchant=130agi,weapon=polearm_3.50speed_2968min_4453max
-ranged=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=gnomish_xray,weapon=bow_3.00speed_2226min_4135max
+ranged=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=flintlockes_woodchucker,weapon=bow_3.00speed_2226min_4135max
 # Gear Summary
 # gear_strength=20
 # gear_agility=7310
@@ -69,7 +69,7 @@ ranged=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_
 # tier13_4pc_melee=1
 # hands=wyrmstalkers_gloves,heroic=1,addon=synapse_springs
 # main_hand=kiril_fury_of_beasts,heroic=1,weapon=polearm_3.50speed_2968min_4453max
-# ranged=vishanka_jaws_of_the_earth,heroic=1,weapon=bow_3.00speed_2226min_4135max,enchant=gnomish_xray
+# ranged=vishanka_jaws_of_the_earth,heroic=1,weapon=bow_3.00speed_2226min_4135max,enchant=flintlockes_woodchucker
 pet=cat,cat
 talents=200000030300003010111000000000000000000000000000000000000000000
 active=owner
