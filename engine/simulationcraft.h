@@ -139,6 +139,7 @@ struct proc_t;
 struct raid_event_t;
 struct rating_t;
 struct reforge_plot_t;
+struct reforge_plot_data_t;
 struct report_t;
 struct rng_t;
 struct talent_t;
@@ -3342,6 +3343,12 @@ struct reforge_plot_t
   void create_options();
 };
 
+struct reforge_plot_data_t
+{
+  double value;
+  double error;
+};
+
 // Event ====================================================================
 
 struct event_t : public noncopyable
@@ -3859,7 +3866,7 @@ struct player_t : public noncopyable
   benefit_t* benefit_list;
   uptime_t* uptime_list;
   std::vector<double> dps_plot_data[ STAT_MAX ];
-  std::vector<std::vector<double> > reforge_plot_data;
+  std::vector<std::vector<reforge_plot_data_t> > reforge_plot_data;
   std::vector<std::vector<double> > timeline_resource;
 
   // Damage

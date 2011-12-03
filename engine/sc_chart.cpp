@@ -1256,12 +1256,12 @@ const char* chart_t::scaling_dps( std::string& s,
 
 // ternary_coords ===========================================================
 
-std::vector<double> ternary_coords( std::vector<double> xyz )
+std::vector<double> ternary_coords( std::vector<reforge_plot_data_t> xyz )
 {
   std::vector<double> result;
   result.resize( 2 );
-  result[0] = xyz[ 2 ]/2.0 + xyz[ 1 ];
-  result[1] = xyz[ 2 ]/2.0 * sqrt( 3.0 );
+  result[0] = xyz[ 2 ].value/2.0 + xyz[ 1 ].value;
+  result[1] = xyz[ 2 ].value/2.0 * sqrt( 3.0 );
   return result;
 }
 
@@ -1293,7 +1293,7 @@ const char* chart_t::reforge_dps( std::string& s,
 
   if ( ! p )
     return 0;
-  std::vector< std::vector<double> >& pd = p -> reforge_plot_data;
+  std::vector< std::vector<reforge_plot_data_t> >& pd = p -> reforge_plot_data;
   if ( pd.size() == 0 )
     return 0;
 
@@ -1307,10 +1307,10 @@ const char* chart_t::reforge_dps( std::string& s,
   for ( size_t i=0; i < pd.size(); i++ )
   {
     assert( num_stats < pd[ i ].size() );
-    if ( pd[ i ][ num_stats ] < min_dps )
-      min_dps = pd[ i ][ num_stats ];
-    if ( pd[ i ][ num_stats ] > max_dps )
-      max_dps = pd[ i ][ num_stats ];
+    if ( pd[ i ][ num_stats ].value < min_dps )
+      min_dps = pd[ i ][ num_stats ].value;
+    if ( pd[ i ][ num_stats ].value > max_dps )
+      max_dps = pd[ i ][ num_stats ].value;
   }
 
   dps_range = max_dps - min_dps;
@@ -1320,70 +1320,143 @@ const char* chart_t::reforge_dps( std::string& s,
     int range = p -> sim -> reforge_plot -> reforge_plot_amount;
     int num_points = ( int ) pd.size();
     std::vector<int> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
+    const reforge_plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
+    double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
+    double max_delta = ( max_dps + baseline.error / 2 ) - baseline.value;
+    double max_ydelta = std::max( min_delta, max_delta );
+    int ysteps = 5;
+    double ystep_amount = max_ydelta / ysteps;
+    
     char buffer[ 1024 ];
 
     s = get_chart_base_url();
     s += "chs=525x300";
     s += "&amp;";
-    s += "cht=s";
+    s += "cht=lxy";
     s += "&amp;";
     if ( ! p -> sim -> print_styles )
     {
       s += "chf=bg,s,333333";
       s += "&amp;";
     }
-    s += "chd=t:";
+    
+    // X series
+    s += "chd=t2:";
     for ( int i=0; i < num_points; i++ )
     {
-      snprintf( buffer, sizeof( buffer ), "%.0f", pd[ i ][ 0 ] );
+      snprintf( buffer, sizeof( buffer ), "%.0f", pd[ i ][ 0 ].value );
       s += buffer;
       if ( i < num_points - 1 )
         s+= ",";
     }
+    
+    // Y series
     s += "|";
     for ( int i=0; i < num_points; i++ )
     {
-      snprintf( buffer, sizeof( buffer ), "%.0f", pd[ i ][ 2 ] );
+      snprintf( buffer, sizeof( buffer ), "%.0f", pd[ i ][ 2 ].value );
+      s += buffer;
+      if ( i < num_points - 1 )
+        s+= ",";
+    }
+    
+    // Min Y series
+    s += "|-1|";
+    for ( int i=0; i < num_points; i++ )
+    {
+      double v = pd[ i ][ 2 ].value - pd[ i ][ 2 ].error / 2;
+      snprintf( buffer, sizeof( buffer ), "%.0f", v );
+      s += buffer;
+      if ( i < num_points - 1 )
+        s+= ",";
+    }
+    
+    // Max Y series
+    s += "|-1|";
+    for ( int i=0; i < num_points; i++ )
+    {
+      double v = pd[ i ][ 2 ].value + pd[ i ][ 2 ].error / 2;
+      snprintf( buffer, sizeof( buffer ), "%.0f", v );
       s += buffer;
       if ( i < num_points - 1 )
         s+= ",";
     }
 
     s += "&amp;";
-    snprintf( buffer, sizeof( buffer ), "chds=%d,%d,%.0f,%.0f", -range, +range, floor( min_dps ), ceil( max_dps ) ); s += buffer;
-    s += "&amp;";
-    s += "chxt=x,y,x";
-    s += "&amp;";
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%d|0|%%2b%d|%%2b%d|1:|%.0f|%.0f|%.0f", ( -range ), ( -range )/2, ( +range )/2, ( +range ), min_dps, p -> dps.mean, max_dps );
+    
+    // Axis dimensions
+    snprintf( buffer, sizeof( buffer ), "chds=%d,%d,%.0f,%.0f", 
+             -range, +range, 
+             floor( baseline.value - max_ydelta ), 
+             ceil( baseline.value + max_ydelta ) );
     s += buffer;
-    snprintf( buffer, sizeof( buffer ), "|2:|%s||%s", util_t::stat_type_string( stat_indices[ 1 ] ), util_t::stat_type_string( stat_indices[ 0 ] ) );
+    s += "&amp;chxt=x,y,x&amp;";
+    
+    // X Axis labels
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%d|0|%d|%d|", 
+             ( range ), ( range ) / 2, ( range ) / 2, ( range ) );
+    s += buffer;
+    
+    // Y Axis labels
+    s += "1:|";
+    for ( int i = ysteps; i >= 1; i -= 1 )
+    {
+      snprintf( buffer, sizeof( buffer ), "%.0f (%.0f)|", 
+               baseline.value - i * ystep_amount,
+               - ( i * ystep_amount ) );
+      s += buffer;
+    }
+    snprintf( buffer, sizeof( buffer ), "%.0f|", baseline.value );
+    s += buffer;
+    for ( int i = 1; i <= ysteps; i += 1 )
+    {
+      snprintf( buffer, sizeof( buffer ), "%.0f (%%2b%.0f)|", 
+               baseline.value + i * ystep_amount,
+               i * ystep_amount );
+      s += buffer;
+    }
+    
+    // X2 Axis labels
+    snprintf( buffer, sizeof( buffer ), "2:|%s to %s||%s to %s", 
+             util_t::stat_type_abbrev( stat_indices[ 0 ] ),
+             util_t::stat_type_abbrev( stat_indices[ 1 ] ), 
+             util_t::stat_type_abbrev( stat_indices[ 1 ] ),
+             util_t::stat_type_abbrev( stat_indices[ 0 ] ) );
     s += buffer;
     s += "&amp;";
-    snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> dps.mean - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
-    s += "&amp;";
+    
+    // Chart legend
     if ( ! p -> sim -> print_styles )
     {
       s += "chdls=dddddd,12";
       s += "&amp;";
     }
+    
+    // Chart color
     s += "chco=";
     s += stat_color( stat_indices[ 0 ] );
     s += "&amp;";
-    s += "chg=5,10,1,3";
+    
+    // Grid lines
+    s += "chg=5,";
+    s += util_t::to_string( 100 / ( ysteps * 2 ) );
+    s += ",1,3";
     s += "&amp;";
+    
+    // Chart Title
     std::string formatted_name = p -> name_str;
     util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
     snprintf( buffer, sizeof( buffer ), "chtt=%s+Reforge+Scaling", formatted_name.c_str() ); s += buffer;
     s += "&amp;";
+    
     if ( p -> sim -> print_styles )
-    {
       s += "chts=666666,18";
-    }
     else
-    {
       s += "chts=dddddd,18";
-    }
+    s += "&amp;";
 
+    // Chart markers (Errorbars and Center-line)
+    s += "chm=E,FF2222,1,-1,1:5|h,888888,1,0.5,1,-1.0";
   }
   else if ( num_stats == 3 )
   {
@@ -1393,12 +1466,12 @@ const char* chart_t::reforge_dps( std::string& s,
     std::vector< std::string > colors;
     for ( int i=0; i < ( int ) pd.size(); i++ )
     {
-      std::vector<double> scaled_dps = pd[ i ];
+      std::vector<reforge_plot_data_t> scaled_dps = pd[ i ];
       int ref_plot_amount = p -> sim -> reforge_plot -> reforge_plot_amount;
       for ( int j=0; j < 3; j++ )
-        scaled_dps[ j ] = ( scaled_dps[ j ] + ref_plot_amount ) / ( 3. * ref_plot_amount );
+        scaled_dps[ j ].value = ( scaled_dps[ j ].value + ref_plot_amount ) / ( 3. * ref_plot_amount );
       triangle_points.push_back( ternary_coords( scaled_dps ) );
-      colors.push_back( color_temperature_gradient( pd[ i ][ 3 ], min_dps, dps_range ) );
+      colors.push_back( color_temperature_gradient( pd[ i ][ 3 ].value, min_dps, dps_range ) );
     }
 
     char buffer[ 1024 ];

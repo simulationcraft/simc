@@ -159,7 +159,7 @@ void reforge_plot_t::analyze_stats()
     if ( sim -> canceled ) break;
 
     sim_t* delta_sim=0;
-    std::vector<double> delta_result;
+    std::vector<reforge_plot_data_t> delta_result;
     delta_result.resize( stat_mods[ i ].size() + 1 );
 
     delta_sim = new sim_t( sim );
@@ -171,7 +171,8 @@ void reforge_plot_t::analyze_stats()
     {
       delta_sim -> enchant.add_stat( reforge_plot_stat_indices[ j ],
                                      stat_mods[ i ][ j ] );
-      delta_result[ j ] = stat_mods[ i ][ j ];
+      delta_result[ j ].value = stat_mods[ i ][ j ];
+      delta_result[ j ].error = 0;
 
       if ( sim -> report_progress )
         util_t::fprintf( stdout, "%s: %d ",
@@ -194,8 +195,11 @@ void reforge_plot_t::analyze_stats()
 
       if ( delta_sim )
       {
+        reforge_plot_data_t data;
         player_t* delta_p = delta_sim -> find_player( p -> name() );
-        delta_result[ stat_mods[ i ].size() ] = delta_p -> dps.mean;
+        data.value = delta_p -> dps.mean;
+        data.error = delta_p -> dps_error;
+        delta_result[ stat_mods[ i ].size() ] = data;
         p -> reforge_plot_data.push_back( delta_result );
       }
     }
@@ -246,7 +250,7 @@ void reforge_plot_t::analyze()
     {
       for ( int j=0; j < ( int ) p -> reforge_plot_data[ i ].size(); j++ )
         util_t::fprintf( reforge_plot_output_file, "%f, ",
-                         p -> reforge_plot_data[ i ][ j ] );
+                         p -> reforge_plot_data[ i ][ j ].value );
       util_t::fprintf( reforge_plot_output_file, "\n" );
     }
 
