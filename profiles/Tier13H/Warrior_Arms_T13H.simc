@@ -9,7 +9,7 @@ role=attack
 use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#warrior-3202030312021231221103220000000000000000030000000000000000000
-glyphs=death_wish/cleaving/heroic_throw/battle/berserker_rage/bloody_healing/slam/raging_blow/bloodthirst
+glyphs=colossus_smash/sweeping_strikes/rapid_charge/battle/berserker_rage/enduring_victory/mortal_strike/slam/overpower
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
 actions+=/snapshot_stats
