@@ -945,6 +945,7 @@ static void trigger_vishanka( attack_t* a )
         init();
 
         // FIX ME: Can this crit, miss, etc?
+        may_miss    = false;
       }
     };
 
