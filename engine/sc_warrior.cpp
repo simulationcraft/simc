@@ -522,9 +522,6 @@ static void trigger_deep_wounds( action_t* a )
                              p -> active_deep_wounds -> weapon_multiplier *
                              p -> active_deep_wounds -> player_multiplier );
 
-  if ( p -> primary_tree() == TREE_FURY )
-    deep_wounds_dmg *= 1.0 + p -> spec.precision -> effect_base_value( 3 ) / 100.0;
-
   dot_t* dot = p -> active_deep_wounds -> dot;
 
   if ( dot -> ticking )
