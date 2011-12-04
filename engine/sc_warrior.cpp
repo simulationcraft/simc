@@ -2062,7 +2062,7 @@ struct rend_dot_t : public warrior_attack_t
   {
     base_td = base_td_init;
     if ( weapon )
-      base_td += sim -> range( weapon -> min_dmg, weapon -> max_dmg ) * 0.25 + weapon -> swing_time * weapon_power_mod * total_attack_power() / 6.0;
+      base_td += ( sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> swing_time * weapon_power_mod * total_attack_power() ) * 0.25;
 
     warrior_attack_t::execute();
 
