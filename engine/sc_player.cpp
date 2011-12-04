@@ -456,7 +456,7 @@ player_t::player_t( sim_t*             s,
   flask( FLASK_NONE ),
   food( FOOD_NONE ),
   // Events
-  executing( 0 ), channeling( 0 ), readying( 0 ), in_combat( false ), action_queued( false ),
+  executing( 0 ), channeling( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ),
   cast_delay_reaction( 0 ), cast_delay_occurred( 0 ),
   // Actions
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
@@ -1618,6 +1618,9 @@ void player_t::init_actions()
   for ( action_t* action = action_list; action; action = action -> next )
   {
     action -> init();
+    if ( action -> trigger_gcd == 0 && ! action -> background && action -> use_off_gcd )
+      off_gcd_actions.push_back( action );
+    
   }
 
   int capacity = std::max( 1200, ( int ) ( sim -> max_time / 2.0 ) );
@@ -3076,6 +3079,7 @@ void player_t::reset()
   executing = 0;
   channeling = 0;
   readying = 0;
+  off_gcd = 0;
   in_combat = false;
 
   cast_delay_reaction = 0;
@@ -3252,6 +3256,7 @@ void player_t::arise()
   init_resources( true );
 
   readying = 0;
+  off_gcd = 0;
 
   arise_time = sim -> current_time;
 
@@ -3279,6 +3284,7 @@ void player_t::demise()
     readying = 0;
   }
 
+  event_t::cancel( off_gcd );
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
@@ -3313,6 +3319,7 @@ void player_t::interrupt()
   if ( buffs.stunned -> check() )
   {
     if ( readying ) event_t::cancel( readying );
+    if ( off_gcd ) event_t::cancel( off_gcd );
   }
   else
   {
@@ -3386,6 +3393,7 @@ std::string player_t::print_action_map( int iterations, int precision )
 action_t* player_t::execute_action()
 {
   readying = 0;
+  off_gcd = 0;
 
   action_t* action=0;
 

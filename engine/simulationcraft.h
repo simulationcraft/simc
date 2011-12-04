@@ -3813,6 +3813,7 @@ struct player_t : public noncopyable
   action_t* executing;
   action_t* channeling;
   event_t*  readying;
+  event_t*  off_gcd;
   bool      in_combat;
   bool      action_queued;
 
@@ -3836,6 +3837,7 @@ struct player_t : public noncopyable
 
   // Action Priority List
   action_t*   action_list;
+  std::vector<action_t*> off_gcd_actions;
   std::string action_list_str;
   std::string choose_action_list;
   std::string action_list_skip;
@@ -4534,7 +4536,7 @@ struct action_t : public spell_id_t
   uint32_t id;
   school_type school;
   int resource, tree, result, aoe;
-  bool dual, callbacks, special, binary, channeled, background, sequence;
+  bool dual, callbacks, special, binary, channeled, background, sequence, use_off_gcd;
   bool direct_tick, repeating, harmful, proc, item_proc, may_trigger_dtr, discharge_proc, auto_cast, initialized;
   bool may_hit, may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
@@ -4960,6 +4962,12 @@ struct action_priority_list_t
 struct player_ready_event_t : public event_t
 {
   player_ready_event_t( sim_t* sim, player_t* p, double delta_time );
+  virtual void execute();
+};
+
+struct player_gcd_event_t : public event_t
+{
+  player_gcd_event_t( sim_t* sim, player_t* p, double delta_time );
   virtual void execute();
 };
 

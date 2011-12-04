@@ -1715,6 +1715,7 @@ struct heroic_strike_t : public warrior_attack_t
     base_crit        += p -> talents.incite -> effect1().percent();
     base_dd_min       = base_dd_max = 8;
     direct_power_mod  = 0.6; // Hardcoded into tooltip, 02/11/2011
+    harmful           = true;
   }
 
   virtual double cost() const
@@ -3577,16 +3578,16 @@ void warrior_t::init_actions()
     // Arms
     if ( primary_tree() == TREE_ARMS )
     {
-      action_list_str += "/stance,choose=berserker,if=(buff.taste_for_blood.down&rage<75)";
-      action_list_str += "/stance,choose=battle,if=(dot.rend.remains=0|((buff.overpower.up|buff.taste_for_blood.up)&cooldown.mortal_strike.remains>1)&rage<=75)";
+      action_list_str += "/stance,choose=berserker,if=(buff.taste_for_blood.down&rage<75),use_off_gcd=1";
+      action_list_str += "/stance,choose=battle,if=(dot.rend.remains=0|((buff.overpower.up|buff.taste_for_blood.up)&cooldown.mortal_strike.remains>1)&rage<=75),use_off_gcd=1";
 
-      action_list_str += "/recklessness,if=((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20)";
+      action_list_str += "/recklessness,if=((target.health_pct>20&target.time_to_die>320)|target.health_pct<=20),use_off_gcd=1";
       if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage,if=!buff.deadly_calm.up&rage<70";
-      if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<30";
+      if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,if=rage<30,use_off_gcd=1";
       if ( talents.sweeping_strikes -> ok() ) action_list_str += "/sweeping_strikes,if=target.adds>0";
       // Don't want to bladestorm during SS as it's only 1 extra hit per WW not per target
       action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";
-      action_list_str += "/cleave,if=target.adds>0";
+      action_list_str += "/cleave,if=target.adds>0,use_off_gcd=1";
       if ( set_bonus.tier13_2pc_melee() )
       {
         action_list_str += "/inner_rage,if=target.adds=0&!buff.deadly_calm.up&cooldown.deadly_calm.remains>15&((rage>=75&target.health_pct>=20)|((buff.incite.up|buff.colossus_smash.up)&((rage>=40&target.health_pct>=20)|(rage>=65&target.health_pct<20))))";
@@ -3595,7 +3596,7 @@ void warrior_t::init_actions()
       {
         action_list_str += "/inner_rage,if=!buff.deadly_calm.up&rage>80&cooldown.deadly_calm.remains>15";
       }
-      action_list_str += "/heroic_strike,if=(((rage>=85|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=75))&target.health_pct>=20)|buff.deadly_calm.up|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&(((rage>=50|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=40))&target.health_pct>=20)|((rage>=75|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=65))&target.health_pct<20))))";
+      action_list_str += "/heroic_strike,if=(((rage>=85|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=75))&target.health_pct>=20)|buff.deadly_calm.up|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&(((rage>=50|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=40))&target.health_pct>=20)|((rage>=75|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=65))&target.health_pct<20)))),use_off_gcd=1";
       action_list_str += "/overpower,if=buff.taste_for_blood.remains<=1.5";
       action_list_str += "/mortal_strike,if=target.health_pct>20|rage>=30";
       action_list_str += "/execute,if=buff.battle_trance.up";
