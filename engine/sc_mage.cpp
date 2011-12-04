@@ -2050,6 +2050,12 @@ struct flame_orb_explosion_t : public mage_spell_t
     aoe = -1;
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect2().percent();
   }
+
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  {
+    // Ticks don't trigger ignite
+    spell_t::impact( t, impact_result, travel_dmg );
+  }
 };
 
 struct flame_orb_tick_t : public mage_spell_t
@@ -2449,6 +2455,17 @@ struct frostfire_orb_explosion_t : public mage_spell_t
     school = SCHOOL_FROSTFIRE; // required since defaults to FIRE
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
   }
+
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  {
+    // Ticks don't trigger ignite
+    spell_t::impact( t, impact_result, travel_dmg );
+
+    mage_t* p = player -> cast_mage();
+
+    if ( may_chill && result_is_hit( impact_result ) )
+      p -> buffs_fingers_of_frost -> trigger();
+  }
 };
 
 struct frostfire_orb_tick_t : public mage_spell_t
@@ -2621,6 +2638,12 @@ struct living_bomb_explosion_t : public mage_spell_t
       dtr_action = new living_bomb_explosion_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  {
+    // Ticks don't trigger ignite
+    spell_t::impact( t, impact_result, travel_dmg );
   }
 };
 
