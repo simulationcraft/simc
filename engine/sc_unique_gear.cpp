@@ -1499,7 +1499,7 @@ static void register_rathrak( item_t* item )
       trigger_gcd = 0;
       background = true;
       may_miss = false; // FIXME: Verify this
-      may_crit = true; 
+      tick_may_crit = true; 
       proc = true;
       init();
       cooldown -> duration = 17.0; // FIXME: Verify this. Got 17.188sec after 545 procs.
