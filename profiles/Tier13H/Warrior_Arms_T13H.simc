@@ -51,22 +51,22 @@ finger2=curled_twilight_claw,heroic=1,ilevel=410,quality=epic,stats=286str_459st
 trinket1=creche_of_the_final_dragon,heroic=1,ilevel=410,quality=epic,stats=517str,equip=ondamage_3278crit_15%_20dur_115cd
 trinket2=eye_of_unmaking,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99str_100%_10dur_10stack
 back=dreamcrusher_drape,ilevel=397,quality=epic,stats=769armor_251str_406sta_196crit_127hit,enchant=65crit
-main_hand=experimental_specimen_slicer,heroic=1,ilevel=410,quality=epic,stats=529str_824sta_362crit_347mastery,gems=50str_10str,enchant=landslide,weapon=axe2h_3.60speed_2887min_4331max
+main_hand=gurthalak_voice_of_the_deeps,heroic=1,ilevel=416,quality=epic,stats=581str_871sta,enchant=landslide,weapon=sword2h_3.60speed_3053min_4580max
 ranged=darting_chakram,ilevel=397,quality=epic,stats=153str_230sta_111exp_87crit,weapon=thrown_2.10speed_1492min_2238max
 # Gear Summary
-# gear_strength=6872
+# gear_strength=6864
 # gear_agility=20
-# gear_stamina=8093
+# gear_stamina=8140
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
 # gear_expertise_rating=734
 # gear_hit_rating=933
-# gear_crit_rating=2921
-# gear_mastery_rating=2332
+# gear_crit_rating=2559
+# gear_mastery_rating=1985
 # gear_armor=23606
 # meta_gem=reverberating_shadowspirit
 # tier13_2pc_melee=1
 # tier13_4pc_melee=1
-# main_hand=experimental_specimen_slicer,heroic=1,weapon=axe2h_3.60speed_2887min_4331max,enchant=landslide
+# main_hand=gurthalak_voice_of_the_deeps,heroic=1,weapon=sword2h_3.60speed_3053min_4580max,enchant=landslide
 # ranged=darting_chakram,weapon=thrown_2.10speed_1492min_2238max

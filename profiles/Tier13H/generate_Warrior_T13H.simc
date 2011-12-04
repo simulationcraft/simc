@@ -26,7 +26,7 @@ finger2=curled_twilight_claw,id=78432,gems=50str_10str,reforge=mastery_crit
 trinket1=creche_of_the_final_dragon,id=77992
 trinket2=eye_of_unmaking,id=77997
 back=dreamcrusher_drape,id=77097,enchant=65crit
-main_hand=experimental_specimen_slicer,id=78403,gems=50str_10str,enchant=landslide
+main_hand=gurthalak_voice_of_the_deeps,id=78478,enchant=landslide
 ranged=darting_chakram,id=77087
 save=Warrior_Arms_T13H.simc
 
@@ -65,11 +65,11 @@ use_pre_potion=1
 professions=blacksmithing=525/jewelcrafting=525
 talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022321020000000000000000000
 glyphs=death_wish/cleaving/heroic_throw/bloody_healing/battle/berserker_rage/bloodthirst/raging_blow/slam
-head=colossal_dragonplate_helmet,id=78688,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery
+head=colossal_dragonplate_helmet,id=78688,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery,reforge=crit_hit
 neck=necklace_of_black_dragons_teeth,id=77090
 shoulders=backbreaker_spaulders,id=78465,gems=50str_50str_20str,enchant=50str_25crit,reforge=mastery_hit
-chest=colossal_dragonplate_battleplate,id=78657,gems=50str_50str_25str_25crit_30str,enchant=20all
-waist=demonbone_waistguard,id=77185,gems=67str_25str_25hit_20str
+chest=colossal_dragonplate_battleplate,id=78657,gems=50str_50str_25str_25crit_30str,enchant=20all,reforge=mastery_hit
+waist=demonbone_waistguard,id=77185,gems=67str_25str_25hit_20str,reforge=mastery_hit
 legs=colossal_dragonplate_legplates,id=78706,gems=50str_50str_50str_30str,enchant=190ap_55crit,reforge=mastery_crit
 feet=treads_of_crushed_flesh,id=78389,gems=50str_50str_20str,enchant=35mastery,reforge=mastery_hit
 wrists=rockhide_bracers,id=78373,gems=67str_50str_10str,enchant=50str,reforge=mastery_hit
@@ -79,7 +79,7 @@ finger2=curled_twilight_claw,id=78432,gems=50str_10str,reforge=mastery_crit
 trinket1=creche_of_the_final_dragon,id=77992
 trinket2=eye_of_unmaking,id=77997
 back=dreamcrusher_drape,id=77097,enchant=65crit
-main_hand=experimental_specimen_slicer,id=78403,gems=50str_10str,enchant=landslide,reforge=mastery_hit
-off_hand=experimental_specimen_slicer,id=78403,gems=50str_10str,enchant=landslide,reforge=mastery_hit
-ranged=darting_chakram,id=77087
+main_hand=gurthalak_voice_of_the_deeps,id=78478,enchant=landslide
+off_hand=gurthalak_voice_of_the_deeps,id=78478,enchant=landslide
+ranged=darting_chakram,id=77087,reforge=crit_hit
 save=Warrior_Fury_2h_T13H.simc
