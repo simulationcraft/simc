@@ -1537,6 +1537,7 @@ static void register_souldrinker( item_t* item )
   player_t* p = item -> player;
   bool heroic = item -> heroic();
   bool lfr    = item -> lfr();
+  int slot    = item -> slot;
 
   struct souldrinker_spell_t : public spell_t
   {
@@ -1550,12 +1551,15 @@ static void register_souldrinker( item_t* item )
       proc = true;
       init();
     }
+
     virtual void execute()
     {
       base_dd_min = base_dd_max = effect1().percent() / 10.0 * player -> resource_max[ RESOURCE_HEALTH ];
       spell_t::execute();
     }
+
     virtual void player_buff() { }
+
     virtual double total_dd_multiplier() const { return 1.0; }
   };
 
@@ -1563,16 +1567,22 @@ static void register_souldrinker( item_t* item )
   {
     spell_t* spell;
     rng_t* rng;
+    int slot;
 
-    souldrinker_callback_t( player_t* p, spell_t* s ) :
-      action_callback_t( p -> sim, p ), spell( s )
+    souldrinker_callback_t( player_t* p, spell_t* s, int slot ) :
+      action_callback_t( p -> sim, p ), spell( s ), slot( slot )
     {
       rng  = p -> get_rng ( "souldrinker", RNG_DEFAULT );
     }
 
-    virtual void trigger( action_t* /* a */, void* /* call_data */ )
+    virtual void trigger( action_t* a, void* /* call_data */ )
     {
-      // FIXME: Does it have an ICD or not?
+      // Only the slot the weapon is in can trigger it, e.g. a Souldrinker in the MH can't proc from OH attacks
+      // http://elitistjerks.com/f72/t125291-frost_dps_winter_discontent_4_3_a/p12/#post2055642
+      if ( ! a -> weapon ) return;
+      if ( a -> weapon -> slot != slot ) return;
+
+      // No ICD
       if ( rng -> roll( 0.15 ) )
       {
         spell -> execute();
@@ -1580,7 +1590,7 @@ static void register_souldrinker( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic, lfr ) ) );
+  p -> register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic, lfr ), slot ) );
 }
 
 // register_titahk ==========================================================
