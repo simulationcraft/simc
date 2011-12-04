@@ -16,11 +16,11 @@ actions+=/snapshot_stats
 actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
 actions+=/auto_attack
 actions+=/stance,choose=berserker
-actions+=/recklessness
-actions+=/death_wish
-actions+=/cleave,if=target.adds>0
+actions+=/recklessness,use_off_gcd=1
+actions+=/death_wish,use_off_gcd=1
+actions+=/cleave,if=target.adds>0,use_off_gcd=1
 actions+=/whirlwind,if=target.adds>0
-actions+=/heroic_strike,if=((rage>=85&target.health_pct>=20)|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&((rage>=50&target.health_pct>=20)|(rage>=75&target.health_pct<20))))
+actions+=/heroic_strike,use_off_gcd=1,if=(((rage>=85|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=75))&target.health_pct>=20)|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&(((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)|((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20))))
 actions+=/execute,if=buff.executioner_talent.remains<1.5
 actions+=/colossus_smash
 actions+=/execute,if=buff.executioner_talent.stack<5

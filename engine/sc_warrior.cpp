@@ -3618,13 +3618,13 @@ void warrior_t::init_actions()
     else if ( primary_tree() == TREE_FURY )
     {
       action_list_str += "/stance,choose=berserker";
-      action_list_str += "/recklessness";
-      if ( talents.death_wish -> ok() ) action_list_str += "/death_wish";
-      action_list_str += "/cleave,if=target.adds>0";
+      action_list_str += "/recklessness,use_off_gcd=1";
+      if ( talents.death_wish -> ok() ) action_list_str += "/death_wish,use_off_gcd=1";
+      action_list_str += "/cleave,if=target.adds>0,use_off_gcd=1";
       action_list_str += "/whirlwind,if=target.adds>0";
       if ( set_bonus.tier13_2pc_melee() )
-        action_list_str += "/inner_rage,if=target.adds=0&((rage>=75&target.health_pct>=20)|((buff.incite.up|buff.colossus_smash.up)&((rage>=40&target.health_pct>=20)|(rage>=65&target.health_pct<20))))";
-      action_list_str += "/heroic_strike,if=(((rage>=85|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=75))&target.health_pct>=20)|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&(((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)|((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20))))";
+        action_list_str += "/inner_rage,use_off_gcd=1,if=target.adds=0&((rage>=75&target.health_pct>=20)|((buff.incite.up|buff.colossus_smash.up)&((rage>=40&target.health_pct>=20)|(rage>=65&target.health_pct<20))))";
+      action_list_str += "/heroic_strike,use_off_gcd=1,if=(((rage>=85|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=75))&target.health_pct>=20)|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&(((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)|((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20))))";
       action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
       if ( level >= 81 ) action_list_str += "/colossus_smash";
       action_list_str += "/execute,if=buff.executioner_talent.stack<5";
