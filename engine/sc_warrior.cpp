@@ -628,6 +628,7 @@ struct opportunity_strike_t : public warrior_attack_t
     warrior_attack_t( "opportunity_strike", 76858, p, TREE_ARMS )
   {
     background = true;
+    proc = true; // No longer triggers deep wounds
   }
 };
 
