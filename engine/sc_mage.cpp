@@ -667,18 +667,22 @@ struct mirror_image_pet_t : public pet_t
       }
       else
       {
-        num_rotations = 2;
-        for ( int j=0; j < num_rotations; j++ )
-        {
-          // Mirror Image casts 10 Frostbolts, 4 Fire Blasts
-          front = new frostbolt_t ( this, front );
-          front = new frostbolt_t ( this, front );
-          front = new frostbolt_t ( this, front );
-          front = new fire_blast_t( this, front );
-          front = new frostbolt_t ( this, front );
-          front = new frostbolt_t ( this, front );
-          front = new fire_blast_t( this, front );
-        }
+        // Mirror Image casts 11 Frostbolts, 4 Fire Blasts
+        front = new fire_blast_t( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new fire_blast_t( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new fire_blast_t( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new fire_blast_t( this, front );
+        front = new frostbolt_t ( this, front );
+        front = new frostbolt_t ( this, front );
       }
       sequences.push_back( front );
     }
