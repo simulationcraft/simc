@@ -5566,7 +5566,9 @@ struct wait_action_base_t : public action_t
 struct wait_for_cooldown_t : public wait_action_base_t
 {
   cooldown_t* wait_cd;
+  action_t* a;
   wait_for_cooldown_t( player_t* player, const char* cd_name );
+  virtual bool usable_moving() { return a -> usable_moving(); }
   virtual double execute_time() const;
 };
 

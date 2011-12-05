@@ -5256,8 +5256,10 @@ struct wait_until_ready_t : public wait_fixed_t
 
 wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name ) :
   wait_action_base_t( player, ( "wait_for_" + std::string( cd_name ) ).c_str() ),
-  wait_cd( player -> get_cooldown( cd_name ) )
-{}
+  wait_cd( player -> get_cooldown( cd_name ) ), a( player -> find_action( cd_name ) )
+{
+  assert( a );
+}
 
 double wait_for_cooldown_t::execute_time() const
 { return wait_cd -> remains(); }
