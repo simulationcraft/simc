@@ -144,6 +144,7 @@ struct invulnerable_event_t : public raid_event_t
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> sleeping ) continue;
+      p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> halt();
       p -> clear_debuffs(); // FIXME! this is really just clearing DoTs at the moment
     }
@@ -216,6 +217,7 @@ struct movement_event_t : public raid_event_t
       }
       if ( p -> sleeping ) continue;
       if ( p -> buffs.stunned -> check() ) continue;
+      p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> moving();
     }
   }
@@ -240,6 +242,7 @@ struct stun_event_t : public raid_event_t
       player_t* p = affected_players[ i ];
       p -> buffs.stunned -> increment();
       if ( p -> sleeping ) continue;
+      p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> stun();
     }
   }
