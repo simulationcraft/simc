@@ -1701,9 +1701,6 @@ struct seal_of_truth_dot_t : public paladin_attack_t
 
     base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure -> effect1().percent() +
                                p -> talents.inquiry_of_faith -> mod_additive( P_TICK_DAMAGE ) );
-
-    // Hotfix 40% increased damage needs testing
-    base_multiplier *= 1.40;
   }
 
   virtual void player_buff()
