@@ -333,6 +333,8 @@ struct rogue_t : public player_t
   combo_points_t* combo_points;
   action_callback_t* virtual_hat_callback;
 
+  player_t* tot_target;
+
   // Options
   double      virtual_hat_interval;
 
@@ -827,11 +829,11 @@ static void trigger_main_gauche( rogue_attack_t* a )
 static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 {
   rogue_t* p = a -> player -> cast_rogue();
-
+  
   if ( ! p -> buffs_tot_trigger -> check() )
     return;
 
-  player_t* t = a -> target;
+  player_t* t = p -> tot_target;
 
   if ( t )
   {
@@ -2672,6 +2674,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
 
     rogue_attack_t::execute();
 
+    p -> tot_target = target;
     trigger_tier12_4pc_melee( this );
     p -> buffs_tier13_2pc -> trigger();
     p -> buffs_tot_trigger -> trigger();
