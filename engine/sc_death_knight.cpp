@@ -1869,11 +1869,6 @@ void death_knight_attack_t::player_buff()
 
   // Add in all m_dd_additive
   player_multiplier *= 1.0 + m_dd_additive;
-
-  if ( p -> primary_tree() == TREE_FROST && school == SCHOOL_FROST )
-  {
-    player_multiplier *= 1.0 + p -> spells.frozen_heart -> effect1().coeff() * 0.01 * p -> composite_mastery();
-  }
 }
 
 // death_knight_attack_t::ready() ===========================================
@@ -1989,11 +1984,6 @@ void death_knight_spell_t::player_buff()
   death_knight_t* p = player -> cast_death_knight();
 
   spell_t::player_buff();
-
-  if ( p -> primary_tree() == TREE_FROST && school == SCHOOL_FROST )
-  {
-    player_multiplier *= 1.0 + p -> spells.frozen_heart -> effect1().coeff() * 0.01 * p -> composite_mastery();
-  }
 
   if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
     player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
@@ -4971,6 +4961,9 @@ double death_knight_t::composite_player_multiplier( const school_type school, ac
 
   if ( primary_tree() == TREE_UNHOLY && school == SCHOOL_SHADOW )
     m *= 1.0 + spells.dreadblade -> effect1().coeff() * 0.01 * composite_mastery();
+
+  if ( primary_tree() == TREE_FROST && school == SCHOOL_FROST )
+    m *= 1.0 + spells.frozen_heart -> effect1().coeff() * 0.01 * composite_mastery();
 
   return m;
 }

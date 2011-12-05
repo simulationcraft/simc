@@ -2935,6 +2935,7 @@ struct wound_poison_t : public rogue_poison_t
         apply_poison_debuff( p, target );
         sim -> add_event( this, 15.0 );
       }
+
       virtual void execute()
       {
         rogue_t* p = player -> cast_rogue();
