@@ -337,6 +337,7 @@ struct rogue_t : public player_t
 
   // Options
   double      virtual_hat_interval;
+  std::string tricks_of_the_trade_target_str;
 
   uint32_t fof_p1, fof_p2, fof_p3;
   int last_tier12_4pc;
@@ -374,6 +375,7 @@ struct rogue_t : public player_t
 
     // Options
     virtual_hat_interval = -1;
+    tricks_of_the_trade_target_str = "";
 
     distance = 3;
     default_distance = 3;
@@ -2655,17 +2657,43 @@ struct tricks_of_the_trade_t : public rogue_attack_t
   tricks_of_the_trade_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "tricks_of_the_trade", 57934, p, true )
   {
+
     parse_options( NULL, options_str );
 
     if ( p -> glyphs.tricks_of_the_trade -> ok() )
       base_cost = 0;
 
-    // Target is the mob by default, which is the same as the old behavior of "other"
+    if ( ! p -> tricks_of_the_trade_target_str.empty() )
+    {
+      target_str = p -> tricks_of_the_trade_target_str;
+    }
 
-    if ( target_str == "self" ) // This is only for backwards compatibility
+    if ( target_str.empty() )
     {
       target = p;
     }
+    else
+    {
+      if ( target_str == "self" ) // This is only for backwards compatibility
+      {
+        target = p;
+      }
+      else
+      {
+        player_t* q = sim -> find_player( target_str );
+
+        if ( q )
+          target = q;
+        else
+        {
+          sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
+          target = p;
+        }
+      }
+
+    }
+
+    p -> tot_target = target;
   }
 
   virtual void execute()
@@ -2674,7 +2702,6 @@ struct tricks_of_the_trade_t : public rogue_attack_t
 
     rogue_attack_t::execute();
 
-    p -> tot_target = target;
     trigger_tier12_4pc_melee( this );
     p -> buffs_tier13_2pc -> trigger();
     p -> buffs_tot_trigger -> trigger();
@@ -4117,8 +4144,9 @@ void rogue_t::create_options()
 
   option_t rogue_options[] =
   {
-    { "virtual_hat_interval", OPT_FLT,  &( virtual_hat_interval           ) },
-    { "initial_combo_points", OPT_FUNC, ( void * ) ::parse_combo_points     },
+    { "virtual_hat_interval",       OPT_FLT,    &( virtual_hat_interval           ) },
+    { "initial_combo_points",       OPT_FUNC,   ( void * ) ::parse_combo_points     },
+    { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
