@@ -3673,7 +3673,8 @@ struct player_t : public noncopyable
   int         specialization;
   int         invert_scaling;
   bool        vengeance_enabled;
-  double      vengeance_damage, vengeance_value, vengeance_max; // a percentage of maximum possible vengeance (i.e. 1.0 means 10% of your health)
+  double      vengeance_damage, vengeance_value, vengeance_max;
+  bool        vengeance_was_attacked;
   int         active_pets;
   double      dtr_proc_chance;
   double      dtr_base_proc_chance;

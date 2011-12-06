@@ -83,10 +83,13 @@ struct vengeance_t : public event_t
 
   virtual void execute()
   {
-    if ( player -> vengeance_damage > 1 )
+    if ( player -> vengeance_was_attacked /* There is only a 5% decay if the player has been attacked ( dodged, paried )
+    damage in the last 2s. 10% is only when there has been no attack at all. See Issue 1009 */ )
     {
       player -> vengeance_value *= 0.95;
       player -> vengeance_value += 0.05 * player -> vengeance_damage;
+      if ( player -> vengeance_value < player -> vengeance_damage * ( 1.0 / 3.0 ) )
+        player -> vengeance_value = player -> vengeance_damage * ( 1.0 / 3.0 ) ;
     }
     else
     {
@@ -110,6 +113,7 @@ struct vengeance_t : public event_t
     }
 
     player -> vengeance_damage = 0;
+    player -> vengeance_was_attacked = false;
 
     new ( sim ) vengeance_t( player );
   }
@@ -392,7 +396,7 @@ player_t::player_t( sim_t*             s,
   skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
-  vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ),
+  vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
   reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ), scale_player( 1 ), has_dtr( false ), avg_ilvl( 0 ),
   // Latency
@@ -4058,7 +4062,10 @@ double player_t::assess_damage( double            amount,
   }
 
   if ( vengeance_enabled )
+  {
     vengeance_damage += actual_amount;
+    vengeance_was_attacked = true;
+  }
 
   return mitigated_amount;
 }
