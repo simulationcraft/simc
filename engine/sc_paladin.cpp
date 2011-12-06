@@ -2029,6 +2029,8 @@ struct consecration_tick_t : public paladin_spell_t
     direct_power_mod             = 1.0;
 
     base_multiplier *= 1.0 + p -> talents.hallowed_ground -> mod_additive( P_GENERIC );
+
+    stats = player -> get_stats( "consecration", this );
   }
 };
 
