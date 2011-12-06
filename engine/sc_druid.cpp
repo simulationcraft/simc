@@ -802,7 +802,7 @@ static void trigger_eclipse_gain_delay( spell_t* s, int gain )
       s( spell ), g( gain )
     {
       name = "Eclipse gain delay";
-      sim -> add_event( this, sim -> aura_delay );
+      sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
     }
 
     virtual void execute()
