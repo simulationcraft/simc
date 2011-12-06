@@ -5188,7 +5188,14 @@ void druid_t::init_actions()
         action_list_str += "/feral_charge_cat,if=!in_combat";
         action_list_str += "/auto_attack";
         action_list_str += "/skull_bash_cat";
-        action_list_str += "/tigers_fury,if=energy<=45&(!buff.omen_of_clarity.react)";
+        if ( set_bonus.tier13_4pc_melee() )
+        {
+          action_list_str += "/tigers_fury,if=energy<=45&(!buff.omen_of_clarity.react)";
+        }
+        else
+        {
+          action_list_str += "/tigers_fury,if=energy<=35&(!buff.omen_of_clarity.react)";
+        }
         if ( talents.berserk -> rank() )
         {
           action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<";
