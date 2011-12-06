@@ -1286,7 +1286,7 @@ static void register_fury_of_the_beast( item_t* item )
       double amount = h ? 120 : lfr ? 95 : 107; // Amount saved in the stat buff
 
       fury_of_the_beast = new buff_t( p, h ? 109864 : lfr ? 109861 : 108011, "fury_of_the_beast", 0.15 );
-      fury_of_the_beast -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
+      fury_of_the_beast -> cooldown -> duration = 55.0; // FIXME: Confirm ICD
       fury_of_the_beast_stack  = new stat_buff_t( p, h ? 109863 : lfr ? 109860 : 108016, "fury_of_the_beast_stack", STAT_CRIT_RATING, amount );
       fury_of_the_beast_stack -> activated = false;
     }
