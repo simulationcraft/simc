@@ -2033,6 +2033,9 @@ double player_t::composite_attack_haste() const
 
   if ( type != PLAYER_GUARDIAN )
   {
+    if ( buffs.dark_intent -> up() )
+      h *= 1.0 / 1.03;
+
     if ( buffs.bloodlust -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.30 );
