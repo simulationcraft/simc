@@ -413,6 +413,46 @@ struct vulnerable_event_t : public raid_event_t
   }
 };
 
+// Position Switch ===============================================================
+
+struct position_event_t : public raid_event_t
+{
+
+  position_event_t( sim_t* s, const std::string& options_str ) :
+    raid_event_t( s, "position_switch" )
+  {
+    parse_options( 0, options_str );
+  }
+
+  virtual void start()
+   {
+    raid_event_t::start();
+
+     int num_affected = ( int ) affected_players.size();
+     for ( int i=0; i < num_affected; i++ )
+     {
+       player_t* p = affected_players[ i ];
+       if ( p -> position == POSITION_BACK )
+         p -> position = POSITION_FRONT;
+       else if ( p -> position == POSITION_RANGED_BACK )
+         p -> position = POSITION_RANGED_FRONT;
+     }
+   }
+
+   virtual void finish()
+   {
+     int num_affected = ( int ) affected_players.size();
+     for ( int i=0; i < num_affected; i++ )
+     {
+       player_t* p = affected_players[ i ];
+
+       p -> init_position();
+     }
+
+     raid_event_t::finish();
+   }
+};
+
 // raid_event_t::raid_event_t ===============================================
 
 raid_event_t::raid_event_t( sim_t* s, const char* n ) :
@@ -631,6 +671,7 @@ raid_event_t* raid_event_t::create( sim_t* sim,
   if ( name == "heal"         ) return new         heal_event_t( sim, options_str );
   if ( name == "stun"         ) return new         stun_event_t( sim, options_str );
   if ( name == "vulnerable"   ) return new   vulnerable_event_t( sim, options_str );
+  if ( name == "position_switch" ) return new  position_event_t( sim, options_str );
 
   return 0;
 }
