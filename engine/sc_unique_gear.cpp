@@ -708,8 +708,6 @@ static void register_shard_of_woe( item_t* item )
   {
     p -> initial_resource_reduction[ i ] += 205;
   }
-  p -> initial_resource_reduction[ SCHOOL_HOLY   ] += 200;
-  p -> initial_resource_reduction[ SCHOOL_NATURE ] += 200;
 }
 
 // register_sorrowsong ======================================================
