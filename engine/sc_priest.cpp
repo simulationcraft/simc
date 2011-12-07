@@ -569,6 +569,7 @@ struct priest_heal_t : public heal_t
 
   bool can_trigger_DA;
   divine_aegis_t* da;
+  cooldown_t* min_interval;
 
   void trigger_echo_of_light( heal_t* a, player_t* /* t */ )
   {
@@ -644,11 +645,15 @@ struct priest_heal_t : public heal_t
 
   priest_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
     heal_t( n, player, sname, t ), can_trigger_DA( true ), da()
-  {}
+  {
+    min_interval = player -> get_cooldown( "min_interval_" + name_str );
+  }
 
   priest_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
     heal_t( n, player, id, t ), can_trigger_DA( true ), da()
-  {}
+  {
+    min_interval = player -> get_cooldown( "min_interval_" + name_str );
+  }
 
   virtual void player_buff();
 
@@ -783,6 +788,45 @@ struct priest_heal_t : public heal_t
 
     if ( p -> talents.strength_of_soul -> rank() && t -> buffs.weakened_soul -> up() )
       t -> buffs.weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect1().base_value() );
+  }
+
+  void update_ready()
+  {
+    heal_t::update_ready();
+
+    if ( min_interval -> duration > 0 && ! dual )
+    {
+      min_interval -> start( -1, 0 );
+
+      if ( sim -> debug ) log_t::output( sim, "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready );
+    }
+  }
+
+  bool ready()
+  {
+    if ( ! heal_t::ready() )
+      return false;
+
+    return ( min_interval -> remains() <= 0 );
+  }
+
+  void parse_options( option_t*          options,
+                                const std::string& options_str )
+  {
+    option_t base_options[] =
+    {
+      { "min_interval", OPT_FLT, &(min_interval -> duration ) },
+      { NULL,        OPT_UNKNOWN, NULL      }
+    };
+
+    std::vector<option_t> merged_options;
+    option_t::merge( merged_options, options, base_options );
+
+    option_t merged_options_array[ merged_options.size() ];
+
+    std::copy( merged_options.begin(), merged_options.end() + 1, merged_options_array );
+
+    heal_t::parse_options( merged_options_array, options_str );
   }
 
 };
