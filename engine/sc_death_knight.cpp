@@ -1701,6 +1701,7 @@ static void trigger_blood_caked_blade( action_t* a )
         trigger_gcd    = false;
         weapon = &( player -> main_hand_weapon );
         normalize_weapon_speed = false;
+        init();
       }
 
       virtual void target_debuff( player_t* t, int dmg_type )
