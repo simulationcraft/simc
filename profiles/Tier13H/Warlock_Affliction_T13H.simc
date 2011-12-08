@@ -25,8 +25,7 @@ actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target
 actions+=/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react
 actions+=/haunt
 actions+=/summon_doomguard,if=time>10
-actions+=/wait_until_ready,if=buff.will_of_unbinding.up&cooldown.haunt.remains<action.drain_soul.tick_time&buff.will_of_unbinding.remains<cooldown.haunt.remains+action.haunt.cast_time+action.drain_soul.tick_time
-actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
+actions+=/drain_soul,interrupt=1,interrupt_if=buff.will_of_unbinding.up&cooldown.haunt.remains<tick_time&buff.will_of_unbinding.remains<action.haunt.cast_time+tick_time+cooldown.haunt.remains,if=target.health_pct<=25
 actions+=/shadowflame
 actions+=/soul_fire,if=buff.soulburn.up
 actions+=/life_tap,mana_percentage<=35
