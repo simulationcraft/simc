@@ -4605,15 +4605,19 @@ void warlock_t::init_actions()
   if ( action_list_str.empty() )
   {
 
-    // Moonwell Chalice check for Demo
+    // Trinket check
     bool has_mwc = false;
+    bool has_wou = false;
     for ( int i=0; i < SLOT_MAX; i++ )
     {
       item_t& item = items[ i ];
       if ( strstr( item.name(), "moonwell_chalice" ) )
       {
         has_mwc = true;
-        break;
+      }
+      if ( strstr( item.name(), "will_of_unbinding" ) )
+      {
+        has_wou = true;
       }
     }
 
@@ -4709,7 +4713,7 @@ void warlock_t::init_actions()
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
       if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
       if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
-      if ( talent_soul_siphon -> rank() ) action_list_str += "/wait_until_ready,if=buff.will_of_unbinding.up&cooldown.haunt.remains<action.drain_soul.tick_time&buff.will_of_unbinding.remains<cooldown.haunt.remains+action.haunt.cast_time+action.drain_soul.tick_time";
+      if ( talent_soul_siphon -> rank() && has_wou ) action_list_str += "/wait_until_ready,if=buff.will_of_unbinding.up&cooldown.haunt.remains<action.drain_soul.tick_time&buff.will_of_unbinding.remains<cooldown.haunt.remains+action.haunt.cast_time+action.drain_soul.tick_time";
       if ( talent_soul_siphon -> rank() ) action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
       if ( level >= 75 ) action_list_str += "/shadowflame";
       if ( set_bonus.tier13_4pc_caster() ) action_list_str += "/soul_fire,if=buff.soulburn.up";
