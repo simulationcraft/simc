@@ -1492,8 +1492,10 @@ struct cleave_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
+    cooldown -> duration = spell_id_t::cooldown();
+
     if ( p -> buffs_inner_rage -> up() )
-      cooldown -> duration = spell_id_t::cooldown() * ( 1.0 + p -> buffs_inner_rage -> effect1().percent() );
+      cooldown -> duration *= 1.0 + p -> buffs_inner_rage -> effect1().percent();
 
     warrior_attack_t::update_ready();
   }
@@ -1769,8 +1771,10 @@ struct heroic_strike_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
+    cooldown -> duration = spell_id_t::cooldown();
+
     if ( p -> buffs_inner_rage -> up() )
-      cooldown -> duration = spell_id_t::cooldown() * ( 1.0 + p -> buffs_inner_rage -> effect1().percent() );
+      cooldown -> duration *= 1.0 + p -> buffs_inner_rage -> effect1().percent();
 
     warrior_attack_t::update_ready();
   }
