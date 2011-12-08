@@ -822,7 +822,8 @@ struct priest_heal_t : public heal_t
     std::vector<option_t> merged_options;
     option_t::merge( merged_options, options, base_options );
 
-    option_t merged_options_array[ merged_options.size() ];
+    const size_t i = merged_options.size();
+    option_t merged_options_array[ i ];
 
     std::copy( merged_options.begin(), merged_options.end() + 1, merged_options_array );
 
