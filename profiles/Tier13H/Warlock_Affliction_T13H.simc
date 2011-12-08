@@ -25,74 +25,6 @@ actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target
 actions+=/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react
 actions+=/haunt
 actions+=/summon_doomguard,if=time>10
-actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
-actions+=/shadowflame
-actions+=/soul_fire,if=buff.soulburn.up
-actions+=/life_tap,mana_percentage<=35
-actions+=/shadow_bolt
-actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
-actions+=/fel_flame,moving=1
-actions+=/life_tap
-head=hood_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_hit,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
-neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_hit,gems=50int_10int
-shoulders=mantle_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=mastery_hit,gems=50int_50int_20int,enchant=50int_25haste
-chest=robes_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307hit_362haste,gems=50int_50int_25int_25haste_30int,enchant=20all
-waist=cord_of_the_slain_champion,heroic=1,type=cloth,ilevel=410,quality=epic,stats=925armor_368int_611sta_247crit_256haste,gems=50int_50int_50int_20int
-legs=leggings_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1439armor_489int_824sta_331mastery_341haste,reforge=mastery_hit,gems=50int_50int_25int_25haste_30int,enchant=95int_55spi
-feet=janglespur_jackboots,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1130armor_368int_611sta_248crit_256haste,reforge=crit_hit,gems=50int_50int_20int,enchant=35mastery
-wrists=bracers_of_the_banished,heroic=1,type=cloth,ilevel=410,quality=epic,stats=719armor_286int_459sta_184mastery_200haste,reforge=mastery_hit,gems=50int_50int_10int,enchant=50int
-hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1059armor_391int_647sta_291haste_238crit,reforge=crit_hit,gems=50int_50int_50int_20int,enchant=50haste
-finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,reforge=mastery_hit,gems=50int_10int
-finger2=infinite_loop,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_164hit_212crit,reforge=crit_haste,gems=50int_10int
-trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
-trinket2=cunning_of_the_cruel,heroic=1,ilevel=410,quality=epic,stats=517int,equip=onspelldamage_11937+105.8shadow_15%_25cd
-back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,reforge=mastery_haste,gems=50int_10int,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
-ranged=finger_of_zonozz,heroic=1,ilevel=410,quality=epic,stats=172int_259sta_120mastery_106haste,reforge=mastery_hit
-# Gear Summary
-# gear_strength=20
-# gear_agility=20
-# gear_stamina=8128
-# gear_intellect=7271
-# gear_spirit=76
-# gear_spell_power=2786
-# gear_hit_rating=1745
-# gear_crit_rating=1081
-# gear_haste_rating=3091
-# gear_mastery_rating=876
-# gear_armor=10254
-# meta_gem=burning_shadowspirit
-# tier13_2pc_caster=1
-# tier13_4pc_caster=1
-# back=nanoprecise_cape,enchant=lightweave_embroidery
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1304max,enchant=power_torrent
-use_pre_soulburn=1
-
-warlock=Warlock_Affliction_FIX
-origin="http://www.wowhead.com/profile=33781276"
-level=85
-race=orc
-position=back
-role=spell
-use_pre_potion=1
-professions=tailoring=525/blacksmithing=525
-talents=http://www.wowhead.com/talent#warlock-22322200301332132103000000000000000003300000000000000000
-glyphs=haunt/corruption/unstable_affliction/life_tap/shadow_bolt
-actions=flask,type=draconic_mind
-actions+=/food,type=seafood_magnifique_feast
-actions+=/fel_armor
-actions+=/summon_felhunter
-actions+=/dark_intent
-actions+=/snapshot_stats
-actions+=/blood_fury
-actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20
-actions+=/demon_soul
-actions+=/soulburn
-actions+=/corruption,if=(!ticking|remains<tick_time)&miss_react
-actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
-actions+=/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react
-actions+=/haunt
-actions+=/summon_doomguard,if=time>10
 actions+=/wait_until_ready,if=buff.will_of_unbinding.up&cooldown.haunt.remains<action.drain_soul.tick_time&buff.will_of_unbinding.remains<cooldown.haunt.remains+action.haunt.cast_time+action.drain_soul.tick_time
 actions+=/drain_soul,interrupt=1,if=target.health_pct<=25
 actions+=/shadowflame
@@ -101,7 +33,7 @@ actions+=/life_tap,mana_percentage<=35
 actions+=/shadow_bolt
 actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
 actions+=/fel_flame,moving=1
-actions+=/life_tap
+actions+=/life_tap,if=mana_pct_nonproc<100
 head=hood_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_hit,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_hit,gems=50int_10int
 shoulders=mantle_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=mastery_hit,gems=50int_50int_20int,enchant=50int_25haste

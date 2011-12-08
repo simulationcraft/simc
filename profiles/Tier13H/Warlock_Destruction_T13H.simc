@@ -35,7 +35,7 @@ actions+=/shadowburn
 actions+=/incinerate
 actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
 actions+=/fel_flame,moving=1
-actions+=/life_tap
+actions+=/life_tap,if=mana_pct_nonproc<100
 head=hood_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_hit,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_hit,gems=50int_10int
 shoulders=mantle_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=crit_hit,gems=50int_50int_20int,enchant=50int_25haste
