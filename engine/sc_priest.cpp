@@ -815,19 +815,19 @@ struct priest_heal_t : public heal_t
   {
     option_t base_options[] =
     {
-      { "min_interval", OPT_FLT, &(min_interval -> duration ) },
-      { NULL,        OPT_UNKNOWN, NULL      }
+      { "min_interval", OPT_FLT, &(min_interval -> duration ) }
     };
 
     std::vector<option_t> merged_options;
     option_t::merge( merged_options, options, base_options );
 
-    const size_t i = merged_options.size();
-    option_t merged_options_array[ i ];
+    option_t* merged_options_array = new option_t[ merged_options.size() ];
 
     std::copy( merged_options.begin(), merged_options.end() + 1, merged_options_array );
 
     heal_t::parse_options( merged_options_array, options_str );
+
+    delete[] merged_options_array;
   }
 
 };
