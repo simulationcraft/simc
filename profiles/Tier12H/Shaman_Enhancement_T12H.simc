@@ -29,7 +29,7 @@ actions+=/blood_fury
 actions+=/searing_totem
 actions+=/stormstrike
 actions+=/lava_lash
-actions+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
 actions+=/unleash_elements
 actions+=/flame_shock,if=!ticking|buff.unleash_flame.up
 actions+=/earth_shock

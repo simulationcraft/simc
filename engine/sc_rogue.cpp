@@ -3532,11 +3532,11 @@ void rogue_t::init_actions()
 
       if ( talents.hemorrhage -> rank() )
       {
-        action_list_str += "/hemorrhage,if=combo_points<4&energy>40&dot.hemorrhage.remains<4";
+        action_list_str += "/hemorrhage,if=combo_points<4&dot.hemorrhage.remains<4";
         action_list_str += "/hemorrhage,if=combo_points<5&energy>80&dot.hemorrhage.remains<4";
       }
 
-      action_list_str += "/backstab,if=combo_points<4&energy>40";
+      action_list_str += "/backstab,if=combo_points<4";
       action_list_str += "/backstab,if=combo_points<5&energy>80";
     }
     else

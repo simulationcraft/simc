@@ -39,7 +39,7 @@ actions+=/life_tap,if=mana_pct<=30&buff.bloodlust.down&buff.metamorphosis.down&b
 actions+=/shadow_bolt
 actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
 actions+=/fel_flame,moving=1
-actions+=/life_tap
+actions+=/life_tap,if=mana_pct_nonproc<100
 head=balespiders_hood,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_253mastery_228haste,reforge=haste_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
 neck=flowform_choker,ilevel=378,quality=epic,stats=227int_341sta_143haste_115mastery,reforge=haste_hit,gems=40int_10int
 shoulders=balespiders_mantle,type=cloth,ilevel=378,quality=epic,stats=1043armor_282int_454sta_201haste_183hit,reforge=haste_mastery,gems=40int,enchant=50int_25haste

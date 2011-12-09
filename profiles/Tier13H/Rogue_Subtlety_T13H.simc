@@ -33,9 +33,9 @@ actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
 actions+=/rupture,if=combo_points=5&!ticking
 actions+=/recuperate,if=combo_points=5&remains<3
 actions+=/eviscerate,if=combo_points=5&dot.rupture.remains>1
-actions+=/hemorrhage,if=combo_points<4&energy>40&dot.hemorrhage.remains<4
+actions+=/hemorrhage,if=combo_points<4&dot.hemorrhage.remains<4
 actions+=/hemorrhage,if=combo_points<5&energy>80&dot.hemorrhage.remains<4
-actions+=/backstab,if=combo_points<4&energy>40
+actions+=/backstab,if=combo_points<4
 actions+=/backstab,if=combo_points<5&energy>80
 head=blackfang_battleweave_helmet,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_318crit_354haste,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=mastery_crit

@@ -1,7 +1,7 @@
 #!./simc 
 
 shaman=Shaman_Enhancement_T12N
-origin="Shaman_CharDevSync.simc"
+origin="generate_Shaman_T12N.simc"
 level=85
 race=orc
 position=back
@@ -18,22 +18,19 @@ actions+=/strength_of_earth_totem
 actions+=/windfury_totem
 actions+=/mana_spring_totem
 actions+=/lightning_shield
-actions+=/tolvir_potion,if=!in_combat
-actions+=/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40
 actions+=/snapshot_stats
 actions+=/auto_attack
 actions+=/wind_shear
 actions+=/bloodlust,health_percentage<=25
 actions+=/bloodlust,if=target.time_to_die<=60
-actions+=/flame_shock,previous_action=lava_burst,if=buff.unleash_flame.up
 actions+=/use_item,name=ancient_petrified_seed
 actions+=/blood_fury
 actions+=/searing_totem
 actions+=/stormstrike
 actions+=/lava_lash
-actions+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
+actions+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
 actions+=/unleash_elements
-actions+=/lava_burst,if=cooldown.shock.remains<cast_time&dot.flame_shock.remains>cast_time+travel_time&buff.unleash_flame.remains>cast_time
 actions+=/flame_shock,if=!ticking|buff.unleash_flame.up
 actions+=/earth_shock
 actions+=/spirit_wolf

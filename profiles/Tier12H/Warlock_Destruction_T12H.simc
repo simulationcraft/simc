@@ -36,7 +36,7 @@ actions+=/shadowburn
 actions+=/incinerate
 actions+=/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct
 actions+=/fel_flame,moving=1
-actions+=/life_tap
+actions+=/life_tap,if=mana_pct_nonproc<100
 head=balespiders_hood,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1211armor_400int_689sta_288mastery_262haste,reforge=mastery_hit,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_hit,gems=40int_10int
 shoulders=balespiders_mantle,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1118armor_322int_513sta_227haste_209hit,gems=40int,enchant=50int_25haste

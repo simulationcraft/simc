@@ -15,7 +15,7 @@ actions+=/food,type=beer_basted_crocolisk
 actions+=/presence,choose=unholy
 actions+=/army_of_the_dead
 actions+=/snapshot_stats
-actions+=/blood_fury,time>=10
+actions+=/blood_fury,time>=2
 actions+=/raise_dead
 actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack

@@ -19,7 +19,7 @@ actions+=/tolvir_potion,if=!in_combat
 actions+=/feral_charge_cat,if=!in_combat
 actions+=/auto_attack
 actions+=/skull_bash_cat
-actions+=/tigers_fury,if=energy<=45&(!buff.omen_of_clarity.react)
+actions+=/tigers_fury,if=energy<=35&(!buff.omen_of_clarity.react)
 actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<25&cooldown.tigers_fury.remains>6)
 actions+=/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)
