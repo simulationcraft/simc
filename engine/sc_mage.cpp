@@ -720,6 +720,8 @@ struct mirror_image_pet_t : public pet_t
 
     sequence_finished = 0;
 
+    distance = o -> distance;
+
     for ( int i=0; i < num_images; i++ )
     {
       sequences[ i ] -> schedule_execute();
@@ -758,6 +760,7 @@ struct tier12_mirror_image_pet_t : public pet_t
     {
       snapshot_crit = 0.00; // Rough guess
     }
+    distance = owner -> distance;
   }
 
   virtual double composite_spell_crit() const
