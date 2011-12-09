@@ -87,7 +87,6 @@ struct shaman_t : public player_t
   // Cooldowns
   cooldown_t* cooldowns_elemental_mastery;
   cooldown_t* cooldowns_fire_elemental_totem;
-  cooldown_t* cooldowns_flametongue_weapon;
   cooldown_t* cooldowns_lava_burst;
   cooldown_t* cooldowns_shock;
   cooldown_t* cooldowns_strike;
@@ -223,7 +222,6 @@ struct shaman_t : public player_t
     // Cooldowns
     cooldowns_elemental_mastery    = get_cooldown( "elemental_mastery"    );
     cooldowns_fire_elemental_totem = get_cooldown( "fire_elemental_totem" );
-    cooldowns_flametongue_weapon   = get_cooldown( "flametongue_weapon"   );
     cooldowns_lava_burst           = get_cooldown( "lava_burst"           );
     cooldowns_shock                = get_cooldown( "shock"                );
     cooldowns_strike               = get_cooldown( "strike"               );
@@ -286,20 +284,23 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct shaman_attack_t : public attack_t
 {
+  bool windfury;
+  bool flametongue;
+  
   /* Old style construction, spell data will not be accessed */
   shaman_attack_t( const char* n, player_t* player, school_type s, int t, bool special ) :
-    attack_t( n, player, RESOURCE_MANA, s, t, special ) { }
+    attack_t( n, player, RESOURCE_MANA, s, t, special ), windfury( true ), flametongue( true ) { }
 
   /* Class spell data based construction, spell name in s_name */
   shaman_attack_t( const char* n, const char* s_name, player_t* player ) :
-    attack_t( n, s_name, player, TREE_NONE, true )
+    attack_t( n, s_name, player, TREE_NONE, true ), windfury( true ), flametongue( true )
   {
     may_crit    = true;
   }
 
   /* Spell data based construction, spell id in spell_id */
   shaman_attack_t( const char* n, uint32_t spell_id, player_t* player ) :
-    attack_t( n, spell_id, player, TREE_NONE, true )
+    attack_t( n, spell_id, player, TREE_NONE, true ), windfury( true ), flametongue( true )
   {
     may_crit    = true;
   }
@@ -317,54 +318,33 @@ struct shaman_attack_t : public attack_t
 
 struct shaman_spell_t : public spell_t
 {
-  double base_cost_reduction;
-  bool   maelstrom;
-  bool   overload;
-  bool   is_totem;
-
-  std::string previous_action_str;
-  action_t* previous_action_match;
-
+  double   base_cost_reduction;
+  bool     maelstrom;
+  bool     overload;
+  bool     is_totem;
+  
   /* Old style construction, spell data will not be accessed */
   shaman_spell_t( const char* n, player_t* p, const std::string& options_str, const school_type s, int t ) :
     spell_t( n, p, RESOURCE_MANA, s, t ),
-    base_cost_reduction( 0 ), maelstrom( false ), is_totem( false ),
-    previous_action_match( 0 )
+    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false )
   {
-    option_t options[] =
-    {
-      { "previous_action", OPT_STRING,  &( previous_action_str ) },
-      { NULL,              OPT_UNKNOWN, NULL                     }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
   }
 
   /* Class spell data based construction, spell name in s_name */
   shaman_spell_t( const char* n, const char* s_name, player_t* p, const std::string& options_str = std::string() ) :
-    spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), overload( false ), is_totem( false ),
-    previous_action_match( 0 )
+    spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), overload( false ), is_totem( false )
   {
-    option_t options[] =
-    {
-      { "previous_action", OPT_STRING,  &( previous_action_str ) },
-      { NULL,              OPT_UNKNOWN, NULL                     }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     may_crit = true;
   }
 
   /* Spell data based construction, spell id in spell_id */
   shaman_spell_t( const char* n, uint32_t spell_id, player_t* p, const std::string& options_str = std::string() ) :
-    spell_t( n, spell_id, p ), base_cost_reduction( 0.0 ), maelstrom( false ), is_totem( false ),
-    previous_action_match( 0 )
+    spell_t( n, spell_id, p ), base_cost_reduction( 0.0 ), maelstrom( false ), overload( false ), is_totem( false )
   {
-    option_t options[] =
-    {
-      { "previous_action", OPT_STRING,  &( previous_action_str ) },
-      { NULL,              OPT_UNKNOWN, NULL                     }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     may_crit = true;
   }
@@ -387,23 +367,6 @@ struct shaman_spell_t : public spell_t
       return true;
 
     return spell_t::usable_moving();
-  }
-
-  virtual bool ready()
-  {
-    if ( previous_action_str.empty() ) return spell_t::ready();
-
-    if ( ! previous_action_match )
-    {
-      shaman_t* p = player -> cast_shaman();
-      previous_action_match = p -> find_action( previous_action_str );
-      assert( previous_action_match );
-    }
-
-    if ( player -> last_foreground_action != previous_action_match )
-      return false;
-
-    return spell_t::ready();
   }
 };
 
@@ -1098,12 +1061,6 @@ static void trigger_flametongue_weapon( attack_t* a )
   double m_ft = a -> weapon -> swing_time / 4.0;
   double m_coeff = 0.1253;
 
-  if ( p -> cooldowns_flametongue_weapon -> remains() > 0 )
-  {
-    p -> procs_ft_icd -> occur();
-    return;
-  }
-
   if ( a -> weapon -> slot == SLOT_MAIN_HAND )
     ft = p -> flametongue_mh;
   else
@@ -1125,7 +1082,6 @@ static void trigger_flametongue_weapon( attack_t* a )
     ft -> base_spell_power_multiplier = m_coeff * m_ft;
     ft -> base_attack_power_multiplier = 0;
   }
-
 
   ft -> execute();
 }
@@ -1155,7 +1111,7 @@ struct windfury_delay_event_t : public event_t
   }
 };
 
-static void trigger_windfury_weapon( attack_t* a )
+static bool trigger_windfury_weapon( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
   attack_t* wf = 0;
@@ -1165,7 +1121,7 @@ static void trigger_windfury_weapon( attack_t* a )
   else
     wf = p -> windfury_oh;
 
-  if ( p -> cooldowns_windfury_weapon -> remains() > 0 ) return;
+  if ( p -> cooldowns_windfury_weapon -> remains() > 0 ) return false;
 
   if ( p -> rng_windfury_weapon -> roll( wf -> proc_chance() ) )
   {
@@ -1173,17 +1129,19 @@ static void trigger_windfury_weapon( attack_t* a )
 
     // Delay windfury by some time, up to about a second
     new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, p -> rng_windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
+    return true;
   }
+  return false;
 }
 
 // trigger_rolling_thunder ==================================================
 
-static void trigger_rolling_thunder ( spell_t* s )
+static bool trigger_rolling_thunder ( spell_t* s )
 {
   shaman_t* p = s -> player -> cast_shaman();
 
   if ( ! p -> buffs_lightning_shield -> check() )
-    return;
+    return false;
 
   if ( p -> rng_rolling_thunder -> roll( p -> talent_rolling_thunder -> proc_chance() ) )
   {
@@ -1196,7 +1154,10 @@ static void trigger_rolling_thunder ( spell_t* s )
 
     p -> buffs_lightning_shield -> trigger();
     p -> procs_rolling_thunder  -> occur();
+    return true;
   }
+  
+  return false;
 }
 
 // trigger_static_shock =====================================================
@@ -1503,8 +1464,9 @@ struct unleash_wind_t : public shaman_attack_t
   unleash_wind_t( player_t* player ) :
     shaman_attack_t( "unleash_wind", 73681, player )
   {
-    background           = true;
-    proc                 = true;
+    background            = true;
+    windfury              = false;
+    may_dodge = may_parry = false;
 
     // Don't cooldown here, unleash elements will handle it
     cooldown -> duration = 0.0;
@@ -1577,10 +1539,10 @@ void shaman_attack_t::execute()
       p -> procs_maelstrom_weapon -> occur();
     }
 
-    if ( weapon -> buff_type == WINDFURY_IMBUE )
+    if ( windfury && weapon -> buff_type == WINDFURY_IMBUE )
       trigger_windfury_weapon( this );
 
-    if ( weapon -> buff_type == FLAMETONGUE_IMBUE )
+    if ( flametongue && weapon -> buff_type == FLAMETONGUE_IMBUE )
       trigger_flametongue_weapon( this );
 
     if ( p -> rng_primal_wisdom -> roll( p -> spec_primal_wisdom -> proc_chance() ) )
@@ -1607,9 +1569,6 @@ void shaman_attack_t::player_buff()
 {
   attack_t::player_buff();
   shaman_t* p = player -> cast_shaman();
-
-  if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
-    player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
 
   if ( school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
     player_multiplier *= 1.0 + p -> buffs_stormfire -> base_value();
@@ -2015,17 +1974,6 @@ void shaman_spell_t::player_buff()
       p -> buffs_stormstrike -> base_value( E_APPLY_AURA, A_308 ) +
       p -> glyph_stormstrike -> mod_additive( P_EFFECT_1 ) / 100.0;
   }
-
-  if ( sim -> auras.elemental_oath -> up() && p -> buffs_elemental_focus -> up() )
-  {
-    // Elemental oath self buff is type 0 sub type 0
-    player_multiplier *= 1.0 + p -> talent_elemental_oath -> base_value( E_NONE, A_NONE ) / 100.0;
-  }
-
-  if ( p -> buffs_elemental_mastery -> up() )
-    player_multiplier *= 1.0 + p -> buffs_elemental_mastery -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-
-  player_multiplier *= 1.0 + p -> talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
 
   // Apply Tier12 4 piece enhancement bonus as multiplicative for now
   if ( ! is_totem && school == SCHOOL_FIRE && p -> buffs_stormfire -> up() )
@@ -4716,15 +4664,28 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
   double m = player_t::composite_player_multiplier( school, a );
 
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
+  {
     m *= 1.0 + composite_mastery() * mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
+
+    if ( buffs_elemental_mastery -> up() )
+      m *= 1.0 + buffs_elemental_mastery -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
+  }
     
-  if ( school != SCHOOL_PHYSICAL )
+  if ( school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
   {
     if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + main_hand_weapon.buff_value;
     else if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + off_hand_weapon.buff_value;
+  
+    if ( sim -> auras.elemental_oath -> up() && buffs_elemental_focus -> up() )
+    {
+      // Elemental oath self buff is type 0 sub type 0
+      m *= 1.0 + talent_elemental_oath -> base_value( E_NONE, A_NONE ) / 100.0;
+    }
   }
+  
+  m *= 1.0 + talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
   
   return m;
 }
