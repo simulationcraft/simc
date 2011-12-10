@@ -4722,7 +4722,7 @@ void warlock_t::init_actions()
           // Attempt to account for non-default channel_lag settings
           char delay = (char) ( sim -> channel_lag * 20 + 48 );
           if ( delay > 57 ) delay = 57;
-          action_list_str += "interrupt_if=buff.will_of_unbinding.up&cooldown.haunt.remains<tick_time&buff.will_of_unbinding.remains<action.haunt.cast_time+tick_time+0.";
+          action_list_str += ",interrupt_if=buff.will_of_unbinding.up&cooldown.haunt.remains<tick_time&buff.will_of_unbinding.remains<action.haunt.cast_time+tick_time+0.";
           action_list_str += delay;
         }
       }
