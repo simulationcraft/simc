@@ -1,8 +1,0 @@
-#./!simc
-
-chardev=133579 name=Warrior_Arms_T11H actions= save=Warrior_Arms_T11H.simc
-
-chardev=36557 name=Warrior_Fury_1h_T11H actions= save=Warrior_Fury_1h_T11H.simc
-
-chardev=36611 name=Warrior_Fury_2h_T11H actions= save=Warrior_Fury_2h_T11H.simc
-

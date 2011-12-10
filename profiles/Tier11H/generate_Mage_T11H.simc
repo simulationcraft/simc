@@ -1,8 +1,0 @@
-#!simc
-
-# T11 profiles
-chardev=35357   name=Mage_Arcane_T11H           save=Mage_Arcane_T11H.simc
-chardev=88851   name=Mage_Fire_Frostfire_T11H   save=Mage_Fire_Frostfire_T11H.simc
-chardev=88793   name=Mage_Fire_T11H             save=Mage_Fire_T11H.simc
-chardev=87205   name=Mage_Frost_Frostfire_T11H  save=Mage_Frost_Frostfire_T11H.simc
-chardev=87885   name=Mage_Frost_T11H            save=Mage_Frost_T11H.simc

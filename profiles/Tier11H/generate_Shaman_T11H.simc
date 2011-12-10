@@ -1,7 +1,0 @@
-#!simc
-
-# Tier 11
-
-chardev=14385 name=Shaman_Elemental_T11H save=Shaman_Elemental_T11H.simc
-
-chardev=39863 name=Shaman_Enh_T11H save=Shaman_Enh_T11H.simc
