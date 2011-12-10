@@ -492,8 +492,11 @@ public:
     }
 
     // Needs testing
-    c *= 1.0 + p -> buffs_tier13_2pc_heal -> check() * -0.25;
-    c  = floor( c );
+    if ( p -> buffs_tier13_2pc_heal -> check() )
+    {
+      c *= 1.0 + p -> buffs_tier13_2pc_heal -> effect1().percent();
+      c  = floor( c );
+    }
 
     return c;
   }
@@ -693,8 +696,11 @@ struct priest_heal_t : public heal_t
     }
 
     // Needs testing
-    c *= 1.0 + p -> buffs_tier13_2pc_heal -> check() * -0.25;
-    c  = floor( c );
+    if ( p -> buffs_tier13_2pc_heal -> check() )
+    {
+      c *= 1.0 + p -> buffs_tier13_2pc_heal -> effect1().percent();
+      c  = floor( c );
+    }
 
     return c;
   }
@@ -3189,6 +3195,16 @@ struct divine_hymn_t : public priest_heal_t
     add_child( divine_hymn_tick );
   }
 
+  virtual void execute()
+  {
+    priest_t* p = player -> cast_priest();
+
+    priest_heal_t::execute();
+
+    // Needs testing
+    p -> buffs_tier13_2pc_heal -> trigger();
+  }
+
   virtual void tick( dot_t* d )
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
@@ -3786,9 +3802,6 @@ struct lightwell_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     priest_spell_t::execute();
-
-    // Needs testing
-    p -> buffs_tier13_2pc_heal -> trigger();
 
     p -> pet_lightwell -> get_cooldown( "lightwell_renew" ) -> duration = consume_interval;
     p -> pet_lightwell -> summon( duration() );
@@ -4879,8 +4892,9 @@ void priest_t::init_buffs()
   buffs_inner_fire                 = new buff_t( this, "inner_fire", "Inner Fire" );
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs_inner_focus -> cooldown -> duration = 0;
-  buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will"                                );
-  buffs_tier13_2pc_heal            = new buff_t( this, "tier13_2pc_heal", 1, 0, ( primary_tree() == TREE_DISCIPLINE ) ? 10.0 : 15.0, set_bonus.tier13_2pc_heal() );
+  buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will" );
+  buffs_tier13_2pc_heal            = new buff_t( this, sets -> set( SET_T13_2PC_HEAL ) -> effect1().trigger_spell_id(), "tier13_2pc_heal", set_bonus.tier13_2pc_heal() );
+  buffs_tier13_2pc_heal -> buff_duration = ( primary_tree() == TREE_DISCIPLINE ) ? 10.0 : buffs_tier13_2pc_heal -> buff_duration;
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
