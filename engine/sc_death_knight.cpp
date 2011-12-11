@@ -2100,11 +2100,12 @@ struct melee_t : public death_knight_attack_t
           {
             p -> buffs_sudden_doom -> trigger( new_stacks );
           }
-          // Refresh the 1 stack we already have
-          // refresh( 0 ) means we don't add any stacks
+          // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
           else
           {
             p -> buffs_sudden_doom -> refresh( 0 );
+            if ( p -> buffs_sudden_doom -> check() == 2 && new_stacks == 1)
+              p -> buffs_sudden_doom -> decrement( 1 );
           }
         }
       }
@@ -3290,11 +3291,12 @@ struct obliterate_t : public death_knight_attack_t
         {
           p -> buffs_rime -> trigger( new_stacks );
         }
-        // Refresh the 1 stack we already have
-        // refresh( 0 ) means we don't add any stacks
+        // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
         else
         {
           p -> buffs_rime -> refresh( 0 );
+          if ( p -> buffs_rime -> check() == 2 && new_stacks == 1)
+            p -> buffs_rime -> decrement( 1 );
         }
 
         p -> cooldowns_howling_blast -> reset();
