@@ -1285,7 +1285,7 @@ static void register_fury_of_the_beast( item_t* item )
 
       fury_of_the_beast = new buff_t( p, h ? 109864 : lfr ? 109861 : 108011, "fury_of_the_beast", 0.15 );
       fury_of_the_beast -> cooldown -> duration = 55.0; // FIXME: Confirm ICD
-      fury_of_the_beast_stack  = new stat_buff_t( p, h ? 109863 : lfr ? 109860 : 108016, "fury_of_the_beast_stack", STAT_CRIT_RATING, amount );
+      fury_of_the_beast_stack  = new stat_buff_t( p, h ? 109863 : lfr ? 109860 : 108016, "fury_of_the_beast_stack", STAT_AGILITY, amount );
       fury_of_the_beast_stack -> activated = false;
     }
 
@@ -1304,7 +1304,7 @@ static void register_fury_of_the_beast( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_CRIT_MASK, new fury_of_the_beast_callback_t( p, item -> heroic(), item -> lfr() ) );
+  p -> register_attack_callback( RESULT_HIT_MASK, new fury_of_the_beast_callback_t( p, item -> heroic(), item -> lfr() ) );
 }
 
 // register_gurthalak =======================================================

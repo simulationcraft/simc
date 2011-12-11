@@ -817,7 +817,7 @@ struct priest_heal_t : public heal_t
   }
 
   void parse_options( option_t*          options,
-                                const std::string& options_str )
+                      const std::string& options_str )
   {
     const option_t base_options[] =
     {
