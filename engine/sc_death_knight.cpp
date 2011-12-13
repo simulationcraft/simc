@@ -954,8 +954,6 @@ struct army_ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
-    // Pets don't seem to inherit their master's crit at the moment.
-    // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
     snapshot_crit     = o -> composite_attack_crit();
     snapshot_haste    = o -> composite_attack_haste();
     snapshot_speed    = o -> composite_attack_speed();
