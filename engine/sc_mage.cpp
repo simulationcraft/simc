@@ -2832,6 +2832,8 @@ struct mirror_image_t : public mage_spell_t
     parse_options( NULL, options_str );
     harmful = false;
 
+    num_ticks = 0;
+
     if ( p -> pet_mirror_image_3 )
     {
       stats -> add_child( p -> pet_mirror_image_3 -> get_stats( "mirror_arcane_blast" ) );
