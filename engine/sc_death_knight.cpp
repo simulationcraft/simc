@@ -365,7 +365,6 @@ struct death_knight_t : public player_t
   virtual void      init_procs();
   virtual void      init_resources( bool force );
   virtual void      init_benefits();
-  double            composite_pet_attack_crit();
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_attack_haste() const;
   virtual double    composite_attack_hit() const;
@@ -1117,12 +1116,6 @@ struct gargoyle_pet_t : public pet_t
 
     snapshot_haste      = o -> composite_attack_speed();
     snapshot_power      = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
-    // Pets don't seem to inherit their master's crit at the moment.
-    // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
-    // TODO: it can crit on live, but not 5%, or 7% or even 12% with spell crit debuff.
-    // Not sure what the % is, but 2-6% with 5% crit debuff seems on par. Hord to crunch numbers with samples of 30/60 hits.
-    // for now, for live, going with 0 base crit %, but boosted by crit debuff.
-    //snapshot_spell_crit = o -> dbc.ptr ? o -> composite_spell_crit() : o -> composite_pet_attack_crit();
     snapshot_spell_crit = o -> composite_spell_crit();
 
   }
@@ -1318,8 +1311,6 @@ struct ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
-    // Pets don't seem to inherit their master's crit at the moment.
-    // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
     snapshot_crit     = o -> composite_attack_crit();
     snapshot_haste    = o -> composite_attack_haste();
     snapshot_speed    = o -> composite_attack_speed();
@@ -1327,8 +1318,6 @@ struct ghoul_pet_t : public pet_t
     snapshot_strength = o -> strength();
   }
 
-  // Pets don't seem to inherit their master's crit at the moment.
-  // fixed on the PTR: http://us.battle.net/wow/en/forum/topic/3424465781?page=4#71
   virtual double composite_attack_crit() const
   {
     death_knight_t* o = owner -> cast_death_knight();
@@ -1337,7 +1326,7 @@ struct ghoul_pet_t : public pet_t
 
     if ( o -> primary_tree() == TREE_UNHOLY )
     {
-      return snapshot_crit;
+      return o -> composite_attack_crit();
     }
     else
     {
@@ -4858,14 +4847,6 @@ double death_knight_t::assess_damage( double            amount,
     buffs_scent_of_blood -> trigger();
 
   return player_t::assess_damage( amount, school, dmg_type, result, action );
-}
-
-// death_knight_t::composite_pet_attack_crit ================================
-
-double death_knight_t::composite_pet_attack_crit()
-{
-  // Latest value as of 4.2
-  return 0.07;
 }
 
 // death_knight_t::composite_armor_multiplier ===============================
