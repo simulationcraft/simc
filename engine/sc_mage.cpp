@@ -2831,6 +2831,14 @@ struct mirror_image_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     harmful = false;
+
+    if ( p -> pet_mirror_image_3 )
+    {
+      stats -> add_child( p -> pet_mirror_image_3 -> get_stats( "mirror_arcane_blast" ) );
+      stats -> add_child( p -> pet_mirror_image_3 -> get_stats( "mirror_fire_blast" ) );
+      stats -> add_child( p -> pet_mirror_image_3 -> get_stats( "mirror_fireball" ) );
+      stats -> add_child( p -> pet_mirror_image_3 -> get_stats( "mirror_frost_bolt" ) );
+    }
   }
 
   virtual void execute()
