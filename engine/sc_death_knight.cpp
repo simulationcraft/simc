@@ -3918,6 +3918,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
   if ( name == "festering_strike"         ) return new festering_strike_t         ( this, options_str );
   if ( name == "outbreak"                 ) return new outbreak_t                 ( this, options_str );
+  if ( name == "necrotic_strike"          ) return new necrotic_strike_t          ( this, options_str );
   if ( name == "plague_strike"            ) return new plague_strike_t            ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
