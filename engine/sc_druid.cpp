@@ -3158,27 +3158,17 @@ void druid_spell_t::player_buff()
 
   spell_t::player_buff();
 
-  if ( p -> buffs_moonkin_form -> check() )
-    player_multiplier *= 1.0 + p -> talents.master_shapeshifter -> base_value() * 0.01;
-
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
   {
-    player_multiplier *= 1.0 + p -> talents.balance_of_power -> effect1().percent();
-
     // Moonfury is actually additive with other player_multipliers, like glyphs, etc.
     if ( p -> primary_tree() == TREE_BALANCE )
     {
       double m = p -> spells.moonfury -> effect1().percent();
       additive_multiplier += m;
     }
-
-    if ( p -> buffs_moonkin_form -> check() )
-      player_multiplier *= 1.10;
   }
 
-  player_multiplier *= 1.0 + p -> talents.earth_and_moon -> effect2().percent();
-
-  // Add in Additive Multipliers
+   // Add in Additive Multipliers
   player_multiplier *= 1.0 + additive_multiplier;
 
   // Reset Additive_Multiplier
@@ -5482,6 +5472,19 @@ double druid_t::composite_player_multiplier( const school_type school, action_t*
         m *= 1.0 + ( buffs_eclipse_solar -> effect1().percent()
                  + composite_mastery() * spells.total_eclipse -> effect1().coeff() * 0.01 );
   }
+
+  if ( buffs_moonkin_form -> check() )
+    m *= 1.0 + talents.master_shapeshifter -> base_value() * 0.01;
+
+  if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
+  {
+    m *= 1.0 + talents.balance_of_power -> effect1().percent();
+
+    if ( buffs_moonkin_form -> check() )
+      m *= 1.10;
+  }
+
+  m *= 1.0 + talents.earth_and_moon -> effect2().percent();
 
   return m;
 }
