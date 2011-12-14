@@ -45,6 +45,7 @@ static bool is_plot_stat( sim_t* sim,
 
 reforge_plot_t::reforge_plot_t( sim_t* s ) :
   sim( s ),
+  current_reforge_sim( 0 ),
   reforge_plot_output_file( stdout ),
   reforge_plot_step( 20 ),
   reforge_plot_amount( 200 ),
@@ -158,18 +159,17 @@ void reforge_plot_t::analyze_stats()
   {
     if ( sim -> canceled ) break;
 
-    sim_t* delta_sim=0;
     std::vector<reforge_plot_data_t> delta_result;
     delta_result.resize( stat_mods[ i ].size() + 1 );
 
-    delta_sim = new sim_t( sim );
+    current_reforge_sim = new sim_t( sim );
     if ( reforge_plot_iterations > 0 )
-      delta_sim -> iterations = reforge_plot_iterations;
+      current_reforge_sim -> iterations = reforge_plot_iterations;
     if ( sim -> report_progress )
       util_t::fprintf( stdout, "Current reforge: " );
     for ( int j=0; j < ( int ) stat_mods[ i ].size(); j++ )
     {
-      delta_sim -> enchant.add_stat( reforge_plot_stat_indices[ j ],
+      current_reforge_sim -> enchant.add_stat( reforge_plot_stat_indices[ j ],
                                      stat_mods[ i ][ j ] );
       delta_result[ j ].value = stat_mods[ i ][ j ];
       delta_result[ j ].error = 0;
@@ -187,16 +187,16 @@ void reforge_plot_t::analyze_stats()
     }
 
     current_stat_combo = i;
-    delta_sim -> execute();
+    current_reforge_sim -> execute();
 
     for ( int k=0; k < num_players; k++ )
     {
       player_t* p = sim -> players_by_name[ k ];
 
-      if ( delta_sim )
+      if ( current_reforge_sim )
       {
         reforge_plot_data_t data;
-        player_t* delta_p = delta_sim -> find_player( p -> name() );
+        player_t* delta_p = current_reforge_sim -> find_player( p -> name() );
         data.value = delta_p -> dps.mean;
         data.error = delta_p -> dps_error;
         delta_result[ stat_mods[ i ].size() ] = data;
@@ -204,10 +204,10 @@ void reforge_plot_t::analyze_stats()
       }
     }
 
-    if ( delta_sim )
+    if ( current_reforge_sim )
     {
-      delete delta_sim;
-      delta_sim = 0;
+      delete current_reforge_sim;
+      current_reforge_sim = 0;
     }
   }
 }
@@ -268,10 +268,29 @@ double reforge_plot_t::progress( std::string& phase )
 
   if ( current_stat_combo <= 0 ) return 0.0;
 
-  phase = "Reforge Plot";
-  double combo_progress = current_stat_combo / ( double ) num_stat_combos;
-
-  return combo_progress;
+  phase = "Reforge - ";
+  for ( size_t i = 0; i < reforge_plot_stat_indices.size(); i++ )
+  {
+    phase += util_t::stat_type_abbrev( reforge_plot_stat_indices[ i ] );
+    if ( i < reforge_plot_stat_indices.size() - 1 )
+      phase += " to ";
+  }
+  
+  double total_iter = num_stat_combos * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
+  double reforge_iter = current_stat_combo * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
+  
+  if ( current_reforge_sim && current_reforge_sim -> current_iteration > 0 )
+  {
+    // Add current reforge iterations only if the update does not land on a partition
+    // operation
+    if ( current_reforge_sim -> children.size() == current_reforge_sim -> threads - 1 )
+      reforge_iter += current_reforge_sim -> current_iteration * sim -> threads;
+    // At partition, add an extra amount of iterations to keep the iterations correct
+    else
+      reforge_iter += ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
+  }
+  
+  return reforge_iter / total_iter;
 }
 
 // reforge_plot_t::create_options ===========================================

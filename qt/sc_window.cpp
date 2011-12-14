@@ -521,7 +521,11 @@ void SimulationCraftWindow::createCmdLine()
   forwardButton->setMaximumWidth( 30 );
   progressBar->setStyle( new QPlastiqueStyle() );
   progressBar->setMaximum( 100 );
-  progressBar->setMaximumWidth( 150 );
+  progressBar->setMaximumWidth( 200 );
+  progressBar->setMinimumWidth( 150 );
+  QFont progfont( progressBar -> font() );
+  progfont.setPointSize( 11 );
+  progressBar->setFont( progfont );
   connect( backButton,    SIGNAL( clicked( bool ) ),   this, SLOT(    backButtonClicked() ) );
   connect( forwardButton, SIGNAL( clicked( bool ) ),   this, SLOT( forwardButtonClicked() ) );
   connect( mainButton,    SIGNAL( clicked( bool ) ),   this, SLOT(    mainButtonClicked() ) );
@@ -1340,7 +1344,7 @@ void SimulationCraftWindow::startSim()
   // simulateText->setPlainText( defaultSimulateText() );
   cmdLineText = "";
   cmdLine->setText( cmdLineText );
-  timer->start( 500 );
+  timer->start( 100 );
 }
 
 QString SimulationCraftWindow::mergeOptions()
