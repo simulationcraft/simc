@@ -3320,6 +3320,7 @@ struct plot_t
 struct reforge_plot_t
 {
   sim_t* sim;
+  sim_t* current_reforge_sim;
   std::string reforge_plot_stat_str;
   std::string reforge_plot_output_file_str;
   FILE* reforge_plot_output_file;
