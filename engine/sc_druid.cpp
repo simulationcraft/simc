@@ -1267,14 +1267,7 @@ void druid_cat_attack_t::execute()
 
 void druid_cat_attack_t::player_buff()
 {
-  druid_t* p = player -> cast_druid();
-
   attack_t::player_buff();
-
-  player_multiplier *= 1.0 + p -> buffs_tigers_fury -> value();
-
-  if ( school == SCHOOL_BLEED && p -> primary_tree() == TREE_FERAL )
-    player_multiplier *= 1.0 + p -> spells.razor_claws -> effect1().coeff() * 0.01 * p -> composite_mastery();
 }
 
 // druid_cat_attack_t::ready ================================================
@@ -5458,6 +5451,12 @@ double druid_t::composite_attack_crit() const
 double druid_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
+
+  if ( ( school == SCHOOL_PHYSICAL ) || ( school == SCHOOL_BLEED ) )
+    m *= 1.0 + buffs_tigers_fury -> value();
+
+  if ( school == SCHOOL_BLEED && primary_tree() == TREE_FERAL )
+    m *= 1.0 + spells.razor_claws -> effect1().coeff() * 0.01 * composite_mastery();
 
   if ( primary_tree() == TREE_BALANCE )
   {
