@@ -5110,8 +5110,7 @@ void priest_t::init_actions()
 
         buffer += "/holy_fire";
         buffer += "/penance";
-        if ( ! talents.archangel -> ok() )
-          buffer += "/mind_blast";
+        buffer += "/mind_blast";
 
         buffer += "/smite";
       }

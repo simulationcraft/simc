@@ -27,6 +27,7 @@ actions+=/shadow_word_pain,if=miss_react&(remains<tick_time|!ticking)
 actions+=/penance,if=buff.borrowed_time.up
 actions+=/holy_fire
 actions+=/penance
+actions+=/mind_blast
 actions+=/smite
 head=hood_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,gems=burning_shadowspirit_67int_30int,enchant=60int_35crit
 neck=petrified_fungal_heart,heroic=1,ilevel=410,quality=epic,stats=306int_459sta_204spi_204haste
