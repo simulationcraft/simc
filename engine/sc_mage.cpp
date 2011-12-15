@@ -2997,20 +2997,14 @@ struct pyroblast_hs_t : public mage_spell_t
     }
   }
 
-  virtual double cost() const
+  virtual bool ready()
   {
-    mage_t* p = player -> cast_mage();
-    if ( p -> buffs_hot_streak -> check() )
-      return 0;
-    return mage_spell_t::cost();
-  }
+    if ( ! mage_spell_t::ready() )
+      return false;
 
-  virtual double execute_time() const
-  {
     mage_t* p = player -> cast_mage();
-    if ( p -> buffs_hot_streak -> check() )
-      return 0;
-    return mage_spell_t::execute_time();
+
+    return ( p -> buffs_hot_streak -> check() > 0 );
   }
 };
 
