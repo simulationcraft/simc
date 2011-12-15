@@ -828,7 +828,6 @@ struct priest_heal_t : public heal_t
     std::vector<option_t> merged_options;
     heal_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
   }
-
 };
 
 // Atonement heal ===========================================================
