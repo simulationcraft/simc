@@ -33,12 +33,13 @@ infinite_mana=1
 # have a large affect.
 Priest_Disc_AE_T12N.simc
 infinite_mana=1
+Priest_Disc_AAA_AE_T12N.simc
+name=Priest_Disc_AAA_AE_T12N_finite
 # Fill up group for PoH
-warrior=dummy1 main_hand=shadowmourne,id=49623 actions="wait,sec=50" quiet=1
-warrior=dummy2 main_hand=shadowmourne,id=49623 actions="wait,sec=50" quiet=1
-warrior=dummy3 main_hand=shadowmourne,id=49623 actions="wait,sec=50" quiet=1
-warrior=dummy4 main_hand=shadowmourne,id=49623 actions="wait,sec=50" quiet=1
-party=Priest_Disc_AE_T12N,dummy1,dummy2,dummy3,dummy4
+warrior=dummy1 actions="wait,sec=50" quiet=1
+warrior=dummy2 actions="wait,sec=50" quiet=1
+warrior=dummy3 actions="wait,sec=50" quiet=1
+party=Priest_Disc_AE_T12N,Priest_Disc_AAA_AE_T12N_finite,dummy1,dummy2,dummy3
 
 # T12H equip uses non-existant upgraded heroics, disabled for now
 #Priest_Disc_Single_T12H.simc
