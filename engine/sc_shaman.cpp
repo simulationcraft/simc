@@ -1440,6 +1440,7 @@ struct windfury_weapon_attack_t : public shaman_attack_t
     school           = SCHOOL_PHYSICAL;
     stats -> school  = SCHOOL_PHYSICAL;
     background       = true;
+    callbacks        = false; // Windfury does not proc any On-Equip procs, apparently
     base_multiplier *= 1.0 + p -> talent_elemental_weapons -> effect3().percent();
 
     init();
