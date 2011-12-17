@@ -2655,9 +2655,8 @@ struct shadow_dance_t : public rogue_attack_t
 struct tricks_of_the_trade_t : public rogue_attack_t
 {
   tricks_of_the_trade_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "tricks_of_the_trade", 57934, p, true )
+    rogue_attack_t( "tricks_of_the_trade", 57934, p )
   {
-
     parse_options( NULL, options_str );
 
     if ( p -> glyphs.tricks_of_the_trade -> ok() )
@@ -2690,7 +2689,6 @@ struct tricks_of_the_trade_t : public rogue_attack_t
           target = p;
         }
       }
-
     }
 
     p -> tot_target = target;

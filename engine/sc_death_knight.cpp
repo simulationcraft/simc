@@ -2588,7 +2588,7 @@ struct death_coil_t : public death_knight_spell_t
     base_dd_min      = p -> dbc.effect_min( effect_id( 1 ), p -> level );
     base_dd_max      = p -> dbc.effect_max( effect_id( 1 ), p -> level );
 
-    base_multiplier *= 1 + p -> talents.morbidity -> effect1().percent()
+    base_multiplier *= 1.0 + p -> talents.morbidity -> effect1().percent()
                        + p -> glyphs.death_coil -> effect1().percent();
 
     base_crit     += p -> sets -> set( SET_T11_2PC_MELEE ) -> effect1().percent();
@@ -2604,7 +2604,6 @@ struct death_coil_t : public death_knight_spell_t
     if ( p -> buffs_sudden_doom -> check() ) return 0;
 
     return death_knight_spell_t::cost();
-
   }
 
   void execute()
