@@ -139,21 +139,21 @@ static bool download( url_cache_entry_t& entry,
       return false;
   }
 
-  std::wstring wHeaders;
-  utf8::utf8to16( cookies, cookies + std::strlen( cookies ), std::back_inserter( wHeaders ) );
+  std::string wHeaders;
+  wHeaders += cookies;
 
   if ( ! entry.last_modified_header.empty() )
   {
-    wHeaders += L"If-Modified-Since: ";
+    wHeaders += "If-Modified-Since: ";
     utf8::utf8to16( entry.last_modified_header.begin(), entry.last_modified_header.end(),
                     std::back_inserter( wHeaders ) );
-    wHeaders += L"\r\n";
+    wHeaders += "\r\n";
   }
 
-  std::wstring wURL;
-  utf8::utf8to16( url.begin(), url.end(), std::back_inserter( wURL ) );
+  std::string wURL = url;
+  wURL = util_t::urlencode( wURL ); 
 
-  InetWrapper hFile( InternetOpenUrl( hINet, wURL.c_str(), wHeaders.data(), static_cast<DWORD>(wHeaders.length()),
+  InetWrapper hFile( InternetOpenUrlA( hINet, wURL.c_str(), wHeaders.data(), static_cast<DWORD>(wHeaders.length()),
                                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
   if ( ! hFile )
     return false;
