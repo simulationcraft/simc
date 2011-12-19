@@ -52,7 +52,7 @@
     <ClCompile>
       <AdditionalOptions>-Zm200 -w34100 -w34189 -w34100 -w34189 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>c:\Qt\4.7.4\include\QtCore;c:\Qt\4.7.4\include\QtGui;c:\Qt\4.7.4\include\QtWebKit;c:\Qt\4.7.4\include;engine;c:\Qt\4.7.4\include\ActiveQt;debug;c:\Qt\4.7.4\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\Qt\4.8.0\include\QtCore;c:\Qt\4.8.0\include\QtGui;c:\Qt\4.8.0\include\QtWebKit;c:\Qt\4.8.0\include;engine;c:\Qt\4.8.0\include\ActiveQt;debug;c:\Qt\4.8.0\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_DLL;QT_WEBKIT_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -75,10 +75,10 @@
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" "/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27"
 "/MACHINE:i386" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>c:\Qt\4.7.4\lib\qtmaind.lib;wininet.lib;c:\Qt\4.7.4\lib\QtWebKit4.lib;c:\qt\4.7.4\lib\QtNetwork4.lib;c:\Qt\4.7.4\lib\QtGui4.lib;c:\Qt\4.7.4\lib\QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>c:\Qt\4.8.0\lib\qtmaind.lib;wininet.lib;c:\Qt\4.8.0\lib\QtWebKit4.lib;c:\qt\4.8.0\lib\QtNetwork4.lib;c:\Qt\4.8.0\lib\QtGui4.lib;c:\Qt\4.8.0\lib\QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\SimulationCraft.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>c:\Qt\4.7.4\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>c:\Qt\4.8.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
@@ -96,7 +96,7 @@
     <ClCompile>
       <AdditionalOptions>-Zm200 -w34100 -w34189 -w34100 -w34189 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>c:\Qt\4.7.4\include\QtCore;c:\Qt\4.7.4\include\QtGui;c:\Qt\4.7.4\include\QtWebKit;c:\Qt\4.7.4\include;engine;c:\Qt\4.7.4\include\ActiveQt;release;c:\Qt\4.7.4\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\Qt\4.8.0\include\QtCore;c:\Qt\4.8.0\include\QtGui;c:\Qt\4.8.0\include\QtWebKit;c:\Qt\4.8.0\include;engine;c:\Qt\4.8.0\include\ActiveQt;release;c:\Qt\4.8.0\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBKIT_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -122,10 +122,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" "/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>c:\Qt\4.7.4\lib\qtmain.lib;wininet.lib;c:\Qt\4.7.4\lib\QtWebKit4.lib;c:\qt\4.7.4\lib\QtNetwork4.lib;c:\Qt\4.7.4\lib\QtGui4.lib;c:\Qt\4.7.4\lib\QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>c:\Qt\4.8.0\lib\qtmain.lib;wininet.lib;c:\Qt\4.8.0\lib\QtWebKit4.lib;c:\qt\4.8.0\lib\QtNetwork4.lib;c:\Qt\4.8.0\lib\QtGui4.lib;c:\Qt\4.8.0\lib\QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\SimulationCraft.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>c:\Qt\4.7.4\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>c:\Qt\4.8.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
@@ -231,14 +231,14 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MOC qt\simulationcraftqt.h</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Rem IncrediBuild_AllowRemote
 Rem IncrediBuild_OutputFile debug\moc_simulationcraftqt.cpp
-c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I"c:\Qt\4.7.4\include\QtCore" -I"c:\Qt\4.7.4\include\QtGui" -I"c:\Qt\4.7.4\include\QtWebKit" -I"c:\Qt\4.7.4\include" -I"engine" -I"c:\Qt\4.7.4\include\ActiveQt" -I"debug" -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o debug\moc_simulationcraftqt.cpp
+c:\Qt\4.8.0\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I"c:\Qt\4.8.0\include\QtCore" -I"c:\Qt\4.8.0\include\QtGui" -I"c:\Qt\4.8.0\include\QtWebKit" -I"c:\Qt\4.8.0\include" -I"engine" -I"c:\Qt\4.8.0\include\ActiveQt" -I"debug" -Ic:\Qt\4.8.0\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o debug\moc_simulationcraftqt.cpp
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Rem;qt\simulationcraftqt.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\moc_simulationcraftqt.cpp;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MOC qt\simulationcraftqt.h</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rem IncrediBuild_AllowRemote
 Rem IncrediBuild_OutputFile release\moc_simulationcraftqt.cpp
-c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I"c:\Qt\4.7.4\include\QtCore" -I"c:\Qt\4.7.4\include\QtGui" -I"c:\Qt\4.7.4\include\QtWebKit" -I"c:\Qt\4.7.4\include" -I"engine" -I"c:\Qt\4.7.4\include\ActiveQt" -I"release" -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o release\moc_simulationcraftqt.cpp
+c:\Qt\4.8.0\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I"c:\Qt\4.8.0\include\QtCore" -I"c:\Qt\4.8.0\include\QtGui" -I"c:\Qt\4.8.0\include\QtWebKit" -I"c:\Qt\4.8.0\include" -I"engine" -I"c:\Qt\4.8.0\include\ActiveQt" -I"release" -Ic:\Qt\4.8.0\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o release\moc_simulationcraftqt.cpp
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rem;qt\simulationcraftqt.h;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\moc_simulationcraftqt.cpp;%(Outputs)</Outputs>
