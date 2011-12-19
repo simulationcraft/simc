@@ -64,7 +64,7 @@ player_t* chardev_t::download_player( sim_t* sim,
   sim -> current_name = id;
 
   js_node_t* profile_js = download_profile( sim, id, caching );
-  if ( ! profile_js )
+  if ( ! profile_js || ! ( profile_js = js_t::get_node( profile_js, "character" ) ) )
   {
     sim -> errorf( "Unable to download character profile %s from chardev.\n", id.c_str() );
     return 0;
