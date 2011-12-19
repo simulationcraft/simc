@@ -92,7 +92,7 @@
 #include "data_definitions.hh"
 
 #define SC_MAJOR_VERSION "430"
-#define SC_MINOR_VERSION "3"
+#define SC_MINOR_VERSION "4"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 #define SC_EPSILON ( 0.000001 )
