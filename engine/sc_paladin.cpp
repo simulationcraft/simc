@@ -453,9 +453,6 @@ struct paladin_heal_t : public heal_t
 
     heal_t::player_buff();
 
-    if ( p -> buffs_avenging_wrath -> up() )
-      player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> effect2().percent();
-
     if ( p -> buffs_conviction -> up() )
     {
       player_multiplier *= 1.0 + p -> buffs_conviction -> effect2().percent();
@@ -512,8 +509,6 @@ struct paladin_attack_t : public attack_t
     may_crit = true;
 
     class_flag1 = ! use2hspec;
-
-    base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
   }
 
   paladin_t* p() const
@@ -595,11 +590,7 @@ struct paladin_attack_t : public attack_t
   {
     paladin_t* p = player -> cast_paladin();
     attack_t::player_buff();
-    player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
-    if ( school == SCHOOL_HOLY )
-    {
-      player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
-    }
+
     if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
     {
       player_multiplier *= 1.18;
@@ -671,9 +662,7 @@ struct paladin_spell_t : public spell_t
   }
 
   void initialize_()
-  {
-    base_multiplier *= 1.0 + p() -> talents.communion -> effect3().percent();
-  }
+  { }
 
   paladin_t* p() const
   {
@@ -746,12 +735,6 @@ struct paladin_spell_t : public spell_t
 
     spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p -> buffs_avenging_wrath -> value();
-
-    if ( school == SCHOOL_HOLY )
-    {
-      player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
-    }
     if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
     {
       player_multiplier *= 1.12;
@@ -3540,6 +3523,16 @@ double paladin_t::composite_attribute_multiplier( int attr ) const
 double paladin_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
+
+  // These affect all damage done by the paladin
+  m *= 1.0 + buffs_avenging_wrath -> value();
+
+  m *= 1.0 + talents.communion -> effect3().percent();
+
+  if ( school == SCHOOL_HOLY )
+  {
+    m *= 1.0 + buffs_inquisition -> value();
+  }
 
   if ( a && a -> type == ACTION_ATTACK && ! a -> class_flag1 && ( primary_tree() == TREE_RETRIBUTION ) && ( main_hand_weapon.group() == WEAPON_2H ) )
   {
