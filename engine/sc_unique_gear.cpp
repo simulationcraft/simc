@@ -1314,11 +1314,9 @@ static void register_gurthalak( item_t* item )
   player_t* p   = item -> player;
   bool heroic   = item -> heroic();
   bool lfr      = item -> lfr();
+  int  slot     = item -> slot;
 
-  uint32_t spell_id = heroic ? 68044 : lfr ? 52586 : 68043;
-
-  // Currently it appears all of the spawns are using the same spell id
-  if ( p -> bugs ) spell_id = 52586;
+  uint32_t tick_damage = heroic ? 12429 : lfr ? 9881 : 11155; // Heroic is assumed
 
   uint32_t proc_spell_id = heroic ? 109839 : lfr ? 109841 : 107810;
 
@@ -1327,38 +1325,53 @@ static void register_gurthalak( item_t* item )
     double chance;
     spell_t* spell;
     rng_t* rng;
+    int slot;
 
-    // FIXME: Verify if spell can miss
+    // FIXME: This should be converted to a pet, which casts 3 Mind Flays,
+    // of 3 ticks each, with the last being 2-3 ticks
+    // Reia is working on it and it's proving difficult
+    // So until that can be done, simulate 8-9 ticks on one mind flay, with a dot refresh
+    // Will hurt Fury warriors the most
     struct gurthalak_t : public spell_t
     {
-      gurthalak_t( player_t* p, uint32_t spell_id ) :
-        spell_t( "gurthalak_voice_of_the_deeps", spell_id, p )
+      gurthalak_t( player_t* p, uint32_t tick_damage ) :
+        spell_t( "gurthalak_voice_of_the_deeps", 52586, p )
       {
         trigger_gcd = 0;
         background = true;
-        may_miss = false;
         tick_may_crit = true;
         hasted_ticks = false;
         proc = true;
-        num_ticks = 11; // Casts between 3-4 mind flays of 3 ticks each with each spawn, average appears to be 11 ticks cast
+        num_ticks = 9; // Casts 3 mind flays, resulting in 8-9 ticks on average
         base_attack_power_multiplier = 1.0;
         base_spell_power_multiplier = 0;
+
+        // While this spell ID is the one used by all of the tentacles,
+        // It doesn't have a coeff and each version has static damage
+        tick_power_mod = 0;
+        base_td = tick_damage;
+        base_cost = 0; // This screws up reporting
+
+        // Until this is changed to a pet to allow for multiple spawns at once
+        // Allow the dot to refresh itself
+        dot_behavior = DOT_REFRESH;
+
         init();
       }
 
-      virtual void player_buff()
+      virtual void execute()
       {
-        spell_t::player_buff();
-
-        // Doesn't appear to inherit any of the player's crit, crit debuff still works
-        player_crit = 0;
+        // Casts either 8 or 9 ticks, roughly equal chance for both
+        num_ticks = sim -> roll( 0.5 ) ? 9 : 8;
+        spell_t::execute();
       }
     };
 
-    gurthalak_callback_t( player_t* p, uint32_t id, uint32_t proc_spell_id ) :
-      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() )
+    gurthalak_callback_t( player_t* p, uint32_t tick_damage, uint32_t proc_spell_id, int slot ) :
+      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() ),
+      slot( slot )
     {
-      spell = new gurthalak_t( p, id );
+      spell = new gurthalak_t( p, tick_damage );
 
       rng = p -> get_rng ( "gurthalak" );
     }
@@ -1368,6 +1381,24 @@ static void register_gurthalak( item_t* item )
       if ( a -> proc )
         return;
 
+      // This currently has some odd spawning when equipped in the OH
+      // We don't currently have a way to replicate this behavior perfectly in the sim, that I'm aware of
+      // Changing to it to slot based will under value the weapon whenever it is in the OH for Fury Warriors
+      /* 
+        Bloodthirst? Yes.
+        Heroic Strike? Yes.
+        Cleave? Yes.
+        Slam? No.
+        Raging Blow? Offhand hit can proc it, main hand can't.
+        Whirlwind? Same as Raging Blow. 1 roll per offhand hit, can proc multiple times from the same ability if it hits multiple times.
+        Colossus Smash? No.
+        Thunder Clap? Yes.
+        Heroic Leap? Yes.
+      */
+
+      if ( ! a -> weapon ) return;
+      if ( a -> weapon -> slot != slot ) return;
+
       if ( rng -> roll( chance ) )
       {
         spell -> execute();
@@ -1375,7 +1406,7 @@ static void register_gurthalak( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new gurthalak_callback_t( p, spell_id, proc_spell_id ) );
+  p -> register_attack_callback( RESULT_HIT_MASK, new gurthalak_callback_t( p, tick_damage, proc_spell_id, slot ) );
 }
 
 // register_nokaled =========================================================
