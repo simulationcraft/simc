@@ -283,7 +283,7 @@ double reforge_plot_t::progress( std::string& phase )
   {
     // Add current reforge iterations only if the update does not land on a partition
     // operation
-    if ( current_reforge_sim -> children.size() == current_reforge_sim -> threads - 1 )
+    if ( ( int ) current_reforge_sim -> children.size() == current_reforge_sim -> threads - 1 )
       reforge_iter += current_reforge_sim -> current_iteration * sim -> threads;
     // At partition, add an extra amount of iterations to keep the iterations correct
     else
