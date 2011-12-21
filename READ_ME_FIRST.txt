@@ -18,18 +18,22 @@ SimulationCraft allows raid/party creation of arbitrary size, generating detaile
 reports for both individual and raid performance. Currently, it is a command-line tool in 
 which the player profiles are specified via parameter files. 
 
-Documentation can be found here: http://code.google.com/p/simulationcraft/wiki/
+Documentation can be found here: http://code.google.com/p/simulationcraft/wiki/StartersGuide
 
 =============================================================================================
 
-What is in the Install?
+What is in the Archive?
 
 Windows Platforms:
-(1) simc.exe => Command-line simulation executable
-(2) SimulationCraft.exe => Basic graphic user-interface.  Accepts drag-n-drop of .simc profiles.
-(3) Win32OpenSSL_Light-*.exe => OpenSSL for Qt (some Windows platforms already have this).
-(4) Legend.html => Glossary for simulation output
-(5) phonon4.dll and Qt*.dll => dlls necessary for simcqt.exe to run
+(1) READ_ME_FIRST.txt => This file
+(2) simc.exe => Command-line simulation executable
+(3) SimulationCraft.exe => Basic graphic user-interface.  Accepts drag-n-drop of .simc profiles.
+(4) Win32OpenSSL_Light-*.exe => OpenSSL for Qt (some Windows platforms already have this). Install this if you're getting errors when using the browser in the GUI.
+(5) Legend.html => Glossary for simulation output
+(6) Welcome.html => Welcome screen for the GUI
+(7) phonon4.dll and Qt*.dll => dlls necessary for simcqt.exe to run
+(8) /profiles => All of the DPS profiles you will find in the GUI
+(9) /profiles_heal => Experimental healing and tanking profiles
 
 Posix Platforms: (Linux, OSX, etc)
 (1) simc => Command-line simulation executable
@@ -38,7 +42,7 @@ Posix Platforms: (Linux, OSX, etc)
 
 =============================================================================================
 
-How To Run?
+How To Run the Command-Line Tool?
 
 SimulationCraft is a parameter-driven command-line tool.  What this means is that you cannot
 simply double-click the simc executable.  Parameters are specified in a generic parm=value
@@ -47,7 +51,7 @@ format.
 A starter's guide can be found here: http://code.google.com/p/simulationcraft/wiki/StartersGuide
 
 Consider typing the following at a command-line prompt:
-simc.exe armoy=us,Llane,Segv iterations=10000 calculate_scale_factors=1 html=Segv.html
+simc.exe armory=us,Llane,Segv iterations=10000 calculate_scale_factors=1 html=Segv.html
 Here we invoke the executable and pass four parm=value pairs.
 armory => us,Llane,Segv
 iterations => 10000
@@ -77,8 +81,12 @@ config file on top of SimulationCraft.exe.  It will load the config and allow yo
 different options, such as calculating scale factors, after which you press "Simulate!" 
 to start it running.
 
-In order to run this on Windows, you may have install OpenSSL.  The OpenSSL installer was
+In order to run this on Windows, you may have to install OpenSSL.  The OpenSSL installer was
 included in the zip download: Win32OpenSSL_Light-*.exe
+
+If you get an error of "MSVCP100.dll is not found." Please install VC++ redistributable package from Microsoft.
+http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=5555
+MSVCP100.dll should be linked automatically when building the GUI, but in certain cases it silently fails.
 
 =============================================================================================
 
