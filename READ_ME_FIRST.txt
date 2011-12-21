@@ -25,15 +25,17 @@ Documentation can be found here: http://code.google.com/p/simulationcraft/wiki/S
 What is in the Archive?
 
 Windows Platforms:
-(1) READ_ME_FIRST.txt => This file
-(2) simc.exe => Command-line simulation executable
-(3) SimulationCraft.exe => Basic graphic user-interface.  Accepts drag-n-drop of .simc profiles.
-(4) Win32OpenSSL_Light-*.exe => OpenSSL for Qt (some Windows platforms already have this). Install this if you're getting errors when using the browser in the GUI.
+(1) /imageformats, phonon4.dll and Qt*.dll => dlls necessary for simcqt.exe to run
+(2) /profiles => All of the DPS profiles you will find in the GUI
+(3) /profiles_heal => Experimental healing and tanking profiles
+(4) /source => Source used to build the executables
 (5) Legend.html => Glossary for simulation output
-(6) Welcome.html => Welcome screen for the GUI
-(7) phonon4.dll and Qt*.dll => dlls necessary for simcqt.exe to run
-(8) /profiles => All of the DPS profiles you will find in the GUI
-(9) /profiles_heal => Experimental healing and tanking profiles
+(6) READ_ME_FIRST.txt => This file
+(7) simc.exe => Command-line simulation executable
+(8) SimulationCraft.exe => Basic graphic user-interface.  Accepts drag-n-drop of .simc profiles.
+(9) Welcome.html => Welcome screen for the GUI
+(10) Welcome.png => SimC logo for the GUI
+(11) Win32OpenSSL_Light-*.exe => OpenSSL for Qt (some Windows platforms already have this).
 
 Posix Platforms: (Linux, OSX, etc)
 (1) simc => Command-line simulation executable
