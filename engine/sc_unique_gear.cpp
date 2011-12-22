@@ -1534,7 +1534,7 @@ static void register_rathrak( item_t* item )
       init();
       cooldown -> duration = 17.0; // FIXME: Verify this. Got 17.188sec after 545 procs.
     }
-    // Testing shows this does double dip in CoE and Spell Dmg modifiers (Shadow Power, etc)
+    // Testing shows this is affected by CoE and Spell Dmg modifiers (Shadow Power, etc)
   };
 
   struct rathrak_callback_t : public action_callback_t
