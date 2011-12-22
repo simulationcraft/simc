@@ -1530,10 +1530,11 @@ static void register_rathrak( item_t* item )
       may_miss = false; // FIXME: Verify this
       tick_may_crit = true; 
       proc = true;
+      hasted_ticks = false;
       init();
       cooldown -> duration = 17.0; // FIXME: Verify this. Got 17.188sec after 545 procs.
     }
-    // FIXME does this double dip in talents/masterys/etc?
+    // Testing shows this does double dip in CoE and Spell Dmg modifiers (Shadow Power, etc)
   };
 
   struct rathrak_callback_t : public action_callback_t
