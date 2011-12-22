@@ -3246,16 +3246,21 @@ void paladin_t::init_actions()
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions();
       action_list_str += "/avenging_wrath";
-      action_list_str += "/guardian_of_ancient_kings,if=health_pct<=30";
-      action_list_str += "/word_of_glory,if=health_pct<=50";
-      action_list_str += "/holy_shield";
-      action_list_str += "/shield_of_the_righteous,if=holy_power=3";
-      action_list_str += "/crusader_strike";
+      action_list_str += "/guardian_of_ancient_kings,if=health_pct<=30,use_off_gcd=1";
+      action_list_str += "/holy_shield,use_off_gcd=1";
+      action_list_str += "/shield_of_the_righteous,if=holy_power=3&(buff.sacred_duty.up|buff.inquisition.up)";
+      action_list_str += "/judgement,if=holy_power=3";
+      action_list_str += "/inquisition,if=holy_power=3&(buff.inquisition.down|buff.inquisition.remains<5)";
+      action_list_str += "/divine_plea,if=holy_power<2";
+      action_list_str += "/avengers_shield,if=buff.grand_crusader.up&holy_power<3";
+      action_list_str += "/judgement,if=buff.judgements_of_the_pure.down";
+      action_list_str += "/crusader_strike,if=holy_power<3";
+      action_list_str += "/hammer_of_wrath";
+      action_list_str += "/avengers_shield,if=cooldown.crusader_strike.remains>=0.2";
       action_list_str += "/judgement";
-      action_list_str += "/avengers_shield";
-      action_list_str += "/holy_wrath";
       action_list_str += "/consecration";
-      action_list_str += "/divine_plea";
+      action_list_str += "/holy_wrath";
+      action_list_str += "/divine_plea,if=holy_power<1";
     }
     break;
     case TREE_HOLY:
