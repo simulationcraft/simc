@@ -27,7 +27,7 @@ actions+=/execute,if=buff.executioner_talent.stack<5
 actions+=/bloodthirst
 actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute,if=rage>=50
-actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
+actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1,use_off_gcd=1
 actions+=/raging_blow
 actions+=/battle_shout,if=rage<70
 head=greathelm_of_the_voracious_maw,heroic=1,type=plate,ilevel=391,quality=epic,stats=3057armor_400str_689sta_320mastery_224crit,reforge=mastery_hit,gems=reverberating_shadowspirit_20str_20hit_30str,enchant=60str_35mastery

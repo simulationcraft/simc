@@ -27,7 +27,7 @@ actions+=/execute,if=buff.executioner_talent.stack<5
 actions+=/bloodthirst
 actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute,if=rage>=50
-actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
+actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1,use_off_gcd=1
 actions+=/raging_blow
 actions+=/battle_shout,if=rage<70
 head=helmet_of_the_molten_giant,type=plate,ilevel=378,quality=epic,stats=2943armor_348str_611sta_245haste_233mastery,reforge=mastery_crit,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery

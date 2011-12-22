@@ -3642,14 +3642,14 @@ void warrior_t::init_actions()
       action_list_str += "/bloodthirst";
       if ( talents.raging_blow -> ok() && talents.titans_grip -> ok() )
       {
-        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1,use_off_gcd=1";
         action_list_str += "/raging_blow";
       }
       action_list_str += "/slam,if=buff.bloodsurge.react";
       action_list_str += "/execute,if=rage>=50";
       if ( talents.raging_blow -> ok() && ! talents.titans_grip -> ok() )
       {
-        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1";
+        action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1,use_off_gcd=1";
         action_list_str += "/raging_blow";
       }
       action_list_str += "/battle_shout,if=rage<70";
@@ -3662,9 +3662,8 @@ void warrior_t::init_actions()
       action_list_str += "/stance,choose=defensive";
       if ( talents.last_stand -> ok() ) action_list_str += "/last_stand,if=health<30000";
       action_list_str += "/heroic_strike,if=rage>=50";
-      action_list_str += "/inner_rage,if=rage>=85";
-      action_list_str += "/berserker_rage";
-
+      action_list_str += "/inner_rage,if=rage>=85,use_off_gcd=1";
+      action_list_str += "/berserker_rage,use_off_gcd=1";
       action_list_str += "/shield_block,sync=shield_slam";
       action_list_str += "/shield_slam";
       action_list_str += "/thunder_clap,if=dot.rend.remains<=3";

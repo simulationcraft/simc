@@ -26,7 +26,7 @@ actions+=/execute,if=buff.executioner_talent.remains<1.5
 actions+=/colossus_smash
 actions+=/execute,if=buff.executioner_talent.stack<5
 actions+=/bloodthirst
-actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1
+actions+=/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1,use_off_gcd=1
 actions+=/raging_blow
 actions+=/slam,if=buff.bloodsurge.react
 actions+=/execute,if=rage>=50
