@@ -2,8 +2,6 @@
 
 # Quickly regenerate all profiles in SVN
 
-generate_profiles_T11H.simc
-
 generate_profiles_T12N.simc
 generate_profiles_T12H.simc
 
