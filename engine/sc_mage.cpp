@@ -1763,7 +1763,7 @@ struct combustion_t : public mage_spell_t
 
     mage_t* p = player -> cast_mage();
 
-    if ( ! p -> dots_ignite -> ticking )
+    if ( p -> dots_ignite -> ticking )
     {
       ignite_dmg += calculate_dot_dps( p -> dots_ignite );
       ignite_dmg /= 1.0 + p -> specializations.flashburn * p -> dots_ignite -> action -> snapshot_mastery;
