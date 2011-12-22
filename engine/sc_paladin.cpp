@@ -1836,7 +1836,6 @@ struct judgement_t : public paladin_attack_t
 
     if ( seal -> result_is_hit() )
     {
-
       if ( p -> talents.judgements_of_the_just -> rank() )
       {
         target -> debuffs.judgements_of_the_just -> trigger();
@@ -3201,21 +3200,22 @@ void paladin_t::init_actions()
       }
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions();
-      action_list_str += "/zealotry";
       if ( level >= 85 )
-        action_list_str += "/guardian_of_ancient_kings,if=(buff.zealotry.remains<31&buff.zealotry.up)|cooldown.zealotry.remains>60";
-      action_list_str += "/avenging_wrath,if=buff.zealotry.remains<21&buff.zealotry.up";
-      if ( level >= 81 )
-        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<5)&(holy_power=3|buff.divine_purpose.react)";
+        action_list_str += "/guardian_of_ancient_kings,if=cooldown.zealotry.remains<10";
+      action_list_str += "/zealotry,if=cooldown.guardian_of_ancient_kings.remains>0&cooldown.guardian_of_ancient_kings.remains<292";
+      action_list_str += "/avenging_wrath,if=buff.zealotry.up";
       action_list_str += "/crusader_strike,if=holy_power<3";  // CS before TV if <3 power, even with DP up
-      action_list_str += "/judgement,if=set_bonus.tier13_2pc_melee&holy_power<3";
+      action_list_str += "/judgement,if=buff.zealotry.down&holy_power<3";
+      if ( level >= 81 )
+        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|buff.divine_purpose.react)";
       action_list_str += "/templars_verdict,if=buff.divine_purpose.react";
       action_list_str += "/templars_verdict,if=holy_power=3";
       action_list_str += "/exorcism,if=buff.the_art_of_war.react";
       action_list_str += "/hammer_of_wrath";
-      action_list_str += "/judgement";
+      action_list_str += "/judgement,if=set_bonus.tier13_2pc_melee&buff.zealotry.up&holy_power<3";
+      action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.2&cooldown.crusader_strike.remains>0";
       action_list_str += "/holy_wrath";
-      action_list_str += "/consecration,if=mana>17000";  // Consecration is expensive, only use if we have plenty of mana
+      action_list_str += "/consecration,if=mana>16000";  // Consecration is expensive, only use if we have plenty of mana
       action_list_str += "/divine_plea";
     }
     break;
