@@ -1756,16 +1756,19 @@ struct combustion_t : public mage_spell_t
 
   virtual void execute()
   {
-    double ignite_dmg;
+    double ignite_dmg = 0;
     // Apparently, Combustion double-dips mastery....
     // In addition, Ignite contribution uses current mastery
     // http://elitistjerks.com/f75/t110187-cataclysm_mage_simulators_formulators/p3/#post1824829
 
     mage_t* p = player -> cast_mage();
 
-    ignite_dmg = calculate_dot_dps( p -> dots_ignite         );
-    ignite_dmg /= 1.0 + p -> specializations.flashburn * p -> dots_ignite -> action -> snapshot_mastery;
-    ignite_dmg *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
+    if ( ! p -> dots_ignite -> ticking )
+    {
+      ignite_dmg += calculate_dot_dps( p -> dots_ignite );
+      ignite_dmg /= 1.0 + p -> specializations.flashburn * p -> dots_ignite -> action -> snapshot_mastery;
+      ignite_dmg *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
+    }
 
     base_td = 0;
     base_td += calculate_dot_dps( p -> dots_frostfire_bolt );
