@@ -6040,6 +6040,16 @@ action_expr_t* player_t::create_expression( action_t* a,
         };
         return new pet_active_expr_t( a, pet );
       }
+      else if ( splits[ 2 ] == "remains" )
+      {
+        struct pet_remains_expr_t : public action_expr_t
+        {
+          pet_t* pet;
+          pet_remains_expr_t( action_t* a, pet_t* p ) : action_expr_t( a, "pet_remains", TOK_NUM ), pet( p ) {}
+          virtual int evaluate() { result_num = ( pet -> expiration && pet -> expiration-> remains() > 0 ) ? pet -> expiration -> remains() : 0; return TOK_NUM; }
+        };
+        return new pet_remains_expr_t( a, pet );
+      }
       else
       {
         return pet -> create_expression( a, name_str.substr( splits[ 1 ].length() + 5 ) );
