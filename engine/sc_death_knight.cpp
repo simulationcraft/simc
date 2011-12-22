@@ -3304,7 +3304,6 @@ struct obliterate_t : public death_knight_attack_t
       p -> proc_oblit_killing_machine -> occur();
 
     p -> buffs_killing_machine -> expire();
-
   }
 
   virtual void player_buff()
@@ -3337,10 +3336,11 @@ struct outbreak_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    may_crit   = false;
+    may_crit = false;
+
+    cooldown -> duration += p -> spells.veteran_of_the_third_war -> effect3().seconds();
 
     assert( p -> blood_plague );
-
     assert( p -> frost_fever );
   }
 
