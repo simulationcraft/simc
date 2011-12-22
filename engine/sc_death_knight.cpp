@@ -4483,7 +4483,14 @@ void death_knight_t::init_actions()
     case TREE_UNHOLY:
       action_list_str += init_use_item_actions( ",time>=2" );
       action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions( ",time>=2" );
+      if ( talents.unholy_frenzy -> rank() && race == RACE_TROLL )
+      {
+        action_list_str += init_use_racial_actions( ",sync=unholy_frenzy" );
+      }
+      else
+      {
+        action_list_str += init_use_racial_actions( ",time>=2" );
+      }
       action_list_str += "/raise_dead";
       action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
