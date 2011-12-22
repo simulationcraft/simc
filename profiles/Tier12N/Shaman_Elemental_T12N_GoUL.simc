@@ -23,7 +23,7 @@ actions+=/bloodlust,health_percentage<=25
 actions+=/bloodlust,if=target.time_to_die<=60
 actions+=/berserking
 actions+=/elemental_mastery
-actions+=/flame_shock,if=!ticking|ticks_remain<2
+actions+=/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time
 actions+=/earth_shock,if=buff.lightning_shield.react=9
 actions+=/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time

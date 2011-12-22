@@ -4432,7 +4432,7 @@ void shaman_t::init_actions()
       }
       if ( ! glyph_unleashed_lightning -> ok() )
         action_list_str += "/unleash_elements,moving=1";
-      action_list_str += "/flame_shock,if=!ticking|ticks_remain<2";
+      action_list_str += "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)";
       if ( level >= 75 ) action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time";
       if ( talent_fulmination -> rank() )
       {
