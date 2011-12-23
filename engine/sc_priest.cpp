@@ -4015,7 +4015,7 @@ struct power_word_shield_t : public priest_absorb_t
 
   virtual bool ready()
   {
-    if ( ! ignore_debuff & target -> buffs.weakened_soul -> check() )
+    if ( ! ignore_debuff && target -> buffs.weakened_soul -> check() )
       return false;
 
     return priest_absorb_t::ready();

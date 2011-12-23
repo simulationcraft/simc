@@ -132,7 +132,7 @@ double spell_data_t::cast_time( uint32_t level ) const
   {
     if ( _cast_min < 0 )
       return 0;
-    return _cast_min;
+    return _cast_min / 1000.0;
   }
 
   if ( level >= static_cast<uint32_t>( _cast_div ) )
