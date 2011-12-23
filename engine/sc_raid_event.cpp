@@ -259,8 +259,7 @@ struct stun_event_t : public raid_event_t
       {
         // Don't schedule_ready players who are already working, like pets auto-summoned during the stun event ( ebon imp ).
         if ( ! p -> readying && ! p -> sleeping )
-          if ( p -> last_foreground_action && ! p -> last_foreground_action -> execute_event )
-            p -> schedule_ready();
+          p -> schedule_ready();
       }
     }
 
