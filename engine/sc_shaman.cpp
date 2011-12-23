@@ -34,18 +34,18 @@ struct shaman_targetdata_t : public targetdata_t
 
   buff_t* debuffs_searing_flames;
 
-  shaman_targetdata_t(player_t* source, player_t* target);
+  shaman_targetdata_t( player_t* source, player_t* target );
 };
 
-void register_shaman_targetdata(sim_t* sim)
+void register_shaman_targetdata( sim_t* sim )
 {
   player_type t = SHAMAN;
   typedef shaman_targetdata_t type;
 
-  REGISTER_DOT(flame_shock);
-  REGISTER_DOT(searing_flames);
+  REGISTER_DOT( flame_shock );
+  REGISTER_DOT( searing_flames );
 
-  REGISTER_DEBUFF(searing_flames);
+  REGISTER_DEBUFF( searing_flames );
 }
 
 struct shaman_t : public player_t
@@ -257,7 +257,7 @@ struct shaman_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new shaman_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new shaman_targetdata_t( source, target );}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -300,7 +300,7 @@ struct shaman_attack_t : public attack_t
 {
   bool windfury;
   bool flametongue;
-  
+
   /* Old style construction, spell data will not be accessed */
   shaman_attack_t( const char* n, player_t* player, school_type s, int t, bool special ) :
     attack_t( n, player, RESOURCE_MANA, s, t, special ), windfury( true ), flametongue( true ) { }
@@ -336,7 +336,7 @@ struct shaman_spell_t : public spell_t
   bool     maelstrom;
   bool     overload;
   bool     is_totem;
-  
+
   /* Old style construction, spell data will not be accessed */
   shaman_spell_t( const char* n, player_t* p, const std::string& options_str, const school_type s, int t ) :
     spell_t( n, p, RESOURCE_MANA, s, t ),
@@ -406,13 +406,13 @@ struct spirit_wolf_pet_t : public pet_t
       // level 85 enhancement shaman, with and without Glyph
       base_multiplier *= 1.49835 * 2.0;
     }
-    
+
     virtual void execute()
     {
       shaman_t* o = player -> cast_pet() -> owner -> cast_shaman();
-      
+
       attack_t::execute();
-      
+
       // Two independent chances to proc it since we model 2 wolf pets as 1 ..
       if ( result_is_hit() )
       {
@@ -1170,7 +1170,7 @@ static bool trigger_rolling_thunder ( spell_t* s )
     p -> procs_rolling_thunder  -> occur();
     return true;
   }
-  
+
   return false;
 }
 
@@ -1224,12 +1224,11 @@ struct lava_burst_overload_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   virtual void player_buff()
   {
     shaman_spell_t::player_buff();
 
-    shaman_t* p = player -> cast_shaman();
     shaman_targetdata_t* td = targetdata() -> cast_shaman();
 
     if ( td -> dots_flame_shock -> ticking )
@@ -1344,14 +1343,12 @@ struct searing_flames_t : public shaman_spell_t
 
   virtual double total_td_multiplier() const
   {
-    shaman_t* p = player -> cast_shaman();
     shaman_targetdata_t* td = targetdata() -> cast_shaman();
     return td -> debuffs_searing_flames -> stack();
   }
 
   virtual void last_tick( dot_t* d )
   {
-    shaman_t* p = player -> cast_shaman();
     shaman_targetdata_t* td = targetdata() -> cast_shaman();
     shaman_spell_t::last_tick( d );
     td -> debuffs_searing_flames -> expire();
@@ -1771,7 +1768,7 @@ struct lava_lash_t : public shaman_attack_t
     flametongue_bonus   = base_value( E_DUMMY ) / 100.0;
 
     // Searing flames bonus to base weapon damage
-    sf_bonus            = p -> talent_improved_lava_lash -> effect2().percent() + 
+    sf_bonus            = p -> talent_improved_lava_lash -> effect2().percent() +
                           p -> sets -> set( SET_T12_2PC_MELEE ) -> base_value() / 100.0;
   }
 
@@ -2175,7 +2172,7 @@ struct chain_lightning_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
 
     shaman_spell_t::player_buff();
-    
+
     if ( p -> buffs_maelstrom_weapon -> up() )
       player_multiplier *= 1.0 + p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent();
   }
@@ -2298,7 +2295,6 @@ struct fire_nova_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    shaman_t* p = player -> cast_shaman();
     shaman_targetdata_t* td = targetdata() -> cast_shaman();
 
     if ( ! td -> dots_flame_shock -> ticking )
@@ -2455,13 +2451,13 @@ struct lightning_bolt_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   virtual void player_buff()
   {
     shaman_t* p = player -> cast_shaman();
 
     shaman_spell_t::player_buff();
-    
+
     if ( p -> buffs_maelstrom_weapon -> up() )
       player_multiplier *= 1.0 + p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent();
   }
@@ -2527,8 +2523,8 @@ struct lightning_bolt_t : public shaman_spell_t
       if ( p -> talent_telluric_currents -> rank() )
       {
         p -> resource_gain( RESOURCE_MANA,
-          travel_dmg * p -> talent_telluric_currents -> base_value() / 100.0,
-          p -> gains_telluric_currents );
+                            travel_dmg * p -> talent_telluric_currents -> base_value() / 100.0,
+                            p -> gains_telluric_currents );
       }
     }
   }
@@ -2733,21 +2729,21 @@ struct earth_shock_t : public shaman_spell_t
     buff_t* buff;
     int consume_stacks;
     int consume_threshold;
-    
+
     lightning_charge_delay_t( sim_t* sim, player_t* p, buff_t* b, int consume, int consume_threshold ) :
-    event_t( sim, p ), buff( b ), consume_stacks( consume ), consume_threshold( consume_threshold )
+      event_t( sim, p ), buff( b ), consume_stacks( consume ), consume_threshold( consume_threshold )
     {
       name = "lightning_charge_delay_t";
       sim -> add_event( this, 0.001 );
     }
-    
+
     void execute()
     {
-      if ( ( buff -> check() - consume_threshold ) > 0 ) 
+      if ( ( buff -> check() - consume_threshold ) > 0 )
         buff -> decrement( consume_stacks );
     }
   };
-  
+
   int consume_threshold;
 
   earth_shock_t( player_t* player, const std::string& options_str, bool dtr=false ) :
@@ -4218,7 +4214,7 @@ void shaman_t::init_buffs()
   buffs_unleash_flame           = new unleash_flame_buff_t   ( this );
   buffs_unleash_wind            = new unleash_elements_buff_t( this, 73681,                                                    "unleash_wind"          );
   buffs_water_shield            = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),             "water_shield"          );
-  
+
   // Elemental Tier13 set bonuses
   buffs_tier13_2pc_caster       = new stat_buff_t            ( this, 105779, "tier13_2pc_caster", STAT_MASTERY_RATING, dbc.spell( 105779 ) -> effect1().base_value() );
   buffs_tier13_4pc_caster       = new stat_buff_t            ( this, 105821, "tier13_4pc_caster", STAT_HASTE_RATING,   dbc.spell( 105821 ) -> effect1().base_value() );
@@ -4411,17 +4407,17 @@ void shaman_t::init_actions()
       {
         if ( ! items[ i ].use.active() ) continue;
 
-        // Fiery Quintessence / Bottled Wishes are aligned to fire elemental and 
+        // Fiery Quintessence / Bottled Wishes are aligned to fire elemental and
         // only used when the required temporary int threshold is exceeded
         if ( util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) ||
              util_t::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
         {
-          action_list_str += "/use_item,name=" + 
-                             std::string( items[ i ].name() ) + 
-                             ",if=(cooldown.fire_elemental_totem.remains" + 
-                             ( ( set_bonus.tier12_2pc_caster() ) ? "<25" : "=0" ) + 
-                             "&temporary_bonus.spell_power>=" + 
-                             util_t::to_string( sp_threshold ) + 
+          action_list_str += "/use_item,name=" +
+                             std::string( items[ i ].name() ) +
+                             ",if=(cooldown.fire_elemental_totem.remains" +
+                             ( ( set_bonus.tier12_2pc_caster() ) ? "<25" : "=0" ) +
+                             "&temporary_bonus.spell_power>=" +
+                             util_t::to_string( sp_threshold ) +
                              ")|set_bonus.tier12_2pc_caster=0";
         }
         else
@@ -4452,18 +4448,18 @@ void shaman_t::init_actions()
         action_list_str += "/earth_shock,if=buff.lightning_shield.react=9";
         action_list_str += "/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
       }
-      
+
       // Fire elemental summoning logic
-      // 1) Make sure we fully use some commonly used temporary int bonuses of the profile, calculating the following 
+      // 1) Make sure we fully use some commonly used temporary int bonuses of the profile, calculating the following
       // additively as a sum of temporary intellect buffs on the profile during iteration
       //    - Power Torrent or Lightweave Embroidery is up (either being up is counted as a temporary int buff of 500)
       //    - DMC: Volcano (temporary int buff of 1600)
       //    - Will of Unbinding (all versions are a temporary int buff of 700 int)
-      // 2) If the profile hase Fiery Quintessence, align Fire Elemental summoning always with FQ (and require an 
+      // 2) If the profile hase Fiery Quintessence, align Fire Elemental summoning always with FQ (and require an
       //    additional 1100 temporary int)
-      // 3) If the profile hase Bottled Wishes, align Fire Elemental summoning always with BW (and require an 
+      // 3) If the profile hase Bottled Wishes, align Fire Elemental summoning always with BW (and require an
       //    additional 2290 temporary spell power)
-      // 4) If the profile uses pre-potting, make sure we try to use the FE during potion, so that 
+      // 4) If the profile uses pre-potting, make sure we try to use the FE during potion, so that
       //    all the other temporary int/sp buffs are also up
       sp_threshold += has_fiery_quintessence * 1149;
       sp_threshold += has_bottled_wishes * 2290;
@@ -4473,13 +4469,13 @@ void shaman_t::init_actions()
         {
           if ( use_pre_potion )
           {
-            action_list_str += "/fire_elemental_totem,if=buff.volcanic_potion.up&temporary_bonus.spell_power>=" + 
+            action_list_str += "/fire_elemental_totem,if=buff.volcanic_potion.up&temporary_bonus.spell_power>=" +
                                util_t::to_string( sp_threshold + 1200 ) + "&(!ticking|remains<25)";
-            action_list_str += "/fire_elemental_totem,if=!buff.volcanic_potion.up&temporary_bonus.spell_power>=" + 
+            action_list_str += "/fire_elemental_totem,if=!buff.volcanic_potion.up&temporary_bonus.spell_power>=" +
                                util_t::to_string( sp_threshold ) + "&(!ticking|remains<25)";
           }
           else
-            action_list_str += "/fire_elemental_totem,if=temporary_bonus.spell_power>=" + 
+            action_list_str += "/fire_elemental_totem,if=temporary_bonus.spell_power>=" +
                                util_t::to_string( sp_threshold ) + "&(!ticking|remains<25)";
         }
         else
@@ -4491,9 +4487,9 @@ void shaman_t::init_actions()
         {
           if ( use_pre_potion )
           {
-            action_list_str += "/fire_elemental_totem,if=!ticking&buff.volcanic_potion.up&temporary_bonus.spell_power>=" + 
+            action_list_str += "/fire_elemental_totem,if=!ticking&buff.volcanic_potion.up&temporary_bonus.spell_power>=" +
                                util_t::to_string( sp_threshold + 1200 );
-            action_list_str += "/fire_elemental_totem,if=!ticking&!buff.volcanic_potion.up&temporary_bonus.spell_power>=" + 
+            action_list_str += "/fire_elemental_totem,if=!ticking&!buff.volcanic_potion.up&temporary_bonus.spell_power>=" +
                                util_t::to_string( sp_threshold );
           }
           else
@@ -4535,17 +4531,17 @@ void shaman_t::moving()
 {
   // Spiritwalker's Grace complicates things, as you can cast it while casting
   // anything. So, to model that, if a raid move event comes, we need to check
-  // if we can trigger Spiritwalker's Grace. If so, conditionally execute it, to 
+  // if we can trigger Spiritwalker's Grace. If so, conditionally execute it, to
   // allow the currently executing cast to finish.
   if ( level == 85 )
   {
     action_t* swg = find_action( "spiritwalkers_grace" );
 
-    // We need to bypass swg -> ready() check here, so whip up a special 
+    // We need to bypass swg -> ready() check here, so whip up a special
     // readiness check that only checks for player skill, cooldown and resource
     // availability
     if ( swg &&
-         executing && 
+         executing &&
          sim -> roll( skill ) &&
          swg -> cooldown -> remains() == 0 &&
          resource_available( swg -> resource, swg -> cost() ) )
@@ -4565,18 +4561,18 @@ void shaman_t::moving()
         {
           if ( sim -> log )
             log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
-                          executing -> name_str.c_str() );
+                           executing -> name_str.c_str() );
           swg -> execute();
         }
       }
-      // Other trees blindly execute Spiritwalker's Grace if there's a spell cast 
+      // Other trees blindly execute Spiritwalker's Grace if there's a spell cast
       // executing during movement event
       else
       {
         swg -> execute();
         if ( sim -> log )
           log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
-                        executing -> name_str.c_str() );
+                         executing -> name_str.c_str() );
       }
     }
     else
@@ -4650,7 +4646,7 @@ double shaman_t::composite_attack_crit() const
 double shaman_t::composite_spell_power( const school_type school ) const
 {
   double sp = 0;
-  
+
   if ( primary_tree() == TREE_ENHANCEMENT )
     sp = composite_attack_power_multiplier() * composite_attack_power() * spec_mental_quickness -> base_value( E_APPLY_AURA, A_366 ) / 100.0;
   else
@@ -4684,23 +4680,23 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
     if ( buffs_elemental_mastery -> up() )
       m *= 1.0 + buffs_elemental_mastery -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
   }
-    
+
   if ( school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
   {
     if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + main_hand_weapon.buff_value;
     else if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + off_hand_weapon.buff_value;
-  
+
     if ( sim -> auras.elemental_oath -> up() && buffs_elemental_focus -> up() )
     {
       // Elemental oath self buff is type 0 sub type 0
       m *= 1.0 + talent_elemental_oath -> base_value( E_NONE, A_NONE ) / 100.0;
     }
   }
-  
+
   m *= 1.0 + talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-  
+
   return m;
 }
 
@@ -4902,9 +4898,9 @@ void player_t::shaman_combat_begin( sim_t* sim )
     sim -> auras.strength_of_earth -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 8076 ) -> effect1().id(), sim -> max_player_level ) );
 }
 
-shaman_targetdata_t::shaman_targetdata_t(player_t* source, player_t* target)
-  : targetdata_t(source, target)
+shaman_targetdata_t::shaman_targetdata_t( player_t* source, player_t* target )
+  : targetdata_t( source, target )
 {
   shaman_t* p = source -> cast_shaman();
-  debuffs_searing_flames          = add_aura(new searing_flames_buff_t  ( this, p -> talent_searing_flames -> spell_id(),                      "searing_flames"        ));
+  debuffs_searing_flames          = add_aura( new searing_flames_buff_t  ( this, p -> talent_searing_flames -> spell_id(),                      "searing_flames"        ) );
 }

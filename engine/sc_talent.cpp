@@ -911,7 +911,8 @@ double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, in
 double spell_id_t::mod_additive( property_type_t p_type ) const
 {
   // Move this somewhere sane, here for now
-  static const double property_flat_divisor[] = {
+  static const double property_flat_divisor[] =
+  {
     1.0,    // P_GENERIC
     1000.0, // P_DURATION
     1.0,    // P_THREAT

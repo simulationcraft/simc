@@ -39,7 +39,7 @@ pet_t::pet_t( sim_t*             s,
               player_t*          o,
               const std::string& n,
               bool               g ) :
-              player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( PET_NONE )
+  player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( PET_NONE )
 {
   init_pet_t_();
 }
@@ -49,7 +49,7 @@ pet_t::pet_t( sim_t*             s,
               const std::string& n,
               pet_type_t         pt,
               bool               g ) :
-              player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
+  player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
 {
   init_pet_t_();
 }

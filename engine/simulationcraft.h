@@ -195,17 +195,17 @@ struct shaman_targetdata_t;
 struct warlock_targetdata_t;
 struct warrior_targetdata_t;
 
-void register_death_knight_targetdata(sim_t* sim);
-void register_druid_targetdata(sim_t* sim);
-void register_hunter_targetdata(sim_t* sim);
-void register_mage_targetdata(sim_t* sim);
-void register_monk_targetdata(sim_t* sim);
-void register_paladin_targetdata(sim_t* sim);
-void register_priest_targetdata(sim_t* sim);
-void register_rogue_targetdata(sim_t* sim);
-void register_shaman_targetdata(sim_t* sim);
-void register_warlock_targetdata(sim_t* sim);
-void register_warrior_targetdata(sim_t* sim);
+void register_death_knight_targetdata( sim_t* sim );
+void register_druid_targetdata( sim_t* sim );
+void register_hunter_targetdata( sim_t* sim );
+void register_mage_targetdata( sim_t* sim );
+void register_monk_targetdata( sim_t* sim );
+void register_paladin_targetdata( sim_t* sim );
+void register_priest_targetdata( sim_t* sim );
+void register_rogue_targetdata( sim_t* sim );
+void register_shaman_targetdata( sim_t* sim );
+void register_warlock_targetdata( sim_t* sim );
+void register_warrior_targetdata( sim_t* sim );
 
 #define DATA_DOT 0
 #define DATA_AURA 1
@@ -216,15 +216,15 @@ struct actor_pair_t
   player_t* target;
   player_t* source;
 
-  actor_pair_t(player_t* target, player_t* source)
-    : target(target), source(source)
+  actor_pair_t( player_t* target, player_t* source )
+    : target( target ), source( source )
   {}
 
-  actor_pair_t(player_t* p = 0)
-    : target(p), source(p)
+  actor_pair_t( player_t* p = 0 )
+    : target( p ), source( p )
   {}
 
-  actor_pair_t(targetdata_t* td);
+  actor_pair_t( targetdata_t* td );
 };
 
 // Enumerations =============================================================
@@ -2227,8 +2227,8 @@ finline int32_t util_t::DoubleToInt( double d )
 {
   union Cast
   {
-  double d;
-  int32_t l;
+    double d;
+    int32_t l;
   };
   volatile Cast c;
   c.d = d + 6755399441055744.0;
@@ -2239,7 +2239,7 @@ finline int32_t util_t::FloorToInt( double d )
 {
   return xs_FloorToInt( d );
 }
-  
+
 finline int32_t util_t::CeilToInt( double d )
 {
   return xs_CeilToInt( d );
@@ -2593,7 +2593,7 @@ public:
   bool variance_analyzed() const { return analyzed_variance; }
   bool distribution_created() const { return created_dist; }
   bool sorted() const { return is_sorted; }
-  int size() const { if ( simple ) return count; return (int) data.size(); }
+  int size() const { if ( simple ) return count; return ( int ) data.size(); }
 
   void analyze(
     bool calc_basics=true,
@@ -3319,17 +3319,17 @@ struct sim_t : private thread_t
   void      aura_loss( const char* name, int aura_id=0 );
   action_expr_t* create_expression( action_t*, const std::string& name );
   int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
-  void register_targetdata_item(int kind, const char* name, player_type type, size_t offset);
-  void* get_targetdata_item(player_t* source, player_t* target, int kind, const std::string& name);
+  void register_targetdata_item( int kind, const char* name, player_type type, size_t offset );
+  void* get_targetdata_item( player_t* source, player_t* target, int kind, const std::string& name );
 
-  dot_t* get_targetdata_dot(player_t* source, player_t* target, const std::string& name)
+  dot_t* get_targetdata_dot( player_t* source, player_t* target, const std::string& name )
   {
-    return (dot_t*)get_targetdata_item(source, target, DATA_DOT, name);
+    return ( dot_t* )get_targetdata_item( source, target, DATA_DOT, name );
   }
 
-  buff_t* get_targetdata_aura(player_t* source, player_t* target, const std::string& name)
+  buff_t* get_targetdata_aura( player_t* source, player_t* target, const std::string& name )
   {
-    return (buff_t*)get_targetdata_item(source, target, DATA_AURA, name);
+    return ( buff_t* )get_targetdata_item( source, target, DATA_AURA, name );
   }
 };
 
@@ -4186,7 +4186,7 @@ struct player_t : public noncopyable
 
   virtual const char* name() const { return name_str.c_str(); }
 
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target);
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target );
   virtual void init();
   virtual void init_glyphs();
   virtual void init_base() = 0;
@@ -4514,13 +4514,13 @@ struct targetdata_t : public noncopyable
 
   dot_t* dot_list;
 
-  targetdata_t(player_t* source, player_t* target);
+  targetdata_t( player_t* source, player_t* target );
 
   virtual ~targetdata_t();
   virtual void reset();
   virtual void clear_debuffs();
 
-  static targetdata_t* get(player_t* source, player_t* target);
+  static targetdata_t* get( player_t* source, player_t* target );
 
   death_knight_targetdata_t* cast_death_knight() { assert( source->type == DEATH_KNIGHT ); return ( death_knight_targetdata_t* ) this; }
   druid_targetdata_t       * cast_druid       () { assert( source->type == DRUID        ); return ( druid_targetdata_t       * ) this; }
@@ -4535,8 +4535,8 @@ struct targetdata_t : public noncopyable
   warrior_targetdata_t     * cast_warrior     () { assert( source->type == WARRIOR      ); return ( warrior_targetdata_t     * ) this; }
 
 protected:
-  dot_t* add_dot(dot_t* d);
-  aura_t* add_aura(aura_t* b);
+  dot_t* add_dot( dot_t* d );
+  aura_t* add_aura( aura_t* b );
 };
 
 // Pet ======================================================================
@@ -4738,7 +4738,7 @@ public:
   action_t( int type, const char* name, const char* sname, player_t* p=0, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, int t=TREE_NONE, bool special=false );
   virtual ~action_t();
-  void init_dot(const std::string& dot_name);
+  void init_dot( const std::string& dot_name );
 
   virtual void   parse_data();
   virtual void   parse_effect_data( int spell_id, int effect_nr );
@@ -4812,12 +4812,12 @@ public:
 
   dot_t* dot() const
   {
-    if(targetdata_dot_offset >= 0)
-      return *(dot_t**)((char*)targetdata() + targetdata_dot_offset);
+    if( targetdata_dot_offset >= 0 )
+      return *( dot_t** )( ( char* )targetdata() + targetdata_dot_offset );
     else
     {
-      if(!action_dot)
-        action_dot = player->get_dot(name_str);
+      if( !action_dot )
+        action_dot = player->get_dot( name_str );
       return action_dot;
     }
   }
@@ -4832,10 +4832,10 @@ public:
 
   targetdata_t* targetdata() const
   {
-    if(cached_targetdata_target != target)
+    if( cached_targetdata_target != target )
     {
       cached_targetdata_target = target;
-      cached_targetdata = targetdata_t::get(player, target);
+      cached_targetdata = targetdata_t::get( player, target );
     }
     return cached_targetdata;
   }
@@ -5315,7 +5315,7 @@ struct uptime_t : public uptime_common_t
 };
 
 struct buff_uptime_t : public uptime_common_t
-{ buff_uptime_t( sim_t* s ) : uptime_common_t( s ) {} };
+  { buff_uptime_t( sim_t* s ) : uptime_common_t( s ) {} };
 
 // Gain =====================================================================
 
@@ -5597,39 +5597,39 @@ struct rawr_t
 
 namespace bcp_api
 {
-  bool download_guild( sim_t* sim,
-                       const std::string& region,
-                       const std::string& server,
-                       const std::string& name,
-                       const std::vector<int>& ranks,
-                       int player_type = PLAYER_NONE,
-                       int max_rank=0,
-                       cache::behavior_t b=cache::players() );
-  player_t* download_player( sim_t*,
-                             const std::string& region,
-                             const std::string& server,
-                             const std::string& name,
-                             const std::string& talents=std::string("active"),
-                             cache::behavior_t b=cache::players() );
-  bool download_item( item_t&, const std::string& item_id, cache::behavior_t b=cache::items() );
-  bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-                       cache::behavior_t b=cache::items() );
-  bool download_slot( item_t& item,
-                      const std::string& item_id,
-                      const std::string& enchant_id,
-                      const std::string& addon_id,
-                      const std::string& reforge_id,
-                      const std::string& rsuffix_id,
-                      const std::string gem_ids[ 3 ],
-                      cache::behavior_t b=cache::items() );
-  int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t b=cache::items() );
+bool download_guild( sim_t* sim,
+                     const std::string& region,
+                     const std::string& server,
+                     const std::string& name,
+                     const std::vector<int>& ranks,
+                     int player_type = PLAYER_NONE,
+                     int max_rank=0,
+                     cache::behavior_t b=cache::players() );
+player_t* download_player( sim_t*,
+                           const std::string& region,
+                           const std::string& server,
+                           const std::string& name,
+                           const std::string& talents=std::string( "active" ),
+                           cache::behavior_t b=cache::players() );
+bool download_item( item_t&, const std::string& item_id, cache::behavior_t b=cache::items() );
+bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
+                     cache::behavior_t b=cache::items() );
+bool download_slot( item_t& item,
+                    const std::string& item_id,
+                    const std::string& enchant_id,
+                    const std::string& addon_id,
+                    const std::string& reforge_id,
+                    const std::string& rsuffix_id,
+                    const std::string gem_ids[ 3 ],
+                    cache::behavior_t b=cache::items() );
+int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t b=cache::items() );
 }
 
 // Wowreforge ===============================================================
 
 namespace wowreforge
 {
-  player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_t b=cache::players() );
+player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_t b=cache::players() );
 };
 
 // HTTP Download  ===========================================================
@@ -5726,8 +5726,8 @@ struct wait_for_cooldown_t : public wait_action_base_t
 inline buff_t* buff_t::find( sim_t* s, const std::string& name ) { return find( s -> buff_list, name ); }
 inline buff_t* buff_t::find( player_t* p, const std::string& name ) { return find( p -> buff_list, name ); }
 
-inline actor_pair_t::actor_pair_t(targetdata_t* td)
-   : target(td->target), source(td->source)
+inline actor_pair_t::actor_pair_t( targetdata_t* td )
+  : target( td->target ), source( td->source )
 {}
 
 #ifdef WHAT_IF

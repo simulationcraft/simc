@@ -44,34 +44,34 @@ struct druid_targetdata_t : public targetdata_t
     return dots_regrowth->ticking || dots_rejuvenation->ticking || dots_lifebloom->ticking || dots_wild_growth->ticking;
   }
 
-  druid_targetdata_t(player_t* source, player_t* target)
-    : targetdata_t(source, target)
+  druid_targetdata_t( player_t* source, player_t* target )
+    : targetdata_t( source, target )
   {
-    buffs_combo_points = add_aura(new buff_t( this, "combo_points", 5 ));
+    buffs_combo_points = add_aura( new buff_t( this, "combo_points", 5 ) );
 
-    buffs_lifebloom = add_aura(new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, 0 ));
+    buffs_lifebloom = add_aura( new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, 0 ) );
     buffs_lifebloom -> buff_duration = 11.0; // Override duration so the bloom works correctly
   }
 };
 
-void register_druid_targetdata(sim_t* sim)
+void register_druid_targetdata( sim_t* sim )
 {
   player_type t = DRUID;
   typedef druid_targetdata_t type;
 
-  REGISTER_DOT(fiery_claws);
-  REGISTER_DOT(insect_swarm);
-  REGISTER_DOT(lacerate);
-  REGISTER_DOT(lifebloom);
-  REGISTER_DOT(moonfire);
-  REGISTER_DOT(rake);
-  REGISTER_DOT(regrowth);
-  REGISTER_DOT(rejuvenation);
-  REGISTER_DOT(rip);
-  REGISTER_DOT(sunfire);
-  REGISTER_DOT(wild_growth);
+  REGISTER_DOT( fiery_claws );
+  REGISTER_DOT( insect_swarm );
+  REGISTER_DOT( lacerate );
+  REGISTER_DOT( lifebloom );
+  REGISTER_DOT( moonfire );
+  REGISTER_DOT( rake );
+  REGISTER_DOT( regrowth );
+  REGISTER_DOT( rejuvenation );
+  REGISTER_DOT( rip );
+  REGISTER_DOT( sunfire );
+  REGISTER_DOT( wild_growth );
 
-  REGISTER_BUFF(combo_points);
+  REGISTER_BUFF( combo_points );
 }
 
 struct druid_t : public player_t
@@ -360,7 +360,7 @@ struct druid_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new druid_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new druid_targetdata_t( source, target );}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -991,7 +991,7 @@ static void trigger_lotp( action_t* a )
 
   p -> resource_gain( RESOURCE_MANA,
                       p -> resource_max[ RESOURCE_MANA ] * p -> talents.leader_of_the_pack -> effect1().percent(),
-                      p -> gains_lotp_mana );  
+                      p -> gains_lotp_mana );
 
   p -> cooldowns_lotp -> start( 6.0 );
 };
@@ -1565,7 +1565,7 @@ struct frenzied_regeneration_buff_t : public buff_t
       // FIXME: Glyph should increase healing received
     }
 
-    double health_pct = effect2().percent(); 
+    double health_pct = effect2().percent();
 
     health_gain = ( int ) floor( player -> resource_max[ RESOURCE_HEALTH ] * health_pct );
     p -> stat_gain( STAT_MAX_HEALTH, health_gain );
@@ -1628,7 +1628,6 @@ struct maim_t : public druid_cat_attack_t
 
   virtual void execute()
   {
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     base_dd_adder = base_dmg_per_point * td -> buffs_combo_points -> stack();
@@ -1871,7 +1870,7 @@ struct rip_t : public druid_cat_attack_t
     may_crit              = false;
     base_multiplier      *= 1.0 + p -> glyphs.rip -> mod_additive( P_TICK_DAMAGE );
 
-    dot_behavior          = DOT_REFRESH; 
+    dot_behavior          = DOT_REFRESH;
   }
 
   virtual void execute()
@@ -1886,7 +1885,6 @@ struct rip_t : public druid_cat_attack_t
 
   virtual void player_buff()
   {
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     if ( base_td == 0.0 && tick_power_mod == 0.0 )
@@ -2731,7 +2729,6 @@ struct lifebloom_bloom_t : public druid_heal_t
 
   virtual void execute()
   {
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     base_dd_multiplier = td -> buffs_lifebloom -> check();
@@ -2761,7 +2758,6 @@ struct lifebloom_t : public druid_heal_t
 
   virtual double calculate_tick_damage()
   {
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     return druid_heal_t::calculate_tick_damage() * td -> buffs_lifebloom -> check();
@@ -2783,7 +2779,6 @@ struct lifebloom_t : public druid_heal_t
     bloom -> execute();
 
     druid_heal_t::last_tick( d );
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     td -> buffs_lifebloom -> expire();
@@ -2835,7 +2830,6 @@ struct nourish_t : public druid_heal_t
   virtual void target_debuff( player_t* t, int dmg_type )
   {
     druid_heal_t::target_debuff( t, dmg_type );
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     if ( td -> hot_ticking() )
@@ -2992,7 +2986,6 @@ struct swiftmend_t : public druid_heal_t
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     // Note: with the glyph you can use other people's regrowth/rejuv
@@ -3190,7 +3183,7 @@ void druid_spell_t::player_buff()
     }
   }
 
-   // Add in Additive Multipliers
+  // Add in Additive Multipliers
   player_multiplier *= 1.0 + additive_multiplier;
 
   // Reset Additive_Multiplier
@@ -3910,8 +3903,8 @@ struct starfire_t : public druid_spell_t
 {
   int extend_moonfire;
 
-  starfire_t( druid_t* p, const std::string& options_str, bool dtr=false, const char* name = "starfire", dot_t* is_ = 0, dot_t* mf_ = 0, dot_t* sf_ = 0 ) :
-    druid_spell_t( name, 2912, p ),
+  starfire_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
+    druid_spell_t( "starfire", 2912, p ),
     extend_moonfire( 0 )
   {
     option_t options[] =
@@ -3938,7 +3931,6 @@ struct starfire_t : public druid_spell_t
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
-    dot_t* is = td->dots_insect_swarm;
     dot_t* mf = td->dots_moonfire;
     dot_t* sf = td->dots_sunfire;
 
@@ -4186,7 +4178,7 @@ struct starsurge_t : public druid_spell_t
     else
       return druid_spell_t::ready();
   }
-  
+
   virtual void target_debuff( player_t* t, int dmg_type )
   {
     druid_spell_t::target_debuff( t, dmg_type );
@@ -5375,7 +5367,7 @@ void druid_t::regen( double periodicity )
       resource_gain( RESOURCE_RAGE, 1.0 * periodicity, gains_enrage );
 
     uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
-                                       resource_max    [ RESOURCE_RAGE ] );
+                                resource_max    [ RESOURCE_RAGE ] );
   }
 
   player_t::regen( periodicity );

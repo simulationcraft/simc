@@ -462,9 +462,9 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
 
 // print_html_raid_imagemaps ==================================================
 
-static void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps)
+static void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps )
 {
-  std::vector<player_t*> player_list = (dps) ? sim -> players_by_dps : sim -> players_by_hps;
+  std::vector<player_t*> player_list = ( dps ) ? sim -> players_by_dps : sim -> players_by_hps;
   int start = num * MAX_PLAYERS_PER_CHART;
   unsigned int end = start + MAX_PLAYERS_PER_CHART;
 
@@ -484,14 +484,14 @@ static void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps)
   for ( int i=end-1; i >= start; i-- )
   {
     fprintf( file, "\"%s\"", player_list[i] -> name_str.c_str() );
-    if (i != start) fprintf( file, ", " );
+    if ( i != start ) fprintf( file, ", " );
   }
   fprintf( file, "];\n" );
 
   char imgid[32];
-  util_t::snprintf( imgid, sizeof( imgid ), "%sIMG%d", (dps) ? "DPS" : "HPS", num );
+  util_t::snprintf( imgid, sizeof( imgid ), "%sIMG%d", ( dps ) ? "DPS" : "HPS", num );
   char mapid[32];
-  util_t::snprintf( mapid, sizeof( mapid ), "%sMAP%d", (dps) ? "DPS" : "HPS", num );
+  util_t::snprintf( mapid, sizeof( mapid ), "%sMAP%d", ( dps ) ? "DPS" : "HPS", num );
 
   fprintf( file, "\t\t\tu = document.getElementById('%s').src;\n"
                  "\t\t\tgetMap(u, n, function(mapStr) {\n"
@@ -528,13 +528,13 @@ static void print_html_raid_imagemaps( FILE*  file, sim_t* sim )
   int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    print_html_raid_imagemap(file, sim, i, true);
+    print_html_raid_imagemap( file, sim, i, true );
   }
 
   count = ( int ) sim -> hps_charts.size();
   for ( int i=0; i < count; i++ )
   {
-    print_html_raid_imagemap(file, sim, i, false);
+    print_html_raid_imagemap( file, sim, i, false );
   }
 
   fprintf( file, "\t\t</script>\n" );

@@ -424,32 +424,32 @@ struct position_event_t : public raid_event_t
   }
 
   virtual void start()
-   {
+  {
     raid_event_t::start();
 
-     int num_affected = ( int ) affected_players.size();
-     for ( int i=0; i < num_affected; i++ )
-     {
-       player_t* p = affected_players[ i ];
-       if ( p -> position == POSITION_BACK )
-         p -> position = POSITION_FRONT;
-       else if ( p -> position == POSITION_RANGED_BACK )
-         p -> position = POSITION_RANGED_FRONT;
-     }
-   }
+    int num_affected = ( int ) affected_players.size();
+    for ( int i=0; i < num_affected; i++ )
+    {
+      player_t* p = affected_players[ i ];
+      if ( p -> position == POSITION_BACK )
+        p -> position = POSITION_FRONT;
+      else if ( p -> position == POSITION_RANGED_BACK )
+        p -> position = POSITION_RANGED_FRONT;
+    }
+  }
 
-   virtual void finish()
-   {
-     int num_affected = ( int ) affected_players.size();
-     for ( int i=0; i < num_affected; i++ )
-     {
-       player_t* p = affected_players[ i ];
+  virtual void finish()
+  {
+    int num_affected = ( int ) affected_players.size();
+    for ( int i=0; i < num_affected; i++ )
+    {
+      player_t* p = affected_players[ i ];
 
-       p -> init_position();
-     }
+      p -> init_position();
+    }
 
-     raid_event_t::finish();
-   }
+    raid_event_t::finish();
+  }
 };
 
 // raid_event_t::raid_event_t ===============================================

@@ -82,22 +82,22 @@ struct warrior_targetdata_t : public targetdata_t
 
   buff_t* debuffs_colossus_smash;
 
-  warrior_targetdata_t(player_t* source, player_t* target)
-    : targetdata_t(source, target)
+  warrior_targetdata_t( player_t* source, player_t* target )
+    : targetdata_t( source, target )
   {
-    debuffs_colossus_smash            = add_aura(new buff_t( this, "colossus_smash",            1,  6.0 ));
+    debuffs_colossus_smash            = add_aura( new buff_t( this, "colossus_smash",            1,  6.0 ) );
   }
 };
 
-void register_warrior_targetdata(sim_t* sim)
+void register_warrior_targetdata( sim_t* sim )
 {
   player_type t = WARRIOR;
   typedef warrior_targetdata_t type;
 
-  REGISTER_DOT(deep_wounds);
-  REGISTER_DOT(rend);
+  REGISTER_DOT( deep_wounds );
+  REGISTER_DOT( rend );
 
-  REGISTER_DEBUFF(colossus_smash);
+  REGISTER_DEBUFF( colossus_smash );
 }
 
 struct warrior_t : public player_t
@@ -343,7 +343,7 @@ struct warrior_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new warrior_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new warrior_targetdata_t( source, target );}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_defense();
@@ -1710,8 +1710,8 @@ struct execute_t : public warrior_attack_t
     direct_power_mod = 0.0437 * max_consumed;
 
     player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> ok() ?
-                              ( p -> buffs_lambs_to_the_slaughter -> stack()
-                             * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 );
+                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
+                                   * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 );
   }
 
   virtual bool ready()
@@ -1864,9 +1864,9 @@ struct mortal_strike_t : public warrior_attack_t
       player_crit += p -> buffs_juggernaut -> effect1().percent();
 
     player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> ok() ?
-                              ( p -> buffs_lambs_to_the_slaughter -> stack()
-                             * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 )
-                             + additive_multipliers;
+                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
+                                   * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 )
+                         + additive_multipliers;
   }
 };
 
@@ -1926,8 +1926,8 @@ struct overpower_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> ok() ?
-                              ( p -> buffs_lambs_to_the_slaughter -> stack()
-                              * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 );
+                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
+                                   * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 );
   }
 
   virtual bool ready()
@@ -2067,7 +2067,7 @@ struct rend_dot_t : public warrior_attack_t
   rend_dot_t( warrior_t* p ) :
     warrior_attack_t( "rend_dot", 94009, p )
   {
-    init_dot("rend");
+    init_dot( "rend" );
     background = true;
     tick_may_crit          = true;
     may_crit               = false;
@@ -2186,7 +2186,7 @@ struct revenge_t : public warrior_attack_t
       if ( result_is_hit( impact_result ) )
       {
         double amount = 0.20 * travel_dmg;
-        p -> buffs_tier13_2pc_tank -> trigger(1, amount);
+        p -> buffs_tier13_2pc_tank -> trigger( 1, amount );
         absorb_stats -> add_result( amount, amount, STATS_ABSORB, impact_result );
         absorb_stats -> add_execute( 0 );
       }
@@ -2395,9 +2395,9 @@ struct slam_attack_t : public warrior_attack_t
       player_multiplier *= 1.0 + p -> talents.bloodsurge -> effect1().percent();
 
     player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> ok() ?
-                              ( p -> buffs_lambs_to_the_slaughter -> stack()
-                             * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 )
-                             + additive_multipliers;
+                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
+                                   * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 )
+                         + additive_multipliers;
   }
 };
 
@@ -2915,7 +2915,7 @@ struct recklessness_t : public warrior_spell_t
 
 struct retaliation_t : public warrior_spell_t
 {
-  retaliation_t( warrior_t* p,  const std::string& options_str ) : 
+  retaliation_t( warrior_t* p,  const std::string& options_str ) :
     warrior_spell_t( "retaliation", 20230, p )
   {
     parse_options( NULL, options_str );
@@ -2926,9 +2926,9 @@ struct retaliation_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
-     warrior_t* p = player -> cast_warrior();
+    warrior_t* p = player -> cast_warrior();
 
-     p -> buffs_retaliation -> trigger( 20 );
+    p -> buffs_retaliation -> trigger( 20 );
   }
 };
 
@@ -3904,7 +3904,7 @@ void warrior_t::regen( double periodicity )
     resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
 
   uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
-                                     resource_max    [ RESOURCE_RAGE] );
+                              resource_max    [ RESOURCE_RAGE] );
 }
 
 // warrior_t::primary_role() ================================================

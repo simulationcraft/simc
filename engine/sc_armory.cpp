@@ -1020,7 +1020,7 @@ bool armory_t::download_slot( item_t& item,
   {
     item.sim -> errorf( "Player %s unable to parse LFR flag for item %s at slot %s.\n", p -> name(), id_str.c_str(), item.slot_name() );
     return false;
-  } 
+  }
 
   if ( ! parse_item_armor_type( item, slot_xml ) )
   {

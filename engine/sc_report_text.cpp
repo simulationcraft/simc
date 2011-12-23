@@ -232,7 +232,7 @@ static void print_text_buffs( FILE* file, player_t* p )
                        b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
 
       if ( b -> benefit_pct > 0 &&
-          b -> benefit_pct < 100 )
+           b -> benefit_pct < 100 )
       {
         util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
       }
@@ -257,7 +257,7 @@ static void print_text_buffs( FILE* file, player_t* p )
                          b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
 
         if ( b -> benefit_pct > 0 &&
-            b -> benefit_pct < 100 )
+             b -> benefit_pct < 100 )
         {
           util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
         }

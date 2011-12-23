@@ -221,27 +221,27 @@ struct warlock_targetdata_t : public targetdata_t
     return dots;
   }
 
-  warlock_targetdata_t(player_t* source, player_t* target);
+  warlock_targetdata_t( player_t* source, player_t* target );
 };
 
-void register_warlock_targetdata(sim_t* sim)
+void register_warlock_targetdata( sim_t* sim )
 {
   player_type t = WARLOCK;
   typedef warlock_targetdata_t type;
 
-  REGISTER_DOT(corruption);
-  REGISTER_DOT(unstable_affliction);
-  REGISTER_DOT(bane_of_agony);
-  REGISTER_DOT(bane_of_doom);
-  REGISTER_DOT(immolate);
-  REGISTER_DOT(drain_life);
-  REGISTER_DOT(drain_soul);
-  REGISTER_DOT(shadowflame_dot);
-  REGISTER_DOT(curse_of_elements);
-  REGISTER_DOT(burning_embers);
+  REGISTER_DOT( corruption );
+  REGISTER_DOT( unstable_affliction );
+  REGISTER_DOT( bane_of_agony );
+  REGISTER_DOT( bane_of_doom );
+  REGISTER_DOT( immolate );
+  REGISTER_DOT( drain_life );
+  REGISTER_DOT( drain_soul );
+  REGISTER_DOT( shadowflame_dot );
+  REGISTER_DOT( curse_of_elements );
+  REGISTER_DOT( burning_embers );
 
-  REGISTER_DEBUFF(haunted);
-  REGISTER_DEBUFF(shadow_embrace);
+  REGISTER_DEBUFF( haunted );
+  REGISTER_DEBUFF( shadow_embrace );
 }
 
 
@@ -454,7 +454,7 @@ struct warlock_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new warlock_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new warlock_targetdata_t( source, target );}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -488,15 +488,16 @@ struct warlock_t : public player_t
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 };
 
-warlock_targetdata_t::warlock_targetdata_t(player_t* source, player_t* target)
-  : targetdata_t(source, target)
+warlock_targetdata_t::warlock_targetdata_t( player_t* source, player_t* target )
+  : targetdata_t( source, target )
 {
   warlock_t* p = this->source->cast_warlock();
-  debuffs_haunted               = add_aura(new buff_t( this, p -> talent_haunt -> spell_id(), "haunted", p -> talent_haunt -> rank() ));
-  debuffs_shadow_embrace        = add_aura(new buff_t( this, p -> talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", p -> talent_shadow_embrace -> rank() ));
+  debuffs_haunted               = add_aura( new buff_t( this, p -> talent_haunt -> spell_id(), "haunted", p -> talent_haunt -> rank() ) );
+  debuffs_shadow_embrace        = add_aura( new buff_t( this, p -> talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", p -> talent_shadow_embrace -> rank() ) );
 }
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace   // ANONYMOUS NAMESPACE ==========================================
+{
 
 // ==========================================================================
 // Warlock Pet
@@ -776,7 +777,7 @@ struct warlock_pet_t : public pet_t
 
   virtual double composite_attack_crit() const
   {
-   double ac = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
+    double ac = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
     // According to Issue 881, FM on the owner doesn't increase pet crit, only when cast directly on the pet. 28/09/11
     if ( owner -> buffs.focus_magic -> check() )
@@ -1519,7 +1520,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
     {
       warlock_pet_spell_t::player_buff();
       warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-      warlock_targetdata_t* td = targetdata_t::get(o, target) -> cast_warlock();
+      warlock_targetdata_t* td = targetdata_t::get( o, target ) -> cast_warlock();
 
       player_multiplier *= 1.0 + td -> active_dots() * effect3().percent();
     }
@@ -1824,9 +1825,9 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
     }
 
     double mastery_value = o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
-    
+
     double mastery_gain = ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * mastery_value / 10000.0 );
-       
+
     m *= 1.0 + mastery_gain;
 
     return m;
@@ -2595,7 +2596,7 @@ struct drain_life_t : public warlock_spell_t
     heal = new drain_life_heal_t( p );
   }
 
-  virtual void last_tick( dot_t* d)
+  virtual void last_tick( dot_t* d )
   {
     warlock_spell_t::last_tick( d );
     warlock_t* p = player -> cast_warlock();
@@ -2775,7 +2776,6 @@ struct unstable_affliction_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    warlock_t* p = player -> cast_warlock();
 
     if ( result_is_hit() )
     {
@@ -2823,7 +2823,6 @@ struct haunt_t : public warlock_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      warlock_t* p = player -> cast_warlock();
       warlock_targetdata_t* td = targetdata() -> cast_warlock();
       td -> debuffs_haunted -> trigger();
       td -> debuffs_shadow_embrace -> trigger();
@@ -2868,7 +2867,6 @@ struct immolate_t : public warlock_spell_t
 
     if ( result_is_hit() )
     {
-      warlock_t* p = player -> cast_warlock();
       warlock_targetdata_t* td = targetdata() -> cast_warlock();
       if ( td -> dots_unstable_affliction -> ticking )
       {
@@ -2957,7 +2955,6 @@ struct conflagrate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_targetdata_t* td = targetdata() -> cast_warlock();
 
     action_t* a = td -> dots_immolate -> action;
@@ -2982,7 +2979,6 @@ struct conflagrate_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_targetdata_t* td = targetdata() -> cast_warlock();
 
     if ( ! ( td -> dots_immolate -> ticking ) )
@@ -3020,7 +3016,8 @@ struct incinerate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_targetdata_t* td = targetdata() -> cast_warlock();
 
-    if ( td -> dots_immolate -> ticking ) {
+    if ( td -> dots_immolate -> ticking )
+    {
       base_dd_adder = ( sim -> range( base_dd_min, base_dd_max ) + direct_power_mod * total_power() ) / 6;
     }
 
@@ -3277,7 +3274,7 @@ struct demon_armor_t : public warlock_spell_t
     warlock_spell_t( "demon_armor", p, "Demon Armor" )
   {
     parse_options( NULL, options_str );
-   
+
     harmful = false;
   }
 
@@ -3515,11 +3512,11 @@ struct summon_infernal_t : public summon_pet_t
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
 
     summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
-    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ? 
-      ( p -> talent_summon_felguard -> ok() ? 
-        p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) : 
-        p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) 
-      ) : 0.0;
+    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
+                          ( p -> talent_summon_felguard -> ok() ?
+                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :
+                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 )
+                          ) : 0.0;
     infernal_awakening = new infernal_awakening_t( p );
   }
 
@@ -3546,11 +3543,11 @@ struct summon_doomguard2_t : public summon_pet_t
     harmful = false;
     background = true;
     summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
-    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ? 
-      ( p -> talent_summon_felguard -> ok() ? 
-        p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) : 
-        p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) 
-      ) : 0.0;
+    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
+                          ( p -> talent_summon_felguard -> ok() ?
+                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :
+                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 )
+                          ) : 0.0;
   }
 
   virtual void execute()
@@ -3786,7 +3783,6 @@ struct fel_flame_t : public warlock_spell_t
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
-    warlock_t* p = player -> cast_warlock();
 
     if ( result_is_hit( impact_result ) )
     {
@@ -4072,8 +4068,6 @@ struct seed_of_corruption_t : public warlock_spell_t
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
-    warlock_t* p = player -> cast_warlock();
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 
     if ( result_is_hit( impact_result ) )
@@ -4768,7 +4762,7 @@ void warlock_t::init_actions()
         if ( has_wou )
         {
           // Attempt to account for non-default channel_lag settings
-          char delay = (char) ( sim -> channel_lag * 20 + 48 );
+          char delay = ( char ) ( sim -> channel_lag * 20 + 48 );
           if ( delay > 57 ) delay = 57;
           action_list_str += ",interrupt_if=buff.will_of_unbinding.up&cooldown.haunt.remains<tick_time&buff.will_of_unbinding.remains<action.haunt.cast_time+tick_time+0.";
           action_list_str += delay;
@@ -4845,7 +4839,7 @@ void warlock_t::init_actions()
         action_list_str += "/metamorphosis";
         if ( has_mwc ) action_list_str += ",if=buff.moonwell_chalice.up&pet.felguard.active";
       }
-      if ( level >= 85 ) 
+      if ( level >= 85 )
       {
         action_list_str += "/demon_soul";
         if ( has_mwc ) action_list_str += ",if=buff.metamorphosis.up";

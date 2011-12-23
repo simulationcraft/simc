@@ -18,21 +18,21 @@ struct mage_targetdata_t : public targetdata_t
   dot_t* dots_living_bomb;
   dot_t* dots_pyroblast;
 
-  mage_targetdata_t(player_t* source, player_t* target)
-    : targetdata_t(source, target)
+  mage_targetdata_t( player_t* source, player_t* target )
+    : targetdata_t( source, target )
   {
   }
 };
 
-void register_mage_targetdata(sim_t* sim)
+void register_mage_targetdata( sim_t* sim )
 {
   player_type t = MAGE;
   typedef mage_targetdata_t type;
 
-  REGISTER_DOT(frostfire_bolt);
-  REGISTER_DOT(ignite);
-  REGISTER_DOT(living_bomb);
-  REGISTER_DOT(pyroblast);
+  REGISTER_DOT( frostfire_bolt );
+  REGISTER_DOT( ignite );
+  REGISTER_DOT( living_bomb );
+  REGISTER_DOT( pyroblast );
 }
 
 struct mage_t : public player_t
@@ -302,7 +302,7 @@ struct mage_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new mage_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new mage_targetdata_t( source, target );}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -2982,7 +2982,7 @@ struct pyroblast_hs_t : public mage_spell_t
   pyroblast_hs_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "pyroblast_hs", 92315, p )
   {
-    init_dot("pyroblast");
+    init_dot( "pyroblast" );
     check_spec( TREE_FIRE );
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.pyroblast -> effect1().percent();
@@ -3991,7 +3991,7 @@ void mage_t::init_actions()
       if ( talents.icy_veins -> rank() )
       {
         action_list_str += "/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down";
-        if ( set_bonus.tier13_2pc_caster() && set_bonus.tier13_4pc_caster())
+        if ( set_bonus.tier13_2pc_caster() && set_bonus.tier13_4pc_caster() )
           action_list_str += "&(buff.tier13_2pc.stack>7|cooldown.cold_snap.remains<22)";
       }
       if ( talents.deep_freeze -> rank() ) action_list_str += "/deep_freeze,if=buff.fingers_of_frost.react";
@@ -4279,7 +4279,7 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
   {
     struct regen_mps_expr_t : public action_expr_t
     {
-      regen_mps_expr_t( action_t* a ) : action_expr_t( a, "regen_mps", TOK_NUM ){}
+      regen_mps_expr_t( action_t* a ) : action_expr_t( a, "regen_mps", TOK_NUM ) {}
       virtual int evaluate()
       {
         mage_t* p = action -> player -> cast_mage();

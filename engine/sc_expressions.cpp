@@ -57,107 +57,107 @@ struct expr_binary_t : public action_expr_t
       result_type = TOK_NUM;
       switch( operation )
       {
-        case TOK_ADD:
+      case TOK_ADD:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = left -> result_num + right -> result_num;
+        break;
+      }
+      case TOK_SUB:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = left -> result_num - right -> result_num;
+        break;
+      }
+      case TOK_MULT:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = left -> result_num * right -> result_num;
+        break;
+      }
+      case TOK_DIV:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = left -> result_num / right -> result_num;
+        break;
+      }
+
+      case TOK_EQ:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = static_cast< int >( left -> result_num == right -> result_num );
+        break;
+      }
+      case TOK_NOTEQ:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = static_cast< int >( left -> result_num != right -> result_num );
+        break;
+      }
+      case TOK_LT:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = static_cast< int >( left -> result_num < right -> result_num );
+        break;
+      }
+      case TOK_LTEQ:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = static_cast< int >( left -> result_num <= right -> result_num );
+        break;
+      }
+      case TOK_GT:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = static_cast< int >( left -> result_num > right -> result_num );
+        break;
+      }
+      case TOK_GTEQ:
+      {
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = static_cast< int >( left -> result_num >= right -> result_num );
+        break;
+      }
+
+      case TOK_AND:
+      {
+        if ( left -> result_num == 0 )
         {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = left -> result_num + right -> result_num;
-          break;
-        }
-        case TOK_SUB:
-        {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = left -> result_num - right -> result_num;
-          break;
-        }
-        case TOK_MULT:
-        {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = left -> result_num * right -> result_num;
-          break;
-        }
-        case TOK_DIV:
-        {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = left -> result_num / right -> result_num;
+          result_num = 0;
           break;
         }
 
-        case TOK_EQ:
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = static_cast< int >( ( left -> result_num != 0 ) && ( right -> result_num != 0 ) );
+        break;
+      }
+
+      case TOK_OR:
+      {
+        if ( left -> result_num != 0 )
         {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = static_cast< int >( left -> result_num == right -> result_num );
-          break;
-        }
-        case TOK_NOTEQ:
-        {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = static_cast< int >( left -> result_num != right -> result_num );
-          break;
-        }
-        case TOK_LT:
-        {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = static_cast< int >( left -> result_num < right -> result_num );
-          break;
-        }
-        case TOK_LTEQ:
-        {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = static_cast< int >( left -> result_num <= right -> result_num );
-          break;
-        }
-        case TOK_GT:
-        {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = static_cast< int >( left -> result_num > right -> result_num );
-          break;
-        }
-        case TOK_GTEQ:
-        {
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = static_cast< int >( left -> result_num >= right -> result_num );
+          result_num = 1;
           break;
         }
 
-        case TOK_AND:
-        {
-          if ( left -> result_num == 0 )
-          {
-            result_num = 0;
-            break;
-          }
+        right_result = right -> evaluate();
+        if ( left_result != right_result ) goto error;
+        result_num = static_cast< int >( ( left -> result_num != 0 ) || ( right -> result_num != 0 ) );
+        break;
+      }
 
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = static_cast< int >( ( left -> result_num != 0 ) && ( right -> result_num != 0 ) );
-          break;
-        }
-
-        case TOK_OR:
-        {
-          if ( left -> result_num != 0 )
-          {
-            result_num = 1;
-            break;
-          }
-
-          right_result = right -> evaluate();
-          if ( left_result != right_result ) goto error;
-          result_num = static_cast< int >( ( left -> result_num != 0 ) || ( right -> result_num != 0 ) );
-          break;
-        }
-
-        default: assert( 0 );
+      default: assert( 0 );
       }
     }
     else if ( left_result == TOK_STR )

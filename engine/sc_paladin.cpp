@@ -29,25 +29,25 @@ struct paladin_targetdata_t : public targetdata_t
 
   buff_t* debuffs_censure;
 
-  paladin_targetdata_t(player_t* source, player_t* target)
-    : targetdata_t(source, target)
+  paladin_targetdata_t( player_t* source, player_t* target )
+    : targetdata_t( source, target )
   {
-    debuffs_censure = add_aura(new buff_t( this, 31803, "censure" ));
+    debuffs_censure = add_aura( new buff_t( this, 31803, "censure" ) );
   }
 };
 
-void register_paladin_targetdata(sim_t* sim)
+void register_paladin_targetdata( sim_t* sim )
 {
   player_type t = PALADIN;
   typedef paladin_targetdata_t type;
 
-  REGISTER_DOT(censure);
-  REGISTER_DOT(exorcism);
-  REGISTER_DOT(word_of_glory);
-  REGISTER_DOT(flames_of_the_faithful);
-  REGISTER_DOT(holy_radiance);
+  REGISTER_DOT( censure );
+  REGISTER_DOT( exorcism );
+  REGISTER_DOT( word_of_glory );
+  REGISTER_DOT( flames_of_the_faithful );
+  REGISTER_DOT( holy_radiance );
 
-  REGISTER_DEBUFF(censure);
+  REGISTER_DEBUFF( censure );
 }
 
 struct paladin_t : public player_t
@@ -300,7 +300,7 @@ struct paladin_t : public player_t
     create_options();
   }
 
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new paladin_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new paladin_targetdata_t( source, target );}
   virtual void      init_defense();
   virtual void      init_base();
   virtual void      init_gains();
@@ -627,7 +627,7 @@ struct paladin_attack_t : public attack_t
     {
       player_multiplier *= 1.18;
     }
-    
+
     if ( p -> buffs_conviction -> up() )
     {
       player_multiplier *= 1.0 + p -> buffs_conviction -> effect1().percent();
@@ -700,7 +700,7 @@ struct paladin_spell_t : public spell_t
   {
     return static_cast<paladin_t*>( player );
   }
-  
+
   virtual void consume_resource()
   {
     spell_t::consume_resource();
@@ -755,7 +755,7 @@ struct paladin_spell_t : public spell_t
 
     if ( p -> buffs_divine_favor -> up() )
       h *= 1.0 / ( 1.0 + p -> buffs_divine_favor -> effect1().percent() );
-    
+
     h *= 1.0 / ( 1.0 + p -> talents.speed_of_light -> effect1().percent() );
 
     return h;
@@ -821,7 +821,7 @@ static void trigger_beacon_of_light( heal_t* h )
 
   if ( ! p -> beacon_target )
     return;
-  
+
   if ( ! p -> beacon_target -> buffs.beacon_of_light -> up() )
     return;
 
@@ -847,7 +847,7 @@ static void trigger_beacon_of_light( heal_t* h )
     };
     p -> active_beacon_of_light = new beacon_of_light_heal_t( p );
   }
-  
+
   p -> active_beacon_of_light -> base_dd_min = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> effect1().percent();
   p -> active_beacon_of_light -> base_dd_max = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> effect1().percent();
 
@@ -925,7 +925,7 @@ static void trigger_illuminated_healing( heal_t* h )
     return;
 
   paladin_t* p = h -> player -> cast_paladin();
-  
+
   // FIXME: Each player can have their own bubble, so this should probably be a vector as well
   if ( ! p -> active_illuminated_healing )
   {
@@ -946,7 +946,7 @@ static void trigger_illuminated_healing( heal_t* h )
 
   // FIXME: This should stack when the buff is present already
 
-  double bubble_value = p -> passives.illuminated_healing -> effect2().base_value() / 10000.0 
+  double bubble_value = p -> passives.illuminated_healing -> effect2().base_value() / 10000.0
                         * p -> composite_mastery()
                         * h -> direct_dmg;
 
@@ -1739,7 +1739,6 @@ struct seal_of_truth_dot_t : public paladin_attack_t
 
   virtual void last_tick( dot_t* d )
   {
-    paladin_t* p = player -> cast_paladin();
     paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_attack_t::last_tick( d );
     td -> debuffs_censure -> expire();
@@ -1761,7 +1760,6 @@ struct seal_of_truth_proc_t : public paladin_attack_t
   }
   virtual void player_buff()
   {
-    paladin_t* p = player -> cast_paladin();
     paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_attack_t::player_buff();
     player_multiplier *= td -> debuffs_censure -> stack() * 0.2;
@@ -1795,7 +1793,6 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
 
   virtual void player_buff()
   {
-    paladin_t* p = player -> cast_paladin();
     paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_attack_t::player_buff();
     player_multiplier *= 1.0 + td -> debuffs_censure -> stack() * 0.20;
@@ -2539,7 +2536,7 @@ struct divine_light_t : public paladin_heal_t
     p -> buffs_infusion_of_light -> expire();
     trigger_tower_of_radiance( this );
   }
-  
+
   virtual double execute_time() const
   {
     paladin_t* p = player -> cast_paladin();
@@ -2643,8 +2640,8 @@ struct holy_radiance_t : public paladin_heal_t
     paladin_heal_t( "holy_radiance", p, "Holy Radiance" )
   {
     parse_options( NULL, options_str );
-    
-     // FIXME: This is an AoE Hot, which isn't supported currently
+
+    // FIXME: This is an AoE Hot, which isn't supported currently
     aoe = effect2().base_value();
 
     base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
@@ -2689,7 +2686,7 @@ struct holy_shock_heal_t : public paladin_heal_t
 {
   double cd_duration;
 
-  holy_shock_heal_t( paladin_t* p, const std::string& options_str ) : 
+  holy_shock_heal_t( paladin_t* p, const std::string& options_str ) :
     paladin_heal_t( "holy_shock_heal", p, 20473 ), cd_duration( 0 )
   {
     check_spec( TREE_HOLY );
@@ -2704,7 +2701,7 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     cd_duration = cooldown -> duration;
   }
-  
+
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
@@ -2741,11 +2738,11 @@ struct lay_on_hands_t : public paladin_heal_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    
+
     // Heal is based on paladin's current max health
     base_dd_min = base_dd_max = p -> resource_max[ RESOURCE_HEALTH ];
 
-    paladin_heal_t::execute();    
+    paladin_heal_t::execute();
 
     target -> debuffs.forbearance -> trigger();
 
@@ -3167,7 +3164,7 @@ void paladin_t::init_buffs()
   buffs_gotak_prot             = new buff_t( this, 86659, "guardian_of_the_ancient_kings" );
   buffs_grand_crusader         = new buff_t( this, talents.grand_crusader -> effect_trigger_spell( 1 ), "grand_crusader", talents.grand_crusader -> proc_chance() );
   buffs_holy_shield            = new buff_t( this, 20925, "holy_shield" );
-  buffs_infusion_of_light      = new buff_t( this, talents.infusion_of_light -> effect_trigger_spell( 1 ), "infusion_of_light", talents.infusion_of_light -> rank() ); 
+  buffs_infusion_of_light      = new buff_t( this, talents.infusion_of_light -> effect_trigger_spell( 1 ), "infusion_of_light", talents.infusion_of_light -> rank() );
   buffs_inquisition            = new buff_t( this, 84963, "inquisition" );
   buffs_judgements_of_the_bold = new buff_t( this, 89906, "judgements_of_the_bold", ( primary_tree() == TREE_RETRIBUTION ? 1 : 0 ) );
   buffs_judgements_of_the_pure = new buff_t( this, talents.judgements_of_the_pure -> effect_trigger_spell( 1 ), "judgements_of_the_pure", talents.judgements_of_the_pure -> proc_chance() );
@@ -3403,7 +3400,7 @@ void paladin_t::init_talents()
   talents.selfless_healer    = find_talent( "Selfless Healer" );
   talents.inquiry_of_faith   = find_talent( "Inquiry of Faith" );
   talents.zealotry           = find_talent( "Zealotry" );
-  
+
   // NYI
   talents.ardent_defender = 0 ;
   talents.aura_mastery = 0;
@@ -3704,7 +3701,7 @@ double paladin_t::assess_damage( double            amount,
   if ( buffs_divine_shield -> up() )
   {
     amount = 0;
-    
+
     // Return out, as you don't get to benefit from anything else
     return player_t::assess_damage( amount, school, dmg_type, result, action );
   }

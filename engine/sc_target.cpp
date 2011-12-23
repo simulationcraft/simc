@@ -332,7 +332,7 @@ void enemy_t::init()
 
 void enemy_t::init_base()
 {
-  waiting_time = std::min( (int) floor( sim -> max_time ), sim -> wheel_seconds );
+  waiting_time = std::min( ( int ) floor( sim -> max_time ), sim -> wheel_seconds );
   if ( waiting_time < 1.0 )
     waiting_time = 1.0;
 

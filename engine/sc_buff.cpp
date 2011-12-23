@@ -147,7 +147,7 @@ void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
 
 buff_t::buff_t( actor_pair_t  p,
                 spell_data_t* spell, ... ) :
-spell_id_t( p.source, spell -> name_cstr(), spell -> id() ),
+  spell_id_t( p.source, spell -> name_cstr(), spell -> id() ),
   buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ), name_str( s_token ),
   sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),

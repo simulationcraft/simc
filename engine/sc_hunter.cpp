@@ -17,18 +17,18 @@ struct hunter_targetdata_t : public targetdata_t
 {
   dot_t* dots_serpent_sting;
 
-  hunter_targetdata_t(player_t* source, player_t* target)
-    : targetdata_t(source, target)
+  hunter_targetdata_t( player_t* source, player_t* target )
+    : targetdata_t( source, target )
   {
   }
 };
 
-void register_hunter_targetdata(sim_t* sim)
+void register_hunter_targetdata( sim_t* sim )
 {
   player_type t = HUNTER;
   typedef hunter_targetdata_t type;
 
-  REGISTER_DOT(serpent_sting);
+  REGISTER_DOT( serpent_sting );
 }
 
 
@@ -244,7 +244,7 @@ struct hunter_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new hunter_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new hunter_targetdata_t( source, target );}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -964,7 +964,7 @@ static void trigger_vishanka( attack_t* a )
     };
 
     uint32_t id = p -> dbc.spell( p -> vishanka ) -> effect1().trigger_spell_id();
-    
+
     p -> active_vishanka = new vishanka_t( p, id );
   }
 
@@ -1841,7 +1841,7 @@ double hunter_attack_t::cost() const
 
   return c;
 }
- 
+
 // hunter_attack_t::consume_resouce =========================================
 
 void hunter_attack_t::consume_resource()
@@ -2447,8 +2447,6 @@ struct chimera_shot_t : public hunter_attack_t
 
   virtual void execute()
   {
-    hunter_t* p = player -> cast_hunter();
-
     hunter_attack_t::execute();
 
     if ( result_is_hit() )
@@ -4099,19 +4097,19 @@ void hunter_t::init_actions()
       }
       else
       {
-      if ( ! glyphs.arcane_shot -> ok() )
-        action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.react|target.health_pct>90";
-      else
-      {
-        action_list_str += "/aimed_shot,if=target.health_pct>90|buff.rapid_fire.up|buff.bloodlust.react";
-        if ( race == RACE_TROLL )
-          action_list_str += "|buff.berserking.up";
-        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.react";
-        if ( race == RACE_TROLL )
-          action_list_str += "&!buff.berserking.up)";
+        if ( ! glyphs.arcane_shot -> ok() )
+          action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.react|target.health_pct>90";
         else
-          action_list_str += ")";
-      }
+        {
+          action_list_str += "/aimed_shot,if=target.health_pct>90|buff.rapid_fire.up|buff.bloodlust.react";
+          if ( race == RACE_TROLL )
+            action_list_str += "|buff.berserking.up";
+          action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.react";
+          if ( race == RACE_TROLL )
+            action_list_str += "&!buff.berserking.up)";
+          else
+            action_list_str += ")";
+        }
       }
       action_list_str += "/steady_shot";
       break;
@@ -4419,9 +4417,9 @@ void hunter_t::armory_extensions( const std::string& region,
       int pet_level, pet_family;
 
       if ( ! js_t::get_value( pet_name,    pet_records[ i ], "name"     ) ||
-          ! js_t::get_value( pet_talents, pet_records[ i ], "build"    ) ||
-          ! js_t::get_value( pet_level,   pet_records[ i ], "level"    ) ||
-          ! js_t::get_value( pet_family,  pet_records[ i ], "familyId" ) )
+           ! js_t::get_value( pet_talents, pet_records[ i ], "build"    ) ||
+           ! js_t::get_value( pet_level,   pet_records[ i ], "level"    ) ||
+           ! js_t::get_value( pet_family,  pet_records[ i ], "familyId" ) )
       {
         sim -> errorf( "\nHunter %s unable to decode pet name/build/level/familyId for pet %s\n", name(), pet_name.c_str() );
         continue;
@@ -4528,7 +4526,7 @@ int hunter_t::decode_set( item_t& item )
   {
     return SET_NONE;
   }
-  
+
   if ( strstr( s, "lightningcharged"      ) ) return SET_T11_MELEE;
   if ( strstr( s, "flamewakers"           ) ) return SET_T12_MELEE;
   if ( strstr( s, "wyrmstalkers"          ) ) return SET_T13_MELEE;

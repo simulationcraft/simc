@@ -120,12 +120,12 @@ struct rogue_targetdata_t : public targetdata_t
 
   combo_points_t* combo_points;
 
-  rogue_targetdata_t(player_t* source, player_t* target)
-    : targetdata_t(source, target)
+  rogue_targetdata_t( player_t* source, player_t* target )
+    : targetdata_t( source, target )
   {
     combo_points = new combo_points_t( this->target );
 
-    debuffs_poison_doses = add_aura(new buff_t( this, "poison_doses",  5  ));
+    debuffs_poison_doses = add_aura( new buff_t( this, "poison_doses",  5  ) );
   }
 
   virtual void reset()
@@ -141,15 +141,15 @@ struct rogue_targetdata_t : public targetdata_t
   }
 };
 
-void register_rogue_targetdata(sim_t* sim)
+void register_rogue_targetdata( sim_t* sim )
 {
   player_type t = ROGUE;
   typedef rogue_targetdata_t type;
 
-  REGISTER_DOT(rupture);
-  REGISTER_DOT(hemorrhage);
+  REGISTER_DOT( rupture );
+  REGISTER_DOT( hemorrhage );
 
-  REGISTER_DEBUFF(poison_doses);
+  REGISTER_DEBUFF( poison_doses );
 }
 
 struct rogue_t : public player_t
@@ -422,7 +422,7 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new rogue_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new rogue_targetdata_t( source, target );}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -694,7 +694,7 @@ static void trigger_initiative( rogue_attack_t* a )
   {
     rogue_targetdata_t* td = a -> targetdata() -> cast_rogue();
     td -> combo_points -> add( p -> dbc.spell( p -> talents.initiative -> effect1().trigger_spell_id() ) -> effect1().base_value(),
-                              p -> talents.initiative );
+                               p -> talents.initiative );
   }
 }
 
@@ -868,7 +868,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
 static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 {
   rogue_t* p = a -> player -> cast_rogue();
-  
+
   if ( ! p -> buffs_tot_trigger -> check() )
     return;
 
@@ -886,7 +886,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
       t -> buffs.tricks_of_the_trade -> buff_duration = duration;
       t -> buffs.tricks_of_the_trade -> trigger( 1, value / 100.0 );
     }
-    
+
     p -> buffs_tot_trigger -> expire();
   }
 }
@@ -1345,7 +1345,7 @@ bool rogue_attack_t::ready()
 {
   rogue_t* p = player -> cast_rogue();
 
-  if ( requires_combo_points)
+  if ( requires_combo_points )
   {
     rogue_targetdata_t* td = targetdata() -> cast_rogue();
     if ( ! td -> combo_points -> count )
@@ -1406,7 +1406,6 @@ void rogue_attack_t::add_combo_points()
 {
   if ( adds_combo_points > 0 )
   {
-    rogue_t* p = player -> cast_rogue();
     rogue_targetdata_t* td = targetdata() -> cast_rogue();
 
     td -> combo_points -> add( adds_combo_points, name() );
@@ -1578,7 +1577,7 @@ struct ambush_t : public rogue_attack_t
     base_cost             += p -> talents.slaughter_from_the_shadows -> effect1().resource( RESOURCE_ENERGY );
     base_multiplier       *= 1.0 + ( p -> talents.improved_ambush -> effect2().percent() +
                                      p -> talents.opportunity     -> effect1().percent() );
-    base_crit             += p -> talents.improved_ambush -> effect1().percent(); 
+    base_crit             += p -> talents.improved_ambush -> effect1().percent();
   }
 
   virtual void execute()
@@ -1808,7 +1807,6 @@ struct envenom_t : public rogue_attack_t
 
   virtual bool ready()
   {
-    rogue_t* p = player -> cast_rogue();
     rogue_targetdata_t* td = targetdata() -> cast_rogue();
 
     // Envenom is not usable when there is no DP on a target
@@ -2911,7 +2909,6 @@ struct deadly_poison_t : public rogue_poison_t
 
   virtual double calculate_tick_damage()
   {
-    rogue_t* p = player -> cast_rogue();
     rogue_targetdata_t* td = targetdata() -> cast_rogue();
     return rogue_poison_t::calculate_tick_damage() * td -> debuffs_poison_doses -> stack();
   }
@@ -3402,7 +3399,7 @@ double rogue_t::composite_player_multiplier( const school_type school, action_t*
   double m = player_t::composite_player_multiplier( school, a );
 
   if ( buffs_master_of_subtlety -> check() ||
-      ( spec_master_of_subtlety -> ok() && ( buffs_stealthed -> check() || buffs_vanish -> check() ) ) )
+       ( spec_master_of_subtlety -> ok() && ( buffs_stealthed -> check() || buffs_vanish -> check() ) ) )
     m *= 1.0 + buffs_master_of_subtlety -> value();
 
   return m;
@@ -3664,7 +3661,12 @@ action_expr_t* rogue_t::create_expression( action_t* a, const std::string& name_
     struct combo_points_expr_t : public action_expr_t
     {
       combo_points_expr_t( action_t* a ) : action_expr_t( a, "combo_points", TOK_NUM ) {}
-      virtual int evaluate() { rogue_t* p = action -> player -> cast_rogue(); rogue_targetdata_t* td = action -> targetdata() -> cast_rogue(); result_num = td -> combo_points -> count; return TOK_NUM; }
+      virtual int evaluate()
+      {
+        rogue_targetdata_t* td = action -> targetdata() -> cast_rogue();
+        result_num = td -> combo_points -> count;
+        return TOK_NUM;
+      }
     };
     return new combo_points_expr_t( a );
   }
@@ -3962,7 +3964,7 @@ void rogue_t::init_buffs()
   // buffs_fof_fod           = new buff_t( this, 109949, "legendary_daggers", fof_p3 );
   // None of the buffs are currently in the DBC, so define them manually for now
   buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, 30.0, 2.5, fof_p1 ); // Chance appears as 100% in DBC
-  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, 30.0, 2.5, fof_p2 ); // http://ptr.wowhead.com/spell=109959#comments 
+  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, 30.0, 2.5, fof_p2 ); // http://ptr.wowhead.com/spell=109959#comments
   buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, 30.0, 2.5, fof_p3 );
   buffs_fof_fod           = new buff_t( this, "legendary_daggers", 1, 6.0, 0, fof_p3 );
 }
@@ -4147,7 +4149,7 @@ void rogue_t::regen( double periodicity )
   }
 
   uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
-                                       resource_max    [ RESOURCE_ENERGY ] );
+                                resource_max    [ RESOURCE_ENERGY ] );
 
   for ( int i = 0; i < 3; i++ )
     uptimes_bandits_guile[ i ] -> update( ( buffs_bandits_guile -> current_stack / 4 - 1 ) == i );

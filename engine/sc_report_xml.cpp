@@ -285,7 +285,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   writer.print_tag( "level", util_t::to_string( p -> level ) );
   writer.print_tag( "race", p -> race_str.c_str() );
   writer.begin_tag( "class" );
-  writer.print_attribute("type", util_t::player_type_string( p->type ) );
+  writer.print_attribute( "type", util_t::player_type_string( p->type ) );
   if ( p -> is_pet() )
     writer.print_attribute( "subtype", util_t::pet_type_string( p -> cast_pet() -> pet_type ) );
   writer.end_tag(); // </class>
@@ -452,52 +452,54 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         if ( ! a -> background ) break;
       }
 
-      writer.begin_tag("action");
-      writer.print_attribute("id", util_t::to_string(id));
-      writer.print_attribute("name", s -> name_str);
-      writer.print_attribute("count", util_t::to_string( s -> num_executes ));
-      writer.print_attribute("frequency", util_t::to_string( s -> frequency ));
-      writer.print_attribute("dpe", util_t::to_string( s -> ape, 0 ));
-      writer.print_attribute("dpe_pct", util_t::to_string( s -> portion_amount * 100.0 ));
-      writer.print_attribute("dpet", util_t::to_string( s -> apet ));
-      writer.print_attribute("apr", util_t::to_string( s -> apr ));
-      writer.print_attribute("pdps", util_t::to_string( s -> portion_aps.mean ));
+      writer.begin_tag( "action" );
+      writer.print_attribute( "id", util_t::to_string( id ) );
+      writer.print_attribute( "name", s -> name_str );
+      writer.print_attribute( "count", util_t::to_string( s -> num_executes ) );
+      writer.print_attribute( "frequency", util_t::to_string( s -> frequency ) );
+      writer.print_attribute( "dpe", util_t::to_string( s -> ape, 0 ) );
+      writer.print_attribute( "dpe_pct", util_t::to_string( s -> portion_amount * 100.0 ) );
+      writer.print_attribute( "dpet", util_t::to_string( s -> apet ) );
+      writer.print_attribute( "apr", util_t::to_string( s -> apr ) );
+      writer.print_attribute( "pdps", util_t::to_string( s -> portion_aps.mean ) );
 
-      if ( ! s -> timeline_aps_chart.empty() ) {
-        writer.begin_tag("chart");
-        writer.print_attribute("type", "timeline_aps");
-        writer.print_attribute("href", s -> timeline_aps_chart );
+      if ( ! s -> timeline_aps_chart.empty() )
+      {
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "timeline_aps" );
+        writer.print_attribute( "href", s -> timeline_aps_chart );
         writer.end_tag(); // </chart>
       }
 
-      writer.print_tag("etpe", util_t::to_string(s -> etpe));
-      writer.print_tag("ttpt", util_t::to_string(s -> ttpt));
-      writer.print_tag("actual_amount", util_t::to_string(s -> actual_amount.mean));
-      writer.print_tag("total_amount", util_t::to_string(s -> total_amount.mean));
-      writer.print_tag("overkill_pct", util_t::to_string(s -> overkill_pct));
-      writer.print_tag("aps", util_t::to_string(s -> aps));
-      writer.print_tag("apet", util_t::to_string(s -> apet));
+      writer.print_tag( "etpe", util_t::to_string( s -> etpe ) );
+      writer.print_tag( "ttpt", util_t::to_string( s -> ttpt ) );
+      writer.print_tag( "actual_amount", util_t::to_string( s -> actual_amount.mean ) );
+      writer.print_tag( "total_amount", util_t::to_string( s -> total_amount.mean ) );
+      writer.print_tag( "overkill_pct", util_t::to_string( s -> overkill_pct ) );
+      writer.print_tag( "aps", util_t::to_string( s -> aps ) );
+      writer.print_tag( "apet", util_t::to_string( s -> apet ) );
 
       if ( s -> num_direct_results > 0 )
       {
-        writer.begin_tag("direct_results");
-        writer.print_attribute("count", util_t::to_string(s -> num_direct_results));
+        writer.begin_tag( "direct_results" );
+        writer.print_attribute( "count", util_t::to_string( s -> num_direct_results ) );
 
         for ( int i=RESULT_MAX-1; i >= RESULT_NONE; i-- )
         {
-          if ( s -> direct_results[ i ].count.mean ) {
+          if ( s -> direct_results[ i ].count.mean )
+          {
             writer.begin_tag( "result" );
             writer.print_attribute( "type", util_t::result_type_string( i ) );
-            writer.print_attribute( "count", util_t::to_string(s -> direct_results[ i ].count.mean) );
-            writer.print_attribute( "pct", util_t::to_string(s -> direct_results[ i ].pct) );
-            writer.print_attribute( "min", util_t::to_string(s -> direct_results[ i ].actual_amount.min) );
-            writer.print_attribute( "max", util_t::to_string(s -> direct_results[ i ].actual_amount.max) );
-            writer.print_attribute( "avg", util_t::to_string(s -> direct_results[ i ].actual_amount.mean) );
-            writer.print_attribute( "avg_min", util_t::to_string(s -> direct_results[ i ].avg_actual_amount.min) );
-            writer.print_attribute( "avg_max", util_t::to_string(s -> direct_results[ i ].avg_actual_amount.max) );
-            writer.print_attribute( "actual", util_t::to_string(s -> direct_results[ i ].fight_actual_amount.mean) );
-            writer.print_attribute( "total", util_t::to_string(s -> direct_results[ i ].fight_total_amount.mean) );
-            writer.print_attribute( "overkill_pct", util_t::to_string(s -> direct_results[ i ].overkill_pct) );
+            writer.print_attribute( "count", util_t::to_string( s -> direct_results[ i ].count.mean ) );
+            writer.print_attribute( "pct", util_t::to_string( s -> direct_results[ i ].pct ) );
+            writer.print_attribute( "min", util_t::to_string( s -> direct_results[ i ].actual_amount.min ) );
+            writer.print_attribute( "max", util_t::to_string( s -> direct_results[ i ].actual_amount.max ) );
+            writer.print_attribute( "avg", util_t::to_string( s -> direct_results[ i ].actual_amount.mean ) );
+            writer.print_attribute( "avg_min", util_t::to_string( s -> direct_results[ i ].avg_actual_amount.min ) );
+            writer.print_attribute( "avg_max", util_t::to_string( s -> direct_results[ i ].avg_actual_amount.max ) );
+            writer.print_attribute( "actual", util_t::to_string( s -> direct_results[ i ].fight_actual_amount.mean ) );
+            writer.print_attribute( "total", util_t::to_string( s -> direct_results[ i ].fight_total_amount.mean ) );
+            writer.print_attribute( "overkill_pct", util_t::to_string( s -> direct_results[ i ].overkill_pct ) );
             writer.end_tag(); // </result>
           }
         }
@@ -507,25 +509,26 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
 
       if ( s -> num_ticks > 0 )
       {
-        writer.begin_tag("tick_results");
-        writer.print_attribute("count", util_t::to_string(s -> num_tick_results));
-        writer.print_attribute("ticks", util_t::to_string(s -> num_ticks));
+        writer.begin_tag( "tick_results" );
+        writer.print_attribute( "count", util_t::to_string( s -> num_tick_results ) );
+        writer.print_attribute( "ticks", util_t::to_string( s -> num_ticks ) );
 
         for ( int i=RESULT_MAX-1; i >= RESULT_NONE; i-- )
         {
-          if ( s -> tick_results[ i ].count.mean ) {
+          if ( s -> tick_results[ i ].count.mean )
+          {
             writer.begin_tag( "result" );
             writer.print_attribute( "type", util_t::result_type_string( i ) );
-            writer.print_attribute( "count", util_t::to_string(s -> tick_results[ i ].count.mean) );
-            writer.print_attribute( "pct", util_t::to_string(s -> tick_results[ i ].pct) );
-            writer.print_attribute( "min", util_t::to_string(s -> tick_results[ i ].actual_amount.min) );
-            writer.print_attribute( "max", util_t::to_string(s -> tick_results[ i ].actual_amount.max) );
-            writer.print_attribute( "avg", util_t::to_string(s -> tick_results[ i ].actual_amount.mean) );
-            writer.print_attribute( "avg_min", util_t::to_string(s -> tick_results[ i ].avg_actual_amount.min) );
-            writer.print_attribute( "avg_max", util_t::to_string(s -> tick_results[ i ].avg_actual_amount.max) );
-            writer.print_attribute( "actual", util_t::to_string(s -> tick_results[ i ].fight_actual_amount.mean) );
-            writer.print_attribute( "total", util_t::to_string(s -> tick_results[ i ].fight_total_amount.mean) );
-            writer.print_attribute( "overkill_pct", util_t::to_string(s -> tick_results[ i ].overkill_pct) );
+            writer.print_attribute( "count", util_t::to_string( s -> tick_results[ i ].count.mean ) );
+            writer.print_attribute( "pct", util_t::to_string( s -> tick_results[ i ].pct ) );
+            writer.print_attribute( "min", util_t::to_string( s -> tick_results[ i ].actual_amount.min ) );
+            writer.print_attribute( "max", util_t::to_string( s -> tick_results[ i ].actual_amount.max ) );
+            writer.print_attribute( "avg", util_t::to_string( s -> tick_results[ i ].actual_amount.mean ) );
+            writer.print_attribute( "avg_min", util_t::to_string( s -> tick_results[ i ].avg_actual_amount.min ) );
+            writer.print_attribute( "avg_max", util_t::to_string( s -> tick_results[ i ].avg_actual_amount.max ) );
+            writer.print_attribute( "actual", util_t::to_string( s -> tick_results[ i ].fight_actual_amount.mean ) );
+            writer.print_attribute( "total", util_t::to_string( s -> tick_results[ i ].fight_total_amount.mean ) );
+            writer.print_attribute( "overkill_pct", util_t::to_string( s -> tick_results[ i ].overkill_pct ) );
             writer.end_tag(); // </result>
           }
         }
@@ -534,9 +537,9 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       }
 
 
-      writer.begin_tag("chart");
-      writer.print_attribute("type", "timeline_stat_aps");
-      writer.print_attribute_unescaped("href", s -> timeline_aps_chart);
+      writer.begin_tag( "chart" );
+      writer.print_attribute( "type", "timeline_stat_aps" );
+      writer.print_attribute_unescaped( "href", s -> timeline_aps_chart );
       writer.end_tag(); // </chart>
 
       // Action Details
@@ -554,8 +557,9 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         if ( found ) continue;
         processed_actions.push_back( a -> name() );
 
-        if ( a -> target ) {
-          writer.print_tag("target", a -> target -> name());
+        if ( a -> target )
+        {
+          writer.print_tag( "target", a -> target -> name() );
         }
       }
       writer.end_tag(); // </action>
@@ -979,7 +983,7 @@ void print_xml_config( sim_t* sim, xml_writer_t & writer )
 {
   writer.begin_tag( "config" );
 
-  writer.print_tag( "style", sim -> hosted_html ? "hosted" : (sim -> print_styles ? "print" : "not-specified" ) );
+  writer.print_tag( "style", sim -> hosted_html ? "hosted" : ( sim -> print_styles ? "print" : "not-specified" ) );
   writer.print_tag( "has_scale_factors", sim -> scaling -> has_scale_factors() ? "true" : "false" );
   writer.print_tag( "report_pets_separately", sim -> report_pets_separately ? "true" : "false" );
   writer.print_tag( "report_details", sim -> report_details ? "true" : "false" );
@@ -1001,7 +1005,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 
   writer.print_tag( "threads", util_t::to_string( sim -> threads < 1 ? 1 : sim -> threads ) );
 
-  writer.print_tag( "confidence", util_t::to_string( sim -> confidence * 100.0 ));
+  writer.print_tag( "confidence", util_t::to_string( sim -> confidence * 100.0 ) );
 
   writer.begin_tag( "simulation_length" );
   writer.print_attribute( "mean", util_t::to_string( sim -> simulation_length.mean, 0 ) );
@@ -1013,44 +1017,44 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
   writer.print_attribute( "total", util_t::to_string( sim -> simulation_length.sum, 0 ) );
   writer.end_tag(); // </simulation_length>
 
-  writer.begin_tag("events");
-  writer.print_attribute("processed", util_t::to_string( sim -> total_events_processed ));
-  writer.print_attribute("max_remaining", util_t::to_string( sim -> max_events_remaining ));
+  writer.begin_tag( "events" );
+  writer.print_attribute( "processed", util_t::to_string( sim -> total_events_processed ) );
+  writer.print_attribute( "max_remaining", util_t::to_string( sim -> max_events_remaining ) );
   writer.end_tag(); // </events>
 
   writer.print_tag( "fight_style", sim -> fight_style );
 
-  writer.print_tag( "elapsed_cpu_sec", util_t::to_string( sim -> elapsed_cpu_seconds ));
+  writer.print_tag( "elapsed_cpu_sec", util_t::to_string( sim -> elapsed_cpu_seconds ) );
 
-  writer.begin_tag("lag");
-  writer.print_attribute("type", "world");
-  writer.print_attribute("value", util_t::to_string(sim -> world_lag * 1000.0) );
-  writer.print_attribute( "stddev", util_t::to_string(sim -> world_lag_stddev * 1000.0) );
+  writer.begin_tag( "lag" );
+  writer.print_attribute( "type", "world" );
+  writer.print_attribute( "value", util_t::to_string( sim -> world_lag * 1000.0 ) );
+  writer.print_attribute( "stddev", util_t::to_string( sim -> world_lag_stddev * 1000.0 ) );
   writer.end_tag(); // </lag>
 
-  writer.begin_tag("lag");
+  writer.begin_tag( "lag" );
   writer.print_attribute( "type", "queue" );
-  writer.print_attribute( "value", util_t::to_string(sim -> queue_lag * 1000.0) );
-  writer.print_attribute( "stddev", util_t::to_string(sim -> queue_lag_stddev * 1000.0) );
+  writer.print_attribute( "value", util_t::to_string( sim -> queue_lag * 1000.0 ) );
+  writer.print_attribute( "stddev", util_t::to_string( sim -> queue_lag_stddev * 1000.0 ) );
   writer.end_tag(); // </lag>
 
   if ( sim -> strict_gcd_queue )
   {
-    writer.begin_tag("lag");
-    writer.print_attribute("type", "gcd");
-    writer.print_attribute("value", util_t::to_string(sim -> gcd_lag * 1000.0) );
-    writer.print_attribute("stddev", util_t::to_string(sim -> gcd_lag_stddev * 1000.0) );
+    writer.begin_tag( "lag" );
+    writer.print_attribute( "type", "gcd" );
+    writer.print_attribute( "value", util_t::to_string( sim -> gcd_lag * 1000.0 ) );
+    writer.print_attribute( "stddev", util_t::to_string( sim -> gcd_lag_stddev * 1000.0 ) );
     writer.end_tag(); // </lag>
 
-    writer.begin_tag("lag");
-    writer.print_attribute("type", "channel");
-    writer.print_attribute("value", util_t::to_string(sim -> channel_lag * 1000.0) );
-    writer.print_attribute("stddev", util_t::to_string(sim -> channel_lag_stddev * 1000.0) );
+    writer.begin_tag( "lag" );
+    writer.print_attribute( "type", "channel" );
+    writer.print_attribute( "value", util_t::to_string( sim -> channel_lag * 1000.0 ) );
+    writer.print_attribute( "stddev", util_t::to_string( sim -> channel_lag_stddev * 1000.0 ) );
     writer.end_tag(); // </lag>
 
-    writer.begin_tag("lag");
-    writer.print_attribute("type", "queue_gcd");
-    writer.print_attribute("value", util_t::to_string(sim -> queue_gcd_reduction * 1000.0));
+    writer.begin_tag( "lag" );
+    writer.print_attribute( "type", "queue_gcd" );
+    writer.print_attribute( "value", util_t::to_string( sim -> queue_gcd_reduction * 1000.0 ) );
     writer.end_tag(); // </lag>
   }
 
@@ -1102,7 +1106,8 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 
   writer.begin_tag( "player_by_dps" );
   count = sim -> players_by_dps.size();
-  for ( size_t i = 0; i < count; i++ ) {
+  for ( size_t i = 0; i < count; i++ )
+  {
     player_t* p = sim -> players_by_dps[ i ];
     writer.begin_tag( "player" );
     writer.print_attribute( "name", p -> name() );
@@ -1114,7 +1119,8 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 
   writer.begin_tag( "player_by_hps" );
   count = sim -> players_by_dps.size();
-  for ( size_t i = 0; i < count; i++ ) {
+  for ( size_t i = 0; i < count; i++ )
+  {
     player_t* p = sim -> players_by_dps[ i ];
     writer.begin_tag( "player" );
     writer.print_attribute( "name", p -> name() );
@@ -1129,7 +1135,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
   writer.end_tag(); // </summary>
 }
 
-void print_xml_get_action_list(sim_t* sim, player_t* p, std::map<int, action_t*> & all_actions)
+void print_xml_get_action_list( sim_t* sim, player_t* p, std::map<int, action_t*> & all_actions )
 {
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
@@ -1149,7 +1155,8 @@ void print_xml_get_action_list(sim_t* sim, player_t* p, std::map<int, action_t*>
             found = true;
         if ( found ) continue;
         processed_actions.push_back( a -> name() );
-        if (all_actions.find( a -> id ) == all_actions.end()) { // Not found.
+        if ( all_actions.find( a -> id ) == all_actions.end() ) // Not found.
+        {
           all_actions[ a -> id ] = a;
         }
       }
@@ -1159,7 +1166,7 @@ void print_xml_get_action_list(sim_t* sim, player_t* p, std::map<int, action_t*>
 
 void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
 {
-  writer.begin_tag("action_definitions");
+  writer.begin_tag( "action_definitions" );
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
@@ -1181,69 +1188,71 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         processed_actions.push_back( a -> name() );
 
         writer.begin_tag( "action_detail" );
-        writer.print_attribute("id", util_t::to_string( a -> id ) );
-        writer.print_attribute("name", a -> name() );
-        writer.print_tag("school", util_t::school_type_string( a-> school ));
-        writer.print_tag("resource", util_t::resource_type_string( a -> resource ));
-        writer.print_tag("tree", util_t::talent_tree_string( a -> tree ));
-        writer.print_tag("range", util_t::to_string( a -> range ));
-        writer.print_tag("travel_speed", util_t::to_string( a -> travel_speed ));
-        writer.print_tag("trigger_gcd", util_t::to_string( a -> trigger_gcd ));
-        writer.print_tag("base_cost", util_t::to_string( a -> base_cost ));
-        writer.begin_tag("cooldown");
-        writer.print_attribute("duration", util_t::to_string( a -> cooldown -> duration ));
+        writer.print_attribute( "id", util_t::to_string( a -> id ) );
+        writer.print_attribute( "name", a -> name() );
+        writer.print_tag( "school", util_t::school_type_string( a-> school ) );
+        writer.print_tag( "resource", util_t::resource_type_string( a -> resource ) );
+        writer.print_tag( "tree", util_t::talent_tree_string( a -> tree ) );
+        writer.print_tag( "range", util_t::to_string( a -> range ) );
+        writer.print_tag( "travel_speed", util_t::to_string( a -> travel_speed ) );
+        writer.print_tag( "trigger_gcd", util_t::to_string( a -> trigger_gcd ) );
+        writer.print_tag( "base_cost", util_t::to_string( a -> base_cost ) );
+        writer.begin_tag( "cooldown" );
+        writer.print_attribute( "duration", util_t::to_string( a -> cooldown -> duration ) );
         writer.end_tag(); // </cooldown>
-        writer.print_tag("base_execute_time", util_t::to_string( a -> base_execute_time ));
-        writer.print_tag("base_crit", util_t::to_string( a -> base_crit ));
-        if ( a -> target ) {
-          writer.print_tag("target", a -> target -> name());
+        writer.print_tag( "base_execute_time", util_t::to_string( a -> base_execute_time ) );
+        writer.print_tag( "base_crit", util_t::to_string( a -> base_crit ) );
+        if ( a -> target )
+        {
+          writer.print_tag( "target", a -> target -> name() );
         }
-        if ( a -> tooltip() ) {
-          writer.print_tag("tooltip", a -> tooltip());
+        if ( a -> tooltip() )
+        {
+          writer.print_tag( "tooltip", a -> tooltip() );
         }
-        writer.print_tag("description", report_t::encode_html( a -> desc() ));
+        writer.print_tag( "description", report_t::encode_html( a -> desc() ) );
 
         if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
         {
-          writer.begin_tag("direct_damage");
-          writer.print_tag("may_crit", a -> may_crit ? "true" : "false");
-          writer.print_tag("direct_power_mod", util_t::to_string(a -> direct_power_mod));
-          writer.begin_tag("base");
-          writer.print_attribute("min", util_t::to_string( a -> base_dd_min ));
-          writer.print_attribute("max", util_t::to_string( a -> base_dd_max ));
+          writer.begin_tag( "direct_damage" );
+          writer.print_tag( "may_crit", a -> may_crit ? "true" : "false" );
+          writer.print_tag( "direct_power_mod", util_t::to_string( a -> direct_power_mod ) );
+          writer.begin_tag( "base" );
+          writer.print_attribute( "min", util_t::to_string( a -> base_dd_min ) );
+          writer.print_attribute( "max", util_t::to_string( a -> base_dd_max ) );
           writer.end_tag(); // </base>
           writer.end_tag(); // </direct_damage>
         }
 
         if ( a -> num_ticks )
         {
-          writer.begin_tag("damage_over_time");
-          writer.print_tag("tick_may_crit", a -> tick_may_crit ? "true" : "false");
-          writer.print_tag("tick_zero", a -> tick_zero ? "true" : "false");
-          writer.print_tag("tick_power_mod", util_t::to_string( a -> tick_power_mod ));
-          writer.print_tag("base", util_t::to_string( a -> base_td ));
-          writer.print_tag("num_ticks", util_t::to_string( a -> num_ticks ));
-          writer.print_tag("base_tick_time", util_t::to_string( a -> base_tick_time ));
-          writer.print_tag("hasted_ticks", util_t::to_string( a -> hasted_ticks ));
-          writer.print_tag("dot_behavior", a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT" );
+          writer.begin_tag( "damage_over_time" );
+          writer.print_tag( "tick_may_crit", a -> tick_may_crit ? "true" : "false" );
+          writer.print_tag( "tick_zero", a -> tick_zero ? "true" : "false" );
+          writer.print_tag( "tick_power_mod", util_t::to_string( a -> tick_power_mod ) );
+          writer.print_tag( "base", util_t::to_string( a -> base_td ) );
+          writer.print_tag( "num_ticks", util_t::to_string( a -> num_ticks ) );
+          writer.print_tag( "base_tick_time", util_t::to_string( a -> base_tick_time ) );
+          writer.print_tag( "hasted_ticks", util_t::to_string( a -> hasted_ticks ) );
+          writer.print_tag( "dot_behavior", a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT" );
           writer.end_tag(); // </damage_over_time>
         }
         // Extra Reporting for DKs
         if ( a -> player -> type == DEATH_KNIGHT )
         {
-          writer.begin_tag("runes");
-          writer.print_tag("blood", util_t::to_string( a -> rune_cost() & 0x1 ));
-          writer.print_tag("frost", util_t::to_string( ( a -> rune_cost() >> 4 ) & 0x1 ));
-          writer.print_tag("unholy", util_t::to_string( ( a -> rune_cost() >> 2 ) & 0x1 ));
-          writer.print_tag("runic_power_gain", util_t::to_string( a -> rp_gain ));
+          writer.begin_tag( "runes" );
+          writer.print_tag( "blood", util_t::to_string( a -> rune_cost() & 0x1 ) );
+          writer.print_tag( "frost", util_t::to_string( ( a -> rune_cost() >> 4 ) & 0x1 ) );
+          writer.print_tag( "unholy", util_t::to_string( ( a -> rune_cost() >> 2 ) & 0x1 ) );
+          writer.print_tag( "runic_power_gain", util_t::to_string( a -> rp_gain ) );
           writer.end_tag(); // </runes>
         }
         if ( a -> weapon )
         {
-          writer.begin_tag("weapon");
-          writer.print_tag("normalize_speed", a -> normalize_weapon_speed ? "true" : "false");
-          writer.print_tag("power_mod", util_t::to_string(a -> weapon_power_mod));
-          writer.print_tag("multiplier", util_t::to_string(a -> weapon_multiplier));
+          writer.begin_tag( "weapon" );
+          writer.print_tag( "normalize_speed", a -> normalize_weapon_speed ? "true" : "false" );
+          writer.print_tag( "power_mod", util_t::to_string( a -> weapon_power_mod ) );
+          writer.print_tag( "multiplier", util_t::to_string( a -> weapon_multiplier ) );
           writer.end_tag(); // </weapon>
         }
 

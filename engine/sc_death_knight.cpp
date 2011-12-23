@@ -117,19 +117,19 @@ struct death_knight_targetdata_t : public targetdata_t
     return disease_count;
   }
 
-  death_knight_targetdata_t(player_t* source, player_t* target);
+  death_knight_targetdata_t( player_t* source, player_t* target );
 };
 
-void register_death_knight_targetdata(sim_t* sim)
+void register_death_knight_targetdata( sim_t* sim )
 {
   player_type t = DEATH_KNIGHT;
   typedef death_knight_targetdata_t type;
 
-  REGISTER_DOT(blood_plague);
-  REGISTER_DOT(death_and_decay);
-  REGISTER_DOT(frost_fever);
+  REGISTER_DOT( blood_plague );
+  REGISTER_DOT( death_and_decay );
+  REGISTER_DOT( frost_fever );
 
-  REGISTER_DEBUFF(ebon_plaguebringer);
+  REGISTER_DEBUFF( ebon_plaguebringer );
 }
 
 struct death_knight_t : public player_t
@@ -371,7 +371,7 @@ struct death_knight_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new death_knight_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new death_knight_targetdata_t( source, target );}
   virtual void      init();
   virtual void      init_talents();
   virtual void      init_spells();
@@ -425,11 +425,11 @@ struct death_knight_t : public player_t
   }
 };
 
-death_knight_targetdata_t::death_knight_targetdata_t(player_t* source, player_t* target)
-  : targetdata_t(source, target)
+death_knight_targetdata_t::death_knight_targetdata_t( player_t* source, player_t* target )
+  : targetdata_t( source, target )
 {
   death_knight_t* p = this->source -> cast_death_knight();
-  debuffs_ebon_plaguebringer  = add_aura(new buff_t( this, 65142, "ebon_plaguebringer_track", -1, -1, true ));
+  debuffs_ebon_plaguebringer  = add_aura( new buff_t( this, 65142, "ebon_plaguebringer_track", -1, -1, true ) );
   debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().seconds();
 }
 
@@ -1715,7 +1715,6 @@ static void trigger_blood_caked_blade( action_t* a )
       virtual void target_debuff( player_t* t, int dmg_type )
       {
         death_knight_attack_t::target_debuff( t, dmg_type );
-        death_knight_t* p = player -> cast_death_knight();
         death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
         target_multiplier *= 1.0 + td -> diseases() * effect1().percent() / 2.0;
@@ -2116,7 +2115,7 @@ struct melee_t : public death_knight_attack_t
           else
           {
             p -> buffs_sudden_doom -> refresh( 0 );
-            if ( p -> buffs_sudden_doom -> check() == 2 && new_stacks == 1)
+            if ( p -> buffs_sudden_doom -> check() == 2 && new_stacks == 1 )
               p -> buffs_sudden_doom -> decrement( 1 );
           }
         }
@@ -2288,7 +2287,6 @@ struct blood_boil_t : public death_knight_spell_t
   {
     death_knight_spell_t::target_debuff( t, dmg_type );
 
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
     base_dd_adder = ( td -> diseases() ? 95 : 0 );
@@ -2351,7 +2349,6 @@ struct blood_strike_offhand_t : public death_knight_attack_t
 
   virtual void target_debuff( player_t* t, int dmg_type )
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
@@ -2395,7 +2392,6 @@ struct blood_strike_t : public death_knight_attack_t
   {
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
     target_multiplier *= 1 + td -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
@@ -2769,7 +2765,6 @@ struct festering_strike_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_attack_t::execute();
 
     if ( result_is_hit() )
@@ -2950,7 +2945,6 @@ struct heart_strike_t : public death_knight_attack_t
 
   void target_debuff( player_t* t, int dmg_type )
   {
-    death_knight_t* p = player -> cast_death_knight();
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
     death_knight_attack_t::target_debuff( t, dmg_type );
@@ -3312,7 +3306,7 @@ struct obliterate_t : public death_knight_attack_t
         else
         {
           p -> buffs_rime -> refresh( 0 );
-          if ( p -> buffs_rime -> check() == 2 && new_stacks == 1)
+          if ( p -> buffs_rime -> check() == 2 && new_stacks == 1 )
             p -> buffs_rime -> decrement( 1 );
         }
 
@@ -3740,7 +3734,6 @@ struct scourge_strike_t : public death_knight_attack_t
       // Shadow portion doesn't double dips in debuffs, other than EP/E&M/CoE below
       // death_knight_spell_t::target_debuff( t, dmg_type );
 
-      death_knight_t* p = player -> cast_death_knight();
       death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
       target_multiplier = td -> diseases() * 0.18;

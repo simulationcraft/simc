@@ -19,22 +19,22 @@ struct priest_targetdata_t : public targetdata_t
 
   remove_dots_event_t* remove_dots_event;
 
-  priest_targetdata_t(player_t* source, player_t* target)
-    : targetdata_t(source, target), remove_dots_event(NULL)
+  priest_targetdata_t( player_t* source, player_t* target )
+    : targetdata_t( source, target ), remove_dots_event( NULL )
   {
   }
 };
 
-void register_priest_targetdata(sim_t* sim)
+void register_priest_targetdata( sim_t* sim )
 {
   player_type t = PRIEST;
   typedef priest_targetdata_t type;
 
-  REGISTER_DOT(devouring_plague);
-  REGISTER_DOT(holy_fire);
-  REGISTER_DOT(renew);
-  REGISTER_DOT(shadow_word_pain);
-  REGISTER_DOT(vampiric_touch);
+  REGISTER_DOT( devouring_plague );
+  REGISTER_DOT( holy_fire );
+  REGISTER_DOT( renew );
+  REGISTER_DOT( shadow_word_pain );
+  REGISTER_DOT( vampiric_touch );
 }
 
 
@@ -237,7 +237,7 @@ struct priest_t : public player_t
 
   // Options
   std::string atonement_target_str;
-  
+
   // Mana Resource Tracker
   struct mana_resource_t
   {
@@ -370,7 +370,7 @@ struct priest_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new priest_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new priest_targetdata_t( source, target );}
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_benefits();
@@ -832,7 +832,7 @@ struct priest_heal_t : public heal_t
   {
     const option_t base_options[] =
     {
-      { "min_interval", OPT_FLT,     &(min_interval -> duration ) },
+      { "min_interval", OPT_FLT,     &( min_interval -> duration ) },
       { NULL,           OPT_UNKNOWN, NULL      }
     };
 
@@ -4913,12 +4913,12 @@ void priest_t::init_buffs()
     player_t* p = sim -> actor_list[i];
     if ( talents.divine_aegis -> rank() )
     {
-      buff_t* b = new buff_t( actor_pair_t(p, this), 47753, "divine_aegis" );
+      buff_t* b = new buff_t( actor_pair_t( p, this ), 47753, "divine_aegis" );
       p -> buffs.divine_aegis.push_back( b );
       p -> absorb_buffs.push_back( b );
     }
 
-    buff_t* b  = new buff_t( actor_pair_t(p, this), 17, "power_word_shield" );
+    buff_t* b  = new buff_t( actor_pair_t( p, this ), 17, "power_word_shield" );
     p -> buffs.power_word_shield.push_back( b );
     p -> absorb_buffs.push_back( b );
   }

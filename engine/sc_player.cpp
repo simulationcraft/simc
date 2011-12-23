@@ -477,14 +477,14 @@ player_t::player_t( sim_t*             s,
   dps_error( 0 ), dpr( 0 ), dtps_error( 0 ),
   dmg( s -> statistics_level < 2 ), compound_dmg( s -> statistics_level < 2 ),
   dps( s -> statistics_level < 1 ), dpse( s -> statistics_level < 2 ),
-  dtps( s -> statistics_level < 2), dmg_taken( s -> statistics_level < 2 ),
+  dtps( s -> statistics_level < 2 ), dmg_taken( s -> statistics_level < 2 ),
   dps_convergence( 0 ),
   // Heal
   iteration_heal( 0 ),iteration_heal_taken( 0 ),
   hps_error( 0 ), hpr( 0 ),
   heal( s -> statistics_level < 2 ), compound_heal( s -> statistics_level < 2 ),
-  hps( s -> statistics_level < 1), hpse( s -> statistics_level < 2),
-  htps( s -> statistics_level < 2), heal_taken(s -> statistics_level < 2 ),
+  hps( s -> statistics_level < 1 ), hpse( s -> statistics_level < 2 ),
+  htps( s -> statistics_level < 2 ), heal_taken( s -> statistics_level < 2 ),
   // Gear
   sets( 0 ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
@@ -493,7 +493,7 @@ player_t::player_t( sim_t*             s,
   // Movement & Position
   base_movement_speed( 7.0 ), x_position( 0.0 ), y_position( 0.0 ),
   buffs( buffs_t() ), debuffs( debuffs_t() ), gains( gains_t() ), procs( procs_t() ), rng_list( 0 ), rngs( rngs_t() ),
-  targetdata_id(-1)
+  targetdata_id( -1 )
 {
   sim -> actor_list.push_back( this );
 
@@ -570,8 +570,8 @@ player_t::player_t( sim_t*             s,
 
 player_t::~player_t()
 {
-  for(std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i)
-   delete *i;
+  for( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
+    delete *i;
 
   while ( action_t* a = action_list )
   {
@@ -1628,7 +1628,7 @@ void player_t::init_actions()
     action -> init();
     if ( action -> trigger_gcd == 0 && ! action -> background && action -> use_off_gcd )
       off_gcd_actions.push_back( action );
-    
+
   }
 
   int capacity = std::max( 1200, ( int ) ( sim -> max_time / 2.0 ) );
@@ -1769,7 +1769,7 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
-  primary_resource_cap = get_uptime( util_t::resource_type_string( primary_resource() ) + (std::string) "_cap" );
+  primary_resource_cap = get_uptime( util_t::resource_type_string( primary_resource() ) + ( std::string ) "_cap" );
 }
 
 // player_t::init_benefits ===================================================
@@ -3142,8 +3142,8 @@ void player_t::reset()
 
   for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
   {
-    if(*i)
-      (*i)->reset();
+    if( *i )
+      ( *i )->reset();
   }
 
   for ( stats_t* s = stats_list; s; s = s -> next ) s -> reset();
@@ -3389,8 +3389,8 @@ void player_t::clear_debuffs()
 
   for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
   {
-    if(*i)
-      (*i)->clear_debuffs();
+    if( *i )
+      ( *i )->clear_debuffs();
   }
 }
 
@@ -3528,7 +3528,7 @@ void player_t::regen( const double periodicity )
     }
   }
 
-  int index = (int) ( sim -> current_time );
+  int index = ( int ) ( sim -> current_time );
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -5607,7 +5607,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 
   size_t i;
   size_t i_max = std::min( talent_string.size(),
-                                    static_cast< size_t >( MAX_TALENT_SLOTS ) );
+                           static_cast< size_t >( MAX_TALENT_SLOTS ) );
   for ( i = 0; i < i_max; i++ )
   {
     char c = talent_string[ i ];
@@ -6096,23 +6096,23 @@ action_expr_t* player_t::create_expression( action_t* a,
 
       switch ( stat )
       {
-        case STAT_STRENGTH:         p_stat = &( a -> player -> temporary.attribute[ ATTR_STRENGTH  ] ); attr = ATTR_STRENGTH;  break;
-        case STAT_AGILITY:          p_stat = &( a -> player -> temporary.attribute[ ATTR_AGILITY   ] ); attr = ATTR_AGILITY;   break;
-        case STAT_STAMINA:          p_stat = &( a -> player -> temporary.attribute[ ATTR_STAMINA   ] ); attr = ATTR_STAMINA;   break;
-        case STAT_INTELLECT:        p_stat = &( a -> player -> temporary.attribute[ ATTR_INTELLECT ] ); attr = ATTR_INTELLECT; break;
-        case STAT_SPIRIT:           p_stat = &( a -> player -> temporary.attribute[ ATTR_SPIRIT    ] ); attr = ATTR_SPIRIT;    break;
-        case STAT_SPELL_POWER:      p_stat = &( a -> player -> temporary.spell_power                 ); break;
-        case STAT_ATTACK_POWER:     p_stat = &( a -> player -> temporary.attack_power                ); break;
-        case STAT_EXPERTISE_RATING: p_stat = &( a -> player -> temporary.expertise_rating            ); break;
-        case STAT_HIT_RATING:       p_stat = &( a -> player -> temporary.hit_rating                  ); break;
-        case STAT_CRIT_RATING:      p_stat = &( a -> player -> temporary.crit_rating                 ); break;
-        case STAT_HASTE_RATING:     p_stat = &( a -> player -> temporary.haste_rating                ); break;
-        case STAT_ARMOR:            p_stat = &( a -> player -> temporary.armor                       ); break;
-        case STAT_DODGE_RATING:     p_stat = &( a -> player -> temporary.dodge_rating                ); break;
-        case STAT_PARRY_RATING:     p_stat = &( a -> player -> temporary.parry_rating                ); break;
-        case STAT_BLOCK_RATING:     p_stat = &( a -> player -> temporary.block_rating                ); break;
-        case STAT_MASTERY_RATING:   p_stat = &( a -> player -> temporary.mastery_rating              ); break;
-        default: break;
+      case STAT_STRENGTH:         p_stat = &( a -> player -> temporary.attribute[ ATTR_STRENGTH  ] ); attr = ATTR_STRENGTH;  break;
+      case STAT_AGILITY:          p_stat = &( a -> player -> temporary.attribute[ ATTR_AGILITY   ] ); attr = ATTR_AGILITY;   break;
+      case STAT_STAMINA:          p_stat = &( a -> player -> temporary.attribute[ ATTR_STAMINA   ] ); attr = ATTR_STAMINA;   break;
+      case STAT_INTELLECT:        p_stat = &( a -> player -> temporary.attribute[ ATTR_INTELLECT ] ); attr = ATTR_INTELLECT; break;
+      case STAT_SPIRIT:           p_stat = &( a -> player -> temporary.attribute[ ATTR_SPIRIT    ] ); attr = ATTR_SPIRIT;    break;
+      case STAT_SPELL_POWER:      p_stat = &( a -> player -> temporary.spell_power                 ); break;
+      case STAT_ATTACK_POWER:     p_stat = &( a -> player -> temporary.attack_power                ); break;
+      case STAT_EXPERTISE_RATING: p_stat = &( a -> player -> temporary.expertise_rating            ); break;
+      case STAT_HIT_RATING:       p_stat = &( a -> player -> temporary.hit_rating                  ); break;
+      case STAT_CRIT_RATING:      p_stat = &( a -> player -> temporary.crit_rating                 ); break;
+      case STAT_HASTE_RATING:     p_stat = &( a -> player -> temporary.haste_rating                ); break;
+      case STAT_ARMOR:            p_stat = &( a -> player -> temporary.armor                       ); break;
+      case STAT_DODGE_RATING:     p_stat = &( a -> player -> temporary.dodge_rating                ); break;
+      case STAT_PARRY_RATING:     p_stat = &( a -> player -> temporary.parry_rating                ); break;
+      case STAT_BLOCK_RATING:     p_stat = &( a -> player -> temporary.block_rating                ); break;
+      case STAT_MASTERY_RATING:   p_stat = &( a -> player -> temporary.mastery_rating              ); break;
+      default: break;
       }
 
       if ( p_stat )
@@ -6122,20 +6122,20 @@ action_expr_t* player_t::create_expression( action_t* a,
           int attr;
           int stat_type;
           double& stat;
-          temporary_stat_expr_t( action_t* a, double* p_stat, int stat_type, int attr ) : 
+          temporary_stat_expr_t( action_t* a, double* p_stat, int stat_type, int attr ) :
             action_expr_t( a, "temporary_stat", TOK_NUM ), attr( attr ), stat_type( stat_type ), stat( *p_stat ) { }
 
           virtual int evaluate()
-          { 
+          {
             result_num = stat;
             if ( attr != -1 )
-              result_num *= action -> player -> composite_attribute_multiplier( attr ); 
+              result_num *= action -> player -> composite_attribute_multiplier( attr );
             else if ( stat_type == STAT_SPELL_POWER )
             {
               result_num += action -> player -> temporary.attribute[ ATTR_INTELLECT ] *
                             action -> player -> composite_attribute_multiplier( ATTR_INTELLECT ) *
                             action -> player -> spell_power_per_intellect;
-              
+
               result_num *= action -> player -> composite_spell_power_multiplier();
               //log_t::output( action -> sim, "temporary_bonus.spell_power=%f", result_num );
             }
@@ -6143,15 +6143,15 @@ action_expr_t* player_t::create_expression( action_t* a,
             {
               result_num += action -> player -> temporary.attribute[ ATTR_STRENGTH ] *
                             action -> player -> composite_attribute_multiplier( ATTR_STRENGTH ) *
-                            action -> player -> attack_power_per_strength + 
+                            action -> player -> attack_power_per_strength +
                             action -> player -> temporary.attribute[ ATTR_AGILITY ] *
                             action -> player -> composite_attribute_multiplier( ATTR_AGILITY ) *
                             action -> player -> attack_power_per_agility;
-              
+
               result_num *= action -> player -> composite_attack_power_multiplier();
             }
-            
-            return TOK_NUM; 
+
+            return TOK_NUM;
           }
         };
         return new temporary_stat_expr_t( a, p_stat, stat, attr );
@@ -6163,7 +6163,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" || splits[ 0 ] == "aura" )
     {
       buff_t* buff;
-      buff = sim->get_targetdata_aura(a -> player, this, splits[1]);
+      buff = sim->get_targetdata_aura( a -> player, this, splits[1] );
       if ( ! buff ) buff = buff_t::find( this, splits[ 1 ] );
       if ( ! buff ) buff = buff_t::find( sim, splits[ 1 ] );
       if ( ! buff ) return 0;
@@ -6186,7 +6186,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     else if ( splits[ 0 ] == "dot" )
     {
       dot_t* dot = 0;
-      dot = sim->get_targetdata_dot(a -> player, this, splits[1]);
+      dot = sim->get_targetdata_dot( a -> player, this, splits[1] );
       if ( ! dot )
         dot = get_dot( splits[ 1 ] );
       if ( ! dot )
@@ -6313,7 +6313,7 @@ action_expr_t* player_t::create_expression( action_t* a,
   if ( num_splits >= 2 && splits[ 0 ] == "target" )
   {
     std::string rest = splits[1];
-    for(int i = 2; i < num_splits; ++i)
+    for( int i = 2; i < num_splits; ++i )
       rest += '.' + splits[i];
     return target -> create_expression( a, rest );
   }
@@ -6817,38 +6817,38 @@ player_t* player_t::create( sim_t*             sim,
   return 0;
 }
 
-targetdata_t* player_t::new_targetdata(player_t* source, player_t* target)
+targetdata_t* player_t::new_targetdata( player_t* source, player_t* target )
 {
-  return new targetdata_t(source, target);
+  return new targetdata_t( source, target );
 }
 
 // ==========================================================================
 // Target data
 // ==========================================================================
 
-targetdata_t* targetdata_t::get(player_t* source, player_t* target)
+targetdata_t* targetdata_t::get( player_t* source, player_t* target )
 {
-   int id = source->targetdata_id;
-   if(id < 0)
-       source->targetdata_id = id = source->sim->num_targetdata_ids++;
+  int id = source->targetdata_id;
+  if( id < 0 )
+    source -> targetdata_id = id = source -> sim -> num_targetdata_ids++;
 
-   if(id >= target->targetdata.size())
-       target->targetdata.resize(id + 1);
+  if( id >= target -> targetdata.size() )
+    target -> targetdata.resize( id + 1 );
 
-   targetdata_t* p = target->targetdata[id];
-   if(!p)
-       target->targetdata[id] = p = source->new_targetdata(source, target);
+  targetdata_t* p = target->targetdata[id];
+  if( ! p )
+    target -> targetdata[id] = p = source -> new_targetdata( source, target );
 
-   return p;
+  return p;
 }
 
-targetdata_t::targetdata_t(player_t* source, player_t* target)
-  : source((player_t*)source), target((player_t*)target), dot_list(NULL)
+targetdata_t::targetdata_t( player_t* source, player_t* target )
+  : source( ( player_t* )source ), target( ( player_t* )target ), dot_list( NULL )
 {
   std::vector<std::pair<size_t, std::string> >& v = source->sim->targetdata_dots[source->type];
-  for(std::vector<std::pair<size_t, std::string> >::iterator i = v.begin(); i != v.end(); ++i)
+  for( std::vector<std::pair<size_t, std::string> >::iterator i = v.begin(); i != v.end(); ++i )
   {
-    *(dot_t**)((char*)this + i->first) = add_dot(new dot_t( i->second, this->target ));
+    *( dot_t** )( ( char* )this + i->first ) = add_dot( new dot_t( i->second, this->target ) );
   }
 }
 
@@ -6863,7 +6863,7 @@ targetdata_t::~targetdata_t()
 
 void targetdata_t::reset()
 {
-  for(dot_t* d = dot_list; d; d = d->next)
+  for( dot_t* d = dot_list; d; d = d->next )
     d -> reset();
 }
 
@@ -6871,21 +6871,21 @@ void targetdata_t::clear_debuffs()
 {
   // FIXME: should clear debuffs as well according to similar FIXME in player_t::clear_debuffs()
 
-  for(dot_t* d = dot_list; d; d = d->next)
+  for( dot_t* d = dot_list; d; d = d->next )
     d -> cancel();
 }
 
-dot_t* targetdata_t::add_dot(dot_t* d)
+dot_t* targetdata_t::add_dot( dot_t* d )
 {
-    d -> next = dot_list;
-    dot_list = d;
+  d -> next = dot_list;
+  dot_list = d;
 
-    return d;
+  return d;
 }
 
-aura_t* targetdata_t::add_aura(aura_t* a)
+aura_t* targetdata_t::add_aura( aura_t* a )
 {
-  assert(a->player == this->target);
-  assert(a->initial_source == this->source);
+  assert( a->player == this->target );
+  assert( a->initial_source == this->source );
   return a;
 }

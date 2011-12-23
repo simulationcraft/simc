@@ -148,7 +148,7 @@ void action_t::init_action_t_()
   action_dot = NULL;
   targetdata_dot_offset = -1;
 
-  init_dot(name_str);
+  init_dot( name_str );
 
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
@@ -184,11 +184,11 @@ void action_t::init_action_t_()
   }
 }
 
-void action_t::init_dot(const std::string& name)
+void action_t::init_dot( const std::string& name )
 {
-  std::unordered_map<std::string, std::pair<player_type, size_t> >::iterator doti = sim->targetdata_items[0].find(name);
-  if(doti != sim->targetdata_items[0].end() && doti->second.first == player->type)
-    targetdata_dot_offset = (int)doti->second.second;
+  std::unordered_map<std::string, std::pair<player_type, size_t> >::iterator doti = sim->targetdata_items[0].find( name );
+  if( doti != sim->targetdata_items[0].end() && doti->second.first == player->type )
+    targetdata_dot_offset = ( int )doti->second.second;
 }
 
 action_t::action_t( int               ty,
@@ -1694,7 +1694,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( num_splits == 3 && ( splits[0] == "buff" || splits[0] == "debuff" || splits[0] == "aura" ) )
   {
-    buff_t* buff = sim -> get_targetdata_aura(player, target, splits[1]);
+    buff_t* buff = sim -> get_targetdata_aura( player, target, splits[1] );
     if( buff )
       return buff -> create_expression( this, splits[ 2 ] );
   }
@@ -1712,7 +1712,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   if ( num_splits >= 2 && splits[ 0 ] == "target" )
   {
     std::string rest = splits[1];
-    for(int i = 2; i < num_splits; ++i)
+    for( int i = 2; i < num_splits; ++i )
       rest += '.' + splits[i];
     return target -> create_expression( this, rest );
   }
@@ -1721,7 +1721,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   if ( num_splits >= 2 && splits[ 0 ] == "self" )
   {
     std::string rest = splits[1];
-    for(int i = 2; i < num_splits; ++i)
+    for( int i = 2; i < num_splits; ++i )
       rest += '.' + splits[i];
     return player -> create_expression( this, rest );
   }
@@ -1730,7 +1730,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   if ( num_splits >= 2 && splits[ 0 ] == "sim" )
   {
     std::string rest = splits[1];
-    for(int i = 2; i < num_splits; ++i)
+    for( int i = 2; i < num_splits; ++i )
       rest += '.' + splits[i];
     return sim -> create_expression( this, rest );
   }

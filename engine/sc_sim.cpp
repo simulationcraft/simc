@@ -630,7 +630,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
   channel_lag( 0.250 ), channel_lag_stddev( 0 ),
   queue_gcd_reduction( 0.032 ), strict_gcd_queue( 0 ),
-  confidence( 0.95), confidence_estimator( 0.0 ),
+  confidence( 0.95 ), confidence_estimator( 0.0 ),
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 0.25 ),
   current_time( 0 ), max_time( 450 ), expected_time( 0 ), vary_combat_length( 0.2 ),
@@ -667,17 +667,17 @@ sim_t::sim_t( sim_t* p, int index ) :
   threads( 0 ), thread_index( index ),
   spell_query( 0 )
 {
-  register_death_knight_targetdata(this);
-  register_druid_targetdata(this);
-  register_hunter_targetdata(this);
-  register_mage_targetdata(this);
-  register_monk_targetdata(this);
-  register_paladin_targetdata(this);
-  register_priest_targetdata(this);
-  register_rogue_targetdata(this);
-  register_shaman_targetdata(this);
-  register_warlock_targetdata(this);
-  register_warrior_targetdata(this);
+  register_death_knight_targetdata( this );
+  register_druid_targetdata( this );
+  register_hunter_targetdata( this );
+  register_mage_targetdata( this );
+  register_monk_targetdata( this );
+  register_paladin_targetdata( this );
+  register_priest_targetdata( this );
+  register_rogue_targetdata( this );
+  register_shaman_targetdata( this );
+  register_warlock_targetdata( this );
+  register_warrior_targetdata( this );
 
   path_str += "|profiles";
   path_str += "|profiles_heal";
@@ -1597,11 +1597,11 @@ void sim_t::analyze_player( player_t* p )
   }
   else
   {
-  chart_t::distribution      ( p -> distribution_dps_chart,          this,
-                               p -> dps.distribution, encoded_name + " DPS",
-                               p -> dps.mean,
-                               p -> dps.min,
-                               p -> dps.max );
+    chart_t::distribution      ( p -> distribution_dps_chart,          this,
+                                 p -> dps.distribution, encoded_name + " DPS",
+                                 p -> dps.mean,
+                                 p -> dps.min,
+                                 p -> dps.max );
   }
 
   chart_t::distribution      ( p -> distribution_deaths_chart,       this,
@@ -1628,7 +1628,7 @@ void sim_t::analyze()
   {
     int last = ( int ) floor( iteration_timeline[ i ] );
     size_t num_buckets = divisor_timeline.size();
-    if ( 1 + last > (int) num_buckets ) divisor_timeline.resize( 1 + last, 0 );
+    if ( 1 + last > ( int ) num_buckets ) divisor_timeline.resize( 1 + last, 0 );
     for ( int j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }
 
@@ -2044,14 +2044,14 @@ action_expr_t* sim_t::create_expression( action_t* a,
     player_t* actor = sim_t::find_player( splits[ 1 ] );
     if ( ! target ) return 0;
     std::string rest = splits[2];
-    for(int i = 3; i < num_splits; ++i)
+    for( int i = 3; i < num_splits; ++i )
       rest += '.' + splits[i];
     return actor -> create_expression( a, rest );
   }
   if ( num_splits >= 2 && splits[ 0 ] == "target" )
   {
     std::string rest = splits[1];
-    for(int i = 2; i < num_splits; ++i)
+    for( int i = 2; i < num_splits; ++i )
       rest += '.' + splits[i];
     return target -> create_expression( a, rest );
   }
@@ -2417,7 +2417,7 @@ double sim_t::progress( std::string& phase )
     return plot -> progress( phase );
   }
   else if ( scaling -> calculate_scale_factors &&
-            scaling -> num_scaling_stats > 0 && 
+            scaling -> num_scaling_stats > 0 &&
             scaling -> remaining_scaling_stats > 0 )
   {
     return scaling -> progress( phase );
@@ -2545,22 +2545,22 @@ int sim_t::errorf( const char* format, ... )
   return retcode;
 }
 
-void sim_t::register_targetdata_item(int kind, const char* name, player_type type, size_t offset)
+void sim_t::register_targetdata_item( int kind, const char* name, player_type type, size_t offset )
 {
   std::string s = name;
-  targetdata_items[kind][s] = std::make_pair(type, offset);
-  if(kind == DATA_DOT)
-    targetdata_dots[type].push_back(std::make_pair(offset, s));
+  targetdata_items[kind][s] = std::make_pair( type, offset );
+  if( kind == DATA_DOT )
+    targetdata_dots[type].push_back( std::make_pair( offset, s ) );
 }
 
-void* sim_t::get_targetdata_item(player_t* source, player_t* target, int kind, const std::string& name)
+void* sim_t::get_targetdata_item( player_t* source, player_t* target, int kind, const std::string& name )
 {
-  std::unordered_map<std::string, std::pair<player_type, size_t> >::iterator i = targetdata_items[kind].find(name);
-  if(i != targetdata_items[kind].end())
+  std::unordered_map<std::string, std::pair<player_type, size_t> >::iterator i = targetdata_items[kind].find( name );
+  if( i != targetdata_items[kind].end() )
   {
-    if(source->type == i->second.first)
+    if( source->type == i->second.first )
     {
-      return *(void**)((char*)targetdata_t::get(source, target) + i->second.second);
+      return *( void** )( ( char* )targetdata_t::get( source, target ) + i->second.second );
     }
   }
   return 0;

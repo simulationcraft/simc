@@ -13,15 +13,15 @@ enum monk_stance { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
 struct monk_targetdata_t : public targetdata_t
 {
-  monk_targetdata_t(player_t* source, player_t* target)
-    : targetdata_t(source, target)
+  monk_targetdata_t( player_t* source, player_t* target )
+    : targetdata_t( source, target )
   {
   }
 };
 
-void register_monk_targetdata(sim_t* sim)
+void register_monk_targetdata( sim_t* /* sim */ )
 {
-  player_type t = MONK;
+  /* player_type t = MONK; */
   typedef monk_targetdata_t type;
 }
 
@@ -96,7 +96,7 @@ struct monk_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new monk_targetdata_t(source, target);}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new monk_targetdata_t( source, target );}
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual void      init_talents();
   virtual void      init_spells();
@@ -218,7 +218,7 @@ bool monk_attack_t::ready()
 struct jab_t : public monk_attack_t
 {
   jab_t( monk_t* p, const std::string& options_str ) :
-  monk_attack_t( "jab", "Jab", p )
+    monk_attack_t( "jab", "Jab", p )
   {
     parse_options( 0, options_str );
     resource = RESOURCE_CHI;
@@ -240,7 +240,7 @@ struct jab_t : public monk_attack_t
 struct tiger_palm_t : public monk_attack_t
 {
   tiger_palm_t( monk_t* p, const std::string& options_str ) :
-  monk_attack_t( "tiger_palm", "Tiger Palm", p )
+    monk_attack_t( "tiger_palm", "Tiger Palm", p )
   {
     parse_options( 0, options_str );
     resource = RESOURCE_LIGHT_FORCE;
@@ -263,7 +263,7 @@ struct tiger_palm_t : public monk_attack_t
 struct blackout_kick_t : public monk_attack_t
 {
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
-  monk_attack_t( "blackout_kick", "Blackout Kick", p )
+    monk_attack_t( "blackout_kick", "Blackout Kick", p )
   {
     parse_options( 0, options_str );
     resource = RESOURCE_DARK_FORCE;
@@ -274,7 +274,7 @@ struct blackout_kick_t : public monk_attack_t
 struct spinning_crane_kick_tick_t : public monk_attack_t
 {
   spinning_crane_kick_tick_t( monk_t* p ) :
-  monk_attack_t( "spinning_crane_kick_tick", (uint32_t) 0, p )
+    monk_attack_t( "spinning_crane_kick_tick", ( uint32_t ) 0, p )
   {
     background  = true;
     dual        = true;
@@ -290,8 +290,8 @@ struct spinning_crane_kick_t : public monk_attack_t
   spinning_crane_kick_tick_t* spinning_crane_kick_tick;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ) :
-  monk_attack_t( "spinning_crane_kick", "Spinning Crane Kick", p ),
-  spinning_crane_kick_tick( 0 )
+    monk_attack_t( "spinning_crane_kick", "Spinning Crane Kick", p ),
+    spinning_crane_kick_tick( 0 )
   {
     parse_options( 0, options_str );
 
@@ -322,11 +322,11 @@ struct spinning_crane_kick_t : public monk_attack_t
 
     if ( sim -> log )
       log_t::output( sim, "%s consumes %.1f %s and %.1f %s for %s", player -> name(),
-                      lf_cost,
-                      util_t::resource_type_string( RESOURCE_LIGHT_FORCE ),
-                      df_cost,
-                      util_t::resource_type_string( RESOURCE_DARK_FORCE ),
-                      name() );
+                     lf_cost,
+                     util_t::resource_type_string( RESOURCE_LIGHT_FORCE ),
+                     df_cost,
+                     util_t::resource_type_string( RESOURCE_DARK_FORCE ),
+                     name() );
 
     stats -> consume_resource( lf_cost );
     stats -> consume_resource( df_cost );
@@ -335,10 +335,10 @@ struct spinning_crane_kick_t : public monk_attack_t
   virtual bool ready()
   {
     if ( ! player -> resource_available( RESOURCE_LIGHT_FORCE, 2 ) )
-        return false;
+      return false;
 
     if ( ! player -> resource_available( RESOURCE_DARK_FORCE, 2 ) )
-        return false;
+      return false;
 
     return monk_attack_t::ready();
   }
@@ -368,7 +368,7 @@ struct stance_t : public monk_spell_t
   std::string stance_str;
 
   stance_t( monk_t* p, const std::string& options_str ) :
-    monk_spell_t( "stance", (uint32_t) 0, p ),
+    monk_spell_t( "stance", ( uint32_t ) 0, p ),
     switch_to_stance( 0 ), stance_str( "" )
   {
     option_t options[] =
@@ -498,7 +498,7 @@ void monk_t::init_base()
 
   int tree = primary_tree();
 
-  default_distance = (tree == TREE_MISTWEAVER ) ? 40 : 3;
+  default_distance = ( tree == TREE_MISTWEAVER ) ? 40 : 3;
   distance = default_distance;
 
   base_gcd = 1.0; // FIXME: assumption
@@ -547,8 +547,8 @@ void monk_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_jab_lf = get_gain( "jab_light_force");
-  gains_jab_df = get_gain( "jab_dark_force");
+  gains_jab_lf = get_gain( "jab_light_force" );
+  gains_jab_df = get_gain( "jab_dark_force" );
 }
 
 // monk_t::init_procs =======================================================
@@ -597,7 +597,7 @@ void monk_t::init_actions()
 
 void monk_t::init_resources( bool force )
 {
-  player_t::init_resources( force);
+  player_t::init_resources( force );
 
   resource_current[ RESOURCE_LIGHT_FORCE ] = 0;
   resource_current[ RESOURCE_DARK_FORCE  ] = 0;

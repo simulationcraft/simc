@@ -135,8 +135,8 @@ player_ready_event_t::player_ready_event_t( sim_t*    sim,
 
 void player_ready_event_t::execute()
 {
-  // Player that's checking for off gcd actions to use, cancels that checking 
-  // when there's a ready event firing. 
+  // Player that's checking for off gcd actions to use, cancels that checking
+  // when there's a ready event firing.
   if ( player -> off_gcd )
     event_t::cancel( player -> off_gcd );
 
@@ -160,9 +160,9 @@ void player_ready_event_t::execute()
 // player_gcd_event_t::player_ready_event_t =================================
 
 player_gcd_event_t::player_gcd_event_t( sim_t*    sim,
-                                           player_t* p,
-                                           double    delta_time ) :
-event_t( sim, p )
+                                        player_t* p,
+                                        double    delta_time ) :
+  event_t( sim, p )
 {
   name = "Player-Ready-GCD";
   if ( sim -> debug ) log_t::output( sim, "New Player-Ready-GCD Event: %s", p -> name() );
@@ -174,15 +174,15 @@ event_t( sim, p )
 void player_gcd_event_t::execute()
 {
   action_t* a = 0;
-  
+
   for ( std::vector<action_t*>::const_iterator i = player -> off_gcd_actions.begin();
-       i < player -> off_gcd_actions.end(); i++ )
+        i < player -> off_gcd_actions.end(); i++ )
   {
     a = *i;
     if ( a -> ready() )
     {
       player -> last_foreground_action = a;
-      
+
       a -> execute();
       player -> iteration_executed_foreground_actions++;
       if ( a -> marker ) player -> action_sequence += a -> marker;
@@ -190,7 +190,7 @@ void player_gcd_event_t::execute()
         player -> action_map[ a -> label_str ] += 1;
     }
   }
-  
+
   player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, 0.1 );
 }
 
@@ -224,14 +224,14 @@ void action_execute_event_t::execute()
 
     player -> schedule_ready( 0 );
   }
-  
+
   if ( player -> off_gcd_actions.size() == 0 )
     return;
-  
+
   // Kick off the during-gcd checker, first run is immediately after
   if ( player -> off_gcd )
     event_t::cancel( player -> off_gcd );
-  
+
   player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, 0 );
 }
 
