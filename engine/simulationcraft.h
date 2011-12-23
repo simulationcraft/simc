@@ -49,6 +49,23 @@
 #include <typeinfo>
 #include <vector>
 
+#if _MSC_VER || __cplusplus >= 201103L
+#include <unordered_map>
+#if _MSC_VER < 1600
+namespace std {using namespace tr1; }
+#endif
+#else
+#include <tr1/unordered_map>
+namespace std {using namespace tr1; }
+#endif
+
+// GCC (and probably the C++ standard in general) doesn't like offsetof on non-POD types
+#ifdef _MSC_VER
+#define nonpod_offsetof(t, m) offsetof(t, m)
+#else
+#define nonpod_offsetof(t, m) ((size_t) ( (volatile char *)&((volatile t *)(size_t)0x10000)->m - (volatile char *)(size_t)0x10000 ))
+#endif
+
 #include "data_enums.hh"
 
 #if defined( _MSC_VER )
@@ -164,6 +181,51 @@ struct warlock_t;
 struct warrior_t;
 struct weapon_t;
 struct xml_node_t;
+
+struct targetdata_t;
+struct death_knight_targetdata_t;
+struct druid_targetdata_t;
+struct hunter_targetdata_t;
+struct mage_targetdata_t;
+struct monk_targetdata_t;
+struct paladin_targetdata_t;
+struct priest_targetdata_t;
+struct rogue_targetdata_t;
+struct shaman_targetdata_t;
+struct warlock_targetdata_t;
+struct warrior_targetdata_t;
+
+void register_death_knight_targetdata(sim_t* sim);
+void register_druid_targetdata(sim_t* sim);
+void register_hunter_targetdata(sim_t* sim);
+void register_mage_targetdata(sim_t* sim);
+void register_monk_targetdata(sim_t* sim);
+void register_paladin_targetdata(sim_t* sim);
+void register_priest_targetdata(sim_t* sim);
+void register_rogue_targetdata(sim_t* sim);
+void register_shaman_targetdata(sim_t* sim);
+void register_warlock_targetdata(sim_t* sim);
+void register_warrior_targetdata(sim_t* sim);
+
+#define DATA_DOT 0
+#define DATA_AURA 1
+#define DATA_COUNT 2
+
+struct actor_pair_t
+{
+  player_t* target;
+  player_t* source;
+
+  actor_pair_t(player_t* target, player_t* source)
+    : target(target), source(source)
+  {}
+
+  actor_pair_t(player_t* p = 0)
+    : target(p), source(p)
+  {}
+
+  actor_pair_t(targetdata_t* td);
+};
 
 // Enumerations =============================================================
 
@@ -2231,6 +2293,10 @@ struct spell_id_t
   const spelleffect_data_t*  s_single;
   int                        s_tree;
 
+  std::list<spell_id_t*>* s_list;
+  std::list<spell_id_t*>::iterator s_list_iter;
+  void queue();
+
   // Construction & deconstruction
   // spell_id_t( const spell_id_t& copy ) = default;
   spell_id_t( player_t* player = 0, const char* t_name = 0 );
@@ -2591,7 +2657,7 @@ struct buff_t : public spell_id_t
           double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
 
   // Player Buff
-  buff_t( player_t*, const std::string& name,
+  buff_t( actor_pair_t pair, const std::string& name,
           int max_stack=1, double buff_duration=0, double buff_cooldown=0,
           double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0, bool activated=true );
 
@@ -2600,16 +2666,16 @@ private:
   void init_from_talent_( player_t*, talent_t* );
   void init_from_spell_( player_t*, spell_data_t* );
 public:
-  buff_t( player_t*, talent_t*, ... );
-  buff_t( player_t*, spell_data_t*, ... );
+  buff_t( actor_pair_t pair, talent_t*, ... );
+  buff_t( actor_pair_t pair, spell_data_t*, ... );
 
   // Player Buff as spell_id_t by name
-  buff_t( player_t*, const std::string& name, const char* sname,
+  buff_t( actor_pair_t pair, const std::string& name, const char* sname,
           double chance=-1, double cd=-1.0,
           bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
 
   // Player Buff as spell_id_t by id
-  buff_t( player_t*, const uint32_t id, const std::string& name,
+  buff_t( actor_pair_t pair, const uint32_t id, const std::string& name,
           double chance=-1, double cd=-1.0,
           bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
 
@@ -2955,6 +3021,10 @@ public:
 
 // Simulation Engine ========================================================
 
+#define REGISTER_DOT(n) sim->register_targetdata_item(DATA_DOT, #n, t, nonpod_offsetof(type, dots_##n))
+#define REGISTER_BUFF(n) sim->register_targetdata_item(DATA_AURA, #n, t, nonpod_offsetof(type, buffs_##n))
+#define REGISTER_DEBUFF(n) sim->register_targetdata_item(DATA_AURA, #n, t, nonpod_offsetof(type, debuffs_##n))
+
 struct sim_t : private thread_t
 {
   int         argc;
@@ -2967,6 +3037,7 @@ struct sim_t : private thread_t
   player_t*   active_player;
   int         num_players;
   int         num_enemies;
+  int         num_targetdata_ids;
   int         max_player_level;
   int         canceled;
   double      queue_lag, queue_lag_stddev;
@@ -3193,6 +3264,9 @@ struct sim_t : private thread_t
   int save_raid_summary;
   int statistics_level;
 
+  std::unordered_map<std::string, std::pair<player_type, size_t> > targetdata_items[DATA_COUNT];
+  std::vector<std::pair<size_t, std::string> > targetdata_dots[PLAYER_MAX];
+
   // Multi-Threading
   int threads;
   std::vector<sim_t*> children;
@@ -3245,6 +3319,18 @@ struct sim_t : private thread_t
   void      aura_loss( const char* name, int aura_id=0 );
   action_expr_t* create_expression( action_t*, const std::string& name );
   int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
+  void register_targetdata_item(int kind, const char* name, player_type type, size_t offset);
+  void* get_targetdata_item(player_t* source, player_t* target, int kind, const std::string& name);
+
+  dot_t* get_targetdata_dot(player_t* source, player_t* target, const std::string& name)
+  {
+    return (dot_t*)get_targetdata_item(source, target, DATA_DOT, name);
+  }
+
+  buff_t* get_targetdata_aura(player_t* source, player_t* target, const std::string& name)
+  {
+    return (buff_t*)get_targetdata_item(source, target, DATA_AURA, name);
+  }
 };
 
 // Scaling ==================================================================
@@ -4091,12 +4177,16 @@ struct player_t : public noncopyable
   };
   rngs_t rngs;
 
+  int targetdata_id;
+  std::vector<targetdata_t*> targetdata;
+
   player_t( sim_t* sim, player_type type, const std::string& name, race_type race_type = RACE_NONE );
 
   virtual ~player_t();
 
   virtual const char* name() const { return name_str.c_str(); }
 
+  virtual targetdata_t* new_targetdata(player_t* source, player_t* target);
   virtual void init();
   virtual void init_glyphs();
   virtual void init_base() = 0;
@@ -4417,6 +4507,38 @@ struct player_t : public noncopyable
   virtual void pre_analyze_hook() {}
 };
 
+struct targetdata_t : public noncopyable
+{
+  player_t* source;
+  player_t* target;
+
+  dot_t* dot_list;
+
+  targetdata_t(player_t* source, player_t* target);
+
+  virtual ~targetdata_t();
+  virtual void reset();
+  virtual void clear_debuffs();
+
+  static targetdata_t* get(player_t* source, player_t* target);
+
+  death_knight_targetdata_t* cast_death_knight() { assert( source->type == DEATH_KNIGHT ); return ( death_knight_targetdata_t* ) this; }
+  druid_targetdata_t       * cast_druid       () { assert( source->type == DRUID        ); return ( druid_targetdata_t       * ) this; }
+  hunter_targetdata_t      * cast_hunter      () { assert( source->type == HUNTER       ); return ( hunter_targetdata_t      * ) this; }
+  mage_targetdata_t        * cast_mage        () { assert( source->type == MAGE         ); return ( mage_targetdata_t        * ) this; }
+  monk_targetdata_t        * cast_monk        () { assert( source->type == MONK         ); return ( monk_targetdata_t        * ) this; }
+  paladin_targetdata_t     * cast_paladin     () { assert( source->type == PALADIN      ); return ( paladin_targetdata_t     * ) this; }
+  priest_targetdata_t      * cast_priest      () { assert( source->type == PRIEST       ); return ( priest_targetdata_t      * ) this; }
+  rogue_targetdata_t       * cast_rogue       () { assert( source->type == ROGUE        ); return ( rogue_targetdata_t       * ) this; }
+  shaman_targetdata_t      * cast_shaman      () { assert( source->type == SHAMAN       ); return ( shaman_targetdata_t      * ) this; }
+  warlock_targetdata_t     * cast_warlock     () { assert( source->type == WARLOCK      ); return ( warlock_targetdata_t     * ) this; }
+  warrior_targetdata_t     * cast_warrior     () { assert( source->type == WARRIOR      ); return ( warrior_targetdata_t     * ) this; }
+
+protected:
+  dot_t* add_dot(dot_t* d);
+  aura_t* add_aura(aura_t* b);
+};
+
 // Pet ======================================================================
 
 struct pet_t : public player_t
@@ -4574,7 +4696,7 @@ struct action_t : public spell_id_t
   rng_t* rng[ RESULT_MAX ];
   rng_t* rng_travel;
   cooldown_t* cooldown;
-  dot_t* dot;
+  mutable dot_t* action_dot;
   stats_t* stats;
   event_t* execute_event;
   event_t* travel_event;
@@ -4602,8 +4724,12 @@ struct action_t : public spell_id_t
   action_t* dtr_action;
   bool is_dtr_action;
   bool can_trigger_dtr;
+  int targetdata_dot_offset;
 
 private:
+  mutable player_t* cached_targetdata_target;
+  mutable targetdata_t* cached_targetdata;
+
   void init_action_t_();
 
 public:
@@ -4612,6 +4738,7 @@ public:
   action_t( int type, const char* name, const char* sname, player_t* p=0, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, int t=TREE_NONE, bool special=false );
   virtual ~action_t();
+  void init_dot(const std::string& dot_name);
 
   virtual void   parse_data();
   virtual void   parse_effect_data( int spell_id, int effect_nr );
@@ -4683,6 +4810,18 @@ public:
 
   virtual double ppm_proc_chance( double PPM ) const;
 
+  dot_t* dot() const
+  {
+    if(targetdata_dot_offset >= 0)
+      return *(dot_t**)((char*)targetdata() + targetdata_dot_offset);
+    else
+    {
+      if(!action_dot)
+        action_dot = player->get_dot(name_str);
+      return action_dot;
+    }
+  }
+
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
   // Move to ability_t in future
@@ -4690,6 +4829,16 @@ public:
   const spelleffect_data_t& effect1() const { return spell -> effect1(); }
   const spelleffect_data_t& effect2() const { return spell -> effect2(); }
   const spelleffect_data_t& effect3() const { return spell -> effect3(); }
+
+  targetdata_t* targetdata() const
+  {
+    if(cached_targetdata_target != target)
+    {
+      cached_targetdata_target = target;
+      cached_targetdata = targetdata_t::get(player, target);
+    }
+    return cached_targetdata;
+  }
 };
 
 // Attack ===================================================================
@@ -5577,6 +5726,9 @@ struct wait_for_cooldown_t : public wait_action_base_t
 inline buff_t* buff_t::find( sim_t* s, const std::string& name ) { return find( s -> buff_list, name ); }
 inline buff_t* buff_t::find( player_t* p, const std::string& name ) { return find( p -> buff_list, name ); }
 
+inline actor_pair_t::actor_pair_t(targetdata_t* td)
+   : target(td->target), source(td->source)
+{}
 
 #ifdef WHAT_IF
 

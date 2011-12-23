@@ -100,6 +100,38 @@ struct dk_rune_t
 
 enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4 };
 
+struct death_knight_targetdata_t : public targetdata_t
+{
+  dot_t* dots_blood_plague;
+  dot_t* dots_death_and_decay;
+  dot_t* dots_frost_fever;
+
+  buff_t* debuffs_ebon_plaguebringer;
+
+  int diseases()
+  {
+    int disease_count = 0;
+    if ( debuffs_ebon_plaguebringer -> check() ) disease_count++;
+    if ( dots_blood_plague -> ticking ) disease_count++;
+    if ( dots_frost_fever  -> ticking ) disease_count++;
+    return disease_count;
+  }
+
+  death_knight_targetdata_t(player_t* source, player_t* target);
+};
+
+void register_death_knight_targetdata(sim_t* sim)
+{
+  player_type t = DEATH_KNIGHT;
+  typedef death_knight_targetdata_t type;
+
+  REGISTER_DOT(blood_plague);
+  REGISTER_DOT(death_and_decay);
+  REGISTER_DOT(frost_fever);
+
+  REGISTER_DEBUFF(ebon_plaguebringer);
+}
+
 struct death_knight_t : public player_t
 {
   // Active
@@ -114,7 +146,6 @@ struct death_knight_t : public player_t
   buff_t* buffs_crimson_scourge;
   buff_t* buffs_dancing_rune_weapon;
   buff_t* buffs_dark_transformation;
-  buff_t* buffs_ebon_plaguebringer; // Used for disease tracking
   buff_t* buffs_frost_presence;
   buff_t* buffs_killing_machine;
   buff_t* buffs_pillar_of_frost;
@@ -136,11 +167,6 @@ struct death_knight_t : public player_t
   // Diseases
   spell_t* blood_plague;
   spell_t* frost_fever;
-
-  // DoTs
-  dot_t* dots_blood_plague;
-  dot_t* dots_death_and_decay;
-  dot_t* dots_frost_fever;
 
   // Gains
   gain_t* gains_butchery;
@@ -328,11 +354,6 @@ struct death_knight_t : public player_t
     blood_plague = NULL;
     frost_fever  = NULL;
 
-    // DoTs
-    dots_blood_plague    = get_dot( "blood_plague" );
-    dots_death_and_decay = get_dot( "death_and_decay" );
-    dots_frost_fever     = get_dot( "frost_fever" );
-
     // Pets and Guardians
     active_army_ghoul          = NULL;
     active_bloodworms          = NULL;
@@ -350,6 +371,7 @@ struct death_knight_t : public player_t
   }
 
   // Character Definition
+  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new death_knight_targetdata_t(source, target);}
   virtual void      init();
   virtual void      init_talents();
   virtual void      init_spells();
@@ -394,15 +416,6 @@ struct death_knight_t : public player_t
   virtual double    runes_cooldown_time( dk_rune_t* r );
   virtual bool      runes_depleted( rune_type rt, int position );
 
-  int diseases( player_t* /* t */ )
-  {
-    int disease_count = 0;
-    if ( buffs_ebon_plaguebringer -> check() ) disease_count++;
-    if ( dots_blood_plague -> ticking ) disease_count++;
-    if ( dots_frost_fever  -> ticking ) disease_count++;
-    return disease_count;
-  }
-
   void reset_gcd()
   {
     for ( action_t* a=action_list; a; a = a -> next )
@@ -411,6 +424,14 @@ struct death_knight_t : public player_t
     }
   }
 };
+
+death_knight_targetdata_t::death_knight_targetdata_t(player_t* source, player_t* target)
+  : targetdata_t(source, target)
+{
+  death_knight_t* p = this->source -> cast_death_knight();
+  debuffs_ebon_plaguebringer  = add_aura(new buff_t( this, 65142, "ebon_plaguebringer_track", -1, -1, true ));
+  debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().seconds();
+}
 
 static void log_rune_status( death_knight_t* p )
 {
@@ -1695,8 +1716,9 @@ static void trigger_blood_caked_blade( action_t* a )
       {
         death_knight_attack_t::target_debuff( t, dmg_type );
         death_knight_t* p = player -> cast_death_knight();
+        death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
-        target_multiplier *= 1.0 + p -> diseases( t ) * effect1().percent() / 2.0;
+        target_multiplier *= 1.0 + td -> diseases() * effect1().percent() / 2.0;
       }
     };
 
@@ -1729,12 +1751,13 @@ static void trigger_brittle_bones( spell_t* s, player_t* t )
 static void trigger_ebon_plaguebringer( action_t* a, player_t* t )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
+  death_knight_targetdata_t* td = a -> targetdata() -> cast_death_knight();
 
   if ( ! p -> talents.ebon_plaguebringer -> rank() )
     return;
 
   // Each DK gets their own ebon plaguebringer debuff, but we only track one a time, so fake it
-  p -> buffs_ebon_plaguebringer -> trigger();
+  td -> debuffs_ebon_plaguebringer -> trigger();
 
   if ( a -> sim -> overrides.ebon_plaguebringer )
     return;
@@ -1765,13 +1788,13 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
   if ( p -> bugs )
     unholy_blight_dmg *= 0.75;
 
-  dot_t* dot = p -> active_unholy_blight -> dot;
+  dot_t* dot = p -> active_unholy_blight -> dot();
 
   if ( dot -> ticking )
   {
     unholy_blight_dmg += p -> active_unholy_blight -> base_td * dot -> ticks();
 
-    p -> active_unholy_blight -> dot -> cancel();
+    p -> active_unholy_blight -> dot() -> cancel();
   }
   p -> active_unholy_blight -> base_td = unholy_blight_dmg / p -> active_unholy_blight -> num_ticks;
   p -> active_unholy_blight -> execute();
@@ -2074,6 +2097,8 @@ struct melee_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
+      death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
         // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
@@ -2102,7 +2127,7 @@ struct melee_t : public death_knight_attack_t
       if ( p -> buffs_killing_machine -> trigger( 1, p -> buffs_killing_machine -> effect1().percent(), chance ) )
         p -> buffs_tier11_4pc_melee -> trigger();
 
-      if ( p -> dots_blood_plague && p -> dots_blood_plague -> ticking )
+      if ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking )
         p -> buffs_crimson_scourge -> trigger();
 
       trigger_blood_caked_blade( this );
@@ -2264,9 +2289,10 @@ struct blood_boil_t : public death_knight_spell_t
     death_knight_spell_t::target_debuff( t, dmg_type );
 
     death_knight_t* p = player -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
-    base_dd_adder = ( p -> diseases( t ) ? 95 : 0 );
-    direct_power_mod  = 0.08 + ( p -> diseases( t ) ? 0.035 : 0 );
+    base_dd_adder = ( td -> diseases() ? 95 : 0 );
+    direct_power_mod  = 0.08 + ( td -> diseases() ? 0.035 : 0 );
   }
 
   virtual bool ready()
@@ -2326,9 +2352,10 @@ struct blood_strike_offhand_t : public death_knight_attack_t
   virtual void target_debuff( player_t* t, int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases( t ) * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
+    target_multiplier *= 1 + td -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
 };
 
@@ -2369,8 +2396,9 @@ struct blood_strike_t : public death_knight_attack_t
     death_knight_attack_t::target_debuff( t, dmg_type );
 
     death_knight_t* p = player -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
-    target_multiplier *= 1 + p -> diseases( t ) * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
+    target_multiplier *= 1 + td -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
 };
 
@@ -2746,9 +2774,10 @@ struct festering_strike_t : public death_knight_attack_t
 
     if ( result_is_hit() )
     {
-      p -> dots_blood_plague -> extend_duration_seconds( 8 );
-      p -> dots_frost_fever  -> extend_duration_seconds( 8 );
-      if ( p -> dots_blood_plague -> ticking || p -> dots_frost_fever -> ticking )
+      death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+      td -> dots_blood_plague -> extend_duration_seconds( 8 );
+      td -> dots_frost_fever  -> extend_duration_seconds( 8 );
+      if ( td -> dots_blood_plague -> ticking || td -> dots_frost_fever -> ticking )
         trigger_ebon_plaguebringer( this, target );
     }
   }
@@ -2922,10 +2951,11 @@ struct heart_strike_t : public death_knight_attack_t
   void target_debuff( player_t* t, int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases( t ) * effect3().percent();
+    target_multiplier *= 1 + td -> diseases() * effect3().percent();
   }
 };
 
@@ -3214,9 +3244,10 @@ struct obliterate_offhand_t : public death_knight_attack_t
   virtual void target_debuff( player_t* t, int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases( t ) * effect3().percent() / 2.0;
+    target_multiplier *= 1 + td -> diseases() * effect3().percent() / 2.0;
 
     if ( t -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
@@ -3318,9 +3349,10 @@ struct obliterate_t : public death_knight_attack_t
   virtual void target_debuff( player_t* t, int dmg_type )
   {
     death_knight_t* p = player -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
     death_knight_attack_t::target_debuff( t, dmg_type );
 
-    target_multiplier *= 1 + p -> diseases( t ) * effect3().percent() / 2.0;
+    target_multiplier *= 1 + td -> diseases() * effect3().percent() / 2.0;
 
     if ( t -> health_percentage() < 35 )
       player_multiplier *= 1.0 + p -> talents.merciless_combat -> effect1().percent();
@@ -3709,8 +3741,9 @@ struct scourge_strike_t : public death_knight_attack_t
       // death_knight_spell_t::target_debuff( t, dmg_type );
 
       death_knight_t* p = player -> cast_death_knight();
+      death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
-      target_multiplier = p -> diseases( t ) * 0.18;
+      target_multiplier = td -> diseases() * 0.18;
 
       if ( t -> debuffs.earth_and_moon -> up() || t -> debuffs.ebon_plaguebringer -> up() || t -> debuffs.curse_of_elements -> up() )
         target_multiplier *= 1.08;
@@ -4695,8 +4728,6 @@ void death_knight_t::init_buffs()
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
   buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", "Dancing Rune Weapon", -1, -1.0, true ); // quiet=true
   buffs_dark_transformation = new buff_t( this, "dark_transformation", "Dark Transformation" );
-  buffs_ebon_plaguebringer  = new buff_t( this, 65142, "ebon_plaguebringer_track", -1, -1, true );
-  buffs_ebon_plaguebringer -> buff_duration += talents.epidemic -> effect1().seconds();
   buffs_frost_presence      = new buff_t( this, "frost_presence", "Frost Presence" );
   buffs_killing_machine     = new buff_t( this, 51124, "killing_machine" ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost", "Pillar of Frost" );

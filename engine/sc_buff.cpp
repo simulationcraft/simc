@@ -72,7 +72,7 @@ buff_t::buff_t( sim_t*             s,
 
 // buff_t::buff_t ===========================================================
 
-buff_t::buff_t( player_t*          p,
+buff_t::buff_t( actor_pair_t       p,
                 const std::string& n,
                 int                ms,
                 double             d,
@@ -83,9 +83,9 @@ buff_t::buff_t( player_t*          p,
                 int                rt,
                 int                id,
                 bool               act ) :
-  spell_id_t( p, n.c_str() ),
+  spell_id_t( p.source, n.c_str() ),
   buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
-  name_str( n ), sim( p -> sim ), player( p ), source( p ), initial_source( p ),
+  name_str( n ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( ms ), aura_id( id ), rng_type( rt ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
   uptime_pct()
@@ -113,16 +113,16 @@ void buff_t::init_from_talent_( player_t* /* p */, talent_t* talent )
 
 // buff_t::buff_t ===========================================================
 
-buff_t::buff_t( player_t* p,
+buff_t::buff_t( actor_pair_t p,
                 talent_t* talent, ... ) :
-  spell_id_t( p, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
+  spell_id_t( p.source, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
   buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
-  name_str( s_token ), sim( p -> sim ), player( p ), source( p ), initial_source( p ),
+  name_str( s_token ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),
   activated( true ), reverse( false ), constant( false ), quiet( false ),
   uptime_pct()
 {
-  init_from_talent_( p, talent );
+  init_from_talent_( p.source, talent );
 
   va_list vap;
   va_start( vap, talent );
@@ -145,16 +145,16 @@ void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
 
 // buff_t::buff_t ===========================================================
 
-buff_t::buff_t( player_t*     p,
+buff_t::buff_t( actor_pair_t  p,
                 spell_data_t* spell, ... ) :
-  spell_id_t( p, spell -> name_cstr(), spell -> id() ),
+spell_id_t( p.source, spell -> name_cstr(), spell -> id() ),
   buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ), name_str( s_token ),
-  sim( p -> sim ), player( p ), source( p ), initial_source( p ),
+  sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),
   activated( true ), reverse( false ), constant( false ), quiet( false ),
   uptime_pct()
 {
-  init_from_spell_( p, spell );
+  init_from_spell_( p.source, spell );
 
   va_list vap;
   va_start( vap, spell );
@@ -252,10 +252,12 @@ void buff_t::init()
 
   buff_t** tail=0;
 
-  if ( player )
+  if ( initial_source )
   {
-    cooldown = player -> get_cooldown( "buff_" + name_str );
-    rng = player -> get_rng( name_str, rng_type );
+    cooldown = initial_source-> get_cooldown( "buff_" + name_str );
+    if ( initial_source != player )
+      name_str = name_str + ':' + initial_source->name_str;
+    rng = initial_source-> get_rng( name_str, rng_type );
     tail = &( player -> buff_list );
   }
   else
@@ -276,7 +278,7 @@ void buff_t::init()
 
 // buff_t::buff_t ===========================================================
 
-buff_t::buff_t( player_t*          p,
+buff_t::buff_t( actor_pair_t       p,
                 const std::string& n,
                 const char*        sname,
                 double             chance,
@@ -285,11 +287,11 @@ buff_t::buff_t( player_t*          p,
                 bool               r,
                 int                rt,
                 bool               act ) :
-  spell_id_t( p, n.c_str(), sname, 0 ),
+  spell_id_t( p.source, n.c_str(), sname, 0 ),
   buff_duration( duration() ),
   default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   name_str( n ),
-  sim( p -> sim ), player( p ), source( 0 ), initial_source( 0 ),
+  sim( p.target -> sim ), player( p.target ), source( 0 ), initial_source( p.source ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
   aura_id( 0 ), rng_type( rt ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
@@ -297,17 +299,20 @@ buff_t::buff_t( player_t*          p,
 {
   init_buff_t_();
 
-  cooldown = player -> get_cooldown( "buff_" + name_str );
+  cooldown = initial_source -> get_cooldown( "buff_" + name_str );
   if ( cd < 0.0 )
   {
-    cooldown -> duration = p -> dbc.spell( spell_id() ) -> cooldown();
+    cooldown -> duration = p.source -> dbc.spell( spell_id() ) -> cooldown();
   }
   else
   {
     cooldown -> duration = cd;
   }
 
-  rng = player -> get_rng( n, rng_type );
+  if ( initial_source != player )
+    name_str = name_str + ':' + initial_source->name_str;
+
+  rng = initial_source -> get_rng( name_str, rng_type );
 
 
   if ( sim -> debug )
@@ -316,7 +321,7 @@ buff_t::buff_t( player_t*          p,
 
 // buff_t::buff_t ===========================================================
 
-buff_t::buff_t( player_t*          p,
+buff_t::buff_t( actor_pair_t       p,
                 const uint32_t     id,
                 const std::string& n,
                 double             chance,
@@ -325,10 +330,10 @@ buff_t::buff_t( player_t*          p,
                 bool               r,
                 int                rt,
                 bool               act ) :
-  spell_id_t( p, n.c_str(), id ),
+  spell_id_t( p.source, n.c_str(), id ),
   buff_duration( duration() ),
   default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
-  name_str( n ), sim( p -> sim ), player( p ), source( 0 ), initial_source( 0 ),
+  name_str( n ), sim( p.target -> sim ), player( p.target ), source( 0 ), initial_source( p.source ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
   aura_id( 0 ), rng_type( rt ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
@@ -339,14 +344,17 @@ buff_t::buff_t( player_t*          p,
   cooldown = player -> get_cooldown( "buff_" + name_str );
   if ( cd < 0.0 )
   {
-    cooldown -> duration = p -> dbc.spell( spell_id() ) -> cooldown();
+    cooldown -> duration = player -> dbc.spell( spell_id() ) -> cooldown();
   }
   else
   {
     cooldown -> duration = cd;
   }
 
-  rng = player -> get_rng( n, rng_type );
+  if ( initial_source != player )
+    name_str = name_str + ':' + initial_source->name_str;
+
+  rng = initial_source -> get_rng( name_str, rng_type );
 
   if ( sim -> debug )
     log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );

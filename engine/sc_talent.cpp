@@ -181,7 +181,7 @@ uint32_t talent_t::rank() const
 spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
   s_type( T_SPELL ), s_id( 0 ), s_data( 0 ), s_enabled( false ), s_player( player ),
   s_overridden( false ), s_token( t_name ? t_name : "" ),
-  s_required_talent( 0 ), s_single( 0 ), s_tree( -1 )
+  s_required_talent( 0 ), s_single( 0 ), s_tree( -1 ), s_list( 0 )
 {
   armory_t::format( s_token, FORMAT_ASCII_MASK );
   range::fill( s_effects, 0 );
@@ -189,7 +189,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
   s_type( T_SPELL ), s_id( id ), s_data( 0 ), s_enabled( false ), s_player( player ),
-  s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 )
+  s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 ), s_list( 0 )
 {
   initialize();
   armory_t::format( s_token, FORMAT_ASCII_MASK );
@@ -197,7 +197,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
   s_type( T_SPELL ), s_id( 0 ), s_data( 0 ), s_enabled( false ), s_player( player ),
-  s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 )
+  s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 ), s_list( 0 )
 {
   initialize( s_name );
   armory_t::format( s_token, FORMAT_ASCII_MASK );
@@ -205,8 +205,14 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name
 
 spell_id_t::~spell_id_t()
 {
-  if ( s_player )
-    s_player -> spell_list.remove( this );
+  if ( s_list )
+    s_list -> erase( s_list_iter );
+}
+
+void spell_id_t::queue()
+{
+  s_list = &s_player -> spell_list;
+  s_list_iter = s_list->insert( s_list->end(), this );
 }
 
 bool spell_id_t::initialize( const char* s_name )
@@ -984,7 +990,7 @@ double spell_id_t::mod_additive( property_type_t p_type ) const
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
   spell_id_t( player, t_name, id, talent )
 {
-  s_player -> spell_list.push_back( this );
+  queue();
 
   if ( s_player -> sim -> debug )
     log_t::output( s_player -> sim, "Active Spell status: %s", to_str().c_str() );
@@ -993,7 +999,7 @@ active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint
 active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
   spell_id_t( player, t_name, s_name, talent )
 {
-  s_player -> spell_list.push_back( this );
+  queue();
 
   if ( s_player -> sim -> debug )
     log_t::output( s_player -> sim, "Active Spell status: %s", to_str().c_str() );
@@ -1006,7 +1012,7 @@ active_spell_t::active_spell_t( player_t* player, const char* t_name, const char
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
   spell_id_t( player, t_name, id, talent )
 {
-  s_player -> spell_list.push_back( this );
+  queue();
 
   if ( s_player -> sim -> debug )
     log_t::output( s_player -> sim, "Passive Spell status: %s", to_str().c_str() );
@@ -1015,7 +1021,7 @@ passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const ui
 passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
   spell_id_t( player, t_name, s_name, talent )
 {
-  s_player -> spell_list.push_back( this );
+  queue();
 
   if ( s_player -> sim -> debug )
     log_t::output( s_player -> sim, "Passive Spell status: %s", to_str().c_str() );
@@ -1049,7 +1055,7 @@ bool glyph_t::enable( bool override_value )
 mastery_t::mastery_t( player_t* player, const char* t_name, const uint32_t id, int tree ) :
   spell_id_t( player, t_name, id ), m_tree( tree )
 {
-  s_player -> spell_list.push_back( this );
+  queue();
 
   if ( s_player -> sim -> debug )
     log_t::output( s_player -> sim, "Mastery status: %s", to_str().c_str() );
@@ -1058,7 +1064,7 @@ mastery_t::mastery_t( player_t* player, const char* t_name, const uint32_t id, i
 mastery_t::mastery_t( player_t* player, const char* t_name, const char* s_name, int tree ) :
   spell_id_t( player, t_name, s_name ), m_tree( tree )
 {
-  s_player -> spell_list.push_back( this );
+  queue();
 
   if ( s_player -> sim -> debug )
     log_t::output( s_player -> sim, "Mastery status: %s", to_str().c_str() );

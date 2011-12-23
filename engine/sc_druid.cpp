@@ -9,6 +9,71 @@
 // Druid
 // ==========================================================================
 
+
+struct druid_targetdata_t : public targetdata_t
+{
+  dot_t* dots_fiery_claws;
+  dot_t* dots_insect_swarm;
+  dot_t* dots_lacerate;
+  dot_t* dots_lifebloom;
+  dot_t* dots_moonfire;
+  dot_t* dots_rake;
+  dot_t* dots_regrowth;
+  dot_t* dots_rejuvenation;
+  dot_t* dots_rip;
+  dot_t* dots_sunfire;
+  dot_t* dots_wild_growth;
+
+  buff_t* buffs_lifebloom;
+  buff_t* buffs_combo_points;
+
+  double combo_point_rank( double* cp_list ) const
+  {
+    assert( buffs_combo_points -> check() );
+    return cp_list[ buffs_combo_points -> stack() - 1 ];
+  }
+
+  double combo_point_rank( double cp1, double cp2, double cp3, double cp4, double cp5 ) const
+  {
+    double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
+    return combo_point_rank( cp_list );
+  }
+
+  bool hot_ticking()
+  {
+    return dots_regrowth->ticking || dots_rejuvenation->ticking || dots_lifebloom->ticking || dots_wild_growth->ticking;
+  }
+
+  druid_targetdata_t(player_t* source, player_t* target)
+    : targetdata_t(source, target)
+  {
+    buffs_combo_points = add_aura(new buff_t( this, "combo_points", 5 ));
+
+    buffs_lifebloom = add_aura(new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, 0 ));
+    buffs_lifebloom -> buff_duration = 11.0; // Override duration so the bloom works correctly
+  }
+};
+
+void register_druid_targetdata(sim_t* sim)
+{
+  player_type t = DRUID;
+  typedef druid_targetdata_t type;
+
+  REGISTER_DOT(fiery_claws);
+  REGISTER_DOT(insect_swarm);
+  REGISTER_DOT(lacerate);
+  REGISTER_DOT(lifebloom);
+  REGISTER_DOT(moonfire);
+  REGISTER_DOT(rake);
+  REGISTER_DOT(regrowth);
+  REGISTER_DOT(rejuvenation);
+  REGISTER_DOT(rip);
+  REGISTER_DOT(sunfire);
+  REGISTER_DOT(wild_growth);
+
+  REGISTER_BUFF(combo_points);
+}
+
 struct druid_t : public player_t
 {
   // Active
@@ -31,7 +96,6 @@ struct druid_t : public player_t
   buff_t* buffs_barkskin;
   buff_t* buffs_bear_form;
   buff_t* buffs_cat_form;
-  buff_t* buffs_combo_points;
   buff_t* buffs_eclipse_lunar;
   buff_t* buffs_eclipse_solar;
   buff_t* buffs_enrage;
@@ -39,7 +103,6 @@ struct druid_t : public player_t
   buff_t* buffs_glyph_of_innervate;
   buff_t* buffs_harmony;
   buff_t* buffs_lacerate;
-  buff_t* buffs_lifebloom;
   buff_t* buffs_lunar_shower;
   buff_t* buffs_moonkin_form;
   buff_t* buffs_natures_grace;
@@ -70,24 +133,6 @@ struct druid_t : public player_t
   cooldown_t* cooldowns_lotp;
   cooldown_t* cooldowns_mangle_bear;
   cooldown_t* cooldowns_starsurge;
-
-  // DoTs
-  dot_t* dots_insect_swarm;
-  dot_t* dots_insect_swarm2;
-  dot_t* dots_insect_swarm3;
-  dot_t* dots_lacerate;
-  dot_t* dots_lifebloom;
-  dot_t* dots_moonfire;
-  dot_t* dots_moonfire2;
-  dot_t* dots_moonfire3;
-  dot_t* dots_rake;
-  dot_t* dots_regrowth;
-  dot_t* dots_rejuvenation;
-  dot_t* dots_rip;
-  dot_t* dots_sunfire;
-  dot_t* dots_sunfire2;
-  dot_t* dots_sunfire3;
-  dot_t* dots_wild_growth;
 
   // Gains
   gain_t* gains_bear_melee;
@@ -300,23 +345,6 @@ struct druid_t : public player_t
     cooldowns_mangle_bear    = get_cooldown( "mangle_bear"    );
     cooldowns_starsurge      = get_cooldown( "starsurge"      );
 
-    dots_insect_swarm  = get_dot( "insect_swarm"  );
-    dots_insect_swarm2 = get_dot( "insect_swarm2" );
-    dots_insect_swarm3 = get_dot( "insect_swarm3" );
-    dots_lacerate      = get_dot( "lacerate"      );
-    dots_lifebloom     = get_dot( "lifebloom"     );
-    dots_moonfire      = get_dot( "moonfire"      );
-    dots_moonfire2     = get_dot( "moonfire2"     );
-    dots_moonfire3     = get_dot( "moonfire3"     );
-    dots_rake          = get_dot( "rake"          );
-    dots_regrowth      = get_dot( "regrowth"      );
-    dots_rejuvenation  = get_dot( "rejuvenation"  );
-    dots_rip           = get_dot( "rip"           );
-    dots_sunfire       = get_dot( "sunfire"       );
-    dots_sunfire2      = get_dot( "sunfire2"      );
-    dots_sunfire3      = get_dot( "sunfire3"      );
-    dots_wild_growth   = get_dot( "wild_growth"   );
-
     cat_melee_attack = 0;
     bear_melee_attack = 0;
 
@@ -332,6 +360,7 @@ struct druid_t : public player_t
   }
 
   // Character Definition
+  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new druid_targetdata_t(source, target);}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -345,7 +374,6 @@ struct druid_t : public player_t
   virtual void      init_actions();
   virtual void      combat_begin();
   virtual void      reset();
-  virtual void      clear_debuffs();
   virtual void      regen( double periodicity );
   virtual double    available() const;
   virtual double    composite_armor_multiplier() const;
@@ -372,29 +400,6 @@ struct druid_t : public player_t
   virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
   virtual double    intellect() const;
 
-  // Utilities
-  double combo_point_rank( double* cp_list ) const
-  {
-    assert( buffs_combo_points -> check() );
-    return cp_list[ buffs_combo_points -> stack() - 1 ];
-  }
-
-  double combo_point_rank( double cp1, double cp2, double cp3, double cp4, double cp5 ) const
-  {
-    double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
-    return combo_point_rank( cp_list );
-  }
-
-  bool hot_ticking( player_t* t )
-  {
-    if ( ( t -> find_dot( "regrowth"     ) && t -> find_dot( "regrowth"     ) -> ticking ) ||
-         ( t -> find_dot( "rejuvenation" ) && t -> find_dot( "rejuvenation" ) -> ticking ) ||
-         ( t -> find_dot( "lifebloom"    ) && t -> find_dot( "lifebloom"    ) -> ticking ) ||
-         ( t -> find_dot( "wild_growth"  ) && t -> find_dot( "wild_growth"  ) -> ticking ) )
-      return true;
-
-    return false;
-  }
 
   void reset_gcd()
   {
@@ -680,15 +685,15 @@ struct burning_treant_pet_t : public pet_t
 
 // add_combo_point ==========================================================
 
-static void add_combo_point( druid_t* p )
+static void add_combo_point( druid_t* p, druid_targetdata_t* td )
 {
-  if ( p -> buffs_combo_points -> current_stack == 5 )
+  if ( td -> buffs_combo_points -> current_stack == 5 )
   {
     p -> procs_combo_points_wasted -> occur();
     return;
   }
 
-  p -> buffs_combo_points -> trigger();
+  td -> buffs_combo_points -> trigger();
 }
 
 // trigger_earth_and_moon ===================================================
@@ -852,13 +857,14 @@ static void trigger_efflorescence( heal_t* a )
 static void trigger_empowered_touch( heal_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
+  druid_targetdata_t* td = a -> targetdata() -> cast_druid();
 
   if ( p -> rng_empowered_touch -> roll( p -> talents.empowered_touch -> effect2().percent() ) )
   {
-    if ( p -> dots_lifebloom -> ticking )
+    if ( td -> dots_lifebloom -> ticking )
     {
-      p -> dots_lifebloom -> refresh_duration();
-      if ( p -> buffs_lifebloom -> check() ) p -> buffs_lifebloom -> refresh();
+      td -> dots_lifebloom -> refresh_duration();
+      if ( td -> buffs_lifebloom -> check() ) td -> buffs_lifebloom -> refresh();
       p -> procs_empowered_touch -> occur();
     }
   }
@@ -1029,6 +1035,7 @@ static void trigger_primal_fury( druid_bear_attack_t* a )
 static void trigger_primal_fury( druid_cat_attack_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
+  druid_targetdata_t * td = a -> targetdata() -> cast_druid();
 
   if ( ! p -> talents.primal_fury -> rank() )
     return;
@@ -1040,7 +1047,7 @@ static void trigger_primal_fury( druid_cat_attack_t* a )
 
   if ( p -> rng_primal_fury -> roll( blood_frenzy -> proc_chance() ) )
   {
-    add_combo_point( p );
+    add_combo_point( p, td );
     p -> procs_primal_fury -> occur();
   }
 }
@@ -1096,6 +1103,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
   if ( s -> school != SCHOOL_PHYSICAL ) return;
 
   druid_t* p = s -> player -> cast_druid();
+  druid_targetdata_t* td = s -> targetdata() -> cast_druid();
   sim_t* sim = s -> sim;
 
   if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
@@ -1118,7 +1126,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     {
       druid_cat_attack_t::impact( t, impact_result, 0 );
 
-      base_td = total_dot_dmg / dot -> num_ticks;
+      base_td = total_dot_dmg / dot() -> num_ticks;
     }
 
     virtual double travel_time()
@@ -1147,7 +1155,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
   if ( ! p -> active_tier12_2pc_melee ) p -> active_tier12_2pc_melee = new fiery_claws_t( p );
 
-  dot_t* dot = p -> active_tier12_2pc_melee -> dot;
+  dot_t* dot = td -> dots_fiery_claws;
 
   if ( dot -> ticking )
   {
@@ -1232,6 +1240,7 @@ void druid_cat_attack_t::consume_resource()
 void druid_cat_attack_t::execute()
 {
   druid_t* p = player -> cast_druid();
+  druid_targetdata_t* td = targetdata() -> cast_druid();
 
   attack_t::execute();
 
@@ -1241,13 +1250,13 @@ void druid_cat_attack_t::execute()
     {
       if ( p -> set_bonus.tier12_4pc_melee() & p -> buffs_berserk -> check() )
       {
-        if ( p -> rng_tier12_4pc_melee -> roll( p -> buffs_combo_points -> check() / 5 ) )
+        if ( p -> rng_tier12_4pc_melee -> roll( td -> buffs_combo_points -> check() / 5 ) )
           p -> buffs_berserk -> extend_duration( p, p ->sets ->set( SET_T12_4PC_MELEE ) -> base_value() );
       }
 
-      p -> buffs_combo_points -> expire();
+      td -> buffs_combo_points -> expire();
     }
-    if ( adds_combo_points ) add_combo_point ( p );
+    if ( adds_combo_points ) add_combo_point ( p, td );
 
     if ( result == RESULT_CRIT )
     {
@@ -1278,6 +1287,7 @@ bool druid_cat_attack_t::ready()
     return false;
 
   druid_t*  p = player -> cast_druid();
+  druid_targetdata_t* td = targetdata() -> cast_druid();
 
   if ( ! p -> buffs_cat_form -> check() )
     return false;
@@ -1290,7 +1300,7 @@ bool druid_cat_attack_t::ready()
     if ( ! p -> buffs_stealthed -> check() )
       return false;
 
-  if ( requires_combo_points && ! p -> buffs_combo_points -> check() )
+  if ( requires_combo_points && ! td -> buffs_combo_points -> check() )
     return false;
 
   return true;
@@ -1430,9 +1440,10 @@ struct ferocious_bite_t : public druid_cat_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    base_dd_adder    = base_dmg_per_point * p -> buffs_combo_points -> stack();
-    direct_power_mod = 0.109 * p -> buffs_combo_points -> stack();
+    base_dd_adder    = base_dmg_per_point * td -> buffs_combo_points -> stack();
+    direct_power_mod = 0.109 * td -> buffs_combo_points -> stack();
 
     // consumes up to 35 additional energy to increase damage by up to 100%.
     // Assume 100/35 = 2.857% per additional energy consumed
@@ -1465,9 +1476,9 @@ struct ferocious_bite_t : public druid_cat_attack_t
     if ( result_is_hit() && target -> health_percentage() <= health_percentage )
     {
       // Proc chance is not stored in the talent anymore
-      if ( p -> dots_rip -> ticking && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> rank() * 0.50 ) )
+      if ( td -> dots_rip -> ticking && p -> rng_blood_in_the_water -> roll( p -> talents.blood_in_the_water -> rank() * 0.50 ) )
       {
-        p -> dots_rip -> refresh_duration();
+        td -> dots_rip -> refresh_duration();
       }
     }
   }
@@ -1618,8 +1629,9 @@ struct maim_t : public druid_cat_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    base_dd_adder = base_dmg_per_point * p -> buffs_combo_points -> stack();
+    base_dd_adder = base_dmg_per_point * td -> buffs_combo_points -> stack();
 
     druid_cat_attack_t::execute();
   }
@@ -1652,14 +1664,15 @@ struct mangle_cat_t : public druid_cat_attack_t
     if ( result_is_hit() )
     {
       druid_t* p = player -> cast_druid();
+      druid_targetdata_t* td = targetdata() -> cast_druid();
 
       if ( p -> glyphs.bloodletting -> enabled() &&
-           p -> dots_rip -> ticking  &&
-           p -> dots_rip -> added_ticks < 4 )
+           td -> dots_rip -> ticking  &&
+           td -> dots_rip -> added_ticks < 4 )
       {
         // Glyph adds 1/1/2 ticks on execute
-        int extra_ticks = ( p -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
-        p -> dots_rip -> extend_duration( extra_ticks );
+        int extra_ticks = ( td -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
+        td -> dots_rip -> extend_duration( extra_ticks );
       }
       p -> buffs_t11_4pc_melee -> trigger();
     }
@@ -1681,11 +1694,12 @@ struct mangle_cat_t : public druid_cat_attack_t
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     if ( extend_rip )
       if ( ! p -> glyphs.bloodletting -> enabled() ||
-           ! p -> dots_rip -> ticking ||
-           ( p -> dots_rip -> added_ticks == 4 ) )
+           ! td -> dots_rip -> ticking ||
+           ( td -> dots_rip -> added_ticks == 4 ) )
         return false;
 
     return druid_cat_attack_t::ready();
@@ -1873,11 +1887,12 @@ struct rip_t : public druid_cat_attack_t
   virtual void player_buff()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     if ( base_td == 0.0 && tick_power_mod == 0.0 )
     {
-      base_td        = base_td_init + p -> buffs_combo_points -> stack() * base_dmg_per_point;
-      tick_power_mod = p -> buffs_combo_points -> stack() * ap_per_point;
+      base_td        = base_td_init + td -> buffs_combo_points -> stack() * base_dmg_per_point;
+      tick_power_mod = td -> buffs_combo_points -> stack() * ap_per_point;
     }
 
     druid_cat_attack_t::player_buff();
@@ -1886,11 +1901,12 @@ struct rip_t : public druid_cat_attack_t
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    if ( p -> dots_rip -> ticking )
+    if ( td -> dots_rip -> ticking )
     {
-      double b = base_td_init + p -> buffs_combo_points -> stack() * base_dmg_per_point;
-      double t = p -> buffs_combo_points -> stack() * ap_per_point;
+      double b = base_td_init + td -> buffs_combo_points -> stack() * base_dmg_per_point;
+      double t = td -> buffs_combo_points -> stack() * ap_per_point;
       double current_value = b + t * p -> composite_attack_power();
       double saved_value = base_td + tick_power_mod * player_attack_power;
 
@@ -1927,8 +1943,9 @@ struct savage_roar_t : public druid_cat_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    double duration = this -> duration() + 5.0 * p -> buffs_combo_points -> stack();
+    double duration = this -> duration() + 5.0 * td -> buffs_combo_points -> stack();
     duration += p -> talents.endless_carnage -> effect2().seconds();
 
     // execute clears CP, so has to be after calculation duration
@@ -1963,16 +1980,17 @@ struct shred_t : public druid_cat_attack_t
   {
     druid_cat_attack_t::execute();
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     if ( result_is_hit() )
     {
       if ( p -> glyphs.bloodletting -> enabled() &&
-           p -> dots_rip -> ticking  &&
-           p -> dots_rip -> added_ticks < 4 )
+           td -> dots_rip -> ticking  &&
+           td -> dots_rip -> added_ticks < 4 )
       {
         // Glyph adds 1/1/2 ticks on execute
-        int extra_ticks = ( p -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
-        p -> dots_rip -> extend_duration( extra_ticks );
+        int extra_ticks = ( td -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
+        td -> dots_rip -> extend_duration( extra_ticks );
       }
       trigger_infected_wounds( this );
     }
@@ -2000,11 +2018,12 @@ struct shred_t : public druid_cat_attack_t
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     if ( extend_rip )
       if ( ! p -> glyphs.bloodletting -> enabled() ||
-           ! p -> dots_rip -> ticking ||
-           ( p -> dots_rip -> added_ticks == 4 ) )
+           ! td -> dots_rip -> ticking ||
+           ( td -> dots_rip -> added_ticks == 4 ) )
         return false;
 
     return druid_cat_attack_t::ready();
@@ -2459,10 +2478,11 @@ struct pulverize_t : public druid_bear_attack_t
     if ( result_is_hit() )
     {
       druid_t* p = player -> cast_druid();
-      if ( p -> dots_lacerate -> ticking )
+      druid_targetdata_t* td = targetdata() -> cast_druid();
+      if ( td -> dots_lacerate -> ticking )
       {
         p -> buffs_pulverize -> trigger( 1, p -> buffs_lacerate -> stack() * 0.03 );
-        p -> dots_lacerate -> cancel();
+        td -> dots_lacerate -> cancel();
         p -> buffs_lacerate -> expire();
       }
     }
@@ -2712,8 +2732,9 @@ struct lifebloom_bloom_t : public druid_heal_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    base_dd_multiplier = p -> buffs_lifebloom -> check();
+    base_dd_multiplier = td -> buffs_lifebloom -> check();
 
     druid_heal_t::execute();
   }
@@ -2735,22 +2756,24 @@ struct lifebloom_t : public druid_heal_t
 
     bloom = new lifebloom_bloom_t( p );
 
-    // This can be only cast on one target, unless Tree of Life is up
+    // TODO: this can be only cast on one target, unless Tree of Life is up
   }
 
   virtual double calculate_tick_damage()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    return druid_heal_t::calculate_tick_damage() * p -> buffs_lifebloom -> check();
+    return druid_heal_t::calculate_tick_damage() * td -> buffs_lifebloom -> check();
   }
 
   virtual void execute()
   {
     druid_heal_t::execute();
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    p -> buffs_lifebloom -> trigger();
+    td -> buffs_lifebloom -> trigger();
 
     p -> trigger_replenishment();
   }
@@ -2761,8 +2784,9 @@ struct lifebloom_t : public druid_heal_t
 
     druid_heal_t::last_tick( d );
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    p -> buffs_lifebloom -> expire();
+    td -> buffs_lifebloom -> expire();
   }
 
   virtual void tick( dot_t* d )
@@ -2812,8 +2836,9 @@ struct nourish_t : public druid_heal_t
   {
     druid_heal_t::target_debuff( t, dmg_type );
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    if ( p -> hot_ticking( t ) )
+    if ( td -> hot_ticking() )
       target_multiplier *= 1.20;
   }
 };
@@ -2837,6 +2862,7 @@ struct regrowth_t : public druid_heal_t
   {
     druid_heal_t::execute();
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     p -> buffs_natures_grace -> trigger( 1, p -> talents.natures_grace -> base_value() / 100.0 );
     trigger_empowered_touch( this );
@@ -2846,9 +2872,9 @@ struct regrowth_t : public druid_heal_t
 
     if ( p -> glyphs.regrowth -> enabled() )
     {
-      if ( target -> health_percentage() <= p -> glyphs.regrowth ->effect1().percent() && p -> dots_regrowth -> ticking )
+      if ( target -> health_percentage() <= p -> glyphs.regrowth ->effect1().percent() && td -> dots_regrowth -> ticking )
       {
-        p -> dots_regrowth -> refresh_duration();
+        td -> dots_regrowth -> refresh_duration();
       }
     }
   }
@@ -2914,6 +2940,7 @@ struct rejuvenation_t : public druid_heal_t
 
 // Swiftmend ================================================================
 
+// TODO: in game, you can swiftmend other druids' hots, which is not supported here
 struct swiftmend_t : public druid_heal_t
 {
   swiftmend_t( druid_t* p, const std::string& options_str ) :
@@ -2931,28 +2958,29 @@ struct swiftmend_t : public druid_heal_t
   {
     druid_heal_t::execute();
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     if ( ! p -> glyphs.swiftmend -> enabled() )
     {
       // Will consume the shortest of the two HoTs if both are up
-      if ( p -> dots_regrowth -> ticking && p -> dots_rejuvenation -> ticking )
+      if ( td -> dots_regrowth -> ticking && td -> dots_rejuvenation -> ticking )
       {
-        if ( p -> dots_regrowth -> remains() > p -> dots_rejuvenation -> remains() )
+        if ( td -> dots_regrowth -> remains() > td -> dots_rejuvenation -> remains() )
         {
-          p -> dots_rejuvenation -> cancel();
+          td -> dots_rejuvenation -> cancel();
         }
         else
         {
-          p -> dots_regrowth -> cancel();
+          td -> dots_regrowth -> cancel();
         }
       }
-      else if ( p -> dots_regrowth -> ticking )
+      else if ( td -> dots_regrowth -> ticking )
       {
-        p -> dots_regrowth -> cancel();
+        td -> dots_regrowth -> cancel();
       }
-      else if ( p -> dots_rejuvenation -> ticking )
+      else if ( td -> dots_rejuvenation -> ticking )
       {
-        p -> dots_rejuvenation -> cancel();
+        td -> dots_rejuvenation -> cancel();
       }
     }
 
@@ -2965,9 +2993,10 @@ struct swiftmend_t : public druid_heal_t
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     // Note: with the glyph you can use other people's regrowth/rejuv
-    if ( ! ( p -> dots_regrowth -> ticking || p -> dots_rejuvenation -> ticking ) )
+    if ( ! ( td -> dots_regrowth -> ticking || td -> dots_rejuvenation -> ticking ) )
       return false;
 
     return druid_heal_t::ready();
@@ -3584,8 +3613,8 @@ struct insect_swarm_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
 
-  insect_swarm_t( druid_t* p, const std::string& options_str, const char* name = "insect_swarm" ) :
-    druid_spell_t( name, 5570, p ),
+  insect_swarm_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "insect_swarm", 5570, p ),
     starsurge_cd( 0 )
   {
     parse_options( NULL, options_str );
@@ -3679,11 +3708,10 @@ struct mark_of_the_wild_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
-  dot_t* sf;
 
-  moonfire_t( druid_t* p, const std::string& options_str, bool dtr=false, const char* name = "moonfire", dot_t* sf_=0 ) :
-    druid_spell_t( name, 8921, p ),
-    starsurge_cd( 0 ), sf( sf_ ? sf_ : p -> dots_sunfire )
+  moonfire_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
+    druid_spell_t( "moonfire", 8921, p ),
+    starsurge_cd( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -3743,6 +3771,8 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
+    dot_t* sf = td ->dots_sunfire;
 
     // Recalculate all those multipliers w/o Lunar Shower/BotG
     player_buff_tick();
@@ -3879,13 +3909,10 @@ struct druids_swiftness_t : public druid_spell_t
 struct starfire_t : public druid_spell_t
 {
   int extend_moonfire;
-  dot_t* is;
-  dot_t* mf;
-  dot_t* sf;
 
   starfire_t( druid_t* p, const std::string& options_str, bool dtr=false, const char* name = "starfire", dot_t* is_ = 0, dot_t* mf_ = 0, dot_t* sf_ = 0 ) :
     druid_spell_t( name, 2912, p ),
-    extend_moonfire( 0 ), is( is_ ? is_ : p -> dots_insect_swarm ), mf( mf_ ? mf_ : p -> dots_moonfire ), sf( sf_ ? sf_ : p -> dots_sunfire )
+    extend_moonfire( 0 )
   {
     option_t options[] =
     {
@@ -3910,6 +3937,10 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
+    dot_t* is = td->dots_insect_swarm;
+    dot_t* mf = td->dots_moonfire;
+    dot_t* sf = td->dots_sunfire;
 
     trigger_burning_treant( this );
 
@@ -3974,30 +4005,32 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::target_debuff( t, dmg_type );
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
     // Starsurge, and Wrath spells against that target by 3%.
-    if ( is -> ticking )
+    if ( td -> dots_insect_swarm -> ticking )
       target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
   }
 
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     if ( extend_moonfire )
     {
       if ( ! p -> glyphs.starfire -> enabled() )
         return false;
 
-      if ( mf -> ticking )
+      if ( td -> dots_moonfire -> ticking )
       {
-        if ( mf -> added_seconds > 8 )
+        if ( td -> dots_moonfire -> added_seconds > 8 )
           return false;
       }
-      else if ( sf -> ticking )
+      else if ( td -> dots_sunfire -> ticking )
       {
-        if ( sf -> added_seconds > 8 )
+        if ( td -> dots_sunfire -> added_seconds > 8 )
           return false;
       }
       else
@@ -4158,10 +4191,11 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::target_debuff( t, dmg_type );
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
     // Starsurge, and Wrath spells against that target by 3%.
-    if ( p -> dots_insect_swarm -> ticking )
+    if ( td -> dots_insect_swarm -> ticking )
       target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
   }
 };
@@ -4202,13 +4236,12 @@ struct stealth_t : public spell_t
 struct sunfire_t : public druid_spell_t
 {
   cooldown_t* starsurge_cd;
-  dot_t* mf;
 
   // Identical to moonfire, except damage type and usability
 
-  sunfire_t( druid_t* p, const std::string& options_str, bool dtr=false, const char* name = "sunfire", dot_t* mf_=0  ) :
-    druid_spell_t( name, 93402, p ),
-    starsurge_cd( 0 ), mf( mf_ ? mf_ : p -> dots_moonfire )
+  sunfire_t( druid_t* p, const std::string& options_str, bool dtr=false ) :
+    druid_spell_t( "sunfire", 93402, p ),
+    starsurge_cd( 0 )
   {
     check_talent( p -> talents.sunfire -> rank() );
 
@@ -4270,6 +4303,8 @@ struct sunfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
+    dot_t* mf = td->dots_moonfire;
 
     // Recalculate all those multipliers w/o Lunar Shower/BotG
     player_buff_tick();
@@ -4537,10 +4572,11 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::target_debuff( t, dmg_type );
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata() -> cast_druid();
 
     // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
     // Starsurge, and Wrath spells against that target by 3%.
-    if ( p -> dots_insect_swarm -> ticking )
+    if ( td -> dots_insect_swarm -> ticking )
       target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
   }
 
@@ -4655,8 +4691,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
   if ( name == "insect_swarm"           ) return new           insect_swarm_t( this, options_str );
-  if ( name == "insect_swarm2"          ) return new           insect_swarm_t( this, options_str, "insect_swarm2" );
-  if ( name == "insect_swarm3"          ) return new           insect_swarm_t( this, options_str, "insect_swarm3" );
   if ( name == "innervate"              ) return new              innervate_t( this, options_str );
   if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
   if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
@@ -4666,8 +4700,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "mark_of_the_wild"       ) return new       mark_of_the_wild_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
-  if ( name == "moonfire2"              ) return new               moonfire_t( this, options_str, false, "moonfire2", dots_sunfire2 );
-  if ( name == "moonfire3"              ) return new               moonfire_t( this, options_str, false, "moonfire3", dots_sunfire3 );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
   if ( name == "nourish"                ) return new                nourish_t( this, options_str );
@@ -4683,14 +4715,10 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
   if ( name == "skull_bash_cat"         ) return new         skull_bash_cat_t( this, options_str );
   if ( name == "starfire"               ) return new               starfire_t( this, options_str );
-  if ( name == "starfire2"              ) return new               starfire_t( this, options_str, false, "starfire2", dots_insect_swarm2, dots_moonfire2, dots_sunfire2 );
-  if ( name == "starfire3"              ) return new               starfire_t( this, options_str, false, "starfire3", dots_insect_swarm3, dots_moonfire3, dots_sunfire3 );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
   if ( name == "stealth"                ) return new                stealth_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
-  if ( name == "sunfire2"               ) return new                sunfire_t( this, options_str, false, "sunfire2",dots_moonfire2 );
-  if ( name == "sunfire3"               ) return new                sunfire_t( this, options_str, false, "sunfire3",dots_moonfire3 );
   if ( name == "survival_instincts"     ) return new     survival_instincts_t( this, options_str );
   if ( name == "swipe_bear"             ) return new             swipe_bear_t( this, options_str );
   if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );
@@ -4935,8 +4963,6 @@ void druid_t::init_buffs()
   buffs_frenzied_regeneration -> cooldown -> duration = 0; //CD is handled by the ability
   buffs_harmony               = new buff_t( this, 100977, "harmony" );
   buffs_lacerate              = new buff_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
-  buffs_lifebloom             = new buff_t( this, dbc.class_ability_id( type, "Lifebloom" ), "lifebloom", 1.0, 0 );
-  buffs_lifebloom -> buff_duration = 11.0; // Override duration so the bloom works correctly
   buffs_lunar_shower          = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
   buffs_natures_swiftness     = new buff_t( this, talents.natures_swiftness ->spell_id(), "natures_swiftness" );
   buffs_natures_swiftness -> cooldown -> duration = 0;// CD is handled by the ability
@@ -4954,7 +4980,6 @@ void druid_t::init_buffs()
   // simple
   buffs_bear_form    = new buff_t( this, 5487,  "bear_form" );
   buffs_cat_form     = new buff_t( this, 768,   "cat_form" );
-  buffs_combo_points = new buff_t( this, "combo_points", 5 );
   buffs_moonkin_form = new buff_t( this, 24858, "moonkin_form" );
   buffs_savage_roar  = new buff_t( this, 52610, "savage_roar" );
   buffs_stealthed    = new buff_t( this, 5215,  "stealthed" );
@@ -5326,15 +5351,6 @@ void druid_t::reset()
   eclipse_wrath_count   = 0;
   eclipse_bar_direction = 0;
   base_gcd = 1.5;
-}
-
-// druid_t::clear_debuffs ===================================================
-
-void druid_t::clear_debuffs()
-{
-  player_t::clear_debuffs();
-
-  buffs_combo_points -> expire();
 }
 
 // druid_t::regen ===========================================================

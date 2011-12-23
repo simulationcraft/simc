@@ -27,6 +27,27 @@ enum totem_type { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER,
 
 enum imbue_type_t { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
 
+struct shaman_targetdata_t : public targetdata_t
+{
+  dot_t* dots_flame_shock;
+  dot_t* dots_searing_flames;
+
+  buff_t* debuffs_searing_flames;
+
+  shaman_targetdata_t(player_t* source, player_t* target);
+};
+
+void register_shaman_targetdata(sim_t* sim)
+{
+  player_type t = SHAMAN;
+  typedef shaman_targetdata_t type;
+
+  REGISTER_DOT(flame_shock);
+  REGISTER_DOT(searing_flames);
+
+  REGISTER_DEBUFF(searing_flames);
+}
+
 struct shaman_t : public player_t
 {
   // Options
@@ -59,7 +80,6 @@ struct shaman_t : public player_t
   buff_t* buffs_lightning_shield;
   buff_t* buffs_maelstrom_weapon;
   buff_t* buffs_natures_swiftness;
-  buff_t* buffs_searing_flames;
   buff_t* buffs_shamanistic_rage;
   buff_t* buffs_spiritwalkers_grace;
   buff_t* buffs_stormfire;
@@ -92,9 +112,6 @@ struct shaman_t : public player_t
   cooldown_t* cooldowns_strike;
   cooldown_t* cooldowns_t12_2pc_caster;
   cooldown_t* cooldowns_windfury_weapon;
-
-  // Dots
-  dot_t* dot_flame_shock;
 
   // Gains
   gain_t* gains_primal_wisdom;
@@ -228,9 +245,6 @@ struct shaman_t : public player_t
     cooldowns_t12_2pc_caster       = get_cooldown( "t12_2pc_caster"       );
     cooldowns_windfury_weapon      = get_cooldown( "windfury_weapon"      );
 
-    // Dots
-    dot_flame_shock = get_dot( "flame_shock" );
-
     // Weapon Enchants
     windfury_mh    = 0;
     windfury_oh    = 0;
@@ -243,6 +257,7 @@ struct shaman_t : public player_t
   }
 
   // Character Definition
+  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new shaman_targetdata_t(source, target);}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -254,7 +269,6 @@ struct shaman_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      moving();
-  virtual void      clear_debuffs();
   virtual double    composite_attack_crit() const;
   virtual double    composite_attack_hit() const;
   virtual double    composite_spell_hit() const;
@@ -1216,8 +1230,9 @@ struct lava_burst_overload_t : public shaman_spell_t
     shaman_spell_t::player_buff();
 
     shaman_t* p = player -> cast_shaman();
+    shaman_targetdata_t* td = targetdata() -> cast_shaman();
 
-    if ( p -> dot_flame_shock -> ticking )
+    if ( td -> dots_flame_shock -> ticking )
       player_crit += 1.0;
   }
 };
@@ -1330,14 +1345,16 @@ struct searing_flames_t : public shaman_spell_t
   virtual double total_td_multiplier() const
   {
     shaman_t* p = player -> cast_shaman();
-    return p -> buffs_searing_flames -> stack();
+    shaman_targetdata_t* td = targetdata() -> cast_shaman();
+    return td -> debuffs_searing_flames -> stack();
   }
 
   virtual void last_tick( dot_t* d )
   {
     shaman_t* p = player -> cast_shaman();
+    shaman_targetdata_t* td = targetdata() -> cast_shaman();
     shaman_spell_t::last_tick( d );
-    p -> buffs_searing_flames -> expire();
+    td -> debuffs_searing_flames -> expire();
   }
 };
 
@@ -1765,9 +1782,10 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( result_is_hit() )
     {
-      p -> buffs_searing_flames -> expire();
+      shaman_targetdata_t* td = targetdata() -> cast_shaman();
+      td -> debuffs_searing_flames -> expire();
       if ( p -> active_searing_flames_dot )
-        p -> active_searing_flames_dot -> dot -> cancel();
+        p -> active_searing_flames_dot -> dot() -> cancel();
 
       trigger_static_shock( this );
     }
@@ -1782,7 +1800,8 @@ struct lava_lash_t : public shaman_attack_t
     // Lava lash damage calculation from: http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p11/#post1935780
 
     // First group, Searing Flames + Flametongue bonus
-    player_multiplier *= 1.0 + p -> buffs_searing_flames -> check() * sf_bonus +
+    shaman_targetdata_t* td = targetdata() -> cast_shaman();
+    player_multiplier *= 1.0 + td -> debuffs_searing_flames -> check() * sf_bonus +
                                flametongue_bonus;
 
     // Second group, Improved Lava Lash + Glyph of Lava Lash + T11 2Piece bonus
@@ -2280,8 +2299,9 @@ struct fire_nova_t : public shaman_spell_t
   virtual bool ready()
   {
     shaman_t* p = player -> cast_shaman();
+    shaman_targetdata_t* td = targetdata() -> cast_shaman();
 
-    if ( ! p -> dot_flame_shock -> ticking )
+    if ( ! td -> dots_flame_shock -> ticking )
       return false;
 
     return shaman_spell_t::ready();
@@ -2369,7 +2389,8 @@ struct lava_burst_t : public shaman_spell_t
 
     shaman_t* p = player -> cast_shaman();
 
-    if ( p -> dot_flame_shock -> ticking )
+    shaman_targetdata_t* td = targetdata() -> cast_shaman();
+    if ( td -> dots_flame_shock -> ticking )
       player_crit += 1.0;
 
     if ( p -> buffs_unleash_flame -> up() )
@@ -2953,7 +2974,7 @@ struct shaman_totem_t : public shaman_spell_t
     if ( p -> totems[ totem ] )
     {
       p -> totems[ totem ] -> cancel();
-      p -> totems[ totem ] -> dot -> cancel();
+      p -> totems[ totem ] -> dot() -> cancel();
     }
 
     if ( sim -> log )
@@ -3360,8 +3381,9 @@ struct searing_totem_t : public shaman_totem_t
   virtual void tick( dot_t* d )
   {
     shaman_t* p = player -> cast_shaman();
+    shaman_targetdata_t* td = targetdata() -> cast_shaman();
     shaman_totem_t::tick( d );
-    if ( result_is_hit() && p -> buffs_searing_flames -> trigger() )
+    if ( result_is_hit() && td -> debuffs_searing_flames -> trigger() )
     {
       double new_base_td = tick_dmg;
       // Searing flame dot treats all hits as.. HITS
@@ -3918,14 +3940,6 @@ unleash_flame_buff_t::expire()
 // Shaman Character Definition
 // ==========================================================================
 
-// shaman_t::clear_debuffs  =================================================
-
-void shaman_t::clear_debuffs()
-{
-  player_t::clear_debuffs();
-  buffs_searing_flames -> expire();
-}
-
 // shaman_t::create_options =================================================
 
 void shaman_t::create_options()
@@ -4195,7 +4209,6 @@ void shaman_t::init_buffs()
   buffs_lightning_shield        = new lightning_shield_buff_t( this, dbc.class_ability_id( type, "Lightning Shield" ),         "lightning_shield"      );
   buffs_maelstrom_weapon        = new buff_t                 ( this, talent_maelstrom_weapon -> effect_trigger_spell( 1 ),     "maelstrom_weapon"      ); buffs_maelstrom_weapon -> activated = false;
   buffs_natures_swiftness       = new buff_t                 ( this, talent_natures_swiftness -> spell_id(),                   "natures_swiftness"     );
-  buffs_searing_flames          = new searing_flames_buff_t  ( this, talent_searing_flames -> spell_id(),                      "searing_flames"        );
   buffs_shamanistic_rage        = new buff_t                 ( this, talent_shamanistic_rage -> spell_id(),                    "shamanistic_rage"      );
   buffs_spiritwalkers_grace     = new buff_t                 ( this, 79206,                                                    "spiritwalkers_grace",       1.0, 0 );
   // Enhancement T12 4Piece Bonus
@@ -4887,4 +4900,11 @@ void player_t::shaman_combat_begin( sim_t* sim )
     sim -> auras.mana_spring_totem -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 5677 ) -> effect1().id(), sim -> max_player_level ) );
   if ( sim -> overrides.strength_of_earth )
     sim -> auras.strength_of_earth -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 8076 ) -> effect1().id(), sim -> max_player_level ) );
+}
+
+shaman_targetdata_t::shaman_targetdata_t(player_t* source, player_t* target)
+  : targetdata_t(source, target)
+{
+  shaman_t* p = source -> cast_shaman();
+  debuffs_searing_flames          = add_aura(new searing_flames_buff_t  ( target, p -> talent_searing_flames -> spell_id(),                      "searing_flames"        ));
 }

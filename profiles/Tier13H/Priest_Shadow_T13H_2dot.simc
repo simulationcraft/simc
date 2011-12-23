@@ -1,4 +1,6 @@
 #!./simc 
+enemy=enemy1
+enemy=enemy2
 
 priest=Priest_Shadow_T13H_2dot
 origin="http://www.wowhead.com/profile=33771407"
@@ -25,13 +27,13 @@ actions+=/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&mi
 actions+=/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react
 actions+=/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2|dot.vampiric_touch.remains<cast_time+2.5
 actions+=/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react
-actions+=/vampiric_touch_2,if=(!ticking|dot.vampiric_touch_2.remains<cast_time+2.5)&miss_react
-actions+=/shadow_word_pain_2,if=(!ticking|dot.shadow_word_pain_2.remains<gcd+0.5)&miss_react
+actions+=/vampiric_touch,target=enemy2,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react
+actions+=/shadow_word_pain,target=enemy2,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react
 actions+=/archangel,if=buff.dark_evangelism.stack>=5&dot.vampiric_touch.remains>5&dot.devouring_plague.remains>5
 actions+=/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1
 actions+=/shadow_word_death,health_percentage<=25
 actions+=/shadow_fiend
-actions+=/mind_flay_2,if=(dot.shadow_word_pain_2.remains<dot.shadow_word_pain.remains)&miss_react
+actions+=/mind_flay,target=enemy2,if=(dot.shadow_word_pain.remains<self.target.dot.shadow_word_pain.remains)&miss_react
 actions+=/shadow_word_death,if=mana_pct<10
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1

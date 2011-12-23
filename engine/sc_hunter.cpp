@@ -13,6 +13,25 @@ struct hunter_pet_t;
 
 enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
 
+struct hunter_targetdata_t : public targetdata_t
+{
+  dot_t* dots_serpent_sting;
+
+  hunter_targetdata_t(player_t* source, player_t* target)
+    : targetdata_t(source, target)
+  {
+  }
+};
+
+void register_hunter_targetdata(sim_t* sim)
+{
+  player_type t = HUNTER;
+  typedef hunter_targetdata_t type;
+
+  REGISTER_DOT(serpent_sting);
+}
+
+
 struct hunter_t : public player_t
 {
   // Active
@@ -48,9 +67,6 @@ struct hunter_t : public player_t
 
   // Custom Parameters
   std::string summon_pet_str;
-
-  // Dots
-  dot_t* dots_serpent_sting;
 
   // Gains
   gain_t* gains_glyph_of_arcane_shot;
@@ -212,9 +228,6 @@ struct hunter_t : public player_t
     cooldowns_explosive_shot = get_cooldown( "explosive_shot " );
     cooldowns_vishanka       = get_cooldown( "vishanka"        );
 
-    // Dots
-    dots_serpent_sting = get_dot( "serpent_sting" );
-
     ranged_attack = 0;
     summon_pet_str = "";
     distance = 40;
@@ -231,6 +244,7 @@ struct hunter_t : public player_t
   }
 
   // Character Definition
+  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new hunter_targetdata_t(source, target);}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -820,7 +834,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       attack_t::impact( t, impact_result, 0 );
 
       // FIXME: Is a is_hit check necessary here?
-      base_td = piercing_shots_dmg / dot -> num_ticks;
+      base_td = piercing_shots_dmg / dot() -> num_ticks;
     }
 
     virtual double travel_time()
@@ -844,7 +858,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
 
   if ( ! p -> active_piercing_shots ) p -> active_piercing_shots = new piercing_shots_t( p );
 
-  dot_t* dot = p -> active_piercing_shots -> dot;
+  dot_t* dot = p -> active_piercing_shots -> dot();
 
   if ( dot -> ticking )
   {
@@ -1892,7 +1906,8 @@ void hunter_attack_t::player_buff()
   if (  p -> buffs_beast_within -> up() )
     player_multiplier *= 1.0 + p -> buffs_beast_within -> effect2().percent();
 
-  if ( p -> dots_serpent_sting -> ticking )
+  hunter_targetdata_t* td = targetdata() -> cast_hunter();
+  if ( td -> dots_serpent_sting -> ticking )
     player_multiplier *= 1.0 + p -> talents.noxious_stings -> effect1().percent();
 
   if ( p -> buffs_culling_the_herd -> up() )
@@ -2438,7 +2453,8 @@ struct chimera_shot_t : public hunter_attack_t
 
     if ( result_is_hit() )
     {
-      p -> dots_serpent_sting -> refresh_duration();
+      hunter_targetdata_t* td = targetdata() -> cast_hunter();
+      td -> dots_serpent_sting -> refresh_duration();
     }
   }
 
@@ -2493,8 +2509,9 @@ struct cobra_shot_t : public hunter_attack_t
     if ( result_is_hit() )
     {
       hunter_t* p = player -> cast_hunter();
+      hunter_targetdata_t* td = targetdata() -> cast_hunter();
 
-      p -> dots_serpent_sting -> extend_duration( 2 );
+      td -> dots_serpent_sting -> extend_duration( 2 );
 
       double focus = focus_gain;
       if ( p -> talents.termination -> rank() )

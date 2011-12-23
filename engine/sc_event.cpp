@@ -271,9 +271,9 @@ void dot_tick_event_t::execute()
 
   if ( dot -> action -> channeled &&
        dot -> current_tick == dot -> num_ticks &&
-       player -> skill < 1.0 )
+       dot -> action -> player -> skill < 1.0 )
   {
-    if ( sim -> roll( player -> skill ) )
+    if ( sim -> roll( dot -> action -> player -> skill ) )
     {
       dot -> action -> tick( dot );
     }
@@ -293,7 +293,7 @@ void dot_tick_event_t::execute()
     if ( dot -> action -> interrupt )
     {
       // Interrupt if any higher priority action is ready.
-      for ( action_t* a = player -> action_list; a != dot -> action; a = a -> next )
+      for ( action_t* a = dot -> action -> player -> action_list; a != dot -> action; a = a -> next )
       {
         if ( a -> background ) continue;
         if ( a -> ready() )
@@ -312,9 +312,9 @@ void dot_tick_event_t::execute()
 
     if ( dot -> action -> channeled )
     {
-      if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
+      if ( dot -> action -> player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
 
-      player -> schedule_ready( 0 );
+      dot -> action -> player -> schedule_ready( 0 );
     }
   }
   else dot -> schedule_tick();

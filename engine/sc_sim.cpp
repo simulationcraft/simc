@@ -625,7 +625,7 @@ static bool parse_item_sources( sim_t*             sim,
 
 sim_t::sim_t( sim_t* p, int index ) :
   parent( p ),
-  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), max_player_level( -1 ), canceled( 0 ),
+  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ), canceled( 0 ),
   queue_lag( 0.037 ), queue_lag_stddev( 0 ),
   gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
   channel_lag( 0.250 ), channel_lag_stddev( 0 ),
@@ -667,6 +667,17 @@ sim_t::sim_t( sim_t* p, int index ) :
   threads( 0 ), thread_index( index ),
   spell_query( 0 )
 {
+  register_death_knight_targetdata(this);
+  register_druid_targetdata(this);
+  register_hunter_targetdata(this);
+  register_mage_targetdata(this);
+  register_monk_targetdata(this);
+  register_paladin_targetdata(this);
+  register_priest_targetdata(this);
+  register_rogue_targetdata(this);
+  register_shaman_targetdata(this);
+  register_warlock_targetdata(this);
+  register_warrior_targetdata(this);
 
   path_str += "|profiles";
   path_str += "|profiles_heal";
@@ -2019,17 +2030,7 @@ action_expr_t* sim_t::create_expression( action_t* a,
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
 
-  if ( num_splits == 2 )
-  {
-    if ( splits[ 0 ] == "target" )
-    {
-      if ( a -> target )
-        return a -> target -> create_expression( a, splits[ 1 ] );
-      else
-        return target -> create_expression( a, splits[ 1 ] );
-    }
-  }
-  else if ( num_splits == 3 )
+  if ( num_splits == 3 )
   {
     if ( splits[ 0 ] == "aura" )
     {
@@ -2037,12 +2038,22 @@ action_expr_t* sim_t::create_expression( action_t* a,
       if ( ! buff ) return 0;
       return buff -> create_expression( a, splits[ 2 ] );
     }
-    if ( splits[ 0 ] == "target" )
-    {
-      player_t* target = sim_t::find_player( splits[ 1 ] );
-      if ( ! target ) return 0;
-      return target -> create_expression( a, splits[ 2 ] );
-    }
+  }
+  if ( num_splits >= 3 && splits[ 0 ] == "actors" )
+  {
+    player_t* actor = sim_t::find_player( splits[ 1 ] );
+    if ( ! target ) return 0;
+    std::string rest = splits[2];
+    for(int i = 3; i < num_splits; ++i)
+      rest += '.' + splits[i];
+    return actor -> create_expression( a, rest );
+  }
+  if ( num_splits >= 2 && splits[ 0 ] == "target" )
+  {
+    std::string rest = splits[1];
+    for(int i = 2; i < num_splits; ++i)
+      rest += '.' + splits[i];
+    return target -> create_expression( a, rest );
   }
 
   return 0;
@@ -2532,4 +2543,25 @@ int sim_t::errorf( const char* format, ... )
 
   error_list.push_back( buffer );
   return retcode;
+}
+
+void sim_t::register_targetdata_item(int kind, const char* name, player_type type, size_t offset)
+{
+  std::string s = name;
+  targetdata_items[kind][s] = std::make_pair(type, offset);
+  if(kind == DATA_DOT)
+    targetdata_dots[type].push_back(std::make_pair(offset, s));
+}
+
+void* sim_t::get_targetdata_item(player_t* source, player_t* target, int kind, const std::string& name)
+{
+  std::unordered_map<std::string, std::pair<player_type, size_t> >::iterator i = targetdata_items[kind].find(name);
+  if(i != targetdata_items[kind].end())
+  {
+    if(source->type == i->second.first)
+    {
+      return *(void**)((char*)targetdata_t::get(source, target) + i->second.second);
+    }
+  }
+  return 0;
 }

@@ -75,6 +75,31 @@
 
 enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 
+struct warrior_targetdata_t : public targetdata_t
+{
+  dot_t* dots_deep_wounds;
+  dot_t* dots_rend;
+
+  buff_t* debuffs_colossus_smash;
+
+  warrior_targetdata_t(player_t* source, player_t* target)
+    : targetdata_t(source, target)
+  {
+    debuffs_colossus_smash            = add_aura(new buff_t( this, "colossus_smash",            1,  6.0 ));
+  }
+};
+
+void register_warrior_targetdata(sim_t* sim)
+{
+  player_type t = WARRIOR;
+  typedef warrior_targetdata_t type;
+
+  REGISTER_DOT(deep_wounds);
+  REGISTER_DOT(rend);
+
+  REGISTER_DEBUFF(colossus_smash);
+}
+
 struct warrior_t : public player_t
 {
   int instant_flurry_haste;
@@ -96,7 +121,6 @@ struct warrior_t : public player_t
   buff_t* buffs_berserker_stance;
   buff_t* buffs_bloodsurge;
   buff_t* buffs_bloodthirst;
-  buff_t* buffs_colossus_smash;
   buff_t* buffs_deadly_calm;
   buff_t* buffs_death_wish;
   buff_t* buffs_defensive_stance;
@@ -131,10 +155,6 @@ struct warrior_t : public player_t
   cooldown_t* cooldowns_colossus_smash;
   cooldown_t* cooldowns_shield_slam;
   cooldown_t* cooldowns_strikes_of_opportunity;
-
-  // Dots
-  dot_t* dots_deep_wounds;
-  dot_t* dots_rend;
 
   // Gains
   gain_t* gains_anger_management;
@@ -311,10 +331,6 @@ struct warrior_t : public player_t
     cooldowns_shield_slam            = get_cooldown( "shield_slam"            );
     cooldowns_strikes_of_opportunity = get_cooldown( "strikes_of_opportunity" );
 
-    // Dots
-    dots_deep_wounds = get_dot( "deep_wounds" );
-    dots_rend        = get_dot( "rend"        );
-
     instant_flurry_haste = 1;
     initial_rage = 0;
 
@@ -327,6 +343,7 @@ struct warrior_t : public player_t
   }
 
   // Character Definition
+  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new warrior_targetdata_t(source, target);}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_defense();
@@ -488,7 +505,7 @@ struct deep_wounds_t : public warrior_attack_t
     warrior_attack_t::impact( t, impact_result, 0 );
     if ( result_is_hit( impact_result ) )
     {
-      base_td = deep_wounds_dmg / dot -> num_ticks;
+      base_td = deep_wounds_dmg / dot() -> num_ticks;
       trigger_blood_frenzy( this );
     }
   }
@@ -522,7 +539,7 @@ static void trigger_deep_wounds( action_t* a )
                              p -> active_deep_wounds -> weapon_multiplier *
                              p -> active_deep_wounds -> player_multiplier );
 
-  dot_t* dot = p -> active_deep_wounds -> dot;
+  dot_t* dot = p -> active_deep_wounds -> dot();
 
   if ( dot -> ticking )
   {
@@ -721,7 +738,7 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
     {
       warrior_attack_t::impact( t, impact_result, 0 );
 
-      base_td = total_dot_dmg / dot -> num_ticks;
+      base_td = total_dot_dmg / dot() -> num_ticks;
     }
 
     virtual double travel_time()
@@ -750,7 +767,7 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
 
   if ( ! p -> active_tier12_2pc_tank ) p -> active_tier12_2pc_tank = new combust_t( p );
 
-  dot_t* dot = p -> active_tier12_2pc_tank -> dot;
+  dot_t* dot = p -> active_tier12_2pc_tank -> dot();
 
   if ( dot -> ticking )
   {
@@ -901,10 +918,11 @@ static void trigger_tier12_4pc_melee( attack_t* a )
 double warrior_attack_t::armor() const
 {
   warrior_t* p = player -> cast_warrior();
+  warrior_targetdata_t* td = targetdata() -> cast_warrior();
 
   double a = attack_t::armor();
 
-  a *= 1.0 - p -> buffs_colossus_smash -> value();
+  a *= 1.0 - td -> debuffs_colossus_smash -> value();
 
   return a;
 }
@@ -1524,7 +1542,10 @@ struct colossus_smash_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     if ( result_is_hit() )
-      p -> buffs_colossus_smash -> trigger( 1, armor_pen_value );
+    {
+      warrior_targetdata_t* td = targetdata() -> cast_warrior();
+      td -> debuffs_colossus_smash -> trigger( 1, armor_pen_value );
+    }
   }
 };
 
@@ -1809,6 +1830,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( result_is_hit() )
     {
+      warrior_targetdata_t* td = targetdata() -> cast_warrior();
       p -> buffs_lambs_to_the_slaughter -> trigger();
       p -> buffs_battle_trance -> trigger();
       p -> buffs_juggernaut -> expire();
@@ -1819,14 +1841,14 @@ struct mortal_strike_t : public warrior_attack_t
         p -> buffs_wrecking_crew -> trigger( 1, value );
       }
 
-      if ( p -> talents.lambs_to_the_slaughter -> rank() && p -> dots_rend -> ticking )
-        p -> dots_rend -> refresh_duration();
+      if ( p -> talents.lambs_to_the_slaughter -> rank() && td -> dots_rend -> ticking )
+        td -> dots_rend -> refresh_duration();
 
       trigger_tier12_4pc_melee( this );
 
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
       {
-        p -> buffs_colossus_smash -> trigger();
+        td -> debuffs_colossus_smash -> trigger();
         p -> procs_tier13_4pc_melee -> occur();
       }
     }
@@ -2014,7 +2036,8 @@ struct raging_blow_t : public warrior_attack_t
       // PTR - is this triggered per attack or once
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
       {
-        p -> buffs_colossus_smash -> trigger();
+        warrior_targetdata_t* td = targetdata() -> cast_warrior();
+        td -> debuffs_colossus_smash -> trigger();
         p -> procs_tier13_4pc_melee -> occur();
       }
     }
@@ -2044,12 +2067,11 @@ struct rend_dot_t : public warrior_attack_t
   rend_dot_t( warrior_t* p ) :
     warrior_attack_t( "rend_dot", 94009, p )
   {
+    init_dot("rend");
     background = true;
     tick_may_crit          = true;
     may_crit               = false;
     tick_zero              = true;
-
-    dot = p ->  get_dot( "rend" );
 
     weapon                 = &( p -> main_hand_weapon );
     normalize_weapon_speed = false;
@@ -2503,11 +2525,12 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = player -> cast_warrior();
+    warrior_targetdata_t* td = targetdata() -> cast_warrior();
 
     p -> buffs_thunderstruck -> trigger();
 
-    if ( p -> talents.blood_and_thunder -> rank() && p -> dots_rend && p -> dots_rend -> ticking )
-      p -> dots_rend -> refresh_duration();
+    if ( p -> talents.blood_and_thunder -> rank() && td -> dots_rend && td -> dots_rend -> ticking )
+      td -> dots_rend -> refresh_duration();
   }
 };
 
@@ -3378,7 +3401,6 @@ void warrior_t::init_buffs()
   buffs_berserker_stance          = new buff_t( this, 7381, "berserker_stance" );
   buffs_bloodsurge                = new buff_t( this, "bloodsurge",                1, 10.0,   0, talents.bloodsurge -> proc_chance() );
   buffs_bloodthirst               = new buff_t( this, 23885, "bloodthirst" );
-  buffs_colossus_smash            = new buff_t( this, "colossus_smash",            1,  6.0 );
   buffs_deadly_calm               = new buff_t( this, "deadly_calm",               1, 10.0 );
   buffs_death_wish                = new buff_t( this, "death_wish",                1, 30.0 );
   buffs_defensive_stance          = new buff_t( this, 7376, "defensive_stance" );

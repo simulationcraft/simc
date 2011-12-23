@@ -11,6 +11,30 @@
 
 enum rotation_t { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
+struct mage_targetdata_t : public targetdata_t
+{
+  dot_t* dots_frostfire_bolt;
+  dot_t* dots_ignite;
+  dot_t* dots_living_bomb;
+  dot_t* dots_pyroblast;
+
+  mage_targetdata_t(player_t* source, player_t* target)
+    : targetdata_t(source, target)
+  {
+  }
+};
+
+void register_mage_targetdata(sim_t* sim)
+{
+  player_type t = MAGE;
+  typedef mage_targetdata_t type;
+
+  REGISTER_DOT(frostfire_bolt);
+  REGISTER_DOT(ignite);
+  REGISTER_DOT(living_bomb);
+  REGISTER_DOT(pyroblast);
+}
+
 struct mage_t : public player_t
 {
   // Active
@@ -18,12 +42,6 @@ struct mage_t : public player_t
   pet_t*   pet_water_elemental;
   pet_t*   pet_tier12_mirror_image;
   pet_t*   pet_mirror_image_3;
-
-  // Dots
-  dot_t* dots_frostfire_bolt;
-  dot_t* dots_ignite;
-  dot_t* dots_living_bomb;
-  dot_t* dots_pyroblast;
 
   // Buffs
   buff_t* buffs_arcane_blast;
@@ -264,12 +282,6 @@ struct mage_t : public player_t
     pet_tier12_mirror_image = 0;
     pet_mirror_image_3      = 0;
 
-    // Dots
-    dots_frostfire_bolt = get_dot( "frostfire_bolt" );
-    dots_ignite         = get_dot( "ignite"         );
-    dots_living_bomb    = get_dot( "living_bomb"    );
-    dots_pyroblast      = get_dot( "pyroblast"      );
-
     // Cooldowns
     cooldowns_deep_freeze  = get_cooldown( "deep_freeze" );
     cooldowns_early_frost  = get_cooldown( "early_frost" );
@@ -290,6 +302,7 @@ struct mage_t : public player_t
   }
 
   // Character Definition
+  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new mage_targetdata_t(source, target);}
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -938,7 +951,7 @@ static void trigger_ignite( spell_t* s, double dmg )
       mage_spell_t::impact( t, impact_result, 0 );
 
       // FIXME: Is a is_hit check necessary here?
-      base_td = ignite_dmg / dot -> num_ticks;
+      base_td = ignite_dmg / dot() -> num_ticks;
     }
     virtual double travel_time()
     {
@@ -965,7 +978,7 @@ static void trigger_ignite( spell_t* s, double dmg )
 
   if ( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
 
-  dot_t* dot = p -> active_ignite -> dot;
+  dot_t* dot = p -> active_ignite -> dot();
 
   if ( dot -> ticking )
   {
@@ -1762,19 +1775,20 @@ struct combustion_t : public mage_spell_t
     // http://elitistjerks.com/f75/t110187-cataclysm_mage_simulators_formulators/p3/#post1824829
 
     mage_t* p = player -> cast_mage();
+    mage_targetdata_t* td = targetdata() -> cast_mage();
 
-    if ( p -> dots_ignite -> ticking )
+    if ( td -> dots_ignite -> ticking )
     {
-      ignite_dmg += calculate_dot_dps( p -> dots_ignite );
-      ignite_dmg /= 1.0 + p -> specializations.flashburn * p -> dots_ignite -> action -> snapshot_mastery;
+      ignite_dmg += calculate_dot_dps( td -> dots_ignite );
+      ignite_dmg /= 1.0 + p -> specializations.flashburn * td -> dots_ignite -> action -> snapshot_mastery;
       ignite_dmg *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
     }
 
     base_td = 0;
-    base_td += calculate_dot_dps( p -> dots_frostfire_bolt );
+    base_td += calculate_dot_dps( td -> dots_frostfire_bolt );
     base_td += ignite_dmg;
-    base_td += calculate_dot_dps( p -> dots_living_bomb    ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
-    base_td += calculate_dot_dps( p -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
+    base_td += calculate_dot_dps( td -> dots_living_bomb    ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
+    base_td += calculate_dot_dps( td -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
 
     if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect2().seconds();
@@ -2968,11 +2982,11 @@ struct pyroblast_hs_t : public mage_spell_t
   pyroblast_hs_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "pyroblast_hs", 92315, p )
   {
+    init_dot("pyroblast");
     check_spec( TREE_FIRE );
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.pyroblast -> effect1().percent();
     base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
-    dot = p -> get_dot( "pyroblast" );
     dot_behavior = DOT_REFRESH;
 
     if ( ! dtr && player -> has_dtr )

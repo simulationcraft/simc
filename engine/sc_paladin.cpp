@@ -19,6 +19,37 @@ enum seal_type_t
   SEAL_MAX
 };
 
+struct paladin_targetdata_t : public targetdata_t
+{
+  dot_t* dots_flames_of_the_faithful;
+  dot_t* dots_exorcism;
+  dot_t* dots_word_of_glory;
+  dot_t* dots_holy_radiance;
+  dot_t* dots_censure;
+
+  buff_t* debuffs_censure;
+
+  paladin_targetdata_t(player_t* source, player_t* target)
+    : targetdata_t(source, target)
+  {
+    debuffs_censure = add_aura(new buff_t( this, 31803, "censure" ));
+  }
+};
+
+void register_paladin_targetdata(sim_t* sim)
+{
+  player_type t = PALADIN;
+  typedef paladin_targetdata_t type;
+
+  REGISTER_DOT(censure);
+  REGISTER_DOT(exorcism);
+  REGISTER_DOT(word_of_glory);
+  REGISTER_DOT(flames_of_the_faithful);
+  REGISTER_DOT(holy_radiance);
+
+  REGISTER_DEBUFF(censure);
+}
+
 struct paladin_t : public player_t
 {
   // Active
@@ -40,7 +71,6 @@ struct paladin_t : public player_t
   // Buffs
   buff_t* buffs_ancient_power;
   buff_t* buffs_avenging_wrath;
-  buff_t* buffs_censure;
   buff_t* buffs_conviction;
   buff_t* buffs_daybreak;
   buff_t* buffs_divine_favor;
@@ -270,6 +300,7 @@ struct paladin_t : public player_t
     create_options();
   }
 
+  virtual targetdata_t* new_targetdata(player_t* source, player_t* target) {return new paladin_targetdata_t(source, target);}
   virtual void      init_defense();
   virtual void      init_base();
   virtual void      init_gains();
@@ -534,6 +565,7 @@ struct paladin_attack_t : public attack_t
     if ( result_is_hit() )
     {
       paladin_t* pa = player -> cast_paladin();
+      paladin_targetdata_t* td = targetdata() -> cast_paladin();
       if ( trigger_seal || ( trigger_seal_of_righteousness && ( pa -> active_seal == SEAL_OF_RIGHTEOUSNESS ) ) )
       {
         switch ( pa -> active_seal )
@@ -548,7 +580,7 @@ struct paladin_attack_t : public attack_t
           pa -> active_seal_of_righteousness_proc -> execute();
           break;
         case SEAL_OF_TRUTH:
-          if ( pa -> buffs_censure -> stack() >= 1 ) pa -> active_seal_of_truth_proc -> execute();
+          if ( td -> debuffs_censure -> stack() >= 1 ) pa -> active_seal_of_truth_proc -> execute();
           break;
         default:
           ;
@@ -1069,10 +1101,11 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
       dot_behavior  = DOT_REFRESH;
       init();
     }
+
     virtual void impact( player_t* t, int impact_result, double total_dot_dmg )
     {
       paladin_attack_t::impact( t, impact_result, 0 );
-      int nticks = dot -> num_ticks;
+      int nticks = dot() -> num_ticks;
       base_td = total_dot_dmg / nticks;
     }
     virtual double travel_time()
@@ -1099,7 +1132,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
   if ( ! p -> active_flames_of_the_faithful_proc ) p -> active_flames_of_the_faithful_proc = new flames_of_the_faithful_t( p );
 
-  dot_t* dot = p -> active_flames_of_the_faithful_proc -> dot;
+  dot_t* dot = p -> active_flames_of_the_faithful_proc -> dot();
 
   if ( dot -> ticking )
   {
@@ -1689,14 +1722,16 @@ struct seal_of_truth_dot_t : public paladin_attack_t
   virtual void player_buff()
   {
     paladin_attack_t::player_buff();
-    player_multiplier *= p() -> buffs_censure -> stack();
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
+    player_multiplier *= td -> debuffs_censure -> stack();
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg=0 )
   {
     if ( result_is_hit( impact_result ) )
     {
-      p() -> buffs_censure -> trigger();
+      paladin_targetdata_t* td = targetdata() -> cast_paladin();
+      td -> debuffs_censure -> trigger();
       player_buff(); // update with new stack of the debuff
     }
     paladin_attack_t::impact( t, impact_result, travel_dmg );
@@ -1705,8 +1740,9 @@ struct seal_of_truth_dot_t : public paladin_attack_t
   virtual void last_tick( dot_t* d )
   {
     paladin_t* p = player -> cast_paladin();
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_attack_t::last_tick( d );
-    p -> buffs_censure -> expire();
+    td -> debuffs_censure -> expire();
   }
 };
 
@@ -1726,8 +1762,9 @@ struct seal_of_truth_proc_t : public paladin_attack_t
   virtual void player_buff()
   {
     paladin_t* p = player -> cast_paladin();
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= p -> buffs_censure -> stack() * 0.2;
+    player_multiplier *= td -> debuffs_censure -> stack() * 0.2;
   }
 };
 
@@ -1759,8 +1796,9 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
   virtual void player_buff()
   {
     paladin_t* p = player -> cast_paladin();
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_attack_t::player_buff();
-    player_multiplier *= 1.0 + p -> buffs_censure -> stack() * 0.20;
+    player_multiplier *= 1.0 + td -> debuffs_censure -> stack() * 0.20;
   }
 };
 
@@ -2224,6 +2262,9 @@ struct exorcism_t : public paladin_spell_t
   {
     paladin_t* p = player -> cast_paladin();
     paladin_spell_t::execute();
+
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
+
     // FIXME: Should this be wrapped in a result_is_hit() ?
     switch ( p -> active_seal )
     {
@@ -2237,7 +2278,7 @@ struct exorcism_t : public paladin_spell_t
       p -> active_seal_of_righteousness_proc -> execute();
       break;
     case SEAL_OF_TRUTH:
-      if ( p -> buffs_censure -> stack() >= 1 ) p -> active_seal_of_truth_proc -> execute();
+      if ( td -> debuffs_censure -> stack() >= 1 ) p -> active_seal_of_truth_proc -> execute();
       break;
     default:
       ;
@@ -3115,7 +3156,6 @@ void paladin_t::init_buffs()
 
   buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
   buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
-  buffs_censure                = new buff_t( this, 31803, "censure" );
   buffs_conviction             = new buff_t( this, talents.conviction -> effect1().trigger_spell_id(), "conviction", talents.conviction -> rank() );
   buffs_daybreak               = new buff_t( this, talents.daybreak -> effect_trigger_spell( 1 ), "daybreak", talents.daybreak -> proc_chance() );
   buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, 0 ); // Let the ability handle the CD
