@@ -3830,17 +3830,17 @@ struct lightning_shield_buff_t : public buff_t
 
 struct searing_flames_buff_t : public buff_t
 {
-  searing_flames_buff_t( player_t*   p,
+  searing_flames_buff_t( actor_pair_t pair,
                          uint32_t    id,
                          const char* n ) :
-    buff_t( p, id, n, 1.0, -1, true ) // Quiet buff, dont show in report
+    buff_t( pair, id, n, 1.0, -1, true ) // Quiet buff, dont show in report
   {
     // The default chance is in the script dummy effect base value
-    default_chance     = p -> dbc.spell( id ) -> effect1().percent();
+    default_chance     = initial_source -> dbc.spell( id ) -> effect1().percent();
 
     // Various other things are specified in the actual debuff placed on the target
-    buff_duration      = p -> dbc.spell( 77661 ) -> duration();
-    max_stack          = p -> dbc.spell( 77661 ) -> max_stacks();
+    buff_duration      = initial_source -> dbc.spell( 77661 ) -> duration();
+    max_stack          = initial_source -> dbc.spell( 77661 ) -> max_stacks();
 
     // Reinit because of max_stack change
     init_buff_shared();
@@ -4906,5 +4906,5 @@ shaman_targetdata_t::shaman_targetdata_t(player_t* source, player_t* target)
   : targetdata_t(source, target)
 {
   shaman_t* p = source -> cast_shaman();
-  debuffs_searing_flames          = add_aura(new searing_flames_buff_t  ( target, p -> talent_searing_flames -> spell_id(),                      "searing_flames"        ));
+  debuffs_searing_flames          = add_aura(new searing_flames_buff_t  ( this, p -> talent_searing_flames -> spell_id(),                      "searing_flames"        ));
 }
