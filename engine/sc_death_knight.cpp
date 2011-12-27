@@ -2042,7 +2042,7 @@ struct flaming_torment_t : public death_knight_spell_t
     may_crit         = false;
   }
 
-  virtual double calculate_direct_damage()
+  virtual double calculate_direct_damage( int )
   {
     death_knight_t* p = player -> cast_death_knight();
     double dmg = base_dd_min * p -> sets -> set( SET_T12_4PC_MELEE ) -> effect1().percent();

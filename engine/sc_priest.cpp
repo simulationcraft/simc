@@ -1096,7 +1096,7 @@ struct shadow_fiend_pet_t : public pet_t
       }
     }
 
-    virtual double calculate_direct_damage()
+    virtual double calculate_direct_damage( int )
     {
       double dmg = base_dd_min * dmg_mult;
 

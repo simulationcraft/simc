@@ -836,7 +836,7 @@ double action_t::calculate_tick_damage()
 
 // action_t::calculate_direct_damage ========================================
 
-double action_t::calculate_direct_damage()
+double action_t::calculate_direct_damage( int chain_target )
 {
   double dmg = sim -> range( base_dd_min, base_dd_max );
 
@@ -902,6 +902,9 @@ double action_t::calculate_direct_damage()
     dmg *= 1.0 - resistance();
   }
 
+  if ( chain_target > 0 && base_add_multiplier != 1.0 )
+    dmg *= pow( base_add_multiplier, chain_target );
+  
   if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
 
   if ( sim -> debug )
@@ -932,6 +935,48 @@ void action_t::consume_resource()
   stats -> consume_resource( resource_consumed );
 }
 
+// action_t::available_targets ==============================================
+
+size_t action_t::available_targets( std::vector< player_t* >& tl ) const
+{
+  // TODO: This does not work for heals at all, as it presumes enemies in the 
+  // actor list.
+
+  tl.push_back( target );
+
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    if ( ! sim -> actor_list[ i ] -> sleeping &&
+         sim -> actor_list[ i ] -> is_enemy() && 
+         sim -> actor_list[ i ] != target )
+      tl.push_back( sim -> actor_list[ i ] );
+  }
+  
+  return tl.size();
+}
+
+// action_t::target_list ====================================================
+
+std::vector< player_t* > action_t::target_list() const
+{
+  // A very simple target list for aoe spells, pick any and all targets, up to 
+  // aoe amount, or if aoe == -1, pick all (enemy) targets
+
+  std::vector< player_t* > t;
+  
+  size_t total_targets = available_targets( t );
+  
+  if ( aoe == -1 || total_targets <= static_cast< size_t >( aoe + 1 ) )
+    return t;
+  // Drop out targets from the end
+  else 
+  {
+    t.resize( aoe + 1 );
+    
+    return t;
+  }
+}
+
 // action_t::execute ========================================================
 
 void action_t::execute()
@@ -957,19 +1002,36 @@ void action_t::execute()
   }
 
   player_buff();
-
-  target_debuff( target, DMG_DIRECT );
-
-  calculate_result();
-
-  consume_resource();
-
-  if ( result_is_hit() )
+  
+  if ( aoe == -1 || aoe > 0 )
   {
-    direct_dmg = calculate_direct_damage();
+    std::vector< player_t* > tl = target_list();
+    
+    for ( size_t t = 0; t < tl.size(); t++ )
+    {
+      target_debuff( tl[ t ], DMG_DIRECT );
+
+      calculate_result();
+
+      if ( result_is_hit() )
+        direct_dmg = calculate_direct_damage( t + 1 );
+
+      schedule_travel( tl[ t ] );
+    }
+  }
+  else
+  {
+    target_debuff( target, DMG_DIRECT );
+    
+    calculate_result();
+    
+    if ( result_is_hit() )
+      direct_dmg = calculate_direct_damage();
+    
+    schedule_travel( target );
   }
 
-  schedule_travel( target );
+  consume_resource();
 
   update_ready();
 
@@ -1090,7 +1152,7 @@ void action_t::assess_damage( player_t* t,
     {
       log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
                      player -> name(), name(),
-                     target -> name(), dmg_adjusted,
+                     t -> name(), dmg_adjusted,
                      util_t::school_type_string( school ),
                      util_t::result_type_string( dmg_result ) );
     }

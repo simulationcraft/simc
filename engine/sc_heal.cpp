@@ -293,7 +293,7 @@ void heal_t::calculate_result()
 
 // heal_t::calculate_direct_damage ==========================================
 
-double heal_t::calculate_direct_damage()
+double heal_t::calculate_direct_damage( int )
 {
   double dmg = sim -> range( base_dd_min, base_dd_max );
 
@@ -690,7 +690,7 @@ void absorb_t::calculate_result()
 
 // absorb_t::calculate_direct_damage ========================================
 
-double absorb_t::calculate_direct_damage()
+double absorb_t::calculate_direct_damage( int )
 {
   double dmg = sim -> range( base_dd_min, base_dd_max );
 

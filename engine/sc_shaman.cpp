@@ -2186,13 +2186,20 @@ struct chain_lightning_t : public shaman_spell_t
     p -> buffs_elemental_mastery_insta -> expire();
 
     p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
-
-    if ( result_is_hit() )
+  }
+  
+  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  {
+    shaman_spell_t::impact( t, impact_result, travel_dmg );
+    
+    if ( result_is_hit( impact_result ) )
     {
+      shaman_t* p = player -> cast_shaman();
+
       trigger_rolling_thunder( this );
-
+      
       double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 ) / 3.0;
-
+      
       if ( overload_chance && p -> rng_elemental_overload -> roll( overload_chance ) )
       {
         overload -> execute();
@@ -2259,38 +2266,67 @@ struct elemental_mastery_t : public shaman_spell_t
 };
 
 // Fire Nova Spell ==========================================================
-
-struct fire_nova_t : public shaman_spell_t
+  
+struct fire_nova_explosion_t : public shaman_spell_t
 {
+  player_t* emit_target;
   double m_additive;
-
-  fire_nova_t( player_t* player, const std::string& options_str ) :
-    shaman_spell_t( "fire_nova", "Fire Nova", player, options_str ), m_additive( 0.0 )
+  
+  fire_nova_explosion_t( player_t* player, player_t* target ) :
+    shaman_spell_t( "fire_nova_explosion", 8349, player ), 
+    emit_target( target ), m_additive( 0.0 )
   {
     shaman_t* p = player -> cast_shaman();
-
-    aoe                   = -1;
-
     m_additive =  p -> talent_call_of_flame -> effect1().percent();
-
+    aoe = -1;
+    background = true;
+    callbacks = false;
+    
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
-
-    // Scaling information is from another spell (8349)
-    base_dd_min           = p -> dbc.effect_min( p -> dbc.spell( 8349 ) -> effect1().id(), p -> level );
-    base_dd_max           = p -> dbc.effect_max( p -> dbc.spell( 8349 ) -> effect1().id(), p -> level );
-    direct_power_mod      = p -> dbc.spell( 8349 ) -> effect1().coeff();
   }
 
-  virtual void player_buff()
+  void player_buff()
   {
     shaman_spell_t::player_buff();
-
+    
     shaman_t* p = player -> cast_shaman();
-
+    
     if ( p -> buffs_unleash_flame -> up() )
       base_multiplier = 1.0 + m_additive + p -> buffs_unleash_flame -> mod_additive( P_GENERIC );
     else
       base_multiplier = 1.0 + m_additive;
+  }
+  
+  // Fire nova does not damage the main target.
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      if ( ! sim -> actor_list[ i ] -> sleeping &&
+           sim -> actor_list[ i ] -> is_enemy() && 
+           sim -> actor_list[ i ] != emit_target )
+        tl.push_back( sim -> actor_list[ i ] );
+    }
+    
+    return tl.size();
+  }
+};
+
+struct fire_nova_t : public shaman_spell_t
+{
+  fire_nova_explosion_t* explosion;
+
+  fire_nova_t( player_t* player, const std::string& options_str ) :
+    shaman_spell_t( "fire_nova", "Fire Nova", player, options_str ), 
+    explosion( 0 )
+  {
+    aoe       = -1;
+    may_crit  = false;
+    may_miss  = false;
+    callbacks = false;
+    explosion = new fire_nova_explosion_t( player, target );
+    
+    add_child( explosion );
   }
 
   virtual bool ready()
@@ -2302,23 +2338,80 @@ struct fire_nova_t : public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
-
-  /*virtual void assess_damage( player_t* target, double dmg_amount, int dmg_type, int dmg_result )
+  
+  void impact( player_t*, int, double )
   {
-    if ( result_is_hit( dmg_result ) )
+    explosion -> execute();
+  }
+  
+  // Fire nova is emitted on all targets with a flame shock from us .. so
+  std::vector< player_t* > target_list() const
+  {
+    std::vector< player_t* > t;
+    
+    for ( player_t* e = sim -> target_list; e; e = e -> next )
     {
-      target_t* t = target -> cast_target();
-
-      if ( t -> adds_nearby > 0 )
-      {
-        for ( int i = 0; i < t -> adds_nearby; i++ )
-        {
-          additional_damage( t, dmg_amount, dmg_type, dmg_result );
-          // Also needs to extend FS duration when Call of Flame is taken
-        }
-      }
+      if ( e -> sleeping || ! e -> is_enemy() )
+        continue;
+      
+      shaman_targetdata_t* td = targetdata_t::get( player, e ) -> cast_shaman();
+      if ( td -> dots_flame_shock -> ticking )
+        t.push_back( e );
     }
-  }*/
+    
+    return t;
+  }
+};
+  
+// Earthquake Spell =========================================================
+  
+struct earthquake_rumble_t : public shaman_spell_t
+{
+  earthquake_rumble_t( player_t* player ) :
+    shaman_spell_t( "earthquake_rumble", 77478, player )
+  {
+    harmful = true;
+    aoe = -1;
+    background = true;
+    school = SCHOOL_PHYSICAL;
+    stats -> school = SCHOOL_PHYSICAL;
+    callbacks = false;
+  }
+  
+  double total_spell_power() const
+  {
+    return player -> composite_spell_power( SCHOOL_NATURE ) * player -> composite_spell_power_multiplier();
+  }
+};
+
+struct earthquake_t : public shaman_spell_t
+{
+  earthquake_rumble_t* quake;
+  
+  earthquake_t( player_t* player, const std::string& options_str ) :
+    shaman_spell_t( "earthquake", "Earthquake", player, options_str ),
+    quake( 0 )
+  {
+    base_td = 0;
+    base_dd_min = base_dd_max = direct_power_mod = 0;
+    harmful = true;
+    may_miss = false;
+    may_miss = may_crit = may_dodge = may_parry = false;
+    num_ticks = duration();
+    base_tick_time = 1.0;
+    hasted_ticks = false;
+
+    quake = new earthquake_rumble_t( player );
+    
+    add_child( quake );
+  }
+  
+  void tick( dot_t* d )
+  {
+    shaman_spell_t::tick( d );
+    
+    quake -> execute();
+  }
 };
 
 // Lava Burst Spell =========================================================
@@ -3003,27 +3096,62 @@ struct shaman_totem_t : public shaman_spell_t
       log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
     player_buff(); // Totems recalculate stats on every "tick"
-    target_debuff( target, DMG_DIRECT );
-    calculate_result();
 
-    if ( result_is_hit() )
+    if ( aoe == -1 || aoe > 0 )
     {
-      direct_dmg = calculate_direct_damage();
-
-      if ( direct_dmg > 0 )
+      std::vector< player_t* > tl = target_list();
+      
+      for ( size_t t = 0; t < tl.size(); t++ )
       {
-        tick_dmg = direct_dmg;
-        direct_dmg = 0;
-        assess_damage( target, tick_dmg, DMG_OVER_TIME, result );
+        target_debuff( tl[ t ], DMG_OVER_TIME );
+        
+        calculate_result();
+        
+        if ( result_is_hit() )
+        {
+          direct_dmg = calculate_direct_damage( t );
+          
+          if ( direct_dmg > 0 )
+          {
+            tick_dmg = direct_dmg;
+            direct_dmg = 0;
+            assess_damage( tl[ t ], tick_dmg, DMG_OVER_TIME, result );
+          }
+        }
+        else
+        {
+          if ( sim -> log )
+            log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
+        }
+        
       }
+
+      stats -> add_tick( d -> time_to_tick );
     }
     else
     {
-      if ( sim -> log )
-        log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
-    }
+      target_debuff( target, DMG_DIRECT );
+      calculate_result();
 
-    stats -> add_tick( d -> time_to_tick );
+      if ( result_is_hit() )
+      {
+        direct_dmg = calculate_direct_damage();
+        
+        if ( direct_dmg > 0 )
+        {
+          tick_dmg = direct_dmg;
+          direct_dmg = 0;
+          assess_damage( target, tick_dmg, DMG_OVER_TIME, result );
+        }
+      }
+      else
+      {
+        if ( sim -> log )
+          log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
+      }
+      
+      stats -> add_tick( d -> time_to_tick );
+    }
   }
 
   virtual double gcd() const
@@ -3965,6 +4093,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
   if ( name == "earth_elemental_totem"   ) return new    earth_elemental_totem_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
+  if ( name == "earthquake"              ) return new               earthquake_t( this, options_str );
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
   if ( name == "fire_elemental_totem"    ) return new     fire_elemental_totem_t( this, options_str );
   if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );

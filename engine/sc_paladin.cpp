@@ -802,7 +802,7 @@ struct righteous_flames_t : public paladin_spell_t
     may_crit         = false;
   }
 
-  virtual double calculate_direct_damage()
+  virtual double calculate_direct_damage( int )
   {
     paladin_t* p = player -> cast_paladin();
     double dmg = base_dd_min * p -> sets -> set( SET_T12_2PC_TANK ) -> effect1().percent();

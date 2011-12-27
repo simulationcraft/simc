@@ -2026,6 +2026,16 @@ action_expr_t* sim_t::create_expression( action_t* a,
     };
     return new time_expr_t( a );
   }
+  
+  if ( util_t::str_compare_ci( name_str, "enemies" ) )
+  {
+    struct enemy_amount_expr_t : public action_expr_t
+    {
+      enemy_amount_expr_t( action_t* a ) : action_expr_t( a, "enemy_amount", TOK_NUM ) { }
+      virtual int evaluate() { result_num = action -> sim -> num_enemies; return TOK_NUM; }
+    };
+    return new enemy_amount_expr_t( a );
+  }
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );

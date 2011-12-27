@@ -2081,7 +2081,7 @@ struct rend_dot_t : public warrior_attack_t
 
   }
 
-  virtual double calculate_direct_damage()
+  virtual double calculate_direct_damage( int )
   {
     // Rend doesn't actually hit with the weapon, but ticks on application
     return 0.0;

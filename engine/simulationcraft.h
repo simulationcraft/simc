@@ -4758,7 +4758,7 @@ public:
   virtual void   calculate_result() { assert( 0 ); }
   virtual bool   result_is_hit ( int r=RESULT_UNKNOWN ) const;
   virtual bool   result_is_miss( int r=RESULT_UNKNOWN ) const;
-  virtual double calculate_direct_damage();
+  virtual double calculate_direct_damage( int = 0 );
   virtual double calculate_tick_damage();
   virtual double calculate_weapon_damage();
   virtual double armor() const;
@@ -4839,6 +4839,9 @@ public:
     }
     return cached_targetdata;
   }
+  
+  virtual size_t available_targets( std::vector< player_t* >& ) const;
+  virtual std::vector< player_t* > target_list() const;
 };
 
 // Attack ===================================================================
@@ -4930,7 +4933,7 @@ public:
   virtual void assess_damage( player_t* t, double amount,
                               int    dmg_type, int impact_result );
   virtual void calculate_result();
-  virtual double calculate_direct_damage();
+  virtual double calculate_direct_damage( int = 0 );
   virtual double calculate_tick_damage();
   virtual void impact( player_t*, int impact_result, double travel_dmg );
   virtual void tick( dot_t* d );
@@ -4963,7 +4966,7 @@ public:
   virtual void assess_damage( player_t* t, double amount,
                               int    dmg_type, int impact_result );
   virtual void calculate_result();
-  virtual double calculate_direct_damage();
+  virtual double calculate_direct_damage( int = 0 );
   virtual void impact( player_t*, int impact_result, double travel_dmg );
 
 };
