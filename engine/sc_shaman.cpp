@@ -2272,9 +2272,9 @@ struct fire_nova_explosion_t : public shaman_spell_t
   player_t* emit_target;
   double m_additive;
   
-  fire_nova_explosion_t( player_t* player, player_t* target ) :
+  fire_nova_explosion_t( player_t* player ) :
     shaman_spell_t( "fire_nova_explosion", 8349, player ), 
-    emit_target( target ), m_additive( 0.0 )
+    emit_target( 0 ), m_additive( 0.0 )
   {
     shaman_t* p = player -> cast_shaman();
     m_additive =  p -> talent_call_of_flame -> effect1().percent();
@@ -2310,6 +2310,13 @@ struct fire_nova_explosion_t : public shaman_spell_t
     
     return tl.size();
   }
+  
+  void reset()
+  {
+    shaman_spell_t::reset();
+    
+    emit_target = 0;
+  }
 };
 
 struct fire_nova_t : public shaman_spell_t
@@ -2324,7 +2331,7 @@ struct fire_nova_t : public shaman_spell_t
     may_crit  = false;
     may_miss  = false;
     callbacks = false;
-    explosion = new fire_nova_explosion_t( player, target );
+    explosion = new fire_nova_explosion_t( player );
     
     add_child( explosion );
   }
@@ -2339,8 +2346,9 @@ struct fire_nova_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
   
-  void impact( player_t*, int, double )
+  void impact( player_t* t, int, double )
   {
+    explosion -> emit_target = t;
     explosion -> execute();
   }
   
