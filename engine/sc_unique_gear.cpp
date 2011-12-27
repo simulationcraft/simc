@@ -1032,7 +1032,7 @@ static void register_windward_heart( item_t* item )
       proc = p -> get_proc( "windward_heart" );
       rng  = p -> get_rng ( "windward_heart" );
       cd = p -> get_cooldown( "windward_heart_callback" );
-      cd -> duration = 45.0;
+      cd -> duration = 20.0;
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )

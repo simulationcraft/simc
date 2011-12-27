@@ -496,8 +496,7 @@ warlock_targetdata_t::warlock_targetdata_t( player_t* source, player_t* target )
   debuffs_shadow_embrace        = add_aura( new buff_t( this, p -> talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", p -> talent_shadow_embrace -> rank() ) );
 }
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Warlock Pet
