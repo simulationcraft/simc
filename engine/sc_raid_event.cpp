@@ -570,9 +570,9 @@ void raid_event_t::schedule()
     virtual void execute()
     {
       raid_event -> saved_duration = raid_event -> duration_time();
-      double ct = raid_event -> cooldown_time();
-
       raid_event -> start();
+
+      double ct = raid_event -> cooldown_time();
 
       if ( ct <= raid_event -> saved_duration ) ct = raid_event -> saved_duration + 0.01;
 
