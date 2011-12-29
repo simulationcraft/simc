@@ -59,6 +59,10 @@ struct shaman_t : public player_t
   // Active
   action_t* active_lightning_charge;
   action_t* active_searing_flames_dot;
+  
+  // Cached actions
+  action_t* action_flame_shock;
+  action_t* action_improved_lava_lash;
 
   // Pets
   pet_t* pet_spirit_wolf;
@@ -227,6 +231,9 @@ struct shaman_t : public player_t
     // Active
     active_lightning_charge   = 0;
     active_searing_flames_dot = 0;
+    
+    action_flame_shock = 0;
+    action_improved_lava_lash = 0;
 
     // Pets
     pet_spirit_wolf     = 0;
@@ -1191,6 +1198,145 @@ static bool trigger_static_shock ( attack_t* a )
   }
   return false;
 }
+  
+// trigger_improved_lava_lash ===============================================
+
+//  shaman_spell_t( const char* n, player_t* p, const std::string& options_str, const school_type s, int t ) :
+static bool trigger_improved_lava_lash( attack_t* a )
+{
+  struct improved_lava_lash_t : public shaman_spell_t
+  {
+    rng_t* imp_ll_rng;
+    cooldown_t* imp_ll_fs_cd;
+    
+    improved_lava_lash_t( player_t* p ) :
+      shaman_spell_t( "improved_lava_lash", p, "", SCHOOL_FIRE, TREE_ENHANCEMENT ),
+      imp_ll_rng( 0 ), imp_ll_fs_cd( 0 )
+    {
+      aoe = 4;
+      may_miss = may_crit = false;
+      proc = true;
+      callbacks = false;
+      background = true;
+      
+      imp_ll_rng = sim -> get_rng( "improved_ll" );
+      imp_ll_rng -> average_range = false;
+      imp_ll_fs_cd = player -> get_cooldown( "improved_ll_fs_cooldown" );
+      imp_ll_fs_cd -> duration = 0;
+    }
+    
+    size_t available_targets( std::vector< player_t* >& tl ) const
+    {
+      for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+      {
+        if ( ! sim -> actor_list[ i ] -> sleeping &&
+            sim -> actor_list[ i ] -> is_enemy() && 
+            sim -> actor_list[ i ] != target )
+          tl.push_back( sim -> actor_list[ i ] );
+      }
+      
+      return tl.size();
+    }
+
+    std::vector< player_t* > target_list() const
+    {
+      std::vector< player_t* > t;
+      
+      size_t total_targets = available_targets( t );
+      
+      // Reduce targets to aoe amount by removing random entries from the 
+      // target list until it's at aoe amount
+      while ( total_targets > static_cast< size_t >( aoe ) )
+      {
+        t.erase( t.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, total_targets ) ) );
+        total_targets--;
+      }
+      
+      return t;
+    }
+    
+    // Impact on any target triggers a flame shock; for now, cache the 
+    // relevant parts of the spell and return them after execute has finished
+    void impact( player_t* t, int, double )
+    {
+      if ( sim -> debug )
+        log_t::output( sim, "%s spreads Flame Shock (off of %s) on %s", 
+                      player -> name(), 
+                      target -> name(),
+                      t -> name() );
+      
+      shaman_t* p = player -> cast_shaman();
+      
+      double dd_min = p -> action_flame_shock -> base_dd_min,
+             dd_max = p -> action_flame_shock -> base_dd_max,
+             real_base_cost = p -> action_flame_shock -> base_cost;
+      player_t* original_target = p -> action_flame_shock -> target;
+      cooldown_t* original_cd = p -> action_flame_shock -> cooldown;
+      
+      p -> action_flame_shock -> base_dd_min = 0;
+      p -> action_flame_shock -> base_dd_max = 0;
+      p -> action_flame_shock -> background = true;
+      p -> action_flame_shock -> callbacks = false;
+      p -> action_flame_shock -> proc = true;
+      p -> action_flame_shock -> may_crit = false;
+      p -> action_flame_shock -> may_miss = false;
+      p -> action_flame_shock -> base_cost = 0;
+      p -> action_flame_shock -> target = t;
+      p -> action_flame_shock -> cooldown = imp_ll_fs_cd;
+      
+      p -> action_flame_shock -> execute();
+      
+      p -> action_flame_shock -> base_dd_min = dd_min;
+      p -> action_flame_shock -> base_dd_max = dd_max;
+      p -> action_flame_shock -> background = false;
+      p -> action_flame_shock -> callbacks = true;
+      p -> action_flame_shock -> proc = false;
+      p -> action_flame_shock -> may_crit = true;
+      p -> action_flame_shock -> may_miss = true;
+      p -> action_flame_shock -> base_cost = real_base_cost;
+      p -> action_flame_shock -> target = original_target;
+      p -> action_flame_shock -> cooldown = original_cd;
+      
+      // And then reduce count of flame shock action by one, so we do not
+      // calculate pointless executes (caused by improved lava lash)
+      p -> action_flame_shock -> stats -> direct_results[ RESULT_HIT ].iteration_count--;
+      p -> action_flame_shock -> stats -> num_direct_results--;
+      p -> action_flame_shock -> stats -> num_executes--;
+    }
+  };
+  
+  // Do not spread the love when there is only poor Fluffy Pillow against you
+  if ( a -> sim -> num_enemies == 1 )
+    return false;
+  
+  shaman_targetdata_t* t = a -> targetdata() -> cast_shaman();
+  
+  if ( ! t -> dots_flame_shock -> ticking )
+    return false;
+  
+  shaman_t* p = a -> player -> cast_shaman();
+  
+  if ( p -> talent_improved_lava_lash -> rank() == 0 )
+    return false;
+
+  if ( ! p -> action_flame_shock )
+  {
+    p -> action_flame_shock = p -> find_action( "flame_shock" );
+    assert( p -> action_flame_shock );
+  }
+  
+  if ( ! p -> action_improved_lava_lash )
+  {
+    p -> action_improved_lava_lash = new improved_lava_lash_t( p );
+    p -> action_improved_lava_lash -> init();
+  }
+  
+  // Splash from the action's target
+  p -> action_improved_lava_lash -> target = a -> target;
+  p -> action_improved_lava_lash -> execute();
+  
+  return true;
+}
 
 // ==========================================================================
 // Shaman Secondary Spells / Attacks
@@ -1785,6 +1931,8 @@ struct lava_lash_t : public shaman_attack_t
         p -> active_searing_flames_dot -> dot() -> cancel();
 
       trigger_static_shock( this );
+      if ( td -> dots_flame_shock -> ticking )
+        trigger_improved_lava_lash( this );
     }
   }
 
