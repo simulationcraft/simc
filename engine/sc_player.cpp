@@ -6832,7 +6832,7 @@ targetdata_t* targetdata_t::get( player_t* source, player_t* target )
   if( id < 0 )
     source -> targetdata_id = id = source -> sim -> num_targetdata_ids++;
 
-  if( id >= target -> targetdata.size() )
+  if( id >= ( int ) target -> targetdata.size() )
     target -> targetdata.resize( id + 1 );
 
   targetdata_t* p = target->targetdata[id];

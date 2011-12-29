@@ -2558,7 +2558,7 @@ struct earthquake_t : public shaman_spell_t
     harmful = true;
     may_miss = false;
     may_miss = may_crit = may_dodge = may_parry = false;
-    num_ticks = duration();
+    num_ticks = ( int ) duration();
     base_tick_time = 1.0;
     hasted_ticks = false;
 

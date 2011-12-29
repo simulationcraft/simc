@@ -917,7 +917,6 @@ static void trigger_tier12_4pc_melee( attack_t* a )
 
 double warrior_attack_t::armor() const
 {
-  warrior_t* p = player -> cast_warrior();
   warrior_targetdata_t* td = targetdata() -> cast_warrior();
 
   double a = attack_t::armor();
@@ -1538,8 +1537,6 @@ struct colossus_smash_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-
-    warrior_t* p = player -> cast_warrior();
 
     if ( result_is_hit() )
     {
