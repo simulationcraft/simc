@@ -1201,7 +1201,6 @@ static bool trigger_static_shock ( attack_t* a )
   
 // trigger_improved_lava_lash ===============================================
 
-//  shaman_spell_t( const char* n, player_t* p, const std::string& options_str, const school_type s, int t ) :
 static bool trigger_improved_lava_lash( attack_t* a )
 {
   struct improved_lava_lash_t : public shaman_spell_t
@@ -1269,12 +1268,14 @@ static bool trigger_improved_lava_lash( attack_t* a )
       
       double dd_min = p -> action_flame_shock -> base_dd_min,
              dd_max = p -> action_flame_shock -> base_dd_max,
+             coeff = p -> action_flame_shock -> direct_power_mod,
              real_base_cost = p -> action_flame_shock -> base_cost;
       player_t* original_target = p -> action_flame_shock -> target;
       cooldown_t* original_cd = p -> action_flame_shock -> cooldown;
       
       p -> action_flame_shock -> base_dd_min = 0;
       p -> action_flame_shock -> base_dd_max = 0;
+      p -> action_flame_shock -> direct_power_mod = 0;
       p -> action_flame_shock -> background = true;
       p -> action_flame_shock -> callbacks = false;
       p -> action_flame_shock -> proc = true;
@@ -1288,6 +1289,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
       
       p -> action_flame_shock -> base_dd_min = dd_min;
       p -> action_flame_shock -> base_dd_max = dd_max;
+      p -> action_flame_shock -> direct_power_mod = coeff;
       p -> action_flame_shock -> background = false;
       p -> action_flame_shock -> callbacks = true;
       p -> action_flame_shock -> proc = false;
