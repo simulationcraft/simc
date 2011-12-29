@@ -1207,6 +1207,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
   {
     rng_t* imp_ll_rng;
     cooldown_t* imp_ll_fs_cd;
+    stats_t* fs_dummy_stat;
     
     improved_lava_lash_t( player_t* p ) :
       shaman_spell_t( "improved_lava_lash", p, "", SCHOOL_FIRE, TREE_ENHANCEMENT ),
@@ -1222,6 +1223,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
       imp_ll_rng -> average_range = false;
       imp_ll_fs_cd = player -> get_cooldown( "improved_ll_fs_cooldown" );
       imp_ll_fs_cd -> duration = 0;
+      fs_dummy_stat = player -> get_stats( "flame_shock_dummy" );
     }
     
     size_t available_targets( std::vector< player_t* >& tl ) const
@@ -1272,6 +1274,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
              real_base_cost = p -> action_flame_shock -> base_cost;
       player_t* original_target = p -> action_flame_shock -> target;
       cooldown_t* original_cd = p -> action_flame_shock -> cooldown;
+      stats_t* original_stats = p -> action_flame_shock -> stats;
       
       p -> action_flame_shock -> base_dd_min = 0;
       p -> action_flame_shock -> base_dd_max = 0;
@@ -1284,6 +1287,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
       p -> action_flame_shock -> base_cost = 0;
       p -> action_flame_shock -> target = t;
       p -> action_flame_shock -> cooldown = imp_ll_fs_cd;
+      p -> action_flame_shock -> stats = fs_dummy_stat;
       
       p -> action_flame_shock -> execute();
       
@@ -1298,12 +1302,11 @@ static bool trigger_improved_lava_lash( attack_t* a )
       p -> action_flame_shock -> base_cost = real_base_cost;
       p -> action_flame_shock -> target = original_target;
       p -> action_flame_shock -> cooldown = original_cd;
+      p -> action_flame_shock -> stats = original_stats;
       
-      // And then reduce count of flame shock action by one, so we do not
-      // calculate pointless executes (caused by improved lava lash)
-      p -> action_flame_shock -> stats -> direct_results[ RESULT_HIT ].iteration_count--;
-      p -> action_flame_shock -> stats -> num_direct_results--;
-      p -> action_flame_shock -> stats -> num_executes--;
+      // Hide the Flame Shock dummy stat and improved_lava_lash from reports
+      fs_dummy_stat -> num_executes = 0;
+      stats -> num_executes = 0;
     }
   };
   
