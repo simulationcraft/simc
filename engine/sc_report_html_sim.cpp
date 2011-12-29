@@ -1458,7 +1458,7 @@ void report_t::print_html( sim_t* sim )
   }
 
   // Auras
-  print_html_auras_buffs( file, sim );
+  // print_html_auras_buffs( file, sim );
 
   // Sim Summary
   print_html_sim_summary( file, sim );

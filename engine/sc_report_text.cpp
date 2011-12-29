@@ -167,170 +167,139 @@ static void print_text_actions( FILE* file, player_t* p )
 
 // print_text_buffs =========================================================
 
+static inline bool buff_comp( const buff_t* i, const buff_t* j )
+{
+  // Aura&Buff / Pet
+  if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
+    return true;
+  // Pet / Aura&Buff
+  else if ( i -> player && i -> player -> is_pet() && ( ! j -> player || ! j -> player -> is_pet() ) )
+    return false;
+  // Pet / Pet
+  else if ( i -> player && i -> player -> is_pet() && j -> player && j -> player -> is_pet() )
+  {
+    if ( i -> player -> name_str.compare( j -> player -> name_str ) == 0 )
+      return ( i -> name_str.compare( j -> name_str ) < 0 );
+    else
+      return ( i -> player -> name_str.compare( j -> player -> name_str ) < 0 );
+  }
+
+  return ( i -> name_str.compare( j -> name_str ) < 0 );
+}
+  
 static void print_text_buffs( FILE* file, player_t* p )
 {
   bool first=true;
   char prefix = ' ';
   int total_length = 100;
-  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+  std::vector< buff_t* > buff_list;
+  std::string full_name;
+  
+  for ( buff_t* b = p -> sim -> buff_list; b; b = b -> next )
   {
-    if ( b -> quiet || ! b -> start_count )
+    if ( b -> quiet || ! b -> start_count || ! b -> constant )
       continue;
-
-    if ( b -> constant )
-    {
-      int length = ( int ) strlen( b -> name() );
-      if ( ( total_length + length ) > 100 )
-      {
-        if ( ! first )
-          util_t::fprintf( file, "\n" );
-        first=false;
-        util_t::fprintf( file, "  Constant Buffs:" );
-        prefix = ' ';
-        total_length = 0;
-      }
-      util_t::fprintf( file, "%c%s", prefix, b -> name() );
-      prefix = '/';
-      total_length += length;
-    }
+    
+    buff_list.push_back( b );
   }
-  util_t::fprintf( file, "\n" );
-
-  util_t::fprintf( file, "  Dynamic Buffs:\n" );
-
-  int max_length = 0;
+  
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
   {
-    if ( ! b -> quiet && b -> start_count && ! b -> constant )
-    {
-      int length = ( int ) strlen( b -> name() );
-      if ( length > max_length ) max_length = length;
-    }
-  }
-
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-  {
-    for ( buff_t* b = pet -> buff_list; b; b = b -> next )
-    {
-      if ( ! b -> quiet && b -> start_count && ! b -> constant )
-      {
-        int length = ( int ) strlen( b -> name() ) + ( int ) pet -> name_str.size() + 1;
-        if ( length > max_length ) max_length = length;
-      }
-    }
-  }
-
-  for ( buff_t* b = p -> buff_list; b; b = b -> next )
-  {
-    if ( b -> quiet || ! b -> start_count )
+    if ( b -> quiet || ! b -> start_count || ! b -> constant )
       continue;
-
-    if ( ! b -> constant )
-    {
-      util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
-                       max_length, b -> name(), b -> avg_start, b -> avg_refresh,
-                       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
-
-      if ( b -> benefit_pct > 0 &&
-           b -> benefit_pct < 100 )
-      {
-        util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
-      }
-
-      util_t::fprintf( file, "\n" );
-    }
+    
+    buff_list.push_back( b );
   }
-
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  
+  std::sort( buff_list.begin(), buff_list.end(), buff_comp );
+  
+  for ( std::vector< buff_t* >::const_iterator b = buff_list.begin();
+       b < buff_list.end(); b++ )
   {
-    for ( buff_t* b = pet -> buff_list; b; b = b -> next )
+    int length = ( int ) ( *b ) -> name_str.length();
+    if ( ( total_length + length ) > 100 )
     {
-      if ( b -> quiet || ! b -> start_count )
-        continue;
-
-      if ( ! b -> constant )
-      {
-        std::string full_name = pet -> name_str + "-" + b -> name_str;
-
-        util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
-                         max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
-                         b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
-
-        if ( b -> benefit_pct > 0 &&
-             b -> benefit_pct < 100 )
-        {
-          util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
-        }
-
+      if ( ! first )
         util_t::fprintf( file, "\n" );
-      }
+      first=false;
+      util_t::fprintf( file, "  Constant Buffs:" );
+      prefix = ' ';
+      total_length = 0;
     }
+    util_t::fprintf( file, "%c%s", prefix, ( *b ) -> name() );
+    prefix = '/';
+    total_length += length;
   }
-}
 
-// print_text_buffs =========================================================
-
-static void print_text_buffs( FILE* file, sim_t* sim )
-{
-  util_t::fprintf( file, "\nAuras:" );
-  char prefix = ' ';
-  int total_length = 100;
-  for ( buff_t* b = sim -> buff_list; b; b = b -> next )
-  {
-    if ( b -> quiet || ! b -> start_count )
-      continue;
-
-    if ( b -> constant )
-    {
-      int length = ( int ) strlen( b -> name() );
-      if ( ( total_length + length ) > 100 )
-      {
-        util_t::fprintf( file, "\n  Constant:" );
-        prefix = ' ';
-        total_length = 0;
-      }
-      util_t::fprintf( file, "%c%s", prefix, b -> name() );
-      prefix = '/';
-      total_length += length;
-    }
-  }
   util_t::fprintf( file, "\n" );
 
-  util_t::fprintf( file, "  Dynamic:\n" );
-
+  buff_list.clear();
+  
   int max_length = 0;
-  for ( buff_t* b = sim -> buff_list; b; b = b -> next )
+
+  // Consolidate player buffs, first auras
+  for ( buff_t* b = p -> sim -> buff_list; b; b = b -> next )
   {
-    if ( ! b -> quiet && b -> start_count && ! b -> constant )
+    if ( b -> quiet || ! b -> start_count || b -> constant )
+      continue;
+    
+    buff_list.push_back( b );
+  }
+
+  // Then player buffs
+  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+  {
+    if ( b -> quiet || ! b -> start_count || b -> constant )
+      continue;
+
+    buff_list.push_back( b );
+  }
+  
+  // Then pet buffs
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    for ( buff_t* b = pet -> buff_list; b; b = b -> next )
     {
-      int length = ( int ) strlen( b -> name() );
-      if ( length > max_length ) max_length = length;
+      if ( b -> quiet || ! b -> start_count || b -> constant )
+        continue;
+      
+      buff_list.push_back( b );
     }
   }
 
-  for ( buff_t* b = sim -> buff_list; b; b = b -> next )
+  for ( std::vector< buff_t* >::const_iterator b = buff_list.begin();
+       b < buff_list.end(); b++ )
   {
-    if ( b -> quiet || ! b -> start_count )
-      continue;
+    if ( ( *b ) -> player && ( *b ) -> player -> is_pet() )
+      full_name = ( *b ) -> player -> name_str + "-" + ( *b ) -> name_str;
+    else
+      full_name = ( *b ) -> name_str;
+    
+    int length = ( int ) full_name.length();
+    if ( length > max_length ) max_length = length;
+  }
 
-    if ( ! b -> constant )
-    {
-      util_t::fprintf( file, "    %-*s : start=%-4.1f  refresh=%-5.1f  interval=%5.1f|%-5.1f  uptime=%2.0f%%",
-                       max_length, b -> name(), b -> avg_start, b -> avg_refresh,
-                       b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
+  std::sort( buff_list.begin(), buff_list.end(), buff_comp );
 
-      if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
-      {
-        util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
-      }
+  if ( buff_list.size() > 0 )
+    util_t::fprintf( file, "  Dynamic Buffs:\n" );
+  
+  for ( std::vector< buff_t* >::const_iterator b = buff_list.begin();
+       b < buff_list.end(); b++ )
+  {
+    if ( ( *b ) -> player && ( *b ) -> player -> is_pet() )
+      full_name = ( *b ) -> player -> name_str + "-" + ( *b ) -> name_str;
+    else
+      full_name = ( *b ) -> name_str;
 
-      if ( b -> trigger_pct > 0 && b -> trigger_pct < 100 )
-      {
-        util_t::fprintf( file, "  trigger=%2.0f%%", b -> trigger_pct );
-      }
-
-      util_t::fprintf( file, "\n" );
-    }
+    util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
+                    max_length, full_name.c_str(), ( *b ) -> avg_start, ( *b ) -> avg_refresh,
+                    ( *b ) -> avg_start_interval, ( *b ) -> avg_trigger_interval, ( *b ) -> uptime_pct.mean );
+    
+    if ( ( *b ) -> benefit_pct > 0 && ( *b ) -> benefit_pct < 100 )
+      util_t::fprintf( file, "  benefit=%2.0f%%", ( *b ) -> benefit_pct );
+    
+    util_t::fprintf( file, "\n" );
   }
 }
 
@@ -942,7 +911,6 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 
   if ( detail )
   {
-    print_text_buffs        ( file, sim );
     print_text_hat_donors   ( file, sim );
     print_text_waiting      ( file, sim );
     print_text_performance  ( file, sim );
