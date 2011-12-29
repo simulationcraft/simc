@@ -1226,14 +1226,26 @@ static bool trigger_improved_lava_lash( attack_t* a )
       fs_dummy_stat = player -> get_stats( "flame_shock_dummy" );
     }
     
+    // Exclude targets with your flame shock on
     size_t available_targets( std::vector< player_t* >& tl ) const
     {
       for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
       {
-        if ( ! sim -> actor_list[ i ] -> sleeping &&
-            sim -> actor_list[ i ] -> is_enemy() && 
-            sim -> actor_list[ i ] != target )
-          tl.push_back( sim -> actor_list[ i ] );
+        if ( sim -> actor_list[ i ] -> sleeping )
+          continue;
+        
+        if ( ! sim -> actor_list[ i ] -> is_enemy() )
+          continue;
+        
+        if ( sim -> actor_list[ i ] == target )
+          continue;
+          
+        shaman_targetdata_t* td = targetdata_t::get( player, sim -> actor_list[ i ] ) -> cast_shaman();
+        
+        if ( td -> dots_flame_shock -> ticking )
+          continue;
+
+        tl.push_back( sim -> actor_list[ i ] );
       }
       
       return tl.size();
