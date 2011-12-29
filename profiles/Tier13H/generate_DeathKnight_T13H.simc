@@ -140,7 +140,7 @@ trinket1=eye_of_unmaking,id=77997
 #trinket2=bonelink_fetish,id=78002
 trinket2=creche_of_the_final_dragon,id=77992
 back=dreamcrusher_drape,id=77097,reforge=crit_haste,enchant=65crit
-main_hand=gurthalak_voice_of_the_deeps,id=78478,enchant=rune_of_the_fallen_crusader,gems=50str_10str
+main_hand=gurthalak_voice_of_the_deeps,id=78478,enchant=rune_of_the_fallen_crusader
 ranged=gutripper_shard,id=77081,reforge=mastery_hit,gems=50str
 save=Death_Knight_Unholy_2h_T13H.simc
 

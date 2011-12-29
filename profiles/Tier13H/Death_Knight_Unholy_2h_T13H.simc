@@ -53,10 +53,10 @@ finger2=curled_twilight_claw,heroic=1,ilevel=410,quality=epic,stats=286str_459st
 trinket1=eye_of_unmaking,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99str_100%_10dur_10stack
 trinket2=creche_of_the_final_dragon,heroic=1,ilevel=410,quality=epic,stats=517str,equip=ondamage_3278crit_15%_20dur_115cd
 back=dreamcrusher_drape,ilevel=397,quality=epic,stats=769armor_251str_406sta_196crit_127hit,reforge=crit_haste,enchant=65crit
-main_hand=gurthalak_voice_of_the_deeps,heroic=1,ilevel=416,quality=epic,stats=581str_871sta,gems=50str_10str,enchant=rune_of_the_fallen_crusader,weapon=sword2h_3.60speed_3053min_4580max
+main_hand=gurthalak_voice_of_the_deeps,heroic=1,ilevel=416,quality=epic,stats=581str_871sta,enchant=rune_of_the_fallen_crusader,weapon=sword2h_3.60speed_3053min_4580max
 ranged=gutripper_shard,ilevel=397,quality=epic,stats=153str_230sta_92mastery_108haste,reforge=mastery_hit,gems=50str
 # Gear Summary
-# gear_strength=7182
+# gear_strength=7122
 # gear_agility=20
 # gear_stamina=8262
 # gear_intellect=20
