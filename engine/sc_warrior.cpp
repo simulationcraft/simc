@@ -3937,6 +3937,9 @@ double warrior_t::assess_damage( double            amount,
        result == RESULT_BLOCK  )
   {
     double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ];
+    if ( buffs_berserker_rage -> up() )
+      rage_gain *= 2.0;
+
     resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
   }
 
