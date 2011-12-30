@@ -1323,19 +1323,21 @@ static void register_gurthalak( item_t* item )
   struct gurthalak_callback_t : public action_callback_t
   {
     double chance;
-    spell_t* spell;
+    spell_t* spell[5];
     rng_t* rng;
     int slot;
+    int current_spell;
 
     // FIXME: This should be converted to a pet, which casts 3 Mind Flays,
     // of 3 ticks each, with the last being 2-3 ticks
     // Reia is working on it and it's proving difficult
-    // So until that can be done, simulate 8-9 ticks on one mind flay, with a dot refresh
-    // Will hurt Fury warriors the most
+    // So until that can be done, use 5 spells to act as 5 spawns
+    // and simulate 8-9 ticks on one mind flay, with a dot refresh
+    // OH modeling of this for Fury is undervalued
     struct gurthalak_t : public spell_t
     {
-      gurthalak_t( player_t* p, uint32_t tick_damage ) :
-        spell_t( "gurthalak_voice_of_the_deeps", 52586, p )
+      gurthalak_t( player_t* p, uint32_t tick_damage, const char* name ) :
+        spell_t( name, 52586, p )
       {
         trigger_gcd = 0;
         background = true;
@@ -1346,14 +1348,16 @@ static void register_gurthalak( item_t* item )
         base_attack_power_multiplier = 1.0;
         base_spell_power_multiplier = 0;
 
+        // Override stats so all 5 tentacles are merged into 1
+        stats = p -> get_stats( "gurthalak_voice_of_the_deeps" );
+
         // While this spell ID is the one used by all of the tentacles,
         // It doesn't have a coeff and each version has static damage
         tick_power_mod = 0;
         base_td = tick_damage;
-        base_cost = 0; // This screws up reporting
+        base_cost = 0; // Override this, otherwise it screws up reporting
 
-        // Until this is changed to a pet to allow for multiple spawns at once
-        // Allow the dot to refresh itself
+        // Change to DOT_REFRESH in-case we somehow RNG to all holy hell and get 6 up at once
         dot_behavior = DOT_REFRESH;
 
         init();
@@ -1363,15 +1367,21 @@ static void register_gurthalak( item_t* item )
       {
         // Casts either 8 or 9 ticks, roughly equal chance for both
         num_ticks = sim -> roll( 0.5 ) ? 9 : 8;
+
         spell_t::execute();
       }
     };
 
     gurthalak_callback_t( player_t* p, uint32_t tick_damage, uint32_t proc_spell_id, int slot ) :
       action_callback_t( p -> sim, p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() ),
-      slot( slot )
+      slot( slot ), current_spell( 0 )
     {
-      spell = new gurthalak_t( p, tick_damage );
+      // Init 5 Gurths to act like multiple tentacles up at once
+      spell[0] = new gurthalak_t( p, tick_damage, "gurthalak_voice_of_the_deeps0" );
+      spell[1] = new gurthalak_t( p, tick_damage, "gurthalak_voice_of_the_deeps1" );
+      spell[2] = new gurthalak_t( p, tick_damage, "gurthalak_voice_of_the_deeps2" );
+      spell[3] = new gurthalak_t( p, tick_damage, "gurthalak_voice_of_the_deeps3" );
+      spell[4] = new gurthalak_t( p, tick_damage, "gurthalak_voice_of_the_deeps4" );
 
       rng = p -> get_rng ( "gurthalak" );
     }
@@ -1401,7 +1411,12 @@ static void register_gurthalak( item_t* item )
 
       if ( rng -> roll( chance ) )
       {
-        spell -> execute();
+        // Control our spawns of Gurth
+        current_spell++;
+        if ( current_spell > 4 )
+          current_spell = 0;
+
+        spell[ current_spell ] -> execute();
       }
     }
   };
