@@ -1316,7 +1316,7 @@ static void register_gurthalak( item_t* item )
   bool lfr      = item -> lfr();
   int  slot     = item -> slot;
 
-  uint32_t tick_damage = heroic ? 12429 : lfr ? 9881 : 11155; // Heroic is assumed
+  uint32_t tick_damage = heroic ? 12591 : lfr ? 9881 : 11155;
 
   uint32_t proc_spell_id = heroic ? 109839 : lfr ? 109841 : 107810;
 
