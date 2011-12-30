@@ -4611,8 +4611,18 @@ void shaman_t::init_actions()
 {
   if ( primary_tree() == TREE_ENHANCEMENT && main_hand_weapon.type == WEAPON_NONE )
   {
-    if ( !quiet )
+    if ( ! quiet )
       sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
+  // Restoration isn't supported atm
+  if ( primary_tree() == TREE_RESTORATION && primary_role() == ROLE_HEAL )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Restoration Shaman support for player %s is not currently supported.", name() );
+
     quiet = true;
     return;
   }
