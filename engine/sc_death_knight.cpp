@@ -4355,7 +4355,7 @@ void death_knight_t::init_actions()
 {
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
-    if ( !quiet )
+    if ( ! quiet )
       sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
     quiet = true;
     return;

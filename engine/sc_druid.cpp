@@ -5754,13 +5754,10 @@ int druid_t::primary_role() const
 
   else if ( primary_tree() == TREE_RESTORATION )
   {
-    if ( player_t::primary_role() == ROLE_HEAL )
-      return ROLE_HEAL;
-
     if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_SPELL )
       return ROLE_SPELL;
 
-    return ROLE_SPELL;
+    return ROLE_HEAL;
   }
 
   return ROLE_NONE;
