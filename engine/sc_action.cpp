@@ -280,10 +280,10 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
     return;
   }
 
+  const spell_data_t* spell = player -> dbc.spell( spell_id );
+  const spelleffect_data_t* effect = player -> dbc.effect( spell -> effect_id( effect_nr ) );
+  
   assert( spell );
-
-  const spelleffect_data_t* effects[4] = { 0, spell -> _effect1, spell -> _effect2, spell -> _effect3 };
-  const spelleffect_data_t* effect = effects[ effect_nr ];
 
   if ( ! effect )
   {
