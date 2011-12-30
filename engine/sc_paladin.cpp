@@ -3312,7 +3312,7 @@ void paladin_t::init_actions()
         action_list_str = "flask,type=stoneblood/food,type=dragonfin_filet";
         action_list_str += "/indestructible_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       }
-      action_list_str += "/seal_of_truth";
+      action_list_str += "/seal_of_insight";
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
       int num_items = ( int ) items.size();
@@ -3327,11 +3327,13 @@ void paladin_t::init_actions()
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions();
       action_list_str += "/avenging_wrath";
-      action_list_str += "/judgement";
-      action_list_str += "/holy_wrath";
-      action_list_str += "/holy_shock";
-      action_list_str += "/consecration";
-      action_list_str += "/divine_plea";
+      if ( talents.divine_favor -> ok() ) action_list_str += "/divine_favor";
+      action_list_str += "/judgement,if=buff.judgements_of_the_pure.remains<10";
+      action_list_str += "/word_of_glory,if=holy_power>2";
+      action_list_str += "/holy_shock_heal";
+      action_list_str += "/divine_light,if=mana_pct>75";
+      action_list_str += "/divine_plea,if=mana_pct<75";
+      action_list_str += "/holy_light";      
     }
     break;
     default:
@@ -3500,14 +3502,11 @@ int paladin_t::primary_role() const
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
     return ROLE_HYBRID;
 
-  if ( player_t::primary_role() == ROLE_TANK  )
+  if ( player_t::primary_role() == ROLE_TANK || primary_tree() == TREE_PROTECTION  )
     return ROLE_TANK;
 
-  if ( player_t::primary_role() == ROLE_HEAL )
+  if ( player_t::primary_role() == ROLE_HEAL || primary_tree() == TREE_HOLY )
     return ROLE_HEAL;
-
-  if ( primary_tree() == TREE_PROTECTION )
-    return ROLE_TANK;
 
   return ROLE_HYBRID;
 }
