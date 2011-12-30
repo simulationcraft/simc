@@ -1469,7 +1469,6 @@ void action_t::init()
 
     stats = player -> get_stats( name_str + "_DTR", this );
     background = true;
-    travel_speed = 0.0;
   }
 
   initialized = true;
