@@ -9,7 +9,6 @@
 // Druid
 // ==========================================================================
 
-
 struct druid_targetdata_t : public targetdata_t
 {
   dot_t* dots_fiery_claws;
@@ -72,6 +71,7 @@ void register_druid_targetdata( sim_t* sim )
   REGISTER_DOT( wild_growth );
 
   REGISTER_BUFF( combo_points );
+  REGISTER_BUFF( lifebloom );
 }
 
 struct druid_t : public player_t
@@ -5107,7 +5107,7 @@ void druid_t::init_actions()
 {
   if ( primary_role() == ROLE_ATTACK && main_hand_weapon.type == WEAPON_NONE )
   {
-    if ( !quiet )
+    if ( ! quiet )
       sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
     quiet = true;
     return;
@@ -5254,7 +5254,7 @@ void druid_t::init_actions()
         action_list_str += "/shred,if=time_to_max_energy<=1.0";
       }
     }
-    else
+    else if ( primary_role() == ROLE_SPELL )
     {
       if ( level > 80 )
       {
@@ -5326,6 +5326,37 @@ void druid_t::init_actions()
       action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
       action_list_str += "/moonfire,moving=1";
       action_list_str += "/sunfire,moving=1";
+    }
+    else
+    {
+      if ( level > 80 )
+      {
+        action_list_str += "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
+      }
+      else
+      {
+        action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
+      }
+      action_list_str += "/mark_of_the_wild";
+      action_list_str += "/snapshot_stats";
+      action_list_str += "/volcanic_potion,if=!in_combat";
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      action_list_str += "/innervate";
+      if ( talents.tree_of_life -> ok() ) action_list_str += "/tree_of_life";
+      action_list_str += "/healing_touch,if=buff.omen_of_clarity.up";
+      action_list_str += "/rejuvenation,if=!ticking|remains<tick_time";
+      action_list_str += "/lifebloom,if=buff.lifebloom.stack<3";
+      action_list_str += "/swiftmend";
+      if ( talents.tree_of_life -> ok() )
+      {
+        action_list_str += "/healing_touch,if=buff.tree_of_life.up&mana_pct>=5";
+        action_list_str += "/healing_touch,if=buff.tree_of_life.down&mana_pct>=30";
+      }
+      else
+      {
+        action_list_str += "/healing_touch,if=mana_pct>=30";
+      }
+      action_list_str += "/nourish";
     }
     action_list_default = 1;
   }
