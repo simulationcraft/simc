@@ -541,6 +541,20 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "Patchwerk";
     sim -> raid_events_str.clear();
   }
+  else if ( util_t::str_compare_ci( value, "Ultraxion" ) )
+  {
+    sim -> fight_style = "Ultraxion";
+    sim -> max_time    = 366.0;
+    sim -> vary_combat_length = 0.0;
+    sim -> raid_events_str =  "stun,duration=1.0,first=45.0,period=45.0,cooldown_stddev=0.0,cooldown>=45.0,cooldown<=45.0";
+    sim -> raid_events_str += "/stun,duration=1.0,first=57.0,period=57.0,cooldown_stddev=0.0,cooldown>=57.0,cooldown<=57.0";
+    sim -> raid_events_str += "/damage,first=6.0,period=6.0,cooldown_stddev=0.0,last=59.5,amount=44000,type=shadow,cooldown>=5.0,cooldown<=5.0";
+    sim -> raid_events_str += "/damage,first=60.0,period=5.0,cooldown_stddev=0.01,last=119.5,amount=44855,type=shadow,cooldown>=5.0,cooldown<=5.0";
+    sim -> raid_events_str += "/damage,first=120.0,period=4.0,cooldown_stddev=0.01,last=179.5,amount=44855,type=shadow,cooldown>=4.0,cooldown<=4.0";
+    sim -> raid_events_str += "/damage,first=180.0,period=3.0,cooldown_stddev=0.01,last=239.5,amount=44855,type=shadow,cooldown>=3.0,cooldown<=3.0";
+    sim -> raid_events_str += "/damage,first=240.0,period=2.0,cooldown_stddev=0.01,last=299.5,amount=44855,type=shadow,cooldown>=2.0,cooldown<=2.0";
+    sim -> raid_events_str += "/damage,first=300.0,period=1.0,cooldown_stddev=0.01,amount=44855,type=shadow,cooldown>=1.0,cooldown<=1.0";
+  }
   else if ( util_t::str_compare_ci( value, "HelterSkelter" ) )
   {
     sim -> fight_style = "HelterSkelter";
