@@ -245,6 +245,17 @@ parse_player( sim_t*             sim,
     return 0;
   }
   if ( sim -> debug ) js_t::print( profile, sim -> output_file );
+  
+  std::string status, reason;
+  if ( js_t::get_value( status, profile, "status" ) && util_t::str_compare_ci( status, "nok" ) )
+  {
+    js_t::get_value( reason, profile, "reason" );
+    
+    sim -> errorf( "BCP API: Unable to download player from '%s', reason: %s\n",
+                  player.url.c_str(),
+                  reason.c_str() );
+    return 0;
+  }
 
   std::string name;
   if ( js_t::get_value( name, profile, "name"  ) )
