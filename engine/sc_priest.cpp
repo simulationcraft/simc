@@ -2474,6 +2474,15 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
+  virtual void reset()
+  {
+    priest_targetdata_t* td = targetdata() -> cast_priest();
+
+    priest_spell_t::reset();
+    
+    td -> remove_dots_event = 0;
+  }
+
   virtual void execute()
   {
     priest_spell_t::execute();
