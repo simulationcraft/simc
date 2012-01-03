@@ -110,7 +110,7 @@ namespace std {using namespace tr1; }
 
 #define SC_MAJOR_VERSION "430"
 #define SC_MINOR_VERSION "5"
-#define SC_USE_PTR ( 0 )
+#define SC_USE_PTR ( 1 )
 #define SC_BETA ( 0 )
 #define SC_EPSILON ( 0.000001 )
 #ifndef M_PI

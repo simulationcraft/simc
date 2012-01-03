@@ -2236,7 +2236,7 @@ struct arcane_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    if ( p -> buffs_lock_and_load -> check() )
+    if ( ! p -> dbc.ptr && p -> buffs_lock_and_load -> check() )
       return 0;
 
     return hunter_attack_t::cost();
@@ -2263,8 +2263,11 @@ struct arcane_shot_t : public hunter_attack_t
       }
     }
 
-    p -> buffs_lock_and_load -> up();
-    p -> buffs_lock_and_load -> decrement();
+    if ( p -> dbc.ptr )
+    {
+      p -> buffs_lock_and_load -> up();
+      p -> buffs_lock_and_load -> decrement();
+    }
   }
 };
 
@@ -2843,7 +2846,7 @@ struct multi_shot_t : public hunter_attack_t
     hunter_attack_t::execute();
     hunter_t* p = player -> cast_hunter();
 
-    if ( p -> buffs_bombardment -> up() )
+    if ( p -> buffs_bombardment -> up() && ! p -> dbc.ptr )
       p -> buffs_bombardment -> expire();
   }
 
@@ -4076,7 +4079,6 @@ void hunter_t::init_actions()
 
     // MAKRMANSHIP
     case TREE_MARKSMANSHIP:
-
       action_list_str += init_use_racial_actions();
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
@@ -4112,13 +4114,11 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot";
       break;
 
-
     // SURVIVAL
     case TREE_SURVIVAL:
       action_list_str += "/multi_shot,if=target.adds>2";
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking";
-
       action_list_str += "/explosive_shot,if=(remains<2.0)";
       action_list_str += "/explosive_trap";
       action_list_str += "/kill_shot";
@@ -4127,13 +4127,11 @@ void hunter_t::init_actions()
 //      if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
 
       action_list_str += "/rapid_fire";
-
       action_list_str += "/arcane_shot,if=focus>=50&!buff.lock_and_load.react";
       if ( level >=81 )
         action_list_str += "/cobra_shot";
       else
         action_list_str += "/steady_shot";
-
       if ( summon_pet_str.empty() )
         summon_pet_str = "cat";
       break;

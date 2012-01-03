@@ -4119,7 +4119,11 @@ struct starsurge_t : public druid_spell_t
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 
     if ( p -> set_bonus.tier13_4pc_caster() )
+    {
       cooldown -> duration -= 5.0;
+      if ( p -> dbc.ptr )
+        base_multiplier *= 1.10;
+    }
 
     starfall_cd = p -> get_cooldown( "starfall" );
 
