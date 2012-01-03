@@ -2427,9 +2427,6 @@ struct slam_t : public warrior_attack_t
     }
   }
 
-  virtual double haste() const { return 1.0; }
-  virtual double swing_haste() const { return 1.0; }
-
   virtual double cost() const
   {
     warrior_t* p = player -> cast_warrior();
