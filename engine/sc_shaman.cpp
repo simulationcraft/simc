@@ -90,6 +90,7 @@ struct shaman_t : public player_t
   buff_t* buffs_stormstrike;
   buff_t* buffs_tier13_2pc_caster;
   buff_t* buffs_tier13_4pc_caster;
+  buff_t* buffs_tier13_4pc_healer;
   buff_t* buffs_unleash_flame;
   buff_t* buffs_unleash_wind;
   buff_t* buffs_water_shield;
@@ -2086,6 +2087,9 @@ double shaman_spell_t::haste() const
   if ( p -> buffs_elemental_mastery -> up() )
     h *= 1.0 / ( 1.0 + p -> buffs_elemental_mastery -> base_value( E_APPLY_AURA, A_MOD_CASTING_SPEED_NOT_STACK ) );
 
+  if ( p -> buffs_tier13_4pc_healer -> up() )
+    h *= 1.0 / ( 1.0 + p -> buffs_tier13_4pc_healer -> effect1().percent() );
+
   return h;
 }
 
@@ -4070,6 +4074,11 @@ struct spiritwalkers_grace_t : public shaman_spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+    
+    // Extend buff duration with t13 4pc healer
+    shaman_t* p = player -> cast_shaman();
+    p -> buffs_spiritwalkers_grace -> buff_duration = p -> buffs_spiritwalkers_grace -> duration() + 
+                                                      p -> sets -> set( SET_T13_4PC_HEAL ) -> effect1().seconds();
   }
 
   virtual void execute()
@@ -4079,6 +4088,8 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p -> buffs_spiritwalkers_grace -> trigger();
+    if ( p -> set_bonus.tier13_4pc_heal() )
+      p -> buffs_tier13_4pc_healer -> trigger();
   }
 };
 
@@ -4520,6 +4531,7 @@ void shaman_t::init_buffs()
   // Elemental Tier13 set bonuses
   buffs_tier13_2pc_caster       = new stat_buff_t            ( this, 105779, "tier13_2pc_caster", STAT_MASTERY_RATING, dbc.spell( 105779 ) -> effect1().base_value() );
   buffs_tier13_4pc_caster       = new stat_buff_t            ( this, 105821, "tier13_4pc_caster", STAT_HASTE_RATING,   dbc.spell( 105821 ) -> effect1().base_value() );
+  buffs_tier13_4pc_healer       = new buff_t                 ( this, 105877, "tier13_4pc_healer" );
 }
 
 // shaman_t::init_values ====================================================
@@ -4823,6 +4835,9 @@ void shaman_t::init_actions()
       }
       else
         action_list_str += "/spiritwalkers_grace,moving=1";
+      
+      if ( set_bonus.tier13_4pc_heal() )
+        action_list_str += "/spiritwalkers_grace";
 
       action_list_str += "/chain_lightning,if=target.adds>2";
       if ( ! ( set_bonus.tier11_4pc_caster() || level > 80 ) )
