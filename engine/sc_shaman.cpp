@@ -4763,6 +4763,10 @@ void shaman_t::init_actions()
           action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
         }
       }
+
+      if ( set_bonus.tier13_4pc_heal() )
+        action_list_str += "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
+      
       if ( ! glyph_unleashed_lightning -> ok() )
         action_list_str += "/unleash_elements,moving=1";
       action_list_str += "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)";
@@ -4836,9 +4840,6 @@ void shaman_t::init_actions()
       else
         action_list_str += "/spiritwalkers_grace,moving=1";
       
-      if ( set_bonus.tier13_4pc_heal() )
-        action_list_str += "/spiritwalkers_grace";
-
       action_list_str += "/chain_lightning,if=target.adds>2";
       if ( ! ( set_bonus.tier11_4pc_caster() || level > 80 ) )
         action_list_str += "/chain_lightning,if=(!buff.bloodlust.react&(mana_pct-target.health_pct)>5)|target.adds>1";
