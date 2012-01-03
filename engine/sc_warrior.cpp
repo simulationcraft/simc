@@ -2374,7 +2374,6 @@ struct slam_attack_t : public warrior_attack_t
 
     base_crit             += p -> glyphs.slam -> effect1().percent();
     crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
-    base_execute_time     += p -> talents.improved_slam -> effect1().seconds();
 
     additive_multipliers = p -> talents.improved_slam -> effect2().percent()
                            + p -> talents.war_academy -> effect1().percent();
@@ -2409,6 +2408,7 @@ struct slam_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
+    base_execute_time += p -> talents.improved_slam -> effect1().seconds();
     may_crit = false;
 
     // Ensure we include racial expertise
