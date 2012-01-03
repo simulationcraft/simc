@@ -1747,8 +1747,10 @@ struct seal_of_truth_dot_t : public paladin_attack_t
 
 struct seal_of_truth_proc_t : public paladin_attack_t
 {
+  gurthalak_callback_t* gurthalak;
+  
   seal_of_truth_proc_t( paladin_t* p )
-    : paladin_attack_t( "seal_of_truth", 42463, p )
+    : paladin_attack_t( "seal_of_truth", 42463, p ), gurthalak( 0 )
   {
     background  = true;
     proc        = true;
@@ -1758,6 +1760,35 @@ struct seal_of_truth_proc_t : public paladin_attack_t
 
     base_multiplier *= 1.0 + p -> talents.seals_of_the_pure -> effect1().percent();
   }
+  
+  virtual void init()
+  {
+    paladin_attack_t::init();
+
+    for ( size_t i = 0; i < player -> attack_callbacks[ RESULT_HIT ].size(); i++ )
+    {
+      action_callback_t* cb = player -> attack_callbacks[ RESULT_HIT ][ i ];
+      gurthalak_callback_t* g = dynamic_cast< gurthalak_callback_t* >( cb );
+      if ( g )
+      {
+        gurthalak = g;
+        break;
+      }
+    }
+  }
+
+  virtual void execute()
+  {
+    paladin_attack_t::execute();
+    
+    proc = false;
+
+    if ( gurthalak && result_is_hit( result ) )
+      gurthalak -> trigger( this, 0 );
+    
+    proc = true;
+  }
+
   virtual void player_buff()
   {
     paladin_targetdata_t* td = targetdata() -> cast_paladin();
