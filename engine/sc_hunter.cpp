@@ -4045,7 +4045,6 @@ void hunter_t::init_actions()
     action_list_str += "/auto_shot";
     action_list_str += "/explosive_trap,if=target.adds>0";
 
-
     switch ( primary_tree() )
     {
     // BEAST MASTERY
@@ -4074,7 +4073,6 @@ void hunter_t::init_actions()
       else
         action_list_str += "/steady_shot";
       break;
-
 
     // MAKRMANSHIP
     case TREE_MARKSMANSHIP:
@@ -4139,7 +4137,6 @@ void hunter_t::init_actions()
       if ( summon_pet_str.empty() )
         summon_pet_str = "cat";
       break;
-
 
     // DEFAULT
     default: break;

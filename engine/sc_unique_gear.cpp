@@ -1037,10 +1037,10 @@ static void register_windward_heart( item_t* item )
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
-      if (   a -> aoe      ||
-             a -> proc     ||
-             a -> dual     ||
-             ! a -> harmful   )
+      if ( a -> aoe      ||
+           a -> proc     ||
+           a -> dual     ||
+           ! a -> harmful   )
         return;
 
       if ( cd -> remains() > 0 )
@@ -1350,6 +1350,7 @@ static void register_gurthalak( item_t* item )
 
         // Override stats so all 5 tentacles are merged into 1
         stats = p -> get_stats( "gurthalak_voice_of_the_deeps" );
+        stats -> school = SCHOOL_SHADOW; // Fix for reporting
 
         // While this spell ID is the one used by all of the tentacles,
         // It doesn't have a coeff and each version has static damage

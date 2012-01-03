@@ -1169,7 +1169,7 @@ struct shadow_fiend_pet_t : public pet_t
       if ( result_is_hit( impact_result ) )
       {
         if ( o -> set_bonus.tier13_4pc_caster() )
-          o -> buffs_shadow_orb  -> trigger( 3, 1, o -> constants.shadow_orb_proc_value + o -> constants.harnessed_shadows_value );
+          o -> buffs_shadow_orb -> trigger( 3, 1, o -> constants.shadow_orb_proc_value + o -> constants.harnessed_shadows_value );
 
         o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] *
                             p -> mana_leech -> effect_base_value( 1 ) / 100.0,
