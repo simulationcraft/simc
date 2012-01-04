@@ -315,6 +315,7 @@ struct death_knight_t : public player_t
     talent_t* toughness;
 
     // Unholy
+    talent_t* contagion;
     talent_t* dark_transformation;
     talent_t* ebon_plaguebringer;
     talent_t* epidemic;
@@ -2289,8 +2290,8 @@ struct blood_boil_t : public death_knight_spell_t
 
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
-    base_dd_adder = ( td -> diseases() ? 95 : 0 );
-    direct_power_mod  = 0.08 + ( td -> diseases() ? 0.035 : 0 );
+    base_dd_adder = td -> diseases() ? 95 : 0;
+    direct_power_mod = 0.08 + ( td -> diseases() ? 0.035 : 0 );
   }
 
   virtual bool ready()
@@ -2304,7 +2305,6 @@ struct blood_boil_t : public death_knight_spell_t
       return group_runes( p, 0, 0, 0, use );
     else
       return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
-
   }
 };
 
@@ -2665,7 +2665,6 @@ struct death_strike_offhand_t : public death_knight_attack_t
     base_crit       +=     p -> talents.improved_death_strike -> mod_additive( P_CRIT );
     base_multiplier *= 1 + p -> talents.improved_death_strike -> mod_additive( P_GENERIC );
   }
-
 };
 
 struct death_strike_t : public death_knight_attack_t
@@ -2923,7 +2922,7 @@ struct heart_strike_t : public death_knight_attack_t
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
 
-    base_multiplier *= 1 + p -> glyphs.heart_strike -> effect1().percent();
+    base_multiplier *= 1.0 + p -> glyphs.heart_strike -> effect1().percent();
 
     aoe = 2;
     base_add_multiplier *= 0.75;
@@ -3004,8 +3003,9 @@ struct howling_blast_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     extract_rune_cost( this , &cost_blood, &cost_frost, &cost_unholy );
-    aoe               = 1; // Change to -1 once we support meteor split effect
-    direct_power_mod  = 0.4;
+    aoe              = -1;
+    aoe_dmg          = 0.5; // Only 50% of the direct damage is done for AoE
+    direct_power_mod = 0.4;
 
     assert( p -> frost_fever );
   }
@@ -3024,24 +3024,38 @@ struct howling_blast_t : public death_knight_spell_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
+
     if ( ! p -> buffs_rime -> up() )
     {
       // We only consume resources when rime is not up
       // Rime procs generate no RP from rune abilites, which is handled in consume_resource as well
       death_knight_spell_t::consume_resource();
     }
+
     death_knight_spell_t::execute();
 
     if ( result_is_hit() )
     {
-      if ( p -> glyphs.howling_blast -> ok() )
-        p -> frost_fever -> execute();
-
       if ( p -> talents.chill_of_the_grave -> rank() )
         p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC ), p -> gains_chill_of_the_grave );
     }
 
     p -> buffs_rime -> decrement();
+  }
+
+  virtual void impact( player_t* t, int result, double dmg )
+  {
+    death_knight_spell_t::impact( t, result, dmg );
+
+    if ( result_is_hit( result ) )
+    {
+      death_knight_t* p = player -> cast_death_knight();
+      if ( p -> glyphs.howling_blast -> ok() )
+      {
+        p -> frost_fever -> target = t;
+        p -> frost_fever -> execute();
+      }
+    }    
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -3378,7 +3392,6 @@ struct outbreak_t : public death_knight_spell_t
     if ( result_is_hit() )
     {
       p -> blood_plague -> execute();
-
       p -> frost_fever -> execute();
     }
   }
@@ -3388,25 +3401,80 @@ struct outbreak_t : public death_knight_spell_t
 
 struct pestilence_t : public death_knight_spell_t
 {
+  double multiplier;
+  int spread_bp, spread_ff;
+  player_t* source;
+
   pestilence_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "pestilence", "Pestilence", p )
+    death_knight_spell_t( "pestilence", "Pestilence", p ),
+    multiplier( 0 ), spread_bp( 0 ), spread_ff( 0 ), source( 0 )
   {
     parse_options( NULL, options_str );
-
+    
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
 
     if ( p -> primary_tree() == TREE_FROST ||
          p -> primary_tree() == TREE_UNHOLY )
       convert_runes = 1.0;
+
+    aoe = -1;
+
+    multiplier = effect2().base_value() + p -> talents.contagion -> effect1().base_value();
+    source = target;
   }
 
   virtual void execute()
   {
+    // See which diseases we can spread
+    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+    spread_bp = td -> dots_blood_plague -> ticking;
+    spread_ff = td -> dots_frost_fever -> ticking;
+
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_pestilence -> execute();
+  }
+
+  virtual void impact( player_t* t, int result, double dmg )
+  {
+    death_knight_spell_t::impact( t, result, dmg );
+
+    // Doesn't affect the original target
+    if ( t == source )
+      return;
+
+    if ( result_is_hit( result ) )
+    {
+      // FIXME: if the source of the dot was pestilence, the multiplier doesn't change
+      // Not sure how to support that
+      death_knight_t* p = player -> cast_death_knight();
+      if ( spread_bp )
+      {
+        p -> blood_plague -> target = t;
+        p -> blood_plague -> player_multiplier *= multiplier;
+        p -> blood_plague -> execute();
+      }
+      if ( spread_ff )
+      {
+        p -> frost_fever -> target = t;
+        p -> frost_fever -> player_multiplier *= multiplier;
+        p -> frost_fever -> execute();
+      }
+    }
+  }
+
+  virtual bool ready()
+  {
+    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+
+    // BP or FF must be ticking to use
+    if ( ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking ) || 
+        ( td -> dots_frost_fever && td -> dots_frost_fever -> ticking ) )
+      return death_knight_spell_t::ready();
+
+    return false;
   }
 };
 
@@ -3660,7 +3728,6 @@ struct rune_strike_offhand_t : public death_knight_attack_t
     direct_power_mod = 0.15;
     may_dodge = may_block = may_parry = false;
   }
-
 };
 
 struct rune_strike_t : public death_knight_attack_t
@@ -3838,7 +3905,7 @@ struct unholy_blight_t : public death_knight_spell_t
     hasted_ticks   = false;
   }
 
-  void target_debuff( player_t* /* t */, int /* dmg_type */ )
+  void target_debuff( player_t*, int )
   {
     // no debuff effect
   }
@@ -3877,6 +3944,8 @@ struct unholy_frenzy_t : public spell_t
     target -> buffs.unholy_frenzy -> trigger( 1 );
   }
 };
+
+// Butchery Event ===========================================================
 
 struct butchery_event_t : public event_t
 {
@@ -4274,6 +4343,7 @@ void death_knight_t::init_talents()
   talents.threat_of_thassarian        = find_talent( "Threat of Thassarian" );
 
   // Unholy
+  talents.contagion                   = find_talent( "Contagion" );
   talents.dark_transformation         = find_talent( "Dark Transformation" );
   talents.ebon_plaguebringer          = find_talent( "Ebon Plaguebringer" );
   talents.epidemic                    = find_talent( "Epidemic" );
