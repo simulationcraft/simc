@@ -692,22 +692,36 @@ void SimulationCraftWindow::createPlotsTab()
 
 void SimulationCraftWindow::createReforgePlotsTab()
 {
-  QVBoxLayout* reforgeplotsLayout = new QVBoxLayout();
+  QFormLayout* reforgePlotsLayout = new QFormLayout();
+  reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+
+  // Create Combo Boxes
+  plotAmountChoice = createChoice( 5, "100", "200", "300", "400", "500" );
+  plotAmountChoice -> setCurrentIndex( 1 ); // Default is 200
+  reforgePlotsLayout -> addRow( "Reforge Amount", plotAmountChoice );
+
+  plotStepChoice = createChoice( 5, "10", "20", "30", "40", "50" );
+  plotStepChoice -> setCurrentIndex( 1 ); // Default is 20
+  reforgePlotsLayout -> addRow( "Step Amount", plotStepChoice );
+
+  QLabel* messageText = new QLabel( "A maximum of three stats may be ran at once." );
+  reforgePlotsLayout -> addRow( messageText );
+
   reforgeplotsButtonGroup = new ReforgeButtonGroup();
-  reforgeplotsButtonGroup->setExclusive( false );
+  reforgeplotsButtonGroup -> setExclusive( false );
   OptionEntry* reforgeplots = getReforgePlotOptions();
   for( int i=0; reforgeplots[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( reforgeplots[ i ].label );
-    checkBox->setToolTip( reforgeplots[ i ].tooltip );
-    reforgeplotsButtonGroup->addButton( checkBox );
-    reforgeplotsLayout->addWidget( checkBox );
+    checkBox -> setToolTip( reforgeplots[ i ].tooltip );
+    reforgeplotsButtonGroup -> addButton( checkBox );
+    reforgePlotsLayout -> addWidget( checkBox );
     QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
                       reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
   }
-  reforgeplotsLayout->addStretch( 1 );
+
   QGroupBox* reforgeplotsGroupBox = new QGroupBox();
-  reforgeplotsGroupBox->setLayout( reforgeplotsLayout );
+  reforgeplotsGroupBox -> setLayout( reforgePlotsLayout );
 
   optionsTab->addTab( reforgeplotsGroupBox, "Reforge Plots" );
 }
@@ -1000,6 +1014,10 @@ void SimulationCraftWindow::createToolTips()
 
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
+
+  plotAmountChoice -> setToolTip( "The maximum amount to reforge per stat." );
+  plotStepChoice -> setToolTip( "The stat difference between two points.\n"
+                                "It's NOT the number of steps: a lower value will generate more points!" );
 }
 
 #ifdef SC_PAPERDOLL
