@@ -1116,10 +1116,10 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
           // Recasting a dot while it's still ticking gives it an extra tick in total
           dot -> num_ticks++;
 
-          // Fix to refreshing tick_zero dots
+          // tick_zero dots tick again when reapplied
           if ( tick_zero )
           {
-            dot -> num_ticks++;
+            tick( dot );
           }
         }
       }

@@ -133,6 +133,11 @@ void dot_t::refresh_duration()
   added_ticks = 0;
   added_seconds = 0;
   num_ticks = action -> hasted_num_ticks();
+
+  // tick zero dots tick when refreshed
+  if ( action -> tick_zero )
+    action -> tick( this );
+
   recalculate_ready();
 }
 
