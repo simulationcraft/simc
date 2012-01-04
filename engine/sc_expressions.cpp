@@ -350,7 +350,6 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
   }
   else
   {
-
     printf( "Unexpected token (%c) in %s\n", c, expr_str.c_str() );
   }
 

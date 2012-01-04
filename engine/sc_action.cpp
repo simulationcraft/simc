@@ -1094,6 +1094,7 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
   assess_damage( t, travel_dmg, DMG_DIRECT, impact_result );
   
   // Set target so aoe dots work
+  player_t* orig_target = target;
   target = t;
 
   if ( result_is_hit( impact_result ) )
@@ -1142,6 +1143,9 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
       log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util_t::result_type_string( impact_result ) );
     }
   }
+
+  // Reset target
+  target = orig_target;
 }
 
 // action_t::assess_damage ==================================================
@@ -1778,12 +1782,26 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     return sim -> create_expression( this, name_str );
   }
 
-  if ( num_splits >= 2 && splits[ 0 ] == "target" )
+  if ( num_splits == 2 && splits[ 0 ] == "target" )
+  {  
+    return target -> create_expression( this, splits[ 1 ] );
+  }
+
+  if ( num_splits > 2 && splits[ 0 ] == "target" )
   {
-    std::string rest = splits[1];
-    for( int i = 2; i < num_splits; ++i )
-      rest += '.' + splits[i];
-    return target -> create_expression( this, rest );
+    // Find target
+    player_t* expr_target = sim -> find_player( splits[ 1 ] );
+    if ( ! expr_target )
+    {
+      sim -> errorf( "Unable to find target for %s", name_str.c_str() );
+      sim -> cancel();
+    }
+    
+    std::string rest = splits[ 2 ];
+    for( int i = 3; i < num_splits; ++i )
+      rest += '.' + splits[ i ];
+
+    return expr_target -> create_expression( this, rest );
   }
 
   // necessary for self.target.*, self.dot.*
