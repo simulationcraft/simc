@@ -4695,7 +4695,7 @@ struct action_t : public spell_id_t
   weapon_t* weapon;
   double weapon_multiplier;
   double base_add_multiplier;
-  double aoe_dmg; // Static reduction of damage for AoE
+  double base_aoe_multiplier; // Static reduction of damage for AoE
   bool normalize_weapon_speed;
   rng_t* rng[ RESULT_MAX ];
   rng_t* rng_travel;

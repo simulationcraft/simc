@@ -3003,9 +3003,9 @@ struct howling_blast_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     extract_rune_cost( this , &cost_blood, &cost_frost, &cost_unholy );
-    aoe              = -1;
-    aoe_dmg          = effect3().percent(); // Only 50% of the direct damage is done for AoE
-    direct_power_mod = 0.4;
+    aoe                 = -1;
+    base_aoe_multiplier = effect3().percent(); // Only 50% of the direct damage is done for AoE
+    direct_power_mod    = 0.4;
 
     assert( p -> frost_fever );
   }

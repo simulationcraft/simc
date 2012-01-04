@@ -907,8 +907,8 @@ double action_t::calculate_direct_damage( int chain_target )
     dmg *= pow( base_add_multiplier, chain_target );
   
   // AoE with static reduced damage per target
-  if ( chain_target > 1 && aoe_dmg != 1.0 )
-    dmg *= aoe_dmg;
+  if ( chain_target > 1 && base_aoe_multiplier != 1.0 )
+    dmg *= base_aoe_multiplier;
 
   if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
 
