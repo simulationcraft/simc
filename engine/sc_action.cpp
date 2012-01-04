@@ -902,9 +902,14 @@ double action_t::calculate_direct_damage( int chain_target )
     dmg *= 1.0 - resistance();
   }
 
+  // AoE with decay per target
   if ( chain_target > 0 && base_add_multiplier != 1.0 )
     dmg *= pow( base_add_multiplier, chain_target );
   
+  // AoE with static reduced damage per target
+  if ( chain_target > 1 && aoe_dmg != 1.0 )
+    dmg *= aoe_dmg;
+
   if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
 
   if ( sim -> debug )
@@ -1087,6 +1092,9 @@ void action_t::last_tick( dot_t* d )
 void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
 {
   assess_damage( t, travel_dmg, DMG_DIRECT, impact_result );
+  
+  // Set target so aoe dots work
+  target = t;
 
   if ( result_is_hit( impact_result ) )
   {

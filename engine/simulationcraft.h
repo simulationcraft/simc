@@ -4695,6 +4695,7 @@ struct action_t : public spell_id_t
   weapon_t* weapon;
   double weapon_multiplier;
   double base_add_multiplier;
+  double aoe_dmg; // Static reduction of damage for AoE
   bool normalize_weapon_speed;
   rng_t* rng[ RESULT_MAX ];
   rng_t* rng_travel;
@@ -4815,12 +4816,12 @@ public:
 
   dot_t* dot() const
   {
-    if( targetdata_dot_offset >= 0 )
+    if ( targetdata_dot_offset >= 0 )
       return *( dot_t** )( ( char* )targetdata() + targetdata_dot_offset );
     else
     {
-      if( !action_dot )
-        action_dot = player->get_dot( name_str );
+      if ( ! action_dot )
+        action_dot = player -> get_dot( name_str );
       return action_dot;
     }
   }

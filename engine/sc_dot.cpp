@@ -163,11 +163,10 @@ void dot_t::reset()
 void dot_t::schedule_tick()
 {
   if ( sim -> debug )
-    log_t::output( sim, "%s schedules tick for %s on %s", action ->player -> name(), name(), player -> name() );
+    log_t::output( sim, "%s schedules tick for %s on %s", action -> player -> name(), name(), player -> name() );
 
   if ( current_tick == 0 )
   {
-
     if ( action -> tick_zero )
     {
       time_to_tick = 0;

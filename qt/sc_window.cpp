@@ -1477,8 +1477,8 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   options += "\n";
-  options += "reforge_plot_amount=" + plotAmountChoice ->currentText() + "\n";
-  options += "reforge_plot_step=" + plotStepChoice ->currentText() + "\n";
+  options += "reforge_plot_amount=" + plotAmountChoice -> currentText() + "\n";
+  options += "reforge_plot_step=" + plotStepChoice -> currentText() + "\n";
   options += "reforge_plot_output_file=reforge_plot.csv"; // This should be set in the gui if possible
   options += "\n";
   options += simulateText->toPlainText();
