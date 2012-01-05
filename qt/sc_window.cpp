@@ -672,22 +672,31 @@ void SimulationCraftWindow::createScalingTab()
 
 void SimulationCraftWindow::createPlotsTab()
 {
-  QVBoxLayout* plotsLayout = new QVBoxLayout();
+  QFormLayout* plotsLayout = new QFormLayout();
+  plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+
+  // Creat Combo Boxes
+  plotsPointsChoice = createChoice( 4, "20", "30", "40", "50" );
+  plotsLayout -> addRow( "Number of Plot Points", plotsPointsChoice );
+
+  plotsStepChoice = createChoice( 5, "5", "10", "15", "20", "25" );
+  plotsStepChoice -> setCurrentIndex( 3 );
+  plotsLayout -> addRow( "Plot Step Amount", plotsStepChoice );
+
   plotsButtonGroup = new QButtonGroup();
-  plotsButtonGroup->setExclusive( false );
+  plotsButtonGroup -> setExclusive( false );
   OptionEntry* plots = getPlotOptions();
   for( int i=0; plots[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( plots[ i ].label );
-    checkBox->setToolTip( plots[ i ].tooltip );
-    plotsButtonGroup->addButton( checkBox );
-    plotsLayout->addWidget( checkBox );
+    checkBox -> setToolTip( plots[ i ].tooltip );
+    plotsButtonGroup -> addButton( checkBox );
+    plotsLayout -> addWidget( checkBox );
   }
-  plotsLayout->addStretch( 1 );
   QGroupBox* plotsGroupBox = new QGroupBox();
-  plotsGroupBox->setLayout( plotsLayout );
+  plotsGroupBox -> setLayout( plotsLayout );
 
-  optionsTab->addTab( plotsGroupBox, "Plots" );
+  optionsTab -> addTab( plotsGroupBox, "Plots" );
 }
 
 void SimulationCraftWindow::createReforgePlotsTab()
@@ -696,13 +705,13 @@ void SimulationCraftWindow::createReforgePlotsTab()
   reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  plotAmountChoice = createChoice( 5, "100", "200", "300", "400", "500" );
-  plotAmountChoice -> setCurrentIndex( 1 ); // Default is 200
-  reforgePlotsLayout -> addRow( "Reforge Amount", plotAmountChoice );
+  reforgePlotAmountChoice = createChoice( 5, "100", "200", "300", "400", "500" );
+  reforgePlotAmountChoice -> setCurrentIndex( 1 ); // Default is 200
+  reforgePlotsLayout -> addRow( "Reforge Amount", reforgePlotAmountChoice );
 
-  plotStepChoice = createChoice( 5, "10", "20", "30", "40", "50" );
-  plotStepChoice -> setCurrentIndex( 1 ); // Default is 20
-  reforgePlotsLayout -> addRow( "Step Amount", plotStepChoice );
+  reforgePlotStepChoice = createChoice( 5, "10", "20", "30", "40", "50" );
+  reforgePlotStepChoice -> setCurrentIndex( 1 ); // Default is 20
+  reforgePlotsLayout -> addRow( "Step Amount", reforgePlotStepChoice );
 
   QLabel* messageText = new QLabel( "A maximum of three stats may be ran at once." );
   reforgePlotsLayout -> addRow( messageText );
@@ -1015,9 +1024,13 @@ void SimulationCraftWindow::createToolTips()
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
 
-  plotAmountChoice -> setToolTip( "The maximum amount to reforge per stat." );
-  plotStepChoice -> setToolTip( "The stat difference between two points.\n"
-                                "It's NOT the number of steps: a lower value will generate more points!" );
+  plotsPointsChoice -> setToolTip( "The number of points that will appear on the graph" );
+  plotsStepChoice -> setToolTip( "The delta between two points of the graph.\n"
+                                 "The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval" );
+
+  reforgePlotAmountChoice -> setToolTip( "The maximum amount to reforge per stat." );
+  reforgePlotStepChoice -> setToolTip( "The stat difference between two points.\n"
+                                       "It's NOT the number of steps: a lower value will generate more points!" );
 }
 
 #ifdef SC_PAPERDOLL
@@ -1465,6 +1478,8 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   options += "\n";
+  options += "dps_plot_points=" + plotsPointsChoice -> currentText() + "\n";
+  options += "dps_plot_step=" + plotsStepChoice -> currentText() + "\n";
   options += "reforge_plot_stat=none";
   buttons = reforgeplotsButtonGroup->buttons();
   OptionEntry* reforgeplots = getReforgePlotOptions();
@@ -1477,8 +1492,8 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   options += "\n";
-  options += "reforge_plot_amount=" + plotAmountChoice -> currentText() + "\n";
-  options += "reforge_plot_step=" + plotStepChoice -> currentText() + "\n";
+  options += "reforge_plot_amount=" + reforgePlotAmountChoice -> currentText() + "\n";
+  options += "reforge_plot_step=" + reforgePlotStepChoice -> currentText() + "\n";
   options += "reforge_plot_output_file=reforge_plot.csv"; // This should be set in the gui if possible
   options += "\n";
   options += simulateText->toPlainText();

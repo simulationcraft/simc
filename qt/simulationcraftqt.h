@@ -135,9 +135,11 @@ public:
     QButtonGroup* buffsButtonGroup;
     QButtonGroup* debuffsButtonGroup;
     QButtonGroup* scalingButtonGroup;
+    QComboBox* plotsPointsChoice;
+    QComboBox* plotsStepChoice;
     QButtonGroup* plotsButtonGroup;
-    QComboBox* plotAmountChoice;
-    QComboBox* plotStepChoice;
+    QComboBox* reforgePlotAmountChoice;
+    QComboBox* reforgePlotStepChoice;
     ReforgeButtonGroup* reforgeplotsButtonGroup;
     SimulationCraftWebView* battleNetView;
     SimulationCraftWebView* charDevView;
