@@ -1376,7 +1376,8 @@ struct lava_burst_overload_t : public shaman_spell_t
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
-      p -> talent_call_of_flame -> effect2().percent();
+      p -> talent_call_of_flame -> effect2().percent() +
+      p -> glyph_lava_burst -> mod_additive( P_GENERIC );
 
     crit_bonus_multiplier *= 1.0 +
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE ) +
