@@ -1362,7 +1362,6 @@ struct bloodthirst_buff_callback_t : public action_callback_t
   }
 };
 
-
 // Bloodthirst ==============================================================
 
 struct bloodthirst_t : public warrior_attack_t
@@ -1377,6 +1376,8 @@ struct bloodthirst_t : public warrior_attack_t
     // Include the weapon so we benefit from racials
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
+    // Bloodthirst can trigger procs from either weapon
+    proc_ignores_slot    = true;
 
     direct_power_mod   = effect_average( 1 ) / 100.0;
     base_dd_min        = 0.0;
@@ -1480,6 +1481,12 @@ struct cleave_t : public warrior_attack_t
     direct_power_mod = 0.45;
     base_dd_min      = 6;
     base_dd_max      = 6;
+
+    // Include the weapon so we benefit from racials
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
+    // Cleave can trigger procs from either weapon
+    proc_ignores_slot    = true;
 
     base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect1().percent();
 
@@ -1732,6 +1739,8 @@ struct heroic_strike_t : public warrior_attack_t
     // Include the weapon so we benefit from racials
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
+    // HS can trigger procs from either weapon
+    proc_ignores_slot    = true;
 
     base_crit        += p -> talents.incite -> effect1().percent();
     base_dd_min       = base_dd_max = 8;
@@ -2513,6 +2522,9 @@ struct thunder_clap_t : public warrior_attack_t
     base_multiplier  *= 1.0 + p -> talents.thunderstruck -> effect1().percent();
     base_crit        += p -> talents.incite -> effect1().percent();
     base_cost        += p -> glyphs.resonating_power -> effect1().resource( RESOURCE_RAGE );
+
+    // TC can trigger procs from either weapon, even though it doesn't need a weapon
+    proc_ignores_slot    = true;
   }
 
   virtual void execute()
