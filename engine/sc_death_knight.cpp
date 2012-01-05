@@ -840,7 +840,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
   }
 };
 
-
 namespace  // ANONYMOUS NAMESPACE ===========================================
 {
 

@@ -280,6 +280,7 @@ struct warrior_t : public player_t
     talent_t* rampage;
     talent_t* rude_interruption;
     talent_t* single_minded_fury;
+    talent_t* skirmisher;
     talent_t* titans_grip;
 
     // Prot
@@ -1377,7 +1378,7 @@ struct bloodthirst_t : public warrior_attack_t
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
     // Bloodthirst can trigger procs from either weapon
-    proc_ignores_slot    = true;
+    proc_ignores_slot  = true;
 
     direct_power_mod   = effect_average( 1 ) / 100.0;
     base_dd_min        = 0.0;
@@ -1486,7 +1487,7 @@ struct cleave_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     // Cleave can trigger procs from either weapon
-    proc_ignores_slot    = true;
+    proc_ignores_slot = true;
 
     base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect1().percent();
 
@@ -1658,6 +1659,9 @@ struct execute_t : public warrior_attack_t
     base_dd_min        = 10;
     base_dd_max        = 10;
 
+    // Execute can trigger weapon procs from either slot
+    proc_ignores_slot = true;
+
     // Rage scaling is handled in player_buff()
 
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
@@ -1740,7 +1744,7 @@ struct heroic_strike_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     // HS can trigger procs from either weapon
-    proc_ignores_slot    = true;
+    proc_ignores_slot = true;
 
     base_crit        += p -> talents.incite -> effect1().percent();
     base_dd_min       = base_dd_max = 8;
@@ -1804,6 +1808,46 @@ struct heroic_strike_t : public warrior_attack_t
       cooldown -> duration *= 1.0 + p -> buffs_inner_rage -> effect1().percent();
 
     warrior_attack_t::update_ready();
+  }
+};
+
+// Heroic Leap ==============================================================
+
+struct heroic_leap_t : public warrior_attack_t
+{
+  heroic_leap_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "heroic_leap", "Heroic Leap", p )
+  {
+    parse_options( NULL, options_str );
+
+    aoe = -1;
+
+    // Damage is stored in a trigger spell
+    const spell_data_t* dmg_spell = p -> dbc.spell( effect3().trigger_spell_id() );
+    base_dd_min = p -> dbc.effect_min( dmg_spell -> effect1().id(), p -> level );
+    base_dd_max = p -> dbc.effect_max( dmg_spell -> effect1().id(), p -> level );
+    direct_power_mod = dmg_spell -> extra_coeff();
+    
+    cooldown -> duration += p -> talents.skirmisher -> effect2().seconds();
+
+    // Heroic Leap can trigger procs from either weapon
+    proc_ignores_slot = true;
+
+    // FIXME: Can this miss, dodge, parry, etc?
+    // If it can parry/dodge, does it inherit the expertise from the MH?
+  }
+
+  virtual bool ready()
+  {
+    bool ranged = ( player -> position == POSITION_RANGED_FRONT ||
+                    player -> position == POSITION_RANGED_BACK );
+
+    if ( player -> in_combat && ! ranged )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::ready();
   }
 };
 
@@ -2524,7 +2568,7 @@ struct thunder_clap_t : public warrior_attack_t
     base_cost        += p -> glyphs.resonating_power -> effect1().resource( RESOURCE_RAGE );
 
     // TC can trigger procs from either weapon, even though it doesn't need a weapon
-    proc_ignores_slot    = true;
+    proc_ignores_slot = true;
   }
 
   virtual void execute()
@@ -3166,6 +3210,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "demoralizing_shout" ) return new demoralizing_shout_t ( this, options_str );
   if ( name == "devastate"          ) return new devastate_t          ( this, options_str );
   if ( name == "execute"            ) return new execute_t            ( this, options_str );
+  if ( name == "heroic_leap"        ) return new heroic_leap_t        ( this, options_str );
   if ( name == "heroic_strike"      ) return new heroic_strike_t      ( this, options_str );
   if ( name == "inner_rage"         ) return new inner_rage_t         ( this, options_str );
   if ( name == "last_stand"         ) return new last_stand_t         ( this, options_str );
@@ -3233,6 +3278,7 @@ void warrior_t::init_talents()
   talents.rampage                 = find_talent( "Rampage" );
   talents.rude_interruption       = find_talent( "Rude Interruption" );
   talents.single_minded_fury      = find_talent( "Single-Minded Fury" );
+  talents.skirmisher              = find_talent( "Skirmisher" );
   talents.titans_grip             = find_talent( "Titan's Grip" );
 
   // Prot
