@@ -255,7 +255,6 @@ struct death_knight_t : public player_t
   rng_t* rng_blood_caked_blade;
   rng_t* rng_might_of_the_frozen_wastes;
   rng_t* rng_threat_of_thassarian;
-  rng_t* rng_butchery_start;
 
   // Runes
   struct runes_t
@@ -4252,7 +4251,6 @@ void death_knight_t::init_rng()
   rng_blood_caked_blade          = get_rng( "blood_caked_blade"          );
   rng_might_of_the_frozen_wastes = get_rng( "might_of_the_frozen_wastes" );
   rng_threat_of_thassarian       = get_rng( "threat_of_thassarian"       );
-  rng_butchery_start             = get_rng( "butchery_start"             );
 }
 
 // death_knight_t::init_defense =============================================
@@ -4928,7 +4926,8 @@ void death_knight_t::combat_begin()
   if ( am_value > 0 && am_value >= sim -> auras.abominations_might -> current_value )
     sim -> auras.abominations_might -> trigger( 1, am_value );
 
-  new ( sim ) butchery_event_t( this, 5.0 / talents.butchery -> rank() );
+  if ( talents.butchery -> rank() )
+    new ( sim ) butchery_event_t( this, 5.0 / talents.butchery -> rank() );
 }
 
 // death_knight_t::assess_damage ============================================
