@@ -3858,9 +3858,11 @@ struct dark_intent_t : public warlock_spell_t
       if ( sim -> log ) log_t::output( sim, "%s grants %s Dark Intent", p -> name(), dark_intent_target -> name() );
       dark_intent_target -> buffs.dark_intent -> trigger( 1, 0.01 );
       dark_intent_target -> dark_intent_cb -> active = true;
+      dark_intent_target -> dark_intent_cb -> listener = p;
 
       p -> buffs.dark_intent -> trigger( 1, 0.03 );
       p -> dark_intent_cb -> active = true;
+      p -> dark_intent_cb -> listener = dark_intent_target;
     }
   }
 
