@@ -146,8 +146,7 @@ static bool download( url_cache_entry_t& entry,
   if ( ! entry.last_modified_header.empty() )
   {
     wHeaders += "If-Modified-Since: ";
-    utf8::utf8to16( entry.last_modified_header.begin(), entry.last_modified_header.end(),
-                    std::back_inserter( wHeaders ) );
+    wHeaders += entry.last_modified_header;
     wHeaders += "\r\n";
   }
 
