@@ -37,7 +37,6 @@ void register_priest_targetdata( sim_t* sim )
   REGISTER_DOT( vampiric_touch );
 }
 
-
 // ==========================================================================
 // Priest
 // ==========================================================================
@@ -458,6 +457,8 @@ public:
 
 struct priest_absorb_t : public absorb_t
 {
+  cooldown_t* min_interval;
+
 private:
   void _init_priest_absorb_t()
   {
@@ -465,6 +466,7 @@ private:
     tick_may_crit     = false;
     may_miss          = false;
     may_resist        = false;
+    min_interval      = player -> get_cooldown( "min_interval_" + name_str );
   }
 
 public:
@@ -534,6 +536,19 @@ public:
 
     if ( ! ( background || proc ) )
       p -> trigger_cauterizing_flame();
+  }
+  
+  void parse_options( option_t*          options,
+                      const std::string& options_str )
+  {
+    const option_t base_options[] =
+    {
+      { "min_interval", OPT_FLT,     &( min_interval -> duration ) },
+      { NULL,           OPT_UNKNOWN, NULL      }
+    };
+
+    std::vector<option_t> merged_options;
+    absorb_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
   }
 };
 
