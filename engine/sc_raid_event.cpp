@@ -240,8 +240,8 @@ struct stun_event_t : public raid_event_t
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
-      p -> buffs.stunned -> increment();
       if ( p -> sleeping ) continue;
+      p -> buffs.stunned -> increment();
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> stun();
     }
@@ -253,12 +253,12 @@ struct stun_event_t : public raid_event_t
     for ( int i=0; i < num_affected; i++ )
     {
       player_t* p = affected_players[ i ];
-      p -> buffs.stunned -> decrement();
       if ( p -> sleeping ) continue;
+      p -> buffs.stunned -> decrement();
       if ( ! p -> buffs.stunned -> check() )
       {
         // Don't schedule_ready players who are already working, like pets auto-summoned during the stun event ( ebon imp ).
-        if ( ! p -> readying && ! p -> sleeping )
+        if ( ! p -> channeling && ! p -> executing && ! p -> readying && ! p -> sleeping )
           p -> schedule_ready();
       }
     }
