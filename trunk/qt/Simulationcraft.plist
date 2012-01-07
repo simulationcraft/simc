@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDocumentTypes</key>
+	<array/>
+	<key>CFBundleExecutable</key>
+	<string>SimulationCraft</string>
+	<key>CFBundleIconFile</key>
+	<string>Simcraft2.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.googlecode.simulationcraft</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>SimulationCraft Qt for OSX (GIT-REV-PARSE-HERE)</string>
+	<key>CFBundleSignature</key>
+	<string>simc</string>
+	<key>CFBundleURLTypes</key>
+	<array/>
+	<key>CFBundleVersion</key>
+	<string>VERSION-PARSE-HERE</string>
+	<key>NSServices</key>
+	<array/>
+	<key>UTExportedTypeDeclarations</key>
+	<array/>
+	<key>UTImportedTypeDeclarations</key>
+	<array/>
+	<key>SUPublicDSAKeyFile</key>
+	<string>dsa_pub.pem</string>
+	<key>SUEnableSystemProfiling</key>
+	<true/>
+</dict>
+</plist>
