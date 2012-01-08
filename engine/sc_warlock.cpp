@@ -3738,7 +3738,7 @@ struct hand_of_guldan_t : public warlock_spell_t
       warlock_targetdata_t* td = targetdata() -> cast_warlock();
 
       if ( t -> debuffs.flying -> check() ) {
-        if ( sim -> debug ) log_t::output( sim, "%s can not apply its debuff to flying target %s", name(), t -> name_str );
+        if ( sim -> debug ) log_t::output( sim, "%s can not apply its debuff to flying target %s", name(), t -> name_str.c_str() );
       }
       else
       {
