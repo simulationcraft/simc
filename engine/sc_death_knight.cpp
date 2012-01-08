@@ -2595,6 +2595,17 @@ struct death_and_decay_t : public death_knight_spell_t
     double n_ticks   = num_ticks * ( 1.0 + p -> glyphs.death_and_decay -> effect1().percent() );
     num_ticks        = ( int ) n_ticks;
   }
+
+  virtual void impact( player_t* t, int impact_result, double travel_dmg=0 )
+  {
+    if ( t -> debuffs.flying -> check() ) {
+      if ( sim -> debug ) log_t::output( sim, "Ground effect %s can not hit flying target %s", name(), t -> name_str.c_str() );
+    }
+    else
+    {
+      death_knight_spell_t::impact( t, impact_result, travel_dmg );
+    }
+  }
 };
 
 // Death Coil ===============================================================

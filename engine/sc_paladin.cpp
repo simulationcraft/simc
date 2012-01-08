@@ -2049,6 +2049,8 @@ struct consecration_tick_t : public paladin_spell_t
 
     stats = player -> get_stats( "consecration", this );
   }
+
+
 };
 
 struct consecration_t : public paladin_spell_t
@@ -2073,6 +2075,17 @@ struct consecration_t : public paladin_spell_t
     }
 
     tick_spell = new consecration_tick_t( p );
+  }
+
+  virtual void impact( player_t* t, int impact_result, double travel_dmg=0 )
+  {
+    if ( t -> debuffs.flying -> check() ) {
+      if ( sim -> debug ) log_t::output( sim, "Ground effect %s can not hit flying target %s", name(), t -> name_str.c_str() );
+    }
+    else
+    {
+      paladin_spell_t::impact( t, impact_result, travel_dmg );
+    }
   }
 
   virtual void tick( dot_t* d )

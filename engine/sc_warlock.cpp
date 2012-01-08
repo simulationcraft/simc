@@ -3736,7 +3736,15 @@ struct hand_of_guldan_t : public warlock_spell_t
     if ( result_is_hit( impact_result ) )
     {
       warlock_targetdata_t* td = targetdata() -> cast_warlock();
-      p -> buffs_hand_of_guldan -> trigger();
+
+      if ( t -> debuffs.flying -> check() ) {
+        if ( sim -> debug ) log_t::output( sim, "%s can not apply its debuff to flying target %s", name(), t -> name_str );
+      }
+      else
+      {
+        p -> buffs_hand_of_guldan -> trigger();
+      }
+     
       trigger_impending_doom( this );
 
       if ( td -> dots_immolate -> ticking && p -> talent_cremation -> rank() )
