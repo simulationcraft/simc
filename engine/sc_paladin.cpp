@@ -3252,7 +3252,7 @@ void paladin_t::init_actions()
       action_list_str += "/judgement,if=set_bonus.tier13_2pc_melee&buff.zealotry.up&holy_power<3";
       action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.2&cooldown.crusader_strike.remains>0";
       action_list_str += "/holy_wrath";
-      action_list_str += "/consecration,if=mana>16000";  // Consecration is expensive, only use if we have plenty of mana
+      action_list_str += "/consecration,not_flying=1,if=mana>16000";  // Consecration is expensive, only use if we have plenty of mana
       action_list_str += "/divine_plea";
     }
     break;
@@ -3295,7 +3295,7 @@ void paladin_t::init_actions()
       action_list_str += "/hammer_of_wrath";
       action_list_str += "/avengers_shield,if=cooldown.crusader_strike.remains>=0.2";
       action_list_str += "/judgement";
-      action_list_str += "/consecration";
+      action_list_str += "/consecration,not_flying=1";
       action_list_str += "/holy_wrath";
       action_list_str += "/divine_plea,if=holy_power<1";
     }

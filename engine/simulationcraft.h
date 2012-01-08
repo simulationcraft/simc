@@ -4100,6 +4100,7 @@ struct player_t : public noncopyable
     debuff_t* ebon_plaguebringer;
     debuff_t* expose_armor;
     debuff_t* faerie_fire;
+    debuff_t* flying;
     debuff_t* forbearance;
     debuff_t* hemorrhage;
     debuff_t* hunters_mark;
@@ -4707,7 +4708,7 @@ struct action_t : public spell_id_t
   double haste_gain_percentage;
   double min_current_time, max_current_time;
   double min_health_percentage, max_health_percentage;
-  int moving, vulnerable, invulnerable, wait_on_ready, interrupt;
+  int moving, vulnerable, invulnerable, wait_on_ready, interrupt, not_flying;
   bool round_base_dmg;
   bool class_flag1;
   std::string if_expr_str;

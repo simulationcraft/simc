@@ -30,7 +30,7 @@ actions+=/hammer_of_wrath
 actions+=/judgement,if=set_bonus.tier13_2pc_melee&buff.zealotry.up&holy_power<3
 actions+=/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.2&cooldown.crusader_strike.remains>0
 actions+=/holy_wrath
-actions+=/consecration,if=mana>16000
+actions+=/consecration,not_flying=1,if=mana>16000
 actions+=/divine_plea
 head=immolation_helmet,type=plate,ilevel=378,quality=epic,stats=2943armor_348str_611sta_199hit_279crit,gems=reverberating_shadowspirit_40str_30str,enchant=60str_35mastery
 neck=stoneheart_choker,ilevel=378,quality=epic,stats=227str_341sta_137exp_160crit,reforge=crit_mastery

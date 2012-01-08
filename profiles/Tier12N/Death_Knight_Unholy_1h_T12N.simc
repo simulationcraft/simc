@@ -26,12 +26,12 @@ actions+=/plague_strike,if=dot.blood_plague.remains<2&cooldown.outbreak.remains>
 actions+=/dark_transformation
 actions+=/summon_gargoyle,time<=60
 actions+=/summon_gargoyle,if=buff.bloodlust.react|buff.unholy_frenzy.react
-actions+=/death_and_decay,if=unholy=2&runic_power<110
+actions+=/death_and_decay,not_flying=1,if=unholy=2&runic_power<110
 actions+=/scourge_strike,if=unholy=2&runic_power<110
 actions+=/festering_strike,if=blood=2&frost=2&runic_power<110
 actions+=/death_coil,if=runic_power>90
 actions+=/death_coil,if=buff.sudden_doom.react
-actions+=/death_and_decay
+actions+=/death_and_decay,not_flying=1
 actions+=/scourge_strike
 actions+=/festering_strike
 actions+=/death_coil

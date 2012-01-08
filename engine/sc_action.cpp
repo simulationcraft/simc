@@ -129,6 +129,7 @@ void action_t::init_action_t_()
   moving                         = -1;
   vulnerable                     = 0;
   invulnerable                   = 0;
+  not_flying                     = 0;
   wait_on_ready                  = -1;
   interrupt                      = 0;
   round_base_dmg                 = true;
@@ -389,6 +390,7 @@ void action_t::parse_options( option_t*          options,
     { "interrupt_if",           OPT_STRING, &interrupt_if_expr_str },
     { "interrupt",              OPT_BOOL,   &interrupt             },
     { "invulnerable",           OPT_BOOL,   &invulnerable          },
+    { "not_flying",             OPT_BOOL,   &not_flying            },
     { "moving",                 OPT_BOOL,   &moving                },
     { "sync",                   OPT_STRING, &sync_str              },
     { "time<",                  OPT_FLT,    &max_current_time      },
@@ -1423,6 +1425,10 @@ bool action_t::ready()
 
   if ( invulnerable )
     if ( ! t -> debuffs.invulnerable -> check() )
+      return false;
+
+  if ( not_flying )
+    if ( t -> debuffs.flying -> check() )
       return false;
 
   if ( min_health_percentage > 0 )

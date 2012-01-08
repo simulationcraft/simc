@@ -1731,6 +1731,7 @@ void player_t::init_buffs()
   debuffs.casting      = new debuff_t( this, "casting",      -1 );
   debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
   debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
+  debuffs.flying       = new debuff_t( this, "flying",   -1 );
 }
 
 // player_t::init_gains =====================================================

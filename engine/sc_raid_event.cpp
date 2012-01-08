@@ -161,6 +161,30 @@ struct invulnerable_event_t : public raid_event_t
   }
 };
 
+// Flying =============================================================
+
+struct flying_event_t : public raid_event_t
+{
+  flying_event_t( sim_t* s, const std::string& options_str ) :
+    raid_event_t( s, "flying" )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void start()
+  {
+    raid_event_t::start();
+    sim -> target -> debuffs.flying -> increment();
+  }
+
+  virtual void finish()
+  {
+    sim -> target -> debuffs.flying -> decrement();
+    raid_event_t::finish();
+  }
+};
+
+
 // Movement =================================================================
 
 struct movement_event_t : public raid_event_t
@@ -472,11 +496,11 @@ double raid_event_t::cooldown_time() const
 
   if ( num_starts == 0 )
   {
-    time = cooldown / 2;
+    time = 0;
 
-    if ( first > 0 || cooldown_stddev > 0 )
+    if ( first > 0 )
     {
-      time = first + fabs( rng -> gauss( cooldown, cooldown_stddev ) - cooldown );
+      time = first;
     }
   }
   else
@@ -648,8 +672,6 @@ void raid_event_t::parse_options( option_t*          options,
     sim -> cancel();
   }
 
-  if ( cooldown > 0 && cooldown_stddev == 0 ) cooldown_stddev = 0.10 * cooldown;
-  if ( duration > 0 && duration_stddev == 0 ) duration_stddev = 0.10 * duration;
 }
 
 // raid_event_t::create =====================================================
@@ -671,6 +693,7 @@ raid_event_t* raid_event_t::create( sim_t* sim,
   if ( name == "stun"         ) return new         stun_event_t( sim, options_str );
   if ( name == "vulnerable"   ) return new   vulnerable_event_t( sim, options_str );
   if ( name == "position_switch" ) return new  position_event_t( sim, options_str );
+  if ( name == "flying" )       return new  flying_event_t( sim, options_str );
 
   return 0;
 }
@@ -708,7 +731,6 @@ void raid_event_t::init( sim_t* sim )
 
     assert( e -> cooldown > 0 );
     assert( e -> cooldown > e -> cooldown_stddev );
-    assert( e -> cooldown > e -> duration );
 
     sim -> raid_events.push_back( e );
   }
