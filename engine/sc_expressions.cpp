@@ -270,7 +270,7 @@ int expression_t::is_binary( int expr_token_type )
 
 int expression_t::next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str, token_type_t prev_token )
 {
-  char c = expr_str[ current_index++ ];
+  unsigned char c = expr_str[ current_index++ ];
 
   if ( c == '\0' ) return TOK_UNKNOWN;
 

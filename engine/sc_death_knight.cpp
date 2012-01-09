@@ -2237,8 +2237,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
     {
       death_knight_spell_t::execute();
 
-      death_knight_t* p = player -> cast_death_knight();
-
       p -> active_army_ghoul -> summon( 40.0 );
     }
   }

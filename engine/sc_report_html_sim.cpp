@@ -573,13 +573,13 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
       fprintf( file,
                "\t\t\t\t\t<tr>\n"
                "\t\t\t\t\t\t<th class=\"left small\">Profile</th>\n" );
-      for ( int i=0; i < STAT_MAX; i++ )
+      for ( int j=0; j < STAT_MAX; j++ )
       {
-        if ( sim -> scaling -> stats.get_stat( i ) != 0 )
+        if ( sim -> scaling -> stats.get_stat( j ) != 0 )
         {
           fprintf( file,
                    "\t\t\t\t\t\t<th class=\"small\">%s</th>\n",
-                   util_t::stat_type_abbrev( i ) );
+                   util_t::stat_type_abbrev( j ) );
         }
       }
       fprintf( file,

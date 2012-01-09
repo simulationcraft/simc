@@ -128,13 +128,13 @@ bool parse_glyphs( player_t* p, js_node_t* build )
       std::vector<js_node_t*> children;
       if ( js_t::get_children( children, glyphs ) > 0 )
       {
-        for ( std::size_t i = 0; i < children.size(); ++i )
+        for ( std::size_t j = 0; j < children.size(); ++j )
         {
           std::string glyph_name;
-          if ( ! js_t::get_value( glyph_name, children[ i ], "name" ) )
+          if ( ! js_t::get_value( glyph_name, children[ j ], "name" ) )
           {
             std::string glyph_id;
-            if ( js_t::get_value( glyph_id, children[ i ], "item" ) )
+            if ( js_t::get_value( glyph_id, children[ j ], "item" ) )
               item_t::download_glyph( p, glyph_name, glyph_id );
           }
 

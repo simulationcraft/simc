@@ -192,10 +192,10 @@ static bool parse_gems( item_t&           item,
       if ( pos != std::string::npos )
       {
         std::string::size_type start = pos + strlen( search );
-        std::string::size_type pos = tooltip_str.find( "<", start );
-        if ( pos != std::string::npos )
+        std::string::size_type new_pos = tooltip_str.find( "<", start );
+        if ( new_pos != std::string::npos )
         {
-          armory_t::fuzzy_stats( item.armory_gems_str, tooltip_str.substr( start, pos-start ) );
+          armory_t::fuzzy_stats( item.armory_gems_str, tooltip_str.substr( start, new_pos-start ) );
         }
       }
     }
@@ -576,8 +576,8 @@ int wowhead_t::parse_gem( item_t&            item,
       std::string name_str;
       if ( xml_t::get_value( name_str, node, "name/cdata" ) )
       {
-        std::string::size_type pos = name_str.find( " Diamond" );
-        if ( pos != std::string::npos ) name_str.erase( pos );
+        std::string::size_type new_pos = name_str.find( " Diamond" );
+        if ( new_pos != std::string::npos ) name_str.erase( new_pos );
         armory_t::format( name_str );
         item.armory_gems_str += "_";
         item.armory_gems_str += name_str;

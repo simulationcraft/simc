@@ -336,28 +336,28 @@ player_t* battle_net_t::download_player( sim_t* sim,
     int num_tokens = util_t::string_split( tokens, data_item_str, "&=" );
 
     std::string enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids[ 3 ];
-    for ( int i=0; i < num_tokens-1; i += 2 )
+    for ( int j=0; j < num_tokens-1; j += 2 )
     {
-      std::string& name  = tokens[ i ];
-      std::string& value = tokens[ i+1 ];
+      std::string& key  = tokens[ j ];
+      std::string& value = tokens[ j+1 ];
 
-      if     ( name == "i"  ) id_str       = value;
-      else if ( name == "e"  ) enchant_id   = value;
-      else if ( name == "ee" ) addon_id     = value;
-      else if ( name == "re" ) reforge_id   = value;
-      else if ( name == "r"  ) rsuffix_id   = value;
+      if      ( key == "i"  ) id_str       = value;
+      else if ( key == "e"  ) enchant_id   = value;
+      else if ( key == "ee" ) addon_id     = value;
+      else if ( key == "re" ) reforge_id   = value;
+      else if ( key == "r"  ) rsuffix_id   = value;
     }
 
     xml_node_t* sockets_root_node = xml_t::get_node( slot_node, "span", "class", "sockets" );
     std::vector<xml_node_t*> socket_nodes;
     int num_sockets = xml_t::get_children( socket_nodes, sockets_root_node );
 
-    for ( int i=0; i < num_sockets; i++ )
+    for ( int j=0; j < num_sockets; j++ )
     {
       std::string href_str;
-      xml_t::get_value( href_str, xml_t::get_node( socket_nodes[ i ], "a" ), "href" );
+      xml_t::get_value( href_str, xml_t::get_node( socket_nodes[ j ], "a" ), "href" );
       std::string::size_type index = href_str.rfind( "/" );
-      if ( index != std::string::npos ) gem_ids[ i ] = href_str.substr( index+1 );
+      if ( index != std::string::npos ) gem_ids[ j ] = href_str.substr( index+1 );
     }
 
     if ( ! id_str.empty() )

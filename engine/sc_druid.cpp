@@ -2475,7 +2475,6 @@ struct pulverize_t : public druid_bear_attack_t
 
     if ( result_is_hit() )
     {
-      druid_t* p = player -> cast_druid();
       druid_targetdata_t* td = targetdata() -> cast_druid();
       if ( td -> dots_lacerate -> ticking )
       {

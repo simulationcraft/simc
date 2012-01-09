@@ -550,8 +550,8 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         action_t* a = s -> action_list[ i ];
 
         bool found = false;
-        size_t size = processed_actions.size();
-        for ( size_t j = 0; j < size && !found; j++ )
+        size_t size_processed = processed_actions.size();
+        for ( size_t j = 0; j < size_processed && !found; j++ )
           if ( processed_actions[ j ] == a -> name() )
             found = true;
         if ( found ) continue;
@@ -1149,8 +1149,8 @@ void print_xml_get_action_list( sim_t* sim, player_t* p, std::map<int, action_t*
         action_t* a = s -> action_list[ i ];
 
         bool found = false;
-        size_t size = processed_actions.size();
-        for ( size_t j = 0; j < size && !found; j++ )
+        size_t size_processed = processed_actions.size();
+        for ( size_t j = 0; j < size_processed && !found; j++ )
           if ( processed_actions[ j ] == a -> name() )
             found = true;
         if ( found ) continue;
@@ -1180,8 +1180,8 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         action_t* a = s -> action_list[ i ];
 
         bool found = false;
-        size_t size = processed_actions.size();
-        for ( size_t j = 0; j < size && !found; j++ )
+        size_t size_processed = processed_actions.size();
+        for ( size_t j = 0; j < size_processed && !found; j++ )
           if ( processed_actions[ j ] == a -> name() )
             found = true;
         if ( found ) continue;

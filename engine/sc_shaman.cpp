@@ -4714,9 +4714,9 @@ void shaman_t::init_actions()
     {
       int sp_threshold = 0;
       if ( set_bonus.tier12_2pc_caster() )
-        sp_threshold = ( ( has_power_torrent || has_lightweave ) ? ( ( has_dmc_volcano ) ? 1600 : 500 ) : 0 ) + has_will_of_unbinding * 700;
+        sp_threshold = ( ( has_power_torrent || has_lightweave ) ? ( ( has_dmc_volcano ) ? 1600 : 500 ) : 0 ) + (has_will_of_unbinding?1:0) * 700;
       else
-        sp_threshold = ( has_power_torrent || has_lightweave ) * 500 + has_dmc_volcano * 1600 + has_will_of_unbinding * 700;
+        sp_threshold = (( has_power_torrent || has_lightweave )?1:0) * 500 + (has_dmc_volcano?1:0) * 1600 + (has_will_of_unbinding?1:0) * 700;
 
       action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
 
@@ -4790,8 +4790,8 @@ void shaman_t::init_actions()
       //    additional 2290 temporary spell power)
       // 4) If the profile uses pre-potting, make sure we try to use the FE during potion, so that
       //    all the other temporary int/sp buffs are also up
-      sp_threshold += has_fiery_quintessence * 1149;
-      sp_threshold += has_bottled_wishes * 2290;
+      sp_threshold += (has_fiery_quintessence?1:0) * 1149;
+      sp_threshold += (has_bottled_wishes?1:0) * 2290;
       if ( set_bonus.tier12_2pc_caster() )
       {
         if ( sp_threshold > 0 )

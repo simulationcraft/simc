@@ -3806,15 +3806,16 @@ void player_t::stat_gain( int       stat,
 
   if ( sim -> log ) log_t::output( sim, "%s gains %.0f %s%s", name(), amount, util_t::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
 
+  int temp_value = temporary_stat ? 1 : 0;
   switch ( stat )
   {
-  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; attribute[ ATTR_STRENGTH  ] += amount; temporary.attribute[ ATTR_STRENGTH  ] += temporary_stat * amount; break;
-  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; attribute[ ATTR_AGILITY   ] += amount; temporary.attribute[ ATTR_AGILITY   ] += temporary_stat * amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; attribute[ ATTR_STAMINA   ] += amount; temporary.attribute[ ATTR_STAMINA   ] += temporary_stat * amount; recalculate_resource_max( RESOURCE_HEALTH ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; temporary.attribute[ ATTR_INTELLECT ] += temporary_stat * amount; recalculate_resource_max( RESOURCE_MANA ); break;
-  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; attribute[ ATTR_SPIRIT    ] += amount; temporary.attribute[ ATTR_SPIRIT    ] += temporary_stat * amount; break;
+  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; attribute[ ATTR_STRENGTH  ] += amount; temporary.attribute[ ATTR_STRENGTH  ] += temp_value * amount; break;
+  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; attribute[ ATTR_AGILITY   ] += amount; temporary.attribute[ ATTR_AGILITY   ] += temp_value * amount; break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; attribute[ ATTR_STAMINA   ] += amount; temporary.attribute[ ATTR_STAMINA   ] += temp_value * amount; recalculate_resource_max( RESOURCE_HEALTH ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; temporary.attribute[ ATTR_INTELLECT ] += temp_value * amount; recalculate_resource_max( RESOURCE_MANA ); break;
+  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; attribute[ ATTR_SPIRIT    ] += amount; temporary.attribute[ ATTR_SPIRIT    ] += temp_value * amount; break;
 
-  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] += amount; temporary.attribute[ i ] += temporary_stat * amount; attribute[ i ] += amount; } break;
+  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] += amount; temporary.attribute[ i ] += temp_value * amount; attribute[ i ] += amount; } break;
 
   case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount, gain, action ); break;
   case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount, gain, action ); break;
@@ -3830,44 +3831,44 @@ void player_t::stat_gain( int       stat,
   case STAT_MAX_FOCUS:  resource_max[ RESOURCE_FOCUS  ] += amount; resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
   case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC  ] += amount; resource_gain( RESOURCE_RUNIC,  amount, gain, action ); break;
 
-  case STAT_SPELL_POWER:       stats.spell_power       += amount; temporary.spell_power += temporary_stat * amount; spell_power[ SCHOOL_MAX ] += amount; break;
+  case STAT_SPELL_POWER:       stats.spell_power       += amount; temporary.spell_power += temp_value * amount; spell_power[ SCHOOL_MAX ] += amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration += amount; spell_penetration         += amount; break;
   case STAT_MP5:               stats.mp5               += amount; mp5                       += amount; break;
 
-  case STAT_ATTACK_POWER:             stats.attack_power             += amount; temporary.attack_power += temporary_stat * amount; attack_power       += amount;                            break;
-  case STAT_EXPERTISE_RATING:         stats.expertise_rating         += amount; temporary.expertise_rating += temporary_stat * amount; attack_expertise   += amount / rating.expertise;         break;
+  case STAT_ATTACK_POWER:             stats.attack_power             += amount; temporary.attack_power += temp_value * amount; attack_power       += amount;                            break;
+  case STAT_EXPERTISE_RATING:         stats.expertise_rating         += amount; temporary.expertise_rating += temp_value * amount; attack_expertise   += amount / rating.expertise;         break;
 
   case STAT_HIT_RATING:
     stats.hit_rating += amount;
-    temporary.hit_rating += temporary_stat * amount;
+    temporary.hit_rating += temp_value * amount;
     attack_hit       += amount / rating.attack_hit;
     spell_hit        += amount / rating.spell_hit;
     break;
 
   case STAT_CRIT_RATING:
     stats.crit_rating += amount;
-    temporary.crit_rating += temporary_stat * amount;
+    temporary.crit_rating += temp_value * amount;
     attack_crit       += amount / rating.attack_crit;
     spell_crit        += amount / rating.spell_crit;
     break;
 
   case STAT_HASTE_RATING:
     stats.haste_rating += amount;
-    temporary.haste_rating += temporary_stat * amount;
+    temporary.haste_rating += temp_value * amount;
     haste_rating       += amount;
     recalculate_haste();
     break;
 
-  case STAT_ARMOR:          stats.armor          += amount; temporary.armor += temporary_stat * amount; armor       += amount;                  break;
+  case STAT_ARMOR:          stats.armor          += amount; temporary.armor += temp_value * amount; armor       += amount;                  break;
   case STAT_BONUS_ARMOR:    stats.bonus_armor    += amount; bonus_armor += amount;                  break;
-  case STAT_DODGE_RATING:   stats.dodge_rating   += amount; temporary.dodge_rating += temporary_stat * amount; dodge       += amount / rating.dodge;   break;
-  case STAT_PARRY_RATING:   stats.parry_rating   += amount; temporary.parry_rating += temporary_stat * amount; parry       += amount / rating.parry;   break;
+  case STAT_DODGE_RATING:   stats.dodge_rating   += amount; temporary.dodge_rating += temp_value * amount; dodge       += amount / rating.dodge;   break;
+  case STAT_PARRY_RATING:   stats.parry_rating   += amount; temporary.parry_rating += temp_value * amount; parry       += amount / rating.parry;   break;
 
-  case STAT_BLOCK_RATING: stats.block_rating += amount; temporary.block_rating += temporary_stat * amount; block       += amount / rating.block; break;
+  case STAT_BLOCK_RATING: stats.block_rating += amount; temporary.block_rating += temp_value * amount; block       += amount / rating.block; break;
 
   case STAT_MASTERY_RATING:
     stats.mastery_rating += amount;
-    temporary.mastery_rating += temporary_stat * amount;
+    temporary.mastery_rating += temp_value * amount;
     mastery += amount / rating.mastery;
     break;
 
@@ -3886,15 +3887,16 @@ void player_t::stat_loss( int       stat,
 
   if ( sim -> log ) log_t::output( sim, "%s loses %.0f %s%s", name(), amount, util_t::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
 
+  int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
   {
-  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temporary_buff * amount; attribute[ ATTR_STRENGTH  ] -= amount; break;
-  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temporary_buff * amount; attribute[ ATTR_AGILITY   ] -= amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temporary_buff * amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * health_per_stamina, action ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temporary_buff * amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA, floor( amount * composite_attribute_multiplier( ATTR_INTELLECT ) ) * mana_per_intellect, action ); break;
-  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temporary_buff * amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
+  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temp_value * amount; attribute[ ATTR_STRENGTH  ] -= amount; break;
+  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temp_value * amount; attribute[ ATTR_AGILITY   ] -= amount; break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * health_per_stamina, action ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA, floor( amount * composite_attribute_multiplier( ATTR_INTELLECT ) ) * mana_per_intellect, action ); break;
+  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
 
-  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] -= amount; temporary.attribute[ i ] -= temporary_buff * amount; attribute[ i ] -= amount; } break;
+  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] -= amount; temporary.attribute[ i ] -= temp_value * amount; attribute[ i ] -= amount; } break;
 
   case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount, action ); break;
   case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount, action ); break;
@@ -3921,44 +3923,44 @@ void player_t::stat_loss( int       stat,
   }
   break;
 
-  case STAT_SPELL_POWER:       stats.spell_power       -= amount; temporary.spell_power -= temporary_buff * amount; spell_power[ SCHOOL_MAX ] -= amount; break;
+  case STAT_SPELL_POWER:       stats.spell_power       -= amount; temporary.spell_power -= temp_value * amount; spell_power[ SCHOOL_MAX ] -= amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration -= amount; spell_penetration         -= amount; break;
   case STAT_MP5:               stats.mp5               -= amount; mp5                       -= amount; break;
 
-  case STAT_ATTACK_POWER:             stats.attack_power             -= amount; temporary.attack_power -= temporary_buff * amount; attack_power       -= amount;                            break;
-  case STAT_EXPERTISE_RATING:         stats.expertise_rating         -= amount; temporary.expertise_rating -= temporary_buff * amount; attack_expertise   -= amount / rating.expertise;         break;
+  case STAT_ATTACK_POWER:             stats.attack_power             -= amount; temporary.attack_power -= temp_value * amount; attack_power       -= amount;                            break;
+  case STAT_EXPERTISE_RATING:         stats.expertise_rating         -= amount; temporary.expertise_rating -= temp_value * amount; attack_expertise   -= amount / rating.expertise;         break;
 
   case STAT_HIT_RATING:
     stats.hit_rating -= amount;
-    temporary.hit_rating -= temporary_buff * amount;
+    temporary.hit_rating -= temp_value * amount;
     attack_hit       -= amount / rating.attack_hit;
     spell_hit        -= amount / rating.spell_hit;
     break;
 
   case STAT_CRIT_RATING:
     stats.crit_rating -= amount;
-    temporary.crit_rating -= temporary_buff * amount;
+    temporary.crit_rating -= temp_value * amount;
     attack_crit       -= amount / rating.attack_crit;
     spell_crit        -= amount / rating.spell_crit;
     break;
 
   case STAT_HASTE_RATING:
     stats.haste_rating -= amount;
-    temporary.haste_rating -= temporary_buff * amount;
+    temporary.haste_rating -= temp_value * amount;
     haste_rating       -= amount;
     recalculate_haste();
     break;
 
-  case STAT_ARMOR:          stats.armor          -= amount; temporary.armor -= temporary_buff * amount; armor       -= amount;                  break;
+  case STAT_ARMOR:          stats.armor          -= amount; temporary.armor -= temp_value * amount; armor       -= amount;                  break;
   case STAT_BONUS_ARMOR:    stats.bonus_armor    -= amount; bonus_armor -= amount;                  break;
-  case STAT_DODGE_RATING:   stats.dodge_rating   -= amount; temporary.dodge_rating -= temporary_buff * amount; dodge       -= amount / rating.dodge;   break;
-  case STAT_PARRY_RATING:   stats.parry_rating   -= amount; temporary.parry_rating -= temporary_buff * amount; parry       -= amount / rating.parry;   break;
+  case STAT_DODGE_RATING:   stats.dodge_rating   -= amount; temporary.dodge_rating -= temp_value * amount; dodge       -= amount / rating.dodge;   break;
+  case STAT_PARRY_RATING:   stats.parry_rating   -= amount; temporary.parry_rating -= temp_value * amount; parry       -= amount / rating.parry;   break;
 
-  case STAT_BLOCK_RATING: stats.block_rating -= amount; temporary.block_rating -= temporary_buff * amount; block       -= amount / rating.block; break;
+  case STAT_BLOCK_RATING: stats.block_rating -= amount; temporary.block_rating -= temp_value * amount; block       -= amount / rating.block; break;
 
   case STAT_MASTERY_RATING:
     stats.mastery_rating -= amount;
-    temporary.mastery_rating -= temporary_buff * amount;
+    temporary.mastery_rating -= temp_value * amount;
     mastery -= amount / rating.mastery;
     break;
 

@@ -483,9 +483,9 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
       action_t* a = s -> action_list[ i ];
 
       bool found = false;
-      size_t size = processed_actions.size();
-      for ( size_t j = 0; j < size && !found; j++ )
-        if ( processed_actions[ j ] == a -> name() )
+      size_t size_processed = processed_actions.size();
+      for ( size_t k = 0; k < size_processed && !found; k++ )
+        if ( processed_actions[ k ] == a -> name() )
           found = true;
       if ( found ) continue;
       processed_actions.push_back( a -> name() );
@@ -1516,13 +1516,13 @@ static void print_html_player_resources( FILE* file, player_t* p )
 
   fprintf( file,
            "\t\t\t\t\t\t<div class=\"charts\">\n" );
-  for ( int i = RESOURCE_NONE + 1; i < RESOURCE_MAX; i++ )
+  for ( int j = RESOURCE_NONE + 1; j < RESOURCE_MAX; j++ )
   {
-    if ( p -> resource_max[ i ] > 0 && ! p -> timeline_resource_chart[ i ].empty() )
+    if ( p -> resource_max[ j ] > 0 && ! p -> timeline_resource_chart[ j ].empty() )
     {
       fprintf( file,
                "\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Timeline Chart\" />\n",
-               p -> timeline_resource_chart[ i ].c_str() );
+               p -> timeline_resource_chart[ j ].c_str() );
     }
   }
   fprintf( file,
@@ -1777,14 +1777,14 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                "\t\t\t\t\t\t\t\t<td colspan=\"7\" class=\"filler\">\n"
                "\t\t\t\t\t\t\t\t\t<h4>Stack Uptimes</h4>\n"
                "\t\t\t\t\t\t\t\t\t<ul>\n" );
-      for ( unsigned int i= 0; i < b -> stack_uptime.size(); i++ )
+      for ( unsigned int j= 0; j < b -> stack_uptime.size(); j++ )
       {
-        double uptime = b -> stack_uptime[ i ].uptime;
+        double uptime = b -> stack_uptime[ j ].uptime;
         if ( uptime > 0 )
         {
           fprintf( file,
                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s_%d:</span>%.1f%%</li>\n",
-                   b -> name(), i,
+                   b -> name(), j,
                    uptime * 100.0 );
         }
       }
