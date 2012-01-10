@@ -49,7 +49,7 @@ pet_t::pet_t( sim_t*             s,
               const std::string& n,
               pet_type_t         pt,
               bool               g ) :
-  player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
+  player_t( s, pt == PET_ENEMY ? ENEMY_ADD : g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
 {
   init_pet_t_();
 }

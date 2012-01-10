@@ -87,7 +87,6 @@ struct enemy_add_t : public pet_t
   enemy_add_t( sim_t* s, player_t* o, const std::string& n, pet_type_t pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
   {
-    type = ENEMY_ADD;
     create_options();
   }
 
@@ -492,7 +491,7 @@ void enemy_t::create_pets()
   for ( int i=0; i < sim -> target_adds; i++ )
   {
     char buffer[ 1024 ];
-    snprintf( buffer, sizeof( buffer ), "Add %i", i );
+    snprintf( buffer, sizeof( buffer ), "add_%i", i );
 
     create_pet( buffer );
   }
