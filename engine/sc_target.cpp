@@ -123,8 +123,8 @@ struct melee_t : public attack_t
     repeating   = true;
     trigger_gcd = 0;
     base_cost   = 0;
-    base_dd_min = 120000;
-    base_execute_time = 2.0;
+    base_dd_min = 260000;
+    base_execute_time = 2.4;
   }
 };
 
@@ -137,7 +137,7 @@ struct auto_attack_t : public attack_t
   {
     p -> main_hand_attack = new melee_t( "melee_main_hand", player );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = 2.0;
+    p -> main_hand_attack -> base_execute_time = 2.4;
 
     option_t options[] =
     {
@@ -151,7 +151,7 @@ struct auto_attack_t : public attack_t
 
     p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min;
     if ( p -> main_hand_attack -> base_execute_time < 0.01 )
-      p -> main_hand_attack -> base_execute_time = 2.0;
+      p -> main_hand_attack -> base_execute_time = 2.4;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
@@ -201,7 +201,7 @@ struct spell_nuke_t : public spell_t
     parse_options( options, options_str );
 
     base_dd_max = base_dd_min;
-    if ( base_execute_time < 0.01 )
+    if ( base_execute_time < 0.00 )
       base_execute_time = 3.0;
 
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
@@ -423,8 +423,11 @@ void enemy_t::init_actions()
     {
       action_list_str += "/snapshot_stats";
 
-      if ( ! is_add() && target != this )
+      if ( ! is_add() && target != this && !is_enemy() )
+      {
         action_list_str += "/auto_attack";
+        action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1";
+      }
     }
   }
   player_t::init_actions();
