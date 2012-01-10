@@ -1448,7 +1448,8 @@ struct ghoul_pet_t : public pet_t
 
 struct death_knight_attack_t : public attack_t
 {
-  bool   requires_weapon;
+  bool   always_consume;
+  bool   requires_weapon;  
   int    cost_blood;
   int    cost_frost;
   int    cost_unholy;
@@ -1459,7 +1460,7 @@ struct death_knight_attack_t : public attack_t
 
   death_knight_attack_t( const char* n, death_knight_t* p, bool special = false ) :
     attack_t( n, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, special ),
-    requires_weapon( true ),
+    always_consume( false ), requires_weapon( true ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     m_dd_additive( 0 )
   {
@@ -1468,7 +1469,7 @@ struct death_knight_attack_t : public attack_t
 
   death_knight_attack_t( const char* n, uint32_t id, death_knight_t* p ) :
     attack_t( n, id, p, 0, true ),
-    requires_weapon( true ),
+    always_consume( false ), requires_weapon( true ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     m_dd_additive( 0 )
   {
@@ -1477,7 +1478,7 @@ struct death_knight_attack_t : public attack_t
 
   death_knight_attack_t( const char* n, const char* sname, death_knight_t* p ) :
     attack_t( n, sname, p, 0, true ),
-    requires_weapon( true ),
+    always_consume( false ), requires_weapon( true ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     m_dd_additive( 0 )
   {
@@ -1841,7 +1842,7 @@ void death_knight_attack_t::consume_resource()
     attack_t::consume_resource();
   }
 
-  if ( result_is_hit() )
+  if ( result_is_hit() || always_consume )
     consume_runes( player, use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
   else
     refund_power( this );
@@ -2683,6 +2684,8 @@ struct death_strike_t : public death_knight_attack_t
     oh_attack( 0 )
   {
     parse_options( NULL, options_str );
+
+    always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     if ( p -> primary_tree() == TREE_BLOOD )
