@@ -956,6 +956,7 @@ static void trigger_vishanka( attack_t* a )
         background  = true;
         proc        = true;
         trigger_gcd = 0;
+        crit_bonus = 0.5; // Only crits for 150% on live
         init();
 
         // FIX ME: Can this crit, miss, etc?
