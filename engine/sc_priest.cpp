@@ -538,6 +538,14 @@ public:
       p -> trigger_cauterizing_flame();
   }
   
+  bool ready()
+  {
+    if ( min_interval -> remains() > 0 )
+      return false;
+
+    return absorb_t::ready();
+  }
+
   void parse_options( option_t*          options,
                       const std::string& options_str )
   {
@@ -549,6 +557,18 @@ public:
 
     std::vector<option_t> merged_options;
     absorb_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
+  }
+
+  void update_ready()
+  {
+    absorb_t::update_ready();
+
+    if ( min_interval -> duration > 0 && ! dual )
+    {
+      min_interval -> start( -1, 0 );
+
+      if ( sim -> debug ) log_t::output( sim, "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready );
+    }
   }
 };
 
