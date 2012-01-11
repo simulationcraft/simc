@@ -524,7 +524,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 a -> min_gcd,
                 a -> base_cost,
                 a -> cooldown -> duration,
-                a -> base_execute_time,
+                a -> base_execute_time.total_seconds(),
                 a -> base_crit,
                 a -> target ? a -> target -> name() : "",
                 a -> tooltip(),

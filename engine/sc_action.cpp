@@ -61,7 +61,7 @@ void action_t::init_action_t_()
   weapon_power_mod               = 1.0/14.0;
   direct_power_mod               = 0.0;
   tick_power_mod                 = 0.0;
-  base_execute_time              = 0.0;
+  base_execute_time              = timespan_t::zero;
   base_tick_time                 = 0.0;
   base_cost                      = 0.0;
   base_dd_min                    = 0.0;
@@ -250,7 +250,7 @@ void action_t::parse_data()
 {
   if ( id > 0 && ( spell = player -> dbc.spell( id ) ) )
   {
-    base_execute_time    = spell -> cast_time( player -> level ).total_seconds();
+    base_execute_time    = spell -> cast_time( player -> level );
     cooldown -> duration = spell -> cooldown().total_seconds();
     range                = spell -> max_range();
     travel_speed         = spell -> missile_speed();

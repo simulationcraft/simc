@@ -1511,13 +1511,13 @@ struct auto_attack_t : public action_t
 
     p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
+      p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds( p -> off_hand_weapon.swing_time );
     }
 
     trigger_gcd = 0;

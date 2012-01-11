@@ -358,7 +358,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       : attack_t( "melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL ), owner( 0 )
     {
       weapon = &( p -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
+      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
       weapon_multiplier = 1.0;
       background = true;
       repeating  = true;
@@ -1016,7 +1016,7 @@ struct melee_t : public paladin_attack_t
     trigger_gcd       = 0;
     base_cost         = 0;
     weapon            = &( p -> main_hand_weapon );
-    base_execute_time = p -> main_hand_weapon.swing_time;
+    base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
   }
 
   virtual timespan_t execute_time() const
@@ -2536,7 +2536,7 @@ struct divine_light_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.clarity_of_purpose -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().time_value();
   }
 
   virtual void execute()
@@ -2606,7 +2606,7 @@ struct holy_light_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.clarity_of_purpose -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().time_value();
   }
 
   virtual void execute()
@@ -2657,7 +2657,7 @@ struct holy_radiance_t : public paladin_heal_t
     // FIXME: This is an AoE Hot, which isn't supported currently
     aoe = effect2().base_value();
 
-    base_execute_time += p -> talents.clarity_of_purpose -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().time_value();
 
     hot = new holy_radiance_hot_t( p, effect1().trigger_spell_id() );
   }

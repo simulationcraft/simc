@@ -20,6 +20,10 @@
 #  define SC_SIGACTION
 #endif
 
+#if defined(_LP64) || defined(__LP64__) || defined(_WIN64) || defined(_AMD64_)
+#  define SIMC_X64
+#endif
+
 #if defined( _MSC_VER )
 #  include "../vs/stdint.h"
 #else
@@ -1117,7 +1121,11 @@ inline typename range::traits<Range>::iterator unique( Range& r, Comp c )
 
 struct timespan_t
 {
+#ifdef SIMC_X64
   typedef int64_t time_t;
+#else
+  typedef int32_t time_t;
+#endif
 
 private:
   time_t time;
@@ -1162,7 +1170,7 @@ public:
     return *this;
   }
   timespan_t operator*=(const int64_t right) {
-    time *= right;
+    time = (time_t)(time * right);
     return *this;
   }
   timespan_t operator*=(const uint32_t right) {
@@ -1170,7 +1178,7 @@ public:
     return *this;
   }
   timespan_t operator*=(const uint64_t right) {
-    time *= right;
+    time = (time_t)(time * right);
     return *this;
   }
 
@@ -1183,7 +1191,7 @@ public:
     return *this;
   }
   timespan_t operator/=(const int64_t right) {
-    time /= right;
+    time = (time_t)(time / right);
     return *this;
   }
   timespan_t operator/=(const uint32_t right) {
@@ -1191,7 +1199,7 @@ public:
     return *this;
   }
   timespan_t operator/=(const uint64_t right) {
-    time /= right;
+    time = (time_t)(time / right);
     return *this;
   }
 
@@ -4844,7 +4852,8 @@ struct action_t : public spell_id_t
   double rp_gain;
   double min_gcd, trigger_gcd, range;
   double weapon_power_mod, direct_power_mod, tick_power_mod;
-  double base_execute_time, base_tick_time, base_cost;
+  timespan_t base_execute_time;
+  double base_tick_time, base_cost;
   double base_dd_min, base_dd_max, base_td, base_td_init;
   double   base_dd_multiplier,   base_td_multiplier;
   double player_dd_multiplier, player_td_multiplier;
@@ -4922,7 +4931,7 @@ public:
   virtual double total_haste() const  { return haste();           }
   virtual double haste() const        { return 1.0;               }
   virtual timespan_t gcd() const;
-  virtual timespan_t execute_time() const { return timespan_t::from_seconds(base_execute_time); }
+  virtual timespan_t execute_time() const { return base_execute_time; }
   virtual timespan_t tick_time() const;
   virtual int    hasted_num_ticks( double d=-1 ) const;
   virtual timespan_t travel_time();

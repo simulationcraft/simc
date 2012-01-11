@@ -1020,7 +1020,7 @@ public:
 
     spell_t::player_buff();
 
-    if ( base_execute_time > 0 && s_tree == WARLOCK_DESTRUCTION && p -> buffs_demon_soul_imp -> up() )
+    if ( base_execute_time > timespan_t::zero && s_tree == WARLOCK_DESTRUCTION && p -> buffs_demon_soul_imp -> up() )
     {
       player_crit += p -> buffs_demon_soul_imp -> effect1().percent();
     }
@@ -1193,7 +1193,7 @@ struct warlock_pet_melee_t : public attack_t
     attack_t( name, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
   {
     weapon = &( p -> main_hand_weapon );
-    base_execute_time = weapon -> swing_time;
+    base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
     may_crit    = true;
     background  = true;
     repeating   = true;
@@ -1324,7 +1324,7 @@ struct imp_pet_t : public warlock_main_pet_t
       warlock_t*  o = p -> owner -> cast_warlock();
 
       direct_power_mod = 0.618; // tested in-game as of 2011/05/10
-      base_execute_time += o -> talent_dark_arts -> effect1().time_value().total_seconds();
+      base_execute_time += o -> talent_dark_arts -> effect1().time_value();
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
@@ -1780,7 +1780,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       warlock_pet_spell_t( "doombolt", p, "Doom Bolt" )
     {
       //FIXME: Needs testing, but WoL seems to suggest it has been changed from 2.5 to 3.0 sometime after 4.1.
-      base_execute_time = 3.0;
+      base_execute_time = timespan_t::from_seconds(3.0);
 
       //Rough numbers based on report in EJ thread 2011/07/04
       direct_power_mod  = 1.36;
@@ -2158,7 +2158,7 @@ struct shadow_bolt_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time += p -> talent_bane -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talent_bane -> effect1().time_value();
     base_cost  *= 1.0 + p -> glyphs.shadow_bolt -> base_value();
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent() );
 
@@ -2317,7 +2317,7 @@ struct chaos_bolt_t : public warlock_spell_t
     may_resist = false;
     may_miss = false;
 
-    base_execute_time += p -> talent_bane -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talent_bane -> effect1().time_value();
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
     cooldown -> duration += ( p -> glyphs.chaos_bolt -> base_value() / 1000.0 );
 
@@ -2769,7 +2769,7 @@ struct unstable_affliction_t : public warlock_spell_t
 
     may_crit   = false;
     base_crit += p -> talent_everlasting_affliction -> effect2().percent();
-    base_execute_time += p -> glyphs.unstable_affliction -> base_value() / 1000.0;
+    base_execute_time += timespan_t::from_millis(p -> glyphs.unstable_affliction -> base_value());
   }
 
   virtual void execute()
@@ -2839,7 +2839,7 @@ struct immolate_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talent_bane -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talent_bane -> effect1().time_value();
 
     base_dd_multiplier *= 1.0 + ( p -> talent_improved_immolate -> effect1().percent() );
 
@@ -3000,7 +3000,7 @@ struct incinerate_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent() );
-    base_execute_time += p -> talent_emberstorm -> effect3().time_value().total_seconds();
+    base_execute_time += p -> talent_emberstorm -> effect3().time_value();
     base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> base_value() );
 
     if ( ! dtr && p -> has_dtr )
@@ -3139,7 +3139,7 @@ struct soul_fire_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talent_emberstorm -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talent_emberstorm -> effect1().time_value();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -3368,7 +3368,7 @@ private:
 
     warlock_t* p = player -> cast_warlock();
     harmful = false;
-    base_execute_time += p -> talent_master_summoner -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talent_master_summoner -> effect1().time_value();
     base_cost         *= 1.0 + p -> talent_master_summoner -> effect2().percent();
 
     pet = p -> find_pet( pet_name );

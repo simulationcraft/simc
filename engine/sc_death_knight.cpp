@@ -760,7 +760,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_attack_t( "drw_melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       weapon            = &( p -> owner -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
+      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
       base_dd_min       = 2; // FIXME: Should these be set?
       base_dd_max       = 322;
       may_crit          = true;
@@ -894,7 +894,7 @@ struct army_ghoul_pet_t : public pet_t
     army_ghoul_pet_melee_t( army_ghoul_pet_t* p ) :
       army_ghoul_pet_attack_t( "melee", p, RESOURCE_NONE, false )
     {
-      base_execute_time = weapon -> swing_time;
+      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
       background        = true;
       repeating         = true;
       weapon_power_mod  = 0.0055 / weapon -> swing_time; // FIXME: Needs further testing
@@ -1027,7 +1027,7 @@ struct bloodworms_pet_t : public pet_t
       attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
+      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
       base_dd_min = base_dd_max = 1;
       may_crit    = true;
       background  = true;
@@ -1217,7 +1217,7 @@ struct ghoul_pet_t : public pet_t
     ghoul_pet_melee_t( ghoul_pet_t* p ) :
       ghoul_pet_attack_t( "melee", p, RESOURCE_NONE, false )
     {
-      base_execute_time = weapon -> swing_time;
+      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
       background        = true;
       repeating         = true;
       weapon_power_mod  = 0.120 / weapon -> swing_time; // should be exact as of 4.2
@@ -2166,13 +2166,13 @@ struct auto_attack_t : public death_knight_attack_t
 
     p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
+      p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds( p -> off_hand_weapon.swing_time );
       p -> off_hand_attack -> base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
     }
 

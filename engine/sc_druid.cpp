@@ -551,7 +551,7 @@ struct treants_pet_t : public pet_t
       attack_t( "treant_melee", player )
     {
       weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
+      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
       base_dd_min = base_dd_max = 1;
       background = true;
       repeating = true;
@@ -2606,7 +2606,7 @@ void druid_heal_t::execute()
 
   heal_t::execute();
 
-  if ( base_execute_time > 0 && p -> buffs_natures_swiftness -> up() )
+  if ( base_execute_time > timespan_t::zero && p -> buffs_natures_swiftness -> up() )
   {
     p -> buffs_natures_swiftness -> expire();
   }
@@ -2662,7 +2662,7 @@ void druid_heal_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs_harmony -> value();
   }
 
-  if ( p -> buffs_natures_swiftness -> check() && base_execute_time > 0 )
+  if ( p -> buffs_natures_swiftness -> check() && base_execute_time > timespan_t::zero )
   {
     player_multiplier *= 1.0 + p -> talents.natures_swiftness -> effect2().percent();
   }
@@ -2680,7 +2680,7 @@ struct healing_touch_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
-    base_execute_time  += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
+    base_execute_time  += timespan_t::from_seconds(p -> talents.naturalist -> mod_additive( P_CAST_TIME ));
     consume_ooc         = true;
 
     ns_cd = p -> get_cooldown( "natures_swiftness" );
@@ -2813,7 +2813,7 @@ struct nourish_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
-    base_execute_time  += p -> talents.naturalist -> mod_additive( P_CAST_TIME );
+    base_execute_time  += timespan_t::from_seconds(p -> talents.naturalist -> mod_additive( P_CAST_TIME ));
   }
 
   virtual void execute()
@@ -3005,7 +3005,7 @@ struct tranquility_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     aoe               = effect3().base_value(); // Heals 5 targets
-    base_execute_time = duration().total_seconds();
+    base_execute_time = duration();
     channeled         = true;
 
     // Healing is in spell effect 1
@@ -3115,7 +3115,7 @@ void druid_spell_t::schedule_execute()
   spell_t::schedule_execute();
   druid_t* p = player -> cast_druid();
 
-  if ( base_execute_time > 0 )
+  if ( base_execute_time > timespan_t::zero )
     p -> buffs_natures_swiftness -> expire();
 }
 
@@ -3206,7 +3206,7 @@ struct auto_attack_t : public action_t
     druid_t* p = player -> cast_druid();
 
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
     p -> main_hand_attack -> schedule_execute();
   }
 
@@ -3253,7 +3253,7 @@ struct bear_form_t : public druid_spell_t
 
     // Override these as we can do it before combat
     trigger_gcd       = 0;
-    base_execute_time = 0;
+    base_execute_time = timespan_t::zero;
     harmful           = false;
 
     if ( ! p -> bear_melee_attack )
@@ -3360,7 +3360,7 @@ struct cat_form_t : public druid_spell_t
 
     // Override for precombat casting
     trigger_gcd       = 0;
-    base_execute_time = 0;
+    base_execute_time = timespan_t::zero;
     harmful           = false;
 
     if ( ! p -> cat_melee_attack )
@@ -3823,7 +3823,7 @@ struct moonkin_form_t : public druid_spell_t
 
     // Override these as we can precast before combat begins
     trigger_gcd       = 0;
-    base_execute_time = 0;
+    base_execute_time = timespan_t::zero;
     base_cost         = 0;
     harmful           = false;
   }
@@ -3913,7 +3913,7 @@ struct starfire_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
+    base_execute_time += timespan_t::from_seconds(p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME ));
 
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
@@ -4527,7 +4527,7 @@ struct wrath_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME );
+    base_execute_time += timespan_t::from_seconds(p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME ));
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 

@@ -497,7 +497,7 @@ public:
 
     double c = absorb_t::cost();
 
-    if ( base_execute_time <= 0.0 )
+    if ( base_execute_time <= timespan_t::zero )
     {
       c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
       c  = floor( c );
@@ -519,7 +519,7 @@ public:
 
     priest_t* p = player -> cast_priest();
 
-    if ( base_execute_time <= 0.0 )
+    if ( base_execute_time <= timespan_t::zero )
       p -> buffs_inner_will -> up();
     // Needs testing
     p -> buffs_tier13_2pc_heal -> up();
@@ -734,7 +734,7 @@ struct priest_heal_t : public heal_t
 
     double c = heal_t::cost();
 
-    if ( base_execute_time <= 0.0 )
+    if ( base_execute_time <= timespan_t::zero )
     {
       c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
       c  = floor( c );
@@ -756,7 +756,7 @@ struct priest_heal_t : public heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( base_execute_time <= 0.0 )
+    if ( base_execute_time <= timespan_t::zero )
       p -> buffs_inner_will -> up();
     // Needs testing
     p -> buffs_tier13_2pc_heal -> up();
@@ -1033,7 +1033,7 @@ public:
 
     double c = spell_t::cost();
 
-    if ( base_execute_time <= 0.0 )
+    if ( base_execute_time <= timespan_t::zero )
     {
       c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
       c  = floor( c );
@@ -1048,7 +1048,7 @@ public:
 
     priest_t* p = player -> cast_priest();
 
-    if ( base_execute_time <= 0.0 )
+    if ( base_execute_time <= timespan_t::zero )
       p -> buffs_inner_will -> up();
   }
 
@@ -1171,7 +1171,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       priest_t* o = player -> owner -> cast_priest();
       weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
+      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
       weapon_multiplier = 0;
       direct_power_mod = 0.0064 * o -> level;
       if ( harmful ) base_spell_power_multiplier = 1.0;
@@ -2819,7 +2819,7 @@ struct holy_fire_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    base_execute_time += p -> talents.divine_fury -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talents.divine_fury -> effect1().time_value();
 
     base_hit += p -> glyphs.divine_accuracy -> effect1().percent();
 
@@ -2939,7 +2939,7 @@ struct smite_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.divine_fury -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talents.divine_fury -> effect1().time_value();
     base_hit += p -> glyphs.divine_accuracy -> effect1().percent();
 
     can_trigger_atonement = true;
@@ -3415,7 +3415,7 @@ struct greater_heal_t : public priest_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.divine_fury -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talents.divine_fury -> effect1().time_value();
 
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
   }
@@ -3537,7 +3537,7 @@ struct _heal_t : public priest_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.divine_fury -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talents.divine_fury -> effect1().time_value();
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
 
     // FIXME: Check Spell when it's imported into the dbc

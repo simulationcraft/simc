@@ -404,7 +404,7 @@ struct spirit_wolf_pet_t : public pet_t
       attack_t( "wolf_melee", player )
     {
       weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
+      base_execute_time = timespan_t::from_seconds( weapon -> swing_time );
       background = true;
       repeating = true;
       may_crit = true;
@@ -576,8 +576,8 @@ struct earth_elemental_pet_t : public pet_t
       background        = true;
       repeating         = true;
       weapon            = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      weapon_power_mod  = 0.098475 / base_execute_time;
+      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+      weapon_power_mod  = 0.098475 / base_execute_time.total_seconds();
 
       base_attack_power_multiplier = 0;
     }
@@ -793,7 +793,7 @@ struct fire_elemental_pet_t : public pet_t
       background                = true;
       repeating                 = true;
       may_crit                  = true;
-      base_execute_time         = 3.0;
+      base_execute_time         = timespan_t::from_seconds(3.0);
       base_dd_min = base_dd_max = 89;
       direct_power_mod          = player -> dbc.spell( 13376 ) -> effect1().coeff();
     }
@@ -822,7 +822,7 @@ struct fire_elemental_pet_t : public pet_t
       // 207 = 80
       base_cost            = player -> level * 2.750;
       // For now, model the cast time increase as well, see below
-      base_execute_time    = player -> dbc.spell( 12470 ) -> cast_time( player -> level ).total_seconds();
+      base_execute_time    = player -> dbc.spell( 12470 ) -> cast_time( player -> level );
 
       base_dd_min          = 583;
       base_dd_max          = 663;
@@ -847,7 +847,7 @@ struct fire_elemental_pet_t : public pet_t
 
       may_crit             = true;
       base_cost            = ( player -> level ) * 3.554;
-      base_execute_time    = 0;
+      base_execute_time    = timespan_t::zero;
       direct_power_mod     = player -> dbc.spell( 57984 ) -> effect1().coeff();
       cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 7.0 );
 
@@ -922,7 +922,7 @@ struct fire_elemental_pet_t : public pet_t
     {
       player -> main_hand_attack = new fire_melee_t( player );
       player -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
-      player -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
+      player -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(player -> main_hand_weapon.swing_time);
 
       trigger_gcd = 0;
     }
@@ -1001,7 +1001,7 @@ struct fire_elemental_pet_t : public pet_t
     owner_int = owner -> intellect();
     owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
 
-    fire_shield -> num_ticks = ( int ) ( duration / fire_shield -> base_execute_time );
+    fire_shield -> num_ticks = ( int ) ( timespan_t::from_seconds(duration) / fire_shield -> base_execute_time );
     fire_shield -> execute();
 
     cooldown_fire_nova -> start();
@@ -1871,14 +1871,14 @@ struct auto_attack_t : public shaman_attack_t
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       if ( p -> primary_tree() != TREE_ENHANCEMENT ) return;
       p -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
+      p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds( p -> off_hand_weapon.swing_time );
     }
 
     trigger_gcd = 0;
@@ -2107,7 +2107,7 @@ double shaman_spell_t::cost_reduction() const
   if ( harmful && callbacks && ! proc && p -> buffs_elemental_focus -> up() )
     cr += p -> buffs_elemental_focus -> mod_additive( P_RESOURCE_COST );
 
-  if ( base_execute_time == 0 )
+  if ( base_execute_time == timespan_t::zero )
     cr += p -> spec_mental_quickness -> mod_additive( P_RESOURCE_COST );
 
   return cr;
@@ -2140,7 +2140,7 @@ void shaman_spell_t::consume_resource()
 timespan_t shaman_spell_t::execute_time() const
 {
   shaman_t* p = player -> cast_shaman();
-  if ( p -> buffs_natures_swiftness -> up() && school == SCHOOL_NATURE && base_execute_time < 10.0 )
+  if ( p -> buffs_natures_swiftness -> up() && school == SCHOOL_NATURE && base_execute_time < timespan_t::from_seconds(10.0) )
     return timespan_t::from_seconds(1.0 + p -> buffs_natures_swiftness -> base_value());
 
   return spell_t::execute_time();
@@ -2313,7 +2313,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     maelstrom          = true;
     direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
-    base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
+    base_execute_time += timespan_t::from_millis(p -> spec_shamanism -> effect_base_value( 3 ));
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
     cooldown -> duration += p -> spec_elemental_fury -> mod_additive( P_COOLDOWN );
 
@@ -2607,7 +2607,7 @@ struct lava_burst_t : public shaman_spell_t
 
     // Shamanism
     direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
-    base_execute_time   += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
+    base_execute_time   += timespan_t::from_millis(p -> spec_shamanism -> effect_base_value( 3 ));
     base_cost_reduction += p -> talent_convection -> mod_additive( P_RESOURCE_COST );
     m_additive          +=
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
@@ -2700,7 +2700,7 @@ struct lightning_bolt_t : public shaman_spell_t
     maelstrom          = true;
     // Shamanism
     direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
-    base_execute_time += p -> spec_shamanism -> effect_base_value( 3 ) / 1000.0;
+    base_execute_time += timespan_t::from_millis(p -> spec_shamanism -> effect_base_value( 3 ));
     // Elemental fury
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
@@ -4078,8 +4078,8 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     
     // Extend buff duration with t13 4pc healer
     shaman_t* p = player -> cast_shaman();
-    p -> buffs_spiritwalkers_grace -> buff_duration = p -> buffs_spiritwalkers_grace -> duration() + 
-                                                      p -> sets -> set( SET_T13_4PC_HEAL ) -> effect1().time_value().total_seconds();
+    p -> buffs_spiritwalkers_grace -> buff_duration = (p -> buffs_spiritwalkers_grace -> duration() + 
+                                                      p -> sets -> set( SET_T13_4PC_HEAL ) -> effect1().time_value()).total_seconds();
   }
 
   virtual void execute()

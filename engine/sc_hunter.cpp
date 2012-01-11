@@ -1083,7 +1083,7 @@ struct pet_melee_t : public hunter_pet_attack_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     weapon = &( p -> main_hand_weapon );
-    base_execute_time = weapon -> swing_time;
+    base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
     background        = true;
     repeating         = true;
     school = SCHOOL_PHYSICAL;
@@ -1890,7 +1890,7 @@ timespan_t hunter_attack_t::execute_time() const
 {
   timespan_t t = attack_t::execute_time();
 
-  if ( t == timespan_t::zero  || base_execute_time < 0 )
+  if ( t == timespan_t::zero  || base_execute_time < timespan_t::zero )
     return timespan_t::zero;
 
   return t;
@@ -1939,7 +1939,7 @@ struct ranged_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     weapon = &( p -> ranged_weapon );
-    base_execute_time = weapon -> swing_time;
+    base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
 
     normalize_weapon_speed=false;
     may_crit    = true;
@@ -2048,7 +2048,7 @@ struct aimed_shot_t : public hunter_attack_t
 
       // Don't know why these values aren't 0 in the database.
       base_cost = 0;
-      base_execute_time = 0;
+      base_execute_time = timespan_t::zero;
 
       // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
       // Testing confirms that the weapon multiplier also affects the RAP coeff
@@ -2488,7 +2488,7 @@ struct cobra_shot_t : public hunter_attack_t
     direct_power_mod = 0.017; // hardcoded into tooltip
 
     if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
-      base_execute_time -= 0.2;
+      base_execute_time -= timespan_t::from_seconds( 0.2 );
 
     focus_gain = p -> dbc.spell( 77443 ) -> effect1().base_value();
 
@@ -2925,7 +2925,7 @@ struct steady_shot_t : public hunter_attack_t
     direct_power_mod = 0.021; // hardcoded into tooltip
 
     if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
-      base_execute_time -= 0.2;
+      base_execute_time -= timespan_t::from_seconds(0.2);
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );

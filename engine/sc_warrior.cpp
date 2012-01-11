@@ -1216,13 +1216,13 @@ struct auto_attack_t : public warrior_attack_t
 
     p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
+      p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> off_hand_weapon.swing_time);
     }
 
     trigger_gcd = 0;
@@ -1828,7 +1828,7 @@ struct heroic_leap_t : public warrior_attack_t
     base_dd_max = p -> dbc.effect_max( dmg_spell -> effect1().id(), p -> level );
     direct_power_mod = dmg_spell -> extra_coeff();
     
-    cooldown -> duration += p -> talents.skirmisher -> effect2().seconds();
+    cooldown -> duration += p -> talents.skirmisher -> effect2().time_value().total_seconds();
 
     // Heroic Leap can trigger procs from either weapon
     proc_ignores_slot = true;
@@ -2461,7 +2461,7 @@ struct slam_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.improved_slam -> effect1().time_value().total_seconds();
+    base_execute_time += p -> talents.improved_slam -> effect1().time_value();
     may_crit = false;
 
     // Ensure we include racial expertise
