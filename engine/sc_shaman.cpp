@@ -1113,9 +1113,9 @@ static void trigger_flametongue_weapon( attack_t* a )
 struct windfury_delay_event_t : public event_t
 {
   attack_t* wf;
-  double delay;
+  timespan_t delay;
 
-  windfury_delay_event_t( sim_t* sim, player_t* p, attack_t* wf, double delay ) :
+  windfury_delay_event_t( sim_t* sim, player_t* p, attack_t* wf, timespan_t delay ) :
     event_t( sim, p ), wf( wf ), delay( delay )
   {
     name = "windfury_delay_event";
@@ -1150,7 +1150,7 @@ static bool trigger_windfury_weapon( attack_t* a )
     p -> cooldowns_windfury_weapon -> start( timespan_t::from_seconds(p -> rng_windfury_delay -> gauss( 3.0, 0.3 )) );
 
     // Delay windfury by some time, up to about a second
-    new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, p -> rng_windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
+    new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, timespan_t::from_seconds(p -> rng_windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev )) );
     return true;
   }
   return false;
@@ -2246,7 +2246,7 @@ void shaman_spell_t::schedule_execute()
 
   time_to_execute = execute_time();
 
-  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute.total_seconds() );
+  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
 
   if ( ! background )
   {
@@ -3005,7 +3005,7 @@ struct earth_shock_t : public shaman_spell_t
       event_t( sim, p ), buff( b ), consume_stacks( consume ), consume_threshold( consume_threshold )
     {
       name = "lightning_charge_delay_t";
-      sim -> add_event( this, 0.001 );
+      sim -> add_event( this, timespan_t::from_seconds(0.001) );
     }
 
     void execute()
@@ -4199,7 +4199,7 @@ struct unleash_flame_expiration_delay_t : public event_t
   {
     shaman_t* s = player -> cast_shaman();
     name = "unleash_flame_expiration_delay";
-    sim -> add_event( this, sim -> gauss( s -> uf_expiration_delay, s -> uf_expiration_delay_stddev ) );
+    sim -> add_event( this, timespan_t::from_seconds(sim -> gauss( s -> uf_expiration_delay, s -> uf_expiration_delay_stddev )) );
   }
 
   virtual void execute()

@@ -140,7 +140,7 @@ void pet_t::summon( double duration )
   {
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, pet_t* p, double duration ) : event_t( sim, p )
+      expiration_t( sim_t* sim, pet_t* p, timespan_t duration ) : event_t( sim, p )
       {
         sim -> add_event( this, duration );
       }
@@ -151,7 +151,7 @@ void pet_t::summon( double duration )
         if ( ! player -> sleeping ) player -> cast_pet() -> dismiss();
       }
     };
-    expiration = new ( sim ) expiration_t( sim, this, duration );
+    expiration = new ( sim ) expiration_t( sim, this, timespan_t::from_seconds(duration) );
   }
 
   arise();

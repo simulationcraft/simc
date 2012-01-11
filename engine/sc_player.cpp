@@ -78,7 +78,7 @@ struct vengeance_t : public event_t
     event_t( player -> sim, player )
   {
     name = "Vengeance_Check";
-    sim -> add_event( this, 2.0 );
+    sim -> add_event( this, timespan_t::from_seconds(2.0) );
   }
 
   virtual void execute()
@@ -3240,7 +3240,7 @@ void player_t::schedule_ready( timespan_t delta_time,
     last_foreground_action -> stats -> total_execute_time += delta_time.total_seconds();
   }
 
-  readying = new ( sim ) player_ready_event_t( sim, this, delta_time.total_seconds() );
+  readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
 
   if ( was_executing && was_executing -> gcd() > timespan_t::zero && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
@@ -5442,7 +5442,7 @@ struct use_item_t : public action_t
           trigger_expiration_t( sim_t* sim, player_t* player, item_t* i, action_callback_t* t ) : event_t( sim, player ), item( i ), trigger( t )
           {
             name = item -> name();
-            sim -> add_event( this, item -> use.duration );
+            sim -> add_event( this, timespan_t::from_seconds(item -> use.duration) );
           }
           virtual void execute()
           {

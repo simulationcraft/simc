@@ -830,15 +830,15 @@ sim_t::~sim_t()
 // sim_t::add_event =========================================================
 
 void sim_t::add_event( event_t* e,
-                       double   delta_time )
+                       timespan_t delta_time )
 {
-  if ( delta_time < 0 )
-    delta_time = 0;
+  if ( delta_time < timespan_t::zero )
+    delta_time = timespan_t::zero;
 
-  e -> time = current_time + delta_time;
+  e -> time = current_time + delta_time.total_seconds();
   e -> id   = ++id;
 
-  if ( unlikely( ! ( delta_time <= wheel_seconds ) ) )
+  if ( unlikely( ! ( delta_time.total_seconds() <= wheel_seconds ) ) )
   {
     errorf( "sim_t::add_event assertion error! delta_time > wheel_seconds, event %s from %s.\n", e -> name, e -> player ? e -> player -> name() : "no-one" );
     assert( 0 );
@@ -872,7 +872,7 @@ void sim_t::reschedule_event( event_t* e )
 {
   if ( debug ) log_t::output( this, "Reschedule Event: %s %d", e -> name, e -> id );
 
-  add_event( e, ( e -> reschedule_time.total_seconds() - current_time ) );
+  add_event( e, ( e -> reschedule_time - timespan_t::from_seconds(current_time) ) );
 
   e -> reschedule_time = timespan_t::zero;
 }
@@ -1146,7 +1146,7 @@ void sim_t::combat_begin()
       bloodlust_check_t( sim_t* sim ) : event_t( sim, 0 )
       {
         name = "Bloodlust Check";
-        sim -> add_event( this, 1.0 );
+        sim -> add_event( this, timespan_t::from_seconds(1.0) );
       }
       virtual void execute()
       {

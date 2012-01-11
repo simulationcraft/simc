@@ -440,7 +440,7 @@ private:
 
 public:
   remove_dots_event_t( sim_t* sim, priest_t* pr, priest_targetdata_t* td ) : event_t( sim, pr, "mind_spike_remove_dots" ), td( td )
-  { sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) ); }
+  { sim -> add_event( this, timespan_t::from_seconds(sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev )) ); }
 
   virtual void execute()
   {
@@ -4390,7 +4390,7 @@ struct tier12_heal_2pc_event_t : public event_t
   {
     buff = b;
     name = "tier12_heal_2pc";
-    sim -> add_event( this, 5.0 );
+    sim -> add_event( this, timespan_t::from_seconds(5.0) );
   }
 
   virtual void execute()

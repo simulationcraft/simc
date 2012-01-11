@@ -807,7 +807,7 @@ static void trigger_eclipse_gain_delay( spell_t* s, int gain )
       s( spell ), g( gain )
     {
       name = "Eclipse gain delay";
-      sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
+      sim -> add_event( this, timespan_t::from_seconds(sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev )) );
     }
 
     virtual void execute()
@@ -1538,7 +1538,7 @@ struct frenzied_regeneration_buff_t : public buff_t
           event_t( p -> sim, p, "frenzied_regeneration_heal" ),
           rage_stats( 0 )
         {
-          sim -> add_event( this, 1.0 );
+          sim -> add_event( this, timespan_t::from_seconds(1.0) );
           rage_stats = p -> get_stats( "frenzied_regeneration" );
         }
 
@@ -3522,7 +3522,7 @@ struct innervate_buff_t : public buff_t
     {
       innervate_event_t ( player_t* p ) :
         event_t( p -> sim, p, "innervate" )
-      { sim -> add_event( this, 1.0 ); }
+      { sim -> add_event( this, timespan_t::from_seconds(1.0) ); }
 
       virtual void execute()
       {

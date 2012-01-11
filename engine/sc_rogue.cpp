@@ -2985,7 +2985,7 @@ struct wound_poison_t : public rogue_poison_t
       {
         name = "Wound Poison Expiration";
         apply_poison_debuff( p, target );
-        sim -> add_event( this, 15.0 );
+        sim -> add_event( this, timespan_t::from_seconds(15.0) );
       }
 
       virtual void execute()
@@ -4084,7 +4084,7 @@ void rogue_t::combat_begin()
           double remainder = interval - cooldown;
           if ( remainder < 0 ) remainder = 0;
           double time = cooldown + p -> rng_hat_interval -> range( remainder*0.5, remainder*1.5 ) + 0.01;
-          sim -> add_event( this, time );
+          sim -> add_event( this, timespan_t::from_seconds(time) );
         }
         virtual void execute()
         {

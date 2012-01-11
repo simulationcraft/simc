@@ -3959,11 +3959,11 @@ struct unholy_frenzy_t : public spell_t
 
 struct butchery_event_t : public event_t
 {
-  butchery_event_t( player_t* player, double tick_time ) :
+  butchery_event_t( player_t* player, timespan_t tick_time ) :
     event_t( player -> sim, player, "butchery_regen" )
   {
-    if ( tick_time < 0 ) tick_time = 0;
-    if ( tick_time > 5 ) tick_time = 5;
+    if ( tick_time < timespan_t::zero ) tick_time = timespan_t::zero;
+    if ( tick_time > timespan_t::from_seconds(5) ) tick_time = timespan_t::from_seconds(5);
     sim -> add_event( this, tick_time );
   }
 
@@ -3976,7 +3976,7 @@ struct butchery_event_t : public event_t
     // with rank 2 you gain 1 RP every 2.5s
     p -> resource_gain( RESOURCE_RUNIC, 1, p -> gains_butchery );
 
-    new ( sim ) butchery_event_t( player, 5.0 / p -> talents.butchery -> rank()  );
+    new ( sim ) butchery_event_t( player, timespan_t::from_seconds(5.0 / p -> talents.butchery -> rank()) );
   }
 };
 
@@ -4938,7 +4938,7 @@ void death_knight_t::combat_begin()
     sim -> auras.abominations_might -> trigger( 1, am_value );
 
   if ( talents.butchery -> rank() )
-    new ( sim ) butchery_event_t( this, 5.0 / talents.butchery -> rank() );
+    new ( sim ) butchery_event_t( this, timespan_t::from_seconds(5.0 / talents.butchery -> rank()) );
 }
 
 // death_knight_t::assess_damage ============================================

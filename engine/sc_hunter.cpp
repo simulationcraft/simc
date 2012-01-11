@@ -3608,7 +3608,7 @@ struct hunter_sniper_training_event_t : public event_t
     event_t( player -> sim, player )
   {
     name = "Sniper_Training_Check";
-    sim -> add_event( this, 5.0 );
+    sim -> add_event( this, timespan_t::from_seconds(5.0) );
   }
 
   virtual void execute()

@@ -53,7 +53,7 @@ struct stat_proc_callback_t : public action_callback_t
           tick_stack_t( sim_t* sim, player_t* p, stat_proc_callback_t* cb ) : event_t( sim, p ), callback( cb )
           {
             name = callback -> buff -> name();
-            sim -> add_event( this, callback -> tick );
+            sim -> add_event( this, timespan_t::from_seconds(callback -> tick) );
           }
           virtual void execute()
           {
@@ -865,7 +865,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
         {
           log_t::output( sim, "%s action %s procs Dragonwrath Tarecgosas Rest.", a -> player -> name(), a -> name() );
         }
-        new ( sim ) action_execute_event_t( sim, a -> dtr_action, 0 /* Add DTR Proc Delay here */ );
+        new ( sim ) action_execute_event_t( sim, a -> dtr_action, timespan_t::zero /* Add DTR Proc Delay here */ );
       }
     }
   };
@@ -1264,7 +1264,7 @@ static void register_fury_of_the_beast( item_t* item )
         event_t( player -> sim, player ), buff( b ), buff_stack( q )
       {
         name = "fury_of_the_beast";
-        sim -> add_event( this, 1.0 );
+        sim -> add_event( this, timespan_t::from_seconds(1.0) );
       }
 
       virtual void execute()

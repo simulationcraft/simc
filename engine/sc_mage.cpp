@@ -2742,11 +2742,11 @@ struct mage_armor_buff_t : public buff_t
 {
   struct mage_armor_event_t : public event_t
   {
-    mage_armor_event_t( player_t* player, double tick_time ) :
+    mage_armor_event_t( player_t* player, timespan_t tick_time ) :
       event_t( player -> sim, player, "mage_armor" )
     {
-      if ( tick_time < 0 ) tick_time = 0;
-      if ( tick_time > 5 ) tick_time = 5;
+      if ( tick_time < timespan_t::zero ) tick_time = timespan_t::zero;
+      if ( tick_time > timespan_t::from_seconds(5) ) tick_time = timespan_t::from_seconds(5);
       sim -> add_event( this, tick_time );
     }
 
@@ -2761,7 +2761,7 @@ struct mage_armor_buff_t : public buff_t
 
         p -> resource_gain( RESOURCE_MANA, gain_amount, p -> gains_mage_armor );
 
-        new ( sim ) mage_armor_event_t( player, 5.0 );
+        new ( sim ) mage_armor_event_t( player, timespan_t::from_seconds(5.0) );
       }
     }
   };
@@ -2775,7 +2775,7 @@ struct mage_armor_buff_t : public buff_t
     mage_t* p = player -> cast_mage();
     double d = p -> rng_mage_armor_start -> real() * 5.0; // Random start of the first mana regen tick.
     p -> mage_armor_timer = sim -> current_time + d - 5.0;
-    new ( sim ) mage_armor_event_t( player, d );
+    new ( sim ) mage_armor_event_t( player, timespan_t::from_seconds(d) );
     buff_t::start( stacks, value );
   }
 };

@@ -3470,7 +3470,7 @@ struct sim_t : private thread_t
   void      combat( int iteration );
   void      combat_begin();
   void      combat_end();
-  void      add_event( event_t*, double delta_time );
+  void      add_event( event_t*, timespan_t delta_time );
   void      reschedule_event( event_t* );
   void      flush_events();
   void      cancel_events( player_t* );
@@ -5308,13 +5308,13 @@ struct action_priority_list_t
 
 struct player_ready_event_t : public event_t
 {
-  player_ready_event_t( sim_t* sim, player_t* p, double delta_time );
+  player_ready_event_t( sim_t* sim, player_t* p, timespan_t delta_time );
   virtual void execute();
 };
 
 struct player_gcd_event_t : public event_t
 {
-  player_gcd_event_t( sim_t* sim, player_t* p, double delta_time );
+  player_gcd_event_t( sim_t* sim, player_t* p, timespan_t delta_time );
   virtual void execute();
 };
 
@@ -5323,7 +5323,7 @@ struct player_gcd_event_t : public event_t
 struct action_execute_event_t : public event_t
 {
   action_t* action;
-  action_execute_event_t( sim_t* sim, action_t* a, double time_to_execute );
+  action_execute_event_t( sim_t* sim, action_t* a, timespan_t time_to_execute );
   virtual void execute();
 };
 
@@ -5332,7 +5332,7 @@ struct action_execute_event_t : public event_t
 struct dot_tick_event_t : public event_t
 {
   dot_t* dot;
-  dot_tick_event_t( sim_t* sim, dot_t* d, double time_to_tick );
+  dot_tick_event_t( sim_t* sim, dot_t* d, timespan_t time_to_tick );
   virtual void execute();
 };
 
@@ -5344,7 +5344,7 @@ struct action_travel_event_t : public event_t
   player_t* target;
   int result;
   double damage;
-  action_travel_event_t( sim_t* sim, player_t* t, action_t* a, double time_to_travel );
+  action_travel_event_t( sim_t* sim, player_t* t, action_t* a, timespan_t time_to_travel );
   virtual void execute();
 };
 

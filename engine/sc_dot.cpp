@@ -181,7 +181,7 @@ void dot_t::schedule_tick()
 
   time_to_tick = action -> tick_time();
 
-  tick_event = new ( sim ) dot_tick_event_t( sim, this, time_to_tick.total_seconds() );
+  tick_event = new ( sim ) dot_tick_event_t( sim, this, time_to_tick );
 
   ticking = 1;
 

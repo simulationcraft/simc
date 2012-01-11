@@ -11,7 +11,7 @@ struct expiration_t : public event_t
 {
   buff_t* buff;
 
-  expiration_t( sim_t* sim, player_t* p, buff_t* b, double d ) : event_t( sim, p, b -> name() ), buff( b )
+  expiration_t( sim_t* sim, player_t* p, buff_t* b, timespan_t d ) : event_t( sim, p, b -> name() ), buff( b )
   { sim -> add_event( this, d ); }
 
   virtual void execute()
@@ -31,7 +31,7 @@ struct buff_delay_t : public event_t
     event_t( sim, p, b -> name() ), value( value ), buff( b ), stacks( stacks )
   {
     double delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
-    sim -> add_event( this, delay_duration );
+    sim -> add_event( this, timespan_t::from_seconds(delay_duration) );
   }
 
   virtual void execute()
@@ -640,7 +640,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     event_t::cancel( expiration );
 
-    expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time.total_seconds() );
+    expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time );
 
     if ( sim -> debug )
       log_t::output( sim, "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
@@ -676,7 +676,7 @@ void buff_t::start( int    stacks,
 
   if ( buff_duration > timespan_t::zero )
   {
-	expiration = new ( sim ) expiration_t( sim, player, this, buff_duration.total_seconds() );
+	expiration = new ( sim ) expiration_t( sim, player, this, buff_duration );
   }
 }
 
