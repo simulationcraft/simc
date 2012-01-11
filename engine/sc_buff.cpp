@@ -30,8 +30,8 @@ struct buff_delay_t : public event_t
   buff_delay_t( sim_t* sim, player_t* p, buff_t* b, int stacks, double value ) :
     event_t( sim, p, b -> name() ), value( value ), buff( b ), stacks( stacks )
   {
-    double delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
-    sim -> add_event( this, timespan_t::from_seconds(delay_duration) );
+    timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+    sim -> add_event( this, delay_duration );
   }
 
   virtual void execute()
@@ -213,8 +213,8 @@ void buff_t::init_buff_shared()
   current_value = 0;
   last_start = timespan_t::min;
   last_trigger = timespan_t::min;
-  start_intervals_sum = 0;
-  trigger_intervals_sum = 0;
+  start_intervals_sum = timespan_t::zero;
+  trigger_intervals_sum = timespan_t::zero;
   iteration_uptime_sum = timespan_t::zero;
   up_count = 0;
   down_count = 0;
@@ -411,11 +411,11 @@ bool buff_t::may_react( int stack )
 
   if ( stack > max_stack ) return false;
 
-  double occur = stack_occurrence[ stack ];
+  timespan_t occur = stack_occurrence[ stack ];
 
-  if ( occur <= 0 ) return true;
+  if ( occur <= timespan_t::zero ) return true;
 
-  return sim -> current_time.total_seconds()  > stack_react_time[ stack ];
+  return sim -> current_time > stack_react_time[ stack ];
 }
 
 // buff_t::stack_react ======================================================
@@ -426,7 +426,7 @@ int buff_t::stack_react()
 
   for ( int i=1; i <= current_stack; i++ )
   {
-    if ( stack_react_time[ i ] > sim -> current_time.total_seconds() ) break;
+    if ( stack_react_time[ i ] > sim -> current_time ) break;
     stack++;
   }
 
@@ -504,7 +504,7 @@ bool buff_t::trigger( int    stacks,
   if ( ! rng -> roll( chance ) )
     return false;
 
-  if ( ! activated && player && player -> in_combat && sim -> default_aura_delay > 0 )
+  if ( ! activated && player && player -> in_combat && sim -> default_aura_delay > timespan_t::zero )
   {
     // In-game, procs that happen "close to eachother" are usually delayed into the
     // same time slot. We roughly model this by allowing procs that happen during the
@@ -531,7 +531,7 @@ void buff_t::execute( int stacks, double value )
 {
   if ( last_trigger > timespan_t::zero )
   {
-    trigger_intervals_sum += (sim -> current_time - last_trigger).total_seconds();
+    trigger_intervals_sum += sim -> current_time - last_trigger;
     trigger_intervals++;
   }
   last_trigger = sim -> current_time;
@@ -631,11 +631,11 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
       // When Strength of Soul removes the Weakened Soul debuff completely,
       // there's a delay before the server notifies the client. Modeling
       // this effect as a world lag.
-      double lag, dev;
+      timespan_t lag, dev;
 
       lag = p -> world_lag_override ? p -> world_lag : sim -> world_lag;
       dev = p -> world_lag_stddev_override ? p -> world_lag_stddev : sim -> world_lag_stddev;
-      reschedule_time = timespan_t::from_seconds(p -> rngs.lag_world -> gauss( lag, dev ));
+      reschedule_time = p -> rngs.lag_world -> gauss( lag, dev );
     }
 
     event_t::cancel( expiration );
@@ -669,7 +669,7 @@ void buff_t::start( int    stacks,
 
   if ( last_start >= timespan_t::zero )
   {
-	start_intervals_sum += (sim -> current_time - last_start).total_seconds();
+	start_intervals_sum += sim -> current_time - last_start;
     start_intervals++;
   }
   last_start = sim -> current_time;
@@ -727,8 +727,8 @@ void buff_t::bump( int    stacks,
 
     aura_gain();
 
-    double now = sim -> current_time.total_seconds();
-    double react = now + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
+    timespan_t now = sim -> current_time;
+    timespan_t react = now + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
     for ( int i=before_stack+1; i <= current_stack; i++ )
     {
       stack_occurrence[ i ] = now;
@@ -785,8 +785,8 @@ void buff_t::expire()
 void buff_t::predict()
 {
   // Guarantee that may_react() will return true if the buff is present.
-  fill( &stack_occurrence[ 0 ], &stack_occurrence[ current_stack + 1 ], -1 );
-  fill( &stack_react_time[ 0 ], &stack_react_time[ current_stack + 1 ], -1 );
+  fill( &stack_occurrence[ 0 ], &stack_occurrence[ current_stack + 1 ], timespan_t::min );
+  fill( &stack_react_time[ 0 ], &stack_react_time[ current_stack + 1 ], timespan_t::min );
 }
 
 // buff_t::aura_gain ========================================================
@@ -875,11 +875,11 @@ void buff_t::analyze()
   }
   if ( start_intervals > 0 )
   {
-    avg_start_interval = start_intervals_sum / start_intervals;
+    avg_start_interval = start_intervals_sum.total_seconds() / start_intervals;
   }
   if ( trigger_intervals > 0 )
   {
-    avg_trigger_interval = trigger_intervals_sum / trigger_intervals;
+    avg_trigger_interval = trigger_intervals_sum.total_seconds() / trigger_intervals;
   }
   avg_start   =   start_count / ( double ) sim -> iterations;
   avg_refresh = refresh_count / ( double ) sim -> iterations;

@@ -371,7 +371,7 @@ struct warrior_t : public player_t
   virtual double    composite_tank_crit( const school_type school ) const;
   virtual double    composite_tank_parry() const;
   virtual void      reset();
-  virtual void      regen( double periodicity );
+  virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
@@ -589,7 +589,7 @@ static void trigger_rage_gain( attack_t* a )
   warrior_t* p = a -> player -> cast_warrior();
   weapon_t*  w = a -> weapon;
 
-  double rage_gain = 6.5 * w -> swing_time;
+  double rage_gain = 6.5 * w -> swing_time.total_seconds();
 
   if ( w -> slot == SLOT_OFF_HAND )
     rage_gain /= 2.0;
@@ -1216,13 +1216,13 @@ struct auto_attack_t : public warrior_attack_t
 
     p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
+    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> off_hand_weapon.swing_time);
+      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
 
     trigger_gcd = timespan_t::zero;
@@ -2142,7 +2142,7 @@ struct rend_dot_t : public warrior_attack_t
   {
     base_td = base_td_init;
     if ( weapon )
-      base_td += ( sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> swing_time * weapon_power_mod * total_attack_power() ) * 0.25;
+      base_td += ( sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> swing_time.total_seconds() * weapon_power_mod * total_attack_power() ) * 0.25;
 
     warrior_attack_t::execute();
 
@@ -2239,7 +2239,7 @@ struct revenge_t : public warrior_attack_t
         double amount = 0.20 * travel_dmg;
         p -> buffs_tier13_2pc_tank -> trigger( 1, amount );
         absorb_stats -> add_result( amount, amount, STATS_ABSORB, impact_result );
-        absorb_stats -> add_execute( 0 );
+        absorb_stats -> add_execute( timespan_t::zero );
       }
     }
   }
@@ -3439,7 +3439,7 @@ void warrior_t::init_scaling()
 
 void warrior_t::init_buffs()
 {
-  double duration = 12.0;
+  timespan_t duration = timespan_t::from_seconds(12.0);
 
   player_t::init_buffs();
 
@@ -3486,11 +3486,11 @@ void warrior_t::init_buffs()
   buffs_shield_block              = new shield_block_buff_t( this );
   switch ( talents.booming_voice -> rank() )
   {
-  case 1 : duration = 9.0; break;
-  case 2 : duration = 6.0; break;
-  default: duration = 12.0; break;
+  case 1 : duration = timespan_t::from_seconds(9.0); break;
+  case 2 : duration = timespan_t::from_seconds(6.0); break;
+  default: duration = timespan_t::from_seconds(12.0); break;
   }
-  buffs_tier12_2pc_melee          = new buff_t( this, "tier12_2pc_melee",          1, timespan_t::from_seconds(duration), timespan_t::zero, set_bonus.tier12_2pc_melee() );
+  buffs_tier12_2pc_melee          = new buff_t( this, "tier12_2pc_melee",          1, duration, timespan_t::zero, set_bonus.tier12_2pc_melee() );
 }
 
 // warrior_t::init_values ====================================================
@@ -3949,12 +3949,12 @@ double warrior_t::composite_tank_parry() const
 
 // warrior_t::regen =========================================================
 
-void warrior_t::regen( double periodicity )
+void warrior_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
   if ( spec.anger_management -> ok() )
-    resource_gain( RESOURCE_RAGE, ( periodicity / 3.0 ), gains_anger_management );
+    resource_gain( RESOURCE_RAGE, ( periodicity.total_seconds() / 3.0 ), gains_anger_management );
 
   uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                               resource_max    [ RESOURCE_RAGE] );

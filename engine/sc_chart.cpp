@@ -876,7 +876,7 @@ const char* chart_t::time_spent( std::string& s,
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
     if ( st -> quiet ) continue;
-    if ( st -> total_time <= 0 ) continue;
+    if ( st -> total_time <= timespan_t::zero ) continue;
     if ( st -> background ) continue;
 
     stats_list.push_back( st );

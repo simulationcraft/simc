@@ -327,7 +327,7 @@ struct paladin_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual int       primary_resource() const { return RESOURCE_MANA; }
   virtual int       primary_role() const;
-  virtual void      regen( double periodicity );
+  virtual void      regen( timespan_t periodicity );
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
   virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
   virtual cooldown_t* get_cooldown( const std::string& name );
@@ -358,7 +358,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       : attack_t( "melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL ), owner( 0 )
     {
       weapon = &( p -> main_hand_weapon );
-      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+      base_execute_time = weapon -> swing_time;
       weapon_multiplier = 1.0;
       background = true;
       repeating  = true;
@@ -382,7 +382,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
     : pet_t( sim, p, "guardian_of_ancient_kings", true ), melee( 0 )
   {
     main_hand_weapon.type = WEAPON_BEAST;
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
     main_hand_weapon.min_dmg = 5500; // TODO
     main_hand_weapon.max_dmg = 7000; // TODO
   }
@@ -1016,7 +1016,7 @@ struct melee_t : public paladin_attack_t
     trigger_gcd       = timespan_t::zero;
     base_cost         = 0;
     weapon            = &( p -> main_hand_weapon );
-    base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
+    base_execute_time = p -> main_hand_weapon.swing_time;
   }
 
   virtual timespan_t execute_time() const
@@ -1650,7 +1650,7 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     trigger_gcd = timespan_t::zero;
 
     aoe              = ( int ) p -> talents.seals_of_command -> mod_additive( P_TARGET );
-    base_multiplier *= p -> main_hand_weapon.swing_time; // Note that tooltip changes with haste, but actual damage doesn't
+    base_multiplier *= p -> main_hand_weapon.swing_time.total_seconds(); // Note that tooltip changes with haste, but actual damage doesn't
     base_multiplier *= 1.0 + ( p -> talents.seals_of_the_pure -> effect1().percent() );
 
     direct_power_mod             = 1.0;
@@ -2092,7 +2092,7 @@ struct consecration_t : public paladin_spell_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -2334,7 +2334,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     if ( p -> primary_tree() == TREE_RETRIBUTION )
-      p -> guardian_of_ancient_kings -> summon( p -> spells.guardian_of_ancient_kings_ret -> duration().total_seconds() );
+      p -> guardian_of_ancient_kings -> summon( p -> spells.guardian_of_ancient_kings_ret -> duration() );
     else if ( p -> primary_tree() == TREE_PROTECTION )
       p -> buffs_gotak_prot -> trigger();
   }
@@ -3671,7 +3671,7 @@ double paladin_t::matching_gear_multiplier( const attribute_type attr ) const
 
 // paladin_t::regen  ========================================================
 
-void paladin_t::regen( double periodicity )
+void paladin_t::regen( timespan_t periodicity )
 {
   double orig_mrwc = mana_regen_while_casting;
   if ( buffs_judgements_of_the_pure -> up() )
@@ -3685,19 +3685,19 @@ void paladin_t::regen( double periodicity )
   {
     double tick_pct = ( buffs_divine_plea -> effect_base_value( 1 ) + glyphs.divine_plea -> mod_additive( P_EFFECT_1 ) ) * 0.01;
     double tick_amount = resource_max[ RESOURCE_MANA ] * tick_pct;
-    double amount = periodicity * tick_amount / 3;
+    double amount = periodicity.total_seconds() * tick_amount / 3;
     resource_gain( RESOURCE_MANA, amount, gains_divine_plea );
   }
   if ( buffs_judgements_of_the_wise -> up() )
   {
     double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_wise->effect1().percent();
-    double amount = periodicity * tot_amount / buffs_judgements_of_the_wise -> buff_duration.total_seconds();
+    double amount = periodicity.total_seconds() * tot_amount / buffs_judgements_of_the_wise -> buff_duration.total_seconds();
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_wise );
   }
   if ( buffs_judgements_of_the_bold -> up() )
   {
     double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_bold->effect1().percent();
-    double amount = periodicity * tot_amount / buffs_judgements_of_the_bold -> buff_duration.total_seconds();
+    double amount = periodicity.total_seconds() * tot_amount / buffs_judgements_of_the_bold -> buff_duration.total_seconds();
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_bold );
   }
 }

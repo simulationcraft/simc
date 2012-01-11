@@ -372,7 +372,7 @@ struct rogue_t : public player_t
   player_t* tot_target;
 
   // Options
-  double      virtual_hat_interval;
+  timespan_t virtual_hat_interval;
   std::string tricks_of_the_trade_target_str;
 
   uint32_t fof_p1, fof_p2, fof_p3;
@@ -406,7 +406,7 @@ struct rogue_t : public player_t
     cooldowns_killing_spree       = get_cooldown( "killing_spree"       );
 
     // Options
-    virtual_hat_interval = -1;
+    virtual_hat_interval = timespan_t::min;
     tricks_of_the_trade_target_str = "";
 
     distance = 3;
@@ -438,8 +438,8 @@ struct rogue_t : public player_t
   virtual void      combat_begin();
   virtual void      reset();
   virtual double    energy_regen_per_second() const;
-  virtual void      regen( double periodicity );
-  virtual double    available() const;
+  virtual void      regen( timespan_t periodicity );
+  virtual timespan_t available() const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_expr_t* create_expression( action_t* a, const std::string& name_str );
@@ -1511,13 +1511,13 @@ struct auto_attack_t : public action_t
 
     p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
+    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds( p -> off_hand_weapon.swing_time );
+      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
 
     trigger_gcd = timespan_t::zero;
@@ -2234,7 +2234,7 @@ struct killing_spree_t : public rogue_attack_t
       attack_oh -> execute();
     }
 
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   // Killing Spree not modified by haste effects
@@ -2510,7 +2510,7 @@ struct shiv_t : public rogue_attack_t
     if ( weapon -> type == WEAPON_NONE )
       background = true; // Do not allow execution.
 
-    base_cost        += weapon -> swing_time * 10.0;
+    base_cost        += weapon -> swing_time.total_seconds() * 10.0;
     adds_combo_points = 1;
     may_crit          = false;
     base_dd_min = base_dd_max = 1;
@@ -2603,16 +2603,16 @@ struct slice_and_dice_t : public rogue_attack_t
 
 struct pool_energy_t : public action_t
 {
-  double wait;
+  timespan_t wait;
   int for_next;
 
   pool_energy_t( rogue_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "pool_energy", p ),
-    wait( 0.5 ), for_next( 0 )
+    wait( timespan_t::from_seconds(0.5) ), for_next( 0 )
   {
     option_t options[] =
     {
-      { "wait",     OPT_FLT,  &wait     },
+      { "wait",     OPT_TIMESPAN,  &wait     },
       { "for_next", OPT_BOOL, &for_next },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -2628,7 +2628,7 @@ struct pool_energy_t : public action_t
 
   virtual timespan_t gcd() const
   {
-    return timespan_t::from_seconds(wait);
+    return wait;
   }
 
   virtual bool ready()
@@ -2903,7 +2903,7 @@ struct deadly_poison_t : public rogue_poison_t
       }
 
       update_ready();
-      stats -> add_execute( time_to_execute.total_seconds() );
+      stats -> add_execute( time_to_execute );
     }
   }
 
@@ -3196,7 +3196,7 @@ struct envenom_buff_t : public buff_t
 
   virtual bool trigger( int cp, double, double )
   {
-    timespan_t new_duration = timespan_t::from_seconds(1.0 + cp);
+    timespan_t new_duration = timespan_t::from_seconds(1.0) + timespan_t::from_seconds(cp);
 
     if ( remains_lt( new_duration ) )
     {
@@ -4020,7 +4020,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
     rogue -> procs_honor_among_thieves -> occur();
 
-    rogue -> cooldowns_honor_among_thieves -> start( timespan_t::from_seconds(5.0 - rogue -> talents.honor_among_thieves -> rank()) );
+    rogue -> cooldowns_honor_among_thieves -> start( timespan_t::from_seconds(5.0) - timespan_t::from_seconds(rogue -> talents.honor_among_thieves -> rank()) );
   }
 };
 
@@ -4038,11 +4038,11 @@ void rogue_t::register_callbacks()
     register_spell_callback ( RESULT_CRIT_MASK, cb );
     register_tick_callback( RESULT_CRIT_MASK, cb );
 
-    if ( virtual_hat_interval < 0 )
+    if ( virtual_hat_interval < timespan_t::zero )
     {
-      virtual_hat_interval = 5.20 - talents.honor_among_thieves -> rank();
+      virtual_hat_interval = timespan_t::from_seconds(5.20) - timespan_t::from_seconds(talents.honor_among_thieves -> rank());
     }
-    if ( virtual_hat_interval > 0 )
+    if ( virtual_hat_interval > timespan_t::zero )
     {
       virtual_hat_callback = cb;
     }
@@ -4069,22 +4069,22 @@ void rogue_t::combat_begin()
 
   if ( talents.honor_among_thieves -> rank() )
   {
-    if ( virtual_hat_interval > 0 )
+    if ( virtual_hat_interval > timespan_t::zero )
     {
       struct virtual_hat_event_t : public event_t
       {
         action_callback_t* callback;
-        double interval;
+        timespan_t interval;
 
-        virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, double i ) :
+        virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, timespan_t i ) :
           event_t( sim, p ), callback( cb ), interval( i )
         {
           name = "Virtual HAT Event";
-          double cooldown = 5.0 - p -> talents.honor_among_thieves -> rank();
-          double remainder = interval - cooldown;
-          if ( remainder < 0 ) remainder = 0;
-          double time = cooldown + p -> rng_hat_interval -> range( remainder*0.5, remainder*1.5 ) + 0.01;
-          sim -> add_event( this, timespan_t::from_seconds(time) );
+          timespan_t cooldown = timespan_t::from_seconds(5.0) - timespan_t::from_seconds(p -> talents.honor_among_thieves -> rank());
+          timespan_t remainder = interval - cooldown;
+          if ( remainder < timespan_t::zero ) remainder = timespan_t::zero;
+          timespan_t time = cooldown + p -> rng_hat_interval -> range( remainder*0.5, remainder*1.5 ) + timespan_t::from_seconds(0.01);
+          sim -> add_event( this, time );
         }
         virtual void execute()
         {
@@ -4122,7 +4122,7 @@ double rogue_t::energy_regen_per_second() const
 
 // rogue_t::regen ===========================================================
 
-void rogue_t::regen( double periodicity )
+void rogue_t::regen( timespan_t periodicity )
 {
   // XXX review how this all stacks (additive/multiplicative)
 
@@ -4132,7 +4132,7 @@ void rogue_t::regen( double periodicity )
   {
     if ( infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {
-      double energy_regen = periodicity * energy_regen_per_second();
+      double energy_regen = periodicity.total_seconds() * energy_regen_per_second();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_adrenaline_rush );
     }
@@ -4142,7 +4142,7 @@ void rogue_t::regen( double periodicity )
   {
     if ( infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {
-      double energy_regen = periodicity * energy_regen_per_second() * 0.30;
+      double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * 0.30;
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_overkill );
     }
@@ -4157,14 +4157,17 @@ void rogue_t::regen( double periodicity )
 
 // rogue_t::available =======================================================
 
-double rogue_t::available() const
+timespan_t rogue_t::available() const
 {
   double energy = resource_current[ RESOURCE_ENERGY ];
 
   if ( energy > 25 )
-    return 0.1;
+    return timespan_t::from_seconds(0.1);
 
-  return std::max( ( 25 - energy ) / energy_regen_per_second(), 0.1 );
+  return std::max(
+    timespan_t::from_seconds(( 25 - energy ) / energy_regen_per_second()),
+    timespan_t::from_seconds(0.1)
+  );
 }
 
 // rogue_t::copy_options ====================================================
@@ -4175,7 +4178,7 @@ void rogue_t::create_options()
 
   option_t rogue_options[] =
   {
-    { "virtual_hat_interval",       OPT_FLT,    &( virtual_hat_interval           ) },
+    { "virtual_hat_interval",       OPT_TIMESPAN, &( virtual_hat_interval         ) },
     { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
     { NULL, OPT_UNKNOWN, NULL }
   };

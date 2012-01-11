@@ -14,12 +14,12 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   resource( RESOURCE_NONE ), resource_consumed( 0 ), /* resource_portion( 0 ), */
   /* frequency( 0 ), */ num_executes( 0 ), num_ticks( 0 ),
   num_direct_results( 0 ), num_tick_results( 0 ),
-  total_execute_time( 0 ), total_tick_time( 0 ), total_time( 0 ),
+  total_execute_time( timespan_t::zero ), total_tick_time( timespan_t::zero ), total_time( timespan_t::zero ),
   portion_amount( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), apr( 0 ),
   /* rpe( 0 ), */ etpe( 0 ), ttpt( 0 ),
-  total_intervals( 0 ), num_intervals( 0 ),
-  last_execute( -1 ),
+  total_intervals( timespan_t::zero ), num_intervals( 0 ),
+  last_execute( timespan_t::min ),
   iteration_actual_amount( 0 ), actual_amount( p -> sim -> statistics_level < 3 ),
   total_amount( p -> sim -> statistics_level < 3 ),portion_aps( p -> sim -> statistics_level < 3 ),
   compound_actual( 0 ), compound_amount( 0 ), opportunity_cost( 0 ),
@@ -58,7 +58,7 @@ void stats_t::add_child( stats_t* child )
 
 void stats_t::reset()
 {
-  last_execute = -1;
+  last_execute = timespan_t::min;
 }
 
 // stats_t::add_result ======================================================
@@ -97,23 +97,23 @@ void stats_t::add_result( double act_amount,
 
 // stats_t::add_execute =====================================================
 
-void stats_t::add_execute( double time )
+void stats_t::add_execute( timespan_t time )
 {
   num_executes++;
   total_execute_time += time;
 
-  if ( likely( last_execute > 0 &&
-       last_execute != sim -> current_time.total_seconds() ) )
+  if ( likely( last_execute > timespan_t::zero &&
+       last_execute != sim -> current_time ) )
   {
     num_intervals++;
-    total_intervals += sim -> current_time.total_seconds() - last_execute;
+    total_intervals += sim -> current_time - last_execute;
   }
-  last_execute = sim -> current_time.total_seconds();
+  last_execute = sim -> current_time;
 }
 
 // stats_t::add_tick ========================================================
 
-void stats_t::add_tick( double time )
+void stats_t::add_tick( timespan_t time )
 {
   num_ticks++;
   total_tick_time += time;
@@ -222,7 +222,7 @@ void stats_t::analyze()
 
   resource_portion = ( resource_total > 0 ) ? ( resource_consumed / resource_total ) : 0;
 
-  frequency = num_intervals ? total_intervals / num_intervals : 0;
+  frequency = num_intervals ? total_intervals.total_seconds() / num_intervals : 0;
 
   total_execute_time /= num_iterations;
   total_tick_time    /= num_iterations;
@@ -245,18 +245,18 @@ void stats_t::analyze()
     ape  = ( num_executes > 0 ) ? ( compound_amount / num_executes ) : 0;
 
     total_time = total_execute_time + total_tick_time;
-    aps  = ( total_time > 0 ) ? ( compound_amount / total_time ) : 0;
+    aps  = ( total_time > timespan_t::zero ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
-    total_time = total_execute_time + ( channeled ? total_tick_time : 0 );
-    apet = ( total_time > 0 ) ? ( compound_amount / total_time ) : 0;
+    total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero );
+    apet = ( total_time > timespan_t::zero ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
     apr  = ( resource_consumed > 0 ) ? ( compound_amount / resource_consumed ) : 0;
   }
   else
-    total_time = total_execute_time + ( channeled ? total_tick_time : 0 );
+    total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero );
 
-  ttpt = num_ticks ? total_tick_time / num_ticks : 0;
-  etpe = num_executes? ( total_execute_time + ( channeled ? total_tick_time : 0 ) ) / num_executes : 0;
+  ttpt = num_ticks ? total_tick_time.total_seconds() / num_ticks : 0;
+  etpe = num_executes? ( total_execute_time.total_seconds() + ( channeled ? total_tick_time.total_seconds() : 0 ) ) / num_executes : 0;
 
   int num_buckets = ( int ) timeline_amount.size();
   int max_buckets = std::min( num_buckets, ( int ) sim -> divisor_timeline.size() );

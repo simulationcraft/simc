@@ -780,9 +780,9 @@ double action_t::calculate_weapon_damage()
 
   double dmg = sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> bonus_dmg;
 
-  double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
+  timespan_t weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
-  double power_damage = weapon_speed * weapon_power_mod * total_attack_power();
+  double power_damage = weapon_speed.total_seconds() * weapon_power_mod * total_attack_power();
 
   double total_dmg = dmg + power_damage;
 
@@ -1043,7 +1043,7 @@ void action_t::execute()
 
   update_ready();
 
-  if ( ! dual ) stats -> add_execute( time_to_execute.total_seconds() );
+  if ( ! dual ) stats -> add_execute( time_to_execute );
 
   if ( repeating && ! proc ) schedule_execute();
 }
@@ -1076,7 +1076,7 @@ void action_t::tick( dot_t* d )
 
   if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
 
-  stats -> add_tick( d -> time_to_tick.total_seconds() );
+  stats -> add_tick( d -> time_to_tick );
 }
 
 // action_t::last_tick ======================================================
@@ -1229,7 +1229,7 @@ void action_t::schedule_execute()
     player -> gcd_ready = sim -> current_time + gcd();
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
-      player -> gcd_ready -= timespan_t::from_seconds(sim -> queue_gcd_reduction);
+      player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
 
     if ( special && time_to_execute > timespan_t::zero && ! proc )
@@ -1308,21 +1308,21 @@ void action_t::reschedule_execute( timespan_t time )
 
 void action_t::update_ready()
 {
-  double delay = 0;
+  timespan_t delay = timespan_t::zero;
   if ( cooldown -> duration > timespan_t::zero && ! dual )
   {
 
     if ( ! background && ! proc )
     {
-      double lag, dev;
+      timespan_t lag, dev;
 
       lag = player -> world_lag_override ? player -> world_lag : sim -> world_lag;
       dev = player -> world_lag_stddev_override ? player -> world_lag_stddev : sim -> world_lag_stddev;
       delay = player -> rngs.lag_world -> gauss( lag, dev );
-      if ( sim -> debug ) log_t::output( sim, "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay );
+      if ( sim -> debug ) log_t::output( sim, "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
     }
 
-    cooldown -> start( timespan_t::min, timespan_t::from_seconds(delay) );
+    cooldown -> start( timespan_t::min, delay );
 
     if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
   }
@@ -1331,7 +1331,7 @@ void action_t::update_ready()
     if ( result_is_miss() )
     {
       dot_t* dot = this -> dot();
-      last_reaction_time = timespan_t::from_seconds(player -> total_reaction_time());
+      last_reaction_time = player -> total_reaction_time();
       if ( sim -> debug )
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)",
                        player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );

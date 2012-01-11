@@ -656,8 +656,8 @@ struct warlock_pet_t : public pet_t
     main_hand_weapon.min_dmg    = get_weapon( level, pet_type, 1 );
     main_hand_weapon.max_dmg    = get_weapon( level, pet_type, 2 );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = get_weapon( level, pet_type, 3 );
-    if ( main_hand_weapon.swing_time == 0 )
+    main_hand_weapon.swing_time = timespan_t::from_seconds(get_weapon( level, pet_type, 3 ));
+    if ( main_hand_weapon.swing_time == timespan_t::zero )
     {
       sim -> errorf( "Pet %s has swingtime == 0.\n", name() );
       assert( 0 );
@@ -722,7 +722,7 @@ struct warlock_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     warlock_t*  o = owner -> cast_warlock();
     pet_t::summon( duration );
@@ -807,7 +807,7 @@ struct warlock_main_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, pet_name, pt )
   {}
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     warlock_t* o = owner -> cast_warlock();
     o -> active_pet = this;
@@ -862,7 +862,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 ), snapshot_mastery( 0 )
   {}
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     reset();
     warlock_pet_t::summon( duration );
@@ -1165,7 +1165,7 @@ public:
       {
         p -> procs_fiery_imp -> occur();
         p -> pet_fiery_imp -> dismiss();
-        p -> pet_fiery_imp -> summon( p -> dbc.spell( 99221 ) -> duration().total_seconds() - 0.01 );
+        p -> pet_fiery_imp -> summon( p -> dbc.spell( 99221 ) -> duration() - timespan_t::from_seconds(0.01) );
         p -> cooldowns_fiery_imp -> start();
       }
     }
@@ -1193,7 +1193,7 @@ struct warlock_pet_melee_t : public attack_t
     attack_t( name, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
   {
     weapon = &( p -> main_hand_weapon );
-    base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+    base_execute_time = weapon -> swing_time;
     may_crit    = true;
     background  = true;
     repeating   = true;
@@ -1451,7 +1451,7 @@ struct felguard_pet_t : public warlock_main_pet_t
     {
       felstorm_tick -> execute();
 
-      stats -> add_tick( d -> time_to_tick.total_seconds() );
+      stats -> add_tick( d -> time_to_tick );
     }
   };
 
@@ -1565,7 +1565,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
     return warlock_main_pet_t::create_action( name, options_str );
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     sim -> auras.fel_intelligence -> trigger();
 
@@ -1846,7 +1846,7 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
     action_list_str += "/snapshot_stats";
   }
 
-  virtual double    available() const { return sim -> max_time.total_seconds(); }
+  virtual timespan_t available() const { return sim -> max_time; }
 
   virtual double composite_attack_power() const
   {
@@ -1877,7 +1877,7 @@ struct fiery_imp_pet_t : public pet_t
     action_list_str += "/flame_blast";
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     pet_t::summon( duration );
     // Guardians use snapshots
@@ -2091,7 +2091,7 @@ struct bane_of_doom_t : public warlock_spell_t
     {
       p -> procs_ebon_imp -> occur();
       p -> pet_ebon_imp -> dismiss();
-      p -> pet_ebon_imp -> summon( 14.99 );
+      p -> pet_ebon_imp -> summon( timespan_t::from_seconds(14.99) );
     }
   }
 };
@@ -2457,23 +2457,23 @@ struct shadowburn_t : public warlock_spell_t
 
 struct shadowfury_t : public warlock_spell_t
 {
-  double cast_gcd;
+  timespan_t cast_gcd;
 
   shadowfury_t( warlock_t* p, const std::string& options_str ) :
     warlock_spell_t( "shadowfury", p, "Shadowfury" ),
-    cast_gcd( -1 )
+    cast_gcd( timespan_t::zero )
   {
     check_talent( p -> talent_shadowfury -> rank() );
 
     option_t options[] =
     {
-      { "cast_gcd",    OPT_FLT,  &cast_gcd    },
+      { "cast_gcd",    OPT_TIMESPAN,  &cast_gcd    },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
     // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
-    trigger_gcd = timespan_t::from_seconds(( cast_gcd >= 0 ) ? cast_gcd : 0.5);
+    trigger_gcd = ( cast_gcd >= timespan_t::zero ) ? cast_gcd : timespan_t::from_seconds(0.5);
   }
 };
 
@@ -3358,7 +3358,7 @@ struct fel_armor_t : public warlock_spell_t
 
 struct summon_pet_t : public warlock_spell_t
 {
-  double summoning_duration;
+  timespan_t summoning_duration;
   pet_t* pet;
 
 private:
@@ -3381,13 +3381,13 @@ private:
 
 public:
   summon_pet_t( const char* n, warlock_t* p, const char* sname, const std::string& options_str="" ) :
-    warlock_spell_t( n, p, sname ), summoning_duration ( 0 ), pet( 0 )
+    warlock_spell_t( n, p, sname ), summoning_duration ( timespan_t::zero ), pet( 0 )
   {
     _init_summon_pet_t( options_str, n );
   }
 
   summon_pet_t( const char* n, warlock_t* p, int id, const std::string& options_str="" ) :
-    warlock_spell_t( n, p, id ), summoning_duration ( 0 ), pet( 0 )
+    warlock_spell_t( n, p, id ), summoning_duration ( timespan_t::zero ), pet( 0 )
   {
     _init_summon_pet_t( options_str, n );
   }
@@ -3510,12 +3510,12 @@ struct summon_infernal_t : public summon_pet_t
   {
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) ) : timespan_t::zero;
 
-    summoning_duration = (duration() + p -> talent_ancient_grimoire -> effect1().time_value()).total_seconds();
-    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
+    summoning_duration = (duration() + p -> talent_ancient_grimoire -> effect1().time_value());
+    summoning_duration += timespan_t::from_seconds(( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> talent_summon_felguard -> ok() ?
                             p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :
                             p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 )
-                          ) : 0.0;
+                          ) : 0.0);
     infernal_awakening = new infernal_awakening_t( p );
   }
 
@@ -3541,12 +3541,12 @@ struct summon_doomguard2_t : public summon_pet_t
   {
     harmful = false;
     background = true;
-    summoning_duration = (duration() + p -> talent_ancient_grimoire -> effect1().time_value()).total_seconds();
-    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
+    summoning_duration = (duration() + p -> talent_ancient_grimoire -> effect1().time_value());
+    summoning_duration += timespan_t::from_seconds(( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> talent_summon_felguard -> ok() ?
                             p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :
                             p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 )
-                          ) : 0.0;
+                          ) : 0.0);
   }
 
   virtual void execute()
@@ -4770,7 +4770,7 @@ void warlock_t::init_actions()
         if ( has_wou )
         {
           // Attempt to account for non-default channel_lag settings
-          char delay = ( char ) ( sim -> channel_lag * 20 + 48 );
+          char delay = ( char ) ( sim -> channel_lag.total_seconds() * 20 + 48 );
           if ( delay > 57 ) delay = 57;
           action_list_str += ",interrupt_if=buff.will_of_unbinding.up&cooldown.haunt.remains<tick_time&buff.will_of_unbinding.remains<action.haunt.cast_time+tick_time+0.";
           action_list_str += delay;

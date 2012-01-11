@@ -123,7 +123,8 @@ namespace std {using namespace tr1; }
 
 #define MAX_PLAYERS_PER_CHART 20
 
-#define SC_USE_INTEGER_TIME
+// TODO: Integer time is only partially working.
+//#define SC_USE_INTEGER_TIME
 
 // Forward Declarations =====================================================
 
@@ -1149,6 +1150,8 @@ public:
   double total_seconds() const { return time * SECONDS_PER_MILLI; }
   time_t total_millis() const { return time; }
 
+  static timespan_t from_millis( const uint64_t millis ) { return timespan_t((time_t)millis); }
+  static timespan_t from_millis( const int64_t millis ) { return timespan_t((time_t)millis); }
   static timespan_t from_millis( const uint32_t millis ) { return timespan_t((time_t)millis); }
   static timespan_t from_millis( const int32_t millis ) { return timespan_t((time_t)millis); }
   static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis); }
@@ -1175,6 +1178,8 @@ public:
   double total_seconds() const { return time; }
   time_t total_millis() const { return time * MILLIS_PER_SECOND; }
 
+  static timespan_t from_millis( const uint64_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
+  static timespan_t from_millis( const int64_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
   static timespan_t from_millis( const uint32_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
   static timespan_t from_millis( const int32_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
   static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
@@ -1244,6 +1249,9 @@ public:
     return *this;
   }
 
+  friend timespan_t operator+(const timespan_t right);
+  friend timespan_t operator-(const timespan_t right);
+
   friend timespan_t operator+(const timespan_t left, const timespan_t right);
   friend timespan_t operator-(const timespan_t left, const timespan_t right);
   friend timespan_t operator*(const timespan_t left, const double right);
@@ -1276,6 +1284,14 @@ public:
 #define TIMESPAN_TO_NATIVE_VALUE(t) ((t).total_seconds())
 #define TIMESPAN_FROM_NATIVE_VALUE(v) (timespan_t::from_seconds(v))
 #endif
+
+inline timespan_t operator+(const timespan_t right) {
+  return right;
+}
+
+inline timespan_t operator-(const timespan_t right) {
+  return timespan_t(-right.time);
+}
 
 inline timespan_t operator+(const timespan_t left, const timespan_t right) {
   return timespan_t(left.time + right.time);
@@ -2699,26 +2715,26 @@ struct raid_event_t
   sim_t* sim;
   std::string name_str;
   int64_t num_starts;
-  double first, last;
-  double cooldown;
-  double cooldown_stddev;
-  double cooldown_min;
-  double cooldown_max;
-  double duration;
-  double duration_stddev;
-  double duration_min;
-  double duration_max;
-  double distance_min;
-  double distance_max;
-  double saved_duration;
+  timespan_t first, last;
+  timespan_t cooldown;
+  timespan_t cooldown_stddev;
+  timespan_t cooldown_min;
+  timespan_t cooldown_max;
+  timespan_t duration;
+  timespan_t duration_stddev;
+  timespan_t duration_min;
+  timespan_t duration_max;
+  double     distance_min;
+  double     distance_max;
+  timespan_t saved_duration;
   rng_t* rng;
   std::vector<player_t*> affected_players;
 
   raid_event_t( sim_t*, const char* name );
   virtual ~raid_event_t() {}
 
-  virtual double cooldown_time() const;
-  virtual double duration_time() const;
+  virtual timespan_t cooldown_time() const;
+  virtual timespan_t duration_time() const;
   virtual void schedule();
   virtual void reset();
   virtual void start();
@@ -2847,13 +2863,14 @@ struct buff_t : public spell_id_t
   double default_chance;
   timespan_t last_start;
   timespan_t last_trigger;
-  double start_intervals_sum, trigger_intervals_sum;
+  timespan_t start_intervals_sum;
+  timespan_t trigger_intervals_sum;
   timespan_t iteration_uptime_sum;
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
   double benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
   std::string name_str;
-  std::vector<double> stack_occurrence, stack_react_time;
+  std::vector<timespan_t> stack_occurrence, stack_react_time;
   std::vector<buff_uptime_t> stack_uptime;
   sim_t* sim;
   player_t* player;
@@ -3263,18 +3280,20 @@ struct sim_t : private thread_t
   int         num_targetdata_ids;
   int         max_player_level;
   int         canceled;
-  double      queue_lag, queue_lag_stddev;
-  double      gcd_lag, gcd_lag_stddev;
-  double      channel_lag, channel_lag_stddev;
-  double      queue_gcd_reduction;
+  timespan_t  queue_lag, queue_lag_stddev;
+  timespan_t  gcd_lag, gcd_lag_stddev;
+  timespan_t  channel_lag, channel_lag_stddev;
+  timespan_t  queue_gcd_reduction;
   int         strict_gcd_queue;
   double      confidence;
   double      confidence_estimator;
   // Latency
-  double      world_lag, world_lag_stddev;
-  double      travel_variance, default_skill, reaction_time, regen_periodicity;
+  timespan_t  world_lag, world_lag_stddev;
+  double      travel_variance, default_skill;
+  timespan_t  reaction_time, regen_periodicity;
   timespan_t  current_time, max_time, expected_time;
-  double      vary_combat_length, last_event;
+  double      vary_combat_length;
+  timespan_t  last_event;
   int         fixed_time;
   int64_t     events_remaining, max_events_remaining;
   int64_t     events_processed, total_events_processed;
@@ -3439,8 +3458,8 @@ struct sim_t : private thread_t
   timespan_t aura_delay;
 
   // Global aura related delay
-  double default_aura_delay;
-  double default_aura_delay_stddev;
+  timespan_t default_aura_delay;
+  timespan_t default_aura_delay_stddev;
 
   cooldown_t* cooldown_list;
 
@@ -3453,10 +3472,12 @@ struct sim_t : private thread_t
   scaling_t* scaling;
   plot_t*    plot;
   reforge_plot_t* reforge_plot;
-  double     elapsed_cpu_seconds, iteration_dmg, iteration_heal;
+  timespan_t elapsed_cpu;
+  double     iteration_dmg, iteration_heal;
   sample_data_t raid_dps, total_dmg, raid_hps, total_heal, simulation_length;
   int        report_progress;
-  int        bloodlust_percent, bloodlust_time;
+  int        bloodlust_percent;
+  timespan_t bloodlust_time;
   std::string reference_player_str;
   std::vector<player_t*> players_by_dps;
   std::vector<player_t*> players_by_hps;
@@ -3465,7 +3486,7 @@ struct sim_t : private thread_t
   std::vector<std::string> id_dictionary;
   std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
   std::string downtime_chart;
-  std::vector<double> iteration_timeline;
+  std::vector<timespan_t> iteration_timeline;
   std::vector<int> divisor_timeline;
   std::string timeline_chart;
   std::string output_file_str, html_file_str;
@@ -3527,8 +3548,8 @@ struct sim_t : private thread_t
   void      create_options();
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
-  bool      time_to_think( double proc_time );
-  double    total_reaction_time ();
+  bool      time_to_think( timespan_t proc_time );
+  timespan_t total_reaction_time ();
   int       roll( double chance );
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
@@ -3744,17 +3765,17 @@ struct weapon_t
   school_type school;
   double damage, dps;
   double min_dmg, max_dmg;
-  double swing_time;
+  timespan_t swing_time;
   int    slot;
   int    buff_type;
   double buff_value;
   double bonus_dmg;
 
   int    group() const;
-  double normalized_weapon_speed() const;
-  double proc_chance_on_swing( double PPM, double adjusted_swing_time=0 ) const;
+  timespan_t normalized_weapon_speed() const;
+  double proc_chance_on_swing( double PPM, timespan_t adjusted_swing_time=timespan_t::zero ) const;
 
-  weapon_t( int t=WEAPON_NONE, double d=0, double st=2.0, school_type s=SCHOOL_PHYSICAL ) :
+  weapon_t( int t=WEAPON_NONE, double d=0, timespan_t st=timespan_t::from_seconds(2.0), school_type s=SCHOOL_PHYSICAL ) :
     type( t ), school( s ), damage( d ), min_dmg( d ), max_dmg( d ), swing_time( st ), slot( SLOT_NONE ), buff_type( 0 ), buff_value( 0 ), bonus_dmg( 0 ) { }
 };
 
@@ -3834,7 +3855,8 @@ struct item_t
     school_type school;
     int max_stacks;
     double stat_amount, discharge_amount, discharge_scaling;
-    double proc_chance, duration, cooldown, tick;
+    double proc_chance;
+    timespan_t duration, cooldown, tick;
     bool cost_reduction;
     bool no_crit;
     bool no_player_benefits;
@@ -3845,8 +3867,8 @@ struct item_t
     special_effect_t() :
       trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( SCHOOL_NONE ),
       max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
-      proc_chance( 0 ), duration( 0 ), cooldown( 0 ),
-      tick( 0 ), cost_reduction( false ), no_crit( false ), no_player_benefits( false ), no_debuffs( false ),
+      proc_chance( 0 ), duration( timespan_t::zero ), cooldown( timespan_t::zero ),
+      tick( timespan_t::zero ), cost_reduction( false ), no_crit( false ), no_player_benefits( false ), no_debuffs( false ),
       no_refresh( false ), chance_to_discharge( false ), reverse( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
@@ -3992,7 +4014,7 @@ struct player_t : public noncopyable
   int         active_pets;
   double      dtr_proc_chance;
   double      dtr_base_proc_chance;
-  double      reaction_mean,reaction_stddev,reaction_nu;
+  timespan_t  reaction_mean,reaction_stddev,reaction_nu;
   int         infinite_resource[ RESOURCE_MAX ];
   std::vector<buff_t*> absorb_buffs;
   int         scale_player;
@@ -4000,8 +4022,8 @@ struct player_t : public noncopyable
   double      avg_ilvl;
 
   // Latency
-  double      world_lag, world_lag_stddev;
-  double      brain_lag, brain_lag_stddev;
+  timespan_t  world_lag, world_lag_stddev;
+  timespan_t  brain_lag, brain_lag_stddev;
   bool        world_lag_override, world_lag_stddev_override;
 
   int    events;
@@ -4059,7 +4081,7 @@ struct player_t : public noncopyable
   double base_focus_regen_per_second;
   double base_chi_regen_per_second;
   double resource_reduction[ SCHOOL_MAX ], initial_resource_reduction[ SCHOOL_MAX ];
-  double last_cast;
+  timespan_t last_cast;
 
   // Attack Mechanics
   double base_attack_power,       initial_attack_power,        attack_power,       buffed_attack_power;
@@ -4522,12 +4544,12 @@ struct player_t : public noncopyable
   virtual void      schedule_ready( timespan_t delta_time=timespan_t::zero, bool waiting=false );
   virtual void      arise();
   virtual void      demise();
-  virtual double    available() const { return 0.1; }
+  virtual timespan_t available() const { return timespan_t::from_seconds(0.1); }
   virtual action_t* execute_action();
 
   virtual std::string print_action_map( int iterations, int precision );
 
-  virtual void   regen( double periodicity=0.25 );
+  virtual void   regen( timespan_t periodicity=timespan_t::from_seconds(0.25) );
   virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
   virtual double resource_loss( int resource, double amount, action_t* a=0 );
   virtual void   recalculate_resource_max( int resource );
@@ -4540,8 +4562,8 @@ struct player_t : public noncopyable
   virtual int    normalize_by() const;
 
   virtual double health_percentage() const;
-  virtual double time_to_die() const;
-  virtual double total_reaction_time() const;
+  virtual timespan_t time_to_die() const;
+  virtual timespan_t total_reaction_time() const;
 
   virtual void stat_gain( int stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
   virtual void stat_loss( int stat, double amount, action_t* a=0, bool temporary=false );
@@ -4555,7 +4577,7 @@ struct player_t : public noncopyable
   struct heal_info_t { double actual, amount; };
   virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a=0 );
 
-  virtual void  summon_pet( const char* name, double duration=0 );
+  virtual void  summon_pet( const char* name, timespan_t duration=timespan_t::zero );
   virtual void dismiss_pet( const char* name );
 
   virtual bool ooc_buffs() { return true; }
@@ -4801,7 +4823,7 @@ public:
   virtual void init_talents();
   virtual void init_target();
   virtual void reset();
-  virtual void summon( double duration=0 );
+  virtual void summon( timespan_t duration=timespan_t::zero );
   virtual void dismiss();
   virtual bool ooc_buffs() { return false; }
   virtual double assess_damage( double amount, const school_type school, int type, int result, action_t* a=0 );
@@ -4831,11 +4853,12 @@ struct stats_t
   double resource_consumed, resource_portion;
   double frequency, num_executes, num_ticks;
   double num_direct_results, num_tick_results;
-  double total_execute_time, total_tick_time, total_time;
+  timespan_t total_execute_time, total_tick_time, total_time;
   double portion_amount, overkill_pct;
   double aps, ape, apet, apr, rpe, etpe, ttpt;
-  double total_intervals, num_intervals;
-  double last_execute;
+  timespan_t total_intervals;
+  double num_intervals;
+  timespan_t last_execute;
   double iteration_actual_amount, iteration_total_amount;
   sample_data_t actual_amount, total_amount, portion_aps;
   std::string aps_distribution_chart;
@@ -4867,8 +4890,8 @@ struct stats_t
   void add_child( stats_t* child );
   void consume_resource( double r ) { resource_consumed += r; }
   void add_result( double act_amount, double tot_amount, int dmg_type, int result );
-  void add_tick   ( double time );
-  void add_execute( double time );
+  void add_tick   ( timespan_t time );
+  void add_execute( timespan_t time );
   void combat_begin();
   void combat_end();
   void reset();
@@ -5697,9 +5720,11 @@ struct rng_t
   virtual double real();
   virtual int    roll( double chance );
   virtual double range( double min, double max );
+  timespan_t range( timespan_t min, timespan_t max );
   virtual double gauss( double mean, double stddev );
-  virtual timespan_t gauss( timespan_t mean, timespan_t stddev );
+  timespan_t gauss( timespan_t mean, timespan_t stddev );
   double exgauss( double mean, double stddev, double nu );
+  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
   virtual void   seed( uint32_t start );
   void   report( FILE* );
   static double stdnormal_cdf( double u );

@@ -239,13 +239,13 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
            "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
-           sim -> elapsed_cpu_seconds );
+           sim -> elapsed_cpu.total_seconds() );
   fprintf( file,
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
-           sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu_seconds );
+           sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds() );
 
   fprintf( file,
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
@@ -257,13 +257,13 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
            "\t\t\t\t\t\t\t\t<th>World Lag:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
-           sim -> world_lag * 1000.0, sim -> world_lag_stddev * 1000.0 );
+           (double)sim -> world_lag.total_millis(), (double)sim -> world_lag_stddev.total_millis() );
   fprintf( file,
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>Queue Lag:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
-           sim -> queue_lag * 1000.0, sim -> queue_lag_stddev * 1000.0 );
+           (double)sim -> queue_lag.total_millis(), (double)sim -> queue_lag_stddev.total_millis() );
   if ( sim -> strict_gcd_queue )
   {
     fprintf( file,
@@ -271,19 +271,19 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
              "\t\t\t\t\t\t\t\t<th>GCD Lag:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
-             sim -> gcd_lag * 1000.0, sim -> gcd_lag_stddev * 1000.0 );
+             (double)sim -> gcd_lag.total_millis(), (double)sim -> gcd_lag_stddev.total_millis() );
     fprintf( file,
              "\t\t\t\t\t\t\t<tr class=\"left\">\n"
              "\t\t\t\t\t\t\t\t<th>Channel Lag:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
-             sim -> channel_lag * 1000.0, sim -> channel_lag_stddev * 1000.0 );
+             (double)sim -> channel_lag.total_millis(), (double)sim -> channel_lag_stddev.total_millis() );
     fprintf( file,
              "\t\t\t\t\t\t\t<tr class=\"left\">\n"
              "\t\t\t\t\t\t\t\t<th>Queue GCD Reduction:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
-             sim -> queue_gcd_reduction * 1000.0 );
+             (double)sim -> queue_gcd_reduction.total_millis() );
   }
 
 

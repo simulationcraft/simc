@@ -51,10 +51,10 @@ void register_shaman_targetdata( sim_t* sim )
 struct shaman_t : public player_t
 {
   // Options
-  double wf_delay;
-  double wf_delay_stddev;
-  double uf_expiration_delay;
-  double uf_expiration_delay_stddev;
+  timespan_t wf_delay;
+  timespan_t wf_delay_stddev;
+  timespan_t uf_expiration_delay;
+  timespan_t uf_expiration_delay_stddev;
 
   // Active
   action_t* active_lightning_charge;
@@ -221,7 +221,8 @@ struct shaman_t : public player_t
   glyph_t* glyph_thunderstorm;
 
   shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r ),
-    wf_delay( 0.95 ), wf_delay_stddev( 0.25 ), uf_expiration_delay( 0.3 ), uf_expiration_delay_stddev( 0.05 )
+    wf_delay( timespan_t::from_seconds(0.95) ), wf_delay_stddev( timespan_t::from_seconds(0.25) ),
+    uf_expiration_delay( timespan_t::from_seconds(0.3) ), uf_expiration_delay_stddev( timespan_t::from_seconds(0.05) )
   {
     if ( race == RACE_NONE ) race = RACE_TAUREN;
 
@@ -295,7 +296,7 @@ struct shaman_t : public player_t
   virtual void      combat_begin();
 
   // Event Tracking
-  virtual void regen( double periodicity );
+  virtual void regen( timespan_t periodicity );
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -404,7 +405,7 @@ struct spirit_wolf_pet_t : public pet_t
       attack_t( "wolf_melee", player )
     {
       weapon = &( player -> main_hand_weapon );
-      base_execute_time = timespan_t::from_seconds( weapon -> swing_time );
+      base_execute_time = weapon -> swing_time;
       background = true;
       repeating = true;
       may_crit = true;
@@ -460,7 +461,7 @@ struct spirit_wolf_pet_t : public pet_t
     main_hand_weapon.min_dmg    = 556; // Level 85 Values, approximated
     main_hand_weapon.max_dmg    = 835;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 1.5;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(1.5);
   }
 
   virtual void init_base()
@@ -491,7 +492,7 @@ struct spirit_wolf_pet_t : public pet_t
     return ap + ap_per_owner * o -> composite_attack_power_multiplier() * o -> composite_attack_power();
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     pet_t::summon( duration );
     melee -> execute(); // Kick-off repeating attack
@@ -576,7 +577,7 @@ struct earth_elemental_pet_t : public pet_t
       background        = true;
       repeating         = true;
       weapon            = &( player -> main_hand_weapon );
-      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+      base_execute_time = weapon -> swing_time;
       weapon_power_mod  = 0.098475 / base_execute_time.total_seconds();
 
       base_attack_power_multiplier = 0;
@@ -612,7 +613,7 @@ struct earth_elemental_pet_t : public pet_t
     main_hand_weapon.min_dmg    = 370; // Level 85 Values, approximated
     main_hand_weapon.max_dmg    = 409;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
   }
 
   virtual void init_base()
@@ -631,9 +632,9 @@ struct earth_elemental_pet_t : public pet_t
 
   virtual int primary_resource() const { return RESOURCE_MANA; }
 
-  virtual void regen( double /* periodicity */ ) { }
+  virtual void regen( timespan_t /* periodicity */ ) { }
 
-  virtual void summon( double /* duration */ )
+  virtual void summon( timespan_t /* duration */ )
   {
     shaman_t* o = owner -> cast_shaman();
 
@@ -922,7 +923,7 @@ struct fire_elemental_pet_t : public pet_t
     {
       player -> main_hand_attack = new fire_melee_t( player );
       player -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
-      player -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(player -> main_hand_weapon.swing_time);
+      player -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
 
       trigger_gcd = timespan_t::zero;
     }
@@ -967,7 +968,7 @@ struct fire_elemental_pet_t : public pet_t
     main_hand_weapon.min_dmg         = 427; // Level 85 Values, approximated
     main_hand_weapon.max_dmg         = 461;
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time      = 2.0;
+    main_hand_weapon.swing_time      = timespan_t::from_seconds(2.0);
 
     rng_ability_cooldown             = get_rng( "fire_elemental_ability_cooldown" );
     rng_ability_cooldown -> average_range = 0;
@@ -983,16 +984,16 @@ struct fire_elemental_pet_t : public pet_t
 
   virtual int primary_resource() const { return RESOURCE_MANA; }
 
-  virtual void regen( double periodicity )
+  virtual void regen( timespan_t periodicity )
   {
     if ( ! recent_cast() )
     {
-      resource_gain( RESOURCE_MANA, 10.66 * periodicity ); // FIXME! Does regen scale with gear???
+      resource_gain( RESOURCE_MANA, 10.66 * periodicity.total_seconds() ); // FIXME! Does regen scale with gear???
     }
   }
 
   // Snapshot int, spell power from player
-  virtual void summon( double duration )
+  virtual void summon( timespan_t duration )
   {
     shaman_t* o = owner -> cast_shaman();
 
@@ -1001,7 +1002,7 @@ struct fire_elemental_pet_t : public pet_t
     owner_int = owner -> intellect();
     owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
 
-    fire_shield -> num_ticks = ( int ) ( timespan_t::from_seconds(duration) / fire_shield -> base_execute_time );
+    fire_shield -> num_ticks = ( int ) ( duration / fire_shield -> base_execute_time );
     fire_shield -> execute();
 
     cooldown_fire_nova -> start();
@@ -1080,7 +1081,7 @@ static void trigger_flametongue_weapon( attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
   spell_t* ft = 0;
-  double m_ft = a -> weapon -> swing_time / 4.0;
+  double m_ft = a -> weapon -> swing_time.total_seconds() / 4.0;
   double m_coeff = 0.1253;
 
   if ( a -> weapon -> slot == SLOT_MAIN_HAND )
@@ -1147,10 +1148,10 @@ static bool trigger_windfury_weapon( attack_t* a )
 
   if ( p -> rng_windfury_weapon -> roll( wf -> proc_chance() ) )
   {
-    p -> cooldowns_windfury_weapon -> start( timespan_t::from_seconds(p -> rng_windfury_delay -> gauss( 3.0, 0.3 )) );
+    p -> cooldowns_windfury_weapon -> start( p -> rng_windfury_delay -> gauss( timespan_t::from_seconds(3.0), timespan_t::from_seconds(0.3) ) );
 
     // Delay windfury by some time, up to about a second
-    new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, timespan_t::from_seconds(p -> rng_windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev )) );
+    new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, p -> rng_windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
     return true;
   }
   return false;
@@ -1871,14 +1872,14 @@ struct auto_attack_t : public shaman_attack_t
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
+    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       if ( p -> primary_tree() != TREE_ENHANCEMENT ) return;
       p -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds( p -> off_hand_weapon.swing_time );
+      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
 
     trigger_gcd = timespan_t::zero;
@@ -2254,7 +2255,7 @@ void shaman_spell_t::schedule_execute()
     player -> gcd_ready = sim -> current_time + gcd();
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
-      player -> gcd_ready -= timespan_t::from_seconds(sim -> queue_gcd_reduction);
+      player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
   }
 }
@@ -2906,7 +2907,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
 
     shaman_t* p = player -> cast_shaman();
 
-    p -> pet_spirit_wolf -> summon( duration().total_seconds() );
+    p -> pet_spirit_wolf -> summon( duration() );
   }
 };
 
@@ -3255,7 +3256,7 @@ struct shaman_totem_t : public shaman_spell_t
 
     p -> totems[ totem ] = this;
 
-    stats -> add_execute( time_to_execute.total_seconds() );
+    stats -> add_execute( time_to_execute );
   }
 
   virtual void last_tick( dot_t* d )
@@ -3304,7 +3305,7 @@ struct shaman_totem_t : public shaman_spell_t
         
       }
 
-      stats -> add_tick( d -> time_to_tick.total_seconds() );
+      stats -> add_tick( d -> time_to_tick );
     }
     else
     {
@@ -3328,7 +3329,7 @@ struct shaman_totem_t : public shaman_spell_t
           log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
       }
       
-      stats -> add_tick( d -> time_to_tick.total_seconds() );
+      stats -> add_tick( d -> time_to_tick );
     }
   }
 
@@ -4199,7 +4200,7 @@ struct unleash_flame_expiration_delay_t : public event_t
   {
     shaman_t* s = player -> cast_shaman();
     name = "unleash_flame_expiration_delay";
-    sim -> add_event( this, timespan_t::from_seconds(sim -> gauss( s -> uf_expiration_delay, s -> uf_expiration_delay_stddev )) );
+    sim -> add_event( this, sim -> gauss( s -> uf_expiration_delay, s -> uf_expiration_delay_stddev ) );
   }
 
   virtual void execute()
@@ -4257,10 +4258,10 @@ void shaman_t::create_options()
 
   option_t shaman_options[] =
   {
-    { "wf_delay",                   OPT_FLT,     &( wf_delay                   ) },
-    { "wf_delay_stddev",            OPT_FLT,     &( wf_delay_stddev            ) },
-    { "uf_expiration_delay",        OPT_FLT,     &( uf_expiration_delay        ) },
-    { "uf_expiration_delay_stddev", OPT_FLT,     &( uf_expiration_delay_stddev ) },
+    { "wf_delay",                   OPT_TIMESPAN,     &( wf_delay                   ) },
+    { "wf_delay_stddev",            OPT_TIMESPAN,     &( wf_delay_stddev            ) },
+    { "uf_expiration_delay",        OPT_TIMESPAN,     &( uf_expiration_delay        ) },
+    { "uf_expiration_delay_stddev", OPT_TIMESPAN,     &( uf_expiration_delay_stddev ) },
     { NULL,                         OPT_UNKNOWN, NULL                            }
   };
 
@@ -5042,7 +5043,7 @@ double shaman_t::composite_spell_crit() const
 
 // shaman_t::regen  =========================================================
 
-void shaman_t::regen( double periodicity )
+void shaman_t::regen( timespan_t periodicity )
 {
   mana_regen_while_casting = ( primary_tree() == TREE_RESTORATION ) ? 0.50 : 0.0;
 
@@ -5050,7 +5051,7 @@ void shaman_t::regen( double periodicity )
 
   if ( buffs_water_shield -> up() )
   {
-    double water_shield_regen = periodicity * buffs_water_shield -> base_value() / 5.0;
+    double water_shield_regen = periodicity.total_seconds() * buffs_water_shield -> base_value() / 5.0;
 
     resource_gain( RESOURCE_MANA, water_shield_regen, gains_water_shield );
   }

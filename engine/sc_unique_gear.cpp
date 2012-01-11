@@ -1126,7 +1126,7 @@ static void register_indomitable_pride( item_t* item )
           assert( 0 );
         buff -> trigger( 1, amount );
         stats -> add_result( amount, amount, ABSORB, RESULT_HIT );
-        stats -> add_execute( 0 );
+        stats -> add_execute( timespan_t::zero );
       }
     }
   };
@@ -1168,7 +1168,7 @@ static void register_spidersilk_spindle( item_t* item )
         double amount = buff -> effect1().base_value();
         buff -> trigger( 1, amount );
         stats -> add_result( amount, amount, ABSORB, RESULT_HIT );
-        stats -> add_execute( 0 );
+        stats -> add_execute( timespan_t::zero );
       }
     }
   };
@@ -2092,8 +2092,7 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
 
   return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player,
                              e.stat, e.max_stacks, e.stat_amount,
-                             e.proc_chance, timespan_t::from_seconds(e.duration),
-                             timespan_t::from_seconds(e.cooldown), timespan_t::from_seconds(e.tick),
+                             e.proc_chance, e.duration, e.cooldown, e.tick,
                              e.reverse, RNG_DEFAULT );
 }
 
@@ -2108,7 +2107,7 @@ action_callback_t* unique_gear_t::register_cost_reduction_proc( item_t& i,
 
   return register_cost_reduction_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                        e.school, e.max_stacks, e.discharge_amount,
-                                       e.proc_chance, timespan_t::from_seconds(e.duration), timespan_t::from_seconds(e.cooldown), ! e.no_refresh, e.reverse, RNG_DEFAULT );
+                                       e.proc_chance, e.duration, e.cooldown, ! e.no_refresh, e.reverse, RNG_DEFAULT );
 }
 
 // ==========================================================================
@@ -2122,7 +2121,7 @@ action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
 
   return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                   e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                  e.proc_chance, timespan_t::from_seconds(e.cooldown), e.no_crit, e.no_player_benefits, e.no_debuffs );
+                                  e.proc_chance, e.cooldown, e.no_crit, e.no_player_benefits, e.no_debuffs );
 }
 
 // ==========================================================================
@@ -2136,7 +2135,7 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( item_t& i,
 
   return register_chance_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                          e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                         e.proc_chance, timespan_t::from_seconds(e.cooldown), e.no_crit, e.no_player_benefits, e.no_debuffs );
+                                         e.proc_chance, e.cooldown, e.no_crit, e.no_player_benefits, e.no_debuffs );
 }
 
 // ==========================================================================
@@ -2151,7 +2150,7 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( item_t& i,
   return register_stat_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                        e.max_stacks, e.stat, e.stat_amount,
                                        e.school, e.discharge_amount, e.discharge_scaling,
-                                       e.proc_chance, timespan_t::from_seconds(e.duration), timespan_t::from_seconds(e.cooldown), e.no_crit, e.no_player_benefits, e.no_debuffs );
+                                       e.proc_chance, e.duration, e.cooldown, e.no_crit, e.no_player_benefits, e.no_debuffs );
 }
 
 // ==========================================================================

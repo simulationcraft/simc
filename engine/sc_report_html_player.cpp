@@ -270,7 +270,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
            s -> tick_results[ RESULT_MISS ].pct +
            s -> tick_results[ RESULT_DODGE ].pct +
            s -> tick_results[ RESULT_PARRY ].pct,
-           100 * s -> total_tick_time / s -> player -> fight_length.mean );
+           100 * s -> total_tick_time.total_seconds() / s -> player -> fight_length.mean );
 
   if ( p -> sim -> report_details )
   {

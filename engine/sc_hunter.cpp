@@ -277,7 +277,7 @@ struct hunter_t : public player_t
   virtual void      moving();
 
   // Event Tracking
-  virtual void regen( double periodicity );
+  virtual void regen( timespan_t periodicity );
 };
 
 // ==========================================================================
@@ -337,7 +337,7 @@ struct hunter_pet_t : public pet_t
     main_hand_weapon.max_dmg    = rating_t::interpolate( level, 0, 0, 78, 110 ); // FIXME needs level 60 and 70 values
     // Level 85 numbers from Rivkah from EJ, 07.08.2011
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
 
     stamina_per_owner = 0.45;
 
@@ -431,7 +431,7 @@ struct hunter_pet_t : public pet_t
 
     infinite_resource[ RESOURCE_FOCUS ] = o -> infinite_resource[ RESOURCE_FOCUS ];
 
-    world_lag = 0.3; // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
+    world_lag = timespan_t::from_seconds(0.3); // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
     world_lag_override = true;
   }
 
@@ -638,7 +638,7 @@ struct hunter_pet_t : public pet_t
     return composite_attack_hit() * 17.0 / 8.0;
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -1083,7 +1083,7 @@ struct pet_melee_t : public hunter_pet_attack_t
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
     weapon = &( p -> main_hand_weapon );
-    base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+    base_execute_time = weapon -> swing_time;
     background        = true;
     repeating         = true;
     school = SCHOOL_PHYSICAL;
@@ -1815,7 +1815,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
   virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -1939,7 +1939,7 @@ struct ranged_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     weapon = &( p -> ranged_weapon );
-    base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+    base_execute_time = weapon -> swing_time;
 
     normalize_weapon_speed=false;
     may_crit    = true;
@@ -4257,14 +4257,14 @@ double hunter_t::matching_gear_multiplier( const attribute_type attr ) const
 
 // hunter_t::regen  =========================================================
 
-void hunter_t::regen( double periodicity )
+void hunter_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
   periodicity *= 1.0 + haste_rating / rating.attack_haste;
   if ( buffs_rapid_fire -> check() && talents.rapid_recuperation -> rank() )
   {
     // 2/4 focus per sec
-    double rr_regen = periodicity * talents.rapid_recuperation -> effect1().base_value();
+    double rr_regen = periodicity.total_seconds() * talents.rapid_recuperation -> effect1().base_value();
 
     resource_gain( RESOURCE_FOCUS, rr_regen, gains_rapid_recuperation );
   }

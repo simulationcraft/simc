@@ -181,7 +181,7 @@ void heal_t::execute()
 
   update_ready();
 
-  if ( ! dual ) stats -> add_execute( time_to_execute.total_seconds() );
+  if ( ! dual ) stats -> add_execute( time_to_execute );
 
   if ( harmful ) player -> in_combat = true;
 
@@ -266,7 +266,7 @@ void heal_t::tick( dot_t* d )
 
   if ( callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
 
-  stats -> add_tick( d -> time_to_tick.total_seconds() );
+  stats -> add_tick( d -> time_to_tick );
 }
 
 // heal_t::calculate_result =================================================
@@ -620,7 +620,7 @@ void absorb_t::execute()
 
   update_ready();
 
-  if ( ! dual ) stats -> add_execute( time_to_execute.total_seconds() );
+  if ( ! dual ) stats -> add_execute( time_to_execute );
 
   if ( repeating && ! proc ) schedule_execute();
 

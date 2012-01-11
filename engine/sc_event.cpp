@@ -142,7 +142,7 @@ void player_ready_event_t::execute()
 
   if ( ! player -> execute_action() )
   {
-    timespan_t x = timespan_t::from_seconds(player -> available());
+    timespan_t x = player -> available();
 
     player -> schedule_ready( x, true );
     // Waiting Debug
@@ -362,7 +362,7 @@ regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
 {
   name = "Regen Event";
   if ( sim -> debug ) log_t::output( sim, "New Regen Event" );
-  sim -> add_event( this, timespan_t::from_seconds(sim -> regen_periodicity) );
+  sim -> add_event( this, sim -> regen_periodicity );
 }
 
 // regen_event_t::execute ===================================================

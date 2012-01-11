@@ -596,7 +596,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type school, double dmg, double fc, double ppm=0, double cd=0, int rng_type=RNG_DEFAULT ) :
+  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type school, double dmg, double fc, double ppm=0, timespan_t cd=timespan_t::zero, int rng_type=RNG_DEFAULT ) :
     action_callback_t( p -> sim, p ),
     name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm )
   {
@@ -619,7 +619,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     };
 
     cooldown = p -> get_cooldown( name_str );
-    cooldown -> duration = timespan_t::from_seconds(cd);
+    cooldown -> duration = cd;
 
     spell = new discharge_spell_t( name_str.c_str(), p, dmg, school );
 
@@ -692,8 +692,8 @@ static void register_synapse_springs( item_t* item )
   item -> use.name_str = "synapse_springs";
   item -> use.stat = max_stat;
   item -> use.stat_amount = 480.0;
-  item -> use.duration = 10.0;
-  item -> use.cooldown = 60.0;
+  item -> use.duration = timespan_t::from_seconds(10.0);
+  item -> use.cooldown = timespan_t::from_seconds(60.0);
 }
 
 // ==========================================================================
@@ -719,15 +719,15 @@ void enchant_t::init( player_t* p )
     // Reference: http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p4/#post1832162
     if ( mh_enchant == "avalanche" )
     {
-      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_w", p, mhw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, 0.01/*CD*/ );
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_w", p, mhw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, timespan_t::from_seconds(0.01)/*CD*/ );
       p -> register_attack_callback( RESULT_HIT_MASK, cb );
     }
     if ( oh_enchant == "avalanche" )
     {
-      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_w", p, ohw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, 0.01/*CD*/ );
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_w", p, ohw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, timespan_t::from_seconds(0.01)/*CD*/ );
       p -> register_attack_callback( RESULT_HIT_MASK, cb );
     }
-    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_s", p, 0, 1, SCHOOL_NATURE, 500, 0.25/*FIXED*/, 0, 10.0/*CD*/ );
+    action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_s", p, 0, 1, SCHOOL_NATURE, 500, 0.25/*FIXED*/, 0, timespan_t::from_seconds(10.0)/*CD*/ );
     p -> register_spell_callback ( RESULT_HIT_MASK, cb );
   }
   if ( mh_enchant == "berserking" )

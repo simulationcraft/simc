@@ -53,7 +53,7 @@ struct dk_rune_t
   bool is_regenerating() const { return state == STATE_REGENERATING                    ; }
   int  get_type()        const { return type & RUNE_TYPE_MASK                          ; }
 
-  void regen_rune( player_t* p, double periodicity );
+  void regen_rune( player_t* p, timespan_t periodicity );
 
   void make_permanent_death_rune()
   {
@@ -397,7 +397,7 @@ struct death_knight_t : public player_t
   virtual double    composite_tank_parry() const;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
   virtual double    composite_tank_crit( const school_type school ) const;
-  virtual void      regen( double periodicity );
+  virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual double    assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
   virtual void      combat_begin();
@@ -449,7 +449,7 @@ static void log_rune_status( death_knight_t* p )
   log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str() );
 }
 
-void dk_rune_t::regen_rune( player_t* p, double periodicity )
+void dk_rune_t::regen_rune( player_t* p, timespan_t periodicity )
 {
   // If the other rune is already regening, we don't
   // but if both are full we still continue on to record resource gain overflow
@@ -472,7 +472,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   if ( o -> buffs_runic_corruption -> up() )
     runes_per_second *= 1.0 + ( o -> talents.runic_corruption -> effect1().percent() );
 
-  double regen_amount = periodicity * runes_per_second;
+  double regen_amount = periodicity.total_seconds() * runes_per_second;
 
   // record rune gains and overflow
   gain_t* gains_rune      = o -> gains_rune         ;
@@ -760,7 +760,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_attack_t( "drw_melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       weapon            = &( p -> owner -> main_hand_weapon );
-      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+      base_execute_time = weapon -> swing_time;
       base_dd_min       = 2; // FIXME: Should these be set?
       base_dd_max       = 322;
       may_crit          = true;
@@ -802,7 +802,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_SWORD_2H;
     main_hand_weapon.min_dmg    = 685; // FIXME: Should these be hardcoded?
     main_hand_weapon.max_dmg    = 975;
-    main_hand_weapon.swing_time = 3.3;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(3.3);
   }
 
   virtual void init_base()
@@ -827,7 +827,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double composite_attack_power() const       { return attack_power; }
   virtual double composite_spell_crit() const         { return snapshot_spell_crit;  }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
@@ -862,7 +862,7 @@ struct army_ghoul_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 228; // FIXME: Needs further testing
     main_hand_weapon.max_dmg    = 323; // FIXME: Needs further testing
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
 
     action_list_str = "snapshot_stats/auto_attack/claw";
   }
@@ -894,10 +894,10 @@ struct army_ghoul_pet_t : public pet_t
     army_ghoul_pet_melee_t( army_ghoul_pet_t* p ) :
       army_ghoul_pet_attack_t( "melee", p, RESOURCE_NONE, false )
     {
-      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+      base_execute_time = weapon -> swing_time;
       background        = true;
       repeating         = true;
-      weapon_power_mod  = 0.0055 / weapon -> swing_time; // FIXME: Needs further testing
+      weapon_power_mod  = 0.0055 / weapon -> swing_time.total_seconds(); // FIXME: Needs further testing
     }
   };
 
@@ -929,7 +929,7 @@ struct army_ghoul_pet_t : public pet_t
     army_ghoul_pet_claw_t( army_ghoul_pet_t* p ) :
       army_ghoul_pet_attack_t( "claw", 91776, p )
     {
-      weapon_power_mod  = 0.0055 / weapon -> swing_time; // FIXME: Needs further testing
+      weapon_power_mod  = 0.0055 / weapon -> swing_time.total_seconds(); // FIXME: Needs further testing
     }
   };
 
@@ -970,7 +970,7 @@ struct army_ghoul_pet_t : public pet_t
     return a;
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
@@ -1004,14 +1004,17 @@ struct army_ghoul_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  double available() const
+  timespan_t available() const
   {
     double energy = resource_current[ RESOURCE_ENERGY ];
 
     if ( energy > 40 )
-      return 0.1;
+      return timespan_t::from_seconds(0.1);
 
-    return std::max( ( 40 - energy ) / energy_regen_per_second(), 0.1 );
+    return std::max( 
+      timespan_t::from_seconds(( 40 - energy ) / energy_regen_per_second()),
+      timespan_t::from_seconds(0.1)
+    );
   }
 };
 
@@ -1027,7 +1030,7 @@ struct bloodworms_pet_t : public pet_t
       attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       weapon = &( player -> main_hand_weapon );
-      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+      base_execute_time = weapon -> swing_time;
       base_dd_min = base_dd_max = 1;
       may_crit    = true;
       background  = true;
@@ -1043,7 +1046,7 @@ struct bloodworms_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 20;
     main_hand_weapon.max_dmg    = 20;
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
   }
 
   virtual void init_base()
@@ -1062,7 +1065,7 @@ struct bloodworms_pet_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     pet_t::summon( duration );
     melee -> schedule_execute();
@@ -1126,7 +1129,7 @@ struct gargoyle_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     pet_t::summon( duration );
     // Haste etc. are taken at the time of summoning
@@ -1174,7 +1177,7 @@ struct ghoul_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 622.43; // should be exact as of 4.2
     main_hand_weapon.max_dmg    = 933.64; // should be exact as of 4.2
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
 
     action_list_str = "auto_attack/sweeping_claws/claw";
   }
@@ -1217,10 +1220,10 @@ struct ghoul_pet_t : public pet_t
     ghoul_pet_melee_t( ghoul_pet_t* p ) :
       ghoul_pet_attack_t( "melee", p, RESOURCE_NONE, false )
     {
-      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+      base_execute_time = weapon -> swing_time;
       background        = true;
       repeating         = true;
-      weapon_power_mod  = 0.120 / weapon -> swing_time; // should be exact as of 4.2
+      weapon_power_mod  = 0.120 / weapon -> swing_time.total_seconds(); // should be exact as of 4.2
     }
   };
 
@@ -1252,7 +1255,7 @@ struct ghoul_pet_t : public pet_t
     ghoul_pet_claw_t( ghoul_pet_t* p ) :
       ghoul_pet_attack_t( "claw", 91776, p )
     {
-      weapon_power_mod = 0.120 / weapon -> swing_time; // should be exact as of 4.2
+      weapon_power_mod = 0.120 / weapon -> swing_time.total_seconds(); // should be exact as of 4.2
     }
   };
 
@@ -1262,7 +1265,7 @@ struct ghoul_pet_t : public pet_t
       ghoul_pet_attack_t( "sweeping_claws", 91778, p )
     {
       aoe = 2;
-      weapon_power_mod = 0.120 / weapon -> swing_time; // Copied from claw, but seems Ok
+      weapon_power_mod = 0.120 / weapon -> swing_time.total_seconds(); // Copied from claw, but seems Ok
     }
 
     virtual bool ready()
@@ -1325,7 +1328,7 @@ struct ghoul_pet_t : public pet_t
     return a;
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
@@ -1431,15 +1434,18 @@ struct ghoul_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  double available() const
+  timespan_t available() const
   {
     double energy = resource_current[ RESOURCE_ENERGY ];
 
     // Cheapest Ability need 40 Energy
     if ( energy > 40 )
-      return 0.1;
+      return timespan_t::from_seconds(0.1);
 
-    return std::max( ( 40 - energy ) / energy_regen_per_second(), 0.1 );
+    return std::max( 
+      timespan_t::from_seconds(( 40 - energy ) / energy_regen_per_second()),
+      timespan_t::from_seconds(0.1)
+    );
   }
 };
 // ==========================================================================
@@ -2166,13 +2172,13 @@ struct auto_attack_t : public death_knight_attack_t
 
     p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
+    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds( p -> off_hand_weapon.swing_time );
+      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
       p -> off_hand_attack -> base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
     }
 
@@ -2232,13 +2238,13 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // sense to cast ghouls 7-10s before a fight begins so you don't
       // waste rune regen and enter the fight depleted.  So, the time
       // you get for ghouls is 4-6 seconds less.
-      p -> active_army_ghoul -> summon( 35.0 );
+      p -> active_army_ghoul -> summon( timespan_t::from_seconds(35.0) );
     }
     else
     {
       death_knight_spell_t::execute();
 
-      p -> active_army_ghoul -> summon( 40.0 );
+      p -> active_army_ghoul -> summon( timespan_t::from_seconds(40.0) );
     }
   }
 
@@ -2532,7 +2538,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
 
     p -> buffs_dancing_rune_weapon -> trigger();
-    p -> active_dancing_rune_weapon -> summon( duration().total_seconds() );
+    p -> active_dancing_rune_weapon -> summon( duration() );
   }
 };
 
@@ -3710,7 +3716,7 @@ struct raise_dead_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> active_ghoul -> summon( ( p -> primary_tree() == TREE_UNHOLY ) ? 0.0 : p -> dbc.spell( effect1().base_value() ) -> duration().total_seconds() );
+    p -> active_ghoul -> summon( ( p -> primary_tree() == TREE_UNHOLY ) ? timespan_t::zero : p -> dbc.spell( effect1().base_value() ) -> duration() );
   }
 
   virtual bool ready()
@@ -3894,7 +3900,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> active_gargoyle -> summon( p -> dbc.spell( effect3().trigger_spell_id() ) -> duration().total_seconds() );
+    p -> active_gargoyle -> summon( p -> dbc.spell( effect3().trigger_spell_id() ) -> duration() );
   }
 };
 
@@ -5092,12 +5098,12 @@ int death_knight_t::primary_role() const
 
 // death_knight_t::regen ====================================================
 
-void death_knight_t::regen( double periodicity )
+void death_knight_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
   if ( set_bonus.tier12_2pc_melee() && sim -> auras.horn_of_winter -> check() )
-    resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity, gains_tier12_2pc_melee );
+    resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity.total_seconds(), gains_tier12_2pc_melee );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     _runes.slot[i].regen_rune( this, periodicity );

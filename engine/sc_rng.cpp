@@ -43,6 +43,13 @@ int rng_t::roll( double chance )
 
 // rng_t::range =============================================================
 
+timespan_t rng_t::range( timespan_t min, timespan_t max )
+{
+  return TIMESPAN_FROM_NATIVE_VALUE( range( TIMESPAN_TO_NATIVE_VALUE(min), TIMESPAN_TO_NATIVE_VALUE( max ) ) );
+}
+
+// rng_t::range =============================================================
+
 double rng_t::range( double min,
                      double max )
 {
@@ -132,6 +139,13 @@ double rng_t::exgauss( double mean, double stddev, double nu )
   if ( result > 5 ) result = 5; // cut it off at 5s
 
   return result;
+}
+
+// rng_t::exgauss ===========================================================
+
+timespan_t rng_t::exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
+{
+  return TIMESPAN_FROM_NATIVE_VALUE( exgauss( TIMESPAN_TO_NATIVE_VALUE(mean), TIMESPAN_TO_NATIVE_VALUE(stddev), TIMESPAN_TO_NATIVE_VALUE(nu) ) );
 }
 
 // rng_t::seed ==============================================================

@@ -440,7 +440,7 @@ private:
 
 public:
   remove_dots_event_t( sim_t* sim, priest_t* pr, priest_targetdata_t* td ) : event_t( sim, pr, "mind_spike_remove_dots" ), td( td )
-  { sim -> add_event( this, timespan_t::from_seconds(sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev )) ); }
+  { sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) ); }
 
   virtual void execute()
   {
@@ -551,7 +551,7 @@ public:
   {
     const option_t base_options[] =
     {
-      { "min_interval", OPT_FLT,     &( min_interval -> duration ) },
+      { "min_interval", OPT_TIMESPAN,     &( min_interval -> duration ) },
       { NULL,           OPT_UNKNOWN, NULL      }
     };
 
@@ -1171,7 +1171,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       priest_t* o = player -> owner -> cast_priest();
       weapon = &( player -> main_hand_weapon );
-      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+      base_execute_time = weapon -> swing_time;
       weapon_multiplier = 0;
       direct_power_mod = 0.0064 * o -> level;
       if ( harmful ) base_spell_power_multiplier = 1.0;
@@ -1264,7 +1264,7 @@ struct shadow_fiend_pet_t : public pet_t
     bad_swing( false ), extra_tick( false )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = 1.5;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(1.5);
     main_hand_weapon.school     = SCHOOL_SHADOW;
 
     stamina_per_owner           = 0.30;
@@ -1347,7 +1347,7 @@ struct shadow_fiend_pet_t : public pet_t
     return c;
   }
 
-  virtual void summon( double duration )
+  virtual void summon( timespan_t duration )
   {
     priest_t* p = owner -> cast_priest();
 
@@ -1359,7 +1359,7 @@ struct shadow_fiend_pet_t : public pet_t
     // Simulate extra tick
     if ( !bugs || !owner -> sim -> roll( 0.5 ) )
     {
-      duration -= 0.1;
+      duration -= timespan_t::from_seconds(0.1);
     }
 
     dismiss();
@@ -1455,7 +1455,7 @@ struct lightwell_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual void summon( double duration )
+  virtual void summon( timespan_t duration )
   {
     priest_t* p = owner -> cast_priest();
 
@@ -1507,7 +1507,7 @@ struct cauterizing_flame_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual void summon( double duration )
+  virtual void summon( timespan_t duration )
   {
     priest_t* p = owner -> cast_priest();
     pet_t::summon( duration );
@@ -1782,7 +1782,7 @@ struct dispersion_t : public priest_spell_t
     double current_mana = p -> resource_current[ RESOURCE_MANA ];
 
     double consumption_rate = ( p -> mana_resource.mana_loss - p -> mana_resource.mana_gain ) / sim -> current_time.total_seconds();
-    double time_to_die = p -> target -> time_to_die();
+    double time_to_die = p -> target -> time_to_die().total_seconds();
 
     if ( consumption_rate <= 0.00001 ) return false;
 
@@ -1903,7 +1903,7 @@ struct hymn_of_hope_t : public priest_spell_t
   {
     hymn_of_hope_tick -> execute();
 
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -2132,7 +2132,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    p -> pet_shadow_fiend -> summon( duration().total_seconds() );
+    p -> pet_shadow_fiend -> summon( duration() );
   }
 
   virtual bool ready()
@@ -2384,20 +2384,20 @@ struct mind_blast_t : public priest_spell_t
 
 struct mind_flay_t : public priest_spell_t
 {
-  double mb_wait;
+  timespan_t mb_wait;
   int    swp_refresh;
   int    cut_for_mb;
 
   mind_flay_t( priest_t* p, const std::string& options_str,
                const char* name = "mind_flay" ) :
-    priest_spell_t( name, p, "Mind Flay" ), mb_wait( 0 ), swp_refresh( 0 ), cut_for_mb( 0 )
+    priest_spell_t( name, p, "Mind Flay" ), mb_wait( timespan_t::zero ), swp_refresh( 0 ), cut_for_mb( 0 )
   {
     check_spec( TREE_SHADOW );
 
     option_t options[] =
     {
       { "cut_for_mb",  OPT_BOOL, &cut_for_mb  },
-      { "mb_wait",     OPT_FLT,  &mb_wait     },
+      { "mb_wait",     OPT_TIMESPAN,  &mb_wait     },
       { "swp_refresh", OPT_BOOL, &swp_refresh },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -2483,9 +2483,9 @@ struct mind_flay_t : public priest_spell_t
 
     // If this option is set (with a value in seconds), don't cast Mind Flay if Mind Blast
     // is about to come off it's cooldown.
-    if ( mb_wait )
+    if ( mb_wait != timespan_t::zero )
     {
-      if ( p -> cooldowns_mind_blast -> remains() < timespan_t::from_seconds(mb_wait) )
+      if ( p -> cooldowns_mind_blast -> remains() < mb_wait )
         return false;
     }
 
@@ -2615,7 +2615,7 @@ struct mind_sear_t : public priest_spell_t
     if ( mind_sear_tick )
       mind_sear_tick -> execute();
 
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -2915,7 +2915,7 @@ struct penance_t : public priest_spell_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual double cost() const
@@ -3267,7 +3267,7 @@ struct divine_hymn_t : public priest_heal_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     divine_hymn_tick -> execute();
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -3662,7 +3662,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
   virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual bool ready()
@@ -3862,7 +3862,7 @@ struct lightwell_t : public priest_spell_t
     priest_spell_t::execute();
 
     p -> pet_lightwell -> get_cooldown( "lightwell_renew" ) -> duration = consume_interval;
-    p -> pet_lightwell -> summon( duration().total_seconds() );
+    p -> pet_lightwell -> summon( duration() );
   }
 };
 
@@ -3940,7 +3940,7 @@ struct penance_heal_t : public priest_heal_t
     penance_tick -> heal_target.clear();
     penance_tick -> heal_target.push_back( target );
     penance_tick -> execute();
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual double cost() const
@@ -4451,7 +4451,7 @@ void priest_t::trigger_cauterizing_flame()
   if ( pet_cauterizing_flame && pet_cauterizing_flame -> sleeping &&
        rng_cauterizing_flame -> roll( sets -> set( SET_T12_4PC_HEAL ) -> proc_chance()  ) )
   {
-    pet_cauterizing_flame -> summon( dbc.spell( 99136 ) -> duration().total_seconds() );
+    pet_cauterizing_flame -> summon( dbc.spell( 99136 ) -> duration() );
   }
 }
 

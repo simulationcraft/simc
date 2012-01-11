@@ -374,8 +374,8 @@ struct druid_t : public player_t
   virtual void      init_actions();
   virtual void      combat_begin();
   virtual void      reset();
-  virtual void      regen( double periodicity );
-  virtual double    available() const;
+  virtual void      regen( timespan_t periodicity );
+  virtual timespan_t available() const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_attack_power() const;
   virtual double    composite_attack_power_multiplier() const;
@@ -551,7 +551,7 @@ struct treants_pet_t : public pet_t
       attack_t( "treant_melee", player )
     {
       weapon = &( player -> main_hand_weapon );
-      base_execute_time = timespan_t::from_seconds(weapon -> swing_time);
+      base_execute_time = weapon -> swing_time;
       base_dd_min = base_dd_max = 1;
       background = true;
       repeating = true;
@@ -569,7 +569,7 @@ struct treants_pet_t : public pet_t
     main_hand_weapon.min_dmg    = 580;
     main_hand_weapon.max_dmg    = 580;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 1.65;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(1.65);
   }
 
   virtual void init_base()
@@ -632,7 +632,7 @@ struct burning_treant_pet_t : public pet_t
     action_list_str += "/fireseed";
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     pet_t::summon( duration );
     // Guardians use snapshots
@@ -807,7 +807,7 @@ static void trigger_eclipse_gain_delay( spell_t* s, int gain )
       s( spell ), g( gain )
     {
       name = "Eclipse gain delay";
-      sim -> add_event( this, timespan_t::from_seconds(sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev )) );
+      sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
     }
 
     virtual void execute()
@@ -1090,7 +1090,7 @@ static void trigger_burning_treant( spell_t* s )
     {
       p -> procs_burning_treant -> occur();
       p -> pet_burning_treant -> dismiss();
-      p -> pet_burning_treant -> summon( p -> dbc.spell( 99035 ) -> duration().total_seconds() - 0.01 );
+      p -> pet_burning_treant -> summon( p -> dbc.spell( 99035 ) -> duration() - timespan_t::from_seconds(0.01) );
       p -> cooldowns_burning_treant -> start();
     }
   }
@@ -1363,11 +1363,12 @@ struct claw_t : public druid_cat_attack_t
 
 struct feral_charge_cat_t : public druid_cat_attack_t
 {
-  double stampede_cost_reduction, stampede_duration;
+  double stampede_cost_reduction;
+  timespan_t stampede_duration;
 
   feral_charge_cat_t( druid_t* p, const std::string& options_str ) :
     druid_cat_attack_t( "feral_charge_cat", 49376, p ),
-    stampede_cost_reduction( 0.0 ), stampede_duration( 0.0 )
+    stampede_cost_reduction( 0.0 ), stampede_duration( timespan_t::zero )
   {
     parse_options( NULL, options_str );
 
@@ -1382,10 +1383,10 @@ struct feral_charge_cat_t : public druid_cat_attack_t
         stampede_cost_reduction /= 100.0;
       }
       stampede_cost_reduction = -stampede_cost_reduction;
-      stampede_duration = stampede_spell.duration().total_seconds();
+      stampede_duration = stampede_spell.duration();
     }
 
-    p -> buffs_stampede_cat -> buff_duration = timespan_t::from_seconds(stampede_duration);
+    p -> buffs_stampede_cat -> buff_duration = stampede_duration;
 
     may_miss   = false;
     may_dodge  = false;
@@ -1943,13 +1944,13 @@ struct savage_roar_t : public druid_cat_attack_t
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    double duration = this -> duration().total_seconds() + 5.0 * td -> buffs_combo_points -> stack();
-    duration += p -> talents.endless_carnage -> effect2().time_value().total_seconds();
+    timespan_t duration = this -> duration() + timespan_t::from_seconds(5.0) * td -> buffs_combo_points -> stack();
+    duration += p -> talents.endless_carnage -> effect2().time_value();
 
     // execute clears CP, so has to be after calculation duration
     druid_cat_attack_t::execute();
 
-    p -> buffs_savage_roar -> buff_duration = timespan_t::from_seconds(duration);
+    p -> buffs_savage_roar -> buff_duration = duration;
     p -> buffs_savage_roar -> trigger( 1, buff_value );
   }
 };
@@ -3207,7 +3208,7 @@ struct auto_attack_t : public action_t
     druid_t* p = player -> cast_druid();
 
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
+    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
     p -> main_hand_attack -> schedule_execute();
   }
 
@@ -3276,7 +3277,7 @@ struct bear_form_t : public druid_spell_t
       w -> type = WEAPON_BEAST;
       w -> school = SCHOOL_PHYSICAL;
       w -> damage = 54.8 * 2.5;
-      w -> swing_time = 2.5;
+      w -> swing_time = timespan_t::from_seconds(2.5);
     }
 
     // Force melee swing to restart if necessary
@@ -3380,10 +3381,10 @@ struct cat_form_t : public druid_spell_t
       // FIXME: If we really want to model switching between forms, the old values need to be saved somewhere
       w -> type = WEAPON_BEAST;
       w -> school = SCHOOL_PHYSICAL;
-      w -> min_dmg /= w -> swing_time;
-      w -> max_dmg /= w -> swing_time;
+      w -> min_dmg /= w -> swing_time.total_seconds();
+      w -> max_dmg /= w -> swing_time.total_seconds();
       w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
-      w -> swing_time = 1.0;
+      w -> swing_time = timespan_t::from_seconds(1.0);
     }
 
     // Force melee swing to restart if necessary
@@ -4097,7 +4098,7 @@ struct starfall_t : public druid_spell_t
     /*target_t* t = target -> cast_target();
     if ( t -> adds_nearby > 0 )
       starfall_star -> execute();*/
-    stats -> add_tick( d -> time_to_tick.total_seconds() );
+    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -4400,7 +4401,7 @@ struct treants_spell_t : public druid_spell_t
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
 
-    p -> pet_treants -> summon( 30.0 );
+    p -> pet_treants -> summon( timespan_t::from_seconds(30.0) );
   }
 };
 
@@ -4970,7 +4971,7 @@ void druid_t::init_buffs()
 
   buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
   buffs_primal_madness_bear = new      buff_t( this, "primal_madness_bear" );
-  buffs_berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds(15.0 + glyphs.berserk -> mod_additive( P_DURATION )) );
+  buffs_berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds(15.0) + timespan_t::from_seconds(glyphs.berserk -> mod_additive( P_DURATION )) );
   buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, timespan_t::from_seconds(6.0) );
 
   // simple
@@ -5012,7 +5013,7 @@ void druid_t::init_scaling()
 {
   player_t::init_scaling();
 
-  equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time;
+  equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time.total_seconds();
 
   scales_with[ STAT_WEAPON_SPEED  ] = 0;
 
@@ -5382,7 +5383,7 @@ void druid_t::reset()
 
 // druid_t::regen ===========================================================
 
-void druid_t::regen( double periodicity )
+void druid_t::regen( timespan_t periodicity )
 {
   int resource_type = primary_resource();
 
@@ -5394,12 +5395,12 @@ void druid_t::regen( double periodicity )
   else if ( resource_type == RESOURCE_MANA )
   {
     if ( buffs_glyph_of_innervate -> check() )
-      resource_gain( RESOURCE_MANA, buffs_glyph_of_innervate -> value() * periodicity, gains_glyph_of_innervate );
+      resource_gain( RESOURCE_MANA, buffs_glyph_of_innervate -> value() * periodicity.total_seconds(), gains_glyph_of_innervate );
   }
   else if ( resource_type == RESOURCE_RAGE )
   {
     if ( buffs_enrage -> up() )
-      resource_gain( RESOURCE_RAGE, 1.0 * periodicity, gains_enrage );
+      resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds(), gains_enrage );
 
     uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
                                 resource_max    [ RESOURCE_RAGE ] );
@@ -5410,16 +5411,19 @@ void druid_t::regen( double periodicity )
 
 // druid_t::available =======================================================
 
-double druid_t::available() const
+timespan_t druid_t::available() const
 {
   if ( primary_resource() != RESOURCE_ENERGY )
-    return 0.1;
+    return timespan_t::from_seconds(0.1);
 
   double energy = resource_current[ RESOURCE_ENERGY ];
 
-  if ( energy > 25 ) return 0.1;
+  if ( energy > 25 ) return timespan_t::from_seconds(0.1);
 
-  return std::max( ( 25 - energy ) / energy_regen_per_second(), 0.1 );
+  return std::max(
+    timespan_t::from_seconds(( 25 - energy ) / energy_regen_per_second()),
+    timespan_t::from_seconds(0.1)
+  );
 }
 
 // druid_t::combat_begin ====================================================

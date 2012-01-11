@@ -13,13 +13,13 @@ struct enemy_t : public player_t
 {
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
-  double waiting_time;
+  timespan_t waiting_time;
 
   enemy_t( sim_t* s, const std::string& n, race_type r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
-    waiting_time( 1.0 )
+    waiting_time( timespan_t::from_seconds(1.0) )
 
   {
     player_t** last = &( sim -> target_list );
@@ -75,7 +75,7 @@ struct enemy_t : public player_t
   virtual void combat_end();
   virtual void recalculate_health();
   virtual action_expr_t* create_expression( action_t* action, const std::string& type );
-  virtual double available() const { return waiting_time; }
+  virtual timespan_t available() const { return waiting_time; }
 };
 
 // ==========================================================================
@@ -249,17 +249,17 @@ struct spell_aoe_t : public spell_t
 struct summon_add_t : public spell_t
 {
   std::string add_name;
-  double summoning_duration;
+  timespan_t summoning_duration;
   pet_t* pet;
 
   summon_add_t( player_t* player, const std::string& options_str ) :
     spell_t( "summon_add", player, RESOURCE_MANA, SCHOOL_PHYSICAL ),
-    add_name( "" ), summoning_duration( 0 ), pet( 0 )
+    add_name( "" ), summoning_duration( timespan_t::zero ), pet( 0 )
   {
     option_t options[] =
     {
       { "name",     OPT_STRING, &add_name             },
-      { "duration", OPT_FLT,    &summoning_duration   },
+      { "duration", OPT_TIMESPAN,    &summoning_duration   },
       { "cooldown", OPT_TIMESPAN,    &cooldown -> duration },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -331,9 +331,9 @@ void enemy_t::init()
 
 void enemy_t::init_base()
 {
-  waiting_time = std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds );
-  if ( waiting_time < 1.0 )
-    waiting_time = 1.0;
+  waiting_time = timespan_t::from_seconds(std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds ));
+  if ( waiting_time < timespan_t::from_seconds(1.0) )
+    waiting_time = timespan_t::from_seconds(1.0);
 
   health_per_stamina = 10;
 
@@ -438,7 +438,7 @@ void enemy_t::init_actions()
     if ( action -> name_str == "snapshot_stats" ) continue;
     if ( action -> name_str.find( "auto_attack" ) != std::string::npos )
       continue;
-    waiting_time = 1.0;
+    waiting_time = timespan_t::from_seconds(1.0);
     break;
   }
 }
