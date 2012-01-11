@@ -5217,9 +5217,9 @@ struct dot_t
   event_t* tick_event;
   dot_t* next;
   int num_ticks, current_tick, added_ticks, ticking;
-  double added_seconds;
-  double ready;
-  double miss_time;
+  timespan_t added_seconds;
+  timespan_t ready;
+  timespan_t miss_time;
   timespan_t time_to_tick;
   std::string name_str;
 

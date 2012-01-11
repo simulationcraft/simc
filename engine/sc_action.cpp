@@ -1110,7 +1110,7 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
       dot -> num_ticks = hasted_num_ticks();
       dot -> current_tick = 0;
       dot -> added_ticks = 0;
-      dot -> added_seconds = 0;
+      dot -> added_seconds = timespan_t::zero;
       if ( dot -> ticking )
       {
         assert( dot -> tick_event );
@@ -1336,7 +1336,7 @@ void action_t::update_ready()
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)",
                        player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
 
-      dot -> miss_time = sim -> current_time;
+      dot -> miss_time = timespan_t::from_seconds(sim -> current_time);
     }
   }
 }
@@ -1705,8 +1705,8 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       virtual int evaluate()
       {
         dot_t* dot = action -> dot();
-        if ( dot -> miss_time == -1 ||
-             action -> sim -> current_time >= ( dot -> miss_time + action -> last_reaction_time.total_seconds() ) )
+        if ( dot -> miss_time == timespan_t::min ||
+             action -> sim -> current_time >= ( dot -> miss_time + action -> last_reaction_time ).total_seconds() )
         {
           result_num = 1;
         }

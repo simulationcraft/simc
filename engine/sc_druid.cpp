@@ -3944,14 +3944,14 @@ struct starfire_t : public druid_spell_t
       {
         if ( mf -> ticking )
         {
-          if ( mf -> added_seconds < 9.0 )
+          if ( mf -> added_seconds < timespan_t::from_seconds(9.0) )
             mf -> extend_duration_seconds( 3.0 );
           else
             mf -> extend_duration_seconds( 0.0 );
         }
         else if ( sf -> ticking )
         {
-          if ( sf -> added_seconds < 9.0 )
+          if ( sf -> added_seconds < timespan_t::from_seconds(9.0) )
             sf -> extend_duration_seconds( 3.0 );
           else
             sf -> extend_duration_seconds( 0.0 );
@@ -4017,12 +4017,12 @@ struct starfire_t : public druid_spell_t
 
       if ( td -> dots_moonfire -> ticking )
       {
-        if ( td -> dots_moonfire -> added_seconds > 8 )
+        if ( td -> dots_moonfire -> added_seconds > timespan_t::from_seconds(8) )
           return false;
       }
       else if ( td -> dots_sunfire -> ticking )
       {
-        if ( td -> dots_sunfire -> added_seconds > 8 )
+        if ( td -> dots_sunfire -> added_seconds > timespan_t::from_seconds(8) )
           return false;
       }
       else

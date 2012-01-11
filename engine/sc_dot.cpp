@@ -12,7 +12,7 @@
 dot_t::dot_t( const std::string& n, player_t* p ) :
   sim( p -> sim ), player( p ), action( 0 ), tick_event( 0 ), next( 0 ),
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-  added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ),time_to_tick( timespan_t::zero ), name_str( n )
+  added_seconds( timespan_t::zero ), ready( timespan_t::min ), miss_time( timespan_t::min ),time_to_tick( timespan_t::zero ), name_str( n )
 {}
 // dot_t::cancel ===================================================
 
@@ -82,7 +82,7 @@ void dot_t::extend_duration_seconds( double extra_seconds )
 
   action -> player_buff();
 
-  added_seconds += extra_seconds;
+  added_seconds += timespan_t::from_seconds(extra_seconds);
 
   int new_remaining_ticks = action -> hasted_num_ticks( duration_left );
   num_ticks += ( new_remaining_ticks - old_remaining_ticks );
@@ -111,7 +111,7 @@ void dot_t::recalculate_ready()
   // new finish time for the DoT, start from the time of the next tick and add the time
   // for the remaining ticks to that event.
   int remaining_ticks = num_ticks - current_tick;
-  ready = tick_event -> time + action -> tick_time().total_seconds() * ( remaining_ticks - 1 );
+  ready = timespan_t::from_seconds(tick_event -> time) + action -> tick_time() * ( remaining_ticks - 1 );
 }
 
 // dot_t::refresh_duration ==================================================
@@ -131,7 +131,7 @@ void dot_t::refresh_duration()
 
   current_tick = 0;
   added_ticks = 0;
-  added_seconds = 0;
+  added_seconds = timespan_t::zero;
   num_ticks = action -> hasted_num_ticks();
 
   // tick zero dots tick when refreshed
@@ -147,7 +147,7 @@ timespan_t dot_t::remains()
 {
   if ( ! action ) return timespan_t::zero;
   if ( ! ticking ) return timespan_t::zero;
-  return timespan_t::from_seconds(ready - player -> sim -> current_time);
+  return ready - timespan_t::from_seconds(player -> sim -> current_time);
 }
 
 // dot_t::reset =============================================================
@@ -158,9 +158,9 @@ void dot_t::reset()
   current_tick=0;
   added_ticks=0;
   ticking=0;
-  added_seconds=0.0;
-  ready=-1;
-  miss_time=-1;
+  added_seconds=timespan_t::zero;
+  ready=timespan_t::min;
+  miss_time=timespan_t::min;
 }
 
 // dot_t::schedule_tick =====================================================
