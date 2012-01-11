@@ -735,7 +735,7 @@ struct hunter_attack_t : public attack_t
   virtual double cost() const;
   virtual void   consume_resource();
   virtual void   execute();
-  virtual double execute_time() const;
+  virtual timespan_t execute_time() const;
   virtual double swing_haste() const;
   virtual void   player_buff();
 };
@@ -837,9 +837,9 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       base_td = piercing_shots_dmg / dot() -> num_ticks;
     }
 
-    virtual double travel_time()
+    virtual timespan_t travel_time()
     {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+      return timespan_t::from_seconds( sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ) );
     }
 
     virtual double total_td_multiplier() const { return target_multiplier; }
@@ -1886,12 +1886,12 @@ void hunter_attack_t::execute()
 
 // hunter_attack_t::execute_time ============================================
 
-double hunter_attack_t::execute_time() const
+timespan_t hunter_attack_t::execute_time() const
 {
-  double t = attack_t::execute_time();
+  timespan_t t = attack_t::execute_time();
 
-  if ( t == 0  || base_execute_time < 0 )
-    return 0;
+  if ( t == timespan_t::zero  || base_execute_time < 0 )
+    return timespan_t::zero;
 
   return t;
 }
@@ -1954,10 +1954,10 @@ struct ranged_t : public hunter_attack_t
     special = false;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
-      return 0.01;
+      return timespan_t::from_seconds(0.01);
 
     return hunter_attack_t::execute_time();
   }
@@ -2018,7 +2018,7 @@ struct auto_shot_t : public hunter_attack_t
     return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     double h = 1.0;
 
@@ -2142,12 +2142,12 @@ struct aimed_shot_t : public hunter_attack_t
     return hunter_attack_t::cost();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     hunter_t* p = player -> cast_hunter();
 
     if ( p -> buffs_master_marksman_fire -> check() )
-      return 0;
+      return timespan_t::zero;
 
     return hunter_attack_t::execute_time();
   }

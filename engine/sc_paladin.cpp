@@ -1019,9 +1019,9 @@ struct melee_t : public paladin_attack_t
     base_execute_time = p -> main_hand_weapon.swing_time;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    if ( ! player -> in_combat ) return 0.01;
+    if ( ! player -> in_combat ) return timespan_t::from_seconds(0.01);
     return paladin_attack_t::execute_time();
   }
 
@@ -1108,9 +1108,9 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
       int nticks = dot() -> num_ticks;
       base_td = total_dot_dmg / nticks;
     }
-    virtual double travel_time()
+    virtual timespan_t travel_time()
     {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+      return timespan_t::from_seconds( sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ) );
     }
     virtual void target_debuff( player_t* /* t */, int /* dmg_type */ )
     {
@@ -2242,10 +2242,10 @@ struct exorcism_t : public paladin_spell_t
     return paladin_spell_t::cost();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     paladin_t* p = player->cast_paladin();
-    if ( p -> buffs_the_art_of_war -> check() ) return 0.0;
+    if ( p -> buffs_the_art_of_war -> check() ) return timespan_t::zero;
     return paladin_spell_t::execute_time();
   }
 
@@ -2550,14 +2550,14 @@ struct divine_light_t : public paladin_heal_t
     trigger_tower_of_radiance( this );
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     paladin_t* p = player -> cast_paladin();
 
-    double t = paladin_heal_t::execute_time();
+    timespan_t t = paladin_heal_t::execute_time();
 
     if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().time_value().total_seconds();
+      t += p -> buffs_infusion_of_light -> effect1().time_value();
 
     return t;
   }
@@ -2584,14 +2584,14 @@ struct flash_of_light_t : public paladin_heal_t
     trigger_tower_of_radiance( this );
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     paladin_t* p = player -> cast_paladin();
 
-    double t = paladin_heal_t::execute_time();
+    timespan_t t = paladin_heal_t::execute_time();
 
     if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().time_value().total_seconds();
+      t += p -> buffs_infusion_of_light -> effect1().time_value();
 
     return t;
   }
@@ -2619,14 +2619,14 @@ struct holy_light_t : public paladin_heal_t
     p -> buffs_infusion_of_light -> expire();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     paladin_t* p = player -> cast_paladin();
 
-    double t = paladin_heal_t::execute_time();
+    timespan_t t = paladin_heal_t::execute_time();
 
     if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().time_value().total_seconds();
+      t += p -> buffs_infusion_of_light -> effect1().time_value();
 
     return t;
   }
@@ -2680,14 +2680,14 @@ struct holy_radiance_t : public paladin_heal_t
       p -> resource_gain( RESOURCE_HOLY_POWER, 1, p -> gains_hp_tower_of_radiance );
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     paladin_t* p = player -> cast_paladin();
 
-    double t = paladin_heal_t::execute_time();
+    timespan_t t = paladin_heal_t::execute_time();
 
     if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().time_value().total_seconds();
+      t += p -> buffs_infusion_of_light -> effect1().time_value();
 
     return t;
   }

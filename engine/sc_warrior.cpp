@@ -500,7 +500,7 @@ struct deep_wounds_t : public warrior_attack_t
     dot_behavior  = DOT_REFRESH;
   }
   virtual double total_td_multiplier() const { return target_multiplier; }
-  virtual double travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
+  virtual timespan_t travel_time() { return timespan_t::from_seconds(sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay )); }
   virtual void impact( player_t* t, int impact_result, double deep_wounds_dmg )
   {
     warrior_attack_t::impact( t, impact_result, 0 );
@@ -742,9 +742,9 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
       base_td = total_dot_dmg / dot() -> num_ticks;
     }
 
-    virtual double travel_time()
+    virtual timespan_t travel_time()
     {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+      return timespan_t::from_seconds(sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ));
     }
 
     virtual void target_debuff( player_t* /* t */, int /* dmg_type */ )
@@ -1147,20 +1147,20 @@ struct melee_t : public warrior_attack_t
     return h;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double t = warrior_attack_t::execute_time();
+    timespan_t t = warrior_attack_t::execute_time();
 
     if ( player -> in_combat )
       return t;
 
     if ( weapon -> slot == SLOT_MAIN_HAND || sync_weapons )
-      return 0.02;
+      return timespan_t::from_seconds(0.02);
 
     // Before combat begins, unless we are under sync_weapons the OH is
     // delayed by half its swing time.
 
-    return 0.02 + t / 2;
+    return timespan_t::from_seconds(0.02) + t / 2;
   }
 
   virtual void execute()
@@ -2490,12 +2490,12 @@ struct slam_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     warrior_t* p = player -> cast_warrior();
 
     if ( p -> buffs_bloodsurge -> check() )
-      return 0.0;
+      return timespan_t::zero;
 
     return warrior_attack_t::execute_time();
   }

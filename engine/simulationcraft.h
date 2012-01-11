@@ -1195,11 +1195,6 @@ public:
     return *this;
   }
 
-  timespan_t operator*(const int32_t right) {
-    time *= right;
-    return *this;
-  }
-
   friend timespan_t operator+(const timespan_t left, const timespan_t right);
   friend timespan_t operator-(const timespan_t left, const timespan_t right);
   friend timespan_t operator*(const timespan_t left, const double right);
@@ -1223,7 +1218,12 @@ public:
   static timespan_t from_millis( const uint32_t millis ) { return timespan_t((time_t)millis); }
   static timespan_t from_millis( const int32_t millis ) { return timespan_t((time_t)millis); }
   static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_seconds( const double seconds ) { return timespan_t((time_t)(seconds * MILLIS_PER_SECOND)); }
+  static timespan_t from_seconds( const double seconds ) {
+    double millis = seconds * MILLIS_PER_SECOND; // FIXME: Either fix all double time handling, or use ticks instead of millis.
+    if(millis > 0 && millis < 1) // Compensate for imprecision in double handling.
+      millis = 1;
+    return timespan_t((time_t)(millis));
+  }
   static timespan_t from_minutes( const double minutes ) { return timespan_t((time_t)(minutes * MILLIS_PER_MINUTE)); }
 
   static const timespan_t zero;
@@ -4922,10 +4922,10 @@ public:
   virtual double total_haste() const  { return haste();           }
   virtual double haste() const        { return 1.0;               }
   virtual timespan_t gcd() const;
-  virtual double execute_time() const { return base_execute_time; }
-  virtual double tick_time() const;
+  virtual timespan_t execute_time() const { return timespan_t::from_seconds(base_execute_time); }
+  virtual timespan_t tick_time() const;
   virtual int    hasted_num_ticks( double d=-1 ) const;
-  virtual double travel_time();
+  virtual timespan_t travel_time();
   virtual void   player_buff();
   virtual void   player_tick() {}
   virtual void   target_debuff( player_t* t, int dmg_type );
@@ -5038,7 +5038,7 @@ public:
   virtual double haste() const;
   virtual double total_haste() const  { return swing_haste();           }
   virtual double swing_haste() const;
-  virtual double execute_time() const;
+  virtual timespan_t execute_time() const;
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual int    build_table( double* chances, int* results );
@@ -5072,7 +5072,7 @@ public:
   // Spell Overrides
   virtual double haste() const;
   virtual timespan_t gcd() const;
-  virtual double execute_time() const;
+  virtual timespan_t execute_time() const;
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
   virtual void   calculate_result();
@@ -5898,7 +5898,7 @@ struct wait_for_cooldown_t : public wait_action_base_t
   action_t* a;
   wait_for_cooldown_t( player_t* player, const char* cd_name );
   virtual bool usable_moving() { return a -> usable_moving(); }
-  virtual double execute_time() const;
+  virtual timespan_t execute_time() const;
 };
 
 inline buff_t* buff_t::find( sim_t* s, const std::string& name ) { return find( s -> buff_list, name ); }

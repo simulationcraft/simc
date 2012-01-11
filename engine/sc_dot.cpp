@@ -75,7 +75,7 @@ void dot_t::extend_duration_seconds( double extra_seconds )
   double old_haste_factor = 1.0 / action -> player_haste;
 
   // Multiply with tick_time() for the duration left after the next tick
-  double duration_left = old_remaining_ticks * action -> tick_time();
+  double duration_left = old_remaining_ticks * action -> tick_time().total_seconds();
 
   // Add the added seconds
   duration_left += extra_seconds;
@@ -111,7 +111,7 @@ void dot_t::recalculate_ready()
   // new finish time for the DoT, start from the time of the next tick and add the time
   // for the remaining ticks to that event.
   int remaining_ticks = num_ticks - current_tick;
-  ready = tick_event -> time + action -> tick_time() * ( remaining_ticks - 1 );
+  ready = tick_event -> time + action -> tick_time().total_seconds() * ( remaining_ticks - 1 );
 }
 
 // dot_t::refresh_duration ==================================================
@@ -179,7 +179,7 @@ void dot_t::schedule_tick()
     }
   }
 
-  time_to_tick = action -> tick_time();
+  time_to_tick = action -> tick_time().total_seconds();
 
   tick_event = new ( sim ) dot_tick_event_t( sim, this, time_to_tick );
 

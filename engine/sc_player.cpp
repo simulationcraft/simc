@@ -5240,7 +5240,7 @@ struct wait_fixed_t : public wait_action_base_t
     time_expr = action_expr_t::parse( this, sec_str );
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     int result = time_expr -> evaluate();
     assert( result == TOK_NUM ); ( void )result;
@@ -5248,7 +5248,7 @@ struct wait_fixed_t : public wait_action_base_t
 
     if ( wait <= 0 ) wait = player -> available();
 
-    return wait;
+    return timespan_t::from_seconds(wait);
   }
 };
 
@@ -5260,23 +5260,23 @@ struct wait_until_ready_t : public wait_fixed_t
     wait_fixed_t( player, options_str )
   {}
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double wait = wait_fixed_t::execute_time();
-    double remains = 0;
+    timespan_t wait = wait_fixed_t::execute_time();
+    timespan_t remains = timespan_t::zero;
 
     for ( action_t* a = player -> action_list; a; a = a -> next )
     {
       if ( a -> background ) continue;
 
-      remains = a -> cooldown -> remains();
-      if ( remains > 0 && remains < wait ) wait = remains;
+      remains = timespan_t::from_seconds(a -> cooldown -> remains());
+      if ( remains > timespan_t::zero && remains < wait ) wait = remains;
 
-      remains = a -> dot() -> remains();
-      if ( remains > 0 && remains < wait ) wait = remains;
+      remains = timespan_t::from_seconds(a -> dot() -> remains());
+      if ( remains > timespan_t::zero && remains < wait ) wait = remains;
     }
 
-    if ( wait <= 0 ) wait = player -> available();
+    if ( wait <= timespan_t::zero ) wait = timespan_t::from_seconds(player -> available());
 
     return wait;
   }
@@ -5291,8 +5291,8 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name 
   assert( a );
 }
 
-double wait_for_cooldown_t::execute_time() const
-{ return wait_cd -> remains(); }
+timespan_t wait_for_cooldown_t::execute_time() const
+{ return timespan_t::from_seconds( wait_cd -> remains() ); }
 
 // Use Item Action ==========================================================
 
@@ -6199,7 +6199,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         struct duration_expr_t : public action_expr_t
         {
           duration_expr_t( action_t* a ) : action_expr_t( a, "dot_duration", TOK_NUM ) {}
-          virtual int evaluate() { result_num = action -> num_ticks * action -> tick_time(); return TOK_NUM; }
+          virtual int evaluate() { result_num = action -> num_ticks * action -> tick_time().total_seconds(); return TOK_NUM; }
         };
         return new duration_expr_t( a );
       }

@@ -396,7 +396,7 @@ struct mage_spell_t : public spell_t
   virtual double cost() const;
   virtual double haste() const;
   virtual void   execute();
-  virtual double execute_time() const;
+  virtual timespan_t execute_time() const;
   virtual void   impact( player_t* t, int impact_result, double travel_dmg );
   virtual void   consume_resource();
   virtual void   player_buff();
@@ -953,9 +953,9 @@ static void trigger_ignite( spell_t* s, double dmg )
       // FIXME: Is a is_hit check necessary here?
       base_td = ignite_dmg / dot() -> num_ticks;
     }
-    virtual double travel_time()
+    virtual timespan_t travel_time()
     {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+      return timespan_t::from_seconds( sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ) );
     }
     virtual double total_td_multiplier() const { return 1.0; }
   };
@@ -1161,7 +1161,7 @@ void mage_spell_t::execute()
   if ( ( base_dd_max > 0 || base_td > 0 ) && ! background )
     p -> buffs_arcane_potency -> decrement();
 
-  if ( ! channeled && spell_t::execute_time() > 0 )
+  if ( ! channeled && spell_t::execute_time() > timespan_t::zero )
     p -> buffs_presence_of_mind -> expire();
 
   if ( fof_frozen )
@@ -1198,14 +1198,14 @@ void mage_spell_t::execute()
 
 // mage_spell_t::execute_time ===============================================
 
-double mage_spell_t::execute_time() const
+timespan_t mage_spell_t::execute_time() const
 {
   mage_t* p = player -> cast_mage();
 
-  double t = spell_t::execute_time();
+  timespan_t t = spell_t::execute_time();
 
-  if ( ! channeled && t > 0 && p -> buffs_presence_of_mind -> up() )
-    return 0;
+  if ( ! channeled && t > timespan_t::zero && p -> buffs_presence_of_mind -> up() )
+    return timespan_t::zero;
 
   return t;
 }
@@ -1454,11 +1454,11 @@ struct arcane_blast_t : public mage_spell_t
     trigger_tier12_mirror_image( this );
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     mage_t* p = player -> cast_mage();
-    double t = mage_spell_t::execute_time();
-    t += p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect3().time_value().total_seconds();
+    timespan_t t = mage_spell_t::execute_time();
+    t += p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect3().time_value();
     return t;
   }
 
@@ -2041,11 +2041,11 @@ struct fireball_t : public mage_spell_t
     return mage_spell_t::cost();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
-      return 0;
+      return timespan_t::zero;
     return mage_spell_t::execute_time();
   }
 
@@ -2341,15 +2341,15 @@ struct frostbolt_t : public mage_spell_t
     trigger_tier12_mirror_image( this );
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     mage_t* p = player -> cast_mage();
-    double ct = mage_spell_t::execute_time();
+    timespan_t ct = mage_spell_t::execute_time();
     if ( p -> talents.early_frost -> rank() )
     {
       if ( ! p -> cooldowns_early_frost -> remains() )
       {
-        ct += p -> talents.early_frost -> effect1().time_value().total_seconds();
+        ct += p -> talents.early_frost -> effect1().time_value();
       }
     }
     return ct;
@@ -2420,11 +2420,11 @@ struct frostfire_bolt_t : public mage_spell_t
     return mage_spell_t::cost();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
-      return 0;
+      return timespan_t::zero;
     return mage_spell_t::execute_time();
   }
 

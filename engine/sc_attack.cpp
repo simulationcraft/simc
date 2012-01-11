@@ -104,14 +104,14 @@ double attack_t::haste() const
 
 // attack_t::execute_time ===================================================
 
-double attack_t::execute_time() const
+timespan_t attack_t::execute_time() const
 {
-  if ( base_execute_time == 0 ) return 0;
+  if ( base_execute_time == 0 ) return timespan_t::zero;
 
   if ( ! harmful && ! player -> in_combat )
-    return 0;
+    return timespan_t::zero;
 
-  return base_execute_time * swing_haste();
+  return timespan_t::from_seconds(base_execute_time * swing_haste());
 }
 
 // attack_t::player_buff ====================================================

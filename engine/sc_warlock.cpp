@@ -2169,11 +2169,11 @@ struct shadow_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double h = warlock_spell_t::execute_time();
+    timespan_t h = warlock_spell_t::execute_time();
     warlock_t* p = player -> cast_warlock();
-    if ( p -> buffs_shadow_trance -> up() ) h = 0;
+    if ( p -> buffs_shadow_trance -> up() ) h = timespan_t::zero;
     if ( p -> buffs_backdraft -> up() )
     {
       h *= 1.0 + p -> buffs_backdraft -> effect1().percent();
@@ -2328,9 +2328,9 @@ struct chaos_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double h = warlock_spell_t::execute_time();
+    timespan_t h = warlock_spell_t::execute_time();
     warlock_t* p = player -> cast_warlock();
 
     if ( p -> buffs_backdraft -> up() )
@@ -2612,10 +2612,10 @@ struct drain_life_t : public warlock_spell_t
       trigger_everlasting_affliction( this );
   }
 
-  virtual double tick_time() const
+  virtual timespan_t tick_time() const
   {
     warlock_t* p = player -> cast_warlock();
-    double t = warlock_spell_t::tick_time();
+    timespan_t t = warlock_spell_t::tick_time();
 
     if ( p -> buffs_soulburn -> up() )
       t *= 1.0 - 0.5;
@@ -3066,10 +3066,10 @@ struct incinerate_t : public warlock_spell_t
     }
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     warlock_t* p = player -> cast_warlock();
-    double h = warlock_spell_t::execute_time();
+    timespan_t h = warlock_spell_t::execute_time();
 
     if ( p -> buffs_molten_core -> up() )
     {
@@ -3167,10 +3167,10 @@ struct soul_fire_t : public warlock_spell_t
     trigger_tier12_4pc_caster( this );
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     warlock_t* p = player -> cast_warlock();
-    double t = warlock_spell_t::execute_time();
+    timespan_t t = warlock_spell_t::execute_time();
 
     if ( p -> buffs_decimation -> up() )
     {
@@ -3178,11 +3178,11 @@ struct soul_fire_t : public warlock_spell_t
     }
     if ( p -> buffs_empowered_imp -> up() )
     {
-      t = 0;
+      t = timespan_t::zero;
     }
     if ( p -> buffs_soulburn -> up() )
     {
-      t = 0;
+      t = timespan_t::zero;
     }
 
     return t;
@@ -3428,12 +3428,12 @@ struct summon_main_pet_t : public summon_pet_t
     return summon_pet_t::ready();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     warlock_t* p = player -> cast_warlock();
 
     if ( p -> buffs_soulburn -> up() )
-      return 0.0;
+      return timespan_t::zero;
 
     return warlock_spell_t::execute_time();
   }
@@ -3757,9 +3757,9 @@ struct hand_of_guldan_t : public warlock_spell_t
     }
   }
 
-  virtual double travel_time()
+  virtual timespan_t travel_time()
   {
-    return 0.2;
+    return timespan_t::from_seconds(0.2);
   }
 };
 

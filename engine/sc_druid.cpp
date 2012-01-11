@@ -503,7 +503,7 @@ struct druid_heal_t : public heal_t
   virtual double cost() const;
   virtual double cost_reduction() const;
   virtual void   execute();
-  virtual double execute_time() const;
+  virtual timespan_t execute_time() const;
   virtual double haste() const;
   virtual void   player_buff();
 };
@@ -532,7 +532,7 @@ struct druid_spell_t : public spell_t
   virtual double cost() const;
   virtual double cost_reduction() const;
   virtual void   execute();
-  virtual double execute_time() const;
+  virtual timespan_t execute_time() const;
   virtual double haste() const;
   virtual void   player_tick();
   virtual void   player_buff();
@@ -1129,9 +1129,9 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
       base_td = total_dot_dmg / dot() -> num_ticks;
     }
 
-    virtual double travel_time()
+    virtual timespan_t travel_time()
     {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+      return timespan_t::from_seconds( sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ) );
     }
 
     virtual void target_debuff( player_t* /* t */, int /* dmg_type */ )
@@ -1328,10 +1328,10 @@ struct cat_melee_t : public druid_cat_attack_t
     player_multiplier *= 1.0 + p -> buffs_savage_roar -> value();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
-      return 0.01;
+      return timespan_t::from_seconds(0.01);
 
     return druid_cat_attack_t::execute_time();
   }
@@ -2208,10 +2208,10 @@ struct bear_melee_t : public druid_bear_attack_t
     may_crit    = true;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
-      return 0.01;
+      return timespan_t::from_seconds(0.01);
 
     return druid_bear_attack_t::execute_time();
   }
@@ -2619,12 +2619,12 @@ void druid_heal_t::execute()
 
 // druid_heal_t::execute_time ===============================================
 
-double druid_heal_t::execute_time() const
+timespan_t druid_heal_t::execute_time() const
 {
   druid_t* p = player -> cast_druid();
 
   if ( p -> buffs_natures_swiftness -> check() )
-    return 0;
+    return timespan_t::zero;
 
   return heal_t::execute_time();
 }
@@ -2872,12 +2872,12 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     druid_t* p = player -> cast_druid();
 
     if ( p -> buffs_tree_of_life -> check() )
-      return 0;
+      return timespan_t::zero;
 
     return druid_heal_t::execute_time();
   }
@@ -3071,7 +3071,7 @@ double druid_spell_t::cost() const
 {
   druid_t* p = player -> cast_druid();
 
-  if ( harmful && p -> buffs_omen_of_clarity -> check() && spell_t::execute_time() )
+  if ( harmful && p -> buffs_omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero )
     return 0;
 
   double c = spell_t::cost();
@@ -3098,12 +3098,12 @@ double druid_spell_t::haste() const
 
 // druid_spell_t::execute_time ==============================================
 
-double druid_spell_t::execute_time() const
+timespan_t druid_spell_t::execute_time() const
 {
   druid_t* p = player -> cast_druid();
 
   if ( p -> buffs_natures_swiftness -> check() )
-    return 0;
+    return timespan_t::zero;
 
   return spell_t::execute_time();
 }
@@ -3140,7 +3140,7 @@ void druid_spell_t::consume_resource()
   spell_t::consume_resource();
   druid_t* p = player -> cast_druid();
 
-  if ( harmful && p -> buffs_omen_of_clarity -> up() && spell_t::execute_time() )
+  if ( harmful && p -> buffs_omen_of_clarity -> up() && spell_t::execute_time() != timespan_t::zero )
   {
     // Treat the savings like a mana gain.
     double amount = spell_t::cost();
@@ -4163,12 +4163,12 @@ struct starsurge_t : public druid_spell_t
     p -> buffs_shooting_stars -> expire();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     druid_t* p = player -> cast_druid();
 
     if ( p -> buffs_shooting_stars -> up() )
-      return 0;
+      return timespan_t::zero;
 
     return druid_spell_t::execute_time();
   }
@@ -4538,9 +4538,9 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double t = druid_spell_t::execute_time();
+    timespan_t t = druid_spell_t::execute_time();
     druid_t* p = player ->cast_druid();
 
     if ( p -> buffs_tree_of_life -> check() )

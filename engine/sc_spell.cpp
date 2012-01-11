@@ -80,20 +80,20 @@ timespan_t spell_t::gcd() const
 
 // spell_t::execute_time ====================================================
 
-double spell_t::execute_time() const
+timespan_t spell_t::execute_time() const
 {
   double t = base_execute_time;
 
   if ( ! harmful && ! player -> in_combat )
-    return 0;
+    return timespan_t::zero;
 
   if ( player -> buffs.corruption_absolute -> up() )
-    return 0;
+    return timespan_t::zero;
 
-  if ( t <= 0 ) return 0;
+  if ( t <= 0 ) return timespan_t::zero;
   t *= haste();
 
-  return t;
+  return timespan_t::from_seconds(t);
 }
 
 // spell_t::player_buff =====================================================

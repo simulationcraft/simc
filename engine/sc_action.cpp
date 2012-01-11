@@ -476,11 +476,11 @@ timespan_t action_t::gcd() const
 
 // action_t::travel_time ====================================================
 
-double action_t::travel_time()
+timespan_t action_t::travel_time()
 {
-  if ( travel_speed == 0 ) return 0;
+  if ( travel_speed == 0 ) return timespan_t::zero;
 
-  if ( player -> distance == 0 ) return 0;
+  if ( player -> distance == 0 ) return timespan_t::zero;
 
   double t = player -> distance / travel_speed;
 
@@ -491,7 +491,7 @@ double action_t::travel_time()
     t = rng_travel -> gauss( t, v );
   }
 
-  return t;
+  return timespan_t::from_seconds(t);
 }
 
 // action_t::player_buff ====================================================
@@ -1219,7 +1219,7 @@ void action_t::schedule_execute()
     log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
   }
 
-  time_to_execute = execute_time();
+  time_to_execute = execute_time().total_seconds();
 
   execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
 
@@ -1261,7 +1261,7 @@ void action_t::schedule_execute()
 
 void action_t::schedule_travel( player_t* t )
 {
-  time_to_travel = travel_time();
+  time_to_travel = travel_time().total_seconds();
 
   snapshot();
 
@@ -1347,7 +1347,7 @@ bool action_t::usable_moving()
 {
   bool usable = true;
 
-  if ( execute_time() > 0 )
+  if ( execute_time() > timespan_t::zero )
     return false;
 
   if ( channeled )
@@ -1648,7 +1648,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct cast_time_expr_t : public action_expr_t
     {
       cast_time_expr_t( action_t* a ) : action_expr_t( a, "cast_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> execute_time(); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> execute_time().total_seconds(); return TOK_NUM; }
     };
     return new cast_time_expr_t( this );
   }
@@ -1666,7 +1666,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct tick_time_expr_t : public action_expr_t
     {
       tick_time_expr_t( action_t* a ) : action_expr_t( a, "tick_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> dot() -> ticking ) ? action -> dot() -> action -> tick_time() : 0; return TOK_NUM; }
+      virtual int evaluate() { result_num = ( ( action -> dot() -> ticking ) ? action -> dot() -> action -> tick_time() : timespan_t::zero ).total_seconds(); return TOK_NUM; }
     };
     return new tick_time_expr_t( this );
   }
@@ -1684,7 +1684,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct travel_time_expr_t : public action_expr_t
     {
       travel_time_expr_t( action_t* a ) : action_expr_t( a, "travel_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> travel_time(); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> travel_time().total_seconds(); return TOK_NUM; }
     };
     return new travel_time_expr_t( this );
   }
@@ -1852,14 +1852,14 @@ double action_t::ppm_proc_chance( double PPM ) const
 
 // action_t::tick_time ======================================================
 
-double action_t::tick_time() const
+timespan_t action_t::tick_time() const
 {
   double t = base_tick_time;
   if ( channeled || hasted_ticks )
   {
     t *= player_haste;
   }
-  return t;
+  return timespan_t::from_seconds(t);
 }
 
 // action_t::hasted_num_ticks ===============================================

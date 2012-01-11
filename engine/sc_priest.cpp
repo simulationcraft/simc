@@ -531,7 +531,7 @@ public:
 
     priest_t* p = player -> cast_priest();
 
-    if ( execute_time() > 0 )
+    if ( execute_time() > timespan_t::zero )
       p -> buffs_borrowed_time -> expire();
 
     if ( ! ( background || proc ) )
@@ -771,7 +771,7 @@ struct priest_heal_t : public heal_t
     if ( ! ( background || proc ) )
       p -> trigger_cauterizing_flame();
 
-    if ( execute_time() > 0 )
+    if ( execute_time() > timespan_t::zero )
       p -> buffs_borrowed_time -> expire();
   }
 
@@ -2161,7 +2161,7 @@ void priest_spell_t::execute()
 
   priest_t* p = player -> cast_priest();
 
-  if ( execute_time() > 0 )
+  if ( execute_time() > timespan_t::zero )
     p -> buffs_borrowed_time -> expire();
 }
 
@@ -2368,9 +2368,9 @@ struct mind_blast_t : public priest_spell_t
     target_crit       += p -> buffs_mind_spike -> value() * p -> buffs_mind_spike -> check();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double a = priest_spell_t::execute_time();
+    timespan_t a = priest_spell_t::execute_time();
 
     priest_t* p = player -> cast_priest();
 
@@ -3367,12 +3367,12 @@ struct flash_heal_t : public priest_heal_t
     return c;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     priest_t* p = player -> cast_priest();
 
     if ( p -> buffs_surge_of_light -> check() )
-      return 0;
+      return timespan_t::zero;
 
     return priest_heal_t::execute_time();
   }
@@ -3500,11 +3500,11 @@ struct greater_heal_t : public priest_heal_t
       player_crit += p -> talents.renewed_hope -> effect1().percent();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     priest_t* p = player -> cast_priest();
 
-    double c = priest_heal_t::execute_time();
+    timespan_t c = priest_heal_t::execute_time();
 
     if ( p -> buffs_serendipity -> check() )
       c *= 1.0 + p -> buffs_serendipity -> effect1().percent();
@@ -4199,11 +4199,11 @@ struct prayer_of_healing_t : public priest_heal_t
       player_multiplier *= 1.0 + p -> buffs_chakra_sanctuary -> effect1().percent();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     priest_t* p = player -> cast_priest();
 
-    double c = priest_heal_t::execute_time();
+    timespan_t c = priest_heal_t::execute_time();
 
     if ( p -> buffs_serendipity -> check() )
       c *= 1.0 + p -> buffs_serendipity -> effect1().percent();

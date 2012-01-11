@@ -961,9 +961,9 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
       base_td = total_dot_dmg / dot() -> num_ticks;
     }
-    virtual double travel_time()
+    virtual timespan_t travel_time()
     {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+      return timespan_t::from_seconds( sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ) );
     }
     virtual void target_debuff( player_t* /* t */ , int /* dmg_type */ )
     {
@@ -1448,12 +1448,12 @@ struct melee_t : public rogue_attack_t
       base_hit -= 0.19;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double t = rogue_attack_t::execute_time();
+    timespan_t t = rogue_attack_t::execute_time();
 
     if ( ! player -> in_combat )
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds(0.2) ) : t/2 ) : timespan_t::from_seconds(0.01);
 
     return t;
   }

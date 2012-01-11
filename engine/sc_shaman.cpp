@@ -376,7 +376,7 @@ struct shaman_spell_t : public spell_t
   virtual double cost() const;
   virtual double cost_reduction() const;
   virtual void   consume_resource();
-  virtual double execute_time() const;
+  virtual timespan_t execute_time() const;
   virtual void   execute();
   virtual void   player_buff();
   virtual double haste() const;
@@ -385,7 +385,7 @@ struct shaman_spell_t : public spell_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( p -> buffs_spiritwalkers_grace -> check() || execute_time() == 0 )
+    if ( p -> buffs_spiritwalkers_grace -> check() || execute_time() == timespan_t::zero )
       return true;
 
     return spell_t::usable_moving();
@@ -531,7 +531,7 @@ struct earth_elemental_pet_t : public pet_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
     virtual void execute() { player -> distance = 1; }
-    virtual double execute_time() const { return ( player -> distance / 10.0 ); }
+    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> distance / 10.0 ); }
     virtual bool ready() { return ( player -> distance > 1 ); }
     virtual bool usable_moving() { return true; }
   };
@@ -728,7 +728,7 @@ struct fire_elemental_pet_t : public pet_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
     virtual void execute() { player -> distance = 1; }
-    virtual double execute_time() const { return ( player -> distance / 10.0 ); }
+    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> distance / 10.0 ); }
     virtual bool ready() { return ( player -> distance > 1 ); }
     virtual timespan_t gcd() const { return timespan_t::zero; }
     virtual bool usable_moving() { return true; }
@@ -777,7 +777,7 @@ struct fire_elemental_pet_t : public pet_t
       // auto attack an execute time
       if ( ! background && player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
-        double time_to_next_hit = player -> main_hand_attack -> execute_time();
+        double time_to_next_hit = player -> main_hand_attack -> execute_time().total_seconds();
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
     }
@@ -1811,12 +1811,12 @@ struct melee_t : public shaman_attack_t
     return h;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double t = shaman_attack_t::execute_time();
+    timespan_t t = shaman_attack_t::execute_time();
     if ( ! player -> in_combat )
     {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds(0.2) ) : t/2 ) : timespan_t::from_seconds(0.01);
     }
     return t;
   }
@@ -2137,11 +2137,11 @@ void shaman_spell_t::consume_resource()
 
 // shaman_spell_t::execute_time =============================================
 
-double shaman_spell_t::execute_time() const
+timespan_t shaman_spell_t::execute_time() const
 {
   shaman_t* p = player -> cast_shaman();
   if ( p -> buffs_natures_swiftness -> up() && school == SCHOOL_NATURE && base_execute_time < 10.0 )
-    return 1.0 + p -> buffs_natures_swiftness -> base_value();
+    return timespan_t::from_seconds(1.0 + p -> buffs_natures_swiftness -> base_value());
 
   return spell_t::execute_time();
 }
@@ -2206,7 +2206,7 @@ void shaman_spell_t::execute()
   // Shamans have specialized swing timer reset system, where every cast time spell
   // resets the swing timers, _IF_ the spell is not maelstromable, or the maelstrom
   // weapon stack is zero.
-  if ( execute_time() > 0 )
+  if ( execute_time() > timespan_t::zero )
   {
     if ( ! maelstrom || p -> buffs_maelstrom_weapon -> check() == 0 )
     {
@@ -2221,14 +2221,14 @@ void shaman_spell_t::execute()
       // Non-maelstromable spell finishes casting, reset swing timers
       if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
-        time_to_next_hit = player -> main_hand_attack -> execute_time();
+        time_to_next_hit = player -> main_hand_attack -> execute_time().total_seconds();
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
 
       // Offhand
       if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
       {
-        time_to_next_hit = player -> off_hand_attack -> execute_time();
+        time_to_next_hit = player -> off_hand_attack -> execute_time().total_seconds();
         player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
     }
@@ -2244,7 +2244,7 @@ void shaman_spell_t::schedule_execute()
     log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
   }
 
-  time_to_execute = execute_time();
+  time_to_execute = execute_time().total_seconds();
 
   execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
 
@@ -2379,9 +2379,9 @@ struct chain_lightning_t : public shaman_spell_t
     }
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double t    = shaman_spell_t::execute_time();
+    timespan_t t    = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
 
     if ( p -> buffs_elemental_mastery_insta -> up() )
@@ -2636,16 +2636,16 @@ struct lava_burst_t : public shaman_spell_t
       p -> buffs_lava_surge -> expire();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double t = shaman_spell_t::execute_time();
+    timespan_t t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
 
     if ( p -> buffs_elemental_mastery_insta -> up() )
       t *= 1.0 + p -> buffs_elemental_mastery_insta -> mod_additive( P_CAST_TIME );
 
     if ( p -> buffs_lava_surge -> up() )
-      return 0;
+      return timespan_t::zero;
 
     return t;
   }
@@ -2748,9 +2748,9 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double t = shaman_spell_t::execute_time();
+    timespan_t t = shaman_spell_t::execute_time();
     shaman_t* p = player -> cast_shaman();
     if ( p -> buffs_elemental_mastery_insta -> up() )
       t *= 1.0 + p -> buffs_elemental_mastery_insta -> mod_additive( P_CAST_TIME );
