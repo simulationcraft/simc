@@ -2805,7 +2805,8 @@ struct buff_t : public spell_id_t
   double default_chance;
   timespan_t last_start;
   timespan_t last_trigger;
-  double start_intervals_sum, trigger_intervals_sum, iteration_uptime_sum;
+  double start_intervals_sum, trigger_intervals_sum;
+  timespan_t iteration_uptime_sum;
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
   double benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
@@ -5535,8 +5536,8 @@ struct gain_t
 struct proc_t
 {
   double count;
-  double last_proc;
-  double interval_sum;
+  timespan_t last_proc;
+  timespan_t interval_sum;
   double interval_count;
 
   double frequency;
@@ -5547,19 +5548,19 @@ struct proc_t
   proc_t* next;
 
   proc_t( sim_t* s, const std::string& n ) :
-    count( 0 ), last_proc( 0 ), interval_sum( 0 ), interval_count( 0 ),
+    count( 0 ), last_proc( timespan_t::zero ), interval_sum( timespan_t::zero ), interval_count( 0 ),
     frequency( 0 ), sim( s ), player( 0 ), name_str( n ), next( 0 )
   {}
 
   void occur()
   {
     count++;
-    if ( last_proc > 0 && last_proc < sim -> current_time.total_seconds() )
+    if ( last_proc > timespan_t::zero && last_proc < sim -> current_time )
     {
-      interval_sum += sim -> current_time.total_seconds() - last_proc;
+      interval_sum += sim -> current_time - last_proc;
       interval_count++;
     }
-    last_proc = sim -> current_time.total_seconds();
+    last_proc = sim -> current_time;
   }
 
   void merge( const proc_t* other )
@@ -5572,7 +5573,7 @@ struct proc_t
   void analyze( const sim_t* sim )
   {
     count /= sim -> iterations;
-    if ( interval_count > 0 ) frequency = interval_sum / interval_count;
+    if ( interval_count > 0 ) frequency = interval_sum.total_seconds() / interval_count;
   }
 
   const char* name() const { return name_str.c_str(); }

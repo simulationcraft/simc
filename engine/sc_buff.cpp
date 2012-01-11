@@ -215,7 +215,7 @@ void buff_t::init_buff_shared()
   last_trigger = timespan_t::min;
   start_intervals_sum = 0;
   trigger_intervals_sum = 0;
-  iteration_uptime_sum = 0;
+  iteration_uptime_sum = timespan_t::zero;
   up_count = 0;
   down_count = 0;
   start_intervals = 0;
@@ -388,7 +388,7 @@ buff_t::~buff_t()
 
 void buff_t::combat_begin()
 {
-  iteration_uptime_sum = 0;
+  iteration_uptime_sum = timespan_t::zero;
 }
 
 // buff_t::combat_end ==========================================================
@@ -396,9 +396,9 @@ void buff_t::combat_begin()
 void buff_t::combat_end()
 {
   if ( player )
-    uptime_pct.add( player -> iteration_fight_length != timespan_t::zero ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length.total_seconds() : 0 );
+    uptime_pct.add( player -> iteration_fight_length != timespan_t::zero ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length : 0 );
   else
-    uptime_pct.add( sim -> current_time != timespan_t::zero ? 100.0 * iteration_uptime_sum / sim -> current_time.total_seconds() : 0 );
+    uptime_pct.add( sim -> current_time != timespan_t::zero ? 100.0 * iteration_uptime_sum / sim -> current_time : 0 );
 }
 
 // buff_t::may_react ========================================================
@@ -766,7 +766,7 @@ void buff_t::expire()
   aura_loss();
   if ( last_start >= timespan_t::zero )
   {
-    iteration_uptime_sum += (sim -> current_time - last_start).total_seconds();
+    iteration_uptime_sum += sim -> current_time - last_start;
   }
 
   if ( sim -> target -> resource_base[ RESOURCE_HEALTH ] == 0 ||
