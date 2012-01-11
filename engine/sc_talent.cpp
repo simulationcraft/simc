@@ -820,7 +820,7 @@ double spell_id_t::effect_period( uint32_t effect_num ) const
 
   uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> dbc.effect( effect_id ) -> period();
+  return s_player -> dbc.effect( effect_id ) -> period().total_seconds();
 }
 
 double spell_id_t::effect_radius( uint32_t effect_num ) const

@@ -252,8 +252,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       {
       case A_PERIODIC_DAMAGE:
         s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
-        if ( e -> period() )
-          s << " every " << e -> period() << " seconds";
+        if ( e -> period() != timespan_t::zero )
+          s << " every " << e -> period().total_seconds() << " seconds";
         break;
       case A_PROC_TRIGGER_SPELL:
         if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
@@ -263,8 +263,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
         if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
         {
           s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
-          if ( e -> period() )
-            s << " every " << e -> period() << " seconds";
+          if ( e -> period() != timespan_t::zero )
+            s << " every " << e -> period().total_seconds() << " seconds";
         }
         break;
       case A_ADD_FLAT_MODIFIER:

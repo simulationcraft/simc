@@ -754,7 +754,7 @@ static void trigger_restless_blades( rogue_attack_t* a )
   if ( ! a -> requires_combo_points )
     return;
 
-  double reduction = ( p -> talents.restless_blades -> effect1().time_interval().total_seconds() ) * a -> combo_points_spent;
+  double reduction = ( p -> talents.restless_blades -> effect1().time_value().total_seconds() ) * a -> combo_points_spent;
 
   p -> cooldowns_adrenaline_rush -> ready -= reduction;
   p -> cooldowns_killing_spree -> ready   -= reduction;
@@ -2696,7 +2696,7 @@ struct shadow_dance_t : public rogue_attack_t
 
     p -> buffs_shadow_dance -> buff_duration += p -> glyphs.shadow_dance -> mod_additive( P_DURATION );
     if ( p -> set_bonus.tier13_4pc_melee() )
-      p -> buffs_shadow_dance -> buff_duration += p -> spells.tier13_4pc -> effect1().time_interval().total_seconds();
+      p -> buffs_shadow_dance -> buff_duration += p -> spells.tier13_4pc -> effect1().time_value().total_seconds();
 
     parse_options( NULL, options_str );
   }
@@ -2769,7 +2769,7 @@ struct vanish_t : public rogue_attack_t
 
     harmful = false;
 
-    cooldown -> duration += p -> talents.elusiveness -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> talents.elusiveness -> effect1().time_value().total_seconds();
 
     parse_options( NULL, options_str );
   }
@@ -3179,7 +3179,7 @@ struct adrenaline_rush_buff_t : public buff_t
     cooldown -> duration = 0;
     buff_duration += p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION );
     if ( p -> set_bonus.tier13_4pc_melee() )
-      buff_duration += p -> spells.tier13_4pc -> effect2().time_interval().total_seconds();
+      buff_duration += p -> spells.tier13_4pc -> effect2().time_value().total_seconds();
   }
 
   virtual bool trigger( int, double, double )
@@ -3324,7 +3324,7 @@ struct vendetta_buff_t : public buff_t
   {
     buff_duration *= 1.0 + p -> glyphs.vendetta -> mod_additive( P_DURATION );
     if ( p -> set_bonus.tier13_4pc_melee() )
-      buff_duration += p -> spells.tier13_4pc -> effect3().time_interval().total_seconds();
+      buff_duration += p -> spells.tier13_4pc -> effect3().time_value().total_seconds();
   }
 
   virtual bool trigger( int, double, double )

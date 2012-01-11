@@ -1901,7 +1901,7 @@ public:
 
   int                        base_value() const { return _base_value; }
   double percent() const { return _base_value / 100.0; }
-  timespan_t time_interval() const { return timespan_t::from_millis(_base_value); }
+  timespan_t time_value() const { return timespan_t::from_millis(_base_value); }
   double resource( int type ) const
   {
     switch( type )
@@ -1928,7 +1928,7 @@ public:
 
   double                     coeff() const { return _coeff; }
 
-  double                     period() const { return _amplitude / 1000.0; }
+  timespan_t                 period() const { return timespan_t::from_millis(_amplitude); }
 
   double                     radius() const { return _radius; }
   double                     radius_max() const { return _radius_max; }

@@ -1280,7 +1280,7 @@ struct bladestorm_t : public warrior_attack_t
     channeled = true;
     tick_zero = true;
 
-    cooldown -> duration += p -> glyphs.bladestorm -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> glyphs.bladestorm -> effect1().time_value().total_seconds();
 
     bladestorm_mh = new bladestorm_tick_t( p, "bladestorm_mh" );
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
@@ -1422,8 +1422,8 @@ struct charge_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown -> duration += p -> talents.juggernaut -> effect3().time_interval().total_seconds();
-    cooldown -> duration += p -> glyphs.rapid_charge -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> talents.juggernaut -> effect3().time_value().total_seconds();
+    cooldown -> duration += p -> glyphs.rapid_charge -> effect1().time_value().total_seconds();
 
     stancemask = STANCE_BATTLE;
 
@@ -2390,7 +2390,7 @@ struct shockwave_t : public warrior_attack_t
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
-    cooldown -> duration += p -> glyphs.shockwave -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> glyphs.shockwave -> effect1().time_value().total_seconds();
   }
 
   virtual void execute()
@@ -2461,7 +2461,7 @@ struct slam_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.improved_slam -> effect1().time_interval().total_seconds();
+    base_execute_time += p -> talents.improved_slam -> effect1().time_value().total_seconds();
     may_crit = false;
 
     // Ensure we include racial expertise
@@ -2730,7 +2730,7 @@ struct battle_shout_t : public warrior_spell_t
 
     rage_gain = p -> dbc.spell( effect3().trigger_spell_id() ) -> effect1().resource( RESOURCE_RAGE ) + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
     cooldown = player -> get_cooldown( "shout" );
-    cooldown -> duration = 10 + spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_interval().total_seconds();
+    cooldown -> duration = 10 + spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_value().total_seconds();
 
     if ( p -> set_bonus.tier12_2pc_melee() )
     {
@@ -2750,7 +2750,7 @@ struct battle_shout_t : public warrior_spell_t
     {
       for ( player_t* q = sim -> player_list; q; q = q -> next )
       {
-        q -> buffs.battle_shout -> buff_duration = duration() + p -> glyphs.battle -> effect1().time_interval().total_seconds();
+        q -> buffs.battle_shout -> buff_duration = duration() + p -> glyphs.battle -> effect1().time_value().total_seconds();
         q -> buffs.battle_shout -> trigger( 1, effect_average( 1 ) );
       }
 
@@ -2779,7 +2779,7 @@ struct commanding_shout_t : public warrior_spell_t
     rage_gain = 20 + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
 
     cooldown = player -> get_cooldown( "shout" );
-    cooldown -> duration = spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_interval().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_value().total_seconds();
 
     if ( p -> set_bonus.tier12_2pc_melee() )
     {
@@ -3008,7 +3008,7 @@ struct shield_block_t : public warrior_spell_t
     harmful = false;
 
     if ( p -> talents.shield_mastery -> ok() )
-      cooldown -> duration += p -> talents.shield_mastery -> effect1().time_interval().total_seconds();
+      cooldown -> duration += p -> talents.shield_mastery -> effect1().time_value().total_seconds();
   }
 
   virtual void execute()

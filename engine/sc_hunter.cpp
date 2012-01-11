@@ -2307,7 +2307,7 @@ struct black_arrow_t : public hunter_attack_t
 
     cooldown = p -> get_cooldown( "traps" );
     cooldown -> duration = spell_id_t::cooldown();
-    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value().total_seconds();
 
     base_multiplier *= 1.0 + p -> talents.trap_mastery -> effect1().percent();
     // Testing shows BA crits for 2.09x dmg with the crit dmg meta gem, this
@@ -2395,7 +2395,7 @@ struct explosive_trap_t : public hunter_attack_t
     //TODO: Split traps cooldown into fire/frost/snakes
     cooldown = p -> get_cooldown( "traps" );
     cooldown -> duration = spell_id_t::cooldown();
-    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value().total_seconds();
 
     may_miss=false;
 
@@ -3217,7 +3217,7 @@ struct bestial_wrath_t : public hunter_spell_t
     parse_options( NULL, options_str );
     check_talent( p -> talents.bestial_wrath -> rank() );
 
-    cooldown -> duration += p -> glyphs.bestial_wrath -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> glyphs.bestial_wrath -> effect1().time_value().total_seconds();
     cooldown -> duration *=  ( 1.0 + p -> talents.longevity -> effect1().percent() );
     harmful = false;
   }
@@ -3436,7 +3436,7 @@ struct rapid_fire_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.posthaste -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> talents.posthaste -> effect1().time_value().total_seconds();
 
     harmful = false;
   }

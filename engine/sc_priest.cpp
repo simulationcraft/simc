@@ -1747,7 +1747,7 @@ struct dispersion_t : public priest_spell_t
     harmful           = false;
     tick_may_crit     = false;
 
-    cooldown -> duration += p -> glyphs.dispersion -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> glyphs.dispersion -> effect1().time_value().total_seconds();
   }
 
   virtual void tick( dot_t* d )
@@ -2120,7 +2120,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     cooldown = p -> cooldowns_shadow_fiend;
     cooldown -> duration = p -> active_spells.shadow_fiend -> cooldown() +
-                           p -> talents.veiled_shadows -> effect2().time_interval().total_seconds() +
+                           p -> talents.veiled_shadows -> effect2().time_value().total_seconds() +
                            ( p -> set_bonus.tier12_2pc_caster() ? -75.0 : 0.0 );
 
     harmful = false;
@@ -2270,7 +2270,7 @@ struct mind_blast_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    cooldown -> duration += p -> talents.improved_mind_blast -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> talents.improved_mind_blast -> effect1().time_value().total_seconds();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2819,7 +2819,7 @@ struct holy_fire_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    base_execute_time += p -> talents.divine_fury -> effect1().time_interval().total_seconds();
+    base_execute_time += p -> talents.divine_fury -> effect1().time_value().total_seconds();
 
     base_hit += p -> glyphs.divine_accuracy -> effect1().percent();
 
@@ -2906,7 +2906,7 @@ struct penance_t : public priest_spell_t
     base_tick_time = 1.0;
     hasted_ticks   = false;
 
-    cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().time_interval().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().time_value().total_seconds();
 
     tick_spell = new penance_tick_t( p );
   }
@@ -2939,7 +2939,7 @@ struct smite_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.divine_fury -> effect1().time_interval().total_seconds();
+    base_execute_time += p -> talents.divine_fury -> effect1().time_value().total_seconds();
     base_hit += p -> glyphs.divine_accuracy -> effect1().percent();
 
     can_trigger_atonement = true;
@@ -2978,8 +2978,8 @@ struct smite_t : public priest_spell_t
     if ( p -> talents.train_of_thought -> rank() &&
          p -> rng_train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
     {
-      if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> spell( 1 ).effect2().time_interval().total_seconds() )
-        p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> spell( 1 ).effect2().time_interval().total_seconds();
+      if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> spell( 1 ).effect2().time_value().total_seconds() )
+        p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> spell( 1 ).effect2().time_value().total_seconds();
       else
         p -> cooldowns_penance -> reset();
 
@@ -3153,7 +3153,7 @@ struct circle_of_healing_t : public priest_heal_t
     cooldown -> duration = spell_id_t::cooldown();
 
     if ( p -> buffs_chakra_sanctuary -> up() )
-      cooldown -> duration +=  p -> buffs_chakra_sanctuary -> effect2().time_interval().total_seconds();
+      cooldown -> duration +=  p -> buffs_chakra_sanctuary -> effect2().time_value().total_seconds();
 
     // Choose Heal Target
     heal_target.clear();
@@ -3246,7 +3246,7 @@ struct divine_hymn_t : public priest_heal_t
     harmful = false;
     channeled = true;
 
-    cooldown -> duration += p -> talents.heavenly_voice -> effect2().time_interval().total_seconds();
+    cooldown -> duration += p -> talents.heavenly_voice -> effect2().time_value().total_seconds();
 
     divine_hymn_tick = new divine_hymn_tick_t( p );
     divine_hymn_tick -> target_count = effect2().base_value();
@@ -3394,7 +3394,7 @@ struct guardian_spirit_t : public priest_heal_t
 
     harmful = false;
 
-    cooldown -> duration += p -> glyphs.guardian_spirit -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> glyphs.guardian_spirit -> effect1().time_value().total_seconds();
   }
 
   virtual void execute()
@@ -3415,7 +3415,7 @@ struct greater_heal_t : public priest_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.divine_fury -> effect1().time_interval().total_seconds();
+    base_execute_time += p -> talents.divine_fury -> effect1().time_value().total_seconds();
 
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
   }
@@ -3537,7 +3537,7 @@ struct _heal_t : public priest_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.divine_fury -> effect1().time_interval().total_seconds();
+    base_execute_time += p -> talents.divine_fury -> effect1().time_value().total_seconds();
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
 
     // FIXME: Check Spell when it's imported into the dbc
@@ -3928,7 +3928,7 @@ struct penance_heal_t : public priest_heal_t
     hasted_ticks   = false;
 
     cooldown = p -> cooldowns_penance;
-    cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().time_interval().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().time_value().total_seconds();
 
     penance_tick = new penance_heal_tick_t( p );
     penance_tick -> target = target;
@@ -3988,7 +3988,7 @@ struct power_word_shield_t : public priest_absorb_t
     // Soul Warding does not lower the CD to 1; instead it takes us
     // down to the GCD.  If the player is 2/2 in Soul Warding, set our
     // cooldown to 0 instead of to 1.0.
-    cooldown -> duration += p -> talents.soul_warding -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> talents.soul_warding -> effect1().time_value().total_seconds();
     if ( p -> talents.soul_warding -> rank() == 2 )
     {
       cooldown -> duration = 0;
@@ -4347,7 +4347,7 @@ struct renew_t : public priest_heal_t
     }
 
     if ( p -> talents.rapid_renewal -> rank() )
-      trigger_gcd += p -> talents.rapid_renewal -> effect1().time_interval().total_seconds();
+      trigger_gcd += p -> talents.rapid_renewal -> effect1().time_value().total_seconds();
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )

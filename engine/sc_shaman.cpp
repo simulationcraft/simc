@@ -3501,7 +3501,7 @@ struct magma_totem_t : public shaman_totem_t
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     // Spell id 8188 does the triggering of magma totem's aura
-    base_tick_time    = p -> dbc.spell( 8188 ) -> effect1().period();
+    base_tick_time    = p -> dbc.spell( 8188 ) -> effect1().period().total_seconds();
     num_ticks         = ( int ) ( totem_duration / base_tick_time );
 
     // Fill out scaling data
@@ -4079,7 +4079,7 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     // Extend buff duration with t13 4pc healer
     shaman_t* p = player -> cast_shaman();
     p -> buffs_spiritwalkers_grace -> buff_duration = p -> buffs_spiritwalkers_grace -> duration() + 
-                                                      p -> sets -> set( SET_T13_4PC_HEAL ) -> effect1().time_interval().total_seconds();
+                                                      p -> sets -> set( SET_T13_4PC_HEAL ) -> effect1().time_value().total_seconds();
   }
 
   virtual void execute()

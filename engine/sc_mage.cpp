@@ -1458,7 +1458,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     double t = mage_spell_t::execute_time();
-    t += p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect3().time_interval().total_seconds();
+    t += p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect3().time_value().total_seconds();
     return t;
   }
 
@@ -1525,7 +1525,7 @@ struct arcane_explosion_t : public mage_spell_t
 
     if ( p -> talents.improved_arcane_explosion -> rank() )
     {
-      trigger_gcd += p -> talents.improved_arcane_explosion -> effect1().time_interval().total_seconds();
+      trigger_gcd += p -> talents.improved_arcane_explosion -> effect1().time_value().total_seconds();
     }
   }
 
@@ -1649,7 +1649,7 @@ struct arcane_power_t : public mage_spell_t
 
     if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + 
-      p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect1().time_interval().total_seconds() *
+      p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect1().time_value().total_seconds() *
         (1.0 + p -> talents.arcane_flows -> effect1().percent());
 
     mage_spell_t::execute();
@@ -1791,7 +1791,7 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( td -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
 
     if ( p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration + p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect2().time_interval().total_seconds();
+      cooldown -> duration = orig_duration + p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect2().time_value().total_seconds();
 
     mage_spell_t::execute();
   }
@@ -1930,7 +1930,7 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    cooldown -> duration += p -> glyphs.dragons_breath -> effect1().time_interval().total_seconds();
+    cooldown -> duration += p -> glyphs.dragons_breath -> effect1().time_value().total_seconds();
   }
 };
 
@@ -1950,7 +1950,7 @@ struct evocation_t : public mage_spell_t
     harmful           = false;
     hasted_ticks      = false;
 
-    cooldown -> duration += p -> talents.arcane_flows -> effect2().time_interval().total_seconds();
+    cooldown -> duration += p -> talents.arcane_flows -> effect2().time_value().total_seconds();
   }
 
   virtual void tick( dot_t* d )
@@ -2349,7 +2349,7 @@ struct frostbolt_t : public mage_spell_t
     {
       if ( ! p -> cooldowns_early_frost -> remains() )
       {
-        ct += p -> talents.early_frost -> effect1().time_interval().total_seconds();
+        ct += p -> talents.early_frost -> effect1().time_value().total_seconds();
       }
     }
     return ct;
@@ -2637,7 +2637,7 @@ struct icy_veins_t : public mage_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration +
-        p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect3().time_interval().total_seconds() *
+        p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect3().time_value().total_seconds() *
         (1.0 + p -> talents.ice_floes -> effect1().percent());
     consume_resource();
     update_ready();
