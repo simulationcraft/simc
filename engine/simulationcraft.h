@@ -3647,7 +3647,7 @@ public:
   }
   timespan_t occurs()  const { return timespan_t::from_seconds(( reschedule_time != 0 ) ? reschedule_time : time); }
   timespan_t remains() const { return occurs() - timespan_t::from_seconds(sim -> current_time); }
-  virtual void reschedule( double new_time );
+  virtual void reschedule( timespan_t new_time );
   virtual void execute() = 0;
   virtual ~event_t() {}
 

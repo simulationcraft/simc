@@ -3025,7 +3025,7 @@ struct wound_poison_t : public rogue_poison_t
         event_t*& e = p -> expirations_.wound_poison;
 
         if ( e )
-          e -> reschedule( 15.0 );
+          e -> reschedule( timespan_t::from_seconds(15.0) );
         else
           e = new ( sim ) expiration_t( sim, p, target );
       }

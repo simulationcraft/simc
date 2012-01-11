@@ -777,7 +777,7 @@ struct fire_elemental_pet_t : public pet_t
       // auto attack an execute time
       if ( ! background && player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
-        double time_to_next_hit = player -> main_hand_attack -> execute_time().total_seconds();
+        timespan_t time_to_next_hit = player -> main_hand_attack -> execute_time();
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
     }
@@ -2216,19 +2216,19 @@ void shaman_spell_t::execute()
                        name_str.c_str(), maelstrom, p -> buffs_maelstrom_weapon -> check() );
       }
 
-      double time_to_next_hit;
+      timespan_t time_to_next_hit;
 
       // Non-maelstromable spell finishes casting, reset swing timers
       if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
-        time_to_next_hit = player -> main_hand_attack -> execute_time().total_seconds();
+        time_to_next_hit = player -> main_hand_attack -> execute_time();
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
 
       // Offhand
       if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
       {
-        time_to_next_hit = player -> off_hand_attack -> execute_time().total_seconds();
+        time_to_next_hit = player -> off_hand_attack -> execute_time();
         player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
     }

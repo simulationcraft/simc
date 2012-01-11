@@ -1243,7 +1243,7 @@ void action_t::schedule_execute()
         time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
         time_to_next_hit -= timespan_t::from_seconds( sim -> current_time );
         time_to_next_hit += time_to_execute;
-        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit.total_seconds() );
+        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
       // Offhand
       if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
@@ -1251,7 +1251,7 @@ void action_t::schedule_execute()
         time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
         time_to_next_hit -= timespan_t::from_seconds( sim -> current_time );
         time_to_next_hit += time_to_execute;
-        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit.total_seconds() );
+        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
     }
   }
@@ -1295,7 +1295,7 @@ void action_t::reschedule_execute( timespan_t time )
 
   if ( delta_time > timespan_t::zero )
   {
-    execute_event -> reschedule( time.total_seconds() );
+    execute_event -> reschedule( time );
   }
   else // Impossible to reschedule events "early".  Need to be canceled and re-created.
   {

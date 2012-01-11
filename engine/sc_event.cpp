@@ -66,9 +66,9 @@ void* event_t::operator new( std::size_t /* size */ ) throw()
   return NULL;
 }
 
-void event_t::reschedule( double new_time )
+void event_t::reschedule( timespan_t new_time )
 {
-  reschedule_time = sim -> current_time + new_time;
+  reschedule_time = sim -> current_time + new_time.total_seconds();
 
   if ( sim -> debug ) log_t::output( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time );
 

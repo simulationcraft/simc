@@ -616,7 +616,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( extra_seconds > timespan_t::zero )
   {
-    expiration -> reschedule( (expiration -> remains() + extra_seconds).total_seconds() );
+    expiration -> reschedule( expiration -> remains() + extra_seconds );
 
     if ( sim -> debug )
       log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
@@ -696,7 +696,7 @@ void buff_t::refresh( int    stacks,
     assert( expiration );
     if ( expiration -> occurs() < timespan_t::from_seconds(sim -> current_time) + buff_duration )
     {
-      expiration -> reschedule( buff_duration.total_seconds() );
+      expiration -> reschedule( buff_duration );
     }
   }
 }
