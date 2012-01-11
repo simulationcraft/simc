@@ -1236,22 +1236,22 @@ void action_t::schedule_execute()
     {
       // While an ability is casting, the auto_attack is paused
       // So we simply reschedule the auto_attack by the ability's casttime
-      double time_to_next_hit;
+      timespan_t time_to_next_hit;
       // Mainhand
       if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
         time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
-        time_to_next_hit -= sim -> current_time;
-        time_to_next_hit += time_to_execute.total_seconds();
-        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+        time_to_next_hit -= timespan_t::from_seconds( sim -> current_time );
+        time_to_next_hit += time_to_execute;
+        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit.total_seconds() );
       }
       // Offhand
       if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
       {
         time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
-        time_to_next_hit -= sim -> current_time;
-        time_to_next_hit += time_to_execute.total_seconds();
-        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+        time_to_next_hit -= timespan_t::from_seconds( sim -> current_time );
+        time_to_next_hit += time_to_execute;
+        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit.total_seconds() );
       }
     }
   }
@@ -1289,11 +1289,11 @@ void action_t::reschedule_execute( timespan_t time )
     log_t::output( sim, "%s reschedules execute for %s", player -> name(), name() );
   }
 
-  double delta_time = sim -> current_time + time.total_seconds() - execute_event -> occurs();
+  timespan_t delta_time = timespan_t::from_seconds(sim -> current_time) + time - execute_event -> occurs();
 
-  time_to_execute += timespan_t::from_seconds(delta_time);
+  time_to_execute += delta_time;
 
-  if ( delta_time > 0 )
+  if ( delta_time > timespan_t::zero )
   {
     execute_event -> reschedule( time.total_seconds() );
   }

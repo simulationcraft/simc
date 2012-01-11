@@ -3245,7 +3245,7 @@ void player_t::schedule_ready( double delta_time,
   if ( was_executing && was_executing -> gcd() > timespan_t::zero && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
     // Record the last ability use time for cast_react
-    cast_delay_occurred = readying -> occurs();
+    cast_delay_occurred = readying -> occurs().total_seconds();
     cast_delay_reaction = rngs.lag_brain -> gauss( brain_lag, brain_lag_stddev );
     if ( sim -> debug )
     {

@@ -4021,7 +4021,7 @@ double warrior_t::assess_damage( double            amount,
     if ( main_hand_attack && main_hand_attack -> execute_event )
     {
       double swing_time = main_hand_attack -> time_to_execute.total_seconds();
-      double max_reschedule = ( main_hand_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
+      double max_reschedule = ( main_hand_attack -> execute_event -> occurs().total_seconds() - 0.20 * swing_time ) - sim -> current_time;
 
       if ( max_reschedule > 0 )
       {

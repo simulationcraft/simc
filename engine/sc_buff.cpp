@@ -443,7 +443,7 @@ double buff_t::remains()
   }
   if ( expiration )
   {
-    return expiration -> occurs() - sim -> current_time;
+    return expiration -> occurs().total_seconds() - sim -> current_time;
   }
   return -1;
 }
@@ -694,7 +694,7 @@ void buff_t::refresh( int    stacks,
   if ( buff_duration > 0 )
   {
     assert( expiration );
-    if ( expiration -> occurs() < sim -> current_time + buff_duration )
+    if ( expiration -> occurs().total_seconds() < sim -> current_time + buff_duration )
     {
       expiration -> reschedule( buff_duration );
     }

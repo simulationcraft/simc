@@ -3641,8 +3641,8 @@ public:
   {
     if ( ! name ) name = "unknown";
   }
-  double occurs()  const { return ( reschedule_time != 0 ) ? reschedule_time : time; }
-  timespan_t remains() const { return timespan_t::from_seconds(occurs() - sim -> current_time); }
+  timespan_t occurs()  const { return timespan_t::from_seconds(( reschedule_time != 0 ) ? reschedule_time : time); }
+  timespan_t remains() const { return occurs() - timespan_t::from_seconds(sim -> current_time); }
   virtual void reschedule( double new_time );
   virtual void execute() = 0;
   virtual ~event_t() {}
