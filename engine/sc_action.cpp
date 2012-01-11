@@ -56,7 +56,7 @@ void action_t::init_action_t_()
   ability_lag_stddev             = 0.0;
   rp_gain                        = 0.0;
   min_gcd                        = timespan_t::zero;
-  trigger_gcd                    = timespan_t::from_seconds(player -> base_gcd);
+  trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
   weapon_power_mod               = 1.0/14.0;
   direct_power_mod               = 0.0;
@@ -1735,8 +1735,8 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
                          action -> sim -> current_time );
         }
 
-        if ( ! action -> player -> cast_delay_occurred ||
-             action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction < action -> sim -> current_time )
+        if ( action -> player -> cast_delay_occurred == timespan_t::zero ||
+             action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction < timespan_t::from_seconds(action -> sim -> current_time) )
         {
           result_num = 1;
         }
@@ -1844,7 +1844,7 @@ double action_t::ppm_proc_chance( double PPM ) const
   {
     timespan_t time = channeled ? dot() -> time_to_tick : time_to_execute;
 
-    if ( time == timespan_t::zero ) time = timespan_t::from_seconds(player -> base_gcd);
+    if ( time == timespan_t::zero ) time = player -> base_gcd;
 
     return ( PPM * time.total_minutes() );
   }

@@ -3412,7 +3412,7 @@ void warrior_t::init_base()
     base_block += spec.sentinel -> effect_base_value( 3 ) / 100.0;
   }
 
-  base_gcd = 1.5;
+  base_gcd = timespan_t::from_seconds(1.5);
 }
 
 // warrior_t::init_scaling ==================================================

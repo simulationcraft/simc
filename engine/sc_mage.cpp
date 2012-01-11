@@ -1894,7 +1894,7 @@ struct deep_freeze_t : public mage_spell_t
 
     fof_frozen = true;
     base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effect1().percent();
-    trigger_gcd = timespan_t::from_seconds(p -> base_gcd);
+    trigger_gcd = p -> base_gcd;
 
     if ( ! dtr && player -> has_dtr )
     {

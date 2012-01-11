@@ -393,7 +393,7 @@ player_t::player_t( sim_t*             s,
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ),
-  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
+  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( 0 ), base_gcd( timespan_t::from_seconds(1.5) ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
@@ -461,7 +461,7 @@ player_t::player_t( sim_t*             s,
   food( FOOD_NONE ),
   // Events
   executing( 0 ), channeling( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ),
-  cast_delay_reaction( 0 ), cast_delay_occurred( 0 ),
+  cast_delay_reaction( timespan_t::zero ), cast_delay_occurred( timespan_t::zero ),
   // Actions
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
@@ -3094,8 +3094,8 @@ void player_t::reset()
   off_gcd = 0;
   in_combat = false;
 
-  cast_delay_reaction = 0;
-  cast_delay_occurred = 0;
+  cast_delay_reaction = timespan_t::zero;
+  cast_delay_occurred = timespan_t::zero;
 
   main_hand_weapon.buff_type  = 0;
   main_hand_weapon.buff_value = 0;
@@ -3245,8 +3245,8 @@ void player_t::schedule_ready( double delta_time,
   if ( was_executing && was_executing -> gcd() > timespan_t::zero && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
     // Record the last ability use time for cast_react
-    cast_delay_occurred = readying -> occurs().total_seconds();
-    cast_delay_reaction = rngs.lag_brain -> gauss( brain_lag, brain_lag_stddev );
+    cast_delay_occurred = readying -> occurs();
+    cast_delay_reaction = timespan_t::from_seconds(rngs.lag_brain -> gauss( brain_lag, brain_lag_stddev ));
     if ( sim -> debug )
     {
       log_t::output( sim, "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",

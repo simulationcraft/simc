@@ -232,7 +232,7 @@ struct hunter_t : public player_t
     summon_pet_str = "";
     distance = 40;
     default_distance = 40;
-    base_gcd = 1.0;
+    base_gcd = timespan_t::from_seconds(1.0);
     flaming_arrow = NULL;
 
     tier13_4pc_cooldown = 105.0;
@@ -427,7 +427,7 @@ struct hunter_pet_t : public pet_t
 
     base_focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline -> effect1().percent();
 
-    base_gcd = 1.20;
+    base_gcd = timespan_t::from_seconds(1.20);
 
     infinite_resource[ RESOURCE_FOCUS ] = o -> infinite_resource[ RESOURCE_FOCUS ];
 

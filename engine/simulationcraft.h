@@ -3937,7 +3937,8 @@ struct player_t : public noncopyable
   role_type   role;
   player_t*   target;
   int         level, use_pre_potion, party, member;
-  double      skill, initial_skill, distance, default_distance, gcd_ready, base_gcd;
+  double      skill, initial_skill, distance, default_distance, gcd_ready;
+  timespan_t  base_gcd;
   int         potion_used, sleeping, initial_sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
@@ -4092,8 +4093,8 @@ struct player_t : public noncopyable
 
   // Delay time used by "cast_delay" expression to determine when an action
   // can be used at minimum after a spell cast has finished, including GCD
-  double    cast_delay_reaction;
-  double    cast_delay_occurred;
+  timespan_t cast_delay_reaction;
+  timespan_t cast_delay_occurred;
 
   // Callbacks
   std::vector<action_callback_t*> all_callbacks;

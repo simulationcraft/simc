@@ -405,7 +405,7 @@ struct druid_t : public player_t
   {
     for ( action_t* a=action_list; a; a = a -> next )
     {
-      if ( a -> trigger_gcd != timespan_t::zero ) a -> trigger_gcd = timespan_t::from_seconds(base_gcd);
+      if ( a -> trigger_gcd != timespan_t::zero ) a -> trigger_gcd = base_gcd;
     }
   }
 };
@@ -3289,7 +3289,7 @@ struct bear_form_t : public druid_spell_t
     if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
 
     p -> buffs_bear_form -> start();
-    p -> base_gcd = 1.0;
+    p -> base_gcd = timespan_t::from_seconds(1.0);
     p -> reset_gcd();
 
     p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank() + p -> talents.natural_reaction -> effect1().percent();
@@ -3398,7 +3398,7 @@ struct cat_form_t : public druid_spell_t
     p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank();
 
     p -> buffs_cat_form -> start();
-    p -> base_gcd = 1.0;
+    p -> base_gcd = timespan_t::from_seconds(1.0);
     p -> reset_gcd();
 
     if ( p -> talents.leader_of_the_pack -> rank() )
@@ -4927,7 +4927,7 @@ void druid_t::init_base()
   if ( primary_tree() == TREE_RESTORATION )
     mana_regen_while_casting = spells.meditation -> effect1().percent();
 
-  base_gcd = 1.5;
+  base_gcd = timespan_t::from_seconds(1.5);
 }
 
 // druid_t::init_buffs ======================================================
@@ -5377,7 +5377,7 @@ void druid_t::reset()
   eclipse_bar_value     = 0;
   eclipse_wrath_count   = 0;
   eclipse_bar_direction = 0;
-  base_gcd = 1.5;
+  base_gcd = timespan_t::from_seconds(1.5);
 }
 
 // druid_t::regen ===========================================================

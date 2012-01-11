@@ -3688,7 +3688,7 @@ void rogue_t::init_base()
 
   base_energy_regen_per_second = 10 + spec_vitality -> base_value( E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT ) / 10.0;
 
-  base_gcd = 1.0;
+  base_gcd = timespan_t::from_seconds(1.0);
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;

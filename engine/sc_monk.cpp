@@ -501,7 +501,7 @@ void monk_t::init_base()
   default_distance = ( tree == TREE_MISTWEAVER ) ? 40 : 3;
   distance = default_distance;
 
-  base_gcd = 1.0; // FIXME: assumption
+  base_gcd = timespan_t::from_seconds(1.0); // FIXME: assumption
 
   resource_base[  RESOURCE_CHI  ] = 100; // FIXME: placeholder
   resource_base[  RESOURCE_LIGHT_FORCE ] = 4;

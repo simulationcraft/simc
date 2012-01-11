@@ -420,8 +420,7 @@ struct death_knight_t : public player_t
   {
     for ( action_t* a=action_list; a; a = a -> next )
     {
-      if ( a -> trigger_gcd != timespan_t::zero )
-        a -> trigger_gcd = timespan_t::from_seconds(base_gcd);
+      if ( a -> trigger_gcd != timespan_t::zero ) a -> trigger_gcd = base_gcd;
     }
   }
 };
@@ -3644,7 +3643,7 @@ struct presence_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> base_gcd = 1.50;
+    p -> base_gcd = timespan_t::from_seconds(1.50);
 
     switch ( p -> active_presence )
     {
@@ -3669,7 +3668,7 @@ struct presence_t : public death_knight_spell_t
     break;
     case PRESENCE_UNHOLY:
       p -> buffs_unholy_presence -> trigger( 1, 0.10 + p -> talents.improved_unholy_presence -> effect2().percent() );
-      p -> base_gcd = 1.0;
+      p -> base_gcd = timespan_t::from_seconds(1.0);
       break;
     }
 
@@ -4309,7 +4308,7 @@ void death_knight_t::init_base()
   if ( talents.runic_power_mastery -> rank() )
     resource_base[ RESOURCE_RUNIC ] += talents.runic_power_mastery -> effect1().resource( RESOURCE_RUNIC );
 
-  base_gcd = 1.5;
+  base_gcd = timespan_t::from_seconds(1.5);
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
