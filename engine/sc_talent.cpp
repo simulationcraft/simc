@@ -813,14 +813,14 @@ double spell_id_t::effect_coeff( uint32_t effect_num ) const
   return s_player -> dbc.effect( effect_id ) -> coeff();
 }
 
-double spell_id_t::effect_period( uint32_t effect_num ) const
+timespan_t spell_id_t::effect_period( uint32_t effect_num ) const
 {
   if ( ! ok() )
-    return 0.0;
+    return timespan_t::zero;
 
   uint32_t effect_id = s_data -> effect_id( effect_num );
 
-  return s_player -> dbc.effect( effect_id ) -> period().total_seconds();
+  return s_player -> dbc.effect( effect_id ) -> period();
 }
 
 double spell_id_t::effect_radius( uint32_t effect_num ) const

@@ -2527,7 +2527,7 @@ struct spell_id_t
   virtual double effect_min( uint32_t effect_num ) const;
   virtual double effect_max( uint32_t effect_num ) const;
   virtual double effect_coeff( uint32_t effect_num ) const;
-  virtual double effect_period( uint32_t effect_num ) const;
+  virtual timespan_t effect_period( uint32_t effect_num ) const;
   virtual double effect_radius( uint32_t effect_num ) const;
   virtual double effect_radius_max( uint32_t effect_num ) const;
   virtual double effect_pp_combo_points( uint32_t effect_num ) const;

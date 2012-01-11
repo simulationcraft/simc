@@ -2205,7 +2205,7 @@ struct killing_spree_t : public rogue_attack_t
     add_trigger_buff( p -> buffs_killing_spree );
 
     num_ticks = 5;
-    base_tick_time = effect_period( 1 );
+    base_tick_time = effect_period( 1 ).total_seconds();
 
     may_crit   = false;
 
@@ -2344,7 +2344,7 @@ struct recuperate_t : public rogue_attack_t
     rogue_attack_t( "recuperate", 73651, p )
   {
     requires_combo_points = true;
-    base_tick_time = effect_period( 1 );
+    base_tick_time = effect_period( 1 ).total_seconds();
     parse_options( NULL, options_str );
     dot_behavior = DOT_REFRESH;
     harmful = false;
