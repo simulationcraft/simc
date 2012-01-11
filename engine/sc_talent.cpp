@@ -553,17 +553,17 @@ bool spell_id_t::in_range() const
   return s_data -> in_range( s_player -> distance );
 }
 
-double spell_id_t::cooldown() const
+timespan_t spell_id_t::cooldown() const
 {
   if ( ! ok() )
-    return 0.0;
+    return timespan_t::zero;
 
-  double d = s_data -> cooldown();
+  double d = s_data -> cooldown().total_seconds();
 
   if ( d > ( s_player -> sim -> wheel_seconds - 2.0 ) )
     d = s_player -> sim -> wheel_seconds - 2.0;
 
-  return d;
+  return timespan_t::from_seconds(d);
 }
 
 double spell_id_t::gcd() const

@@ -1517,7 +1517,7 @@ struct cleave_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    cooldown -> duration = spell_id_t::cooldown();
+    cooldown -> duration = spell_id_t::cooldown().total_seconds();
 
     if ( p -> buffs_inner_rage -> up() )
       cooldown -> duration *= 1.0 + p -> buffs_inner_rage -> effect1().percent();
@@ -1802,7 +1802,7 @@ struct heroic_strike_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    cooldown -> duration = spell_id_t::cooldown();
+    cooldown -> duration = spell_id_t::cooldown().total_seconds();
 
     if ( p -> buffs_inner_rage -> up() )
       cooldown -> duration *= 1.0 + p -> buffs_inner_rage -> effect1().percent();
@@ -2730,7 +2730,7 @@ struct battle_shout_t : public warrior_spell_t
 
     rage_gain = p -> dbc.spell( effect3().trigger_spell_id() ) -> effect1().resource( RESOURCE_RAGE ) + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
     cooldown = player -> get_cooldown( "shout" );
-    cooldown -> duration = 10 + spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_value().total_seconds();
+    cooldown -> duration = 10 + spell_id_t::cooldown().total_seconds() + p -> talents.booming_voice -> effect1().time_value().total_seconds();
 
     if ( p -> set_bonus.tier12_2pc_melee() )
     {
@@ -2779,7 +2779,7 @@ struct commanding_shout_t : public warrior_spell_t
     rage_gain = 20 + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
 
     cooldown = player -> get_cooldown( "shout" );
-    cooldown -> duration = spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_value().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown().total_seconds() + p -> talents.booming_voice -> effect1().time_value().total_seconds();
 
     if ( p -> set_bonus.tier12_2pc_melee() )
     {

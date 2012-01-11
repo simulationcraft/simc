@@ -3461,7 +3461,7 @@ struct faerie_fire_feral_t : public druid_spell_t
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier  = 0;
     direct_power_mod             = extra_coeff();
-    cooldown -> duration         = player -> dbc.spell( 16857 ) -> cooldown(); // Cooldown is stored in another version of FF
+    cooldown -> duration         = player -> dbc.spell( 16857 ) -> cooldown().total_seconds(); // Cooldown is stored in another version of FF
     trigger_gcd                  = player -> dbc.spell( 16857 ) -> gcd();
   }
 

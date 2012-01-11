@@ -1798,21 +1798,21 @@ public:
   double               max_range() const { return _max_range; }
   bool                 in_range( double range ) const { return range >= _min_range && range <= _max_range; }
 
-  double               cooldown() const { return _cooldown / 1000.0; }
-  double               duration() const { return _duration / 1000.0; }
-  double               gcd() const { return _gcd / 1000.0; }
+  timespan_t           cooldown() const { return timespan_t::from_millis(_cooldown); }
+  double               duration() const { return _duration * (1 / 1000.0); }
+  double               gcd() const { return _gcd * (1 / 1000.0); }
   double               cast_time( uint32_t level ) const;
 
   uint32_t             category() const { return _category; }
 
   double               cost() const;
   uint32_t             rune_cost() const { return _rune_cost; }
-  double               runic_power_gain() const { return _runic_power_gain / 10.0; }
+  double               runic_power_gain() const { return _runic_power_gain * (1 / 10.0); }
 
   uint32_t             max_stacks() const { return _max_stack; }
   uint32_t             initial_stacks() const { return _proc_charges; }
 
-  double               proc_chance() const { return _proc_chance / 100.0; }
+  double               proc_chance() const { return _proc_chance * (1 / 100.0); }
 
   uint32_t             effect_id( uint32_t effect_num ) const
   {
@@ -1900,7 +1900,7 @@ public:
   effect_subtype_t           subtype() const { return _subtype; }
 
   int                        base_value() const { return _base_value; }
-  double percent() const { return _base_value / 100.0; }
+  double percent() const { return _base_value * (1 / 100.0); }
   timespan_t time_value() const { return timespan_t::from_millis(_base_value); }
   double resource( int type ) const
   {
@@ -1908,9 +1908,9 @@ public:
     {
     case RESOURCE_RUNIC:
     case RESOURCE_RAGE:
-      return _base_value / 10.0;
+      return _base_value * (1 / 10.0);
     case RESOURCE_MANA:
-      return _base_value / 100.0;
+      return _base_value * (1 / 100.0);
     default:
       return _base_value;
     }
@@ -2499,7 +2499,7 @@ struct spell_id_t
   virtual double max_range() const;
   virtual double extra_coeff() const;
   virtual bool in_range() const;
-  virtual double cooldown() const;
+  virtual timespan_t cooldown() const;
   virtual double gcd() const;
   virtual uint32_t category() const;
   virtual double duration() const;

@@ -2003,7 +2003,7 @@ struct primal_strike_t : public shaman_attack_t
 
     weapon               = &( p -> main_hand_weapon );
     cooldown             = p -> cooldowns_strike;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown();
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds();
 
     base_multiplier     += p -> talent_focused_strikes -> mod_additive( P_GENERIC );
   }
@@ -2040,7 +2040,7 @@ struct stormstrike_t : public shaman_attack_t
     weapon_multiplier    = 0.0;
     may_crit             = false;
     cooldown             = p -> cooldowns_strike;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown();
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds();
 
     // Actual damaging attacks are done by stormstrike_attack_t
     stormstrike_mh = new stormstrike_attack_t( player, "stormstrike_mh", effect_trigger_spell( 2 ), &( p -> main_hand_weapon ) );
@@ -3029,7 +3029,7 @@ struct earth_shock_t : public shaman_spell_t
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     cooldown = p -> cooldowns_shock;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() +
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds() +
       p -> talent_reverberation -> mod_additive( P_COOLDOWN );
 
     if ( p -> glyph_shocking -> ok() )
@@ -3100,7 +3100,7 @@ struct flame_shock_t : public shaman_spell_t
     num_ticks = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + p -> glyph_flame_shock -> mod_additive( P_DURATION ) ) );
 
     cooldown              = p -> cooldowns_shock;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() +
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds() +
       p -> talent_reverberation -> mod_additive( P_COOLDOWN );
 
     if ( p -> glyph_shocking -> ok() )
@@ -3174,7 +3174,7 @@ struct frost_shock_t : public shaman_spell_t
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     cooldown              = p -> cooldowns_shock;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() +
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds() +
       p -> talent_reverberation -> mod_additive( P_COOLDOWN );
 
     if ( p -> glyph_shocking -> ok() )

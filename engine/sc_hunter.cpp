@@ -2306,7 +2306,7 @@ struct black_arrow_t : public hunter_attack_t
     may_crit   = false;
 
     cooldown = p -> get_cooldown( "traps" );
-    cooldown -> duration = spell_id_t::cooldown();
+    cooldown -> duration = spell_id_t::cooldown().total_seconds();
     cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value().total_seconds();
 
     base_multiplier *= 1.0 + p -> talents.trap_mastery -> effect1().percent();
@@ -2394,7 +2394,7 @@ struct explosive_trap_t : public hunter_attack_t
 
     //TODO: Split traps cooldown into fire/frost/snakes
     cooldown = p -> get_cooldown( "traps" );
-    cooldown -> duration = spell_id_t::cooldown();
+    cooldown -> duration = spell_id_t::cooldown().total_seconds();
     cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value().total_seconds();
 
     may_miss=false;
@@ -2613,7 +2613,7 @@ struct explosive_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? 0.0 : spell_id_t::cooldown() );
+    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? 0.0 : spell_id_t::cooldown().total_seconds() );
 
     hunter_attack_t::update_ready();
   }

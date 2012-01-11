@@ -476,8 +476,8 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     s << std::endl;
   }
 
-  if ( spell -> cooldown() > 0 )
-    s << "Cooldown     : " << spell -> cooldown() << " seconds" << std::endl;
+  if ( spell -> cooldown() > timespan_t::zero )
+    s << "Cooldown     : " << spell -> cooldown().total_seconds() << " seconds" << std::endl;
 
   if ( spell -> initial_stacks() > 0 || spell -> max_stacks() )
   {

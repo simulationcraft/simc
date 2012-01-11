@@ -106,7 +106,7 @@ void buff_t::init_from_talent_( player_t* /* p */, talent_t* talent )
 
     max_stack = std::max( ( int ) spell -> max_stacks(), 1 );
     buff_duration = spell -> duration();
-    buff_cooldown = spell -> cooldown();
+    buff_cooldown = spell -> cooldown().total_seconds();
     aura_id = spell -> id();
   }
 }
@@ -139,7 +139,7 @@ void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
   max_stack = std::max( ( int ) spell -> max_stacks(), 1 );
   default_chance = spell -> proc_chance() ? spell -> proc_chance() : 1.0;
   buff_duration = spell -> duration();
-  buff_cooldown = spell -> cooldown();
+  buff_cooldown = spell -> cooldown().total_seconds();
   aura_id = spell -> id();
 }
 
@@ -302,7 +302,7 @@ buff_t::buff_t( actor_pair_t       p,
   cooldown = initial_source -> get_cooldown( "buff_" + name_str );
   if ( cd < 0.0 )
   {
-    cooldown -> duration = p.source -> dbc.spell( spell_id() ) -> cooldown();
+    cooldown -> duration = p.source -> dbc.spell( spell_id() ) -> cooldown().total_seconds();
   }
   else
   {
@@ -344,7 +344,7 @@ buff_t::buff_t( actor_pair_t       p,
   cooldown = player -> get_cooldown( "buff_" + name_str );
   if ( cd < 0.0 )
   {
-    cooldown -> duration = player -> dbc.spell( spell_id() ) -> cooldown();
+    cooldown -> duration = player -> dbc.spell( spell_id() ) -> cooldown().total_seconds();
   }
   else
   {
