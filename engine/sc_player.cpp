@@ -6066,7 +6066,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
           pet_t* pet;
           pet_remains_expr_t( action_t* a, pet_t* p ) : action_expr_t( a, "pet_remains", TOK_NUM ), pet( p ) {}
-          virtual int evaluate() { result_num = ( pet -> expiration && pet -> expiration-> remains() > 0 ) ? pet -> expiration -> remains() : 0; return TOK_NUM; }
+          virtual int evaluate() { result_num = ( pet -> expiration && pet -> expiration-> remains() > timespan_t::zero ) ? pet -> expiration -> remains().total_seconds() : 0; return TOK_NUM; }
         };
         return new pet_remains_expr_t( a, pet );
       }
@@ -6261,7 +6261,7 @@ action_expr_t* player_t::create_expression( action_t* a,
             result_num = 9999;
             player_t* p = action -> player;
             attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? p -> main_hand_attack : p -> off_hand_attack;
-            if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> remains();
+            if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> remains().total_seconds();
             return TOK_NUM;
           }
         };
