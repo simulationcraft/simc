@@ -4889,7 +4889,7 @@ struct action_t : public spell_id_t
   int bloodlust_active;
   double max_haste;
   double haste_gain_percentage;
-  double min_current_time, max_current_time;
+  timespan_t min_current_time, max_current_time;
   double min_health_percentage, max_health_percentage;
   int moving, vulnerable, invulnerable, wait_on_ready, interrupt, not_flying;
   bool round_base_dmg;
