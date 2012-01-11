@@ -3188,18 +3188,18 @@ void player_t::schedule_ready( timespan_t delta_time,
 
     if ( last_foreground_action && ! last_foreground_action -> auto_cast )
     {
-      if ( last_foreground_action -> ability_lag > 0.0 )
+      if ( last_foreground_action -> ability_lag > timespan_t::zero )
       {
-        double ability_lag = rngs.lag_ability -> gauss( last_foreground_action -> ability_lag, last_foreground_action -> ability_lag_stddev );
-        double gcd_lag     = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
-        double diff        = ( gcd_ready.total_seconds() + gcd_lag ) - ( sim -> current_time + ability_lag );
-        if ( diff > 0 && sim -> strict_gcd_queue )
+        timespan_t ability_lag = timespan_t::from_seconds(rngs.lag_ability -> gauss( last_foreground_action -> ability_lag.total_seconds(), last_foreground_action -> ability_lag_stddev.total_seconds() ));
+        timespan_t gcd_lag     = timespan_t::from_seconds(rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev ));
+        timespan_t diff        = ( gcd_ready + gcd_lag ) - ( timespan_t::from_seconds(sim -> current_time) + ability_lag );
+        if ( diff > timespan_t::zero && sim -> strict_gcd_queue )
         {
-          lag = timespan_t::from_seconds(gcd_lag);
+          lag = gcd_lag;
         }
         else
         {
-          lag = timespan_t::from_seconds(ability_lag);
+          lag = ability_lag;
           action_queued = true;
         }
       }

@@ -4854,7 +4854,7 @@ struct action_t : public spell_id_t
   bool tick_may_crit, tick_zero, hasted_ticks;
   bool no_buffs, no_debuffs;
   int dot_behavior;
-  double ability_lag, ability_lag_stddev;
+  timespan_t ability_lag, ability_lag_stddev;
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;
   double range;

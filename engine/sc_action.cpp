@@ -52,8 +52,8 @@ void action_t::init_action_t_()
   no_buffs                       = false;
   no_debuffs                     = false;
   dot_behavior                   = DOT_CLIP;
-  ability_lag                    = 0.0;
-  ability_lag_stddev             = 0.0;
+  ability_lag                    = timespan_t::zero;
+  ability_lag_stddev             = timespan_t::zero;
   rp_gain                        = 0.0;
   min_gcd                        = timespan_t::zero;
   trigger_gcd                    = player -> base_gcd;

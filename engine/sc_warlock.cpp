@@ -1907,8 +1907,8 @@ struct fiery_imp_pet_t : public pet_t
       trigger_gcd = timespan_t::from_seconds(1.5);
       if ( p -> owner -> bugs )
       {
-        ability_lag = 0.74;
-        ability_lag_stddev = 0.62 / 2.0;
+        ability_lag = timespan_t::from_seconds(0.74);
+        ability_lag_stddev = timespan_t::from_seconds(0.62 / 2.0);
       }
     }
   };
