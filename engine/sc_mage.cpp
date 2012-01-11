@@ -3085,7 +3085,7 @@ struct scorch_t : public mage_spell_t
       if ( target -> debuffs.shadow_and_flame -> check() )
         return false;
 
-      if ( target -> debuffs.critical_mass -> remains_gt( 6.0 ) )
+      if ( target -> debuffs.critical_mass -> remains_gt( timespan_t::from_seconds(6.0) ) )
         return false;
     }
 

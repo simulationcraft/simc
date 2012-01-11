@@ -1251,7 +1251,7 @@ void druid_cat_attack_t::execute()
       if ( p -> set_bonus.tier12_4pc_melee() & p -> buffs_berserk -> check() )
       {
         if ( p -> rng_tier12_4pc_melee -> roll( td -> buffs_combo_points -> check() / 5 ) )
-          p -> buffs_berserk -> extend_duration( p, p ->sets ->set( SET_T12_4PC_MELEE ) -> base_value() );
+          p -> buffs_berserk -> extend_duration( p, timespan_t::from_seconds(p ->sets ->set( SET_T12_4PC_MELEE ) -> base_value()) );
       }
 
       td -> buffs_combo_points -> expire();

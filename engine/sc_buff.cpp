@@ -435,39 +435,39 @@ int buff_t::stack_react()
 
 // buff_t::remains ==========================================================
 
-double buff_t::remains()
+timespan_t buff_t::remains()
 {
   if ( current_stack <= 0 )
   {
-    return 0;
+    return timespan_t::zero;
   }
   if ( expiration )
   {
-    return expiration -> occurs().total_seconds() - sim -> current_time;
+    return expiration -> occurs() - timespan_t::from_seconds(sim -> current_time);
   }
-  return -1;
+  return timespan_t::min;
 }
 
 // buff_t::remains_gt =======================================================
 
-bool buff_t::remains_gt( double time )
+bool buff_t::remains_gt( timespan_t time )
 {
-  double time_remaining = remains();
+  timespan_t time_remaining = remains();
 
-  if ( time_remaining == 0 ) return false;
+  if ( time_remaining == timespan_t::zero ) return false;
 
-  if ( time_remaining == -1 ) return true;
+  if ( time_remaining == timespan_t::min ) return true;
 
   return ( time_remaining > time );
 }
 
 // buff_t::remains_lt =======================================================
 
-bool buff_t::remains_lt( double time )
+bool buff_t::remains_lt( timespan_t time )
 {
-  double time_remaining = remains();
+  timespan_t time_remaining = remains();
 
-  if ( time_remaining == -1 ) return false;
+  if ( time_remaining == timespan_t::min ) return false;
 
   return ( time_remaining < time );
 }
@@ -609,24 +609,24 @@ void buff_t::decrement( int    stacks,
 
 // buff_t::extend_duration ==================================================
 
-void buff_t::extend_duration( player_t* p, double extra_seconds )
+void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 {
   assert( expiration );
-  assert( extra_seconds < sim -> wheel_seconds );
+  assert( extra_seconds.total_seconds() < sim -> wheel_seconds );
 
-  if ( extra_seconds > 0 )
+  if ( extra_seconds > timespan_t::zero )
   {
-    expiration -> reschedule( expiration -> remains().total_seconds() + extra_seconds );
+    expiration -> reschedule( (expiration -> remains() + extra_seconds).total_seconds() );
 
     if ( sim -> debug )
       log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
                      p -> name(), name(), extra_seconds, expiration -> occurs() );
   }
-  else if ( extra_seconds < 0 )
+  else if ( extra_seconds < timespan_t::zero )
   {
-    double reschedule_time = expiration -> remains().total_seconds() + extra_seconds;
+    timespan_t reschedule_time = expiration -> remains() + extra_seconds;
 
-    if ( reschedule_time <= 0 )
+    if ( reschedule_time <= timespan_t::zero )
     {
       // When Strength of Soul removes the Weakened Soul debuff completely,
       // there's a delay before the server notifies the client. Modeling
@@ -635,16 +635,16 @@ void buff_t::extend_duration( player_t* p, double extra_seconds )
 
       lag = p -> world_lag_override ? p -> world_lag : sim -> world_lag;
       dev = p -> world_lag_stddev_override ? p -> world_lag_stddev : sim -> world_lag_stddev;
-      reschedule_time = p -> rngs.lag_world -> gauss( lag, dev );
+      reschedule_time = timespan_t::from_seconds(p -> rngs.lag_world -> gauss( lag, dev ));
     }
 
     event_t::cancel( expiration );
 
-    expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time );
+    expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time.total_seconds() );
 
     if ( sim -> debug )
       log_t::output( sim, "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
-                     p -> name(), name(), extra_seconds, expiration -> occurs() );
+                     p -> name(), name(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
 }
 
@@ -926,7 +926,7 @@ action_expr_t* buff_t::create_expression( action_t* action,
     {
       buff_t* buff;
       buff_remains_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_remains", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = buff -> remains(); return TOK_NUM; }
+      virtual int evaluate() { result_num = buff -> remains().total_seconds(); return TOK_NUM; }
     };
     return new buff_remains_expr_t( action, this );
   }

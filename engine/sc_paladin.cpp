@@ -2459,7 +2459,7 @@ struct zealotry_t : public paladin_spell_t
     update_ready();
     p -> buffs_zealotry -> trigger();
     if ( p -> set_bonus.tier12_4pc_melee() )
-      p -> buffs_zealotry -> extend_duration( p, p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive( P_DURATION ) );
+      p -> buffs_zealotry -> extend_duration( p, timespan_t::from_seconds(p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive( P_DURATION )) );
   }
 
   virtual void consume_resource()

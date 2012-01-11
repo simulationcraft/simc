@@ -839,7 +839,7 @@ struct priest_heal_t : public heal_t
     priest_t* p = player -> cast_priest();
 
     if ( p -> talents.strength_of_soul -> rank() && t -> buffs.weakened_soul -> up() )
-      t -> buffs.weakened_soul -> extend_duration( p, -1 * p -> talents.strength_of_soul -> effect1().base_value() );
+      t -> buffs.weakened_soul -> extend_duration( p, timespan_t::from_seconds(-1 * p -> talents.strength_of_soul -> effect1().base_value()) );
   }
 
   void update_ready()

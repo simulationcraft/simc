@@ -3915,8 +3915,8 @@ struct soulburn_t : public warlock_spell_t
       // If this was a pre-combat soulburn, ensure we model the 3 seconds needed to regenerate the soul shard
       if ( ! p -> in_combat )
       {
-        p -> buffs_soulburn -> extend_duration( p, -3 );
-        if ( p -> buffs_tier13_4pc_caster -> check() ) p -> buffs_tier13_4pc_caster -> extend_duration( p, -3 );
+        p -> buffs_soulburn -> extend_duration( p, timespan_t::from_seconds(-3) );
+        if ( p -> buffs_tier13_4pc_caster -> check() ) p -> buffs_tier13_4pc_caster -> extend_duration( p, timespan_t::from_seconds(-3) );
       }
     }
 

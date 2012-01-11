@@ -878,7 +878,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
   {
     timespan_t duration = p -> dbc.spell( 57933 ) -> duration();
 
-    if ( t -> buffs.tricks_of_the_trade -> remains_lt( duration.total_seconds() ) )
+    if ( t -> buffs.tricks_of_the_trade -> remains_lt( duration ) )
     {
       double value = p -> dbc.spell( 57933 ) -> effect1().base_value();
       value += p -> glyphs.tricks_of_the_trade -> mod_additive( P_EFFECT_1 );
@@ -1928,16 +1928,16 @@ struct expose_armor_t : public rogue_attack_t
 
     if ( result_is_hit() )
     {
-      double duration = 10 * combo_points_spent;
+      timespan_t duration = timespan_t::from_seconds(10) * combo_points_spent;
 
-      duration += p -> glyphs.expose_armor -> mod_additive( P_DURATION );
+      duration += timespan_t::from_seconds(p -> glyphs.expose_armor -> mod_additive( P_DURATION ));
 
       if ( p -> buffs_revealing_strike -> up() )
         duration *= 1.0 + p -> buffs_revealing_strike -> value();
 
       if ( target -> debuffs.expose_armor -> remains_lt( duration ) )
       {
-        target -> debuffs.expose_armor -> buff_duration = timespan_t::from_seconds(duration);
+        target -> debuffs.expose_armor -> buff_duration = duration;
         target -> debuffs.expose_armor -> trigger( 1, 0.12 );
         target -> debuffs.expose_armor -> source = p;
       }
@@ -3196,11 +3196,11 @@ struct envenom_buff_t : public buff_t
 
   virtual bool trigger( int cp, double, double )
   {
-    double new_duration = 1.0 + cp;
+    timespan_t new_duration = timespan_t::from_seconds(1.0 + cp);
 
     if ( remains_lt( new_duration ) )
     {
-      buff_duration = timespan_t::from_seconds(new_duration);
+      buff_duration = new_duration;
       return buff_t::trigger();
     }
     else
@@ -3301,14 +3301,14 @@ struct slice_and_dice_buff_t : public buff_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    double new_duration = p -> dbc.spell( id ) -> duration().total_seconds();
-    new_duration += 3.0 * cp;
-    new_duration += p -> glyphs.slice_and_dice -> mod_additive( P_DURATION );
+    timespan_t new_duration = p -> dbc.spell( id ) -> duration();
+    new_duration += timespan_t::from_seconds(3.0 * cp);
+    new_duration += timespan_t::from_seconds(p -> glyphs.slice_and_dice -> mod_additive( P_DURATION ));
     new_duration *= 1.0 + p -> talents.improved_slice_and_dice -> mod_additive( P_DURATION );
 
     if ( remains_lt( new_duration ) )
     {
-      buff_duration = timespan_t::from_seconds(new_duration);
+      buff_duration = new_duration;
       return buff_t::trigger( 1,
         base_value( E_APPLY_AURA, A_319 ) * ( 1.0 + p -> composite_mastery() * p -> mastery_executioner -> effect_coeff( 1 ) / 100.0 ) );
     }

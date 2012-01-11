@@ -1763,7 +1763,7 @@ static void trigger_ebon_plaguebringer( action_t* a, player_t* t )
     return;
 
   timespan_t duration = timespan_t::from_seconds(21.0) + p -> talents.epidemic -> effect1().time_value();
-  if ( t -> debuffs.ebon_plaguebringer -> remains_lt( duration.total_seconds() ) )
+  if ( t -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
   {
     t -> debuffs.ebon_plaguebringer -> buff_duration = duration;
     t -> debuffs.ebon_plaguebringer -> trigger( 1, 8.0 );
@@ -5206,7 +5206,7 @@ void death_knight_t::trigger_runic_empowerment()
   if ( talents.runic_corruption -> rank() )
   {
     if ( buffs_runic_corruption -> check() )
-      buffs_runic_corruption -> extend_duration( this, 3 );
+      buffs_runic_corruption -> extend_duration( this, timespan_t::from_seconds(3) );
     else
       buffs_runic_corruption -> trigger();
 

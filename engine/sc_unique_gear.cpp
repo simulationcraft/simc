@@ -1271,7 +1271,7 @@ static void register_fury_of_the_beast( item_t* item )
       {
         if ( buff -> check() && buff_stack -> check() < buff_stack -> max_stack )
         {
-          buff_stack -> buff_duration = timespan_t::from_seconds(buff -> remains()); // hack instead of overriding fury_of_the_beast::expire()
+          buff_stack -> buff_duration = buff -> remains(); // hack instead of overriding fury_of_the_beast::expire()
           buff_stack -> trigger();
           new ( sim ) fury_of_the_beast_event_t( player, buff, buff_stack );
         }

@@ -2871,15 +2871,15 @@ public:
   inline bool   up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int    stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
   inline double value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
-  double remains();
-  bool   remains_gt( double time );
-  bool   remains_lt( double time );
+  timespan_t remains();
+  bool   remains_gt( timespan_t time );
+  bool   remains_lt( timespan_t time );
   bool   trigger  ( action_t*, int stacks=1, double value=-1.0 );
   virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0 );
   virtual void   execute ( int stacks=1, double value=-1.0 );
   virtual void   increment( int stacks=1, double value=-1.0 );
   void   decrement( int stacks=1, double value=-1.0 );
-  void   extend_duration( player_t* p, double seconds );
+  void   extend_duration( player_t* p, timespan_t seconds );
 
   virtual void start    ( int stacks=1, double value=-1.0 );
   virtual void refresh  ( int stacks=0, double value=-1.0 );
