@@ -398,14 +398,6 @@ void enemy_t::init_target()
   if ( target )
     return;
 
-  for ( player_t* q = sim -> player_list; q; q = q -> next )
-  {
-    if ( q -> primary_role() != ROLE_TANK )
-      continue;
-    target = q;
-    break;
-  }
-
   if ( ! target )
   {
     target = sim -> target;
@@ -426,6 +418,16 @@ void enemy_t::init_actions()
       {
         action_list_str += "/auto_attack";
         action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1";
+      }
+      else
+      {
+        for ( player_t* q = sim -> player_list; q; q = q -> next )
+        {
+          if ( q -> primary_role() != ROLE_TANK )
+            continue;
+          action_list_str += "/auto_attack,target="; action_list_str += q -> name();
+          action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1,target="; action_list_str += q -> name();
+        }
       }
     }
   }
