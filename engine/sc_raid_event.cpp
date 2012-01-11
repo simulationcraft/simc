@@ -335,7 +335,7 @@ struct damage_event_t : public raid_event_t
     };
     parse_options( options, options_str );
 
-    assert( duration == 0 );
+	assert( duration == timespan_t::zero );
 
     name_str = "raid_damage_" + type_str;
 
@@ -388,7 +388,7 @@ struct heal_event_t : public raid_event_t
     };
     parse_options( options, options_str );
 
-    assert( duration == 0 );
+	assert( duration == timespan_t::zero );
   }
 
   virtual void start()
@@ -731,7 +731,7 @@ void raid_event_t::init( sim_t* sim )
       continue;
     }
 
-    assert( e -> cooldown > 0 );
+	assert( e -> cooldown > timespan_t::zero );
     assert( e -> cooldown > e -> cooldown_stddev );
 
     sim -> raid_events.push_back( e );
