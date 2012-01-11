@@ -3291,7 +3291,7 @@ void player_t::demise()
   if ( sim -> log )
     log_t::output( sim, "%s demises.", name() );
 
-  assert( arise_time >= 0 );
+  assert( arise_time >= timespan_t::zero );
   iteration_fight_length += timespan_t::from_seconds( sim -> current_time ) - arise_time;
   arise_time = timespan_t::min;
 

@@ -3852,7 +3852,7 @@ struct lightwell_t : public priest_spell_t
 
     harmful = false;
 
-    assert( consume_interval > 0 && consume_interval < cooldown -> duration );
+    assert( consume_interval > timespan_t::zero && consume_interval < cooldown -> duration );
   }
 
   virtual void execute()
