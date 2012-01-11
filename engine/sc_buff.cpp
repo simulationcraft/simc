@@ -105,7 +105,7 @@ void buff_t::init_from_talent_( player_t* /* p */, talent_t* talent )
     spell_data_t* spell = talent -> trigger ? talent -> trigger : talent -> sd;
 
     max_stack = std::max( ( int ) spell -> max_stacks(), 1 );
-    buff_duration = spell -> duration();
+    buff_duration = spell -> duration().total_seconds();
     buff_cooldown = spell -> cooldown().total_seconds();
     aura_id = spell -> id();
   }
@@ -138,7 +138,7 @@ void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
 {
   max_stack = std::max( ( int ) spell -> max_stacks(), 1 );
   default_chance = spell -> proc_chance() ? spell -> proc_chance() : 1.0;
-  buff_duration = spell -> duration();
+  buff_duration = spell -> duration().total_seconds();
   buff_cooldown = spell -> cooldown().total_seconds();
   aura_id = spell -> id();
 }

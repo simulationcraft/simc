@@ -2661,7 +2661,7 @@ struct kill_shot_t : public hunter_attack_t
     if ( p -> glyphs.kill_shot -> ok() )
     {
       cooldowns_glyph_kill_shot = p -> get_cooldown( "cooldowns_glyph_kill_shot" );
-      cooldowns_glyph_kill_shot -> duration = p -> dbc.spell( 90967 ) -> duration();
+      cooldowns_glyph_kill_shot -> duration = p -> dbc.spell( 90967 ) -> duration().total_seconds();
     }
 
     normalize_weapon_speed = true;
@@ -3913,7 +3913,7 @@ void hunter_t::init_buffs()
   buffs_rapid_fire -> cooldown -> duration = 0;
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, 0, 0, 1, true );
 
-  buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
+  buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration().total_seconds(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
   buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", sets -> set( SET_T13_4PC_MELEE ) -> proc_chance(), tier13_4pc_cooldown );
 
   // Own TSA for Glyph of TSA

@@ -355,7 +355,7 @@ struct priest_t : public player_t
     cooldowns_shadow_fiend               = get_cooldown( "shadow_fiend" );
     cooldowns_chakra                     = get_cooldown( "chakra"   );
     cooldowns_rapture                    = get_cooldown( "rapture" );
-    cooldowns_rapture -> duration        = dbc.spell( 63853 ) -> duration();
+    cooldowns_rapture -> duration        = dbc.spell( 63853 ) -> duration().total_seconds();
     cooldowns_inner_focus                = get_cooldown( "inner_focus" );
     cooldowns_penance                    = get_cooldown( "penance" );
 
@@ -4451,7 +4451,7 @@ void priest_t::trigger_cauterizing_flame()
   if ( pet_cauterizing_flame && pet_cauterizing_flame -> sleeping &&
        rng_cauterizing_flame -> roll( sets -> set( SET_T12_4PC_HEAL ) -> proc_chance()  ) )
   {
-    pet_cauterizing_flame -> summon( dbc.spell( 99136 ) -> duration() );
+    pet_cauterizing_flame -> summon( dbc.spell( 99136 ) -> duration().total_seconds() );
   }
 }
 

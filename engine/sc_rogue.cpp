@@ -876,7 +876,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 
   if ( t )
   {
-    double duration = p -> dbc.spell( 57933 ) -> duration();
+    double duration = p -> dbc.spell( 57933 ) -> duration().total_seconds();
 
     if ( t -> buffs.tricks_of_the_trade -> remains_lt( duration ) )
     {
@@ -992,7 +992,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_melee -> base_td * dot -> ticks();
   }
 
-  if ( ( p -> dbc.spell( 99173 )  -> duration() + sim -> aura_delay ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99173 )  -> duration().total_seconds() + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Burning Wounds due to Max Duration.", p -> name() );
     p -> procs_munched_tier12_2pc_melee -> occur();
@@ -3217,7 +3217,7 @@ struct find_weakness_buff_t : public buff_t
       return;
 
     // Duration is specified in the actual debuff (or is it a buff?) placed on the target
-    buff_duration = p -> dbc.spell( 91021 ) -> duration();
+    buff_duration = p -> dbc.spell( 91021 ) -> duration().total_seconds();
 
     init_buff_shared();
   }
@@ -3301,7 +3301,7 @@ struct slice_and_dice_buff_t : public buff_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    double new_duration = p -> dbc.spell( id ) -> duration();
+    double new_duration = p -> dbc.spell( id ) -> duration().total_seconds();
     new_duration += 3.0 * cp;
     new_duration += p -> glyphs.slice_and_dice -> mod_additive( P_DURATION );
     new_duration *= 1.0 + p -> talents.improved_slice_and_dice -> mod_additive( P_DURATION );
@@ -3935,13 +3935,13 @@ void rogue_t::init_buffs()
   buffs_shiv               = new buff_t( this, "shiv",          1  );
   buffs_stealthed          = new buff_t( this, "stealthed",     1  );
   buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
-  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, spells.tier13_2pc -> duration(), 0.0, ( set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
+  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, spells.tier13_2pc -> duration().total_seconds(), 0.0, ( set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
   buffs_tot_trigger        = new buff_t( this, 57934, "tricks_of_the_trade_trigger", -1, -1, true );
   buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
 
-  buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );
-  buffs_tier12_4pc_crit    = new stat_buff_t( this, "fiery_devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration() );
-  buffs_tier12_4pc_mastery = new stat_buff_t( this, "master_of_flames",  STAT_MASTERY_RATING, 0.0, 1, dbc.spell( 99188 ) -> duration() );
+  buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration().total_seconds() );
+  buffs_tier12_4pc_crit    = new stat_buff_t( this, "fiery_devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration().total_seconds() );
+  buffs_tier12_4pc_mastery = new stat_buff_t( this, "master_of_flames",  STAT_MASTERY_RATING, 0.0, 1, dbc.spell( 99188 ) -> duration().total_seconds() );
 
   buffs_blade_flurry       = new buff_t( this, spec_blade_flurry -> spell_id(), "blade_flurry" );
   buffs_cold_blood         = new buff_t( this, talents.cold_blood -> spell_id(), "cold_blood" );

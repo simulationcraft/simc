@@ -1090,7 +1090,7 @@ static void trigger_burning_treant( spell_t* s )
     {
       p -> procs_burning_treant -> occur();
       p -> pet_burning_treant -> dismiss();
-      p -> pet_burning_treant -> summon( p -> dbc.spell( 99035 ) -> duration() - 0.01 );
+      p -> pet_burning_treant -> summon( p -> dbc.spell( 99035 ) -> duration().total_seconds() - 0.01 );
       p -> cooldowns_burning_treant -> start();
     }
   }
@@ -1162,7 +1162,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_melee -> base_td * dot -> ticks();
   }
 
-  if ( ( p -> dbc.spell( 99002 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99002 ) -> duration().total_seconds() + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Fiery Claws due to Max Fiery Claws Duration.", p -> name() );
     p -> procs_munched_tier12_2pc_melee -> occur();

@@ -465,13 +465,13 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   if ( spell -> runic_power_gain() > 0 )
     s << "Power Gain   : " << spell -> runic_power_gain() << " Runic Power" << std::endl;
 
-  if ( spell -> duration() != 0 )
+  if ( spell -> duration() != timespan_t::zero )
   {
     s << "Duration     : ";
-    if ( spell -> duration() < 0 )
+    if ( spell -> duration() < timespan_t::zero )
       s << "Aura (infinite)";
     else
-      s << spell -> duration() << " seconds";
+      s << spell -> duration().total_seconds() << " seconds";
 
     s << std::endl;
   }

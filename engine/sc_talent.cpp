@@ -587,7 +587,7 @@ double spell_id_t::duration() const
   if ( ! ok() )
     return 0.0;
 
-  double d = s_data -> duration();
+  double d = s_data -> duration().total_seconds();
 
   if ( d > ( s_player -> sim -> wheel_seconds - 2.0 ) )
     d = s_player -> sim -> wheel_seconds - 2.0;

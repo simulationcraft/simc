@@ -775,7 +775,7 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_tank -> base_td * dot -> ticks();
   }
 
-  if ( ( p -> dbc.spell( 99240 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99240 ) -> duration().total_seconds() + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Combust due to Combust duration.", p -> name() );
     p -> procs_munched_tier12_2pc_tank -> occur();

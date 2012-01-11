@@ -1165,7 +1165,7 @@ public:
       {
         p -> procs_fiery_imp -> occur();
         p -> pet_fiery_imp -> dismiss();
-        p -> pet_fiery_imp -> summon( p -> dbc.spell( 99221 ) -> duration() - 0.01 );
+        p -> pet_fiery_imp -> summon( p -> dbc.spell( 99221 ) -> duration().total_seconds() - 0.01 );
         p -> cooldowns_fiery_imp -> start();
       }
     }
@@ -2411,7 +2411,7 @@ struct shadowburn_t : public warlock_spell_t
     if ( p -> glyphs.shadowburn -> ok() )
     {
       cd_glyph_of_shadowburn             = p -> get_cooldown ( "glyph_of_shadowburn" );
-      cd_glyph_of_shadowburn -> duration = p -> dbc.spell( 91001 ) -> duration();
+      cd_glyph_of_shadowburn -> duration = p -> dbc.spell( 91001 ) -> duration().total_seconds();
     }
 
     if ( ! dtr && p -> has_dtr )

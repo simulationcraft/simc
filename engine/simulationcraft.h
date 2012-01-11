@@ -1799,7 +1799,7 @@ public:
   bool                 in_range( double range ) const { return range >= _min_range && range <= _max_range; }
 
   timespan_t           cooldown() const { return timespan_t::from_millis(_cooldown); }
-  double               duration() const { return _duration * (1 / 1000.0); }
+  timespan_t           duration() const { return timespan_t::from_millis(_duration); }
   double               gcd() const { return _gcd * (1 / 1000.0); }
   double               cast_time( uint32_t level ) const;
 

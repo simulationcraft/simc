@@ -338,7 +338,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
     case A_PERIODIC_DUMMY:
     case A_PERIODIC_TRIGGER_SPELL:
       base_tick_time   = effect -> period().total_seconds();
-      num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
+      num_ticks        = ( int ) ( spell -> duration().total_seconds() / base_tick_time );
       break;
     case A_SCHOOL_ABSORB:
       direct_power_mod = effect -> coeff();

@@ -1057,7 +1057,7 @@ static void trigger_tier12_mirror_image( spell_t* s )
     {
       p -> procs_tier12_mirror_image -> occur();
       p -> pet_tier12_mirror_image -> dismiss();
-      p -> pet_tier12_mirror_image -> summon( p -> dbc.spell( 99063 ) -> duration() - 0.01 );
+      p -> pet_tier12_mirror_image -> summon( p -> dbc.spell( 99063 ) -> duration().total_seconds() - 0.01 );
       p -> cooldowns_tier12_mirror_image -> start();
     }
   }

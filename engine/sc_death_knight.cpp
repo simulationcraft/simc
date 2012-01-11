@@ -3710,7 +3710,7 @@ struct raise_dead_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> active_ghoul -> summon( ( p -> primary_tree() == TREE_UNHOLY ) ? 0.0 : p -> dbc.spell( effect1().base_value() ) -> duration() );
+    p -> active_ghoul -> summon( ( p -> primary_tree() == TREE_UNHOLY ) ? 0.0 : p -> dbc.spell( effect1().base_value() ) -> duration().total_seconds() );
   }
 
   virtual bool ready()
@@ -3894,7 +3894,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> active_gargoyle -> summon( p -> dbc.spell( effect3().trigger_spell_id() ) -> duration() );
+    p -> active_gargoyle -> summon( p -> dbc.spell( effect3().trigger_spell_id() ) -> duration().total_seconds() );
   }
 };
 

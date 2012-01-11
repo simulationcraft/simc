@@ -1673,7 +1673,7 @@ static void register_titahk( item_t* item )
       proc_chance( spell -> proc_chance() ),
       rng( p -> get_rng( "titahk" ) )
     {
-      double duration = buff -> duration();
+      double duration = buff -> duration().total_seconds();
       buff_self   = new stat_buff_t( p, "titahk_self", STAT_HASTE_RATING, buff -> effect1().base_value(), 1, duration );
       buff_self -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
       buff_radius = new stat_buff_t( p, "titahk_aoe",  STAT_HASTE_RATING, buff -> effect2().base_value(), 1, duration ); // FIXME: Apply aoe buff to other players

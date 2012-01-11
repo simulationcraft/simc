@@ -4107,7 +4107,7 @@ struct elemental_devastation_t : public buff_t
   {
     // Duration has to be parsed out from the triggered spell
     const spell_data_t* trigger = p -> dbc.spell( p -> dbc.spell( id ) -> effect1().trigger_spell_id() );
-    buff_duration = trigger -> duration();
+    buff_duration = trigger -> duration().total_seconds();
 
     // And fix atomic, as it's a triggered spell, but not really .. sigh
     s_single = s_effects[ 0 ];
@@ -4148,7 +4148,7 @@ struct searing_flames_buff_t : public buff_t
     default_chance     = initial_source -> dbc.spell( id ) -> effect1().percent();
 
     // Various other things are specified in the actual debuff placed on the target
-    buff_duration      = initial_source -> dbc.spell( 77661 ) -> duration();
+    buff_duration      = initial_source -> dbc.spell( 77661 ) -> duration().total_seconds();
     max_stack          = initial_source -> dbc.spell( 77661 ) -> max_stacks();
 
     // Reinit because of max_stack change
