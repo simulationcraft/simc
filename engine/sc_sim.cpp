@@ -1986,7 +1986,7 @@ double sim_t::gauss( double mean,
 timespan_t sim_t::gauss( timespan_t mean,
                          timespan_t stddev )
 {
-  return timespan_t::from_millis( gauss( mean.total_millis(), stddev.total_millis() ) );
+  return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE(mean), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
 }
 
 // sim_t::real ==============================================================

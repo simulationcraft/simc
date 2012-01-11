@@ -67,6 +67,7 @@
     <ClCompile Include="engine\sc_report_html_player.cpp" />
     <ClCompile Include="engine\sc_report_text.cpp" />
     <ClCompile Include="engine\sc_report_html_sim.cpp" />
+    <ClCompile Include="engine\sc_timespan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\simulationcraft.h" />
@@ -116,6 +117,7 @@
     </None>
     <None Include="engine\sc_item_data.inc" />
     <None Include="engine\sc_item_data_ptr.inc" />
+    <None Include="engine\xs_float\xs_Float.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Data Files">

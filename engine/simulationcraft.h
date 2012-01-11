@@ -123,6 +123,8 @@ namespace std {using namespace tr1; }
 
 #define MAX_PLAYERS_PER_CHART 20
 
+#define SC_USE_INTEGER_TIME
+
 // Forward Declarations =====================================================
 
 struct action_t;
@@ -1122,6 +1124,8 @@ inline typename range::traits<Range>::iterator unique( Range& r, Comp c )
 struct timespan_t
 {
 
+#ifdef SC_USE_INTEGER_TIME
+
 #ifdef SIMC_X64
   typedef int64_t time_t;
 #else
@@ -1140,11 +1144,47 @@ private:
   explicit timespan_t(const time_t millis) : time(millis) { }
 
 public:
-  timespan_t() : time(0) { }
 
   double total_minutes() const { return time * MINUTES_PER_MILLI; }
   double total_seconds() const { return time * SECONDS_PER_MILLI; }
   time_t total_millis() const { return time; }
+
+  static timespan_t from_millis( const uint32_t millis ) { return timespan_t((time_t)millis); }
+  static timespan_t from_millis( const int32_t millis ) { return timespan_t((time_t)millis); }
+  static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis); }
+  static timespan_t from_seconds( const double seconds ) { return timespan_t((time_t)(seconds * MILLIS_PER_SECOND));  }
+  static timespan_t from_minutes( const double minutes ) { return timespan_t((time_t)(minutes * MILLIS_PER_MINUTE)); }
+
+#else // !SC_USE_INTEGER_TIME
+
+  typedef double time_t;
+
+private:
+  time_t time;
+
+  static const double MILLIS_PER_SECOND;
+  static const double MINUTES_PER_SECOND;
+  static const time_t SECONDS_PER_MILLI;
+  static const time_t SECONDS_PER_MINUTE;
+
+
+  explicit timespan_t(const time_t millis) : time(millis) { }
+
+public:
+  double total_minutes() const { return time * MINUTES_PER_SECOND; }
+  double total_seconds() const { return time; }
+  time_t total_millis() const { return time * MILLIS_PER_SECOND; }
+
+  static timespan_t from_millis( const uint32_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
+  static timespan_t from_millis( const int32_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
+  static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
+  static timespan_t from_seconds( const double seconds ) { return timespan_t(seconds);  }
+  static timespan_t from_minutes( const double minutes ) { return timespan_t((time_t)(minutes * SECONDS_PER_MINUTE)); }
+
+#endif
+
+public:
+  timespan_t() : time(0) { }
 
   bool operator==( const timespan_t right ) const { return time == right.time; }
   bool operator!=( const timespan_t right ) const { return time != right.time; }
@@ -1224,16 +1264,18 @@ public:
   friend timespan_t operator*(const uint32_t left, const timespan_t right);
   friend timespan_t operator*(const uint64_t left, const timespan_t right);
 
-  static timespan_t from_millis( const uint32_t millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_millis( const int32_t millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_seconds( const double seconds ) { return timespan_t((time_t)(seconds * MILLIS_PER_SECOND));  }
-  static timespan_t from_minutes( const double minutes ) { return timespan_t((time_t)(minutes * MILLIS_PER_MINUTE)); }
-
   static const timespan_t zero;
   static const timespan_t min;
   static const timespan_t max;
 };
+
+#ifdef SC_USE_INTEGER_TIME
+#define TIMESPAN_TO_NATIVE_VALUE(t) ((t).total_millis())
+#define TIMESPAN_FROM_NATIVE_VALUE(v) (timespan_t::from_millis(v))
+#else // #ifndef SC_USE_INTEGER_TIME
+#define TIMESPAN_TO_NATIVE_VALUE(t) ((t).total_seconds())
+#define TIMESPAN_FROM_NATIVE_VALUE(v) (timespan_t::from_seconds(v))
+#endif
 
 inline timespan_t operator+(const timespan_t left, const timespan_t right) {
   return timespan_t(left.time + right.time);
