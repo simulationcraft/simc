@@ -4124,7 +4124,7 @@ struct lightning_shield_buff_t : public buff_t
   lightning_shield_buff_t( player_t*   p,
                            uint32_t    id,
                            const char* n ) :
-    buff_t( p, id, n, 1.0, false )
+    buff_t( p, id, n, 1.0, timespan_t::min, false )
   {
     shaman_t* s = player -> cast_shaman();
 
@@ -4142,7 +4142,7 @@ struct searing_flames_buff_t : public buff_t
   searing_flames_buff_t( actor_pair_t pair,
                          uint32_t    id,
                          const char* n ) :
-    buff_t( pair, id, n, 1.0, -1, true ) // Quiet buff, dont show in report
+    buff_t( pair, id, n, 1.0, timespan_t::min, true ) // Quiet buff, dont show in report
   {
     // The default chance is in the script dummy effect base value
     default_chance     = initial_source -> dbc.spell( id ) -> effect1().percent();
@@ -4163,7 +4163,7 @@ struct unleash_elements_buff_t : public buff_t
   unleash_elements_buff_t( player_t*   p,
                            uint32_t    id,
                            const char* n ) :
-    buff_t( p, id, n, 1.0, false ), bonus( 0.0 )
+    buff_t( p, id, n, 1.0, timespan_t::min, false ), bonus( 0.0 )
   {
     shaman_t* s = player -> cast_shaman();
     bonus       = s -> talent_elemental_weapons -> effect2().percent();
@@ -4509,18 +4509,18 @@ void shaman_t::init_buffs()
   buffs_elemental_devastation   = new elemental_devastation_t( this, talent_elemental_devastation -> spell_id(),               "elemental_devastation" ); buffs_elemental_devastation -> activated = false;
   buffs_elemental_focus         = new buff_t                 ( this, talent_elemental_focus -> effect_trigger_spell( 1 ),      "elemental_focus"       ); buffs_elemental_focus -> activated = false;
   // For now, elemental mastery will need 2 buffs, 1 to trigger the insta cast, and a second for the haste/damage buff
-  buffs_elemental_mastery_insta = new buff_t                 ( this, talent_elemental_mastery -> spell_id(),                   "elemental_mastery_instant", 1.0, -1.0, true );
+  buffs_elemental_mastery_insta = new buff_t                 ( this, talent_elemental_mastery -> spell_id(),                   "elemental_mastery_instant", 1.0, timespan_t::min, true );
   // Note the chance override, as the spell itself does not have a proc chance
   buffs_elemental_mastery       = new buff_t                 ( this, talent_elemental_mastery -> effect_trigger_spell( 2 ),    "elemental_mastery",         1.0 );
   buffs_fire_elemental          = new buff_t                 ( this, "fire_elemental", 1 );
   buffs_flurry                  = new buff_t                 ( this, talent_flurry -> effect_trigger_spell( 1 ),               "flurry",                    talent_flurry -> proc_chance() ); buffs_flurry -> activated = false;
   // TBD how this is handled for reals
-  buffs_lava_surge              = new buff_t                 ( this, 77762,                                                    "lava_surge",                1.0, -1.0, true ); buffs_lava_surge -> activated = false;
+  buffs_lava_surge              = new buff_t                 ( this, 77762,                                                    "lava_surge",                1.0, timespan_t::min, true ); buffs_lava_surge -> activated = false;
   buffs_lightning_shield        = new lightning_shield_buff_t( this, dbc.class_ability_id( type, "Lightning Shield" ),         "lightning_shield"      );
   buffs_maelstrom_weapon        = new buff_t                 ( this, talent_maelstrom_weapon -> effect_trigger_spell( 1 ),     "maelstrom_weapon"      ); buffs_maelstrom_weapon -> activated = false;
   buffs_natures_swiftness       = new buff_t                 ( this, talent_natures_swiftness -> spell_id(),                   "natures_swiftness"     );
   buffs_shamanistic_rage        = new buff_t                 ( this, talent_shamanistic_rage -> spell_id(),                    "shamanistic_rage"      );
-  buffs_spiritwalkers_grace     = new buff_t                 ( this, 79206,                                                    "spiritwalkers_grace",       1.0, 0 );
+  buffs_spiritwalkers_grace     = new buff_t                 ( this, 79206,                                                    "spiritwalkers_grace",       1.0, timespan_t::zero );
   // Enhancement T12 4Piece Bonus
   buffs_stormfire               = new buff_t                 ( this, 99212,                                                    "stormfire"             );
   buffs_stormstrike             = new buff_t                 ( this, talent_stormstrike -> spell_id(),                         "stormstrike"           );
@@ -5194,19 +5194,19 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_typ
 
 void player_t::shaman_init( sim_t* sim )
 {
-  sim -> auras.elemental_oath    = new aura_t( sim, "elemental_oath",    1, 0.0 );
-  sim -> auras.flametongue_totem = new aura_t( sim, "flametongue_totem", 1, 300.0 );
-  sim -> auras.mana_spring_totem = new aura_t( sim, "mana_spring_totem", 1, 300.0 );
-  sim -> auras.strength_of_earth = new aura_t( sim, "strength_of_earth", 1, 300.0 );
-  sim -> auras.unleashed_rage    = new aura_t( sim, "unleashed_rage",    1, 0.0 );
-  sim -> auras.windfury_totem    = new aura_t( sim, "windfury_totem",    1, 300.0 );
-  sim -> auras.wrath_of_air      = new aura_t( sim, "wrath_of_air",      1, 300.0 );
+  sim -> auras.elemental_oath    = new aura_t( sim, "elemental_oath",    1, timespan_t::zero );
+  sim -> auras.flametongue_totem = new aura_t( sim, "flametongue_totem", 1, timespan_t::from_seconds(300.0) );
+  sim -> auras.mana_spring_totem = new aura_t( sim, "mana_spring_totem", 1, timespan_t::from_seconds(300.0) );
+  sim -> auras.strength_of_earth = new aura_t( sim, "strength_of_earth", 1, timespan_t::from_seconds(300.0) );
+  sim -> auras.unleashed_rage    = new aura_t( sim, "unleashed_rage",    1, timespan_t::zero );
+  sim -> auras.windfury_totem    = new aura_t( sim, "windfury_totem",    1, timespan_t::from_seconds(300.0) );
+  sim -> auras.wrath_of_air      = new aura_t( sim, "wrath_of_air",      1, timespan_t::from_seconds(300.0) );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.bloodlust  = new buff_t( p, "bloodlust", 1, 40.0 );
-    p -> buffs.exhaustion = new buff_t( p, "exhaustion", 1, 600.0, 0, 1.0, true );
+    p -> buffs.bloodlust  = new buff_t( p, "bloodlust", 1, timespan_t::from_seconds(40.0) );
+    p -> buffs.exhaustion = new buff_t( p, "exhaustion", 1, timespan_t::from_seconds(600.0), timespan_t::zero, 1.0, true );
     p -> buffs.mana_tide  = new buff_t( p, 16190, "mana_tide" );
   }
 }

@@ -48,7 +48,7 @@ struct druid_targetdata_t : public targetdata_t
   {
     buffs_combo_points = add_aura( new buff_t( this, "combo_points", 5 ) );
 
-    buffs_lifebloom = add_aura( new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, 0 ) );
+    buffs_lifebloom = add_aura( new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, timespan_t::zero ) );
     buffs_lifebloom -> buff_duration = timespan_t::from_seconds(11.0); // Override duration so the bloom works correctly
   }
 };
@@ -4938,17 +4938,17 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   // These have either incorrect or no values in the DBC or don't really exist
-  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate -> enabled() );
-  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
-  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
-  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().time_value().total_seconds() );
-  buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell( 1 ).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
-  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
-  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
-  buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3,   8.0,     0, set_bonus.tier11_4pc_caster() );
-  buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3,  30.0,     0, set_bonus.tier11_4pc_melee()  );
-  buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1,  10.0,     0, ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
-  buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3,     0,     0, 1.0, true );
+  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1, timespan_t::from_seconds(10.0), timespan_t::zero, glyphs.innervate -> enabled() );
+  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds( 60.0), talents.natures_grace -> ok() );
+  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1, timespan_t::from_seconds(15.0), timespan_t::zero, 3.5 / 60.0 );
+  buffs_pulverize          = new buff_t( this, "pulverize"         , 1, timespan_t::from_seconds(10.0) + talents.endless_carnage -> effect2().time_value() );
+  buffs_revitalize         = new buff_t( this, "revitalize"        , 1, timespan_t::from_seconds( 1.0), timespan_t::from_seconds(talents.revitalize -> spell( 1 ).effect2().base_value()), talents.revitalize -> ok() ? 0.20 : 0, true );
+  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1, timespan_t::from_seconds( 8.0), timespan_t::zero, talents.stampede -> ok() );
+  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1, timespan_t::from_seconds(10.0), timespan_t::zero, talents.stampede -> ok() );
+  buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3, timespan_t::from_seconds( 8.0), timespan_t::zero, set_bonus.tier11_4pc_caster() );
+  buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3, timespan_t::from_seconds(30.0), timespan_t::zero, set_bonus.tier11_4pc_melee()  );
+  buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1, timespan_t::from_seconds(10.0), timespan_t::zero, ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
+  buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3, timespan_t::from_seconds(   0), timespan_t::zero, 1.0, true );
 
   // buff_t ( sim, id, name, chance, cooldown, quiet, reverse, rng_type )
   buffs_barkskin              = new buff_t( this, 22812, "barkskin" );
@@ -4970,8 +4970,8 @@ void druid_t::init_buffs()
 
   buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
   buffs_primal_madness_bear = new      buff_t( this, "primal_madness_bear" );
-  buffs_berserk             = new      buff_t( this, "berserk", 1, 15.0 + glyphs.berserk -> mod_additive( P_DURATION ) );
-  buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, 6.0 );
+  buffs_berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds(15.0 + glyphs.berserk -> mod_additive( P_DURATION )) );
+  buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, timespan_t::from_seconds(6.0) );
 
   // simple
   buffs_bear_form    = new buff_t( this, 5487,  "bear_form" );
@@ -5864,8 +5864,8 @@ void player_t::druid_init( sim_t* sim )
     p -> debuffs.demoralizing_roar    = new debuff_t( p, 99, "demoralizing_roar" );
     p -> debuffs.earth_and_moon       = new debuff_t( p, 60433, "earth_and_moon" );
     p -> debuffs.faerie_fire          = new debuff_t( p, 91565, "faerie_fire" );
-    p -> debuffs.infected_wounds      = new debuff_t( p, "infected_wounds",      1,  12.0 );
-    p -> debuffs.mangle               = new debuff_t( p, "mangle",               1,  60.0 );
+    p -> debuffs.infected_wounds      = new debuff_t( p, "infected_wounds",      1, timespan_t::from_seconds( 12.0 ) );
+    p -> debuffs.mangle               = new debuff_t( p, "mangle",               1, timespan_t::from_seconds( 60.0 ) );
   }
 
 }

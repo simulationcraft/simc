@@ -1926,7 +1926,7 @@ struct fiery_imp_pet_t : public pet_t
 
 struct coe_debuff_t : public debuff_t
 {
-  coe_debuff_t( player_t* t ) : debuff_t( t, "curse_of_elements", 1, 300.0 )
+  coe_debuff_t( player_t* t ) : debuff_t( t, "curse_of_elements", 1, timespan_t::from_seconds(300.0) )
   {}
 
   virtual void expire()
@@ -4558,7 +4558,7 @@ void warlock_t::init_buffs()
   buffs_molten_core           = new buff_t( this, talent_molten_core -> effect_trigger_spell( 1 ), "molten_core", talent_molten_core -> rank() * 0.02 );
   buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> base_value() / 100.0 );
 
-  buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, 15.0, 0.0, talent_hand_of_guldan -> rank() );
+  buffs_hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, timespan_t::from_seconds(15.0), timespan_t::zero, talent_hand_of_guldan -> rank() );
   buffs_improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", ( talent_improved_soul_fire -> rank() > 0 ) );
   buffs_soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs_demon_soul_imp        = new buff_t( this, 79459, "demon_soul_imp" );

@@ -53,15 +53,15 @@ struct buff_delay_t : public event_t
 buff_t::buff_t( sim_t*             s,
                 const std::string& n,
                 int                ms,
-                double             d,
-                double             cd,
+                timespan_t         d,
+                timespan_t         cd,
                 double             ch,
                 bool               q,
                 bool               r,
                 int                rt,
                 int                id ) :
   spell_id_t( 0, n.c_str() ),
-  buff_duration( timespan_t::from_seconds(d) ), buff_cooldown( timespan_t::from_seconds(cd) ), default_chance( ch ),
+  buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   name_str( n ), sim( s ), player( 0 ), source( 0 ), initial_source( 0 ),
   max_stack( ms ), aura_id( id ), rng_type( rt ),
   activated( true ), reverse( r ), constant( false ), quiet( q ),
@@ -75,8 +75,8 @@ buff_t::buff_t( sim_t*             s,
 buff_t::buff_t( actor_pair_t       p,
                 const std::string& n,
                 int                ms,
-                double             d,
-                double             cd,
+                timespan_t         d,
+                timespan_t         cd,
                 double             ch,
                 bool               q,
                 bool               r,
@@ -84,7 +84,7 @@ buff_t::buff_t( actor_pair_t       p,
                 int                id,
                 bool               act ) :
   spell_id_t( p.source, n.c_str() ),
-  buff_duration( timespan_t::from_seconds(d) ), buff_cooldown( timespan_t::from_seconds(cd) ), default_chance( ch ),
+  buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   name_str( n ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( ms ), aura_id( id ), rng_type( rt ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
@@ -282,7 +282,7 @@ buff_t::buff_t( actor_pair_t       p,
                 const std::string& n,
                 const char*        sname,
                 double             chance,
-                double             cd,
+                timespan_t         cd,
                 bool               q,
                 bool               r,
                 int                rt,
@@ -300,13 +300,13 @@ buff_t::buff_t( actor_pair_t       p,
   init_buff_t_();
 
   cooldown = initial_source -> get_cooldown( "buff_" + name_str );
-  if ( cd < 0.0 )
+  if ( cd < timespan_t::zero )
   {
     cooldown -> duration = p.source -> dbc.spell( spell_id() ) -> cooldown().total_seconds();
   }
   else
   {
-    cooldown -> duration = cd;
+    cooldown -> duration = cd.total_seconds();
   }
 
   if ( initial_source != player )
@@ -325,7 +325,7 @@ buff_t::buff_t( actor_pair_t       p,
                 const uint32_t     id,
                 const std::string& n,
                 double             chance,
-                double             cd,
+                timespan_t         cd,
                 bool               q,
                 bool               r,
                 int                rt,
@@ -342,13 +342,13 @@ buff_t::buff_t( actor_pair_t       p,
   init_buff_t_();
 
   cooldown = player -> get_cooldown( "buff_" + name_str );
-  if ( cd < 0.0 )
+  if ( cd < timespan_t::zero )
   {
     cooldown -> duration = player -> dbc.spell( spell_id() ) -> cooldown().total_seconds();
   }
   else
   {
-    cooldown -> duration = cd;
+    cooldown -> duration = cd.total_seconds();
   }
 
   if ( initial_source != player )
@@ -1026,8 +1026,8 @@ stat_buff_t::stat_buff_t( player_t*          p,
                           int                st,
                           double             a,
                           int                ms,
-                          double             d,
-                          double             cd,
+                          timespan_t         d,
+                          timespan_t         cd,
                           double             ch,
                           bool               q,
                           bool               r,
@@ -1046,7 +1046,7 @@ stat_buff_t::stat_buff_t( player_t*          p,
                           int                st,
                           double             a,
                           double             ch,
-                          double             cd,
+                          timespan_t         cd,
                           bool               q,
                           bool               r,
                           int                rng_type,
@@ -1117,8 +1117,8 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               int                sch,
                                               double             a,
                                               int                ms,
-                                              double             d,
-                                              double             cd,
+                                              timespan_t         d,
+                                              timespan_t         cd,
                                               double             ch,
                                               bool               re,
                                               bool               q,
@@ -1138,7 +1138,7 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               int                sch,
                                               double             a,
                                               double             ch,
-                                              double             cd,
+                                              timespan_t         cd,
                                               bool               re,
                                               bool               q,
                                               bool               r,
@@ -1225,8 +1225,8 @@ void cost_reduction_buff_t::refresh( int    stacks,
 debuff_t::debuff_t( player_t*          p,
                     const std::string& n,
                     int                ms,
-                    double             d,
-                    double             cd,
+                    timespan_t         d,
+                    timespan_t         cd,
                     double             ch,
                     bool               q,
                     bool               r,
@@ -1240,7 +1240,7 @@ debuff_t::debuff_t( player_t*          p,
                     const uint32_t     id,
                     const std::string& n,
                     double             chance,
-                    double             cd,
+                    timespan_t         cd,
                     bool               q,
                     bool               r,
                     int                rt ) :

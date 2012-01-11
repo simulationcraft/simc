@@ -3928,20 +3928,20 @@ void rogue_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
 
-  buffs_bandits_guile      = new buff_t( this, "bandits_guile", 12, 15.0, 0.0, 1.0, true );
+  buffs_bandits_guile      = new buff_t( this, "bandits_guile", 12, timespan_t::from_seconds(15.0), timespan_t::zero, 1.0, true );
   buffs_deadly_proc        = new buff_t( this, "deadly_proc",   1  );
-  buffs_overkill           = new buff_t( this, "overkill",      1, 20.0 );
+  buffs_overkill           = new buff_t( this, "overkill",      1, timespan_t::from_seconds(20.0) );
   buffs_recuperate         = new buff_t( this, "recuperate",    1  );
   buffs_shiv               = new buff_t( this, "shiv",          1  );
   buffs_stealthed          = new buff_t( this, "stealthed",     1  );
-  buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
-  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, spells.tier13_2pc -> duration().total_seconds(), 0.0, ( set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
-  buffs_tot_trigger        = new buff_t( this, 57934, "tricks_of_the_trade_trigger", -1, -1, true );
-  buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
+  buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, timespan_t::from_seconds(15.0), timespan_t::zero, set_bonus.tier11_4pc_melee() * 0.01 );
+  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, spells.tier13_2pc -> duration(), timespan_t::zero, ( set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
+  buffs_tot_trigger        = new buff_t( this, 57934, "tricks_of_the_trade_trigger", -1, timespan_t::min, true );
+  buffs_vanish             = new buff_t( this, "vanish",        1, timespan_t::from_seconds(3.0) );
 
-  buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration().total_seconds() );
-  buffs_tier12_4pc_crit    = new stat_buff_t( this, "fiery_devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration().total_seconds() );
-  buffs_tier12_4pc_mastery = new stat_buff_t( this, "master_of_flames",  STAT_MASTERY_RATING, 0.0, 1, dbc.spell( 99188 ) -> duration().total_seconds() );
+  buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );
+  buffs_tier12_4pc_crit    = new stat_buff_t( this, "fiery_devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration() );
+  buffs_tier12_4pc_mastery = new stat_buff_t( this, "master_of_flames",  STAT_MASTERY_RATING, 0.0, 1, dbc.spell( 99188 ) -> duration() );
 
   buffs_blade_flurry       = new buff_t( this, spec_blade_flurry -> spell_id(), "blade_flurry" );
   buffs_cold_blood         = new buff_t( this, talents.cold_blood -> spell_id(), "cold_blood" );
@@ -3963,10 +3963,10 @@ void rogue_t::init_buffs()
   // buffs_fof_p3            = new stat_buff_t( this, 109939, "legendary_daggers_p3", STAT_AGILITY, dbc.spell( 109939 ) -> effect1().base_value(), fof_p3 );
   // buffs_fof_fod           = new buff_t( this, 109949, "legendary_daggers", fof_p3 );
   // None of the buffs are currently in the DBC, so define them manually for now
-  buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, 30.0, 2.5, fof_p1 ); // Chance appears as 100% in DBC
-  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, 30.0, 2.5, fof_p2 ); // http://ptr.wowhead.com/spell=109959#comments
-  buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, 30.0, 2.5, fof_p3 );
-  buffs_fof_fod           = new buff_t( this, "legendary_daggers", 1, 6.0, 0, fof_p3 );
+  buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, timespan_t::from_seconds(30.0), timespan_t::from_seconds(2.5), fof_p1 ); // Chance appears as 100% in DBC
+  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, timespan_t::from_seconds(30.0), timespan_t::from_seconds(2.5), fof_p2 ); // http://ptr.wowhead.com/spell=109959#comments
+  buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, timespan_t::from_seconds(30.0), timespan_t::from_seconds(2.5), fof_p3 );
+  buffs_fof_fod           = new buff_t( this, "legendary_daggers", 1, timespan_t::from_seconds(6.0), timespan_t::zero, fof_p3 );
 }
 
 // rogue_t::init_values =====================================================
@@ -4256,9 +4256,9 @@ void player_t::rogue_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.tricks_of_the_trade  = new   buff_t( p, "tricks_of_the_trade", 1, 6.0 );
+    p -> buffs.tricks_of_the_trade  = new   buff_t( p, "tricks_of_the_trade", 1, timespan_t::from_seconds(6.0) );
     p -> debuffs.expose_armor       = new debuff_t( p, "expose_armor",     1 );
-    p -> debuffs.hemorrhage         = new debuff_t( p, "hemorrhage",       1, 60.0 );
+    p -> debuffs.hemorrhage         = new debuff_t( p, "hemorrhage",       1, timespan_t::from_seconds(60.0) );
     p -> debuffs.master_poisoner    = new debuff_t( p, "master_poisoner", -1 );
     p -> debuffs.poisoned           = new debuff_t( p, "poisoned",        -1 );
     p -> debuffs.savage_combat      = new debuff_t( p, "savage_combat",   -1 );

@@ -1690,13 +1690,13 @@ void player_t::init_spells()
 void player_t::init_buffs()
 {
   buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
-  buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1,  4.0 );
+  buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1, timespan_t::from_seconds(4.0) );
   buffs.corruption_absolute       = new buff_t( this, 82170, "corruption_absolute"          );
   buffs.dark_intent               = new buff_t( this, 85767, "dark_intent"                  );
   buffs.dark_intent_feedback      = new buff_t( this, 85759, "dark_intent_feedback"         );
   buffs.essence_of_the_red        = new buff_t( this,        "essence_of_the_red"           );
   buffs.furious_howl              = new buff_t( this, 24604, "furious_howl"                 );
-  buffs.grace                     = new buff_t( this,        "grace",               3, 15.0 );
+  buffs.grace                     = new buff_t( this,        "grace",               3, timespan_t::from_seconds(15.0) );
   buffs.hellscreams_warsong       = new buff_t( this,        "hellscreams_warsong", 1       );
   buffs.heroic_presence           = new buff_t( this,        "heroic_presence",     1       );
   buffs.hymn_of_hope = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope"                 );
@@ -1708,18 +1708,18 @@ void player_t::init_buffs()
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, 15.0 );
-  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, 15.0 );
-  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0, 1, 15.0, 60.0 );
-  buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0, 1, 25.0, 60.0 );
-  buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0, 1, 25.0, 60.0 );
-  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0, 1, 15.0, 60.0 );
-  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0, 1, 20.0 );
-  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING,  500.0, 1, 15.0, 60.0 );
-  buffs.tolvir_potion          = new stat_buff_t( this, "tolvir_potion",          STAT_AGILITY,      1200.0, 1, 25.0, 60.0 );
-  buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_INTELLECT,    1200.0, 1, 25.0, 60.0 );
-  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,   200.0, 1, 15.0, 60.0 );
-  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,   200.0, 1, 15.0, 60.0 );
+  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds(15.0) );
+  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds(15.0) );
+  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
+  buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
+  buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
+  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
+  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0, 1, timespan_t::from_seconds(20.0) );
+  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING,  500.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
+  buffs.tolvir_potion          = new stat_buff_t( this, "tolvir_potion",          STAT_AGILITY,      1200.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
+  buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_INTELLECT,    1200.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
+  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,   200.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
+  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,   200.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
 
   buffs.mongoose_mh = NULL;
   buffs.mongoose_oh = NULL;
@@ -5389,7 +5389,7 @@ struct use_item_t : public action_t
       if ( e.max_stacks  == 0 ) e.max_stacks  = 1;
       if ( e.proc_chance == 0 ) e.proc_chance = 1;
 
-      buff = new stat_buff_t( player, use_name, e.stat, e.stat_amount, e.max_stacks, e.duration, 0, e.proc_chance, false, e.reverse );
+      buff = new stat_buff_t( player, use_name, e.stat, e.stat_amount, e.max_stacks, timespan_t::from_seconds(e.duration), timespan_t::zero, e.proc_chance, false, e.reverse );
     }
     else assert( false );
 

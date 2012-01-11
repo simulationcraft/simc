@@ -2838,12 +2838,12 @@ struct buff_t : public spell_id_t
 
   // Raid Aura
   buff_t( sim_t*, const std::string& name,
-          int max_stack=1, double buff_duration=0, double buff_cooldown=0,
+          int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
           double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
 
   // Player Buff
   buff_t( actor_pair_t pair, const std::string& name,
-          int max_stack=1, double buff_duration=0, double buff_cooldown=0,
+          int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
           double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0, bool activated=true );
 
   // Player Buff with extracted data
@@ -2856,12 +2856,12 @@ public:
 
   // Player Buff as spell_id_t by name
   buff_t( actor_pair_t pair, const std::string& name, const char* sname,
-          double chance=-1, double cd=-1.0,
+          double chance=-1, timespan_t cd=timespan_t::min,
           bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
 
   // Player Buff as spell_id_t by id
   buff_t( actor_pair_t pair, const uint32_t id, const std::string& name,
-          double chance=-1, double cd=-1.0,
+          double chance=-1, timespan_t cd=timespan_t::min,
           bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
@@ -2922,11 +2922,11 @@ struct stat_buff_t : public buff_t
 
   stat_buff_t( player_t*, const std::string& name,
                int stat, double amount,
-               int max_stack=1, double buff_duration=0, double buff_cooldown=0,
+               int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
                double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0, bool activated=true );
   stat_buff_t( player_t*, const uint32_t id, const std::string& name,
                int stat, double amount,
-               double chance=1.0, double buff_cooldown=-1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
+               double chance=1.0, timespan_t buff_cooldown=timespan_t::min, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
 
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -2941,11 +2941,11 @@ struct cost_reduction_buff_t : public buff_t
 
   cost_reduction_buff_t( player_t*, const std::string& name,
                          int school, double amount,
-                         int max_stack=1, double buff_duration=0, double buff_cooldown=0,
+                         int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
                          double chance=1.0, bool refreshes=false, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0, bool activated=true );
   cost_reduction_buff_t( player_t*, const uint32_t id, const std::string& name,
                          int school, double amount,
-                         double chance=1.0, double buff_cooldown=-1.0, bool refreshes=false, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
+                         double chance=1.0, timespan_t buff_cooldown=timespan_t::min, bool refreshes=false, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
 
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -2957,12 +2957,12 @@ struct debuff_t : public buff_t
 {
   // Player De-Buff
   debuff_t( player_t*, const std::string& name,
-            int max_stack=1, double buff_duration=0, double buff_cooldown=0,
+            int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
             double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
 
   // Player De-Buff as spell_id_t by id
   debuff_t( player_t*, const uint32_t id, const std::string& name,
-            double chance=-1, double duration=-1.0,
+            double chance=-1, timespan_t duration=timespan_t::min,
             bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
 
 };

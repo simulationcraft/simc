@@ -3679,12 +3679,12 @@ void mage_t::init_buffs()
   buffs_mage_armor           = new mage_armor_buff_t( this );
   buffs_molten_armor         = new buff_t( this, spells.molten_armor,          NULL );
 
-  buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2,    0, 0, talents.arcane_potency ->rank() );
-  buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, 10.0 );
-  buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2,    0, 0, 1.0, true );
+  buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2, timespan_t::zero, timespan_t::zero, talents.arcane_potency ->rank() );
+  buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, timespan_t::from_seconds(10.0) );
+  buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2, timespan_t::zero, timespan_t::zero, 1.0, true );
   buffs_presence_of_mind     = new buff_t( this, "presence_of_mind",     1 );
 
-  buffs_tier13_2pc           = new stat_buff_t( this, "tier13_2pc", STAT_HASTE_RATING, 50.0, 10, 30.0 );
+  buffs_tier13_2pc           = new stat_buff_t( this, "tier13_2pc", STAT_HASTE_RATING, 50.0, 10, timespan_t::from_seconds(30.0) );
 }
 
 // mage_t::init_gains =======================================================
@@ -4371,7 +4371,7 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type 
 
 void player_t::mage_init( sim_t* sim )
 {
-  sim -> auras.arcane_tactics = new aura_t( sim, "arcane_tactics", 1, 0.0 );
+  sim -> auras.arcane_tactics = new aura_t( sim, "arcane_tactics", 1, timespan_t::zero );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {

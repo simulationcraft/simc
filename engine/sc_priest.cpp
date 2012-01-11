@@ -1311,7 +1311,7 @@ struct shadow_fiend_pet_t : public pet_t
   {
     pet_t::init_buffs();
 
-    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration().total_seconds() );
+    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration() );
   }
 
   virtual double composite_spell_power( const school_type school ) const
@@ -4983,13 +4983,13 @@ void priest_t::init_buffs()
 
   // Shadow
   buffs_empowered_shadow           = new buff_t( this, 95799, "empowered_shadow" );
-  buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, 6.0                      );
+  buffs_glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, timespan_t::from_seconds(6.0)  );
   buffs_mind_melt                  = new buff_t( this, talents.mind_melt -> effect2().trigger_spell_id(), "mind_melt"                 );
-  buffs_mind_spike                 = new buff_t( this, "mind_spike",                 3, 12.0                     );
+  buffs_mind_spike                 = new buff_t( this, "mind_spike",                 3, timespan_t::from_seconds(12.0) );
   buffs_shadow_form                = new buff_t( this, "shadow_form", "Shadowform" );
   buffs_shadow_orb                 = new buff_t( this, passive_spells.shadow_orbs -> effect1().trigger_spell_id(), "shadow_orb" );
   buffs_shadow_orb -> activated = false;
-  buffs_shadowfiend                = new buff_t( this, "shadowfiend", 1, 15.0 ); // Pet Tracking Buff
+  buffs_shadowfiend                = new buff_t( this, "shadowfiend", 1, timespan_t::from_seconds(15.0) ); // Pet Tracking Buff
   buffs_glyph_of_spirit_tap        = new buff_t( this, 81301, "glyph_of_spirit_tap" ); // FIXME: implement actual mechanics
   buffs_vampiric_embrace           = new buff_t( this, talents.vampiric_embrace, NULL );
 
@@ -5653,16 +5653,16 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_typ
 
 void player_t::priest_init( sim_t* sim )
 {
-  sim -> auras.mind_quickening = new aura_t( sim, "mind_quickening", 1, 0.0 );
+  sim -> auras.mind_quickening = new aura_t( sim, "mind_quickening", 1, timespan_t::zero );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
     p -> buffs.fortitude        = new stat_buff_t( p, "fortitude", STAT_STAMINA, floor( sim -> dbc.effect_average( sim -> dbc.spell( 79104 ) -> effect1().id(), sim -> max_player_level ) ), ! p -> is_pet() );
-    p -> buffs.guardian_spirit  = new      buff_t( p, 47788, "guardian_spirit", 1.0, 0 ); // Let the ability handle the CD
-    p -> buffs.pain_supression  = new      buff_t( p, 33206, "pain_supression", 1.0, 0 ); // Let the ability handle the CD
-    p -> buffs.power_infusion   = new      buff_t( p, "power_infusion", 1, 15.0, 0 );
-    p -> buffs.inspiration      = new      buff_t( p, "inspiration", 1, 15.0, 0 );
+    p -> buffs.guardian_spirit  = new      buff_t( p, 47788, "guardian_spirit", 1.0, timespan_t::zero ); // Let the ability handle the CD
+    p -> buffs.pain_supression  = new      buff_t( p, 33206, "pain_supression", 1.0, timespan_t::zero ); // Let the ability handle the CD
+    p -> buffs.power_infusion   = new      buff_t( p, "power_infusion", 1, timespan_t::from_seconds(15.0), timespan_t::zero );
+    p -> buffs.inspiration      = new      buff_t( p, "inspiration", 1, timespan_t::from_seconds(15.0), timespan_t::zero );
     p -> buffs.weakened_soul    = new      buff_t( p, 6788, "weakened_soul" );
   }
 }

@@ -430,7 +430,7 @@ death_knight_targetdata_t::death_knight_targetdata_t( player_t* source, player_t
   : targetdata_t( source, target )
 {
   death_knight_t* p = this->source -> cast_death_knight();
-  debuffs_ebon_plaguebringer  = add_aura( new buff_t( this, 65142, "ebon_plaguebringer_track", -1, -1, true ) );
+  debuffs_ebon_plaguebringer  = add_aura( new buff_t( this, 65142, "ebon_plaguebringer_track", -1, timespan_t::min, true ) );
   debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().time_value();
 }
 
@@ -4735,9 +4735,9 @@ void death_knight_t::init_enchant()
     }
   };
 
-  buffs_rune_of_cinderglacier       = new buff_t( this, "rune_of_cinderglacier",       2, 30.0 );
+  buffs_rune_of_cinderglacier       = new buff_t( this, "rune_of_cinderglacier",       2, timespan_t::from_seconds(30.0) );
   buffs_rune_of_razorice            = new buff_t( this, 51714, "rune_of_razorice" );
-  buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0 );
+  buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, timespan_t::from_seconds(15.0) );
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
@@ -4799,16 +4799,16 @@ void death_knight_t::init_buffs()
   buffs_blood_presence      = new buff_t( this, "blood_presence", "Blood Presence" );
   buffs_bone_shield         = new buff_t( this, "bone_shield", "Bone Shield" );
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
-  buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", "Dancing Rune Weapon", -1, -1.0, true ); // quiet=true
+  buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", "Dancing Rune Weapon", -1, timespan_t::min, true ); // quiet=true
   buffs_dark_transformation = new buff_t( this, "dark_transformation", "Dark Transformation" );
   buffs_frost_presence      = new buff_t( this, "frost_presence", "Frost Presence" );
   buffs_killing_machine     = new buff_t( this, 51124, "killing_machine" ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost", "Pillar of Frost" );
-  buffs_rime                = new buff_t( this, "rime", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, 30.0, 0.0, 1.0 ); // Trigger controls proc chance
+  buffs_rime                = new buff_t( this, "rime", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, timespan_t::from_seconds(30.0), timespan_t::zero, 1.0 ); // Trigger controls proc chance
   buffs_runic_corruption    = new buff_t( this, 51460, "runic_corruption" );
-  buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  20.0,  0.0, talents.scent_of_blood -> proc_chance() );
+  buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  timespan_t::from_seconds(20.0), timespan_t::zero, talents.scent_of_blood -> proc_chance() );
   buffs_shadow_infusion     = new buff_t( this, 91342, "shadow_infusion", talents.shadow_infusion -> proc_chance() );
-  buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, 10.0, 0.0, 1.0 );
+  buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, timespan_t::from_seconds(10.0), timespan_t::zero, 1.0 );
   buffs_tier11_4pc_melee    = new buff_t( this, 90507, "tier11_4pc_melee", set_bonus.tier11_4pc_melee() );
   buffs_tier13_4pc_melee    = new stat_buff_t( this, 105647, "tier13_4pc_melee", STAT_MASTERY_RATING, dbc.spell( 105647 ) -> effect1().base_value() );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence", "Unholy Presence" );
@@ -4816,7 +4816,7 @@ void death_knight_t::init_buffs()
   struct bloodworms_buff_t : public buff_t
   {
     bloodworms_buff_t( death_knight_t* p ) :
-      buff_t( p, "bloodworms", 1, 19.99, 0.0, p -> talents.blood_parasite -> rank() * 0.05 ) {}
+      buff_t( p, "bloodworms", 1, timespan_t::from_seconds(19.99), timespan_t::zero, p -> talents.blood_parasite -> rank() * 0.05 ) {}
     virtual void start( int stacks, double value )
     {
       buff_t::start( stacks, value );
@@ -5406,9 +5406,9 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, ra
 
 void player_t::death_knight_init( sim_t* sim )
 {
-  sim -> auras.abominations_might  = new aura_t( sim, "abominations_might",  1,   0.0 );
-  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, 120.0 );
-  sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1,   0.0 );
+  sim -> auras.abominations_might  = new aura_t( sim, "abominations_might",  1, timespan_t::zero );
+  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, timespan_t::from_seconds(120.0) );
+  sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1, timespan_t::zero );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -5416,7 +5416,7 @@ void player_t::death_knight_init( sim_t* sim )
     p -> buffs.unholy_frenzy        = new   buff_t( p, 49016, "unholy_frenzy" );
     p -> debuffs.brittle_bones      = new debuff_t( p, "brittle_bones",      1 );
     p -> debuffs.ebon_plaguebringer = new debuff_t( p, 65142, "ebon_plaguebringer" );
-    p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, 21.0 );
+    p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, timespan_t::from_seconds(21.0) );
   }
 }
 

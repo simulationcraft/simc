@@ -511,7 +511,7 @@ struct hunter_pet_t : public pet_t
     buffs_rabid             = new buff_t( this, 53401, "rabid" );
     buffs_rabid_power_stack = new buff_t( this, 53403, "rabid_power_stack" );
     buffs_sic_em            = new buff_t( this, 89388, "sic_em" );
-    buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, 10.0, 0.0 );
+    buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, timespan_t::from_seconds(10.0), timespan_t::zero );
   }
 
   virtual void init_gains()
@@ -3901,8 +3901,8 @@ void hunter_t::init_buffs()
   buffs_culling_the_herd            = new buff_t( this, 70893, "culling_the_herd" );
   buffs_focus_fire                  = new buff_t( this, 82692, "focus_fire" );
   buffs_improved_steady_shot        = new buff_t( this, 53220, "improved_steady_shot", talents.improved_steady_shot -> ok() );
-  buffs_killing_streak              = new buff_t( this, "killing_streak", 1, 8, 0, talents.killing_streak -> ok() );
-  buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, 0, 0, 1.0, true );
+  buffs_killing_streak              = new buff_t( this, "killing_streak", 1, timespan_t::from_seconds(8), timespan_t::zero, talents.killing_streak -> ok() );
+  buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, timespan_t::zero, timespan_t::zero, 1.0, true );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect1().percent() );
   if ( bugs ) buffs_lock_and_load -> cooldown -> duration = 10.0; // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
@@ -3911,10 +3911,10 @@ void hunter_t::init_buffs()
 
   buffs_rapid_fire                  = new buff_t( this, 3045, "rapid_fire" );
   buffs_rapid_fire -> cooldown -> duration = 0;
-  buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, 0, 0, 1, true );
+  buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, timespan_t::zero, timespan_t::zero, 1, true );
 
-  buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration().total_seconds(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
-  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", sets -> set( SET_T13_4PC_MELEE ) -> proc_chance(), tier13_4pc_cooldown );
+  buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), timespan_t::zero, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
+  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", sets -> set( SET_T13_4PC_MELEE ) -> proc_chance(), timespan_t::from_seconds(tier13_4pc_cooldown) );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );

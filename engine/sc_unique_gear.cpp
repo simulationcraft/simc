@@ -25,7 +25,7 @@ struct stat_proc_callback_t : public action_callback_t
     if ( proc_chance == 0 ) proc_chance = 1;
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
-    buff = new stat_buff_t( p, n, stat, amount, max_stacks, duration, cooldown, proc_chance, false, reverse, rng_type );
+    buff = new stat_buff_t( p, n, stat, amount, max_stacks, timespan_t::from_seconds(duration), timespan_t::from_seconds(cooldown), proc_chance, false, reverse, rng_type );
     buff -> activated = activated;
   }
 
@@ -92,7 +92,7 @@ struct cost_reduction_proc_callback_t : public action_callback_t
     if ( proc_chance == 0 ) proc_chance = 1;
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
-    buff = new cost_reduction_buff_t( p, n, school, amount, max_stacks, duration, cooldown, proc_chance, refreshes, false, reverse, rng_type );
+    buff = new cost_reduction_buff_t( p, n, school, amount, max_stacks, timespan_t::from_seconds(duration), timespan_t::from_seconds(cooldown), proc_chance, refreshes, false, reverse, rng_type );
     buff -> activated = activated;
   }
 
@@ -379,7 +379,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
 
-    buff = new stat_buff_t( p, n, stat, stat_amount, max_stacks, duration, cooldown, proc_chance );
+    buff = new stat_buff_t( p, n, stat, stat_amount, max_stacks, timespan_t::from_seconds(duration), timespan_t::from_seconds(cooldown), proc_chance );
     buff -> activated = activated;
 
     struct discharge_spell_t : public spell_t
@@ -478,7 +478,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
 
       apparatus_of_khazgoroth = new buff_t( p, 96923, "titanic_power" ); // TODO: Duration, cd, etc.?
       apparatus_of_khazgoroth -> activated = false;
-      blessing_of_khazgoroth  = new stat_buff_t( p, "blessing_of_khazgoroth", STAT_CRIT_RATING, amount, 1, 15.0, 120.0 );
+      blessing_of_khazgoroth  = new stat_buff_t( p, "blessing_of_khazgoroth", STAT_CRIT_RATING, amount, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(120.0) );
       proc_apparatus_of_khazgoroth_haste   = p -> get_proc( "apparatus_of_khazgoroth_haste"   );
       proc_apparatus_of_khazgoroth_crit    = p -> get_proc( "apparatus_of_khazgoroth_crit"    );
       proc_apparatus_of_khazgoroth_mastery = p -> get_proc( "apparatus_of_khazgoroth_mastery" );
@@ -570,9 +570,9 @@ static void register_fury_of_angerforge( item_t* item )
     fury_of_angerforge_callback_t( player_t* p ) :
       action_callback_t( p -> sim, p )
     {
-      raw_fury = new buff_t( p, "raw_fury", 5, 15.0, 5.0, 0.5, true );
+      raw_fury = new buff_t( p, "raw_fury", 5, timespan_t::from_seconds(15.0), timespan_t::from_seconds(5.0), 0.5, true );
       raw_fury -> activated = false;
-      blackwing_dragonkin = new stat_buff_t( p, "blackwing_dragonkin", STAT_STRENGTH, 1926, 1, 20.0, 120.0 );
+      blackwing_dragonkin = new stat_buff_t( p, "blackwing_dragonkin", STAT_STRENGTH, 1926, 1, timespan_t::from_seconds(20.0), timespan_t::from_seconds(120.0) );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -613,7 +613,7 @@ static void register_heart_of_ignacious( item_t* item )
     heart_of_ignacious_callback_t( player_t* p, bool h ) :
       stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, 15.0, 2.0, 0, false, RNG_DEFAULT, false ), heroic( h )
     {
-      haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, heroic ? 363 : 321, 5, 20.0, 120.0 );
+      haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, heroic ? 363 : 321, 5, timespan_t::from_seconds(20.0), timespan_t::from_seconds(120.0) );
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
@@ -653,9 +653,9 @@ static void register_matrix_restabilizer( item_t* item )
       stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, 0, 0, 0, 0, 0, false, RNG_DEFAULT, false ),
       heroic( h ), buff_matrix_restabilizer_crit( 0 ), buff_matrix_restabilizer_haste( 0 ), buff_matrix_restabilizer_mastery( 0 )
     {
-      buff_matrix_restabilizer_crit     = new stat_buff_t( p, "matrix_restabilizer_crit",    STAT_CRIT_RATING,    heroic ? 1834 : 1624, 1, 30, 105, .15, false, RNG_DEFAULT, false );
-      buff_matrix_restabilizer_haste    = new stat_buff_t( p, "matrix_restabilizer_haste",   STAT_HASTE_RATING,   heroic ? 1834 : 1624, 1, 30, 105, .15, false, RNG_DEFAULT, false );
-      buff_matrix_restabilizer_mastery  = new stat_buff_t( p, "matrix_restabilizer_mastery", STAT_MASTERY_RATING, heroic ? 1834 : 1624, 1, 30, 105, .15, false, RNG_DEFAULT, false );
+      buff_matrix_restabilizer_crit     = new stat_buff_t( p, "matrix_restabilizer_crit",    STAT_CRIT_RATING,    heroic ? 1834 : 1624, 1, timespan_t::from_seconds(30), timespan_t::from_seconds(105), .15, false, RNG_DEFAULT, false );
+      buff_matrix_restabilizer_haste    = new stat_buff_t( p, "matrix_restabilizer_haste",   STAT_HASTE_RATING,   heroic ? 1834 : 1624, 1, timespan_t::from_seconds(30), timespan_t::from_seconds(105), .15, false, RNG_DEFAULT, false );
+      buff_matrix_restabilizer_mastery  = new stat_buff_t( p, "matrix_restabilizer_mastery", STAT_MASTERY_RATING, heroic ? 1834 : 1624, 1, timespan_t::from_seconds(30), timespan_t::from_seconds(105), .15, false, RNG_DEFAULT, false );
     }
 
     virtual void trigger( action_t* a, void* call_data )
@@ -1105,7 +1105,7 @@ static void register_indomitable_pride( item_t* item )
       action_callback_t( p -> sim, p ), heroic( h ), lfr( l ), cd ( 0 ), stats( 0 )
     {
       // Looks like there is no spell_id_t for the buff
-      buff = new buff_t( p, "indomitable_pride", 1, 6.0 );
+      buff = new buff_t( p, "indomitable_pride", 1, timespan_t::from_seconds(6.0) );
       buff -> activated = false;
       cd = listener -> get_cooldown( "indomitable_pride" );
       cd -> duration = 60.0;
@@ -1673,7 +1673,7 @@ static void register_titahk( item_t* item )
       proc_chance( spell -> proc_chance() ),
       rng( p -> get_rng( "titahk" ) )
     {
-      double duration = buff -> duration().total_seconds();
+      timespan_t duration = buff -> duration();
       buff_self   = new stat_buff_t( p, "titahk_self", STAT_HASTE_RATING, buff -> effect1().base_value(), 1, duration );
       buff_self -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
       buff_radius = new stat_buff_t( p, "titahk_aoe",  STAT_HASTE_RATING, buff -> effect2().base_value(), 1, duration ); // FIXME: Apply aoe buff to other players

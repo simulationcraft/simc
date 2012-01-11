@@ -3165,15 +3165,15 @@ void paladin_t::init_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
 
   buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
-  buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, 0 ); // Let the ability handle the CD
+  buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, timespan_t::zero ); // Let the ability handle the CD
   buffs_conviction             = new buff_t( this, talents.conviction -> effect1().trigger_spell_id(), "conviction", talents.conviction -> rank() );
   buffs_daybreak               = new buff_t( this, talents.daybreak -> effect_trigger_spell( 1 ), "daybreak", talents.daybreak -> proc_chance() );
-  buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, 0 ); // Let the ability handle the CD
+  buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, timespan_t::zero ); // Let the ability handle the CD
   buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().time_value();
-  buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
-  buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, 0 ); // Let the ability handle the CD
+  buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, timespan_t::zero ); // Let the ability handle the CD
+  buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, timespan_t::zero ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
-  buffs_divine_shield          = new buff_t( this,   642, "divine_shield", 1.0, 0 ); // Let the ability handle the CD
+  buffs_divine_shield          = new buff_t( this,   642, "divine_shield", 1.0, timespan_t::zero ); // Let the ability handle the CD
   buffs_gotak_prot             = new buff_t( this, 86659, "guardian_of_the_ancient_kings" );
   buffs_grand_crusader         = new buff_t( this, talents.grand_crusader -> effect_trigger_spell( 1 ), "grand_crusader", talents.grand_crusader -> proc_chance() );
   buffs_holy_shield            = new buff_t( this, 20925, "holy_shield" );
@@ -3896,8 +3896,8 @@ void player_t::paladin_init( sim_t* sim )
     p -> buffs.blessing_of_might_regen  = new buff_t( p, "blessing_of_might_regen", ! p -> is_pet() );
     p -> buffs.illuminated_healing      = new buff_t( p, 86273, "illuminated_healing" );
     p -> debuffs.forbearance            = new debuff_t( p, 25771, "forbearance" );
-    p -> debuffs.judgements_of_the_just = new debuff_t( p, "judgements_of_the_just", 1, 20.0 );
-    p -> debuffs.vindication            = new debuff_t( p, "vindication",            1, 30.0 );
+    p -> debuffs.judgements_of_the_just = new debuff_t( p, "judgements_of_the_just", 1, timespan_t::from_seconds(20.0) );
+    p -> debuffs.vindication            = new debuff_t( p, "vindication",            1, timespan_t::from_seconds(30.0) );
   }
 }
 
