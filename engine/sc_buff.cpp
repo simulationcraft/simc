@@ -620,7 +620,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     if ( sim -> debug )
       log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
-                     p -> name(), name(), extra_seconds, expiration -> occurs() );
+                     p -> name(), name(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
   else if ( extra_seconds < timespan_t::zero )
   {

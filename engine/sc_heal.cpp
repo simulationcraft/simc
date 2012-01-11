@@ -235,7 +235,7 @@ void heal_t::impact( player_t* t, int impact_result, double travel_heal=0 )
     dot -> recalculate_ready();
     if ( sim -> debug )
       log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)",
-                     player -> name(), dot -> ready, name(), dot -> name() );
+                     player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
   }
 }
 

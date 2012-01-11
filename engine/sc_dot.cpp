@@ -90,14 +90,14 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds )
   if ( sim -> debug )
   {
     log_t::output( sim, "%s extends duration of %s on %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d",
-                   action -> player -> name(), name(), player -> name(), extra_seconds,
+                   action -> player -> name(), name(), player -> name(), extra_seconds.total_seconds(),
                    old_haste_factor, ( 1.0 / action -> player_haste ),
                    old_num_ticks, num_ticks,
                    old_remaining_ticks, new_remaining_ticks );
   }
   else if ( sim -> log )
   {
-    log_t::output( sim, "%s extends duration of %s on %s by %.1f second(s).", action -> player -> name(), name(), player -> name(), extra_seconds );
+    log_t::output( sim, "%s extends duration of %s on %s by %.1f second(s).", action -> player -> name(), name(), player -> name(), extra_seconds.total_seconds() );
   }
 
   recalculate_ready();

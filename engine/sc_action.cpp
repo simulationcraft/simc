@@ -1136,7 +1136,7 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
 
       if ( sim -> debug )
         log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)",
-                       player -> name(), dot -> ready, name(), dot -> name() );
+                       player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
     }
   }
   else
@@ -1324,7 +1324,7 @@ void action_t::update_ready()
 
     cooldown -> start( timespan_t::min, timespan_t::from_seconds(delay) );
 
-    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready );
+    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
   }
   if ( num_ticks )
   {
@@ -1731,7 +1731,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
           log_t::output( action -> sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f",
                          action -> player -> name_str.c_str(),
                          action -> name_str.c_str(),
-                         action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction,
+                         (action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction).total_seconds(),
                          action -> sim -> current_time );
         }
 
