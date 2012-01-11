@@ -873,7 +873,7 @@ static void trigger_flurry( attack_t* a, int stacks )
         delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
       else
         delta = ( mhe -> time - sim -> current_time ) * mult;
-      p -> main_hand_attack -> reschedule_execute( delta );
+      p -> main_hand_attack -> reschedule_execute( timespan_t::from_seconds(delta) );
     }
   }
   if ( p -> off_hand_attack )
@@ -886,7 +886,7 @@ static void trigger_flurry( attack_t* a, int stacks )
         delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
       else
         delta = ( ohe -> time - sim -> current_time ) * mult;
-      p -> off_hand_attack -> reschedule_execute( delta );
+      p -> off_hand_attack -> reschedule_execute( timespan_t::from_seconds(delta) );
     }
   }
 }
@@ -4025,7 +4025,7 @@ double warrior_t::assess_damage( double            amount,
 
       if ( max_reschedule > 0 )
       {
-        main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
+        main_hand_attack -> reschedule_execute( timespan_t::from_seconds(std::min( ( 0.40 * swing_time ), max_reschedule )) );
         procs_parry_haste -> occur();
       }
     }

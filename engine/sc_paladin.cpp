@@ -3755,7 +3755,7 @@ double paladin_t::assess_damage( double            amount,
 
       if ( max_reschedule > 0 )
       {
-        main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
+        main_hand_attack -> reschedule_execute( timespan_t::from_seconds(std::min( ( 0.40 * swing_time ), max_reschedule )) );
         procs_parry_haste -> occur();
       }
     }

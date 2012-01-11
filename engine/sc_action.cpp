@@ -1282,25 +1282,25 @@ void action_t::schedule_travel( player_t* t )
 
 // action_t::reschedule_execute =============================================
 
-void action_t::reschedule_execute( double time )
+void action_t::reschedule_execute( timespan_t time )
 {
   if ( sim -> log )
   {
     log_t::output( sim, "%s reschedules execute for %s", player -> name(), name() );
   }
 
-  double delta_time = sim -> current_time + time - execute_event -> occurs();
+  double delta_time = sim -> current_time + time.total_seconds() - execute_event -> occurs();
 
   time_to_execute += delta_time;
 
   if ( delta_time > 0 )
   {
-    execute_event -> reschedule( time );
+    execute_event -> reschedule( time.total_seconds() );
   }
   else // Impossible to reschedule events "early".  Need to be canceled and re-created.
   {
     event_t::cancel( execute_event );
-    execute_event = new ( sim ) action_execute_event_t( sim, this, time );
+    execute_event = new ( sim ) action_execute_event_t( sim, this, time.total_seconds() );
   }
 }
 

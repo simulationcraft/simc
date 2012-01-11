@@ -4957,7 +4957,7 @@ public:
   virtual void   additional_damage( player_t* t, double amount, int dmg_type, int impact_result );
   virtual void   schedule_execute();
   virtual void   schedule_travel( player_t* t );
-  virtual void   reschedule_execute( double time );
+  virtual void   reschedule_execute( timespan_t time );
   virtual void   update_ready();
   virtual bool   usable_moving();
   virtual bool   ready();
