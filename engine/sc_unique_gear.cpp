@@ -141,7 +141,7 @@ struct discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -161,7 +161,7 @@ struct discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -265,7 +265,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -285,7 +285,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -389,7 +389,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -411,7 +411,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -752,7 +752,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
     tyrandes_spell_t( player_t* p, double max_mana ) :
       spell_t( "tyrandes_doll", p, RESOURCE_NONE, SCHOOL_ARCANE )
     {
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       base_dd_min = max_mana;
       base_dd_max = max_mana;
       may_crit = true;
@@ -946,7 +946,7 @@ static void register_blazing_power( item_t* item )
     blazing_power_heal_t( player_t* p, bool heroic ) :
       heal_t( "blaze_of_life", p, heroic ? 97136 : 96966 )
     {
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       background  = true;
       may_miss = false;
       may_crit = true;
@@ -1010,7 +1010,7 @@ static void register_windward_heart( item_t* item )
     windward_heart_heal_t( player_t* p, bool heroic, bool lfr ) :
       heal_t( "windward", p, heroic ? 109825 : lfr ? 109822 : 108000 )
     {
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       background  = true;
       may_miss = false;
       may_crit = true;
@@ -1199,7 +1199,7 @@ static void register_bonelink_fetish( item_t* item )
       whirling_maw_t( player_t* p, uint32_t spell_id ) :
         attack_t( "bonelink_fetish", spell_id, p )
       {
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         background = true;
         may_miss = false;
         may_glance = false;
@@ -1338,7 +1338,7 @@ static void register_gurthalak( item_t* item )
       gurthalak_t( player_t* p, uint32_t tick_damage, const char* name ) :
         spell_t( name, 52586, p )
       {
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         background = true;
         tick_may_crit = true;
         hasted_ticks = false;
@@ -1456,7 +1456,7 @@ static void register_nokaled( item_t* item )
       nokaled_fire_t( player_t* p, uint32_t spell_id ) :
         spell_t( "nokaled_fireblast", spell_id, p )
       {
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         background = true;
         may_miss = false;
         may_crit = true;
@@ -1470,7 +1470,7 @@ static void register_nokaled( item_t* item )
       nokaled_frost_t( player_t* p, uint32_t spell_id ) :
         spell_t( "nokaled_iceblast", spell_id, p )
       {
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         background = true;
         may_miss = false;
         may_crit = true;
@@ -1484,7 +1484,7 @@ static void register_nokaled( item_t* item )
       nokaled_shadow_t( player_t* p, uint32_t spell_id ) :
         spell_t( "nokaled_shadowblast", spell_id, p )
       {
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         background = true;
         may_miss = false;
         may_crit = true;
@@ -1545,7 +1545,7 @@ static void register_rathrak( item_t* item )
     rathrak_poison_t( player_t* p, uint32_t spell_id ) :
       spell_t( "rathrak", spell_id, p )
     {
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       background = true;
       may_miss = false; // FIXME: Verify this
       tick_may_crit = true; 
@@ -1594,7 +1594,7 @@ static void register_souldrinker( item_t* item )
     souldrinker_spell_t( player_t* p, bool h, bool lfr ) :
       spell_t( "souldrinker", h ? 109831 : lfr ? 109828 : 108022, p )
     {
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       background = true;
       may_miss = false;
       may_crit = false;

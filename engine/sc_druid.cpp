@@ -405,7 +405,7 @@ struct druid_t : public player_t
   {
     for ( action_t* a=action_list; a; a = a -> next )
     {
-      if ( a -> trigger_gcd != 0 ) a -> trigger_gcd = base_gcd;
+      if ( a -> trigger_gcd != timespan_t::zero ) a -> trigger_gcd = timespan_t::from_seconds(base_gcd);
     }
   }
 };
@@ -659,7 +659,7 @@ struct burning_treant_pet_t : public pet_t
       spell_t( "fireseed", 99026, p )
     {
       may_crit          = true;
-      trigger_gcd = 1.5;
+      trigger_gcd = timespan_t::from_seconds(1.5);
       if ( p -> owner -> bugs )
       {
         ability_lag = 0.74;
@@ -908,7 +908,7 @@ static void trigger_fury_swipes( action_t* a )
         {
           background  = true;
           proc        = true;
-          trigger_gcd = 0;
+          trigger_gcd = timespan_t::zero;
           init();
         }
       };
@@ -1316,7 +1316,7 @@ struct cat_melee_t : public druid_cat_attack_t
     background  = true;
     repeating   = true;
     may_crit    = true;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     base_cost   = 0;
   }
 
@@ -2203,7 +2203,7 @@ struct bear_melee_t : public druid_bear_attack_t
   {
     background  = true;
     repeating   = true;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     base_cost   = 0;
     may_crit    = true;
   }
@@ -2903,7 +2903,7 @@ struct rejuvenation_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     may_crit     = p -> talents.gift_of_the_earthmother -> rank() ? true : false;
-    trigger_gcd += p -> talents.swift_rejuvenation -> mod_additive( P_GCD );
+    trigger_gcd += timespan_t::from_seconds(p -> talents.swift_rejuvenation -> mod_additive( P_GCD ));
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE ) +
                         p -> talents.blessing_of_the_grove -> mod_additive( P_TICK_DAMAGE ) +
@@ -3198,7 +3198,7 @@ struct auto_attack_t : public action_t
   auto_attack_t( player_t* player, const std::string& /* options_str */ ) :
     action_t( ACTION_OTHER, "auto_attack", player )
   {
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3252,7 +3252,7 @@ struct bear_form_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     // Override these as we can do it before combat
-    trigger_gcd       = 0;
+    trigger_gcd       = timespan_t::zero;
     base_execute_time = timespan_t::zero;
     harmful           = false;
 
@@ -3359,7 +3359,7 @@ struct cat_form_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     // Override for precombat casting
-    trigger_gcd       = 0;
+    trigger_gcd       = timespan_t::zero;
     base_execute_time = timespan_t::zero;
     harmful           = false;
 
@@ -3462,7 +3462,7 @@ struct faerie_fire_feral_t : public druid_spell_t
     base_spell_power_multiplier  = 0;
     direct_power_mod             = extra_coeff();
     cooldown -> duration         = player -> dbc.spell( 16857 ) -> cooldown().total_seconds(); // Cooldown is stored in another version of FF
-    trigger_gcd                  = player -> dbc.spell( 16857 ) -> gcd().total_seconds();
+    trigger_gcd                  = player -> dbc.spell( 16857 ) -> gcd();
   }
 
   virtual void execute()
@@ -3664,7 +3664,7 @@ struct mark_of_the_wild_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     id          = 1126;
     base_cost  *= 1.0 + p -> glyphs.mark_of_the_wild -> mod_additive( P_RESOURCE_COST ) / 100.0;
     harmful     = false;
@@ -3822,7 +3822,7 @@ struct moonkin_form_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     // Override these as we can precast before combat begins
-    trigger_gcd       = 0;
+    trigger_gcd       = timespan_t::zero;
     base_execute_time = timespan_t::zero;
     base_cost         = 0;
     harmful           = false;
@@ -4204,7 +4204,7 @@ struct stealth_t : public spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     harmful     = false;
   }
 

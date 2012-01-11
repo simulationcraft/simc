@@ -56,7 +56,7 @@ void action_t::init_action_t_()
   ability_lag_stddev             = 0.0;
   rp_gain                        = 0.0;
   min_gcd                        = timespan_t::zero;
-  trigger_gcd                    = player -> base_gcd;
+  trigger_gcd                    = timespan_t::from_seconds(player -> base_gcd);
   range                          = -1.0;
   weapon_power_mod               = 1.0/14.0;
   direct_power_mod               = 0.0;
@@ -254,7 +254,7 @@ void action_t::parse_data()
     cooldown -> duration = spell -> cooldown().total_seconds();
     range                = spell -> max_range();
     travel_speed         = spell -> missile_speed();
-    trigger_gcd          = spell -> gcd().total_seconds();
+    trigger_gcd          = spell -> gcd();
     school               = spell_id_t::get_school_type( spell -> school_mask() );
     stats -> school      = school;
     resource             = spell -> power_type();
@@ -471,7 +471,7 @@ timespan_t action_t::gcd() const
   if ( ! harmful && ! player -> in_combat )
     return timespan_t::zero;
 
-  return timespan_t::from_seconds(trigger_gcd);
+  return trigger_gcd;
 }
 
 // action_t::travel_time ====================================================

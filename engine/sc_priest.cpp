@@ -1122,7 +1122,7 @@ struct shadow_fiend_pet_t : public pet_t
       proc             = true;
       may_crit         = false;
       direct_power_mod = 0.0;
-      trigger_gcd      = false;
+      trigger_gcd      = timespan_t::zero;
       school           = SCHOOL_FIRE;
 
       if ( const spell_data_t* shadowflame = spell_data_t::find( 99156, "Shadowflame", o -> dbc.ptr ) )
@@ -1537,7 +1537,7 @@ struct shadowy_apparition_t : public priest_spell_t
     proc              = true;
     callbacks         = false;
 
-    trigger_gcd       = 0;
+    trigger_gcd       = timespan_t::zero;
     travel_speed      = 3.5;
 
     base_crit += 0.06; // estimated.
@@ -4347,7 +4347,7 @@ struct renew_t : public priest_heal_t
     }
 
     if ( p -> talents.rapid_renewal -> rank() )
-      trigger_gcd += p -> talents.rapid_renewal -> effect1().time_value().total_seconds();
+      trigger_gcd += p -> talents.rapid_renewal -> effect1().time_value();
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )

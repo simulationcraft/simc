@@ -14,7 +14,7 @@
 sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   action_t( ACTION_SEQUENCE, "default", p ), current_action( -1 ), restarted( false )
 {
-  trigger_gcd = 0;
+  trigger_gcd = timespan_t::zero;
 
   std::vector<std::string> splits;
   int size = util_t::string_split( splits, sub_action_str, ":" );

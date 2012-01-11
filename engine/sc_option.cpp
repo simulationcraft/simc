@@ -131,7 +131,7 @@ void option_t::save( FILE* file )
   else if ( type == OPT_TIMESPAN )
   {
     timespan_t v = *( ( timespan_t* ) address );
-    if ( v != timespan_t::zero ) util_t::fprintf( file, "%s=%.2f\n", name, v );
+    if ( v != timespan_t::zero ) util_t::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
   }
   else if ( type == OPT_LIST )
   {

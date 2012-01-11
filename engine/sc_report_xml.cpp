@@ -1195,7 +1195,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         writer.print_tag( "tree", util_t::talent_tree_string( a -> tree ) );
         writer.print_tag( "range", util_t::to_string( a -> range ) );
         writer.print_tag( "travel_speed", util_t::to_string( a -> travel_speed ) );
-        writer.print_tag( "trigger_gcd", util_t::to_string( a -> trigger_gcd ) );
+        writer.print_tag( "trigger_gcd", util_t::to_string( a -> trigger_gcd.total_seconds() ) );
         writer.print_tag( "base_cost", util_t::to_string( a -> base_cost ) );
         writer.begin_tag( "cooldown" );
         writer.print_attribute( "duration", util_t::to_string( a -> cooldown -> duration ) );

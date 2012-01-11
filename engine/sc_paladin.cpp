@@ -362,7 +362,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       weapon_multiplier = 1.0;
       background = true;
       repeating  = true;
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       base_cost   = 0;
 
       owner = p -> cast_pet() -> owner -> cast_paladin();
@@ -838,7 +838,7 @@ static void trigger_beacon_of_light( heal_t* h )
         background = true;
         may_crit = false;
         proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
 
         target = p -> beacon_target;
 
@@ -877,7 +877,7 @@ static void trigger_enlightened_judgements( paladin_t* p )
       {
         background = true;
         proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
 
         init();
       }
@@ -936,7 +936,7 @@ static void trigger_illuminated_healing( heal_t* h )
       {
         background = true;
         proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
 
         init();
       }
@@ -970,7 +970,7 @@ static void trigger_protector_of_the_innocent( paladin_t* p )
       {
         background = true;
         proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
 
         init();
       }
@@ -1013,7 +1013,7 @@ struct melee_t : public paladin_attack_t
     trigger_seal      = true;
     background        = true;
     repeating         = true;
-    trigger_gcd       = 0;
+    trigger_gcd       = timespan_t::zero;
     base_cost         = 0;
     weapon            = &( p -> main_hand_weapon );
     base_execute_time = timespan_t::from_seconds(p -> main_hand_weapon.swing_time);
@@ -1058,7 +1058,7 @@ struct auto_attack_t : public paladin_attack_t
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( p );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
 
     parse_options( NULL, options_str );
   }
@@ -1461,7 +1461,7 @@ struct hand_of_light_proc_t : public attack_t
     may_parry   = false;
     proc        = true;
     background  = true;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void player_buff()
@@ -1546,7 +1546,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   {
     background  = true;
     proc        = true;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
 
     target = player;
     heal_target.clear();
@@ -1598,7 +1598,7 @@ struct seal_of_justice_proc_t : public paladin_attack_t
   {
     background        = true;
     proc              = true;
-    trigger_gcd       = 0;
+    trigger_gcd       = timespan_t::zero;
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
   }
@@ -1647,7 +1647,7 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
     background  = true;
     may_crit    = true;
     proc        = true;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
 
     aoe              = ( int ) p -> talents.seals_of_command -> mod_additive( P_TARGET );
     base_multiplier *= p -> main_hand_weapon.swing_time; // Note that tooltip changes with haste, but actual damage doesn't

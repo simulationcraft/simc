@@ -535,7 +535,7 @@ struct rogue_poison_t : public spell_t
     proc             = true;
     background       = true;
     base_cost        = 0.0;
-    trigger_gcd      = 0.0;
+    trigger_gcd      = timespan_t::zero;
     may_crit         = true;
     tick_may_crit    = true;
     hasted_ticks     = false;
@@ -836,7 +836,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
 
           base_dd_min = base_dd_max = 1;
           background      = true;
-          trigger_gcd     = 0;
+          trigger_gcd     = timespan_t::zero;
           base_cost       = 0;
           may_glance      = false; // XXX: does not glance
           may_crit        = true;
@@ -1440,7 +1440,7 @@ struct melee_t : public rogue_attack_t
     base_dd_min = base_dd_max = 1;
     background      = true;
     repeating       = true;
-    trigger_gcd     = 0;
+    trigger_gcd     = timespan_t::zero;
     base_cost       = 0;
     may_crit        = true;
 
@@ -1520,7 +1520,7 @@ struct auto_attack_t : public action_t
       p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds( p -> off_hand_weapon.swing_time );
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3066,7 +3066,7 @@ struct apply_poison_t : public action_t
       sim -> cancel();
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
 
     if ( p -> main_hand_weapon.type != WEAPON_NONE )
     {
@@ -3136,7 +3136,7 @@ struct stealth_t : public spell_t
   stealth_t( rogue_t* p, const std::string& options_str ) :
     spell_t( "stealth", p ), used( false )
   {
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     id = 1784;
 
     parse_options( NULL, options_str );

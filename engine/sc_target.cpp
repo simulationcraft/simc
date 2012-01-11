@@ -120,7 +120,7 @@ struct melee_t : public attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     base_cost   = 0;
     base_dd_min = 260000;
     base_execute_time = timespan_t::from_seconds(2.4);
@@ -157,7 +157,7 @@ struct auto_attack_t : public attack_t
     stats -> school = school;
     name_str = name_str + "_" + target -> name();
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -276,7 +276,7 @@ struct summon_add_t : public spell_t
 
     harmful = false;
 
-    trigger_gcd = 1.5;
+    trigger_gcd = timespan_t::from_seconds(1.5);
   }
 
   virtual void execute()

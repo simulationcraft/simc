@@ -792,7 +792,7 @@ struct tier12_mirror_image_pet_t : public pet_t
       spell_t( "fireball", 99062, mirror_image )
     {
       may_crit          = true;
-      trigger_gcd = 1.5;
+      trigger_gcd = timespan_t::from_seconds(1.5);
       if ( mirror_image -> owner -> bugs )
       {
         ability_lag = 0.74;
@@ -1525,7 +1525,7 @@ struct arcane_explosion_t : public mage_spell_t
 
     if ( p -> talents.improved_arcane_explosion -> rank() )
     {
-      trigger_gcd += p -> talents.improved_arcane_explosion -> effect1().time_value().total_seconds();
+      trigger_gcd += p -> talents.improved_arcane_explosion -> effect1().time_value();
     }
   }
 
@@ -1894,7 +1894,7 @@ struct deep_freeze_t : public mage_spell_t
 
     fof_frozen = true;
     base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effect1().percent();
-    trigger_gcd = p -> base_gcd;
+    trigger_gcd = timespan_t::from_seconds(p -> base_gcd);
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2194,7 +2194,7 @@ struct focus_magic_t : public mage_spell_t
       }
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
 
     struct focus_magic_feedback_callback_t : public action_callback_t
     {
@@ -2803,7 +2803,7 @@ struct mana_gem_t : public action_t
 
     cooldown = p -> cooldowns_mana_gem;
     cooldown -> duration = 120.0;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     harmful = false;
   }
 
@@ -3161,7 +3161,7 @@ struct water_elemental_spell_t : public mage_spell_t
     check_spec( TREE_FROST );
     parse_options( NULL, options_str );
     harmful = false;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     base_cost = 0;
   }
 
@@ -3220,7 +3220,7 @@ struct choose_rotation_t : public action_t
       cooldown -> duration = 1.0;
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     harmful = false;
   }
 

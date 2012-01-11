@@ -955,7 +955,7 @@ static void trigger_vishanka( attack_t* a )
       {
         background  = true;
         proc        = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         crit_bonus = 0.5; // Only crits for 150% on live
         init();
 
@@ -1101,7 +1101,7 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     p -> main_hand_attack = new pet_melee_t( player );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     school = SCHOOL_PHYSICAL;
     stats -> school = school;
   }
@@ -2001,7 +2001,7 @@ struct auto_shot_t : public hunter_attack_t
 
     p -> ranged_attack = new ranged_t( player );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3071,7 +3071,7 @@ timespan_t hunter_spell_t::gcd() const
     return timespan_t::zero;
 
   // Hunter gcd unaffected by haste
-  return timespan_t::from_seconds(trigger_gcd);
+  return trigger_gcd;
 }
 
 // hunter_spell_t::cost =====================================================
@@ -3260,7 +3260,7 @@ struct fervor_t : public hunter_spell_t
 
     harmful = false;
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3575,7 +3575,7 @@ struct trueshot_aura_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
     check_talent( p -> talents.trueshot_aura -> rank() );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     harmful = false;
   }
 

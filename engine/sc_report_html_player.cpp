@@ -520,7 +520,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 util_t::talent_tree_string( a -> tree ),
                 a -> range,
                 a -> travel_speed,
-                a -> trigger_gcd,
+                a -> trigger_gcd.total_seconds(),
                 a -> min_gcd.total_seconds(),
                 a -> base_cost,
                 a -> cooldown -> duration,

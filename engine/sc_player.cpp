@@ -1385,7 +1385,7 @@ struct execute_pet_action_t : public action_t
     action_t( ACTION_OTHER, "execute_pet_action", player ), pet_action( 0 ), pet( p ), action_str( as )
   {
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void reset()
@@ -1626,7 +1626,7 @@ void player_t::init_actions()
   for ( action_t* action = action_list; action; action = action -> next )
   {
     action -> init();
-    if ( action -> trigger_gcd == 0 && ! action -> background && action -> use_off_gcd )
+    if ( action -> trigger_gcd == timespan_t::zero && ! action -> background && action -> use_off_gcd )
       off_gcd_actions.push_back( action );
 
   }
@@ -4707,7 +4707,7 @@ struct start_moving_t : public action_t
     action_t( ACTION_OTHER, "start_moving", player )
   {
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     cooldown -> duration = 0.5;
     harmful = false;
   }
@@ -4735,7 +4735,7 @@ struct stop_moving_t : public action_t
     action_t( ACTION_OTHER, "stop_moving", player )
   {
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     cooldown -> duration = 0.5;
     harmful = false;
   }
@@ -4768,7 +4768,7 @@ struct arcane_torrent_t : public action_t
   {
     check_race( RACE_BLOOD_ELF );
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     cooldown -> duration = 120;
   }
 
@@ -4836,7 +4836,7 @@ struct berserking_t : public action_t
   {
     check_race( RACE_TROLL );
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     cooldown -> duration = 180;
   }
 
@@ -4870,7 +4870,7 @@ struct blood_fury_t : public action_t
   {
     check_race( RACE_ORC );
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     cooldown -> duration = 120;
   }
 
@@ -4937,7 +4937,7 @@ struct stoneform_t : public action_t
   {
     check_race( RACE_DWARF );
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     cooldown -> duration = 120;
   }
 
@@ -5022,7 +5022,7 @@ struct lifeblood_t : public action_t
     }
     parse_options( NULL, options_str );
     harmful = false;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     cooldown -> duration = 120;
   }
 
@@ -5062,7 +5062,7 @@ struct restart_sequence_t : public action_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -5110,7 +5110,7 @@ struct restore_mana_t : public action_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -5138,7 +5138,7 @@ struct snapshot_stats_t : public action_t
     action_t( ACTION_OTHER, "snapshot_stats", player ), attack( 0 ), spell( 0 )
   {
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -5372,7 +5372,7 @@ struct use_item_t : public action_t
         discharge_spell_t( const char* n, player_t* p, double a, const school_type s ) :
           spell_t( n, p, RESOURCE_NONE, s )
         {
-          trigger_gcd = 0;
+          trigger_gcd = timespan_t::zero;
           base_dd_min = a;
           base_dd_max = a;
           may_crit    = true;
@@ -5399,7 +5399,7 @@ struct use_item_t : public action_t
 
     cooldown = player -> get_cooldown( cooldown_name );
     cooldown -> duration = item -> use.cooldown;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
 
     if ( buff != 0 ) buff -> cooldown = cooldown;
   }
@@ -5512,7 +5512,7 @@ struct cancel_buff_t : public action_t
       sim -> errorf( "Player %s uses cancel_buff with unknown buff %s\n", player -> name(), buff_name.c_str() );
       sim -> cancel();
     }
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()

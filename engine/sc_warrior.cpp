@@ -623,7 +623,7 @@ static void trigger_retaliation( warrior_t* p, int school, int result )
       {
         background = true;
         proc = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         weapon = &( p -> main_hand_weapon );
         weapon_multiplier = 1.0;
 
@@ -1126,7 +1126,7 @@ struct melee_t : public warrior_attack_t
     may_glance      = true;
     background      = true;
     repeating       = true;
-    trigger_gcd     = 0;
+    trigger_gcd     = timespan_t::zero;
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
@@ -1225,7 +1225,7 @@ struct auto_attack_t : public warrior_attack_t
       p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds(p -> off_hand_weapon.swing_time);
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -2698,7 +2698,7 @@ struct warrior_spell_t : public spell_t
 timespan_t warrior_spell_t::gcd() const
 {
   // Unaffected by haste
-  return timespan_t::from_seconds(trigger_gcd);
+  return trigger_gcd;
 }
 
 // warrior_spell_t::ready() =================================================
@@ -3055,7 +3055,7 @@ struct stance_t : public warrior_spell_t
 
     harmful = false;
     base_cost   = 0;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     cooldown -> duration = 1.0;
     resource    = RESOURCE_RAGE;
   }

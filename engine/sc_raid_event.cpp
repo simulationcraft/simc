@@ -346,7 +346,7 @@ struct damage_event_t : public raid_event_t
       {
         may_crit = false;
         background = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
       }
     };
 

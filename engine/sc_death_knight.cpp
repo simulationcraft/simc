@@ -420,7 +420,8 @@ struct death_knight_t : public player_t
   {
     for ( action_t* a=action_list; a; a = a -> next )
     {
-      if ( a -> trigger_gcd != 0 ) a -> trigger_gcd = base_gcd;
+      if ( a -> trigger_gcd != timespan_t::zero )
+        a -> trigger_gcd = timespan_t::from_seconds(base_gcd);
     }
   }
 };
@@ -575,7 +576,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_spell_t( "blood_boil", 48721, p )
     {
       background       = true;
-      trigger_gcd      = 0;
+      trigger_gcd      = timespan_t::zero;
       aoe              = -1;
       may_crit         = true;
       direct_power_mod = 0.08;
@@ -615,7 +616,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       background  = true;
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       direct_power_mod = 0.23;
       base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level ); // Values are saved in a not automatically parsed sub-effect
       base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
@@ -646,7 +647,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       background  = true;
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
 
       base_crit       +=     o -> talents.improved_death_strike -> mod_additive( P_CRIT );
       base_multiplier *= 1 + o -> talents.improved_death_strike -> mod_additive( P_GENERIC );
@@ -661,7 +662,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       background        = true;
-      trigger_gcd       = 0;
+      trigger_gcd       = timespan_t::zero;
       base_tick_time    = timespan_t::from_seconds(3.0);
       hasted_ticks      = false;
       may_miss          = false;
@@ -681,7 +682,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background          = true;
       aoe                 = 2;
       base_add_multiplier = 0.75;
-      trigger_gcd         = 0;
+      trigger_gcd         = timespan_t::zero;
       base_multiplier    *= 1 + o -> glyphs.heart_strike -> effect1().percent();
     }
 
@@ -700,7 +701,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_spell_t( "icy_touch", 45477, p )
     {
       background       = true;
-      trigger_gcd      = 0;
+      trigger_gcd      = timespan_t::zero;
       direct_power_mod = 0.2;
     }
 
@@ -724,7 +725,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_pestilence_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( "pestilence", 50842, p )
     {
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       background = true;
     }
   };
@@ -735,7 +736,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_attack_t( "plague_strike", 45462, p, true )
     {
       background       = true;
-      trigger_gcd      = 0;
+      trigger_gcd      = timespan_t::zero;
       may_crit         = true;
     }
 
@@ -908,7 +909,7 @@ struct army_ghoul_pet_t : public pet_t
     {
       weapon = &( p -> main_hand_weapon );
       p -> main_hand_attack = new army_ghoul_pet_melee_t( p );
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
     }
 
     virtual void execute()
@@ -1086,7 +1087,7 @@ struct gargoyle_pet_t : public pet_t
     {
       // FIX ME!
       // Resist (can be partial)? Scaling?
-      trigger_gcd = 1.5;
+      trigger_gcd = timespan_t::from_seconds(1.5);
       may_crit    = true;
       min_gcd     = timespan_t::from_seconds(1.5); // issue961
 
@@ -1231,7 +1232,7 @@ struct ghoul_pet_t : public pet_t
     {
       weapon = &( p -> main_hand_weapon );
       p -> main_hand_attack = new ghoul_pet_melee_t( p );
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
     }
 
     virtual void execute()
@@ -1706,7 +1707,7 @@ static void trigger_blood_caked_blade( action_t* a )
         may_crit       = false;
         background     = true;
         proc           = true;
-        trigger_gcd    = false;
+        trigger_gcd    = timespan_t::zero;
         weapon = &( player -> main_hand_weapon );
         normalize_weapon_speed = false;
         init();
@@ -2071,7 +2072,7 @@ struct melee_t : public death_knight_attack_t
     may_glance      = true;
     background      = true;
     repeating       = true;
-    trigger_gcd     = 0;
+    trigger_gcd     = timespan_t::zero;
     base_cost       = 0;
 
     if ( p -> dual_wield() )
@@ -2176,7 +2177,7 @@ struct auto_attack_t : public death_knight_attack_t
       p -> off_hand_attack -> base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3625,7 +3626,7 @@ struct presence_t : public death_knight_spell_t
       switch_to_presence = PRESENCE_FROST;
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     cooldown -> duration = 1.0;
     harmful     = false;
     resource    = RESOURCE_RUNIC;
@@ -3945,7 +3946,7 @@ struct unholy_frenzy_t : public spell_t
     }
 
     harmful = false;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()

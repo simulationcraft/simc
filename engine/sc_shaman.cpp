@@ -546,7 +546,7 @@ struct earth_elemental_pet_t : public pet_t
       assert( p -> main_hand_weapon.type != WEAPON_NONE );
       p -> main_hand_attack = new melee_t( player );
 
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
     }
 
     virtual void execute()
@@ -882,7 +882,7 @@ struct fire_elemental_pet_t : public pet_t
       may_crit                     = true;
       background                   = true;
       repeating                    = true;
-      trigger_gcd                  = 0;
+      trigger_gcd                  = timespan_t::zero;
       base_cost                    = 0;
       direct_power_mod             = 1.0;
       base_spell_power_multiplier  = 1.0;
@@ -924,7 +924,7 @@ struct fire_elemental_pet_t : public pet_t
       player -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
       player -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(player -> main_hand_weapon.swing_time);
 
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
     }
 
     virtual void execute()
@@ -1792,7 +1792,7 @@ struct melee_t : public shaman_attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     base_cost   = 0;
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
@@ -1881,7 +1881,7 @@ struct auto_attack_t : public shaman_attack_t
       p -> off_hand_attack -> base_execute_time = timespan_t::from_seconds( p -> off_hand_weapon.swing_time );
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3034,7 +3034,7 @@ struct earth_shock_t : public shaman_spell_t
 
     if ( p -> glyph_shocking -> ok() )
     {
-      trigger_gcd         = 1.0;
+      trigger_gcd         = timespan_t::from_seconds(1.0);
       min_gcd             = timespan_t::from_seconds(1.0);
     }
 
@@ -3105,7 +3105,7 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( p -> glyph_shocking -> ok() )
     {
-      trigger_gcd         = 1.0;
+      trigger_gcd         = timespan_t::from_seconds(1.0);
       min_gcd             = timespan_t::from_seconds(1.0);
     }
 
@@ -3179,7 +3179,7 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( p -> glyph_shocking -> ok() )
     {
-      trigger_gcd         = 1.0;
+      trigger_gcd         = timespan_t::from_seconds(1.0);
       min_gcd             = timespan_t::from_seconds(1.0);
     }
   }

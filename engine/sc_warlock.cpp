@@ -1732,7 +1732,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
       num_ticks    = 1;
       hasted_ticks = false;
       harmful = false;
-      trigger_gcd=1.5;
+      trigger_gcd = timespan_t::from_seconds(1.5);
 
       immolation_damage = new immolation_damage_t( p );
     }
@@ -1904,7 +1904,7 @@ struct fiery_imp_pet_t : public pet_t
       spell_t( "flame_blast", 99226, p )
     {
       may_crit          = true;
-      trigger_gcd = 1.5;
+      trigger_gcd = timespan_t::from_seconds(1.5);
       if ( p -> owner -> bugs )
       {
         ability_lag = 0.74;
@@ -1948,7 +1948,7 @@ struct curse_of_elements_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
+    trigger_gcd -= timespan_t::from_seconds(p -> constants_pandemic_gcd * p -> talent_pandemic -> rank());
   }
 
   virtual void execute()
@@ -2010,7 +2010,7 @@ struct bane_of_agony_t : public warlock_spell_t
     may_crit   = false;
 
     base_crit += p -> talent_doom_and_gloom -> effect1().percent();
-    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
+    trigger_gcd -= timespan_t::from_seconds(p -> constants_pandemic_gcd * p -> talent_pandemic -> rank());
 
     int extra_ticks = ( int ) ( timespan_t::from_millis(p -> glyphs.bane_of_agony -> base_value()) / base_tick_time );
 
@@ -2058,7 +2058,7 @@ struct bane_of_doom_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit     = false;
 
-    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
+    trigger_gcd -= timespan_t::from_seconds(p -> constants_pandemic_gcd * p -> talent_pandemic -> rank());
     base_crit += p -> talent_doom_and_gloom -> effect1().percent();
   }
 
@@ -2105,7 +2105,7 @@ struct bane_of_havoc_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
+    trigger_gcd -= timespan_t::from_seconds(p -> constants_pandemic_gcd * p -> talent_pandemic -> rank());
   }
 
   virtual void execute()
@@ -2473,7 +2473,7 @@ struct shadowfury_t : public warlock_spell_t
     parse_options( options, options_str );
 
     // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
-    trigger_gcd = ( cast_gcd >= 0 ) ? cast_gcd : 0.5;
+    trigger_gcd = timespan_t::from_seconds(( cast_gcd >= 0 ) ? cast_gcd : 0.5);
   }
 };
 
@@ -3231,7 +3231,7 @@ struct life_tap_t : public warlock_spell_t
     harmful = false;
 
     if ( p -> glyphs.life_tap -> ok() )
-      trigger_gcd += p -> glyphs.life_tap -> effect1().time_value().total_seconds();
+      trigger_gcd += p -> glyphs.life_tap -> effect1().time_value();
   }
 
   virtual void execute()
@@ -3494,7 +3494,7 @@ struct infernal_awakening_t : public warlock_spell_t
     aoe        = -1;
     background = true;
     proc       = true;
-    trigger_gcd= 0;
+    trigger_gcd= timespan_t::zero;
   }
 };
 
@@ -3661,7 +3661,7 @@ struct metamorphosis_t : public warlock_spell_t
 
     parse_options( NULL, options_str );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     harmful = false;
   }
 
