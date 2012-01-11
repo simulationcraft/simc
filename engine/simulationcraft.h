@@ -1121,6 +1121,7 @@ inline typename range::traits<Range>::iterator unique( Range& r, Comp c )
 
 struct timespan_t
 {
+
 #ifdef SIMC_X64
   typedef int64_t time_t;
 #else
@@ -1228,7 +1229,7 @@ public:
   static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis); }
   static timespan_t from_seconds( const double seconds ) {
     double millis = seconds * MILLIS_PER_SECOND; // FIXME: Either fix all double time handling, or use ticks instead of millis.
-    if(millis > 0 && millis < 1) // Compensate for imprecision in double handling.
+	if(millis > 0 && millis < 1) // Compensate for imprecision in double handling.
       millis = 1;
     return timespan_t((time_t)(millis));
   }
