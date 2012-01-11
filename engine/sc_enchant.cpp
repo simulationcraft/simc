@@ -636,7 +636,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     if ( a -> proc ) return;
     if ( weapon && a -> weapon != weapon ) return;
 
-    if ( cooldown -> remains() > 0 )
+    if ( cooldown -> remains() > timespan_t::zero )
       return;
 
     double chance = fixed_chance;
@@ -797,7 +797,7 @@ void enchant_t::init( player_t* p )
       }
       virtual void trigger( action_t* /* a */, void* /* call_data */ )
       {
-        if ( s_buff -> cooldown -> remains() > 0 ) return;
+        if ( s_buff -> cooldown -> remains() > timespan_t::zero ) return;
         if ( ! s_buff -> rng -> roll( 0.15 ) ) return;
         if ( mh_buff && mh_buff -> check() )
         {

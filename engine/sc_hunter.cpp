@@ -943,7 +943,7 @@ static void trigger_vishanka( attack_t* a )
   if ( ! p -> vishanka )
     return;
 
-  if ( p -> cooldowns_vishanka -> remains() > 0 )
+  if ( p -> cooldowns_vishanka -> remains() > timespan_t::zero )
     return;
 
   if ( ! p -> active_vishanka )
@@ -2671,7 +2671,7 @@ struct kill_shot_t : public hunter_attack_t
   {
     hunter_attack_t::execute();
 
-    if ( cooldowns_glyph_kill_shot && cooldowns_glyph_kill_shot -> remains() == 0 )
+    if ( cooldowns_glyph_kill_shot && cooldowns_glyph_kill_shot -> remains() == timespan_t::zero )
     {
       cooldown -> reset();
       cooldowns_glyph_kill_shot -> start();

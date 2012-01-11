@@ -5269,7 +5269,7 @@ struct wait_until_ready_t : public wait_fixed_t
     {
       if ( a -> background ) continue;
 
-      remains = timespan_t::from_seconds(a -> cooldown -> remains());
+      remains = a -> cooldown -> remains();
       if ( remains > timespan_t::zero && remains < wait ) wait = remains;
 
       remains = timespan_t::from_seconds(a -> dot() -> remains());
@@ -5292,7 +5292,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name 
 }
 
 timespan_t wait_for_cooldown_t::execute_time() const
-{ return timespan_t::from_seconds( wait_cd -> remains() ); }
+{ return wait_cd -> remains(); }
 
 // Use Item Action ==========================================================
 
@@ -5407,7 +5407,7 @@ struct use_item_t : public action_t
   void lockout( double duration )
   {
     if ( duration <= 0 ) return;
-    double ready = sim -> current_time + duration;
+    timespan_t ready = timespan_t::from_seconds(sim -> current_time + duration);
     for ( action_t* a = player -> action_list; a; a = a -> next )
     {
       if ( a -> name_str == "use_item" )
@@ -6181,7 +6181,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
           cooldown_t* cooldown;
           cooldown_remains_expr_t( action_t* a, cooldown_t* c ) : action_expr_t( a, "cooldown_remains", TOK_NUM ), cooldown( c ) {}
-          virtual int evaluate() { result_num = cooldown -> remains(); return TOK_NUM; }
+          virtual int evaluate() { result_num = cooldown -> remains().total_seconds(); return TOK_NUM; }
         };
         return new cooldown_remains_expr_t( a, cooldown );
       }

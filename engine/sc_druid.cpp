@@ -894,7 +894,7 @@ static void trigger_fury_swipes( action_t* a )
   if ( ! p -> talents.fury_swipes -> rank() )
     return;
 
-  if ( p -> cooldowns_fury_swipes -> remains() > 0 )
+  if ( p -> cooldowns_fury_swipes -> remains() > timespan_t::zero )
     return;
 
   if ( p -> rng_fury_swipes -> roll( p -> talents.fury_swipes -> proc_chance() ) )
@@ -916,7 +916,7 @@ static void trigger_fury_swipes( action_t* a )
     }
 
     p -> active_fury_swipes    -> execute();
-    p -> cooldowns_fury_swipes -> start( 3.0 );
+    p -> cooldowns_fury_swipes -> start( timespan_t::from_seconds(3.0) );
     p -> procs_fury_swipes     -> occur();
   }
 }
@@ -978,7 +978,7 @@ static void trigger_lotp( action_t* a )
   if ( ! p -> talents.leader_of_the_pack -> ok() )
     return;
 
-  if ( p -> cooldowns_lotp -> remains() > 0 )
+  if ( p -> cooldowns_lotp -> remains() > timespan_t::zero )
     return;
 
   // Has to do damage and can't be a proc
@@ -993,7 +993,7 @@ static void trigger_lotp( action_t* a )
                       p -> resource_max[ RESOURCE_MANA ] * p -> talents.leader_of_the_pack -> effect1().percent(),
                       p -> gains_lotp_mana );
 
-  p -> cooldowns_lotp -> start( 6.0 );
+  p -> cooldowns_lotp -> start( timespan_t::from_seconds(6.0) );
 };
 
 // trigger_omen_of_clarity ==================================================
@@ -1084,7 +1084,7 @@ static void trigger_burning_treant( spell_t* s )
 {
   druid_t* p = s -> player -> cast_druid();
 
-  if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_burning_treant -> remains() == 0 ) )
+  if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_burning_treant -> remains() == timespan_t::zero ) )
   {
     if ( p -> rng_burning_treant -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
@@ -2699,7 +2699,7 @@ struct healing_touch_t : public druid_heal_t
 
     if ( p -> glyphs.healing_touch -> enabled() )
     {
-      ns_cd -> ready -= p -> glyphs.healing_touch -> effect1().base_value();
+      ns_cd -> ready -= timespan_t::from_seconds(p -> glyphs.healing_touch -> effect1().base_value());
     }
   }
 };
@@ -3886,7 +3886,7 @@ struct druids_swiftness_t : public druid_spell_t
   virtual bool ready()
   {
     if ( sub_cooldown )
-      if ( sub_cooldown -> remains() > 0 )
+      if ( sub_cooldown -> remains() > timespan_t::zero )
         return false;
 
     if ( sub_dot )
@@ -4151,7 +4151,7 @@ struct starsurge_t : public druid_spell_t
       trigger_eclipse_gain_delay( this, gain );
       if ( p -> glyphs.starsurge -> ok() )
       {
-        starfall_cd -> ready -= p -> glyphs.starsurge -> base_value();
+        starfall_cd -> ready -= timespan_t::from_seconds(p -> glyphs.starsurge -> base_value());
       }
     }
   }

@@ -37,7 +37,7 @@ struct buff_delay_t : public event_t
   virtual void execute()
   {
     // Add a Cooldown check here to avoid extra processing due to delays
-    if ( buff -> cooldown -> remains() ==  0 )
+    if ( buff -> cooldown -> remains() ==  timespan_t::zero )
       buff -> execute( stacks, value );
     buff -> delay = 0;
   }
@@ -491,7 +491,7 @@ bool buff_t::trigger( int    stacks,
 {
   if ( max_stack == 0 || chance == 0 ) return false;
 
-  if ( cooldown -> remains() > 0 )
+  if ( cooldown -> remains() > timespan_t::zero )
     return false;
 
   if ( player && player -> sleeping )
@@ -936,7 +936,7 @@ action_expr_t* buff_t::create_expression( action_t* action,
     {
       buff_t* buff;
       buff_cooldown_remains_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_cooldown_remains", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = buff -> cooldown -> remains(); return TOK_NUM; }
+      virtual int evaluate() { result_num = buff -> cooldown -> remains().total_seconds(); return TOK_NUM; }
     };
     return new buff_cooldown_remains_expr_t( action, this );
   }
@@ -1004,7 +1004,7 @@ action_expr_t* buff_t::create_expression( action_t* action,
         }
         else
         {
-          result_num = buff -> cooldown -> remains();
+          result_num = buff -> cooldown -> remains().total_seconds();
         }
         return TOK_NUM;
       }

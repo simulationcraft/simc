@@ -754,7 +754,7 @@ static void trigger_restless_blades( rogue_attack_t* a )
   if ( ! a -> requires_combo_points )
     return;
 
-  double reduction = ( p -> talents.restless_blades -> effect1().time_value().total_seconds() ) * a -> combo_points_spent;
+  timespan_t reduction = p -> talents.restless_blades -> effect1().time_value() * a -> combo_points_spent;
 
   p -> cooldowns_adrenaline_rush -> ready -= reduction;
   p -> cooldowns_killing_spree -> ready   -= reduction;
@@ -793,13 +793,13 @@ static void trigger_seal_fate( rogue_attack_t* a )
     return;
 
   // This is to prevent dual-weapon special attacks from triggering a double-proc of Seal Fate
-  if ( p -> cooldowns_seal_fate -> remains() > 0 )
+  if ( p -> cooldowns_seal_fate -> remains() > timespan_t::zero )
     return;
 
   if ( p -> rng_seal_fate -> roll( p -> talents.seal_fate -> proc_chance() ) )
   {
     rogue_targetdata_t* td = a -> targetdata() -> cast_rogue();
-    p -> cooldowns_seal_fate -> start( 0.0001 );
+    p -> cooldowns_seal_fate -> start( timespan_t::from_millis(1) );
     p -> procs_seal_fate -> occur();
     td -> combo_points -> add( 1, p -> talents.seal_fate );
   }
@@ -4008,7 +4008,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 //    if ( sim -> debug )
 //      log_t::output( sim, "Eligible For Honor Among Thieves" );
 
-    if ( rogue -> cooldowns_honor_among_thieves -> remains() > 0 )
+    if ( rogue -> cooldowns_honor_among_thieves -> remains() > timespan_t::zero )
       return;
 
     if ( ! rogue -> rng_honor_among_thieves -> roll( rogue -> talents.honor_among_thieves -> proc_chance() ) )
@@ -4020,7 +4020,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
     rogue -> procs_honor_among_thieves -> occur();
 
-    rogue -> cooldowns_honor_among_thieves -> start( 5.0 - rogue -> talents.honor_among_thieves -> rank() );
+    rogue -> cooldowns_honor_among_thieves -> start( timespan_t::from_seconds(5.0 - rogue -> talents.honor_among_thieves -> rank()) );
   }
 };
 

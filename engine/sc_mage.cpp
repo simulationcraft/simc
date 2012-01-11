@@ -1051,7 +1051,7 @@ static void trigger_tier12_mirror_image( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_tier12_mirror_image -> remains() == 0 ) )
+  if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_tier12_mirror_image -> remains() == timespan_t::zero ) )
   {
     if ( p -> rng_tier12_mirror_image -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
@@ -2305,10 +2305,10 @@ struct frostbolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::schedule_execute();
-    if ( ! p -> cooldowns_early_frost -> remains() )
+    if ( p -> cooldowns_early_frost -> remains() == timespan_t::zero )
     {
       p -> procs_early_frost -> occur();
-      p -> cooldowns_early_frost -> start( 15.0 );
+      p -> cooldowns_early_frost -> start( timespan_t::from_seconds(15.0) );
     }
   }
 
@@ -2347,7 +2347,7 @@ struct frostbolt_t : public mage_spell_t
     timespan_t ct = mage_spell_t::execute_time();
     if ( p -> talents.early_frost -> rank() )
     {
-      if ( ! p -> cooldowns_early_frost -> remains() )
+      if ( p -> cooldowns_early_frost -> remains() == timespan_t::zero )
       {
         ct += p -> talents.early_frost -> effect1().time_value();
       }
@@ -2360,7 +2360,7 @@ struct frostbolt_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     if ( p -> talents.early_frost -> rank() )
-      if ( ! p -> cooldowns_early_frost -> remains() )
+      if ( p -> cooldowns_early_frost -> remains() != timespan_t::zero )
         return timespan_t::from_seconds(1.0);
 
     return mage_spell_t::gcd();
@@ -3275,7 +3275,7 @@ struct choose_rotation_t : public action_t
     double regen_rate = p -> rotation.mana_gain / sim -> current_time;
 
     double ttd = sim -> target -> time_to_die();
-    double tte = p -> cooldowns_evocation -> remains();
+    double tte = p -> cooldowns_evocation -> remains().total_seconds();
 
     if ( p -> rotation.current == ROTATION_DPS )
     {
@@ -3378,7 +3378,7 @@ struct choose_rotation_t : public action_t
 
   virtual bool ready()
   {
-    if ( cooldown -> remains() > 0 )
+    if ( cooldown -> remains() > timespan_t::zero )
       return false;
 
     if ( sim -> current_time < cooldown -> duration.total_seconds() )

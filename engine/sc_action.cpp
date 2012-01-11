@@ -1322,7 +1322,7 @@ void action_t::update_ready()
       if ( sim -> debug ) log_t::output( sim, "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay );
     }
 
-    cooldown -> start( -1, delay );
+    cooldown -> start( timespan_t::min, timespan_t::from_seconds(delay) );
 
     if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready );
   }
@@ -1372,7 +1372,7 @@ bool action_t::ready()
     if ( ! sim -> roll( player -> skill ) )
       return false;
 
-  if ( cooldown -> remains() > 0 )
+  if ( cooldown -> remains() > timespan_t::zero )
     return false;
 
   if ( ! player -> resource_available( resource, cost() ) )

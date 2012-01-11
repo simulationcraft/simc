@@ -5186,22 +5186,22 @@ struct cooldown_t
   player_t* player;
   std::string name_str;
   timespan_t duration;
-  double ready;
+  timespan_t ready;
   cooldown_t* next;
 
-  cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( timespan_t::zero ), ready( -1 ), next( 0 ) {}
-  cooldown_t( const std::string& n, sim_t* s ) : sim( s ), player( 0 ), name_str( n ), duration( timespan_t::zero ), ready( -1 ), next( 0 ) {}
+  cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( timespan_t::zero ), ready( timespan_t::min ), next( 0 ) {}
+  cooldown_t( const std::string& n, sim_t* s ) : sim( s ), player( 0 ), name_str( n ), duration( timespan_t::zero ), ready( timespan_t::min ), next( 0 ) {}
 
-  void reset() { ready=-1; }
-  void start( double override=-1, double delay=0 )
+  void reset() { ready=timespan_t::min; }
+  void start( timespan_t override=timespan_t::min, timespan_t delay=timespan_t::zero )
   {
-    if ( override >= 0 ) duration = timespan_t::from_seconds(override);
-    if ( duration > timespan_t::zero ) ready = sim -> current_time + duration.total_seconds() + delay;
+    if ( override >= timespan_t::zero ) duration = override;
+    if ( duration > timespan_t::zero ) ready = timespan_t::from_seconds(sim -> current_time) + duration + delay;
   }
-  double remains()
+  timespan_t remains()
   {
-    double diff = ready - sim -> current_time;
-    if ( diff < 0 ) diff = 0;
+    timespan_t diff = ready - timespan_t::from_seconds(sim -> current_time);
+    if ( diff < timespan_t::zero ) diff = timespan_t::zero;
     return diff;
   }
   const char* name() { return name_str.c_str(); }

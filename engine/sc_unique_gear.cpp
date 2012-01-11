@@ -199,7 +199,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
-    if ( cooldown -> remains() > 0 )
+    if ( cooldown -> remains() > timespan_t::zero )
       return;
 
     if ( ! allow_self_procs && ( a == discharge_action ) ) return;
@@ -324,7 +324,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
     /* Always adds a stack if not on cooldown. The proc chance is the chance to discharge */
-    if ( cooldown -> remains() > 0 )
+    if ( cooldown -> remains() > timespan_t::zero )
       return;
 
     if ( ! allow_self_procs && ( a == discharge_action ) ) return;
@@ -491,7 +491,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
 
       if ( apparatus_of_khazgoroth -> trigger() )
       {
-        if ( blessing_of_khazgoroth -> cooldown -> remains() > 0 ) return;
+        if ( blessing_of_khazgoroth -> cooldown -> remains() > timespan_t::zero ) return;
 
         // FIXME: This really should be a /use action
         if ( apparatus_of_khazgoroth -> check() == 5 )
@@ -582,7 +582,7 @@ static void register_fury_of_angerforge( item_t* item )
 
       if ( raw_fury -> trigger() )
       {
-        if ( blackwing_dragonkin -> cooldown -> remains() > 0 ) return;
+        if ( blackwing_dragonkin -> cooldown -> remains() > timespan_t::zero ) return;
 
         // FIXME: This really should be a /use action
         if ( raw_fury -> check() == 5 )
@@ -660,7 +660,7 @@ static void register_matrix_restabilizer( item_t* item )
 
     virtual void trigger( action_t* a, void* call_data )
     {
-      if ( buff -> cooldown -> remains() > 0 ) return;
+      if ( buff -> cooldown -> remains() > timespan_t::zero ) return;
 
       player_t* p = a -> player;
 
@@ -789,7 +789,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
       if ( mana_stored > max_mana ) mana_stored = max_mana;
 
       // FIXME! For now trigger as soon as the cooldown is up.
-      if ( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= 0 ) )
+      if ( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= timespan_t::zero ) )
       {
         discharge_spell -> execute();
         player -> resource_gain( RESOURCE_MANA, mana_stored, gain_source, discharge_spell );
@@ -979,7 +979,7 @@ static void register_blazing_power( item_t* item )
            ! a -> harmful   )
         return;
 
-      if ( cd -> remains() > 0 )
+      if ( cd -> remains() > timespan_t::zero )
         return;
 
       if ( rng -> roll( 0.10 ) )
@@ -1043,7 +1043,7 @@ static void register_windward_heart( item_t* item )
            ! a -> harmful   )
         return;
 
-      if ( cd -> remains() > 0 )
+      if ( cd -> remains() > timespan_t::zero )
         return;
 
       if ( rng -> roll( 0.10 ) )
@@ -1116,7 +1116,7 @@ static void register_indomitable_pride( item_t* item )
 
     virtual void trigger( action_t* /* a */, void*  call_data )
     {
-      if ( cd -> remains() <= 0 && listener -> health_percentage() < 50 )
+      if ( cd -> remains() <= timespan_t::zero && listener -> health_percentage() < 50 )
       {
         cd -> start();
         double amount = heroic ? 0.56 : lfr ? 0.43 : 0.50;
@@ -1162,7 +1162,7 @@ static void register_spidersilk_spindle( item_t* item )
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
-      if ( cd -> remains() <= 0 && listener -> health_percentage() < 35 )
+      if ( cd -> remains() <= timespan_t::zero && listener -> health_percentage() < 35 )
       {
         cd -> start();
         double amount = buff -> effect1().base_value();
@@ -1227,7 +1227,7 @@ static void register_bonelink_fetish( item_t* item )
       if ( a -> proc )
         return;
 
-      if ( cooldown -> remains() > 0 )
+      if ( cooldown -> remains() > timespan_t::zero )
         return;
 
       if ( rng -> roll( chance ) )
@@ -1294,7 +1294,7 @@ static void register_fury_of_the_beast( item_t* item )
       if ( ! a -> weapon ) return;
       if ( a -> proc ) return;
 
-      if ( fury_of_the_beast -> cooldown -> remains() > 0 ) return;
+      if ( fury_of_the_beast -> cooldown -> remains() > timespan_t::zero ) return;
 
       if ( fury_of_the_beast -> trigger() )
       {
@@ -1570,7 +1570,7 @@ static void register_rathrak( item_t* item )
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
-      if ( ( spell -> cooldown -> remains() <= 0.0 ) && rng -> roll( 0.15 ) )
+      if ( ( spell -> cooldown -> remains() <= timespan_t::zero ) && rng -> roll( 0.15 ) )
       {
         spell -> execute();
       }
@@ -1683,7 +1683,7 @@ static void register_titahk( item_t* item )
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
       // FIXME: Does this have an ICD?
-      if ( ( buff_self -> cooldown -> remains() <= 0.0 ) && rng -> roll( proc_chance ) )
+      if ( ( buff_self -> cooldown -> remains() <= timespan_t::zero ) && rng -> roll( proc_chance ) )
       {
         buff_self -> trigger();
         buff_radius -> trigger();

@@ -1086,8 +1086,8 @@ public:
     if ( p -> rng_impending_doom -> roll ( p -> talent_impending_doom -> proc_chance() ) )
     {
       p -> procs_impending_doom -> occur();
-      if ( p -> cooldowns_metamorphosis -> remains() > p -> talent_impending_doom -> effect2().base_value() )
-        p -> cooldowns_metamorphosis -> ready -= p -> talent_impending_doom -> effect2().base_value();
+      if ( p -> cooldowns_metamorphosis -> remains() > timespan_t::from_seconds(p -> talent_impending_doom -> effect2().base_value()) )
+        p -> cooldowns_metamorphosis -> ready -= timespan_t::from_seconds(p -> talent_impending_doom -> effect2().base_value());
       else
         p -> cooldowns_metamorphosis -> reset();
     }
@@ -1159,7 +1159,7 @@ public:
   {
     warlock_t* p = s -> player -> cast_warlock();
 
-    if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_fiery_imp -> remains() == 0 ) )
+    if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_fiery_imp -> remains() == timespan_t::zero ) )
     {
       if ( p -> rng_fiery_imp -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
       {
@@ -2436,7 +2436,7 @@ struct shadowburn_t : public warlock_spell_t
 
     if ( p -> glyphs.shadowburn -> ok() )
     {
-      if ( cd_glyph_of_shadowburn -> remains() == 0 && target -> health_percentage() < p -> glyphs.shadowburn -> effect1().base_value() )
+      if ( cd_glyph_of_shadowburn -> remains() == timespan_t::zero && target -> health_percentage() < p -> glyphs.shadowburn -> effect1().base_value() )
       {
         cooldown -> reset();
         cd_glyph_of_shadowburn -> start();

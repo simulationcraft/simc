@@ -1143,11 +1143,11 @@ static bool trigger_windfury_weapon( attack_t* a )
   else
     wf = p -> windfury_oh;
 
-  if ( p -> cooldowns_windfury_weapon -> remains() > 0 ) return false;
+  if ( p -> cooldowns_windfury_weapon -> remains() > timespan_t::zero ) return false;
 
   if ( p -> rng_windfury_weapon -> roll( wf -> proc_chance() ) )
   {
-    p -> cooldowns_windfury_weapon -> start( p -> rng_windfury_delay -> gauss( 3.0, 0.3 ) );
+    p -> cooldowns_windfury_weapon -> start( timespan_t::from_seconds(p -> rng_windfury_delay -> gauss( 3.0, 0.3 )) );
 
     // Delay windfury by some time, up to about a second
     new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, p -> rng_windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
@@ -1979,7 +1979,7 @@ struct lava_lash_t : public shaman_attack_t
     shaman_t* p = player -> cast_shaman();
 
     if ( wf_cd_only )
-      if ( p -> cooldowns_windfury_weapon -> remains() > 0 )
+      if ( p -> cooldowns_windfury_weapon -> remains() > timespan_t::zero )
         return false;
 
     return shaman_attack_t::ready();
@@ -2291,7 +2291,7 @@ struct bloodlust_t : public shaman_spell_t
     if ( player -> buffs.exhaustion -> check() )
       return false;
 
-    if (  player -> buffs.bloodlust -> cooldown -> remains() > 0 )
+    if (  player -> buffs.bloodlust -> cooldown -> remains() > timespan_t::zero )
       return false;
 
     return shaman_spell_t::ready();
@@ -2355,7 +2355,7 @@ struct chain_lightning_t : public shaman_spell_t
     p -> buffs_maelstrom_weapon        -> expire();
     p -> buffs_elemental_mastery_insta -> expire();
 
-    p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
+    p -> cooldowns_elemental_mastery -> ready += timespan_t::from_millis(p -> talent_feedback -> base_value());
   }
   
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
@@ -2741,10 +2741,10 @@ struct lightning_bolt_t : public shaman_spell_t
     p -> buffs_maelstrom_weapon        -> expire();
     p -> buffs_elemental_mastery_insta -> expire();
 
-    p -> cooldowns_elemental_mastery -> ready += p -> talent_feedback -> base_value() / 1000.0;
+    p -> cooldowns_elemental_mastery -> ready += timespan_t::from_millis(p -> talent_feedback -> base_value());
     if ( p -> rng_t12_2pc_caster -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
     {
-      p -> cooldowns_fire_elemental_totem -> ready -= p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value();
+      p -> cooldowns_fire_elemental_totem -> ready -= timespan_t::from_seconds(p -> sets -> set( SET_T12_2PC_CASTER ) -> effect1().base_value());
     }
   }
 
@@ -2845,7 +2845,7 @@ struct shamans_swiftness_t : public shaman_spell_t
   virtual bool ready()
   {
     if ( sub_cooldown )
-      if ( sub_cooldown -> remains() > 0 )
+      if ( sub_cooldown -> remains() > timespan_t::zero )
         return false;
 
     if ( sub_dot )
@@ -4872,7 +4872,7 @@ void shaman_t::moving()
     if ( swg &&
          executing &&
          sim -> roll( skill ) &&
-         swg -> cooldown -> remains() == 0 &&
+         swg -> cooldown -> remains() == timespan_t::zero &&
          resource_available( swg -> resource, swg -> cost() ) )
     {
       // Elemental has to do some additional checking here

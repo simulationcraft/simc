@@ -659,7 +659,7 @@ static void trigger_strikes_of_opportunity( attack_t* a )
   if ( ! p -> mastery.strikes_of_opportunity -> ok() )
     return;
 
-  if ( p -> cooldowns_strikes_of_opportunity -> remains() > 0 )
+  if ( p -> cooldowns_strikes_of_opportunity -> remains() > timespan_t::zero )
     return;
 
   double chance = p -> composite_mastery() * p -> mastery.strikes_of_opportunity -> effect2().percent() / 100.0;
@@ -667,7 +667,7 @@ static void trigger_strikes_of_opportunity( attack_t* a )
   if ( ! p -> rng_strikes_of_opportunity -> roll( chance ) )
     return;
 
-  p -> cooldowns_strikes_of_opportunity -> start( 0.5 );
+  p -> cooldowns_strikes_of_opportunity -> start( timespan_t::from_seconds(0.5) );
 
   assert( p -> active_opportunity_strike );
 

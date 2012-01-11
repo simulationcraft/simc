@@ -848,7 +848,7 @@ struct priest_heal_t : public heal_t
 
     if ( min_interval -> duration > timespan_t::zero && ! dual )
     {
-      min_interval -> start( -1, 0 );
+      min_interval -> start( timespan_t::min, timespan_t::zero );
 
       if ( sim -> debug ) log_t::output( sim, "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready );
     }
@@ -859,7 +859,7 @@ struct priest_heal_t : public heal_t
     if ( ! heal_t::ready() )
       return false;
 
-    return ( min_interval -> remains() <= 0 );
+    return ( min_interval -> remains() <= timespan_t::zero );
   }
 
   void parse_options( option_t*          options,
@@ -1773,7 +1773,7 @@ struct dispersion_t : public priest_spell_t
 
     if ( ! p -> pet_shadow_fiend -> sleeping ) return false;
 
-    double sf_cooldown_remains  = p -> cooldowns_shadow_fiend -> remains();
+    double sf_cooldown_remains  = p -> cooldowns_shadow_fiend -> remains().total_seconds();
     double sf_cooldown_duration = p -> cooldowns_shadow_fiend -> duration.total_seconds();
 
     if ( sf_cooldown_remains <= 0 ) return false;
@@ -2414,7 +2414,7 @@ struct mind_flay_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( cut_for_mb )
-      if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ).total_seconds() )
+      if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
         num_ticks = 2;
 
     priest_spell_t::execute();
@@ -2458,7 +2458,7 @@ struct mind_flay_t : public priest_spell_t
       }
       if ( result == RESULT_CRIT )
       {
-        p -> cooldowns_shadow_fiend -> ready -= 1.0 * p -> talents.sin_and_punishment -> effect2().base_value();
+        p -> cooldowns_shadow_fiend -> ready -= timespan_t::from_seconds(1.0) * p -> talents.sin_and_punishment -> effect2().base_value();
       }
     }
   }
@@ -2485,7 +2485,7 @@ struct mind_flay_t : public priest_spell_t
     // is about to come off it's cooldown.
     if ( mb_wait )
     {
-      if ( p -> cooldowns_mind_blast -> remains() < mb_wait )
+      if ( p -> cooldowns_mind_blast -> remains() < timespan_t::from_seconds(mb_wait) )
         return false;
     }
 
@@ -2623,16 +2623,16 @@ struct mind_sear_t : public priest_spell_t
 
 struct shadow_word_death_t : public priest_spell_t
 {
-  double mb_min_wait;
-  double mb_max_wait;
+  timespan_t mb_min_wait;
+  timespan_t mb_max_wait;
 
   shadow_word_death_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "shadow_word_death", p, "Shadow Word: Death" ), mb_min_wait( 0 ), mb_max_wait( 0 )
+    priest_spell_t( "shadow_word_death", p, "Shadow Word: Death" ), mb_min_wait( timespan_t::zero ), mb_max_wait( timespan_t::zero )
   {
     option_t options[] =
     {
-      { "mb_min_wait", OPT_FLT,  &mb_min_wait },
-      { "mb_max_wait", OPT_FLT,  &mb_max_wait },
+      { "mb_min_wait", OPT_TIMESPAN,  &mb_min_wait },
+      { "mb_max_wait", OPT_TIMESPAN,  &mb_max_wait },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2707,11 +2707,11 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( mb_min_wait )
+    if ( mb_min_wait != timespan_t::zero )
       if ( p -> cooldowns_mind_blast -> remains() < mb_min_wait )
         return false;
 
-    if ( mb_max_wait )
+    if ( mb_max_wait != timespan_t::zero )
       if ( p -> cooldowns_mind_blast -> remains() > mb_max_wait )
         return false;
 
@@ -2978,8 +2978,8 @@ struct smite_t : public priest_spell_t
     if ( p -> talents.train_of_thought -> rank() &&
          p -> rng_train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
     {
-      if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> spell( 1 ).effect2().time_value().total_seconds() )
-        p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> spell( 1 ).effect2().time_value().total_seconds();
+      if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> spell( 1 ).effect2().time_value() )
+        p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> spell( 1 ).effect2().time_value();
       else
         p -> cooldowns_penance -> reset();
 
@@ -3439,8 +3439,8 @@ struct greater_heal_t : public priest_heal_t
     if ( p -> talents.train_of_thought -> rank() &&
          p -> rng_train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
     {
-      if ( p -> cooldowns_inner_focus -> remains() > p -> talents.train_of_thought -> effect1().base_value() )
-        p -> cooldowns_inner_focus -> ready -= p -> talents.train_of_thought -> effect1().base_value();
+      if ( p -> cooldowns_inner_focus -> remains() > timespan_t::from_seconds(p -> talents.train_of_thought -> effect1().base_value()) )
+        p -> cooldowns_inner_focus -> ready -= timespan_t::from_seconds(p -> talents.train_of_thought -> effect1().base_value());
       else
         p -> cooldowns_inner_focus -> reset();
 
@@ -4030,7 +4030,7 @@ struct power_word_shield_t : public priest_absorb_t
     p -> buffs_borrowed_time -> trigger();
 
     // Rapture
-    if ( p -> cooldowns_rapture -> remains() == 0 && p -> talents.rapture -> rank() )
+    if ( p -> cooldowns_rapture -> remains() == timespan_t::zero && p -> talents.rapture -> rank() )
     {
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.rapture -> effect1().percent(), p -> gains_rapture );
       p -> cooldowns_rapture -> start();
