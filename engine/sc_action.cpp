@@ -116,8 +116,8 @@ void action_t::init_action_t_()
   stats                          = NULL;
   execute_event                  = NULL;
   travel_event                   = NULL;
-  time_to_execute                = 0.0;
-  time_to_travel                 = 0.0;
+  time_to_execute                = timespan_t::zero;
+  time_to_travel                 = timespan_t::zero;
   travel_speed                   = 0.0;
   bloodlust_active               = 0;
   max_haste                      = 0.0;
@@ -1043,7 +1043,7 @@ void action_t::execute()
 
   update_ready();
 
-  if ( ! dual ) stats -> add_execute( time_to_execute );
+  if ( ! dual ) stats -> add_execute( time_to_execute.total_seconds() );
 
   if ( repeating && ! proc ) schedule_execute();
 }
@@ -1219,9 +1219,9 @@ void action_t::schedule_execute()
     log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
   }
 
-  time_to_execute = execute_time().total_seconds();
+  time_to_execute = execute_time();
 
-  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
+  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute.total_seconds() );
 
   if ( ! background )
   {
@@ -1232,7 +1232,7 @@ void action_t::schedule_execute()
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
 
-    if ( special && time_to_execute > 0 && ! proc )
+    if ( special && time_to_execute > timespan_t::zero && ! proc )
     {
       // While an ability is casting, the auto_attack is paused
       // So we simply reschedule the auto_attack by the ability's casttime
@@ -1242,7 +1242,7 @@ void action_t::schedule_execute()
       {
         time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
         time_to_next_hit -= sim -> current_time;
-        time_to_next_hit += time_to_execute;
+        time_to_next_hit += time_to_execute.total_seconds();
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
       // Offhand
@@ -1250,7 +1250,7 @@ void action_t::schedule_execute()
       {
         time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
         time_to_next_hit -= sim -> current_time;
-        time_to_next_hit += time_to_execute;
+        time_to_next_hit += time_to_execute.total_seconds();
         player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
     }
@@ -1261,11 +1261,11 @@ void action_t::schedule_execute()
 
 void action_t::schedule_travel( player_t* t )
 {
-  time_to_travel = travel_time().total_seconds();
+  time_to_travel = travel_time();
 
   snapshot();
 
-  if ( time_to_travel == 0 )
+  if ( time_to_travel == timespan_t::zero )
   {
     impact( t, result, direct_dmg );
   }
@@ -1273,10 +1273,10 @@ void action_t::schedule_travel( player_t* t )
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
+      log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel.total_seconds(), name() );
     }
 
-    travel_event = new ( sim ) action_travel_event_t( sim, t, this, time_to_travel );
+    travel_event = new ( sim ) action_travel_event_t( sim, t, this, time_to_travel.total_seconds() );
   }
 }
 
@@ -1291,7 +1291,7 @@ void action_t::reschedule_execute( timespan_t time )
 
   double delta_time = sim -> current_time + time.total_seconds() - execute_event -> occurs();
 
-  time_to_execute += delta_time;
+  time_to_execute += timespan_t::from_seconds(delta_time);
 
   if ( delta_time > 0 )
   {
@@ -1842,7 +1842,7 @@ double action_t::ppm_proc_chance( double PPM ) const
   }
   else
   {
-    double time = channeled ? dot() -> time_to_tick : time_to_execute;
+    double time = channeled ? dot() -> time_to_tick : time_to_execute.total_seconds();
 
     if ( time == 0 ) time = player -> base_gcd;
 

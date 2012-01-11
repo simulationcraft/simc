@@ -231,6 +231,6 @@ void spell_t::schedule_execute()
 {
   action_t::schedule_execute();
 
-  if ( time_to_execute > 0 )
+  if ( time_to_execute > timespan_t::zero )
     player -> debuffs.casting -> trigger();
 }

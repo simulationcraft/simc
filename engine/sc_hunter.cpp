@@ -2170,7 +2170,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     hunter_attack_t::schedule_execute();
 
-    if ( time_to_execute > 0 )
+    if ( time_to_execute > timespan_t::zero )
     {
       p -> ranged_attack -> cancel();
       casted = 1;

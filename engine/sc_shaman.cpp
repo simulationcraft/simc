@@ -908,7 +908,7 @@ struct fire_elemental_pet_t : public pet_t
     virtual void execute()
     {
       // If we're casting Fire Nova, we should clip a swing
-      if ( time_to_execute > 0 && player -> executing )
+      if ( time_to_execute > timespan_t::zero && player -> executing )
         schedule_execute();
       else
         attack_t::execute();
@@ -1825,7 +1825,7 @@ struct melee_t : public shaman_attack_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    if ( time_to_execute > 0 && p -> executing )
+    if ( time_to_execute > timespan_t::zero && p -> executing )
     {
       if ( sim -> debug ) log_t::output( sim, "Executing '%s' during melee (%s).", p -> executing -> name(), util_t::slot_type_string( weapon -> slot ) );
       schedule_execute();
@@ -1844,7 +1844,7 @@ struct melee_t : public shaman_attack_t
     shaman_attack_t::schedule_execute();
     shaman_t* p = player -> cast_shaman();
     // Clipped swings do not eat unleash wind buffs
-    if ( time_to_execute > 0 && ! p -> executing )
+    if ( time_to_execute > timespan_t::zero && ! p -> executing )
       p -> buffs_unleash_wind -> decrement();
   }
 };
@@ -2244,9 +2244,9 @@ void shaman_spell_t::schedule_execute()
     log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
   }
 
-  time_to_execute = execute_time().total_seconds();
+  time_to_execute = execute_time();
 
-  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
+  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute.total_seconds() );
 
   if ( ! background )
   {
@@ -3255,7 +3255,7 @@ struct shaman_totem_t : public shaman_spell_t
 
     p -> totems[ totem ] = this;
 
-    stats -> add_execute( time_to_execute );
+    stats -> add_execute( time_to_execute.total_seconds() );
   }
 
   virtual void last_tick( dot_t* d )

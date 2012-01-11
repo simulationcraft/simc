@@ -2903,7 +2903,7 @@ struct deadly_poison_t : public rogue_poison_t
       }
 
       update_ready();
-      stats -> add_execute( time_to_execute );
+      stats -> add_execute( time_to_execute.total_seconds() );
     }
   }
 

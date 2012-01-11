@@ -181,7 +181,7 @@ void heal_t::execute()
 
   update_ready();
 
-  if ( ! dual ) stats -> add_execute( time_to_execute );
+  if ( ! dual ) stats -> add_execute( time_to_execute.total_seconds() );
 
   if ( harmful ) player -> in_combat = true;
 
@@ -620,7 +620,7 @@ void absorb_t::execute()
 
   update_ready();
 
-  if ( ! dual ) stats -> add_execute( time_to_execute );
+  if ( ! dual ) stats -> add_execute( time_to_execute.total_seconds() );
 
   if ( repeating && ! proc ) schedule_execute();
 

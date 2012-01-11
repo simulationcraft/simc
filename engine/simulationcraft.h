@@ -4886,7 +4886,8 @@ struct action_t : public spell_id_t
   stats_t* stats;
   event_t* execute_event;
   event_t* travel_event;
-  double time_to_execute, time_to_travel, travel_speed;
+  timespan_t time_to_execute, time_to_travel;
+  double travel_speed;
   int bloodlust_active;
   double max_haste;
   double haste_gain_percentage;
@@ -5898,7 +5899,7 @@ struct wait_action_base_t : public action_t
   { trigger_gcd = 0; }
 
   virtual void execute()
-  { player -> iteration_waiting_time += time_to_execute; }
+  { player -> iteration_waiting_time += time_to_execute.total_seconds(); }
 };
 
 // Wait For Cooldown Action =================================================
