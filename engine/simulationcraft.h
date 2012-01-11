@@ -4907,7 +4907,7 @@ struct action_t : public spell_id_t
   std::string signature_str;
   std::string target_str;
   std::string label_str;
-  double last_reaction_time;
+  timespan_t last_reaction_time;
   action_t* dtr_action;
   bool is_dtr_action;
   bool can_trigger_dtr;

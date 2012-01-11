@@ -142,7 +142,7 @@ void action_t::init_action_t_()
   sync_action                    = NULL;
   next                           = NULL;
   marker                         = 0;
-  last_reaction_time             = 0.0;
+  last_reaction_time             = timespan_t::zero;
   dtr_action                     = 0;
   is_dtr_action                  = false;
   cached_targetdata = NULL;
@@ -1331,10 +1331,10 @@ void action_t::update_ready()
     if ( result_is_miss() )
     {
       dot_t* dot = this -> dot();
-      last_reaction_time = player -> total_reaction_time();
+      last_reaction_time = timespan_t::from_seconds(player -> total_reaction_time());
       if ( sim -> debug )
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)",
-                       player -> name(), last_reaction_time, name(), dot -> name() );
+                       player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
 
       dot -> miss_time = sim -> current_time;
     }
@@ -1706,7 +1706,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       {
         dot_t* dot = action -> dot();
         if ( dot -> miss_time == -1 ||
-             action -> sim -> current_time >= ( dot -> miss_time + action -> last_reaction_time ) )
+             action -> sim -> current_time >= ( dot -> miss_time + action -> last_reaction_time.total_seconds() ) )
         {
           result_num = 1;
         }
