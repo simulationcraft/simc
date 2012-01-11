@@ -431,7 +431,7 @@ death_knight_targetdata_t::death_knight_targetdata_t( player_t* source, player_t
 {
   death_knight_t* p = this->source -> cast_death_knight();
   debuffs_ebon_plaguebringer  = add_aura( new buff_t( this, 65142, "ebon_plaguebringer_track", -1, -1, true ) );
-  debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().time_value().total_seconds();
+  debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().time_value();
 }
 
 static void log_rune_status( death_knight_t* p )
@@ -1762,8 +1762,8 @@ static void trigger_ebon_plaguebringer( action_t* a, player_t* t )
   if ( a -> sim -> overrides.ebon_plaguebringer )
     return;
 
-  double duration = 21.0 + p -> talents.epidemic -> effect1().time_value().total_seconds();
-  if ( t -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
+  timespan_t duration = timespan_t::from_seconds(21.0) + p -> talents.epidemic -> effect1().time_value();
+  if ( t -> debuffs.ebon_plaguebringer -> remains_lt( duration.total_seconds() ) )
   {
     t -> debuffs.ebon_plaguebringer -> buff_duration = duration;
     t -> debuffs.ebon_plaguebringer -> trigger( 1, 8.0 );
@@ -2495,15 +2495,15 @@ struct bone_shield_t : public death_knight_spell_t
       // rotation.  Assume we casted Bone Shield somewhere between
       // 8-16s before we start fighting.  The cost in this case is
       // zero and we don't cause any cooldown.
-      double pre_cast = p -> sim -> range( 8.0, 16.0 );
+      timespan_t pre_cast = timespan_t::from_seconds(p -> sim -> range( 8.0, 16.0 ));
 
-      cooldown -> duration -= pre_cast;
+      cooldown -> duration -= pre_cast.total_seconds();
       p -> buffs_bone_shield -> buff_duration -= pre_cast;
 
       p -> buffs_bone_shield -> trigger( 1, p -> talents.bone_shield -> effect2().percent() );
       death_knight_spell_t::execute();
 
-      cooldown -> duration += pre_cast;
+      cooldown -> duration += pre_cast.total_seconds();
       p -> buffs_bone_shield -> buff_duration += pre_cast;
     }
     else
@@ -2988,7 +2988,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( ! sim -> overrides.horn_of_winter )
     {
-      sim -> auras.horn_of_winter -> buff_duration = 120.0 + p -> glyphs.horn_of_winter -> effect1().time_value().total_seconds();
+      sim -> auras.horn_of_winter -> buff_duration = timespan_t::from_seconds(120.0) + p -> glyphs.horn_of_winter -> effect1().time_value();
       sim -> auras.horn_of_winter -> trigger( 1, bonus );
     }
 

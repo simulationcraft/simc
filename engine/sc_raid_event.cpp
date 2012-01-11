@@ -236,7 +236,7 @@ struct movement_event_t : public raid_event_t
       }
       if ( my_duration > 0 )
       {
-        p -> buffs.raid_movement -> buff_duration = my_duration;
+        p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds(my_duration);
         p -> buffs.raid_movement -> trigger();
       }
       if ( p -> sleeping ) continue;

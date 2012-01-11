@@ -5459,7 +5459,7 @@ struct use_item_t : public action_t
     {
       if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), use_name.c_str() );
       buff -> trigger();
-      lockout( buff -> buff_duration );
+      lockout( buff -> buff_duration.total_seconds() );
     }
     else assert( false );
 

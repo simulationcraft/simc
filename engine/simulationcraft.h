@@ -2805,9 +2805,12 @@ public:
 
 struct buff_t : public spell_id_t
 {
-  double current_value, react, buff_duration, buff_cooldown, default_chance;
-  double last_start;
-  double last_trigger, start_intervals_sum, trigger_intervals_sum, iteration_uptime_sum;
+  double current_value, react;
+  timespan_t buff_duration, buff_cooldown;
+  double default_chance;
+  timespan_t last_start;
+  timespan_t last_trigger;
+  double start_intervals_sum, trigger_intervals_sum, iteration_uptime_sum;
   int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
   double benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;

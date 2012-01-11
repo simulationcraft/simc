@@ -4553,7 +4553,7 @@ void warlock_t::init_buffs()
   buffs_empowered_imp         = new buff_t( this, 47283, "empowered_imp", talent_empowered_imp -> effect1().percent() );
   buffs_eradication           = new buff_t( this, talent_eradication -> effect_trigger_spell( 1 ), "eradication", talent_eradication -> proc_chance() );
   buffs_metamorphosis         = new buff_t( this, 47241, "metamorphosis", talent_metamorphosis -> rank() );
-  buffs_metamorphosis -> buff_duration += glyphs.metamorphosis -> base_value() / 1000.0;
+  buffs_metamorphosis -> buff_duration += timespan_t::from_millis(glyphs.metamorphosis -> base_value());
   buffs_metamorphosis -> cooldown -> duration = 0;
   buffs_molten_core           = new buff_t( this, talent_molten_core -> effect_trigger_spell( 1 ), "molten_core", talent_molten_core -> rank() * 0.02 );
   buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> base_value() / 100.0 );

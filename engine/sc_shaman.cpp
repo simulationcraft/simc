@@ -3212,12 +3212,12 @@ struct wind_shear_t : public shaman_spell_t
 
 struct shaman_totem_t : public shaman_spell_t
 {
-  double totem_duration;
+  timespan_t totem_duration;
   double totem_bonus;
   totem_type totem;
 
   shaman_totem_t( const char * name, const char * totem_name, player_t* player, const std::string& options_str, totem_type t ) :
-    shaman_spell_t( name, totem_name, player, options_str ), totem_duration( 0 ), totem_bonus( 0 ), totem( t )
+    shaman_spell_t( name, totem_name, player, options_str ), totem_duration( timespan_t::zero ), totem_bonus( 0 ), totem( t )
   {
     shaman_t* p = player -> cast_shaman();
 
@@ -3226,11 +3226,11 @@ struct shaman_totem_t : public shaman_spell_t
     hasted_ticks         = false;
     callbacks            = false;
     base_cost_reduction += p -> talent_totemic_focus -> mod_additive( P_RESOURCE_COST );
-    totem_duration       = duration().total_seconds() * ( 1.0 + p -> talent_totemic_focus -> mod_additive( P_DURATION ) );
+    totem_duration       = duration() * ( 1.0 + p -> talent_totemic_focus -> mod_additive( P_DURATION ) );
     // Model all totems as ticking "dots" for now, this will cause them to properly
     // "fade", so we can recast them if the fight length is long enough and optimal_raid=0
     num_ticks            = 1;
-    base_tick_time       = timespan_t::from_seconds(totem_duration);
+    base_tick_time       = totem_duration;
   }
 
   // Simulate a totem "drop", this is a simplified action_t::execute()
@@ -3502,7 +3502,7 @@ struct magma_totem_t : public shaman_totem_t
 
     // Spell id 8188 does the triggering of magma totem's aura
     base_tick_time    = p -> dbc.spell( 8188 ) -> effect1().period();
-    num_ticks         = ( int ) ( totem_duration / base_tick_time.total_seconds() );
+    num_ticks         = ( int ) ( totem_duration / base_tick_time );
 
     // Fill out scaling data
     trigger           = p -> dbc.spell( p -> dbc.spell( 8188 ) -> effect1().trigger_spell_id() );
@@ -3643,7 +3643,7 @@ struct searing_totem_t : public shaman_totem_t
     base_tick_time       = timespan_t::from_seconds(1.6);
     travel_speed         = 0; // TODO: Searing bolt has a real travel time, however modeling it is another issue entirely
     range                = p -> dbc.spell( 3606 ) -> max_range();
-    num_ticks            = ( int ) ( totem_duration / base_tick_time.total_seconds() );
+    num_ticks            = ( int ) ( totem_duration / base_tick_time );
     // Also kludge totem school to fire
     school               = spell_id_t::get_school_type( p -> dbc.spell( 3606 ) -> school_mask() );
     stats -> school      = SCHOOL_FIRE;
@@ -4078,8 +4078,8 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     
     // Extend buff duration with t13 4pc healer
     shaman_t* p = player -> cast_shaman();
-    p -> buffs_spiritwalkers_grace -> buff_duration = (p -> buffs_spiritwalkers_grace -> duration() + 
-                                                      p -> sets -> set( SET_T13_4PC_HEAL ) -> effect1().time_value()).total_seconds();
+    p -> buffs_spiritwalkers_grace -> buff_duration = p -> buffs_spiritwalkers_grace -> duration() + 
+                                                      p -> sets -> set( SET_T13_4PC_HEAL ) -> effect1().time_value();
   }
 
   virtual void execute()
@@ -4107,7 +4107,7 @@ struct elemental_devastation_t : public buff_t
   {
     // Duration has to be parsed out from the triggered spell
     const spell_data_t* trigger = p -> dbc.spell( p -> dbc.spell( id ) -> effect1().trigger_spell_id() );
-    buff_duration = trigger -> duration().total_seconds();
+    buff_duration = trigger -> duration();
 
     // And fix atomic, as it's a triggered spell, but not really .. sigh
     s_single = s_effects[ 0 ];
@@ -4148,7 +4148,7 @@ struct searing_flames_buff_t : public buff_t
     default_chance     = initial_source -> dbc.spell( id ) -> effect1().percent();
 
     // Various other things are specified in the actual debuff placed on the target
-    buff_duration      = initial_source -> dbc.spell( 77661 ) -> duration().total_seconds();
+    buff_duration      = initial_source -> dbc.spell( 77661 ) -> duration();
     max_stack          = initial_source -> dbc.spell( 77661 ) -> max_stacks();
 
     // Reinit because of max_stack change

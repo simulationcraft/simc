@@ -1769,7 +1769,7 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                b -> cooldown -> name_str.c_str(),
                b -> tooltip(),
                b -> max_stack,
-               b -> buff_duration,
+               b -> buff_duration.total_seconds(),
                b -> cooldown -> duration,
                b -> default_chance * 100 );
 
@@ -1854,7 +1854,7 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                  ( *b ) -> cooldown -> name_str.c_str(),
                  ( *b ) -> tooltip(),
                  ( *b ) -> max_stack,
-                 ( *b ) -> buff_duration,
+                 ( *b ) -> buff_duration.total_seconds(),
                  ( *b ) -> cooldown -> duration,
                  ( *b ) -> default_chance * 100 );
       }

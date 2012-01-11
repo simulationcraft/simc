@@ -449,13 +449,13 @@ static void trigger_blood_frenzy( action_t* a )
 
   // Don't alter the duration if it is set to 0 (override/optimal_raid)
 
-  if ( t -> debuffs.blood_frenzy_bleed -> buff_duration > 0 )
+  if ( t -> debuffs.blood_frenzy_bleed -> buff_duration > timespan_t::zero )
   {
-    t -> debuffs.blood_frenzy_bleed -> buff_duration = (a -> num_ticks * a -> base_tick_time).total_seconds();
+    t -> debuffs.blood_frenzy_bleed -> buff_duration = a -> num_ticks * a -> base_tick_time;
   }
-  if ( t -> debuffs.blood_frenzy_physical -> buff_duration > 0 )
+  if ( t -> debuffs.blood_frenzy_physical -> buff_duration > timespan_t::zero )
   {
-    t -> debuffs.blood_frenzy_physical -> buff_duration = (a -> num_ticks * a -> base_tick_time).total_seconds();
+    t -> debuffs.blood_frenzy_physical -> buff_duration = a -> num_ticks * a -> base_tick_time;
   }
 
   double rank = p -> talents.blood_frenzy -> rank();
@@ -2750,7 +2750,7 @@ struct battle_shout_t : public warrior_spell_t
     {
       for ( player_t* q = sim -> player_list; q; q = q -> next )
       {
-        q -> buffs.battle_shout -> buff_duration = (duration() + p -> glyphs.battle -> effect1().time_value()).total_seconds();
+        q -> buffs.battle_shout -> buff_duration = duration() + p -> glyphs.battle -> effect1().time_value();
         q -> buffs.battle_shout -> trigger( 1, effect_average( 1 ) );
       }
 
@@ -2796,7 +2796,7 @@ struct commanding_shout_t : public warrior_spell_t
     warrior_t* p = player -> cast_warrior();
     for ( player_t* q = sim -> player_list; q; q = q -> next )
     {
-      q -> buffs.commanding_shout -> buff_duration = 120 /* include commanding glyph */;
+      q -> buffs.commanding_shout -> buff_duration = timespan_t::from_seconds(120) /* include commanding glyph */;
       q -> buffs.commanding_shout -> trigger( 1, effect_average( 1 ) );
     }
 

@@ -1652,16 +1652,16 @@ struct archangel_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    double delta = p -> buffs_holy_evangelism -> last_trigger - p -> buffs_dark_evangelism -> last_trigger;
+    timespan_t delta = p -> buffs_holy_evangelism -> last_trigger - p -> buffs_dark_evangelism -> last_trigger;
 
-    if ( p -> buffs_holy_evangelism -> up() && delta > 0 )
+    if ( p -> buffs_holy_evangelism -> up() && delta > timespan_t::zero )
     {
       cooldown -> duration = effect2().base_value();
       p -> buffs_holy_archangel -> trigger( 1, p -> constants.holy_archangel_value * p -> buffs_holy_evangelism -> stack() );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_holy_evangelism -> expire();
     }
-    else if ( p -> buffs_dark_evangelism -> up() && delta < 0 )
+    else if ( p -> buffs_dark_evangelism -> up() && delta < timespan_t::zero )
     {
       cooldown -> duration =effect3().base_value();
       p -> buffs_dark_archangel -> trigger( 1, p -> buffs_dark_evangelism -> stack() );
@@ -4949,7 +4949,7 @@ void priest_t::init_buffs()
   buffs_inner_focus -> cooldown -> duration = 0;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will" );
   buffs_tier13_2pc_heal            = new buff_t( this, sets -> set( SET_T13_2PC_HEAL ) -> effect1().trigger_spell_id(), "tier13_2pc_heal", set_bonus.tier13_2pc_heal() );
-  buffs_tier13_2pc_heal -> buff_duration = ( primary_tree() == TREE_DISCIPLINE ) ? 10.0 : buffs_tier13_2pc_heal -> buff_duration;
+  buffs_tier13_2pc_heal -> buff_duration = ( primary_tree() == TREE_DISCIPLINE ) ? timespan_t::from_seconds(10.0) : buffs_tier13_2pc_heal -> buff_duration;
 
   // TODO: probably these should be moved into targetdata
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )

@@ -1525,7 +1525,7 @@ struct roar_of_courage_t : public hunter_pet_spell_t
 
     if ( ! sim -> overrides.roar_of_courage )
     {
-      sim -> auras.roar_of_courage -> buff_duration = duration().total_seconds();
+      sim -> auras.roar_of_courage -> buff_duration = duration();
       sim -> auras.roar_of_courage -> trigger( 1, bonus );
     }
   }
@@ -3620,9 +3620,9 @@ struct hunter_sniper_training_event_t : public event_t
 
     if ( ! p -> buffs.raid_movement -> up() )
     {
-      double finished_moving = p -> buffs.raid_movement -> last_start + p -> buffs.raid_movement -> buff_duration;
+      timespan_t finished_moving = p -> buffs.raid_movement -> last_start + p -> buffs.raid_movement -> buff_duration;
 
-      if ( ( sim -> current_time - finished_moving ) > p -> talents.sniper_training -> effect1().base_value() )
+      if ( ( sim -> current_time - finished_moving.total_seconds() ) > p -> talents.sniper_training -> effect1().base_value() )
       {
         p -> buffs_sniper_training -> trigger();
       }

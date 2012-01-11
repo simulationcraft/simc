@@ -876,9 +876,9 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 
   if ( t )
   {
-    double duration = p -> dbc.spell( 57933 ) -> duration().total_seconds();
+    timespan_t duration = p -> dbc.spell( 57933 ) -> duration();
 
-    if ( t -> buffs.tricks_of_the_trade -> remains_lt( duration ) )
+    if ( t -> buffs.tricks_of_the_trade -> remains_lt( duration.total_seconds() ) )
     {
       double value = p -> dbc.spell( 57933 ) -> effect1().base_value();
       value += p -> glyphs.tricks_of_the_trade -> mod_additive( P_EFFECT_1 );
@@ -1937,7 +1937,7 @@ struct expose_armor_t : public rogue_attack_t
 
       if ( target -> debuffs.expose_armor -> remains_lt( duration ) )
       {
-        target -> debuffs.expose_armor -> buff_duration = duration;
+        target -> debuffs.expose_armor -> buff_duration = timespan_t::from_seconds(duration);
         target -> debuffs.expose_armor -> trigger( 1, 0.12 );
         target -> debuffs.expose_armor -> source = p;
       }
@@ -2694,9 +2694,9 @@ struct shadow_dance_t : public rogue_attack_t
   {
     add_trigger_buff( p -> buffs_shadow_dance );
 
-    p -> buffs_shadow_dance -> buff_duration += p -> glyphs.shadow_dance -> mod_additive( P_DURATION );
+    p -> buffs_shadow_dance -> buff_duration += timespan_t::from_seconds(p -> glyphs.shadow_dance -> mod_additive( P_DURATION ));
     if ( p -> set_bonus.tier13_4pc_melee() )
-      p -> buffs_shadow_dance -> buff_duration += p -> spells.tier13_4pc -> effect1().time_value().total_seconds();
+      p -> buffs_shadow_dance -> buff_duration += p -> spells.tier13_4pc -> effect1().time_value();
 
     parse_options( NULL, options_str );
   }
@@ -3177,9 +3177,9 @@ struct adrenaline_rush_buff_t : public buff_t
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
     cooldown -> duration = 0;
-    buff_duration += p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION );
+    buff_duration += timespan_t::from_seconds(p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION ));
     if ( p -> set_bonus.tier13_4pc_melee() )
-      buff_duration += p -> spells.tier13_4pc -> effect2().time_value().total_seconds();
+      buff_duration += p -> spells.tier13_4pc -> effect2().time_value();
   }
 
   virtual bool trigger( int, double, double )
@@ -3200,7 +3200,7 @@ struct envenom_buff_t : public buff_t
 
     if ( remains_lt( new_duration ) )
     {
-      buff_duration = new_duration;
+      buff_duration = timespan_t::from_seconds(new_duration);
       return buff_t::trigger();
     }
     else
@@ -3217,7 +3217,7 @@ struct find_weakness_buff_t : public buff_t
       return;
 
     // Duration is specified in the actual debuff (or is it a buff?) placed on the target
-    buff_duration = p -> dbc.spell( 91021 ) -> duration().total_seconds();
+    buff_duration = p -> dbc.spell( 91021 ) -> duration();
 
     init_buff_shared();
   }
@@ -3254,7 +3254,7 @@ struct master_of_subtlety_buff_t : public buff_t
   master_of_subtlety_buff_t( rogue_t* p, uint32_t id ) :
     buff_t( p, id, "master_of_subtlety" )
   {
-    buff_duration = 6.0;
+    buff_duration = timespan_t::from_seconds(6.0);
   }
 
   virtual bool trigger( int, double, double )
@@ -3308,7 +3308,7 @@ struct slice_and_dice_buff_t : public buff_t
 
     if ( remains_lt( new_duration ) )
     {
-      buff_duration = new_duration;
+      buff_duration = timespan_t::from_seconds(new_duration);
       return buff_t::trigger( 1,
         base_value( E_APPLY_AURA, A_319 ) * ( 1.0 + p -> composite_mastery() * p -> mastery_executioner -> effect_coeff( 1 ) / 100.0 ) );
     }
@@ -3324,7 +3324,7 @@ struct vendetta_buff_t : public buff_t
   {
     buff_duration *= 1.0 + p -> glyphs.vendetta -> mod_additive( P_DURATION );
     if ( p -> set_bonus.tier13_4pc_melee() )
-      buff_duration += p -> spells.tier13_4pc -> effect3().time_value().total_seconds();
+      buff_duration += p -> spells.tier13_4pc -> effect3().time_value();
   }
 
   virtual bool trigger( int, double, double )

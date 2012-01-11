@@ -49,7 +49,7 @@ struct druid_targetdata_t : public targetdata_t
     buffs_combo_points = add_aura( new buff_t( this, "combo_points", 5 ) );
 
     buffs_lifebloom = add_aura( new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, 0 ) );
-    buffs_lifebloom -> buff_duration = 11.0; // Override duration so the bloom works correctly
+    buffs_lifebloom -> buff_duration = timespan_t::from_seconds(11.0); // Override duration so the bloom works correctly
   }
 };
 
@@ -1385,7 +1385,7 @@ struct feral_charge_cat_t : public druid_cat_attack_t
       stampede_duration = stampede_spell.duration().total_seconds();
     }
 
-    p -> buffs_stampede_cat -> buff_duration = stampede_duration;
+    p -> buffs_stampede_cat -> buff_duration = timespan_t::from_seconds(stampede_duration);
 
     may_miss   = false;
     may_dodge  = false;
@@ -1949,7 +1949,7 @@ struct savage_roar_t : public druid_cat_attack_t
     // execute clears CP, so has to be after calculation duration
     druid_cat_attack_t::execute();
 
-    p -> buffs_savage_roar -> buff_duration = duration;
+    p -> buffs_savage_roar -> buff_duration = timespan_t::from_seconds(duration);
     p -> buffs_savage_roar -> trigger( 1, buff_value );
   }
 };
@@ -2263,11 +2263,12 @@ struct demoralizing_roar_t : public druid_bear_attack_t
 
 struct feral_charge_bear_t : public druid_bear_attack_t
 {
-  double stampede_haste, stampede_duration;
+  double stampede_haste;
+  timespan_t stampede_duration;
 
   feral_charge_bear_t( druid_t* p, const std::string& options_str ) :
     druid_bear_attack_t( "feral_charge_bear", 16979, p ),
-    stampede_haste( 0.0 ), stampede_duration( 0.0 )
+    stampede_haste( 0.0 ), stampede_duration( timespan_t::zero )
   {
     parse_options( NULL, options_str );
 
@@ -2276,7 +2277,7 @@ struct feral_charge_bear_t : public druid_bear_attack_t
       uint32_t sid = ( p -> talents.stampede -> rank() == 2 ) ? 78893 : 78892;
       passive_spell_t stampede_spell( p, "stampede_bear_spell", sid );
       stampede_haste = stampede_spell.base_value( E_APPLY_AURA, A_MOD_HASTE ) / 100.0;
-      stampede_duration = stampede_spell.duration().total_seconds();
+      stampede_duration = stampede_spell.duration();
     }
 
     stampede_haste = 1.0 / ( 1.0 + stampede_haste );
@@ -4965,7 +4966,7 @@ void druid_t::init_buffs()
   buffs_shooting_stars        = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   buffs_survival_instincts    = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
   buffs_tree_of_life          = new buff_t( this, talents.tree_of_life, NULL );
-  buffs_tree_of_life -> buff_duration += talents.natural_shapeshifter -> mod_additive( P_DURATION );
+  buffs_tree_of_life -> buff_duration += timespan_t::from_seconds(talents.natural_shapeshifter -> mod_additive( P_DURATION ));
 
   buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
   buffs_primal_madness_bear = new      buff_t( this, "primal_madness_bear" );

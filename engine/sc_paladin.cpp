@@ -2413,15 +2413,15 @@ struct holy_wrath_t : public paladin_spell_t
 
 struct inquisition_t : public paladin_spell_t
 {
-  double base_duration;
+  timespan_t base_duration;
   inquisition_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "inquisition", "Inquisition", p ), base_duration( 0 )
+    : paladin_spell_t( "inquisition", "Inquisition", p ), base_duration( timespan_t::zero )
   {
     parse_options( NULL, options_str );
 
     harmful = false;
     trigger_dp = true;
-    base_duration = duration().total_seconds() * ( 1.0 + p -> talents.inquiry_of_faith -> mod_additive( P_DURATION ) );
+    base_duration = duration() * ( 1.0 + p -> talents.inquiry_of_faith -> mod_additive( P_DURATION ) );
   }
 
   virtual void execute()
@@ -3169,7 +3169,7 @@ void paladin_t::init_buffs()
   buffs_conviction             = new buff_t( this, talents.conviction -> effect1().trigger_spell_id(), "conviction", talents.conviction -> rank() );
   buffs_daybreak               = new buff_t( this, talents.daybreak -> effect_trigger_spell( 1 ), "daybreak", talents.daybreak -> proc_chance() );
   buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, 0 ); // Let the ability handle the CD
-  buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().time_value().total_seconds();
+  buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().time_value();
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
   buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
@@ -3691,13 +3691,13 @@ void paladin_t::regen( double periodicity )
   if ( buffs_judgements_of_the_wise -> up() )
   {
     double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_wise->effect1().percent();
-    double amount = periodicity * tot_amount / buffs_judgements_of_the_wise -> buff_duration;
+    double amount = periodicity * tot_amount / buffs_judgements_of_the_wise -> buff_duration.total_seconds();
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_wise );
   }
   if ( buffs_judgements_of_the_bold -> up() )
   {
     double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_bold->effect1().percent();
-    double amount = periodicity * tot_amount / buffs_judgements_of_the_bold -> buff_duration;
+    double amount = periodicity * tot_amount / buffs_judgements_of_the_bold -> buff_duration.total_seconds();
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_bold );
   }
 }
