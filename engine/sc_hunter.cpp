@@ -768,7 +768,7 @@ struct hunter_spell_t : public spell_t
     _init_hunter_spell_t();
   }
 
-  virtual double gcd() const;
+  virtual timespan_t gcd() const;
   virtual double cost() const;
   virtual void consume_resource();
 };
@@ -3065,13 +3065,13 @@ struct wild_quiver_trigger_t : public action_callback_t
 
 // hunter_spell_t::gcd()
 
-double hunter_spell_t::gcd() const
+timespan_t hunter_spell_t::gcd() const
 {
   if ( ! harmful && ! player -> in_combat )
-    return 0;
+    return timespan_t::zero;
 
   // Hunter gcd unaffected by haste
-  return trigger_gcd;
+  return timespan_t::from_seconds(trigger_gcd);
 }
 
 // hunter_spell_t::cost =====================================================

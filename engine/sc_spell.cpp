@@ -67,13 +67,13 @@ double spell_t::haste() const
 
 // spell_t::gcd =============================================================
 
-double spell_t::gcd() const
+timespan_t spell_t::gcd() const
 {
-  double t = action_t::gcd();
-  if ( t == 0 ) return 0;
+  timespan_t t = action_t::gcd();
+  if ( t == timespan_t::zero ) return timespan_t::zero;
 
   t *= haste();
-  if ( t < min_gcd ) t = min_gcd;
+  if ( t.total_seconds() < min_gcd ) t = timespan_t::from_seconds(min_gcd);
 
   return t;
 }

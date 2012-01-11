@@ -2626,9 +2626,9 @@ struct pool_energy_t : public action_t
       log_t::output( sim, "%s performs %s", player -> name(), name() );
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
-    return wait;
+    return timespan_t::from_seconds(wait);
   }
 
   virtual bool ready()

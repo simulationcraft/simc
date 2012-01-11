@@ -730,7 +730,7 @@ struct fire_elemental_pet_t : public pet_t
     virtual void execute() { player -> distance = 1; }
     virtual double execute_time() const { return ( player -> distance / 10.0 ); }
     virtual bool ready() { return ( player -> distance > 1 ); }
-    virtual double gcd() const { return 0.0; }
+    virtual timespan_t gcd() const { return timespan_t::zero; }
     virtual bool usable_moving() { return true; }
   };
 
@@ -2251,7 +2251,7 @@ void shaman_spell_t::schedule_execute()
   if ( ! background )
   {
     player -> executing = this;
-    player -> gcd_ready = sim -> current_time + gcd();
+    player -> gcd_ready = sim -> current_time + gcd().total_seconds();
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;
@@ -3332,12 +3332,12 @@ struct shaman_totem_t : public shaman_spell_t
     }
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
     if ( harmful )
       return shaman_spell_t::gcd();
 
-    return player -> in_combat ? shaman_spell_t::gcd() : 0;
+    return player -> in_combat ? shaman_spell_t::gcd() : timespan_t::zero;
   }
 
   virtual bool ready()
@@ -3879,9 +3879,9 @@ struct flametongue_weapon_t : public shaman_spell_t
     return false;
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
-    return player -> in_combat ? shaman_spell_t::gcd() : 0;
+    return player -> in_combat ? shaman_spell_t::gcd() : timespan_t::zero;
   }
 };
 
@@ -3967,9 +3967,9 @@ struct windfury_weapon_t : public shaman_spell_t
     return false;
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
-    return player -> in_combat ? shaman_spell_t::gcd() : 0;
+    return player -> in_combat ? shaman_spell_t::gcd() : timespan_t::zero;
   }
 };
 
@@ -4011,9 +4011,9 @@ struct lightning_shield_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
-    return player -> in_combat ? shaman_spell_t::gcd() : 0;
+    return player -> in_combat ? shaman_spell_t::gcd() : timespan_t::zero;
   }
 };
 
@@ -4057,9 +4057,9 @@ struct water_shield_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
-    return player -> in_combat ? shaman_spell_t::gcd() : 0;
+    return player -> in_combat ? shaman_spell_t::gcd() : timespan_t::zero;
   }
 };
 

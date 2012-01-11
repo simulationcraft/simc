@@ -254,7 +254,7 @@ void action_t::parse_data()
     cooldown -> duration = spell -> cooldown().total_seconds();
     range                = spell -> max_range();
     travel_speed         = spell -> missile_speed();
-    trigger_gcd          = spell -> gcd();
+    trigger_gcd          = spell -> gcd().total_seconds();
     school               = spell_id_t::get_school_type( spell -> school_mask() );
     stats -> school      = school;
     resource             = spell -> power_type();
@@ -466,12 +466,12 @@ double action_t::cost() const
 
 // action_t::gcd ============================================================
 
-double action_t::gcd() const
+timespan_t action_t::gcd() const
 {
   if ( ! harmful && ! player -> in_combat )
-    return 0;
+    return timespan_t::zero;
 
-  return trigger_gcd;
+  return timespan_t::from_seconds(trigger_gcd);
 }
 
 // action_t::travel_time ====================================================
@@ -1226,7 +1226,7 @@ void action_t::schedule_execute()
   if ( ! background )
   {
     player -> executing = this;
-    player -> gcd_ready = sim -> current_time + gcd();
+    player -> gcd_ready = sim -> current_time + gcd().total_seconds();
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;
@@ -1675,7 +1675,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct cast_time_expr_t : public action_expr_t
     {
       cast_time_expr_t( action_t* a ) : action_expr_t( a, "gcd", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> gcd(); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> gcd().total_seconds(); return TOK_NUM; }
     };
     return new cast_time_expr_t( this );
   }

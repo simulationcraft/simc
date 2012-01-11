@@ -3203,7 +3203,7 @@ void player_t::schedule_ready( double delta_time,
           action_queued = true;
         }
       }
-      else if ( last_foreground_action -> gcd() == 0 )
+      else if ( last_foreground_action -> gcd() == timespan_t::zero )
       {
         lag = 0;
       }
@@ -3242,7 +3242,7 @@ void player_t::schedule_ready( double delta_time,
 
   readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
 
-  if ( was_executing && was_executing -> gcd() > 0 && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
+  if ( was_executing && was_executing -> gcd() > timespan_t::zero && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
     // Record the last ability use time for cast_react
     cast_delay_occurred = readying -> occurs();

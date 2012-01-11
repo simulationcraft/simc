@@ -1698,10 +1698,10 @@ struct blink_t : public mage_spell_t
     player -> buffs.stunned -> expire();
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
     mage_t* p = player -> cast_mage();
-    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return 0;
+    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return timespan_t::zero;
     return mage_spell_t::gcd();
   }
 };
@@ -2355,13 +2355,13 @@ struct frostbolt_t : public mage_spell_t
     return ct;
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
     mage_t* p = player -> cast_mage();
 
     if ( p -> talents.early_frost -> rank() )
       if ( ! p -> cooldowns_early_frost -> remains() )
-        return 1.0;
+        return timespan_t::from_seconds(1.0);
 
     return mage_spell_t::gcd();
   }
@@ -2867,10 +2867,10 @@ struct mirror_image_t : public mage_spell_t
     p -> pet_mirror_image_3 -> summon();
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
     mage_t* p = player -> cast_mage();
-    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return 0;
+    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return timespan_t::zero;
     return mage_spell_t::gcd();
   }
 };

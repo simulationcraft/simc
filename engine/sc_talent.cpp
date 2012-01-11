@@ -566,10 +566,10 @@ timespan_t spell_id_t::cooldown() const
   return timespan_t::from_seconds(d);
 }
 
-double spell_id_t::gcd() const
+timespan_t spell_id_t::gcd() const
 {
   if ( ! ok() )
-    return 0.0;
+    return timespan_t::zero;
 
   return s_data -> gcd();
 }

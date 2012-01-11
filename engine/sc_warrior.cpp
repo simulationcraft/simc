@@ -2689,16 +2689,16 @@ struct warrior_spell_t : public spell_t
   {
   }
 
-  virtual double gcd() const;
+  virtual timespan_t gcd() const;
   virtual bool   ready();
 };
 
 // warrior_spell_t::gcd =====================================================
 
-double warrior_spell_t::gcd() const
+timespan_t warrior_spell_t::gcd() const
 {
   // Unaffected by haste
-  return trigger_gcd;
+  return timespan_t::from_seconds(trigger_gcd);
 }
 
 // warrior_spell_t::ready() =================================================

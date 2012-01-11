@@ -2994,9 +2994,9 @@ struct horn_of_winter_t : public death_knight_spell_t
     player -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_horn_of_winter );
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
-    return player -> in_combat ? death_knight_spell_t::gcd() : 0;
+    return player -> in_combat ? death_knight_spell_t::gcd() : timespan_t::zero;
   }
 };
 

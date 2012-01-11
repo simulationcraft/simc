@@ -456,8 +456,8 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   else if ( spell -> _cast_min < 0 || spell -> _cast_max < 0 )
     s << "Cast Time    : Ranged Shot" << std::endl;
 
-  if ( spell -> gcd() )
-    s << "GCD          : " << spell -> gcd() << " seconds" << std::endl;
+  if ( spell -> gcd() != timespan_t::zero )
+    s << "GCD          : " << spell -> gcd().total_seconds() << " seconds" << std::endl;
 
   if ( spell -> missile_speed() )
     s << "Velocity     : " << spell -> missile_speed() << " yards/sec"  << std::endl;

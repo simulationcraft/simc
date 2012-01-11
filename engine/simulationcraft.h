@@ -1800,7 +1800,7 @@ public:
 
   timespan_t           cooldown() const { return timespan_t::from_millis(_cooldown); }
   timespan_t           duration() const { return timespan_t::from_millis(_duration); }
-  double               gcd() const { return _gcd * (1 / 1000.0); }
+  timespan_t           gcd() const { return timespan_t::from_millis(_gcd); }
   double               cast_time( uint32_t level ) const;
 
   uint32_t             category() const { return _category; }
@@ -2500,7 +2500,7 @@ struct spell_id_t
   virtual double extra_coeff() const;
   virtual bool in_range() const;
   virtual timespan_t cooldown() const;
-  virtual double gcd() const;
+  virtual timespan_t gcd() const;
   virtual uint32_t category() const;
   virtual double duration() const;
   virtual double cost() const;
@@ -4921,7 +4921,7 @@ public:
   virtual double cost() const;
   virtual double total_haste() const  { return haste();           }
   virtual double haste() const        { return 1.0;               }
-  virtual double gcd() const;
+  virtual timespan_t gcd() const;
   virtual double execute_time() const { return base_execute_time; }
   virtual double tick_time() const;
   virtual int    hasted_num_ticks( double d=-1 ) const;
@@ -5071,7 +5071,7 @@ public:
 
   // Spell Overrides
   virtual double haste() const;
-  virtual double gcd() const;
+  virtual timespan_t gcd() const;
   virtual double execute_time() const;
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type );
