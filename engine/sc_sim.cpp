@@ -667,7 +667,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
-  buff_list( 0 ), aura_delay( 0.5 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
+  buff_list( 0 ), aura_delay( timespan_t::from_seconds(0.5) ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
   elapsed_cpu_seconds( 0 ), iteration_dmg( 0 ), iteration_heal( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), simulation_length( false ),
@@ -1978,6 +1978,14 @@ double sim_t::gauss( double mean,
   rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
 
   return r -> gauss( mean, stddev );
+}
+
+// sim_t::gauss =============================================================
+
+timespan_t sim_t::gauss( timespan_t mean,
+                         timespan_t stddev )
+{
+  return timespan_t::from_millis( gauss( mean.total_millis(), stddev.total_millis() ) );
 }
 
 // sim_t::real ==============================================================

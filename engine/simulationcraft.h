@@ -3397,7 +3397,7 @@ struct sim_t : private thread_t
 
   // Auras and De-Buffs
   buff_t* buff_list;
-  double aura_delay;
+  timespan_t aura_delay;
 
   // Global aura related delay
   double default_aura_delay;
@@ -3493,6 +3493,7 @@ struct sim_t : private thread_t
   int       roll( double chance );
   double    range( double min, double max );
   double    gauss( double mean, double stddev );
+  timespan_t gauss( timespan_t mean, timespan_t stddev );
   double    real();
   rng_t*    get_rng( const std::string& name, int type=RNG_DEFAULT );
   double    iteration_adjust();

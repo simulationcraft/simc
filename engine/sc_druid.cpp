@@ -1131,7 +1131,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
     virtual timespan_t travel_time()
     {
-      return timespan_t::from_seconds( sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ) );
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
 
     virtual void target_debuff( player_t* /* t */, int /* dmg_type */ )
@@ -1162,7 +1162,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_melee -> base_td * dot -> ticks();
   }
 
-  if ( ( p -> dbc.spell( 99002 ) -> duration() + timespan_t::from_seconds(sim -> aura_delay) ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99002 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Fiery Claws due to Max Fiery Claws Duration.", p -> name() );
     p -> procs_munched_tier12_2pc_melee -> occur();

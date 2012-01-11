@@ -955,7 +955,7 @@ static void trigger_ignite( spell_t* s, double dmg )
     }
     virtual timespan_t travel_time()
     {
-      return timespan_t::from_seconds( sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ) );
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
     virtual double total_td_multiplier() const { return 1.0; }
   };
@@ -985,7 +985,7 @@ static void trigger_ignite( spell_t* s, double dmg )
     ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
   }
 
-  if ( timespan_t::from_seconds(4.0) + timespan_t::from_seconds(sim -> aura_delay) < dot -> remains() )
+  if ( timespan_t::from_seconds(4.0) + sim -> aura_delay < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
     p -> procs_munched_ignite -> occur();

@@ -500,7 +500,7 @@ struct deep_wounds_t : public warrior_attack_t
     dot_behavior  = DOT_REFRESH;
   }
   virtual double total_td_multiplier() const { return target_multiplier; }
-  virtual timespan_t travel_time() { return timespan_t::from_seconds(sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay )); }
+  virtual timespan_t travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
   virtual void impact( player_t* t, int impact_result, double deep_wounds_dmg )
   {
     warrior_attack_t::impact( t, impact_result, 0 );
@@ -547,7 +547,7 @@ static void trigger_deep_wounds( action_t* a )
     deep_wounds_dmg += p -> active_deep_wounds -> base_td * dot -> ticks();
   }
 
-  if ( timespan_t::from_seconds(6.0) + timespan_t::from_seconds(sim -> aura_delay) < dot -> remains() )
+  if ( timespan_t::from_seconds(6.0) + sim -> aura_delay < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
     p -> procs_munched_deep_wounds -> occur();
@@ -744,7 +744,7 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
 
     virtual timespan_t travel_time()
     {
-      return timespan_t::from_seconds(sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ));
+      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
 
     virtual void target_debuff( player_t* /* t */, int /* dmg_type */ )
@@ -775,7 +775,7 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_tank -> base_td * dot -> ticks();
   }
 
-  if ( p -> dbc.spell( 99240 ) -> duration() + timespan_t::from_seconds(sim -> aura_delay) < dot -> remains() )
+  if ( p -> dbc.spell( 99240 ) -> duration() + sim -> aura_delay < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Combust due to Combust duration.", p -> name() );
     p -> procs_munched_tier12_2pc_tank -> occur();
