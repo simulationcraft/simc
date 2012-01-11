@@ -310,7 +310,7 @@ struct spinning_crane_kick_t : public monk_attack_t
     if ( spinning_crane_kick_tick )
       spinning_crane_kick_tick -> execute();
 
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 
   virtual void consume_resource()

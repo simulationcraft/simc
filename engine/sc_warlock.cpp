@@ -1451,7 +1451,7 @@ struct felguard_pet_t : public warlock_main_pet_t
     {
       felstorm_tick -> execute();
 
-      stats -> add_tick( d -> time_to_tick );
+      stats -> add_tick( d -> time_to_tick.total_seconds() );
     }
   };
 

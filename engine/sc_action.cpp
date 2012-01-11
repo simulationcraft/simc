@@ -1076,7 +1076,7 @@ void action_t::tick( dot_t* d )
 
   if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
 
-  stats -> add_tick( d -> time_to_tick );
+  stats -> add_tick( d -> time_to_tick.total_seconds() );
 }
 
 // action_t::last_tick ======================================================
@@ -1842,11 +1842,11 @@ double action_t::ppm_proc_chance( double PPM ) const
   }
   else
   {
-    double time = channeled ? dot() -> time_to_tick : time_to_execute.total_seconds();
+    timespan_t time = channeled ? dot() -> time_to_tick : time_to_execute;
 
-    if ( time == 0 ) time = player -> base_gcd;
+    if ( time == timespan_t::zero ) time = timespan_t::from_seconds(player -> base_gcd);
 
-    return ( PPM * time / 60.0 );
+    return ( PPM * time.total_minutes() );
   }
 }
 

@@ -266,7 +266,7 @@ void heal_t::tick( dot_t* d )
 
   if ( callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
 
-  stats -> add_tick( d -> time_to_tick );
+  stats -> add_tick( d -> time_to_tick.total_seconds() );
 }
 
 // heal_t::calculate_result =================================================
@@ -411,7 +411,7 @@ void heal_t::last_tick( dot_t* d )
   if ( sim -> debug ) log_t::output( sim, "%s fades from %s", d -> name(), heal_target[0] -> name() );
 
   d -> ticking = 0;
-  d -> time_to_tick = 0;
+  d -> time_to_tick = timespan_t::zero;
 }
 
 // heal_t::find_greatest_difference_player ==================================

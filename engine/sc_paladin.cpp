@@ -2092,7 +2092,7 @@ struct consecration_t : public paladin_spell_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 };
 

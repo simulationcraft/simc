@@ -1903,7 +1903,7 @@ struct hymn_of_hope_t : public priest_spell_t
   {
     hymn_of_hope_tick -> execute();
 
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 };
 
@@ -2615,7 +2615,7 @@ struct mind_sear_t : public priest_spell_t
     if ( mind_sear_tick )
       mind_sear_tick -> execute();
 
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 };
 
@@ -2915,7 +2915,7 @@ struct penance_t : public priest_spell_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 
   virtual double cost() const
@@ -3267,7 +3267,7 @@ struct divine_hymn_t : public priest_heal_t
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     divine_hymn_tick -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 };
 
@@ -3662,7 +3662,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
   virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 
   virtual bool ready()
@@ -3940,7 +3940,7 @@ struct penance_heal_t : public priest_heal_t
     penance_tick -> heal_target.clear();
     penance_tick -> heal_target.push_back( target );
     penance_tick -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 
   virtual double cost() const

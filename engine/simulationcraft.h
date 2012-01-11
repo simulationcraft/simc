@@ -5220,7 +5220,7 @@ struct dot_t
   double added_seconds;
   double ready;
   double miss_time;
-  double time_to_tick;
+  timespan_t time_to_tick;
   std::string name_str;
 
   dot_t() : player( 0 ) {}

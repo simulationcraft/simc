@@ -4097,7 +4097,7 @@ struct starfall_t : public druid_spell_t
     /*target_t* t = target -> cast_target();
     if ( t -> adds_nearby > 0 )
       starfall_star -> execute();*/
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 };
 

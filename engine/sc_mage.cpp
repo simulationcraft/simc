@@ -1597,7 +1597,7 @@ struct arcane_missiles_t : public mage_spell_t
   virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 
   virtual bool ready()
@@ -2138,7 +2138,7 @@ struct flame_orb_t : public mage_spell_t
   virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 
   virtual void last_tick( dot_t* d )
@@ -2545,7 +2545,7 @@ struct frostfire_orb_t : public mage_spell_t
   virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
 
     // Trigger Brain Freeze
     mage_t* p = player -> cast_mage();

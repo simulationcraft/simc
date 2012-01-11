@@ -12,7 +12,7 @@
 dot_t::dot_t( const std::string& n, player_t* p ) :
   sim( p -> sim ), player( p ), action( 0 ), tick_event( 0 ), next( 0 ),
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-  added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ),time_to_tick( 0.0 ), name_str( n )
+  added_seconds( 0.0 ), ready( -1.0 ), miss_time( -1.0 ),time_to_tick( timespan_t::zero ), name_str( n )
 {}
 // dot_t::cancel ===================================================
 
@@ -174,14 +174,14 @@ void dot_t::schedule_tick()
   {
     if ( action -> tick_zero )
     {
-      time_to_tick = 0;
+      time_to_tick = timespan_t::zero;
       action -> tick( this );
     }
   }
 
-  time_to_tick = action -> tick_time().total_seconds();
+  time_to_tick = action -> tick_time();
 
-  tick_event = new ( sim ) dot_tick_event_t( sim, this, time_to_tick );
+  tick_event = new ( sim ) dot_tick_event_t( sim, this, time_to_tick.total_seconds() );
 
   ticking = 1;
 

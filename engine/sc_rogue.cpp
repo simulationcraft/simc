@@ -2234,7 +2234,7 @@ struct killing_spree_t : public rogue_attack_t
       attack_oh -> execute();
     }
 
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick.total_seconds() );
   }
 
   // Killing Spree not modified by haste effects

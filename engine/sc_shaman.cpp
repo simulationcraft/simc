@@ -3304,7 +3304,7 @@ struct shaman_totem_t : public shaman_spell_t
         
       }
 
-      stats -> add_tick( d -> time_to_tick );
+      stats -> add_tick( d -> time_to_tick.total_seconds() );
     }
     else
     {
@@ -3328,7 +3328,7 @@ struct shaman_totem_t : public shaman_spell_t
           log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
       }
       
-      stats -> add_tick( d -> time_to_tick );
+      stats -> add_tick( d -> time_to_tick.total_seconds() );
     }
   }
 
