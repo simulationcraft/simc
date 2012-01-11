@@ -2012,8 +2012,8 @@ struct avenging_wrath_t : public paladin_spell_t
 
     harmful = false;
     cooldown -> duration += p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN )
-                            + p -> talents.paragon_of_virtue -> effect2().seconds()
-                            + p -> talents.shield_of_the_templar -> effect3().seconds();
+                            + p -> talents.paragon_of_virtue -> effect2().time_interval().total_seconds()
+                            + p -> talents.shield_of_the_templar -> effect3().time_interval().total_seconds();
   }
 
   virtual void execute()
@@ -2158,7 +2158,7 @@ struct divine_protection_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.paragon_of_virtue -> effect1().seconds();
+    cooldown -> duration += p -> talents.paragon_of_virtue -> effect1().time_interval().total_seconds();
     harmful = false;
   }
 
@@ -2324,7 +2324,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.shield_of_the_templar -> effect1().seconds();
+    cooldown -> duration += p -> talents.shield_of_the_templar -> effect1().time_interval().total_seconds();
   }
 
   virtual void execute()
@@ -2536,7 +2536,7 @@ struct divine_light_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().time_interval().total_seconds();
   }
 
   virtual void execute()
@@ -2557,7 +2557,7 @@ struct divine_light_t : public paladin_heal_t
     double t = paladin_heal_t::execute_time();
 
     if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().seconds();
+      t += p -> buffs_infusion_of_light -> effect1().time_interval().total_seconds();
 
     return t;
   }
@@ -2591,7 +2591,7 @@ struct flash_of_light_t : public paladin_heal_t
     double t = paladin_heal_t::execute_time();
 
     if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().seconds();
+      t += p -> buffs_infusion_of_light -> effect1().time_interval().total_seconds();
 
     return t;
   }
@@ -2606,7 +2606,7 @@ struct holy_light_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().time_interval().total_seconds();
   }
 
   virtual void execute()
@@ -2626,7 +2626,7 @@ struct holy_light_t : public paladin_heal_t
     double t = paladin_heal_t::execute_time();
 
     if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().seconds();
+      t += p -> buffs_infusion_of_light -> effect1().time_interval().total_seconds();
 
     return t;
   }
@@ -2657,7 +2657,7 @@ struct holy_radiance_t : public paladin_heal_t
     // FIXME: This is an AoE Hot, which isn't supported currently
     aoe = effect2().base_value();
 
-    base_execute_time += p -> talents.clarity_of_purpose -> effect1().seconds();
+    base_execute_time += p -> talents.clarity_of_purpose -> effect1().time_interval().total_seconds();
 
     hot = new holy_radiance_hot_t( p, effect1().trigger_spell_id() );
   }
@@ -2687,7 +2687,7 @@ struct holy_radiance_t : public paladin_heal_t
     double t = paladin_heal_t::execute_time();
 
     if ( p -> buffs_infusion_of_light -> up() )
-      t += p -> buffs_infusion_of_light -> effect1().seconds();
+      t += p -> buffs_infusion_of_light -> effect1().time_interval().total_seconds();
 
     return t;
   }
@@ -2745,7 +2745,7 @@ struct lay_on_hands_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> glyphs.lay_on_hands -> effect1().seconds();
+    cooldown -> duration += p -> glyphs.lay_on_hands -> effect1().time_interval().total_seconds();
   }
 
   virtual void execute()
@@ -2812,8 +2812,8 @@ struct word_of_glory_t : public paladin_heal_t
     base_spell_power_multiplier  = 0.0;
 
     base_crit += p -> talents.rule_of_law -> effect1().percent();
-    cooldown -> duration += p -> talents.selfless_healer -> effect3().seconds()
-                            + p -> passives.walk_in_the_light -> effect3().seconds();
+    cooldown -> duration += p -> talents.selfless_healer -> effect3().time_interval().total_seconds()
+                            + p -> passives.walk_in_the_light -> effect3().time_interval().total_seconds();
 
     base_multiplier *= 1.0 + p -> passives.meditation -> effect2().percent();
 
@@ -3169,7 +3169,7 @@ void paladin_t::init_buffs()
   buffs_conviction             = new buff_t( this, talents.conviction -> effect1().trigger_spell_id(), "conviction", talents.conviction -> rank() );
   buffs_daybreak               = new buff_t( this, talents.daybreak -> effect_trigger_spell( 1 ), "daybreak", talents.daybreak -> proc_chance() );
   buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, 0 ); // Let the ability handle the CD
-  buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().seconds();
+  buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().time_interval().total_seconds();
   buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, 0 ); // Let the ability handle the CD
   buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, 0 ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );

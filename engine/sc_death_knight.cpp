@@ -430,7 +430,7 @@ death_knight_targetdata_t::death_knight_targetdata_t( player_t* source, player_t
 {
   death_knight_t* p = this->source -> cast_death_knight();
   debuffs_ebon_plaguebringer  = add_aura( new buff_t( this, 65142, "ebon_plaguebringer_track", -1, -1, true ) );
-  debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().seconds();
+  debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().time_interval().total_seconds();
 }
 
 static void log_rune_status( death_knight_t* p )
@@ -1761,7 +1761,7 @@ static void trigger_ebon_plaguebringer( action_t* a, player_t* t )
   if ( a -> sim -> overrides.ebon_plaguebringer )
     return;
 
-  double duration = 21.0 + p -> talents.epidemic -> effect1().seconds();
+  double duration = 21.0 + p -> talents.epidemic -> effect1().time_interval().total_seconds();
   if ( t -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
   {
     t -> debuffs.ebon_plaguebringer -> buff_duration = duration;
@@ -2987,7 +2987,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( ! sim -> overrides.horn_of_winter )
     {
-      sim -> auras.horn_of_winter -> buff_duration = 120.0 + p -> glyphs.horn_of_winter -> effect1().seconds();
+      sim -> auras.horn_of_winter -> buff_duration = 120.0 + p -> glyphs.horn_of_winter -> effect1().time_interval().total_seconds();
       sim -> auras.horn_of_winter -> trigger( 1, bonus );
     }
 
@@ -3388,7 +3388,7 @@ struct outbreak_t : public death_knight_spell_t
 
     may_crit = false;
 
-    cooldown -> duration += p -> spells.veteran_of_the_third_war -> effect3().seconds();
+    cooldown -> duration += p -> spells.veteran_of_the_third_war -> effect3().time_interval().total_seconds();
 
     assert( p -> blood_plague );
     assert( p -> frost_fever );
@@ -3700,7 +3700,7 @@ struct raise_dead_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> primary_tree() == TREE_UNHOLY )
-      cooldown -> duration += p -> spells.master_of_ghouls -> effect1().seconds();
+      cooldown -> duration += p -> spells.master_of_ghouls -> effect1().time_interval().total_seconds();
 
     harmful = false;
   }

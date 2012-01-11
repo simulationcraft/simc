@@ -1324,7 +1324,7 @@ struct imp_pet_t : public warlock_main_pet_t
       warlock_t*  o = p -> owner -> cast_warlock();
 
       direct_power_mod = 0.618; // tested in-game as of 2011/05/10
-      base_execute_time += o -> talent_dark_arts -> effect1().seconds();
+      base_execute_time += o -> talent_dark_arts -> effect1().time_interval().total_seconds();
       if ( o -> bugs ) min_gcd = 1.5;
     }
 
@@ -2158,7 +2158,7 @@ struct shadow_bolt_t : public warlock_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time += p -> talent_bane -> effect1().seconds();
+    base_execute_time += p -> talent_bane -> effect1().time_interval().total_seconds();
     base_cost  *= 1.0 + p -> glyphs.shadow_bolt -> base_value();
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent() );
 
@@ -2317,7 +2317,7 @@ struct chaos_bolt_t : public warlock_spell_t
     may_resist = false;
     may_miss = false;
 
-    base_execute_time += p -> talent_bane -> effect1().seconds();
+    base_execute_time += p -> talent_bane -> effect1().time_interval().total_seconds();
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
     cooldown -> duration += ( p -> glyphs.chaos_bolt -> base_value() / 1000.0 );
 
@@ -2839,7 +2839,7 @@ struct immolate_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talent_bane -> effect1().seconds();
+    base_execute_time += p -> talent_bane -> effect1().time_interval().total_seconds();
 
     base_dd_multiplier *= 1.0 + ( p -> talent_improved_immolate -> effect1().percent() );
 
@@ -3000,7 +3000,7 @@ struct incinerate_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     base_multiplier   *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent() );
-    base_execute_time += p -> talent_emberstorm -> effect3().seconds();
+    base_execute_time += p -> talent_emberstorm -> effect3().time_interval().total_seconds();
     base_multiplier   *= 1.0 + ( p -> glyphs.incinerate -> base_value() );
 
     if ( ! dtr && p -> has_dtr )
@@ -3139,7 +3139,7 @@ struct soul_fire_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talent_emberstorm -> effect1().seconds();
+    base_execute_time += p -> talent_emberstorm -> effect1().time_interval().total_seconds();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -3231,7 +3231,7 @@ struct life_tap_t : public warlock_spell_t
     harmful = false;
 
     if ( p -> glyphs.life_tap -> ok() )
-      trigger_gcd += p -> glyphs.life_tap -> effect1().seconds();
+      trigger_gcd += p -> glyphs.life_tap -> effect1().time_interval().total_seconds();
   }
 
   virtual void execute()
@@ -3368,7 +3368,7 @@ private:
 
     warlock_t* p = player -> cast_warlock();
     harmful = false;
-    base_execute_time += p -> talent_master_summoner -> effect1().seconds();
+    base_execute_time += p -> talent_master_summoner -> effect1().time_interval().total_seconds();
     base_cost         *= 1.0 + p -> talent_master_summoner -> effect2().percent();
 
     pet = p -> find_pet( pet_name );
@@ -3510,7 +3510,7 @@ struct summon_infernal_t : public summon_pet_t
   {
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
 
-    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
+    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().time_interval().total_seconds();
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> talent_summon_felguard -> ok() ?
                             p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :
@@ -3541,7 +3541,7 @@ struct summon_doomguard2_t : public summon_pet_t
   {
     harmful = false;
     background = true;
-    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().seconds();
+    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().time_interval().total_seconds();
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> talent_summon_felguard -> ok() ?
                             p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :

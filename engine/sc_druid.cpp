@@ -1944,7 +1944,7 @@ struct savage_roar_t : public druid_cat_attack_t
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     double duration = this -> duration() + 5.0 * td -> buffs_combo_points -> stack();
-    duration += p -> talents.endless_carnage -> effect2().seconds();
+    duration += p -> talents.endless_carnage -> effect2().time_interval().total_seconds();
 
     // execute clears CP, so has to be after calculation duration
     druid_cat_attack_t::execute();
@@ -2039,7 +2039,7 @@ struct skull_bash_cat_t : public druid_cat_attack_t
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
-    cooldown -> duration += p -> talents.brutal_impact -> effect3().seconds();
+    cooldown -> duration += p -> talents.brutal_impact -> effect3().time_interval().total_seconds();
   }
 
   virtual bool ready()
@@ -2497,7 +2497,7 @@ struct skull_bash_bear_t : public druid_bear_attack_t
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
-    cooldown -> duration  += p -> talents.brutal_impact -> effect2().seconds();
+    cooldown -> duration  += p -> talents.brutal_impact -> effect2().time_interval().total_seconds();
   }
 
   virtual bool ready()
@@ -4940,7 +4940,7 @@ void druid_t::init_buffs()
   buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1,  10.0,     0, glyphs.innervate -> enabled() );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1,  15.0,  60.0, talents.natures_grace -> ok() );
   buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1,  15.0,     0, 3.5 / 60.0 );
-  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().seconds() );
+  buffs_pulverize          = new buff_t( this, "pulverize"         , 1,  10.0 + talents.endless_carnage -> effect2().time_interval().total_seconds() );
   buffs_revitalize         = new buff_t( this, "revitalize"        , 1,   1.0, talents.revitalize -> spell( 1 ).effect2().base_value(), talents.revitalize -> ok() ? 0.20 : 0, true );
   buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1,   8.0,     0, talents.stampede -> ok() );
   buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1,  10.0,     0, talents.stampede -> ok() );
