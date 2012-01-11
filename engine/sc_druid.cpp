@@ -3945,16 +3945,16 @@ struct starfire_t : public druid_spell_t
         if ( mf -> ticking )
         {
           if ( mf -> added_seconds < timespan_t::from_seconds(9.0) )
-            mf -> extend_duration_seconds( 3.0 );
+            mf -> extend_duration_seconds( timespan_t::from_seconds(3.0) );
           else
-            mf -> extend_duration_seconds( 0.0 );
+            mf -> extend_duration_seconds( timespan_t::zero );
         }
         else if ( sf -> ticking )
         {
           if ( sf -> added_seconds < timespan_t::from_seconds(9.0) )
-            sf -> extend_duration_seconds( 3.0 );
+            sf -> extend_duration_seconds( timespan_t::from_seconds(3.0) );
           else
-            sf -> extend_duration_seconds( 0.0 );
+            sf -> extend_duration_seconds( timespan_t::zero );
         }
       }
 

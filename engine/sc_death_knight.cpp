@@ -2780,8 +2780,8 @@ struct festering_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
-      td -> dots_blood_plague -> extend_duration_seconds( 8 );
-      td -> dots_frost_fever  -> extend_duration_seconds( 8 );
+      td -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds(8) );
+      td -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds(8) );
       if ( td -> dots_blood_plague -> ticking || td -> dots_frost_fever -> ticking )
         trigger_ebon_plaguebringer( this, target );
     }

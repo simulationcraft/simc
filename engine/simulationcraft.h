@@ -5228,7 +5228,7 @@ struct dot_t
 
   void   cancel();
   void   extend_duration( int extra_ticks, bool cap=false );
-  void   extend_duration_seconds( double extra_seconds );
+  void   extend_duration_seconds( timespan_t extra_seconds );
   void   recalculate_ready();
   void   refresh_duration();
   void   reset();

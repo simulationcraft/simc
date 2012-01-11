@@ -58,7 +58,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap )
 
 // dot_t::extend_duration_seconds ===========================================
 
-void dot_t::extend_duration_seconds( double extra_seconds )
+void dot_t::extend_duration_seconds( timespan_t extra_seconds )
 {
   if ( ! ticking )
     return;
@@ -75,16 +75,16 @@ void dot_t::extend_duration_seconds( double extra_seconds )
   double old_haste_factor = 1.0 / action -> player_haste;
 
   // Multiply with tick_time() for the duration left after the next tick
-  double duration_left = old_remaining_ticks * action -> tick_time().total_seconds();
+  timespan_t duration_left = old_remaining_ticks * action -> tick_time();
 
   // Add the added seconds
   duration_left += extra_seconds;
 
   action -> player_buff();
 
-  added_seconds += timespan_t::from_seconds(extra_seconds);
+  added_seconds += extra_seconds;
 
-  int new_remaining_ticks = action -> hasted_num_ticks( duration_left );
+  int new_remaining_ticks = action -> hasted_num_ticks( duration_left.total_seconds() );
   num_ticks += ( new_remaining_ticks - old_remaining_ticks );
 
   if ( sim -> debug )
