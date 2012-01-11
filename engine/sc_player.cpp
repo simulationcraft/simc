@@ -1012,15 +1012,15 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   }
   else if ( meta_gem == META_MYSTICAL_SKYFIRE )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, 4.0, 45.0 );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, timespan_t::from_seconds(4.0), timespan_t::from_seconds(45.0) );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, 0, 15.0 );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, timespan_t::zero, timespan_t::from_seconds(15.0) );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, 0, 15.0 );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, timespan_t::zero, timespan_t::from_seconds(15.0) );
   }
 }
 
@@ -5348,19 +5348,19 @@ struct use_item_t : public action_t
       {
         trigger = unique_gear_t::register_cost_reduction_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                                e.school, e.max_stacks, e.discharge_amount,
-                                                               e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, false, e.reverse, 0 );
+                                                               e.proc_chance, timespan_t::zero/*dur*/, timespan_t::zero/*cd*/, false, e.reverse, 0 );
       }
       else if ( e.stat )
       {
         trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                      e.stat, e.max_stacks, e.stat_amount,
-                                                     e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, e.tick, e.reverse, 0 );
+                                                     e.proc_chance, timespan_t::zero/*dur*/, timespan_t::zero/*cd*/, timespan_t::from_seconds(e.tick), e.reverse, 0 );
       }
       else if ( e.school )
       {
         trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                           e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                                          e.proc_chance, 0.0/*cd*/, e.no_crit, e.no_player_benefits, e.no_debuffs );
+                                                          e.proc_chance, timespan_t::zero/*cd*/, e.no_crit, e.no_player_benefits, e.no_debuffs );
       }
 
       if ( trigger ) trigger -> deactivate();

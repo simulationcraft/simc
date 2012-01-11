@@ -5364,28 +5364,28 @@ struct unique_gear_t
 
   static action_callback_t* register_stat_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                 int stat, int max_stacks, double amount,
-                                                double proc_chance, double duration, double cooldown,
-                                                double tick=0, bool reverse=false, int rng_type=RNG_DEFAULT );
+                                                double proc_chance, timespan_t duration, timespan_t cooldown,
+                                                timespan_t tick=timespan_t::zero, bool reverse=false, int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_cost_reduction_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                           int school, int max_stacks, double amount,
-                                                          double proc_chance, double duration, double cooldown,
+                                                          double proc_chance, timespan_t duration, timespan_t cooldown,
                                                           bool refreshes=false, bool reverse=false, int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                      int max_stacks, const school_type school, double amount, double scaling,
-                                                     double proc_chance, double cooldown, bool no_crits, bool no_buffs, bool no_debuffs,
+                                                     double proc_chance, timespan_t cooldown, bool no_crits, bool no_buffs, bool no_debuffs,
                                                      int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_chance_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                             int max_stacks, const school_type school, double amount, double scaling,
-                                                            double proc_chance, double cooldown, bool no_crits, bool no_buffs, bool no_debuffs,
+                                                            double proc_chance, timespan_t cooldown, bool no_crits, bool no_buffs, bool no_debuffs,
                                                             int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_stat_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                           int stat, int max_stacks, double stat_amount,
                                                           const school_type school, double discharge_amount, double discharge_scaling,
-                                                          double proc_chance, double duration, double cooldown, bool no_crits, bool no_buffs,
+                                                          double proc_chance, timespan_t duration, timespan_t cooldown, bool no_crits, bool no_buffs,
                                                           bool no_debuffs );
 
   static action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
@@ -5464,14 +5464,14 @@ struct benefit_t : public noncopyable
 
 struct uptime_common_t
 {
-  double last_start;
-  double uptime_sum;
+  timespan_t last_start;
+  timespan_t uptime_sum;
   sim_t* sim;
 
   double uptime;
 
   uptime_common_t( sim_t* s ) :
-    last_start( -1 ), uptime_sum( 0 ), sim( s ),
+    last_start( timespan_t::min ), uptime_sum( timespan_t::zero ), sim( s ),
     uptime( std::numeric_limits<double>::quiet_NaN() )
   {}
 
@@ -5479,20 +5479,20 @@ struct uptime_common_t
   {
     if ( is_up )
     {
-      if ( last_start < 0 )
-        last_start = sim -> current_time;
+      if ( last_start < timespan_t::zero )
+        last_start = timespan_t::from_seconds(sim -> current_time);
     }
-    else if ( last_start >= 0 )
+    else if ( last_start >= timespan_t::zero )
     {
-      uptime_sum += sim -> current_time - last_start;
-      last_start = -1;
+      uptime_sum += timespan_t::from_seconds(sim -> current_time) - last_start;
+      last_start = timespan_t::min;
     }
   }
 
-  void reset() { last_start = -1; }
+  void reset() { last_start = timespan_t::min; }
 
   void analyze()
-  { uptime = uptime_sum / sim -> iterations / sim -> simulation_length.mean; }
+  { uptime = uptime_sum.total_seconds() / sim -> iterations / sim -> simulation_length.mean; }
 
   void merge( const uptime_common_t& other )
   { uptime_sum += other.uptime_sum; }
