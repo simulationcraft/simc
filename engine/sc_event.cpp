@@ -148,7 +148,7 @@ void player_ready_event_t::execute()
     // Waiting Debug
     if ( sim -> debug )
     {
-      log_t::output( sim, "%s is waiting for %.4f resource=%.2f", player -> name(), x, player -> resource_current[ player -> primary_resource() ] );
+      log_t::output( sim, "%s is waiting for %.4f resource=%.2f", player -> name(), x.total_seconds(), player -> resource_current[ player -> primary_resource() ] );
     }
   }
 }
@@ -250,7 +250,7 @@ dot_tick_event_t::dot_tick_event_t( sim_t* sim,
 
   if ( sim -> debug )
     log_t::output( sim, "New DoT Tick Event: %s %s %d-of-%d %.2f",
-                   player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick );
+                   player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
   sim -> add_event( this, time_to_tick );
 }

@@ -3702,7 +3702,7 @@ public:
   int       canceled;
   const char* name;
   event_t( sim_t* s, player_t* p=0, const char* n="" ) :
-    next( 0 ), sim( s ), player( p ), reschedule_time( timespan_t::zero ), canceled( 0 ), name( n ), time( timespan_t::zero )
+    next( 0 ), sim( s ), player( p ), time( timespan_t::zero ), reschedule_time( timespan_t::zero ), canceled( 0 ), name( n )
   {
     if ( ! name ) name = "unknown";
   }

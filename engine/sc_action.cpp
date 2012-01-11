@@ -793,7 +793,7 @@ double action_t::calculate_weapon_damage()
   if ( sim -> debug )
   {
     log_t::output( sim, "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
-                   player -> name(), name(), total_dmg, dmg, weapon -> bonus_dmg, weapon_speed, power_damage, total_attack_power() );
+                   player -> name(), name(), total_dmg, dmg, weapon -> bonus_dmg, weapon_speed.total_seconds(), power_damage, total_attack_power() );
   }
 
   return total_dmg;
@@ -1732,7 +1732,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
                          action -> player -> name_str.c_str(),
                          action -> name_str.c_str(),
                          (action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction).total_seconds(),
-                         action -> sim -> current_time );
+                         action -> sim -> current_time.total_seconds() );
         }
 
         if ( action -> player -> cast_delay_occurred == timespan_t::zero ||

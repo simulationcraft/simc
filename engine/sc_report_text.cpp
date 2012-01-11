@@ -102,7 +102,7 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 
   if ( s -> total_tick_time > timespan_t::zero )
   {
-    util_t::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time / s -> player -> fight_length.mean  );
+    util_t::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time.total_seconds() / s -> player -> fight_length.mean  );
   }
 
   util_t::fprintf( file, "\n" );

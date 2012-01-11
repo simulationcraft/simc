@@ -2911,7 +2911,7 @@ void player_t::combat_end()
   dps.add( iteration_fight_length != timespan_t::zero ? iteration_dmg / iteration_fight_length.total_seconds() : 0 );
   dpse.add( sim -> current_time != timespan_t::zero ? iteration_dmg / sim -> current_time.total_seconds() : 0 );
 
-  if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time, iteration_fight_length.total_seconds() );
+  if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 
   // Heal
   heal.add( iteration_heal );

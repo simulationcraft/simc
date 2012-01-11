@@ -1035,7 +1035,7 @@ void sim_t::combat( int iteration )
       // The first iteration is always time-limited since we do not yet have inferred health
       if ( current_time > expected_time )
       {
-        if ( debug ) log_t::output( this, "Reached expected_time=%.2f, ending simulation", expected_time );
+        if ( debug ) log_t::output( this, "Reached expected_time=%.2f, ending simulation", expected_time.total_seconds() );
         // Set this last event as canceled, so asserts dont fire when odd things happen at the
         // tail-end of the simulation iteration
         e -> canceled = 1;
