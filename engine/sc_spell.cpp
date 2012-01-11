@@ -16,7 +16,7 @@ void spell_t::init_spell_t_()
   may_miss = may_resist = true;
   base_spell_power_multiplier = 1.0;
   crit_bonus = 0.5;
-  min_gcd = 1.0;
+  min_gcd = timespan_t::from_seconds(1.0);
   hasted_ticks = true;
 
   player_t* p = player;
@@ -73,7 +73,7 @@ timespan_t spell_t::gcd() const
   if ( t == timespan_t::zero ) return timespan_t::zero;
 
   t *= haste();
-  if ( t.total_seconds() < min_gcd ) t = timespan_t::from_seconds(min_gcd);
+  if ( t < min_gcd ) t = min_gcd;
 
   return t;
 }

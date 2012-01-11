@@ -3035,7 +3035,7 @@ struct earth_shock_t : public shaman_spell_t
     if ( p -> glyph_shocking -> ok() )
     {
       trigger_gcd         = 1.0;
-      min_gcd             = 1.0;
+      min_gcd             = timespan_t::from_seconds(1.0);
     }
 
     consume_threshold     = ( int ) p -> talent_fulmination -> base_value();
@@ -3106,7 +3106,7 @@ struct flame_shock_t : public shaman_spell_t
     if ( p -> glyph_shocking -> ok() )
     {
       trigger_gcd         = 1.0;
-      min_gcd             = 1.0;
+      min_gcd             = timespan_t::from_seconds(1.0);
     }
 
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
@@ -3180,7 +3180,7 @@ struct frost_shock_t : public shaman_spell_t
     if ( p -> glyph_shocking -> ok() )
     {
       trigger_gcd         = 1.0;
-      min_gcd             = 1.0;
+      min_gcd             = timespan_t::from_seconds(1.0);
     }
   }
 };

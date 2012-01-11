@@ -1325,7 +1325,7 @@ struct imp_pet_t : public warlock_main_pet_t
 
       direct_power_mod = 0.618; // tested in-game as of 2011/05/10
       base_execute_time += o -> talent_dark_arts -> effect1().time_value();
-      if ( o -> bugs ) min_gcd = 1.5;
+      if ( o -> bugs ) min_gcd = timespan_t::from_seconds(1.5);
     }
 
     virtual void player_buff()
@@ -1602,7 +1602,7 @@ struct succubus_pet_t : public warlock_main_pet_t
         base_dd_max = 314;
       }
 
-      if ( o -> bugs ) min_gcd = 1.5;
+      if ( o -> bugs ) min_gcd = timespan_t::from_seconds(1.5);
     }
 
     virtual void impact( player_t* t, int impact_result, double travel_dmg )

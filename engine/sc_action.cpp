@@ -55,7 +55,7 @@ void action_t::init_action_t_()
   ability_lag                    = 0.0;
   ability_lag_stddev             = 0.0;
   rp_gain                        = 0.0;
-  min_gcd                        = 0.0;
+  min_gcd                        = timespan_t::zero;
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
   weapon_power_mod               = 1.0/14.0;

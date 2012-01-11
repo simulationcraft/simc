@@ -4850,7 +4850,8 @@ struct action_t : public spell_id_t
   int dot_behavior;
   double ability_lag, ability_lag_stddev;
   double rp_gain;
-  double min_gcd, trigger_gcd, range;
+  timespan_t min_gcd;
+  double trigger_gcd, range;
   double weapon_power_mod, direct_power_mod, tick_power_mod;
   timespan_t base_execute_time;
   timespan_t base_tick_time;

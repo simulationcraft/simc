@@ -521,7 +521,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 a -> range,
                 a -> travel_speed,
                 a -> trigger_gcd,
-                a -> min_gcd,
+                a -> min_gcd.total_seconds(),
                 a -> base_cost,
                 a -> cooldown -> duration,
                 a -> base_execute_time.total_seconds(),
