@@ -916,7 +916,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
            "\t\t\t\t<p>Fight Length is the specified average fight duration. If vary_combat_length is set, the fight length will vary by +/- that portion of the value. See <a href=\"http://code.google.com/p/simulationcraft/wiki/Options#Combat_Length\" class=\"ext\">Combat Length</a> in the wiki for further details.</p>\n"
            "\t\t\t</div>\n"
            "\t\t</div>\n",
-           sim -> max_time,
+           sim -> max_time.total_seconds(),
            sim -> vary_combat_length );
 
   fprintf( file,
@@ -1215,7 +1215,7 @@ static void print_html_masthead( FILE*  file, sim_t* sim )
   {
     fprintf( file,
              "\t\t\t\t<li><b>Fight Length:</b> %.0f</li>\n",
-             sim -> max_time );
+             sim -> max_time.total_seconds() );
   }
   fprintf( file,
            "\t\t\t\t<li><b>Fight Style:</b> %s</li>\n",
