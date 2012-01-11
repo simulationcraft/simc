@@ -820,7 +820,7 @@ static double calculate_dot_dps( dot_t* dot )
 
   a -> result = RESULT_HIT;
 
-  return ( a -> calculate_tick_damage() / a -> base_tick_time );
+  return ( a -> calculate_tick_damage() / a -> base_tick_time.total_seconds() );
 }
 
 // consume_brain_freeze =====================================================
@@ -1572,7 +1572,7 @@ struct arcane_missiles_t : public mage_spell_t
     num_ticks += p -> talents.improved_arcane_missiles -> rank();
     hasted_ticks = false;
 
-    base_tick_time += p -> talents.missile_barrage -> mod_additive( P_TICK_TIME );
+    base_tick_time += timespan_t::from_seconds(p -> talents.missile_barrage -> mod_additive( P_TICK_TIME ));
 
     tick_spell = new arcane_missiles_tick_t( p );
   }
@@ -1754,7 +1754,7 @@ struct combustion_t : public mage_spell_t
 
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     num_ticks      = 10;
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
 
     orig_duration = cooldown -> duration;
 
@@ -1943,8 +1943,8 @@ struct evocation_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_tick_time    = 2.0;
-    num_ticks         = ( int ) ( duration().total_seconds() / base_tick_time );
+    base_tick_time    = timespan_t::from_seconds(2.0);
+    num_ticks         = ( int ) ( duration() / base_tick_time );
     tick_zero         = true;
     channeled         = true;
     harmful           = false;
@@ -2123,7 +2123,7 @@ struct flame_orb_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     num_ticks = 15;
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
     hasted_ticks = false;
 
     explosion_spell = new flame_orb_explosion_t( p );
@@ -2385,7 +2385,7 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       base_multiplier *= 1.0 + p -> glyphs.frostfire -> effect1().percent();
       num_ticks = 4;
-      base_tick_time = 3.0;
+      base_tick_time = timespan_t::from_seconds(3.0);
       dot_behavior = DOT_REFRESH;
     }
     if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
@@ -2532,7 +2532,7 @@ struct frostfire_orb_t : public mage_spell_t
 
     school = SCHOOL_FROSTFIRE; // set as Fire in DBC, coloring the report chart wrong
     num_ticks = 15;
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
     hasted_ticks = false;
 
     explosion_spell = new frostfire_orb_explosion_t( p );

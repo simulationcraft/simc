@@ -62,7 +62,7 @@ void action_t::init_action_t_()
   direct_power_mod               = 0.0;
   tick_power_mod                 = 0.0;
   base_execute_time              = timespan_t::zero;
-  base_tick_time                 = 0.0;
+  base_tick_time                 = timespan_t::zero;
   base_cost                      = 0.0;
   base_dd_min                    = 0.0;
   base_dd_max                    = 0.0;
@@ -337,8 +337,8 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
     case A_PERIODIC_DAMAGE_PERCENT:
     case A_PERIODIC_DUMMY:
     case A_PERIODIC_TRIGGER_SPELL:
-      base_tick_time   = effect -> period().total_seconds();
-      num_ticks        = ( int ) ( spell -> duration().total_seconds() / base_tick_time );
+      base_tick_time   = effect -> period();
+      num_ticks        = ( int ) ( spell -> duration() / base_tick_time );
       break;
     case A_SCHOOL_ABSORB:
       direct_power_mod = effect -> coeff();
@@ -1854,12 +1854,12 @@ double action_t::ppm_proc_chance( double PPM ) const
 
 timespan_t action_t::tick_time() const
 {
-  double t = base_tick_time;
+  timespan_t t = base_tick_time;
   if ( channeled || hasted_ticks )
   {
     t *= player_haste;
   }
-  return timespan_t::from_seconds(t);
+  return t;
 }
 
 // action_t::hasted_num_ticks ===============================================
@@ -1874,9 +1874,9 @@ int action_t::hasted_num_ticks( double d ) const
   // It's important that we're accurate here so that we model haste breakpoints correctly.
 
   if ( d < 0 )
-    d = num_ticks * base_tick_time;
+    d = num_ticks * base_tick_time.total_seconds();
 
-  double t = floor( ( base_tick_time * player_haste * 1000.0 ) + 0.5 ) / 1000.0;
+  double t = floor( ( base_tick_time.total_millis() * player_haste ) + 0.5 ) / 1000.0;
 
   double n = d / t;
 

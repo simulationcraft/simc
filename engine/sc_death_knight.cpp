@@ -599,7 +599,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       background         = true;
-      base_tick_time     = 3.0;
+      base_tick_time     = timespan_t::from_seconds(3.0);
       num_ticks          = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
       direct_power_mod   = 0.055 * 1.15;
       may_miss           = false;
@@ -662,7 +662,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       background        = true;
       trigger_gcd       = 0;
-      base_tick_time    = 3.0;
+      base_tick_time    = timespan_t::from_seconds(3.0);
       hasted_ticks      = false;
       may_miss          = false;
       num_ticks         = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
@@ -2316,7 +2316,7 @@ struct blood_plague_t : public death_knight_spell_t
     crit_bonus_multiplier = 1.0;
 
     base_td          = effect_average( 1 ) * 1.15;
-    base_tick_time   = 3.0;
+    base_tick_time   = timespan_t::from_seconds(3.0);
     tick_may_crit    = true;
     background       = true;
     num_ticks        = 7 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 1, 3, 4 );
@@ -2585,7 +2585,7 @@ struct death_and_decay_t : public death_knight_spell_t
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     tick_power_mod   = 0.064;
     base_td          = p -> dbc.effect_average( effect1().id(), p -> level );
-    base_tick_time   = 1.0;
+    base_tick_time   = timespan_t::from_seconds(1.0);
     num_ticks        = 10; // 11 with tick_zero
     tick_may_crit    = true;
     tick_zero        = true;
@@ -2795,7 +2795,7 @@ struct frost_fever_t : public death_knight_spell_t
     death_knight_spell_t( "frost_fever", 59921, p )
   {
     base_td          = effect_average( 1 ) * 1.15;
-    base_tick_time   = 3.0;
+    base_tick_time   = timespan_t::from_seconds(3.0);
     hasted_ticks     = false;
     may_miss         = false;
     may_crit         = false;
@@ -3886,7 +3886,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
 
     harmful = false;
     num_ticks = 0;
-    base_tick_time = 0.0;
+    base_tick_time = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3905,7 +3905,7 @@ struct unholy_blight_t : public death_knight_spell_t
   unholy_blight_t( death_knight_t* p ) :
     death_knight_spell_t( "unholy_blight", p -> talents.unholy_blight -> spell_id(), p )
   {
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
     num_ticks      = 10;
     background     = true;
     proc           = true;

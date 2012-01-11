@@ -2119,7 +2119,7 @@ struct hemorrhage_t : public rogue_attack_t
     if ( p -> glyphs.hemorrhage -> ok() )
     {
       num_ticks = 8;
-      base_tick_time = 3.0;
+      base_tick_time = timespan_t::from_seconds(3.0);
       dot_behavior = DOT_REFRESH;
     }
   }
@@ -2205,7 +2205,7 @@ struct killing_spree_t : public rogue_attack_t
     add_trigger_buff( p -> buffs_killing_spree );
 
     num_ticks = 5;
-    base_tick_time = effect_period( 1 ).total_seconds();
+    base_tick_time = effect_period( 1 );
 
     may_crit   = false;
 
@@ -2344,7 +2344,7 @@ struct recuperate_t : public rogue_attack_t
     rogue_attack_t( "recuperate", 73651, p )
   {
     requires_combo_points = true;
-    base_tick_time = effect_period( 1 ).total_seconds();
+    base_tick_time = effect_period( 1 );
     parse_options( NULL, options_str );
     dot_behavior = DOT_REFRESH;
     harmful = false;
@@ -2452,7 +2452,7 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     if ( result_is_hit( impact_result ) )
-      num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
+      num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time.total_seconds() );
     rogue_attack_t::impact( t, impact_result, travel_dmg );
   }
 

@@ -297,7 +297,7 @@ struct spinning_crane_kick_t : public monk_attack_t
 
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
 
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
     num_ticks = 6;
     tick_zero = true;
     channeled = true;

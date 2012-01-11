@@ -2065,7 +2065,7 @@ struct consecration_t : public paladin_spell_t
     hasted_ticks   = false;
     may_miss       = false;
     num_ticks      = 10;
-    base_tick_time = 1;
+    base_tick_time = timespan_t::from_seconds(1.0);
     base_cost     *= 1.0 + p -> talents.hallowed_ground -> mod_additive( P_RESOURCE_COST );
 
     if ( p -> glyphs.consecration -> ok() )
@@ -2825,7 +2825,7 @@ struct word_of_glory_t : public paladin_heal_t
     {
       // Hot is built into the spell, but only becomes active with the glyph
       base_td = 0;
-      base_tick_time = 0;
+      base_tick_time = timespan_t::zero;
       num_ticks = 0;
     }
   }

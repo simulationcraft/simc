@@ -834,7 +834,7 @@ static void trigger_efflorescence( heal_t* a )
     {
       aoe            = 3;
       background     = true;
-      base_tick_time = 1.0;
+      base_tick_time = timespan_t::from_seconds(1.0);
       hasted_ticks   = true;
       may_crit       = false;
       num_ticks      = 7;
@@ -4077,7 +4077,7 @@ struct starfall_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     num_ticks      = 10;
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
     hasted_ticks   = false;
     cooldown -> duration += p -> glyphs.starfall -> mod_additive( P_COOLDOWN );
 

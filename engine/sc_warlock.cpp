@@ -2012,7 +2012,7 @@ struct bane_of_agony_t : public warlock_spell_t
     base_crit += p -> talent_doom_and_gloom -> effect1().percent();
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
 
-    int extra_ticks = ( int ) ( p -> glyphs.bane_of_agony -> base_value() / 1000.0 / base_tick_time );
+    int extra_ticks = ( int ) ( timespan_t::from_millis(p -> glyphs.bane_of_agony -> base_value()) / base_tick_time );
 
     if ( extra_ticks > 0 )
     {

@@ -1232,7 +1232,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.print_tag( "tick_power_mod", util_t::to_string( a -> tick_power_mod ) );
           writer.print_tag( "base", util_t::to_string( a -> base_td ) );
           writer.print_tag( "num_ticks", util_t::to_string( a -> num_ticks ) );
-          writer.print_tag( "base_tick_time", util_t::to_string( a -> base_tick_time ) );
+          writer.print_tag( "base_tick_time", util_t::to_string( a -> base_tick_time.total_seconds() ) );
           writer.print_tag( "hasted_ticks", util_t::to_string( a -> hasted_ticks ) );
           writer.print_tag( "dot_behavior", a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT" );
           writer.end_tag(); // </damage_over_time>

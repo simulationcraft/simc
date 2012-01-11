@@ -2576,7 +2576,7 @@ struct earthquake_t : public shaman_spell_t
     may_miss = false;
     may_miss = may_crit = may_dodge = may_parry = false;
     num_ticks = ( int ) duration().total_seconds();
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
     hasted_ticks = false;
 
     quake = new earthquake_rumble_t( player );
@@ -3230,7 +3230,7 @@ struct shaman_totem_t : public shaman_spell_t
     // Model all totems as ticking "dots" for now, this will cause them to properly
     // "fade", so we can recast them if the fight length is long enough and optimal_raid=0
     num_ticks            = 1;
-    base_tick_time       = totem_duration;
+    base_tick_time       = timespan_t::from_seconds(totem_duration);
   }
 
   // Simulate a totem "drop", this is a simplified action_t::execute()
@@ -3501,8 +3501,8 @@ struct magma_totem_t : public shaman_totem_t
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     // Spell id 8188 does the triggering of magma totem's aura
-    base_tick_time    = p -> dbc.spell( 8188 ) -> effect1().period().total_seconds();
-    num_ticks         = ( int ) ( totem_duration / base_tick_time );
+    base_tick_time    = p -> dbc.spell( 8188 ) -> effect1().period();
+    num_ticks         = ( int ) ( totem_duration / base_tick_time.total_seconds() );
 
     // Fill out scaling data
     trigger           = p -> dbc.spell( p -> dbc.spell( 8188 ) -> effect1().trigger_spell_id() );
@@ -3640,10 +3640,10 @@ struct searing_totem_t : public shaman_totem_t
     // Note, searing totem tick time should come from the searing totem's casting time (1.50 sec),
     // except it's in-game cast time is ~1.6sec
     // base_tick_time       = p -> player_data.spell_cast_time( 3606, p -> level );
-    base_tick_time       = 1.6;
+    base_tick_time       = timespan_t::from_seconds(1.6);
     travel_speed         = 0; // TODO: Searing bolt has a real travel time, however modeling it is another issue entirely
     range                = p -> dbc.spell( 3606 ) -> max_range();
-    num_ticks            = ( int ) ( totem_duration / base_tick_time );
+    num_ticks            = ( int ) ( totem_duration / base_tick_time.total_seconds() );
     // Also kludge totem school to fire
     school               = spell_id_t::get_school_type( p -> dbc.spell( 3606 ) -> school_mask() );
     stats -> school      = SCHOOL_FIRE;

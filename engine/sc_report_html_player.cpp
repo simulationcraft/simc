@@ -563,7 +563,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                   a -> tick_power_mod,
                   a -> base_td,
                   a -> num_ticks,
-                  a -> base_tick_time,
+                  a -> base_tick_time.total_seconds(),
                   a -> hasted_ticks?"true":"false",
                   a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT" );
       }

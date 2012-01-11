@@ -451,11 +451,11 @@ static void trigger_blood_frenzy( action_t* a )
 
   if ( t -> debuffs.blood_frenzy_bleed -> buff_duration > 0 )
   {
-    t -> debuffs.blood_frenzy_bleed -> buff_duration = a -> num_ticks * a -> base_tick_time;
+    t -> debuffs.blood_frenzy_bleed -> buff_duration = (a -> num_ticks * a -> base_tick_time).total_seconds();
   }
   if ( t -> debuffs.blood_frenzy_physical -> buff_duration > 0 )
   {
-    t -> debuffs.blood_frenzy_physical -> buff_duration = a -> num_ticks * a -> base_tick_time;
+    t -> debuffs.blood_frenzy_physical -> buff_duration = (a -> num_ticks * a -> base_tick_time).total_seconds();
   }
 
   double rank = p -> talents.blood_frenzy -> rank();

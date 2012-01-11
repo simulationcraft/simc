@@ -630,7 +630,7 @@ struct priest_heal_t : public heal_t
       echo_of_light_t( player_t* p ) :
         priest_heal_t( "echo_of_light", p, 77489 )
       {
-        base_tick_time = 1.0;
+        base_tick_time = timespan_t::from_seconds(1.0);
         num_ticks      = 6;
 
         background     = true;
@@ -1740,7 +1740,7 @@ struct dispersion_t : public priest_spell_t
 
     check_talent( p -> talents.dispersion -> rank() );
 
-    base_tick_time    = 1.0;
+    base_tick_time    = timespan_t::from_seconds(1.0);
     num_ticks         = 6;
 
     channeled         = true;
@@ -2414,7 +2414,7 @@ struct mind_flay_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( cut_for_mb )
-      if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
+      if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ).total_seconds() )
         num_ticks = 2;
 
     priest_spell_t::execute();
@@ -2903,7 +2903,7 @@ struct penance_t : public priest_spell_t
     channeled      = true;
     tick_zero      = true;
     num_ticks      = 2;
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
     hasted_ticks   = false;
 
     cooldown -> duration = spell_id_t::cooldown().total_seconds() + p -> glyphs.penance -> effect1().time_value().total_seconds();
@@ -3642,7 +3642,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
     hasted_ticks = false;
     may_crit     = false;
 
-    base_tick_time = 2.0;
+    base_tick_time = timespan_t::from_seconds(2.0);
     num_ticks = 9;
 
     tick_spell = new holy_word_sanctuary_tick_t( p );
@@ -3924,7 +3924,7 @@ struct penance_heal_t : public priest_heal_t
     channeled      = true;
     tick_zero      = true;
     num_ticks      = 2;
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
     hasted_ticks   = false;
 
     cooldown = p -> cooldowns_penance;

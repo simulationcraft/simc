@@ -814,7 +814,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       base_multiplier = 1.0;
       tick_power_mod  = 0;
       num_ticks       = 8;
-      base_tick_time  = 1.0;
+      base_tick_time  = timespan_t::from_seconds(1.0);
 
       init();
     }

@@ -4853,7 +4853,8 @@ struct action_t : public spell_id_t
   double min_gcd, trigger_gcd, range;
   double weapon_power_mod, direct_power_mod, tick_power_mod;
   timespan_t base_execute_time;
-  double base_tick_time, base_cost;
+  timespan_t base_tick_time;
+  double base_cost;
   double base_dd_min, base_dd_max, base_td, base_td_init;
   double   base_dd_multiplier,   base_td_multiplier;
   double player_dd_multiplier, player_td_multiplier;
