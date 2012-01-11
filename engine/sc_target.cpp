@@ -331,7 +331,7 @@ void enemy_t::init()
 
 void enemy_t::init_base()
 {
-  waiting_time = std::min( ( int ) floor( sim -> max_time ), sim -> wheel_seconds );
+  waiting_time = std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds );
   if ( waiting_time < 1.0 )
     waiting_time = 1.0;
 
@@ -516,7 +516,7 @@ double enemy_t::health_percentage() const
 
   if ( resource_base[ RESOURCE_HEALTH ] == 0 ) // first iteration
   {
-    double remainder = std::max( 0.0, ( sim -> expected_time - sim -> current_time ) );
+    timespan_t remainder = std::max( timespan_t::zero, ( sim -> expected_time - sim -> current_time ) );
 
     return ( remainder / sim -> expected_time ) * ( initial_health_percentage - sim -> target_death_pct ) + sim ->  target_death_pct;
   }
@@ -528,7 +528,7 @@ double enemy_t::health_percentage() const
 
 void enemy_t::recalculate_health()
 {
-  if ( sim -> expected_time <= 0 || fixed_health > 0 ) return;
+  if ( sim -> expected_time <= timespan_t::zero || fixed_health > 0 ) return;
 
   if ( initial_health == 0 ) // first iteration
   {
@@ -536,7 +536,7 @@ void enemy_t::recalculate_health()
   }
   else
   {
-    double delta_time = sim -> current_time - sim -> expected_time;
+    timespan_t delta_time = sim -> current_time - sim -> expected_time;
     delta_time /= ( sim -> current_iteration + 1 ); // dampening factor
     double factor = 1.0 - ( delta_time / sim -> expected_time );
 

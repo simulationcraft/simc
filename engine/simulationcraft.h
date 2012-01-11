@@ -1227,12 +1227,7 @@ public:
   static timespan_t from_millis( const uint32_t millis ) { return timespan_t((time_t)millis); }
   static timespan_t from_millis( const int32_t millis ) { return timespan_t((time_t)millis); }
   static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_seconds( const double seconds ) {
-    double millis = seconds * MILLIS_PER_SECOND; // FIXME: Either fix all double time handling, or use ticks instead of millis.
-    if(millis > 0 && millis < 1) // Compensate for imprecision in double handling.
-      millis = 1;
-    return timespan_t((time_t)(millis));
-  }
+  static timespan_t from_seconds( const double seconds ) { return timespan_t((time_t)(seconds * MILLIS_PER_SECOND));  }
   static timespan_t from_minutes( const double minutes ) { return timespan_t((time_t)(minutes * MILLIS_PER_MINUTE)); }
 
   static const timespan_t zero;
@@ -3235,7 +3230,8 @@ struct sim_t : private thread_t
   // Latency
   double      world_lag, world_lag_stddev;
   double      travel_variance, default_skill, reaction_time, regen_periodicity;
-  double      current_time, max_time, expected_time, vary_combat_length, last_event;
+  timespan_t  current_time, max_time, expected_time;
+  double      vary_combat_length, last_event;
   int         fixed_time;
   int64_t     events_remaining, max_events_remaining;
   int64_t     events_processed, total_events_processed;
@@ -3637,17 +3633,17 @@ public:
   sim_t*    sim;
   player_t* player;
   uint32_t  id;
-  double    time;
+  timespan_t time;
   timespan_t reschedule_time;
   int       canceled;
   const char* name;
   event_t( sim_t* s, player_t* p=0, const char* n="" ) :
-    next( 0 ), sim( s ), player( p ), reschedule_time( timespan_t::zero ), canceled( 0 ), name( n )
+    next( 0 ), sim( s ), player( p ), reschedule_time( timespan_t::zero ), canceled( 0 ), name( n ), time( timespan_t::zero )
   {
     if ( ! name ) name = "unknown";
   }
-  timespan_t occurs()  const { return ( reschedule_time != timespan_t::zero ) ? reschedule_time : timespan_t::from_seconds(time); }
-  timespan_t remains() const { return occurs() - timespan_t::from_seconds(sim -> current_time); }
+  timespan_t occurs()  const { return ( reschedule_time != timespan_t::zero ) ? reschedule_time : time; }
+  timespan_t remains() const { return occurs() - sim -> current_time; }
   virtual void reschedule( timespan_t new_time );
   virtual void execute() = 0;
   virtual ~event_t() {}
@@ -4668,7 +4664,7 @@ struct player_t : public noncopyable
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
   enemy_t       * cast_enemy       () { assert( type == ENEMY        ); return ( enemy_t       * ) this; }
 
-  bool      in_gcd() const { return gcd_ready > timespan_t::from_seconds(sim -> current_time); }
+  bool      in_gcd() const { return gcd_ready > sim -> current_time; }
   bool      recent_cast() const;
   item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
@@ -5199,11 +5195,11 @@ struct cooldown_t
   void start( timespan_t override=timespan_t::min, timespan_t delay=timespan_t::zero )
   {
     if ( override >= timespan_t::zero ) duration = override;
-    if ( duration > timespan_t::zero ) ready = timespan_t::from_seconds(sim -> current_time) + duration + delay;
+    if ( duration > timespan_t::zero ) ready = sim -> current_time + duration + delay;
   }
   timespan_t remains()
   {
-    timespan_t diff = ready - timespan_t::from_seconds(sim -> current_time);
+    timespan_t diff = ready - sim -> current_time;
     if ( diff < timespan_t::zero ) diff = timespan_t::zero;
     return diff;
   }
@@ -5481,11 +5477,11 @@ struct uptime_common_t
     if ( is_up )
     {
       if ( last_start < timespan_t::zero )
-        last_start = timespan_t::from_seconds(sim -> current_time);
+        last_start = sim -> current_time;
     }
     else if ( last_start >= timespan_t::zero )
     {
-      uptime_sum += timespan_t::from_seconds(sim -> current_time) - last_start;
+      uptime_sum += sim -> current_time - last_start;
       last_start = timespan_t::min;
     }
   }
@@ -5558,12 +5554,12 @@ struct proc_t
   void occur()
   {
     count++;
-    if ( last_proc > 0 && last_proc < sim -> current_time )
+    if ( last_proc > 0 && last_proc < sim -> current_time.total_seconds() )
     {
-      interval_sum += sim -> current_time - last_proc;
+      interval_sum += sim -> current_time.total_seconds() - last_proc;
       interval_count++;
     }
-    last_proc = sim -> current_time;
+    last_proc = sim -> current_time.total_seconds();
   }
 
   void merge( const proc_t* other )

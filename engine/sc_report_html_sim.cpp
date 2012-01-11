@@ -1204,12 +1204,12 @@ static void print_html_masthead( FILE*  file, sim_t* sim )
 
   if ( sim -> vary_combat_length > 0.0 )
   {
-    double min_length = sim -> max_time * ( 1 - sim -> vary_combat_length );
-    double max_length = sim -> max_time * ( 1 + sim -> vary_combat_length );
+    timespan_t min_length = sim -> max_time * ( 1 - sim -> vary_combat_length );
+    timespan_t max_length = sim -> max_time * ( 1 + sim -> vary_combat_length );
     fprintf( file,
              "\t\t\t\t<li class=\"linked\"><a href=\"#help-fight-length\" class=\"help\"><b>Fight Length:</b> %.0f - %.0f</a></li>\n",
-             min_length,
-             max_length );
+             min_length.total_seconds(),
+             max_length.total_seconds() );
   }
   else
   {

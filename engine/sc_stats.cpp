@@ -25,7 +25,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   compound_actual( 0 ), compound_amount( 0 ), opportunity_cost( 0 ),
   direct_results( RESULT_MAX, stats_results_t( p -> sim ) ), tick_results( RESULT_MAX, stats_results_t( p -> sim ) )
 {
-  int size = ( int ) ( sim -> max_time * ( 1.0 + sim -> vary_combat_length ) );
+  int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
   if ( size <= 0 )size = 600; // Default to 10 minutes
   size *= 2;
   size += 3; // Buffer against rounding.
@@ -89,7 +89,7 @@ void stats_t::add_result( double act_amount,
   r -> iteration_actual_amount += act_amount;
   r -> iteration_total_amount += tot_amount;
 
-  int index = (int) ( sim -> current_time );
+  int index = (int) ( sim -> current_time.total_seconds() );
 
 
   timeline_amount[ index ] += act_amount;
@@ -103,12 +103,12 @@ void stats_t::add_execute( double time )
   total_execute_time += time;
 
   if ( likely( last_execute > 0 &&
-       last_execute != sim -> current_time ) )
+       last_execute != sim -> current_time.total_seconds() ) )
   {
     num_intervals++;
-    total_intervals += sim -> current_time - last_execute;
+    total_intervals += sim -> current_time.total_seconds() - last_execute;
   }
-  last_execute = sim -> current_time;
+  last_execute = sim -> current_time.total_seconds();
 }
 
 // stats_t::add_tick ========================================================

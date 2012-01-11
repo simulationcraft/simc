@@ -1275,7 +1275,7 @@ void player_t::init_resources( bool force )
     timeline_resource.resize( RESOURCE_MAX );
     timeline_resource_chart.resize( RESOURCE_MAX );
 
-    int size = ( int ) ( sim -> max_time * ( 1.0 + sim -> vary_combat_length ) );
+    int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
     if ( size <= 0 ) size = 600; // Default to 10 minutes
     size *= 2;
     size += 3; // Buffer against rounding.
@@ -1631,7 +1631,7 @@ void player_t::init_actions()
 
   }
 
-  int capacity = std::max( 1200, ( int ) ( sim -> max_time / 2.0 ) );
+  int capacity = std::max( 1200, ( int ) ( sim -> max_time.total_seconds() / 2.0 ) );
   action_sequence.reserve( capacity );
   action_sequence = "";
 }
@@ -2908,7 +2908,7 @@ void player_t::combat_end()
   compound_dmg.add( iteration_dmg );
 
   dps.add( iteration_fight_length != timespan_t::zero ? iteration_dmg / iteration_fight_length.total_seconds() : 0 );
-  dpse.add( sim -> current_time ? iteration_dmg / sim -> current_time : 0 );
+  dpse.add( sim -> current_time != timespan_t::zero ? iteration_dmg / sim -> current_time.total_seconds() : 0 );
 
   if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time, iteration_fight_length.total_seconds() );
 
@@ -2923,7 +2923,7 @@ void player_t::combat_end()
   compound_heal.add( iteration_heal );
 
   hps.add( iteration_fight_length != timespan_t::zero ? iteration_heal / iteration_fight_length.total_seconds() : 0 );
-  hpse.add( sim -> current_time ? iteration_heal / sim -> current_time : 0 );
+  hpse.add( sim -> current_time != timespan_t::zero ? iteration_heal / sim -> current_time.total_seconds() : 0 );
 
   dmg_taken.add( iteration_dmg_taken );
   dtps.add( iteration_fight_length != timespan_t::zero ? iteration_dmg_taken / iteration_fight_length.total_seconds() : 0 );
@@ -3175,7 +3175,7 @@ void player_t::schedule_ready( timespan_t delta_time,
 
   if ( ! has_foreground_actions( this ) ) return;
 
-  timespan_t gcd_adjust = gcd_ready - ( timespan_t::from_seconds(sim -> current_time) + delta_time );
+  timespan_t gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if ( gcd_adjust > timespan_t::zero ) delta_time += gcd_adjust;
 
   if ( unlikely( waiting ) )
@@ -3192,7 +3192,7 @@ void player_t::schedule_ready( timespan_t delta_time,
       {
         timespan_t ability_lag = rngs.lag_ability -> gauss( last_foreground_action -> ability_lag, last_foreground_action -> ability_lag_stddev );
         timespan_t gcd_lag     = timespan_t::from_seconds(rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev ));
-        timespan_t diff        = ( gcd_ready + gcd_lag ) - ( timespan_t::from_seconds(sim -> current_time) + ability_lag );
+        timespan_t diff        = ( gcd_ready + gcd_lag ) - ( sim -> current_time + ability_lag );
         if ( diff > timespan_t::zero && sim -> strict_gcd_queue )
         {
           lag = gcd_lag;
@@ -3216,7 +3216,7 @@ void player_t::schedule_ready( timespan_t delta_time,
         double   gcd_lag = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
         double queue_lag = rngs.lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_stddev );
 
-        double diff = ( gcd_ready.total_seconds() + gcd_lag ) - ( sim -> current_time + queue_lag );
+        double diff = ( gcd_ready.total_seconds() + gcd_lag ) - ( sim -> current_time.total_seconds() + queue_lag );
 
         if ( diff > 0 && sim -> strict_gcd_queue )
         {
@@ -3276,7 +3276,7 @@ void player_t::arise()
   readying = 0;
   off_gcd = 0;
 
-  arise_time = timespan_t::from_seconds(sim -> current_time);
+  arise_time = sim -> current_time;
 
   schedule_ready();
 }
@@ -3292,7 +3292,7 @@ void player_t::demise()
     log_t::output( sim, "%s demises.", name() );
 
   assert( arise_time >= timespan_t::zero );
-  iteration_fight_length += timespan_t::from_seconds( sim -> current_time ) - arise_time;
+  iteration_fight_length += sim -> current_time - arise_time;
   arise_time = timespan_t::min;
 
   sleeping = 1;
@@ -3529,7 +3529,7 @@ void player_t::regen( const double periodicity )
     }
   }
 
-  int index = ( int ) ( sim -> current_time );
+  int index = ( int ) ( sim -> current_time.total_seconds() );
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -3571,7 +3571,7 @@ double player_t::resource_loss( int       resource,
 
   if ( resource == RESOURCE_MANA )
   {
-    last_cast = sim -> current_time;
+    last_cast = sim -> current_time.total_seconds();
   }
 
   action_callback_t::trigger( resource_loss_callbacks[ resource ], action, ( void* ) &actual_amount );
@@ -3777,13 +3777,13 @@ double player_t::time_to_die() const
   // wait a minimum gcd before starting to estimate fight duration based on health,
   // otherwise very odd things happen with multi-actor simulations and time_to_die
   // expressions
-  if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= 1.0 )
+  if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds(1.0) )
   {
-    return sim -> current_time * resource_current[ RESOURCE_HEALTH ] / iteration_dmg_taken;
+    return sim -> current_time.total_seconds() * resource_current[ RESOURCE_HEALTH ] / iteration_dmg_taken;
   }
   else
   {
-    return sim -> expected_time - sim -> current_time;
+    return (sim -> expected_time - sim -> current_time).total_seconds();
   }
 }
 
@@ -4077,7 +4077,7 @@ double player_t::assess_damage( double            amount,
     {
       if ( ! sleeping )
       {
-        deaths.add( sim -> current_time );
+        deaths.add( sim -> current_time.total_seconds() );
       }
       if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
       demise();
@@ -4361,7 +4361,7 @@ void player_t::recalculate_haste()
 
 bool player_t::recent_cast() const
 {
-  return ( last_cast > 0 ) && ( ( last_cast + 5.0 ) > sim -> current_time );
+  return ( last_cast > 0 ) && ( ( last_cast + 5.0 ) > sim -> current_time.total_seconds() );
 }
 
 // player_t::find_action ====================================================
@@ -5407,7 +5407,7 @@ struct use_item_t : public action_t
   void lockout( double duration )
   {
     if ( duration <= 0 ) return;
-    timespan_t ready = timespan_t::from_seconds(sim -> current_time + duration);
+    timespan_t ready = sim -> current_time + timespan_t::from_seconds(duration);
     for ( action_t* a = player -> action_list; a; a = a -> next )
     {
       if ( a -> name_str == "use_item" )

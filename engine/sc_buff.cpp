@@ -398,7 +398,7 @@ void buff_t::combat_end()
   if ( player )
     uptime_pct.add( player -> iteration_fight_length != timespan_t::zero ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length.total_seconds() : 0 );
   else
-    uptime_pct.add( sim -> current_time ? 100.0 * iteration_uptime_sum / sim -> current_time : 0 );
+    uptime_pct.add( sim -> current_time != timespan_t::zero ? 100.0 * iteration_uptime_sum / sim -> current_time.total_seconds() : 0 );
 }
 
 // buff_t::may_react ========================================================
@@ -415,7 +415,7 @@ bool buff_t::may_react( int stack )
 
   if ( occur <= 0 ) return true;
 
-  return sim -> current_time  > stack_react_time[ stack ];
+  return sim -> current_time.total_seconds()  > stack_react_time[ stack ];
 }
 
 // buff_t::stack_react ======================================================
@@ -426,7 +426,7 @@ int buff_t::stack_react()
 
   for ( int i=1; i <= current_stack; i++ )
   {
-    if ( stack_react_time[ i ] > sim -> current_time ) break;
+    if ( stack_react_time[ i ] > sim -> current_time.total_seconds() ) break;
     stack++;
   }
 
@@ -443,7 +443,7 @@ timespan_t buff_t::remains()
   }
   if ( expiration )
   {
-    return expiration -> occurs() - timespan_t::from_seconds(sim -> current_time);
+    return expiration -> occurs() - sim -> current_time;
   }
   return timespan_t::min;
 }
@@ -531,10 +531,10 @@ void buff_t::execute( int stacks, double value )
 {
   if ( last_trigger > timespan_t::zero )
   {
-    trigger_intervals_sum += sim -> current_time - last_trigger.total_seconds();
+    trigger_intervals_sum += (sim -> current_time - last_trigger).total_seconds();
     trigger_intervals++;
   }
-  last_trigger = timespan_t::from_seconds(sim -> current_time);
+  last_trigger = sim -> current_time;
 
   if ( reverse )
   {
@@ -661,7 +661,7 @@ void buff_t::start( int    stacks,
     assert( 0 );
   }
 
-  if ( sim -> current_time <= 0.01 ) constant = true;
+  if ( sim -> current_time <= timespan_t::from_seconds(0.01) ) constant = true;
 
   start_count++;
 
@@ -669,10 +669,10 @@ void buff_t::start( int    stacks,
 
   if ( last_start >= timespan_t::zero )
   {
-	start_intervals_sum += sim -> current_time - last_start.total_seconds();
+	start_intervals_sum += (sim -> current_time - last_start).total_seconds();
     start_intervals++;
   }
-  last_start = timespan_t::from_seconds(sim -> current_time);
+  last_start = sim -> current_time;
 
   if ( buff_duration > timespan_t::zero )
   {
@@ -694,7 +694,7 @@ void buff_t::refresh( int    stacks,
   if ( buff_duration > timespan_t::zero )
   {
     assert( expiration );
-    if ( expiration -> occurs() < timespan_t::from_seconds(sim -> current_time) + buff_duration )
+    if ( expiration -> occurs() < sim -> current_time + buff_duration )
     {
       expiration -> reschedule( buff_duration );
     }
@@ -727,7 +727,7 @@ void buff_t::bump( int    stacks,
 
     aura_gain();
 
-    double now = sim -> current_time;
+    double now = sim -> current_time.total_seconds();
     double react = now + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
     for ( int i=before_stack+1; i <= current_stack; i++ )
     {
@@ -766,7 +766,7 @@ void buff_t::expire()
   aura_loss();
   if ( last_start >= timespan_t::zero )
   {
-    iteration_uptime_sum += sim -> current_time - last_start.total_seconds();
+    iteration_uptime_sum += (sim -> current_time - last_start).total_seconds();
   }
 
   if ( sim -> target -> resource_base[ RESOURCE_HEALTH ] == 0 ||

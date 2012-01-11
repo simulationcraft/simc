@@ -1846,7 +1846,7 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
     action_list_str += "/snapshot_stats";
   }
 
-  virtual double    available() const { return sim -> max_time; }
+  virtual double    available() const { return sim -> max_time.total_seconds(); }
 
   virtual double composite_attack_power() const
   {

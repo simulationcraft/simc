@@ -3622,7 +3622,7 @@ struct hunter_sniper_training_event_t : public event_t
     {
       timespan_t finished_moving = p -> buffs.raid_movement -> last_start + p -> buffs.raid_movement -> buff_duration;
 
-      if ( ( sim -> current_time - finished_moving.total_seconds() ) > p -> talents.sniper_training -> effect1().base_value() )
+      if ( ( sim -> current_time - finished_moving ) > timespan_t::from_seconds(p -> talents.sniper_training -> effect1().base_value()) )
       {
         p -> buffs_sniper_training -> trigger();
       }

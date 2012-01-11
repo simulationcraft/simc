@@ -607,7 +607,7 @@ void raid_event_t::schedule()
       else raid_event -> finish();
 
       if ( raid_event -> last <= 0 ||
-           raid_event -> last > ( sim -> current_time + ct ) )
+           raid_event -> last > ( sim -> current_time.total_seconds() + ct ) )
       {
         new ( sim ) cooldown_event_t( sim, raid_event, timespan_t::from_seconds(ct) );
       }

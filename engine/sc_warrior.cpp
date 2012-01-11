@@ -868,12 +868,12 @@ static void trigger_flurry( attack_t* a, int stacks )
     event_t* mhe = p -> main_hand_attack -> execute_event;
     if ( mhe )
     {
-      double delta;
+      timespan_t delta;
       if ( mhe -> reschedule_time != timespan_t::zero )
-        delta = ( mhe -> reschedule_time.total_seconds() - sim -> current_time ) * mult;
+        delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
       else
         delta = ( mhe -> time - sim -> current_time ) * mult;
-      p -> main_hand_attack -> reschedule_execute( timespan_t::from_seconds(delta) );
+      p -> main_hand_attack -> reschedule_execute( delta );
     }
   }
   if ( p -> off_hand_attack )
@@ -881,12 +881,12 @@ static void trigger_flurry( attack_t* a, int stacks )
     event_t* ohe = p -> off_hand_attack -> execute_event;
     if ( ohe )
     {
-      double delta;
+      timespan_t delta;
       if ( ohe -> reschedule_time != timespan_t::zero )
-        delta = ( ohe -> reschedule_time.total_seconds() - sim -> current_time ) * mult;
+        delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
       else
         delta = ( ohe -> time - sim -> current_time ) * mult;
-      p -> off_hand_attack -> reschedule_execute( timespan_t::from_seconds(delta) );
+      p -> off_hand_attack -> reschedule_execute( delta );
     }
   }
 }
@@ -4021,12 +4021,12 @@ double warrior_t::assess_damage( double            amount,
 
     if ( main_hand_attack && main_hand_attack -> execute_event )
     {
-      double swing_time = main_hand_attack -> time_to_execute.total_seconds();
-      double max_reschedule = ( main_hand_attack -> execute_event -> occurs().total_seconds() - 0.20 * swing_time ) - sim -> current_time;
+      timespan_t swing_time = main_hand_attack -> time_to_execute;
+      timespan_t max_reschedule = ( main_hand_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
 
-      if ( max_reschedule > 0 )
+      if ( max_reschedule > timespan_t::zero )
       {
-        main_hand_attack -> reschedule_execute( timespan_t::from_seconds(std::min( ( 0.40 * swing_time ), max_reschedule )) );
+        main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
         procs_parry_haste -> occur();
       }
     }

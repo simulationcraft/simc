@@ -1980,13 +1980,13 @@ struct evocation_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     if ( p -> rotation.current == ROTATION_DPS )
     {
-      p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
+      p -> rotation.dps_time += ( sim -> current_time.total_seconds() - p -> rotation.last_time );
     }
     else if ( p -> rotation.current == ROTATION_DPM )
     {
-      p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
+      p -> rotation.dpm_time += ( sim -> current_time.total_seconds() - p -> rotation.last_time );
     }
-    p -> rotation.last_time = sim -> current_time;
+    p -> rotation.last_time = sim -> current_time.total_seconds();
     if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
     p -> rotation.current = ROTATION_DPM;
   }
@@ -2755,7 +2755,7 @@ struct mage_armor_buff_t : public buff_t
       mage_t* p = player -> cast_mage();
       if ( p -> buffs_mage_armor -> check() )
       {
-        p -> mage_armor_timer = sim -> current_time;
+        p -> mage_armor_timer = sim -> current_time.total_seconds();
         double gain_amount = p -> resource_max[ RESOURCE_MANA ] * p -> spells.mage_armor -> effect2().percent();
         gain_amount *= 1.0 + p -> glyphs.mage_armor -> effect1().percent();
 
@@ -2774,7 +2774,7 @@ struct mage_armor_buff_t : public buff_t
   {
     mage_t* p = player -> cast_mage();
     double d = p -> rng_mage_armor_start -> real() * 5.0; // Random start of the first mana regen tick.
-    p -> mage_armor_timer = sim -> current_time + d - 5.0;
+    p -> mage_armor_timer = sim -> current_time.total_seconds() + d - 5.0;
     new ( sim ) mage_armor_event_t( player, timespan_t::from_seconds(d) );
     buff_t::start( stacks, value );
   }
@@ -3232,17 +3232,17 @@ struct choose_rotation_t : public action_t
     {
       if ( p -> rotation.current == ROTATION_DPS )
       {
-        p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
+        p -> rotation.dps_time += ( sim -> current_time.total_seconds() - p -> rotation.last_time );
       }
       else if ( p -> rotation.current == ROTATION_DPM )
       {
-        p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
+        p -> rotation.dpm_time += ( sim -> current_time.total_seconds() - p -> rotation.last_time );
       }
-      p -> rotation.last_time = sim -> current_time;
+      p -> rotation.last_time = sim -> current_time.total_seconds();
 
       if ( sim -> log )
       {
-        log_t::output( sim, "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / sim -> current_time ), sim -> target -> time_to_die() );
+        log_t::output( sim, "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / sim -> current_time.total_seconds() ), sim -> target -> time_to_die() );
       }
 
       if ( force_dps )
@@ -3272,14 +3272,14 @@ struct choose_rotation_t : public action_t
     // In order for this to work, the resource_gain() method must filter out these sources when
     // tracking "rotation.mana_gain".
 
-    double regen_rate = p -> rotation.mana_gain / sim -> current_time;
+    double regen_rate = p -> rotation.mana_gain / sim -> current_time.total_seconds();
 
     double ttd = sim -> target -> time_to_die();
     double tte = p -> cooldowns_evocation -> remains().total_seconds();
 
     if ( p -> rotation.current == ROTATION_DPS )
     {
-      p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
+      p -> rotation.dps_time += ( sim -> current_time.total_seconds() - p -> rotation.last_time );
 
       // We should only drop out of dps rotation if we break target mana treshold.
       // In that situation we enter a mps rotation waiting for evocation to come off cooldown or for fight to end.
@@ -3308,7 +3308,7 @@ struct choose_rotation_t : public action_t
     }
     else if ( p -> rotation.current == ROTATION_DPM )
     {
-      p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
+      p -> rotation.dpm_time += ( sim -> current_time.total_seconds() - p -> rotation.last_time );
 
       // Calculate consumption rate of dps rotation and determine if we should start burning.
 
@@ -3371,7 +3371,7 @@ struct choose_rotation_t : public action_t
         p -> rotation.current = ROTATION_DPS;
       }
     }
-    p -> rotation.last_time = sim -> current_time;
+    p -> rotation.last_time = sim -> current_time.total_seconds();
 
     update_ready();
   }
@@ -3381,7 +3381,7 @@ struct choose_rotation_t : public action_t
     if ( cooldown -> remains() > timespan_t::zero )
       return false;
 
-    if ( sim -> current_time < cooldown -> duration.total_seconds() )
+    if ( sim -> current_time < cooldown -> duration )
       return false;
 
     if ( if_expr && ! if_expr -> success() )
@@ -4245,7 +4245,7 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
     struct mage_armor_timer_expr_t : public action_expr_t
     {
       mage_armor_timer_expr_t( action_t* a ) : action_expr_t( a, "mage_armor_timer", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> cast_mage() -> mage_armor_timer + 5 - action -> sim -> current_time; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> cast_mage() -> mage_armor_timer + 5 - action -> sim -> current_time.total_seconds(); return TOK_NUM; }
     };
     return new mage_armor_timer_expr_t( a );
   }
@@ -4260,15 +4260,15 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
         mage_t* p = action -> player -> cast_mage();
         if ( p -> rotation.current == ROTATION_DPS )
         {
-          p -> rotation.dps_time += ( action -> sim -> current_time - p -> rotation.last_time );
+          p -> rotation.dps_time += ( action -> sim -> current_time.total_seconds() - p -> rotation.last_time );
         }
         else if ( p -> rotation.current == ROTATION_DPM )
         {
-          p -> rotation.dpm_time += ( action -> sim -> current_time - p -> rotation.last_time );
+          p -> rotation.dpm_time += ( action -> sim -> current_time.total_seconds() - p -> rotation.last_time );
         }
-        p -> rotation.last_time = action -> sim -> current_time;
+        p -> rotation.last_time = action -> sim -> current_time.total_seconds();
 
-        result_num = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / action -> sim -> current_time );
+        result_num = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time ) - ( p -> rotation.mana_gain / action -> sim -> current_time.total_seconds() );
         return TOK_NUM;
       }
     };
@@ -4283,7 +4283,7 @@ action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_s
       virtual int evaluate()
       {
         mage_t* p = action -> player -> cast_mage();
-        result_num = ( p -> rotation.mana_gain / action -> sim -> current_time );
+        result_num = ( p -> rotation.mana_gain / action -> sim -> current_time.total_seconds() );
         return TOK_NUM;
       }
     };

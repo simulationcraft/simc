@@ -68,9 +68,9 @@ void* event_t::operator new( std::size_t /* size */ ) throw()
 
 void event_t::reschedule( timespan_t new_time )
 {
-  reschedule_time = timespan_t::from_seconds(sim -> current_time) + new_time;
+  reschedule_time = sim -> current_time + new_time;
 
-  if ( sim -> debug ) log_t::output( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time, reschedule_time.total_seconds() );
+  if ( sim -> debug ) log_t::output( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time.total_seconds(), reschedule_time.total_seconds() );
 
 //  if ( ! strcmp( name, "Rabid Expiration" ) ) assert( false );
 }
@@ -146,10 +146,10 @@ void player_ready_event_t::execute()
 
     player -> schedule_ready( x, true );
     // Waiting Debug
-    //if ( sim -> debug )
-    //{
-    //  log_t::output( sim, "%s is waiting for %.4f resource=%.2f", player -> name(), x, player -> resource_current[ player -> primary_resource() ] );
-    //}
+    if ( sim -> debug )
+    {
+      log_t::output( sim, "%s is waiting for %.4f resource=%.2f", player -> name(), x, player -> resource_current[ player -> primary_resource() ] );
+    }
   }
 }
 
@@ -206,7 +206,7 @@ action_execute_event_t::action_execute_event_t( sim_t*    sim,
                                                 event_t( sim, a -> player ), action( a )
 {
   name = "Action-Execute";
-  if ( sim -> debug ) log_t::output( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute );
+  if ( sim -> debug ) log_t::output( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute.total_seconds() );
   sim -> add_event( this, time_to_execute );
 }
 

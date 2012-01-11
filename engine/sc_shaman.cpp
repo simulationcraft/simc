@@ -587,7 +587,7 @@ struct earth_elemental_pet_t : public pet_t
       return 1.0;
     }
 
-    virtual double    available() const { return sim -> max_time; }
+    virtual double    available() const { return sim -> max_time.total_seconds(); }
 
     // Earth elemental scales purely with spell power
     virtual double total_attack_power() const
@@ -2251,7 +2251,7 @@ void shaman_spell_t::schedule_execute()
   if ( ! background )
   {
     player -> executing = this;
-    player -> gcd_ready = timespan_t::from_seconds(sim -> current_time) + gcd();
+    player -> gcd_ready = sim -> current_time + gcd();
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
       player -> gcd_ready -= timespan_t::from_seconds(sim -> queue_gcd_reduction);

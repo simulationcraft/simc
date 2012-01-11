@@ -21,5 +21,5 @@ void log_t::output( sim_t* sim, const char* format, ... )
   va_end( vap );
 
   util_t::fprintf( sim -> output_file, "%-8.2f %s\n", sim -> current_time, buffer );
-  fflush( sim -> output_file );
+  //fflush( sim -> output_file );
 }

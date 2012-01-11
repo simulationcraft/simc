@@ -1226,7 +1226,7 @@ void action_t::schedule_execute()
   if ( ! background )
   {
     player -> executing = this;
-    player -> gcd_ready = timespan_t::from_seconds(sim -> current_time) + gcd();
+    player -> gcd_ready = sim -> current_time + gcd();
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
       player -> gcd_ready -= timespan_t::from_seconds(sim -> queue_gcd_reduction);
@@ -1241,7 +1241,7 @@ void action_t::schedule_execute()
       if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
         time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
-        time_to_next_hit -= timespan_t::from_seconds( sim -> current_time );
+        time_to_next_hit -= sim -> current_time;
         time_to_next_hit += time_to_execute;
         player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
@@ -1249,7 +1249,7 @@ void action_t::schedule_execute()
       if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
       {
         time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
-        time_to_next_hit -= timespan_t::from_seconds( sim -> current_time );
+        time_to_next_hit -= sim -> current_time;
         time_to_next_hit += time_to_execute;
         player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
@@ -1289,7 +1289,7 @@ void action_t::reschedule_execute( timespan_t time )
     log_t::output( sim, "%s reschedules execute for %s", player -> name(), name() );
   }
 
-  timespan_t delta_time = timespan_t::from_seconds(sim -> current_time) + time - execute_event -> occurs();
+  timespan_t delta_time = sim -> current_time + time - execute_event -> occurs();
 
   time_to_execute += delta_time;
 
@@ -1336,7 +1336,7 @@ void action_t::update_ready()
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)",
                        player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
 
-      dot -> miss_time = timespan_t::from_seconds(sim -> current_time);
+      dot -> miss_time = sim -> current_time;
     }
   }
 }
@@ -1382,11 +1382,11 @@ bool action_t::ready()
     return false;
 
   if ( min_current_time > timespan_t::zero )
-    if ( sim -> current_time < min_current_time.total_seconds() )
+    if ( sim -> current_time < min_current_time )
       return false;
 
   if ( max_current_time > timespan_t::zero )
-    if ( sim -> current_time > max_current_time.total_seconds() )
+    if ( sim -> current_time > max_current_time )
       return false;
 
   if ( max_haste > 0 )
@@ -1706,7 +1706,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       {
         dot_t* dot = action -> dot();
         if ( dot -> miss_time == timespan_t::min ||
-             action -> sim -> current_time >= ( dot -> miss_time + action -> last_reaction_time ).total_seconds() )
+             action -> sim -> current_time >= ( dot -> miss_time + action -> last_reaction_time ) )
         {
           result_num = 1;
         }
@@ -1736,7 +1736,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
         }
 
         if ( action -> player -> cast_delay_occurred == timespan_t::zero ||
-             action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction < timespan_t::from_seconds(action -> sim -> current_time) )
+             action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction < action -> sim -> current_time )
         {
           result_num = 1;
         }

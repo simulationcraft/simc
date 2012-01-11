@@ -111,7 +111,7 @@ void dot_t::recalculate_ready()
   // new finish time for the DoT, start from the time of the next tick and add the time
   // for the remaining ticks to that event.
   int remaining_ticks = num_ticks - current_tick;
-  ready = timespan_t::from_seconds(tick_event -> time) + action -> tick_time() * ( remaining_ticks - 1 );
+  ready = tick_event -> time + action -> tick_time() * ( remaining_ticks - 1 );
 }
 
 // dot_t::refresh_duration ==================================================
@@ -147,7 +147,7 @@ timespan_t dot_t::remains()
 {
   if ( ! action ) return timespan_t::zero;
   if ( ! ticking ) return timespan_t::zero;
-  return ready - timespan_t::from_seconds(player -> sim -> current_time);
+  return ready - player -> sim -> current_time;
 }
 
 // dot_t::reset =============================================================

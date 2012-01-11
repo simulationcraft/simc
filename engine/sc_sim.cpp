@@ -544,7 +544,7 @@ static bool parse_fight_style( sim_t*             sim,
   else if ( util_t::str_compare_ci( value, "Ultraxion" ) )
   {
     sim -> fight_style = "Ultraxion";
-    sim -> max_time    = 366.0;
+    sim -> max_time    = timespan_t::from_seconds(366.0);
     sim -> fixed_time  = 1;
     sim -> vary_combat_length = 0.0;
     sim -> raid_events_str =  "flying,first=0,duration=500,cooldown=500";
@@ -649,7 +649,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   confidence( 0.95 ), confidence_estimator( 0.0 ),
   world_lag( 0.1 ), world_lag_stddev( -1.0 ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 0.25 ),
-  current_time( 0 ), max_time( 450 ), expected_time( 0 ), vary_combat_length( 0.2 ),
+  current_time( timespan_t::zero ), max_time( timespan_t::from_seconds(450) ), expected_time( timespan_t::zero ), vary_combat_length( 0.2 ),
   last_event( 0 ), fixed_time( 0 ),
   events_remaining( 0 ), max_events_remaining( 0 ),
   events_processed( 0 ), total_events_processed( 0 ),
@@ -835,7 +835,7 @@ void sim_t::add_event( event_t* e,
   if ( delta_time < timespan_t::zero )
     delta_time = timespan_t::zero;
 
-  e -> time = current_time + delta_time.total_seconds();
+  e -> time = current_time + delta_time;
   e -> id   = ++id;
 
   if ( unlikely( ! ( delta_time.total_seconds() <= wheel_seconds ) ) )
@@ -844,9 +844,9 @@ void sim_t::add_event( event_t* e,
     assert( 0 );
   }
 
-  if ( e -> time > last_event ) last_event = e -> time;
+  if ( e -> time.total_seconds() > last_event ) last_event = e -> time.total_seconds();
 
-  uint32_t slice = ( uint32_t ) ( e -> time * wheel_granularity ) & wheel_mask;
+  uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
 
   event_t** prev = &( timing_wheel[ slice ] );
 
@@ -861,7 +861,7 @@ void sim_t::add_event( event_t* e,
 
   if ( debug )
   {
-    log_t::output( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
+    log_t::output( this, "Add Event: %s %.2f %d", e -> name, e -> time.total_seconds(), e -> id );
     if ( e -> player ) log_t::output( this, "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> events );
   }
 }
@@ -872,7 +872,7 @@ void sim_t::reschedule_event( event_t* e )
 {
   if ( debug ) log_t::output( this, "Reschedule Event: %s %d", e -> name, e -> id );
 
-  add_event( e, ( e -> reschedule_time - timespan_t::from_seconds(current_time) ) );
+  add_event( e, ( e -> reschedule_time - current_time ) );
 
   e -> reschedule_time = timespan_t::zero;
 }
@@ -1044,7 +1044,7 @@ void sim_t::combat( int iteration )
     }
     else
     {
-      if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
+      if ( expected_time > timespan_t::zero && current_time > ( expected_time * 2.0 ) )
       {
         if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
         // Set this last event as canceled, so asserts dont fire when odd things happen at the
@@ -1069,7 +1069,7 @@ void sim_t::combat( int iteration )
     {
       if ( debug ) log_t::output( this, "Canceled event: %s", e -> name );
     }
-    else if ( unlikely( e -> reschedule_time.total_seconds() > e -> time ) )
+    else if ( unlikely( e -> reschedule_time > e -> time ) )
     {
       reschedule_event( e );
       continue;
@@ -1092,7 +1092,8 @@ void sim_t::reset()
   if ( debug ) log_t::output( this, "Resetting Simulator" );
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
   id = 0;
-  current_time = last_event = 0;
+  current_time = timespan_t::zero;
+  last_event = 0;
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> reset();
@@ -1153,7 +1154,7 @@ void sim_t::combat_begin()
         player_t* t = sim -> target;
         if ( ( sim -> bloodlust_percent  > 0 && t -> health_percentage() <  sim -> bloodlust_percent ) ||
              ( sim -> bloodlust_time     < 0 && t -> time_to_die()       < -sim -> bloodlust_time ) ||
-             ( sim -> bloodlust_time     > 0 && sim -> current_time      >  sim -> bloodlust_time ) )
+             ( sim -> bloodlust_time     > 0 && sim -> current_time.total_seconds() >  sim -> bloodlust_time ) )
         {
           for ( player_t* p = sim -> player_list; p; p = p -> next )
           {
@@ -1180,8 +1181,8 @@ void sim_t::combat_end()
 {
   if ( debug ) log_t::output( this, "Combat End" );
 
-  iteration_timeline.push_back( current_time );
-  simulation_length.add( current_time );
+  iteration_timeline.push_back( current_time.total_seconds() );
+  simulation_length.add( current_time.total_seconds() );
 
   total_events_processed += events_processed;
 
@@ -1207,9 +1208,9 @@ void sim_t::combat_end()
   }
 
   total_dmg.add( iteration_dmg );
-  raid_dps.add( current_time ? iteration_dmg / current_time : 0 );
+  raid_dps.add( current_time != timespan_t::zero ? iteration_dmg / current_time.total_seconds() : 0 );
   total_heal.add( iteration_heal );
-  raid_hps.add( current_time ? iteration_heal / current_time : 0 );
+  raid_hps.add( current_time != timespan_t::zero ? iteration_heal / current_time.total_seconds() : 0 );
 
   flush_events();
 }
@@ -1944,7 +1945,7 @@ bool sim_t::time_to_think( double proc_time )
 {
   if ( proc_time == 0 ) return false;
   if ( proc_time < 0 ) return true;
-  return current_time - proc_time > reaction_time;
+  return current_time.total_seconds() - proc_time > reaction_time;
 }
 
 // sim_t::roll ==============================================================
@@ -2046,7 +2047,7 @@ action_expr_t* sim_t::create_expression( action_t* a,
     struct time_expr_t : public action_expr_t
     {
       time_expr_t( action_t* a ) : action_expr_t( a, "time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> sim -> current_time;  return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds();  return TOK_NUM; }
     };
     return new time_expr_t( a );
   }
@@ -2124,7 +2125,7 @@ void sim_t::create_options()
   {
     // General
     { "iterations",                       OPT_INT,    &( iterations                               ) },
-    { "max_time",                         OPT_FLT,    &( max_time                                 ) },
+    { "max_time",                         OPT_TIMESPAN, &( max_time                               ) },
     { "fixed_time",                       OPT_BOOL,   &( fixed_time                               ) },
     { "vary_combat_length",               OPT_FLT,    &( vary_combat_length                       ) },
     { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
@@ -2511,7 +2512,7 @@ int sim_t::main( int argc, char** argv )
   }
   else
   {
-    if ( max_time <= 0 )
+    if ( max_time <= timespan_t::zero )
     {
       util_t::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );
@@ -2529,7 +2530,7 @@ int sim_t::main( int argc, char** argv )
 
     util_t::fprintf( output_file,
                      "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
-                     iterations, max_time, vary_combat_length, optimal_raid, fight_style.c_str() );
+                     iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
     fflush( output_file );
 
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );

@@ -3750,12 +3750,12 @@ double paladin_t::assess_damage( double            amount,
   {
     if ( main_hand_attack && main_hand_attack -> execute_event )
     {
-      double swing_time = main_hand_attack -> time_to_execute.total_seconds();
-      double max_reschedule = ( main_hand_attack -> execute_event -> occurs().total_seconds() - 0.20 * swing_time ) - sim -> current_time;
+      timespan_t swing_time = main_hand_attack -> time_to_execute;
+      timespan_t max_reschedule = ( main_hand_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
 
-      if ( max_reschedule > 0 )
+      if ( max_reschedule > timespan_t::zero )
       {
-        main_hand_attack -> reschedule_execute( timespan_t::from_seconds(std::min( ( 0.40 * swing_time ), max_reschedule )) );
+        main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
         procs_parry_haste -> occur();
       }
     }

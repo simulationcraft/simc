@@ -1153,7 +1153,7 @@ struct gargoyle_pet_t : public pet_t
 
     readying = 0;
 
-    arise_time = timespan_t::from_seconds(sim -> current_time);
+    arise_time = sim -> current_time;
 
     schedule_ready( timespan_t::from_seconds(3.0), true ); // Gargoyle pet is idle for the first 3 seconds.
   }
