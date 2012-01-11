@@ -1378,7 +1378,7 @@ struct shadow_fiend_pet_t : public pet_t
     p -> buffs_shadowfiend -> expire();
   }
 
-  virtual void schedule_ready( double delta_time=0,
+  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero,
                                bool   waiting=false )
   {
     pet_t::schedule_ready( delta_time, waiting );

@@ -608,7 +608,7 @@ struct treants_pet_t : public pet_t
     return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
 
-  virtual void schedule_ready( double delta_time=0,
+  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero,
                                bool   waiting=false )
   {
     pet_t::schedule_ready( delta_time, waiting );
@@ -668,7 +668,7 @@ struct burning_treant_pet_t : public pet_t
     }
   };
 
-  virtual void schedule_ready( double delta_time,
+  virtual void schedule_ready( timespan_t delta_time,
                                bool   waiting  )
   {
     pet_t::schedule_ready( delta_time, waiting );

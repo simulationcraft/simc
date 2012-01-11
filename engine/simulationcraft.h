@@ -3937,7 +3937,8 @@ struct player_t : public noncopyable
   role_type   role;
   player_t*   target;
   int         level, use_pre_potion, party, member;
-  double      skill, initial_skill, distance, default_distance, gcd_ready;
+  double      skill, initial_skill, distance, default_distance;
+  timespan_t  gcd_ready;
   timespan_t  base_gcd;
   int         potion_used, sleeping, initial_sleeping, initialized;
   rating_t    rating;
@@ -4125,9 +4126,9 @@ struct player_t : public noncopyable
   // Reporting
   int       quiet;
   action_t* last_foreground_action;
-  double    iteration_fight_length,arise_time;
+  timespan_t iteration_fight_length,arise_time;
   sample_data_t fight_length, waiting_time, executed_foreground_actions;
-  double    iteration_waiting_time;
+  timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
   double    resource_lost  [ RESOURCE_MAX ];
   double    resource_gained[ RESOURCE_MAX ];
@@ -4478,7 +4479,7 @@ struct player_t : public noncopyable
   virtual void      moving();
   virtual void      stun();
   virtual void      clear_debuffs();
-  virtual void      schedule_ready( double delta_time=0, bool waiting=false );
+  virtual void      schedule_ready( timespan_t delta_time=timespan_t::zero, bool waiting=false );
   virtual void      arise();
   virtual void      demise();
   virtual double    available() const { return 0.1; }
@@ -4666,7 +4667,7 @@ struct player_t : public noncopyable
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
   enemy_t       * cast_enemy       () { assert( type == ENEMY        ); return ( enemy_t       * ) this; }
 
-  bool      in_gcd() const { return gcd_ready > sim -> current_time; }
+  bool      in_gcd() const { return gcd_ready > timespan_t::from_seconds(sim -> current_time); }
   bool      recent_cast() const;
   item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
@@ -5904,7 +5905,7 @@ struct wait_action_base_t : public action_t
   { trigger_gcd = timespan_t::zero; }
 
   virtual void execute()
-  { player -> iteration_waiting_time += time_to_execute.total_seconds(); }
+  { player -> iteration_waiting_time += time_to_execute; }
 };
 
 // Wait For Cooldown Action =================================================

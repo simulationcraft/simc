@@ -404,7 +404,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       owner -> cast_paladin() -> ancient_fury_explosion -> execute();
   }
 
-  virtual void schedule_ready( double delta_time=0, bool waiting=false )
+  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero, bool waiting=false )
   {
     pet_t::schedule_ready( delta_time, waiting );
     if ( ! melee -> execute_event ) melee -> execute();

@@ -142,7 +142,7 @@ void player_ready_event_t::execute()
 
   if ( ! player -> execute_action() )
   {
-    double x = player -> available();
+    timespan_t x = timespan_t::from_seconds(player -> available());
 
     player -> schedule_ready( x, true );
     // Waiting Debug
@@ -222,7 +222,7 @@ void action_execute_event_t::execute()
   {
     if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s\n", action -> name() );
 
-    player -> schedule_ready( 0 );
+    player -> schedule_ready( timespan_t::zero );
   }
 
   if ( player -> off_gcd_actions.size() == 0 )
@@ -314,7 +314,7 @@ void dot_tick_event_t::execute()
     {
       if ( dot -> action -> player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
 
-      dot -> action -> player -> schedule_ready( 0 );
+      dot -> action -> player -> schedule_ready( timespan_t::zero );
     }
   }
   else dot -> schedule_tick();

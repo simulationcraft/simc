@@ -711,7 +711,7 @@ struct warlock_pet_t : public pet_t
     resource_current[ RESOURCE_MANA ] = resource_max[ RESOURCE_MANA ] = resource_initial[ RESOURCE_MANA ];
   }
 
-  virtual void schedule_ready( double delta_time=0,
+  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero,
                                bool   waiting=false )
   {
     if ( main_hand_attack && ! main_hand_attack -> execute_event )

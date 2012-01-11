@@ -393,7 +393,7 @@ player_t::player_t( sim_t*             s,
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ),
-  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( 0 ), base_gcd( timespan_t::from_seconds(1.5) ),
+  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( timespan_t::zero ), base_gcd( timespan_t::from_seconds(1.5) ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
@@ -466,9 +466,9 @@ player_t::player_t( sim_t*             s,
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
-  iteration_fight_length( 0 ), arise_time( 0 ),
+  iteration_fight_length( timespan_t::zero ), arise_time( timespan_t::zero ),
   fight_length( s -> statistics_level < 2, true ), waiting_time( true ), executed_foreground_actions( s -> statistics_level < 3 ),
-  iteration_waiting_time( 0 ), iteration_executed_foreground_actions( 0 ),
+  iteration_waiting_time( timespan_t::zero ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
   deaths(), deaths_error( 0 ),
   buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ),
@@ -2841,8 +2841,8 @@ void player_t::combat_begin()
 
   action_sequence = "";
 
-  iteration_fight_length = 0;
-  iteration_waiting_time = 0;
+  iteration_fight_length = timespan_t::zero;
+  iteration_waiting_time = timespan_t::zero;
   iteration_executed_foreground_actions = 0;
   iteration_dmg = 0;
   iteration_heal = 0;
@@ -2889,10 +2889,10 @@ void player_t::combat_end()
   else if ( is_pet() )
     cast_pet() -> dismiss();
 
-  fight_length.add( iteration_fight_length );
+  fight_length.add( iteration_fight_length.total_seconds() );
 
   executed_foreground_actions.add( iteration_executed_foreground_actions );
-  waiting_time.add( iteration_waiting_time );
+  waiting_time.add( iteration_waiting_time.total_seconds() );
 
   for ( stats_t* s = stats_list; s; s = s -> next )
     s -> combat_end();
@@ -2907,7 +2907,7 @@ void player_t::combat_end()
   }
   compound_dmg.add( iteration_dmg );
 
-  dps.add( iteration_fight_length ? iteration_dmg / iteration_fight_length : 0 );
+  dps.add( iteration_fight_length != timespan_t::zero ? iteration_dmg / iteration_fight_length.total_seconds() : 0 );
   dpse.add( sim -> current_time ? iteration_dmg / sim -> current_time : 0 );
 
   if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time, iteration_fight_length );
@@ -2922,14 +2922,14 @@ void player_t::combat_end()
   }
   compound_heal.add( iteration_heal );
 
-  hps.add( iteration_fight_length ? iteration_heal / iteration_fight_length : 0 );
+  hps.add( iteration_fight_length != timespan_t::zero ? iteration_heal / iteration_fight_length.total_seconds() : 0 );
   hpse.add( sim -> current_time ? iteration_heal / sim -> current_time : 0 );
 
   dmg_taken.add( iteration_dmg_taken );
-  dtps.add( iteration_fight_length ? iteration_dmg_taken / iteration_fight_length : 0 );
+  dtps.add( iteration_fight_length != timespan_t::zero ? iteration_dmg_taken / iteration_fight_length.total_seconds() : 0 );
 
   heal_taken.add( iteration_heal_taken );
-  htps.add( iteration_fight_length ? iteration_heal_taken / iteration_fight_length : 0 );
+  htps.add( iteration_fight_length != timespan_t::zero ? iteration_heal_taken / iteration_fight_length.total_seconds() : 0 );
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
@@ -3019,7 +3019,7 @@ void player_t::reset()
   skill = initial_skill;
 
   last_cast = 0;
-  gcd_ready = 0;
+  gcd_ready = timespan_t::zero;
 
   sleeping = 1;
   events = 0;
@@ -3156,7 +3156,7 @@ void player_t::reset()
 
 // player_t::schedule_ready =================================================
 
-void player_t::schedule_ready( double delta_time,
+void player_t::schedule_ready( timespan_t delta_time,
                                bool   waiting )
 {
   if ( readying )
@@ -3175,8 +3175,8 @@ void player_t::schedule_ready( double delta_time,
 
   if ( ! has_foreground_actions( this ) ) return;
 
-  double gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
-  if ( gcd_adjust > 0 ) delta_time += gcd_adjust;
+  timespan_t gcd_adjust = gcd_ready - ( timespan_t::from_seconds(sim -> current_time) + delta_time );
+  if ( gcd_adjust > timespan_t::zero ) delta_time += gcd_adjust;
 
   if ( unlikely( waiting ) )
   {
@@ -3184,7 +3184,7 @@ void player_t::schedule_ready( double delta_time,
   }
   else
   {
-    double lag = 0;
+    timespan_t lag = timespan_t::zero;
 
     if ( last_foreground_action && ! last_foreground_action -> auto_cast )
     {
@@ -3192,55 +3192,55 @@ void player_t::schedule_ready( double delta_time,
       {
         double ability_lag = rngs.lag_ability -> gauss( last_foreground_action -> ability_lag, last_foreground_action -> ability_lag_stddev );
         double gcd_lag     = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
-        double diff        = ( gcd_ready + gcd_lag ) - ( sim -> current_time + ability_lag );
+        double diff        = ( gcd_ready.total_seconds() + gcd_lag ) - ( sim -> current_time + ability_lag );
         if ( diff > 0 && sim -> strict_gcd_queue )
         {
-          lag = gcd_lag;
+          lag = timespan_t::from_seconds(gcd_lag);
         }
         else
         {
-          lag = ability_lag;
+          lag = timespan_t::from_seconds(ability_lag);
           action_queued = true;
         }
       }
       else if ( last_foreground_action -> gcd() == timespan_t::zero )
       {
-        lag = 0;
+        lag = timespan_t::zero;
       }
       else if ( last_foreground_action -> channeled )
       {
-        lag = rngs.lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_stddev );
+        lag = timespan_t::from_seconds(rngs.lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_stddev ));
       }
       else
       {
         double   gcd_lag = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
         double queue_lag = rngs.lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_stddev );
 
-        double diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
+        double diff = ( gcd_ready.total_seconds() + gcd_lag ) - ( sim -> current_time + queue_lag );
 
         if ( diff > 0 && sim -> strict_gcd_queue )
         {
-          lag = gcd_lag;
+          lag = timespan_t::from_seconds(gcd_lag);
         }
         else
         {
-          lag = queue_lag;
+          lag = timespan_t::from_seconds(queue_lag);
           action_queued = true;
         }
       }
     }
 
-    if ( lag < 0 ) lag = 0;
+    if ( lag < timespan_t::zero ) lag = timespan_t::zero;
 
     delta_time += lag;
   }
 
   if ( last_foreground_action )
   {
-    last_foreground_action -> stats -> total_execute_time += delta_time;
+    last_foreground_action -> stats -> total_execute_time += delta_time.total_seconds();
   }
 
-  readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
+  readying = new ( sim ) player_ready_event_t( sim, this, delta_time.total_seconds() );
 
   if ( was_executing && was_executing -> gcd() > timespan_t::zero && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
@@ -3252,8 +3252,8 @@ void player_t::schedule_ready( double delta_time,
       log_t::output( sim, "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
                      name_str.c_str(),
                      was_executing -> name_str.c_str(),
-                     readying -> occurs(),
-                     cast_delay_reaction );
+                     readying -> occurs().total_seconds(),
+                     cast_delay_reaction.total_seconds() );
     }
   }
 }
@@ -3276,7 +3276,7 @@ void player_t::arise()
   readying = 0;
   off_gcd = 0;
 
-  arise_time = sim -> current_time;
+  arise_time = timespan_t::from_seconds(sim -> current_time);
 
   schedule_ready();
 }
@@ -3292,8 +3292,8 @@ void player_t::demise()
     log_t::output( sim, "%s demises.", name() );
 
   assert( arise_time >= 0 );
-  iteration_fight_length += ( sim -> current_time - arise_time );
-  arise_time = -1;
+  iteration_fight_length += timespan_t::from_seconds( sim -> current_time ) - arise_time;
+  arise_time = timespan_t::min;
 
   sleeping = 1;
   if ( readying )

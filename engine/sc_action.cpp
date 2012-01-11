@@ -1226,10 +1226,10 @@ void action_t::schedule_execute()
   if ( ! background )
   {
     player -> executing = this;
-    player -> gcd_ready = sim -> current_time + gcd().total_seconds();
+    player -> gcd_ready = timespan_t::from_seconds(sim -> current_time) + gcd();
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
-      player -> gcd_ready -= sim -> queue_gcd_reduction;
+      player -> gcd_ready -= timespan_t::from_seconds(sim -> queue_gcd_reduction);
     }
 
     if ( special && time_to_execute > timespan_t::zero && ! proc )

@@ -396,7 +396,7 @@ void buff_t::combat_begin()
 void buff_t::combat_end()
 {
   if ( player )
-    uptime_pct.add( player -> iteration_fight_length ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length : 0 );
+    uptime_pct.add( player -> iteration_fight_length != timespan_t::zero ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length.total_seconds() : 0 );
   else
     uptime_pct.add( sim -> current_time ? 100.0 * iteration_uptime_sum / sim -> current_time : 0 );
 }
