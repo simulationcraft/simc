@@ -99,6 +99,7 @@ SOURCES += engine/sc_stats.cpp
 SOURCES += engine/sc_talent.cpp
 SOURCES += engine/sc_target.cpp
 SOURCES += engine/sc_thread.cpp
+SOURCES += engine/sc_timespan.cpp
 SOURCES += engine/sc_unique_gear.cpp
 SOURCES += engine/sc_util.cpp
 SOURCES += engine/sc_warlock.cpp

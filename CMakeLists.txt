@@ -79,6 +79,7 @@ SET(SIMC_ENGINE_SOURCE
   "engine/sc_talent.cpp"
   "engine/sc_target.cpp"
   "engine/sc_thread.cpp"
+  "engine/sc_timespan.cpp"
   "engine/sc_unique_gear.cpp"
   "engine/sc_util.cpp"
   "engine/sc_warlock.cpp"
