@@ -968,8 +968,8 @@ void print_xml_performance( sim_t* sim, xml_writer_t & writer )
   writer.print_tag( "max_event_queue", util_t::to_string( sim -> max_events_remaining ) );
   writer.print_tag( "target_health", util_t::to_string( sim -> target -> resource_base[ RESOURCE_HEALTH ], 0 ) );
   writer.print_tag( "sim_seconds", util_t::to_string( sim -> iterations * sim -> simulation_length.mean, 0 ) );
-  writer.print_tag( "cpu_seconds", util_t::to_string( sim -> elapsed_cpu_seconds, 3 ) );
-  writer.print_tag( "speed_up", util_t::to_string( sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu_seconds, 0 ) );
+  writer.print_tag( "cpu_seconds", util_t::to_string( sim -> elapsed_cpu.total_seconds(), 3 ) );
+  writer.print_tag( "speed_up", util_t::to_string( sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds(), 0 ) );
   writer.begin_tag( "rng" );
   writer.print_attribute( "roll", util_t::to_string( ( sim -> rng -> expected_roll  == 0 ) ? 1.0 : ( sim -> rng -> actual_roll  / sim -> rng -> expected_roll  ), 6 ) );
   writer.print_attribute( "range", util_t::to_string( ( sim -> rng -> expected_range == 0 ) ? 1.0 : ( sim -> rng -> actual_range / sim -> rng -> expected_range ), 6 ) );
@@ -1024,37 +1024,37 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
 
   writer.print_tag( "fight_style", sim -> fight_style );
 
-  writer.print_tag( "elapsed_cpu_sec", util_t::to_string( sim -> elapsed_cpu_seconds ) );
+  writer.print_tag( "elapsed_cpu_sec", util_t::to_string( sim -> elapsed_cpu.total_seconds() ) );
 
   writer.begin_tag( "lag" );
   writer.print_attribute( "type", "world" );
-  writer.print_attribute( "value", util_t::to_string( sim -> world_lag * 1000.0 ) );
-  writer.print_attribute( "stddev", util_t::to_string( sim -> world_lag_stddev * 1000.0 ) );
+  writer.print_attribute( "value", util_t::to_string( sim -> world_lag.total_millis() ) );
+  writer.print_attribute( "stddev", util_t::to_string( sim -> world_lag_stddev.total_millis() ) );
   writer.end_tag(); // </lag>
 
   writer.begin_tag( "lag" );
   writer.print_attribute( "type", "queue" );
-  writer.print_attribute( "value", util_t::to_string( sim -> queue_lag * 1000.0 ) );
-  writer.print_attribute( "stddev", util_t::to_string( sim -> queue_lag_stddev * 1000.0 ) );
+  writer.print_attribute( "value", util_t::to_string( sim -> queue_lag.total_millis() ) );
+  writer.print_attribute( "stddev", util_t::to_string( sim -> queue_lag_stddev.total_millis() ) );
   writer.end_tag(); // </lag>
 
   if ( sim -> strict_gcd_queue )
   {
     writer.begin_tag( "lag" );
     writer.print_attribute( "type", "gcd" );
-    writer.print_attribute( "value", util_t::to_string( sim -> gcd_lag * 1000.0 ) );
-    writer.print_attribute( "stddev", util_t::to_string( sim -> gcd_lag_stddev * 1000.0 ) );
+    writer.print_attribute( "value", util_t::to_string( sim -> gcd_lag.total_millis() ) );
+    writer.print_attribute( "stddev", util_t::to_string( sim -> gcd_lag_stddev.total_millis() ) );
     writer.end_tag(); // </lag>
 
     writer.begin_tag( "lag" );
     writer.print_attribute( "type", "channel" );
-    writer.print_attribute( "value", util_t::to_string( sim -> channel_lag * 1000.0 ) );
-    writer.print_attribute( "stddev", util_t::to_string( sim -> channel_lag_stddev * 1000.0 ) );
+    writer.print_attribute( "value", util_t::to_string( sim -> channel_lag.total_millis() ) );
+    writer.print_attribute( "stddev", util_t::to_string( sim -> channel_lag_stddev.total_millis() ) );
     writer.end_tag(); // </lag>
 
     writer.begin_tag( "lag" );
     writer.print_attribute( "type", "queue_gcd" );
-    writer.print_attribute( "value", util_t::to_string( sim -> queue_gcd_reduction * 1000.0 ) );
+    writer.print_attribute( "value", util_t::to_string( sim -> queue_gcd_reduction.total_millis() ) );
     writer.end_tag(); // </lag>
   }
 
@@ -1195,12 +1195,12 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         writer.print_tag( "tree", util_t::talent_tree_string( a -> tree ) );
         writer.print_tag( "range", util_t::to_string( a -> range ) );
         writer.print_tag( "travel_speed", util_t::to_string( a -> travel_speed ) );
-        writer.print_tag( "trigger_gcd", util_t::to_string( a -> trigger_gcd ) );
+        writer.print_tag( "trigger_gcd", util_t::to_string( a -> trigger_gcd.total_seconds() ) );
         writer.print_tag( "base_cost", util_t::to_string( a -> base_cost ) );
         writer.begin_tag( "cooldown" );
-        writer.print_attribute( "duration", util_t::to_string( a -> cooldown -> duration ) );
+        writer.print_attribute( "duration", util_t::to_string( a -> cooldown -> duration.total_seconds() ) );
         writer.end_tag(); // </cooldown>
-        writer.print_tag( "base_execute_time", util_t::to_string( a -> base_execute_time ) );
+        writer.print_tag( "base_execute_time", util_t::to_string( a -> base_execute_time.total_seconds() ) );
         writer.print_tag( "base_crit", util_t::to_string( a -> base_crit ) );
         if ( a -> target )
         {
@@ -1232,7 +1232,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.print_tag( "tick_power_mod", util_t::to_string( a -> tick_power_mod ) );
           writer.print_tag( "base", util_t::to_string( a -> base_td ) );
           writer.print_tag( "num_ticks", util_t::to_string( a -> num_ticks ) );
-          writer.print_tag( "base_tick_time", util_t::to_string( a -> base_tick_time ) );
+          writer.print_tag( "base_tick_time", util_t::to_string( a -> base_tick_time.total_seconds() ) );
           writer.print_tag( "hasted_ticks", util_t::to_string( a -> hasted_ticks ) );
           writer.print_tag( "dot_behavior", a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT" );
           writer.end_tag(); // </damage_over_time>

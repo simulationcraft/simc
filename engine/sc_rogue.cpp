@@ -372,7 +372,7 @@ struct rogue_t : public player_t
   player_t* tot_target;
 
   // Options
-  double      virtual_hat_interval;
+  timespan_t virtual_hat_interval;
   std::string tricks_of_the_trade_target_str;
 
   uint32_t fof_p1, fof_p2, fof_p3;
@@ -406,7 +406,7 @@ struct rogue_t : public player_t
     cooldowns_killing_spree       = get_cooldown( "killing_spree"       );
 
     // Options
-    virtual_hat_interval = -1;
+    virtual_hat_interval = timespan_t::min;
     tricks_of_the_trade_target_str = "";
 
     distance = 3;
@@ -438,8 +438,8 @@ struct rogue_t : public player_t
   virtual void      combat_begin();
   virtual void      reset();
   virtual double    energy_regen_per_second() const;
-  virtual void      regen( double periodicity );
-  virtual double    available() const;
+  virtual void      regen( timespan_t periodicity );
+  virtual timespan_t available() const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_expr_t* create_expression( action_t* a, const std::string& name_str );
@@ -535,7 +535,7 @@ struct rogue_poison_t : public spell_t
     proc             = true;
     background       = true;
     base_cost        = 0.0;
-    trigger_gcd      = 0.0;
+    trigger_gcd      = timespan_t::zero;
     may_crit         = true;
     tick_may_crit    = true;
     hasted_ticks     = false;
@@ -754,7 +754,7 @@ static void trigger_restless_blades( rogue_attack_t* a )
   if ( ! a -> requires_combo_points )
     return;
 
-  double reduction = ( p -> talents.restless_blades -> effect1().seconds() ) * a -> combo_points_spent;
+  timespan_t reduction = p -> talents.restless_blades -> effect1().time_value() * a -> combo_points_spent;
 
   p -> cooldowns_adrenaline_rush -> ready -= reduction;
   p -> cooldowns_killing_spree -> ready   -= reduction;
@@ -793,13 +793,13 @@ static void trigger_seal_fate( rogue_attack_t* a )
     return;
 
   // This is to prevent dual-weapon special attacks from triggering a double-proc of Seal Fate
-  if ( p -> cooldowns_seal_fate -> remains() > 0 )
+  if ( p -> cooldowns_seal_fate -> remains() > timespan_t::zero )
     return;
 
   if ( p -> rng_seal_fate -> roll( p -> talents.seal_fate -> proc_chance() ) )
   {
     rogue_targetdata_t* td = a -> targetdata() -> cast_rogue();
-    p -> cooldowns_seal_fate -> start( 0.0001 );
+    p -> cooldowns_seal_fate -> start( timespan_t::from_millis(1) );
     p -> procs_seal_fate -> occur();
     td -> combo_points -> add( 1, p -> talents.seal_fate );
   }
@@ -836,7 +836,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
 
           base_dd_min = base_dd_max = 1;
           background      = true;
-          trigger_gcd     = 0;
+          trigger_gcd     = timespan_t::zero;
           base_cost       = 0;
           may_glance      = false; // XXX: does not glance
           may_crit        = true;
@@ -876,7 +876,7 @@ static void trigger_tricks_of_the_trade( rogue_attack_t* a )
 
   if ( t )
   {
-    double duration = p -> dbc.spell( 57933 ) -> duration();
+    timespan_t duration = p -> dbc.spell( 57933 ) -> duration();
 
     if ( t -> buffs.tricks_of_the_trade -> remains_lt( duration ) )
     {
@@ -961,7 +961,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
       base_td = total_dot_dmg / dot() -> num_ticks;
     }
-    virtual double travel_time()
+    virtual timespan_t travel_time()
     {
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
@@ -992,7 +992,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_melee -> base_td * dot -> ticks();
   }
 
-  if ( ( p -> dbc.spell( 99173 )  -> duration() + sim -> aura_delay ) < dot -> remains() )
+  if ( p -> dbc.spell( 99173 )  -> duration() + sim -> aura_delay < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Burning Wounds due to Max Duration.", p -> name() );
     p -> procs_munched_tier12_2pc_melee -> occur();
@@ -1440,7 +1440,7 @@ struct melee_t : public rogue_attack_t
     base_dd_min = base_dd_max = 1;
     background      = true;
     repeating       = true;
-    trigger_gcd     = 0;
+    trigger_gcd     = timespan_t::zero;
     base_cost       = 0;
     may_crit        = true;
 
@@ -1448,12 +1448,12 @@ struct melee_t : public rogue_attack_t
       base_hit -= 0.19;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double t = rogue_attack_t::execute_time();
+    timespan_t t = rogue_attack_t::execute_time();
 
     if ( ! player -> in_combat )
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds(0.2) ) : t/2 ) : timespan_t::from_seconds(0.01);
 
     return t;
   }
@@ -1520,7 +1520,7 @@ struct auto_attack_t : public action_t
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -1928,9 +1928,9 @@ struct expose_armor_t : public rogue_attack_t
 
     if ( result_is_hit() )
     {
-      double duration = 10 * combo_points_spent;
+      timespan_t duration = timespan_t::from_seconds(10) * combo_points_spent;
 
-      duration += p -> glyphs.expose_armor -> mod_additive( P_DURATION );
+      duration += timespan_t::from_seconds(p -> glyphs.expose_armor -> mod_additive( P_DURATION ));
 
       if ( p -> buffs_revealing_strike -> up() )
         duration *= 1.0 + p -> buffs_revealing_strike -> value();
@@ -2119,7 +2119,7 @@ struct hemorrhage_t : public rogue_attack_t
     if ( p -> glyphs.hemorrhage -> ok() )
     {
       num_ticks = 8;
-      base_tick_time = 3.0;
+      base_tick_time = timespan_t::from_seconds(3.0);
       dot_behavior = DOT_REFRESH;
     }
   }
@@ -2165,7 +2165,7 @@ struct kick_t : public rogue_attack_t
     if ( p -> glyphs.kick -> ok() )
     {
       // All kicks are assumed to interrupt a cast
-      cooldown -> duration -= 2.0; // + 4 Duration - 6 on Success = -2
+      cooldown -> duration -= timespan_t::from_seconds(2.0); // + 4 Duration - 6 on Success = -2
     }
   }
 
@@ -2452,7 +2452,7 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     if ( result_is_hit( impact_result ) )
-      num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time );
+      num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time.total_seconds() );
     rogue_attack_t::impact( t, impact_result, travel_dmg );
   }
 
@@ -2510,7 +2510,7 @@ struct shiv_t : public rogue_attack_t
     if ( weapon -> type == WEAPON_NONE )
       background = true; // Do not allow execution.
 
-    base_cost        += weapon -> swing_time * 10.0;
+    base_cost        += weapon -> swing_time.total_seconds() * 10.0;
     adds_combo_points = 1;
     may_crit          = false;
     base_dd_min = base_dd_max = 1;
@@ -2603,16 +2603,16 @@ struct slice_and_dice_t : public rogue_attack_t
 
 struct pool_energy_t : public action_t
 {
-  double wait;
+  timespan_t wait;
   int for_next;
 
   pool_energy_t( rogue_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "pool_energy", p ),
-    wait( 0.5 ), for_next( 0 )
+    wait( timespan_t::from_seconds(0.5) ), for_next( 0 )
   {
     option_t options[] =
     {
-      { "wait",     OPT_FLT,  &wait     },
+      { "wait",     OPT_TIMESPAN,  &wait     },
       { "for_next", OPT_BOOL, &for_next },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -2626,7 +2626,7 @@ struct pool_energy_t : public action_t
       log_t::output( sim, "%s performs %s", player -> name(), name() );
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
     return wait;
   }
@@ -2694,9 +2694,9 @@ struct shadow_dance_t : public rogue_attack_t
   {
     add_trigger_buff( p -> buffs_shadow_dance );
 
-    p -> buffs_shadow_dance -> buff_duration += p -> glyphs.shadow_dance -> mod_additive( P_DURATION );
+    p -> buffs_shadow_dance -> buff_duration += timespan_t::from_seconds(p -> glyphs.shadow_dance -> mod_additive( P_DURATION ));
     if ( p -> set_bonus.tier13_4pc_melee() )
-      p -> buffs_shadow_dance -> buff_duration += p -> spells.tier13_4pc -> effect1().seconds();
+      p -> buffs_shadow_dance -> buff_duration += p -> spells.tier13_4pc -> effect1().time_value();
 
     parse_options( NULL, options_str );
   }
@@ -2769,7 +2769,7 @@ struct vanish_t : public rogue_attack_t
 
     harmful = false;
 
-    cooldown -> duration += p -> talents.elusiveness -> effect1().seconds();
+    cooldown -> duration += p -> talents.elusiveness -> effect1().time_value();
 
     parse_options( NULL, options_str );
   }
@@ -2985,7 +2985,7 @@ struct wound_poison_t : public rogue_poison_t
       {
         name = "Wound Poison Expiration";
         apply_poison_debuff( p, target );
-        sim -> add_event( this, 15.0 );
+        sim -> add_event( this, timespan_t::from_seconds(15.0) );
       }
 
       virtual void execute()
@@ -3025,7 +3025,7 @@ struct wound_poison_t : public rogue_poison_t
         event_t*& e = p -> expirations_.wound_poison;
 
         if ( e )
-          e -> reschedule( 15.0 );
+          e -> reschedule( timespan_t::from_seconds(15.0) );
         else
           e = new ( sim ) expiration_t( sim, p, target );
       }
@@ -3066,7 +3066,7 @@ struct apply_poison_t : public action_t
       sim -> cancel();
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
 
     if ( p -> main_hand_weapon.type != WEAPON_NONE )
     {
@@ -3136,7 +3136,7 @@ struct stealth_t : public spell_t
   stealth_t( rogue_t* p, const std::string& options_str ) :
     spell_t( "stealth", p ), used( false )
   {
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     id = 1784;
 
     parse_options( NULL, options_str );
@@ -3176,10 +3176,10 @@ struct adrenaline_rush_buff_t : public buff_t
   {
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
-    cooldown -> duration = 0;
-    buff_duration += p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION );
+    cooldown -> duration = timespan_t::zero;
+    buff_duration += timespan_t::from_seconds(p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION ));
     if ( p -> set_bonus.tier13_4pc_melee() )
-      buff_duration += p -> spells.tier13_4pc -> effect2().seconds();
+      buff_duration += p -> spells.tier13_4pc -> effect2().time_value();
   }
 
   virtual bool trigger( int, double, double )
@@ -3196,7 +3196,7 @@ struct envenom_buff_t : public buff_t
 
   virtual bool trigger( int cp, double, double )
   {
-    double new_duration = 1.0 + cp;
+    timespan_t new_duration = timespan_t::from_seconds(1.0) + timespan_t::from_seconds(cp);
 
     if ( remains_lt( new_duration ) )
     {
@@ -3235,7 +3235,7 @@ struct killing_spree_buff_t : public buff_t
   {
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
-    cooldown -> duration = 0;
+    cooldown -> duration = timespan_t::zero;
   }
 
   virtual bool trigger( int, double, double )
@@ -3254,7 +3254,7 @@ struct master_of_subtlety_buff_t : public buff_t
   master_of_subtlety_buff_t( rogue_t* p, uint32_t id ) :
     buff_t( p, id, "master_of_subtlety" )
   {
-    buff_duration = 6.0;
+    buff_duration = timespan_t::from_seconds(6.0);
   }
 
   virtual bool trigger( int, double, double )
@@ -3301,9 +3301,9 @@ struct slice_and_dice_buff_t : public buff_t
   {
     rogue_t* p = player -> cast_rogue();
 
-    double new_duration = p -> dbc.spell( id ) -> duration();
-    new_duration += 3.0 * cp;
-    new_duration += p -> glyphs.slice_and_dice -> mod_additive( P_DURATION );
+    timespan_t new_duration = p -> dbc.spell( id ) -> duration();
+    new_duration += timespan_t::from_seconds(3.0 * cp);
+    new_duration += timespan_t::from_seconds(p -> glyphs.slice_and_dice -> mod_additive( P_DURATION ));
     new_duration *= 1.0 + p -> talents.improved_slice_and_dice -> mod_additive( P_DURATION );
 
     if ( remains_lt( new_duration ) )
@@ -3324,7 +3324,7 @@ struct vendetta_buff_t : public buff_t
   {
     buff_duration *= 1.0 + p -> glyphs.vendetta -> mod_additive( P_DURATION );
     if ( p -> set_bonus.tier13_4pc_melee() )
-      buff_duration += p -> spells.tier13_4pc -> effect3().seconds();
+      buff_duration += p -> spells.tier13_4pc -> effect3().time_value();
   }
 
   virtual bool trigger( int, double, double )
@@ -3688,7 +3688,7 @@ void rogue_t::init_base()
 
   base_energy_regen_per_second = 10 + spec_vitality -> base_value( E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT ) / 10.0;
 
-  base_gcd = 1.0;
+  base_gcd = timespan_t::from_seconds(1.0);
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;
@@ -3928,16 +3928,16 @@ void rogue_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
 
-  buffs_bandits_guile      = new buff_t( this, "bandits_guile", 12, 15.0, 0.0, 1.0, true );
+  buffs_bandits_guile      = new buff_t( this, "bandits_guile", 12, timespan_t::from_seconds(15.0), timespan_t::zero, 1.0, true );
   buffs_deadly_proc        = new buff_t( this, "deadly_proc",   1  );
-  buffs_overkill           = new buff_t( this, "overkill",      1, 20.0 );
+  buffs_overkill           = new buff_t( this, "overkill",      1, timespan_t::from_seconds(20.0) );
   buffs_recuperate         = new buff_t( this, "recuperate",    1  );
   buffs_shiv               = new buff_t( this, "shiv",          1  );
   buffs_stealthed          = new buff_t( this, "stealthed",     1  );
-  buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, 15.0, 0.0, set_bonus.tier11_4pc_melee() * 0.01 );
-  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, spells.tier13_2pc -> duration(), 0.0, ( set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
-  buffs_tot_trigger        = new buff_t( this, 57934, "tricks_of_the_trade_trigger", -1, -1, true );
-  buffs_vanish             = new buff_t( this, "vanish",        1, 3.0 );
+  buffs_tier11_4pc         = new buff_t( this, "tier11_4pc",    1, timespan_t::from_seconds(15.0), timespan_t::zero, set_bonus.tier11_4pc_melee() * 0.01 );
+  buffs_tier13_2pc         = new buff_t( this, "tier13_2pc",    1, spells.tier13_2pc -> duration(), timespan_t::zero, ( set_bonus.tier13_2pc_melee() ) ? 1.0 : 0 );
+  buffs_tot_trigger        = new buff_t( this, 57934, "tricks_of_the_trade_trigger", -1, timespan_t::min, true );
+  buffs_vanish             = new buff_t( this, "vanish",        1, timespan_t::from_seconds(3.0) );
 
   buffs_tier12_4pc_haste   = new stat_buff_t( this, "future_on_fire",    STAT_HASTE_RATING,   0.0, 1, dbc.spell( 99186 ) -> duration() );
   buffs_tier12_4pc_crit    = new stat_buff_t( this, "fiery_devastation", STAT_CRIT_RATING,    0.0, 1, dbc.spell( 99187 ) -> duration() );
@@ -3963,10 +3963,10 @@ void rogue_t::init_buffs()
   // buffs_fof_p3            = new stat_buff_t( this, 109939, "legendary_daggers_p3", STAT_AGILITY, dbc.spell( 109939 ) -> effect1().base_value(), fof_p3 );
   // buffs_fof_fod           = new buff_t( this, 109949, "legendary_daggers", fof_p3 );
   // None of the buffs are currently in the DBC, so define them manually for now
-  buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, 30.0, 2.5, fof_p1 ); // Chance appears as 100% in DBC
-  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, 30.0, 2.5, fof_p2 ); // http://ptr.wowhead.com/spell=109959#comments
-  buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, 30.0, 2.5, fof_p3 );
-  buffs_fof_fod           = new buff_t( this, "legendary_daggers", 1, 6.0, 0, fof_p3 );
+  buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, timespan_t::from_seconds(30.0), timespan_t::from_seconds(2.5), fof_p1 ); // Chance appears as 100% in DBC
+  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, timespan_t::from_seconds(30.0), timespan_t::from_seconds(2.5), fof_p2 ); // http://ptr.wowhead.com/spell=109959#comments
+  buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, timespan_t::from_seconds(30.0), timespan_t::from_seconds(2.5), fof_p3 );
+  buffs_fof_fod           = new buff_t( this, "legendary_daggers", 1, timespan_t::from_seconds(6.0), timespan_t::zero, fof_p3 );
 }
 
 // rogue_t::init_values =====================================================
@@ -4008,7 +4008,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 //    if ( sim -> debug )
 //      log_t::output( sim, "Eligible For Honor Among Thieves" );
 
-    if ( rogue -> cooldowns_honor_among_thieves -> remains() > 0 )
+    if ( rogue -> cooldowns_honor_among_thieves -> remains() > timespan_t::zero )
       return;
 
     if ( ! rogue -> rng_honor_among_thieves -> roll( rogue -> talents.honor_among_thieves -> proc_chance() ) )
@@ -4020,7 +4020,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
     rogue -> procs_honor_among_thieves -> occur();
 
-    rogue -> cooldowns_honor_among_thieves -> start( 5.0 - rogue -> talents.honor_among_thieves -> rank() );
+    rogue -> cooldowns_honor_among_thieves -> start( timespan_t::from_seconds(5.0) - timespan_t::from_seconds(rogue -> talents.honor_among_thieves -> rank()) );
   }
 };
 
@@ -4038,11 +4038,11 @@ void rogue_t::register_callbacks()
     register_spell_callback ( RESULT_CRIT_MASK, cb );
     register_tick_callback( RESULT_CRIT_MASK, cb );
 
-    if ( virtual_hat_interval < 0 )
+    if ( virtual_hat_interval < timespan_t::zero )
     {
-      virtual_hat_interval = 5.20 - talents.honor_among_thieves -> rank();
+      virtual_hat_interval = timespan_t::from_seconds(5.20) - timespan_t::from_seconds(talents.honor_among_thieves -> rank());
     }
-    if ( virtual_hat_interval > 0 )
+    if ( virtual_hat_interval > timespan_t::zero )
     {
       virtual_hat_callback = cb;
     }
@@ -4069,21 +4069,21 @@ void rogue_t::combat_begin()
 
   if ( talents.honor_among_thieves -> rank() )
   {
-    if ( virtual_hat_interval > 0 )
+    if ( virtual_hat_interval > timespan_t::zero )
     {
       struct virtual_hat_event_t : public event_t
       {
         action_callback_t* callback;
-        double interval;
+        timespan_t interval;
 
-        virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, double i ) :
+        virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, timespan_t i ) :
           event_t( sim, p ), callback( cb ), interval( i )
         {
           name = "Virtual HAT Event";
-          double cooldown = 5.0 - p -> talents.honor_among_thieves -> rank();
-          double remainder = interval - cooldown;
-          if ( remainder < 0 ) remainder = 0;
-          double time = cooldown + p -> rng_hat_interval -> range( remainder*0.5, remainder*1.5 ) + 0.01;
+          timespan_t cooldown = timespan_t::from_seconds(5.0) - timespan_t::from_seconds(p -> talents.honor_among_thieves -> rank());
+          timespan_t remainder = interval - cooldown;
+          if ( remainder < timespan_t::zero ) remainder = timespan_t::zero;
+          timespan_t time = cooldown + p -> rng_hat_interval -> range( remainder*0.5, remainder*1.5 ) + timespan_t::from_seconds(0.01);
           sim -> add_event( this, time );
         }
         virtual void execute()
@@ -4122,7 +4122,7 @@ double rogue_t::energy_regen_per_second() const
 
 // rogue_t::regen ===========================================================
 
-void rogue_t::regen( double periodicity )
+void rogue_t::regen( timespan_t periodicity )
 {
   // XXX review how this all stacks (additive/multiplicative)
 
@@ -4132,7 +4132,7 @@ void rogue_t::regen( double periodicity )
   {
     if ( infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {
-      double energy_regen = periodicity * energy_regen_per_second();
+      double energy_regen = periodicity.total_seconds() * energy_regen_per_second();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_adrenaline_rush );
     }
@@ -4142,7 +4142,7 @@ void rogue_t::regen( double periodicity )
   {
     if ( infinite_resource[ RESOURCE_ENERGY ] == 0 )
     {
-      double energy_regen = periodicity * energy_regen_per_second() * 0.30;
+      double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * 0.30;
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains_overkill );
     }
@@ -4157,14 +4157,17 @@ void rogue_t::regen( double periodicity )
 
 // rogue_t::available =======================================================
 
-double rogue_t::available() const
+timespan_t rogue_t::available() const
 {
   double energy = resource_current[ RESOURCE_ENERGY ];
 
   if ( energy > 25 )
-    return 0.1;
+    return timespan_t::from_seconds(0.1);
 
-  return std::max( ( 25 - energy ) / energy_regen_per_second(), 0.1 );
+  return std::max(
+    timespan_t::from_seconds(( 25 - energy ) / energy_regen_per_second()),
+    timespan_t::from_seconds(0.1)
+  );
 }
 
 // rogue_t::copy_options ====================================================
@@ -4175,7 +4178,7 @@ void rogue_t::create_options()
 
   option_t rogue_options[] =
   {
-    { "virtual_hat_interval",       OPT_FLT,    &( virtual_hat_interval           ) },
+    { "virtual_hat_interval",       OPT_TIMESPAN, &( virtual_hat_interval         ) },
     { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
@@ -4256,9 +4259,9 @@ void player_t::rogue_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.tricks_of_the_trade  = new   buff_t( p, "tricks_of_the_trade", 1, 6.0 );
+    p -> buffs.tricks_of_the_trade  = new   buff_t( p, "tricks_of_the_trade", 1, timespan_t::from_seconds(6.0) );
     p -> debuffs.expose_armor       = new debuff_t( p, "expose_armor",     1 );
-    p -> debuffs.hemorrhage         = new debuff_t( p, "hemorrhage",       1, 60.0 );
+    p -> debuffs.hemorrhage         = new debuff_t( p, "hemorrhage",       1, timespan_t::from_seconds(60.0) );
     p -> debuffs.master_poisoner    = new debuff_t( p, "master_poisoner", -1 );
     p -> debuffs.poisoned           = new debuff_t( p, "poisoned",        -1 );
     p -> debuffs.savage_combat      = new debuff_t( p, "savage_combat",   -1 );

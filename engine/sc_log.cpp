@@ -20,6 +20,6 @@ void log_t::output( sim_t* sim, const char* format, ... )
   vsnprintf( buffer, sizeof( buffer ),  format, vap );
   va_end( vap );
 
-  util_t::fprintf( sim -> output_file, "%-8.2f %s\n", sim -> current_time, buffer );
-  fflush( sim -> output_file );
+  util_t::fprintf( sim -> output_file, "%-8.2f %s\n", sim -> current_time.total_seconds(), buffer );
+  //fflush( sim -> output_file );
 }

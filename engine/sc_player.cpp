@@ -78,7 +78,7 @@ struct vengeance_t : public event_t
     event_t( player -> sim, player )
   {
     name = "Vengeance_Check";
-    sim -> add_event( this, 2.0 );
+    sim -> add_event( this, timespan_t::from_seconds(2.0) );
   }
 
   virtual void execute()
@@ -307,11 +307,11 @@ static bool parse_world_lag( sim_t* sim,
 {
   assert( name == "world_lag" ); ( void )name;
 
-  sim -> active_player -> world_lag = atof( value.c_str() );
+  sim -> active_player -> world_lag = timespan_t::from_seconds(atof( value.c_str() ));
 
-  if ( sim -> active_player -> world_lag < 0.0 )
+  if ( sim -> active_player -> world_lag < timespan_t::zero )
   {
-    sim -> active_player -> world_lag = 0.0;
+    sim -> active_player -> world_lag = timespan_t::zero;
   }
 
   sim -> active_player -> world_lag_override = true;
@@ -328,11 +328,11 @@ static bool parse_world_lag_stddev( sim_t* sim,
 {
   assert( name == "world_lag_stddev" ); ( void )name;
 
-  sim -> active_player -> world_lag_stddev = atof( value.c_str() );
+  sim -> active_player -> world_lag_stddev = timespan_t::from_seconds(atof( value.c_str() ));
 
-  if ( sim -> active_player -> world_lag_stddev < 0.0 )
+  if ( sim -> active_player -> world_lag_stddev < timespan_t::zero )
   {
-    sim -> active_player -> world_lag_stddev = 0.0;
+    sim -> active_player -> world_lag_stddev = timespan_t::zero;
   }
 
   sim -> active_player -> world_lag_stddev_override = true;
@@ -348,11 +348,11 @@ static bool parse_brain_lag( sim_t* sim,
 {
   assert( name == "brain_lag" ); ( void )name;
 
-  sim -> active_player -> brain_lag = atof( value.c_str() );
+  sim -> active_player -> brain_lag = timespan_t::from_seconds(atof( value.c_str() ));
 
-  if ( sim -> active_player -> brain_lag < 0.0 )
+  if ( sim -> active_player -> brain_lag < timespan_t::zero )
   {
-    sim -> active_player -> brain_lag = 0.0;
+    sim -> active_player -> brain_lag = timespan_t::zero;
   }
 
   return true;
@@ -367,11 +367,11 @@ static bool parse_brain_lag_stddev( sim_t* sim,
 {
   assert( name == "brain_lag_stddev" ); ( void )name;
 
-  sim -> active_player -> brain_lag_stddev = atof( value.c_str() );
+  sim -> active_player -> brain_lag_stddev = timespan_t::from_seconds(atof( value.c_str() ));
 
-  if ( sim -> active_player -> brain_lag_stddev < 0.0 )
+  if ( sim -> active_player -> brain_lag_stddev < timespan_t::zero )
   {
-    sim -> active_player -> brain_lag_stddev = 0.0;
+    sim -> active_player -> brain_lag_stddev = timespan_t::zero;
   }
 
   return true;
@@ -393,15 +393,16 @@ player_t::player_t( sim_t*             s,
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ),
-  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( 0 ), base_gcd( 1.5 ),
+  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( timespan_t::zero ), base_gcd( timespan_t::from_seconds(1.5) ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
-  reaction_mean( 0.5 ), reaction_stddev( 0.0 ), reaction_nu( 0.5 ), scale_player( 1 ), has_dtr( false ), avg_ilvl( 0 ),
+  reaction_mean( timespan_t::from_seconds(0.5) ), reaction_stddev( timespan_t::zero ), reaction_nu( timespan_t::from_seconds(0.5) ),
+  scale_player( 1 ), has_dtr( false ), avg_ilvl( 0 ),
   // Latency
-  world_lag( 0.1 ), world_lag_stddev( -1.0 ),
-  brain_lag( -1.0 ), brain_lag_stddev( -1.0 ),
+  world_lag( timespan_t::from_seconds(0.1) ), world_lag_stddev( timespan_t::min ),
+  brain_lag( timespan_t::min ), brain_lag_stddev( timespan_t::min ),
   world_lag_override( false ), world_lag_stddev_override( false ),
   events( 0 ),
   dbc( s -> dbc ),
@@ -424,7 +425,7 @@ player_t::player_t( sim_t*             s,
   mp5_per_intellect( 0 ),
   mana_regen_base( 0 ), mana_regen_while_casting( 0 ),
   base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
-  last_cast( 0 ),
+  last_cast( timespan_t::zero ),
   // Attack Mechanics
   base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),       buffed_attack_power( 0 ),
   base_attack_hit( 0 ),         initial_attack_hit( 0 ),          attack_hit( 0 ),         buffed_attack_hit( 0 ),
@@ -461,14 +462,14 @@ player_t::player_t( sim_t*             s,
   food( FOOD_NONE ),
   // Events
   executing( 0 ), channeling( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ),
-  cast_delay_reaction( 0 ), cast_delay_occurred( 0 ),
+  cast_delay_reaction( timespan_t::zero ), cast_delay_occurred( timespan_t::zero ),
   // Actions
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
-  iteration_fight_length( 0 ), arise_time( 0 ),
+  iteration_fight_length( timespan_t::zero ), arise_time( timespan_t::zero ),
   fight_length( s -> statistics_level < 2, true ), waiting_time( true ), executed_foreground_actions( s -> statistics_level < 3 ),
-  iteration_waiting_time( 0 ), iteration_executed_foreground_actions( 0 ),
+  iteration_waiting_time( timespan_t::zero ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
   deaths(), deaths_error( 0 ),
   buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ),
@@ -563,7 +564,7 @@ player_t::player_t( sim_t*             s,
   range::fill( talent_tab_points, 0 );
   range::fill( tree_type, TREE_NONE );
 
-  if ( reaction_stddev == 0 ) reaction_stddev = reaction_mean * 0.25;
+  if ( reaction_stddev == timespan_t::zero ) reaction_stddev = reaction_mean * 0.25;
 }
 
 // player_t::~player_t ======================================================
@@ -819,8 +820,8 @@ void player_t::init_base()
   if ( level <= 80 ) health_per_stamina = 10;
   else if ( level <= 85 ) health_per_stamina = ( level - 80 ) / 5 * 4 + 10;
   else if ( level <= MAX_LEVEL ) health_per_stamina = 14;
-  if ( world_lag_stddev < 0 ) world_lag_stddev = world_lag * 0.1;
-  if ( brain_lag_stddev < 0 ) brain_lag_stddev = brain_lag * 0.1;
+  if ( world_lag_stddev < timespan_t::zero ) world_lag_stddev = world_lag * 0.1;
+  if ( brain_lag_stddev < timespan_t::zero ) brain_lag_stddev = brain_lag * 0.1;
 }
 
 // player_t::init_items =====================================================
@@ -1012,15 +1013,15 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   }
   else if ( meta_gem == META_MYSTICAL_SKYFIRE )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, 4.0, 45.0 );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, timespan_t::from_seconds(4.0), timespan_t::from_seconds(45.0) );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, 0, 15.0 );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, timespan_t::zero, timespan_t::from_seconds(15.0) );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, 0, 15.0 );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, timespan_t::zero, timespan_t::from_seconds(15.0) );
   }
 }
 
@@ -1275,7 +1276,7 @@ void player_t::init_resources( bool force )
     timeline_resource.resize( RESOURCE_MAX );
     timeline_resource_chart.resize( RESOURCE_MAX );
 
-    int size = ( int ) ( sim -> max_time * ( 1.0 + sim -> vary_combat_length ) );
+    int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
     if ( size <= 0 ) size = 600; // Default to 10 minutes
     size *= 2;
     size += 3; // Buffer against rounding.
@@ -1385,7 +1386,7 @@ struct execute_pet_action_t : public action_t
     action_t( ACTION_OTHER, "execute_pet_action", player ), pet_action( 0 ), pet( p ), action_str( as )
   {
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void reset()
@@ -1626,12 +1627,12 @@ void player_t::init_actions()
   for ( action_t* action = action_list; action; action = action -> next )
   {
     action -> init();
-    if ( action -> trigger_gcd == 0 && ! action -> background && action -> use_off_gcd )
+    if ( action -> trigger_gcd == timespan_t::zero && ! action -> background && action -> use_off_gcd )
       off_gcd_actions.push_back( action );
 
   }
 
-  int capacity = std::max( 1200, ( int ) ( sim -> max_time / 2.0 ) );
+  int capacity = std::max( 1200, ( int ) ( sim -> max_time.total_seconds() / 2.0 ) );
   action_sequence.reserve( capacity );
   action_sequence = "";
 }
@@ -1690,13 +1691,13 @@ void player_t::init_spells()
 void player_t::init_buffs()
 {
   buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
-  buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1,  4.0 );
+  buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1, timespan_t::from_seconds(4.0) );
   buffs.corruption_absolute       = new buff_t( this, 82170, "corruption_absolute"          );
   buffs.dark_intent               = new buff_t( this, 85767, "dark_intent"                  );
   buffs.dark_intent_feedback      = new buff_t( this, 85759, "dark_intent_feedback"         );
   buffs.essence_of_the_red        = new buff_t( this,        "essence_of_the_red"           );
   buffs.furious_howl              = new buff_t( this, 24604, "furious_howl"                 );
-  buffs.grace                     = new buff_t( this,        "grace",               3, 15.0 );
+  buffs.grace                     = new buff_t( this,        "grace",               3, timespan_t::from_seconds(15.0) );
   buffs.hellscreams_warsong       = new buff_t( this,        "hellscreams_warsong", 1       );
   buffs.heroic_presence           = new buff_t( this,        "heroic_presence",     1       );
   buffs.hymn_of_hope = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope"                 );
@@ -1708,18 +1709,18 @@ void player_t::init_buffs()
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, 15.0 );
-  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, 15.0 );
-  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0, 1, 15.0, 60.0 );
-  buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0, 1, 25.0, 60.0 );
-  buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0, 1, 25.0, 60.0 );
-  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0, 1, 15.0, 60.0 );
-  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0, 1, 20.0 );
-  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING,  500.0, 1, 15.0, 60.0 );
-  buffs.tolvir_potion          = new stat_buff_t( this, "tolvir_potion",          STAT_AGILITY,      1200.0, 1, 25.0, 60.0 );
-  buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_INTELLECT,    1200.0, 1, 25.0, 60.0 );
-  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,   200.0, 1, 15.0, 60.0 );
-  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,   200.0, 1, 15.0, 60.0 );
+  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds(15.0) );
+  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds(15.0) );
+  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
+  buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
+  buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
+  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
+  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0, 1, timespan_t::from_seconds(20.0) );
+  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING,  500.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
+  buffs.tolvir_potion          = new stat_buff_t( this, "tolvir_potion",          STAT_AGILITY,      1200.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
+  buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_INTELLECT,    1200.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
+  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,   200.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
+  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,   200.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
 
   buffs.mongoose_mh = NULL;
   buffs.mongoose_oh = NULL;
@@ -1913,22 +1914,22 @@ void player_t::init_scaling()
       case STAT_WEAPON_DPS:
         if ( main_hand_weapon.damage > 0 )
         {
-          main_hand_weapon.damage  += main_hand_weapon.swing_time * v;
-          main_hand_weapon.min_dmg += main_hand_weapon.swing_time * v;
-          main_hand_weapon.max_dmg += main_hand_weapon.swing_time * v;
+          main_hand_weapon.damage  += main_hand_weapon.swing_time.total_seconds() * v;
+          main_hand_weapon.min_dmg += main_hand_weapon.swing_time.total_seconds() * v;
+          main_hand_weapon.max_dmg += main_hand_weapon.swing_time.total_seconds() * v;
         }
         if ( ranged_weapon.damage > 0 )
         {
-          ranged_weapon.damage     += ranged_weapon.swing_time * v;
-          ranged_weapon.min_dmg    += ranged_weapon.swing_time * v;
-          ranged_weapon.max_dmg    += ranged_weapon.swing_time * v;
+          ranged_weapon.damage     += ranged_weapon.swing_time.total_seconds() * v;
+          ranged_weapon.min_dmg    += ranged_weapon.swing_time.total_seconds() * v;
+          ranged_weapon.max_dmg    += ranged_weapon.swing_time.total_seconds() * v;
         }
         break;
 
       case STAT_WEAPON_SPEED:
-        if ( main_hand_weapon.swing_time > 0 )
+        if ( main_hand_weapon.swing_time > timespan_t::zero )
         {
-          double new_speed = ( main_hand_weapon.swing_time + v );
+          timespan_t new_speed = ( main_hand_weapon.swing_time + timespan_t::from_seconds(v) );
           double mult = new_speed / main_hand_weapon.swing_time;
 
           main_hand_weapon.min_dmg *= mult;
@@ -1937,9 +1938,9 @@ void player_t::init_scaling()
 
           main_hand_weapon.swing_time = new_speed;
         }
-        if ( ranged_weapon.swing_time > 0 )
+        if ( ranged_weapon.swing_time > timespan_t::zero )
         {
-          double new_speed = ( ranged_weapon.swing_time + v );
+          timespan_t new_speed = ( ranged_weapon.swing_time + timespan_t::from_seconds(v) );
 
           double mult = new_speed / ranged_weapon.swing_time;
 
@@ -1954,16 +1955,16 @@ void player_t::init_scaling()
       case STAT_WEAPON_OFFHAND_DPS:
         if ( off_hand_weapon.damage > 0 )
         {
-          off_hand_weapon.damage   += off_hand_weapon.swing_time * v;
-          off_hand_weapon.min_dmg  += off_hand_weapon.swing_time * v;
-          off_hand_weapon.max_dmg  += off_hand_weapon.swing_time * v;
+          off_hand_weapon.damage   += off_hand_weapon.swing_time.total_seconds() * v;
+          off_hand_weapon.min_dmg  += off_hand_weapon.swing_time.total_seconds() * v;
+          off_hand_weapon.max_dmg  += off_hand_weapon.swing_time.total_seconds() * v;
         }
         break;
 
       case STAT_WEAPON_OFFHAND_SPEED:
-        if ( off_hand_weapon.swing_time > 0 )
+        if ( off_hand_weapon.swing_time > timespan_t::zero )
         {
-          double new_speed = ( off_hand_weapon.swing_time + v );
+          timespan_t new_speed = ( off_hand_weapon.swing_time + timespan_t::from_seconds(v) );
           double mult = new_speed / off_hand_weapon.swing_time;
 
           off_hand_weapon.min_dmg *= mult;
@@ -2841,8 +2842,8 @@ void player_t::combat_begin()
 
   action_sequence = "";
 
-  iteration_fight_length = 0;
-  iteration_waiting_time = 0;
+  iteration_fight_length = timespan_t::zero;
+  iteration_waiting_time = timespan_t::zero;
   iteration_executed_foreground_actions = 0;
   iteration_dmg = 0;
   iteration_heal = 0;
@@ -2889,10 +2890,10 @@ void player_t::combat_end()
   else if ( is_pet() )
     cast_pet() -> dismiss();
 
-  fight_length.add( iteration_fight_length );
+  fight_length.add( iteration_fight_length.total_seconds() );
 
   executed_foreground_actions.add( iteration_executed_foreground_actions );
-  waiting_time.add( iteration_waiting_time );
+  waiting_time.add( iteration_waiting_time.total_seconds() );
 
   for ( stats_t* s = stats_list; s; s = s -> next )
     s -> combat_end();
@@ -2907,10 +2908,10 @@ void player_t::combat_end()
   }
   compound_dmg.add( iteration_dmg );
 
-  dps.add( iteration_fight_length ? iteration_dmg / iteration_fight_length : 0 );
-  dpse.add( sim -> current_time ? iteration_dmg / sim -> current_time : 0 );
+  dps.add( iteration_fight_length != timespan_t::zero ? iteration_dmg / iteration_fight_length.total_seconds() : 0 );
+  dpse.add( sim -> current_time != timespan_t::zero ? iteration_dmg / sim -> current_time.total_seconds() : 0 );
 
-  if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time, iteration_fight_length );
+  if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 
   // Heal
   heal.add( iteration_heal );
@@ -2922,14 +2923,14 @@ void player_t::combat_end()
   }
   compound_heal.add( iteration_heal );
 
-  hps.add( iteration_fight_length ? iteration_heal / iteration_fight_length : 0 );
-  hpse.add( sim -> current_time ? iteration_heal / sim -> current_time : 0 );
+  hps.add( iteration_fight_length != timespan_t::zero ? iteration_heal / iteration_fight_length.total_seconds() : 0 );
+  hpse.add( sim -> current_time != timespan_t::zero ? iteration_heal / sim -> current_time.total_seconds() : 0 );
 
   dmg_taken.add( iteration_dmg_taken );
-  dtps.add( iteration_fight_length ? iteration_dmg_taken / iteration_fight_length : 0 );
+  dtps.add( iteration_fight_length != timespan_t::zero ? iteration_dmg_taken / iteration_fight_length.total_seconds() : 0 );
 
   heal_taken.add( iteration_heal_taken );
-  htps.add( iteration_fight_length ? iteration_heal_taken / iteration_fight_length : 0 );
+  htps.add( iteration_fight_length != timespan_t::zero ? iteration_heal_taken / iteration_fight_length.total_seconds() : 0 );
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
@@ -3018,8 +3019,8 @@ void player_t::reset()
 
   skill = initial_skill;
 
-  last_cast = 0;
-  gcd_ready = 0;
+  last_cast = timespan_t::zero;
+  gcd_ready = timespan_t::zero;
 
   sleeping = 1;
   events = 0;
@@ -3094,8 +3095,8 @@ void player_t::reset()
   off_gcd = 0;
   in_combat = false;
 
-  cast_delay_reaction = 0;
-  cast_delay_occurred = 0;
+  cast_delay_reaction = timespan_t::zero;
+  cast_delay_occurred = timespan_t::zero;
 
   main_hand_weapon.buff_type  = 0;
   main_hand_weapon.buff_value = 0;
@@ -3156,7 +3157,7 @@ void player_t::reset()
 
 // player_t::schedule_ready =================================================
 
-void player_t::schedule_ready( double delta_time,
+void player_t::schedule_ready( timespan_t delta_time,
                                bool   waiting )
 {
   if ( readying )
@@ -3175,8 +3176,8 @@ void player_t::schedule_ready( double delta_time,
 
   if ( ! has_foreground_actions( this ) ) return;
 
-  double gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
-  if ( gcd_adjust > 0 ) delta_time += gcd_adjust;
+  timespan_t gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
+  if ( gcd_adjust > timespan_t::zero ) delta_time += gcd_adjust;
 
   if ( unlikely( waiting ) )
   {
@@ -3184,16 +3185,16 @@ void player_t::schedule_ready( double delta_time,
   }
   else
   {
-    double lag = 0;
+    timespan_t lag = timespan_t::zero;
 
     if ( last_foreground_action && ! last_foreground_action -> auto_cast )
     {
-      if ( last_foreground_action -> ability_lag > 0.0 )
+      if ( last_foreground_action -> ability_lag > timespan_t::zero )
       {
-        double ability_lag = rngs.lag_ability -> gauss( last_foreground_action -> ability_lag, last_foreground_action -> ability_lag_stddev );
-        double gcd_lag     = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
-        double diff        = ( gcd_ready + gcd_lag ) - ( sim -> current_time + ability_lag );
-        if ( diff > 0 && sim -> strict_gcd_queue )
+        timespan_t ability_lag = rngs.lag_ability -> gauss( last_foreground_action -> ability_lag, last_foreground_action -> ability_lag_stddev );
+        timespan_t gcd_lag     = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
+        timespan_t diff        = ( gcd_ready + gcd_lag ) - ( sim -> current_time + ability_lag );
+        if ( diff > timespan_t::zero && sim -> strict_gcd_queue )
         {
           lag = gcd_lag;
         }
@@ -3203,9 +3204,9 @@ void player_t::schedule_ready( double delta_time,
           action_queued = true;
         }
       }
-      else if ( last_foreground_action -> gcd() == 0 )
+      else if ( last_foreground_action -> gcd() == timespan_t::zero )
       {
-        lag = 0;
+        lag = timespan_t::zero;
       }
       else if ( last_foreground_action -> channeled )
       {
@@ -3213,12 +3214,12 @@ void player_t::schedule_ready( double delta_time,
       }
       else
       {
-        double   gcd_lag = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
-        double queue_lag = rngs.lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_stddev );
+        timespan_t   gcd_lag = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
+        timespan_t queue_lag = rngs.lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_stddev );
 
-        double diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
+        timespan_t diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
 
-        if ( diff > 0 && sim -> strict_gcd_queue )
+        if ( diff > timespan_t::zero && sim -> strict_gcd_queue )
         {
           lag = gcd_lag;
         }
@@ -3230,7 +3231,7 @@ void player_t::schedule_ready( double delta_time,
       }
     }
 
-    if ( lag < 0 ) lag = 0;
+    if ( lag < timespan_t::zero ) lag = timespan_t::zero;
 
     delta_time += lag;
   }
@@ -3242,7 +3243,7 @@ void player_t::schedule_ready( double delta_time,
 
   readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
 
-  if ( was_executing && was_executing -> gcd() > 0 && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
+  if ( was_executing && was_executing -> gcd() > timespan_t::zero && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
     // Record the last ability use time for cast_react
     cast_delay_occurred = readying -> occurs();
@@ -3252,8 +3253,8 @@ void player_t::schedule_ready( double delta_time,
       log_t::output( sim, "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
                      name_str.c_str(),
                      was_executing -> name_str.c_str(),
-                     readying -> occurs(),
-                     cast_delay_reaction );
+                     readying -> occurs().total_seconds(),
+                     cast_delay_reaction.total_seconds() );
     }
   }
 }
@@ -3291,9 +3292,9 @@ void player_t::demise()
   if ( sim -> log )
     log_t::output( sim, "%s demises.", name() );
 
-  assert( arise_time >= 0 );
-  iteration_fight_length += ( sim -> current_time - arise_time );
-  arise_time = -1;
+  assert( arise_time >= timespan_t::zero );
+  iteration_fight_length += sim -> current_time - arise_time;
+  arise_time = timespan_t::min;
 
   sleeping = 1;
   if ( readying )
@@ -3454,27 +3455,27 @@ action_t* player_t::execute_action()
 
 // player_t::regen ==========================================================
 
-void player_t::regen( const double periodicity )
+void player_t::regen( const timespan_t periodicity )
 {
   int resource_type = primary_resource();
 
   if ( resource_type == RESOURCE_ENERGY )
   {
-    double energy_regen = periodicity * energy_regen_per_second();
+    double energy_regen = periodicity.total_seconds() * energy_regen_per_second();
 
     resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
   }
 
   else if ( resource_type == RESOURCE_CHI )
   {
-    double chi_regen = periodicity * chi_regen_per_second();
+    double chi_regen = periodicity.total_seconds() * chi_regen_per_second();
 
     resource_gain( RESOURCE_CHI, chi_regen, gains.chi_regen );
   }
 
   else if ( resource_type == RESOURCE_FOCUS )
   {
-    double focus_regen = periodicity * focus_regen_per_second();
+    double focus_regen = periodicity.total_seconds() * focus_regen_per_second();
 
     resource_gain( RESOURCE_FOCUS, focus_regen, gains.focus_regen );
   }
@@ -3483,7 +3484,7 @@ void player_t::regen( const double periodicity )
   {
     if ( mana_regen_while_casting > 0 )
     {
-      double spirit_regen = periodicity * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
+      double spirit_regen = periodicity.total_seconds() * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
 
       spirit_regen *= mana_regen_while_casting;
 
@@ -3493,21 +3494,21 @@ void player_t::regen( const double periodicity )
     double cmp5 = composite_mp5();
     if ( cmp5 > 0 )
     {
-      double mp5_regen = periodicity * cmp5 / 5.0;
+      double mp5_regen = periodicity.total_seconds() * cmp5 / 5.0;
 
       resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
     }
 
     if ( buffs.replenishment -> up() )
     {
-      double replenishment_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.0010;
+      double replenishment_regen = periodicity.total_seconds() * resource_max[ RESOURCE_MANA ] * 0.0010;
 
       resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
     }
 
     if ( buffs.essence_of_the_red -> up() )
     {
-      double essence_regen = periodicity * resource_max[ RESOURCE_MANA ] * 0.05;
+      double essence_regen = periodicity.total_seconds() * resource_max[ RESOURCE_MANA ] * 0.05;
 
       resource_gain( RESOURCE_MANA, essence_regen, gains.essence_of_the_red );
     }
@@ -3517,25 +3518,25 @@ void player_t::regen( const double periodicity )
 
     if ( ms > bow )
     {
-      double mana_spring_regen = periodicity * ms / 5.0;
+      double mana_spring_regen = periodicity.total_seconds() * ms / 5.0;
 
       resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring_totem );
     }
     else if ( bow > 0 )
     {
-      double wisdom_regen = periodicity * bow / 5.0;
+      double wisdom_regen = periodicity.total_seconds() * bow / 5.0;
 
       resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_might );
     }
   }
 
-  int index = ( int ) ( sim -> current_time );
+  int index = ( int ) ( sim -> current_time.total_seconds() );
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( resource_max[ i ] == 0 ) continue;
 
-    timeline_resource[ i ][ index ] += resource_current[ i ] * periodicity;
+    timeline_resource[ i ][ index ] += resource_current[ i ] * periodicity.total_seconds();
   }
 }
 
@@ -3771,25 +3772,25 @@ double player_t::health_percentage() const
 
 // target_t::time_to_die ====================================================
 
-double player_t::time_to_die() const
+timespan_t player_t::time_to_die() const
 {
   // FIXME: Someone can figure out a better way to do this, for now, we NEED to
   // wait a minimum gcd before starting to estimate fight duration based on health,
   // otherwise very odd things happen with multi-actor simulations and time_to_die
   // expressions
-  if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= 1.0 )
+  if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds(1.0) )
   {
     return sim -> current_time * resource_current[ RESOURCE_HEALTH ] / iteration_dmg_taken;
   }
   else
   {
-    return sim -> expected_time - sim -> current_time;
+    return (sim -> expected_time - sim -> current_time);
   }
 }
 
 // player_t::total_reaction_time ============================================
 
-double player_t::total_reaction_time() const
+timespan_t player_t::total_reaction_time() const
 {
   return rngs.lag_reaction -> exgauss( reaction_mean, reaction_stddev, reaction_nu );
 }
@@ -4077,7 +4078,7 @@ double player_t::assess_damage( double            amount,
     {
       if ( ! sleeping )
       {
-        deaths.add( sim -> current_time );
+        deaths.add( sim -> current_time.total_seconds() );
       }
       if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
       demise();
@@ -4169,7 +4170,7 @@ player_t::heal_info_t player_t::assess_heal(  double            amount,
 // player_t::summon_pet =====================================================
 
 void player_t::summon_pet( const char* pet_name,
-                           double      duration )
+                           timespan_t  duration )
 {
   for ( pet_t* p = pet_list; p; p = p -> next_pet )
   {
@@ -4361,7 +4362,7 @@ void player_t::recalculate_haste()
 
 bool player_t::recent_cast() const
 {
-  return ( last_cast > 0 ) && ( ( last_cast + 5.0 ) > sim -> current_time );
+  return ( last_cast > timespan_t::zero ) && ( ( last_cast + timespan_t::from_seconds(5.0) ) > sim -> current_time );
 }
 
 // player_t::find_action ====================================================
@@ -4707,8 +4708,8 @@ struct start_moving_t : public action_t
     action_t( ACTION_OTHER, "start_moving", player )
   {
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
-    cooldown -> duration = 0.5;
+    trigger_gcd = timespan_t::zero;
+    cooldown -> duration = timespan_t::from_seconds(0.5);
     harmful = false;
   }
 
@@ -4735,8 +4736,8 @@ struct stop_moving_t : public action_t
     action_t( ACTION_OTHER, "stop_moving", player )
   {
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
-    cooldown -> duration = 0.5;
+    trigger_gcd = timespan_t::zero;
+    cooldown -> duration = timespan_t::from_seconds(0.5);
     harmful = false;
   }
 
@@ -4768,8 +4769,8 @@ struct arcane_torrent_t : public action_t
   {
     check_race( RACE_BLOOD_ELF );
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
-    cooldown -> duration = 120;
+    trigger_gcd = timespan_t::zero;
+    cooldown -> duration = timespan_t::from_seconds(120);
   }
 
   virtual void execute()
@@ -4836,8 +4837,8 @@ struct berserking_t : public action_t
   {
     check_race( RACE_TROLL );
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
-    cooldown -> duration = 180;
+    trigger_gcd = timespan_t::zero;
+    cooldown -> duration = timespan_t::from_seconds(180);
   }
 
   virtual void execute()
@@ -4870,8 +4871,8 @@ struct blood_fury_t : public action_t
   {
     check_race( RACE_ORC );
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
-    cooldown -> duration = 120;
+    trigger_gcd = timespan_t::zero;
+    cooldown -> duration = timespan_t::from_seconds(120);
   }
 
   virtual void execute()
@@ -4937,8 +4938,8 @@ struct stoneform_t : public action_t
   {
     check_race( RACE_DWARF );
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
-    cooldown -> duration = 120;
+    trigger_gcd = timespan_t::zero;
+    cooldown -> duration = timespan_t::from_seconds(120);
   }
 
   virtual void execute()
@@ -5022,8 +5023,8 @@ struct lifeblood_t : public action_t
     }
     parse_options( NULL, options_str );
     harmful = false;
-    trigger_gcd = 0;
-    cooldown -> duration = 120;
+    trigger_gcd = timespan_t::zero;
+    cooldown -> duration = timespan_t::from_seconds(120);
   }
 
   virtual void execute()
@@ -5062,7 +5063,7 @@ struct restart_sequence_t : public action_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -5110,7 +5111,7 @@ struct restore_mana_t : public action_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -5138,7 +5139,7 @@ struct snapshot_stats_t : public action_t
     action_t( ACTION_OTHER, "snapshot_stats", player ), attack( 0 ), spell( 0 )
   {
     parse_options( NULL, options_str );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -5240,13 +5241,13 @@ struct wait_fixed_t : public wait_action_base_t
     time_expr = action_expr_t::parse( this, sec_str );
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     int result = time_expr -> evaluate();
     assert( result == TOK_NUM ); ( void )result;
-    double wait = time_expr -> result_num;
+    timespan_t wait = timespan_t::from_seconds(time_expr -> result_num);
 
-    if ( wait <= 0 ) wait = player -> available();
+    if ( wait <= timespan_t::zero ) wait = player -> available();
 
     return wait;
   }
@@ -5260,23 +5261,23 @@ struct wait_until_ready_t : public wait_fixed_t
     wait_fixed_t( player, options_str )
   {}
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double wait = wait_fixed_t::execute_time();
-    double remains = 0;
+    timespan_t wait = wait_fixed_t::execute_time();
+    timespan_t remains = timespan_t::zero;
 
     for ( action_t* a = player -> action_list; a; a = a -> next )
     {
       if ( a -> background ) continue;
 
       remains = a -> cooldown -> remains();
-      if ( remains > 0 && remains < wait ) wait = remains;
+      if ( remains > timespan_t::zero && remains < wait ) wait = remains;
 
       remains = a -> dot() -> remains();
-      if ( remains > 0 && remains < wait ) wait = remains;
+      if ( remains > timespan_t::zero && remains < wait ) wait = remains;
     }
 
-    if ( wait <= 0 ) wait = player -> available();
+    if ( wait <= timespan_t::zero ) wait = player -> available();
 
     return wait;
   }
@@ -5291,7 +5292,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name 
   assert( a );
 }
 
-double wait_for_cooldown_t::execute_time() const
+timespan_t wait_for_cooldown_t::execute_time() const
 { return wait_cd -> remains(); }
 
 // Use Item Action ==========================================================
@@ -5348,19 +5349,19 @@ struct use_item_t : public action_t
       {
         trigger = unique_gear_t::register_cost_reduction_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                                e.school, e.max_stacks, e.discharge_amount,
-                                                               e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, false, e.reverse, 0 );
+                                                               e.proc_chance, timespan_t::zero/*dur*/, timespan_t::zero/*cd*/, false, e.reverse, 0 );
       }
       else if ( e.stat )
       {
         trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                      e.stat, e.max_stacks, e.stat_amount,
-                                                     e.proc_chance, 0.0/*dur*/, 0.0/*cd*/, e.tick, e.reverse, 0 );
+                                                     e.proc_chance, timespan_t::zero/*dur*/, timespan_t::zero/*cd*/, e.tick, e.reverse, 0 );
       }
       else if ( e.school )
       {
         trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                           e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                                          e.proc_chance, 0.0/*cd*/, e.no_crit, e.no_player_benefits, e.no_debuffs );
+                                                          e.proc_chance, timespan_t::zero/*cd*/, e.no_crit, e.no_player_benefits, e.no_debuffs );
       }
 
       if ( trigger ) trigger -> deactivate();
@@ -5372,7 +5373,7 @@ struct use_item_t : public action_t
         discharge_spell_t( const char* n, player_t* p, double a, const school_type s ) :
           spell_t( n, p, RESOURCE_NONE, s )
         {
-          trigger_gcd = 0;
+          trigger_gcd = timespan_t::zero;
           base_dd_min = a;
           base_dd_max = a;
           may_crit    = true;
@@ -5389,7 +5390,7 @@ struct use_item_t : public action_t
       if ( e.max_stacks  == 0 ) e.max_stacks  = 1;
       if ( e.proc_chance == 0 ) e.proc_chance = 1;
 
-      buff = new stat_buff_t( player, use_name, e.stat, e.stat_amount, e.max_stacks, e.duration, 0, e.proc_chance, false, e.reverse );
+      buff = new stat_buff_t( player, use_name, e.stat, e.stat_amount, e.max_stacks, e.duration, timespan_t::zero, e.proc_chance, false, e.reverse );
     }
     else assert( false );
 
@@ -5399,15 +5400,15 @@ struct use_item_t : public action_t
 
     cooldown = player -> get_cooldown( cooldown_name );
     cooldown -> duration = item -> use.cooldown;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
 
     if ( buff != 0 ) buff -> cooldown = cooldown;
   }
 
-  void lockout( double duration )
+  void lockout( timespan_t duration )
   {
-    if ( duration <= 0 ) return;
-    double ready = sim -> current_time + duration;
+    if ( duration <= timespan_t::zero ) return;
+    timespan_t ready = sim -> current_time + duration;
     for ( action_t* a = player -> action_list; a; a = a -> next )
     {
       if ( a -> name_str == "use_item" )
@@ -5432,7 +5433,7 @@ struct use_item_t : public action_t
 
       trigger -> activate();
 
-      if ( item -> use.duration )
+      if ( item -> use.duration != timespan_t::zero )
       {
         struct trigger_expiration_t : public event_t
         {
@@ -5512,7 +5513,7 @@ struct cancel_buff_t : public action_t
       sim -> errorf( "Player %s uses cancel_buff with unknown buff %s\n", player -> name(), buff_name.c_str() );
       sim -> cancel();
     }
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -5948,7 +5949,7 @@ action_expr_t* player_t::create_expression( action_t* a,
       player_t* player;
       time_to_die_expr_t( action_t* a, player_t* p ) :
         action_expr_t( a, "target_time_to_die", TOK_NUM ), player( p ) {}
-      virtual int evaluate() { result_num = player -> time_to_die();  return TOK_NUM; }
+      virtual int evaluate() { result_num = player -> time_to_die().total_seconds();  return TOK_NUM; }
     };
     return new time_to_die_expr_t( a, this );
   }
@@ -6066,7 +6067,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
           pet_t* pet;
           pet_remains_expr_t( action_t* a, pet_t* p ) : action_expr_t( a, "pet_remains", TOK_NUM ), pet( p ) {}
-          virtual int evaluate() { result_num = ( pet -> expiration && pet -> expiration-> remains() > 0 ) ? pet -> expiration -> remains() : 0; return TOK_NUM; }
+          virtual int evaluate() { result_num = ( pet -> expiration && pet -> expiration-> remains() > timespan_t::zero ) ? pet -> expiration -> remains().total_seconds() : 0; return TOK_NUM; }
         };
         return new pet_remains_expr_t( a, pet );
       }
@@ -6181,7 +6182,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
           cooldown_t* cooldown;
           cooldown_remains_expr_t( action_t* a, cooldown_t* c ) : action_expr_t( a, "cooldown_remains", TOK_NUM ), cooldown( c ) {}
-          virtual int evaluate() { result_num = cooldown -> remains(); return TOK_NUM; }
+          virtual int evaluate() { result_num = cooldown -> remains().total_seconds(); return TOK_NUM; }
         };
         return new cooldown_remains_expr_t( a, cooldown );
       }
@@ -6199,7 +6200,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         struct duration_expr_t : public action_expr_t
         {
           duration_expr_t( action_t* a ) : action_expr_t( a, "dot_duration", TOK_NUM ) {}
-          virtual int evaluate() { result_num = action -> num_ticks * action -> tick_time(); return TOK_NUM; }
+          virtual int evaluate() { result_num = action -> num_ticks * action -> tick_time().total_seconds(); return TOK_NUM; }
         };
         return new duration_expr_t( a );
       }
@@ -6218,7 +6219,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
           dot_t* dot;
           dot_remains_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_remains", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = dot -> remains(); return TOK_NUM; }
+          virtual int evaluate() { result_num = dot -> remains().total_seconds(); return TOK_NUM; }
         };
         return new dot_remains_expr_t( a, dot );
       }
@@ -6261,7 +6262,7 @@ action_expr_t* player_t::create_expression( action_t* a,
             result_num = 9999;
             player_t* p = action -> player;
             attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? p -> main_hand_attack : p -> off_hand_attack;
-            if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> remains();
+            if ( attack && attack -> execute_event ) result_num = attack -> execute_event -> remains().total_seconds();
             return TOK_NUM;
           }
         };
@@ -6753,9 +6754,9 @@ void player_t::create_options()
     { "player_resist_frost",                  OPT_INT,    &( spell_resistance[ SCHOOL_FROST  ]        ) },
     { "player_resist_fire",                   OPT_INT,    &( spell_resistance[ SCHOOL_FIRE   ]        ) },
     { "player_resist_nature",                 OPT_INT,    &( spell_resistance[ SCHOOL_NATURE ]        ) },
-    { "reaction_time_mean",                   OPT_FLT,    &( reaction_mean                            ) },
-    { "reaction_time_stddev",                 OPT_FLT,    &( reaction_stddev                          ) },
-    { "reaction_time_nu",                     OPT_FLT,    &( reaction_nu                              ) },
+    { "reaction_time_mean",                   OPT_TIMESPAN, &( reaction_mean                          ) },
+    { "reaction_time_stddev",                 OPT_TIMESPAN, &( reaction_stddev                        ) },
+    { "reaction_time_nu",                     OPT_TIMESPAN, &( reaction_nu                            ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

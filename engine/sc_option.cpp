@@ -85,6 +85,11 @@ void option_t::print( FILE* file )
     double v = *( ( double* ) address );
     util_t::fprintf( file, "%s=%.2f\n", name, v );
   }
+  else if ( type == OPT_TIMESPAN )
+  {
+    timespan_t v = *( ( timespan_t* ) address );
+    util_t::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
+  }
   else if ( type == OPT_LIST )
   {
     std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
@@ -122,6 +127,11 @@ void option_t::save( FILE* file )
   {
     double v = *( ( double* ) address );
     if ( v != 0 ) util_t::fprintf( file, "%s=%.2f\n", name, v );
+  }
+  else if ( type == OPT_TIMESPAN )
+  {
+    timespan_t v = *( ( timespan_t* ) address );
+    if ( v != timespan_t::zero ) util_t::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
   }
   else if ( type == OPT_LIST )
   {
@@ -173,6 +183,7 @@ bool option_t::parse( sim_t*             sim,
     case OPT_CHARP:  *( ( char** )       address ) = util_t::dup( v.c_str() );  break;
     case OPT_INT:    *( ( int* )         address ) = atoi( v.c_str() );         break;
     case OPT_FLT:    *( ( double* )      address ) = atof( v.c_str() );         break;
+    case OPT_TIMESPAN:*( ( timespan_t* ) address ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
     case OPT_BOOL:
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );

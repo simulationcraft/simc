@@ -126,19 +126,19 @@ double spell_data_t::cost() const
 
 // spell_data_t::cast_time ==================================================
 
-double spell_data_t::cast_time( uint32_t level ) const
+timespan_t spell_data_t::cast_time( uint32_t level ) const
 {
   if ( _cast_div < 0 )
   {
     if ( _cast_min < 0 )
-      return 0;
-    return _cast_min / 1000.0;
+      return timespan_t::zero;
+    return timespan_t::from_millis(_cast_min);
   }
 
   if ( level >= static_cast<uint32_t>( _cast_div ) )
-    return _cast_max / 1000.0;
+    return timespan_t::from_millis(_cast_max);
 
-  return ( _cast_min + ( _cast_max - _cast_min ) * ( level - 1 ) / ( double )( _cast_div - 1 ) ) / 1000.0;
+  return timespan_t::from_millis( _cast_min + ( _cast_max - _cast_min ) * ( level - 1 ) / ( double )( _cast_div - 1 ) );
 }
 
 // spell_data_t::flags ======================================================

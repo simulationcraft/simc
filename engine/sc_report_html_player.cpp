@@ -270,7 +270,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
            s -> tick_results[ RESULT_MISS ].pct +
            s -> tick_results[ RESULT_DODGE ].pct +
            s -> tick_results[ RESULT_PARRY ].pct,
-           100 * s -> total_tick_time / s -> player -> fight_length.mean );
+           100 * s -> total_tick_time.total_seconds() / s -> player -> fight_length.mean );
 
   if ( p -> sim -> report_details )
   {
@@ -520,11 +520,11 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 util_t::talent_tree_string( a -> tree ),
                 a -> range,
                 a -> travel_speed,
-                a -> trigger_gcd,
-                a -> min_gcd,
+                a -> trigger_gcd.total_seconds(),
+                a -> min_gcd.total_seconds(),
                 a -> base_cost,
-                a -> cooldown -> duration,
-                a -> base_execute_time,
+                a -> cooldown -> duration.total_seconds(),
+                a -> base_execute_time.total_seconds(),
                 a -> base_crit,
                 a -> target ? a -> target -> name() : "",
                 a -> tooltip(),
@@ -563,7 +563,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                   a -> tick_power_mod,
                   a -> base_td,
                   a -> num_ticks,
-                  a -> base_tick_time,
+                  a -> base_tick_time.total_seconds(),
                   a -> hasted_ticks?"true":"false",
                   a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT" );
       }
@@ -1769,8 +1769,8 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                b -> cooldown -> name_str.c_str(),
                b -> tooltip(),
                b -> max_stack,
-               b -> buff_duration,
-               b -> cooldown -> duration,
+               b -> buff_duration.total_seconds(),
+               b -> cooldown -> duration.total_seconds(),
                b -> default_chance * 100 );
 
       fprintf( file,
@@ -1854,8 +1854,8 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                  ( *b ) -> cooldown -> name_str.c_str(),
                  ( *b ) -> tooltip(),
                  ( *b ) -> max_stack,
-                 ( *b ) -> buff_duration,
-                 ( *b ) -> cooldown -> duration,
+                 ( *b ) -> buff_duration.total_seconds(),
+                 ( *b ) -> cooldown -> duration.total_seconds(),
                  ( *b ) -> default_chance * 100 );
       }
       else

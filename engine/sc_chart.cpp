@@ -876,7 +876,7 @@ const char* chart_t::time_spent( std::string& s,
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
     if ( st -> quiet ) continue;
-    if ( st -> total_time <= 0 ) continue;
+    if ( st -> total_time <= timespan_t::zero ) continue;
     if ( st -> background ) continue;
 
     stats_list.push_back( st );
@@ -904,7 +904,7 @@ const char* chart_t::time_spent( std::string& s,
   s += "chd=t:";
   for ( int i=0; i < num_stats; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * stats_list[ i ] -> total_time / p -> fight_length.mean ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * stats_list[ i ] -> total_time.total_seconds() / p -> fight_length.mean ); s += buffer;
   }
   if ( p -> waiting_time.mean > 0 )
   {
@@ -940,7 +940,7 @@ const char* chart_t::time_spent( std::string& s,
     stats_t* st = stats_list[ i ];
     if ( i ) s += "|";
     s += st -> name_str.c_str();
-    snprintf( buffer, sizeof( buffer ), " %.1fs", st -> total_time ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), " %.1fs", st -> total_time.total_seconds() ); s += buffer;
   }
   if ( p -> waiting_time.mean > 0 )
   {

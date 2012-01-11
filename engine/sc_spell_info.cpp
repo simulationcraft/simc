@@ -252,8 +252,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       {
       case A_PERIODIC_DAMAGE:
         s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
-        if ( e -> period() )
-          s << " every " << e -> period() << " seconds";
+        if ( e -> period() != timespan_t::zero )
+          s << " every " << e -> period().total_seconds() << " seconds";
         break;
       case A_PROC_TRIGGER_SPELL:
         if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
@@ -263,8 +263,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
         if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
         {
           s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
-          if ( e -> period() )
-            s << " every " << e -> period() << " seconds";
+          if ( e -> period() != timespan_t::zero )
+            s << " every " << e -> period().total_seconds() << " seconds";
         }
         break;
       case A_ADD_FLAT_MODIFIER:
@@ -445,7 +445,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     s << "Cast Time    : ";
 
     if ( spell -> _cast_div )
-      s << spell -> cast_time( 85 );
+      s << spell -> cast_time( 85 ).total_seconds();
     else if ( spell -> _cast_min != spell -> _cast_max )
       s << spell -> _cast_min / 1000.0 << " - " << spell -> _cast_max / 1000.0;
     else
@@ -456,8 +456,8 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   else if ( spell -> _cast_min < 0 || spell -> _cast_max < 0 )
     s << "Cast Time    : Ranged Shot" << std::endl;
 
-  if ( spell -> gcd() )
-    s << "GCD          : " << spell -> gcd() << " seconds" << std::endl;
+  if ( spell -> gcd() != timespan_t::zero )
+    s << "GCD          : " << spell -> gcd().total_seconds() << " seconds" << std::endl;
 
   if ( spell -> missile_speed() )
     s << "Velocity     : " << spell -> missile_speed() << " yards/sec"  << std::endl;
@@ -465,19 +465,19 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   if ( spell -> runic_power_gain() > 0 )
     s << "Power Gain   : " << spell -> runic_power_gain() << " Runic Power" << std::endl;
 
-  if ( spell -> duration() != 0 )
+  if ( spell -> duration() != timespan_t::zero )
   {
     s << "Duration     : ";
-    if ( spell -> duration() < 0 )
+    if ( spell -> duration() < timespan_t::zero )
       s << "Aura (infinite)";
     else
-      s << spell -> duration() << " seconds";
+      s << spell -> duration().total_seconds() << " seconds";
 
     s << std::endl;
   }
 
-  if ( spell -> cooldown() > 0 )
-    s << "Cooldown     : " << spell -> cooldown() << " seconds" << std::endl;
+  if ( spell -> cooldown() > timespan_t::zero )
+    s << "Cooldown     : " << spell -> cooldown().total_seconds() << " seconds" << std::endl;
 
   if ( spell -> initial_stacks() > 0 || spell -> max_stacks() )
   {

@@ -52,17 +52,17 @@ void action_t::init_action_t_()
   no_buffs                       = false;
   no_debuffs                     = false;
   dot_behavior                   = DOT_CLIP;
-  ability_lag                    = 0.0;
-  ability_lag_stddev             = 0.0;
+  ability_lag                    = timespan_t::zero;
+  ability_lag_stddev             = timespan_t::zero;
   rp_gain                        = 0.0;
-  min_gcd                        = 0.0;
+  min_gcd                        = timespan_t::zero;
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
   weapon_power_mod               = 1.0/14.0;
   direct_power_mod               = 0.0;
   tick_power_mod                 = 0.0;
-  base_execute_time              = 0.0;
-  base_tick_time                 = 0.0;
+  base_execute_time              = timespan_t::zero;
+  base_tick_time                 = timespan_t::zero;
   base_cost                      = 0.0;
   base_dd_min                    = 0.0;
   base_dd_max                    = 0.0;
@@ -116,14 +116,14 @@ void action_t::init_action_t_()
   stats                          = NULL;
   execute_event                  = NULL;
   travel_event                   = NULL;
-  time_to_execute                = 0.0;
-  time_to_travel                 = 0.0;
+  time_to_execute                = timespan_t::zero;
+  time_to_travel                 = timespan_t::zero;
   travel_speed                   = 0.0;
   bloodlust_active               = 0;
   max_haste                      = 0.0;
   haste_gain_percentage          = 0.0;
-  min_current_time               = 0.0;
-  max_current_time               = 0.0;
+  min_current_time               = timespan_t::zero;
+  max_current_time               = timespan_t::zero;
   min_health_percentage          = 0.0;
   max_health_percentage          = 0.0;
   moving                         = -1;
@@ -142,7 +142,7 @@ void action_t::init_action_t_()
   sync_action                    = NULL;
   next                           = NULL;
   marker                         = 0;
-  last_reaction_time             = 0.0;
+  last_reaction_time             = timespan_t::zero;
   dtr_action                     = 0;
   is_dtr_action                  = false;
   cached_targetdata = NULL;
@@ -354,7 +354,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
         base_crit += 0.01 * effect -> base_value();
         break;
       case P_COOLDOWN:
-        cooldown -> duration += 0.001 * effect -> base_value();
+        cooldown -> duration += timespan_t::from_millis( effect -> base_value() );
         break;
       default: break;
       }
@@ -393,8 +393,8 @@ void action_t::parse_options( option_t*          options,
     { "not_flying",             OPT_BOOL,   &not_flying            },
     { "moving",                 OPT_BOOL,   &moving                },
     { "sync",                   OPT_STRING, &sync_str              },
-    { "time<",                  OPT_FLT,    &max_current_time      },
-    { "time>",                  OPT_FLT,    &min_current_time      },
+    { "time<",                  OPT_TIMESPAN, &max_current_time    },
+    { "time>",                  OPT_TIMESPAN, &min_current_time    },
     { "travel_speed",           OPT_FLT,    &travel_speed          },
     { "vulnerable",             OPT_BOOL,   &vulnerable            },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
@@ -466,21 +466,21 @@ double action_t::cost() const
 
 // action_t::gcd ============================================================
 
-double action_t::gcd() const
+timespan_t action_t::gcd() const
 {
   if ( ! harmful && ! player -> in_combat )
-    return 0;
+    return timespan_t::zero;
 
   return trigger_gcd;
 }
 
 // action_t::travel_time ====================================================
 
-double action_t::travel_time()
+timespan_t action_t::travel_time()
 {
-  if ( travel_speed == 0 ) return 0;
+  if ( travel_speed == 0 ) return timespan_t::zero;
 
-  if ( player -> distance == 0 ) return 0;
+  if ( player -> distance == 0 ) return timespan_t::zero;
 
   double t = player -> distance / travel_speed;
 
@@ -491,7 +491,7 @@ double action_t::travel_time()
     t = rng_travel -> gauss( t, v );
   }
 
-  return t;
+  return timespan_t::from_seconds(t);
 }
 
 // action_t::player_buff ====================================================
@@ -780,9 +780,9 @@ double action_t::calculate_weapon_damage()
 
   double dmg = sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> bonus_dmg;
 
-  double weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
+  timespan_t weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
-  double power_damage = weapon_speed * weapon_power_mod * total_attack_power();
+  double power_damage = weapon_speed.total_seconds() * weapon_power_mod * total_attack_power();
 
   double total_dmg = dmg + power_damage;
 
@@ -793,7 +793,7 @@ double action_t::calculate_weapon_damage()
   if ( sim -> debug )
   {
     log_t::output( sim, "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
-                   player -> name(), name(), total_dmg, dmg, weapon -> bonus_dmg, weapon_speed, power_damage, total_attack_power() );
+                   player -> name(), name(), total_dmg, dmg, weapon -> bonus_dmg, weapon_speed.total_seconds(), power_damage, total_attack_power() );
   }
 
   return total_dmg;
@@ -1110,7 +1110,7 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
       dot -> num_ticks = hasted_num_ticks();
       dot -> current_tick = 0;
       dot -> added_ticks = 0;
-      dot -> added_seconds = 0;
+      dot -> added_seconds = timespan_t::zero;
       if ( dot -> ticking )
       {
         assert( dot -> tick_event );
@@ -1136,7 +1136,7 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
 
       if ( sim -> debug )
         log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)",
-                       player -> name(), dot -> ready, name(), dot -> name() );
+                       player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
     }
   }
   else
@@ -1232,11 +1232,11 @@ void action_t::schedule_execute()
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
 
-    if ( special && time_to_execute > 0 && ! proc )
+    if ( special && time_to_execute > timespan_t::zero && ! proc )
     {
       // While an ability is casting, the auto_attack is paused
       // So we simply reschedule the auto_attack by the ability's casttime
-      double time_to_next_hit;
+      timespan_t time_to_next_hit;
       // Mainhand
       if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
@@ -1265,7 +1265,7 @@ void action_t::schedule_travel( player_t* t )
 
   snapshot();
 
-  if ( time_to_travel == 0 )
+  if ( time_to_travel == timespan_t::zero )
   {
     impact( t, result, direct_dmg );
   }
@@ -1273,7 +1273,7 @@ void action_t::schedule_travel( player_t* t )
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(),time_to_travel, name() );
+      log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
     travel_event = new ( sim ) action_travel_event_t( sim, t, this, time_to_travel );
@@ -1282,18 +1282,18 @@ void action_t::schedule_travel( player_t* t )
 
 // action_t::reschedule_execute =============================================
 
-void action_t::reschedule_execute( double time )
+void action_t::reschedule_execute( timespan_t time )
 {
   if ( sim -> log )
   {
     log_t::output( sim, "%s reschedules execute for %s", player -> name(), name() );
   }
 
-  double delta_time = sim -> current_time + time - execute_event -> occurs();
+  timespan_t delta_time = sim -> current_time + time - execute_event -> occurs();
 
   time_to_execute += delta_time;
 
-  if ( delta_time > 0 )
+  if ( delta_time > timespan_t::zero )
   {
     execute_event -> reschedule( time );
   }
@@ -1308,23 +1308,23 @@ void action_t::reschedule_execute( double time )
 
 void action_t::update_ready()
 {
-  double delay = 0;
-  if ( cooldown -> duration > 0 && ! dual )
+  timespan_t delay = timespan_t::zero;
+  if ( cooldown -> duration > timespan_t::zero && ! dual )
   {
 
     if ( ! background && ! proc )
     {
-      double lag, dev;
+      timespan_t lag, dev;
 
       lag = player -> world_lag_override ? player -> world_lag : sim -> world_lag;
       dev = player -> world_lag_stddev_override ? player -> world_lag_stddev : sim -> world_lag_stddev;
       delay = player -> rngs.lag_world -> gauss( lag, dev );
-      if ( sim -> debug ) log_t::output( sim, "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay );
+      if ( sim -> debug ) log_t::output( sim, "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
     }
 
-    cooldown -> start( -1, delay );
+    cooldown -> start( timespan_t::min, delay );
 
-    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready );
+    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
   }
   if ( num_ticks )
   {
@@ -1334,7 +1334,7 @@ void action_t::update_ready()
       last_reaction_time = player -> total_reaction_time();
       if ( sim -> debug )
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)",
-                       player -> name(), last_reaction_time, name(), dot -> name() );
+                       player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
 
       dot -> miss_time = sim -> current_time;
     }
@@ -1347,7 +1347,7 @@ bool action_t::usable_moving()
 {
   bool usable = true;
 
-  if ( execute_time() > 0 )
+  if ( execute_time() > timespan_t::zero )
     return false;
 
   if ( channeled )
@@ -1372,7 +1372,7 @@ bool action_t::ready()
     if ( ! sim -> roll( player -> skill ) )
       return false;
 
-  if ( cooldown -> remains() > 0 )
+  if ( cooldown -> remains() > timespan_t::zero )
     return false;
 
   if ( ! player -> resource_available( resource, cost() ) )
@@ -1381,11 +1381,11 @@ bool action_t::ready()
   if ( if_expr && ! if_expr -> success() )
     return false;
 
-  if ( min_current_time > 0 )
+  if ( min_current_time > timespan_t::zero )
     if ( sim -> current_time < min_current_time )
       return false;
 
-  if ( max_current_time > 0 )
+  if ( max_current_time > timespan_t::zero )
     if ( sim -> current_time > max_current_time )
       return false;
 
@@ -1484,7 +1484,7 @@ void action_t::init()
   if ( is_dtr_action )
   {
     cooldown = player -> get_cooldown( name_str + "_DTR" );
-    cooldown -> duration = 0;
+    cooldown -> duration = timespan_t::zero;
 
     stats = player -> get_stats( name_str + "_DTR", this );
     background = true;
@@ -1536,7 +1536,7 @@ void action_t::interrupt_action()
 {
   if ( sim -> debug ) log_t::output( sim, "action %s of %s is interrupted", name(), player -> name() );
 
-  if ( cooldown -> duration > 0 && ! dual )
+  if ( cooldown -> duration > timespan_t::zero && ! dual )
   {
     if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 
@@ -1639,7 +1639,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct remains_expr_t : public action_expr_t
     {
       remains_expr_t( action_t* a ) : action_expr_t( a, "remains", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> dot() -> remains(); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> dot() -> remains().total_seconds(); return TOK_NUM; }
     };
     return new remains_expr_t( this );
   }
@@ -1648,7 +1648,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct cast_time_expr_t : public action_expr_t
     {
       cast_time_expr_t( action_t* a ) : action_expr_t( a, "cast_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> execute_time(); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> execute_time().total_seconds(); return TOK_NUM; }
     };
     return new cast_time_expr_t( this );
   }
@@ -1657,7 +1657,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct cooldown_expr_t : public action_expr_t
     {
       cooldown_expr_t( action_t* a ) : action_expr_t( a, "cooldown", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> cooldown -> duration; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> cooldown -> duration.total_seconds(); return TOK_NUM; }
     };
     return new cooldown_expr_t( this );
   }
@@ -1666,7 +1666,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct tick_time_expr_t : public action_expr_t
     {
       tick_time_expr_t( action_t* a ) : action_expr_t( a, "tick_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> dot() -> ticking ) ? action -> dot() -> action -> tick_time() : 0; return TOK_NUM; }
+      virtual int evaluate() { result_num = ( ( action -> dot() -> ticking ) ? action -> dot() -> action -> tick_time() : timespan_t::zero ).total_seconds(); return TOK_NUM; }
     };
     return new tick_time_expr_t( this );
   }
@@ -1675,7 +1675,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct cast_time_expr_t : public action_expr_t
     {
       cast_time_expr_t( action_t* a ) : action_expr_t( a, "gcd", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> gcd(); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> gcd().total_seconds(); return TOK_NUM; }
     };
     return new cast_time_expr_t( this );
   }
@@ -1684,7 +1684,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct travel_time_expr_t : public action_expr_t
     {
       travel_time_expr_t( action_t* a ) : action_expr_t( a, "travel_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> travel_time(); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> travel_time().total_seconds(); return TOK_NUM; }
     };
     return new travel_time_expr_t( this );
   }
@@ -1705,7 +1705,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       virtual int evaluate()
       {
         dot_t* dot = action -> dot();
-        if ( dot -> miss_time == -1 ||
+        if ( dot -> miss_time == timespan_t::min ||
              action -> sim -> current_time >= ( dot -> miss_time + action -> last_reaction_time ) )
         {
           result_num = 1;
@@ -1731,11 +1731,11 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
           log_t::output( action -> sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f",
                          action -> player -> name_str.c_str(),
                          action -> name_str.c_str(),
-                         action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction,
-                         action -> sim -> current_time );
+                         (action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction).total_seconds(),
+                         action -> sim -> current_time.total_seconds() );
         }
 
-        if ( ! action -> player -> cast_delay_occurred ||
+        if ( action -> player -> cast_delay_occurred == timespan_t::zero ||
              action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction < action -> sim -> current_time )
         {
           result_num = 1;
@@ -1842,19 +1842,19 @@ double action_t::ppm_proc_chance( double PPM ) const
   }
   else
   {
-    double time = channeled ? dot() -> time_to_tick : time_to_execute;
+    timespan_t time = channeled ? dot() -> time_to_tick : time_to_execute;
 
-    if ( time == 0 ) time = player -> base_gcd;
+    if ( time == timespan_t::zero ) time = player -> base_gcd;
 
-    return ( PPM * time / 60.0 );
+    return ( PPM * time.total_minutes() );
   }
 }
 
 // action_t::tick_time ======================================================
 
-double action_t::tick_time() const
+timespan_t action_t::tick_time() const
 {
-  double t = base_tick_time;
+  timespan_t t = base_tick_time;
   if ( channeled || hasted_ticks )
   {
     t *= player_haste;
@@ -1864,7 +1864,7 @@ double action_t::tick_time() const
 
 // action_t::hasted_num_ticks ===============================================
 
-int action_t::hasted_num_ticks( double d ) const
+int action_t::hasted_num_ticks( timespan_t d ) const
 {
   if ( ! hasted_ticks ) return num_ticks;
 
@@ -1873,10 +1873,10 @@ int action_t::hasted_num_ticks( double d ) const
   // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
   // It's important that we're accurate here so that we model haste breakpoints correctly.
 
-  if ( d < 0 )
+  if ( d < timespan_t::zero )
     d = num_ticks * base_tick_time;
 
-  double t = floor( ( base_tick_time * player_haste * 1000.0 ) + 0.5 ) / 1000.0;
+  timespan_t t = timespan_t::from_millis( ( base_tick_time.total_millis() * player_haste ) + 0.5);
 
   double n = d / t;
 

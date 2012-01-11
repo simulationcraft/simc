@@ -13,13 +13,13 @@ struct enemy_t : public player_t
 {
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
-  double waiting_time;
+  timespan_t waiting_time;
 
   enemy_t( sim_t* s, const std::string& n, race_type r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
-    waiting_time( 1.0 )
+    waiting_time( timespan_t::from_seconds(1.0) )
 
   {
     player_t** last = &( sim -> target_list );
@@ -75,7 +75,7 @@ struct enemy_t : public player_t
   virtual void combat_end();
   virtual void recalculate_health();
   virtual action_expr_t* create_expression( action_t* action, const std::string& type );
-  virtual double available() const { return waiting_time; }
+  virtual timespan_t available() const { return waiting_time; }
 };
 
 // ==========================================================================
@@ -120,10 +120,10 @@ struct melee_t : public attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     base_cost   = 0;
     base_dd_min = 260000;
-    base_execute_time = 2.4;
+    base_execute_time = timespan_t::from_seconds(2.4);
   }
 };
 
@@ -136,12 +136,12 @@ struct auto_attack_t : public attack_t
   {
     p -> main_hand_attack = new melee_t( "melee_main_hand", player );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = 2.4;
+    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(2.4);
 
     option_t options[] =
     {
       { "damage",       OPT_FLT, &p -> main_hand_attack -> base_dd_min       },
-      { "attack_speed", OPT_FLT, &p -> main_hand_attack -> base_execute_time },
+      { "attack_speed", OPT_TIMESPAN, &p -> main_hand_attack -> base_execute_time },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -149,15 +149,15 @@ struct auto_attack_t : public attack_t
     p -> main_hand_attack -> target = target;
 
     p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min;
-    if ( p -> main_hand_attack -> base_execute_time < 0.01 )
-      p -> main_hand_attack -> base_execute_time = 2.4;
+    if ( p -> main_hand_attack -> base_execute_time < timespan_t::from_seconds(0.01) )
+      p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(2.4);
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
     stats -> school = school;
     name_str = name_str + "_" + target -> name();
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -185,7 +185,7 @@ struct spell_nuke_t : public spell_t
   spell_nuke_t( player_t* p, const std::string& options_str ) :
     spell_t( "spell_nuke", p, RESOURCE_MANA, SCHOOL_FIRE )
   {
-    base_execute_time = 3.0;
+    base_execute_time = timespan_t::from_seconds(3.0);
     base_dd_min = 50000;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
@@ -193,15 +193,15 @@ struct spell_nuke_t : public spell_t
     option_t options[] =
     {
       { "damage",       OPT_FLT, &base_dd_min          },
-      { "attack_speed", OPT_FLT, &base_execute_time    },
-      { "cooldown",     OPT_FLT, &cooldown -> duration },
+      { "attack_speed", OPT_TIMESPAN, &base_execute_time    },
+      { "cooldown",     OPT_TIMESPAN, &cooldown -> duration },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
     base_dd_max = base_dd_min;
-    if ( base_execute_time < 0.00 )
-      base_execute_time = 3.0;
+    if ( base_execute_time < timespan_t::zero )
+      base_execute_time = timespan_t::from_seconds(3.0);
 
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
     stats -> school = school;
@@ -218,7 +218,7 @@ struct spell_aoe_t : public spell_t
   spell_aoe_t( player_t* p, const std::string& options_str ) :
     spell_t( "spell_aoe", p, RESOURCE_MANA, SCHOOL_FIRE )
   {
-    base_execute_time = 3.0;
+    base_execute_time = timespan_t::from_seconds(3.0);
     base_dd_min = 50000;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
@@ -226,15 +226,15 @@ struct spell_aoe_t : public spell_t
     option_t options[] =
     {
       { "damage",       OPT_FLT, &base_dd_min          },
-      { "cast_time", OPT_FLT, &base_execute_time    },
-      { "cooldown",     OPT_FLT, &cooldown -> duration },
+      { "cast_time", OPT_TIMESPAN, &base_execute_time    },
+      { "cooldown",     OPT_TIMESPAN, &cooldown -> duration },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
     base_dd_max = base_dd_min;
-    if ( base_execute_time < 0.01 )
-      base_execute_time = 3.0;
+    if ( base_execute_time < timespan_t::from_seconds(0.01) )
+      base_execute_time = timespan_t::from_seconds(3.0);
 
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
     stats -> school = school;
@@ -249,18 +249,18 @@ struct spell_aoe_t : public spell_t
 struct summon_add_t : public spell_t
 {
   std::string add_name;
-  double summoning_duration;
+  timespan_t summoning_duration;
   pet_t* pet;
 
   summon_add_t( player_t* player, const std::string& options_str ) :
     spell_t( "summon_add", player, RESOURCE_MANA, SCHOOL_PHYSICAL ),
-    add_name( "" ), summoning_duration( 0 ), pet( 0 )
+    add_name( "" ), summoning_duration( timespan_t::zero ), pet( 0 )
   {
     option_t options[] =
     {
       { "name",     OPT_STRING, &add_name             },
-      { "duration", OPT_FLT,    &summoning_duration   },
-      { "cooldown", OPT_FLT,    &cooldown -> duration },
+      { "duration", OPT_TIMESPAN,    &summoning_duration   },
+      { "cooldown", OPT_TIMESPAN,    &cooldown -> duration },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -276,7 +276,7 @@ struct summon_add_t : public spell_t
 
     harmful = false;
 
-    trigger_gcd = 1.5;
+    trigger_gcd = timespan_t::from_seconds(1.5);
   }
 
   virtual void execute()
@@ -331,9 +331,9 @@ void enemy_t::init()
 
 void enemy_t::init_base()
 {
-  waiting_time = std::min( ( int ) floor( sim -> max_time ), sim -> wheel_seconds );
-  if ( waiting_time < 1.0 )
-    waiting_time = 1.0;
+  waiting_time = timespan_t::from_seconds(std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds ));
+  if ( waiting_time < timespan_t::from_seconds(1.0) )
+    waiting_time = timespan_t::from_seconds(1.0);
 
   health_per_stamina = 10;
 
@@ -440,7 +440,7 @@ void enemy_t::init_actions()
     if ( action -> name_str == "snapshot_stats" ) continue;
     if ( action -> name_str.find( "auto_attack" ) != std::string::npos )
       continue;
-    waiting_time = 1.0;
+    waiting_time = timespan_t::from_seconds(1.0);
     break;
   }
 }
@@ -518,7 +518,7 @@ double enemy_t::health_percentage() const
 
   if ( resource_base[ RESOURCE_HEALTH ] == 0 ) // first iteration
   {
-    double remainder = std::max( 0.0, ( sim -> expected_time - sim -> current_time ) );
+    timespan_t remainder = std::max( timespan_t::zero, ( sim -> expected_time - sim -> current_time ) );
 
     return ( remainder / sim -> expected_time ) * ( initial_health_percentage - sim -> target_death_pct ) + sim ->  target_death_pct;
   }
@@ -530,7 +530,7 @@ double enemy_t::health_percentage() const
 
 void enemy_t::recalculate_health()
 {
-  if ( sim -> expected_time <= 0 || fixed_health > 0 ) return;
+  if ( sim -> expected_time <= timespan_t::zero || fixed_health > 0 ) return;
 
   if ( initial_health == 0 ) // first iteration
   {
@@ -538,7 +538,7 @@ void enemy_t::recalculate_health()
   }
   else
   {
-    double delta_time = sim -> current_time - sim -> expected_time;
+    timespan_t delta_time = sim -> current_time - sim -> expected_time;
     delta_time /= ( sim -> current_iteration + 1 ); // dampening factor
     double factor = 1.0 - ( delta_time / sim -> expected_time );
 

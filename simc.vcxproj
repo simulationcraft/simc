@@ -88,6 +88,7 @@
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <RunCodeAnalysis Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -139,6 +140,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -240,6 +242,7 @@
     <ClCompile Include="engine\sc_talent.cpp" />
     <ClCompile Include="engine\sc_target.cpp" />
     <ClCompile Include="engine\sc_thread.cpp" />
+    <ClCompile Include="engine\sc_timespan.cpp" />
     <ClCompile Include="engine\sc_unique_gear.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
     <ClCompile Include="engine\sc_warlock.cpp" />

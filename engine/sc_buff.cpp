@@ -11,7 +11,7 @@ struct expiration_t : public event_t
 {
   buff_t* buff;
 
-  expiration_t( sim_t* sim, player_t* p, buff_t* b, double d ) : event_t( sim, p, b -> name() ), buff( b )
+  expiration_t( sim_t* sim, player_t* p, buff_t* b, timespan_t d ) : event_t( sim, p, b -> name() ), buff( b )
   { sim -> add_event( this, d ); }
 
   virtual void execute()
@@ -30,14 +30,14 @@ struct buff_delay_t : public event_t
   buff_delay_t( sim_t* sim, player_t* p, buff_t* b, int stacks, double value ) :
     event_t( sim, p, b -> name() ), value( value ), buff( b ), stacks( stacks )
   {
-    double delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+    timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
     sim -> add_event( this, delay_duration );
   }
 
   virtual void execute()
   {
     // Add a Cooldown check here to avoid extra processing due to delays
-    if ( buff -> cooldown -> remains() ==  0 )
+    if ( buff -> cooldown -> remains() ==  timespan_t::zero )
       buff -> execute( stacks, value );
     buff -> delay = 0;
   }
@@ -53,8 +53,8 @@ struct buff_delay_t : public event_t
 buff_t::buff_t( sim_t*             s,
                 const std::string& n,
                 int                ms,
-                double             d,
-                double             cd,
+                timespan_t         d,
+                timespan_t         cd,
                 double             ch,
                 bool               q,
                 bool               r,
@@ -75,8 +75,8 @@ buff_t::buff_t( sim_t*             s,
 buff_t::buff_t( actor_pair_t       p,
                 const std::string& n,
                 int                ms,
-                double             d,
-                double             cd,
+                timespan_t         d,
+                timespan_t         cd,
                 double             ch,
                 bool               q,
                 bool               r,
@@ -116,7 +116,7 @@ void buff_t::init_from_talent_( player_t* /* p */, talent_t* talent )
 buff_t::buff_t( actor_pair_t p,
                 talent_t* talent, ... ) :
   spell_id_t( p.source, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
-  buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ),
+  buff_duration( timespan_t::zero ), buff_cooldown( timespan_t::zero ), default_chance( 0 ),
   name_str( s_token ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),
   activated( true ), reverse( false ), constant( false ), quiet( false ),
@@ -148,7 +148,7 @@ void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
 buff_t::buff_t( actor_pair_t  p,
                 spell_data_t* spell, ... ) :
   spell_id_t( p.source, spell -> name_cstr(), spell -> id() ),
-  buff_duration( 0 ), buff_cooldown( 0 ), default_chance( 0 ), name_str( s_token ),
+	  buff_duration( timespan_t::zero ), buff_cooldown( timespan_t::zero ), default_chance( 0 ), name_str( s_token ),
   sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),
   activated( true ), reverse( false ), constant( false ), quiet( false ),
@@ -183,11 +183,11 @@ void buff_t::parse_options( va_list vap )
     }
     else if ( ! strcmp( parm, "duration" ) )
     {
-      buff_duration = ( double ) va_arg( vap, double );
+      buff_duration = timespan_t::from_seconds(( double ) va_arg( vap, double ));
     }
     else if ( ! strcmp( parm, "cooldown" ) )
     {
-      buff_cooldown = ( double ) va_arg( vap, double );
+      buff_cooldown = timespan_t::from_seconds(( double ) va_arg( vap, double ));
     }
     else if ( ! strcmp( parm, "reverse" ) )
     {
@@ -211,11 +211,11 @@ void buff_t::init_buff_shared()
 {
   current_stack = 0;
   current_value = 0;
-  last_start = -1;
-  last_trigger = -1;
-  start_intervals_sum = 0;
-  trigger_intervals_sum = 0;
-  iteration_uptime_sum = 0;
+  last_start = timespan_t::min;
+  last_trigger = timespan_t::min;
+  start_intervals_sum = timespan_t::zero;
+  trigger_intervals_sum = timespan_t::zero;
+  iteration_uptime_sum = timespan_t::zero;
   up_count = 0;
   down_count = 0;
   start_intervals = 0;
@@ -235,7 +235,7 @@ void buff_t::init_buff_shared()
   expiration = 0;
   delay = 0;
 
-  buff_duration = std::min( buff_duration, sim -> wheel_seconds - 2.0 );
+  buff_duration = std::min( buff_duration, timespan_t::from_seconds(sim -> wheel_seconds - 2.0) );
 
   if ( max_stack >= 0 )
   {
@@ -282,7 +282,7 @@ buff_t::buff_t( actor_pair_t       p,
                 const std::string& n,
                 const char*        sname,
                 double             chance,
-                double             cd,
+                timespan_t         cd,
                 bool               q,
                 bool               r,
                 int                rt,
@@ -300,7 +300,7 @@ buff_t::buff_t( actor_pair_t       p,
   init_buff_t_();
 
   cooldown = initial_source -> get_cooldown( "buff_" + name_str );
-  if ( cd < 0.0 )
+  if ( cd < timespan_t::zero )
   {
     cooldown -> duration = p.source -> dbc.spell( spell_id() ) -> cooldown();
   }
@@ -325,7 +325,7 @@ buff_t::buff_t( actor_pair_t       p,
                 const uint32_t     id,
                 const std::string& n,
                 double             chance,
-                double             cd,
+                timespan_t         cd,
                 bool               q,
                 bool               r,
                 int                rt,
@@ -342,7 +342,7 @@ buff_t::buff_t( actor_pair_t       p,
   init_buff_t_();
 
   cooldown = player -> get_cooldown( "buff_" + name_str );
-  if ( cd < 0.0 )
+  if ( cd < timespan_t::zero )
   {
     cooldown -> duration = player -> dbc.spell( spell_id() ) -> cooldown();
   }
@@ -388,7 +388,7 @@ buff_t::~buff_t()
 
 void buff_t::combat_begin()
 {
-  iteration_uptime_sum = 0;
+  iteration_uptime_sum = timespan_t::zero;
 }
 
 // buff_t::combat_end ==========================================================
@@ -396,9 +396,9 @@ void buff_t::combat_begin()
 void buff_t::combat_end()
 {
   if ( player )
-    uptime_pct.add( player -> iteration_fight_length ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length : 0 );
+    uptime_pct.add( player -> iteration_fight_length != timespan_t::zero ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length : 0 );
   else
-    uptime_pct.add( sim -> current_time ? 100.0 * iteration_uptime_sum / sim -> current_time : 0 );
+    uptime_pct.add( sim -> current_time != timespan_t::zero ? 100.0 * iteration_uptime_sum / sim -> current_time : 0 );
 }
 
 // buff_t::may_react ========================================================
@@ -411,11 +411,11 @@ bool buff_t::may_react( int stack )
 
   if ( stack > max_stack ) return false;
 
-  double occur = stack_occurrence[ stack ];
+  timespan_t occur = stack_occurrence[ stack ];
 
-  if ( occur <= 0 ) return true;
+  if ( occur <= timespan_t::zero ) return true;
 
-  return sim -> current_time  > stack_react_time[ stack ];
+  return sim -> current_time > stack_react_time[ stack ];
 }
 
 // buff_t::stack_react ======================================================
@@ -435,39 +435,39 @@ int buff_t::stack_react()
 
 // buff_t::remains ==========================================================
 
-double buff_t::remains()
+timespan_t buff_t::remains()
 {
   if ( current_stack <= 0 )
   {
-    return 0;
+    return timespan_t::zero;
   }
   if ( expiration )
   {
     return expiration -> occurs() - sim -> current_time;
   }
-  return -1;
+  return timespan_t::min;
 }
 
 // buff_t::remains_gt =======================================================
 
-bool buff_t::remains_gt( double time )
+bool buff_t::remains_gt( timespan_t time )
 {
-  double time_remaining = remains();
+  timespan_t time_remaining = remains();
 
-  if ( time_remaining == 0 ) return false;
+  if ( time_remaining == timespan_t::zero ) return false;
 
-  if ( time_remaining == -1 ) return true;
+  if ( time_remaining == timespan_t::min ) return true;
 
   return ( time_remaining > time );
 }
 
 // buff_t::remains_lt =======================================================
 
-bool buff_t::remains_lt( double time )
+bool buff_t::remains_lt( timespan_t time )
 {
-  double time_remaining = remains();
+  timespan_t time_remaining = remains();
 
-  if ( time_remaining == -1 ) return false;
+  if ( time_remaining == timespan_t::min ) return false;
 
   return ( time_remaining < time );
 }
@@ -491,7 +491,7 @@ bool buff_t::trigger( int    stacks,
 {
   if ( max_stack == 0 || chance == 0 ) return false;
 
-  if ( cooldown -> remains() > 0 )
+  if ( cooldown -> remains() > timespan_t::zero )
     return false;
 
   if ( player && player -> sleeping )
@@ -504,7 +504,7 @@ bool buff_t::trigger( int    stacks,
   if ( ! rng -> roll( chance ) )
     return false;
 
-  if ( ! activated && player && player -> in_combat && sim -> default_aura_delay > 0 )
+  if ( ! activated && player && player -> in_combat && sim -> default_aura_delay > timespan_t::zero )
   {
     // In-game, procs that happen "close to eachother" are usually delayed into the
     // same time slot. We roughly model this by allowing procs that happen during the
@@ -529,7 +529,7 @@ bool buff_t::trigger( int    stacks,
 
 void buff_t::execute( int stacks, double value )
 {
-  if ( last_trigger > 0 )
+  if ( last_trigger > timespan_t::zero )
   {
     trigger_intervals_sum += sim -> current_time - last_trigger;
     trigger_intervals++;
@@ -546,11 +546,11 @@ void buff_t::execute( int stacks, double value )
   }
 
   // new buff cooldown impl
-  if ( cooldown -> duration > 0 )
+  if ( cooldown -> duration > timespan_t::zero )
   {
     if ( sim -> debug )
       log_t::output( sim, "%s starts buff %s cooldown (%s) with duration %.2f",
-                     ( source ? source -> name() : "someone" ), name(), cooldown -> name(), cooldown -> duration );
+                     ( source ? source -> name() : "someone" ), name(), cooldown -> name(), cooldown -> duration.total_seconds() );
 
     cooldown -> start();
   }
@@ -609,29 +609,29 @@ void buff_t::decrement( int    stacks,
 
 // buff_t::extend_duration ==================================================
 
-void buff_t::extend_duration( player_t* p, double extra_seconds )
+void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 {
   assert( expiration );
-  assert( extra_seconds < sim -> wheel_seconds );
+  assert( extra_seconds.total_seconds() < sim -> wheel_seconds );
 
-  if ( extra_seconds > 0 )
+  if ( extra_seconds > timespan_t::zero )
   {
     expiration -> reschedule( expiration -> remains() + extra_seconds );
 
     if ( sim -> debug )
       log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
-                     p -> name(), name(), extra_seconds, expiration -> occurs() );
+                     p -> name(), name(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
-  else if ( extra_seconds < 0 )
+  else if ( extra_seconds < timespan_t::zero )
   {
-    double reschedule_time = expiration -> remains() + extra_seconds;
+    timespan_t reschedule_time = expiration -> remains() + extra_seconds;
 
-    if ( reschedule_time <= 0 )
+    if ( reschedule_time <= timespan_t::zero )
     {
       // When Strength of Soul removes the Weakened Soul debuff completely,
       // there's a delay before the server notifies the client. Modeling
       // this effect as a world lag.
-      double lag, dev;
+      timespan_t lag, dev;
 
       lag = p -> world_lag_override ? p -> world_lag : sim -> world_lag;
       dev = p -> world_lag_stddev_override ? p -> world_lag_stddev : sim -> world_lag_stddev;
@@ -644,7 +644,7 @@ void buff_t::extend_duration( player_t* p, double extra_seconds )
 
     if ( sim -> debug )
       log_t::output( sim, "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
-                     p -> name(), name(), extra_seconds, expiration -> occurs() );
+                     p -> name(), name(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
 }
 
@@ -661,22 +661,22 @@ void buff_t::start( int    stacks,
     assert( 0 );
   }
 
-  if ( sim -> current_time <= 0.01 ) constant = true;
+  if ( sim -> current_time <= timespan_t::from_seconds(0.01) ) constant = true;
 
   start_count++;
 
   bump( stacks, value );
 
-  if ( last_start >= 0 )
+  if ( last_start >= timespan_t::zero )
   {
-    start_intervals_sum += sim -> current_time - last_start;
+	start_intervals_sum += sim -> current_time - last_start;
     start_intervals++;
   }
   last_start = sim -> current_time;
 
-  if ( buff_duration > 0 )
+  if ( buff_duration > timespan_t::zero )
   {
-    expiration = new ( sim ) expiration_t( sim, player, this, buff_duration );
+	expiration = new ( sim ) expiration_t( sim, player, this, buff_duration );
   }
 }
 
@@ -691,7 +691,7 @@ void buff_t::refresh( int    stacks,
 
   bump( stacks, value );
 
-  if ( buff_duration > 0 )
+  if ( buff_duration > timespan_t::zero )
   {
     assert( expiration );
     if ( expiration -> occurs() < sim -> current_time + buff_duration )
@@ -727,8 +727,8 @@ void buff_t::bump( int    stacks,
 
     aura_gain();
 
-    double now = sim -> current_time;
-    double react = now + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
+    timespan_t now = sim -> current_time;
+    timespan_t react = now + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
     for ( int i=before_stack+1; i <= current_stack; i++ )
     {
       stack_occurrence[ i ] = now;
@@ -749,7 +749,7 @@ void buff_t::override( int    stacks,
     assert( 0 );
   }
 
-  buff_duration = 0;
+  buff_duration = timespan_t::zero;
   start( stacks, value );
   overridden = true;
 }
@@ -764,7 +764,7 @@ void buff_t::expire()
   current_stack = 0;
   current_value = 0;
   aura_loss();
-  if ( last_start >= 0 )
+  if ( last_start >= timespan_t::zero )
   {
     iteration_uptime_sum += sim -> current_time - last_start;
   }
@@ -785,8 +785,8 @@ void buff_t::expire()
 void buff_t::predict()
 {
   // Guarantee that may_react() will return true if the buff is present.
-  fill( &stack_occurrence[ 0 ], &stack_occurrence[ current_stack + 1 ], -1 );
-  fill( &stack_react_time[ 0 ], &stack_react_time[ current_stack + 1 ], -1 );
+  fill( &stack_occurrence[ 0 ], &stack_occurrence[ current_stack + 1 ], timespan_t::min );
+  fill( &stack_react_time[ 0 ], &stack_react_time[ current_stack + 1 ], timespan_t::min );
 }
 
 // buff_t::aura_gain ========================================================
@@ -835,8 +835,8 @@ void buff_t::reset()
   event_t::cancel( delay );
   cooldown -> reset();
   expire();
-  last_start = -1;
-  last_trigger = -1;
+  last_start = timespan_t::min;
+  last_trigger = timespan_t::min;
 }
 
 // buff_t::merge ============================================================
@@ -875,11 +875,11 @@ void buff_t::analyze()
   }
   if ( start_intervals > 0 )
   {
-    avg_start_interval = start_intervals_sum / start_intervals;
+    avg_start_interval = start_intervals_sum.total_seconds() / start_intervals;
   }
   if ( trigger_intervals > 0 )
   {
-    avg_trigger_interval = trigger_intervals_sum / trigger_intervals;
+    avg_trigger_interval = trigger_intervals_sum.total_seconds() / trigger_intervals;
   }
   avg_start   =   start_count / ( double ) sim -> iterations;
   avg_refresh = refresh_count / ( double ) sim -> iterations;
@@ -908,8 +908,8 @@ std::string buff_t::to_str() const
   s << spell_id_t::to_str();
   s << " max_stack=" << max_stack;
   s << " initial_stack=" << initial_stacks();
-  s << " cooldown=" << cooldown -> duration;
-  s << " duration=" << buff_duration;
+  s << " cooldown=" << cooldown -> duration.total_seconds();
+  s << " duration=" << buff_duration.total_seconds();
   s << " default_chance=" << default_chance;
 
   return s.str();
@@ -926,7 +926,7 @@ action_expr_t* buff_t::create_expression( action_t* action,
     {
       buff_t* buff;
       buff_remains_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_remains", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = buff -> remains(); return TOK_NUM; }
+      virtual int evaluate() { result_num = buff -> remains().total_seconds(); return TOK_NUM; }
     };
     return new buff_remains_expr_t( action, this );
   }
@@ -936,7 +936,7 @@ action_expr_t* buff_t::create_expression( action_t* action,
     {
       buff_t* buff;
       buff_cooldown_remains_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_cooldown_remains", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = buff -> cooldown -> remains(); return TOK_NUM; }
+      virtual int evaluate() { result_num = buff -> cooldown -> remains().total_seconds(); return TOK_NUM; }
     };
     return new buff_cooldown_remains_expr_t( action, this );
   }
@@ -1004,7 +1004,7 @@ action_expr_t* buff_t::create_expression( action_t* action,
         }
         else
         {
-          result_num = buff -> cooldown -> remains();
+          result_num = buff -> cooldown -> remains().total_seconds();
         }
         return TOK_NUM;
       }
@@ -1026,8 +1026,8 @@ stat_buff_t::stat_buff_t( player_t*          p,
                           int                st,
                           double             a,
                           int                ms,
-                          double             d,
-                          double             cd,
+                          timespan_t         d,
+                          timespan_t         cd,
                           double             ch,
                           bool               q,
                           bool               r,
@@ -1046,7 +1046,7 @@ stat_buff_t::stat_buff_t( player_t*          p,
                           int                st,
                           double             a,
                           double             ch,
-                          double             cd,
+                          timespan_t         cd,
                           bool               q,
                           bool               r,
                           int                rng_type,
@@ -1069,7 +1069,7 @@ void stat_buff_t::bump( int    stacks,
   double delta = amount * current_stack - current_value;
   if ( delta > 0 )
   {
-    player -> stat_gain( stat, delta, 0, 0, buff_duration > 0 );
+    player -> stat_gain( stat, delta, 0, 0, buff_duration > timespan_t::zero );
     current_value += delta;
   }
   else
@@ -1089,7 +1089,7 @@ void stat_buff_t::decrement( int    stacks,
   else
   {
     double delta = amount * stacks;
-    player -> stat_loss( stat, delta, 0, buff_duration > 0 );
+    player -> stat_loss( stat, delta, 0, buff_duration > timespan_t::zero );
     current_stack -= stacks;
     current_value -= delta;
   }
@@ -1101,7 +1101,7 @@ void stat_buff_t::expire()
 {
   if ( current_stack > 0 )
   {
-    player -> stat_loss( stat, current_value, 0, buff_duration > 0 );
+    player -> stat_loss( stat, current_value, 0, buff_duration > timespan_t::zero );
     buff_t::expire();
   }
 }
@@ -1117,8 +1117,8 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               int                sch,
                                               double             a,
                                               int                ms,
-                                              double             d,
-                                              double             cd,
+                                              timespan_t         d,
+                                              timespan_t         cd,
                                               double             ch,
                                               bool               re,
                                               bool               q,
@@ -1138,7 +1138,7 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               int                sch,
                                               double             a,
                                               double             ch,
-                                              double             cd,
+                                              timespan_t         cd,
                                               bool               re,
                                               bool               q,
                                               bool               r,
@@ -1225,8 +1225,8 @@ void cost_reduction_buff_t::refresh( int    stacks,
 debuff_t::debuff_t( player_t*          p,
                     const std::string& n,
                     int                ms,
-                    double             d,
-                    double             cd,
+                    timespan_t         d,
+                    timespan_t         cd,
                     double             ch,
                     bool               q,
                     bool               r,
@@ -1240,7 +1240,7 @@ debuff_t::debuff_t( player_t*          p,
                     const uint32_t     id,
                     const std::string& n,
                     double             chance,
-                    double             cd,
+                    timespan_t         cd,
                     bool               q,
                     bool               r,
                     int                rt ) :

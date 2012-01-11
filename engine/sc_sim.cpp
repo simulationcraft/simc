@@ -544,7 +544,7 @@ static bool parse_fight_style( sim_t*             sim,
   else if ( util_t::str_compare_ci( value, "Ultraxion" ) )
   {
     sim -> fight_style = "Ultraxion";
-    sim -> max_time    = 366.0;
+    sim -> max_time    = timespan_t::from_seconds(366.0);
     sim -> fixed_time  = 1;
     sim -> vary_combat_length = 0.0;
     sim -> raid_events_str =  "flying,first=0,duration=500,cooldown=500";
@@ -642,15 +642,15 @@ static bool parse_item_sources( sim_t*             sim,
 sim_t::sim_t( sim_t* p, int index ) :
   parent( p ),
   target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ), canceled( 0 ),
-  queue_lag( 0.037 ), queue_lag_stddev( 0 ),
-  gcd_lag( 0.150 ), gcd_lag_stddev( 0 ),
-  channel_lag( 0.250 ), channel_lag_stddev( 0 ),
-  queue_gcd_reduction( 0.032 ), strict_gcd_queue( 0 ),
+  queue_lag( timespan_t::from_seconds(0.037) ), queue_lag_stddev( timespan_t::zero ),
+  gcd_lag( timespan_t::from_seconds(0.150) ), gcd_lag_stddev( timespan_t::zero ),
+  channel_lag( timespan_t::from_seconds(0.250) ), channel_lag_stddev( timespan_t::zero ),
+  queue_gcd_reduction( timespan_t::from_seconds(0.032) ), strict_gcd_queue( 0 ),
   confidence( 0.95 ), confidence_estimator( 0.0 ),
-  world_lag( 0.1 ), world_lag_stddev( -1.0 ),
-  travel_variance( 0 ), default_skill( 1.0 ), reaction_time( 0.5 ), regen_periodicity( 0.25 ),
-  current_time( 0 ), max_time( 450 ), expected_time( 0 ), vary_combat_length( 0.2 ),
-  last_event( 0 ), fixed_time( 0 ),
+  world_lag( timespan_t::from_seconds(0.1) ), world_lag_stddev( timespan_t::min ),
+  travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds(0.5) ), regen_periodicity( timespan_t::from_seconds(0.25) ),
+  current_time( timespan_t::zero ), max_time( timespan_t::from_seconds(450) ), expected_time( timespan_t::zero ), vary_combat_length( 0.2 ),
+  last_event( timespan_t::zero ), fixed_time( 0 ),
   events_remaining( 0 ), max_events_remaining( 0 ),
   events_processed( 0 ), total_events_processed( 0 ),
   seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
@@ -667,12 +667,13 @@ sim_t::sim_t( sim_t* p, int index ) :
   smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
-  buff_list( 0 ), aura_delay( 0.5 ), default_aura_delay( 0.3 ), default_aura_delay_stddev( 0.05 ),
+  buff_list( 0 ), aura_delay( timespan_t::from_seconds(0.5) ), default_aura_delay( timespan_t::from_seconds(0.3) ),
+  default_aura_delay_stddev( timespan_t::from_seconds(0.05) ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
-  elapsed_cpu_seconds( 0 ), iteration_dmg( 0 ), iteration_heal( 0 ),
+  elapsed_cpu( timespan_t::zero ), iteration_dmg( 0 ), iteration_heal( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), simulation_length( false ),
   report_progress( 1 ),
-  bloodlust_percent( 25 ), bloodlust_time( -60 ),
+  bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds(-60) ),
   path_str( "." ), output_file( stdout ),
   armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
   // Report
@@ -830,15 +831,15 @@ sim_t::~sim_t()
 // sim_t::add_event =========================================================
 
 void sim_t::add_event( event_t* e,
-                       double   delta_time )
+                       timespan_t delta_time )
 {
-  if ( delta_time < 0 )
-    delta_time = 0;
+  if ( delta_time < timespan_t::zero )
+    delta_time = timespan_t::zero;
 
   e -> time = current_time + delta_time;
   e -> id   = ++id;
 
-  if ( unlikely( ! ( delta_time <= wheel_seconds ) ) )
+  if ( unlikely( ! ( delta_time.total_seconds() <= wheel_seconds ) ) )
   {
     errorf( "sim_t::add_event assertion error! delta_time > wheel_seconds, event %s from %s.\n", e -> name, e -> player ? e -> player -> name() : "no-one" );
     assert( 0 );
@@ -846,7 +847,7 @@ void sim_t::add_event( event_t* e,
 
   if ( e -> time > last_event ) last_event = e -> time;
 
-  uint32_t slice = ( uint32_t ) ( e -> time * wheel_granularity ) & wheel_mask;
+  uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
 
   event_t** prev = &( timing_wheel[ slice ] );
 
@@ -861,7 +862,7 @@ void sim_t::add_event( event_t* e,
 
   if ( debug )
   {
-    log_t::output( this, "Add Event: %s %.2f %d", e -> name, e -> time, e -> id );
+    log_t::output( this, "Add Event: %s %.2f %d", e -> name, e -> time.total_seconds(), e -> id );
     if ( e -> player ) log_t::output( this, "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> events );
   }
 }
@@ -874,7 +875,7 @@ void sim_t::reschedule_event( event_t* e )
 
   add_event( e, ( e -> reschedule_time - current_time ) );
 
-  e -> reschedule_time = 0;
+  e -> reschedule_time = timespan_t::zero;
 }
 
 // sim_t::next_event ========================================================
@@ -948,7 +949,7 @@ void sim_t::cancel_events( player_t* p )
 
   if ( debug ) log_t::output( this, "Canceling events for player %s, events to cancel %d", p -> name(), p -> events );
 
-  int end_slice = ( uint32_t ) ( last_event * wheel_granularity ) & wheel_mask;
+  int end_slice = ( uint32_t ) ( last_event.total_seconds() * wheel_granularity ) & wheel_mask;
 
   // Loop only partial wheel, [current_time..last_event], as that's the range where there
   // are events for actors in the sim
@@ -1034,7 +1035,7 @@ void sim_t::combat( int iteration )
       // The first iteration is always time-limited since we do not yet have inferred health
       if ( current_time > expected_time )
       {
-        if ( debug ) log_t::output( this, "Reached expected_time=%.2f, ending simulation", expected_time );
+        if ( debug ) log_t::output( this, "Reached expected_time=%.2f, ending simulation", expected_time.total_seconds() );
         // Set this last event as canceled, so asserts dont fire when odd things happen at the
         // tail-end of the simulation iteration
         e -> canceled = 1;
@@ -1044,7 +1045,7 @@ void sim_t::combat( int iteration )
     }
     else
     {
-      if ( expected_time > 0 && current_time > ( expected_time * 2.0 ) )
+      if ( expected_time > timespan_t::zero && current_time > ( expected_time * 2.0 ) )
       {
         if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
         // Set this last event as canceled, so asserts dont fire when odd things happen at the
@@ -1092,7 +1093,8 @@ void sim_t::reset()
   if ( debug ) log_t::output( this, "Resetting Simulator" );
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
   id = 0;
-  current_time = last_event = 0;
+  current_time = timespan_t::zero;
+  last_event = timespan_t::zero;
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
     b -> reset();
@@ -1146,14 +1148,14 @@ void sim_t::combat_begin()
       bloodlust_check_t( sim_t* sim ) : event_t( sim, 0 )
       {
         name = "Bloodlust Check";
-        sim -> add_event( this, 1.0 );
+        sim -> add_event( this, timespan_t::from_seconds(1.0) );
       }
       virtual void execute()
       {
         player_t* t = sim -> target;
-        if ( ( sim -> bloodlust_percent  > 0 && t -> health_percentage() <  sim -> bloodlust_percent ) ||
-             ( sim -> bloodlust_time     < 0 && t -> time_to_die()       < -sim -> bloodlust_time ) ||
-             ( sim -> bloodlust_time     > 0 && sim -> current_time      >  sim -> bloodlust_time ) )
+        if ( ( sim -> bloodlust_percent  > 0                && t -> health_percentage() <  sim -> bloodlust_percent ) ||
+             ( sim -> bloodlust_time     < timespan_t::zero && t -> time_to_die()       < -sim -> bloodlust_time ) ||
+             ( sim -> bloodlust_time     > timespan_t::zero && sim -> current_time      >  sim -> bloodlust_time ) )
         {
           for ( player_t* p = sim -> player_list; p; p = p -> next )
           {
@@ -1181,7 +1183,7 @@ void sim_t::combat_end()
   if ( debug ) log_t::output( this, "Combat End" );
 
   iteration_timeline.push_back( current_time );
-  simulation_length.add( current_time );
+  simulation_length.add( current_time.total_seconds() );
 
   total_events_processed += events_processed;
 
@@ -1207,9 +1209,9 @@ void sim_t::combat_end()
   }
 
   total_dmg.add( iteration_dmg );
-  raid_dps.add( current_time ? iteration_dmg / current_time : 0 );
+  raid_dps.add( current_time != timespan_t::zero ? iteration_dmg / current_time.total_seconds() : 0 );
   total_heal.add( iteration_heal );
-  raid_hps.add( current_time ? iteration_heal / current_time : 0 );
+  raid_hps.add( current_time != timespan_t::zero ? iteration_heal / current_time.total_seconds() : 0 );
 
   flush_events();
 }
@@ -1253,10 +1255,10 @@ bool sim_t::init()
   memset( timing_wheel,0,sizeof( event_t* )*wheel_size );
 
 
-  if (   queue_lag_stddev == 0 )   queue_lag_stddev =   queue_lag * 0.25;
-  if (     gcd_lag_stddev == 0 )     gcd_lag_stddev =     gcd_lag * 0.25;
-  if ( channel_lag_stddev == 0 ) channel_lag_stddev = channel_lag * 0.25;
-  if ( world_lag_stddev    < 0 ) world_lag_stddev   =   world_lag * 0.1;
+  if (   queue_lag_stddev == timespan_t::zero )   queue_lag_stddev =   queue_lag * 0.25;
+  if (     gcd_lag_stddev == timespan_t::zero )     gcd_lag_stddev =     gcd_lag * 0.25;
+  if ( channel_lag_stddev == timespan_t::zero ) channel_lag_stddev = channel_lag * 0.25;
+  if ( world_lag_stddev    < timespan_t::zero ) world_lag_stddev   =   world_lag * 0.1;
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )
@@ -1642,7 +1644,7 @@ void sim_t::analyze()
   size_t num_timelines = iteration_timeline.size();
   for ( size_t i=0; i < num_timelines; i++ )
   {
-    int last = ( int ) floor( iteration_timeline[ i ] );
+    int last = ( int ) floor( iteration_timeline[ i ].total_seconds() );
     size_t num_buckets = divisor_timeline.size();
     if ( 1 + last > ( int ) num_buckets ) divisor_timeline.resize( 1 + last, 0 );
     for ( int j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
@@ -1797,7 +1799,7 @@ bool sim_t::execute()
   merge();
   analyze();
 
-  elapsed_cpu_seconds = ( util_t::milliseconds() - start_time ) / 1000.0;
+  elapsed_cpu = timespan_t::from_millis( (util_t::milliseconds() - start_time) );
 
   return true;
 }
@@ -1940,10 +1942,10 @@ void sim_t::aura_loss( const char* aura_name , int /* aura_id */ )
 
 // sim_t::time_to_think =====================================================
 
-bool sim_t::time_to_think( double proc_time )
+bool sim_t::time_to_think( timespan_t proc_time )
 {
-  if ( proc_time == 0 ) return false;
-  if ( proc_time < 0 ) return true;
+  if ( proc_time == timespan_t::zero ) return false;
+  if ( proc_time < timespan_t::zero ) return true;
   return current_time - proc_time > reaction_time;
 }
 
@@ -1978,6 +1980,14 @@ double sim_t::gauss( double mean,
   rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
 
   return r -> gauss( mean, stddev );
+}
+
+// sim_t::gauss =============================================================
+
+timespan_t sim_t::gauss( timespan_t mean,
+                         timespan_t stddev )
+{
+  return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE(mean), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
 }
 
 // sim_t::real ==============================================================
@@ -2038,7 +2048,7 @@ action_expr_t* sim_t::create_expression( action_t* a,
     struct time_expr_t : public action_expr_t
     {
       time_expr_t( action_t* a ) : action_expr_t( a, "time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> sim -> current_time;  return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds();  return TOK_NUM; }
     };
     return new time_expr_t( a );
   }
@@ -2116,7 +2126,7 @@ void sim_t::create_options()
   {
     // General
     { "iterations",                       OPT_INT,    &( iterations                               ) },
-    { "max_time",                         OPT_FLT,    &( max_time                                 ) },
+    { "max_time",                         OPT_TIMESPAN, &( max_time                               ) },
     { "fixed_time",                       OPT_BOOL,   &( fixed_time                               ) },
     { "vary_combat_length",               OPT_FLT,    &( vary_combat_length                       ) },
     { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
@@ -2127,20 +2137,20 @@ void sim_t::create_options()
     { "item_db_source",                   OPT_FUNC,   ( void* ) ::parse_item_sources                },
     { "proxy",                            OPT_FUNC,   ( void* ) ::parse_proxy                       },
     // Lag
-    { "channel_lag",                      OPT_FLT,    &( channel_lag                              ) },
-    { "channel_lag_stddev",               OPT_FLT,    &( channel_lag_stddev                       ) },
-    { "gcd_lag",                          OPT_FLT,    &( gcd_lag                                  ) },
-    { "gcd_lag_stddev",                   OPT_FLT,    &( gcd_lag_stddev                           ) },
-    { "queue_lag",                        OPT_FLT,    &( queue_lag                                ) },
-    { "queue_lag_stddev",                 OPT_FLT,    &( queue_lag_stddev                         ) },
-    { "queue_gcd_reduction",              OPT_FLT,    &( queue_gcd_reduction                      ) },
+    { "channel_lag",                      OPT_TIMESPAN, &( channel_lag                            ) },
+    { "channel_lag_stddev",               OPT_TIMESPAN, &( channel_lag_stddev                     ) },
+    { "gcd_lag",                          OPT_TIMESPAN, &( gcd_lag                                ) },
+    { "gcd_lag_stddev",                   OPT_TIMESPAN, &( gcd_lag_stddev                         ) },
+    { "queue_lag",                        OPT_TIMESPAN, &( queue_lag                              ) },
+    { "queue_lag_stddev",                 OPT_TIMESPAN, &( queue_lag_stddev                       ) },
+    { "queue_gcd_reduction",              OPT_TIMESPAN, &( queue_gcd_reduction                    ) },
     { "strict_gcd_queue",                 OPT_BOOL,   &( strict_gcd_queue                         ) },
-    { "default_world_lag",                OPT_FLT,    &( world_lag                                ) },
-    { "default_world_lag_stddev",         OPT_FLT,    &( world_lag_stddev                         ) },
-    { "default_aura_delay",               OPT_FLT,    &( default_aura_delay                       ) },
-    { "default_aura_delay_stddev",        OPT_FLT,    &( default_aura_delay_stddev                ) },
+    { "default_world_lag",                OPT_TIMESPAN, &( world_lag                              ) },
+    { "default_world_lag_stddev",         OPT_TIMESPAN, &( world_lag_stddev                       ) },
+    { "default_aura_delay",               OPT_TIMESPAN, &( default_aura_delay                     ) },
+    { "default_aura_delay_stddev",        OPT_TIMESPAN, &( default_aura_delay_stddev              ) },
     { "default_skill",                    OPT_FLT,    &( default_skill                            ) },
-    { "reaction_time",                    OPT_FLT,    &( reaction_time                            ) },
+    { "reaction_time",                    OPT_TIMESPAN, &( reaction_time                          ) },
     { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
     // Output
     { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
@@ -2228,7 +2238,7 @@ void sim_t::create_options()
     { "override.windfury_totem",          OPT_BOOL,   &( overrides.windfury_totem                 ) },
     { "override.wrath_of_air",            OPT_BOOL,   &( overrides.wrath_of_air                   ) },
     // Regen
-    { "regen_periodicity",                OPT_FLT,    &( regen_periodicity                        ) },
+    { "regen_periodicity",                OPT_TIMESPAN, &( regen_periodicity                      ) },
     // RNG
     { "smooth_rng",                       OPT_BOOL,   &( smooth_rng                               ) },
     { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
@@ -2239,7 +2249,7 @@ void sim_t::create_options()
     { "party",                            OPT_LIST,   &( party_encoding                           ) },
     { "active",                           OPT_FUNC,   ( void* ) ::parse_active                      },
     { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
-    { "aura_delay",                       OPT_FLT,    &( aura_delay                               ) },
+    { "aura_delay",                       OPT_TIMESPAN, &( aura_delay                             ) },
     { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
     { "seed",                             OPT_INT,    &( seed                                     ) },
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
@@ -2503,7 +2513,7 @@ int sim_t::main( int argc, char** argv )
   }
   else
   {
-    if ( max_time <= 0 )
+    if ( max_time <= timespan_t::zero )
     {
       util_t::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );
@@ -2521,7 +2531,7 @@ int sim_t::main( int argc, char** argv )
 
     util_t::fprintf( output_file,
                      "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
-                     iterations, max_time, vary_combat_length, optimal_raid, fight_style.c_str() );
+                     iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
     fflush( output_file );
 
     util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );

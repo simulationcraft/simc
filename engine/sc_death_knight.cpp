@@ -53,7 +53,7 @@ struct dk_rune_t
   bool is_regenerating() const { return state == STATE_REGENERATING                    ; }
   int  get_type()        const { return type & RUNE_TYPE_MASK                          ; }
 
-  void regen_rune( player_t* p, double periodicity );
+  void regen_rune( player_t* p, timespan_t periodicity );
 
   void make_permanent_death_rune()
   {
@@ -397,7 +397,7 @@ struct death_knight_t : public player_t
   virtual double    composite_tank_parry() const;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
   virtual double    composite_tank_crit( const school_type school ) const;
-  virtual void      regen( double periodicity );
+  virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual double    assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
   virtual void      combat_begin();
@@ -420,7 +420,7 @@ struct death_knight_t : public player_t
   {
     for ( action_t* a=action_list; a; a = a -> next )
     {
-      if ( a -> trigger_gcd != 0 ) a -> trigger_gcd = base_gcd;
+      if ( a -> trigger_gcd != timespan_t::zero ) a -> trigger_gcd = base_gcd;
     }
   }
 };
@@ -429,8 +429,8 @@ death_knight_targetdata_t::death_knight_targetdata_t( player_t* source, player_t
   : targetdata_t( source, target )
 {
   death_knight_t* p = this->source -> cast_death_knight();
-  debuffs_ebon_plaguebringer  = add_aura( new buff_t( this, 65142, "ebon_plaguebringer_track", -1, -1, true ) );
-  debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().seconds();
+  debuffs_ebon_plaguebringer  = add_aura( new buff_t( this, 65142, "ebon_plaguebringer_track", -1, timespan_t::min, true ) );
+  debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().time_value();
 }
 
 static void log_rune_status( death_knight_t* p )
@@ -449,7 +449,7 @@ static void log_rune_status( death_knight_t* p )
   log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str() );
 }
 
-void dk_rune_t::regen_rune( player_t* p, double periodicity )
+void dk_rune_t::regen_rune( player_t* p, timespan_t periodicity )
 {
   // If the other rune is already regening, we don't
   // but if both are full we still continue on to record resource gain overflow
@@ -472,7 +472,7 @@ void dk_rune_t::regen_rune( player_t* p, double periodicity )
   if ( o -> buffs_runic_corruption -> up() )
     runes_per_second *= 1.0 + ( o -> talents.runic_corruption -> effect1().percent() );
 
-  double regen_amount = periodicity * runes_per_second;
+  double regen_amount = periodicity.total_seconds() * runes_per_second;
 
   // record rune gains and overflow
   gain_t* gains_rune      = o -> gains_rune         ;
@@ -575,7 +575,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_spell_t( "blood_boil", 48721, p )
     {
       background       = true;
-      trigger_gcd      = 0;
+      trigger_gcd      = timespan_t::zero;
       aoe              = -1;
       may_crit         = true;
       direct_power_mod = 0.08;
@@ -599,7 +599,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       background         = true;
-      base_tick_time     = 3.0;
+      base_tick_time     = timespan_t::from_seconds(3.0);
       num_ticks          = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
       direct_power_mod   = 0.055 * 1.15;
       may_miss           = false;
@@ -615,7 +615,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       background  = true;
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       direct_power_mod = 0.23;
       base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level ); // Values are saved in a not automatically parsed sub-effect
       base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
@@ -646,7 +646,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       background  = true;
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
 
       base_crit       +=     o -> talents.improved_death_strike -> mod_additive( P_CRIT );
       base_multiplier *= 1 + o -> talents.improved_death_strike -> mod_additive( P_GENERIC );
@@ -661,8 +661,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
       death_knight_t* o = p -> owner -> cast_death_knight();
 
       background        = true;
-      trigger_gcd       = 0;
-      base_tick_time    = 3.0;
+      trigger_gcd       = timespan_t::zero;
+      base_tick_time    = timespan_t::from_seconds(3.0);
       hasted_ticks      = false;
       may_miss          = false;
       num_ticks         = 7 + util_t::talent_rank( o -> talents.epidemic -> rank(), 3, 1, 3, 4 );
@@ -681,7 +681,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background          = true;
       aoe                 = 2;
       base_add_multiplier = 0.75;
-      trigger_gcd         = 0;
+      trigger_gcd         = timespan_t::zero;
       base_multiplier    *= 1 + o -> glyphs.heart_strike -> effect1().percent();
     }
 
@@ -700,7 +700,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_spell_t( "icy_touch", 45477, p )
     {
       background       = true;
-      trigger_gcd      = 0;
+      trigger_gcd      = timespan_t::zero;
       direct_power_mod = 0.2;
     }
 
@@ -724,7 +724,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_pestilence_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( "pestilence", 50842, p )
     {
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
       background = true;
     }
   };
@@ -735,7 +735,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_attack_t( "plague_strike", 45462, p, true )
     {
       background       = true;
-      trigger_gcd      = 0;
+      trigger_gcd      = timespan_t::zero;
       may_crit         = true;
     }
 
@@ -802,7 +802,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_SWORD_2H;
     main_hand_weapon.min_dmg    = 685; // FIXME: Should these be hardcoded?
     main_hand_weapon.max_dmg    = 975;
-    main_hand_weapon.swing_time = 3.3;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(3.3);
   }
 
   virtual void init_base()
@@ -827,7 +827,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double composite_attack_power() const       { return attack_power; }
   virtual double composite_spell_crit() const         { return snapshot_spell_crit;  }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
@@ -862,7 +862,7 @@ struct army_ghoul_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 228; // FIXME: Needs further testing
     main_hand_weapon.max_dmg    = 323; // FIXME: Needs further testing
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
 
     action_list_str = "snapshot_stats/auto_attack/claw";
   }
@@ -897,7 +897,7 @@ struct army_ghoul_pet_t : public pet_t
       base_execute_time = weapon -> swing_time;
       background        = true;
       repeating         = true;
-      weapon_power_mod  = 0.0055 / weapon -> swing_time; // FIXME: Needs further testing
+      weapon_power_mod  = 0.0055 / weapon -> swing_time.total_seconds(); // FIXME: Needs further testing
     }
   };
 
@@ -908,7 +908,7 @@ struct army_ghoul_pet_t : public pet_t
     {
       weapon = &( p -> main_hand_weapon );
       p -> main_hand_attack = new army_ghoul_pet_melee_t( p );
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
     }
 
     virtual void execute()
@@ -929,7 +929,7 @@ struct army_ghoul_pet_t : public pet_t
     army_ghoul_pet_claw_t( army_ghoul_pet_t* p ) :
       army_ghoul_pet_attack_t( "claw", 91776, p )
     {
-      weapon_power_mod  = 0.0055 / weapon -> swing_time; // FIXME: Needs further testing
+      weapon_power_mod  = 0.0055 / weapon -> swing_time.total_seconds(); // FIXME: Needs further testing
     }
   };
 
@@ -970,7 +970,7 @@ struct army_ghoul_pet_t : public pet_t
     return a;
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
@@ -1004,14 +1004,17 @@ struct army_ghoul_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  double available() const
+  timespan_t available() const
   {
     double energy = resource_current[ RESOURCE_ENERGY ];
 
     if ( energy > 40 )
-      return 0.1;
+      return timespan_t::from_seconds(0.1);
 
-    return std::max( ( 40 - energy ) / energy_regen_per_second(), 0.1 );
+    return std::max( 
+      timespan_t::from_seconds(( 40 - energy ) / energy_regen_per_second()),
+      timespan_t::from_seconds(0.1)
+    );
   }
 };
 
@@ -1043,7 +1046,7 @@ struct bloodworms_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 20;
     main_hand_weapon.max_dmg    = 20;
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
   }
 
   virtual void init_base()
@@ -1062,7 +1065,7 @@ struct bloodworms_pet_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     pet_t::summon( duration );
     melee -> schedule_execute();
@@ -1086,9 +1089,9 @@ struct gargoyle_pet_t : public pet_t
     {
       // FIX ME!
       // Resist (can be partial)? Scaling?
-      trigger_gcd = 1.5;
+      trigger_gcd = timespan_t::from_seconds(1.5);
       may_crit    = true;
-      min_gcd     = 1.5; // issue961
+      min_gcd     = timespan_t::from_seconds(1.5); // issue961
 
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
@@ -1126,7 +1129,7 @@ struct gargoyle_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     pet_t::summon( duration );
     // Haste etc. are taken at the time of summoning
@@ -1155,7 +1158,7 @@ struct gargoyle_pet_t : public pet_t
 
     arise_time = sim -> current_time;
 
-    schedule_ready( 3.0, true ); // Gargoyle pet is idle for the first 3 seconds.
+    schedule_ready( timespan_t::from_seconds(3.0), true ); // Gargoyle pet is idle for the first 3 seconds.
   }
 };
 
@@ -1174,7 +1177,7 @@ struct ghoul_pet_t : public pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 622.43; // should be exact as of 4.2
     main_hand_weapon.max_dmg    = 933.64; // should be exact as of 4.2
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
 
     action_list_str = "auto_attack/sweeping_claws/claw";
   }
@@ -1220,7 +1223,7 @@ struct ghoul_pet_t : public pet_t
       base_execute_time = weapon -> swing_time;
       background        = true;
       repeating         = true;
-      weapon_power_mod  = 0.120 / weapon -> swing_time; // should be exact as of 4.2
+      weapon_power_mod  = 0.120 / weapon -> swing_time.total_seconds(); // should be exact as of 4.2
     }
   };
 
@@ -1231,7 +1234,7 @@ struct ghoul_pet_t : public pet_t
     {
       weapon = &( p -> main_hand_weapon );
       p -> main_hand_attack = new ghoul_pet_melee_t( p );
-      trigger_gcd = 0;
+      trigger_gcd = timespan_t::zero;
     }
 
     virtual void execute()
@@ -1252,7 +1255,7 @@ struct ghoul_pet_t : public pet_t
     ghoul_pet_claw_t( ghoul_pet_t* p ) :
       ghoul_pet_attack_t( "claw", 91776, p )
     {
-      weapon_power_mod = 0.120 / weapon -> swing_time; // should be exact as of 4.2
+      weapon_power_mod = 0.120 / weapon -> swing_time.total_seconds(); // should be exact as of 4.2
     }
   };
 
@@ -1262,7 +1265,7 @@ struct ghoul_pet_t : public pet_t
       ghoul_pet_attack_t( "sweeping_claws", 91778, p )
     {
       aoe = 2;
-      weapon_power_mod = 0.120 / weapon -> swing_time; // Copied from claw, but seems Ok
+      weapon_power_mod = 0.120 / weapon -> swing_time.total_seconds(); // Copied from claw, but seems Ok
     }
 
     virtual bool ready()
@@ -1325,7 +1328,7 @@ struct ghoul_pet_t : public pet_t
     return a;
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     death_knight_t* o = owner -> cast_death_knight();
     pet_t::summon( duration );
@@ -1431,15 +1434,18 @@ struct ghoul_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  double available() const
+  timespan_t available() const
   {
     double energy = resource_current[ RESOURCE_ENERGY ];
 
     // Cheapest Ability need 40 Energy
     if ( energy > 40 )
-      return 0.1;
+      return timespan_t::from_seconds(0.1);
 
-    return std::max( ( 40 - energy ) / energy_regen_per_second(), 0.1 );
+    return std::max( 
+      timespan_t::from_seconds(( 40 - energy ) / energy_regen_per_second()),
+      timespan_t::from_seconds(0.1)
+    );
   }
 };
 // ==========================================================================
@@ -1706,7 +1712,7 @@ static void trigger_blood_caked_blade( action_t* a )
         may_crit       = false;
         background     = true;
         proc           = true;
-        trigger_gcd    = false;
+        trigger_gcd    = timespan_t::zero;
         weapon = &( player -> main_hand_weapon );
         normalize_weapon_speed = false;
         init();
@@ -1761,7 +1767,7 @@ static void trigger_ebon_plaguebringer( action_t* a, player_t* t )
   if ( a -> sim -> overrides.ebon_plaguebringer )
     return;
 
-  double duration = 21.0 + p -> talents.epidemic -> effect1().seconds();
+  timespan_t duration = timespan_t::from_seconds(21.0) + p -> talents.epidemic -> effect1().time_value();
   if ( t -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
   {
     t -> debuffs.ebon_plaguebringer -> buff_duration = duration;
@@ -2071,19 +2077,19 @@ struct melee_t : public death_knight_attack_t
     may_glance      = true;
     background      = true;
     repeating       = true;
-    trigger_gcd     = 0;
+    trigger_gcd     = timespan_t::zero;
     base_cost       = 0;
 
     if ( p -> dual_wield() )
       base_hit -= 0.19;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
-    double t = death_knight_attack_t::execute_time();
+    timespan_t t = death_knight_attack_t::execute_time();
     if ( ! player -> in_combat )
     {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, 0.2 ) : t/2 ) : 0.01;
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds(0.2) ) : t/2 ) : timespan_t::from_seconds(0.01);
     }
     return t;
   }
@@ -2176,7 +2182,7 @@ struct auto_attack_t : public death_knight_attack_t
       p -> off_hand_attack -> base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
     }
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -2232,13 +2238,13 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // sense to cast ghouls 7-10s before a fight begins so you don't
       // waste rune regen and enter the fight depleted.  So, the time
       // you get for ghouls is 4-6 seconds less.
-      p -> active_army_ghoul -> summon( 35.0 );
+      p -> active_army_ghoul -> summon( timespan_t::from_seconds(35.0) );
     }
     else
     {
       death_knight_spell_t::execute();
 
-      p -> active_army_ghoul -> summon( 40.0 );
+      p -> active_army_ghoul -> summon( timespan_t::from_seconds(40.0) );
     }
   }
 
@@ -2316,7 +2322,7 @@ struct blood_plague_t : public death_knight_spell_t
     crit_bonus_multiplier = 1.0;
 
     base_td          = effect_average( 1 ) * 1.15;
-    base_tick_time   = 3.0;
+    base_tick_time   = timespan_t::from_seconds(3.0);
     tick_may_crit    = true;
     background       = true;
     num_ticks        = 7 + util_t::talent_rank( p -> talents.epidemic -> rank(), 3, 1, 3, 4 );
@@ -2407,7 +2413,7 @@ struct blood_tap_t : public death_knight_spell_t
     base_cost = 0.0; // Cost is stored as 6 in the DBC for some odd reason
     harmful   = false;
     if ( p -> talents.improved_blood_tap -> rank() )
-      cooldown -> duration += p -> talents.improved_blood_tap -> mod_additive( P_COOLDOWN );
+      cooldown -> duration += timespan_t::from_seconds(p -> talents.improved_blood_tap -> mod_additive( P_COOLDOWN ));
   }
 
   void execute()
@@ -2494,7 +2500,7 @@ struct bone_shield_t : public death_knight_spell_t
       // rotation.  Assume we casted Bone Shield somewhere between
       // 8-16s before we start fighting.  The cost in this case is
       // zero and we don't cause any cooldown.
-      double pre_cast = p -> sim -> range( 8.0, 16.0 );
+      timespan_t pre_cast = timespan_t::from_seconds(p -> sim -> range( 8.0, 16.0 ));
 
       cooldown -> duration -= pre_cast;
       p -> buffs_bone_shield -> buff_duration -= pre_cast;
@@ -2585,7 +2591,7 @@ struct death_and_decay_t : public death_knight_spell_t
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
     tick_power_mod   = 0.064;
     base_td          = p -> dbc.effect_average( effect1().id(), p -> level );
-    base_tick_time   = 1.0;
+    base_tick_time   = timespan_t::from_seconds(1.0);
     num_ticks        = 10; // 11 with tick_zero
     tick_may_crit    = true;
     tick_zero        = true;
@@ -2779,8 +2785,8 @@ struct festering_strike_t : public death_knight_attack_t
     if ( result_is_hit() )
     {
       death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
-      td -> dots_blood_plague -> extend_duration_seconds( 8 );
-      td -> dots_frost_fever  -> extend_duration_seconds( 8 );
+      td -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds(8) );
+      td -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds(8) );
       if ( td -> dots_blood_plague -> ticking || td -> dots_frost_fever -> ticking )
         trigger_ebon_plaguebringer( this, target );
     }
@@ -2795,7 +2801,7 @@ struct frost_fever_t : public death_knight_spell_t
     death_knight_spell_t( "frost_fever", 59921, p )
   {
     base_td          = effect_average( 1 ) * 1.15;
-    base_tick_time   = 3.0;
+    base_tick_time   = timespan_t::from_seconds(3.0);
     hasted_ticks     = false;
     may_miss         = false;
     may_crit         = false;
@@ -2987,16 +2993,16 @@ struct horn_of_winter_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     if ( ! sim -> overrides.horn_of_winter )
     {
-      sim -> auras.horn_of_winter -> buff_duration = 120.0 + p -> glyphs.horn_of_winter -> effect1().seconds();
+      sim -> auras.horn_of_winter -> buff_duration = timespan_t::from_seconds(120.0) + p -> glyphs.horn_of_winter -> effect1().time_value();
       sim -> auras.horn_of_winter -> trigger( 1, bonus );
     }
 
     player -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_horn_of_winter );
   }
 
-  virtual double gcd() const
+  virtual timespan_t gcd() const
   {
-    return player -> in_combat ? death_knight_spell_t::gcd() : 0;
+    return player -> in_combat ? death_knight_spell_t::gcd() : timespan_t::zero;
   }
 };
 
@@ -3388,7 +3394,7 @@ struct outbreak_t : public death_knight_spell_t
 
     may_crit = false;
 
-    cooldown -> duration += p -> spells.veteran_of_the_third_war -> effect3().seconds();
+    cooldown -> duration += p -> spells.veteran_of_the_third_war -> effect3().time_value();
 
     assert( p -> blood_plague );
     assert( p -> frost_fever );
@@ -3625,8 +3631,8 @@ struct presence_t : public death_knight_spell_t
       switch_to_presence = PRESENCE_FROST;
     }
 
-    trigger_gcd = 0;
-    cooldown -> duration = 1.0;
+    trigger_gcd = timespan_t::zero;
+    cooldown -> duration = timespan_t::from_seconds(1.0);
     harmful     = false;
     resource    = RESOURCE_RUNIC;
   }
@@ -3643,7 +3649,7 @@ struct presence_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> base_gcd = 1.50;
+    p -> base_gcd = timespan_t::from_seconds(1.50);
 
     switch ( p -> active_presence )
     {
@@ -3668,7 +3674,7 @@ struct presence_t : public death_knight_spell_t
     break;
     case PRESENCE_UNHOLY:
       p -> buffs_unholy_presence -> trigger( 1, 0.10 + p -> talents.improved_unholy_presence -> effect2().percent() );
-      p -> base_gcd = 1.0;
+      p -> base_gcd = timespan_t::from_seconds(1.0);
       break;
     }
 
@@ -3700,7 +3706,7 @@ struct raise_dead_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> primary_tree() == TREE_UNHOLY )
-      cooldown -> duration += p -> spells.master_of_ghouls -> effect1().seconds();
+      cooldown -> duration += p -> spells.master_of_ghouls -> effect1().time_value();
 
     harmful = false;
   }
@@ -3710,7 +3716,7 @@ struct raise_dead_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> active_ghoul -> summon( ( p -> primary_tree() == TREE_UNHOLY ) ? 0.0 : p -> dbc.spell( effect1().base_value() ) -> duration() );
+    p -> active_ghoul -> summon( ( p -> primary_tree() == TREE_UNHOLY ) ? timespan_t::zero : p -> dbc.spell( effect1().base_value() ) -> duration() );
   }
 
   virtual bool ready()
@@ -3886,7 +3892,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
 
     harmful = false;
     num_ticks = 0;
-    base_tick_time = 0.0;
+    base_tick_time = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3905,7 +3911,7 @@ struct unholy_blight_t : public death_knight_spell_t
   unholy_blight_t( death_knight_t* p ) :
     death_knight_spell_t( "unholy_blight", p -> talents.unholy_blight -> spell_id(), p )
   {
-    base_tick_time = 1.0;
+    base_tick_time = timespan_t::from_seconds(1.0);
     num_ticks      = 10;
     background     = true;
     proc           = true;
@@ -3945,7 +3951,7 @@ struct unholy_frenzy_t : public spell_t
     }
 
     harmful = false;
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3959,11 +3965,11 @@ struct unholy_frenzy_t : public spell_t
 
 struct butchery_event_t : public event_t
 {
-  butchery_event_t( player_t* player, double tick_time ) :
+  butchery_event_t( player_t* player, timespan_t tick_time ) :
     event_t( player -> sim, player, "butchery_regen" )
   {
-    if ( tick_time < 0 ) tick_time = 0;
-    if ( tick_time > 5 ) tick_time = 5;
+    if ( tick_time < timespan_t::zero ) tick_time = timespan_t::zero;
+    if ( tick_time > timespan_t::from_seconds(5) ) tick_time = timespan_t::from_seconds(5);
     sim -> add_event( this, tick_time );
   }
 
@@ -3976,7 +3982,7 @@ struct butchery_event_t : public event_t
     // with rank 2 you gain 1 RP every 2.5s
     p -> resource_gain( RESOURCE_RUNIC, 1, p -> gains_butchery );
 
-    new ( sim ) butchery_event_t( player, 5.0 / p -> talents.butchery -> rank()  );
+    new ( sim ) butchery_event_t( player, timespan_t::from_seconds(5.0 / p -> talents.butchery -> rank()) );
   }
 };
 
@@ -4308,7 +4314,7 @@ void death_knight_t::init_base()
   if ( talents.runic_power_mastery -> rank() )
     resource_base[ RESOURCE_RUNIC ] += talents.runic_power_mastery -> effect1().resource( RESOURCE_RUNIC );
 
-  base_gcd = 1.5;
+  base_gcd = timespan_t::from_seconds(1.5);
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
@@ -4734,9 +4740,9 @@ void death_knight_t::init_enchant()
     }
   };
 
-  buffs_rune_of_cinderglacier       = new buff_t( this, "rune_of_cinderglacier",       2, 30.0 );
+  buffs_rune_of_cinderglacier       = new buff_t( this, "rune_of_cinderglacier",       2, timespan_t::from_seconds(30.0) );
   buffs_rune_of_razorice            = new buff_t( this, 51714, "rune_of_razorice" );
-  buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, 15.0 );
+  buffs_rune_of_the_fallen_crusader = new buff_t( this, "rune_of_the_fallen_crusader", 1, timespan_t::from_seconds(15.0) );
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
@@ -4798,16 +4804,16 @@ void death_knight_t::init_buffs()
   buffs_blood_presence      = new buff_t( this, "blood_presence", "Blood Presence" );
   buffs_bone_shield         = new buff_t( this, "bone_shield", "Bone Shield" );
   buffs_crimson_scourge     = new buff_t( this, 81141, "crimson_scourge", talents.crimson_scourge -> proc_chance() );
-  buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", "Dancing Rune Weapon", -1, -1.0, true ); // quiet=true
+  buffs_dancing_rune_weapon = new buff_t( this, "dancing_rune_weapon", "Dancing Rune Weapon", -1, timespan_t::min, true ); // quiet=true
   buffs_dark_transformation = new buff_t( this, "dark_transformation", "Dark Transformation" );
   buffs_frost_presence      = new buff_t( this, "frost_presence", "Frost Presence" );
   buffs_killing_machine     = new buff_t( this, 51124, "killing_machine" ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost", "Pillar of Frost" );
-  buffs_rime                = new buff_t( this, "rime", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, 30.0, 0.0, 1.0 ); // Trigger controls proc chance
+  buffs_rime                = new buff_t( this, "rime", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, timespan_t::from_seconds(30.0), timespan_t::zero, 1.0 ); // Trigger controls proc chance
   buffs_runic_corruption    = new buff_t( this, 51460, "runic_corruption" );
-  buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  20.0,  0.0, talents.scent_of_blood -> proc_chance() );
+  buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  timespan_t::from_seconds(20.0), timespan_t::zero, talents.scent_of_blood -> proc_chance() );
   buffs_shadow_infusion     = new buff_t( this, 91342, "shadow_infusion", talents.shadow_infusion -> proc_chance() );
-  buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, 10.0, 0.0, 1.0 );
+  buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, timespan_t::from_seconds(10.0), timespan_t::zero, 1.0 );
   buffs_tier11_4pc_melee    = new buff_t( this, 90507, "tier11_4pc_melee", set_bonus.tier11_4pc_melee() );
   buffs_tier13_4pc_melee    = new stat_buff_t( this, 105647, "tier13_4pc_melee", STAT_MASTERY_RATING, dbc.spell( 105647 ) -> effect1().base_value() );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence", "Unholy Presence" );
@@ -4815,7 +4821,7 @@ void death_knight_t::init_buffs()
   struct bloodworms_buff_t : public buff_t
   {
     bloodworms_buff_t( death_knight_t* p ) :
-      buff_t( p, "bloodworms", 1, 19.99, 0.0, p -> talents.blood_parasite -> rank() * 0.05 ) {}
+      buff_t( p, "bloodworms", 1, timespan_t::from_seconds(19.99), timespan_t::zero, p -> talents.blood_parasite -> rank() * 0.05 ) {}
     virtual void start( int stacks, double value )
     {
       buff_t::start( stacks, value );
@@ -4938,7 +4944,7 @@ void death_knight_t::combat_begin()
     sim -> auras.abominations_might -> trigger( 1, am_value );
 
   if ( talents.butchery -> rank() )
-    new ( sim ) butchery_event_t( this, 5.0 / talents.butchery -> rank() );
+    new ( sim ) butchery_event_t( this, timespan_t::from_seconds(5.0 / talents.butchery -> rank()) );
 }
 
 // death_knight_t::assess_damage ============================================
@@ -5092,12 +5098,12 @@ int death_knight_t::primary_role() const
 
 // death_knight_t::regen ====================================================
 
-void death_knight_t::regen( double periodicity )
+void death_knight_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
   if ( set_bonus.tier12_2pc_melee() && sim -> auras.horn_of_winter -> check() )
-    resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity, gains_tier12_2pc_melee );
+    resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity.total_seconds(), gains_tier12_2pc_melee );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     _runes.slot[i].regen_rune( this, periodicity );
@@ -5205,7 +5211,7 @@ void death_knight_t::trigger_runic_empowerment()
   if ( talents.runic_corruption -> rank() )
   {
     if ( buffs_runic_corruption -> check() )
-      buffs_runic_corruption -> extend_duration( this, 3 );
+      buffs_runic_corruption -> extend_duration( this, timespan_t::from_seconds(3) );
     else
       buffs_runic_corruption -> trigger();
 
@@ -5405,9 +5411,9 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, ra
 
 void player_t::death_knight_init( sim_t* sim )
 {
-  sim -> auras.abominations_might  = new aura_t( sim, "abominations_might",  1,   0.0 );
-  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, 120.0 );
-  sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1,   0.0 );
+  sim -> auras.abominations_might  = new aura_t( sim, "abominations_might",  1, timespan_t::zero );
+  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, timespan_t::from_seconds(120.0) );
+  sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1, timespan_t::zero );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -5415,7 +5421,7 @@ void player_t::death_knight_init( sim_t* sim )
     p -> buffs.unholy_frenzy        = new   buff_t( p, 49016, "unholy_frenzy" );
     p -> debuffs.brittle_bones      = new debuff_t( p, "brittle_bones",      1 );
     p -> debuffs.ebon_plaguebringer = new debuff_t( p, 65142, "ebon_plaguebringer" );
-    p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, 21.0 );
+    p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, timespan_t::from_seconds(21.0) );
   }
 }
 

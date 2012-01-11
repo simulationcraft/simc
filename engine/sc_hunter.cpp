@@ -232,7 +232,7 @@ struct hunter_t : public player_t
     summon_pet_str = "";
     distance = 40;
     default_distance = 40;
-    base_gcd = 1.0;
+    base_gcd = timespan_t::from_seconds(1.0);
     flaming_arrow = NULL;
 
     tier13_4pc_cooldown = 105.0;
@@ -277,7 +277,7 @@ struct hunter_t : public player_t
   virtual void      moving();
 
   // Event Tracking
-  virtual void regen( double periodicity );
+  virtual void regen( timespan_t periodicity );
 };
 
 // ==========================================================================
@@ -337,7 +337,7 @@ struct hunter_pet_t : public pet_t
     main_hand_weapon.max_dmg    = rating_t::interpolate( level, 0, 0, 78, 110 ); // FIXME needs level 60 and 70 values
     // Level 85 numbers from Rivkah from EJ, 07.08.2011
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = 2.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
 
     stamina_per_owner = 0.45;
 
@@ -427,11 +427,11 @@ struct hunter_pet_t : public pet_t
 
     base_focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline -> effect1().percent();
 
-    base_gcd = 1.20;
+    base_gcd = timespan_t::from_seconds(1.20);
 
     infinite_resource[ RESOURCE_FOCUS ] = o -> infinite_resource[ RESOURCE_FOCUS ];
 
-    world_lag = 0.3; // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
+    world_lag = timespan_t::from_seconds(0.3); // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
     world_lag_override = true;
   }
 
@@ -511,7 +511,7 @@ struct hunter_pet_t : public pet_t
     buffs_rabid             = new buff_t( this, 53401, "rabid" );
     buffs_rabid_power_stack = new buff_t( this, 53403, "rabid_power_stack" );
     buffs_sic_em            = new buff_t( this, 89388, "sic_em" );
-    buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, 10.0, 0.0 );
+    buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, timespan_t::from_seconds(10.0), timespan_t::zero );
   }
 
   virtual void init_gains()
@@ -638,7 +638,7 @@ struct hunter_pet_t : public pet_t
     return composite_attack_hit() * 17.0 / 8.0;
   }
 
-  virtual void summon( double duration=0 )
+  virtual void summon( timespan_t duration=timespan_t::zero )
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -735,7 +735,7 @@ struct hunter_attack_t : public attack_t
   virtual double cost() const;
   virtual void   consume_resource();
   virtual void   execute();
-  virtual double execute_time() const;
+  virtual timespan_t execute_time() const;
   virtual double swing_haste() const;
   virtual void   player_buff();
 };
@@ -768,7 +768,7 @@ struct hunter_spell_t : public spell_t
     _init_hunter_spell_t();
   }
 
-  virtual double gcd() const;
+  virtual timespan_t gcd() const;
   virtual double cost() const;
   virtual void consume_resource();
 };
@@ -814,7 +814,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       base_multiplier = 1.0;
       tick_power_mod  = 0;
       num_ticks       = 8;
-      base_tick_time  = 1.0;
+      base_tick_time  = timespan_t::from_seconds(1.0);
 
       init();
     }
@@ -837,7 +837,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       base_td = piercing_shots_dmg / dot() -> num_ticks;
     }
 
-    virtual double travel_time()
+    virtual timespan_t travel_time()
     {
       return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
     }
@@ -865,7 +865,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
     piercing_shots_dmg += p -> active_piercing_shots -> base_td * dot -> ticks();
   }
 
-  if ( ( 8.0 + sim -> aura_delay ) < dot -> remains() )
+  if ( timespan_t::from_seconds(8.0) + sim -> aura_delay < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Piercing Shots due to Max Piercing Shots Duration.", p -> name() );
     p -> procs_munched_piercing_shots -> occur();
@@ -943,7 +943,7 @@ static void trigger_vishanka( attack_t* a )
   if ( ! p -> vishanka )
     return;
 
-  if ( p -> cooldowns_vishanka -> remains() > 0 )
+  if ( p -> cooldowns_vishanka -> remains() > timespan_t::zero )
     return;
 
   if ( ! p -> active_vishanka )
@@ -955,7 +955,7 @@ static void trigger_vishanka( attack_t* a )
       {
         background  = true;
         proc        = true;
-        trigger_gcd = 0;
+        trigger_gcd = timespan_t::zero;
         crit_bonus = 0.5; // Only crits for 150% on live
         init();
 
@@ -972,7 +972,7 @@ static void trigger_vishanka( attack_t* a )
   if ( a -> sim -> roll( p -> dbc.spell( p -> vishanka ) -> proc_chance() ) )
   {
     p -> active_vishanka -> execute();
-    p -> cooldowns_vishanka -> duration = 15.0; // Assume a ICD until testing proves one way or another
+    p -> cooldowns_vishanka -> duration = timespan_t::from_seconds(15.0); // Assume a ICD until testing proves one way or another
     p -> cooldowns_vishanka -> start();
   }
 }
@@ -1101,7 +1101,7 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   {
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
     p -> main_hand_attack = new pet_melee_t( player );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     school = SCHOOL_PHYSICAL;
     stats -> school = school;
   }
@@ -1886,12 +1886,12 @@ void hunter_attack_t::execute()
 
 // hunter_attack_t::execute_time ============================================
 
-double hunter_attack_t::execute_time() const
+timespan_t hunter_attack_t::execute_time() const
 {
-  double t = attack_t::execute_time();
+  timespan_t t = attack_t::execute_time();
 
-  if ( t == 0  || base_execute_time < 0 )
-    return 0;
+  if ( t == timespan_t::zero  || base_execute_time < timespan_t::zero )
+    return timespan_t::zero;
 
   return t;
 }
@@ -1954,10 +1954,10 @@ struct ranged_t : public hunter_attack_t
     special = false;
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
-      return 0.01;
+      return timespan_t::from_seconds(0.01);
 
     return hunter_attack_t::execute_time();
   }
@@ -2001,7 +2001,7 @@ struct auto_shot_t : public hunter_attack_t
 
     p -> ranged_attack = new ranged_t( player );
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -2018,7 +2018,7 @@ struct auto_shot_t : public hunter_attack_t
     return( p -> ranged_attack -> execute_event == 0 ); // not swinging
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     double h = 1.0;
 
@@ -2048,7 +2048,7 @@ struct aimed_shot_t : public hunter_attack_t
 
       // Don't know why these values aren't 0 in the database.
       base_cost = 0;
-      base_execute_time = 0;
+      base_execute_time = timespan_t::zero;
 
       // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
       // Testing confirms that the weapon multiplier also affects the RAP coeff
@@ -2142,12 +2142,12 @@ struct aimed_shot_t : public hunter_attack_t
     return hunter_attack_t::cost();
   }
 
-  virtual double execute_time() const
+  virtual timespan_t execute_time() const
   {
     hunter_t* p = player -> cast_hunter();
 
     if ( p -> buffs_master_marksman_fire -> check() )
-      return 0;
+      return timespan_t::zero;
 
     return hunter_attack_t::execute_time();
   }
@@ -2170,7 +2170,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     hunter_attack_t::schedule_execute();
 
-    if ( time_to_execute > 0 )
+    if ( time_to_execute > timespan_t::zero )
     {
       p -> ranged_attack -> cancel();
       casted = 1;
@@ -2307,7 +2307,7 @@ struct black_arrow_t : public hunter_attack_t
 
     cooldown = p -> get_cooldown( "traps" );
     cooldown -> duration = spell_id_t::cooldown();
-    cooldown -> duration += p -> talents.resourcefulness -> effect1().seconds();
+    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value();
 
     base_multiplier *= 1.0 + p -> talents.trap_mastery -> effect1().percent();
     // Testing shows BA crits for 2.09x dmg with the crit dmg meta gem, this
@@ -2395,7 +2395,7 @@ struct explosive_trap_t : public hunter_attack_t
     //TODO: Split traps cooldown into fire/frost/snakes
     cooldown = p -> get_cooldown( "traps" );
     cooldown -> duration = spell_id_t::cooldown();
-    cooldown -> duration += p -> talents.resourcefulness -> effect1().seconds();
+    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value();
 
     may_miss=false;
 
@@ -2443,7 +2443,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     normalize_weapon_speed = true;
 
-    cooldown -> duration += p -> glyphs.chimera_shot -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> glyphs.chimera_shot -> mod_additive( P_COOLDOWN ));
 
     consumes_tier12_4pc = true;
   }
@@ -2488,7 +2488,7 @@ struct cobra_shot_t : public hunter_attack_t
     direct_power_mod = 0.017; // hardcoded into tooltip
 
     if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
-      base_execute_time -= 0.2;
+      base_execute_time -= timespan_t::from_seconds( 0.2 );
 
     focus_gain = p -> dbc.spell( 77443 ) -> effect1().base_value();
 
@@ -2613,7 +2613,7 @@ struct explosive_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? 0.0 : spell_id_t::cooldown() );
+    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? timespan_t::zero : spell_id_t::cooldown() );
 
     hunter_attack_t::update_ready();
   }
@@ -2671,7 +2671,7 @@ struct kill_shot_t : public hunter_attack_t
   {
     hunter_attack_t::execute();
 
-    if ( cooldowns_glyph_kill_shot && cooldowns_glyph_kill_shot -> remains() == 0 )
+    if ( cooldowns_glyph_kill_shot && cooldowns_glyph_kill_shot -> remains() == timespan_t::zero )
     {
       cooldown -> reset();
       cooldowns_glyph_kill_shot -> start();
@@ -2925,7 +2925,7 @@ struct steady_shot_t : public hunter_attack_t
     direct_power_mod = 0.021; // hardcoded into tooltip
 
     if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
-      base_execute_time -= 0.2;
+      base_execute_time -= timespan_t::from_seconds(0.2);
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -3065,10 +3065,10 @@ struct wild_quiver_trigger_t : public action_callback_t
 
 // hunter_spell_t::gcd()
 
-double hunter_spell_t::gcd() const
+timespan_t hunter_spell_t::gcd() const
 {
   if ( ! harmful && ! player -> in_combat )
-    return 0;
+    return timespan_t::zero;
 
   // Hunter gcd unaffected by haste
   return trigger_gcd;
@@ -3217,7 +3217,7 @@ struct bestial_wrath_t : public hunter_spell_t
     parse_options( NULL, options_str );
     check_talent( p -> talents.bestial_wrath -> rank() );
 
-    cooldown -> duration += p -> glyphs.bestial_wrath -> effect1().seconds();
+    cooldown -> duration += p -> glyphs.bestial_wrath -> effect1().time_value();
     cooldown -> duration *=  ( 1.0 + p -> talents.longevity -> effect1().percent() );
     harmful = false;
   }
@@ -3260,7 +3260,7 @@ struct fervor_t : public hunter_spell_t
 
     harmful = false;
 
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
   }
 
   virtual void execute()
@@ -3436,7 +3436,7 @@ struct rapid_fire_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.posthaste -> effect1().seconds();
+    cooldown -> duration += p -> talents.posthaste -> effect1().time_value();
 
     harmful = false;
   }
@@ -3575,7 +3575,7 @@ struct trueshot_aura_t : public hunter_spell_t
   {
     hunter_t* p = player -> cast_hunter();
     check_talent( p -> talents.trueshot_aura -> rank() );
-    trigger_gcd = 0;
+    trigger_gcd = timespan_t::zero;
     harmful = false;
   }
 
@@ -3608,7 +3608,7 @@ struct hunter_sniper_training_event_t : public event_t
     event_t( player -> sim, player )
   {
     name = "Sniper_Training_Check";
-    sim -> add_event( this, 5.0 );
+    sim -> add_event( this, timespan_t::from_seconds(5.0) );
   }
 
   virtual void execute()
@@ -3620,9 +3620,9 @@ struct hunter_sniper_training_event_t : public event_t
 
     if ( ! p -> buffs.raid_movement -> up() )
     {
-      double finished_moving = p -> buffs.raid_movement -> last_start + p -> buffs.raid_movement -> buff_duration;
+      timespan_t finished_moving = p -> buffs.raid_movement -> last_start + p -> buffs.raid_movement -> buff_duration;
 
-      if ( ( sim -> current_time - finished_moving ) > p -> talents.sniper_training -> effect1().base_value() )
+      if ( ( sim -> current_time - finished_moving ) > timespan_t::from_seconds(p -> talents.sniper_training -> effect1().base_value()) )
       {
         p -> buffs_sniper_training -> trigger();
       }
@@ -3901,20 +3901,20 @@ void hunter_t::init_buffs()
   buffs_culling_the_herd            = new buff_t( this, 70893, "culling_the_herd" );
   buffs_focus_fire                  = new buff_t( this, 82692, "focus_fire" );
   buffs_improved_steady_shot        = new buff_t( this, 53220, "improved_steady_shot", talents.improved_steady_shot -> ok() );
-  buffs_killing_streak              = new buff_t( this, "killing_streak", 1, 8, 0, talents.killing_streak -> ok() );
-  buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, 0, 0, 1.0, true );
+  buffs_killing_streak              = new buff_t( this, "killing_streak", 1, timespan_t::from_seconds(8), timespan_t::zero, talents.killing_streak -> ok() );
+  buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, timespan_t::zero, timespan_t::zero, 1.0, true );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect1().percent() );
-  if ( bugs ) buffs_lock_and_load -> cooldown -> duration = 10.0; // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
+  if ( bugs ) buffs_lock_and_load -> cooldown -> duration = timespan_t::from_seconds(10.0); // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
   buffs_master_marksman_fire        = new buff_t( this, 82926, "master_marksman_fire", 1 );
   buffs_sniper_training             = new buff_t( this, talents.sniper_training -> rank() == 3 ? 64420 : talents.sniper_training -> rank() == 2 ? 64419 : talents.sniper_training -> rank() == 1 ? 64418 : 0, "sniper_training", talents.sniper_training -> rank() );
 
   buffs_rapid_fire                  = new buff_t( this, 3045, "rapid_fire" );
-  buffs_rapid_fire -> cooldown -> duration = 0;
-  buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, 0, 0, 1, true );
+  buffs_rapid_fire -> cooldown -> duration = timespan_t::zero;
+  buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, timespan_t::zero, timespan_t::zero, 1, true );
 
-  buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), 0, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
-  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", sets -> set( SET_T13_4PC_MELEE ) -> proc_chance(), tier13_4pc_cooldown );
+  buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), timespan_t::zero, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
+  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", sets -> set( SET_T13_4PC_MELEE ) -> proc_chance(), timespan_t::from_seconds(tier13_4pc_cooldown) );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );
@@ -4257,14 +4257,14 @@ double hunter_t::matching_gear_multiplier( const attribute_type attr ) const
 
 // hunter_t::regen  =========================================================
 
-void hunter_t::regen( double periodicity )
+void hunter_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
   periodicity *= 1.0 + haste_rating / rating.attack_haste;
   if ( buffs_rapid_fire -> check() && talents.rapid_recuperation -> rank() )
   {
     // 2/4 focus per sec
-    double rr_regen = periodicity * talents.rapid_recuperation -> effect1().base_value();
+    double rr_regen = periodicity.total_seconds() * talents.rapid_recuperation -> effect1().base_value();
 
     resource_gain( RESOURCE_FOCUS, rr_regen, gains_rapid_recuperation );
   }

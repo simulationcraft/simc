@@ -100,9 +100,9 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
                      s -> tick_results[ RESULT_CRIT ].pct );
   }
 
-  if ( s -> total_tick_time > 0 )
+  if ( s -> total_tick_time > timespan_t::zero )
   {
-    util_t::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time / s -> player -> fight_length.mean  );
+    util_t::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time.total_seconds() / s -> player -> fight_length.mean  );
   }
 
   util_t::fprintf( file, "\n" );
@@ -508,8 +508,8 @@ static void print_text_performance( FILE* file, sim_t* sim )
                    ( long ) sim -> max_events_remaining,
                    sim -> target -> resource_base[ RESOURCE_HEALTH ],
                    sim -> iterations * sim -> simulation_length.mean,
-                   sim -> elapsed_cpu_seconds,
-                   sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu_seconds );
+                   sim -> elapsed_cpu.total_seconds(),
+                   sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds() );
 
   sim -> rng -> report( file );
 }

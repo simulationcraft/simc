@@ -43,6 +43,13 @@ int rng_t::roll( double chance )
 
 // rng_t::range =============================================================
 
+timespan_t rng_t::range( timespan_t min, timespan_t max )
+{
+  return TIMESPAN_FROM_NATIVE_VALUE( range( TIMESPAN_TO_NATIVE_VALUE(min), TIMESPAN_TO_NATIVE_VALUE( max ) ) );
+}
+
+// rng_t::range =============================================================
+
 double rng_t::range( double min,
                      double max )
 {
@@ -54,6 +61,14 @@ double rng_t::range( double min,
   if ( min < max ) result =  min + real() * ( max - min );
   actual_range += result;
   return result;
+}
+
+// rng_t::gauss =============================================================
+
+timespan_t rng_t::gauss( timespan_t mean,
+                         timespan_t stddev )
+{
+  return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE(mean), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
 }
 
 // rng_t::gauss =============================================================
@@ -124,6 +139,13 @@ double rng_t::exgauss( double mean, double stddev, double nu )
   if ( result > 5 ) result = 5; // cut it off at 5s
 
   return result;
+}
+
+// rng_t::exgauss ===========================================================
+
+timespan_t rng_t::exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
+{
+  return TIMESPAN_FROM_NATIVE_VALUE( exgauss( TIMESPAN_TO_NATIVE_VALUE(mean), TIMESPAN_TO_NATIVE_VALUE(stddev), TIMESPAN_TO_NATIVE_VALUE(nu) ) );
 }
 
 // rng_t::seed ==============================================================
@@ -550,6 +572,7 @@ struct rng_normalized_t : public rng_t
   virtual double real() { return base -> real(); }
   virtual double range( double min, double max ) { return ( min + max ) / 2.0; }
   virtual double gauss( double mean, double /* stddev */ ) { return mean; }
+  virtual timespan_t gauss( timespan_t mean, timespan_t /* stddev */ ) { return mean; }
   virtual int    roll( double chance ) = 0; // must be overridden
 };
 
@@ -608,6 +631,10 @@ struct rng_phase_shift_t : public rng_normalized_t
     expected_gauss += mean;
     actual_gauss += result;
     return result;
+  }
+  virtual timespan_t gauss( timespan_t mean, timespan_t stddev )
+  {
+    return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE(mean), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
   }
   virtual int roll( double chance )
   {
@@ -737,6 +764,10 @@ struct rng_pre_fill_t : public rng_normalized_t
     expected_gauss += mean;
     actual_gauss += result;
     return result;
+  }
+  virtual timespan_t gauss( timespan_t mean, timespan_t stddev )
+  {
+    return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE(mean), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
   }
 };
 
@@ -953,6 +984,11 @@ struct rng_distance_simple_t : public rng_normalized_t
     expected_gauss += mean;
     actual_gauss += result;
     return result;
+  }
+
+  virtual timespan_t gauss( timespan_t mean, timespan_t stddev )
+  {
+    return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE(mean), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
   }
 };
 

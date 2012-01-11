@@ -235,7 +235,7 @@ void heal_t::impact( player_t* t, int impact_result, double travel_heal=0 )
     dot -> recalculate_ready();
     if ( sim -> debug )
       log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)",
-                     player -> name(), dot -> ready, name(), dot -> name() );
+                     player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
   }
 }
 
@@ -411,7 +411,7 @@ void heal_t::last_tick( dot_t* d )
   if ( sim -> debug ) log_t::output( sim, "%s fades from %s", d -> name(), heal_target[0] -> name() );
 
   d -> ticking = 0;
-  d -> time_to_tick = 0;
+  d -> time_to_tick = timespan_t::zero;
 }
 
 // heal_t::find_greatest_difference_player ==================================
