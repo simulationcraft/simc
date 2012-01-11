@@ -143,11 +143,11 @@ void dot_t::refresh_duration()
 
 // dot_t::remains ===========================================================
 
-double dot_t::remains()
+timespan_t dot_t::remains()
 {
-  if ( ! action ) return 0;
-  if ( ! ticking ) return 0;
-  return ready - player -> sim -> current_time;
+  if ( ! action ) return timespan_t::zero;
+  if ( ! ticking ) return timespan_t::zero;
+  return timespan_t::from_seconds(ready - player -> sim -> current_time);
 }
 
 // dot_t::reset =============================================================

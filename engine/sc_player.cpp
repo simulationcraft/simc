@@ -5272,7 +5272,7 @@ struct wait_until_ready_t : public wait_fixed_t
       remains = a -> cooldown -> remains();
       if ( remains > timespan_t::zero && remains < wait ) wait = remains;
 
-      remains = timespan_t::from_seconds(a -> dot() -> remains());
+      remains = a -> dot() -> remains();
       if ( remains > timespan_t::zero && remains < wait ) wait = remains;
     }
 
@@ -6218,7 +6218,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
           dot_t* dot;
           dot_remains_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_remains", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = dot -> remains(); return TOK_NUM; }
+          virtual int evaluate() { result_num = dot -> remains().total_seconds(); return TOK_NUM; }
         };
         return new dot_remains_expr_t( a, dot );
       }

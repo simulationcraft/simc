@@ -5232,7 +5232,7 @@ struct dot_t
   void   recalculate_ready();
   void   refresh_duration();
   void   reset();
-  double remains();
+  timespan_t remains();
   void   schedule_tick();
   int    ticks();
 

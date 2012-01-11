@@ -1639,7 +1639,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct remains_expr_t : public action_expr_t
     {
       remains_expr_t( action_t* a ) : action_expr_t( a, "remains", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> dot() -> remains(); return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> dot() -> remains().total_seconds(); return TOK_NUM; }
     };
     return new remains_expr_t( this );
   }

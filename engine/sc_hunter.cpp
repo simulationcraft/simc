@@ -865,7 +865,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
     piercing_shots_dmg += p -> active_piercing_shots -> base_td * dot -> ticks();
   }
 
-  if ( ( 8.0 + sim -> aura_delay ) < dot -> remains() )
+  if ( timespan_t::from_seconds(8.0) + timespan_t::from_seconds(sim -> aura_delay) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Piercing Shots due to Max Piercing Shots Duration.", p -> name() );
     p -> procs_munched_piercing_shots -> occur();

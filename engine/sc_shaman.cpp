@@ -2849,7 +2849,7 @@ struct shamans_swiftness_t : public shaman_spell_t
         return false;
 
     if ( sub_dot )
-      if ( sub_dot -> remains() > 0 )
+      if ( sub_dot -> remains() > timespan_t::zero )
         return false;
 
     return shaman_spell_t::ready();

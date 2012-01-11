@@ -1139,7 +1139,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     total_dot_dmg += p -> active_flames_of_the_faithful_proc -> base_td * dot -> ticks();
   }
 
-  if ( ( p -> dbc.spell( 99092 ) -> duration().total_seconds() + sim -> aura_delay ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99092 ) -> duration() + timespan_t::from_seconds(sim -> aura_delay) ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Flames of the Faithful due to Max Duration.", p -> name() );
     p -> procs_munched_tier12_2pc_melee -> occur();

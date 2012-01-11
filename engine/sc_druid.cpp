@@ -1162,7 +1162,7 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
     total_dot_dmg += p -> active_tier12_2pc_melee -> base_td * dot -> ticks();
   }
 
-  if ( ( p -> dbc.spell( 99002 ) -> duration().total_seconds() + sim -> aura_delay ) < dot -> remains() )
+  if ( ( p -> dbc.spell( 99002 ) -> duration() + timespan_t::from_seconds(sim -> aura_delay) ) < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Fiery Claws due to Max Fiery Claws Duration.", p -> name() );
     p -> procs_munched_tier12_2pc_melee -> occur();
@@ -3890,7 +3890,7 @@ struct druids_swiftness_t : public druid_spell_t
         return false;
 
     if ( sub_dot )
-      if ( sub_dot -> remains() > 0 )
+      if ( sub_dot -> remains() > timespan_t::zero )
         return false;
 
     return druid_spell_t::ready();
