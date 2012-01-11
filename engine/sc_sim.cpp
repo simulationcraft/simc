@@ -872,9 +872,9 @@ void sim_t::reschedule_event( event_t* e )
 {
   if ( debug ) log_t::output( this, "Reschedule Event: %s %d", e -> name, e -> id );
 
-  add_event( e, ( e -> reschedule_time - current_time ) );
+  add_event( e, ( e -> reschedule_time.total_seconds() - current_time ) );
 
-  e -> reschedule_time = 0;
+  e -> reschedule_time = timespan_t::zero;
 }
 
 // sim_t::next_event ========================================================
@@ -1069,7 +1069,7 @@ void sim_t::combat( int iteration )
     {
       if ( debug ) log_t::output( this, "Canceled event: %s", e -> name );
     }
-    else if ( unlikely( e -> reschedule_time > e -> time ) )
+    else if ( unlikely( e -> reschedule_time.total_seconds() > e -> time ) )
     {
       reschedule_event( e );
       continue;

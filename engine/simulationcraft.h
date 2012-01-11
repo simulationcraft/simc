@@ -3637,15 +3637,15 @@ public:
   player_t* player;
   uint32_t  id;
   double    time;
-  double    reschedule_time;
+  timespan_t reschedule_time;
   int       canceled;
   const char* name;
   event_t( sim_t* s, player_t* p=0, const char* n="" ) :
-    next( 0 ), sim( s ), player( p ), reschedule_time( 0 ), canceled( 0 ), name( n )
+    next( 0 ), sim( s ), player( p ), reschedule_time( timespan_t::zero ), canceled( 0 ), name( n )
   {
     if ( ! name ) name = "unknown";
   }
-  timespan_t occurs()  const { return timespan_t::from_seconds(( reschedule_time != 0 ) ? reschedule_time : time); }
+  timespan_t occurs()  const { return ( reschedule_time != timespan_t::zero ) ? reschedule_time : timespan_t::from_seconds(time); }
   timespan_t remains() const { return occurs() - timespan_t::from_seconds(sim -> current_time); }
   virtual void reschedule( timespan_t new_time );
   virtual void execute() = 0;

@@ -869,8 +869,8 @@ static void trigger_flurry( attack_t* a, int stacks )
     if ( mhe )
     {
       double delta;
-      if ( mhe -> reschedule_time )
-        delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
+      if ( mhe -> reschedule_time != timespan_t::zero )
+        delta = ( mhe -> reschedule_time.total_seconds() - sim -> current_time ) * mult;
       else
         delta = ( mhe -> time - sim -> current_time ) * mult;
       p -> main_hand_attack -> reschedule_execute( timespan_t::from_seconds(delta) );
@@ -882,8 +882,8 @@ static void trigger_flurry( attack_t* a, int stacks )
     if ( ohe )
     {
       double delta;
-      if ( ohe -> reschedule_time )
-        delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
+      if ( ohe -> reschedule_time != timespan_t::zero )
+        delta = ( ohe -> reschedule_time.total_seconds() - sim -> current_time ) * mult;
       else
         delta = ( ohe -> time - sim -> current_time ) * mult;
       p -> off_hand_attack -> reschedule_execute( timespan_t::from_seconds(delta) );
