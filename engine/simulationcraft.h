@@ -5658,6 +5658,7 @@ struct rng_t
   virtual int    roll( double chance );
   virtual double range( double min, double max );
   virtual double gauss( double mean, double stddev );
+  virtual timespan_t gauss( timespan_t mean, timespan_t stddev );
   double exgauss( double mean, double stddev, double nu );
   virtual void   seed( uint32_t start );
   void   report( FILE* );

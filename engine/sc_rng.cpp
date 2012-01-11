@@ -58,6 +58,14 @@ double rng_t::range( double min,
 
 // rng_t::gauss =============================================================
 
+timespan_t rng_t::gauss( timespan_t mean,
+                         timespan_t stddev )
+{
+  return timespan_t::from_millis( gauss( mean.total_millis(), stddev.total_millis() ) );
+}
+
+// rng_t::gauss =============================================================
+
 double rng_t::gauss( double mean,
                      double stddev )
 {
@@ -550,6 +558,7 @@ struct rng_normalized_t : public rng_t
   virtual double real() { return base -> real(); }
   virtual double range( double min, double max ) { return ( min + max ) / 2.0; }
   virtual double gauss( double mean, double /* stddev */ ) { return mean; }
+  virtual timespan_t gauss( timespan_t mean, timespan_t /* stddev */ ) { return mean; }
   virtual int    roll( double chance ) = 0; // must be overridden
 };
 
@@ -608,6 +617,10 @@ struct rng_phase_shift_t : public rng_normalized_t
     expected_gauss += mean;
     actual_gauss += result;
     return result;
+  }
+  virtual timespan_t gauss( timespan_t mean, timespan_t stddev )
+  {
+    return timespan_t::from_millis(gauss(mean.total_millis(), stddev.total_millis()));
   }
   virtual int roll( double chance )
   {
@@ -737,6 +750,10 @@ struct rng_pre_fill_t : public rng_normalized_t
     expected_gauss += mean;
     actual_gauss += result;
     return result;
+  }
+  virtual timespan_t gauss( timespan_t mean, timespan_t stddev )
+  {
+    return timespan_t::from_millis(gauss(mean.total_millis(), stddev.total_millis()));
   }
 };
 
@@ -953,6 +970,11 @@ struct rng_distance_simple_t : public rng_normalized_t
     expected_gauss += mean;
     actual_gauss += result;
     return result;
+  }
+
+  virtual timespan_t gauss( timespan_t mean, timespan_t stddev )
+  {
+    return timespan_t::from_millis( gauss( mean.total_millis(), stddev.total_millis() ) );
   }
 };
 
