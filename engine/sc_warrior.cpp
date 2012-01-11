@@ -2750,7 +2750,7 @@ struct battle_shout_t : public warrior_spell_t
     {
       for ( player_t* q = sim -> player_list; q; q = q -> next )
       {
-        q -> buffs.battle_shout -> buff_duration = duration() + p -> glyphs.battle -> effect1().time_value().total_seconds();
+        q -> buffs.battle_shout -> buff_duration = (duration() + p -> glyphs.battle -> effect1().time_value()).total_seconds();
         q -> buffs.battle_shout -> trigger( 1, effect_average( 1 ) );
       }
 

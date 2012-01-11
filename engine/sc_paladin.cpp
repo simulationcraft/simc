@@ -2334,7 +2334,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     if ( p -> primary_tree() == TREE_RETRIBUTION )
-      p -> guardian_of_ancient_kings -> summon( p -> spells.guardian_of_ancient_kings_ret -> duration() );
+      p -> guardian_of_ancient_kings -> summon( p -> spells.guardian_of_ancient_kings_ret -> duration().total_seconds() );
     else if ( p -> primary_tree() == TREE_PROTECTION )
       p -> buffs_gotak_prot -> trigger();
   }
@@ -2421,7 +2421,7 @@ struct inquisition_t : public paladin_spell_t
 
     harmful = false;
     trigger_dp = true;
-    base_duration = duration() * ( 1.0 + p -> talents.inquiry_of_faith -> mod_additive( P_DURATION ) );
+    base_duration = duration().total_seconds() * ( 1.0 + p -> talents.inquiry_of_faith -> mod_additive( P_DURATION ) );
   }
 
   virtual void execute()

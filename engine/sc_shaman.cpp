@@ -822,7 +822,7 @@ struct fire_elemental_pet_t : public pet_t
       // 207 = 80
       base_cost            = player -> level * 2.750;
       // For now, model the cast time increase as well, see below
-      base_execute_time    = player -> dbc.spell( 12470 ) -> cast_time( player -> level );
+      base_execute_time    = player -> dbc.spell( 12470 ) -> cast_time( player -> level ).total_seconds();
 
       base_dd_min          = 583;
       base_dd_max          = 663;
@@ -2575,7 +2575,7 @@ struct earthquake_t : public shaman_spell_t
     harmful = true;
     may_miss = false;
     may_miss = may_crit = may_dodge = may_parry = false;
-    num_ticks = ( int ) duration();
+    num_ticks = ( int ) duration().total_seconds();
     base_tick_time = 1.0;
     hasted_ticks = false;
 
@@ -2906,7 +2906,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
 
     shaman_t* p = player -> cast_shaman();
 
-    p -> pet_spirit_wolf -> summon( duration() );
+    p -> pet_spirit_wolf -> summon( duration().total_seconds() );
   }
 };
 
@@ -3226,7 +3226,7 @@ struct shaman_totem_t : public shaman_spell_t
     hasted_ticks         = false;
     callbacks            = false;
     base_cost_reduction += p -> talent_totemic_focus -> mod_additive( P_RESOURCE_COST );
-    totem_duration       = duration() * ( 1.0 + p -> talent_totemic_focus -> mod_additive( P_DURATION ) );
+    totem_duration       = duration().total_seconds() * ( 1.0 + p -> talent_totemic_focus -> mod_additive( P_DURATION ) );
     // Model all totems as ticking "dots" for now, this will cause them to properly
     // "fade", so we can recast them if the fight length is long enough and optimal_raid=0
     num_ticks            = 1;

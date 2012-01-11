@@ -2532,7 +2532,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
 
     p -> buffs_dancing_rune_weapon -> trigger();
-    p -> active_dancing_rune_weapon -> summon( duration() );
+    p -> active_dancing_rune_weapon -> summon( duration().total_seconds() );
   }
 };
 

@@ -1382,7 +1382,7 @@ struct feral_charge_cat_t : public druid_cat_attack_t
         stampede_cost_reduction /= 100.0;
       }
       stampede_cost_reduction = -stampede_cost_reduction;
-      stampede_duration = stampede_spell.duration();
+      stampede_duration = stampede_spell.duration().total_seconds();
     }
 
     p -> buffs_stampede_cat -> buff_duration = stampede_duration;
@@ -1943,7 +1943,7 @@ struct savage_roar_t : public druid_cat_attack_t
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    double duration = this -> duration() + 5.0 * td -> buffs_combo_points -> stack();
+    double duration = this -> duration().total_seconds() + 5.0 * td -> buffs_combo_points -> stack();
     duration += p -> talents.endless_carnage -> effect2().time_value().total_seconds();
 
     // execute clears CP, so has to be after calculation duration
@@ -2276,7 +2276,7 @@ struct feral_charge_bear_t : public druid_bear_attack_t
       uint32_t sid = ( p -> talents.stampede -> rank() == 2 ) ? 78893 : 78892;
       passive_spell_t stampede_spell( p, "stampede_bear_spell", sid );
       stampede_haste = stampede_spell.base_value( E_APPLY_AURA, A_MOD_HASTE ) / 100.0;
-      stampede_duration = stampede_spell.duration();
+      stampede_duration = stampede_spell.duration().total_seconds();
     }
 
     stampede_haste = 1.0 / ( 1.0 + stampede_haste );
@@ -3005,7 +3005,7 @@ struct tranquility_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     aoe               = effect3().base_value(); // Heals 5 targets
-    base_execute_time = duration();
+    base_execute_time = duration().total_seconds();
     channeled         = true;
 
     // Healing is in spell effect 1

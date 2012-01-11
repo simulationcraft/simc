@@ -1311,7 +1311,7 @@ struct shadow_fiend_pet_t : public pet_t
   {
     pet_t::init_buffs();
 
-    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration() );
+    buffs_shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration().total_seconds() );
   }
 
   virtual double composite_spell_power( const school_type school ) const
@@ -2132,7 +2132,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    p -> pet_shadow_fiend -> summon( duration() );
+    p -> pet_shadow_fiend -> summon( duration().total_seconds() );
   }
 
   virtual bool ready()
@@ -3862,7 +3862,7 @@ struct lightwell_t : public priest_spell_t
     priest_spell_t::execute();
 
     p -> pet_lightwell -> get_cooldown( "lightwell_renew" ) -> duration = consume_interval;
-    p -> pet_lightwell -> summon( duration() );
+    p -> pet_lightwell -> summon( duration().total_seconds() );
   }
 };
 

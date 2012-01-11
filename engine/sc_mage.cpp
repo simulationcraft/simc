@@ -1944,7 +1944,7 @@ struct evocation_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     base_tick_time    = 2.0;
-    num_ticks         = ( int ) ( duration() / base_tick_time );
+    num_ticks         = ( int ) ( duration().total_seconds() / base_tick_time );
     tick_zero         = true;
     channeled         = true;
     harmful           = false;

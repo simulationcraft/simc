@@ -250,7 +250,7 @@ void action_t::parse_data()
 {
   if ( id > 0 && ( spell = player -> dbc.spell( id ) ) )
   {
-    base_execute_time    = spell -> cast_time( player -> level );
+    base_execute_time    = spell -> cast_time( player -> level ).total_seconds();
     cooldown -> duration = spell -> cooldown().total_seconds();
     range                = spell -> max_range();
     travel_speed         = spell -> missile_speed();

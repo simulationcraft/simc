@@ -445,7 +445,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     s << "Cast Time    : ";
 
     if ( spell -> _cast_div )
-      s << spell -> cast_time( 85 );
+      s << spell -> cast_time( 85 ).total_seconds();
     else if ( spell -> _cast_min != spell -> _cast_max )
       s << spell -> _cast_min / 1000.0 << " - " << spell -> _cast_max / 1000.0;
     else

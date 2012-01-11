@@ -3510,7 +3510,7 @@ struct summon_infernal_t : public summon_pet_t
   {
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
 
-    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().time_value().total_seconds();
+    summoning_duration = (duration() + p -> talent_ancient_grimoire -> effect1().time_value()).total_seconds();
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> talent_summon_felguard -> ok() ?
                             p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :
@@ -3541,7 +3541,7 @@ struct summon_doomguard2_t : public summon_pet_t
   {
     harmful = false;
     background = true;
-    summoning_duration = duration() + p -> talent_ancient_grimoire -> effect1().time_value().total_seconds();
+    summoning_duration = (duration() + p -> talent_ancient_grimoire -> effect1().time_value()).total_seconds();
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> talent_summon_felguard -> ok() ?
                             p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :

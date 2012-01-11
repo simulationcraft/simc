@@ -582,15 +582,15 @@ uint32_t spell_id_t::category() const
   return s_data -> category();
 }
 
-double spell_id_t::duration() const
+timespan_t spell_id_t::duration() const
 {
   if ( ! ok() )
-    return 0.0;
+    return timespan_t::zero;
 
-  double d = s_data -> duration().total_seconds();
-
-  if ( d > ( s_player -> sim -> wheel_seconds - 2.0 ) )
-    d = s_player -> sim -> wheel_seconds - 2.0;
+  timespan_t d = s_data -> duration();
+  timespan_t player_wheel_seconds = timespan_t::from_seconds(s_player -> sim -> wheel_seconds - 2.0);
+  if ( d > player_wheel_seconds )
+    d = player_wheel_seconds;
 
   return d;
 }
@@ -643,10 +643,10 @@ double spell_id_t::proc_chance() const
   return s_data -> proc_chance();
 }
 
-double spell_id_t::cast_time() const
+timespan_t spell_id_t::cast_time() const
 {
   if ( ! ok() )
-    return 0.0;
+    return timespan_t::zero;
 
   return s_data -> cast_time( s_player -> level );
 }

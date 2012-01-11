@@ -1525,7 +1525,7 @@ struct roar_of_courage_t : public hunter_pet_spell_t
 
     if ( ! sim -> overrides.roar_of_courage )
     {
-      sim -> auras.roar_of_courage -> buff_duration = duration();
+      sim -> auras.roar_of_courage -> buff_duration = duration().total_seconds();
       sim -> auras.roar_of_courage -> trigger( 1, bonus );
     }
   }

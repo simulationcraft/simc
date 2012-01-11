@@ -1801,7 +1801,7 @@ public:
   timespan_t           cooldown() const { return timespan_t::from_millis(_cooldown); }
   timespan_t           duration() const { return timespan_t::from_millis(_duration); }
   timespan_t           gcd() const { return timespan_t::from_millis(_gcd); }
-  double               cast_time( uint32_t level ) const;
+  timespan_t           cast_time( uint32_t level ) const;
 
   uint32_t             category() const { return _category; }
 
@@ -2502,14 +2502,14 @@ struct spell_id_t
   virtual timespan_t cooldown() const;
   virtual timespan_t gcd() const;
   virtual uint32_t category() const;
-  virtual double duration() const;
+  virtual timespan_t duration() const;
   virtual double cost() const;
   virtual uint32_t rune_cost() const;
   virtual double runic_power_gain() const;
   virtual uint32_t max_stacks() const;
   virtual uint32_t initial_stacks() const;
   virtual double proc_chance() const;
-  virtual double cast_time() const;
+  virtual timespan_t cast_time() const;
   virtual uint32_t effect_id( uint32_t effect_num ) const;
   virtual bool flags( spell_attribute_t f ) const;
   virtual const char* desc() const;
