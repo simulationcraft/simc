@@ -4942,7 +4942,7 @@ public:
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const { return base_execute_time; }
   virtual timespan_t tick_time() const;
-  virtual int    hasted_num_ticks( double d=-1 ) const;
+  virtual int    hasted_num_ticks( timespan_t d=timespan_t::min ) const;
   virtual timespan_t travel_time();
   virtual void   player_buff();
   virtual void   player_tick() {}

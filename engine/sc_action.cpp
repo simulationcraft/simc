@@ -1864,7 +1864,7 @@ timespan_t action_t::tick_time() const
 
 // action_t::hasted_num_ticks ===============================================
 
-int action_t::hasted_num_ticks( double d ) const
+int action_t::hasted_num_ticks( timespan_t d ) const
 {
   if ( ! hasted_ticks ) return num_ticks;
 
@@ -1873,10 +1873,10 @@ int action_t::hasted_num_ticks( double d ) const
   // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
   // It's important that we're accurate here so that we model haste breakpoints correctly.
 
-  if ( d < 0 )
-    d = num_ticks * base_tick_time.total_seconds();
+  if ( d < timespan_t::zero )
+    d = num_ticks * base_tick_time;
 
-  double t = floor( ( base_tick_time.total_millis() * player_haste ) + 0.5 ) / 1000.0;
+  timespan_t t = timespan_t::from_millis( ( base_tick_time.total_millis() * player_haste ) + 0.5);
 
   double n = d / t;
 
