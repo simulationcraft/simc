@@ -21,7 +21,7 @@
 #endif
 
 #if defined(_LP64) || defined(__LP64__) || defined(_WIN64) || defined(_AMD64_)
-#  define SIMC_X64
+#  define SC_X64
 #endif
 
 #if defined( _MSC_VER )
@@ -1126,7 +1126,7 @@ struct timespan_t
 
 #ifdef SC_USE_INTEGER_TIME
 
-#ifdef SIMC_X64
+#ifdef SC_X64
   typedef int64_t time_t;
 #else
   typedef int32_t time_t;
