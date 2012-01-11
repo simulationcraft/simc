@@ -817,7 +817,7 @@ struct fire_elemental_pet_t : public pet_t
       aoe                  = -1;
       may_crit             = true;
       direct_power_mod     = player -> dbc.spell( 12470 ) -> effect1().coeff();
-      cooldown -> duration = fe -> rng_ability_cooldown -> range( 30.0, 60.0 );
+      cooldown -> duration = timespan_t::from_seconds(fe -> rng_ability_cooldown -> range( 30.0, 60.0 ));
 
       // 207 = 80
       base_cost            = player -> level * 2.750;
@@ -832,7 +832,7 @@ struct fire_elemental_pet_t : public pet_t
     {
       fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
       // Randomize next cooldown duration here
-      cooldown -> duration = fe -> rng_ability_cooldown -> range( 30.0, 60.0 );
+      cooldown -> duration = timespan_t::from_seconds(fe -> rng_ability_cooldown -> range( 30.0, 60.0 ));
 
       fire_elemental_spell_t::execute();
     }
@@ -849,7 +849,7 @@ struct fire_elemental_pet_t : public pet_t
       base_cost            = ( player -> level ) * 3.554;
       base_execute_time    = timespan_t::zero;
       direct_power_mod     = player -> dbc.spell( 57984 ) -> effect1().coeff();
-      cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 7.0 );
+      cooldown -> duration = timespan_t::from_seconds(fe -> rng_ability_cooldown -> range( 5.0, 7.0 ));
 
       base_dd_min        = 276;
       base_dd_max        = 321;
@@ -864,7 +864,7 @@ struct fire_elemental_pet_t : public pet_t
     {
       fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
       // Randomize next cooldown duration here
-      cooldown -> duration = fe -> rng_ability_cooldown -> range( 5.0, 7.0 );
+      cooldown -> duration = timespan_t::from_seconds(fe -> rng_ability_cooldown -> range( 5.0, 7.0 ));
 
       fire_elemental_spell_t::execute();
     }
@@ -1223,7 +1223,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
       imp_ll_rng = sim -> get_rng( "improved_ll" );
       imp_ll_rng -> average_range = false;
       imp_ll_fs_cd = player -> get_cooldown( "improved_ll_fs_cooldown" );
-      imp_ll_fs_cd -> duration = 0;
+      imp_ll_fs_cd -> duration = timespan_t::zero;
       fs_dummy_stat = player -> get_stats( "flame_shock_dummy" );
     }
     
@@ -1575,7 +1575,7 @@ struct unleash_flame_t : public shaman_spell_t
       p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     // Don't cooldown here, unleash elements ability will handle it
-    cooldown -> duration = 0.0;
+    cooldown -> duration = timespan_t::zero;
   }
 
   virtual void execute()
@@ -1649,7 +1649,7 @@ struct unleash_wind_t : public shaman_attack_t
     may_dodge = may_parry = false;
 
     // Don't cooldown here, unleash elements will handle it
-    cooldown -> duration = 0.0;
+    cooldown -> duration = timespan_t::zero;
   }
 
   virtual void execute()
@@ -2003,7 +2003,7 @@ struct primal_strike_t : public shaman_attack_t
 
     weapon               = &( p -> main_hand_weapon );
     cooldown             = p -> cooldowns_strike;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds();
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown();
 
     base_multiplier     += p -> talent_focused_strikes -> mod_additive( P_GENERIC );
   }
@@ -2040,7 +2040,7 @@ struct stormstrike_t : public shaman_attack_t
     weapon_multiplier    = 0.0;
     may_crit             = false;
     cooldown             = p -> cooldowns_strike;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds();
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown();
 
     // Actual damaging attacks are done by stormstrike_attack_t
     stormstrike_mh = new stormstrike_attack_t( player, "stormstrike_mh", effect_trigger_spell( 2 ), &( p -> main_hand_weapon ) );
@@ -2315,7 +2315,7 @@ struct chain_lightning_t : public shaman_spell_t
     direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
     base_execute_time += timespan_t::from_millis(p -> spec_shamanism -> effect_base_value( 3 ));
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
-    cooldown -> duration += p -> spec_elemental_fury -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> spec_elemental_fury -> mod_additive( P_COOLDOWN ));
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
@@ -2922,7 +2922,7 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     check_spec( TREE_ELEMENTAL );
 
-    cooldown -> duration += p -> glyph_thunder -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> glyph_thunder -> mod_additive( P_COOLDOWN ));
     bonus                 =
       p -> dbc.spell( id ) -> effect2().percent() +
       p -> glyph_thunderstorm -> mod_additive( P_EFFECT_2 ) / 100.0;
@@ -3029,8 +3029,8 @@ struct earth_shock_t : public shaman_spell_t
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     cooldown = p -> cooldowns_shock;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds() +
-      p -> talent_reverberation -> mod_additive( P_COOLDOWN );
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() +
+      timespan_t::from_seconds(p -> talent_reverberation -> mod_additive( P_COOLDOWN ));
 
     if ( p -> glyph_shocking -> ok() )
     {
@@ -3100,8 +3100,8 @@ struct flame_shock_t : public shaman_spell_t
     num_ticks = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + p -> glyph_flame_shock -> mod_additive( P_DURATION ) ) );
 
     cooldown              = p -> cooldowns_shock;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds() +
-      p -> talent_reverberation -> mod_additive( P_COOLDOWN );
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() +
+      timespan_t::from_seconds(p -> talent_reverberation -> mod_additive( P_COOLDOWN ));
 
     if ( p -> glyph_shocking -> ok() )
     {
@@ -3174,8 +3174,8 @@ struct frost_shock_t : public shaman_spell_t
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     cooldown              = p -> cooldowns_shock;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown().total_seconds() +
-      p -> talent_reverberation -> mod_additive( P_COOLDOWN );
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() +
+      timespan_t::from_seconds(p -> talent_reverberation -> mod_additive( P_COOLDOWN ));
 
     if ( p -> glyph_shocking -> ok() )
     {
@@ -3196,7 +3196,7 @@ struct wind_shear_t : public shaman_spell_t
 
     may_miss = may_resist = may_crit = false;
 
-    cooldown -> duration += p -> talent_reverberation -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> talent_reverberation -> mod_additive( P_COOLDOWN ));
   }
 
   virtual bool ready()
@@ -3404,7 +3404,7 @@ struct fire_elemental_totem_t : public shaman_totem_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> glyph_fire_elemental_totem -> mod_additive( P_COOLDOWN ));
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
   }

@@ -619,7 +619,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     };
 
     cooldown = p -> get_cooldown( name_str );
-    cooldown -> duration = cd;
+    cooldown -> duration = timespan_t::from_seconds(cd);
 
     spell = new discharge_spell_t( name_str.c_str(), p, dmg, school );
 

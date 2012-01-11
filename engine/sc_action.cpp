@@ -251,7 +251,7 @@ void action_t::parse_data()
   if ( id > 0 && ( spell = player -> dbc.spell( id ) ) )
   {
     base_execute_time    = spell -> cast_time( player -> level );
-    cooldown -> duration = spell -> cooldown().total_seconds();
+    cooldown -> duration = spell -> cooldown();
     range                = spell -> max_range();
     travel_speed         = spell -> missile_speed();
     trigger_gcd          = spell -> gcd();
@@ -354,7 +354,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
         base_crit += 0.01 * effect -> base_value();
         break;
       case P_COOLDOWN:
-        cooldown -> duration += 0.001 * effect -> base_value();
+        cooldown -> duration += timespan_t::from_millis( effect -> base_value() );
         break;
       default: break;
       }
@@ -1309,7 +1309,7 @@ void action_t::reschedule_execute( timespan_t time )
 void action_t::update_ready()
 {
   double delay = 0;
-  if ( cooldown -> duration > 0 && ! dual )
+  if ( cooldown -> duration > timespan_t::zero && ! dual )
   {
 
     if ( ! background && ! proc )
@@ -1484,7 +1484,7 @@ void action_t::init()
   if ( is_dtr_action )
   {
     cooldown = player -> get_cooldown( name_str + "_DTR" );
-    cooldown -> duration = 0;
+    cooldown -> duration = timespan_t::zero;
 
     stats = player -> get_stats( name_str + "_DTR", this );
     background = true;
@@ -1536,7 +1536,7 @@ void action_t::interrupt_action()
 {
   if ( sim -> debug ) log_t::output( sim, "action %s of %s is interrupted", name(), player -> name() );
 
-  if ( cooldown -> duration > 0 && ! dual )
+  if ( cooldown -> duration > timespan_t::zero && ! dual )
   {
     if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 
@@ -1657,7 +1657,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct cooldown_expr_t : public action_expr_t
     {
       cooldown_expr_t( action_t* a ) : action_expr_t( a, "cooldown", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> cooldown -> duration; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> cooldown -> duration.total_seconds(); return TOK_NUM; }
     };
     return new cooldown_expr_t( this );
   }

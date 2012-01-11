@@ -1198,7 +1198,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         writer.print_tag( "trigger_gcd", util_t::to_string( a -> trigger_gcd.total_seconds() ) );
         writer.print_tag( "base_cost", util_t::to_string( a -> base_cost ) );
         writer.begin_tag( "cooldown" );
-        writer.print_attribute( "duration", util_t::to_string( a -> cooldown -> duration ) );
+        writer.print_attribute( "duration", util_t::to_string( a -> cooldown -> duration.total_seconds() ) );
         writer.end_tag(); // </cooldown>
         writer.print_tag( "base_execute_time", util_t::to_string( a -> base_execute_time.total_seconds() ) );
         writer.print_tag( "base_crit", util_t::to_string( a -> base_crit ) );

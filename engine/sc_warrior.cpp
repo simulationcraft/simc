@@ -1280,7 +1280,8 @@ struct bladestorm_t : public warrior_attack_t
     channeled = true;
     tick_zero = true;
 
-    cooldown -> duration += p -> glyphs.bladestorm -> effect1().time_value().total_seconds();
+
+    cooldown -> duration += p -> glyphs.bladestorm -> effect1().time_value();
 
     bladestorm_mh = new bladestorm_tick_t( p, "bladestorm_mh" );
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
@@ -1422,8 +1423,8 @@ struct charge_t : public warrior_attack_t
     };
     parse_options( options, options_str );
 
-    cooldown -> duration += p -> talents.juggernaut -> effect3().time_value().total_seconds();
-    cooldown -> duration += p -> glyphs.rapid_charge -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> talents.juggernaut -> effect3().time_value();
+    cooldown -> duration += p -> glyphs.rapid_charge -> effect1().time_value();
 
     stancemask = STANCE_BATTLE;
 
@@ -1517,7 +1518,7 @@ struct cleave_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    cooldown -> duration = spell_id_t::cooldown().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown();
 
     if ( p -> buffs_inner_rage -> up() )
       cooldown -> duration *= 1.0 + p -> buffs_inner_rage -> effect1().percent();
@@ -1802,7 +1803,7 @@ struct heroic_strike_t : public warrior_attack_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    cooldown -> duration = spell_id_t::cooldown().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown();
 
     if ( p -> buffs_inner_rage -> up() )
       cooldown -> duration *= 1.0 + p -> buffs_inner_rage -> effect1().percent();
@@ -2390,7 +2391,7 @@ struct shockwave_t : public warrior_attack_t
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
-    cooldown -> duration += p -> glyphs.shockwave -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> glyphs.shockwave -> effect1().time_value();
   }
 
   virtual void execute()
@@ -2730,7 +2731,7 @@ struct battle_shout_t : public warrior_spell_t
 
     rage_gain = p -> dbc.spell( effect3().trigger_spell_id() ) -> effect1().resource( RESOURCE_RAGE ) + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
     cooldown = player -> get_cooldown( "shout" );
-    cooldown -> duration = 10 + spell_id_t::cooldown().total_seconds() + p -> talents.booming_voice -> effect1().time_value().total_seconds();
+    cooldown -> duration = timespan_t::from_seconds(10) + spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_value();
 
     if ( p -> set_bonus.tier12_2pc_melee() )
     {
@@ -2779,7 +2780,7 @@ struct commanding_shout_t : public warrior_spell_t
     rage_gain = 20 + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
 
     cooldown = player -> get_cooldown( "shout" );
-    cooldown -> duration = spell_id_t::cooldown().total_seconds() + p -> talents.booming_voice -> effect1().time_value().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_value();
 
     if ( p -> set_bonus.tier12_2pc_melee() )
     {
@@ -3008,7 +3009,7 @@ struct shield_block_t : public warrior_spell_t
     harmful = false;
 
     if ( p -> talents.shield_mastery -> ok() )
-      cooldown -> duration += p -> talents.shield_mastery -> effect1().time_value().total_seconds();
+      cooldown -> duration += p -> talents.shield_mastery -> effect1().time_value();
   }
 
   virtual void execute()
@@ -3056,7 +3057,7 @@ struct stance_t : public warrior_spell_t
     harmful = false;
     base_cost   = 0;
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 1.0;
+    cooldown -> duration = timespan_t::from_seconds(1.0);
     resource    = RESOURCE_RAGE;
   }
 

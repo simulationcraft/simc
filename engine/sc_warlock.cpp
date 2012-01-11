@@ -444,7 +444,7 @@ struct warlock_t : public player_t
     cooldowns_infernal                        = get_cooldown ( "summon_infernal" );
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
     cooldowns_fiery_imp = get_cooldown( "fiery_imp" );
-    cooldowns_fiery_imp -> duration = 45.0;
+    cooldowns_fiery_imp -> duration = timespan_t::from_seconds(45.0);
 
     use_pre_soulburn = 1;
 
@@ -2319,7 +2319,7 @@ struct chaos_bolt_t : public warlock_spell_t
 
     base_execute_time += p -> talent_bane -> effect1().time_value();
     base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
-    cooldown -> duration += ( p -> glyphs.chaos_bolt -> base_value() / 1000.0 );
+    cooldown -> duration += timespan_t::from_millis( p -> glyphs.chaos_bolt -> base_value() );
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2411,7 +2411,7 @@ struct shadowburn_t : public warlock_spell_t
     if ( p -> glyphs.shadowburn -> ok() )
     {
       cd_glyph_of_shadowburn             = p -> get_cooldown ( "glyph_of_shadowburn" );
-      cd_glyph_of_shadowburn -> duration = p -> dbc.spell( 91001 ) -> duration().total_seconds();
+      cd_glyph_of_shadowburn -> duration = p -> dbc.spell( 91001 ) -> duration();
     }
 
     if ( ! dtr && p -> has_dtr )
@@ -2942,7 +2942,7 @@ struct conflagrate_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     base_crit += p -> talent_fire_and_brimstone -> effect2().percent();
-    cooldown -> duration += ( p -> glyphs.conflagrate -> base_value() / 1000.0 );
+    cooldown -> duration += timespan_t::from_millis( p -> glyphs.conflagrate -> base_value() );
     base_dd_multiplier *= 1.0 + ( p -> glyphs.immolate -> base_value() ) + ( p -> talent_improved_immolate -> effect1().percent() );
 
     if ( ! dtr && p -> has_dtr )
@@ -3508,7 +3508,7 @@ struct summon_infernal_t : public summon_pet_t
     summon_pet_t( "infernal", p, "Summon Infernal", options_str ),
     infernal_awakening( 0 )
   {
-    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
+    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) ) : timespan_t::zero;
 
     summoning_duration = (duration() + p -> talent_ancient_grimoire -> effect1().time_value()).total_seconds();
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
@@ -3571,7 +3571,7 @@ struct summon_doomguard_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) / 1000.0 : 0.0;
+    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis(p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 )) : timespan_t::zero;
 
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p );
@@ -4554,7 +4554,7 @@ void warlock_t::init_buffs()
   buffs_eradication           = new buff_t( this, talent_eradication -> effect_trigger_spell( 1 ), "eradication", talent_eradication -> proc_chance() );
   buffs_metamorphosis         = new buff_t( this, 47241, "metamorphosis", talent_metamorphosis -> rank() );
   buffs_metamorphosis -> buff_duration += timespan_t::from_millis(glyphs.metamorphosis -> base_value());
-  buffs_metamorphosis -> cooldown -> duration = 0;
+  buffs_metamorphosis -> cooldown -> duration = timespan_t::zero;
   buffs_molten_core           = new buff_t( this, talent_molten_core -> effect_trigger_spell( 1 ), "molten_core", talent_molten_core -> rank() * 0.02 );
   buffs_shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> base_value() / 100.0 );
 

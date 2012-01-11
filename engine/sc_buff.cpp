@@ -266,7 +266,7 @@ void buff_t::init()
     rng = sim -> get_rng( name_str, rng_type );
     tail = &( sim -> buff_list );
   }
-  cooldown -> duration = buff_cooldown.total_seconds();
+  cooldown -> duration = buff_cooldown;
 
   while ( *tail && name_str > ( ( *tail ) -> name_str ) )
   {
@@ -302,11 +302,11 @@ buff_t::buff_t( actor_pair_t       p,
   cooldown = initial_source -> get_cooldown( "buff_" + name_str );
   if ( cd < timespan_t::zero )
   {
-    cooldown -> duration = p.source -> dbc.spell( spell_id() ) -> cooldown().total_seconds();
+    cooldown -> duration = p.source -> dbc.spell( spell_id() ) -> cooldown();
   }
   else
   {
-    cooldown -> duration = cd.total_seconds();
+    cooldown -> duration = cd;
   }
 
   if ( initial_source != player )
@@ -344,11 +344,11 @@ buff_t::buff_t( actor_pair_t       p,
   cooldown = player -> get_cooldown( "buff_" + name_str );
   if ( cd < timespan_t::zero )
   {
-    cooldown -> duration = player -> dbc.spell( spell_id() ) -> cooldown().total_seconds();
+    cooldown -> duration = player -> dbc.spell( spell_id() ) -> cooldown();
   }
   else
   {
-    cooldown -> duration = cd.total_seconds();
+    cooldown -> duration = cd;
   }
 
   if ( initial_source != player )
@@ -546,11 +546,11 @@ void buff_t::execute( int stacks, double value )
   }
 
   // new buff cooldown impl
-  if ( cooldown -> duration > 0 )
+  if ( cooldown -> duration > timespan_t::zero )
   {
     if ( sim -> debug )
       log_t::output( sim, "%s starts buff %s cooldown (%s) with duration %.2f",
-                     ( source ? source -> name() : "someone" ), name(), cooldown -> name(), cooldown -> duration );
+                     ( source ? source -> name() : "someone" ), name(), cooldown -> name(), cooldown -> duration.total_seconds() );
 
     cooldown -> start();
   }
@@ -908,7 +908,7 @@ std::string buff_t::to_str() const
   s << spell_id_t::to_str();
   s << " max_stack=" << max_stack;
   s << " initial_stack=" << initial_stacks();
-  s << " cooldown=" << cooldown -> duration;
+  s << " cooldown=" << cooldown -> duration.total_seconds();
   s << " duration=" << buff_duration.total_seconds();
   s << " default_chance=" << default_chance;
 

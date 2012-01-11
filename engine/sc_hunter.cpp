@@ -972,7 +972,7 @@ static void trigger_vishanka( attack_t* a )
   if ( a -> sim -> roll( p -> dbc.spell( p -> vishanka ) -> proc_chance() ) )
   {
     p -> active_vishanka -> execute();
-    p -> cooldowns_vishanka -> duration = 15.0; // Assume a ICD until testing proves one way or another
+    p -> cooldowns_vishanka -> duration = timespan_t::from_seconds(15.0); // Assume a ICD until testing proves one way or another
     p -> cooldowns_vishanka -> start();
   }
 }
@@ -2306,8 +2306,8 @@ struct black_arrow_t : public hunter_attack_t
     may_crit   = false;
 
     cooldown = p -> get_cooldown( "traps" );
-    cooldown -> duration = spell_id_t::cooldown().total_seconds();
-    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown();
+    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value();
 
     base_multiplier *= 1.0 + p -> talents.trap_mastery -> effect1().percent();
     // Testing shows BA crits for 2.09x dmg with the crit dmg meta gem, this
@@ -2394,8 +2394,8 @@ struct explosive_trap_t : public hunter_attack_t
 
     //TODO: Split traps cooldown into fire/frost/snakes
     cooldown = p -> get_cooldown( "traps" );
-    cooldown -> duration = spell_id_t::cooldown().total_seconds();
-    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown();
+    cooldown -> duration += p -> talents.resourcefulness -> effect1().time_value();
 
     may_miss=false;
 
@@ -2443,7 +2443,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     normalize_weapon_speed = true;
 
-    cooldown -> duration += p -> glyphs.chimera_shot -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> glyphs.chimera_shot -> mod_additive( P_COOLDOWN ));
 
     consumes_tier12_4pc = true;
   }
@@ -2613,7 +2613,7 @@ struct explosive_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? 0.0 : spell_id_t::cooldown().total_seconds() );
+    cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? timespan_t::zero : spell_id_t::cooldown() );
 
     hunter_attack_t::update_ready();
   }
@@ -2661,7 +2661,7 @@ struct kill_shot_t : public hunter_attack_t
     if ( p -> glyphs.kill_shot -> ok() )
     {
       cooldowns_glyph_kill_shot = p -> get_cooldown( "cooldowns_glyph_kill_shot" );
-      cooldowns_glyph_kill_shot -> duration = p -> dbc.spell( 90967 ) -> duration().total_seconds();
+      cooldowns_glyph_kill_shot -> duration = p -> dbc.spell( 90967 ) -> duration();
     }
 
     normalize_weapon_speed = true;
@@ -3217,7 +3217,7 @@ struct bestial_wrath_t : public hunter_spell_t
     parse_options( NULL, options_str );
     check_talent( p -> talents.bestial_wrath -> rank() );
 
-    cooldown -> duration += p -> glyphs.bestial_wrath -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> glyphs.bestial_wrath -> effect1().time_value();
     cooldown -> duration *=  ( 1.0 + p -> talents.longevity -> effect1().percent() );
     harmful = false;
   }
@@ -3436,7 +3436,7 @@ struct rapid_fire_t : public hunter_spell_t
     hunter_t* p = player -> cast_hunter();
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.posthaste -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> talents.posthaste -> effect1().time_value();
 
     harmful = false;
   }
@@ -3904,13 +3904,13 @@ void hunter_t::init_buffs()
   buffs_killing_streak              = new buff_t( this, "killing_streak", 1, timespan_t::from_seconds(8), timespan_t::zero, talents.killing_streak -> ok() );
   buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, timespan_t::zero, timespan_t::zero, 1.0, true );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect1().percent() );
-  if ( bugs ) buffs_lock_and_load -> cooldown -> duration = 10.0; // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
+  if ( bugs ) buffs_lock_and_load -> cooldown -> duration = timespan_t::from_seconds(10.0); // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
   buffs_master_marksman_fire        = new buff_t( this, 82926, "master_marksman_fire", 1 );
   buffs_sniper_training             = new buff_t( this, talents.sniper_training -> rank() == 3 ? 64420 : talents.sniper_training -> rank() == 2 ? 64419 : talents.sniper_training -> rank() == 1 ? 64418 : 0, "sniper_training", talents.sniper_training -> rank() );
 
   buffs_rapid_fire                  = new buff_t( this, 3045, "rapid_fire" );
-  buffs_rapid_fire -> cooldown -> duration = 0;
+  buffs_rapid_fire -> cooldown -> duration = timespan_t::zero;
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, timespan_t::zero, timespan_t::zero, 1, true );
 
   buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), timespan_t::zero, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );

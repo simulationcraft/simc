@@ -395,7 +395,7 @@ struct stance_t : public monk_spell_t
 
     harmful = false;
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 1.0;
+    cooldown -> duration = timespan_t::from_seconds(1.0);
     resource    = RESOURCE_CHI;
   }
 

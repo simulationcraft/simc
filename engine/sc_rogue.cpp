@@ -2165,7 +2165,7 @@ struct kick_t : public rogue_attack_t
     if ( p -> glyphs.kick -> ok() )
     {
       // All kicks are assumed to interrupt a cast
-      cooldown -> duration -= 2.0; // + 4 Duration - 6 on Success = -2
+      cooldown -> duration -= timespan_t::from_seconds(2.0); // + 4 Duration - 6 on Success = -2
     }
   }
 
@@ -2769,7 +2769,7 @@ struct vanish_t : public rogue_attack_t
 
     harmful = false;
 
-    cooldown -> duration += p -> talents.elusiveness -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> talents.elusiveness -> effect1().time_value();
 
     parse_options( NULL, options_str );
   }
@@ -3176,7 +3176,7 @@ struct adrenaline_rush_buff_t : public buff_t
   {
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
-    cooldown -> duration = 0;
+    cooldown -> duration = timespan_t::zero;
     buff_duration += timespan_t::from_seconds(p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION ));
     if ( p -> set_bonus.tier13_4pc_melee() )
       buff_duration += p -> spells.tier13_4pc -> effect2().time_value();
@@ -3235,7 +3235,7 @@ struct killing_spree_buff_t : public buff_t
   {
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
-    cooldown -> duration = 0;
+    cooldown -> duration = timespan_t::zero;
   }
 
   virtual bool trigger( int, double, double )

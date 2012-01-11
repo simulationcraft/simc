@@ -178,7 +178,7 @@ struct discharge_proc_callback_t : public action_callback_t
     };
 
     cooldown = p -> get_cooldown( name_str );
-    cooldown -> duration = cd;
+    cooldown -> duration = timespan_t::from_seconds(cd);
 
     if ( amount > 0 )
     {
@@ -302,7 +302,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
     };
 
     cooldown = p -> get_cooldown( name_str );
-    cooldown -> duration = cd;
+    cooldown -> duration = timespan_t::from_seconds(cd);
 
     if ( amount > 0 )
     {
@@ -759,7 +759,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
       aoe = -1;
       background = true;
       base_spell_power_multiplier = 0;
-      cooldown -> duration = 60.0;
+      cooldown -> duration = timespan_t::from_seconds(60.0);
       init();
     }
   };
@@ -968,7 +968,7 @@ static void register_blazing_power( item_t* item )
       proc = p -> get_proc( "blazing_power" );
       rng  = p -> get_rng ( "blazing_power" );
       cd = p -> get_cooldown( "blazing_power_callback" );
-      cd -> duration = 45.0;
+      cd -> duration = timespan_t::from_seconds(45.0);
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1032,7 +1032,7 @@ static void register_windward_heart( item_t* item )
       proc = p -> get_proc( "windward_heart" );
       rng  = p -> get_rng ( "windward_heart" );
       cd = p -> get_cooldown( "windward_heart_callback" );
-      cd -> duration = 20.0;
+      cd -> duration = timespan_t::from_seconds(20.0);
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1108,7 +1108,7 @@ static void register_indomitable_pride( item_t* item )
       buff = new buff_t( p, "indomitable_pride", 1, timespan_t::from_seconds(6.0) );
       buff -> activated = false;
       cd = listener -> get_cooldown( "indomitable_pride" );
-      cd -> duration = 60.0;
+      cd -> duration = timespan_t::from_seconds(60.0);
       p -> absorb_buffs.push_back( buff );
       stats = listener -> get_stats( "indomitable_pride" );
       stats -> type = STATS_ABSORB;
@@ -1154,7 +1154,7 @@ static void register_spidersilk_spindle( item_t* item )
       buff = new buff_t( p, h ? 97129 : 96945, "loom_of_fate" );
       buff -> activated = false;
       cd = listener -> get_cooldown( "spidersilk_spindle" );
-      cd -> duration = 60.0;
+      cd -> duration = timespan_t::from_seconds(60.0);
       p -> absorb_buffs.push_back( buff );
       stats = listener -> get_stats( "loom_of_fate" );
       stats -> type = STATS_ABSORB;
@@ -1217,7 +1217,7 @@ static void register_bonelink_fetish( item_t* item )
       attack = new whirling_maw_t( p, p -> dbc.spell( id ) -> effect1().trigger_spell_id() );
 
       cooldown = p -> get_cooldown( "bonelink_fetish" );
-      cooldown -> duration = 25.0; // 25 second ICD
+      cooldown -> duration = timespan_t::from_seconds(25.0); // 25 second ICD
 
       rng = p -> get_rng ( "bonelink_fetish" );
     }
@@ -1284,7 +1284,7 @@ static void register_fury_of_the_beast( item_t* item )
       double amount = h ? 120 : lfr ? 95 : 107; // Amount saved in the stat buff
 
       fury_of_the_beast = new buff_t( p, h ? 109864 : lfr ? 109861 : 108011, "fury_of_the_beast", 0.15 );
-      fury_of_the_beast -> cooldown -> duration = 55.0; // FIXME: Confirm ICD
+      fury_of_the_beast -> cooldown -> duration = timespan_t::from_seconds(55.0); // FIXME: Confirm ICD
       fury_of_the_beast_stack  = new stat_buff_t( p, h ? 109863 : lfr ? 109860 : 108016, "fury_of_the_beast_stack", STAT_AGILITY, amount );
       fury_of_the_beast_stack -> activated = false;
     }
@@ -1552,7 +1552,7 @@ static void register_rathrak( item_t* item )
       proc = true;
       hasted_ticks = false;
       init();
-      cooldown -> duration = 17.0; // FIXME: Verify this. Got 17.188sec after 545 procs.
+      cooldown -> duration = timespan_t::from_seconds(17.0); // FIXME: Verify this. Got 17.188sec after 545 procs.
     }
     // Testing shows this is affected by CoE and Spell Dmg modifiers (Shadow Power, etc)
   };
@@ -1675,9 +1675,9 @@ static void register_titahk( item_t* item )
     {
       timespan_t duration = buff -> duration();
       buff_self   = new stat_buff_t( p, "titahk_self", STAT_HASTE_RATING, buff -> effect1().base_value(), 1, duration );
-      buff_self -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
+      buff_self -> cooldown -> duration = timespan_t::from_seconds(45.0); // FIXME: Confirm ICD
       buff_radius = new stat_buff_t( p, "titahk_aoe",  STAT_HASTE_RATING, buff -> effect2().base_value(), 1, duration ); // FIXME: Apply aoe buff to other players
-      buff_radius -> cooldown -> duration = 45.0; // FIXME: Confirm ICD
+      buff_radius -> cooldown -> duration = timespan_t::from_seconds(45.0); // FIXME: Confirm ICD
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )

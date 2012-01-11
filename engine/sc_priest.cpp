@@ -355,7 +355,7 @@ struct priest_t : public player_t
     cooldowns_shadow_fiend               = get_cooldown( "shadow_fiend" );
     cooldowns_chakra                     = get_cooldown( "chakra"   );
     cooldowns_rapture                    = get_cooldown( "rapture" );
-    cooldowns_rapture -> duration        = dbc.spell( 63853 ) -> duration().total_seconds();
+    cooldowns_rapture -> duration        = dbc.spell( 63853 ) -> duration();
     cooldowns_inner_focus                = get_cooldown( "inner_focus" );
     cooldowns_penance                    = get_cooldown( "penance" );
 
@@ -846,7 +846,7 @@ struct priest_heal_t : public heal_t
   {
     heal_t::update_ready();
 
-    if ( min_interval -> duration > 0 && ! dual )
+    if ( min_interval -> duration > timespan_t::zero && ! dual )
     {
       min_interval -> start( -1, 0 );
 
@@ -867,7 +867,7 @@ struct priest_heal_t : public heal_t
   {
     const option_t base_options[] =
     {
-      { "min_interval", OPT_FLT,     &( min_interval -> duration ) },
+      { "min_interval", OPT_TIMESPAN,     &( min_interval -> duration ) },
       { NULL,           OPT_UNKNOWN, NULL      }
     };
 
@@ -1479,7 +1479,7 @@ struct cauterizing_flame_pet_t : public pet_t
     cauterizing_flame_heal_t( player_t* player ) :
       heal_t( "cauterizing_flame_heal", player, 99152 )
     {
-      cooldown -> duration = 1;
+      cooldown -> duration = timespan_t::from_seconds(1);
     }
 
     void execute()
@@ -1656,14 +1656,14 @@ struct archangel_t : public priest_spell_t
 
     if ( p -> buffs_holy_evangelism -> up() && delta > timespan_t::zero )
     {
-      cooldown -> duration = effect2().base_value();
+      cooldown -> duration = timespan_t::from_seconds(effect2().base_value());
       p -> buffs_holy_archangel -> trigger( 1, p -> constants.holy_archangel_value * p -> buffs_holy_evangelism -> stack() );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs_holy_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_holy_evangelism -> expire();
     }
     else if ( p -> buffs_dark_evangelism -> up() && delta < timespan_t::zero )
     {
-      cooldown -> duration =effect3().base_value();
+      cooldown -> duration = timespan_t::from_seconds(effect3().base_value());
       p -> buffs_dark_archangel -> trigger( 1, p -> buffs_dark_evangelism -> stack() );
       p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs_dark_evangelism -> stack(), p -> gains_archangel );
       p -> buffs_dark_evangelism -> expire();
@@ -1700,7 +1700,7 @@ struct chakra_t : public priest_spell_t
   virtual void execute()
   {
     // FIXME: Doesn't the cooldown work like Inner Focus?
-    cooldown -> duration = sim -> wheel_seconds;
+    cooldown -> duration = timespan_t::from_seconds(sim -> wheel_seconds);
 
     priest_spell_t::execute();
 
@@ -1747,7 +1747,7 @@ struct dispersion_t : public priest_spell_t
     harmful           = false;
     tick_may_crit     = false;
 
-    cooldown -> duration += p -> glyphs.dispersion -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> glyphs.dispersion -> effect1().time_value();
   }
 
   virtual void tick( dot_t* d )
@@ -1774,7 +1774,7 @@ struct dispersion_t : public priest_spell_t
     if ( ! p -> pet_shadow_fiend -> sleeping ) return false;
 
     double sf_cooldown_remains  = p -> cooldowns_shadow_fiend -> remains();
-    double sf_cooldown_duration = p -> cooldowns_shadow_fiend -> duration;
+    double sf_cooldown_duration = p -> cooldowns_shadow_fiend -> duration.total_seconds();
 
     if ( sf_cooldown_remains <= 0 ) return false;
 
@@ -1923,7 +1923,7 @@ struct inner_focus_t : public priest_spell_t
 
   virtual void execute()
   {
-    cooldown -> duration = sim -> wheel_seconds;
+    cooldown -> duration = timespan_t::from_seconds(sim -> wheel_seconds);
 
     priest_t* p = player -> cast_priest();
 
@@ -2119,9 +2119,9 @@ struct shadow_fiend_spell_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     cooldown = p -> cooldowns_shadow_fiend;
-    cooldown -> duration = p -> active_spells.shadow_fiend -> cooldown().total_seconds() +
-                           p -> talents.veiled_shadows -> effect2().time_value().total_seconds() +
-                           ( p -> set_bonus.tier12_2pc_caster() ? -75.0 : 0.0 );
+    cooldown -> duration = p -> active_spells.shadow_fiend -> cooldown() +
+                           p -> talents.veiled_shadows -> effect2().time_value() +
+                           ( p -> set_bonus.tier12_2pc_caster() ? timespan_t::from_seconds(-75.0) : timespan_t::zero );
 
     harmful = false;
   }
@@ -2270,7 +2270,7 @@ struct mind_blast_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    cooldown -> duration += p -> talents.improved_mind_blast -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> talents.improved_mind_blast -> effect1().time_value();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2293,7 +2293,7 @@ struct mind_blast_t : public priest_spell_t
 
   virtual void execute()
   {
-    double saved_cooldown = cooldown -> duration;
+    timespan_t saved_cooldown = cooldown -> duration;
 
     priest_t* p = player -> cast_priest();
     priest_targetdata_t* td = targetdata() -> cast_priest();
@@ -2531,7 +2531,7 @@ struct mind_spike_t : public priest_spell_t
       p -> buffs_chakra_pre -> expire();
 
       p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration  = p -> buffs_chakra_pre -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_chakra -> duration  = p -> buffs_chakra_pre -> spell_id_t::cooldown();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -2906,7 +2906,7 @@ struct penance_t : public priest_spell_t
     base_tick_time = timespan_t::from_seconds(1.0);
     hasted_ticks   = false;
 
-    cooldown -> duration = spell_id_t::cooldown().total_seconds() + p -> glyphs.penance -> effect1().time_value().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().time_value();
 
     tick_spell = new penance_tick_t( p );
   }
@@ -2970,7 +2970,7 @@ struct smite_t : public priest_spell_t
       p -> buffs_chakra_pre -> expire();
 
       p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
       p -> cooldowns_chakra -> start();
     }
 
@@ -3080,7 +3080,7 @@ struct binding_heal_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown();
       p -> cooldowns_inner_focus -> start();
       p -> buffs_inner_focus -> expire();
     }
@@ -3093,7 +3093,7 @@ struct binding_heal_t : public priest_heal_t
       p -> buffs_chakra_pre -> expire();
 
       p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3150,10 +3150,10 @@ struct circle_of_healing_t : public priest_heal_t
   {
     priest_t* p = player -> cast_priest();
 
-    cooldown -> duration = spell_id_t::cooldown().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown();
 
     if ( p -> buffs_chakra_sanctuary -> up() )
-      cooldown -> duration +=  p -> buffs_chakra_sanctuary -> effect2().time_value().total_seconds();
+      cooldown -> duration +=  p -> buffs_chakra_sanctuary -> effect2().time_value();
 
     // Choose Heal Target
     heal_target.clear();
@@ -3246,7 +3246,7 @@ struct divine_hymn_t : public priest_heal_t
     harmful = false;
     channeled = true;
 
-    cooldown -> duration += p -> talents.heavenly_voice -> effect2().time_value().total_seconds();
+    cooldown -> duration += p -> talents.heavenly_voice -> effect2().time_value();
 
     divine_hymn_tick = new divine_hymn_tick_t( p );
     divine_hymn_tick -> target_count = effect2().base_value();
@@ -3304,7 +3304,7 @@ struct flash_heal_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown();
       p -> cooldowns_inner_focus -> start();
       p -> buffs_inner_focus -> expire();
     }
@@ -3317,7 +3317,7 @@ struct flash_heal_t : public priest_heal_t
       p -> buffs_chakra_pre -> expire();
 
       p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3394,7 +3394,7 @@ struct guardian_spirit_t : public priest_heal_t
 
     harmful = false;
 
-    cooldown -> duration += p -> glyphs.guardian_spirit -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> glyphs.guardian_spirit -> effect1().time_value();
   }
 
   virtual void execute()
@@ -3452,7 +3452,7 @@ struct greater_heal_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown();
       p -> cooldowns_inner_focus -> start();
       p -> buffs_inner_focus -> expire();
     }
@@ -3465,7 +3465,7 @@ struct greater_heal_t : public priest_heal_t
       p -> buffs_chakra_pre -> expire();
 
       p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3562,7 +3562,7 @@ struct _heal_t : public priest_heal_t
       p -> buffs_chakra_pre -> expire();
 
       p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -3838,14 +3838,14 @@ struct holy_word_t : public priest_spell_t
 
 struct lightwell_t : public priest_spell_t
 {
-  double consume_interval;
+  timespan_t consume_interval;
 
   lightwell_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "lightwell", p, "Lightwell" ), consume_interval( 10 )
+    priest_spell_t( "lightwell", p, "Lightwell" ), consume_interval( timespan_t::from_seconds(10) )
   {
     option_t options[] =
     {
-      { "consume_interval", OPT_FLT,     &consume_interval },
+      { "consume_interval", OPT_TIMESPAN,     &consume_interval },
       { NULL,               OPT_UNKNOWN, NULL              }
     };
     parse_options( options, options_str );
@@ -3928,7 +3928,7 @@ struct penance_heal_t : public priest_heal_t
     hasted_ticks   = false;
 
     cooldown = p -> cooldowns_penance;
-    cooldown -> duration = spell_id_t::cooldown().total_seconds() + p -> glyphs.penance -> effect1().time_value().total_seconds();
+    cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().time_value();
 
     penance_tick = new penance_heal_tick_t( p );
     penance_tick -> target = target;
@@ -3988,10 +3988,10 @@ struct power_word_shield_t : public priest_absorb_t
     // Soul Warding does not lower the CD to 1; instead it takes us
     // down to the GCD.  If the player is 2/2 in Soul Warding, set our
     // cooldown to 0 instead of to 1.0.
-    cooldown -> duration += p -> talents.soul_warding -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> talents.soul_warding -> effect1().time_value();
     if ( p -> talents.soul_warding -> rank() == 2 )
     {
-      cooldown -> duration = 0;
+      cooldown -> duration = timespan_t::zero;
     }
 
     base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
@@ -4144,7 +4144,7 @@ struct prayer_of_healing_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_inner_focus -> duration = p -> buffs_inner_focus -> spell_id_t::cooldown();
       p -> cooldowns_inner_focus -> start();
       p -> buffs_inner_focus -> expire();
     }
@@ -4157,7 +4157,7 @@ struct prayer_of_healing_t : public priest_heal_t
       p -> buffs_chakra_pre -> expire();
 
       p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -4291,7 +4291,7 @@ struct prayer_of_mending_t : public priest_heal_t
       p -> buffs_chakra_pre -> expire();
 
       p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown().total_seconds();
+      p -> cooldowns_chakra -> duration = p -> buffs_chakra_pre -> spell_id_t::cooldown();
       p -> cooldowns_chakra -> start();
     }
   }
@@ -4946,7 +4946,7 @@ void priest_t::init_buffs()
   buffs_holy_archangel             = new buff_t( this, 81700, "holy_archangel" );
   buffs_inner_fire                 = new buff_t( this, "inner_fire", "Inner Fire" );
   buffs_inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
-  buffs_inner_focus -> cooldown -> duration = 0;
+  buffs_inner_focus -> cooldown -> duration = timespan_t::zero;
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will" );
   buffs_tier13_2pc_heal            = new buff_t( this, sets -> set( SET_T13_2PC_HEAL ) -> effect1().trigger_spell_id(), "tier13_2pc_heal", set_bonus.tier13_2pc_heal() );
   buffs_tier13_2pc_heal -> buff_duration = ( primary_tree() == TREE_DISCIPLINE ) ? timespan_t::from_seconds(10.0) : buffs_tier13_2pc_heal -> buff_duration;
@@ -4975,7 +4975,7 @@ void priest_t::init_buffs()
   buffs_serendipity                = new buff_t( this, talents.serendipity -> effect1().trigger_spell_id(), "serendipity", talents.serendipity -> rank() );
   // TEST: buffs_serendipity -> activated = false;
   buffs_serenity                   = new buff_t( this, 88684, "serenity" );
-  buffs_serenity -> cooldown -> duration = 0;
+  buffs_serenity -> cooldown -> duration = timespan_t::zero;
   // TEST: buffs_serenity -> activated = false;
   buffs_surge_of_light             = new buff_t( this, talents.surge_of_light, NULL );
   buffs_surge_of_light -> activated = false;

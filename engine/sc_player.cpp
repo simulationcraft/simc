@@ -4708,7 +4708,7 @@ struct start_moving_t : public action_t
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 0.5;
+    cooldown -> duration = timespan_t::from_seconds(0.5);
     harmful = false;
   }
 
@@ -4736,7 +4736,7 @@ struct stop_moving_t : public action_t
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 0.5;
+    cooldown -> duration = timespan_t::from_seconds(0.5);
     harmful = false;
   }
 
@@ -4769,7 +4769,7 @@ struct arcane_torrent_t : public action_t
     check_race( RACE_BLOOD_ELF );
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 120;
+    cooldown -> duration = timespan_t::from_seconds(120);
   }
 
   virtual void execute()
@@ -4837,7 +4837,7 @@ struct berserking_t : public action_t
     check_race( RACE_TROLL );
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 180;
+    cooldown -> duration = timespan_t::from_seconds(180);
   }
 
   virtual void execute()
@@ -4871,7 +4871,7 @@ struct blood_fury_t : public action_t
     check_race( RACE_ORC );
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 120;
+    cooldown -> duration = timespan_t::from_seconds(120);
   }
 
   virtual void execute()
@@ -4938,7 +4938,7 @@ struct stoneform_t : public action_t
     check_race( RACE_DWARF );
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 120;
+    cooldown -> duration = timespan_t::from_seconds(120);
   }
 
   virtual void execute()
@@ -5023,7 +5023,7 @@ struct lifeblood_t : public action_t
     parse_options( NULL, options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 120;
+    cooldown -> duration = timespan_t::from_seconds(120);
   }
 
   virtual void execute()
@@ -5398,7 +5398,7 @@ struct use_item_t : public action_t
     cooldown_name += item -> slot_name();
 
     cooldown = player -> get_cooldown( cooldown_name );
-    cooldown -> duration = item -> use.cooldown;
+    cooldown -> duration = timespan_t::from_seconds(item -> use.cooldown);
     trigger_gcd = timespan_t::zero;
 
     if ( buff != 0 ) buff -> cooldown = cooldown;

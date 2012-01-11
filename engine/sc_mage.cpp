@@ -289,7 +289,7 @@ struct mage_t : public player_t
     cooldowns_fire_blast   = get_cooldown( "fire_blast"  );
     cooldowns_mana_gem     = get_cooldown( "mana_gem"    );
     cooldowns_tier12_mirror_image = get_cooldown( "tier12_mirror_image" );
-    cooldowns_tier12_mirror_image -> duration = 45.0;
+    cooldowns_tier12_mirror_image -> duration = timespan_t::from_seconds(45.0);
 
     distance = 40;
     default_distance = 40;
@@ -1616,7 +1616,7 @@ struct arcane_power_buff_t : public buff_t
   arcane_power_buff_t( mage_t* p ) :
     buff_t( p, p -> spells.arcane_power, NULL )
   {
-    cooldown -> duration = 0; // CD is managed by the spell
+    cooldown -> duration = timespan_t::zero; // CD is managed by the spell
   }
 
   virtual void expire()
@@ -1631,10 +1631,10 @@ struct arcane_power_buff_t : public buff_t
 
 struct arcane_power_t : public mage_spell_t
 {
-  double orig_duration;
+  timespan_t orig_duration;
 
   arcane_power_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_power", 12042, p ), orig_duration( 0 )
+    mage_spell_t( "arcane_power", 12042, p ), orig_duration( timespan_t::zero )
   {
     check_talent( p -> talents.arcane_power -> rank() );
     parse_options( NULL, options_str );
@@ -1649,7 +1649,7 @@ struct arcane_power_t : public mage_spell_t
 
     if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + 
-      p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect1().time_value().total_seconds() *
+      p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect1().time_value() *
         (1.0 + p -> talents.arcane_flows -> effect1().percent());
 
     mage_spell_t::execute();
@@ -1744,10 +1744,10 @@ struct cold_snap_t : public mage_spell_t
 
 struct combustion_t : public mage_spell_t
 {
-  double orig_duration;
+  timespan_t orig_duration;
 
   combustion_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "combustion", 11129, p ), orig_duration( 0 )
+    mage_spell_t( "combustion", 11129, p ), orig_duration( timespan_t::zero )
   {
     check_talent( p -> talents.combustion -> rank() );
     parse_options( NULL, options_str );
@@ -1791,7 +1791,7 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( td -> dots_pyroblast      ) * ( 1.0 + p -> specializations.flashburn * p -> composite_mastery() );
 
     if ( p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration + p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect2().time_value().total_seconds();
+      cooldown -> duration = orig_duration + p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect2().time_value();
 
     mage_spell_t::execute();
   }
@@ -1890,7 +1890,7 @@ struct deep_freeze_t : public mage_spell_t
 
     // The spell data is spread across two separate Spell IDs.  Hard code missing for now.
     base_cost = 0.09 * p -> resource_base[ RESOURCE_MANA ];
-    cooldown -> duration = 30.0;
+    cooldown -> duration = timespan_t::from_seconds(30.0);
 
     fof_frozen = true;
     base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effect1().percent();
@@ -1930,7 +1930,7 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    cooldown -> duration += p -> glyphs.dragons_breath -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> glyphs.dragons_breath -> effect1().time_value();
   }
 };
 
@@ -1950,7 +1950,7 @@ struct evocation_t : public mage_spell_t
     harmful           = false;
     hasted_ticks      = false;
 
-    cooldown -> duration += p -> talents.arcane_flows -> effect2().time_value().total_seconds();
+    cooldown -> duration += p -> talents.arcane_flows -> effect2().time_value();
   }
 
   virtual void tick( dot_t* d )
@@ -2605,7 +2605,7 @@ struct icy_veins_buff_t : public buff_t
   icy_veins_buff_t( mage_t* p ) :
     buff_t( p, p -> spells.icy_veins, NULL )
   {
-    cooldown -> duration = 0; // CD is managed by the spell
+    cooldown -> duration = timespan_t::zero; // CD is managed by the spell
   }
 
   virtual void expire()
@@ -2620,10 +2620,10 @@ struct icy_veins_buff_t : public buff_t
 
 struct icy_veins_t : public mage_spell_t
 {
-  double orig_duration;
+  timespan_t orig_duration;
 
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "icy_veins", 12472, p ), orig_duration( 0 )
+    mage_spell_t( "icy_veins", 12472, p ), orig_duration( timespan_t::zero )
   {
     check_talent( p -> talents.icy_veins -> rank() );
     parse_options( NULL, options_str );
@@ -2637,7 +2637,7 @@ struct icy_veins_t : public mage_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration +
-        p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect3().time_value().total_seconds() *
+        p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect3().time_value() *
         (1.0 + p -> talents.ice_floes -> effect1().percent());
     consume_resource();
     update_ready();
@@ -2802,7 +2802,7 @@ struct mana_gem_t : public action_t
     }
 
     cooldown = p -> cooldowns_mana_gem;
-    cooldown -> duration = 120.0;
+    cooldown -> duration = timespan_t::from_seconds(120.0);
     trigger_gcd = timespan_t::zero;
     harmful = false;
   }
@@ -3195,7 +3195,7 @@ struct choose_rotation_t : public action_t
   choose_rotation_t( mage_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "choose_rotation", p )
   {
-    cooldown -> duration = 10;
+    cooldown -> duration = timespan_t::from_seconds(10);
     evocation_target_mana_percentage = 35;
     force_dps = 0;
     force_dpm = 0;
@@ -3204,7 +3204,7 @@ struct choose_rotation_t : public action_t
 
     option_t options[] =
     {
-      { "cooldown", OPT_FLT, &( cooldown -> duration ) },
+      { "cooldown", OPT_TIMESPAN, &( cooldown -> duration ) },
       { "evocation_pct", OPT_FLT, &( evocation_target_mana_percentage ) },
       { "force_dps", OPT_INT, &( force_dps ) },
       { "force_dpm", OPT_INT, &( force_dpm ) },
@@ -3214,10 +3214,10 @@ struct choose_rotation_t : public action_t
     };
     parse_options( options, options_str );
 
-    if ( cooldown -> duration < 1.0 )
+    if ( cooldown -> duration < timespan_t::from_seconds(1.0) )
     {
       sim -> errorf( "Player %s: choose_rotation cannot have cooldown -> duration less than 1.0sec", p -> name() );
-      cooldown -> duration = 1.0;
+      cooldown -> duration = timespan_t::from_seconds(1.0);
     }
 
     trigger_gcd = timespan_t::zero;
@@ -3381,7 +3381,7 @@ struct choose_rotation_t : public action_t
     if ( cooldown -> remains() > 0 )
       return false;
 
-    if ( sim -> current_time < cooldown -> duration )
+    if ( sim -> current_time < cooldown -> duration.total_seconds() )
       return false;
 
     if ( if_expr && ! if_expr -> success() )

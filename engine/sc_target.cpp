@@ -194,7 +194,7 @@ struct spell_nuke_t : public spell_t
     {
       { "damage",       OPT_FLT, &base_dd_min          },
       { "attack_speed", OPT_TIMESPAN, &base_execute_time    },
-      { "cooldown",     OPT_FLT, &cooldown -> duration },
+      { "cooldown",     OPT_TIMESPAN, &cooldown -> duration },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -226,8 +226,8 @@ struct spell_aoe_t : public spell_t
     option_t options[] =
     {
       { "damage",       OPT_FLT, &base_dd_min          },
-      { "cast_time", OPT_FLT, &base_execute_time    },
-      { "cooldown",     OPT_FLT, &cooldown -> duration },
+      { "cast_time", OPT_TIMESPAN, &base_execute_time    },
+      { "cooldown",     OPT_TIMESPAN, &cooldown -> duration },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -260,7 +260,7 @@ struct summon_add_t : public spell_t
     {
       { "name",     OPT_STRING, &add_name             },
       { "duration", OPT_FLT,    &summoning_duration   },
-      { "cooldown", OPT_FLT,    &cooldown -> duration },
+      { "cooldown", OPT_TIMESPAN,    &cooldown -> duration },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );

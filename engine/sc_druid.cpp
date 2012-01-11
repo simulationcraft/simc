@@ -339,7 +339,7 @@ struct druid_t : public player_t
     eclipse_bar_direction = 0;
 
     cooldowns_burning_treant = get_cooldown( "burning_treant" );
-    cooldowns_burning_treant -> duration = 45.0;
+    cooldowns_burning_treant -> duration = timespan_t::from_seconds(45.0);
     cooldowns_fury_swipes    = get_cooldown( "fury_swipes"    );
     cooldowns_lotp           = get_cooldown( "lotp"           );
     cooldowns_mangle_bear    = get_cooldown( "mangle_bear"    );
@@ -2039,7 +2039,7 @@ struct skull_bash_cat_t : public druid_cat_attack_t
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
-    cooldown -> duration += p -> talents.brutal_impact -> effect3().time_value().total_seconds();
+    cooldown -> duration += p -> talents.brutal_impact -> effect3().time_value();
   }
 
   virtual bool ready()
@@ -2074,7 +2074,7 @@ struct tigers_fury_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    cooldown -> duration += p -> glyphs.tigers_fury -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> glyphs.tigers_fury -> mod_additive( P_COOLDOWN ));
   }
 
   virtual void execute()
@@ -2498,7 +2498,7 @@ struct skull_bash_bear_t : public druid_bear_attack_t
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
-    cooldown -> duration  += p -> talents.brutal_impact -> effect2().time_value().total_seconds();
+    cooldown -> duration  += p -> talents.brutal_impact -> effect2().time_value();
   }
 
   virtual bool ready()
@@ -3015,7 +3015,7 @@ struct tranquility_t : public druid_heal_t
 
     // FIXME: The hot should stack
 
-    cooldown -> duration += p -> talents.malfurions_gift -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> talents.malfurions_gift -> mod_additive( P_COOLDOWN ));
   }
 };
 
@@ -3462,7 +3462,7 @@ struct faerie_fire_feral_t : public druid_spell_t
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier  = 0;
     direct_power_mod             = extra_coeff();
-    cooldown -> duration         = player -> dbc.spell( 16857 ) -> cooldown().total_seconds(); // Cooldown is stored in another version of FF
+    cooldown -> duration         = player -> dbc.spell( 16857 ) -> cooldown(); // Cooldown is stored in another version of FF
     trigger_gcd                  = player -> dbc.spell( 16857 ) -> gcd();
   }
 
@@ -4080,7 +4080,7 @@ struct starfall_t : public druid_spell_t
     num_ticks      = 10;
     base_tick_time = timespan_t::from_seconds(1.0);
     hasted_ticks   = false;
-    cooldown -> duration += p -> glyphs.starfall -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> glyphs.starfall -> mod_additive( P_COOLDOWN ));
 
     harmful = false;
 
@@ -4120,7 +4120,7 @@ struct starsurge_t : public druid_spell_t
 
     if ( p -> set_bonus.tier13_4pc_caster() )
     {
-      cooldown -> duration -= 5.0;
+      cooldown -> duration -= timespan_t::from_seconds(5.0);
       if ( p -> dbc.ptr )
         base_multiplier *= 1.10;
     }
@@ -4444,7 +4444,7 @@ struct typhoon_t : public druid_spell_t
     base_dd_max           = p -> dbc.effect_max( damage_spell -> effect_id( 2 ), p -> level );
     base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect1().percent();
     direct_power_mod      = damage_spell -> effect2().coeff();
-    cooldown -> duration += p -> glyphs.monsoon -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> glyphs.monsoon -> mod_additive( P_COOLDOWN ));
     base_cost            *= 1.0 + p -> glyphs.typhoon -> mod_additive( P_RESOURCE_COST );
   }
 };
@@ -4956,12 +4956,12 @@ void druid_t::init_buffs()
   buffs_eclipse_solar         = new buff_t( this, 48517, "solar_eclipse" );
   buffs_enrage                = new buff_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
   buffs_frenzied_regeneration = new frenzied_regeneration_buff_t( this );
-  buffs_frenzied_regeneration -> cooldown -> duration = 0; //CD is handled by the ability
+  buffs_frenzied_regeneration -> cooldown -> duration = timespan_t::zero; //CD is handled by the ability
   buffs_harmony               = new buff_t( this, 100977, "harmony" );
   buffs_lacerate              = new buff_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
   buffs_lunar_shower          = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
   buffs_natures_swiftness     = new buff_t( this, talents.natures_swiftness ->spell_id(), "natures_swiftness" );
-  buffs_natures_swiftness -> cooldown -> duration = 0;// CD is handled by the ability
+  buffs_natures_swiftness -> cooldown -> duration = timespan_t::zero;// CD is handled by the ability
   buffs_savage_defense        = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
   buffs_shooting_stars        = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   buffs_survival_instincts    = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );

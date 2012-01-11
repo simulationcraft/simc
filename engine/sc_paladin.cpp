@@ -1240,9 +1240,9 @@ struct avengers_shield_t : public paladin_attack_t
 
 struct crusader_strike_t : public paladin_attack_t
 {
-  double base_cooldown;
+  timespan_t base_cooldown;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "crusader_strike", "Crusader Strike", p ), base_cooldown( 0 )
+    : paladin_attack_t( "crusader_strike", "Crusader Strike", p ), base_cooldown( timespan_t::zero )
   {
     parse_options( NULL, options_str );
 
@@ -1250,7 +1250,7 @@ struct crusader_strike_t : public paladin_attack_t
     trigger_seal = true;
 
     // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
-    cooldown -> duration += p -> passives.judgements_of_the_wise -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> passives.judgements_of_the_wise -> mod_additive( P_COOLDOWN ));
     base_cooldown         = cooldown -> duration;
 
     base_crit       += p -> talents.rule_of_law -> mod_additive( P_CRIT );
@@ -1289,7 +1289,7 @@ struct crusader_strike_t : public paladin_attack_t
     if ( p -> talents.sanctity_of_battle -> rank() )
     {
       cooldown -> duration = base_cooldown * haste();
-      if ( sim -> log ) log_t::output( sim, "%s %s cooldown is %.2f", p -> name(), name(),  cooldown -> duration );
+      if ( sim -> log ) log_t::output( sim, "%s %s cooldown is %.2f", p -> name(), name(),  cooldown -> duration.total_seconds() );
     }
 
     paladin_attack_t::update_ready();
@@ -1300,10 +1300,10 @@ struct crusader_strike_t : public paladin_attack_t
 
 struct divine_storm_t : public paladin_attack_t
 {
-  double base_cooldown;
+  timespan_t base_cooldown;
 
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "divine_storm", "Divine Storm", p ), base_cooldown( 0 )
+    : paladin_attack_t( "divine_storm", "Divine Storm", p ), base_cooldown( timespan_t::zero )
   {
     check_talent( p -> talents.divine_storm -> rank() );
 
@@ -1357,7 +1357,7 @@ struct hammer_of_justice_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.improved_hammer_of_justice -> mod_additive( P_COOLDOWN );
+    cooldown -> duration += timespan_t::from_seconds(p -> talents.improved_hammer_of_justice -> mod_additive( P_COOLDOWN ));
   }
 };
 
@@ -1585,7 +1585,7 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
-    cooldown -> duration = 8;
+    cooldown -> duration = timespan_t::from_seconds(8);
   }
 };
 
@@ -1633,7 +1633,7 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
-    cooldown -> duration = 8;
+    cooldown -> duration = timespan_t::from_seconds(8);
   }
 };
 
@@ -1688,7 +1688,7 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
-    cooldown -> duration = 8;
+    cooldown -> duration = timespan_t::from_seconds(8);
   }
 };
 
@@ -1834,7 +1834,7 @@ struct judgement_t : public paladin_attack_t
     seal_of_truth         = new seal_of_truth_judgement_t        ( p );
 
     if ( p -> set_bonus.pvp_4pc_melee() )
-      cooldown -> duration -= 1.0;
+      cooldown -> duration -= timespan_t::from_seconds(1.0);
   }
 
   action_t* active_seal() const
@@ -2011,9 +2011,9 @@ struct avenging_wrath_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    cooldown -> duration += p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN )
-                            + p -> talents.paragon_of_virtue -> effect2().time_value().total_seconds()
-                            + p -> talents.shield_of_the_templar -> effect3().time_value().total_seconds();
+    cooldown -> duration += timespan_t::from_seconds(p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN ))
+                            + p -> talents.paragon_of_virtue -> effect2().time_value()
+                            + p -> talents.shield_of_the_templar -> effect3().time_value();
   }
 
   virtual void execute()
@@ -2158,7 +2158,7 @@ struct divine_protection_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.paragon_of_virtue -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> talents.paragon_of_virtue -> effect1().time_value();
     harmful = false;
   }
 
@@ -2324,7 +2324,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.shield_of_the_templar -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> talents.shield_of_the_templar -> effect1().time_value();
   }
 
   virtual void execute()
@@ -2697,10 +2697,10 @@ struct holy_radiance_t : public paladin_heal_t
 
 struct holy_shock_heal_t : public paladin_heal_t
 {
-  double cd_duration;
+  timespan_t cd_duration;
 
   holy_shock_heal_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "holy_shock_heal", p, 20473 ), cd_duration( 0 )
+    paladin_heal_t( "holy_shock_heal", p, 20473 ), cd_duration( timespan_t::zero )
   {
     check_spec( TREE_HOLY );
 
@@ -2720,7 +2720,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     paladin_t* p = player -> cast_paladin();
 
     if ( p -> buffs_daybreak -> up() )
-      cooldown -> duration = 0;
+      cooldown -> duration = timespan_t::zero;
 
     paladin_heal_t::execute();
 
@@ -2745,7 +2745,7 @@ struct lay_on_hands_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> glyphs.lay_on_hands -> effect1().time_value().total_seconds();
+    cooldown -> duration += p -> glyphs.lay_on_hands -> effect1().time_value();
   }
 
   virtual void execute()
@@ -2812,8 +2812,8 @@ struct word_of_glory_t : public paladin_heal_t
     base_spell_power_multiplier  = 0.0;
 
     base_crit += p -> talents.rule_of_law -> effect1().percent();
-    cooldown -> duration += p -> talents.selfless_healer -> effect3().time_value().total_seconds()
-                            + p -> passives.walk_in_the_light -> effect3().time_value().total_seconds();
+    cooldown -> duration += p -> talents.selfless_healer -> effect3().time_value()
+                            + p -> passives.walk_in_the_light -> effect3().time_value();
 
     base_multiplier *= 1.0 + p -> passives.meditation -> effect2().percent();
 

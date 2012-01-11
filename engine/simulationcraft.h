@@ -5185,18 +5185,18 @@ struct cooldown_t
   sim_t* sim;
   player_t* player;
   std::string name_str;
-  double duration;
+  timespan_t duration;
   double ready;
   cooldown_t* next;
 
-  cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( 0 ), ready( -1 ), next( 0 ) {}
-  cooldown_t( const std::string& n, sim_t* s ) : sim( s ), player( 0 ), name_str( n ), duration( 0 ), ready( -1 ), next( 0 ) {}
+  cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( timespan_t::zero ), ready( -1 ), next( 0 ) {}
+  cooldown_t( const std::string& n, sim_t* s ) : sim( s ), player( 0 ), name_str( n ), duration( timespan_t::zero ), ready( -1 ), next( 0 ) {}
 
   void reset() { ready=-1; }
   void start( double override=-1, double delay=0 )
   {
-    if ( override >= 0 ) duration = override;
-    if ( duration > 0 ) ready = sim -> current_time + duration + delay;
+    if ( override >= 0 ) duration = timespan_t::from_seconds(override);
+    if ( duration > timespan_t::zero ) ready = sim -> current_time + duration.total_seconds() + delay;
   }
   double remains()
   {

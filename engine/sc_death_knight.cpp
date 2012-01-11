@@ -2408,7 +2408,7 @@ struct blood_tap_t : public death_knight_spell_t
     base_cost = 0.0; // Cost is stored as 6 in the DBC for some odd reason
     harmful   = false;
     if ( p -> talents.improved_blood_tap -> rank() )
-      cooldown -> duration += p -> talents.improved_blood_tap -> mod_additive( P_COOLDOWN );
+      cooldown -> duration += timespan_t::from_seconds(p -> talents.improved_blood_tap -> mod_additive( P_COOLDOWN ));
   }
 
   void execute()
@@ -2497,13 +2497,13 @@ struct bone_shield_t : public death_knight_spell_t
       // zero and we don't cause any cooldown.
       timespan_t pre_cast = timespan_t::from_seconds(p -> sim -> range( 8.0, 16.0 ));
 
-      cooldown -> duration -= pre_cast.total_seconds();
+      cooldown -> duration -= pre_cast;
       p -> buffs_bone_shield -> buff_duration -= pre_cast;
 
       p -> buffs_bone_shield -> trigger( 1, p -> talents.bone_shield -> effect2().percent() );
       death_knight_spell_t::execute();
 
-      cooldown -> duration += pre_cast.total_seconds();
+      cooldown -> duration += pre_cast;
       p -> buffs_bone_shield -> buff_duration += pre_cast;
     }
     else
@@ -3389,7 +3389,7 @@ struct outbreak_t : public death_knight_spell_t
 
     may_crit = false;
 
-    cooldown -> duration += p -> spells.veteran_of_the_third_war -> effect3().time_value().total_seconds();
+    cooldown -> duration += p -> spells.veteran_of_the_third_war -> effect3().time_value();
 
     assert( p -> blood_plague );
     assert( p -> frost_fever );
@@ -3627,7 +3627,7 @@ struct presence_t : public death_knight_spell_t
     }
 
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = 1.0;
+    cooldown -> duration = timespan_t::from_seconds(1.0);
     harmful     = false;
     resource    = RESOURCE_RUNIC;
   }
@@ -3701,7 +3701,7 @@ struct raise_dead_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> primary_tree() == TREE_UNHOLY )
-      cooldown -> duration += p -> spells.master_of_ghouls -> effect1().time_value().total_seconds();
+      cooldown -> duration += p -> spells.master_of_ghouls -> effect1().time_value();
 
     harmful = false;
   }

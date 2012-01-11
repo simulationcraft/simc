@@ -523,7 +523,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 a -> trigger_gcd.total_seconds(),
                 a -> min_gcd.total_seconds(),
                 a -> base_cost,
-                a -> cooldown -> duration,
+                a -> cooldown -> duration.total_seconds(),
                 a -> base_execute_time.total_seconds(),
                 a -> base_crit,
                 a -> target ? a -> target -> name() : "",
@@ -1770,7 +1770,7 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                b -> tooltip(),
                b -> max_stack,
                b -> buff_duration.total_seconds(),
-               b -> cooldown -> duration,
+               b -> cooldown -> duration.total_seconds(),
                b -> default_chance * 100 );
 
       fprintf( file,
@@ -1855,7 +1855,7 @@ static void print_html_player_buffs( FILE* file, player_t* p )
                  ( *b ) -> tooltip(),
                  ( *b ) -> max_stack,
                  ( *b ) -> buff_duration.total_seconds(),
-                 ( *b ) -> cooldown -> duration,
+                 ( *b ) -> cooldown -> duration.total_seconds(),
                  ( *b ) -> default_chance * 100 );
       }
       else
