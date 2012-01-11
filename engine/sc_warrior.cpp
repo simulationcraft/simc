@@ -1829,7 +1829,7 @@ struct heroic_leap_t : public warrior_attack_t
     base_dd_max = p -> dbc.effect_max( dmg_spell -> effect1().id(), p -> level );
     direct_power_mod = dmg_spell -> extra_coeff();
     
-    cooldown -> duration += p -> talents.skirmisher -> effect2().time_value().total_seconds();
+    cooldown -> duration += p -> talents.skirmisher -> effect2().time_value();
 
     // Heroic Leap can trigger procs from either weapon
     proc_ignores_slot = true;

@@ -540,7 +540,7 @@ public:
   
   bool ready()
   {
-    if ( min_interval -> remains() > 0 )
+    if ( min_interval -> remains() > timespan_t::zero )
       return false;
 
     return absorb_t::ready();
@@ -563,9 +563,9 @@ public:
   {
     absorb_t::update_ready();
 
-    if ( min_interval -> duration > 0 && ! dual )
+    if ( min_interval -> duration > timespan_t::zero && ! dual )
     {
-      min_interval -> start( -1, 0 );
+      min_interval -> start( timespan_t::min, timespan_t::zero );
 
       if ( sim -> debug ) log_t::output( sim, "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready );
     }
