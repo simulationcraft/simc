@@ -860,7 +860,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   warlock_guardian_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
     warlock_pet_t( sim, owner, pet_name, pt, true ),
     snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 ), snapshot_mastery( 0 )
-  {}f
+  {}
 
   virtual void summon( timespan_t duration=timespan_t::zero )
   {
@@ -868,7 +868,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     warlock_pet_t::summon( duration );
     // Guardians use snapshots
     snapshot_crit = owner -> composite_spell_crit();
-    snapshot_haste = owner -> spell_haste();
+    snapshot_haste = owner -> spell_haste;
     snapshot_sp = floor( owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() );
     snapshot_mastery = owner -> composite_mastery();
   }
@@ -1788,8 +1788,8 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
 
       if ( p -> owner -> bugs )
       {
-        ability_lag = 0.22;
-        ability_lag_stddev = 0.04;
+        ability_lag = timespan_t::from_seconds(0.22);
+        ability_lag_stddev = timespan_t::from_seconds(0.01);
       }
     }
   };
