@@ -860,7 +860,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   warlock_guardian_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name, pet_type_t pt ) :
     warlock_pet_t( sim, owner, pet_name, pt, true ),
     snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 ), snapshot_mastery( 0 )
-  {}
+  {}f
 
   virtual void summon( timespan_t duration=timespan_t::zero )
   {
@@ -868,7 +868,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     warlock_pet_t::summon( duration );
     // Guardians use snapshots
     snapshot_crit = owner -> composite_spell_crit();
-    snapshot_haste = owner -> composite_spell_haste();
+    snapshot_haste = owner -> spell_haste();
     snapshot_sp = floor( owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() );
     snapshot_mastery = owner -> composite_mastery();
   }
@@ -885,7 +885,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 
   virtual double composite_attack_haste() const
   {
-    return snapshot_haste * player_t::composite_attack_haste();
+    return snapshot_haste;
   }
 
   virtual double composite_attack_hit() const
@@ -907,8 +907,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 
   virtual double composite_spell_haste() const
   {
-    // FIXME: Needs testing, but Doomguard seems to not scale with our haste after 4.1 or so
-    return 1.0;
+    return snapshot_haste;
   }
 
   virtual double composite_spell_power( const school_type school ) const
@@ -1786,6 +1785,12 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
       direct_power_mod  = 1.36;
       base_dd_min *= 1.25;
       base_dd_max *= 1.25;
+
+      if ( p -> owner -> bugs )
+      {
+        ability_lag = 0.22;
+        ability_lag_stddev = 0.04;
+      }
     }
   };
 
