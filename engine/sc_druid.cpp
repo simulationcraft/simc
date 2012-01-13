@@ -49,7 +49,7 @@ struct druid_targetdata_t : public targetdata_t
     buffs_combo_points = add_aura( new buff_t( this, "combo_points", 5 ) );
 
     buffs_lifebloom = add_aura( new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, timespan_t::zero ) );
-    buffs_lifebloom -> buff_duration = timespan_t::from_seconds(11.0); // Override duration so the bloom works correctly
+    buffs_lifebloom -> buff_duration = timespan_t::from_seconds( 11.0 ); // Override duration so the bloom works correctly
   }
 };
 
@@ -339,7 +339,7 @@ struct druid_t : public player_t
     eclipse_bar_direction = 0;
 
     cooldowns_burning_treant = get_cooldown( "burning_treant" );
-    cooldowns_burning_treant -> duration = timespan_t::from_seconds(45.0);
+    cooldowns_burning_treant -> duration = timespan_t::from_seconds( 45.0 );
     cooldowns_fury_swipes    = get_cooldown( "fury_swipes"    );
     cooldowns_lotp           = get_cooldown( "lotp"           );
     cooldowns_mangle_bear    = get_cooldown( "mangle_bear"    );
@@ -569,7 +569,7 @@ struct treants_pet_t : public pet_t
     main_hand_weapon.min_dmg    = 580;
     main_hand_weapon.max_dmg    = 580;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds(1.65);
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.65 );
   }
 
   virtual void init_base()
@@ -659,11 +659,11 @@ struct burning_treant_pet_t : public pet_t
       spell_t( "fireseed", 99026, p )
     {
       may_crit          = true;
-      trigger_gcd = timespan_t::from_seconds(1.5);
+      trigger_gcd = timespan_t::from_seconds( 1.5 );
       if ( p -> owner -> bugs )
       {
-        ability_lag = timespan_t::from_seconds(0.74);
-        ability_lag_stddev = timespan_t::from_seconds(0.62 / 2.0);
+        ability_lag = timespan_t::from_seconds( 0.74 );
+        ability_lag_stddev = timespan_t::from_seconds( 0.62 / 2.0 );
       }
     }
   };
@@ -834,7 +834,7 @@ static void trigger_efflorescence( heal_t* a )
     {
       aoe            = 3;
       background     = true;
-      base_tick_time = timespan_t::from_seconds(1.0);
+      base_tick_time = timespan_t::from_seconds( 1.0 );
       hasted_ticks   = true;
       may_crit       = false;
       num_ticks      = 7;
@@ -916,7 +916,7 @@ static void trigger_fury_swipes( action_t* a )
     }
 
     p -> active_fury_swipes    -> execute();
-    p -> cooldowns_fury_swipes -> start( timespan_t::from_seconds(3.0) );
+    p -> cooldowns_fury_swipes -> start( timespan_t::from_seconds( 3.0 ) );
     p -> procs_fury_swipes     -> occur();
   }
 }
@@ -993,7 +993,7 @@ static void trigger_lotp( action_t* a )
                       p -> resource_max[ RESOURCE_MANA ] * p -> talents.leader_of_the_pack -> effect1().percent(),
                       p -> gains_lotp_mana );
 
-  p -> cooldowns_lotp -> start( timespan_t::from_seconds(6.0) );
+  p -> cooldowns_lotp -> start( timespan_t::from_seconds( 6.0 ) );
 };
 
 // trigger_omen_of_clarity ==================================================
@@ -1090,7 +1090,7 @@ static void trigger_burning_treant( spell_t* s )
     {
       p -> procs_burning_treant -> occur();
       p -> pet_burning_treant -> dismiss();
-      p -> pet_burning_treant -> summon( p -> dbc.spell( 99035 ) -> duration() - timespan_t::from_seconds(0.01) );
+      p -> pet_burning_treant -> summon( p -> dbc.spell( 99035 ) -> duration() - timespan_t::from_seconds( 0.01 ) );
       p -> cooldowns_burning_treant -> start();
     }
   }
@@ -1251,7 +1251,7 @@ void druid_cat_attack_t::execute()
       if ( p -> set_bonus.tier12_4pc_melee() & p -> buffs_berserk -> check() )
       {
         if ( p -> rng_tier12_4pc_melee -> roll( td -> buffs_combo_points -> check() / 5 ) )
-          p -> buffs_berserk -> extend_duration( p, timespan_t::from_seconds(p ->sets ->set( SET_T12_4PC_MELEE ) -> base_value()) );
+          p -> buffs_berserk -> extend_duration( p, timespan_t::from_seconds( p ->sets ->set( SET_T12_4PC_MELEE ) -> base_value() ) );
       }
 
       td -> buffs_combo_points -> expire();
@@ -1331,7 +1331,7 @@ struct cat_melee_t : public druid_cat_attack_t
   virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
-      return timespan_t::from_seconds(0.01);
+      return timespan_t::from_seconds( 0.01 );
 
     return druid_cat_attack_t::execute_time();
   }
@@ -1539,7 +1539,7 @@ struct frenzied_regeneration_buff_t : public buff_t
           event_t( p -> sim, p, "frenzied_regeneration_heal" ),
           rage_stats( 0 )
         {
-          sim -> add_event( this, timespan_t::from_seconds(1.0) );
+          sim -> add_event( this, timespan_t::from_seconds( 1.0 ) );
           rage_stats = p -> get_stats( "frenzied_regeneration" );
         }
 
@@ -1944,7 +1944,7 @@ struct savage_roar_t : public druid_cat_attack_t
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    timespan_t duration = this -> duration() + timespan_t::from_seconds(5.0) * td -> buffs_combo_points -> stack();
+    timespan_t duration = this -> duration() + timespan_t::from_seconds( 5.0 ) * td -> buffs_combo_points -> stack();
     duration += p -> talents.endless_carnage -> effect2().time_value();
 
     // execute clears CP, so has to be after calculation duration
@@ -2075,7 +2075,7 @@ struct tigers_fury_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    cooldown -> duration += timespan_t::from_seconds(p -> glyphs.tigers_fury -> mod_additive( P_COOLDOWN ));
+    cooldown -> duration += timespan_t::from_seconds( p -> glyphs.tigers_fury -> mod_additive( P_COOLDOWN ) );
   }
 
   virtual void execute()
@@ -2212,7 +2212,7 @@ struct bear_melee_t : public druid_bear_attack_t
   virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
-      return timespan_t::from_seconds(0.01);
+      return timespan_t::from_seconds( 0.01 );
 
     return druid_bear_attack_t::execute_time();
   }
@@ -2682,7 +2682,7 @@ struct healing_touch_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
-    base_execute_time  += timespan_t::from_seconds(p -> talents.naturalist -> mod_additive( P_CAST_TIME ));
+    base_execute_time  += timespan_t::from_seconds( p -> talents.naturalist -> mod_additive( P_CAST_TIME ) );
     consume_ooc         = true;
 
     ns_cd = p -> get_cooldown( "natures_swiftness" );
@@ -2700,7 +2700,7 @@ struct healing_touch_t : public druid_heal_t
 
     if ( p -> glyphs.healing_touch -> enabled() )
     {
-      ns_cd -> ready -= timespan_t::from_seconds(p -> glyphs.healing_touch -> effect1().base_value());
+      ns_cd -> ready -= timespan_t::from_seconds( p -> glyphs.healing_touch -> effect1().base_value() );
     }
   }
 };
@@ -2815,7 +2815,7 @@ struct nourish_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
-    base_execute_time  += timespan_t::from_seconds(p -> talents.naturalist -> mod_additive( P_CAST_TIME ));
+    base_execute_time  += timespan_t::from_seconds( p -> talents.naturalist -> mod_additive( P_CAST_TIME ) );
   }
 
   virtual void execute()
@@ -2905,7 +2905,7 @@ struct rejuvenation_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     may_crit     = p -> talents.gift_of_the_earthmother -> rank() ? true : false;
-    trigger_gcd += timespan_t::from_seconds(p -> talents.swift_rejuvenation -> mod_additive( P_GCD ));
+    trigger_gcd += timespan_t::from_seconds( p -> talents.swift_rejuvenation -> mod_additive( P_GCD ) );
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE ) +
                         p -> talents.blessing_of_the_grove -> mod_additive( P_TICK_DAMAGE ) +
@@ -3016,7 +3016,7 @@ struct tranquility_t : public druid_heal_t
 
     // FIXME: The hot should stack
 
-    cooldown -> duration += timespan_t::from_seconds(p -> talents.malfurions_gift -> mod_additive( P_COOLDOWN ));
+    cooldown -> duration += timespan_t::from_seconds( p -> talents.malfurions_gift -> mod_additive( P_COOLDOWN ) );
   }
 };
 
@@ -3277,7 +3277,7 @@ struct bear_form_t : public druid_spell_t
       w -> type = WEAPON_BEAST;
       w -> school = SCHOOL_PHYSICAL;
       w -> damage = 54.8 * 2.5;
-      w -> swing_time = timespan_t::from_seconds(2.5);
+      w -> swing_time = timespan_t::from_seconds( 2.5 );
     }
 
     // Force melee swing to restart if necessary
@@ -3290,7 +3290,7 @@ struct bear_form_t : public druid_spell_t
     if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
 
     p -> buffs_bear_form -> start();
-    p -> base_gcd = timespan_t::from_seconds(1.0);
+    p -> base_gcd = timespan_t::from_seconds( 1.0 );
     p -> reset_gcd();
 
     p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank() + p -> talents.natural_reaction -> effect1().percent();
@@ -3384,7 +3384,7 @@ struct cat_form_t : public druid_spell_t
       w -> min_dmg /= w -> swing_time.total_seconds();
       w -> max_dmg /= w -> swing_time.total_seconds();
       w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
-      w -> swing_time = timespan_t::from_seconds(1.0);
+      w -> swing_time = timespan_t::from_seconds( 1.0 );
     }
 
     // Force melee swing to restart if necessary
@@ -3399,7 +3399,7 @@ struct cat_form_t : public druid_spell_t
     p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank();
 
     p -> buffs_cat_form -> start();
-    p -> base_gcd = timespan_t::from_seconds(1.0);
+    p -> base_gcd = timespan_t::from_seconds( 1.0 );
     p -> reset_gcd();
 
     if ( p -> talents.leader_of_the_pack -> rank() )
@@ -3523,7 +3523,7 @@ struct innervate_buff_t : public buff_t
     {
       innervate_event_t ( player_t* p ) :
         event_t( p -> sim, p, "innervate" )
-      { sim -> add_event( this, timespan_t::from_seconds(1.0) ); }
+      { sim -> add_event( this, timespan_t::from_seconds( 1.0 ) ); }
 
       virtual void execute()
       {
@@ -3915,7 +3915,7 @@ struct starfire_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time += timespan_t::from_seconds(p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME ));
+    base_execute_time += timespan_t::from_seconds( p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME ) );
 
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
@@ -3945,15 +3945,15 @@ struct starfire_t : public druid_spell_t
       {
         if ( mf -> ticking )
         {
-          if ( mf -> added_seconds < timespan_t::from_seconds(9.0) )
-            mf -> extend_duration_seconds( timespan_t::from_seconds(3.0) );
+          if ( mf -> added_seconds < timespan_t::from_seconds( 9.0 ) )
+            mf -> extend_duration_seconds( timespan_t::from_seconds( 3.0 ) );
           else
             mf -> extend_duration_seconds( timespan_t::zero );
         }
         else if ( sf -> ticking )
         {
-          if ( sf -> added_seconds < timespan_t::from_seconds(9.0) )
-            sf -> extend_duration_seconds( timespan_t::from_seconds(3.0) );
+          if ( sf -> added_seconds < timespan_t::from_seconds( 9.0 ) )
+            sf -> extend_duration_seconds( timespan_t::from_seconds( 3.0 ) );
           else
             sf -> extend_duration_seconds( timespan_t::zero );
         }
@@ -4018,12 +4018,12 @@ struct starfire_t : public druid_spell_t
 
       if ( td -> dots_moonfire -> ticking )
       {
-        if ( td -> dots_moonfire -> added_seconds > timespan_t::from_seconds(8) )
+        if ( td -> dots_moonfire -> added_seconds > timespan_t::from_seconds( 8 ) )
           return false;
       }
       else if ( td -> dots_sunfire -> ticking )
       {
-        if ( td -> dots_sunfire -> added_seconds > timespan_t::from_seconds(8) )
+        if ( td -> dots_sunfire -> added_seconds > timespan_t::from_seconds( 8 ) )
           return false;
       }
       else
@@ -4079,9 +4079,9 @@ struct starfall_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     num_ticks      = 10;
-    base_tick_time = timespan_t::from_seconds(1.0);
+    base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
-    cooldown -> duration += timespan_t::from_seconds(p -> glyphs.starfall -> mod_additive( P_COOLDOWN ));
+    cooldown -> duration += timespan_t::from_seconds( p -> glyphs.starfall -> mod_additive( P_COOLDOWN ) );
 
     harmful = false;
 
@@ -4121,7 +4121,7 @@ struct starsurge_t : public druid_spell_t
 
     if ( p -> set_bonus.tier13_4pc_caster() )
     {
-      cooldown -> duration -= timespan_t::from_seconds(5.0);
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
       if ( p -> dbc.ptr )
         base_multiplier *= 1.10;
     }
@@ -4152,7 +4152,7 @@ struct starsurge_t : public druid_spell_t
       trigger_eclipse_gain_delay( this, gain );
       if ( p -> glyphs.starsurge -> ok() )
       {
-        starfall_cd -> ready -= timespan_t::from_seconds(p -> glyphs.starsurge -> base_value());
+        starfall_cd -> ready -= timespan_t::from_seconds( p -> glyphs.starsurge -> base_value() );
       }
     }
   }
@@ -4401,7 +4401,7 @@ struct treants_spell_t : public druid_spell_t
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
 
-    p -> pet_treants -> summon( timespan_t::from_seconds(30.0) );
+    p -> pet_treants -> summon( timespan_t::from_seconds( 30.0 ) );
   }
 };
 
@@ -4445,7 +4445,7 @@ struct typhoon_t : public druid_spell_t
     base_dd_max           = p -> dbc.effect_max( damage_spell -> effect_id( 2 ), p -> level );
     base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect1().percent();
     direct_power_mod      = damage_spell -> effect2().coeff();
-    cooldown -> duration += timespan_t::from_seconds(p -> glyphs.monsoon -> mod_additive( P_COOLDOWN ));
+    cooldown -> duration += timespan_t::from_seconds( p -> glyphs.monsoon -> mod_additive( P_COOLDOWN ) );
     base_cost            *= 1.0 + p -> glyphs.typhoon -> mod_additive( P_RESOURCE_COST );
   }
 };
@@ -4529,7 +4529,7 @@ struct wrath_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += timespan_t::from_seconds(p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME ));
+    base_execute_time += timespan_t::from_seconds( p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME ) );
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 
@@ -4928,7 +4928,7 @@ void druid_t::init_base()
   if ( primary_tree() == TREE_RESTORATION )
     mana_regen_while_casting = spells.meditation -> effect1().percent();
 
-  base_gcd = timespan_t::from_seconds(1.5);
+  base_gcd = timespan_t::from_seconds( 1.5 );
 }
 
 // druid_t::init_buffs ======================================================
@@ -4939,17 +4939,17 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   // These have either incorrect or no values in the DBC or don't really exist
-  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1, timespan_t::from_seconds(10.0), timespan_t::zero, glyphs.innervate -> enabled() );
-  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds( 60.0), talents.natures_grace -> ok() );
-  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1, timespan_t::from_seconds(15.0), timespan_t::zero, 3.5 / 60.0 );
-  buffs_pulverize          = new buff_t( this, "pulverize"         , 1, timespan_t::from_seconds(10.0) + talents.endless_carnage -> effect2().time_value() );
-  buffs_revitalize         = new buff_t( this, "revitalize"        , 1, timespan_t::from_seconds( 1.0), timespan_t::from_seconds(talents.revitalize -> spell( 1 ).effect2().base_value()), talents.revitalize -> ok() ? 0.20 : 0, true );
-  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1, timespan_t::from_seconds( 8.0), timespan_t::zero, talents.stampede -> ok() );
-  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1, timespan_t::from_seconds(10.0), timespan_t::zero, talents.stampede -> ok() );
-  buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3, timespan_t::from_seconds( 8.0), timespan_t::zero, set_bonus.tier11_4pc_caster() );
-  buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3, timespan_t::from_seconds(30.0), timespan_t::zero, set_bonus.tier11_4pc_melee()  );
-  buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1, timespan_t::from_seconds(10.0), timespan_t::zero, ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
-  buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3, timespan_t::from_seconds(   0), timespan_t::zero, 1.0, true );
+  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, glyphs.innervate -> enabled() );
+  buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ), talents.natures_grace -> ok() );
+  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1, timespan_t::from_seconds( 15.0 ), timespan_t::zero, 3.5 / 60.0 );
+  buffs_pulverize          = new buff_t( this, "pulverize"         , 1, timespan_t::from_seconds( 10.0 ) + talents.endless_carnage -> effect2().time_value() );
+  buffs_revitalize         = new buff_t( this, "revitalize"        , 1, timespan_t::from_seconds( 1.0 ), timespan_t::from_seconds( talents.revitalize -> spell( 1 ).effect2().base_value() ), talents.revitalize -> ok() ? 0.20 : 0, true );
+  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1, timespan_t::from_seconds( 8.0 ), timespan_t::zero, talents.stampede -> ok() );
+  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, talents.stampede -> ok() );
+  buffs_t11_4pc_caster     = new buff_t( this, "t11_4pc_caster"    , 3, timespan_t::from_seconds( 8.0 ), timespan_t::zero, set_bonus.tier11_4pc_caster() );
+  buffs_t11_4pc_melee      = new buff_t( this, "t11_4pc_melee"     , 3, timespan_t::from_seconds( 30.0 ), timespan_t::zero, set_bonus.tier11_4pc_melee()  );
+  buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
+  buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3, timespan_t::from_seconds(   0 ), timespan_t::zero, 1.0, true );
 
   // buff_t ( sim, id, name, chance, cooldown, quiet, reverse, rng_type )
   buffs_barkskin              = new buff_t( this, 22812, "barkskin" );
@@ -4967,12 +4967,12 @@ void druid_t::init_buffs()
   buffs_shooting_stars        = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   buffs_survival_instincts    = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
   buffs_tree_of_life          = new buff_t( this, talents.tree_of_life, NULL );
-  buffs_tree_of_life -> buff_duration += timespan_t::from_seconds(talents.natural_shapeshifter -> mod_additive( P_DURATION ));
+  buffs_tree_of_life -> buff_duration += timespan_t::from_seconds( talents.natural_shapeshifter -> mod_additive( P_DURATION ) );
 
   buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
   buffs_primal_madness_bear = new      buff_t( this, "primal_madness_bear" );
-  buffs_berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds(15.0) + timespan_t::from_seconds(glyphs.berserk -> mod_additive( P_DURATION )) );
-  buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, timespan_t::from_seconds(6.0) );
+  buffs_berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds( 15.0 ) + timespan_t::from_seconds( glyphs.berserk -> mod_additive( P_DURATION ) ) );
+  buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, timespan_t::from_seconds( 6.0 ) );
 
   // simple
   buffs_bear_form    = new buff_t( this, 5487,  "bear_form" );
@@ -5378,7 +5378,7 @@ void druid_t::reset()
   eclipse_bar_value     = 0;
   eclipse_wrath_count   = 0;
   eclipse_bar_direction = 0;
-  base_gcd = timespan_t::from_seconds(1.5);
+  base_gcd = timespan_t::from_seconds( 1.5 );
 }
 
 // druid_t::regen ===========================================================
@@ -5414,16 +5414,16 @@ void druid_t::regen( timespan_t periodicity )
 timespan_t druid_t::available() const
 {
   if ( primary_resource() != RESOURCE_ENERGY )
-    return timespan_t::from_seconds(0.1);
+    return timespan_t::from_seconds( 0.1 );
 
   double energy = resource_current[ RESOURCE_ENERGY ];
 
-  if ( energy > 25 ) return timespan_t::from_seconds(0.1);
+  if ( energy > 25 ) return timespan_t::from_seconds( 0.1 );
 
   return std::max(
-    timespan_t::from_seconds(( 25 - energy ) / energy_regen_per_second()),
-    timespan_t::from_seconds(0.1)
-  );
+           timespan_t::from_seconds( ( 25 - energy ) / energy_regen_per_second() ),
+           timespan_t::from_seconds( 0.1 )
+         );
 }
 
 // druid_t::combat_begin ====================================================
@@ -5516,7 +5516,7 @@ double druid_t::composite_player_multiplier( const school_type school, action_t*
     if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
       if ( buffs_eclipse_solar -> up() )
         m *= 1.0 + ( buffs_eclipse_solar -> effect1().percent()
-                 + composite_mastery() * spells.total_eclipse -> effect1().coeff() * 0.01 );
+                     + composite_mastery() * spells.total_eclipse -> effect1().coeff() * 0.01 );
   }
 
   if ( buffs_moonkin_form -> check() )

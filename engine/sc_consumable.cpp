@@ -43,7 +43,7 @@ struct flask_t : public action_t
     if ( type == FLASK_NONE )
     {
       sim -> errorf( "Player %s attempting to use flask of type '%s', which is not supported.\n",
-                   player -> name(), type_str.c_str() );
+                     player -> name(), type_str.c_str() );
       sim -> cancel();
     }
     gain = p -> get_gain( "flask" );
@@ -412,7 +412,7 @@ struct destruction_potion_t : public action_t
     trigger_gcd = timespan_t::zero;
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = timespan_t::from_seconds(60.0);
+    cooldown -> duration = timespan_t::from_seconds( 60.0 );
   }
 
   virtual void execute()
@@ -423,11 +423,11 @@ struct destruction_potion_t : public action_t
     }
     else
     {
-      cooldown -> duration -= timespan_t::from_seconds(5.0);
-      player -> buffs.destruction_potion -> buff_duration -= timespan_t::from_seconds(5.0);
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
+      player -> buffs.destruction_potion -> buff_duration -= timespan_t::from_seconds( 5.0 );
       player -> buffs.destruction_potion -> trigger();
-      cooldown -> duration += timespan_t::from_seconds(5.0);
-      player -> buffs.destruction_potion -> buff_duration += timespan_t::from_seconds(5.0);
+      cooldown -> duration += timespan_t::from_seconds( 5.0 );
+      player -> buffs.destruction_potion -> buff_duration += timespan_t::from_seconds( 5.0 );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -462,7 +462,7 @@ struct speed_potion_t : public action_t
     trigger_gcd = timespan_t::zero;
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = timespan_t::from_seconds(60.0);
+    cooldown -> duration = timespan_t::from_seconds( 60.0 );
   }
 
   virtual void execute()
@@ -473,11 +473,11 @@ struct speed_potion_t : public action_t
     }
     else
     {
-      cooldown -> duration -= timespan_t::from_seconds(5.0);
-      player -> buffs.speed_potion -> buff_duration -= timespan_t::from_seconds(5.0);
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
+      player -> buffs.speed_potion -> buff_duration -= timespan_t::from_seconds( 5.0 );
       player -> buffs.speed_potion -> trigger();
-      cooldown -> duration += timespan_t::from_seconds(5.0);
-      player -> buffs.speed_potion -> buff_duration += timespan_t::from_seconds(5.0);
+      cooldown -> duration += timespan_t::from_seconds( 5.0 );
+      player -> buffs.speed_potion -> buff_duration += timespan_t::from_seconds( 5.0 );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -512,7 +512,7 @@ struct wild_magic_potion_t : public action_t
     trigger_gcd = timespan_t::zero;
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = timespan_t::from_seconds(60.0);
+    cooldown -> duration = timespan_t::from_seconds( 60.0 );
   }
 
   virtual void execute()
@@ -524,14 +524,14 @@ struct wild_magic_potion_t : public action_t
     }
     else
     {
-      cooldown -> duration -= timespan_t::from_seconds(5.0);
-      player -> buffs.wild_magic_potion_sp   -> buff_duration -= timespan_t::from_seconds(5.0);
-      player -> buffs.wild_magic_potion_crit -> buff_duration -= timespan_t::from_seconds(5.0);
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
+      player -> buffs.wild_magic_potion_sp   -> buff_duration -= timespan_t::from_seconds( 5.0 );
+      player -> buffs.wild_magic_potion_crit -> buff_duration -= timespan_t::from_seconds( 5.0 );
       player -> buffs.wild_magic_potion_sp   -> trigger();
       player -> buffs.wild_magic_potion_crit -> trigger();
-      cooldown -> duration += timespan_t::from_seconds(5.0);
-      player -> buffs.wild_magic_potion_sp   -> buff_duration += timespan_t::from_seconds(5.0);
-      player -> buffs.wild_magic_potion_crit -> buff_duration += timespan_t::from_seconds(5.0);
+      cooldown -> duration += timespan_t::from_seconds( 5.0 );
+      player -> buffs.wild_magic_potion_sp   -> buff_duration += timespan_t::from_seconds( 5.0 );
+      player -> buffs.wild_magic_potion_crit -> buff_duration += timespan_t::from_seconds( 5.0 );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -565,7 +565,7 @@ struct earthen_potion_t : public action_t
     trigger_gcd = timespan_t::zero;
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = timespan_t::from_seconds(60.0);
+    cooldown -> duration = timespan_t::from_seconds( 60.0 );
   }
 
   virtual void execute()
@@ -576,11 +576,11 @@ struct earthen_potion_t : public action_t
     }
     else
     {
-      cooldown -> duration -= timespan_t::from_seconds(5.0);
-      player -> buffs.earthen_potion   -> buff_duration -= timespan_t::from_seconds(5.0);
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
+      player -> buffs.earthen_potion   -> buff_duration -= timespan_t::from_seconds( 5.0 );
       player -> buffs.earthen_potion   -> trigger();
-      cooldown -> duration += timespan_t::from_seconds(5.0);
-      player -> buffs.earthen_potion   -> buff_duration += timespan_t::from_seconds(5.0);
+      cooldown -> duration += timespan_t::from_seconds( 5.0 );
+      player -> buffs.earthen_potion   -> buff_duration += timespan_t::from_seconds( 5.0 );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -614,7 +614,7 @@ struct golemblood_potion_t : public action_t
     trigger_gcd = timespan_t::zero;
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = timespan_t::from_seconds(60.0);
+    cooldown -> duration = timespan_t::from_seconds( 60.0 );
   }
 
   virtual void execute()
@@ -625,11 +625,11 @@ struct golemblood_potion_t : public action_t
     }
     else
     {
-      cooldown -> duration -= timespan_t::from_seconds(5.0);
-      player -> buffs.golemblood_potion   -> buff_duration -= timespan_t::from_seconds(5.0);
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
+      player -> buffs.golemblood_potion   -> buff_duration -= timespan_t::from_seconds( 5.0 );
       player -> buffs.golemblood_potion   -> trigger();
-      cooldown -> duration += timespan_t::from_seconds(5.0);
-      player -> buffs.golemblood_potion   -> buff_duration += timespan_t::from_seconds(5.0);
+      cooldown -> duration += timespan_t::from_seconds( 5.0 );
+      player -> buffs.golemblood_potion   -> buff_duration += timespan_t::from_seconds( 5.0 );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -663,7 +663,7 @@ struct tolvir_potion_t : public action_t
     trigger_gcd = timespan_t::zero;
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = timespan_t::from_seconds(60.0);
+    cooldown -> duration = timespan_t::from_seconds( 60.0 );
   }
 
   virtual void execute()
@@ -674,11 +674,11 @@ struct tolvir_potion_t : public action_t
     }
     else
     {
-      cooldown -> duration -= timespan_t::from_seconds(5.0);
-      player -> buffs.tolvir_potion   -> buff_duration -= timespan_t::from_seconds(5.0);
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
+      player -> buffs.tolvir_potion   -> buff_duration -= timespan_t::from_seconds( 5.0 );
       player -> buffs.tolvir_potion   -> trigger();
-      cooldown -> duration += timespan_t::from_seconds(5.0);
-      player -> buffs.tolvir_potion   -> buff_duration += timespan_t::from_seconds(5.0);
+      cooldown -> duration += timespan_t::from_seconds( 5.0 );
+      player -> buffs.tolvir_potion   -> buff_duration += timespan_t::from_seconds( 5.0 );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -712,7 +712,7 @@ struct volcanic_potion_t : public action_t
     trigger_gcd = timespan_t::zero;
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = timespan_t::from_seconds(60.0);
+    cooldown -> duration = timespan_t::from_seconds( 60.0 );
   }
 
   virtual void execute()
@@ -723,11 +723,11 @@ struct volcanic_potion_t : public action_t
     }
     else
     {
-      cooldown -> duration -= timespan_t::from_seconds(5.0);
-      player -> buffs.volcanic_potion   -> buff_duration -= timespan_t::from_seconds(5.0);
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
+      player -> buffs.volcanic_potion   -> buff_duration -= timespan_t::from_seconds( 5.0 );
       player -> buffs.volcanic_potion   -> trigger();
-      cooldown -> duration += timespan_t::from_seconds(5.0);
-      player -> buffs.volcanic_potion   -> buff_duration += timespan_t::from_seconds(5.0);
+      cooldown -> duration += timespan_t::from_seconds( 5.0 );
+      player -> buffs.volcanic_potion   -> buff_duration += timespan_t::from_seconds( 5.0 );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -761,7 +761,7 @@ struct indestructible_potion_t : public action_t
     trigger_gcd = timespan_t::zero;
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = timespan_t::from_seconds(120.0); // Assume the player would not chose to overwrite the buff early.
+    cooldown -> duration = timespan_t::from_seconds( 120.0 ); // Assume the player would not chose to overwrite the buff early.
   }
 
   virtual void execute()
@@ -772,11 +772,11 @@ struct indestructible_potion_t : public action_t
     }
     else
     {
-      cooldown -> duration -= timespan_t::from_seconds(5.0);
-      player -> buffs.indestructible_potion -> buff_duration -= timespan_t::from_seconds(5.0);
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
+      player -> buffs.indestructible_potion -> buff_duration -= timespan_t::from_seconds( 5.0 );
       player -> buffs.indestructible_potion -> trigger();
-      cooldown -> duration += timespan_t::from_seconds(5.0);
-      player -> buffs.indestructible_potion -> buff_duration += timespan_t::from_seconds(5.0);
+      cooldown -> duration += timespan_t::from_seconds( 5.0 );
+      player -> buffs.indestructible_potion -> buff_duration += timespan_t::from_seconds( 5.0 );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
@@ -880,7 +880,7 @@ struct health_stone_t : public action_t
     assert( health > 0 && trigger > 0 );
 
     cooldown = p -> get_cooldown( "rune" );
-    cooldown -> duration = timespan_t::from_minutes(15);
+    cooldown -> duration = timespan_t::from_minutes( 15 );
 
     trigger_gcd = timespan_t::zero;
     harmful = false;
@@ -930,7 +930,7 @@ struct dark_rune_t : public action_t
     assert( mana > 0 && trigger > 0 );
 
     cooldown = p -> get_cooldown( "rune" );
-    cooldown -> duration = timespan_t::from_minutes(15);
+    cooldown -> duration = timespan_t::from_minutes( 15 );
 
     trigger_gcd = timespan_t::zero;
     harmful = false;

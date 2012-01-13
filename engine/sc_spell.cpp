@@ -16,7 +16,7 @@ void spell_t::init_spell_t_()
   may_miss = may_resist = true;
   base_spell_power_multiplier = 1.0;
   crit_bonus = 0.5;
-  min_gcd = timespan_t::from_seconds(1.0);
+  min_gcd = timespan_t::from_seconds( 1.0 );
   hasted_ticks = true;
 
   player_t* p = player;
@@ -155,7 +155,7 @@ double spell_t::crit_chance( int delta_level ) const
 {
   double chance = total_crit();
 
-  (void) delta_level;
+  ( void ) delta_level;
 
   return chance;
 }

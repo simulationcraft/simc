@@ -19,7 +19,7 @@ struct enemy_t : public player_t
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
-    waiting_time( timespan_t::from_seconds(1.0) )
+    waiting_time( timespan_t::from_seconds( 1.0 ) )
 
   {
     player_t** last = &( sim -> target_list );
@@ -123,7 +123,7 @@ struct melee_t : public attack_t
     trigger_gcd = timespan_t::zero;
     base_cost   = 0;
     base_dd_min = 260000;
-    base_execute_time = timespan_t::from_seconds(2.4);
+    base_execute_time = timespan_t::from_seconds( 2.4 );
   }
 };
 
@@ -136,7 +136,7 @@ struct auto_attack_t : public attack_t
   {
     p -> main_hand_attack = new melee_t( "melee_main_hand", player );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(2.4);
+    p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds( 2.4 );
 
     option_t options[] =
     {
@@ -149,8 +149,8 @@ struct auto_attack_t : public attack_t
     p -> main_hand_attack -> target = target;
 
     p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min;
-    if ( p -> main_hand_attack -> base_execute_time < timespan_t::from_seconds(0.01) )
-      p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds(2.4);
+    if ( p -> main_hand_attack -> base_execute_time < timespan_t::from_seconds( 0.01 ) )
+      p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds( 2.4 );
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
@@ -185,7 +185,7 @@ struct spell_nuke_t : public spell_t
   spell_nuke_t( player_t* p, const std::string& options_str ) :
     spell_t( "spell_nuke", p, RESOURCE_MANA, SCHOOL_FIRE )
   {
-    base_execute_time = timespan_t::from_seconds(3.0);
+    base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 50000;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
@@ -201,7 +201,7 @@ struct spell_nuke_t : public spell_t
 
     base_dd_max = base_dd_min;
     if ( base_execute_time < timespan_t::zero )
-      base_execute_time = timespan_t::from_seconds(3.0);
+      base_execute_time = timespan_t::from_seconds( 3.0 );
 
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
     stats -> school = school;
@@ -218,7 +218,7 @@ struct spell_aoe_t : public spell_t
   spell_aoe_t( player_t* p, const std::string& options_str ) :
     spell_t( "spell_aoe", p, RESOURCE_MANA, SCHOOL_FIRE )
   {
-    base_execute_time = timespan_t::from_seconds(3.0);
+    base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 50000;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
@@ -233,8 +233,8 @@ struct spell_aoe_t : public spell_t
     parse_options( options, options_str );
 
     base_dd_max = base_dd_min;
-    if ( base_execute_time < timespan_t::from_seconds(0.01) )
-      base_execute_time = timespan_t::from_seconds(3.0);
+    if ( base_execute_time < timespan_t::from_seconds( 0.01 ) )
+      base_execute_time = timespan_t::from_seconds( 3.0 );
 
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
     stats -> school = school;
@@ -276,7 +276,7 @@ struct summon_add_t : public spell_t
 
     harmful = false;
 
-    trigger_gcd = timespan_t::from_seconds(1.5);
+    trigger_gcd = timespan_t::from_seconds( 1.5 );
   }
 
   virtual void execute()
@@ -331,9 +331,9 @@ void enemy_t::init()
 
 void enemy_t::init_base()
 {
-  waiting_time = timespan_t::from_seconds(std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds ));
-  if ( waiting_time < timespan_t::from_seconds(1.0) )
-    waiting_time = timespan_t::from_seconds(1.0);
+  waiting_time = timespan_t::from_seconds( std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds ) );
+  if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
+    waiting_time = timespan_t::from_seconds( 1.0 );
 
   health_per_stamina = 10;
 
@@ -440,7 +440,7 @@ void enemy_t::init_actions()
     if ( action -> name_str == "snapshot_stats" ) continue;
     if ( action -> name_str.find( "auto_attack" ) != std::string::npos )
       continue;
-    waiting_time = timespan_t::from_seconds(1.0);
+    waiting_time = timespan_t::from_seconds( 1.0 );
     break;
   }
 }

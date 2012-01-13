@@ -151,9 +151,9 @@ static bool download( url_cache_entry_t& entry,
   }
 
   std::string wURL = url;
-  wURL = util_t::urlencode( wURL ); 
+  wURL = util_t::urlencode( wURL );
 
-  InetWrapper hFile( InternetOpenUrlA( hINet, wURL.c_str(), wHeaders.data(), static_cast<DWORD>(wHeaders.length()),
+  InetWrapper hFile( InternetOpenUrlA( hINet, wURL.c_str(), wHeaders.data(), static_cast<DWORD>( wHeaders.length() ),
                                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
   if ( ! hFile )
     return false;
@@ -578,7 +578,7 @@ void http_t::cache_load()
     }
   }
   catch( ... )
-  {}
+    {}
 }
 
 // http_t::cache_save =======================================================
@@ -612,7 +612,7 @@ void http_t::cache_save()
     }
   }
   catch ( ... )
-  {}
+    {}
 }
 
 

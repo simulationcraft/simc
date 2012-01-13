@@ -382,7 +382,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
     : pet_t( sim, p, "guardian_of_ancient_kings", true ), melee( 0 )
   {
     main_hand_weapon.type = WEAPON_BEAST;
-    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     main_hand_weapon.min_dmg = 5500; // TODO
     main_hand_weapon.max_dmg = 7000; // TODO
   }
@@ -1021,7 +1021,7 @@ struct melee_t : public paladin_attack_t
 
   virtual timespan_t execute_time() const
   {
-    if ( ! player -> in_combat ) return timespan_t::from_seconds(0.01);
+    if ( ! player -> in_combat ) return timespan_t::from_seconds( 0.01 );
     return paladin_attack_t::execute_time();
   }
 
@@ -1250,7 +1250,7 @@ struct crusader_strike_t : public paladin_attack_t
     trigger_seal = true;
 
     // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
-    cooldown -> duration += timespan_t::from_seconds(p -> passives.judgements_of_the_wise -> mod_additive( P_COOLDOWN ));
+    cooldown -> duration += timespan_t::from_seconds( p -> passives.judgements_of_the_wise -> mod_additive( P_COOLDOWN ) );
     base_cooldown         = cooldown -> duration;
 
     base_crit       += p -> talents.rule_of_law -> mod_additive( P_CRIT );
@@ -1357,7 +1357,7 @@ struct hammer_of_justice_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += timespan_t::from_seconds(p -> talents.improved_hammer_of_justice -> mod_additive( P_COOLDOWN ));
+    cooldown -> duration += timespan_t::from_seconds( p -> talents.improved_hammer_of_justice -> mod_additive( P_COOLDOWN ) );
   }
 };
 
@@ -1585,7 +1585,7 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
-    cooldown -> duration = timespan_t::from_seconds(8);
+    cooldown -> duration = timespan_t::from_seconds( 8 );
   }
 };
 
@@ -1633,7 +1633,7 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
-    cooldown -> duration = timespan_t::from_seconds(8);
+    cooldown -> duration = timespan_t::from_seconds( 8 );
   }
 };
 
@@ -1688,7 +1688,7 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
-    cooldown -> duration = timespan_t::from_seconds(8);
+    cooldown -> duration = timespan_t::from_seconds( 8 );
   }
 };
 
@@ -1834,7 +1834,7 @@ struct judgement_t : public paladin_attack_t
     seal_of_truth         = new seal_of_truth_judgement_t        ( p );
 
     if ( p -> set_bonus.pvp_4pc_melee() )
-      cooldown -> duration -= timespan_t::from_seconds(1.0);
+      cooldown -> duration -= timespan_t::from_seconds( 1.0 );
   }
 
   action_t* active_seal() const
@@ -2011,7 +2011,7 @@ struct avenging_wrath_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    cooldown -> duration += timespan_t::from_seconds(p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN ))
+    cooldown -> duration += timespan_t::from_seconds( p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN ) )
                             + p -> talents.paragon_of_virtue -> effect2().time_value()
                             + p -> talents.shield_of_the_templar -> effect3().time_value();
   }
@@ -2065,7 +2065,7 @@ struct consecration_t : public paladin_spell_t
     hasted_ticks   = false;
     may_miss       = false;
     num_ticks      = 10;
-    base_tick_time = timespan_t::from_seconds(1.0);
+    base_tick_time = timespan_t::from_seconds( 1.0 );
     base_cost     *= 1.0 + p -> talents.hallowed_ground -> mod_additive( P_RESOURCE_COST );
 
     if ( p -> glyphs.consecration -> ok() )
@@ -2079,7 +2079,8 @@ struct consecration_t : public paladin_spell_t
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg=0 )
   {
-    if ( t -> debuffs.flying -> check() ) {
+    if ( t -> debuffs.flying -> check() )
+    {
       if ( sim -> debug ) log_t::output( sim, "Ground effect %s can not hit flying target %s", name(), t -> name_str.c_str() );
     }
     else
@@ -2459,7 +2460,7 @@ struct zealotry_t : public paladin_spell_t
     update_ready();
     p -> buffs_zealotry -> trigger();
     if ( p -> set_bonus.tier12_4pc_melee() )
-      p -> buffs_zealotry -> extend_duration( p, timespan_t::from_seconds(p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive( P_DURATION )) );
+      p -> buffs_zealotry -> extend_duration( p, timespan_t::from_seconds( p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive( P_DURATION ) ) );
   }
 
   virtual void consume_resource()
@@ -3346,7 +3347,7 @@ void paladin_t::init_actions()
       action_list_str += "/holy_shock_heal";
       action_list_str += "/divine_light,if=mana_pct>75";
       action_list_str += "/divine_plea,if=mana_pct<75";
-      action_list_str += "/holy_light";      
+      action_list_str += "/holy_light";
     }
     break;
     default:
@@ -3896,8 +3897,8 @@ void player_t::paladin_init( sim_t* sim )
     p -> buffs.blessing_of_might_regen  = new buff_t( p, "blessing_of_might_regen", ! p -> is_pet() );
     p -> buffs.illuminated_healing      = new buff_t( p, 86273, "illuminated_healing" );
     p -> debuffs.forbearance            = new debuff_t( p, 25771, "forbearance" );
-    p -> debuffs.judgements_of_the_just = new debuff_t( p, "judgements_of_the_just", 1, timespan_t::from_seconds(20.0) );
-    p -> debuffs.vindication            = new debuff_t( p, "vindication",            1, timespan_t::from_seconds(30.0) );
+    p -> debuffs.judgements_of_the_just = new debuff_t( p, "judgements_of_the_just", 1, timespan_t::from_seconds( 20.0 ) );
+    p -> debuffs.vindication            = new debuff_t( p, "vindication",            1, timespan_t::from_seconds( 30.0 ) );
   }
 }
 

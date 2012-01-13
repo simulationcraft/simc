@@ -148,7 +148,7 @@ void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
 buff_t::buff_t( actor_pair_t  p,
                 spell_data_t* spell, ... ) :
   spell_id_t( p.source, spell -> name_cstr(), spell -> id() ),
-	  buff_duration( timespan_t::zero ), buff_cooldown( timespan_t::zero ), default_chance( 0 ), name_str( s_token ),
+  buff_duration( timespan_t::zero ), buff_cooldown( timespan_t::zero ), default_chance( 0 ), name_str( s_token ),
   sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( 0 ), rng_type( RNG_CYCLIC ),
   activated( true ), reverse( false ), constant( false ), quiet( false ),
@@ -183,11 +183,11 @@ void buff_t::parse_options( va_list vap )
     }
     else if ( ! strcmp( parm, "duration" ) )
     {
-      buff_duration = timespan_t::from_seconds(( double ) va_arg( vap, double ));
+      buff_duration = timespan_t::from_seconds( ( double ) va_arg( vap, double ) );
     }
     else if ( ! strcmp( parm, "cooldown" ) )
     {
-      buff_cooldown = timespan_t::from_seconds(( double ) va_arg( vap, double ));
+      buff_cooldown = timespan_t::from_seconds( ( double ) va_arg( vap, double ) );
     }
     else if ( ! strcmp( parm, "reverse" ) )
     {
@@ -235,7 +235,7 @@ void buff_t::init_buff_shared()
   expiration = 0;
   delay = 0;
 
-  buff_duration = std::min( buff_duration, timespan_t::from_seconds(sim -> wheel_seconds - 2.0) );
+  buff_duration = std::min( buff_duration, timespan_t::from_seconds( sim -> wheel_seconds - 2.0 ) );
 
   if ( max_stack >= 0 )
   {
@@ -661,7 +661,7 @@ void buff_t::start( int    stacks,
     assert( 0 );
   }
 
-  if ( sim -> current_time <= timespan_t::from_seconds(0.01) ) constant = true;
+  if ( sim -> current_time <= timespan_t::from_seconds( 0.01 ) ) constant = true;
 
   start_count++;
 
@@ -669,14 +669,14 @@ void buff_t::start( int    stacks,
 
   if ( last_start >= timespan_t::zero )
   {
-	start_intervals_sum += sim -> current_time - last_start;
+    start_intervals_sum += sim -> current_time - last_start;
     start_intervals++;
   }
   last_start = sim -> current_time;
 
   if ( buff_duration > timespan_t::zero )
   {
-	expiration = new ( sim ) expiration_t( sim, player, this, buff_duration );
+    expiration = new ( sim ) expiration_t( sim, player, this, buff_duration );
   }
 }
 

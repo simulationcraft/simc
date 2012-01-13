@@ -661,7 +661,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         {
           const spell_data_t* spell = sim -> dbc.spell( *i );
           if ( spell && spell -> _effect[ j ] &&
-          sim -> dbc.effect( spell -> _effect[ j ] ) )
+               sim -> dbc.effect( spell -> _effect[ j ] ) )
             p_data = reinterpret_cast< char* > ( const_cast< spelleffect_data_t* >( sim -> dbc.effect( spell -> _effect[ j ] ) ) );
           else
             p_data = 0;

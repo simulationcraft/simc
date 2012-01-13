@@ -153,17 +153,17 @@ void plot_t::analyze_stats()
         {
           player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-	  if ( delta_p -> primary_role() == ROLE_DPS )
-	    p -> dps_plot_data[ i ].push_back( delta_p -> dps.mean );
-	  else
-	    p -> dps_plot_data[ i ].push_back( delta_p -> hps.mean );
+          if ( delta_p -> primary_role() == ROLE_DPS )
+            p -> dps_plot_data[ i ].push_back( delta_p -> dps.mean );
+          else
+            p -> dps_plot_data[ i ].push_back( delta_p -> hps.mean );
         }
         else
         {
-	  if ( p -> primary_role() == ROLE_DPS )
-	    p -> dps_plot_data[ i ].push_back( p -> dps.mean );
-	  else
-	    p -> dps_plot_data[ i ].push_back( p -> hps.mean );
+          if ( p -> primary_role() == ROLE_DPS )
+            p -> dps_plot_data[ i ].push_back( p -> dps.mean );
+          else
+            p -> dps_plot_data[ i ].push_back( p -> hps.mean );
         }
       }
 

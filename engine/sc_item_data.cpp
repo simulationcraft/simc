@@ -295,53 +295,53 @@ int item_database_t::random_suffix_type( const item_data_t* item )
 {
   switch ( item -> item_class )
   {
-    case ITEM_CLASS_WEAPON:
-      switch ( item -> item_subclass )
-      {
-        case ITEM_SUBCLASS_WEAPON_AXE2:
-        case ITEM_SUBCLASS_WEAPON_MACE2:
-        case ITEM_SUBCLASS_WEAPON_POLEARM:
-        case ITEM_SUBCLASS_WEAPON_SWORD2:
-        case ITEM_SUBCLASS_WEAPON_STAFF:
-          return 0;
+  case ITEM_CLASS_WEAPON:
+    switch ( item -> item_subclass )
+    {
+    case ITEM_SUBCLASS_WEAPON_AXE2:
+    case ITEM_SUBCLASS_WEAPON_MACE2:
+    case ITEM_SUBCLASS_WEAPON_POLEARM:
+    case ITEM_SUBCLASS_WEAPON_SWORD2:
+    case ITEM_SUBCLASS_WEAPON_STAFF:
+      return 0;
 
-        case ITEM_SUBCLASS_WEAPON_BOW:
-        case ITEM_SUBCLASS_WEAPON_GUN:
-        case ITEM_SUBCLASS_WEAPON_THROWN:
-        case ITEM_SUBCLASS_WEAPON_CROSSBOW:
-        case ITEM_SUBCLASS_WEAPON_WAND:
-          return 4;
-        default:
-          return 3;
-      }
-    case ITEM_CLASS_ARMOR:
-      switch ( item -> inventory_type )
-      {
-        case INVTYPE_HEAD:
-        case INVTYPE_CHEST:
-        case INVTYPE_LEGS:
-        case INVTYPE_ROBE:
-          return 0;
+    case ITEM_SUBCLASS_WEAPON_BOW:
+    case ITEM_SUBCLASS_WEAPON_GUN:
+    case ITEM_SUBCLASS_WEAPON_THROWN:
+    case ITEM_SUBCLASS_WEAPON_CROSSBOW:
+    case ITEM_SUBCLASS_WEAPON_WAND:
+      return 4;
+    default:
+      return 3;
+    }
+  case ITEM_CLASS_ARMOR:
+    switch ( item -> inventory_type )
+    {
+    case INVTYPE_HEAD:
+    case INVTYPE_CHEST:
+    case INVTYPE_LEGS:
+    case INVTYPE_ROBE:
+      return 0;
 
-        case INVTYPE_SHOULDERS:
-        case INVTYPE_WAIST:
-        case INVTYPE_FEET:
-        case INVTYPE_HANDS:
-        case INVTYPE_TRINKET:
-          return 1;
+    case INVTYPE_SHOULDERS:
+    case INVTYPE_WAIST:
+    case INVTYPE_FEET:
+    case INVTYPE_HANDS:
+    case INVTYPE_TRINKET:
+      return 1;
 
-        case INVTYPE_NECK:
-        case INVTYPE_WEAPONOFFHAND:
-        case INVTYPE_HOLDABLE:
-        case INVTYPE_FINGER:
-        case INVTYPE_CLOAK:
-          return 2;
+    case INVTYPE_NECK:
+    case INVTYPE_WEAPONOFFHAND:
+    case INVTYPE_HOLDABLE:
+    case INVTYPE_FINGER:
+    case INVTYPE_CLOAK:
+      return 2;
 
-        default:
-          return -1;
-      }
     default:
       return -1;
+    }
+  default:
+    return -1;
   }
 
   return -1;
@@ -424,25 +424,25 @@ uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc
 
   switch ( item -> inventory_type )
   {
-    case INVTYPE_HEAD:
-    case INVTYPE_SHOULDERS:
-    case INVTYPE_CHEST:
-    case INVTYPE_WAIST:
-    case INVTYPE_LEGS:
-    case INVTYPE_FEET:
-    case INVTYPE_WRISTS:
-    case INVTYPE_HANDS:
-    case INVTYPE_CLOAK:
-    case INVTYPE_ROBE:
-    {
-      total_armor = dbc.item_armor_total( item -> level ).armor_type[ item -> item_subclass - 1 ];
-      m_quality   = dbc.item_armor_quality( item -> level ).values[ item -> quality ];
-      unsigned invtype = item -> inventory_type;
-      if ( invtype == INVTYPE_ROBE ) invtype = INVTYPE_CHEST;
-      m_invtype = dbc.item_armor_inv_type( invtype ).armor_type[ item -> item_subclass - 1 ];
-      break;
-    }
-    default: return 0;
+  case INVTYPE_HEAD:
+  case INVTYPE_SHOULDERS:
+  case INVTYPE_CHEST:
+  case INVTYPE_WAIST:
+  case INVTYPE_LEGS:
+  case INVTYPE_FEET:
+  case INVTYPE_WRISTS:
+  case INVTYPE_HANDS:
+  case INVTYPE_CLOAK:
+  case INVTYPE_ROBE:
+  {
+    total_armor = dbc.item_armor_total( item -> level ).armor_type[ item -> item_subclass - 1 ];
+    m_quality   = dbc.item_armor_quality( item -> level ).values[ item -> quality ];
+    unsigned invtype = item -> inventory_type;
+    if ( invtype == INVTYPE_ROBE ) invtype = INVTYPE_CHEST;
+    m_invtype = dbc.item_armor_inv_type( invtype ).armor_type[ item -> item_subclass - 1 ];
+    break;
+  }
+  default: return 0;
   }
 
   return ( uint32_t ) floor( total_armor * m_quality * m_invtype + 0.5 );
@@ -468,15 +468,15 @@ uint32_t item_database_t::weapon_dmg_min( const item_t& item, unsigned item_id )
 uint32_t item_database_t::weapon_dmg_min( const item_data_t* item, const dbc_t& dbc )
 {
   return ( uint32_t ) floor( dbc.weapon_dps( item -> id ) *
-                            dbc.item( item -> id ) -> delay / 1000.0 *
-                            ( 1 - dbc.item( item -> id ) -> dmg_range / 2 ) );
+                             dbc.item( item -> id ) -> delay / 1000.0 *
+                             ( 1 - dbc.item( item -> id ) -> dmg_range / 2 ) );
 }
 
 uint32_t item_database_t::weapon_dmg_max( const item_data_t* item, const dbc_t& dbc )
 {
   return ( uint32_t ) floor( dbc.weapon_dps( item -> id ) *
-                            dbc.item( item -> id ) -> delay / 1000.0 *
-                            ( 1 + dbc.item( item -> id ) -> dmg_range / 2 ) + 0.5 );
+                             dbc.item( item -> id ) -> delay / 1000.0 *
+                             ( 1 + dbc.item( item -> id ) -> dmg_range / 2 ) + 0.5 );
 }
 
 uint32_t item_database_t::weapon_dmg_max( const item_t& item, unsigned item_id )
@@ -556,7 +556,7 @@ bool item_database_t::parse_enchant( item_t&            item,
 
   for ( unsigned i = 0; i < 3; i++ )
   {
-    if (item_enchant.ench_type[ i ] == ITEM_ENCHANTMENT_NONE ) continue;
+    if ( item_enchant.ench_type[ i ] == ITEM_ENCHANTMENT_NONE ) continue;
     if ( item_enchant.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
     {
       has_spell = true;

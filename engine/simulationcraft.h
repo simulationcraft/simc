@@ -1143,7 +1143,7 @@ private:
   static const double MINUTES_PER_MILLI;
 
 
-  explicit timespan_t(const time_t millis) : time(millis) { }
+  explicit timespan_t( const time_t millis ) : time( millis ) { }
 
 public:
 
@@ -1151,13 +1151,13 @@ public:
   double total_seconds() const { return time * SECONDS_PER_MILLI; }
   time_t total_millis() const { return time; }
 
-  static timespan_t from_millis( const uint64_t millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_millis( const int64_t millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_millis( const uint32_t millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_millis( const int32_t millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis); }
-  static timespan_t from_seconds( const double seconds ) { return timespan_t((time_t)(seconds * MILLIS_PER_SECOND));  }
-  static timespan_t from_minutes( const double minutes ) { return timespan_t((time_t)(minutes * MILLIS_PER_MINUTE)); }
+  static timespan_t from_millis( const uint64_t millis ) { return timespan_t( ( time_t )millis ); }
+  static timespan_t from_millis( const int64_t millis ) { return timespan_t( ( time_t )millis ); }
+  static timespan_t from_millis( const uint32_t millis ) { return timespan_t( ( time_t )millis ); }
+  static timespan_t from_millis( const int32_t millis ) { return timespan_t( ( time_t )millis ); }
+  static timespan_t from_millis( const double millis ) { return timespan_t( ( time_t )millis ); }
+  static timespan_t from_seconds( const double seconds ) { return timespan_t( ( time_t )( seconds * MILLIS_PER_SECOND ) );  }
+  static timespan_t from_minutes( const double minutes ) { return timespan_t( ( time_t )( minutes * MILLIS_PER_MINUTE ) ); }
 
 #else // !SC_USE_INTEGER_TIME
 
@@ -1172,106 +1172,118 @@ private:
   static const time_t SECONDS_PER_MINUTE;
 
 
-  explicit timespan_t(const time_t millis) : time(millis) { }
+  explicit timespan_t( const time_t millis ) : time( millis ) { }
 
 public:
   double total_minutes() const { return time * MINUTES_PER_SECOND; }
   double total_seconds() const { return time; }
   time_t total_millis() const { return time * MILLIS_PER_SECOND; }
 
-  static timespan_t from_millis( const uint64_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
-  static timespan_t from_millis( const int64_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
-  static timespan_t from_millis( const uint32_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
-  static timespan_t from_millis( const int32_t millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
-  static timespan_t from_millis( const double millis ) { return timespan_t((time_t)millis * SECONDS_PER_MILLI); }
-  static timespan_t from_seconds( const double seconds ) { return timespan_t(seconds);  }
-  static timespan_t from_minutes( const double minutes ) { return timespan_t((time_t)(minutes * SECONDS_PER_MINUTE)); }
+  static timespan_t from_millis( const uint64_t millis ) { return timespan_t( ( time_t )millis * SECONDS_PER_MILLI ); }
+  static timespan_t from_millis( const int64_t millis ) { return timespan_t( ( time_t )millis * SECONDS_PER_MILLI ); }
+  static timespan_t from_millis( const uint32_t millis ) { return timespan_t( ( time_t )millis * SECONDS_PER_MILLI ); }
+  static timespan_t from_millis( const int32_t millis ) { return timespan_t( ( time_t )millis * SECONDS_PER_MILLI ); }
+  static timespan_t from_millis( const double millis ) { return timespan_t( ( time_t )millis * SECONDS_PER_MILLI ); }
+  static timespan_t from_seconds( const double seconds ) { return timespan_t( seconds );  }
+  static timespan_t from_minutes( const double minutes ) { return timespan_t( ( time_t )( minutes * SECONDS_PER_MINUTE ) ); }
 
 #endif
 
 public:
-  timespan_t() : time(0) { }
+  timespan_t() : time( 0 ) { }
 
   bool operator==( const timespan_t right ) const { return time == right.time; }
   bool operator!=( const timespan_t right ) const { return time != right.time; }
 
-  bool operator>(const timespan_t right ) const { return time > right.time; }
-  bool operator>=(const timespan_t right ) const { return time >= right.time; }
-  bool operator<(const timespan_t right ) const { return time < right.time; }
-  bool operator<=(const timespan_t right ) const { return time <= right.time; }
+  bool operator>( const timespan_t right ) const { return time > right.time; }
+  bool operator>=( const timespan_t right ) const { return time >= right.time; }
+  bool operator<( const timespan_t right ) const { return time < right.time; }
+  bool operator<=( const timespan_t right ) const { return time <= right.time; }
 
-  timespan_t & operator+=(const timespan_t right) {
+  timespan_t & operator+=( const timespan_t right )
+  {
     time += right.time;
     return *this;
   }
-  timespan_t operator-=(const timespan_t right) {
+  timespan_t operator-=( const timespan_t right )
+  {
     time -= right.time;
     return *this;
   }
-  timespan_t operator*=(const double right) {
-    time = (time_t)(time * right);
+  timespan_t operator*=( const double right )
+  {
+    time = ( time_t )( time * right );
     return *this;
   }
-  timespan_t operator*=(const int32_t right) {
+  timespan_t operator*=( const int32_t right )
+  {
     time *= right;
     return *this;
   }
-  timespan_t operator*=(const int64_t right) {
-    time = (time_t)(time * right);
+  timespan_t operator*=( const int64_t right )
+  {
+    time = ( time_t )( time * right );
     return *this;
   }
-  timespan_t operator*=(const uint32_t right) {
+  timespan_t operator*=( const uint32_t right )
+  {
     time *= right;
     return *this;
   }
-  timespan_t operator*=(const uint64_t right) {
-    time = (time_t)(time * right);
+  timespan_t operator*=( const uint64_t right )
+  {
+    time = ( time_t )( time * right );
     return *this;
   }
 
-  timespan_t operator/=(const double right) {
-    time = (time_t)(time / right);
+  timespan_t operator/=( const double right )
+  {
+    time = ( time_t )( time / right );
     return *this;
   }
-  timespan_t operator/=(const int32_t right) {
+  timespan_t operator/=( const int32_t right )
+  {
     time /= right;
     return *this;
   }
-  timespan_t operator/=(const int64_t right) {
-    time = (time_t)(time / right);
+  timespan_t operator/=( const int64_t right )
+  {
+    time = ( time_t )( time / right );
     return *this;
   }
-  timespan_t operator/=(const uint32_t right) {
+  timespan_t operator/=( const uint32_t right )
+  {
     time /= right;
     return *this;
   }
-  timespan_t operator/=(const uint64_t right) {
-    time = (time_t)(time / right);
+  timespan_t operator/=( const uint64_t right )
+  {
+    time = ( time_t )( time / right );
     return *this;
   }
 
-  friend timespan_t operator+(const timespan_t right);
-  friend timespan_t operator-(const timespan_t right);
+  friend timespan_t operator+( const timespan_t right );
+  friend timespan_t operator-( const timespan_t right );
 
-  friend timespan_t operator+(const timespan_t left, const timespan_t right);
-  friend timespan_t operator-(const timespan_t left, const timespan_t right);
-  friend timespan_t operator*(const timespan_t left, const double right);
-  friend timespan_t operator*(const timespan_t left, const int32_t right);
-  friend timespan_t operator*(const timespan_t left, const int64_t right);
-  friend timespan_t operator*(const timespan_t left, const uint32_t right);
-  friend timespan_t operator*(const timespan_t left, const uint64_t right);
-  friend timespan_t operator/(const timespan_t left, const double right);
-  friend timespan_t operator/(const timespan_t left, const int32_t right);
-  friend timespan_t operator/(const timespan_t left, const int64_t right);
-  friend timespan_t operator/(const timespan_t left, const uint32_t right);
-  friend timespan_t operator/(const timespan_t left, const uint64_t right);
-  friend double operator/(const timespan_t left, const timespan_t right);
+  friend timespan_t operator+( const timespan_t left, const timespan_t right );
+  friend timespan_t operator-( const timespan_t left, const timespan_t right );
+  friend timespan_t operator*( const timespan_t left, const double right );
+  friend timespan_t operator*( const timespan_t left, const int32_t right );
+  friend timespan_t operator*( const timespan_t left, const int64_t right );
+  friend timespan_t operator*( const timespan_t left, const uint32_t right );
+  friend timespan_t operator*( const timespan_t left, const uint64_t right );
+  friend timespan_t operator/( const timespan_t left, const double right );
+  friend timespan_t operator/( const timespan_t left, const int32_t right );
+  friend timespan_t operator/( const timespan_t left, const int64_t right );
+  friend timespan_t operator/( const timespan_t left, const uint32_t right );
+  friend timespan_t operator/( const timespan_t left, const uint64_t right );
+  friend double operator/( const timespan_t left, const timespan_t right );
 
-  friend timespan_t operator*(const double left, const timespan_t right);
-  friend timespan_t operator*(const int32_t left, const timespan_t right);
-  friend timespan_t operator*(const int64_t left, const timespan_t right);
-  friend timespan_t operator*(const uint32_t left, const timespan_t right);
-  friend timespan_t operator*(const uint64_t left, const timespan_t right);
+  friend timespan_t operator*( const double left, const timespan_t right );
+  friend timespan_t operator*( const int32_t left, const timespan_t right );
+  friend timespan_t operator*( const int64_t left, const timespan_t right );
+  friend timespan_t operator*( const uint32_t left, const timespan_t right );
+  friend timespan_t operator*( const uint64_t left, const timespan_t right );
 
   static const timespan_t zero;
   static const timespan_t min;
@@ -1286,68 +1298,88 @@ public:
 #define TIMESPAN_FROM_NATIVE_VALUE(v) (timespan_t::from_seconds(v))
 #endif
 
-inline timespan_t operator+(const timespan_t right) {
+inline timespan_t operator+( const timespan_t right )
+{
   return right;
 }
 
-inline timespan_t operator-(const timespan_t right) {
-  return timespan_t(-right.time);
+inline timespan_t operator-( const timespan_t right )
+{
+  return timespan_t( -right.time );
 }
 
-inline timespan_t operator+(const timespan_t left, const timespan_t right) {
-  return timespan_t(left.time + right.time);
+inline timespan_t operator+( const timespan_t left, const timespan_t right )
+{
+  return timespan_t( left.time + right.time );
 }
-inline timespan_t operator-(const timespan_t left, const timespan_t right) {
-  return timespan_t(left.time - right.time);
+inline timespan_t operator-( const timespan_t left, const timespan_t right )
+{
+  return timespan_t( left.time - right.time );
 }
-inline timespan_t operator*(const timespan_t left, const double right) {
-  return timespan_t((timespan_t::time_t)(left.time * right));
+inline timespan_t operator*( const timespan_t left, const double right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time * right ) );
 }
-inline timespan_t operator*(const timespan_t left, const int32_t right) {
-  return timespan_t((timespan_t::time_t)(left.time * right));
+inline timespan_t operator*( const timespan_t left, const int32_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time * right ) );
 }
-inline timespan_t operator*(const timespan_t left, const int64_t right) {
-  return timespan_t((timespan_t::time_t)(left.time * right));
+inline timespan_t operator*( const timespan_t left, const int64_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time * right ) );
 }
-inline timespan_t operator*(const timespan_t left, const uint32_t right) {
-  return timespan_t((timespan_t::time_t)(left.time * right));
+inline timespan_t operator*( const timespan_t left, const uint32_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time * right ) );
 }
-inline timespan_t operator*(const timespan_t left, const uint64_t right) {
-  return timespan_t((timespan_t::time_t)(left.time * right));
+inline timespan_t operator*( const timespan_t left, const uint64_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time * right ) );
 }
-inline timespan_t operator/(const timespan_t left, const double right) {
-  return timespan_t((timespan_t::time_t)(left.time / right));
+inline timespan_t operator/( const timespan_t left, const double right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time / right ) );
 }
-inline timespan_t operator/(const timespan_t left, const int32_t right) {
-  return timespan_t((timespan_t::time_t)(left.time / right));
+inline timespan_t operator/( const timespan_t left, const int32_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time / right ) );
 }
-inline timespan_t operator/(const timespan_t left, const int64_t right) {
-  return timespan_t((timespan_t::time_t)(left.time / (timespan_t::time_t)right));
+inline timespan_t operator/( const timespan_t left, const int64_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time / ( timespan_t::time_t )right ) );
 }
-inline timespan_t operator/(const timespan_t left, const uint32_t right) {
-  return timespan_t((timespan_t::time_t)(left.time / (timespan_t::time_t)right));
+inline timespan_t operator/( const timespan_t left, const uint32_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time / ( timespan_t::time_t )right ) );
 }
-inline timespan_t operator/(const timespan_t left, const uint64_t right) {
-  return timespan_t((timespan_t::time_t)(left.time / (timespan_t::time_t)right));
+inline timespan_t operator/( const timespan_t left, const uint64_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left.time / ( timespan_t::time_t )right ) );
 }
-inline double operator/(const timespan_t left, const timespan_t right) {
-  return (double)left.time / right.time;
+inline double operator/( const timespan_t left, const timespan_t right )
+{
+  return ( double )left.time / right.time;
 }
 
-inline timespan_t operator*(const double left, const timespan_t right) {
-  return timespan_t((timespan_t::time_t)(left * right.time));
+inline timespan_t operator*( const double left, const timespan_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left * right.time ) );
 }
-inline timespan_t operator*(const int32_t left, const timespan_t right) {
-  return timespan_t((timespan_t::time_t)(left * right.time));
+inline timespan_t operator*( const int32_t left, const timespan_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left * right.time ) );
 }
-inline timespan_t operator*(const int64_t left, const timespan_t right) {
-  return timespan_t((timespan_t::time_t)(left * right.time));
+inline timespan_t operator*( const int64_t left, const timespan_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left * right.time ) );
 }
-inline timespan_t operator*(const uint32_t left, const timespan_t right) {
-  return timespan_t((timespan_t::time_t)(left * right.time));
+inline timespan_t operator*( const uint32_t left, const timespan_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left * right.time ) );
 }
-inline timespan_t operator*(const uint64_t left, const timespan_t right) {
-  return timespan_t((timespan_t::time_t)(left * right.time));
+inline timespan_t operator*( const uint64_t left, const timespan_t right )
+{
+  return timespan_t( ( timespan_t::time_t )( left * right.time ) );
 }
 
 // Cache Control ============================================================
@@ -1861,21 +1893,21 @@ public:
   double               max_range() const { return _max_range; }
   bool                 in_range( double range ) const { return range >= _min_range && range <= _max_range; }
 
-  timespan_t           cooldown() const { return timespan_t::from_millis(_cooldown); }
-  timespan_t           duration() const { return timespan_t::from_millis(_duration); }
-  timespan_t           gcd() const { return timespan_t::from_millis(_gcd); }
+  timespan_t           cooldown() const { return timespan_t::from_millis( _cooldown ); }
+  timespan_t           duration() const { return timespan_t::from_millis( _duration ); }
+  timespan_t           gcd() const { return timespan_t::from_millis( _gcd ); }
   timespan_t           cast_time( uint32_t level ) const;
 
   uint32_t             category() const { return _category; }
 
   double               cost() const;
   uint32_t             rune_cost() const { return _rune_cost; }
-  double               runic_power_gain() const { return _runic_power_gain * (1 / 10.0); }
+  double               runic_power_gain() const { return _runic_power_gain * ( 1 / 10.0 ); }
 
   uint32_t             max_stacks() const { return _max_stack; }
   uint32_t             initial_stacks() const { return _proc_charges; }
 
-  double               proc_chance() const { return _proc_chance * (1 / 100.0); }
+  double               proc_chance() const { return _proc_chance * ( 1 / 100.0 ); }
 
   uint32_t             effect_id( uint32_t effect_num ) const
   {
@@ -1963,17 +1995,17 @@ public:
   effect_subtype_t           subtype() const { return _subtype; }
 
   int                        base_value() const { return _base_value; }
-  double percent() const { return _base_value * (1 / 100.0); }
-  timespan_t time_value() const { return timespan_t::from_millis(_base_value); }
+  double percent() const { return _base_value * ( 1 / 100.0 ); }
+  timespan_t time_value() const { return timespan_t::from_millis( _base_value ); }
   double resource( int type ) const
   {
     switch( type )
     {
     case RESOURCE_RUNIC:
     case RESOURCE_RAGE:
-      return _base_value * (1 / 10.0);
+      return _base_value * ( 1 / 10.0 );
     case RESOURCE_MANA:
-      return _base_value * (1 / 100.0);
+      return _base_value * ( 1 / 100.0 );
     default:
       return _base_value;
     }
@@ -1991,7 +2023,7 @@ public:
 
   double                     coeff() const { return _coeff; }
 
-  timespan_t                 period() const { return timespan_t::from_millis(_amplitude); }
+  timespan_t                 period() const { return timespan_t::from_millis( _amplitude ); }
 
   double                     radius() const { return _radius; }
   double                     radius_max() const { return _radius_max; }
@@ -3776,7 +3808,7 @@ struct weapon_t
   timespan_t normalized_weapon_speed() const;
   double proc_chance_on_swing( double PPM, timespan_t adjusted_swing_time=timespan_t::zero ) const;
 
-  weapon_t( int t=WEAPON_NONE, double d=0, timespan_t st=timespan_t::from_seconds(2.0), school_type s=SCHOOL_PHYSICAL ) :
+  weapon_t( int t=WEAPON_NONE, double d=0, timespan_t st=timespan_t::from_seconds( 2.0 ), school_type s=SCHOOL_PHYSICAL ) :
     type( t ), school( s ), damage( d ), min_dmg( d ), max_dmg( d ), swing_time( st ), slot( SLOT_NONE ), buff_type( 0 ), buff_value( 0 ), bonus_dmg( 0 ) { }
 };
 
@@ -4545,12 +4577,12 @@ struct player_t : public noncopyable
   virtual void      schedule_ready( timespan_t delta_time=timespan_t::zero, bool waiting=false );
   virtual void      arise();
   virtual void      demise();
-  virtual timespan_t available() const { return timespan_t::from_seconds(0.1); }
+  virtual timespan_t available() const { return timespan_t::from_seconds( 0.1 ); }
   virtual action_t* execute_action();
 
   virtual std::string print_action_map( int iterations, int precision );
 
-  virtual void   regen( timespan_t periodicity=timespan_t::from_seconds(0.25) );
+  virtual void   regen( timespan_t periodicity=timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
   virtual double resource_loss( int resource, double amount, action_t* a=0 );
   virtual void   recalculate_resource_max( int resource );
@@ -5096,7 +5128,7 @@ public:
     }
     return cached_targetdata;
   }
-  
+
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual std::vector< player_t* > target_list() const;
 };

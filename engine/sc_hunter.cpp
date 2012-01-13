@@ -232,7 +232,7 @@ struct hunter_t : public player_t
     summon_pet_str = "";
     distance = 40;
     default_distance = 40;
-    base_gcd = timespan_t::from_seconds(1.0);
+    base_gcd = timespan_t::from_seconds( 1.0 );
     flaming_arrow = NULL;
 
     tier13_4pc_cooldown = 105.0;
@@ -337,7 +337,7 @@ struct hunter_pet_t : public pet_t
     main_hand_weapon.max_dmg    = rating_t::interpolate( level, 0, 0, 78, 110 ); // FIXME needs level 60 and 70 values
     // Level 85 numbers from Rivkah from EJ, 07.08.2011
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     stamina_per_owner = 0.45;
 
@@ -427,11 +427,11 @@ struct hunter_pet_t : public pet_t
 
     base_focus_regen_per_second *= 1.0 + o -> talents.bestial_discipline -> effect1().percent();
 
-    base_gcd = timespan_t::from_seconds(1.20);
+    base_gcd = timespan_t::from_seconds( 1.20 );
 
     infinite_resource[ RESOURCE_FOCUS ] = o -> infinite_resource[ RESOURCE_FOCUS ];
 
-    world_lag = timespan_t::from_seconds(0.3); // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
+    world_lag = timespan_t::from_seconds( 0.3 ); // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
     world_lag_override = true;
   }
 
@@ -511,7 +511,7 @@ struct hunter_pet_t : public pet_t
     buffs_rabid             = new buff_t( this, 53401, "rabid" );
     buffs_rabid_power_stack = new buff_t( this, 53403, "rabid_power_stack" );
     buffs_sic_em            = new buff_t( this, 89388, "sic_em" );
-    buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, timespan_t::from_seconds(10.0), timespan_t::zero );
+    buffs_wolverine_bite    = new buff_t( this, "wolverine_bite",    1, timespan_t::from_seconds( 10.0 ), timespan_t::zero );
   }
 
   virtual void init_gains()
@@ -814,7 +814,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       base_multiplier = 1.0;
       tick_power_mod  = 0;
       num_ticks       = 8;
-      base_tick_time  = timespan_t::from_seconds(1.0);
+      base_tick_time  = timespan_t::from_seconds( 1.0 );
 
       init();
     }
@@ -865,7 +865,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
     piercing_shots_dmg += p -> active_piercing_shots -> base_td * dot -> ticks();
   }
 
-  if ( timespan_t::from_seconds(8.0) + sim -> aura_delay < dot -> remains() )
+  if ( timespan_t::from_seconds( 8.0 ) + sim -> aura_delay < dot -> remains() )
   {
     if ( sim -> log ) log_t::output( sim, "Player %s munches Piercing Shots due to Max Piercing Shots Duration.", p -> name() );
     p -> procs_munched_piercing_shots -> occur();
@@ -972,7 +972,7 @@ static void trigger_vishanka( attack_t* a )
   if ( a -> sim -> roll( p -> dbc.spell( p -> vishanka ) -> proc_chance() ) )
   {
     p -> active_vishanka -> execute();
-    p -> cooldowns_vishanka -> duration = timespan_t::from_seconds(15.0); // Assume a ICD until testing proves one way or another
+    p -> cooldowns_vishanka -> duration = timespan_t::from_seconds( 15.0 ); // Assume a ICD until testing proves one way or another
     p -> cooldowns_vishanka -> start();
   }
 }
@@ -1957,7 +1957,7 @@ struct ranged_t : public hunter_attack_t
   virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
-      return timespan_t::from_seconds(0.01);
+      return timespan_t::from_seconds( 0.01 );
 
     return hunter_attack_t::execute_time();
   }
@@ -2443,7 +2443,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     normalize_weapon_speed = true;
 
-    cooldown -> duration += timespan_t::from_seconds(p -> glyphs.chimera_shot -> mod_additive( P_COOLDOWN ));
+    cooldown -> duration += timespan_t::from_seconds( p -> glyphs.chimera_shot -> mod_additive( P_COOLDOWN ) );
 
     consumes_tier12_4pc = true;
   }
@@ -2925,7 +2925,7 @@ struct steady_shot_t : public hunter_attack_t
     direct_power_mod = 0.021; // hardcoded into tooltip
 
     if ( p -> sets -> set ( SET_T11_4PC_MELEE ) -> ok() )
-      base_execute_time -= timespan_t::from_seconds(0.2);
+      base_execute_time -= timespan_t::from_seconds( 0.2 );
 
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
@@ -3608,7 +3608,7 @@ struct hunter_sniper_training_event_t : public event_t
     event_t( player -> sim, player )
   {
     name = "Sniper_Training_Check";
-    sim -> add_event( this, timespan_t::from_seconds(5.0) );
+    sim -> add_event( this, timespan_t::from_seconds( 5.0 ) );
   }
 
   virtual void execute()
@@ -3622,7 +3622,7 @@ struct hunter_sniper_training_event_t : public event_t
     {
       timespan_t finished_moving = p -> buffs.raid_movement -> last_start + p -> buffs.raid_movement -> buff_duration;
 
-      if ( ( sim -> current_time - finished_moving ) > timespan_t::from_seconds(p -> talents.sniper_training -> effect1().base_value()) )
+      if ( ( sim -> current_time - finished_moving ) > timespan_t::from_seconds( p -> talents.sniper_training -> effect1().base_value() ) )
       {
         p -> buffs_sniper_training -> trigger();
       }
@@ -3901,10 +3901,10 @@ void hunter_t::init_buffs()
   buffs_culling_the_herd            = new buff_t( this, 70893, "culling_the_herd" );
   buffs_focus_fire                  = new buff_t( this, 82692, "focus_fire" );
   buffs_improved_steady_shot        = new buff_t( this, 53220, "improved_steady_shot", talents.improved_steady_shot -> ok() );
-  buffs_killing_streak              = new buff_t( this, "killing_streak", 1, timespan_t::from_seconds(8), timespan_t::zero, talents.killing_streak -> ok() );
+  buffs_killing_streak              = new buff_t( this, "killing_streak", 1, timespan_t::from_seconds( 8 ), timespan_t::zero, talents.killing_streak -> ok() );
   buffs_killing_streak_crits        = new buff_t( this, "killing_streak_crits", 2, timespan_t::zero, timespan_t::zero, 1.0, true );
   buffs_lock_and_load               = new buff_t( this, 56453, "lock_and_load", talents.tnt -> effect1().percent() );
-  if ( bugs ) buffs_lock_and_load -> cooldown -> duration = timespan_t::from_seconds(10.0); // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
+  if ( bugs ) buffs_lock_and_load -> cooldown -> duration = timespan_t::from_seconds( 10.0 ); // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
   buffs_master_marksman             = new buff_t( this, 82925, "master_marksman", talents.master_marksman -> proc_chance() );
   buffs_master_marksman_fire        = new buff_t( this, 82926, "master_marksman_fire", 1 );
   buffs_sniper_training             = new buff_t( this, talents.sniper_training -> rank() == 3 ? 64420 : talents.sniper_training -> rank() == 2 ? 64419 : talents.sniper_training -> rank() == 1 ? 64418 : 0, "sniper_training", talents.sniper_training -> rank() );
@@ -3914,7 +3914,7 @@ void hunter_t::init_buffs()
   buffs_pre_improved_steady_shot    = new buff_t( this, "pre_improved_steady_shot",    2, timespan_t::zero, timespan_t::zero, 1, true );
 
   buffs_tier12_4pc                  = new buff_t( this, "tier12_4pc", 1, dbc.spell( 99060 ) -> duration(), timespan_t::zero, dbc.spell( 99059 ) -> proc_chance() * set_bonus.tier12_4pc_melee() );
-  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", sets -> set( SET_T13_4PC_MELEE ) -> proc_chance(), timespan_t::from_seconds(tier13_4pc_cooldown) );
+  buffs_tier13_4pc                  = new buff_t( this, 105919, "tier13_4pc", sets -> set( SET_T13_4PC_MELEE ) -> proc_chance(), timespan_t::from_seconds( tier13_4pc_cooldown ) );
 
   // Own TSA for Glyph of TSA
   buffs_trueshot_aura               = new buff_t( this, 19506, "trueshot_aura" );

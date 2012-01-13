@@ -257,13 +257,13 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
            "\t\t\t\t\t\t\t\t<th>World Lag:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
-           (double)sim -> world_lag.total_millis(), (double)sim -> world_lag_stddev.total_millis() );
+           ( double )sim -> world_lag.total_millis(), ( double )sim -> world_lag_stddev.total_millis() );
   fprintf( file,
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>Queue Lag:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
-           (double)sim -> queue_lag.total_millis(), (double)sim -> queue_lag_stddev.total_millis() );
+           ( double )sim -> queue_lag.total_millis(), ( double )sim -> queue_lag_stddev.total_millis() );
   if ( sim -> strict_gcd_queue )
   {
     fprintf( file,
@@ -271,19 +271,19 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
              "\t\t\t\t\t\t\t\t<th>GCD Lag:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
-             (double)sim -> gcd_lag.total_millis(), (double)sim -> gcd_lag_stddev.total_millis() );
+             ( double )sim -> gcd_lag.total_millis(), ( double )sim -> gcd_lag_stddev.total_millis() );
     fprintf( file,
              "\t\t\t\t\t\t\t<tr class=\"left\">\n"
              "\t\t\t\t\t\t\t\t<th>Channel Lag:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
-             (double)sim -> channel_lag.total_millis(), (double)sim -> channel_lag_stddev.total_millis() );
+             ( double )sim -> channel_lag.total_millis(), ( double )sim -> channel_lag_stddev.total_millis() );
     fprintf( file,
              "\t\t\t\t\t\t\t<tr class=\"left\">\n"
              "\t\t\t\t\t\t\t\t<th>Queue GCD Reduction:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
-             (double)sim -> queue_gcd_reduction.total_millis() );
+             ( double )sim -> queue_gcd_reduction.total_millis() );
   }
 
 

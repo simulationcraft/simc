@@ -78,7 +78,7 @@ struct vengeance_t : public event_t
     event_t( player -> sim, player )
   {
     name = "Vengeance_Check";
-    sim -> add_event( this, timespan_t::from_seconds(2.0) );
+    sim -> add_event( this, timespan_t::from_seconds( 2.0 ) );
   }
 
   virtual void execute()
@@ -307,7 +307,7 @@ static bool parse_world_lag( sim_t* sim,
 {
   assert( name == "world_lag" ); ( void )name;
 
-  sim -> active_player -> world_lag = timespan_t::from_seconds(atof( value.c_str() ));
+  sim -> active_player -> world_lag = timespan_t::from_seconds( atof( value.c_str() ) );
 
   if ( sim -> active_player -> world_lag < timespan_t::zero )
   {
@@ -328,7 +328,7 @@ static bool parse_world_lag_stddev( sim_t* sim,
 {
   assert( name == "world_lag_stddev" ); ( void )name;
 
-  sim -> active_player -> world_lag_stddev = timespan_t::from_seconds(atof( value.c_str() ));
+  sim -> active_player -> world_lag_stddev = timespan_t::from_seconds( atof( value.c_str() ) );
 
   if ( sim -> active_player -> world_lag_stddev < timespan_t::zero )
   {
@@ -348,7 +348,7 @@ static bool parse_brain_lag( sim_t* sim,
 {
   assert( name == "brain_lag" ); ( void )name;
 
-  sim -> active_player -> brain_lag = timespan_t::from_seconds(atof( value.c_str() ));
+  sim -> active_player -> brain_lag = timespan_t::from_seconds( atof( value.c_str() ) );
 
   if ( sim -> active_player -> brain_lag < timespan_t::zero )
   {
@@ -367,7 +367,7 @@ static bool parse_brain_lag_stddev( sim_t* sim,
 {
   assert( name == "brain_lag_stddev" ); ( void )name;
 
-  sim -> active_player -> brain_lag_stddev = timespan_t::from_seconds(atof( value.c_str() ));
+  sim -> active_player -> brain_lag_stddev = timespan_t::from_seconds( atof( value.c_str() ) );
 
   if ( sim -> active_player -> brain_lag_stddev < timespan_t::zero )
   {
@@ -393,15 +393,15 @@ player_t::player_t( sim_t*             s,
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ),
-  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( timespan_t::zero ), base_gcd( timespan_t::from_seconds(1.5) ),
+  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( timespan_t::zero ), base_gcd( timespan_t::from_seconds( 1.5 ) ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
-  reaction_mean( timespan_t::from_seconds(0.5) ), reaction_stddev( timespan_t::zero ), reaction_nu( timespan_t::from_seconds(0.5) ),
+  reaction_mean( timespan_t::from_seconds( 0.5 ) ), reaction_stddev( timespan_t::zero ), reaction_nu( timespan_t::from_seconds( 0.5 ) ),
   scale_player( 1 ), has_dtr( false ), avg_ilvl( 0 ),
   // Latency
-  world_lag( timespan_t::from_seconds(0.1) ), world_lag_stddev( timespan_t::min ),
+  world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min ),
   brain_lag( timespan_t::min ), brain_lag_stddev( timespan_t::min ),
   world_lag_override( false ), world_lag_stddev_override( false ),
   events( 0 ),
@@ -1013,15 +1013,15 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   }
   else if ( meta_gem == META_MYSTICAL_SKYFIRE )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, timespan_t::from_seconds(4.0), timespan_t::from_seconds(45.0) );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, timespan_t::from_seconds( 4.0 ), timespan_t::from_seconds( 45.0 ) );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, timespan_t::zero, timespan_t::from_seconds(15.0) );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, timespan_t::zero, timespan_t::from_seconds( 15.0 ) );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, timespan_t::zero, timespan_t::from_seconds(15.0) );
+    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, timespan_t::zero, timespan_t::from_seconds( 15.0 ) );
   }
 }
 
@@ -1691,13 +1691,13 @@ void player_t::init_spells()
 void player_t::init_buffs()
 {
   buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
-  buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1, timespan_t::from_seconds(4.0) );
+  buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1, timespan_t::from_seconds( 4.0 ) );
   buffs.corruption_absolute       = new buff_t( this, 82170, "corruption_absolute"          );
   buffs.dark_intent               = new buff_t( this, 85767, "dark_intent"                  );
   buffs.dark_intent_feedback      = new buff_t( this, 85759, "dark_intent_feedback"         );
   buffs.essence_of_the_red        = new buff_t( this,        "essence_of_the_red"           );
   buffs.furious_howl              = new buff_t( this, 24604, "furious_howl"                 );
-  buffs.grace                     = new buff_t( this,        "grace",               3, timespan_t::from_seconds(15.0) );
+  buffs.grace                     = new buff_t( this,        "grace",               3, timespan_t::from_seconds( 15.0 ) );
   buffs.hellscreams_warsong       = new buff_t( this,        "hellscreams_warsong", 1       );
   buffs.heroic_presence           = new buff_t( this,        "heroic_presence",     1       );
   buffs.hymn_of_hope = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope"                 );
@@ -1709,18 +1709,18 @@ void player_t::init_buffs()
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds(15.0) );
-  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds(15.0) );
-  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
-  buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
-  buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
-  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
-  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0, 1, timespan_t::from_seconds(20.0) );
-  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING,  500.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
-  buffs.tolvir_potion          = new stat_buff_t( this, "tolvir_potion",          STAT_AGILITY,      1200.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
-  buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_INTELLECT,    1200.0, 1, timespan_t::from_seconds(25.0), timespan_t::from_seconds(60.0) );
-  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,   200.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
-  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,   200.0, 1, timespan_t::from_seconds(15.0), timespan_t::from_seconds(60.0) );
+  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds( 15.0 ) );
+  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds( 15.0 ) );
+  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
+  buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0, 1, timespan_t::from_seconds( 25.0 ), timespan_t::from_seconds( 60.0 ) );
+  buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0, 1, timespan_t::from_seconds( 25.0 ), timespan_t::from_seconds( 60.0 ) );
+  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
+  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0, 1, timespan_t::from_seconds( 20.0 ) );
+  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING,  500.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
+  buffs.tolvir_potion          = new stat_buff_t( this, "tolvir_potion",          STAT_AGILITY,      1200.0, 1, timespan_t::from_seconds( 25.0 ), timespan_t::from_seconds( 60.0 ) );
+  buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_INTELLECT,    1200.0, 1, timespan_t::from_seconds( 25.0 ), timespan_t::from_seconds( 60.0 ) );
+  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,   200.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
+  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,   200.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
 
   buffs.mongoose_mh = NULL;
   buffs.mongoose_oh = NULL;
@@ -1929,7 +1929,7 @@ void player_t::init_scaling()
       case STAT_WEAPON_SPEED:
         if ( main_hand_weapon.swing_time > timespan_t::zero )
         {
-          timespan_t new_speed = ( main_hand_weapon.swing_time + timespan_t::from_seconds(v) );
+          timespan_t new_speed = ( main_hand_weapon.swing_time + timespan_t::from_seconds( v ) );
           double mult = new_speed / main_hand_weapon.swing_time;
 
           main_hand_weapon.min_dmg *= mult;
@@ -1940,7 +1940,7 @@ void player_t::init_scaling()
         }
         if ( ranged_weapon.swing_time > timespan_t::zero )
         {
-          timespan_t new_speed = ( ranged_weapon.swing_time + timespan_t::from_seconds(v) );
+          timespan_t new_speed = ( ranged_weapon.swing_time + timespan_t::from_seconds( v ) );
 
           double mult = new_speed / ranged_weapon.swing_time;
 
@@ -1964,7 +1964,7 @@ void player_t::init_scaling()
       case STAT_WEAPON_OFFHAND_SPEED:
         if ( off_hand_weapon.swing_time > timespan_t::zero )
         {
-          timespan_t new_speed = ( off_hand_weapon.swing_time + timespan_t::from_seconds(v) );
+          timespan_t new_speed = ( off_hand_weapon.swing_time + timespan_t::from_seconds( v ) );
           double mult = new_speed / off_hand_weapon.swing_time;
 
           off_hand_weapon.min_dmg *= mult;
@@ -3778,13 +3778,13 @@ timespan_t player_t::time_to_die() const
   // wait a minimum gcd before starting to estimate fight duration based on health,
   // otherwise very odd things happen with multi-actor simulations and time_to_die
   // expressions
-  if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds(1.0) )
+  if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds( 1.0 ) )
   {
-    return sim -> current_time * (resource_current[ RESOURCE_HEALTH ] / iteration_dmg_taken);
+    return sim -> current_time * ( resource_current[ RESOURCE_HEALTH ] / iteration_dmg_taken );
   }
   else
   {
-    return (sim -> expected_time - sim -> current_time);
+    return ( sim -> expected_time - sim -> current_time );
   }
 }
 
@@ -4362,7 +4362,7 @@ void player_t::recalculate_haste()
 
 bool player_t::recent_cast() const
 {
-  return ( last_cast > timespan_t::zero ) && ( ( last_cast + timespan_t::from_seconds(5.0) ) > sim -> current_time );
+  return ( last_cast > timespan_t::zero ) && ( ( last_cast + timespan_t::from_seconds( 5.0 ) ) > sim -> current_time );
 }
 
 // player_t::find_action ====================================================
@@ -4709,7 +4709,7 @@ struct start_moving_t : public action_t
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = timespan_t::from_seconds(0.5);
+    cooldown -> duration = timespan_t::from_seconds( 0.5 );
     harmful = false;
   }
 
@@ -4737,7 +4737,7 @@ struct stop_moving_t : public action_t
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = timespan_t::from_seconds(0.5);
+    cooldown -> duration = timespan_t::from_seconds( 0.5 );
     harmful = false;
   }
 
@@ -4770,7 +4770,7 @@ struct arcane_torrent_t : public action_t
     check_race( RACE_BLOOD_ELF );
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = timespan_t::from_seconds(120);
+    cooldown -> duration = timespan_t::from_seconds( 120 );
   }
 
   virtual void execute()
@@ -4838,7 +4838,7 @@ struct berserking_t : public action_t
     check_race( RACE_TROLL );
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = timespan_t::from_seconds(180);
+    cooldown -> duration = timespan_t::from_seconds( 180 );
   }
 
   virtual void execute()
@@ -4872,7 +4872,7 @@ struct blood_fury_t : public action_t
     check_race( RACE_ORC );
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = timespan_t::from_seconds(120);
+    cooldown -> duration = timespan_t::from_seconds( 120 );
   }
 
   virtual void execute()
@@ -4939,7 +4939,7 @@ struct stoneform_t : public action_t
     check_race( RACE_DWARF );
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = timespan_t::from_seconds(120);
+    cooldown -> duration = timespan_t::from_seconds( 120 );
   }
 
   virtual void execute()
@@ -5024,7 +5024,7 @@ struct lifeblood_t : public action_t
     parse_options( NULL, options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero;
-    cooldown -> duration = timespan_t::from_seconds(120);
+    cooldown -> duration = timespan_t::from_seconds( 120 );
   }
 
   virtual void execute()
@@ -5245,7 +5245,7 @@ struct wait_fixed_t : public wait_action_base_t
   {
     int result = time_expr -> evaluate();
     assert( result == TOK_NUM ); ( void )result;
-    timespan_t wait = timespan_t::from_seconds(time_expr -> result_num);
+    timespan_t wait = timespan_t::from_seconds( time_expr -> result_num );
 
     if ( wait <= timespan_t::zero ) wait = player -> available();
 

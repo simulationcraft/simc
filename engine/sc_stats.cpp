@@ -89,7 +89,7 @@ void stats_t::add_result( double act_amount,
   r -> iteration_actual_amount += act_amount;
   r -> iteration_total_amount += tot_amount;
 
-  int index = (int) ( sim -> current_time.total_seconds() );
+  int index = ( int ) ( sim -> current_time.total_seconds() );
 
 
   timeline_amount[ index ] += act_amount;
@@ -103,7 +103,7 @@ void stats_t::add_execute( timespan_t time )
   total_execute_time += time;
 
   if ( likely( last_execute > timespan_t::zero &&
-       last_execute != sim -> current_time ) )
+               last_execute != sim -> current_time ) )
   {
     num_intervals++;
     total_intervals += sim -> current_time - last_execute;
@@ -278,7 +278,8 @@ stats_t::stats_results_t::stats_results_t( sim_t* s ) :
   iteration_total_amount( 0 ),
   pct( 0 ),
   overkill_pct( 0 )
-{ // Keep non hidden reported numbers clean
+{
+  // Keep non hidden reported numbers clean
   count.mean = 0;
   actual_amount.mean = 0; actual_amount.max=0;
   avg_actual_amount.mean = 0;
@@ -309,7 +310,7 @@ inline void stats_t::stats_results_t::combat_end()
 {
   avg_actual_amount.add( iteration_count ? iteration_actual_amount / iteration_count : 0 );
   count.add( iteration_count );
-  fight_actual_amount.add( iteration_actual_amount);
+  fight_actual_amount.add( iteration_actual_amount );
   fight_total_amount.add(  iteration_total_amount );
 
   iteration_count = 0;

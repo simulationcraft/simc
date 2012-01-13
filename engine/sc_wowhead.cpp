@@ -80,8 +80,8 @@ static xml_node_t* download_id( sim_t*             sim,
 {
   if ( id_str.empty() || id_str == "0" ) return 0;
 
-  std::string url_www = ( ptr ? "http://ptr.wowhead.com/item=" : "http://www.wowhead.com/item=")
-      + id_str + "&xml";
+  std::string url_www = ( ptr ? "http://ptr.wowhead.com/item=" : "http://www.wowhead.com/item=" )
+                        + id_str + "&xml";
 
   xml_node_t *node = xml_t::get( sim, url_www, caching, "</json>" );
   if ( sim -> debug ) xml_t::print( node );

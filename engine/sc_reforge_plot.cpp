@@ -135,7 +135,7 @@ void reforge_plot_t::analyze_stats()
   generate_stat_mods( stat_mods, reforge_plot_stat_indices, 0,
                       cur_stat_mods );
 
-  num_stat_combos = static_cast<int>(stat_mods.size());
+  num_stat_combos = static_cast<int>( stat_mods.size() );
 
   if ( reforge_plot_debug )
   {
@@ -170,7 +170,7 @@ void reforge_plot_t::analyze_stats()
     for ( int j=0; j < ( int ) stat_mods[ i ].size(); j++ )
     {
       current_reforge_sim -> enchant.add_stat( reforge_plot_stat_indices[ j ],
-                                     stat_mods[ i ][ j ] );
+                                               stat_mods[ i ][ j ] );
       delta_result[ j ].value = stat_mods[ i ][ j ];
       delta_result[ j ].error = 0;
 
@@ -197,16 +197,16 @@ void reforge_plot_t::analyze_stats()
       {
         reforge_plot_data_t data;
         player_t* delta_p = current_reforge_sim -> find_player( p -> name() );
-	if ( delta_p -> primary_role() == ROLE_DPS )
-	{
-	  data.value = delta_p -> dps.mean;
-	  data.error = delta_p -> dps_error;
-	}
-	else
-	{
-	  data.value = delta_p -> hps.mean;
-	  data.error = delta_p -> hps_error;
-	}
+        if ( delta_p -> primary_role() == ROLE_DPS )
+        {
+          data.value = delta_p -> dps.mean;
+          data.error = delta_p -> dps_error;
+        }
+        else
+        {
+          data.value = delta_p -> hps.mean;
+          data.error = delta_p -> hps_error;
+        }
         delta_result[ stat_mods[ i ].size() ] = data;
         p -> reforge_plot_data.push_back( delta_result );
       }
@@ -283,10 +283,10 @@ double reforge_plot_t::progress( std::string& phase )
     if ( i < reforge_plot_stat_indices.size() - 1 )
       phase += " to ";
   }
-  
+
   double total_iter = num_stat_combos * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
   double reforge_iter = current_stat_combo * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
-  
+
   if ( current_reforge_sim && current_reforge_sim -> current_iteration > 0 )
   {
     // Add current reforge iterations only if the update does not land on a partition
@@ -297,7 +297,7 @@ double reforge_plot_t::progress( std::string& phase )
     else
       reforge_iter += ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
   }
-  
+
   return reforge_iter / total_iter;
 }
 

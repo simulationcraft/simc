@@ -304,7 +304,7 @@ bool item_t::init()
   }
 
   if ( encoded_name_str != "empty" &&
-      encoded_name_str != "none" )
+       encoded_name_str != "none" )
   {
     id_str                    = armory_id_str;
     encoded_stats_str         = armory_stats_str;
@@ -417,8 +417,8 @@ bool item_t::decode_armor_type()
     break;
   }
   if ( encoded_name_str == "empty" ||
-      encoded_name_str == "none"  ||
-      encoded_name_str == "" )
+       encoded_name_str == "none"  ||
+       encoded_name_str == "" )
   {
     is_matching_type = armor_type() == NULL;
   }
@@ -725,17 +725,17 @@ bool item_t::decode_enchant()
   if ( encoded_enchant_str == "none" ) return true;
 
   if ( encoded_enchant_str == "berserking"       ||
-      encoded_enchant_str == "executioner"      ||
-      encoded_enchant_str == "mongoose"         ||
-      encoded_enchant_str == "avalanche"        ||
-      encoded_enchant_str == "elemental_slayer" ||
-      encoded_enchant_str == "hurricane"        ||
-      encoded_enchant_str == "landslide"        ||
-      encoded_enchant_str == "power_torrent"    ||
-      encoded_enchant_str == "windwalk"         ||
-      encoded_enchant_str == "spellsurge"       ||
-      encoded_enchant_str == "synapse_springs"  ||
-      encoded_enchant_str == "gnomish_xray"      )
+       encoded_enchant_str == "executioner"      ||
+       encoded_enchant_str == "mongoose"         ||
+       encoded_enchant_str == "avalanche"        ||
+       encoded_enchant_str == "elemental_slayer" ||
+       encoded_enchant_str == "hurricane"        ||
+       encoded_enchant_str == "landslide"        ||
+       encoded_enchant_str == "power_torrent"    ||
+       encoded_enchant_str == "windwalk"         ||
+       encoded_enchant_str == "spellsurge"       ||
+       encoded_enchant_str == "synapse_springs"  ||
+       encoded_enchant_str == "gnomish_xray"      )
   {
     unique_enchant = true;
     return true;
@@ -888,15 +888,15 @@ bool item_t::decode_special( special_effect_t& effect,
     }
     else if ( t.name == "duration" || t.name == "dur" )
     {
-      effect.duration = timespan_t::from_seconds(t.value);
+      effect.duration = timespan_t::from_seconds( t.value );
     }
     else if ( t.name == "cooldown" || t.name == "cd" )
     {
-      effect.cooldown = timespan_t::from_seconds(t.value);
+      effect.cooldown = timespan_t::from_seconds( t.value );
     }
     else if ( t.name == "tick" )
     {
-      effect.tick = timespan_t::from_seconds(t.value);
+      effect.tick = timespan_t::from_seconds( t.value );
     }
     else if ( t.full == "reverse" )
     {
@@ -1238,7 +1238,7 @@ bool item_t::decode_weapon()
     }
     else if ( t.name == "speed" || t.name == "spd" )
     {
-      w -> swing_time = timespan_t::from_seconds(t.value);
+      w -> swing_time = timespan_t::from_seconds( t.value );
     }
     else if ( t.name == "min" )
     {

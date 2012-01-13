@@ -191,7 +191,7 @@ void player_gcd_event_t::execute()
     }
   }
 
-  player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::from_seconds(0.1) );
+  player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::from_seconds( 0.1 ) );
 }
 
 // ==========================================================================

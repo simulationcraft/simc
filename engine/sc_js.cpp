@@ -372,7 +372,7 @@ int js_t::get_value( std::vector<std::string>& value,
   {
     value[ i ] = node -> children[ i ] -> value;
   }
-  return static_cast<int>(size);
+  return static_cast<int>( size );
 }
 
 // js_t::get_name ===========================================================

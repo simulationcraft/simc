@@ -473,7 +473,7 @@ unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n 
 unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) const
 {
 #if SC_USE_PTR
-  assert( class_id < CLASS_SIZE && tier < (unsigned) ( ptr ? PTR_TIER_BONUSES_MAX_TIER : TIER_BONUSES_MAX_TIER ) && n < set_bonus_spell_size() );
+  assert( class_id < CLASS_SIZE && tier < ( unsigned ) ( ptr ? PTR_TIER_BONUSES_MAX_TIER : TIER_BONUSES_MAX_TIER ) && n < set_bonus_spell_size() );
   return ptr ? __ptr_tier_bonuses_data[ class_id ][ tier ][ n ]
              : __tier_bonuses_data[ class_id ][ tier ][ n ];
 #else

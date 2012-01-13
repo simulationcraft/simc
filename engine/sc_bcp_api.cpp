@@ -117,7 +117,8 @@ bool parse_talents( player_t* p, js_node_t* talents )
 
 bool parse_glyphs( player_t* p, js_node_t* build )
 {
-  static const char* const glyph_type_names[] = {
+  static const char* const glyph_type_names[] =
+  {
     "glyphs/prime", "glyphs/major", "glyphs/minor"
   };
 
@@ -164,7 +165,8 @@ bool parse_items( player_t* p, js_node_t* items )
 {
   if ( !items ) return true;
 
-  static const char* const slot_map[] = {
+  static const char* const slot_map[] =
+  {
     "head",
     "neck",
     "shoulder",
@@ -245,15 +247,15 @@ parse_player( sim_t*             sim,
     return 0;
   }
   if ( sim -> debug ) js_t::print( profile, sim -> output_file );
-  
+
   std::string status, reason;
   if ( js_t::get_value( status, profile, "status" ) && util_t::str_compare_ci( status, "nok" ) )
   {
     js_t::get_value( reason, profile, "reason" );
-    
+
     sim -> errorf( "BCP API: Unable to download player from '%s', reason: %s\n",
-                  player.url.c_str(),
-                  reason.c_str() );
+                   player.url.c_str(),
+                   reason.c_str() );
     return 0;
   }
 
@@ -316,7 +318,7 @@ parse_player( sim_t*             sim,
   if ( js_t::get_value( p -> thumbnail_url, profile, "thumbnail" ) )
   {
     p -> thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
-        p -> region_str + '/' + p -> thumbnail_url;
+                         p -> region_str + '/' + p -> thumbnail_url;
     http_t::format( p -> thumbnail_url );
   }
 
@@ -371,7 +373,7 @@ player_t* download_player( sim_t*             sim,
   std::string battlenet = "http://" + region + ".battle.net/";
 
   player.url = battlenet + "api/wow/character/" +
-    server + '/' + name + "?fields=talents,items,professions&locale=en_US";
+               server + '/' + name + "?fields=talents,items,professions&locale=en_US";
   player.origin = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
 
   player.region = region;
@@ -520,7 +522,7 @@ bool download_item_data( item_t& item, item_info_t& item_data,
     }
 
     // FIXME: LFR tag is not available from BCP API.
- 
+
     // socket bonus is not available from BCP API.
     {
       // FIXME: set item_data.id_socket_bonus appropriately.
@@ -529,7 +531,7 @@ bool download_item_data( item_t& item, item_info_t& item_data,
   catch ( const char* fieldname )
   {
     item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%s' %s at slot '%s'.\n",
-                       item.player -> name(), item_id.c_str(), fieldname, item.slot_name() );
+                        item.player -> name(), item_id.c_str(), fieldname, item.slot_name() );
     return false;
   }
 
@@ -609,7 +611,7 @@ js_node_t* download_roster( sim_t* sim,
                             cache::behavior_t  caching )
 {
   std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
-      name + "?fields=members";
+                    name + "?fields=members";
 
   std::string result;
   if ( ! http_t::get( result, url, caching, "\"members\"" ) )
@@ -649,13 +651,13 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
 
     int cid;
     if ( ! js_t::get_value( cid, characters[ i ], "character/class" ) ||
-        ( player_filter != PLAYER_NONE && player_filter != util_t::translate_class_id( cid ) ) )
+         ( player_filter != PLAYER_NONE && player_filter != util_t::translate_class_id( cid ) ) )
       continue;
 
     int rank;
     if ( ! js_t::get_value( rank, characters[ i ], "rank" ) ||
-        ( ( max_rank > 0 ) && ( rank > max_rank ) ) ||
-        ( ! ranks.empty() && range::find( ranks, rank ) == ranks.end() ) )
+         ( ( max_rank > 0 ) && ( rank > max_rank ) ) ||
+         ( ! ranks.empty() && range::find( ranks, rank ) == ranks.end() ) )
       continue;
 
     std::string cname;
@@ -693,7 +695,7 @@ bool download_glyph( player_t*          player,
                      cache::behavior_t  caching )
 {
   const std::string& region =
-      ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
+    ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
 
   js_node_t* item = download_id( player -> sim, region, glyph_id, caching );
   if ( ! item || ! js_t::get_value( glyph_name, item, "name" ) )
@@ -764,9 +766,9 @@ std::string parse_gem_stats( const std::string& bonus )
 int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t caching )
 {
   const std::string& region =
-      item.player -> region_str.empty()
-      ? item.sim -> default_region_str
-      : item.player -> region_str;
+    item.player -> region_str.empty()
+    ? item.sim -> default_region_str
+    : item.player -> region_str;
 
   js_node_t* js = download_id( item.sim, region, gem_id, caching );
   if ( ! js )

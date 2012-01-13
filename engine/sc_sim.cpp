@@ -544,7 +544,7 @@ static bool parse_fight_style( sim_t*             sim,
   else if ( util_t::str_compare_ci( value, "Ultraxion" ) )
   {
     sim -> fight_style = "Ultraxion";
-    sim -> max_time    = timespan_t::from_seconds(366.0);
+    sim -> max_time    = timespan_t::from_seconds( 366.0 );
     sim -> fixed_time  = 1;
     sim -> vary_combat_length = 0.0;
     sim -> raid_events_str =  "flying,first=0,duration=500,cooldown=500";
@@ -642,14 +642,14 @@ static bool parse_item_sources( sim_t*             sim,
 sim_t::sim_t( sim_t* p, int index ) :
   parent( p ),
   target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ), canceled( 0 ),
-  queue_lag( timespan_t::from_seconds(0.037) ), queue_lag_stddev( timespan_t::zero ),
-  gcd_lag( timespan_t::from_seconds(0.150) ), gcd_lag_stddev( timespan_t::zero ),
-  channel_lag( timespan_t::from_seconds(0.250) ), channel_lag_stddev( timespan_t::zero ),
-  queue_gcd_reduction( timespan_t::from_seconds(0.032) ), strict_gcd_queue( 0 ),
+  queue_lag( timespan_t::from_seconds( 0.037 ) ), queue_lag_stddev( timespan_t::zero ),
+  gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero ),
+  channel_lag( timespan_t::from_seconds( 0.250 ) ), channel_lag_stddev( timespan_t::zero ),
+  queue_gcd_reduction( timespan_t::from_seconds( 0.032 ) ), strict_gcd_queue( 0 ),
   confidence( 0.95 ), confidence_estimator( 0.0 ),
-  world_lag( timespan_t::from_seconds(0.1) ), world_lag_stddev( timespan_t::min ),
-  travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds(0.5) ), regen_periodicity( timespan_t::from_seconds(0.25) ),
-  current_time( timespan_t::zero ), max_time( timespan_t::from_seconds(450) ), expected_time( timespan_t::zero ), vary_combat_length( 0.2 ),
+  world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min ),
+  travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ), regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
+  current_time( timespan_t::zero ), max_time( timespan_t::from_seconds( 450 ) ), expected_time( timespan_t::zero ), vary_combat_length( 0.2 ),
   last_event( timespan_t::zero ), fixed_time( 0 ),
   events_remaining( 0 ), max_events_remaining( 0 ),
   events_processed( 0 ), total_events_processed( 0 ),
@@ -667,13 +667,13 @@ sim_t::sim_t( sim_t* p, int index ) :
   smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
-  buff_list( 0 ), aura_delay( timespan_t::from_seconds(0.5) ), default_aura_delay( timespan_t::from_seconds(0.3) ),
-  default_aura_delay_stddev( timespan_t::from_seconds(0.05) ),
+  buff_list( 0 ), aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
+  default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
   cooldown_list( 0 ), replenishment_targets( 0 ),
   elapsed_cpu( timespan_t::zero ), iteration_dmg( 0 ), iteration_heal( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), simulation_length( false ),
   report_progress( 1 ),
-  bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds(-60) ),
+  bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( -60 ) ),
   path_str( "." ), output_file( stdout ),
   armory_throttle( 5 ), current_throttle( 5 ), debug_exp( 0 ),
   // Report
@@ -1148,7 +1148,7 @@ void sim_t::combat_begin()
       bloodlust_check_t( sim_t* sim ) : event_t( sim, 0 )
       {
         name = "Bloodlust Check";
-        sim -> add_event( this, timespan_t::from_seconds(1.0) );
+        sim -> add_event( this, timespan_t::from_seconds( 1.0 ) );
       }
       virtual void execute()
       {
@@ -1799,7 +1799,7 @@ bool sim_t::execute()
   merge();
   analyze();
 
-  elapsed_cpu = timespan_t::from_millis( (util_t::milliseconds() - start_time) );
+  elapsed_cpu = timespan_t::from_millis( ( util_t::milliseconds() - start_time ) );
 
   return true;
 }
@@ -1987,7 +1987,7 @@ double sim_t::gauss( double mean,
 timespan_t sim_t::gauss( timespan_t mean,
                          timespan_t stddev )
 {
-  return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE(mean), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
+  return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE( mean ), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
 }
 
 // sim_t::real ==============================================================
@@ -2052,7 +2052,7 @@ action_expr_t* sim_t::create_expression( action_t* a,
     };
     return new time_expr_t( a );
   }
-  
+
   if ( util_t::str_compare_ci( name_str, "enemies" ) )
   {
     struct enemy_amount_expr_t : public action_expr_t

@@ -202,7 +202,7 @@ player_t* battle_net_t::download_player( sim_t* sim,
       bool active = ( xml_t::get_value( active_str, anchor_node, "class" ) && active_str == "active" );
 
       if ( ( util_t::str_compare_ci( talents_description,   "active" ) &&   active ) ||
-          ( util_t::str_compare_ci( talents_description, "inactive" ) && ! active ) )
+           ( util_t::str_compare_ci( talents_description, "inactive" ) && ! active ) )
       {
         talents_xml = download_character_talents( sim, region, server, name, ( primary ? "primary" : "secondary" ), caching );
         break;

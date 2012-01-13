@@ -389,8 +389,8 @@ void scaling_t::analyze_lag()
   }
 
   delta_sim = new sim_t( sim );
-  delta_sim ->     gcd_lag += timespan_t::from_seconds(0.100);
-  delta_sim -> channel_lag += timespan_t::from_seconds(0.200);
+  delta_sim ->     gcd_lag += timespan_t::from_seconds( 0.100 );
+  delta_sim -> channel_lag += timespan_t::from_seconds( 0.200 );
   delta_sim -> scaling -> scale_stat = STAT_MAX;
   delta_sim -> execute();
 
@@ -417,7 +417,7 @@ void scaling_t::analyze_lag()
     if ( scale_factor_noise > 0 &&
          scale_factor_noise < error / fabs( delta_score - ref_score ) )
       sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for lag (error is >%.0f%% delta score)\n",
-                           p -> name(), sim -> iterations, scale_factor_noise * 100.0 );
+                     p -> name(), sim -> iterations, scale_factor_noise * 100.0 );
 
     error = fabs( error / divisor );
     p -> scaling_lag = score;

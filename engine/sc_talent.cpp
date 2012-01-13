@@ -563,7 +563,7 @@ timespan_t spell_id_t::cooldown() const
   if ( d > ( s_player -> sim -> wheel_seconds - 2.0 ) )
     d = s_player -> sim -> wheel_seconds - 2.0;
 
-  return timespan_t::from_seconds(d);
+  return timespan_t::from_seconds( d );
 }
 
 timespan_t spell_id_t::gcd() const
@@ -588,7 +588,7 @@ timespan_t spell_id_t::duration() const
     return timespan_t::zero;
 
   timespan_t d = s_data -> duration();
-  timespan_t player_wheel_seconds = timespan_t::from_seconds(s_player -> sim -> wheel_seconds - 2.0);
+  timespan_t player_wheel_seconds = timespan_t::from_seconds( s_player -> sim -> wheel_seconds - 2.0 );
   if ( d > player_wheel_seconds )
     d = player_wheel_seconds;
 

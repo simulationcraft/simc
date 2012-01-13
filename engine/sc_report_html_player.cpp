@@ -1668,7 +1668,7 @@ static inline bool buff_comp( const buff_t* i, const buff_t* j )
     else
       return ( i -> player -> name_str.compare( j -> player -> name_str ) < 0 );
   }
-  
+
   return ( i -> name_str.compare( j -> name_str ) < 0 );
 }
 
@@ -1705,7 +1705,7 @@ static void print_html_player_buffs( FILE* file, player_t* p )
   for ( buff_t* b = p -> sim -> buff_list; b; b = b -> next )
     if ( ! b -> quiet && b -> start_count && ! b -> constant )
       dynamic_buffs.push_back( b );
-  
+
   std::sort( dynamic_buffs.begin(), dynamic_buffs.end(), buff_comp );
 
   for ( i=0; i < ( int ) dynamic_buffs.size(); i++ )
@@ -1807,18 +1807,18 @@ static void print_html_player_buffs( FILE* file, player_t* p )
              "\t\t\t\t\t\t\t\t</tr>\n" );
     i = 1;
     std::vector< buff_t* > constant_buffs;
-    
+
     for ( buff_t* b = p -> buff_list; b; b = b -> next )
       if ( ! b -> quiet && b -> start_count && b -> constant )
         constant_buffs.push_back( b );
     for ( buff_t* b = p -> sim -> buff_list; b; b = b -> next )
       if ( ! b -> quiet && b -> start_count && b -> constant )
         constant_buffs.push_back( b );
-    
+
     std::sort( constant_buffs.begin(), constant_buffs.end(), buff_comp );
 
     for ( std::vector< buff_t* >::const_iterator b = constant_buffs.begin();
-         b < constant_buffs.end(); b++ )
+          b < constant_buffs.end(); b++ )
     {
       fprintf( file,
                "\t\t\t\t\t\t\t<tr" );

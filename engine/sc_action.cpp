@@ -284,7 +284,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
 
   const spell_data_t* spell = player -> dbc.spell( spell_id );
   const spelleffect_data_t* effect = player -> dbc.effect( spell -> effect_id( effect_nr ) );
-  
+
   assert( spell );
 
   if ( ! effect )
@@ -491,7 +491,7 @@ timespan_t action_t::travel_time()
     t = rng_travel -> gauss( t, v );
   }
 
-  return timespan_t::from_seconds(t);
+  return timespan_t::from_seconds( t );
 }
 
 // action_t::player_buff ====================================================
@@ -908,7 +908,7 @@ double action_t::calculate_direct_damage( int chain_target )
   // AoE with decay per target
   if ( chain_target > 0 && base_add_multiplier != 1.0 )
     dmg *= pow( base_add_multiplier, chain_target );
-  
+
   // AoE with static reduced damage per target
   if ( chain_target > 1 && base_aoe_multiplier != 1.0 )
     dmg *= base_aoe_multiplier;
@@ -947,7 +947,7 @@ void action_t::consume_resource()
 
 size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 {
-  // TODO: This does not work for heals at all, as it presumes enemies in the 
+  // TODO: This does not work for heals at all, as it presumes enemies in the
   // actor list.
 
   tl.push_back( target );
@@ -955,11 +955,11 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     if ( ! sim -> actor_list[ i ] -> sleeping &&
-         sim -> actor_list[ i ] -> is_enemy() && 
+         sim -> actor_list[ i ] -> is_enemy() &&
          sim -> actor_list[ i ] != target )
       tl.push_back( sim -> actor_list[ i ] );
   }
-  
+
   return tl.size();
 }
 
@@ -967,20 +967,20 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 
 std::vector< player_t* > action_t::target_list() const
 {
-  // A very simple target list for aoe spells, pick any and all targets, up to 
+  // A very simple target list for aoe spells, pick any and all targets, up to
   // aoe amount, or if aoe == -1, pick all (enemy) targets
 
   std::vector< player_t* > t;
-  
+
   size_t total_targets = available_targets( t );
-  
+
   if ( aoe == -1 || total_targets <= static_cast< size_t >( aoe + 1 ) )
     return t;
   // Drop out targets from the end
-  else 
+  else
   {
     t.resize( aoe + 1 );
-    
+
     return t;
   }
 }
@@ -1010,11 +1010,11 @@ void action_t::execute()
   }
 
   player_buff();
-  
+
   if ( aoe == -1 || aoe > 0 )
   {
     std::vector< player_t* > tl = target_list();
-    
+
     for ( size_t t = 0; t < tl.size(); t++ )
     {
       target_debuff( tl[ t ], DMG_DIRECT );
@@ -1030,12 +1030,12 @@ void action_t::execute()
   else
   {
     target_debuff( target, DMG_DIRECT );
-    
+
     calculate_result();
-    
+
     if ( result_is_hit() )
       direct_dmg = calculate_direct_damage();
-    
+
     schedule_travel( target );
   }
 
@@ -1095,7 +1095,7 @@ void action_t::last_tick( dot_t* d )
 void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
 {
   assess_damage( t, travel_dmg, DMG_DIRECT, impact_result );
-  
+
   // Set target so aoe dots work
   player_t* orig_target = target;
   target = t;
@@ -1731,7 +1731,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
           log_t::output( action -> sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f",
                          action -> player -> name_str.c_str(),
                          action -> name_str.c_str(),
-                         (action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction).total_seconds(),
+                         ( action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction ).total_seconds(),
                          action -> sim -> current_time.total_seconds() );
         }
 
@@ -1790,7 +1790,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   }
 
   if ( num_splits == 2 && splits[ 0 ] == "target" )
-  {  
+  {
     return target -> create_expression( this, splits[ 1 ] );
   }
 
@@ -1803,7 +1803,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       sim -> errorf( "Unable to find target for %s", name_str.c_str() );
       sim -> cancel();
     }
-    
+
     std::string rest = splits[ 2 ];
     for( int i = 3; i < num_splits; ++i )
       rest += '.' + splits[ i ];
@@ -1876,7 +1876,7 @@ int action_t::hasted_num_ticks( timespan_t d ) const
   if ( d < timespan_t::zero )
     d = num_ticks * base_tick_time;
 
-  timespan_t t = timespan_t::from_millis( ( base_tick_time.total_millis() * player_haste ) + 0.5);
+  timespan_t t = timespan_t::from_millis( ( base_tick_time.total_millis() * player_haste ) + 0.5 );
 
   double n = d / t;
 

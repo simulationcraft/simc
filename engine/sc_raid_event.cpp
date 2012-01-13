@@ -236,7 +236,7 @@ struct movement_event_t : public raid_event_t
       }
       if ( my_duration > 0 )
       {
-        p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds(my_duration);
+        p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds( my_duration );
         p -> buffs.raid_movement -> trigger();
       }
       if ( p -> sleeping ) continue;
@@ -335,7 +335,7 @@ struct damage_event_t : public raid_event_t
     };
     parse_options( options, options_str );
 
-	assert( duration == timespan_t::zero );
+    assert( duration == timespan_t::zero );
 
     name_str = "raid_damage_" + type_str;
 
@@ -388,7 +388,7 @@ struct heal_event_t : public raid_event_t
     };
     parse_options( options, options_str );
 
-	assert( duration == timespan_t::zero );
+    assert( duration == timespan_t::zero );
   }
 
   virtual void start()
@@ -600,7 +600,7 @@ void raid_event_t::schedule()
 
       timespan_t ct = raid_event -> cooldown_time();
 
-      if ( ct <= raid_event -> saved_duration ) ct = raid_event -> saved_duration + timespan_t::from_seconds(0.01);
+      if ( ct <= raid_event -> saved_duration ) ct = raid_event -> saved_duration + timespan_t::from_seconds( 0.01 );
 
       if ( raid_event -> saved_duration > timespan_t::zero )
       {
@@ -731,7 +731,7 @@ void raid_event_t::init( sim_t* sim )
       continue;
     }
 
-	assert( e -> cooldown > timespan_t::zero );
+    assert( e -> cooldown > timespan_t::zero );
     assert( e -> cooldown > e -> cooldown_stddev );
 
     sim -> raid_events.push_back( e );

@@ -42,7 +42,7 @@ void attack_t::init_attack_t_()
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
 
-  min_gcd = timespan_t::from_seconds(1.0);
+  min_gcd = timespan_t::from_seconds( 1.0 );
   hasted_ticks = false;
 
   // Prevent melee from being scheduled when player is moving
