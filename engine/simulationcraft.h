@@ -1130,6 +1130,7 @@ struct timespan_t
 #ifdef SC_X64
   typedef int64_t time_t;
 #else
+  // CAREFUL: Using int32_t implies that no overflowing happens during calculation.
   typedef int32_t time_t;
 #endif
 

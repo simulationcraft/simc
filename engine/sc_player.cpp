@@ -3780,7 +3780,7 @@ timespan_t player_t::time_to_die() const
   // expressions
   if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds(1.0) )
   {
-    return sim -> current_time * resource_current[ RESOURCE_HEALTH ] / iteration_dmg_taken;
+    return sim -> current_time * (resource_current[ RESOURCE_HEALTH ] / iteration_dmg_taken);
   }
   else
   {
