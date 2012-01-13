@@ -283,12 +283,17 @@ class TalentDataGenerator(DataGenerator):
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' )
 
+        index = 0
         for id in ids + [ 0 ]:
+		
             talent     = self._talent_db[id]
             talent_tab = self._talenttab_db[talent.talent_tab]
             spell      = self._spell_db[talent.id_rank_1]
             if not spell.id and talent.id_rank_1 > 0:
                 continue
+				
+            if( index % 20 == 0 ):
+                s += '//{ Name                                ,    Id, Flgs,Tab, Class, Pet,Depend,DR ,Col,Row, { Rank1, Rank2, Rank3 },S1,S2,S3 },\n'
 
             fields = spell.field('name')
             fields += talent.field('id')
@@ -300,6 +305,8 @@ class TalentDataGenerator(DataGenerator):
             fields += [ '0', '0', '0' ]
         
             s += '  { %s },\n' % (', '.join(fields))
+			
+            index += 1
 
         s += '};'
 
@@ -444,6 +451,7 @@ class ItemDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or ''
         )
 
+        index = 0
         for id in ids + [ 0 ]:
             item = self._item_sparse_db[id]
             item2 = self._item_db[id]
@@ -458,6 +466,9 @@ class ItemDataGenerator(DataGenerator):
             if item2.classs == 12 or ( item2.classs == 7 and item2.subclass == 3 ):
                 item2.classs = 0
                 item2.subclass = 6
+
+            if(index % 20 == 0):
+			    s += '//{    Id, Name                                                   , Icon                                    ,     Flags1,     Flags2,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  ClassMask,   RaceMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {TId1,TId2,TId3,TId4,TId5 }, {    CdS1,    CdS2,    CdS3,    CdS4,    CdS5 }, { CdCat1, CdCat2, CdCat3, CdCat4, CdCat5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n'
 
             fields = item.field('id', 'name')
             fields += item_display.field('icon')
@@ -474,6 +485,8 @@ class ItemDataGenerator(DataGenerator):
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix' )
 
             s += '  { %s },\n' % (', '.join(fields))
+			
+            index += 1
 
         s += '};\n\n'
 
@@ -1384,6 +1397,7 @@ class SpellDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or ''
         )
 
+        index = 0
         for id in id_keys + [ 0 ]:
             spell = self._spell_db[id]
 
@@ -1391,6 +1405,9 @@ class SpellDataGenerator(DataGenerator):
                 sys.stderr.write('Spell id %d not found\n') % id
                 continue
 
+            if(index % 20 == 0):
+              s += '//{ Name                                ,    Id,Flags,PrjSp,  Sch, PT, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,Cost, RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, {   Ef1,   Ef2,   Ef3 }, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
+				
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
             fields += spell.field('prj_speed', 'mask_school', 'type_power')
@@ -1456,6 +1473,8 @@ class SpellDataGenerator(DataGenerator):
             # Pad struct with empty pointers for direct access to spell effect data
             fields += [ '0', '0', '0' ]
             s += '  { %s },\n' % (', '.join(fields))
+			
+            index += 1
             
 
         s += '};\n\n'
@@ -1473,12 +1492,16 @@ class SpellDataGenerator(DataGenerator):
 
         #stm = set()
         # Move spell scaling data and spell effect data to other struct
+        index = 0
         for effect_data in sorted(effects) + [ ( 0, 0 ) ]:
             effect = self._spelleffect_db[effect_data[0]]
             if not effect.id and effect_data[ 0 ] > 0:
                 sys.stderr.write('Spell Effect id %d not found\n') % effect_data[0]
                 continue
-            
+
+            if(index % 20 == 0):
+                s += '//{    Id,Flags,  SpId,Ix, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, Trigg,   DmgMul,  CboP, RealP,Die, 0, 0 },\n'
+				
             fields = effect.field('id')
             fields += [ '%#.2x' % 0 ] 
             fields += effect.field('id_spell', 'index')
@@ -1506,6 +1529,8 @@ class SpellDataGenerator(DataGenerator):
             fields += [ '0', '0' ]
 
             s += '  { %s },\n' % (', '.join(fields))
+
+            index += 1
 
         s += '};\n\n'
 
