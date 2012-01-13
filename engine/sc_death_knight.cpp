@@ -1011,9 +1011,9 @@ struct army_ghoul_pet_t : public pet_t
     if ( energy > 40 )
       return timespan_t::from_seconds( 0.1 );
 
-    return std::max( 
-      timespan_t::from_seconds(( 40 - energy ) / energy_regen_per_second()),
-      timespan_t::from_seconds(0.1)
+    return std::max(
+      timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+      timespan_t::from_seconds( 0.1 )
     );
   }
 };
@@ -1442,9 +1442,9 @@ struct ghoul_pet_t : public pet_t
     if ( energy > 40 )
       return timespan_t::from_seconds( 0.1 );
 
-    return std::max( 
-      timespan_t::from_seconds(( 40 - energy ) / energy_regen_per_second()),
-      timespan_t::from_seconds(0.1)
+    return std::max(
+      timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+      timespan_t::from_seconds( 0.1 )
     );
   }
 };
@@ -4062,7 +4062,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
     case 'd': rt = RUNE_TYPE_DEATH; break;
     }
     int position = 0; // any
-    switch( splits[1][splits[1].size()-1] )
+    switch ( splits[1][splits[1].size()-1] )
     {
     case '1': position = 1; break;
     case '2': position = 2; break;
@@ -4091,7 +4091,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
       virtual int evaluate()
       {
         death_knight_t* dk = action -> player -> cast_death_knight();
-        switch( myaction )
+        switch ( myaction )
         {
         case 0: result_num = dk -> runes_count( r, include_death, position ); break;
         case 1: result_num = dk -> runes_cooldown_any( r, include_death, position ); break;

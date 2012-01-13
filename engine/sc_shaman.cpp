@@ -4079,7 +4079,7 @@ struct spiritwalkers_grace_t : public shaman_spell_t
 
     // Extend buff duration with t13 4pc healer
     shaman_t* p = player -> cast_shaman();
-    p -> buffs_spiritwalkers_grace -> buff_duration = p -> buffs_spiritwalkers_grace -> duration() + 
+    p -> buffs_spiritwalkers_grace -> buff_duration = p -> buffs_spiritwalkers_grace -> duration() +
                                                       p -> sets -> set( SET_T13_4PC_HEAL ) -> effect1().time_value();
   }
 

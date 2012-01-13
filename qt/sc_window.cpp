@@ -206,7 +206,7 @@ void ReforgeButtonGroup::setSelected( int state )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if( tokens.count() >= 14 )
+  if ( tokens.count() >= 14 )
   {
          versionChoice->setCurrentIndex( tokens[  0 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
@@ -235,19 +235,19 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   OptionEntry*        plots = getPlotOptions();
   OptionEntry* reforgeplots = getReforgePlotOptions();
 
-  for( int i = 13; i < tokens.count(); i++ )
+  for ( int i = 13; i < tokens.count(); i++ )
   {
     QStringList opt_tokens = tokens[ i ].split( ':' );
 
     OptionEntry* options=0;
     QList<QAbstractButton*>* buttons=0;
 
-    if(      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffs;           buttons = &buff_buttons;        }
-    else if( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffs;         buttons = &debuff_buttons;      }
-    else if( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scaling;         buttons = &scaling_buttons;     }
-    else if( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plots;           buttons = &plot_buttons;        }
-    else if( ! opt_tokens[ 0 ].compare( "reforge_plots"  ) ) { options = reforgeplots;    buttons = &reforgeplot_buttons; }
-    else if( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
+    if (      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffs;           buttons = &buff_buttons;        }
+    else if ( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffs;         buttons = &debuff_buttons;      }
+    else if ( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scaling;         buttons = &scaling_buttons;     }
+    else if ( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plots;           buttons = &plot_buttons;        }
+    else if ( ! opt_tokens[ 0 ].compare( "reforge_plots"  ) ) { options = reforgeplots;    buttons = &reforgeplot_buttons; }
+    else if ( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
     {
       QStringList item_db_list = opt_tokens[ 1 ].split( '/' );
       QListWidgetItem** items = new QListWidgetItem *[item_db_list.size()];
@@ -272,9 +272,9 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
     if ( ! options ) continue;
 
     QStringList opt_value = opt_tokens[ 1 ].split( '=' );
-    for( int opt=0; options[ opt ].label; opt++ )
+    for ( int opt=0; options[ opt ].label; opt++ )
     {
-      if( ! opt_value[ 0 ].compare( options[ opt ].option ) )
+      if ( ! opt_value[ 0 ].compare( options[ opt ].option ) )
       {
         buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
         break;
@@ -303,7 +303,7 @@ QString SimulationCraftWindow::encodeOptions()
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
-  for( int i=1; buffs[ i ].label; i++ )
+  for ( int i=1; buffs[ i ].label; i++ )
   {
     encoded += " buff:";
     encoded += buffs[ i ].option;
@@ -313,7 +313,7 @@ QString SimulationCraftWindow::encodeOptions()
 
   buttons = debuffsButtonGroup->buttons();
   OptionEntry* debuffs = getDebuffOptions();
-  for( int i=1; debuffs[ i ].label; i++ )
+  for ( int i=1; debuffs[ i ].label; i++ )
   {
     encoded += " debuff:";
     encoded += debuffs[ i ].option;
@@ -323,7 +323,7 @@ QString SimulationCraftWindow::encodeOptions()
 
   buttons = scalingButtonGroup->buttons();
   OptionEntry* scaling = getScalingOptions();
-  for( int i=2; scaling[ i ].label; i++ )
+  for ( int i=2; scaling[ i ].label; i++ )
   {
     encoded += " scaling:";
     encoded += scaling[ i ].option;
@@ -333,7 +333,7 @@ QString SimulationCraftWindow::encodeOptions()
 
   buttons = plotsButtonGroup->buttons();
   OptionEntry* plots = getPlotOptions();
-  for( int i=0; plots[ i ].label; i++ )
+  for ( int i=0; plots[ i ].label; i++ )
   {
     encoded += " plots:";
     encoded += plots[ i ].option;
@@ -343,7 +343,7 @@ QString SimulationCraftWindow::encodeOptions()
 
   buttons = reforgeplotsButtonGroup->buttons();
   OptionEntry* reforgeplots = getReforgePlotOptions();
-  for( int i=0; reforgeplots[ i ].label; i++ )
+  for ( int i=0; reforgeplots[ i ].label; i++ )
   {
     encoded += " reforge_plots:";
     encoded += reforgeplots[ i ].option;
@@ -368,7 +368,7 @@ QString SimulationCraftWindow::encodeOptions()
 
 void SimulationCraftWindow::updateSimProgress()
 {
-  if( sim )
+  if ( sim )
   {
     simProgress = ( int ) ( 100.0 * sim->progress( simPhase ) );
   }
@@ -377,8 +377,8 @@ void SimulationCraftWindow::updateSimProgress()
     simPhase = "%p%";
     simProgress = 100;
   }
-  if( mainTab->currentIndex() != TAB_IMPORT &&
-      mainTab->currentIndex() != TAB_RESULTS )
+  if ( mainTab->currentIndex() != TAB_IMPORT &&
+       mainTab->currentIndex() != TAB_RESULTS )
   {
     progressBar->setFormat( QString::fromUtf8( simPhase.c_str() ) );
     progressBar->setValue( simProgress );
@@ -389,12 +389,12 @@ void SimulationCraftWindow::loadHistory()
 {
   http_t::cache_load();
   QFile file( "simc_history.dat" );
-  if( file.open( QIODevice::ReadOnly ) )
+  if ( file.open( QIODevice::ReadOnly ) )
   {
     QDataStream in( &file );
     QString historyVersion;
     in >> historyVersion;
-    if( historyVersion != HISTORY_VERSION ) return;
+    if ( historyVersion != HISTORY_VERSION ) return;
     in >> historyWidth;
     in >> historyHeight;
     in >> historyMaximized;
@@ -409,7 +409,7 @@ void SimulationCraftWindow::loadHistory()
     file.close();
 
     int count = importHistory.count();
-    for( int i=0; i < count; i++ )
+    for ( int i=0; i < count; i++ )
     {
       QListWidgetItem* item = new QListWidgetItem( importHistory.at( i ) );
       historyList->addItem( item );
@@ -418,7 +418,7 @@ void SimulationCraftWindow::loadHistory()
     decodeOptions( optionsHistory.backwards() );
 
     QString s = overridesTextHistory.backwards();
-    if( ! s.isEmpty() ) overridesText->setPlainText( s );
+    if ( ! s.isEmpty() ) overridesText->setPlainText( s );
   }
 }
 
@@ -427,13 +427,13 @@ void SimulationCraftWindow::saveHistory()
   charDevCookies->save();
   http_t::cache_save();
   QFile file( "simc_history.dat" );
-  if( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly ) )
   {
     optionsHistory.add( encodeOptions() );
 
     QStringList importHistory;
     int count = historyList->count();
-    for( int i=0; i < count; i++ )
+    for ( int i=0; i < count; i++ )
     {
       importHistory.append( historyList->item( i )->text() );
     }
@@ -614,7 +614,7 @@ void SimulationCraftWindow::createBuffsTab()
   buffsButtonGroup = new QButtonGroup();
   buffsButtonGroup->setExclusive( false );
   OptionEntry* buffs = getBuffOptions();
-  for( int i=0; buffs[ i ].label; i++ )
+  for ( int i=0; buffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
     if ( i>2 ) checkBox->setChecked( true );
@@ -635,7 +635,7 @@ void SimulationCraftWindow::createDebuffsTab()
   debuffsButtonGroup = new QButtonGroup();
   debuffsButtonGroup->setExclusive( false );
   OptionEntry* debuffs = getDebuffOptions();
-  for( int i=0; debuffs[ i ].label; i++ )
+  for ( int i=0; debuffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( debuffs[ i ].label );
     if ( i>0 ) checkBox->setChecked( true );
@@ -656,7 +656,7 @@ void SimulationCraftWindow::createScalingTab()
   scalingButtonGroup = new QButtonGroup();
   scalingButtonGroup->setExclusive( false );
   OptionEntry* scaling = getScalingOptions();
-  for( int i=0; scaling[ i ].label; i++ )
+  for ( int i=0; scaling[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( scaling[ i ].label );
     checkBox->setToolTip( scaling[ i ].tooltip );
@@ -686,7 +686,7 @@ void SimulationCraftWindow::createPlotsTab()
   plotsButtonGroup = new QButtonGroup();
   plotsButtonGroup -> setExclusive( false );
   OptionEntry* plots = getPlotOptions();
-  for( int i=0; plots[ i ].label; i++ )
+  for ( int i=0; plots[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( plots[ i ].label );
     checkBox -> setToolTip( plots[ i ].tooltip );
@@ -719,7 +719,7 @@ void SimulationCraftWindow::createReforgePlotsTab()
   reforgeplotsButtonGroup = new ReforgeButtonGroup();
   reforgeplotsButtonGroup -> setExclusive( false );
   OptionEntry* reforgeplots = getReforgePlotOptions();
-  for( int i=0; reforgeplots[ i ].label; i++ )
+  for ( int i=0; reforgeplots[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( reforgeplots[ i ].label );
     checkBox -> setToolTip( reforgeplots[ i ].tooltip );
@@ -798,14 +798,14 @@ void SimulationCraftWindow::createBestInSlotTab()
   const int TIER_MAX=2;
   const char* tierNames[] = { "T12", "T13" };
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
-  for( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
+  for ( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
     // Ignore the Monk for now
     if ( i == MONK ) continue;
 
     QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util_t::player_type_string( i ) ) );
     bisTree->addTopLevelItem( top );
-    for( int j=0; j < TIER_MAX; j++ )
+    for ( int j=0; j < TIER_MAX; j++ )
     {
       top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( tierNames[ j ] ) ) );
     }
@@ -832,13 +832,13 @@ void SimulationCraftWindow::createBestInSlotTab()
 
   QStringList profileList = dir.entryList();
   int numProfiles = profileList.count();
-  for( int i=0; i < numProfiles; i++ )
+  for ( int i=0; i < numProfiles; i++ )
   {
     QString& profile = profileList[ i ];
 
     int player = PLAYER_MAX;
-    for( int j=0; j < PLAYER_MAX && player == PLAYER_MAX; j++ )
-      if( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
+    for ( int j=0; j < PLAYER_MAX && player == PLAYER_MAX; j++ )
+      if ( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
         player = j;
 
     // Hack! For now...  Need to decide sim-wide just how the heck we want to refer to DKs.
@@ -846,11 +846,11 @@ void SimulationCraftWindow::createBestInSlotTab()
       player = DEATH_KNIGHT;
 
     int tier = TIER_MAX;
-    for( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
-      if( profile.contains( tierNames[ j ] ) )
+    for ( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
+      if ( profile.contains( tierNames[ j ] ) )
         tier = j;
 
-    if( player != PLAYER_MAX && tier != TIER_MAX )
+    if ( player != PLAYER_MAX && tier != TIER_MAX )
     {
       QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( profile ) );
       rootItems[ player ][ tier ]->addChild( item );
@@ -944,7 +944,7 @@ void SimulationCraftWindow::createResultsTab()
 #endif
 
   QFile file( legendFile );
-  if( file.open( QIODevice::ReadOnly ) )
+  if ( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
     file.close();
@@ -990,7 +990,7 @@ void SimulationCraftWindow::createToolTips()
                                 "HelterSkelter:\n"
                                 "    Movement, Stuns, Interrupts,\n"
                                 "    Target-Switching (every 2min)\n"
-				"Ultraxion:\n"
+                                "Ultraxion:\n"
                                 "    Periodic Stuns, Raid Damage\n" );
 
   targetRaceChoice->setToolTip( "Race of the target and any adds." );
@@ -1090,7 +1090,7 @@ void SimulationCraftWindow::updateVisibleWebView( SimulationCraftWebView* wv )
 
 sim_t* SimulationCraftWindow::initSim()
 {
-  if( ! sim )
+  if ( ! sim )
   {
     sim = new sim_t();
     sim -> input_is_utf8 = true; // Presume GUI input is always UTF-8
@@ -1106,7 +1106,7 @@ sim_t* SimulationCraftWindow::initSim()
 
 void SimulationCraftWindow::deleteSim()
 {
-  if( sim )
+  if ( sim )
   {
     fclose( sim -> output_file );
     delete sim;
@@ -1131,15 +1131,15 @@ void ImportThread::importBattleNet()
   {
     QStringList parts = qurl.host().split( '.' );
 
-    if( parts.size() )
+    if ( parts.size() )
     {
-      if( parts[ parts.size() - 1 ].length() == 2 )
+      if ( parts[ parts.size() - 1 ].length() == 2 )
         region = parts[ parts.size() - 1 ];
       else
       {
-        for( QStringList::size_type i = 0; i < parts.size(); ++i )
+        for ( QStringList::size_type i = 0; i < parts.size(); ++i )
         {
-          if( parts[ i ].length() == 2 )
+          if ( parts[ i ].length() == 2 )
           {
             region = parts[ i ];
             break;
@@ -1151,9 +1151,9 @@ void ImportThread::importBattleNet()
 
   {
     QStringList parts = qurl.path().split( '/' );
-    for( QStringList::size_type i = 0, n = parts.size(); i + 2 < n; ++i )
+    for ( QStringList::size_type i = 0, n = parts.size(); i + 2 < n; ++i )
     {
-      if( parts[ i ] == "character" )
+      if ( parts[ i ] == "character" )
       {
         server = parts[ i + 1 ];
         character = parts[ i + 2 ];
@@ -1162,26 +1162,26 @@ void ImportThread::importBattleNet()
     }
   }
 
-  if( false )
+  if ( false )
   {
     QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
     int count = tokens.count();
-    for( int i=0; i < count-1; i++ )
+    for ( int i=0; i < count-1; i++ )
     {
       QString& t = tokens[ i ];
-      if( t == "http" )
+      if ( t == "http" )
       {
         region = tokens[ ++i ];
       }
-      else if( t == "r" ) // old armory
+      else if ( t == "r" ) // old armory
       {
         server = tokens[ ++i ];
       }
-      else if( t == "n" ) // old armory
+      else if ( t == "n" ) // old armory
       {
         character = tokens[ ++i ];
       }
-      else if( t == "character" && ( i<count-2 ) ) // new battle.net
+      else if ( t == "character" && ( i<count-2 ) ) // new battle.net
       {
         server    = tokens[ ++i ];
         character = tokens[ ++i ];
@@ -1189,7 +1189,7 @@ void ImportThread::importBattleNet()
     }
   }
 
-  if( region.isEmpty() || server.isEmpty() || character.isEmpty() )
+  if ( region.isEmpty() || server.isEmpty() || character.isEmpty() )
   {
     fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
   }
@@ -1203,9 +1203,9 @@ void ImportThread::importBattleNet()
                 cpp_r   = region.toUtf8().constData();
     player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
 
-    if( false )
+    if ( false )
     {
-      if( cpp_r == "cn" )
+      if ( cpp_r == "cn" )
         player = armory_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
       else
         player = battle_net_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
@@ -1217,7 +1217,7 @@ void ImportThread::importCharDev()
 {
   QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
   int count = tokens.count();
-  if( count > 0 )
+  if ( count > 0 )
   {
     // Win7/x86_64 workaround
     std::string c = tokens[ count-1 ].toUtf8().constData();
@@ -1235,7 +1235,7 @@ void ImportThread::importRawr()
 void ImportThread::run()
 {
   cache::advance_era();
-  switch( tab )
+  switch ( tab )
   {
   case TAB_BATTLE_NET: importBattleNet(); break;
   case TAB_CHAR_DEV:   importCharDev();   break;
@@ -1243,7 +1243,7 @@ void ImportThread::run()
   default: assert( 0 );
   }
 
-  if( player )
+  if ( player )
   {
     player -> role = util_t::parse_role_type( mainWindow->defaultRoleChoice->currentText().toUtf8().constData() );
 
@@ -1259,7 +1259,7 @@ void ImportThread::run()
 
 void SimulationCraftWindow::startImport( int tab, const QString& url )
 {
-  if( sim )
+  if ( sim )
   {
     sim -> cancel();
     return;
@@ -1285,15 +1285,15 @@ void SimulationCraftWindow::importFinished()
     simulateTextHistory.add( importThread->profile );
 
     QString label = QString::fromUtf8( importThread->player->name_str.c_str() );
-    while( label.size() < 20 ) label += ' ';
+    while ( label.size() < 20 ) label += ' ';
     label += QString::fromUtf8( importThread->player->origin_str.c_str() );
 
     bool found = false;
-    for( int i=0; i < historyList->count() && ! found; i++ )
-      if( historyList->item( i )->text() == label )
+    for ( int i=0; i < historyList->count() && ! found; i++ )
+      if ( historyList->item( i )->text() == label )
         found = true;
 
-    if( ! found )
+    if ( ! found )
     {
       QListWidgetItem* item = new QListWidgetItem( label );
       //item->setFont( QFont( "fixed" ) );
@@ -1321,7 +1321,7 @@ void SimulationCraftWindow::importFinished()
 void SimulateThread::run()
 {
   QFile file( "simc_gui.simc" );
-  if( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly ) )
   {
     file.write( options.toAscii() );
     file.close();
@@ -1336,13 +1336,13 @@ void SimulateThread::run()
 
   QList<QByteArray> lines;
   lines.append( "simc" );
-  for( int i=1; i < argc; i++ )
+  for ( int i=1; i < argc; i++ )
   {
     lines.append( stringList[ i-1 ].toUtf8().constData() );
   }
-  for( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
+  for ( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
 
-  if( sim -> parse_options( argc, argv ) )
+  if ( sim -> parse_options( argc, argv ) )
   {
     success = sim -> execute();
 
@@ -1358,14 +1358,14 @@ void SimulateThread::run()
 
 void SimulationCraftWindow::startSim()
 {
-  if( sim )
+  if ( sim )
   {
     sim -> cancel();
     return;
   }
   optionsHistory.add( encodeOptions() );
   optionsHistory.current_index = 0;
-  if( simulateText->toPlainText() != defaultSimulateText() )
+  if ( simulateText->toPlainText() != defaultSimulateText() )
   {
     simulateTextHistory.add(  simulateText->toPlainText() );
   }
@@ -1399,7 +1399,7 @@ QString SimulationCraftWindow::mergeOptions()
     options += "\n";
   }
   options += "iterations=" + iterationsChoice->currentText() + "\n";
-  if( iterationsChoice->currentText() == "10000" )
+  if ( iterationsChoice->currentText() == "10000" )
   {
     options += "dps_plot_iterations=1000\n";
   }
@@ -1428,7 +1428,7 @@ QString SimulationCraftWindow::mergeOptions()
   options += "optimal_raid=0\n";
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
-  for( int i=1; buffs[ i ].label; i++ )
+  for ( int i=1; buffs[ i ].label; i++ )
   {
     options += buffs[ i ].option;
     options += "=";
@@ -1437,7 +1437,7 @@ QString SimulationCraftWindow::mergeOptions()
   }
   buttons = debuffsButtonGroup->buttons();
   OptionEntry* debuffs = getDebuffOptions();
-  for( int i=1; debuffs[ i ].label; i++ )
+  for ( int i=1; debuffs[ i ].label; i++ )
   {
     options += debuffs[ i ].option;
     options += "=";
@@ -1446,20 +1446,20 @@ QString SimulationCraftWindow::mergeOptions()
   }
   buttons = scalingButtonGroup->buttons();
   OptionEntry* scaling = getScalingOptions();
-  for( int i=2; scaling[ i ].label; i++ )
+  for ( int i=2; scaling[ i ].label; i++ )
   {
-    if( buttons.at( i )->isChecked() )
+    if ( buttons.at( i )->isChecked() )
     {
       options += "calculate_scale_factors=1\n";
       break;
     }
   }
-  if( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
-  if( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
+  if ( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
+  if ( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
   options += "scale_only=none";
-  for( int i=2; scaling[ i ].label; i++ )
+  for ( int i=2; scaling[ i ].label; i++ )
   {
-    if( buttons.at( i )->isChecked() )
+    if ( buttons.at( i )->isChecked() )
     {
       options += ",";
       options += scaling[ i ].option;
@@ -1469,9 +1469,9 @@ QString SimulationCraftWindow::mergeOptions()
   options += "dps_plot_stat=none";
   buttons = plotsButtonGroup->buttons();
   OptionEntry* plots = getPlotOptions();
-  for( int i=0; plots[ i ].label; i++ )
+  for ( int i=0; plots[ i ].label; i++ )
   {
-    if( buttons.at( i )->isChecked() )
+    if ( buttons.at( i )->isChecked() )
     {
       options += ",";
       options += plots[ i ].option;
@@ -1483,9 +1483,9 @@ QString SimulationCraftWindow::mergeOptions()
   options += "reforge_plot_stat=none";
   buttons = reforgeplotsButtonGroup->buttons();
   OptionEntry* reforgeplots = getReforgePlotOptions();
-  for( int i=0; reforgeplots[ i ].label; i++ )
+  for ( int i=0; reforgeplots[ i ].label; i++ )
   {
-    if( buttons.at( i )->isChecked() )
+    if ( buttons.at( i )->isChecked() )
     {
       options += ",";
       options += reforgeplots[ i ].option;
@@ -1503,14 +1503,14 @@ QString SimulationCraftWindow::mergeOptions()
   options += cmdLine->text();
   options += "\n";
 #if SC_USE_PTR
-  if( versionChoice->currentIndex() == 2 )
+  if ( versionChoice->currentIndex() == 2 )
   {
     options += "ptr=1\n";
     options += "copy=EvilTwinPTR\n";
     options += "ptr=0\n";
   }
 #endif
-  if( debugChoice->currentIndex() != 0 )
+  if ( debugChoice->currentIndex() != 0 )
   {
     options += "log=1\n";
     options += "scale_only=none\n";
@@ -1528,13 +1528,13 @@ void SimulationCraftWindow::simulateFinished()
   progressBar->setValue( simProgress );
   QFile file( sim -> html_file_str.c_str() );
   deleteSim();
-  if( ! simulateThread->success )
+  if ( ! simulateThread->success )
   {
     logText->appendPlainText( "Simulation failed!\n" );
     logText->moveCursor( QTextCursor::End );
     mainTab->setCurrentIndex( TAB_LOG );
   }
-  else if( file.open( QIODevice::ReadOnly ) )
+  else if ( file.open( QIODevice::ReadOnly ) )
   {
     // Html results will _ALWAYS_ be utf-8, regardless of the input encoding
     // so read them to the WebView through QTextStream
@@ -1566,7 +1566,7 @@ void SimulationCraftWindow::saveLog()
 
   QFile file( cmdLine->text() );
 
-  if( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly ) )
   {
     file.write( logText->toPlainText().toAscii() );
     file.close();
@@ -1578,15 +1578,15 @@ void SimulationCraftWindow::saveLog()
 void SimulationCraftWindow::saveResults()
 {
   int index = resultsTab->currentIndex();
-  if( index <= 0 ) return;
+  if ( index <= 0 ) return;
 
-  if( visibleWebView->url().toString() != "about:blank" ) return;
+  if ( visibleWebView->url().toString() != "about:blank" ) return;
 
   resultsCmdLineHistory.add( cmdLine->text() );
 
   QFile file( cmdLine->text() );
 
-  if( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly ) )
   {
     file.write( resultsHtml[ index-1 ].toAscii() );
     file.close();
@@ -1609,7 +1609,7 @@ void SimulationCraftWindow::closeEvent( QCloseEvent* e )
 
 void SimulationCraftWindow::cmdLineTextEdited( const QString& s )
 {
-  switch( mainTab->currentIndex() )
+  switch ( mainTab->currentIndex() )
   {
   case TAB_WELCOME:   cmdLineText = s; break;
   case TAB_OPTIONS:   cmdLineText = s; break;
@@ -1625,33 +1625,33 @@ void SimulationCraftWindow::cmdLineTextEdited( const QString& s )
 
 void SimulationCraftWindow::cmdLineReturnPressed()
 {
-  if( mainTab->currentIndex() == TAB_IMPORT )
+  if ( mainTab->currentIndex() == TAB_IMPORT )
   {
-    if( cmdLine->text().count( "battle.net" ) ||
-        cmdLine->text().count( "wowarmory.com" ) )
+    if ( cmdLine->text().count( "battle.net" ) ||
+         cmdLine->text().count( "wowarmory.com" ) )
     {
       battleNetView->setUrl( QUrl::fromUserInput( cmdLine->text() ) );
       importTab->setCurrentIndex( TAB_BATTLE_NET );
     }
-    else if( cmdLine->text().count( "chardev.org" ) )
+    else if ( cmdLine->text().count( "chardev.org" ) )
     {
       charDevView->setUrl( QUrl::fromUserInput( cmdLine->text() ) );
       importTab->setCurrentIndex( TAB_CHAR_DEV );
     }
     else
     {
-      if( ! sim ) mainButtonClicked( true );
+      if ( ! sim ) mainButtonClicked( true );
     }
   }
   else
   {
-    if( ! sim ) mainButtonClicked( true );
+    if ( ! sim ) mainButtonClicked( true );
   }
 }
 
 void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
 {
-  switch( mainTab->currentIndex() )
+  switch ( mainTab->currentIndex() )
   {
   case TAB_WELCOME:   startSim(); break;
   case TAB_OPTIONS:   startSim(); break;
@@ -1660,7 +1660,7 @@ void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
   case TAB_HELP:      startSim(); break;
   case TAB_SITE:      startSim(); break;
   case TAB_IMPORT:
-    switch( importTab->currentIndex() )
+    switch ( importTab->currentIndex() )
     {
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
     case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
@@ -1674,9 +1674,9 @@ void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
 
 void SimulationCraftWindow::backButtonClicked( bool /* checked */ )
 {
-  if( visibleWebView )
+  if ( visibleWebView )
   {
-    if( mainTab->currentIndex() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
+    if ( mainTab->currentIndex() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
     {
       visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) - 1 ] );
 
@@ -1693,7 +1693,7 @@ void SimulationCraftWindow::backButtonClicked( bool /* checked */ )
   }
   else
   {
-    switch( mainTab->currentIndex() )
+    switch ( mainTab->currentIndex() )
     {
     case TAB_WELCOME:   break;
     case TAB_OPTIONS:   decodeOptions( optionsHistory.backwards() ); break;
@@ -1708,14 +1708,14 @@ void SimulationCraftWindow::backButtonClicked( bool /* checked */ )
 
 void SimulationCraftWindow::forwardButtonClicked( bool /* checked */ )
 {
-  if( visibleWebView )
+  if ( visibleWebView )
   {
     visibleWebView->forward();
     visibleWebView->setFocus();
   }
   else
   {
-    switch( mainTab->currentIndex() )
+    switch ( mainTab->currentIndex() )
     {
     case TAB_WELCOME:   break;
     case TAB_OPTIONS:   decodeOptions( optionsHistory.forwards() ); break;
@@ -1734,7 +1734,7 @@ void SimulationCraftWindow::rawrButtonClicked( bool /* checked */ )
   dialog.setFileMode( QFileDialog::ExistingFile );
   dialog.setNameFilter( "Rawr Profiles (*.xml)" );
   dialog.restoreState( rawrDialogState );
-  if( dialog.exec() )
+  if ( dialog.exec() )
   {
     rawrDialogState = dialog.saveState();
     QStringList fileList = dialog.selectedFiles();
@@ -1751,7 +1751,7 @@ void SimulationCraftWindow::rawrButtonClicked( bool /* checked */ )
 void SimulationCraftWindow::mainTabChanged( int index )
 {
   visibleWebView = 0;
-  switch( index )
+  switch ( index )
   {
   case TAB_WELCOME:   cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_OPTIONS:   cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
@@ -1778,7 +1778,7 @@ void SimulationCraftWindow::mainTabChanged( int index )
 #endif
   default: assert( 0 );
   }
-  if( visibleWebView )
+  if ( visibleWebView )
   {
     progressBar->setFormat( "%p%" );
   }
@@ -1791,10 +1791,10 @@ void SimulationCraftWindow::mainTabChanged( int index )
 
 void SimulationCraftWindow::importTabChanged( int index )
 {
-  if( index == TAB_RAWR ||
-      index == TAB_BIS  ||
-      index == TAB_CUSTOM  ||
-      index == TAB_HISTORY )
+  if ( index == TAB_RAWR ||
+       index == TAB_BIS  ||
+       index == TAB_CUSTOM  ||
+       index == TAB_HISTORY )
   {
     visibleWebView = 0;
     progressBar->setFormat( simPhase.c_str() );
@@ -1809,7 +1809,7 @@ void SimulationCraftWindow::importTabChanged( int index )
 
 void SimulationCraftWindow::resultsTabChanged( int index )
 {
-  if( index <= 0 )
+  if ( index <= 0 )
   {
     cmdLine->setText( "" );
   }
@@ -1817,14 +1817,14 @@ void SimulationCraftWindow::resultsTabChanged( int index )
   {
     updateVisibleWebView( ( SimulationCraftWebView* ) resultsTab->widget( index ) );
     QString s = visibleWebView->url().toString();
-    if( s == "about:blank" ) s = resultsFileText;
+    if ( s == "about:blank" ) s = resultsFileText;
     cmdLine->setText( s );
   }
 }
 
 void SimulationCraftWindow::resultsTabCloseRequest( int index )
 {
-  if( index <= 0 )
+  if ( index <= 0 )
   {
     // Ignore attempts to close Legend
   }
@@ -1840,13 +1840,13 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
 
-  if( url.count( "battle.net"    ) ||
-      url.count( "wowarmory.com" ) )
+  if ( url.count( "battle.net"    ) ||
+       url.count( "wowarmory.com" ) )
   {
     battleNetView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
     importTab->setCurrentIndex( TAB_BATTLE_NET );
   }
-  else if( url.count( "chardev.org" ) )
+  else if ( url.count( "chardev.org" ) )
   {
     charDevView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
     importTab->setCurrentIndex( TAB_CHAR_DEV );
@@ -1864,7 +1864,7 @@ void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col 
   QString s = "Unable to import profile "; s += profile;
 
   QFile file( bisProfilePath + profile );
-  if( file.open( QIODevice::ReadOnly ) )
+  if ( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
     file.close();
@@ -1880,7 +1880,7 @@ void SimulationCraftWindow::allBuffsChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   int count = buttons.count();
-  for( int i=1; i < count; i++ )
+  for ( int i=1; i < count; i++ )
   {
     buttons.at( i ) -> setChecked( checked );
   }
@@ -1890,7 +1890,7 @@ void SimulationCraftWindow::allDebuffsChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = debuffsButtonGroup->buttons();
   int count = buttons.count();
-  for( int i=1; i < count; i++ )
+  for ( int i=1; i < count; i++ )
   {
     buttons.at( i ) -> setChecked( checked );
   }
@@ -1900,7 +1900,7 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
   int count = buttons.count();
-  for( int i=2; i < count; i++ )
+  for ( int i=2; i < count; i++ )
   {
     buttons.at( i ) -> setChecked( checked );
   }
@@ -1917,13 +1917,13 @@ void SimulationCraftWindow::armoryRegionChanged( const QString& region )
 void PersistentCookieJar::save()
 {
   QFile file( fileName );
-  if( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly ) )
   {
     QDataStream out( &file );
     QList<QNetworkCookie> cookies = allCookies();
     qint32 count = ( qint32 ) cookies.count();
     out << count;
-    for( int i=0; i < count; i++ )
+    for ( int i=0; i < count; i++ )
     {
       const QNetworkCookie& c = cookies.at( i );
       out << c.name();
@@ -1936,13 +1936,13 @@ void PersistentCookieJar::save()
 void PersistentCookieJar::load()
 {
   QFile file( fileName );
-  if( file.open( QIODevice::ReadOnly ) )
+  if ( file.open( QIODevice::ReadOnly ) )
   {
     QDataStream in( &file );
     QList<QNetworkCookie> cookies;
     qint32 count;
     in >> count;
-    for( int i=0; i < count; i++ )
+    for ( int i=0; i < count; i++ )
     {
       QByteArray name, value;
       in >> name;

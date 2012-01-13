@@ -1999,7 +1999,7 @@ public:
   timespan_t time_value() const { return timespan_t::from_millis( _base_value ); }
   double resource( int type ) const
   {
-    switch( type )
+    switch ( type )
     {
     case RESOURCE_RUNIC:
     case RESOURCE_RAGE:
@@ -5121,7 +5121,7 @@ public:
 
   targetdata_t* targetdata() const
   {
-    if( cached_targetdata_target != target )
+    if ( cached_targetdata_target != target )
     {
       cached_targetdata_target = target;
       cached_targetdata = targetdata_t::get( player, target );
@@ -5607,7 +5607,7 @@ struct uptime_t : public uptime_common_t
 };
 
 struct buff_uptime_t : public uptime_common_t
-  { buff_uptime_t( sim_t* s ) : uptime_common_t( s ) {} };
+{ buff_uptime_t( sim_t* s ) : uptime_common_t( s ) {} };
 
 // Gain =====================================================================
 

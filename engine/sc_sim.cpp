@@ -924,7 +924,7 @@ void sim_t::flush_events()
         // not technically matter
         e -> canceled = 1;
         e -> player -> events--;
-        if( e -> player -> events < 0 )
+        if ( e -> player -> events < 0 )
         {
           errorf( "sim_t::flush_events assertion error! flushing event %s leaves negative event count for user %s.\n", e -> name, e -> player -> name() );
           assert( 0 );
@@ -1023,7 +1023,7 @@ void sim_t::combat( int iteration )
     if ( e -> player && ! e -> canceled )
     {
       e -> player -> events--;
-      if( e -> player -> events < 0 )
+      if ( e -> player -> events < 0 )
       {
         errorf( "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> player -> name() );
         assert( 0 );
@@ -2080,14 +2080,14 @@ action_expr_t* sim_t::create_expression( action_t* a,
     player_t* actor = sim_t::find_player( splits[ 1 ] );
     if ( ! target ) return 0;
     std::string rest = splits[2];
-    for( int i = 3; i < num_splits; ++i )
+    for ( int i = 3; i < num_splits; ++i )
       rest += '.' + splits[i];
     return actor -> create_expression( a, rest );
   }
   if ( num_splits >= 2 && splits[ 0 ] == "target" )
   {
     std::string rest = splits[1];
-    for( int i = 2; i < num_splits; ++i )
+    for ( int i = 2; i < num_splits; ++i )
       rest += '.' + splits[i];
     return target -> create_expression( a, rest );
   }
@@ -2585,16 +2585,16 @@ void sim_t::register_targetdata_item( int kind, const char* name, player_type ty
 {
   std::string s = name;
   targetdata_items[kind][s] = std::make_pair( type, offset );
-  if( kind == DATA_DOT )
+  if ( kind == DATA_DOT )
     targetdata_dots[type].push_back( std::make_pair( offset, s ) );
 }
 
 void* sim_t::get_targetdata_item( player_t* source, player_t* target, int kind, const std::string& name )
 {
   std::unordered_map<std::string, std::pair<player_type, size_t> >::iterator i = targetdata_items[kind].find( name );
-  if( i != targetdata_items[kind].end() )
+  if ( i != targetdata_items[kind].end() )
   {
-    if( source->type == i->second.first )
+    if ( source->type == i->second.first )
     {
       return *( void** )( ( char* )targetdata_t::get( source, target ) + i->second.second );
     }

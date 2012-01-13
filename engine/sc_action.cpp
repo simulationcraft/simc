@@ -189,7 +189,7 @@ void action_t::init_action_t_()
 void action_t::init_dot( const std::string& name )
 {
   std::unordered_map<std::string, std::pair<player_type, size_t> >::iterator doti = sim->targetdata_items[0].find( name );
-  if( doti != sim->targetdata_items[0].end() && doti->second.first == player->type )
+  if ( doti != sim->targetdata_items[0].end() && doti->second.first == player->type )
     targetdata_dot_offset = ( int )doti->second.second;
 }
 
@@ -1498,7 +1498,7 @@ void action_t::init()
 void action_t::reset()
 {
   cooldown -> reset();
-  if( action_dot )
+  if ( action_dot )
     action_dot -> reset();
   result = RESULT_NONE;
   execute_event = 0;
@@ -1514,7 +1514,7 @@ void action_t::cancel()
   if ( channeled )
   {
     dot_t* dot = this -> dot();
-    if( dot -> ticking )
+    if ( dot -> ticking )
     {
       last_tick( dot );
       event_t::cancel( dot -> tick_event );
@@ -1775,7 +1775,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   if ( num_splits == 3 && ( splits[0] == "buff" || splits[0] == "debuff" || splits[0] == "aura" ) )
   {
     buff_t* buff = sim -> get_targetdata_aura( player, target, splits[1] );
-    if( buff )
+    if ( buff )
       return buff -> create_expression( this, splits[ 2 ] );
   }
 
@@ -1805,7 +1805,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     }
 
     std::string rest = splits[ 2 ];
-    for( int i = 3; i < num_splits; ++i )
+    for ( int i = 3; i < num_splits; ++i )
       rest += '.' + splits[ i ];
 
     return expr_target -> create_expression( this, rest );
@@ -1815,7 +1815,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   if ( num_splits >= 2 && splits[ 0 ] == "self" )
   {
     std::string rest = splits[1];
-    for( int i = 2; i < num_splits; ++i )
+    for ( int i = 2; i < num_splits; ++i )
       rest += '.' + splits[i];
     return player -> create_expression( this, rest );
   }
@@ -1824,7 +1824,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   if ( num_splits >= 2 && splits[ 0 ] == "sim" )
   {
     std::string rest = splits[1];
-    for( int i = 2; i < num_splits; ++i )
+    for ( int i = 2; i < num_splits; ++i )
       rest += '.' + splits[i];
     return sim -> create_expression( this, rest );
   }

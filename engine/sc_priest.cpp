@@ -4459,7 +4459,7 @@ void priest_t::trigger_cauterizing_flame()
 
 int priest_t::primary_role() const
 {
-  switch( player_t::primary_role() )
+  switch ( player_t::primary_role() )
   {
   case ROLE_HEAL:
     return ROLE_HEAL;

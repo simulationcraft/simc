@@ -34,7 +34,7 @@ static const char* class_color( int type )
 // The above colors don't all work for text rendered on a light (white) background.  These colors work better by reducing the brightness HSV component of the above colors
 static const char* class_text_color( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case MAGE:         return "59ADCC"; // darker blue
   case PRIEST:       return "8A8A8A"; // darker silver
@@ -71,7 +71,7 @@ static const char* school_color( int type )
 
 static const char* stat_color( int type )
 {
-  switch( type )
+  switch ( type )
   {
   case STAT_STRENGTH:                 return class_color( WARRIOR );
   case STAT_AGILITY:                  return class_color( HUNTER );

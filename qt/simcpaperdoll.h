@@ -36,12 +36,13 @@ class EnchantDataModel;
 class EnchantFilterProxyModel;
 class RandomSuffixDataModel;
 
-class EnchantData {
+class EnchantData
+{
 public:
   const item_data_t*  item;
   const spell_data_t* enchant;
   const item_enchantment_data_t* item_enchant;
-  inline bool operator==(const EnchantData& other) { return enchant == other.enchant; }
+  inline bool operator==( const EnchantData& other ) { return enchant == other.enchant; }
 };
 Q_DECLARE_METATYPE( EnchantData );
 
@@ -159,7 +160,7 @@ private:
 
 class ItemDataListModel : public QAbstractListModel
 {
- Q_OBJECT
+  Q_OBJECT
 public:
   ItemDataListModel( QObject* = 0 );
 

@@ -1648,9 +1648,9 @@ struct arcane_power_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     if ( p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration + 
-      p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect1().time_value() *
-        (1.0 + p -> talents.arcane_flows -> effect1().percent());
+      cooldown -> duration = orig_duration +
+                             p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect1().time_value() *
+                             ( 1.0 + p -> talents.arcane_flows -> effect1().percent() );
 
     mage_spell_t::execute();
     p -> buffs_arcane_power -> trigger( 1, effect1().percent() );
@@ -2637,8 +2637,8 @@ struct icy_veins_t : public mage_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration +
-        p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect3().time_value() *
-        (1.0 + p -> talents.ice_floes -> effect1().percent());
+                             p -> buffs_tier13_2pc -> check() * p -> spells.stolen_time -> effect3().time_value() *
+                             ( 1.0 + p -> talents.ice_floes -> effect1().percent() );
     consume_resource();
     update_ready();
     p -> buffs_icy_veins -> trigger();

@@ -385,7 +385,8 @@ player_t* download_player( sim_t*             sim,
   return parse_player( sim, player, caching );
 }
 
-namespace { // ANONYMOUS ====================================================
+namespace   // ANONYMOUS ====================================================
+{
 
 struct item_info_t : public item_data_t
 {
@@ -600,7 +601,8 @@ bool download_slot( item_t& item,
   return true;
 }
 
-namespace { // ANONYMOUS ====================================================
+namespace   // ANONYMOUS ====================================================
+{
 
 // download_roster ==========================================================
 
@@ -717,7 +719,8 @@ bool download_glyph( player_t*          player,
   return true;
 }
 
-namespace { // ANONYMOUS ====================================================
+namespace   // ANONYMOUS ====================================================
+{
 
 // bcp_api::parse_gem_stats =================================================
 
@@ -811,7 +814,8 @@ int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t cachin
 
 } // namespace bcp_api =====================================================
 
-namespace wowreforge { // ==================================================
+namespace wowreforge   // ==================================================
+{
 
 player_t* download_player( sim_t*             sim,
                            const std::string& profile_id,

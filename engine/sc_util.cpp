@@ -1857,7 +1857,7 @@ bool util_t::socket_gem_match( int socket,
 
 const char* util_t::item_quality_string( int quality )
 {
-  switch( quality )
+  switch ( quality )
   {
   case 1:   return "common";
   case 2:   return "uncommon";

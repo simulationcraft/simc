@@ -577,8 +577,8 @@ void http_t::cache_load()
       c.modified = c.validated = cache::IN_THE_BEGINNING;
     }
   }
-  catch( ... )
-    {}
+  catch ( ... )
+  {}
 }
 
 // http_t::cache_save =======================================================
@@ -612,7 +612,7 @@ void http_t::cache_save()
     }
   }
   catch ( ... )
-    {}
+  {}
 }
 
 

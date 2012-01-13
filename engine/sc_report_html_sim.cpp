@@ -493,37 +493,39 @@ static void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps 
   char mapid[32];
   util_t::snprintf( mapid, sizeof( mapid ), "%sMAP%d", ( dps ) ? "DPS" : "HPS", num );
 
-  fprintf( file, "\t\t\tu = document.getElementById('%s').src;\n"
-                 "\t\t\tgetMap(u, n, function(mapStr) {\n"
-                 "\t\t\t\tdocument.getElementById('%s').innerHTML += mapStr;\n"
-                 "\t\t\t\t$j('#%s').attr('usemap','#%s');\n"
-                 "\t\t\t\t$j('#%s area').click(function(e) {\n"
-                 "\t\t\t\t\tanchor = $j(this).attr('href');\n"
-                 "\t\t\t\t\ttarget = $j(anchor).children('h2:first');\n"
-                 "\t\t\t\t\topen_anchor(target);\n"
-                 "\t\t\t\t});\n"
-                 "\t\t\t});\n\n",
-                 imgid, mapid, imgid, mapid, mapid );
+  fprintf( file,
+           "\t\t\tu = document.getElementById('%s').src;\n"
+           "\t\t\tgetMap(u, n, function(mapStr) {\n"
+           "\t\t\t\tdocument.getElementById('%s').innerHTML += mapStr;\n"
+           "\t\t\t\t$j('#%s').attr('usemap','#%s');\n"
+           "\t\t\t\t$j('#%s area').click(function(e) {\n"
+           "\t\t\t\t\tanchor = $j(this).attr('href');\n"
+           "\t\t\t\t\ttarget = $j(anchor).children('h2:first');\n"
+           "\t\t\t\t\topen_anchor(target);\n"
+           "\t\t\t\t});\n"
+           "\t\t\t});\n\n",
+           imgid, mapid, imgid, mapid, mapid );
 }
 
 static void print_html_raid_imagemaps( FILE*  file, sim_t* sim )
 {
 
-  fprintf( file, "\t\t<script type=\"text/javascript\">\n"
-                 "\t\t\tvar $j = jQuery.noConflict();\n"
-                 "\t\t\tfunction getMap(url, names, mapWrite) {\n"
-                 "\t\t\t\t$j.getJSON(url + '&chof=json&callback=?', function(jsonObj) {\n"
-                 "\t\t\t\t\tvar area = false;\n"
-                 "\t\t\t\t\tvar chart = jsonObj.chartshape;\n"
-                 "\t\t\t\t\tvar mapStr = '';\n"
-                 "\t\t\t\t\tfor (var i = 0; i < chart.length; i++) {\n"
-                 "\t\t\t\t\t\tarea = chart[i];\n"
-                 "\t\t\t\t\t\tarea.coords[2] = 523;\n"
-                 "\t\t\t\t\t\tmapStr += \"\\n  <area name='\" + area.name + \"' shape='\" + area.type + \"' coords='\" + area.coords.join(\",\") + \"' href='#\" + names[i] + \"'  title='\" + names[i] + \"'>\";\n"
-                 "\t\t\t\t\t}\n"
-                 "\t\t\t\t\tmapWrite(mapStr);\n"
-                 "\t\t\t\t});\n"
-                 "\t\t\t}\n\n" );
+  fprintf( file,
+           "\t\t<script type=\"text/javascript\">\n"
+           "\t\t\tvar $j = jQuery.noConflict();\n"
+           "\t\t\tfunction getMap(url, names, mapWrite) {\n"
+           "\t\t\t\t$j.getJSON(url + '&chof=json&callback=?', function(jsonObj) {\n"
+           "\t\t\t\t\tvar area = false;\n"
+           "\t\t\t\t\tvar chart = jsonObj.chartshape;\n"
+           "\t\t\t\t\tvar mapStr = '';\n"
+           "\t\t\t\t\tfor (var i = 0; i < chart.length; i++) {\n"
+           "\t\t\t\t\t\tarea = chart[i];\n"
+           "\t\t\t\t\t\tarea.coords[2] = 523;\n"
+           "\t\t\t\t\t\tmapStr += \"\\n  <area name='\" + area.name + \"' shape='\" + area.type + \"' coords='\" + area.coords.join(\",\") + \"' href='#\" + names[i] + \"'  title='\" + names[i] + \"'>\";\n"
+           "\t\t\t\t\t}\n"
+           "\t\t\t\t\tmapWrite(mapStr);\n"
+           "\t\t\t\t});\n"
+           "\t\t\t}\n\n" );
 
   int count = ( int ) sim -> dps_charts.size();
   for ( int i=0; i < count; i++ )

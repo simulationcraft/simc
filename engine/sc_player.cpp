@@ -571,7 +571,7 @@ player_t::player_t( sim_t*             s,
 
 player_t::~player_t()
 {
-  for( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
+  for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
     delete *i;
 
   while ( action_t* a = action_list )
@@ -3144,7 +3144,7 @@ void player_t::reset()
 
   for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
   {
-    if( *i )
+    if ( *i )
       ( *i )->reset();
   }
 
@@ -3391,7 +3391,7 @@ void player_t::clear_debuffs()
 
   for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
   {
-    if( *i )
+    if ( *i )
       ( *i )->clear_debuffs();
   }
 }
@@ -4777,7 +4777,7 @@ struct arcane_torrent_t : public action_t
   {
     int resource = player -> primary_resource();
     double gain = 0;
-    switch( resource )
+    switch ( resource )
     {
     case RESOURCE_MANA:
       gain = player -> resource_max [ RESOURCE_MANA ] * 0.06;
@@ -4807,7 +4807,7 @@ struct arcane_torrent_t : public action_t
       return false;
 
     int resource = player -> primary_resource();
-    switch( resource )
+    switch ( resource )
     {
     case RESOURCE_MANA:
       if ( player -> resource_current [ resource ] / player -> resource_max [ resource ] <= 0.94 )
@@ -6317,7 +6317,7 @@ action_expr_t* player_t::create_expression( action_t* a,
   if ( num_splits >= 2 && splits[ 0 ] == "target" )
   {
     std::string rest = splits[1];
-    for( int i = 2; i < num_splits; ++i )
+    for ( int i = 2; i < num_splits; ++i )
       rest += '.' + splits[i];
     return target -> create_expression( a, rest );
   }
@@ -6833,14 +6833,14 @@ targetdata_t* player_t::new_targetdata( player_t* source, player_t* target )
 targetdata_t* targetdata_t::get( player_t* source, player_t* target )
 {
   int id = source->targetdata_id;
-  if( id < 0 )
+  if ( id < 0 )
     source -> targetdata_id = id = source -> sim -> num_targetdata_ids++;
 
-  if( id >= ( int ) target -> targetdata.size() )
+  if ( id >= ( int ) target -> targetdata.size() )
     target -> targetdata.resize( id + 1 );
 
   targetdata_t* p = target->targetdata[id];
-  if( ! p )
+  if ( ! p )
     target -> targetdata[id] = p = source -> new_targetdata( source, target );
 
   return p;
@@ -6850,7 +6850,7 @@ targetdata_t::targetdata_t( player_t* source, player_t* target )
   : source( ( player_t* )source ), target( ( player_t* )target ), dot_list( NULL )
 {
   std::vector<std::pair<size_t, std::string> >& v = source->sim->targetdata_dots[source->type];
-  for( std::vector<std::pair<size_t, std::string> >::iterator i = v.begin(); i != v.end(); ++i )
+  for ( std::vector<std::pair<size_t, std::string> >::iterator i = v.begin(); i != v.end(); ++i )
   {
     *( dot_t** )( ( char* )this + i->first ) = add_dot( new dot_t( i->second, this->target ) );
   }
@@ -6867,7 +6867,7 @@ targetdata_t::~targetdata_t()
 
 void targetdata_t::reset()
 {
-  for( dot_t* d = dot_list; d; d = d->next )
+  for ( dot_t* d = dot_list; d; d = d->next )
     d -> reset();
 }
 
@@ -6875,7 +6875,7 @@ void targetdata_t::clear_debuffs()
 {
   // FIXME: should clear debuffs as well according to similar FIXME in player_t::clear_debuffs()
 
-  for( dot_t* d = dot_list; d; d = d->next )
+  for ( dot_t* d = dot_list; d; d = d->next )
     d -> cancel();
 }
 
