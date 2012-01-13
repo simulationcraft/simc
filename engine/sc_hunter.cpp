@@ -2264,7 +2264,7 @@ struct arcane_shot_t : public hunter_attack_t
       }
     }
 
-    if ( p -> dbc.ptr )
+    if ( ! p -> dbc.ptr )
     {
       p -> buffs_lock_and_load -> up();
       p -> buffs_lock_and_load -> decrement();
