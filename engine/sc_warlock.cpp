@@ -108,64 +108,64 @@ struct _weapon_list_t
 {
   int id;
   double min_dmg, max_dmg;
-  double swing_time;
+  timespan_t swing_time;
 };
 
 const _weapon_list_t imp_weapon[]=
 {
-  { 81, 116.7, 176.7, 2.0 },
-  { 0, 0, 0, 0 }
+  { 81, 116.7, 176.7, timespan_t::from_seconds(2.0) },
+  { 0, 0, 0, timespan_t::zero }
 };
 
 const _weapon_list_t felguard_weapon[]=
 {
-  { 85, 926.3, 926.3, 2.0 },
-  { 81, 848.7, 848.7, 2.0 },
-  { 80, 824.6, 824.6, 2.0 },
-  { 0, 0, 0, 0 }
+  { 85, 926.3, 926.3, timespan_t::from_seconds(2.0) },
+  { 81, 848.7, 848.7, timespan_t::from_seconds(2.0) },
+  { 80, 824.6, 824.6, timespan_t::from_seconds(2.0) },
+  { 0, 0, 0, timespan_t::zero }
 };
 
 const _weapon_list_t felhunter_weapon[]=
 {
-  { 85, 926.3, 926.3, 2.0 },
-  { 81, 678.4, 1010.4, 2.0 },
-  { 80, 824.6, 824.6, 2.0 },
-  { 0, 0, 0, 0 }
+  { 85, 926.3, 926.3, timespan_t::from_seconds(2.0) },
+  { 81, 678.4, 1010.4, timespan_t::from_seconds(2.0) },
+  { 80, 824.6, 824.6, timespan_t::from_seconds(2.0) },
+  { 0, 0, 0, timespan_t::zero }
 };
 
 const _weapon_list_t succubus_weapon[]=
 {
-  { 85, 926.3, 926.3, 2.0 },
-  { 81, 848.7, 848.7, 2.0 },
-  { 80, 824.6, 824.6, 2.0 },
-  { 0, 0, 0, 0 }
+  { 85, 926.3, 926.3, timespan_t::from_seconds(2.0) },
+  { 81, 848.7, 848.7, timespan_t::from_seconds(2.0) },
+  { 80, 824.6, 824.6, timespan_t::from_seconds(2.0) },
+  { 0, 0, 0, timespan_t::zero }
 };
 
 const _weapon_list_t infernal_weapon[]=
 {
-  { 85, 1072.0, 1072.0, 2.0 }, //Rough numbers
-  { 80, 924.0, 924.0, 2.0 }, //Rough numbers
-  { 0, 0, 0, 0 }
+  { 85, 1072.0, 1072.0, timespan_t::from_seconds(2.0) }, //Rough numbers
+  { 80, 924.0, 924.0, timespan_t::from_seconds(2.0) }, //Rough numbers
+  { 0, 0, 0, timespan_t::zero }
 };
 
 const _weapon_list_t doomguard_weapon[]=
 {
-  { 0, 0, 0, 0 }
+  { 0, 0, 0, timespan_t::zero }
 };
 
 const _weapon_list_t ebon_imp_weapon[]=
 {
-  { 85, 1110.0, 1110.0, 2.0 }, //Rough numbers
-  { 80, 956.0, 956.0, 2.0 }, //Rough numbers
-  { 0, 0, 0, 0 }
+  { 85, 1110.0, 1110.0, timespan_t::from_seconds(2.0) }, //Rough numbers
+  { 80, 956.0, 956.0, timespan_t::from_seconds(2.0) }, //Rough numbers
+  { 0, 0, 0, timespan_t::zero }
 };
 
 const _weapon_list_t voidwalker_weapon[]=
 {
-  { 85, 926.3, 926.3, 2.0 },
-  { 81, 848.7, 848.7, 2.0 },
-  { 80, 824.6, 824.6, 2.0 },
-  { 0, 0, 0, 0 }
+  { 85, 926.3, 926.3, timespan_t::from_seconds(2.0) },
+  { 81, 848.7, 848.7, timespan_t::from_seconds(2.0) },
+  { 80, 824.6, 824.6, timespan_t::from_seconds(2.0) },
+  { 0, 0, 0, timespan_t::zero }
 };
 
 } // namespace pet_stats ====================================================
@@ -420,7 +420,7 @@ struct warlock_t : public player_t
   };
   glyphs_t glyphs;
 
-  double constants_pandemic_gcd;
+  timespan_t constants_pandemic_gcd;
 
   int use_pre_soulburn;
 
@@ -574,9 +574,9 @@ struct warlock_pet_t : public pet_t
     return r;
   }
 
-  double get_weapon( int level, pet_type_t pet_type, int n )
+private:
+  const pet_stats::_weapon_list_t* get_weapon( pet_type_t pet_type )
   {
-    double r = 0.0;
     const pet_stats::_weapon_list_t*  weapon_list = 0;
 
     if      ( pet_type == PET_IMP          ) weapon_list = pet_stats::imp_weapon;
@@ -588,59 +588,72 @@ struct warlock_pet_t : public pet_t
     else if ( pet_type == PET_EBON_IMP     ) weapon_list = pet_stats::ebon_imp_weapon;
     else if ( pet_type == PET_VOIDWALKER   ) weapon_list = pet_stats::voidwalker_weapon;
 
-    if ( weapon_list )
+    return weapon_list;
+  }
+
+public:
+  double get_weapon_min( int level, pet_type_t pet_type )
+  {
+    const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+    
+    double r = 0.0;
+    for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
     {
-      if ( n == 3 )
+      if ( level == weapon_list[ i ].id )
       {
-        for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-        {
-          if ( level == weapon_list[ i ].id )
-          {
-            r += weapon_list[ i ].swing_time;
-            break;
-          }
-          if ( level > weapon_list[ i ].id )
-          {
-            r += weapon_list[ i ].swing_time;
-            break;
-          }
-        }
+        r += weapon_list[ i ].min_dmg;
+        break;
       }
-      else if ( n == 1 )
+      if ( level > weapon_list[ i ].id )
       {
-        for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-        {
-          if ( level == weapon_list[ i ].id )
-          {
-            r += weapon_list[ i ].min_dmg;
-            break;
-          }
-          if ( level > weapon_list[ i ].id )
-          {
-            r += weapon_list[ i ].min_dmg;
-            break;
-          }
-        }
-      }
-      else if ( n == 2 )
-      {
-        for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-        {
-          if ( level == weapon_list[ i ].id )
-          {
-            r += weapon_list[ i ].max_dmg;
-            break;
-          }
-          if ( level > weapon_list[ i ].id )
-          {
-            r += weapon_list[ i ].max_dmg;
-            break;
-          }
-        }
+        r += weapon_list[ i ].min_dmg;
+        break;
       }
     }
-    if ( n == 3 && r == 0 )r = 1.0; // set swing-time to 1.00 if there is no weapon
+    return r;
+  }
 
+  double get_weapon_max( int level, pet_type_t pet_type )
+  {
+    const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+
+    double r = 0.0;
+    for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
+    {
+      if ( level == weapon_list[ i ].id )
+      {
+        r += weapon_list[ i ].max_dmg;
+        break;
+      }
+      if ( level > weapon_list[ i ].id )
+      {
+        r += weapon_list[ i ].max_dmg;
+        break;
+      }
+    }
+    return r;
+  }
+
+  timespan_t get_weapon_swing_time( int level, pet_type_t pet_type )
+  {
+    const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+
+    timespan_t r = timespan_t::zero;
+    for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
+    {
+      if ( level == weapon_list[ i ].id )
+      {
+        r += weapon_list[ i ].swing_time;
+        break;
+      }
+      if ( level > weapon_list[ i ].id )
+      {
+        r += weapon_list[ i ].swing_time;
+        break;
+      }
+    }
+    if ( r == timespan_t::zero )
+      r = timespan_t::from_seconds(1.0); // set swing-time to 1.00 if there is no weapon
     return r;
   }
 
@@ -653,10 +666,10 @@ struct warlock_pet_t : public pet_t
     stats2_avaiable = 0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = get_weapon( level, pet_type, 1 );
-    main_hand_weapon.max_dmg    = get_weapon( level, pet_type, 2 );
+    main_hand_weapon.min_dmg    = get_weapon_min( level, pet_type );
+    main_hand_weapon.max_dmg    = get_weapon_max( level, pet_type );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( get_weapon( level, pet_type, 3 ) );
+    main_hand_weapon.swing_time = get_weapon_swing_time( level, pet_type );
     if ( main_hand_weapon.swing_time == timespan_t::zero )
     {
       sim -> errorf( "Pet %s has swingtime == 0.\n", name() );
@@ -1953,7 +1966,7 @@ struct curse_of_elements_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd -= timespan_t::from_seconds( p -> constants_pandemic_gcd * p -> talent_pandemic -> rank() );
+    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
   }
 
   virtual void execute()
@@ -2015,7 +2028,7 @@ struct bane_of_agony_t : public warlock_spell_t
     may_crit   = false;
 
     base_crit += p -> talent_doom_and_gloom -> effect1().percent();
-    trigger_gcd -= timespan_t::from_seconds( p -> constants_pandemic_gcd * p -> talent_pandemic -> rank() );
+    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
 
     int extra_ticks = ( int ) ( timespan_t::from_millis( p -> glyphs.bane_of_agony -> base_value() ) / base_tick_time );
 
@@ -2063,7 +2076,7 @@ struct bane_of_doom_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit     = false;
 
-    trigger_gcd -= timespan_t::from_seconds( p -> constants_pandemic_gcd * p -> talent_pandemic -> rank() );
+    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
     base_crit += p -> talent_doom_and_gloom -> effect1().percent();
   }
 
@@ -2110,7 +2123,7 @@ struct bane_of_havoc_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd -= timespan_t::from_seconds( p -> constants_pandemic_gcd * p -> talent_pandemic -> rank() );
+    trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
   }
 
   virtual void execute()
@@ -3516,11 +3529,11 @@ struct summon_infernal_t : public summon_pet_t
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) ) : timespan_t::zero;
 
     summoning_duration = ( duration() + p -> talent_ancient_grimoire -> effect1().time_value() );
-    summoning_duration += timespan_t::from_seconds( ( p -> set_bonus.tier13_2pc_caster() ) ?
+    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> talent_summon_felguard -> ok() ?
-                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :
-                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 )
-                          ) : 0.0 );
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) ) :
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) )
+                          ) : timespan_t::zero;
     infernal_awakening = new infernal_awakening_t( p );
   }
 
@@ -3547,11 +3560,11 @@ struct summon_doomguard2_t : public summon_pet_t
     harmful = false;
     background = true;
     summoning_duration = ( duration() + p -> talent_ancient_grimoire -> effect1().time_value() );
-    summoning_duration += timespan_t::from_seconds( ( p -> set_bonus.tier13_2pc_caster() ) ?
+    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> talent_summon_felguard -> ok() ?
-                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) :
-                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 )
-                          ) : 0.0 );
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) ) :
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) )
+                          ) : timespan_t::zero;
   }
 
   virtual void execute()
@@ -4488,7 +4501,7 @@ void warlock_t::init_spells()
   mastery_spells.master_demonologist  = new mastery_t( this, "master_demonologist", "Master Demonologist", TREE_DEMONOLOGY );
 
   // Constants
-  constants_pandemic_gcd              = 0.25;
+  constants_pandemic_gcd              = timespan_t::from_seconds(0.25);
 
   // Prime
   glyphs.metamorphosis        = find_glyph( "Glyph of Metamorphosis" );
