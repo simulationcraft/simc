@@ -1250,7 +1250,7 @@ struct crusader_strike_t : public paladin_attack_t
     trigger_seal = true;
 
     // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
-    cooldown -> duration += timespan_t::from_seconds( p -> passives.judgements_of_the_wise -> mod_additive( P_COOLDOWN ) );
+    cooldown -> duration += p -> passives.judgements_of_the_wise -> mod_additive_cooldown();
     base_cooldown         = cooldown -> duration;
 
     base_crit       += p -> talents.rule_of_law -> mod_additive( P_CRIT );
@@ -1357,7 +1357,7 @@ struct hammer_of_justice_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += timespan_t::from_seconds( p -> talents.improved_hammer_of_justice -> mod_additive( P_COOLDOWN ) );
+    cooldown -> duration += p -> talents.improved_hammer_of_justice -> mod_additive_cooldown();
   }
 };
 
@@ -2011,7 +2011,7 @@ struct avenging_wrath_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    cooldown -> duration += timespan_t::from_seconds( p -> talents.sanctified_wrath -> mod_additive( P_COOLDOWN ) )
+    cooldown -> duration +=   p -> talents.sanctified_wrath -> mod_additive_cooldown()
                             + p -> talents.paragon_of_virtue -> effect2().time_value()
                             + p -> talents.shield_of_the_templar -> effect3().time_value();
   }
@@ -2460,7 +2460,7 @@ struct zealotry_t : public paladin_spell_t
     update_ready();
     p -> buffs_zealotry -> trigger();
     if ( p -> set_bonus.tier12_4pc_melee() )
-      p -> buffs_zealotry -> extend_duration( p, timespan_t::from_seconds( p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive( P_DURATION ) ) );
+      p -> buffs_zealotry -> extend_duration( p, p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive_duration() );
   }
 
   virtual void consume_resource()

@@ -354,7 +354,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
         base_crit += 0.01 * effect -> base_value();
         break;
       case P_COOLDOWN:
-        cooldown -> duration += timespan_t::from_millis( effect -> base_value() );
+        cooldown -> duration += effect -> time_value();
         break;
       default: break;
       }

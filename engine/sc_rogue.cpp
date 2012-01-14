@@ -1930,7 +1930,7 @@ struct expose_armor_t : public rogue_attack_t
     {
       timespan_t duration = timespan_t::from_seconds( 10 ) * combo_points_spent;
 
-      duration += timespan_t::from_seconds( p -> glyphs.expose_armor -> mod_additive( P_DURATION ) );
+      duration += p -> glyphs.expose_armor -> mod_additive_duration();
 
       if ( p -> buffs_revealing_strike -> up() )
         duration *= 1.0 + p -> buffs_revealing_strike -> value();
@@ -2452,7 +2452,7 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_t* p = player -> cast_rogue();
     if ( result_is_hit( impact_result ) )
-      num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive( P_DURATION ) / base_tick_time.total_seconds() );
+      num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive_duration() / base_tick_time );
     rogue_attack_t::impact( t, impact_result, travel_dmg );
   }
 
@@ -2694,7 +2694,7 @@ struct shadow_dance_t : public rogue_attack_t
   {
     add_trigger_buff( p -> buffs_shadow_dance );
 
-    p -> buffs_shadow_dance -> buff_duration += timespan_t::from_seconds( p -> glyphs.shadow_dance -> mod_additive( P_DURATION ) );
+    p -> buffs_shadow_dance -> buff_duration += p -> glyphs.shadow_dance -> mod_additive_duration();
     if ( p -> set_bonus.tier13_4pc_melee() )
       p -> buffs_shadow_dance -> buff_duration += p -> spells.tier13_4pc -> effect1().time_value();
 
@@ -3177,7 +3177,7 @@ struct adrenaline_rush_buff_t : public buff_t
     // we track the cooldown in the actual action
     // and because of restless blades have to remove it here
     cooldown -> duration = timespan_t::zero;
-    buff_duration += timespan_t::from_seconds( p -> glyphs.adrenaline_rush -> mod_additive( P_DURATION ) );
+    buff_duration += p -> glyphs.adrenaline_rush -> mod_additive_duration();
     if ( p -> set_bonus.tier13_4pc_melee() )
       buff_duration += p -> spells.tier13_4pc -> effect2().time_value();
   }
@@ -3302,8 +3302,8 @@ struct slice_and_dice_buff_t : public buff_t
     rogue_t* p = player -> cast_rogue();
 
     timespan_t new_duration = p -> dbc.spell( id ) -> duration();
-    new_duration += timespan_t::from_seconds( 3.0 * cp );
-    new_duration += timespan_t::from_seconds( p -> glyphs.slice_and_dice -> mod_additive( P_DURATION ) );
+    new_duration += timespan_t::from_seconds( 3.0 ) * cp;
+    new_duration += p -> glyphs.slice_and_dice -> mod_additive_duration();
     new_duration *= 1.0 + p -> talents.improved_slice_and_dice -> mod_additive( P_DURATION );
 
     if ( remains_lt( new_duration ) )

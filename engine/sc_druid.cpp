@@ -2075,7 +2075,7 @@ struct tigers_fury_t : public druid_cat_attack_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    cooldown -> duration += timespan_t::from_seconds( p -> glyphs.tigers_fury -> mod_additive( P_COOLDOWN ) );
+    cooldown -> duration += p -> glyphs.tigers_fury -> mod_additive_cooldown();
   }
 
   virtual void execute()
@@ -2682,7 +2682,7 @@ struct healing_touch_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
-    base_execute_time  += timespan_t::from_seconds( p -> talents.naturalist -> mod_additive( P_CAST_TIME ) );
+    base_execute_time  += p -> talents.naturalist -> mod_additive_cast_time();
     consume_ooc         = true;
 
     ns_cd = p -> get_cooldown( "natures_swiftness" );
@@ -2815,7 +2815,7 @@ struct nourish_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     base_dd_multiplier *= 1.0 + p -> talents.empowered_touch -> mod_additive( P_GENERIC );
-    base_execute_time  += timespan_t::from_seconds( p -> talents.naturalist -> mod_additive( P_CAST_TIME ) );
+    base_execute_time  += p -> talents.naturalist -> mod_additive_cast_time();
   }
 
   virtual void execute()
@@ -2905,7 +2905,7 @@ struct rejuvenation_t : public druid_heal_t
     parse_options( NULL, options_str );
 
     may_crit     = p -> talents.gift_of_the_earthmother -> rank() ? true : false;
-    trigger_gcd += timespan_t::from_seconds( p -> talents.swift_rejuvenation -> mod_additive( P_GCD ) );
+    trigger_gcd += p -> talents.swift_rejuvenation -> mod_additive_gcd();
 
     additive_factors += p -> talents.genesis -> mod_additive( P_TICK_DAMAGE ) +
                         p -> talents.blessing_of_the_grove -> mod_additive( P_TICK_DAMAGE ) +
@@ -3016,7 +3016,7 @@ struct tranquility_t : public druid_heal_t
 
     // FIXME: The hot should stack
 
-    cooldown -> duration += timespan_t::from_seconds( p -> talents.malfurions_gift -> mod_additive( P_COOLDOWN ) );
+    cooldown -> duration += p -> talents.malfurions_gift -> mod_additive_cooldown();
   }
 };
 
@@ -3616,7 +3616,7 @@ struct insect_swarm_t : public druid_spell_t
     may_crit = false;
 
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
-    num_ticks   += ( int ) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 );
+    num_ticks   += ( int ) ( p -> talents.genesis -> mod_additive_duration().total_seconds() / 2.0 );
     dot_behavior = DOT_REFRESH;
 
     if ( p -> primary_tree() == TREE_BALANCE )
@@ -3710,7 +3710,7 @@ struct moonfire_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
-    num_ticks   += ( int ) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 );
+    num_ticks   += ( int ) ( p -> talents.genesis -> mod_additive_duration().total_seconds() / 2.0 );
     dot_behavior = DOT_REFRESH;
 
     if ( p -> primary_tree() == TREE_BALANCE )
@@ -3915,7 +3915,7 @@ struct starfire_t : public druid_spell_t
     };
     parse_options( options, options_str );
 
-    base_execute_time += timespan_t::from_seconds( p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME ) );
+    base_execute_time += p -> talents.starlight_wrath -> mod_additive_cast_time();
 
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
@@ -4081,7 +4081,7 @@ struct starfall_t : public druid_spell_t
     num_ticks      = 10;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
-    cooldown -> duration += timespan_t::from_seconds( p -> glyphs.starfall -> mod_additive( P_COOLDOWN ) );
+    cooldown -> duration += p -> glyphs.starfall -> mod_additive_cooldown();
 
     harmful = false;
 
@@ -4245,7 +4245,7 @@ struct sunfire_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     // Genesis, additional time is given in ms. Current structure requires it to be converted into ticks
-    num_ticks   += ( int ) ( p -> talents.genesis -> mod_additive( P_DURATION ) / 2.0 );
+    num_ticks   += ( int ) ( p -> talents.genesis -> mod_additive_duration().total_seconds() / 2.0 );
     dot_behavior = DOT_REFRESH;
 
     if ( p -> primary_tree() == TREE_BALANCE )
@@ -4445,7 +4445,7 @@ struct typhoon_t : public druid_spell_t
     base_dd_max           = p -> dbc.effect_max( damage_spell -> effect_id( 2 ), p -> level );
     base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect1().percent();
     direct_power_mod      = damage_spell -> effect2().coeff();
-    cooldown -> duration += timespan_t::from_seconds( p -> glyphs.monsoon -> mod_additive( P_COOLDOWN ) );
+    cooldown -> duration += p -> glyphs.monsoon -> mod_additive_cooldown();
     base_cost            *= 1.0 + p -> glyphs.typhoon -> mod_additive( P_RESOURCE_COST );
   }
 };
@@ -4529,7 +4529,7 @@ struct wrath_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += timespan_t::from_seconds( p -> talents.starlight_wrath -> mod_additive( P_CAST_TIME ) );
+    base_execute_time += p -> talents.starlight_wrath -> mod_additive_cast_time();
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
 
@@ -4967,12 +4967,12 @@ void druid_t::init_buffs()
   buffs_shooting_stars        = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   buffs_survival_instincts    = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );
   buffs_tree_of_life          = new buff_t( this, talents.tree_of_life, NULL );
-  buffs_tree_of_life -> buff_duration += timespan_t::from_seconds( talents.natural_shapeshifter -> mod_additive( P_DURATION ) );
+  buffs_tree_of_life -> buff_duration += talents.natural_shapeshifter -> mod_additive_duration();
 
   buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
   buffs_primal_madness_bear = new      buff_t( this, "primal_madness_bear" );
-  buffs_berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds( 15.0 ) + timespan_t::from_seconds( glyphs.berserk -> mod_additive( P_DURATION ) ) );
-  buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, timespan_t::from_seconds( 6.0 ) );
+  buffs_berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds(15.0) + glyphs.berserk -> mod_additive_duration() );
+  buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, timespan_t::from_seconds(6.0) );
 
   // simple
   buffs_bear_form    = new buff_t( this, 5487,  "bear_form" );
