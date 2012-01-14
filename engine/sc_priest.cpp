@@ -2387,10 +2387,11 @@ struct mind_flay_t : public priest_spell_t
   timespan_t mb_wait;
   int    swp_refresh;
   int    cut_for_mb;
+  int    no_dmg;
 
   mind_flay_t( priest_t* p, const std::string& options_str,
                const char* name = "mind_flay" ) :
-    priest_spell_t( name, p, "Mind Flay" ), mb_wait( timespan_t::zero ), swp_refresh( 0 ), cut_for_mb( 0 )
+    priest_spell_t( name, p, "Mind Flay" ), mb_wait( timespan_t::zero ), swp_refresh( 0 ), cut_for_mb( 0 ), no_dmg( 0 )
   {
     check_spec( TREE_SHADOW );
 
@@ -2399,6 +2400,7 @@ struct mind_flay_t : public priest_spell_t
       { "cut_for_mb",  OPT_BOOL, &cut_for_mb  },
       { "mb_wait",     OPT_TIMESPAN,  &mb_wait     },
       { "swp_refresh", OPT_BOOL, &swp_refresh },
+      { "no_dmg",      OPT_BOOL, &no_dmg      },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2435,6 +2437,14 @@ struct mind_flay_t : public priest_spell_t
     player_td_multiplier += p -> buffs_dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
 
     player_td_multiplier += p -> glyphs.mind_flay -> effect1().percent();
+  }
+
+  virtual double calculate_tick_damage()
+  {
+    if ( no_dmg )
+      return 0.0;
+
+    return priest_spell_t::calculate_tick_damage();
   }
 
   virtual void tick( dot_t* d )
