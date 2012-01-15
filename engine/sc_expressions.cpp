@@ -195,12 +195,14 @@ int expression_t::precedence( int expr_token_type )
 {
   switch ( expr_token_type )
   {
+  case TOK_FLOOR:
+  case TOK_CEIL:
+    return 6;
+      
   case TOK_NOT:
   case TOK_PLUS:
   case TOK_MINUS:
   case TOK_ABS:
-  case TOK_FLOOR:
-  case TOK_CEIL:
     return 5;
 
   case TOK_MULT:
