@@ -90,6 +90,8 @@ struct hunter_t : public player_t
   proc_t* procs_deferred_piercing_shots;
   proc_t* procs_munched_piercing_shots;
   proc_t* procs_rolled_piercing_shots;
+  proc_t* procs_explosive_shot_focus_starved;
+  proc_t* procs_black_arrow_focus_starved;
 
   // Random Number Generation
   rng_t* rng_frenzy;
@@ -225,8 +227,8 @@ struct hunter_t : public player_t
     merge_piercing_shots = 0;
 
     // Cooldowns
-    cooldowns_explosive_shot = get_cooldown( "explosive_shot " );
-    cooldowns_vishanka       = get_cooldown( "vishanka"        );
+    cooldowns_explosive_shot = get_cooldown( "explosive_shot" );
+    cooldowns_vishanka       = get_cooldown( "vishanka"       );
 
     ranged_attack = 0;
     summon_pet_str = "";
@@ -2319,6 +2321,19 @@ struct black_arrow_t : public hunter_attack_t
     tick_power_mod=extra_coeff();
   }
 
+  virtual bool ready()
+  {
+    hunter_t* p = player -> cast_hunter();
+
+    if ( cooldown -> remains() == timespan_t::zero && ! p -> resource_available( RESOURCE_FOCUS, cost() ) )
+    {
+      if ( sim -> log ) log_t::output( sim, "Player %s was focus starved when Black Arrow was ready.", p -> name() );
+      p -> procs_black_arrow_focus_starved -> occur();
+    }
+
+    return hunter_attack_t::ready();
+  }
+
   virtual void tick( dot_t* d )
   {
     hunter_attack_t::tick( d );
@@ -2600,6 +2615,12 @@ struct explosive_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
+    if ( cooldown -> remains() == timespan_t::zero && ! p -> resource_available( RESOURCE_FOCUS, cost() ) )
+    {
+      if ( sim -> log ) log_t::output( sim, "Player %s was focus starved when Explosive Shot was ready.", p -> name() );
+      p -> procs_explosive_shot_focus_starved -> occur();
+    }
+
     if ( non_consecutive && p -> last_foreground_action )
     {
       if ( p -> last_foreground_action -> name_str == "explosive_shot" )
@@ -2840,15 +2861,6 @@ struct multi_shot_t : public hunter_attack_t
       spread_sting = new serpent_sting_spread_t( player, options_str );
 
     consumes_tier12_4pc = true;
-  }
-
-  virtual void execute()
-  {
-    hunter_attack_t::execute();
-    hunter_t* p = player -> cast_hunter();
-
-    if ( p -> buffs_bombardment -> up() && ! p -> dbc.ptr )
-      p -> buffs_bombardment -> expire();
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
@@ -3977,13 +3989,15 @@ void hunter_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_thrill_of_the_hunt = get_proc( "thrill_of_the_hunt" );
-  procs_wild_quiver        = get_proc( "wild_quiver"        );
-  procs_lock_and_load      = get_proc( "lock_and_load"      );
-  procs_flaming_arrow      = get_proc( "flaming_arrow"      );
-  procs_deferred_piercing_shots = get_proc( "deferred_piercing_shots" );
-  procs_munched_piercing_shots  = get_proc( "munched_piercing_shotse" );
-  procs_rolled_piercing_shots   = get_proc( "rolled_piercing_shots"   );
+  procs_thrill_of_the_hunt           = get_proc( "thrill_of_the_hunt"           );
+  procs_wild_quiver                  = get_proc( "wild_quiver"                  );
+  procs_lock_and_load                = get_proc( "lock_and_load"                );
+  procs_flaming_arrow                = get_proc( "flaming_arrow"                );
+  procs_deferred_piercing_shots      = get_proc( "deferred_piercing_shots"      );
+  procs_munched_piercing_shots       = get_proc( "munched_piercing_shots"       );
+  procs_rolled_piercing_shots        = get_proc( "rolled_piercing_shots"        );
+  procs_explosive_shot_focus_starved = get_proc( "explosive_shot_focus_starved" );
+  procs_black_arrow_focus_starved    = get_proc( "black_arrow_focus_starved"    );
 }
 
 // hunter_t::init_rng =======================================================
