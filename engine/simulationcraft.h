@@ -3089,7 +3089,9 @@ enum token_type_t
   TOK_NUM,
   TOK_STR,
   TOK_ABS,
-  TOK_SPELL_LIST
+  TOK_SPELL_LIST,
+  TOK_FLOOR,
+  TOK_CEIL
 };
 
 struct expr_token_t

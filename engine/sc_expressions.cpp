@@ -26,6 +26,8 @@ struct expr_unary_t : public action_expr_t
       case TOK_MINUS: result_num = - input -> result_num; break;
       case TOK_NOT:   result_num = ( input -> result_num != 0 ) ? 0 : 1; break;
       case TOK_ABS:   result_num = fabs( input -> result_num ); break;
+      case TOK_FLOOR: result_num = floor( input -> result_num ); break;
+      case TOK_CEIL:  result_num = ceil( input -> result_num ); break;
       }
     }
     else
@@ -197,6 +199,8 @@ int expression_t::precedence( int expr_token_type )
   case TOK_PLUS:
   case TOK_MINUS:
   case TOK_ABS:
+  case TOK_FLOOR:
+  case TOK_CEIL:
     return 5;
 
   case TOK_MULT:
@@ -236,6 +240,8 @@ int expression_t::is_unary( int expr_token_type )
   case TOK_PLUS:
   case TOK_MINUS:
   case TOK_ABS:
+  case TOK_FLOOR:
+  case TOK_CEIL:
     return true;
   }
   return false;
@@ -273,6 +279,8 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
   unsigned char c = expr_str[ current_index++ ];
 
   if ( c == '\0' ) return TOK_UNKNOWN;
+  if ( ( prev_token == TOK_FLOOR || prev_token == TOK_CEIL ) && c != '(' )
+    return TOK_UNKNOWN;
 
   token_str = c;
 
@@ -329,7 +337,13 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
       token_str += c;
       c = expr_str[ ++current_index ];
     }
-    return TOK_STR;
+    
+    if ( util_t::str_compare_ci( token_str, "floor" ) )
+      return TOK_FLOOR;
+    else if ( util_t::str_compare_ci( token_str, "ceil" ) )
+      return TOK_CEIL;
+    else
+      return TOK_STR;
   }
 
   if ( isdigit( c ) || c == '-' )
