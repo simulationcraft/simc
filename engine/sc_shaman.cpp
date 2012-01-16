@@ -2558,6 +2558,11 @@ struct earthquake_rumble_t : public shaman_spell_t
     may_resist = false;
   }
 
+  double armor() const
+  {
+    return 0.0;
+  }
+
   double total_spell_power() const
   {
     return player -> composite_spell_power( SCHOOL_NATURE ) * player -> composite_spell_power_multiplier();
