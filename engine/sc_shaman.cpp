@@ -2555,6 +2555,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
     callbacks = false;
+    may_resist = false;
   }
 
   double total_spell_power() const
