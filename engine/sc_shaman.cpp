@@ -2356,7 +2356,6 @@ struct chain_lightning_t : public shaman_spell_t
     p -> buffs_maelstrom_weapon        -> expire();
     p -> buffs_elemental_mastery_insta -> expire();
 
-    p -> cooldowns_elemental_mastery -> ready += timespan_t::from_millis( p -> talent_feedback -> base_value() );
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
@@ -2368,6 +2367,8 @@ struct chain_lightning_t : public shaman_spell_t
       shaman_t* p = player -> cast_shaman();
 
       trigger_rolling_thunder( this );
+
+      p -> cooldowns_elemental_mastery -> ready += timespan_t::from_millis( p -> talent_feedback -> base_value() );
 
       double overload_chance = p -> composite_mastery() * p -> mastery_elemental_overload -> base_value( E_APPLY_AURA, A_DUMMY, 0 ) / 3.0;
 
