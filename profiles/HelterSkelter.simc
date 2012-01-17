@@ -1,5 +1,0 @@
-
-raid_events=casting,cooldown=30,duration=3,first=15
-raid_events+=/movement,cooldown=30,duration=5
-raid_events+=/stun,cooldown=60,duration=2
-raid_events+=/invulnerable,cooldown=120,duration=3
