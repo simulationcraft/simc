@@ -23,7 +23,7 @@ actions+=/berserking
 actions+=/insect_swarm,if=(ticks_remain<2|(dot.insect_swarm.remains<10&buff.solar_eclipse.up&eclipse<15))&(buff.solar_eclipse.up|buff.lunar_eclipse.up|time<10)
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
 actions+=/typhoon,moving=1
-actions+=/starfall,if=buff.lunar_eclipse.up
+actions+=/starfall,if=eclipse<-80
 actions+=/sunfire,if=(ticks_remain<2&!dot.moonfire.remains>0)|(eclipse<15&dot.sunfire.remains<10)
 actions+=/moonfire,if=buff.lunar_eclipse.up&((ticks_remain<2&!dot.sunfire.remains>0)|(eclipse>-20&dot.moonfire.remains<10))
 actions+=/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up

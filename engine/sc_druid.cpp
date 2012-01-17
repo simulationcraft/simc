@@ -5292,7 +5292,7 @@ void druid_t::init_actions()
         action_list_str += "/typhoon,moving=1";
       if ( talents.starfall -> rank() )
       {
-        action_list_str += "/starfall,if=buff.lunar_eclipse.up";
+        action_list_str += "/starfall,if=eclipse<-80";
       }
 
       const std::string renew_after = util_t::to_string( set_bonus.tier12_4pc_caster() ? 7 : 10 );
