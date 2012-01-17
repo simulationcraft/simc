@@ -548,6 +548,7 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> fixed_time  = 1;
     sim -> vary_combat_length = 0.0;
     sim -> raid_events_str =  "flying,first=0,duration=500,cooldown=500";
+    sim -> raid_events_str +=  "/position_switch,first=0,duration=500,cooldown=500";
     sim -> raid_events_str += "/stun,duration=1.0,first=45.0,period=45.0";
     sim -> raid_events_str += "/stun,duration=1.0,first=57.0,period=57.0";
     sim -> raid_events_str += "/damage,first=6.0,period=6.0,last=59.5,amount=44000,type=shadow";

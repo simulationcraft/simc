@@ -5230,14 +5230,16 @@ void druid_t::init_actions()
         }
         action_list_str += use_str;
         action_list_str += init_use_profession_actions();
-        action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        action_list_str += "/shred,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4";
+        action_list_str += "/mangle_cat,extend_rip=1,if=position_front&dot.rip.ticking&dot.rip.remains<=4";
         if ( talents.blood_in_the_water -> rank() )
           action_list_str += "&target.health_pct>" + bitw_hp;
         action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
         action_list_str += "/rake,if=target.time_to_die>=8.5&buff.tigers_fury.up&dot.rake.remains<9.0&(!dot.rake.ticking|dot.rake.multiplier<multiplier)";
         action_list_str += "/rake,if=target.time_to_die>=dot.rake.remains&dot.rake.remains<3.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
-        action_list_str += "/shred,if=buff.omen_of_clarity.react";
+        action_list_str += "/shred,if=position_back&buff.omen_of_clarity.react";
+        action_list_str += "/mangle_cat,if=position_front&buff.omen_of_clarity.react";
         action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
         action_list_str += "/ravage,if=(buff.stampede_cat.up|buff.t13_4pc_melee.up)&cooldown.tigers_fury.remains=0";
         action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&buff.combo_points.stack>=5)|target.time_to_die<=1";
@@ -5252,11 +5254,16 @@ void druid_t::init_actions()
         action_list_str += "/ravage,if=(buff.stampede_cat.up|buff.t13_4pc_melee.up)&!buff.omen_of_clarity.react&buff.tigers_fury.up&time_to_max_energy>1.0";
         if ( set_bonus.tier11_4pc_melee() )
           action_list_str += "/mangle_cat,if=set_bonus.tier11_4pc_melee&buff.t11_4pc_melee.stack<3";
-        action_list_str += "/shred,if=buff.tigers_fury.up|buff.berserk.up";
-        action_list_str += "/shred,if=(buff.combo_points.stack<5&dot.rip.remains<3.0)|(buff.combo_points.stack=0&buff.savage_roar.remains<2)";
-        action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/shred,if=target.time_to_die<=8.5";
-        action_list_str += "/shred,if=time_to_max_energy<=1.0";
+        action_list_str += "/shred,if=position_back&(buff.tigers_fury.up|buff.berserk.up)";
+        action_list_str += "/shred,if=position_back&((buff.combo_points.stack<5&dot.rip.remains<3.0)|(buff.combo_points.stack=0&buff.savage_roar.remains<2))";
+        action_list_str += "/shred,if=position_back&cooldown.tigers_fury.remains<=3.0";
+        action_list_str += "/shred,if=position_back&target.time_to_die<=8.5";
+        action_list_str += "/shred,if=position_back&time_to_max_energy<=1.0";
+        action_list_str += "/mangle_cat,if=position_front&(buff.tigers_fury.up|buff.berserk.up)";
+        action_list_str += "/mangle_cat,if=position_front&((buff.combo_points.stack<5&dot.rip.remains<3.0)|(buff.combo_points.stack=0&buff.savage_roar.remains<2))";
+        action_list_str += "/mangle_cat,if=position_front&cooldown.tigers_fury.remains<=3.0";
+        action_list_str += "/mangle_cat,if=position_front&target.time_to_die<=8.5";
+        action_list_str += "/mangle_cat,if=position_front&time_to_max_energy<=1.0";
       }
     }
     else if ( primary_role() == ROLE_SPELL )
