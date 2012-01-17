@@ -1830,19 +1830,6 @@ struct heroic_leap_t : public warrior_attack_t
     // FIXME: Can this miss, dodge, parry, etc?
     // If it can parry/dodge, does it inherit the expertise from the MH?
   }
-
-  virtual bool ready()
-  {
-    bool ranged = ( player -> position == POSITION_RANGED_FRONT ||
-                    player -> position == POSITION_RANGED_BACK );
-
-    if ( player -> in_combat && ! ranged )
-    {
-      return false;
-    }
-
-    return warrior_attack_t::ready();
-  }
 };
 
 // Mortal Strike ============================================================
@@ -3649,6 +3636,10 @@ void warrior_t::init_actions()
 
     action_list_str += init_use_profession_actions();
     action_list_str += init_use_racial_actions();
+
+    // Heroic Leap, for everyone but tanks
+    if ( primary_role() != ROLE_TANK )
+      action_list_str += "/heroic_leap,use_off_gcd=1";
 
     // Arms
     if ( primary_tree() == TREE_ARMS )
