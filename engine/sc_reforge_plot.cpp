@@ -197,15 +197,15 @@ void reforge_plot_t::analyze_stats()
       {
         reforge_plot_data_t data;
         player_t* delta_p = current_reforge_sim -> find_player( p -> name() );
-        if ( delta_p -> primary_role() == ROLE_DPS )
-        {
-          data.value = delta_p -> dps.mean;
-          data.error = delta_p -> dps_error;
-        }
-        else
+        if ( delta_p -> primary_role() == ROLE_HEAL )
         {
           data.value = delta_p -> hps.mean;
           data.error = delta_p -> hps_error;
+        }
+        else
+        {
+          data.value = delta_p -> dps.mean;
+          data.error = delta_p -> dps_error;
         }
         delta_result[ stat_mods[ i ].size() ] = data;
         p -> reforge_plot_data.push_back( delta_result );
