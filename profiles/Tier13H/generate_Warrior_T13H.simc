@@ -30,31 +30,7 @@ main_hand=gurthalak_voice_of_the_deeps,id=78478,enchant=landslide
 ranged=darting_chakram,id=77087,reforge=exp_haste
 save=Warrior_Arms_T13H.simc
 
-warrior=Warrior_Fury_1h_T13H
-level=85
-race=worgen
-role=attack
-use_pre_potion=1
-professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022320120000000000000000000
-glyphs=death_wish/cleaving/heroic_throw/battle/berserker_rage/bloody_healing/slam/raging_blow/bloodthirst
-head=colossal_dragonplate_helmet,id=78688,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery
-neck=necklace_of_black_dragons_teeth,id=77090
-shoulders=backbreaker_spaulders,id=78465,gems=50str_50str_20str,enchant=50str_25crit,reforge=mastery_hit
-chest=colossal_dragonplate_battleplate,id=78657,gems=50str_50str_25str_25crit_30str,enchant=20all,reforge=mastery_haste
-waist=demonbone_waistguard,id=77185,gems=67str_25str_25hit_20str,reforge=mastery_haste
-legs=colossal_dragonplate_legplates,id=78706,gems=50str_50str_50str_30str,enchant=190ap_55crit,reforge=mastery_crit
-feet=treads_of_crushed_flesh,id=78389,gems=50str_50str_20str,enchant=35mastery,reforge=mastery_hit
-wrists=rockhide_bracers,id=78373,gems=67str_50str_10str,enchant=50str,reforge=mastery_hit
-hands=colossal_dragonplate_gauntlets,id=78668,gems=50str_10str,enchant=50str
-finger1=ring_of_torn_flesh,id=77110,gems=25str_25crit_10str,reforge=mastery_hit
-finger2=curled_twilight_claw,id=78432,gems=50str_10str,reforge=mastery_crit
-trinket1=creche_of_the_final_dragon,id=77992
-trinket2=eye_of_unmaking,id=77997
-back=dreamcrusher_drape,id=77097,enchant=65crit
-main_hand=souldrinker,id=78479,enchant=landslide
-off_hand=souldrinker,id=78479,enchant=landslide
-ranged=darting_chakram,id=77087
+chardev=321154 name=Warrior_Fury_1h_T13H
 save=Warrior_Fury_1h_T13H.simc
 
 warrior=Warrior_Fury_2h_T13H
