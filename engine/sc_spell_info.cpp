@@ -260,15 +260,23 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
           s << " every " << e -> period().total_seconds() << " seconds";
         break;
       case A_PROC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
-          s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+        if ( e -> trigger_spell_id() )
+          if( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+          else
+            s << ": (" << e -> trigger_spell_id() << ")";
         break;
       case A_PERIODIC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
+        if ( e -> trigger_spell_id() )
         {
-          s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
-          if ( e -> period() != timespan_t::zero )
-            s << " every " << e -> period().total_seconds() << " seconds";
+          if( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          {
+            s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+            if ( e -> period() != timespan_t::zero )
+              s << " every " << e -> period().total_seconds() << " seconds";
+          }
+          else
+            s << ": (" << e -> trigger_spell_id() << ")";
         }
         break;
       case A_ADD_FLAT_MODIFIER:
