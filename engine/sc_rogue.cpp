@@ -3558,7 +3558,7 @@ void rogue_t::init_actions()
         }
       }
 
-      action_list_str += init_use_profession_actions( ( found_item >= 0 ) ? "" : ",if=buff.shadow_dance.up" );
+      action_list_str += init_use_profession_actions( ( found_item >= 0 ) ? "" : ",if=buff.shadow_dance.up|position_front" );
 
       action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
