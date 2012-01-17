@@ -1,7 +1,7 @@
 #!./simc 
 
 paladin=Paladin_Retribution_T13H
-origin="http://www.wowhead.com/profile=33906831"
+origin="http://chardev.org/?profile=321151"
 level=85
 race=human
 position=back
@@ -9,7 +9,7 @@ role=hybrid
 use_pre_potion=1
 professions=blacksmithing=525/enchanting=525
 talents=http://www.wowhead.com/talent#paladin-203002000000000000000200000000000000000023203213211113012301
-glyphs=templars_verdict/exorcism/seal_of_truth/the_ascetic_crusader/hammer_of_wrath/rebuke
+glyphs=the_ascetic_crusader/hammer_of_wrath/rebuke/templars_verdict/exorcism/seal_of_truth
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
 actions+=/seal_of_truth
@@ -32,34 +32,34 @@ actions+=/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.2&cooldown.crusader
 actions+=/holy_wrath
 actions+=/consecration,not_flying=1,if=mana>16000
 actions+=/divine_plea
-head=helmet_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=3231armor_489str_824sta_316hit_356exp,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery
-neck=necklace_of_black_dragons_teeth,ilevel=397,quality=epic,stats=271str_406sta_189hit_167crit,reforge=crit_mastery
-shoulders=backbreaker_spaulders,heroic=1,type=plate,ilevel=416,quality=epic,stats=3035armor_391str_647sta_257crit_257mastery,gems=50str_50str_20str,enchant=50str_25crit
-chest=battleplate_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=3977armor_489str_824sta_329haste_343mastery,reforge=haste_crit,gems=50str_50str_50str_30str,enchant=20all
-waist=runescriven_demon_collar,heroic=1,type=plate,ilevel=410,quality=epic,stats=2237armor_368str_611sta_271mastery_218haste,reforge=haste_hit,gems=50str_50str_50str_20str
+head=helmet_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=3231armor_489str_824sta_316hit_356exp,reforge=exp_mastery,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery
+neck=necklace_of_black_dragons_teeth,ilevel=397,quality=epic,stats=271str_406sta_189hit_167crit,reforge=hit_mastery
+shoulders=backbreaker_spaulders,heroic=1,type=plate,ilevel=416,quality=epic,stats=3035armor_391str_647sta_257crit_257mastery,reforge=crit_exp,gems=50str_50str_20str,enchant=50str_25crit
+chest=battleplate_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=3977armor_489str_824sta_329haste_343mastery,reforge=haste_hit,gems=50str_50str_50str_30str,enchant=20all
+waist=runescriven_demon_collar,heroic=1,type=plate,ilevel=410,quality=epic,stats=2237armor_368str_611sta_271mastery_218haste,reforge=haste_crit,gems=50str_50str_50str_20str
 legs=legplates_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=3480armor_489str_824sta_350mastery_319crit,gems=50str_50str_25str_25mastery_30str,enchant=55crit_190ap
-feet=treads_of_crushed_flesh,heroic=1,type=plate,ilevel=410,quality=epic,stats=2734armor_368str_611sta_259mastery_237crit,gems=50str_50str_20str
-wrists=rockhide_bracers,heroic=1,type=plate,ilevel=410,quality=epic,stats=1740armor_286str_459sta_159mastery_219crit,gems=50str_50str_10str,enchant=50str
-hands=gauntlets_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=2486armor_388str_611sta_258crit_262haste,reforge=haste_hit,gems=50str_50str_10str,enchant=50str
-finger1=breathstealer_band,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_194haste_194mastery,reforge=haste_crit,gems=50str_10str,enchant=40str
-finger2=curled_twilight_claw,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_225mastery_143hit,gems=50str_10str,enchant=40str
+feet=treads_of_crushed_flesh,heroic=1,type=plate,ilevel=410,quality=epic,stats=2734armor_368str_611sta_259mastery_237crit,gems=50str_50str_20str,enchant=50mastery
+wrists=rockhide_bracers,heroic=1,type=plate,ilevel=410,quality=epic,stats=1740armor_286str_459sta_159mastery_219crit,reforge=crit_hit,gems=50str_50str_10str,enchant=50str
+hands=gauntlets_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=2486armor_388str_611sta_258crit_262haste,reforge=haste_mastery,gems=50str_50str_10str,enchant=50str
+finger1=curled_twilight_claw,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_225mastery_143hit,gems=50str_10str,enchant=40str
+finger2=breathstealer_band,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_194haste_194mastery,reforge=haste_exp,gems=50str_10str,enchant=40str
 trinket1=eye_of_unmaking,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99str_100%_10dur_10stack
 trinket2=creche_of_the_final_dragon,heroic=1,ilevel=410,quality=epic,stats=517str,equip=ondamage_3278crit_15%_20dur_115cd
 back=dreamcrusher_drape,ilevel=397,quality=epic,stats=769armor_251str_406sta_196crit_127hit,reforge=crit_mastery,gems=50str_10str,enchant=65crit
 main_hand=gurthalak_voice_of_the_deeps,heroic=1,ilevel=416,quality=epic,stats=581str_871sta,enchant=landslide,weapon=sword2h_3.60speed_3053min_4580max
-ranged=gutripper_shard,heroic=1,ilevel=410,quality=epic,stats=172str_259sta_104mastery_122haste,reforge=haste_exp,gems=50str
+ranged=gutripper_shard,ilevel=397,quality=epic,stats=153str_230sta_92mastery_108haste,reforge=haste_hit,gems=50str
 # Gear Summary
-# gear_strength=7271
+# gear_strength=7252
 # gear_agility=20
-# gear_stamina=8291
+# gear_stamina=8262
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=404
-# gear_hit_rating=966
-# gear_crit_rating=1862
-# gear_haste_rating=678
-# gear_mastery_rating=2366
+# gear_expertise_rating=393
+# gear_hit_rating=961
+# gear_crit_rating=1618
+# gear_haste_rating=669
+# gear_mastery_rating=2659
 # gear_armor=23689
 # meta_gem=reverberating_shadowspirit
 # tier13_2pc_melee=1
