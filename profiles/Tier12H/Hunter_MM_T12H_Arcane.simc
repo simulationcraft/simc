@@ -12,7 +12,7 @@ talents=http://www.wowhead.com/talent#hunter-02300200000000000002302320032120231
 glyphs=steady_shot/arcane_shot/rapid_fire
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
-actions+=/hunters_mark
+actions+=/hunters_mark,if=target.time_to_die>=21
 actions+=/summon_pet
 actions+=/trueshot_aura
 actions+=/snapshot_stats

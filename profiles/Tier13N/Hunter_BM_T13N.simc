@@ -12,7 +12,7 @@ talents=http://www.wowhead.com/talent#hunter-23302303113201121212302000000000000
 glyphs=bestial_wrath/kill_command/arcane_shot/kill_shot
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
-actions+=/hunters_mark
+actions+=/hunters_mark,if=target.time_to_die>=21
 actions+=/summon_pet
 actions+=/snapshot_stats
 actions+=/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60
