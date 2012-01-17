@@ -1815,6 +1815,7 @@ struct heroic_leap_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     aoe = -1;
+    may_dodge = may_parry = false;
 
     // Damage is stored in a trigger spell
     const spell_data_t* dmg_spell = p -> dbc.spell( effect3().trigger_spell_id() );
@@ -1826,9 +1827,6 @@ struct heroic_leap_t : public warrior_attack_t
 
     // Heroic Leap can trigger procs from either weapon
     proc_ignores_slot = true;
-
-    // FIXME: Can this miss, dodge, parry, etc?
-    // If it can parry/dodge, does it inherit the expertise from the MH?
   }
 };
 
@@ -3563,7 +3561,6 @@ void warrior_t::init_actions()
   {
     switch ( primary_tree() )
     {
-
     case TREE_FURY:
     case TREE_ARMS:
       // Flask
@@ -3694,7 +3691,9 @@ void warrior_t::init_actions()
       action_list_str += "/whirlwind,if=target.adds>0";
       if ( set_bonus.tier13_2pc_melee() )
         action_list_str += "/inner_rage,use_off_gcd=1,if=target.adds=0&((rage>=75&target.health_pct>=20)|((buff.incite.up|buff.colossus_smash.up)&((rage>=40&target.health_pct>=20)|(rage>=65&target.health_pct<20))))";
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=(((rage>=85|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=75))&target.health_pct>=20)|buff.battle_trance.up|((buff.incite.up|buff.colossus_smash.up)&(((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)|((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20))))";
+      action_list_str += "/heroic_strike,use_off_gcd=1,if=(rage>=85|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=75))&target.health_pct>=20";
+      action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.battle_trance.up";
+      action_list_str += "/heroic_strike,use_off_gcd=1,if=(buff.incite.up|buff.colossus_smash.up)&(((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)|((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20)))";
       action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
       if ( level >= 81 ) action_list_str += "/colossus_smash";
       action_list_str += "/execute,if=buff.executioner_talent.stack<5";
