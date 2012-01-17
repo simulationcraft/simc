@@ -6044,6 +6044,24 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new ptr_expr_t( a );
   }
+  if ( name_str == "position_front" )
+  {
+    struct position_front_expr_t : public action_expr_t
+    {
+      position_front_expr_t( action_t* a ) : action_expr_t( a, "position_front", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( action -> player -> position == POSITION_FRONT || action -> player -> position == POSITION_RANGED_FRONT ) ? 1 : 0; return TOK_NUM; }
+    };
+    return new position_front_expr_t( a );
+  }
+  if ( name_str == "position_back" )
+  {
+    struct position_back_expr_t : public action_expr_t
+    {
+      position_back_expr_t( action_t* a ) : action_expr_t( a, "position_back", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( action -> player -> position == POSITION_BACK || action -> player -> position == POSITION_RANGED_BACK ) ? 1 : 0; return TOK_NUM; }
+    };
+    return new position_back_expr_t( a );
+  }
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
   if ( splits[ 0 ] == "pet" )
