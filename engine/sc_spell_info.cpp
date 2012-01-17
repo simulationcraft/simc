@@ -231,8 +231,12 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
-      if ( e -> trigger_spell_id() && sim -> dbc.spell( e -> trigger_spell_id() ) )
-        s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+      if ( e -> trigger_spell_id() ) {
+        if( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+        else
+          s << ": (" << e -> trigger_spell_id() << ")";
+      }
       break;
     default:
       break;
