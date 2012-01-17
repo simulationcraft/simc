@@ -4045,7 +4045,7 @@ void hunter_t::init_actions()
     action_list_str = "flask,type=winds";
     action_list_str += "/food,type=seafood_magnifique_feast";
 
-    action_list_str += "/hunters_mark";
+    action_list_str += "/hunters_mark,if=target.time_to_die>=21";
     action_list_str += "/summon_pet";
     if ( talents.trueshot_aura -> rank() )
       action_list_str += "/trueshot_aura";
