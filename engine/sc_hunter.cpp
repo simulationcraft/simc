@@ -4133,20 +4133,34 @@ void hunter_t::init_actions()
     case TREE_SURVIVAL:
       action_list_str += "/multi_shot,if=target.adds>2";
       action_list_str += "/cobra_shot,if=target.adds>2";
-      action_list_str += "/serpent_sting,if=!ticking";
+      action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
       action_list_str += "/explosive_shot,if=(remains<2.0)";
-      action_list_str += "/explosive_trap";
+
+      if ( ! dbc.ptr )
+        action_list_str += "/explosive_trap,not_flying=1,if=target.time_to_die>=11";
+      
       action_list_str += "/kill_shot";
 
-//    Not used on fights like Patchwerk where the boss stands still.
-//      if ( talents.black_arrow -> rank() ) action_list_str += "/black_arrow,if=!ticking";
+      if ( talents.black_arrow -> rank() )
+      {
+        if ( dbc.ptr )
+          action_list_str += "/black_arrow,if=target.time_to_die>=8";
+        else
+          action_list_str += "/black_arrow,flying=1,if=target.time_to_die>=8";
+      }
 
       action_list_str += "/rapid_fire";
-      action_list_str += "/arcane_shot,if=focus>=50&!buff.lock_and_load.react";
+
+      if ( dbc.ptr )
+        action_list_str += "/arcane_shot,if=focus>=67";
+      else
+        action_list_str += "/arcane_shot,if=focus>=61&!buff.lock_and_load.react";
+
       if ( level >=81 )
         action_list_str += "/cobra_shot";
       else
         action_list_str += "/steady_shot";
+      
       if ( summon_pet_str.empty() )
         summon_pet_str = "cat";
       break;

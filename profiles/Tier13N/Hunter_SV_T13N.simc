@@ -24,12 +24,13 @@ actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
 actions+=/multi_shot,if=target.adds>2
 actions+=/cobra_shot,if=target.adds>2
-actions+=/serpent_sting,if=!ticking
+actions+=/serpent_sting,if=!ticking&target.time_to_die>=10
 actions+=/explosive_shot,if=(remains<2.0)
-actions+=/explosive_trap
+actions+=/explosive_trap,not_flying=1,if=target.time_to_die>=11
 actions+=/kill_shot
+actions+=/black_arrow,not_flying=0,if=target.time_to_die>=8
 actions+=/rapid_fire
-actions+=/arcane_shot,if=focus>=50&!buff.lock_and_load.react
+actions+=/arcane_shot,if=focus>=61&!buff.lock_and_load.react
 actions+=/cobra_shot
 head=wyrmstalkers_headguard,type=mail,ilevel=397,quality=epic,stats=2261armor_426agi_730sta_346crit_210mastery,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
 neck=cameo_of_terrible_memories,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176hit
