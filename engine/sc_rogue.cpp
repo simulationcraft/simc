@@ -3476,6 +3476,7 @@ void rogue_t::init_actions()
       action_list_str += "/envenom,if=combo_points>=4&energy>90";
       action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
       action_list_str += "/backstab,if=combo_points<5&target.health_pct<35";
+      action_list_str += "/mutilate,if=position_front&combo_points<5&target.health_pct<35";
       action_list_str += "/mutilate,if=combo_points<4&target.health_pct>=35";
       if ( talents.overkill -> rank() )
         action_list_str += "/vanish,if=time>30&energy>50";
@@ -3513,8 +3514,8 @@ void rogue_t::init_actions()
 
       if ( talents.shadow_dance -> rank() )
       {
-        action_list_str += "/pool_energy,for_next=1";
-        action_list_str += "/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down";
+        action_list_str += "/pool_energy,for_next=1,if=position_back";
+        action_list_str += "/shadow_dance,if=position_back&energy>85&combo_points<5&buff.stealthed.down";
       }
 
       int num_items = ( int ) items.size();
@@ -3561,17 +3562,17 @@ void rogue_t::init_actions()
 
       action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
-      action_list_str += "/pool_energy,for_next=1";
-      action_list_str += "/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up";
+      action_list_str += "/pool_energy,for_next=1,if=position_back";
+      action_list_str += "/vanish,if=position_back&time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up";
 
       action_list_str += "/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up";
       if ( talents.premeditation -> rank() )
         action_list_str += "/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2";
 
-      action_list_str += "/ambush,if=combo_points<=4";
+      action_list_str += "/ambush,if=combo_points<=4&position_back";
 
       if ( talents.preparation -> rank() )
-        action_list_str += "/preparation,if=cooldown.vanish.remains>60";
+        action_list_str += "/preparation,if=cooldown.vanish.remains>60&position_back";
 
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 
@@ -3584,8 +3585,8 @@ void rogue_t::init_actions()
 
       if ( talents.hemorrhage -> rank() )
       {
-        action_list_str += "/hemorrhage,if=combo_points<4&dot.hemorrhage.remains<4";
-        action_list_str += "/hemorrhage,if=combo_points<5&energy>80&dot.hemorrhage.remains<4";
+        action_list_str += "/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)";
+        action_list_str += "/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)";
       }
 
       action_list_str += "/backstab,if=combo_points<4";

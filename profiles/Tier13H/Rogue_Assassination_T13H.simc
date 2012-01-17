@@ -31,6 +31,7 @@ actions+=/envenom,if=combo_points>=4&buff.envenom.down
 actions+=/envenom,if=combo_points>=4&energy>90
 actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
 actions+=/backstab,if=combo_points<5&target.health_pct<35
+actions+=/mutilate,if=position_front&combo_points<5&target.health_pct<35
 actions+=/mutilate,if=combo_points<4&target.health_pct>=35
 actions+=/vanish,if=time>30&energy>50
 head=blackfang_battleweave_helmet,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_318crit_354haste,reforge=crit_hit,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
@@ -70,3 +71,4 @@ ranged=horrifying_horn_arbalest,heroic=1,ilevel=410,quality=epic,stats=172agi_25
 # main_hand=blade_of_the_unmaker,heroic=1,weapon=dagger_1.80speed_1132min_1698max,enchant=landslide
 # off_hand=electrowing_dagger,heroic=1,weapon=dagger_1.40speed_728min_1353max,enchant=landslide
 # ranged=horrifying_horn_arbalest,heroic=1,weapon=crossbow_2.90speed_2325min_3489max
+
