@@ -991,7 +991,7 @@ timespan_t spell_id_t::mod_additive_duration() const
     (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_DURATION || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
     (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_DURATION || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
   );
-  return timespan_t::from_millis(mod_additive( P_DURATION ));
+  return timespan_t::from_seconds(mod_additive( P_DURATION ));
 }
 
 timespan_t spell_id_t::mod_additive_cast_time() const
@@ -1002,7 +1002,7 @@ timespan_t spell_id_t::mod_additive_cast_time() const
     (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_CAST_TIME || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
     (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_CAST_TIME || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
   );
-  return timespan_t::from_millis(mod_additive( P_CAST_TIME ));
+  return timespan_t::from_seconds(mod_additive( P_CAST_TIME ));
 }
 
 timespan_t spell_id_t::mod_additive_cooldown() const
@@ -1013,7 +1013,7 @@ timespan_t spell_id_t::mod_additive_cooldown() const
     (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_COOLDOWN || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
     (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_COOLDOWN || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
   );
-  return timespan_t::from_millis(mod_additive( P_COOLDOWN ));
+  return timespan_t::from_seconds(mod_additive( P_COOLDOWN ));
 }
 
 timespan_t spell_id_t::mod_additive_tick_time() const
@@ -1024,7 +1024,7 @@ timespan_t spell_id_t::mod_additive_tick_time() const
     (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_TICK_TIME || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
     (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_TICK_TIME || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
   );
-  return timespan_t::from_millis(mod_additive( P_TICK_TIME ));
+  return timespan_t::from_seconds(mod_additive( P_TICK_TIME ));
 }
 
 timespan_t spell_id_t::mod_additive_gcd() const
@@ -1035,7 +1035,7 @@ timespan_t spell_id_t::mod_additive_gcd() const
     (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_GCD || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
     (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_GCD || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
   );
-  return timespan_t::from_millis(mod_additive( P_GCD ));
+  return timespan_t::from_seconds(mod_additive( P_GCD ));
 }
 
 
