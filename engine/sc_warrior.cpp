@@ -1487,8 +1487,6 @@ struct cleave_t : public warrior_attack_t
     // Include the weapon so we benefit from racials
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
-    // Cleave can trigger procs from either weapon
-    proc_ignores_slot = true;
 
     base_multiplier *= 1.0 + p -> talents.thunderstruck -> effect1().percent();
 
@@ -1660,9 +1658,6 @@ struct execute_t : public warrior_attack_t
     base_dd_min        = 10;
     base_dd_max        = 10;
 
-    // Execute can trigger weapon procs from either slot
-    proc_ignores_slot = true;
-
     // Rage scaling is handled in player_buff()
 
     stancemask = STANCE_BATTLE | STANCE_BERSERKER;
@@ -1744,8 +1739,6 @@ struct heroic_strike_t : public warrior_attack_t
     // Include the weapon so we benefit from racials
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
-    // HS can trigger procs from either weapon
-    proc_ignores_slot = true;
 
     base_crit        += p -> talents.incite -> effect1().percent();
     base_dd_min       = base_dd_max = 8;
