@@ -1,6 +1,6 @@
 #!./simc 
 
-rogue=Rogue_Subtlety_T13H
+rogue=Rogue_Subtlety_T13H_TEST
 origin="http://www.wowhead.com/profile=33907993"
 level=85
 race=troll
@@ -19,16 +19,16 @@ actions+=/auto_attack
 actions+=/stealth
 actions+=/kick
 actions+=/tricks_of_the_trade,if=set_bonus.tier12_4pc_melee|set_bonus.tier13_2pc_melee
-actions+=/pool_energy,for_next=1,if=position_back
-actions+=/shadow_dance,if=position_back&energy>85&combo_points<5&buff.stealthed.down
+actions+=/pool_energy,for_next=1
+actions+=/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down
 actions+=/use_item,name=blackfang_battleweave_gloves,if=buff.shadow_dance.up
-actions+=/berserking,if=buff.shadow_dance.up|position_front
+actions+=/berserking,if=buff.shadow_dance.up
 actions+=/pool_energy,for_next=1,if=position_back
-actions+=/vanish,if=position_back&time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up
+actions+=/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up
 actions+=/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up
 actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2
-actions+=/ambush,if=position_back&combo_points<=4
-actions+=/preparation,if=cooldown.vanish.remains>60&position_back
+actions+=/ambush,if=combo_points<=4
+actions+=/preparation,if=cooldown.vanish.remains>60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
 actions+=/rupture,if=combo_points=5&!ticking
 actions+=/recuperate,if=combo_points=5&remains<3
