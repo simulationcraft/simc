@@ -1,6 +1,6 @@
 #!./simc 
 
-rogue=Rogue_Subtlety_T13H_TEST
+rogue=Rogue_Subtlety_T13H
 origin="http://www.wowhead.com/profile=33907993"
 level=85
 race=troll
@@ -23,7 +23,7 @@ actions+=/pool_energy,for_next=1
 actions+=/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down
 actions+=/use_item,name=blackfang_battleweave_gloves,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
-actions+=/pool_energy,for_next=1,if=position_back
+actions+=/pool_energy,for_next=1
 actions+=/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up
 actions+=/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up
 actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2

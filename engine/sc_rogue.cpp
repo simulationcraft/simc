@@ -3562,7 +3562,7 @@ void rogue_t::init_actions()
 
       action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
-      action_list_str += "/pool_energy,for_next=1,if=position_back";
+      action_list_str += "/pool_energy,for_next=1";
       action_list_str += "/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!buff.find_weakness.up";
 
       action_list_str += "/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up";
