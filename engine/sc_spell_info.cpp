@@ -261,10 +261,16 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
         break;
       case A_PROC_TRIGGER_SPELL:
         if ( e -> trigger_spell_id() )
+        {
           if( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          {
             s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+          }
           else
+          {
             s << ": (" << e -> trigger_spell_id() << ")";
+          }
+        }
         break;
       case A_PERIODIC_TRIGGER_SPELL:
         if ( e -> trigger_spell_id() )
