@@ -1572,7 +1572,7 @@ struct arcane_missiles_t : public mage_spell_t
     num_ticks += p -> talents.improved_arcane_missiles -> rank();
     hasted_ticks = false;
 
-    base_tick_time += p -> talents.missile_barrage -> mod_additive_tick_time();
+    base_tick_time += p -> talents.missile_barrage -> mod_additive_time( P_TICK_TIME );
 
     tick_spell = new arcane_missiles_tick_t( p );
   }

@@ -2316,7 +2316,7 @@ struct chain_lightning_t : public shaman_spell_t
     direct_power_mod += p -> spec_shamanism -> effect_base_value( 1 ) / 100.0;
     base_execute_time += timespan_t::from_millis( p -> spec_shamanism -> effect_base_value( 3 ) );
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
-    cooldown -> duration += p -> spec_elemental_fury -> mod_additive_cooldown();
+    cooldown -> duration += p -> spec_elemental_fury -> mod_additive_time( P_COOLDOWN );
 
     base_multiplier     *= 1.0 +
       p -> talent_concussion -> mod_additive( P_GENERIC ) +
@@ -2929,7 +2929,7 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_t* p = player -> cast_shaman();
     check_spec( TREE_ELEMENTAL );
 
-    cooldown -> duration += p -> glyph_thunder -> mod_additive_cooldown();
+    cooldown -> duration += p -> glyph_thunder -> mod_additive_time( P_COOLDOWN );
     bonus                 =
       p -> dbc.spell( id ) -> effect2().percent() +
       p -> glyph_thunderstorm -> mod_additive( P_EFFECT_2 ) / 100.0;
@@ -3036,7 +3036,7 @@ struct earth_shock_t : public shaman_spell_t
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     cooldown = p -> cooldowns_shock;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() + p -> talent_reverberation -> mod_additive_cooldown();
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() + p -> talent_reverberation -> mod_additive_time( P_COOLDOWN );
 
     if ( p -> glyph_shocking -> ok() )
     {
@@ -3106,7 +3106,7 @@ struct flame_shock_t : public shaman_spell_t
     num_ticks = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + p -> glyph_flame_shock -> mod_additive( P_DURATION ) ) );
 
     cooldown              = p -> cooldowns_shock;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() + p -> talent_reverberation -> mod_additive_cooldown();
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() + p -> talent_reverberation -> mod_additive_time( P_COOLDOWN );
 
     if ( p -> glyph_shocking -> ok() )
     {
@@ -3179,7 +3179,7 @@ struct frost_shock_t : public shaman_spell_t
     crit_bonus_multiplier *= 1.0 + p -> spec_elemental_fury -> mod_additive( P_CRIT_DAMAGE );
 
     cooldown              = p -> cooldowns_shock;
-    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() + p -> talent_reverberation -> mod_additive_cooldown();
+    cooldown -> duration = p -> dbc.spell( id ) -> cooldown() + p -> talent_reverberation -> mod_additive_time( P_COOLDOWN );
 
     if ( p -> glyph_shocking -> ok() )
     {
@@ -3200,7 +3200,7 @@ struct wind_shear_t : public shaman_spell_t
 
     may_miss = may_resist = may_crit = false;
 
-    cooldown -> duration += p -> talent_reverberation -> mod_additive_cooldown();
+    cooldown -> duration += p -> talent_reverberation -> mod_additive_time( P_COOLDOWN );
   }
 
   virtual bool ready()
@@ -3408,7 +3408,7 @@ struct fire_elemental_totem_t : public shaman_totem_t
   {
     shaman_t* p = player -> cast_shaman();
 
-    cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive_cooldown();
+    cooldown -> duration += p -> glyph_fire_elemental_totem -> mod_additive_time( P_COOLDOWN );
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
   }

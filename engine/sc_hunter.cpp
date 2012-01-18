@@ -2458,7 +2458,7 @@ struct chimera_shot_t : public hunter_attack_t
 
     normalize_weapon_speed = true;
 
-    cooldown -> duration += p -> glyphs.chimera_shot -> mod_additive_cooldown();
+    cooldown -> duration += p -> glyphs.chimera_shot -> mod_additive_time( P_COOLDOWN );
 
     consumes_tier12_4pc = true;
   }

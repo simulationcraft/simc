@@ -2413,7 +2413,7 @@ struct blood_tap_t : public death_knight_spell_t
     base_cost = 0.0; // Cost is stored as 6 in the DBC for some odd reason
     harmful   = false;
     if ( p -> talents.improved_blood_tap -> rank() )
-      cooldown -> duration += p -> talents.improved_blood_tap -> mod_additive_cooldown();
+      cooldown -> duration += p -> talents.improved_blood_tap -> mod_additive_time( P_COOLDOWN );
   }
 
   void execute()

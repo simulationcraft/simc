@@ -584,7 +584,7 @@ static void print_text_scale_factors( FILE* file, player_t* p )
     {
       util_t::fprintf( file, "  %s=%.*f(%.*f)", util_t::stat_type_abbrev( i ),
                        p -> sim -> report_precision, sf.get_stat( i ),
-                       p -> sim -> report_precision, p -> scaling_error.get_stat( i ) );;
+                       p -> sim -> report_precision, p -> scaling_error.get_stat( i ) );
     }
   }
   if ( p -> sim -> scaling -> normalize_scale_factors )

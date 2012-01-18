@@ -908,6 +908,34 @@ double spell_id_t::base_value( effect_type_t type, effect_subtype_t sub_type, in
   return 0.0;
 }
 
+const spelleffect_data_t* spell_id_t::get_effect( property_type_t p_type ) const
+{
+  if ( ! ok() )
+    return NULL;
+
+  if ( s_single )
+  {
+    if ( ( p_type == P_MAX ) || ( s_single -> subtype() == A_ADD_FLAT_MODIFIER ) || ( s_single -> subtype() == A_ADD_PCT_MODIFIER ) )
+      return s_single;
+    else
+      return NULL;
+  }
+
+  for ( int i = 0; i < MAX_EFFECTS; i++ )
+  {
+    if ( ! s_effects[ i ] )
+      continue;
+
+    if ( s_effects[ i ] -> subtype() != A_ADD_FLAT_MODIFIER && s_effects[ i ] -> subtype() != A_ADD_PCT_MODIFIER )
+      continue;
+
+    if ( p_type == P_MAX || s_effects[ i ] -> misc_value1() == p_type )
+      return s_effects[ i ];
+  }
+
+  return NULL;
+}
+
 double spell_id_t::mod_additive( property_type_t p_type ) const
 {
   // Move this somewhere sane, here for now
@@ -944,100 +972,30 @@ double spell_id_t::mod_additive( property_type_t p_type ) const
     100.0,  // P_DISPEL_CHANCE
   };
 
-  if ( ! ok() )
+  const spelleffect_data_t* effect = get_effect( p_type );
+
+  if( effect == NULL )
     return 0.0;
 
-  if ( s_single )
-  {
-    if ( ( p_type == P_MAX ) || ( s_single -> subtype() == A_ADD_FLAT_MODIFIER ) || ( s_single -> subtype() == A_ADD_PCT_MODIFIER ) )
-    {
-      if ( s_single -> subtype() == ( int ) A_ADD_PCT_MODIFIER )
-        return s_single -> base_value() / 100.0;
-      // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
-      else
-        return s_single -> base_value() / property_flat_divisor[ s_single -> misc_value1() ];
-    }
-    else
-      return 0.0;
-  }
-
-  for ( int i = 0; i < MAX_EFFECTS; i++ )
-  {
-    if ( ! s_effects[ i ] )
-      continue;
-
-    if ( s_effects[ i ] -> subtype() != A_ADD_FLAT_MODIFIER && s_effects[ i ] -> subtype() != A_ADD_PCT_MODIFIER )
-      continue;
-
-    if ( p_type == P_MAX || s_effects[ i ] -> misc_value1() == p_type )
-    {
-      // Divide by 100 for every A_ADD_PCT_MODIFIER
-      if ( s_effects[ i ] -> subtype() == ( int ) A_ADD_PCT_MODIFIER )
-        return s_effects[ i ] -> base_value() / 100.0;
-      // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
-      else
-        return s_effects[ i ] -> base_value() / property_flat_divisor[ s_effects[ i ] -> misc_value1() ];
-    }
-  }
-
-  return 0.0;
+  // Divide by 100 for every A_ADD_PCT_MODIFIER
+  if( effect -> subtype() == ( int ) A_ADD_PCT_MODIFIER )
+    return effect -> base_value() / 100.0;
+  // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
+  else
+    return effect -> base_value() / property_flat_divisor[ effect -> misc_value1() ];
 }
 
-timespan_t spell_id_t::mod_additive_duration() const
+timespan_t spell_id_t::mod_additive_time( property_type_t p_type ) const
 {
-  assert(
-    (s_single     == NULL || s_single     -> misc_value1() != P_DURATION || s_single     -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[0] == NULL || s_effects[0] -> misc_value1() != P_DURATION || s_effects[0] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_DURATION || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_DURATION || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
-  );
-  return timespan_t::from_seconds(mod_additive( P_DURATION ));
-}
+  const spelleffect_data_t* effect = get_effect( p_type );
 
-timespan_t spell_id_t::mod_additive_cast_time() const
-{
-  assert(
-    (s_single     == NULL || s_single     -> misc_value1() != P_CAST_TIME || s_single     -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[0] == NULL || s_effects[0] -> misc_value1() != P_CAST_TIME || s_effects[0] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_CAST_TIME || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_CAST_TIME || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
-  );
-  return timespan_t::from_seconds(mod_additive( P_CAST_TIME ));
-}
+  if( effect == NULL )
+    return timespan_t::zero;
 
-timespan_t spell_id_t::mod_additive_cooldown() const
-{
-  assert(
-    (s_single     == NULL || s_single     -> misc_value1() != P_COOLDOWN || s_single     -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[0] == NULL || s_effects[0] -> misc_value1() != P_COOLDOWN || s_effects[0] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_COOLDOWN || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_COOLDOWN || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
-  );
-  return timespan_t::from_seconds(mod_additive( P_COOLDOWN ));
-}
+  assert(effect -> subtype() == A_ADD_FLAT_MODIFIER);
 
-timespan_t spell_id_t::mod_additive_tick_time() const
-{
-  assert(
-    (s_single     == NULL || s_single     -> misc_value1() != P_TICK_TIME || s_single     -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[0] == NULL || s_effects[0] -> misc_value1() != P_TICK_TIME || s_effects[0] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_TICK_TIME || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_TICK_TIME || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
-  );
-  return timespan_t::from_seconds(mod_additive( P_TICK_TIME ));
+  return timespan_t::from_millis(effect -> base_value());
 }
-
-timespan_t spell_id_t::mod_additive_gcd() const
-{
-  assert(
-    (s_single     == NULL || s_single     -> misc_value1() != P_GCD || s_single     -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[0] == NULL || s_effects[0] -> misc_value1() != P_GCD || s_effects[0] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[1] == NULL || s_effects[1] -> misc_value1() != P_GCD || s_effects[1] -> subtype() != (int) A_ADD_PCT_MODIFIER) &&
-    (s_effects[2] == NULL || s_effects[2] -> misc_value1() != P_GCD || s_effects[2] -> subtype() != (int) A_ADD_PCT_MODIFIER)
-  );
-  return timespan_t::from_seconds(mod_additive( P_GCD ));
-}
-
 
 // ==========================================================================
 // Active Spell ID

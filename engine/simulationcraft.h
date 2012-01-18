@@ -2635,11 +2635,8 @@ struct spell_id_t
   // Return an additive modifier from the spell (E_APPLY_AURA -> A_ADD_PCT_MODIFIER|A_ADD_FLAT_MODIFIER ),
   // based on the property of the modifier (as defined by misc_value)
   virtual double mod_additive( property_type_t = P_MAX ) const;
-  timespan_t mod_additive_duration() const;
-  timespan_t mod_additive_cast_time() const;
-  timespan_t mod_additive_cooldown() const;
-  timespan_t mod_additive_tick_time() const;
-  timespan_t mod_additive_gcd() const;
+  timespan_t mod_additive_time( property_type_t = P_MAX ) const;
+  const spelleffect_data_t* get_effect( property_type_t p_type ) const;
 
   // Spell data specific static methods
   static uint32_t get_school_mask( const school_type s );

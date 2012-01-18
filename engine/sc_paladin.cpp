@@ -1250,7 +1250,7 @@ struct crusader_strike_t : public paladin_attack_t
     trigger_seal = true;
 
     // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
-    cooldown -> duration += p -> passives.judgements_of_the_wise -> mod_additive_cooldown();
+    cooldown -> duration += p -> passives.judgements_of_the_wise -> mod_additive_time( P_COOLDOWN );
     base_cooldown         = cooldown -> duration;
 
     base_crit       += p -> talents.rule_of_law -> mod_additive( P_CRIT );
@@ -1357,7 +1357,7 @@ struct hammer_of_justice_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> talents.improved_hammer_of_justice -> mod_additive_cooldown();
+    cooldown -> duration += p -> talents.improved_hammer_of_justice -> mod_additive_time( P_COOLDOWN );
   }
 };
 
@@ -2011,7 +2011,7 @@ struct avenging_wrath_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    cooldown -> duration +=   p -> talents.sanctified_wrath -> mod_additive_cooldown()
+    cooldown -> duration +=   p -> talents.sanctified_wrath -> mod_additive_time( P_COOLDOWN )
                             + p -> talents.paragon_of_virtue -> effect2().time_value()
                             + p -> talents.shield_of_the_templar -> effect3().time_value();
   }
@@ -2060,7 +2060,7 @@ struct consecration_t : public paladin_spell_t
   consecration_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "consecration", "Consecration", p ), tick_spell( 0 )
   {
-    parse_options( NULL, options_str );;
+    parse_options( NULL, options_str );
 
     hasted_ticks   = false;
     may_miss       = false;
@@ -2398,7 +2398,7 @@ struct holy_wrath_t : public paladin_spell_t
   holy_wrath_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "holy_wrath", "Holy Wrath", p )
   {
-    parse_options( NULL, options_str );;
+    parse_options( NULL, options_str );
 
     // aoe = -1; FIXME disabled until we have meteor support
     may_crit   = true;
@@ -2460,7 +2460,7 @@ struct zealotry_t : public paladin_spell_t
     update_ready();
     p -> buffs_zealotry -> trigger();
     if ( p -> set_bonus.tier12_4pc_melee() )
-      p -> buffs_zealotry -> extend_duration( p, p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive_duration() );
+      p -> buffs_zealotry -> extend_duration( p, p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive_time( P_DURATION ) );
   }
 
   virtual void consume_resource()
