@@ -2575,9 +2575,12 @@ struct explosive_shot_t : public hunter_attack_t
   int lock_and_load;
   int non_consecutive;
 
+  double base_td_min; double base_td_max;
+
   explosive_shot_t( player_t* player, const std::string& options_str ) :
     hunter_attack_t( "explosive_shot", player, "Explosive Shot" ),
-    lock_and_load( 0 ), non_consecutive( 0 )
+    lock_and_load( 0 ), non_consecutive( 0 ),
+    base_td_min( 0 ), base_td_max( 0 )
   {
     hunter_t* p = player -> cast_hunter();
     check_spec ( TREE_SURVIVAL );
@@ -2604,6 +2607,10 @@ struct explosive_shot_t : public hunter_attack_t
     tick_zero = true;
 
     consumes_tier12_4pc = true;
+
+    base_td_min = player -> dbc.effect_min( effect1().id(), player -> level );
+    base_td_max = player -> dbc.effect_max( effect1().id(), player -> level );
+    if ( sim -> debug ) log_t::output( sim, "Player %s setting Explosive Shot base_td_min=%.2f base_td_max=%.2f", p -> name(), base_td_min, base_td_max );
   }
 
   virtual double cost() const
@@ -2646,6 +2653,7 @@ struct explosive_shot_t : public hunter_attack_t
 
   virtual void execute()
   {
+    base_td = sim -> range( base_td_min, base_td_max );
     hunter_attack_t::execute();
 
     hunter_t* p = player -> cast_hunter();
