@@ -680,7 +680,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   // Report
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
-  save_raid_summary( 0 ), statistics_level( 1 ),
+  save_raid_summary( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),
   spell_query( 0 )
@@ -2330,6 +2330,7 @@ void sim_t::create_options()
     { "report_rng",                       OPT_BOOL,   &( report_rng                               ) },
     { "report_overheal",                  OPT_BOOL,   &( report_overheal                          ) },
     { "statistics_level",                 OPT_INT,    &( statistics_level                         ) },
+    { "separate_stats_by_actions",        OPT_BOOL,    &( separate_stats_by_actions                         ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

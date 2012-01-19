@@ -3545,6 +3545,7 @@ struct sim_t : private thread_t
   int report_overheal;
   int save_raid_summary;
   int statistics_level;
+  int separate_stats_by_actions;
 
   std::unordered_map<std::string, std::pair<player_type, size_t> > targetdata_items[DATA_COUNT];
   std::vector<std::pair<size_t, std::string> > targetdata_dots[PLAYER_MAX];

@@ -169,7 +169,7 @@ void action_t::init_action_t_()
 
   cooldown = player -> get_cooldown( name_str );
 
-  stats = player -> get_stats( name_str, this );
+  stats = player -> get_stats( name_str , this );
 
   id = spell_id();
   tree = util_t::talent_tree( s_tree, player -> type );

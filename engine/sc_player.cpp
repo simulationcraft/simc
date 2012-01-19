@@ -1600,6 +1600,11 @@ void player_t::init_actions()
                                  ( i < 58 ) ? ( 'a' + i - 36 ) : '.' );
 
         a -> signature_str = splits[ i ];
+
+        if (  sim -> separate_stats_by_actions > 0 )
+        {
+          a -> stats = get_stats( a -> name_str + "__" + a -> marker, a );
+        }
       }
       else
       {
