@@ -1492,7 +1492,9 @@ void action_t::init()
     cooldown = player -> get_cooldown( name_str + "_DTR" );
     cooldown -> duration = timespan_t::zero;
 
-    stats = player -> get_stats( name_str + "_DTR", this );
+    if ( sim -> separate_stats_by_actions <= 0 )
+      stats = player -> get_stats( stats -> name_str + "_DTR", this );
+
     background = true;
   }
 

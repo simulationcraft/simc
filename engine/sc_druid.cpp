@@ -1714,7 +1714,6 @@ struct pounce_bleed_t : public druid_cat_attack_t
     druid_cat_attack_t( "pounce_bleed", 9007, player )
   {
     background     = true;
-    stats          = player -> get_stats( "pounce", this );
     tick_power_mod = 0.03;
   }
 };
@@ -1730,6 +1729,13 @@ struct pounce_t : public druid_cat_attack_t
 
     requires_stealth = true;
     pounce_bleed     = new pounce_bleed_t( p );
+  }
+
+  virtual void init()
+  {
+    druid_cat_attack_t::init();
+
+    pounce_bleed -> stats = stats;
   }
 
   virtual void execute()
@@ -4044,7 +4050,6 @@ struct starfall_star_t : public druid_spell_t
     background  = true;
     dual        = true;
     direct_tick = true;
-    stats       = player -> get_stats( "starfall", this );
 
     if ( p -> primary_tree() == TREE_BALANCE )
       crit_bonus_multiplier *= 1.0 + p -> spells.moonfury -> effect2().percent();
@@ -4086,6 +4091,13 @@ struct starfall_t : public druid_spell_t
     harmful = false;
 
     starfall_star = new starfall_star_t( p );
+  }
+
+  virtual void init()
+  {
+    druid_spell_t::init();
+
+    starfall_star -> stats = stats;
   }
 
   virtual void tick( dot_t* d )

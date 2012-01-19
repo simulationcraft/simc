@@ -1865,8 +1865,6 @@ struct hymn_of_hope_tick_t : public priest_spell_t
     direct_tick = true;
 
     harmful     = false;
-
-    stats = player -> get_stats( "hymn_of_hope", this );
   }
 
   virtual void execute()
@@ -1897,6 +1895,13 @@ struct hymn_of_hope_t : public priest_spell_t
     channeled = true;
 
     hymn_of_hope_tick = new hymn_of_hope_tick_t( p );
+  }
+
+  virtual void init()
+  {
+    priest_spell_t::init();
+
+    hymn_of_hope_tick -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -2598,8 +2603,6 @@ struct mind_sear_tick_t : public priest_spell_t
     background  = true;
     dual        = true;
     direct_tick = true;
-
-    stats = player -> get_stats( "mind_sear", this );
   }
 };
 
@@ -2618,6 +2621,13 @@ struct mind_sear_t : public priest_spell_t
     may_crit  = false;
 
     mind_sear_tick = new mind_sear_tick_t( player );
+  }
+
+  virtual void init()
+  {
+    priest_spell_t::init();
+
+    mind_sear_tick -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -2884,8 +2894,6 @@ struct penance_t : public priest_spell_t
       background  = true;
       dual        = true;
       direct_tick = true;
-
-      stats = player -> get_stats( "penance", this );
     }
 
     virtual void player_buff()
@@ -2919,6 +2927,13 @@ struct penance_t : public priest_spell_t
     cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().time_value();
 
     tick_spell = new penance_tick_t( p );
+  }
+
+  virtual void init()
+  {
+    priest_spell_t::init();
+
+    tick_spell -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -3610,8 +3625,6 @@ struct holy_word_sanctuary_t : public priest_heal_t
       dual        = true;
       background  = true;
       direct_tick = true;
-
-      stats = player -> get_stats( "holy_word_sanctuary", this );
     }
     virtual void execute()
     {
@@ -3667,6 +3680,13 @@ struct holy_word_sanctuary_t : public priest_heal_t
     // see Issue1023 and http://elitistjerks.com/f77/t110245-cataclysm_holy_priest_compendium/p25/#post2054467
     base_cost        *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
     base_cost         = floor( base_cost );
+  }
+
+  virtual void init()
+  {
+    priest_heal_t::init();
+
+    tick_spell -> stats = stats;
   }
 
   virtual void tick( dot_t* d )

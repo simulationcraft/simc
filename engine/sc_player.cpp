@@ -1601,9 +1601,12 @@ void player_t::init_actions()
 
         a -> signature_str = splits[ i ];
 
-        if (  sim -> separate_stats_by_actions > 0 )
+        if (  sim -> separate_stats_by_actions > 0 && !is_pet() )
         {
           a -> stats = get_stats( a -> name_str + "__" + a -> marker, a );
+
+          if ( a -> dtr_action )
+            a -> dtr_action -> stats = get_stats( a -> name_str + "__" + a -> marker + "_DTR", a );
         }
       }
       else

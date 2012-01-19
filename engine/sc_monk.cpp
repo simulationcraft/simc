@@ -280,8 +280,6 @@ struct spinning_crane_kick_tick_t : public monk_attack_t
     dual        = true;
     direct_tick = true;
     aoe = -1;
-
-    stats = player -> get_stats( "spinning_crane_kick", this );
   }
 };
 
@@ -303,6 +301,13 @@ struct spinning_crane_kick_t : public monk_attack_t
     channeled = true;
 
     spinning_crane_kick_tick = new spinning_crane_kick_tick_t( p );
+  }
+
+  virtual void init()
+  {
+    monk_attack_t::init();
+
+    spinning_crane_kick_tick -> stats = stats;
   }
 
   virtual void tick( dot_t* d )

@@ -1549,7 +1549,6 @@ struct arcane_missiles_tick_t : public mage_spell_t
     direct_tick = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect1().percent();
     base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
-    stats = player -> get_stats( "arcane_missiles", this );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1577,6 +1576,12 @@ struct arcane_missiles_t : public mage_spell_t
     tick_spell = new arcane_missiles_tick_t( p );
   }
 
+  virtual  void init()
+  {
+    mage_spell_t::init();
+
+    tick_spell -> stats = stats;
+  }
   virtual void execute()
   {
     mage_t* p = player -> cast_mage();

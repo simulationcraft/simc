@@ -2046,8 +2046,6 @@ struct consecration_tick_t : public paladin_spell_t
     direct_power_mod             = 1.0;
 
     base_multiplier *= 1.0 + p -> talents.hallowed_ground -> mod_additive( P_GENERIC );
-
-    stats = player -> get_stats( "consecration", this );
   }
 
 
@@ -2075,6 +2073,13 @@ struct consecration_t : public paladin_spell_t
     }
 
     tick_spell = new consecration_tick_t( p );
+  }
+
+  virtual void init()
+  {
+    paladin_spell_t::init();
+
+    tick_spell -> stats = stats;
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg=0 )

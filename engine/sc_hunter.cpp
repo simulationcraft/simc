@@ -1789,8 +1789,6 @@ struct froststorm_breath_t : public hunter_pet_spell_t
       direct_power_mod = 0.24; // hardcoded into tooltip, 17/10/2011
       background  = true;
       direct_tick = true;
-
-      stats = player -> get_stats( "froststorm_breath", this );
     }
   };
 
@@ -1812,6 +1810,13 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     tick_spell = new froststorm_breath_tick_t( p );
 
     add_child( tick_spell );
+  }
+
+  virtual void init()
+  {
+    hunter_pet_spell_t::init();
+
+    tick_spell -> stats = stats;
   }
 
   virtual void tick( dot_t* d )

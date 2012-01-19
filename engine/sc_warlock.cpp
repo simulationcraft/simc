@@ -1439,7 +1439,6 @@ struct felguard_pet_t : public warlock_main_pet_t
       background  = true;
       aoe         = -1;
       direct_tick = true;
-      stats       = p -> get_stats( "felstorm", this );
       resource    = RESOURCE_MANA;
     }
   };
@@ -3620,8 +3619,6 @@ struct immolation_damage_t : public warlock_spell_t
     aoe         = -1;
     direct_tick = true;
     may_crit    = false;
-
-    stats = p -> get_stats( "immolation_aura", this );
   }
 };
 
@@ -3640,6 +3637,13 @@ struct immolation_aura_t : public warlock_spell_t
     harmful = true;
     tick_may_crit = false;
     immolation_damage = new immolation_damage_t( p );
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    immolation_damage -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -4008,7 +4012,6 @@ struct hellfire_tick_t : public warlock_spell_t
     direct_tick = true;
 
     base_multiplier *= 1.0 + p -> talent_cremation -> effect1().percent();
-    stats = p -> get_stats( "hellfire", this );
   }
 };
 
@@ -4035,6 +4038,13 @@ struct hellfire_t : public warlock_spell_t
     {
       range += p -> talent_inferno -> effect1().base_value();
     }
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    hellfire_tick -> stats = stats;
   }
 
   virtual bool usable_moving()
@@ -4131,8 +4141,6 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     background  = true;
     aoe         = -1;
     direct_tick = true;
-
-    stats = p -> get_stats( "rain_of_fire", this );
   }
 };
 
@@ -4154,6 +4162,13 @@ struct rain_of_fire_t : public warlock_spell_t
     rain_of_fire_tick = new rain_of_fire_tick_t( p );
 
     add_child( rain_of_fire_tick );
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    rain_of_fire_tick -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
