@@ -1816,6 +1816,7 @@ struct heroic_leap_t : public warrior_attack_t
 
     aoe = -1;
     may_dodge = may_parry = false;
+	harmful = true; // This should be defaulted to true, but it's not
 
     // Damage is stored in a trigger spell
     const spell_data_t* dmg_spell = p -> dbc.spell( effect3().trigger_spell_id() );

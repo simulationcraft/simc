@@ -509,6 +509,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">target:</span>%s</li>\n"
+				"\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">harmful:</span>%s</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
                 "\t\t\t\t\t\t\t\t\t\t</ul>\n"
@@ -527,6 +528,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 a -> base_execute_time.total_seconds(),
                 a -> base_crit,
                 a -> target ? a -> target -> name() : "",
+				a -> harmful ? "true" : "false",
                 a -> tooltip(),
                 report_t::encode_html( a -> desc() ).c_str() );
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
