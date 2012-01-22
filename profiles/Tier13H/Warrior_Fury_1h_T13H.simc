@@ -1,15 +1,15 @@
 #!./simc 
 
 warrior=Warrior_Fury_1h_T13H
-origin="http://chardev.org/?profile=321154"
+origin="http://chardev.org/?profile=326833"
 level=85
 race=worgen
 position=back
 role=attack
 use_pre_potion=1
-professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222203130111022320120000000000000000000
-glyphs=cleaving/colossus_smash/death_wish/battle/command/berserker_rage/bloodthirst/raging_blow/slam
+professions=blacksmithing=525/enchanting=525
+talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222103130111122320120000000000000000000
+glyphs=colossus_smash/death_wish/victory_rush/bloody_healing/berserker_rage/furious_sundering/bloodthirst/slam/raging_blow
 actions=flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk
 actions+=/snapshot_stats
@@ -39,39 +39,40 @@ actions+=/heroic_strike,use_off_gcd=1,if=rage>=85
 actions+=/raging_blow,if=rage>90&buff.inner_rage.up&cooldown.bloodthirst.remains>0.2
 actions+=/raging_blow,if=buff.colossus_smash.up&rage>50
 actions+=/battle_shout,if=rage<70&cooldown.bloodthirst.remains>0.2
-head=colossal_dragonplate_helmet,heroic=1,type=plate,ilevel=410,quality=epic,stats=3231armor_489str_824sta_341exp_331crit,reforge=crit_hit,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery
+head=colossal_dragonplate_helmet,heroic=1,type=plate,ilevel=410,quality=epic,stats=3231armor_489str_824sta_341exp_331crit,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery
 neck=necklace_of_black_dragons_teeth,ilevel=397,quality=epic,stats=271str_406sta_189hit_167crit
-shoulders=colossal_dragonplate_pauldrons,heroic=1,type=plate,ilevel=410,quality=epic,stats=2983armor_368str_611sta_248haste_253crit,reforge=haste_hit,gems=50str_25str_25hit_20str,enchant=50str_25crit
-chest=bones_of_the_damned,type=plate,ilevel=397,quality=epic,stats=3829armor_446str_730sta_297crit_308hit,gems=50str_50str_20str,enchant=20all
-waist=runescriven_demon_collar,heroic=1,type=plate,ilevel=410,quality=epic,stats=2237armor_368str_611sta_271mastery_218haste,reforge=mastery_exp,gems=50str_50str_50str_20str
-legs=colossal_dragonplate_legplates,heroic=1,type=plate,ilevel=410,quality=epic,stats=3480armor_489str_824sta_327hit_330mastery,reforge=mastery_crit,gems=67str_67str_67str_30str,enchant=55crit_190ap
-feet=treads_of_crushed_flesh,heroic=1,type=plate,ilevel=410,quality=epic,stats=2734armor_368str_611sta_259mastery_237crit,reforge=mastery_hit,gems=50str_50str_20str,enchant=50hit
-wrists=bracers_of_destructive_strength,type=plate,ilevel=397,quality=epic,stats=1675armor_231str_406sta_141exp_175crit,reforge=crit_hit,gems=50str_50str_50str_20str,enchant=50str
+shoulders=backbreaker_spaulders,heroic=1,type=plate,ilevel=416,quality=epic,stats=3035armor_391str_647sta_257crit_257mastery,reforge=mastery_hit,gems=50str_50str_20str,enchant=50str_25crit
+shirt=precious_ribbon,ilevel=1,quality=uncommon
+chest=colossal_dragonplate_battleplate,heroic=1,type=plate,ilevel=410,quality=epic,stats=3977armor_489str_824sta_375mastery_282exp,reforge=mastery_crit,gems=50str_50str_25str_25crit_30str,enchant=20all
+waist=runescriven_demon_collar,heroic=1,type=plate,ilevel=410,quality=epic,stats=2237armor_368str_611sta_271mastery_218haste,reforge=mastery_crit,gems=50str_50str_50str_20str
+legs=colossal_dragonplate_legplates,heroic=1,type=plate,ilevel=410,quality=epic,stats=3480armor_489str_824sta_327hit_330mastery,reforge=mastery_crit,gems=50str_50str_50str_30str,enchant=55crit_190ap
+feet=treads_of_crushed_flesh,heroic=1,type=plate,ilevel=410,quality=epic,stats=2734armor_368str_611sta_259mastery_237crit,reforge=mastery_hit,gems=50str_50str_20str,enchant=35mastery
+wrists=rockhide_bracers,heroic=1,type=plate,ilevel=410,quality=epic,stats=1740armor_286str_459sta_159mastery_219crit,reforge=mastery_hit,gems=50str_50str_10str,enchant=50str
 hands=colossal_dragonplate_gauntlets,heroic=1,type=plate,ilevel=410,quality=epic,stats=2486armor_388str_611sta_252hit_272crit,gems=50str_50str_10str,enchant=50str
-finger1=curled_twilight_claw,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_225mastery_143hit,reforge=mastery_crit,gems=50str_10str
-finger2=breathstealer_band,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_194haste_194mastery,reforge=mastery_exp,gems=50str_10str
-trinket1=creche_of_the_final_dragon,heroic=1,ilevel=410,quality=epic,stats=517str,equip=ondamage_3278crit_15%_20dur_115cd
-trinket2=eye_of_unmaking,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99str_100%_10dur_10stack
+finger1=breathstealer_band,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_194haste_194mastery,reforge=mastery_crit,gems=50str_10str,enchant=40str
+finger2=curled_twilight_claw,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_225mastery_143hit,reforge=mastery_crit,gems=50str_10str,enchant=40str
+trinket1=eye_of_unmaking,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99str_100%_10dur_10stack
+trinket2=creche_of_the_final_dragon,heroic=1,ilevel=410,quality=epic,stats=517str,equip=ondamage_3278crit_15%_20dur_115cd
 back=dreamcrusher_drape,ilevel=397,quality=epic,stats=769armor_251str_406sta_196crit_127hit,gems=50str_10str,enchant=65crit
 main_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=249agi_373sta,enchant=landslide,weapon=axe_2.60speed_1431min_2658max
-off_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=249agi_373sta,enchant=landslide,weapon=axe_2.60speed_1431min_2658max
-ranged=darting_chakram,ilevel=397,quality=epic,stats=153str_230sta_111exp_87crit,reforge=crit_hit,weapon=thrown_2.10speed_1492min_2238max
+off_hand=hand_of_morchok,heroic=1,ilevel=410,quality=epic,stats=215str_353sta_137mastery_157crit,reforge=mastery_exp,gems=50str_10str,enchant=landslide,weapon=axe_2.60speed_1353min_2513max
+ranged=darting_chakram,ilevel=397,quality=epic,stats=153str_230sta_111exp_87crit,weapon=thrown_2.10speed_1492min_2238max
 # Gear Summary
-# gear_strength=6471
-# gear_agility=518
-# gear_stamina=7954
+# gear_strength=6896
+# gear_agility=269
+# gear_stamina=8117
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=778
-# gear_hit_rating=1859
-# gear_crit_rating=2146
-# gear_haste_rating=561
-# gear_mastery_rating=804
-# gear_armor=23424
+# gear_expertise_rating=788
+# gear_hit_rating=1306
+# gear_crit_rating=2650
+# gear_haste_rating=412
+# gear_mastery_rating=1398
+# gear_armor=23689
 # meta_gem=reverberating_shadowspirit
 # tier13_2pc_melee=1
 # tier13_4pc_melee=1
 # main_hand=nokaled_the_elements_of_death,heroic=1,weapon=axe_2.60speed_1431min_2658max,enchant=landslide
-# off_hand=nokaled_the_elements_of_death,heroic=1,weapon=axe_2.60speed_1431min_2658max,enchant=landslide
+# off_hand=hand_of_morchok,heroic=1,weapon=axe_2.60speed_1353min_2513max,enchant=landslide
 # ranged=darting_chakram,weapon=thrown_2.10speed_1492min_2238max

@@ -30,7 +30,7 @@ main_hand=gurthalak_voice_of_the_deeps,id=78478,enchant=landslide
 ranged=darting_chakram,id=77087,reforge=exp_haste
 save=Warrior_Arms_T13H.simc
 
-chardev=321154 name=Warrior_Fury_1h_T13H
+chardev=326833 name=Warrior_Fury_1h_T13H
 save=Warrior_Fury_1h_T13H.simc
 
 warrior=Warrior_Fury_2h_T13H
