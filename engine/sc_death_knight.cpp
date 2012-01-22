@@ -222,7 +222,7 @@ struct death_knight_t : public player_t
   // Spells
   struct spells_t
   {
-	// Passives
+    // Passives
     passive_spell_t* blood_of_the_north;
     passive_spell_t* blood_rites;
     passive_spell_t* icy_talons;
@@ -233,8 +233,8 @@ struct death_knight_t : public player_t
     passive_spell_t* unholy_might;
     passive_spell_t* veteran_of_the_third_war;
 
-	// Masteries
-	mastery_t* dreadblade;
+    // Masteries
+    mastery_t* dreadblade;
     mastery_t* frozen_heart;
 
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
