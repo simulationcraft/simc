@@ -222,17 +222,20 @@ struct death_knight_t : public player_t
   // Spells
   struct spells_t
   {
-    spell_data_t* blood_of_the_north;
-    spell_data_t* blood_rites;
-    spell_data_t* dreadblade;
-    spell_data_t* frozen_heart;
-    spell_data_t* icy_talons;
-    spell_data_t* master_of_ghouls;
-    spell_data_t* plate_specialization;
-    spell_data_t* reaping;
-    spell_data_t* runic_empowerment;
-    spell_data_t* unholy_might;
-    spell_data_t* veteran_of_the_third_war;
+	// Passives
+    passive_spell_t* blood_of_the_north;
+    passive_spell_t* blood_rites;
+    passive_spell_t* icy_talons;
+    passive_spell_t* master_of_ghouls;
+    passive_spell_t* plate_specialization;
+    passive_spell_t* reaping;
+    passive_spell_t* runic_empowerment;
+    passive_spell_t* unholy_might;
+    passive_spell_t* veteran_of_the_third_war;
+
+	// Masteries
+	mastery_t* dreadblade;
+    mastery_t* frozen_heart;
 
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   };
@@ -1909,9 +1912,8 @@ double death_knight_attack_t::swing_haste() const
 {
   double haste = attack_t::swing_haste();
   death_knight_t* p = player -> cast_death_knight();
-
-  if ( p -> primary_tree() == TREE_FROST )
-    haste *= 1.0 / ( 1.0 + p -> spells.icy_talons -> effect1().percent() );
+ 
+  haste *= 1.0 / ( 1.0 + p -> spells.icy_talons -> effect1().percent() );
 
   if ( p -> talents.improved_icy_talons -> rank() )
     haste *= 1.0 / ( 1.0 + p -> talents.improved_icy_talons -> effect3().percent() );
@@ -3706,8 +3708,7 @@ struct raise_dead_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> primary_tree() == TREE_UNHOLY )
-      cooldown -> duration += p -> spells.master_of_ghouls -> effect1().time_value();
+    cooldown -> duration += p -> spells.master_of_ghouls -> effect1().time_value();
 
     harmful = false;
   }
@@ -4289,16 +4290,12 @@ void death_knight_t::init_base()
   double str_mult = ( talents.abominations_might -> effect2().percent() +
                       talents.brittle_bones      -> effect2().percent() );
 
-  if ( primary_tree() == TREE_UNHOLY )
-    str_mult += spells.unholy_might -> effect1().percent();
+  str_mult += spells.unholy_might -> effect1().percent();
 
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
 
-  if ( primary_tree() == TREE_BLOOD )
-  {
-    attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effect1().percent();
-    base_attack_expertise = spells.veteran_of_the_third_war -> effect2().percent();
-  }
+  attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effect1().percent();
+  base_attack_expertise = spells.veteran_of_the_third_war -> effect2().percent();
 
   if ( talents.toughness -> rank() )
     initial_armor_multiplier *= 1.0 + talents.toughness -> effect1().percent();
@@ -4384,23 +4381,23 @@ void death_knight_t::init_spells()
   player_t::init_spells();
 
   // Blood
-  spells.blood_rites              = spell_data_t::find( 50034, "Blood Rites",              dbc.ptr );
-  spells.veteran_of_the_third_war = spell_data_t::find( 50029, "Veteran of the Third War", dbc.ptr );
+  spells.blood_rites              = new passive_spell_t( this, "blood_rites", 50034 ); 
+  spells.veteran_of_the_third_war = new passive_spell_t( this, "veteran_of_the_third_war", 50029 );
 
   // Frost
-  spells.blood_of_the_north = spell_data_t::find( 54637, "Blood of the North", dbc.ptr );
-  spells.icy_talons         = spell_data_t::find( 50887, "Icy Talons",         dbc.ptr );
-  spells.frozen_heart       = spell_data_t::find( 77514, "Frozen Heart",       dbc.ptr );
+  spells.blood_of_the_north = new passive_spell_t( this, "blood_of_the_north", 54637 );
+  spells.icy_talons         = new passive_spell_t( this, "icy_talons", 50887 );
+  spells.frozen_heart       = new mastery_t( this, "frozen_heart", 77514, TREE_FROST );
 
   // Unholy
-  spells.dreadblade       = spell_data_t::find( 77515, "Dreadblade",       dbc.ptr );
-  spells.master_of_ghouls = spell_data_t::find( 52143, "Master of Ghouls", dbc.ptr );
-  spells.reaping          = spell_data_t::find( 56835, "Reaping",          dbc.ptr );
-  spells.unholy_might     = spell_data_t::find( 91107, "Unholy Might",     dbc.ptr );
+  spells.dreadblade       = new mastery_t( this, "dreadblade", 77515, TREE_UNHOLY );
+  spells.master_of_ghouls = new passive_spell_t( this, "master_of_ghouls", 52143 );
+  spells.reaping          = new passive_spell_t( this, "reaping", 56835 );
+  spells.unholy_might     = new passive_spell_t( this, "unholy_might", 91107 );
 
   // General
-  spells.plate_specialization = spell_data_t::find( 86524, "Plate Specialization", dbc.ptr );
-  spells.runic_empowerment    = spell_data_t::find( 81229, "Runic Empowerment",    dbc.ptr );
+  spells.plate_specialization = new passive_spell_t( this, "plate_specialization", 86524 );
+  spells.runic_empowerment    = new passive_spell_t( this, "runic_empowerment", 81229 );
 
   // Glyphs
   glyphs.death_and_decay = find_glyph( "Glyph of Death and Decay" );
@@ -5060,10 +5057,10 @@ double death_knight_t::composite_player_multiplier( const school_type school, ac
   m *= 1.0 + buffs_frost_presence -> value();
   m *= 1.0 + buffs_bone_shield -> value();
 
-  if ( primary_tree() == TREE_UNHOLY && school == SCHOOL_SHADOW )
+  if ( school == SCHOOL_SHADOW )
     m *= 1.0 + spells.dreadblade -> effect1().coeff() * 0.01 * composite_mastery();
 
-  if ( primary_tree() == TREE_FROST && school == SCHOOL_FROST )
+  if ( school == SCHOOL_FROST )
     m *= 1.0 + spells.frozen_heart -> effect1().coeff() * 0.01 * composite_mastery();
 
   return m;
