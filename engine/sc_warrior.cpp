@@ -1402,6 +1402,13 @@ struct bloodthirst_t : public warrior_attack_t
       p -> buffs_battle_trance -> trigger();
 
       trigger_bloodsurge( this );
+            
+      if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> effect1().percent() ) )
+      {
+        warrior_targetdata_t* td = targetdata() -> cast_warrior();
+        td -> debuffs_colossus_smash -> trigger();
+        p -> procs_tier13_4pc_melee -> occur();
+      }
     }
   }
 };
@@ -1876,7 +1883,7 @@ struct mortal_strike_t : public warrior_attack_t
 
       trigger_tier12_4pc_melee( this );
 
-      if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
+      if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ) )
       {
         td -> debuffs_colossus_smash -> trigger();
         p -> procs_tier13_4pc_melee -> occur();
@@ -2061,14 +2068,6 @@ struct raging_blow_t : public warrior_attack_t
       if ( oh_attack )
       {
         oh_attack -> execute();
-      }
-
-      // PTR - is this triggered per attack or once
-      if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( 0.13 ) )
-      {
-        warrior_targetdata_t* td = targetdata() -> cast_warrior();
-        td -> debuffs_colossus_smash -> trigger();
-        p -> procs_tier13_4pc_melee -> occur();
       }
     }
     p -> buffs_tier11_4pc_melee -> trigger();
@@ -3637,7 +3636,7 @@ void warrior_t::init_actions()
 
     // Heroic Leap, for everyone but tanks
     if ( primary_role() != ROLE_TANK )
-      action_list_str += "/heroic_leap,use_off_gcd=1";
+      action_list_str += "/heroic_leap,use_off_gcd=1,if=buff.colossus_smash.up";
 
     // Arms
     if ( primary_tree() == TREE_ARMS )
@@ -3724,27 +3723,31 @@ void warrior_t::init_actions()
         action_list_str += "/recklessness,use_off_gcd=1,if=buff.death_wish.up|target.time_to_die<13";
         action_list_str += "/cleave,if=target.adds>0,use_off_gcd=1";
         action_list_str += "/whirlwind,if=target.adds>0";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=40&target.health_pct>=20";
+        action_list_str += "/heroic_strike,use_off_gcd=1,if=set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=60&target.health_pct>=20";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.battle_trance.up";
+        action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.colossus_smash.up&rage>50";
         if ( talents.executioner -> ok() )
         {
           action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
-          action_list_str += "/execute,if=buff.executioner_talent.stack<5&rage>=30";
+          action_list_str += "/execute,if=buff.executioner_talent.stack<5&rage>=30&cooldown.bloodthirst.remains>0.2";
         }
         action_list_str += "/bloodthirst";
-        action_list_str += "/colossus_smash";
+        action_list_str += "/colossus_smash,if=buff.colossus_smash.down";
         action_list_str += "/inner_rage,use_off_gcd=1,if=buff.colossus_smash.up|cooldown.colossus_smash.remains<9";
         if ( talents.bloodsurge -> ok() )
           action_list_str += "/slam,if=buff.bloodsurge.react";
-        action_list_str += "/execute,if=rage>=50";
+        action_list_str += "/execute,if=rage>=50&cooldown.bloodthirst.remains>0.2";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=(buff.incite.up|buff.colossus_smash.up)&((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=(buff.incite.up|buff.colossus_smash.up)&((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20)";
         if ( talents.raging_blow -> ok() )
-          action_list_str += "/raging_blow,if=rage>60&cooldown.inner_rage.remains>2&buff.inner_rage.down";
+          action_list_str += "/raging_blow,if=rage>60&cooldown.inner_rage.remains>2&buff.inner_rage.down&cooldown.bloodthirst.remains>0.2";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=rage>=85";
         if ( talents.raging_blow -> ok() )
-          action_list_str += "/raging_blow,if=rage>90&buff.inner_rage.up";
-        action_list_str += "/battle_shout,if=rage<70";
+        {
+          action_list_str += "/raging_blow,if=rage>90&buff.inner_rage.up&cooldown.bloodthirst.remains>0.2";
+          action_list_str += "/raging_blow,if=buff.colossus_smash.up&rage>50";
+        }
+        action_list_str += "/battle_shout,if=rage<70&cooldown.bloodthirst.remains>0.2";
       }
     }
 

@@ -15,7 +15,7 @@ actions+=/food,type=beer_basted_crocolisk
 actions+=/snapshot_stats
 actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
 actions+=/auto_attack
-actions+=/heroic_leap,use_off_gcd=1
+actions+=/heroic_leap,use_off_gcd=1,if=buff.colossus_smash.up
 actions+=/stance,choose=berserker
 actions+=/recklessness,use_off_gcd=1
 actions+=/death_wish,use_off_gcd=1

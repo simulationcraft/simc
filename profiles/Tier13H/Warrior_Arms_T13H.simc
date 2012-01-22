@@ -15,7 +15,7 @@ actions+=/food,type=beer_basted_crocolisk
 actions+=/snapshot_stats
 actions+=/golemblood_potion,if=!in_combat|buff.recklessness.up|target.time_to_die<26
 actions+=/auto_attack
-actions+=/heroic_leap,use_off_gcd=1
+actions+=/heroic_leap,use_off_gcd=1,if=buff.colossus_smash.up
 actions+=/berserker_rage,if=rage<=95,use_off_gcd=1
 actions+=/deadly_calm,use_off_gcd=1
 actions+=/inner_rage,if=buff.deadly_calm.down&cooldown.deadly_calm.remains>15,use_off_gcd=1
