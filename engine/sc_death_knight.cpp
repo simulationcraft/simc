@@ -153,6 +153,7 @@ struct death_knight_t : public player_t
   buff_t* buffs_rune_of_cinderglacier;
   buff_t* buffs_rune_of_razorice;
   buff_t* buffs_rune_of_the_fallen_crusader;
+  buff_t* buffs_rune_strike;
   buff_t* buffs_runic_corruption;
   buff_t* buffs_scent_of_blood;
   buff_t* buffs_shadow_infusion;
@@ -3762,7 +3763,6 @@ struct rune_strike_t : public death_knight_attack_t
     direct_power_mod = 0.15;
     may_dodge = may_block = may_parry = false;
 
-
     weapon = &( p -> main_hand_weapon );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -3774,12 +3774,24 @@ struct rune_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
+    p -> buffs_rune_strike -> expire();
+
     if ( result_is_hit() )
       p -> trigger_runic_empowerment();
 
     if ( oh_attack )
       if ( p -> rng_threat_of_thassarian -> roll ( p -> talents.threat_of_thassarian -> effect1().percent() ) )
         oh_attack -> execute();
+  }
+
+  virtual bool ready()
+  {
+    death_knight_t* p = player -> cast_death_knight();
+
+    if ( ! p -> buffs_blood_presence -> check() || p -> buffs_rune_strike -> check() )
+      return false;
+
+    return death_knight_attack_t::ready();
   }
 };
 
@@ -4498,17 +4510,19 @@ void death_knight_t::init_actions()
       if ( talents.bone_shield -> rank() )
         action_list_str += "/bone_shield,if=!buff.bone_shield.up";
       action_list_str += "/raise_dead,time>=10";
-      action_list_str += "/icy_touch,if=dot.frost_fever.remains<=2";
-      action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
-      action_list_str += "/heart_strike";
-      action_list_str += "/death_strike";
       if ( talents.dancing_rune_weapon -> rank() )
       {
         action_list_str += "/dancing_rune_weapon,time<=150,if=dot.frost_fever.remains<=5|dot.blood_plague.remains<=5";
         action_list_str += "/dancing_rune_weapon,if=(dot.frost_fever.remains<=5|dot.blood_plague.remains<=5)&buff.bloodlust.react";
       }
+      action_list_str += "/outbreak,if=dot.frost_fever.remains<=1|dot.blood_plague.remains<=1";
+      action_list_str += "/icy_touch,if=dot.frost_fever.remains<=2";
+      action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
+      action_list_str += "/death_strike";
+      action_list_str += "/heart_strike";
+      action_list_str += "/rune_strike";
       action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
-      action_list_str += "/death_coil";
+      
       break;
     case TREE_FROST:
     {
@@ -4808,8 +4822,9 @@ void death_knight_t::init_buffs()
   buffs_killing_machine     = new buff_t( this, 51124, "killing_machine" ); // PPM based!
   buffs_pillar_of_frost     = new buff_t( this, "pillar_of_frost", "Pillar of Frost" );
   buffs_rime                = new buff_t( this, "rime", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, timespan_t::from_seconds( 30.0 ), timespan_t::zero, 1.0 ); // Trigger controls proc chance
+  buffs_rune_strike         = new buff_t( this, "runestrike", 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, 1.0, true );
   buffs_runic_corruption    = new buff_t( this, 51460, "runic_corruption" );
-  buffs_scent_of_blood      = new buff_t( this, "scent_of_blood",      talents.scent_of_blood -> rank(),  timespan_t::from_seconds( 20.0 ), timespan_t::zero, talents.scent_of_blood -> proc_chance() );
+  buffs_scent_of_blood      = new buff_t( this, "scent_of_blood", talents.scent_of_blood -> rank(),  timespan_t::from_seconds( 20.0 ), timespan_t::zero, talents.scent_of_blood -> proc_chance() );
   buffs_shadow_infusion     = new buff_t( this, 91342, "shadow_infusion", talents.shadow_infusion -> proc_chance() );
   buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, 1.0 );
   buffs_tier11_4pc_melee    = new buff_t( this, 90507, "tier11_4pc_melee", set_bonus.tier11_4pc_melee() );
@@ -4958,6 +4973,9 @@ double death_knight_t::assess_damage( double            amount,
 
   if ( result != RESULT_MISS )
     buffs_scent_of_blood -> trigger();
+
+  if ( result == RESULT_DODGE || result == RESULT_PARRY )
+    buffs_rune_strike -> trigger();
 
   return player_t::assess_damage( amount, school, dmg_type, result, action );
 }

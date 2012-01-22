@@ -18,14 +18,14 @@ actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_di
 actions+=/auto_attack
 actions+=/bone_shield,if=!buff.bone_shield.up
 actions+=/raise_dead,time>=10
+actions+=/dancing_rune_weapon,time<=150,if=dot.frost_fever.remains<=5|dot.blood_plague.remains<=5
+actions+=/outbreak,if=dot.frost_fever.remains<=1|dot.blood_plague.remains<=1
 actions+=/icy_touch,if=dot.frost_fever.remains<=2
 actions+=/plague_strike,if=dot.blood_plague.remains<=2
-actions+=/heart_strike
 actions+=/death_strike
-actions+=/dancing_rune_weapon,time<=150,if=dot.frost_fever.remains<=5|dot.blood_plague.remains<=5
-actions+=/dancing_rune_weapon,if=(dot.frost_fever.remains<=5|dot.blood_plague.remains<=5)&buff.bloodlust.react
+actions+=/heart_strike
+actions+=/rune_strike
 actions+=/empower_rune_weapon,if=blood=0&unholy=0&frost=0
-actions+=/death_coil
 head=helm_of_setesh,heroic=1,type=plate,ilevel=346,quality=rare,stats=2680armor_242dodge_117exp_454sta_216str,reforge=exp_hit,gems=austere_earthsiege_20exp_30sta_45sta,enchant=90sta_35dodge
 neck=ironstar_amulet,ilevel=359,quality=epic,stats=190dodge_96hit_286sta_145str
 shoulders=earthshape_pauldrons,heroic=1,type=plate,ilevel=346,quality=rare,stats=2474armor_130dodge_130mastery_337sta_225str,gems=45sta_10dodge,enchant=45sta_20dodge
@@ -109,3 +109,4 @@ ranged=finkles_mixer_upper,heroic=1,ilevel=372,quality=epic,stats=121int_81maste
 # tier11_4pc_heal=1
 # back=drape_of_the_twins,heroic=1,enchant=lightweave_embroidery_old
 # main_hand=andoros_fist_of_the_dragon_king,heroic=1,weapon=mace_1.80speed_82min_154max
+
