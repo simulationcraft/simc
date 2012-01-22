@@ -233,11 +233,11 @@ struct warrior_t : public player_t
   // Spec Passives
   struct spec_t
   {
-    passive_spell_t* anger_management;
-    passive_spell_t* dual_wield_specialization;
-    passive_spell_t* precision;
-    passive_spell_t* sentinel;
-    passive_spell_t* two_handed_weapon_specialization;
+    spell_id_t* anger_management;
+    spell_id_t* dual_wield_specialization;
+    spell_id_t* precision;
+    spell_id_t* sentinel;
+    spell_id_t* two_handed_weapon_specialization;
 
     spec_t() { memset( ( void* ) this, 0x0, sizeof( spec_t ) ); }
   };
@@ -3296,11 +3296,11 @@ void warrior_t::init_spells()
   mastery.unshackled_fury        = new mastery_t( this, "unshackled_fury",        76856, TREE_FURY );
 
   // Spec Passives
-  spec.anger_management                 = new passive_spell_t( this, "anger_management",                 12296 );
-  spec.dual_wield_specialization        = new passive_spell_t( this, "dual_wield_specialization",        23588 );
-  spec.precision                        = new passive_spell_t( this, "precision",                        29592 );
-  spec.sentinel                         = new passive_spell_t( this, "sentinel",                         29144 );
-  spec.two_handed_weapon_specialization = new passive_spell_t( this, "two_handed_weapon_specialization", 12712 );
+  spec.anger_management                 = new spell_id_t( this, "anger_management",                 12296 );
+  spec.dual_wield_specialization        = new spell_id_t( this, "dual_wield_specialization",        23588 );
+  spec.precision                        = new spell_id_t( this, "precision",                        29592 );
+  spec.sentinel                         = new spell_id_t( this, "sentinel",                         29144 );
+  spec.two_handed_weapon_specialization = new spell_id_t( this, "two_handed_weapon_specialization", 12712 );
 
   glyphs.battle              = find_glyph( "Glyph of Battle" );
   glyphs.berserker_rage      = find_glyph( "Glyph of Berserker Rage" );

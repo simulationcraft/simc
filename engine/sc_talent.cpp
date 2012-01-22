@@ -997,50 +997,6 @@ timespan_t spell_id_t::mod_additive_time( property_type_t p_type ) const
   return timespan_t::from_millis(effect -> base_value());
 }
 
-// ==========================================================================
-// Active Spell ID
-// ==========================================================================
-
-active_spell_t::active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
-  spell_id_t( player, t_name, id, talent )
-{
-  queue();
-
-  if ( s_player -> sim -> debug )
-    log_t::output( s_player -> sim, "Active Spell status: %s", to_str().c_str() );
-}
-
-active_spell_t::active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
-  spell_id_t( player, t_name, s_name, talent )
-{
-  queue();
-
-  if ( s_player -> sim -> debug )
-    log_t::output( s_player -> sim, "Active Spell status: %s", to_str().c_str() );
-}
-
-// ==========================================================================
-// Passive Spell ID
-// ==========================================================================
-
-passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
-  spell_id_t( player, t_name, id, talent )
-{
-  queue();
-
-  if ( s_player -> sim -> debug )
-    log_t::output( s_player -> sim, "Passive Spell status: %s", to_str().c_str() );
-}
-
-passive_spell_t::passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
-  spell_id_t( player, t_name, s_name, talent )
-{
-  queue();
-
-  if ( s_player -> sim -> debug )
-    log_t::output( s_player -> sim, "Passive Spell status: %s", to_str().c_str() );
-}
-
 // Glyph basic object
 
 glyph_t::glyph_t( player_t* player, spell_data_t* _sd ) :

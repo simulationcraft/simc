@@ -168,8 +168,6 @@ struct report_t;
 struct rng_t;
 struct talent_t;
 struct spell_id_t;
-struct active_spell_t;
-struct passive_spell_t;
 struct rogue_t;
 struct scaling_t;
 struct shaman_t;
@@ -2691,23 +2689,7 @@ struct talent_t : spell_id_t
   const spelleffect_data_t& effect3() const { return sd -> effect3(); }
 };
 
-// Active Spell ID class
-
-struct active_spell_t : public spell_id_t
-{
-  active_spell_t( player_t* player = 0, const char* t_name = 0 ) : spell_id_t( player, t_name ) {}
-  active_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent = 0 );
-  active_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent = 0 );
-};
-
-// Passive Spell ID class
-
-struct passive_spell_t : public spell_id_t
-{
-  passive_spell_t( player_t* player = 0, const char* t_name = 0 ) : spell_id_t( player, t_name ) {}
-  passive_spell_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent = 0 );
-  passive_spell_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent = 0 );
-};
+// Glyph
 
 struct glyph_t : public spell_id_t
 {
@@ -2725,6 +2707,8 @@ struct glyph_t : public spell_id_t
   const spelleffect_data_t& effect2() const { return sd_enabled -> effect2(); }
   const spelleffect_data_t& effect3() const { return sd_enabled -> effect3(); }
 };
+
+// Mastery
 
 struct mastery_t : public spell_id_t
 {
@@ -5028,7 +5012,7 @@ private:
 
 public:
   action_t( int type, const char* name, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_NONE, int t=TREE_NONE, bool special=false );
-  action_t( int type, const active_spell_t& s, int t=TREE_NONE, bool special=false );
+  action_t( int type, const spell_id_t& s, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const char* sname, player_t* p=0, int t=TREE_NONE, bool special=false );
   action_t( int type, const char* name, const uint32_t id, player_t* p=0, int t=TREE_NONE, bool special=false );
   virtual ~action_t();
@@ -5148,7 +5132,7 @@ private:
   void init_attack_t_();
 
 public:
-  attack_t( const active_spell_t& s, int t=TREE_NONE, bool special=false );
+  attack_t( const spell_id_t& s, int t=TREE_NONE, bool special=false );
   attack_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=false );
   attack_t( const char* name, const char* sname, player_t* p, int t = TREE_NONE, bool special=false );
   attack_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE, bool special=false );
@@ -5183,7 +5167,7 @@ private:
   void init_spell_t_();
 
 public:
-  spell_t( const active_spell_t& s, int t=TREE_NONE );
+  spell_t( const spell_id_t& s, int t=TREE_NONE );
   spell_t( const char* n=0, player_t* p=0, int r=RESOURCE_NONE, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE );
   spell_t( const char* name, const char* sname, player_t* p, int t = TREE_NONE );
   spell_t( const char* name, const uint32_t id, player_t* p, int t = TREE_NONE );

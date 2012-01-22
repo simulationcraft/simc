@@ -152,17 +152,17 @@ struct priest_t : public player_t
   struct passive_spells_t
   {
     // Discipline
-    passive_spell_t* enlightenment;
-    passive_spell_t* meditation_disc;
+    spell_id_t* enlightenment;
+    spell_id_t* meditation_disc;
 
     // Holy
-    passive_spell_t* spiritual_healing;
-    passive_spell_t* meditation_holy;
+    spell_id_t* spiritual_healing;
+    spell_id_t* meditation_holy;
 
     // Shadow
-    passive_spell_t* shadow_power;
-    passive_spell_t* shadow_orbs;
-    passive_spell_t* shadowy_apparition_num;
+    spell_id_t* shadow_power;
+    spell_id_t* shadow_orbs;
+    spell_id_t* shadowy_apparition_num;
   };
   passive_spells_t passive_spells;
 
@@ -178,11 +178,11 @@ struct priest_t : public player_t
   // Active Spells
   struct active_spells_t
   {
-    active_spell_t* mind_spike;
-    active_spell_t* shadow_fiend;
-    active_spell_t* holy_archangel;
-    active_spell_t* holy_archangel2;
-    active_spell_t* dark_archangel;
+    spell_id_t* mind_spike;
+    spell_id_t* shadow_fiend;
+    spell_id_t* holy_archangel;
+    spell_id_t* holy_archangel2;
+    spell_id_t* dark_archangel;
   };
   active_spells_t   active_spells;
 
@@ -996,7 +996,7 @@ public:
     _init_priest_spell_t();
   }
 
-  priest_spell_t( const active_spell_t& s ) :
+  priest_spell_t( const spell_id_t& s ) :
     spell_t( s ), atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
@@ -1252,8 +1252,8 @@ struct shadow_fiend_pet_t : public pet_t
 
   double bad_spell_power;
   buff_t* buffs_shadowcrawl;
-  active_spell_t* shadowcrawl;
-  passive_spell_t* mana_leech;
+  spell_id_t* shadowcrawl;
+  spell_id_t* mana_leech;
   bool bad_swing;
   bool extra_tick;
 
@@ -1286,8 +1286,8 @@ struct shadow_fiend_pet_t : public pet_t
   {
     player_t::init_spells();
 
-    shadowcrawl                 = new active_spell_t ( this, "shadowcrawl", "Shadowcrawl" );
-    mana_leech                  = new passive_spell_t( this, "mana_leech", 34650 );
+    shadowcrawl = new spell_id_t( this, "shadowcrawl", "Shadowcrawl" );
+    mana_leech  = new spell_id_t( this, "mana_leech", 34650 );
   }
 
   virtual void init_base()
@@ -4897,17 +4897,17 @@ void priest_t::init_spells()
   // Passive Spells
 
   // Discipline
-  passive_spells.enlightenment          = new passive_spell_t( this, "enlightenment", "Enlightenment" );
-  passive_spells.meditation_disc        = new passive_spell_t( this, "meditation_disc", "Meditation" );
+  passive_spells.enlightenment          = new spell_id_t( this, "enlightenment", "Enlightenment" );
+  passive_spells.meditation_disc        = new spell_id_t( this, "meditation_disc", "Meditation" );
 
   // Holy
-  passive_spells.spiritual_healing      = new passive_spell_t( this, "spiritual_healing", "Spiritual Healing" );
-  passive_spells.meditation_holy        = new passive_spell_t( this, "meditation_holy", 95861 );
+  passive_spells.spiritual_healing      = new spell_id_t( this, "spiritual_healing", "Spiritual Healing" );
+  passive_spells.meditation_holy        = new spell_id_t( this, "meditation_holy", 95861 );
 
   // Shadow
-  passive_spells.shadow_power           = new passive_spell_t( this, "shadow_power", "Shadow Power" );
-  passive_spells.shadow_orbs            = new passive_spell_t( this, "shadow_orbs", "Shadow Orbs" );
-  passive_spells.shadowy_apparition_num = new passive_spell_t( this, "shadowy_apparition_num", 78202 );
+  passive_spells.shadow_power           = new spell_id_t( this, "shadow_power", "Shadow Power" );
+  passive_spells.shadow_orbs            = new spell_id_t( this, "shadow_orbs", "Shadow Orbs" );
+  passive_spells.shadowy_apparition_num = new spell_id_t( this, "shadowy_apparition_num", 78202 );
 
   // Mastery Spells
   mastery_spells.shield_discipline = new mastery_t( this, "shield_discipline", "Shield Discipline", TREE_DISCIPLINE );
@@ -4915,11 +4915,11 @@ void priest_t::init_spells()
   mastery_spells.shadow_orb_power  = new mastery_t( this, "shadow_orb_power", "Shadow Orb Power", TREE_SHADOW );
 
   // Active Spells
-  active_spells.mind_spike      = new active_spell_t( this, "mind_spike", "Mind Spike" );
-  active_spells.shadow_fiend    = new active_spell_t( this, "shadow_fiend", "Shadowfiend" );
-  active_spells.holy_archangel  = new active_spell_t( this, "holy_archangel", 87152 );
-  active_spells.holy_archangel2 = new active_spell_t( this, "holy_archangel2", 81700 );
-  active_spells.dark_archangel  = new active_spell_t( this, "dark_archangel", 87153 );
+  active_spells.mind_spike      = new spell_id_t( this, "mind_spike", "Mind Spike" );
+  active_spells.shadow_fiend    = new spell_id_t( this, "shadow_fiend", "Shadowfiend" );
+  active_spells.holy_archangel  = new spell_id_t( this, "holy_archangel", 87152 );
+  active_spells.holy_archangel2 = new spell_id_t( this, "holy_archangel2", 81700 );
+  active_spells.dark_archangel  = new spell_id_t( this, "dark_archangel", 87153 );
 
   dark_flames                   = spell_data_t::find( 99158, "Dark Flames", dbc.ptr );
 

@@ -218,7 +218,7 @@ action_t::action_t( int ty, const char* name, const char* sname, player_t* p, in
   init_action_t_();
 }
 
-action_t::action_t( int ty, const active_spell_t& s, int t, bool sp ) :
+action_t::action_t( int ty, const spell_id_t& s, int t, bool sp ) :
   spell_id_t( s ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
   player( s_player ), target( s_player -> target ), school( get_school_type() ), resource( power_type() ),

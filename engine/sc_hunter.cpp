@@ -194,9 +194,9 @@ struct hunter_t : public player_t
   // Spells
   struct passive_spells_t
   {
-    passive_spell_t* animal_handler;
-    passive_spell_t* artisan_quiver;
-    passive_spell_t* into_the_wildness;
+    spell_id_t* animal_handler;
+    spell_id_t* artisan_quiver;
+    spell_id_t* into_the_wildness;
 
     mastery_t* master_of_beasts;
     mastery_t* wild_quiver;
@@ -3839,9 +3839,9 @@ void hunter_t::init_spells()
 {
   player_t::init_spells();
 
-  passive_spells.animal_handler    = new passive_spell_t( this, "animal_handler", "Animal Handler" );
-  passive_spells.artisan_quiver    = new passive_spell_t( this, "artisan_quiver", "Artisan Quiver" );
-  passive_spells.into_the_wildness = new passive_spell_t( this, "into_the_wildness", "Into the Wilderness" );
+  passive_spells.animal_handler    = new spell_id_t( this, "animal_handler", "Animal Handler" );
+  passive_spells.artisan_quiver    = new spell_id_t( this, "artisan_quiver", "Artisan Quiver" );
+  passive_spells.into_the_wildness = new spell_id_t( this, "into_the_wildness", "Into the Wilderness" );
 
   passive_spells.master_of_beasts     = new mastery_t( this, "master_of_beasts", "Master of Beasts", TREE_BEAST_MASTERY );
   passive_spells.wild_quiver          = new mastery_t( this, "wild_quiver", "Wild Quiver", TREE_MARKSMANSHIP );

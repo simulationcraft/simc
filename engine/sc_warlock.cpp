@@ -287,7 +287,7 @@ struct warlock_t : public player_t
   // Talents
 
   // Affliction
-  passive_spell_t* talent_unstable_affliction;
+  spell_id_t* talent_unstable_affliction;
   talent_t* talent_doom_and_gloom; // done
   talent_t* talent_improved_life_tap; // done
   talent_t* talent_improved_corruption; // done
@@ -305,7 +305,7 @@ struct warlock_t : public player_t
   talent_t* talent_haunt; // done
 
   // Demonology
-  passive_spell_t* talent_summon_felguard;
+  spell_id_t* talent_summon_felguard;
   talent_t* talent_demonic_embrace; // done
   talent_t* talent_dark_arts; // done
   talent_t* talent_mana_feed; // done
@@ -324,7 +324,7 @@ struct warlock_t : public player_t
   talent_t* talent_metamorphosis; // done
 
   // Destruction
-  passive_spell_t* talent_conflagrate;
+  spell_id_t* talent_conflagrate;
   talent_t* talent_bane; // done
   talent_t* talent_shadow_and_flame; // done
   talent_t* talent_improved_immolate;
@@ -343,12 +343,12 @@ struct warlock_t : public player_t
 
   struct passive_spells_t
   {
-    passive_spell_t* shadow_mastery;
-    passive_spell_t* demonic_knowledge;
-    passive_spell_t* cataclysm;
-    passive_spell_t* doom_and_gloom;
-    passive_spell_t* pandemic;
-    passive_spell_t* nethermancy;
+    spell_id_t* shadow_mastery;
+    spell_id_t* demonic_knowledge;
+    spell_id_t* cataclysm;
+    spell_id_t* doom_and_gloom;
+    spell_id_t* pandemic;
+    spell_id_t* nethermancy;
 
   };
   passive_spells_t passive_spells;
@@ -986,7 +986,7 @@ public:
     _init_warlock_spell_t();
   }
 
-  warlock_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
+  warlock_spell_t( const spell_id_t& s, int t = TREE_NONE ) :
     spell_t( s, t )
   {
     _init_warlock_spell_t();
@@ -1288,7 +1288,7 @@ struct warlock_pet_spell_t : public spell_t
     crit_multiplier *= 1.33;
   }
 
-  warlock_pet_spell_t( const active_spell_t& s, int t = TREE_NONE ) :
+  warlock_pet_spell_t( const spell_id_t& s, int t = TREE_NONE ) :
     spell_t( s, t )
   {
     may_crit = true;
@@ -4425,7 +4425,7 @@ void warlock_t::create_pets()
 void warlock_t::init_talents()
 {
   // Affliction
-  talent_unstable_affliction          = new passive_spell_t ( this, "unstable_affliction", "Unstable Affliction" );
+  talent_unstable_affliction          = new spell_id_t( this, "unstable_affliction", "Unstable Affliction" );
   talent_doom_and_gloom               = find_talent( "Doom and Gloom" );
   talent_improved_life_tap            = find_talent( "Improved Life Tap" );
   talent_improved_corruption          = find_talent( "Improved Corruption" );
@@ -4443,7 +4443,7 @@ void warlock_t::init_talents()
   talent_haunt                        = find_talent( "Haunt" );
 
   // Demonology
-  talent_summon_felguard      = new passive_spell_t ( this, "summon_felguard", "Summon Felguard" );
+  talent_summon_felguard      = new spell_id_t( this, "summon_felguard", "Summon Felguard" );
   talent_demonic_embrace      = find_talent( "Demonic Embrace" );
   talent_dark_arts            = find_talent( "Dark Arts" );
   talent_mana_feed            = find_talent( "Mana Feed" );
@@ -4462,7 +4462,7 @@ void warlock_t::init_talents()
   talent_metamorphosis        = find_talent( "Metamorphosis" );
 
   // Destruction
-  talent_conflagrate            = new passive_spell_t ( this, "conflagrate", "Conflagrate" );
+  talent_conflagrate            = new spell_id_t( this, "conflagrate", "Conflagrate" );
   talent_bane                   = find_talent( "Bane" );
   talent_shadow_and_flame       = find_talent( "Shadow and Flame" );
   talent_improved_immolate      = find_talent( "Improved Immolate" );
@@ -4502,13 +4502,14 @@ void warlock_t::init_spells()
   // passive_spells =========================================================
 
   // Core
-  passive_spells.shadow_mastery       = new passive_spell_t( this, "shadow_mastery", "Shadow Mastery" );
-  passive_spells.demonic_knowledge    = new passive_spell_t( this, "demonic_knowledge", "Demonic Knowledge" );
-  passive_spells.cataclysm            = new passive_spell_t( this, "cataclysm", "Cataclysm" );
-  passive_spells.nethermancy          = new passive_spell_t( this, "nethermancy", 86091 );
+  passive_spells.shadow_mastery       = new spell_id_t( this, "shadow_mastery", "Shadow Mastery" );
+  passive_spells.demonic_knowledge    = new spell_id_t( this, "demonic_knowledge", "Demonic Knowledge" );
+  passive_spells.cataclysm            = new spell_id_t( this, "cataclysm", "Cataclysm" );
+  passive_spells.nethermancy          = new spell_id_t( this, "nethermancy", 86091 );
+  
   //Affliction
-  passive_spells.doom_and_gloom       = new passive_spell_t( this, "doom_and_gloom", "Doom and Gloom", talent_doom_and_gloom );
-  passive_spells.pandemic             = new passive_spell_t( this, "pandemic", "Pandemic", talent_pandemic );
+  passive_spells.doom_and_gloom       = new spell_id_t( this, "doom_and_gloom", "Doom and Gloom", talent_doom_and_gloom );
+  passive_spells.pandemic             = new spell_id_t( this, "pandemic", "Pandemic", talent_pandemic );
 
   // Mastery
   mastery_spells.fiery_apocalypse     = new mastery_t( this, "fiery_apocalypse", "Fiery Apocalypse", TREE_DESTRUCTION );

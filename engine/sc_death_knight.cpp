@@ -224,15 +224,15 @@ struct death_knight_t : public player_t
   struct spells_t
   {
     // Passives
-    passive_spell_t* blood_of_the_north;
-    passive_spell_t* blood_rites;
-    passive_spell_t* icy_talons;
-    passive_spell_t* master_of_ghouls;
-    passive_spell_t* plate_specialization;
-    passive_spell_t* reaping;
-    passive_spell_t* runic_empowerment;
-    passive_spell_t* unholy_might;
-    passive_spell_t* veteran_of_the_third_war;
+    spell_id_t* blood_of_the_north;
+    spell_id_t* blood_rites;
+    spell_id_t* icy_talons;
+    spell_id_t* master_of_ghouls;
+    spell_id_t* plate_specialization;
+    spell_id_t* reaping;
+    spell_id_t* runic_empowerment;
+    spell_id_t* unholy_might;
+    spell_id_t* veteran_of_the_third_war;
 
     // Masteries
     mastery_t* dreadblade;
@@ -4393,23 +4393,23 @@ void death_knight_t::init_spells()
   player_t::init_spells();
 
   // Blood
-  spells.blood_rites              = new passive_spell_t( this, "blood_rites", 50034 ); 
-  spells.veteran_of_the_third_war = new passive_spell_t( this, "veteran_of_the_third_war", 50029 );
+  spells.blood_rites              = new spell_id_t( this, "blood_rites", 50034 ); 
+  spells.veteran_of_the_third_war = new spell_id_t( this, "veteran_of_the_third_war", 50029 );
 
   // Frost
-  spells.blood_of_the_north = new passive_spell_t( this, "blood_of_the_north", 54637 );
-  spells.icy_talons         = new passive_spell_t( this, "icy_talons", 50887 );
+  spells.blood_of_the_north = new spell_id_t( this, "blood_of_the_north", 54637 );
+  spells.icy_talons         = new spell_id_t( this, "icy_talons", 50887 );
   spells.frozen_heart       = new mastery_t( this, "frozen_heart", 77514, TREE_FROST );
 
   // Unholy
   spells.dreadblade       = new mastery_t( this, "dreadblade", 77515, TREE_UNHOLY );
-  spells.master_of_ghouls = new passive_spell_t( this, "master_of_ghouls", 52143 );
-  spells.reaping          = new passive_spell_t( this, "reaping", 56835 );
-  spells.unholy_might     = new passive_spell_t( this, "unholy_might", 91107 );
+  spells.master_of_ghouls = new spell_id_t( this, "master_of_ghouls", 52143 );
+  spells.reaping          = new spell_id_t( this, "reaping", 56835 );
+  spells.unholy_might     = new spell_id_t( this, "unholy_might", 91107 );
 
   // General
-  spells.plate_specialization = new passive_spell_t( this, "plate_specialization", 86524 );
-  spells.runic_empowerment    = new passive_spell_t( this, "runic_empowerment", 81229 );
+  spells.plate_specialization = new spell_id_t( this, "plate_specialization", 86524 );
+  spells.runic_empowerment    = new spell_id_t( this, "runic_empowerment", 81229 );
 
   // Glyphs
   glyphs.death_and_decay = find_glyph( "Glyph of Death and Decay" );

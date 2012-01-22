@@ -34,7 +34,7 @@ void spell_t::init_spell_t_()
   }
 }
 
-spell_t::spell_t( const active_spell_t& s, int t ) :
+spell_t::spell_t( const spell_id_t& s, int t ) :
   action_t( ACTION_SPELL, s, t, true )
 {
   init_spell_t_();

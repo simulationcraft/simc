@@ -262,17 +262,17 @@ struct rogue_t : public player_t
   rng_t* rng_wound_poison;
 
   // Spec passives
-  passive_spell_t* spec_ambidexterity;
-  passive_spell_t* spec_assassins_resolve;
-  passive_spell_t* spec_improved_poisons;
-  passive_spell_t* spec_master_of_subtlety;
-  passive_spell_t* spec_sinister_calling;
-  passive_spell_t* spec_vitality;
+  spell_id_t* spec_ambidexterity;
+  spell_id_t* spec_assassins_resolve;
+  spell_id_t* spec_improved_poisons;
+  spell_id_t* spec_master_of_subtlety;
+  spell_id_t* spec_sinister_calling;
+  spell_id_t* spec_vitality;
 
   // Spec actives
-  active_spell_t* spec_blade_flurry;
-  active_spell_t* spec_mutilate;
-  active_spell_t* spec_shadowstep;
+  spell_id_t* spec_blade_flurry;
+  spell_id_t* spec_mutilate;
+  spell_id_t* spec_shadowstep;
 
   // Masteries
   mastery_t* mastery_executioner;
@@ -3761,17 +3761,17 @@ void rogue_t::init_spells()
   player_t::init_spells();
 
   // Spec passives
-  spec_improved_poisons   = new passive_spell_t( this, "improved_poisons",   14117 );
-  spec_assassins_resolve  = new passive_spell_t( this, "assassins_resolve",  84601 );
-  spec_vitality           = new passive_spell_t( this, "vitality",           61329 );
-  spec_ambidexterity      = new passive_spell_t( this, "ambidexterity",      13852 );
-  spec_master_of_subtlety = new passive_spell_t( this, "master_of_subtlety", 31223 );
-  spec_sinister_calling   = new passive_spell_t( this, "sinister_calling",   31220 );
+  spec_improved_poisons   = new spell_id_t( this, "improved_poisons",   14117 );
+  spec_assassins_resolve  = new spell_id_t( this, "assassins_resolve",  84601 );
+  spec_vitality           = new spell_id_t( this, "vitality",           61329 );
+  spec_ambidexterity      = new spell_id_t( this, "ambidexterity",      13852 );
+  spec_master_of_subtlety = new spell_id_t( this, "master_of_subtlety", 31223 );
+  spec_sinister_calling   = new spell_id_t( this, "sinister_calling",   31220 );
 
   // Spec Actives
-  spec_mutilate           = new active_spell_t( this, "mutilate",            1329 );
-  spec_blade_flurry       = new active_spell_t( this, "blade_flurry",        13877 );
-  spec_shadowstep         = new active_spell_t( this, "shadowstep",          36554 );
+  spec_mutilate           = new spell_id_t( this, "mutilate",           1329 );
+  spec_blade_flurry       = new spell_id_t( this, "blade_flurry",       13877 );
+  spec_shadowstep         = new spell_id_t( this, "shadowstep",         36554 );
 
   // Masteries
   mastery_potent_poisons  = new mastery_t( this, "potent_poisons",     76803, TREE_ASSASSINATION );

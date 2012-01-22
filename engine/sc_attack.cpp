@@ -61,7 +61,7 @@ void attack_t::init_attack_t_()
   }
 }
 
-attack_t::attack_t( const active_spell_t& s, int t, bool special ) :
+attack_t::attack_t( const spell_id_t& s, int t, bool special ) :
   action_t( ACTION_ATTACK, s, t, special )
 {
   init_attack_t_();

@@ -123,15 +123,15 @@ struct paladin_t : public player_t
     mastery_t* divine_bulwark;
     mastery_t* hand_of_light;
     mastery_t* illuminated_healing;
-    passive_spell_t* judgements_of_the_bold; // passive stuff is hidden here because spells
-    passive_spell_t* judgements_of_the_wise; // can only have three effects
-    passive_spell_t* meditation;
-    passive_spell_t* plate_specialization;
-    passive_spell_t* sheath_of_light;
-    passive_spell_t* touched_by_the_light;
-    passive_spell_t* two_handed_weapon_spec;
-    passive_spell_t* vengeance;
-    passive_spell_t* walk_in_the_light;
+    spell_id_t* judgements_of_the_bold; // passive stuff is hidden here because spells
+    spell_id_t* judgements_of_the_wise; // can only have three effects
+    spell_id_t* meditation;
+    spell_id_t* plate_specialization;
+    spell_id_t* sheath_of_light;
+    spell_id_t* touched_by_the_light;
+    spell_id_t* two_handed_weapon_spec;
+    spell_id_t* vengeance;
+    spell_id_t* walk_in_the_light;
     passives_t() { memset( ( void* ) this, 0x0, sizeof( passives_t ) ); }
   };
   passives_t passives;
@@ -150,7 +150,7 @@ struct paladin_t : public player_t
   // Spells
   struct spells_t
   {
-    active_spell_t* guardian_of_ancient_kings_ret;
+    spell_id_t* guardian_of_ancient_kings_ret;
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   } spells;
 
@@ -3439,23 +3439,23 @@ void paladin_t::init_spells()
   player_t::init_spells();
 
   // Spells
-  spells.guardian_of_ancient_kings_ret = new active_spell_t( this, "guardian_of_ancient_kings", 86698 );
+  spells.guardian_of_ancient_kings_ret = new spell_id_t( this, "guardian_of_ancient_kings", 86698 );
 
   // Passives
   passives.divine_bulwark         = new mastery_t( this, "divine_bulwark", "Divine Bulwark", TREE_PROTECTION );
   passives.hand_of_light          = new mastery_t( this, "hand_of_light", "Hand of Light", TREE_RETRIBUTION );
   passives.illuminated_healing    = new mastery_t( this, "illuminated_healing", "Illuminated Healing", TREE_HOLY );
-  passives.judgements_of_the_bold = new passive_spell_t( this, "judgements_of_the_bold", "Judgements of the Bold" );
-  passives.judgements_of_the_wise = new passive_spell_t( this, "judgements_of_the_wise", "Judgements of the Wise" );
-  passives.meditation             = new passive_spell_t( this, "meditation", "Medidation" );
-  passives.plate_specialization   = new passive_spell_t( this, "plate_specialization", 86525 );
-  passives.sheath_of_light        = new passive_spell_t( this, "sheath_of_light", "Sheath of Light" );
-  passives.touched_by_the_light   = new passive_spell_t( this, "touched_by_the_light", "Touched by the Light" );
-  passives.two_handed_weapon_spec = new passive_spell_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization" );
-  passives.vengeance              = new passive_spell_t( this, "vengeance", "Vengeance" );
+  passives.judgements_of_the_bold = new spell_id_t( this, "judgements_of_the_bold", "Judgements of the Bold" );
+  passives.judgements_of_the_wise = new spell_id_t( this, "judgements_of_the_wise", "Judgements of the Wise" );
+  passives.meditation             = new spell_id_t( this, "meditation", "Medidation" );
+  passives.plate_specialization   = new spell_id_t( this, "plate_specialization", 86525 );
+  passives.sheath_of_light        = new spell_id_t( this, "sheath_of_light", "Sheath of Light" );
+  passives.touched_by_the_light   = new spell_id_t( this, "touched_by_the_light", "Touched by the Light" );
+  passives.two_handed_weapon_spec = new spell_id_t( this, "two_handed_weapon_specialization", "Two-Handed Weapon Specialization" );
+  passives.vengeance              = new spell_id_t( this, "vengeance", "Vengeance" );
   if ( passives.vengeance -> ok() )
     vengeance_enabled = true;
-  passives.walk_in_the_light      = new passive_spell_t( this, "walk_in_the_light", "Walk in the Light" );
+  passives.walk_in_the_light      = new spell_id_t( this, "walk_in_the_light", "Walk in the Light" );
 
   // Glyphs
   glyphs.ascetic_crusader         = find_glyph( "Glyph of the Ascetic Crusader" );

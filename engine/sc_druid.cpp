@@ -1375,7 +1375,7 @@ struct feral_charge_cat_t : public druid_cat_attack_t
     if ( p -> talents.stampede -> rank() )
     {
       uint32_t sid = ( p -> talents.stampede -> rank() == 2 ) ? 81022 : 81021;
-      passive_spell_t stampede_spell( p, "stampede_cat_spell", sid );
+      spell_id_t stampede_spell( p, "stampede_cat_spell", sid );
       stampede_cost_reduction = stampede_spell.mod_additive( P_RESOURCE_COST );
       // 81022 is bugged and says FLAT_MODIFIER not PCT_MODIFIER so adjust it
       if ( sid == 81022 )
@@ -2282,7 +2282,7 @@ struct feral_charge_bear_t : public druid_bear_attack_t
     if ( p -> talents.stampede -> rank() )
     {
       uint32_t sid = ( p -> talents.stampede -> rank() == 2 ) ? 78893 : 78892;
-      passive_spell_t stampede_spell( p, "stampede_bear_spell", sid );
+      spell_id_t stampede_spell( p, "stampede_bear_spell", sid );
       stampede_haste = stampede_spell.base_value( E_APPLY_AURA, A_MOD_HASTE ) / 100.0;
       stampede_duration = stampede_spell.duration();
     }

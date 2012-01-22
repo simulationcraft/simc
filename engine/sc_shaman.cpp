@@ -96,18 +96,18 @@ struct shaman_t : public player_t
   buff_t* buffs_water_shield;
 
   // Tree specialization passives
-  passive_spell_t* spec_elemental_fury;
-  passive_spell_t* spec_shamanism;
-  passive_spell_t* spec_mental_quickness;
-  passive_spell_t* spec_dual_wield;
-  passive_spell_t* spec_primal_wisdom;
+  spell_id_t* spec_elemental_fury;
+  spell_id_t* spec_shamanism;
+  spell_id_t* spec_mental_quickness;
+  spell_id_t* spec_dual_wield;
+  spell_id_t* spec_primal_wisdom;
 
   // Masteries
   mastery_t* mastery_elemental_overload;
   mastery_t* mastery_enhanced_elements;
 
   // Armor specializations
-  passive_spell_t* mail_specialization;
+  spell_id_t* mail_specialization;
 
   // Cooldowns
   cooldown_t* cooldowns_elemental_mastery;
@@ -4408,14 +4408,14 @@ void shaman_t::init_spells()
   player_t::init_spells();
 
   // Tree Specialization
-  spec_elemental_fury         = new passive_spell_t( this, "elemental_fury",     60188 );
-  spec_shamanism              = new passive_spell_t( this, "shamanism",          62099 );
+  spec_elemental_fury         = new spell_id_t( this, "elemental_fury",     60188 );
+  spec_shamanism              = new spell_id_t( this, "shamanism",          62099 );
 
-  spec_mental_quickness       = new passive_spell_t( this, "mental_quickness",   30814 );
-  spec_dual_wield             = new passive_spell_t( this, "dual_wield",         86629 );
-  spec_primal_wisdom          = new passive_spell_t( this, "primal_wisdom",      51522 );
+  spec_mental_quickness       = new spell_id_t( this, "mental_quickness",   30814 );
+  spec_dual_wield             = new spell_id_t( this, "dual_wield",         86629 );
+  spec_primal_wisdom          = new spell_id_t( this, "primal_wisdom",      51522 );
 
-  mail_specialization         = new passive_spell_t( this, "mail_specialization", 86529 );
+  mail_specialization         = new spell_id_t( this, "mail_specialization", 86529 );
 
   // Masteries
   mastery_elemental_overload  = new mastery_t( this, "elemental_overload", 77222, TREE_ELEMENTAL );
@@ -4430,7 +4430,7 @@ void shaman_t::init_spells()
   glyph_lava_lash             = find_glyph( "Glyph of Lava Lash" );
   glyph_lightning_bolt        = find_glyph( "Glyph of Lightning Bolt" );
   glyph_stormstrike           = find_glyph( "Glyph of Stormstrike" );
-  glyph_unleashed_lightning = find_glyph( "Glyph of Unleashed Lightning" );
+  glyph_unleashed_lightning   = find_glyph( "Glyph of Unleashed Lightning" );
   glyph_water_shield          = find_glyph( "Glyph of Water Shield" );
   glyph_windfury_weapon       = find_glyph( "Glyph of Windfury Weapon" );
 
