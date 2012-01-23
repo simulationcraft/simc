@@ -4,30 +4,7 @@
 
 # Gear Source: http://elitistjerks.com/f81/t126928-fury_4_3_bis/ this uses invalid gear
 
-warrior=Warrior_Arms_T13H
-level=85
-race=worgen
-role=attack
-use_pre_potion=1
-professions=blacksmithing=525/jewelcrafting=525
-talents=http://www.wowhead.com/talent#warrior-3202030312021231221103220000000000000000030000000000000000000
-glyphs=colossus_smash/sweeping_strikes/rapid_charge/battle/berserker_rage/enduring_victory/mortal_strike/slam/overpower
-head=colossal_dragonplate_helmet,id=78688,gems=reverberating_shadowspirit_67str_30str,enchant=60str_35mastery
-neck=necklace_of_black_dragons_teeth,id=77090,reforge=hit_haste
-shoulders=backbreaker_spaulders,id=78465,reforge=mastery_haste,gems=67str_67str_20str,enchant=50str_25crit
-chest=colossal_dragonplate_battleplate,id=78657,reforge=mastery_crit,gems=50str_50str_25str_25crit_30str,enchant=20all
-waist=runescriven_demon_collar,id=78416,reforge=mastery_crit,gems=50str_50str_50str_20str
-legs=colossal_dragonplate_legplates,id=78706,reforge=mastery_crit,gems=40str_40str_40str_30str,enchant=55crit_190ap
-feet=treads_of_crushed_flesh,id=78389,reforge=mastery_haste,gems=50str_50str_20str,enchant=50haste
-wrists=rockhide_bracers,id=78373,reforge=mastery_haste,gems=50str_50str_10str,enchant=50str
-hands=colossal_dragonplate_gauntlets,id=78668,gems=50str_50str_10str,enchant=50str
-finger1=breathstealer_band,id=78492,reforge=mastery_crit,gems=50str_10str
-finger2=curled_twilight_claw,id=78432,reforge=mastery_exp,gems=50str_10str
-trinket1=creche_of_the_final_dragon,id=77992
-trinket2=eye_of_unmaking,id=77997
-back=dreamcrusher_drape,id=77097,gems=50str_10str,enchant=65crit
-main_hand=gurthalak_voice_of_the_deeps,id=78478,enchant=landslide
-ranged=darting_chakram,id=77087,reforge=exp_haste
+chardev=326865 name=Warrior_Arms_T13H
 save=Warrior_Arms_T13H.simc
 
 chardev=326833 name=Warrior_Fury_1h_T13H
