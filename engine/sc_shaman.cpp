@@ -5010,6 +5010,8 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
   {
     m *= 1.0 + composite_mastery() * mastery_enhanced_elements -> base_value( E_APPLY_AURA, A_DUMMY );
 
+    m *= 1.0 + talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
+
     if ( buffs_elemental_mastery -> up() )
       m *= 1.0 + buffs_elemental_mastery -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
   }
@@ -5027,8 +5029,6 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
       m *= 1.0 + talent_elemental_oath -> base_value( E_NONE, A_NONE ) / 100.0;
     }
   }
-
-  m *= 1.0 + talent_elemental_precision -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
 
   return m;
 }
