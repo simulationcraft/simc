@@ -3663,12 +3663,12 @@ void warrior_t::init_actions()
       action_list_str += "/execute";
       action_list_str += "/colossus_smash,if=buff.colossus_smash.remains<=1.5";
       action_list_str += "/slam,if=(rage>=35|buff.battle_trance.up|buff.deadly_calm.up)";
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.deadly_calm.up";
+      if ( talents.deadly_calm -> ok() )
+        action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.deadly_calm.up";
       action_list_str += "/heroic_strike,use_off_gcd=1,if=rage>85";
       action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct>20&(rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))";
       action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct<=20&((rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))|buff.battle_trance.up)";     
       action_list_str += "/battle_shout,if=rage<60";
-      action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
     }
 
     // Fury

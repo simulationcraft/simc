@@ -41,7 +41,6 @@ actions+=/heroic_strike,use_off_gcd=1,if=rage>85
 actions+=/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct>20&(rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))
 actions+=/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct<=20&((rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))|buff.battle_trance.up)
 actions+=/battle_shout,if=rage<60
-actions+=/execute,if=buff.executioner_talent.remains<1.5
 head=colossal_dragonplate_helmet,heroic=1,type=plate,ilevel=410,quality=epic,stats=3231armor_489str_824sta_341exp_331crit,reforge=exp_mastery,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery
 neck=necklace_of_black_dragons_teeth,ilevel=397,quality=epic,stats=271str_406sta_189hit_167crit,reforge=hit_exp
 shoulders=backbreaker_spaulders,heroic=1,type=plate,ilevel=416,quality=epic,stats=3035armor_391str_647sta_257crit_257mastery,reforge=mastery_exp,gems=50str_50str_20str,enchant=50str_25crit
