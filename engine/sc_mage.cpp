@@ -932,11 +932,11 @@ static void trigger_ignite( spell_t* s, double dmg )
   if ( ! p -> talents.ignite -> rank() ) return;
 
   struct ignite_sampling_event_t : public event_t
-	{	  
-	  player_t* target;
-	  double crit_ignite_bank;
+  {
+    player_t* target;
+    double crit_ignite_bank;
     timespan_t application_delay;
-	  ignite_sampling_event_t( sim_t* sim, player_t* t, action_t* a, double crit_ignite_bank ) : event_t( sim, a -> player ), target( t ), crit_ignite_bank(crit_ignite_bank)
+    ignite_sampling_event_t( sim_t* sim, player_t* t, action_t* a, double crit_ignite_bank ) : event_t( sim, a -> player ), target( t ), crit_ignite_bank( crit_ignite_bank )
     {
       name   = "Ignite Sampling";
 
@@ -948,7 +948,7 @@ static void trigger_ignite( spell_t* s, double dmg )
       timespan_t delay = sim -> aura_delay - p -> ignite_sampling_delta;
       sim -> add_event( this, sim -> gauss( delay, 0.25 * delay ) );
     }
-	  virtual void execute()
+    virtual void execute()
     {
         mage_t* p = player -> cast_mage();
 
@@ -1023,7 +1023,7 @@ static void trigger_ignite( spell_t* s, double dmg )
           }
         }
     }
-	};
+  };
 
   double ignite_dmg = dmg * p -> talents.ignite -> effect1().percent();
 
@@ -1041,7 +1041,7 @@ static void trigger_ignite( spell_t* s, double dmg )
     return;
   }
 
-  ignite_sampling_event_t* ignite_sampling_event = new ( sim ) ignite_sampling_event_t( sim, s -> target, s, ignite_dmg );
+  new ( sim ) ignite_sampling_event_t( sim, s -> target, s, ignite_dmg );
 }
 
 // trigger_master_of_elements ===============================================
