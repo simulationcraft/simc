@@ -115,6 +115,7 @@ struct mage_t : public player_t
   // Options
   std::string focus_magic_target_str;
   double merge_ignite;
+  timespan_t ignite_sampling_delta;
 
   // Spell Data
   struct spells_t
@@ -266,7 +267,7 @@ struct mage_t : public player_t
   int mana_gem_charges;
   timespan_t mage_armor_timer;
 
-  mage_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, MAGE, name, r )
+  mage_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, MAGE, name, r ), ignite_sampling_delta( timespan_t::from_seconds( 0.15 ) )
   {
     if ( race == RACE_NONE ) race = RACE_UNDEAD;
 
@@ -930,35 +931,99 @@ static void trigger_ignite( spell_t* s, double dmg )
 
   if ( ! p -> talents.ignite -> rank() ) return;
 
-  struct ignite_t : public mage_spell_t
-  {
-    ignite_t( player_t* player ) :
-      mage_spell_t( "ignite", 12654, player )
+  struct ignite_sampling_event_t : public event_t
+	{	  
+	  player_t* target;
+	  double crit_ignite_bank;
+    timespan_t application_delay;
+	  ignite_sampling_event_t( sim_t* sim, player_t* t, action_t* a, double crit_ignite_bank ) : event_t( sim, a -> player ), target( t ), crit_ignite_bank(crit_ignite_bank)
     {
-      background    = true;
+      name   = "Ignite Sampling";
 
-      // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
-      // proc          = false;
+      if ( sim -> debug )
+        log_t::output( sim, "New Ignite Sampling Event: %s",
+                       player -> name() );
 
-      may_resist    = true;
-      tick_may_crit = false;
-      hasted_ticks  = false;
-      dot_behavior  = DOT_REFRESH;
-      init();
+      mage_t* p = player -> cast_mage();
+      timespan_t delay = sim -> aura_delay - p -> ignite_sampling_delta;
+      sim -> add_event( this, sim -> gauss( delay, 0.25 * delay ) );
     }
-    virtual void impact( player_t* t, int impact_result, double ignite_dmg )
+	  virtual void execute()
     {
-      mage_spell_t::impact( t, impact_result, 0 );
+        mage_t* p = player -> cast_mage();
 
-      // FIXME: Is a is_hit check necessary here?
-      base_td = ignite_dmg / dot() -> num_ticks;
+        struct ignite_t : public mage_spell_t
+        {
+          ignite_t( player_t* player ) :
+            mage_spell_t( "ignite", 12654, player )
+          {
+            background    = true;
+
+            // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
+            // proc          = false;
+
+            may_resist    = true;
+            tick_may_crit = false;
+            hasted_ticks  = false;
+            dot_behavior  = DOT_REFRESH;
+            init();
+          }
+          virtual void impact( player_t* t, int impact_result, double ignite_dmg )
+          {
+            mage_spell_t::impact( t, impact_result, 0 );
+
+            base_td = ignite_dmg / dot() -> num_ticks;
+          }
+          virtual timespan_t travel_time()
+          {
+            mage_t* p = player -> cast_mage();
+            return sim -> gauss( p -> ignite_sampling_delta, 0.25 * p -> ignite_sampling_delta );
+          }
+          virtual double total_td_multiplier() const { return 1.0; }
+        };
+
+        if ( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
+
+        dot_t* dot = p -> active_ignite -> dot();
+
+        double ignite_dmg = crit_ignite_bank;
+
+        if ( dot -> ticking )
+        {
+          ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
+        }
+
+        // TODO: investigate if this can actually happen
+        /*if ( timespan_t::from_seconds( 4.0 ) + sim -> aura_delay < dot -> remains() )
+        {
+          if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
+          p -> procs_munched_ignite -> occur();
+          return;
+        }*/
+
+        if ( p -> active_ignite -> travel_event )
+        {
+          // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
+          if ( sim -> log ) log_t::output( sim, "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
+          p -> procs_munched_ignite -> occur();
+        }
+
+        p -> active_ignite -> direct_dmg = ignite_dmg;
+        p -> active_ignite -> result = RESULT_HIT;
+        p -> active_ignite -> schedule_travel( target );
+
+        if ( p -> active_ignite -> travel_event && dot -> ticking )
+        {
+          if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_event -> occurs() )
+          {
+            // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
+            // both tick -and- get rolled into the next Ignite.
+            if ( sim -> log ) log_t::output( sim, "Player %s rolls Ignite.", p -> name() );
+            p -> procs_rolled_ignite -> occur();
+          }
+        }
     }
-    virtual timespan_t travel_time()
-    {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
-    }
-    virtual double total_td_multiplier() const { return 1.0; }
-  };
+	};
 
   double ignite_dmg = dmg * p -> talents.ignite -> effect1().percent();
 
@@ -976,43 +1041,7 @@ static void trigger_ignite( spell_t* s, double dmg )
     return;
   }
 
-  if ( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
-
-  dot_t* dot = p -> active_ignite -> dot();
-
-  if ( dot -> ticking )
-  {
-    ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
-  }
-
-  if ( timespan_t::from_seconds( 4.0 ) + sim -> aura_delay < dot -> remains() )
-  {
-    if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
-    p -> procs_munched_ignite -> occur();
-    return;
-  }
-
-  if ( p -> active_ignite -> travel_event )
-  {
-    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
-    p -> procs_munched_ignite -> occur();
-  }
-
-  p -> active_ignite -> direct_dmg = ignite_dmg;
-  p -> active_ignite -> result = RESULT_HIT;
-  p -> active_ignite -> schedule_travel( s -> target );
-
-  if ( p -> active_ignite -> travel_event && dot -> ticking )
-  {
-    if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_event -> occurs() )
-    {
-      // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
-      // both tick -and- get rolled into the next Ignite.
-      if ( sim -> log ) log_t::output( sim, "Player %s rolls Ignite.", p -> name() );
-      p -> procs_rolled_ignite -> occur();
-    }
-  }
+  ignite_sampling_event_t* ignite_sampling_event = new ( sim ) ignite_sampling_event_t( sim, s -> target, s, ignite_dmg );
 }
 
 // trigger_master_of_elements ===============================================
@@ -4308,6 +4337,7 @@ void mage_t::create_options()
   {
     { "focus_magic_target",  OPT_STRING, &( focus_magic_target_str ) },
     { "merge_ignite",        OPT_FLT,    &( merge_ignite           ) },
+	{ "ignite_sampling_delta", OPT_TIMESPAN, &( ignite_sampling_delta ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
