@@ -5419,7 +5419,7 @@ struct use_item_t : public action_t
     timespan_t ready = sim -> current_time + duration;
     for ( action_t* a = player -> action_list; a; a = a -> next )
     {
-      if ( a -> name_str == "use_item" )
+      if ( a -> name_str.substr(0, 8) == "use_item" )
       {
         if ( ready > a -> cooldown -> ready )
         {
