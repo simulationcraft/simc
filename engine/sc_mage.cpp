@@ -267,7 +267,7 @@ struct mage_t : public player_t
   int mana_gem_charges;
   timespan_t mage_armor_timer;
 
-  mage_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, MAGE, name, r ), ignite_sampling_delta( timespan_t::from_seconds( 0.15 ) )
+  mage_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, MAGE, name, r ), ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) )
   {
     if ( race == RACE_NONE ) race = RACE_UNDEAD;
 
@@ -972,7 +972,7 @@ static void trigger_ignite( spell_t* s, double dmg )
           {
             mage_spell_t::impact( t, impact_result, 0 );
 
-            base_td = ignite_dmg / dot() -> num_ticks;
+            base_td = ignite_dmg;
           }
           virtual timespan_t travel_time()
           {
@@ -991,6 +991,11 @@ static void trigger_ignite( spell_t* s, double dmg )
         if ( dot -> ticking )
         {
           ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
+          ignite_dmg /= 3.0;          
+        }
+        else
+        {
+          ignite_dmg /= 2.0;
         }
 
         // TODO: investigate if this can actually happen
