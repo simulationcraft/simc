@@ -569,7 +569,10 @@ static bool parse_fight_style( sim_t*             sim,
   else if ( util_t::str_compare_ci( value, "LightMovement" ) )
   {
     sim -> fight_style = "LightMovement";
-    sim -> raid_events_str = "/movement,players_only=1,first=53,cooldown=85,duration=7,last=360";
+    sim -> raid_events_str = "/movement,players_only=1,first=";
+    sim -> raid_events_str += util_t::to_string( int( sim -> max_time.total_seconds() * 0.1 ) );
+    sim -> raid_events_str += ",cooldown=85,duration=7,last=";
+    sim -> raid_events_str += util_t::to_string( int( sim -> max_time.total_seconds() * 0.8 ) );
   }
   else if ( util_t::str_compare_ci( value, "HeavyMovement" ) )
   {

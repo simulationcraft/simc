@@ -2128,13 +2128,13 @@ const char* chart_t::dps_error( std::string& s,
     s += "chts=dddddd,18";
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.0f,%.0f,%.8f,100*exp(-(x-%.0f)^2/(2*%.0f^2))", p -> dps.mean - std_dev * 4, p -> dps.mean + std_dev * 4, 1 / std_dev, p -> dps.mean, std_dev ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.2f,%.2f,%.8f,100*exp(-(x-%.4f)^2/(2*%.2f^2))", p -> dps.mean - std_dev * 4, p -> dps.mean + std_dev * 4, std_dev / 100.0, p -> dps.mean, std_dev ); s += buffer;
 
   s += "&amp;";
   s += "chd=t:-1";
 
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.0f:%.0f,0", std::max( 4 * std_dev - p -> dps_error, 0.0 ) * std_dev, floor( std::min( 4 * std_dev + p -> dps_error, 8* std_dev ) * std_dev ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.0f:%.0f,0", std::max( 4 * std_dev - p -> dps_error, 0.0 ) * 100.0 / std_dev, floor( std::min( 4 * std_dev + p -> dps_error, 8* std_dev ) * 100.0 / std_dev ) ); s += buffer;
 
 
   return s.c_str();

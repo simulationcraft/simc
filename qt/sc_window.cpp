@@ -588,7 +588,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(      "World Lag",       latencyChoice = createChoice( 3, "Low", "Medium", "High" ) );
   globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 3, "Patchwerk", "HelterSkelter", "Ultraxion" ) );
+  globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 5, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement" ) );
   globalsLayout->addRow(   "Target Level",   targetLevelChoice = createChoice( 3, "Raid Boss", "5-man heroic", "5-man normal" ) );
   globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
@@ -991,7 +991,13 @@ void SimulationCraftWindow::createToolTips()
                                 "    Movement, Stuns, Interrupts,\n"
                                 "    Target-Switching (every 2min)\n"
                                 "Ultraxion:\n"
-                                "    Periodic Stuns, Raid Damage\n" );
+                                "    Periodic Stuns, Raid Damage\n"
+                                "LightMovement:\n"
+                                "    7s Movement, 85s CD,\n"
+                                "    10% into the fight until 20% before the end\n"
+                                "HeavyMovement:\n"
+                                "    4s Movement, 10s CD,\n"
+                                "    beginning 10s into the fight\n" );
 
   targetRaceChoice->setToolTip( "Race of the target and any adds." );
 
