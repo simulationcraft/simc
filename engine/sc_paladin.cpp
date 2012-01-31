@@ -466,7 +466,7 @@ struct paladin_heal_t : public heal_t
 
   virtual double haste() const
   {
-    double h = spell_t::haste();
+    double h = heal_t::haste();
 
     paladin_t* p = player -> cast_paladin();
 
@@ -1549,8 +1549,6 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     trigger_gcd = timespan_t::zero;
 
     target = player;
-    heal_target.clear();
-    heal_target.push_back( target );
   }
 
   virtual void execute()

@@ -592,7 +592,7 @@ void action_t::target_debuff( player_t* t, int /* dmg_type */ )
 
       }
     }
-    else
+    else if ( type == ACTION_SPELL || type == ACTION_ATTACK )
     {
       target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
                                    std::max( t -> debuffs.earth_and_moon     -> value(),
@@ -624,12 +624,8 @@ void action_t::target_debuff( player_t* t, int /* dmg_type */ )
         target_attack_power += t -> debuffs.hunters_mark -> value();
       }
     }
-    if ( base_spell_power_multiplier > 0 )
-    {
-      // no spell power based debuffs at this time
-    }
 
-    if ( t -> debuffs.vulnerable -> up() ) target_multiplier *= t -> debuffs.vulnerable -> value();
+    if ( t -> debuffs.vulnerable -> up() && ( type == ACTION_SPELL || type == ACTION_ATTACK ) ) target_multiplier *= t -> debuffs.vulnerable -> value();
 
   }
 
@@ -958,7 +954,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     if ( ! sim -> actor_list[ i ] -> sleeping &&
-         sim -> actor_list[ i ] -> is_enemy() &&
+         ( ( type == ACTION_HEAL && !sim -> actor_list[ i ] -> is_enemy() ) || ( type != ACTION_HEAL && sim -> actor_list[ i ] -> is_enemy() ) ) &&
          sim -> actor_list[ i ] != target )
       tl.push_back( sim -> actor_list[ i ] );
   }
@@ -1061,7 +1057,7 @@ void action_t::tick( dot_t* d )
 
   player_tick();
 
-  target_debuff( target, DMG_OVER_TIME );
+  target_debuff( target, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
   if ( tick_may_crit )
   {
@@ -1075,7 +1071,7 @@ void action_t::tick( dot_t* d )
 
   tick_dmg = calculate_tick_damage();
 
-  assess_damage( target, tick_dmg, DMG_OVER_TIME, result );
+  assess_damage( target, tick_dmg, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, result );
 
   if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
 
@@ -1097,7 +1093,7 @@ void action_t::last_tick( dot_t* d )
 
 void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
 {
-  assess_damage( t, travel_dmg, DMG_DIRECT, impact_result );
+  assess_damage( t, travel_dmg, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, impact_result );
 
   // Set target so aoe dots work
   player_t* orig_target = target;

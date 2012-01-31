@@ -379,7 +379,7 @@ enum result_type
   RESULT_MAX
 };
 
-#define RESULT_HIT_MASK  ( (1<<RESULT_GLANCE) | (1<<RESULT_BLOCK) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
+#define RESULT_HIT_MASK  ( (1<<RESULT_GLANCE) | (1<<RESULT_BLOCK) | (1<<RESULT_CRIT_BLOCK) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
 #define RESULT_CRIT_MASK ( (1<<RESULT_CRIT) )
 #define RESULT_MISS_MASK ( (1<<RESULT_MISS) )
 #define RESULT_NONE_MASK ( (1<<RESULT_NONE) )
@@ -404,7 +404,7 @@ enum proc_type
   PROC_MAX
 };
 
-enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
+enum action_type { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
 
 enum school_type
 {
@@ -5189,9 +5189,8 @@ public:
 
 // Heal =====================================================================
 
-struct heal_t : public spell_t
+struct heal_t : public action_t
 {
-  std::vector<player_t*> heal_target;
 
   // Reporting
   double total_heal, total_actual;
@@ -5203,19 +5202,12 @@ public:
   heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE );
   heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE );
 
-  virtual void parse_options( option_t* options, const std::string& options_str );
   virtual void player_buff();
-  virtual void target_debuff( player_t* t, int dmg_type );
   virtual double haste() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                               int    dmg_type, int impact_result );
   virtual void calculate_result();
-  virtual double calculate_direct_damage( int = 0 );
-  virtual double calculate_tick_damage();
-  virtual void impact( player_t*, int impact_result, double travel_dmg );
-  virtual void tick( dot_t* d );
-  virtual void last_tick( dot_t* d );
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
 };

@@ -992,8 +992,7 @@ static void register_blazing_power( item_t* item )
 
       if ( rng -> roll( 0.10 ) )
       {
-        heal -> heal_target.clear();
-        heal -> heal_target.push_back( heal -> find_lowest_player() );
+        heal -> target =  heal -> find_lowest_player();
         heal -> execute();
         proc -> occur();
         cd -> start();
@@ -1056,8 +1055,7 @@ static void register_windward_heart( item_t* item )
 
       if ( rng -> roll( 0.10 ) )
       {
-        heal -> heal_target.clear();
-        heal -> heal_target.push_back( heal -> find_lowest_player() );
+        heal -> target = heal -> find_lowest_player();
         heal -> execute();
         proc -> occur();
         cd -> start();

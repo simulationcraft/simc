@@ -948,16 +948,14 @@ struct atonement_heal_t : public priest_heal_t
 
   virtual void execute()
   {
-    heal_target.clear();
-    heal_target.push_back( find_lowest_player() );
+    target = find_lowest_player();
 
     priest_heal_t::execute();
   }
 
   virtual void tick( dot_t* d )
   {
-    heal_target.clear();
-    heal_target.push_back( find_lowest_player() );
+    target = find_lowest_player();
 
     priest_heal_t::tick( d );
   }
@@ -1415,8 +1413,7 @@ struct lightwell_pet_t : public pet_t
     {
       cast() -> charges--;
 
-      assert( heal_target.size() == 1 );
-      heal_target[ 0 ] = find_lowest_player();
+      target = find_lowest_player();
 
       heal_t::execute();
     }
@@ -1485,8 +1482,7 @@ struct cauterizing_flame_pet_t : public pet_t
     void execute()
     {
       // Choose Heal Target
-      heal_target.clear();
-      heal_target.push_back( find_lowest_player() );
+      target = find_lowest_player();
       heal_t::execute();
     }
   };
@@ -3071,27 +3067,13 @@ struct binding_heal_t : public priest_heal_t
     parse_options( NULL, options_str );
 
     base_multiplier *= 1.0 + p -> talents.empowered_healing -> base_value( E_APPLY_AURA , A_ADD_PCT_MODIFIER );
+
+    aoe = 1;
   }
 
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-
-    // Adjust heal_target
-    heal_target.resize( 1 );
-    if ( heal_target[0] != p )
-      heal_target.push_back( p );
-    else
-    {
-      for ( player_t* q = sim -> player_list; q; q = q -> next )
-      {
-        if ( q != p && ! q -> is_pet() && p -> get_player_distance( q ) < ( range * range ) )
-        {
-          heal_target.push_back( q );
-          break;
-        }
-      }
-    }
 
     priest_heal_t::execute();
 
@@ -3169,6 +3151,7 @@ struct circle_of_healing_t : public priest_heal_t
 
     base_cost *= 1.0 + p -> glyphs.circle_of_healing -> effect2().percent();
     base_cost  = floor( base_cost );
+    aoe = p -> glyphs.circle_of_healing -> ok() ? 5 : 4;
   }
 
   virtual void execute()
@@ -3181,16 +3164,7 @@ struct circle_of_healing_t : public priest_heal_t
       cooldown -> duration +=  p -> buffs_chakra_sanctuary -> effect2().time_value();
 
     // Choose Heal Target
-    heal_target.clear();
-    heal_target.push_back( find_lowest_player() );
-    for ( player_t* q = sim -> player_list; q; q = q -> next )
-    {
-      if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( target ) < ( range * range ) )
-      {
-        heal_target.push_back( q );
-        if ( heal_target.size() >= ( unsigned ) ( p -> glyphs.circle_of_healing -> ok() ? 6 : 5 ) ) break;
-      }
-    }
+    target = find_lowest_player();
 
     priest_heal_t::execute();
   }
@@ -3217,34 +3191,16 @@ struct circle_of_healing_t : public priest_heal_t
 
 struct divine_hymn_tick_t : public priest_heal_t
 {
-  size_t target_count;
-
-  divine_hymn_tick_t( player_t* player ) :
-    priest_heal_t( "divine_hymn_tick", player, 64844 ),
-    target_count( 0 )
+  divine_hymn_tick_t( player_t* player, int nr_targets ) :
+    priest_heal_t( "divine_hymn_tick", player, 64844 )
   {
     priest_t* p = player -> cast_priest();
 
     background  = true;
 
+    aoe = nr_targets - 1;
+
     base_multiplier *= 1.0 + p -> talents.heavenly_voice -> effect1().percent();
-  }
-
-  virtual void execute()
-  {
-    // Choose Heal Targets
-    heal_target.clear();
-    heal_target.push_back( find_lowest_player() ); // Find at least the lowest player
-    for ( player_t* q = sim -> player_list; q; q = q -> next )
-    {
-      if ( !q -> is_pet() && q != heal_target[0] )
-      {
-        heal_target.push_back( q );
-        if ( heal_target.size() >= target_count ) break;
-      }
-    }
-
-    priest_heal_t::execute();
   }
 
   virtual void player_buff()
@@ -3273,8 +3229,7 @@ struct divine_hymn_t : public priest_heal_t
 
     cooldown -> duration += p -> talents.heavenly_voice -> effect2().time_value();
 
-    divine_hymn_tick = new divine_hymn_tick_t( p );
-    divine_hymn_tick -> target_count = effect2().base_value();
+    divine_hymn_tick = new divine_hymn_tick_t( p, effect2().base_value() );
     add_child( divine_hymn_tick );
   }
 
@@ -3626,20 +3581,6 @@ struct holy_word_sanctuary_t : public priest_heal_t
       background  = true;
       direct_tick = true;
     }
-    virtual void execute()
-    {
-      // Choose Heal Targets
-      heal_target.clear();
-      for ( player_t* q = sim -> player_list; q; q = q -> next )
-      {
-        if ( !q -> is_pet() && q -> get_player_distance( target ) < ( range * range ) )
-        {
-          heal_target.push_back( q );
-        }
-      }
-
-      priest_heal_t::execute();
-    }
 
     virtual void player_buff()
     {
@@ -3967,8 +3908,7 @@ struct penance_heal_t : public priest_heal_t
   virtual void tick( dot_t* d )
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
-    penance_tick -> heal_target.clear();
-    penance_tick -> heal_target.push_back( target );
+    penance_tick -> target = target;
     penance_tick -> execute();
     stats -> add_tick( d -> time_to_tick );
   }
@@ -4092,8 +4032,7 @@ struct power_word_shield_t : public priest_absorb_t
     if ( glyph_pws )
     {
       glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = p -> glyphs.power_word_shield -> effect1().percent() * travel_dmg;
-      glyph_pws -> heal_target.clear();
-      glyph_pws -> heal_target.push_back( t );
+      glyph_pws -> target = t;
       glyph_pws -> execute();
     }
 
@@ -4140,6 +4079,8 @@ struct prayer_of_healing_t : public priest_heal_t
       glyph = new glyph_prayer_of_healing_t( p );
       add_child( glyph );
     }
+
+    aoe = 4;
   }
 
   virtual void init()
@@ -4153,17 +4094,6 @@ struct prayer_of_healing_t : public priest_heal_t
   virtual void execute()
   {
     priest_t* p = player -> cast_priest();
-
-    // Choose Heal Targets
-    heal_target.resize( 1 ); // Only leave the first target, reset the others.
-    for ( player_t* q = sim -> player_list; q; q = q -> next )
-    {
-      if ( !q -> is_pet() && q != heal_target[0] && q -> get_player_distance( heal_target[0] ) < ( range * range ) && q -> party == heal_target[0] -> party )
-      {
-        heal_target.push_back( q );
-        if ( heal_target.size() >= 5 ) break;
-      }
-    }
 
     priest_heal_t::execute();
 
@@ -4204,7 +4134,7 @@ struct prayer_of_healing_t : public priest_heal_t
       priest_t* p = player -> cast_priest();
 
       // FIXME: Modelled as a Direct Heal instead of a dot
-      glyph -> heal_target.clear(); glyph -> heal_target.push_back( t );
+      glyph -> target = t;
       glyph -> base_dd_min = glyph -> base_dd_max = travel_dmg * p -> glyphs.prayer_of_healing -> effect1().percent();
       glyph -> execute();
     }
@@ -4279,6 +4209,8 @@ struct prayer_of_mending_t : public priest_heal_t
     base_cost  = floor( base_cost );
 
     can_trigger_DA = false;
+
+    aoe = 4;
   }
 
   virtual void player_buff()
@@ -4293,19 +4225,6 @@ struct prayer_of_mending_t : public priest_heal_t
 
   virtual void execute()
   {
-    // Set Heal Targets
-    heal_target.resize( 1 ); // Only leave the first target, reset the others.
-    if ( ! single )
-    {
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
-      {
-        if ( !p -> is_pet() && p != heal_target[0] )
-        {
-          heal_target.push_back( p );
-          if ( heal_target.size() >= 5 ) break;
-        }
-      }
-    }
 
     priest_heal_t::execute();
 
@@ -4332,7 +4251,7 @@ struct prayer_of_mending_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( p -> glyphs.prayer_of_mending -> ok() && t == heal_target[0] )
+    if ( p -> glyphs.prayer_of_mending -> ok() && t == target )
       target_multiplier *= 1.0 + p -> glyphs.prayer_of_mending -> effect1().percent();
   }
 };
@@ -4389,8 +4308,7 @@ struct renew_t : public priest_heal_t
     {
       priest_t* p = player -> cast_priest();
       dt -> base_dd_min = dt -> base_dd_max = ( base_td + total_power() * tick_power_mod ) * hasted_num_ticks() * p -> talents.divine_touch -> effect1().percent();
-      dt -> heal_target.clear();
-      dt -> heal_target.push_back( t );
+      dt -> target = t;
       dt -> execute();
     }
   }
