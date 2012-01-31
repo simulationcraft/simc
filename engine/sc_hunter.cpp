@@ -2240,16 +2240,6 @@ struct arcane_shot_t : public hunter_attack_t
     consumes_tier12_4pc = true;
   }
 
-  virtual double cost() const
-  {
-    hunter_t* p = player -> cast_hunter();
-
-    if ( ! p -> dbc.ptr && p -> buffs_lock_and_load -> check() )
-      return 0;
-
-    return hunter_attack_t::cost();
-  }
-
   virtual void execute()
   {
     hunter_attack_t::execute();
@@ -2269,12 +2259,6 @@ struct arcane_shot_t : public hunter_attack_t
       {
         p -> active_pet -> buffs_sic_em -> trigger();
       }
-    }
-
-    if ( ! p -> dbc.ptr )
-    {
-      p -> buffs_lock_and_load -> up();
-      p -> buffs_lock_and_load -> decrement();
     }
   }
 };
@@ -4149,26 +4133,18 @@ void hunter_t::init_actions()
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
       action_list_str += "/explosive_shot,if=(remains<2.0)";
 
-      if ( ! dbc.ptr )
+      if ( ! talents.black_arrow -> rank() )
         action_list_str += "/explosive_trap,not_flying=1,if=target.time_to_die>=11";
       
       action_list_str += "/kill_shot";
 
       if ( talents.black_arrow -> rank() )
-      {
-        if ( dbc.ptr )
-          action_list_str += "/black_arrow,if=target.time_to_die>=8";
-        else
-          action_list_str += "/black_arrow,flying=1,if=target.time_to_die>=8";
-      }
+        action_list_str += "/black_arrow,if=target.time_to_die>=8";
 
       action_list_str += "/rapid_fire";
 
-      if ( dbc.ptr )
-        action_list_str += "/arcane_shot,if=focus>=67";
-      else
-        action_list_str += "/arcane_shot,if=focus>=61&!buff.lock_and_load.react";
-
+      action_list_str += "/arcane_shot,if=focus>=67";
+      
       if ( level >=81 )
         action_list_str += "/cobra_shot";
       else
