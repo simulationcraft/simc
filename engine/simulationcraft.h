@@ -113,7 +113,7 @@ namespace std {using namespace tr1; }
 #include "data_definitions.hh"
 
 #define SC_MAJOR_VERSION "432"
-#define SC_MINOR_VERSION "1"
+#define SC_MINOR_VERSION "2"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 #define SC_EPSILON ( 0.000001 )
