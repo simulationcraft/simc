@@ -111,6 +111,7 @@ void action_t::init_action_t_()
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
   base_add_multiplier            = 1.0;
+  base_aoe_multiplier            = 1.0;
   normalize_weapon_speed         = false;
   rng_travel                     = NULL;
   stats                          = NULL;
