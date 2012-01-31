@@ -1,6 +1,6 @@
 #define TALENT_SIZE (660)
 
-// 660 talents, wow build 15050
+// 660 talents, wow build 15211
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,Tab, Class, Pet,Depend,DR ,Col,Row, { Rank1, Rank2, Rank3 },S1,S2,S3 },
   { "Precision"                         ,   181, 0x00,  1, 0x008, 0x0,     0,  0,  2,  0, { 13705, 13832, 13843 }, 0, 0, 0 },

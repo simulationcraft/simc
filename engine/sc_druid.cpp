@@ -4134,8 +4134,7 @@ struct starsurge_t : public druid_spell_t
     if ( p -> set_bonus.tier13_4pc_caster() )
     {
       cooldown -> duration -= timespan_t::from_seconds( 5.0 );
-      if ( p -> dbc.ptr )
-        base_multiplier *= 1.10;
+      base_multiplier *= 1.10;
     }
 
     starfall_cd = p -> get_cooldown( "starfall" );
