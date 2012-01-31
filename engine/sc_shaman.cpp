@@ -4735,24 +4735,25 @@ void shaman_t::init_actions()
       for ( int i=0; i < num_items; i++ )
       {
         if ( ! items[ i ].use.active() ) continue;
+        
+        int duration = 0;
 
         // Fiery Quintessence / Bottled Wishes are aligned to fire elemental and
-        // only used when the required temporary int threshold is exceeded
-        if ( util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) ||
-             util_t::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
+        // only used when the required temporary spell power threshold is exceeded
+        if ( util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
+          duration = 25;
+        else if ( util_t::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
+          duration = 15;
+        
+        action_list_str += "/use_item,name=" + std::string( items[ i ].name() );
+
+        if ( duration > 0 )
         {
-          action_list_str += "/use_item,name=" +
-                             std::string( items[ i ].name() ) +
-                             ",if=(cooldown.fire_elemental_totem.remains" +
-                             ( ( set_bonus.tier12_2pc_caster() ) ? "<25" : "=0" ) +
+          action_list_str += ",if=(cooldown.fire_elemental_totem.remains" +
+                             ( ( set_bonus.tier12_2pc_caster() ) ? "<" + util_t::to_string( duration ) : "=0" ) +
                              "&temporary_bonus.spell_power>=" +
                              util_t::to_string( sp_threshold ) +
                              ")|set_bonus.tier12_2pc_caster=0";
-        }
-        else
-        {
-          action_list_str += "/use_item,name=";
-          action_list_str += items[ i ].name();
         }
       }
       action_list_str += init_use_profession_actions();
