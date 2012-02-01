@@ -630,8 +630,8 @@ void action_t::target_debuff( player_t* t, int /* dmg_type */ )
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
-                   name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
+    log_t::output( sim, "action_t::target_debuff: %s (target=%s) multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
+                   name(), t -> name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
 }
 
 // action_t::snapshot

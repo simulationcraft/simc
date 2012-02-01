@@ -22,6 +22,11 @@ void heal_t::init_heal_t_()
   if ( target -> is_enemy() || target -> is_add() )
     target = player;
 
+  base_spell_power_multiplier = 1.0;
+  min_gcd = timespan_t::from_seconds( 1.0 );
+
+  group_only = false;
+
   total_heal = total_actual = 0;
 
   dot_behavior      = DOT_REFRESH;
@@ -29,6 +34,7 @@ void heal_t::init_heal_t_()
   may_crit          = true;
   tick_may_crit     = true;
   may_trigger_dtr   = false;
+  hasted_ticks = true;
 
   stats -> type = STATS_HEAL;
 
@@ -66,10 +72,14 @@ void heal_t::player_buff()
 
   player_t* p = player;
 
+  player_multiplier    = p -> composite_player_heal_multiplier( school );
+  player_dd_multiplier = p -> composite_player_dh_multiplier( school );
+  player_td_multiplier = p -> composite_player_th_multiplier( school );
+
   player_crit = p -> composite_spell_crit();
 
-  if ( sim -> debug ) log_t::output( sim, "heal_t::player_buff: %s crit=%.2f",
-                                     name(), player_crit );
+  if ( sim -> debug ) log_t::output( sim, "heal_t::player_buff: %s mult=%.2f dd_mult=%.2f td_mult=%.2f crit=%.2f",
+                                     name(), player_multiplier, player_dd_multiplier, player_td_multiplier, player_crit );
 }
 
 // heal_t::haste ============================================================
@@ -77,6 +87,37 @@ void heal_t::player_buff()
 double heal_t::haste() const
 {
   return player -> composite_spell_haste();
+}
+
+// heal_t::gcd =============================================================
+
+timespan_t heal_t::gcd() const
+{
+  timespan_t t = action_t::gcd();
+  if ( t == timespan_t::zero ) return timespan_t::zero;
+
+  t *= haste();
+  if ( t < min_gcd ) t = min_gcd;
+
+  return t;
+}
+
+// heal_t::execute_time ====================================================
+
+timespan_t heal_t::execute_time() const
+{
+  timespan_t t = base_execute_time;
+
+  if ( ! harmful && ! player -> in_combat )
+    return timespan_t::zero;
+
+  if ( player -> buffs.corruption_absolute -> up() )
+    return timespan_t::zero;
+
+  if ( t <= timespan_t::zero ) return timespan_t::zero;
+  t *= haste();
+
+  return t;
 }
 
 // heal_t::execute ==========================================================
@@ -95,10 +136,12 @@ void heal_t::execute()
     if ( result != RESULT_NONE )
     {
       action_callback_t::trigger( player -> heal_callbacks[ result ], this );
+      action_callback_t::trigger( player -> spell_callbacks[ result ], this );
     }
     if ( ! background ) // OnSpellCast
     {
       action_callback_t::trigger( player -> heal_callbacks[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
     }
   }
 }
@@ -123,6 +166,23 @@ void heal_t::calculate_result()
   }
 
   if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+}
+
+// heal_t::crit_chance =====================================================
+
+double heal_t::crit_chance( int /* delta_level */ ) const
+{
+  return total_crit();
+}
+
+// heal_t::schedule_execute ================================================
+
+void heal_t::schedule_execute()
+{
+  action_t::schedule_execute();
+
+  if ( time_to_execute > timespan_t::zero )
+    player -> debuffs.casting -> trigger();
 }
 
 // heal_t::assess_damage ====================================================
@@ -210,6 +270,31 @@ player_t* heal_t::find_lowest_player()
   return max_player;
 }
 
+// heal_t::available_targets ==============================================
+
+size_t heal_t::available_targets( std::vector< player_t* >& tl ) const
+{
+  // TODO: This does not work for heals at all, as it presumes enemies in the
+  // actor list.
+
+  if ( group_only )
+  {
+  tl.push_back( target );
+
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    if ( ! sim -> actor_list[ i ] -> sleeping &&
+         !sim -> actor_list[ i ] -> is_enemy() &&
+         sim -> actor_list[ i ] != target && sim -> actor_list[ i ] -> party == target -> party )
+      tl.push_back( sim -> actor_list[ i ] );
+  }
+
+  return tl.size();
+  }
+
+  return action_t::available_targets( tl );
+}
+
 // ==========================================================================
 // Absorb
 // ==========================================================================
@@ -227,6 +312,9 @@ void absorb_t::init_absorb_t_()
 {
   if ( target -> is_enemy() || target -> is_add() )
     target = player;
+
+  base_spell_power_multiplier = 1.0;
+  min_gcd = timespan_t::from_seconds( 1.0 );
 
   total_heal = total_actual = 0;
   may_trigger_dtr   = false;
@@ -260,6 +348,8 @@ void absorb_t::player_buff()
 
   player_t* p = player;
 
+  player_multiplier    = p -> composite_player_absorb_multiplier   ( school );
+
   player_crit = p -> composite_spell_crit();
 
   if ( sim -> debug ) log_t::output( sim, "absorb_t::player_buff: %s crit=%.2f",
@@ -271,6 +361,37 @@ void absorb_t::player_buff()
 double absorb_t::haste() const
 {
   return player -> composite_spell_haste();
+}
+
+// absorb_t::gcd =============================================================
+
+timespan_t absorb_t::gcd() const
+{
+  timespan_t t = action_t::gcd();
+  if ( t == timespan_t::zero ) return timespan_t::zero;
+
+  t *= haste();
+  if ( t < min_gcd ) t = min_gcd;
+
+  return t;
+}
+
+// absorb_t::execute_time ====================================================
+
+timespan_t absorb_t::execute_time() const
+{
+  timespan_t t = base_execute_time;
+
+  if ( ! harmful && ! player -> in_combat )
+    return timespan_t::zero;
+
+  if ( player -> buffs.corruption_absolute -> up() )
+    return timespan_t::zero;
+
+  if ( t <= timespan_t::zero ) return timespan_t::zero;
+  t *= haste();
+
+  return t;
 }
 
 // absorb_t::execute ========================================================
@@ -290,10 +411,12 @@ void absorb_t::execute()
     if ( result != RESULT_NONE )
     {
       //action_callback_t::trigger( player -> heal_callbacks[ result ], this );
+      action_callback_t::trigger( player -> spell_callbacks[ result ], this );
     }
     if ( ! background ) // OnSpellCast
     {
       //action_callback_t::trigger( player -> heal_callbacks[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
     }
   }
 }
@@ -347,4 +470,14 @@ void absorb_t::calculate_result()
   result = RESULT_HIT;
 
   if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+}
+
+// spell_t::schedule_execute ================================================
+
+void absorb_t::schedule_execute()
+{
+  action_t::schedule_execute();
+
+  if ( time_to_execute > timespan_t::zero )
+    player -> debuffs.casting -> trigger();
 }

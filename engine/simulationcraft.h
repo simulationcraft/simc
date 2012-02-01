@@ -5189,7 +5189,7 @@ public:
 
 struct heal_t : public action_t
 {
-
+  bool group_only;
   // Reporting
   double total_heal, total_actual;
 
@@ -5202,12 +5202,17 @@ public:
 
   virtual void player_buff();
   virtual double haste() const;
+  virtual timespan_t gcd() const;
+  virtual timespan_t execute_time() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                               int    dmg_type, int impact_result );
   virtual void calculate_result();
+  virtual double crit_chance( int delta_level ) const;
+  virtual void   schedule_execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
+  virtual size_t available_targets( std::vector< player_t* >& ) const;
 };
 
 // Absorb ===================================================================
@@ -5226,11 +5231,14 @@ public:
 
   virtual void player_buff();
   virtual double haste() const;
+  virtual timespan_t gcd() const;
+  virtual timespan_t execute_time() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                               int    dmg_type, int impact_result );
   virtual void calculate_result();
   virtual void impact( player_t*, int impact_result, double travel_dmg );
+  virtual void   schedule_execute();
 
 };
 

@@ -4070,6 +4070,7 @@ struct prayer_of_healing_t : public priest_heal_t
     }
 
     aoe = 4;
+    group_only = true;
   }
 
   virtual void init()
