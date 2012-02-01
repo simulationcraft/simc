@@ -4056,10 +4056,16 @@ double player_t::assess_damage( double            amount,
       double buff_value = absorb_buffs[ i ] -> value();
       double value = std::min( mitigated_amount - absorbed_amount, buff_value );
       absorbed_amount += value;
+      if ( sim -> debug ) log_t::output( sim, "%s %s absorbs %.2f",
+                                         name(), absorb_buffs[ i ] -> name(), value );
       if ( value == buff_value )
         absorb_buffs[ i ] -> expire();
       else
+      {
         absorb_buffs[ i ] -> current_value -= value;
+        if ( sim -> debug ) log_t::output( sim, "%s %s absorb remaining %.2f",
+                                           name(), absorb_buffs[ i ] -> name(), absorb_buffs[ i ] -> current_value );
+      }
     }
   }
   mitigated_amount -= absorbed_amount;

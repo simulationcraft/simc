@@ -26,7 +26,9 @@ struct priest_targetdata_t : public targetdata_t
     : targetdata_t( source, target ), remove_dots_event( NULL )
   {
     buffs_power_word_shield = add_aura( new buff_t( this, 17, "power_word_shield" ) );
+    target -> absorb_buffs.push_back( buffs_power_word_shield );
     buffs_divine_aegis = add_aura( new buff_t( this, 47753, "divine_aegis" ) );
+    target -> absorb_buffs.push_back( buffs_divine_aegis );
   }
 };
 
@@ -778,8 +780,7 @@ struct priest_heal_t : public heal_t
     if ( da )
     {
       da -> base_dd_min = da -> base_dd_max = amount * da -> shield_multiple;
-      da -> heal_target.clear();
-      da -> heal_target.push_back( t );
+      da -> target = t;
       da -> execute();
     }
   }

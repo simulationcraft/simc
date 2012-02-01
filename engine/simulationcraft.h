@@ -5212,10 +5212,8 @@ public:
 
 // Absorb ===================================================================
 
-struct absorb_t : public spell_t
+struct absorb_t : public action_t
 {
-  std::vector<player_t*> heal_target;
-
   // Reporting
   double total_heal, total_actual;
 
@@ -5226,15 +5224,12 @@ public:
   absorb_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE );
   absorb_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE );
 
-  virtual void parse_options( option_t* options, const std::string& options_str );
   virtual void player_buff();
-  virtual void target_debuff( player_t* t, int dmg_type );
   virtual double haste() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                               int    dmg_type, int impact_result );
   virtual void calculate_result();
-  virtual double calculate_direct_damage( int = 0 );
   virtual void impact( player_t*, int impact_result, double travel_dmg );
 
 };
