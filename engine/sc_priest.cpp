@@ -17,11 +17,16 @@ struct priest_targetdata_t : public targetdata_t
   dot_t*            dots_holy_fire;
   dot_t*            dots_renew;
 
+  buff_t*           buffs_power_word_shield;
+  buff_t*           buffs_divine_aegis;
+
   remove_dots_event_t* remove_dots_event;
 
   priest_targetdata_t( player_t* source, player_t* target )
     : targetdata_t( source, target ), remove_dots_event( NULL )
   {
+    buffs_power_word_shield = add_aura( new buff_t( this, 17, "power_word_shield" ) );
+    buffs_divine_aegis = add_aura( new buff_t( this, 47753, "divine_aegis" ) );
   }
 };
 
@@ -35,6 +40,9 @@ void register_priest_targetdata( sim_t* sim )
   REGISTER_DOT( renew );
   REGISTER_DOT( shadow_word_pain );
   REGISTER_DOT( vampiric_touch );
+
+  REGISTER_BUFF( power_word_shield );
+  REGISTER_BUFF( divine_aegis );
 }
 
 // ==========================================================================
@@ -596,21 +604,11 @@ struct priest_heal_t : public heal_t
 
     virtual void impact( player_t* t, int impact_result, double travel_dmg )
     {
-      // Get DA buff:
-      buff_t* buff_da = 0;
-      for ( unsigned int i = 0; i < t -> buffs.divine_aegis.size(); i++ )
-      {
-        if ( t -> buffs.divine_aegis[i ] -> initial_source == player )
-        {
-          buff_da = t -> buffs.divine_aegis[i ];
-          break;
-        }
-      }
-      assert( buff_da );
+      priest_targetdata_t* td = targetdata() -> cast_priest();
 
-      double old_amount = buff_da -> current_value;
+      double old_amount = td -> buffs_divine_aegis -> current_value;
       double new_amount = std::min( t -> resource_current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
-      buff_da -> trigger( 1, old_amount + new_amount );
+      td -> buffs_divine_aegis -> trigger( 1, old_amount + new_amount );
       stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, STATS_ABSORB, impact_result );
     }
   };
@@ -4010,22 +4008,12 @@ struct power_word_shield_t : public priest_absorb_t
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     priest_t* p = player -> cast_priest();
+    priest_targetdata_t* td = targetdata() -> cast_priest();
 
     t -> buffs.weakened_soul -> trigger();
 
-    // Get PWS buff:
-    buff_t* pws = 0;
-    for ( unsigned int i = 0; i < t -> buffs.power_word_shield.size(); i++ )
-    {
-      if ( t -> buffs.power_word_shield[ i ] -> initial_source == player )
-      {
-        pws = t -> buffs.power_word_shield[ i ];
-        break;
-      }
-    }
-    assert( pws );
+    td -> buffs_power_word_shield -> trigger( 1, travel_dmg );
 
-    pws -> trigger( 1, travel_dmg );
     stats -> add_result( travel_dmg, travel_dmg, STATS_ABSORB, impact_result );
 
     // Glyph
@@ -4898,22 +4886,6 @@ void priest_t::init_buffs()
   buffs_inner_will                 = new buff_t( this, "inner_will", "Inner Will" );
   buffs_tier13_2pc_heal            = new buff_t( this, sets -> set( SET_T13_2PC_HEAL ) -> effect1().trigger_spell_id(), "tier13_2pc_heal", set_bonus.tier13_2pc_heal() );
   buffs_tier13_2pc_heal -> buff_duration = ( primary_tree() == TREE_DISCIPLINE ) ? timespan_t::from_seconds( 10.0 ) : buffs_tier13_2pc_heal -> buff_duration;
-
-  // TODO: probably these should be moved into targetdata
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-    if ( talents.divine_aegis -> rank() )
-    {
-      buff_t* b = new buff_t( actor_pair_t( p, this ), 47753, "divine_aegis" );
-      p -> buffs.divine_aegis.push_back( b );
-      p -> absorb_buffs.push_back( b );
-    }
-
-    buff_t* b  = new buff_t( actor_pair_t( p, this ), 17, "power_word_shield" );
-    p -> buffs.power_word_shield.push_back( b );
-    p -> absorb_buffs.push_back( b );
-  }
 
   // Holy
   buffs_chakra_pre                 = new buff_t( this, 14751, "chakra_pre" );

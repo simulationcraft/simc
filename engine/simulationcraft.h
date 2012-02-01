@@ -4349,8 +4349,6 @@ struct player_t : public noncopyable
     buff_t* weakened_soul;
     buff_t* wild_magic_potion_crit;
     buff_t* wild_magic_potion_sp;
-    std::vector<buff_t*> power_word_shield;
-    std::vector<buff_t*> divine_aegis;
   };
   buffs_t buffs;
 
