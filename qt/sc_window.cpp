@@ -206,7 +206,7 @@ void ReforgeButtonGroup::setSelected( int state )
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
   QStringList tokens = encoding.split( ' ' );
-  if ( tokens.count() >= 14 )
+  if ( tokens.count() >= 15 )
   {
          versionChoice->setCurrentIndex( tokens[  0 ].toInt() );
       iterationsChoice->setCurrentIndex( tokens[  1 ].toInt() );
@@ -286,7 +286,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14" )
     .arg(       versionChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
