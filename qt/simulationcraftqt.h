@@ -131,6 +131,7 @@ public:
   QComboBox* armorySpecChoice;
   QComboBox* defaultRoleChoice;
   QComboBox* debugChoice;
+  QComboBox* reportpetsChoice;
   QListWidget* itemDbOrder;
   QButtonGroup* buffsButtonGroup;
   QButtonGroup* debuffsButtonGroup;

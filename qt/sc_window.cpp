@@ -221,6 +221,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
      defaultRoleChoice->setCurrentIndex( tokens[ 10 ].toInt() );
          latencyChoice->setCurrentIndex( tokens[ 11 ].toInt() );
      targetLevelChoice->setCurrentIndex( tokens[ 12 ].toInt() );
+      reportpetsChoice->setCurrentIndex( tokens[ 13 ].toInt() );
   }
 
   QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup->buttons();
@@ -299,6 +300,7 @@ QString SimulationCraftWindow::encodeOptions()
     .arg(   defaultRoleChoice->currentIndex() )
     .arg(       latencyChoice->currentIndex() )
     .arg(   targetLevelChoice->currentIndex() )
+    .arg(    reportpetsChoice->currentIndex() )
     ;
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
@@ -597,9 +599,11 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   globalsLayout->addRow(   "Default Role",   defaultRoleChoice = createChoice( 4, "auto", "dps", "heal", "tank" ) );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
+  globalsLayout->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 7 );
   fightVarianceChoice->setCurrentIndex( 2 );
+  reportpetsChoice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
 
@@ -1014,6 +1018,8 @@ void SimulationCraftWindow::createToolTips()
   armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
   defaultRoleChoice->setToolTip( "Specify the character role during import to ensure correct action priority list." );
+
+  reportpetsChoice->setToolTip( "Specify if pets get reported separetly in detail." );
 
   debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
                            "Gory details are very gory.  No documentation will be forthcoming.\n"
@@ -1521,6 +1527,10 @@ QString SimulationCraftWindow::mergeOptions()
     options += "log=1\n";
     options += "scale_only=none\n";
     options += "dps_plot_stat=none\n";
+  }
+  if ( reportpetsChoice->currentIndex() != 1 )
+  {
+    options += "report_pets_separately=1\n";
   }
   return options;
 }
