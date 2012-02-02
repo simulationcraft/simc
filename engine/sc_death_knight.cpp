@@ -4510,19 +4510,18 @@ void death_knight_t::init_actions()
       if ( talents.bone_shield -> rank() )
         action_list_str += "/bone_shield,if=!buff.bone_shield.up";
       action_list_str += "/raise_dead,time>=10";
+      action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
+      action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+      action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
       if ( talents.dancing_rune_weapon -> rank() )
-      {
-        action_list_str += "/dancing_rune_weapon,time<=150,if=dot.frost_fever.remains<=5|dot.blood_plague.remains<=5";
-        action_list_str += "/dancing_rune_weapon,if=(dot.frost_fever.remains<=5|dot.blood_plague.remains<=5)&buff.bloodlust.react";
-      }
-      action_list_str += "/outbreak,if=dot.frost_fever.remains<=1|dot.blood_plague.remains<=1";
-      action_list_str += "/icy_touch,if=dot.frost_fever.remains<=2";
-      action_list_str += "/plague_strike,if=dot.blood_plague.remains<=2";
+        action_list_str += "/dancing_rune_weapon";
+      action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
       action_list_str += "/death_strike";
-      action_list_str += "/heart_strike";
-      action_list_str += "/rune_strike";
-      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
-      
+      action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
+      action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
+      action_list_str += "/rune_strike,if=runic_power>=40";
+      action_list_str += "/horn_of_winter";     
+      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";      
       break;
     case TREE_FROST:
     {
