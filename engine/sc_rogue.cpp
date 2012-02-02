@@ -1471,19 +1471,32 @@ struct melee_t : public rogue_attack_t
       }
       p -> buffs_tier11_4pc -> trigger();
 
-      p -> buffs_fof_p1 -> trigger();
-      p -> buffs_fof_p2 -> trigger();
-      if ( ! p -> buffs_fof_fod -> check() )
-        p -> buffs_fof_p3 -> trigger();
-
-      // Assuming that you get a 5% chance per buff over 30 to proc Fury of the Destroyer, so that upon reaching 50, you'd trigger it automatically
-      if ( p -> buffs_fof_p3 -> check() > 30 )
+      // Legendary Daggers buff handling
+      // Proc rates from: https://github.com/Aldriana/ShadowCraft-Engine/blob/master/shadowcraft/objects/proc_data.py#L504
+      // Logic from: http://code.google.com/p/simulationcraft/issues/detail?id=1118
+      double fof_chance = ( p -> primary_tree() == TREE_ASSASSINATION ) ? 0.235 : ( p -> primary_tree() == TREE_COMBAT ) ? 0.095 : 0.275;
+      if ( sim -> roll( fof_chance ) )
       {
-        if ( p -> buffs_fof_fod -> trigger( 1, -1, ( p -> buffs_fof_p3 -> check() - 30 ) * 0.05 ) )
+        p -> buffs_fof_p1 -> trigger();
+        p -> buffs_fof_p2 -> trigger();
+        
+        if ( ! p -> buffs_fof_fod -> check() && p -> buffs_fof_p3 -> check() > 30 )
         {
-          rogue_targetdata_t* td = targetdata() -> cast_rogue();
-          p -> buffs_fof_p3 -> expire();
-          td -> combo_points -> add( 5, "legendary_daggers" );
+          // Trigging FoF and the Stacking Buff are mutually exclusive
+          if ( sim -> roll( 1.0 / ( 50.0 - p -> buffs_fof_p3 -> check() ) ) )
+          {
+            p -> buffs_fof_fod -> trigger();
+            rogue_targetdata_t* td = targetdata() -> cast_rogue();
+            td -> combo_points -> add( 5, "legendary_daggers" );
+          }
+          else
+          {
+            p -> buffs_fof_p3 -> trigger();
+          }
+        }
+        else
+        {
+          p -> buffs_fof_p3 -> trigger();
         }
       }
     }
@@ -3228,6 +3241,24 @@ struct find_weakness_buff_t : public buff_t
   }
 };
 
+struct fof_fod_buff_t : public buff_t
+{
+  fof_fod_buff_t( rogue_t* p, int fof_p3 ) :
+    buff_t( p, "legendary_daggers", 1, timespan_t::from_seconds( 6.0 ), timespan_t::zero, fof_p3 )
+  { 
+    if ( ! fof_p3 )
+      return;   
+  }
+ 
+  virtual void expire()
+  {
+    buff_t::expire();
+
+    rogue_t* p = player -> cast_rogue();
+    p -> buffs_fof_p3 -> expire();
+  }
+};
+
 struct killing_spree_buff_t : public buff_t
 {
   killing_spree_buff_t( rogue_t* p, uint32_t id ) :
@@ -3964,10 +3995,10 @@ void rogue_t::init_buffs()
   // buffs_fof_p3            = new stat_buff_t( this, 109939, "legendary_daggers_p3", STAT_AGILITY, dbc.spell( 109939 ) -> effect1().base_value(), fof_p3 );
   // buffs_fof_fod           = new buff_t( this, 109949, "legendary_daggers", fof_p3 );
   // None of the buffs are currently in the DBC, so define them manually for now
-  buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, timespan_t::from_seconds( 30.0 ), timespan_t::from_seconds( 2.5 ), fof_p1 ); // Chance appears as 100% in DBC
-  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, timespan_t::from_seconds( 30.0 ), timespan_t::from_seconds( 2.5 ), fof_p2 ); // http://ptr.wowhead.com/spell=109959#comments
-  buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, timespan_t::from_seconds( 30.0 ), timespan_t::from_seconds( 2.5 ), fof_p3 );
-  buffs_fof_fod           = new buff_t( this, "legendary_daggers", 1, timespan_t::from_seconds( 6.0 ), timespan_t::zero, fof_p3 );
+  buffs_fof_p1            = new stat_buff_t( this, "legendary_daggers_p1", STAT_AGILITY,  2.0, 50, timespan_t::from_seconds( 30.0 ), timespan_t::zero, fof_p1 );
+  buffs_fof_p2            = new stat_buff_t( this, "legendary_daggers_p2", STAT_AGILITY,  5.0, 50, timespan_t::from_seconds( 30.0 ), timespan_t::zero, fof_p2 );
+  buffs_fof_p3            = new stat_buff_t( this, "legendary_daggers_p3", STAT_AGILITY, 17.0, 50, timespan_t::from_seconds( 30.0 ), timespan_t::zero, fof_p3 );
+  buffs_fof_fod           = new fof_fod_buff_t( this, fof_p3 );
 }
 
 // rogue_t::init_values =====================================================
