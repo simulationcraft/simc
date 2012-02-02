@@ -329,6 +329,7 @@ struct mage_t : public player_t
   virtual int       primary_role() const     { return ROLE_SPELL; }
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_mastery() const;
+  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
   virtual double    composite_spell_power( const school_type school ) const;
@@ -1293,28 +1294,10 @@ void mage_spell_t::player_buff()
 
   spell_t::player_buff();
 
-  if ( p -> talents.molten_fury -> rank() )
-  {
-    if ( target -> health_percentage() < 35 )
-    {
-      player_multiplier *= 1.0 + p -> talents.molten_fury -> effect1().percent();
-    }
-  }
-  if ( p -> buffs_invocation -> up() )
-  {
-    player_multiplier *= 1.0 + p -> talents.invocation -> effect1().percent();
-  }
-  if ( p -> buffs_arcane_power -> up() )
-  {
-    player_multiplier *= 1.0 + p -> buffs_arcane_power -> value();
-  }
   if ( p -> buffs_arcane_potency -> up() )
   {
     player_crit += p -> talents.arcane_potency -> effect1().percent();
   }
-
-  double mana_pct = player -> resource_current[ RESOURCE_MANA ] / player -> resource_max [ RESOURCE_MANA ];
-  player_multiplier *= 1.0 + mana_pct * p -> specializations.mana_adept * p -> composite_mastery();
 
   if ( school == SCHOOL_ARCANE )
   {
@@ -4077,6 +4060,30 @@ double mage_t::composite_mastery() const
   double m = player_t::composite_mastery();
 
   m += specializations.frost2;
+
+  return m;
+}
+
+// mage_t::composite_player_multipler =======================================
+
+double mage_t::composite_player_multiplier( const school_type school, action_t* a ) const
+{
+  double m = player_t::composite_player_multiplier( school, a );
+
+  if ( talents.molten_fury -> rank() && target -> health_percentage() < 35 )
+  {
+    m *= 1.0 + talents.molten_fury -> effect1().percent();
+  }
+
+  if ( buffs_invocation -> up() )
+  {
+    m *= 1.0 +talents.invocation -> effect1().percent();
+  }
+
+  m *= 1.0 + buffs_arcane_power -> value();
+
+  double mana_pct = resource_current[ RESOURCE_MANA ] / resource_max [ RESOURCE_MANA ];
+  m *= 1.0 + mana_pct * specializations.mana_adept * composite_mastery();
 
   return m;
 }
