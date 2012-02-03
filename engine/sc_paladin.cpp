@@ -1171,10 +1171,10 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
 
 // Ancient Fury =============================================================
 
-struct ancient_fury_t : public paladin_attack_t
+struct ancient_fury_t : public paladin_spell_t
 {
-  ancient_fury_t( paladin_t* p )
-    : paladin_attack_t( "ancient_fury", 86704, p, false )
+  ancient_fury_t( paladin_t* p ) :
+    paladin_spell_t( "ancient_fury", 86704, p )
   {
     // TODO meteor stuff
     background = true;
@@ -1183,13 +1183,13 @@ struct ancient_fury_t : public paladin_attack_t
 
   virtual void execute()
   {
-    paladin_attack_t::execute();
+    paladin_spell_t::execute();
     player -> cast_paladin() -> buffs_ancient_power -> expire();
   }
 
   virtual void player_buff()
   {
-    paladin_attack_t::player_buff();
+    paladin_spell_t::player_buff();
     player_multiplier *= player -> cast_paladin() -> buffs_ancient_power -> stack();
   }
 };
