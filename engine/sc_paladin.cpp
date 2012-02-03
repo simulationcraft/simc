@@ -1179,6 +1179,7 @@ struct ancient_fury_t : public paladin_spell_t
     // TODO meteor stuff
     background = true;
     callbacks  = false;
+    may_crit   = true;
   }
 
   virtual void execute()
