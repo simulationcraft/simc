@@ -1019,7 +1019,7 @@ void SimulationCraftWindow::createToolTips()
 
   defaultRoleChoice->setToolTip( "Specify the character role during import to ensure correct action priority list." );
 
-  reportpetsChoice->setToolTip( "Specify if pets get reported separetly in detail." );
+  reportpetsChoice->setToolTip( "Specify if pets get reported separately in detail." );
 
   debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
                            "Gory details are very gory.  No documentation will be forthcoming.\n"
