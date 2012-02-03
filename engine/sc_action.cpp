@@ -1881,7 +1881,7 @@ int action_t::hasted_num_ticks( timespan_t d ) const
   if ( d < timespan_t::zero )
     d = num_ticks * base_tick_time;
 
-  timespan_t t = timespan_t::from_millis( ( base_tick_time.total_millis() * player_haste ) + 0.5 );
+  timespan_t t = timespan_t::from_millis( (int) ( ( base_tick_time.total_millis() * player_haste ) + 0.5 ) );
 
   double n = d / t;
 
