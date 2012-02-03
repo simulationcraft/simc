@@ -1180,6 +1180,7 @@ struct ancient_fury_t : public paladin_spell_t
     background = true;
     callbacks  = false;
     may_crit   = true;
+    crit_bonus = 1.0; // Ancient Fury crits for 200%
   }
 
   virtual void execute()
@@ -1192,6 +1193,12 @@ struct ancient_fury_t : public paladin_spell_t
   {
     paladin_spell_t::player_buff();
     player_multiplier *= player -> cast_paladin() -> buffs_ancient_power -> stack();
+  }
+
+  virtual double total_crit() const
+  {
+    // This doesnt inherit the player's crit
+    return base_crit + target_crit;
   }
 };
 
@@ -2987,7 +2994,7 @@ void paladin_t::init_base()
     break;
 
   case TREE_PROTECTION:
-    attribute_multiplier_initial[ ATTR_STAMINA   ] *= 1.0 + passives.touched_by_the_light -> base_value( E_APPLY_AURA, A_MOD_TOTAL_STAT_PERCENTAGE );
+    attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0 + passives.touched_by_the_light -> base_value( E_APPLY_AURA, A_MOD_TOTAL_STAT_PERCENTAGE );
     // effect is actually on JotW since there's not room for more effects on TbtL
     base_spell_hit += passives.judgements_of_the_wise -> base_value( E_APPLY_AURA, A_MOD_SPELL_HIT_CHANCE );
     break;
