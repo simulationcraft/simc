@@ -2283,7 +2283,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
   else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnSpellDamage_11937+105.8Shadow_15%_25Cd" : lfr ? "OnSpellDamage_9369+83.1Shadow_15%_25Cd" : "OnSpellDamage_10575+93.8Shadow_15%_25Cd" ); // Confirm ICD, AoE? Saw a 26.862sec ICD on PTR.
-  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_-17051+101.6Physical_15%_25Cd" : lfr ? "OnAttackHit_-13383+79.7Physical_15%_25Cd" : "OnAttackHit_-15106+90Physical_15%_25Cd" ); // Confirm ICD. Saw a 27.271sec ICD on PTR.
+  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_-6770+40.55Physical_45%_9Cd" : lfr ? "OnAttackHit_-5313+31.81Physical_45%_9Cd" : "OnAttackHit_-5997+35.92Physical_45%_9Cd" ); // ICD, base damage, and ap coeff determined experimentally on heroic version. Assuming dbc has wrong base damage. Normal and LFR assumed to be changed by the same %
   else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "reign_of_the_dead"                   ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "solace_of_the_defeated"              ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );
