@@ -63,7 +63,7 @@ hands=deep_earth_grips,heroic=1,type=leather,ilevel=410,quality=epic,stats=1308a
 finger1=seal_of_primordial_shadow,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_184exp_200mastery,reforge=exp_haste,gems=50agi_10agi,enchant=50agi
 finger2=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_203crit_179haste,reforge=crit_mastery,gems=50agi_10agi,enchant=50agi
 trinket1=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99agi_100%_10dur_10stack
-trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-17051+101.6physical_15%_25cd
+trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-6770+40.55physical_45%_9cd
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=hit_haste,gems=50agi_50agi_20agi,enchant=65crit
 main_hand=kiril_fury_of_beasts,heroic=1,ilevel=416,quality=epic,stats=581agi_871sta,enchant=130agi,weapon=polearm_3.50speed_2968min_4453max
 ranged=ripfang_relic,ilevel=397,quality=epic,stats=153agi_230sta_104crit_99exp,reforge=exp_haste,gems=50agi

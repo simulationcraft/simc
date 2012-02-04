@@ -49,7 +49,7 @@ hands=spiritwalkers_grips,heroic=1,type=mail,ilevel=410,quality=epic,stats=1820a
 finger1=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_203crit_179haste,reforge=haste_mastery,enchant=40agi
 finger2=seal_of_primordial_shadow,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_184exp_200mastery,reforge=exp_hit,enchant=40agi
 trinket1=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99agi_100%_10dur_10stack
-trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-17051+101.6physical_15%_25cd
+trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-6770+40.55physical_45%_9cd
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,gems=50agi_50agi_20agi,enchant=22agi
 main_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=249agi_373sta,enchant=landslide,weapon=axe_2.60speed_1431min_2658max
 off_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=249agi_373sta,enchant=landslide,weapon=axe_2.60speed_1431min_2658max

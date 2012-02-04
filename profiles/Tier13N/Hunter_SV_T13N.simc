@@ -42,7 +42,7 @@ wrists=dragonbelly_bracers,type=mail,ilevel=397,quality=epic,stats=1218armor_271
 hands=wyrmstalkers_gloves,type=mail,ilevel=397,quality=epic,stats=1739armor_341agi_542sta_205hit_247haste,gems=50agi_10agi,enchant=20agi,addon=synapse_springs
 finger1=signet_of_grasping_mouths,ilevel=397,quality=epic,stats=251agi_406sta_179crit_157haste,gems=50agi_10agi,enchant=40agi
 finger2=seal_of_primordial_shadow,ilevel=397,quality=epic,stats=251agi_406sta_162exp_176mastery,enchant=40agi
-trinket1=vial_of_shadows,ilevel=397,quality=epic,stats=458agi,equip=onattackhit_-15106+90physical_15%_25cd
+trinket1=vial_of_shadows,ilevel=397,quality=epic,stats=458agi,equip=onattackhit_-5997+35.92physical_45%_9cd
 trinket2=starcatcher_compass,ilevel=397,quality=epic,stats=458agi,equip=ondamage_2904haste_15%_20dur_115cd
 back=batwing_cloak,ilevel=397,quality=epic,stats=769armor_251agi_406sta_176haste_162crit,enchant=22agi
 main_hand=kiril_fury_of_beasts,ilevel=403,quality=epic,stats=514agi_772sta,enchant=130agi,weapon=polearm_3.50speed_2629min_3945max
