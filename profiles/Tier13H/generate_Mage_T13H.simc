@@ -67,7 +67,7 @@ hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1
 finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,reforge=haste_hit,gems=50int_10int
 finger2=infinite_loop,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_164hit_212crit,gems=50int_10int
 trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
-trinket2=cunning_of_the_cruel,heroic=1,ilevel=410,quality=epic,stats=517int,equip=onspelldamage_11937+105.8shadow_15%_25cd
+trinket2=cunning_of_the_cruel,id=78000
 back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,gems=50int_10int,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,reforge=haste_mastery,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
 ranged=finger_of_zonozz,heroic=1,ilevel=410,quality=epic,stats=172int_259sta_120mastery_106haste,reforge=haste_hit

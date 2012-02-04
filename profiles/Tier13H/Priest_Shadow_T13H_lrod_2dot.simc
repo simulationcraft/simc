@@ -51,7 +51,7 @@ hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1
 finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,reforge=mastery_spi,gems=50int_10int
 finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,gems=50int_10int
 trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
-trinket2=cunning_of_the_cruel,heroic=1,ilevel=410,quality=epic,stats=517int,equip=onspelldamage_11937+105.8shadow_15%_25cd
+trinket2=cunning_of_the_cruel,heroic=1,ilevel=410,quality=epic,stats=517int,equip=onspelldamage_4774.8+42.32shadow_45%_9cd
 back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,reforge=haste_mastery,gems=50int_10int,enchant=lightweave_embroidery
 main_hand=lightning_rod,heroic=1,ilevel=410,quality=epic,stats=529int_824sta_339hit_362haste_3145sp,reforge=hit_mastery,gems=50int_10int,enchant=power_torrent,weapon=staff_3.00speed_892min_1338max
 ranged=finger_of_zonozz,heroic=1,ilevel=410,quality=epic,stats=172int_259sta_120mastery_106haste,reforge=mastery_spi
