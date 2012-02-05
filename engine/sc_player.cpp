@@ -1839,12 +1839,12 @@ void player_t::init_scaling()
 
     int role = primary_role();
 
-    int attack = ( ( role == ROLE_ATTACK ) || ( role == ROLE_HYBRID ) ) ? 1 : 0;
+    int attack = ( ( role == ROLE_ATTACK ) || ( role == ROLE_HYBRID ) || role == ROLE_TANK ) ? 1 : 0;
     int spell  = ( ( role == ROLE_SPELL  ) || ( role == ROLE_HYBRID ) || ( role == ROLE_HEAL ) ) ? 1 : 0;
     int tank   = role == ROLE_TANK ? 1 : 0;
 
     scales_with[ STAT_STRENGTH  ] = attack;
-    scales_with[ STAT_AGILITY   ] = attack || tank;
+    scales_with[ STAT_AGILITY   ] = attack;
     scales_with[ STAT_STAMINA   ] = tank;
     scales_with[ STAT_INTELLECT ] = spell;
     scales_with[ STAT_SPIRIT    ] = spell;
@@ -1861,8 +1861,8 @@ void player_t::init_scaling()
     scales_with[ STAT_MP5               ] = 0;
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
-    scales_with[ STAT_EXPERTISE_RATING         ] = attack || tank;
-    scales_with[ STAT_EXPERTISE_RATING2        ] = ( attack || tank ) && position == POSITION_FRONT;
+    scales_with[ STAT_EXPERTISE_RATING         ] = attack;
+    scales_with[ STAT_EXPERTISE_RATING2        ] = attack && ( position == POSITION_FRONT );
 
     scales_with[ STAT_HIT_RATING                ] = 1;
     scales_with[ STAT_CRIT_RATING               ] = 1;

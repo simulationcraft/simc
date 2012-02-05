@@ -4732,7 +4732,7 @@ struct player_t : public noncopyable
   static void enemy_combat_end  ( sim_t* /* sim */ ) {}
 
   inline bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
-  inline bool is_enemy() const { return type == ENEMY; }
+  inline bool is_enemy() const { return type == ENEMY || type == ENEMY_ADD; }
   inline bool is_add() const { return type == ENEMY_ADD; }
 
   death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }

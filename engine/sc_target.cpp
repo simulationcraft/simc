@@ -124,6 +124,25 @@ struct melee_t : public attack_t
     base_cost   = 0;
     base_dd_min = 260000;
     base_execute_time = timespan_t::from_seconds( 2.4 );
+    aoe = -1;
+  }
+
+  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    // TODO: This does not work for heals at all, as it presumes enemies in the
+    // actor list.
+
+    tl.push_back( target );
+
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      if ( ! sim -> actor_list[ i ] -> sleeping &&
+           !sim -> actor_list[ i ] -> is_enemy() && sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
+           sim -> actor_list[ i ] != target )
+        tl.push_back( sim -> actor_list[ i ] );
+    }
+
+    return tl.size();
   }
 };
 
@@ -138,15 +157,20 @@ struct auto_attack_t : public attack_t
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds( 2.4 );
 
+    int aoe_tanks = 0;
     option_t options[] =
     {
-      { "damage",       OPT_FLT, &p -> main_hand_attack -> base_dd_min       },
+      { "damage",       OPT_FLT,      &p -> main_hand_attack -> base_dd_min       },
       { "attack_speed", OPT_TIMESPAN, &p -> main_hand_attack -> base_execute_time },
+      { "aoe_tanks",    OPT_BOOL,     &aoe_tanks },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
     p -> main_hand_attack -> target = target;
+
+    if ( aoe_tanks == 1 )
+      p -> main_hand_attack -> aoe = -1;
 
     p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min;
     if ( p -> main_hand_attack -> base_execute_time < timespan_t::from_seconds( 0.01 ) )
@@ -163,6 +187,7 @@ struct auto_attack_t : public attack_t
   virtual void execute()
   {
     enemy_t* p = player -> cast_enemy();
+
     p -> main_hand_attack -> schedule_execute();
     if ( p -> off_hand_attack )
     {
@@ -190,11 +215,13 @@ struct spell_nuke_t : public spell_t
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
 
+    int aoe_tanks = 0;
     option_t options[] =
     {
       { "damage",       OPT_FLT, &base_dd_min          },
       { "attack_speed", OPT_TIMESPAN, &base_execute_time    },
       { "cooldown",     OPT_TIMESPAN, &cooldown -> duration },
+      { "aoe_tanks",    OPT_BOOL,     &aoe_tanks },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -208,7 +235,28 @@ struct spell_nuke_t : public spell_t
     name_str = name_str + "_" + target -> name();
 
     may_crit = false;
+    if ( aoe_tanks == 1 )
+      aoe = -1;
   }
+
+  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    // TODO: This does not work for heals at all, as it presumes enemies in the
+    // actor list.
+
+    tl.push_back( target );
+
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      if ( ! sim -> actor_list[ i ] -> sleeping &&
+           !sim -> actor_list[ i ] -> is_enemy() && sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
+           sim -> actor_list[ i ] != target )
+        tl.push_back( sim -> actor_list[ i ] );
+    }
+
+    return tl.size();
+  }
+
 };
 
 // Spell AoE ================================================================
@@ -241,7 +289,28 @@ struct spell_aoe_t : public spell_t
     name_str = name_str + "_" + target -> name();
 
     may_crit = false;
+
+    aoe = -1;
   }
+
+  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    // TODO: This does not work for heals at all, as it presumes enemies in the
+    // actor list.
+
+    tl.push_back( target );
+
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      if ( ! sim -> actor_list[ i ] -> sleeping &&
+           !sim -> actor_list[ i ] -> is_enemy() &&
+           sim -> actor_list[ i ] != target )
+        tl.push_back( sim -> actor_list[ i ] );
+    }
+
+    return tl.size();
+  }
+
 };
 
 // Summon Add ===============================================================
@@ -398,9 +467,13 @@ void enemy_t::init_target()
   if ( target )
     return;
 
-  if ( ! target )
+  for ( player_t* q = sim -> player_list; q; q = q -> next )
   {
-    target = sim -> target;
+    if ( q -> primary_role() != ROLE_TANK )
+      continue;
+
+    target = q;
+    break;
   }
 }
 
@@ -414,21 +487,8 @@ void enemy_t::init_actions()
     {
       action_list_str += "/snapshot_stats";
 
-      if ( ! is_add() && target != this && !is_enemy() )
-      {
-        action_list_str += "/auto_attack";
-        action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1";
-      }
-      else
-      {
-        for ( player_t* q = sim -> player_list; q; q = q -> next )
-        {
-          if ( q -> primary_role() != ROLE_TANK )
-            continue;
-          action_list_str += "/auto_attack,target="; action_list_str += q -> name();
-          action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1,target="; action_list_str += q -> name();
-        }
-      }
+      action_list_str += "/auto_attack,damage=260000,attack_speed=2.4,aoe_tanks=1";
+      action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1,aoe_tanks=1";
     }
   }
   player_t::init_actions();
