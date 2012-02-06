@@ -91,6 +91,7 @@ static const char* const cookies =
   "Cookie: int-WOW=1\r\n"
   "Cookie: int-WOW-arenapass2011=1\r\n"
   "Cookie: int-WOW-epic-savings-promo=1\r\n"
+  "Cookie: int-WOW-anniversary=1\r\n"
   "Cookie: int-EuropeanInvitational2011=1\r\n"
   "Cookie: int-dec=1\r\n";
 
