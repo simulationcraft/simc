@@ -475,6 +475,9 @@ void enemy_t::init_target()
     target = q;
     break;
   }
+
+  if ( !target )
+    target = sim -> target;
 }
 
 // enemy_t::init_actions ====================================================
@@ -487,8 +490,11 @@ void enemy_t::init_actions()
     {
       action_list_str += "/snapshot_stats";
 
-      action_list_str += "/auto_attack,damage=260000,attack_speed=2.4,aoe_tanks=1";
-      action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1,aoe_tanks=1";
+      if ( target != this )
+      {
+        action_list_str += "/auto_attack,damage=260000,attack_speed=2.4,aoe_tanks=1";
+        action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1,aoe_tanks=1";
+      }
     }
   }
   player_t::init_actions();
