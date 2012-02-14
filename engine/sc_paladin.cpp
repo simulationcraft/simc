@@ -3524,7 +3524,7 @@ void paladin_t::init_values()
 
 int paladin_t::primary_role() const
 {
-  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
+  if ( player_t::primary_role() == ROLE_DPS || primary_tree() == TREE_RETRIBUTION )
     return ROLE_HYBRID;
 
   if ( player_t::primary_role() == ROLE_TANK || primary_tree() == TREE_PROTECTION  )
