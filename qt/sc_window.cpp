@@ -792,7 +792,7 @@ void SimulationCraftWindow::createRawrTab()
 
 void SimulationCraftWindow::createBestInSlotTab()
 {
-  QStringList headerLabels( "Player Class" ); headerLabels += QString( "Profile" );
+  QStringList headerLabels( "Player Class" ); headerLabels += QString( "Location" );
 
   bisTree = new QTreeWidget();
   bisTree->setColumnCount( 1 );
@@ -814,11 +814,12 @@ void SimulationCraftWindow::createBestInSlotTab()
       top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( tierNames[ j ] ) ) );
     }
   }
+// Scan all subfolders in /profiles/ and create a list
 #ifndef Q_WS_MAC
-  QDir dir = QString( "profiles" );
+  QDir tdir = QString( "profiles" );
 #else
   CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "profiles" ), 0, 0 );
-  QDir dir;
+  QDir tdir;
   if ( fileRef )
   {
     CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
@@ -828,36 +829,58 @@ void SimulationCraftWindow::createBestInSlotTab()
     CFRelease( macPath );
   }
 #endif
-  dir.setSorting( QDir::Name );
-  dir.setFilter( QDir::Files );
-  dir.setNameFilters( QStringList( "*.simc" ) );
-  bisProfilePath = dir.absolutePath() + "/";
-  bisProfilePath = QDir::toNativeSeparators( bisProfilePath );
+  tdir.setFilter( QDir::Dirs );
 
-  QStringList profileList = dir.entryList();
-  int numProfiles = profileList.count();
-  for ( int i=0; i < numProfiles; i++ )
+  QStringList tprofileList = tdir.entryList();
+  int tnumProfiles = tprofileList.count();
+  // Main loop through all subfolders of ./profiles/
+  for ( int i=0; i < tnumProfiles; i++ )
   {
-    QString& profile = profileList[ i ];
-
-    int player = PLAYER_MAX;
-    for ( int j=0; j < PLAYER_MAX && player == PLAYER_MAX; j++ )
-      if ( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
-        player = j;
-
-    // Hack! For now...  Need to decide sim-wide just how the heck we want to refer to DKs.
-    if ( profile.contains( "Death_Knight" ) )
-      player = DEATH_KNIGHT;
-
-    int tier = TIER_MAX;
-    for ( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
-      if ( profile.contains( tierNames[ j ] ) )
-        tier = j;
-
-    if ( player != PLAYER_MAX && tier != TIER_MAX )
+#ifndef Q_WS_MAC
+    QDir dir = QString( "profiles/" + tprofileList[ i ] );
+#else
+    CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "profiles" + tprofileList[ i ] ), 0, 0 );
+    QDir dir;
+    if ( fileRef )
     {
-      QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( profile ) );
-      rootItems[ player ][ tier ]->addChild( item );
+      CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+      dir            = QString( CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() ) );
+
+      CFRelease( fileRef );
+      CFRelease( macPath );
+    }
+#endif
+    dir.setSorting( QDir::Name );
+    dir.setFilter( QDir::Files );
+    dir.setNameFilters( QStringList( "*.simc" ) );
+
+    QStringList profileList = dir.entryList();
+    int numProfiles = profileList.count();
+    for ( int i=0; i < numProfiles; i++ )
+    {
+      QString profile = dir.absolutePath() + "/";
+      profile = QDir::toNativeSeparators( profile );
+      profile += profileList[ i ];
+
+      int player = PLAYER_MAX;
+      for ( int j=0; j < PLAYER_MAX && player == PLAYER_MAX; j++ )
+        if ( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
+          player = j;
+
+      // Hack! For now...  Need to decide sim-wide just how the heck we want to refer to DKs.
+      if ( profile.contains( "Death_Knight" ) )
+        player = DEATH_KNIGHT;
+
+      int tier = TIER_MAX;
+      for ( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
+        if ( profile.contains( tierNames[ j ] ) )
+          tier = j;
+
+      if ( player != PLAYER_MAX && tier != TIER_MAX )
+      {
+        QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[ i ] << profile );
+        rootItems[ player ][ tier ]->addChild( item );
+      }
     }
   }
 
@@ -1875,11 +1898,11 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
 
 void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
 {
-  QString profile = item->text( 0 );
+  QString profile = item->text( 1 );
 
   QString s = "Unable to import profile "; s += profile;
 
-  QFile file( bisProfilePath + profile );
+  QFile file( profile );
   if ( file.open( QIODevice::ReadOnly ) )
   {
     s = file.readAll();
