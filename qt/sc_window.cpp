@@ -871,6 +871,10 @@ void SimulationCraftWindow::createBestInSlotTab()
       if ( profile.contains( "Death_Knight" ) )
         player = DEATH_KNIGHT;
 
+      // exclude generate profiles
+      if ( profile.contains( "generate" ) )
+        continue;
+
       int tier = TIER_MAX;
       for ( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
         if ( profile.contains( tierNames[ j ] ) )
