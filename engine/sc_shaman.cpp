@@ -410,10 +410,10 @@ struct spirit_wolf_pet_t : public pet_t
       repeating = true;
       may_crit = true;
 
-      // Wolves have a base multiplier of 1.49835 approximately, and there are
-      // two wolves. Verified using paper doll damage range values on a
-      // level 85 enhancement shaman, with and without Glyph
-      base_multiplier *= 1.49835 * 2.0;
+      // Two wolves
+      base_multiplier  *= 2.0;
+      // TODO: Wolves get no weapon speed based bonus to damage?
+      weapon_power_mod /= player -> main_hand_weapon.swing_time.total_seconds();
     }
 
     virtual void execute()
@@ -458,8 +458,8 @@ struct spirit_wolf_pet_t : public pet_t
     pet_t( sim, owner, "spirit_wolf" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 556; // Level 85 Values, approximated
-    main_hand_weapon.max_dmg    = 835;
+    main_hand_weapon.min_dmg    = 655; // Level 85 Values, approximated
+    main_hand_weapon.max_dmg    = 934;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
@@ -486,8 +486,7 @@ struct spirit_wolf_pet_t : public pet_t
   {
     shaman_t* o         = owner -> cast_shaman();
     double ap           = pet_t::composite_attack_power();
-    // In game testing has ap_per_owner without glyph as ~33%, and with glyph, ~65%
-    double ap_per_owner = 0.329 + o -> glyph_feral_spirit -> ok() * 0.320;
+    double ap_per_owner = ( o -> glyph_feral_spirit -> ok() ) ? 0.9730 : 0.4944;
 
     return ap + ap_per_owner * o -> composite_attack_power_multiplier() * o -> composite_attack_power();
   }
