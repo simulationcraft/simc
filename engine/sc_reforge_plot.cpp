@@ -80,6 +80,8 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
     {
       if ( p -> quiet )
         continue;
+      if ( p -> is_pet() )
+        continue;
       if ( p -> stats.get_stat( stat_indices[ cur_mod_stat ] ) - sum < 0 )
         negative_stat = 1;
     }
@@ -99,6 +101,8 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> quiet )
+        continue;
+      if ( p -> is_pet() )
         continue;
       if ( p -> stats.get_stat( stat_indices[ cur_mod_stat ] ) + mod_amount < 0 )
         negative_stat = 1;
