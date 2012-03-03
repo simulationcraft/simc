@@ -4451,6 +4451,21 @@ action_priority_list_t* player_t::find_action_priority_list( const std::string& 
   return 0;
 }
 
+// player_t::find_stats ======================================================
+
+stats_t* player_t::find_stats( const std::string& n )
+{
+  stats_t* stats = 0;
+
+  for ( stats = stats_list; stats; stats = stats -> next )
+  {
+    if ( stats -> name_str == n )
+      break;
+  }
+
+  return stats;
+}
+
 // player_t::get_cooldown ===================================================
 
 cooldown_t* player_t::get_cooldown( const std::string& name )

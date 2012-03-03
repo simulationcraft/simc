@@ -3636,6 +3636,7 @@ struct scaling_t
   void init_deltas();
   void analyze();
   void analyze_stats();
+  void analyze_ability_stats( int, double, player_t*, player_t*, player_t* );
   void analyze_lag();
   void analyze_gear_weights();
   void normalize();
@@ -4760,6 +4761,7 @@ struct player_t : public noncopyable
   cooldown_t* find_cooldown( const std::string& name ) const;
   dot_t*      find_dot     ( const std::string& name ) const;
   action_priority_list_t* find_action_priority_list( const std::string& name ) const;
+  stats_t*    find_stats   ( const std::string& name );
 
   cooldown_t* get_cooldown( const std::string& name );
   dot_t*      get_dot     ( const std::string& name );
@@ -4886,6 +4888,9 @@ struct stats_t
   std::vector<stats_t*> children;
   double compound_actual,compound_amount;
   double opportunity_cost;
+
+  gear_stats_t scaling;
+  gear_stats_t scaling_error;
 
   struct stats_results_t
   {

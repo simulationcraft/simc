@@ -290,10 +290,14 @@ void scaling_t::analyze_stats()
     {
       player_t* p = sim -> players_by_name[ j ];
 
+
+
       if ( p -> scales_with[ i ] <= 0 ) continue;
 
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
+
+
 
       double divisor = scale_delta;
 
@@ -329,6 +333,8 @@ void scaling_t::analyze_stats()
         delta_error /= 10.0;
       }
 
+      analyze_ability_stats( i, divisor, p, ref_p, delta_p );
+
       if ( center )
         p -> scaling_compare_error.set_stat( i, error );
       else
@@ -361,6 +367,25 @@ void scaling_t::analyze_stats()
   baseline_sim = 0;
 }
 
+// scaling_t::analyze_ability_stats ===================================================
+
+void scaling_t::analyze_ability_stats( int stat, double delta, player_t* p, player_t* ref_p, player_t* delta_p )
+{
+  if ( p -> sim -> statistics_level < 3 )
+    return;
+
+  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  {
+    stats_t* ref_s = ref_p -> find_stats( s -> name_str );
+    stats_t* delta_s = delta_p -> find_stats( s -> name_str );
+    assert( ref_s && delta_s );
+    double score = ( delta_s -> portion_aps.mean - ref_s -> portion_aps.mean ) / delta;
+    s -> scaling.set_stat( stat, score );
+    double x = p -> sim -> confidence_estimator;
+    double error = fabs( sqrt ( delta_s -> portion_aps.mean_std_dev * x + delta_s -> portion_aps.mean_std_dev * x + ref_s -> portion_aps.mean_std_dev * x  + ref_s -> portion_aps.mean_std_dev * x ) / delta );
+    s -> scaling_error.set_stat( stat, error );
+  }
+}
 // scaling_t::analyze_lag ===================================================
 
 void scaling_t::analyze_lag()

@@ -382,6 +382,71 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
         fprintf ( file,
                   "\t\t\t\t\t\t\t\t\t\t</tr>\n"
                   "\t\t\t\t\t\t\t\t\t</table>\n" );
+
+        if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
+        {
+          int colspan = 0;
+          fprintf( file,
+                   "\t\t\t\t\t\t<table class=\"details\">\n" );
+          fprintf( file,
+                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-scale-factors\" class=\"help\">?</a></th>\n" );
+          for ( int i=0; i < STAT_MAX; i++ )
+            if ( p -> scales_with[ i ] )
+            {
+              fprintf( file,
+                       "\t\t\t\t\t\t\t\t<th>%s</th>\n",
+                       util_t::stat_type_abbrev( i ) );
+              colspan++;
+            }
+          if ( p -> sim -> scaling -> scale_lag )
+          {
+            fprintf( file,
+                     "\t\t\t\t\t\t\t\t<th>ms Lag</th>\n" );
+            colspan++;
+          }
+          fprintf( file,
+                   "\t\t\t\t\t\t\t</tr>\n" );
+          fprintf( file,
+                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Factors</th>\n" );
+          for ( int i=0; i < STAT_MAX; i++ )
+            if ( p -> scales_with[ i ] )
+              fprintf( file,
+                       "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                       p -> sim -> report_precision,
+                       s -> scaling.get_stat( i ) );
+          fprintf( file,
+                   "\t\t\t\t\t\t\t</tr>\n" );
+          fprintf( file,
+                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n" );
+          for ( int i=0; i < STAT_MAX; i++ )
+            if ( p -> scales_with[ i ] )
+              fprintf( file,
+                       "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                       ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
+                       p -> sim -> scaling -> stats.get_stat( i ) );
+          fprintf( file,
+                   "\t\t\t\t\t\t\t</tr>\n" );
+          fprintf( file,
+                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n" );
+          for ( int i=0; i < STAT_MAX; i++ )
+            if ( p -> scales_with[ i ] )
+              fprintf( file,
+                       "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                       p -> sim -> report_precision,
+                       s -> scaling_error.get_stat( i ) );
+          fprintf( file,
+                   "\t\t\t\t\t\t\t</tr>\n" );
+
+
+
+          fprintf( file,
+                   "\t\t\t\t\t\t</table>\n" );
+
+        }
     }
 
 
