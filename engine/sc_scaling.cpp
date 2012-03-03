@@ -382,7 +382,7 @@ void scaling_t::analyze_ability_stats( int stat, double delta, player_t* p, play
     double score = ( delta_s -> portion_aps.mean - ref_s -> portion_aps.mean ) / delta;
     s -> scaling.set_stat( stat, score );
     double x = p -> sim -> confidence_estimator;
-    double error = fabs( sqrt ( delta_s -> portion_aps.mean_std_dev * x + delta_s -> portion_aps.mean_std_dev * x + ref_s -> portion_aps.mean_std_dev * x  + ref_s -> portion_aps.mean_std_dev * x ) / delta );
+    double error = fabs( sqrt ( delta_s -> portion_aps.mean_std_dev * x * delta_s -> portion_aps.mean_std_dev * x + ref_s -> portion_aps.mean_std_dev * x * ref_s -> portion_aps.mean_std_dev * x ) / delta );
     s -> scaling_error.set_stat( stat, error );
   }
 }
