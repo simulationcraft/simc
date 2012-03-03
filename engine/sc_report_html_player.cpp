@@ -336,6 +336,53 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
     fprintf ( file,
               "\t\t\t\t\t\t\t\t\t\t</tr>\n"
               "\t\t\t\t\t\t\t\t\t</table>\n" );
+    if ( ! s -> portion_aps.simple || ! s -> actual_amount.simple )
+    {
+    fprintf ( file,
+                  "\t\t\t\t\t\t\t\t\t<table class=\"details\">\n"
+                  "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
+      if ( ! s -> portion_aps.simple )
+        fprintf ( file,
+                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Portion APS</th>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">pAPS stddev</th>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">pAPS mean stddev</th>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">pAPS error</th>\n" );
+      if ( ! s -> actual_amount.simple )
+        fprintf ( file,
+                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean Amount</th>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount stddev</th>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount mean stddev</th>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount min</th>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount max</th>\n");
+        fprintf ( file,
+                  "\t\t\t\t\t\t\t\t\t\t</tr>\n"
+                  "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
+      if ( ! s -> portion_aps.simple )
+        fprintf ( file,
+                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n",
+                  s -> portion_aps.mean,
+                  s -> portion_aps.std_dev,
+                  s -> portion_aps.mean_std_dev,
+                  s -> portion_aps.mean_std_dev * p -> sim -> confidence_estimator );
+      if ( ! s -> actual_amount.simple )
+        fprintf ( file,
+                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n",
+                  s -> actual_amount.mean,
+                  s -> actual_amount.std_dev,
+                  s -> actual_amount.mean_std_dev,
+                  s -> actual_amount.min,
+                  s -> actual_amount.max );
+        fprintf ( file,
+                  "\t\t\t\t\t\t\t\t\t\t</tr>\n"
+                  "\t\t\t\t\t\t\t\t\t</table>\n" );
+    }
 
 
     fprintf ( file,
