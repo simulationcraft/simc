@@ -1,0 +1,31 @@
+# Ultraxion 10N
+enemy=Ultraxion
+max_time=360
+
+## Hour of Twilight
+# absorbed using Heroic Will
+raid_events+=/stun,cooldown=45,cooldown>=45,cooldown<=45,duration=2.4,first=45
+
+## Fading Light
+# FIXME: only affects damage dealers & main tank
+# FIXME: this cooldown assumes 5 damage dealers (1 is affected every 22.5 secs); with 6, change cooldown to 135
+raid_events+=/stun,cooldown=112.5,duration=2.4
+
+## Unstable Monstrosity
+raid_events+=/damage,type=shadow,amount=30000,cooldown=6,last=60
+raid_events+=/damage,type=shadow,amount=30000,cooldown=5,first=60,last=120
+raid_events+=/damage,type=shadow,amount=30000,cooldown=4,first=120,last=180
+raid_events+=/damage,type=shadow,amount=30000,cooldown=3,first=180,last=240
+raid_events+=/damage,type=shadow,amount=30000,cooldown=2,first=240,last=300
+raid_events+=/damage,type=shadow,amount=30000,cooldown=1,first=300,last=360
+
+## Essence of Dreams
+raid_events+=/heal,amount=2000,cooldown=1
+
+## TODO: Gift of Life
+
+## TODO: Source of Magic
+
+## TODO: Timeloop
+
+## TODO: Last Defender of Azeroth
