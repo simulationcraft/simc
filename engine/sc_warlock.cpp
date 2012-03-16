@@ -4887,6 +4887,10 @@ void warlock_t::init_actions()
         action_list_str += "/demon_soul";
         if ( has_mwc ) action_list_str += ",if=buff.metamorphosis.up";
       }
+      if ( level >= 20 )
+      {
+        action_list_str += "/bane_of_doom,if=!ticking&time<10";
+      }
       if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
       action_list_str += "/felguard:felstorm";
       action_list_str += "/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking";

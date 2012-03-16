@@ -20,6 +20,7 @@ actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.metamorphosis.up|!in_combat
 actions+=/metamorphosis
 actions+=/demon_soul
+actions+=/bane_of_doom,if=!ticking&time<10
 actions+=/summon_doomguard,if=time>10
 actions+=/felguard:felstorm
 actions+=/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking
