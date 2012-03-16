@@ -4021,7 +4021,7 @@ void mage_t::init_actions()
       {
         if ( level >= 56 )
         {
-          action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react";
+          action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react";
         }
         else
           action_list_str += "/fireball,if=buff.brain_freeze.react";

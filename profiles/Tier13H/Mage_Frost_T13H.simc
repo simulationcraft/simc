@@ -28,7 +28,7 @@ actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/berserking,if=buff.icy_veins.down&buff.bloodlust.down
 actions+=/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down&(buff.tier13_2pc.stack>7|cooldown.cold_snap.remains<22)
 actions+=/deep_freeze,if=buff.fingers_of_frost.react
-actions+=/frostfire_bolt,if=buff.brain_freeze.react
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&buff.fingers_of_frost.react
 actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
 actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
 actions+=/frostbolt
