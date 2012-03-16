@@ -1018,6 +1018,8 @@ static void trigger_ignite( spell_t* s, double dmg )
         p -> active_ignite -> result = RESULT_HIT;
         p -> active_ignite -> schedule_travel( target );
 
+        dot -> prev_tick_amount = ignite_dmg;
+
         if ( p -> active_ignite -> travel_event && dot -> ticking )
         {
           if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_event -> occurs() )
@@ -3978,7 +3980,7 @@ void mage_t::init_actions()
       if ( talents.critical_mass -> rank() ) action_list_str += "/scorch,debuff=1";
       if ( talents.combustion -> rank()   )
       {
-        action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking";
+        action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking&dot.ignite.tick_dmg>10000";
       }
       action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( talents.living_bomb -> rank() ) action_list_str += "/living_bomb,if=!ticking";

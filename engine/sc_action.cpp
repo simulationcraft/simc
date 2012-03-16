@@ -1071,6 +1071,8 @@ void action_t::tick( dot_t* d )
 
   tick_dmg = calculate_tick_damage();
 
+  d -> prev_tick_amount = tick_dmg;
+
   assess_damage( target, tick_dmg, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, result );
 
   if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
@@ -1674,6 +1676,15 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       virtual int evaluate() { result_num = ( ( action -> dot() -> ticking ) ? action -> dot() -> action -> tick_time() : timespan_t::zero ).total_seconds(); return TOK_NUM; }
     };
     return new tick_time_expr_t( this );
+  }
+  if ( name_str == "tick_dmg" )
+  {
+    struct tick_dmg_expr_t : public action_expr_t
+    {
+      tick_dmg_expr_t( action_t* a ) : action_expr_t( a, "tick_dmg", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> dot() -> prev_tick_amount; return TOK_NUM; }
+    };
+    return new tick_dmg_expr_t( this );
   }
   if ( name_str == "gcd" )
   {

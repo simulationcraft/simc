@@ -5311,6 +5311,7 @@ struct dot_t
   timespan_t miss_time;
   timespan_t time_to_tick;
   std::string name_str;
+  double prev_tick_amount;
 
   dot_t() : player( 0 ) {}
   dot_t( const std::string& n, player_t* p );

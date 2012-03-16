@@ -1157,6 +1157,8 @@ static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
   p -> active_flames_of_the_faithful_proc -> result = RESULT_HIT;
   p -> active_flames_of_the_faithful_proc -> schedule_travel( s -> target );
 
+  dot -> prev_tick_amount = total_dot_dmg;
+
   if ( p -> active_flames_of_the_faithful_proc -> travel_event && dot -> ticking )
   {
     if ( dot -> tick_event -> occurs() < p -> active_flames_of_the_faithful_proc -> travel_event -> occurs() )

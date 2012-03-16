@@ -885,6 +885,8 @@ static void trigger_piercing_shots( action_t* a, double dmg )
   p -> active_piercing_shots -> result = RESULT_HIT;
   p -> active_piercing_shots -> schedule_travel( a -> target );
 
+  dot -> prev_tick_amount = piercing_shots_dmg;
+
   if ( p -> active_piercing_shots -> travel_event && dot -> ticking )
   {
     if ( dot -> tick_event -> occurs() < p -> active_piercing_shots -> travel_event -> occurs() )

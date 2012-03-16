@@ -6275,6 +6275,16 @@ action_expr_t* player_t::create_expression( action_t* a,
         };
         return new dot_remains_expr_t( a, dot );
       }
+      if ( splits[ 2 ] == "tick_dmg" )
+      {
+        struct dot_tick_dmg_expr_t : public action_expr_t
+        {
+          dot_t* dot;
+          dot_tick_dmg_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_tick_dmg", TOK_NUM ), dot( d ) {}
+          virtual int evaluate() { result_num = dot -> prev_tick_amount; return TOK_NUM; }
+        };
+        return new dot_tick_dmg_expr_t( a, dot );
+      }
       if ( splits[ 2 ] == "ticks_remain" )
       {
         struct dot_ticks_remain_expr_t : public action_expr_t

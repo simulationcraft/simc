@@ -565,6 +565,8 @@ static void trigger_deep_wounds( action_t* a )
   p -> active_deep_wounds -> result = RESULT_HIT;
   p -> active_deep_wounds -> schedule_travel( a -> target );
 
+  dot -> prev_tick_amount = deep_wounds_dmg;
+
   if ( p -> active_deep_wounds -> travel_event && dot -> ticking )
   {
     if ( dot -> tick_event -> occurs() < p -> active_deep_wounds -> travel_event -> occurs() )
@@ -792,6 +794,8 @@ static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
   p -> active_tier12_2pc_tank -> direct_dmg = total_dot_dmg;
   p -> active_tier12_2pc_tank -> result = RESULT_HIT;
   p -> active_tier12_2pc_tank -> schedule_travel( s -> target );
+
+  dot -> prev_tick_amount = total_dot_dmg;
 
   if ( p -> active_tier12_2pc_tank -> travel_event && dot -> ticking )
   {
