@@ -379,10 +379,13 @@ enum result_type
   RESULT_MAX
 };
 
-#define RESULT_HIT_MASK  ( (1<<RESULT_GLANCE) | (1<<RESULT_BLOCK) | (1<<RESULT_CRIT_BLOCK) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
-#define RESULT_CRIT_MASK ( (1<<RESULT_CRIT) )
-#define RESULT_MISS_MASK ( (1<<RESULT_MISS) )
-#define RESULT_NONE_MASK ( (1<<RESULT_NONE) )
+#define RESULT_HIT_MASK   ( (1<<RESULT_GLANCE) | (1<<RESULT_BLOCK) | (1<<RESULT_CRIT_BLOCK) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
+#define RESULT_CRIT_MASK  ( (1<<RESULT_CRIT) )
+#define RESULT_MISS_MASK  ( (1<<RESULT_MISS) )
+#define RESULT_BLOCK_MASK ( (1<<RESULT_BLOCK) )
+#define RESULT_DODGE_MASK ( (1<<RESULT_DODGE) )
+#define RESULT_PARRY_MASK ( (1<<RESULT_PARRY) )
+#define RESULT_NONE_MASK  ( (1<<RESULT_NONE) )
 #define RESULT_ALL_MASK  -1
 
 enum proc_type
@@ -3881,18 +3884,19 @@ struct item_t
     double proc_chance;
     timespan_t duration, cooldown, tick;
     bool cost_reduction;
-    bool no_crit;
     bool no_player_benefits;
     bool no_debuffs;
     bool no_refresh;
     bool chance_to_discharge;
+    unsigned int override_result_types_mask;
+    unsigned result_types_mask;
     bool reverse;
     special_effect_t() :
       trigger_type( 0 ), trigger_mask( 0 ), stat( 0 ), school( SCHOOL_NONE ),
       max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
       proc_chance( 0 ), duration( timespan_t::zero ), cooldown( timespan_t::zero ),
-      tick( timespan_t::zero ), cost_reduction( false ), no_crit( false ), no_player_benefits( false ), no_debuffs( false ),
-      no_refresh( false ), chance_to_discharge( false ), reverse( false ) {}
+      tick( timespan_t::zero ), cost_reduction( false ), no_player_benefits( false ), no_debuffs( false ),
+      no_refresh( false ), chance_to_discharge( false ), override_result_types_mask( 0 ), result_types_mask( 0 ), reverse( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
 
@@ -5457,19 +5461,21 @@ struct unique_gear_t
 
   static action_callback_t* register_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                      int max_stacks, const school_type school, double amount, double scaling,
-                                                     double proc_chance, timespan_t cooldown, bool no_crits, bool no_buffs, bool no_debuffs,
+                                                     double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs,
+                                                     unsigned int override_result_types_mask = 0, unsigned int results_types_mask = 0,
                                                      int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_chance_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                             int max_stacks, const school_type school, double amount, double scaling,
-                                                            double proc_chance, timespan_t cooldown, bool no_crits, bool no_buffs, bool no_debuffs,
+                                                            double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs,
+                                                            unsigned int override_result_types_mask = 0, unsigned int results_types_mask = 0,
                                                             int rng_type=RNG_DEFAULT );
 
   static action_callback_t* register_stat_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                           int stat, int max_stacks, double stat_amount,
                                                           const school_type school, double discharge_amount, double discharge_scaling,
-                                                          double proc_chance, timespan_t duration, timespan_t cooldown, bool no_crits, bool no_buffs,
-                                                          bool no_debuffs );
+                                                          double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs,
+                                                          unsigned int override_result_types_mask = 0, unsigned int results_types_mask = 0 );
 
   static action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
   static action_callback_t* register_cost_reduction_proc( item_t&, item_t::special_effect_t& );

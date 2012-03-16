@@ -2986,7 +2986,11 @@ void player_t::merge( player_t& other )
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
-    b -> merge( buff_t::find( &other, b -> name() ) );
+    buff_t *otherbuff = buff_t::find( &other, b -> name() );
+    if ( otherbuff )
+    {
+      b -> merge( otherbuff );
+    }
   }
 
   for ( proc_t* proc = proc_list; proc; proc = proc -> next )
@@ -5390,7 +5394,7 @@ struct use_item_t : public action_t
       {
         trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                           e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                                          e.proc_chance, timespan_t::zero/*cd*/, e.no_crit, e.no_player_benefits, e.no_debuffs );
+                                                          e.proc_chance, timespan_t::zero/*cd*/, e.no_player_benefits, e.no_debuffs, e.override_result_types_mask, e.result_types_mask );
       }
 
       if ( trigger ) trigger -> deactivate();
@@ -5399,20 +5403,21 @@ struct use_item_t : public action_t
     {
       struct discharge_spell_t : public spell_t
       {
-        discharge_spell_t( const char* n, player_t* p, double a, const school_type s ) :
+        discharge_spell_t( const char* n, player_t* p, double a, const school_type s, unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0 ) :
           spell_t( n, p, RESOURCE_NONE, s )
         {
           trigger_gcd = timespan_t::zero;
           base_dd_min = a;
           base_dd_max = a;
-          may_crit    = true;
+          may_crit    = ( s != SCHOOL_DRAIN ) && ( ( override_result_types_mask & RESULT_CRIT_MASK ) ? ( result_types_mask & RESULT_CRIT_MASK ) : true ); // Default true
+          may_miss    = ( override_result_types_mask & RESULT_MISS_MASK ) ? ( result_types_mask & RESULT_MISS_MASK ) != 0 : may_miss;
           background  = true;
           base_spell_power_multiplier = 0;
           init();
         }
       };
 
-      discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school );
+      discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school, e.override_result_types_mask, e.result_types_mask );
     }
     else if ( e.stat )
     {

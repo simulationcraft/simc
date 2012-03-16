@@ -507,16 +507,12 @@ public:
 
     double c = absorb_t::cost();
 
-    if ( base_execute_time <= timespan_t::zero )
+    if ( ( base_execute_time <= timespan_t::zero ) && ! channeled )
     {
-      c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
-      c  = floor( c );
-    }
-
-    // Needs testing
-    if ( p -> buffs_tier13_2pc_heal -> check() )
-    {
-      c *= 1.0 + p -> buffs_tier13_2pc_heal -> effect1().percent();
+      double m = 1.0;
+      m += p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
+      m += p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
+      c *= m;
       c  = floor( c );
     }
 
@@ -734,16 +730,16 @@ struct priest_heal_t : public heal_t
 
     double c = heal_t::cost();
 
-    if ( base_execute_time <= timespan_t::zero )
+    if ( ( base_execute_time <= timespan_t::zero ) && ! channeled )
     {
-      c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
-      c  = floor( c );
-    }
-
-    // Needs testing
-    if ( p -> buffs_tier13_2pc_heal -> check() )
-    {
-      c *= 1.0 + p -> buffs_tier13_2pc_heal -> effect1().percent();
+      double m = 1.0;
+      m += p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
+      m += p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
+      if ( p -> buffs_tier13_2pc_heal -> check() )
+      {
+        m += p -> buffs_tier13_2pc_heal -> effect1().percent();
+      }     
+      c *= m;
       c  = floor( c );
     }
 
@@ -1030,9 +1026,12 @@ public:
 
     double c = spell_t::cost();
 
-    if ( base_execute_time <= timespan_t::zero )
+    if ( ( base_execute_time <= timespan_t::zero ) && ! channeled )
     {
-      c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
+      double m = 1.0;
+      m += p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
+      m += p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
+      c *= m;
       c  = floor( c );
     }
 
@@ -2082,9 +2081,6 @@ struct shadow_form_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-
-    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-    base_cost  = floor( base_cost );
   }
 
   virtual void execute()
@@ -2207,9 +2203,6 @@ struct devouring_plague_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     may_crit   = false;
-
-    base_cost        *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-    base_cost         = floor( base_cost );
 
     if ( p -> talents.improved_devouring_plague -> rank() )
     {
@@ -2652,9 +2645,6 @@ struct shadow_word_death_t : public priest_spell_t
     };
     parse_options( options, options_str );
 
-    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-    base_cost  = floor( base_cost );
-
     base_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
 
     if ( ! dtr && player -> has_dtr )
@@ -2744,9 +2734,6 @@ struct shadow_word_pain_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     may_crit   = false;
-
-    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-    base_cost  = floor( base_cost );
 
     stats -> children.push_back( player -> get_stats( "shadowy_apparition", this ) );
   }
@@ -3144,9 +3131,6 @@ struct circle_of_healing_t : public priest_heal_t
     check_talent( p -> talents.circle_of_healing -> rank() );
 
     parse_options( NULL, options_str );
-
-    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-    base_cost  = floor( base_cost );
 
     base_cost *= 1.0 + p -> glyphs.circle_of_healing -> effect2().percent();
     base_cost  = floor( base_cost );
@@ -3614,12 +3598,6 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
     // Needs testing
     cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
-
-    // HW: Sanctuary is treated as a instant cast spell, both affected by Inner Will and Mental Agility
-    // Implemented 06/12/2011 ( Patch 4.3 ),
-    // see Issue1023 and http://elitistjerks.com/f77/t110245-cataclysm_holy_priest_compendium/p25/#post2054467
-    base_cost        *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-    base_cost         = floor( base_cost );
   }
 
   virtual void init()
@@ -3653,7 +3631,14 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
     double c = priest_heal_t::cost();
 
-    c *= 1.0 - p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
+    // HW: Sanctuary is treated as a instant cast spell, both affected by Inner Will and Mental Agility
+    // Implemented 06/12/2011 ( Patch 4.3 ),
+    // see Issue1023 and http://elitistjerks.com/f77/t110245-cataclysm_holy_priest_compendium/p25/#post2054467
+
+    double m = 1.0;
+    m += p -> buffs_inner_will -> check() * p -> buffs_inner_will -> effect1().percent();
+    m += p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
+    c *= m;
     c  = floor( c );
 
     return c;
@@ -3963,9 +3948,6 @@ struct power_word_shield_t : public priest_absorb_t
       cooldown -> duration = timespan_t::zero;
     }
 
-    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-    base_cost  = floor( base_cost );
-
     base_multiplier *= 1.0 + p -> talents.improved_power_word_shield -> effect1().percent();
 
     direct_power_mod = 0.87; // hardcoded into tooltip
@@ -3977,6 +3959,14 @@ struct power_word_shield_t : public priest_absorb_t
       add_child( glyph_pws );
     }
   }
+
+  virtual double cost() const
+  {
+    double c = priest_absorb_t::cost();
+
+    return c;
+  }
+
 
   virtual void player_buff()
   {
@@ -4195,9 +4185,6 @@ struct prayer_of_mending_t : public priest_heal_t
     direct_power_mod = effect_coeff( 1 );
     base_dd_min = base_dd_max = effect_min( 1 );
 
-    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-    base_cost  = floor( base_cost );
-
     can_trigger_DA = false;
 
     aoe = 4;
@@ -4271,9 +4258,6 @@ struct renew_t : public priest_heal_t
     parse_options( NULL, options_str );
 
     may_crit = false;
-
-    base_cost *= 1.0 + p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-    base_cost  = floor( base_cost );
 
     base_multiplier *= 1.0 + p -> glyphs.renew -> effect1().percent();
     base_multiplier *= 1.0 + p -> talents.improved_renew -> effect1().percent();

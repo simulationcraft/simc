@@ -1917,7 +1917,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   righteous_flames_t* righteous_flames;
 
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
-    paladin_attack_t( "shield_of_the_righteous", "Shield of the Righteous", p )
+    paladin_attack_t( "shield_of_the_righteous", "Shield of the Righteous", p ), righteous_flames(NULL)
   {
     check_talent( p -> talents.shield_of_the_righteous -> rank() );
 
@@ -3283,17 +3283,24 @@ void paladin_t::init_actions()
     break;
     case TREE_PROTECTION:
     {
-      if ( level > 80 )
+      if ( level > 75 )
       {
-        action_list_str = "flask,type=steelskin/food,type=beer_basted_crocolisk";
-        action_list_str += "/earthen_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        if ( level > 80 )
+        {
+          action_list_str = "flask,type=steelskin/food,type=beer_basted_crocolisk";
+          action_list_str += "/earthen_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        }
+        else
+        {
+          action_list_str = "flask,type=stoneblood/food,type=dragonfin_filet";
+          action_list_str += "/indestructible_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        }
+        action_list_str += "/seal_of_truth";
       }
       else
       {
-        action_list_str = "flask,type=stoneblood/food,type=dragonfin_filet";
-        action_list_str += "/indestructible_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        action_list_str = "seal_of_truth";
       }
-      action_list_str += "/seal_of_truth";
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
       int num_items = ( int ) items.size();

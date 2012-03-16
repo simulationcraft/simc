@@ -2325,6 +2325,7 @@ static void print_html_player_benefits_uptimes( FILE* file, player_t* p )
            "\t\t\t\t\t\t\t\t\t<th>%%</th>\n"
            "\t\t\t\t\t\t\t\t</tr>\n" );
   int i = 1;
+
   for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
   {
     if ( u -> ratio > 0 )
@@ -2345,6 +2346,35 @@ static void print_html_player_benefits_uptimes( FILE* file, player_t* p )
       i++;
     }
   }
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    for ( benefit_t* u = pet -> benefit_list; u; u = u -> next )
+    {
+      if ( u -> ratio > 0 )
+      {
+        std::string benefit_name;
+        benefit_name += pet -> name_str + '-';
+        benefit_name += u -> name();
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 benefit_name.c_str(),
+                 u -> ratio * 100.0 );
+        i++;
+      }
+    }
+  }
+
   fprintf( file,
            "\t\t\t\t\t\t\t\t<tr>\n"
            "\t\t\t\t\t\t\t\t\t<th>Uptimes</th>\n"
@@ -2370,6 +2400,36 @@ static void print_html_player_benefits_uptimes( FILE* file, player_t* p )
       i++;
     }
   }
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  {
+    for ( uptime_t* u = pet -> uptime_list; u; u = u -> next )
+    {
+      if ( u -> uptime > 0 )
+      {
+        std::string uptime_name;
+        uptime_name += pet -> name_str + '-';
+        uptime_name += u -> name();
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 uptime_name.c_str(),
+                 u -> uptime * 100.0 );
+
+        i++;
+      }
+    }
+  }
+
 
   fprintf( file,
            "\t\t\t\t\t\t\t</table>\n"

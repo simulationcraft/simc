@@ -913,7 +913,53 @@ bool item_t::decode_special( special_effect_t& effect,
     }
     else if ( t.name == "nocrit" )
     {
-      effect.no_crit = true;
+      effect.override_result_types_mask |= RESULT_CRIT_MASK;
+      effect.result_types_mask &= ~RESULT_CRIT_MASK;
+    }
+    else if ( t.name == "maycrit" )
+    {
+      effect.override_result_types_mask |= RESULT_CRIT_MASK;
+      effect.result_types_mask |= RESULT_CRIT_MASK;
+    }
+    else if ( t.name == "nomiss" )
+    {
+      effect.override_result_types_mask |= RESULT_MISS_MASK;
+      effect.result_types_mask &= ~RESULT_MISS_MASK;
+    }
+    else if ( t.name == "maymiss" )
+    {
+      effect.override_result_types_mask |= RESULT_MISS_MASK;
+      effect.result_types_mask |= RESULT_MISS_MASK;
+    }
+    else if ( t.name == "nododge" )
+    {
+      effect.override_result_types_mask |= RESULT_DODGE_MASK;
+      effect.result_types_mask &= ~RESULT_DODGE_MASK;
+    }
+    else if ( t.name == "maydodge" )
+    {
+      effect.override_result_types_mask |= RESULT_DODGE_MASK;
+      effect.result_types_mask |= RESULT_DODGE_MASK;
+    }
+    else if ( t.name == "noparry" )
+    {
+      effect.override_result_types_mask |= RESULT_PARRY_MASK;
+      effect.result_types_mask &= ~RESULT_PARRY_MASK;
+    }
+    else if ( t.name == "mayparry" )
+    {
+      effect.override_result_types_mask |= RESULT_PARRY_MASK;
+      effect.result_types_mask |= RESULT_PARRY_MASK;
+    }
+    else if ( t.name == "noblock" )
+    {
+      effect.override_result_types_mask |= RESULT_BLOCK_MASK;
+      effect.result_types_mask &= ~RESULT_BLOCK_MASK;
+    }
+    else if ( t.name == "mayblock" )
+    {
+      effect.override_result_types_mask |= RESULT_BLOCK_MASK;
+      effect.result_types_mask |= RESULT_BLOCK_MASK;
     }
     else if ( t.name == "nobuffs" )
     {
