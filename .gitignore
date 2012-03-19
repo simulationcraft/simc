@@ -14,7 +14,6 @@ simc_gui.simc
 simc_log.txt
 simc_report.html
 .DS_Store
-Makefile
 *.[Dd]ebug
 *.[Rr]elease
 [Rr]elease
@@ -33,3 +32,11 @@ simc_http_log.txt
 log.txt
 bin
 int
+.project
+.externalToolBuilders
+.settings
+engine/simc_x64
+.cproject
+Makefile
+simcqt.pro.user
+nppBackup
