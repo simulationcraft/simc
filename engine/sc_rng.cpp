@@ -30,12 +30,12 @@ double rng_t::real()
 
 // rng_t::roll ==============================================================
 
-int rng_t::roll( double chance )
+bool rng_t::roll( double chance )
 {
   if ( chance <= 0 ) return 0;
   if ( chance >= 1 ) return 1;
   num_roll++;
-  int result = ( real() < chance ) ? 1 : 0;
+  bool result = ( real() < chance );
   expected_roll += chance;
   if ( result ) actual_roll++;
   return result;
@@ -74,7 +74,8 @@ timespan_t rng_t::gauss( timespan_t mean,
 // rng_t::gauss =============================================================
 
 double rng_t::gauss( double mean,
-                     double stddev )
+                     double stddev,
+                     const bool truncate_low_end )
 {
   if ( average_gauss ) return mean;
 
@@ -112,9 +113,11 @@ double rng_t::gauss( double mean,
     gauss_pair_use = true;
   }
 
-  // True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
   double result = mean + z * stddev;
-  if ( result < 0 ) result = 0;
+
+  // True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
+  if ( truncate_low_end && result < 0 )
+    result = 0;
 
   num_gauss++;
   expected_gauss += mean;
@@ -336,6 +339,8 @@ double rng_t::stdnormal_inv( double p )
   return ( p > 0.5 ? -u : u );
 };
 
+namespace { // ANONYMOUS ====================================================
+
 // ==========================================================================
 // SFMT Random Number Generator
 // ==========================================================================
@@ -352,220 +357,280 @@ double rng_t::stdnormal_inv( double p )
  * The new BSD License is applied to this software.
  */
 
+// http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/
+
 // Mersenne Exponent. The period of the sequence is a multiple of 2^MEXP-1.
-#define MEXP 1279
+#define DSFMT_MEXP 19937
 
-// SFMT generator has an internal state array of 128-bit integers, and N_sfmt is its size.
-#define N_sfmt (MEXP / 128 + 1)
+#define DSFMT_N ((DSFMT_MEXP - 128) / 104 + 1)
 
-// N32 is the size of internal state array when regarded as an array of 32-bit integers.
-#define N32 (N_sfmt * 4)
+#define DSFMT_N64 (DSFMT_N * 2)
 
-// MEXP_1279 paramaters
-#define POS1    7
-#define SL1     14
-#define SL2     3
-#define SR1     5
-#define SR2     1
-#define MSK1    0xf7fefffdU
-#define MSK2    0x7fefcfffU
-#define MSK3    0xaff3ef3fU
-#define MSK4    0xb5ffff7fU
-#define PARITY1 0x00000001U
-#define PARITY2 0x00000000U
-#define PARITY3 0x00000000U
-#define PARITY4 0x20000000U
+#ifndef UINT64_C
+#define UINT64_C(v) (v ## ULL)
+#endif
 
-// a parity check vector which certificate the period of 2^{MEXP}
-static uint32_t parity[4] = {PARITY1, PARITY2, PARITY3, PARITY4};
+#define DSFMT_LOW_MASK  UINT64_C(0x000FFFFFFFFFFFFF)
+#define DSFMT_HIGH_CONST UINT64_C(0x3FF0000000000000)
+#define DSFMT_SR  12
 
-// 128-bit data structure
-struct w128_t
-{
-  uint32_t u[4];
+#define DSFMT_POS1  117
+#define DSFMT_SL1 19
+#define DSFMT_MSK1  UINT64_C(0x000ffafffffffb3f)
+#define DSFMT_MSK2  UINT64_C(0x000ffdfffc90fffd)
+#define DSFMT_MSK32_1 0x000ffaffU
+#define DSFMT_MSK32_2 0xfffffb3fU
+#define DSFMT_MSK32_3 0x000ffdffU
+#define DSFMT_MSK32_4 0xfc90fffdU
+#define DSFMT_FIX1  UINT64_C(0x90014964b32f4329)
+#define DSFMT_FIX2  UINT64_C(0x3b8d12ac548a7c7a)
+#define DSFMT_PCV1  UINT64_C(0x3d84e1ac0dc82880)
+#define DSFMT_PCV2  UINT64_C(0x0000000000000001)
+#define DSFMT_IDSTR "dSFMT2-19937:117-19:ffafffffffb3f-ffdfffc90fffd"
+
+#if defined(__SSE2__)
+#  include <emmintrin.h>
+
+/** mask data for sse2 */
+static __m128i sse2_param_mask;
+/** 1 in 64bit for sse2 */
+static __m128i sse2_int_one;
+/** 2.0 double for sse2 */
+static __m128d sse2_double_two;
+/** -1.0 double for sse2 */
+static __m128d sse2_double_m_one;
+
+#define SSE2_SHUFF 0x1b
+
+/** 128-bit data structure */
+union w128_t {
+    __m128i si;
+    __m128d sd;
+    uint64_t u[2];
+    uint32_t u32[4];
+    double d[2];
 };
 
-struct rng_sfmt_t : public rng_t
+#else  /* standard C */
+/** 128-bit data structure */
+union w128_t {
+  uint64_t u[2];
+  uint32_t u32[4];
+  double d[2];
+};
+#endif
+
+/** the 128-bit internal state array */
+struct dsfmt_t {
+    w128_t status[DSFMT_N + 1];
+    int idx;
+};
+#if defined(__SSE2__)
+/**
+ * This function setup some constant variables for SSE2.
+ */
+static void setup_const(void) {
+    static int first = 1;
+    if (!first) {
+  return;
+    }
+    sse2_param_mask = _mm_set_epi32(DSFMT_MSK32_3, DSFMT_MSK32_4,
+            DSFMT_MSK32_1, DSFMT_MSK32_2);
+    sse2_int_one = _mm_set_epi32(0, 1, 0, 1);
+    sse2_double_two = _mm_set_pd(2.0, 2.0);
+    sse2_double_m_one = _mm_set_pd(-1.0, -1.0);
+    first = 0;
+}
+
+/**
+ * This function represents the recursion formula.
+ * @param r output 128-bit
+ * @param a a 128-bit part of the internal state array
+ * @param b a 128-bit part of the internal state array
+ * @param d a 128-bit part of the internal state array (I/O)
+ */
+inline static void do_recursion(w128_t *r, w128_t *a, w128_t *b, w128_t *u) {
+    __m128i v, w, x, y, z;
+
+    x = a->si;
+    z = _mm_slli_epi64(x, DSFMT_SL1);
+    y = _mm_shuffle_epi32(u->si, SSE2_SHUFF);
+    z = _mm_xor_si128(z, b->si);
+    y = _mm_xor_si128(y, z);
+
+    v = _mm_srli_epi64(y, DSFMT_SR);
+    w = _mm_and_si128(y, sse2_param_mask);
+    v = _mm_xor_si128(v, x);
+    v = _mm_xor_si128(v, w);
+    r->si = v;
+    u->si = y;
+}
+#else /* standard C */
+
+inline void do_recursion( w128_t* r, const w128_t* a, const w128_t* b, w128_t* lung )
 {
-  w128_t sfmt[N_sfmt]; // the 128-bit internal state array
+    uint64_t t0, t1, L0, L1;
 
-  uint32_t *psfmt32; // the 32bit integer pointer to the 128-bit internal state array
+    t0 = a->u[0];
+    t1 = a->u[1];
+    L0 = lung->u[0];
+    L1 = lung->u[1];
+    lung->u[0] = (t0 << DSFMT_SL1) ^ (L1 >> 32) ^ (L1 << 32) ^ b->u[0];
+    lung->u[1] = (t1 << DSFMT_SL1) ^ (L0 >> 32) ^ (L0 << 32) ^ b->u[1];
+    r->u[0] = (lung->u[0] >> DSFMT_SR) ^ (lung->u[0] & DSFMT_MSK1) ^ t0;
+    r->u[1] = (lung->u[1] >> DSFMT_SR) ^ (lung->u[1] & DSFMT_MSK2) ^ t1;
+}
+#endif
 
-  int idx; // index counter to the 32-bit internal state array
+void dsfmt_gen_rand_all(dsfmt_t *dsfmt) {
+    int i;
+    w128_t lung;
 
+    lung = dsfmt->status[DSFMT_N];
+    do_recursion(&dsfmt->status[0], &dsfmt->status[0],
+     &dsfmt->status[DSFMT_POS1], &lung);
+    for (i = 1; i < DSFMT_N - DSFMT_POS1; i++) {
+  do_recursion(&dsfmt->status[i], &dsfmt->status[i],
+         &dsfmt->status[i + DSFMT_POS1], &lung);
+    }
+    for (; i < DSFMT_N; i++) {
+  do_recursion(&dsfmt->status[i], &dsfmt->status[i],
+         &dsfmt->status[i + DSFMT_POS1 - DSFMT_N], &lung);
+
+    }
+    dsfmt->status[DSFMT_N] = lung;
+}
+
+/**
+ * This function initializes the internal state array to fit the IEEE
+ * 754 format.
+ * @param dsfmt dsfmt state vector.
+ */
+void initial_mask(dsfmt_t *dsfmt) {
+    int i;
+    uint64_t *psfmt;
+
+    psfmt = &dsfmt->status[0].u[0];
+    for (i = 0; i < DSFMT_N * 2; i++) {
+        psfmt[i] = (psfmt[i] & DSFMT_LOW_MASK) | DSFMT_HIGH_CONST;
+    }
+}
+
+/**
+ * This function certificate the period of 2^{SFMT_MEXP}-1.
+ * @param dsfmt dsfmt state vector.
+ */
+void period_certification(dsfmt_t *dsfmt) {
+    uint64_t pcv[2] = {DSFMT_PCV1, DSFMT_PCV2};
+    uint64_t tmp[2];
+    uint64_t inner;
+    int i;
+
+    tmp[0] = (dsfmt->status[DSFMT_N].u[0] ^ DSFMT_FIX1);
+    tmp[1] = (dsfmt->status[DSFMT_N].u[1] ^ DSFMT_FIX2);
+
+    inner = tmp[0] & pcv[0];
+    inner ^= tmp[1] & pcv[1];
+    for (i = 32; i > 0; i >>= 1) {
+        inner ^= inner >> i;
+    }
+    inner &= 1;
+    /* check OK */
+    if (inner == 1) {
+  return;
+    }
+    /* check NG, and modification */
+    dsfmt->status[DSFMT_N].u[1] ^= 1;
+    return;
+}
+
+inline int idxof(int i) {
+    return i;
+}
+
+
+/**
+ * This function initializes the internal state array with a 32-bit
+ * integer seed.
+ * @param dsfmt dsfmt state vector.
+ * @param seed a 32-bit integer used as the seed.
+ * @param mexp caller's mersenne expornent
+ */
+void dsfmt_chk_init_gen_rand(dsfmt_t *dsfmt, uint32_t seed) {
+    int i;
+    uint32_t *psfmt;
+
+
+    psfmt = &dsfmt->status[0].u32[0];
+    psfmt[idxof(0)] = seed;
+    for (i = 1; i < (DSFMT_N + 1) * 4; i++) {
+        psfmt[idxof(i)] = 1812433253UL
+      * (psfmt[idxof(i - 1)] ^ (psfmt[idxof(i - 1)] >> 30)) + i;
+    }
+    initial_mask(dsfmt);
+    period_certification(dsfmt);
+    dsfmt->idx = DSFMT_N64;
+
+#if defined(__SSE2__)
+    setup_const();
+#endif
+}
+
+/**
+ * This function generates and returns double precision pseudorandom
+ * number which distributes uniformly in the range [1,2).  This is
+ * the primitive and faster than generating numbers in other ranges.
+ * dsfmt_init_gen_rand() or dsfmt_init_by_array() must be called
+ * before this function.
+ */
+double dsfmt_genrand_close_open(dsfmt_t *dsfmt) {
+
+    double *psfmt64 = &dsfmt->status[0].d[0];
+
+    if (dsfmt->idx >= DSFMT_N64)
+    {
+      dsfmt_gen_rand_all(dsfmt);
+      dsfmt->idx = 0;
+    }
+    return psfmt64[dsfmt->idx++];
+}
+
+} // ANONYMOUS ==============================================================
+
+class rng_sfmt_t : public rng_t
+{
+private:
+  /** global data */
+  dsfmt_t dsfmt_global_data;
+
+public:
   rng_sfmt_t( const std::string& name, bool avg_range=false, bool avg_gauss=false );
 
   virtual int type() const { return RNG_MERSENNE_TWISTER; }
   virtual double real();
-  virtual void seed( uint32_t start );
+  virtual void seed( uint32_t start=rand() );
 };
-
-// period_certification =====================================================
-
-inline static void period_certification( uint32_t* psfmt32 )
-{
-  int inner = 0;
-  int i, j;
-  uint32_t work;
-
-  for ( i = 0; i < 4; i++ )
-    inner ^= psfmt32[i] & parity[i];
-  for ( i = 16; i > 0; i >>= 1 )
-    inner ^= inner >> i;
-  inner &= 1;
-  /* check OK */
-  if ( inner == 1 )
-  {
-    return;
-  }
-  /* check NG, and modification */
-  for ( i = 0; i < 4; i++ )
-  {
-    work = 1;
-    for ( j = 0; j < 32; j++ )
-    {
-      if ( ( work & parity[i] ) != 0 )
-      {
-        psfmt32[i] ^= work;
-        return;
-      }
-      work = work << 1;
-    }
-  }
-}
-
-// init_gen_rand ============================================================
-
-inline static void init_gen_rand( rng_sfmt_t* r, uint32_t seed )
-{
-  uint32_t* psfmt32 = r -> psfmt32;
-
-  int i;
-
-  psfmt32[0] = seed;
-  for ( i = 1; i < N32; i++ )
-  {
-    psfmt32[i] = 1812433253UL * ( psfmt32[i - 1] ^ ( psfmt32[i - 1] >> 30 ) ) + i;
-  }
-  period_certification( psfmt32 );
-}
-
-// rshift128 ================================================================
-
-inline static void rshift128( w128_t *out, w128_t const *in, int shift )
-{
-  uint64_t th, tl, oh, ol;
-
-  th = ( ( uint64_t )in->u[3] << 32 ) | ( ( uint64_t )in->u[2] );
-  tl = ( ( uint64_t )in->u[1] << 32 ) | ( ( uint64_t )in->u[0] );
-
-  oh = th >> ( shift * 8 );
-  ol = tl >> ( shift * 8 );
-  ol |= th << ( 64 - shift * 8 );
-  out->u[1] = ( uint32_t )( ol >> 32 );
-  out->u[0] = ( uint32_t )ol;
-  out->u[3] = ( uint32_t )( oh >> 32 );
-  out->u[2] = ( uint32_t )oh;
-}
-
-// lshift128 ================================================================
-
-inline static void lshift128( w128_t *out, w128_t const *in, int shift )
-{
-  uint64_t th, tl, oh, ol;
-
-  th = ( ( uint64_t )in->u[3] << 32 ) | ( ( uint64_t )in->u[2] );
-  tl = ( ( uint64_t )in->u[1] << 32 ) | ( ( uint64_t )in->u[0] );
-
-  oh = th << ( shift * 8 );
-  ol = tl << ( shift * 8 );
-  oh |= tl >> ( 64 - shift * 8 );
-  out->u[1] = ( uint32_t )( ol >> 32 );
-  out->u[0] = ( uint32_t )ol;
-  out->u[3] = ( uint32_t )( oh >> 32 );
-  out->u[2] = ( uint32_t )oh;
-}
-
-// do_recursion =============================================================
-
-inline static void do_recursion( w128_t *r, w128_t *a, w128_t *b, w128_t *c, w128_t *d )
-{
-  w128_t x;
-  w128_t y;
-
-  lshift128( &x, a, SL2 );
-  rshift128( &y, c, SR2 );
-  r->u[0] = a->u[0] ^ x.u[0] ^ ( ( b->u[0] >> SR1 ) & MSK1 ) ^ y.u[0] ^ ( d->u[0] << SL1 );
-  r->u[1] = a->u[1] ^ x.u[1] ^ ( ( b->u[1] >> SR1 ) & MSK2 ) ^ y.u[1] ^ ( d->u[1] << SL1 );
-  r->u[2] = a->u[2] ^ x.u[2] ^ ( ( b->u[2] >> SR1 ) & MSK3 ) ^ y.u[2] ^ ( d->u[2] << SL1 );
-  r->u[3] = a->u[3] ^ x.u[3] ^ ( ( b->u[3] >> SR1 ) & MSK4 ) ^ y.u[3] ^ ( d->u[3] << SL1 );
-}
-
-// gen_rand_all =============================================================
-
-inline static void gen_rand_all( w128_t*   sfmt )
-{
-  int i;
-  w128_t *r1, *r2;
-
-  r1 = &sfmt[N_sfmt - 2];
-  r2 = &sfmt[N_sfmt - 1];
-  for ( i = 0; i < N_sfmt - POS1; i++ )
-  {
-    do_recursion( &sfmt[i], &sfmt[i], &sfmt[i + POS1], r1, r2 );
-    r1 = r2;
-    r2 = &sfmt[i];
-  }
-  for ( ; i < N_sfmt; i++ )
-  {
-    do_recursion( &sfmt[i], &sfmt[i], &sfmt[i + POS1 - N_sfmt], r1, r2 );
-    r1 = r2;
-    r2 = &sfmt[i];
-  }
-}
-
-// gen_rand32 ===============================================================
-
-inline static uint32_t gen_rand32( rng_sfmt_t* r )
-{
-  if ( r->idx >= N32 )
-  {
-    gen_rand_all( r->sfmt );
-    r->idx = 0;
-  }
-  return r->psfmt32[r->idx++];
-}
-
-// gen_rand_real ============================================================
-
-inline static double gen_rand_real( rng_sfmt_t* r )
-{
-  return gen_rand32( r ) * ( 1.0 / 4294967295.0 );  // divide by 2^32-1
-}
 
 // rng_sfmt_t::rng_sfmt_t ===================================================
 
 rng_sfmt_t::rng_sfmt_t( const std::string& name, bool avg_range, bool avg_gauss ) :
   rng_t( name, avg_range, avg_gauss )
 {
-  psfmt32 = &sfmt[0].u[0];
-  idx = N32;
-
-  init_gen_rand( this, rand() );
+  seed();
 }
 
 // rng_sfmt_t::real =========================================================
 
 double rng_sfmt_t::real()
 {
-  return gen_rand_real( this );
+  return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0;
 }
 
 // rng_sfmt_t::seed =========================================================
 
 void rng_sfmt_t::seed( uint32_t start )
 {
-  init_gen_rand( this, start );
+  dsfmt_chk_init_gen_rand( &dsfmt_global_data, start );
 }
 
 // ==========================================================================
@@ -581,9 +646,9 @@ struct rng_normalized_t : public rng_t
 
   virtual double real() { return base -> real(); }
   virtual double range( double min, double max ) { return ( min + max ) / 2.0; }
-  virtual double gauss( double mean, double /* stddev */ ) { return mean; }
+  virtual double gauss( double mean, double /* stddev */, bool /* truncate_low_end */ ) { return mean; }
   virtual timespan_t gauss( timespan_t mean, timespan_t /* stddev */ ) { return mean; }
-  virtual int    roll( double chance ) = 0; // must be overridden
+  virtual bool    roll( double chance ) = 0; // must be overridden
 };
 
 // ==========================================================================
@@ -631,7 +696,7 @@ struct rng_phase_shift_t : public rng_normalized_t
     actual_range += result;
     return result;
   }
-  virtual double gauss( double mean, double stddev )
+  virtual double gauss( double mean, double stddev, bool /* truncate_low_end */ = false )
   {
     if ( average_gauss ) return mean;
     num_gauss++;
@@ -646,7 +711,7 @@ struct rng_phase_shift_t : public rng_normalized_t
   {
     return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE( mean ), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
   }
-  virtual int roll( double chance )
+  virtual bool roll( double chance )
   {
     if ( chance <= 0 ) return 0;
     if ( chance >= 1 ) return 1;
@@ -655,9 +720,9 @@ struct rng_phase_shift_t : public rng_normalized_t
     if ( actual_roll < expected_roll )
     {
       actual_roll++;
-      return 1;
+      return true;
     }
-    return 0;
+    return false;
   }
 };
 
@@ -697,7 +762,7 @@ struct rng_pre_fill_t : public rng_normalized_t
   }
   virtual int type() const { return RNG_PRE_FILL; }
 
-  virtual int roll( double chance )
+  virtual bool roll( double chance )
   {
     if ( chance <= 0 ) return 0;
     if ( chance >= 1 ) return 1;
@@ -731,9 +796,9 @@ struct rng_pre_fill_t : public rng_normalized_t
     if ( roll_distribution[ roll_index ] )
     {
       actual_roll++;
-      return 1;
+      return true;
     }
-    return 0;
+    return false;
   }
 
   virtual double range( double min, double max )
@@ -756,7 +821,7 @@ struct rng_pre_fill_t : public rng_normalized_t
     return result;
   }
 
-  virtual double gauss( double mean, double stddev )
+  virtual double gauss( double mean, double stddev, bool /* truncate_low_end */ = false )
   {
     if ( average_gauss ) return mean;
     int size = ( int ) gauss_distribution.size();
@@ -962,7 +1027,7 @@ struct rng_distance_simple_t : public rng_normalized_t
   }
   virtual int type() const { return RNG_DISTANCE_SIMPLE; }
 
-  virtual int roll( double chance )
+  virtual bool roll( double chance )
   {
     if ( chance <= 0 ) return 0;
     if ( chance >= 1 ) return 1;
@@ -971,9 +1036,9 @@ struct rng_distance_simple_t : public rng_normalized_t
     if ( roll_d.reach( chance ) )
     {
       actual_roll++;
-      return 1;
+      return true;
     }
-    return 0;
+    return false;
   }
 
   virtual double range( double min, double max )
@@ -986,7 +1051,7 @@ struct rng_distance_simple_t : public rng_normalized_t
     return result;
   }
 
-  virtual double gauss( double mean, double stddev )
+  virtual double gauss( double mean, double stddev, bool /* truncate_low_end */ = false )
   {
     if ( average_gauss ) return mean;
     num_gauss++;
@@ -1017,7 +1082,7 @@ struct rng_distance_bands_t : public rng_distance_simple_t
   }
   virtual int type() const { return RNG_DISTANCE_BANDS; }
 
-  virtual int roll( double chance )
+  virtual bool roll( double chance )
   {
     if ( chance <= 0 ) return 0;
     if ( chance >= 1 ) return 1;
@@ -1027,9 +1092,9 @@ struct rng_distance_bands_t : public rng_distance_simple_t
     if ( roll_bands[ band ].reach( chance ) )
     {
       actual_roll++;
-      return 1;
+      return true;
     }
-    return 0;
+    return false;
   }
 };
 
@@ -1110,4 +1175,5 @@ int main( int argc, char** argv )
 }
 
 #endif
+
 
