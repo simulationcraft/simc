@@ -738,7 +738,7 @@ struct priest_heal_t : public heal_t
       if ( p -> buffs_tier13_2pc_heal -> check() )
       {
         m += p -> buffs_tier13_2pc_heal -> effect1().percent();
-      }     
+      }
       c *= m;
       c  = floor( c );
     }
@@ -3470,7 +3470,7 @@ struct greater_heal_t : public priest_heal_t
     timespan_t c = priest_heal_t::execute_time();
 
     if ( p -> buffs_serendipity -> check() )
-      c *= 1.0 + p -> buffs_serendipity -> effect1().percent();
+      c *= 1.0 + p -> buffs_serendipity -> effect1().percent() * p -> buffs_serendipity -> check();
 
     return c;
   }
@@ -3482,7 +3482,7 @@ struct greater_heal_t : public priest_heal_t
     double c = priest_heal_t::cost();
 
     if ( p -> buffs_serendipity -> check() )
-      c *= 1.0 + p -> buffs_serendipity -> effect2().percent();
+      c *= 1.0 + p -> buffs_serendipity -> effect2().percent() * p -> buffs_serendipity -> check();
 
     if ( p -> buffs_inner_focus -> check() )
       c = 0;
@@ -4146,7 +4146,7 @@ struct prayer_of_healing_t : public priest_heal_t
     timespan_t c = priest_heal_t::execute_time();
 
     if ( p -> buffs_serendipity -> check() )
-      c *= 1.0 + p -> buffs_serendipity -> effect1().percent();
+      c *= 1.0 + p -> buffs_serendipity -> effect1().percent() * p -> buffs_serendipity -> check();
 
     return c;
   }
@@ -4158,7 +4158,7 @@ struct prayer_of_healing_t : public priest_heal_t
     double c = priest_heal_t::cost();
 
     if ( p -> buffs_serendipity -> check() )
-      c *= 1.0 + p -> buffs_serendipity -> effect2().percent();
+      c *= 1.0 + p -> buffs_serendipity -> effect2().percent() * p -> buffs_serendipity -> check();
 
     if ( p -> buffs_inner_focus -> check() )
       c = 0;
