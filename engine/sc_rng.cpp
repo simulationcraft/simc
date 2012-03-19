@@ -1045,10 +1045,10 @@ rng_t* rng_t::create( sim_t*             sim,
   if ( type == RNG_CYCLIC      ) type = RNG_PHASE_SHIFT;
   if ( type == RNG_DISTRIBUTED ) type = RNG_DISTANCE_BANDS;
 
-  rng_t* b = sim -> deterministic_roll ? sim -> deterministic_rng : sim -> rng;
+  rng_t* b = sim -> default_rng();
 
-  bool ar = ( bool ) ( sim -> average_range != 0 );
-  bool ag = ( bool ) ( sim -> average_gauss != 0 );
+  bool ar = ( sim -> average_range != 0 );
+  bool ag = ( sim -> average_gauss != 0 );
 
   switch ( type )
   {

@@ -667,8 +667,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   input_is_utf8( false ),
   dtr_proc_chance( -1.0 ),
   target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
-  rng( 0 ), deterministic_rng( 0 ), rng_list( 0 ),
-  smooth_rng( 0 ), deterministic_roll( 0 ), average_range( 1 ), average_gauss( 0 ), convergence_scale( 2 ),
+  default_rng_( 0 ), rng_list( 0 ), deterministic_roll( false ),
+  rng( 0 ), deterministic_rng( 0 ), smooth_rng( false ), average_range( true ), average_gauss( false ),
+  convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
   buff_list( 0 ), aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
@@ -1236,10 +1237,12 @@ bool sim_t::init()
   if ( scaling -> smooth_scale_factors &&
        scaling -> scale_stat != STAT_NONE )
   {
-    smooth_rng = 1;
-    average_range = 1;
-    deterministic_roll = 1;
+    smooth_rng = true;
+    average_range = true;
+    deterministic_roll = true;
   }
+
+  default_rng_ = ( deterministic_roll ? deterministic_rng : rng );
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
@@ -1953,15 +1956,6 @@ bool sim_t::time_to_think( timespan_t proc_time )
   return current_time - proc_time > reaction_time;
 }
 
-// sim_t::roll ==============================================================
-
-int sim_t::roll( double chance )
-{
-  rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
-
-  return r -> roll( chance );
-}
-
 // sim_t::range =============================================================
 
 double sim_t::range( double min,
@@ -1969,9 +1963,7 @@ double sim_t::range( double min,
 {
   if ( average_range ) return ( min + max ) / 2.0;
 
-  rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
-
-  return r -> range( min, max );
+  return default_rng_ -> range( min, max );
 }
 
 // sim_t::gauss =============================================================
@@ -1981,9 +1973,7 @@ double sim_t::gauss( double mean,
 {
   if ( average_gauss ) return mean;
 
-  rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
-
-  return r -> gauss( mean, stddev );
+  return default_rng_ -> gauss( mean, stddev );
 }
 
 // sim_t::gauss =============================================================
@@ -1992,15 +1982,6 @@ timespan_t sim_t::gauss( timespan_t mean,
                          timespan_t stddev )
 {
   return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE( mean ), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
-}
-
-// sim_t::real ==============================================================
-
-double sim_t::real()
-{
-  rng_t* r = ( deterministic_roll ? deterministic_rng : rng );
-
-  return r -> real();
 }
 
 // sim_t::get_rng ===========================================================
@@ -2012,7 +1993,7 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
   if ( type == RNG_GLOBAL ) return rng;
   if ( type == RNG_DETERMINISTIC ) return deterministic_rng;
 
-  if ( ! smooth_rng ) return ( deterministic_roll ? deterministic_rng : rng );
+  if ( ! smooth_rng ) return default_rng_;
 
   rng_t* r=0;
 

@@ -485,10 +485,9 @@ raid_event_t::raid_event_t( sim_t* s, const char* n ) :
   cooldown_min( timespan_t::zero ), cooldown_max( timespan_t::zero ),
   duration( timespan_t::zero ), duration_stddev( timespan_t::zero ),
   duration_min( timespan_t::zero ), duration_max( timespan_t::zero ),
-  distance_min( 0 ), distance_max( 0 ), saved_duration( timespan_t::zero )
-{
-  rng = ( sim -> deterministic_roll ) ? sim -> deterministic_rng : sim -> rng;
-}
+  distance_min( 0 ), distance_max( 0 ), saved_duration( timespan_t::zero ),
+  rng( s -> default_rng() )
+{}
 
 // raid_event_t::cooldown_time ==============================================
 
