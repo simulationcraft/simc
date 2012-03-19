@@ -2117,7 +2117,14 @@ const char* chart_t::dps_error( std::string& s,
   snprintf( buffer, sizeof( buffer ), "chtt=%.2f%%25+Confidence+Interval", p -> sim -> confidence * 100.0 ); s += buffer;
 
   s += "&amp;";
+  if ( p -> sim -> print_styles )
+  {
+  s += "chxs=0,000000|1,000000|2,000000|3,000000";
+  }
+  else
+  {
   s += "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
+  }
   s += "&amp;";
   if ( p -> sim -> print_styles )
   {
