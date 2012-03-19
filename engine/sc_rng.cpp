@@ -5,28 +5,23 @@
 
 #include "simulationcraft.h"
 
-// ==========================================================================
-// Standard Random Number Generator
-// ==========================================================================
-
 // rng_t::rng_t =============================================================
 
 rng_t::rng_t( const std::string& n, bool avg_range, bool avg_gauss ) :
-  name_str( n ), gauss_pair_use( false ),
+  name_str( n ),
   expected_roll( 0 ),  actual_roll( 0 ),  num_roll( 0 ),
   expected_range( 0 ), actual_range( 0 ), num_range( 0 ),
   expected_gauss( 0 ), actual_gauss( 0 ), num_gauss( 0 ),
+  next( 0 ),
+  gauss_pair_use( false ),
   average_range( avg_range ),
-  average_gauss( avg_gauss ),
-  next( 0 )
+  average_gauss( avg_gauss )
 {}
 
-// rng_t::real ==============================================================
+// rng_t::seed ==============================================================
 
-double rng_t::real()
-{
-  return rand() * ( 1.0 / ( ( ( double ) RAND_MAX ) + 1.0 ) );
-}
+void rng_t::seed( uint32_t )
+{}
 
 // rng_t::roll ==============================================================
 
@@ -43,13 +38,6 @@ bool rng_t::roll( double chance )
 
 // rng_t::range =============================================================
 
-timespan_t rng_t::range( timespan_t min, timespan_t max )
-{
-  return TIMESPAN_FROM_NATIVE_VALUE( range( TIMESPAN_TO_NATIVE_VALUE( min ), TIMESPAN_TO_NATIVE_VALUE( max ) ) );
-}
-
-// rng_t::range =============================================================
-
 double rng_t::range( double min,
                      double max )
 {
@@ -61,14 +49,6 @@ double rng_t::range( double min,
   if ( min < max ) result =  min + real() * ( max - min );
   actual_range += result;
   return result;
-}
-
-// rng_t::gauss =============================================================
-
-timespan_t rng_t::gauss( timespan_t mean,
-                         timespan_t stddev )
-{
-  return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE( mean ), TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
 }
 
 // rng_t::gauss =============================================================
@@ -142,20 +122,6 @@ double rng_t::exgauss( double mean, double stddev, double nu )
   if ( result > 5 ) result = 5; // cut it off at 5s
 
   return result;
-}
-
-// rng_t::exgauss ===========================================================
-
-timespan_t rng_t::exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
-{
-  return TIMESPAN_FROM_NATIVE_VALUE( exgauss( TIMESPAN_TO_NATIVE_VALUE( mean ), TIMESPAN_TO_NATIVE_VALUE( stddev ), TIMESPAN_TO_NATIVE_VALUE( nu ) ) );
-}
-
-// rng_t::seed ==============================================================
-
-void rng_t::seed( uint32_t start )
-{
-  srand( start );
 }
 
 // rng_t::report ============================================================
@@ -340,6 +306,28 @@ double rng_t::stdnormal_inv( double p )
 };
 
 namespace { // ANONYMOUS ====================================================
+
+// ==========================================================================
+// Standard Random Number Generator
+// ==========================================================================
+
+class rng_std_t : public rng_t
+{
+public:
+  rng_std_t( const std::string& name, bool avg_range, bool avg_gauss ) :
+    rng_t( name, avg_range, avg_gauss )
+  {}
+
+  virtual rng_type type() const // override
+  { return RNG_STANDARD; }
+
+  virtual void seed( uint32_t start ) // override
+  { srand( start ); }
+
+  virtual double real() // override
+  { return rand() * ( 1.0 / ( ( ( double ) RAND_MAX ) + 1.0 ) ); }
+};
+
 
 // ==========================================================================
 // SFMT Random Number Generator
@@ -580,41 +568,29 @@ private:
   dsfmt_t dsfmt_global_data;
 
 public:
-  rng_sfmt_t( const std::string& name, bool avg_range=false, bool avg_gauss=false );
+  rng_sfmt_t( const std::string& name, bool avg_range=false, bool avg_gauss=false ) :
+    rng_t( name, avg_range, avg_gauss )
+  { seed( time( NULL ) ); }
 
-  virtual int type() const { return RNG_MERSENNE_TWISTER; }
-  virtual double real();
-  virtual void seed( uint32_t start=rand() );
+  virtual rng_type type() const
+  { return RNG_MERSENNE_TWISTER; }
 
+  virtual double real()
+  { return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
+
+  virtual void seed( uint32_t start )
+  { dsfmt_chk_init_gen_rand( &dsfmt_global_data, start ); }
+
+#if defined(__SSE2__)
   // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
-  // This object needs to be aligned to sizeof(w128_t) == 16.
+  // This object needs to be aligned to sizeof(__m128d) == 16.
   static void* operator new( size_t size )
   { return _mm_malloc( size, alignof( dsfmt_t ) ); }
   static void operator delete( void* p )
   { return _mm_free( p ); }
+#endif
 };
 
-// rng_sfmt_t::rng_sfmt_t ===================================================
-
-rng_sfmt_t::rng_sfmt_t( const std::string& name, bool avg_range, bool avg_gauss ) :
-  rng_t( name, avg_range, avg_gauss )
-{
-  seed();
-}
-
-// rng_sfmt_t::real =========================================================
-
-double rng_sfmt_t::real()
-{
-  return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0;
-}
-
-// rng_sfmt_t::seed =========================================================
-
-void rng_sfmt_t::seed( uint32_t start )
-{
-  dsfmt_chk_init_gen_rand( &dsfmt_global_data, start );
-}
 
 // ==========================================================================
 // Base-Class for Normalized RNGs
@@ -666,7 +642,7 @@ struct rng_phase_shift_t : public rng_normalized_t
 
     actual_roll = real() - 0.5;
   }
-  virtual int type() const { return RNG_PHASE_SHIFT; }
+  virtual rng_type type() const { return RNG_PHASE_SHIFT; }
 
   virtual double range( double min, double max )
   {
@@ -743,7 +719,7 @@ struct rng_pre_fill_t : public rng_normalized_t
     roll_distribution.resize( 10 );
     roll_index = 10;
   }
-  virtual int type() const { return RNG_PRE_FILL; }
+  virtual rng_type type() const { return RNG_PRE_FILL; }
 
   virtual bool roll( double chance )
   {
@@ -1008,7 +984,7 @@ struct rng_distance_simple_t : public rng_normalized_t
     range_d.actual = real();
     gauss_d.actual = real() * 2.5;
   }
-  virtual int type() const { return RNG_DISTANCE_SIMPLE; }
+  virtual rng_type type() const { return RNG_DISTANCE_SIMPLE; }
 
   virtual bool roll( double chance )
   {
@@ -1063,7 +1039,7 @@ struct rng_distance_bands_t : public rng_distance_simple_t
   {
     for ( int i=0; i < 10; i++ ) roll_bands[ i ].actual = real() - 0.5;
   }
-  virtual int type() const { return RNG_DISTANCE_BANDS; }
+  virtual rng_type type() const { return RNG_DISTANCE_BANDS; }
 
   virtual bool roll( double chance )
   {
@@ -1087,7 +1063,7 @@ struct rng_distance_bands_t : public rng_distance_simple_t
 
 rng_t* rng_t::create( sim_t*             sim,
                       const std::string& name,
-                      int                type )
+                      rng_type           type )
 {
   if ( type == RNG_DEFAULT     ) type = RNG_PHASE_SHIFT;
   if ( type == RNG_CYCLIC      ) type = RNG_PHASE_SHIFT;
@@ -1100,15 +1076,14 @@ rng_t* rng_t::create( sim_t*             sim,
 
   switch ( type )
   {
-  case RNG_STANDARD:         return new rng_t                ( name,    ar, ag );
+  case RNG_STANDARD:         return new rng_std_t            ( name,    ar, ag );
   case RNG_MERSENNE_TWISTER: return new rng_sfmt_t           ( name,    ar, ag );
   case RNG_PHASE_SHIFT:      return new rng_phase_shift_t    ( name, b, ar, ag );
   case RNG_PRE_FILL:         return new rng_pre_fill_t       ( name, b, ar, ag );
   case RNG_DISTANCE_SIMPLE:  return new rng_distance_simple_t( name, b, ar, ag );
   case RNG_DISTANCE_BANDS:   return new rng_distance_bands_t ( name, b, ar, ag );
+  default: assert( 0 );      return 0;
   }
-  assert( 0 );
-  return 0;
 }
 
 #ifdef UNIT_TEST
@@ -1158,5 +1133,3 @@ int main( int argc, char** argv )
 }
 
 #endif
-
-

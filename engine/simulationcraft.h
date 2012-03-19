@@ -2,8 +2,8 @@
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-#ifndef __SIMULATIONCRAFT_H
-#define __SIMULATIONCRAFT_H
+#ifndef SIMULATIONCRAFT_H
+#define SIMULATIONCRAFT_H
 
 // Platform Initialization ==================================================
 
@@ -79,8 +79,6 @@ namespace std {using namespace tr1; }
 # define finline                     inline
 # define SC_FINLINE_EXT              __attribute__((always_inline))
 #endif
-
-#include "xs_float/xs_Float.h"
 
 #if __BSD_VISIBLE
 #  include <netinet/in.h>
@@ -2484,45 +2482,7 @@ public:
   static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
 
   static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
-
-  static int32_t DoubleToInt( double d ) SC_FINLINE_EXT;
-  static int32_t FloorToInt ( double d ) SC_FINLINE_EXT;
-  static int32_t CeilToInt  ( double d ) SC_FINLINE_EXT;
-  static int32_t RoundToInt ( double d ) SC_FINLINE_EXT;
-  static int32_t CRoundToInt( double d ) SC_FINLINE_EXT;
 };
-
-finline int32_t util_t::DoubleToInt( double d )
-{
-  union Cast
-  {
-    double d;
-    int32_t l;
-  };
-  volatile Cast c;
-  c.d = d + 6755399441055744.0;
-  return c.l;
-}
-
-finline int32_t util_t::FloorToInt( double d )
-{
-  return xs_FloorToInt( d );
-}
-
-finline int32_t util_t::CeilToInt( double d )
-{
-  return xs_CeilToInt( d );
-}
-
-finline int32_t util_t::RoundToInt( double d )
-{
-  return xs_RoundToInt( d );
-}
-
-finline int32_t util_t::CRoundToInt( double d )
-{
-  return xs_CRoundToInt( d );
-}
 
 // Spell information struct, holding static functions to output spell data in a human readable form
 
@@ -5737,35 +5697,59 @@ struct log_t
 
 // Pseudo Random Number Generation ==========================================
 
-struct rng_t
+class rng_t
 {
+public:
   std::string name_str;
-  bool   gauss_pair_use;
-  double gauss_pair_value;
   double expected_roll,  actual_roll,  num_roll;
   double expected_range, actual_range, num_range;
   double expected_gauss, actual_gauss, num_gauss;
-  bool   average_range, average_gauss;
   rng_t* next;
 
+private:
+  double gauss_pair_value;
+  bool   gauss_pair_use;
+public:
+  bool   average_range, average_gauss;
+  // FIXME: Change rng-creation so that average_range and average_gauss can be protected again.
+protected:
   rng_t( const std::string& n, bool avg_range=false, bool avg_gauss=false );
+
+public:
   virtual ~rng_t() {}
 
-  virtual int    type() const { return RNG_STANDARD; }
-  virtual double real();
+  virtual rng_type type() const = 0;
+  virtual double  real() = 0;
   virtual bool    roll( double chance );
   virtual double range( double min, double max );
-  timespan_t range( timespan_t min, timespan_t max );
   virtual double gauss( double mean, double stddev, const bool truncate_low_end = false );
-  timespan_t gauss( timespan_t mean, timespan_t stddev );
-  double exgauss( double mean, double stddev, double nu );
-  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
-  virtual void   seed( uint32_t start=time(NULL) );
+        double exgauss( double mean, double stddev, double nu );
+  virtual void    seed( uint32_t start = time( NULL ) );
   void   report( FILE* );
+
+  timespan_t range( timespan_t min, timespan_t max )
+  {
+    return TIMESPAN_FROM_NATIVE_VALUE( range( TIMESPAN_TO_NATIVE_VALUE( min ),
+                                              TIMESPAN_TO_NATIVE_VALUE( max ) ) );
+  }
+
+  timespan_t gauss( timespan_t mean, timespan_t stddev )
+  {
+    return TIMESPAN_FROM_NATIVE_VALUE( gauss( TIMESPAN_TO_NATIVE_VALUE( mean ),
+                                              TIMESPAN_TO_NATIVE_VALUE( stddev ) ) );
+  }
+
+  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
+  {
+    return TIMESPAN_FROM_NATIVE_VALUE( exgauss( TIMESPAN_TO_NATIVE_VALUE( mean ),
+                                                TIMESPAN_TO_NATIVE_VALUE( stddev ),
+                                                TIMESPAN_TO_NATIVE_VALUE( nu ) ) );
+  }
+
   static double stdnormal_cdf( double u );
   static double stdnormal_inv( double p );
 
-  static rng_t* create( sim_t*, const std::string& name, int type=RNG_STANDARD );
+  static rng_t* create( sim_t*, const std::string& name, rng_type type=RNG_STANDARD );
 };
 
 // String utils =============================================================
@@ -6318,4 +6302,3 @@ struct ability_t : public action_t
 #endif
 
 #endif // __SIMULATIONCRAFT_H
-

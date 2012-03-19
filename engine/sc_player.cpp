@@ -4686,7 +4686,7 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 
   if ( ! rng )
   {
-    rng = rng_t::create( sim, n, type );
+    rng = rng_t::create( sim, n, (rng_type) type );
     rng -> next = rng_list;
     rng_list = rng;
   }

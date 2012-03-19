@@ -40,7 +40,9 @@ private:
   {
     idx.first = list;
     for ( unsigned last_id = 0; list -> id(); last_id = list -> id(), ++list )
-      assert( list -> id() > last_id );
+    {
+      assert( list -> id() > last_id ); ( void )last_id;
+    }
     idx.second = list;
   }
 
