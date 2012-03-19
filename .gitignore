@@ -13,6 +13,7 @@ results.html
 simc_gui.simc
 simc_log.txt
 simc_report.html
+simc_report.xml
 .DS_Store
 *.[Dd]ebug
 *.[Rr]elease
