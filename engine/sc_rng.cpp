@@ -389,16 +389,12 @@ namespace { // ANONYMOUS ====================================================
 #define DSFMT_IDSTR "dSFMT2-19937:117-19:ffafffffffb3f-ffdfffc90fffd"
 
 #if defined(__SSE2__)
-#  include <emmintrin.h>
+#include <emmintrin.h>
+#include <mm_malloc.h>
 
 /** mask data for sse2 */
-static __m128i sse2_param_mask;
-/** 1 in 64bit for sse2 */
-static __m128i sse2_int_one;
-/** 2.0 double for sse2 */
-static __m128d sse2_double_two;
-/** -1.0 double for sse2 */
-static __m128d sse2_double_m_one;
+const __m128i sse2_param_mask = _mm_set_epi32( DSFMT_MSK32_3, DSFMT_MSK32_4,
+                                               DSFMT_MSK32_1, DSFMT_MSK32_2 );
 
 #define SSE2_SHUFF 0x1b
 
@@ -426,22 +422,6 @@ struct dsfmt_t {
     int idx;
 };
 #if defined(__SSE2__)
-/**
- * This function setup some constant variables for SSE2.
- */
-static void setup_const(void) {
-    static int first = 1;
-    if (!first) {
-  return;
-    }
-    sse2_param_mask = _mm_set_epi32(DSFMT_MSK32_3, DSFMT_MSK32_4,
-            DSFMT_MSK32_1, DSFMT_MSK32_2);
-    sse2_int_one = _mm_set_epi32(0, 1, 0, 1);
-    sse2_double_two = _mm_set_pd(2.0, 2.0);
-    sse2_double_m_one = _mm_set_pd(-1.0, -1.0);
-    first = 0;
-}
-
 /**
  * This function represents the recursion formula.
  * @param r output 128-bit
@@ -570,10 +550,6 @@ void dsfmt_chk_init_gen_rand(dsfmt_t *dsfmt, uint32_t seed) {
     initial_mask(dsfmt);
     period_certification(dsfmt);
     dsfmt->idx = DSFMT_N64;
-
-#if defined(__SSE2__)
-    setup_const();
-#endif
 }
 
 /**
@@ -609,6 +585,13 @@ public:
   virtual int type() const { return RNG_MERSENNE_TWISTER; }
   virtual double real();
   virtual void seed( uint32_t start=rand() );
+
+  // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
+  // This object needs to be aligned to sizeof(w128_t) == 16.
+  static void* operator new( size_t size )
+  { return _mm_malloc( size, alignof( dsfmt_t ) ); }
+  static void operator delete( void* p )
+  { return _mm_free( p ); }
 };
 
 // rng_sfmt_t::rng_sfmt_t ===================================================
