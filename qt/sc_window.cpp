@@ -1376,6 +1376,7 @@ void SimulateThread::run()
   }
 
   sim -> html_file_str = "simc_report.html";
+  sim -> xml_file_str  = "simc_report.xml";
 
   QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
 
