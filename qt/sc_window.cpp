@@ -299,7 +299,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 
 QString SimulationCraftWindow::encodeOptions()
 {
-  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11" )
+  QString encoded = QString( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14" )
     .arg(       versionChoice->currentIndex() )
     .arg(    iterationsChoice->currentIndex() )
     .arg(   fightLengthChoice->currentIndex() )
