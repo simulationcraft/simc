@@ -19,6 +19,8 @@ CPP_FLAGS  = -Wall -Woverloaded-virtual -W
 OPTS       = -O3 -fomit-frame-pointer -ffast-math
 BITS       = 32
 
+-include ../build.conf
+
 ifeq (64,${BITS})
 CPP_FLAGS += -m64
 LINK_FLAGS+= -m64

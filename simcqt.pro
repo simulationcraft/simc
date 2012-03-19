@@ -4,6 +4,10 @@ QT += core gui network webkit
 #CONFIG += paperdoll
 #CONFIG += openssl
 
+exists( build.conf ) {
+  include( build.conf )
+}
+
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 
 win32 {
