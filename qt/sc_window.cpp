@@ -236,6 +236,10 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
       targetLevelChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
        reportpetsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
+       printstyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
+       statisticslevel_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
 
   QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup->buttons();
   QList<QAbstractButton*>     debuff_buttons  =      debuffsButtonGroup->buttons();
@@ -316,6 +320,8 @@ QString SimulationCraftWindow::encodeOptions()
   ss << ' ' << latencyChoice->currentIndex();
   ss << ' ' << targetLevelChoice->currentIndex();
   ss << ' ' << reportpetsChoice->currentIndex();
+  ss << ' ' << printstyleChoice->currentIndex();
+  ss << ' ' << statisticslevel_Choice->currentIndex();
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
@@ -604,10 +610,13 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(   "Default Role",   defaultRoleChoice = createChoice( 4, "auto", "dps", "heal", "tank" ) );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
+  globalsLayout->addRow( "Report Print Style", printstyleChoice = createChoice( 2, "Classic", "White" ) );
+  globalsLayout->addRow( "Statistics Level", statisticslevel_Choice = createChoice( 5, "0", "1", "2", "3", "8" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 7 );
   fightVarianceChoice->setCurrentIndex( 2 );
   reportpetsChoice->setCurrentIndex( 1 );
+  statisticslevel_Choice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
 
@@ -1056,6 +1065,18 @@ void SimulationCraftWindow::createToolTips()
   defaultRoleChoice->setToolTip( "Specify the character role during import to ensure correct action priority list." );
 
   reportpetsChoice->setToolTip( "Specify if pets get reported separately in detail." );
+
+  printstyleChoice->setToolTip( "Specify html report print style." );
+
+
+  statisticslevel_Choice->setToolTip( "Statistics Level determines how much information will be collected during simulation.\n"
+                                      " Higher Statistics Level require more memory.\n"
+                                      " Level 0: Only Simulation Length data is collected.\n"
+                                      " Level 1: DPS/HPS data is collected.\n"
+                                      " Level 2: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.\n"
+                                      " Level 3: Ability Amount and  portion APS is collected.\n"
+                                      " *Warning* Levels above 3 are usually not recommended when simulating more than 1 player.\n"
+                                      " Level 8: Ability Result Amount, Count and average Amount is collected. ");
 
   debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
                            "Gory details are very gory.  No documentation will be forthcoming.\n"
@@ -1543,7 +1564,11 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
   options += "reforge_plot_amount=" + reforgePlotAmountChoice -> currentText() + "\n";
   options += "reforge_plot_step=" + reforgePlotStepChoice -> currentText() + "\n";
-  options += "reforge_plot_output_file=reforge_plot.csv"; // This should be set in the gui if possible
+  options += "reforge_plot_output_file=reforge_plot.csv\n"; // This should be set in the gui if possible
+  if ( statisticslevel_Choice->currentIndex() >= 0 )
+  {
+    options += "statistics_level=" + statisticslevel_Choice->currentText() + "\n";
+  }
   options += "\n";
   options += simulateText->toPlainText();
   options += "\n";
@@ -1568,6 +1593,10 @@ QString SimulationCraftWindow::mergeOptions()
   if ( reportpetsChoice->currentIndex() != 1 )
   {
     options += "report_pets_separately=1\n";
+  }
+  if ( printstyleChoice->currentIndex() == 1 )
+  {
+    options += "print_styles=1\n";
   }
   return options;
 }

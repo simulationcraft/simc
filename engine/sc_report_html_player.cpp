@@ -12,7 +12,7 @@ static void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data
   // Print Statistics of a Sample Data Container
 
   fprintf( file,
-           "\t\t\t\t\t\t\t<table class=\"sc\">\n"
+           "\t\t\t\t\t\t\t<table>\n"
            "\t\t\t\t\t\t\t\t<tr>\n"
            "\t\t\t\t\t\t\t\t\t<th class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"sample=%s\">%s</a></th>\n"
            "\t\t\t\t\t\t\t\t\t<th></th>\n"
@@ -338,50 +338,9 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
               "\t\t\t\t\t\t\t\t\t</table>\n" );
     if ( ! s -> portion_aps.simple || ! s -> actual_amount.simple )
     {
-    fprintf ( file,
-                  "\t\t\t\t\t\t\t\t\t<table class=\"details\">\n"
-                  "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
-      if ( ! s -> portion_aps.simple )
-        fprintf ( file,
-                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Portion APS</th>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">pAPS stddev</th>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">pAPS mean stddev</th>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">pAPS error</th>\n" );
-      if ( ! s -> actual_amount.simple )
-        fprintf ( file,
-                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean Amount</th>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount stddev</th>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount mean stddev</th>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount min</th>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount max</th>\n");
-        fprintf ( file,
-                  "\t\t\t\t\t\t\t\t\t\t</tr>\n"
-                  "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
-      if ( ! s -> portion_aps.simple )
-        fprintf ( file,
-                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n",
-                  s -> portion_aps.mean,
-                  s -> portion_aps.std_dev,
-                  s -> portion_aps.mean_std_dev,
-                  s -> portion_aps.mean_std_dev * p -> sim -> confidence_estimator );
-      if ( ! s -> actual_amount.simple )
-        fprintf ( file,
-                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
-                  "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n",
-                  s -> actual_amount.mean,
-                  s -> actual_amount.std_dev,
-                  s -> actual_amount.mean_std_dev,
-                  s -> actual_amount.min,
-                  s -> actual_amount.max );
-        fprintf ( file,
-                  "\t\t\t\t\t\t\t\t\t\t</tr>\n"
-                  "\t\t\t\t\t\t\t\t\t</table>\n" );
+      print_html_sample_data( file, p, s -> actual_amount, "Actual Amount" );
+
+      print_html_sample_data( file, p, s -> portion_aps, "portion Amount per Second ( pAPS )" );
 
         if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
         {
@@ -1418,11 +1377,30 @@ static void print_html_player_statistics( FILE* file, player_t* p )
   fprintf( file,
            "\t\t\t\t\t<div class=\"player-section gains\">\n"
            "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
-           "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
+           "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
+           "\t\t\t\t\t\t\t<table  class=\"sc\">\n"
+           "\t\t\t\t\t\t\t\t<tr>\n"
+           "\t\t\t\t\t\t\t\t<td>\n" );
+
+  print_html_sample_data( file, p, p -> fight_length, "Fight Length" );
 
   print_html_sample_data( file, p, p -> dps, "DPS" );
 
+  print_html_sample_data( file, p, p -> dpse, "DPS(e)" );
+
+  print_html_sample_data( file, p, p -> dmg, "Damage" );
+
+  print_html_sample_data( file, p, p -> dtps, "DTPS" );
+
   print_html_sample_data( file, p, p -> hps, "HPS" );
+
+  print_html_sample_data( file, p, p -> hpse, "HPS(e)" );
+
+  print_html_sample_data( file, p, p -> heal, "Heal" );
+
+  print_html_sample_data( file, p, p -> htps, "HTPS" );
+
+  print_html_sample_data( file, p, p -> executed_foreground_actions, "#Executed Foreground Actions" );
 
   std::string timeline_dps_error_str           = "";
   std::string dps_error_str                    = "";
@@ -1446,6 +1424,9 @@ static void print_html_player_statistics( FILE* file, player_t* p )
   }
   fprintf( file,
            "%s\n"
+           "\t\t\t\t\t\t\t</td>\n"
+           "\t\t\t\t\t\t\t</tr>\n"
+           "\t\t\t\t\t\t\t</table>\n"
            "\t\t\t\t\t\t\t</div>\n"
            "\t\t\t\t\t\t</div>\n",
            dps_error_str.c_str() );
