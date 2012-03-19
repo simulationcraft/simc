@@ -3125,7 +3125,7 @@ struct action_expr_t
   virtual ~action_expr_t() {}
   virtual int evaluate() { return result_type; }
   virtual const char* name() { return name_str.c_str(); }
-  virtual bool success() { return ( evaluate() == TOK_NUM ) && ( result_num != 0 ); }
+  finline bool success() { return ( evaluate() == TOK_NUM ) && ( result_num != 0 ); }
 
   static action_expr_t* parse( action_t*, const std::string& expr_str );
 };

@@ -1086,7 +1086,7 @@ void action_t::last_tick( dot_t* d )
 {
   if ( sim -> debug ) log_t::output( sim, "%s fades from %s", d -> name(), target -> name() );
 
-  d -> ticking = 0;
+  d -> ticking = false;
 
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
 }

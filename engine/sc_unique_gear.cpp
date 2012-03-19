@@ -210,7 +210,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
-    if ( cooldown -> remains() > timespan_t::zero )
+    if ( cooldown -> remains() != timespan_t::zero )
       return;
 
     if ( ! allow_self_procs && ( a == discharge_action ) ) return;

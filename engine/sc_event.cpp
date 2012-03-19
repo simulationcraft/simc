@@ -269,9 +269,9 @@ void dot_tick_event_t::execute()
   dot -> tick_event = 0;
   dot -> current_tick++;
 
-  if ( dot -> action -> channeled &&
-       dot -> current_tick == dot -> num_ticks &&
-       dot -> action -> player -> skill < 1.0 )
+  if ( dot -> action -> player -> skill < 1.0 &&
+       dot -> action -> channeled &&
+       dot -> current_tick == dot -> num_ticks )
   {
     if ( sim -> roll( dot -> action -> player -> skill ) )
     {
