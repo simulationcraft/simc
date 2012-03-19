@@ -41,3 +41,4 @@ engine/simc_x64
 Makefile
 simcqt.pro.user
 nppBackup
+build.conf
