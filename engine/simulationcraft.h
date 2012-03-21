@@ -5697,7 +5697,7 @@ struct log_t
 
 // Pseudo Random Number Generation ==========================================
 
-class rng_t
+struct rng_t
 {
 public:
   std::string name_str;
