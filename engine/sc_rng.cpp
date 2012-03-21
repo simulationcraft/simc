@@ -585,7 +585,7 @@ public:
   // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
   // This object needs to be aligned to sizeof(__m128d) == 16.
   static void* operator new( size_t size )
-  { return _mm_malloc( size, sizeof( dsfmt_t ) ); }
+  { return _mm_malloc( size, sizeof( __m128d ) ); }
   static void operator delete( void* p )
   { return _mm_free( p ); }
 #endif
