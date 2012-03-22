@@ -11,8 +11,8 @@ def _rune_cost(generator, filter_data, record, *args):
     return args[0] % cost
 
 class DataGenerator(object):
-    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', None,       'Druid'  ]
-    _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     None,        0x400   ]
+    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',       'Druid'  ]
+    _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,        0x400   ]
     _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei' ] + [ None ] * 10 + [ 'Worgen', None ]
     _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400     ] + [ None ] * 10 + [ 0x200000, None ]
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
@@ -899,7 +899,7 @@ class SpellDataGenerator(DataGenerator):
             'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent', 'TalentTab',
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
-            'Item', 'SpellEquippedItems', 'SpellIcon' ]
+            'Item', 'SpellEquippedItems', 'SpellIcon', 'SpellEffectScaling' ]
 
         DataGenerator.__init__(self, options)
 
@@ -1050,21 +1050,36 @@ class SpellDataGenerator(DataGenerator):
 
         # First, get spells from talents. Pet and character class alike
         for talent_id, talent_data in self._talent_db.iteritems():
-            talent_tab = self._talenttab_db[talent_data.talent_tab]
-            if not talent_tab.id:
-                continue
+            if self._options.build < 15464:
+                talent_tab = self._talenttab_db[talent_data.talent_tab]
+                if not talent_tab.id:
+                    continue
 
-            # Make sure the talent is a class  / pet associated one
-            if talent_tab.mask_class      not in DataGenerator._class_masks and \
-               talent_tab.mask_pet_talent not in DataGenerator._pet_masks:
-                continue
+                # Make sure the talent is a class  / pet associated one
+                if talent_tab.mask_class      not in DataGenerator._class_masks and \
+                   talent_tab.mask_pet_talent not in DataGenerator._pet_masks:
+                    continue
 
-            # Get all talents that have spell ranks associated with them
-            for rank in xrange(1, 4):
+                # Get all talents that have spell ranks associated with them
+                for rank in xrange(1, 4):
+                    filter_list = { }
+                    id = getattr(talent_data, 'id_rank_%d' % rank)
+                    if id:
+                        lst = self.generate_spell_filter_list(id, talent_tab.mask_class, talent_tab.mask_pet_talent, 0, filter_list)
+                        if not lst:
+                            continue
+                        
+                        for k, v in lst.iteritems():
+                            if ids.get(k):
+                                ids[k]['mask_class'] |= v['mask_class']
+                                ids[k]['mask_race'] |= v['mask_race']
+                            else:
+                                ids[k] = { 'mask_class': v['mask_class'], 'mask_race' : v['mask_race'], 'effect_list': v['effect_list'] }
+            else:
                 filter_list = { }
-                id = getattr(talent_data, 'id_rank_%d' % rank)
+                id = getattr(talent_data, 'id_rank_1')
                 if id:
-                    lst = self.generate_spell_filter_list(id, talent_tab.mask_class, talent_tab.mask_pet_talent, 0, filter_list)
+                    lst = self.generate_spell_filter_list(id, DataGenerator._class_masks[talent_data['class']], 0, 0, filter_list)
                     if not lst:
                         continue
                     

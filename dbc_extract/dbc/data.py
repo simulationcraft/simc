@@ -13,7 +13,7 @@ _DIFF_DATA = {
     },
     12759: { 
         'SpellPower.dbc' : [ 
-            ( 'unk_12759', _ADD_FIELD, 'id_display' ),
+            ( ( 'unk_12759', '%f' ), _ADD_FIELD, 'id_display' ),
         ],
         'TalentTab.dbc' : [
             ( 'unk_12759_1', _ADD_FIELD, 'unk_8' ),
@@ -57,6 +57,76 @@ _DIFF_DATA = {
         'Item-sparse.db2' : [
             ( ( 'unk_14890' ), _ADD_FIELD, 'unk_14732_2'   ),
         ]
+    },
+    # Mists of Pandaria beta ->
+    15464: {
+        'Spell.dbc' : [
+            ( 'unk_45', _REMOVE_FIELD ),
+            ( 'unk_36', _REMOVE_FIELD ),
+            ( 'type_power', _REMOVE_FIELD )
+        ],
+        'SpellCategories.dbc' : [
+            ( 'unk_15464', _ADD_FIELD, 'start_recovery_category' )
+        ],
+        'SpellClassOptions.dbc' : [
+            ( 'unk_15464', _ADD_FIELD, 'desc' )
+        ],
+        'SpellEffect.dbc' : [
+            ( 'unk_15464', _ADD_FIELD, 'trigger_spell' ),
+        ],
+        'SpellPower.dbc' : [
+            ( 'type_power', _ADD_FIELD, 'id' ),
+            ( 'unk_15464_1', _ADD_FIELD, 'unk_14732' ),
+            ( 'id_spell', _ADD_FIELD, 'unk_15464_1' ),
+        ],
+        'Talent.dbc' : [
+            ( 'unk_18', _REMOVE_FIELD ),
+            ( 'unk_17', _REMOVE_FIELD ),
+            ( 'unk_16', _REMOVE_FIELD ),
+            ( 'unk_15', _REMOVE_FIELD ),
+            ( 'unk_14', _REMOVE_FIELD ),
+            ( 'unk_13', _REMOVE_FIELD ),
+            ( 'unk_11', _REMOVE_FIELD ),
+            ( 'unk_10', _REMOVE_FIELD ),
+            # Rename some obvious stuff
+            ( 'id_rank_3', _REMOVE_FIELD ),
+            ( 'unk_15464_1', _ADD_FIELD, 'id_rank_2' ),
+            ( 'id_rank_5', _REMOVE_FIELD ),
+            ( 'class', _ADD_FIELD, 'id_rank_4' ),
+        ],
+        'SkillLineAbility.dbc' : [
+            ( 'unk_13', _REMOVE_FIELD ),
+            ( 'unk_12', _REMOVE_FIELD ),
+        ],
+        'SpellRuneCost.dbc' : [
+            ( 'rune_cost_4', _ADD_FIELD, 'rune_cost_3' )
+        ],
+        'SpellItemEnchantment.dbc' : [
+            ( 'amount_4', _REMOVE_FIELD ),
+            ( 'amount_5', _REMOVE_FIELD ),
+            ( 'amount_6', _REMOVE_FIELD ),
+            ( 'unk_15464_5', _ADD_FIELD, 'unk_2' ),
+            ( 'unk_15464_4', _ADD_FIELD, 'unk_2' ),
+            ( 'unk_15464_3', _ADD_FIELD, 'unk_2' ),
+            ( 'unk_15464_2', _ADD_FIELD, 'unk_2' ),
+            ( 'unk_15464_1', _ADD_FIELD, 'unk_1' ),
+        ],
+        'Item-sparse.db2' : [
+            ( 'unk_15464', _ADD_FIELD, 'unk_131' )
+        ],
+        'SpellScaling.dbc' : [
+            ( 'e1_bcp', _REMOVE_FIELD ),
+            ( 'e2_bcp', _REMOVE_FIELD ),
+            ( 'e3_bcp', _REMOVE_FIELD ),
+            ( 'e1_average', _REMOVE_FIELD ),
+            ( 'e2_average', _REMOVE_FIELD ),
+            ( 'e3_average', _REMOVE_FIELD ),
+            ( 'e1_delta', _REMOVE_FIELD ),
+            ( 'e2_delta', _REMOVE_FIELD ),
+            ( 'e3_delta', _REMOVE_FIELD ),
+            ( 'unk_15464_2', _ADD_FIELD, 'c_scaling_threshold' ),
+            ( 'unk_15464_1', _ADD_FIELD, 'c_scaling_threshold' ),
+        ],
     },
 }
 
@@ -252,6 +322,14 @@ _DBC_FIELDS = {
     'SpellCastTimes.dbc' : [
           'id', ( 'cast_time', '%5d' ), ( 'cast_time_per_level', '%d' ), ( 'min_cast_time', '%5d' )
     ],
+    'SpellChainEffects.dbc' : [
+        'id',
+        ( 'f1', '%f' ), ( 'f2', '%f' ), 'f3', ( 'f4', '%f' ), 'f5', 'f6', 'f7', 'f8', 'f9', 'f10',
+        'f11', 'f12', ( 'f13', '%f' ), ( 'f14', '%f' ), 'f15', ( 'f16', '%f' ), 'f17', 'f18', ( 'f19', '%f' ), 'f10',
+        ( 'f21', '%f' ), 'f22', 'f23', 'f24', 'f25', ( 'f26', '%f' ), 'f27', 'f28', 'f29', 'f10',
+        'f31', 'f32', 'f33', 'f34', 'f35', 'f36', 'f37', 'f38', 'f39', 'f10',
+        'f41', 'f42', 'f43', 'f44',
+    ],
     'SpellClassOptions.dbc' : [
           'id', 'modal_next_spell', ( 'spell_family_flags_1', '%#.8x' ), ( 'spell_family_flags_2', '%#.8x' ), ( 'spell_family_flags_3', '%#.8x' ), 'spell_family_name', 'desc'
     ],
@@ -281,6 +359,10 @@ _DBC_FIELDS = {
           'id_radius',             'id_radius_max',            ( 'real_ppl', '%5.3f' ),       ( 'class_mask_1', '%#.8x' ), ( 'class_mask_2', '%#.8x' ),
           ( 'class_mask_3', '%#.8x' ),       ( 'trigger_spell', '%5d' ),     'implicit_target_1',        'implicit_target_2',     ( 'id_spell', '%5u' ),
         ( 'index', '%u' )
+    ],
+    # New in MoP
+    'SpellEffectScaling.dbc' : [
+        'id', ( 'average', '%13.10f' ), ( 'delta', '%13.10f' ), ( 'bonus', '%13.10f' ), ( 'unknown', '%13.10f' )
     ],
     'SpellEquippedItems.dbc' : [
         'id', ( 'item_class', '%4d' ), ( 'mask_inv_type', '%#.8x' ), ( 'mask_sub_class', '%#.8x' )
