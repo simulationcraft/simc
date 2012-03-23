@@ -522,9 +522,9 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
 
   uint32_t effect_id;
   const spelleffect_data_t* e;
-  for ( int i = 0; i < 3; i++ )
+  for ( size_t i = 0; i < spell -> _effects.size(); i++ )
   {
-    if ( ! ( effect_id = spell -> _effect[ i ] ) )
+    if ( ! ( effect_id = spell -> _effects[ i ] -> _id ) )
       continue;
     else
       e = sim -> dbc.effect( effect_id );

@@ -808,10 +808,6 @@ enum format_type
 #define NUM_SPELL_FLAGS (10)
 #endif
 
-#ifndef MAX_EFFECTS
-#define MAX_EFFECTS (3)
-#endif
-
 #ifndef MAX_TALENT_TABS
 #define MAX_TALENT_TABS (4)
 #endif
@@ -1793,154 +1789,6 @@ enum spell_attribute_t
 
 // DBC related classes ======================================================
 
-struct spell_data_t
-{
-private:
-  static const unsigned FLAG_USED = 1;
-  static const unsigned FLAG_DISABLED = 2;
-
-  friend class dbc_t;
-  static void link( bool ptr );
-
-public:
-  const char* _name;               // Spell name from Spell.dbc stringblock (enGB)
-  unsigned    _id;                 // Spell ID in dbc
-  unsigned    _flags;              // Unused for now, 0x00 for all
-  double      _prj_speed;          // Projectile Speed
-  unsigned    _school;             // Spell school mask
-  int         _power_type;         // Resource type
-  unsigned    _class_mask;         // Class mask for spell
-  unsigned    _race_mask;          // Racial mask for the spell
-  int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array, 0 disabled
-  double      _extra_coeff;        // An "extra" coefficient (used for some spells to indicate AP based coefficient)
-  // SpellLevels.dbc
-  unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
-  unsigned    _max_level;          // Maximum level for scaling
-  // SpellRange.dbc
-  double      _min_range;          // Minimum range in yards
-  double      _max_range;          // Maximum range in yards
-  // SpellCooldown.dbc
-  unsigned    _cooldown;           // Cooldown in milliseconds
-  unsigned    _gcd;                // GCD in milliseconds
-  // SpellCategories.dbc
-  unsigned    _category;           // Spell category (for shared cooldowns, effects?)
-  // SpellDuration.dbc
-  double      _duration;           // Spell duration in milliseconds
-  // SpellPower.dbc
-  double      _cost;               // Resource cost, for mana this is the percent of base mana
-  // SpellRuneCost.dbc
-  unsigned    _rune_cost;          // Bitmask of rune cost 0x1, 0x2 = Blood | 0x4, 0x8 = Unholy | 0x10, 0x20 = Frost
-  unsigned    _runic_power_gain;   // Amount of runic power gained ( / 10 )
-  // SpellAuraOptions.dbc
-  unsigned    _max_stack;          // Maximum stack size for spell
-  unsigned    _proc_chance;        // Spell proc chance in percent
-  unsigned    _proc_charges;       // Per proc charge amount
-  // SpellEquippedItems.dbc
-  unsigned    _equipped_class;
-  unsigned    _equipped_invtype_mask;
-  unsigned    _equipped_subclass_mask;
-  // SpellScaling.dbc
-  int         _cast_min;           // Minimum casting time in milliseconds
-  int         _cast_max;           // Maximum casting time in milliseconds
-  int         _cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
-  double      _c_scaling;          // A scaling multiplier for level based scaling
-  unsigned    _c_scaling_level;    // A scaling divisor for level based scaling
-  // SpellEffect.dbc
-  unsigned    _effect[MAX_EFFECTS];// Effect identifiers
-  // Spell.dbc flags
-  unsigned    _attributes[NUM_SPELL_FLAGS];// Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
-  const char* _desc;               // Spell.dbc description stringblock
-  const char* _tooltip;            // Spell.dbc tooltip stringblock
-  // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // Spell description variable stringblock, if present
-  // SpellIcon.dbc
-  const char* _icon;
-
-  // Pointers for runtime linking
-  spelleffect_data_t* _effect1;
-  spelleffect_data_t* _effect2;
-  spelleffect_data_t* _effect3;
-
-  const spelleffect_data_t& effect1() const { return *_effect1; }
-  const spelleffect_data_t& effect2() const { return *_effect2; }
-  const spelleffect_data_t& effect3() const { return *_effect3; }
-
-  bool                 is_used() const { return _flags & FLAG_USED; }
-  void                 set_used( bool value );
-
-  bool                 is_enabled() const { return ! ( _flags & FLAG_DISABLED ); }
-  void                 set_enabled( bool value );
-
-  unsigned             id() const { return _id; }
-  uint32_t             school_mask() const { return _school; }
-  resource_type        power_type() const;
-
-  bool                 is_class( player_type c ) const;
-  uint32_t             class_mask() const { return _class_mask; }
-
-  bool                 is_race( race_type r ) const;
-  uint32_t             race_mask() const { return _race_mask; }
-
-  bool                 is_level( uint32_t level ) const { return level >= _spell_level; }
-  uint32_t             level() const { return _spell_level; }
-  uint32_t             max_level() const { return _max_level; }
-
-  player_type          scaling_class() const;
-
-  double               missile_speed() const { return _prj_speed; }
-  double               min_range() const { return _min_range; }
-  double               max_range() const { return _max_range; }
-  bool                 in_range( double range ) const { return range >= _min_range && range <= _max_range; }
-
-  timespan_t           cooldown() const { return timespan_t::from_millis( _cooldown ); }
-  timespan_t           duration() const { return timespan_t::from_millis( _duration ); }
-  timespan_t           gcd() const { return timespan_t::from_millis( _gcd ); }
-  timespan_t           cast_time( uint32_t level ) const;
-
-  uint32_t             category() const { return _category; }
-
-  double               cost() const;
-  uint32_t             rune_cost() const { return _rune_cost; }
-  double               runic_power_gain() const { return _runic_power_gain * ( 1 / 10.0 ); }
-
-  uint32_t             max_stacks() const { return _max_stack; }
-  uint32_t             initial_stacks() const { return _proc_charges; }
-
-  double               proc_chance() const { return _proc_chance * ( 1 / 100.0 ); }
-
-  uint32_t             effect_id( uint32_t effect_num ) const
-  {
-    assert( effect_num >= 1 && effect_num <= MAX_EFFECTS );
-    return _effect[ effect_num - 1 ];
-  }
-
-  bool                 flags( spell_attribute_t f ) const;
-
-  const char*          name_cstr() const { return _name; }
-  const char*          desc() const { return _desc; }
-  const char*          tooltip() const { return _tooltip; }
-
-  double               scaling_multiplier() const { return _c_scaling; }
-  unsigned             scaling_threshold() const { return _c_scaling_level; }
-  double               extra_coeff() const { return _extra_coeff; }
-
-  static spell_data_t* nil();
-  static spell_data_t* find( const char* name, bool ptr = false );
-  static spell_data_t* find( unsigned id, bool ptr = false );
-  static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
-  static spell_data_t* list( bool ptr = false );
-};
-
-class spell_data_nil_t : public spell_data_t
-{
-public:
-  spell_data_nil_t();
-  static spell_data_nil_t singleton;
-};
-
-inline spell_data_t* spell_data_t::nil()
-{ return &spell_data_nil_t::singleton; }
-
 // SpellEffect.dbc
 struct spelleffect_data_t
 {
@@ -2051,6 +1899,151 @@ public:
 
 inline spelleffect_data_t* spelleffect_data_t::nil()
 { return &spelleffect_data_nil_t::singleton; }
+
+struct spell_data_t
+{
+private:
+  static const unsigned FLAG_USED = 1;
+  static const unsigned FLAG_DISABLED = 2;
+
+  friend class dbc_t;
+  static void link( bool ptr );
+
+public:
+  const char* _name;               // Spell name from Spell.dbc stringblock (enGB)
+  unsigned    _id;                 // Spell ID in dbc
+  unsigned    _flags;              // Unused for now, 0x00 for all
+  double      _prj_speed;          // Projectile Speed
+  unsigned    _school;             // Spell school mask
+  int         _power_type;         // Resource type
+  unsigned    _class_mask;         // Class mask for spell
+  unsigned    _race_mask;          // Racial mask for the spell
+  int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array, 0 disabled
+  double      _extra_coeff;        // An "extra" coefficient (used for some spells to indicate AP based coefficient)
+  // SpellLevels.dbc
+  unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
+  unsigned    _max_level;          // Maximum level for scaling
+  // SpellRange.dbc
+  double      _min_range;          // Minimum range in yards
+  double      _max_range;          // Maximum range in yards
+  // SpellCooldown.dbc
+  unsigned    _cooldown;           // Cooldown in milliseconds
+  unsigned    _gcd;                // GCD in milliseconds
+  // SpellCategories.dbc
+  unsigned    _category;           // Spell category (for shared cooldowns, effects?)
+  // SpellDuration.dbc
+  double      _duration;           // Spell duration in milliseconds
+  // SpellPower.dbc
+  double      _cost;               // Resource cost, for mana this is the percent of base mana
+  // SpellRuneCost.dbc
+  unsigned    _rune_cost;          // Bitmask of rune cost 0x1, 0x2 = Blood | 0x4, 0x8 = Unholy | 0x10, 0x20 = Frost
+  unsigned    _runic_power_gain;   // Amount of runic power gained ( / 10 )
+  // SpellAuraOptions.dbc
+  unsigned    _max_stack;          // Maximum stack size for spell
+  unsigned    _proc_chance;        // Spell proc chance in percent
+  unsigned    _proc_charges;       // Per proc charge amount
+  // SpellEquippedItems.dbc
+  unsigned    _equipped_class;
+  unsigned    _equipped_invtype_mask;
+  unsigned    _equipped_subclass_mask;
+  // SpellScaling.dbc
+  int         _cast_min;           // Minimum casting time in milliseconds
+  int         _cast_max;           // Maximum casting time in milliseconds
+  int         _cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
+  double      _c_scaling;          // A scaling multiplier for level based scaling
+  unsigned    _c_scaling_level;    // A scaling divisor for level based scaling
+  // Spell.dbc flags
+  unsigned    _attributes[NUM_SPELL_FLAGS];// Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
+  const char* _desc;               // Spell.dbc description stringblock
+  const char* _tooltip;            // Spell.dbc tooltip stringblock
+  // SpellDescriptionVariables.dbc
+  const char* _desc_vars;          // Spell description variable stringblock, if present
+  // SpellIcon.dbc
+  const char* _icon;
+
+  // Pointers for runtime linking
+  std::vector<const spelleffect_data_t*> _effects;
+
+  const spelleffect_data_t& effectN(unsigned idx) const { assert( idx >= 1 && idx <= _effects.size() ); return *_effects[ idx - 1 ]; }
+  const spelleffect_data_t& effect1() const { return effectN( 1 ); }
+  const spelleffect_data_t& effect2() const { return effectN( 2 ); }
+  const spelleffect_data_t& effect3() const { return effectN( 3 ); }
+
+  bool                 is_used() const { return _flags & FLAG_USED; }
+  void                 set_used( bool value );
+
+  bool                 is_enabled() const { return ! ( _flags & FLAG_DISABLED ); }
+  void                 set_enabled( bool value );
+
+  unsigned             id() const { return _id; }
+  uint32_t             school_mask() const { return _school; }
+  resource_type        power_type() const;
+
+  bool                 is_class( player_type c ) const;
+  uint32_t             class_mask() const { return _class_mask; }
+
+  bool                 is_race( race_type r ) const;
+  uint32_t             race_mask() const { return _race_mask; }
+
+  bool                 is_level( uint32_t level ) const { return level >= _spell_level; }
+  uint32_t             level() const { return _spell_level; }
+  uint32_t             max_level() const { return _max_level; }
+
+  player_type          scaling_class() const;
+
+  double               missile_speed() const { return _prj_speed; }
+  double               min_range() const { return _min_range; }
+  double               max_range() const { return _max_range; }
+  bool                 in_range( double range ) const { return range >= _min_range && range <= _max_range; }
+
+  timespan_t           cooldown() const { return timespan_t::from_millis( _cooldown ); }
+  timespan_t           duration() const { return timespan_t::from_millis( _duration ); }
+  timespan_t           gcd() const { return timespan_t::from_millis( _gcd ); }
+  timespan_t           cast_time( uint32_t level ) const;
+
+  uint32_t             category() const { return _category; }
+
+  double               cost() const;
+  uint32_t             rune_cost() const { return _rune_cost; }
+  double               runic_power_gain() const { return _runic_power_gain * ( 1 / 10.0 ); }
+
+  uint32_t             max_stacks() const { return _max_stack; }
+  uint32_t             initial_stacks() const { return _proc_charges; }
+
+  double               proc_chance() const { return _proc_chance * ( 1 / 100.0 ); }
+
+  uint32_t             effect_id( uint32_t effect_num ) const
+  {
+    assert( effect_num >= 1 && effect_num <= _effects.size() );
+    return _effects[ effect_num - 1 ] -> _id;
+  }
+
+  bool                 flags( spell_attribute_t f ) const;
+
+  const char*          name_cstr() const { return _name; }
+  const char*          desc() const { return _desc; }
+  const char*          tooltip() const { return _tooltip; }
+
+  double               scaling_multiplier() const { return _c_scaling; }
+  unsigned             scaling_threshold() const { return _c_scaling_level; }
+  double               extra_coeff() const { return _extra_coeff; }
+
+  static spell_data_t* nil();
+  static spell_data_t* find( const char* name, bool ptr = false );
+  static spell_data_t* find( unsigned id, bool ptr = false );
+  static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
+  static spell_data_t* list( bool ptr = false );
+};
+
+class spell_data_nil_t : public spell_data_t
+{
+public:
+  spell_data_nil_t();
+  static spell_data_nil_t singleton;
+};
+
+inline spell_data_t* spell_data_t::nil()
+{ return &spell_data_nil_t::singleton; }
 
 struct talent_data_t
 {
@@ -2516,7 +2509,7 @@ struct spell_id_t
   bool                       s_overridden;      // Spell enable/disable status was manually overridden
   std::string                s_token;
   const talent_t*            s_required_talent;
-  const spelleffect_data_t*  s_effects[ MAX_EFFECTS ];
+  std::vector< const spelleffect_data_t* >  s_effects;
   const spelleffect_data_t*  s_single;
   int                        s_tree;
 

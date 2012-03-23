@@ -306,6 +306,7 @@ class TalentDataGenerator(DataGenerator):
             fields += [ '%#.2x' % 0 ]
             if self._options.build < 15464:
                 fields += talent_tab.field('tab_page', 'mask_class', 'mask_pet_talent')
+                fields += talent.field('talent_depend', 'depend_rank')
             else:
                 fields += [ '%2u' % 0 ]
                 # These are now the pet talents
@@ -323,8 +324,10 @@ class TalentDataGenerator(DataGenerator):
                 else:
                     fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
                     fields += [ '%#.02x' % 0 ]
+                
+                fields += self._talent_db[0].field('talent_depend', 'depend_rank')
             
-            fields += talent.field('talent_depend', 'depend_rank', 'col', 'row')
+            fields += talent.field('col', 'row')
             if self._options.build < 15464:
                 fields += [ '{ %s }' % ', '.join(talent.field('id_rank_1', 'id_rank_2', 'id_rank_3')) ]
             else:
@@ -1476,7 +1479,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             if(index % 20 == 0):
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, PT, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,   Cost, RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, {    Ef1,    Ef2,    Ef3 }, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, PT, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,   Cost, RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
@@ -1535,29 +1538,14 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spellscaling_db[0].field('cast_div', 'c_scaling', 'c_scaling_threshold' )
 
             s_effect = []
-            if self._options.build < 15464:
-                for effect in spell._effects:
-                    if not effect or not ids.get(id, { 'effect_list': [ True, True, True ] })['effect_list'][effect.index]:
-                        s_effect += data.SpellEffect.default().field('id')
-                    else:
-                        s_effect += effect.field('id')
+            for effect in spell._effects:
+                if self._options.build < 15464:
+                    if effect and ids.get(id, { 'effect_list': [ True, True, True ] })['effect_list'][effect.index]:
                         effects.add( ( effect.id, spell.id_scaling ) )
-            else:
-                for effect in spell._effects:
-                    if not effect or not ids.get(id, { 'effect_list': [ False ] })['effect_list'][effect.index]:
-                        s_effect += self._spelleffect_db[0].field('id')
-                        continue
-                    
-                    effects.add( ( effect.id, spell.id_scaling ) )
-                    if effect.index < 3:
-                        s_effect += effect.field('id')
-                
-                # Fill with zeros up to 3
-                for i in xrange(0, 3 - len(s_effect)):
-                    s_effect += self._spelleffect_db[0].field('id')
+                else:
+                    if effect and ids.get(id, { 'effect_list': [ False ] })['effect_list'][effect.index]:
+                        effects.add( ( effect.id, spell.id_scaling ) )
 
-
-            fields += [ '{ %s }' % ', '.join(s_effect) ]
             # Add spell flags
             fields += [ '{ %s }' % ', '.join(spell.field('flags', 'flags_1', 'flags_2', 'flags_3', 'flags_4', 'flags_5', 'flags_6', 'flags_7', 'flags_12694', 'flags_8')) ]
             fields += spell.field('desc', 'tt')
@@ -1570,7 +1558,7 @@ class SpellDataGenerator(DataGenerator):
             else:
                 fields += [ '0' ]
             # Pad struct with empty pointers for direct access to spell effect data
-            fields += [ '0', '0', '0' ]
+            fields += [ 'std::vector<const spelleffect_data_t*>()' ]
             try:
                 s += '  { %s },\n' % (', '.join(fields))
             except:

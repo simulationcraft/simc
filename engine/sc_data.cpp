@@ -12,7 +12,8 @@
 spell_data_nil_t spell_data_nil_t::singleton;
 
 spell_data_nil_t::spell_data_nil_t() : spell_data_t()
-{ _effect1 = _effect2 = _effect3 = spelleffect_data_t::nil(); }
+{ 
+}
 
 // spell_data_t::set_used ===================================================
 

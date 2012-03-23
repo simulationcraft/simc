@@ -836,17 +836,8 @@ talent_data_t* talent_data_t::find( const char* name, bool ptr )
   return 0;
 }
 
-void spell_data_t::link( bool ptr )
+void spell_data_t::link( bool /* ptr */ )
 {
-  spell_data_t* spell_data = spell_data_t::list( ptr );
-
-  for ( int i = 0; spell_data[ i ].name_cstr(); i++ )
-  {
-    spell_data_t& sd = spell_data[ i ];
-    sd._effect1 = spelleffect_data_t::find( sd._effect[ 0 ], ptr );
-    sd._effect2 = spelleffect_data_t::find( sd._effect[ 1 ], ptr );
-    sd._effect3 = spelleffect_data_t::find( sd._effect[ 2 ], ptr );
-  }
 }
 
 void spelleffect_data_t::link( bool ptr )
@@ -859,6 +850,11 @@ void spelleffect_data_t::link( bool ptr )
 
     ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
+    
+    if ( ed._spell->_effects.size() < ( ed._index + 1 ) )
+      ed._spell->_effects.resize( ed._index + 1, spelleffect_data_t::nil() );
+    
+    ed._spell->_effects[ ed._index ]= &ed;
   }
 }
 

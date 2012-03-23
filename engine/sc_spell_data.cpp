@@ -656,12 +656,13 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     {
       if ( effect_query )
       {
-        for ( int j = 0; j < MAX_EFFECTS; j++ )
+        const spell_data_t* spell = sim -> dbc.spell( *i );
+
+        for ( int j = 0; j < spell -> _effects.size(); j++ )
         {
-          const spell_data_t* spell = sim -> dbc.spell( *i );
-          if ( spell && spell -> _effect[ j ] &&
-               sim -> dbc.effect( spell -> _effect[ j ] ) )
-            p_data = reinterpret_cast< char* > ( const_cast< spelleffect_data_t* >( sim -> dbc.effect( spell -> _effect[ j ] ) ) );
+          if ( spell && spell -> _effects[ j ] -> _id > 0 &&
+               sim -> dbc.effect( spell -> _effects[ j ] -> _id ) )
+            p_data = reinterpret_cast< char* > ( const_cast< spelleffect_data_t* >( spell -> _effects[ j ] ) );
           else
             p_data = 0;
 
