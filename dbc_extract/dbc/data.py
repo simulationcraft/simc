@@ -362,7 +362,7 @@ _DBC_FIELDS = {
     ],
     # New in MoP
     'SpellEffectScaling.dbc' : [
-        'id', ( 'average', '%13.10f' ), ( 'delta', '%13.10f' ), ( 'bonus', '%13.10f' ), ( 'unknown', '%13.10f' )
+        'id', ( 'average', '%13.10f' ), ( 'delta', '%13.10f' ), ( 'bonus', '%13.10f' ), ( 'id_effect', '%5u' )
     ],
     'SpellEquippedItems.dbc' : [
         'id', ( 'item_class', '%4d' ), ( 'mask_inv_type', '%#.8x' ), ( 'mask_sub_class', '%#.8x' )
