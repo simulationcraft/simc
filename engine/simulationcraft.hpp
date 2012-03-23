@@ -813,7 +813,7 @@ enum format_type
 #endif
 
 #ifndef MAX_TALENT_TABS
-#define MAX_TALENT_TABS (3)
+#define MAX_TALENT_TABS (4)
 #endif
 
 #ifndef MAX_TALENTS
@@ -1827,7 +1827,7 @@ public:
   // SpellDuration.dbc
   double      _duration;           // Spell duration in milliseconds
   // SpellPower.dbc
-  unsigned    _cost;               // Resource cost
+  double      _cost;               // Resource cost, for mana this is the percent of base mana
   // SpellRuneCost.dbc
   unsigned    _rune_cost;          // Bitmask of rune cost 0x1, 0x2 = Blood | 0x4, 0x8 = Unholy | 0x10, 0x20 = Frost
   unsigned    _runic_power_gain;   // Amount of runic power gained ( / 10 )
@@ -2165,8 +2165,6 @@ public:
 
   double regen_spirit( player_type t, unsigned level ) const;
   double regen_spirit( pet_type_t t, unsigned level ) const;
-  double oct_regen_mp( player_type t, unsigned level ) const;
-  double oct_regen_mp( pet_type_t t, unsigned level ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
   double oct_combat_rating( unsigned combat_rating_id, player_type t ) const;

@@ -17,10 +17,9 @@ static const struct { const char* name; player_type pt; } _class_map[] =
   { "Shaman", SHAMAN },
   { "Mage", MAGE },
   { "Warlock", WARLOCK },
-  { 0, PLAYER_NONE },
+  { "Monk", MONK }, // FIXME: move to the correct place
   { "Druid", DRUID },
   { 0, PLAYER_NONE },
-  { "Monk", MONK }, // FIXME: move to the correct place
 };
 
 static const char * _race_strings[] =
@@ -569,10 +568,14 @@ std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent
   s << "Talent Tab   : " << talent -> tab_page() + 1 << std::endl;
   if ( talent -> depends_id() )
   {
-    s << "Depends on   : " << sim -> dbc.talent( talent -> depends_id() ) -> name_cstr();
-    if ( talent -> depends_rank() > 0 )
-      s << " (Rank " << talent -> depends_rank() + 1 << ")";
-
+    const talent_data_t* d = sim -> dbc.talent( talent -> depends_id() );
+    if ( d -> id() > 0 )
+    {
+      s << "Depends on   : " << d -> name_cstr();
+      if ( talent -> depends_rank() > 0 )
+        s << " (Rank " << talent -> depends_rank() + 1 << ")";
+    }
+    
     s << std::endl;
   }
 

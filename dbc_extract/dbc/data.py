@@ -75,7 +75,7 @@ _DIFF_DATA = {
             ( 'unk_15464', _ADD_FIELD, 'trigger_spell' ),
         ],
         'SpellPower.dbc' : [
-            ( 'type_power', _ADD_FIELD, 'id' ),
+            ( ( 'type_power', '%2u' ), _ADD_FIELD, 'id' ),
             ( 'unk_15464_1', _ADD_FIELD, 'unk_14732' ),
             ( 'id_spell', _ADD_FIELD, 'unk_15464_1' ),
         ],
@@ -92,11 +92,16 @@ _DIFF_DATA = {
             ( 'id_rank_3', _REMOVE_FIELD ),
             ( 'unk_15464_1', _ADD_FIELD, 'id_rank_2' ),
             ( 'id_rank_5', _REMOVE_FIELD ),
-            ( 'class', _ADD_FIELD, 'id_rank_4' ),
+            ( 'class_id', _ADD_FIELD, 'id_rank_4' ),
+            ( 'talent_tab', _REMOVE_FIELD ),
+            ( 'spec_id', _ADD_FIELD, 'id' ),
         ],
         'SkillLineAbility.dbc' : [
             ( 'unk_13', _REMOVE_FIELD ),
             ( 'unk_12', _REMOVE_FIELD ),
+        ],
+        'SkillLine.dbc' : [
+            ( 'unk_15464', _ADD_FIELD, 'can_link' )
         ],
         'SpellRuneCost.dbc' : [
             ( 'rune_cost_4', _ADD_FIELD, 'rune_cost_3' )
@@ -113,6 +118,9 @@ _DIFF_DATA = {
         ],
         'Item-sparse.db2' : [
             ( 'unk_15464', _ADD_FIELD, 'unk_131' )
+        ],
+        'ItemDisplayInfo.dbc' : [
+            ( 'unk_15464', _ADD_FIELD, 'f24' )
         ],
         'SpellScaling.dbc' : [
             ( 'e1_bcp', _REMOVE_FIELD ),
@@ -143,6 +151,9 @@ _DBC_FIELDS = {
           'unk_6',    'id_team',    'unk_8',      'unk_9',      'unk_10',     'unk_11',
           'id_movie', 'faction',    'ofs_name',   'ofs_f_name', 'ofs_n_name', 'unk_17',
           'unk_19',   'expansion',  'unk_21',     'unk_22',     'unk_23',     'unk_24'
+    ],
+    'ChrSpecialization.dbc' : [
+          'id', 'f1', 'class_id', 'id_mastery', 'f4', 'spec_id', 'f6', 'f7', 'id_icon', 'ofs_name', 'ofs_desc'
     ],
     'GameTables.dbc' : [
           'id', 'ofs_data_file', 'f1', 'f3'
@@ -304,8 +315,11 @@ _DBC_FIELDS = {
           ( 'id', '%4u' ),          'id_skill',      ( 'mask_race', '%#.8x' ),   ('mask_class', '%#.8x' ),       ( 'flags', '%#.8x' ),
           'req_level',   'id_skill_tier', 'id_skill_cost',   'unk'
     ],
+    'SpecializationSpells.dbc' : [
+        'id', 'spec_id', 'spell_id', 'replace_spell_id', 'f5'
+    ],
     'Spell.dbc' : [
-        ( 'id', '%5u' ),           ( 'flags', '%#.8x' ),      ( 'flags_1', '%#.8x' ),      ( 'flags_2', '%#.8x' ),      ( 'flags_3', '%#.8x' ),
+        ( 'id', '%6u' ),           ( 'flags', '%#.8x' ),      ( 'flags_1', '%#.8x' ),      ( 'flags_2', '%#.8x' ),      ( 'flags_3', '%#.8x' ),
         ( 'flags_4', '%#.8x' ),    ( 'flags_5', '%#.8x' ),    ( 'flags_6', '%#.8x' ),      ( 'flags_7', '%#.8x' ),      ( 'flags_8', '%#.8x' ), 
         ( 'id_cast_time', '%5u'),  ( 'id_duration', '%5u' ),  ( 'type_power', '%2d' ),     ( 'id_range', '%5u' ),       ( 'prj_speed', '%4.1f' ),
            'unk_15',                 'unk_16',                ( 'id_icon', '%5u' ),        ( 'id_active_icon', '%5u' ), ( 'ofs_name', '%5u' ),
@@ -353,16 +367,16 @@ _DBC_FIELDS = {
         'id', ( 'duration_1', '%9d' ), 'duration_2', 'duration_3'
     ],
     'SpellEffect.dbc' : [
-        ( 'id', '%5u' ),         ( 'type', '%4u' ),            ( 'multiple_value', '%f' ), ( 'sub_type', '%4u' ),     ( 'amplitude', '%5u' ),
+        ( 'id', '%6u' ),         ( 'type', '%4u' ),            ( 'multiple_value', '%f' ), ( 'sub_type', '%4u' ),     ( 'amplitude', '%5u' ),
         ( 'base_value', '%7d' ), ( 'coefficient', '%13.10f' ), ( 'dmg_multiplier', '%f' ),   'chain_target',          ( 'die_sides', '%2d' ),
           'item_type',             'mechanic',                 ( 'misc_value', '%7d' ),    ( 'misc_value_2', '%7d' ), ( 'points_per_combo_points', '%5.1f' ), 
           'id_radius',             'id_radius_max',            ( 'real_ppl', '%5.3f' ),       ( 'class_mask_1', '%#.8x' ), ( 'class_mask_2', '%#.8x' ),
-          ( 'class_mask_3', '%#.8x' ),       ( 'trigger_spell', '%5d' ),     'implicit_target_1',        'implicit_target_2',     ( 'id_spell', '%5u' ),
-        ( 'index', '%u' )
+          ( 'class_mask_3', '%#.8x' ),       ( 'trigger_spell', '%5d' ),     'implicit_target_1',        'implicit_target_2',     ( 'id_spell', '%6u' ),
+        ( 'index', '%2u' )
     ],
     # New in MoP
     'SpellEffectScaling.dbc' : [
-        'id', ( 'average', '%13.10f' ), ( 'delta', '%13.10f' ), ( 'bonus', '%13.10f' ), ( 'id_effect', '%5u' )
+        'id', ( 'average', '%13.10f' ), ( 'delta', '%13.10f' ), ( 'bonus', '%13.10f' ), ( 'id_effect', '%6u' )
     ],
     'SpellEquippedItems.dbc' : [
         'id', ( 'item_class', '%4d' ), ( 'mask_inv_type', '%#.8x' ), ( 'mask_sub_class', '%#.8x' )
@@ -405,8 +419,8 @@ _DBC_FIELDS = {
           'id', 'max_affected_targets', 'max_target_level', 'target_type', 'targets'
     ],
     'Talent.dbc' : [
-        ( 'id', '%5u' ),          'talent_tab',         ( 'row', '%2u' ),         ( 'col', '%2u' ),       ( 'id_rank_1', '%5u' ),
-        ( 'id_rank_2', '%5u' ), ( 'id_rank_3', '%5u' ), ( 'id_rank_4', '%5u' ),   ( 'id_rank_5', '%5u' ), ( 'talent_depend', '%5u' ),
+        ( 'id', '%5u' ),          'talent_tab',         ( 'row', '%2u' ),         ( 'col', '%2u' ),       ( 'id_rank_1', '%6u' ),
+        ( 'id_rank_2', '%6u' ), ( 'id_rank_3', '%6u' ), ( 'id_rank_4', '%6u' ),   ( 'id_rank_5', '%6u' ), ( 'talent_depend', '%6u' ),
           'unk_10',               'unk_11',             ( 'depend_rank', '%2u' ),   'unk_13',               'unk_14', 
           'unk_15',               'unk_16',               'unk_17',                 'unk_18'
     ],
@@ -504,6 +518,12 @@ class DBCRecord(object):
             s += '%s=%s ' % (i, (self._field_fmt[self._fields.index(i)] % getattr(self, i)).strip())
 
         return s
+
+class SpellEffect(DBCRecord):
+    def __init__(self, dbc_parser, record):
+        DBCRecord.__init__(self, dbc_parser, record)
+        
+        self.scaling = None
 
 class Item_sparse(DBCRecord):
     def __init__(self, dbc_parser, record):
@@ -616,15 +636,26 @@ class Spell(DBCRecord):
     def __init__(self, dbc_parser, record):
         DBCRecord.__init__(self, dbc_parser, record)
 
-        self._effects = [ None, None, None ]
+        self._effects = [ None ]
         self.name     = 0
         self.desc     = 0
         self.tt       = 0
         self.rank     = 0
+        self.max_effect_index = 0
+        self.power    = None
 
     def add_effect(self, spell_effect):
-        self._effects[spell_effect.index] = spell_effect
+        if spell_effect.index > self.max_effect_index:
+            self.max_effect_index = spell_effect.index
+            for i in xrange(0, (self.max_effect_index + 1) - len(self._effects)):
+                self._effects.append( None )
+
+        self._effects[ spell_effect.index ] = spell_effect
+
         setattr(self, 'effect_%d' % ( spell_effect.index + 1 ), spell_effect)
+
+    def add_power(self, spell_power):
+        self.power = spell_power
     
     def __getattr__(self, name):
         # Hack to get effect default values if spell has no effect_x, as those fields 
@@ -723,6 +754,8 @@ class SpellPower(DBCRecord):
                 return self.cost
             elif self.cost_perc > 0:
                 return self.cost_perc
+            elif self.unk_12759 > 0:
+                return self.unk_12759
             else:
                 return 0
         else:
@@ -734,11 +767,13 @@ class SpellPower(DBCRecord):
         # Add a special 'power_cost' field kludge
         if 'power_cost' in args:
             if self.cost > 0:
-                f[args.index('power_cost')] = '%3u' % self.cost
+                f[args.index('power_cost')] = '%6.2f' % self.cost
             elif self.cost_perc > 0:
-                f[args.index('power_cost')] = '%3u' % self.cost_perc
+                f[args.index('power_cost')] = '%6.2f' % self.cost_perc
+            elif self.unk_12759 > 0:
+                f[args.index('power_cost')] = '%6.2f' % self.unk_12759
             else:
-                f[args.index('power_cost')] = '%3u' % 0
+                f[args.index('power_cost')] = '%6.2f' % 0
 
         return f
 
@@ -859,6 +894,31 @@ class SkillLine(DBCRecord):
             s += 'desc=\"%s\" ' % self.desc
 
         s += DBCRecord.__str__(self)
+
+        return s
+
+class ChrSpecialization(DBCRecord):
+    def parse(self):
+        DBCRecord.parse(self)
+
+        # Find DBCStrings available for the spell
+        if self.ofs_name != 0:
+            self.name = self._dbc_parser.get_string_block(self.ofs_name)
+        else:
+            self.name = ''
+
+        if self.ofs_desc != 0:
+            self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
+        else:
+            self.desc = ''
+
+    def __str__(self):
+        s = DBCRecord.__str__(self)
+        s += 'name="%s" ' % self.name
+
+        if self.desc:
+            s += 'desc=\"%s\" ' % self.desc
+
 
         return s
 

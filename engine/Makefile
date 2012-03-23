@@ -88,7 +88,6 @@ SRC = \
 	sc_event.cpp \
 	sc_gear_stats.cpp \
 	sc_heal.cpp \
-	sc_hunter.cpp \
 	sc_http.cpp \
 	sc_item.cpp \
 	sc_item_data.cpp \
@@ -130,6 +129,7 @@ SRC = \
 	sc_xml.cpp \
 	class_modules$(PATHSEP)sc_death_knight.cpp \
 	class_modules$(PATHSEP)sc_druid.cpp \
+    class_modules$(PATHSEP)sc_hunter.cpp \
 	class_modules$(PATHSEP)sc_mage.cpp \
 	class_modules$(PATHSEP)sc_monk.cpp \
 	class_modules$(PATHSEP)sc_paladin.cpp \

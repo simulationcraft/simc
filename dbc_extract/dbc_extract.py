@@ -32,7 +32,7 @@ parser.add_option("--suffix", dest = "suffix",
                   default = r'', action = "store", type = "string")
 parser.add_option("--min-ilvl", dest = "min_ilevel",
                   help    = "Minimum inclusive ilevel for item-related extraction",
-                  default = 318, action = "store", type = "int" )
+                  default = 378, action = "store", type = "int" )
 parser.add_option("--max-ilvl", dest = "max_ilevel",
                   help    = "Maximum inclusive ilevel for item-related extraction",
                   default = 580, action = "store", type = "int" )
@@ -71,7 +71,11 @@ if options.type == 'spell':
     
     print g.generate(ids)
 elif options.type == 'class_list':
-    g = dbc.generator.SpellListGenerator(options)
+    g = None
+    if options.build < 15464:        
+        g = dbc.generator.SpellListGenerator(options)
+    else:
+        g = dbc.generator.MoPSpellListGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()
@@ -100,7 +104,11 @@ elif options.type == 'mastery_list':
     
     print g.generate(ids)
 elif options.type == 'spec_spell_list':
-    g = dbc.generator.TalentSpecializationGenerator(options)
+    g = None
+    if options.build < 15464:
+        g = dbc.generator.TalentSpecializationGenerator(options)
+    else:
+        g = dbc.generator.SpecializationSpellGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()
@@ -236,8 +244,13 @@ elif options.type == 'scale':
     if not g.initialize():
         sys.exit(1)
     print g.generate()
-
-    g = dbc.generator.ClassScalingDataGenerator(options, [ 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTRegenMP' ] )
+    
+    tables = None
+    if options.build < 15464:
+        tables = [ 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTRegenMP' ]
+    else:
+        tables = [ 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt' ]
+    g = dbc.generator.ClassScalingDataGenerator(options, tables )
     if not g.initialize():
         sys.exit(1)
     print g.generate()

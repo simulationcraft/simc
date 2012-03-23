@@ -370,24 +370,6 @@ stat_data_t& dbc_t::attribute_base( pet_type_t t, unsigned level ) const
   return attribute_base( util_t::pet_class_type( t ), level );
 }
 
-double dbc_t::oct_regen_mp( player_type t, unsigned level ) const
-{
-  uint32_t class_id = util_t::class_id( t );
-
-  assert( class_id < CLASS_SIZE && level > 0 && level <= MAX_LEVEL );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_octregen_mp[ class_id ][ level - 1 ]
-             : __gt_octregen_mp[ class_id ][ level - 1 ];
-#else
-  return __gt_octregen_mp[ class_id ][ level - 1 ];
-#endif
-}
-
-double dbc_t::oct_regen_mp( pet_type_t t, unsigned level ) const
-{
-  return oct_regen_mp( util_t::pet_class_type( t ), level );
-}
-
 double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 {
   assert( combat_rating_id < RATING_MAX && level <= MAX_LEVEL );

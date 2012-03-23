@@ -1565,6 +1565,7 @@ int util_t::class_id( int type )
   case SHAMAN:       return  7;
   case MAGE:         return  8;
   case WARLOCK:      return  9;
+  case MONK:         return 10;
   case DRUID:        return 11;
   case PLAYER_SPECIAL_SCALE: return 12;
   }
@@ -1678,6 +1679,7 @@ const char* util_t::class_id_string( int type )
   case SHAMAN:       return  "7";
   case MAGE:         return  "8";
   case WARLOCK:      return  "9";
+  case MONK:         return "10";
   case DRUID:        return "11";
   }
 
@@ -1699,6 +1701,7 @@ int util_t::translate_class_id( int cid )
   case  7: return SHAMAN;
   case  8: return MAGE;
   case  9: return WARLOCK;
+  case 10: return MONK;
   case 11: return DRUID;
   }
 
