@@ -75,7 +75,7 @@ _DIFF_DATA = {
             ( 'unk_15464', _ADD_FIELD, 'trigger_spell' ),
         ],
         'SpellPower.dbc' : [
-            ( ( 'type_power', '%2u' ), _ADD_FIELD, 'id' ),
+            ( ( 'type_power', '%2d' ), _ADD_FIELD, 'id' ),
             ( 'unk_15464_1', _ADD_FIELD, 'unk_14732' ),
             ( 'id_spell', _ADD_FIELD, 'unk_15464_1' ),
         ],
