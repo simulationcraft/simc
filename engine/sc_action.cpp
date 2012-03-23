@@ -15,7 +15,6 @@ void action_t::init_action_t_()
 {
   sim                            = s_player->sim;
   name_str                       = s_token;
-  player                         = s_player;
   target                         = s_player -> target;
   id                             = 0;
   result                         = RESULT_NONE;

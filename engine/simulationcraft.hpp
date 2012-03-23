@@ -4903,7 +4903,7 @@ struct action_t : public spell_id_t
   sim_t* sim;
   const int type;
   std::string name_str;
-  player_t* player;
+  player_t* const player;
   player_t* target;
   uint32_t id;
   school_type school;
