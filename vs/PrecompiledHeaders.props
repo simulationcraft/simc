@@ -10,7 +10,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <PrecompiledHeaderFile>simulationcraft.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>simulationcraft.hpp</PrecompiledHeaderFile>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />

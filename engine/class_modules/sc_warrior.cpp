@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "../simulationcraft.hpp"
 
 // ==========================================================================
 //
@@ -1351,7 +1351,7 @@ struct bloodthirst_buff_callback_t : public action_callback_t
   bloodthirst_heal_t* bloodthirst_heal;
 
   bloodthirst_buff_callback_t( warrior_t* p, buff_t* b ) :
-    action_callback_t( p -> sim, p ), buff( b ),
+    action_callback_t( p ), buff( b ),
     bloodthirst_heal( 0 )
   {
     bloodthirst_heal = new bloodthirst_heal_t( p );

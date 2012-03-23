@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -36,7 +36,7 @@ struct compare_talents
 
 struct dark_intent_callback_t : public action_callback_t
 {
-  dark_intent_callback_t( player_t* p ) : action_callback_t( p -> sim, p ) {}
+  dark_intent_callback_t( player_t* p ) : action_callback_t( p ) {}
 
   virtual void trigger( action_t* /* a */, void* /* call_data */ )
   {
@@ -2147,7 +2147,7 @@ double player_t::composite_attack_hit() const
   double ah = attack_hit;
 
   // Changes here may need to be reflected in the corresponding pet_t
-  // function in simulationcraft.h
+  // function in simulationcraft.hpp
   if ( buffs.heroic_presence -> up() ) ah += 0.01;
 
   return ah;
@@ -2448,7 +2448,7 @@ double player_t::composite_spell_hit() const
   double sh = spell_hit;
 
   // Changes here may need to be reflected in the corresponding pet_t
-  // function in simulationcraft.h
+  // function in simulationcraft.hpp
   if ( buffs.heroic_presence -> up() ) sh += 0.01;
 
   return sh;

@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "../simulationcraft.hpp"
 
 // ==========================================================================
 // Mage
@@ -2222,7 +2222,7 @@ struct focus_magic_t : public mage_spell_t
 
     struct focus_magic_feedback_callback_t : public action_callback_t
     {
-      focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p -> sim, p, true ) {}
+      focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p, true ) {}
 
       virtual void trigger( action_t* /* a */, void* /* call_data */ )
       {

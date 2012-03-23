@@ -5301,20 +5301,17 @@ struct dot_t
 
 struct action_callback_t
 {
-  sim_t* sim;
   player_t* listener;
   bool active;
   bool allow_self_procs;
   bool allow_item_procs;
   bool allow_procs;
 
-  action_callback_t( sim_t* s, player_t* l, bool ap=false, bool aip=false, bool asp=false ) :
-    sim( s ), listener( l ), active( true ), allow_self_procs( asp ), allow_item_procs( aip ), allow_procs( ap )
+  action_callback_t( player_t* l, bool ap=false, bool aip=false, bool asp=false ) :
+    listener( l ), active( true ), allow_self_procs( asp ), allow_item_procs( aip ), allow_procs( ap )
   {
-    if ( l )
-    {
-      l -> all_callbacks.push_back( this );
-    }
+    assert( l );
+    l -> all_callbacks.push_back( this );
   }
   virtual ~action_callback_t() {}
   virtual void trigger( action_t*, void* call_data=0 ) = 0;
@@ -5322,7 +5319,7 @@ struct action_callback_t
   virtual void activate() { active=true; }
   virtual void deactivate() { active=false; }
 
-  static void trigger( std::vector<action_callback_t*>& v, action_t* a, void* call_data=0 )
+  static void trigger( const std::vector<action_callback_t*>& v, action_t* a, void* call_data=0 )
   {
     if ( a && ! a -> player -> in_combat ) return;
 
@@ -5339,7 +5336,7 @@ struct action_callback_t
     }
   }
 
-  static void reset( std::vector<action_callback_t*>& v )
+  static void reset( const std::vector<action_callback_t*>& v )
   {
     std::size_t size = v.size();
     for ( std::size_t i=0; i < size; i++ )
@@ -5697,7 +5694,7 @@ struct log_t
 
 // Pseudo Random Number Generation ==========================================
 
-struct rng_t
+class rng_t
 {
 public:
   std::string name_str;

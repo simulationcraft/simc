@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "../simulationcraft.hpp"
 
 // ==========================================================================
 // Custom Combo Point Impl.
@@ -4020,7 +4020,7 @@ void rogue_t::init_values()
 
 struct honor_among_thieves_callback_t : public action_callback_t
 {
-  honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r -> sim, r ) {}
+  honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r ) {}
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {

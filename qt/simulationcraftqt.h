@@ -6,7 +6,7 @@
 #ifndef SIMULATIONCRAFTQT_H
 #define SIMULATIONCRAFTQT_H
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 #include <QtGui/QtGui>
 #include <QtWebKit>
 

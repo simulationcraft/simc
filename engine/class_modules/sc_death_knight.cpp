@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "../simulationcraft.hpp"
 
 struct dancing_rune_weapon_pet_t;
 
@@ -4667,7 +4667,7 @@ void death_knight_t::init_enchant()
     int slot;
     buff_t* buff;
 
-    cinderglacier_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot( s ), buff( b ) {}
+    cinderglacier_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p ), slot( s ), buff( b ) {}
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
@@ -4687,7 +4687,7 @@ void death_knight_t::init_enchant()
     int slot;
     buff_t* buff;
 
-    fallen_crusader_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p -> sim, p ), slot( s ), buff( b ) {}
+    fallen_crusader_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p ), slot( s ), buff( b ) {}
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
@@ -4730,7 +4730,7 @@ void death_knight_t::init_enchant()
     spell_t* razorice_damage_proc;
 
     razorice_callback_t( death_knight_t* p, int s, buff_t* b ) :
-      action_callback_t( p -> sim, p ), slot( s ), buff( b ), razorice_damage_proc( 0 )
+      action_callback_t( p ), slot( s ), buff( b ), razorice_damage_proc( 0 )
     {
       razorice_damage_proc = new razorice_spell_t( p );
     }

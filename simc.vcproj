@@ -239,15 +239,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_death_knight.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_dot.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_druid.cpp"
 			>
 		</File>
 		<File
@@ -311,10 +303,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_mage.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_main.cpp"
 			>
 		</File>
@@ -323,15 +311,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_monk.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_option.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_paladin.cpp"
 			>
 		</File>
 		<File
@@ -344,10 +324,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_plot.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_priest.cpp"
 			>
 		</File>
 		<File
@@ -391,10 +367,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_rogue.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_sample_data.cpp"
 			>
 		</File>
@@ -416,10 +388,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_set_bonus.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_shaman.cpp"
 			>
 		</File>
 		<File
@@ -491,14 +459,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_warlock.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_warrior.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_weapon.cpp"
 			>
 		</File>
@@ -511,7 +471,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\simulationcraft.h"
+			RelativePath=".\engine\simulationcraft.hpp"
 			>
 		</File>
 		<File
@@ -524,6 +484,46 @@
 		</File>
 		<File
 			RelativePath=".\engine\xs_float\xs_Float.h"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_death_knight.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_druid.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_mage.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_monk.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_paladin.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_priest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_rogue.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_shaman.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_warlock.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_warrior.cpp"
 			>
 		</File>
 	</Files>

@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "../simulationcraft.hpp"
 
 // ==========================================================================
 // Hunter
@@ -3044,7 +3044,7 @@ struct wild_quiver_trigger_t : public action_callback_t
   rng_t* rng;
 
   wild_quiver_trigger_t( player_t* p, attack_t* a ) :
-    action_callback_t( p -> sim, p ), attack( a )
+    action_callback_t( p ), attack( a )
   {
     rng = p -> get_rng( "wild_quiver" );
   }

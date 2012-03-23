@@ -17,7 +17,7 @@
 //   Searing Totem's base damage range is wrong in spell data
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "../simulationcraft.hpp"
 
 // ==========================================================================
 // Shaman

@@ -2,7 +2,7 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-#include "simulationcraft.h"
+#include "../simulationcraft.hpp"
 
 /*
  * To Do:

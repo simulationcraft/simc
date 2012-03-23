@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
 // stat_proc_callback =======================================================
 
@@ -18,8 +18,7 @@ struct stat_proc_callback_t : public action_callback_t
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a,
                         double proc_chance, timespan_t duration, timespan_t cooldown,
                         timespan_t t=timespan_t::zero, bool reverse=false, int rng_type=RNG_DEFAULT, bool activated=true ) :
-    action_callback_t( p -> sim, p ),
-    name_str( n ), stat( s ), amount( a ), tick( t )
+    action_callback_t( p ), name_str( n ), stat( s ), amount( a ), tick( t )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
@@ -67,7 +66,7 @@ struct stat_proc_callback_t : public action_callback_t
           }
         };
 
-        new ( sim ) tick_stack_t( sim, a -> player, this );
+        new ( listener -> sim ) tick_stack_t( listener -> sim, a -> player, this );
       }
     }
   }
@@ -85,8 +84,7 @@ struct cost_reduction_proc_callback_t : public action_callback_t
   cost_reduction_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a,
                                   double proc_chance, timespan_t duration, timespan_t cooldown,
                                   bool refreshes=false, bool reverse=false, int rng_type=RNG_DEFAULT, bool activated=true ) :
-    action_callback_t( p -> sim, p ),
-    name_str( n ), school( s ), amount( a )
+    action_callback_t( p ), name_str( n ), school( s ), amount( a )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
@@ -131,8 +129,8 @@ struct discharge_proc_callback_t : public action_callback_t
                              double pc, timespan_t cd, bool no_buffs, bool no_debuffs,
                              unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0,
                              int rng_type=RNG_DEFAULT ) :
-    action_callback_t( p -> sim, p ),
-    name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc ), cooldown( 0 ), discharge_action( 0 ), proc( 0 ), rng( 0 )
+    action_callback_t( p ), name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc ),
+    cooldown( 0 ), discharge_action( 0 ), proc( 0 ), rng( 0 )
   {
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
@@ -242,7 +240,7 @@ struct discharge_proc_callback_t : public action_callback_t
     else
     {
       stacks = 0;
-      if ( sim -> debug ) log_t::output( sim, "%s procs %s", a -> name(), discharge_action -> name() );
+      if ( listener -> sim -> debug ) log_t::output( listener -> sim, "%s procs %s", a -> name(), discharge_action -> name() );
       discharge_action -> execute();
       proc -> occur();
     }
@@ -266,8 +264,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
                                     double pc, timespan_t cd, bool no_buffs, bool no_debuffs,
                                     unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0,
                                     int rng_type=RNG_DEFAULT ) :
-    action_callback_t( p -> sim, p ),
-    name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
+    action_callback_t( p ), name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
   {
     if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
@@ -397,7 +394,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
                                   const school_type school, double discharge_amount, double discharge_scaling,
                                   double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs, bool activated=true,
                                   unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0 ) :
-    action_callback_t( p -> sim, p ), name_str( n )
+    action_callback_t( p ), name_str( n )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
@@ -504,7 +501,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     proc_t* proc_apparatus_of_khazgoroth_mastery;
 
     apparatus_of_khazgoroth_callback_t( player_t* p, bool h ) :
-      action_callback_t( p -> sim, p ), heroic( h )
+      action_callback_t( p ), heroic( h )
     {
       double amount = heroic ? 2875 : 2540;
 
@@ -600,7 +597,7 @@ static void register_fury_of_angerforge( item_t* item )
     stat_buff_t* blackwing_dragonkin;
 
     fury_of_angerforge_callback_t( player_t* p ) :
-      action_callback_t( p -> sim, p )
+      action_callback_t( p )
     {
       raw_fury = new buff_t( p, "raw_fury", 5, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 5.0 ), 0.5, true );
       raw_fury -> activated = false;
@@ -807,7 +804,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
     player_t* player;
 
     tyrandes_callback_t( player_t* p ) :
-      action_callback_t( p -> sim, p ), max_mana( 4200 ), mana_stored( 0 ), player( p )
+      action_callback_t( p ), max_mana( 4200 ), mana_stored( 0 ), player( p )
     {
       discharge_spell = new tyrandes_spell_t( p, max_mana );
       gain_source = p -> get_gain( "tyrandes_doll" );
@@ -877,7 +874,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     double chance;
 
     dragonwrath_tarecgosas_rest_dd_callback_t( player_t* p, double pc ) :
-      action_callback_t( p -> sim, p ), rng( 0 ), chance( pc )
+      action_callback_t( p ), rng( 0 ), chance( pc )
     {
       rng = p -> get_rng( "dragonwrath_tarecgosas_rest_dd" );
     }
@@ -895,11 +892,11 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
       if ( rng -> roll( chance ) )
       {
-        if ( sim -> log )
+        if ( listener -> sim -> log )
         {
-          log_t::output( sim, "%s action %s procs Dragonwrath Tarecgosas Rest.", a -> player -> name(), a -> name() );
+          log_t::output(  listener -> sim, "%s action %s procs Dragonwrath Tarecgosas Rest.", a -> player -> name(), a -> name() );
         }
-        new ( sim ) action_execute_event_t( sim, a -> dtr_action, timespan_t::zero /* Add DTR Proc Delay here */ );
+        new (  listener -> sim ) action_execute_event_t(  listener -> sim, a -> dtr_action, timespan_t::zero /* Add DTR Proc Delay here */ );
       }
     }
   };
@@ -997,7 +994,7 @@ static void register_blazing_power( item_t* item )
     rng_t* rng;
 
     blazing_power_callback_t( player_t* p, heal_t* s ) :
-      action_callback_t( p -> sim, p ), heal( s ), proc( 0 ), rng( 0 )
+      action_callback_t( p ), heal( s ), proc( 0 ), rng( 0 )
     {
       proc = p -> get_proc( "blazing_power" );
       rng  = p -> get_rng ( "blazing_power" );
@@ -1060,7 +1057,7 @@ static void register_windward_heart( item_t* item )
     rng_t* rng;
 
     windward_heart_callback_t( player_t* p, heal_t* s ) :
-      action_callback_t( p -> sim, p ), heal( s ), proc( 0 ), rng( 0 )
+      action_callback_t( p ), heal( s ), proc( 0 ), rng( 0 )
     {
       proc = p -> get_proc( "windward_heart" );
       rng  = p -> get_rng ( "windward_heart" );
@@ -1134,7 +1131,7 @@ static void register_indomitable_pride( item_t* item )
     cooldown_t* cd;
     stats_t* stats;
     indomitable_pride_callback_t( player_t* p, bool h, bool l ) :
-      action_callback_t( p -> sim, p ), heroic( h ), lfr( l ), cd ( 0 ), stats( 0 )
+      action_callback_t( p ), heroic( h ), lfr( l ), cd ( 0 ), stats( 0 )
     {
       // Looks like there is no spell_id_t for the buff
       buff = new buff_t( p, "indomitable_pride", 1, timespan_t::from_seconds( 6.0 ) );
@@ -1181,7 +1178,7 @@ static void register_spidersilk_spindle( item_t* item )
     cooldown_t* cd;
     stats_t* stats;
     spidersilk_spindle_callback_t( player_t* p, bool h ) :
-      action_callback_t( p -> sim, p ), cd ( 0 ), stats( 0 )
+      action_callback_t( p ), cd ( 0 ), stats( 0 )
     {
       buff = new buff_t( p, h ? 97129 : 96945, "loom_of_fate" );
       buff -> activated = false;
@@ -1244,7 +1241,7 @@ static void register_bonelink_fetish( item_t* item )
     };
 
     bonelink_fetish_callback_t( player_t* p, uint32_t id ) :
-      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( id ) -> proc_chance() )
+      action_callback_t( p ), chance( p -> dbc.spell( id ) -> proc_chance() )
     {
       attack = new whirling_maw_t( p, p -> dbc.spell( id ) -> effect1().trigger_spell_id() );
 
@@ -1311,7 +1308,7 @@ static void register_fury_of_the_beast( item_t* item )
     };
 
     fury_of_the_beast_callback_t( player_t* p, bool h, bool lfr ) :
-      action_callback_t( p -> sim, p )
+      action_callback_t( p )
     {
       double amount = h ? 120 : lfr ? 95 : 107; // Amount saved in the stat buff
 
@@ -1331,7 +1328,7 @@ static void register_fury_of_the_beast( item_t* item )
       if ( fury_of_the_beast -> trigger() )
       {
         // FIXME: check if the stacking buff ticks at 0s or 1s
-        new ( sim ) fury_of_the_beast_event_t( listener, fury_of_the_beast, fury_of_the_beast_stack );
+        new (  listener -> sim ) fury_of_the_beast_event_t( listener, fury_of_the_beast, fury_of_the_beast_stack );
       }
     }
   };
@@ -1405,7 +1402,7 @@ static void register_gurthalak( item_t* item )
     };
 
     gurthalak_callback_t( player_t* p, uint32_t tick_damage, uint32_t proc_spell_id, int slot ) :
-      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() ),
+      action_callback_t( p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() ),
       slot( slot )
     {
       // Init different spells/dots to act like multiple tentacles up at once
@@ -1526,7 +1523,7 @@ static void register_nokaled( item_t* item )
     };
 
     nokaled_callback_t( player_t* p, uint32_t ids[], uint32_t proc_spell_id, int slot ) :
-      action_callback_t( p -> sim, p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() ),
+      action_callback_t( p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() ),
       slot( slot )
     {
       spells[ 0 ] = new   nokaled_fire_t( p, ids[ 0 ] );
@@ -1555,7 +1552,9 @@ static void register_nokaled( item_t* item )
 
       if ( rng -> roll( chance ) )
       {
-        spells[ ( int ) ( rng -> range( 0.0, 2.999 ) ) ] -> execute();
+        int r = ( int ) ( rng -> range( 0.0, 2.999 ) );
+        assert( r >= 0 && r <= 3 );
+        spells[ r ] -> execute();
       }
     }
   };
@@ -1595,7 +1594,7 @@ static void register_rathrak( item_t* item )
     rng_t* rng;
 
     rathrak_callback_t( player_t* p, spell_t* s ) :
-      action_callback_t( p -> sim, p ), spell( s )
+      action_callback_t( p ), spell( s )
     {
       rng  = p -> get_rng ( "rathrak", RNG_DEFAULT );
     }
@@ -1652,7 +1651,7 @@ static void register_souldrinker( item_t* item )
     int slot;
 
     souldrinker_callback_t( player_t* p, spell_t* s, int slot ) :
-      action_callback_t( p -> sim, p ), spell( s ), slot( slot )
+      action_callback_t( p ), spell( s ), slot( slot )
     {
       rng  = p -> get_rng ( "souldrinker", RNG_DEFAULT );
     }
@@ -1701,7 +1700,7 @@ static void register_titahk( item_t* item )
     buff_t* buff_radius; // This buff should be in 20 yards radius but it is contained only on the player for simulation.
 
     titahk_callback_t( player_t* p, const spell_data_t* spell, const spell_data_t* buff ) :
-      action_callback_t( p -> sim, p ),
+      action_callback_t( p ),
       proc_chance( spell -> proc_chance() ),
       rng( p -> get_rng( "titahk" ) )
     {

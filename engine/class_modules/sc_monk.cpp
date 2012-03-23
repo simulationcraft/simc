@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "../simulationcraft.hpp"
 
 // ==========================================================================
 // Monk
@@ -138,6 +138,9 @@ struct monk_attack_t : public attack_t
     _init_monk_attack_t();
   }
 
+  monk_t* p() const
+  { return static_cast<monk_t*>( player ); }
+
   void _init_monk_attack_t()
   {
     may_crit   = true;
@@ -165,6 +168,9 @@ struct monk_spell_t : public spell_t
     _init_monk_spell_t();
   }
 
+  monk_t* p() const
+  { return static_cast<monk_t*>( player ); }
+
   void _init_monk_spell_t()
   {
     may_crit   = true;
@@ -191,6 +197,9 @@ struct monk_heal_t : public heal_t
     _init_monk_heal_t();
   }
 
+  monk_t* p() const
+  { return static_cast<monk_t*>( player ); }
+
   void _init_monk_heal_t()
   {
     may_crit   = true;
@@ -206,10 +215,8 @@ bool monk_attack_t::ready()
   if ( ! attack_t::ready() )
     return false;
 
-  monk_t* p = player -> cast_monk();
-
   // Attack available in current stance?
-  if ( ( stancemask & p -> active_stance ) == 0 )
+  if ( ( stancemask & p() -> active_stance ) == 0 )
     return false;
 
   return true;
@@ -230,10 +237,8 @@ struct jab_t : public monk_attack_t
   {
     monk_attack_t::execute();
 
-    monk_t* p = player -> cast_monk();
-
-    p -> resource_gain( RESOURCE_LIGHT_FORCE, 1, p -> gains_jab_lf );
-    p -> resource_gain( RESOURCE_DARK_FORCE,  1, p -> gains_jab_df );
+    p() -> resource_gain( RESOURCE_LIGHT_FORCE, 1, p() -> gains_jab_lf );
+    p() -> resource_gain( RESOURCE_DARK_FORCE,  1, p() -> gains_jab_df );
   }
 };
 
@@ -356,10 +361,8 @@ bool monk_spell_t::ready()
   if ( ! spell_t::ready() )
     return false;
 
-  monk_t* p = player -> cast_monk();
-
   // spell available in current stance?
-  if ( ( stancemask & p -> active_stance ) == 0 )
+  if ( ( stancemask & p() -> active_stance ) == 0 )
     return false;
 
   return true;
@@ -406,18 +409,14 @@ struct stance_t : public monk_spell_t
 
   virtual void execute()
   {
-    monk_t* p = player -> cast_monk();
-
     monk_spell_t::execute();
 
-    p -> active_stance = switch_to_stance;
+    p() -> active_stance = switch_to_stance;
   }
 
   virtual bool ready()
   {
-    monk_t* p = player -> cast_monk();
-
-    if ( p -> active_stance == switch_to_stance )
+    if ( p() -> active_stance == switch_to_stance )
       return false;
 
     return monk_spell_t::ready();
@@ -431,10 +430,8 @@ bool monk_heal_t::ready()
   if ( ! heal_t::ready() )
     return false;
 
-  monk_t* p = player -> cast_monk();
-
   // heal available in current stance?
-  if ( ( stancemask & p -> active_stance ) == 0 )
+  if ( ( stancemask & p() -> active_stance ) == 0 )
     return false;
 
   return true;

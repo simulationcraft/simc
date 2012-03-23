@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
 // rng_t::rng_t =============================================================
 
@@ -653,6 +653,7 @@ struct rng_phase_shift_t : public rng_normalized_t
     double result = min + range_distribution[ range_index ] * ( max - min );
     expected_range += ( max - min ) / 2.0;
     actual_range += result;
+    assert( result >= min && result <= max );
     return result;
   }
   virtual double gauss( double mean, double stddev, bool /* truncate_low_end */ = false )
@@ -777,6 +778,7 @@ struct rng_pre_fill_t : public rng_normalized_t
     double result = min + range_distribution[ range_index ] * ( max - min );
     expected_range += ( max - min ) / 2.0;
     actual_range += result;
+    assert( result >= min && result <= max );
     return result;
   }
 
@@ -1065,7 +1067,7 @@ rng_t* rng_t::create( sim_t*             sim,
                       const std::string& name,
                       rng_type           type )
 {
-  if ( type == RNG_DEFAULT     ) type = RNG_PHASE_SHIFT;
+  if ( type == RNG_DEFAULT     ) type = RNG_MERSENNE_TWISTER;
   if ( type == RNG_CYCLIC      ) type = RNG_PHASE_SHIFT;
   if ( type == RNG_DISTRIBUTED ) type = RNG_DISTANCE_BANDS;
 

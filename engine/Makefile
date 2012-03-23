@@ -67,7 +67,7 @@ LINK_LIBS += -L$(OPENSSL_PATH)/lib -lssleay32
 endif
 
 SRC = \
-	simulationcraft.h \
+	simulationcraft.hpp \
 	data_definitions.hh \
 	data_enums.hh \
 	utf8.h \
@@ -82,9 +82,7 @@ SRC = \
 	sc_const_data.cpp \
 	sc_consumable.cpp \
 	sc_data.cpp \
-	sc_death_knight.cpp \
 	sc_dot.cpp \
-	sc_druid.cpp \
 	sc_enchant.cpp \
 	sc_expressions.cpp \
 	sc_event.cpp \
@@ -96,16 +94,12 @@ SRC = \
 	sc_item_data.cpp \
 	sc_js.cpp \
 	sc_log.cpp \
-	sc_mage.cpp \
 	sc_main.cpp \
 	sc_mmo_champion.cpp \
-	sc_monk.cpp \
 	sc_option.cpp \
-	sc_paladin.cpp \
 	sc_pet.cpp \
 	sc_player.cpp \
 	sc_plot.cpp \
-	sc_priest.cpp \
 	sc_raid_event.cpp \
 	sc_rating.cpp \
 	sc_rawr.cpp \
@@ -116,9 +110,7 @@ SRC = \
 	sc_report_xml.cpp \
 	sc_report.cpp \
 	sc_rng.cpp \
-	sc_rogue.cpp \
 	sc_sample_data.cpp \
-	sc_shaman.cpp \
 	sc_scaling.cpp \
 	sc_sequence.cpp \
 	sc_set_bonus.cpp \
@@ -133,13 +125,20 @@ SRC = \
 	sc_timespan.cpp \
 	sc_unique_gear.cpp \
 	sc_util.cpp \
-	sc_warlock.cpp \
-	sc_warrior.cpp \
 	sc_weapon.cpp \
 	sc_wowhead.cpp \
-	sc_xml.cpp
-
-SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC))
+	sc_xml.cpp \
+	class_modules$(PATHSEP)sc_death_knight.cpp \
+	class_modules$(PATHSEP)sc_druid.cpp \
+	class_modules$(PATHSEP)sc_mage.cpp \
+	class_modules$(PATHSEP)sc_monk.cpp \
+	class_modules$(PATHSEP)sc_paladin.cpp \
+	class_modules$(PATHSEP)sc_priest.cpp \
+	class_modules$(PATHSEP)sc_rogue.cpp \
+	class_modules$(PATHSEP)sc_shaman.cpp \
+	class_modules$(PATHSEP)sc_warlock.cpp \
+	class_modules$(PATHSEP)sc_warrior.cpp
+SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
 OBJ_DIR = .
 OBJ_EXT = o

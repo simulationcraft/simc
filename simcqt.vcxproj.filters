@@ -265,7 +265,7 @@
     <ClInclude Include="qt\sc_autoupdate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="engine\simulationcraft.h">
+    <ClInclude Include="engine\simulationcraft.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

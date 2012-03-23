@@ -29,7 +29,7 @@
 
 #include <vector>
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
 class Paperdoll;
 class EnchantDataModel;

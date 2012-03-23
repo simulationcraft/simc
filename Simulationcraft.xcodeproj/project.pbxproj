@@ -701,7 +701,7 @@
 		6EC6192F1396789B006B7A89 /* simulationcraftqt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simulationcraftqt.h; path = qt/simulationcraftqt.h; sourceTree = "<group>"; };
 		6EC61930139678B9006B7A89 /* data_definitions.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = data_definitions.hh; path = engine/data_definitions.hh; sourceTree = "<group>"; };
 		6EC61931139678B9006B7A89 /* data_enums.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = data_enums.hh; path = engine/data_enums.hh; sourceTree = "<group>"; };
-		6EC61932139678B9006B7A89 /* simulationcraft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simulationcraft.h; path = engine/simulationcraft.h; sourceTree = "<group>"; };
+		6EC61932139678B9006B7A89 /* simulationcraft.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simulationcraft.hpp; path = engine/simulationcraft.hpp; sourceTree = "<group>"; };
 		6EC61934139678B9006B7A89 /* checked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checked.h; sourceTree = "<group>"; };
 		6EC61935139678B9006B7A89 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
 		6EC61936139678B9006B7A89 /* unchecked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unchecked.h; sourceTree = "<group>"; };
@@ -1053,7 +1053,7 @@
 				6EC61933139678B9006B7A89 /* utf8 */,
 				6EC61930139678B9006B7A89 /* data_definitions.hh */,
 				6EC61931139678B9006B7A89 /* data_enums.hh */,
-				6EC61932139678B9006B7A89 /* simulationcraft.h */,
+				6EC61932139678B9006B7A89 /* simulationcraft.hpp */,
 				6EC61937139678B9006B7A89 /* utf8.h */,
 				6EC618B4139677F0006B7A89 /* sc_action.cpp */,
 				6EC618B5139677F0006B7A89 /* sc_armory.cpp */,
@@ -1437,7 +1437,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "MAJOR_VERSION=$(grep \"SC_MAJOR_VERSION\" engine/simulationcraft.h|sed -E -e \"s/#define SC_MAJOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nMINOR_VERSION=$(grep \"SC_MINOR_VERSION\" engine/simulationcraft.h|sed -E -e \"s/#define SC_MINOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nREVISION=$((svn info \"$PROJECT_DIR\"||git --git-dir=\"${PROJECT_DIR}/.git\")|grep \"Revision\"|$SED -E -e \"s/Revision:[^0-9]+//\")\nDEPLOY_DIR=$(mktemp -d -t SimulationCraft)\nCONTENTS_FOLDER_PATH=$DEPLOY_DIR/SimulationCraft.app/Contents\necho Revision is: $REVISION\necho Deploying to: $DEPLOY_DIR\n\n$CP -rf \"${PROJECT_DIR}/SimulationCraft.app\" $DEPLOY_DIR\nmacdeployqt $DEPLOY_DIR/SimulationCraft.app -verbose=2\n$SED -i -e \"s/GIT-REV-PARSE-HERE/$REVISION/\" $CONTENTS_FOLDER_PATH/Info.plist\n$SED -i -e \"s/VERSION-PARSE-HERE/$MAJOR_VERSION\\.$MINOR_VERSION/\" $CONTENTS_FOLDER_PATH/Info.plist\nsvn export --force \"${PROJECT_DIR}\" $DEPLOY_DIR/source || git checkout-index -a -f --prefix=$DEPLOY_DIR/source/\nrm -rf $DEPLOY_DIR/source/dbc_extract $DEPLOY_DIR/source/html $DEPLOY_DIR/source/qt/icon/SIMC-LOGO-MK.psd $DEPLOY_DIR/source/qt/icons\n\nhdiutil create -srcfolder $DEPLOY_DIR/SimulationCraft.app -srcfolder $DEPLOY_DIR/source -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder \"${PROJECT_DIR}/simc\" -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $CONTENTS_FOLDER_PATH/Info CFBundleVersion`\" -ov -puppetstrings simc-$MAJOR_VERSION-$MINOR_VERSION-osx-x86.dmg\n[ -d $DEPLOY_DIR ] && rm -rf $DEPLOY_DIR";
+			shellScript = "MAJOR_VERSION=$(grep \"SC_MAJOR_VERSION\" engine/simulationcraft.hpp|sed -E -e \"s/#define SC_MAJOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nMINOR_VERSION=$(grep \"SC_MINOR_VERSION\" engine/simulationcraft.hpp|sed -E -e \"s/#define SC_MINOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nREVISION=$((svn info \"$PROJECT_DIR\"||git --git-dir=\"${PROJECT_DIR}/.git\")|grep \"Revision\"|$SED -E -e \"s/Revision:[^0-9]+//\")\nDEPLOY_DIR=$(mktemp -d -t SimulationCraft)\nCONTENTS_FOLDER_PATH=$DEPLOY_DIR/SimulationCraft.app/Contents\necho Revision is: $REVISION\necho Deploying to: $DEPLOY_DIR\n\n$CP -rf \"${PROJECT_DIR}/SimulationCraft.app\" $DEPLOY_DIR\nmacdeployqt $DEPLOY_DIR/SimulationCraft.app -verbose=2\n$SED -i -e \"s/GIT-REV-PARSE-HERE/$REVISION/\" $CONTENTS_FOLDER_PATH/Info.plist\n$SED -i -e \"s/VERSION-PARSE-HERE/$MAJOR_VERSION\\.$MINOR_VERSION/\" $CONTENTS_FOLDER_PATH/Info.plist\nsvn export --force \"${PROJECT_DIR}\" $DEPLOY_DIR/source || git checkout-index -a -f --prefix=$DEPLOY_DIR/source/\nrm -rf $DEPLOY_DIR/source/dbc_extract $DEPLOY_DIR/source/html $DEPLOY_DIR/source/qt/icon/SIMC-LOGO-MK.psd $DEPLOY_DIR/source/qt/icons\n\nhdiutil create -srcfolder $DEPLOY_DIR/SimulationCraft.app -srcfolder $DEPLOY_DIR/source -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder \"${PROJECT_DIR}/simc\" -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $CONTENTS_FOLDER_PATH/Info CFBundleVersion`\" -ov -puppetstrings simc-$MAJOR_VERSION-$MINOR_VERSION-osx-x86.dmg\n[ -d $DEPLOY_DIR ] && rm -rf $DEPLOY_DIR";
 		};
 		6EF04D13139F987E009AA411 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

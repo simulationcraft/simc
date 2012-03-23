@@ -70,7 +70,7 @@
     <ClCompile Include="engine\sc_timespan.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\simulationcraft.h" />
+    <ClInclude Include="engine\simulationcraft.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\data_definitions.hh" />
