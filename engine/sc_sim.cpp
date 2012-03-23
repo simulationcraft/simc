@@ -2225,7 +2225,7 @@ void sim_t::create_options()
     // Regen
     { "regen_periodicity",                OPT_TIMESPAN, &( regen_periodicity                      ) },
     // RNG
-    { "smooth_rng",                       OPT_BOOL,   &( smooth_rng                               ) },
+    { "smooth_rng",                       OPT_DEPRECATED,   &( smooth_rng                               ) },
     { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
     { "average_range",                    OPT_BOOL,   &( average_range                            ) },
     { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
