@@ -16,8 +16,8 @@ parser.add_option("-t", "--type", dest = "type",
                               'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups' ]), 
 parser.add_option("-l", "--level", dest = "level", 
-                  help    = "Scaling values up to level [85]", 
-                  default = 85, action = "store", type = "int")
+                  help    = "Scaling values up to level [90]", 
+                  default = 90, action = "store", type = "int")
 parser.add_option("-p", "--path", dest = "path", 
                   help    = "DBC input directory [cwd]", 
                   default = r'.', action = "store", type = "string")
@@ -35,7 +35,7 @@ parser.add_option("--min-ilvl", dest = "min_ilevel",
                   default = 318, action = "store", type = "int" )
 parser.add_option("--max-ilvl", dest = "max_ilevel",
                   help    = "Maximum inclusive ilevel for item-related extraction",
-                  default = 420, action = "store", type = "int" )
+                  default = 580, action = "store", type = "int" )
 parser.add_option("--itemcache", dest = "item_cache_dir",
                   help    = "World of Warcraft Item cache directory.", 
                   default = r'', action = "store", type = "string" )
