@@ -480,17 +480,20 @@ private:
   }
 
 public:
-  priest_absorb_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+  priest_absorb_t( const char* n, priest_t* player, const char* sname, int t = TREE_NONE ) :
     absorb_t( n, player, sname, t )
   {
     _init_priest_absorb_t();
   }
 
-  priest_absorb_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
+  priest_absorb_t( const char* n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
     absorb_t( n, player, id, t )
   {
     _init_priest_absorb_t();
   }
+
+  priest_t* p() const
+  { return static_cast<priest_t*>( player ); }
 
   virtual void player_buff()
   {
@@ -623,7 +626,7 @@ struct priest_heal_t : public heal_t
 
     struct echo_of_light_t : public priest_heal_t
     {
-      echo_of_light_t( player_t* p ) :
+      echo_of_light_t( priest_t* p ) :
         priest_heal_t( "echo_of_light", p, 77489 )
       {
         base_tick_time = timespan_t::from_seconds( 1.0 );
@@ -687,17 +690,20 @@ struct priest_heal_t : public heal_t
     }
   }
 
-  priest_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+  priest_heal_t( const char* n, priest_t* player, const char* sname, int t = TREE_NONE ) :
     heal_t( n, player, sname, t ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
   }
 
-  priest_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
+  priest_heal_t( const char* n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
     heal_t( n, player, id, t ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
   }
+
+  priest_t* p() const
+  { return static_cast<priest_t*>( player ); }
 
   virtual void player_buff();
 
@@ -983,7 +989,7 @@ private:
   }
 
 public:
-  priest_spell_t( const char* n, player_t* player, const school_type s, int t ) :
+  priest_spell_t( const char* n, priest_t* player, const school_type s, int t ) :
     spell_t( n, player, RESOURCE_MANA, s, t ), atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
@@ -995,17 +1001,20 @@ public:
     _init_priest_spell_t();
   }
 
-  priest_spell_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+  priest_spell_t( const char* n, priest_t* player, const char* sname, int t = TREE_NONE ) :
     spell_t( n, sname, player, t ), atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
   }
 
-  priest_spell_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
+  priest_spell_t( const char* n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
     spell_t( n, id, player, t ), atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
   }
+
+  priest_t* p() const
+  { return static_cast<priest_t*>( player ); }
 
   virtual void init()
   {
@@ -1194,7 +1203,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       attack_t::assess_damage( t, amount, dmg_type, impact_result );
 
-      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player -> cast_pet() );
       priest_t* o = p -> owner -> cast_priest();
 
       if ( result_is_hit( impact_result ) )
@@ -1212,7 +1221,7 @@ struct shadow_fiend_pet_t : public pet_t
     {
       attack_t::player_buff();
 
-      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player -> cast_pet() );
 
       if ( p -> bad_swing )
         p -> bad_swing = false;
@@ -1233,7 +1242,7 @@ struct shadow_fiend_pet_t : public pet_t
 
     virtual void impact( player_t* t, int result, double dmg )
     {
-      shadow_fiend_pet_t* p = ( shadow_fiend_pet_t* ) player -> cast_pet();
+      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player -> cast_pet() );
       priest_t* o = p -> owner -> cast_priest();
 
       attack_t::impact( t, result, dmg );
@@ -1524,7 +1533,7 @@ struct cauterizing_flame_pet_t : public pet_t
 
 struct shadowy_apparition_t : public priest_spell_t
 {
-  shadowy_apparition_t( player_t* player ) :
+  shadowy_apparition_t( priest_t* player ) :
     priest_spell_t( "shadowy_apparition", player, 87532 )
   {
     background        = true;
@@ -1719,7 +1728,7 @@ struct dispersion_t : public priest_spell_t
 {
   int low_mana;
 
-  dispersion_t( player_t* player, const std::string& options_str ) :
+  dispersion_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "dispersion", player, "Dispersion" ), low_mana( 0 )
   {
     option_t options[] =
@@ -1807,7 +1816,7 @@ struct fortitude_t : public priest_spell_t
 {
   double bonus;
 
-  fortitude_t( player_t* player, const std::string& options_str ) :
+  fortitude_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "fortitude", player, "Power Word: Fortitude" ), bonus( 0 )
   {
     parse_options( NULL, options_str );
@@ -1849,7 +1858,7 @@ struct fortitude_t : public priest_spell_t
 
 struct hymn_of_hope_tick_t : public priest_spell_t
 {
-  hymn_of_hope_tick_t( player_t* player ) :
+  hymn_of_hope_tick_t( priest_t* player ) :
     priest_spell_t( "hymn_of_hope_tick", player, 64904 )
   {
     dual        = true;
@@ -1935,7 +1944,7 @@ struct inner_focus_t : public priest_spell_t
 
 struct inner_fire_t : public priest_spell_t
 {
-  inner_fire_t( player_t* player, const std::string& options_str ) :
+  inner_fire_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "inner_fire", player, "Inner Fire" )
   {
     parse_options( NULL, options_str );
@@ -1968,7 +1977,7 @@ struct inner_fire_t : public priest_spell_t
 
 struct inner_will_t : public priest_spell_t
 {
-  inner_will_t( player_t* player, const std::string& options_str ) :
+  inner_will_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "inner_will", player, "Inner Will" )
   {
     parse_options( NULL, options_str );
@@ -2164,7 +2173,7 @@ void priest_spell_t::execute()
 
 struct devouring_plague_burst_t : public priest_spell_t
 {
-  devouring_plague_burst_t( player_t* player ) :
+  devouring_plague_burst_t( priest_t* player ) :
     priest_spell_t( "devouring_plague_burst", player, SCHOOL_SHADOW, TREE_SHADOW )
   {
     proc       = true;
@@ -2195,7 +2204,7 @@ struct devouring_plague_t : public priest_spell_t
 {
   devouring_plague_burst_t* burst_spell;
 
-  devouring_plague_t( player_t* player, const std::string& options_str ) :
+  devouring_plague_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "devouring_plague", player, "Devouring Plague" ), burst_spell( 0 )
   {
     priest_t* p = player -> cast_priest();
@@ -2255,7 +2264,7 @@ struct mind_blast_t : public priest_spell_t
 {
   stats_t* orb_stats[ 4 ];
 
-  mind_blast_t( player_t* player, const std::string& options_str, bool dtr=false ) :
+  mind_blast_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "mind_blast", player, "Mind Blast" )
   {
     parse_options( NULL, options_str );
@@ -2499,7 +2508,7 @@ struct mind_flay_t : public priest_spell_t
 
 struct mind_spike_t : public priest_spell_t
 {
-  mind_spike_t( player_t* player, const std::string& options_str, bool dtr=false ) :
+  mind_spike_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "mind_spike", player, "Mind Spike" )
   {
     parse_options( NULL, options_str );
@@ -2584,7 +2593,7 @@ struct mind_spike_t : public priest_spell_t
 
 struct mind_sear_tick_t : public priest_spell_t
 {
-  mind_sear_tick_t( player_t* player ) :
+  mind_sear_tick_t( priest_t* player ) :
     priest_spell_t( "mind_sear_tick", player, 49821 )
   {
     background  = true;
@@ -2598,7 +2607,7 @@ struct mind_sear_t : public priest_spell_t
 {
   mind_sear_tick_t* mind_sear_tick;
 
-  mind_sear_t( player_t* player, const std::string& options_str ) :
+  mind_sear_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "mind_sear", player, "Mind Sear" ),
     mind_sear_tick( 0 )
   {
@@ -2801,7 +2810,7 @@ struct vampiric_embrace_t : public priest_spell_t
 
 struct vampiric_touch_t : public priest_spell_t
 {
-  vampiric_touch_t( player_t* player, const std::string& options_str ) :
+  vampiric_touch_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "vampiric_touch", player, "Vampiric Touch" )
   {
     parse_options( NULL, options_str );
@@ -2813,7 +2822,7 @@ struct vampiric_touch_t : public priest_spell_t
 
 struct holy_fire_t : public priest_spell_t
 {
-  holy_fire_t( player_t* player, const std::string& options_str, bool dtr=false ) :
+  holy_fire_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "holy_fire", player, "Holy Fire" )
   {
     parse_options( NULL, options_str );
@@ -2869,7 +2878,7 @@ struct penance_t : public priest_spell_t
 {
   struct penance_tick_t : public priest_spell_t
   {
-    penance_tick_t( player_t* player ) :
+    penance_tick_t( priest_t* player ) :
       priest_spell_t( "penance_tick", player, 47666 )
     {
       background  = true;
@@ -3173,7 +3182,7 @@ struct circle_of_healing_t : public priest_heal_t
 
 struct divine_hymn_tick_t : public priest_heal_t
 {
-  divine_hymn_tick_t( player_t* player, int nr_targets ) :
+  divine_hymn_tick_t( priest_t* player, int nr_targets ) :
     priest_heal_t( "divine_hymn_tick", player, 64844 )
   {
     priest_t* p = player -> cast_priest();
@@ -3556,7 +3565,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
 {
   struct holy_word_sanctuary_tick_t : public priest_heal_t
   {
-    holy_word_sanctuary_tick_t( player_t* player ) :
+    holy_word_sanctuary_tick_t( priest_t* player ) :
       priest_heal_t( "holy_word_sanctuary_tick", player, 88686 )
     {
       dual        = true;
@@ -3736,7 +3745,7 @@ struct holy_word_t : public priest_spell_t
   holy_word_chastise_t*  hw_chastise;
   holy_word_serenity_t*  hw_serenity;
 
-  holy_word_t( player_t* player, const std::string& options_str ) :
+  holy_word_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "holy_word", player, SCHOOL_HOLY, TREE_HOLY ),
     hw_sanctuary( 0 ), hw_chastise( 0 ), hw_serenity( 0 )
   {
@@ -3824,7 +3833,7 @@ struct lightwell_t : public priest_spell_t
 
 struct penance_heal_tick_t : public priest_heal_t
 {
-  penance_heal_tick_t( player_t* player ) :
+  penance_heal_tick_t( priest_t* player ) :
     priest_heal_t( "penance_heal_tick", player, 47750 )
   {
     background  = true;
@@ -3912,7 +3921,7 @@ struct penance_heal_t : public priest_heal_t
 
 struct glyph_power_word_shield_t : public priest_heal_t
 {
-  glyph_power_word_shield_t( player_t* player ) :
+  glyph_power_word_shield_t( priest_t* player ) :
     priest_heal_t( "power_word_shield_glyph", player, 55672 )
   {
     school          = SCHOOL_HOLY;
@@ -4032,7 +4041,7 @@ struct power_word_shield_t : public priest_absorb_t
 
 struct glyph_prayer_of_healing_t : public priest_heal_t
 {
-  glyph_prayer_of_healing_t( player_t* player ) :
+  glyph_prayer_of_healing_t( priest_t* player ) :
     priest_heal_t( "prayer_of_healing_glyph", player, 56161 )
   {
     proc       = true;
@@ -4236,7 +4245,7 @@ struct prayer_of_mending_t : public priest_heal_t
 
 struct divine_touch_t : public priest_heal_t
 {
-  divine_touch_t( player_t* player ) :
+  divine_touch_t( priest_t* player ) :
     priest_heal_t( "divine_touch", player, 63544 )
   {
     school          = SCHOOL_HOLY;
