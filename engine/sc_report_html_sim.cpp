@@ -331,8 +331,6 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
              sim -> dpet_charts[ i ].c_str() );
   }
 
-
-
   fprintf( file,
            "\t\t\t\t</div>\n" );
 
