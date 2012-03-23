@@ -1627,7 +1627,6 @@ void priest_spell_t::add_more_shadowy_apparitions( player_t* player )
 // Priest Non-Harmful Spells
 // ==========================================================================
 
-
 // Archangel Spell ==========================================================
 
 struct archangel_t : public priest_spell_t
