@@ -1538,13 +1538,16 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spellscaling_db[0].field('cast_div', 'c_scaling', 'c_scaling_threshold' )
 
             s_effect = []
+            effect_ids = []
             for effect in spell._effects:
                 if self._options.build < 15464:
                     if effect and ids.get(id, { 'effect_list': [ True, True, True ] })['effect_list'][effect.index]:
                         effects.add( ( effect.id, spell.id_scaling ) )
+                        effect_ids.append( '%u' % effect.id )
                 else:
                     if effect and ids.get(id, { 'effect_list': [ False ] })['effect_list'][effect.index]:
                         effects.add( ( effect.id, spell.id_scaling ) )
+                        effect_ids.append( '%u' % effect.id )
 
             # Add spell flags
             fields += [ '{ %s }' % ', '.join(spell.field('flags', 'flags_1', 'flags_2', 'flags_3', 'flags_4', 'flags_5', 'flags_6', 'flags_7', 'flags_12694', 'flags_8')) ]
@@ -1559,11 +1562,8 @@ class SpellDataGenerator(DataGenerator):
                 fields += [ '0' ]
             # Pad struct with empty pointers for direct access to spell effect data
             fields += [ 'std::vector<const spelleffect_data_t*>()' ]
-            try:
-                s += '  { %s },\n' % (', '.join(fields))
-            except:
-                sys.stderr.write('%s\n' % fields)
-                sys.exit(1)
+
+            s += '  { %s }, /* %s */\n' % (', '.join(fields), ', '.join(effect_ids))
             
             index += 1
         
