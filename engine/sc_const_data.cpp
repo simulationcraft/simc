@@ -135,7 +135,7 @@ const char* dbc_t::build_level( bool ptr )
 { return ( SC_USE_PTR && ptr ) ? "15354" : "15354"; }
 
 const char* dbc_t::wow_version( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "4.3.3" : "4.3.3"; }
+{ return ( SC_USE_PTR && ptr ) ? "5.0.1" : "5.0.0"; }
 
 void dbc_t::init()
 {
