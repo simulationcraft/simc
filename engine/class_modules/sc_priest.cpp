@@ -480,14 +480,14 @@ private:
   }
 
 public:
-  priest_absorb_t( const char* n, priest_t* player, const char* sname, int t = TREE_NONE ) :
-    absorb_t( n, player, sname, t )
+  priest_absorb_t( const std::string& n, priest_t* player, const char* sname, int t = TREE_NONE ) :
+    absorb_t( n.c_str(), player, sname, t )
   {
     _init_priest_absorb_t();
   }
 
-  priest_absorb_t( const char* n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
-    absorb_t( n, player, id, t )
+  priest_absorb_t( const std::string& n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
+    absorb_t( n.c_str(), player, id, t )
   {
     _init_priest_absorb_t();
   }
@@ -690,14 +690,14 @@ struct priest_heal_t : public heal_t
     }
   }
 
-  priest_heal_t( const char* n, priest_t* player, const char* sname, int t = TREE_NONE ) :
-    heal_t( n, player, sname, t ), can_trigger_DA( true ), da()
+  priest_heal_t( const std::string& n, priest_t* player, const char* sname, int t = TREE_NONE ) :
+    heal_t( n.c_str(), player, sname, t ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
   }
 
-  priest_heal_t( const char* n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
-    heal_t( n, player, id, t ), can_trigger_DA( true ), da()
+  priest_heal_t( const std::string& n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
+    heal_t( n.c_str(), player, id, t ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
   }
@@ -989,8 +989,8 @@ private:
   }
 
 public:
-  priest_spell_t( const char* n, priest_t* player, const school_type s, int t ) :
-    spell_t( n, player, RESOURCE_MANA, s, t ), atonement( 0 ), can_trigger_atonement( 0 )
+  priest_spell_t( const std::string& n, priest_t* player, const school_type s, int t ) :
+    spell_t( n.c_str(), player, RESOURCE_MANA, s, t ), atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
   }
@@ -1001,14 +1001,14 @@ public:
     _init_priest_spell_t();
   }
 
-  priest_spell_t( const char* n, priest_t* player, const char* sname, int t = TREE_NONE ) :
-    spell_t( n, sname, player, t ), atonement( 0 ), can_trigger_atonement( 0 )
+  priest_spell_t( const std::string& n, priest_t* player, const char* sname, int t = TREE_NONE ) :
+    spell_t( n.c_str(), sname, player, t ), atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
   }
 
-  priest_spell_t( const char* n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
-    spell_t( n, id, player, t ), atonement( 0 ), can_trigger_atonement( 0 )
+  priest_spell_t( const std::string& n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
+    spell_t( n.c_str(), id, player, t ), atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
   }
@@ -1531,10 +1531,10 @@ struct cauterizing_flame_pet_t : public pet_t
 
 // Shadowy Apparition Spell =================================================
 
-struct shadowy_apparition_t : public priest_spell_t
+struct shadowy_apparition_spell_t : public priest_spell_t
 {
-  shadowy_apparition_t( priest_t* player ) :
-    priest_spell_t( "shadowy_apparition", player, 87532 )
+  shadowy_apparition_spell_t( priest_t* player ) :
+    priest_spell_t( "shadowy_apparition_spell", player, 87532 )
   {
     background        = true;
     proc              = true;
@@ -1591,14 +1591,11 @@ void priest_spell_t::trigger_shadowy_apparition( player_t* player )
 {
   priest_t* p = player -> cast_priest();
 
-  spell_t* s = NULL;
-
-  if ( p -> talents.shadowy_apparition -> rank() )
+  if ( !p -> shadowy_apparition_free_list.empty() )
   {
-    double h = p -> talents.shadowy_apparition -> rank() * ( p -> is_moving() ? 0.2 : 0.04 );
-    if ( p -> sim -> roll( h ) && ( !p -> shadowy_apparition_free_list.empty() ) )
+    for ( ; p->buffs_shadow_orb -> check(); p->buffs_shadow_orb -> decrement() )
     {
-      s = p -> shadowy_apparition_free_list.front();
+      spell_t* s = p -> shadowy_apparition_free_list.front();
 
       p -> shadowy_apparition_free_list.pop();
 
@@ -1621,7 +1618,7 @@ void priest_spell_t::add_more_shadowy_apparitions( player_t* player )
   {
     for ( uint32_t i = 0; i < p -> constants.max_shadowy_apparitions; i++ )
     {
-      s = new shadowy_apparition_t( p );
+      s = new shadowy_apparition_spell_t( p );
       p -> shadowy_apparition_free_list.push( s );
     }
   }
@@ -2763,8 +2760,6 @@ struct shadow_word_pain_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    trigger_shadowy_apparition( p );
-
     if ( result_is_hit() )
     {
       p -> buffs_shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
@@ -3027,6 +3022,21 @@ struct smite_t : public priest_spell_t
   }
 };
 
+struct shadowy_apparition_t : priest_spell_t
+{
+  shadowy_apparition_t( priest_t* player, const std::string& options_str ) :
+    priest_spell_t( "shadowy_apparition", player, "Shadowy Apparition" )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    trigger_shadowy_apparition( player );
+  }
+};
 
 // ==========================================================================
 // Priest Heal & Absorb Spells

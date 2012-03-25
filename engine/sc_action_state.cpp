@@ -573,15 +573,12 @@ double action_t::calculate_direct_damage_s( int chain_target, const action_state
   if ( amount == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) 
     return 0;
   
-  double weapon_dmg = 0;
-  
   amount += base_dd_adder + player_dd_adder + target_dd_adder;
   
   if ( weapon_multiplier > 0 )
   {
     amount += calculate_weapon_damage_s( state );
     amount *= weapon_multiplier;
-    weapon_dmg = amount;
   }
   
   amount += direct_power_mod * state -> total_power();
