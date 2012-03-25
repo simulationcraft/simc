@@ -753,7 +753,8 @@ class SpellDataGenerator(DataGenerator):
         ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ), ( 99173, 0 ), ( 99186, 0 ), ( 99187, 0 ), ( 99188, 0 ), ), # Rogue poison effects, Tier 12 bonus spells
         ( ( 63619, 5 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ( 94472, 0 ), ( 99156, 5 ), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs, Atonement Crit, sfiend tier12 bonus
         ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 5 ), ( 99000, 0 ), ), # DK Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike. Tier 12 4pc spell.
-        ( ( 12470, 5 ), ( 13376, 5 ), ( 57984, 5 ) ),   # Shaman Greater Fire Elemental abilities
+        (   ( 77451, 0 ), ( 45284, 0 ), ( 45297, 0 ),       # Overloads
+            ( 12470, 5 ), ( 13376, 5 ), ( 57984, 5 ) ),     # Shaman Greater Fire Elemental abilities
         ( 
             ( 5405, 0 ),  ( 92283, 3 ), ( 84721, 0 ), ( 79058, 0 ), # Mana Gem, Frostfire Orb x2, Arcane Brilliance
             ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), ( 99062, 5 ), # Mirror Image spells. incl T12 Fireball
