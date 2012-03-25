@@ -249,15 +249,21 @@ struct priest_t : public player_t
   bool echo_of_light_merged;
 
   // Random Number Generators
-  rng_t* rng_pain_and_suffering;
-  rng_t* rng_cauterizing_flame;
-  rng_t* rng_train_of_thought;
-  rng_t* rng_tier13_4pc_heal;
+  struct rngs_t
+  {
+    rng_t* pain_and_suffering;
+    rng_t* cauterizing_flame;
+    rng_t* train_of_thought;
+    rng_t* tier13_4pc_heal;
+  } rngs;
 
   // Pets
-  pet_t* pet_shadow_fiend;
-  pet_t* pet_cauterizing_flame;
-  pet_t* pet_lightwell;
+  struct pets_t
+  {
+    pet_t* shadow_fiend;
+    pet_t* cauterizing_flame;
+    pet_t* lightwell;
+  } pets;
 
   // Options
   std::string atonement_target_str;
@@ -384,9 +390,9 @@ struct priest_t : public player_t
     cooldowns.inner_focus                = get_cooldown( "inner_focus" );
     cooldowns.penance                    = get_cooldown( "penance" );
 
-    pet_shadow_fiend                     = NULL;
-    pet_cauterizing_flame                = NULL;
-    pet_lightwell                        = NULL;
+    pets.shadow_fiend                     = NULL;
+    pets.cauterizing_flame                = NULL;
+    pets.lightwell                        = NULL;
 
     create_talents();
     create_glyphs();
@@ -412,7 +418,7 @@ struct priest_t : public player_t
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
+  virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
@@ -1575,34 +1581,30 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
   virtual void impact( player_t* t, int result, double dmg )
   {
-    priest_t* p = player -> cast_priest();
-
     priest_spell_t::impact( t, result, dmg );
 
 
     // Needs testing
-    if ( p -> set_bonus.tier13_4pc_caster() )
+    if ( p() -> set_bonus.tier13_4pc_caster() )
     {
-      p -> buffs.shadow_orb -> trigger( 3, 1, 1.0 );
+      p() -> buffs.shadow_orb -> trigger( 3, 1, 1.0 );
     }
 
     // Cleanup. Re-add to free list.
-    p -> shadowy_apparition_active_list.remove( this );
-    p -> shadowy_apparition_free_list.push( this );
+    p() -> shadowy_apparition_active_list.remove( this );
+    p() -> shadowy_apparition_free_list.push( this );
   }
 
   virtual void player_buff()
   {
-    priest_t* p = player -> cast_priest();
-
     priest_spell_t::player_buff();
 
     if ( player -> bugs )
     {
-      player_multiplier /= 1.0 + p -> constants.twisted_faith_static_value;
+      player_multiplier /= 1.0 + p() -> constants.twisted_faith_static_value;
     }
 
-    player_multiplier *= 1.0 + p -> sets -> set( SET_T11_4PC_CASTER ) -> mod_additive( P_GENERIC );
+    player_multiplier *= 1.0 + p() -> sets -> set( SET_T11_4PC_CASTER ) -> mod_additive( P_GENERIC );
   }
 };
 
@@ -1789,7 +1791,7 @@ struct dispersion_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    if ( ! p -> pet_shadow_fiend -> sleeping ) return false;
+    if ( ! p -> pets.shadow_fiend -> sleeping ) return false;
 
     double sf_cooldown_remains  = p -> cooldowns.shadow_fiend -> remains().total_seconds();
     double sf_cooldown_duration = p -> cooldowns.shadow_fiend -> duration.total_seconds();
@@ -2152,7 +2154,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    p -> pet_shadow_fiend -> summon( duration() );
+    p -> pets.shadow_fiend -> summon( duration() );
   }
 
   virtual bool ready()
@@ -2478,7 +2480,7 @@ struct mind_flay_t : public priest_spell_t
 
       if ( td -> dots_shadow_word_pain -> ticking )
       {
-        if ( p -> rng_pain_and_suffering -> roll( p -> constants.pain_and_suffering_value ) )
+        if ( p -> rngs.pain_and_suffering -> roll( p -> constants.pain_and_suffering_value ) )
         {
           td -> dots_shadow_word_pain -> refresh_duration();
         }
@@ -3005,7 +3007,7 @@ struct smite_t : public priest_spell_t
 
     // Train of Thought
     if ( p -> talents.train_of_thought -> rank() &&
-         p -> rng_train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
+         p -> rngs.train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
     {
       if ( p -> cooldowns.penance -> remains() > p -> talents.train_of_thought -> spell( 1 ).effect2().time_value() )
         p -> cooldowns.penance -> ready -= p -> talents.train_of_thought -> spell( 1 ).effect2().time_value();
@@ -3437,7 +3439,7 @@ struct greater_heal_t : public priest_heal_t
     // NOTE: Process Train of Thought _before_ Inner Focus: the GH that consumes Inner Focus does not
     //       reduce the cooldown, since Inner Focus doesn't go on cooldown until after it is consumed.
     if ( p -> talents.train_of_thought -> rank() &&
-         p -> rng_train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
+         p -> rngs.train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
     {
       if ( p -> cooldowns.inner_focus -> remains() > timespan_t::from_seconds( p -> talents.train_of_thought -> effect1().base_value() ) )
         p -> cooldowns.inner_focus -> ready -= timespan_t::from_seconds( p -> talents.train_of_thought -> effect1().base_value() );
@@ -3853,8 +3855,8 @@ struct lightwell_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    p -> pet_lightwell -> get_cooldown( "lightwell_renew" ) -> duration = consume_interval;
-    p -> pet_lightwell -> summon( duration() );
+    p -> pets.lightwell -> get_cooldown( "lightwell_renew" ) -> duration = consume_interval;
+    p -> pets.lightwell -> summon( duration() );
   }
 };
 
@@ -4013,7 +4015,7 @@ struct power_word_shield_t : public priest_absorb_t
 
     // Needs testing
     if ( p -> set_bonus.tier13_4pc_heal() )
-      if ( p -> rng_tier13_4pc_heal -> roll( 0.1 ) )
+      if ( p -> rngs.tier13_4pc_heal -> roll( 0.1 ) )
         player_multiplier *= 2.0;
   }
 
@@ -4407,10 +4409,10 @@ double priest_t::shadow_orb_amount() const
 void priest_t::trigger_cauterizing_flame()
 {
   // Assuming you can only have 1 Cauterizing Flame
-  if ( pet_cauterizing_flame && pet_cauterizing_flame -> sleeping &&
-       rng_cauterizing_flame -> roll( sets -> set( SET_T12_4PC_HEAL ) -> proc_chance()  ) )
+  if ( pets.cauterizing_flame && pets.cauterizing_flame -> sleeping &&
+       rngs.cauterizing_flame -> roll( sets -> set( SET_T12_4PC_HEAL ) -> proc_chance()  ) )
   {
-    pet_cauterizing_flame -> summon( dbc.spell( 99136 ) -> duration() );
+    pets.cauterizing_flame -> summon( dbc.spell( 99136 ) -> duration() );
   }
 }
 
@@ -4643,9 +4645,9 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 
 void priest_t::create_pets()
 {
-  pet_shadow_fiend      = create_pet( "shadow_fiend"      );
-  pet_cauterizing_flame = create_pet( "cauterizing_flame" );
-  pet_lightwell         = create_pet( "lightwell"         );
+  pets.shadow_fiend      = create_pet( "shadow_fiend"      );
+  pets.cauterizing_flame = create_pet( "cauterizing_flame" );
+  pets.lightwell         = create_pet( "lightwell"         );
 }
 
 // priest_t::init_base ======================================================
@@ -4743,10 +4745,10 @@ void priest_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_pain_and_suffering = get_rng( "pain_and_suffering" );
-  rng_cauterizing_flame  = get_rng( "rng_cauterizing_flame" );
-  rng_train_of_thought   = get_rng( "train_of_thought" );
-  rng_tier13_4pc_heal    = get_rng( "tier13_4pc_heal" );
+  rngs.pain_and_suffering = get_rng( "pain_and_suffering" );
+  rngs.cauterizing_flame  = get_rng( "rngs.cauterizing_flame" );
+  rngs.train_of_thought   = get_rng( "train_of_thought" );
+  rngs.tier13_4pc_heal    = get_rng( "tier13_4pc_heal" );
 }
 
 // priest_t::init_talents ===================================================
@@ -4890,9 +4892,9 @@ void priest_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
-  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
-  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
+  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
+  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
+  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
 
   // Discipline
   buffs.borrowed_time              = new buff_t( this, talents.borrowed_time -> effect1().trigger_spell_id(), "borrowed_time", talents.borrowed_time -> rank() );
