@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="simc"
 	ProjectGUID="{D963926C-4A85-4600-8626-51FA12FDF5C1}"
 	RootNamespace="simc"
@@ -239,7 +239,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\class_modules\sc_death_knight.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_dot.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_druid.cpp"
 			>
 		</File>
 		<File
@@ -275,7 +283,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_hunter.cpp"
+			RelativePath=".\engine\class_modules\sc_hunter.cpp"
 			>
 		</File>
 		<File
@@ -303,6 +311,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\class_modules\sc_mage.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_main.cpp"
 			>
 		</File>
@@ -311,7 +323,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\class_modules\sc_monk.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_option.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_paladin.cpp"
 			>
 		</File>
 		<File
@@ -324,6 +344,10 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_plot.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_priest.cpp"
 			>
 		</File>
 		<File
@@ -367,6 +391,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\class_modules\sc_rogue.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_sample_data.cpp"
 			>
 		</File>
@@ -388,6 +416,10 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_set_bonus.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_shaman.cpp"
 			>
 		</File>
 		<File
@@ -459,6 +491,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\class_modules\sc_warlock.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_warrior.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_weapon.cpp"
 			>
 		</File>
@@ -484,46 +524,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\xs_float\xs_Float.h"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_death_knight.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_druid.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_mage.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_monk.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_paladin.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_priest.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_rogue.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_shaman.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_warlock.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_warrior.cpp"
 			>
 		</File>
 	</Files>
