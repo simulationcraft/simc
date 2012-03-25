@@ -104,11 +104,13 @@ struct priest_t : public player_t
     spell_id_t* grace;
     spell_id_t* evangelism;
     spell_id_t* train_of_thought;
+    spell_id_t* rapture;
 
     // Holy
     spell_id_t* spiritual_healing;
     spell_id_t* meditation_holy;
     spell_id_t* revelations;
+    spell_id_t* body_and_soul;
 
     // Shadow
     spell_id_t* shadow_power;
@@ -116,6 +118,7 @@ struct priest_t : public player_t
     spell_id_t* shadowy_apparition_num;
     spell_id_t* pain_and_suffering;
     spell_id_t* twisted_faith;
+    spell_id_t* shadow_form;
   };
   specialization_spells_t spec;
 
@@ -233,13 +236,7 @@ struct priest_t : public player_t
     double meditation_value;
 
     // Discipline
-    double twin_disciplines_value;
-    double dark_archangel_damage_value;
-    double holy_archangel_value;
     double inner_will_value;
-
-    // Holy
-    double holy_concentration_value;
 
     // Shadow
     double shadow_power_damage_value;
@@ -248,12 +245,9 @@ struct priest_t : public player_t
     double shadow_orb_damage_value;
     double shadow_orb_mastery_value;
 
-    double darkness_value;
-    double improved_shadow_word_pain_value;
     double twisted_faith_static_value;
     double twisted_faith_dynamic_value;
     double shadow_form_value;
-    double harnessed_shadows_value;
     double pain_and_suffering_value;
 
     double devouring_plague_health_mod;
@@ -329,10 +323,8 @@ struct priest_t : public player_t
   virtual double    composite_armor() const;
   virtual double    composite_spell_power( const school_type school ) const;
   virtual double    composite_spell_hit() const;
-  virtual double    composite_spell_haste() const;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
   virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) const;
-  virtual double    composite_player_heal_multiplier( const school_type school ) const;
   virtual double    composite_movement_speed() const;
 
   virtual double    matching_gear_multiplier( const attribute_type attr ) const;
@@ -687,7 +679,7 @@ struct priest_heal_t : public heal_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( p -> spec.grace -> rank() )
+    if ( p -> spec.grace -> ok() )
       t -> buffs.grace -> trigger( 1, p -> dbc.effect( p -> dbc.spell( p -> spec.grace -> effect_trigger_spell( 1 ) ) -> effect1().id() ) -> base_value() / 100.0 );
   }
 
@@ -695,7 +687,7 @@ struct priest_heal_t : public heal_t
   {
     priest_t* p = player -> cast_priest();
 
-    if ( p -> glyphs.strength_of_soul -> rank() && t -> buffs.weakened_soul -> up() )
+    if ( p -> glyphs.strength_of_soul -> ok() && t -> buffs.weakened_soul -> up() )
       t -> buffs.weakened_soul -> extend_duration( p, timespan_t::from_seconds( -1 * p -> glyphs.strength_of_soul -> effect1().base_value() ) );
   }
 
@@ -794,15 +786,6 @@ struct atonement_heal_t : public priest_heal_t
     return 0;
   }
 
-  virtual void player_buff()
-  {
-    priest_heal_t::player_buff();
-    priest_t* p = player -> cast_priest();
-
-    // Atonement does not scale with Twin Disciplines as of WoW 4.2
-    player_multiplier /= 1.0 + p -> constants.twin_disciplines_value;
-  }
-
   virtual void execute()
   {
     target = find_lowest_player();
@@ -878,7 +861,7 @@ public:
 
     priest_t* p = player -> cast_priest();
 
-    if ( can_trigger_atonement && p -> glyphs.atonement -> rank() )
+    if ( can_trigger_atonement && p -> glyphs.atonement -> ok() )
     {
       std::string n = "atonement_" + name_str;
       atonement = new atonement_heal_t( n.c_str(), p );
@@ -919,7 +902,7 @@ public:
 
     if ( p -> buffs.vampiric_embrace -> up() && result_is_hit( impact_result ) )
     {
-      double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
+      double a = amount;
       p -> resource_gain( RESOURCE_HEALTH, a * 0.06, player -> gains.vampiric_embrace );
 
       pet_t* r = p -> pet_list;
@@ -1058,7 +1041,7 @@ struct shadow_fiend_pet_t : public pet_t
       if ( result_is_hit( impact_result ) )
       {
         if ( o -> set_bonus.tier13_4pc_caster() )
-          o -> buffs.shadow_orb -> trigger( 3, 1, o -> constants.shadow_orb_proc_value + o -> constants.harnessed_shadows_value );
+          o -> buffs.shadow_orb -> trigger( 3, 1, o -> constants.shadow_orb_proc_value );
 
         o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] *
                             p -> mana_leech -> effect_base_value( 1 ) / 100.0,
@@ -1255,13 +1238,10 @@ struct lightwell_pet_t : public pet_t
     lightwell_renew_t( lightwell_pet_t* player ) :
       heal_t( "lightwell_renew", player, 7001 )
     {
-      priest_t* p = player -> owner -> cast_priest();
-
       may_crit = false;
       tick_may_crit = true;
 
       tick_power_mod = 0.308;
-      base_multiplier *= ( 1.0 + p -> constants.twin_disciplines_value ) * 1.15;
     }
 
     lightwell_pet_t* cast()
@@ -1945,8 +1925,6 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p() -> buffs.dark_archangel -> value() * p() -> constants.dark_archangel_damage_value;
-
     player_multiplier *= 1.0 + ( p() -> buffs.shadow_orb -> stack() * p() -> shadow_orb_amount() );
   }
 
@@ -2019,13 +1997,9 @@ struct mind_flay_t : public priest_spell_t
 
   virtual void player_buff()
   {
-    priest_t* p = player -> cast_priest();
-
     priest_spell_t::player_buff();
 
-    player_td_multiplier += p -> buffs.dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
-
-    player_td_multiplier += p -> glyphs.mind_flay -> effect1().percent();
+    player_td_multiplier += p() -> glyphs.mind_flay -> effect1().percent();
   }
 
   virtual double calculate_tick_damage()
@@ -2046,7 +2020,7 @@ struct mind_flay_t : public priest_spell_t
     if ( result_is_hit() )
     {
       p -> buffs.dark_evangelism -> trigger();
-      p -> buffs.shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
+      p -> buffs.shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value );
 
       if ( td -> dots_shadow_word_pain -> ticking )
       {
@@ -2163,13 +2137,9 @@ struct mind_spike_t : public priest_spell_t
 
   virtual void player_buff()
   {
-    priest_t* p = player -> cast_priest();
-
     priest_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p -> buffs.dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
-
-    player_multiplier *= 1.0 + ( p -> buffs.shadow_orb -> stack() * p -> shadow_orb_amount() );
+    player_multiplier *= 1.0 + ( p() -> buffs.shadow_orb -> stack() * p() -> shadow_orb_amount() );
   }
 };
 
@@ -2291,8 +2261,6 @@ struct shadow_word_death_t : public priest_spell_t
     // Hardcoded into the tooltip
     if ( target -> health_percentage() <= 25 )
       player_multiplier *= 3.0;
-
-    player_multiplier *= 1.0 + p -> buffs.dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
   }
 
   virtual bool ready()
@@ -2331,8 +2299,6 @@ struct shadow_word_pain_t : public priest_spell_t
 
     priest_spell_t::player_buff();
 
-    player_td_multiplier += p -> constants.improved_shadow_word_pain_value;
-
     player_td_multiplier += p -> glyphs.shadow_word_pain -> effect1().percent();
   }
 
@@ -2344,7 +2310,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     if ( result_is_hit() )
     {
-      p -> buffs.shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value + p -> constants.harnessed_shadows_value );
+      p -> buffs.shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value );
     }
   }
 };
@@ -2741,8 +2707,6 @@ struct divine_hymn_tick_t : public priest_heal_t
   divine_hymn_tick_t( priest_t* player, int nr_targets ) :
     priest_heal_t( "divine_hymn_tick", player, 64844 )
   {
-    priest_t* p = player -> cast_priest();
-
     background  = true;
 
     aoe = nr_targets - 1;
@@ -3381,12 +3345,10 @@ struct power_word_shield_t : public priest_absorb_t
 
     priest_t* p = player -> cast_priest();
 
-    p -> buffs.borrowed_time -> trigger();
-
     // Rapture
-    if ( p -> cooldowns.rapture -> remains() == timespan_t::zero && p -> talents.rapture -> rank() )
+    if ( p -> cooldowns.rapture -> remains() == timespan_t::zero && p -> spec.rapture -> ok() )
     {
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.rapture -> effect1().percent(), p -> gains.rapture );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> spec.rapture -> effect1().percent(), p -> gains.rapture );
       p -> cooldowns.rapture -> start();
     }
   }
@@ -3411,8 +3373,8 @@ struct power_word_shield_t : public priest_absorb_t
     }
 
     // Body and Soul
-    if ( p -> talents.body_and_soul -> rank() )
-      t -> buffs.body_and_soul -> trigger( 1, p -> talents.body_and_soul -> effect1().percent() );
+    if ( p -> spec.body_and_soul -> ok() )
+      t -> buffs.body_and_soul -> trigger( 1, p -> spec.body_and_soul -> effect1().percent() );
   }
 
   virtual bool ready()
@@ -3723,17 +3685,6 @@ double priest_t::composite_spell_hit() const
   return hit;
 }
 
-// priest_t::composite_spell_haste ==========================================
-
-double priest_t::composite_spell_haste() const
-{
-  double h = player_t::composite_spell_haste();
-
-  h *= constants.darkness_value;
-
-  return h;
-}
-
 // priest_t::composite_player_multiplier ====================================
 
 double priest_t::composite_player_multiplier( const school_type school, action_t* a ) const
@@ -3747,8 +3698,6 @@ double priest_t::composite_player_multiplier( const school_type school, action_t
   }
   if ( spell_id_t::is_school( school, SCHOOL_SHADOWLIGHT ) )
   {
-    m *= 1.0 + constants.twin_disciplines_value;
-
     if ( buffs.chakra_chastise -> up() )
     {
       m *= 1.0 + 0.15;
@@ -3774,18 +3723,6 @@ double priest_t::composite_player_td_multiplier( const school_type school, actio
   }
 
   return player_multiplier;
-}
-
-// priest_t::composite_player_heal_multiplier ===============================
-
-double priest_t::composite_player_heal_multiplier( const school_type school ) const
-{
-  double m = player_t::composite_player_heal_multiplier( school );
-
-  if ( spell_id_t::is_school( school, SCHOOL_SHADOWLIGHT ) )
-    m *= 1.0 + constants.twin_disciplines_value;
-
-  return m;
 }
 
 // priest_t::composite_movement_speed =======================================
@@ -4006,11 +3943,13 @@ void priest_t::init_spells()
   spec.grace = find_specialization_spell( "Grace" );
   spec.evangelism = find_specialization_spell( "Evangelism" );
   spec.train_of_thought = find_specialization_spell( "Train of Thought" );
+  spec.rapture = find_specialization_spell( "Rapture" );
 
   // Holy
   spec.spiritual_healing      = new spell_id_t( this, "spiritual_healing", "Spiritual Healing" );
   spec.meditation_holy        = new spell_id_t( this, "meditation_holy", 95861 );
   spec.revelations            = find_specialization_spell( "Revelations" );
+  spec.body_and_soul = find_specialization_spell( "Body and Soul" );
 
   // Shadow
   spec.shadow_power           = new spell_id_t( this, "shadow_power", "Shadow Power" );
@@ -4018,6 +3957,7 @@ void priest_t::init_spells()
   spec.shadowy_apparition_num = new spell_id_t( this, "shadowy_apparition_num", 78202 );
   spec.pain_and_suffering = find_specialization_spell( "Pain and Suffering" );
   spec.twisted_faith = find_specialization_spell( "Twisted Faith" );
+  spec.shadow_form = find_specialization_spell( "Shadow Form" );
 
   // Mastery Spells
   mastery_spells.shield_discipline = new mastery_t( this, "shield_discipline", "Shield Discipline", TREE_DISCIPLINE );
@@ -4233,8 +4173,7 @@ void priest_t::init_actions()
         if ( race == RACE_TROLL )
           buffer += "/berserking";
         buffer += "/power_infusion";
-        if ( talents.rapture -> ok() )
-          buffer += "/power_word_shield,if=buff.weakened_soul.down";
+        buffer += "/power_word_shield,if=buff.weakened_soul.down";
 
         if ( level >= 28 )
           buffer += "/devouring_plague,if=miss_react&(remains<tick_time|!ticking)";
@@ -4264,14 +4203,11 @@ void priest_t::init_actions()
           list_default += ",if=pet.shadow_fiend.active";
         if ( race == RACE_TROLL )
           list_default += "/berserking";
-        if ( talents.inner_focus ->ok() )
-          list_default += "/inner_focus";
+        list_default += "/inner_focus";
         list_default += "/power_infusion";
         list_default += "/power_word_shield";
-        if ( talents.rapture -> ok() )
+        if ( spec.rapture -> ok() )
           list_default += ",if=!cooldown.rapture.remains";
-        if ( talents.archangel -> ok() )
-          list_default += "/archangel,if=buff.holy_evangelism.stack>=5";
         list_default += "/greater_heal,if=buff.inner_focus.up";
 
         list_default += "/holy_fire";
@@ -4319,12 +4255,11 @@ void priest_t::init_actions()
         if ( level >= 64 )                               list_default += "/hymn_of_hope";
         if ( level >= 66 )                               list_default += ",if=pet.shadow_fiend.active&time>200";
         if ( race == RACE_TROLL )                        list_default += "/berserking";
-        if ( talents.chakra -> ok() )                    list_default += "/chakra";
-        if ( talents.archangel -> ok() )                 list_default += "/archangel,if=buff.holy_evangelism.stack>=5";
+                                                         list_default += "/chakra";
                                                          list_default += "/holy_fire";
         if ( level >= 28 )                               list_default += "/devouring_plague,if=remains<tick_time|!ticking";
                                                          list_default += "/shadow_word_pain,if=remains<tick_time|!ticking";
-        if ( ! talents.archangel -> ok() )               list_default += "/mind_blast";
+                                                         list_default += "/mind_blast";
                                                          list_default += "/smite";
       }
       // HEALER
@@ -4345,7 +4280,6 @@ void priest_t::init_actions()
       if ( level >= 66 )                                 list_default += ",if=pet.shadow_fiend.active&time>200";
       if ( race == RACE_TROLL )                          list_default += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      list_default += "/arcane_torrent,if=mana_pct<=90";
-      if ( talents.archangel -> ok() )                   list_default += "/archangel,if=buff.holy_evangelism.stack>=5";
                                                          list_default += "/holy_fire";
       if ( level >= 28 )                                 list_default += "/devouring_plague,if=remains<tick_time|!ticking";
                                                          list_default += "/shadow_word_pain,if=remains<tick_time|!ticking";
@@ -4404,14 +4338,6 @@ void priest_t::init_values()
                                               spec.meditation_disc  -> base_value( E_APPLY_AURA, A_MOD_MANA_REGEN_INTERRUPT ) :
                                               spec.meditation_holy  -> base_value( E_APPLY_AURA, A_MOD_MANA_REGEN_INTERRUPT );
 
-  // Discipline
-  constants.twin_disciplines_value          = talents.twin_disciplines          -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-  constants.dark_archangel_damage_value     = dbc.spell( 87153 )      -> effect1().percent();
-  constants.holy_archangel_value            = dbc.spell( 81700 )     -> effect1().percent();
-
-  // Holy
-  constants.holy_concentration_value        = talents.holy_concentration        -> effect1().percent();
-
   // Shadow Core
   constants.shadow_power_damage_value       = spec.shadow_power       -> effect1().percent();
   constants.shadow_power_crit_value         = spec.shadow_power       -> effect2().percent();
@@ -4419,18 +4345,15 @@ void priest_t::init_values()
   constants.shadow_orb_mastery_value        = mastery_spells.shadow_orb_power   -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
 
   // Shadow
-  constants.darkness_value                  = 1.0 / ( 1.0 + talents.darkness    -> effect1().percent() );
-  constants.improved_shadow_word_pain_value = talents.improved_shadow_word_pain -> effect1().percent();
-  constants.twisted_faith_static_value      = talents.twisted_faith             -> effect2().percent();
-  constants.twisted_faith_dynamic_value     = talents.twisted_faith             -> effect1().percent();
-  constants.shadow_form_value               = talents.shadow_form               -> effect2().percent();
-  constants.harnessed_shadows_value         = talents.harnessed_shadows         -> effect1().percent();
-  constants.pain_and_suffering_value        = talents.pain_and_suffering        -> proc_chance();
+  constants.twisted_faith_static_value      = spec.twisted_faith             -> effect2().percent();
+  constants.twisted_faith_dynamic_value     = spec.twisted_faith             -> effect1().percent();
+  constants.shadow_form_value               = spec.shadow_form               -> effect2().percent();
+  constants.pain_and_suffering_value        = spec.pain_and_suffering        -> proc_chance();
   constants.devouring_plague_health_mod     = 0.15;
 
   constants.max_shadowy_apparitions         = spec.shadowy_apparition_num -> effect1().base_value();
 
-  mana_regen_while_casting = constants.meditation_value + constants.holy_concentration_value;
+  mana_regen_while_casting = constants.meditation_value;
 
   if ( set_bonus.pvp_2pc_caster() )
     attribute_initial[ ATTR_INTELLECT ] += 70;
