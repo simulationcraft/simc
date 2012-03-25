@@ -361,7 +361,7 @@ struct warrior_t : public player_t
   virtual void      combat_begin();
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_attack_hit() const;
-  virtual double    composite_attack_crit() const;
+  virtual double    composite_attack_crit( weapon_t* ) const;
   virtual double    composite_mastery() const;
   virtual double    composite_attack_haste() const;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
@@ -3835,9 +3835,9 @@ double warrior_t::composite_attack_hit() const
 
 // warrior_t::composite_attack_crit =========================================
 
-double warrior_t::composite_attack_crit() const
+double warrior_t::composite_attack_crit( weapon_t* w ) const
 {
-  double c = player_t::composite_attack_crit();
+  double c = player_t::composite_attack_crit( w );
 
   c += talents.rampage -> effect2().percent();
 

@@ -2474,7 +2474,7 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       if ( dot_stack < 3 ) dot_stack++;
       result = RESULT_HIT;
-      double dot_dmg = calculate_direct_damage() * 0.03;
+      double dot_dmg = calculate_direct_damage( 0 ) * 0.03;
       base_td = dot_stack * dot_dmg / num_ticks;
     }
     mage_spell_t::impact( t, impact_result, travel_dmg );

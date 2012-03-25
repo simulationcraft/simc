@@ -1338,12 +1338,12 @@ struct shadow_fiend_pet_t : public pet_t
     return owner -> composite_spell_hit();
   }
 
-  virtual double composite_attack_expertise() const
+  virtual double composite_attack_expertise( weapon_t* /* w */ ) const
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
 
-  virtual double composite_attack_crit() const
+  virtual double composite_attack_crit( weapon_t* /* w */ ) const
   {
     double c = pet_t::composite_attack_crit();
 

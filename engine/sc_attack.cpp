@@ -111,6 +111,7 @@ timespan_t attack_t::execute_time() const
   if ( ! harmful && ! player -> in_combat )
     return timespan_t::zero;
 
+  //log_t::output( sim, "%s execute_time=%f base_execute_time=%f execute_time=%f", name(), base_execute_time * swing_haste(), base_execute_time, swing_haste() );
   return base_execute_time * swing_haste();
 }
 
@@ -123,67 +124,8 @@ void attack_t::player_buff()
   player_t* p = player;
 
   player_hit       = p -> composite_attack_hit();
-  player_expertise = p -> composite_attack_expertise();
-  player_crit      = p -> composite_attack_crit();
-
-  if ( weapon )
-  {
-    if ( p -> race == RACE_ORC )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_AXE:
-      case WEAPON_AXE_2H:
-      case WEAPON_FIST:
-        player_expertise += 0.03;
-        break;
-      }
-    }
-    else if ( p -> race == RACE_TROLL )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_BOW:
-        player_crit += 0.01;
-        break;
-      }
-    }
-    else if ( p -> race == RACE_HUMAN )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_MACE:
-      case WEAPON_MACE_2H:
-      case WEAPON_SWORD:
-      case WEAPON_SWORD_2H:
-        player_expertise += 0.03;
-        break;
-      }
-    }
-    else if ( p -> race == RACE_DWARF )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_GUN:
-        player_crit += 0.01;
-        break;
-      case WEAPON_MACE:
-      case WEAPON_MACE_2H:
-        player_expertise += 0.03;
-        break;
-      }
-    }
-    else if ( p -> race == RACE_GNOME )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_DAGGER:
-      case WEAPON_SWORD:
-        player_expertise += 0.03;
-        break;
-      }
-    }
-  }
+  player_expertise = p -> composite_attack_expertise( weapon );
+  player_crit      = p -> composite_attack_crit( weapon );
 
   if ( sim -> debug )
     log_t::output( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
@@ -496,12 +438,4 @@ void attack_t::calculate_result()
 void attack_t::execute()
 {
   action_t::execute();
-
-  if ( harmful && callbacks )
-  {
-    if ( result != RESULT_NONE )
-    {
-      action_callback_t::trigger( player -> attack_callbacks[ result ], this );
-    }
-  }
 }

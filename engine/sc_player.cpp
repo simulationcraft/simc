@@ -429,7 +429,8 @@ player_t::player_t( sim_t*             s,
   // Attack Mechanics
   base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),       buffed_attack_power( 0 ),
   base_attack_hit( 0 ),         initial_attack_hit( 0 ),          attack_hit( 0 ),         buffed_attack_hit( 0 ),
-  base_attack_expertise( 0 ),   initial_attack_expertise( 0 ),    attack_expertise( 0 ),   buffed_attack_expertise( 0 ),
+  base_attack_expertise( 0 ),   initial_attack_expertise( 0 ),    attack_expertise( 0 ),   buffed_mh_attack_expertise( 0 ),
+  buffed_oh_attack_expertise( 0 ),
   base_attack_crit( 0 ),        initial_attack_crit( 0 ),         attack_crit( 0 ),        buffed_attack_crit( 0 ),
   attack_power_multiplier( 1.0 ), initial_attack_power_multiplier( 1.0 ),
   attack_power_per_strength( 0 ), initial_attack_power_per_strength( 0 ),
@@ -2116,7 +2117,7 @@ double player_t::composite_attack_power() const
 
 // player_t::composite_attack_crit ==========================================
 
-double player_t::composite_attack_crit() const
+double player_t::composite_attack_crit( weapon_t* weapon ) const
 {
   double ac = attack_crit + attack_crit_per_agility * agility();
 
@@ -2136,8 +2137,85 @@ double player_t::composite_attack_crit() const
   {
     ac += 0.01;
   }
+  
+  switch ( race )
+  {
+    case RACE_DWARF:
+      if ( weapon && weapon -> type == WEAPON_GUN )
+        ac += 0.01;
+      break;
+    case RACE_TROLL:
+      if ( weapon && weapon -> type == WEAPON_BOW )
+        ac += 0.01;
+    default:
+      break;
+  }
 
   return ac;
+}
+
+// player_t::composite_attack_expertise =====================================
+double player_t::composite_attack_expertise( weapon_t* weapon ) const
+{
+  double m = attack_expertise;
+  
+  if ( ! weapon )
+    return m;
+
+  switch ( race )
+  {
+    case RACE_ORC:
+    {
+      switch ( weapon -> type )
+      {
+        case WEAPON_AXE:
+        case WEAPON_AXE_2H:
+        case WEAPON_FIST:
+          m += 0.03;
+          break;
+      }
+      break;
+    }
+    case RACE_HUMAN:
+    {
+      switch ( weapon -> type )
+      {
+        case WEAPON_MACE:
+        case WEAPON_MACE_2H:
+        case WEAPON_SWORD:
+        case WEAPON_SWORD_2H:
+          m += 0.03;
+          break;
+      }
+      break;
+    }
+    case RACE_DWARF:
+    {
+      switch ( weapon -> type )
+      {
+        case WEAPON_MACE:
+        case WEAPON_MACE_2H:
+          m += 0.03;
+          break;
+      }
+      break;
+    }
+    case RACE_GNOME:
+    {
+      switch ( weapon -> type )
+      {
+        case WEAPON_DAGGER:
+        case WEAPON_SWORD:
+          m += 0.03;
+          break;
+      }
+      break;
+    }
+    default:
+      break;
+  }
+  
+  return m;
 }
 
 // player_t::composite_attack_hit ===========================================
@@ -2504,12 +2582,24 @@ double player_t::composite_attribute_multiplier( int attr ) const
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) const
+double player_t::composite_player_multiplier( const school_type school, action_t* /* a */ ) const
 {
   double m = 1.0;
 
   if ( type != PLAYER_GUARDIAN )
   {
+    if ( school == SCHOOL_PHYSICAL )
+    {
+      if ( debuffs.demoralizing_roar    -> up() ||
+           debuffs.demoralizing_shout   -> up() ||
+           debuffs.demoralizing_screech -> up() ||
+           debuffs.scarlet_fever        -> up() ||
+           debuffs.vindication          -> up() )
+      {
+        m *= 0.90;
+      }
+    }
+
     if ( buffs.hellscreams_warsong -> up() || buffs.strength_of_wrynn -> up() )
     {
       // ICC buff.
@@ -5202,8 +5292,9 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed_attack_power       = p -> composite_attack_power() * p -> composite_attack_power_multiplier();
     p -> buffed_attack_hit         = p -> composite_attack_hit();
-    p -> buffed_attack_expertise   = p -> composite_attack_expertise();
-    p -> buffed_attack_crit        = p -> composite_attack_crit();
+    p -> buffed_mh_attack_expertise   = p -> composite_attack_expertise( &( p -> main_hand_weapon ) );
+    p -> buffed_oh_attack_expertise   = p -> composite_attack_expertise( &( p -> off_hand_weapon ) );
+    p -> buffed_attack_crit        = p -> composite_attack_crit( &( p -> main_hand_weapon ) );
 
     p -> buffed_armor       = p -> composite_armor();
     p -> buffed_miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL );
@@ -6955,3 +7046,64 @@ aura_t* targetdata_t::add_aura( aura_t* a )
   assert( a->initial_source == this->source );
   return a;
 }
+
+double player_t::composite_spell_crit_vulnerability() const
+{
+  return std::max( debuffs.critical_mass    -> stack() * 5,
+                   debuffs.shadow_and_flame -> stack() * 5 ) / 100.0;
+}
+
+double player_t::composite_attack_crit_vulnerability() const
+{
+  return 0.0;
+}
+
+double player_t::composite_player_vulnerability( school_type school ) const
+{
+  double m = 1.0;
+  
+  if ( school == SCHOOL_PHYSICAL ||
+       school == SCHOOL_BLEED    )
+  {
+    if ( debuffs.savage_combat -> up() )
+    {
+      m *= 1.04;
+    }
+    else if ( debuffs.blood_frenzy_physical -> value() || 
+              debuffs.brittle_bones -> value() || 
+              debuffs.ravage -> value() )
+    {
+      m *= 1.0 + std::max( std::max( debuffs.blood_frenzy_physical -> value() * 0.01,
+                                     debuffs.brittle_bones         -> value() ),
+                           debuffs.ravage                          -> value() * 0.01 );
+      
+    }
+  }
+  else
+  {
+    m *= 1.0 + ( std::max( debuffs.curse_of_elements  -> value(),
+                           std::max( debuffs.earth_and_moon     -> value(),
+                                     std::max( debuffs.ebon_plaguebringer -> value(),
+                                               debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
+  }
+  
+  return m;
+}
+
+double player_t::composite_ranged_attack_power_vulnerability() const
+{
+  if ( debuffs.hunters_mark -> check() )
+    return debuffs.hunters_mark -> value();
+
+  return 0.0;
+}
+
+double player_t::composite_player_penetration_vulnerability( school_type /* s */ ) const
+{
+  double p = 0;
+  
+  if ( debuffs.curse_of_elements -> check() ) p += 88;
+  
+  return p;
+}
+

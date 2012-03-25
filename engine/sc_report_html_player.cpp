@@ -996,12 +996,14 @@ static void print_html_stats ( FILE* file, player_t* a )
     fprintf( file,
              "\t\t\t\t\t\t\t\t\t<tr class=\"odd\">\n"
              "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f / %.2f</td>\n"
+             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f / %.2f </td>\n"
+             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             100 * a -> buffed_attack_expertise,
-             100 * a -> composite_attack_expertise(),
+             100 * a -> buffed_mh_attack_expertise,
+             100 * a -> buffed_oh_attack_expertise,
+             100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
+             100 * a -> composite_attack_expertise( &( a -> off_hand_weapon ) ),
              a -> stats.expertise_rating );
 
     fprintf( file,

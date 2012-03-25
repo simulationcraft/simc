@@ -371,7 +371,9 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   print_xml_player_attribute( writer, "attackcrit",
                               100 * p -> composite_attack_crit(), p -> stats.crit_rating, 100 * p -> buffed_attack_crit );
   print_xml_player_attribute( writer, "expertise",
-                              100 * p -> composite_attack_expertise(), p -> stats.expertise_rating, 100 * p -> buffed_attack_expertise );
+                              100 * p -> composite_attack_expertise( &( p -> main_hand_weapon ) ), p -> stats.expertise_rating, 100 * p -> buffed_mh_attack_expertise );
+  print_xml_player_attribute( writer, "expertise_oh",
+                              100 * p -> composite_attack_expertise( &( p -> off_hand_weapon ) ), p -> stats.expertise_rating, 100 * p -> buffed_oh_attack_expertise );
   print_xml_player_attribute( writer, "attackhaste",
                               100 * ( 1 / p -> composite_attack_haste() - 1 ), p -> stats.haste_rating, 100 * ( 1 / p -> buffed_attack_haste - 1 ) );
   print_xml_player_attribute( writer, "attackspeed",

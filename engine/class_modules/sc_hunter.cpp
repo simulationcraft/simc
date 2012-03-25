@@ -592,14 +592,14 @@ struct hunter_pet_t : public pet_t
 
     return mult;
   }
-
-  virtual double composite_attack_crit() const
+  
+  virtual double composite_attack_crit( weapon_t* /* w */ ) const
   {
     hunter_t* o = owner -> cast_hunter();
 
-    double ac = pet_t::composite_attack_crit();
+    double ac = pet_t::composite_attack_crit( 0);
 
-    ac += o -> composite_attack_crit();
+    ac += o -> composite_attack_crit( &( o -> main_hand_weapon ) );
 
     return ac;
   }
@@ -628,7 +628,7 @@ struct hunter_pet_t : public pet_t
     return o -> composite_attack_hit();
   }
 
-  virtual double composite_attack_expertise() const
+  virtual double composite_attack_expertise( weapon_t* /* w */ ) const
   {
     hunter_t* o = owner -> cast_hunter();
 

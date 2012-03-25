@@ -71,6 +71,7 @@ SRC = \
 	data_definitions.hh \
 	data_enums.hh \
 	utf8.h \
+	sc_action_state.cpp \
 	sc_action.cpp \
 	sc_armory.cpp \
 	sc_attack.cpp \
@@ -129,7 +130,7 @@ SRC = \
 	sc_xml.cpp \
 	class_modules$(PATHSEP)sc_death_knight.cpp \
 	class_modules$(PATHSEP)sc_druid.cpp \
-    class_modules$(PATHSEP)sc_hunter.cpp \
+	class_modules$(PATHSEP)sc_hunter.cpp \
 	class_modules$(PATHSEP)sc_mage.cpp \
 	class_modules$(PATHSEP)sc_monk.cpp \
 	class_modules$(PATHSEP)sc_paladin.cpp \

@@ -2155,7 +2155,7 @@ struct hemorrhage_t : public rogue_attack_t
         // Dot can crit and double dips in player multipliers
         // Damage is based off actual damage, not normalized to hits like FFB
         // http://elitistjerks.com/f78/t105429-cataclysm_mechanics_testing/p6/#post1796877
-        double dot_dmg = calculate_direct_damage() * p -> glyphs.hemorrhage -> base_value() / 100.0;
+        double dot_dmg = calculate_direct_damage( 0 ) * p -> glyphs.hemorrhage -> base_value() / 100.0;
         base_td = dot_dmg / num_ticks;
       }
     }

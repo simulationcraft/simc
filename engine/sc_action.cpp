@@ -150,6 +150,11 @@ void action_t::init_action_t_()
   cached_targetdata_target = NULL;
   action_dot = NULL;
   targetdata_dot_offset = -1;
+  // New Stuff
+  stateless = false;
+  snapshot_flags = 0;
+  update_flags = STATE_TARGET;
+  state_cache = 0;
 
   init_dot( name_str );
 
@@ -242,6 +247,13 @@ action_t::~action_t()
   {
     delete if_expr;
     delete interrupt_if_expr;
+  }
+  
+  while ( state_cache )
+  {
+    action_state_t* s = state_cache;
+    state_cache = s -> next;
+    delete s;
   }
 }
 
@@ -516,23 +528,7 @@ void action_t::player_buff()
   {
     player_t* p = player;
 
-    if ( school == SCHOOL_BLEED )
-    {
-      // Not applicable
-    }
-
-    if ( school == SCHOOL_PHYSICAL )
-    {
-      if ( p -> debuffs.demoralizing_roar    -> up() ||
-           p -> debuffs.demoralizing_shout   -> up() ||
-           p -> debuffs.demoralizing_screech -> up() ||
-           p -> debuffs.scarlet_fever        -> up() ||
-           p -> debuffs.vindication          -> up() )
-      {
-        player_multiplier *= 0.90;
-      }
-    }
-    else if ( school != SCHOOL_PHYSICAL )
+    if ( school != SCHOOL_PHYSICAL )
     {
       player_penetration = p -> composite_spell_penetration();
     }
@@ -1007,34 +1003,74 @@ void action_t::execute()
     player -> in_combat = true;
   }
 
-  player_buff();
-
-  if ( aoe == -1 || aoe > 0 )
+  if ( ! stateless )
   {
-    std::vector< player_t* > tl = target_list();
+    player_buff();
 
-    for ( size_t t = 0; t < tl.size(); t++ )
+    if ( aoe == -1 || aoe > 0 )
     {
-      target_debuff( tl[ t ], DMG_DIRECT );
+      std::vector< player_t* > tl = target_list();
+      
+      for ( size_t t = 0; t < tl.size(); t++ )
+      {
+        target_debuff( tl[ t ], DMG_DIRECT );
+        
+        calculate_result();
 
+        if ( result_is_hit() )
+          direct_dmg = calculate_direct_damage( t + 1 );
+        
+        schedule_travel( tl[ t ] );
+      }
+    }
+    else
+    {
+      target_debuff( target, DMG_DIRECT );
+      
       calculate_result();
 
       if ( result_is_hit() )
-        direct_dmg = calculate_direct_damage( t + 1 );
-
-      schedule_travel( tl[ t ] );
+        direct_dmg = calculate_direct_damage( 0 );
+      
+      schedule_travel( target );
     }
   }
   else
   {
-    target_debuff( target, DMG_DIRECT );
-
-    calculate_result();
-
-    if ( result_is_hit() )
-      direct_dmg = calculate_direct_damage();
-
-    schedule_travel( target );
+    if ( aoe == -1 || aoe > 0 )
+    {
+      std::vector< player_t* > tl = target_list();
+      
+      for ( size_t t = 0; t < tl.size(); t++ )
+      {
+        action_state_t* state = get_state();
+        state -> target = tl[ t ];
+        state -> take_state( snapshot_flags );
+        calculate_result_s( state );
+        
+        if ( result_is_hit( state -> result ) )
+          state -> result_amount = calculate_direct_damage_s( t + 1, state );
+        
+        if ( sim -> debug )
+          state -> debug();
+        
+        schedule_travel_s( state );
+      }
+    }
+    else
+    {
+      action_state_t* state = get_state();
+      state -> take_state( snapshot_flags );
+      calculate_result_s( state );
+      
+      if ( result_is_hit( state -> result ) )
+        state -> result_amount = calculate_direct_damage_s( 0, state );
+      
+      if ( sim -> debug )
+        state -> debug();
+      
+      schedule_travel_s( state );
+    }
   }
 
   consume_resource();
@@ -1052,29 +1088,53 @@ void action_t::tick( dot_t* d )
 {
   if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
-  result = RESULT_HIT;
-
-  player_tick();
-
-  target_debuff( target, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
-
-  if ( tick_may_crit )
+  if ( ! stateless )
   {
-    int delta_level = target -> level - player -> level;
-
-    if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
+    result = RESULT_HIT;
+    
+    player_tick();
+    
+    target_debuff( target, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+    
+    if ( tick_may_crit )
     {
-      result = RESULT_CRIT;
+      int delta_level = target -> level - player -> level;
+      
+      if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
+      {
+        result = RESULT_CRIT;
+      }
     }
+    
+    tick_dmg = calculate_tick_damage();
+    
+    d -> prev_tick_amount = tick_dmg;
+
+    assess_damage( target, tick_dmg, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, result );
+
+    if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
   }
+  else
+  {
+    d -> state -> result = RESULT_HIT;
+    d -> state -> take_state( update_flags );
+    
+    if ( tick_may_crit )
+    {
+      if ( rng[ RESULT_CRIT ] -> roll( crit_chance_s( d -> state ) ) )
+        d -> state -> result = RESULT_CRIT;
+    }
+    
+    d -> state -> result_amount = calculate_tick_damage_s( d -> state );
+    
+    assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
 
-  tick_dmg = calculate_tick_damage();
-
-  d -> prev_tick_amount = tick_dmg;
-
-  assess_damage( target, tick_dmg, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, result );
-
-  if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
+    if ( harmful && callbacks )
+      action_callback_t::trigger( player -> tick_callbacks[ d -> state -> result ], this );
+    
+    if ( sim -> debug )
+      d -> state -> debug();
+  }
 
   stats -> add_tick( d -> time_to_tick );
 }
@@ -1086,6 +1146,11 @@ void action_t::last_tick( dot_t* d )
   if ( sim -> debug ) log_t::output( sim, "%s fades from %s", d -> name(), target -> name() );
 
   d -> ticking = false;
+  if ( d -> state )
+  {
+    release_state( d -> state );
+    d -> state = 0;
+  }
 
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
 }
@@ -1495,6 +1560,47 @@ void action_t::init()
 
     background = true;
   }
+
+  if ( may_crit || tick_may_crit )
+    snapshot_flags |= STATE_CRIT | STATE_TARGET_CRIT;
+  
+  if ( may_miss )
+    snapshot_flags |= STATE_HIT;
+  
+  if ( harmful )
+  {
+    if ( base_td > 0 || num_ticks > 0 )
+      snapshot_flags |= STATE_TA_ACTION_MUL;
+    
+    if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
+      snapshot_flags |= STATE_DA_ACTION_MUL;
+  }
+  
+  switch ( type )
+  {
+    case ACTION_ATTACK:
+      if ( base_attack_power_multiplier > 0 && 
+          ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
+        snapshot_flags |= STATE_AP | STATE_TARGET_POWER;
+      
+      if ( may_dodge || may_parry )
+        snapshot_flags |= STATE_EXPERTISE;
+      
+      break;
+    case ACTION_SPELL:
+      if ( base_spell_power_multiplier > 0 && 
+          ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+        snapshot_flags |= STATE_SP | STATE_TARGET_POWER;
+      
+      if ( num_ticks > 0 && hasted_ticks )
+        snapshot_flags |= STATE_HASTE;
+      break;
+    default:
+      break;
+  }
+  
+  if ( ! target -> is_enemy() )
+    snapshot_flags |= STATE_PENETRATION | STATE_TARGET_PEN;
 
   initialized = true;
 }

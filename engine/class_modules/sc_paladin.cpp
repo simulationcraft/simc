@@ -314,7 +314,7 @@ struct paladin_t : public player_t
   virtual void      reset();
   virtual double    composite_attribute_multiplier( int attr ) const;
   virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
-  virtual double    composite_attack_expertise() const;
+  virtual double    composite_attack_expertise( weapon_t* ) const;
   virtual double    composite_attack_haste() const;
   virtual double    composite_spell_haste() const;
   virtual double    composite_spell_power( const school_type school ) const;
@@ -3547,9 +3547,9 @@ int paladin_t::primary_role() const
 
 // paladin_t::composite_attack_expertise ====================================
 
-double paladin_t::composite_attack_expertise() const
+double paladin_t::composite_attack_expertise( weapon_t* w ) const
 {
-  double m = player_t::composite_attack_expertise();
+  double m = player_t::composite_attack_expertise( w );
   if ( ( ( active_seal == SEAL_OF_TRUTH ) || ( active_seal == SEAL_OF_RIGHTEOUSNESS ) )&& glyphs.seal_of_truth -> ok() )
   {
     m += glyphs.seal_of_truth -> mod_additive( P_EFFECT_2 ) / 100.0;

@@ -787,7 +787,7 @@ public:
     return ap;
   }
 
-  virtual double composite_attack_crit() const
+  virtual double composite_attack_crit( weapon_t* ) const
   {
     double ac = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
@@ -834,7 +834,7 @@ struct warlock_main_pet_t : public warlock_pet_t
     o -> active_pet = 0;
   }
 
-  virtual double composite_attack_expertise() const
+  virtual double composite_attack_expertise( weapon_t* ) const
   {
     return owner -> spell_hit * 26.0 / 17.0;
   }
@@ -886,12 +886,12 @@ struct warlock_guardian_pet_t : public warlock_pet_t
     snapshot_mastery = owner -> composite_mastery();
   }
 
-  virtual double composite_attack_crit() const
+  virtual double composite_attack_crit( weapon_t* ) const
   {
     return snapshot_crit;
   }
 
-  virtual double composite_attack_expertise() const
+  virtual double composite_attack_expertise( weapon_t* ) const
   {
     return 0;
   }
