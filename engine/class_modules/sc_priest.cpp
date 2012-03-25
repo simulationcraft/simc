@@ -340,23 +340,6 @@ struct priest_t : public player_t
   };
   constants_t constants;
 
-  // Power Mods
-  struct power_mod_t
-  {
-    double devouring_plague;
-    double mind_blast;
-    double mind_flay;
-    double mind_spike;
-    double shadow_word_death;
-    double shadow_word_pain;
-    double vampiric_touch;
-    double holy_fire;
-    double smite;
-
-    power_mod_t() { memset( ( void * ) this, 0x0, sizeof( power_mod_t ) ); }
-  };
-  power_mod_t power_mod;
-
   bool   was_sub_25;
 
   priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
