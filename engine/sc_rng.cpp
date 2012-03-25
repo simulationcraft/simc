@@ -656,7 +656,7 @@ struct rng_phase_shift_t : public rng_normalized_t
     assert( result >= min && result <= max );
     return result;
   }
-  virtual double gauss( double mean, double stddev, bool /* truncate_low_end */ = false )
+  virtual double gauss( double mean, double stddev, const bool /* truncate_low_end */ = false )
   {
     if ( average_gauss ) return mean;
     num_gauss++;
@@ -782,7 +782,7 @@ struct rng_pre_fill_t : public rng_normalized_t
     return result;
   }
 
-  virtual double gauss( double mean, double stddev, bool /* truncate_low_end */ = false )
+  virtual double gauss( double mean, double stddev, const bool /* truncate_low_end */ = false )
   {
     if ( average_gauss ) return mean;
     int size = ( int ) gauss_distribution.size();
@@ -1012,7 +1012,7 @@ struct rng_distance_simple_t : public rng_normalized_t
     return result;
   }
 
-  virtual double gauss( double mean, double stddev, bool /* truncate_low_end */ = false )
+  virtual double gauss( double mean, double stddev, const bool /* truncate_low_end */ = false )
   {
     if ( average_gauss ) return mean;
     num_gauss++;
