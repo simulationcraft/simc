@@ -378,7 +378,8 @@ struct priest_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new priest_targetdata_t( source, target );}
+  virtual targetdata_t* new_targetdata( player_t* source, player_t* target )
+    { return new priest_targetdata_t( source, target ); }
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_benefits();
@@ -1094,8 +1095,8 @@ public:
       atonement -> trigger( amount, dmg_type, impact_result );
   }
 
-  static void trigger_shadowy_apparition( player_t* player );
-  static void add_more_shadowy_apparitions( player_t* player );
+  static void trigger_shadowy_apparition( priest_t* player );
+  static void add_more_shadowy_apparitions( priest_t* player );
 };
 
 // ==========================================================================
@@ -1564,10 +1565,8 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   }
 };
 
-void priest_spell_t::trigger_shadowy_apparition( player_t* player )
+void priest_spell_t::trigger_shadowy_apparition( priest_t* p )
 {
-  priest_t* p = player -> cast_priest();
-
   if ( !p -> shadowy_apparition_free_list.empty() )
   {
     for ( ; p->buffs.shadow_orb -> check(); p->buffs.shadow_orb -> decrement() )
@@ -1585,10 +1584,8 @@ void priest_spell_t::trigger_shadowy_apparition( player_t* player )
   }
 }
 
-void priest_spell_t::add_more_shadowy_apparitions( player_t* player )
+void priest_spell_t::add_more_shadowy_apparitions( priest_t* p )
 {
-  priest_t* p = player -> cast_priest();
-
   spell_t* s = NULL;
 
   if ( ! p -> shadowy_apparition_free_list.size() )
@@ -3006,7 +3003,7 @@ struct shadowy_apparition_t : priest_spell_t
   {
     priest_spell_t::execute();
 
-    trigger_shadowy_apparition( player );
+    trigger_shadowy_apparition( p() );
   }
 };
 
