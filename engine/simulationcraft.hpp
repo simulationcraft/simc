@@ -2231,9 +2231,11 @@ public:
   unsigned specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned specialization_ability_tree_size() const;
   unsigned specialization_ability_size() const;
+  int      specialization_ability_tree( player_type c, uint32_t spell_id ) const;
 
-  unsigned mastery_ability( unsigned class_id, unsigned n ) const;
+  unsigned mastery_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned mastery_ability_size() const;
+  int      mastery_ability_tree( player_type c, uint32_t spell_id ) const;
 
   unsigned glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n ) const;
   unsigned glyph_spell_size() const;
@@ -2254,12 +2256,11 @@ public:
   unsigned class_ability_id( player_type c, const char* spell_name, int tree = -1 ) const;
   unsigned race_ability_id( player_type c, race_type r, const char* spell_name ) const;
   unsigned specialization_ability_id( player_type c, const char* spell_name, int tree = -1 ) const;
-  unsigned mastery_ability_id( player_type c, const char* spell_name ) const;
+  unsigned mastery_ability_id( player_type c, const char* spell_name, int spec = -1 ) const;
   unsigned glyph_spell_id( player_type c, const char* spell_name ) const;
   unsigned set_bonus_spell_id( player_type c, const char* spell_name, int tier = -1 ) const;
 
   int      class_ability_tree( player_type c, uint32_t spell_id ) const;
-  int      specialization_ability_tree( player_type c, uint32_t spell_id ) const;
 
   bool     is_class_ability( uint32_t spell_id ) const;
   bool     is_race_ability( uint32_t spell_id ) const;

@@ -326,12 +326,15 @@ struct spell_list_expr_t : public spell_data_expr_t
     {
       for ( unsigned cls = 0; cls < 12; cls++ )
       {
-        for ( unsigned n = 0; n < sim -> dbc.mastery_ability_size(); n++ )
+        for ( unsigned tree = 0; tree < MAX_TALENT_TABS; tree++ )
         {
-          if ( ! ( spell_id = sim -> dbc.mastery_ability( cls, n ) ) )
-            continue;
+          for ( unsigned n = 0; n < sim -> dbc.mastery_ability_size(); n++ )
+          {
+            if ( ! ( spell_id = sim -> dbc.mastery_ability( cls, tree, n ) ) )
+              continue;
 
-          result_spell_list.push_back( spell_id );
+            result_spell_list.push_back( spell_id );
+          }
         }
       }
       break;

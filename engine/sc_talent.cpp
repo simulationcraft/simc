@@ -298,6 +298,9 @@ bool spell_id_t::initialize( const char* s_name )
   case T_CLASS:
     s_tree = s_player -> dbc.class_ability_tree( player_class, s_id );
     break;
+  case T_MASTERY:
+    s_tree = s_player -> dbc.mastery_ability_tree( player_class, s_id );
+    break;
   default:
     s_tree = -1;
     break;

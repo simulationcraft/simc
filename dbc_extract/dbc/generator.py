@@ -1670,30 +1670,48 @@ class MasteryAbilityGenerator(DataGenerator):
                     continue
                 
                 if s.flags_12694 & 0x20000000:
-                    ids[v.id_mastery] = { 'mask_class' : DataGenerator._class_masks[v.class_id], 'category' : v.id }
+                    ids[v.id_mastery] = { 'mask_class' : v.class_id, 'category' : v.spec_id, 'spec_name' : v.name }
                 
         return ids
 
     def generate(self, ids = None):
         max_ids = 0
         mastery_class = 0
-        keys    = [ [], [], [], [], [], [], [], [], [], [], [], [] ]
+        keys    = [ 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+        ]
         
         for k, v in ids.iteritems():
-            if v['mask_class'] == 0:
-                for cls in xrange(0, len(SpellDataGenerator._class_categories)):
-                    if v['category'] in SpellDataGenerator._class_categories[cls]:
-                        mastery_class = cls
-                        break
+            if self._options.build < 15464:
+                if v['mask_class'] == 0:
+                    for cls in xrange(0, len(SpellDataGenerator._skill_categories)):
+                        if v['category'] == SpellDataGenerator._skill_categories[cls]:
+                            mastery_class = cls
+                            break
+                else:
+                    mastery_class = self._class_map[v['mask_class']]
+        
+                keys[mastery_class][0].append( ( self._spell_db[k].name, k, "Generic" ) )
             else:
-                mastery_class = self._class_map[v['mask_class']]
-            
-            keys[mastery_class].append( ( self._spell_db[k].name, k ) )
-            
+                keys[v['mask_class']][v['category']].append( ( self._spell_db[k].name, k, v['spec_name'] ) )
+        
+        
         # Find out the maximum size of a key array
-        for i in keys:
-            if len(i) > max_ids:
-                max_ids = len(i)
+        for cls in keys:
+            for spec in cls:
+                if len(spec) > max_ids:
+                    max_ids = len(spec)
 
         data_str = "%sclass_mastery_ability%s" % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -1705,22 +1723,27 @@ class MasteryAbilityGenerator(DataGenerator):
             max_ids
         )
         s += '// Class mastery abilities, wow build %d\n' % self._options.build
-        s += 'static unsigned __%s_data[][%s_SIZE] = {\n' % (
+        s += 'static unsigned __%s_data[][MAX_TALENT_TABS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
         )
         
-        for k in xrange(0, len(keys)):
-            if SpellDataGenerator._class_names[k]:
-                s += '  // Class mastery abilities for %s\n' % ( SpellDataGenerator._class_names[k] )
+        for cls in xrange(0, len(keys)):
+            if SpellDataGenerator._class_names[cls]:
+                s += '  // Class mastery abilities for %s\n' % ( SpellDataGenerator._class_names[cls] )
                 
             s += '  {\n'
-            for ability in sorted(keys[k], key = lambda i: i[0]):
-                s += '    %6u, // %s\n' % ( ability[1], ability[0] )
-                
-            if len(keys[k]) < max_ids:
-                s += '    %6u,\n' % 0
-                
+            for spec in xrange(0, len(keys[cls])):
+                if len(keys[cls][spec]) > 0:
+                    s += '    // Masteries for %s specialization\n' % keys[cls][spec][0][2]
+                s += '    {\n'
+                for ability in sorted(keys[cls][spec], key = lambda i: i[0]):
+                    s += '      %6u, // %s\n' % ( ability[1], ability[0] )
+
+                if len(keys[cls][spec]) < max_ids:
+                    s += '      %6u,\n' % 0
+
+                s += '    },\n'
             s += '  },\n'
         
         s += '};\n'
@@ -2405,122 +2428,6 @@ class ClassFlagGenerator(SpellDataGenerator):
 
                         bfield = ((i - 1) * 32) + bit
                         spell_family[copts.spell_family_name][bfield]['effects'].append( effect )
-
-            """
-            spell = self._spell_db[spell_id]
-            sname = spell.name
-            if spell.rank:
-                sname += ' (%s)' % spell.rank
-
-            # Calculate the class specific thing for the spell
-            if spell.id_class_opts > 0:
-                opts = self._spellclassoptions_db[spell.id_class_opts]
-
-                for i in xrange(1, 4):
-                    f = getattr(opts, 'spell_family_flags_%u' % i)
-                    
-                    for bit in xrange(0, 31):
-                        if not (f & (1 << bit)):
-                            continue
-
-                        bfield = ((i - 1) * 32) + bit
-                        class_opts[bfield].append( ( [ -1 ], sname, spell.id ) )
-
-            # Aand check what affects what for spells too
-            for effect in spell._effects:
-                if not effect:
-                    continue
-
-                # Skip anything but modifier applications
-                if effect.type != 6 or effect.sub_type not in [ 13, 79, 107, 108, 308 ]:
-                    continue
-
-                # Skip server side scripts and see what happens then
-                #if effect.type == 74 or effect.type == 0 or effect.type == 3 or (effect.type == 6 and effect.sub_type == 4):
-                #    continue
-
-                for i in xrange(1, 4):
-                    f = getattr(effect, 'class_mask_%u' % i)
-                    for bit in xrange(0, 31):
-                        if not (f & (1 << bit)):
-                            continue
-
-                        bfield = ((i - 1) * 32) + bit
-                        found = False
-                        for t in class_opts[bfield]:
-                            if sname == t[1] and spell.id == t[2]:
-                                if effect.index not in t[0]:
-                                    t[0].append(effect.index)
-
-                                found = True
-                                break
-
-                        if not found:
-                            class_opts[bfield].append( ( [ effect.index ], sname, spell.id ) )
-        
-        # Then, loop ALL talents for the class, and adding their effect's options
-        for talent_id, talent_data in self._talent_db.iteritems():
-            tabinfo = self._talenttab_db[talent_data.talent_tab]
-            if tabinfo.mask_class != mask:
-                continue
-
-            spell = self._spell_db[talent_data.id_rank_1]
-            if not spell.id:
-                continue
-
-            sname = spell.name
-            if spell.rank:
-                sname += ' (%s)' % spell.rank
-
-            for effect in spell._effects:
-                if not effect:
-                    continue
-
-                # Skip anything but modifier applications
-                if effect.type != 6 or effect.sub_type not in [ 13, 79, 107, 108, 308 ]:
-                    continue
-
-                # Skip server side scripts and see what happens then
-                #if effect.type == 74 or effect.type == 0 or effect.type == 3 or (effect.type == 6 and effect.sub_type == 4):
-                #    continue
-
-                for i in xrange(1, 4):
-                    f = getattr(effect, 'class_mask_%u' % i)
-                    for bit in xrange(0, 31):
-                        if not (f & (1 << bit)):
-                            continue
-
-                        bfield = ((i - 1) * 32) + bit
-                        found = False
-                        for t in class_opts[bfield]:
-                            if sname == t[1] and spell.id == t[2]:
-                                if effect.index not in t[0]:
-                                    t[0].append(effect.index)
-
-                                found = True
-                                break
-
-                        if not found:
-                            class_opts[bfield].append( ( [ effect.index ], sname, spell.id ) )
-        
-        s = 'Bit Spell name, id\n'
-        for i in xrange(0, len(class_opts)):
-            if not class_opts[i]:
-                s += ' %2d.\n' % (i + 1)
-            else:
-                s += ' %2d. %s%s (%u)\n' % ( 
-                    i + 1, 
-                    (-1 not in sorted(class_opts[i])[0][0]) and ('[%s] ' % ', '.join(["%s" % el for el in sorted(class_opts[i])[0][0]])) or '    ', 
-                    sorted(class_opts[i])[0][1],
-                    sorted(class_opts[i])[0][2]
-                )
-                for sp in sorted(class_opts[i])[1:]:
-                    s += '     %s%s (%u)\n' % ( 
-                        (-1 not in sp[0]) and ('[%s] ' % ', '.join(["%s" % el for el in sp[0]])) or '    ', 
-                        sp[1], 
-                        sp[2])
-
-        """
 
         for family, d in sorted(spell_family.items()):
             s += 'Spell family %d:\n' % family

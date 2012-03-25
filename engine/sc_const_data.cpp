@@ -430,15 +430,15 @@ unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, uns
 #endif
 }
 
-unsigned dbc_t::mastery_ability( unsigned class_id, unsigned n ) const
+unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, unsigned n ) const
 {
   assert( class_id < CLASS_SIZE && n < mastery_ability_size() );
 
 #if SC_USE_PTR
-  return ptr ? __ptr_class_mastery_ability_data[ class_id ][ n ]
-             : __class_mastery_ability_data[ class_id ][ n ];
+  return ptr ? __ptr_class_mastery_ability_data[ class_id ][ specialization ][ n ]
+             : __class_mastery_ability_data[ class_id ][ specialization ][ n ];
 #else
-  return __class_mastery_ability_data[ class_id ][ n ];
+  return __class_mastery_ability_data[ class_id ][ specialization ][ n ];
 #endif
 }
 
@@ -1211,26 +1211,62 @@ unsigned dbc_t::set_bonus_spell_id( player_type c, const char* name, int tier ) 
   return 0;
 }
 
-unsigned dbc_t::mastery_ability_id( player_type c, const char* spell_name ) const
+unsigned dbc_t::mastery_ability_id( player_type c, const char* spell_name, int spec ) const
 {
   uint32_t cid = util_t::class_id( c );
   uint32_t spell_id;
 
   assert( spell_name && spell_name[ 0 ] );
 
-  for ( unsigned n = 0; n < mastery_ability_size(); n++ )
+  if ( spec == -1 )
   {
-    if ( ! ( spell_id = mastery_ability( cid, n ) ) )
-      break;
+    for ( unsigned tree = 0; tree < MAX_TALENT_TABS; tree++ )
+    {
+      for ( unsigned n = 0; n < mastery_ability_size(); n++ )
+      {
+        if ( ! ( spell_id = mastery_ability( cid, tree, n ) ) )
+          break;
 
-    if ( ! spell( spell_id ) -> id() )
-      continue;
+        if ( ! spell( spell_id ) -> id() )
+          continue;
 
-    if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-      return spell_id;
+        if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+          return spell_id;
+      }
+    }
+  }
+  else
+  {
+    for ( unsigned n = 0; n < mastery_ability_size(); n++ )
+    {
+      if ( ! ( spell_id = mastery_ability( cid, spec, n ) ) )
+        break;
+
+      if ( ! spell( spell_id ) -> id() )
+        continue;
+
+      if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+        return spell_id;
+    }
   }
 
   return 0;
+}
+
+int dbc_t::mastery_ability_tree( player_type c, uint32_t spell_id ) const
+{
+  uint32_t cid = util_t::class_id( c );
+
+  for ( unsigned tree = 0; tree < MAX_TALENT_TABS; tree++ )
+  {
+    for ( unsigned n = 0; n < mastery_ability_size(); n++ )
+    {
+      if ( mastery_ability( cid, tree, n ) == spell_id )
+        return tree;
+    }
+  }
+
+  return -1;
 }
 
 bool dbc_t::is_class_ability( uint32_t spell_id ) const
@@ -1276,10 +1312,13 @@ bool dbc_t::is_mastery_ability( uint32_t spell_id ) const
 {
   for ( unsigned int cls = 0; cls < 12; cls++ )
   {
-    for ( unsigned n = 0; n < mastery_ability_size(); n++ )
+    for ( unsigned tree = 0; tree < MAX_TALENT_TABS; tree++ )
     {
-      if ( mastery_ability( cls, n ) == spell_id )
-        return true;
+      for ( unsigned n = 0; n < mastery_ability_size(); n++ )
+      {
+        if ( mastery_ability( cls, tree, n ) == spell_id )
+          return true;
+      }
     }
   }
 
