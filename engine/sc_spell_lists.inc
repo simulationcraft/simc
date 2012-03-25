@@ -1,4 +1,4 @@
-#define CLASS_ABILITY_SIZE (47)
+#define CLASS_ABILITY_SIZE (46)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
 // Class based active abilities, wow build 15464
@@ -781,7 +781,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 47 abilities
+    // General tree, 46 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
@@ -828,7 +828,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          783, // Travel Form (Shapeshift)
        50516, // Typhoon
       102793, // Ursol's Vortex
-      102401, // Wild Charge
         5176, // Wrath
     },
     // Balance tree, 6 abilities

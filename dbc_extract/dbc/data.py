@@ -72,7 +72,7 @@ _DIFF_DATA = {
             ( 'unk_15464', _ADD_FIELD, 'desc' )
         ],
         'SpellEffect.dbc' : [
-            ( 'unk_15464', _ADD_FIELD, 'trigger_spell' ),
+            ( 'unk_15464', _ADD_FIELD, 'class_mask_3' ),
         ],
         'SpellPower.dbc' : [
             ( ( 'type_power', '%2d' ), _ADD_FIELD, 'id' ),
