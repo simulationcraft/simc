@@ -5944,16 +5944,15 @@ glyph_t* player_t::find_glyph( const std::string& n )
 
 // player_t::find_specialization_spell ======================================
 
-spell_id_t* player_t::find_specialization_spell( const char* name, const char* token )
+spell_id_t* player_t::find_specialization_spell( const char* name, const char* token, talent_tree_type tree )
 {
   spell_id_t* spec_spell = 0;
-  unsigned spell_id = dbc.specialization_ability_id( type, name );
+  unsigned spell_id = dbc.specialization_ability_id( type, name, util_t::spec_id( type, tree ) );
   if ( spell_id > 0 )
     spec_spell = new spell_id_t( this, token, name );
   
   return spec_spell;
 }
-
 
 // player_t::create_expression ==============================================
 

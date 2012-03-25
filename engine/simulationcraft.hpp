@@ -450,10 +450,10 @@ enum talent_tree_type
 {
   TREE_NONE=0,
   TREE_BLOOD,         TREE_UNHOLY,                         // DEATH KNIGHT
-  TREE_BALANCE,       TREE_FERAL,        TREE_RESTORATION, // DRUID
+  TREE_BALANCE,       TREE_FERAL,        TREE_GUARDIAN, TREE_RESTORATION, // DRUID
   TREE_BEAST_MASTERY, TREE_MARKSMANSHIP, TREE_SURVIVAL,    // HUNTER
   TREE_ARCANE,        TREE_FIRE,         TREE_FROST,       // MAGE
-  TREE_BREWMASTER,    TREE_WINDWALKER,   TREE_MISTWEAVER,  // FIXME tank/dd/heal
+  TREE_BREWMASTER,    TREE_MISTWEAVER,   TREE_WINDWALKER,  // FIXME tank/heal/dd
                                          TREE_RETRIBUTION, // PALADIN
   TREE_DISCIPLINE,    TREE_HOLY,         TREE_SHADOW,      // PRIEST
   TREE_ASSASSINATION, TREE_COMBAT,       TREE_SUBTLETY,    // ROGUE
@@ -467,7 +467,7 @@ enum talent_tab_type
 {
   TALENT_TAB_NONE = -1,
   DEATH_KNIGHT_BLOOD = 0,   DEATH_KNIGHT_FROST,  DEATH_KNIGHT_UNHOLY, // DEATH KNIGHT
-  DRUID_BALANCE = 0,        DRUID_FERAL,         DRUID_RESTORATION,   // DRUID
+  DRUID_BALANCE = 0,        DRUID_FERAL,         DRUID_GUARDIAN, DRUID_RESTORATION,   // DRUID
   HUNTER_BEAST_MASTERY = 0, HUNTER_MARKSMANSHIP, HUNTER_SURVIVAL,     // HUNTER
   MAGE_ARCANE = 0,          MAGE_FIRE,           MAGE_FROST,          // MAGE
   MONK_BREWMASTER = 0,      MONK_WINDWALKER,     MONK_MISTWEAVER,     // MONK tank/dd/heal
@@ -2408,6 +2408,7 @@ public:
   static const char* stat_type_abbrev          ( int type );
   static const char* stat_type_wowhead         ( int type );
   static int         talent_tree               ( int tree, player_type ptype );
+  static int         spec_id                   ( player_type ptype, talent_tree_type tree );
   static const char* talent_tree_string        ( int tree, bool armory_format = true );
   static const char* weapon_type_string        ( int type );
   static const char* weapon_class_string       ( int class_ );
@@ -4625,7 +4626,7 @@ struct player_t : public noncopyable
 
   virtual talent_t* find_talent( const std::string& name, int tree = TALENT_TAB_NONE );
   virtual glyph_t*  find_glyph ( const std::string& name );
-  virtual spell_id_t* find_specialization_spell( const char* name, const char* token );
+  virtual spell_id_t* find_specialization_spell( const char* name, const char* token = 0, talent_tree_type tree = TREE_NONE );
 
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 

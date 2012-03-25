@@ -839,6 +839,105 @@ int util_t::talent_tree( int tree, player_type ptype )
   return TREE_NONE;
 }
 
+int util_t::spec_id( player_type ptype, talent_tree_type tree )
+{
+  switch ( ptype )
+  {
+  case DEATH_KNIGHT:
+    switch ( tree )
+    {
+    case TREE_BLOOD:    return 0;
+    case TREE_FROST:    return 1;
+    case TREE_UNHOLY:   return 2;
+    default: break;
+    }
+  case DRUID:
+    switch ( tree )
+    {
+    case TREE_BALANCE:         return 0;
+    case TREE_FERAL:           return 1;
+    case TREE_GUARDIAN:        return 2;
+    case TREE_RESTORATION:     return 3;
+    default: break;
+    }
+  case HUNTER:
+    switch ( tree )
+    {
+    case TREE_BEAST_MASTERY:  return 0;
+    case TREE_MARKSMANSHIP:   return 1;
+    case TREE_SURVIVAL:       return 2;
+    default: break;
+    }
+  case MAGE:
+    switch ( tree )
+    {
+    case TREE_ARCANE:           return 0;
+    case TREE_FIRE:             return 1;
+    case TREE_FROST:            return 2;
+    default: break;
+    }
+  case MONK:
+    switch ( tree )
+    {
+    case TREE_BREWMASTER:       return 0;
+    case TREE_MISTWEAVER:       return 1;
+    case TREE_WINDWALKER:       return 2;
+    default: break;
+    }
+  case PALADIN:
+    switch ( tree )
+    {
+    case TREE_HOLY:          return 0;
+    case TREE_PROTECTION:    return 1;
+    case TREE_RETRIBUTION:   return 2;
+    default: break;
+    }
+  case PRIEST:
+    switch ( tree )
+    {
+    case TREE_DISCIPLINE:     return 0;
+    case TREE_HOLY:           return 1;
+    case TREE_SHADOW:         return 2;
+    default: break;
+    }
+  case ROGUE:
+    switch ( tree )
+    {
+    case TREE_ASSASSINATION:   return 0;
+    case TREE_COMBAT:          return 1;
+    case TREE_SUBTLETY:        return 2;
+    default: break;
+    }
+  case SHAMAN:
+    switch ( tree )
+    {
+    case TREE_ELEMENTAL:      return 0;
+    case TREE_ENHANCEMENT:    return 1;
+    case TREE_RESTORATION:    return 2;
+    default: break;
+    }
+  case WARLOCK:
+    switch ( tree )
+    {
+    case TREE_AFFLICTION:    return 0;
+    case TREE_DEMONOLOGY:    return 1;
+    case TREE_DESTRUCTION:   return 2;
+    default: break;
+    }
+  case WARRIOR:
+    switch ( tree )
+    {
+    case TREE_ARMS:          return 0;
+    case TREE_FURY:          return 1;
+    case TREE_PROTECTION:    return 2;
+    default: break;
+    }
+  default:
+    break;
+  }
+  return -1;
+}
+
 // util_t::talent_tree_string ===============================================
 
 const char* util_t::talent_tree_string( int tree, bool armory_format )
