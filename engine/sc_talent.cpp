@@ -279,7 +279,14 @@ bool spell_id_t::initialize( const char* s_name )
   // Do second phase of spell initialization
   s_data = s_player -> dbc.spell( s_id );
 
-  const_cast<spell_data_t*>( s_data ) -> set_used( true );
+  const_cast< spell_data_t* >( s_data ) -> set_used( true );
+
+  // Automagically generate a spell token if the token does not exist
+  if ( s_token.empty() )
+  {
+    s_token = std::string( s_data -> name_cstr() );
+    armory_t::format( s_token, FORMAT_ASCII_MASK );
+  }
 
   // Some spells, namely specialization and class spells
   // can specify a tree for the spell
@@ -387,6 +394,8 @@ std::string spell_id_t::to_str() const
   s << " player=" << s_player -> name_str;
   if ( s_required_talent )
     s << " req_talent=" << s_required_talent -> s_token;
+  if ( s_tree >= 0 )
+    s << " specialization=" << s_tree;
 
   return s.str();
 }
@@ -1064,4 +1073,3 @@ std::string mastery_t::to_str() const
 
   return s.str();
 }
-
