@@ -163,7 +163,7 @@ struct rating_t;
 struct reforge_plot_t;
 struct reforge_plot_data_t;
 struct report_t;
-struct rng_t;
+class rng_t;
 struct talent_t;
 struct spell_id_t;
 struct rogue_t;

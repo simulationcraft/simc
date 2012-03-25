@@ -267,7 +267,7 @@ void action_t::parse_data()
     else
       base_cost = spell -> cost();
 
-    for ( int i=1; i <= spell -> _effects.size(); i++ )
+    for ( unsigned int i=1; i <= spell -> _effects.size(); i++ )
     {
       parse_effect_data( id, i );
     }
