@@ -1267,7 +1267,7 @@ class SpellDataGenerator(DataGenerator):
 
             self.process_spell(spell.id, ids, ability_data.mask_class or mask_class_category, ability_data.mask_race or mask_race_category)
 
-        # Get specialization skills from SpecializationSpells
+        # Get specialization skills from SpecializationSpells and masteries from ChrSpecializations
         if self._options.build >= 15464:
             for spec_id, spec_spell_data in self._specializationspells_db.iteritems():
                 # Guess class based on specialization category identifier
@@ -1287,6 +1287,15 @@ class SpellDataGenerator(DataGenerator):
                     mask_class = DataGenerator._class_masks[3]
                 
                 self.process_spell(spell.id, ids, mask_class, 0)
+            
+            for spec_id, spec_data in self._chrspecialization_db.iteritems():
+                s = self._spell_db[spec_data.id_mastery]
+                if s.id == 0:
+                    continue
+                
+                if s.flags_12694 & 0x20000000:
+                    self.process_spell(s.id, ids, DataGenerator._class_masks[spec_data.class_id], 0)
+        
 
         # Get spells relating to item enchants, so we can populate a (nice?) list
         for ability_id, ability_data in self._skilllineability_db.iteritems():

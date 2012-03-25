@@ -13,6 +13,7 @@ spell_data_nil_t spell_data_nil_t::singleton;
 
 spell_data_nil_t::spell_data_nil_t() : spell_data_t()
 { 
+  _effects = new std::vector< const spelleffect_data_t* >();
 }
 
 // spell_data_t::set_used ===================================================
