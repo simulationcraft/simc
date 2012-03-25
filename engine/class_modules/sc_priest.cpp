@@ -195,8 +195,6 @@ struct priest_t : public player_t
   };
   active_spells_t   active_spells;
 
-  spell_data_t*     dark_flames;
-
   // Cooldowns
   struct cooldowns_t
   {
@@ -223,7 +221,6 @@ struct priest_t : public player_t
   struct benefits_t
   {
     benefit_t* mind_spike[ 4 ];
-    benefit_t* dark_flames;
     benefit_t* shadow_orb[ 4 ];
     benefit_t* test_of_faith;
   } benefits;
@@ -2299,31 +2296,11 @@ struct mind_blast_t : public priest_spell_t
 
   virtual void player_buff()
   {
-    priest_t* p = player -> cast_priest();
-    priest_targetdata_t* td = targetdata() -> cast_priest();
-
     priest_spell_t::player_buff();
 
-    double m = 1.0;
+    player_multiplier *= 1.0 + p() -> buffs.dark_archangel -> value() * p() -> constants.dark_archangel_damage_value;
 
-    if ( p -> set_bonus.tier12_4pc_caster() )
-    {
-      if ( td -> dots_shadow_word_pain -> ticking && td -> dots_vampiric_touch -> ticking && td -> dots_devouring_plague -> ticking )
-      {
-        m += p -> dark_flames -> effect1().percent();
-        p -> benefits.dark_flames -> update( 1 );
-      }
-      else
-      {
-        p -> benefits.dark_flames -> update( 0 );
-      }
-    }
-
-    m += p -> buffs.dark_archangel -> value() * p -> constants.dark_archangel_damage_value;
-
-    player_multiplier *= m;
-
-    player_multiplier *= 1.0 + ( p -> buffs.shadow_orb -> stack() * p -> shadow_orb_amount() );
+    player_multiplier *= 1.0 + ( p() -> buffs.shadow_orb -> stack() * p() -> shadow_orb_amount() );
   }
 
   virtual void target_debuff( player_t* t, int dmg_type )
@@ -4605,8 +4582,6 @@ void priest_t::init_benefits()
   benefits.mind_spike[ 2 ] = get_benefit( "mind_spike_2" );
   benefits.mind_spike[ 3 ] = get_benefit( "mind_spike_3" );
 
-  benefits.dark_flames     = get_benefit( "dark_flames" );
-
   benefits.shadow_orb[ 0 ] = get_benefit( "Percentage of Mind Blasts benefiting from 0 Shadow Orbs" );
   benefits.shadow_orb[ 1 ] = get_benefit( "Percentage of Mind Blasts benefiting from 1 Shadow Orbs" );
   benefits.shadow_orb[ 2 ] = get_benefit( "Percentage of Mind Blasts benefiting from 2 Shadow Orbs" );
@@ -4720,15 +4695,6 @@ void priest_t::init_spells()
   mastery_spells.shield_discipline = new mastery_t( this, "shield_discipline", "Shield Discipline", TREE_DISCIPLINE );
   mastery_spells.echo_of_light     = new mastery_t( this, "echo_of_light", "Echo of Light", TREE_HOLY );
   mastery_spells.shadow_orb_power  = new mastery_t( this, "shadow_orb_power", "Shadow Orb Power", TREE_SHADOW );
-
-  // Active Spells
-  active_spells.mind_spike      = new spell_id_t( this, "mind_spike", "Mind Spike" );
-  active_spells.shadow_fiend    = new spell_id_t( this, "shadow_fiend", "Shadowfiend" );
-  active_spells.holy_archangel  = new spell_id_t( this, "holy_archangel", 87152 );
-  active_spells.holy_archangel2 = new spell_id_t( this, "holy_archangel2", 81700 );
-  active_spells.dark_archangel  = new spell_id_t( this, "dark_archangel", 87153 );
-
-  dark_flames                   = spell_data_t::find( 99158, "Dark Flames", dbc.ptr );
 
   // Glyphs
   glyphs.circle_of_healing  = find_glyph( "Glyph of Circle of Healing" );
