@@ -104,9 +104,9 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds )
 
   int new_remaining_ticks;
   if ( ! state ) 
-    action -> hasted_num_ticks( duration_left );
+    new_remaining_ticks = action -> hasted_num_ticks( duration_left );
   else
-    action -> hasted_num_ticks_s( state, duration_left );
+    new_remaining_ticks = action -> hasted_num_ticks_s( state, duration_left );
   
   num_ticks += ( new_remaining_ticks - old_remaining_ticks );
 
