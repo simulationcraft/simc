@@ -4232,9 +4232,6 @@ double player_t::target_mitigation( double            amount,
     if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
       log_t::output( sim, "Damage to %s before armor mitigation is %f", action -> target -> name(), mitigated_amount );
 
-    // Inspiration
-    mitigated_amount *= 1.0 - buffs.inspiration -> value() / 100.0;
-
     // Armor
     if ( action )
     {

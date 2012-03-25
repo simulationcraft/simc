@@ -4328,7 +4328,6 @@ struct player_t : public noncopyable
     buff_t* illuminated_healing;
     buff_t* indestructible_potion;
     buff_t* innervate;
-    buff_t* inspiration;
     buff_t* lifeblood;
     buff_t* mana_tide;
     buff_t* mark_of_the_wild;
