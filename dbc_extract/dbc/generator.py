@@ -1868,6 +1868,10 @@ class SpecializationSpellGenerator(DataGenerator):
             if chrspec.class_id == 0:
                 continue
             
+            spell = self._spell_db[data.spell_id]
+            if spell.id == 0:
+                continue
+            
             keys[chrspec.class_id][chrspec.spec_id].append( ( self._spell_db[data.spell_id].name, data.spell_id, chrspec.name ) )
 
         # Figure out tree with most abilities

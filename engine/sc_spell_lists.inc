@@ -1116,7 +1116,6 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
   {
     // Specialization abilities for Discipline tree
     {
-       47537, // 0
        47515, // Divine Aegis
        81662, // Evangelism
        47517, // Grace
@@ -1154,7 +1153,6 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
     },
     // Specialization abilities for Shadow tree
     {
-       95740, // 0
        47585, // Dispersion
         8092, // Mind Blast
        15407, // Mind Flay
@@ -1384,7 +1382,6 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
     },
     // Specialization abilities for Destruction tree
     {
-      117168, // 0
       109784, // Aftermath
        19881, // Auto Wand
       117896, // Backdraft
