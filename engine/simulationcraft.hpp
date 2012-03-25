@@ -4348,8 +4348,7 @@ struct player_t : public noncopyable
     buff_t* weakened_soul;
     buff_t* wild_magic_potion_crit;
     buff_t* wild_magic_potion_sp;
-  };
-  buffs_t buffs;
+  } buffs;
 
   struct debuffs_t
   {
