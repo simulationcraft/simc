@@ -851,10 +851,13 @@ void spelleffect_data_t::link( bool ptr )
     ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
     
-    if ( ed._spell->_effects.size() < ( ed._index + 1 ) )
-      ed._spell->_effects.resize( ed._index + 1, spelleffect_data_t::nil() );
+    if ( ed._spell -> _effects == 0 )
+      ed._spell -> _effects = new std::vector< const spelleffect_data_t* >();
     
-    ed._spell->_effects[ ed._index ]= &ed;
+    if ( ed._spell -> _effects -> size() < ( ed._index + 1 ) )
+      ed._spell -> _effects -> resize( ed._index + 1, spelleffect_data_t::nil() );
+    
+    ed._spell -> _effects -> at( ed._index ) = &ed;
   }
 }
 

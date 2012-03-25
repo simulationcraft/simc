@@ -1962,9 +1962,9 @@ public:
   const char* _icon;
 
   // Pointers for runtime linking
-  std::vector<const spelleffect_data_t*> _effects;
+  std::vector<const spelleffect_data_t*>* _effects;
 
-  const spelleffect_data_t& effectN(unsigned idx) const { assert( idx >= 1 && idx <= _effects.size() ); return *_effects[ idx - 1 ]; }
+  const spelleffect_data_t& effectN(unsigned idx) const { assert( idx >= 1 && idx <= _effects -> size() ); return *_effects -> at( idx - 1 ); }
   const spelleffect_data_t& effect1() const { return effectN( 1 ); }
   const spelleffect_data_t& effect2() const { return effectN( 2 ); }
   const spelleffect_data_t& effect3() const { return effectN( 3 ); }
@@ -2014,8 +2014,8 @@ public:
 
   uint32_t             effect_id( uint32_t effect_num ) const
   {
-    assert( effect_num >= 1 && effect_num <= _effects.size() );
-    return _effects[ effect_num - 1 ] -> _id;
+    assert( effect_num >= 1 && effect_num <= _effects -> size() );
+    return _effects -> at( effect_num - 1 ) -> _id;
   }
 
   bool                 flags( spell_attribute_t f ) const;

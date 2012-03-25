@@ -1561,7 +1561,7 @@ class SpellDataGenerator(DataGenerator):
             else:
                 fields += [ '0' ]
             # Pad struct with empty pointers for direct access to spell effect data
-            fields += [ 'std::vector<const spelleffect_data_t*>()' ]
+            fields += [ '0' ]
 
             s += '  { %s }, /* %s */\n' % (', '.join(fields), ', '.join(effect_ids))
             

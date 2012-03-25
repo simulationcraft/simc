@@ -78,11 +78,11 @@ bool talent_t::set_rank( uint32_t r, bool overridden )
          ( r == 2 ) ? td -> spell2 :
          ( r == 1 ) ? td -> spell1 : spell_data_t::nil() );
   trigger = 0;
-  for (size_t i = 0; i < sd -> _effects.size(); i++ )
+  for ( size_t i = 0; i < sd -> _effects -> size(); i++ )
   {
-    if ( sd -> _effects[ i ] -> trigger_spell_id() )
+    if ( sd -> _effects -> at( i ) -> trigger_spell_id() )
     {
-      trigger = sd -> _effects[ i ] -> _trigger_spell;
+      trigger = sd -> _effects -> at( i ) -> _trigger_spell;
       break;
     }
   }
@@ -317,16 +317,16 @@ bool spell_id_t::initialize( const char* s_name )
 
   // Map s_effects, figure out if this is a s_single-effect spell
   uint32_t n_effects = 0;
-  s_effects.resize( s_data->_effects.size(), spelleffect_data_t::nil() );
-  for ( size_t i = 0; i < s_data->_effects.size(); i++ )
+  s_effects.resize( s_data -> _effects -> size(), spelleffect_data_t::nil() );
+  for ( size_t i = 0; i < s_data -> _effects -> size(); i++ )
   {
-    if ( ! s_data -> _effects[ i ] -> _id )
+    if ( ! s_data -> _effects -> at( i ) -> _id )
       continue;
 
-    if ( ! s_player -> dbc.effect( s_data -> _effects[ i ] -> _id ) )
+    if ( ! s_player -> dbc.effect( s_data -> _effects -> at( i ) -> _id ) )
       continue;
 
-    s_effects[ i ] = s_data -> _effects[ i ];
+    s_effects[ i ] = s_data -> _effects -> at( i );
     n_effects++;
   }
 
