@@ -658,7 +658,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       {
         const spell_data_t* spell = sim -> dbc.spell( *i );
 
-        for ( int j = 0; j < spell -> _effects.size(); j++ )
+        for ( unsigned int j = 0; j < spell -> _effects.size(); j++ )
         {
           if ( spell && spell -> _effects[ j ] -> _id > 0 &&
                sim -> dbc.effect( spell -> _effects[ j ] -> _id ) )
