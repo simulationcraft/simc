@@ -46,6 +46,7 @@ HEADERS += qt/sc_autoupdate.h
 HEADERS += qt/simulationcraftqt.h
 
 SOURCES += engine/sc_action.cpp
+SOURCES += engine/sc_action_state.cpp
 SOURCES += engine/sc_armory.cpp
 SOURCES += engine/sc_attack.cpp
 SOURCES += engine/sc_battle_net.cpp

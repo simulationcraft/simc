@@ -179,6 +179,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="engine\sc_action.cpp" />
+    <ClCompile Include="engine\sc_action_state.cpp" />
     <ClCompile Include="engine\sc_armory.cpp" />
     <ClCompile Include="engine\sc_attack.cpp" />
     <ClCompile Include="engine\sc_battle_net.cpp" />

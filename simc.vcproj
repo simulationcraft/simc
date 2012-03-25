@@ -199,6 +199,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_action_state.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_armory.cpp"
 			>
 		</File>
