@@ -88,10 +88,6 @@ struct priest_t : public player_t
     buff_t* vampiric_embrace;
 
     // Set Bonus
-    buff_t* indulgence_of_the_penitent;
-    buff_t* divine_fire;
-    buff_t* cauterizing_flame;
-    buff_t* tier13_2pc_heal;
   } buffs;
 
   // Talents
@@ -221,7 +217,6 @@ struct priest_t : public player_t
     gain_t* masochism;
     gain_t* rapture;
     gain_t* hymn_of_hope;
-    gain_t* divine_fire;
   } gains;
 
   // Benefits
@@ -551,8 +546,6 @@ public:
 
     if ( base_execute_time <= timespan_t::zero )
       p -> buffs.inner_will -> up();
-    // Needs testing
-    p -> buffs.tier13_2pc_heal -> up();
   }
 
   virtual void execute()
@@ -762,10 +755,6 @@ struct priest_heal_t : public heal_t
       double m = 1.0;
       m += p -> buffs.inner_will -> check() * p -> buffs.inner_will -> effect1().percent();
       m += p -> talents.mental_agility -> mod_additive( P_RESOURCE_COST );
-      if ( p -> buffs.tier13_2pc_heal -> check() )
-      {
-        m += p -> buffs.tier13_2pc_heal -> effect1().percent();
-      }
       c *= m;
       c  = floor( c );
     }
@@ -781,8 +770,6 @@ struct priest_heal_t : public heal_t
 
     if ( base_execute_time <= timespan_t::zero )
       p -> buffs.inner_will -> up();
-    // Needs testing
-    p -> buffs.tier13_2pc_heal -> up();
   }
 
   virtual void execute()
@@ -1534,20 +1521,6 @@ struct cauterizing_flame_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
-
-  virtual void summon( timespan_t duration )
-  {
-    priest_t* p = owner -> cast_priest();
-    pet_t::summon( duration );
-    p -> buffs.cauterizing_flame -> start();
-  }
-
-  virtual void dismiss()
-  {
-    priest_t* p = owner -> cast_priest();
-    pet_t::dismiss();
-    p -> buffs.cauterizing_flame -> expire();
-  }
 };
 
 // ==========================================================================
@@ -2077,12 +2050,7 @@ struct power_infusion_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    priest_t* p = player -> cast_priest();
-
     target -> buffs.power_infusion -> trigger();
-
-    // Needs testing
-    p -> buffs.tier13_2pc_heal -> trigger();
   }
 
   virtual bool ready()
@@ -3255,16 +3223,6 @@ struct divine_hymn_t : public priest_heal_t
     add_child( divine_hymn_tick );
   }
 
-  virtual void execute()
-  {
-    priest_t* p = player -> cast_priest();
-
-    priest_heal_t::execute();
-
-    // Needs testing
-    p -> buffs.tier13_2pc_heal -> trigger();
-  }
-
   virtual void tick( dot_t* d )
   {
     if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
@@ -3296,8 +3254,6 @@ struct flash_heal_t : public priest_heal_t
       p -> buffs.surge_of_light -> expire();
     else if ( p -> buffs.surge_of_light -> trigger() )
       p -> procs.surge_of_light -> occur();
-
-    p -> buffs.divine_fire -> trigger();
 
     p -> buffs.serendipity -> trigger();
 
@@ -3430,8 +3386,6 @@ struct greater_heal_t : public priest_heal_t
 
     p -> buffs.serendipity -> expire();
 
-    p -> buffs.divine_fire -> trigger();
-
     if ( p -> buffs.surge_of_light -> trigger() )
       p -> procs.surge_of_light -> occur();
 
@@ -3553,8 +3507,6 @@ struct _heal_t : public priest_heal_t
 
     if ( p -> buffs.surge_of_light -> trigger() )
       p -> procs.surge_of_light -> occur();
-
-    p -> buffs.divine_fire -> trigger();
 
     // Trigger Chakra
     if ( p -> buffs.chakra_pre -> up() )
@@ -3873,15 +3825,6 @@ struct penance_heal_tick_t : public priest_heal_t
     direct_tick = true;
 
     stats = player -> get_stats( "penance_heal", this );
-  }
-
-  virtual void execute()
-  {
-    priest_heal_t::execute();
-
-    priest_t* p = player -> cast_priest();
-
-    p -> buffs.indulgence_of_the_penitent -> trigger();
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
@@ -4246,8 +4189,6 @@ struct prayer_of_mending_t : public priest_heal_t
 
     priest_t* p = player -> cast_priest();
 
-    p -> buffs.divine_fire -> trigger();
-
     // Chakra
     if ( p -> buffs.chakra_pre -> up() )
     {
@@ -4336,50 +4277,6 @@ struct renew_t : public priest_heal_t
       player_multiplier *= 1.0 + p -> buffs.chakra_sanctuary -> effect1().percent();
   }
 };
-
-// Tier 12 Healer 2pc Bonus =================================================
-
-// Implementation not 100% correct. When the buff expires and is reapplied between 2 events, the event is doubled, which then doubles the mana gain.
-
-// Event
-struct tier12_heal_2pc_event_t : public event_t
-{
-  buff_t* buff;
-
-  tier12_heal_2pc_event_t ( player_t* player,buff_t* b ) :
-    event_t( player -> sim, player ), buff( 0 )
-  {
-    buff = b;
-    name = "tier12_heal_2pc";
-    sim -> add_event( this, timespan_t::from_seconds( 5.0 ) );
-  }
-
-  virtual void execute()
-  {
-    if ( buff -> check() )
-    {
-      priest_t* p = player -> cast_priest();
-      player -> resource_gain( RESOURCE_MANA, player -> resource_base[ RESOURCE_MANA ] * p -> sets -> set( SET_T12_2PC_HEAL ) -> effect_base_value( 1 ) / 100.0, p -> gains.divine_fire );
-      new ( sim ) tier12_heal_2pc_event_t( player, buff );
-    }
-  }
-};
-
-// Buff
-
-struct tier12_heal_2pc_buff_t : public buff_t
-{
-  tier12_heal_2pc_buff_t( player_t* p, const uint32_t id, const std::string& n, double c ) :
-    buff_t ( p, id, n, c )
-  { }
-
-  virtual void start( int stacks, double value )
-  {
-    new ( sim ) tier12_heal_2pc_event_t( player, this );
-    buff_t::start( stacks, value );
-  }
-};
-
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -4681,7 +4578,6 @@ void priest_t::init_gains()
   gains.masochism                 = get_gain( "masochism" );
   gains.rapture                   = get_gain( "rapture" );
   gains.hymn_of_hope              = get_gain( "hymn_of_hope" );
-  gains.divine_fire               = get_gain( "divine_fire" );
 }
 
 // priest_t::init_procs. =====================================================
@@ -4909,9 +4805,6 @@ void priest_t::init_buffs()
   buffs.inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
   buffs.inner_focus -> cooldown -> duration = timespan_t::zero;
   buffs.inner_will                 = new buff_t( this, "inner_will", "Inner Will" );
-  buffs.tier13_2pc_heal            = new buff_t( this, sets -> set( SET_T13_2PC_HEAL ) -> effect1().trigger_spell_id(), "tier13_2pc_heal", set_bonus.tier13_2pc_heal() );
-  buffs.tier13_2pc_heal -> buff_duration = ( primary_tree() == TREE_DISCIPLINE ) ? timespan_t::from_seconds( 10.0 ) : buffs.tier13_2pc_heal -> buff_duration;
-
   // Holy
   buffs.chakra_pre                 = new buff_t( this, 14751, "chakra_pre" );
   buffs.chakra_chastise            = new buff_t( this, 81209, "chakra_chastise" );
@@ -4939,9 +4832,6 @@ void priest_t::init_buffs()
   buffs.vampiric_embrace           = new buff_t( this, talents.vampiric_embrace, NULL );
 
   // Set Bonus
-  buffs.indulgence_of_the_penitent = new buff_t( this, 89913, "indulgence_of_the_penitent", set_bonus.tier11_4pc_heal() );
-  buffs.divine_fire = new tier12_heal_2pc_buff_t( this, 99132, "divine_fire", set_bonus.tier12_2pc_heal() );
-  buffs.cauterizing_flame          = new buff_t( this, "cauterizing_flame",          1                           );
 }
 
 // priest_t::init_actions ===================================================
