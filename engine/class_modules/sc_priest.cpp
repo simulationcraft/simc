@@ -184,17 +184,6 @@ struct priest_t : public player_t
   };
   mastery_spells_t mastery_spells;
 
-  // Active Spells
-  struct active_spells_t
-  {
-    spell_id_t* mind_spike;
-    spell_id_t* shadow_fiend;
-    spell_id_t* holy_archangel;
-    spell_id_t* holy_archangel2;
-    spell_id_t* dark_archangel;
-  };
-  active_spells_t   active_spells;
-
   // Cooldowns
   struct cooldowns_t
   {
@@ -305,9 +294,7 @@ struct priest_t : public player_t
     // Discipline
     double twin_disciplines_value;
     double dark_archangel_damage_value;
-    double dark_archangel_mana_value;
     double holy_archangel_value;
-    double archangel_mana_value;
     double inner_will_value;
     double borrowed_time_value;
 
@@ -1628,14 +1615,12 @@ struct archangel_t : public priest_spell_t
     {
       cooldown -> duration = timespan_t::from_seconds( effect2().base_value() );
       p -> buffs.holy_archangel -> trigger( 1, p -> constants.holy_archangel_value * p -> buffs.holy_evangelism -> stack() );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs.holy_evangelism -> stack(), p -> gains.archangel );
       p -> buffs.holy_evangelism -> expire();
     }
     else if ( p -> buffs.dark_evangelism -> up() && delta < timespan_t::zero )
     {
       cooldown -> duration = timespan_t::from_seconds( effect3().base_value() );
       p -> buffs.dark_archangel -> trigger( 1, p -> buffs.dark_evangelism -> stack() );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs.dark_evangelism -> stack(), p -> gains.archangel );
       p -> buffs.dark_evangelism -> expire();
     }
 
@@ -2086,7 +2071,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     cooldown = p -> cooldowns.shadow_fiend;
-    cooldown -> duration = p -> active_spells.shadow_fiend -> cooldown() +
+    cooldown -> duration = spell_id_t::cooldown() +
                            p -> talents.veiled_shadows -> effect2().time_value() +
                            ( p -> set_bonus.tier12_2pc_caster() ? timespan_t::from_seconds( -75.0 ) : timespan_t::zero );
 
@@ -5120,10 +5105,8 @@ void priest_t::init_values()
 
   // Discipline
   constants.twin_disciplines_value          = talents.twin_disciplines          -> base_value( E_APPLY_AURA, A_MOD_DAMAGE_PERCENT_DONE );
-  constants.dark_archangel_damage_value     = active_spells.dark_archangel      -> base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22 );
-  constants.dark_archangel_mana_value       = active_spells.dark_archangel      -> effect_base_value( 3 ) / 100.0;
-  constants.holy_archangel_value            = active_spells.holy_archangel2     -> base_value( E_APPLY_AURA, A_MOD_HEALING_DONE_PERCENT ) / 100.0;
-  constants.archangel_mana_value            = active_spells.holy_archangel      -> base_value( E_ENERGIZE_PCT );
+  constants.dark_archangel_damage_value     = dbc.spell( 87153 )      -> effect1().percent();
+  constants.holy_archangel_value            = dbc.spell( 81700 )     -> effect1().percent();
   constants.borrowed_time_value             = 1.0 / ( 1.0 + talents.borrowed_time -> effect1().percent() );
 
   // Holy
