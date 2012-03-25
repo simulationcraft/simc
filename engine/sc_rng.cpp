@@ -570,7 +570,7 @@ private:
 public:
   rng_sfmt_t( const std::string& name, bool avg_range=false, bool avg_gauss=false ) :
     rng_t( name, avg_range, avg_gauss )
-  { seed( time( NULL ) ); }
+  { seed( static_cast<uint32_t>( time( NULL ) ) ); }
 
   virtual rng_type type() const
   { return RNG_MERSENNE_TWISTER; }
@@ -605,7 +605,7 @@ struct rng_normalized_t : public rng_t
 
   virtual double real() { return base -> real(); }
   virtual double range( double min, double max ) { return ( min + max ) / 2.0; }
-  virtual double gauss( double mean, double /* stddev */, bool /* truncate_low_end */ ) { return mean; }
+  virtual double gauss( double mean, double /* stddev */, const bool /* truncate_low_end */ ) { return mean; }
   virtual timespan_t gauss( timespan_t mean, timespan_t /* stddev */ ) { return mean; }
   virtual bool    roll( double chance ) = 0; // must be overridden
 };
