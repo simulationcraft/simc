@@ -2634,6 +2634,7 @@ struct spell_id_t
   const spelleffect_data_t& effect1() const { return ( ok() ? s_data -> effect1(): *spelleffect_data_t::nil() ); }
   const spelleffect_data_t& effect2() const { return ( ok() ? s_data -> effect2(): *spelleffect_data_t::nil() ); }
   const spelleffect_data_t& effect3() const { return ( ok() ? s_data -> effect3(): *spelleffect_data_t::nil() ); }
+  const spelleffect_data_t& effectN( unsigned idx ) const { return ( ok() ? s_data -> effectN( idx ) : *spelleffect_data_t::nil(); }
 private:
 };
 
