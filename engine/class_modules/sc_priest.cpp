@@ -202,33 +202,45 @@ struct priest_t : public player_t
   spell_data_t*     dark_flames;
 
   // Cooldowns
-  cooldown_t*       cooldowns_mind_blast;
-  cooldown_t*       cooldowns_shadow_fiend;
-  cooldown_t*       cooldowns_chakra;
-  cooldown_t*       cooldowns_rapture;
-  cooldown_t*       cooldowns_inner_focus;
-  cooldown_t*       cooldowns_penance;
+  struct cooldowns_t
+  {
+    cooldown_t* mind_blast;
+    cooldown_t* shadow_fiend;
+    cooldown_t* chakra;
+    cooldown_t* rapture;
+    cooldown_t* inner_focus;
+    cooldown_t* penance;
+  } cooldowns;
 
   // Gains
-  gain_t* gains_dispersion;
-  gain_t* gains_shadow_fiend;
-  gain_t* gains_archangel;
-  gain_t* gains_masochism;
-  gain_t* gains_rapture;
-  gain_t* gains_hymn_of_hope;
-  gain_t* gains_divine_fire;
+  struct gains_t
+  {
+    gain_t* dispersion;
+    gain_t* shadow_fiend;
+    gain_t* archangel;
+    gain_t* masochism;
+    gain_t* rapture;
+    gain_t* hymn_of_hope;
+    gain_t* divine_fire;
+  } gains;
 
-  // Uptimes
-  benefit_t* uptimes_mind_spike[ 4 ];
-  benefit_t* uptimes_dark_flames;
-  benefit_t* uptimes_shadow_orb[ 4 ];
-  benefit_t* uptimes_test_of_faith;
+  // Benefits
+  struct benefits_t
+  {
+    benefit_t* mind_spike[ 4 ];
+    benefit_t* dark_flames;
+    benefit_t* shadow_orb[ 4 ];
+    benefit_t* test_of_faith;
+  } benefits;
 
   // Procs
-  proc_t* procs_shadowy_apparation;
-  proc_t* procs_surge_of_light;
-  proc_t* procs_train_of_thought_gh;
-  proc_t* procs_train_of_thought_smite;
+  struct procs_t
+  {
+    proc_t* shadowy_apparation;
+    proc_t* surge_of_light;
+    proc_t* train_of_thought_gh;
+    proc_t* train_of_thought_smite;
+  } procs;
 
   // Special
   std::queue<spell_t*> shadowy_apparition_free_list;
@@ -364,13 +376,13 @@ struct priest_t : public player_t
 
     max_mana_cost                        = 0.0;
 
-    cooldowns_mind_blast                 = get_cooldown( "mind_blast" );
-    cooldowns_shadow_fiend               = get_cooldown( "shadow_fiend" );
-    cooldowns_chakra                     = get_cooldown( "chakra"   );
-    cooldowns_rapture                    = get_cooldown( "rapture" );
-    cooldowns_rapture -> duration        = dbc.spell( 63853 ) -> duration();
-    cooldowns_inner_focus                = get_cooldown( "inner_focus" );
-    cooldowns_penance                    = get_cooldown( "penance" );
+    cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
+    cooldowns.shadow_fiend               = get_cooldown( "shadow_fiend" );
+    cooldowns.chakra                     = get_cooldown( "chakra"   );
+    cooldowns.rapture                    = get_cooldown( "rapture" );
+    cooldowns.rapture -> duration        = dbc.spell( 63853 ) -> duration();
+    cooldowns.inner_focus                = get_cooldown( "inner_focus" );
+    cooldowns.penance                    = get_cooldown( "penance" );
 
     pet_shadow_fiend                     = NULL;
     pet_cauterizing_flame                = NULL;
@@ -726,10 +738,10 @@ struct priest_heal_t : public heal_t
       if (  t -> resource_current[ RESOURCE_HEALTH ] * 2 <= t -> resource_max[ RESOURCE_HEALTH ] )
       {
         target_multiplier *= 1.0 + p -> talents.test_of_faith -> effect2().percent();
-        p -> uptimes_test_of_faith -> update( true );
+        p -> benefits.test_of_faith -> update( true );
       }
       else
-        p -> uptimes_test_of_faith -> update( false );
+        p -> benefits.test_of_faith -> update( false );
     }
   }
 
@@ -1074,7 +1086,7 @@ public:
     if ( p -> buffs.vampiric_embrace -> up() && result_is_hit( impact_result ) )
     {
       double a = amount * ( 1.0 + p -> constants.twin_disciplines_value );
-      p -> resource_gain( RESOURCE_HEALTH, a * 0.06, p -> gains.vampiric_embrace );
+      p -> resource_gain( RESOURCE_HEALTH, a * 0.06, player -> gains.vampiric_embrace );
 
       pet_t* r = p -> pet_list;
 
@@ -1216,7 +1228,7 @@ struct shadow_fiend_pet_t : public pet_t
 
         o -> resource_gain( RESOURCE_MANA, o -> resource_max[ RESOURCE_MANA ] *
                             p -> mana_leech -> effect_base_value( 1 ) / 100.0,
-                            o -> gains_shadow_fiend );
+                            o -> gains.shadow_fiend );
       }
     }
 
@@ -1608,7 +1620,7 @@ void priest_spell_t::trigger_shadowy_apparition( player_t* player )
 
       p -> shadowy_apparition_active_list.push_back( s );
 
-      p -> procs_shadowy_apparation -> occur();
+      p -> procs.shadowy_apparation -> occur();
 
       s -> execute();
     }
@@ -1664,14 +1676,14 @@ struct archangel_t : public priest_spell_t
     {
       cooldown -> duration = timespan_t::from_seconds( effect2().base_value() );
       p -> buffs.holy_archangel -> trigger( 1, p -> constants.holy_archangel_value * p -> buffs.holy_evangelism -> stack() );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs.holy_evangelism -> stack(), p -> gains_archangel );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.archangel_mana_value * p -> buffs.holy_evangelism -> stack(), p -> gains.archangel );
       p -> buffs.holy_evangelism -> expire();
     }
     else if ( p -> buffs.dark_evangelism -> up() && delta < timespan_t::zero )
     {
       cooldown -> duration = timespan_t::from_seconds( effect3().base_value() );
       p -> buffs.dark_archangel -> trigger( 1, p -> buffs.dark_evangelism -> stack() );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs.dark_evangelism -> stack(), p -> gains_archangel );
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> constants.dark_archangel_mana_value * p -> buffs.dark_evangelism -> stack(), p -> gains.archangel );
       p -> buffs.dark_evangelism -> expire();
     }
 
@@ -1762,7 +1774,7 @@ struct dispersion_t : public priest_spell_t
 
     double regen_amount = p -> dbc.spell( 49766 ) -> effect1().percent() * p -> resource_max[ RESOURCE_MANA ];
 
-    p -> resource_gain( RESOURCE_MANA, regen_amount, p -> gains_dispersion );
+    p -> resource_gain( RESOURCE_MANA, regen_amount, p -> gains.dispersion );
 
     priest_spell_t::tick( d );
   }
@@ -1779,8 +1791,8 @@ struct dispersion_t : public priest_spell_t
 
     if ( ! p -> pet_shadow_fiend -> sleeping ) return false;
 
-    double sf_cooldown_remains  = p -> cooldowns_shadow_fiend -> remains().total_seconds();
-    double sf_cooldown_duration = p -> cooldowns_shadow_fiend -> duration.total_seconds();
+    double sf_cooldown_remains  = p -> cooldowns.shadow_fiend -> remains().total_seconds();
+    double sf_cooldown_duration = p -> cooldowns.shadow_fiend -> duration.total_seconds();
 
     if ( sf_cooldown_remains <= 0 ) return false;
 
@@ -1879,7 +1891,7 @@ struct hymn_of_hope_tick_t : public priest_spell_t
 
     priest_t* p = player -> cast_priest();
 
-    p -> resource_gain( RESOURCE_MANA, effect1().percent() * p -> resource_max[ RESOURCE_MANA ], p -> gains_hymn_of_hope );
+    p -> resource_gain( RESOURCE_MANA, effect1().percent() * p -> resource_max[ RESOURCE_MANA ], p -> gains.hymn_of_hope );
 
     // Hymn of Hope only adds +x% of the current_max mana, it doesn't change if afterwards max_mana changes.
     player -> buffs.hymn_of_hope -> trigger();
@@ -2126,7 +2138,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown = p -> cooldowns_shadow_fiend;
+    cooldown = p -> cooldowns.shadow_fiend;
     cooldown -> duration = p -> active_spells.shadow_fiend -> cooldown() +
                            p -> talents.veiled_shadows -> effect2().time_value() +
                            ( p -> set_bonus.tier12_2pc_caster() ? timespan_t::from_seconds( -75.0 ) : timespan_t::zero );
@@ -2311,11 +2323,11 @@ struct mind_blast_t : public priest_spell_t
 
     for ( int i=0; i < 4; i++ )
     {
-      p -> uptimes_mind_spike[ i ] -> update( i == p -> buffs.mind_spike -> stack() );
+      p -> benefits.mind_spike[ i ] -> update( i == p -> buffs.mind_spike -> stack() );
     }
     for ( int i=0; i < 4; i++ )
     {
-      p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs.shadow_orb -> stack() );
+      p -> benefits.shadow_orb[ i ] -> update( i == p -> buffs.shadow_orb -> stack() );
     }
 
     p -> buffs.mind_melt -> expire();
@@ -2349,11 +2361,11 @@ struct mind_blast_t : public priest_spell_t
       if ( td -> dots_shadow_word_pain -> ticking && td -> dots_vampiric_touch -> ticking && td -> dots_devouring_plague -> ticking )
       {
         m += p -> dark_flames -> effect1().percent();
-        p -> uptimes_dark_flames -> update( 1 );
+        p -> benefits.dark_flames -> update( 1 );
       }
       else
       {
-        p -> uptimes_dark_flames -> update( 0 );
+        p -> benefits.dark_flames -> update( 0 );
       }
     }
 
@@ -2421,14 +2433,14 @@ struct mind_flay_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( cut_for_mb )
-      if ( p -> cooldowns_mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
+      if ( p -> cooldowns.mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
         num_ticks = 2;
 
     priest_spell_t::execute();
 
     if ( result_is_hit() )
     {
-      // Evangelism procs off both the initial cast and each tick.
+      // Evangelism procs. off both the initial cast and each tick.
       p -> buffs.dark_evangelism -> trigger();
     }
   }
@@ -2473,7 +2485,7 @@ struct mind_flay_t : public priest_spell_t
       }
       if ( result == RESULT_CRIT )
       {
-        p -> cooldowns_shadow_fiend -> ready -= timespan_t::from_seconds( 1.0 ) * p -> talents.sin_and_punishment -> effect2().base_value();
+        p -> cooldowns.shadow_fiend -> ready -= timespan_t::from_seconds( 1.0 ) * p -> talents.sin_and_punishment -> effect2().base_value();
       }
     }
   }
@@ -2500,7 +2512,7 @@ struct mind_flay_t : public priest_spell_t
     // is about to come off it's cooldown.
     if ( mb_wait != timespan_t::zero )
     {
-      if ( p -> cooldowns_mind_blast -> remains() < mb_wait )
+      if ( p -> cooldowns.mind_blast -> remains() < mb_wait )
         return false;
     }
 
@@ -2545,9 +2557,9 @@ struct mind_spike_t : public priest_spell_t
 
       p -> buffs.chakra_pre -> expire();
 
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration  = p -> buffs.chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> start();
+      p -> cooldowns.chakra -> reset();
+      p -> cooldowns.chakra -> duration  = p -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns.chakra -> start();
     }
   }
 
@@ -2562,7 +2574,7 @@ struct mind_spike_t : public priest_spell_t
       priest_targetdata_t* td = targetdata() -> cast_priest();
       for ( int i=0; i < 4; i++ )
       {
-        p -> uptimes_shadow_orb[ i ] -> update( i == p -> buffs.shadow_orb -> stack() );
+        p -> benefits.shadow_orb[ i ] -> update( i == p -> buffs.shadow_orb -> stack() );
       }
 
       p -> buffs.mind_melt -> trigger( 1, 1.0 );
@@ -2700,7 +2712,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     if ( ( ( health_loss > 0.0 ) || ( p -> set_bonus.tier13_2pc_caster() )  ) && p -> talents.masochism -> rank() )
     {
-      p -> resource_gain( RESOURCE_MANA, p -> talents.masochism -> effect1().percent() * p -> resource_max[ RESOURCE_MANA ], p -> gains_masochism );
+      p -> resource_gain( RESOURCE_MANA, p -> talents.masochism -> effect1().percent() * p -> resource_max[ RESOURCE_MANA ], p -> gains.masochism );
     }
   }
 
@@ -2725,11 +2737,11 @@ struct shadow_word_death_t : public priest_spell_t
     priest_t* p = player -> cast_priest();
 
     if ( mb_min_wait != timespan_t::zero )
-      if ( p -> cooldowns_mind_blast -> remains() < mb_min_wait )
+      if ( p -> cooldowns.mind_blast -> remains() < mb_min_wait )
         return false;
 
     if ( mb_max_wait != timespan_t::zero )
-      if ( p -> cooldowns_mind_blast -> remains() > mb_max_wait )
+      if ( p -> cooldowns.mind_blast -> remains() > mb_max_wait )
         return false;
 
     return priest_spell_t::ready();
@@ -2975,7 +2987,7 @@ struct smite_t : public priest_spell_t
     priest_spell_t::execute();
 
     if ( p -> buffs.surge_of_light -> trigger() )
-      p -> procs_surge_of_light -> occur();
+      p -> procs.surge_of_light -> occur();
 
     p -> buffs.holy_evangelism -> trigger();
 
@@ -2986,21 +2998,21 @@ struct smite_t : public priest_spell_t
 
       p -> buffs.chakra_pre -> expire();
 
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> start();
+      p -> cooldowns.chakra -> reset();
+      p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns.chakra -> start();
     }
 
     // Train of Thought
     if ( p -> talents.train_of_thought -> rank() &&
          p -> rng_train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
     {
-      if ( p -> cooldowns_penance -> remains() > p -> talents.train_of_thought -> spell( 1 ).effect2().time_value() )
-        p -> cooldowns_penance -> ready -= p -> talents.train_of_thought -> spell( 1 ).effect2().time_value();
+      if ( p -> cooldowns.penance -> remains() > p -> talents.train_of_thought -> spell( 1 ).effect2().time_value() )
+        p -> cooldowns.penance -> ready -= p -> talents.train_of_thought -> spell( 1 ).effect2().time_value();
       else
-        p -> cooldowns_penance -> reset();
+        p -> cooldowns.penance -> reset();
 
-      p -> procs_train_of_thought_smite -> occur();
+      p -> procs.train_of_thought_smite -> occur();
     }
   }
 
@@ -3091,15 +3103,15 @@ struct binding_heal_t : public priest_heal_t
     p -> buffs.serendipity -> trigger();
 
     if ( p -> buffs.surge_of_light -> trigger() )
-      p -> procs_surge_of_light -> occur();
+      p -> procs.surge_of_light -> occur();
 
     // Inner Focus
     if ( p -> buffs.inner_focus -> up() )
     {
       // Inner Focus cooldown starts when consumed.
-      p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = p -> buffs.inner_focus -> spell_id_t::cooldown();
-      p -> cooldowns_inner_focus -> start();
+      p -> cooldowns.inner_focus -> reset();
+      p -> cooldowns.inner_focus -> duration = p -> buffs.inner_focus -> spell_id_t::cooldown();
+      p -> cooldowns.inner_focus -> start();
       p -> buffs.inner_focus -> expire();
     }
 
@@ -3110,9 +3122,9 @@ struct binding_heal_t : public priest_heal_t
 
       p -> buffs.chakra_pre -> expire();
 
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> start();
+      p -> cooldowns.chakra -> reset();
+      p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns.chakra -> start();
     }
   }
 
@@ -3281,7 +3293,7 @@ struct flash_heal_t : public priest_heal_t
     if ( p -> buffs.surge_of_light -> up() )
       p -> buffs.surge_of_light -> expire();
     else if ( p -> buffs.surge_of_light -> trigger() )
-      p -> procs_surge_of_light -> occur();
+      p -> procs.surge_of_light -> occur();
 
     p -> buffs.divine_fire -> trigger();
 
@@ -3291,9 +3303,9 @@ struct flash_heal_t : public priest_heal_t
     if ( p -> buffs.inner_focus -> up() )
     {
       // Inner Focus cooldown starts when consumed.
-      p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = p -> buffs.inner_focus -> spell_id_t::cooldown();
-      p -> cooldowns_inner_focus -> start();
+      p -> cooldowns.inner_focus -> reset();
+      p -> cooldowns.inner_focus -> duration = p -> buffs.inner_focus -> spell_id_t::cooldown();
+      p -> cooldowns.inner_focus -> start();
       p -> buffs.inner_focus -> expire();
     }
 
@@ -3304,9 +3316,9 @@ struct flash_heal_t : public priest_heal_t
 
       p -> buffs.chakra_pre -> expire();
 
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> start();
+      p -> cooldowns.chakra -> reset();
+      p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns.chakra -> start();
     }
   }
 
@@ -3419,7 +3431,7 @@ struct greater_heal_t : public priest_heal_t
     p -> buffs.divine_fire -> trigger();
 
     if ( p -> buffs.surge_of_light -> trigger() )
-      p -> procs_surge_of_light -> occur();
+      p -> procs.surge_of_light -> occur();
 
     // Train of Thought
     // NOTE: Process Train of Thought _before_ Inner Focus: the GH that consumes Inner Focus does not
@@ -3427,21 +3439,21 @@ struct greater_heal_t : public priest_heal_t
     if ( p -> talents.train_of_thought -> rank() &&
          p -> rng_train_of_thought -> roll( util_t::talent_rank( p -> talents.train_of_thought -> rank(), 2, 0.5, 1.0 ) ) )
     {
-      if ( p -> cooldowns_inner_focus -> remains() > timespan_t::from_seconds( p -> talents.train_of_thought -> effect1().base_value() ) )
-        p -> cooldowns_inner_focus -> ready -= timespan_t::from_seconds( p -> talents.train_of_thought -> effect1().base_value() );
+      if ( p -> cooldowns.inner_focus -> remains() > timespan_t::from_seconds( p -> talents.train_of_thought -> effect1().base_value() ) )
+        p -> cooldowns.inner_focus -> ready -= timespan_t::from_seconds( p -> talents.train_of_thought -> effect1().base_value() );
       else
-        p -> cooldowns_inner_focus -> reset();
+        p -> cooldowns.inner_focus -> reset();
 
-      p -> procs_train_of_thought_gh -> occur();
+      p -> procs.train_of_thought_gh -> occur();
     }
 
     // Inner Focus
     if ( p -> buffs.inner_focus -> up() )
     {
       // Inner Focus cooldown starts when consumed.
-      p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = p -> buffs.inner_focus -> spell_id_t::cooldown();
-      p -> cooldowns_inner_focus -> start();
+      p -> cooldowns.inner_focus -> reset();
+      p -> cooldowns.inner_focus -> duration = p -> buffs.inner_focus -> spell_id_t::cooldown();
+      p -> cooldowns.inner_focus -> start();
       p -> buffs.inner_focus -> expire();
     }
 
@@ -3452,9 +3464,9 @@ struct greater_heal_t : public priest_heal_t
 
       p -> buffs.chakra_pre -> expire();
 
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> start();
+      p -> cooldowns.chakra -> reset();
+      p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns.chakra -> start();
     }
   }
 
@@ -3538,7 +3550,7 @@ struct _heal_t : public priest_heal_t
     priest_t* p = player -> cast_priest();
 
     if ( p -> buffs.surge_of_light -> trigger() )
-      p -> procs_surge_of_light -> occur();
+      p -> procs.surge_of_light -> occur();
 
     p -> buffs.divine_fire -> trigger();
 
@@ -3549,9 +3561,9 @@ struct _heal_t : public priest_heal_t
 
       p -> buffs.chakra_pre -> expire();
 
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> start();
+      p -> cooldowns.chakra -> reset();
+      p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns.chakra -> start();
     }
   }
 
@@ -3907,7 +3919,7 @@ struct penance_heal_t : public priest_heal_t
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
 
-    cooldown = p -> cooldowns_penance;
+    cooldown = p -> cooldowns.penance;
     cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().time_value();
 
     penance_tick = new penance_heal_tick_t( p );
@@ -4014,10 +4026,10 @@ struct power_word_shield_t : public priest_absorb_t
     p -> buffs.borrowed_time -> trigger();
 
     // Rapture
-    if ( p -> cooldowns_rapture -> remains() == timespan_t::zero && p -> talents.rapture -> rank() )
+    if ( p -> cooldowns.rapture -> remains() == timespan_t::zero && p -> talents.rapture -> rank() )
     {
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.rapture -> effect1().percent(), p -> gains_rapture );
-      p -> cooldowns_rapture -> start();
+      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.rapture -> effect1().percent(), p -> gains.rapture );
+      p -> cooldowns.rapture -> start();
     }
   }
 
@@ -4108,9 +4120,9 @@ struct prayer_of_healing_t : public priest_heal_t
     if ( p -> buffs.inner_focus -> up() )
     {
       // Inner Focus cooldown starts when consumed.
-      p -> cooldowns_inner_focus -> reset();
-      p -> cooldowns_inner_focus -> duration = p -> buffs.inner_focus -> spell_id_t::cooldown();
-      p -> cooldowns_inner_focus -> start();
+      p -> cooldowns.inner_focus -> reset();
+      p -> cooldowns.inner_focus -> duration = p -> buffs.inner_focus -> spell_id_t::cooldown();
+      p -> cooldowns.inner_focus -> start();
       p -> buffs.inner_focus -> expire();
     }
 
@@ -4121,9 +4133,9 @@ struct prayer_of_healing_t : public priest_heal_t
 
       p -> buffs.chakra_pre -> expire();
 
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> start();
+      p -> cooldowns.chakra -> reset();
+      p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns.chakra -> start();
     }
   }
 
@@ -4241,9 +4253,9 @@ struct prayer_of_mending_t : public priest_heal_t
 
       p -> buffs.chakra_pre -> expire();
 
-      p -> cooldowns_chakra -> reset();
-      p -> cooldowns_chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
-      p -> cooldowns_chakra -> start();
+      p -> cooldowns.chakra -> reset();
+      p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p -> cooldowns.chakra -> start();
     }
   }
 
@@ -4345,7 +4357,7 @@ struct tier12_heal_2pc_event_t : public event_t
     if ( buff -> check() )
     {
       priest_t* p = player -> cast_priest();
-      player -> resource_gain( RESOURCE_MANA, player -> resource_base[ RESOURCE_MANA ] * p -> sets -> set( SET_T12_2PC_HEAL ) -> effect_base_value( 1 ) / 100.0, p -> gains_divine_fire );
+      player -> resource_gain( RESOURCE_MANA, player -> resource_base[ RESOURCE_MANA ] * p -> sets -> set( SET_T12_2PC_HEAL ) -> effect_base_value( 1 ) / 100.0, p -> gains.divine_fire );
       new ( sim ) tier12_heal_2pc_event_t( player, buff );
     }
   }
@@ -4661,25 +4673,25 @@ void priest_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_dispersion                = get_gain( "dispersion" );
-  gains_shadow_fiend              = get_gain( "shadow_fiend" );
-  gains_archangel                 = get_gain( "archangel" );
-  gains_masochism                 = get_gain( "masochism" );
-  gains_rapture                   = get_gain( "rapture" );
-  gains_hymn_of_hope              = get_gain( "hymn_of_hope" );
-  gains_divine_fire               = get_gain( "divine_fire" );
+  gains.dispersion                = get_gain( "dispersion" );
+  gains.shadow_fiend              = get_gain( "shadow_fiend" );
+  gains.archangel                 = get_gain( "archangel" );
+  gains.masochism                 = get_gain( "masochism" );
+  gains.rapture                   = get_gain( "rapture" );
+  gains.hymn_of_hope              = get_gain( "hymn_of_hope" );
+  gains.divine_fire               = get_gain( "divine_fire" );
 }
 
-// priest_t::init_procs =====================================================
+// priest_t::init_procs. =====================================================
 
 void priest_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_shadowy_apparation     = get_proc( "shadowy_apparation_proc" );
-  procs_surge_of_light         = get_proc( "surge_of_light" );
-  procs_train_of_thought_gh    = get_proc( "train_of_thought_gh" );
-  procs_train_of_thought_smite = get_proc( "train_of_thought_smite" );
+  procs.shadowy_apparation     = get_proc( "shadowy_apparation_proc" );
+  procs.surge_of_light         = get_proc( "surge_of_light" );
+  procs.train_of_thought_gh    = get_proc( "train_of_thought_gh" );
+  procs.train_of_thought_smite = get_proc( "train_of_thought_smite" );
 }
 
 // priest_t::init_scaling ===================================================
@@ -4704,25 +4716,25 @@ void priest_t::init_scaling()
   }
 }
 
-// priest_t::init_uptimes ===================================================
+// priest_t::init_benefits ===================================================
 
 void priest_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_mind_spike[ 0 ] = get_benefit( "mind_spike_0" );
-  uptimes_mind_spike[ 1 ] = get_benefit( "mind_spike_1" );
-  uptimes_mind_spike[ 2 ] = get_benefit( "mind_spike_2" );
-  uptimes_mind_spike[ 3 ] = get_benefit( "mind_spike_3" );
+  benefits.mind_spike[ 0 ] = get_benefit( "mind_spike_0" );
+  benefits.mind_spike[ 1 ] = get_benefit( "mind_spike_1" );
+  benefits.mind_spike[ 2 ] = get_benefit( "mind_spike_2" );
+  benefits.mind_spike[ 3 ] = get_benefit( "mind_spike_3" );
 
-  uptimes_dark_flames     = get_benefit( "dark_flames" );
+  benefits.dark_flames     = get_benefit( "dark_flames" );
 
-  uptimes_shadow_orb[ 0 ] = get_benefit( "Percentage of Mind Blasts benefiting from 0 Shadow Orbs" );
-  uptimes_shadow_orb[ 1 ] = get_benefit( "Percentage of Mind Blasts benefiting from 1 Shadow Orbs" );
-  uptimes_shadow_orb[ 2 ] = get_benefit( "Percentage of Mind Blasts benefiting from 2 Shadow Orbs" );
-  uptimes_shadow_orb[ 3 ] = get_benefit( "Percentage of Mind Blasts benefiting from 3 Shadow Orbs" );
+  benefits.shadow_orb[ 0 ] = get_benefit( "Percentage of Mind Blasts benefiting from 0 Shadow Orbs" );
+  benefits.shadow_orb[ 1 ] = get_benefit( "Percentage of Mind Blasts benefiting from 1 Shadow Orbs" );
+  benefits.shadow_orb[ 2 ] = get_benefit( "Percentage of Mind Blasts benefiting from 2 Shadow Orbs" );
+  benefits.shadow_orb[ 3 ] = get_benefit( "Percentage of Mind Blasts benefiting from 3 Shadow Orbs" );
 
-  uptimes_test_of_faith = get_benefit( "test_of_faith" );
+  benefits.test_of_faith = get_benefit( "test_of_faith" );
 }
 
 // priest_t::init_rng =======================================================
@@ -5390,8 +5402,8 @@ double priest_t::resource_gain( int       resource,
 
   if ( resource == RESOURCE_MANA )
   {
-    if ( source != gains_shadow_fiend &&
-         source != gains_dispersion )
+    if ( source != gains.shadow_fiend &&
+         source != gains.dispersion )
     {
       mana_resource.mana_gain += actual_amount;
     }
