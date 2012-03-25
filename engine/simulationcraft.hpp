@@ -4627,6 +4627,7 @@ struct player_t : public noncopyable
   virtual talent_t* find_talent( const std::string& name, int tree = TALENT_TAB_NONE );
   virtual glyph_t*  find_glyph ( const std::string& name );
   virtual spell_id_t* find_specialization_spell( const char* name, const char* token = 0, talent_tree_type tree = TREE_NONE );
+  virtual spell_id_t* find_mastery_spell( const char* name, const char* token = 0, talent_tree_type tree = TREE_NONE );
 
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
