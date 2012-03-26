@@ -1999,7 +1999,7 @@ public:
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
 
-  const spelleffect_data_t& effectN(unsigned idx) const { assert( idx >= 1 && idx <= _effects -> size() ); return *_effects -> at( idx - 1 ); }
+  const spelleffect_data_t& effectN(unsigned idx) const { assert( idx ); if ( idx > _effects -> size() ) return *spelleffect_data_t::nil(); else return *_effects -> at( idx - 1 ); }
   const spelleffect_data_t& effect1() const { return effectN( 1 ); }
   const spelleffect_data_t& effect2() const { return effectN( 2 ); }
   const spelleffect_data_t& effect3() const { return effectN( 3 ); }

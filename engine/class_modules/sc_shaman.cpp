@@ -34,6 +34,7 @@ struct shaman_targetdata_t : public targetdata_t
 
   buff_t* debuffs_searing_flames;
   buff_t* debuffs_stormstrike;
+  buff_t* debuffs_unleashed_fury_ft;
 
   shaman_targetdata_t( player_t* source, player_t* target );
 };
@@ -48,6 +49,7 @@ void register_shaman_targetdata( sim_t* sim )
 
   REGISTER_DEBUFF( searing_flames );
   REGISTER_DEBUFF( stormstrike );
+  REGISTER_DEBUFF( unleashed_fury_ft );
 }
 
 struct shaman_t : public player_t
@@ -77,6 +79,7 @@ struct shaman_t : public player_t
   // Buffs
   struct
   {
+    buff_t* elemental_blast;
     buff_t* elemental_focus;
     buff_t* elemental_mastery;
     buff_t* flurry;
@@ -90,6 +93,8 @@ struct shaman_t : public player_t
     buff_t* tier13_4pc_healer;
     buff_t* unleash_flame;
     buff_t* unleash_wind;
+    buff_t* unleashed_fury_ft;
+    buff_t* unleashed_fury_wf;
     buff_t* water_shield;
   } buff;
 
@@ -660,7 +665,7 @@ struct earth_elemental_pet_t : public pet_t
 
       base_attack_power_multiplier = 0;
     }
-
+    
     virtual double swing_haste() const
     {
       return 1.0;
@@ -2512,6 +2517,14 @@ struct lava_burst_t : public shaman_spell_t
       if ( td -> dots_flame_shock -> ticking )
         target_crit += 1.0;
     }
+    
+    inline void snapshot_target_multiplier()
+    {
+      action_state_t::snapshot_target_multiplier();
+      
+      if ( td -> debuffs_unleashed_fury_ft -> up() )
+        target_multiplier *= 1.0 + td -> debuffs_unleashed_fury_ft -> effectN( 1 ).percent();
+    }
   };
   
   lava_burst_overload_t* overload;
@@ -2585,6 +2598,20 @@ struct lava_burst_t : public shaman_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
+  struct lightning_bolt_state_t : public shaman_spell_state_t 
+  {
+    lightning_bolt_state_t( action_t* a, player_t* t ) :
+      shaman_spell_state_t( a, t ) { }
+    
+    inline void snapshot_target_multiplier()
+    {
+      action_state_t::snapshot_target_multiplier();
+      
+      if ( td -> debuffs_unleashed_fury_ft -> up() )
+        target_multiplier *= 1.0 + td -> debuffs_unleashed_fury_ft -> effectN( 1 ).percent();
+    }
+  };
+  
   lightning_bolt_overload_t* overload;
 
   lightning_bolt_t( player_t* player, const std::string& options_str, bool dtr=false ) :
@@ -2603,6 +2630,11 @@ struct lightning_bolt_t : public shaman_spell_t
       dtr_action = new lightning_bolt_t( actor, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual action_state_t* new_state()
+  {
+    return new lightning_bolt_state_t( this, target );
   }
 
   virtual void execute()
@@ -2661,6 +2693,32 @@ struct lightning_bolt_t : public shaman_spell_t
     return shaman_spell_t::usable_moving();
   }
 };
+
+// Elemental Blast Spell ====================================================
+
+struct elemental_blast_t : public shaman_spell_t
+{
+  elemental_blast_t( player_t* player, const std::string& options_str, bool dtr=false ) :
+    shaman_spell_t( "elemental_blast", "Elemental Blast", player, options_str )
+  {
+    stateless   = true;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new elemental_blast_t( actor, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+  
+  virtual void impact_s( action_state_t* state )
+  {
+    shaman_spell_t::impact_s( state );
+
+    if ( result_is_hit( state -> result ) )
+      actor -> buff.elemental_blast -> trigger();
+  }
+};
+
 
 // Shamanisitc Rage Spell ===================================================
 
@@ -2758,9 +2816,17 @@ struct unleash_elements_t : public shaman_spell_t
 
     // You get the buffs, regardless of hit/miss
     if ( actor -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+    {
       actor -> buff.unleash_flame -> trigger();
+      if ( actor -> talent.unleashed_fury -> ok() )
+        actor -> buff.unleashed_fury_ft -> trigger();
+    }
     else if ( actor -> main_hand_weapon.buff_type == WINDFURY_IMBUE )
+    {
       actor -> buff.unleash_wind -> trigger( actor -> buff.unleash_wind -> initial_stacks() );
+      if ( actor -> talent.unleashed_fury -> ok() )
+        actor -> buff.unleashed_fury_wf -> trigger();
+    }
 
     if ( actor -> off_hand_weapon.type != WEAPON_NONE )
     {
@@ -3637,6 +3703,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
   if ( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
+  if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );
   if ( name == "earth_elemental_totem"   ) return new    earth_elemental_totem_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
   if ( name == "earthquake"              ) return new               earthquake_t( this, options_str );
@@ -3848,6 +3915,10 @@ void shaman_t::init_buffs()
   buff.tier13_2pc_caster   = new stat_buff_t            ( this, 105779, "tier13_2pc_caster", STAT_MASTERY_RATING, dbc.spell( 105779 ) -> effect1().base_value() );
   buff.tier13_4pc_caster   = new stat_buff_t            ( this, 105821, "tier13_4pc_caster", STAT_HASTE_RATING,   dbc.spell( 105821 ) -> effect1().base_value() );
   buff.tier13_4pc_healer   = new buff_t                 ( this, 105877, "tier13_4pc_healer" );
+  
+  // MoP stuff
+  buff.elemental_blast     = new buff_t                 ( this, 118522, "elemental_blast" );
+  buff.unleashed_fury_wf   = new buff_t                 ( this, 118472, "unleashed_fury_wf" );
 }
 
 // shaman_t::init_values ====================================================
@@ -4479,4 +4550,5 @@ shaman_targetdata_t::shaman_targetdata_t( player_t* source, player_t* target )
   shaman_t* p = source -> cast_shaman();
   debuffs_searing_flames = add_aura( new searing_flames_buff_t( this, p -> dbc.specialization_ability_id( p -> type, "Searing Flames" ), "searing_flames" ) );
   debuffs_stormstrike    = add_aura( new buff_t( this, p -> dbc.specialization_ability_id( p -> type, "Stormstrike" ), "stormstrike" ) );
+  debuffs_unleashed_fury_ft = add_aura( new buff_t( this, 118470, "unleashed_fury_ft" ) );
 }
