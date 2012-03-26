@@ -614,48 +614,44 @@ rng_t* rng_t::create( sim_t*             sim,
 
 #ifdef UNIT_TEST
 
+std::string& armory_t::format( std::string& name, int ) { return name; }
+uint32_t spell_id_t::get_school_mask( school_type x ) { return 0; }
+
 int main( int argc, char** argv )
 {
-  range_distribution_t range_d;
-  util_t::printf( "\nrange:\n" );
+  rng_t* rng = new rng_sfmt_t( "test-rng", false, false );
+
+
+#ifdef PERFORMANCE
+  int64_t start_time = util_t::milliseconds();
+
+  for ( int i=0;i<=1000000000; i++ )
+    rng -> real();
+  int64_t elapsed_cpu = util_t::milliseconds() - start_time;
+
+  util_t::printf( "%d\n", elapsed_cpu );
+#else
+  util_t::printf( "\nreal:\n" );
   for ( int i=1; i <= 100; i++ )
   {
-    util_t::printf( "  %.2f", range_d.next_value() );
+    util_t::printf( "  %.8f", rng->real() );
     if ( i % 10 == 0 ) util_t::printf( "\n" );
   }
 
-  gauss_distribution_t gauss_d;
-  util_t::printf( "\ngauss:\n" );
+  util_t::printf( "\ngauss mean=0, std_dev=1.0:\n" );
   for ( int i=1; i <= 100; i++ )
   {
-    util_t::printf( "  %.2f", gauss_d.next_value() );
+    util_t::printf( "  %.8f", rng->gauss( 0.0, 1.0 ) );
     if ( i % 10 == 0 ) util_t::printf( "\n" );
   }
 
-  roll_distribution_t roll_d;
-  util_t::printf( "\nroll:\n" );
-  for ( int i=1; i <= 100; i++ )
-  {
-    util_t::printf( "  %d", roll_d.reach( 0.30 ) );
-    if ( i % 10 == 0 ) util_t::printf( "\n" );
-  }
-
-  rng_t* rng = new rng_sfmt_t( "global", false, false );
-
-  roll_distribution_t roll_d_05;
-  util_t::printf( "\nroll 5%%:\n" );
-  for ( int i=0; i < 1000000; i++ ) roll_d_05.reach( 0.05 );
-  roll_d_05.verify( rng );
-
-  roll_distribution_t roll_d_30;
   util_t::printf( "\nroll 30%%:\n" );
-  for ( int i=0; i < 1000000; i++ ) roll_d_30.reach( 0.30 );
-  roll_d_30.verify( rng );
-
-  roll_distribution_t roll_d_80;
-  util_t::printf( "\nroll 80%%:\n" );
-  for ( int i=0; i < 1000000; i++ ) roll_d_80.reach( 0.80 );
-  roll_d_80.verify( rng );
+  for ( int i=1; i <= 100; i++ )
+  {
+    util_t::printf( "  %d", rng->roll( 0.30 ) );
+    if ( i % 10 == 0 ) util_t::printf( "\n" );
+  }
+#endif
 }
 
 #endif
