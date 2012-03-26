@@ -109,7 +109,7 @@ class SpecializationEnumGenerator(DataGenerator):
 
                 enum_str = '  %s_%s%s= %u,\n' % (
                     DataGenerator._class_names[cls].upper().replace(" ", "_"),
-                    enum_ids[cls][spec]['name'].upper(),
+                    enum_ids[cls][spec]['name'].upper().replace(" ", "_"),
                     ( 21 - (len(enum_ids[cls][spec]['name']) + len(DataGenerator._class_names[cls]) + 1) ) * ' ',
                     enum_ids[cls][spec]['id'] )
                 
@@ -120,7 +120,7 @@ class SpecializationEnumGenerator(DataGenerator):
                 continue
 
             enum_str = '  PET_%s%s= %u,\n' % (
-                enum_ids[-1][spec]['name'].upper(),
+                enum_ids[-1][spec]['name'].upper().replace(" ", "_"),
                 ( 21 - (len(enum_ids[-1][spec]['name']) + 4) ) * ' ',
                 enum_ids[-1][spec]['id'] )
             
