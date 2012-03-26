@@ -10,7 +10,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // print_html_contents ======================================================
 
-static void print_html_contents( FILE*  file, sim_t* sim )
+void print_html_contents( FILE*  file, sim_t* sim )
 {
   size_t c = 2;     // total number of TOC entries
   if ( sim -> scaling -> has_scale_factors() )
@@ -172,7 +172,7 @@ static void print_html_contents( FILE*  file, sim_t* sim )
 
 // print_html_sim_summary ===================================================
 
-static void print_html_sim_summary( FILE*  file, sim_t* sim )
+void print_html_sim_summary( FILE*  file, sim_t* sim )
 {
 
   fprintf( file,
@@ -346,7 +346,7 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
 
 // print_html_raid_summary ==================================================
 
-static void print_html_raid_summary( FILE*  file, sim_t* sim )
+void print_html_raid_summary( FILE*  file, sim_t* sim )
 {
   fprintf( file,
            "\t\t<div id=\"raid-summary\" class=\"section section-open\">\n\n" );
@@ -462,7 +462,7 @@ static void print_html_raid_summary( FILE*  file, sim_t* sim )
 
 // print_html_raid_imagemaps ==================================================
 
-static void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps )
+void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps )
 {
   std::vector<player_t*> player_list = ( dps ) ? sim -> players_by_dps : sim -> players_by_hps;
   int start = num * MAX_PLAYERS_PER_CHART;
@@ -507,7 +507,7 @@ static void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps 
            imgid, mapid, imgid, mapid, mapid );
 }
 
-static void print_html_raid_imagemaps( FILE*  file, sim_t* sim )
+void print_html_raid_imagemaps( FILE*  file, sim_t* sim )
 {
 
   fprintf( file,
@@ -545,7 +545,7 @@ static void print_html_raid_imagemaps( FILE*  file, sim_t* sim )
 
 // print_html_scale_factors =================================================
 
-static void print_html_scale_factors( FILE*  file, sim_t* sim )
+void print_html_scale_factors( FILE*  file, sim_t* sim )
 {
   if ( ! sim -> scaling -> has_scale_factors() ) return;
 
@@ -639,7 +639,7 @@ static void print_html_scale_factors( FILE*  file, sim_t* sim )
 
 // print_html_help_boxes ====================================================
 
-static void print_html_help_boxes( FILE*  file, sim_t* sim )
+void print_html_help_boxes( FILE*  file, sim_t* sim )
 {
   fprintf( file,
            "\t\t<!-- Help Boxes -->\n" );
@@ -935,7 +935,7 @@ static void print_html_help_boxes( FILE*  file, sim_t* sim )
 
 // print_html_styles ====================================================
 
-static void print_html_styles( FILE*  file, sim_t* sim )
+void print_html_styles( FILE*  file, sim_t* sim )
 {
   // Styles
   // If file is being hosted on simulationcraft.org, link to the local
@@ -1181,7 +1181,7 @@ static void print_html_styles( FILE*  file, sim_t* sim )
 
 // print_html_masthead ====================================================
 
-static void print_html_masthead( FILE*  file, sim_t* sim )
+void print_html_masthead( FILE*  file, sim_t* sim )
 {
   // Begin masthead section
   fprintf( file,
@@ -1230,10 +1230,9 @@ static void print_html_masthead( FILE*  file, sim_t* sim )
   // End masthead section
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
 
 // report_t::print_html =====================================================
-void report_t::print_html( sim_t* sim )
+void print_html_( sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_name.size();
 
@@ -1512,4 +1511,11 @@ void report_t::print_html( sim_t* sim )
            "</html>\n" );
 
   fclose( file );
+}
+
+} // ANONYMOUS NAMESPACE ====================================================
+
+void report_t::print_html( sim_t* sim )
+{
+  print_html_( sim );
 }

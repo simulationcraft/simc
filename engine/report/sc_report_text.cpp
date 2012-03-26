@@ -17,7 +17,7 @@ void simplify_html( std::string& buffer )
 
 // print_text_action ========================================================
 
-static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
+void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 {
   if ( s -> num_executes == 0 && s -> total_amount.mean == 0 ) return;
 
@@ -111,7 +111,7 @@ static void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 
 // print_text_actions =======================================================
 
-static void print_text_actions( FILE* file, player_t* p )
+void print_text_actions( FILE* file, player_t* p )
 {
   if ( ! p -> glyphs_str.empty() ) util_t::fprintf( file, "  Glyphs: %s\n", p -> glyphs_str.c_str() );
 
@@ -168,7 +168,7 @@ static void print_text_actions( FILE* file, player_t* p )
 
 // print_text_buffs =========================================================
 
-static inline bool buff_comp( const buff_t* i, const buff_t* j )
+inline bool buff_comp( const buff_t* i, const buff_t* j )
 {
   // Aura&Buff / Pet
   if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
@@ -188,7 +188,7 @@ static inline bool buff_comp( const buff_t* i, const buff_t* j )
   return ( i -> name_str.compare( j -> name_str ) < 0 );
 }
 
-static void print_text_buffs( FILE* file, player_t* p )
+void print_text_buffs( FILE* file, player_t* p )
 {
   bool first=true;
   char prefix = ' ';
@@ -306,7 +306,7 @@ static void print_text_buffs( FILE* file, player_t* p )
 
 // print_text_core_stats ====================================================
 
-static void print_text_core_stats( FILE* file, player_t* p )
+void print_text_core_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
                    "  Core Stats:  strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f|%.2f(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
@@ -322,7 +322,7 @@ static void print_text_core_stats( FILE* file, player_t* p )
 
 // print_text_spell_stats ===================================================
 
-static void print_text_spell_stats( FILE* file, player_t* p )
+void print_text_spell_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
                    "  Spell Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  penetration=%.0f|%.0f(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  mp5=%.0f|%.0f(%.0f)\n",
@@ -336,7 +336,7 @@ static void print_text_spell_stats( FILE* file, player_t* p )
 
 // print_text_attack_stats ==================================================
 
-static void print_text_attack_stats( FILE* file, player_t* p )
+void print_text_attack_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
                    "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f/%.2f|%.2f/%.2f(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
@@ -352,7 +352,7 @@ static void print_text_attack_stats( FILE* file, player_t* p )
 
 // print_text_defense_stats =================================================
 
-static void print_text_defense_stats( FILE* file, player_t* p )
+void print_text_defense_stats( FILE* file, player_t* p )
 {
   util_t::fprintf( file,
                    "  Defense Stats:  armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
@@ -366,7 +366,7 @@ static void print_text_defense_stats( FILE* file, player_t* p )
 
 // print_text_gains =========================================================
 
-static void print_text_gains( FILE* file, player_t* p )
+void print_text_gains( FILE* file, player_t* p )
 {
   int max_length = 0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
@@ -395,7 +395,7 @@ static void print_text_gains( FILE* file, player_t* p )
 
 // print_text_pet_gains =====================================================
 
-static void print_text_pet_gains( FILE* file, player_t* p )
+void print_text_pet_gains( FILE* file, player_t* p )
 {
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
@@ -431,7 +431,7 @@ static void print_text_pet_gains( FILE* file, player_t* p )
 
 // print_text_procs =========================================================
 
-static void print_text_procs( FILE* file, player_t* p )
+void print_text_procs( FILE* file, player_t* p )
 {
   bool first=true;
 
@@ -448,7 +448,7 @@ static void print_text_procs( FILE* file, player_t* p )
 
 // print_text_uptime ========================================================
 
-static void print_text_uptime( FILE* file, player_t* p )
+void print_text_uptime( FILE* file, player_t* p )
 {
   bool first=true;
 
@@ -474,7 +474,7 @@ static void print_text_uptime( FILE* file, player_t* p )
 
 // print_text_waiting =======================================================
 
-static void print_text_waiting( FILE* file, sim_t* sim )
+void print_text_waiting( FILE* file, sim_t* sim )
 {
   util_t::fprintf( file, "\nWaiting:\n" );
 
@@ -497,7 +497,7 @@ static void print_text_waiting( FILE* file, sim_t* sim )
 
 // print_text_performance ===================================================
 
-static void print_text_performance( FILE* file, sim_t* sim )
+void print_text_performance( FILE* file, sim_t* sim )
 {
   util_t::fprintf( file,
                    "\nBaseline Performance:\n"
@@ -519,7 +519,7 @@ static void print_text_performance( FILE* file, sim_t* sim )
 
 // print_text_scale_factors =================================================
 
-static void print_text_scale_factors( FILE* file, sim_t* sim )
+void print_text_scale_factors( FILE* file, sim_t* sim )
 {
   if ( ! sim -> scaling -> has_scale_factors() ) return;
 
@@ -569,7 +569,7 @@ static void print_text_scale_factors( FILE* file, sim_t* sim )
 
 // print_text_scale_factors =================================================
 
-static void print_text_scale_factors( FILE* file, player_t* p )
+void print_text_scale_factors( FILE* file, player_t* p )
 {
   if ( ! p -> sim -> scaling -> has_scale_factors() ) return;
 
@@ -616,7 +616,7 @@ static void print_text_scale_factors( FILE* file, player_t* p )
 
 // print_text_dps_plots =====================================================
 
-static void print_text_dps_plots( FILE* file, player_t* p )
+void print_text_dps_plots( FILE* file, player_t* p )
 {
   sim_t* sim = p -> sim;
 
@@ -650,7 +650,7 @@ static void print_text_dps_plots( FILE* file, player_t* p )
 
 // print_text_reference_dps =================================================
 
-static void print_text_reference_dps( FILE* file, sim_t* sim )
+void print_text_reference_dps( FILE* file, sim_t* sim )
 {
   if ( sim -> reference_player_str.empty() ) return;
 
@@ -730,8 +730,6 @@ static void print_text_reference_dps( FILE* file, sim_t* sim )
   }
 }
 
-namespace {
-
 struct compare_hat_donor_interval
 {
   bool operator()( player_t* l, player_t* r ) const
@@ -740,9 +738,7 @@ struct compare_hat_donor_interval
   }
 };
 
-}
-
-static void print_text_hat_donors( FILE* file, sim_t* sim )
+void print_text_hat_donors( FILE* file, sim_t* sim )
 {
   std::vector<player_t*> hat_donors;
 
@@ -772,7 +768,7 @@ static void print_text_hat_donors( FILE* file, sim_t* sim )
 
 // print_text_player ========================================================
 
-static void print_text_player( FILE* file, player_t* p )
+void print_text_player( FILE* file, player_t* p )
 {
   util_t::fprintf( file, "\n%s: %s %s %s %s %d\n",
                    p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player",

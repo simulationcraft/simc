@@ -10,7 +10,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // print_html_action_damage =================================================
 
-static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
+void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
 {
   int id = 0;
 
@@ -499,7 +499,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
 
 // print_html_action_resource ===============================================
 
-static void print_html_action_resource( FILE* file, stats_t* s, int j )
+void print_html_action_resource( FILE* file, stats_t* s, int j )
 {
 
   fprintf( file,
@@ -532,7 +532,7 @@ static void print_html_action_resource( FILE* file, stats_t* s, int j )
 
 // print_html_gear ==========================================================
 
-static void print_html_gear ( FILE* file, player_t* a )
+void print_html_gear ( FILE* file, player_t* a )
 {
   if ( a -> fight_length.mean > 0 )
   {
@@ -569,7 +569,7 @@ static void print_html_gear ( FILE* file, player_t* a )
 
 // print_html_profile =======================================================
 
-static void print_html_profile ( FILE* file, player_t* a )
+void print_html_profile ( FILE* file, player_t* a )
 {
   if ( a -> fight_length.mean > 0 )
   {
@@ -592,7 +592,7 @@ static void print_html_profile ( FILE* file, player_t* a )
 
 // print_html_stats =========================================================
 
-static void print_html_stats ( FILE* file, player_t* a )
+void print_html_stats ( FILE* file, player_t* a )
 {
   std::string n = a -> name();
   util_t::format_text( n, true );
@@ -909,7 +909,7 @@ static void print_html_stats ( FILE* file, player_t* a )
 
 // print_html_talents_player ================================================
 
-static void print_html_talents( FILE* file, player_t* p )
+void print_html_talents( FILE* file, player_t* p )
 {
   std::string n = p -> name();
   util_t::format_text( n, true );
@@ -965,7 +965,7 @@ static void print_html_talents( FILE* file, player_t* p )
 
 // print_html_player_scale_factors ==========================================
 
-static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p )
+void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p )
 {
 
   if ( !p -> is_pet() )
@@ -1119,7 +1119,7 @@ static void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p
 
 // print_html_player_action_priority_list ===================================
 
-static void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p )
+void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p )
 {
 
   fprintf( file,
@@ -1187,7 +1187,7 @@ static void print_html_player_action_priority_list( FILE* file, sim_t* sim, play
 
 // print_html_player_statistics =============================================
 
-static void print_html_player_statistics( FILE* file, player_t* p )
+void print_html_player_statistics( FILE* file, player_t* p )
 {
 
 // Statistics & Data Analysis
@@ -1252,7 +1252,7 @@ static void print_html_player_statistics( FILE* file, player_t* p )
 
 // print_html_player_resources ==============================================
 
-static void print_html_player_resources( FILE* file, player_t* p )
+void print_html_player_resources( FILE* file, player_t* p )
 {
 // Resources Section
 
@@ -1449,7 +1449,7 @@ static void print_html_player_resources( FILE* file, player_t* p )
 
 // print_html_player_charts =================================================
 
-static void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
+void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
 {
   const size_t num_players = sim -> players_by_name.size();
 
@@ -1565,7 +1565,7 @@ static void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
 
 // print_html_player_buffs ==================================================
 
-static inline bool buff_comp( const buff_t* i, const buff_t* j )
+inline bool buff_comp( const buff_t* i, const buff_t* j )
 {
   // Aura & Buff / Pet
   if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
@@ -1585,7 +1585,7 @@ static inline bool buff_comp( const buff_t* i, const buff_t* j )
   return ( i -> name_str.compare( j -> name_str ) < 0 );
 }
 
-static void print_html_player_buffs( FILE* file, player_t* p )
+void print_html_player_buffs( FILE* file, player_t* p )
 {
   int i=0;
   // Buff Section
@@ -1792,7 +1792,7 @@ static void print_html_player_buffs( FILE* file, player_t* p )
 
 // print_html_player ========================================================
 
-static void print_html_player_description( FILE* file, sim_t* sim, player_t* p, int j, std::string& n )
+void print_html_player_description( FILE* file, sim_t* sim, player_t* p, int j, std::string& n )
 {
 
   int num_players = ( int ) sim -> players_by_name.size();
@@ -1870,7 +1870,7 @@ static void print_html_player_description( FILE* file, sim_t* sim, player_t* p, 
 
 // print_html_player_results_spec_gear ========================================================
 
-static void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_t* p )
+void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_t* p )
 {
 
   // Main player table
@@ -2025,7 +2025,7 @@ static void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_
 
 // print_html_player_abilities ========================================================
 
-static void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, std::string& n )
+void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, std::string& n )
 {
 
   // Abilities Section
@@ -2112,7 +2112,7 @@ static void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, st
 
 // print_html_player_benefits_uptimes ========================================================
 
-static void print_html_player_benefits_uptimes( FILE* file, player_t* p )
+void print_html_player_benefits_uptimes( FILE* file, player_t* p )
 {
   fprintf( file,
            "\t\t\t\t\t<div class=\"player-section benefits\">\n"
@@ -2238,7 +2238,7 @@ static void print_html_player_benefits_uptimes( FILE* file, player_t* p )
 
 // print_html_player_procs ========================================================
 
-static void print_html_player_procs( FILE* file, player_t* p )
+void print_html_player_procs( FILE* file, player_t* p )
 {
   // Procs Section
   fprintf( file,
@@ -2285,7 +2285,7 @@ static void print_html_player_procs( FILE* file, player_t* p )
 
 // print_html_player_deaths ========================================================
 
-static void print_html_player_deaths( FILE* file, player_t* p )
+void print_html_player_deaths( FILE* file, player_t* p )
 {
   // Death Analysis
 
@@ -2363,7 +2363,7 @@ static void print_html_player_deaths( FILE* file, player_t* p )
 
 // print_html_player_gear_weights ========================================================
 
-static void print_html_player_gear_weights( FILE* file, player_t* p )
+void print_html_player_gear_weights( FILE* file, player_t* p )
 {
   if ( p -> sim -> scaling -> has_scale_factors() && !p -> is_pet() )
   {
@@ -2411,7 +2411,7 @@ static void print_html_player_gear_weights( FILE* file, player_t* p )
 
 // print_html_player_ ========================================================
 
-static void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
+void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 {
   std::string n = p -> name();
   util_t::format_text( n, true );
