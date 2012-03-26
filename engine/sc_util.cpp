@@ -770,6 +770,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case DEATH_KNIGHT_FROST:    return TREE_FROST;
     case DEATH_KNIGHT_UNHOLY:   return TREE_UNHOLY;
     }
+    break;
   case DRUID:
     switch ( tree )
     {
@@ -777,6 +778,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case DRUID_FERAL:           return TREE_FERAL;
     case DRUID_RESTORATION:     return TREE_RESTORATION;
     }
+    break;
   case HUNTER:
     switch ( tree )
     {
@@ -784,6 +786,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case HUNTER_MARKSMANSHIP:   return TREE_MARKSMANSHIP;
     case HUNTER_SURVIVAL:       return TREE_SURVIVAL;
     }
+    break;
   case MAGE:
     switch ( tree )
     {
@@ -791,6 +794,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case MAGE_FIRE:             return TREE_FIRE;
     case MAGE_FROST:            return TREE_FROST;
     }
+    break;
   case PALADIN:
     switch ( tree )
     {
@@ -798,6 +802,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case PALADIN_PROTECTION:    return TREE_PROTECTION;
     case PALADIN_RETRIBUTION:   return TREE_RETRIBUTION;
     }
+    break;
   case PRIEST:
     switch ( tree )
     {
@@ -805,6 +810,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case PRIEST_HOLY:           return TREE_HOLY;
     case PRIEST_SHADOW:         return TREE_SHADOW;
     }
+    break;
   case ROGUE:
     switch ( tree )
     {
@@ -812,6 +818,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case ROGUE_COMBAT:          return TREE_COMBAT;
     case ROGUE_SUBTLETY:        return TREE_SUBTLETY;
     }
+    break;
   case SHAMAN:
     switch ( tree )
     {
@@ -819,6 +826,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case SHAMAN_ENHANCEMENT:    return TREE_ENHANCEMENT;
     case SHAMAN_RESTORATION:    return TREE_RESTORATION;
     }
+    break;
   case WARLOCK:
     switch ( tree )
     {
@@ -826,6 +834,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case WARLOCK_DEMONOLOGY:    return TREE_DEMONOLOGY;
     case WARLOCK_DESTRUCTION:   return TREE_DESTRUCTION;
     }
+    break;
   case WARRIOR:
     switch ( tree )
     {
@@ -833,6 +842,7 @@ int util_t::talent_tree( int tree, player_type ptype )
     case WARRIOR_FURY:          return TREE_FURY;
     case WARRIOR_PROTECTION:    return TREE_PROTECTION;
     }
+    break;
   default:
     break;
   }
@@ -851,6 +861,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_UNHOLY:   return 2;
     default: break;
     }
+    break;
   case DRUID:
     switch ( tree )
     {
@@ -860,6 +871,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_RESTORATION:     return 3;
     default: break;
     }
+    break;
   case HUNTER:
     switch ( tree )
     {
@@ -868,6 +880,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_SURVIVAL:       return 2;
     default: break;
     }
+    break;
   case MAGE:
     switch ( tree )
     {
@@ -876,6 +889,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_FROST:            return 2;
     default: break;
     }
+    break;
   case MONK:
     switch ( tree )
     {
@@ -884,6 +898,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_WINDWALKER:       return 2;
     default: break;
     }
+    break;
   case PALADIN:
     switch ( tree )
     {
@@ -892,6 +907,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_RETRIBUTION:   return 2;
     default: break;
     }
+    break;
   case PRIEST:
     switch ( tree )
     {
@@ -900,6 +916,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_SHADOW:         return 2;
     default: break;
     }
+    break;
   case ROGUE:
     switch ( tree )
     {
@@ -908,6 +925,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_SUBTLETY:        return 2;
     default: break;
     }
+    break;
   case SHAMAN:
     switch ( tree )
     {
@@ -916,6 +934,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_RESTORATION:    return 2;
     default: break;
     }
+    break;
   case WARLOCK:
     switch ( tree )
     {
@@ -924,6 +943,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_DESTRUCTION:   return 2;
     default: break;
     }
+    break;
   case WARRIOR:
     switch ( tree )
     {
@@ -932,6 +952,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
     case TREE_PROTECTION:    return 2;
     default: break;
     }
+    break;
   default:
     break;
   }
@@ -952,6 +973,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_UNHOLY;
     default: break;
     }
+    break;
   case DRUID:
     switch ( tree )
     {
@@ -961,6 +983,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 3: return TREE_RESTORATION;
     default: break;
     }
+    break;
   case HUNTER:
     switch ( tree )
     {
@@ -969,6 +992,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_SURVIVAL;
     default: break;
     }
+    break;
   case MAGE:
     switch ( tree )
     {
@@ -977,6 +1001,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_FROST;
     default: break;
     }
+    break;
   case MONK:
     switch ( tree )
     {
@@ -985,6 +1010,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_WINDWALKER;
     default: break;
     }
+    break;
   case PALADIN:
     switch ( tree )
     {
@@ -993,6 +1019,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_RETRIBUTION;
     default: break;
     }
+    break;
   case PRIEST:
     switch ( tree )
     {
@@ -1001,6 +1028,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_SHADOW;
     default: break;
     }
+    break;
   case ROGUE:
     switch ( tree )
     {
@@ -1009,6 +1037,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_SUBTLETY;
     default: break;
     }
+    break;
   case SHAMAN:
     switch ( tree )
     {
@@ -1017,6 +1046,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_RESTORATION;
     default: break;
     }
+    break;
   case WARLOCK:
     switch ( tree )
     {
@@ -1025,6 +1055,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_DESTRUCTION;
     default: break;
     }
+    break;
   case WARRIOR:
     switch ( tree )
     {
@@ -1033,6 +1064,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
     case 2: return TREE_PROTECTION;
     default: break;
     }
+    break;
   default:
     break;
   }
