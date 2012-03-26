@@ -384,6 +384,10 @@ static bool parse_specialization( sim_t* sim,
                                   const std::string& value )
 {
   sim -> active_player -> spec = util_t::translate_spec_str( sim -> active_player -> type, value );
+
+  if ( sim -> active_player -> spec == TREE_NONE )
+    sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player->name(), value.c_str() );
+
   return true;
 }
 
