@@ -1630,7 +1630,7 @@ void print_html_player_buffs( FILE* file, player_t* p )
     {
       buff_name += b -> player -> name_str + '-';
     }
-    buff_name += b -> name();
+    buff_name += b -> name_str.c_str();
 
     fprintf( file,
              "\t\t\t\t\t\t\t<tr" );
@@ -1697,7 +1697,7 @@ void print_html_player_buffs( FILE* file, player_t* p )
         {
           fprintf( file,
                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s_%d:</span>%.1f%%</li>\n",
-                   b -> name(), j,
+                   b -> name_str.c_str(), j,
                    uptime * 100.0 );
         }
       }
@@ -1745,7 +1745,7 @@ void print_html_player_buffs( FILE* file, player_t* p )
         fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( *b ) -> name() );
+                 ( *b ) -> name_str.c_str() );
 
 
         fprintf( file,
@@ -1775,7 +1775,7 @@ void print_html_player_buffs( FILE* file, player_t* p )
         fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( *b ) -> name() );
+                 ( *b ) -> name_str.c_str() );
 
       i++;
     }

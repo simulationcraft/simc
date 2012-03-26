@@ -2766,7 +2766,6 @@ struct raid_event_t
   virtual void start();
   virtual void finish();
   virtual void parse_options( option_t*, const std::string& options_str );
-  virtual const char* name() const { return name_str.c_str(); }
   static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
   static void init( sim_t* );
   static void reset( sim_t* );
@@ -2981,8 +2980,6 @@ public:
   virtual void combat_begin();
   virtual void combat_end();
 
-  const char* name() { return name_str.c_str(); }
-
   action_expr_t* create_expression( action_t*, const std::string& type );
   std::string    to_str() const;
 
@@ -3127,7 +3124,6 @@ struct action_expr_t
   action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action( a ), name_str( n ) { result_type = TOK_STR; result_str = constant_value; }
   virtual ~action_expr_t() {}
   virtual int evaluate() { return result_type; }
-  virtual const char* name() { return name_str.c_str(); }
   finline bool success() { return ( evaluate() == TOK_NUM ) && ( result_num != 0 ); }
 
   static action_expr_t* parse( action_t*, const std::string& expr_str );
@@ -3587,8 +3583,6 @@ public:
   player_t* find_player( int index );
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
-  void      aura_gain( const char* name, int aura_id=0 );
-  void      aura_loss( const char* name, int aura_id=0 );
   action_expr_t* create_expression( action_t*, const std::string& name );
   int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
   void register_targetdata_item( int kind, const char* name, player_type type, size_t offset );
@@ -4759,8 +4753,6 @@ struct player_t : public noncopyable
   item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
   bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
-  void      aura_gain( const char* name, double value=0 );
-  void      aura_loss( const char* name, double value=0 );
 
   cooldown_t* find_cooldown( const std::string& name ) const;
   dot_t*      find_dot     ( const std::string& name ) const;

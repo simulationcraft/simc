@@ -33,7 +33,7 @@ struct expr_unary_t : public action_expr_t
     else
     {
       action -> sim -> errorf( "%s-%s: Unexpected input type (%s) for unary operator '%s'\n",
-                               action -> player -> name(), action -> name(), input -> name(), name() );
+                               action -> player -> name(), action -> name(), input -> name_str.c_str(), name_str.c_str() );
     }
     return result_type;
   }
@@ -182,7 +182,7 @@ struct expr_binary_t : public action_expr_t
     return result_type;
 error:
     action -> sim -> errorf( "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n",
-                             action -> player -> name(), action -> name(), left -> name(), right -> name(), name() );
+                             action -> player -> name(), action -> name(), left -> name_str.c_str(), right -> name_str.c_str(), name_str.c_str() );
     action -> sim -> cancel();
 
     return result_type;

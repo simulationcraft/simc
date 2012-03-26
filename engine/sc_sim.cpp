@@ -32,9 +32,9 @@ struct sim_signal_handler_t
   {
     if ( global_sim )
     {
-      const char* name = strsignal( signal );
+      const char* name_str.c_str = strsignal( signal );
       fprintf( stderr, "sim_signal_handler: %s! Seed=%d Iteration=%d\n",
-               name, global_sim -> seed, global_sim -> current_iteration );
+               name_str.c_str, global_sim -> seed, global_sim -> current_iteration );
       fflush( stderr );
     }
     exit( 0 );
@@ -1729,7 +1729,7 @@ void sim_t::merge( sim_t& other_sim )
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
-    b -> merge( buff_t::find( &other_sim, b -> name() ) );
+    b -> merge( buff_t::find( &other_sim, b -> name_str.c_str() ) );
   }
 
   for ( unsigned int i = 0; i < actor_list.size(); i++ )
@@ -1917,20 +1917,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.thunder_clap           = optimal_raid;
   overrides.trueshot_aura          = optimal_raid;
   overrides.vindication            = optimal_raid;
-}
-
-// sim_t::aura_gain =========================================================
-
-void sim_t::aura_gain( const char* aura_name , int /* aura_id */ )
-{
-  if ( log ) log_t::output( this, "Raid gains %s", aura_name );
-}
-
-// sim_t::aura_loss =========================================================
-
-void sim_t::aura_loss( const char* aura_name , int /* aura_id */ )
-{
-  if ( log ) log_t::output( this, "Raid loses %s", aura_name );
 }
 
 // sim_t::time_to_think =====================================================

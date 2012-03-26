@@ -536,7 +536,7 @@ timespan_t raid_event_t::duration_time() const
 void raid_event_t::start()
 {
   if ( sim -> log )
-    log_t::output( sim, "Raid event %s starts.", name() );
+    log_t::output( sim, "Raid event %s starts.", name_str.c_str() );
 
   num_starts++;
 
@@ -561,14 +561,14 @@ void raid_event_t::start()
 void raid_event_t::finish()
 {
   if ( sim -> log )
-    log_t::output( sim, "Raid event %s finishes.", name() );
+    log_t::output( sim, "Raid event %s finishes.", name_str.c_str() );
 }
 
 // raid_event_t::schedule ===================================================
 
 void raid_event_t::schedule()
 {
-  if ( sim -> debug ) log_t::output( sim, "Scheduling raid event: %s", name() );
+  if ( sim -> debug ) log_t::output( sim, "Scheduling raid event: %s", name_str.c_str() );
 
   struct duration_event_t : public event_t
   {
@@ -671,9 +671,9 @@ void raid_event_t::parse_options( option_t*          options,
   for ( int i=0; base_options[ i ].name; i++ )
     merged_options.push_back( base_options[ i ] );
 
-  if ( ! option_t::parse( sim, name(), merged_options, options_str ) )
+  if ( ! option_t::parse( sim, name_str.c_str(), merged_options, options_str ) )
   {
-    sim -> errorf( "Raid Event %s: Unable to parse options str '%s'.\n", name(), options_str.c_str() );
+    sim -> errorf( "Raid Event %s: Unable to parse options str '%s'.\n", name_str.c_str(), options_str.c_str() );
     sim -> cancel();
   }
 

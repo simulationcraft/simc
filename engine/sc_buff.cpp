@@ -11,7 +11,7 @@ struct expiration_t : public event_t
 {
   buff_t* buff;
 
-  expiration_t( sim_t* sim, player_t* p, buff_t* b, timespan_t d ) : event_t( sim, p, b -> name() ), buff( b )
+  expiration_t( sim_t* sim, player_t* p, buff_t* b, timespan_t d ) : event_t( sim, p, b -> name_str.c_str() ), buff( b )
   { sim -> add_event( this, d ); }
 
   virtual void execute()
@@ -28,7 +28,7 @@ struct buff_delay_t : public event_t
   int     stacks;
 
   buff_delay_t( sim_t* sim, player_t* p, buff_t* b, int stacks, double value ) :
-    event_t( sim, p, b -> name() ), value( value ), buff( b ), stacks( stacks )
+    event_t( sim, p, b -> name_str.c_str() ), value( value ), buff( b ), stacks( stacks )
   {
     timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
     sim -> add_event( this, delay_duration );
@@ -542,7 +542,7 @@ void buff_t::execute( int stacks, double value )
   {
     if ( sim -> debug )
       log_t::output( sim, "%s starts buff %s cooldown (%s) with duration %.2f",
-                     ( source ? source -> name() : "someone" ), name(), cooldown -> name(), cooldown -> duration.total_seconds() );
+                     ( source ? source -> name() : "someone" ), name_str.c_str(), cooldown -> name(), cooldown -> duration.total_seconds() );
 
     cooldown -> start();
   }
@@ -595,7 +595,7 @@ void buff_t::decrement( int    stacks,
 
     if ( sim -> debug )
       log_t::output( sim, "buff %s decremented by %d to %d stacks",
-                     name(), stacks, current_stack );
+                     name_str.c_str(), stacks, current_stack );
   }
 }
 
@@ -612,7 +612,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     if ( sim -> debug )
       log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
-                     p -> name(), name(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
+                     p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
   else if ( extra_seconds < timespan_t::zero )
   {
@@ -636,7 +636,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     if ( sim -> debug )
       log_t::output( sim, "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
-                     p -> name(), name(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
+                     p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
 }
 
@@ -649,7 +649,7 @@ void buff_t::start( int    stacks,
 
   if ( current_stack != 0 )
   {
-    sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n", name(), player -> name() );
+    sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(), player -> name() );
     assert( 0 );
   }
 
@@ -737,7 +737,7 @@ void buff_t::override( int    stacks,
   if ( max_stack == 0 ) return;
   if ( current_stack != 0 )
   {
-    sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n", name(), player -> name() );
+    sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(), player -> name() );
     assert( 0 );
   }
 
@@ -788,7 +788,7 @@ void buff_t::aura_gain()
   if ( sim -> log )
   {
     char an[ 128 ];
-    const char* s = name();
+    const char* s = name_str.c_str();
     if ( max_stack >= 0 )
     {
       snprintf( an, sizeof( an ), "%s_%d", s, current_stack );
@@ -797,11 +797,14 @@ void buff_t::aura_gain()
 
     if ( player )
     {
-      player -> aura_gain( s, current_value );
+      if ( sim -> log && ! player->sleeping )
+      {
+        log_t::output( sim, "%s gains %s ( value=%.2f )", player->name(), s, current_value );
+      }
     }
     else
     {
-      sim -> aura_gain( s, aura_id );
+      if ( sim -> log ) log_t::output( sim, "Raid gains %s", s );
     }
   }
 }
@@ -812,11 +815,12 @@ void buff_t::aura_loss()
 {
   if ( player )
   {
-    player -> aura_loss( name(), current_value );
+    if ( sim -> log && ! player -> sleeping )
+      log_t::output( sim, "%s loses %s", player -> name(), name_str.c_str() );
   }
   else
   {
-    sim -> aura_loss( name(), aura_id );
+    if ( sim -> log ) log_t::output( sim, "Raid loses %s",  name_str.c_str() );
   }
 }
 

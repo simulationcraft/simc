@@ -227,7 +227,7 @@ void print_text_buffs( FILE* file, player_t* p )
       prefix = ' ';
       total_length = 0;
     }
-    util_t::fprintf( file, "%c%s", prefix, ( *b ) -> name() );
+    util_t::fprintf( file, "%c%s", prefix, ( *b ) -> name_str.c_str() );
     prefix = '/';
     total_length += length;
   }

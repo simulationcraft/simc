@@ -647,11 +647,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
 
     cooldown -> start();
 
-    if ( ++stacks < max_stacks )
-    {
-      listener -> aura_gain( name_str.c_str() );
-    }
-    else
+    if ( ++stacks >= max_stacks )
     {
       stacks = 0;
       spell -> execute();

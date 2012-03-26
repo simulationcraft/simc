@@ -584,7 +584,7 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
       continue;
 
     writer.begin_tag( "buff" );
-    writer.print_attribute( "name", b -> name() );
+    writer.print_attribute( "name", b -> name_str.c_str() );
     writer.print_attribute( "type", b -> constant ? "constant" : "dynamic" );
 
     if ( b -> constant )
@@ -894,7 +894,7 @@ void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
       continue;
 
     writer.begin_tag( "buff" );
-    writer.print_attribute( "name", b -> name() );
+    writer.print_attribute( "name", b -> name_str.c_str() );
     writer.print_attribute( "type", b -> constant ? "constant" : "dynamic" );
 
     if ( b -> constant )

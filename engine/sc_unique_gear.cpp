@@ -50,7 +50,7 @@ struct stat_proc_callback_t : public action_callback_t
           stat_proc_callback_t* callback;
           tick_stack_t( sim_t* sim, player_t* p, stat_proc_callback_t* cb ) : event_t( sim, p ), callback( cb )
           {
-            name = callback -> buff -> name();
+            name = callback -> buff -> name_str.c_str();
             sim -> add_event( this, callback -> tick );
           }
           virtual void execute()
@@ -228,11 +228,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
     cooldown -> start();
 
-    if ( ++stacks < max_stacks )
-    {
-      listener -> aura_gain( name_str.c_str(), stacks );
-    }
-    else
+    if ( ++stacks >= max_stacks )
     {
       stacks = 0;
       if ( listener -> sim -> debug ) log_t::output( listener -> sim, "%s procs %s", a -> name(), discharge_action -> name() );
@@ -344,7 +340,6 @@ struct chance_discharge_proc_callback_t : public action_callback_t
 
     if ( ++stacks < max_stacks )
     {
-      listener -> aura_gain( name_str.c_str(), stacks );
       if ( proc_chance )
       {
         if ( proc_chance < 0 )

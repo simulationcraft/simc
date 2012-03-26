@@ -3096,7 +3096,7 @@ void player_t::merge( player_t& other )
 
   for ( buff_t* b = buff_list; b; b = b -> next )
   {
-    buff_t *otherbuff = buff_t::find( &other, b -> name() );
+    buff_t *otherbuff = buff_t::find( &other, b -> name_str.c_str() );
     if ( otherbuff )
     {
       b -> merge( otherbuff );
@@ -4163,14 +4163,14 @@ double player_t::assess_damage( double            amount,
       double value = std::min( mitigated_amount - absorbed_amount, buff_value );
       absorbed_amount += value;
       if ( sim -> debug ) log_t::output( sim, "%s %s absorbs %.2f",
-                                         name(), absorb_buffs[ i ] -> name(), value );
+                                         name(), absorb_buffs[ i ] -> name_str.c_str(), value );
       if ( value == buff_value )
         absorb_buffs[ i ] -> expire();
       else
       {
         absorb_buffs[ i ] -> current_value -= value;
         if ( sim -> debug ) log_t::output( sim, "%s %s absorb remaining %.2f",
-                                           name(), absorb_buffs[ i ] -> name(), absorb_buffs[ i ] -> current_value );
+                                           name(), absorb_buffs[ i ] -> name_str.c_str(), absorb_buffs[ i ] -> current_value );
       }
     }
   }
@@ -4491,27 +4491,6 @@ action_t* player_t::find_action( const std::string& str )
       return a;
 
   return 0;
-}
-
-// player_t::aura_gain ======================================================
-
-void player_t::aura_gain( const char* aura_name , double value )
-{
-  if ( sim -> log && ! sleeping )
-  {
-    log_t::output( sim, "%s gains %s ( value=%.2f )", name(), aura_name, value );
-  }
-
-}
-
-// player_t::aura_loss ======================================================
-
-void player_t::aura_loss( const char* aura_name , double /* value */ )
-{
-  if ( sim -> log && ! sleeping )
-  {
-    log_t::output( sim, "%s loses %s", name(), aura_name );
-  }
 }
 
 // player_t::find_cooldown ==================================================
@@ -5649,7 +5628,7 @@ struct cancel_buff_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s cancels buff %s", player -> name(), buff -> name() );
+    if ( sim -> log ) log_t::output( sim, "%s cancels buff %s", player -> name(), buff -> name_str.c_str() );
     buff -> expire();
   }
 
