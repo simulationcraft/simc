@@ -4438,7 +4438,7 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_typ
 {
   if ( blocked_class_modules::shaman )
   {
-    util_t::blocked_class_module( sim, SHAMAN );
+    sim -> errorf( util_t::blocked_class_module(  SHAMAN ).c_str() );
     return NULL;
   }
 

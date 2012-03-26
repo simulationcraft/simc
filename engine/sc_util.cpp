@@ -2775,12 +2775,12 @@ std::string tolower( const std::string& src )
   return dest;
 }
 
-void util_t::blocked_class_module( sim_t* s, const player_type& pt )
+std::string util_t::blocked_class_module( const player_type& pt )
 {
   std::string class_string = util_t::player_type_string( pt );
   if( !class_string.empty() )
     class_string[ 0 ] = std::toupper( class_string[ 0 ] );
-  s->errorf( "\n%s Module is currently not available.\n", class_string.c_str() );
+  return "\n" + class_string + " Module is currently not available.\n";
 }
 
 #if 0 // UNUSED

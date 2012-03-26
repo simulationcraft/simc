@@ -5531,7 +5531,7 @@ player_t* player_t::create_druid( sim_t*             sim,
 {
   if ( blocked_class_modules::druid )
   {
-    util_t::blocked_class_module( sim, DRUID );
+    sim -> errorf( util_t::blocked_class_module(  DRUID ).c_str() );
     return NULL;
   }
 

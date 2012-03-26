@@ -4279,7 +4279,7 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type 
 {
   if ( blocked_class_modules::mage )
   {
-    util_t::blocked_class_module( sim, MAGE );
+    sim -> errorf( util_t::blocked_class_module(  MAGE ).c_str() );
     return NULL;
   }
 

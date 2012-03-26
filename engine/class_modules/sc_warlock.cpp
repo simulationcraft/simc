@@ -4867,7 +4867,7 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_ty
 {
   if ( blocked_class_modules::warlock )
   {
-    util_t::blocked_class_module( sim, WARLOCK );
+    sim -> errorf( util_t::blocked_class_module(  WARLOCK ).c_str() );
     return NULL;
   }
 

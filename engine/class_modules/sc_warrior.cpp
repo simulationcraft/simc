@@ -3900,7 +3900,7 @@ player_t* player_t::create_warrior( sim_t* sim, const std::string& name, race_ty
 {
   if ( blocked_class_modules::warrior )
   {
-    util_t::blocked_class_module( sim, WARRIOR );
+    sim -> errorf( util_t::blocked_class_module(  WARRIOR ).c_str() );
     return NULL;
   }
 

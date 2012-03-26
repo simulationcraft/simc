@@ -4434,7 +4434,7 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_typ
 {
   if ( blocked_class_modules::priest )
   {
-    util_t::blocked_class_module( sim, PRIEST );
+    sim -> errorf( util_t::blocked_class_module(  PRIEST ).c_str() );
     return NULL;
   }
 

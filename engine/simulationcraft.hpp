@@ -2528,7 +2528,7 @@ public:
 
   static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
 
-  static void blocked_class_module( sim_t*, const player_type& );
+  static std::string blocked_class_module( const player_type& );
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form

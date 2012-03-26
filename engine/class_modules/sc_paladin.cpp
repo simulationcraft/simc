@@ -3711,7 +3711,7 @@ player_t* player_t::create_paladin( sim_t* sim, const std::string& name, race_ty
 {
   if ( blocked_class_modules::paladin )
   {
-    util_t::blocked_class_module( sim, PALADIN );
+    sim -> errorf( util_t::blocked_class_module(  PALADIN ).c_str() );
     return NULL;
   }
 
