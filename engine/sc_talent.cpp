@@ -293,13 +293,13 @@ bool spell_id_t::initialize( const char* s_name )
   switch ( s_type )
   {
   case T_SPEC:
-    s_tree = s_player -> dbc.specialization_ability_tree( player_class, s_id );
+    s_tree = util_t::translate_spec_id( s_player -> type, s_player -> dbc.specialization_ability_tree( player_class, s_id ) );
     break;
   case T_CLASS:
     s_tree = s_player -> dbc.class_ability_tree( player_class, s_id );
     break;
   case T_MASTERY:
-    s_tree = s_player -> dbc.mastery_ability_tree( player_class, s_id );
+    s_tree = util_t::translate_spec_id( s_player -> type, s_player -> dbc.mastery_ability_tree( player_class, s_id ) );
     break;
   default:
     s_tree = -1;
@@ -377,8 +377,8 @@ bool spell_id_t::ok() const
   if ( s_required_talent )
     res = res & s_required_talent -> ok();
 
-  if ( s_type == T_SPEC )
-    res = res & ( s_tree == s_player -> specialization );
+  if ( s_type == T_SPEC || s_type == T_MASTERY )
+    res = res & ( s_tree == s_player -> spec );
 
   return res;
 }

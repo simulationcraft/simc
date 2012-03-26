@@ -938,6 +938,107 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
   return -1;
 }
 
+// util_t::translate_spec_id ================================================
+
+talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
+{
+  switch ( ptype )
+  {
+  case DEATH_KNIGHT:
+    switch ( tree )
+    {
+    case 0: return TREE_BLOOD;
+    case 1: return TREE_FROST;
+    case 2: return TREE_UNHOLY;
+    default: break;
+    }
+  case DRUID:
+    switch ( tree )
+    {
+    case 0: return TREE_BALANCE;
+    case 1: return TREE_FERAL;
+    case 2: return TREE_GUARDIAN;
+    case 3: return TREE_RESTORATION;
+    default: break;
+    }
+  case HUNTER:
+    switch ( tree )
+    {
+    case 0: return TREE_BEAST_MASTERY;
+    case 1: return TREE_MARKSMANSHIP;
+    case 2: return TREE_SURVIVAL;
+    default: break;
+    }
+  case MAGE:
+    switch ( tree )
+    {
+    case 0: return TREE_ARCANE;
+    case 1: return TREE_FIRE;
+    case 2: return TREE_FROST;
+    default: break;
+    }
+  case MONK:
+    switch ( tree )
+    {
+    case 0: return TREE_BREWMASTER;
+    case 1: return TREE_MISTWEAVER;
+    case 2: return TREE_WINDWALKER;
+    default: break;
+    }
+  case PALADIN:
+    switch ( tree )
+    {
+    case 0: return TREE_HOLY;
+    case 1: return TREE_PROTECTION;
+    case 2: return TREE_RETRIBUTION;
+    default: break;
+    }
+  case PRIEST:
+    switch ( tree )
+    {
+    case 0: return TREE_DISCIPLINE;
+    case 1: return TREE_HOLY;
+    case 2: return TREE_SHADOW;
+    default: break;
+    }
+  case ROGUE:
+    switch ( tree )
+    {
+    case 0: return TREE_ASSASSINATION;
+    case 1: return TREE_COMBAT;
+    case 2: return TREE_SUBTLETY;
+    default: break;
+    }
+  case SHAMAN:
+    switch ( tree )
+    {
+    case 0: return TREE_ELEMENTAL;
+    case 1: return TREE_ENHANCEMENT;
+    case 2: return TREE_RESTORATION;
+    default: break;
+    }
+  case WARLOCK:
+    switch ( tree )
+    {
+    case 0: return TREE_AFFLICTION;
+    case 1: return TREE_DEMONOLOGY;
+    case 2: return TREE_DESTRUCTION;
+    default: break;
+    }
+  case WARRIOR:
+    switch ( tree )
+    {
+    case 0: return TREE_ARMS;
+    case 1: return TREE_FURY;
+    case 2: return TREE_PROTECTION;
+    default: break;
+    }
+  default:
+    break;
+  }
+  return TREE_NONE;
+}
+
 // util_t::translate_spec_str ===============================================
 
 talent_tree_type util_t::translate_spec_str( player_type ptype, const std::string& spec_str )

@@ -2420,6 +2420,7 @@ public:
   static int         talent_tree               ( int tree, player_type ptype );
   static int         spec_id                   ( player_type ptype, talent_tree_type tree );
   static talent_tree_type translate_spec_str   ( player_type ptype, const std::string& spec_str );
+  static talent_tree_type translate_spec_id    ( player_type ptype, int spec_id );
   static const char* talent_tree_string        ( int tree, bool armory_format = true );
   static const char* weapon_type_string        ( int type );
   static const char* weapon_class_string       ( int class_ );

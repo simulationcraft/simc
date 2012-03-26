@@ -2872,8 +2872,9 @@ struct earth_shock_t : public shaman_spell_t
     shaman_spell_t( "earth_shock", "Earth Shock", player, options_str ), 
     consume_threshold( ( int ) actor -> spec.fulmination -> effectN( 1 ).base_value() )
   {
-    stateless = true;
-    cooldown  = actor -> cooldown.shock;
+    stateless            = true;
+    cooldown             = actor -> cooldown.shock;
+    cooldown -> duration = spell_id_t::cooldown();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3588,7 +3589,8 @@ struct lightning_shield_buff_t : public buff_t
   {
     shaman_t* s = player -> cast_shaman();
 
-    max_stack = ( int ) s -> spec.rolling_thunder -> effectN( 1 ).base_value();
+    if ( s -> primary_tree() == TREE_ELEMENTAL )
+      max_stack = ( int ) s -> spec.rolling_thunder -> effectN( 1 ).base_value();
 
     // Reinit because of max_stack change
     init_buff_shared();
