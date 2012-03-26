@@ -173,7 +173,7 @@ void spell_t::calculate_result()
 
   if ( ( result == RESULT_NONE ) && may_miss )
   {
-    if ( rng[ RESULT_MISS ] -> roll( miss_chance( delta_level ) ) )
+    if ( rng_result -> roll( miss_chance( delta_level ) ) )
     {
       result = RESULT_MISS;
     }
@@ -181,7 +181,7 @@ void spell_t::calculate_result()
 
   if ( ( result == RESULT_NONE ) && may_resist && binary )
   {
-    if ( rng[ RESULT_RESIST ] -> roll( resistance() ) )
+    if ( rng_result -> roll( resistance() ) )
     {
       result = RESULT_RESIST;
     }
@@ -193,7 +193,7 @@ void spell_t::calculate_result()
 
     if ( may_crit )
     {
-      if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
+      if ( rng_result -> roll( crit_chance( delta_level ) ) )
       {
         result = RESULT_CRIT;
       }

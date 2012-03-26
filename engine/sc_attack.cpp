@@ -395,7 +395,7 @@ void attack_t::calculate_result()
 
   if ( result_is_hit() )
   {
-    if ( binary && rng[ RESULT_RESIST ] -> roll( resistance() ) )
+    if ( binary && rng_result -> roll( resistance() ) )
     {
       result = RESULT_RESIST;
     }
@@ -403,7 +403,7 @@ void attack_t::calculate_result()
     {
       int delta_level = target -> level - player -> level;
 
-      if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
+      if ( rng_result -> roll( crit_chance( delta_level ) ) )
       {
         result = RESULT_CRIT;
       }

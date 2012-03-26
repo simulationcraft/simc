@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include <simulationcraft.hpp>
+#include "sc_report.hpp"
 #include <stack>
 
 namespace { // ANONYMOUS NAMESPACE ==========================================

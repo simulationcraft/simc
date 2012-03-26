@@ -196,13 +196,13 @@ void spell_t::calculate_result_s( action_state_t* state )
   
   if ( may_miss )
   {
-    if ( rng[ RESULT_MISS ] -> roll( miss_chance_s( state ) ) )
+    if ( rng_result -> roll( miss_chance_s( state ) ) )
       state -> result = RESULT_MISS;
   }
   
   if ( state -> result == RESULT_NONE && may_resist && binary )
   {
-    if ( rng[ RESULT_RESIST ] -> roll( resistance_s( state ) ) )
+    if ( rng_result -> roll( resistance_s( state ) ) )
       state -> result = RESULT_RESIST;
   }
   
@@ -212,7 +212,7 @@ void spell_t::calculate_result_s( action_state_t* state )
     
     if ( may_crit )
     {
-      if ( rng[ RESULT_CRIT ] -> roll( crit_chance_s( state ) ) )
+      if ( rng_result -> roll( crit_chance_s( state ) ) )
         state -> result = RESULT_CRIT;
     }
   }
@@ -398,11 +398,11 @@ void attack_t::calculate_result_s( action_state_t* state )
   
   if ( action -> result_is_hit( state -> result ) )
   {
-    if ( action -> binary && action -> rng[ RESULT_RESIST ] -> roll( action -> resistance_s( state ) ) )
+    if ( action -> binary && action -> rng_result -> roll( action -> resistance_s( state ) ) )
       state -> result = RESULT_RESIST;
     else if ( action -> special && action -> may_crit && state -> result == RESULT_HIT ) // Specials are 2-roll calculations
     {
-      if ( action -> rng[ RESULT_CRIT ] -> roll( crit_chance_s( state ) ) )
+      if ( action -> rng_result -> roll( crit_chance_s( state ) ) )
         state -> result = RESULT_CRIT;
     }
   }
@@ -526,7 +526,7 @@ void heal_t::calculate_result_s( action_state_t* state )
   
   if ( state -> action -> may_crit )
   {
-    if ( state -> action -> rng[ RESULT_CRIT ] -> roll( crit_chance_s( state ) ) )
+    if ( state -> action -> rng_result -> roll( crit_chance_s( state ) ) )
     {
       state -> result = RESULT_CRIT;
     }

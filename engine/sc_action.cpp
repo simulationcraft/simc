@@ -112,6 +112,7 @@ void action_t::init_action_t_()
   base_add_multiplier            = 1.0;
   base_aoe_multiplier            = 1.0;
   normalize_weapon_speed         = false;
+  rng_result                     = NULL;
   rng_travel                     = NULL;
   stats                          = NULL;
   execute_event                  = NULL;
@@ -170,8 +171,6 @@ void action_t::init_action_t_()
   action_t** last = &( player -> action_list );
   while ( *last ) last = &( ( *last ) -> next );
   *last = this;
-
-  range::fill( rng, 0 );
 
   cooldown = player -> get_cooldown( name_str );
 
@@ -1116,7 +1115,7 @@ void action_t::tick( dot_t* d )
     {
       int delta_level = target -> level - player -> level;
       
-      if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
+      if ( rng_result-> roll( crit_chance( delta_level ) ) )
       {
         result = RESULT_CRIT;
       }
@@ -1137,7 +1136,7 @@ void action_t::tick( dot_t* d )
     
     if ( tick_may_crit )
     {
-      if ( rng[ RESULT_CRIT ] -> roll( crit_chance_s( d -> state ) ) )
+      if ( rng_result -> roll( crit_chance_s( d -> state ) ) )
         d -> state -> result = RESULT_CRIT;
     }
     
@@ -1533,14 +1532,8 @@ void action_t::init()
 {
   if ( initialized ) return;
 
-  std::string buffer;
-  for ( int i=0; i < RESULT_MAX; i++ )
-  {
-    buffer  = name();
-    buffer += "_";
-    buffer += util_t::result_type_string( i );
-    rng[ i ] = player -> get_rng( buffer );
-  }
+
+  rng_result = player -> get_rng( name_str + "_result" );
 
   if ( ! sync_str.empty() )
   {

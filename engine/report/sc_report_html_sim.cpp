@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include <simulationcraft.hpp>
+#include "sc_report.hpp"
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -285,30 +286,8 @@ static void print_html_sim_summary( FILE*  file, sim_t* sim )
              ( double )sim -> queue_gcd_reduction.total_millis() );
 
   }
-    fprintf( file,
-             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-             "\t\t\t\t\t\t\t\t<th><h2>RNG:</h2></th>\n"
-             "\t\t\t\t\t\t\t\t<td></td>\n"
-             "\t\t\t\t\t\t\t</tr>\n" );
-    fprintf( file,
-             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-             "\t\t\t\t\t\t\t\t<th>Actual Roll / Expected Roll</th>\n"
-             "\t\t\t\t\t\t\t\t<td>%.8f / %.8f</td>\n"
-             "\t\t\t\t\t\t\t</tr>\n",
-             sim -> rng->actual_roll, sim -> rng->expected_roll );
-    fprintf( file,
-             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-             "\t\t\t\t\t\t\t\t<th>Actual Range / Expected Range</th>\n"
-             "\t\t\t\t\t\t\t\t<td>%.8f / %.8f</td>\n"
-             "\t\t\t\t\t\t\t</tr>\n",
-             sim -> rng->actual_range, sim -> rng->expected_range );
-    fprintf( file,
-             "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-             "\t\t\t\t\t\t\t\t<th>Actual gauss / Expected gauss</th>\n"
-             "\t\t\t\t\t\t\t\t<td>%.8f / %.8f</td>\n"
-             "\t\t\t\t\t\t\t</tr>\n",
-             sim -> rng->actual_gauss, sim -> rng->expected_gauss );
 
+  print_html_rng_information( file, sim -> rng );
 
   fprintf( file,
            "\t\t\t\t\t\t</table>\n" );

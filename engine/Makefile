@@ -107,6 +107,7 @@ SRC = \
 	sc_unique_gear.cpp \
 	sc_util.cpp \
 	sc_weapon.cpp \
+	report$(PATHSEP)sc_report.hpp \
 	report$(PATHSEP)sc_report_html_player.cpp \
 	report$(PATHSEP)sc_report_html_sim.cpp \
 	report$(PATHSEP)sc_report_text.cpp \

@@ -159,7 +159,7 @@ void heal_t::calculate_result()
 
   if ( may_crit )
   {
-    if ( rng[ RESULT_CRIT ] -> roll( crit_chance( 0 ) ) )
+    if ( rng_result -> roll( crit_chance( 0 ) ) )
     {
       result = RESULT_CRIT;
     }
