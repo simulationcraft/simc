@@ -1166,7 +1166,7 @@ struct ghoul_pet_t : public pet_t
   double snapshot_crit, snapshot_haste, snapshot_speed, snapshot_hit, snapshot_strength;
 
   ghoul_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "ghoul", true ),
+    pet_t( sim, owner, "ghoul", owner -> primary_tree() == TREE_UNHOLY ? false : true ),
     snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_speed( 0 ), snapshot_hit( 0 ), snapshot_strength( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1278,8 +1278,7 @@ struct ghoul_pet_t : public pet_t
   {
     death_knight_t* o = owner -> cast_death_knight();
     assert( o -> primary_tree() != TREE_NONE );
-    if ( o -> primary_tree() == TREE_UNHOLY )
-      type = PLAYER_PET;
+
 
     // Value for the ghoul of a naked worgen as of 4.2
     attribute_base[ ATTR_STRENGTH  ] = 476;
@@ -4137,18 +4136,6 @@ double death_knight_t::composite_attack_hit() const
 void death_knight_t::init()
 {
   player_t::init();
-
-  if ( active_ghoul )
-  {
-    if ( primary_tree() == TREE_UNHOLY )
-    {
-      active_ghoul -> type = PLAYER_PET;
-    }
-    else
-    {
-      active_ghoul -> type = PLAYER_GUARDIAN;
-    }
-  }
 
   if ( ( primary_tree() == TREE_FROST ) )
   {

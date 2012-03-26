@@ -4012,12 +4012,12 @@ public:
 
 struct player_t : public noncopyable
 {
-  sim_t*      sim;
+  sim_t* const sim;
   std::string name_str, talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   player_t*   next;
   int         index;
-  player_type type;
+  const player_type type;
   role_type   role;
   player_t*   target;
   int         level, use_pre_potion, party, member;
@@ -4862,9 +4862,9 @@ public:
 
 struct stats_t
 {
-  std::string name_str;
+  const std::string name_str;
   sim_t* sim;
-  player_t* player;
+  player_t* const player;
   stats_t* next;
   stats_t* parent;
   school_type school;
@@ -4931,7 +4931,7 @@ struct stats_t
 
 struct action_t : public spell_id_t
 {
-  sim_t* sim;
+  sim_t* const sim;
   const int type;
   std::string name_str;
   player_t* const player;
@@ -5547,9 +5547,9 @@ struct sequence_t : public action_t
 
 struct cooldown_t
 {
-  sim_t* sim;
-  player_t* player;
-  std::string name_str;
+  sim_t* const sim;
+  player_t* const player;
+  const std::string name_str;
   timespan_t duration;
   timespan_t ready;
   cooldown_t* next;
@@ -5576,8 +5576,8 @@ struct cooldown_t
 
 struct dot_t
 {
-  sim_t* sim;
-  player_t* player;
+  sim_t* const sim;
+  player_t* const player;
   action_t* action;
   event_t* tick_event;
   dot_t* next;
@@ -5586,12 +5586,11 @@ struct dot_t
   timespan_t ready;
   timespan_t miss_time;
   timespan_t time_to_tick;
-  std::string name_str;
+  const std::string name_str;
   double prev_tick_amount;
   /* New stuff */
   action_state_t* state;
 
-  dot_t() : player( 0 ) {}
   dot_t( const std::string& n, player_t* p );
 
   void   cancel();
@@ -5662,9 +5661,9 @@ struct action_callback_t
 
 struct action_priority_list_t
 {
-  std::string name_str;
+  const std::string name_str;
   std::string action_list_str;
-  player_t* player;
+  player_t* const player;
   action_priority_list_t( std::string name, player_t* p ) : name_str( name ), player( p )
   {}
 };
@@ -5687,7 +5686,7 @@ struct player_gcd_event_t : public event_t
 
 struct action_execute_event_t : public event_t
 {
-  action_t* action;
+  action_t* const action;
   action_execute_event_t( sim_t* sim, action_t* a, timespan_t time_to_execute );
   virtual void execute();
 };
@@ -5696,7 +5695,7 @@ struct action_execute_event_t : public event_t
 
 struct dot_tick_event_t : public event_t
 {
-  dot_t* dot;
+  dot_t* const dot;
   dot_tick_event_t( sim_t* sim, dot_t* d, timespan_t time_to_tick );
   virtual void execute();
 };
@@ -5705,8 +5704,8 @@ struct dot_tick_event_t : public event_t
 
 struct action_travel_event_t : public event_t
 {
-  action_t* action;
-  player_t* target;
+  action_t* const action;
+  player_t* const target;
   int result;
   double damage;
   action_travel_event_t( sim_t* sim, player_t* t, action_t* a, timespan_t time_to_travel );
@@ -5715,8 +5714,8 @@ struct action_travel_event_t : public event_t
 
 struct stateless_travel_event_t : public event_t
 {
-  action_t* action;
-  action_state_t* state;
+  action_t* const action;
+  action_state_t* const state;
   stateless_travel_event_t( sim_t* sim, action_t* a, action_state_t* state, timespan_t time_to_travel );
   virtual void execute();
 };
@@ -5813,7 +5812,7 @@ struct benefit_t : public noncopyable
   double ratio;
 
   benefit_t* next;
-  std::string name_str;
+  const std::string name_str;
 
   explicit benefit_t( const std::string& n ) :
     up( 0 ), down( 0 ),
@@ -5873,7 +5872,7 @@ struct uptime_common_t
 
 struct uptime_t : public uptime_common_t
 {
-  std::string name_str;
+  const std::string name_str;
   uptime_t* next;
 
   uptime_t( sim_t* s, const std::string& n ) :
@@ -5892,7 +5891,7 @@ struct gain_t
 {
   double actual, overflow, count;
 
-  std::string name_str;
+  const std::string name_str;
   resource_type type;
   gain_t* next;
 
@@ -5916,15 +5915,15 @@ struct proc_t
   double interval_count;
 
   double frequency;
-  sim_t* sim;
+  sim_t* const sim;
 
-  player_t* player;
-  std::string name_str;
+  player_t* const player;
+  const std::string name_str;
   proc_t* next;
 
-  proc_t( sim_t* s, const std::string& n ) :
+  proc_t( sim_t* s, player_t* p, const std::string& n ) :
     count( 0 ), last_proc( timespan_t::zero ), interval_sum( timespan_t::zero ), interval_count( 0 ),
-    frequency( 0 ), sim( s ), player( 0 ), name_str( n ), next( 0 )
+    frequency( 0 ), sim( s ), player( p ), name_str( n ), next( 0 )
   {}
 
   void occur()
@@ -6014,7 +6013,7 @@ struct log_t
 struct rng_t
 {
 public:
-  std::string name_str;
+  const std::string name_str;
   double expected_roll,  actual_roll,  num_roll;
   double expected_range, actual_range, num_range;
   double expected_gauss, actual_gauss, num_gauss;

@@ -4641,7 +4641,7 @@ proc_t* player_t::get_proc( const std::string& name )
       return p;
   }
 
-  p = new proc_t( sim, name );
+  p = new proc_t( sim, this, name );
 
   proc_t** tail = &proc_list;
 
@@ -4652,8 +4652,6 @@ proc_t* player_t::get_proc( const std::string& name )
 
   p -> next = *tail;
   *tail = p;
-
-  p -> player = this;
 
   return p;
 }
