@@ -3366,7 +3366,7 @@ private:
   int deterministic_rng;
 public:
   rng_t* rng;
-  rng_t* deterministic_rng;
+  rng_t* _deterministic_rng;
   int smooth_rng, average_range, average_gauss;
   int convergence_scale;
 

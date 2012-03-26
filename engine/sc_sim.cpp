@@ -668,7 +668,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   dtr_proc_chance( -1.0 ),
   target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
   default_rng_( 0 ), rng_list( 0 ), deterministic_rng( false ),
-  rng( 0 ), deterministic_rng( 0 ), smooth_rng( false ), average_range( true ), average_gauss( false ),
+  rng( 0 ), _deterministic_rng( 0 ), smooth_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -812,7 +812,7 @@ sim_t::~sim_t()
   }
 
   delete rng;
-  delete deterministic_rng;
+  delete _deterministic_rng;
   delete scaling;
   delete plot;
   delete reforge_plot;
@@ -1222,8 +1222,8 @@ bool sim_t::init()
 
   rng = rng_t::create( this, "global", RNG_MERSENNE_TWISTER );
 
-  deterministic_rng = rng_t::create( this, "global_deterministic", RNG_MERSENNE_TWISTER );
-  deterministic_rng -> seed( 31459 + thread_index );
+  _deterministic_rng = rng_t::create( this, "global_deterministic", RNG_MERSENNE_TWISTER );
+  _deterministic_rng -> seed( 31459 + thread_index );
 
   if ( scaling -> smooth_scale_factors &&
        scaling -> scale_stat != STAT_NONE )
@@ -1233,7 +1233,7 @@ bool sim_t::init()
     deterministic_rng = true;
   }
 
-  default_rng_ = ( deterministic_rng ? deterministic_rng : rng );
+  default_rng_ = ( deterministic_rng ? _deterministic_rng : rng );
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
@@ -1977,7 +1977,7 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
   assert( rng );
 
   if ( type == RNG_GLOBAL ) return rng;
-  if ( type == RNG_DETERMINISTIC ) return deterministic_rng;
+  if ( type == RNG_DETERMINISTIC ) return _deterministic_rng;
 
   if ( ! smooth_rng ) return default_rng_;
 

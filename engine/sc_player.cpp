@@ -2007,7 +2007,7 @@ void player_t::init_scaling()
 
       case STAT_MAX: break;
 
-      default: assert( 0 );
+      default: assert( 0 ); break;
       }
     }
   }
@@ -2159,6 +2159,7 @@ double player_t::composite_attack_crit( weapon_t* weapon ) const
     case RACE_TROLL:
       if ( weapon && weapon -> type == WEAPON_BOW )
         ac += 0.01;
+      break;
     default:
       break;
   }
@@ -3986,7 +3987,7 @@ void player_t::stat_gain( int       stat,
     mastery += amount / rating.mastery;
     break;
 
-  default: assert( 0 );
+  default: assert( 0 ); break;
   }
 }
 
@@ -4078,7 +4079,7 @@ void player_t::stat_loss( int       stat,
     mastery -= amount / rating.mastery;
     break;
 
-  default: assert( 0 );
+  default: assert( 0 ); break;
   }
 }
 
@@ -4770,7 +4771,7 @@ rng_t* player_t::get_rng( const std::string& n, int type )
   assert( sim -> rng );
 
   if ( type == RNG_GLOBAL ) return sim -> rng;
-  if ( type == RNG_DETERMINISTIC ) return sim -> deterministic_rng;
+  if ( type == RNG_DETERMINISTIC ) return sim -> _deterministic_rng;
 
   if ( ! sim -> smooth_rng ) return sim -> default_rng();
 
