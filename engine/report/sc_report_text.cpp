@@ -823,9 +823,9 @@ void report_t::print_text( FILE* file, sim_t* sim, bool detail )
 #if SC_BETA
   util_t::fprintf( file, "\n\n*** Beta Release ***\n" );
   int i = 0;
-  while ( !report::beta_warnings[ i ].empty() )
+  while ( !beta_warnings[ i ].empty() )
   {
-    util_t::fprintf( file, " * %s\n", report::beta_warnings[ i ].c_str() );
+    util_t::fprintf( file, " * %s\n", beta_warnings[ i ].c_str() );
     i++;
   }
   util_t::fprintf( file, "\n" );

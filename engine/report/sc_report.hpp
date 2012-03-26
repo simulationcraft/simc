@@ -2,6 +2,21 @@
 #define SC_REPORT_HPP
 
 namespace {
+#if SC_BETA
+// beta warning messages
+static const std::string beta_warnings[] =
+{
+  "Beta! Beta! Beta! Beta! Beta! Beta!",
+  "Not All classes are yet supported.",
+  "Some class models still need tweaking.",
+  "Some class action lists need tweaking.",
+  "Some class BiS gear setups need tweaking.",
+  "Some trinkets not yet implemented.",
+  "Constructive feedback regarding our output will shorten the Beta phase dramatically.",
+  "Beta! Beta! Beta! Beta! Beta! Beta!",
+  ""
+};
+#endif
 
 void print_html_rng_information( FILE* file, rng_t* rng )
 {

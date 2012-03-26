@@ -1296,17 +1296,17 @@ void print_html_( sim_t* sim )
   fprintf( file,
            "\t\t\t<h2>Beta Release</h2>\n" );
   int ii = 0;
-  if ( !report::beta_warnings[ 0 ].empty() )
+  if ( !beta_warnings[ 0 ].empty() )
     fprintf( file,
              "\t\t\t<ul>\n" );
-  while ( !report::beta_warnings[ ii ].empty() )
+  while ( !beta_warnings[ ii ].empty() )
   {
     fprintf( file,
              "\t\t\t\t<li>%s</li>\n",
-             report::beta_warnings[ ii ].c_str() );
+             beta_warnings[ ii ].c_str() );
     ii++;
   }
-  if ( !report::beta_warnings[ 0 ].empty() )
+  if ( !beta_warnings[ 0 ].empty() )
     fprintf( file,
              "\t\t\t</ul>\n" );
   fprintf( file,
