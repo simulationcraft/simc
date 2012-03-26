@@ -3,7 +3,7 @@
 setlocal
 
 set INEXT=DBFilesClient
-set OUTPATH=%~dp0..\engine
+set OUTPATH=%~dp0..\engine\dbc
 set RUNFILE=%~dp0\dbc_extract.py
 
 
