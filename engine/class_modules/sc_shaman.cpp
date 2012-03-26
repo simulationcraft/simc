@@ -4436,6 +4436,12 @@ int shaman_t::primary_role() const
 
 player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_type r )
 {
+  if ( blocked_class_modules::shaman )
+  {
+    util_t::blocked_class_module( sim, SHAMAN );
+    return NULL;
+  }
+
   return new shaman_t( sim, name, r );
 }
 

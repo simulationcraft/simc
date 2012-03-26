@@ -5262,6 +5262,12 @@ bool death_knight_t::runes_depleted( rune_type rt, int position )
 
 player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, race_type r )
 {
+  if ( blocked_class_modules::death_knight )
+  {
+    util_t::blocked_class_module( sim, DEATH_KNIGHT );
+    return NULL;
+  }
+
   return new death_knight_t( sim, name, r );
 }
 

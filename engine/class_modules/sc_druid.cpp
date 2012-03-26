@@ -5529,6 +5529,12 @@ player_t* player_t::create_druid( sim_t*             sim,
                                   const std::string& name,
                                   race_type r )
 {
+  if ( blocked_class_modules::druid )
+  {
+    util_t::blocked_class_module( sim, DRUID );
+    return NULL;
+  }
+
   return new druid_t( sim, name, r );
 }
 

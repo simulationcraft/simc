@@ -3898,6 +3898,12 @@ int warrior_t::decode_set( item_t& item )
 
 player_t* player_t::create_warrior( sim_t* sim, const std::string& name, race_type r )
 {
+  if ( blocked_class_modules::warrior )
+  {
+    util_t::blocked_class_module( sim, WARRIOR );
+    return NULL;
+  }
+
   return new warrior_t( sim, name, r );
 }
 

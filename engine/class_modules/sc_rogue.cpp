@@ -4070,6 +4070,12 @@ int rogue_t::decode_set( item_t& item )
 
 player_t* player_t::create_rogue( sim_t* sim, const std::string& name, race_type r )
 {
+  if ( blocked_class_modules::rogue )
+  {
+    util_t::blocked_class_module( sim, ROGUE );
+    return NULL;
+  }
+
   return new rogue_t( sim, name, r );
 }
 

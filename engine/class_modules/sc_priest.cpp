@@ -4432,6 +4432,12 @@ int priest_t::decode_set( item_t& item )
 
 player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_type r )
 {
+  if ( blocked_class_modules::priest )
+  {
+    util_t::blocked_class_module( sim, PRIEST );
+    return NULL;
+  }
+
   return new priest_t( sim, name, r );
 }
 

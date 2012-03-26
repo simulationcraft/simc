@@ -680,13 +680,14 @@ int monk_t::primary_role() const
 
 // player_t::create_monk  ===================================================
 
-player_t* player_t::create_monk( sim_t* sim, const std::string& /* name */, race_type /* r */ )
+player_t* player_t::create_monk( sim_t* sim, const std::string& name, race_type r )
 {
-  sim -> errorf( "Monk Module isn't available at the moment." );
-
-  //return new monk_t( sim, name, r );
-
-  return NULL;
+  if ( blocked_class_modules::monk )
+  {
+    util_t::blocked_class_module( sim, MONK );
+    return NULL;
+  }
+  return new monk_t( sim, name, r );
 }
 
 // player_t::monk_init ======================================================

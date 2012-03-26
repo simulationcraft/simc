@@ -3709,6 +3709,12 @@ double paladin_t::get_hand_of_light() const
 
 player_t* player_t::create_paladin( sim_t* sim, const std::string& name, race_type r )
 {
+  if ( blocked_class_modules::paladin )
+  {
+    util_t::blocked_class_module( sim, PALADIN );
+    return NULL;
+  }
+
   return new paladin_t( sim, name, r );
 }
 

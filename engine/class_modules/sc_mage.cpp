@@ -4277,6 +4277,12 @@ int mage_t::decode_set( item_t& item )
 
 player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type r )
 {
+  if ( blocked_class_modules::mage )
+  {
+    util_t::blocked_class_module( sim, MAGE );
+    return NULL;
+  }
+
   return new mage_t( sim, name, r );
 }
 

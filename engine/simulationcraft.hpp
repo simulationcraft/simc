@@ -119,6 +119,21 @@ namespace std {using namespace tr1; }
 #define M_PI ( 3.14159265358979323846 )
 #endif
 
+namespace blocked_class_modules
+{
+static const bool death_knight  = true;
+static const bool druid         = true;
+static const bool hunter        = true;
+static const bool mage          = true;
+static const bool monk          = true;
+static const bool paladin       = true;
+static const bool priest        = false;
+static const bool rogue         = true;
+static const bool shaman        = false;
+static const bool warlock       = true;
+static const bool warrior       = true;
+}
+
 #define MAX_PLAYERS_PER_CHART 20
 
 // TODO: Integer time is only partially working.
@@ -2512,6 +2527,8 @@ public:
   static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
 
   static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
+
+  static void blocked_class_module( sim_t*, const player_type& );
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form

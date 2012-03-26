@@ -4865,6 +4865,12 @@ int warlock_t::decode_set( item_t& item )
 
 player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_type r )
 {
+  if ( blocked_class_modules::warlock )
+  {
+    util_t::blocked_class_module( sim, WARLOCK );
+    return NULL;
+  }
+
   return new warlock_t( sim, name, r );
 }
 

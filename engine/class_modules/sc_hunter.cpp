@@ -4452,6 +4452,12 @@ void hunter_t::moving()
 
 player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_type r )
 {
+  if ( blocked_class_modules::hunter )
+  {
+    util_t::blocked_class_module( sim, HUNTER );
+    return NULL;
+  }
+
   return new hunter_t( sim, name, r );
 }
 
