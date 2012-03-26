@@ -3790,9 +3790,9 @@ void hunter_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
-  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
-  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
+  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
+  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
+  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   buffs_aspect_of_the_hawk          = new buff_t( this, 13165, "aspect_of_the_hawk" );
   buffs_beast_within                = new buff_t( this, 34471, "beast_within", talents.the_beast_within -> rank() );
@@ -3899,8 +3899,8 @@ void hunter_t::init_rng()
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
   // also useful for frequent checks with low probability of proc and timed effect
 
-  rng_frenzy               = get_rng( "frenzy",                      RNG_DISTRIBUTED );
-  rng_rabid_power          = get_rng( "rabid_power",                 RNG_DISTRIBUTED );
+  rng_frenzy               = get_rng( "frenzy" );
+  rng_rabid_power          = get_rng( "rabid_power" );
 }
 
 // hunter_t::init_scaling ===================================================

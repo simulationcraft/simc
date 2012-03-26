@@ -786,7 +786,6 @@ static void trigger_brain_freeze( spell_t* s )
 
 static void trigger_hot_streak( mage_spell_t* s )
 {
-  sim_t* sim = s -> sim;
   mage_t*  p = s -> player -> cast_mage();
 
   if ( ! s -> may_hot_streak )
@@ -799,11 +798,6 @@ static void trigger_hot_streak( mage_spell_t* s )
 
   p -> procs_test_for_crit_hotstreak -> occur();
 
-  if ( sim -> smooth_rng )
-  {
-    // Decouple Hot Streak proc from actual crit to reduce wild swings during RNG smoothing.
-    result = sim -> rng -> roll( s -> total_crit() ) ? RESULT_CRIT : RESULT_HIT;
-  }
   if ( result == RESULT_CRIT )
   {
     p -> procs_crit_for_hotstreak -> occur();
@@ -3553,9 +3547,9 @@ void mage_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
-  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
-  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
+  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
+  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
+  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   buffs_arcane_blast         = new buff_t( this, spells.arcane_blast,          NULL );
   buffs_arcane_missiles      = new buff_t( this, spells.arcane_missiles,       "chance", 0.40, NULL );

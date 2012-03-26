@@ -1539,7 +1539,7 @@ void action_t::init()
     buffer  = name();
     buffer += "_";
     buffer += util_t::result_type_string( i );
-    rng[ i ] = player -> get_rng( buffer, ( ( i == RESULT_CRIT ) ? RNG_DISTRIBUTED : RNG_CYCLIC ) );
+    rng[ i ] = player -> get_rng( buffer );
   }
 
   if ( ! sync_str.empty() )
@@ -1564,7 +1564,7 @@ void action_t::init()
   }
 
   if ( sim -> travel_variance && travel_speed && player -> distance )
-    rng_travel = player -> get_rng( name_str + "_travel", RNG_DISTRIBUTED );
+    rng_travel = player -> get_rng( name_str + "_travel" );
 
   if ( is_dtr_action )
   {

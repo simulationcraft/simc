@@ -380,38 +380,16 @@ void attack_t::calculate_result_s( action_state_t* state )
     state -> result = static_cast< result_type >( results[ 0 ] );
   else
   {
-    if ( action -> sim -> smooth_rng )
+    // 1-roll attack table
+
+    double random = action -> sim -> real();
+      
+    for ( int i = 0; i < num_results; i++ )
     {
-      // Encode 1-roll attack table into equivalent multi-roll system
-      
-      double prev_chance = 0.0;
-      
-      for ( int i = 0; i < num_results - 1; i++ )
+      if ( random <= chances[ i ] )
       {
-        if ( action -> rng[ results[ i ] ] -> roll( ( chances[ i ] - prev_chance ) / ( 1.0 - prev_chance ) ) )
-        {
-          state -> result = static_cast< result_type >( results[ i ] );
-          break;
-        }
-        prev_chance = chances[ i ];
-      }
-      
-      if ( result == RESULT_NONE ) 
-        state -> result = static_cast< result_type >( results[ num_results - 1 ] );
-    }
-    else
-    {
-      // 1-roll attack table with true RNG
-      
-      double random = action -> sim -> real();
-      
-      for ( int i = 0; i < num_results; i++ )
-      {
-        if ( random <= chances[ i ] )
-        {
-          state -> result = static_cast< result_type >( results[ i ] );
-          break;
-        }
+        state -> result = static_cast< result_type >( results[ i ] );
+        break;
       }
     }
   }

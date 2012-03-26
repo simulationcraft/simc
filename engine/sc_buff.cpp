@@ -58,12 +58,11 @@ buff_t::buff_t( sim_t*             s,
                 double             ch,
                 bool               q,
                 bool               r,
-                int                rt,
                 int                id ) :
   spell_id_t( 0, n.c_str() ),
   buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   name_str( n ), sim( s ), player( 0 ), source( 0 ), initial_source( 0 ),
-  max_stack( ms ), aura_id( id ), rng_type( rt ),
+  max_stack( ms ), aura_id( id ),
   activated( true ), reverse( r ), constant( false ), quiet( q ),
   uptime_pct()
 {
@@ -80,13 +79,12 @@ buff_t::buff_t( actor_pair_t       p,
                 double             ch,
                 bool               q,
                 bool               r,
-                int                rt,
                 int                id,
                 bool               act ) :
   spell_id_t( p.source, n.c_str() ),
   buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   name_str( n ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
-  max_stack( ms ), aura_id( id ), rng_type( rt ),
+  max_stack( ms ), aura_id( id ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
   uptime_pct()
 {
@@ -118,7 +116,7 @@ buff_t::buff_t( actor_pair_t p,
   spell_id_t( p.source, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
   buff_duration( timespan_t::zero ), buff_cooldown( timespan_t::zero ), default_chance( 0 ),
   name_str( s_token ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
-  max_stack( 0 ), rng_type( RNG_CYCLIC ),
+  max_stack( 0 ),
   activated( true ), reverse( false ), constant( false ), quiet( false ),
   uptime_pct()
 {
@@ -150,7 +148,7 @@ buff_t::buff_t( actor_pair_t  p,
   spell_id_t( p.source, spell -> name_cstr(), spell -> id() ),
   buff_duration( timespan_t::zero ), buff_cooldown( timespan_t::zero ), default_chance( 0 ), name_str( s_token ),
   sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
-  max_stack( 0 ), rng_type( RNG_CYCLIC ),
+  max_stack( 0 ),
   activated( true ), reverse( false ), constant( false ), quiet( false ),
   uptime_pct()
 {
@@ -196,10 +194,6 @@ void buff_t::parse_options( va_list vap )
     else if ( ! strcmp( parm, "quiet" ) )
     {
       quiet = va_arg( vap, int ) ? true : false;
-    }
-    else if ( ! strcmp( parm, "rng" ) )
-    {
-      rng_type = ( int ) va_arg( vap, int );
     }
   }
   va_end( vap );
@@ -257,13 +251,13 @@ void buff_t::init()
     cooldown = initial_source-> get_cooldown( "buff_" + name_str );
     if ( initial_source != player )
       name_str = name_str + ':' + initial_source->name_str;
-    rng = initial_source-> get_rng( name_str, rng_type );
+    rng = initial_source-> get_rng( name_str );
     tail = &( player -> buff_list );
   }
   else
   {
     cooldown = sim -> get_cooldown( "buff_" + name_str );
-    rng = sim -> get_rng( name_str, rng_type );
+    rng = sim -> get_rng( name_str );
     tail = &( sim -> buff_list );
   }
   cooldown -> duration = buff_cooldown;
@@ -285,7 +279,6 @@ buff_t::buff_t( actor_pair_t       p,
                 timespan_t         cd,
                 bool               q,
                 bool               r,
-                int                rt,
                 bool               act ) :
   spell_id_t( p.source, n.c_str(), sname, 0 ),
   buff_duration( duration() ),
@@ -293,7 +286,7 @@ buff_t::buff_t( actor_pair_t       p,
   name_str( n ),
   sim( p.target -> sim ), player( p.target ), source( 0 ), initial_source( p.source ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
-  aura_id( 0 ), rng_type( rt ),
+  aura_id( 0 ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
   uptime_pct()
 {
@@ -312,7 +305,7 @@ buff_t::buff_t( actor_pair_t       p,
   if ( initial_source != player )
     name_str = name_str + ':' + initial_source->name_str;
 
-  rng = initial_source -> get_rng( name_str, rng_type );
+  rng = initial_source -> get_rng( name_str );
 
 
   if ( sim -> debug )
@@ -328,14 +321,13 @@ buff_t::buff_t( actor_pair_t       p,
                 timespan_t         cd,
                 bool               q,
                 bool               r,
-                int                rt,
                 bool               act ) :
   spell_id_t( p.source, n.c_str(), id ),
   buff_duration( duration() ),
   default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
   name_str( n ), sim( p.target -> sim ), player( p.target ), source( 0 ), initial_source( p.source ),
   max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
-  aura_id( 0 ), rng_type( rt ),
+  aura_id( 0 ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
   uptime_pct()
 {
@@ -354,7 +346,7 @@ buff_t::buff_t( actor_pair_t       p,
   if ( initial_source != player )
     name_str = name_str + ':' + initial_source->name_str;
 
-  rng = initial_source -> get_rng( name_str, rng_type );
+  rng = initial_source -> get_rng( name_str );
 
   if ( sim -> debug )
     log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );
@@ -1031,10 +1023,9 @@ stat_buff_t::stat_buff_t( player_t*          p,
                           double             ch,
                           bool               q,
                           bool               r,
-                          int                rng_type,
                           int                id,
                           bool               act ) :
-  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id, act ), amount( a ), stat( st )
+  buff_t( p, n, ms, d, cd, ch, q, r, id, act ), amount( a ), stat( st )
 {
 }
 
@@ -1049,9 +1040,8 @@ stat_buff_t::stat_buff_t( player_t*          p,
                           timespan_t         cd,
                           bool               q,
                           bool               r,
-                          int                rng_type,
                           bool               act ) :
-  buff_t( p, id, n, ch, cd, q, r, rng_type, act ), amount( a ), stat( st )
+  buff_t( p, id, n, ch, cd, q, r, act ), amount( a ), stat( st )
 {
 }
 
@@ -1123,10 +1113,9 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               bool               re,
                                               bool               q,
                                               bool               r,
-                                              int                rng_type,
                                               int                id,
                                               bool               act ) :
-  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id, act ), amount( a ), school( sch ), refreshes( re )
+  buff_t( p, n, ms, d, cd, ch, q, r, id, act ), amount( a ), school( sch ), refreshes( re )
 {
 }
 
@@ -1142,9 +1131,8 @@ cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
                                               bool               re,
                                               bool               q,
                                               bool               r,
-                                              int                rng_type,
                                               bool               act ) :
-  buff_t( p, id, n, ch, cd, q, r, rng_type, act ), amount( a ), school( sch ), refreshes( re )
+  buff_t( p, id, n, ch, cd, q, r, act ), amount( a ), school( sch ), refreshes( re )
 {
 }
 
@@ -1230,9 +1218,8 @@ debuff_t::debuff_t( player_t*          p,
                     double             ch,
                     bool               q,
                     bool               r,
-                    int                rng_type,
                     int                id ) :
-  buff_t( p, n, ms, d, cd, ch, q, r, rng_type, id )
+  buff_t( p, n, ms, d, cd, ch, q, r, id )
 {
 }
 
@@ -1242,8 +1229,7 @@ debuff_t::debuff_t( player_t*          p,
                     double             chance,
                     timespan_t         cd,
                     bool               q,
-                    bool               r,
-                    int                rt ) :
-  buff_t( p, id, n, chance, cd, q, r, rt )
+                    bool               r) :
+  buff_t( p, id, n, chance, cd, q, r )
 {
 }

@@ -4766,14 +4766,11 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 // player_t::get_rng ========================================================
 
-rng_t* player_t::get_rng( const std::string& n, int type )
+rng_t* player_t::get_rng( const std::string& n )
 {
   assert( sim -> rng );
 
-  if ( type == RNG_GLOBAL ) return sim -> rng;
-  if ( type == RNG_DETERMINISTIC ) return sim -> _deterministic_rng;
-
-  if ( ! sim -> smooth_rng ) return sim -> default_rng();
+  if ( ! sim -> separated_rng ) return sim -> default_rng();
 
   rng_t* rng=0;
 
@@ -4785,7 +4782,7 @@ rng_t* player_t::get_rng( const std::string& n, int type )
 
   if ( ! rng )
   {
-    rng = rng_t::create( sim, n, (rng_type) type );
+    rng = rng_t::create( sim, n );
     rng -> next = rng_list;
     rng_list = rng;
   }
@@ -5482,13 +5479,13 @@ struct use_item_t : public action_t
       {
         trigger = unique_gear_t::register_cost_reduction_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                                e.school, e.max_stacks, e.discharge_amount,
-                                                               e.proc_chance, timespan_t::zero/*dur*/, timespan_t::zero/*cd*/, false, e.reverse, 0 );
+                                                               e.proc_chance, timespan_t::zero/*dur*/, timespan_t::zero/*cd*/, false, e.reverse );
       }
       else if ( e.stat )
       {
         trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                      e.stat, e.max_stacks, e.stat_amount,
-                                                     e.proc_chance, timespan_t::zero/*dur*/, timespan_t::zero/*cd*/, e.tick, e.reverse, 0 );
+                                                     e.proc_chance, timespan_t::zero/*dur*/, timespan_t::zero/*cd*/, e.tick, e.reverse );
       }
       else if ( e.school )
       {

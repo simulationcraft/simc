@@ -70,7 +70,7 @@ namespace std {using namespace tr1; }
 #define nonpod_offsetof(t, m) ((size_t) ( (volatile char *)&((volatile t *)(size_t)0x10000)->m - (volatile char *)(size_t)0x10000 ))
 #endif
 
-#include "dbc\data_enums.hh"
+#include "dbc/data_enums.hh"
 
 #if defined( _MSC_VER )
 # define finline                     __forceinline
@@ -108,7 +108,7 @@ namespace std {using namespace tr1; }
 #endif
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 
-#include "dbc\data_definitions.hh"
+#include "dbc/data_definitions.hh"
 
 #define SC_MAJOR_VERSION "500"
 #define SC_MINOR_VERSION "1"
@@ -769,16 +769,10 @@ enum rng_type
   RNG_DEFAULT=0,     // Do not care/know where it will be used
   RNG_GLOBAL,        // Returns reference to global RNG on sim_t
   RNG_DETERMINISTIC, // Returns reference to global deterministic RNG on sim_t
-  RNG_CYCLIC,        // Normalized even/periodical results are acceptable
-  RNG_DISTRIBUTED,   // Normalized variable/distributed values should be returned
 
   // Specifies a particular RNG desired
   RNG_STANDARD,          // Creates RNG using srand() and rand()
   RNG_MERSENNE_TWISTER,  // Creates RNG using SIMD oriented Fast Mersenne Twister
-  RNG_PHASE_SHIFT,       // Simplistic cycle-based RNG, unsuitable for overlapping procs
-  RNG_DISTANCE_SIMPLE,   // Simple normalized proc-separation RNG, suitable for fixed proc chance
-  RNG_DISTANCE_BANDS,    // Complex normalized proc-separation RNG, suitable for varying proc chance
-  RNG_PRE_FILL,          // Deterministic number of procs with random distribution
   RNG_MAX
 };
 
@@ -2913,7 +2907,6 @@ struct buff_t : public spell_id_t
   buff_t* next;
   int current_stack, max_stack;
   int aura_id;
-  int rng_type;
   bool activated;
   bool reverse, constant, quiet, overridden;
   sample_data_t uptime_pct;
@@ -2924,12 +2917,12 @@ struct buff_t : public spell_id_t
   // Raid Aura
   buff_t( sim_t*, const std::string& name,
           int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
-          double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+          double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0 );
 
   // Player Buff
   buff_t( actor_pair_t pair, const std::string& name,
           int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
-          double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0, bool activated=true );
+          double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0, bool activated=true );
 
   // Player Buff with extracted data
 private:
@@ -2942,12 +2935,12 @@ public:
   // Player Buff as spell_id_t by name
   buff_t( actor_pair_t pair, const std::string& name, const char* sname,
           double chance=-1, timespan_t cd=timespan_t::min,
-          bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
+          bool quiet=false, bool reverse=false, bool activated=true );
 
   // Player Buff as spell_id_t by id
   buff_t( actor_pair_t pair, const uint32_t id, const std::string& name,
           double chance=-1, timespan_t cd=timespan_t::min,
-          bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
+          bool quiet=false, bool reverse=false, bool activated=true );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
@@ -3008,10 +3001,10 @@ struct stat_buff_t : public buff_t
   stat_buff_t( player_t*, const std::string& name,
                int stat, double amount,
                int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
-               double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0, bool activated=true );
+               double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0, bool activated=true );
   stat_buff_t( player_t*, const uint32_t id, const std::string& name,
                int stat, double amount,
-               double chance=1.0, timespan_t buff_cooldown=timespan_t::min, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
+               double chance=1.0, timespan_t buff_cooldown=timespan_t::min, bool quiet=false, bool reverse=false, bool activated=true );
 
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -3027,10 +3020,10 @@ struct cost_reduction_buff_t : public buff_t
   cost_reduction_buff_t( player_t*, const std::string& name,
                          int school, double amount,
                          int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
-                         double chance=1.0, bool refreshes=false, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0, bool activated=true );
+                         double chance=1.0, bool refreshes=false, bool quiet=false, bool reverse=false, int aura_id=0, bool activated=true );
   cost_reduction_buff_t( player_t*, const uint32_t id, const std::string& name,
                          int school, double amount,
-                         double chance=1.0, timespan_t buff_cooldown=timespan_t::min, bool refreshes=false, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, bool activated=true );
+                         double chance=1.0, timespan_t buff_cooldown=timespan_t::min, bool refreshes=false, bool quiet=false, bool reverse=false, bool activated=true );
 
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -3043,12 +3036,12 @@ struct debuff_t : public buff_t
   // Player De-Buff
   debuff_t( player_t*, const std::string& name,
             int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
-            double chance=1.0, bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC, int aura_id=0 );
+            double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0 );
 
   // Player De-Buff as spell_id_t by id
   debuff_t( player_t*, const uint32_t id, const std::string& name,
             double chance=-1, timespan_t duration=timespan_t::min,
-            bool quiet=false, bool reverse=false, int rng_type=RNG_CYCLIC );
+            bool quiet=false, bool reverse=false );
 
 };
 
@@ -3367,7 +3360,7 @@ private:
 public:
   rng_t* rng;
   rng_t* _deterministic_rng;
-  int smooth_rng, average_range, average_gauss;
+  int separated_rng, average_range, average_gauss;
   int convergence_scale;
 
   rng_t* default_rng() const { return default_rng_; }
@@ -4779,7 +4772,7 @@ struct player_t : public noncopyable
   stats_t*    get_stats   ( const std::string& name, action_t* action=0 );
   benefit_t*  get_benefit ( const std::string& name );
   uptime_t*   get_uptime  ( const std::string& name );
-  rng_t*      get_rng     ( const std::string& name, int type=RNG_DEFAULT );
+  rng_t*      get_rng     ( const std::string& name );
   double      get_player_distance( const player_t* p ) const;
   double      get_position_distance( double m=0, double v=0 ) const;
   action_priority_list_t* get_action_priority_list( const std::string& name );
@@ -5751,24 +5744,22 @@ struct unique_gear_t
   static action_callback_t* register_stat_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                 int stat, int max_stacks, double amount,
                                                 double proc_chance, timespan_t duration, timespan_t cooldown,
-                                                timespan_t tick=timespan_t::zero, bool reverse=false, int rng_type=RNG_DEFAULT );
+                                                timespan_t tick=timespan_t::zero, bool reverse=false );
 
   static action_callback_t* register_cost_reduction_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                           int school, int max_stacks, double amount,
                                                           double proc_chance, timespan_t duration, timespan_t cooldown,
-                                                          bool refreshes=false, bool reverse=false, int rng_type=RNG_DEFAULT );
+                                                          bool refreshes=false, bool reverse=false );
 
   static action_callback_t* register_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                      int max_stacks, const school_type school, double amount, double scaling,
                                                      double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs,
-                                                     unsigned int override_result_types_mask = 0, unsigned int results_types_mask = 0,
-                                                     int rng_type=RNG_DEFAULT );
+                                                     unsigned int override_result_types_mask = 0, unsigned int results_types_mask = 0 );
 
   static action_callback_t* register_chance_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                             int max_stacks, const school_type school, double amount, double scaling,
                                                             double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs,
-                                                            unsigned int override_result_types_mask = 0, unsigned int results_types_mask = 0,
-                                                            int rng_type=RNG_DEFAULT );
+                                                            unsigned int override_result_types_mask = 0, unsigned int results_types_mask = 0 );
 
   static action_callback_t* register_stat_discharge_proc( int type, int64_t mask, const std::string& name, player_t*,
                                                           int stat, int max_stacks, double stat_amount,

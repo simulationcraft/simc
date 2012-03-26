@@ -4684,7 +4684,7 @@ void druid_t::init_buffs()
   buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
   buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3, timespan_t::from_seconds(   0 ), timespan_t::zero, 1.0, true );
 
-  // buff_t ( sim, id, name, chance, cooldown, quiet, reverse, rng_type )
+  // buff_t ( sim, id, name, chance, cooldown, quiet, reverse )
   buffs_barkskin              = new buff_t( this, 22812, "barkskin" );
   buffs_eclipse_lunar         = new buff_t( this, 48518, "lunar_eclipse" );
   buffs_eclipse_solar         = new buff_t( this, 48517, "solar_eclipse" );

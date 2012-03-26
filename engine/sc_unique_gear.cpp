@@ -17,14 +17,13 @@ struct stat_proc_callback_t : public action_callback_t
 
   stat_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a,
                         double proc_chance, timespan_t duration, timespan_t cooldown,
-                        timespan_t t=timespan_t::zero, bool reverse=false, int rng_type=RNG_DEFAULT, bool activated=true ) :
+                        timespan_t t=timespan_t::zero, bool reverse=false, bool activated=true ) :
     action_callback_t( p ), name_str( n ), stat( s ), amount( a ), tick( t )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
-    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
-    buff = new stat_buff_t( p, n, stat, amount, max_stacks, duration, cooldown, proc_chance, false, reverse, rng_type );
+    buff = new stat_buff_t( p, n, stat, amount, max_stacks, duration, cooldown, proc_chance, false, reverse );
     buff -> activated = activated;
   }
 
@@ -83,14 +82,13 @@ struct cost_reduction_proc_callback_t : public action_callback_t
 
   cost_reduction_proc_callback_t( const std::string& n, player_t* p, int s, int max_stacks, double a,
                                   double proc_chance, timespan_t duration, timespan_t cooldown,
-                                  bool refreshes=false, bool reverse=false, int rng_type=RNG_DEFAULT, bool activated=true ) :
+                                  bool refreshes=false, bool reverse=false, bool activated=true ) :
     action_callback_t( p ), name_str( n ), school( s ), amount( a )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
-    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
 
-    buff = new cost_reduction_buff_t( p, n, school, amount, max_stacks, duration, cooldown, proc_chance, refreshes, false, reverse, rng_type );
+    buff = new cost_reduction_buff_t( p, n, school, amount, max_stacks, duration, cooldown, proc_chance, refreshes, false, reverse );
     buff -> activated = activated;
   }
 
@@ -127,13 +125,10 @@ struct discharge_proc_callback_t : public action_callback_t
   discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
                              const school_type school, double amount, double scaling,
                              double pc, timespan_t cd, bool no_buffs, bool no_debuffs,
-                             unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0,
-                             int rng_type=RNG_DEFAULT ) :
+                             unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0 ) :
     action_callback_t( p ), name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc ),
     cooldown( 0 ), discharge_action( 0 ), proc( 0 ), rng( 0 )
   {
-    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
-
     struct discharge_spell_t : public spell_t
     {
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool nb, bool nd,
@@ -199,7 +194,7 @@ struct discharge_proc_callback_t : public action_callback_t
     }
 
     proc = p -> get_proc( name_str.c_str() );
-    rng  = p -> get_rng ( name_str.c_str(), rng_type );  // default is CYCLIC since discharge should not have duration
+    rng  = p -> get_rng ( name_str.c_str() );  // default is CYCLIC since discharge should not have duration
   }
 
   virtual void reset() { stacks=0; }
@@ -262,12 +257,9 @@ struct chance_discharge_proc_callback_t : public action_callback_t
   chance_discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
                                     const school_type school, double amount, double scaling,
                                     double pc, timespan_t cd, bool no_buffs, bool no_debuffs,
-                                    unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0,
-                                    int rng_type=RNG_DEFAULT ) :
+                                    unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0 ) :
     action_callback_t( p ), name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
   {
-    if ( rng_type == RNG_DEFAULT ) rng_type = RNG_DISTRIBUTED;
-
     struct discharge_spell_t : public spell_t
     {
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool nb, bool nd,
@@ -333,7 +325,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
     }
 
     proc = p -> get_proc( name_str.c_str() );
-    rng  = p -> get_rng ( name_str.c_str(), rng_type );  // default is CYCLIC since discharge should not have duration
+    rng  = p -> get_rng ( name_str.c_str() );  // default is CYCLIC since discharge should not have duration
   }
 
   virtual void reset() { stacks=0; }
@@ -577,7 +569,7 @@ static void register_darkmoon_card_greatness( item_t* item )
       max_stat = stat[ i ];
     }
   }
-  action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 45.0 ), timespan_t::zero, false, RNG_DEFAULT, false );
+  action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 45.0 ), timespan_t::zero, false, false );
 
   p -> register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
   p -> register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -640,7 +632,7 @@ static void register_heart_of_ignacious( item_t* item )
     bool heroic;
 
     heart_of_ignacious_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 2.0 ), timespan_t::zero, false, RNG_DEFAULT, false ), heroic( h )
+      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 2.0 ), timespan_t::zero, false, false ), heroic( h )
     {
       haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, heroic ? 363 : 321, 5, timespan_t::from_seconds( 20.0 ), timespan_t::from_seconds( 120.0 ) );
     }
@@ -679,7 +671,7 @@ static void register_matrix_restabilizer( item_t* item )
     stat_buff_t* buff_matrix_restabilizer_mastery;
 
     matrix_restabilizer_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, 0, 0, timespan_t::zero, timespan_t::zero, timespan_t::zero, false, RNG_DEFAULT, false ),
+      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, 0, 0, timespan_t::zero, timespan_t::zero, timespan_t::zero, false, false ),
       heroic( h ), buff_matrix_restabilizer_crit( 0 ), buff_matrix_restabilizer_haste( 0 ), buff_matrix_restabilizer_mastery( 0 )
     {
       buff_matrix_restabilizer_crit     = new stat_buff_t( p, "matrix_restabilizer_crit",    STAT_CRIT_RATING,    heroic ? 1834 : 1624, 1, timespan_t::from_seconds( 30 ), timespan_t::from_seconds( 105 ), .15, false, RNG_DEFAULT, false );
@@ -751,7 +743,7 @@ static void register_sorrowsong( item_t* item )
   struct sorrowsong_callback_t : public stat_proc_callback_t
   {
     sorrowsong_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "sorrowsong", p, STAT_SPELL_POWER, 1, h ? 1710 : 1512, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 20.0 ), timespan_t::zero, false, RNG_DEFAULT, false )
+      stat_proc_callback_t( "sorrowsong", p, STAT_SPELL_POWER, 1, h ? 1710 : 1512, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 20.0 ), timespan_t::zero, false, false )
     {}
 
     virtual void trigger( action_t* a, void* call_data )
@@ -1100,7 +1092,7 @@ static void register_symbiotic_worm( item_t* item )
   struct symbiotic_worm_callback_t : public stat_proc_callback_t
   {
     symbiotic_worm_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "symbiotic_worm", p, STAT_MASTERY_RATING, 1, h ? 1089 : 963, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 30.0 ), timespan_t::zero, false, RNG_DEFAULT, false )
+      stat_proc_callback_t( "symbiotic_worm", p, STAT_MASTERY_RATING, 1, h ? 1089 : 963, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 30.0 ), timespan_t::zero, false, false )
     {}
 
     virtual void trigger( action_t* a, void* call_data )
@@ -1596,7 +1588,7 @@ static void register_rathrak( item_t* item )
     rathrak_callback_t( player_t* p, spell_t* s ) :
       action_callback_t( p ), spell( s )
     {
-      rng  = p -> get_rng ( "rathrak", RNG_DEFAULT );
+      rng  = p -> get_rng ( "rathrak" );
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
@@ -1653,7 +1645,7 @@ static void register_souldrinker( item_t* item )
     souldrinker_callback_t( player_t* p, spell_t* s, int slot ) :
       action_callback_t( p ), spell( s ), slot( slot )
     {
-      rng  = p -> get_rng ( "souldrinker", RNG_DEFAULT );
+      rng  = p -> get_rng ( "souldrinker" );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1799,10 +1791,9 @@ action_callback_t* unique_gear_t::register_stat_proc( int                type,
                                                       timespan_t         duration,
                                                       timespan_t         cooldown,
                                                       timespan_t         tick,
-                                                      bool               reverse,
-                                                      int                rng_type )
+                                                      bool               reverse )
 {
-  action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, reverse, rng_type, type == PROC_NONE );
+  action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, reverse, type == PROC_NONE );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -1861,10 +1852,9 @@ action_callback_t* unique_gear_t::register_cost_reduction_proc( int             
                                                                 timespan_t         duration,
                                                                 timespan_t         cooldown,
                                                                 bool               refreshes,
-                                                                bool               reverse,
-                                                                int                rng_type )
+                                                                bool               reverse )
 {
-  action_callback_t* cb = new cost_reduction_proc_callback_t( name, player, school, max_stacks, amount, proc_chance, duration, cooldown, refreshes, reverse, rng_type, type == PROC_NONE );
+  action_callback_t* cb = new cost_reduction_proc_callback_t( name, player, school, max_stacks, amount, proc_chance, duration, cooldown, refreshes, reverse, type == PROC_NONE );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -1925,11 +1915,10 @@ action_callback_t* unique_gear_t::register_discharge_proc( int                ty
                                                            bool               no_buffs,
                                                            bool               no_debuffs,
                                                            unsigned int       override_result_types_mask,
-                                                           unsigned int       result_types_mask,
-                                                           int                rng_type )
+                                                           unsigned int       result_types_mask )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
-                                                         no_buffs, no_debuffs, override_result_types_mask, result_types_mask, rng_type );
+                                                         no_buffs, no_debuffs, override_result_types_mask, result_types_mask );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -1995,11 +1984,10 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( int           
                                                                   bool               no_buffs,
                                                                   bool               no_debuffs,
                                                                   unsigned int       override_result_types_mask,
-                                                                  unsigned int       result_types_mask,
-                                                                  int                rng_type )
+                                                                  unsigned int       result_types_mask )
 {
   action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
-                                                                no_buffs, no_debuffs, override_result_types_mask, result_types_mask, rng_type );
+                                                                no_buffs, no_debuffs, override_result_types_mask, result_types_mask );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -2127,7 +2115,7 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
   return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player,
                              e.stat, e.max_stacks, e.stat_amount,
                              e.proc_chance, e.duration, e.cooldown, e.tick,
-                             e.reverse, RNG_DEFAULT );
+                             e.reverse );
 }
 
 // ==========================================================================
@@ -2141,7 +2129,7 @@ action_callback_t* unique_gear_t::register_cost_reduction_proc( item_t& i,
 
   return register_cost_reduction_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                        e.school, e.max_stacks, e.discharge_amount,
-                                       e.proc_chance, e.duration, e.cooldown, ! e.no_refresh, e.reverse, RNG_DEFAULT );
+                                       e.proc_chance, e.duration, e.cooldown, ! e.no_refresh, e.reverse );
 }
 
 // ==========================================================================

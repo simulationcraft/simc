@@ -377,36 +377,16 @@ void attack_t::calculate_result()
   }
   else
   {
-    if ( sim -> smooth_rng )
+    // 1-roll attack table with true RNG
+
+    double random = sim -> real();
+
+    for ( int i=0; i < num_results; i++ )
     {
-      // Encode 1-roll attack table into equivalent multi-roll system
-
-      double prev_chance = 0.0;
-
-      for ( int i=0; i < num_results-1; i++ )
+      if ( random <= chances[ i ] )
       {
-        if ( rng[ results[ i ] ] -> roll( ( chances[ i ] - prev_chance ) / ( 1.0 - prev_chance ) ) )
-        {
           result = results[ i ];
-          break;
-        }
-        prev_chance = chances[ i ];
-      }
-      if ( result == RESULT_NONE ) result = results[ num_results-1 ];
-    }
-    else
-    {
-      // 1-roll attack table with true RNG
-
-      double random = sim -> real();
-
-      for ( int i=0; i < num_results; i++ )
-      {
-        if ( random <= chances[ i ] )
-        {
-          result = results[ i ];
-          break;
-        }
+      break;
       }
     }
   }

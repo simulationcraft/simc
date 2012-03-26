@@ -668,7 +668,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   dtr_proc_chance( -1.0 ),
   target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
   default_rng_( 0 ), rng_list( 0 ), deterministic_rng( false ),
-  rng( 0 ), _deterministic_rng( 0 ), smooth_rng( false ), average_range( true ), average_gauss( false ),
+  rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -1228,7 +1228,7 @@ bool sim_t::init()
   if ( scaling -> smooth_scale_factors &&
        scaling -> scale_stat != STAT_NONE )
   {
-    smooth_rng = true;
+    separated_rng = true;
     average_range = true;
     deterministic_rng = true;
   }
@@ -1979,7 +1979,7 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
   if ( type == RNG_GLOBAL ) return rng;
   if ( type == RNG_DETERMINISTIC ) return _deterministic_rng;
 
-  if ( ! smooth_rng ) return default_rng_;
+  if ( ! separated_rng ) return default_rng_;
 
   rng_t* r=0;
 
@@ -2206,8 +2206,8 @@ void sim_t::create_options()
     // Regen
     { "regen_periodicity",                OPT_TIMESPAN, &( regen_periodicity                      ) },
     // RNG
-    { "smooth_rng",                       OPT_DEPRECATED,   &( smooth_rng                               ) },
-    { "deterministic_rng",               OPT_BOOL,   &( deterministic_rng                       ) },
+    { "separated_rng",                    OPT_BOOL,   &( separated_rng                            ) },
+    { "deterministic_rng",                OPT_BOOL,   &( deterministic_rng                        ) },
     { "average_range",                    OPT_BOOL,   &( average_range                            ) },
     { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
     { "convergence_scale",                OPT_INT,    &( convergence_scale                        ) },
