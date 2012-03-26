@@ -78,10 +78,10 @@ struct priest_t : public player_t
     buff_t* glyph_of_shadow_word_death;
     buff_t* mind_melt;
     buff_t* mind_spike;
-    buff_t* shadow_form;
+    buff_t* shadowform;
     buff_t* shadow_orb;
     buff_t* shadowfiend;
-    buff_t* glyph_of_spirit_tap;
+    buff_t* glyph_of_atonement;
     buff_t* vampiric_embrace;
 
     // Set Bonus
@@ -116,9 +116,8 @@ struct priest_t : public player_t
     spell_id_t* shadow_power;
     spell_id_t* shadow_orbs;
     spell_id_t* shadowy_apparition_num;
-    spell_id_t* pain_and_suffering;
     spell_id_t* twisted_faith;
-    spell_id_t* shadow_form;
+    spell_id_t* shadowform;
   };
   specialization_spells_t spec;
 
@@ -174,7 +173,6 @@ struct priest_t : public player_t
   // Random Number Generators
   struct rngs_t
   {
-    rng_t* pain_and_suffering;
   } rngs;
 
   // Pets
@@ -216,7 +214,7 @@ struct priest_t : public player_t
     glyph_t* smite;
 
     // Mop
-    glyph_t* spirit_tap;
+    glyph_t* atonement;
     glyph_t* mind_melt;
     glyph_t* strength_of_soul;
     glyph_t* inner_sanctum;
@@ -240,8 +238,7 @@ struct priest_t : public player_t
 
     double twisted_faith_static_value;
     double twisted_faith_dynamic_value;
-    double shadow_form_value;
-    double pain_and_suffering_value;
+    double shadowform_value;
 
     double devouring_plague_health_mod;
 
@@ -742,7 +739,7 @@ struct atonement_heal_t : public priest_heal_t
   {
     priest_t* p = player -> cast_priest();
 
-    atonement_dmg *= p -> glyphs.spirit_tap -> effect1().percent();
+    atonement_dmg *= p -> glyphs.atonement -> effect1().percent();
     double cap = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
 
     if ( result == RESULT_CRIT )
@@ -854,7 +851,7 @@ public:
 
     priest_t* p = player -> cast_priest();
 
-    if ( can_trigger_atonement && p -> glyphs.spirit_tap -> ok() )
+    if ( can_trigger_atonement && p -> glyphs.atonement -> ok() )
     {
       std::string n = "atonement_" + name_str;
       atonement = new atonement_heal_t( n.c_str(), p );
@@ -1777,10 +1774,10 @@ struct power_infusion_t : public priest_spell_t
 
 // Shadow Form Spell ========================================================
 
-struct shadow_form_t : public priest_spell_t
+struct shadowform_t : public priest_spell_t
 {
-  shadow_form_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "shadow_form", p, "Shadowform" )
+  shadowform_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "shadowform", p, "Shadowform" )
   {
     parse_options( NULL, options_str );
 
@@ -1793,7 +1790,7 @@ struct shadow_form_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    p -> buffs.shadow_form -> trigger();
+    p -> buffs.shadowform -> trigger();
 
     sim -> auras.mind_quickening -> trigger();
   }
@@ -1802,7 +1799,7 @@ struct shadow_form_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    if (  p -> buffs.shadow_form -> check() )
+    if (  p -> buffs.shadowform -> check() )
       return false;
 
     return priest_spell_t::ready();
@@ -1945,13 +1942,12 @@ struct mind_blast_t : public priest_spell_t
 struct mind_flay_t : public priest_spell_t
 {
   timespan_t mb_wait;
-  int    swp_refresh;
   int    cut_for_mb;
   int    no_dmg;
 
   mind_flay_t( priest_t* p, const std::string& options_str,
                const char* name = "mind_flay" ) :
-    priest_spell_t( name, p, "Mind Flay" ), mb_wait( timespan_t::zero ), swp_refresh( 0 ), cut_for_mb( 0 ), no_dmg( 0 )
+    priest_spell_t( name, p, "Mind Flay" ), mb_wait( timespan_t::zero ), cut_for_mb( 0 ), no_dmg( 0 )
   {
     check_spec( TREE_SHADOW );
 
@@ -1959,7 +1955,6 @@ struct mind_flay_t : public priest_spell_t
     {
       { "cut_for_mb",  OPT_BOOL, &cut_for_mb  },
       { "mb_wait",     OPT_TIMESPAN,  &mb_wait     },
-      { "swp_refresh", OPT_BOOL, &swp_refresh },
       { "no_dmg",      OPT_BOOL, &no_dmg      },
       { NULL, OPT_UNKNOWN, NULL }
     };
@@ -2000,47 +1995,20 @@ struct mind_flay_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    priest_t* p = player -> cast_priest();
-    priest_targetdata_t* td = targetdata() -> cast_priest();
-
     if ( result_is_hit() )
     {
-      p -> buffs.dark_evangelism -> trigger();
-      p -> buffs.shadow_orb  -> trigger( 1, 1, p -> constants.shadow_orb_proc_value );
-
-      if ( td -> dots_shadow_word_pain -> ticking )
-      {
-        if ( p -> rngs.pain_and_suffering -> roll( p -> constants.pain_and_suffering_value ) )
-        {
-          td -> dots_shadow_word_pain -> refresh_duration();
-        }
-      }
+      p() -> buffs.dark_evangelism -> trigger();
+      p() -> buffs.shadow_orb  -> trigger( 1, 1, p() -> constants.shadow_orb_proc_value );
     }
   }
 
   virtual bool ready()
   {
-    priest_t* p = player -> cast_priest();
-
-    // Optional check to only cast Mind Flay if there's 2 or less ticks left on SW:P
-    // This allows a action+=/mind_flay,swp_refresh to be added as a higher priority to ensure that SW:P doesn't fall off
-    // Won't be necessary as part of a standard rotation, but if there's movement or other delays in casting it would have
-    // it's uses.
-    if ( swp_refresh && ( p -> spec.pain_and_suffering -> ok()) )
-    {
-      priest_targetdata_t* td = targetdata() -> cast_priest();
-      if ( ! td ->dots_shadow_word_pain -> ticking )
-        return false;
-
-      if ( ( td -> dots_shadow_word_pain -> num_ticks - td -> dots_shadow_word_pain -> current_tick ) > 2 )
-        return false;
-    }
-
     // If this option is set (with a value in seconds), don't cast Mind Flay if Mind Blast
     // is about to come off it's cooldown.
     if ( mb_wait != timespan_t::zero )
     {
-      if ( p -> cooldowns.mind_blast -> remains() < mb_wait )
+      if ( p() -> cooldowns.mind_blast -> remains() < mb_wait )
         return false;
     }
 
@@ -2223,7 +2191,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     priest_spell_t::impact( t, impact_result, travel_dmg );
 
-    double health_loss = travel_dmg * ( 1.0 - p -> spec.pain_and_suffering -> ok() * 0.20 );
+    double health_loss = travel_dmg;
 
     // Needs testing
     if ( p -> set_bonus.tier13_2pc_caster() )
@@ -2344,7 +2312,7 @@ struct holy_fire_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_hit += player -> glyphs.spirit_tap -> effect1().percent();
+    base_hit += player -> glyphs.atonement -> effect1().percent();
 
     can_trigger_atonement = true;
 
@@ -2467,7 +2435,7 @@ struct smite_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_hit += p -> glyphs.spirit_tap -> effect1().percent();
+    base_hit += p -> glyphs.atonement -> effect1().percent();
 
     can_trigger_atonement = true;
 
@@ -3648,7 +3616,7 @@ double priest_t::composite_player_multiplier( const school_type school, action_t
 
   if ( spell_id_t::is_school( school, SCHOOL_SHADOW ) )
   {
-    m *= 1.0 + buffs.shadow_form -> check() * constants.shadow_form_value;
+    m *= 1.0 + buffs.shadowform -> check() * constants.shadowform_value;
     m *= 1.0 + constants.twisted_faith_static_value;
   }
   if ( spell_id_t::is_school( school, SCHOOL_SHADOWLIGHT ) )
@@ -3729,7 +3697,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "inner_will"             ) return new inner_will_t            ( this, options_str );
   if ( name == "pain_suppression"       ) return new pain_suppression_t      ( this, options_str );
   if ( name == "power_infusion"         ) return new power_infusion_t        ( this, options_str );
-  if ( name == "shadow_form"            ) return new shadow_form_t           ( this, options_str );
+  if ( name == "shadowform"            ) return new shadowform_t           ( this, options_str );
   if ( name == "vampiric_embrace"       ) return new vampiric_embrace_t      ( this, options_str );
 
   // Damage
@@ -3835,7 +3803,7 @@ void priest_t::init_scaling()
   player_t::init_scaling();
 
   // An Atonement Priest might be Health-capped
-  scales_with[ STAT_STAMINA ] = glyphs.spirit_tap -> ok();
+  scales_with[ STAT_STAMINA ] = glyphs.atonement -> ok();
 
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
   if ( ( spec.twisted_faith -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
@@ -3873,7 +3841,6 @@ void priest_t::init_rng()
 {
   player_t::init_rng();
 
-  rngs.pain_and_suffering = get_rng( "pain_and_suffering" );
 }
 
 // priest_t::init_talents ===================================================
@@ -3910,9 +3877,8 @@ void priest_t::init_spells()
   spec.shadow_power           = new spell_id_t( this, "shadow_power", "Shadow Power" );
   spec.shadow_orbs            = new spell_id_t( this, "shadow_orbs", "Shadow Orbs" );
   spec.shadowy_apparition_num = new spell_id_t( this, "shadowy_apparition_num", 78202 );
-  spec.pain_and_suffering = find_specialization_spell( "Pain and Suffering" );
   spec.twisted_faith = find_specialization_spell( "Twisted Faith" );
-  spec.shadow_form = find_specialization_spell( "Shadow Form" );
+  spec.shadowform = find_specialization_spell( "Shadowform" );
 
   // Mastery Spells
   mastery_spells.shield_discipline = new mastery_t( this, "shield_discipline", "Shield Discipline", TREE_DISCIPLINE );
@@ -3930,7 +3896,7 @@ void priest_t::init_spells()
   glyphs.prayer_of_mending  = find_glyph( "Glyph of Prayer of Mending" );
   glyphs.renew              = find_glyph( "Glyph of Renew" );
   glyphs.smite              = find_glyph( "Glyph of Smite" );
-  glyphs.spirit_tap         = find_glyph( "Glyph of Spirit Tap" );
+  glyphs.atonement         = find_glyph( "Atonement" ); //find_glyph( "Glyph of Spirit Tap" );
   glyphs.mind_melt          = find_glyph( "Glyph of Mind Melt" );
   glyphs.strength_of_soul   = find_glyph( "Glyph of Strength of Soul" );
   glyphs.inner_sanctum      = find_glyph( "Glyph of Inner Sanctum" );
@@ -3983,11 +3949,11 @@ void priest_t::init_buffs()
   buffs.glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, timespan_t::from_seconds( 6.0 )  );
   buffs.mind_melt                  = new buff_t( this, glyphs.mind_melt -> effect2().trigger_spell_id(), "mind_melt"                 );
   buffs.mind_spike                 = new buff_t( this, "mind_spike",                 3, timespan_t::from_seconds( 12.0 ) );
-  buffs.shadow_form                = new buff_t( this, "shadow_form", "Shadowform" );
+  buffs.shadowform                = new buff_t( this, "shadowform", "Shadowform" );
   buffs.shadow_orb                 = new buff_t( this, spec.shadow_orbs -> effect1().trigger_spell_id(), "shadow_orb" );
   buffs.shadow_orb -> activated = false;
   buffs.shadowfiend                = new buff_t( this, "shadowfiend", 1, timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
-  buffs.glyph_of_spirit_tap        = new buff_t( this, 81301, "glyph_of_spirit_tap" ); // FIXME: implement actual mechanics
+  buffs.glyph_of_atonement        = new buff_t( this, 81301, "glyph_of_atonement" ); // FIXME: implement actual mechanics
   buffs.vampiric_embrace           = new buff_t( this, "vampiric_embrace", "Vampiric Embrace" );
 
   // Set Bonus
@@ -4018,7 +3984,7 @@ void priest_t::init_actions()
 
     buffer += "/fortitude/inner_fire";
 
-    buffer += "/shadow_form";
+    buffer += "/shadowform";
 
     buffer += "/vampiric_embrace";
 
@@ -4159,7 +4125,7 @@ void priest_t::init_actions()
         list_default += "/greater_heal,if=buff.inner_focus.up";
 
         list_default += "/holy_fire";
-        if ( glyphs.spirit_tap -> ok() )
+        if ( glyphs.atonement -> ok() )
         {
           list_default += "/smite,if=";
           if ( glyphs.smite -> ok() )
@@ -4295,8 +4261,7 @@ void priest_t::init_values()
   // Shadow
   constants.twisted_faith_static_value      = spec.twisted_faith             -> effect2().percent();
   constants.twisted_faith_dynamic_value     = spec.twisted_faith             -> effect1().percent();
-  constants.shadow_form_value               = spec.shadow_form               -> effect2().percent();
-  constants.pain_and_suffering_value        = spec.pain_and_suffering        -> proc_chance();
+  constants.shadowform_value               = spec.shadowform               -> effect2().percent();
   constants.devouring_plague_health_mod     = 0.15;
 
   constants.max_shadowy_apparitions         = spec.shadowy_apparition_num -> effect1().base_value();
@@ -4376,7 +4341,7 @@ void priest_t::fixup_atonement_stats( const char* trigger_spell_name,
 
 void priest_t::pre_analyze_hook()
 {
-  if ( glyphs.spirit_tap -> ok() )
+  if ( glyphs.atonement -> ok() )
   {
     fixup_atonement_stats( "smite", "atonement_smite" );
     fixup_atonement_stats( "holy_fire", "atonement_holy_fire" );
@@ -4430,9 +4395,9 @@ double priest_t::target_mitigation( double            amount,
 {
   amount = player_t::target_mitigation( amount, school, dmg_type, result, action );
 
-  if ( buffs.shadow_form -> check() )
+  if ( buffs.shadowform -> check() )
   {
-    amount *= 1.0 + buffs.shadow_form -> effect3().percent();
+    amount *= 1.0 + buffs.shadowform -> effect3().percent();
   }
 
   if ( glyphs.inner_sanctum -> ok() )
