@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt;C:\data\code\simcraft\simulationcraft;C:\data\code\simcraft\simulationcraft\vs;C:\data\code\simcraft\simulationcraft\sfmt"
+				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
