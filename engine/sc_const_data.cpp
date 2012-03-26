@@ -132,7 +132,7 @@ dbc_index_t<talent_data_t> idx_td;
 } // ANONYMOUS namespace ====================================================
 
 const char* dbc_t::build_level( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "15354" : "15354"; }
+{ return ( SC_USE_PTR && ptr ) ? "15464" : "15464"; }
 
 const char* dbc_t::wow_version( bool ptr )
 { return ( SC_USE_PTR && ptr ) ? "5.0.1" : "5.0.0"; }
