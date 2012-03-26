@@ -1408,45 +1408,34 @@ const char* util_t::set_item_type_string( int item_set )
   switch ( item_set )
   {
     // Melee sets
-  case 925:   // Death Knight T11
-  case 927:   // Druid T11
-  case 932:   // Paladin T11
-  case 939:   // Shaman T11
-  case 942:   // Warrior T11
-  case 1000:  // Death Knight T12
-  case 1002:  // Druid T12
-  case 1011:  // Paladin T12
-  case 1015:  // Shaman T12
-  case 1017:  // Warrior T12
+    case 1057:   // DK T13
+    case 1058:   // Druid T13
+    case 1061:   // Hunter T13
+    case 1064:   // Paladin T13
+    case 1068:   // Rogue T13
+    case 1071:   // Shaman T13
+    case 1073:   // Warrior T13
     return "Melee";
 
     // Tank sets
-  case 926:   // Death Knight T11
-  case 934:   // Paladin T11
-  case 943:   // Warrior T11
-  case 1001:  // Death Knight T12
-  case 1013:  // Paladin T12
-  case 1018:  // Warrior T12
+    case 1056:   // DK T13
+    case 1065:   // Paladin T13
+    case 1074:   // Warrior T13
     return "Tank";
 
     // Healer sets
-  case 928:   // Druid T11
-  case 933:   // Paladin T11
-  case 935:   // Priest T11
-  case 938:   // Shaman T11
-  case 1003:  // Druid T12
-  case 1010:  // Priest T12
-  case 1012:  // Paladin T12
-  case 1014:  // Shaman T12
+    case 1060:   // Druid T13
+    case 1063:   // Paladin T13
+    case 1066:   // Priest T13
+    case 1069:   // Shaman T13
     return "Healer";
 
     // DPS Caster sets
-  case 929:   // Druid T11
-  case 936:   // Priest T11
-  case 940:   // Shaman T11
-  case 1004:  // Druid T12
-  case 1009:  // Priest T12
-  case 1016:  // Shaman T12
+    case 1059:   // Druid T13
+    case 1062:   // Mage T13
+    case 1067:   // Priest T13
+    case 1070:   // Shaman T13
+    case 1072:   // Warlock T13
     return "Caster";
   }
   return 0;
@@ -1559,18 +1548,6 @@ const char* util_t::set_bonus_string( set_type type )
 {
   switch ( type )
   {
-  case SET_T11_2PC_CASTER: return "tier11_2pc_caster";
-  case SET_T11_4PC_CASTER: return "tier11_4pc_caster";
-  case SET_T11_2PC_MELEE:  return "tier11_2pc_melee";
-  case SET_T11_4PC_MELEE:  return "tier11_4pc_melee";
-  case SET_T11_2PC_TANK:   return "tier11_2pc_tank";
-  case SET_T11_4PC_TANK:   return "tier11_4pc_tank";
-  case SET_T12_2PC_CASTER: return "tier12_2pc_caster";
-  case SET_T12_4PC_CASTER: return "tier12_4pc_caster";
-  case SET_T12_2PC_MELEE:  return "tier12_2pc_melee";
-  case SET_T12_4PC_MELEE:  return "tier12_4pc_melee";
-  case SET_T12_2PC_TANK:   return "tier12_2pc_tank";
-  case SET_T12_4PC_TANK:   return "tier12_4pc_tank";
   case SET_T13_2PC_CASTER: return "tier13_2pc_caster";
   case SET_T13_4PC_CASTER: return "tier13_4pc_caster";
   case SET_T13_2PC_MELEE:  return "tier13_2pc_melee";
@@ -1583,6 +1560,18 @@ const char* util_t::set_bonus_string( set_type type )
   case SET_T14_4PC_MELEE:  return "tier14_4pc_melee";
   case SET_T14_2PC_TANK:   return "tier14_2pc_tank";
   case SET_T14_4PC_TANK:   return "tier14_4pc_tank";
+  case SET_T15_2PC_CASTER: return "tier15_2pc_caster";
+  case SET_T15_4PC_CASTER: return "tier15_4pc_caster";
+  case SET_T15_2PC_MELEE:  return "tier15_2pc_melee";
+  case SET_T15_4PC_MELEE:  return "tier15_4pc_melee";
+  case SET_T15_2PC_TANK:   return "tier15_2pc_tank";
+  case SET_T15_4PC_TANK:   return "tier15_4pc_tank";
+  case SET_T16_2PC_CASTER: return "tier16_2pc_caster";
+  case SET_T16_4PC_CASTER: return "tier16_4pc_caster";
+  case SET_T16_2PC_MELEE:  return "tier16_2pc_melee";
+  case SET_T16_4PC_MELEE:  return "tier16_4pc_melee";
+  case SET_T16_2PC_TANK:   return "tier16_2pc_tank";
+  case SET_T16_4PC_TANK:   return "tier16_4pc_tank";
   case SET_PVP_2PC_CASTER: return "pvp_2pc_caster";
   case SET_PVP_4PC_CASTER: return "pvp_4pc_caster";
   case SET_PVP_2PC_MELEE:  return "pvp_2pc_melee";

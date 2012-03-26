@@ -40,7 +40,6 @@ struct mage_t : public player_t
   // Active
   spell_t* active_ignite;
   pet_t*   pet_water_elemental;
-  pet_t*   pet_tier12_mirror_image;
   pet_t*   pet_mirror_image_3;
 
   // Buffs
@@ -71,7 +70,6 @@ struct mage_t : public player_t
   cooldown_t* cooldowns_evocation;
   cooldown_t* cooldowns_fire_blast;
   cooldown_t* cooldowns_mana_gem;
-  cooldown_t* cooldowns_tier12_mirror_image;
 
   // Gains
   gain_t* gains_clearcasting;
@@ -165,7 +163,6 @@ struct mage_t : public player_t
   proc_t* procs_rolled_ignite;
   proc_t* procs_mana_gem;
   proc_t* procs_early_frost;
-  proc_t* procs_tier12_mirror_image;
   proc_t* procs_test_for_crit_hotstreak;
   proc_t* procs_crit_for_hotstreak;
   proc_t* procs_hotstreak;
@@ -179,7 +176,6 @@ struct mage_t : public player_t
   rng_t* rng_impact;
   rng_t* rng_improved_freeze;
   rng_t* rng_nether_vortex;
-  rng_t* rng_tier12_mirror_image;
   rng_t* rng_mage_armor_start;
 
   // Rotation (DPS vs DPM)
@@ -280,7 +276,6 @@ struct mage_t : public player_t
 
     // Pets
     pet_water_elemental     = 0;
-    pet_tier12_mirror_image = 0;
     pet_mirror_image_3      = 0;
 
     // Cooldowns
@@ -289,8 +284,6 @@ struct mage_t : public player_t
     cooldowns_evocation    = get_cooldown( "evocation"   );
     cooldowns_fire_blast   = get_cooldown( "fire_blast"  );
     cooldowns_mana_gem     = get_cooldown( "mana_gem"    );
-    cooldowns_tier12_mirror_image = get_cooldown( "tier12_mirror_image" );
-    cooldowns_tier12_mirror_image -> duration = timespan_t::from_seconds( 45.0 );
 
     distance = 40;
     default_distance = 40;
@@ -750,68 +743,6 @@ struct mirror_image_pet_t : public pet_t
   }
 };
 
-// ==========================================================================
-// Pet Mirror Image Tier 12 set bonus
-// ==========================================================================
-
-struct tier12_mirror_image_pet_t : public pet_t
-{
-  double snapshot_crit;
-
-  tier12_mirror_image_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "tier12_mirror_image", true /*guardian*/ ),
-    snapshot_crit( 0 )
-  {
-    action_list_str += "/snapshot_stats";
-    action_list_str += "/fireball";
-  }
-
-  virtual void summon( timespan_t duration=timespan_t::zero )
-  {
-    pet_t::summon( duration );
-    // Guardians use snapshots
-    snapshot_crit = owner -> composite_spell_crit();
-    if ( owner -> bugs )
-    {
-      snapshot_crit = 0.00; // Rough guess
-    }
-    distance = owner -> distance;
-  }
-
-  virtual double composite_spell_crit() const
-  {
-    return snapshot_crit;
-  }
-
-  virtual double composite_spell_haste() const
-  {
-    return 1.0;
-  }
-
-  struct fireball_t : public spell_t
-  {
-    fireball_t( tier12_mirror_image_pet_t* mirror_image ):
-      spell_t( "fireball", 99062, mirror_image )
-    {
-      may_crit          = true;
-      trigger_gcd = timespan_t::from_seconds( 1.5 );
-      if ( mirror_image -> owner -> bugs )
-      {
-        ability_lag = timespan_t::from_seconds( 0.74 );
-        ability_lag_stddev = timespan_t::from_seconds( 0.62 / 2.0 );
-      }
-    }
-  };
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if ( name == "fireball" ) return new fireball_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-};
-
 // calculate_dot_dps ========================================================
 
 static double calculate_dot_dps( dot_t* dot )
@@ -848,11 +779,6 @@ static void trigger_brain_freeze( spell_t* s )
 
   chance = p -> talents.brain_freeze -> proc_chance();
 
-  if ( p -> set_bonus.tier12_4pc_caster() )
-  {
-    chance += p -> sets-> set( SET_T12_4PC_CASTER ) -> s_effects[ 1 ] -> percent();
-  }
-
   p -> buffs_brain_freeze -> trigger( 1, -1.0, chance );
 }
 
@@ -886,11 +812,6 @@ static void trigger_hot_streak( mage_spell_t* s )
     double hot_streak_chance = -2.73 * s -> hot_streak_crit() + 0.95;
 
     if ( hot_streak_chance < 0.0 ) hot_streak_chance = 0.0;
-
-    if ( p -> set_bonus.tier12_4pc_caster() )
-    {
-      hot_streak_chance += 0.3; // From testing on the PTR and also the consensus of the EJ thread.
-    }
 
     if ( hot_streak_chance > 0 && p -> buffs_hot_streak -> trigger( 1, 0, hot_streak_chance ) )
     {
@@ -1082,24 +1003,6 @@ static void trigger_replenishment( spell_t* s )
   p -> trigger_replenishment();
 }
 
-// trigger_tier12_mirror_image ==============================================
-
-static void trigger_tier12_mirror_image( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_tier12_mirror_image -> remains() == timespan_t::zero ) )
-  {
-    if ( p -> rng_tier12_mirror_image -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
-    {
-      p -> procs_tier12_mirror_image -> occur();
-      p -> pet_tier12_mirror_image -> dismiss();
-      p -> pet_tier12_mirror_image -> summon( p -> dbc.spell( 99063 ) -> duration() - timespan_t::from_seconds( 0.01 ) );
-      p -> cooldowns_tier12_mirror_image -> start();
-    }
-  }
-}
-
 // ==========================================================================
 // Mage Spell
 // ==========================================================================
@@ -1150,11 +1053,6 @@ double mage_spell_t::cost() const
   if ( p -> buffs_arcane_power -> check() )
   {
     double m = 1.0 + p -> buffs_arcane_power -> effect2().percent();
-
-    if ( p -> set_bonus.tier12_4pc_caster() )
-    {
-      m += p -> sets -> set( SET_T12_4PC_CASTER ) -> s_effects[ 0 ] -> percent();
-    }
 
     c *= m;
   }
@@ -1390,7 +1288,6 @@ struct arcane_blast_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1418,25 +1315,12 @@ struct arcane_blast_t : public mage_spell_t
     {
       double m = 1.0 + p -> buffs_arcane_power -> effect2().percent();
 
-      if ( p -> set_bonus.tier12_4pc_caster() )
-      {
-        m += p -> sets -> set( SET_T12_4PC_CASTER ) -> s_effects[ 0 ] -> percent();
-      }
-
       c *= m;
     }
 
     if ( p -> buffs_arcane_blast -> check() )
     {
       stack_cost = base_cost * p -> buffs_arcane_blast -> stack() * p -> spells.arcane_blast -> effect2().percent();
-
-      // The T12 4pc causes AP to reduce the base cost of AB in the stack calculation
-      // ( BaseCost * AP ) + ( BaseCost * AP * 1.5 * ABStacks )
-      if ( p -> set_bonus.tier12_4pc_caster() && p -> buffs_arcane_power -> check() )
-      {
-        stack_cost *= 1.0 + p -> buffs_arcane_power -> effect2().percent()
-                          + p -> sets -> set( SET_T12_4PC_CASTER ) -> s_effects[ 0 ] -> percent();
-      }
     }
 
     c += stack_cost;
@@ -1469,8 +1353,6 @@ struct arcane_blast_t : public mage_spell_t
         }
       }
     }
-
-    trigger_tier12_mirror_image( this );
   }
 
   virtual timespan_t execute_time() const
@@ -1567,7 +1449,6 @@ struct arcane_missiles_tick_t : public mage_spell_t
     background  = true;
     direct_tick = true;
     base_crit  += p -> glyphs.arcane_missiles -> effect1().percent();
-    base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2045,7 +1926,6 @@ struct fireball_t : public mage_spell_t
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.fireball -> effect1().percent();
     may_hot_streak = true;
-    if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -2078,7 +1958,6 @@ struct fireball_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
     mage_spell_t::execute();
     consume_brain_freeze( this );
-    trigger_tier12_mirror_image( this );
     if ( result_is_hit() )
     {
       if ( p -> set_bonus.tier13_2pc_caster() )
@@ -2313,7 +2192,6 @@ struct frostbolt_t : public mage_spell_t
     base_crit += p -> glyphs.frostbolt -> effect1().percent();
     may_chill = true;
     may_brain_freeze = true;
-    if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     base_multiplier *= 1.0 + p -> specializations.frost3;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
@@ -2362,7 +2240,6 @@ struct frostbolt_t : public mage_spell_t
         }*/
       }
     }
-    trigger_tier12_mirror_image( this );
   }
 
   virtual timespan_t execute_time() const
@@ -2412,7 +2289,6 @@ struct frostfire_bolt_t : public mage_spell_t
       base_tick_time = timespan_t::from_seconds( 3.0 );
       dot_behavior = DOT_REFRESH;
     }
-    if ( p -> set_bonus.tier11_4pc_caster() ) base_execute_time *= 0.9;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -2458,7 +2334,6 @@ struct frostfire_bolt_t : public mage_spell_t
     fof_frozen = p -> buffs_brain_freeze -> up();
     mage_spell_t::execute();
     consume_brain_freeze( this );
-    trigger_tier12_mirror_image( this );
     if ( result_is_hit() )
     {
       if ( p -> set_bonus.tier13_2pc_caster() )
@@ -2600,7 +2475,6 @@ struct ice_lance_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     base_multiplier *= 1.0 + p -> glyphs.ice_lance -> effect1().percent();
-    base_crit  += p -> set_bonus.tier11_2pc_caster() * 0.05;
     fof_frozen = true;
 
     if ( ! dtr && player -> has_dtr )
@@ -2973,7 +2847,6 @@ struct pyroblast_t : public mage_spell_t
     check_spec( TREE_FIRE );
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.pyroblast -> effect1().percent();
-    base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
 
@@ -3010,7 +2883,6 @@ struct pyroblast_hs_t : public mage_spell_t
     check_spec( TREE_FIRE );
     parse_options( NULL, options_str );
     base_crit += p -> glyphs.pyroblast -> effect1().percent();
-    base_crit += p -> set_bonus.tier11_2pc_caster() * 0.05;
     dot_behavior = DOT_REFRESH;
 
     if ( ! dtr && player -> has_dtr )
@@ -3485,7 +3357,6 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 
   if ( pet_name == "mirror_image_3"  ) return new mirror_image_pet_t   ( sim, this );
   if ( pet_name == "water_elemental" ) return new water_elemental_pet_t( sim, this );
-  if ( pet_name == "tier12_mirror_image" ) return new tier12_mirror_image_pet_t( sim, this );
 
   return 0;
 }
@@ -3496,7 +3367,6 @@ void mage_t::create_pets()
 {
   pet_mirror_image_3      = create_pet( "mirror_image_3"      );
   pet_water_elemental     = create_pet( "water_elemental"     );
-  pet_tier12_mirror_image = create_pet( "tier12_mirror_image" );
 }
 
 // mage_t::init_talents =====================================================
@@ -3631,8 +3501,6 @@ void mage_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    {  90290,  90291,     0,     0,     0,     0,     0,     0 }, // Tier11
-    {  99061,  99064,     0,     0,     0,     0,     0,     0 }, // Tier12
     { 105788, 105790,     0,     0,     0,     0,     0,     0 }, // Tier13
     {      0,      0,     0,     0,     0,     0,     0,     0 },
   };
@@ -3736,7 +3604,6 @@ void mage_t::init_procs()
   procs_rolled_ignite           = get_proc( "rolled_ignite"                 );
   procs_mana_gem                = get_proc( "mana_gem"                      );
   procs_early_frost             = get_proc( "early_frost"                   );
-  procs_tier12_mirror_image     = get_proc( "tier12_mirror_image"           );
   procs_test_for_crit_hotstreak = get_proc( "test_for_crit_hotstreak"       );
   procs_crit_for_hotstreak      = get_proc( "crit_test_hotstreak"           );
   procs_hotstreak               = get_proc( "normal_hotstreak"              );
@@ -3772,7 +3639,6 @@ void mage_t::init_rng()
   rng_impact              = get_rng( "impact"              );
   rng_improved_freeze     = get_rng( "improved_freeze"     );
   rng_nether_vortex       = get_rng( "nether_vortex"       );
-  rng_tier12_mirror_image = get_rng( "tier12_mirror_image" );
   rng_mage_armor_start    = get_rng( "rng_mage_armor_start" );
 }
 
@@ -4396,8 +4262,6 @@ int mage_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "firelord"      ) ) return SET_T11_CASTER;
-  if ( strstr( s, "firehawk"      ) ) return SET_T12_CASTER;
   if ( strstr( s, "time_lords_"   ) ) return SET_T13_CASTER;
 
   if ( strstr( s, "gladiators_silk_"  ) ) return SET_PVP_CASTER;

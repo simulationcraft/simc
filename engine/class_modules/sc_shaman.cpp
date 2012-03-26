@@ -3786,8 +3786,6 @@ void shaman_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
-    {  90503,  90505,  90501,  90502,     0,     0,      0,      0 }, // Tier11
-    {  99204,  99206,  99209,  99213,     0,     0,  99190,  99195 }, // Tier12
     { 105780, 105816, 105866, 105872,     0,     0, 105764, 105876 }, // Tier13
     {      0,      0,      0,      0,     0,     0,      0,      0 },
   };
@@ -4097,10 +4095,7 @@ void shaman_t::init_actions()
     else
     {
       int sp_threshold = 0;
-      if ( set_bonus.tier12_2pc_caster() )
-        sp_threshold = ( ( has_power_torrent || has_lightweave ) ? ( ( has_dmc_volcano ) ? 1600 : 500 ) : 0 ) + ( has_will_of_unbinding?1:0 ) * 700;
-      else
-        sp_threshold = ( ( has_power_torrent || has_lightweave )?1:0 ) * 500 + ( has_dmc_volcano?1:0 ) * 1600 + ( has_will_of_unbinding?1:0 ) * 700;
+      sp_threshold = ( ( has_power_torrent || has_lightweave )?1:0 ) * 500 + ( has_dmc_volcano?1:0 ) * 1600 + ( has_will_of_unbinding?1:0 ) * 700;
 
       action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
 
@@ -4128,11 +4123,9 @@ void shaman_t::init_actions()
 
         if ( duration > 0 )
         {
-          action_list_str += ",if=(cooldown.fire_elemental_totem.remains" +
-                             ( ( set_bonus.tier12_2pc_caster() ) ? "<" + util_t::to_string( duration ) : "=0" ) +
-                             "&temporary_bonus.spell_power>=" +
+          action_list_str += ",if=(cooldown.fire_elemental_totem.remains=0&temporary_bonus.spell_power>=" +
                              util_t::to_string( sp_threshold ) +
-                             ")|set_bonus.tier12_2pc_caster=0";
+                             ")";
         }
       }
       action_list_str += init_use_profession_actions();
@@ -4176,51 +4169,13 @@ void shaman_t::init_actions()
       //    all the other temporary int/sp buffs are also up
       sp_threshold += ( has_fiery_quintessence?1:0 ) * 1149;
       sp_threshold += ( has_bottled_wishes?1:0 ) * 2290;
-      if ( set_bonus.tier12_2pc_caster() )
-      {
-        if ( sp_threshold > 0 )
-        {
-          if ( use_pre_potion )
-          {
-            action_list_str += "/fire_elemental_totem,if=buff.volcanic_potion.up&temporary_bonus.spell_power>=" +
-                               util_t::to_string( sp_threshold + 1200 ) + "&(!ticking|remains<25)";
-            action_list_str += "/fire_elemental_totem,if=!buff.volcanic_potion.up&temporary_bonus.spell_power>=" +
-                               util_t::to_string( sp_threshold ) + "&(!ticking|remains<25)";
-          }
-          else
-            action_list_str += "/fire_elemental_totem,if=temporary_bonus.spell_power>=" +
-                               util_t::to_string( sp_threshold ) + "&(!ticking|remains<25)";
-        }
-        else
-          action_list_str += "/fire_elemental_totem,if=!ticking";
-      }
-      else
-      {
-        if ( sp_threshold > 0 )
-        {
-          if ( use_pre_potion )
-          {
-            action_list_str += "/fire_elemental_totem,if=!ticking&buff.volcanic_potion.up&temporary_bonus.spell_power>=" +
-                               util_t::to_string( sp_threshold + 1200 );
-            action_list_str += "/fire_elemental_totem,if=!ticking&!buff.volcanic_potion.up&temporary_bonus.spell_power>=" +
-                               util_t::to_string( sp_threshold );
-          }
-          else
-          {
-            action_list_str += "/fire_elemental_totem,if=!ticking&temporary_bonus.spell_power>=" +
-                               util_t::to_string( sp_threshold );
-          }
-        }
-        else
-          action_list_str += "/fire_elemental_totem,if=!ticking";
-      }
 
       action_list_str += "/earth_elemental_totem,if=!ticking";
       action_list_str += "/searing_totem";
 
       if ( glyph.unleashed_lightning -> ok() )
       {
-        action_list_str += "/spiritwalkers_grace,moving=1,if=cooldown.lava_burst.remains=0&set_bonus.tier12_4pc_caster=0";
+        action_list_str += "/spiritwalkers_grace,moving=1,if=cooldown.lava_burst.remains=0";
       }
       else
         action_list_str += "/spiritwalkers_grace,moving=1";
@@ -4263,12 +4218,11 @@ void shaman_t::moving()
         // Elemental executes SWG mid-cast during a movement event, if
         // 1) The profile does not have Glyph of Unleashed Lightning and is executing
         //    a Lighting Bolt
-        // 2) The profile does not have Tier12 4PC set bonus and is executing a
-        //    Lava Burst
+        // 2) The profile is executing a Lava Burst
         // 3) The profile is casting Chain Lightning
         if ( ( ! glyph.unleashed_lightning -> ok() && executing -> id == 403 ) ||
-             ( ! set_bonus.tier12_4pc_caster() && executing -> id == 51505 ) ||
-             executing -> id == 421 )
+             ( executing -> id == 51505 ) ||
+             ( executing -> id == 421 ) )
         {
           if ( sim -> log )
             log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
@@ -4417,42 +4371,6 @@ int shaman_t::decode_set( item_t& item )
   }
 
   const char* s = item.name();
-
-  if ( strstr( s, "raging_elements" ) )
-  {
-    bool is_caster = ( strstr( s, "headpiece"     ) ||
-                       strstr( s, "shoulderwraps" ) ||
-                       strstr( s, "hauberk"       ) ||
-                       strstr( s, "kilt"          ) ||
-                       strstr( s, "gloves"        ) );
-
-    bool is_melee = ( strstr( s, "helmet"         ) ||
-                      strstr( s, "spaulders"      ) ||
-                      strstr( s, "cuirass"        ) ||
-                      strstr( s, "legguards"      ) ||
-                      strstr( s, "grips"          ) );
-
-    if ( is_caster ) return SET_T11_CASTER;
-    if ( is_melee  ) return SET_T11_MELEE;
-  }
-
-  if ( strstr( s, "erupting_volcanic" ) )
-  {
-    bool is_caster = ( strstr( s, "headpiece"     ) ||
-                       strstr( s, "shoulderwraps" ) ||
-                       strstr( s, "hauberk"       ) ||
-                       strstr( s, "kilt"          ) ||
-                       strstr( s, "gloves"        ) );
-
-    bool is_melee = ( strstr( s, "helmet"         ) ||
-                      strstr( s, "spaulders"      ) ||
-                      strstr( s, "cuirass"        ) ||
-                      strstr( s, "legguards"      ) ||
-                      strstr( s, "grips"          ) );
-
-    if ( is_caster ) return SET_T12_CASTER;
-    if ( is_melee  ) return SET_T12_MELEE;
-  }
 
   if ( strstr( s, "spiritwalkers" ) )
   {

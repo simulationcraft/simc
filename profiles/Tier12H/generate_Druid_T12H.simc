@@ -1,8 +1,0 @@
-#./!simc
-
-chardev=275626 save=Druid_Balance_T12H.simc name=Druid_Balance_T12H 
-
-chardev=256655 save=Druid_Balance_T12H_DTR.simc name=Druid_Balance_T12H_DTR
-
-chardev=211262 save=Druid_Feral_T12H.simc name=Druid_Feral_T12H
-glyphs=rip/bloodletting/berserk

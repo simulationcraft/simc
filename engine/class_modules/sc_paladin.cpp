@@ -21,7 +21,6 @@ enum seal_type_t
 
 struct paladin_targetdata_t : public targetdata_t
 {
-  dot_t* dots_flames_of_the_faithful;
   dot_t* dots_exorcism;
   dot_t* dots_word_of_glory;
   dot_t* dots_holy_radiance;
@@ -44,7 +43,6 @@ void register_paladin_targetdata( sim_t* sim )
   REGISTER_DOT( censure );
   REGISTER_DOT( exorcism );
   REGISTER_DOT( word_of_glory );
-  REGISTER_DOT( flames_of_the_faithful );
   REGISTER_DOT( holy_radiance );
 
   REGISTER_DEBUFF( censure );
@@ -56,7 +54,6 @@ struct paladin_t : public player_t
   int       active_seal;
   heal_t*   active_beacon_of_light;
   heal_t*   active_enlightened_judgements;
-  action_t* active_flames_of_the_faithful_proc;
   action_t* active_hand_of_light_proc;
   absorb_t* active_illuminated_healing;
   heal_t*   active_protector_of_the_innocent;
@@ -142,8 +139,6 @@ struct paladin_t : public player_t
   // Procs
   proc_t* procs_eternal_glory;
   proc_t* procs_parry_haste;
-  proc_t* procs_munched_tier12_2pc_melee;
-  proc_t* procs_rolled_tier12_2pc_melee;
   proc_t* procs_wasted_divine_purpose;
   proc_t* procs_wasted_art_of_war;
 
@@ -273,7 +268,6 @@ struct paladin_t : public player_t
 
     active_beacon_of_light             = 0;
     active_enlightened_judgements      = 0;
-    active_flames_of_the_faithful_proc = 0;
     active_hand_of_light_proc          = 0;
     active_illuminated_healing         = 0;
     active_protector_of_the_innocent   = 0;
@@ -789,30 +783,6 @@ struct paladin_spell_t : public spell_t
   }
 };
 
-// Righteous Flames ( Prot Tier 12 2pc ) ====================================
-
-struct righteous_flames_t : public paladin_spell_t
-{
-  righteous_flames_t( paladin_t* player ) :
-    paladin_spell_t( "righteous_flames", 99075, player )
-  {
-    background       = true;
-    may_miss         = false;
-    proc             = true;
-    may_crit         = false;
-  }
-
-  virtual double calculate_direct_damage( int )
-  {
-    paladin_t* p = player -> cast_paladin();
-    double dmg = base_dd_min * p -> sets -> set( SET_T12_2PC_TANK ) -> effect1().percent();
-
-    dmg *= 1.0 - resistance();
-
-    return dmg;
-  }
-};
-
 // trigger_beacon_of_light ==================================================
 
 static void trigger_beacon_of_light( heal_t* h )
@@ -1077,100 +1047,6 @@ struct auto_attack_t : public paladin_attack_t
   }
 };
 
-// trigger_tier12_2pc_melee =================================================
-
-static void trigger_tier12_2pc_melee( attack_t* s, double dmg )
-{
-  if ( s -> school != SCHOOL_PHYSICAL ) return;
-
-  paladin_t* p = s -> player -> cast_paladin();
-  sim_t* sim = s -> sim;
-
-  if ( ! p -> set_bonus.tier12_2pc_melee() ) return;
-
-  struct flames_of_the_faithful_t : public paladin_attack_t
-  {
-    flames_of_the_faithful_t( paladin_t* player ) :
-      paladin_attack_t( "flames_of_the_faithful", 99092, player )
-    {
-      background    = true;
-      proc          = true;
-      may_resist    = true;
-      tick_may_crit = false;
-      hasted_ticks  = false;
-      dot_behavior  = DOT_REFRESH;
-      init();
-    }
-
-    virtual void impact( player_t* t, int impact_result, double total_dot_dmg )
-    {
-      paladin_attack_t::impact( t, impact_result, 0 );
-      int nticks = dot() -> num_ticks;
-      base_td = total_dot_dmg / nticks;
-    }
-    virtual timespan_t travel_time()
-    {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
-    }
-    virtual void target_debuff( player_t* /* t */, int /* dmg_type */ )
-    {
-      target_multiplier            = 1.0;
-      target_hit                   = 0;
-      target_crit                  = 0;
-      target_attack_power          = 0;
-      target_spell_power           = 0;
-      target_penetration           = 0;
-      target_dd_adder              = 0;
-      if ( sim -> debug )
-        log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
-                       name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
-    }
-    virtual double total_td_multiplier() const { return 1.0; }
-  };
-
-  double total_dot_dmg = dmg * p -> sets -> set( SET_T12_2PC_MELEE ) -> s_effects[ 0 ] -> percent();
-
-  if ( ! p -> active_flames_of_the_faithful_proc ) p -> active_flames_of_the_faithful_proc = new flames_of_the_faithful_t( p );
-
-  dot_t* dot = p -> active_flames_of_the_faithful_proc -> dot();
-
-  if ( dot -> ticking )
-  {
-    total_dot_dmg += p -> active_flames_of_the_faithful_proc -> base_td * dot -> ticks();
-  }
-
-  if ( ( p -> dbc.spell( 99092 ) -> duration() + sim -> aura_delay ) < dot -> remains() )
-  {
-    if ( sim -> log ) log_t::output( sim, "Player %s munches Flames of the Faithful due to Max Duration.", p -> name() );
-    p -> procs_munched_tier12_2pc_melee -> occur();
-    return;
-  }
-
-  if ( p -> active_flames_of_the_faithful_proc -> travel_event )
-  {
-    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Flames of the Faithful due to Aura Delay.", p -> name() );
-    p -> procs_munched_tier12_2pc_melee -> occur();
-  }
-
-  p -> active_flames_of_the_faithful_proc -> direct_dmg = total_dot_dmg;
-  p -> active_flames_of_the_faithful_proc -> result = RESULT_HIT;
-  p -> active_flames_of_the_faithful_proc -> schedule_travel( s -> target );
-
-  dot -> prev_tick_amount = total_dot_dmg;
-
-  if ( p -> active_flames_of_the_faithful_proc -> travel_event && dot -> ticking )
-  {
-    if ( dot -> tick_event -> occurs() < p -> active_flames_of_the_faithful_proc -> travel_event -> occurs() )
-    {
-      // Flames of the Faithful will tick before SPELL_AURA_APPLIED occurs, which means that the current Flames of the Faithful will
-      // both tick -and- get rolled into the next Flames of the Faithful.
-      if ( sim -> log ) log_t::output( sim, "Player %s rolls Flames of the Faithful.", p -> name() );
-      p -> procs_rolled_tier12_2pc_melee -> occur();
-    }
-  }
-}
-
 // Ancient Fury =============================================================
 
 struct ancient_fury_t : public paladin_spell_t
@@ -1267,7 +1143,6 @@ struct crusader_strike_t : public paladin_attack_t
     base_crit       += p -> glyphs.crusader_strike -> mod_additive( P_CRIT );
     base_multiplier *= 1.0 + p -> talents.crusade -> mod_additive( P_GENERIC )
                        + p -> talents.wrath_of_the_lightbringer-> mod_additive( P_GENERIC ) // TODO how do they stack?
-                       + 0.10 * p -> set_bonus.tier11_2pc_tank()
                        + 0.05 * p -> ret_pvp_gloves;
     base_cost       *= 1.0 + p -> glyphs.ascetic_crusader -> mod_additive( P_RESOURCE_COST );
   }
@@ -1285,12 +1160,6 @@ struct crusader_strike_t : public paladin_attack_t
       trigger_grand_crusader( this );
       trigger_hand_of_light( this );
     }
-  }
-
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
-  {
-    paladin_attack_t::impact( t, impact_result, travel_dmg );
-    trigger_tier12_2pc_melee( this, direct_dmg );
   }
 
   virtual void update_ready()
@@ -1916,10 +1785,8 @@ struct judgement_t : public paladin_attack_t
 
 struct shield_of_the_righteous_t : public paladin_attack_t
 {
-  righteous_flames_t* righteous_flames;
-
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
-    paladin_attack_t( "shield_of_the_righteous", "Shield of the Righteous", p ), righteous_flames(NULL)
+    paladin_attack_t( "shield_of_the_righteous", "Shield of the Righteous", p )
   {
     check_talent( p -> talents.shield_of_the_righteous -> rank() );
 
@@ -1934,12 +1801,6 @@ struct shield_of_the_righteous_t : public paladin_attack_t
 
     direct_power_mod = extra_coeff();
     base_multiplier *= 1.0 + p -> glyphs.shield_of_the_righteous -> mod_additive( P_GENERIC );
-
-    if ( p -> set_bonus.tier12_2pc_tank() )
-    {
-      righteous_flames = new righteous_flames_t( p );
-      add_child( righteous_flames );
-    }
   }
 
   virtual void execute()
@@ -1949,11 +1810,6 @@ struct shield_of_the_righteous_t : public paladin_attack_t
     if ( result_is_hit() )
     {
       p -> buffs_sacred_duty -> expire();
-      if ( righteous_flames )
-      {
-        righteous_flames -> base_dd_min = direct_dmg;
-        righteous_flames -> execute();
-      }
     }
   }
 
@@ -1993,8 +1849,7 @@ struct templars_verdict_t : public paladin_attack_t
 
     base_crit       += p -> talents.arbiter_of_the_light -> mod_additive( P_CRIT );
     base_multiplier *= 1 + p -> talents.crusade -> mod_additive( P_GENERIC )
-                       + p -> glyphs.templars_verdict -> mod_additive( P_GENERIC )
-                       + ( p -> set_bonus.tier11_2pc_melee() ? 0.10 : 0.0 );
+                       + p -> glyphs.templars_verdict -> mod_additive( P_GENERIC );
   }
 
   virtual void execute()
@@ -2443,8 +2298,6 @@ struct inquisition_t : public paladin_spell_t
     paladin_t* p = player -> cast_paladin();
 
     p -> buffs_inquisition -> buff_duration = base_duration * p -> holy_power_stacks();
-    if ( p -> set_bonus.tier11_4pc_melee() )
-      p -> buffs_inquisition -> buff_duration += base_duration;
     p -> buffs_inquisition -> trigger( 1, base_value() );
     p -> buffs_divine_purpose -> trigger();
 
@@ -2472,8 +2325,6 @@ struct zealotry_t : public paladin_spell_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
     update_ready();
     p -> buffs_zealotry -> trigger();
-    if ( p -> set_bonus.tier12_4pc_melee() )
-      p -> buffs_zealotry -> extend_duration( p, p -> sets -> set( SET_T12_4PC_MELEE ) -> mod_additive_time( P_DURATION ) );
   }
 
   virtual void consume_resource()
@@ -3054,8 +2905,6 @@ void paladin_t::init_procs()
 
   procs_eternal_glory            = get_proc( "eternal_glory"                  );
   procs_parry_haste              = get_proc( "parry_haste"                    );
-  procs_munched_tier12_2pc_melee = get_proc( "munched_flames_of_the_faithful" );
-  procs_rolled_tier12_2pc_melee  = get_proc( "rolled_flames_of_the_faithful"  );
   procs_wasted_divine_purpose    = get_proc( "wasted_divine_purpose"          );
   procs_wasted_art_of_war        = get_proc( "wasted_art_of_war"              );
 }
@@ -3099,42 +2948,6 @@ int paladin_t::decode_set( item_t& item )
   if ( item.slot == SLOT_HANDS && ret_pvp_gloves == -1 )  // i.e. hasn't been overriden by option
   {
     ret_pvp_gloves = strstr( s, "gladiators_scaled_gauntlets" ) && item.ilevel > 140;
-  }
-
-  if ( strstr( s, "reinforced_sapphirium" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee  ) return SET_T11_MELEE;
-    if ( is_tank   ) return SET_T11_TANK;
-  }
-
-  if ( strstr( s, "immolation" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee  ) return SET_T12_MELEE;
-    if ( is_tank   ) return SET_T12_TANK;
   }
 
   if ( strstr( s, "_of_radiant_glory" ) )
@@ -3501,8 +3314,6 @@ void paladin_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P     H2P     H4P
-    {     0,     0,  90298,  90299,  90301,  90306,      0,      0 }, // Tier11
-    {     0,     0,  99093,  99116,  99074,  99091,  99067,  99070 }, // Tier12
     {     0,     0, 105765, 105820, 105800, 105744, 105743, 105798 }, // Tier13
     {     0,     0,      0,      0,      0,      0,      0,      0 },
   };

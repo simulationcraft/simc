@@ -523,7 +523,7 @@ enum slot_type   // these enum values match armory settings
   SLOT_MAX       = 19
 };
 
-// Tiers 11..14 + PVP
+// Tiers 13..16 + PVP
 #define N_TIER 5
 
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
@@ -534,14 +534,6 @@ typedef uint32_t set_bonus_description_t[N_TIER][N_TIER_BONUS];
 enum set_type
 {
   SET_NONE = 0,
-  SET_T11_CASTER, SET_T11_2PC_CASTER, SET_T11_4PC_CASTER,
-  SET_T11_MELEE,  SET_T11_2PC_MELEE,  SET_T11_4PC_MELEE,
-  SET_T11_TANK,   SET_T11_2PC_TANK,   SET_T11_4PC_TANK,
-  SET_T11_HEAL,   SET_T11_2PC_HEAL,   SET_T11_4PC_HEAL,
-  SET_T12_CASTER, SET_T12_2PC_CASTER, SET_T12_4PC_CASTER,
-  SET_T12_MELEE,  SET_T12_2PC_MELEE,  SET_T12_4PC_MELEE,
-  SET_T12_TANK,   SET_T12_2PC_TANK,   SET_T12_4PC_TANK,
-  SET_T12_HEAL,   SET_T12_2PC_HEAL,   SET_T12_4PC_HEAL,
   SET_T13_CASTER, SET_T13_2PC_CASTER, SET_T13_4PC_CASTER,
   SET_T13_MELEE,  SET_T13_2PC_MELEE,  SET_T13_4PC_MELEE,
   SET_T13_TANK,   SET_T13_2PC_TANK,   SET_T13_4PC_TANK,
@@ -550,6 +542,14 @@ enum set_type
   SET_T14_MELEE,  SET_T14_2PC_MELEE,  SET_T14_4PC_MELEE,
   SET_T14_TANK,   SET_T14_2PC_TANK,   SET_T14_4PC_TANK,
   SET_T14_HEAL,   SET_T14_2PC_HEAL,   SET_T14_4PC_HEAL,
+  SET_T15_CASTER, SET_T15_2PC_CASTER, SET_T15_4PC_CASTER,
+  SET_T15_MELEE,  SET_T15_2PC_MELEE,  SET_T15_4PC_MELEE,
+  SET_T15_TANK,   SET_T15_2PC_TANK,   SET_T15_4PC_TANK,
+  SET_T15_HEAL,   SET_T15_2PC_HEAL,   SET_T15_4PC_HEAL,
+  SET_T16_CASTER, SET_T16_2PC_CASTER, SET_T16_4PC_CASTER,
+  SET_T16_MELEE,  SET_T16_2PC_MELEE,  SET_T16_4PC_MELEE,
+  SET_T16_TANK,   SET_T16_2PC_TANK,   SET_T16_4PC_TANK,
+  SET_T16_HEAL,   SET_T16_2PC_HEAL,   SET_T16_4PC_HEAL,
   SET_PVP_CASTER, SET_PVP_2PC_CASTER, SET_PVP_4PC_CASTER,
   SET_PVP_MELEE,  SET_PVP_2PC_MELEE,  SET_PVP_4PC_MELEE,
   SET_PVP_TANK,   SET_PVP_2PC_TANK,   SET_PVP_4PC_TANK,
@@ -2320,7 +2320,7 @@ struct option_t
 
 #define MAX_TALENT_POINTS 41
 #define MAX_TALENT_ROW ((MAX_TALENT_POINTS+4)/5)
-#define MAX_TALENT_TREES 3
+#define MAX_TALENT_TREES 4
 #define MAX_TALENT_COL 4
 #define MAX_TALENT_SLOTS (MAX_TALENT_TREES*MAX_TALENT_ROW*MAX_TALENT_COL)
 #define MAX_TALENT_RANK_SLOTS ( 90 )
@@ -3968,14 +3968,14 @@ struct item_database_t
 struct set_bonus_t
 {
   int count[ SET_MAX ];
-  int tier11_2pc_caster() const; int tier11_2pc_melee() const; int tier11_2pc_tank() const; int tier11_2pc_heal() const;
-  int tier11_4pc_caster() const; int tier11_4pc_melee() const; int tier11_4pc_tank() const; int tier11_4pc_heal() const;
-  int tier12_2pc_caster() const; int tier12_2pc_melee() const; int tier12_2pc_tank() const; int tier12_2pc_heal() const;
-  int tier12_4pc_caster() const; int tier12_4pc_melee() const; int tier12_4pc_tank() const; int tier12_4pc_heal() const;
   int tier13_2pc_caster() const; int tier13_2pc_melee() const; int tier13_2pc_tank() const; int tier13_2pc_heal() const;
   int tier13_4pc_caster() const; int tier13_4pc_melee() const; int tier13_4pc_tank() const; int tier13_4pc_heal() const;
   int tier14_2pc_caster() const; int tier14_2pc_melee() const; int tier14_2pc_tank() const; int tier14_2pc_heal() const;
   int tier14_4pc_caster() const; int tier14_4pc_melee() const; int tier14_4pc_tank() const; int tier14_4pc_heal() const;
+  int tier15_2pc_caster() const; int tier15_2pc_melee() const; int tier15_2pc_tank() const; int tier15_2pc_heal() const;
+  int tier15_4pc_caster() const; int tier15_4pc_melee() const; int tier15_4pc_tank() const; int tier15_4pc_heal() const;
+  int tier16_2pc_caster() const; int tier16_2pc_melee() const; int tier16_2pc_tank() const; int tier16_2pc_heal() const;
+  int tier16_4pc_caster() const; int tier16_4pc_melee() const; int tier16_4pc_tank() const; int tier16_4pc_heal() const;
   int pvp_2pc_caster() const; int pvp_2pc_melee() const; int pvp_2pc_tank() const; int pvp_2pc_heal() const;
   int pvp_4pc_caster() const; int pvp_4pc_melee() const; int pvp_4pc_tank() const; int pvp_4pc_heal() const;
   int decode( player_t*, item_t& item ) const;

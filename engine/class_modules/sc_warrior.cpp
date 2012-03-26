@@ -52,8 +52,6 @@
 //   * sword_and_board                  = 46953 = add_flat_mod_spell_crit_chance (7)
 //   * thunderstruck                    = 87096 = add_percent_mod_generic
 //   * war_acacdemy                     = 84572 = add_percent_mod_generic
-//   * warrior_tier11_dps_2pc_bonus     = 90293 = add_percent_mod_generic
-//   * warrior_tier11_dps_4pc_bonus     = 90294 = mod_melee_attack_power%
 //   * twohanded_weapon_specialization  = 12712 = mod_damage_done% (0x1)
 //   * unshackled_fury                  = 76856 = add_percent_mod_spell_effect1/2
 //
@@ -110,8 +108,6 @@ struct warrior_t : public player_t
   action_t* active_retaliation;
   action_t* active_opportunity_strike;
   int       active_stance;
-  action_t* active_tier12_2pc_tank;
-  action_t* fiery_attack;
 
   // Buffs
   buff_t* buffs_bastion_of_defense;
@@ -146,9 +142,6 @@ struct warrior_t : public player_t
   buff_t* buffs_thunderstruck;
   buff_t* buffs_victory_rush;
   buff_t* buffs_wrecking_crew;
-  buff_t* buffs_tier11_4pc_melee;
-  buff_t* buffs_tier12_2pc_melee;
-  buff_t* buffs_tier12_4pc_tank;
   buff_t* buffs_tier13_2pc_tank;
 
   // Cooldowns
@@ -216,9 +209,6 @@ struct warrior_t : public player_t
   proc_t* procs_parry_haste;
   proc_t* procs_strikes_of_opportunity;
   proc_t* procs_sudden_death;
-  proc_t* procs_fiery_attack;
-  proc_t* procs_munched_tier12_2pc_tank;
-  proc_t* procs_rolled_tier12_2pc_tank;
   proc_t* procs_tier13_4pc_melee;
 
   // Random Number Generation
@@ -228,7 +218,6 @@ struct warrior_t : public player_t
   rng_t* rng_strikes_of_opportunity;
   rng_t* rng_sudden_death;
   rng_t* rng_wrecking_crew;
-  rng_t* rng_fiery_attack;
 
   // Spec Passives
   struct spec_t
@@ -323,9 +312,7 @@ struct warrior_t : public player_t
     // Active
     active_deep_wounds        = 0;
     active_opportunity_strike = 0;
-    active_tier12_2pc_tank    = 0;
     active_stance             = STANCE_BATTLE;
-    fiery_attack = NULL;
 
     // Cooldowns
     cooldowns_colossus_smash         = get_cooldown( "colossus_smash"         );
@@ -359,7 +346,6 @@ struct warrior_t : public player_t
   virtual void      init_actions();
   virtual void      register_callbacks();
   virtual void      combat_begin();
-  virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_attack_hit() const;
   virtual double    composite_attack_crit( weapon_t* ) const;
   virtual double    composite_mastery() const;
@@ -369,7 +355,6 @@ struct warrior_t : public player_t
   virtual double    composite_tank_block() const;
   virtual double    composite_tank_crit_block() const;
   virtual double    composite_tank_crit( const school_type school ) const;
-  virtual double    composite_tank_parry() const;
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
@@ -712,103 +697,6 @@ static void trigger_sword_and_board( attack_t* a, int result )
   }
 }
 
-// trigger_tier12_2pc_tank ==================================================
-
-static void trigger_tier12_2pc_tank( attack_t* s, double dmg )
-{
-  if ( s -> school != SCHOOL_PHYSICAL ) return;
-
-  warrior_t* p = s -> player -> cast_warrior();
-  sim_t* sim = s -> sim;
-
-  if ( ! p -> set_bonus.tier12_2pc_tank() ) return;
-
-  struct combust_t : public warrior_attack_t
-  {
-    combust_t( warrior_t* player ) :
-      warrior_attack_t( "shield_slam_combust", 99240, player )
-    {
-      background    = true;
-      proc          = true;
-      may_resist    = true;
-      tick_may_crit = false;
-      hasted_ticks  = false;
-      dot_behavior  = DOT_REFRESH;
-      init();
-    }
-
-    virtual void impact( player_t* t, int impact_result, double total_dot_dmg )
-    {
-      warrior_attack_t::impact( t, impact_result, 0 );
-
-      base_td = total_dot_dmg / dot() -> num_ticks;
-    }
-
-    virtual timespan_t travel_time()
-    {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
-    }
-
-    virtual void target_debuff( player_t* /* t */, int /* dmg_type */ )
-    {
-      target_multiplier            = 1.0;
-      target_hit                   = 0;
-      target_crit                  = 0;
-      target_attack_power          = 0;
-      target_spell_power           = 0;
-      target_penetration           = 0;
-      target_dd_adder              = 0;
-      if ( sim -> debug )
-        log_t::output( sim, "action_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
-                       name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
-    }
-
-    virtual double total_td_multiplier() const { return 1.0; }
-  };
-
-  double total_dot_dmg = dmg * p -> dbc.spell( 99239 ) -> effect1().percent();
-
-  if ( ! p -> active_tier12_2pc_tank ) p -> active_tier12_2pc_tank = new combust_t( p );
-
-  dot_t* dot = p -> active_tier12_2pc_tank -> dot();
-
-  if ( dot -> ticking )
-  {
-    total_dot_dmg += p -> active_tier12_2pc_tank -> base_td * dot -> ticks();
-  }
-
-  if ( p -> dbc.spell( 99240 ) -> duration() + sim -> aura_delay < dot -> remains() )
-  {
-    if ( sim -> log ) log_t::output( sim, "Player %s munches Combust due to Combust duration.", p -> name() );
-    p -> procs_munched_tier12_2pc_tank -> occur();
-    return;
-  }
-
-  if ( p -> active_tier12_2pc_tank -> travel_event )
-  {
-    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Combust due to Aura Delay.", p -> name() );
-    p -> procs_munched_tier12_2pc_tank -> occur();
-  }
-
-  p -> active_tier12_2pc_tank -> direct_dmg = total_dot_dmg;
-  p -> active_tier12_2pc_tank -> result = RESULT_HIT;
-  p -> active_tier12_2pc_tank -> schedule_travel( s -> target );
-
-  dot -> prev_tick_amount = total_dot_dmg;
-
-  if ( p -> active_tier12_2pc_tank -> travel_event && dot -> ticking )
-  {
-    if ( dot -> tick_event -> occurs() < p -> active_tier12_2pc_tank -> travel_event -> occurs() )
-    {
-      // Combust will tick before SPELL_AURA_APPLIED occurs, which means that the current Combust will
-      // both tick -and- get rolled into the next Combust
-      if ( sim -> log ) log_t::output( sim, "Player %s rolls Combust.", p -> name() );
-      p -> procs_rolled_tier12_2pc_tank -> occur();
-    }
-  }
-}
-
 // trigger_enrage ===========================================================
 
 static void trigger_enrage( attack_t* a )
@@ -892,27 +780,6 @@ static void trigger_flurry( attack_t* a, int stacks )
         delta = ( ohe -> time - sim -> current_time ) * mult;
       p -> off_hand_attack -> reschedule_execute( delta );
     }
-  }
-}
-
-// trigger_tier12_4pc_melee =================================================
-
-static void trigger_tier12_4pc_melee( attack_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-
-  if ( ! p -> set_bonus.tier12_4pc_melee() ) return;
-
-  if ( ! a -> weapon ) return;
-  if ( a -> weapon -> slot != SLOT_MAIN_HAND ) return;
-  if ( a -> proc ) return;
-
-  assert( p -> fiery_attack );
-
-  if ( p -> rng_fiery_attack -> roll( p -> sets -> set( SET_T12_4PC_MELEE ) -> proc_chance() ) )
-  {
-    p -> procs_fiery_attack -> occur();
-    p -> fiery_attack -> execute();
   }
 }
 
@@ -1388,8 +1255,7 @@ struct bloodthirst_t : public warrior_attack_t
     direct_power_mod   = effect_average( 1 ) / 100.0;
     base_dd_min        = 0.0;
     base_dd_max        = 0.0;
-    base_multiplier   *= 1.0 + p -> glyphs.bloodthirst -> effect1().percent()
-                             + p -> set_bonus.tier11_2pc_melee() * 0.05;
+    base_multiplier   *= 1.0 + p -> glyphs.bloodthirst -> effect1().percent();
     base_crit         += p -> talents.cruelty -> effect1().percent();
   }
 
@@ -1857,7 +1723,6 @@ struct mortal_strike_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     additive_multipliers = p -> glyphs.mortal_strike -> effect1().percent()
-                           + p -> set_bonus.tier11_2pc_melee() * 0.05
                            + p -> talents.war_academy -> effect1().percent();
     crit_bonus_multiplier *= 1.0 + p -> talents.impale -> effect1().percent();
     base_crit             += p -> talents.cruelty -> effect1().percent();
@@ -1885,8 +1750,6 @@ struct mortal_strike_t : public warrior_attack_t
       if ( p -> talents.lambs_to_the_slaughter -> rank() && td -> dots_rend -> ticking )
         td -> dots_rend -> refresh_duration();
 
-      trigger_tier12_4pc_melee( this );
-
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ) )
       {
         td -> debuffs_colossus_smash -> trigger();
@@ -1908,20 +1771,6 @@ struct mortal_strike_t : public warrior_attack_t
                                  ( p -> buffs_lambs_to_the_slaughter -> stack()
                                    * p -> buffs_lambs_to_the_slaughter -> effect1().percent() ) : 0 )
                          + additive_multipliers;
-  }
-};
-
-// Fiery Attack Attack ======================================================
-
-struct fiery_attack_t : public warrior_attack_t
-{
-  fiery_attack_t( warrior_t* player ) :
-    warrior_attack_t( "fiery_attack", 99237, player )
-  {
-    background = true;
-    repeating = false;
-    proc = true;
-    normalize_weapon_speed=true;
   }
 };
 
@@ -1956,9 +1805,6 @@ struct overpower_t : public warrior_attack_t
     warrior_attack_t::execute();
     p -> buffs_overpower -> expire();
     p -> buffs_taste_for_blood -> expire();
-
-    // FIXME: The wording indicates it triggers even if you miss.
-    p -> buffs_tier11_4pc_melee -> trigger();
   }
 
   virtual void player_buff()
@@ -2064,7 +1910,6 @@ struct raging_blow_t : public warrior_attack_t
   virtual void execute()
   {
     attack_t::execute();
-    warrior_t* p = player -> cast_warrior();
 
     if ( result_is_hit() )
     {
@@ -2074,9 +1919,6 @@ struct raging_blow_t : public warrior_attack_t
         oh_attack -> execute();
       }
     }
-    p -> buffs_tier11_4pc_melee -> trigger();
-
-    trigger_tier12_4pc_melee( this );
   }
 
   virtual bool ready()
@@ -2349,12 +2191,6 @@ struct shield_slam_t : public warrior_attack_t
       return 0;
 
     return warrior_attack_t::cost();
-  }
-
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
-  {
-    warrior_attack_t::impact( t, impact_result, travel_dmg );
-    trigger_tier12_2pc_tank( this, direct_dmg );
   }
 };
 
@@ -2702,10 +2538,9 @@ bool warrior_spell_t::ready()
 struct battle_shout_t : public warrior_spell_t
 {
   double rage_gain;
-  double burning_rage_value;
 
   battle_shout_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "battle_shout", "Battle Shout", p ), burning_rage_value( 0.0 )
+    warrior_spell_t( "battle_shout", "Battle Shout", p )
   {
     parse_options( NULL, options_str );
 
@@ -2714,13 +2549,6 @@ struct battle_shout_t : public warrior_spell_t
     rage_gain = p -> dbc.spell( effect3().trigger_spell_id() ) -> effect1().resource( RESOURCE_RAGE ) + p -> talents.booming_voice -> effect2().resource( RESOURCE_RAGE );
     cooldown = player -> get_cooldown( "shout" );
     cooldown -> duration = timespan_t::from_seconds( 10 ) + spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_value();
-
-    if ( p -> set_bonus.tier12_2pc_melee() )
-    {
-      uint32_t id = p -> sets -> set( SET_T12_2PC_MELEE ) -> effect_trigger_spell( 1 );
-      spell_data_t* s = spell_data_t::find( id, "Burning Rage", p -> dbc.ptr );
-      burning_rage_value = s -> effect1().percent();
-    }
   }
 
   virtual void execute()
@@ -2740,8 +2568,6 @@ struct battle_shout_t : public warrior_spell_t
     }
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
-
-    p -> buffs_tier12_2pc_melee -> trigger( 1, burning_rage_value );
   }
 };
 
@@ -2750,10 +2576,9 @@ struct battle_shout_t : public warrior_spell_t
 struct commanding_shout_t : public warrior_spell_t
 {
   double rage_gain;
-  double burning_rage_value;
 
   commanding_shout_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "commanding_shout", "Commanding Shout", p ), burning_rage_value( 0.0 )
+    warrior_spell_t( "commanding_shout", "Commanding Shout", p )
   {
     parse_options( NULL, options_str );
 
@@ -2763,13 +2588,6 @@ struct commanding_shout_t : public warrior_spell_t
 
     cooldown = player -> get_cooldown( "shout" );
     cooldown -> duration = spell_id_t::cooldown() + p -> talents.booming_voice -> effect1().time_value();
-
-    if ( p -> set_bonus.tier12_2pc_melee() )
-    {
-      uint32_t id = p -> sets -> set( SET_T12_2PC_MELEE ) -> effect_trigger_spell( 1 );
-      spell_data_t* s = spell_data_t::find( id, "Burning Rage", p -> dbc.ptr );
-      burning_rage_value = s -> effect1().percent();
-    }
   }
 
   virtual void execute()
@@ -2784,8 +2602,6 @@ struct commanding_shout_t : public warrior_spell_t
     }
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_commanding_shout );
-
-    p -> buffs_tier12_2pc_melee -> trigger( 1, burning_rage_value );
   }
 };
 
@@ -2972,14 +2788,6 @@ struct shield_block_buff_t : public buff_t
   shield_block_buff_t( warrior_t* p ) :
     buff_t( p, 2565, "shield_block" )
   { }
-
-  virtual void expire()
-  {
-    buff_t::expire();
-    warrior_t* p = player -> cast_warrior();
-
-    p -> buffs_tier12_4pc_tank -> trigger( 1, p -> buffs_tier12_4pc_tank -> effect1().percent() );
-  }
 };
 struct shield_block_t : public warrior_spell_t
 {
@@ -3336,14 +3144,10 @@ void warrior_t::init_spells()
   if ( mastery.strikes_of_opportunity -> ok() )
     active_opportunity_strike = new opportunity_strike_t( this );
 
-  fiery_attack = new fiery_attack_t( this );
-
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
-    {     0,     0,  90293,  90295,  90296,  90297,     0,     0 }, // Tier11
-    {     0,     0,  99234,  99238,  99239,  99242,     0,     0 }, // Tier12
     {     0,     0, 105797, 105907, 105908, 105911,     0,     0 }, // Tier13
     {     0,     0,      0,      0,      0,      0,     0,     0 },
   };
@@ -3460,8 +3264,6 @@ void warrior_t::init_buffs()
   buffs_thunderstruck             = new buff_t( this, "thunderstruck",             3, timespan_t::from_seconds( 20.0 ), timespan_t::zero, talents.thunderstruck -> proc_chance() );
   buffs_victory_rush              = new buff_t( this, "victory_rush",              1, timespan_t::from_seconds( 20.0 ) );
   buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, timespan_t::from_seconds( 12.0 ), timespan_t::zero );
-  buffs_tier11_4pc_melee          = new buff_t( this, "tier11_4pc_melee",          3, timespan_t::from_seconds( 30.0 ), timespan_t::zero, set_bonus.tier11_4pc_melee() );
-  buffs_tier12_4pc_tank           = new buff_t( this, 99243, "flame_wall", set_bonus.tier12_4pc_tank() );
   buffs_tier13_2pc_tank           = new buff_t( this, "tier13_2pc_tank", 1, timespan_t::from_seconds( 15.0 ) /* assume some short duration */, timespan_t::from_seconds( set_bonus.tier13_2pc_tank() ) );
   absorb_buffs.push_back( buffs_tier13_2pc_tank );
 
@@ -3472,7 +3274,6 @@ void warrior_t::init_buffs()
   case 2 : duration = timespan_t::from_seconds( 6.0 ); break;
   default: duration = timespan_t::from_seconds( 12.0 ); break;
   }
-  buffs_tier12_2pc_melee          = new buff_t( this, "tier12_2pc_melee",          1, duration, timespan_t::zero, set_bonus.tier12_2pc_melee() );
 }
 
 // warrior_t::init_values ====================================================
@@ -3519,9 +3320,6 @@ void warrior_t::init_procs()
   procs_parry_haste             = get_proc( "parry_haste"             );
   procs_strikes_of_opportunity  = get_proc( "strikes_of_opportunity"  );
   procs_sudden_death            = get_proc( "sudden_death"            );
-  procs_fiery_attack            = get_proc( "fiery_attack"            );
-  procs_munched_tier12_2pc_tank = get_proc( "munched_tier12_2pc_tank" );
-  procs_rolled_tier12_2pc_tank  = get_proc( "rolled_tier12_2pc_tank"  );
   procs_tier13_4pc_melee        = get_proc( "tier13_4pc_melee"        );
 }
 
@@ -3546,7 +3344,6 @@ void warrior_t::init_rng()
   rng_strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
   rng_sudden_death              = get_rng( "sudden_death"              );
   rng_wrecking_crew             = get_rng( "wrecking_crew"             );
-  rng_fiery_attack              = get_rng( "fiery_attack"              );
 }
 
 // warrior_t::init_actions ==================================================
@@ -3811,17 +3608,6 @@ void warrior_t::reset()
   active_stance = STANCE_BATTLE;
 }
 
-// warrior_t::composite_attack_power_multiplier =============================
-
-double warrior_t::composite_attack_power_multiplier() const
-{
-  double mult = player_t::composite_attack_power_multiplier();
-
-  mult *= 1.0 + 0.01 * buffs_tier11_4pc_melee -> stack();
-
-  return mult;
-}
-
 // warrior_t::composite_attack_hit ==========================================
 
 double warrior_t::composite_attack_hit() const
@@ -3889,11 +3675,6 @@ double warrior_t::composite_player_multiplier( const school_type school, action_
     m *= 1.0 + buffs_berserker_stance -> effect1().percent();
   }
 
-  if ( ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) && buffs_tier12_2pc_melee -> check() )
-  {
-    m *= 1.0 + buffs_tier12_2pc_melee -> value();
-  }
-
   return m;
 }
 
@@ -3948,17 +3729,6 @@ double warrior_t::composite_tank_crit( const school_type school ) const
     c += talents.bastion_of_defense -> effect1().percent();
 
   return c;
-}
-
-// warrior_t::composite_tank_parry ===========================================
-
-double warrior_t::composite_tank_parry() const
-{
-  double p = player_t::composite_tank_parry();
-
-  p += buffs_tier12_4pc_tank -> value();
-
-  return p;
 }
 
 // warrior_t::regen =========================================================
@@ -4096,42 +3866,6 @@ int warrior_t::decode_set( item_t& item )
   }
 
   const char* s = item.name();
-
-  if ( strstr( s, "earthen" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee ) return SET_T11_MELEE;
-    if ( is_tank  ) return SET_T11_TANK;
-  }
-
-  if ( strstr( s, "_of_the_molten_giant" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee ) return SET_T12_MELEE;
-    if ( is_tank  ) return SET_T12_TANK;
-  }
 
   if ( strstr( s, "colossal_dragonplate" ) )
   {

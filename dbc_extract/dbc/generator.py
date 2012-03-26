@@ -747,38 +747,38 @@ class SpellDataGenerator(DataGenerator):
          109872, 109870, 109868,    # No'Kaled the Elements of Death - Heroic
           52586,  68043,  68044,    # Gurthalak, Voice of the Deeps - LFR, N, H
         ),
-        (), 
-        ( ( 54158, 0 ), ( 90174, 0 ), ( 99092, 0 ), ( 99075, 0 ), ),     # Paladin "Judgement" damage portion on some Seals. Melee Tier 12 2pc effect. Prot T12 2pc spell.
-        ( ( 99058, 0 ), ( 83381, 0 ), ), # Hunter T12 2pc, Kill Command base dmg
-        ( ( 8680, 1 ), ( 2818, 1 ), ( 13218, 1 ), ( 99173, 0 ), ( 99186, 0 ), ( 99187, 0 ), ( 99188, 0 ), ), # Rogue poison effects, Tier 12 bonus spells
-        ( ( 63619, 5 ), ( 95740, 0 ), ( 93683, 0), ( 95799, 0), ( 94472, 0 ), ( 99156, 5 ), ),     # Priest shadowfiend "Shadowcrawl", new Shadow Orbs, Atonement Crit, sfiend tier12 bonus
-        ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 5 ), ( 99000, 0 ), ), # DK Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike. Tier 12 4pc spell.
-        (   ( 77451, 0 ), ( 45284, 0 ), ( 45297, 0 ),       # Overloads
+        (),     # Warrior:
+        (),     # Paladin:
+        ( ( 83381, 0 ), ), # Hunter: Kill Command base dmg
+        ( ), # Rogue: 
+        ( ( 63619, 5 ), ( 94472, 0 ), ),     # Priest: shadowfiend "Shadowcrawl", Atonement Crit
+        ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 5 ), ), # DK: Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike.
+        (   ( 77451, 0 ), ( 45284, 0 ), ( 45297, 0 ),       # Shaman: Overloads
             ( 12470, 5 ), ( 13376, 5 ), ( 57984, 5 ) ),     # Shaman Greater Fire Elemental abilities
         ( 
-            ( 5405, 0 ),  ( 92283, 3 ), ( 84721, 0 ), ( 79058, 0 ), # Mana Gem, Frostfire Orb x2, Arcane Brilliance
-            ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), ( 99062, 5 ), # Mirror Image spells. incl T12 Fireball
+            ( 79058, 0 ), # Mage: Mana Gem, Frostfire Orb x2, Arcane Brilliance
+            ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
             ( 80354, 0 ),                                           # Temporal Displacement
         ), 
-        ( ( 85692, 5 ), ( 99226, 5 ), ),     # Warlock doomguard "Doom Bolt", Tier 12 bonus spell
-        (),
-        ( ( 81070, 0 ), ( 99002, 0 ), ( 99026, 5 ) ),     # Euphoria mana feed for Balance droods, Tier 12 2pc Feral Fiery Claws. Tier 12 2pc Balance attack.
+        ( ( 85692, 5 ), ),     # Warlock: doomguard "Doom Bolt"
+        (), # Monk:
+        (), # Druid:
     ]
 
-    # Class specific item sets, T11, T12, T13
+    # Class specific item sets, T13
     _item_set_list = [
         (),
-        ( ( 942, 943 ), ( 1017, 1018 ), ( 1073, 1074, ), ), # Warrior
-        ( ( 932, 933, 934 ), ( 1011, 1012, 1013 ), ( 1063, 1065, 1064, ), ), #Paladin
-        ( ( 930, ), ( 1005, ), ( 1061, ), ), # Hunter
-        ( ( 937, ), ( 1006, ), ( 1068, ), ), # Rogue
-        ( ( 936, 935 ), ( 1009, 1010 ), ( 1066, 1067, ), ), #Priest
-        ( ( 925, 926 ), ( 1000, 1001, ), ( 1056, 1057, ), ), # Death Knight
-        ( ( 938, 939, 940 ), ( 1014, 1015, 1016 ), ( 1070, 1071, 1069, ), ), #Shaman
-        ( ( 931, ), ( 1007, ), ( 1062, ), ), # Mage
-        ( ( 941, ), ( 1008, ), ( 1072, ), ), # Warlock
-        (),
-        ( ( 927, 928, 929 ), ( 1002, 1003, 1004 ), ( 1059, 1058, 1060 ), ), #Druid
+        ( ( 1073, 1074, ), ), # Warrior
+        ( ( 1063, 1065, 1064, ), ), #Paladin
+        ( ( 1061, ), ), # Hunter
+        ( ( 1068, ), ), # Rogue
+        ( ( 1066, 1067, ), ), #Priest
+        ( ( 1056, 1057, ), ), # Death Knight
+        ( ( 1070, 1071, 1069, ), ), #Shaman
+        ( ( 1062, ), ), # Mage
+        ( ( 1072, ), ), # Warlock
+        (), # Monk
+        ( ( 1059, 1058, 1060 ), ), #Druid
     ]
   
     _profession_enchant_categories = [
@@ -2548,7 +2548,7 @@ class GlyphListGenerator(SpellDataGenerator):
         return s
 
 class ItemSetListGenerator(SpellDataGenerator):
-    _tier_base = 11
+    _tier_base = 13
     
     def __init__(self, options):
 

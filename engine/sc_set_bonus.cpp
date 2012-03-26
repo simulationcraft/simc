@@ -11,53 +11,17 @@ set_bonus_t::set_bonus_t()
 {
   range::fill( count, 0 );
 
-  count[ SET_T11_2PC_CASTER ] = count[ SET_T11_2PC_MELEE ] = count[ SET_T11_2PC_TANK ] = count[ SET_T11_2PC_HEAL ] = -1;
-  count[ SET_T11_4PC_CASTER ] = count[ SET_T11_4PC_MELEE ] = count[ SET_T11_4PC_TANK ] = count[ SET_T11_4PC_HEAL ] = -1;
-  count[ SET_T12_2PC_CASTER ] = count[ SET_T12_2PC_MELEE ] = count[ SET_T12_2PC_TANK ] = count[ SET_T12_2PC_HEAL ] = -1;
-  count[ SET_T12_4PC_CASTER ] = count[ SET_T12_4PC_MELEE ] = count[ SET_T12_4PC_TANK ] = count[ SET_T12_4PC_HEAL ] = -1;
   count[ SET_T13_2PC_CASTER ] = count[ SET_T13_2PC_MELEE ] = count[ SET_T13_2PC_TANK ] = count[ SET_T13_2PC_HEAL ] = -1;
   count[ SET_T13_4PC_CASTER ] = count[ SET_T13_4PC_MELEE ] = count[ SET_T13_4PC_TANK ] = count[ SET_T13_4PC_HEAL ] = -1;
   count[ SET_T14_2PC_CASTER ] = count[ SET_T14_2PC_MELEE ] = count[ SET_T14_2PC_TANK ] = count[ SET_T14_2PC_HEAL ] = -1;
   count[ SET_T14_4PC_CASTER ] = count[ SET_T14_4PC_MELEE ] = count[ SET_T14_4PC_TANK ] = count[ SET_T14_4PC_HEAL ] = -1;
+  count[ SET_T15_2PC_CASTER ] = count[ SET_T15_2PC_MELEE ] = count[ SET_T15_2PC_TANK ] = count[ SET_T15_2PC_HEAL ] = -1;
+  count[ SET_T15_4PC_CASTER ] = count[ SET_T15_4PC_MELEE ] = count[ SET_T15_4PC_TANK ] = count[ SET_T15_4PC_HEAL ] = -1;
+  count[ SET_T16_2PC_CASTER ] = count[ SET_T16_2PC_MELEE ] = count[ SET_T16_2PC_TANK ] = count[ SET_T16_2PC_HEAL ] = -1;
+  count[ SET_T16_4PC_CASTER ] = count[ SET_T16_4PC_MELEE ] = count[ SET_T16_4PC_TANK ] = count[ SET_T16_4PC_HEAL ] = -1;
   count[ SET_PVP_2PC_CASTER ] = count[ SET_PVP_2PC_MELEE ] = count[ SET_PVP_2PC_TANK ] = count[ SET_PVP_2PC_HEAL ] = -1;
   count[ SET_PVP_4PC_CASTER ] = count[ SET_PVP_4PC_MELEE ] = count[ SET_PVP_4PC_TANK ] = count[ SET_PVP_4PC_HEAL ] = -1;
 }
-
-// set_bonus_t::tier11 ======================================================
-
-int set_bonus_t::tier11_2pc_caster() const { return ( count[ SET_T11_2PC_CASTER ] > 0 || ( count[ SET_T11_2PC_CASTER ] < 0 && count[ SET_T11_CASTER ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier11_4pc_caster() const { return ( count[ SET_T11_4PC_CASTER ] > 0 || ( count[ SET_T11_4PC_CASTER ] < 0 && count[ SET_T11_CASTER ] >= 4 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier11_2pc_melee() const { return ( count[ SET_T11_2PC_MELEE ] > 0 || ( count[ SET_T11_2PC_MELEE ] < 0 && count[ SET_T11_MELEE ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier11_4pc_melee() const { return ( count[ SET_T11_4PC_MELEE ] > 0 || ( count[ SET_T11_4PC_MELEE ] < 0 && count[ SET_T11_MELEE ] >= 4 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier11_2pc_tank() const { return ( count[ SET_T11_2PC_TANK ] > 0 || ( count[ SET_T11_2PC_TANK ] < 0 && count[ SET_T11_TANK ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier11_4pc_tank() const { return ( count[ SET_T11_4PC_TANK ] > 0 || ( count[ SET_T11_4PC_TANK ] < 0 && count[ SET_T11_TANK ] >= 4 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier11_2pc_heal() const { return ( count[ SET_T11_2PC_HEAL ] > 0 || ( count[ SET_T11_2PC_HEAL ] < 0 && count[ SET_T11_HEAL ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier11_4pc_heal() const { return ( count[ SET_T11_4PC_HEAL ] > 0 || ( count[ SET_T11_4PC_HEAL ] < 0 && count[ SET_T11_HEAL ] >= 4 ) ) ? 1 : 0; }
-
-// set_bonus_t::tier12 ======================================================
-
-int set_bonus_t::tier12_2pc_caster() const { return ( count[ SET_T12_2PC_CASTER ] > 0 || ( count[ SET_T12_2PC_CASTER ] < 0 && count[ SET_T12_CASTER ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier12_4pc_caster() const { return ( count[ SET_T12_4PC_CASTER ] > 0 || ( count[ SET_T12_4PC_CASTER ] < 0 && count[ SET_T12_CASTER ] >= 4 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier12_2pc_melee() const { return ( count[ SET_T12_2PC_MELEE ] > 0 || ( count[ SET_T12_2PC_MELEE ] < 0 && count[ SET_T12_MELEE ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier12_4pc_melee() const { return ( count[ SET_T12_4PC_MELEE ] > 0 || ( count[ SET_T12_4PC_MELEE ] < 0 && count[ SET_T12_MELEE ] >= 4 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier12_2pc_tank() const { return ( count[ SET_T12_2PC_TANK ] > 0 || ( count[ SET_T12_2PC_TANK ] < 0 && count[ SET_T12_TANK ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier12_4pc_tank() const { return ( count[ SET_T12_4PC_TANK ] > 0 || ( count[ SET_T12_4PC_TANK ] < 0 && count[ SET_T12_TANK ] >= 4 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier12_2pc_heal() const { return ( count[ SET_T12_2PC_HEAL ] > 0 || ( count[ SET_T12_2PC_HEAL ] < 0 && count[ SET_T12_HEAL ] >= 2 ) ) ? 1 : 0; }
-
-int set_bonus_t::tier12_4pc_heal() const { return ( count[ SET_T12_4PC_HEAL ] > 0 || ( count[ SET_T12_4PC_HEAL ] < 0 && count[ SET_T12_HEAL ] >= 4 ) ) ? 1 : 0; }
 
 // set_bonus_t::tier13 ======================================================
 
@@ -94,6 +58,42 @@ int set_bonus_t::tier14_4pc_tank() const { return ( count[ SET_T14_4PC_TANK ] > 
 int set_bonus_t::tier14_2pc_heal() const { return ( count[ SET_T14_2PC_HEAL ] > 0 || ( count[ SET_T14_2PC_HEAL ] < 0 && count[ SET_T14_HEAL ] >= 2 ) ) ? 1 : 0; }
 
 int set_bonus_t::tier14_4pc_heal() const { return ( count[ SET_T14_4PC_HEAL ] > 0 || ( count[ SET_T14_4PC_HEAL ] < 0 && count[ SET_T14_HEAL ] >= 4 ) ) ? 1 : 0; }
+
+// set_bonus_t::tier15 ======================================================
+
+int set_bonus_t::tier15_2pc_caster() const { return ( count[ SET_T15_2PC_CASTER ] > 0 || ( count[ SET_T15_2PC_CASTER ] < 0 && count[ SET_T15_CASTER ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier15_4pc_caster() const { return ( count[ SET_T15_4PC_CASTER ] > 0 || ( count[ SET_T15_4PC_CASTER ] < 0 && count[ SET_T15_CASTER ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier15_2pc_melee() const { return ( count[ SET_T15_2PC_MELEE ] > 0 || ( count[ SET_T15_2PC_MELEE ] < 0 && count[ SET_T15_MELEE ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier15_4pc_melee() const { return ( count[ SET_T15_4PC_MELEE ] > 0 || ( count[ SET_T15_4PC_MELEE ] < 0 && count[ SET_T15_MELEE ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier15_2pc_tank() const { return ( count[ SET_T15_2PC_TANK ] > 0 || ( count[ SET_T15_2PC_TANK ] < 0 && count[ SET_T15_TANK ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier15_4pc_tank() const { return ( count[ SET_T15_4PC_TANK ] > 0 || ( count[ SET_T15_4PC_TANK ] < 0 && count[ SET_T15_TANK ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier15_2pc_heal() const { return ( count[ SET_T15_2PC_HEAL ] > 0 || ( count[ SET_T15_2PC_HEAL ] < 0 && count[ SET_T15_HEAL ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier15_4pc_heal() const { return ( count[ SET_T15_4PC_HEAL ] > 0 || ( count[ SET_T15_4PC_HEAL ] < 0 && count[ SET_T15_HEAL ] >= 4 ) ) ? 1 : 0; }
+
+// set_bonus_t::tier16 ======================================================
+
+int set_bonus_t::tier16_2pc_caster() const { return ( count[ SET_T16_2PC_CASTER ] > 0 || ( count[ SET_T16_2PC_CASTER ] < 0 && count[ SET_T16_CASTER ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier16_4pc_caster() const { return ( count[ SET_T16_4PC_CASTER ] > 0 || ( count[ SET_T16_4PC_CASTER ] < 0 && count[ SET_T16_CASTER ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier16_2pc_melee() const { return ( count[ SET_T16_2PC_MELEE ] > 0 || ( count[ SET_T16_2PC_MELEE ] < 0 && count[ SET_T16_MELEE ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier16_4pc_melee() const { return ( count[ SET_T16_4PC_MELEE ] > 0 || ( count[ SET_T16_4PC_MELEE ] < 0 && count[ SET_T16_MELEE ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier16_2pc_tank() const { return ( count[ SET_T16_2PC_TANK ] > 0 || ( count[ SET_T16_2PC_TANK ] < 0 && count[ SET_T16_TANK ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier16_4pc_tank() const { return ( count[ SET_T16_4PC_TANK ] > 0 || ( count[ SET_T16_4PC_TANK ] < 0 && count[ SET_T16_TANK ] >= 4 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier16_2pc_heal() const { return ( count[ SET_T16_2PC_HEAL ] > 0 || ( count[ SET_T16_2PC_HEAL ] < 0 && count[ SET_T16_HEAL ] >= 2 ) ) ? 1 : 0; }
+
+int set_bonus_t::tier16_4pc_heal() const { return ( count[ SET_T16_4PC_HEAL ] > 0 || ( count[ SET_T16_4PC_HEAL ] < 0 && count[ SET_T16_HEAL ] >= 4 ) ) ? 1 : 0; }
 
 // set_bonus_t::pvp =========================================================
 

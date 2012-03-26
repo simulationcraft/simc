@@ -250,7 +250,6 @@ struct warlock_t : public player_t
   // Active Pet
   warlock_main_pet_t* active_pet;
   pet_t* pet_ebon_imp;
-  pet_t* pet_fiery_imp;
 
   // Buffs
   buff_t* buffs_backdraft;
@@ -274,15 +273,12 @@ struct warlock_t : public player_t
   buff_t* buffs_demon_soul_voidwalker;
   buff_t* buffs_bane_of_havoc;
   buff_t* buffs_searing_pain_soulburn;
-  buff_t* buffs_tier11_4pc_caster;
-  buff_t* buffs_tier12_4pc_caster;
   buff_t* buffs_tier13_4pc_caster;
 
   // Cooldowns
   cooldown_t* cooldowns_metamorphosis;
   cooldown_t* cooldowns_infernal;
   cooldown_t* cooldowns_doomguard;
-  cooldown_t* cooldowns_fiery_imp;
 
   // Talents
 
@@ -380,7 +376,6 @@ struct warlock_t : public player_t
   proc_t* procs_impending_doom;
   proc_t* procs_shadow_trance;
   proc_t* procs_ebon_imp;
-  proc_t* procs_fiery_imp;
 
   // Random Number Generators
   rng_t* rng_soul_leech;
@@ -390,12 +385,9 @@ struct warlock_t : public player_t
   rng_t* rng_impending_doom;
   rng_t* rng_siphon_life;
   rng_t* rng_ebon_imp;
-  rng_t* rng_fiery_imp;
 
   // Spells
   spell_t* spells_burning_embers;
-
-  spell_data_t* tier12_4pc_caster;
 
   struct glyphs_t
   {
@@ -437,14 +429,11 @@ struct warlock_t : public player_t
 
     active_pet                  = 0;
     pet_ebon_imp                = 0;
-    pet_fiery_imp               = 0;
     spells_burning_embers       = 0;
 
     cooldowns_metamorphosis                   = get_cooldown ( "metamorphosis" );
     cooldowns_infernal                        = get_cooldown ( "summon_infernal" );
     cooldowns_doomguard                       = get_cooldown ( "summon_doomguard" );
-    cooldowns_fiery_imp = get_cooldown( "fiery_imp" );
-    cooldowns_fiery_imp -> duration = timespan_t::from_seconds( 45.0 );
 
     use_pre_soulburn = 1;
 
@@ -1053,18 +1042,6 @@ public:
       target_multiplier *= 1.0 + p -> buffs_bane_of_havoc -> effect1().percent();
   }
 
-  // warlock_spell_t::tick ==================================================
-
-  virtual void tick( dot_t* d )
-  {
-    spell_t::tick( d );
-
-    if ( tick_dmg > 0 )
-    {
-      trigger_fiery_imp( this );
-    }
-  }
-
   // warlock_spell_t::total_td_multiplier ===================================
 
   virtual double total_td_multiplier() const
@@ -1163,35 +1140,6 @@ public:
     {
       td -> dots_corruption -> refresh_duration();
     }
-  }
-
-  // trigger_fiery_imp ======================================================
-
-  static void trigger_fiery_imp( spell_t* s )
-  {
-    warlock_t* p = s -> player -> cast_warlock();
-
-    if ( p -> set_bonus.tier12_2pc_caster() && ( p -> cooldowns_fiery_imp -> remains() == timespan_t::zero ) )
-    {
-      if ( p -> rng_fiery_imp -> roll( p -> sets -> set( SET_T12_2PC_CASTER ) -> proc_chance() ) )
-      {
-        p -> procs_fiery_imp -> occur();
-        p -> pet_fiery_imp -> dismiss();
-        p -> pet_fiery_imp -> summon( p -> dbc.spell( 99221 ) -> duration() - timespan_t::from_seconds( 0.01 ) );
-        p -> cooldowns_fiery_imp -> start();
-      }
-    }
-  }
-
-  // trigger_tier12_4pc_caster ==============================================
-
-  static void trigger_tier12_4pc_caster( spell_t* s )
-  {
-    warlock_t* p = s -> player -> cast_warlock();
-
-    if ( ! p -> set_bonus.tier12_4pc_caster() ) return;
-
-    p -> buffs_tier12_4pc_caster -> trigger( 1, p -> tier12_4pc_caster -> effect1().percent() );
   }
 };
 
@@ -1878,67 +1826,6 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
   }
 };
 
-// ==========================================================================
-// Pet Fiery Imp Tier 12 set bonus
-// ==========================================================================
-
-struct fiery_imp_pet_t : public pet_t
-{
-  double snapshot_crit;
-
-  fiery_imp_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "fiery_imp", true /*guardian*/ ),
-    snapshot_crit( 0 )
-  {
-    action_list_str += "/snapshot_stats";
-    action_list_str += "/flame_blast";
-  }
-
-  virtual void summon( timespan_t duration=timespan_t::zero )
-  {
-    pet_t::summon( duration );
-    // Guardians use snapshots
-    snapshot_crit = owner -> composite_spell_crit();
-    if ( owner -> bugs )
-    {
-      snapshot_crit = 0.00; // Rough guess
-    }
-  }
-
-  virtual double composite_spell_crit() const
-  {
-    return snapshot_crit;
-  }
-
-  virtual double composite_spell_haste() const
-  {
-    return 1.0;
-  }
-
-  struct flame_blast_t : public spell_t
-  {
-    flame_blast_t( fiery_imp_pet_t* p ):
-      spell_t( "flame_blast", 99226, p )
-    {
-      may_crit          = true;
-      trigger_gcd = timespan_t::from_seconds( 1.5 );
-      if ( p -> owner -> bugs )
-      {
-        ability_lag = timespan_t::from_seconds( 0.74 );
-        ability_lag_stddev = timespan_t::from_seconds( 0.62 / 2.0 );
-      }
-    }
-  };
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if ( name == "flame_blast" ) return new flame_blast_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-};
-
 // Curse of Elements Debuff =================================================
 
 struct coe_debuff_t : public debuff_t
@@ -2228,8 +2115,6 @@ struct shadow_bolt_t : public warlock_spell_t
     {
       p -> buffs_backdraft -> decrement();
     }
-
-    trigger_tier12_4pc_caster( this );
   }
 
   virtual void player_buff()
@@ -2335,7 +2220,6 @@ struct chaos_bolt_t : public warlock_spell_t
     may_miss = false;
 
     base_execute_time += p -> talent_bane -> effect1().time_value();
-    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
     cooldown -> duration += timespan_t::from_millis( p -> glyphs.chaos_bolt -> base_value() );
 
     if ( ! dtr && p -> has_dtr )
@@ -2699,13 +2583,6 @@ struct drain_soul_t : public warlock_spell_t
     may_crit     = false;
   }
 
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    trigger_tier12_4pc_caster( this );
-  }
-
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
@@ -2800,16 +2677,6 @@ struct unstable_affliction_t : public warlock_spell_t
         td -> dots_immolate -> cancel();
     }
   }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::tick( d );
-
-    if ( tick_dmg > 0 )
-      p -> buffs_tier11_4pc_caster -> trigger( 2 );
-  }
-
 };
 
 // Haunt Spell ==============================================================
@@ -2823,7 +2690,6 @@ struct haunt_t : public warlock_spell_t
 
     parse_options( NULL, options_str );
 
-    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
     direct_power_mod = 0.5577;
 
     if ( ! dtr && p -> has_dtr )
@@ -2897,10 +2763,6 @@ struct immolate_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     p -> buffs_molten_core -> trigger( 3 );
-    if ( tick_dmg > 0 )
-    {
-      p -> buffs_tier11_4pc_caster -> trigger( 2 );
-    }
   }
 
 };
@@ -3048,8 +2910,6 @@ struct incinerate_t : public warlock_spell_t
     {
       p -> buffs_backdraft -> decrement();
     }
-
-    trigger_tier12_4pc_caster( this );
   }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
@@ -3180,8 +3040,6 @@ struct soul_fire_t : public warlock_spell_t
         p -> resource_gain( RESOURCE_SOUL_SHARDS, 1, p -> gains_tier13_4pc );
       }
     }
-
-    trigger_tier12_4pc_caster( this );
   }
 
   virtual timespan_t execute_time() const
@@ -3741,8 +3599,6 @@ struct hand_of_guldan_t : public warlock_spell_t
 
     parse_options( NULL, options_str );
 
-    base_execute_time *= 1 + p -> sets -> set ( SET_T11_2PC_CASTER ) -> effect_base_value( 1 ) * 0.01;
-
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new hand_of_guldan_t( p, options_str, true );
@@ -3802,14 +3658,6 @@ struct fel_flame_t : public warlock_spell_t
     }
   }
 
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-    warlock_t* p = player -> cast_warlock();
-
-    p -> buffs_tier11_4pc_caster -> decrement();
-  }
-
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
@@ -3819,17 +3667,6 @@ struct fel_flame_t : public warlock_spell_t
       warlock_targetdata_t* td = targetdata() -> cast_warlock();
       td -> dots_immolate            -> extend_duration( 2, true );
       td -> dots_unstable_affliction -> extend_duration( 2, true );
-    }
-  }
-
-  virtual void player_buff()
-  {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::player_buff();
-
-    if ( p -> buffs_tier11_4pc_caster -> up() )
-    {
-      player_multiplier *= 4;
     }
   }
 };
@@ -4279,13 +4116,6 @@ double warlock_t::composite_player_multiplier( const school_type school, action_
     shadow_multiplier *= 1.0 + talent_improved_soul_fire -> rank() * 0.04;
   }
 
-  if ( buffs_tier12_4pc_caster -> up() )
-  {
-    double v = buffs_tier12_4pc_caster -> value();
-    fire_multiplier *= 1.0 + v;
-    shadow_multiplier *= 1.0 + v;
-  }
-
   if ( school == SCHOOL_FIRE )
     player_multiplier *= fire_multiplier;
   else if ( school == SCHOOL_SHADOW )
@@ -4400,7 +4230,6 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "infernal"     ) return new    infernal_pet_t( sim, this );
   if ( pet_name == "doomguard"    ) return new   doomguard_pet_t( sim, this );
   if ( pet_name == "ebon_imp"     ) return new    ebon_imp_pet_t( sim, this );
-  if ( pet_name == "fiery_imp"    ) return new   fiery_imp_pet_t( sim, this );
 
   return 0;
 }
@@ -4417,7 +4246,6 @@ void warlock_t::create_pets()
   create_pet( "infernal"  );
   create_pet( "doomguard" );
   pet_ebon_imp = create_pet( "ebon_imp"  );
-  pet_fiery_imp = create_pet( "fiery_imp" );
 }
 
 // warlock_t::init_talents ==================================================
@@ -4492,8 +4320,6 @@ void warlock_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    {  89934,  89935,     0,     0,     0,     0,     0,     0 }, // Tier11
-    {  99220,  99229,     0,     0,     0,     0,     0,     0 }, // Tier12
     { 105888, 105787,     0,     0,     0,     0,     0,     0 }, // Tier13
     {      0,      0,     0,     0,     0,     0,     0,     0 },
   };
@@ -4537,8 +4363,6 @@ void warlock_t::init_spells()
   // Major
   glyphs.life_tap             = find_glyph( "Glyph of Life Tap" );
   glyphs.shadow_bolt          = find_glyph( "Glyph of Shadow Bolt" );
-
-  tier12_4pc_caster           = spell_data_t::find( 99232, "Apocalypse", dbc.ptr );
 }
 
 // warlock_t::init_base =====================================================
@@ -4609,8 +4433,6 @@ void warlock_t::init_buffs()
   buffs_bane_of_havoc         = new buff_t( this, 80240, "bane_of_havoc" );
   buffs_searing_pain_soulburn = new buff_t( this, 79440, "searing_pain_soulburn" );
   buffs_fel_armor             = new buff_t( this, "fel_armor", "Fel Armor" );
-  buffs_tier11_4pc_caster     = new buff_t( this, sets -> set ( SET_T11_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier11_4pc_caster", sets -> set ( SET_T11_4PC_CASTER ) -> proc_chance() );
-  buffs_tier12_4pc_caster     = new buff_t( this, sets -> set ( SET_T12_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier12_4pc_caster", sets -> set ( SET_T12_4PC_CASTER ) -> proc_chance() );
   buffs_tier13_4pc_caster     = new buff_t( this, sets -> set ( SET_T13_4PC_CASTER ) -> effect_trigger_spell( 1 ), "tier13_4pc_caster", sets -> set ( SET_T13_4PC_CASTER ) -> proc_chance() );
 }
 
@@ -4662,7 +4484,6 @@ void warlock_t::init_procs()
 
   procs_ebon_imp         = get_proc( "ebon_imp"       );
   procs_empowered_imp    = get_proc( "empowered_imp"  );
-  procs_fiery_imp        = get_proc( "fiery_imp"      );
   procs_impending_doom   = get_proc( "impending_doom" );
   procs_shadow_trance    = get_proc( "shadow_trance"  );
 }
@@ -4676,7 +4497,6 @@ void warlock_t::init_rng()
   rng_cremation               = get_rng( "cremation"              );
   rng_ebon_imp                = get_rng( "ebon_imp_proc"          );
   rng_everlasting_affliction  = get_rng( "everlasting_affliction" );
-  rng_fiery_imp               = get_rng( "fiery_imp_proc"         );
   rng_impending_doom          = get_rng( "impending_doom"         );
   rng_pandemic                = get_rng( "pandemic"               );
   rng_siphon_life             = get_rng( "siphon_life"            );
@@ -4796,7 +4616,6 @@ void warlock_t::init_actions()
       action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
       if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
       if ( talent_haunt -> rank() ) action_list_str += "/haunt";
-      if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.unstable_affliction.remains<8";
       if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
       if ( talent_soul_siphon -> rank() )
       {
@@ -4857,7 +4676,6 @@ void warlock_t::init_actions()
           action_list_str += "/soul_fire,if=buff.soulburn.up&!in_combat";
         }
       }
-      if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react&dot.immolate.remains<8";
       action_list_str += "/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react";
       if ( talent_conflagrate -> ok() ) action_list_str += "/conflagrate";
       action_list_str += "/immolate,if=buff.bloodlust.react&buff.bloodlust.remains>32&cooldown.conflagrate.remains<=3&remains<12";
@@ -4911,7 +4729,6 @@ void warlock_t::init_actions()
         action_list_str += ")&target.time_to_die>=15&miss_react";
       }
       action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
-      if ( level >= 81 && set_bonus.tier11_4pc_caster() ) action_list_str += "/fel_flame,if=buff.tier11_4pc_caster.react";
       if ( level >= 75 ) action_list_str += "/shadowflame";
       if ( talent_hand_of_guldan -> ok() ) action_list_str += "/hand_of_guldan";
       if ( level >= 60 ) action_list_str += "/immolation_aura,if=buff.metamorphosis.remains>10";
@@ -5033,8 +4850,6 @@ int warlock_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "shadowflame"             ) ) return SET_T11_CASTER;
-  if ( strstr( s, "balespiders"             ) ) return SET_T12_CASTER;
   if ( strstr( s, "_of_the_faceless_shroud" ) ) return SET_T13_CASTER;
 
   if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;

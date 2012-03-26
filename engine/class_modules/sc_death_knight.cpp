@@ -158,7 +158,6 @@ struct death_knight_t : public player_t
   buff_t* buffs_scent_of_blood;
   buff_t* buffs_shadow_infusion;
   buff_t* buffs_sudden_doom;
-  buff_t* buffs_tier11_4pc_melee;
   buff_t* buffs_tier13_4pc_melee;
   buff_t* buffs_unholy_presence;
 
@@ -178,7 +177,6 @@ struct death_knight_t : public player_t
   gain_t* gains_might_of_the_frozen_wastes;
   gain_t* gains_power_refund;
   gain_t* gains_scent_of_blood;
-  gain_t* gains_tier12_2pc_melee;
   gain_t* gains_rune;
   gain_t* gains_rune_unholy;
   gain_t* gains_rune_blood;
@@ -339,8 +337,6 @@ struct death_knight_t : public player_t
 
   // Uptimes
   benefit_t* uptimes_rp_cap;
-
-  double tier12_4pc_melee_value;
 
   death_knight_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
     player_t( sim, DEATH_KNIGHT, name, r )
@@ -538,9 +534,6 @@ void dk_rune_t::regen_rune( player_t* p, timespan_t periodicity )
     if ( p -> sim -> log )
       log_rune_status( o );
 
-    if ( is_death() )
-      o -> buffs_tier11_4pc_melee -> trigger();
-
     if ( p -> sim -> debug )
       log_t::output( p -> sim, "rune %d regens to full", slot_number );
   }
@@ -624,8 +617,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       base_dd_min      = player -> dbc.effect_min( effect_id( 1 ), p -> level ); // Values are saved in a not automatically parsed sub-effect
       base_dd_max      = player -> dbc.effect_max( effect_id( 1 ), p -> level );
       base_multiplier *= 1 + o -> glyphs.death_coil -> effect1().percent();
-
-      base_crit     += o -> sets -> set( SET_T11_2PC_MELEE ) -> effect1().percent();
     }
   };
 
@@ -2038,33 +2029,6 @@ void death_knight_spell_t::target_debuff( player_t* t, int dmg_type )
   }
 }
 
-// Flaming Torment ( Tier 12 4pc ) ==========================================
-
-struct flaming_torment_t : public death_knight_spell_t
-{
-  flaming_torment_t( const char* n, death_knight_t* player ) :
-    death_knight_spell_t( n, 99000, player )
-  {
-    background       = true;
-    may_miss         = false;
-    proc             = true;
-    may_crit         = false;
-  }
-
-  virtual double calculate_direct_damage( int )
-  {
-    death_knight_t* p = player -> cast_death_knight();
-    double dmg = base_dd_min * p -> sets -> set( SET_T12_4PC_MELEE ) -> effect1().percent();
-
-    if ( ! binary )
-    {
-      dmg *= 1.0 - resistance();
-    }
-
-    return dmg;
-  }
-};
-
 // ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
@@ -2132,8 +2096,7 @@ struct melee_t : public death_knight_attack_t
 
       // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
       double chance = weapon -> proc_chance_on_swing( util_t::talent_rank( p -> talents.killing_machine -> rank(), 3, 1, 3, 5 ) );
-      if ( p -> buffs_killing_machine -> trigger( 1, p -> buffs_killing_machine -> effect1().percent(), chance ) )
-        p -> buffs_tier11_4pc_melee -> trigger();
+      p -> buffs_killing_machine -> trigger( 1, p -> buffs_killing_machine -> effect1().percent(), chance );
 
       if ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking )
         p -> buffs_crimson_scourge -> trigger();
@@ -2633,8 +2596,6 @@ struct death_coil_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> talents.morbidity -> effect1().percent()
                        + p -> glyphs.death_coil -> effect1().percent();
 
-    base_crit     += p -> sets -> set( SET_T11_2PC_MELEE ) -> effect1().percent();
-
     if ( p -> talents.runic_corruption -> rank() )
       base_cost += p -> talents.runic_corruption -> mod_additive( P_RESOURCE_COST ) / 10.0;
   }
@@ -2850,8 +2811,6 @@ struct frost_strike_offhand_t : public death_knight_attack_t
     base_multiplier *= 1.0 + p -> talents.nerves_of_cold_steel -> effect2().percent();
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
-
-    base_crit += p -> sets -> set( SET_T11_2PC_MELEE ) -> effect1().percent();
   }
 
   virtual void player_buff()
@@ -2886,7 +2845,6 @@ struct frost_strike_t : public death_knight_attack_t
 
     weapon     = &( p -> main_hand_weapon );
     base_cost += p -> glyphs.frost_strike -> effect1().base_value() / 10;
-    base_crit += p -> sets -> set( SET_T11_2PC_MELEE ) -> effect1().percent();
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new frost_strike_offhand_t( p );
@@ -3225,10 +3183,8 @@ struct necrotic_strike_t : public death_knight_attack_t
 
 struct obliterate_offhand_t : public death_knight_attack_t
 {
-  flaming_torment_t* flaming_torment;
-
   obliterate_offhand_t( death_knight_t* p ) :
-    death_knight_attack_t( "obliterate_offhand", 66198, p ), flaming_torment( NULL )
+    death_knight_attack_t( "obliterate_offhand", 66198, p )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
@@ -3238,26 +3194,6 @@ struct obliterate_offhand_t : public death_knight_attack_t
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
     m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC ) +
                      p -> glyphs.obliterate -> effect1().percent();
-
-    if ( p -> set_bonus.tier12_4pc_melee() )
-    {
-      flaming_torment = new flaming_torment_t( "obliterate_offhand_flaming_torment", p );
-      add_child( flaming_torment );
-    }
-  }
-
-  virtual void execute()
-  {
-    death_knight_attack_t::execute();
-
-    if ( result_is_hit() )
-    {
-      if ( flaming_torment )
-      {
-        flaming_torment -> base_dd_min = direct_dmg;
-        flaming_torment -> execute();
-      }
-    }
   }
 
   virtual void player_buff()
@@ -3285,10 +3221,9 @@ struct obliterate_offhand_t : public death_knight_attack_t
 struct obliterate_t : public death_knight_attack_t
 {
   attack_t* oh_attack;
-  flaming_torment_t* flaming_torment;
 
   obliterate_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "obliterate", "Obliterate", p ), oh_attack( 0 ), flaming_torment( 0 )
+    death_knight_attack_t( "obliterate", "Obliterate", p ), oh_attack( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -3302,12 +3237,6 @@ struct obliterate_t : public death_knight_attack_t
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
     m_dd_additive += p -> talents.annihilation -> mod_additive( P_GENERIC ) +
                      p -> glyphs.obliterate -> effect1().percent();
-
-    if ( p -> set_bonus.tier12_4pc_melee() )
-    {
-      flaming_torment = new flaming_torment_t( "obliterate_mainhand_flaming_torment", p );
-      add_child( flaming_torment );
-    }
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new obliterate_offhand_t( p );
@@ -3346,12 +3275,6 @@ struct obliterate_t : public death_knight_attack_t
 
         p -> cooldowns_howling_blast -> reset();
         update_ready();
-      }
-
-      if ( flaming_torment )
-      {
-        flaming_torment -> base_dd_min = direct_dmg;
-        flaming_torment -> execute();
       }
     }
 
@@ -3800,14 +3723,11 @@ struct rune_strike_t : public death_knight_attack_t
 struct scourge_strike_t : public death_knight_attack_t
 {
   spell_t* scourge_strike_shadow;
-  flaming_torment_t* flaming_torment;
 
   struct scourge_strike_shadow_t : public death_knight_spell_t
   {
-    flaming_torment_t* flaming_torment;
-
     scourge_strike_shadow_t( death_knight_t* p ) :
-      death_knight_spell_t( "scourge_strike_shadow", 70890, p ), flaming_torment( 0 )
+      death_knight_spell_t( "scourge_strike_shadow", 70890, p )
     {
       check_spec( TREE_UNHOLY );
 
@@ -3818,12 +3738,6 @@ struct scourge_strike_t : public death_knight_attack_t
       background        = true;
       weapon_multiplier = 0;
       base_multiplier  *= 1.0 + p -> glyphs.scourge_strike -> effect1().percent();
-
-      if ( p -> set_bonus.tier12_4pc_melee() )
-      {
-        flaming_torment = new flaming_torment_t( "scourge_strike_shadow_flaming_torment", p );
-        add_child( flaming_torment );
-      }
     }
 
     virtual void target_debuff( player_t* t, int /* dmg_type */ )
@@ -3838,25 +3752,11 @@ struct scourge_strike_t : public death_knight_attack_t
       if ( t -> debuffs.earth_and_moon -> up() || t -> debuffs.ebon_plaguebringer -> up() || t -> debuffs.curse_of_elements -> up() )
         target_multiplier *= 1.08;
     }
-
-    void execute()
-    {
-      death_knight_spell_t::execute();
-
-      if ( result_is_hit() )
-      {
-        if ( flaming_torment )
-        {
-          flaming_torment -> base_dd_min = direct_dmg;
-          flaming_torment -> execute();
-        }
-      }
-    }
   };
 
   scourge_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_attack_t( "scourge_strike", "Scourge Strike", p ),
-    scourge_strike_shadow( 0 ), flaming_torment( 0 )
+    scourge_strike_shadow( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -3864,12 +3764,6 @@ struct scourge_strike_t : public death_knight_attack_t
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
 
     base_multiplier *= 1.0 + p -> talents.rage_of_rivendare -> mod_additive( P_GENERIC );
-
-    if ( p -> set_bonus.tier12_4pc_melee() )
-    {
-      flaming_torment = new flaming_torment_t( "scourge_strike_flaming_torment", p );
-      add_child( flaming_torment );
-    }
   }
 
   void execute()
@@ -3877,11 +3771,6 @@ struct scourge_strike_t : public death_knight_attack_t
     death_knight_attack_t::execute();
     if ( result_is_hit() )
     {
-      if ( flaming_torment )
-      {
-        flaming_torment -> base_dd_min = direct_dmg;
-        flaming_torment -> execute();
-      }
       // We divide out our composite_player_multiplier here because we
       // don't want to double dip; in particular, 3% damage from ret
       // paladins, arcane mages, and beastmaster hunters do not affect
@@ -4435,8 +4324,6 @@ void death_knight_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
-    {     0,     0,  90457,  90459,  90454,  90456,     0,     0 }, // Tier11
-    {     0,     0,  98970,  98996,  98956,  98966,     0,     0 }, // Tier12
     {     0,     0, 105609, 105646, 105552, 105587,     0,     0 }, // Tier13
     {     0,     0,      0,      0,      0,      0,     0,     0 },
   };
@@ -4826,7 +4713,6 @@ void death_knight_t::init_buffs()
   buffs_scent_of_blood      = new buff_t( this, "scent_of_blood", talents.scent_of_blood -> rank(),  timespan_t::from_seconds( 20.0 ), timespan_t::zero, talents.scent_of_blood -> proc_chance() );
   buffs_shadow_infusion     = new buff_t( this, 91342, "shadow_infusion", talents.shadow_infusion -> proc_chance() );
   buffs_sudden_doom         = new buff_t( this, "sudden_doom", ( set_bonus.tier13_2pc_melee() ) ? 2 : 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, 1.0 );
-  buffs_tier11_4pc_melee    = new buff_t( this, 90507, "tier11_4pc_melee", set_bonus.tier11_4pc_melee() );
   buffs_tier13_4pc_melee    = new stat_buff_t( this, 105647, "tier13_4pc_melee", STAT_MASTERY_RATING, dbc.spell( 105647 ) -> effect1().base_value() );
   buffs_unholy_presence     = new buff_t( this, "unholy_presence", "Unholy Presence" );
 
@@ -4877,7 +4763,6 @@ void death_knight_t::init_gains()
   gains_might_of_the_frozen_wastes       = get_gain( "might_of_the_frozen_wastes" );
   gains_power_refund                     = get_gain( "power_refund"               );
   gains_scent_of_blood                   = get_gain( "scent_of_blood"             );
-  gains_tier12_2pc_melee                 = get_gain( "tier12_2pc_melee"           );
   gains_rune                             = get_gain( "rune_regen_all"             );
   gains_rune_unholy                      = get_gain( "rune_regen_unholy"          );
   gains_rune_blood                       = get_gain( "rune_regen_blood"           );
@@ -4999,9 +4884,6 @@ double death_knight_t::composite_attack_power() const
   if ( talents.bladed_armor -> rank() )
     ap += composite_armor() / talents.bladed_armor -> effect1().base_value();
 
-  if ( buffs_tier11_4pc_melee -> check() )
-    ap *= 1.0 + buffs_tier11_4pc_melee -> stack() * buffs_tier11_4pc_melee -> effect1().percent();
-
   return ap;
 }
 
@@ -5117,9 +4999,6 @@ void death_knight_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( set_bonus.tier12_2pc_melee() && sim -> auras.horn_of_winter -> check() )
-    resource_gain( RESOURCE_RUNIC, 3.0 / 5.0 * periodicity.total_seconds(), gains_tier12_2pc_melee );
-
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     _runes.slot[i].regen_rune( this, periodicity );
 
@@ -5156,42 +5035,6 @@ int death_knight_t::decode_set( item_t& item )
   }
 
   const char* s = item.name();
-
-  if ( strstr( s, "magma_plated" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee ) return SET_T11_MELEE;
-    if ( is_tank  ) return SET_T11_TANK;
-  }
-
-  if ( strstr( s, "elementium_deathplate" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "breastplate"   ) ||
-                      strstr( s, "greaves"       ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee ) return SET_T12_MELEE;
-    if ( is_tank  ) return SET_T12_TANK;
-  }
 
   if ( strstr( s, "necrotic_boneplate" ) )
   {

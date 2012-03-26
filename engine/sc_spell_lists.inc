@@ -290,15 +290,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8679, // Wound Poison
            0,
     },
-    // None tree, 7 abilities
+    // Assassination tree, 5 abilities
     {
        14177, // Cold Blood
-        2818, // Deadly Poison
       111240, // Dispatch
        32645, // Envenom
         1329, // Mutilate
        79140, // Vendetta
-        8680, // Wound Poison
            0,
     },
     // Combat tree, 4 abilities
@@ -607,12 +605,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 5 abilities
+    // Pet tree, 4 abilities
     {
        88084, // Arcane Blast
        59637, // Fire Blast
        88082, // Fireball
-       99062, // Fireball
        59638, // Frostbolt
            0,
     },
@@ -693,14 +690,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 7 abilities
+    // Pet tree, 6 abilities
     {
        89766, // Axe Toss (Special Ability)
       119899, // Cauterize Master (Special Ability)
       118093, // Disarm (Special Ability)
        85692, // Doom Bolt
        89751, // Felstorm (Special Ability)
-       99226, // Flame Blast (Basic Attack)
       112042, // Threatening Presence
            0,
     },
@@ -871,9 +867,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       102791, // Wild Mushroom: Bloom
            0,
     },
-    // Pet tree, 1 abilities
     {
-       99026, // Fireseed (Basic Attack)
            0,
     },
   },
@@ -2942,9 +2936,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 };
 
 #define TIER_BONUSES_SIZE (6)
-#define TIER_BONUSES_MAX_TIER (4)
+#define TIER_BONUSES_MAX_TIER (2)
 
-#define TIER_BONUSES_TIER_BASE (11)
+#define TIER_BONUSES_TIER_BASE (13)
 
 // Tier item set bonuses for class, wow build 15464
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
@@ -2955,22 +2949,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Warrior
   {
-    // Tier 11 bonuses (4 spells)
-    {
-      90293, // Earthen Warplate - 2 Piece Bonus (Item - Warrior T11 DPS 2P Bonus)
-      90295, // Earthen Warplate - 4 Piece Bonus (Item - Warrior T11 DPS 4P Bonus)
-      90296, // Earthen Battleplate - 2 Piece Bonus (Item - Warrior T11 Protection 2P Bonus)
-      90297, // Earthen Battleplate - 4 Piece Bonus (Item - Warrior T11 Protection 4P Bonus)
-          0,
-    },
-    // Tier 12 bonuses (4 spells)
-    {
-      99234, // Molten Giant Warplate - 2 Piece Bonus (Item - Warrior T12 DPS 2P Bonus)
-      99238, // Molten Giant Warplate - 4 Piece Bonus (Item - Warrior T12 DPS 4P Bonus)
-      99239, // Molten Giant Battleplate - 2 Piece Bonus (Item - Warrior T12 Protection 2P Bonus)
-      99242, // Molten Giant Battleplate - 4 Piece Bonus (Item - Warrior T12 Protection 4P Bonus)
-          0,
-    },
     // Tier 13 bonuses (4 spells)
     {
       105797, // Colossal Dragonplate Battlegear - 2 Piece Bonus (Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage))
@@ -2985,24 +2963,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Paladin
   {
-    // Tier 11 bonuses (6 spells)
-    {
-      90298, // Reinforced Sapphirium Battleplate - 2 Piece Bonus (Item - Paladin T11 Retribution 2P Bonus)
-      90299, // Reinforced Sapphirium Battleplate - 4 Piece Bonus (Item - Paladin T11 Retribution 4P Bonus)
-      90301, // Reinforced Sapphirium Battlearmor - 2 Piece Bonus (Item - Paladin T11 Protection 2P Bonus)
-      90306, // Reinforced Sapphirium Battlearmor - 4 Piece Bonus (Item - Paladin T11 Protection 4P Bonus)
-      90310, // Reinforced Sapphirium Regalia - 2 Piece Bonus (Item - Paladin T11 Holy 2P Bonus)
-      90313, // Reinforced Sapphirium Regalia - 4 Piece Bonus (Item - Paladin T11 Holy 4P Bonus)
-    },
-    // Tier 12 bonuses (6 spells)
-    {
-      99067, // Regalia of Immolation - 2 Piece Bonus (Item - Paladin T12 Holy 2P Bonus)
-      99070, // Regalia of Immolation - 4 Piece Bonus (Item - Paladin T12 Holy 4P Bonus)
-      99074, // Battlearmor of Immolation - 2 Piece Bonus (Item - Paladin T12 Protection 2P Bonus)
-      99091, // Battlearmor of Immolation - 4 Piece Bonus (Item - Paladin T12 Protection 4P Bonus)
-      99093, // Battleplate of Immolation - 2 Piece Bonus (Item - Paladin T12 Retribution 2P Bonus)
-      99116, // Battleplate of Immolation - 4 Piece Bonus (Item - Paladin T12 Retribution 4P Bonus)
-    },
     // Tier 13 bonuses (6 spells)
     {
       105743, // Regalia of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Holy 2P Bonus (Divine Favor))
@@ -3018,18 +2978,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Hunter
   {
-    // Tier 11 bonuses (2 spells)
-    {
-      89923, // Lightning-Charged Battlegear - 2 Piece Bonus (Item - Hunter T11 2P Bonus)
-      96411, // Lightning-Charged Battlegear - 4 Piece Bonus (Item - Hunter T11 4P Bonus)
-          0,
-    },
-    // Tier 12 bonuses (2 spells)
-    {
-      99057, // Flamewaker's Battlegear - 2 Piece Bonus (Item - Hunter T12 2P Bonus)
-      99059, // Flamewaker's Battlegear - 4 Piece Bonus (Item - Hunter T12 4P Bonus)
-          0,
-    },
     // Tier 13 bonuses (2 spells)
     {
       105732, // Wyrmstalker Battlegear - 2 Piece Bonus (Item - Hunter T13 2P Bonus (Steady Shot and Cobra Shot))
@@ -3042,18 +2990,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Rogue
   {
-    // Tier 11 bonuses (2 spells)
-    {
-      90460, // Wind Dancer's Regalia - 2 Piece Bonus (Item - Rogue T11 2P Bonus)
-      90473, // Wind Dancer's Regalia - 4 Piece Bonus (Item - Rogue T11 4P Bonus)
-          0,
-    },
-    // Tier 12 bonuses (2 spells)
-    {
-      99174, // Vestments of the Dark Phoenix - 2 Piece Bonus (Item - Rogue T12 2P Bonus)
-      99175, // Vestments of the Dark Phoenix - 4 Piece Bonus (Item - Rogue T12 4P Bonus)
-          0,
-    },
     // Tier 13 bonuses (2 spells)
     {
       105849, // Blackfang Battleweave - 2 Piece Bonus (Item - Rogue T13 2P Bonus (Tricks of the Trade))
@@ -3066,22 +3002,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Priest
   {
-    // Tier 11 bonuses (4 spells)
-    {
-      89910, // Mercurial Vestments - 2 Piece Bonus (Item - Priest T11 Healer 2P Bonus)
-      89911, // Mercurial Vestments - 4 Piece Bonus (Item - Priest T11 Healer 4P Bonus)
-      89915, // Mercurial Regalia - 2 Piece Bonus (Item - Priest T11 Shadow 2P Bonus)
-      89922, // Mercurial Regalia - 4 Piece Bonus (Item - Priest T11 Shadow 4P Bonus)
-          0,
-    },
-    // Tier 12 bonuses (4 spells)
-    {
-      99134, // Vestments of the Cleansing Flame - 2 Piece Bonus (Item - Priest T12 Healer 2P Bonus)
-      99135, // Vestments of the Cleansing Flame - 4 Piece Bonus (Item - Priest T12 Healer 4P Bonus)
-      99154, // Regalia of the Cleansing Flame - 2 Piece Bonus (Item - Priest T12 Shadow 2P Bonus)
-      99157, // Regalia of the Cleansing Flame - 4 Piece Bonus (Item - Priest T12 Shadow 4P Bonus)
-          0,
-    },
     // Tier 13 bonuses (4 spells)
     {
       105827, // Vestments of Dying Light - 2 Piece Bonus (Item - Priest T13 Healer 2P Bonus (Power Infusion and Lightwell))
@@ -3096,22 +3016,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Death Knight
   {
-    // Tier 11 bonuses (4 spells)
-    {
-      90454, // Magma Plated Battlearmor - 2 Piece Bonus (Item - Death Knight T11 Blood 2P Bonus)
-      90456, // Magma Plated Battlearmor - 4 Piece Bonus (Item - Death Knight T11 Blood 4P Bonus)
-      90457, // Magma Plated Battlegear - 2 Piece Bonus (Item - Death Knight T11 DPS 2P Bonus)
-      90459, // Magma Plated Battlegear - 4 Piece Bonus (Item - Death Knight T11 DPS 4P Bonus)
-          0,
-    },
-    // Tier 12 bonuses (4 spells)
-    {
-      98956, // Elementium Deathplate Battlearmor - 2 Piece Bonus (Item - Death Knight T12 Blood 2P Bonus)
-      98966, // Elementium Deathplate Battlearmor - 4 Piece Bonus (Item - Death Knight T12 Blood 4P Bonus)
-      98970, // Elementium Deathplate Battlegear - 2 Piece Bonus (Item - Death Knight T12 DPS 2P Bonus)
-      98996, // Elementium Deathplate Battlegear - 4 Piece Bonus (Item - Death Knight T12 DPS 4P Bonus)
-          0,
-    },
     // Tier 13 bonuses (4 spells)
     {
       105552, // Necrotic Boneplate Armor - 2 Piece Bonus (Item - Death Knight T13 Blood 2P Bonus)
@@ -3126,24 +3030,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Shaman
   {
-    // Tier 11 bonuses (6 spells)
-    {
-      90494, // Vestments of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Restoration 2P Bonus)
-      90499, // Vestments of the Raging Elements - 4 Piece Bonus (Item - Shaman T11 Restoration 4P Bonus)
-      90501, // Battlegear of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Enhancement 2P Bonus)
-      90502, // Battlegear of the Raging Elements - 4 Piece Bonus (Item - Shaman T11 Enhancment 4P Bonus)
-      90503, // Regalia of the Raging Elements - 2 Piece Bonus (Item - Shaman T11 Elemental 2P Bonus)
-      90505, // Regalia of the Raging Elements - 4 Piece Bonus (Item - Shaman T11 Elemental 4P Bonus)
-    },
-    // Tier 12 bonuses (6 spells)
-    {
-      99190, // Volcanic Vestments - 2 Piece Bonus (Item - Shaman T12 Restoration 2P Bonus)
-      99195, // Volcanic Vestments - 4 Piece Bonus (Item - Shaman T12 Restoration 4P Bonus)
-      99204, // Volcanic Regalia - 2 Piece Bonus (Item - Shaman T12 Elemental 2P Bonus)
-      99206, // Volcanic Regalia - 4 Piece Bonus (Item - Shaman T12 Elemental 4P Bonus)
-      99209, // Volcanic Battlegear - 2 Piece Bonus (Item - Shaman T12 Enhancement 2P Bonus)
-      99213, // Volcanic Battlegear - 4 Piece Bonus (Item - Shaman T12 Enhancement 4P Bonus)
-    },
     // Tier 13 bonuses (6 spells)
     {
       105764, // Spiritwalker's Vestments - 2 Piece Bonus (Item - Shaman T13 Restoration 2P Bonus (Mana Tide))
@@ -3159,18 +3045,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Mage
   {
-    // Tier 11 bonuses (2 spells)
-    {
-      90290, // Firelord's Vestments - 2 Piece Bonus (Item - Mage T11 2P Bonus)
-      90291, // Firelord's Vestments - 4 Piece Bonus (Item - Mage T11 4P Bonus)
-          0,
-    },
-    // Tier 12 bonuses (2 spells)
-    {
-      99061, // Firehawk Robes of Conflagration - 2 Piece Bonus (Item - Mage T12 2P Bonus)
-      99064, // Firehawk Robes of Conflagration - 4 Piece Bonus (Item - Mage T12 4P Bonus)
-          0,
-    },
     // Tier 13 bonuses (2 spells)
     {
       105788, // Time Lord's Regalia - 2 Piece Bonus (Item - Mage T13 2P Bonus (Haste Rating))
@@ -3183,18 +3057,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Warlock
   {
-    // Tier 11 bonuses (2 spells)
-    {
-      89934, // Shadowflame Regalia - 2 Piece Bonus (Item - Warlock T11 2P Bonus)
-      89935, // Shadowflame Regalia - 4 Piece Bonus (Item - Warlock T11 4P Bonus)
-          0,
-    },
-    // Tier 12 bonuses (2 spells)
-    {
-      99220, // Balespider's Burning Vestments - 2 Piece Bonus (Item - Warlock T12 2P Bonus)
-      99229, // Balespider's Burning Vestments - 4 Piece Bonus (Item - Warlock T12 4P Bonus)
-          0,
-    },
     // Tier 13 bonuses (2 spells)
     {
       105787, // Vestments of the Faceless Shroud - 4 Piece Bonus (Item - Warlock T13 4P Bonus (Soulburn))
@@ -3213,24 +3075,6 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
   // Tier bonuses for Druid
   {
-    // Tier 11 bonuses (6 spells)
-    {
-      90157, // Stormrider's Vestments - 2 Piece Bonus (Item - Druid T11 Restoration 2P Bonus)
-      90158, // Stormrider's Vestments - 4 Piece Bonus (Item - Druid T11 Restoration 4P Bonus)
-      90160, // Stormrider's Regalia - 2 Piece Bonus (Item - Druid T11 Balance 2P Bonus)
-      90162, // Stormrider's Battlegarb - 2 Piece Bonus (Item - Druid T11 Feral 2P Bonus)
-      90163, // Stormrider's Regalia - 4 Piece Bonus (Item - Druid T11 Balance 4P Bonus)
-      90165, // Stormrider's Battlegarb - 4 Piece Bonus (Item - Druid T11 Feral 4P Bonus)
-    },
-    // Tier 12 bonuses (6 spells)
-    {
-      99001, // Obsidian Arborweave Battlegarb - 2 Piece Bonus (Item - Druid T12 Feral 2P Bonus)
-      99009, // Obsidian Arborweave Battlegarb - 4 Piece Bonus (Item - Druid T12 Feral 4P Bonus)
-      99013, // Obsidian Arborweave Vestments - 2 Piece Bonus (Item - Druid T12 Restoration 2P Bonus)
-      99015, // Obsidian Arborweave Vestments - 4 Piece Bonus (Item - Druid T12 Restoration 4P Bonus)
-      99019, // Obsidian Arborweave Regalia - 2 Piece Bonus (Item - Druid T12 Balance 2P Bonus)
-      99049, // Obsidian Arborweave Regalia - 4 Piece Bonus (Item - Druid T12 Balance 4P Bonus)
-    },
     // Tier 13 bonuses (6 spells)
     {
       105715, // Deep Earth Vestments - 2 Piece Bonus (Item - Druid T13 Restoration 2P Bonus (Innervate))

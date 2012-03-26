@@ -319,8 +319,6 @@ struct priest_t : public player_t
 
   virtual double    matching_gear_multiplier( const attribute_type attr ) const;
 
-  virtual double    spirit() const;
-
   virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double    resource_loss( int resource, double amount, action_t* action=0 );
 
@@ -935,42 +933,6 @@ public:
 
 struct shadow_fiend_pet_t : public pet_t
 {
-  struct tier12_flame_attack_t : public spell_t
-  {
-    double dmg_mult;
-
-    tier12_flame_attack_t( shadow_fiend_pet_t* player ) :
-      spell_t( "Shadowflame", player, SCHOOL_FIRE ), dmg_mult( 0.2 )
-    {
-      priest_t* o = player -> owner -> cast_priest();
-
-      background       = true;
-      may_miss         = false;
-      proc             = true;
-      may_crit         = false;
-      direct_power_mod = 0.0;
-      trigger_gcd      = timespan_t::zero;
-      school           = SCHOOL_FIRE;
-
-      if ( const spell_data_t* shadowflame = spell_data_t::find( 99156, "Shadowflame", o -> dbc.ptr ) )
-      {
-        dmg_mult = shadowflame->effect1().percent();
-      }
-    }
-
-    virtual double calculate_direct_damage( int )
-    {
-      double dmg = base_dd_min * dmg_mult;
-
-      if ( ! binary )
-      {
-        dmg *= 1.0 - resistance();
-      }
-
-      return dmg;
-    }
-  };
-
   struct shadowcrawl_t : public spell_t
   {
     shadowcrawl_t( shadow_fiend_pet_t* player ) :
@@ -991,10 +953,8 @@ struct shadow_fiend_pet_t : public pet_t
 
   struct melee_t : public attack_t
   {
-    tier12_flame_attack_t* tier12_flame_attack_spell;
-
     melee_t( shadow_fiend_pet_t* player ) :
-      attack_t( "melee", player, RESOURCE_NONE, SCHOOL_SHADOW ), tier12_flame_attack_spell( 0 )
+      attack_t( "melee", player, RESOURCE_NONE, SCHOOL_SHADOW )
     {
       priest_t* o = player -> owner -> cast_priest();
       weapon = &( player -> main_hand_weapon );
@@ -1012,13 +972,6 @@ struct shadow_fiend_pet_t : public pet_t
       may_parry  = false; // Technically it can be parried on the first swing or if the rear isn't reachable
       may_crit   = true;
       may_block  = false; // Technically it can be blocked on the first swing or if the rear isn't reachable
-
-      if ( o -> set_bonus.tier12_2pc_caster() )
-      {
-        tier12_flame_attack_spell = new tier12_flame_attack_t( player );
-
-        add_child( tier12_flame_attack_spell );
-      }
     }
 
     void assess_damage( player_t* t, double amount, int dmg_type, int impact_result )
@@ -1049,17 +1002,6 @@ struct shadow_fiend_pet_t : public pet_t
         p -> bad_swing = false;
 
       player_multiplier *= 1.0 + p -> buffs.shadowcrawl -> value();
-    }
-
-    void execute()
-    {
-      attack_t::execute();
-
-      if ( tier12_flame_attack_spell )
-      {
-        tier12_flame_attack_spell -> base_dd_min = direct_dmg;
-        tier12_flame_attack_spell -> execute();
-      }
     }
 
     virtual void impact( player_t* t, int result, double dmg )
@@ -1348,8 +1290,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     {
       player_multiplier /= 1.0 + p() -> constants.twisted_faith_static_value;
     }
-
-    player_multiplier *= 1.0 + p() -> sets -> set( SET_T11_4PC_CASTER ) -> mod_additive( P_GENERIC );
   }
 };
 
@@ -1961,7 +1901,6 @@ struct mind_flay_t : public priest_spell_t
     may_crit     = false;
     channeled    = true;
     hasted_ticks = false;
-    base_crit   += p -> sets -> set( SET_T11_2PC_CASTER ) -> mod_additive( P_CRIT );
   }
 
   virtual void execute()
@@ -2873,9 +2812,6 @@ struct _heal_t : public priest_heal_t
     priest_heal_t( "heal", p, "Heal" )
   {
     parse_options( NULL, options_str );
-
-    // FIXME: Check Spell when it's imported into the dbc
-    base_crit      += p -> set_bonus.tier11_2pc_heal() * 0.05;
   }
 
   virtual void execute()
@@ -3668,18 +3604,6 @@ double priest_t::matching_gear_multiplier( const attribute_type attr ) const
   return 0.0;
 }
 
-// priest_t::spirit =========================================================
-
-double priest_t::spirit() const
-{
-  double spi = player_t::spirit();
-
-  if ( set_bonus.tier11_4pc_heal() & ( buffs.chakra_serenity -> up() || buffs.chakra_sanctuary -> up() || buffs.chakra_chastise -> up() ) )
-    spi += 540;
-
-  return spi;
-}
-
 // priest_t::create_action ==================================================
 
 action_t* priest_t::create_action( const std::string& name,
@@ -3903,8 +3827,6 @@ void priest_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //   C2P     C4P    M2P    M4P    T2P    T4P     H2P     H4P
-    {  89915,  89922,     0,     0,     0,     0,  89910,  89911 }, // Tier11
-    {  99154,  99157,     0,     0,     0,     0,  99134,  99135 }, // Tier12
     { 105843, 105844,     0,     0,     0,     0, 105827, 105832 }, // Tier13
     {      0,      0,     0,     0,     0,     0,      0,      0 },
   };
@@ -4465,40 +4387,6 @@ int priest_t::decode_set( item_t& item )
 
   bool is_caster = false;
   bool is_healer = false;
-
-  if ( strstr( s, "mercurial" ) )
-  {
-    is_caster = ( strstr( s, "hood"          ) ||
-                  strstr( s, "shoulderwraps" ) ||
-                  strstr( s, "vestment"      ) ||
-                  strstr( s, "gloves"        ) ||
-                  strstr( s, "leggings"      ) );
-    if ( is_caster ) return SET_T11_CASTER;
-
-    is_healer = ( strstr( s, "cowl"          ) ||
-                  strstr( s, "mantle"        ) ||
-                  strstr( s, "robes"         ) ||
-                  strstr( s, "handwraps"     ) ||
-                  strstr( s, "legwraps"      ) );
-    if ( is_healer ) return SET_T11_HEAL;
-  }
-
-  if ( strstr( s, "_of_the_cleansing_flame" ) )
-  {
-    is_caster = ( strstr( s, "hood"          ) ||
-                  strstr( s, "shoulderwraps" ) ||
-                  strstr( s, "vestment"      ) ||
-                  strstr( s, "gloves"        ) ||
-                  strstr( s, "leggings"      ) );
-    if ( is_caster ) return SET_T12_CASTER;
-
-    is_healer = ( strstr( s, "cowl"          ) ||
-                  strstr( s, "mantle"        ) ||
-                  strstr( s, "robes"         ) ||
-                  strstr( s, "handwraps"     ) ||
-                  strstr( s, "legwraps"      ) );
-    if ( is_healer ) return SET_T12_HEAL;
-  }
 
   if ( strstr( s, "_of_dying_light" ) )
   {
