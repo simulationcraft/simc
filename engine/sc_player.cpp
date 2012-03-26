@@ -6536,9 +6536,11 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     profile_str += "origin=\"" + origin_str + "\"" + term;
     profile_str += "level=" + util_t::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
-    profile_str += "position=" + position_str + term;
+    profile_str += "spec=";
+    profile_str += primary_tree_name() + term;
     profile_str += "role=";
     profile_str += util_t::role_type_string( primary_role() ) + term;
+    profile_str += "position=" + position_str + term;
     profile_str += "use_pre_potion=" + util_t::to_string( use_pre_potion ) + term;
 
     if ( professions_str.size() > 0 )
@@ -6801,6 +6803,7 @@ void player_t::create_options()
     { "brain_lag",                            OPT_FUNC,     ( void* ) ::parse_brain_lag                 },
     { "brain_lag_stddev",                     OPT_FUNC,     ( void* ) ::parse_brain_lag_stddev          },
     { "scale_player",                         OPT_BOOL,     &( scale_player                           ) },
+    { "spec",                                 OPT_FUNC,     ( void* ) ::parse_specialization            },
     { "specialization",                       OPT_FUNC,     ( void* ) ::parse_specialization            },
     // Items
     { "meta_gem",                             OPT_STRING,   &( meta_gem_str                           ) },
