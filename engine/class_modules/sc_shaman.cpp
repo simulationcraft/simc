@@ -3363,8 +3363,7 @@ struct flametongue_weapon_t : public shaman_spell_t
     }
 
     // Spell damage scaling is defined in "Flametongue Weapon (Passive), id 10400"
-    bonus_power  = actor -> dbc.effect_average( actor -> dbc.spell( 10400 ) -> effectN( 1 ).id(), actor -> level );
-    bonus_power /= 100.0;
+    bonus_power  = actor -> dbc.spell( 10400 ) -> effectN( 2 ).percent();
     harmful      = false;
     may_miss     = false;
 
