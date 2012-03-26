@@ -60,6 +60,9 @@ _DIFF_DATA = {
     },
     # Mists of Pandaria beta ->
     15464: {
+        'ChrRaces.dbc' : [
+            ( 'unk_25', _ADD_FIELD, 'unk_24' )
+        ],
         'Spell.dbc' : [
             ( 'unk_45', _REMOVE_FIELD ),
             ( 'unk_36', _REMOVE_FIELD ),
