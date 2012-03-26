@@ -573,7 +573,6 @@
 		6E392F5B1396A00700649B6A /* QtNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtNetwork.framework; path = SDKs/MacOSX10.6.sdk/Library/Frameworks/QtNetwork.framework; sourceTree = DEVELOPER_DIR; };
 		6E392F5D1396A00B00649B6A /* QtWebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtWebKit.framework; path = SDKs/MacOSX10.6.sdk/Library/Frameworks/QtWebKit.framework; sourceTree = DEVELOPER_DIR; };
 		6E392F5F1396A04400649B6A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = SDKs/MacOSX10.6.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
-		6E4D422A147A88E200401931 /* xs_Float.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xs_Float.h; sourceTree = "<group>"; };
 		6E6C54D11396A61C00407A6A /* Welcome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Welcome.png; sourceTree = "<group>"; };
 		6E6C54D21396A62600407A6A /* Welcome.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Welcome.html; sourceTree = "<group>"; };
 		6E6C54D31396A63000407A6A /* Legend.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Legend.html; sourceTree = "<group>"; };
@@ -926,15 +925,6 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		6E4D4229147A88E200401931 /* xs_float */ = {
-			isa = PBXGroup;
-			children = (
-				6E4D422A147A88E200401931 /* xs_Float.h */,
-			);
-			name = xs_float;
-			path = engine/xs_float;
-			sourceTree = "<group>";
-		};
 		6E7C23D413B5361700D85057 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
@@ -1052,7 +1042,6 @@
 		6EC618B313967780006B7A89 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				6E4D4229147A88E200401931 /* xs_float */,
 				6EC61933139678B9006B7A89 /* utf8 */,
 				6EC61930139678B9006B7A89 /* dbc\data_definitions.hh */,
 				6EC61931139678B9006B7A89 /* dbc\data_enums.hh */,
