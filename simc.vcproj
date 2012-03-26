@@ -267,11 +267,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_extra_data.inc"
+			RelativePath=".\engine\dbc\sc_extra_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_extra_data_ptr.inc"
+			RelativePath=".\engine\dbc\sc_extra_data_ptr.inc"
 			>
 		</File>
 		<File
@@ -299,11 +299,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_item_data.inc"
+			RelativePath=".\engine\dbc\sc_item_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_item_data_ptr.inc"
+			RelativePath=".\engine\dbc\sc_item_data_ptr.inc"
 			>
 		</File>
 		<File
@@ -403,11 +403,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_scale_data.inc"
+			RelativePath=".\engine\dbc\sc_scale_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_scale_data_ptr.inc"
+			RelativePath=".\engine\dbc\sc_scale_data_ptr.inc"
 			>
 		</File>
 		<File
@@ -439,11 +439,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_data.inc"
+			RelativePath=".\engine\dbc\sc_spell_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_data_ptr.inc"
+			RelativePath=".\engine\dbc\sc_spell_data_ptr.inc"
 			>
 		</File>
 		<File
@@ -451,11 +451,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_lists.inc"
+			RelativePath=".\engine\dbc\sc_spell_lists.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_lists_ptr.inc"
+			RelativePath=".\engine\dbc\sc_spell_lists_ptr.inc"
 			>
 		</File>
 		<File
@@ -467,11 +467,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_talent_data.inc"
+			RelativePath=".\engine\dbc\sc_talent_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_talent_data_ptr.inc"
+			RelativePath=".\engine\dbc\sc_talent_data_ptr.inc"
 			>
 		</File>
 		<File
