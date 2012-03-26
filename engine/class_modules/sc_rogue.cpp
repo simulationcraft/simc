@@ -4067,7 +4067,7 @@ player_t* player_t::create_rogue( sim_t* sim, const std::string& name, race_type
 {
   if ( blocked_class_modules::rogue )
   {
-    sim -> errorf( util_t::blocked_class_module(  ROGUE ).c_str() );
+    sim -> errorf( "%s", util_t::blocked_class_module(  ROGUE ).c_str() );
     return NULL;
   }
 

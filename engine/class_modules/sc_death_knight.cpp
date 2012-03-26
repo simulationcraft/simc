@@ -5264,7 +5264,7 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, ra
 {
   if ( blocked_class_modules::death_knight )
   {
-    sim -> errorf( util_t::blocked_class_module(  DEATH_KNIGHT ).c_str() );
+    sim -> errorf( "%s", util_t::blocked_class_module(  DEATH_KNIGHT ).c_str() );
     return NULL;
   }
 

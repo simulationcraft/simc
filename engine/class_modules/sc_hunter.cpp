@@ -4454,7 +4454,7 @@ player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_typ
 {
   if ( blocked_class_modules::hunter )
   {
-    sim -> errorf( util_t::blocked_class_module(  HUNTER ).c_str() );
+    sim -> errorf( "%s", util_t::blocked_class_module(  HUNTER ).c_str() );
     return NULL;
   }
 

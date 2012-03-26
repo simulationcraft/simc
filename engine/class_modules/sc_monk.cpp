@@ -684,7 +684,7 @@ player_t* player_t::create_monk( sim_t* sim, const std::string& name, race_type 
 {
   if ( blocked_class_modules::monk )
   {
-    sim -> errorf( util_t::blocked_class_module(  MONK ).c_str() );
+    sim -> errorf( "%s", util_t::blocked_class_module(  MONK ).c_str() );
     return NULL;
   }
   return new monk_t( sim, name, r );
