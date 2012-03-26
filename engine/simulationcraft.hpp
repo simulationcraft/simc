@@ -1999,7 +1999,16 @@ public:
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
 
-  const spelleffect_data_t& effectN(unsigned idx) const { assert( idx ); if ( idx > _effects -> size() ) return *spelleffect_data_t::nil(); else return *_effects -> at( idx - 1 ); }
+  const spelleffect_data_t& effectN(unsigned idx) const
+  {
+    assert( idx );
+    if( ! ( idx <= _effects -> size() ) )
+    {
+      printf( "spell_data_t::effectN( %d ) for effect ( name=%s id=%d ) tried to acess, but index is larger than effect size", idx, _name, _id );
+      return *spelleffect_data_t::nil();
+    }
+    return *_effects -> at( idx - 1 );
+  }
   const spelleffect_data_t& effect1() const { return effectN( 1 ); }
   const spelleffect_data_t& effect2() const { return effectN( 2 ); }
   const spelleffect_data_t& effect3() const { return effectN( 3 ); }
