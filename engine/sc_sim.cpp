@@ -667,7 +667,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   input_is_utf8( false ),
   dtr_proc_chance( -1.0 ),
   target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
-  default_rng_( 0 ), rng_list( 0 ), deterministic_roll( false ),
+  default_rng_( 0 ), rng_list( 0 ), deterministic_rng( false ),
   rng( 0 ), deterministic_rng( 0 ), smooth_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
@@ -1230,10 +1230,10 @@ bool sim_t::init()
   {
     smooth_rng = true;
     average_range = true;
-    deterministic_roll = true;
+    deterministic_rng = true;
   }
 
-  default_rng_ = ( deterministic_roll ? deterministic_rng : rng );
+  default_rng_ = ( deterministic_rng ? deterministic_rng : rng );
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
@@ -2207,7 +2207,7 @@ void sim_t::create_options()
     { "regen_periodicity",                OPT_TIMESPAN, &( regen_periodicity                      ) },
     // RNG
     { "smooth_rng",                       OPT_DEPRECATED,   &( smooth_rng                               ) },
-    { "deterministic_roll",               OPT_BOOL,   &( deterministic_roll                       ) },
+    { "deterministic_rng",               OPT_BOOL,   &( deterministic_rng                       ) },
     { "average_range",                    OPT_BOOL,   &( average_range                            ) },
     { "average_gauss",                    OPT_BOOL,   &( average_gauss                            ) },
     { "convergence_scale",                OPT_INT,    &( convergence_scale                        ) },

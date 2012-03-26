@@ -3361,9 +3361,9 @@ struct sim_t : private thread_t
 
   // Random Number Generation
 private:
-  rng_t* default_rng_;     // == (deterministic_roll ? deterministic_rng : rng )
+  rng_t* default_rng_;     // == (deterministic_rng ? deterministic_rng : rng )
   rng_t* rng_list;
-  int deterministic_roll;
+  int deterministic_rng;
 public:
   rng_t* rng;
   rng_t* deterministic_rng;

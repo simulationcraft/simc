@@ -11,14 +11,14 @@ struct remove_dots_event_t;
 
 struct priest_targetdata_t : public targetdata_t
 {
-  dot_t*            dots_shadow_word_pain;
-  dot_t*            dots_vampiric_touch;
-  dot_t*            dots_devouring_plague;
-  dot_t*            dots_holy_fire;
-  dot_t*            dots_renew;
+  dot_t*  dots_shadow_word_pain;
+  dot_t*  dots_vampiric_touch;
+  dot_t*  dots_devouring_plague;
+  dot_t*  dots_holy_fire;
+  dot_t*  dots_renew;
 
-  buff_t*           buffs_power_word_shield;
-  buff_t*           buffs_divine_aegis;
+  buff_t* buffs_power_word_shield;
+  buff_t* buffs_divine_aegis;
 
   remove_dots_event_t* remove_dots_event;
 
