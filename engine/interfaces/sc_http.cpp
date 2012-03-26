@@ -3,8 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-#include "utf8.h"
+#include "../simulationcraft.hpp"
+#include "../utf8.h"
 
 #include <fstream>
 
@@ -136,7 +136,7 @@ static bool download( url_cache_entry_t& entry,
   if ( !hINet )
   {
     // hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PROXY, "proxy-server", NULL, 0 );
-    hINet = InternetOpen( L"Firefox/3.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+    hINet = InternetOpen( TEXT("Firefox/3.0"), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
     if ( ! hINet )
       return false;
   }

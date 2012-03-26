@@ -1,7 +1,7 @@
 #include <QLocale>
 #include <QtGui/QApplication>
 #include <locale>
-#include "simulationcraftqt.h"
+#include "simulationcraftqt.hpp"
 #ifndef SIMC_NO_AUTOUPDATE
 #include "sc_autoupdate.h"
 #endif /* SIMC_NO_AUTOUPDATE */

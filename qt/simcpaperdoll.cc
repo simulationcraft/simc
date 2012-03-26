@@ -10,7 +10,7 @@
 
 #include <algorithm>
 
-#include "simcpaperdoll.h"
+#include "simcpaperdoll.hpp"
 
 // =============================================================================
 // Temporary place to do implementation, will be removed later on

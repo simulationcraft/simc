@@ -187,11 +187,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\data_definitions.hh"
+			RelativePath=".\engine\dbc\data_definitions.hh"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\data_enums.hh"
+			RelativePath=".\engine\dbc\data_enums.hh"
 			>
 		</File>
 		<File
@@ -203,7 +203,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_armory.cpp"
+			RelativePath=".\engine\interfaces\sc_armory.cpp"
 			>
 		</File>
 		<File
@@ -211,11 +211,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_battle_net.cpp"
+			RelativePath=".\engine\interfaces\sc_battle_net.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_bcp_api.cpp"
+			RelativePath=".\engine\interfaces\sc_bcp_api.cpp"
 			>
 		</File>
 		<File
@@ -223,7 +223,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_chardev.cpp"
+			RelativePath=".\engine\interfaces\sc_chardev.cpp"
 			>
 		</File>
 		<File
@@ -231,7 +231,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_const_data.cpp"
+			RelativePath=".\engine\dbc\sc_const_data.cpp"
 			>
 		</File>
 		<File
@@ -283,7 +283,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_http.cpp"
+			RelativePath=".\engine\interfaces\sc_http.cpp"
 			>
 		</File>
 		<File
@@ -295,7 +295,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_item_data.cpp"
+			RelativePath=".\engine\dbc\sc_item_data.cpp"
 			>
 		</File>
 		<File
@@ -307,7 +307,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_js.cpp"
+			RelativePath=".\engine\interfaces\sc_js.cpp"
 			>
 		</File>
 		<File
@@ -323,7 +323,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_mmo_champion.cpp"
+			RelativePath=".\engine\interfaces\sc_mmo_champion.cpp"
 			>
 		</File>
 		<File
@@ -363,7 +363,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_rawr.cpp"
+			RelativePath=".\engine\interfaces\sc_rawr.cpp"
 			>
 		</File>
 		<File
@@ -371,23 +371,23 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report.cpp"
+			RelativePath=".\engine\report\sc_report.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report_html_player.cpp"
+			RelativePath=".\engine\report\sc_report_html_player.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report_html_sim.cpp"
+			RelativePath=".\engine\report\sc_report_html_sim.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report_text.cpp"
+			RelativePath=".\engine\report\sc_report_text.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report_xml.cpp"
+			RelativePath=".\engine\report\sc_report_xml.cpp"
 			>
 		</File>
 		<File
@@ -435,7 +435,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_data.cpp"
+			RelativePath=".\engine\dbc\sc_spell_data.cpp"
 			>
 		</File>
 		<File
@@ -447,7 +447,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_info.cpp"
+			RelativePath=".\engine\dbc\sc_spell_info.cpp"
 			>
 		</File>
 		<File
@@ -507,11 +507,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_wowhead.cpp"
+			RelativePath=".\engine\interfaces\sc_wowhead.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_xml.cpp"
+			RelativePath=".\engine\interfaces\sc_xml.cpp"
 			>
 		</File>
 		<File

@@ -21,25 +21,25 @@
     <ClCompile Include="engine\sc_action.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_armory.cpp">
+    <ClCompile Include="engine\interfaces\sc_armory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_attack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_battle_net.cpp">
+    <ClCompile Include="engine\interfaces\sc_battle_net.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_buff.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_chardev.cpp">
+    <ClCompile Include="engine\interfaces\sc_chardev.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_chart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_const_data.cpp">
+    <ClCompile Include="engine\dbc\sc_const_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_consumable.cpp">
@@ -69,7 +69,7 @@
     <ClCompile Include="engine\sc_heal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_http.cpp">
+    <ClCompile Include="engine\interfaces\sc_http.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_hunter.cpp">
@@ -78,10 +78,10 @@
     <ClCompile Include="engine\sc_item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_item_data.cpp">
+    <ClCompile Include="engine\dbc\sc_item_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_js.cpp">
+    <ClCompile Include="engine\interfaces\sc_js.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_log.cpp">
@@ -90,7 +90,7 @@
     <ClCompile Include="engine\sc_mage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_mmo_champion.cpp">
+    <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_option.cpp">
@@ -117,13 +117,13 @@
     <ClCompile Include="engine\sc_rating.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_rawr.cpp">
+    <ClCompile Include="engine\interfaces\sc_rawr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_reforge_plot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_report.cpp">
+    <ClCompile Include="engine\report\sc_report.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_rng.cpp">
@@ -150,10 +150,10 @@
     <ClCompile Include="engine\sc_spell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_spell_data.cpp">
+    <ClCompile Include="engine\dbc\sc_spell_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_spell_info.cpp">
+    <ClCompile Include="engine\dbc\sc_spell_info.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_stats.cpp">
@@ -186,10 +186,10 @@
     <ClCompile Include="qt\sc_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_wowhead.cpp">
+    <ClCompile Include="engine\interfaces\sc_wowhead.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_xml.cpp">
+    <ClCompile Include="engine\interfaces\sc_xml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="release\moc_simulationcraftqt.cpp">
@@ -198,22 +198,22 @@
     <ClCompile Include="debug\moc_simulationcraftqt.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_bcp_api.cpp">
+    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_dot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_report_html_player.cpp">
+    <ClCompile Include="engine\report\sc_report_html_player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_report_html_sim.cpp">
+    <ClCompile Include="engine\report\sc_report_html_sim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_report_text.cpp">
+    <ClCompile Include="engine\report\sc_report_text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_report_xml.cpp">
+    <ClCompile Include="engine\report\sc_report_xml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_sample_data.cpp">
@@ -281,7 +281,7 @@
     </CustomBuildStep>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="qt\simulationcraftqt.h">
+    <CustomBuild Include="qt\simulationcraftqt.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

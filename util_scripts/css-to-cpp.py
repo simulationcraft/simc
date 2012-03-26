@@ -4,7 +4,7 @@ import re
 import string
 
 # Read current styles.css file and write slimmed-down version for inclusion
-# in sc_report.cpp
+# in report\sc_report.cpp
 
 OUTFILE = open('cpp-styles.txt', 'w')
 

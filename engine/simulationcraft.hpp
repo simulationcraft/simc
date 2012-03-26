@@ -70,7 +70,7 @@ namespace std {using namespace tr1; }
 #define nonpod_offsetof(t, m) ((size_t) ( (volatile char *)&((volatile t *)(size_t)0x10000)->m - (volatile char *)(size_t)0x10000 ))
 #endif
 
-#include "data_enums.hh"
+#include "dbc\data_enums.hh"
 
 #if defined( _MSC_VER )
 # define finline                     __forceinline
@@ -108,7 +108,7 @@ namespace std {using namespace tr1; }
 #endif
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 
-#include "data_definitions.hh"
+#include "dbc\data_definitions.hh"
 
 #define SC_MAJOR_VERSION "500"
 #define SC_MINOR_VERSION "1"

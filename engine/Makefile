@@ -68,19 +68,12 @@ endif
 
 SRC = \
 	simulationcraft.hpp \
-	data_definitions.hh \
-	data_enums.hh \
 	utf8.h \
 	sc_action_state.cpp \
 	sc_action.cpp \
-	sc_armory.cpp \
 	sc_attack.cpp \
-	sc_battle_net.cpp \
-	sc_bcp_api.cpp \
 	sc_buff.cpp \
-	sc_chardev.cpp \
 	sc_chart.cpp \
-	sc_const_data.cpp \
 	sc_consumable.cpp \
 	sc_data.cpp \
 	sc_dot.cpp \
@@ -89,26 +82,16 @@ SRC = \
 	sc_event.cpp \
 	sc_gear_stats.cpp \
 	sc_heal.cpp \
-	sc_http.cpp \
 	sc_item.cpp \
-	sc_item_data.cpp \
-	sc_js.cpp \
 	sc_log.cpp \
 	sc_main.cpp \
-	sc_mmo_champion.cpp \
 	sc_option.cpp \
 	sc_pet.cpp \
 	sc_player.cpp \
 	sc_plot.cpp \
 	sc_raid_event.cpp \
 	sc_rating.cpp \
-	sc_rawr.cpp \
 	sc_reforge_plot.cpp \
-	sc_report_html_player.cpp \
-	sc_report_html_sim.cpp \
-	sc_report_text.cpp \
-	sc_report_xml.cpp \
-	sc_report.cpp \
 	sc_rng.cpp \
 	sc_sample_data.cpp \
 	sc_scaling.cpp \
@@ -116,8 +99,6 @@ SRC = \
 	sc_set_bonus.cpp \
 	sc_sim.cpp \
 	sc_spell.cpp \
-	sc_spell_data.cpp \
-	sc_spell_info.cpp \
 	sc_stats.cpp \
 	sc_talent.cpp \
 	sc_target.cpp \
@@ -126,8 +107,27 @@ SRC = \
 	sc_unique_gear.cpp \
 	sc_util.cpp \
 	sc_weapon.cpp \
-	sc_wowhead.cpp \
-	sc_xml.cpp \
+	report$(PATHSEP)sc_report_html_player.cpp \
+	report$(PATHSEP)sc_report_html_sim.cpp \
+	report$(PATHSEP)sc_report_text.cpp \
+	report$(PATHSEP)sc_report_xml.cpp \
+	report$(PATHSEP)sc_report.cpp \
+	interfaces$(PATHSEP)sc_armory.cpp \
+	interfaces$(PATHSEP)sc_battle_net.cpp \
+	interfaces$(PATHSEP)sc_bcp_api.cpp \
+	interfaces$(PATHSEP)sc_chardev.cpp \
+	interfaces$(PATHSEP)sc_http.cpp \
+	interfaces$(PATHSEP)sc_js.cpp \
+	interfaces$(PATHSEP)sc_mmo_champion.cpp \
+	interfaces$(PATHSEP)sc_rawr.cpp \
+	interfaces$(PATHSEP)sc_wowhead.cpp \
+	interfaces$(PATHSEP)sc_xml.cpp \
+	dbc$(PATHSEP)data_definitions.hh \
+	dbc$(PATHSEP)data_enums.hh \
+	dbc$(PATHSEP)sc_const_data.cpp \
+	dbc$(PATHSEP)sc_item_data.cpp \
+	dbc$(PATHSEP)sc_spell_data.cpp \
+	dbc$(PATHSEP)sc_spell_info.cpp \
 	class_modules$(PATHSEP)sc_death_knight.cpp \
 	class_modules$(PATHSEP)sc_druid.cpp \
 	class_modules$(PATHSEP)sc_hunter.cpp \
@@ -156,9 +156,9 @@ $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
 	@$(CXX) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
-sc_http$(MODULE_EXT): sc_http.cpp sc_util.cpp
+sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_util.cpp
 	-@echo [$@] Linking
-	@$(CXX) $(CPPFLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPPFLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)

@@ -2,11 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="engine\sc_action.cpp" />
-    <ClCompile Include="engine\sc_armory.cpp" />
+    <ClCompile Include="engine\interfaces\sc_armory.cpp" />
     <ClCompile Include="engine\sc_attack.cpp" />
     <ClCompile Include="engine\sc_buff.cpp" />
     <ClCompile Include="engine\sc_chart.cpp" />
-    <ClCompile Include="engine\sc_const_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_const_data.cpp" />
     <ClCompile Include="engine\sc_consumable.cpp" />
     <ClCompile Include="engine\sc_data.cpp" />
     <ClCompile Include="engine\sc_death_knight.cpp" />
@@ -16,14 +16,14 @@
     <ClCompile Include="engine\sc_event.cpp" />
     <ClCompile Include="engine\sc_expressions.cpp" />
     <ClCompile Include="engine\sc_gear_stats.cpp" />
-    <ClCompile Include="engine\sc_http.cpp" />
+    <ClCompile Include="engine\interfaces\sc_http.cpp" />
     <ClCompile Include="engine\sc_hunter.cpp" />
     <ClCompile Include="engine\sc_item.cpp" />
-    <ClCompile Include="engine\sc_js.cpp" />
+    <ClCompile Include="engine\interfaces\sc_js.cpp" />
     <ClCompile Include="engine\sc_log.cpp" />
     <ClCompile Include="engine\sc_mage.cpp" />
     <ClCompile Include="engine\sc_main.cpp" />
-    <ClCompile Include="engine\sc_mmo_champion.cpp" />
+    <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp" />
     <ClCompile Include="engine\sc_monk.cpp" />
     <ClCompile Include="engine\sc_option.cpp" />
     <ClCompile Include="engine\sc_paladin.cpp" />
@@ -33,8 +33,8 @@
     <ClCompile Include="engine\sc_priest.cpp" />
     <ClCompile Include="engine\sc_raid_event.cpp" />
     <ClCompile Include="engine\sc_rating.cpp" />
-    <ClCompile Include="engine\sc_rawr.cpp" />
-    <ClCompile Include="engine\sc_report.cpp" />
+    <ClCompile Include="engine\interfaces\sc_rawr.cpp" />
+    <ClCompile Include="engine\report\sc_report.cpp" />
     <ClCompile Include="engine\sc_rng.cpp" />
     <ClCompile Include="engine\sc_rogue.cpp" />
     <ClCompile Include="engine\sc_sample_data.cpp" />
@@ -53,27 +53,27 @@
     <ClCompile Include="engine\sc_warlock.cpp" />
     <ClCompile Include="engine\sc_warrior.cpp" />
     <ClCompile Include="engine\sc_weapon.cpp" />
-    <ClCompile Include="engine\sc_wowhead.cpp" />
-    <ClCompile Include="engine\sc_xml.cpp" />
-    <ClCompile Include="engine\sc_spell_data.cpp" />
-    <ClCompile Include="engine\sc_spell_info.cpp" />
-    <ClCompile Include="engine\sc_battle_net.cpp" />
-    <ClCompile Include="engine\sc_chardev.cpp" />
+    <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
+    <ClCompile Include="engine\interfaces\sc_xml.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
+    <ClCompile Include="engine\interfaces\sc_battle_net.cpp" />
+    <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
     <ClCompile Include="engine\sc_heal.cpp" />
-    <ClCompile Include="engine\sc_item_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_item_data.cpp" />
     <ClCompile Include="engine\sc_reforge_plot.cpp" />
-    <ClCompile Include="engine\sc_bcp_api.cpp" />
-    <ClCompile Include="engine\sc_report_xml.cpp" />
-    <ClCompile Include="engine\sc_report_html_player.cpp" />
-    <ClCompile Include="engine\sc_report_text.cpp" />
-    <ClCompile Include="engine\sc_report_html_sim.cpp" />
+    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
+    <ClCompile Include="engine\report\sc_report_xml.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_player.cpp" />
+    <ClCompile Include="engine\report\sc_report_text.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
     <ClCompile Include="engine\sc_timespan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\simulationcraft.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="engine\data_definitions.hh" />
+    <None Include="engine\dbc\data_definitions.hh" />
     <None Include="engine\sc_extra_data.inc">
       <Filter>Data Files</Filter>
     </None>
@@ -104,7 +104,7 @@
     <None Include="engine\sc_spell_lists_ptr.inc">
       <Filter>Data Files</Filter>
     </None>
-    <None Include="engine\data_enums.hh" />
+    <None Include="engine\dbc\data_enums.hh" />
     <None Include="engine\utf8.h" />
     <None Include="engine\utf8\core.h">
       <Filter>utf8</Filter>

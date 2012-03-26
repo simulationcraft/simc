@@ -3,9 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraftqt.h"
+#include "simulationcraftqt.hpp"
 #ifdef SC_PAPERDOLL
-#include "simcpaperdoll.h"
+#include "simcpaperdoll.hpp"
 #endif
 #include <QtWebKit>
 #ifdef Q_WS_MAC

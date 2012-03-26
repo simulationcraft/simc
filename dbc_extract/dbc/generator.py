@@ -469,7 +469,7 @@ class ItemDataGenerator(DataGenerator):
     def generate(self, ids = None):
         ids.sort()
         
-        s = '#include "data_definitions.hh"\n\n'
+        s = '#include "dbc/data_definitions.hh"\n\n'
         s += '#define %sITEM%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
@@ -1468,7 +1468,7 @@ class SpellDataGenerator(DataGenerator):
         id_keys.sort()
         effects = set()
 
-        s = '#include "data_definitions.hh"\n\n'
+        s = '#include "dbc/data_definitions.hh"\n\n'
         s += '#define %sSPELL%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),

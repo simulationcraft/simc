@@ -137,23 +137,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\sc_bcp_api.cpp" />
+    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
     <ClCompile Include="engine\sc_dot.cpp" />
-    <ClCompile Include="engine\sc_report_html_player.cpp" />
-    <ClCompile Include="engine\sc_report_html_sim.cpp" />
-    <ClCompile Include="engine\sc_report_text.cpp" />
-    <ClCompile Include="engine\sc_report_xml.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_player.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
+    <ClCompile Include="engine\report\sc_report_text.cpp" />
+    <ClCompile Include="engine\report\sc_report_xml.cpp" />
     <ClCompile Include="engine\sc_sample_data.cpp" />
     <ClCompile Include="qt\main.cpp" />
     <ClCompile Include="engine\sc_action.cpp" />
     <ClCompile Include="engine\sc_action_state.cpp" />
-    <ClCompile Include="engine\sc_armory.cpp" />
+    <ClCompile Include="engine\interfaces\sc_armory.cpp" />
     <ClCompile Include="engine\sc_attack.cpp" />
-    <ClCompile Include="engine\sc_battle_net.cpp" />
+    <ClCompile Include="engine\interfaces\sc_battle_net.cpp" />
     <ClCompile Include="engine\sc_buff.cpp" />
-    <ClCompile Include="engine\sc_chardev.cpp" />
+    <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
     <ClCompile Include="engine\sc_chart.cpp" />
-    <ClCompile Include="engine\sc_const_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_const_data.cpp" />
     <ClCompile Include="engine\sc_consumable.cpp" />
     <ClCompile Include="engine\sc_data.cpp" />
     <ClCompile Include="engine\sc_enchant.cpp" />
@@ -161,29 +161,29 @@
     <ClCompile Include="engine\sc_expressions.cpp" />
     <ClCompile Include="engine\sc_gear_stats.cpp" />
     <ClCompile Include="engine\sc_heal.cpp" />
-    <ClCompile Include="engine\sc_http.cpp" />
+    <ClCompile Include="engine\interfaces\sc_http.cpp" />
     <ClCompile Include="engine\sc_item.cpp" />
-    <ClCompile Include="engine\sc_item_data.cpp" />
-    <ClCompile Include="engine\sc_js.cpp" />
+    <ClCompile Include="engine\dbc\sc_item_data.cpp" />
+    <ClCompile Include="engine\interfaces\sc_js.cpp" />
     <ClCompile Include="engine\sc_log.cpp" />
-    <ClCompile Include="engine\sc_mmo_champion.cpp" />
+    <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp" />
     <ClCompile Include="engine\sc_option.cpp" />
     <ClCompile Include="engine\sc_pet.cpp" />
     <ClCompile Include="engine\sc_player.cpp" />
     <ClCompile Include="engine\sc_plot.cpp" />
     <ClCompile Include="engine\sc_raid_event.cpp" />
     <ClCompile Include="engine\sc_rating.cpp" />
-    <ClCompile Include="engine\sc_rawr.cpp" />
+    <ClCompile Include="engine\interfaces\sc_rawr.cpp" />
     <ClCompile Include="engine\sc_reforge_plot.cpp" />
-    <ClCompile Include="engine\sc_report.cpp" />
+    <ClCompile Include="engine\report\sc_report.cpp" />
     <ClCompile Include="engine\sc_rng.cpp" />
     <ClCompile Include="engine\sc_scaling.cpp" />
     <ClCompile Include="engine\sc_sequence.cpp" />
     <ClCompile Include="engine\sc_set_bonus.cpp" />
     <ClCompile Include="engine\sc_sim.cpp" />
     <ClCompile Include="engine\sc_spell.cpp" />
-    <ClCompile Include="engine\sc_spell_data.cpp" />
-    <ClCompile Include="engine\sc_spell_info.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
     <ClCompile Include="engine\sc_stats.cpp" />
     <ClCompile Include="engine\sc_talent.cpp" />
     <ClCompile Include="engine\sc_target.cpp" />
@@ -193,8 +193,8 @@
     <ClCompile Include="engine\sc_util.cpp" />
     <ClCompile Include="engine\sc_weapon.cpp" />
     <ClCompile Include="qt\sc_window.cpp" />
-    <ClCompile Include="engine\sc_wowhead.cpp" />
-    <ClCompile Include="engine\sc_xml.cpp" />
+    <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
+    <ClCompile Include="engine\interfaces\sc_xml.cpp" />
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
     <ClCompile Include="engine\class_modules\sc_druid.cpp" />
     <ClCompile Include="engine\class_modules\sc_hunter.cpp" />
@@ -230,20 +230,20 @@
   <ItemGroup>
     <ClInclude Include="qt\sc_autoupdate.h" />
     <ClInclude Include="engine\simulationcraft.hpp" />
-    <CustomBuild Include="qt\simulationcraftqt.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MOC qt\simulationcraftqt.h</Message>
+    <CustomBuild Include="qt\simulationcraftqt.hpp">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MOC qt\simulationcraftqt.hpp</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Rem IncrediBuild_AllowRemote
 Rem IncrediBuild_OutputFile debug\moc_simulationcraftqt.cpp
-c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I"c:\Qt\4.7.4\include\QtCore" -I"c:\Qt\4.7.4\include\QtGui" -I"c:\Qt\4.7.4\include\QtWebKit" -I"c:\Qt\4.7.4\include" -I"engine" -I"c:\Qt\4.7.4\include\ActiveQt" -I"debug" -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o debug\moc_simulationcraftqt.cpp
+c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I"c:\Qt\4.7.4\include\QtCore" -I"c:\Qt\4.7.4\include\QtGui" -I"c:\Qt\4.7.4\include\QtWebKit" -I"c:\Qt\4.7.4\include" -I"engine" -I"c:\Qt\4.7.4\include\ActiveQt" -I"debug" -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.hpp -o debug\moc_simulationcraftqt.cpp
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Rem;qt\simulationcraftqt.h;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Rem;qt\simulationcraftqt.hpp;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\moc_simulationcraftqt.cpp;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MOC qt\simulationcraftqt.h</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MOC qt\simulationcraftqt.hpp</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rem IncrediBuild_AllowRemote
 Rem IncrediBuild_OutputFile release\moc_simulationcraftqt.cpp
-c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I"c:\Qt\4.7.4\include\QtCore" -I"c:\Qt\4.7.4\include\QtGui" -I"c:\Qt\4.7.4\include\QtWebKit" -I"c:\Qt\4.7.4\include" -I"engine" -I"c:\Qt\4.7.4\include\ActiveQt" -I"release" -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o release\moc_simulationcraftqt.cpp
+c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I"c:\Qt\4.7.4\include\QtCore" -I"c:\Qt\4.7.4\include\QtGui" -I"c:\Qt\4.7.4\include\QtWebKit" -I"c:\Qt\4.7.4\include" -I"engine" -I"c:\Qt\4.7.4\include\ActiveQt" -I"release" -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.hpp -o release\moc_simulationcraftqt.cpp
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rem;qt\simulationcraftqt.h;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rem;qt\simulationcraftqt.hpp;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\moc_simulationcraftqt.cpp;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>

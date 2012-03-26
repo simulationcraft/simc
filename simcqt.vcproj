@@ -222,7 +222,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_armory.cpp"
+				RelativePath="engine\interfaces\sc_armory.cpp"
 				>
 			</File>
 			<File
@@ -230,11 +230,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\engine\sc_battle_net.cpp"
+				RelativePath=".\engine\interfaces\sc_battle_net.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\engine\sc_bcp_api.cpp"
+				RelativePath=".\engine\interfaces\sc_bcp_api.cpp"
 				>
 			</File>
 			<File
@@ -242,7 +242,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_chardev.cpp"
+				RelativePath="engine\interfaces\sc_chardev.cpp"
 				>
 			</File>
 			<File
@@ -250,7 +250,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_const_data.cpp"
+				RelativePath="engine\dbc\sc_const_data.cpp"
 				>
 			</File>
 			<File
@@ -295,7 +295,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_http.cpp"
+				RelativePath="engine\interfaces\sc_http.cpp"
 				>
 			</File>
 			<File
@@ -303,7 +303,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_item_data.cpp"
+				RelativePath="engine\dbc\sc_item_data.cpp"
 				>
 			</File>
 			<File
@@ -315,7 +315,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_js.cpp"
+				RelativePath="engine\interfaces\sc_js.cpp"
 				>
 			</File>
 			<File
@@ -323,7 +323,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_mmo_champion.cpp"
+				RelativePath="engine\interfaces\sc_mmo_champion.cpp"
 				>
 			</File>
 			<File
@@ -351,7 +351,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_rawr.cpp"
+				RelativePath="engine\interfaces\sc_rawr.cpp"
 				>
 			</File>
 			<File
@@ -359,23 +359,23 @@
 				>
 			</File>
 			<File
-				RelativePath=".\engine\sc_report_html_player.cpp"
+				RelativePath=".\engine\report\sc_report_html_player.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\engine\sc_report_html_sim.cpp"
+				RelativePath=".\engine\report\sc_report_html_sim.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\engine\sc_report_text.cpp"
+				RelativePath=".\engine\report\sc_report_text.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\engine\sc_report_xml.cpp"
+				RelativePath=".\engine\report\sc_report_xml.cpp"
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_report.cpp"
+				RelativePath="engine\report\sc_report.cpp"
 				>
 			</File>
 			<File
@@ -415,7 +415,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\engine\sc_spell_data.cpp"
+				RelativePath=".\engine\dbc\sc_spell_data.cpp"
 				>
 			</File>
 			<File
@@ -427,7 +427,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\engine\sc_spell_info.cpp"
+				RelativePath=".\engine\dbc\sc_spell_info.cpp"
 				>
 			</File>
 			<File
@@ -483,11 +483,11 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_wowhead.cpp"
+				RelativePath="engine\interfaces\sc_wowhead.cpp"
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_xml.cpp"
+				RelativePath="engine\interfaces\sc_xml.cpp"
 				>
 			</File>
 					<File
@@ -549,16 +549,16 @@
 				>
 			</File>
 			<File
-				RelativePath="qt\simulationcraftqt.h"
+				RelativePath="qt\simulationcraftqt.hpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="MOC qt\simulationcraftqt.h"
-						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\Qt\4.7.4\include\QtCore&quot; -I&quot;c:\Qt\4.7.4\include\QtGui&quot; -I&quot;c:\Qt\4.7.4\include\QtWebKit&quot; -I&quot;c:\Qt\4.7.4\include&quot; -I&quot;engine&quot; -I&quot;c:\Qt\4.7.4\include\ActiveQt&quot; -I&quot;debug&quot; -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
-						AdditionalDependencies="Rem;qt\simulationcraftqt.h"
+						Description="MOC qt\simulationcraftqt.hpp"
+						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\Qt\4.7.4\include\QtCore&quot; -I&quot;c:\Qt\4.7.4\include\QtGui&quot; -I&quot;c:\Qt\4.7.4\include\QtWebKit&quot; -I&quot;c:\Qt\4.7.4\include&quot; -I&quot;engine&quot; -I&quot;c:\Qt\4.7.4\include\ActiveQt&quot; -I&quot;debug&quot; -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.hpp -o debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="Rem;qt\simulationcraftqt.hpp"
 						Outputs="debug\moc_simulationcraftqt.cpp"
 					/>
 				</FileConfiguration>
@@ -567,9 +567,9 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="MOC qt\simulationcraftqt.h"
-						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile release\moc_simulationcraftqt.cpp&#x0D;&#x0A;c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\Qt\4.7.4\include\QtCore&quot; -I&quot;c:\Qt\4.7.4\include\QtGui&quot; -I&quot;c:\Qt\4.7.4\include\QtWebKit&quot; -I&quot;c:\Qt\4.7.4\include&quot; -I&quot;engine&quot; -I&quot;c:\Qt\4.7.4\include\ActiveQt&quot; -I&quot;release&quot; -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.h -o release\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
-						AdditionalDependencies="Rem;qt\simulationcraftqt.h"
+						Description="MOC qt\simulationcraftqt.hpp"
+						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile release\moc_simulationcraftqt.cpp&#x0D;&#x0A;c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\Qt\4.7.4\include\QtCore&quot; -I&quot;c:\Qt\4.7.4\include\QtGui&quot; -I&quot;c:\Qt\4.7.4\include\QtWebKit&quot; -I&quot;c:\Qt\4.7.4\include&quot; -I&quot;engine&quot; -I&quot;c:\Qt\4.7.4\include\ActiveQt&quot; -I&quot;release&quot; -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.hpp -o release\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
+						AdditionalDependencies="Rem;qt\simulationcraftqt.hpp"
 						Outputs="release\moc_simulationcraftqt.cpp"
 					/>
 				</FileConfiguration>
