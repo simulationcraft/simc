@@ -113,7 +113,7 @@ namespace std {using namespace tr1; }
 #define SC_MAJOR_VERSION "500"
 #define SC_MINOR_VERSION "1"
 #define SC_USE_PTR ( 0 )
-#define SC_BETA ( 0 )
+#define SC_BETA ( 1 )
 #define SC_EPSILON ( 0.000001 )
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )
@@ -5952,6 +5952,24 @@ struct proc_t
   const char* name() const { return name_str.c_str(); }
 };
 
+namespace report
+{
+#if SC_BETA
+// beta warning messages
+static const std::string beta_warnings[] =
+{
+  "Beta! Beta! Beta! Beta! Beta! Beta!",
+  "Not All classes are yet supported.",
+  "Some class models still need tweaking.",
+  "Some class action lists need tweaking.",
+  "Some class BiS gear setups need tweaking.",
+  "Some trinkets not yet implemented.",
+  "Constructive feedback regarding our output will shorten the Beta phase dramatically.",
+  "Beta! Beta! Beta! Beta! Beta! Beta!",
+  ""
+};
+#endif
+}
 
 // Report ===================================================================
 

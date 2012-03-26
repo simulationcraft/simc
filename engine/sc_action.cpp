@@ -191,6 +191,18 @@ void action_t::init_action_t_()
 
     background = true; // prevent action from being executed
   }
+  if ( id && spell && s_type == T_SPEC &&
+      ( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) != player->spec ) )
+  {
+    sim -> errorf( "Player %s attempting to execute action %s without the required spec (%s (%d) != %s (%d) ).\n",
+                   player -> name(), name(),
+                   util_t::talent_tree_string( static_cast<int>(util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ) ),
+                   static_cast<int>(util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ),
+                   util_t::talent_tree_string( static_cast<int>(player->spec) ),
+                   static_cast<int>(player->spec) );
+
+    background = true; // prevent action from being executed
+  }
 }
 
 void action_t::init_dot( const std::string& name )

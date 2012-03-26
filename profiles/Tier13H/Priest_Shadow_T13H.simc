@@ -6,6 +6,7 @@ level=85
 race=troll
 position=back
 role=spell
+spec=shadow
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=http://www.wowhead.com/talent#priest-032212000000000000000000000000000000000000322032210201222100231

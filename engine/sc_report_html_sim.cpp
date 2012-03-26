@@ -7,7 +7,6 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-
 // print_html_contents ======================================================
 
 static void print_html_contents( FILE*  file, sim_t* sim )
@@ -1319,17 +1318,17 @@ void report_t::print_html( sim_t* sim )
   fprintf( file,
            "\t\t\t<h2>Beta Release</h2>\n" );
   int ii = 0;
-  if ( beta_warnings[ 0 ] )
+  if ( !report::beta_warnings[ 0 ].empty() )
     fprintf( file,
              "\t\t\t<ul>\n" );
-  while ( beta_warnings[ ii ] )
+  while ( !report::beta_warnings[ ii ].empty() )
   {
     fprintf( file,
              "\t\t\t\t<li>%s</li>\n",
-             beta_warnings[ ii ] );
+             report::beta_warnings[ ii ].c_str() );
     ii++;
   }
-  if ( beta_warnings[ 0 ] )
+  if ( !report::beta_warnings[ 0 ].empty() )
     fprintf( file,
              "\t\t\t</ul>\n" );
   fprintf( file,
