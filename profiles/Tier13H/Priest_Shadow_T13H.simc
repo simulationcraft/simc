@@ -9,7 +9,7 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=http://www.wowhead.com/talent#priest-032212000000000000000000000000000000000000322032210201222100231
-glyphs=mind_flay/shadow_word_pain/shadow_word_death/spirit_tap
+glyphs=spirit_tap
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/fortitude

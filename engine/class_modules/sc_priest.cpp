@@ -206,24 +206,17 @@ struct priest_t : public player_t
   {
     glyph_t* circle_of_healing;
     glyph_t* dispersion;
-    glyph_t* divine_accuracy;
-    glyph_t* guardian_spirit;
     glyph_t* holy_nova;
     glyph_t* inner_fire;
     glyph_t* lightwell;
-    glyph_t* mind_flay;
     glyph_t* penance;
     glyph_t* power_word_shield;
-    glyph_t* prayer_of_healing;
     glyph_t* prayer_of_mending;
     glyph_t* renew;
-    glyph_t* shadow_word_death;
-    glyph_t* shadow_word_pain;
     glyph_t* smite;
-    glyph_t* spirit_tap;
 
     // Mop
-    glyph_t* atonement;
+    glyph_t* spirit_tap;
     glyph_t* mind_melt;
     glyph_t* strength_of_soul;
     glyph_t* inner_sanctum;
@@ -749,7 +742,7 @@ struct atonement_heal_t : public priest_heal_t
   {
     priest_t* p = player -> cast_priest();
 
-    atonement_dmg *= p -> glyphs.atonement -> effect1().percent();
+    atonement_dmg *= p -> glyphs.spirit_tap -> effect1().percent();
     double cap = p -> resource_max[ RESOURCE_HEALTH ] * 0.3;
 
     if ( result == RESULT_CRIT )
@@ -861,7 +854,7 @@ public:
 
     priest_t* p = player -> cast_priest();
 
-    if ( can_trigger_atonement && p -> glyphs.atonement -> ok() )
+    if ( can_trigger_atonement && p -> glyphs.spirit_tap -> ok() )
     {
       std::string n = "atonement_" + name_str;
       atonement = new atonement_heal_t( n.c_str(), p );
@@ -1995,13 +1988,6 @@ struct mind_flay_t : public priest_spell_t
     }
   }
 
-  virtual void player_buff()
-  {
-    priest_spell_t::player_buff();
-
-    player_td_multiplier += p() -> glyphs.mind_flay -> effect1().percent();
-  }
-
   virtual double calculate_tick_damage()
   {
     if ( no_dmg )
@@ -2220,8 +2206,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_t* p = player -> cast_priest();
 
-    p -> was_sub_25 = ! is_dtr_action && p -> glyphs.shadow_word_death -> ok() && ( ! p -> buffs.glyph_of_shadow_word_death -> check() ) &&
-                      ( target -> health_percentage() <= 25 );
+    p -> was_sub_25 = ! is_dtr_action && ( target -> health_percentage() <= 25 );
 
     priest_spell_t::execute();
 
@@ -2293,15 +2278,6 @@ struct shadow_word_pain_t : public priest_spell_t
     stats -> children.push_back( player -> get_stats( "shadowy_apparition", this ) );
   }
 
-  virtual void player_buff()
-  {
-    priest_t* p = player -> cast_priest();
-
-    priest_spell_t::player_buff();
-
-    player_td_multiplier += p -> glyphs.shadow_word_pain -> effect1().percent();
-  }
-
   virtual void tick( dot_t* d )
   {
     priest_spell_t::tick( d );
@@ -2368,7 +2344,7 @@ struct holy_fire_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_hit += player -> glyphs.divine_accuracy -> effect1().percent();
+    base_hit += player -> glyphs.spirit_tap -> effect1().percent();
 
     can_trigger_atonement = true;
 
@@ -2491,7 +2467,7 @@ struct smite_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_hit += p -> glyphs.divine_accuracy -> effect1().percent();
+    base_hit += p -> glyphs.spirit_tap -> effect1().percent();
 
     can_trigger_atonement = true;
 
@@ -2831,8 +2807,6 @@ struct guardian_spirit_t : public priest_heal_t
     base_dd_min = base_dd_max = 0;
 
     harmful = false;
-
-    cooldown -> duration += p -> glyphs.guardian_spirit -> effect1().time_value();
   }
 
   virtual void execute()
@@ -3403,18 +3377,10 @@ struct glyph_prayer_of_healing_t : public priest_heal_t
 
 struct prayer_of_healing_t : public priest_heal_t
 {
-  glyph_prayer_of_healing_t* glyph;
-
   prayer_of_healing_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "prayer_of_healing", p, "Prayer of Healing" ), glyph( 0 )
+    priest_heal_t( "prayer_of_healing", p, "Prayer of Healing" )
   {
     parse_options( NULL, options_str );
-
-    if ( p -> glyphs.prayer_of_healing -> ok() )
-    {
-      glyph = new glyph_prayer_of_healing_t( p );
-      add_child( glyph );
-    }
 
     aoe = 4;
     group_only = true;
@@ -3460,17 +3426,6 @@ struct prayer_of_healing_t : public priest_heal_t
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
-
-    // Glyph
-    if ( glyph )
-    {
-      priest_t* p = player -> cast_priest();
-
-      // FIXME: Modelled as a Direct Heal instead of a dot
-      glyph -> target = t;
-      glyph -> base_dd_min = glyph -> base_dd_max = travel_dmg * p -> glyphs.prayer_of_healing -> effect1().percent();
-      glyph -> execute();
-    }
 
     // Divine Aegis
     if ( impact_result != RESULT_CRIT )
@@ -3880,7 +3835,7 @@ void priest_t::init_scaling()
   player_t::init_scaling();
 
   // An Atonement Priest might be Health-capped
-  scales_with[ STAT_STAMINA ] = glyphs.atonement -> ok();
+  scales_with[ STAT_STAMINA ] = glyphs.spirit_tap -> ok();
 
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
   if ( ( spec.twisted_faith -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
@@ -3967,22 +3922,15 @@ void priest_t::init_spells()
   // Glyphs
   glyphs.circle_of_healing  = find_glyph( "Glyph of Circle of Healing" );
   glyphs.dispersion         = find_glyph( "Glyph of Dispersion" );
-  glyphs.divine_accuracy    = find_glyph( "Glyph of Divine Accuracy" );
-  glyphs.guardian_spirit    = find_glyph( "Glyph of Guardian Spirit" );
   glyphs.holy_nova          = find_glyph( "Glyph of Holy Nova" );
   glyphs.inner_fire         = find_glyph( "Glyph of Inner Fire" );
   glyphs.lightwell          = find_glyph( "Glyph of Lightwell" );
-  glyphs.mind_flay          = find_glyph( "Glyph of Mind Flay" );
   glyphs.penance            = find_glyph( "Glyph of Penance" );
   glyphs.power_word_shield  = find_glyph( "Glyph of Power Word: Shield" );
-  glyphs.prayer_of_healing  = find_glyph( "Glyph of Prayer of Healing" );
   glyphs.prayer_of_mending  = find_glyph( "Glyph of Prayer of Mending" );
   glyphs.renew              = find_glyph( "Glyph of Renew" );
-  glyphs.shadow_word_death  = find_glyph( "Glyph of Shadow Word: Death" );
-  glyphs.shadow_word_pain   = find_glyph( "Glyph of Shadow Word: Pain" );
   glyphs.smite              = find_glyph( "Glyph of Smite" );
   glyphs.spirit_tap         = find_glyph( "Glyph of Spirit Tap" );
-  glyphs.atonement          = find_glyph( "Glphy of Atonement" );
   glyphs.mind_melt          = find_glyph( "Glyph of Mind Melt" );
   glyphs.strength_of_soul   = find_glyph( "Glyph of Strength of Soul" );
   glyphs.inner_sanctum      = find_glyph( "Glyph of Inner Sanctum" );
@@ -4211,7 +4159,7 @@ void priest_t::init_actions()
         list_default += "/greater_heal,if=buff.inner_focus.up";
 
         list_default += "/holy_fire";
-        if ( glyphs.atonement -> ok() )
+        if ( glyphs.spirit_tap -> ok() )
         {
           list_default += "/smite,if=";
           if ( glyphs.smite -> ok() )
@@ -4428,7 +4376,7 @@ void priest_t::fixup_atonement_stats( const char* trigger_spell_name,
 
 void priest_t::pre_analyze_hook()
 {
-  if ( glyphs.atonement -> ok() )
+  if ( glyphs.spirit_tap -> ok() )
   {
     fixup_atonement_stats( "smite", "atonement_smite" );
     fixup_atonement_stats( "holy_fire", "atonement_holy_fire" );
