@@ -1949,8 +1949,6 @@ struct mind_flay_t : public priest_spell_t
                const char* name = "mind_flay" ) :
     priest_spell_t( name, p, "Mind Flay" ), mb_wait( timespan_t::zero ), cut_for_mb( 0 ), no_dmg( 0 )
   {
-    check_spec( TREE_SHADOW );
-
     option_t options[] =
     {
       { "cut_for_mb",  OPT_BOOL, &cut_for_mb  },
