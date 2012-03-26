@@ -134,6 +134,8 @@ static const char* chart_resource_type_string( int type )
   case RESOURCE_RUNE_UNHOLY:  return "Unholy Rune";
   case RESOURCE_RUNE_FROST:   return "Frost Rune";
   case RESOURCE_SOUL_SHARDS:  return "Soul Shards";
+  case RESOURCE_UNSTABLE_EMBERS:  return "Unstable Embers";
+  case RESOURCE_DEMONIC_POWER:    return "Demonic Power";
   case RESOURCE_HOLY_POWER:   return "Holy Power";
   case RESOURCE_CHI:          return "Chi";
   case RESOURCE_LIGHT_FORCE:  return "Light Force";
@@ -2171,7 +2173,9 @@ const char* chart_t::resource_color( int type )
   case RESOURCE_HOLY_POWER:  return class_color( PALADIN );
 
   case RESOURCE_DARK_FORCE:
-  case RESOURCE_SOUL_SHARDS: return class_color( WARLOCK );
+  case RESOURCE_SOUL_SHARDS:
+  case RESOURCE_UNSTABLE_EMBERS:
+  case RESOURCE_DEMONIC_POWER:  return class_color( WARLOCK );
 
   case RESOURCE_LIGHT_FORCE:  return class_color( MONK );
 
