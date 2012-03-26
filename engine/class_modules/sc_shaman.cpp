@@ -169,7 +169,7 @@ struct shaman_t : public player_t
     spell_id_t* shamanistic_rage;
     spell_id_t* static_shock;
     spell_id_t* maelstrom_weapon;
-  } specialization;
+  } spec;
   
   // Masteries
   struct
@@ -377,7 +377,7 @@ struct shaman_spell_t : public spell_t
         ( school == SCHOOL_FIRE || school == SCHOOL_NATURE || school == SCHOOL_FROST ) )
       snapshot_flags |= STATE_MASTERY;
     
-    crit_bonus_multiplier *= 1.0 + actor -> specialization.elemental_fury -> effect1().percent();
+    crit_bonus_multiplier *= 1.0 + actor -> spec.elemental_fury -> effect1().percent();
   }
 
   /* Class spell data based construction, spell name in s_name */
@@ -392,7 +392,7 @@ struct shaman_spell_t : public spell_t
         ( school == SCHOOL_FIRE || school == SCHOOL_NATURE || school == SCHOOL_FROST ) )
       snapshot_flags |= STATE_MASTERY;
 
-    crit_bonus_multiplier *= 1.0 + actor -> specialization.elemental_fury -> effect1().percent();
+    crit_bonus_multiplier *= 1.0 + actor -> spec.elemental_fury -> effect1().percent();
   }
 
   /* Spell data based construction, spell id in spell_id */
@@ -407,7 +407,7 @@ struct shaman_spell_t : public spell_t
         ( school == SCHOOL_FIRE || school == SCHOOL_NATURE || school == SCHOOL_FROST ) )
       snapshot_flags |= STATE_MASTERY;
 
-    crit_bonus_multiplier *= 1.0 + actor -> specialization.elemental_fury -> effect1().percent();
+    crit_bonus_multiplier *= 1.0 + actor -> spec.elemental_fury -> effect1().percent();
   }
 
   virtual bool   is_direct_damage() const { return base_dd_min > 0 && base_dd_max > 0; }
@@ -1196,7 +1196,7 @@ static bool trigger_rolling_thunder ( spell_t* s )
   if ( ! p -> buff.lightning_shield -> check() )
     return false;
 
-  if ( p -> rng.rolling_thunder -> roll( p -> specialization.rolling_thunder -> proc_chance() ) )
+  if ( p -> rng.rolling_thunder -> roll( p -> spec.rolling_thunder -> proc_chance() ) )
   {
     p -> resource_gain( RESOURCE_MANA,
                         p -> dbc.spell( 88765 ) -> effect1().percent() * p -> resource_max[ RESOURCE_MANA ],
@@ -1222,7 +1222,7 @@ static bool trigger_static_shock ( attack_t* a )
   if ( ! p -> buff.lightning_shield -> stack() )
     return false;
 
-  if ( p -> rng.static_shock -> roll( p -> specialization.static_shock -> proc_chance() ) )
+  if ( p -> rng.static_shock -> roll( p -> spec.static_shock -> proc_chance() ) )
   {
     p -> active_lightning_charge -> execute();
     p -> proc.static_shock -> occur();
@@ -1444,7 +1444,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     background           = true;
     stateless            = true;
 
-    direct_power_mod  += actor -> specialization.shamanism -> effectN( 1 ).percent();
+    direct_power_mod  += actor -> spec.shamanism -> effectN( 1 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1473,7 +1473,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     background           = true;
     stateless            = true;
 
-    direct_power_mod  += actor -> specialization.shamanism -> effectN( 2 ).percent();
+    direct_power_mod  += actor -> spec.shamanism -> effectN( 2 ).percent();
 
     aoe = 2;
     if ( actor -> glyph.chain_lightning -> ok() )
@@ -1559,7 +1559,7 @@ struct lightning_charge_t : public shaman_spell_t
     
     lightning_charge_state_t( action_t* a, player_t* t ) :
       shaman_spell_state_t( a, t ), 
-      threshold( ( int ) actor -> specialization.fulmination -> base_value() ) { }
+      threshold( ( int ) actor -> spec.fulmination -> base_value() ) { }
     
     inline void snapshot_actor_multiplier( uint32_t flags )
     {
@@ -1778,7 +1778,7 @@ void shaman_attack_t::impact_s( action_state_t* state )
     if ( flametongue && weapon -> buff_type == FLAMETONGUE_IMBUE )
       trigger_flametongue_weapon( this );
     
-    if ( actor -> rng.primal_wisdom -> roll( actor -> specialization.primal_wisdom -> proc_chance() ) )
+    if ( actor -> rng.primal_wisdom -> roll( actor -> spec.primal_wisdom -> proc_chance() ) )
     {
       double amount = actor -> dbc.spell( 63375 ) -> effect1().percent() * actor -> resource_base[ RESOURCE_MANA ];
       actor -> resource_gain( RESOURCE_MANA, amount, actor -> gain.primal_wisdom );
@@ -2084,7 +2084,7 @@ double shaman_spell_t::cost_reduction() const
     cr += actor -> buff.elemental_focus -> effectN( 1 ).percent();
 
   if ( base_execute_time == timespan_t::zero )
-    cr += actor -> specialization.mental_quickness -> effectN( 2 ).percent();
+    cr += actor -> spec.mental_quickness -> effectN( 2 ).percent();
 
   return cr;
 }
@@ -2249,9 +2249,9 @@ struct chain_lightning_t : public shaman_spell_t
     glyph_targets( 0 )
   {
     maelstrom             = true;
-    direct_power_mod     += actor -> specialization.shamanism      -> effectN( 2 ).percent();
-    base_execute_time    += actor -> specialization.shamanism      -> effectN( 3 ).time_value();
-    cooldown -> duration += actor -> specialization.elemental_fury -> effectN( 2 ).time_value();
+    direct_power_mod     += actor -> spec.shamanism      -> effectN( 2 ).percent();
+    base_execute_time    += actor -> spec.shamanism      -> effectN( 3 ).time_value();
+    cooldown -> duration += actor -> spec.elemental_fury -> effectN( 2 ).time_value();
     base_multiplier      *= 1.0 + actor -> glyph.chain_lightning   -> effectN( 2 ).percent();
     aoe                   = ( 2 + ( int ) actor -> glyph.chain_lightning -> effectN( 1 ).base_value() );
     base_add_multiplier   = effect_chain_multiplier( 1 );
@@ -2592,9 +2592,9 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     maelstrom          = true;
     stateless          = true;
-    direct_power_mod  += actor -> specialization.shamanism -> effectN( 1 ).percent();
+    direct_power_mod  += actor -> spec.shamanism -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + actor -> glyph.telluric_currents -> effectN( 1 ).percent();
-    base_execute_time += actor -> specialization.shamanism -> effectN( 3 ).time_value(); 
+    base_execute_time += actor -> spec.shamanism -> effectN( 3 ).time_value(); 
     base_execute_time *= 1.0 + actor -> glyph.unleashed_lightning -> effectN( 2 ).percent();
     overload           = new lightning_bolt_overload_t( actor );
 
@@ -2804,7 +2804,7 @@ struct earth_shock_t : public shaman_spell_t
 
   earth_shock_t( player_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "earth_shock", "Earth Shock", player, options_str ), 
-    consume_threshold( ( int ) actor -> specialization.fulmination -> effectN( 1 ).base_value() )
+    consume_threshold( ( int ) actor -> spec.fulmination -> effectN( 1 ).base_value() )
   {
     stateless = true;
     cooldown  = actor -> cooldown.shock;
@@ -2884,7 +2884,7 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::tick( d );
 
-    if ( actor -> rng.lava_surge -> roll ( actor -> specialization.lava_surge -> proc_chance() ) )
+    if ( actor -> rng.lava_surge -> roll ( actor -> spec.lava_surge -> proc_chance() ) )
     {
       actor -> proc.lava_surge -> occur();
       actor -> cooldown.lava_burst -> reset();
@@ -3522,7 +3522,7 @@ struct lightning_shield_buff_t : public buff_t
   {
     shaman_t* s = player -> cast_shaman();
 
-    max_stack = ( int ) s -> specialization.rolling_thunder -> effectN( 1 ).base_value();
+    max_stack = ( int ) s -> spec.rolling_thunder -> effectN( 1 ).base_value();
 
     // Reinit because of max_stack change
     init_buff_shared();
@@ -3726,25 +3726,26 @@ void shaman_t::init_spells()
   sets                               = new set_bonus_array_t( this, set_bonuses );
   
   // Generic
-  specialization.mail_specialization = find_specialization_spell( "Mail Specialization", "", ( talent_tree_type ) primary_tree() );
+  spec.mail_specialization = find_specialization_spell( "Mail Specialization", "", ( talent_tree_type ) primary_tree() );
 
   // Elemental
-  specialization.elemental_focus     = find_specialization_spell( "Elemental Fury" );
-  specialization.elemental_precision = find_specialization_spell( "Elemental Precision" );
-  specialization.fulmination         = find_specialization_spell( "Fulmination" );
-  specialization.lava_surge          = find_specialization_spell( "Lava Surge" );
-  specialization.rolling_thunder     = find_specialization_spell( "Rolling Thunder" );
-  specialization.shamanism           = find_specialization_spell( "Shamanism" );
-  specialization.spiritual_insight   = find_specialization_spell( "Spiritual Insight" );
+  spec.elemental_focus     = find_specialization_spell( "Elemental Focus" );
+  spec.elemental_fury      = find_specialization_spell( "Elemental Fury" );
+  spec.elemental_precision = find_specialization_spell( "Elemental Precision" );
+  spec.fulmination         = find_specialization_spell( "Fulmination" );
+  spec.lava_surge          = find_specialization_spell( "Lava Surge" );
+  spec.rolling_thunder     = find_specialization_spell( "Rolling Thunder" );
+  spec.shamanism           = find_specialization_spell( "Shamanism" );
+  spec.spiritual_insight   = find_specialization_spell( "Spiritual Insight" );
   
   // Enhancement
-  specialization.dual_wield          = find_specialization_spell( "Dual Wield" );
-  specialization.flurry              = find_specialization_spell( "Flurry" );
-  specialization.maelstrom_weapon    = find_specialization_spell( "Maelstrom Weapon" );
-  specialization.mental_quickness    = find_specialization_spell( "Mental Quickness" );
-  specialization.primal_wisdom       = find_specialization_spell( "Primal Wisdom" );
-  specialization.shamanistic_rage    = find_specialization_spell( "Shamanistic Rage" );
-  specialization.static_shock        = find_specialization_spell( "Static Shock" );
+  spec.dual_wield          = find_specialization_spell( "Dual Wield" );
+  spec.flurry              = find_specialization_spell( "Flurry" );
+  spec.maelstrom_weapon    = find_specialization_spell( "Maelstrom Weapon" );
+  spec.mental_quickness    = find_specialization_spell( "Mental Quickness" );
+  spec.primal_wisdom       = find_specialization_spell( "Primal Wisdom" );
+  spec.shamanistic_rage    = find_specialization_spell( "Shamanistic Rage" );
+  spec.static_shock        = find_specialization_spell( "Static Shock" );
   
   // Masteries
   mastery.elemental_overload         = find_mastery_spell( "Elemental Overload" );
@@ -3805,7 +3806,7 @@ void shaman_t::init_scaling()
   }
 
   // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
-  if ( specialization.elemental_precision -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
+  if ( spec.elemental_precision -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
   {
     double v = sim -> scaling -> scale_value;
     if ( ! sim -> scaling -> positive_scale_delta )
@@ -3826,18 +3827,18 @@ void shaman_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rng_type=RNG_CYCLIC, activated=true )
 
-  buff.elemental_focus     = new buff_t                 ( this, specialization.elemental_focus -> effect_trigger_spell( 1 ), "elemental_focus"           );
+  buff.elemental_focus     = new buff_t                 ( this, spec.elemental_focus -> effect_trigger_spell( 1 ), "elemental_focus"           );
   buff.elemental_focus -> activated = false;
   buff.elemental_mastery   = new buff_t                 ( this, talent.elemental_mastery -> spell_id(),                       "elemental_mastery",   1.0 );
-  buff.flurry              = new buff_t                 ( this, specialization.flurry -> effect_trigger_spell( 1 ),           "flurry",              1.0 ); 
+  buff.flurry              = new buff_t                 ( this, spec.flurry -> effect_trigger_spell( 1 ),           "flurry",              1.0 ); 
   buff.flurry -> activated = false;
   // TBD how this is handled for reals
-  buff.lava_surge          = new buff_t                 ( this, specialization.lava_surge -> spell_id(),                      "lava_surge",          1.0, timespan_t::min, true );
+  buff.lava_surge          = new buff_t                 ( this, spec.lava_surge -> spell_id(),                      "lava_surge",          1.0, timespan_t::min, true );
   buff.lava_surge -> activated = false;
   buff.lightning_shield    = new lightning_shield_buff_t( this, dbc.class_ability_id( type, "Lightning Shield" ),             "lightning_shield"         );
-  buff.maelstrom_weapon    = new buff_t                 ( this, specialization.maelstrom_weapon -> effect_trigger_spell( 1 ), "maelstrom_weapon"         );
+  buff.maelstrom_weapon    = new buff_t                 ( this, spec.maelstrom_weapon -> effect_trigger_spell( 1 ), "maelstrom_weapon"         );
   buff.maelstrom_weapon -> activated = false;
-  buff.shamanistic_rage    = new buff_t                 ( this, specialization.shamanistic_rage -> spell_id(),                "shamanistic_rage"         );
+  buff.shamanistic_rage    = new buff_t                 ( this, spec.shamanistic_rage -> spell_id(),                "shamanistic_rage"         );
   buff.spiritwalkers_grace = new buff_t                 ( this, dbc.class_ability_id( type, "Spiritwalker's Grace" ),         "spiritwalkers_grace", 1.0, timespan_t::zero );
   buff.unleash_flame       = new unleash_flame_buff_t   ( this );
   buff.unleash_wind        = new buff_t                 ( this, 73681,                                                        "unleash_wind"             );
@@ -3985,7 +3986,6 @@ void shaman_t::init_actions()
       action_list_str +="/windfury_weapon,weapon=main";
       if ( off_hand_weapon.type != WEAPON_NONE )
         action_list_str += "/flametongue_weapon,weapon=off";
-      action_list_str += "/strength_of_earth_totem/windfury_totem/mana_spring_totem/lightning_shield";
       action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
       action_list_str += "/snapshot_stats";
       action_list_str += "/auto_attack";
@@ -4033,7 +4033,6 @@ void shaman_t::init_actions()
       action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
 
       action_list_str += "/flametongue_weapon,weapon=main/lightning_shield";
-      action_list_str += "/mana_spring_totem/wrath_of_air_totem";
       action_list_str += "/snapshot_stats";
       action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
 
@@ -4085,7 +4084,7 @@ void shaman_t::init_actions()
         action_list_str += "/unleash_elements,moving=1";
       action_list_str += "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)";
       if ( level >= 75 ) action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time";
-      if ( specialization.fulmination -> ok() )
+      if ( spec.fulmination -> ok() )
       {
         action_list_str += "/earth_shock,if=buff.lightning_shield.react=9";
         action_list_str += "/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
@@ -4234,7 +4233,7 @@ void shaman_t::moving()
 double shaman_t::matching_gear_multiplier( const attribute_type attr ) const
 {
   if ( attr == ATTR_AGILITY || attr == ATTR_INTELLECT )
-    return specialization.mail_specialization -> effectN( 1 ).percent();
+    return spec.mail_specialization -> effectN( 1 ).percent();
 
   return 0.0;
 }
@@ -4245,7 +4244,7 @@ double shaman_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( specialization.elemental_precision -> ok() *
+  hit += ( spec.elemental_precision -> ok() *
     ( spirit() - attribute_base[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
@@ -4273,7 +4272,7 @@ double shaman_t::composite_spell_power( const school_type school ) const
   double sp = 0;
 
   if ( primary_tree() == TREE_ENHANCEMENT )
-    sp = composite_attack_power_multiplier() * composite_attack_power() * specialization.mental_quickness -> effectN( 1 ).percent();
+    sp = composite_attack_power_multiplier() * composite_attack_power() * spec.mental_quickness -> effectN( 1 ).percent();
   else
     sp = player_t::composite_spell_power( school );
 
@@ -4454,13 +4453,8 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_typ
 
 void player_t::shaman_init( sim_t* sim )
 {
-  sim -> auras.elemental_oath    = new aura_t( sim, "elemental_oath",    1, timespan_t::zero );
-  sim -> auras.flametongue_totem = new aura_t( sim, "flametongue_totem", 1, timespan_t::from_seconds( 300.0 ) );
-  sim -> auras.mana_spring_totem = new aura_t( sim, "mana_spring_totem", 1, timespan_t::from_seconds( 300.0 ) );
-  sim -> auras.strength_of_earth = new aura_t( sim, "strength_of_earth", 1, timespan_t::from_seconds( 300.0 ) );
-  sim -> auras.unleashed_rage    = new aura_t( sim, "unleashed_rage",    1, timespan_t::zero );
-  sim -> auras.windfury_totem    = new aura_t( sim, "windfury_totem",    1, timespan_t::from_seconds( 300.0 ) );
-  sim -> auras.wrath_of_air      = new aura_t( sim, "wrath_of_air",      1, timespan_t::from_seconds( 300.0 ) );
+  sim -> auras.burning_wrath    = new aura_t( sim, "burning_wrath",    1, timespan_t::zero );
+  sim -> auras.grace_of_air     = new aura_t( sim, "grace_of_air",     1, timespan_t::zero );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -4475,16 +4469,8 @@ void player_t::shaman_init( sim_t* sim )
 
 void player_t::shaman_combat_begin( sim_t* sim )
 {
-  if ( sim -> overrides.elemental_oath    ) sim -> auras.elemental_oath    -> override();
-  if ( sim -> overrides.flametongue_totem ) sim -> auras.flametongue_totem -> override( 1, 0.10 );
-  if ( sim -> overrides.unleashed_rage    ) sim -> auras.unleashed_rage    -> override( 1, 0.10 );
-  if ( sim -> overrides.windfury_totem    ) sim -> auras.windfury_totem    -> override( 1, 0.10 );
-  if ( sim -> overrides.wrath_of_air      ) sim -> auras.wrath_of_air      -> override( 1, 0.05 );
-
-  if ( sim -> overrides.mana_spring_totem )
-    sim -> auras.mana_spring_totem -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 5677 ) -> effect1().id(), sim -> max_player_level ) );
-  if ( sim -> overrides.strength_of_earth )
-    sim -> auras.strength_of_earth -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 8076 ) -> effect1().id(), sim -> max_player_level ) );
+  if ( sim -> overrides.burning_wrath ) sim -> auras.burning_wrath -> override( 1, 0.10 );
+  if ( sim -> overrides.grace_of_air  ) sim -> auras.grace_of_air  -> override( 1, 5.0  );
 }
 
 shaman_targetdata_t::shaman_targetdata_t( player_t* source, player_t* target )

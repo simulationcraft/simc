@@ -1878,6 +1878,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.blood_frenzy_bleed     = optimal_raid;
   overrides.blood_frenzy_physical  = optimal_raid;
   overrides.bloodlust              = optimal_raid;
+  overrides.burning_wrath          = optimal_raid;
   overrides.communion              = optimal_raid;
   overrides.corrosive_spit         = optimal_raid;
   overrides.critical_mass          = optimal_raid;
@@ -1889,13 +1890,12 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.devotion_aura          = optimal_raid;
   overrides.earth_and_moon         = optimal_raid;
   overrides.ebon_plaguebringer     = optimal_raid;
-  overrides.elemental_oath         = optimal_raid;
   overrides.expose_armor           = optimal_raid;
   overrides.faerie_fire            = optimal_raid;
   overrides.fel_intelligence       = optimal_raid;
   overrides.ferocious_inspiration  = optimal_raid;
-  overrides.flametongue_totem      = optimal_raid;
   overrides.fortitude              = optimal_raid;
+  overrides.grace_of_air           = optimal_raid;
   overrides.hemorrhage             = optimal_raid;
   overrides.honor_among_thieves    = optimal_raid;
   overrides.horn_of_winter         = optimal_raid;
@@ -1908,7 +1908,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.judgements_of_the_just = optimal_raid;
   overrides.leader_of_the_pack     = optimal_raid;
   overrides.lightning_breath       = optimal_raid;
-  overrides.mana_spring_totem      = optimal_raid;
   overrides.mangle                 = optimal_raid;
   overrides.mark_of_the_wild       = optimal_raid;
   overrides.master_poisoner        = optimal_raid;
@@ -1920,17 +1919,13 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.replenishment          = optimal_raid;
   overrides.savage_combat          = optimal_raid;
   overrides.scarlet_fever          = optimal_raid;
-  overrides.strength_of_earth      = optimal_raid;
   overrides.sunder_armor           = optimal_raid;
   overrides.tailspin               = optimal_raid;
   overrides.tear_armor             = optimal_raid;
   overrides.tendon_rip             = optimal_raid;
   overrides.thunder_clap           = optimal_raid;
   overrides.trueshot_aura          = optimal_raid;
-  overrides.unleashed_rage         = optimal_raid;
   overrides.vindication            = optimal_raid;
-  overrides.windfury_totem         = optimal_raid;
-  overrides.wrath_of_air           = optimal_raid;
 }
 
 // sim_t::aura_gain =========================================================
@@ -2162,6 +2157,7 @@ void sim_t::create_options()
     { "override.blood_frenzy_bleed",      OPT_BOOL,   &( overrides.blood_frenzy_bleed             ) },
     { "override.blood_frenzy_physical",   OPT_BOOL,   &( overrides.blood_frenzy_physical          ) },
     { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
+    { "override.burning_wrath",           OPT_BOOL,   &( overrides.burning_wrath                  ) },
     { "bloodlust_percent",                OPT_INT,    &( bloodlust_percent                        ) },
     { "bloodlust_time",                   OPT_INT,    &( bloodlust_time                           ) },
     { "override.communion",               OPT_BOOL,   &( overrides.communion                      ) },
@@ -2177,14 +2173,13 @@ void sim_t::create_options()
     { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
     { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
     { "override.ebon_plaguebringer",      OPT_BOOL,   &( overrides.ebon_plaguebringer             ) },
-    { "override.elemental_oath",          OPT_BOOL,   &( overrides.elemental_oath                 ) },
     { "override.essence_of_the_red",      OPT_BOOL,   &( overrides.essence_of_the_red             ) },
     { "override.expose_armor",            OPT_BOOL,   &( overrides.expose_armor                   ) },
     { "override.faerie_fire",             OPT_BOOL,   &( overrides.faerie_fire                    ) },
     { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
-    { "override.flametongue_totem",       OPT_BOOL,   &( overrides.flametongue_totem              ) },
     { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
     { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
+    { "override.grace_of_air",            OPT_BOOL,   &( overrides.grace_of_air                   ) },
     { "override.hemorrhage",              OPT_BOOL,   &( overrides.hemorrhage                     ) },
     { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
     { "override.horn_of_winter",          OPT_BOOL,   &( overrides.horn_of_winter                 ) },
@@ -2197,7 +2192,6 @@ void sim_t::create_options()
     { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },
     { "override.leader_of_the_pack",      OPT_BOOL,   &( overrides.leader_of_the_pack             ) },
     { "override.lightning_breath",        OPT_BOOL,   &( overrides.lightning_breath               ) },
-    { "override.mana_spring_totem",       OPT_BOOL,   &( overrides.mana_spring_totem              ) },
     { "override.mangle",                  OPT_BOOL,   &( overrides.mangle                         ) },
     { "override.mark_of_the_wild",        OPT_BOOL,   &( overrides.mark_of_the_wild               ) },
     { "override.master_poisoner",         OPT_BOOL,   &( overrides.master_poisoner                ) },
@@ -2210,7 +2204,6 @@ void sim_t::create_options()
     { "override.roar_of_courage",         OPT_BOOL,   &( overrides.roar_of_courage                ) },
     { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
     { "override.scarlet_fever",           OPT_BOOL,   &( overrides.scarlet_fever                  ) },
-    { "override.strength_of_earth",       OPT_BOOL,   &( overrides.strength_of_earth              ) },
     { "override.strength_of_wrynn",       OPT_BOOL,   &( overrides.strength_of_wrynn              ) },
     { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
     { "override.tailspin",                OPT_BOOL,   &( overrides.tailspin                       ) },
@@ -2218,10 +2211,7 @@ void sim_t::create_options()
     { "override.tendon_rip",              OPT_BOOL,   &( overrides.tendon_rip                     ) },
     { "override.thunder_clap",            OPT_BOOL,   &( overrides.thunder_clap                   ) },
     { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },
-    { "override.unleashed_rage",          OPT_BOOL,   &( overrides.unleashed_rage                 ) },
     { "override.vindication",             OPT_BOOL,   &( overrides.vindication                    ) },
-    { "override.windfury_totem",          OPT_BOOL,   &( overrides.windfury_totem                 ) },
-    { "override.wrath_of_air",            OPT_BOOL,   &( overrides.wrath_of_air                   ) },
     // Regen
     { "regen_periodicity",                OPT_TIMESPAN, &( regen_periodicity                      ) },
     // RNG

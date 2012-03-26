@@ -377,6 +377,16 @@ static bool parse_brain_lag_stddev( sim_t* sim,
   return true;
 }
 
+// parse_specialization ======================================================
+
+static bool parse_specialization( sim_t* sim,
+                                  const std::string&, 
+                                  const std::string& value )
+{
+  sim -> active_player -> spec = util_t::translate_spec_str( sim -> active_player -> type, value );
+  return true;
+}
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -395,7 +405,7 @@ player_t::player_t( sim_t*             s,
   party( 0 ), member( 0 ),
   skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( timespan_t::zero ), base_gcd( timespan_t::from_seconds( 1.5 ) ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
-  pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
+  pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), spec( TREE_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
   reaction_mean( timespan_t::from_seconds( 0.5 ) ), reaction_stddev( timespan_t::zero ), reaction_nu( timespan_t::from_seconds( 0.5 ) ),
@@ -2094,8 +2104,7 @@ double player_t::composite_attack_speed() const
 
   if ( ! is_enemy() && ! is_add() )
     h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party       -> value(),
-                       std::max( sim -> auras.windfury_totem      -> value(),
-                                 sim -> auras.improved_icy_talons -> value() ) ) );
+                                 sim -> auras.improved_icy_talons -> value() ) );
 
   return h;
 }
@@ -2125,7 +2134,6 @@ double player_t::composite_attack_crit( weapon_t* weapon ) const
   {
     if ( sim -> auras.leader_of_the_pack -> up()  ||
          sim -> auras.honor_among_thieves -> up() ||
-         sim -> auras.elemental_oath -> up()      ||
          sim -> auras.rampage -> up()             ||
          buffs.furious_howl -> up() )
     {
@@ -2421,7 +2429,7 @@ double player_t::composite_spell_haste() const
 
     if ( ! is_pet() && ! is_enemy() && ! is_add() )
     {
-      if ( sim -> auras.wrath_of_air -> up() || sim -> auras.moonkin -> up() || sim -> auras.mind_quickening -> up() )
+      if ( sim -> auras.moonkin -> up() || sim -> auras.mind_quickening -> up() )
       {
         h *= 1.0 / ( 1.0 + 0.05 );
       }
@@ -2482,7 +2490,7 @@ double player_t::composite_spell_power_multiplier() const
     }
     else
     {
-      m *= 1.0 + std::max( sim -> auras.flametongue_totem -> value(),
+      m *= 1.0 + std::max( sim -> auras.burning_wrath -> value(),
                            buffs.arcane_brilliance -> up() * 0.06 );
     }
   }
@@ -2501,7 +2509,6 @@ double player_t::composite_spell_crit() const
 
     if ( sim -> auras.leader_of_the_pack -> up() ||
          sim -> auras.honor_among_thieves -> up() ||
-         sim -> auras.elemental_oath -> up() ||
          sim -> auras.rampage -> up() ||
          buffs.furious_howl -> up() )
     {
@@ -2539,6 +2546,16 @@ double player_t::composite_mp5() const
   return mp5 + mp5_per_intellect * floor( intellect() );
 }
 
+double player_t::composite_mastery() const
+{
+  double m = floor( ( mastery * 100.0 ) + 0.5 ) * 0.01;
+  
+  if ( sim -> auras.grace_of_air -> check() )
+    m += sim -> auras.grace_of_air -> value();
+  
+  return m;
+}
+
 // player_t::composite_attack_power_multiplier ==============================
 
 double player_t::composite_attack_power_multiplier() const
@@ -2555,7 +2572,7 @@ double player_t::composite_attack_power_multiplier() const
     }
     else if ( ! is_enemy() && ! is_add() )
     {
-      m *= 1.0 + std::max( sim -> auras.unleashed_rage -> value(), sim -> auras.abominations_might -> value() );
+      m *= 1.0 + sim -> auras.abominations_might -> value();
     }
   }
 
@@ -2734,8 +2751,7 @@ double player_t::strength() const
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
-    a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
-                             sim -> auras.horn_of_winter    -> value() ),
+    a += std::max(           sim -> auras.horn_of_winter    -> value(),
                    std::max( buffs.battle_shout             -> value(),
                              sim -> auras.roar_of_courage   -> value() ) );
   }
@@ -2753,8 +2769,7 @@ double player_t::agility() const
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
-    a += std::max( std::max( sim -> auras.strength_of_earth -> value(),
-                             sim -> auras.horn_of_winter    -> value() ),
+    a += std::max(           sim -> auras.horn_of_winter    -> value(),
                    std::max( buffs.battle_shout             -> value(),
                              sim -> auras.roar_of_courage   -> value() ) );
   }
@@ -3616,20 +3631,9 @@ void player_t::regen( const timespan_t periodicity )
     }
 
     double bow = buffs.blessing_of_might_regen -> current_value;
-    double ms  = ( ! is_enemy() && ! is_add() ) ? sim -> auras.mana_spring_totem -> current_value : 0;
+    double wisdom_regen = periodicity.total_seconds() * bow / 5.0;
 
-    if ( ms > bow )
-    {
-      double mana_spring_regen = periodicity.total_seconds() * ms / 5.0;
-
-      resource_gain( RESOURCE_MANA, mana_spring_regen, gains.mana_spring_totem );
-    }
-    else if ( bow > 0 )
-    {
-      double wisdom_regen = periodicity.total_seconds() * bow / 5.0;
-
-      resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_might );
-    }
+    resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_might );
   }
 
   int index = ( int ) ( sim -> current_time.total_seconds() );
@@ -3838,10 +3842,13 @@ const char* player_t::primary_tree_name() const
 
 int player_t::primary_tree() const
 {
+  /*
   if ( specialization == TALENT_TAB_NONE )
     return TREE_NONE;
 
   return tree_type[ specialization ];
+  */
+  return spec;
 }
 
 // player_t::normalize_by ===================================================
@@ -6794,6 +6801,7 @@ void player_t::create_options()
     { "brain_lag",                            OPT_FUNC,     ( void* ) ::parse_brain_lag                 },
     { "brain_lag_stddev",                     OPT_FUNC,     ( void* ) ::parse_brain_lag_stddev          },
     { "scale_player",                         OPT_BOOL,     &( scale_player                           ) },
+    { "specialization",                       OPT_FUNC,     ( void* ) ::parse_specialization            },
     // Items
     { "meta_gem",                             OPT_STRING,   &( meta_gem_str                           ) },
     { "items",                                OPT_STRING,   &( items_str                              ) },

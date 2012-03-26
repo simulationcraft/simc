@@ -938,6 +938,141 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
   return -1;
 }
 
+// util_t::translate_spec_str ===============================================
+
+talent_tree_type util_t::translate_spec_str( player_type ptype, const std::string& spec_str )
+{
+  switch ( ptype )
+  {
+    case DEATH_KNIGHT:
+    {
+      if ( util_t::str_compare_ci( spec_str, "blood" ) )
+        return TREE_BLOOD;
+      else if ( util_t::str_compare_ci( spec_str, "frost" ) )
+        return TREE_FROST;
+      else if ( util_t::str_compare_ci( spec_str, "unholy" ) )
+        return TREE_UNHOLY;
+      
+      break;
+    }
+    case DRUID:
+    {
+      if ( util_t::str_compare_ci( spec_str, "balance" ) )
+        return TREE_BALANCE;
+      else if ( util_t::str_compare_ci( spec_str, "feral" ) )
+        return TREE_FERAL;
+      else if ( util_t::str_compare_ci( spec_str, "guardian" ) )
+        return TREE_GUARDIAN;
+      else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
+        return TREE_RESTORATION;
+      
+      break;
+    }
+    case HUNTER:
+    {
+      if ( util_t::str_compare_ci( spec_str, "beast_mastery" ) )
+        return TREE_BEAST_MASTERY;
+      else if ( util_t::str_compare_ci( spec_str, "marksmanship" ) )
+        return TREE_MARKSMANSHIP;
+      else if ( util_t::str_compare_ci( spec_str, "survival" ) )
+        return TREE_SURVIVAL;
+
+      break;
+    }
+    case MAGE:
+    {
+      if ( util_t::str_compare_ci( spec_str, "arcane" ) )
+        return TREE_ARCANE;
+      else if ( util_t::str_compare_ci( spec_str, "fire" ) )
+        return TREE_FIRE;
+      else if ( util_t::str_compare_ci( spec_str, "frost" ) )
+        return TREE_FROST;
+
+      break;
+    }
+    case MONK:
+    {
+      if ( util_t::str_compare_ci( spec_str, "brewmaster" ) )
+        return TREE_BREWMASTER;
+      else if ( util_t::str_compare_ci( spec_str, "mistweaver" ) )
+        return TREE_MISTWEAVER;
+      else if ( util_t::str_compare_ci( spec_str, "windwalker" ) )
+        return TREE_WINDWALKER;
+
+      break;
+    }
+    case PALADIN:
+    {
+      if ( util_t::str_compare_ci( spec_str, "holy" ) )
+        return TREE_HOLY;
+      else if ( util_t::str_compare_ci( spec_str, "protection" ) )
+        return TREE_PROTECTION;
+      else if ( util_t::str_compare_ci( spec_str, "retribution" ) )
+        return TREE_RETRIBUTION;
+
+      break;
+    }
+    case PRIEST:
+    {
+      if ( util_t::str_compare_ci( spec_str, "discipline" ) )
+        return TREE_DISCIPLINE;
+      else if ( util_t::str_compare_ci( spec_str, "holy" ) )
+        return TREE_HOLY;
+      else if ( util_t::str_compare_ci( spec_str, "shadow" ) )
+        return TREE_SHADOW;
+
+      break;
+    }
+    case ROGUE:
+    {
+      if ( util_t::str_compare_ci( spec_str, "assassination" ) )
+        return TREE_ASSASSINATION;
+      else if ( util_t::str_compare_ci( spec_str, "combat" ) )
+        return TREE_COMBAT;
+      else if ( util_t::str_compare_ci( spec_str, "subtlety" ) )
+        return TREE_SUBTLETY;
+
+      break;
+    }
+    case SHAMAN:
+    {
+      if ( util_t::str_compare_ci( spec_str, "elemental" ) )
+        return TREE_ELEMENTAL;
+      else if ( util_t::str_compare_ci( spec_str, "enhancement" ) )
+        return TREE_ENHANCEMENT;
+      else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
+        return TREE_RESTORATION;
+
+      break;
+    }
+    case WARLOCK:
+    {
+      if ( util_t::str_compare_ci( spec_str, "afflication" ) )
+        return TREE_AFFLICTION;
+      else if ( util_t::str_compare_ci( spec_str, "demonology" ) )
+        return TREE_DEMONOLOGY;
+      else if ( util_t::str_compare_ci( spec_str, "destruction" ) )
+        return TREE_DESTRUCTION;
+
+      break;
+    }
+    case WARRIOR:
+    {
+      if ( util_t::str_compare_ci( spec_str, "arms" ) )
+        return TREE_ARMS;
+      else if ( util_t::str_compare_ci( spec_str, "fury" ) )
+        return TREE_FURY;
+      else if ( util_t::str_compare_ci( spec_str, "protection" ) )
+        return TREE_PROTECTION;
+
+      break;
+    }
+    default: break;
+  }
+  return TREE_NONE;
+}
+
+
 // util_t::talent_tree_string ===============================================
 
 const char* util_t::talent_tree_string( int tree, bool armory_format )

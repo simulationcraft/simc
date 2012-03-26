@@ -2410,6 +2410,7 @@ public:
   static const char* stat_type_wowhead         ( int type );
   static int         talent_tree               ( int tree, player_type ptype );
   static int         spec_id                   ( player_type ptype, talent_tree_type tree );
+  static talent_tree_type translate_spec_str   ( player_type ptype, const std::string& spec_str );
   static const char* talent_tree_string        ( int tree, bool armory_format = true );
   static const char* weapon_type_string        ( int type );
   static const char* weapon_class_string       ( int class_ );
@@ -3384,6 +3385,7 @@ public:
     int blood_frenzy_physical;
     int bloodlust;
     int brittle_bones;
+    int burning_wrath;
     int communion;
     int corrosive_spit;
     int corruption_absolute;
@@ -3397,16 +3399,15 @@ public:
     int devotion_aura;
     int earth_and_moon;
     int ebon_plaguebringer;
-    int elemental_oath;
     int essence_of_the_red;
     int exhaustion;
     int expose_armor;
     int faerie_fire;
     int fel_intelligence;
     int ferocious_inspiration;
-    int flametongue_totem;
     int focus_magic;
     int fortitude;
+    int grace_of_air;
     int hellscreams_warsong;
     int hemorrhage;
     int honor_among_thieves;
@@ -3419,7 +3420,6 @@ public:
     int judgements_of_the_just;
     int leader_of_the_pack;
     int lightning_breath;
-    int mana_spring_totem;
     int mangle;
     int mark_of_the_wild;
     int master_poisoner;
@@ -3433,7 +3433,6 @@ public:
     int savage_combat;
     int scarlet_fever;
     int shadow_and_flame;
-    int strength_of_earth;
     int strength_of_wrynn;
     int sunder_armor;
     int tailspin;
@@ -3442,10 +3441,7 @@ public:
     int thunder_clap;
     int trueshot_aura;
     int qiraji_fortitude;
-    int unleashed_rage;
     int vindication;
-    int windfury_totem;
-    int wrath_of_air;
   };
   overrides_t overrides;
 
@@ -3454,29 +3450,24 @@ public:
   {
     aura_t* abominations_might;
     aura_t* arcane_tactics;
+    aura_t* burning_wrath;
     aura_t* communion;
     aura_t* demonic_pact;
     aura_t* devotion_aura;
-    aura_t* elemental_oath;
     aura_t* fel_intelligence;
     aura_t* ferocious_inspiration;
-    aura_t* flametongue_totem;
+    aura_t* grace_of_air;
     aura_t* honor_among_thieves;
     aura_t* horn_of_winter;
     aura_t* hunting_party;
     aura_t* improved_icy_talons;
     aura_t* leader_of_the_pack;
-    aura_t* mana_spring_totem;
     aura_t* moonkin;
     aura_t* mind_quickening;
     aura_t* qiraji_fortitude;
     aura_t* rampage;
     aura_t* roar_of_courage;
-    aura_t* strength_of_earth;
     aura_t* trueshot;
-    aura_t* unleashed_rage;
-    aura_t* windfury_totem;
-    aura_t* wrath_of_air;
   };
   auras_t auras;
 
@@ -4031,6 +4022,7 @@ struct player_t : public noncopyable
   pet_t*      pet_list;
   int         bugs;
   int         specialization;
+  talent_tree_type spec;
   int         invert_scaling;
   bool        vengeance_enabled;
   double      vengeance_damage, vengeance_value, vengeance_max;
@@ -4498,8 +4490,6 @@ struct player_t : public noncopyable
   virtual void combat_end();
   virtual void merge( player_t& other );
 
-  virtual double composite_mastery() const { return floor( ( mastery * 100.0 ) + 0.5 ) * 0.01; }
-
   virtual double energy_regen_per_second() const;
   virtual double focus_regen_per_second() const;
   virtual double chi_regen_per_second() const;
@@ -4516,7 +4506,7 @@ struct player_t : public noncopyable
   virtual double composite_spell_hit() const;
   virtual double composite_spell_penetration() const { return spell_penetration; }
   virtual double composite_mp5() const;
-
+  virtual double composite_mastery() const;
 
   virtual double composite_armor()                 const;
   virtual double composite_armor_multiplier()      const;
