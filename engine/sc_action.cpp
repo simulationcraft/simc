@@ -155,6 +155,7 @@ void action_t::init_action_t_()
   snapshot_flags = 0;
   update_flags = STATE_TARGET;
   state_cache = 0;
+  state = 0;
 
   init_dot( name_str );
 
@@ -243,6 +244,9 @@ action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, 
 
 action_t::~action_t()
 {
+  if ( state )
+    delete state;
+  
   if ( ! is_dtr_action )
   {
     delete if_expr;
@@ -1043,33 +1047,33 @@ void action_t::execute()
       
       for ( size_t t = 0; t < tl.size(); t++ )
       {
-        action_state_t* state = get_state();
-        state -> target = tl[ t ];
-        state -> take_state( snapshot_flags );
-        calculate_result_s( state );
+        action_state_t* s = get_state();
+        s -> target = tl[ t ];
+        s -> take_state( snapshot_flags );
+        calculate_result_s( s );
         
-        if ( result_is_hit( state -> result ) )
-          state -> result_amount = calculate_direct_damage_s( t + 1, state );
+        if ( result_is_hit( s -> result ) )
+          s -> result_amount = calculate_direct_damage_s( t + 1, s );
         
         if ( sim -> debug )
-          state -> debug();
+          s -> debug();
         
-        schedule_travel_s( state );
+        schedule_travel_s( s );
       }
     }
     else
     {
-      action_state_t* state = get_state();
-      state -> take_state( snapshot_flags );
-      calculate_result_s( state );
+      action_state_t* s = get_state();
+      s -> take_state( snapshot_flags );
+      calculate_result_s( s );
       
-      if ( result_is_hit( state -> result ) )
-        state -> result_amount = calculate_direct_damage_s( 0, state );
+      if ( result_is_hit( s -> result ) )
+        s -> result_amount = calculate_direct_damage_s( 0, s );
       
       if ( sim -> debug )
-        state -> debug();
+        s -> debug();
       
-      schedule_travel_s( state );
+      schedule_travel_s( s );
     }
   }
 

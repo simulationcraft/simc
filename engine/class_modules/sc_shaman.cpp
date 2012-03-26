@@ -2883,9 +2883,9 @@ struct earth_shock_t : public shaman_spell_t
     }
   }
   
-  virtual void impact_s( action_state_t* state )
+  virtual void execute()
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::execute();
 
     if ( consume_threshold == 0 )
       return;

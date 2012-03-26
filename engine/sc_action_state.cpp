@@ -224,14 +224,19 @@ void spell_t::calculate_result_s( action_state_t* state )
                   util_t::result_type_string( state -> result ) );
 }
 
-void action_t::schedule_travel_s( action_state_t* state )
+void action_t::schedule_travel_s( action_state_t* s )
 {
   time_to_travel = travel_time();
   
+  if ( ! state )
+    state = get_state();
+  
+  state -> copy_state( s );
+  
   if ( time_to_travel == timespan_t::zero )
   {
-    impact_s( state );
-    release_state( state );
+    impact_s( s );
+    release_state( s );
   }
   else
   {
@@ -240,7 +245,7 @@ void action_t::schedule_travel_s( action_state_t* state )
       log_t::output( sim, "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
     
-    new ( sim ) stateless_travel_event_t( sim, this, state, time_to_travel );
+    new ( sim ) stateless_travel_event_t( sim, this, s, time_to_travel );
   }
 }
 

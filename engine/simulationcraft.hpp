@@ -4934,7 +4934,6 @@ struct action_t : public spell_id_t
   player_t* target;
   uint32_t id;
   school_type school;
-  action_type table;
   int resource, tree, result, aoe;
   bool dual, callbacks, special, binary, channeled, background, sequence, use_off_gcd;
   bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot, may_trigger_dtr, discharge_proc, auto_cast, initialized;
@@ -5129,6 +5128,7 @@ public:
 
   /* New stuff */
   action_state_t* state_cache;
+  action_state_t* state; /* State of the last execute() */
   uint32_t snapshot_flags;
   uint32_t update_flags;
   
