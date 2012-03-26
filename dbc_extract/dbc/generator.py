@@ -67,6 +67,67 @@ class DataGenerator(object):
 
     def generate(self, ids = None):
         return ''
+        
+class SpecializationEnumGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ChrSpecialization' ]
+        
+        DataGenerator.__init__(self, options)
+    
+    
+    def generate(self, ids = None):
+        enum_ids = [
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ], # pets come here
+        ]
+        
+        for spec_id, spec_data in self._chrspecialization_db.iteritems():
+            if spec_data.class_id > 0:
+                enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_data.name }
+            else:
+                enum_ids[ -1 ][ spec_data.f6 ] = { 'id': spec_id, 'name': spec_data.name }
+        
+        s = 'enum specialization_t {\n'
+        for cls in xrange(0, len(enum_ids) - 1):
+            if enum_ids[cls][0] == None:
+                continue
+            
+            for spec in xrange(0, len(enum_ids[cls])):
+                if enum_ids[cls][spec] == None:
+                    continue
+
+                enum_str = '  %s_%s%s= %u,\n' % (
+                    DataGenerator._class_names[cls].upper().replace(" ", "_"),
+                    enum_ids[cls][spec]['name'].upper(),
+                    ( 21 - (len(enum_ids[cls][spec]['name']) + len(DataGenerator._class_names[cls]) + 1) ) * ' ',
+                    enum_ids[cls][spec]['id'] )
+                
+                s += enum_str
+        
+        for spec in xrange(0, len(enum_ids[-1])):
+            if enum_ids[-1][spec] == None:
+                continue
+
+            enum_str = '  PET_%s%s= %u,\n' % (
+                enum_ids[-1][spec]['name'].upper(),
+                ( 21 - (len(enum_ids[-1][spec]['name']) + 4) ) * ' ',
+                enum_ids[-1][spec]['id'] )
+            
+            s += enum_str
+        s += '};\n'
+        
+        return s
 
 class BaseScalingDataGenerator(DataGenerator):
     def __init__(self, options, scaling_data):
