@@ -27,8 +27,8 @@ void rng_t::seed( uint32_t )
 
 bool rng_t::roll( double chance )
 {
-  if ( chance <= 0 ) return 0;
-  if ( chance >= 1 ) return 1;
+  if ( chance <= 0 ) return false;
+  if ( chance >= 1 ) return true;
   num_roll++;
   bool result = ( real() < chance );
   expected_roll += chance;
