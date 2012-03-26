@@ -15,7 +15,7 @@ OS         = WINDOWS
 OPENSSL_PATH =
 
 CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual -W
+CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
 OPTS       = -O3 -fomit-frame-pointer -ffast-math
 BITS       = 32
 
