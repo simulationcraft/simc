@@ -321,7 +321,7 @@ struct shaman_attack_t : public attack_t
   bool flametongue;
 
   /* Old style construction, spell data will not be accessed */
-  shaman_attack_t( const char* n, player_t* player, school_type s, int t, bool special ) :
+  shaman_attack_t( const char* n, shaman_t* player, school_type s, int t, bool special ) :
     attack_t( n, player, RESOURCE_MANA, s, t, special ), 
     actor( player -> cast_shaman() ), windfury( true ), flametongue( true )
   {
@@ -331,7 +331,7 @@ struct shaman_attack_t : public attack_t
   }
 
   /* Class spell data based construction, spell name in s_name */
-  shaman_attack_t( const char* n, const char* s_name, player_t* player ) :
+  shaman_attack_t( const char* n, const char* s_name, shaman_t* player ) :
     attack_t( n, s_name, player, TREE_NONE, true ), 
     actor( player -> cast_shaman() ), windfury( true ), flametongue( true )
   {
@@ -342,7 +342,7 @@ struct shaman_attack_t : public attack_t
   }
 
   /* Spell data based construction, spell id in spell_id */
-  shaman_attack_t( const char* n, uint32_t spell_id, player_t* player ) :
+  shaman_attack_t( const char* n, uint32_t spell_id, shaman_t* player ) :
     attack_t( n, spell_id, player, TREE_NONE, true ), 
     actor( player -> cast_shaman() ), windfury( true ), flametongue( true )
   {
@@ -351,6 +351,9 @@ struct shaman_attack_t : public attack_t
         ( school == SCHOOL_FIRE || school == SCHOOL_NATURE || school == SCHOOL_FROST ) )
       snapshot_flags |= STATE_MASTERY;
   }
+
+  shaman_t* p() const
+  { return static_cast<shaman_t*>( player ); }
 
   virtual void execute();
   virtual void impact_s( action_state_t* );
@@ -372,7 +375,7 @@ struct shaman_spell_t : public spell_t
   shaman_t* actor;
 
   /* Old style construction, spell data will not be accessed */
-  shaman_spell_t( const char* n, player_t* p, const std::string& options_str, const school_type s, int t ) :
+  shaman_spell_t( const char* n, shaman_t* p, const std::string& options_str, const school_type s, int t ) :
     spell_t( n, p, RESOURCE_MANA, s, t ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
     actor( p -> cast_shaman() )
@@ -1246,7 +1249,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
     cooldown_t* imp_ll_fs_cd; 
     stats_t* fs_dummy_stat;
 
-    improved_lava_lash_t( player_t* p ) :
+    improved_lava_lash_t( shaman_t* p ) :
       shaman_spell_t( "improved_lava_lash", p, "", SCHOOL_FIRE, TREE_ENHANCEMENT ),
       imp_ll_rng( 0 ), imp_ll_fs_cd( 0 )
     {
@@ -1676,7 +1679,7 @@ struct windfury_weapon_attack_t : public shaman_attack_t
     }
   };
   
-  windfury_weapon_attack_t( player_t* player, const std::string& n, weapon_t* w ) :
+  windfury_weapon_attack_t( shaman_t* player, const std::string& n, weapon_t* w ) :
     shaman_attack_t( n.c_str(), 33757, player )
   {
     weapon           = w;
@@ -1697,7 +1700,7 @@ struct windfury_weapon_attack_t : public shaman_attack_t
 
 struct unleash_wind_t : public shaman_attack_t
 {
-  unleash_wind_t( player_t* player ) :
+  unleash_wind_t( shaman_t* player ) :
     shaman_attack_t( "unleash_wind", 73681, player )
   {
     background            = true;
@@ -1729,7 +1732,7 @@ struct unleash_wind_t : public shaman_attack_t
 
 struct stormstrike_attack_t : public shaman_attack_t
 {
-  stormstrike_attack_t( player_t* player, const char* n, uint32_t id, weapon_t* w ) :
+  stormstrike_attack_t( shaman_t* player, const char* n, uint32_t id, weapon_t* w ) :
     shaman_attack_t( n, id, player )
   {
     background           = true;
@@ -1814,7 +1817,7 @@ struct melee_t : public shaman_attack_t
 {
   int sync_weapons;
 
-  melee_t( const char* name, player_t* player, int sw ) :
+  melee_t( const char* name, shaman_t* player, int sw ) :
     shaman_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
   {
     may_crit    = true;
@@ -1873,7 +1876,7 @@ struct auto_attack_t : public shaman_attack_t
 {
   int sync_weapons;
 
-  auto_attack_t( player_t* player, const std::string& options_str ) :
+  auto_attack_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "auto_attack", player, SCHOOL_PHYSICAL, TREE_NONE, false ),
     sync_weapons( 0 )
   {
@@ -1940,7 +1943,7 @@ struct lava_lash_t : public shaman_attack_t
     }
   };
   
-  lava_lash_t( player_t* player, const std::string& options_str ) :
+  lava_lash_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "lava_lash", "Lava Lash", player )
   {
     check_spec( TREE_ENHANCEMENT );
@@ -1981,7 +1984,7 @@ struct lava_lash_t : public shaman_attack_t
 
 struct primal_strike_t : public shaman_attack_t
 {
-  primal_strike_t( player_t* player, const std::string& options_str ) :
+  primal_strike_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "primal_strike", "Primal Strike", player )
   {
     parse_options( NULL, options_str );
@@ -2007,7 +2010,7 @@ struct stormstrike_t : public shaman_attack_t
   stormstrike_attack_t * stormstrike_mh;
   stormstrike_attack_t * stormstrike_oh;
 
-  stormstrike_t( player_t* player, const std::string& options_str ) :
+  stormstrike_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "stormstrike", "Stormstrike", player ),
     stormstrike_mh( 0 ), stormstrike_oh( 0 )
   {
@@ -2796,7 +2799,7 @@ struct unleash_elements_t : public shaman_spell_t
   unleash_wind_t*   wind;
   unleash_flame_t* flame;
 
-  unleash_elements_t( player_t* player, const std::string& options_str ) :
+  unleash_elements_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "unleash_elements", "Unleash Elements", player, options_str )
   {
     may_crit    = false;

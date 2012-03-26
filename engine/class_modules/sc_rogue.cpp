@@ -495,6 +495,9 @@ struct rogue_attack_t : public attack_t
     init_rogue_attack_t_();
   }
 
+  rogue_t* p() const
+  { return static_cast<rogue_t*>( player ); }
+
   void init_rogue_attack_t_();
 
   virtual double cost() const;
@@ -537,6 +540,9 @@ struct rogue_poison_t : public spell_t
     base_spell_power_multiplier  = 0.0;
     base_attack_power_multiplier = 1.0;
   }
+
+  rogue_t* p() const
+  { return static_cast<rogue_t*>( player ); }
 
   virtual double total_multiplier() const;
 };

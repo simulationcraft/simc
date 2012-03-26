@@ -405,7 +405,7 @@ struct druid_cat_attack_t : public attack_t
   bool requires_combo_points;
   int adds_combo_points;
 
-  druid_cat_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  druid_cat_attack_t( const char* n, druid_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
     attack_t( n, player, RESOURCE_ENERGY, s, t, special ),
     requires_stealth( 0 ),
     requires_position( POSITION_NONE ),
@@ -427,6 +427,9 @@ struct druid_cat_attack_t : public attack_t
     requires_stealth      = false;
   }
 
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
   virtual double cost() const;
   virtual void   execute();
   virtual void   consume_resource();
@@ -440,7 +443,7 @@ struct druid_cat_attack_t : public attack_t
 
 struct druid_bear_attack_t : public attack_t
 {
-  druid_bear_attack_t( const char* n, player_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  druid_bear_attack_t( const char* n, druid_t* player, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
     attack_t( n, player, RESOURCE_RAGE, s, t, special )
   {}
 
@@ -450,6 +453,9 @@ struct druid_bear_attack_t : public attack_t
     may_crit      = true;
     tick_may_crit = true;
   }
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
 
   virtual double cost() const;
   virtual void   execute();
@@ -481,6 +487,9 @@ struct druid_heal_t : public heal_t
     }
   }
 
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
   virtual void   consume_resource();
   virtual double cost() const;
   virtual double cost_reduction() const;
@@ -498,7 +507,7 @@ struct druid_spell_t : public spell_t
 {
   double additive_multiplier;
 
-  druid_spell_t( const char* n, player_t* p, const school_type s, int t ) :
+  druid_spell_t( const char* n, druid_t* p, const school_type s, int t ) :
     spell_t( n, p, RESOURCE_MANA, s, t ), additive_multiplier( 0.0 )
   {
   }
@@ -509,6 +518,9 @@ struct druid_spell_t : public spell_t
     may_crit      = true;
     tick_may_crit = true;
   }
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
 
   virtual void   consume_resource();
   virtual double cost() const;
@@ -544,7 +556,7 @@ struct treants_pet_t : public pet_t
     }
   };
 
-  treants_pet_t( sim_t* sim, player_t* owner, const std::string& pet_name ) :
+  treants_pet_t( sim_t* sim, druid_t* owner, const std::string& pet_name ) :
     pet_t( sim, owner, pet_name )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1104,7 +1116,7 @@ bool druid_cat_attack_t::ready()
 
 struct cat_melee_t : public druid_cat_attack_t
 {
-  cat_melee_t( player_t* player ) :
+  cat_melee_t( druid_t* player ) :
     druid_cat_attack_t( "cat_melee", player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/false )
   {
     background  = true;
@@ -1989,7 +2001,7 @@ void druid_bear_attack_t::player_buff()
 
 struct bear_melee_t : public druid_bear_attack_t
 {
-  bear_melee_t( player_t* player ) :
+  bear_melee_t( druid_t* player ) :
     druid_bear_attack_t( "bear_melee", player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/false )
   {
     background  = true;

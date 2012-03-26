@@ -1485,6 +1485,9 @@ struct death_knight_attack_t : public attack_t
     _init_dk_attack();
   }
 
+  death_knight_t* p() const
+  { return static_cast<death_knight_t*>( player ); }
+
   void _init_dk_attack()
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
@@ -1535,6 +1538,9 @@ struct death_knight_spell_t : public spell_t
   {
     _init_dk_spell();
   }
+
+  death_knight_t* p() const
+  { return static_cast<death_knight_t*>( player ); }
 
   void _init_dk_spell()
   {

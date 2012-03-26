@@ -420,17 +420,20 @@ struct paladin_heal_t : public heal_t
     weapon_multiplier = 0.0;
   }
 
-  paladin_heal_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+  paladin_heal_t( const char* n, paladin_t* player, const char* sname, int t = TREE_NONE ) :
     heal_t( n, player, sname, t )
   {
     _init_paladin_heal_t();
   }
 
-  paladin_heal_t( const char* n, player_t* player, const uint32_t id, int t = TREE_NONE ) :
+  paladin_heal_t( const char* n, paladin_t* player, const uint32_t id, int t = TREE_NONE ) :
     heal_t( n, player, id, t )
   {
     _init_paladin_heal_t();
   }
+
+  paladin_t* p() const
+  { return static_cast<paladin_t*>( player ); }
 
   virtual void consume_resource()
   {
@@ -529,16 +532,14 @@ struct paladin_attack_t : public attack_t
     initialize_( use2hspec );
   }
 
+  paladin_t* p() const
+  { return static_cast<paladin_t*>( player ); }
+
   void initialize_( bool use2hspec )
   {
     may_crit = true;
 
     class_flag1 = ! use2hspec;
-  }
-
-  paladin_t* p() const
-  {
-    return static_cast<paladin_t*>( player );
   }
 
   virtual double haste() const
@@ -687,13 +688,11 @@ struct paladin_spell_t : public spell_t
     initialize_();
   }
 
+  paladin_t* p() const
+  { return static_cast<paladin_t*>( player ); }
+
   void initialize_()
   { }
-
-  paladin_t* p() const
-  {
-    return static_cast<paladin_t*>( player );
-  }
 
   virtual void consume_resource()
   {

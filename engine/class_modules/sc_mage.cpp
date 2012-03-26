@@ -368,23 +368,26 @@ struct mage_spell_t : public spell_t
     }
   }
 
-  mage_spell_t( const char* n, player_t* player, const school_type s, int t ) :
+  mage_spell_t( const char* n, mage_t* player, const school_type s, int t ) :
     spell_t( n, player, RESOURCE_MANA, s, t )
   {
     _init_mage_spell_t();
   }
 
-  mage_spell_t( const char* n, uint32_t id, player_t* player ) :
+  mage_spell_t( const char* n, uint32_t id, mage_t* player ) :
     spell_t( n, id, player )
   {
     _init_mage_spell_t();
   }
 
-  mage_spell_t( const char* n, const char* sname, player_t* player ) :
+  mage_spell_t( const char* n, const char* sname, mage_t* player ) :
     spell_t( n, sname, player )
   {
     _init_mage_spell_t();
   }
+
+  mage_t* p() const
+  { return static_cast<mage_t*>( player ); }
 
   virtual void   parse_options( option_t*, const std::string& );
   virtual bool   ready();
@@ -870,7 +873,7 @@ static void trigger_ignite( spell_t* s, double dmg )
 
         struct ignite_t : public mage_spell_t
         {
-          ignite_t( player_t* player ) :
+          ignite_t( mage_t* player ) :
             mage_spell_t( "ignite", 12654, player )
           {
             background    = true;

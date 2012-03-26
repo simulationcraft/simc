@@ -942,6 +942,9 @@ struct warlock_heal_t : public heal_t
     heal_t( n, p, id )
   { }
 
+  warlock_t* p() const
+  { return static_cast<warlock_t*>( player ); }
+
   virtual void player_buff()
   {
     warlock_t* p = player -> cast_warlock();
@@ -992,6 +995,9 @@ public:
   {
     _init_warlock_spell_t();
   }
+
+  warlock_t* p() const
+  { return static_cast<warlock_t*>( player ); }
 
   // warlock_spell_t::haste =================================================
 
@@ -1160,6 +1166,9 @@ struct warlock_pet_melee_t : public attack_t
 
     base_multiplier *= p -> damage_modifier;
   }
+
+  warlock_pet_t* p() const
+  { return static_cast<warlock_pet_t*>( player ); }
 };
 
 // ==========================================================================
@@ -1176,19 +1185,22 @@ struct warlock_pet_attack_t : public attack_t
     special = true;
   }
 
-  warlock_pet_attack_t( const char* n, player_t* player, const char* sname, int t = TREE_NONE ) :
+  warlock_pet_attack_t( const char* n, warlock_pet_t* player, const char* sname, int t = TREE_NONE ) :
     attack_t( n, sname, player, t, true )
   {
     may_crit   = true;
     special = true;
   }
 
-  warlock_pet_attack_t( const char* n, const uint32_t id, player_t* player, int t = TREE_NONE ) :
+  warlock_pet_attack_t( const char* n, const uint32_t id, warlock_pet_t* player, int t = TREE_NONE ) :
     attack_t( n, id, player, t, true )
   {
     may_crit   = true;
     special = true;
   }
+
+  warlock_pet_t* p() const
+  { return static_cast<warlock_pet_t*>( player ); }
 
   virtual void player_buff()
   {
@@ -1256,6 +1268,9 @@ struct warlock_pet_spell_t : public spell_t
     may_crit = true;
     crit_multiplier *= 1.33;
   }
+
+  warlock_pet_t* p() const
+  { return static_cast<warlock_pet_t*>( player ); }
 
   virtual void player_buff()
   {

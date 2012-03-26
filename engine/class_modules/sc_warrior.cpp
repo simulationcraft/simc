@@ -399,6 +399,9 @@ struct warrior_attack_t : public attack_t
     _init_warrior_attack_t();
   }
 
+  warrior_t* p() const
+  { return static_cast<warrior_t*>( player ); }
+
   void _init_warrior_attack_t()
   {
     may_crit   = true;
@@ -2503,6 +2506,9 @@ struct warrior_spell_t : public spell_t
   {
     _init_warrior_spell_t();
   }
+
+  warrior_t* p() const
+  { return static_cast<warrior_t*>( player ); }
 
   void _init_warrior_spell_t()
   {
