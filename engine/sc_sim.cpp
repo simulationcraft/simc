@@ -32,9 +32,9 @@ struct sim_signal_handler_t
   {
     if ( global_sim )
     {
-      const char* name_str.c_str = strsignal( signal );
+      const char* name = strsignal( signal );
       fprintf( stderr, "sim_signal_handler: %s! Seed=%d Iteration=%d\n",
-               name_str.c_str, global_sim -> seed, global_sim -> current_iteration );
+               name, global_sim -> seed, global_sim -> current_iteration );
       fflush( stderr );
     }
     exit( 0 );
