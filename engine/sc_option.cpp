@@ -404,7 +404,6 @@ bool option_t::parse_token( sim_t*       sim,
 // option_t::merge ==========================================================
 
 namespace {
-{
 inline void merge_some( std::vector<option_t>& out, const option_t* in )
 {
   if ( ! in ) return;
