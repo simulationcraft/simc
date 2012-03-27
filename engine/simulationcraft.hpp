@@ -137,7 +137,7 @@ static const bool warrior       = true;
 #define MAX_PLAYERS_PER_CHART 20
 
 // TODO: Integer time is only partially working.
-//#define SC_USE_INTEGER_TIME
+#define SC_USE_INTEGER_TIME
 
 // Forward Declarations =====================================================
 
@@ -1233,71 +1233,71 @@ public:
 public:
   timespan_t() : time( 0 ) { }
 
-  bool operator==( const timespan_t right ) const { return time == right.time; }
-  bool operator!=( const timespan_t right ) const { return time != right.time; }
+  inline bool operator==( const timespan_t right ) const { return time == right.time; }
+  inline bool operator!=( const timespan_t right ) const { return time != right.time; }
 
-  bool operator>( const timespan_t right ) const { return time > right.time; }
-  bool operator>=( const timespan_t right ) const { return time >= right.time; }
-  bool operator<( const timespan_t right ) const { return time < right.time; }
-  bool operator<=( const timespan_t right ) const { return time <= right.time; }
+  inline bool operator>( const timespan_t right ) const { return time > right.time; }
+  inline bool operator>=( const timespan_t right ) const { return time >= right.time; }
+  inline bool operator<( const timespan_t right ) const { return time < right.time; }
+  inline bool operator<=( const timespan_t right ) const { return time <= right.time; }
 
-  timespan_t & operator+=( const timespan_t right )
+  inline timespan_t & operator+=( const timespan_t right )
   {
     time += right.time;
     return *this;
   }
-  timespan_t operator-=( const timespan_t right )
+  inline timespan_t operator-=( const timespan_t right )
   {
     time -= right.time;
     return *this;
   }
-  timespan_t operator*=( const double right )
+  inline timespan_t operator*=( const double right )
   {
     time = ( time_t )( time * right );
     return *this;
   }
-  timespan_t operator*=( const int32_t right )
+  inline timespan_t operator*=( const int32_t right )
   {
     time *= right;
     return *this;
   }
-  timespan_t operator*=( const int64_t right )
+  inline timespan_t operator*=( const int64_t right )
   {
     time = ( time_t )( time * right );
     return *this;
   }
-  timespan_t operator*=( const uint32_t right )
+  inline timespan_t operator*=( const uint32_t right )
   {
     time *= right;
     return *this;
   }
-  timespan_t operator*=( const uint64_t right )
+  inline timespan_t operator*=( const uint64_t right )
   {
     time = ( time_t )( time * right );
     return *this;
   }
 
-  timespan_t operator/=( const double right )
+  inline timespan_t operator/=( const double right )
   {
     time = ( time_t )( time / right );
     return *this;
   }
-  timespan_t operator/=( const int32_t right )
+  inline timespan_t operator/=( const int32_t right )
   {
     time /= right;
     return *this;
   }
-  timespan_t operator/=( const int64_t right )
+  inline timespan_t operator/=( const int64_t right )
   {
     time = ( time_t )( time / right );
     return *this;
   }
-  timespan_t operator/=( const uint32_t right )
+  inline timespan_t operator/=( const uint32_t right )
   {
     time /= right;
     return *this;
   }
-  timespan_t operator/=( const uint64_t right )
+  inline timespan_t operator/=( const uint64_t right )
   {
     time = ( time_t )( time / right );
     return *this;
@@ -5195,7 +5195,8 @@ struct action_state_t
   action_state_t* next;
 
   action_state_t( action_t*, player_t* );
-
+  virtual ~action_state_t() {};
+  
   virtual void take_state( uint32_t );
   virtual void copy_state( const action_state_t* );
   virtual void debug() const;
