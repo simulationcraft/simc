@@ -99,6 +99,7 @@ class SpecializationEnumGenerator(DataGenerator):
                 enum_ids[ -1 ][ spec_data.f6 ] = { 'id': spec_id, 'name': spec_data.name }
         
         s = 'enum specialization_t {\n'
+        s += '  SPEC_NONE            = -1,\n'
         for cls in xrange(0, len(enum_ids) - 1):
             if enum_ids[cls][0] == None:
                 continue
@@ -304,32 +305,19 @@ class TalentDataGenerator(DataGenerator):
         DataGenerator.__init__(self, options)
 
         self._dbc = [ 'Spell', 'Talent' ]
-        if self._options.build < 15464:
-            self._dbc.append( 'TalentTab' )
-        else:
-            self._dbc.append( 'ChrSpecialization' )
+        self._dbc.append( 'ChrSpecialization' )
 
 
     def filter(self):
         ids = [ ]
 
         for talent_id, talent_data in self._talent_db.iteritems():
-            if self._options.build < 15464:
-                talent_tab = self._talenttab_db[talent_data.talent_tab]
-                if not talent_tab.id:
-                    continue
-
-                # Make sure the talent is a class  / pet associated one
-                if talent_tab.mask_class      not in DataGenerator._class_masks and \
-                   talent_tab.mask_pet_talent not in DataGenerator._pet_masks:
-                    continue
-
             # Make sure at least one spell id is defined
-            if talent_data.id_rank_1 == 0: 
+            if talent_data.id_spell == 0: 
                 continue
 
             # Make sure the "base spell" exists
-            if not self._spell_db.get(talent_data.id_rank_1):
+            if not self._spell_db.get(talent_data.id_spell):
                 continue
 
             ids.append(talent_id)
@@ -353,10 +341,8 @@ class TalentDataGenerator(DataGenerator):
         index = 0
         for id in ids + [ 0 ]:
             talent     = self._talent_db[id]
-            if self._options.build < 15464:
-                talent_tab = self._talenttab_db[talent.talent_tab]
-            spell      = self._spell_db[talent.id_rank_1]
-            if not spell.id and talent.id_rank_1 > 0:
+            spell      = self._spell_db[talent.id_spell]
+            if not spell.id and talent.id_spell > 0:
                 continue
 
             if( index % 20 == 0 ):
@@ -365,34 +351,26 @@ class TalentDataGenerator(DataGenerator):
             fields = spell.field('name')
             fields += talent.field('id')
             fields += [ '%#.2x' % 0 ]
-            if self._options.build < 15464:
-                fields += talent_tab.field('tab_page', 'mask_class', 'mask_pet_talent')
-                fields += talent.field('talent_depend', 'depend_rank')
+            fields += [ '%2u' % 0 ]
+            # These are now the pet talents
+            if talent.spec_id > 0:
+                fields += [ '%#.04x' % 0 ]
+                # Do this ugly for now
+                # _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
+                # _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
+                if talent.spec_id == 74:
+                    fields += [ '%#.02x' % 0x1 ]
+                elif talent.spec_id == 79:
+                    fields += [ '%#.02x' % 0x2 ]
+                elif talent.spec_id == 81:
+                    fields += [ '%#.02x' % 0x4 ]
             else:
-                fields += [ '%2u' % 0 ]
-                # These are now the pet talents
-                if talent.spec_id > 0:
-                    fields += [ '%#.04x' % 0 ]
-                    # Do this ugly for now
-                    # _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
-                    # _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
-                    if talent.spec_id == 74:
-                        fields += [ '%#.02x' % 0x1 ]
-                    elif talent.spec_id == 79:
-                        fields += [ '%#.02x' % 0x2 ]
-                    elif talent.spec_id == 81:
-                        fields += [ '%#.02x' % 0x4 ]
-                else:
-                    fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
-                    fields += [ '%#.02x' % 0 ]
-                
-                fields += self._talent_db[0].field('talent_depend', 'depend_rank')
-            
-            fields += talent.field('col', 'row')
-            if self._options.build < 15464:
-                fields += [ '{ %s }' % ', '.join(talent.field('id_rank_1', 'id_rank_2', 'id_rank_3')) ]
-            else:
-                fields += [ '{ %s }' % ', '.join(talent.field( 'id_rank_1' ) + self._talent_db[0].field( 'id_rank_1', 'id_rank_1' )) ]
+                fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
+                fields += [ '%#.02x' % 0 ]
+                           
+            fields += self._talent_db[0].field('id_replace', 'unk_15464_3')
+            fields += talent.field('col','row')
+            fields += [ '{ %s }' % ', '.join(talent.field( 'id_spell' ) + self._talent_db[0].field( 'id_spell', 'id_spell' )) ]
             # Pad struct with empty pointers for direct rank based spell data access
             fields += [ '0', '0', '0' ]
         
@@ -1026,44 +1004,41 @@ class SpellDataGenerator(DataGenerator):
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
             'Item', 'SpellEquippedItems', 'SpellIcon' ]
 
-        if options.build < 15464:
-            self._dbc.append( 'TalentTab' )
-        else:
-            self._dbc.append( 'SpecializationSpells')
-            self._dbc.append( 'ChrSpecialization' )
-            self._dbc.append( 'SpellEffectScaling' )
-            
-            # Mop General skill categories
-            self._skill_categories = [
-                  0,
-                840,    # Warrior
-                800,    # Paladin
-                795,    # Hunter
-                921,    # Rogue
-                804,    # Priest
-                796,    # Death Knight
-                924,    # Shaman
-                904,    # Mage
-                849,    # Warlock
-                829,    # Monk
-                798,    # Druid
-            ]
-            
-            # MoP Spec specific categories
-            self._spec_skill_categories = [
-                (),
-                (  71,  72,  73,   0 ), # Warrior
-                (  65,  66,  70,   0 ), # Paladin
-                ( 254, 255, 256,   0 ), # Hunter
-                ( 259, 260, 261,   0 ), # Rogue
-                ( 256, 257, 258,   0 ), # Priest
-                ( 250, 251, 252,   0 ), # Death Knight
-                ( 262, 263, 264,   0 ), # Shaman
-                (  62,  63,  64,   0 ), # Mage
-                ( 265, 266, 267,   0 ), # Warlock
-                ( 268, 270, 269,   0 ), # Monk
-                ( 102, 103, 104, 105 ), # Druid
-            ]
+        self._dbc.append( 'SpecializationSpells')
+        self._dbc.append( 'ChrSpecialization' )
+        self._dbc.append( 'SpellEffectScaling' )
+        
+        # Mop General skill categories
+        self._skill_categories = [
+              0,
+            840,    # Warrior
+            800,    # Paladin
+            795,    # Hunter
+            921,    # Rogue
+            804,    # Priest
+            796,    # Death Knight
+            924,    # Shaman
+            904,    # Mage
+            849,    # Warlock
+            829,    # Monk
+            798,    # Druid
+        ]
+        
+        # MoP Spec specific categories
+        self._spec_skill_categories = [
+            (),
+            (  71,  72,  73,   0 ), # Warrior
+            (  65,  66,  70,   0 ), # Paladin
+            ( 254, 255, 256,   0 ), # Hunter
+            ( 259, 260, 261,   0 ), # Rogue
+            ( 256, 257, 258,   0 ), # Priest
+            ( 250, 251, 252,   0 ), # Death Knight
+            ( 262, 263, 264,   0 ), # Shaman
+            (  62,  63,  64,   0 ), # Mage
+            ( 265, 266, 267,   0 ), # Warlock
+            ( 268, 270, 269,   0 ), # Monk
+            ( 102, 103, 104, 105 ), # Druid
+        ]
 
         DataGenerator.__init__(self, options)
 
@@ -1106,27 +1081,26 @@ class SpellDataGenerator(DataGenerator):
             spell.add_effect(spell_effect_data)
         
         # Map Spell effect scaling to Spell Effects
-        if self._options.build >= 15464:
-            for ses_id,ses_data in self._spelleffectscaling_db.iteritems():
-                if not ses_data.id_effect:
-                    continue
+        for ses_id,ses_data in self._spelleffectscaling_db.iteritems():
+            if not ses_data.id_effect:
+                continue
 
-                effect = self._spelleffect_db[ses_data.id_effect]
-                if not effect.id:
-                    continue
+            effect = self._spelleffect_db[ses_data.id_effect]
+            if not effect.id:
+                continue
 
-                effect.scaling = ses_data
+            effect.scaling = ses_data
 
-            # Map Spell powers to spell ids
-            for spell_power_id, spell_power_data in self._spellpower_db.iteritems():
-                if not spell_power_data.id_spell:
-                    continue
-            
-                spell = self._spell_db[spell_power_data.id_spell]
-                if not spell.id:
-                    continue
-            
-                spell.add_power(spell_power_data)
+        # Map Spell powers to spell ids
+        for spell_power_id, spell_power_data in self._spellpower_db.iteritems():
+            if not spell_power_data.id_spell:
+                continue
+        
+            spell = self._spell_db[spell_power_data.id_spell]
+            if not spell.id:
+                continue
+        
+            spell.add_power(spell_power_data)
         
         return True
     
@@ -1280,28 +1254,12 @@ class SpellDataGenerator(DataGenerator):
 
         # First, get spells from talents. Pet and character class alike
         for talent_id, talent_data in self._talent_db.iteritems():
-            if self._options.build < 15464:
-                talent_tab = self._talenttab_db[talent_data.talent_tab]
-                if not talent_tab.id:
-                    continue
-
-                # Make sure the talent is a class  / pet associated one
-                if talent_tab.mask_class      not in DataGenerator._class_masks and \
-                   talent_tab.mask_pet_talent not in DataGenerator._pet_masks:
-                    continue
-
-                # Get all talents that have spell ranks associated with them
-                for rank in xrange(1, 4):
-                    filter_list = { }
-                    id = getattr(talent_data, 'id_rank_%d' % rank)
-                    self.process_spell(id, ids, talent_tab.mask_class, 0)
-            else:
-                mask_class = 0
-                
-                # These may now be pet talents
-                if talent_data.class_id > 0:
-                    mask_class = DataGenerator._class_masks[talent_data.class_id]
-                    self.process_spell(getattr(talent_data, 'id_rank_1'), ids, mask_class, 0)
+            mask_class = 0
+            
+            # These may now be pet talents
+            if talent_data.class_id > 0:
+                mask_class = DataGenerator._class_masks[talent_data.class_id]
+                self.process_spell(getattr(talent_data, 'id_spell'), ids, mask_class, 0)
 
         # Get base skills from SkillLineAbility
         for ability_id, ability_data in self._skilllineability_db.iteritems():
@@ -1330,33 +1288,32 @@ class SpellDataGenerator(DataGenerator):
             self.process_spell(spell.id, ids, ability_data.mask_class or mask_class_category, ability_data.mask_race or mask_race_category)
 
         # Get specialization skills from SpecializationSpells and masteries from ChrSpecializations
-        if self._options.build >= 15464:
-            for spec_id, spec_spell_data in self._specializationspells_db.iteritems():
-                # Guess class based on specialization category identifier
-                spec_data = self._chrspecialization_db[spec_spell_data.spec_id]
-                if spec_data.id == 0:
-                    continue
+        for spec_id, spec_spell_data in self._specializationspells_db.iteritems():
+            # Guess class based on specialization category identifier
+            spec_data = self._chrspecialization_db[spec_spell_data.spec_id]
+            if spec_data.id == 0:
+                continue
 
-                spell = self._spell_db[spec_spell_data.spell_id]
-                if not spell.id:
-                    continue
-                
-                mask_class = 0
-                if spec_data.class_id > 0:
-                    mask_class = DataGenerator._class_masks[spec_data.class_id]
-                # Hunter pet classes have a class id of 0, tag them as "hunter spells" like before
-                else:
-                    mask_class = DataGenerator._class_masks[3]
-                
-                self.process_spell(spell.id, ids, mask_class, 0)
+            spell = self._spell_db[spec_spell_data.spell_id]
+            if not spell.id:
+                continue
             
-            for spec_id, spec_data in self._chrspecialization_db.iteritems():
-                s = self._spell_db[spec_data.id_mastery]
-                if s.id == 0:
-                    continue
-                
-                if s.flags_12694 & 0x20000000:
-                    self.process_spell(s.id, ids, DataGenerator._class_masks[spec_data.class_id], 0)
+            mask_class = 0
+            if spec_data.class_id > 0:
+                mask_class = DataGenerator._class_masks[spec_data.class_id]
+            # Hunter pet classes have a class id of 0, tag them as "hunter spells" like before
+            else:
+                mask_class = DataGenerator._class_masks[3]
+            
+            self.process_spell(spell.id, ids, mask_class, 0)
+        
+        for spec_id, spec_data in self._chrspecialization_db.iteritems():
+            s = self._spell_db[spec_data.id_mastery]
+            if s.id == 0:
+                continue
+            
+            if s.flags_12694 & 0x20000000:
+                self.process_spell(s.id, ids, DataGenerator._class_masks[spec_data.class_id], 0)
         
 
         # Get spells relating to item enchants, so we can populate a (nice?) list
@@ -1555,13 +1512,10 @@ class SpellDataGenerator(DataGenerator):
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
             fields += spell.field('prj_speed', 'mask_school')
-            if self._options.build < 15464:
-                fields += spell.field('type_power')
+            if spell.power:
+                fields += spell.power.field('type_power')
             else:
-                if spell.power:
-                    fields += spell.power.field('type_power')
-                else:
-                    fields += self._spellpower_db[0].field('type_power')                
+                fields += self._spellpower_db[0].field('type_power')                
 
             # Hack in the combined class from the id_tuples dict
             fields += [ '%#.3x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
@@ -1585,13 +1539,10 @@ class SpellDataGenerator(DataGenerator):
             fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
             fields += self._spellcategories_db[spell.id_categories].field('category')
             fields += self._spellduration_db[spell.id_duration].field('duration_1')
-            if self._options.build < 15464:
-                fields += self._spellpower_db[spell.id_power].field('power_cost')
+            if spell.power:
+                fields += spell.power.field('power_cost')
             else:
-                if spell.power:
-                    fields += spell.power.field('power_cost')
-                else:
-                    fields += self._spellpower_db[0].field('power_cost')                
+                fields += self._spellpower_db[0].field('power_cost')                
             fields += _rune_cost(self, None, self._spellrunecost_db[spell.id_rune_cost], '%#.3x'),
             fields += self._spellrunecost_db[spell.id_rune_cost].field('rune_power_gain')
             fields += self._spellauraoptions_db[spell.id_aura_opt].field(
@@ -1611,14 +1562,9 @@ class SpellDataGenerator(DataGenerator):
             s_effect = []
             effect_ids = []
             for effect in spell._effects:
-                if self._options.build < 15464:
-                    if effect and ids.get(id, { 'effect_list': [ True, True, True ] })['effect_list'][effect.index]:
-                        effects.add( ( effect.id, spell.id_scaling ) )
-                        effect_ids.append( '%u' % effect.id )
-                else:
-                    if effect and ids.get(id, { 'effect_list': [ False ] })['effect_list'][effect.index]:
-                        effects.add( ( effect.id, spell.id_scaling ) )
-                        effect_ids.append( '%u' % effect.id )
+                if effect and ids.get(id, { 'effect_list': [ False ] })['effect_list'][effect.index]:
+                    effects.add( ( effect.id, spell.id_scaling ) )
+                    effect_ids.append( '%u' % effect.id )
 
             # Add spell flags
             fields += [ '{ %s }' % ', '.join(spell.field('flags', 'flags_1', 'flags_2', 'flags_3', 'flags_4', 'flags_5', 'flags_6', 'flags_7', 'flags_12694', 'flags_8')) ]
@@ -1680,14 +1626,10 @@ class SpellDataGenerator(DataGenerator):
                 tmp_fields += [ '%-*s' % ( constants.effect_subtype_maxlen, 'A_%d' % effect.sub_type ) ]
 
             fields += tmp_fields
-            if self._options.build < 15464:
-                fields += self._spellscaling_db[effect_data[1]].field(
-                    'e%d_average' % (effect.index + 1), 'e%d_delta' % (effect.index + 1), 'e%d_bcp' % (effect.index + 1))
+            if effect.scaling == None:
+                fields += self._spelleffectscaling_db[0].field('average', 'delta', 'bonus')
             else:
-                if effect.scaling == None:
-                    fields += self._spelleffectscaling_db[0].field('average', 'delta', 'bonus')
-                else:
-                    fields += effect.scaling.field('average', 'delta', 'bonus')
+                fields += effect.scaling.field('average', 'delta', 'bonus')
             fields += effect.field('coefficient', 'amplitude')
             fields += self._spellradius_db[effect.id_radius].field('radius_1')
             fields += self._spellradius_db[effect.id_radius_max].field('radius_1')
@@ -1709,30 +1651,21 @@ class MasteryAbilityGenerator(DataGenerator):
         
         self._dbc = [ 'Spell' ]
 
-        if self._options.build < 15464:
-            self._dbc.append( 'SkillLineAbility' )
-        else:
-            self._dbc.append( 'ChrSpecialization' )
+        self._dbc.append( 'ChrSpecialization' )
 
     def filter(self):
         ids = {}
-        if self._options.build < 15464:
-            for k, v in self._skilllineability_db.iteritems():
-                s = self._spell_db[v.id_spell]
-                if s.flags_12694 & 0x20000000:
-                    ids[v.id_spell] = { 'mask_class' : v.mask_class, 'category' : v.id_skill }
-        else:
-            for k, v in self._chrspecialization_db.iteritems():
-                if v.class_id == 0:
-                    continue
-                
-                s = self._spell_db[v.id_mastery]
-                if s.id == 0:
-                    continue
-                
-                if s.flags_12694 & 0x20000000:
-                    ids[v.id_mastery] = { 'mask_class' : v.class_id, 'category' : v.spec_id, 'spec_name' : v.name }
-                
+        for k, v in self._chrspecialization_db.iteritems():
+            if v.class_id == 0:
+                continue
+            
+            s = self._spell_db[v.id_mastery]
+            if s.id == 0:
+                continue
+            
+            if s.flags_12694 & 0x20000000:
+                ids[v.id_mastery] = { 'mask_class' : v.class_id, 'category' : v.spec_id, 'spec_name' : v.name }
+            
         return ids
 
     def generate(self, ids = None):
@@ -1754,18 +1687,7 @@ class MasteryAbilityGenerator(DataGenerator):
         ]
         
         for k, v in ids.iteritems():
-            if self._options.build < 15464:
-                if v['mask_class'] == 0:
-                    for cls in xrange(0, len(SpellDataGenerator._skill_categories)):
-                        if v['category'] == SpellDataGenerator._skill_categories[cls]:
-                            mastery_class = cls
-                            break
-                else:
-                    mastery_class = self._class_map[v['mask_class']]
-        
-                keys[mastery_class][0].append( ( self._spell_db[k].name, k, "Generic" ) )
-            else:
-                keys[v['mask_class']][v['category']].append( ( self._spell_db[k].name, k, v['spec_name'] ) )
+            keys[v['mask_class']][v['category']].append( ( self._spell_db[k].name, k, v['spec_name'] ) )
         
         
         # Find out the maximum size of a key array
@@ -2077,10 +1999,7 @@ class SpellListGenerator(SpellDataGenerator):
         SpellDataGenerator.__init__(self, options)
 
         # Add SkillLine so we can fancy output
-        if self._options.build < 15464:
-            self._dbc += [ 'SkillLine' ]
-        else:
-            self._dbc += [ 'ChrSpecialization' ]
+        self._dbc += [ 'ChrSpecialization' ]
         
         # Blacklist glyphs for this
         #SpellDataGenerator._skill_category_blacklist += [ 810 ]
@@ -2113,12 +2032,8 @@ class SpellListGenerator(SpellDataGenerator):
             return False;
         
         # Skip spells without any resource cost and category
-        if self._options.build < 15464:
-            if spell.id_power == 0 and spell.id_rune_cost == 0 and spell.id_categories == 0:
-                return False
-        else:
-            if (not spell.power or spell.power.power_cost == 0) and spell.id_rune_cost == 0 and spell.id_categories == 0:
-                return False
+        if (not spell.power or spell.power.power_cost == 0) and spell.id_rune_cost == 0 and spell.id_categories == 0:
+            return False
         
         # Make sure rune cost makes sense, even if the rune cost id is valid
         if spell.id_rune_cost > 0:
