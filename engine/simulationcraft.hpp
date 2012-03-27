@@ -5889,19 +5889,29 @@ struct buff_uptime_t : public uptime_common_t
 
 struct gain_t
 {
-  double actual, overflow, count;
+  double actual[ RESOURCE_MAX ], overflow[ RESOURCE_MAX ], count[ RESOURCE_MAX ];
 
   const std::string name_str;
-  resource_type type;
   gain_t* next;
 
   gain_t( const std::string& n ) :
-    actual( 0 ), overflow( 0 ), count( 0 ), name_str( n ), type( RESOURCE_NONE )
-  {}
-
-  void add( double a, double o=0 ) { actual += a; overflow += o; count++; }
-  void merge( const gain_t* other ) { actual += other -> actual; overflow += other -> overflow; count += other -> count; }
-  void analyze( const sim_t* sim ) { actual /= sim -> iterations; overflow /= sim -> iterations; count /= sim -> iterations; }
+     name_str( n )
+  {
+    range::fill( actual, 0.0 );
+    range::fill( overflow, 0.0 );
+    range::fill( count, 0.0 );
+  }
+  void add( resource_type rt, double a, double o=0 ) { actual[ rt ] += a; overflow[ rt ] += o; count[ rt ]++; }
+  void merge( const gain_t* other )
+  {
+    for( size_t i=0;i<RESOURCE_MAX;i++)
+      { actual[i] += other -> actual[i]; overflow[i] += other -> overflow[i]; count[i] += other -> count[i]; }
+  }
+  void analyze( const sim_t* sim )
+  {
+    for( size_t i=0;i<RESOURCE_MAX;i++)
+      { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
+  }
   const char* name() const { return name_str.c_str(); }
 };
 

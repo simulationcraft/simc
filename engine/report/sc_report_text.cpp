@@ -364,9 +364,22 @@ void print_text_defense_stats( FILE* file, player_t* p )
                    100 * p -> buffed_crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ) );
 }
 
+void print_text_gains( FILE* file, gain_t* g, int max_length )
+{
+  for( size_t i = 0; i < RESOURCE_MAX; i++ )
+  {
+    if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
+    {
+      util_t::fprintf( file, "    %8.1f : %-*s (%s)", g -> actual[ i ], max_length, g -> name(),  util_t::resource_type_string( i ) );
+      double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
+      if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
+      util_t::fprintf( file, "\n" );
+    }
+  }
+}
 // print_text_gains =========================================================
 
-void print_text_gains( FILE* file, player_t* p )
+void print_text_player_gains( FILE* file, player_t* p )
 {
   int max_length = 0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
@@ -383,13 +396,7 @@ void print_text_gains( FILE* file, player_t* p )
 
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if ( g -> actual > 0 || g -> overflow > 0 )
-    {
-      util_t::fprintf( file, "    %8.1f : %-*s", g -> actual, max_length, g -> name() );
-      double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-      if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
-      util_t::fprintf( file, "\n" );
-    }
+    print_text_gains( file, g, max_length );
   }
 }
 
@@ -416,14 +423,7 @@ void print_text_pet_gains( FILE* file, player_t* p )
 
       for ( gain_t* g = pet -> gain_list; g; g = g -> next )
       {
-        if ( g -> actual > 0 || g -> overflow > 0 )
-        {
-          util_t::fprintf( file, "    %7.1f : %-*s", g -> actual, max_length, g -> name() );
-          double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-          if ( overflow_pct > 1.0 )
-            util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
-          util_t::fprintf( file, "\n" );
-        }
+        print_text_gains( file, g, max_length );
       }
     }
   }
@@ -803,7 +803,7 @@ void print_text_player( FILE* file, player_t* p )
   print_text_buffs        ( file, p );
   print_text_uptime       ( file, p );
   print_text_procs        ( file, p );
-  print_text_gains        ( file, p );
+  print_text_player_gains ( file, p );
   print_text_pet_gains    ( file, p );
   print_text_scale_factors( file, p );
   print_text_dps_plots    ( file, p );

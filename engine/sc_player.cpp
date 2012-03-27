@@ -2951,8 +2951,7 @@ void player_t::combat_begin()
 
   if ( primary_resource() == RESOURCE_MANA )
   {
-    get_gain( "initial_mana" ) -> add( resource_max[ RESOURCE_MANA ] );
-    get_gain( "initial_mana" ) -> type = RESOURCE_MANA;
+    get_gain( "initial_mana" ) -> add( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] );
   }
 
   if ( primary_role() == ROLE_TANK && !is_enemy() && ! is_add() )
@@ -3718,17 +3717,7 @@ double player_t::resource_gain( int       resource,
 
   if ( source )
   {
-    if ( source -> type == RESOURCE_NONE )
-      source -> type = ( resource_type ) resource;
-
-    if ( resource != source -> type )
-    {
-      sim -> errorf( "player_t::resource_gain: player=%s gain=%s resource_gain type not identical to gain resource type..\n resource=%s gain=%s",
-                     name(), source -> name_str.c_str(), util_t::resource_type_string( resource ), util_t::resource_type_string( source -> type ) );
-      assert ( 0 );
-    }
-
-    source -> add( actual_amount, amount - actual_amount );
+    source -> add( static_cast<resource_type>( resource ), actual_amount, amount - actual_amount );
   }
 
   action_callback_t::trigger( resource_gain_callbacks[ resource ], action, ( void* ) &actual_amount );

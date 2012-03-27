@@ -1250,6 +1250,41 @@ void print_html_player_statistics( FILE* file, player_t* p )
            dps_error_str.c_str() );
 }
 
+void print_html_gain( FILE* file, gain_t* g )
+{
+
+  for( size_t i = 0; i < RESOURCE_MAX; i++ )
+  {
+  if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
+  {
+    double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr" );
+    if ( !( i & 1 ) )
+    {
+      fprintf( file, " class=\"odd\"" );
+    }
+    fprintf( file, ">\n" );
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+             "\t\t\t\t\t\t\t</tr>\n",
+             g -> name(),
+             util_t::resource_type_string( i ),
+             g -> count[ i ],
+             g -> actual[ i ],
+             g -> actual[ i ] / g -> count[ i ],
+             g -> overflow[ i ],
+             overflow_pct );
+    i++;
+  }
+  }
+}
 // print_html_player_resources ==============================================
 
 void print_html_player_resources( FILE* file, player_t* p )
@@ -1328,34 +1363,7 @@ void print_html_player_resources( FILE* file, player_t* p )
   i = 1;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if ( g -> actual > 0 || g -> overflow > 0 )
-    {
-      double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t<tr" );
-      if ( !( i & 1 ) )
-      {
-        fprintf( file, " class=\"odd\"" );
-      }
-      fprintf( file, ">\n" );
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
-               "\t\t\t\t\t\t\t</tr>\n",
-               g -> name(),
-               util_t::resource_type_string( g -> type ),
-               g -> count,
-               g -> actual,
-               g -> actual / g -> count,
-               g -> overflow,
-               overflow_pct );
-      i++;
-    }
+    print_html_gain( file, g );
   }
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
@@ -1375,25 +1383,8 @@ void print_html_player_resources( FILE* file, player_t* p )
                    "\t\t\t\t\t\t\t</tr>\n",
                    pet -> name_str.c_str() );
         }
-        double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
-        fprintf( file,
-                 "\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-                 "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-                 "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                 "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                 "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                 "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                 "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
-                 "\t\t\t\t\t\t\t</tr>\n",
-                 g -> name(),
-                 util_t::resource_type_string( g -> type ),
-                 g -> count,
-                 g -> actual,
-                 g -> actual / g -> count,
-                 g -> overflow,
-                 overflow_pct );
       }
+      print_html_gain( file, g );
     }
   }
   fprintf( file,
@@ -1408,8 +1399,8 @@ void print_html_player_resources( FILE* file, player_t* p )
     double total_gain=0;
     for ( gain_t* g = p -> gain_list; g; g = g -> next )
     {
-      if ( g -> actual > 0 && g -> type == i )
-        total_gain += g -> actual;
+      if ( g -> actual[ i ] > 0 )
+        total_gain += g -> actual[ i ];
     }
 
     if ( total_gain > 0 )

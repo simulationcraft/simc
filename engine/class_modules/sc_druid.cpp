@@ -1040,8 +1040,7 @@ void druid_cat_attack_t::consume_resource()
     double amount = attack_t::cost();
     if ( amount > 0 )
     {
-      p -> gains_omen_of_clarity -> add( amount );
-      p -> gains_omen_of_clarity -> type = RESOURCE_ENERGY;
+      p -> gains_omen_of_clarity -> add( RESOURCE_ENERGY, amount );
       p -> buffs_omen_of_clarity -> expire();
     }
   }
@@ -1622,8 +1621,7 @@ struct ravage_t : public druid_cat_attack_t
       double amount = attack_t::cost();
       if ( amount > 0 )
       {
-        p -> gains_omen_of_clarity -> add( amount );
-        p -> gains_omen_of_clarity -> type = RESOURCE_ENERGY;
+        p -> gains_omen_of_clarity -> add( RESOURCE_ENERGY, amount );
         p -> buffs_omen_of_clarity -> expire();
       }
     }
@@ -1943,8 +1941,7 @@ void druid_bear_attack_t::consume_resource()
     double amount = attack_t::cost();
     if ( amount > 0 )
     {
-      p -> gains_omen_of_clarity -> add( amount );
-      p -> gains_omen_of_clarity -> type = RESOURCE_RAGE;
+      p -> gains_omen_of_clarity -> add( RESOURCE_RAGE, amount );
       p -> buffs_omen_of_clarity -> expire();
     }
   }
@@ -2355,8 +2352,7 @@ void druid_heal_t::consume_resource()
     double amount = heal_t::cost();
     if ( amount > 0 )
     {
-      p -> gains_omen_of_clarity -> add( amount );
-      p -> gains_omen_of_clarity -> type = RESOURCE_MANA;
+      p -> gains_omen_of_clarity -> add( RESOURCE_MANA, amount );
       p -> buffs_omen_of_clarity -> expire();
     }
   }
@@ -2932,8 +2928,7 @@ void druid_spell_t::consume_resource()
     double amount = spell_t::cost();
     if ( amount > 0 )
     {
-      p -> gains_omen_of_clarity -> add( amount );
-      p -> gains_omen_of_clarity -> type = RESOURCE_MANA;
+      p -> gains_omen_of_clarity -> add( RESOURCE_MANA, amount );
       p -> buffs_omen_of_clarity -> expire();
     }
   }

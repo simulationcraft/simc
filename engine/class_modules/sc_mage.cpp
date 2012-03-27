@@ -1177,8 +1177,7 @@ void mage_spell_t::consume_resource()
     if ( amount > 0 )
     {
       p -> buffs_clearcasting -> expire();
-      p -> gains_clearcasting -> add( amount );
-      p -> gains_clearcasting -> type = RESOURCE_MANA;
+      p -> gains_clearcasting -> add( RESOURCE_MANA, amount );
     }
   }
 }

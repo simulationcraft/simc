@@ -665,15 +665,18 @@ void print_xml_player_gains( xml_writer_t & writer, player_t * p )
 
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if ( g -> actual > 0 || g -> overflow > 0 )
+    for( size_t i = 0; i < RESOURCE_MAX; i++ )
+    {
+    if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {
       writer.begin_tag( "gain" );
       writer.print_attribute( "name", g -> name() );
-      writer.print_attribute( "actual", util_t::to_string( g -> actual, 1 ) );
-      double overflow_pct = 100.0 * g -> overflow / ( g -> actual + g -> overflow );
+      writer.print_attribute( "actual", util_t::to_string( g -> actual[ i ], 1 ) );
+      double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
       if ( overflow_pct > 1.0 )
         writer.print_attribute( "overflow_pct", util_t::to_string( overflow_pct, 1 ) );
       writer.end_tag();
+    }
     }
   }
 
