@@ -209,7 +209,8 @@ static std::string spell_flags( sim_t* /* sim */, const spell_data_t* spell )
 std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
                                                  const spell_data_t*       spell,
                                                  const spelleffect_data_t* e,
-                                                 std::ostringstream&       s )
+                                                 std::ostringstream&       s,
+                                                 int level )
 {
   char tmp_buffer[512],
        tmp_buffer2[64];
@@ -305,8 +306,8 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   s << "               Base Value: ";
   double v_min = 0, v_max = 0;
 
-  v_min = sim -> dbc.effect_min( e -> id(), 85 );
-  v_max = sim -> dbc.effect_max( e -> id(), 85 );
+  v_min = sim -> dbc.effect_min( e -> id(), level );
+  v_max = sim -> dbc.effect_max( e -> id(), level );
 
   s << v_min;
   if ( v_min != v_max )
@@ -316,7 +317,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
     s << " (" << e -> base_value() << ")";
 
   if ( e -> m_unk() )
-    s << " | Bonus Value: " << sim -> dbc.effect_bonus( e -> id(), 85 );
+    s << " | Bonus Value: " << sim -> dbc.effect_bonus( e -> id(), level );
 
   if ( e -> real_ppl() != 0 )
   {
@@ -366,7 +367,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   return s;
 }
 
-std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
+std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int level )
 {
   std::ostringstream s;
   player_type pt = PLAYER_NONE;
@@ -411,14 +412,14 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     {
       double base_mana = rating_t::get_attribute_base( sim,
                                                        sim -> dbc,
-                                                       85,
+                                                       level,
                                                        pt,
                                                        RACE_NONE,
                                                        BASE_STAT_MANA );
 
       s << spell -> _cost << ( spell -> _power_type == 0 ? "% " : " " ) << _resource_strings[ spell -> _power_type + 2 ];
       if ( spell -> _power_type == 0 )
-        s << " (" << floor( spell -> cost() * base_mana ) << " mana @" << 85 << ")";
+        s << " (" << floor( spell -> cost() * base_mana ) << " mana @" << level << ")";
 
       s << std::endl;
     }
@@ -462,7 +463,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
     s << "Cast Time    : ";
 
     if ( spell -> _cast_div )
-      s << spell -> cast_time( 85 ).total_seconds();
+      s << spell -> cast_time( level ).total_seconds();
     else if ( spell -> _cast_min != spell -> _cast_max )
       s << spell -> _cast_min / 1000.0 << " - " << spell -> _cast_max / 1000.0;
     else
@@ -546,7 +547,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell )
   return s.str();
 }
 
-std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent )
+std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent, int /* level */ )
 {
   std::ostringstream s;
 

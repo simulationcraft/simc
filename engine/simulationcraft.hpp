@@ -807,7 +807,7 @@ enum format_type
 
 // Data Access ==============================================================
 #ifndef MAX_LEVEL
-#define MAX_LEVEL (85)
+#define MAX_LEVEL (90)
 #endif
 
 #ifndef MAX_RANK
@@ -2531,10 +2531,10 @@ public:
 
 struct spell_info_t
 {
-  static std::string to_str( sim_t* sim, const spell_data_t* spell );
-  static std::string to_str( sim_t* sim, uint32_t spell_id );
-  static std::string talent_to_str( sim_t* sim, const talent_data_t* talent );
-  static std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s );
+  static std::string to_str( sim_t* sim, const spell_data_t* spell, int level=MAX_LEVEL );
+  //static std::string to_str( sim_t* sim, uint32_t spell_id, int level=MAX_LEVEL );
+  static std::string talent_to_str( sim_t* sim, const talent_data_t* talent, int level=MAX_LEVEL );
+  static std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level=MAX_LEVEL );
 };
 
 // Spell ID class
