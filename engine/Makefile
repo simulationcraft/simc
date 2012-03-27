@@ -138,7 +138,9 @@ SRC = \
 	class_modules$(PATHSEP)sc_priest.cpp \
 	class_modules$(PATHSEP)sc_rogue.cpp \
 	class_modules$(PATHSEP)sc_shaman.cpp \
+	class_modules$(PATHSEP)sc_warlock.hpp \
 	class_modules$(PATHSEP)sc_warlock.cpp \
+	class_modules$(PATHSEP)sc_warlock_pets.cpp \
 	class_modules$(PATHSEP)sc_warrior.cpp
 SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))

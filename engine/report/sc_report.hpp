@@ -1,3 +1,8 @@
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
 #ifndef SC_REPORT_HPP
 #define SC_REPORT_HPP
 
