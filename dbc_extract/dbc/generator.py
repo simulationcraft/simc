@@ -67,7 +67,7 @@ class DataGenerator(object):
 
     def generate(self, ids = None):
         return ''
-        
+
 class SpecializationEnumGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'ChrSpecialization' ]
@@ -92,15 +92,55 @@ class SpecializationEnumGenerator(DataGenerator):
             [ None, None, None, None ], # pets come here
         ]
         
+        spec_translations = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+        ]
+        
+        max_specialization = 0
         for spec_id, spec_data in self._chrspecialization_db.iteritems():
             if spec_data.class_id > 0:
-                enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_data.name }
+                spec_name = '%s_%s' % (
+                    DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
+                    spec_data.name.upper().replace(" ", "_"),
+                )
+                
+                if spec_data.spec_id > max_specialization:
+                    max_specialization = spec_data.spec_id
+                
+                for i in xrange(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
+                    enum_ids[ spec_data.class_id ].append( None )
+                
+                enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_name }
             else:
-                enum_ids[ -1 ][ spec_data.f6 ] = { 'id': spec_id, 'name': spec_data.name }
+                spec_name = 'PET_%s' % (
+                    spec_data.name.upper().replace(" ", "_")
+                )
+
+                if spec_data.spec_id > max_specialization:
+                    max_specialization = spec_data.spec_id
+
+                for i in xrange(0, (max_specialization + 1) - len(enum_ids[ -1 ] ) ):
+                    enum_ids[ -1 ].append( None )
+
+                enum_ids[ -1 ][ spec_data.f6 ] = { 'id': spec_id, 'name': spec_name }
         
-        s = 'enum specialization_t {\n'
-        s += '  SPEC_NONE            = -1,\n'
-        for cls in xrange(0, len(enum_ids) - 1):
+        s  = '#define MAX_SPECS_PER_CLASS (%u)\n' % (max_specialization + 1)
+        s += '#define MAX_SPEC_CLASS  (%u)\n\n' % len(enum_ids)
+        s += 'enum specialization_t {\n'
+        s += '  SPEC_NONE            = 0,\n'
+        for cls in xrange(0, len(enum_ids)):
             if enum_ids[cls][0] == None:
                 continue
             
@@ -108,25 +148,32 @@ class SpecializationEnumGenerator(DataGenerator):
                 if enum_ids[cls][spec] == None:
                     continue
 
-                enum_str = '  %s_%s%s= %u,\n' % (
-                    DataGenerator._class_names[cls].upper().replace(" ", "_"),
-                    enum_ids[cls][spec]['name'].upper().replace(" ", "_"),
-                    ( 21 - (len(enum_ids[cls][spec]['name']) + len(DataGenerator._class_names[cls]) + 1) ) * ' ',
+                enum_str = '  %s%s= %u,\n' % (
+                    enum_ids[cls][spec]['name'],
+                    ( 21 - len(enum_ids[cls][spec]['name']) ) * ' ',
                     enum_ids[cls][spec]['id'] )
                 
                 s += enum_str
+        s += '};\n\n'
         
-        for spec in xrange(0, len(enum_ids[-1])):
-            if enum_ids[-1][spec] == None:
+        s += 'static specialization_t __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] = \n{\n'
+        for cls in xrange(0, len(enum_ids)):
+            if enum_ids[cls][0] == None:
+                s += '  {\n'
+                s += '    SPEC_NONE,\n'
+                s += '  },\n'
                 continue
-
-            enum_str = '  PET_%s%s= %u,\n' % (
-                enum_ids[-1][spec]['name'].upper().replace(" ", "_"),
-                ( 21 - (len(enum_ids[-1][spec]['name']) + 4) ) * ' ',
-                enum_ids[-1][spec]['id'] )
             
-            s += enum_str
-        s += '};\n'
+            s += '  {\n'
+            for spec in xrange(0, len(enum_ids[cls])):
+                if enum_ids[cls][spec] == None:
+                    continue
+
+                s += '    %s,\n' % enum_ids[cls][spec]['name']
+            
+            s += '  },\n'
+            
+        s += '};\n\n'
         
         return s
 
