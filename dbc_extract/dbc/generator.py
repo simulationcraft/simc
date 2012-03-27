@@ -40,6 +40,12 @@ class DataGenerator(object):
             self._race_map[1 << (i - 1)] = i
         
         #print self._class_map, self._race_map
+    
+    def format_str(self, string):
+        return '%s%s%s' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            string,
+            self._options.suffix and ('_%s' % self._options.suffix) or '' )
 
     def initialize(self):
         for i in self._dbc:
@@ -1855,13 +1861,23 @@ class RacialSpellGenerator(SpellDataGenerator):
         )
 
         # Then, output the stuffs
-        s = '#define %s_SIZE (%d)\n#ifndef CLASS_SIZE\n#define CLASS_SIZE (12)\n#endif\n\n' % (
+        s = '#define %s_SIZE (%d)\n\n' % (
             data_str.upper(),
             max_ids
         )
+        s += "#ifndef %s\n#define %s (%d)\n#endif\n" % (
+            self.format_str( 'MAX_CLASS' ),
+            self.format_str( 'MAX_CLASS' ),
+            len(DataGenerator._class_names) )
+        s += "#ifndef %s\n#define %s (%d)\n#endif\n\n" % (
+            self.format_str( 'MAX_RACE' ),
+            self.format_str( 'MAX_RACE' ),
+            len(DataGenerator._race_names) )
         s += '// Racial abilities, wow build %d\n' % self._options.build
-        s += 'static unsigned __%s_data[][CLASS_SIZE][%s_SIZE] = {\n' % (
-            data_str,
+        s += 'static unsigned __%s_data[%s][%s][%s_SIZE] = {\n' % (
+            self.format_str( 'race_ability' ),
+            self.format_str( 'MAX_RACE' ),
+            self.format_str( 'MAX_CLASS' ),
             data_str.upper()
         )
 
