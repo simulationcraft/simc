@@ -52,7 +52,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap )
 
     extra_ticks = std::min( extra_ticks, max_extra_ticks );
   }
-  
+
   if ( ! state )
     action -> player_buff();
   else
@@ -103,11 +103,11 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds )
   added_seconds += extra_seconds;
 
   int new_remaining_ticks;
-  if ( ! state ) 
+  if ( ! state )
     new_remaining_ticks = action -> hasted_num_ticks( duration_left );
   else
     new_remaining_ticks = action -> hasted_num_ticks_s( state, duration_left );
-  
+
   num_ticks += ( new_remaining_ticks - old_remaining_ticks );
 
   if ( sim -> debug )
@@ -214,7 +214,7 @@ void dot_t::schedule_tick()
       action -> tick( this );
     }
   }
-  
+
   if ( ! action -> stateless )
     time_to_tick = action -> tick_time();
   else

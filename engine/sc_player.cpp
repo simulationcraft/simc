@@ -380,7 +380,7 @@ static bool parse_brain_lag_stddev( sim_t* sim,
 // parse_specialization ======================================================
 
 static bool parse_specialization( sim_t* sim,
-                                  const std::string&, 
+                                  const std::string&,
                                   const std::string& value )
 {
   sim -> active_player -> spec = util_t::translate_spec_str( sim -> active_player -> type, value );
@@ -2149,19 +2149,19 @@ double player_t::composite_attack_crit( weapon_t* weapon ) const
   {
     ac += 0.01;
   }
-  
+
   switch ( race )
   {
-    case RACE_DWARF:
-      if ( weapon && weapon -> type == WEAPON_GUN )
-        ac += 0.01;
-      break;
-    case RACE_TROLL:
-      if ( weapon && weapon -> type == WEAPON_BOW )
-        ac += 0.01;
-      break;
-    default:
-      break;
+  case RACE_DWARF:
+    if ( weapon && weapon -> type == WEAPON_GUN )
+      ac += 0.01;
+    break;
+  case RACE_TROLL:
+    if ( weapon && weapon -> type == WEAPON_BOW )
+      ac += 0.01;
+    break;
+  default:
+    break;
   }
 
   return ac;
@@ -2171,63 +2171,63 @@ double player_t::composite_attack_crit( weapon_t* weapon ) const
 double player_t::composite_attack_expertise( weapon_t* weapon ) const
 {
   double m = attack_expertise;
-  
+
   if ( ! weapon )
     return m;
 
   switch ( race )
   {
-    case RACE_ORC:
+  case RACE_ORC:
+  {
+    switch ( weapon -> type )
     {
-      switch ( weapon -> type )
-      {
-        case WEAPON_AXE:
-        case WEAPON_AXE_2H:
-        case WEAPON_FIST:
-          m += 0.03;
-          break;
-      }
+    case WEAPON_AXE:
+    case WEAPON_AXE_2H:
+    case WEAPON_FIST:
+      m += 0.03;
       break;
     }
-    case RACE_HUMAN:
-    {
-      switch ( weapon -> type )
-      {
-        case WEAPON_MACE:
-        case WEAPON_MACE_2H:
-        case WEAPON_SWORD:
-        case WEAPON_SWORD_2H:
-          m += 0.03;
-          break;
-      }
-      break;
-    }
-    case RACE_DWARF:
-    {
-      switch ( weapon -> type )
-      {
-        case WEAPON_MACE:
-        case WEAPON_MACE_2H:
-          m += 0.03;
-          break;
-      }
-      break;
-    }
-    case RACE_GNOME:
-    {
-      switch ( weapon -> type )
-      {
-        case WEAPON_DAGGER:
-        case WEAPON_SWORD:
-          m += 0.03;
-          break;
-      }
-      break;
-    }
-    default:
-      break;
+    break;
   }
-  
+  case RACE_HUMAN:
+  {
+    switch ( weapon -> type )
+    {
+    case WEAPON_MACE:
+    case WEAPON_MACE_2H:
+    case WEAPON_SWORD:
+    case WEAPON_SWORD_2H:
+      m += 0.03;
+      break;
+    }
+    break;
+  }
+  case RACE_DWARF:
+  {
+    switch ( weapon -> type )
+    {
+    case WEAPON_MACE:
+    case WEAPON_MACE_2H:
+      m += 0.03;
+      break;
+    }
+    break;
+  }
+  case RACE_GNOME:
+  {
+    switch ( weapon -> type )
+    {
+    case WEAPON_DAGGER:
+    case WEAPON_SWORD:
+      m += 0.03;
+      break;
+    }
+    break;
+  }
+  default:
+    break;
+  }
+
   return m;
 }
 
@@ -2554,10 +2554,10 @@ double player_t::composite_mp5() const
 double player_t::composite_mastery() const
 {
   double m = floor( ( mastery * 100.0 ) + 0.5 ) * 0.01;
-  
+
   if ( sim -> auras.grace_of_air -> check() )
     m += sim -> auras.grace_of_air -> value();
-  
+
   return m;
 }
 
@@ -4254,11 +4254,11 @@ double player_t::target_mitigation( double            amount,
 
 // player_t::assess_heal ====================================================
 
-player_t::heal_info_t player_t::assess_heal(  double            amount,
-                                              const school_type /* school */,
-                                              int               /* dmg_type */,
-                                              int               /* result */,
-                                              action_t*         action )
+player_t::heal_info_t player_t::assess_heal( double            amount,
+                                             const school_type /* school */,
+                                             int               /* dmg_type */,
+                                             int               /* result */,
+                                             action_t*         action )
 {
   heal_info_t heal;
 
@@ -5508,7 +5508,7 @@ struct use_item_t : public action_t
     timespan_t ready = sim -> current_time + duration;
     for ( action_t* a = player -> action_list; a; a = a -> next )
     {
-      if ( a -> name_str.substr(0, 8) == "use_item" )
+      if ( a -> name_str.substr( 0, 8 ) == "use_item" )
       {
         if ( ready > a -> cooldown -> ready )
         {
@@ -5922,7 +5922,7 @@ spell_id_t* player_t::find_specialization_spell( const char* name, const char* t
   unsigned spell_id = dbc.specialization_ability_id( type, name, util_t::spec_id( type, tree ) );
   if ( spell_id > 0 )
     spec_spell = new spell_id_t( this, token, name );
-  
+
   return spec_spell;
 }
 
@@ -5934,7 +5934,7 @@ spell_id_t* player_t::find_mastery_spell( const char* name, const char* token, t
   unsigned spell_id = dbc.mastery_ability_id( type, name, util_t::spec_id( type, tree ) );
   if ( spell_id > 0 )
     mastery_spell = new spell_id_t( this, token, name );
-  
+
   return mastery_spell;
 }
 
@@ -7061,7 +7061,7 @@ double player_t::composite_attack_crit_vulnerability() const
 double player_t::composite_player_vulnerability( school_type school ) const
 {
   double m = 1.0;
-  
+
   if ( school == SCHOOL_PHYSICAL ||
        school == SCHOOL_BLEED    )
   {
@@ -7069,14 +7069,14 @@ double player_t::composite_player_vulnerability( school_type school ) const
     {
       m *= 1.04;
     }
-    else if ( debuffs.blood_frenzy_physical -> value() || 
-              debuffs.brittle_bones -> value() || 
+    else if ( debuffs.blood_frenzy_physical -> value() ||
+              debuffs.brittle_bones -> value() ||
               debuffs.ravage -> value() )
     {
       m *= 1.0 + std::max( std::max( debuffs.blood_frenzy_physical -> value() * 0.01,
                                      debuffs.brittle_bones         -> value() ),
                            debuffs.ravage                          -> value() * 0.01 );
-      
+
     }
   }
   else
@@ -7086,7 +7086,7 @@ double player_t::composite_player_vulnerability( school_type school ) const
                                      std::max( debuffs.ebon_plaguebringer -> value(),
                                                debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
   }
-  
+
   return m;
 }
 
@@ -7101,9 +7101,9 @@ double player_t::composite_ranged_attack_power_vulnerability() const
 double player_t::composite_player_penetration_vulnerability( school_type /* s */ ) const
 {
   double p = 0;
-  
+
   if ( debuffs.curse_of_elements -> check() ) p += 88;
-  
+
   return p;
 }
 

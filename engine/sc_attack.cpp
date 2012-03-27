@@ -385,8 +385,8 @@ void attack_t::calculate_result()
     {
       if ( random <= chances[ i ] )
       {
-          result = results[ i ];
-      break;
+        result = results[ i ];
+        break;
       }
     }
   }

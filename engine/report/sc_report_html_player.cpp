@@ -155,70 +155,70 @@ void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
 
       print_html_sample_data( file, p, s -> portion_aps, "portion Amount per Second ( pAPS )" );
 
-        if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
-        {
-          int colspan = 0;
-          fprintf( file,
-                   "\t\t\t\t\t\t<table class=\"details\">\n" );
-          fprintf( file,
-                   "\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-scale-factors\" class=\"help\">?</a></th>\n" );
-          for ( int i=0; i < STAT_MAX; i++ )
-            if ( p -> scales_with[ i ] )
-            {
-              fprintf( file,
-                       "\t\t\t\t\t\t\t\t<th>%s</th>\n",
-                       util_t::stat_type_abbrev( i ) );
-              colspan++;
-            }
-          if ( p -> sim -> scaling -> scale_lag )
+      if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
+      {
+        int colspan = 0;
+        fprintf( file,
+                 "\t\t\t\t\t\t<table class=\"details\">\n" );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<th><a href=\"#help-scale-factors\" class=\"help\">?</a></th>\n" );
+        for ( int i=0; i < STAT_MAX; i++ )
+          if ( p -> scales_with[ i ] )
           {
             fprintf( file,
-                     "\t\t\t\t\t\t\t\t<th>ms Lag</th>\n" );
+                     "\t\t\t\t\t\t\t\t<th>%s</th>\n",
+                     util_t::stat_type_abbrev( i ) );
             colspan++;
           }
+        if ( p -> sim -> scaling -> scale_lag )
+        {
           fprintf( file,
-                   "\t\t\t\t\t\t\t</tr>\n" );
-          fprintf( file,
-                   "\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Factors</th>\n" );
-          for ( int i=0; i < STAT_MAX; i++ )
-            if ( p -> scales_with[ i ] )
-              fprintf( file,
-                       "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
-                       p -> sim -> report_precision,
-                       s -> scaling.get_stat( i ) );
-          fprintf( file,
-                   "\t\t\t\t\t\t\t</tr>\n" );
-          fprintf( file,
-                   "\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n" );
-          for ( int i=0; i < STAT_MAX; i++ )
-            if ( p -> scales_with[ i ] )
-              fprintf( file,
-                       "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
-                       ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
-                       p -> sim -> scaling -> stats.get_stat( i ) );
-          fprintf( file,
-                   "\t\t\t\t\t\t\t</tr>\n" );
-          fprintf( file,
-                   "\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n" );
-          for ( int i=0; i < STAT_MAX; i++ )
-            if ( p -> scales_with[ i ] )
-              fprintf( file,
-                       "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
-                       p -> sim -> report_precision,
-                       s -> scaling_error.get_stat( i ) );
-          fprintf( file,
-                   "\t\t\t\t\t\t\t</tr>\n" );
-
-
-
-          fprintf( file,
-                   "\t\t\t\t\t\t</table>\n" );
-
+                   "\t\t\t\t\t\t\t\t<th>ms Lag</th>\n" );
+          colspan++;
         }
+        fprintf( file,
+                 "\t\t\t\t\t\t\t</tr>\n" );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Factors</th>\n" );
+        for ( int i=0; i < STAT_MAX; i++ )
+          if ( p -> scales_with[ i ] )
+            fprintf( file,
+                     "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                     p -> sim -> report_precision,
+                     s -> scaling.get_stat( i ) );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t</tr>\n" );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n" );
+        for ( int i=0; i < STAT_MAX; i++ )
+          if ( p -> scales_with[ i ] )
+            fprintf( file,
+                     "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                     ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
+                     p -> sim -> scaling -> stats.get_stat( i ) );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t</tr>\n" );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n" );
+        for ( int i=0; i < STAT_MAX; i++ )
+          if ( p -> scales_with[ i ] )
+            fprintf( file,
+                     "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                     p -> sim -> report_precision,
+                     s -> scaling_error.get_stat( i ) );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t</tr>\n" );
+
+
+
+        fprintf( file,
+                 "\t\t\t\t\t\t</table>\n" );
+
+      }
     }
 
     fprintf ( file,
@@ -396,7 +396,7 @@ void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">target:</span>%s</li>\n"
-				"\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">harmful:</span>%s</li>\n"
+                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">harmful:</span>%s</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
                 "\t\t\t\t\t\t\t\t\t\t</ul>\n"
@@ -415,7 +415,7 @@ void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
                 a -> base_execute_time.total_seconds(),
                 a -> base_crit,
                 a -> target ? a -> target -> name() : "",
-				a -> harmful ? "true" : "false",
+                a -> harmful ? "true" : "false",
                 a -> tooltip(),
                 report_t::encode_html( a -> desc() ).c_str() );
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
@@ -515,23 +515,23 @@ void print_html_action_resource( FILE* file, stats_t* s, int j )
     if ( ! a -> background ) break;
   }
 
-  for( size_t i = 0; i < RESOURCE_MAX; i++ )
+  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
   {
     if (  s -> rpe[  i ] <= 0 )
       continue;
 
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-           "\t\t\t\t\t\t\t</tr>\n",
-           s -> name_str.c_str(),
-           util_t::resource_type_string( i ),
-           s -> resource_portion[  i ] * 100,
-           s -> apr[ i ],
-           s -> rpe[ i ] );
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
+             "\t\t\t\t\t\t\t</tr>\n",
+             s -> name_str.c_str(),
+             util_t::resource_type_string( i ),
+             s -> resource_portion[  i ] * 100,
+             s -> apr[ i ],
+             s -> rpe[ i ] );
   }
 }
 
@@ -1258,36 +1258,36 @@ void print_html_player_statistics( FILE* file, player_t* p )
 void print_html_gain( FILE* file, gain_t* g )
 {
 
-  for( size_t i = 0; i < RESOURCE_MAX; i++ )
+  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
   {
-  if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
-  {
-    double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
-    fprintf( file,
-             "\t\t\t\t\t\t\t\t<tr" );
-    if ( !( i & 1 ) )
+    if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {
-      fprintf( file, " class=\"odd\"" );
+      double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t<tr" );
+      if ( !( i & 1 ) )
+      {
+        fprintf( file, " class=\"odd\"" );
+      }
+      fprintf( file, ">\n" );
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
+               "\t\t\t\t\t\t\t</tr>\n",
+               g -> name(),
+               util_t::resource_type_string( i ),
+               g -> count[ i ],
+               g -> actual[ i ],
+               g -> actual[ i ] / g -> count[ i ],
+               g -> overflow[ i ],
+               overflow_pct );
+      i++;
     }
-    fprintf( file, ">\n" );
-    fprintf( file,
-             "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
-             "\t\t\t\t\t\t\t</tr>\n",
-             g -> name(),
-             util_t::resource_type_string( i ),
-             g -> count[ i ],
-             g -> actual[ i ],
-             g -> actual[ i ] / g -> count[ i ],
-             g -> overflow[ i ],
-             overflow_pct );
-    i++;
-  }
   }
 }
 // print_html_player_resources ==============================================

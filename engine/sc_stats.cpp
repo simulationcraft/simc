@@ -228,14 +228,14 @@ void stats_t::analyze()
   num_executes       /= num_iterations;
   num_ticks          /= num_iterations;
 
-  for( size_t i = 0; i < RESOURCE_MAX; i++ )
+  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
   {
     rpe[ i ] = num_executes ? resource_gain->actual[ i ] / num_executes : -1;
     rpe_sum += rpe[ i ];
 
-  double resource_total = player -> resource_lost [ i ] / num_iterations;
+    double resource_total = player -> resource_lost [ i ] / num_iterations;
 
-  resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain->actual[ i ] / resource_total ) : 0;
+    resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain->actual[ i ] / resource_total ) : 0;
   }
 
   frequency = num_intervals ? total_intervals.total_seconds() / num_intervals : 0;
@@ -266,7 +266,7 @@ void stats_t::analyze()
     total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero );
     apet = ( total_time > timespan_t::zero ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
-    for( size_t i = 0; i < RESOURCE_MAX; i++ )
+    for ( size_t i = 0; i < RESOURCE_MAX; i++ )
       apr[ i ]  = ( resource_gain->actual[ i ] > 0 ) ? ( compound_amount / resource_gain->actual[ i ] ) : 0;
   }
   else

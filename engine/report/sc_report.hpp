@@ -42,7 +42,7 @@ void print_html_rng_information( FILE* file, rng_t* rng )
            "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.8f / %.8f / %.8f%%</td>\n"
            "\t\t\t\t\t\t\t\t</tr>\n",
            rng->actual_roll, rng->expected_roll,
-           rng->expected_roll ? fabs( ( rng->actual_roll-rng->expected_roll ) / rng->expected_roll ) * 100.0 : 0);
+           rng->expected_roll ? fabs( ( rng->actual_roll-rng->expected_roll ) / rng->expected_roll ) * 100.0 : 0 );
 
   fprintf( file,
            "\t\t\t\t\t\t\t\t</table>\n" );

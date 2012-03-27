@@ -1975,7 +1975,7 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
       return r;
   }
 
-  r = rng_t::create( this, n, static_cast<rng_type> (type) );
+  r = rng_t::create( this, n, static_cast<rng_type> ( type ) );
   r -> next = rng_list;
   rng_list = r;
 

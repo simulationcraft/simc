@@ -209,37 +209,37 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   QStringList tokens = encoding.split( ' ' );
 
   if ( i < tokens.count() )
-          versionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    versionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       iterationsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    iterationsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-      fightLengthChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    fightLengthChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
     fightVarianceChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       fightStyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    fightStyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       targetRaceChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    targetRaceChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-      playerSkillChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    playerSkillChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-          threadsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    threadsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-     armoryRegionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       armorySpecChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    armorySpecChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-      defaultRoleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    defaultRoleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-          latencyChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    latencyChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-      targetLevelChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    targetLevelChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       reportpetsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    reportpetsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       printstyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    printstyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       statisticslevel_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
+    statisticslevel_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
 
   QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup->buttons();
   QList<QAbstractButton*>     debuff_buttons  =      debuffsButtonGroup->buttons();
@@ -1076,7 +1076,7 @@ void SimulationCraftWindow::createToolTips()
                                       " Level 2: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.\n"
                                       " Level 3: Ability Amount and  portion APS is collected.\n"
                                       " *Warning* Levels above 3 are usually not recommended when simulating more than 1 player.\n"
-                                      " Level 8: Ability Result Amount, Count and average Amount is collected. ");
+                                      " Level 8: Ability Result Amount, Count and average Amount is collected. " );
 
   debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
                            "Gory details are very gory.  No documentation will be forthcoming.\n"

@@ -1303,7 +1303,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
                        excess_energy, util_t::resource_type_string( resource ), name() );
 
       player -> resource_loss( resource, excess_energy );
-      stats -> consume_resource( static_cast<resource_type>(resource), excess_energy );
+      stats -> consume_resource( static_cast<resource_type>( resource ), excess_energy );
     }
   }
 
@@ -4711,8 +4711,8 @@ void druid_t::init_buffs()
 
   buffs_primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
   buffs_primal_madness_bear = new      buff_t( this, "primal_madness_bear" );
-  buffs_berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds(15.0) + glyphs.berserk -> mod_additive_time( P_DURATION ) );
-  buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, timespan_t::from_seconds(6.0) );
+  buffs_berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds( 15.0 ) + glyphs.berserk -> mod_additive_time( P_DURATION ) );
+  buffs_tigers_fury         = new      buff_t( this, "tigers_fury", 1, timespan_t::from_seconds( 6.0 ) );
 
   // simple
   buffs_bear_form    = new buff_t( this, 5487,  "bear_form" );
@@ -5514,11 +5514,11 @@ double druid_t::assess_damage( double            amount,
   return amount;
 }
 
-player_t::heal_info_t druid_t::assess_heal(  double            amount,
-                                             const school_type school,
-                                             int               dmg_type,
-                                             int               result,
-                                             action_t*         action )
+player_t::heal_info_t druid_t::assess_heal( double            amount,
+                                            const school_type school,
+                                            int               dmg_type,
+                                            int               result,
+                                            action_t*         action )
 {
   amount *= 1.0 + buffs_frenzied_regeneration -> check() * glyphs.frenzied_regeneration -> effect1().percent();
 

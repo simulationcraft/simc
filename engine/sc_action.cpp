@@ -189,14 +189,14 @@ void action_t::init_action_t_()
     background = true; // prevent action from being executed
   }
   if ( id && spell && s_type == T_SPEC &&
-      ( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) != player->spec ) )
+       ( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) != player->spec ) )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required spec (%s (%d) != %s (%d) ).\n",
                    player -> name(), name(),
-                   util_t::talent_tree_string( static_cast<int>(util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ) ),
-                   static_cast<int>(util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ),
-                   util_t::talent_tree_string( static_cast<int>(player->spec) ),
-                   static_cast<int>(player->spec) );
+                   util_t::talent_tree_string( static_cast<int>( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ) ),
+                   static_cast<int>( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ),
+                   util_t::talent_tree_string( static_cast<int>( player->spec ) ),
+                   static_cast<int>( player->spec ) );
 
     background = true; // prevent action from being executed
   }
@@ -255,13 +255,13 @@ action_t::~action_t()
 {
   if ( state )
     delete state;
-  
+
   if ( ! is_dtr_action )
   {
     delete if_expr;
     delete interrupt_if_expr;
   }
-  
+
   while ( state_cache )
   {
     action_state_t* s = state_cache;
@@ -947,7 +947,7 @@ void action_t::consume_resource()
                    resource_consumed, util_t::resource_type_string( resource ),
                    name(), player -> resource_current[ resource] );
 
-  stats -> consume_resource( static_cast<resource_type>(resource), resource_consumed );
+  stats -> consume_resource( static_cast<resource_type>( resource ), resource_consumed );
 }
 
 // action_t::available_targets ==============================================
@@ -1023,28 +1023,28 @@ void action_t::execute()
     if ( aoe == -1 || aoe > 0 )
     {
       std::vector< player_t* > tl = target_list();
-      
+
       for ( size_t t = 0; t < tl.size(); t++ )
       {
         target_debuff( tl[ t ], DMG_DIRECT );
-        
+
         calculate_result();
 
         if ( result_is_hit() )
           direct_dmg = calculate_direct_damage( t + 1 );
-        
+
         schedule_travel( tl[ t ] );
       }
     }
     else
     {
       target_debuff( target, DMG_DIRECT );
-      
+
       calculate_result();
 
       if ( result_is_hit() )
         direct_dmg = calculate_direct_damage( 0 );
-      
+
       schedule_travel( target );
     }
   }
@@ -1053,20 +1053,20 @@ void action_t::execute()
     if ( aoe == -1 || aoe > 0 )
     {
       std::vector< player_t* > tl = target_list();
-      
+
       for ( size_t t = 0; t < tl.size(); t++ )
       {
         action_state_t* s = get_state();
         s -> target = tl[ t ];
         s -> take_state( snapshot_flags );
         calculate_result_s( s );
-        
+
         if ( result_is_hit( s -> result ) )
           s -> result_amount = calculate_direct_damage_s( t + 1, s );
-        
+
         if ( sim -> debug )
           s -> debug();
-        
+
         schedule_travel_s( s );
       }
     }
@@ -1075,13 +1075,13 @@ void action_t::execute()
       action_state_t* s = get_state();
       s -> take_state( snapshot_flags );
       calculate_result_s( s );
-      
+
       if ( result_is_hit( s -> result ) )
         s -> result_amount = calculate_direct_damage_s( 0, s );
-      
+
       if ( sim -> debug )
         s -> debug();
-      
+
       schedule_travel_s( s );
     }
   }
@@ -1104,23 +1104,23 @@ void action_t::tick( dot_t* d )
   if ( ! stateless )
   {
     result = RESULT_HIT;
-    
+
     player_tick();
-    
+
     target_debuff( target, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
-    
+
     if ( tick_may_crit )
     {
       int delta_level = target -> level - player -> level;
-      
+
       if ( rng_result-> roll( crit_chance( delta_level ) ) )
       {
         result = RESULT_CRIT;
       }
     }
-    
+
     tick_dmg = calculate_tick_damage();
-    
+
     d -> prev_tick_amount = tick_dmg;
 
     assess_damage( target, tick_dmg, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, result );
@@ -1131,20 +1131,20 @@ void action_t::tick( dot_t* d )
   {
     d -> state -> result = RESULT_HIT;
     d -> state -> take_state( update_flags );
-    
+
     if ( tick_may_crit )
     {
       if ( rng_result -> roll( crit_chance_s( d -> state ) ) )
         d -> state -> result = RESULT_CRIT;
     }
-    
+
     d -> state -> result_amount = calculate_tick_damage_s( d -> state );
-    
+
     assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
 
     if ( harmful && callbacks )
       action_callback_t::trigger( player -> tick_callbacks[ d -> state -> result ], this );
-    
+
     if ( sim -> debug )
       d -> state -> debug();
   }
@@ -1570,42 +1570,42 @@ void action_t::init()
 
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TARGET_CRIT;
-  
+
   if ( may_miss )
     snapshot_flags |= STATE_HIT;
-  
+
   if ( harmful )
   {
     if ( base_td > 0 || num_ticks > 0 )
       snapshot_flags |= STATE_TA_ACTION_MUL;
-    
+
     if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
       snapshot_flags |= STATE_DA_ACTION_MUL;
   }
-  
+
   switch ( type )
   {
-    case ACTION_ATTACK:
-      if ( base_attack_power_multiplier > 0 && 
-          ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
-        snapshot_flags |= STATE_AP | STATE_TARGET_POWER;
-      
-      if ( may_dodge || may_parry )
-        snapshot_flags |= STATE_EXPERTISE;
-      
-      break;
-    case ACTION_SPELL:
-      if ( base_spell_power_multiplier > 0 && 
-          ( direct_power_mod > 0 || tick_power_mod > 0 ) )
-        snapshot_flags |= STATE_SP | STATE_TARGET_POWER;
-      
-      if ( num_ticks > 0 && hasted_ticks )
-        snapshot_flags |= STATE_HASTE;
-      break;
-    default:
-      break;
+  case ACTION_ATTACK:
+    if ( base_attack_power_multiplier > 0 &&
+         ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
+      snapshot_flags |= STATE_AP | STATE_TARGET_POWER;
+
+    if ( may_dodge || may_parry )
+      snapshot_flags |= STATE_EXPERTISE;
+
+    break;
+  case ACTION_SPELL:
+    if ( base_spell_power_multiplier > 0 &&
+         ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+      snapshot_flags |= STATE_SP | STATE_TARGET_POWER;
+
+    if ( num_ticks > 0 && hasted_ticks )
+      snapshot_flags |= STATE_HASTE;
+    break;
+  default:
+    break;
   }
-  
+
   if ( ! target -> is_enemy() )
     snapshot_flags |= STATE_PENETRATION | STATE_TARGET_PEN;
 
@@ -2004,7 +2004,7 @@ int action_t::hasted_num_ticks( timespan_t d ) const
   if ( d < timespan_t::zero )
     d = num_ticks * base_tick_time;
 
-  timespan_t t = timespan_t::from_millis( (int) ( ( base_tick_time.total_millis() * player_haste ) + 0.5 ) );
+  timespan_t t = timespan_t::from_millis( ( int ) ( ( base_tick_time.total_millis() * player_haste ) + 0.5 ) );
 
   double n = d / t;
 

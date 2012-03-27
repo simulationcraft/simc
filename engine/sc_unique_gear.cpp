@@ -155,8 +155,8 @@ struct discharge_proc_callback_t : public action_callback_t
 
     struct discharge_attack_t : public attack_t
     {
-      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool nb, bool nd, 
-        unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0 ) :
+      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool nb, bool nd,
+                          unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0 ) :
         attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
@@ -169,9 +169,9 @@ struct discharge_proc_callback_t : public action_callback_t
         may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_types_mask & RESULT_CRIT_MASK ) ? ( result_types_mask & RESULT_CRIT_MASK ) : true ); // Default true
         may_miss = ( override_result_types_mask & RESULT_MISS_MASK ) ? ( result_types_mask & RESULT_MISS_MASK ) != 0 : may_miss;
         may_dodge = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_DODGE_MASK ) ? ( result_types_mask & RESULT_DODGE_MASK ) : may_dodge );
-        may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_PARRY_MASK ) ? ( result_types_mask & RESULT_PARRY_MASK ) : may_parry ) 
+        may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_PARRY_MASK ) ? ( result_types_mask & RESULT_PARRY_MASK ) : may_parry )
                     && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
-        may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_BLOCK_MASK ) ? ( result_types_mask & RESULT_BLOCK_MASK ) : may_block ) 
+        may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_BLOCK_MASK ) ? ( result_types_mask & RESULT_BLOCK_MASK ) : may_block )
                     && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
         may_glance = false;
         background  = true;
@@ -283,7 +283,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
     struct discharge_attack_t : public attack_t
     {
       discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type s, bool nb, bool nd,
-        unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0 ) :
+                          unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0 ) :
         attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
@@ -296,9 +296,9 @@ struct chance_discharge_proc_callback_t : public action_callback_t
         may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_types_mask & RESULT_CRIT_MASK ) ? ( result_types_mask & RESULT_CRIT_MASK ) : true ); // Default true
         may_miss = ( override_result_types_mask & RESULT_MISS_MASK ) ? ( result_types_mask & RESULT_MISS_MASK ) != 0 : may_miss;
         may_dodge = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_DODGE_MASK ) ? ( result_types_mask & RESULT_DODGE_MASK ) : may_dodge );
-        may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_PARRY_MASK ) ? ( result_types_mask & RESULT_PARRY_MASK ) : may_parry ) 
+        may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_PARRY_MASK ) ? ( result_types_mask & RESULT_PARRY_MASK ) : may_parry )
                     && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
-        may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_BLOCK_MASK ) ? ( result_types_mask & RESULT_BLOCK_MASK ) : may_block ) 
+        may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_BLOCK_MASK ) ? ( result_types_mask & RESULT_BLOCK_MASK ) : may_block )
                     && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
         may_glance = false;
         background  = true;
@@ -431,9 +431,9 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_types_mask & RESULT_CRIT_MASK ) ? ( result_types_mask & RESULT_CRIT_MASK ) != 0 : true ); // Default true
         may_miss = ( override_result_types_mask & RESULT_MISS_MASK ) ? ( result_types_mask & RESULT_MISS_MASK ) != 0 : may_miss;
         may_dodge = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_DODGE_MASK ) ? ( result_types_mask & RESULT_DODGE_MASK ) : may_dodge );
-        may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_PARRY_MASK ) ? ( result_types_mask & RESULT_PARRY_MASK ) : may_parry ) 
+        may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_PARRY_MASK ) ? ( result_types_mask & RESULT_PARRY_MASK ) : may_parry )
                     && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
-        may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_BLOCK_MASK ) ? ( result_types_mask & RESULT_BLOCK_MASK ) : may_block ) 
+        may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_types_mask & RESULT_BLOCK_MASK ) ? ( result_types_mask & RESULT_BLOCK_MASK ) : may_block )
                     && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
         may_glance = false;
         background  = true;

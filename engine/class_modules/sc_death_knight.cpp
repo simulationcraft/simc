@@ -1910,7 +1910,7 @@ double death_knight_attack_t::swing_haste() const
 {
   double haste = attack_t::swing_haste();
   death_knight_t* p = player -> cast_death_knight();
- 
+
   haste *= 1.0 / ( 1.0 + p -> spells.icy_talons -> effect1().percent() );
 
   if ( p -> talents.improved_icy_talons -> rank() )
@@ -4276,7 +4276,7 @@ void death_knight_t::init_spells()
   player_t::init_spells();
 
   // Blood
-  spells.blood_rites              = new spell_id_t( this, "blood_rites", 50034 ); 
+  spells.blood_rites              = new spell_id_t( this, "blood_rites", 50034 );
   spells.veteran_of_the_third_war = new spell_id_t( this, "veteran_of_the_third_war", 50029 );
 
   // Frost
@@ -4401,8 +4401,8 @@ void death_knight_t::init_actions()
       action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
       action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
       action_list_str += "/rune_strike,if=runic_power>=40";
-      action_list_str += "/horn_of_winter";     
-      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";      
+      action_list_str += "/horn_of_winter";
+      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
       break;
     case TREE_FROST:
     {

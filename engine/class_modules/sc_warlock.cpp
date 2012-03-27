@@ -22,34 +22,34 @@
 // ==========================================================================
 
 
-  int warlock_targetdata_t::affliction_effects()
-  {
-    int effects = 0;
-    if ( dots_curse_of_elements -> ticking    ) effects++;
-    if ( dots_bane_of_agony -> ticking        ) effects++;
-    if ( dots_bane_of_doom -> ticking         ) effects++;
-    if ( dots_corruption -> ticking           ) effects++;
-    if ( dots_drain_life -> ticking           ) effects++;
-    if ( dots_drain_soul -> ticking           ) effects++;
-    if ( dots_unstable_affliction -> ticking  ) effects++;
-    if ( debuffs_haunted        -> check()    ) effects++;
-    if ( debuffs_shadow_embrace -> check()    ) effects++;
-    return effects;
-  }
+int warlock_targetdata_t::affliction_effects()
+{
+  int effects = 0;
+  if ( dots_curse_of_elements -> ticking    ) effects++;
+  if ( dots_bane_of_agony -> ticking        ) effects++;
+  if ( dots_bane_of_doom -> ticking         ) effects++;
+  if ( dots_corruption -> ticking           ) effects++;
+  if ( dots_drain_life -> ticking           ) effects++;
+  if ( dots_drain_soul -> ticking           ) effects++;
+  if ( dots_unstable_affliction -> ticking  ) effects++;
+  if ( debuffs_haunted        -> check()    ) effects++;
+  if ( debuffs_shadow_embrace -> check()    ) effects++;
+  return effects;
+}
 
-  int warlock_targetdata_t::active_dots()
-  {
-    int dots = 0;
-    if ( dots_bane_of_agony -> ticking            ) dots++;
-    if ( dots_bane_of_doom -> ticking             ) dots++;
-    if ( dots_corruption -> ticking               ) dots++;
-    if ( dots_drain_life -> ticking               ) dots++;
-    if ( dots_drain_soul -> ticking               ) dots++;
-    if ( dots_immolate -> ticking                 ) dots++;
-    if ( dots_shadowflame_dot -> ticking          ) dots++;
-    if ( dots_unstable_affliction -> ticking      ) dots++;
-    return dots;
-  }
+int warlock_targetdata_t::active_dots()
+{
+  int dots = 0;
+  if ( dots_bane_of_agony -> ticking            ) dots++;
+  if ( dots_bane_of_doom -> ticking             ) dots++;
+  if ( dots_corruption -> ticking               ) dots++;
+  if ( dots_drain_life -> ticking               ) dots++;
+  if ( dots_drain_soul -> ticking               ) dots++;
+  if ( dots_immolate -> ticking                 ) dots++;
+  if ( dots_shadowflame_dot -> ticking          ) dots++;
+  if ( dots_unstable_affliction -> ticking      ) dots++;
+  return dots;
+}
 
 
 void register_warlock_targetdata( sim_t* sim )
@@ -75,7 +75,7 @@ void register_warlock_targetdata( sim_t* sim )
 
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type r ) :
-    player_t( sim, WARLOCK, name, r == RACE_NONE ? RACE_UNDEAD : r )
+  player_t( sim, WARLOCK, name, r == RACE_NONE ? RACE_UNDEAD : r )
 {
 
   tree_type[ WARLOCK_AFFLICTION  ] = TREE_AFFLICTION;
@@ -2840,7 +2840,7 @@ void warlock_t::init_spells()
   passive_spells.demonic_knowledge    = new spell_id_t( this, "demonic_knowledge", "Demonic Knowledge" );
   passive_spells.cataclysm            = new spell_id_t( this, "cataclysm", "Cataclysm" );
   passive_spells.nethermancy          = new spell_id_t( this, "nethermancy", 86091 );
-  
+
   //Affliction
   passive_spells.doom_and_gloom       = new spell_id_t( this, "doom_and_gloom", "Doom and Gloom", talent_doom_and_gloom );
   passive_spells.pandemic             = new spell_id_t( this, "pandemic", "Pandemic", talent_pandemic );
@@ -2851,7 +2851,7 @@ void warlock_t::init_spells()
   mastery_spells.master_demonologist  = new mastery_t( this, "master_demonologist", "Master Demonologist", TREE_DEMONOLOGY );
 
   // Constants
-  constants_pandemic_gcd              = timespan_t::from_seconds(0.25);
+  constants_pandemic_gcd              = timespan_t::from_seconds( 0.25 );
 
   // Prime
   glyphs.metamorphosis        = find_glyph( "Glyph of Metamorphosis" );

@@ -1275,7 +1275,7 @@ struct bloodthirst_t : public warrior_attack_t
       p -> buffs_battle_trance -> trigger();
 
       trigger_bloodsurge( this );
-            
+
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> effect1().percent() ) )
       {
         warrior_targetdata_t* td = targetdata() -> cast_warrior();
@@ -1556,7 +1556,7 @@ struct execute_t : public warrior_attack_t
 
     player -> resource_loss( resource, resource_consumed );
 
-    stats -> consume_resource( static_cast<resource_type>(resource), resource_consumed );
+    stats -> consume_resource( static_cast<resource_type>( resource ), resource_consumed );
 
     if ( p -> talents.sudden_death -> ok() )
     {
@@ -1696,7 +1696,7 @@ struct heroic_leap_t : public warrior_attack_t
 
     aoe = -1;
     may_dodge = may_parry = false;
-	harmful = true; // This should be defaulted to true, but it's not
+    harmful = true; // This should be defaulted to true, but it's not
 
     // Damage is stored in a trigger spell
     const spell_data_t* dmg_spell = p -> dbc.spell( effect3().trigger_spell_id() );
@@ -3457,7 +3457,7 @@ void warrior_t::init_actions()
       action_list_str += "/stance,choose=battle,use_off_gcd=1,if=(buff.taste_for_blood.up|buff.overpower.up)&rage<=75&cooldown.mortal_strike.remains>=1.5,use_off_gcd=1";
       if ( talents.sweeping_strikes -> ok() ) action_list_str += "/sweeping_strikes,if=target.adds>0,use_off_gcd=1";
       action_list_str += "/cleave,if=target.adds>0,use_off_gcd=1";
-      action_list_str += "/rend,if=!ticking";      
+      action_list_str += "/rend,if=!ticking";
       // Don't want to bladestorm during SS as it's only 1 extra hit per WW not per target
       action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";
       action_list_str += "/mortal_strike,if=target.health_pct>20";
@@ -3474,7 +3474,7 @@ void warrior_t::init_actions()
         action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.deadly_calm.up";
       action_list_str += "/heroic_strike,use_off_gcd=1,if=rage>85";
       action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct>20&(rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))";
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct<=20&((rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))|buff.battle_trance.up)";     
+      action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct<=20&((rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))|buff.battle_trance.up)";
       action_list_str += "/battle_shout,if=rage<60";
     }
 

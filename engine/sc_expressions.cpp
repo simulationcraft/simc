@@ -198,7 +198,7 @@ int expression_t::precedence( int expr_token_type )
   case TOK_FLOOR:
   case TOK_CEIL:
     return 6;
-      
+
   case TOK_NOT:
   case TOK_PLUS:
   case TOK_MINUS:
@@ -339,7 +339,7 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
       token_str += c;
       c = expr_str[ ++current_index ];
     }
-    
+
     if ( util_t::str_compare_ci( token_str, "floor" ) )
       return TOK_FLOOR;
     else if ( util_t::str_compare_ci( token_str, "ceil" ) )

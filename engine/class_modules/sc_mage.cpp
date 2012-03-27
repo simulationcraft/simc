@@ -869,85 +869,85 @@ static void trigger_ignite( spell_t* s, double dmg )
     }
     virtual void execute()
     {
-        mage_t* p = player -> cast_mage();
+      mage_t* p = player -> cast_mage();
 
-        struct ignite_t : public mage_spell_t
+      struct ignite_t : public mage_spell_t
+      {
+        ignite_t( mage_t* player ) :
+          mage_spell_t( "ignite", 12654, player )
         {
-          ignite_t( mage_t* player ) :
-            mage_spell_t( "ignite", 12654, player )
-          {
-            background    = true;
+          background    = true;
 
-            // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
-            // proc          = false;
+          // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
+          // proc          = false;
 
-            may_resist    = true;
-            tick_may_crit = false;
-            hasted_ticks  = false;
-            dot_behavior  = DOT_REFRESH;
-            init();
-          }
-          virtual void impact( player_t* t, int impact_result, double ignite_dmg )
-          {
-            mage_spell_t::impact( t, impact_result, 0 );
-
-            base_td = ignite_dmg;
-          }
-          virtual timespan_t travel_time()
-          {
-            mage_t* p = player -> cast_mage();
-            return sim -> gauss( p -> ignite_sampling_delta, 0.25 * p -> ignite_sampling_delta );
-          }
-          virtual double total_td_multiplier() const { return 1.0; }
-        };
-
-        if ( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
-
-        dot_t* dot = p -> active_ignite -> dot();
-
-        double ignite_dmg = crit_ignite_bank;
-
-        if ( dot -> ticking )
-        {
-          ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
-          ignite_dmg /= 3.0;          
+          may_resist    = true;
+          tick_may_crit = false;
+          hasted_ticks  = false;
+          dot_behavior  = DOT_REFRESH;
+          init();
         }
-        else
+        virtual void impact( player_t* t, int impact_result, double ignite_dmg )
         {
-          ignite_dmg /= 2.0;
+          mage_spell_t::impact( t, impact_result, 0 );
+
+          base_td = ignite_dmg;
         }
-
-        // TODO: investigate if this can actually happen
-        /*if ( timespan_t::from_seconds( 4.0 ) + sim -> aura_delay < dot -> remains() )
+        virtual timespan_t travel_time()
         {
-          if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
-          p -> procs_munched_ignite -> occur();
-          return;
-        }*/
-
-        if ( p -> active_ignite -> travel_event )
-        {
-          // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-          if ( sim -> log ) log_t::output( sim, "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
-          p -> procs_munched_ignite -> occur();
+          mage_t* p = player -> cast_mage();
+          return sim -> gauss( p -> ignite_sampling_delta, 0.25 * p -> ignite_sampling_delta );
         }
+        virtual double total_td_multiplier() const { return 1.0; }
+      };
 
-        p -> active_ignite -> direct_dmg = ignite_dmg;
-        p -> active_ignite -> result = RESULT_HIT;
-        p -> active_ignite -> schedule_travel( target );
+      if ( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
 
-        dot -> prev_tick_amount = ignite_dmg;
+      dot_t* dot = p -> active_ignite -> dot();
 
-        if ( p -> active_ignite -> travel_event && dot -> ticking )
+      double ignite_dmg = crit_ignite_bank;
+
+      if ( dot -> ticking )
+      {
+        ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
+        ignite_dmg /= 3.0;
+      }
+      else
+      {
+        ignite_dmg /= 2.0;
+      }
+
+      // TODO: investigate if this can actually happen
+      /*if ( timespan_t::from_seconds( 4.0 ) + sim -> aura_delay < dot -> remains() )
+      {
+        if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
+        p -> procs_munched_ignite -> occur();
+        return;
+      }*/
+
+      if ( p -> active_ignite -> travel_event )
+      {
+        // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
+        if ( sim -> log ) log_t::output( sim, "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
+        p -> procs_munched_ignite -> occur();
+      }
+
+      p -> active_ignite -> direct_dmg = ignite_dmg;
+      p -> active_ignite -> result = RESULT_HIT;
+      p -> active_ignite -> schedule_travel( target );
+
+      dot -> prev_tick_amount = ignite_dmg;
+
+      if ( p -> active_ignite -> travel_event && dot -> ticking )
+      {
+        if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_event -> occurs() )
         {
-          if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_event -> occurs() )
-          {
-            // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
-            // both tick -and- get rolled into the next Ignite.
-            if ( sim -> log ) log_t::output( sim, "Player %s rolls Ignite.", p -> name() );
-            p -> procs_rolled_ignite -> occur();
-          }
+          // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
+          // both tick -and- get rolled into the next Ignite.
+          if ( sim -> log ) log_t::output( sim, "Player %s rolls Ignite.", p -> name() );
+          p -> procs_rolled_ignite -> occur();
         }
+      }
     }
   };
 
@@ -4213,7 +4213,7 @@ void mage_t::create_options()
   {
     { "focus_magic_target",  OPT_STRING, &( focus_magic_target_str ) },
     { "merge_ignite",        OPT_FLT,    &( merge_ignite           ) },
-	{ "ignite_sampling_delta", OPT_TIMESPAN, &( ignite_sampling_delta ) },
+    { "ignite_sampling_delta", OPT_TIMESPAN, &( ignite_sampling_delta ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

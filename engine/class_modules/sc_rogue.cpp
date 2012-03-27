@@ -1306,7 +1306,7 @@ struct melee_t : public rogue_attack_t
       {
         p -> buffs_fof_p1 -> trigger();
         p -> buffs_fof_p2 -> trigger();
-        
+
         if ( ! p -> buffs_fof_fod -> check() && p -> buffs_fof_p3 -> check() > 30 )
         {
           // Trigging FoF and the Stacking Buff are mutually exclusive
@@ -3055,11 +3055,11 @@ struct fof_fod_buff_t : public buff_t
 {
   fof_fod_buff_t( rogue_t* p, int fof_p3 ) :
     buff_t( p, "legendary_daggers", 1, timespan_t::from_seconds( 6.0 ), timespan_t::zero, fof_p3 )
-  { 
+  {
     if ( ! fof_p3 )
-      return;   
+      return;
   }
- 
+
   virtual void expire()
   {
     buff_t::expire();

@@ -878,24 +878,24 @@ enum snapshot_state_t
   STATE_MASTERY       = 0x000020,
   STATE_AP            = 0x000040,
   STATE_SP            = 0x000080,
-  
+
   STATE_BASE_MUL      = 0x000100,
   STATE_BASE_MUL_DA   = 0x000200,
   STATE_BASE_MUL_TA   = 0x000400,
-  
+
   STATE_ACTOR_MUL     = 0x001000,
   STATE_ACTOR_MUL_DA  = 0x002000,
   STATE_ACTOR_MUL_TA  = 0x004000,
-  
+
   STATE_TARGET_MUL    = 0x010000,
   STATE_TARGET_CRIT   = 0x020000,
   STATE_TARGET_POWER  = 0x040000,
   STATE_TARGET_PEN    = 0x080000,
   STATE_TARGET        = 0x0F0000,
-  
+
   // PVP Stuffs
   STATE_PENETRATION   = 0x200000,
-  
+
   // Convenience enums for multipliers
   STATE_DA_ACTION_MUL = 0x013300,
   STATE_TA_ACTION_MUL = 0x015500,
@@ -2010,7 +2010,7 @@ public:
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
 
-  const spelleffect_data_t& effectN(unsigned idx) const { assert( idx ); if ( idx > _effects -> size() ) return *spelleffect_data_t::nil(); else return *_effects -> at( idx - 1 ); }
+  const spelleffect_data_t& effectN( unsigned idx ) const { assert( idx ); if ( idx > _effects -> size() ) return *spelleffect_data_t::nil(); else return *_effects -> at( idx - 1 ); }
   const spelleffect_data_t& effect1() const { return effectN( 1 ); }
   const spelleffect_data_t& effect2() const { return effectN( 2 ); }
   const spelleffect_data_t& effect3() const { return effectN( 3 ); }
@@ -4773,7 +4773,7 @@ struct player_t : public noncopyable
 
   // Opportunity to perform any stat fixups before analysis
   virtual void pre_analyze_hook() {}
-  
+
   /* New stuff */
   virtual double composite_player_vulnerability( school_type ) const;
   virtual double composite_player_penetration_vulnerability( school_type ) const;
@@ -5137,7 +5137,7 @@ public:
   action_state_t* state; /* State of the last execute() */
   uint32_t snapshot_flags;
   uint32_t update_flags;
-  
+
   virtual action_state_t* new_state();
   virtual action_state_t* get_state( const action_state_t* = 0 );
   virtual void release_state( action_state_t* );
@@ -5159,7 +5159,7 @@ public:
   virtual double calculate_direct_damage_s( int, const action_state_t* );
   virtual double calculate_weapon_damage_s( const action_state_t* );
   virtual double calculate_tick_damage_s( const action_state_t* );
-  
+
   virtual void calculate_result_s( action_state_t* ) { assert( 0 ); }
   virtual timespan_t tick_time_s( const action_state_t* ) const;
   virtual int    hasted_num_ticks_s( const action_state_t*, timespan_t d = timespan_t::min ) const;
@@ -5170,11 +5170,11 @@ struct action_state_t
   // Source action, target actor
   action_t* action;
   player_t* target;
-  
+
   // Results
   result_type result;
   double      result_amount;
-  
+
   // Snapshotted stats during execution
   double base_hit, actor_hit;
   double actor_expertise;
@@ -5184,32 +5184,32 @@ struct action_state_t
   double base_attack_power, actor_attack_power, target_attack_power;
   double base_spell_power, actor_spell_power;
   double base_penetration, actor_penetration, target_penetration;
-  
+
   // Snapshotted multipliers during execution
   double base_multiplier, base_da_multiplier, base_ta_multiplier;
   double actor_multiplier, actor_da_multiplier, actor_ta_multiplier;
   double target_multiplier;
   double base_ap_multiplier, actor_ap_multiplier;
   double base_sp_multiplier, actor_sp_multiplier;
-  
+
   action_state_t* next;
-  
+
   action_state_t( action_t*, player_t* );
-  
+
   virtual void take_state( uint32_t );
   virtual void copy_state( const action_state_t* );
   virtual void debug() const;
-  
+
   virtual inline void snapshot_crit()
   {
     base_crit     = action -> base_crit;
-    
+
     if ( action -> type == ACTION_ATTACK )
       actor_crit  = action -> player -> composite_attack_crit( action -> weapon );
     else
       actor_crit  = action -> player -> composite_spell_crit();
   }
-  
+
   virtual inline void snapshot_target_crit()
   {
     if ( action -> type == ACTION_ATTACK )
@@ -5217,12 +5217,12 @@ struct action_state_t
     else
       target_crit = target -> composite_spell_crit_vulnerability();
   }
-  
+
   virtual inline void snapshot_mastery()
   {
     mastery = action -> player -> composite_mastery();
   }
-  
+
   virtual inline void snapshot_haste()
   {
     if ( action -> type == ACTION_ATTACK )
@@ -5230,53 +5230,53 @@ struct action_state_t
     else
       haste = action -> player -> composite_spell_haste();
   }
-  
+
   virtual inline void snapshot_hit()
   {
     base_hit = action -> base_hit;
-    
+
     if ( action -> type == ACTION_ATTACK )
       actor_hit = action -> player -> composite_attack_hit();
     else
       actor_hit = action -> player -> composite_spell_hit();
   }
-  
+
   virtual inline void snapshot_expertise()
   {
     actor_expertise = action -> player -> composite_attack_expertise( action -> weapon );
   }
-  
+
   virtual inline void snapshot_attack_power()
   {
     base_attack_power     = action -> base_attack_power;
     actor_attack_power    = action -> player -> composite_attack_power();
   }
-  
+
   virtual inline void snapshot_target_attack_power()
   {
     if ( action -> player -> position == POSITION_RANGED_FRONT ||
-        action -> player -> position == POSITION_RANGED_BACK )
+         action -> player -> position == POSITION_RANGED_BACK )
       target_attack_power = target -> composite_ranged_attack_power_vulnerability();
   }
-  
+
   virtual inline void snapshot_attack_power_multiplier()
   {
     base_ap_multiplier  = action -> base_attack_power_multiplier;
     actor_ap_multiplier = action -> player -> composite_attack_power_multiplier();
   }
-  
+
   virtual inline void snapshot_spell_power()
   {
     base_spell_power  = action -> base_spell_power;
     actor_spell_power = action -> player -> composite_spell_power( action -> school );
   }
-  
+
   virtual void inline snapshot_spell_power_multiplier()
   {
     base_sp_multiplier  = action -> base_spell_power_multiplier;
     actor_sp_multiplier = action -> player -> composite_spell_power_multiplier();
   }
-  
+
   virtual inline void snapshot_base_multiplier( uint32_t flags )
   {
     if ( flags & STATE_BASE_MUL )
@@ -5284,11 +5284,11 @@ struct action_state_t
 
     if ( flags & STATE_BASE_MUL_DA )
       base_da_multiplier   = action -> action_da_multiplier();
-    
+
     if ( flags & STATE_BASE_MUL_TA )
       base_ta_multiplier   = action -> action_ta_multiplier();
   }
-  
+
   virtual inline void snapshot_actor_multiplier( uint32_t flags )
   {
     if ( flags & STATE_ACTOR_MUL )
@@ -5300,84 +5300,84 @@ struct action_state_t
     if ( flags & STATE_ACTOR_MUL_TA )
       actor_ta_multiplier = action -> player -> composite_player_td_multiplier( action -> school, action );
   }
-  
+
   virtual inline void snapshot_target_multiplier()
   {
     target_multiplier = target -> composite_player_vulnerability( action -> school );
   }
-  
+
   virtual inline void snapshot_penetration()
   {
     base_penetration   = action -> base_penetration;
     actor_penetration  = action -> player -> spell_penetration;
   }
-  
+
   virtual inline void snapshot_target_penetration()
   {
     target_penetration = target -> composite_player_penetration_vulnerability( action -> school );
   }
-  
+
   // Query methods
   virtual inline double total_crit() const
   {
     return base_crit + actor_crit + target_crit;
   }
-  
+
   virtual inline double total_power() const
   {
     return total_attack_power() + total_spell_power();
   }
-  
+
   virtual inline double total_attack_power() const
   {
     return total_ap_multiplier() * ( base_attack_power + actor_attack_power + target_attack_power );
   }
-  
+
   virtual inline double total_ap_multiplier() const
   {
     return base_ap_multiplier * actor_ap_multiplier;
   }
-  
+
   virtual inline double total_spell_power() const
   {
     return total_sp_multiplier() * ( base_spell_power + actor_spell_power );
   }
-  
+
   virtual inline double total_sp_multiplier() const
   {
     return base_sp_multiplier * actor_sp_multiplier;
   }
-  
+
   virtual inline double total_mastery() const
   {
     return mastery;
   }
-  
+
   virtual inline double total_haste() const
   {
     return haste;
   }
-  
+
   virtual inline double total_hit() const
   {
     return base_hit + actor_hit;
   }
-  
+
   virtual inline double total_expertise() const
   {
     return actor_expertise;
   }
-  
+
   virtual inline double total_da_multiplier() const
   {
     return base_multiplier * base_da_multiplier * actor_multiplier * actor_da_multiplier * target_multiplier;
   }
-  
+
   virtual inline double total_ta_multiplier() const
   {
     return base_multiplier * base_ta_multiplier * actor_multiplier * actor_ta_multiplier * target_multiplier;
   }
-  
+
   virtual inline double total_penetration() const
   {
     return base_penetration + actor_penetration + target_penetration;
@@ -5458,7 +5458,7 @@ public:
   virtual double crit_chance( int delta_level ) const;
 
   virtual void   schedule_execute();
-  
+
   /* New stuffs */
   virtual void calculate_result_s( action_state_t* );
   virtual double miss_chance_s( const action_state_t* ) const;
@@ -5897,7 +5897,7 @@ struct gain_t
   gain_t* next;
 
   gain_t( const std::string& n ) :
-     name_str( n )
+    name_str( n )
   {
     range::fill( actual, 0.0 );
     range::fill( overflow, 0.0 );
@@ -5906,13 +5906,13 @@ struct gain_t
   void add( resource_type rt, double a, double o=0 ) { actual[ rt ] += a; overflow[ rt ] += o; count[ rt ]++; }
   void merge( const gain_t* other )
   {
-    for( size_t i=0;i<RESOURCE_MAX;i++)
-      { actual[i] += other -> actual[i]; overflow[i] += other -> overflow[i]; count[i] += other -> count[i]; }
+    for ( size_t i=0; i<RESOURCE_MAX; i++ )
+    { actual[i] += other -> actual[i]; overflow[i] += other -> overflow[i]; count[i] += other -> count[i]; }
   }
   void analyze( const sim_t* sim )
   {
-    for( size_t i=0;i<RESOURCE_MAX;i++)
-      { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
+    for ( size_t i=0; i<RESOURCE_MAX; i++ )
+    { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
   }
   const char* name() const { return name_str.c_str(); }
 };
@@ -6048,7 +6048,7 @@ public:
   virtual bool    roll( double chance );
   virtual double range( double min, double max );
   virtual double gauss( double mean, double stddev, const bool truncate_low_end = false );
-        double exgauss( double mean, double stddev, double nu );
+  double exgauss( double mean, double stddev, double nu );
   virtual void    seed( uint32_t start = time( NULL ) );
   void   report( FILE* );
 

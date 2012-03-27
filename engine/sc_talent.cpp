@@ -992,11 +992,11 @@ double spell_id_t::mod_additive( property_type_t p_type ) const
 
   const spelleffect_data_t* effect = get_effect( p_type );
 
-  if( effect == NULL )
+  if ( effect == NULL )
     return 0.0;
 
   // Divide by 100 for every A_ADD_PCT_MODIFIER
-  if( effect -> subtype() == ( int ) A_ADD_PCT_MODIFIER )
+  if ( effect -> subtype() == ( int ) A_ADD_PCT_MODIFIER )
     return effect -> base_value() / 100.0;
   // Divide by property_flat_divisor for every A_ADD_FLAT_MODIFIER
   else
@@ -1007,12 +1007,12 @@ timespan_t spell_id_t::mod_additive_time( property_type_t p_type ) const
 {
   const spelleffect_data_t* effect = get_effect( p_type );
 
-  if( effect == NULL )
+  if ( effect == NULL )
     return timespan_t::zero;
 
-  assert(effect -> subtype() == A_ADD_FLAT_MODIFIER);
+  assert( effect -> subtype() == A_ADD_FLAT_MODIFIER );
 
-  return timespan_t::from_millis(effect -> base_value());
+  return timespan_t::from_millis( effect -> base_value() );
 }
 
 // Glyph basic object

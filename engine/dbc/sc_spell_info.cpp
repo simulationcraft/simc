@@ -231,8 +231,9 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
-      if ( e -> trigger_spell_id() ) {
-        if( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+      if ( e -> trigger_spell_id() )
+      {
+        if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
           s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
         else
           s << ": (" << e -> trigger_spell_id() << ")";
@@ -262,7 +263,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       case A_PROC_TRIGGER_SPELL:
         if ( e -> trigger_spell_id() )
         {
-          if( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
           {
             s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
           }
@@ -275,7 +276,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       case A_PERIODIC_TRIGGER_SPELL:
         if ( e -> trigger_spell_id() )
         {
-          if( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
           {
             s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
             if ( e -> period() != timespan_t::zero )
@@ -576,7 +577,7 @@ std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent
       if ( talent -> depends_rank() > 0 )
         s << " (Rank " << talent -> depends_rank() + 1 << ")";
     }
-    
+
     s << std::endl;
   }
 

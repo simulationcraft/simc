@@ -3597,11 +3597,11 @@ double paladin_t::assess_damage( double            amount,
 
 // paladin_t::assess_heal ===================================================
 
-player_t::heal_info_t paladin_t::assess_heal(  double            amount,
-                                               const school_type school,
-                                               int               dmg_type,
-                                               int               result,
-                                               action_t*         action )
+player_t::heal_info_t paladin_t::assess_heal( double            amount,
+                                              const school_type school,
+                                              int               dmg_type,
+                                              int               result,
+                                              action_t*         action )
 {
 
   amount *= 1.0 + talents.divinity -> effect1().percent();

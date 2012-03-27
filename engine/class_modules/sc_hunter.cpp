@@ -587,12 +587,12 @@ struct hunter_pet_t : public pet_t
 
     return mult;
   }
-  
+
   virtual double composite_attack_crit( weapon_t* /* w */ ) const
   {
     hunter_t* o = owner -> cast_hunter();
 
-    double ac = pet_t::composite_attack_crit( 0);
+    double ac = pet_t::composite_attack_crit( 0 );
 
     ac += o -> composite_attack_crit( &( o -> main_hand_weapon ) );
 
@@ -4022,7 +4022,7 @@ void hunter_t::init_actions()
 
       if ( ! talents.black_arrow -> rank() )
         action_list_str += "/explosive_trap,not_flying=1,if=target.time_to_die>=11";
-      
+
       action_list_str += "/kill_shot";
 
       if ( talents.black_arrow -> rank() )
@@ -4031,12 +4031,12 @@ void hunter_t::init_actions()
       action_list_str += "/rapid_fire";
 
       action_list_str += "/arcane_shot,if=focus>=67";
-      
+
       if ( level >=81 )
         action_list_str += "/cobra_shot";
       else
         action_list_str += "/steady_shot";
-      
+
       if ( summon_pet_str.empty() )
         summon_pet_str = "cat";
       break;

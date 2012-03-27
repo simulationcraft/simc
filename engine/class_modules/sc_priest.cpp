@@ -286,7 +286,7 @@ struct priest_t : public player_t
 
   // Character Definition
   virtual targetdata_t* new_targetdata( player_t* source, player_t* target )
-    { return new priest_targetdata_t( source, target ); }
+  { return new priest_targetdata_t( source, target ); }
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_benefits();
@@ -527,7 +527,7 @@ struct priest_heal_t : public heal_t
                                                 p() -> heals_echo_of_light -> dot() -> ticks() +
                                                 a -> direct_dmg * p() -> composite_mastery() *
                                                 p() -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) /
-                                              p() -> heals_echo_of_light -> num_ticks;
+                                                p() -> heals_echo_of_light -> num_ticks;
         p() -> heals_echo_of_light -> dot() -> refresh_duration();
       }
       else
@@ -537,7 +537,7 @@ struct priest_heal_t : public heal_t
                                                 ( p() -> heals_echo_of_light -> dot() -> ticks() - 1 ) +
                                                 a -> direct_dmg * p() -> composite_mastery() *
                                                 p() -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 ) /
-                                              p() -> heals_echo_of_light -> num_ticks;
+                                                p() -> heals_echo_of_light -> num_ticks;
         p() -> heals_echo_of_light -> dot() -> refresh_duration();
         p() -> echo_of_light_merged = true;
       }
@@ -545,8 +545,8 @@ struct priest_heal_t : public heal_t
     else
     {
       p() -> heals_echo_of_light -> base_td = a -> direct_dmg * p() -> composite_mastery() *
-                                            p() -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 /
-                                            p() -> heals_echo_of_light -> num_ticks;
+                                              p() -> mastery_spells.echo_of_light -> effect_base_value( 2 ) / 10000.0 /
+                                              p() -> heals_echo_of_light -> num_ticks;
       p() -> heals_echo_of_light -> execute();
       p() -> echo_of_light_merged = false;
     }
@@ -961,8 +961,8 @@ struct shadow_fiend_pet_t : public pet_t
           p -> o() -> buffs.shadow_orb -> trigger( 3, 1, p -> o() -> constants.shadow_orb_proc_value );
 
         p -> o() -> resource_gain( RESOURCE_MANA, p -> o() -> resource_max[ RESOURCE_MANA ] *
-                            p -> mana_leech -> effect_base_value( 1 ) / 100.0,
-                            p -> o() -> gains.shadow_fiend );
+                                   p -> mana_leech -> effect_base_value( 1 ) / 100.0,
+                                   p -> o() -> gains.shadow_fiend );
       }
     }
 
@@ -1196,7 +1196,7 @@ struct lightwell_pet_t : public pet_t
 
   virtual void summon( timespan_t duration )
   {
-    priest_t* o = static_cast<priest_t*>(owner);
+    priest_t* o = static_cast<priest_t*>( owner );
 
     spell_haste = o -> spell_haste;
     spell_power[ SCHOOL_HOLY ] = o -> composite_spell_power( SCHOOL_HOLY ) * o -> composite_spell_power_multiplier();
@@ -4199,7 +4199,7 @@ void priest_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  priest_t* source_p = dynamic_cast<priest_t*>(source);
+  priest_t* source_p = dynamic_cast<priest_t*>( source );
 
   assert( source_p );
 

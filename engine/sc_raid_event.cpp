@@ -503,7 +503,7 @@ timespan_t raid_event_t::cooldown_time() const
     {
       time = first;
     }
-    else 
+    else
     {
       time = timespan_t::from_millis( 10 );
     }

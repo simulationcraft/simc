@@ -343,8 +343,8 @@ void print_text_attack_stats( FILE* file, player_t* p )
                    p -> buffed_attack_power, p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
                    100 * p -> buffed_attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating,
                    100 * p -> buffed_attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating,
-                   100 * p -> buffed_mh_attack_expertise,   100 * p -> composite_attack_expertise( &( p -> main_hand_weapon ) ),   
-                   100 * p -> buffed_oh_attack_expertise,   100 * p -> composite_attack_expertise( &( p -> off_hand_weapon ) ),   
+                   100 * p -> buffed_mh_attack_expertise,   100 * p -> composite_attack_expertise( &( p -> main_hand_weapon ) ),
+                   100 * p -> buffed_oh_attack_expertise,   100 * p -> composite_attack_expertise( &( p -> off_hand_weapon ) ),
                    p -> stats.expertise_rating,
                    100 * ( 1 / p -> buffed_attack_haste - 1 ), 100 * ( 1 / p -> composite_attack_haste() - 1 ), p -> stats.haste_rating,
                    100 * ( 1 / p -> buffed_attack_speed - 1 ), 100 * ( 1 / p -> composite_attack_speed() - 1 ), p -> stats.haste_rating );
@@ -366,7 +366,7 @@ void print_text_defense_stats( FILE* file, player_t* p )
 
 void print_text_gains( FILE* file, gain_t* g, int max_length )
 {
-  for( size_t i = 0; i < RESOURCE_MAX; i++ )
+  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
   {
     if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {

@@ -1233,7 +1233,7 @@ debuff_t::debuff_t( player_t*          p,
                     double             chance,
                     timespan_t         cd,
                     bool               q,
-                    bool               r) :
+                    bool               r ) :
   buff_t( p, id, n, chance, cd, q, r )
 {
 }

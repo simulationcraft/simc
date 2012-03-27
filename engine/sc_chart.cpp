@@ -2120,11 +2120,11 @@ const char* chart_t::dps_error( std::string& s,
   s += "&amp;";
   if ( p -> sim -> print_styles )
   {
-  s += "chxs=0,000000|1,000000|2,000000|3,000000";
+    s += "chxs=0,000000|1,000000|2,000000|3,000000";
   }
   else
   {
-  s += "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
+    s += "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
   }
   s += "&amp;";
   if ( p -> sim -> print_styles )

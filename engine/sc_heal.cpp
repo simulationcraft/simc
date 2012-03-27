@@ -59,7 +59,7 @@ heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
 // heal_t::heal_t ======== Heal Constructor by Spell ID =====================
 
 heal_t::heal_t( const char* n, player_t* player, const uint32_t id, int t ) :
-    action_t( ACTION_HEAL, n, id, player, t )
+  action_t( ACTION_HEAL, n, id, player, t )
 {
   init_heal_t_();
 }
@@ -279,17 +279,17 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl ) const
 
   if ( group_only )
   {
-  tl.push_back( target );
+    tl.push_back( target );
 
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    if ( ! sim -> actor_list[ i ] -> sleeping &&
-         !sim -> actor_list[ i ] -> is_enemy() &&
-         sim -> actor_list[ i ] != target && sim -> actor_list[ i ] -> party == target -> party )
-      tl.push_back( sim -> actor_list[ i ] );
-  }
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      if ( ! sim -> actor_list[ i ] -> sleeping &&
+           ! sim -> actor_list[ i ] -> is_enemy() &&
+           sim -> actor_list[ i ] != target && sim -> actor_list[ i ] -> party == target -> party )
+        tl.push_back( sim -> actor_list[ i ] );
+    }
 
-  return tl.size();
+    return tl.size();
   }
 
   return action_t::available_targets( tl );
