@@ -1556,7 +1556,7 @@ struct execute_t : public warrior_attack_t
 
     player -> resource_loss( resource, resource_consumed );
 
-    stats -> consume_resource( resource_consumed );
+    stats -> consume_resource( static_cast<resource_type>(resource), resource_consumed );
 
     if ( p -> talents.sudden_death -> ok() )
     {

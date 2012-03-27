@@ -501,7 +501,6 @@ void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
 
 void print_html_action_resource( FILE* file, stats_t* s, int j )
 {
-
   fprintf( file,
            "\t\t\t\t\t\t\t<tr" );
   if ( j & 1 )
@@ -516,6 +515,11 @@ void print_html_action_resource( FILE* file, stats_t* s, int j )
     if ( ! a -> background ) break;
   }
 
+  for( size_t i = 0; i < RESOURCE_MAX; i++ )
+  {
+    if (  s -> rpe[  i ] <= 0 )
+      continue;
+
   fprintf( file,
            "\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
            "\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
@@ -524,10 +528,11 @@ void print_html_action_resource( FILE* file, stats_t* s, int j )
            "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
            s -> name_str.c_str(),
-           util_t::resource_type_string( s -> resource ),
-           s -> resource_portion * 100,
-           s -> apr,
-           s -> rpe );
+           util_t::resource_type_string( i ),
+           s -> resource_portion[  i ] * 100,
+           s -> apr[ i ],
+           s -> rpe[ i ] );
+  }
 }
 
 // print_html_gear ==========================================================
@@ -1314,7 +1319,7 @@ void print_html_player_resources( FILE* file, player_t* p )
   int i = 0;
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
   {
-    if ( s -> rpe > 0 )
+    if ( s -> rpe_sum > 0 )
     {
       print_html_action_resource( file, s, i );
       i++;
@@ -1328,7 +1333,7 @@ void print_html_player_resources( FILE* file, player_t* p )
     i = 0;
     for ( stats_t* s = pet -> stats_list; s; s = s -> next )
     {
-      if ( s -> rpe > 0 )
+      if ( s -> rpe_sum > 0 )
       {
         if ( first )
         {

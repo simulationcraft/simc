@@ -4873,14 +4873,15 @@ struct stats_t
   bool analyzed;
   bool quiet;
   bool background;
+  gain_t* resource_gain;
 
-  int resource;
-  double resource_consumed, resource_portion;
+  double resource_portion[ RESOURCE_MAX ];
+  double rpe_sum;
   double frequency, num_executes, num_ticks;
   double num_direct_results, num_tick_results;
   timespan_t total_execute_time, total_tick_time, total_time;
   double portion_amount, overkill_pct;
-  double aps, ape, apet, apr, rpe, etpe, ttpt;
+  double aps, ape, apet, apr[ RESOURCE_MAX ], rpe[ RESOURCE_MAX ], etpe, ttpt;
   timespan_t total_intervals;
   double num_intervals;
   timespan_t last_execute;
@@ -4914,9 +4915,10 @@ struct stats_t
   std::string timeline_aps_chart;
 
   stats_t( const std::string& name, player_t* );
+  ~stats_t();
 
   void add_child( stats_t* child );
-  void consume_resource( double r ) { resource_consumed += r; }
+  void consume_resource( resource_type rt, double r );
   void add_result( double act_amount, double tot_amount, int dmg_type, int result );
   void add_tick   ( timespan_t time );
   void add_execute( timespan_t time );

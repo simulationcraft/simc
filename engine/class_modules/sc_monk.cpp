@@ -338,8 +338,8 @@ struct spinning_crane_kick_t : public monk_attack_t
                      util_t::resource_type_string( RESOURCE_DARK_FORCE ),
                      name() );
 
-    stats -> consume_resource( lf_cost );
-    stats -> consume_resource( df_cost );
+    stats -> consume_resource( RESOURCE_LIGHT_FORCE, lf_cost );
+    stats -> consume_resource( RESOURCE_DARK_FORCE, df_cost );
   }
 
   virtual bool ready()

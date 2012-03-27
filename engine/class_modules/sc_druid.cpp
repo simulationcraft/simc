@@ -1303,7 +1303,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
                        excess_energy, util_t::resource_type_string( resource ), name() );
 
       player -> resource_loss( resource, excess_energy );
-      stats -> consume_resource( excess_energy );
+      stats -> consume_resource( static_cast<resource_type>(resource), excess_energy );
     }
   }
 
@@ -1359,7 +1359,7 @@ struct frenzied_regeneration_buff_t : public buff_t
             double rage_health = rage_consumed * health_pct * p -> resource_max[ RESOURCE_HEALTH ];
             p -> resource_gain( RESOURCE_HEALTH, rage_health, p -> gains_frenzied_regeneration );
             p -> resource_loss( RESOURCE_RAGE, rage_consumed );
-            rage_stats -> consume_resource( rage_consumed );
+            rage_stats -> consume_resource( RESOURCE_RAGE, rage_consumed );
             new ( sim ) frenzied_regeneration_event_t( p );
           }
         }
