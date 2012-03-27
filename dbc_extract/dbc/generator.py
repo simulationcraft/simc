@@ -171,6 +171,9 @@ class SpecializationEnumGenerator(DataGenerator):
 
                 s += '    %s,\n' % enum_ids[cls][spec]['name']
             
+            for i in xrange(0, len(enum_ids[cls]) - max_specialization):
+                s += '    SPEC_NONE,\n'
+
             s += '  },\n'
             
         s += '};\n\n'
