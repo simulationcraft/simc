@@ -230,10 +230,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\engine\interfaces\sc_battle_net.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\engine\interfaces\sc_bcp_api.cpp"
 				>
 			</File>

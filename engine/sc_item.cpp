@@ -1368,8 +1368,6 @@ bool item_t::download_slot( item_t& item,
       else if ( src == "mmoc" )
         success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                                  rsuffix_id, gem_ids, cache::ONLY );
-      else if ( src == "armory" )
-        success = armory_t::download_slot( item, item_id, cache::ONLY );
       else if ( src == "bcpapi" )
         success = bcp_api::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, cache::ONLY );
@@ -1395,8 +1393,6 @@ bool item_t::download_slot( item_t& item,
       else if ( src == "mmoc" )
         success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                                  rsuffix_id, gem_ids, cb );
-      else if ( src == "armory" )
-        success = armory_t::download_slot( item, item_id, cache::items() );
       else if ( src == "bcpapi" )
         success = bcp_api::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, cb );
@@ -1434,8 +1430,6 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
         success = wowhead_t::download_item( item, item_id, true, cache::ONLY );
       else if ( source_list[ i ] == "mmoc" )
         success = mmo_champion_t::download_item( item, item_id, cache::ONLY );
-      else if ( source_list[ i ] == "armory" )
-        success = armory_t::download_item( item, item_id, cache::ONLY );
       else if ( source_list[ i ] == "bcpapi" )
         success = bcp_api::download_item( item, item_id, cache::ONLY );
     }
@@ -1455,8 +1449,6 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
         success = wowhead_t::download_item( item, item_id, true );
       else if ( source_list[ i ] == "mmoc" )
         success = mmo_champion_t::download_item( item, item_id );
-      else if ( source_list[ i ] == "armory" )
-        success = armory_t::download_item( item, item_id );
       else if ( source_list[ i ] == "bcpapi" )
         success = bcp_api::download_item( item, item_id );
     }

@@ -378,21 +378,21 @@ enum base_stat_type { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA
 enum resource_type
 {
   RESOURCE_NONE = 0,
-  RESOURCE_HEALTH, 
+  RESOURCE_HEALTH,
   RESOURCE_MANA,
   RESOURCE_RAGE,
   RESOURCE_FOCUS,
   RESOURCE_ENERGY,
   RESOURCE_MONK_ENERGY,
   RESOURCE_RUNIC_POWER,
-  RESOURCE_SOUL_SHARD, 
+  RESOURCE_SOUL_SHARD,
   /* Unknown_1, */
   RESOURCE_HOLY_POWER,
   /* Unknown_2, */
   /* Unknown_3 */
-  RESOURCE_CHI, 
+  RESOURCE_CHI,
   RESOURCE_SHADOW_ORB,
-  RESOURCE_BURNING_EMBER, 
+  RESOURCE_BURNING_EMBER,
   RESOURCE_DEMONIC_FURY,
   /* Dummy resources for reporting */
   RESOURCE_RUNE,
@@ -1865,7 +1865,7 @@ struct spellpower_data_t
   int      _cost;
   double   _cost_2;
   int      _cost_per_second;    // Unsure
-  
+
   resource_type resource() const;
   unsigned id() const { return _id; }
   unsigned spell_id() const { return _spell_id; }
@@ -1874,12 +1874,12 @@ struct spellpower_data_t
   double cost() const {
     double cost = 0.0;
     double divisor;
-    
+
     if ( _cost > 0 )
       cost = _cost;
     else
       cost = _cost_2;
-    
+
     switch ( type() )
     {
       case POWER_MANA:
@@ -1890,7 +1890,7 @@ struct spellpower_data_t
       default:
         divisor = 1.0;
     }
-    
+
     return cost / divisor;
   }
 
@@ -1965,7 +1965,7 @@ public:
   double                     percent() const { return _base_value * ( 1 / 100.0 ); }
   timespan_t                 time_value() const { return timespan_t::from_millis( _base_value ); }
   resource_type              resource_gain_type() const;
-  
+
   double resource( int type ) const
   {
     switch ( type )
@@ -2088,7 +2088,7 @@ public:
   const spelleffect_data_t& effect1() const { return effectN( 1 ); }
   const spelleffect_data_t& effect2() const { return effectN( 2 ); }
   const spelleffect_data_t& effect3() const { return effectN( 3 ); }
-  
+
   const spellpower_data_t& powerN( int pt ) const {
     assert( pt >= POWER_HEALTH && pt < POWER_MAX );
     for ( size_t i = 0; i < _power -> size(); i++ )
@@ -2096,7 +2096,7 @@ public:
       if ( _power -> at( i ) -> _power_type == pt )
         return *_power -> at( i );
     }
-    
+
     return *spellpower_data_t::nil();
   }
 
@@ -5136,7 +5136,7 @@ public:
   virtual resource_type current_resource() const {
     if ( likely( s_data && s_data -> _power && s_data -> _power -> size() == 1 ) )
       return s_data -> _power -> at( 0 ) -> resource();
-    
+
     return RESOURCE_NONE;
   }
   virtual void   execute();
@@ -5284,7 +5284,7 @@ struct action_state_t
 
   action_state_t( action_t*, player_t* );
   virtual ~action_state_t() {};
-  
+
   virtual void take_state( uint32_t );
   virtual void copy_state( const action_state_t* );
   virtual void debug() const;
@@ -6181,45 +6181,9 @@ bool str_to_float( const std::string& src, double& dest );
 
 struct armory_t
 {
-  static bool download_guild( sim_t* sim,
-                              const std::string& region,
-                              const std::string& server,
-                              const std::string& name,
-                              const std::vector<int>& ranks,
-                              int player_type= PLAYER_NONE,
-                              int max_rank=0,
-                              cache::behavior_t b=cache::players() );
-  static player_t* download_player( sim_t* sim,
-                                    const std::string& region,
-                                    const std::string& server,
-                                    const std::string& name,
-                                    const std::string& talents,
-                                    cache::behavior_t  b=cache::players() );
-  static bool download_slot( item_t&, const std::string& item_id, cache::behavior_t b=cache::items() );
-  static bool download_item( item_t&, const std::string& item_id, cache::behavior_t b=cache::items() );
   static void fuzzy_stats( std::string& encoding, const std::string& description );
   static int  parse_meta_gem( const std::string& description );
   static std::string& format( std::string& name, int format_type = FORMAT_DEFAULT );
-};
-
-// Battle Net ===============================================================
-
-struct battle_net_t
-{
-  static player_t* download_player( sim_t* sim,
-                                    const std::string& region,
-                                    const std::string& server,
-                                    const std::string& name,
-                                    const std::string& talents,
-                                    cache::behavior_t b=cache::players() );
-  static bool download_guild( sim_t* sim,
-                              const std::string& region,
-                              const std::string& server,
-                              const std::string& name,
-                              const std::vector<int>& ranks,
-                              int player_type=PLAYER_NONE,
-                              int max_rank=0,
-                              cache::behavior_t b=cache::players() );
 };
 
 // Wowhead  =================================================================

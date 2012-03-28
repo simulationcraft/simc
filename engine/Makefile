@@ -116,7 +116,6 @@ SRC = \
 	report$(PATHSEP)sc_report_xml.cpp \
 	report$(PATHSEP)sc_report.cpp \
 	interfaces$(PATHSEP)sc_armory.cpp \
-	interfaces$(PATHSEP)sc_battle_net.cpp \
 	interfaces$(PATHSEP)sc_bcp_api.cpp \
 	interfaces$(PATHSEP)sc_chardev.cpp \
 	interfaces$(PATHSEP)sc_http.cpp \

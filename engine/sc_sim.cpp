@@ -182,21 +182,7 @@ static bool parse_player( sim_t*             sim,
     cache::behavior_t caching = use_cache ? cache::ANY : cache::players();
 
     if ( wowhead.empty() )
-    {
-      if ( true )
-        sim -> active_player = bcp_api::download_player( sim, region, server, player_name, "active", caching );
-      else
-      {
-        if ( region == "cn" )
-        {
-          sim -> active_player = armory_t::download_player( sim, region, server, player_name, "active", caching );
-        }
-        else
-        {
-          sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, "active", caching );
-        }
-      }
-    }
+      sim -> active_player = bcp_api::download_player( sim, region, server, player_name, "active", caching );
     else
     {
       sim -> active_player = wowhead_t::download_player( sim, wowhead, ( talents == "active" ), caching );
@@ -348,18 +334,7 @@ static bool parse_armory( sim_t*             sim,
       if ( ! sim -> input_is_utf8 )
         sim -> input_is_utf8 = utf8::is_valid( player_name.begin(), player_name.end() ) && utf8::is_valid( server.begin(), server.end() );
 
-      if ( true )
-      {
-        sim -> active_player = bcp_api::download_player( sim, region, server, player_name, description );
-      }
-      else if ( region == "cn" )
-      {
-        sim -> active_player = armory_t::download_player( sim, region, server, player_name, description );
-      }
-      else
-      {
-        sim -> active_player = battle_net_t::download_player( sim, region, server, player_name, description );
-      }
+      sim -> active_player = bcp_api::download_player( sim, region, server, player_name, description );
       if ( ! sim -> active_player ) return false;
     }
     return true;
@@ -416,17 +391,7 @@ static bool parse_armory( sim_t*             sim,
 
     cache::behavior_t caching = use_cache ? cache::ANY : cache::players();
 
-    if ( true )
-      return bcp_api::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, caching );
-
-    if ( region == "cn" )
-    {
-      return armory_t::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, caching );
-    }
-    else
-    {
-      return battle_net_t::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, caching );
-    }
+    return bcp_api::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, caching );
   }
 
   return false;

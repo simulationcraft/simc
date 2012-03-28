@@ -25,7 +25,6 @@ SET(SIMC_ENGINE_SOURCE
   "engine/sc_action.cpp"
   "engine/interfaces\sc_armory.cpp"
   "engine/sc_attack.cpp"
-  "engine/interfaces\sc_battle_net.cpp"
   "engine/interfaces\sc_bcp_api.cpp"
   "engine/sc_buff.cpp"
   "engine/interfaces\sc_chardev.cpp"

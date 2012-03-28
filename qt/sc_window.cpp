@@ -852,11 +852,11 @@ void SimulationCraftWindow::createBestInSlotTab()
 #ifndef Q_WS_MAC
     QDir dir = QString( "profiles/" + tprofileList[ i ] );
 #else
-    CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(), 
-                                                CFStringCreateWithCString( NULL, 
-                                                                           tprofileList[ i ].toAscii().constData(), 
-                                                                           kCFStringEncodingUTF8 ), 
-                                                0, 
+    CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
+                                                CFStringCreateWithCString( NULL,
+                                                                           tprofileList[ i ].toAscii().constData(),
+                                                                           kCFStringEncodingUTF8 ),
+                                                0,
                                                 CFSTR( "profiles" ) );
     QDir dir;
     if ( fileRef )
@@ -1271,14 +1271,6 @@ void ImportThread::importBattleNet()
                 cpp_c   = character.toUtf8().constData(),
                 cpp_r   = region.toUtf8().constData();
     player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-
-    if ( false )
-    {
-      if ( cpp_r == "cn" )
-        player = armory_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-      else
-        player = battle_net_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-    }
   }
 }
 
