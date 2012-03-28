@@ -9,6 +9,7 @@ exists( build.conf ) {
 }
 
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
+QMAKE_CXXFLAGS += $$OPTS
 
 win32 {
   LIBS += -lwininet
@@ -36,8 +37,8 @@ INCLUDEPATH += engine
 DEPENDPATH += engine
 
 HEADERS += engine/simulationcraft.hpp
-HEADERS += engine/dbc\data_enums.hh
-HEADERS += engine/dbc\data_definitions.hh
+HEADERS += engine/dbc/data_enums.hh
+HEADERS += engine/dbc/data_definitions.hh
 HEADERS += engine/utf8.h
 HEADERS += engine/utf8/core.h
 HEADERS += engine/utf8/checked.h
@@ -111,6 +112,7 @@ SOURCES += engine/class_modules/sc_priest.cpp
 SOURCES += engine/class_modules/sc_rogue.cpp
 SOURCES += engine/class_modules/sc_shaman.cpp
 SOURCES += engine/class_modules/sc_warlock.cpp
+SOURCES += engine/class_modules/sc_warlock_pets.cpp
 SOURCES += engine/class_modules/sc_warrior.cpp
 SOURCES += qt/main.cpp
 SOURCES += qt/sc_window.cpp
