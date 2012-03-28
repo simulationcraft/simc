@@ -3606,8 +3606,6 @@ public:
   std::stack<std::string> active_files;
   std::vector<std::string> error_list;
   FILE* output_file;
-  int armory_throttle;
-  int current_throttle;
   int debug_exp;
   int report_precision;
   int report_pets_separately;
@@ -6311,7 +6309,7 @@ public:
   static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
   static bool get( std::string& result, const std::string& url, cache::behavior_t b,
-                   const std::string& confirmation=std::string(), int throttle_seconds=0 );
+                   const std::string& confirmation=std::string() );
 
   static std::string& format( std::string& encoded_url, const std::string& url )
   { format_( encoded_url, url ); return encoded_url; }
@@ -6334,7 +6332,7 @@ struct xml_t
   static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
   static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
   static xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_t b,
-                          const std::string& confirmation=std::string(), int throttle_seconds=0 );
+                          const std::string& confirmation=std::string() );
   static xml_node_t* create( sim_t* sim, const std::string& input );
   static xml_node_t* create( sim_t* sim, FILE* input );
   static void print( xml_node_t* root, FILE* f=0, int spacing=0 );
