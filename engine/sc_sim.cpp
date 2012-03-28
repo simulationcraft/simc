@@ -715,6 +715,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   path_str += "|profiles";
   path_str += DIRECTORY_DELIMITER;
   path_str += "Tier13N";
+  path_str += "|profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "mop_test";
 
   path_str += "|..";
   path_str += DIRECTORY_DELIMITER;
@@ -722,6 +725,11 @@ sim_t::sim_t( sim_t* p, int index ) :
   path_str += "|..";
   path_str += DIRECTORY_DELIMITER;
   path_str += "profiles_heal";
+  path_str += "|..";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "profiles";
+  path_str += DIRECTORY_DELIMITER;
+  path_str += "mop_test";
   path_str += "|..";
   path_str += DIRECTORY_DELIMITER;
   path_str += "profiles";

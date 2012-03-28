@@ -104,13 +104,11 @@ struct priest_t : public player_t
     spell_id_t* grace;
     spell_id_t* evangelism;
     spell_id_t* train_of_thought;
-    spell_id_t* rapture;
 
     // Holy
     spell_id_t* spiritual_healing;
     spell_id_t* meditation_holy;
     spell_id_t* revelations;
-    spell_id_t* body_and_soul;
 
     // Shadow
     spell_id_t* shadow_power;
@@ -136,7 +134,6 @@ struct priest_t : public player_t
     cooldown_t* mind_blast;
     cooldown_t* shadow_fiend;
     cooldown_t* chakra;
-    cooldown_t* rapture;
     cooldown_t* inner_focus;
     cooldown_t* penance;
   } cooldowns;
@@ -147,7 +144,6 @@ struct priest_t : public player_t
     gain_t* dispersion;
     gain_t* shadow_fiend;
     gain_t* archangel;
-    gain_t* rapture;
     gain_t* hymn_of_hope;
   } gains;
 
@@ -271,8 +267,6 @@ struct priest_t : public player_t
     cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
     cooldowns.shadow_fiend               = get_cooldown( "shadow_fiend" );
     cooldowns.chakra                     = get_cooldown( "chakra"   );
-    cooldowns.rapture                    = get_cooldown( "rapture" );
-    cooldowns.rapture -> duration        = dbc.spell( 63853 ) -> duration();
     cooldowns.inner_focus                = get_cooldown( "inner_focus" );
     cooldowns.penance                    = get_cooldown( "penance" );
 
@@ -3070,18 +3064,6 @@ struct power_word_shield_t : public priest_absorb_t
     return c;
   }
 
-  virtual void execute()
-  {
-    priest_absorb_t::execute();
-
-    // Rapture
-    if ( p() -> cooldowns.rapture -> remains() == timespan_t::zero && p() -> spec.rapture -> ok() )
-    {
-      p() -> resource_gain( RESOURCE_MANA, p() -> resource_max[ RESOURCE_MANA ] * p() -> spec.rapture -> effect1().percent(), p() -> gains.rapture );
-      p() -> cooldowns.rapture -> start();
-    }
-  }
-
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     priest_targetdata_t* td = targetdata() -> cast_priest();
@@ -3099,10 +3081,6 @@ struct power_word_shield_t : public priest_absorb_t
       glyph_pws -> target = t;
       glyph_pws -> execute();
     }
-
-    // Body and Soul
-    if ( p() -> spec.body_and_soul -> ok() )
-      t -> buffs.body_and_soul -> trigger( 1, p() -> spec.body_and_soul -> effect1().percent() );
   }
 
   virtual bool ready()
@@ -3115,19 +3093,6 @@ struct power_word_shield_t : public priest_absorb_t
 };
 
 // Prayer of Healing Spell ==================================================
-
-struct glyph_prayer_of_healing_t : public priest_heal_t
-{
-  glyph_prayer_of_healing_t( priest_t* player ) :
-    priest_heal_t( "prayer_of_healing_glyph", player, 56161 )
-  {
-    proc       = true;
-    background = true;
-    may_crit   = false;
-
-    num_ticks = 0; // coded as DD for now.
-  }
-};
 
 struct prayer_of_healing_t : public priest_heal_t
 {
@@ -3545,7 +3510,6 @@ void priest_t::init_gains()
   gains.dispersion                = get_gain( "dispersion" );
   gains.shadow_fiend              = get_gain( "shadow_fiend" );
   gains.archangel                 = get_gain( "archangel" );
-  gains.rapture                   = get_gain( "rapture" );
   gains.hymn_of_hope              = get_gain( "hymn_of_hope" );
 }
 
@@ -3627,13 +3591,11 @@ void priest_t::init_spells()
   spec.grace = find_specialization_spell( "Grace" );
   spec.evangelism = find_specialization_spell( "Evangelism" );
   spec.train_of_thought = find_specialization_spell( "Train of Thought" );
-  spec.rapture = find_specialization_spell( "Rapture" );
 
   // Holy
   spec.spiritual_healing      = new spell_id_t( this, "spiritual_healing", "Spiritual Healing" );
   spec.meditation_holy        = new spell_id_t( this, "meditation_holy", 95861 );
   spec.revelations            = find_specialization_spell( "Revelations" );
-  spec.body_and_soul = find_specialization_spell( "Body and Soul" );
 
   // Shadow
   spec.shadow_power           = new spell_id_t( this, "shadow_power", "Shadow Power" );
@@ -3880,8 +3842,6 @@ void priest_t::init_actions()
         list_default += "/inner_focus";
         list_default += "/power_infusion";
         list_default += "/power_word_shield";
-        if ( spec.rapture -> ok() )
-          list_default += ",if=!cooldown.rapture.remains";
         list_default += "/greater_heal,if=buff.inner_focus.up";
 
         list_default += "/holy_fire";
@@ -3975,12 +3935,12 @@ void priest_t::init_actions()
   }
 
   player_t::init_actions();
-
+/*
   for ( action_t* a = action_list; a; a = a -> next )
   {
     double c = a -> cost();
     if ( c > max_mana_cost ) max_mana_cost = c;
-  }
+  }*/
 }
 
 // priest_t::init_party =====================================================
