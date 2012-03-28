@@ -790,10 +790,10 @@ void print_html_help_boxes( FILE*  file, sim_t* sim )
            "\t\t</div>\n" );
 
   fprintf( file,
-           "\t\t<div id=\"help-max\">\n"
+           "\t\t<div id=\"help-avg\">\n"
            "\t\t\t<div class=\"help-box\">\n"
-           "\t\t\t\t<h3>Max</h3>\n"
-           "\t\t\t\t<p>Maximum crit damage over all iterations.</p>\n"
+           "\t\t\t\t<h3>Avg</h3>\n"
+           "\t\t\t\t<p>Average direct damage per execution.</p>\n"
            "\t\t\t</div>\n"
            "\t\t</div>\n" );
 
@@ -898,6 +898,14 @@ void print_html_help_boxes( FILE*  file, sim_t* sim )
            "\t\t\t<div class=\"help-box\">\n"
            "\t\t\t\t<h3>UpTime%%</h3>\n"
            "\t\t\t\t<p>Percentage of total time that DoT is ticking on target.</p>\n"
+           "\t\t\t</div>\n"
+           "\t\t</div>\n" );
+
+  fprintf( file,
+           "\t\t<div id=\"help-ticks-avg\">\n"
+           "\t\t\t<div class=\"help-box\">\n"
+           "\t\t\t\t<h3>T-Avg</h3>\n"
+           "\t\t\t\t<p>Average damage per tick.</p>\n"
            "\t\t\t</div>\n"
            "\t\t</div>\n" );
 
