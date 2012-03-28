@@ -360,7 +360,7 @@ struct warrior_t : public player_t
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() const { return RESOURCE_RAGE; }
+  virtual resource_type primary_resource() const { return RESOURCE_RAGE; }
   virtual int       primary_role() const;
   virtual double    assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
   virtual void      copy_from( player_t* source );

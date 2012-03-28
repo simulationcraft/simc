@@ -407,7 +407,7 @@ struct death_knight_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() const { return RESOURCE_RUNIC_POWER; }
+  virtual resource_type primary_resource() const { return RESOURCE_RUNIC_POWER; }
   virtual int       primary_role() const;
   virtual void      trigger_runic_empowerment();
   virtual int       runes_count( rune_type rt, bool include_death, int position );
@@ -990,7 +990,7 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual double composite_attack_hit() const { return snapshot_hit; }
 
-  virtual int primary_resource() const { return RESOURCE_ENERGY; }
+  virtual resource_type primary_resource() const { return RESOURCE_ENERGY; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
@@ -1067,7 +1067,7 @@ struct bloodworms_pet_t : public pet_t
     melee -> schedule_execute();
   }
 
-  virtual int primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type primary_resource() const { return RESOURCE_MANA; }
 };
 
 // ==========================================================================
@@ -1415,7 +1415,7 @@ struct ghoul_pet_t : public pet_t
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
-  virtual int primary_resource() const
+  virtual resource_type primary_resource() const
   {
     return RESOURCE_ENERGY;
   }

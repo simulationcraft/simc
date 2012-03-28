@@ -308,7 +308,7 @@ struct priest_t : public player_t
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type primary_resource() const { return RESOURCE_MANA; }
   virtual int       primary_role() const;
   virtual double    composite_armor() const;
   virtual double    composite_spell_power( const school_type school ) const;

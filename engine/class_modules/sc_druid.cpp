@@ -376,7 +376,7 @@ struct druid_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() const;
+  virtual resource_type primary_resource() const;
   virtual int       primary_role() const;
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
   virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
@@ -5105,19 +5105,19 @@ void druid_t::reset()
 
 void druid_t::regen( timespan_t periodicity )
 {
-  int resource_type = primary_resource();
+  resource_type rt = primary_resource();
 
-  if ( resource_type == RESOURCE_ENERGY )
+  if ( rt == RESOURCE_ENERGY )
   {
     uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
                                   resource_max    [ RESOURCE_ENERGY ] );
   }
-  else if ( resource_type == RESOURCE_MANA )
+  else if ( rt == RESOURCE_MANA )
   {
     if ( buffs_glyph_of_innervate -> check() )
       resource_gain( RESOURCE_MANA, buffs_glyph_of_innervate -> value() * periodicity.total_seconds(), gains_glyph_of_innervate );
   }
-  else if ( resource_type == RESOURCE_RAGE )
+  else if ( rt == RESOURCE_RAGE )
   {
     if ( buffs_enrage -> up() )
       resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds(), gains_enrage );
@@ -5456,7 +5456,7 @@ int druid_t::primary_role() const
 
 // druid_t::primary_resource ================================================
 
-int druid_t::primary_resource() const
+resource_type druid_t::primary_resource() const
 {
   if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL )
     return RESOURCE_MANA;

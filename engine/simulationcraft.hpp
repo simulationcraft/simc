@@ -4655,7 +4655,7 @@ struct player_t : public noncopyable
   virtual double resource_loss( int resource, double amount, action_t* a=0 );
   virtual void   recalculate_resource_max( int resource );
   virtual bool   resource_available( int resource, double cost ) const;
-  virtual int    primary_resource() const { return RESOURCE_NONE; }
+  virtual resource_type primary_resource() const { return RESOURCE_NONE; }
   virtual int    primary_role() const;
   virtual int    primary_tree() const;
   virtual int    primary_tab();

@@ -48,7 +48,7 @@ struct enemy_t : public player_t
     return ROLE_TANK;
   }
 
-  virtual int primary_resource() const
+  virtual resource_type primary_resource() const
   {
     return RESOURCE_NONE;
   }
@@ -100,7 +100,7 @@ struct enemy_add_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual int primary_resource() const
+  virtual resource_type primary_resource() const
   {
     return RESOURCE_HEALTH;
   }

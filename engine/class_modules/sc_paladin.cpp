@@ -319,7 +319,7 @@ struct paladin_t : public player_t
   virtual double    matching_gear_multiplier( const attribute_type attr ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type primary_resource() const { return RESOURCE_MANA; }
   virtual int       primary_role() const;
   virtual void      regen( timespan_t periodicity );
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );

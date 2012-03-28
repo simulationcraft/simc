@@ -3578,7 +3578,7 @@ action_t* player_t::execute_action()
 
 void player_t::regen( const timespan_t periodicity )
 {
-  const resource_type r = static_cast<resource_type>( primary_resource() );
+  const resource_type r = primary_resource();
   double base = 0;
   gain_t* gain = NULL;
 
@@ -4868,7 +4868,7 @@ struct arcane_torrent_t : public action_t
 
   virtual void execute()
   {
-    int resource = player -> primary_resource();
+    resource_type resource = player -> primary_resource();
     double gain = 0;
     switch ( resource )
     {
@@ -4899,7 +4899,7 @@ struct arcane_torrent_t : public action_t
     if ( player -> race != RACE_BLOOD_ELF )
       return false;
 
-    int resource = player -> primary_resource();
+    resource_type resource = player -> primary_resource();
     switch ( resource )
     {
     case RESOURCE_MANA:

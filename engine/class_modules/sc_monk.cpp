@@ -109,7 +109,7 @@ struct monk_t : public player_t
   virtual void      init_resources( bool force=false );
   virtual double    matching_gear_multiplier( const attribute_type attr ) const;
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() const;
+  virtual resource_type primary_resource() const;
   virtual int       primary_role() const;
 };
 
@@ -599,7 +599,7 @@ int monk_t::decode_set( item_t& item )
 
 // monk_t::primary_role ==================================================
 
-int monk_t::primary_resource() const
+resource_type monk_t::primary_resource() const
 {
   // FIXME: change to healing stance
   if ( primary_tree() == TREE_MISTWEAVER )

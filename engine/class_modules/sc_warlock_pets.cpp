@@ -901,7 +901,7 @@ double warlock_main_pet_t::composite_attack_expertise( weapon_t* ) const
   return owner -> spell_hit * 26.0 / 17.0;
 }
 
-int warlock_main_pet_t::primary_resource() const { return RESOURCE_MANA; }
+resource_type warlock_main_pet_t::primary_resource() const { return RESOURCE_MANA; }
 
 double warlock_main_pet_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {
