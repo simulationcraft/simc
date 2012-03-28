@@ -1278,7 +1278,7 @@ struct ghoul_pet_t : public pet_t
   virtual void init_base()
   {
     death_knight_t* o = owner -> cast_death_knight();
-    assert( o -> primary_tree() != TREE_NONE );
+    assert( o -> primary_tree() != TREE_NONE ); ( void )o;
 
 
     // Value for the ghoul of a naked worgen as of 4.2
@@ -3565,7 +3565,7 @@ struct presence_t : public death_knight_spell_t
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
     harmful     = false;
   }
-  
+
   virtual resource_type current_resource() const
   {
     return RESOURCE_RUNIC_POWER;
