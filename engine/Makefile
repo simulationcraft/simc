@@ -48,7 +48,9 @@ ifeq (WINDOWS,${OS})
 MODULE_EXT = .exe
 CPP_FLAGS += -DUNICODE
 LINK_LIBS  = -lws2_32 -lwininet
+ifeq (${NO_STATIC},)
 LINK_FLAGS += -static
+endif
 COPY       = copy
 REMOVE     = del /f
 PATHSEP    = \\
