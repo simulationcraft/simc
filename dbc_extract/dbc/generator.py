@@ -335,7 +335,7 @@ class SpellScalingDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
             self._options.level )
         
-        for j in xrange(0, len(self._class_names) + 1):
+        for j in xrange(0, len(self._class_names) + 2):
             # Last entry is the fixed data
             if j < len(self._class_names) and self._class_names[j] != None:
                 s += '  // %s\n' % self._class_names[j]
@@ -1531,7 +1531,25 @@ class SpellDataGenerator(DataGenerator):
         for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
             for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
                 self.process_spell(spell_tuple[0], ids, self._class_masks[cls], 0)
-                    
+        
+        # After normal spells have been fetched, go through all spell ids, 
+        # and get all the relevant aura_ids for selected spells
+        more_ids = { }
+        for spell_id, spell_data in ids.iteritems():
+            spell = self._spell_db[spell_id]
+            for power in spell._powers:
+                if not power or power.aura_id == 0:
+                    continue
+                
+                self.process_spell(power.aura_id, more_ids, spell_data['mask_class'], spell_data['mask_race'])
+        
+        for id, data in more_ids.iteritems():
+            if not ids.has_key(id):
+                ids[ id ] = data
+            else:
+                ids[id]['mask_class'] |= data['mask_class']
+                ids[id]['mask_race'] |= data['mask_race']
+        
         return ids
 
     def generate(self, ids = None):
@@ -1539,6 +1557,7 @@ class SpellDataGenerator(DataGenerator):
         id_keys = ids.keys()
         id_keys.sort()
         effects = set()
+        powers = set()
 
         s = '#include "data_definitions.hh"\n\n'
         s += '#define %sSPELL%s_SIZE (%d)\n\n' % (
@@ -1559,17 +1578,19 @@ class SpellDataGenerator(DataGenerator):
             if not spell.id and id > 0:
                 sys.stderr.write('Spell id %d not found\n') % id
                 continue
+            
+            for power in spell._powers:
+                if power == None:
+                    continue
+                
+                powers.add( power )
 
-            if(index % 20 == 0):
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, PT, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,   Cost, RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
+            if index % 20 == 0:
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration, RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
             fields += spell.field('prj_speed', 'mask_school')
-            if spell.power:
-                fields += spell.power.field('type_power')
-            else:
-                fields += self._spellpower_db[0].field('type_power')                
 
             # Hack in the combined class from the id_tuples dict
             fields += [ '%#.3x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
@@ -1593,10 +1614,6 @@ class SpellDataGenerator(DataGenerator):
             fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
             fields += self._spellcategories_db[spell.id_categories].field('category')
             fields += self._spellduration_db[spell.id_duration].field('duration_1')
-            if spell.power:
-                fields += spell.power.field('power_cost')
-            else:
-                fields += self._spellpower_db[0].field('power_cost')                
             fields += _rune_cost(self, None, self._spellrunecost_db[spell.id_rune_cost], '%#.3x'),
             fields += self._spellrunecost_db[spell.id_rune_cost].field('rune_power_gain')
             fields += self._spellauraoptions_db[spell.id_aura_opt].field(
@@ -1632,7 +1649,7 @@ class SpellDataGenerator(DataGenerator):
             else:
                 fields += [ '0' ]
             # Pad struct with empty pointers for direct access to spell effect data
-            fields += [ '0' ]
+            fields += [ '0', '0' ]
 
             s += '  { %s }, /* %s */\n' % (', '.join(fields), ', '.join(effect_ids))
             
@@ -1651,8 +1668,6 @@ class SpellDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or ''
         )
 
-        #stm = set()
-        # Move spell scaling data and spell effect data to other struct
         index = 0
         for effect_data in sorted(effects) + [ ( 0, 0 ) ]:
             effect = self._spelleffect_db[effect_data[0]]
@@ -1660,7 +1675,7 @@ class SpellDataGenerator(DataGenerator):
                 sys.stderr.write('Spell Effect id %d not found\n') % effect_data[0]
                 continue
 
-            if(index % 20 == 0):
+            if index % 20 == 0:
                 s += '//{     Id,Flags,  SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, Trigg,   DmgMul,  CboP, RealP,Die, 0, 0 },\n'
 
             fields = effect.field('id')
@@ -1695,6 +1710,29 @@ class SpellDataGenerator(DataGenerator):
 
             index += 1
 
+        s += '};\n\n'
+        
+        index = 0
+        def sortf( a, b ):
+            if a.id > b.id:
+                return 1
+            elif a.id < b.id:
+                return -1
+            
+            return 0
+        
+        powers = list(powers)
+        powers.sort(sortf)
+        
+        s += '#define __%s_SIZE (%d)\n\n' % ( self.format_str( "spellpower" ).upper(), len(powers) )
+        s += '// %d effects, wow build level %d\n' % ( len(powers), self._options.build )
+        s += 'static struct spellpower_data_t __%s_data[] = {\n' % ( self.format_str( "spellpower" ) )
+
+        for power in powers + [ self._spellpower_db[0] ]:
+            fields = power.field('id', 'id_spell', 'aura_id', 'type_power', 'cost', 'cost_2', 'cost_per_second' )
+
+            s += '  { %s },\n' % (', '.join(fields))
+            
         s += '};\n\n'
 
         return s
@@ -2096,7 +2134,16 @@ class SpellListGenerator(SpellDataGenerator):
             return False;
         
         # Skip spells without any resource cost and category
-        if (not spell.power or spell.power.power_cost == 0) and spell.id_rune_cost == 0 and spell.id_categories == 0:
+        found_power = False
+        for power in spell._powers:
+            if not power:
+                continue
+            
+            if power.cost > 0 or power.cost_2 > 0 or power.cost_per_second > 0:
+                found_power = True
+                break
+        
+        if not found_power and spell.id_rune_cost == 0 and spell.id_categories == 0:
             return False
         
         # Make sure rune cost makes sense, even if the rune cost id is valid

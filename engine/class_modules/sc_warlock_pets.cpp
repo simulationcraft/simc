@@ -357,8 +357,9 @@ struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_attack_t
     background  = true;
     aoe         = -1;
     direct_tick = true;
-    resource    = RESOURCE_MANA;
   }
+  
+  virtual resource_type current_resource() const { return RESOURCE_MANA; }
 };
 
 struct felstorm_t : public warlock_pet_actions::warlock_pet_attack_t

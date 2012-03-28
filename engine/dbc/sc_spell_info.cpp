@@ -50,13 +50,19 @@ static const char * _resource_strings[] =
   "Rage",
   "Focus",
   "Energy",
-  "Happiness",
+  "Energy",
   "Rune",
   "Runic Power",
   "Soul Shard",
   "Eclipse",
   "Holy Power",
   0,
+  0,
+  "Chi",
+  "Shadow Orb",
+  "Burning Ember",
+  "Demonic Fury",
+  0
 };
 
 static const char * _property_type_strings[] =
@@ -404,41 +410,54 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
     s.seekp( -2, std::ios_base::cur );
     s << std::endl;
   }
-
-  if ( ( spell -> _power_type + 2 ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-       ( spell -> cost() > 0 || ( spell -> _power_type == 5 && spell -> rune_cost() > 0 ) ) )
+  
+  if ( spell -> rune_cost() == 0 )
   {
-    s << "Resource     : ";
-    if ( spell -> _power_type != 5 && spell -> _power_type != 6 && spell -> _power_type != 1 )
+    for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
     {
-      double base_mana = rating_t::get_attribute_base( sim,
-                                                       sim -> dbc,
-                                                       level,
-                                                       pt,
-                                                       RACE_NONE,
-                                                       BASE_STAT_MANA );
+      const spellpower_data_t* pd = spell -> _power -> at( i );
+      
+      if ( pd -> cost() == 0 )
+        continue;
 
-      s << spell -> _cost << ( spell -> _power_type == 0 ? "% " : " " ) << _resource_strings[ spell -> _power_type + 2 ];
-      if ( spell -> _power_type == 0 )
-        s << " (" << floor( spell -> cost() * base_mana ) << " mana @" << level << ")";
+      s << "Resource     : " << spell -> cost( pd -> type() );
+      if ( pd -> type() == POWER_MANA )
+        s << "%";
 
+      s << " ";
+
+      if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
+           _resource_strings[ pd -> type() + POWER_OFFSET ] != 0 )
+        s << _resource_strings[ pd -> type() + POWER_OFFSET ];
+      else
+        s << "Unknown (" << pd -> type() << ")";
+        
+      if ( pd -> type() == POWER_MANA )
+      {
+        double base_resource = rating_t::get_attribute_base( sim, sim -> dbc, level, pt, RACE_NONE, BASE_STAT_MANA );
+        s << " (" << floor( base_resource * pd -> cost() ) << " @" << level << ")";
+      }
+      
+      if ( pd -> aura_id() > 0 && sim -> dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
+        s << " w/ " << sim -> dbc.spell( pd -> aura_id() ) -> name_cstr();
+        
       s << std::endl;
     }
-    else if ( spell -> _power_type == 6 || spell -> _power_type == 1 )
-      s << spell -> cost() << " " << _resource_strings[ spell -> _power_type + 2 ] << std::endl;
-    else if ( spell -> rune_cost() > 0 )
-    {
-      int b = spell -> rune_cost() & 0x3;
-      int u = ( spell -> rune_cost() & 0xC ) >> 2;
-      int f = ( spell -> rune_cost() & 0x30 ) >> 4;
-      if ( b > 0 ) s << ( b & 0x1 ? "1" : "2" ) << " Blood, ";
-      if ( u > 0 ) s << ( u & 0x1 ? "1" : "2" ) << " Unholy, ";
-      if ( f > 0 ) s << ( f & 0x1 ? "1" : "2" ) << " Frost, ";
+  }
+  else if ( spell -> rune_cost() > 0 )
+  {
+    s << "Resource     : ";
 
-      s.seekp( -2, std::ios_base::cur );
+    int b = spell -> rune_cost() & 0x3;
+    int u = ( spell -> rune_cost() & 0xC ) >> 2;
+    int f = ( spell -> rune_cost() & 0x30 ) >> 4;
+    if ( b > 0 ) s << ( b & 0x1 ? "1" : "2" ) << " Blood, ";
+    if ( u > 0 ) s << ( u & 0x1 ? "1" : "2" ) << " Unholy, ";
+    if ( f > 0 ) s << ( f & 0x1 ? "1" : "2" ) << " Frost, ";
 
-      s << " Rune" << ( b + u + f > 1 ? "s" : "" ) << std::endl;
-    }
+    s.seekp( -2, std::ios_base::cur );
+
+    s << " Rune" << ( b + u + f > 1 ? "s" : "" ) << std::endl;
   }
 
   if ( spell -> level() > 0 )

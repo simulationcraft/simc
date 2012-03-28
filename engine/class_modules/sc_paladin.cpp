@@ -357,7 +357,6 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       background = true;
       repeating  = true;
       trigger_gcd = timespan_t::zero;
-      base_cost   = 0;
 
       owner = p -> cast_pet() -> owner -> cast_paladin();
     }
@@ -448,12 +447,12 @@ struct paladin_heal_t : public heal_t
   {
     paladin_t* p = player -> cast_paladin();
 
-    if ( resource == RESOURCE_HOLY_POWER )
+    if ( current_resource() == RESOURCE_HOLY_POWER )
     {
       if ( p -> buffs_divine_purpose -> check() )
         return 0;
 
-      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
+      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resource_current[ RESOURCE_HOLY_POWER ] );
     }
 
     return heal_t::cost();
@@ -640,12 +639,12 @@ struct paladin_attack_t : public attack_t
   {
     paladin_t* p = player -> cast_paladin();
 
-    if ( resource == RESOURCE_HOLY_POWER )
+    if ( current_resource() == RESOURCE_HOLY_POWER )
     {
       if ( p -> buffs_divine_purpose -> check() )
         return 0;
 
-      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
+      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resource_current[ RESOURCE_HOLY_POWER ] );
     }
 
     return attack_t::cost();
@@ -657,7 +656,7 @@ struct paladin_attack_t : public attack_t
 
     paladin_t* p = player -> cast_paladin();
 
-    if ( resource == RESOURCE_HOLY_POWER )
+    if ( current_resource() == RESOURCE_HOLY_POWER )
       p -> buffs_divine_purpose -> expire();
   }
 };
@@ -700,7 +699,7 @@ struct paladin_spell_t : public spell_t
 
     paladin_t* p = player -> cast_paladin();
 
-    if ( resource == RESOURCE_HOLY_POWER )
+    if ( current_resource() == RESOURCE_HOLY_POWER )
       p -> buffs_divine_purpose -> expire();
   }
 
@@ -708,12 +707,12 @@ struct paladin_spell_t : public spell_t
   {
     paladin_t* p = player -> cast_paladin();
 
-    if ( resource == RESOURCE_HOLY_POWER )
+    if ( current_resource() == RESOURCE_HOLY_POWER )
     {
       if ( p -> buffs_divine_purpose -> check() )
         return 0;
 
-      return std::max( base_cost, p -> resource_current[ RESOURCE_HOLY_POWER ] );
+      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resource_current[ RESOURCE_HOLY_POWER ] );
     }
 
     return spell_t::cost();
@@ -983,7 +982,6 @@ struct melee_t : public paladin_attack_t
     background        = true;
     repeating         = true;
     trigger_gcd       = timespan_t::zero;
-    base_cost         = 0;
     weapon            = &( p -> main_hand_weapon );
     base_execute_time = p -> main_hand_weapon.swing_time;
   }
@@ -1143,7 +1141,7 @@ struct crusader_strike_t : public paladin_attack_t
     base_multiplier *= 1.0 + p -> talents.crusade -> mod_additive( P_GENERIC )
                        + p -> talents.wrath_of_the_lightbringer-> mod_additive( P_GENERIC ) // TODO how do they stack?
                        + 0.05 * p -> ret_pvp_gloves;
-    base_cost       *= 1.0 + p -> glyphs.ascetic_crusader -> mod_additive( P_RESOURCE_COST );
+    base_costs[ current_resource() ] *= 1.0 + p -> glyphs.ascetic_crusader -> mod_additive( P_RESOURCE_COST );
   }
 
   virtual void execute()
@@ -1309,7 +1307,7 @@ struct hammer_of_wrath_t : public paladin_attack_t
 
     base_crit += p -> talents.sanctified_wrath -> mod_additive( P_CRIT )
                  + p -> talents.wrath_of_the_lightbringer -> mod_additive( P_CRIT );
-    base_cost *= p -> glyphs.hammer_of_wrath -> mod_additive( P_RESOURCE_COST );
+    base_costs[ current_resource() ] *= p -> glyphs.hammer_of_wrath -> mod_additive( P_RESOURCE_COST );
 
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = extra_coeff();
@@ -1373,8 +1371,10 @@ struct paladin_seal_t : public paladin_attack_t
     parse_options( NULL, options_str );
 
     harmful    = false;
-    base_cost  = p -> resource_base[ RESOURCE_MANA ] * 0.14;
+    base_costs[ current_resource() ]  = p -> resource_base[ current_resource() ] * 0.164;
   }
+  
+  virtual resource_type current_resource() const { return RESOURCE_MANA; }
 
   virtual void execute()
   {
@@ -1401,7 +1401,7 @@ struct rebuke_t : public paladin_attack_t
   {
     parse_options( NULL, options_str );
 
-    base_cost *= 1.0 + p -> glyphs.rebuke -> effect1().percent();
+    base_costs[ current_resource() ] *= 1.0 + p -> glyphs.rebuke -> effect1().percent();
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
@@ -1697,7 +1697,7 @@ struct judgement_t : public paladin_attack_t
   action_t* seal_of_truth;
 
   judgement_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "judgement", "Judgement", p ),
+    : paladin_attack_t( "judgement", "Judgment", p ),
       seal_of_justice( 0 ), seal_of_insight( 0 ),
       seal_of_righteousness( 0 ), seal_of_truth( 0 )
   {
@@ -1738,7 +1738,7 @@ struct judgement_t : public paladin_attack_t
     if ( ! seal )
       return;
 
-    seal -> base_cost   = base_cost;
+    seal -> base_costs[ current_resource() ]   = base_costs[ current_resource() ];
     seal -> cooldown    = cooldown;
     seal -> trigger_gcd = trigger_gcd;
     seal -> execute();
@@ -1926,7 +1926,7 @@ struct consecration_t : public paladin_spell_t
     may_miss       = false;
     num_ticks      = 10;
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    base_cost     *= 1.0 + p -> talents.hallowed_ground -> mod_additive( P_RESOURCE_COST );
+    base_costs[ current_resource() ]     *= 1.0 + p -> talents.hallowed_ground -> mod_additive( P_RESOURCE_COST );
 
     if ( p -> glyphs.consecration -> ok() )
     {
@@ -2374,7 +2374,7 @@ struct beacon_of_light_t : public paladin_heal_t
       sim -> cancel();
     }
 
-    base_cost *= 1.0 - p -> glyphs.beacon_of_light -> effect1().percent();
+    base_costs[ current_resource() ] *= 1.0 - p -> glyphs.beacon_of_light -> effect1().percent();
 
     // Remove the 'dot'
     num_ticks = 0;

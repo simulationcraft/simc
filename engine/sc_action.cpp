@@ -60,7 +60,6 @@ void action_t::init_action_t_()
   tick_power_mod                 = 0.0;
   base_execute_time              = timespan_t::zero;
   base_tick_time                 = timespan_t::zero;
-  base_cost                      = 0.0;
   base_dd_min                    = 0.0;
   base_dd_max                    = 0.0;
   base_td                        = 0.0;
@@ -155,6 +154,9 @@ void action_t::init_action_t_()
   update_flags = STATE_TARGET;
   state_cache = 0;
   state = 0;
+  
+  for ( int i = 0; i < RESOURCE_MAX; i++ )
+    base_costs[ i ] = 0.0;
 
   init_dot( name_str );
 
@@ -212,13 +214,13 @@ void action_t::init_dot( const std::string& name )
 action_t::action_t( int               ty,
                     const char*       n,
                     player_t*         p,
-                    int               r,
+                    int               /* r */,
                     const school_type s,
                     int               tr,
                     bool              sp ) :
   spell_id_t( p, n ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
-  player( s_player ), target( s_player -> target ), school( s ), resource( r ),
+  player( s_player ), target( s_player -> target ), school( s ),
   tree( tr ), special( sp )
 {
   init_action_t_();
@@ -227,7 +229,7 @@ action_t::action_t( int               ty,
 action_t::action_t( int ty, const char* name, const char* sname, player_t* p, int t, bool sp ) :
   spell_id_t( p, name, sname ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
-  player( s_player ), target( s_player -> target ), school( get_school_type() ), resource( power_type() ),
+  player( s_player ), target( s_player -> target ), school( get_school_type() ),
   tree( t ), special( sp )
 {
   init_action_t_();
@@ -236,7 +238,7 @@ action_t::action_t( int ty, const char* name, const char* sname, player_t* p, in
 action_t::action_t( int ty, const spell_id_t& s, int t, bool sp ) :
   spell_id_t( s ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
-  player( s_player ), target( s_player -> target ), school( get_school_type() ), resource( power_type() ),
+  player( s_player ), target( s_player -> target ), school( get_school_type() ),
   tree( t ), special( sp )
 {
   init_action_t_();
@@ -245,7 +247,7 @@ action_t::action_t( int ty, const spell_id_t& s, int t, bool sp ) :
 action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, int t, bool sp ) :
   spell_id_t( p, name, id ),
   sim( s_player->sim ), type( type ), name_str( s_token ),
-  player( s_player ), target( s_player -> target ), school( get_school_type() ), resource( power_type() ),
+  player( s_player ), target( s_player -> target ), school( get_school_type() ),
   tree( t ), special( sp )
 {
   init_action_t_();
@@ -283,14 +285,17 @@ void action_t::parse_data()
     trigger_gcd          = spell -> gcd();
     school               = spell_id_t::get_school_type( spell -> school_mask() );
     stats -> school      = school;
-    resource             = spell -> power_type();
     rp_gain              = spell -> runic_power_gain();
 
-    // For mana it returns the % of base mana, not the absolute cost
-    if ( resource == RESOURCE_MANA )
-      base_cost = floor ( spell -> cost() * player -> resource_base[ RESOURCE_MANA ] );
-    else
-      base_cost = spell -> cost();
+    for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
+    {
+      const spellpower_data_t* pd = spell -> _power -> at( i );
+
+      if ( pd -> _cost > 0 )
+        base_costs[ pd -> resource() ] = pd -> cost();
+      else
+        base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resource_base[ pd -> resource() ] );
+    }
 
     for ( size_t i = 1; i <= spell -> _effects -> size(); i++ )
     {
@@ -389,7 +394,7 @@ void action_t::parse_effect_data( int spell_id, int effect_nr )
       switch ( effect -> misc_value1() )
       {
       case P_RESOURCE_COST:
-        base_cost *= 1 + 0.01 * effect -> base_value();
+        base_costs[ player -> primary_resource() ] *= 1 + 0.01 * effect -> base_value();
         break;
       }
       break;
@@ -473,12 +478,12 @@ double action_t::cost() const
   if ( ! harmful && ! player -> in_combat )
     return 0;
 
-  double c = base_cost;
+  double c = base_costs[ current_resource() ];
 
   c -= player -> resource_reduction[ school ];
   if ( c < 0 ) c = 0;
 
-  if ( resource == RESOURCE_MANA )
+  if ( current_resource() == RESOURCE_MANA )
   {
     if ( player -> buffs.power_infusion -> check() ) c *= 0.80;
   }
@@ -486,7 +491,7 @@ double action_t::cost() const
   if ( is_dtr_action )
     c = 0;
 
-  if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_cost, c, util_t::resource_type_string( resource ) );
+  if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ current_resource() ], c, util_t::resource_type_string( current_resource() ) );
 
   return floor( c );
 }
@@ -936,18 +941,18 @@ double action_t::calculate_direct_damage( int chain_target )
 
 void action_t::consume_resource()
 {
-  if ( resource == RESOURCE_NONE ) return;
+  if ( current_resource() == RESOURCE_NONE ) return;
 
   resource_consumed = cost();
 
-  player -> resource_loss( resource, resource_consumed, this );
+  player -> resource_loss( current_resource(), resource_consumed, this );
 
   if ( sim -> log )
     log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),
-                   resource_consumed, util_t::resource_type_string( resource ),
-                   name(), player -> resource_current[ resource] );
+                   resource_consumed, util_t::resource_type_string( current_resource() ),
+                   name(), player -> resource_current[ current_resource() ] );
 
-  stats -> consume_resource( static_cast<resource_type>( resource ), resource_consumed );
+  stats -> consume_resource( current_resource(), resource_consumed );
 }
 
 // action_t::available_targets ==============================================
@@ -1284,7 +1289,7 @@ void action_t::additional_damage( player_t* t,
 {
   dmg_amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
   double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
-  double actual_amount = std::min( dmg_adjusted, t -> resource_current[ resource ] );
+  double actual_amount = std::min( dmg_adjusted, t -> resource_current[ current_resource() ] );
   stats -> add_result( actual_amount, dmg_amount, dmg_type, dmg_result );
 }
 
@@ -1453,7 +1458,7 @@ bool action_t::ready()
   if ( cooldown -> remains() > timespan_t::zero )
     return false;
 
-  if ( ! player -> resource_available( resource, cost() ) )
+  if ( ! player -> resource_available( current_resource(), cost() ) )
     return false;
 
   if ( if_expr && ! if_expr -> success() )

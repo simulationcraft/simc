@@ -29,7 +29,7 @@ void gear_stats_t::add_stat( int    stat,
   case STAT_RAGE:   resource[ RESOURCE_RAGE   ] += value; break;
   case STAT_ENERGY: resource[ RESOURCE_ENERGY ] += value; break;
   case STAT_FOCUS:  resource[ RESOURCE_FOCUS  ] += value; break;
-  case STAT_RUNIC:  resource[ RESOURCE_RUNIC  ] += value; break;
+  case STAT_RUNIC:  resource[ RESOURCE_RUNIC_POWER  ] += value; break;
 
   case STAT_MAX_HEALTH:
   case STAT_MAX_MANA:
@@ -94,7 +94,7 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_RAGE:   resource[ RESOURCE_RAGE   ] = value; break;
   case STAT_ENERGY: resource[ RESOURCE_ENERGY ] = value; break;
   case STAT_FOCUS:  resource[ RESOURCE_FOCUS  ] = value; break;
-  case STAT_RUNIC:  resource[ RESOURCE_RUNIC  ] = value; break;
+  case STAT_RUNIC:  resource[ RESOURCE_RUNIC_POWER  ] = value; break;
 
   case STAT_MAX_HEALTH:
   case STAT_MAX_MANA:
@@ -158,7 +158,7 @@ double gear_stats_t::get_stat( int stat ) const
   case STAT_RAGE:   return resource[ RESOURCE_RAGE   ];
   case STAT_ENERGY: return resource[ RESOURCE_ENERGY ];
   case STAT_FOCUS:  return resource[ RESOURCE_FOCUS  ];
-  case STAT_RUNIC:  return resource[ RESOURCE_RUNIC  ];
+  case STAT_RUNIC:  return resource[ RESOURCE_RUNIC_POWER  ];
 
   case STAT_MAX_HEALTH:
   case STAT_MAX_MANA:

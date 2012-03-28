@@ -531,14 +531,6 @@ school_type spell_id_t::get_school_type() const
   return get_school_type( school_mask() );
 }
 
-resource_type spell_id_t::power_type() const
-{
-  if ( ! ok() )
-    return RESOURCE_NONE;
-
-  return s_data -> power_type();
-}
-
 double spell_id_t::min_range() const
 {
   if ( ! ok() )
@@ -613,12 +605,12 @@ timespan_t spell_id_t::duration() const
   return d;
 }
 
-double spell_id_t::cost() const
+double spell_id_t::power_cost( power_type pt ) const
 {
   if ( ! ok() )
     return 0.0;
 
-  return s_data -> cost();
+  return s_data -> cost( pt );
 }
 
 uint32_t spell_id_t::rune_cost() const

@@ -33,8 +33,7 @@ struct monk_t : public player_t
   //buff_t* buffs_<buffname>;
 
   // Gains
-  gain_t* gains_jab_lf;
-  gain_t* gains_jab_df;
+  gain_t* gains_chi;
 
   // Procs
   //proc_t* procs_<procname>;
@@ -228,8 +227,6 @@ struct jab_t : public monk_attack_t
     monk_attack_t( "jab", "Jab", p )
   {
     parse_options( 0, options_str );
-    resource = RESOURCE_CHI;
-    base_cost = 40;
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
   }
 
@@ -237,8 +234,7 @@ struct jab_t : public monk_attack_t
   {
     monk_attack_t::execute();
 
-    p() -> resource_gain( RESOURCE_LIGHT_FORCE, 1, p() -> gains_jab_lf );
-    p() -> resource_gain( RESOURCE_DARK_FORCE,  1, p() -> gains_jab_df );
+    p() -> resource_gain( RESOURCE_CHI,  effectN( 2 ).base_value() , p() -> gains_chi );
   }
 };
 
@@ -248,8 +244,6 @@ struct tiger_palm_t : public monk_attack_t
     monk_attack_t( "tiger_palm", "Tiger Palm", p )
   {
     parse_options( 0, options_str );
-    resource = RESOURCE_LIGHT_FORCE;
-    base_cost = 1;
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
   }
 
@@ -271,8 +265,6 @@ struct blackout_kick_t : public monk_attack_t
     monk_attack_t( "blackout_kick", "Blackout Kick", p )
   {
     parse_options( 0, options_str );
-    resource = RESOURCE_DARK_FORCE;
-    base_cost = 2;
   }
 };
 
@@ -321,36 +313,6 @@ struct spinning_crane_kick_t : public monk_attack_t
       spinning_crane_kick_tick -> execute();
 
     stats -> add_tick( d -> time_to_tick );
-  }
-
-  virtual void consume_resource()
-  {
-    double lf_cost = 2;
-    double df_cost = 2;
-    player -> resource_loss( RESOURCE_LIGHT_FORCE, lf_cost, this );
-    player -> resource_loss( RESOURCE_DARK_FORCE, df_cost, this );
-
-    if ( sim -> log )
-      log_t::output( sim, "%s consumes %.1f %s and %.1f %s for %s", player -> name(),
-                     lf_cost,
-                     util_t::resource_type_string( RESOURCE_LIGHT_FORCE ),
-                     df_cost,
-                     util_t::resource_type_string( RESOURCE_DARK_FORCE ),
-                     name() );
-
-    stats -> consume_resource( RESOURCE_LIGHT_FORCE, lf_cost );
-    stats -> consume_resource( RESOURCE_DARK_FORCE, df_cost );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! player -> resource_available( RESOURCE_LIGHT_FORCE, 2 ) )
-      return false;
-
-    if ( ! player -> resource_available( RESOURCE_DARK_FORCE, 2 ) )
-      return false;
-
-    return monk_attack_t::ready();
   }
 };
 
@@ -404,7 +366,6 @@ struct stance_t : public monk_spell_t
     harmful = false;
     trigger_gcd = timespan_t::zero;
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
-    resource    = RESOURCE_CHI;
   }
 
   virtual void execute()
@@ -503,9 +464,7 @@ void monk_t::init_base()
 
   base_gcd = timespan_t::from_seconds( 1.0 ); // FIXME: assumption
 
-  resource_base[  RESOURCE_CHI  ] = 100; // FIXME: placeholder
-  resource_base[  RESOURCE_LIGHT_FORCE ] = 4;
-  resource_base[  RESOURCE_DARK_FORCE  ] = 4;
+  resource_base[  RESOURCE_CHI  ] = 0; // FIXME: placeholder
 
   base_chi_regen_per_second = 10; // FIXME: placeholder ( identical to rogue )
 
@@ -547,8 +506,7 @@ void monk_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_jab_lf = get_gain( "jab_light_force" );
-  gains_jab_df = get_gain( "jab_dark_force" );
+  gains_chi = get_gain( "chi" );
 }
 
 // monk_t::init_procs =======================================================
@@ -599,9 +557,7 @@ void monk_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resource_current[ RESOURCE_LIGHT_FORCE ] = 0;
-  resource_current[ RESOURCE_DARK_FORCE  ] = 0;
-
+  resource_current[ RESOURCE_CHI ] = 0;
 }
 
 // monk_t::matching_gear_multiplier =========================================

@@ -24,7 +24,7 @@ _DBC_FIELDS = {
           'unk_6',    'id_team',    'unk_8',      'unk_9',      'unk_10',     'unk_11',
           'id_movie', 'faction',    'ofs_name',   'ofs_f_name', 'ofs_n_name', 'unk_17',
           'unk_19',   'expansion',  'unk_21',     'unk_22',     'unk_23',     'unk_24',
-	  'unk_25'
+          'unk_25'
     ],
     'ChrSpecialization.dbc' : [
           'id', 'f1', 'class_id', 'id_mastery', 'f4', 'spec_id', 'f6', 'f7', 'id_icon', 'ofs_name', 'ofs_desc'
@@ -109,7 +109,7 @@ _DBC_FIELDS = {
     ],
     'Item-sparse.db2': [
           ( 'id', '%5u' ),          ( 'quality', '%2u' ),     ( 'flags', '%#.8x' ),     ( 'flags_2', '%#.8x' ),       ( 'unk_14732', '%f' ),
-	  ( 'unk_14732_2', '%f' ),    'unk_14890',              'buy_price',
+          ( 'unk_14732_2', '%f' ),    'unk_14890',              'buy_price',
             'sell_price',           ( 'inv_type', '%2u' ),    ( 'race_mask', '%#.8x' ), ( 'class_mask', '%#.8x' ),    ( 'ilevel', '%4u' ),
           ( 'req_level', '%3d' ),   ( 'req_skill', '%4u' ),   ( 'req_skill_rank', '%4u' ), 'req_spell',                  'req_honor_rank',
             'req_city_rank',          'req_rep_faction',        'req_rep_rank',           'max_count',                  'stackable',
@@ -138,7 +138,7 @@ _DBC_FIELDS = {
           ( 'socket_cont_1', '%3d' ),  ( 'socket_cont_2', '%3d' ),  ( 'socket_cont_3', '%3d' ),
           ( 'socket_bonus', '%5d' ),   ( 'gem_props', '%4u' ),
           ( 'item_damage_modifier', '%8.3f' ),  'duration',               'item_limit_category',    'id_holiday',               ( 'weapon_damage_range', '%7.6f' ),
-            'unk_130',                'unk_131',		'unk_15464'
+            'unk_130',                'unk_131',        'unk_15464'
     ],
     'ItemSet.dbc' : [
           'id', 'ofs_name', 
@@ -196,12 +196,12 @@ _DBC_FIELDS = {
     'Spell.dbc' : [
         ( 'id', '%6u' ),           ( 'flags', '%#.8x' ),      ( 'flags_1', '%#.8x' ),      ( 'flags_2', '%#.8x' ),      ( 'flags_3', '%#.8x' ),
         ( 'flags_4', '%#.8x' ),    ( 'flags_5', '%#.8x' ),    ( 'flags_6', '%#.8x' ),      ( 'flags_7', '%#.8x' ),      ( 'flags_12694', '%#.8x' ),
-	( 'flags_8', '%#.8x' ),      'unk_14002',	      ( 'id_cast_time', '%5u'),    ( 'id_duration', '%5u' ),    ( 'id_range', '%5u' ),
+        ( 'flags_8', '%#.8x' ),      'unk_14002',          ( 'id_cast_time', '%5u'),    ( 'id_duration', '%5u' ),    ( 'id_range', '%5u' ),
         ( 'prj_speed', '%4.1f' ),    'unk_15',                  'unk_16',                  ( 'id_icon', '%5u' ),        ( 'id_active_icon', '%5u' ),
         ( 'ofs_name', '%5u' ),     ( 'ofs_rank', '%5u' ),     ( 'ofs_desc', '%5u' ),       ( 'ofs_tool_tip', '%5u' ),   ( 'mask_school', '%#.2x' ),
           'id_rune_cost',          ( 'id_missile', '%5u' ),   ( 'id_desc_var', '%5u' ),    ( 'id_difficulty', '%5u' ),  ( 'extra_coeff', '%5.7f' ),
         ( 'id_scaling', '%5u' ),   ( 'id_aura_opt', '%5u' ),  ( 'id_aura_rest', '%5u' ),   ( 'id_cast_req', '%5u' ),    ( 'id_categories', '%5u' ),  
-	( 'id_class_opts', '%5u' ),( 'id_cooldowns', '%5u' ), ( 'id_equip_items', '%5u' ), ( 'id_interrupts', '%5u' ),  ( 'id_levels', '%5u' ),
+        ( 'id_class_opts', '%5u' ),( 'id_cooldowns', '%5u' ), ( 'id_equip_items', '%5u' ), ( 'id_interrupts', '%5u' ),  ( 'id_levels', '%5u' ),
         ( 'id_power', '%5u' ),     ( 'id_reagents', '%5u' ),  ( 'id_shapeshift', '%5u' ),  ( 'id_tgt_rest', '%5u' ),    ( 'id_totems', '%5u' )
           
     ],
@@ -243,12 +243,12 @@ _DBC_FIELDS = {
         'id', ( 'duration_1', '%9d' ), 'duration_2', 'duration_3'
     ],
     'SpellEffect.dbc' : [
-        ( 'id', '%6u' ),         	( 'type', '%4u' ),            	( 'multiple_value', '%f' ), ( 'sub_type', '%4u' ),     		( 'amplitude', '%5u' ),
-        ( 'base_value', '%7d' ), 	( 'coefficient', '%13.10f' ), 	( 'dmg_multiplier', '%f' ),   'chain_target',          		( 'die_sides', '%2d' ),
-          'item_type',             	  'mechanic',                 	( 'misc_value', '%7d' ),    ( 'misc_value_2', '%7d' ), 		( 'points_per_combo_points', '%5.1f' ), 
-          'id_radius',             	  'id_radius_max',            	( 'real_ppl', '%5.3f' ),    ( 'class_mask_1', '%#.8x' ),	( 'class_mask_2', '%#.8x' ),
-        ( 'class_mask_3', '%#.8x' ),	  'unk_15464',    		( 'trigger_spell', '%5d' ),   'implicit_target_1',        	  'implicit_target_2',     
-	( 'id_spell', '%6u' ), 	        ( 'index', '%2u' ), 		  'unk_14040'
+        ( 'id', '%6u' ),             ( 'type', '%4u' ),                ( 'multiple_value', '%f' ), ( 'sub_type', '%4u' ),             ( 'amplitude', '%5u' ),
+        ( 'base_value', '%7d' ),     ( 'coefficient', '%13.10f' ),     ( 'dmg_multiplier', '%f' ),   'chain_target',                  ( 'die_sides', '%2d' ),
+          'item_type',                   'mechanic',                     ( 'misc_value', '%7d' ),    ( 'misc_value_2', '%7d' ),         ( 'points_per_combo_points', '%5.1f' ), 
+          'id_radius',                   'id_radius_max',                ( 'real_ppl', '%5.3f' ),    ( 'class_mask_1', '%#.8x' ),    ( 'class_mask_2', '%#.8x' ),
+        ( 'class_mask_3', '%#.8x' ),      'unk_15464',            ( 'trigger_spell', '%5d' ),   'implicit_target_1',              'implicit_target_2',     
+    ( 'id_spell', '%6u' ),             ( 'index', '%2u' ),           'unk_14040'
     ],
     # New in MoP
     'SpellEffectScaling.dbc' : [
@@ -267,13 +267,14 @@ _DBC_FIELDS = {
           ( 'id_property_1', '%5u' ), ( 'id_property_2', '%5u' ), ( 'id_property_3', '%5u' ), 
             'ofs_desc', 'id_aura', ( 'slot', '%2u' ), ( 'id_gem', '%5u' ), 'enchantment_condition', 
           ( 'req_skill', '%4u' ), ( 'req_skill_value', '%3u' ), 'unk_1', 'unk_15464_1', 'unk_2', 
-	    'unk_15464_2', 'unk_15464_3', 'unk_15464_4', 'unk_15464_5'
-    ],    'SpellLevels.dbc' : [
+          'unk_15464_2', 'unk_15464_3', 'unk_15464_4', 'unk_15464_5'
+    ],    
+    'SpellLevels.dbc' : [
           'id', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'
     ],
     'SpellPower.dbc' : [
-          'id', 	( 'type_power', '%2d' ),( 'cost', '%6d' ), 	'cost_pl', 	( 'cost_perc', '%3d' ), 'per_second',
-          'id_display', ( 'unk_12759', '%f' ), 	( 'unk_14732', '%f' ),	'unk_15464_1',	  'id_spell'
+          ( 'id', '%6u' ), ( 'type_power', '%2d' ),( 'cost', '%6d' ),     'unk_1',     ( 'cost_per_second', '%3d' ), 'unk_2',
+          'id_display', ( 'cost_2', '%5.2f' ),     ( 'unk_14732', '%f' ),   ( 'aura_id', '%6u' ), ( 'id_spell', '%6u' )
     ],
     'SpellRadius.dbc' : [
           'id', ( 'radius_1', '%7.1f' ), 'radius_2', ( 'radius_3', '%7.f' )
@@ -286,7 +287,7 @@ _DBC_FIELDS = {
           'id', 'rune_cost_1', 'rune_cost_2', 'rune_cost_3', 'rune_cost_4', ( 'rune_power_gain', '%3u' )
     ],
     'SpellScaling.dbc' : [
-          'id',                      ( 'cast_min', '%5d' ),       	( 'cast_max', '%5d' ),       ( 'cast_div', '%2u' ),     ( 'id_class', '%2d' ),
+          'id',                      ( 'cast_min', '%5d' ),           ( 'cast_max', '%5d' ),       ( 'cast_div', '%2u' ),     ( 'id_class', '%2d' ),
         ( 'c_scaling', '%13.10f' ),  ( 'c_scaling_threshold', '%2u' ),    'unk_15464_1',               'unk_15464_2'
           
     ],
@@ -294,13 +295,13 @@ _DBC_FIELDS = {
           'id', 'max_affected_targets', 'max_target_level', 'target_type', 'targets'
     ],
     'Talent.dbc' : [
-        ( 'id', '%5u' ),        'spec_id',	( 'row', '%3u' ),         ( 'col', '%3u' ),       ( 'id_spell', '%7u' ),
+        ( 'id', '%5u' ),        'spec_id',    ( 'row', '%3u' ),         ( 'col', '%3u' ),       ( 'id_spell', '%7u' ),
         ( 'pet', '%5u' ),     ( 'unk_15464_1', '%#.8x' ),       ( 'unk_15464_2', '%#.8x' ),     'class_id',           ( 'id_replace', '%9u' ),
         ( 'unk_15464_3', '%2u' ),  
     ],
     'TalentTab.dbc' : [
         ( 'id', '%5u' ),       'ofs_name',          'spell_icon', ( 'mask_class', '%#.3x' ), ( 'mask_pet_talent', '%#.1x' ),
-        ( 'tab_page', '%2u' ), 'ofs_internal_name', 'ofs_desc',     'unk_8',		       'unk_12759_1',
+        ( 'tab_page', '%2u' ), 'ofs_internal_name', 'ofs_desc',     'unk_8',               'unk_12759_1',
           'unk_12759_2'
     ],
     'TalentTreePrimarySpells.dbc' : [
@@ -517,7 +518,7 @@ class Spell(DBCRecord):
         self.tt       = 0
         self.rank     = 0
         self.max_effect_index = 0
-        self.power    = None
+        self._powers  = []
 
     def add_effect(self, spell_effect):
         if spell_effect.index > self.max_effect_index:
@@ -530,7 +531,11 @@ class Spell(DBCRecord):
         setattr(self, 'effect_%d' % ( spell_effect.index + 1 ), spell_effect)
 
     def add_power(self, spell_power):
-        self.power = spell_power
+        if len(self._powers) < spell_power.type_power + 2 + 1:
+            for i in xrange(0, spell_power.type_power + 2 + 1 - len(self._powers)):
+                self._powers.append( None )
+            
+            self._powers[ spell_power.type_power + 2 ] = spell_power
     
     def __getattr__(self, name):
         # Hack to get effect default values if spell has no effect_x, as those fields 

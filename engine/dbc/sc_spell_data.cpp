@@ -68,7 +68,6 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "flags"         },
   { SD_TYPE_DOUBLE,   "speed"         },
   { SD_TYPE_UNSIGNED, ""              }, // School, requires custom thing
-  { SD_TYPE_INT,      "power_type"    },
   { SD_TYPE_UNSIGNED, ""              }, // Class (spell_class_expr_t)
   { SD_TYPE_UNSIGNED, ""              }, // Race (spell_race_expr_t)
   { SD_TYPE_INT,      "scaling"       },
@@ -81,7 +80,6 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "gcd"           },
   { SD_TYPE_UNSIGNED, "category"      },
   { SD_TYPE_DOUBLE,   "duration"      },
-  { SD_TYPE_UNSIGNED, "cost"          },
   { SD_TYPE_UNSIGNED, ""              }, // Runes (spell_rune_expr_t)
   { SD_TYPE_UNSIGNED, "power_gain"    },
   { SD_TYPE_UNSIGNED, "max_stack"     },
@@ -142,6 +140,9 @@ static const std::string _race_strings[] =
   "draenei",
   "", "", "", "", "", "", "", "", "", "",
   "worgen",
+  "pandaren",
+  "pandaren",
+  "pandaren"
 };
 
 static const std::string _pet_class_strings[] =
@@ -879,7 +880,7 @@ struct spell_rune_expr_t : public spell_list_expr_t
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
       const spell_data_t* spell = sim -> dbc.spell( *i );
-      if ( ! spell || spell -> power_type() != 5 )
+      if ( ! spell )
         continue;
 
       if ( ( spell -> rune_cost() & r ) == r )
@@ -897,7 +898,7 @@ struct spell_rune_expr_t : public spell_list_expr_t
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
       const spell_data_t* spell = sim -> dbc.spell( *i );
-      if ( ! spell || spell -> power_type() != 5 )
+      if ( ! spell )
         continue;
 
       if ( ( spell -> rune_cost() & r ) != r )

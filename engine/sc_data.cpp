@@ -36,33 +36,6 @@ void spell_data_t::set_enabled( bool value )
     _flags |= FLAG_DISABLED;
 }
 
-// spell_data_t::power_type =================================================
-
-resource_type spell_data_t::power_type() const
-{
-  switch ( _power_type )
-  {
-  case POWER_MANA:        return RESOURCE_MANA;
-  case POWER_RAGE:        return RESOURCE_RAGE;
-  case POWER_FOCUS:       return RESOURCE_FOCUS;
-  case POWER_ENERGY:      return RESOURCE_ENERGY;
-  case POWER_HAPPINESS:   return RESOURCE_HAPPINESS;
-  // rune power types are not currently used
-  // case POWER_RUNE:        return RESOURCE_RUNE;
-  // case POWER_RUNE_BLOOD:  return RESOURCE_RUNE_BLOOD;
-  // case POWER_RUNE_UNHOLY: return RESOURCE_RUNE_UNHOLY;
-  // case POWER_RUNE_FROST:  return RESOURCE_RUNE_FROST;
-  case POWER_RUNIC_POWER: return RESOURCE_RUNIC;
-  case POWER_SOUL_SHARDS: return RESOURCE_SOUL_SHARDS;
-  case POWER_UNSTABLE_EMBERS: return RESOURCE_UNSTABLE_EMBERS;
-  case POWER_DEMONIC_POWER:   return RESOURCE_DEMONIC_POWER;
-  case POWER_ECLIPSE:     return RESOURCE_ECLIPSE;
-  case POWER_HOLY_POWER:  return RESOURCE_HOLY_POWER;
-  case POWER_HEALTH:      return RESOURCE_HEALTH;
-  }
-  return RESOURCE_NONE;
-}
-
 // spell_data_t::is_class ===================================================
 
 bool spell_data_t::is_class( player_type c ) const
@@ -107,25 +80,18 @@ player_type spell_data_t::scaling_class() const
 
 // spell_data_t::cost =======================================================
 
-double spell_data_t::cost() const
+double spell_data_t::cost( power_type pt ) const
 {
-  double divisor;
+  if ( _power == 0 )
+    return 0;
 
-  switch ( _power_type )
+  for ( size_t i = 0; i < _power -> size(); i++ )
   {
-  case POWER_MANA:
-    divisor = 100;
-    break;
-  case POWER_RAGE:
-  case POWER_RUNIC_POWER:
-    divisor = 10;
-    break;
-  default:
-    divisor = 1;
-    break;
+    if ( _power -> at( i ) -> _power_type == pt )
+      return _power -> at( i ) -> cost();
   }
-
-  return _cost / divisor;
+  
+  return 0.0;
 }
 
 // spell_data_t::cast_time ==================================================
@@ -182,6 +148,28 @@ void spelleffect_data_t::set_enabled( bool value )
     _flags |= FLAG_ENABLED;
   else
     _flags &= ~FLAG_ENABLED;
+}
+
+resource_type spelleffect_data_t::resource_gain_type() const
+{
+  return util_t::translate_power_type( static_cast< power_type >( _misc_value ) );
+}
+
+// ==========================================================================
+// Spell Power Data
+// ==========================================================================
+
+spellpower_data_nil_t::spellpower_data_nil_t() :
+  spellpower_data_t()
+{ }
+
+spellpower_data_nil_t spellpower_data_nil_t::singleton;
+
+// spell_data_t::power_type =================================================
+
+resource_type spellpower_data_t::resource() const
+{
+  return util_t::translate_power_type( static_cast< power_type >( _power_type ) );
 }
 
 // ==========================================================================

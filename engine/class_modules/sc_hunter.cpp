@@ -898,7 +898,7 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
 
   if ( p -> rng_thrill_of_the_hunt -> roll ( p -> talents.thrill_of_the_hunt -> proc_chance() ) )
   {
-    double gain = a -> base_cost * p -> talents.thrill_of_the_hunt -> effect1().percent();
+    double gain = a -> base_costs[ a -> current_resource() ] * p -> talents.thrill_of_the_hunt -> effect1().percent();
 
     p -> procs_thrill_of_the_hunt -> occur();
     p -> resource_gain( RESOURCE_FOCUS, gain, p -> gains_thrill_of_the_hunt );
@@ -1994,7 +1994,6 @@ struct aimed_shot_t : public hunter_attack_t
       if ( ! options_str.empty() ) parse_options( NULL, options_str );
 
       // Don't know why these values aren't 0 in the database.
-      base_cost = 0;
       base_execute_time = timespan_t::zero;
 
       // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
@@ -2165,7 +2164,7 @@ struct arcane_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     parse_options( NULL, options_str );
-    base_cost += p -> talents.efficiency -> effect2().resource( RESOURCE_FOCUS );
+    base_costs[ current_resource() ] += p -> talents.efficiency -> effect2().resource( RESOURCE_FOCUS );
 
     // To trigger ppm-based abilities
     weapon = &( p -> ranged_weapon );
@@ -2379,7 +2378,7 @@ struct chimera_shot_t : public hunter_attack_t
     weapon = &( p -> ranged_weapon );
     assert( weapon -> group() == WEAPON_RANGED );
 
-    base_cost += p -> talents.efficiency -> effect1().resource( RESOURCE_FOCUS );
+    base_costs[ current_resource() ] += p -> talents.efficiency -> effect1().resource( RESOURCE_FOCUS );
 
     normalize_weapon_speed = true;
 
@@ -2510,7 +2509,7 @@ struct explosive_shot_t : public hunter_attack_t
     may_block = false;
     may_crit  = false;
 
-    base_cost += p -> talents.efficiency -> effect1().resource( RESOURCE_FOCUS );
+    base_costs[ current_resource() ] += p -> talents.efficiency -> effect1().resource( RESOURCE_FOCUS );
     base_crit += p -> glyphs.explosive_shot -> mod_additive( P_CRIT );
     // Testing shows ES crits for 2.09x dmg with the crit dmg meta gem, this
     // yields the right result
@@ -2730,7 +2729,6 @@ struct serpent_sting_spread_t : public serpent_sting_t
   {
     hunter_t* p = player -> cast_hunter();
     num_ticks = 1 + p-> talents.serpent_spread -> rank();
-    base_cost = 0.0;
     travel_speed = 0.0;
     background = true;
     aoe = -1;
@@ -2817,7 +2815,7 @@ struct multi_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
 
     if ( p -> buffs_bombardment -> check() )
-      return base_cost * ( 1 + p -> buffs_bombardment -> effect1().percent() );
+      return base_costs[ current_resource() ] * ( 1 + p -> buffs_bombardment -> effect1().percent() );
 
     return hunter_attack_t::cost();
   }
@@ -3280,7 +3278,7 @@ struct kill_command_t : public hunter_spell_t
 
     base_spell_power_multiplier    = 0.0;
     base_attack_power_multiplier   = 1.0;
-    base_cost += p -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
+    base_costs[ current_resource() ] += p -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
 
     harmful = false;
 

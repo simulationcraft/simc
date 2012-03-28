@@ -407,7 +407,7 @@ struct death_knight_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual int       primary_resource() const { return RESOURCE_RUNIC; }
+  virtual int       primary_resource() const { return RESOURCE_RUNIC_POWER; }
   virtual int       primary_role() const;
   virtual void      trigger_runic_empowerment();
   virtual int       runes_count( rune_type rt, bool include_death, int position );
@@ -1687,7 +1687,7 @@ static void refund_power( action_t* a )
   death_knight_t* p = a -> player -> cast_death_knight();
 
   if ( a -> resource_consumed > 0 )
-    p -> resource_gain( RESOURCE_RUNIC, a -> resource_consumed * RUNIC_POWER_REFUND, p -> gains_power_refund );
+    p -> resource_gain( RESOURCE_RUNIC_POWER, a -> resource_consumed * RUNIC_POWER_REFUND, p -> gains_power_refund );
 }
 
 // ==========================================================================
@@ -1831,17 +1831,17 @@ void death_knight_attack_t::consume_resource()
     {
       if ( p -> buffs_frost_presence -> check() )
       {
-        p -> resource_gain( RESOURCE_RUNIC,
+        p -> resource_gain( RESOURCE_RUNIC_POWER,
                             rp_gain * player -> dbc.spell( 48266 ) -> effect2().percent(),
                             p -> gains_frost_presence );
       }
       if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
       {
-        p -> resource_gain( RESOURCE_RUNIC,
+        p -> resource_gain( RESOURCE_RUNIC_POWER,
                             rp_gain * p -> talents.improved_frost_presence -> effect1().percent(),
                             p -> gains_improved_frost_presence );
       }
-      p -> resource_gain( RESOURCE_RUNIC, rp_gain, rp_gains );
+      p -> resource_gain( RESOURCE_RUNIC_POWER, rp_gain, rp_gains );
     }
   }
   else
@@ -1955,17 +1955,17 @@ void death_knight_spell_t::consume_resource()
     {
       if ( p -> buffs_frost_presence -> check() )
       {
-        p -> resource_gain( RESOURCE_RUNIC,
+        p -> resource_gain( RESOURCE_RUNIC_POWER,
                             rp_gain * player -> dbc.spell( 48266 ) -> effect2().percent(),
                             p -> gains_frost_presence );
       }
       if ( p -> talents.improved_frost_presence -> rank() && ! p -> buffs_frost_presence -> check() )
       {
-        p -> resource_gain( RESOURCE_RUNIC,
+        p -> resource_gain( RESOURCE_RUNIC_POWER,
                             rp_gain * p -> talents.improved_frost_presence -> effect1().percent(),
                             p -> gains_improved_frost_presence );
       }
-      p -> resource_gain( RESOURCE_RUNIC, rp_gain, rp_gains );
+      p -> resource_gain( RESOURCE_RUNIC_POWER, rp_gain, rp_gains );
     }
   }
   else
@@ -2051,7 +2051,6 @@ struct melee_t : public death_knight_attack_t
     background      = true;
     repeating       = true;
     trigger_gcd     = timespan_t::zero;
-    base_cost       = 0;
 
     if ( p -> dual_wield() )
       base_hit -= 0.19;
@@ -2110,14 +2109,14 @@ struct melee_t : public death_knight_attack_t
       trigger_blood_caked_blade( this );
       if ( p -> buffs_scent_of_blood -> up() )
       {
-        p -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_scent_of_blood );
+        p -> resource_gain( RESOURCE_RUNIC_POWER, 10, p -> gains_scent_of_blood );
         p -> buffs_scent_of_blood -> decrement();
       }
 
       if ( p -> rng_might_of_the_frozen_wastes -> roll( p -> talents.might_of_the_frozen_wastes -> proc_chance() ) )
       {
-        p -> resource_gain( RESOURCE_RUNIC,
-                            p -> dbc.spell( p -> talents.might_of_the_frozen_wastes -> effect1().trigger_spell_id() ) -> effect1().resource( RESOURCE_RUNIC ),
+        p -> resource_gain( RESOURCE_RUNIC_POWER,
+                            p -> dbc.spell( p -> talents.might_of_the_frozen_wastes -> effect1().trigger_spell_id() ) -> effect1().resource( RESOURCE_RUNIC_POWER ),
                             p -> gains_might_of_the_frozen_wastes );
       }
     }
@@ -2382,7 +2381,6 @@ struct blood_tap_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_cost = 0.0; // Cost is stored as 6 in the DBC for some odd reason
     harmful   = false;
     if ( p -> talents.improved_blood_tap -> rank() )
       cooldown -> duration += p -> talents.improved_blood_tap -> mod_additive_time( P_COOLDOWN );
@@ -2527,7 +2525,6 @@ struct dark_transformation_t : public death_knight_spell_t
 
     harmful = false;
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
-    base_cost = 0; // DBC has a value of 9 of an unknown resource
   }
 
   virtual void execute()
@@ -2603,7 +2600,7 @@ struct death_coil_t : public death_knight_spell_t
                        + p -> glyphs.death_coil -> effect1().percent();
 
     if ( p -> talents.runic_corruption -> rank() )
-      base_cost += p -> talents.runic_corruption -> mod_additive( P_RESOURCE_COST ) / 10.0;
+      base_costs[ current_resource() ] += p -> talents.runic_corruption -> mod_additive( P_RESOURCE_COST ) / 10.0;
   }
 
   virtual double cost() const
@@ -2696,7 +2693,7 @@ struct death_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> glyphs.death_strike -> ok() )
     {
-      player_multiplier *= 1 + p -> resource_current[ RESOURCE_RUNIC ] / 5 * p -> glyphs.death_strike -> effect1().percent();
+      player_multiplier *= 1 + p -> resource_current[ RESOURCE_RUNIC_POWER ] / 5 * p -> glyphs.death_strike -> effect1().percent();
     }
   }
 };
@@ -2850,7 +2847,7 @@ struct frost_strike_t : public death_knight_attack_t
     parse_options( NULL, options_str );
 
     weapon     = &( p -> main_hand_weapon );
-    base_cost += p -> glyphs.frost_strike -> effect1().base_value() / 10;
+    base_costs[ current_resource() ] += p -> glyphs.frost_strike -> effect1().base_value() / 10;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new frost_strike_offhand_t( p );
@@ -2965,7 +2962,7 @@ struct horn_of_winter_t : public death_knight_spell_t
       sim -> auras.horn_of_winter -> trigger( 1, bonus );
     }
 
-    player -> resource_gain( RESOURCE_RUNIC, 10, p -> gains_horn_of_winter );
+    player -> resource_gain( RESOURCE_RUNIC_POWER, 10, p -> gains_horn_of_winter );
   }
 
   virtual timespan_t gcd() const
@@ -3021,7 +3018,7 @@ struct howling_blast_t : public death_knight_spell_t
     if ( result_is_hit() )
     {
       if ( p -> talents.chill_of_the_grave -> rank() )
-        p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC ), p -> gains_chill_of_the_grave );
+        p -> resource_gain( RESOURCE_RUNIC_POWER, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC_POWER ), p -> gains_chill_of_the_grave );
     }
 
     p -> buffs_rime -> decrement();
@@ -3112,7 +3109,7 @@ struct icy_touch_t : public death_knight_spell_t
     if ( result_is_hit() )
     {
       if ( p -> talents.chill_of_the_grave -> rank() )
-        p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC ), p -> gains_chill_of_the_grave );
+        p -> resource_gain( RESOURCE_RUNIC_POWER, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC_POWER ), p -> gains_chill_of_the_grave );
 
       p -> frost_fever -> execute();
 
@@ -3158,7 +3155,7 @@ struct mind_freeze_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> talents.endless_winter -> rank() )
-      base_cost += p -> talents.endless_winter -> mod_additive( P_RESOURCE_COST ) / 10.0;
+      base_costs[ current_resource() ] += p -> talents.endless_winter -> mod_additive( P_RESOURCE_COST ) / 10.0;
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
@@ -3257,7 +3254,7 @@ struct obliterate_t : public death_knight_attack_t
     {
       if ( p -> talents.chill_of_the_grave -> rank() )
       {
-        p -> resource_gain( RESOURCE_RUNIC, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC ), p -> gains_chill_of_the_grave );
+        p -> resource_gain( RESOURCE_RUNIC_POWER, p -> talents.chill_of_the_grave -> effect1().resource( RESOURCE_RUNIC_POWER ), p -> gains_chill_of_the_grave );
       }
 
       // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
@@ -3567,7 +3564,11 @@ struct presence_t : public death_knight_spell_t
     trigger_gcd = timespan_t::zero;
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
     harmful     = false;
-    resource    = RESOURCE_RUNIC;
+  }
+  
+  virtual resource_type current_resource() const
+  {
+    return RESOURCE_RUNIC_POWER;
   }
 
   virtual double cost() const
@@ -3575,7 +3576,7 @@ struct presence_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
 
     // Presence changes consume all runic power
-    return p -> resource_current [ RESOURCE_RUNIC ];
+    return p -> resource_current [ RESOURCE_RUNIC_POWER ];
   }
 
   virtual void execute()
@@ -3889,7 +3890,7 @@ struct butchery_event_t : public event_t
     // p -> talents.butchery -> effect2().base_value() / 10.0 == p -> talents.butchery -> rank()
     // Just work with hardcoded numbers here. With rank 1 you gain 1 RP every 5s
     // with rank 2 you gain 1 RP every 2.5s
-    p -> resource_gain( RESOURCE_RUNIC, 1, p -> gains_butchery );
+    p -> resource_gain( RESOURCE_RUNIC_POWER, 1, p -> gains_butchery );
 
     new ( sim ) butchery_event_t( player, timespan_t::from_seconds( 5.0 / p -> talents.butchery -> rank() ) );
   }
@@ -4202,10 +4203,10 @@ void death_knight_t::init_base()
   if ( primary_tree() == TREE_BLOOD )
     vengeance_enabled = true;
 
-  resource_base[ RESOURCE_RUNIC ] = 100;
+  resource_base[ RESOURCE_RUNIC_POWER ] = 100;
 
   if ( talents.runic_power_mastery -> rank() )
-    resource_base[ RESOURCE_RUNIC ] += talents.runic_power_mastery -> effect1().resource( RESOURCE_RUNIC );
+    resource_base[ RESOURCE_RUNIC_POWER ] += talents.runic_power_mastery -> effect1().resource( RESOURCE_RUNIC_POWER );
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -4790,7 +4791,7 @@ void death_knight_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resource_current[ RESOURCE_RUNIC ] = 0;
+  resource_current[ RESOURCE_RUNIC_POWER ] = 0;
 }
 
 // death_knight_t::init_uptimes =============================================
@@ -4986,8 +4987,8 @@ void death_knight_t::regen( timespan_t periodicity )
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     _runes.slot[i].regen_rune( this, periodicity );
 
-  uptimes_rp_cap -> update( resource_current[ RESOURCE_RUNIC ] ==
-                            resource_max    [ RESOURCE_RUNIC] );
+  uptimes_rp_cap -> update( resource_current[ RESOURCE_RUNIC_POWER ] ==
+                            resource_max    [ RESOURCE_RUNIC_POWER] );
 }
 
 // death_knight_t::create_options ===========================================

@@ -1371,7 +1371,6 @@ static void register_gurthalak( item_t* item )
         // It doesn't have a coeff and each version has static damage
         tick_power_mod = 0;
         base_td = tick_damage;
-        base_cost = 0; // Override this, otherwise it screws up reporting
 
         // Change to DOT_REFRESH in-case we somehow RNG to all holy hell and get 6 up at once
         dot_behavior = DOT_REFRESH;

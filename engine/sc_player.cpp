@@ -3926,14 +3926,14 @@ void player_t::stat_gain( int       stat,
   case STAT_RAGE:   resource_gain( RESOURCE_RAGE,   amount, gain, action ); break;
   case STAT_ENERGY: resource_gain( RESOURCE_ENERGY, amount, gain, action ); break;
   case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
-  case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC,  amount, gain, action ); break;
+  case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
   case STAT_MAX_HEALTH: resource_max[ RESOURCE_HEALTH ] += amount; resource_gain( RESOURCE_HEALTH, amount, gain, action ); break;
   case STAT_MAX_MANA:   resource_max[ RESOURCE_MANA   ] += amount; resource_gain( RESOURCE_MANA,   amount, gain, action ); break;
   case STAT_MAX_RAGE:   resource_max[ RESOURCE_RAGE   ] += amount; resource_gain( RESOURCE_RAGE,   amount, gain, action ); break;
   case STAT_MAX_ENERGY: resource_max[ RESOURCE_ENERGY ] += amount; resource_gain( RESOURCE_ENERGY, amount, gain, action ); break;
   case STAT_MAX_FOCUS:  resource_max[ RESOURCE_FOCUS  ] += amount; resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
-  case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC  ] += amount; resource_gain( RESOURCE_RUNIC,  amount, gain, action ); break;
+  case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC_POWER  ] += amount; resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
   case STAT_SPELL_POWER:       stats.spell_power       += amount; temporary.spell_power += temp_value * amount; spell_power[ SCHOOL_MAX ] += amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration += amount; spell_penetration         += amount; break;
@@ -4007,7 +4007,7 @@ void player_t::stat_loss( int       stat,
   case STAT_RAGE:   resource_loss( RESOURCE_RAGE,   amount, action ); break;
   case STAT_ENERGY: resource_loss( RESOURCE_ENERGY, amount, action ); break;
   case STAT_FOCUS:  resource_loss( RESOURCE_FOCUS,  amount, action ); break;
-  case STAT_RUNIC:  resource_loss( RESOURCE_RUNIC,  amount, action ); break;
+  case STAT_RUNIC:  resource_loss( RESOURCE_RUNIC_POWER,  amount, action ); break;
 
   case STAT_MAX_HEALTH:
   case STAT_MAX_MANA:
@@ -4020,7 +4020,7 @@ void player_t::stat_loss( int       stat,
               ( stat == STAT_MAX_MANA   ) ? RESOURCE_MANA   :
               ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
               ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
-              ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC );
+              ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC_POWER );
     recalculate_resource_max( r );
     double delta = resource_current[ r ] - resource_max[ r ];
     if ( delta > 0 ) resource_loss( r, delta, action );
@@ -4880,7 +4880,7 @@ struct arcane_torrent_t : public action_t
     case RESOURCE_ENERGY:
     case RESOURCE_FOCUS:
     case RESOURCE_RAGE:
-    case RESOURCE_RUNIC:
+    case RESOURCE_RUNIC_POWER:
       gain = 15;
       break;
     default:
@@ -4911,7 +4911,7 @@ struct arcane_torrent_t : public action_t
     case RESOURCE_ENERGY:
     case RESOURCE_FOCUS:
     case RESOURCE_RAGE:
-    case RESOURCE_RUNIC:
+    case RESOURCE_RUNIC_POWER:
       if ( player -> resource_max [ resource ] - player -> resource_current [ resource ] >= 15 )
         return true;
       break;
@@ -6134,7 +6134,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     struct max_runic_expr_t : public action_expr_t
     {
       max_runic_expr_t( action_t* a ) : action_expr_t( a, "max_runic", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_RUNIC ]; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> resource_max[ RESOURCE_RUNIC_POWER ]; return TOK_NUM; }
     };
     return new max_runic_expr_t( a );
   }
@@ -6681,7 +6681,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     if ( enchant.resource[ RESOURCE_RAGE   ] != 0 )  profile_str += "enchant_rage="             + util_t::to_string( enchant.resource[ RESOURCE_RAGE   ] ) + term;
     if ( enchant.resource[ RESOURCE_ENERGY ] != 0 )  profile_str += "enchant_energy="           + util_t::to_string( enchant.resource[ RESOURCE_ENERGY ] ) + term;
     if ( enchant.resource[ RESOURCE_FOCUS  ] != 0 )  profile_str += "enchant_focus="            + util_t::to_string( enchant.resource[ RESOURCE_FOCUS  ] ) + term;
-    if ( enchant.resource[ RESOURCE_RUNIC  ] != 0 )  profile_str += "enchant_runic="            + util_t::to_string( enchant.resource[ RESOURCE_RUNIC  ] ) + term;
+    if ( enchant.resource[ RESOURCE_RUNIC_POWER  ] != 0 )  profile_str += "enchant_runic="            + util_t::to_string( enchant.resource[ RESOURCE_RUNIC_POWER  ] ) + term;
   }
 
   return true;
@@ -6862,7 +6862,7 @@ void player_t::create_options()
     { "gear_rage",                            OPT_FLT,  &( gear.resource[ RESOURCE_RAGE   ]           ) },
     { "gear_energy",                          OPT_FLT,  &( gear.resource[ RESOURCE_ENERGY ]           ) },
     { "gear_focus",                           OPT_FLT,  &( gear.resource[ RESOURCE_FOCUS  ]           ) },
-    { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC  ]           ) },
+    { "gear_runic",                           OPT_FLT,  &( gear.resource[ RESOURCE_RUNIC_POWER  ]           ) },
     { "gear_armor",                           OPT_FLT,  &( gear.armor                                 ) },
     { "gear_mastery_rating",                  OPT_FLT,  &( gear.mastery_rating                        ) },
     // Stat Enchants
@@ -6885,14 +6885,14 @@ void player_t::create_options()
     { "enchant_rage",                         OPT_FLT,  &( enchant.resource[ RESOURCE_RAGE   ]        ) },
     { "enchant_energy",                       OPT_FLT,  &( enchant.resource[ RESOURCE_ENERGY ]        ) },
     { "enchant_focus",                        OPT_FLT,  &( enchant.resource[ RESOURCE_FOCUS  ]        ) },
-    { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC  ]        ) },
+    { "enchant_runic",                        OPT_FLT,  &( enchant.resource[ RESOURCE_RUNIC_POWER  ]        ) },
     // Regen
     { "infinite_energy",                      OPT_BOOL,   &( infinite_resource[ RESOURCE_ENERGY ]     ) },
     { "infinite_focus",                       OPT_BOOL,   &( infinite_resource[ RESOURCE_FOCUS  ]     ) },
     { "infinite_health",                      OPT_BOOL,   &( infinite_resource[ RESOURCE_HEALTH ]     ) },
     { "infinite_mana",                        OPT_BOOL,   &( infinite_resource[ RESOURCE_MANA   ]     ) },
     { "infinite_rage",                        OPT_BOOL,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
-    { "infinite_runic",                       OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC  ]     ) },
+    { "infinite_runic",                       OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC_POWER  ]     ) },
     // Misc
     { "dtr_proc_chance",                      OPT_FLT,    &( dtr_proc_chance                          ) },
     { "dtr_base_proc_chance",                 OPT_FLT,    &( dtr_base_proc_chance                     ) },

@@ -364,7 +364,7 @@ struct mage_spell_t : public spell_t
     mage_t* p = player -> cast_mage();
     if ( p -> talents.enduring_winter -> rank() )
     {
-      base_cost *= 1.0 + p -> talents.enduring_winter -> effect1().percent();
+      base_costs[ current_resource() ] *= 1.0 + p -> talents.enduring_winter -> effect1().percent();
     }
   }
 
@@ -418,7 +418,6 @@ struct water_elemental_pet_t : public pet_t
       aoe = -1;
       may_crit = true;
       crit_multiplier *= 1.33;
-      base_cost = 0;
     }
 
     virtual void player_buff()
@@ -976,13 +975,13 @@ static void trigger_master_of_elements( spell_t* s )
 {
   mage_t* p = s -> player -> cast_mage();
 
-  if ( s -> base_cost == 0 )
+  if ( s -> base_costs[ s -> current_resource() ] == 0 )
     return;
 
   if ( ! p -> talents.master_of_elements -> rank() )
     return;
 
-  p -> resource_gain( RESOURCE_MANA, s -> base_cost * p -> talents.master_of_elements -> effect1().percent(), p -> gains_master_of_elements );
+  p -> resource_gain( RESOURCE_MANA, s -> base_costs[ s -> current_resource() ] * p -> talents.master_of_elements -> effect1().percent(), p -> gains_master_of_elements );
 }
 
 // trigger_replenishment ====================================================
@@ -1381,7 +1380,7 @@ struct arcane_brilliance_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     bonus      = p -> dbc.effect_average( p -> dbc.spell( 79058 ) -> effect1().id(), p -> level );
-    base_cost *= 1.0 + p -> glyphs.arcane_brilliance -> effect1().percent();
+    base_costs[ current_resource() ] *= 1.0 + p -> glyphs.arcane_brilliance -> effect1().percent();
     harmful = false;
 
     background = ( sim -> overrides.arcane_brilliance != 0 );
@@ -1733,7 +1732,7 @@ struct conjure_mana_gem_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_cost += p -> glyphs.conjuring -> mod_additive( P_RESOURCE_COST );
+    base_costs[ current_resource() ] += p -> glyphs.conjuring -> mod_additive( P_RESOURCE_COST );
   }
 
   virtual void execute()
@@ -1790,7 +1789,7 @@ struct deep_freeze_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     // The spell data is spread across two separate Spell IDs.  Hard code missing for now.
-    base_cost = 0.09 * p -> resource_base[ RESOURCE_MANA ];
+    base_costs[ current_resource() ] = 0.09 * p -> resource_base[ RESOURCE_MANA ];
     cooldown -> duration = timespan_t::from_seconds( 30.0 );
 
     fof_frozen = true;
@@ -1996,6 +1995,8 @@ struct flame_orb_tick_t : public mage_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
+  
+  virtual resource_type current_resource() const { return RESOURCE_NONE; }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
@@ -2029,8 +2030,8 @@ struct flame_orb_t : public mage_spell_t
     add_child( explosion_spell );
 
     tick_spell = new flame_orb_tick_t( p );
-    tick_spell -> resource = RESOURCE_NONE; // Trickery to make MoE work
-    tick_spell -> base_cost = base_cost / num_ticks;
+    // Trickery to make MoE work
+    tick_spell -> base_costs[ tick_spell -> current_resource() ] = base_costs[ current_resource() ] / num_ticks;
     add_child( tick_spell );
   }
 
@@ -2558,6 +2559,8 @@ struct living_bomb_explosion_t : public mage_spell_t
     }
   }
 
+  virtual resource_type current_resource() const { return RESOURCE_NONE; }
+
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     // Ticks don't trigger ignite
@@ -2578,8 +2581,8 @@ struct living_bomb_t : public mage_spell_t
     dot_behavior = DOT_REFRESH;
 
     explosion_spell = new living_bomb_explosion_t( p );
-    explosion_spell -> resource = RESOURCE_NONE; // Trickery to make MoE work
-    explosion_spell -> base_cost = base_cost;
+    // Trickery to make MoE work
+    explosion_spell -> base_costs[ explosion_spell -> current_resource() ] = base_costs[ current_resource() ];
     add_child( explosion_spell );
   }
 
@@ -2933,7 +2936,7 @@ struct scorch_t : public mage_spell_t
     };
     parse_options( options, options_str );
 
-    base_cost *= 1.0 + p -> talents.improved_scorch -> effect1().percent();
+    base_costs[ current_resource() ] *= 1.0 + p -> talents.improved_scorch -> effect1().percent();
     may_hot_streak = true;
 
     if ( debuff )
@@ -3054,7 +3057,6 @@ struct water_elemental_spell_t : public mage_spell_t
     parse_options( NULL, options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero;
-    base_cost = 0;
   }
 
   virtual void execute()

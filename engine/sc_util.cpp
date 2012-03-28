@@ -661,24 +661,23 @@ const char* util_t::resource_type_string( int type )
 {
   switch ( type )
   {
-  case RESOURCE_NONE:         return "none";
-  case RESOURCE_HEALTH:       return "health";
-  case RESOURCE_MANA:         return "mana";
-  case RESOURCE_RAGE:         return "rage";
-  case RESOURCE_ENERGY:       return "energy";
-  case RESOURCE_FOCUS:        return "focus";
-  case RESOURCE_RUNIC:        return "runic_power";
-  case RESOURCE_RUNE:         return "all_runes";
-  case RESOURCE_RUNE_BLOOD:   return "blood_runes";
-  case RESOURCE_RUNE_UNHOLY:  return "unholy_runes";
-  case RESOURCE_RUNE_FROST:   return "frost_runes";
-  case RESOURCE_SOUL_SHARDS:  return "soul_shards";
-  case RESOURCE_UNSTABLE_EMBERS:  return "unstable_embers";
-  case RESOURCE_DEMONIC_POWER:    return "demonic_power";
-  case RESOURCE_HOLY_POWER:   return "holy_power";
-  case RESOURCE_CHI:          return "chi";
-  case RESOURCE_LIGHT_FORCE:  return "light_force";
-  case RESOURCE_DARK_FORCE:   return "dark_Force";
+  case RESOURCE_NONE:          return "none";
+  case RESOURCE_HEALTH:        return "health";
+  case RESOURCE_MANA:          return "mana";
+  case RESOURCE_RAGE:          return "rage";
+  case RESOURCE_ENERGY:        return "energy";
+  case RESOURCE_MONK_ENERGY:   return "energy";
+  case RESOURCE_FOCUS:         return "focus";
+  case RESOURCE_RUNIC_POWER:   return "runic_power";
+  case RESOURCE_RUNE:          return "rune";
+  case RESOURCE_RUNE_BLOOD:    return "blood_rune";
+  case RESOURCE_RUNE_UNHOLY:   return "unholy_rune";
+  case RESOURCE_RUNE_FROST:    return "frost_rune";
+  case RESOURCE_SOUL_SHARD:    return "soul_shard";
+  case RESOURCE_BURNING_EMBER: return "burning_ember";
+  case RESOURCE_DEMONIC_FURY:  return "demonic_fury";
+  case RESOURCE_HOLY_POWER:    return "holy_power";
+  case RESOURCE_CHI:           return "chi";
   }
   return "unknown";
 }
@@ -1281,6 +1280,25 @@ talent_tree_type util_t::translate_spec_str( player_type ptype, const std::strin
   return TREE_NONE;
 }
 
+resource_type util_t::translate_power_type( power_type pt )
+{
+  switch ( pt )
+  {
+    case POWER_HEALTH:        return RESOURCE_HEALTH;
+    case POWER_MANA:          return RESOURCE_MANA;
+    case POWER_RAGE:          return RESOURCE_RAGE;
+    case POWER_FOCUS:         return RESOURCE_FOCUS;
+    case POWER_ENERGY:        return RESOURCE_ENERGY;
+    case POWER_MONK_ENERGY:   return RESOURCE_MONK_ENERGY;
+    case POWER_RUNIC_POWER:   return RESOURCE_RUNIC_POWER;
+    case POWER_SOUL_SHARDS:   return RESOURCE_SOUL_SHARD;
+    case POWER_BURNING_EMBER: return RESOURCE_BURNING_EMBER;
+    case POWER_DEMONIC_FURY:  return RESOURCE_DEMONIC_FURY;
+    case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;
+    case POWER_CHI:           return RESOURCE_CHI;
+    default:                  return RESOURCE_NONE;
+  }
+}
 
 // util_t::talent_tree_string ===============================================
 

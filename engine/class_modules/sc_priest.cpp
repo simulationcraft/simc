@@ -2448,8 +2448,8 @@ struct circle_of_healing_t : public priest_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_cost *= 1.0 + p -> glyphs.circle_of_healing -> effect2().percent();
-    base_cost  = floor( base_cost );
+    base_costs[ current_resource() ] *= 1.0 + p -> glyphs.circle_of_healing -> effect2().percent();
+    base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
     aoe = p -> glyphs.circle_of_healing -> ok() ? 5 : 4;
   }
 
@@ -2819,7 +2819,7 @@ struct holy_word_chastise_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_cost  = floor( base_cost );
+    base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
 
     // Needs testing
     cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
@@ -2851,7 +2851,7 @@ struct holy_word_serenity_t : public priest_heal_t
 
     parse_options( NULL, options_str );
 
-    base_cost  = floor( base_cost );
+    base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
 
     // Needs testing
     cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;

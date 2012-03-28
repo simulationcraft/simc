@@ -122,24 +122,23 @@ static const char* chart_resource_type_string( int type )
 {
   switch ( type )
   {
-  case RESOURCE_NONE:         return "None";
-  case RESOURCE_HEALTH:       return "Health";
-  case RESOURCE_MANA:         return "Mana";
-  case RESOURCE_RAGE:         return "Rage";
-  case RESOURCE_ENERGY:       return "Energy";
-  case RESOURCE_FOCUS:        return "Focus";
-  case RESOURCE_RUNIC:        return "Runic Power";
-  case RESOURCE_RUNE:         return "All Runes";
-  case RESOURCE_RUNE_BLOOD:   return "Blood Rune";
-  case RESOURCE_RUNE_UNHOLY:  return "Unholy Rune";
-  case RESOURCE_RUNE_FROST:   return "Frost Rune";
-  case RESOURCE_SOUL_SHARDS:  return "Soul Shards";
-  case RESOURCE_UNSTABLE_EMBERS:  return "Unstable Embers";
-  case RESOURCE_DEMONIC_POWER:    return "Demonic Power";
-  case RESOURCE_HOLY_POWER:   return "Holy Power";
-  case RESOURCE_CHI:          return "Chi";
-  case RESOURCE_LIGHT_FORCE:  return "Light Force";
-  case RESOURCE_DARK_FORCE:   return "Dark Force";
+  case RESOURCE_NONE:          return "None";
+  case RESOURCE_HEALTH:        return "Health";
+  case RESOURCE_MANA:          return "Mana";
+  case RESOURCE_RAGE:          return "Rage";
+  case RESOURCE_ENERGY:        return "Energy";
+  case RESOURCE_MONK_ENERGY:   return "Energy";
+  case RESOURCE_FOCUS:         return "Focus";
+  case RESOURCE_RUNIC_POWER:   return "Runic Power";
+  case RESOURCE_SOUL_SHARD:    return "Soul Shards";
+  case RESOURCE_HOLY_POWER:    return "Holy Power";
+  case RESOURCE_CHI:           return "Chi";
+  case RESOURCE_BURNING_EMBER: return "Burning Embers";
+  case RESOURCE_DEMONIC_FURY:  return "Demonic Fury";
+  case RESOURCE_RUNE:          return "All Runes";
+  case RESOURCE_RUNE_BLOOD:    return "Blood Rune";
+  case RESOURCE_RUNE_UNHOLY:   return "Unholy Rune";
+  case RESOURCE_RUNE_FROST:    return "Frost Rune";
   }
   return "Unknown";
 }
@@ -2155,28 +2154,27 @@ const char* chart_t::resource_color( int type )
   switch ( type )
   {
   case RESOURCE_HEALTH:
-  case RESOURCE_RUNE_UNHOLY: return class_color( HUNTER );
+  case RESOURCE_RUNE_UNHOLY:   return class_color( HUNTER );
 
   case RESOURCE_RUNE_FROST:
-  case RESOURCE_MANA:        return class_color( SHAMAN );
+  case RESOURCE_MANA:          return class_color( SHAMAN );
 
   case RESOURCE_ENERGY:
-  case RESOURCE_CHI:
-  case RESOURCE_FOCUS:       return class_text_color( ROGUE );
+  case RESOURCE_MONK_ENERGY:
+  case RESOURCE_FOCUS:         return class_text_color( ROGUE );
 
   case RESOURCE_RAGE:
-  case RESOURCE_RUNIC:
+  case RESOURCE_RUNIC_POWER:
   case RESOURCE_RUNE:
-  case RESOURCE_RUNE_BLOOD:  return class_color( DEATH_KNIGHT );
+  case RESOURCE_RUNE_BLOOD:    return class_color( DEATH_KNIGHT );
 
-  case RESOURCE_HOLY_POWER:  return class_color( PALADIN );
+  case RESOURCE_HOLY_POWER:    return class_color( PALADIN );
 
-  case RESOURCE_DARK_FORCE:
-  case RESOURCE_SOUL_SHARDS:
-  case RESOURCE_UNSTABLE_EMBERS:
-  case RESOURCE_DEMONIC_POWER:  return class_color( WARLOCK );
+  case RESOURCE_SOUL_SHARD:
+  case RESOURCE_BURNING_EMBER:
+  case RESOURCE_DEMONIC_FURY:  return class_color( WARLOCK );
 
-  case RESOURCE_LIGHT_FORCE:  return class_color( MONK );
+  case RESOURCE_CHI:           return class_color( MONK );
 
   case RESOURCE_NONE:
   default:                   return "000000";

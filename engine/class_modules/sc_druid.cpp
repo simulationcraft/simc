@@ -1122,7 +1122,6 @@ struct cat_melee_t : public druid_cat_attack_t
     repeating   = true;
     may_crit    = true;
     trigger_gcd = timespan_t::zero;
-    base_cost   = 0;
   }
 
   virtual void player_buff()
@@ -1300,10 +1299,10 @@ struct ferocious_bite_t : public druid_cat_attack_t
       // Let the additional energy consumption create it's own debug log entries.
       if ( sim -> debug )
         log_t::output( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
-                       excess_energy, util_t::resource_type_string( resource ), name() );
+                       excess_energy, util_t::resource_type_string( current_resource() ), name() );
 
-      player -> resource_loss( resource, excess_energy );
-      stats -> consume_resource( static_cast<resource_type>( resource ), excess_energy );
+      player -> resource_loss( current_resource(), excess_energy );
+      stats -> consume_resource( current_resource(), excess_energy );
     }
   }
 
@@ -2004,7 +2003,6 @@ struct bear_melee_t : public druid_bear_attack_t
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero;
-    base_cost   = 0;
     may_crit    = true;
   }
 
@@ -3440,7 +3438,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     trigger_gcd = timespan_t::zero;
     id          = 1126;
-    base_cost  *= 1.0 + p -> glyphs.mark_of_the_wild -> mod_additive( P_RESOURCE_COST ) / 100.0;
+    base_costs[ current_resource() ]  *= 1.0 + p -> glyphs.mark_of_the_wild -> mod_additive( P_RESOURCE_COST ) / 100.0;
     harmful     = false;
 
     background = ( sim -> overrides.mark_of_the_wild != 0 );
@@ -3595,7 +3593,6 @@ struct moonkin_form_t : public druid_spell_t
     // Override these as we can precast before combat begins
     trigger_gcd       = timespan_t::zero;
     base_execute_time = timespan_t::zero;
-    base_cost         = 0;
     harmful           = false;
   }
 
@@ -4208,7 +4205,7 @@ struct typhoon_t : public druid_spell_t
     base_multiplier      *= 1.0 + p -> talents.gale_winds -> effect1().percent();
     direct_power_mod      = damage_spell -> effect2().coeff();
     cooldown -> duration += p -> glyphs.monsoon -> mod_additive_time( P_COOLDOWN );
-    base_cost            *= 1.0 + p -> glyphs.typhoon -> mod_additive( P_RESOURCE_COST );
+    base_costs[ current_resource() ] *= 1.0 + p -> glyphs.typhoon -> mod_additive( P_RESOURCE_COST );
   }
 };
 

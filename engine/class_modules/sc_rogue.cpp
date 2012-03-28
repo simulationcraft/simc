@@ -526,7 +526,6 @@ struct rogue_poison_t : public spell_t
   {
     proc             = true;
     background       = true;
-    base_cost        = 0.0;
     trigger_gcd      = timespan_t::zero;
     may_crit         = true;
     tick_may_crit    = true;
@@ -832,7 +831,6 @@ static void trigger_main_gauche( rogue_attack_t* a )
           base_dd_min = base_dd_max = 1;
           background      = true;
           trigger_gcd     = timespan_t::zero;
-          base_cost       = 0;
           may_glance      = false; // XXX: does not glance
           may_crit        = true;
           normalize_weapon_speed = true; // XXX: it's normalized
@@ -1269,7 +1267,6 @@ struct melee_t : public rogue_attack_t
     background      = true;
     repeating       = true;
     trigger_gcd     = timespan_t::zero;
-    base_cost       = 0;
     may_crit        = true;
 
     if ( p -> dual_wield() )
@@ -1414,7 +1411,7 @@ struct ambush_t : public rogue_attack_t
     if ( weapon -> type == WEAPON_DAGGER )
       weapon_multiplier   *= 1.447; // It'is in the description.
 
-    base_cost             += p -> talents.slaughter_from_the_shadows -> effect1().resource( RESOURCE_ENERGY );
+    base_costs[ current_resource() ]             += p -> talents.slaughter_from_the_shadows -> effect1().resource( RESOURCE_ENERGY );
     base_multiplier       *= 1.0 + ( p -> talents.improved_ambush -> effect2().percent() +
                                      p -> talents.opportunity     -> effect1().percent() );
     base_crit             += p -> talents.improved_ambush -> effect1().percent();
@@ -1457,7 +1454,7 @@ struct backstab_t : public rogue_attack_t
 
     weapon_multiplier *= 1.0 + p -> spec_sinister_calling -> mod_additive( P_EFFECT_2 );
 
-    base_cost         += p -> talents.slaughter_from_the_shadows -> effect1().resource( RESOURCE_ENERGY );
+    base_costs[ current_resource() ]         += p -> talents.slaughter_from_the_shadows -> effect1().resource( RESOURCE_ENERGY );
     base_multiplier   *= 1.0 + ( p -> talents.aggression  -> mod_additive( P_GENERIC ) +
                                  p -> talents.opportunity -> mod_additive( P_GENERIC ) );
     base_crit         += p -> talents.puncturing_wounds -> effect1().percent();
@@ -1814,7 +1811,7 @@ struct fan_of_knives_t : public rogue_attack_t
     aoe    = -1;
     weapon = &( p -> ranged_weapon );
 
-    base_cost += p -> talents.slaughter_from_the_shadows -> effect2().resource( RESOURCE_ENERGY );
+    base_costs[ current_resource() ] += p -> talents.slaughter_from_the_shadows -> effect2().resource( RESOURCE_ENERGY );
   }
 
   virtual void execute()
@@ -1940,7 +1937,7 @@ struct hemorrhage_t : public rogue_attack_t
 
     weapon_multiplier *= 1.0 + p -> spec_sinister_calling -> mod_additive( P_EFFECT_2 );
 
-    base_cost       += p -> talents.slaughter_from_the_shadows -> effect2().resource( RESOURCE_ENERGY );
+    base_costs[ current_resource() ]       += p -> talents.slaughter_from_the_shadows -> effect2().resource( RESOURCE_ENERGY );
     crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
 
     parse_options( NULL, options_str );
@@ -2113,7 +2110,7 @@ struct mutilate_t : public rogue_attack_t
       sim -> cancel();
     }
 
-    base_cost += p -> glyphs.mutilate -> mod_additive( P_RESOURCE_COST );
+    base_costs[ current_resource() ] += p -> glyphs.mutilate -> mod_additive( P_RESOURCE_COST );
 
     parse_options( NULL, options_str );
 
@@ -2337,7 +2334,7 @@ struct shiv_t : public rogue_attack_t
     if ( weapon -> type == WEAPON_NONE )
       background = true; // Do not allow execution.
 
-    base_cost        += weapon -> swing_time.total_seconds() * 10.0;
+    base_costs[ current_resource() ]        += weapon -> swing_time.total_seconds() * 10.0;
     adds_combo_points = 1;
     may_crit          = false;
     base_dd_min = base_dd_max = 1;
@@ -2364,7 +2361,7 @@ struct sinister_strike_t : public rogue_attack_t
   {
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
 
-    base_cost       += p -> talents.improved_sinister_strike -> mod_additive( P_RESOURCE_COST );
+    base_costs[ current_resource() ]       += p -> talents.improved_sinister_strike -> mod_additive( P_RESOURCE_COST );
     base_multiplier *= 1.0 + ( p -> talents.aggression               -> mod_additive( P_GENERIC ) +
                                p -> talents.improved_sinister_strike -> mod_additive( P_GENERIC ) );
     crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
@@ -2536,7 +2533,7 @@ struct tricks_of_the_trade_t : public rogue_attack_t
     parse_options( NULL, options_str );
 
     if ( p -> glyphs.tricks_of_the_trade -> ok() )
-      base_cost = 0;
+      base_costs[ current_resource() ] = 0;
 
     if ( ! p -> tricks_of_the_trade_target_str.empty() )
     {

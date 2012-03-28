@@ -894,7 +894,7 @@ struct fire_elemental_pet_t : public pet_t
       cooldown -> duration = timespan_t::from_seconds( fe -> rng_ability_cooldown -> range( 30.0, 60.0 ) );
 
       // 207 = 80
-      base_cost            = player -> level * 2.750;
+      base_costs[ RESOURCE_MANA ]            = player -> level * 2.750;
       // For now, model the cast time increase as well, see below
       base_execute_time    = player -> dbc.spell( 12470 ) -> cast_time( player -> level );
 
@@ -920,7 +920,7 @@ struct fire_elemental_pet_t : public pet_t
       fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
 
       may_crit             = true;
-      base_cost            = ( player -> level ) * 3.554;
+      base_costs[ RESOURCE_MANA ]            = ( player -> level ) * 3.554;
       base_execute_time    = timespan_t::zero;
       direct_power_mod     = player -> dbc.spell( 57984 ) -> effect1().coeff();
       cooldown -> duration = timespan_t::from_seconds( fe -> rng_ability_cooldown -> range( 5.0, 7.0 ) );
@@ -957,7 +957,6 @@ struct fire_elemental_pet_t : public pet_t
       background                   = true;
       repeating                    = true;
       trigger_gcd                  = timespan_t::zero;
-      base_cost                    = 0;
       direct_power_mod             = 1.0;
       base_spell_power_multiplier  = 1.0;
       base_attack_power_multiplier = 0.0;
@@ -1324,7 +1323,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
       double dd_min = p -> action_flame_shock -> base_dd_min,
              dd_max = p -> action_flame_shock -> base_dd_max,
              coeff = p -> action_flame_shock -> direct_power_mod,
-             real_base_cost = p -> action_flame_shock -> base_cost;
+             real_base_cost = p -> action_flame_shock -> base_costs[ p -> action_flame_shock -> current_resource() ];
       player_t* original_target = p -> action_flame_shock -> target;
       cooldown_t* original_cd = p -> action_flame_shock -> cooldown;
       stats_t* original_stats = p -> action_flame_shock -> stats;
@@ -1337,7 +1336,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
       p -> action_flame_shock -> proc = true;
       p -> action_flame_shock -> may_crit = false;
       p -> action_flame_shock -> may_miss = false;
-      p -> action_flame_shock -> base_cost = 0;
+      p -> action_flame_shock -> base_costs[ p -> action_flame_shock -> current_resource() ] = 0;
       p -> action_flame_shock -> target = state -> target;
       p -> action_flame_shock -> cooldown = imp_ll_fs_cd;
       p -> action_flame_shock -> stats = fs_dummy_stat;
@@ -1352,7 +1351,7 @@ static bool trigger_improved_lava_lash( attack_t* a )
       p -> action_flame_shock -> proc = false;
       p -> action_flame_shock -> may_crit = true;
       p -> action_flame_shock -> may_miss = true;
-      p -> action_flame_shock -> base_cost = real_base_cost;
+      p -> action_flame_shock -> base_costs[ p -> action_flame_shock -> current_resource() ] = real_base_cost;
       p -> action_flame_shock -> target = original_target;
       p -> action_flame_shock -> cooldown = original_cd;
       p -> action_flame_shock -> stats = original_stats;
@@ -1642,7 +1641,6 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     background         = true;
     proc               = true;
     stateless          = true;
-    base_cost          = 0;
     direct_power_mod   = 1.0;
 
     base_dd_min = w -> swing_time.total_seconds() / 4.0 * player -> dbc.effect_min( effect2().id(), player -> level ) / 25.0;
@@ -1824,7 +1822,6 @@ struct melee_t : public shaman_attack_t
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero;
-    base_cost   = 0;
     stateless   = true;
 
     if ( actor -> dual_wield() ) base_hit -= 0.19;
@@ -2786,8 +2783,8 @@ struct thunderstorm_t : public shaman_spell_t
   {
     shaman_spell_t::impact_s( state );
 
-    actor -> resource_gain( resource,
-                            actor -> resource_max[ resource ] * bonus,
+    actor -> resource_gain( effectN( 2 ).resource_gain_type(),
+                            actor -> resource_max[ effectN( 2 ).resource_gain_type() ] * bonus,
                             actor -> gain.thunderstorm );
   }
 };
@@ -4213,7 +4210,7 @@ void shaman_t::moving()
          executing &&
          sim -> roll( skill ) &&
          swg -> cooldown -> remains() == timespan_t::zero &&
-         resource_available( swg -> resource, swg -> cost() ) )
+         resource_available( swg -> current_resource(), swg -> cost() ) )
     {
       // Elemental has to do some additional checking here
       if ( primary_tree() == TREE_ELEMENTAL )

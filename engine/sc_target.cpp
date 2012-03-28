@@ -121,7 +121,6 @@ struct melee_t : public attack_t
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero;
-    base_cost   = 0;
     base_dd_min = 260000;
     base_execute_time = timespan_t::from_seconds( 2.4 );
     aoe = -1;

@@ -377,11 +377,29 @@ enum base_stat_type { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA
 
 enum resource_type
 {
-  RESOURCE_NONE=0,
-  RESOURCE_HEALTH, RESOURCE_MANA,  RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_FOCUS, RESOURCE_RUNIC,
-  RESOURCE_RUNE, RESOURCE_HAPPINESS, RESOURCE_SOUL_SHARDS, RESOURCE_UNSTABLE_EMBERS, RESOURCE_DEMONIC_POWER,
-  RESOURCE_ECLIPSE, RESOURCE_HOLY_POWER, RESOURCE_RUNE_BLOOD, RESOURCE_RUNE_UNHOLY, RESOURCE_RUNE_FROST,
-  RESOURCE_CHI, RESOURCE_LIGHT_FORCE,RESOURCE_DARK_FORCE, RESOURCE_MAX
+  RESOURCE_NONE = 0,
+  RESOURCE_HEALTH, 
+  RESOURCE_MANA,
+  RESOURCE_RAGE,
+  RESOURCE_FOCUS,
+  RESOURCE_ENERGY,
+  RESOURCE_MONK_ENERGY,
+  RESOURCE_RUNIC_POWER,
+  RESOURCE_SOUL_SHARD, 
+  /* Unknown_1, */
+  RESOURCE_HOLY_POWER,
+  /* Unknown_2, */
+  /* Unknown_3 */
+  RESOURCE_CHI, 
+  RESOURCE_SHADOW_ORB,
+  RESOURCE_BURNING_EMBER, 
+  RESOURCE_DEMONIC_FURY,
+  /* Dummy resources for reporting */
+  RESOURCE_RUNE,
+  RESOURCE_RUNE_BLOOD,
+  RESOURCE_RUNE_UNHOLY,
+  RESOURCE_RUNE_FROST,
+  RESOURCE_MAX
 };
 
 enum result_type
@@ -828,25 +846,27 @@ enum format_type
 
 enum power_type
 {
-  POWER_MANA = 0,
-  POWER_RAGE = 1,
-  POWER_FOCUS = 2,
-  POWER_ENERGY = 3,
-  POWER_HAPPINESS = 4,
-  // not yet used
-  POWER_RUNE = 5,
-  POWER_RUNIC_POWER = 6,
-  POWER_SOUL_SHARDS = 7,
-  POWER_ECLIPSE = 8,
-  POWER_HOLY_POWER = 9,
-  POWER_UNSTABLE_EMBERS = 14,
-  POWER_DEMONIC_POWER = 15,
-  POWER_HEALTH = 0xFFFFFFFE, // (or -2 if signed)
-  POWER_NONE = 0xFFFFFFFF, // None.
-  //these are not yet used
-  //POWER_RUNE_BLOOD = 10,
-  //POWER_RUNE_FROST = 11,
-  //POWER_RUNE_UNHOLY = 12
+  POWER_HEALTH        = -2,
+  POWER_MANA          = 0,
+  POWER_RAGE          = 1,
+  POWER_FOCUS         = 2,
+  POWER_ENERGY        = 3,
+  POWER_MONK_ENERGY   = 4,
+  POWER_RUNE          = 5,
+  POWER_RUNIC_POWER   = 6,
+  POWER_SOUL_SHARDS   = 7,
+  // Not yet used
+  POWER_HOLY_POWER    = 9,
+  // Not yet used (MoP Monk deprecated resource #1)
+  // Not yet used
+  POWER_CHI           = 12,
+  POWER_SHADOW_ORB    = 13,
+  POWER_BURNING_EMBER = 14,
+  POWER_DEMONIC_FURY  = 15,
+  // Helpers
+  POWER_MAX           = 16,
+  POWER_NONE          = 0xFFFFFFFF, // None.
+  POWER_OFFSET        = 2,
 };
 
 enum rating_type
@@ -1835,6 +1855,60 @@ enum spell_attribute_t
 
 // DBC related classes ======================================================
 
+// SpellPower.dbc
+struct spellpower_data_t
+{
+  unsigned _id;
+  unsigned _spell_id;
+  unsigned _aura_id;            // Spell id for the aura during which this power type is active
+  int      _power_type;
+  int      _cost;
+  double   _cost_2;
+  int      _cost_per_second;    // Unsure
+  
+  resource_type resource() const;
+  unsigned id() const { return _id; }
+  unsigned spell_id() const { return _spell_id; }
+  unsigned aura_id() const { return _aura_id; }
+  power_type type() const { return static_cast< power_type >( _power_type ); }
+  double cost() const {
+    double cost = 0.0;
+    double divisor;
+    
+    if ( _cost > 0 )
+      cost = _cost;
+    else
+      cost = _cost_2;
+    
+    switch ( type() )
+    {
+      case POWER_MANA:
+        divisor = 100.0;
+      case POWER_RAGE:
+      case POWER_RUNIC_POWER:
+        divisor = 10.0;
+      default:
+        divisor = 1.0;
+    }
+    
+    return cost / divisor;
+  }
+
+  static spellpower_data_t* nil();
+  static spellpower_data_t* list( bool ptr = false );
+  static void               link( bool ptr = false );
+};
+
+class spellpower_data_nil_t : public spellpower_data_t
+{
+public:
+  spellpower_data_nil_t();
+  static spellpower_data_nil_t singleton;
+};
+
+inline spellpower_data_t* spellpower_data_t::nil()
+{ return &spellpower_data_nil_t::singleton; }
+
 // SpellEffect.dbc
 struct spelleffect_data_t
 {
@@ -1888,13 +1962,15 @@ public:
   effect_subtype_t           subtype() const { return _subtype; }
 
   int                        base_value() const { return _base_value; }
-  double percent() const { return _base_value * ( 1 / 100.0 ); }
-  timespan_t time_value() const { return timespan_t::from_millis( _base_value ); }
+  double                     percent() const { return _base_value * ( 1 / 100.0 ); }
+  timespan_t                 time_value() const { return timespan_t::from_millis( _base_value ); }
+  resource_type              resource_gain_type() const;
+  
   double resource( int type ) const
   {
     switch ( type )
     {
-    case RESOURCE_RUNIC:
+    case RESOURCE_RUNIC_POWER:
     case RESOURCE_RAGE:
       return _base_value * ( 1 / 10.0 );
     case RESOURCE_MANA:
@@ -1961,7 +2037,6 @@ public:
   unsigned    _flags;              // Unused for now, 0x00 for all
   double      _prj_speed;          // Projectile Speed
   unsigned    _school;             // Spell school mask
-  int         _power_type;         // Resource type
   unsigned    _class_mask;         // Class mask for spell
   unsigned    _race_mask;          // Racial mask for the spell
   int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array, 0 disabled
@@ -1979,8 +2054,6 @@ public:
   unsigned    _category;           // Spell category (for shared cooldowns, effects?)
   // SpellDuration.dbc
   double      _duration;           // Spell duration in milliseconds
-  // SpellPower.dbc
-  double      _cost;               // Resource cost, for mana this is the percent of base mana
   // SpellRuneCost.dbc
   unsigned    _rune_cost;          // Bitmask of rune cost 0x1, 0x2 = Blood | 0x4, 0x8 = Unholy | 0x10, 0x20 = Frost
   unsigned    _runic_power_gain;   // Amount of runic power gained ( / 10 )
@@ -2009,11 +2082,23 @@ public:
 
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
+  std::vector<const spellpower_data_t*>*  _power;
 
   const spelleffect_data_t& effectN( unsigned idx ) const { assert( idx ); if ( idx > _effects -> size() ) return *spelleffect_data_t::nil(); else return *_effects -> at( idx - 1 ); }
   const spelleffect_data_t& effect1() const { return effectN( 1 ); }
   const spelleffect_data_t& effect2() const { return effectN( 2 ); }
   const spelleffect_data_t& effect3() const { return effectN( 3 ); }
+  
+  const spellpower_data_t& powerN( int pt ) const {
+    assert( pt >= POWER_HEALTH && pt < POWER_MAX );
+    for ( size_t i = 0; i < _power -> size(); i++ )
+    {
+      if ( _power -> at( i ) -> _power_type == pt )
+        return *_power -> at( i );
+    }
+    
+    return *spellpower_data_t::nil();
+  }
 
   bool                 is_used() const { return _flags & FLAG_USED; }
   void                 set_used( bool value );
@@ -2023,7 +2108,6 @@ public:
 
   unsigned             id() const { return _id; }
   uint32_t             school_mask() const { return _school; }
-  resource_type        power_type() const;
 
   bool                 is_class( player_type c ) const;
   uint32_t             class_mask() const { return _class_mask; }
@@ -2046,10 +2130,10 @@ public:
   timespan_t           duration() const { return timespan_t::from_millis( _duration ); }
   timespan_t           gcd() const { return timespan_t::from_millis( _gcd ); }
   timespan_t           cast_time( uint32_t level ) const;
+  double               cost( power_type ) const;
 
   uint32_t             category() const { return _category; }
 
-  double               cost() const;
   uint32_t             rune_cost() const { return _rune_cost; }
   double               runic_power_gain() const { return _runic_power_gain * ( 1 / 10.0 ); }
 
@@ -2423,6 +2507,7 @@ public:
   static int         spec_id                   ( player_type ptype, talent_tree_type tree );
   static talent_tree_type translate_spec_str   ( player_type ptype, const std::string& spec_str );
   static talent_tree_type translate_spec_id    ( player_type ptype, int spec_id );
+  static resource_type translate_power_type    ( power_type );
   static const char* talent_tree_string        ( int tree, bool armory_format = true );
   static const char* weapon_type_string        ( int type );
   static const char* weapon_class_string       ( int class_ );
@@ -2593,7 +2678,6 @@ struct spell_id_t
   virtual double missile_speed() const;
   virtual uint32_t school_mask() const;
   virtual school_type get_school_type() const;
-  virtual resource_type power_type() const;
   virtual double min_range() const;
   virtual double max_range() const;
   virtual double extra_coeff() const;
@@ -2602,7 +2686,7 @@ struct spell_id_t
   virtual timespan_t gcd() const;
   virtual uint32_t category() const;
   virtual timespan_t duration() const;
-  virtual double cost() const;
+  virtual double power_cost( power_type pt ) const;
   virtual uint32_t rune_cost() const;
   virtual double runic_power_gain() const;
   virtual uint32_t max_stacks() const;
@@ -4940,7 +5024,7 @@ struct action_t : public spell_id_t
   player_t* target;
   uint32_t id;
   school_type school;
-  int resource, tree, result, aoe;
+  int tree, result, aoe;
   bool dual, callbacks, special, binary, channeled, background, sequence, use_off_gcd;
   bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot, may_trigger_dtr, discharge_proc, auto_cast, initialized;
   bool may_hit, may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
@@ -4955,7 +5039,7 @@ struct action_t : public spell_id_t
   double weapon_power_mod, direct_power_mod, tick_power_mod;
   timespan_t base_execute_time;
   timespan_t base_tick_time;
-  double base_cost;
+  double base_costs[ RESOURCE_MAX ];
   double base_dd_min, base_dd_max, base_td, base_td_init;
   double   base_dd_multiplier,   base_td_multiplier;
   double player_dd_multiplier, player_td_multiplier;
@@ -5051,6 +5135,12 @@ public:
   virtual double armor() const;
   virtual double resistance() const;
   virtual void   consume_resource();
+  virtual resource_type current_resource() const {
+    if ( likely( s_data && s_data -> _power && s_data -> _power -> size() == 1 ) )
+      return s_data -> _power -> at( 0 ) -> resource();
+    
+    return RESOURCE_NONE;
+  }
   virtual void   execute();
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );

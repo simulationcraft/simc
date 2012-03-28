@@ -871,7 +871,7 @@ void warrior_attack_t::execute()
   warrior_t* p = player -> cast_warrior();
 
   // Battle Trance only is effective+consumed if action cost was >5
-  if ( base_cost > 5 && p -> buffs_battle_trance -> up() )
+  if ( base_costs[ current_resource() ] > 5 && p -> buffs_battle_trance -> up() )
     p -> buffs_battle_trance -> expire();
 
   if ( proc ) return;
@@ -1209,10 +1209,11 @@ struct bloodthirst_heal_t : public heal_t
     // Add Field Dressing Talent, warrior heal etc.
 
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
-    resource = RESOURCE_NONE;
     background= true;
     init();
-  }
+  }  
+  
+  virtual resource_type current_resource() const { return RESOURCE_NONE; }
 };
 
 struct bloodthirst_buff_callback_t : public action_callback_t
@@ -1548,24 +1549,24 @@ struct execute_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     // Consumes base_cost + 20
-    resource_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 20.0 + cost() );
+    resource_consumed = std::min( p -> resource_current[ current_resource() ], 20.0 + cost() );
 
     if ( sim -> debug )
       log_t::output( sim, "%s consumes %.1f %s for %s", p -> name(),
-                     resource_consumed, util_t::resource_type_string( resource ), name() );
+                     resource_consumed, util_t::resource_type_string( current_resource() ), name() );
 
-    player -> resource_loss( resource, resource_consumed );
+    player -> resource_loss( current_resource(), resource_consumed );
 
-    stats -> consume_resource( static_cast<resource_type>( resource ), resource_consumed );
+    stats -> consume_resource( current_resource(), resource_consumed );
 
     if ( p -> talents.sudden_death -> ok() )
     {
-      double current_rage = p -> resource_current[ RESOURCE_RAGE ];
+      double current_rage = p -> resource_current[ current_resource() ];
       double sudden_death_rage = p -> talents.sudden_death -> effect1().base_value();
 
       if ( current_rage < sudden_death_rage )
       {
-        p -> resource_gain( RESOURCE_RAGE, sudden_death_rage - current_rage, p -> gains_sudden_death ); // FIXME: Do we keep up to 10 or always at least 10?
+        p -> resource_gain( current_resource(), sudden_death_rage - current_rage, p -> gains_sudden_death ); // FIXME: Do we keep up to 10 or always at least 10?
       }
     }
   }
@@ -1840,7 +1841,7 @@ struct pummel_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    base_cost *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
+    base_costs[ current_resource() ] *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
@@ -2122,7 +2123,7 @@ struct shield_bash_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    base_cost *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
+    base_costs[ current_resource() ] *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
 
     may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
@@ -2243,7 +2244,6 @@ struct slam_attack_t : public warrior_attack_t
     warrior_attack_t( name, 50782, p ),
     additive_multipliers( 0 )
   {
-    base_cost = 0;
     may_miss = may_dodge = may_parry = false;
     background = true;
 
@@ -2355,7 +2355,7 @@ struct sunder_armor_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    base_cost *= 1.0 + p -> glyphs.furious_sundering -> effect1().percent();
+    base_costs[ current_resource() ] *= 1.0 + p -> glyphs.furious_sundering -> effect1().percent();
 
     // TODO: Glyph of Sunder armor applies affect to nearby target
   }
@@ -2387,7 +2387,7 @@ struct thunder_clap_t : public warrior_attack_t
     direct_power_mod  = extra_coeff();
     base_multiplier  *= 1.0 + p -> talents.thunderstruck -> effect1().percent();
     base_crit        += p -> talents.incite -> effect1().percent();
-    base_cost        += p -> glyphs.resonating_power -> effect1().resource( RESOURCE_RAGE );
+    base_costs[ current_resource() ]        += p -> glyphs.resonating_power -> effect1().resource( RESOURCE_RAGE );
 
     // TC can trigger procs from either weapon, even though it doesn't need a weapon
     proc_ignores_slot = true;
@@ -2851,11 +2851,11 @@ struct stance_t : public warrior_spell_t
     }
 
     harmful = false;
-    base_cost   = 0;
     trigger_gcd = timespan_t::zero;
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
-    resource    = RESOURCE_RAGE;
   }
+  
+  virtual resource_type current_resource() const { return RESOURCE_RAGE; }
 
   virtual void execute()
   {
@@ -2885,7 +2885,7 @@ struct stance_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    double c = p -> resource_current [ RESOURCE_RAGE ];
+    double c = p -> resource_current [ current_resource() ];
 
     c -= 25.0; // Stance Mastery
 
@@ -2921,7 +2921,7 @@ struct sweeping_strikes_t : public warrior_spell_t
 
     harmful = false;
 
-    base_cost *= 1.0 + p -> glyphs.sweeping_strikes -> effect1().percent();
+    base_costs[ current_resource() ] *= 1.0 + p -> glyphs.sweeping_strikes -> effect1().percent();
 
     stancemask = STANCE_BERSERKER | STANCE_BATTLE;
   }

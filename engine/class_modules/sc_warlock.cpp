@@ -566,7 +566,7 @@ struct shadow_bolt_t : public warlock_spell_t
     parse_options( options, options_str );
 
     base_execute_time += p -> talent_bane -> effect1().time_value();
-    base_cost  *= 1.0 + p -> glyphs.shadow_bolt -> base_value();
+    base_costs[ current_resource() ]  *= 1.0 + p -> glyphs.shadow_bolt -> base_value();
     base_multiplier *= 1.0 + ( p -> talent_shadow_and_flame -> effect2().percent() );
 
     if ( ! dtr && player -> has_dtr )
@@ -1489,7 +1489,7 @@ struct soul_fire_t : public warlock_spell_t
       p -> buffs_soulburn -> expire();
       if ( p -> set_bonus.tier13_4pc_caster() )
       {
-        p -> resource_gain( RESOURCE_SOUL_SHARDS, 1, p -> gains_tier13_4pc );
+        p -> resource_gain( RESOURCE_SOUL_SHARD, 1, p -> gains_tier13_4pc );
       }
     }
   }
@@ -1696,7 +1696,7 @@ private:
     warlock_t* p = player -> cast_warlock();
     harmful = false;
     base_execute_time += p -> talent_master_summoner -> effect1().time_value();
-    base_cost         *= 1.0 + p -> talent_master_summoner -> effect2().percent();
+    base_costs[ current_resource() ]         *= 1.0 + p -> talent_master_summoner -> effect2().percent();
 
     pet = p -> find_pet( pet_name );
     if ( ! pet )
@@ -2887,7 +2887,7 @@ void warlock_t::init_base()
 
   mana_per_intellect = 15;
 
-  resource_base[ RESOURCE_SOUL_SHARDS ] = 3;
+  resource_base[ RESOURCE_SOUL_SHARD ] = 3;
 
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
@@ -3295,7 +3295,7 @@ action_expr_t* warlock_t::create_expression( action_t* a, const std::string& nam
     struct shards_expr_t : public action_expr_t
     {
       shards_expr_t( action_t* a ) : action_expr_t( a, "shards", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> cast_warlock() -> resource_current[ RESOURCE_SOUL_SHARDS ]; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> cast_warlock() -> resource_current[ RESOURCE_SOUL_SHARD ]; return TOK_NUM; }
     };
     return new shards_expr_t( a );
   }

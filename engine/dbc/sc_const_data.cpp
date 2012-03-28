@@ -128,6 +128,7 @@ public:
 dbc_index_t<spell_data_t> idx_sd;
 dbc_index_t<spelleffect_data_t> idx_sed;
 dbc_index_t<talent_data_t> idx_td;
+dbc_index_t<spellpower_data_t> idx_pd;
 
 } // ANONYMOUS namespace ====================================================
 
@@ -142,15 +143,18 @@ void dbc_t::init()
   idx_sd.init();
   idx_sed.init();
   idx_td.init();
+  idx_pd.init();
 
   spell_data_t::link( false );
   spelleffect_data_t::link( false );
+  spellpower_data_t::link( false );
   talent_data_t::link( false );
 
   if ( SC_USE_PTR )
   {
     spell_data_t::link( true );
     spelleffect_data_t::link( true );
+    spellpower_data_t::link( true );
     talent_data_t::link( true );
   }
 }
@@ -181,7 +185,7 @@ double dbc_t::melee_crit_base( player_type t ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE );
+  assert( class_id < MAX_CLASS );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_melee_crit_base[ class_id ]
              : __gt_chance_to_melee_crit_base[ class_id ];
@@ -199,7 +203,7 @@ double dbc_t::spell_crit_base( player_type t ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE );
+  assert( class_id < MAX_CLASS );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_spell_crit_base[ class_id ]
              : __gt_chance_to_spell_crit_base[ class_id ];
@@ -217,7 +221,7 @@ double dbc_t::dodge_base( player_type t ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE );
+  assert( class_id < MAX_CLASS );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_dodge_base[ class_id ]
              : __gt_chance_to_dodge_base[ class_id ];
@@ -253,7 +257,7 @@ double dbc_t::spell_scaling( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE + 1 && level > 0 && level < MAX_LEVEL );
+  assert( class_id < MAX_CLASS + 1 && level > 0 && level < MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_spell_scaling[ class_id ][ level ]
              : __gt_spell_scaling[ class_id ][ level ];
@@ -266,7 +270,7 @@ double dbc_t::melee_crit_scaling( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_melee_crit[ class_id ][ level - 1 ]
              : __gt_chance_to_melee_crit[ class_id ][ level - 1 ];
@@ -284,7 +288,7 @@ double dbc_t::spell_crit_scaling( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_spell_crit[ class_id ][ level - 1 ]
              : __gt_chance_to_spell_crit[ class_id ][ level - 1 ];
@@ -302,7 +306,7 @@ double dbc_t::dodge_scaling( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_dodge_per_agi[ class_id ][ level - 1 ]
              : __gt_dodge_per_agi[ class_id ][ level - 1 ];
@@ -320,7 +324,7 @@ double dbc_t::regen_base( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_base_mp5[ class_id ][ level - 1 ]
              : __gt_base_mp5[ class_id ][ level - 1 ];
@@ -338,7 +342,7 @@ double dbc_t::regen_spirit( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_regen_mpper_spt[ class_id ][ level - 1 ]
              : __gt_regen_mpper_spt[ class_id ][ level - 1 ];
@@ -356,7 +360,7 @@ stat_data_t& dbc_t::attribute_base( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < CLASS_SIZE && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_class_stats_by_level[ class_id ][ level - 1 ]
              : __gt_class_stats_by_level[ class_id ][ level - 1 ];
@@ -396,7 +400,7 @@ double dbc_t::oct_combat_rating( unsigned combat_rating_id, player_type t ) cons
 
 unsigned dbc_t::class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
 {
-  assert( class_id < CLASS_SIZE && tree_id < CLASS_ABILITY_TREE_SIZE && n < CLASS_ABILITY_SIZE );
+  assert( class_id < MAX_CLASS && tree_id < CLASS_ABILITY_TREE_SIZE && n < CLASS_ABILITY_SIZE );
 
 #if SC_USE_PTR
   return ptr ? __ptr_class_ability_data[ class_id ][ tree_id ][ n ]
@@ -408,7 +412,7 @@ unsigned dbc_t::class_ability( unsigned class_id, unsigned tree_id, unsigned n )
 
 unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) const
 {
-  assert( race_id < 24 && class_id < CLASS_SIZE && n < RACE_ABILITY_SIZE );
+  assert( race_id < 24 && class_id < MAX_CLASS && n < RACE_ABILITY_SIZE );
 
 #if SC_USE_PTR
   return ptr ? __ptr_race_ability_data[ race_id ][ class_id ][ n ]
@@ -420,7 +424,7 @@ unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) 
 
 unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
 {
-  assert( class_id < CLASS_SIZE && tree_id < MAX_TALENT_TABS && n < specialization_ability_size() );
+  assert( class_id < MAX_CLASS && tree_id < MAX_TALENT_TABS && n < specialization_ability_size() );
 
 #if SC_USE_PTR
   return ptr ? __ptr_tree_specialization_data[ class_id ][ tree_id ][ n ]
@@ -432,7 +436,7 @@ unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, uns
 
 unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, unsigned n ) const
 {
-  assert( class_id < CLASS_SIZE && n < mastery_ability_size() );
+  assert( class_id < MAX_CLASS && n < mastery_ability_size() );
 
 #if SC_USE_PTR
   return ptr ? __ptr_class_mastery_ability_data[ class_id ][ specialization ][ n ]
@@ -444,7 +448,7 @@ unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, uns
 
 unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n ) const
 {
-  assert( class_id < CLASS_SIZE && glyph_type < GLYPH_MAX && n < glyph_spell_size() );
+  assert( class_id < MAX_CLASS && glyph_type < GLYPH_MAX && n < glyph_spell_size() );
 
 #if SC_USE_PTR
   return ptr ? __ptr_glyph_abilities_data[ class_id ][ glyph_type ][ n ]
@@ -457,11 +461,11 @@ unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_type, unsigned n 
 unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) const
 {
 #if SC_USE_PTR
-  assert( class_id < CLASS_SIZE && tier < ( unsigned ) ( ptr ? PTR_TIER_BONUSES_MAX_TIER : TIER_BONUSES_MAX_TIER ) && n < set_bonus_spell_size() );
+  assert( class_id < MAX_CLASS && tier < ( unsigned ) ( ptr ? PTR_TIER_BONUSES_MAX_TIER : TIER_BONUSES_MAX_TIER ) && n < set_bonus_spell_size() );
   return ptr ? __ptr_tier_bonuses_data[ class_id ][ tier ][ n ]
              : __tier_bonuses_data[ class_id ][ tier ][ n ];
 #else
-  assert( class_id < CLASS_SIZE && tier < TIER_BONUSES_MAX_TIER && n < set_bonus_spell_size() );
+  assert( class_id < MAX_CLASS && tier < TIER_BONUSES_MAX_TIER && n < set_bonus_spell_size() );
   return __tier_bonuses_data[ class_id ][ tier ][ n ];
 #endif
 }
@@ -780,6 +784,17 @@ spelleffect_data_t* spelleffect_data_t::list( bool ptr )
 #endif
 }
 
+spellpower_data_t* spellpower_data_t::list( bool ptr )
+{
+  ( void )ptr;
+
+#if SC_USE_PTR
+  return ptr ? __ptr_spellpower_data : __spellpower_data;
+#else
+  return __spellpower_data;
+#endif
+}
+
 talent_data_t* talent_data_t::list( bool ptr )
 {
   ( void )ptr;
@@ -858,6 +873,22 @@ void spelleffect_data_t::link( bool ptr )
       ed._spell -> _effects -> resize( ed._index + 1, spelleffect_data_t::nil() );
 
     ed._spell -> _effects -> at( ed._index ) = &ed;
+  }
+}
+
+void spellpower_data_t::link( bool ptr )
+{
+  spellpower_data_t* spellpower_data = spellpower_data_t::list( ptr );
+
+  for ( int i = 0; spellpower_data[ i ]._id; i++ )
+  {
+    spellpower_data_t& pd = spellpower_data[ i ];
+    spell_data_t*      sd = spell_data_t::find( pd._spell_id, ptr );
+    
+    if ( sd -> _power == 0 )
+      sd -> _power = new std::vector< const spellpower_data_t* >();
+    
+    sd -> _power -> push_back( &pd );
   }
 }
 
