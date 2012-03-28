@@ -3578,75 +3578,73 @@ action_t* player_t::execute_action()
 
 void player_t::regen( const timespan_t periodicity )
 {
-  int resource_type = primary_resource();
+  const resource_type r = static_cast<resource_type>( primary_resource() );
+  double base = 0;
+  gain_t* gain = NULL;
 
-  if ( resource_type == RESOURCE_ENERGY )
+  switch( r )
   {
-    double energy_regen = periodicity.total_seconds() * energy_regen_per_second();
+  case RESOURCE_ENERGY:
+    base = energy_regen_per_second();
+    gain = gains.energy_regen;
+    break;
 
-    resource_gain( RESOURCE_ENERGY, energy_regen, gains.energy_regen );
-  }
+  case RESOURCE_CHI:
+    base = chi_regen_per_second();
+    gain = gains.chi_regen;
+    break;
 
-  else if ( resource_type == RESOURCE_CHI )
-  {
-    double chi_regen = periodicity.total_seconds() * chi_regen_per_second();
+  case RESOURCE_FOCUS:
+    base = focus_regen_per_second();
+    gain = gains.focus_regen;
+    break;
 
-    resource_gain( RESOURCE_CHI, chi_regen, gains.chi_regen );
-  }
+  case RESOURCE_MANA:
+    base = mana_regen_while_casting ? sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base : 0.0;
+    gain = gains.spirit_intellect_regen;
 
-  else if ( resource_type == RESOURCE_FOCUS )
-  {
-    double focus_regen = periodicity.total_seconds() * focus_regen_per_second();
-
-    resource_gain( RESOURCE_FOCUS, focus_regen, gains.focus_regen );
-  }
-
-  else if ( resource_type == RESOURCE_MANA )
-  {
-    if ( mana_regen_while_casting > 0 )
     {
-      double spirit_regen = periodicity.total_seconds() * sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base;
-
-      spirit_regen *= mana_regen_while_casting;
-
-      resource_gain( RESOURCE_MANA, spirit_regen, gains.spirit_intellect_regen );
-    }
-
     double cmp5 = composite_mp5();
     if ( cmp5 > 0 )
     {
-      double mp5_regen = periodicity.total_seconds() * cmp5 / 5.0;
+      const double mp5_regen = periodicity.total_seconds() * cmp5 / 5.0;
 
       resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
     }
 
     if ( buffs.replenishment -> up() )
     {
-      double replenishment_regen = periodicity.total_seconds() * resource_max[ RESOURCE_MANA ] * 0.0010;
+      const double replenishment_regen = periodicity.total_seconds() * resource_max[ RESOURCE_MANA ] * 0.0010;
 
       resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
     }
 
     if ( buffs.essence_of_the_red -> up() )
     {
-      double essence_regen = periodicity.total_seconds() * resource_max[ RESOURCE_MANA ] * 0.05;
+      const double essence_regen = periodicity.total_seconds() * resource_max[ RESOURCE_MANA ] * 0.05;
 
       resource_gain( RESOURCE_MANA, essence_regen, gains.essence_of_the_red );
     }
 
     double bow = buffs.blessing_of_might_regen -> current_value;
-    double wisdom_regen = periodicity.total_seconds() * bow / 5.0;
 
-    resource_gain( RESOURCE_MANA, wisdom_regen, gains.blessing_of_might );
+    resource_gain( RESOURCE_MANA, periodicity.total_seconds() * bow / 5.0, gains.blessing_of_might );
+    }
+    break;
+
+  default:
+    break;
   }
 
-  int index = ( int ) ( sim -> current_time.total_seconds() );
+  if ( gain && base )
+    resource_gain( r, base * periodicity.total_seconds(), gain );
+
+  const unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    if ( resource_max[ i ] == 0 ) continue;
-
-    timeline_resource[ i ][ index ] += resource_current[ i ] * periodicity.total_seconds();
+    if ( resource_max[ i ] != 0 )
+      timeline_resource[ i ][ index ] += resource_current[ i ] * periodicity.total_seconds();
   }
 }
 
