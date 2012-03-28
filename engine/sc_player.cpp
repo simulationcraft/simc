@@ -437,7 +437,7 @@ player_t::player_t( sim_t*             s,
   spell_power_per_intellect( 0 ), initial_spell_power_per_intellect( 0 ),
   spell_crit_per_intellect( 0 ),  initial_spell_crit_per_intellect( 0 ),
   mp5_per_intellect( 0 ),
-  mana_regen_base( 0 ), mana_regen_while_casting( 0 ),
+  mana_regen_base( 0 ),
   base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
   last_cast( timespan_t::zero ),
   // Attack Mechanics
@@ -1777,7 +1777,6 @@ void player_t::init_gains()
   gains.replenishment          = get_gain( "replenishment" );
   gains.restore_mana           = get_gain( "restore_mana" );
   gains.spellsurge             = get_gain( "spellsurge" );
-  gains.spirit_intellect_regen = get_gain( "spirit_intellect_regen" );
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
   gains.vampiric_touch         = get_gain( "vampiric_touch" );
   gains.water_elemental        = get_gain( "water_elemental" );
@@ -3600,18 +3599,10 @@ void player_t::regen( const timespan_t periodicity )
     break;
 
   case RESOURCE_MANA:
-    base = mana_regen_while_casting ? sqrt( floor( intellect() ) ) * floor( spirit() ) * mana_regen_base : 0.0;
-    gain = gains.spirit_intellect_regen;
+    base = composite_mp5() / 5.0;
+    gain = gains.mp5_regen;
 
     {
-    double cmp5 = composite_mp5();
-    if ( cmp5 > 0 )
-    {
-      const double mp5_regen = periodicity.total_seconds() * cmp5 / 5.0;
-
-      resource_gain( RESOURCE_MANA, mp5_regen, gains.mp5_regen );
-    }
-
     if ( buffs.replenishment -> up() )
     {
       const double replenishment_regen = periodicity.total_seconds() * resource_max[ RESOURCE_MANA ] * 0.0010;

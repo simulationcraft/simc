@@ -4183,7 +4183,6 @@ struct player_t : public noncopyable
   double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
   double mp5_per_intellect;
   double mana_regen_base;
-  double mana_regen_while_casting;
   double base_energy_regen_per_second;
   double base_focus_regen_per_second;
   double base_chi_regen_per_second;
@@ -4498,7 +4497,6 @@ struct player_t : public noncopyable
     gain_t* replenishment;
     gain_t* restore_mana;
     gain_t* spellsurge;
-    gain_t* spirit_intellect_regen;
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;

@@ -4336,8 +4336,6 @@ double shaman_t::composite_player_multiplier( const school_type school, action_t
 
 void shaman_t::regen( timespan_t periodicity )
 {
-  mana_regen_while_casting = ( primary_tree() == TREE_RESTORATION ) ? 0.50 : 0.0;
-
   player_t::regen( periodicity );
 
   if ( buff.water_shield -> up() )

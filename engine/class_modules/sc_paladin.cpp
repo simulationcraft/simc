@@ -2842,7 +2842,6 @@ void paladin_t::init_base()
   case TREE_HOLY:
     base_attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgements
     base_spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgements
-    mana_regen_while_casting = passives.meditation -> effect1().percent();
     break;
 
   case TREE_PROTECTION:
@@ -3504,13 +3503,10 @@ double paladin_t::matching_gear_multiplier( const attribute_type attr ) const
 
 void paladin_t::regen( timespan_t periodicity )
 {
-  double orig_mrwc = mana_regen_while_casting;
-  if ( buffs_judgements_of_the_pure -> up() )
-    mana_regen_while_casting *= 1.0 + buffs_judgements_of_the_pure -> effect2().percent();
+
 
   player_t::regen( periodicity );
 
-  mana_regen_while_casting = orig_mrwc;
 
   if ( buffs_divine_plea -> up() )
   {

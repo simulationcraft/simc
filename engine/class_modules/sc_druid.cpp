@@ -4664,9 +4664,6 @@ void druid_t::init_base()
   resource_base[ RESOURCE_MANA ] *= 1.0 + talents.furor -> effect2().percent();
   mana_per_intellect             *= 1.0 + talents.furor -> effect2().percent();
 
-  if ( primary_tree() == TREE_RESTORATION )
-    mana_regen_while_casting = spells.meditation -> effect1().percent();
-
   base_gcd = timespan_t::from_seconds( 1.5 );
 }
 

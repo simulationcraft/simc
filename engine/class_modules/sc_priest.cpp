@@ -3986,8 +3986,6 @@ void priest_t::init_values()
 
   constants.max_shadowy_apparitions         = spec.shadowy_apparition_num -> effect1().base_value();
 
-  mana_regen_while_casting = constants.meditation_value;
-
   if ( set_bonus.pvp_2pc_caster() )
     attribute_initial[ ATTR_INTELLECT ] += 70;
 
