@@ -247,6 +247,11 @@ elif options.type == 'scale':
         sys.exit(1)
     print g.generate()
 
+    g = dbc.generator.LevelScalingDataGenerator(options, [ 'gtOCTHpPerStamina' ] )
+    if not g.initialize():
+        sys.exit(1)
+    print g.generate()
+
     g = dbc.generator.SpellScalingDataGenerator(options)
     if not g.initialize():
         sys.exit(1)

@@ -339,7 +339,10 @@ _DBC_FIELDS = {
     ],
     'gtOCTBaseHPByClass.dbc' : [
           'id', ( 'gt_value', '%7.0f' )
-    ]
+    ],
+    'gtOCTHpPerStamina.dbc' : [
+          'id', ( 'gt_value', '%.10f' )
+    ],
 }
 
 class DBCRecord(object):
