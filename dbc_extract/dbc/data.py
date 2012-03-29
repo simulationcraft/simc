@@ -334,6 +334,12 @@ _DBC_FIELDS = {
     'gtSpellScaling.dbc' : [
           'id', ( 'gt_value', '%.10f' )
     ],
+    'gtOCTBaseMPByClass.dbc' : [
+          'id', ( 'gt_value', '%7.0f' )
+    ],
+    'gtOCTBaseHPByClass.dbc' : [
+          'id', ( 'gt_value', '%7.0f' )
+    ]
 }
 
 class DBCRecord(object):

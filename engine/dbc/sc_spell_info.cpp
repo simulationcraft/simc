@@ -434,8 +434,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
         
       if ( pd -> type() == POWER_MANA )
       {
-        double base_resource = rating_t::get_attribute_base( sim, sim -> dbc, level, pt, RACE_NONE, BASE_STAT_MANA );
-        s << " (" << floor( base_resource * pd -> cost() ) << " @" << level << ")";
+        s << " (" << floor( sim -> dbc.resource_base( pt, level ) * pd -> cost() ) << " @" << level << ")";
       }
       
       if ( pd -> aura_id() > 0 && sim -> dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )

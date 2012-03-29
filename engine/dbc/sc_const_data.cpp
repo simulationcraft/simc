@@ -338,6 +338,32 @@ double dbc_t::regen_base( pet_type_t t, unsigned level ) const
   return regen_base( util_t::pet_class_type( t ), level );
 }
 
+double dbc_t::health_base( player_type t, unsigned level ) const
+{
+  uint32_t class_id = util_t::class_id( t );
+
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_octbase_hpby_class[ class_id ][ level - 1 ]
+             : __gt_octbase_hpby_class[ class_id ][ level - 1 ];
+#else
+  return __gt_octbase_hpby_class[ class_id ][ level - 1 ];
+#endif
+}
+
+double dbc_t::resource_base( player_type t, unsigned level ) const
+{
+  uint32_t class_id = util_t::class_id( t );
+
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_octbase_mpby_class[ class_id ][ level - 1 ]
+             : __gt_octbase_mpby_class[ class_id ][ level - 1 ];
+#else
+  return __gt_octbase_mpby_class[ class_id ][ level - 1 ];
+#endif
+}
+
 double dbc_t::regen_spirit( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );

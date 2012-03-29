@@ -1884,11 +1884,14 @@ struct spellpower_data_t
     {
       case POWER_MANA:
         divisor = 100.0;
+        break;
       case POWER_RAGE:
       case POWER_RUNIC_POWER:
         divisor = 10.0;
+        break;
       default:
         divisor = 1.0;
+        break;
     }
 
     return cost / divisor;
@@ -2273,6 +2276,8 @@ public:
   double dodge_base( pet_type_t t ) const;
   double regen_base( player_type t, unsigned level ) const;
   double regen_base( pet_type_t t, unsigned level ) const;
+  double resource_base( player_type t, unsigned level ) const;
+  double health_base( player_type t, unsigned level ) const;
   stat_data_t& attribute_base( player_type t, unsigned level ) const;
   stat_data_t& attribute_base( pet_type_t t, unsigned level ) const;
   stat_data_t& race_base( race_type r ) const;
@@ -2285,7 +2290,6 @@ public:
   double spell_crit_scaling( pet_type_t t, unsigned level ) const;
   double dodge_scaling( player_type t, unsigned level ) const;
   double dodge_scaling( pet_type_t t, unsigned level ) const;
-
   double regen_spirit( player_type t, unsigned level ) const;
   double regen_spirit( pet_type_t t, unsigned level ) const;
 
