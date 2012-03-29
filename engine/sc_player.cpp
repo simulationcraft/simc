@@ -6123,6 +6123,16 @@ action_expr_t* player_t::create_expression( action_t* a,
        };
        return new resource_nonproc_expr_t( a, name_str, resource_type );
      }
+     else if ( splits[ 1 ] == "net_regen" )
+     {
+       struct resource_net_regen_expr_t : public action_expr_t
+       {
+         int resource_type;
+         resource_net_regen_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
+         virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds() ? ( action -> player -> resource_gained[ resource_type ] - action -> player -> resource_lost[ resource_type ] ) / action -> sim -> current_time.total_seconds() : 0.0; return TOK_NUM; }
+       };
+       return new resource_net_regen_expr_t( a, name_str, resource_type );
+     }
      else if ( splits[ 1 ] == "regen" )
      {
        if ( resource_type == RESOURCE_ENERGY )
