@@ -2131,7 +2131,7 @@ double player_t::composite_attack_power() const
 
 double player_t::composite_attack_crit( weapon_t* weapon ) const
 {
-  double ac = attack_crit + attack_crit_per_agility * agility();
+  double ac = attack_crit + ( agility() / attack_crit_per_agility / 100.0 );
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
@@ -2505,7 +2505,7 @@ double player_t::composite_spell_power_multiplier() const
 
 double player_t::composite_spell_crit() const
 {
-  double sc = spell_crit + spell_crit_per_intellect * intellect();
+  double sc = spell_crit + ( intellect() / spell_crit_per_intellect / 100.0 );
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
