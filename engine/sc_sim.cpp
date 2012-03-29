@@ -654,17 +654,39 @@ sim_t::sim_t( sim_t* p, int index ) :
   threads( 0 ), thread_index( index ),
   spell_query( 0 )
 {
+#if SC_DEATH_KNIGHT == 1 
   register_death_knight_targetdata( this );
+#endif 
+#if SC_DRUID == 1
   register_druid_targetdata( this );
+#endif
+#if SC_HUNTER == 1
   register_hunter_targetdata( this );
+#endif
+#if SC_MAGE == 1
   register_mage_targetdata( this );
+#endif
+#if SC_MONK == 1
   register_monk_targetdata( this );
+#endif
+#if SC_PALADIN == 1
   register_paladin_targetdata( this );
+#endif
+#if SC_PRIEST == 1
   register_priest_targetdata( this );
+#endif
+#if SC_ROGUE == 1
   register_rogue_targetdata( this );
+#endif
+#if SC_SHAMAN == 1 
   register_shaman_targetdata( this );
+#endif
+#if SC_WARLOCK == 1
   register_warlock_targetdata( this );
+#endif
+#if SC_WARRIOR == 1
   register_warrior_targetdata( this );
+#endif
 
   path_str += "|profiles";
   path_str += "|profiles_heal";
