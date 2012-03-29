@@ -18,6 +18,10 @@ class DataGenerator(object):
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
     _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
 
+    def debug(self, msg):
+        if self._options.debug == True:
+            sys.stderr.write("%s: %s\n" % ( self.__class__.__name__, msg ))
+    
     def __init__(self, options):
         self._options = options
 
@@ -1078,7 +1082,6 @@ class SpellDataGenerator(DataGenerator):
         "^Teleport:",
         "^Weapon Skills",
         "^Armor Skills",
-        "^Mastery",
         "^Tamed Pet Passive",
     ]
     
@@ -1234,17 +1237,20 @@ class SpellDataGenerator(DataGenerator):
     def spell_state(self, spell, enabled_effects = None):
         # Check for blacklisted spells
         if spell.id in SpellDataGenerator._spell_blacklist:
+            self.debug("Spell id %u (%s) is blacklisted" % ( spell.id, spell.name ) )
             return False
 
         # Check for spell name blacklist
         for p in SpellDataGenerator._spell_name_blacklist:
             if spell.name and re.search(p, spell.name):
+                self.debug("Spell id %u (%s) matches name blacklist pattern %s" % ( spell.id, spell.name, p ) )
                 return False
 
         # Check for blacklisted spell category mechanism
         if spell.id_categories > 0:
             c = self._spellcategories_db[spell.id_categories]
             if c.mechanic in SpellDataGenerator._mechanic_blacklist:
+                self.debug("Spell id %u (%s) matches mechanic blacklist %u" % ( spell.id, spell.name, c.mechanic ))
                 return False
 
         # Make sure we can filter based on effects even if there's no map of relevant effects
@@ -1270,6 +1276,7 @@ class SpellDataGenerator(DataGenerator):
         # If we do not find a true value in enabled effects, this spell is completely
         # blacklisted, as it has no effects enabled that interest us
         if True not in enabled_effects:
+            self.debug("Spell id %u (%s) has no enabled effects" % ( spell.id, spell.name ) )
             return False
 
         return True

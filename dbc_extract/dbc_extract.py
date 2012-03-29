@@ -39,6 +39,7 @@ parser.add_option("--max-ilvl", dest = "max_ilevel",
 parser.add_option("--itemcache", dest = "item_cache_dir",
                   help    = "World of Warcraft Item cache directory.", 
                   default = r'', action = "store", type = "string" )
+parser.add_option("--debug", dest = "debug", default = False, action = "store_true")
 (options, args) = parser.parse_args()
 
 if options.build == 0 and options.type != 'header' and options.type != 'patch':
