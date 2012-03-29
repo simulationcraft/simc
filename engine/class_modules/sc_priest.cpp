@@ -90,7 +90,24 @@ struct priest_t : public player_t
   // Talents
   struct talents_list_t
   {
-
+    talent_t* void_tendrils;
+    talent_t* psyfiend;
+    talent_t* dominate_mind;
+    talent_t* body_and_soul;
+    talent_t* path_of_the_devout;
+    talent_t* phantasm;
+    talent_t* from_darkness_comes_light;
+    // "coming soon"
+    talent_t* archangel;
+    talent_t* desperate_prayer;
+    talent_t* void_shift;
+    talent_t* angelic_bulwark;
+    talent_t* twist_of_fate;
+    talent_t* power_infusion;
+    talent_t* divine_insight;
+    talent_t* vow_of_unity;
+    talent_t* divine_star;
+    // "coming soon"
   };
   talents_list_t talents;
 
@@ -3506,6 +3523,24 @@ void priest_t::init_rng()
 
 void priest_t::init_talents()
 {
+  talents.void_tendrils               = find_talent( "Void Tendrils" );
+  talents.psyfiend                    = find_talent( "Psyfiend" );
+  talents.dominate_mind               = find_talent( "Dominate Mind" );
+  talents.body_and_soul               = find_talent( "Body and Soul" );
+  talents.path_of_the_devout          = find_talent( "Path of the Devout" );
+  talents.phantasm                    = find_talent( "Phantasm" );
+  talents.from_darkness_comes_light   = find_talent( "From Darkness, Comes Light" );
+  // "coming soon"
+  talents.archangel                   = find_talent( "Archangel" );
+  talents.desperate_prayer            = find_talent( "Desperate Prayer" );
+  talents.void_shift                  = find_talent( "Void Shift" );
+  talents.angelic_bulwark             = find_talent( "Angelic Bulwark" );
+  talents.twist_of_fate               = find_talent( "Twist of Fate" );
+  talents.power_infusion              = find_talent( "Power Infusion" );
+  talents.divine_insight              = find_talent( "Divine Insight" );
+  talents.vow_of_unity                = find_talent( "Vow of Unity" );
+  talents.divine_star                 = find_talent( "Divine Star" );
+  // "coming soon"
 
   player_t::init_talents();
 }
