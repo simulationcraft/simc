@@ -6112,16 +6112,25 @@ action_expr_t* player_t::create_expression( action_t* a,
        };
        return new resource_max_expr_t( a, name_str, resource_type );
      }
-
      else if ( splits[ 1 ] == "max_nonproc" )
      {
-       struct resource_nonproc_expr_t : public action_expr_t
+       struct resource_max_nonproc_expr_t : public action_expr_t
        {
          int resource_type;
-         resource_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
+         resource_max_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
          virtual int evaluate() { result_num = action -> player -> resource_buffed[ resource_type ]; return TOK_NUM; }
        };
-       return new resource_nonproc_expr_t( a, name_str, resource_type );
+       return new resource_max_nonproc_expr_t( a, name_str, resource_type );
+     }
+     else if ( splits[ 1 ] == "pct_nonproc" )
+     {
+       struct resource_pct_nonproc_expr_t : public action_expr_t
+       {
+         int resource_type;
+         resource_pct_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
+         virtual int evaluate() { result_num = action -> player -> resource_current[ resource_type ] / action -> player -> resource_buffed[ resource_type ] * 100.0; return TOK_NUM; }
+       };
+       return new resource_pct_nonproc_expr_t( a, name_str, resource_type );
      }
      else if ( splits[ 1 ] == "net_regen" )
      {
