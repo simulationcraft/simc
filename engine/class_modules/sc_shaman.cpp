@@ -23,6 +23,8 @@
 // Shaman
 // ==========================================================================
 
+#if SC_SHAMAN == 1
+
 enum totem_type { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 
 enum imbue_type_t { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
@@ -51,8 +53,6 @@ void register_shaman_targetdata( sim_t* sim )
   REGISTER_DEBUFF( stormstrike );
   REGISTER_DEBUFF( unleashed_fury_ft );
 }
-
-#if SC_SHAMAN == 1
 
 struct shaman_t : public player_t
 {
@@ -4465,6 +4465,8 @@ void player_t::shaman_combat_begin( sim_t* sim )
   if ( sim -> overrides.grace_of_air  ) sim -> auras.grace_of_air  -> override( 1, 5.0  );
 }
 
+#if SC_SHAMAN == 1
+
 shaman_targetdata_t::shaman_targetdata_t( player_t* source, player_t* target )
   : targetdata_t( source, target )
 {
@@ -4473,3 +4475,5 @@ shaman_targetdata_t::shaman_targetdata_t( player_t* source, player_t* target )
   debuffs_stormstrike    = add_aura( new buff_t( this, p -> dbc.specialization_ability_id( p -> type, "Stormstrike" ), "stormstrike" ) );
   debuffs_unleashed_fury_ft = add_aura( new buff_t( this, 118470, "unleashed_fury_ft" ) );
 }
+
+#endif

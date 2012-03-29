@@ -9,6 +9,8 @@
 // Hunter
 // ==========================================================================
 
+#if SC_HUNTER == 1
+
 struct hunter_pet_t;
 
 enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
@@ -30,8 +32,6 @@ void register_hunter_targetdata( sim_t* sim )
 
   REGISTER_DOT( serpent_sting );
 }
-
-#if SC_HUNTER == 1
 
 struct hunter_t : public player_t
 {

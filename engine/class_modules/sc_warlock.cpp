@@ -21,6 +21,7 @@
 // Warlock
 // ==========================================================================
 
+#if SC_WARLOCK == 1
 
 int warlock_targetdata_t::affliction_effects()
 {
@@ -79,8 +80,6 @@ warlock_targetdata_t::warlock_targetdata_t( player_t* source, player_t* target )
   debuffs_haunted               = add_aura( new buff_t( this, p -> talent_haunt -> spell_id(), "haunted", p -> talent_haunt -> rank() ) );
   debuffs_shadow_embrace        = add_aura( new buff_t( this, p -> talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", p -> talent_shadow_embrace -> rank() ) );
 }
-
-#if SC_WARLOCK == 1
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type r ) :
   player_t( sim, WARLOCK, name, r == RACE_NONE ? RACE_UNDEAD : r )

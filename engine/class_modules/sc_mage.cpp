@@ -9,6 +9,8 @@
 // Mage
 // ==========================================================================
 
+#if SC_MAGE == 1
+
 enum rotation_t { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
 struct mage_targetdata_t : public targetdata_t
@@ -34,8 +36,6 @@ void register_mage_targetdata( sim_t* sim )
   REGISTER_DOT( living_bomb );
   REGISTER_DOT( pyroblast );
 }
-
-#if SC_MAGE == 1
 
 struct mage_t : public player_t
 {

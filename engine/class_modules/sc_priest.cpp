@@ -5,6 +5,8 @@
 
 #include <simulationcraft.hpp>
 
+#if SC_PRIEST == 1
+
 namespace {
 struct remove_dots_event_t;
 }
@@ -46,8 +48,6 @@ void register_priest_targetdata( sim_t* sim )
   REGISTER_BUFF( power_word_shield );
   REGISTER_BUFF( divine_aegis );
 }
-
-#if SC_PRIEST == 1
 
 // ==========================================================================
 // Priest

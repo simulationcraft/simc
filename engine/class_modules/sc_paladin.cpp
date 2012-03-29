@@ -9,6 +9,8 @@
 // Paladin
 // ==========================================================================
 
+#if SC_PALADIN == 1
+
 enum seal_type_t
 {
   SEAL_NONE=0,
@@ -47,8 +49,6 @@ void register_paladin_targetdata( sim_t* sim )
 
   REGISTER_DEBUFF( censure );
 }
-
-#if SC_PALADIN == 1
 
 struct paladin_t : public player_t
 {

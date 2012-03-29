@@ -9,6 +9,8 @@
 // Druid
 // ==========================================================================
 
+#if SC_DRUID == 1
+
 struct druid_targetdata_t : public targetdata_t
 {
   dot_t* dots_insect_swarm;
@@ -71,8 +73,6 @@ void register_druid_targetdata( sim_t* sim )
   REGISTER_BUFF( combo_points );
   REGISTER_BUFF( lifebloom );
 }
-
-#if SC_DRUID == 1
 
 struct druid_t : public player_t
 {

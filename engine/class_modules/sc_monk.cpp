@@ -9,6 +9,8 @@
 // Monk
 // ==========================================================================
 
+#if SC_MONK == 1
+
 enum monk_stance { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
 struct monk_targetdata_t : public targetdata_t
@@ -24,8 +26,6 @@ void register_monk_targetdata( sim_t* /* sim */ )
   /* player_type t = MONK; */
   typedef monk_targetdata_t type;
 }
-
-#if SC_MONK == 1
 
 struct monk_t : public player_t
 {

@@ -5,6 +5,8 @@
 
 #include <simulationcraft.hpp>
 
+#if SC_DEATH_KNIGHT == 1
+
 struct death_knight_targetdata_t : public targetdata_t
 {
   dot_t* dots_blood_plague;
@@ -36,8 +38,6 @@ void register_death_knight_targetdata( sim_t* sim )
 
   REGISTER_DEBUFF( ebon_plaguebringer );
 }
-
-#if SC_DEATH_KNIGHT == 1
 
 struct dancing_rune_weapon_pet_t;
 

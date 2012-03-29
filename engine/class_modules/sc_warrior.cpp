@@ -71,6 +71,8 @@
 // Warrior
 // ==========================================================================
 
+#if SC_WARRIOR == 1
+
 enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 
 struct warrior_targetdata_t : public targetdata_t
@@ -97,8 +99,6 @@ void register_warrior_targetdata( sim_t* sim )
 
   REGISTER_DEBUFF( colossus_smash );
 }
-
-#if SC_WARRIOR == 1
 
 struct warrior_t : public player_t
 {

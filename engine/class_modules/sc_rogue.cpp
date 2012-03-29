@@ -9,6 +9,8 @@
 // Custom Combo Point Impl.
 // ==========================================================================
 
+#if SC_ROGUE == 1
+
 #define COMBO_POINTS_MAX 5
 
 static inline int clamp( int x, int low, int high )
@@ -151,8 +153,6 @@ void register_rogue_targetdata( sim_t* sim )
 
   REGISTER_DEBUFF( poison_doses );
 }
-
-#if SC_ROGUE == 1
 
 struct rogue_t : public player_t
 {
