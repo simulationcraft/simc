@@ -119,20 +119,93 @@ namespace std {using namespace tr1; }
 #define M_PI ( 3.14159265358979323846 )
 #endif
 
-namespace blocked_class_modules
-{
-static const bool death_knight  = true;
-static const bool druid         = true;
-static const bool hunter        = true;
-static const bool mage          = true;
-static const bool monk          = true;
-static const bool paladin       = true;
-static const bool priest        = false;
-static const bool rogue         = true;
-static const bool shaman        = false;
-static const bool warlock       = true;
-static const bool warrior       = true;
+// Enabled classes
+#define SC_DEATH_KNIGHT 0
+#define SC_DRUID        0
+#define SC_HUNTER       0
+#define SC_MAGE         0
+#define SC_MONK         0
+#define SC_PALADIN      0
+#define SC_PRIEST       1
+#define SC_ROGUE        0
+#define SC_SHAMAN       1
+#define SC_WARLOCK      0
+#define SC_WARRIOR      0
+
+#define BLOCKED_CLASS( sim, name_str, pt, r_type ) { \
+  ( void ) name_str; ( void ) r_type; \
+  std::string class_string = util_t::player_type_string( pt ); \
+  if ( ! class_string.empty() ) \
+    class_string[ 0 ] = std::toupper( class_string[ 0 ] ); \
+  sim -> errorf( "%s", std::string( "\n" + class_string + " module is currently not available.\n" ).c_str() ); \
+  return 0; \
 }
+
+#if SC_DEATH_KNIGHT == 1
+#define SC_CREATE_DEATH_KNIGHT( sim, name_str, r_type ) return new death_knight_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_DEATH_KNIGHT( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, DEATH_KNIGHT, r_type )
+#endif
+
+#if SC_DRUID == 1
+#define SC_CREATE_DRUID( sim, name_str, r_type ) return new druid_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_DRUID( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, DRUID, r_type )
+#endif
+
+#if SC_HUNTER == 1
+#define SC_CREATE_HUNTER( sim, name_str, r_type ) return new hunter_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_HUNTER( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, HUNTER, r_type )
+#endif
+
+#if SC_MAGE == 1
+#define SC_CREATE_MAGE( sim, name_str, r_type ) return new mage_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_MAGE( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, MAGE, r_type )
+#endif
+
+#if SC_MONK == 1
+#define SC_CREATE_MONK( sim, name_str, r_type ) return new monk_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_MONK( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, MONK, r_type )
+#endif
+
+#if SC_PALADIN == 1
+#define SC_CREATE_PALADIN( sim, name_str, r_type ) return new paladin_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_PALADIN( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, PALADIN, r_type )
+#endif
+
+#if SC_PRIEST == 1
+#define SC_CREATE_PRIEST( sim, name_str, r_type ) return new priest_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_PRIEST( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, PRIEST, r_type )
+#endif
+
+#if SC_ROGUE == 1
+#define SC_CREATE_ROGUE( sim, name_str, r_type ) return new rogue_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_ROGUE( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, ROGUE, r_type )
+#endif
+
+#if SC_SHAMAN == 1
+#define SC_CREATE_SHAMAN( sim, name_str, r_type ) return new shaman_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_SHAMAN( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, SHAMAN, r_type )
+#endif
+
+#if SC_WARLOCK == 1
+#define SC_CREATE_WARLOCK( sim, name_str, r_type ) return new warlock_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_WARLOCK( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, WARLOCK, r_type )
+#endif
+
+#if SC_WARRIOR == 1
+#define SC_CREATE_WARRIOR( sim, name_str, r_type ) return new warrior_t( sim, name_str, r_type )
+#else
+#define SC_CREATE_WARRIOR( sim, name_str, r_type ) BLOCKED_CLASS( sim, name_str, WARRIOR, r_type )
+#endif
 
 #define MAX_PLAYERS_PER_CHART 20
 
@@ -2612,8 +2685,6 @@ public:
   static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
 
   static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
-
-  static std::string blocked_class_module( const player_type& );
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form

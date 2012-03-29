@@ -35,6 +35,8 @@ void register_mage_targetdata( sim_t* sim )
   REGISTER_DOT( pyroblast );
 }
 
+#if SC_MAGE == 1
+
 struct mage_t : public player_t
 {
   // Active
@@ -4267,6 +4269,8 @@ int mage_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+#endif // SC_MAGE
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -4275,13 +4279,7 @@ int mage_t::decode_set( item_t& item )
 
 player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::mage )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  MAGE ).c_str() );
-    return NULL;
-  }
-
-  return new mage_t( sim, name, r );
+  SC_CREATE_MAGE( sim, name, r );
 }
 
 // player_t::mage_init ======================================================

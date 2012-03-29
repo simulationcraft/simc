@@ -72,6 +72,8 @@ void register_druid_targetdata( sim_t* sim )
   REGISTER_BUFF( lifebloom );
 }
 
+#if SC_DRUID == 1
+
 struct druid_t : public player_t
 {
   // Active
@@ -5519,6 +5521,7 @@ player_t::heal_info_t druid_t::assess_heal( double            amount,
   return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
 
+#endif // SC_DRUID
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
@@ -5530,13 +5533,7 @@ player_t* player_t::create_druid( sim_t*             sim,
                                   const std::string& name,
                                   race_type r )
 {
-  if ( blocked_class_modules::druid )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  DRUID ).c_str() );
-    return NULL;
-  }
-
-  return new druid_t( sim, name, r );
+  SC_CREATE_DRUID( sim, name, r );
 }
 
 // player_t::druid_init =====================================================
@@ -5549,7 +5546,9 @@ void player_t::druid_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
+#if SC_DRUID == 1
     p -> buffs.innervate              = new innervate_buff_t( p );
+#endif // SC_DRUID
     p -> buffs.mark_of_the_wild       = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
     p -> debuffs.demoralizing_roar    = new debuff_t( p, 99, "demoralizing_roar" );
     p -> debuffs.earth_and_moon       = new debuff_t( p, 60433, "earth_and_moon" );

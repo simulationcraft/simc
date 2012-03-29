@@ -52,6 +52,8 @@ void register_shaman_targetdata( sim_t* sim )
   REGISTER_DEBUFF( unleashed_fury_ft );
 }
 
+#if SC_SHAMAN == 1
+
 struct shaman_t : public player_t
 {
   // Options
@@ -4426,6 +4428,8 @@ int shaman_t::primary_role() const
   return ROLE_NONE;
 }
 
+#endif // SC_SHAMAN
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -4434,13 +4438,7 @@ int shaman_t::primary_role() const
 
 player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::shaman )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  SHAMAN ).c_str() );
-    return NULL;
-  }
-
-  return new shaman_t( sim, name, r );
+  SC_CREATE_SHAMAN( sim, name, r );
 }
 
 // player_t::shaman_init ====================================================

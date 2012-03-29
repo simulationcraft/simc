@@ -47,6 +47,8 @@ void register_priest_targetdata( sim_t* sim )
   REGISTER_BUFF( divine_aegis );
 }
 
+#if SC_PRIEST == 1
+
 // ==========================================================================
 // Priest
 // ==========================================================================
@@ -4149,6 +4151,8 @@ int priest_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+#endif // SC_PRIEST
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -4157,13 +4161,7 @@ int priest_t::decode_set( item_t& item )
 
 player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::priest )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  PRIEST ).c_str() );
-    return NULL;
-  }
-
-  return new priest_t( sim, name, r );
+  SC_CREATE_PRIEST( sim, name, r );
 }
 
 // player_t::priest_init ====================================================

@@ -5,6 +5,7 @@
 #include <simulationcraft.hpp>
 #include "sc_warlock.hpp"
 
+#if SC_WARLOCK == 1
 
 namespace pet_stats { // ====================================================
 
@@ -1256,3 +1257,4 @@ void ebon_imp_pet_t::init_base()
   main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this, "ebon_imp_melee" );
 }
 
+#endif // SC_WARLOCK

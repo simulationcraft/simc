@@ -98,6 +98,8 @@ void register_warrior_targetdata( sim_t* sim )
   REGISTER_DEBUFF( colossus_smash );
 }
 
+#if SC_WARRIOR == 1
+
 struct warrior_t : public player_t
 {
   int instant_flurry_haste;
@@ -3896,6 +3898,8 @@ int warrior_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+#endif // SC_WARRIOR
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -3904,13 +3908,7 @@ int warrior_t::decode_set( item_t& item )
 
 player_t* player_t::create_warrior( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::warrior )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  WARRIOR ).c_str() );
-    return NULL;
-  }
-
-  return new warrior_t( sim, name, r );
+  SC_CREATE_WARRIOR( sim, name, r );
 }
 
 // warrior_init =============================================================

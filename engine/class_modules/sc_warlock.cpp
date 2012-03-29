@@ -72,7 +72,15 @@ void register_warlock_targetdata( sim_t* sim )
   REGISTER_DEBUFF( shadow_embrace );
 }
 
+warlock_targetdata_t::warlock_targetdata_t( player_t* source, player_t* target )
+  : targetdata_t( source, target )
+{
+  warlock_t* p = this->source->cast_warlock();
+  debuffs_haunted               = add_aura( new buff_t( this, p -> talent_haunt -> spell_id(), "haunted", p -> talent_haunt -> rank() ) );
+  debuffs_shadow_embrace        = add_aura( new buff_t( this, p -> talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", p -> talent_shadow_embrace -> rank() ) );
+}
 
+#if SC_WARLOCK == 1
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type r ) :
   player_t( sim, WARLOCK, name, r == RACE_NONE ? RACE_UNDEAD : r )
@@ -100,14 +108,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type r ) :
   create_options();
 }
 
-
-warlock_targetdata_t::warlock_targetdata_t( player_t* source, player_t* target )
-  : targetdata_t( source, target )
-{
-  warlock_t* p = this->source->cast_warlock();
-  debuffs_haunted               = add_aura( new buff_t( this, p -> talent_haunt -> spell_id(), "haunted", p -> talent_haunt -> rank() ) );
-  debuffs_shadow_embrace        = add_aura( new buff_t( this, p -> talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", p -> talent_shadow_embrace -> rank() ) );
-}
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -3365,6 +3365,8 @@ int warlock_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+#endif // SC_WARLOCK
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -3373,13 +3375,7 @@ int warlock_t::decode_set( item_t& item )
 
 player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::warlock )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  WARLOCK ).c_str() );
-    return NULL;
-  }
-
-  return new warlock_t( sim, name, r );
+  SC_CREATE_WARLOCK( sim, name, r );
 }
 
 // player_t::warlock_init ===================================================
@@ -3393,7 +3389,9 @@ void player_t::warlock_init( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     p -> debuffs.shadow_and_flame     = new     debuff_t( p, 17800, "shadow_and_flame" );
+#if SC_WARLOCK == 1
     p -> debuffs.curse_of_elements    = new coe_debuff_t( p );
+#endif // SC_WARLOCK
   }
 }
 

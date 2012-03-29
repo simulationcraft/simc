@@ -25,6 +25,8 @@ void register_monk_targetdata( sim_t* /* sim */ )
   typedef monk_targetdata_t type;
 }
 
+#if SC_MONK == 1
+
 struct monk_t : public player_t
 {
   int active_stance;
@@ -630,6 +632,8 @@ int monk_t::primary_role() const
   return ROLE_HYBRID;
 }
 
+#endif // SC_MONK
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -638,12 +642,7 @@ int monk_t::primary_role() const
 
 player_t* player_t::create_monk( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::monk )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  MONK ).c_str() );
-    return NULL;
-  }
-  return new monk_t( sim, name, r );
+  SC_CREATE_MONK( sim, name, r );
 }
 
 // player_t::monk_init ======================================================

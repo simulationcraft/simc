@@ -48,6 +48,8 @@ void register_paladin_targetdata( sim_t* sim )
   REGISTER_DEBUFF( censure );
 }
 
+#if SC_PALADIN == 1
+
 struct paladin_t : public player_t
 {
   // Active
@@ -3698,19 +3700,15 @@ double paladin_t::get_hand_of_light() const
   return composite_mastery() * passives.hand_of_light -> base_value( E_APPLY_AURA, A_DUMMY );
 }
 
+#endif // SC_PALADIN
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
 player_t* player_t::create_paladin( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::paladin )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  PALADIN ).c_str() );
-    return NULL;
-  }
-
-  return new paladin_t( sim, name, r );
+  SC_CREATE_PALADIN( sim, name, r );
 }
 
 // player_t::paladin_init ===================================================

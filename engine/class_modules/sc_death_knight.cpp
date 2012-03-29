@@ -5,6 +5,40 @@
 
 #include <simulationcraft.hpp>
 
+struct death_knight_targetdata_t : public targetdata_t
+{
+  dot_t* dots_blood_plague;
+  dot_t* dots_death_and_decay;
+  dot_t* dots_frost_fever;
+
+  buff_t* debuffs_ebon_plaguebringer;
+
+  int diseases()
+  {
+    int disease_count = 0;
+    if ( debuffs_ebon_plaguebringer -> check() ) disease_count++;
+    if ( dots_blood_plague -> ticking ) disease_count++;
+    if ( dots_frost_fever  -> ticking ) disease_count++;
+    return disease_count;
+  }
+
+  death_knight_targetdata_t( player_t* source, player_t* target );
+};
+
+void register_death_knight_targetdata( sim_t* sim )
+{
+  player_type t = DEATH_KNIGHT;
+  typedef death_knight_targetdata_t type;
+
+  REGISTER_DOT( blood_plague );
+  REGISTER_DOT( death_and_decay );
+  REGISTER_DOT( frost_fever );
+
+  REGISTER_DEBUFF( ebon_plaguebringer );
+}
+
+#if SC_DEATH_KNIGHT == 1
+
 struct dancing_rune_weapon_pet_t;
 
 // ==========================================================================
@@ -99,38 +133,6 @@ struct dk_rune_t
 // ==========================================================================
 
 enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4 };
-
-struct death_knight_targetdata_t : public targetdata_t
-{
-  dot_t* dots_blood_plague;
-  dot_t* dots_death_and_decay;
-  dot_t* dots_frost_fever;
-
-  buff_t* debuffs_ebon_plaguebringer;
-
-  int diseases()
-  {
-    int disease_count = 0;
-    if ( debuffs_ebon_plaguebringer -> check() ) disease_count++;
-    if ( dots_blood_plague -> ticking ) disease_count++;
-    if ( dots_frost_fever  -> ticking ) disease_count++;
-    return disease_count;
-  }
-
-  death_knight_targetdata_t( player_t* source, player_t* target );
-};
-
-void register_death_knight_targetdata( sim_t* sim )
-{
-  player_type t = DEATH_KNIGHT;
-  typedef death_knight_targetdata_t type;
-
-  REGISTER_DOT( blood_plague );
-  REGISTER_DOT( death_and_decay );
-  REGISTER_DOT( frost_fever );
-
-  REGISTER_DEBUFF( ebon_plaguebringer );
-}
 
 struct death_knight_t : public player_t
 {
@@ -5239,6 +5241,8 @@ bool death_knight_t::runes_depleted( rune_type rt, int position )
   return rune -> is_depleted();
 }
 
+#endif // SC_DEATH_KNIGHT
+
 // ==========================================================================
 // player_t implementations
 // ==========================================================================
@@ -5247,13 +5251,7 @@ bool death_knight_t::runes_depleted( rune_type rt, int position )
 
 player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::death_knight )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  DEATH_KNIGHT ).c_str() );
-    return NULL;
-  }
-
-  return new death_knight_t( sim, name, r );
+  SC_CREATE_DEATH_KNIGHT( sim, name, r );
 }
 
 // player_t::death_knight_init ==============================================

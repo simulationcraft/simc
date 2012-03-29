@@ -31,6 +31,7 @@ void register_hunter_targetdata( sim_t* sim )
   REGISTER_DOT( serpent_sting );
 }
 
+#if SC_HUNTER == 1
 
 struct hunter_t : public player_t
 {
@@ -4442,6 +4443,8 @@ void hunter_t::moving()
   if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
+#endif // DISABLED
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -4450,13 +4453,7 @@ void hunter_t::moving()
 
 player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::hunter )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  HUNTER ).c_str() );
-    return NULL;
-  }
-
-  return new hunter_t( sim, name, r );
+  SC_CREATE_HUNTER( sim, name, r );
 }
 
 // player_t::hunter_init ====================================================

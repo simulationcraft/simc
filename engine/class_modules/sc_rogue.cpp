@@ -152,6 +152,8 @@ void register_rogue_targetdata( sim_t* sim )
   REGISTER_DEBUFF( poison_doses );
 }
 
+#if SC_ROGUE == 1
+
 struct rogue_t : public player_t
 {
   // Active
@@ -4060,6 +4062,8 @@ int rogue_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+#endif // SC_ROGUE
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -4068,13 +4072,7 @@ int rogue_t::decode_set( item_t& item )
 
 player_t* player_t::create_rogue( sim_t* sim, const std::string& name, race_type r )
 {
-  if ( blocked_class_modules::rogue )
-  {
-    sim -> errorf( "%s", util_t::blocked_class_module(  ROGUE ).c_str() );
-    return NULL;
-  }
-
-  return new rogue_t( sim, name, r );
+  SC_CREATE_ROGUE( sim, name, r );
 }
 
 // player_t::rogue_init =====================================================
