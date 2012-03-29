@@ -76,8 +76,8 @@ struct priest_t : public player_t
     // Shadow
     buff_t* empowered_shadow;
     buff_t* glyph_of_shadow_word_death;
-    buff_t* mind_melt;
     buff_t* mind_spike;
+    buff_t* glyph_mind_spike;
     buff_t* shadowform;
     buff_t* shadow_orb;
     buff_t* shadowfiend;
@@ -105,9 +105,9 @@ struct priest_t : public player_t
     talent_t* twist_of_fate;
     talent_t* power_infusion;
     talent_t* divine_insight;
-    talent_t* vow_of_unity;
+    talent_t* cascade;
     talent_t* divine_star;
-    // "coming soon"
+    talent_t* halo;
   };
   talents_list_t talents;
 
@@ -216,7 +216,7 @@ struct priest_t : public player_t
 
     // Mop
     glyph_t* atonement;
-    glyph_t* mind_melt;
+    glyph_t* mind_spike;
     glyph_t* strength_of_soul;
     glyph_t* inner_sanctum;
   };
@@ -1721,7 +1721,7 @@ struct mind_blast_t : public priest_spell_t
       p() -> benefits.shadow_orb[ i ] -> update( i == p() -> buffs.shadow_orb -> stack() );
     }
 
-    p() -> buffs.mind_melt -> expire();
+    p() -> buffs.mind_spike -> expire();
     p() -> buffs.mind_spike -> expire();
 
     if ( p() -> buffs.shadow_orb -> check() )
@@ -1756,7 +1756,7 @@ struct mind_blast_t : public priest_spell_t
   {
     timespan_t a = priest_spell_t::execute_time();
 
-    a *= 1 + ( p() -> buffs.mind_melt -> check() * p() -> glyphs.mind_melt -> effect2().percent() );
+    a *= 1 + ( p() -> buffs.mind_spike -> check() * p() -> glyphs.mind_spike -> effect2().percent() );
 
     return a;
   }
@@ -1889,7 +1889,7 @@ struct mind_spike_t : public priest_spell_t
         p() -> benefits.shadow_orb[ i ] -> update( i == p() -> buffs.shadow_orb -> stack() );
       }
 
-      p() -> buffs.mind_melt -> trigger( 1, 1.0 );
+      p() -> buffs.mind_spike -> trigger( 1, 1.0 );
 
       if ( p() -> buffs.shadow_orb -> check() )
       {
@@ -2018,8 +2018,8 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_spell_t::player_buff();
 
-    if ( p() -> glyphs.mind_melt -> ok() && ( target -> health_percentage() <= p() -> glyphs.mind_melt-> effect3().base_value() ) )
-      player_multiplier *= 1.0 + p() -> glyphs.mind_melt -> effect1().percent();
+    if ( p() -> glyphs.mind_spike -> ok() && ( target -> health_percentage() <= p() -> glyphs.mind_spike-> effect3().base_value() ) )
+      player_multiplier *= 1.0 + p() -> glyphs.mind_spike -> effect1().percent();
 
     // Hardcoded into the tooltip
     if ( target -> health_percentage() <= 25 )
@@ -3538,9 +3538,9 @@ void priest_t::init_talents()
   talents.twist_of_fate               = find_talent( "Twist of Fate" );
   talents.power_infusion              = find_talent( "Power Infusion" );
   talents.divine_insight              = find_talent( "Divine Insight" );
-  talents.vow_of_unity                = find_talent( "Vow of Unity" );
+  talents.cascade                     = find_talent( "Cascade" );
   talents.divine_star                 = find_talent( "Divine Star" );
-  // "coming soon"
+  talents.halo                        = find_talent( "Halo" );
 
   player_t::init_talents();
 }
@@ -3589,7 +3589,7 @@ void priest_t::init_spells()
   glyphs.renew              = find_glyph( "Glyph of Renew" );
   glyphs.smite              = find_glyph( "Glyph of Smite" );
   glyphs.atonement         = find_glyph( "Atonement" ); //find_glyph( "Glyph of Spirit Tap" );
-  glyphs.mind_melt          = find_glyph( "Glyph of Mind Melt" );
+  glyphs.mind_spike          = find_glyph( "Glyph of Mind Spike" );
   glyphs.strength_of_soul   = find_glyph( "Glyph of Strength of Soul" );
   glyphs.inner_sanctum      = find_glyph( "Glyph of Inner Sanctum" );
 
@@ -3637,7 +3637,7 @@ void priest_t::init_buffs()
   // Shadow
   buffs.empowered_shadow           = new buff_t( this, 95799, "empowered_shadow" );
   buffs.glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, timespan_t::from_seconds( 6.0 )  );
-  buffs.mind_melt                  = new buff_t( this, glyphs.mind_melt -> effect2().trigger_spell_id(), "mind_melt"                 );
+  buffs.glyph_mind_spike                  = new buff_t( this, glyphs.mind_spike -> effect2().trigger_spell_id(), "mind_spike"                 );
   buffs.mind_spike                 = new buff_t( this, "mind_spike",                 3, timespan_t::from_seconds( 12.0 ) );
   buffs.shadowform                = new buff_t( this, "shadowform", "Shadowform" );
   buffs.shadow_orb                 = new buff_t( this, spec.shadow_orbs -> effect1().trigger_spell_id(), "shadow_orb" );
