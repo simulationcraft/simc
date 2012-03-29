@@ -3390,6 +3390,8 @@ void player_t::warlock_init( sim_t* sim )
     p -> debuffs.shadow_and_flame     = new     debuff_t( p, 17800, "shadow_and_flame" );
 #if SC_WARLOCK == 1
     p -> debuffs.curse_of_elements    = new coe_debuff_t( p );
+#else
+    p -> debuffs.curse_of_elements = new debuff_t( p, "curse_of_elements_dummy_buff" );
 #endif // SC_WARLOCK
   }
 }

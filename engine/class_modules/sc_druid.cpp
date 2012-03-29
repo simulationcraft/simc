@@ -5555,6 +5555,8 @@ void player_t::druid_init( sim_t* sim )
     player_t* p = sim -> actor_list[i];
 #if SC_DRUID == 1
     p -> buffs.innervate              = new innervate_buff_t( p );
+#else
+    p -> buffs.innervate = new buff_t( p, "innervate_dummy_buff" );
 #endif // SC_DRUID
     p -> buffs.mark_of_the_wild       = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
     p -> debuffs.demoralizing_roar    = new debuff_t( p, 99, "demoralizing_roar" );
