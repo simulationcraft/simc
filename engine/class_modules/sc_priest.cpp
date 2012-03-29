@@ -181,18 +181,6 @@ struct priest_t : public player_t
   // Options
   std::string atonement_target_str;
 
-  // Mana Resource Tracker
-  struct mana_resource_t
-  {
-    double mana_gain;
-    double mana_loss;
-    void reset() { memset( ( void* ) this, 0x00, sizeof( mana_resource_t ) ); }
-
-    mana_resource_t() { reset(); }
-  };
-
-  mana_resource_t mana_resource;
-  double max_mana_cost;
   std::vector<player_t *> party_list;
 
   // Glyphs
@@ -262,8 +250,6 @@ struct priest_t : public player_t
     distance                             = 40.0;
     default_distance                     = 40.0;
 
-    max_mana_cost                        = 0.0;
-
     cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
     cooldowns.shadow_fiend               = get_cooldown( "shadow_fiend" );
     cooldowns.chakra                     = get_cooldown( "chakra"   );
@@ -312,9 +298,6 @@ struct priest_t : public player_t
   virtual double    composite_movement_speed() const;
 
   virtual double    matching_gear_multiplier( const attribute_type attr ) const;
-
-  virtual double    resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
-  virtual double    resource_loss( int resource, double amount, action_t* action=0 );
 
   virtual double    target_mitigation( double amount, const school_type school, int type, int result, action_t* a=0 );
 
@@ -1334,17 +1317,10 @@ struct chakra_t : public priest_spell_t
 
 struct dispersion_t : public priest_spell_t
 {
-  int low_mana;
-
   dispersion_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "dispersion", player, "Dispersion" ), low_mana( 0 )
+    priest_spell_t( "dispersion", player, "Dispersion" )
   {
-    option_t options[] =
-    {
-      { "low_mana",  OPT_BOOL,    &low_mana },
-      { NULL,        OPT_UNKNOWN, NULL      }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     base_tick_time    = timespan_t::from_seconds( 1.0 );
     num_ticks         = 6;
@@ -1365,49 +1341,6 @@ struct dispersion_t : public priest_spell_t
     priest_spell_t::tick( d );
   }
 
-  virtual bool ready()
-  {
-    if ( ! priest_spell_t::ready() )
-      return false;
-
-    if ( ! low_mana )
-      return true;
-
-    if ( ! p() -> pets.shadow_fiend -> sleeping ) return false;
-
-    double sf_cooldown_remains  = p() -> cooldowns.shadow_fiend -> remains().total_seconds();
-    double sf_cooldown_duration = p() -> cooldowns.shadow_fiend -> duration.total_seconds();
-
-    if ( sf_cooldown_remains <= 0 ) return false;
-
-    double     max_mana = p() -> resource_max    [ RESOURCE_MANA ];
-    double current_mana = p() -> resource_current[ RESOURCE_MANA ];
-
-    double consumption_rate = ( p() -> mana_resource.mana_loss - p() -> mana_resource.mana_gain ) / sim -> current_time.total_seconds();
-    double time_to_die = p() -> target -> time_to_die().total_seconds();
-
-    if ( consumption_rate <= 0.00001 ) return false;
-
-    double oom_time = current_mana / consumption_rate;
-
-    if ( oom_time >= time_to_die ) return false;
-
-    double sf_regen = 0.30 * max_mana;
-
-    consumption_rate -= sf_regen / sf_cooldown_duration;
-
-    if ( consumption_rate <= 0.00001 ) return false;
-
-    double future_mana = current_mana + sf_regen - consumption_rate * sf_cooldown_remains;
-
-    if ( future_mana > max_mana ) future_mana = max_mana;
-
-    oom_time = future_mana / consumption_rate;
-
-    if ( oom_time >= time_to_die ) return false;
-
-    return ( max_mana - current_mana ) > p() -> max_mana_cost;
-  }
 };
 
 // Fortitude Spell ==========================================================
@@ -4023,8 +3956,6 @@ void priest_t::reset()
 
   was_sub_25 = false;
 
-  mana_resource.reset();
-
   heals_echo_of_light                  = 0;
 
   init_party();
@@ -4064,41 +3995,6 @@ void priest_t::pre_analyze_hook()
     fixup_atonement_stats( "smite", "atonement_smite" );
     fixup_atonement_stats( "holy_fire", "atonement_holy_fire" );
   }
-}
-
-// priest_t::resource_gain ==================================================
-
-double priest_t::resource_gain( int       resource,
-                                double    amount,
-                                gain_t*   source,
-                                action_t* action )
-{
-  double actual_amount = player_t::resource_gain( resource, amount, source, action );
-
-  if ( resource == RESOURCE_MANA )
-  {
-    if ( source != gains.shadow_fiend &&
-         source != gains.dispersion )
-    {
-      mana_resource.mana_gain += actual_amount;
-    }
-  }
-
-  return actual_amount;
-}
-
-// priest_t::resource_loss ==================================================
-
-double priest_t::resource_loss( int       resource,
-                                double    amount,
-                                action_t* action )
-{
-  double actual_amount = player_t::resource_loss( resource, amount, action );
-
-  if ( resource == RESOURCE_MANA )
-  { mana_resource.mana_loss += actual_amount; }
-
-  return actual_amount;
 }
 
 // priest_t::target_mitigation ==============================================
