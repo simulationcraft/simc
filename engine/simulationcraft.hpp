@@ -4303,10 +4303,20 @@ struct player_t : public noncopyable
 
 
   // Resources
-  double  resource_base   [ RESOURCE_MAX ];
-  double  resource_initial[ RESOURCE_MAX ];
-  double  resource_max    [ RESOURCE_MAX ];
-  double  resource_current[ RESOURCE_MAX ];
+  struct resources_t
+  {
+    double base   [ RESOURCE_MAX ];
+    double initial[ RESOURCE_MAX ];
+    double max    [ RESOURCE_MAX ];
+    double current[ RESOURCE_MAX ];
+    double base_multiplier[ RESOURCE_MAX ];
+    double initial_multiplier[ RESOURCE_MAX ];
+
+    resources_t() { range::fill( base, 0.0); range::fill( initial, 0.0 ); range::fill( max, 0.0); range::fill( current, 0.0 );
+    range::fill( base_multiplier, 1.0 ); range::fill( initial_multiplier, 1.0 ); }
+  } resources;
+
+
   double  mana_per_intellect;
   double  health_per_stamina;
   uptime_t* primary_resource_cap;

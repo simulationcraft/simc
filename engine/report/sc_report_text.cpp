@@ -316,8 +316,8 @@ void print_text_core_stats( FILE* file, player_t* p )
                    p -> buffed.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ],
                    p -> buffed.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ],
                    p -> buffed_mastery , p -> composite_mastery(), p -> stats.mastery_rating,
-                   p -> buffed.resource[ RESOURCE_HEALTH ], p -> resource_max[ RESOURCE_HEALTH ],
-                   p -> buffed.resource[ RESOURCE_MANA   ], p -> resource_max[ RESOURCE_MANA   ] );
+                   p -> buffed.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
+                   p -> buffed.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
 }
 
 // print_text_spell_stats ===================================================
@@ -509,7 +509,7 @@ void print_text_performance( FILE* file, sim_t* sim )
                    "  SpeedUp       = %.0f\n\n",
                    ( long ) sim -> total_events_processed,
                    ( long ) sim -> max_events_remaining,
-                   sim -> target -> resource_base[ RESOURCE_HEALTH ],
+                   sim -> target -> resources.base[ RESOURCE_HEALTH ],
                    sim -> iterations * sim -> simulation_length.mean,
                    sim -> elapsed_cpu.total_seconds(),
                    sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds() );

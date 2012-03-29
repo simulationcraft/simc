@@ -148,7 +148,7 @@ void player_ready_event_t::execute()
     // Waiting Debug
     if ( sim -> debug )
     {
-      log_t::output( sim, "%s is waiting for %.4f resource=%.2f", player -> name(), x.total_seconds(), player -> resource_current[ player -> primary_resource() ] );
+      log_t::output( sim, "%s is waiting for %.4f resource=%.2f", player -> name(), x.total_seconds(), player -> resources.current[ player -> primary_resource() ] );
     }
   }
 }

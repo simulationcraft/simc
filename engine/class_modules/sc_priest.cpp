@@ -481,7 +481,7 @@ struct priest_heal_t : public heal_t
       priest_targetdata_t* td = targetdata() -> cast_priest();
 
       double old_amount = td -> buffs_divine_aegis -> current_value;
-      double new_amount = std::min( t -> resource_current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
+      double new_amount = std::min( t -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
       td -> buffs_divine_aegis -> trigger( 1, old_amount + new_amount );
       stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, STATS_ABSORB, impact_result );
     }
@@ -717,7 +717,7 @@ struct atonement_heal_t : public priest_heal_t
   void trigger( double atonement_dmg, int dmg_type, int result )
   {
     atonement_dmg *= p() -> glyphs.atonement -> effect1().percent();
-    double cap = p() -> resource_max[ RESOURCE_HEALTH ] * 0.3;
+    double cap = p() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
 
     if ( result == RESULT_CRIT )
     {
@@ -956,7 +956,7 @@ struct shadow_fiend_pet_t : public pet_t
         if ( p -> o() -> set_bonus.tier13_4pc_caster() )
           p -> o() -> buffs.shadow_orb -> trigger( 3, 1, p -> o() -> constants.shadow_orb_proc_value );
 
-        p -> o() -> resource_gain( RESOURCE_MANA, p -> o() -> resource_max[ RESOURCE_MANA ] *
+        p -> o() -> resource_gain( RESOURCE_MANA, p -> o() -> resources.max[ RESOURCE_MANA ] *
                                    p -> mana_leech -> effect_base_value( 1 ) / 100.0,
                                    p -> o() -> gains.shadow_fiend );
       }
@@ -1043,8 +1043,8 @@ struct shadow_fiend_pet_t : public pet_t
     attribute_base[ ATTR_AGILITY   ]  = 0; // Unknown
     attribute_base[ ATTR_STAMINA   ]  = 0; // Unknown
     attribute_base[ ATTR_INTELLECT ]  = 0; // Unknown
-    resource_base[ RESOURCE_HEALTH ]  = util_t::ability_rank( owner -> level,  18480.0,85,  7475.0,82,  6747.0,80,  100.0,0 );
-    resource_base[ RESOURCE_MANA   ]  = util_t::ability_rank( owner -> level,  16828.0,85,  9824.0,82,  7679.0,80,  100.0,0 );
+    resources.base[ RESOURCE_HEALTH ]  = util_t::ability_rank( owner -> level,  18480.0,85,  7475.0,82,  6747.0,80,  100.0,0 );
+    resources.base[ RESOURCE_MANA   ]  = util_t::ability_rank( owner -> level,  16828.0,85,  9824.0,82,  7679.0,80,  100.0,0 );
     base_attack_power                 = 0;  // Unknown
     base_attack_crit                  = 0.07; // Needs more testing
     initial_attack_power_per_strength = 0; // Unknown
@@ -1353,7 +1353,7 @@ struct dispersion_t : public priest_spell_t
 
   virtual void tick( dot_t* d )
   {
-    double regen_amount = p() -> dbc.spell( 49766 ) -> effect1().percent() * p() -> resource_max[ RESOURCE_MANA ];
+    double regen_amount = p() -> dbc.spell( 49766 ) -> effect1().percent() * p() -> resources.max[ RESOURCE_MANA ];
 
     p() -> resource_gain( RESOURCE_MANA, regen_amount, p() -> gains.dispersion );
 
@@ -1425,7 +1425,7 @@ struct hymn_of_hope_tick_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    p() -> resource_gain( RESOURCE_MANA, effect1().percent() * p() -> resource_max[ RESOURCE_MANA ], p() -> gains.hymn_of_hope );
+    p() -> resource_gain( RESOURCE_MANA, effect1().percent() * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.hymn_of_hope );
 
     // Hymn of Hope only adds +x% of the current_max mana, it doesn't change if afterwards max_mana changes.
     player -> buffs.hymn_of_hope -> trigger();

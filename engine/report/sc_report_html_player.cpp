@@ -657,7 +657,7 @@ void print_html_stats ( FILE* file, player_t* a )
     }
     for ( int i = 1; i < RESOURCE_MAX; i++ )
     {
-      if ( a -> resource_max[ i ] > 0 )
+      if ( a -> resources.max[ i ] > 0 )
         fprintf( file,
              "\t\t\t\t\t\t\t\t\t<tr%s>\n"
              "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
@@ -668,7 +668,7 @@ void print_html_stats ( FILE* file, player_t* a )
              ( j%2 == 1 )? " class=\"odd\"" : "",
              util_t::resource_type_string( i ),
              a -> buffed.resource[ i ],
-             a -> resource_max[ i ],
+             a -> resources.max[ i ],
              0.0 );
       j++;
     }
@@ -1427,7 +1427,7 @@ void print_html_player_resources( FILE* file, player_t* p )
            "\t\t\t\t\t\t<div class=\"charts\">\n" );
   for ( int j = RESOURCE_NONE + 1; j < RESOURCE_MAX; j++ )
   {
-    if ( p -> resource_max[ j ] > 0 && ! p -> timeline_resource_chart[ j ].empty() )
+    if ( p -> resources.max[ j ] > 0 && ! p -> timeline_resource_chart[ j ].empty() )
     {
       fprintf( file,
                "\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Timeline Chart\" />\n",

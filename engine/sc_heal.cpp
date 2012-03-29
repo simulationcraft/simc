@@ -240,7 +240,7 @@ player_t* heal_t::find_greatest_difference_player()
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     // No love for pets right now
-    diff = p -> is_pet() ? 0 : p -> resource_max[ RESOURCE_HEALTH ] - p -> resource_current[ RESOURCE_HEALTH ];
+    diff = p -> is_pet() ? 0 : p -> resources.max[ RESOURCE_HEALTH ] - p -> resources.current[ RESOURCE_HEALTH ];
     if ( diff > max )
     {
       max = diff;
@@ -260,7 +260,7 @@ player_t* heal_t::find_lowest_player()
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     // No love for pets right now
-    diff =  p -> is_pet() ? 0 : 1.0 / p -> resource_current[ RESOURCE_HEALTH ];
+    diff =  p -> is_pet() ? 0 : 1.0 / p -> resources.current[ RESOURCE_HEALTH ];
     if ( diff > max )
     {
       max = diff;

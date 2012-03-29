@@ -274,8 +274,8 @@ public:
 
     if ( p -> talent_soul_leech -> rank() )
     {
-      p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * p -> talent_soul_leech -> effect1().percent(), p -> gains_soul_leech_health );
-      p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talent_soul_leech -> effect1().percent(), p -> gains_soul_leech );
+      p -> resource_gain( RESOURCE_HEALTH, p -> resources.max[ RESOURCE_HEALTH ] * p -> talent_soul_leech -> effect1().percent(), p -> gains_soul_leech_health );
+      p -> resource_gain( RESOURCE_MANA, p -> resources.max[ RESOURCE_MANA ] * p -> talent_soul_leech -> effect1().percent(), p -> gains_soul_leech );
 
       p -> trigger_replenishment();
     }
@@ -864,7 +864,7 @@ struct corruption_t : public warlock_spell_t
     {
       if ( p -> rng_siphon_life -> roll ( p -> talent_siphon_life -> proc_chance() ) )
       {
-        p -> resource_gain( RESOURCE_HEALTH, p -> resource_max[ RESOURCE_HEALTH ] * 0.02 );
+        p -> resource_gain( RESOURCE_HEALTH, p -> resources.max[ RESOURCE_HEALTH ] * 0.02 );
       }
     }
   }
@@ -889,10 +889,10 @@ struct drain_life_heal_t : public warlock_heal_t
 
     double heal_pct = effect1().percent();
 
-    if ( ( p -> resource_current[ RESOURCE_HEALTH ] / p -> resource_max[ RESOURCE_HEALTH ] ) <= 0.25 )
+    if ( ( p -> resources.current[ RESOURCE_HEALTH ] / p -> resources.max[ RESOURCE_HEALTH ] ) <= 0.25 )
       heal_pct += p -> talent_deaths_embrace -> effect1().percent();
 
-    base_dd_min = base_dd_max = p -> resource_max[ RESOURCE_HEALTH ] * heal_pct;
+    base_dd_min = base_dd_max = p -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
     warlock_heal_t::execute();
   }
 
@@ -1565,7 +1565,7 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    double life = p -> resource_max[ RESOURCE_HEALTH ] * effect3().percent();
+    double life = p -> resources.max[ RESOURCE_HEALTH ] * effect3().percent();
     double mana = life * effect2().percent() * ( 1.0 + p -> talent_improved_life_tap -> base_value() / 100.0 );
     p -> resource_loss( RESOURCE_HEALTH, life );
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_life_tap );
@@ -1580,11 +1580,11 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     if (  max_mana_pct > 0 )
-      if ( ( 100.0 * p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] ) > max_mana_pct )
+      if ( ( 100.0 * p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] ) > max_mana_pct )
         return false;
 
     if ( trigger > 0 )
-      if ( p -> resource_current[ RESOURCE_MANA ] > trigger )
+      if ( p -> resources.current[ RESOURCE_MANA ] > trigger )
         return false;
 
     return warlock_spell_t::ready();
@@ -1665,7 +1665,7 @@ struct fel_armor_t : public warlock_spell_t
     d -> current_tick = 0; // ticks indefinitely
 
     p -> resource_gain( RESOURCE_HEALTH,
-                        p -> resource_max[ RESOURCE_HEALTH ] * effect2().percent() * ( 1.0 + p -> talent_demonic_aegis -> effect1().percent() ),
+                        p -> resources.max[ RESOURCE_HEALTH ] * effect2().percent() * ( 1.0 + p -> talent_demonic_aegis -> effect1().percent() ),
                         p -> gains_fel_armor, this );
   }
 
@@ -2481,7 +2481,7 @@ void warlock_t::trigger_mana_feed( action_t* s, double impact_result )
   {
     if ( impact_result == RESULT_CRIT )
     {
-      double mana = p -> resource_max[ RESOURCE_MANA ] * p -> talent_mana_feed -> effect3().percent();
+      double mana = p -> resources.max[ RESOURCE_MANA ] * p -> talent_mana_feed -> effect3().percent();
       if ( p -> active_pet -> pet_type == PET_FELGUARD || p -> active_pet -> pet_type == PET_FELHUNTER ) mana *= 4;
       p -> resource_gain( RESOURCE_MANA, mana, p -> gains_mana_feed );
       a -> procs_mana_feed -> occur();
@@ -2886,7 +2886,7 @@ void warlock_t::init_base()
 
   mana_per_intellect = 15;
 
-  resource_base[ RESOURCE_SOUL_SHARD ] = 3;
+  resources.base[ RESOURCE_SOUL_SHARD ] = 3;
 
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
@@ -3294,7 +3294,7 @@ action_expr_t* warlock_t::create_expression( action_t* a, const std::string& nam
     struct shards_expr_t : public action_expr_t
     {
       shards_expr_t( action_t* a ) : action_expr_t( a, "shards", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> cast_warlock() -> resource_current[ RESOURCE_SOUL_SHARD ]; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> cast_warlock() -> resources.current[ RESOURCE_SOUL_SHARD ]; return TOK_NUM; }
     };
     return new shards_expr_t( a );
   }

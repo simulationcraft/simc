@@ -389,13 +389,13 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
 
   writer.begin_tag( "resource" );
   writer.print_attribute( "name", "health" );
-  writer.print_attribute( "base", util_t::to_string( p -> resource_max[ RESOURCE_HEALTH ], 0 ) );
+  writer.print_attribute( "base", util_t::to_string( p -> resources.max[ RESOURCE_HEALTH ], 0 ) );
   writer.print_attribute( "buffed", util_t::to_string( p -> buffed.attribute[ RESOURCE_HEALTH ], 0 ) );
   writer.end_tag(); // </resource>
 
   writer.begin_tag( "resource" );
   writer.print_attribute( "name", "mana" );
-  writer.print_attribute( "base", util_t::to_string( p -> resource_max[ RESOURCE_MANA ], 0 ) );
+  writer.print_attribute( "base", util_t::to_string( p -> resources.max[ RESOURCE_MANA ], 0 ) );
   writer.print_attribute( "buffed", util_t::to_string( p -> buffed.resource[ RESOURCE_MANA ], 0 ) );
   writer.end_tag(); // </resource>
 }
@@ -967,7 +967,7 @@ void print_xml_performance( sim_t* sim, xml_writer_t & writer )
 
   writer.print_tag( "total_events", util_t::to_string( sim -> total_events_processed ) );
   writer.print_tag( "max_event_queue", util_t::to_string( sim -> max_events_remaining ) );
-  writer.print_tag( "target_health", util_t::to_string( sim -> target -> resource_base[ RESOURCE_HEALTH ], 0 ) );
+  writer.print_tag( "target_health", util_t::to_string( sim -> target -> resources.base[ RESOURCE_HEALTH ], 0 ) );
   writer.print_tag( "sim_seconds", util_t::to_string( sim -> iterations * sim -> simulation_length.mean, 0 ) );
   writer.print_tag( "cpu_seconds", util_t::to_string( sim -> elapsed_cpu.total_seconds(), 3 ) );
   writer.print_tag( "speed_up", util_t::to_string( sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds(), 0 ) );

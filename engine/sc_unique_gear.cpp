@@ -1621,7 +1621,7 @@ static void register_souldrinker( item_t* item )
 
     virtual void execute()
     {
-      base_dd_min = base_dd_max = effect1().percent() / 10.0 * player -> resource_max[ RESOURCE_HEALTH ];
+      base_dd_min = base_dd_max = effect1().percent() / 10.0 * player -> resources.max[ RESOURCE_HEALTH ];
       spell_t::execute();
     }
 

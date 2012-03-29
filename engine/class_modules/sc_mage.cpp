@@ -1791,7 +1791,7 @@ struct deep_freeze_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     // The spell data is spread across two separate Spell IDs.  Hard code missing for now.
-    base_costs[ current_resource() ] = 0.09 * p -> resource_base[ RESOURCE_MANA ];
+    base_costs[ current_resource() ] = 0.09 * p -> resources.base[ RESOURCE_MANA ];
     cooldown -> duration = timespan_t::from_seconds( 30.0 );
 
     fof_frozen = true;
@@ -1861,7 +1861,7 @@ struct evocation_t : public mage_spell_t
 
     mage_t* p = player -> cast_mage();
 
-    double mana = p -> resource_max[ RESOURCE_MANA ] * effect1().percent();
+    double mana = p -> resources.max[ RESOURCE_MANA ] * effect1().percent();
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains_evocation );
   }
 
@@ -1871,8 +1871,8 @@ struct evocation_t : public mage_spell_t
       return false;
 
     // FIXME: This should likely be removed in favor of expressions
-    return ( player -> resource_current[ RESOURCE_MANA ] /
-             player -> resource_max    [ RESOURCE_MANA ] ) < 0.60;
+    return ( player -> resources.current[ RESOURCE_MANA ] /
+             player -> resources.max    [ RESOURCE_MANA ] ) < 0.60;
   }
 
   virtual void execute()
@@ -2655,7 +2655,7 @@ struct mage_armor_buff_t : public buff_t
       if ( p -> buffs_mage_armor -> check() )
       {
         p -> mage_armor_timer = sim -> current_time;
-        double gain_amount = p -> resource_max[ RESOURCE_MANA ] * p -> spells.mage_armor -> effect2().percent();
+        double gain_amount = p -> resources.max[ RESOURCE_MANA ] * p -> spells.mage_armor -> effect2().percent();
         gain_amount *= 1.0 + p -> glyphs.mage_armor -> effect1().percent();
 
         p -> resource_gain( RESOURCE_MANA, gain_amount, p -> gains_mage_armor );
@@ -2731,7 +2731,7 @@ struct mana_gem_t : public action_t
     if ( p -> mana_gem_charges <= 0 )
       return false;
 
-    if ( ( player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ] ) < max )
+    if ( ( player -> resources.max[ RESOURCE_MANA ] - player -> resources.current[ RESOURCE_MANA ] ) < max )
       return false;
 
     return action_t::ready();
@@ -3184,7 +3184,7 @@ struct choose_rotation_t : public action_t
       if ( tte < ttd )
       {
         // We're going until target percentage
-        if ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_max[ RESOURCE_MANA ] < evocation_target_mana_percentage / 100.0 )
+        if ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] < evocation_target_mana_percentage / 100.0 )
         {
           if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
 
@@ -3194,7 +3194,7 @@ struct choose_rotation_t : public action_t
       else
       {
         // We're going until OOM, stop when we can no longer cast full stack AB (approximately, 4 stack with AP can be 6177)
-        if ( p -> resource_current[ RESOURCE_MANA ] < 6200 )
+        if ( p -> resources.current[ RESOURCE_MANA ] < 6200 )
         {
           if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
 
@@ -3209,7 +3209,7 @@ struct choose_rotation_t : public action_t
       // Calculate consumption rate of dps rotation and determine if we should start burning.
 
       double consumption_rate = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - regen_rate;
-      double available_mana = p -> resource_current[ RESOURCE_MANA ];
+      double available_mana = p -> resources.current[ RESOURCE_MANA ];
 
       // Mana Gem, if we have uses left
       if ( p -> mana_gem_charges > 0 )
@@ -3249,7 +3249,7 @@ struct choose_rotation_t : public action_t
       if ( consumption_rate > 0 )
       {
         // Compute time to get to desired percentage.
-        timespan_t expected_time = timespan_t::from_seconds( ( available_mana - target_pct * p -> resource_max[ RESOURCE_MANA ] ) / consumption_rate );
+        timespan_t expected_time = timespan_t::from_seconds( ( available_mana - target_pct * p -> resources.max[ RESOURCE_MANA ] ) / consumption_rate );
 
         if ( expected_time >= target_time )
         {
@@ -3950,7 +3950,7 @@ double mage_t::composite_player_multiplier( const school_type school, action_t* 
 
   m *= 1.0 + buffs_arcane_power -> value();
 
-  double mana_pct = resource_current[ RESOURCE_MANA ] / resource_max [ RESOURCE_MANA ];
+  double mana_pct = resources.current[ RESOURCE_MANA ] / resources.max [ RESOURCE_MANA ];
   m *= 1.0 + mana_pct * specializations.mana_adept * composite_mastery();
 
   return m;
@@ -3999,7 +3999,7 @@ double mage_t::composite_spell_power( const school_type school ) const
 
   if ( buffs_improved_mana_gem -> check() )
   {
-    sp += resource_max[ RESOURCE_MANA ] * talents.improved_mana_gem->effect1().percent();
+    sp += resources.max[ RESOURCE_MANA ] * talents.improved_mana_gem->effect1().percent();
   }
 
   return sp;
@@ -4060,7 +4060,7 @@ void mage_t::regen( timespan_t periodicity )
 
   if ( glyphs.frost_armor -> ok() && buffs_frost_armor -> up()  )
   {
-    double gain_amount = resource_max[ RESOURCE_MANA ] * glyphs.frost_armor -> effect1().percent();
+    double gain_amount = resources.max[ RESOURCE_MANA ] * glyphs.frost_armor -> effect1().percent();
     gain_amount *= periodicity.total_seconds() / 5.0;
     resource_gain( RESOURCE_MANA, gain_amount, gains_frost_armor );
   }

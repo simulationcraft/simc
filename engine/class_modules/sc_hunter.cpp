@@ -418,8 +418,8 @@ struct hunter_pet_t : public pet_t
 
     base_attack_crit = 0.05; // Assume 5% base crit as for most other pets. 19/10/2011
 
-    resource_base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
-    resource_base[ RESOURCE_FOCUS ] = 100 + o -> talents.kindred_spirits -> effect1().resource( RESOURCE_FOCUS );
+    resources.base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
+    resources.base[ RESOURCE_FOCUS ] = 100 + o -> talents.kindred_spirits -> effect1().resource( RESOURCE_FOCUS );
 
     base_focus_regen_per_second  = ( 24.5 / 4.0 );
 
@@ -1139,7 +1139,7 @@ struct claw_t : public hunter_pet_attack_t
     if ( o -> buffs_cobra_strikes -> up() )
       player_crit += o -> buffs_cobra_strikes -> effect1().percent();
 
-    if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
+    if ( p -> talents.wild_hunt -> rank() && ( p -> resources.current[ RESOURCE_FOCUS ] > 50 ) )
     {
       p -> benefits_wild_hunt -> update( true );
       player_multiplier *= 1.0 + p -> talents.wild_hunt -> effect1().percent();
@@ -1167,7 +1167,7 @@ struct claw_t : public hunter_pet_attack_t
     if ( p -> buffs_owls_focus -> check() )
       return 0;
 
-    if ( p -> talents.wild_hunt -> rank() && ( p -> resource_current[ RESOURCE_FOCUS ] > 50 ) )
+    if ( p -> talents.wild_hunt -> rank() && ( p -> resources.current[ RESOURCE_FOCUS ] > 50 ) )
       c *= 1.0 + p -> talents.wild_hunt -> effect2().percent();
 
     if ( p -> buffs_sic_em -> check() )
@@ -1429,7 +1429,7 @@ struct roar_of_recovery_t : public hunter_pet_spell_t
   {
     hunter_t* o = player -> cast_pet() -> owner -> cast_hunter();
 
-    if ( o -> resource_current[ RESOURCE_FOCUS ] > 50 )
+    if ( o -> resources.current[ RESOURCE_FOCUS ] > 50 )
       return false;
 
     return hunter_pet_spell_t::ready();
@@ -3774,7 +3774,7 @@ void hunter_t::init_base()
   // FIXME!
   base_focus_regen_per_second = 4;
 
-  resource_base[ RESOURCE_FOCUS ] = 100 + talents.kindred_spirits -> effect1().resource( RESOURCE_FOCUS );
+  resources.base[ RESOURCE_FOCUS ] = 100 + talents.kindred_spirits -> effect1().resource( RESOURCE_FOCUS );
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;

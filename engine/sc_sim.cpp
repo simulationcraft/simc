@@ -1036,7 +1036,7 @@ void sim_t::combat( int iteration )
       }
     }
 
-    if ( fixed_time || ( target -> resource_base[ RESOURCE_HEALTH ] == 0 ) )
+    if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
     {
       // The first iteration is always time-limited since we do not yet have inferred health
       if ( current_time > expected_time )
@@ -1061,7 +1061,7 @@ void sim_t::combat( int iteration )
         break;
       }
 
-      if (  target -> resource_current[ RESOURCE_HEALTH ] / target -> resource_max[ RESOURCE_HEALTH ] <= target_death_pct / 100.0 )
+      if (  target -> resources.current[ RESOURCE_HEALTH ] / target -> resources.max[ RESOURCE_HEALTH ] <= target_death_pct / 100.0 )
       {
         if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
         // Set this last event as canceled, so asserts dont fire when odd things happen at the

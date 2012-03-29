@@ -2464,11 +2464,11 @@ struct pool_energy_t : public action_t
       // If the next action in the list would be "ready" if it was not constrained by energy,
       // then this command will pool energy until we have enough.
 
-      player -> resource_current[ RESOURCE_ENERGY ] += 100;
+      player -> resources.current[ RESOURCE_ENERGY ] += 100;
 
       bool energy_limited = next -> ready();
 
-      player -> resource_current[ RESOURCE_ENERGY ] -= 100;
+      player -> resources.current[ RESOURCE_ENERGY ] -= 100;
 
       if ( ! energy_limited )
         return false;
@@ -3524,7 +3524,7 @@ void rogue_t::init_base()
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 2.0;
 
-  resource_base[ RESOURCE_ENERGY ] = 100 + spec_assassins_resolve -> base_value( E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
+  resources.base[ RESOURCE_ENERGY ] = 100 + spec_assassins_resolve -> base_value( E_APPLY_AURA, A_MOD_INCREASE_ENERGY );
 
   base_energy_regen_per_second = 10 + spec_vitality -> base_value( E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT ) / 10.0;
 
@@ -3973,8 +3973,8 @@ void rogue_t::regen( timespan_t periodicity )
     }
   }
 
-  uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
-                                resource_max    [ RESOURCE_ENERGY ] );
+  uptimes_energy_cap -> update( resources.current[ RESOURCE_ENERGY ] ==
+                                resources.max    [ RESOURCE_ENERGY ] );
 
   for ( int i = 0; i < 3; i++ )
     uptimes_bandits_guile[ i ] -> update( ( buffs_bandits_guile -> current_stack / 4 - 1 ) == i );
@@ -3984,7 +3984,7 @@ void rogue_t::regen( timespan_t periodicity )
 
 timespan_t rogue_t::available() const
 {
-  double energy = resource_current[ RESOURCE_ENERGY ];
+  double energy = resources.current[ RESOURCE_ENERGY ];
 
   if ( energy > 25 )
     return timespan_t::from_seconds( 0.1 );

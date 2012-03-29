@@ -761,8 +761,8 @@ void buff_t::expire()
     iteration_uptime_sum += sim -> current_time - last_start;
   }
 
-  if ( sim -> target -> resource_base[ RESOURCE_HEALTH ] == 0 ||
-       sim -> target -> resource_current[ RESOURCE_HEALTH ] > 0 )
+  if ( sim -> target -> resources.base[ RESOURCE_HEALTH ] == 0 ||
+       sim -> target -> resources.current[ RESOURCE_HEALTH ] > 0 )
     if ( ! overridden )
     {
       constant = false;

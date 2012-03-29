@@ -155,10 +155,10 @@ struct flask_t : public action_t
     if ( ! player -> in_combat )
     {
       if ( intellect > 0 )
-        player -> resource_gain( RESOURCE_MANA, player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ], gain, this );
+        player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] - player -> resources.current[ RESOURCE_MANA ], gain, this );
 
       if ( stamina > 0 )
-        player -> resource_gain( RESOURCE_HEALTH, player -> resource_max[ RESOURCE_HEALTH ] - player -> resource_current[ RESOURCE_HEALTH ] );
+        player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
     }
   }
 
@@ -385,10 +385,10 @@ struct food_t : public action_t
     if ( ! player -> in_combat )
     {
       if ( intellect > 0 )
-        player -> resource_gain( RESOURCE_MANA, player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ], gain, this );
+        player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] - player -> resources.current[ RESOURCE_MANA ], gain, this );
 
       if ( stamina > 0 )
-        player -> resource_gain( RESOURCE_HEALTH, player -> resource_max[ RESOURCE_HEALTH ] - player -> resource_current[ RESOURCE_HEALTH ] );
+        player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
     }
   }
 
@@ -847,8 +847,8 @@ struct mana_potion_t : public action_t
     if ( player -> potion_used )
       return false;
 
-    if ( ( player -> resource_max    [ RESOURCE_MANA ] -
-           player -> resource_current[ RESOURCE_MANA ] ) < trigger )
+    if ( ( player -> resources.max    [ RESOURCE_MANA ] -
+           player -> resources.current[ RESOURCE_MANA ] ) < trigger )
       return false;
 
     return action_t::ready();
@@ -895,8 +895,8 @@ struct health_stone_t : public action_t
 
   virtual bool ready()
   {
-    if ( ( player -> resource_max    [ RESOURCE_HEALTH ] -
-           player -> resource_current[ RESOURCE_HEALTH ] ) < trigger )
+    if ( ( player -> resources.max    [ RESOURCE_HEALTH ] -
+           player -> resources.current[ RESOURCE_HEALTH ] ) < trigger )
       return false;
 
     return action_t::ready();
@@ -946,11 +946,11 @@ struct dark_rune_t : public action_t
 
   virtual bool ready()
   {
-    if ( player -> resource_current[ RESOURCE_HEALTH ] <= health )
+    if ( player -> resources.current[ RESOURCE_HEALTH ] <= health )
       return false;
 
-    if ( ( player -> resource_max    [ RESOURCE_MANA ] -
-           player -> resource_current[ RESOURCE_MANA ] ) < trigger )
+    if ( ( player -> resources.max    [ RESOURCE_MANA ] -
+           player -> resources.current[ RESOURCE_MANA ] ) < trigger )
       return false;
 
     return action_t::ready();

@@ -59,7 +59,7 @@ struct hymn_of_hope_buff_t : public buff_t
 
     // Extra Mana is only added at the start, not on refresh. Tested 20/01/2011.
     // Extra Mana is set by current max_mana, doesn't change when max_mana changes.
-    mana_gain = player -> resource_max[ RESOURCE_MANA ] * effect2().percent();
+    mana_gain = player -> resources.max[ RESOURCE_MANA ] * effect2().percent();
     player -> stat_gain( STAT_MAX_MANA, mana_gain, player -> gains.hymn_of_hope );
   }
 
@@ -99,8 +99,8 @@ struct vengeance_t : public event_t
     if ( player -> vengeance_value < 0 )
       player -> vengeance_value = 0;
 
-    if ( player -> vengeance_value > ( player -> stamina() + 0.1 * player -> resource_base[ RESOURCE_HEALTH ] ) )
-      player -> vengeance_value = ( player -> stamina() + 0.1 * player -> resource_base[ RESOURCE_HEALTH ] );
+    if ( player -> vengeance_value > ( player -> stamina() + 0.1 * player -> resources.base[ RESOURCE_HEALTH ] ) )
+      player -> vengeance_value = ( player -> stamina() + 0.1 * player -> resources.base[ RESOURCE_HEALTH ] );
 
     if ( player -> vengeance_value > player -> vengeance_max )
       player -> vengeance_max = player -> vengeance_value;
@@ -192,10 +192,10 @@ static void choose_replenish_targets( player_t* provider )
 
       if ( p -> sleeping || ( p -> buffs.replenishment -> current_value == 1.0 ) ) continue;
 
-      if ( ! min_player || min_mana > p -> resource_current[ RESOURCE_MANA ] )
+      if ( ! min_player || min_mana > p -> resources.current[ RESOURCE_MANA ] )
       {
         min_player = p;
-        min_mana   = p -> resource_current[ RESOURCE_MANA ];
+        min_mana   = p -> resources.current[ RESOURCE_MANA ];
       }
     }
     if ( min_player )
@@ -549,10 +549,6 @@ player_t::player_t( sim_t*             s,
   range::fill( resource_reduction, 0 );
   range::fill( initial_resource_reduction, 0 );
 
-  range::fill( resource_base, 0 );
-  range::fill( resource_initial, 0 );
-  range::fill( resource_max, 0 );
-  range::fill( resource_current, 0 );
   range::fill( resource_lost, 0 );
   range::fill( resource_gained, 0 );
 
@@ -823,13 +819,22 @@ void player_t::init_base()
   attribute_base[ ATTR_STAMINA   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_STAMINA );
   attribute_base[ ATTR_INTELLECT ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_INTELLECT );
   attribute_base[ ATTR_SPIRIT    ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPIRIT );
-  resource_base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_HEALTH );
-  resource_base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MANA );
+  resources.base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_HEALTH );
+  resources.base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MANA );
   base_spell_crit                  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT );
   base_attack_crit                 = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT );
   initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
   initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
   base_mp5                         = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MP5 );
+
+  if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
+  {
+    resources.base_multiplier[ RESOURCE_MANA ] *= 1.02;
+  }
+  if ( race == RACE_GNOME )
+  {
+    resources.base_multiplier[ RESOURCE_MANA ] *= 1.05;
+  }
 
   if ( level <= 80 ) health_per_stamina = 10;
   else if ( level <= 85 ) health_per_stamina = ( level - 80 ) / 5 * 4 + 10;
@@ -1251,38 +1256,28 @@ void player_t::init_resources( bool force )
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
-    if ( force || resource_initial[ i ] == 0 )
+    if ( force || resources.initial[ i ] == 0 )
     {
-      resource_initial[ i ] = resource_base[ i ] + gear.resource[ i ] + enchant.resource[ i ] + ( is_pet() ? 0 : sim -> enchant.resource[ i ] );
-
+      resources.initial[ i ] = resources.base[ i ] * resources.base_multiplier[ i ] + gear.resource[ i ] + enchant.resource[ i ] + ( is_pet() ? 0 : sim -> enchant.resource[ i ] );
+      resources.initial[ i ] *= resources.initial_multiplier[ i ];
       if ( i == RESOURCE_MANA )
       {
-        if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
-        {
-          resource_initial[ i ] *= 1.02;
-        }
-        if ( race == RACE_GNOME )
-        {
-          resource_initial[ i ] *= 1.05;
-        }
-        double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( intellect() ) );
-        resource_initial[ i ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
         if ( type != PLAYER_GUARDIAN )
-          resource_initial[ i ] += buffs.arcane_brilliance -> value();
+          resources.initial[ i ] += buffs.arcane_brilliance -> value();
       }
       if ( i == RESOURCE_HEALTH )
       {
         double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
-        resource_initial[ i ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
+        resources.initial[ i ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
 
         if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
         {
           // ICC buff.
-          resource_initial[ i ] *= 1.30;
+          resources.initial[ i ] *= 1.30;
         }
       }
     }
-    resource_current[ i ] = resource_max[ i ] = resource_initial[ i ];
+    resources.current[ i ] = resources.max[ i ] = resources.initial[ i ];
   }
 
   if ( timeline_resource.empty() )
@@ -2928,7 +2923,7 @@ void player_t::combat_begin()
 
   if ( primary_resource() == RESOURCE_MANA )
   {
-    get_gain( "initial_mana" ) -> add( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] );
+    get_gain( "initial_mana" ) -> add( RESOURCE_MANA, resources.max[ RESOURCE_MANA ] );
   }
 
   if ( primary_role() == ROLE_TANK && !is_enemy() && ! is_add() )
@@ -3583,14 +3578,14 @@ void player_t::regen( const timespan_t periodicity )
     {
     if ( buffs.replenishment -> up() )
     {
-      const double replenishment_regen = periodicity.total_seconds() * resource_max[ RESOURCE_MANA ] * 0.0010;
+      const double replenishment_regen = periodicity.total_seconds() * resources.max[ RESOURCE_MANA ] * 0.0010;
 
       resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
     }
 
     if ( buffs.essence_of_the_red -> up() )
     {
-      const double essence_regen = periodicity.total_seconds() * resource_max[ RESOURCE_MANA ] * 0.05;
+      const double essence_regen = periodicity.total_seconds() * resources.max[ RESOURCE_MANA ] * 0.05;
 
       resource_gain( RESOURCE_MANA, essence_regen, gains.essence_of_the_red );
     }
@@ -3612,8 +3607,8 @@ void player_t::regen( const timespan_t periodicity )
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    if ( resource_max[ i ] != 0 )
-      timeline_resource[ i ][ index ] += resource_current[ i ] * periodicity.total_seconds();
+    if ( resources.max[ i ] != 0 )
+      timeline_resource[ i ][ index ] += resources.current[ i ] * periodicity.total_seconds();
   }
 }
 
@@ -3636,14 +3631,14 @@ double player_t::resource_loss( int       resource,
 
   if ( infinite_resource[ resource ] == 0 || is_enemy() )
   {
-    actual_amount = std::min( amount, resource_current[ resource ] );
-    resource_current[ resource ] -= actual_amount;
+    actual_amount = std::min( amount, resources.current[ resource ] );
+    resources.current[ resource ] -= actual_amount;
     resource_lost[ resource ] += actual_amount;
   }
   else
   {
     actual_amount = amount;
-    resource_current[ resource ] -= actual_amount;
+    resources.current[ resource ] -= actual_amount;
     resource_lost[ resource ] += actual_amount;
   }
 
@@ -3671,15 +3666,15 @@ double player_t::resource_gain( int       resource,
   if ( sleeping )
     return 0;
 
-  double actual_amount = std::min( amount, resource_max[ resource ] - resource_current[ resource ] );
+  double actual_amount = std::min( amount, resources.max[ resource ] - resources.current[ resource ] );
 
   if ( actual_amount > 0 )
   {
-    resource_current[ resource ] += actual_amount;
+    resources.current[ resource ] += actual_amount;
     resource_gained [ resource ] += actual_amount;
   }
 
-  if ( resource == primary_resource() && resource_max[ resource ] <= resource_current[ resource ] )
+  if ( resource == primary_resource() && resources.max[ resource ] <= resources.current[ resource ] )
     primary_resource_cap -> update( true );
 
   if ( source )
@@ -3695,7 +3690,7 @@ double player_t::resource_gain( int       resource,
                    name(), actual_amount, amount,
                    util_t::resource_type_string( resource ),
                    source ? source -> name() : action ? action -> name() : "unknown",
-                   resource_current[ resource ], resource_max[ resource ] );
+                   resources.current[ resource ], resources.max[ resource ] );
   }
 
   return actual_amount;
@@ -3711,50 +3706,39 @@ bool player_t::resource_available( int    resource,
     return true;
   }
 
-  return resource_current[ resource ] >= cost;
+  return resources.current[ resource ] >= cost;
 }
 
-// player_t::recalculate_resource_max =======================================
+// player_t::recalculate_resources.max =======================================
 
 void player_t::recalculate_resource_max( int resource )
 {
   // The first 20pts of intellect/stamina only provide 1pt of mana/health.
 
-  resource_max[ resource ] = resource_base[ resource ] +
+  resources.max[ resource ] = resources.base[ resource ] * resources.base_multiplier[ resource ]+
                              gear.resource[ resource ] +
                              enchant.resource[ resource ] +
                              ( is_pet() ? 0 : sim -> enchant.resource[ resource ] );
-
+  resources.max[ resource ] *= resources.initial_multiplier[ resource ];
   switch ( resource )
   {
   case RESOURCE_MANA:
   {
-    if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
-    {
-      resource_max[ resource ] *= 1.02;
-    }
-
-    if ( race == RACE_GNOME )
-    {
-      resource_initial[ resource ] *= 1.05;
-    }
-    double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( intellect() ) );
-    resource_max[ resource ] += ( floor( intellect() ) - adjust ) * mana_per_intellect + adjust;
     // Arcane Brilliance needs to be done here as a generic resource, otherwise override will
     // not (and did not previously) work
     if ( type != PLAYER_GUARDIAN )
-      resource_max[ resource ] += buffs.arcane_brilliance -> value();
+      resources.max[ resource ] += buffs.arcane_brilliance -> value();
     break;
   }
   case RESOURCE_HEALTH:
   {
     double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
-    resource_max[ resource ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
+    resources.max[ resource ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
 
     if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
     {
       // ICC buff.
-      resource_max[ resource ] *= 1.30;
+      resources.max[ resource ] *= 1.30;
     }
     break;
   }
@@ -3837,7 +3821,7 @@ int player_t::normalize_by() const
 
 double player_t::health_percentage() const
 {
-  return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
+  return resources.current[ RESOURCE_HEALTH ] / resources.max[ RESOURCE_HEALTH ] * 100 ;
 }
 
 // target_t::time_to_die ====================================================
@@ -3848,9 +3832,9 @@ timespan_t player_t::time_to_die() const
   // wait a minimum gcd before starting to estimate fight duration based on health,
   // otherwise very odd things happen with multi-actor simulations and time_to_die
   // expressions
-  if ( resource_base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds( 1.0 ) )
+  if ( resources.base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds( 1.0 ) )
   {
-    return sim -> current_time * ( resource_current[ RESOURCE_HEALTH ] / iteration_dmg_taken );
+    return sim -> current_time * ( resources.current[ RESOURCE_HEALTH ] / iteration_dmg_taken );
   }
   else
   {
@@ -3895,12 +3879,12 @@ void player_t::stat_gain( int       stat,
   case STAT_FOCUS:  resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
   case STAT_RUNIC:  resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
-  case STAT_MAX_HEALTH: resource_max[ RESOURCE_HEALTH ] += amount; resource_gain( RESOURCE_HEALTH, amount, gain, action ); break;
-  case STAT_MAX_MANA:   resource_max[ RESOURCE_MANA   ] += amount; resource_gain( RESOURCE_MANA,   amount, gain, action ); break;
-  case STAT_MAX_RAGE:   resource_max[ RESOURCE_RAGE   ] += amount; resource_gain( RESOURCE_RAGE,   amount, gain, action ); break;
-  case STAT_MAX_ENERGY: resource_max[ RESOURCE_ENERGY ] += amount; resource_gain( RESOURCE_ENERGY, amount, gain, action ); break;
-  case STAT_MAX_FOCUS:  resource_max[ RESOURCE_FOCUS  ] += amount; resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
-  case STAT_MAX_RUNIC:  resource_max[ RESOURCE_RUNIC_POWER  ] += amount; resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
+  case STAT_MAX_HEALTH: resources.max[ RESOURCE_HEALTH ] += amount; resource_gain( RESOURCE_HEALTH, amount, gain, action ); break;
+  case STAT_MAX_MANA:   resources.max[ RESOURCE_MANA   ] += amount; resource_gain( RESOURCE_MANA,   amount, gain, action ); break;
+  case STAT_MAX_RAGE:   resources.max[ RESOURCE_RAGE   ] += amount; resource_gain( RESOURCE_RAGE,   amount, gain, action ); break;
+  case STAT_MAX_ENERGY: resources.max[ RESOURCE_ENERGY ] += amount; resource_gain( RESOURCE_ENERGY, amount, gain, action ); break;
+  case STAT_MAX_FOCUS:  resources.max[ RESOURCE_FOCUS  ] += amount; resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
+  case STAT_MAX_RUNIC:  resources.max[ RESOURCE_RUNIC_POWER  ] += amount; resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
   case STAT_SPELL_POWER:       stats.spell_power       += amount; temporary.spell_power += temp_value * amount; spell_power[ SCHOOL_MAX ] += amount; break;
   case STAT_SPELL_PENETRATION: stats.spell_penetration += amount; spell_penetration         += amount; break;
@@ -3989,7 +3973,7 @@ void player_t::stat_loss( int       stat,
               ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
               ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC_POWER );
     recalculate_resource_max( r );
-    double delta = resource_current[ r ] - resource_max[ r ];
+    double delta = resources.current[ r ] - resources.max[ r ];
     if ( delta > 0 ) resource_loss( r, delta, action );
   }
   break;
@@ -4136,14 +4120,14 @@ double player_t::assess_damage( double            amount,
 
   double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount, action );
 
-  if ( resource_current[ RESOURCE_HEALTH ] <= 0 && !is_enemy() && infinite_resource[ RESOURCE_HEALTH ] == 0 )
+  if ( resources.current[ RESOURCE_HEALTH ] <= 0 && !is_enemy() && infinite_resource[ RESOURCE_HEALTH ] == 0 )
   {
     // This can only save the target, if the damage is less than 200% of the target's health as of 4.0.6
-    if ( buffs.guardian_spirit -> check() && actual_amount <= ( resource_max[ RESOURCE_HEALTH] * 2 ) )
+    if ( buffs.guardian_spirit -> check() && actual_amount <= ( resources.max[ RESOURCE_HEALTH] * 2 ) )
     {
       // Just assume that this is used so rarely that a strcmp hack will do
       stats_t* s = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
-      double gs_amount = resource_max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> effect2().percent();
+      double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> effect2().percent();
       resource_gain( RESOURCE_HEALTH, amount );
       if ( s )
         s -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
@@ -4842,7 +4826,7 @@ struct arcane_torrent_t : public action_t
     switch ( resource )
     {
     case RESOURCE_MANA:
-      gain = player -> resource_max [ RESOURCE_MANA ] * 0.06;
+      gain = player -> resources.max [ RESOURCE_MANA ] * 0.06;
       break;
     case RESOURCE_ENERGY:
     case RESOURCE_FOCUS:
@@ -4872,14 +4856,14 @@ struct arcane_torrent_t : public action_t
     switch ( resource )
     {
     case RESOURCE_MANA:
-      if ( player -> resource_current [ resource ] / player -> resource_max [ resource ] <= 0.94 )
+      if ( player -> resources.current [ resource ] / player -> resources.max [ resource ] <= 0.94 )
         return true;
       break;
     case RESOURCE_ENERGY:
     case RESOURCE_FOCUS:
     case RESOURCE_RAGE:
     case RESOURCE_RUNIC_POWER:
-      if ( player -> resource_max [ resource ] - player -> resource_current [ resource ] >= 15 )
+      if ( player -> resources.max [ resource ] - player -> resources.current [ resource ] >= 15 )
         return true;
       break;
     default:
@@ -5178,7 +5162,7 @@ struct restore_mana_t : public action_t
 
   virtual void execute()
   {
-    double mana_missing = player -> resource_max[ RESOURCE_MANA ] - player -> resource_current[ RESOURCE_MANA ];
+    double mana_missing = player -> resources.max[ RESOURCE_MANA ] - player -> resources.current[ RESOURCE_MANA ];
     double mana_gain = mana;
 
     if ( mana_gain == 0 || mana_gain > mana_missing ) mana_gain = mana_missing;
@@ -5215,7 +5199,7 @@ struct snapshot_stats_t : public action_t
     for ( int i=ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
       p -> buffed.attribute[ i ] = floor( p -> get_attribute( static_cast<attribute_type>( i ) ) );
 
-    range::copy( p -> resource_max, p -> buffed.resource );
+    range::copy( p -> resources.max, p -> buffed.resource );
 
     p -> buffed_spell_haste  = p -> composite_spell_haste();
     p -> buffed_attack_haste = p -> composite_attack_haste();
@@ -5925,7 +5909,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     {
       int resource_type;
       resource_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-      virtual int evaluate() { result_num = action -> player -> resource_current[ resource_type ]; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type ]; return TOK_NUM; }
     };
     return new resource_expr_t( a, name_str, resource_type );
   }
@@ -6054,7 +6038,7 @@ action_expr_t* player_t::create_expression( action_t* a,
        {
          int resource_type;
          resource_deficit_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resource_max[ resource_type ] - action -> player -> resource_current[ resource_type ]; return TOK_NUM; }
+         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type ] - action -> player -> resources.current[ resource_type ]; return TOK_NUM; }
        };
        return new resource_deficit_expr_t( a, name_str, resource_type );
      }
@@ -6065,7 +6049,7 @@ action_expr_t* player_t::create_expression( action_t* a,
        {
          int resource_type;
          resource_pct_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resource_current[ resource_type ] / action -> player -> resource_max[ resource_type ] * 100.0; return TOK_NUM; }
+         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type ] / action -> player -> resources.max[ resource_type ] * 100.0; return TOK_NUM; }
        };
        return new resource_pct_expr_t( a, name_str, resource_type );
      }
@@ -6076,7 +6060,7 @@ action_expr_t* player_t::create_expression( action_t* a,
        {
          int resource_type;
          resource_max_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resource_max[ resource_type ]; return TOK_NUM; }
+         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type ]; return TOK_NUM; }
        };
        return new resource_max_expr_t( a, name_str, resource_type );
      }
@@ -6096,7 +6080,7 @@ action_expr_t* player_t::create_expression( action_t* a,
        {
          int resource_type;
          resource_pct_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resource_current[ resource_type ] / action -> player -> buffed.resource[ resource_type ] * 100.0; return TOK_NUM; }
+         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type ] / action -> player -> buffed.resource[ resource_type ] * 100.0; return TOK_NUM; }
        };
        return new resource_pct_nonproc_expr_t( a, name_str, resource_type );
      }
@@ -6143,8 +6127,8 @@ action_expr_t* player_t::create_expression( action_t* a,
            time_to_max_energy_expr_t( action_t* a ) : action_expr_t( a, "time_to_max_energy", TOK_NUM ) {}
            virtual int evaluate()
            {
-             result_num = ( action -> player -> resource_max[ RESOURCE_ENERGY ] -
-                            action -> player -> resource_current[ RESOURCE_ENERGY ] ) /
+             result_num = ( action -> player -> resources.max[ RESOURCE_ENERGY ] -
+                            action -> player -> resources.current[ RESOURCE_ENERGY ] ) /
                           action -> player -> energy_regen_per_second(); return TOK_NUM;
            }
          };
@@ -6157,8 +6141,8 @@ action_expr_t* player_t::create_expression( action_t* a,
            time_to_max_focus_expr_t( action_t* a ) : action_expr_t( a, "time_to_max_focus", TOK_NUM ) {}
            virtual int evaluate()
            {
-             result_num = ( action -> player -> resource_max[ RESOURCE_FOCUS ] -
-                            action -> player -> resource_current[ RESOURCE_FOCUS ] ) /
+             result_num = ( action -> player -> resources.max[ RESOURCE_FOCUS ] -
+                            action -> player -> resources.current[ RESOURCE_FOCUS ] ) /
                           action -> player -> focus_regen_per_second(); return TOK_NUM;
            }
          };

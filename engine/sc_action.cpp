@@ -294,7 +294,7 @@ void action_t::parse_data()
       if ( pd -> _cost > 0 )
         base_costs[ pd -> resource() ] = pd -> cost();
       else
-        base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resource_base[ pd -> resource() ] );
+        base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
     }
 
     for ( size_t i = 1; i <= spell -> _effects -> size(); i++ )
@@ -950,7 +950,7 @@ void action_t::consume_resource()
   if ( sim -> log )
     log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),
                    resource_consumed, util_t::resource_type_string( current_resource() ),
-                   name(), player -> resource_current[ current_resource() ] );
+                   name(), player -> resources.current[ current_resource() ] );
 
   stats -> consume_resource( current_resource(), resource_consumed );
 }
@@ -1010,7 +1010,7 @@ void action_t::execute()
   if ( sim -> log && ! dual )
   {
     log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(),
-                   player -> resource_current[ player -> primary_resource() ] );
+                   player -> resources.current[ player -> primary_resource() ] );
   }
 
   if ( harmful )
@@ -1242,7 +1242,7 @@ void action_t::assess_damage( player_t* t,
                               int    dmg_result )
 {
   double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
-  double actual_amount = t -> infinite_resource[ RESOURCE_HEALTH ] ? dmg_adjusted : std::min( dmg_adjusted, t -> resource_current[ RESOURCE_HEALTH ] );
+  double actual_amount = t -> infinite_resource[ RESOURCE_HEALTH ] ? dmg_adjusted : std::min( dmg_adjusted, t -> resources.current[ RESOURCE_HEALTH ] );
 
   if ( dmg_type == DMG_DIRECT )
   {
@@ -1289,7 +1289,7 @@ void action_t::additional_damage( player_t* t,
 {
   dmg_amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
   double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
-  double actual_amount = std::min( dmg_adjusted, t -> resource_current[ current_resource() ] );
+  double actual_amount = std::min( dmg_adjusted, t -> resources.current[ current_resource() ] );
   stats -> add_result( actual_amount, dmg_amount, dmg_type, dmg_result );
 }
 

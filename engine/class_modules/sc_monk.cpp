@@ -466,7 +466,7 @@ void monk_t::init_base()
 
   base_gcd = timespan_t::from_seconds( 1.0 ); // FIXME: assumption
 
-  resource_base[  RESOURCE_CHI  ] = 0; // FIXME: placeholder
+  resources.base[  RESOURCE_CHI  ] = 0; // FIXME: placeholder
 
   base_chi_regen_per_second = 10; // FIXME: placeholder ( identical to rogue )
 
@@ -559,7 +559,7 @@ void monk_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resource_current[ RESOURCE_CHI ] = 0;
+  resources.current[ RESOURCE_CHI ] = 0;
 }
 
 // monk_t::matching_gear_multiplier =========================================

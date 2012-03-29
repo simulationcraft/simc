@@ -711,8 +711,8 @@ struct earth_elemental_pet_t : public pet_t
   {
     pet_t::init_base();
 
-    resource_base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
-    resource_base[ RESOURCE_MANA   ] = 0; //
+    resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
+    resources.base[ RESOURCE_MANA   ] = 0; //
 
     health_per_stamina = 13.75; // See above
     mana_per_intellect = 0;
@@ -1030,8 +1030,8 @@ struct fire_elemental_pet_t : public pet_t
   {
     pet_t::init_base();
 
-    resource_base[ RESOURCE_HEALTH ] = 4643; // Approximated from lvl83 fire elem with naked shaman
-    resource_base[ RESOURCE_MANA   ] = 8508; //
+    resources.base[ RESOURCE_HEALTH ] = 4643; // Approximated from lvl83 fire elem with naked shaman
+    resources.base[ RESOURCE_MANA   ] = 8508; //
 
     health_per_stamina               = 7.5; // See above
     mana_per_intellect               = 4.5;
@@ -1209,7 +1209,7 @@ static bool trigger_rolling_thunder ( spell_t* s )
   if ( p -> rng.rolling_thunder -> roll( p -> spec.rolling_thunder -> proc_chance() ) )
   {
     p -> resource_gain( RESOURCE_MANA,
-                        p -> dbc.spell( 88765 ) -> effect1().percent() * p -> resource_max[ RESOURCE_MANA ],
+                        p -> dbc.spell( 88765 ) -> effect1().percent() * p -> resources.max[ RESOURCE_MANA ],
                         p -> gain.rolling_thunder );
 
     if ( p -> buff.lightning_shield -> check() == p -> buff.lightning_shield -> max_stack )
@@ -1789,7 +1789,7 @@ void shaman_attack_t::impact_s( action_state_t* state )
 
     if ( actor -> rng.primal_wisdom -> roll( actor -> spec.primal_wisdom -> proc_chance() ) )
     {
-      double amount = actor -> dbc.spell( 63375 ) -> effect1().percent() * actor -> resource_base[ RESOURCE_MANA ];
+      double amount = actor -> dbc.spell( 63375 ) -> effect1().percent() * actor -> resources.base[ RESOURCE_MANA ];
       actor -> resource_gain( RESOURCE_MANA, amount, actor -> gain.primal_wisdom );
     }
   }
@@ -2787,7 +2787,7 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_spell_t::impact_s( state );
 
     actor -> resource_gain( effectN( 2 ).resource_gain_type(),
-                            actor -> resource_max[ effectN( 2 ).resource_gain_type() ] * bonus,
+                            actor -> resources.max[ effectN( 2 ).resource_gain_type() ] * bonus,
                             actor -> gain.thunderstorm );
   }
 };
@@ -3272,7 +3272,7 @@ struct mana_tide_totem_t : public shaman_totem_t
     if ( ! shaman_spell_t::ready() )
       return false;
 
-    return ( actor -> resource_current[ RESOURCE_MANA ] < ( 0.75 * actor -> resource_max[ RESOURCE_MANA ] ) );
+    return ( actor -> resources.current[ RESOURCE_MANA ] < ( 0.75 * actor -> resources.max[ RESOURCE_MANA ] ) );
   }
 };
 

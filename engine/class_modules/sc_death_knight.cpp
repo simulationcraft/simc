@@ -947,7 +947,7 @@ struct army_ghoul_pet_t : public pet_t
     // Ghouls don't appear to gain any crit from agi, they may also just have none
     // initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
-    resource_base[ RESOURCE_ENERGY ] = 100;
+    resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
   }
 
@@ -1006,7 +1006,7 @@ struct army_ghoul_pet_t : public pet_t
 
   timespan_t available() const
   {
-    double energy = resource_current[ RESOURCE_ENERGY ];
+    double energy = resources.current[ RESOURCE_ENERGY ];
 
     if ( energy > 40 )
       return timespan_t::from_seconds( 0.1 );
@@ -1298,7 +1298,7 @@ struct ghoul_pet_t : public pet_t
 
     initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
-    resource_base[ RESOURCE_ENERGY ] = 100;
+    resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
   }
 
@@ -1436,7 +1436,7 @@ struct ghoul_pet_t : public pet_t
 
   timespan_t available() const
   {
-    double energy = resource_current[ RESOURCE_ENERGY ];
+    double energy = resources.current[ RESOURCE_ENERGY ];
 
     // Cheapest Ability need 40 Energy
     if ( energy > 40 )
@@ -2698,7 +2698,7 @@ struct death_strike_t : public death_knight_attack_t
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> glyphs.death_strike -> ok() )
     {
-      player_multiplier *= 1 + p -> resource_current[ RESOURCE_RUNIC_POWER ] / 5 * p -> glyphs.death_strike -> effect1().percent();
+      player_multiplier *= 1 + p -> resources.current[ RESOURCE_RUNIC_POWER ] / 5 * p -> glyphs.death_strike -> effect1().percent();
     }
   }
 };
@@ -3581,7 +3581,7 @@ struct presence_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
 
     // Presence changes consume all runic power
-    return p -> resource_current [ RESOURCE_RUNIC_POWER ];
+    return p -> resources.current [ RESOURCE_RUNIC_POWER ];
   }
 
   virtual void execute()
@@ -4208,10 +4208,10 @@ void death_knight_t::init_base()
   if ( primary_tree() == TREE_BLOOD )
     vengeance_enabled = true;
 
-  resource_base[ RESOURCE_RUNIC_POWER ] = 100;
+  resources.base[ RESOURCE_RUNIC_POWER ] = 100;
 
   if ( talents.runic_power_mastery -> rank() )
-    resource_base[ RESOURCE_RUNIC_POWER ] += talents.runic_power_mastery -> effect1().resource( RESOURCE_RUNIC_POWER );
+    resources.base[ RESOURCE_RUNIC_POWER ] += talents.runic_power_mastery -> effect1().resource( RESOURCE_RUNIC_POWER );
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -4796,7 +4796,7 @@ void death_knight_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resource_current[ RESOURCE_RUNIC_POWER ] = 0;
+  resources.current[ RESOURCE_RUNIC_POWER ] = 0;
 }
 
 // death_knight_t::init_uptimes =============================================
@@ -4992,8 +4992,8 @@ void death_knight_t::regen( timespan_t periodicity )
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     _runes.slot[i].regen_rune( this, periodicity );
 
-  uptimes_rp_cap -> update( resource_current[ RESOURCE_RUNIC_POWER ] ==
-                            resource_max    [ RESOURCE_RUNIC_POWER] );
+  uptimes_rp_cap -> update( resources.current[ RESOURCE_RUNIC_POWER ] ==
+                            resources.max    [ RESOURCE_RUNIC_POWER] );
 }
 
 // death_knight_t::create_options ===========================================

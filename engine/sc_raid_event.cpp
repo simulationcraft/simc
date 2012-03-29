@@ -26,7 +26,7 @@ struct adds_event_t : public raid_event_t
 
     for ( pet_t* pet = sim -> target -> pet_list; pet; pet = pet -> next_pet )
     {
-      pet -> resource_base[ RESOURCE_HEALTH ] = health;
+      pet -> resources.base[ RESOURCE_HEALTH ] = health;
     }
     if ( count > sim -> target_adds )
     {

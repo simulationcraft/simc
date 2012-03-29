@@ -642,7 +642,7 @@ static void trigger_earth_and_moon( spell_t* s )
 static void trigger_eclipse_proc( druid_t* p )
 {
   // All extra procs when eclipse pops
-  p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] * p -> talents.euphoria -> effect3().resource( RESOURCE_MANA ), p -> gains_euphoria );
+  p -> resource_gain( RESOURCE_MANA, p -> resources.max[ RESOURCE_MANA ] * p -> talents.euphoria -> effect3().resource( RESOURCE_MANA ), p -> gains_euphoria );
   p -> buffs_natures_grace -> cooldown -> reset();
 }
 
@@ -914,11 +914,11 @@ static void trigger_lotp( action_t* a )
     return;
 
   p -> resource_gain( RESOURCE_HEALTH,
-                      p -> resource_max[ RESOURCE_HEALTH ] * p -> dbc.spell( 24932 ) -> effect2().percent(),
+                      p -> resources.max[ RESOURCE_HEALTH ] * p -> dbc.spell( 24932 ) -> effect2().percent(),
                       p -> gains_lotp_health );
 
   p -> resource_gain( RESOURCE_MANA,
-                      p -> resource_max[ RESOURCE_MANA ] * p -> talents.leader_of_the_pack -> effect1().percent(),
+                      p -> resources.max[ RESOURCE_MANA ] * p -> talents.leader_of_the_pack -> effect1().percent(),
                       p -> gains_lotp_mana );
 
   p -> cooldowns_lotp -> start( timespan_t::from_seconds( 6.0 ) );
@@ -1001,7 +1001,7 @@ static void trigger_revitalize( druid_heal_t* a )
   {
     p -> procs_revitalize -> occur();
     p -> resource_gain( RESOURCE_MANA,
-                        p -> resource_max[ RESOURCE_MANA ] * p -> talents.revitalize -> effect1().percent(),
+                        p -> resources.max[ RESOURCE_MANA ] * p -> talents.revitalize -> effect1().percent(),
                         p -> gains_revitalize );
   }
 }
@@ -1255,7 +1255,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     // consumes up to 35 additional energy to increase damage by up to 100%.
     // Assume 100/35 = 2.857% per additional energy consumed
 
-    excess_energy = ( p -> resource_current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
+    excess_energy = ( p -> resources.current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() );
 
     if ( excess_energy > max_excess_energy )
     {
@@ -1272,7 +1272,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     {
       if ( p -> glyphs.ferocious_bite -> enabled() )
       {
-        double amount = p -> resource_max[ RESOURCE_HEALTH ] *
+        double amount = p -> resources.max[ RESOURCE_HEALTH ] *
                         p -> glyphs.ferocious_bite -> effect1().percent() *
                         ( ( int ) ( excess_energy + druid_cat_attack_t::cost() ) / 10 );
         p -> resource_gain( RESOURCE_HEALTH, amount, p -> gains_glyph_ferocious_bite );
@@ -1355,9 +1355,9 @@ struct frenzied_regeneration_buff_t : public buff_t
 
           if ( p -> buffs_frenzied_regeneration -> check() )
           {
-            int rage_consumed = ( int ) ( std::min( p -> resource_current[ RESOURCE_RAGE ], 10.0 ) );
+            int rage_consumed = ( int ) ( std::min( p -> resources.current[ RESOURCE_RAGE ], 10.0 ) );
             double health_pct = p -> dbc.spell( 22842 ) -> effect1().percent() / 100;
-            double rage_health = rage_consumed * health_pct * p -> resource_max[ RESOURCE_HEALTH ];
+            double rage_health = rage_consumed * health_pct * p -> resources.max[ RESOURCE_HEALTH ];
             p -> resource_gain( RESOURCE_HEALTH, rage_health, p -> gains_frenzied_regeneration );
             p -> resource_loss( RESOURCE_RAGE, rage_consumed );
             rage_stats -> consume_resource( RESOURCE_RAGE, rage_consumed );
@@ -1374,13 +1374,13 @@ struct frenzied_regeneration_buff_t : public buff_t
 
     double health_pct = effect2().percent();
 
-    health_gain = ( int ) floor( player -> resource_max[ RESOURCE_HEALTH ] * health_pct );
+    health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * health_pct );
     p -> stat_gain( STAT_MAX_HEALTH, health_gain );
 
     // Ability also heals to 30% if not at that amount
-    if ( p -> resource_current[ RESOURCE_HEALTH ] < health_gain )
+    if ( p -> resources.current[ RESOURCE_HEALTH ] < health_gain )
     {
-      p -> resource_gain( RESOURCE_HEALTH, health_gain - p -> resource_current[ RESOURCE_HEALTH ], p -> gains_frenzied_regeneration );
+      p -> resource_gain( RESOURCE_HEALTH, health_gain - p -> resources.current[ RESOURCE_HEALTH ], p -> gains_frenzied_regeneration );
     }
 
     buff_t::start( stacks, value );
@@ -3358,9 +3358,9 @@ struct innervate_t : public druid_spell_t
     {
       // Either Dreamstate increases innervate OR you get glyph of innervate
       gain = 0.05;
-      p -> buffs_glyph_of_innervate -> trigger( 1, p -> resource_max[ RESOURCE_MANA ] * 0.1 / 10.0 );
+      p -> buffs_glyph_of_innervate -> trigger( 1, p -> resources.max[ RESOURCE_MANA ] * 0.1 / 10.0 );
     }
-    innervate_target -> buffs.innervate -> trigger( 1, p -> resource_max[ RESOURCE_MANA ] * gain / 10.0 );
+    innervate_target -> buffs.innervate -> trigger( 1, p -> resources.max[ RESOURCE_MANA ] * gain / 10.0 );
   }
 
   virtual bool ready()
@@ -3369,10 +3369,10 @@ struct innervate_t : public druid_spell_t
       return false;
 
     if ( trigger < 0 )
-      return ( innervate_target -> resource_current[ RESOURCE_MANA ] + trigger ) < 0;
+      return ( innervate_target -> resources.current[ RESOURCE_MANA ] + trigger ) < 0;
 
-    return ( innervate_target -> resource_max    [ RESOURCE_MANA ] -
-             innervate_target -> resource_current[ RESOURCE_MANA ] ) > trigger;
+    return ( innervate_target -> resources.max    [ RESOURCE_MANA ] -
+             innervate_target -> resources.current[ RESOURCE_MANA ] ) > trigger;
   }
 };
 
@@ -3456,9 +3456,9 @@ struct mark_of_the_wild_t : public druid_spell_t
       {
         p -> buffs.mark_of_the_wild -> trigger();
         // Force max mana recalculation here
-        p -> recalculate_resource_max( RESOURCE_MANA );
+        p -> recalculate_resources.max( RESOURCE_MANA );
         if ( ! p -> in_combat )
-          p -> resource_gain( RESOURCE_MANA, p -> resource_max[ RESOURCE_MANA ] - p -> resource_current[ RESOURCE_MANA ], 0, this );
+          p -> resource_gain( RESOURCE_MANA, p -> resources.max[ RESOURCE_MANA ] - p -> resources.current[ RESOURCE_MANA ], 0, this );
       }
     }
   }
@@ -4655,14 +4655,14 @@ void druid_t::init_base()
   diminished_dodge_capi = 0.008555;
   diminished_parry_capi = 0.008555;
 
-  resource_base[ RESOURCE_ENERGY ] = 100;
-  resource_base[ RESOURCE_RAGE   ] = 100;
+  resources.base[ RESOURCE_ENERGY ] = 100;
+  resources.base[ RESOURCE_RAGE   ] = 100;
 
   mana_per_intellect           = 15;
   base_energy_regen_per_second = 10;
 
   // Furor: +5/10/15% max mana
-  resource_base[ RESOURCE_MANA ] *= 1.0 + talents.furor -> effect2().percent();
+  resources.base[ RESOURCE_MANA ] *= 1.0 + talents.furor -> effect2().percent();
   mana_per_intellect             *= 1.0 + talents.furor -> effect2().percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -5107,8 +5107,8 @@ void druid_t::regen( timespan_t periodicity )
 
   if ( rt == RESOURCE_ENERGY )
   {
-    uptimes_energy_cap -> update( resource_current[ RESOURCE_ENERGY ] ==
-                                  resource_max    [ RESOURCE_ENERGY ] );
+    uptimes_energy_cap -> update( resources.current[ RESOURCE_ENERGY ] ==
+                                  resources.max    [ RESOURCE_ENERGY ] );
   }
   else if ( rt == RESOURCE_MANA )
   {
@@ -5120,8 +5120,8 @@ void druid_t::regen( timespan_t periodicity )
     if ( buffs_enrage -> up() )
       resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds(), gains_enrage );
 
-    uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
-                                resource_max    [ RESOURCE_RAGE ] );
+    uptimes_rage_cap -> update( resources.current[ RESOURCE_RAGE ] ==
+                                resources.max    [ RESOURCE_RAGE ] );
   }
 
   player_t::regen( periodicity );
@@ -5134,7 +5134,7 @@ timespan_t druid_t::available() const
   if ( primary_resource() != RESOURCE_ENERGY )
     return timespan_t::from_seconds( 0.1 );
 
-  double energy = resource_current[ RESOURCE_ENERGY ];
+  double energy = resources.current[ RESOURCE_ENERGY ];
 
   if ( energy > 25 ) return timespan_t::from_seconds( 0.1 );
 
@@ -5151,7 +5151,7 @@ void druid_t::combat_begin()
   player_t::combat_begin();
 
   // Start the fight with 0 rage
-  resource_current[ RESOURCE_RAGE ] = 0;
+  resources.current[ RESOURCE_RAGE ] = 0;
 
   // Moonkins can precast 3 wild mushrooms without aggroing the boss
   buffs_wild_mushroom -> trigger( 3 );
@@ -5486,7 +5486,7 @@ double druid_t::assess_damage( double            amount,
 
   // This needs to use unmitigated damage, which amount currently is
   // FIX ME: Rage gains need to trigger on every attempt to poke the bear
-  double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ];
+  double rage_gain = amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
   resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
 
   if ( SCHOOL_SPELL_MASK & ( int64_t( 1 ) << school ) && talents.perseverance -> ok() )

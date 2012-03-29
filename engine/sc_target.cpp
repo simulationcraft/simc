@@ -444,13 +444,13 @@ void enemy_t::init_resources( bool /* force */ )
 {
   double health_adjust = 1.0 + sim -> vary_combat_length * sim -> iteration_adjust();
 
-  resource_base[ RESOURCE_HEALTH ] = initial_health * health_adjust;
+  resources.base[ RESOURCE_HEALTH ] = initial_health * health_adjust;
 
   player_t::init_resources( true );
 
   if ( initial_health_percentage > 0 )
   {
-    resource_max[ RESOURCE_HEALTH ] *= 100.0 / initial_health_percentage;
+    resources.max[ RESOURCE_HEALTH ] *= 100.0 / initial_health_percentage;
   }
 }
 
@@ -581,14 +581,14 @@ double enemy_t::health_percentage() const
 {
   if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
 
-  if ( resource_base[ RESOURCE_HEALTH ] == 0 ) // first iteration
+  if ( resources.base[ RESOURCE_HEALTH ] == 0 ) // first iteration
   {
     timespan_t remainder = std::max( timespan_t::zero, ( sim -> expected_time - sim -> current_time ) );
 
     return ( remainder / sim -> expected_time ) * ( initial_health_percentage - sim -> target_death_pct ) + sim ->  target_death_pct;
   }
 
-  return resource_current[ RESOURCE_HEALTH ] / resource_max[ RESOURCE_HEALTH ] * 100 ;
+  return resources.current[ RESOURCE_HEALTH ] / resources.max[ RESOURCE_HEALTH ] * 100 ;
 }
 
 // enemy_t::recalculate_health ==============================================

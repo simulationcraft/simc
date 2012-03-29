@@ -1234,7 +1234,7 @@ struct bloodthirst_buff_callback_t : public action_callback_t
   {
     if ( buff -> check() && a -> weapon && a -> direct_dmg > 0 )
     {
-      bloodthirst_heal -> base_dd_min = bloodthirst_heal -> base_dd_max = bloodthirst_heal -> effect2().base_value() / 100000.0 * a -> player -> resource_max[ RESOURCE_HEALTH ];
+      bloodthirst_heal -> base_dd_min = bloodthirst_heal -> base_dd_max = bloodthirst_heal -> effect2().base_value() / 100000.0 * a -> player -> resources.max[ RESOURCE_HEALTH ];
       bloodthirst_heal -> execute();
       buff -> decrement();
     }
@@ -1551,7 +1551,7 @@ struct execute_t : public warrior_attack_t
     warrior_t* p = player -> cast_warrior();
 
     // Consumes base_cost + 20
-    resource_consumed = std::min( p -> resource_current[ current_resource() ], 20.0 + cost() );
+    resource_consumed = std::min( p -> resources.current[ current_resource() ], 20.0 + cost() );
 
     if ( sim -> debug )
       log_t::output( sim, "%s consumes %.1f %s for %s", p -> name(),
@@ -1563,7 +1563,7 @@ struct execute_t : public warrior_attack_t
 
     if ( p -> talents.sudden_death -> ok() )
     {
-      double current_rage = p -> resource_current[ current_resource() ];
+      double current_rage = p -> resources.current[ current_resource() ];
       double sudden_death_rage = p -> talents.sudden_death -> effect1().base_value();
 
       if ( current_rage < sudden_death_rage )
@@ -1590,7 +1590,7 @@ struct execute_t : public warrior_attack_t
     // player_buff happens before consume_resource
     // so we can safely check here how much excess rage we will spend
     double base_consumed = cost();
-    double max_consumed = std::min( p -> resource_current[ RESOURCE_RAGE ], 20.0 + base_consumed );
+    double max_consumed = std::min( p -> resources.current[ RESOURCE_RAGE ], 20.0 + base_consumed );
 
     // Damage scales directly with AP per rage since 4.0.1.
     // Can't be derived by parse_data() for now.
@@ -2887,7 +2887,7 @@ struct stance_t : public warrior_spell_t
   {
     warrior_t* p = player -> cast_warrior();
 
-    double c = p -> resource_current [ current_resource() ];
+    double c = p -> resources.current [ current_resource() ];
 
     c -= 25.0; // Stance Mastery
 
@@ -2970,7 +2970,7 @@ struct buff_last_stand_t : public buff_t
 
   virtual bool trigger( int stacks, double value, double chance )
   {
-    health_gain = ( int ) floor( player -> resource_max[ RESOURCE_HEALTH ] * 0.3 );
+    health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * 0.3 );
     player -> stat_gain( STAT_MAX_HEALTH, health_gain );
 
     return buff_t::trigger( stacks, value, chance );
@@ -3178,7 +3178,7 @@ void warrior_t::init_base()
 {
   player_t::init_base();
 
-  resource_base[  RESOURCE_RAGE  ] = 100;
+  resources.base[  RESOURCE_RAGE  ] = 100;
 
   initial_attack_power_per_strength = 2.0;
   initial_attack_power_per_agility  = 0.0;
@@ -3589,7 +3589,7 @@ void warrior_t::combat_begin()
   player_t::combat_begin();
 
   // We (usually) start combat with zero rage.
-  resource_current[ RESOURCE_RAGE ] = std::min( initial_rage, 100 );
+  resources.current[ RESOURCE_RAGE ] = std::min( initial_rage, 100 );
 
   if ( active_stance == STANCE_BATTLE && ! buffs_battle_stance -> check() )
     buffs_battle_stance -> trigger();
@@ -3748,8 +3748,8 @@ void warrior_t::regen( timespan_t periodicity )
   if ( spec.anger_management -> ok() )
     resource_gain( RESOURCE_RAGE, ( periodicity.total_seconds() / 3.0 ), gains_anger_management );
 
-  uptimes_rage_cap -> update( resource_current[ RESOURCE_RAGE ] ==
-                              resource_max    [ RESOURCE_RAGE] );
+  uptimes_rage_cap -> update( resources.current[ RESOURCE_RAGE ] ==
+                              resources.max    [ RESOURCE_RAGE] );
 }
 
 // warrior_t::primary_role() ================================================
@@ -3781,7 +3781,7 @@ double warrior_t::assess_damage( double            amount,
        result == RESULT_GLANCE ||
        result == RESULT_BLOCK  )
   {
-    double rage_gain = amount * 18.92 / resource_max[ RESOURCE_HEALTH ];
+    double rage_gain = amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
     if ( buffs_berserker_rage -> up() )
       rage_gain *= 2.0;
 

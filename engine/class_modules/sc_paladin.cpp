@@ -454,7 +454,7 @@ struct paladin_heal_t : public heal_t
       if ( p -> buffs_divine_purpose -> check() )
         return 0;
 
-      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resource_current[ RESOURCE_HOLY_POWER ] );
+      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resources.current[ RESOURCE_HOLY_POWER ] );
     }
 
     return heal_t::cost();
@@ -646,7 +646,7 @@ struct paladin_attack_t : public attack_t
       if ( p -> buffs_divine_purpose -> check() )
         return 0;
 
-      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resource_current[ RESOURCE_HOLY_POWER ] );
+      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resources.current[ RESOURCE_HOLY_POWER ] );
     }
 
     return attack_t::cost();
@@ -714,7 +714,7 @@ struct paladin_spell_t : public spell_t
       if ( p -> buffs_divine_purpose -> check() )
         return 0;
 
-      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resource_current[ RESOURCE_HOLY_POWER ] );
+      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resources.current[ RESOURCE_HOLY_POWER ] );
     }
 
     return spell_t::cost();
@@ -1373,7 +1373,7 @@ struct paladin_seal_t : public paladin_attack_t
     parse_options( NULL, options_str );
 
     harmful    = false;
-    base_costs[ current_resource() ]  = p -> resource_base[ current_resource() ] * 0.164;
+    base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
   }
   
   virtual resource_type current_resource() const { return RESOURCE_MANA; }
@@ -1436,7 +1436,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     paladin_t* p = player -> cast_paladin();
     base_dd_min = base_dd_max = ( p -> spell_power[ SCHOOL_HOLY ] * 0.15 ) + ( 0.15 * p -> composite_attack_power() );
     paladin_heal_t::execute();
-    p -> resource_gain( RESOURCE_MANA, p -> resource_base[ RESOURCE_MANA ] * effect2().resource( RESOURCE_MANA ), p -> gains_seal_of_insight );
+    p -> resource_gain( RESOURCE_MANA, p -> resources.base[ RESOURCE_MANA ] * effect2().resource( RESOURCE_MANA ), p -> gains_seal_of_insight );
   }
 };
 
@@ -2619,7 +2619,7 @@ struct lay_on_hands_t : public paladin_heal_t
     paladin_t* p = player -> cast_paladin();
 
     // Heal is based on paladin's current max health
-    base_dd_min = base_dd_max = p -> resource_max[ RESOURCE_HEALTH ];
+    base_dd_min = base_dd_max = p -> resources.max[ RESOURCE_HEALTH ];
 
     paladin_heal_t::execute();
 
@@ -2627,7 +2627,7 @@ struct lay_on_hands_t : public paladin_heal_t
 
     if ( p -> glyphs.divinity -> ok() )
       p -> resource_gain( RESOURCE_MANA,
-                          p -> resource_max[ RESOURCE_MANA ] * p -> glyphs.divinity -> effect1().percent(),
+                          p -> resources.max[ RESOURCE_MANA ] * p -> glyphs.divinity -> effect1().percent(),
                           p -> gains_glyph_loh );
   }
 
@@ -2825,7 +2825,7 @@ void paladin_t::init_base()
   base_spell_power  = 0;
   base_attack_power = level * 3;
 
-  resource_base[ RESOURCE_HOLY_POWER ] = 3;
+  resources.base[ RESOURCE_HOLY_POWER ] = 3;
 
   // FIXME! Level-specific!
   base_miss    = 0.05;
@@ -3513,19 +3513,19 @@ void paladin_t::regen( timespan_t periodicity )
   if ( buffs_divine_plea -> up() )
   {
     double tick_pct = ( buffs_divine_plea -> effect_base_value( 1 ) + glyphs.divine_plea -> mod_additive( P_EFFECT_1 ) ) * 0.01;
-    double tick_amount = resource_max[ RESOURCE_MANA ] * tick_pct;
+    double tick_amount = resources.max[ RESOURCE_MANA ] * tick_pct;
     double amount = periodicity.total_seconds() * tick_amount / 3;
     resource_gain( RESOURCE_MANA, amount, gains_divine_plea );
   }
   if ( buffs_judgements_of_the_wise -> up() )
   {
-    double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_wise->effect1().percent();
+    double tot_amount = resources.base[ RESOURCE_MANA ] * buffs_judgements_of_the_wise->effect1().percent();
     double amount = periodicity.total_seconds() * tot_amount / buffs_judgements_of_the_wise -> buff_duration.total_seconds();
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_wise );
   }
   if ( buffs_judgements_of_the_bold -> up() )
   {
-    double tot_amount = resource_base[ RESOURCE_MANA ] * buffs_judgements_of_the_bold->effect1().percent();
+    double tot_amount = resources.base[ RESOURCE_MANA ] * buffs_judgements_of_the_bold->effect1().percent();
     double amount = periodicity.total_seconds() * tot_amount / buffs_judgements_of_the_bold -> buff_duration.total_seconds();
     resource_gain( RESOURCE_MANA, amount, gains_judgements_of_the_bold );
   }
@@ -3568,7 +3568,7 @@ double paladin_t::assess_damage( double            amount,
 
     if ( result == RESULT_DODGE || result == RESULT_BLOCK )
     {
-      resource_gain( RESOURCE_MANA, resource_max[ RESOURCE_MANA ] * 0.02, gains_sanctuary );
+      resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ] * 0.02, gains_sanctuary );
     }
   }
   if ( result == RESULT_BLOCK )
@@ -3667,7 +3667,7 @@ void paladin_t::combat_begin()
 
   if ( talents.communion -> rank() ) sim -> auras.communion -> trigger();
 
-  resource_current[ RESOURCE_HOLY_POWER ] = 0;
+  resources.current[ RESOURCE_HOLY_POWER ] = 0;
 }
 
 // paladin_t::holy_power_stacks =============================================
@@ -3675,9 +3675,9 @@ void paladin_t::combat_begin()
 int paladin_t::holy_power_stacks() const
 {
   if ( buffs_divine_purpose -> up() )
-    return ( int ) resource_max[ RESOURCE_HOLY_POWER ];
+    return ( int ) resources.max[ RESOURCE_HOLY_POWER ];
 
-  return ( int ) resource_current[ RESOURCE_HOLY_POWER ];
+  return ( int ) resources.current[ RESOURCE_HOLY_POWER ];
 }
 
 // paladin_t::get_divine_bulwark ============================================
