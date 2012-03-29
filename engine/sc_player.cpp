@@ -487,6 +487,7 @@ player_t::player_t( sim_t*             s,
   iteration_waiting_time( timespan_t::zero ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
   deaths(), deaths_error( 0 ),
+  buffed( buffed_stats_t() ),
   buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
@@ -2583,24 +2584,6 @@ double player_t::composite_attack_power_multiplier() const
   return m;
 }
 
-// player_t::composite_attribute_multiplier =================================
-
-double player_t::composite_attribute_multiplier( int attr ) const
-{
-  double m = attribute_multiplier[ attr ];
-
-  // MotW / BoK
-  // ... increasing Strength, Agility, Stamina, and Intellect by 5%
-  if ( attr == ATTR_STRENGTH || attr ==  ATTR_AGILITY || attr ==  ATTR_STAMINA || attr ==  ATTR_INTELLECT )
-    if ( buffs.blessing_of_kings -> up() || buffs.mark_of_the_wild -> up() )
-      m *= 1.05;
-
-  if ( attr == ATTR_SPIRIT )
-    m *= 1.0 + buffs.mana_tide -> value();
-
-  return m;
-}
-
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( const school_type school, action_t* /* a */ ) const
@@ -2747,84 +2730,81 @@ double player_t::composite_movement_speed() const
   return speed;
 }
 
-// player_t::strength() =====================================================
+// player_t::composite_attribute =================================
 
-double player_t::strength() const
+double player_t::composite_attribute( int attr ) const
 {
-  double a = attribute[ ATTR_STRENGTH ];
+  double a = attribute[ attr ];
 
-  if ( ! is_pet() && ! is_enemy() && ! is_add() )
+  switch( attr )
   {
-    a += std::max(           sim -> auras.horn_of_winter    -> value(),
-                   std::max( buffs.battle_shout             -> value(),
-                             sim -> auras.roar_of_courage   -> value() ) );
+  case ATTR_STRENGTH:
+    if ( ! is_pet() && ! is_enemy() && ! is_add() )
+    {
+      a += std::max(           sim -> auras.horn_of_winter    -> value(),
+                     std::max( buffs.battle_shout             -> value(),
+                               sim -> auras.roar_of_courage   -> value() ) );
+    }
+    break;
+  case ATTR_AGILITY:
+    if ( ! is_pet() && ! is_enemy() && ! is_add() )
+    {
+      a += std::max(           sim -> auras.horn_of_winter    -> value(),
+                     std::max( buffs.battle_shout             -> value(),
+                               sim -> auras.roar_of_courage   -> value() ) );
+    }
+    break;
+  case ATTR_STAMINA:
+    if ( ! is_pet() && ! is_enemy() && ! is_add() )
+    {
+      a += sim -> auras.qiraji_fortitude -> value();
+    }
+    break;
+  case ATTR_SPIRIT:
+    if ( race == RACE_HUMAN )
+    {
+      a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03;
+    }
+    break;
+  default:
+    break;
   }
 
-  a *= composite_attribute_multiplier( ATTR_STRENGTH );
-
   return a;
 }
 
-// player_t::agility() ======================================================
+// player_t::composite_attribute_multiplier =================================
 
-double player_t::agility() const
+double player_t::composite_attribute_multiplier( int attr ) const
 {
-  double a = attribute[ ATTR_AGILITY ];
+  double m = attribute_multiplier[ attr ];
 
-  if ( ! is_pet() && ! is_enemy() && ! is_add() )
+  switch( attr )
   {
-    a += std::max(           sim -> auras.horn_of_winter    -> value(),
-                   std::max( buffs.battle_shout             -> value(),
-                             sim -> auras.roar_of_courage   -> value() ) );
+  case ATTR_STRENGTH:
+  case ATTR_AGILITY:
+  case ATTR_STAMINA:
+  case ATTR_INTELLECT:
+    // MotW / BoK
+    // ... increasing Strength, Agility, Stamina, and Intellect by 5%
+    if ( buffs.blessing_of_kings -> up() || buffs.mark_of_the_wild -> up() )
+            m *= 1.05;
+    break;
+  case ATTR_SPIRIT:
+    m *= 1.0 + buffs.mana_tide -> value();
+    break;
+  default:
+    break;
   }
 
-  a *= composite_attribute_multiplier( ATTR_AGILITY );
-
-  return a;
+  return m;
 }
 
-// player_t::stamina() ======================================================
+// player_t::get_attribute() ================================================
 
-double player_t::stamina() const
-{
-  double a = attribute[ ATTR_STAMINA ];
+double player_t::get_attribute( attribute_type a ) const
+{ return attribute[ a ] * composite_attribute_multiplier( a ); }
 
-  if ( ! is_pet() && ! is_enemy() && ! is_add() )
-  {
-    a += sim -> auras.qiraji_fortitude -> value();
-  }
-
-  a *= composite_attribute_multiplier( ATTR_STAMINA );
-
-  return a;
-}
-
-// player_t::intellect() ====================================================
-
-double player_t::intellect() const
-{
-  double a = attribute[ ATTR_INTELLECT ];
-
-  a *= composite_attribute_multiplier( ATTR_INTELLECT );
-
-  return a;
-}
-
-// player_t::spirit() =======================================================
-
-double player_t::spirit() const
-{
-  double a = attribute[ ATTR_SPIRIT ];
-
-  if ( race == RACE_HUMAN )
-  {
-    a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03;
-  }
-
-  a *= composite_attribute_multiplier( ATTR_SPIRIT );
-
-  return a;
-}
 
 /*
 // player_t::haste_rating() =================================================

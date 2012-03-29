@@ -957,14 +957,16 @@ struct army_ghoul_pet_t : public pet_t
     return base_energy_regen_per_second;
   }
 
-  virtual double strength() const
+  virtual double composite_attribute( int attr ) const
   {
     death_knight_t* o = owner -> cast_death_knight();
-    double a = attribute[ ATTR_STRENGTH ];
-    // copied from the pet ghoul, tested in unholy and frost.
-    double strength_scaling = 1.01 + o -> glyphs.raise_dead -> ok() * 0.4254;
-    a += snapshot_strength * strength_scaling;
-    a *= composite_attribute_multiplier( ATTR_STRENGTH );
+    double a = attribute[ attr ];
+    if ( attr == ATTR_STRENGTH )
+    {
+      // copied from the pet ghoul, tested in unholy and frost.
+      double strength_scaling = 1.01 + o -> glyphs.raise_dead -> ok() * 0.4254;
+      a += snapshot_strength * strength_scaling;
+    }
     return a;
   }
 
@@ -1306,22 +1308,23 @@ struct ghoul_pet_t : public pet_t
     return base_energy_regen_per_second;
   }
 
-  virtual double strength() const
+  virtual double composite_attribute( int attr ) const
   {
     death_knight_t* o = owner -> cast_death_knight();
-    double a = attribute[ ATTR_STRENGTH ];
-    double strength_scaling = 1.01 + o -> glyphs.raise_dead -> ok() * 0.4254; //weird, but accurate
-
-    // Perma Ghouls are updated constantly
-    if ( o -> primary_tree() == TREE_UNHOLY )
+    double a = attribute[ attr ];
+    if ( attr == ATTR_STRENGTH )
     {
-      a += o -> strength() * strength_scaling;
+      double strength_scaling = 1.01 + o -> glyphs.raise_dead -> ok() * 0.4254; //weird, but accurate
+      if ( o -> primary_tree() == TREE_UNHOLY )
+      {
+        // Perma Ghouls are updated constantly
+        a += o -> strength() * strength_scaling;
+      }
+      else
+      {
+        a += snapshot_strength * strength_scaling;
+      }
     }
-    else
-    {
-      a += snapshot_strength * strength_scaling;
-    }
-    a *= composite_attribute_multiplier( ATTR_STRENGTH );
     return a;
   }
 

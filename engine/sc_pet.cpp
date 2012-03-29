@@ -54,22 +54,25 @@ pet_t::pet_t( sim_t*             s,
   init_pet_t_();
 }
 
-// pet_t::stamina ===========================================================
+// player_t::pet_attribute =================================
 
-double pet_t::stamina() const
+double pet_t::composite_attribute( int attr ) const
 {
-  double a = composite_attribute_multiplier( ATTR_STAMINA ) * ( stamina_per_owner * owner -> stamina() );
+  double a = attribute[ attr ];
 
-  return player_t::stamina() + a;
-}
+  switch( attr )
+  {
+  case ATTR_INTELLECT:
+    a += intellect_per_owner * owner -> intellect();
+    break;
+  case ATTR_STAMINA:
+    a += stamina_per_owner * owner -> stamina();
+    break;
+  default:
+    break;
+  }
 
-// pet_t::intellect =========================================================
-
-double pet_t::intellect() const
-{
-  double a = composite_attribute_multiplier( ATTR_INTELLECT ) * ( intellect_per_owner * owner -> intellect() );
-
-  return player_t::intellect() + a;
+  return a;
 }
 
 // player_t::id =============================================================

@@ -3435,7 +3435,7 @@ double paladin_t::composite_spell_power( const school_type school ) const
   switch ( primary_tree() )
   {
   case TREE_PROTECTION:
-    sp += strength() * passives.touched_by_the_light -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT );
+    sp += get_attribute( ATTR_STRENGTH ) * passives.touched_by_the_light -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT );
     break;
   case TREE_RETRIBUTION:
     sp += composite_attack_power_multiplier() * composite_attack_power() * passives.sheath_of_light -> base_value( E_APPLY_AURA, A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER );

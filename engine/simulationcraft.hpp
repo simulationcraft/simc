@@ -4378,6 +4378,15 @@ struct player_t : public noncopyable
   sample_data_t deaths;
   double    deaths_error;
 
+  // Buffed snapshot_stats (for reporting)
+  struct buffed_stats_t
+  {
+    double attribute[ ATTRIBUTE_MAX ];
+    double resource[ RESOURCE_MAX ];
+
+
+  } buffed;
+
   buff_t*   buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;
@@ -4687,7 +4696,6 @@ struct player_t : public noncopyable
 
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
-  virtual double composite_attribute_multiplier( int attr ) const;
 
   virtual double matching_gear_multiplier( const attribute_type /* attr */ ) const { return 0; }
 
@@ -4703,11 +4711,16 @@ struct player_t : public noncopyable
 
   virtual double composite_movement_speed() const;
 
-  virtual double strength() const;
-  virtual double agility() const;
-  virtual double stamina() const;
-  virtual double intellect() const;
-  virtual double spirit() const;
+
+  virtual double composite_attribute( int attr ) const;
+  virtual double composite_attribute_multiplier( int attr ) const;
+
+  double get_attribute( attribute_type a ) const;
+  double strength() const { return get_attribute( ATTR_STRENGTH ); }
+  double agility() const { return get_attribute( ATTR_AGILITY ); }
+  double stamina() const { return get_attribute( ATTR_STAMINA ); }
+  double intellect() const { return get_attribute( ATTR_INTELLECT ); }
+  double spirit() const { return get_attribute( ATTR_SPIRIT ); }
 
   virtual void      interrupt();
   virtual void      halt();
@@ -4997,8 +5010,7 @@ public:
   virtual double composite_spell_hit()        const { return floor( 100.0 * owner -> composite_spell_hit() ) / 100.0;  }
   virtual double composite_player_multiplier( const school_type school, action_t* a ) const;
 
-  virtual double stamina() const;
-  virtual double intellect() const;
+  virtual double composite_attribute( int attr ) const;
 
   virtual void init_base();
   virtual void init_talents();

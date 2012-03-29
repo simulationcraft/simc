@@ -594,14 +594,12 @@ struct spirit_wolf_pet_t : public pet_t
     return attribute_multiplier[ attr ];
   }
 
-  virtual double strength() const
+  virtual double composite_attribute_multiplier( int attr )
   {
-    return attribute[ ATTR_STRENGTH ];
-  }
+    if ( attr == ATTR_STRENGTH || attr == ATTR_AGILITY )
+      return 1.0;
 
-  virtual double agility() const
-  {
-    return attribute[ ATTR_AGILITY ];
+    return player_t::composite_attribute_multiplier( attr );
   }
 
   virtual double composite_attack_power_multiplier() const
@@ -1081,9 +1079,12 @@ struct fire_elemental_pet_t : public pet_t
     cooldown_fire_blast -> start();
   }
 
-  virtual double intellect() const
+  virtual double composite_attribute( int attr ) const
   {
-    return owner_int;
+    if ( attr == ATTR_INTELLECT )
+      return owner_int;
+
+    return pet_t::composite_attribute( attr );
   }
 
   virtual double composite_spell_power( const school_type ) const

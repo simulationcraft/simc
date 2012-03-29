@@ -382,7 +382,7 @@ struct druid_t : public player_t
   virtual int       primary_role() const;
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
   virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
-  virtual double    intellect() const;
+  virtual double    composite_attribute( int attr ) const;
 
 
   void reset_gcd()
@@ -4644,7 +4644,6 @@ void druid_t::init_base()
 
   base_attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  attribute_multiplier_initial[ ATTR_INTELLECT ] *= 1.0 + talents.heart_of_the_wild -> effect1().percent();
   initial_attack_power_per_strength = 1.0;
   initial_spell_power_per_intellect = 1.0;
 
@@ -5282,17 +5281,31 @@ double druid_t::composite_attribute_multiplier( int attr ) const
 
   // The matching_gear_multiplier is done statically for performance reasons,
   // unfortunately that's before we're in cat form or bear form, so let's compensate here
-  if ( attr == ATTR_STAMINA && buffs_bear_form -> check() )
-  {
-    m *= 1.0 + talents.heart_of_the_wild -> effect1().percent();
 
-    if ( primary_tree() == TREE_FERAL )
-      m *= 1.05;
-  }
-  else if ( attr == ATTR_AGILITY && buffs_cat_form -> check() )
+  switch( attr )
   {
-    if ( primary_tree() == TREE_FERAL )
+  case ATTR_AGILITY:
+    if ( buffs_cat_form -> check() )
+    {
+      if ( primary_tree() == TREE_FERAL )
+        m *= 1.05;
+    }
+    break;
+  case ATTR_STAMINA:
+    if ( buffs_bear_form -> check() )
+    {
+      m *= 1.0 + talents.heart_of_the_wild -> effect1().percent();
+
+      if ( primary_tree() == TREE_FERAL )
+        m *= 1.05;
+    }
+    break;
+  case ATTR_INTELLECT:
+    if ( buffs.mark_of_the_wild -> check() || buffs.blessing_of_kings -> check() )
       m *= 1.05;
+    break;
+  default:
+    break;
   }
 
   return m;
@@ -5300,20 +5313,14 @@ double druid_t::composite_attribute_multiplier( int attr ) const
 
 // Heart of the Wild does nothing for base int so we need to do completely silly
 // tricks to match paper doll in game
-double druid_t::intellect() const
+double druid_t::composite_attribute( int attr ) const
 {
-  double a = attribute_base[ ATTR_INTELLECT ];
-  a *= ( 1.0 + matching_gear_multiplier( ATTR_INTELLECT ) );
+  double a = player_t::composite_attribute( attr );
 
-  double b = attribute[ ATTR_INTELLECT ] - attribute_base[ ATTR_INTELLECT ];
-  b *= ( attribute_multiplier_initial[ ATTR_INTELLECT ] );
-  b *= ( 1.0 + matching_gear_multiplier( ATTR_INTELLECT ) );
+  if ( attr == ATTR_INTELLECT )
+    a += ( a - attribute_base[ attr ] )* talents.heart_of_the_wild -> effect1().percent();
 
-  double z = floor( a + b );
-  if ( buffs.mark_of_the_wild -> check() || buffs.blessing_of_kings -> check() )
-    z *= 1.05;
-
-  return z;
+  return a;
 }
 
 // druid_t::matching_gear_multiplier ========================================
