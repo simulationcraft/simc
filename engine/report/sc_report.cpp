@@ -185,7 +185,7 @@ void report_t::print_profiles( sim_t* sim )
 
 // report_t::print_spell_query ==============================================
 
-void report_t::print_spell_query( sim_t* sim )
+void report_t::print_spell_query( sim_t* sim, unsigned level )
 {
   spell_data_expr_t* sq = sim -> spell_query;
   assert( sq );
@@ -212,7 +212,7 @@ void report_t::print_spell_query( sim_t* sim )
     else
     {
       const spell_data_t* spell = sim -> dbc.spell( *i );
-      util_t::fprintf( sim -> output_file, "%s", spell_info_t::to_str( sim, spell ).c_str() );
+      util_t::fprintf( sim -> output_file, "%s", spell_info_t::to_str( sim, spell, level ).c_str() );
     }
   }
 }

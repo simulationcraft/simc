@@ -3705,6 +3705,7 @@ public:
 
   // Spell database access
   spell_data_expr_t* spell_query;
+  unsigned           spell_query_level;
 
   sim_t( sim_t* parent=0, int thrdID=0 );
   virtual ~sim_t();
@@ -6133,7 +6134,7 @@ struct report_t
 {
   static void encode_html( std::string& buffer );
   static std::string encode_html( const char* str );
-  static void print_spell_query( sim_t* );
+  static void print_spell_query( sim_t*, unsigned level = MAX_LEVEL );
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );
   static void print_html( sim_t* );

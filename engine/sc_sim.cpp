@@ -559,7 +559,22 @@ static bool parse_spell_query( sim_t*             sim,
                                const std::string& /* name */,
                                const std::string& value )
 {
-  sim -> spell_query = spell_data_expr_t::parse( sim, value );
+  std::string sq_str = value;
+  size_t lvl_offset = std::string::npos;
+  
+  if ( ( lvl_offset = value.rfind("@") ) != std::string::npos )
+  {
+    std::string lvl_offset_str = value.substr( lvl_offset + 1 );
+    int sq_lvl = strtol( lvl_offset_str.c_str(), 0, 10 );
+    if ( sq_lvl < 1 || sq_lvl > MAX_LEVEL )
+      return 0;
+    
+    sim -> spell_query_level = static_cast< unsigned >( sq_lvl );
+    
+    sq_str = sq_str.substr( 0, lvl_offset );
+  }
+  
+  sim -> spell_query = spell_data_expr_t::parse( sim, sq_str );
   return sim -> spell_query > 0;
 }
 
@@ -652,7 +667,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_raid_summary( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),
-  spell_query( 0 )
+  spell_query( 0 ), spell_query_level( MAX_LEVEL )
 {
 #if SC_DEATH_KNIGHT == 1 
   register_death_knight_targetdata( this );
@@ -2448,7 +2463,7 @@ int sim_t::main( int argc, char** argv )
   if ( spell_query )
   {
     spell_query -> evaluate();
-    report_t::print_spell_query( this );
+    report_t::print_spell_query( this, spell_query_level );
   }
   else if ( need_to_save_profiles( this ) )
   {

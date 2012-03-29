@@ -378,6 +378,12 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
 {
   std::ostringstream s;
   player_type pt = PLAYER_NONE;
+  
+  if ( spell -> level() > static_cast< unsigned >( level ) )
+  {
+    s << std::endl << "Too low spell level " << level << " for " << spell -> name_cstr() << ", minimum is " << spell -> level() << "." << std::endl << std::endl;
+    return s.str();
+  }
 
   s <<   "Name         : " << spell -> name_cstr() << " (id=" << spell -> id() << ") " << spell_flags( sim, spell ) << std::endl;
 
@@ -420,7 +426,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
       if ( pd -> cost() == 0 )
         continue;
 
-      s << "Resource     : " << spell -> cost( pd -> type() );
+      s << "Resource     : " << spell -> cost( pd -> type() ) * 100.0;
       if ( pd -> type() == POWER_MANA )
         s << "%";
 
@@ -434,7 +440,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
         
       if ( pd -> type() == POWER_MANA )
       {
-        s << " (" << floor( sim -> dbc.resource_base( pt, level ) * pd -> cost() ) << " @" << level << ")";
+        s << " (" << floor( sim -> dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
       }
       
       if ( pd -> aura_id() > 0 && sim -> dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
@@ -549,7 +555,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
     else
       e = sim -> dbc.effect( effect_id );
 
-    spell_info_t::effect_to_str( sim, spell, e, s );
+    spell_info_t::effect_to_str( sim, spell, e, s, level );
   }
 
   if ( spell -> desc() )
