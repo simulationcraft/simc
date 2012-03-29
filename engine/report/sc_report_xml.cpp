@@ -341,16 +341,11 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
 
 void print_xml_player_stats( xml_writer_t & writer, player_t * p )
 {
-  print_xml_player_attribute( writer, "strength",
-                              p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ], p -> attribute_buffed[ ATTR_STRENGTH  ] );
-  print_xml_player_attribute( writer, "agility",
-                              p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ], p -> attribute_buffed[ ATTR_AGILITY   ] );
-  print_xml_player_attribute( writer, "stamina",
-                              p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ], p -> attribute_buffed[ ATTR_STAMINA   ] );
-  print_xml_player_attribute( writer, "intellect",
-                              p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ], p -> attribute_buffed[ ATTR_INTELLECT ] );
-  print_xml_player_attribute( writer, "spirit",
-                              p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ], p -> attribute_buffed[ ATTR_SPIRIT    ] );
+  for ( int i = 1; i < ATTRIBUTE_MAX; i++ )
+  {
+  print_xml_player_attribute( writer, util_t::attribute_type_string( i ),
+            p -> get_attribute( static_cast<attribute_type>( i ) ),  p -> stats.attribute[ i  ], p -> buffed.attribute[ i  ] );
+  }
   print_xml_player_attribute( writer, "mastery",
                               p -> composite_mastery(), p -> stats.mastery_rating, p -> buffed_mastery );
   print_xml_player_attribute( writer, "spellpower",
@@ -395,13 +390,13 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   writer.begin_tag( "resource" );
   writer.print_attribute( "name", "health" );
   writer.print_attribute( "base", util_t::to_string( p -> resource_max[ RESOURCE_HEALTH ], 0 ) );
-  writer.print_attribute( "buffed", util_t::to_string( p -> resource_buffed[ RESOURCE_HEALTH ], 0 ) );
+  writer.print_attribute( "buffed", util_t::to_string( p -> buffed.attribute[ RESOURCE_HEALTH ], 0 ) );
   writer.end_tag(); // </resource>
 
   writer.begin_tag( "resource" );
   writer.print_attribute( "name", "mana" );
   writer.print_attribute( "base", util_t::to_string( p -> resource_max[ RESOURCE_MANA ], 0 ) );
-  writer.print_attribute( "buffed", util_t::to_string( p -> resource_buffed[ RESOURCE_MANA ], 0 ) );
+  writer.print_attribute( "buffed", util_t::to_string( p -> buffed.resource[ RESOURCE_MANA ], 0 ) );
   writer.end_tag(); // </resource>
 }
 

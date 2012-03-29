@@ -4242,7 +4242,6 @@ struct player_t : public noncopyable
   double attribute_initial           [ ATTRIBUTE_MAX ];
   double attribute_multiplier        [ ATTRIBUTE_MAX ];
   double attribute_multiplier_initial[ ATTRIBUTE_MAX ];
-  double attribute_buffed            [ ATTRIBUTE_MAX ];
 
   double mastery, buffed_mastery, mastery_rating, initial_mastery_rating,base_mastery;
 
@@ -4308,7 +4307,6 @@ struct player_t : public noncopyable
   double  resource_initial[ RESOURCE_MAX ];
   double  resource_max    [ RESOURCE_MAX ];
   double  resource_current[ RESOURCE_MAX ];
-  double  resource_buffed [ RESOURCE_MAX ];
   double  mana_per_intellect;
   double  health_per_stamina;
   uptime_t* primary_resource_cap;

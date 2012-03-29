@@ -537,7 +537,6 @@ player_t::player_t( sim_t*             s,
   range::fill( attribute, 0 );
   range::fill( attribute_base, 0 );
   range::fill( attribute_initial, 0 );
-  range::fill( attribute_buffed, 0 );
 
   range::fill( attribute_multiplier, 1 );
   range::fill( attribute_multiplier_initial, 1 );
@@ -556,7 +555,6 @@ player_t::player_t( sim_t*             s,
   range::fill( resource_current, 0 );
   range::fill( resource_lost, 0 );
   range::fill( resource_gained, 0 );
-  range::fill( resource_buffed, 0 );
 
   range::fill( profession, 0 );
 
@@ -5198,9 +5196,11 @@ struct snapshot_stats_t : public action_t
 {
   attack_t* attack;
   spell_t* spell;
+  bool completed;
 
   snapshot_stats_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "snapshot_stats", player ), attack( 0 ), spell( 0 )
+    action_t( ACTION_OTHER, "snapshot_stats", player ), attack( 0 ), spell( 0 ),
+    completed( false )
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero;
@@ -5212,18 +5212,15 @@ struct snapshot_stats_t : public action_t
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
+    for ( int i=ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
+      p -> buffed.attribute[ i ] = floor( p -> get_attribute( static_cast<attribute_type>( i ) ) );
+
+    range::copy( p -> resource_max, p -> buffed.resource );
+
     p -> buffed_spell_haste  = p -> composite_spell_haste();
     p -> buffed_attack_haste = p -> composite_attack_haste();
     p -> buffed_attack_speed = p -> composite_attack_speed();
     p -> buffed_mastery      = p -> composite_mastery();
-
-    p -> attribute_buffed[ ATTR_STRENGTH  ] = floor( p -> strength()  );
-    p -> attribute_buffed[ ATTR_AGILITY   ] = floor( p -> agility()   );
-    p -> attribute_buffed[ ATTR_STAMINA   ] = floor( p -> stamina()   );
-    p -> attribute_buffed[ ATTR_INTELLECT ] = floor( p -> intellect() );
-    p -> attribute_buffed[ ATTR_SPIRIT    ] = floor( p -> spirit()    );
-
-    for ( int i=0; i < RESOURCE_MAX; i++ ) p -> resource_buffed[ i ] = p -> resource_max[ i ];
 
     p -> buffed_spell_power       = floor( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     p -> buffed_spell_hit         = p -> composite_spell_hit();
@@ -5274,13 +5271,13 @@ struct snapshot_stats_t : public action_t
     p -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
     p -> over_cap[ STAT_EXPERTISE_RATING ] = expertise_extra;
 
-    p -> attribute_buffed[ ATTRIBUTE_NONE ] = 1;
+    completed = true;
   }
 
   virtual bool ready()
   {
     if ( sim -> current_iteration > 0 ) return false;
-    if ( player -> attribute_buffed[ ATTRIBUTE_NONE ] != 0 ) return false;
+    if ( completed ) return false;
     return action_t::ready();
   }
 };
@@ -5950,15 +5947,6 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new multiplier_expr_t( a );
   }
-  if ( name_str == "mana_pct_nonproc" )
-  {
-    struct mana_pct_nonproc_expr_t : public action_expr_t
-    {
-      mana_pct_nonproc_expr_t( action_t* a ) : action_expr_t( a, "mana_pct_nonproc", TOK_NUM ) {}
-      virtual int evaluate() { player_t* p = action -> player; result_num = 100 * ( p -> resource_current[ RESOURCE_MANA ] / p -> resource_buffed[ RESOURCE_MANA ] ); return TOK_NUM; }
-    };
-    return new mana_pct_nonproc_expr_t( a );
-  }
   if ( name_str == "in_combat" )
   {
     struct in_combat_expr_t : public action_expr_t
@@ -6098,7 +6086,7 @@ action_expr_t* player_t::create_expression( action_t* a,
        {
          int resource_type;
          resource_max_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resource_buffed[ resource_type ]; return TOK_NUM; }
+         virtual int evaluate() { result_num = action -> player -> buffed.resource[ resource_type ]; return TOK_NUM; }
        };
        return new resource_max_nonproc_expr_t( a, name_str, resource_type );
      }
@@ -6108,7 +6096,7 @@ action_expr_t* player_t::create_expression( action_t* a,
        {
          int resource_type;
          resource_pct_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resource_current[ resource_type ] / action -> player -> resource_buffed[ resource_type ] * 100.0; return TOK_NUM; }
+         virtual int evaluate() { result_num = action -> player -> resource_current[ resource_type ] / action -> player -> buffed.resource[ resource_type ] * 100.0; return TOK_NUM; }
        };
        return new resource_pct_nonproc_expr_t( a, name_str, resource_type );
      }
