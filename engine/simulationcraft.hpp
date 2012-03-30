@@ -6836,4 +6836,4 @@ struct ability_t : public action_t
 
 #endif
 
-#endif // __SIMULATIONCRAFT_H
+#endif // SIMULATIONCRAFT_H
