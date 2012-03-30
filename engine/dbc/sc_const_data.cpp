@@ -257,12 +257,12 @@ double dbc_t::spell_scaling( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );
 
-  assert( class_id < MAX_CLASS + 1 && level > 0 && level < MAX_LEVEL );
+  assert( class_id < MAX_CLASS + 2 && level > 0 && level < MAX_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_spell_scaling[ class_id ][ level ]
-             : __gt_spell_scaling[ class_id ][ level ];
+  return ptr ? __ptr_gt_spell_scaling[ class_id ][ level - 1 ]
+             : __gt_spell_scaling[ class_id ][ level - 1 ];
 #else
-  return __gt_spell_scaling[ class_id ][ level ];
+  return __gt_spell_scaling[ class_id ][ level - 1 ];
 #endif
 }
 
@@ -972,7 +972,7 @@ double dbc_t::effect_average( unsigned effect_id, unsigned level ) const
 
   if ( e -> m_average() != 0 && e -> _spell -> scaling_class() != 0 )
   {
-    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level - 1 );
+    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level );
 
     assert( m_scale != 0 );
 
@@ -1002,7 +1002,7 @@ double dbc_t::effect_delta( unsigned effect_id, unsigned level ) const
 
   if ( e -> m_delta() != 0 && e -> _spell -> scaling_class() != 0 )
   {
-    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level - 1 );
+    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level );
 
     assert( m_scale != 0 );
 
@@ -1025,7 +1025,7 @@ double dbc_t::effect_bonus( unsigned effect_id, unsigned level ) const
 
   if ( e -> m_unk() != 0 && e -> _spell -> scaling_class() != 0 )
   {
-    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level - 1 );
+    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level );
 
     assert( m_scale != 0 );
 
