@@ -391,7 +391,7 @@ struct shaman_spell_t : public spell_t
   }
 
   /* Class spell data based construction, spell name in s_name */
-  shaman_spell_t( const char* n, const char* s_name, player_t* p, const std::string& options_str = std::string() ) :
+  shaman_spell_t( const char* n, const char* s_name, shaman_t* p, const std::string& options_str = std::string() ) :
     spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), overload( false ), is_totem( false ),
     actor( p -> cast_shaman() )
   {
@@ -419,6 +419,9 @@ struct shaman_spell_t : public spell_t
 
     crit_bonus_multiplier *= 1.0 + actor -> spec.elemental_fury -> effect1().percent();
   }
+
+  shaman_t* p() const
+  { return static_cast<shaman_t*>( player ); }
 
   virtual bool   is_direct_damage() const { return base_dd_min > 0 && base_dd_max > 0; }
   virtual bool   is_periodic_damage() const { return base_td > 0; };
@@ -2211,7 +2214,7 @@ void shaman_spell_t::schedule_execute()
 
 struct bloodlust_t : public shaman_spell_t
 {
-  bloodlust_t( player_t* player, const std::string& options_str ) :
+  bloodlust_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "bloodlust", "Bloodlust", player, options_str )
   {
     harmful = false;
@@ -2250,7 +2253,7 @@ struct chain_lightning_t : public shaman_spell_t
   int      glyph_targets;
   chain_lightning_overload_t* overload;
 
-  chain_lightning_t( player_t* player, const std::string& options_str, bool dtr = false ) :
+  chain_lightning_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
     shaman_spell_t( "chain_lightning", "Chain Lightning", player, options_str ),
     glyph_targets( 0 )
   {
@@ -2312,7 +2315,7 @@ struct chain_lightning_t : public shaman_spell_t
 
 struct elemental_mastery_t : public shaman_spell_t
 {
-  elemental_mastery_t( player_t* player, const std::string& options_str ) :
+  elemental_mastery_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "elemental_mastery", "Elemental Mastery", player, options_str )
   {
     check_talent( actor -> talent.elemental_mastery -> rank() );
@@ -2383,7 +2386,7 @@ struct fire_nova_t : public shaman_spell_t
 {
   fire_nova_explosion_t* explosion;
 
-  fire_nova_t( player_t* player, const std::string& options_str ) :
+  fire_nova_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "fire_nova", "Fire Nova", player, options_str ),
     explosion( 0 )
   {
@@ -2475,7 +2478,7 @@ struct earthquake_t : public shaman_spell_t
 {
   earthquake_rumble_t* quake;
 
-  earthquake_t( player_t* player, const std::string& options_str ) :
+  earthquake_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "earthquake", "Earthquake", player, options_str ),
     quake( 0 )
   {
@@ -2531,7 +2534,7 @@ struct lava_burst_t : public shaman_spell_t
   lava_burst_overload_t* overload;
   double                m_additive;
 
-  lava_burst_t( player_t* player, const std::string& options_str, bool dtr=false ) :
+  lava_burst_t( shaman_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "lava_burst", "Lava Burst", player, options_str ),
     m_additive( 0 )
   {
@@ -2615,7 +2618,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   lightning_bolt_overload_t* overload;
 
-  lightning_bolt_t( player_t* player, const std::string& options_str, bool dtr=false ) :
+  lightning_bolt_t( shaman_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "lightning_bolt", "Lightning Bolt", player, options_str )
   {
     maelstrom          = true;
@@ -2699,7 +2702,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
 struct elemental_blast_t : public shaman_spell_t
 {
-  elemental_blast_t( player_t* player, const std::string& options_str, bool dtr=false ) :
+  elemental_blast_t( shaman_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "elemental_blast", "Elemental Blast", player, options_str )
   {
     stateless   = true;
@@ -2725,7 +2728,7 @@ struct elemental_blast_t : public shaman_spell_t
 
 struct shamanistic_rage_t : public shaman_spell_t
 {
-  shamanistic_rage_t( player_t* player, const std::string& options_str ) :
+  shamanistic_rage_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "shamanistic_rage", "Shamanistic Rage", player, options_str )
   {
     check_spec( TREE_ENHANCEMENT );
@@ -2746,7 +2749,7 @@ struct shamanistic_rage_t : public shaman_spell_t
 
 struct spirit_wolf_spell_t : public shaman_spell_t
 {
-  spirit_wolf_spell_t( player_t* player, const std::string& options_str ) :
+  spirit_wolf_spell_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "spirit_wolf", "Feral Spirit", player, options_str )
   {
     check_spec( TREE_ENHANCEMENT );
@@ -2769,7 +2772,7 @@ struct thunderstorm_t : public shaman_spell_t
 {
   double bonus;
 
-  thunderstorm_t( player_t* player, const std::string& options_str ) :
+  thunderstorm_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "thunderstorm", "Thunderstorm", player, options_str ), bonus( 0 )
   {
     check_spec( TREE_ELEMENTAL );
@@ -2869,7 +2872,7 @@ struct earth_shock_t : public shaman_spell_t
 
   int consume_threshold;
 
-  earth_shock_t( player_t* player, const std::string& options_str, bool dtr=false ) :
+  earth_shock_t( shaman_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "earth_shock", "Earth Shock", player, options_str ),
     consume_threshold( ( int ) actor -> spec.fulmination -> effectN( 1 ).base_value() )
   {
@@ -2909,7 +2912,7 @@ struct earth_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
-  flame_shock_t( player_t* player, const std::string& options_str, bool dtr=false ) :
+  flame_shock_t( shaman_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( "flame_shock", "Flame Shock", player, options_str )
   {
     may_trigger_dtr       = false; // Disable the dot ticks procing DTR
@@ -2964,7 +2967,7 @@ struct flame_shock_t : public shaman_spell_t
 
 struct frost_shock_t : public shaman_spell_t
 {
-  frost_shock_t( player_t* player, const std::string& options_str ) :
+  frost_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "frost_shock", "Frost Shock", player )
   {
     parse_options( NULL, options_str );
@@ -2979,7 +2982,7 @@ struct frost_shock_t : public shaman_spell_t
 
 struct wind_shear_t : public shaman_spell_t
 {
-  wind_shear_t( player_t* player, const std::string& options_str ) :
+  wind_shear_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "wind_shear", "Wind Shear", player, options_str )
   {
     may_miss = may_resist = may_crit = false;
@@ -3003,7 +3006,7 @@ struct shaman_totem_t : public shaman_spell_t
   double totem_bonus;
   totem_type totem;
 
-  shaman_totem_t( const char * name, const char * totem_name, player_t* player, const std::string& options_str, totem_type t ) :
+  shaman_totem_t( const char * name, const char * totem_name, shaman_t* player, const std::string& options_str, totem_type t ) :
     shaman_spell_t( name, totem_name, player, options_str ), totem_duration( timespan_t::zero ), totem_bonus( 0 ), totem( t )
   {
     is_totem             = true;
@@ -3142,7 +3145,7 @@ struct shaman_totem_t : public shaman_spell_t
 
 struct earth_elemental_totem_t : public shaman_totem_t
 {
-  earth_elemental_totem_t( player_t* player, const std::string& options_str ) :
+  earth_elemental_totem_t( shaman_t* player, const std::string& options_str ) :
     shaman_totem_t( "earth_elemental_totem", "Earth Elemental Totem", player, options_str, TOTEM_EARTH )
   {
     // Skip a pointless cancel call (and debug=1 cancel line)
@@ -3174,7 +3177,7 @@ struct earth_elemental_totem_t : public shaman_totem_t
 
 struct fire_elemental_totem_t : public shaman_totem_t
 {
-  fire_elemental_totem_t( player_t* player, const std::string& options_str ) :
+  fire_elemental_totem_t( shaman_t* player, const std::string& options_str ) :
     shaman_totem_t( "fire_elemental_totem", "Fire Elemental Totem", player, options_str, TOTEM_FIRE )
   {
     cooldown -> duration *= 1.0 - actor -> glyph.fire_elemental_totem -> effectN( 1 ).percent();
@@ -3206,7 +3209,7 @@ struct fire_elemental_totem_t : public shaman_totem_t
 
 struct magma_totem_t : public shaman_totem_t
 {
-  magma_totem_t( player_t* player, const std::string& options_str ) :
+  magma_totem_t( shaman_t* player, const std::string& options_str ) :
     shaman_totem_t( "magma_totem", "Magma Totem", player, options_str, TOTEM_FIRE )
   {
     const spell_data_t* trigger;
@@ -3242,7 +3245,7 @@ struct magma_totem_t : public shaman_totem_t
 
 struct mana_tide_totem_t : public shaman_totem_t
 {
-  mana_tide_totem_t( player_t* player, const std::string& options_str ) :
+  mana_tide_totem_t( shaman_t* player, const std::string& options_str ) :
     shaman_totem_t( "mana_tide_totem", "Mana Tide Totem", player, options_str, TOTEM_WATER )
   {
     check_spec( TREE_RESTORATION );
@@ -3278,7 +3281,7 @@ struct mana_tide_totem_t : public shaman_totem_t
 
 struct searing_totem_t : public shaman_totem_t
 {
-  searing_totem_t( player_t* player, const std::string& options_str ) :
+  searing_totem_t( shaman_t* player, const std::string& options_str ) :
     shaman_totem_t( "searing_totem", "Searing Totem", player, options_str, TOTEM_FIRE )
   {
     harmful   = true;
@@ -3327,7 +3330,7 @@ struct flametongue_weapon_t : public shaman_spell_t
   double bonus_power;
   int    main, off;
 
-  flametongue_weapon_t( player_t* player, const std::string& options_str ) :
+  flametongue_weapon_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "flametongue_weapon", "Flametongue Weapon", player ),
     bonus_power( 0 ), main( 0 ), off( 0 )
   {
@@ -3410,7 +3413,7 @@ struct windfury_weapon_t : public shaman_spell_t
   double bonus_power;
   int    main, off;
 
-  windfury_weapon_t( player_t* player, const std::string& options_str ) :
+  windfury_weapon_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "windfury_weapon", "Windfury Weapon", player ),
     bonus_power( 0 ), main( 0 ), off( 0 )
   {
@@ -3493,7 +3496,7 @@ struct windfury_weapon_t : public shaman_spell_t
 
 struct lightning_shield_t : public shaman_spell_t
 {
-  lightning_shield_t( player_t* player, const std::string& options_str ) :
+  lightning_shield_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lightning_shield", "Lightning Shield", player )
   {
     parse_options( NULL, options_str );
@@ -3527,7 +3530,7 @@ struct water_shield_t : public shaman_spell_t
 {
   double bonus;
 
-  water_shield_t( player_t* player, const std::string& options_str ) :
+  water_shield_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "water_shield", "Water Shield", player ), bonus( 0.0 )
   {
     parse_options( NULL, options_str );
@@ -3555,7 +3558,7 @@ struct water_shield_t : public shaman_spell_t
 
 struct spiritwalkers_grace_t : public shaman_spell_t
 {
-  spiritwalkers_grace_t( player_t* player, const std::string& options_str ) :
+  spiritwalkers_grace_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "spiritwalkers_grace", "Spiritwalker's Grace", player )
   {
     parse_options( NULL, options_str );
