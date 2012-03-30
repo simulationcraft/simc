@@ -820,6 +820,14 @@ enum stat_type
   STAT_BLOCK_RATING,
   STAT_MAX
 };
+#define check(x) static_assert( static_cast<int>( STAT_##x ) == static_cast<int>( ATTR_##x ), \
+                                "stat_type and attribute_type must be kept in sync" )
+check( STRENGTH );
+check( AGILITY );
+check( STAMINA );
+check( INTELLECT );
+check( SPIRIT );
+#undef check
 
 enum elixir_type
 {
