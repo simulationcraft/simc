@@ -4907,7 +4907,6 @@ struct player_t : public noncopyable
   mage_t        * cast_mage        () { assert( type == MAGE         ); return ( mage_t        * ) this; }
   monk_t        * cast_monk        () { assert( type == MONK         ); return ( monk_t        * ) this; }
   paladin_t     * cast_paladin     () { assert( type == PALADIN      ); return ( paladin_t     * ) this; }
-  priest_t      * cast_priest      () { assert( type == PRIEST       ); return ( priest_t      * ) this; }
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
   shaman_t      * cast_shaman      () { assert( type == SHAMAN       ); return ( shaman_t      * ) this; }
   warlock_t     * cast_warlock     () { assert( type == WARLOCK      ); return ( warlock_t     * ) this; }

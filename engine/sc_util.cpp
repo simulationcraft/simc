@@ -678,6 +678,7 @@ const char* util_t::resource_type_string( int type )
   case RESOURCE_DEMONIC_FURY:  return "demonic_fury";
   case RESOURCE_HOLY_POWER:    return "holy_power";
   case RESOURCE_CHI:           return "chi";
+  case RESOURCE_SHADOW_ORB:    return "shadow_orb";
   }
   return "unknown";
 }
@@ -1296,6 +1297,7 @@ resource_type util_t::translate_power_type( power_type pt )
     case POWER_DEMONIC_FURY:  return RESOURCE_DEMONIC_FURY;
     case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;
     case POWER_CHI:           return RESOURCE_CHI;
+    case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
     default:                  return RESOURCE_NONE;
   }
 }
