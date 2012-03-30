@@ -27,11 +27,13 @@ actions+=/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remain
 actions+=/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react
 actions+=/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1
 actions+=/shadow_word_death,health_percentage<=25
-actions+=/shadow_fiend
+actions+=/shadowy_apparition,if=buff.shadow_orb.stack=3
+actions+=/shadow_fiend,if=mana.pct<70
 actions+=/shadow_word_death,if=mana.pct<10
 actions+=/mind_flay
 actions+=/shadow_word_death,moving=1
-actions+=/dispersion
+actions+=/hymn_of_hope,if=pet.shadow_fiend.active&mana.pct<50
+actions+=/dispersion,if=buff.hymn_of_hope.up
 head=hood_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_spi,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
 neck=petrified_fungal_heart,heroic=1,ilevel=410,quality=epic,stats=306int_459sta_204spi_204haste
 shoulders=mantle_of_dying_light,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=crit_spi,gems=50int_50int_20int,enchant=50int_25haste

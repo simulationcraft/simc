@@ -3108,6 +3108,7 @@ public:
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
 
+  const spell_data_t& data() const { return ( ok() ? *s_data : *spell_data_t::nil() ); } // FIXME: Althor, please replace me!
   int    check() { return current_stack; }
   inline bool   up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int    stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
@@ -5192,6 +5193,7 @@ public:
   virtual ~action_t();
   void init_dot( const std::string& dot_name );
 
+  const spell_data_t& data() const { return ( ok() ? *s_data : *spell_data_t::nil() ); } // FIXME: Althor, please replace me!
   virtual void   parse_data();
   virtual void   parse_effect_data( int spell_id, int effect_nr );
   virtual void   parse_options( option_t*, const std::string& options_str );

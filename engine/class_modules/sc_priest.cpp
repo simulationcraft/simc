@@ -76,7 +76,6 @@ struct priest_t : public player_t
     buff_t* serenity;
 
     // Shadow
-    buff_t* empowered_shadow;
     buff_t* glyph_of_shadow_word_death;
     buff_t* mind_spike;
     buff_t* glyph_mind_spike;
@@ -320,7 +319,6 @@ struct priest_t : public player_t
 
   virtual double    target_mitigation( double amount, const school_type school, int type, int result, action_t* a=0 );
 
-  virtual double    empowered_shadows_amount() const;
   virtual double    shadow_orb_amount() const;
 
   void fixup_atonement_stats( const char* trigger_spell_name, const char* atonement_spell_name );
@@ -897,6 +895,7 @@ public:
 
   static void trigger_shadowy_apparition( priest_t* player );
   static void add_more_shadowy_apparitions( priest_t* player );
+  static void generate_shadow_orb( priest_t* player, unsigned number=1 );
 };
 
 // ==========================================================================
@@ -1290,6 +1289,13 @@ void priest_spell_t::add_more_shadowy_apparitions( priest_t* p )
       p -> shadowy_apparition_free_list.push( s );
     }
   }
+}
+
+void priest_spell_t::generate_shadow_orb( priest_t* p, unsigned number )
+{
+  // Add spec check
+
+  p -> buffs.shadow_orb  -> trigger( number, 1, p -> constants.shadow_orb_proc_value );
 }
 
 // ==========================================================================
@@ -1692,21 +1698,9 @@ struct mind_blast_t : public priest_spell_t
     }
   }
 
-  virtual void init()
-  {
-    for ( int i=0; i < 4; i++ )
-    {
-      std::string str = name_str + "_";
-      orb_stats[ i ] = p() -> get_stats( str + ( char ) ( i + ( int ) '0' ) + ( is_dtr_action ? "_DTR" : "" ), this );
-    }
-    priest_spell_t::init();
-  }
-
   virtual void execute()
   {
     timespan_t saved_cooldown = cooldown -> duration;
-
-    stats = orb_stats[ p() -> buffs.shadow_orb -> stack() ];
 
     priest_spell_t::execute();
 
@@ -1716,21 +1710,11 @@ struct mind_blast_t : public priest_spell_t
     {
       p() -> benefits.mind_spike[ i ] -> update( i == p() -> buffs.mind_spike -> stack() );
     }
-    for ( int i=0; i < 4; i++ )
-    {
-      p() -> benefits.shadow_orb[ i ] -> update( i == p() -> buffs.shadow_orb -> stack() );
-    }
 
     p() -> buffs.mind_spike -> expire();
     p() -> buffs.mind_spike -> expire();
 
-    if ( p() -> buffs.shadow_orb -> check() )
-    {
-      p() -> buffs.shadow_orb -> expire();
-
-      p() -> buffs.empowered_shadow -> trigger( 1, p() -> empowered_shadows_amount() );
-    }
-
+    generate_shadow_orb( p() );
   }
 
   virtual void player_buff()
@@ -1886,11 +1870,6 @@ struct mind_spike_t : public priest_spell_t
 
       p() -> buffs.mind_spike -> trigger( 1, 1.0 );
 
-      if ( p() -> buffs.shadow_orb -> check() )
-      {
-        p() -> buffs.shadow_orb -> expire();
-        p() -> buffs.empowered_shadow -> trigger( 1, p() -> empowered_shadows_amount() );
-      }
       p() -> buffs.mind_spike -> trigger( 1, effect2().percent() );
 
       if ( ! td -> remove_dots_event )
@@ -2051,14 +2030,11 @@ struct shadow_word_pain_t : public priest_spell_t
     stats -> children.push_back( player -> get_stats( "shadowy_apparition", this ) );
   }
 
-  virtual void tick( dot_t* d )
+  virtual void execute()
   {
-    priest_spell_t::tick( d );
+    priest_spell_t::execute();
 
-    if ( result_is_hit() )
-    {
-      p() -> buffs.shadow_orb  -> trigger( 1, 1, p() -> constants.shadow_orb_proc_value );
-    }
+    generate_shadow_orb( p() );
   }
 };
 
@@ -3219,17 +3195,6 @@ struct renew_t : public priest_heal_t
 // Priest Character Definition
 // ==========================================================================
 
-// priest_t::empowered_shadows_amount
-
-double priest_t::empowered_shadows_amount() const
-{
-  double a = shadow_orb_amount();
-
-  a += 0.10;
-
-  return a;
-}
-
 // priest_t::shadow_orb_amount
 
 double priest_t::shadow_orb_amount() const
@@ -3327,7 +3292,6 @@ double priest_t::composite_player_td_multiplier( const school_type school, actio
   if ( school == SCHOOL_SHADOW )
   {
     // Shadow TD
-    player_multiplier += buffs.empowered_shadow -> value();
     player_multiplier += buffs.dark_evangelism -> stack () * buffs.dark_evangelism -> effect1().percent();
   }
 
@@ -3386,6 +3350,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "smite"                  ) return new smite_t                 ( this, options_str );
   if ( name == "shadow_fiend"           ) return new shadow_fiend_spell_t    ( this, options_str );
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
+  if ( name == "shadowy_apparition"     ) return new shadowy_apparition_t    ( this, options_str );
 
   // Heals
   if ( name == "binding_heal"           ) return new binding_heal_t          ( this, options_str );
@@ -3632,7 +3597,6 @@ void priest_t::init_buffs()
   // TEST: buffs.serenity -> activated = false;
 
   // Shadow
-  buffs.empowered_shadow           = new buff_t( this, 95799, "empowered_shadow" );
   buffs.glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, timespan_t::from_seconds( 6.0 )  );
   buffs.glyph_mind_spike                  = new buff_t( this, glyphs.mind_spike -> effect2().trigger_spell_id(), "mind_spike"                 );
   buffs.mind_spike                 = new buff_t( this, "mind_spike",                 3, timespan_t::from_seconds( 12.0 ) );
