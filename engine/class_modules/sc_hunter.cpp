@@ -2698,7 +2698,7 @@ struct serpent_sting_t : public hunter_attack_t
     if ( serpent_sting_burst && p -> talents.improved_serpent_sting -> ok() )
     {
       double t = ( p -> talents.improved_serpent_sting -> effect1().percent() ) *
-                 ( ceil( base_td ) * hasted_num_ticks() + total_power() * 0.4 );
+                 ( ceil( base_td ) * hasted_num_ticks( player -> player_haste ) + total_power() * 0.4 );
 
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;

@@ -5201,7 +5201,7 @@ public:
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const { return base_execute_time; }
   virtual timespan_t tick_time() const;
-  virtual int    hasted_num_ticks( timespan_t d=timespan_t::min ) const;
+  virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min ) const;
   virtual timespan_t travel_time();
   virtual void   player_buff();
   virtual void   player_tick() {}
@@ -5333,7 +5333,6 @@ public:
 
   virtual void calculate_result_s( action_state_t* ) { assert( 0 ); }
   virtual timespan_t tick_time_s( const action_state_t* ) const;
-  virtual int    hasted_num_ticks_s( const action_state_t*, timespan_t d = timespan_t::min ) const;
 };
 
 struct action_state_t

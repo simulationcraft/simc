@@ -657,7 +657,7 @@ void action_t::impact_s( action_state_t* s )
         dot -> state = get_state( s );
       else
         dot -> state -> copy_state( s );
-      dot -> num_ticks = hasted_num_ticks_s( dot -> state );
+      dot -> num_ticks = hasted_num_ticks( dot -> state -> total_haste() );
       if ( dot -> ticking )
       {
         assert( dot -> tick_event );
@@ -732,29 +732,6 @@ timespan_t action_t::tick_time_s( const action_state_t* state ) const
   if ( channeled || hasted_ticks )
     t *= state -> haste;
   return t;
-}
-
-int action_t::hasted_num_ticks_s( const action_state_t* state, timespan_t d ) const
-{
-  if ( ! hasted_ticks ) return num_ticks;
-
-  assert( state -> haste > 0.0 );
-
-  // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
-  // It's important that we're accurate here so that we model haste breakpoints correctly.
-
-  if ( d < timespan_t::zero )
-    d = num_ticks * base_tick_time;
-
-  timespan_t t = timespan_t::from_millis( ( base_tick_time.total_millis() * state -> haste ) + 0.5 );
-
-  double n = d / t;
-
-  // banker's rounding
-  if ( n - 0.5 == ( double ) ( int ) n && ( ( int ) n ) % 2 == 0 )
-    return ( int ) ceil ( n - 0.5 );
-
-  return ( int ) floor( n + 0.5 );
 }
 
 double action_t::resistance_s( const action_state_t* s ) const

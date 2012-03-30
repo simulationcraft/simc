@@ -1190,7 +1190,7 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
       dot_t* dot = this -> dot();
       if ( dot_behavior != DOT_REFRESH ) dot -> cancel();
       dot -> action = this;
-      dot -> num_ticks = hasted_num_ticks();
+      dot -> num_ticks = hasted_num_ticks( player_haste );
       dot -> current_tick = 0;
       dot -> added_ticks = 0;
       dot -> added_seconds = timespan_t::zero;
@@ -1749,6 +1749,15 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new ticks_expr_t( this );
   }
+  if ( name_str == "n_ticks" )
+  {
+    struct n_ticks_expr_t : public action_expr_t
+    {
+      n_ticks_expr_t( action_t* a ) : action_expr_t( a, "n_ticks", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> hasted_num_ticks( action -> player -> composite_spell_haste() ); return TOK_NUM; }
+    };
+    return new n_ticks_expr_t( this );
+  }
   if ( name_str == "ticks_remain" )
   {
     struct ticks_remain_expr_t : public action_expr_t
@@ -1997,7 +2006,7 @@ timespan_t action_t::tick_time() const
 
 // action_t::hasted_num_ticks ===============================================
 
-int action_t::hasted_num_ticks( timespan_t d ) const
+int action_t::hasted_num_ticks( double haste, timespan_t d ) const
 {
   if ( ! hasted_ticks ) return num_ticks;
 
@@ -2009,7 +2018,7 @@ int action_t::hasted_num_ticks( timespan_t d ) const
   if ( d < timespan_t::zero )
     d = num_ticks * base_tick_time;
 
-  timespan_t t = timespan_t::from_millis( ( int ) ( ( base_tick_time.total_millis() * player_haste ) + 0.5 ) );
+  timespan_t t = timespan_t::from_millis( ( int ) ( ( base_tick_time.total_millis() * haste ) + 0.5 ) );
 
   double n = d / t;
 

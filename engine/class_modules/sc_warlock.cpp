@@ -1289,7 +1289,7 @@ struct conflagrate_t : public warlock_spell_t
 
     double periodic_dmg = a -> base_td + total_power() * a -> tick_power_mod;
 
-    int periodic_ticks = td -> dots_immolate -> action -> hasted_num_ticks();
+    int periodic_ticks = td -> dots_immolate -> action -> hasted_num_ticks( player -> player_haste );
 
     base_dd_min = base_dd_max = periodic_dmg * periodic_ticks * effect2().percent() ;
 

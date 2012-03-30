@@ -46,9 +46,9 @@ void dot_t::extend_duration( int extra_ticks, bool cap )
 
     int max_extra_ticks;
     if ( ! state )
-      max_extra_ticks = std::max( action -> hasted_num_ticks() - ticks(), 0 );
+      max_extra_ticks = std::max( action -> hasted_num_ticks( action -> player_haste ) - ticks(), 0 );
     else
-      max_extra_ticks = std::max( action -> hasted_num_ticks_s( state ) - ticks(), 0 );
+      max_extra_ticks = std::max( action -> hasted_num_ticks( state -> total_haste() ) - ticks(), 0 );
 
     extra_ticks = std::min( extra_ticks, max_extra_ticks );
   }
@@ -104,9 +104,9 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds )
 
   int new_remaining_ticks;
   if ( ! state )
-    new_remaining_ticks = action -> hasted_num_ticks( duration_left );
+    new_remaining_ticks = action -> hasted_num_ticks( action -> player_haste, duration_left );
   else
-    new_remaining_ticks = action -> hasted_num_ticks_s( state, duration_left );
+    new_remaining_ticks = action -> hasted_num_ticks( state -> total_haste(), duration_left );
 
   num_ticks += ( new_remaining_ticks - old_remaining_ticks );
 
@@ -159,9 +159,9 @@ void dot_t::refresh_duration()
   added_ticks = 0;
   added_seconds = timespan_t::zero;
   if ( ! state )
-    num_ticks = action -> hasted_num_ticks();
+    num_ticks = action -> hasted_num_ticks( action ->  player_haste );
   else
-    num_ticks = action -> hasted_num_ticks_s( state );
+    num_ticks = action -> hasted_num_ticks( state -> total_haste() );
 
   // tick zero dots tick when refreshed
   if ( action -> tick_zero )
