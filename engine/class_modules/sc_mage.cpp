@@ -986,21 +986,6 @@ static void trigger_master_of_elements( spell_t* s )
   p -> resource_gain( RESOURCE_MANA, s -> base_costs[ s -> current_resource() ] * p -> talents.master_of_elements -> effect1().percent(), p -> gains_master_of_elements );
 }
 
-// trigger_replenishment ====================================================
-
-static void trigger_replenishment( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( ! p -> talents.enduring_winter -> rank() )
-    return;
-
-  if ( ! p -> rng_enduring_winter -> roll( p -> talents.enduring_winter -> sd -> proc_chance() ) )
-    return;
-
-  p -> trigger_replenishment();
-}
-
 // ==========================================================================
 // Mage Spell
 // ==========================================================================
@@ -2219,8 +2204,6 @@ struct frostbolt_t : public mage_spell_t
     mage_spell_t::execute();
     if ( result_is_hit() )
     {
-      trigger_replenishment( this );
-
       if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
 

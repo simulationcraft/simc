@@ -130,103 +130,6 @@ static bool has_foreground_actions( player_t* p )
   return false;
 }
 
-// init_replenish_targets ===================================================
-
-static void init_replenish_targets( sim_t* sim )
-{
-  if ( sim -> replenishment_candidates.empty() )
-  {
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      if ( p -> type != PLAYER_GUARDIAN &&
-           p -> primary_resource() == RESOURCE_MANA )
-      {
-        sim -> replenishment_candidates.push_back( p );
-      }
-    }
-  }
-}
-
-// choose_replenish_targets =================================================
-
-static void choose_replenish_targets( player_t* provider )
-{
-  sim_t* sim = provider -> sim;
-
-  init_replenish_targets( sim );
-
-  std::vector<player_t*>& candidates = sim      -> replenishment_candidates;
-  std::vector<player_t*>& targets    = provider -> replenishment_targets;
-
-  bool replenishment_missing = false;
-
-  for ( int i = ( int ) candidates.size() - 1; i >= 0; i-- )
-  {
-    player_t* p = candidates[ i ];
-
-    if ( ! p -> sleeping && ! p -> buffs.replenishment -> check() )
-    {
-      replenishment_missing = true;
-      break;
-    }
-  }
-
-  // If replenishment is not missing from any of the candidates, then the target list will not change
-
-  if ( ! replenishment_missing ) return;
-
-  for ( int i = ( int ) targets.size() - 1; i >= 0; i-- )
-  {
-    targets[ i ] -> buffs.replenishment -> current_value = -1.0;
-  }
-  targets.clear();
-
-  for ( int i=0; i < sim -> replenishment_targets; i++ )
-  {
-    player_t* min_player=0;
-    double    min_mana=0;
-
-    for ( int j = ( int ) candidates.size() - 1; j >= 0; j-- )
-    {
-      player_t* p = candidates[ j ];
-
-      if ( p -> sleeping || ( p -> buffs.replenishment -> current_value == 1.0 ) ) continue;
-
-      if ( ! min_player || min_mana > p -> resources.current[ RESOURCE_MANA ] )
-      {
-        min_player = p;
-        min_mana   = p -> resources.current[ RESOURCE_MANA ];
-      }
-    }
-    if ( min_player )
-    {
-      min_player -> buffs.replenishment -> trigger( 1, 1.0 );
-      targets.push_back( min_player );
-    }
-    else break;
-  }
-
-  for ( int i = ( int ) candidates.size() - 1; i >= 0; i-- )
-  {
-    player_t* p = candidates[ i ];
-
-    if ( p -> buffs.replenishment -> current_value < 0 )
-    {
-      p -> buffs.replenishment -> expire();
-    }
-  }
-}
-
-// replenish_raid ===========================================================
-
-static void replenish_raid( player_t* provider )
-{
-  for ( player_t* p = provider -> sim -> player_list; p; p = p -> next )
-  {
-    p -> buffs.replenishment -> trigger();
-  }
-}
-
 // parse_talent_url =========================================================
 
 static bool parse_talent_url( sim_t* sim,
@@ -1714,7 +1617,6 @@ void player_t::init_buffs()
   buffs.hellscreams_warsong       = new buff_t( this,        "hellscreams_warsong", 1       );
   buffs.heroic_presence           = new buff_t( this,        "heroic_presence",     1       );
   buffs.hymn_of_hope = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope"                 );
-  buffs.replenishment             = new buff_t( this, 57669, "replenishment"                );
   buffs.stoneform                 = new buff_t( this, 65116, "stoneform"                    );
   buffs.strength_of_wrynn         = new buff_t( this,        "strength_of_wrynn",   1       );
 
@@ -1764,7 +1666,6 @@ void player_t::init_gains()
   gains.mana_potion            = get_gain( "mana_potion" );
   gains.mana_spring_totem      = get_gain( "mana_spring_totem" );
   gains.mp5_regen              = get_gain( "mp5_regen" );
-  gains.replenishment          = get_gain( "replenishment" );
   gains.restore_mana           = get_gain( "restore_mana" );
   gains.spellsurge             = get_gain( "spellsurge" );
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
@@ -2912,9 +2813,6 @@ void player_t::combat_begin()
     buffs.heroic_presence -> trigger();
   }
 
-  if ( sim -> overrides.replenishment )
-    buffs.replenishment -> override();
-
   init_resources( true );
 
   if ( primary_resource() == RESOURCE_MANA )
@@ -3220,8 +3118,6 @@ void player_t::reset()
     action_callback_t::reset( tick_damage_callbacks  [ i ] );
     action_callback_t::reset( direct_damage_callbacks[ i ] );
   }
-
-  replenishment_targets.clear();
 
   init_resources( true );
 
@@ -3572,13 +3468,6 @@ void player_t::regen( const timespan_t periodicity )
     gain = gains.mp5_regen;
 
     {
-    if ( buffs.replenishment -> up() )
-    {
-      const double replenishment_regen = periodicity.total_seconds() * resources.max[ RESOURCE_MANA ] * 0.0010;
-
-      resource_gain( RESOURCE_MANA, replenishment_regen, gains.replenishment );
-    }
-
     if ( buffs.essence_of_the_red -> up() )
     {
       const double essence_regen = periodicity.total_seconds() * resources.max[ RESOURCE_MANA ] * 0.05;
@@ -5608,23 +5497,6 @@ pet_t* player_t::find_pet( const std::string& pet_name )
       return p;
 
   return 0;
-}
-
-// player_t::trigger_replenishment ==========================================
-
-void player_t::trigger_replenishment()
-{
-  if ( sim -> overrides.replenishment )
-    return;
-
-  if ( sim -> replenishment_targets > 0 )
-  {
-    choose_replenish_targets( this );
-  }
-  else
-  {
-    replenish_raid( this );
-  }
 }
 
 // player_t::parse_talent_trees =============================================

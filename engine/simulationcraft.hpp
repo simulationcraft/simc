@@ -3599,7 +3599,6 @@ public:
     int poisoned;
     int rampage;
     int ravage;
-    int replenishment;
     int roar_of_courage;
     int savage_combat;
     int scarlet_fever;
@@ -3651,10 +3650,6 @@ public:
   timespan_t default_aura_delay_stddev;
 
   cooldown_t* cooldown_list;
-
-  // Replenishment
-  int replenishment_targets;
-  std::vector<player_t*> replenishment_candidates;
 
   // Reporting
   report_t*  report;
@@ -4322,9 +4317,6 @@ struct player_t : public noncopyable
   double  mana_per_intellect;
   uptime_t* primary_resource_cap;
 
-  // Replenishment
-  std::vector<player_t*> replenishment_targets;
-
   // Callbacks
   action_callback_t* dark_intent_cb;
 
@@ -4510,7 +4502,6 @@ struct player_t : public noncopyable
     buff_t* mongoose_oh;
     buff_t* pain_supression;
     buff_t* power_infusion;
-    buff_t* replenishment;
     buff_t* raid_movement;
     buff_t* self_movement;
     buff_t* speed_potion;
@@ -4586,7 +4577,6 @@ struct player_t : public noncopyable
     gain_t* mana_potion;
     gain_t* mana_spring_totem;
     gain_t* mp5_regen;
-    gain_t* replenishment;
     gain_t* restore_mana;
     gain_t* spellsurge;
     gain_t* vampiric_embrace;
@@ -4815,8 +4805,6 @@ struct player_t : public noncopyable
   virtual void      create_pets() { }
   virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return 0; }
   virtual pet_t*    find_pet  ( const std::string& name );
-
-  virtual void trigger_replenishment();
 
   virtual int decode_set( item_t& item ) { ( void )item; assert( item.name() ); return SET_NONE; }
 

@@ -654,7 +654,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
   buff_list( 0 ), aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
   default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-  cooldown_list( 0 ), replenishment_targets( 0 ),
+  cooldown_list( 0 ),
   elapsed_cpu( timespan_t::zero ), iteration_dmg( 0 ), iteration_heal( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), simulation_length( false ),
   report_progress( 1 ),
@@ -1917,7 +1917,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.qiraji_fortitude       = optimal_raid;
   overrides.rampage                = optimal_raid;
   overrides.ravage                 = optimal_raid;
-  overrides.replenishment          = optimal_raid;
   overrides.savage_combat          = optimal_raid;
   overrides.scarlet_fever          = optimal_raid;
   overrides.sunder_armor           = optimal_raid;
@@ -2187,7 +2186,6 @@ void sim_t::create_options()
     { "override.qiraji_fortitude",        OPT_BOOL,   &( overrides.qiraji_fortitude               ) },
     { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
     { "override.ravage",                  OPT_BOOL,   &( overrides.ravage                         ) },
-    { "override.replenishment",           OPT_BOOL,   &( overrides.replenishment                  ) },
     { "override.roar_of_courage",         OPT_BOOL,   &( overrides.roar_of_courage                ) },
     { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
     { "override.scarlet_fever",           OPT_BOOL,   &( overrides.scarlet_fever                  ) },
@@ -2212,7 +2210,6 @@ void sim_t::create_options()
     { "active",                           OPT_FUNC,   ( void* ) ::parse_active                      },
     { "armor_update_internval",           OPT_INT,    &( armor_update_interval                    ) },
     { "aura_delay",                       OPT_TIMESPAN, &( aura_delay                             ) },
-    { "replenishment_targets",            OPT_INT,    &( replenishment_targets                    ) },
     { "seed",                             OPT_INT,    &( seed                                     ) },
     { "wheel_granularity",                OPT_FLT,    &( wheel_granularity                        ) },
     { "wheel_seconds",                    OPT_INT,    &( wheel_seconds                            ) },

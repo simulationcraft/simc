@@ -277,7 +277,6 @@ public:
       p -> resource_gain( RESOURCE_HEALTH, p -> resources.max[ RESOURCE_HEALTH ] * p -> talent_soul_leech -> effect1().percent(), p -> gains_soul_leech_health );
       p -> resource_gain( RESOURCE_MANA, p -> resources.max[ RESOURCE_MANA ] * p -> talent_soul_leech -> effect1().percent(), p -> gains_soul_leech );
 
-      p -> trigger_replenishment();
     }
   }
 

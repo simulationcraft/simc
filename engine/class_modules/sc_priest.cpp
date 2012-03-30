@@ -1706,8 +1706,6 @@ struct mind_blast_t : public priest_spell_t
   {
     timespan_t saved_cooldown = cooldown -> duration;
 
-    priest_targetdata_t* td = targetdata() -> cast_priest();
-
     stats = orb_stats[ p() -> buffs.shadow_orb -> stack() ];
 
     priest_spell_t::execute();
@@ -1733,11 +1731,6 @@ struct mind_blast_t : public priest_spell_t
       p() -> buffs.empowered_shadow -> trigger( 1, p() -> empowered_shadows_amount() );
     }
 
-    if ( result_is_hit() )
-    {
-      if ( td -> dots_vampiric_touch -> ticking )
-        p() -> trigger_replenishment();
-    }
   }
 
   virtual void player_buff()
@@ -2052,6 +2045,8 @@ struct shadow_word_pain_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     may_crit   = false;
+
+    tick_zero = true;
 
     stats -> children.push_back( player -> get_stats( "shadowy_apparition", this ) );
   }

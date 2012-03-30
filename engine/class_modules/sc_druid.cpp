@@ -2561,8 +2561,6 @@ struct lifebloom_t : public druid_heal_t
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     td -> buffs_lifebloom -> trigger();
-
-    p -> trigger_replenishment();
   }
 
   virtual void last_tick( dot_t* d )

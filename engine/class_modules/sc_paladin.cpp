@@ -1769,8 +1769,6 @@ struct judgement_t : public paladin_attack_t
 
     p -> buffs_judgements_of_the_wise -> trigger();
 
-    if ( p -> talents.communion -> rank() ) p -> trigger_replenishment();
-
     p -> last_foreground_action = seal; // Necessary for DPET calculations.
   }
 
