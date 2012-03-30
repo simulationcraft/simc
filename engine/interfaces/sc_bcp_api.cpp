@@ -60,16 +60,16 @@ js_node_t* pick_talents( js_node_t* talents, const std::string& specifier )
 
   bool spec1_is_active = js_t::get_child( spec1, "selected" ) != 0;
 
-  if ( specifier == "active" )
+  if ( util_t::str_compare_ci( specifier, "active" ) )
     return spec1_is_active ? spec1 : spec2;
 
-  if ( specifier == "inactive" )
+  if ( util_t::str_compare_ci( specifier, "inactive" ) )
     return spec1_is_active ? spec2 : spec1;
 
-  if ( specifier == "primary" )
+  if ( util_t::str_compare_ci( specifier, "primary" ) )
     return spec1;
 
-  if ( specifier == "secondary" )
+  if ( util_t::str_compare_ci( specifier, "secondary" ) )
     return spec2;
 
   std::string spec_name;
