@@ -233,20 +233,16 @@ bool option_t::parse( sim_t*                 sim,
 bool option_t::parse( sim_t*                 sim,
                       const char*            context,
                       std::vector<option_t>& options,
-                      const std::string&     options_str )
+                      const std::vector<std::string>& splits )
 {
-  std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, options_str, "," );
-
-  for ( int i=0; i < num_splits; i++ )
+  for ( size_t i = 0, size = splits.size(); i < size; ++i )
   {
-    std::string& s = splits[ i ];
-
-    std::string::size_type index = s.find( "=" );
+    const std::string& s = splits[ i ];
+    std::string::size_type index = s.find( '=' );
 
     if ( index == std::string::npos )
     {
-      sim -> errorf( "%s: Unexpected parameter '%s'.  Expected format: name=value\n", context, s.c_str() );
+      sim -> errorf( "%s: Unexpected parameter '%s'. Expected format: name=value\n", context, s.c_str() );
       return false;
     }
 
@@ -265,6 +261,18 @@ bool option_t::parse( sim_t*                 sim,
 
 // option_t::parse ==========================================================
 
+bool option_t::parse( sim_t*                 sim,
+                      const char*            context,
+                      std::vector<option_t>& options,
+                      const std::string&     options_str )
+{
+  std::vector<std::string> splits;
+  util_t::string_split( splits, options_str, "," );
+  return option_t::parse( sim, context, options, splits );
+}
+
+// option_t::parse ==========================================================
+
 bool option_t::parse( sim_t*             sim,
                       const char*        context,
                       const option_t*    options,
@@ -273,6 +281,18 @@ bool option_t::parse( sim_t*             sim,
   std::vector<option_t> options_vector;
   option_t::copy( options_vector, options );
   return parse( sim, context, options_vector, options_str );
+}
+
+// option_t::parse ==========================================================
+
+bool option_t::parse( sim_t*             sim,
+                      const char*        context,
+                      const option_t*    options,
+                      const std::vector<std::string>& strings )
+{
+  std::vector<option_t> options_vector;
+  option_t::copy( options_vector, options );
+  return parse( sim, context, options_vector, strings );
 }
 
 // option_t::parse_file =====================================================

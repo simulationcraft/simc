@@ -149,50 +149,7 @@ static bool parse_player( sim_t*             sim,
                           const std::string& name,
                           const std::string& value )
 {
-  if ( name == "player" )
-  {
-
-    std::string::size_type cut_pt = value.find( ',' );
-    std::string player_name( value, 0, cut_pt );
-
-    std::string player_options;
-    if ( cut_pt != value.npos )
-      player_options.assign( value, cut_pt + 1, value.npos );
-
-    std::string wowhead;
-    std::string region = sim -> default_region_str;
-    std::string server = sim -> default_server_str;
-    std::string talents = "active";
-    int use_cache=0;
-
-    option_t options[] =
-    {
-      { "wowhead", OPT_STRING, &wowhead   },
-      { "region",  OPT_STRING, &region    },
-      { "server",  OPT_STRING, &server    },
-      { "talents", OPT_STRING, &talents   },
-      { "cache",   OPT_BOOL,   &use_cache },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-
-    option_t::parse( sim, "player", options, player_options );
-
-    sim -> input_is_utf8 = range::is_valid_utf8( player_name ) && range::is_valid_utf8( server );
-    cache::behavior_t caching = use_cache ? cache::ANY : cache::players();
-
-    if ( wowhead.empty() )
-      sim -> active_player = bcp_api::download_player( sim, region, server, player_name, "active", caching );
-    else
-    {
-      sim -> active_player = wowhead_t::download_player( sim, wowhead, ( talents == "active" ), caching );
-
-      if ( sim -> active_player && player_name != sim -> active_player -> name() )
-        sim -> errorf( "Mismatch between player name '%s' and wowhead name '%s' for id '%s'\n",
-                       player_name.c_str(), sim -> active_player -> name(), wowhead.c_str() );
-    }
-  }
-
-  else if ( name == "pet" )
+  if ( name == "pet" )
   {
     std::string::size_type cut_pt = value.find( ',' );
     std::string pet_type( value, 0, cut_pt );
@@ -296,33 +253,99 @@ static bool parse_cache( sim_t*             /* sim */,
 
 // parse_armory =============================================================
 
-static bool parse_armory( sim_t*             sim,
-                          const std::string& name,
-                          const std::string& value )
+class names_and_options_t
 {
-  if ( name == "armory" )
-  {
-    std::vector<std::string> splits;
-    int num_splits = util_t::string_split( splits, value, "," );
+private:
+  bool is_valid_region( const std::string& s )
+  { return s.size() == 2; }
 
-    if ( num_splits < 3 )
+public:
+  struct error {};
+  struct option_error : public error {};
+
+  std::vector<std::string> names;
+  std::string region;
+  std::string server;
+  cache::behavior_t cache;
+
+  names_and_options_t( sim_t* sim, const std::string& context,
+                       const option_t* client_options, const std::string& input )
+  {
+    int use_cache = 0;
+
+    option_t base_options[] = {
+      { "region", OPT_STRING,  &region    },
+      { "server", OPT_STRING,  &server    },
+      { "cache",  OPT_BOOL,    &use_cache },
+    };
+
+    std::vector<option_t> options;
+    option_t::merge( options, base_options, client_options );
+
+    size_t n = util_t::string_split( names, input, "," );
+    size_t count = 0;
+    for ( size_t i = 0; i < n; ++i )
     {
-      sim -> errorf( "Expected format is: armory=region,server,player1,player2,...\n" );
-      return false;
+      if ( names[ i ].find( '=' ) != std::string::npos )
+      {
+        if ( unlikely( ! option_t::parse( sim, context.c_str(), options, names[ i ] ) ) )
+          throw option_error();
+      }
+      else if ( count != i )
+        names[ count++ ].swap( names[ i ] );
     }
 
-    const std::string& region = splits[ 0 ];
-    const std::string& server = splits[ 1 ];
+    names.resize( count );
 
-    for ( int i=2; i < num_splits; i++ )
+    if ( region.empty() )
     {
-      std::string player_name = splits[ i ];
-      std::string description = "active";
+      if ( names.size() > 2 && is_valid_region( names[ 0 ] ) )
+      {
+        region = names[ 0 ];
+        server = names[ 1 ];
+        names.erase( names.begin(), names.begin() + 2 );
+      }
+      else
+      {
+        region = sim -> default_region_str;
+        server = sim -> default_server_str;
+      }
+    }
+
+    cache = use_cache ? cache::ANY : cache::players();
+  }
+};
+
+bool parse_armory( sim_t*             sim,
+                   const std::string& name,
+                   const std::string& value )
+{
+  try
+  {
+    std::string spec = "active";
+
+    option_t options[] =
+    {
+      { "spec", OPT_STRING,  &spec },
+      { NULL,   OPT_UNKNOWN, NULL }
+    };
+
+    names_and_options_t stuff( sim, name, options, value );
+
+    for ( size_t i = 0; i < stuff.names.size(); ++i )
+    {
+      // Format: name[|spec]
+      std::string& player_name = stuff.names[ i ];
+      std::string description = spec;
+
       if ( player_name[ 0 ] == '!' )
       {
         player_name.erase( 0, 1 );
         description = "inactive";
+        sim -> errorf( "Warning: use of \"!%s\" to indicate a player's inactive talent spec is deprecated. Use \"%s|inactive\" instead.\n",
+                       player_name.c_str(), player_name.c_str() );
       }
+
       std::string::size_type pos = player_name.find( '|' );
       if ( pos != player_name.npos )
       {
@@ -331,45 +354,54 @@ static bool parse_armory( sim_t*             sim,
       }
 
       if ( ! sim -> input_is_utf8 )
-        sim -> input_is_utf8 = range::is_valid_utf8( player_name ) && range::is_valid_utf8( server );
+        sim -> input_is_utf8 = range::is_valid_utf8( player_name ) && range::is_valid_utf8( stuff.server );
 
-      sim -> active_player = bcp_api::download_player( sim, region, server, player_name, description );
-      if ( ! sim -> active_player ) return false;
+      player_t* p;
+      if ( name == "wowhead" )
+        p = wowhead_t::download_player( sim, stuff.region, stuff.server,
+                                        player_name, description, stuff.cache );
+      else if ( name == "chardev" )
+        p = chardev_t::download_player( sim, player_name, stuff.cache );
+      else if ( name == "wowreforge" )
+        p = wowreforge::download_player( sim, player_name, stuff.cache );
+      else
+        p = bcp_api::download_player( sim, stuff.region, stuff.server,
+                                      player_name, description, stuff.cache );
+
+      sim -> active_player = p;
+      if ( ! p )
+        return false;
     }
-    return true;
   }
-  else if ( name == "guild" )
+
+  catch( names_and_options_t::error& )
+  { return false; }
+
+  return true;
+}
+
+bool parse_guild( sim_t*             sim,
+                  const std::string& name,
+                  const std::string& value )
+{
+  // Save Raid Summary file when guilds are downloaded
+  sim -> save_raid_summary = 1;
+
+  try
   {
-    std::string::size_type cut_pt = value.find( ',' );
-    std::string guild_name( value, 0, cut_pt );
-
-    std::string guild_options;
-    if ( cut_pt != value.npos )
-      guild_options.assign( value, cut_pt + 1, value.npos );
-
-    std::string region = sim -> default_region_str;
-    std::string server = sim -> default_server_str;
     std::string type_str;
     std::string ranks_str;
     int max_rank = 0;
-    int use_cache = 0;
 
     option_t options[] =
     {
-      { "region",   OPT_STRING, &region    },
-      { "server",   OPT_STRING, &server    },
-      { "class",    OPT_STRING, &type_str  },
-      { "max_rank", OPT_INT,    &max_rank  },
-      { "ranks",    OPT_STRING, &ranks_str },
-      { "cache",    OPT_BOOL,   &use_cache },
-      { NULL, OPT_UNKNOWN, NULL }
+      { "class",    OPT_STRING,  &type_str  },
+      { "max_rank", OPT_INT,     &max_rank  },
+      { "ranks",    OPT_STRING,  &ranks_str },
+      { NULL,       OPT_UNKNOWN, NULL }
     };
 
-    if ( ! option_t::parse( sim, "guild", options, guild_options ) )
-      return false;
-
-    // Save Raid Summary file when guilds are downloaded
-    sim -> save_raid_summary = 1;
+    names_and_options_t stuff( sim, name, options, value );
 
     std::vector<int> ranks_list;
     if ( ! ranks_str.empty() )
@@ -383,95 +415,24 @@ static bool parse_armory( sim_t*             sim,
       }
     }
 
-    sim -> input_is_utf8 = range::is_valid_utf8( guild_name ) && range::is_valid_utf8( server );
+    player_type pt = PLAYER_NONE;
+    if ( ! type_str.empty() )
+      pt = util_t::parse_player_type( type_str );
 
-    int player_type = PLAYER_NONE;
-    if ( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );
-
-    cache::behavior_t caching = use_cache ? cache::ANY : cache::players();
-
-    return bcp_api::download_guild( sim, region, server, guild_name, ranks_list, player_type, max_rank, caching );
-  }
-
-  return false;
-}
-
-// parse_wowhead ============================================================
-
-static bool parse_wowhead( sim_t*             sim,
-                           const std::string& name,
-                           const std::string& value )
-{
-  if ( name == "wowhead" )
-  {
-    std::vector<std::string> splits;
-    int num_splits = util_t::string_split( splits, value, ",." );
-
-    if ( num_splits == 1 )
+    for ( size_t i = 0; i < stuff.names.size(); ++i )
     {
-      std::string player_id = splits[ 0 ];
-      bool active = true;
-      if ( player_id[ 0 ] == '!' )
-      {
-        player_id.erase( 0, 1 );
-        active = false;
-      }
-      sim -> active_player = wowhead_t::download_player( sim, player_id, active );
-    }
-    else if ( num_splits >= 3 )
-    {
-      std::string region = splits[ 0 ];
-      std::string server = splits[ 1 ];
-
-      for ( int i=2; i < num_splits; i++ )
-      {
-        std::string player_name = splits[ i ];
-        bool active = true;
-        if ( player_name[ 0 ] == '!' )
-        {
-          player_name.erase( 0, 1 );
-          active = false;
-        }
-        sim -> active_player = wowhead_t::download_player( sim, region, server, player_name, active );
-        if ( ! sim -> active_player ) return false;
-      }
-    }
-    else
-    {
-      sim -> errorf( "Expected format is: wowhead=id OR wowhead=region,server,player1,player2,...\n" );
-      return false;
+      const std::string& guild_name = stuff.names[ i ];
+      sim -> input_is_utf8 = range::is_valid_utf8( guild_name ) && range::is_valid_utf8( stuff.server );
+      if ( ! bcp_api::download_guild( sim, stuff.region, stuff.server, guild_name,
+                                      ranks_list, pt, max_rank, stuff.cache ) )
+        return false;
     }
   }
 
-  return sim -> active_player != 0;
-}
+  catch( names_and_options_t::error& )
+  { return false; }
 
-// parse_chardev ============================================================
-
-static bool parse_chardev( sim_t*             sim,
-                           const std::string& name,
-                           const std::string& value )
-{
-  if ( name == "chardev" )
-  {
-    sim -> active_player = chardev_t::download_player( sim, value );
-  }
-
-  return sim -> active_player != 0;
-}
-
-// parse_wowreforge =========================================================
-
-static bool parse_wowreforge( sim_t*             sim,
-                              const std::string& name,
-                              const std::string& value )
-{
-  if ( name == "wowreforge" )
-  {
-    sim -> active_player = wowreforge::download_player( sim, value );
-  }
-
-  return sim -> active_player != 0;
+  return true;
 }
 
 // parse_rawr ===============================================================
@@ -560,19 +521,19 @@ static bool parse_spell_query( sim_t*             sim,
 {
   std::string sq_str = value;
   size_t lvl_offset = std::string::npos;
-  
+
   if ( ( lvl_offset = value.rfind("@") ) != std::string::npos )
   {
     std::string lvl_offset_str = value.substr( lvl_offset + 1 );
     int sq_lvl = strtol( lvl_offset_str.c_str(), 0, 10 );
     if ( sq_lvl < 1 || sq_lvl > MAX_LEVEL )
       return 0;
-    
+
     sim -> spell_query_level = static_cast< unsigned >( sq_lvl );
-    
+
     sq_str = sq_str.substr( 0, lvl_offset );
   }
-  
+
   sim -> spell_query = spell_data_expr_t::parse( sim, sq_str );
   return sim -> spell_query > 0;
 }
@@ -668,9 +629,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   threads( 0 ), thread_index( index ),
   spell_query( 0 ), spell_query_level( MAX_LEVEL )
 {
-#if SC_DEATH_KNIGHT == 1 
+#if SC_DEATH_KNIGHT == 1
   register_death_knight_targetdata( this );
-#endif 
+#endif
 #if SC_DRUID == 1
   register_druid_targetdata( this );
 #endif
@@ -692,7 +653,7 @@ sim_t::sim_t( sim_t* p, int index ) :
 #if SC_ROGUE == 1
   register_rogue_targetdata( this );
 #endif
-#if SC_SHAMAN == 1 
+#if SC_SHAMAN == 1
   register_shaman_targetdata( this );
 #endif
 #if SC_WARLOCK == 1
@@ -1269,7 +1230,7 @@ bool sim_t::init()
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )
-    log_t::output( this, "Creating Enemys." );
+    log_t::output( this, "Creating Enemies." );
 
   if ( target_list )
   {
@@ -1589,7 +1550,7 @@ void sim_t::analyze_player( player_t* p )
   // Charts =================================================================
 
   chart_t::action_dpet       ( p -> action_dpet_chart,               p );
-  chart_t::aps_portion        ( p -> action_dmg_chart,                p );
+  chart_t::aps_portion       ( p -> action_dmg_chart,                p );
   chart_t::time_spent        ( p -> time_spent_chart,                p );
 
   std::string encoded_name;
@@ -2238,14 +2199,13 @@ void sim_t::create_options()
     { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                      },
     { "enemy",                            OPT_FUNC,   ( void* ) ::parse_player                      },
     { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                      },
-    { "player",                           OPT_FUNC,   ( void* ) ::parse_player                      },
     { "copy",                             OPT_FUNC,   ( void* ) ::parse_player                      },
     { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
-    { "guild",                            OPT_FUNC,   ( void* ) ::parse_armory                      },
-    { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_wowhead                     },
-    { "chardev",                          OPT_FUNC,   ( void* ) ::parse_chardev                     },
+    { "guild",                            OPT_FUNC,   ( void* ) ::parse_guild                       },
+    { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_armory                      },
+    { "chardev",                          OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
-    { "wowreforge",                       OPT_FUNC,   ( void* ) ::parse_wowreforge                  },
+    { "wowreforge",                       OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
     { "cache_items",                      OPT_FUNC,   ( void* ) ::parse_cache                       },
     { "cache_players",                    OPT_FUNC,   ( void* ) ::parse_cache                       },

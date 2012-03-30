@@ -2560,6 +2560,8 @@ struct option_t
   static void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
   static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
   static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
+  static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
+  static bool parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
   static bool parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
   static bool parse_file( sim_t*, FILE* file );
   static bool parse_line( sim_t*, char* line );
@@ -6353,11 +6355,7 @@ struct wowhead_t
                                     const std::string& region,
                                     const std::string& server,
                                     const std::string& name,
-                                    bool active=true,
-                                    cache::behavior_t b=cache::players() );
-  static player_t* download_player( sim_t* sim,
-                                    const std::string& id,
-                                    bool active=true,
+                                    const std::string& spec,
                                     cache::behavior_t b=cache::players() );
   static bool download_slot( item_t&,
                              const std::string& item_id,
