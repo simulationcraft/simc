@@ -2536,7 +2536,6 @@ enum option_type_t
   OPT_NONE=0,
   OPT_STRING,     // std::string*
   OPT_APPEND,     // std::string* (append)
-  OPT_CHARP,      // char*
   OPT_BOOL,       // int (only valid values are 1 and 0)
   OPT_INT,        // int
   OPT_FLT,        // double

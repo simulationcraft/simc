@@ -65,11 +65,6 @@ void option_t::print( FILE* file )
     std::string& v = *( ( std::string* ) address );
     util_t::fprintf( file, "%s=%s\n", name, v.empty() ? "" : v.c_str() );
   }
-  else if ( type == OPT_CHARP )
-  {
-    const char* v = *( ( char** ) address );
-    util_t::fprintf( file, "%s=%s\n", name, v ? v : "" );
-  }
   else if ( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
@@ -107,11 +102,6 @@ void option_t::save( FILE* file )
   {
     std::string& v = *( ( std::string* ) address );
     if ( ! v.empty() ) util_t::fprintf( file, "%s=%s\n", name, v.c_str() );
-  }
-  else if ( type == OPT_CHARP )
-  {
-    const char* v = *( ( char** ) address );
-    if ( v ) util_t::fprintf( file, "%s=%s\n", name, v );
   }
   else if ( type == OPT_BOOL )
   {
@@ -180,7 +170,6 @@ bool option_t::parse( sim_t*             sim,
     {
     case OPT_STRING: *( ( std::string* ) address ) = v;                         break;
     case OPT_APPEND: *( ( std::string* ) address ) += v;                        break;
-    case OPT_CHARP:  *( ( char** )       address ) = util_t::dup( v.c_str() );  break;
     case OPT_INT:    *( ( int* )         address ) = atoi( v.c_str() );         break;
     case OPT_FLT:    *( ( double* )      address ) = atof( v.c_str() );         break;
     case OPT_TIMESPAN:*( ( timespan_t* ) address ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
