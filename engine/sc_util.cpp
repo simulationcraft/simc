@@ -14,6 +14,17 @@ bool pred_ci ( char a, char b )
   return std::tolower( a ) == std::tolower( b );
 }
 
+// parse_enumeration ========================================================
+
+template <typename T, T Min, T Max, const char* F( T )>
+inline T parse_enumeration( const std::string& name )
+{
+  for ( T i = Min; i < Max; ++i )
+      if ( util_t::str_compare_ci( name, F( i ) ) )
+        return i;
+  return Min;
+}
+
 } // ANONYMOUS namespace ====================================================
 
 // util_t::str_compare_ci ===================================================
@@ -172,16 +183,6 @@ int util_t::ability_rank( int player_level,
   return ability_value;
 }
 
-// util_t::dup ==============================================================
-
-char* util_t::dup( const char *value )
-{
-  std::size_t n = strlen( value ) + 1;
-  void *p = malloc( n );
-  if ( p ) memcpy( p, value, n );
-  return static_cast<char*>( p );
-}
-
 #ifdef _MSC_VER
 // vsnprintf ================================================================
 
@@ -232,13 +233,7 @@ const char* util_t::role_type_string( role_type role )
 // util_t::parse_role_type ==================================================
 
 role_type util_t::parse_role_type( const std::string& name )
-{
-  for ( role_type i = ROLE_NONE; i < ROLE_MAX; ++i )
-    if ( util_t::str_compare_ci( name, util_t::role_type_string( i ) ) )
-      return i;
-
-  return ROLE_HYBRID;
-}
+{ return parse_enumeration<role_type,ROLE_NONE,ROLE_MAX,role_type_string>( name ); }
 
 // util_t::race_type_string =================================================
 
@@ -269,25 +264,8 @@ const char* util_t::race_type_string( race_type type )
 
 // util_t::parse_race_type ==================================================
 
-race_type util_t::parse_race_type( const std::string& name )
-{
-  for ( race_type i = RACE_NONE; i < RACE_MAX; ++i )
-    if ( util_t::str_compare_ci( name, util_t::race_type_string( i ) ) )
-      return i;
-
-  return RACE_NONE;
-}
-
-// util_t::parse_position_type ==============================================
-
-position_type util_t::parse_position_type( const std::string& name )
-{
-  for ( position_type i = POSITION_NONE; i < POSITION_MAX; ++i )
-    if ( util_t::str_compare_ci( name, util_t::position_type_string( i ) ) )
-      return i;
-
-  return POSITION_NONE;
-}
+race_type util_t::parse_race_type( const std::string &name )
+{ return parse_enumeration<race_type,RACE_NONE,RACE_MAX,race_type_string>( name ); }
 
 // util_t::position_type_string =============================================
 
@@ -303,6 +281,11 @@ const char* util_t::position_type_string( position_type type )
   default:                    return "unknown";
   }
 }
+
+// util_t::parse_position_type ==============================================
+
+position_type util_t::parse_position_type( const std::string &name )
+{ return parse_enumeration<position_type,POSITION_NONE,POSITION_MAX,position_type_string>( name ); }
 
 // util_t::profession_type_string ===========================================
 
@@ -329,13 +312,7 @@ const char* util_t::profession_type_string( profession_type type )
 // util_t::parse_profession_type ============================================
 
 profession_type util_t::parse_profession_type( const std::string& name )
-{
-  for ( profession_type i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
-    if ( util_t::str_compare_ci( name, util_t::profession_type_string( i ) ) )
-      return i;
-
-  return PROFESSION_NONE;
-}
+{ return parse_enumeration<profession_type,PROFESSION_NONE,PROFESSION_MAX,profession_type_string>( name ); }
 
 // util_t::translate_profession_id ==========================================
 
@@ -2542,13 +2519,12 @@ int64_t util_t::parse_date( const std::string& month_day_year )
 
 int util_t::vfprintf_helper( FILE *stream, const char *format, va_list args )
 {
-  char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
+  std::string p_locale = setlocale( LC_CTYPE, NULL );
   setlocale( LC_CTYPE, "" );
 
   int retcode = ::vfprintf( stream, format, args );
 
-  setlocale( LC_CTYPE, p_locale );
-  free( p_locale );
+  setlocale( LC_CTYPE, p_locale.c_str() );
 
   return retcode;
 }

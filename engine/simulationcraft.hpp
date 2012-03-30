@@ -2640,8 +2640,6 @@ public:
   static double ability_rank( int player_level, double ability_value, int ability_level, ... );
   static int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
 
-  static char* dup( const char* );
-
   static const char* attribute_type_string     ( int type );
   static const char* dmg_type_string           ( int type );
   static const char* dot_behavior_type_string  ( dot_behavior_type t );
