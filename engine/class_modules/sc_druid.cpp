@@ -379,7 +379,7 @@ struct druid_t : public player_t
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual resource_type_t primary_resource() const;
-  virtual int       primary_role() const;
+  virtual role_type primary_role() const;
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
   virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
   virtual double    composite_attribute( int attr ) const;
@@ -5423,7 +5423,7 @@ int druid_t::decode_set( item_t& item )
 
 // druid_t::primary_role ====================================================
 
-int druid_t::primary_role() const
+role_type druid_t::primary_role() const
 {
 
   if ( primary_tree() == TREE_BALANCE )

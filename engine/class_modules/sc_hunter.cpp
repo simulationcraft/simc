@@ -268,7 +268,7 @@ struct hunter_t : public player_t
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual resource_type_t primary_resource() const { return RESOURCE_FOCUS; }
-  virtual int       primary_role() const     { return ROLE_ATTACK; }
+  virtual role_type primary_role() const { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_t );

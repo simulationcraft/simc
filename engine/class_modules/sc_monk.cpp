@@ -112,7 +112,7 @@ struct monk_t : public player_t
   virtual double    matching_gear_multiplier( const attribute_type attr ) const;
   virtual int       decode_set( item_t& item );
   virtual resource_type_t primary_resource() const;
-  virtual int       primary_role() const;
+  virtual role_type primary_role() const;
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -612,7 +612,7 @@ resource_type_t monk_t::primary_resource() const
 
 // monk_t::primary_role ==================================================
 
-int monk_t::primary_role() const
+role_type monk_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
     return ROLE_HYBRID;

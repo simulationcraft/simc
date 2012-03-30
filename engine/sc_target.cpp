@@ -43,22 +43,16 @@ struct enemy_t : public player_t
 
 // target_t::primary_role ===================================================
 
-  virtual int primary_role() const
-  {
-    return ROLE_TANK;
-  }
+  virtual role_type primary_role() const
+  { return ROLE_TANK; }
 
   virtual resource_type_t primary_resource() const
-  {
-    return RESOURCE_NONE;
-  }
+  { return RESOURCE_NONE; }
 
 // target_t::base_armor =====================================================
 
   virtual double base_armor() const
-  {
-    return armor;
-  }
+  { return armor; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual void init();

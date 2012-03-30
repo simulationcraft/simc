@@ -252,7 +252,7 @@ struct warlock_t : public player_t
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
   virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const     { return ROLE_SPELL; }
+  virtual role_type primary_role() const     { return ROLE_SPELL; }
   virtual double    composite_armor() const;
   virtual double    composite_spell_power( const school_type school ) const;
   virtual double    composite_spell_power_multiplier() const;

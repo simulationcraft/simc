@@ -363,7 +363,7 @@ struct warrior_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
   virtual resource_type_t primary_resource() const { return RESOURCE_RAGE; }
-  virtual int       primary_role() const;
+  virtual role_type primary_role() const;
   virtual double    assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
   virtual void      copy_from( player_t* source );
 };
@@ -1213,8 +1213,8 @@ struct bloodthirst_heal_t : public heal_t
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background= true;
     init();
-  }  
-  
+  }
+
   virtual resource_type_t current_resource() const { return RESOURCE_NONE; }
 };
 
@@ -2856,7 +2856,7 @@ struct stance_t : public warrior_spell_t
     trigger_gcd = timespan_t::zero;
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
   }
-  
+
   virtual resource_type_t current_resource() const { return RESOURCE_RAGE; }
 
   virtual void execute()
@@ -3754,7 +3754,7 @@ void warrior_t::regen( timespan_t periodicity )
 
 // warrior_t::primary_role() ================================================
 
-int warrior_t::primary_role() const
+role_type warrior_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;

@@ -322,7 +322,7 @@ struct paladin_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
   virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const;
+  virtual role_type primary_role() const;
   virtual void      regen( timespan_t periodicity );
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
   virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
@@ -1375,7 +1375,7 @@ struct paladin_seal_t : public paladin_attack_t
     harmful    = false;
     base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
   }
-  
+
   virtual resource_type_t current_resource() const { return RESOURCE_MANA; }
 
   virtual void execute()
@@ -3340,7 +3340,7 @@ void paladin_t::init_values()
 
 // paladin_t::primary_role ==================================================
 
-int paladin_t::primary_role() const
+role_type paladin_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_DPS || primary_tree() == TREE_RETRIBUTION )
     return ROLE_HYBRID;

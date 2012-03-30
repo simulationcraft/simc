@@ -11,7 +11,7 @@
 
 // rating_t::init ===========================================================
 
-void rating_t::init( sim_t* sim, dbc_t& dbc, int level, int type )
+void rating_t::init( sim_t* sim, dbc_t& dbc, int level, player_type type )
 {
   if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%d type=%s",
                                      level, util_t::player_type_string( type ) );

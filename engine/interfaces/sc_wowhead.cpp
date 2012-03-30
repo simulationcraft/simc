@@ -595,7 +595,7 @@ player_t* download_player_profile( sim_t* sim,
     sim -> errorf( "Unable to extract player class from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
-  int player_type = util_t::translate_class_id( atoi( cid_str.c_str() ) );
+  player_type player_type = util_t::translate_class_id( atoi( cid_str.c_str() ) );
   std::string type_str = util_t::player_type_string( player_type );
 
   std::string rid_str;
@@ -639,7 +639,7 @@ player_t* download_player_profile( sim_t* sim,
     p -> origin_str = "http://www.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + character_name;
   }
 
-  for ( int i=0; i < PROFESSION_MAX; i++ )
+  for ( profession_type i = PROFESSION_NONE; i < PROFESSION_MAX; i++ )
   {
     std::vector<std::string> skill_levels;
     if ( 2 == js_t::get_value( skill_levels, profile_js, translate_profession_id( i ) ) )

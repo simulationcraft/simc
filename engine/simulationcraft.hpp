@@ -2651,12 +2651,12 @@ public:
   static const char* food_type_string          ( int type );
   static const char* gem_type_string           ( int type );
   static const char* meta_gem_type_string      ( int type );
-  static const char* player_type_string        ( int type );
+  static const char* player_type_string        ( player_type );
   static const char* pet_type_string           ( int type );
-  static const char* position_type_string      ( int type );
-  static const char* profession_type_string    ( int type );
-  static const char* race_type_string          ( int type );
-  static const char* role_type_string          ( int type );
+  static const char* position_type_string      ( position_type );
+  static const char* profession_type_string    ( profession_type );
+  static const char* race_type_string          ( race_type );
+  static const char* role_type_string          ( role_type );
   static const char* resource_type_t_string      ( resource_type_t resource_type );
   static const char* result_type_string        ( int type );
   static int         school_type_component     ( int s_type, int c_type );
@@ -2688,7 +2688,7 @@ public:
   static int parse_meta_gem_type               ( const std::string& name );
   static player_type parse_player_type         ( const std::string& name );
   static pet_type_t parse_pet_type             ( const std::string& name );
-  static int parse_profession_type             ( const std::string& name );
+  static profession_type parse_profession_type ( const std::string& name );
   static position_type parse_position_type     ( const std::string& name );
   static race_type parse_race_type             ( const std::string& name );
   static role_type parse_role_type             ( const std::string& name );
@@ -2714,8 +2714,8 @@ public:
   static player_type pet_class_type( int type );
 
   static const char* class_id_string( int type );
-  static int translate_class_id( int cid );
-  static int translate_class_str( std::string& s );
+  static player_type translate_class_id( int cid );
+  static player_type translate_class_str( std::string& s );
   static race_type translate_race_id( int rid );
   static stat_type translate_item_mod( int stat_mod );
   static slot_type translate_invtype( int inv_type );
@@ -4014,7 +4014,7 @@ struct rating_t : public internal::rating_t
   typedef internal::rating_t base_t;
   rating_t() : base_t( base_t() ) {}
 
-  void init( sim_t*, dbc_t& pData, int level, int type );
+  void init( sim_t*, dbc_t& pData, int level, player_type type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
   static double get_attribute_base( sim_t*, dbc_t& pData, int level, player_type class_type, race_type race, base_stat_type stat_type );
 };
@@ -4353,7 +4353,7 @@ struct player_t : public noncopyable
   double attack_power_per_strength, initial_attack_power_per_strength;
   double attack_power_per_agility,  initial_attack_power_per_agility;
   double attack_crit_per_agility,   initial_attack_crit_per_agility;
-  int    position;
+  position_type position;
   std::string position_str;
 
   // Defense Mechanics
@@ -4825,7 +4825,7 @@ struct player_t : public noncopyable
   virtual void   recalculate_resource_max( resource_type_t resource_type);
   virtual bool   resource_available( resource_type_t resource_type, double cost ) const;
   virtual resource_type_t primary_resource() const { return RESOURCE_NONE; }
-  virtual int    primary_role() const;
+  virtual role_type primary_role() const;
   virtual int    primary_tree() const;
   virtual int    primary_tab();
   virtual const char* primary_tree_name() const;
@@ -5325,7 +5325,7 @@ public:
   virtual void   interrupt_action();
   virtual void   check_talent( int talent_rank );
   virtual void   check_spec( int necessary_spec );
-  virtual void   check_race( int race );
+  virtual void   check_race( race_type race );
   virtual const char* name() const { return name_str.c_str(); }
 
   virtual double   miss_chance( int /* delta_level */ ) const { return 0; }

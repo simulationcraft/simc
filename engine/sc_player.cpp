@@ -1742,11 +1742,11 @@ void player_t::init_scaling()
   {
     invert_scaling = 0;
 
-    int role = primary_role();
+    role_type role = primary_role();
 
-    int attack = ( ( role == ROLE_ATTACK ) || ( role == ROLE_HYBRID ) || role == ROLE_TANK ) ? 1 : 0;
-    int spell  = ( ( role == ROLE_SPELL  ) || ( role == ROLE_HYBRID ) || ( role == ROLE_HEAL ) ) ? 1 : 0;
-    int tank   = role == ROLE_TANK ? 1 : 0;
+    bool attack = ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK );
+    bool spell  = ( role == ROLE_SPELL  || role == ROLE_HYBRID || role == ROLE_HEAL );
+    bool tank   =   role == ROLE_TANK;
 
     scales_with[ STAT_STRENGTH  ] = attack;
     scales_with[ STAT_AGILITY   ] = attack;
@@ -3656,10 +3656,8 @@ int player_t::primary_tab()
 
 // player_t::primary_role ===================================================
 
-int player_t::primary_role() const
-{
-  return role;
-}
+role_type player_t::primary_role() const
+{ return role; }
 
 // player_t::primary_tree_name ==============================================
 
@@ -5110,7 +5108,7 @@ struct snapshot_stats_t : public action_t
     p -> buffed_block       = p -> composite_tank_block();
     p -> buffed_crit        = p -> composite_tank_crit( SCHOOL_PHYSICAL );
 
-    int role = p -> primary_role();
+    role_type role = p -> primary_role();
     int delta_level = sim -> target -> level - p -> level;
     double spell_hit_extra=0, attack_hit_extra=0, expertise_extra=0;
 

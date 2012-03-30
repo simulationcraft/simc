@@ -410,7 +410,7 @@ struct death_knight_t : public player_t
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual resource_type_t primary_resource() const { return RESOURCE_RUNIC_POWER; }
-  virtual int       primary_role() const;
+  virtual role_type primary_role() const;
   virtual void      trigger_runic_empowerment();
   virtual int       runes_count( rune_type rt, bool include_death, int position );
   virtual double    runes_cooldown_any( rune_type rt, bool include_death, int position );
@@ -4969,7 +4969,7 @@ double death_knight_t::composite_tank_crit( const school_type school ) const
 
 // death_knight_t::primary_role =============================================
 
-int death_knight_t::primary_role() const
+role_type death_knight_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;

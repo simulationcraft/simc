@@ -292,7 +292,7 @@ struct shaman_t : public player_t
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const;
+  virtual role_type primary_role() const;
   virtual void      combat_begin();
 
   // Event Tracking
@@ -3567,7 +3567,7 @@ struct spiritwalkers_grace_t : public shaman_spell_t
 
     // Extend buff duration with t13 4pc healer
     actor -> buff.spiritwalkers_grace -> buff_duration = actor -> buff.spiritwalkers_grace -> duration() +
-                                                         actor -> glyph.spiritwalkers_grace -> effectN( 1 ).time_value() + 
+                                                         actor -> glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
                                                          actor -> sets -> set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value();
   }
 
@@ -4408,7 +4408,7 @@ int shaman_t::decode_set( item_t& item )
 
 // shaman_t::primary_role ===================================================
 
-int shaman_t::primary_role() const
+role_type shaman_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;

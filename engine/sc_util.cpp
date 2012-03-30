@@ -207,16 +207,14 @@ const char* util_t::dot_behavior_type_string( dot_behavior_type t )
   switch( t )
   {
   case DOT_REFRESH: return "DOT_REFRESH";
-  case DOT_CLIP: return "DOT_CLIP";
-  // WTF?
-  // case DOT_WAIT: return "DOT_WAIT";
-  default: return "unknown";
+  case DOT_CLIP:    return "DOT_CLIP";
+  default:          return "unknown";
   }
 }
 
 // util_t::role_type_string =================================================
 
-const char* util_t::role_type_string( int role )
+const char* util_t::role_type_string( role_type role )
 {
   switch ( role )
   {
@@ -227,24 +225,24 @@ const char* util_t::role_type_string( int role )
   case ROLE_TANK:      return "tank";
   case ROLE_HEAL:      return "heal";
   case ROLE_NONE:      return "auto";
+  default:             return "unknown";
   }
-  return "unknown";
 }
 
 // util_t::parse_role_type ==================================================
 
 role_type util_t::parse_role_type( const std::string& name )
 {
-  for ( int i=( int ) ROLE_NONE; i < ( int )ROLE_MAX; i++ )
+  for ( role_type i = ROLE_NONE; i < ROLE_MAX; ++i )
     if ( util_t::str_compare_ci( name, util_t::role_type_string( i ) ) )
-      return ( role_type ) i;
+      return i;
 
   return ROLE_HYBRID;
 }
 
 // util_t::race_type_string =================================================
 
-const char* util_t::race_type_string( int type )
+const char* util_t::race_type_string( race_type type )
 {
   switch ( type )
   {
@@ -265,17 +263,17 @@ const char* util_t::race_type_string( int type )
   case RACE_UNDEAD:    return "undead";
   case RACE_GOBLIN:    return "goblin";
   case RACE_WORGEN:    return "worgen";
+  default:             return "unknown";
   }
-  return "unknown";
 }
 
 // util_t::parse_race_type ==================================================
 
 race_type util_t::parse_race_type( const std::string& name )
 {
-  for ( int i=( int ) RACE_NONE; i < ( int )RACE_MAX; i++ )
+  for ( race_type i = RACE_NONE; i < RACE_MAX; ++i )
     if ( util_t::str_compare_ci( name, util_t::race_type_string( i ) ) )
-      return ( race_type ) i;
+      return i;
 
   return RACE_NONE;
 }
@@ -284,16 +282,16 @@ race_type util_t::parse_race_type( const std::string& name )
 
 position_type util_t::parse_position_type( const std::string& name )
 {
-  for ( int i = ( int ) POSITION_NONE; i < ( int ) POSITION_MAX; i++ )
+  for ( position_type i = POSITION_NONE; i < POSITION_MAX; ++i )
     if ( util_t::str_compare_ci( name, util_t::position_type_string( i ) ) )
-      return ( position_type ) i;
+      return i;
 
   return POSITION_NONE;
 }
 
 // util_t::position_type_string =============================================
 
-const char* util_t::position_type_string( int type )
+const char* util_t::position_type_string( position_type type )
 {
   switch ( type )
   {
@@ -302,14 +300,13 @@ const char* util_t::position_type_string( int type )
   case POSITION_FRONT:        return "front";
   case POSITION_RANGED_BACK:  return "ranged_back";
   case POSITION_RANGED_FRONT: return "ranged_front";
+  default:                    return "unknown";
   }
-
-  return "unknown";
 }
 
 // util_t::profession_type_string ===========================================
 
-const char* util_t::profession_type_string( int type )
+const char* util_t::profession_type_string( profession_type type )
 {
   switch ( type )
   {
@@ -325,15 +322,15 @@ const char* util_t::profession_type_string( int type )
   case PROF_MINING:         return "mining";
   case PROF_SKINNING:       return "skinning";
   case PROF_TAILORING:      return "tailoring";
+  default:                  return "unknown";
   }
-  return "unknown";
 }
 
 // util_t::parse_profession_type ============================================
 
-int util_t::parse_profession_type( const std::string& name )
+profession_type util_t::parse_profession_type( const std::string& name )
 {
-  for ( int i=0; i < PROFESSION_MAX; i++ )
+  for ( profession_type i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
     if ( util_t::str_compare_ci( name, util_t::profession_type_string( i ) ) )
       return i;
 
@@ -363,7 +360,7 @@ profession_type util_t::translate_profession_id( int skill_id )
 
 // util_t::player_type_string ===============================================
 
-const char* util_t::player_type_string( int type )
+const char* util_t::player_type_string( player_type type )
 {
   switch ( type )
   {
@@ -383,39 +380,28 @@ const char* util_t::player_type_string( int type )
   case PLAYER_GUARDIAN: return "guardian";
   case ENEMY:           return "enemy";
   case ENEMY_ADD:       return "add";
+  default:              return "unknown";
   }
-  return "unknown";
-}
-
-// util_t::translate_class_str ==============================================
-
-int util_t::translate_class_str( std::string& s )
-{
-  std::string fmt_s = armory_t::format( s );
-  if      ( fmt_s == "death_knight" ) return DEATH_KNIGHT;
-  else if ( fmt_s == "deathknight"  ) return DEATH_KNIGHT;
-  else if ( fmt_s == "druid"        ) return DRUID;
-  else if ( fmt_s == "hunter"       ) return HUNTER;
-  else if ( fmt_s == "mage"         ) return MAGE;
-  else if ( fmt_s == "monk"         ) return MONK;
-  else if ( fmt_s == "paladin"      ) return PALADIN;
-  else if ( fmt_s == "priest"       ) return PRIEST;
-  else if ( fmt_s == "rogue"        ) return ROGUE;
-  else if ( fmt_s == "shaman"       ) return SHAMAN;
-  else if ( fmt_s == "warlock"      ) return WARLOCK;
-  else if ( fmt_s == "warrior"      ) return WARRIOR;
-  return PLAYER_NONE;
 }
 
 // util_t::parse_player_type ================================================
 
 player_type util_t::parse_player_type( const std::string& name )
 {
-  for ( int i=( int ) PLAYER_NONE; i < ( int ) PLAYER_MAX; i++ )
+  for ( player_type i = PLAYER_NONE; i < PLAYER_MAX; ++i )
     if ( util_t::str_compare_ci( name, util_t::player_type_string( i ) ) )
-      return ( player_type ) i;
+      return i;
 
   return PLAYER_NONE;
+}
+
+// util_t::translate_class_str ==============================================
+
+player_type util_t::translate_class_str( std::string& s )
+{
+  std::string fmt_s = armory_t::format( s );
+  if ( fmt_s == "death_knight" ) return DEATH_KNIGHT;
+  return parse_player_type( fmt_s );
 }
 
 // util_t::pet_type_string ==================================================
@@ -2154,7 +2140,7 @@ const char* util_t::class_id_string( int type )
 
 // util_t::translate_class_id ===============================================
 
-int util_t::translate_class_id( int cid )
+player_type util_t::translate_class_id( int cid )
 {
   switch ( cid )
   {
@@ -2169,9 +2155,8 @@ int util_t::translate_class_id( int cid )
   case  9: return WARLOCK;
   case 10: return MONK;
   case 11: return DRUID;
+  default: return PLAYER_NONE;
   }
-
-  return PLAYER_NONE;
 }
 
 // util_t::translate_race_id ================================================

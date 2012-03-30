@@ -154,7 +154,7 @@ void action_t::init_action_t_()
   update_flags = STATE_TARGET;
   state_cache = 0;
   state = 0;
-  
+
   for ( int i = 0; i < RESOURCE_MAX; i++ )
     base_costs[ i ] = 0.0;
 
@@ -1704,7 +1704,7 @@ void action_t::check_talent( int talent_rank )
 
 // action_t::check_race =====================================================
 
-void action_t::check_race( int race )
+void action_t::check_race( race_type race )
 {
   if ( player -> race != race )
   {

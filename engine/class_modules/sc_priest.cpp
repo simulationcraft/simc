@@ -306,7 +306,7 @@ struct priest_t : public player_t
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
   virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
-  virtual int       primary_role() const;
+  virtual role_type primary_role() const;
   virtual void      combat_begin();
   virtual double    composite_armor() const;
   virtual double    composite_spell_power( const school_type school ) const;
@@ -3165,7 +3165,7 @@ struct renew_t : public priest_heal_t
 // Priest Character Definition
 // ==========================================================================
 
-// priest_t::shadow_orb_amount
+// priest_t::shadow_orb_amount ==============================================
 
 double priest_t::shadow_orb_amount() const
 {
@@ -3174,9 +3174,9 @@ double priest_t::shadow_orb_amount() const
   return a;
 }
 
-// priest_t::primary_role
+// priest_t::primary_role ===================================================
 
-int priest_t::primary_role() const
+role_type priest_t::primary_role() const
 {
   switch ( player_t::primary_role() )
   {
