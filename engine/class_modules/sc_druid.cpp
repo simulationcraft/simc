@@ -2557,7 +2557,6 @@ struct lifebloom_t : public druid_heal_t
   virtual void execute()
   {
     druid_heal_t::execute();
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     td -> buffs_lifebloom -> trigger();
@@ -3453,8 +3452,6 @@ struct mark_of_the_wild_t : public druid_spell_t
       if ( p -> ooc_buffs() )
       {
         p -> buffs.mark_of_the_wild -> trigger();
-        // Force max mana recalculation here
-        p -> recalculate_resources.max( RESOURCE_MANA );
         if ( ! p -> in_combat )
           p -> resource_gain( RESOURCE_MANA, p -> resources.max[ RESOURCE_MANA ] - p -> resources.current[ RESOURCE_MANA ], 0, this );
       }

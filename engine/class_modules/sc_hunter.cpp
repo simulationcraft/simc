@@ -339,7 +339,7 @@ struct hunter_pet_t : public pet_t
 
     stamina_per_owner = 0.45;
 
-    health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
+    //health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
     initial_armor_multiplier *= 1.05;
 
 
@@ -2698,7 +2698,7 @@ struct serpent_sting_t : public hunter_attack_t
     if ( serpent_sting_burst && p -> talents.improved_serpent_sting -> ok() )
     {
       double t = ( p -> talents.improved_serpent_sting -> effect1().percent() ) *
-                 ( ceil( base_td ) * hasted_num_ticks( player -> player_haste ) + total_power() * 0.4 );
+                 ( ceil( base_td ) * hasted_num_ticks( player_haste ) + total_power() * 0.4 );
 
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;

@@ -778,17 +778,17 @@ void warlock_pet_t::init_base()
   base_spell_crit                   += 0.0328; // seems to be level invariant, untested
   initial_attack_crit_per_agility   += 0.01 / 52.0; // untested
   initial_spell_crit_per_intellect  += owner -> initial_spell_crit_per_intellect; // untested
-  health_per_stamina = 10.0; // untested!
+  //health_per_stamina = 10.0; // untested!
   mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per point of owner int that exceeds owner base int
-  mp5_per_intellect  = 2.0 / 3.0; // untested!
+  //mp5_per_intellect  = 2.0 / 3.0; // untested!  
 }
 
 void warlock_pet_t::init_resources( bool force )
 {
-  bool mana_force = ( force || resource_initial[ RESOURCE_MANA ] == 0 );
+  //bool mana_force = ( force || resource_initial[ RESOURCE_MANA ] == 0 );
   player_t::init_resources( force );
-  if ( mana_force ) resource_initial[ RESOURCE_MANA ] += ( owner -> intellect() - owner -> attribute_base[ ATTR_INTELLECT ] ) * ( level / 80.0 ) * 7.5;
-  resources.current[ RESOURCE_MANA ] = resources.max[ RESOURCE_MANA ] = resource_initial[ RESOURCE_MANA ];
+  // if ( mana_force ) resource_initial[ RESOURCE_MANA ] += ( owner -> intellect() - owner -> attribute_base[ ATTR_INTELLECT ] ) * ( level / 80.0 ) * 7.5;
+  resources.current[ RESOURCE_MANA ] = resources.max[ RESOURCE_MANA ];// = resource_initial[ RESOURCE_MANA ];
 }
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
@@ -920,7 +920,7 @@ double warlock_main_pet_t::composite_player_multiplier( const school_type school
 double warlock_main_pet_t::composite_mp5() const
 {
   double h = warlock_pet_t::composite_mp5();
-  h += mp5_per_intellect * owner -> intellect();
+  //h += mp5_per_intellect * owner -> intellect();
   return h;
 }
 
@@ -1016,7 +1016,7 @@ void imp_pet_t::init_base()
 
   // untested !!
   mana_per_intellect = 14.28;
-  mp5_per_intellect  = 5.0 / 6.0;
+  //mp5_per_intellect  = 5.0 / 6.0;
   // untested !!
 }
 
@@ -1078,9 +1078,9 @@ void felhunter_pet_t::init_base()
   warlock_pet_t::init_base();
 
   // untested in cataclyms!!
-  health_per_stamina = 9.5;
+  //health_per_stamina = 9.5;
   mana_per_intellect = 11.55;
-  mp5_per_intellect  = 8.0 / 324.0;
+  //mp5_per_intellect  = 8.0 / 324.0;
   base_mp5 = 11.22;
   // untested in cataclyms!!
 

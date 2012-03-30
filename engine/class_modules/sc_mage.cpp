@@ -484,7 +484,7 @@ struct water_elemental_pet_t : public pet_t
     attribute_base[ ATTR_STAMINA   ] = 190;
     attribute_base[ ATTR_INTELLECT ] = 133;
 
-    health_per_stamina = 7.5;
+    //health_per_stamina = 7.5;
     mana_per_intellect = 5;
   }
 
