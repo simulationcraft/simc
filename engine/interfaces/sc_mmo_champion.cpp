@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <simulationcraft.hpp>
+#include "simulationcraft.hpp"
 #define RANGE_BITS 24
 #define RANGE_HIGH ((1<<RANGE_BITS)-1)
 #define RANGE_HIGH_MASK (0x3f<<(RANGE_BITS-6))

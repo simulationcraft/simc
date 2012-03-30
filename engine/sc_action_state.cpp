@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <simulationcraft.hpp>
+#include "simulationcraft.hpp"
 
 action_state_t* action_t::get_state( const action_state_t* other )
 {

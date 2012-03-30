@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="simcqt"
 	ProjectGUID="{8B5B7EB0-9B3B-3682-B018-64769C525784}"
+	RootNamespace="simcqt"
 	Keyword="Qt4VSv1.0"
 	TargetFrameworkVersion="0"
 	>
@@ -45,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm200 -w34100 -w34189 -w34100 -w34189"
 				Optimization="4"
-				AdditionalIncludeDirectories="&quot;c:\Qt\4.7.4\include\QtCore&quot;,&quot;c:\Qt\4.7.4\include\QtGui&quot;,&quot;c:\Qt\4.7.4\include\QtWebKit&quot;,&quot;c:\Qt\4.7.4\include&quot;,&quot;engine&quot;,&quot;c:\Qt\4.7.4\include\ActiveQt&quot;,&quot;debug&quot;,c:\Qt\4.7.4\mkspecs\default"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\QtWebKit&quot;;&quot;$(QTDIR)\include&quot;;&quot;engine&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;debug&quot;;&quot;$(QTDIR)\mkspecs\default&quot;"
 				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_WEBKIT_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -75,10 +76,10 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot; &quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;&#x0D;&#x0A;&quot;/MACHINE:i386&quot;"
-				AdditionalDependencies="c:\Qt\4.7.4\lib\qtmaind.lib wininet.lib c:\Qt\4.7.4\lib\QtWebKit4.lib c:\qt\4.7.4\lib\QtNetwork4.lib c:\Qt\4.7.4\lib\QtGui4.lib c:\Qt\4.7.4\lib\QtCore4.lib"
+				AdditionalDependencies="qtmaind.lib wininet.lib QtWebKit4.lib QtNetwork4.lib QtGui4.lib QtCore4.lib"
 				OutputFile="SimulationCraft.exe"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="c:\Qt\4.7.4\lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="2"
@@ -136,7 +137,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm200 -w34100 -w34189 -w34100 -w34189"
 				Optimization="2"
-				AdditionalIncludeDirectories="&quot;c:\Qt\4.7.4\include\QtCore&quot;,&quot;c:\Qt\4.7.4\include\QtGui&quot;,&quot;c:\Qt\4.7.4\include\QtWebKit&quot;,&quot;c:\Qt\4.7.4\include&quot;,&quot;engine&quot;,&quot;c:\Qt\4.7.4\include\ActiveQt&quot;,&quot;release&quot;,c:\Qt\4.7.4\mkspecs\default"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\QtWebKit&quot;;&quot;$(QTDIR)\include&quot;;&quot;engine&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;release&quot;;&quot;$(QTDIR)\mkspecs\default&quot;"
 				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_NO_DEBUG,QT_WEBKIT_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
@@ -168,11 +169,11 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalOptions="&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot; &quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot;"
-				AdditionalDependencies="c:\Qt\4.7.4\lib\qtmain.lib wininet.lib c:\Qt\4.7.4\lib\QtWebKit4.lib c:\qt\4.7.4\lib\QtNetwork4.lib c:\Qt\4.7.4\lib\QtGui4.lib c:\Qt\4.7.4\lib\QtCore4.lib"
+				AdditionalDependencies="qtmain.lib wininet.lib QtWebKit4.lib QtNetwork4.lib QtGui4.lib QtCore4.lib"
 				OutputFile="SimulationCraft.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="c:\Qt\4.7.4\lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)\lib&quot;"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
@@ -258,7 +259,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\class_modules\sc_death_knight.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_dot.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\class_modules\sc_druid.cpp"
 				>
 			</File>
 			<File
@@ -276,12 +285,55 @@
 			<File
 				RelativePath="engine\sc_extra_data.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\sc_extra_data_ptr.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
-
 			<File
 				RelativePath="engine\sc_gear_stats.cpp"
 				>
@@ -295,6 +347,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\class_modules\sc_hunter.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_item.cpp"
 				>
 			</File>
@@ -305,10 +361,54 @@
 			<File
 				RelativePath="engine\sc_item_data.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\sc_item_data_ptr.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\interfaces\sc_js.cpp"
@@ -319,11 +419,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\class_modules\sc_mage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\interfaces\sc_mmo_champion.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\engine\class_modules\sc_monk.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_option.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\class_modules\sc_paladin.cpp"
 				>
 			</File>
 			<File
@@ -336,6 +448,10 @@
 			</File>
 			<File
 				RelativePath="engine\sc_plot.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\class_modules\sc_priest.cpp"
 				>
 			</File>
 			<File
@@ -355,6 +471,10 @@
 				>
 			</File>
 			<File
+				RelativePath="engine\report\sc_report.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\engine\report\sc_report_html_player.cpp"
 				>
 			</File>
@@ -371,11 +491,11 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\report\sc_report.cpp"
+				RelativePath="engine\sc_rng.cpp"
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_rng.cpp"
+				RelativePath=".\engine\class_modules\sc_rogue.cpp"
 				>
 			</File>
 			<File
@@ -385,10 +505,54 @@
 			<File
 				RelativePath="engine\sc_scale_data.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\sc_scale_data_ptr.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\sc_scaling.cpp"
@@ -400,6 +564,10 @@
 			</File>
 			<File
 				RelativePath="engine\sc_set_bonus.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\class_modules\sc_shaman.cpp"
 				>
 			</File>
 			<File
@@ -417,10 +585,54 @@
 			<File
 				RelativePath="engine\sc_spell_data.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\sc_spell_data_ptr.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\engine\dbc\sc_spell_info.cpp"
@@ -429,10 +641,54 @@
 			<File
 				RelativePath="engine\sc_spell_lists.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\sc_spell_lists_ptr.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\sc_stats.cpp"
@@ -445,10 +701,54 @@
 			<File
 				RelativePath="engine\sc_talent_data.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\sc_talent_data_ptr.inc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\sc_target.cpp"
@@ -471,6 +771,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\class_modules\sc_warlock.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\class_modules\sc_warlock_pets.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\class_modules\sc_warrior.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_weapon.cpp"
 				>
 			</File>
@@ -486,50 +798,6 @@
 				RelativePath="engine\interfaces\sc_xml.cpp"
 				>
 			</File>
-					<File
-			RelativePath=".\engine\class_modules\sc_death_knight.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_druid.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_hunter.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_mage.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_monk.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_paladin.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_priest.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_rogue.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_shaman.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_warlock.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_warrior.cpp"
-			>
-		</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -537,12 +805,94 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\engine\utf8\checked.h"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\utf8\core.h"
+				>
+			</File>
+			<File
 				RelativePath="qt\sc_autoupdate.h"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\engine\report\sc_report.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\class_modules\sc_warlock.hpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="engine\simulationcraft.hpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="qt\simulationcraftqt.hpp"
@@ -553,7 +903,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MOC qt\simulationcraftqt.hpp"
-						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\Qt\4.7.4\include\QtCore&quot; -I&quot;c:\Qt\4.7.4\include\QtGui&quot; -I&quot;c:\Qt\4.7.4\include\QtWebKit&quot; -I&quot;c:\Qt\4.7.4\include&quot; -I&quot;engine&quot; -I&quot;c:\Qt\4.7.4\include\ActiveQt&quot; -I&quot;debug&quot; -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.hpp -o debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
+						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\QtWebKit&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;engine&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;debug&quot; -I$(QTDIR)\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.hpp -o debug\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
 						AdditionalDependencies="Rem;qt\simulationcraftqt.hpp"
 						Outputs="debug\moc_simulationcraftqt.cpp"
 					/>
@@ -564,11 +914,15 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="MOC qt\simulationcraftqt.hpp"
-						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile release\moc_simulationcraftqt.cpp&#x0D;&#x0A;c:\Qt\4.7.4\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;c:\Qt\4.7.4\include\QtCore&quot; -I&quot;c:\Qt\4.7.4\include\QtGui&quot; -I&quot;c:\Qt\4.7.4\include\QtWebKit&quot; -I&quot;c:\Qt\4.7.4\include&quot; -I&quot;engine&quot; -I&quot;c:\Qt\4.7.4\include\ActiveQt&quot; -I&quot;release&quot; -Ic:\Qt\4.7.4\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.hpp -o release\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
+						CommandLine="Rem IncrediBuild_AllowRemote&#x0D;&#x0A;Rem IncrediBuild_OutputFile release\moc_simulationcraftqt.cpp&#x0D;&#x0A;$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\QtWebKit&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;engine&quot; -I&quot;$(QTDIR)\include\ActiveQt&quot; -I&quot;release&quot; -I$(QTDIR)\mkspecs\default -D_MSC_VER=1500 -DWIN32 qt\simulationcraftqt.hpp -o release\moc_simulationcraftqt.cpp&#x0D;&#x0A;"
 						AdditionalDependencies="Rem;qt\simulationcraftqt.hpp"
 						Outputs="release\moc_simulationcraftqt.cpp"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\engine\utf8\unchecked.h"
+				>
 			</File>
 		</Filter>
 		<Filter
@@ -609,6 +963,21 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
 					/>
 				</FileConfiguration>
 			</File>
@@ -616,11 +985,26 @@
 				RelativePath="debug\simcqt.res"
 				>
 				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
 					/>
 				</FileConfiguration>
 			</File>
@@ -631,5 +1015,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="QtVersion Win32"
+			Value="4.7.4"
+		/>
 	</Globals>
 </VisualStudioProject>

@@ -46,7 +46,6 @@
     <ClCompile Include="engine\interfaces\sc_xml.cpp" />
     <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
     <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
-    <ClCompile Include="engine\interfaces\sc_battle_net.cpp" />
     <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
     <ClCompile Include="engine\sc_heal.cpp" />
     <ClCompile Include="engine\dbc\sc_item_data.cpp" />
@@ -69,9 +68,12 @@
     <ClCompile Include="engine\class_modules\sc_shaman.cpp" />
     <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
+    <ClCompile Include="engine\class_modules\sc_warlock_pets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\simulationcraft.hpp" />
+    <ClInclude Include="engine\class_modules\sc_warlock.hpp" />
+    <ClInclude Include="engine\report\sc_report.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\dbc\data_definitions.hh" />

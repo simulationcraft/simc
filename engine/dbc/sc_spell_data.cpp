@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <simulationcraft.hpp>
+#include "simulationcraft.hpp"
 
 enum sdata_field_type_t
 {

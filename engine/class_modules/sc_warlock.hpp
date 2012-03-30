@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <simulationcraft.hpp>
+#include "simulationcraft.hpp"
 
 #ifndef SC_WARLOCK_HPP
 #define SC_WARLOCK_HPP
