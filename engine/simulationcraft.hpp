@@ -4257,7 +4257,6 @@ struct player_t : public noncopyable
   double spell_power_multiplier,    initial_spell_power_multiplier;
   double spell_power_per_intellect, initial_spell_power_per_intellect;
   double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
-  double mp5_per_intellect;
   double mana_regen_base;
   double base_energy_regen_per_second;
   double base_focus_regen_per_second;

@@ -436,7 +436,6 @@ player_t::player_t( sim_t*             s,
   spell_power_multiplier( 1.0 ),  initial_spell_power_multiplier( 1.0 ),
   spell_power_per_intellect( 0 ), initial_spell_power_per_intellect( 0 ),
   spell_crit_per_intellect( 0 ),  initial_spell_crit_per_intellect( 0 ),
-  mp5_per_intellect( 0 ),
   mana_regen_base( 0 ),
   base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
   last_cast( timespan_t::zero ),
@@ -2538,7 +2537,7 @@ double player_t::composite_spell_hit() const
 
 double player_t::composite_mp5() const
 {
-  return mp5 + mp5_per_intellect * floor( intellect() );
+  return mp5 + spirit() * dbc.mp5_per_spirit( type, level);
 }
 
 double player_t::composite_mastery() const
