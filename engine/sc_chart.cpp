@@ -763,7 +763,7 @@ struct compare_amount
   }
 };
 
-const char* chart_t::action_dmg( std::string& s,
+const char* chart_t::aps_portion( std::string& s,
                                  player_t* p )
 {
   std::vector<stats_t*> stats_list;
@@ -771,7 +771,7 @@ const char* chart_t::action_dmg( std::string& s,
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
     if ( st -> quiet ) continue;
-    if ( st -> total_amount.mean <= 0 ) continue;
+    if ( st -> portion_aps.mean <= 0 ) continue;
     if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
     stats_list.push_back( st );
   }
@@ -781,7 +781,7 @@ const char* chart_t::action_dmg( std::string& s,
     for ( stats_t* st = pet -> stats_list; st; st = st -> next )
     {
       if ( st -> quiet ) continue;
-      if ( st -> total_amount.mean <= 0 ) continue;
+      if ( st -> portion_aps.mean <= 0 ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
       stats_list.push_back( st );
     }
@@ -808,7 +808,7 @@ const char* chart_t::action_dmg( std::string& s,
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> actual_amount.mean / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> heal.mean : p -> dmg.mean ) ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> portion_aps.mean / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> hps.mean : p -> dps.mean ) ); s += buffer;
   }
   s += "&amp;";
   s += "chds=0,100";
@@ -840,7 +840,7 @@ const char* chart_t::action_dmg( std::string& s,
   std::string formatted_name = p -> name();
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
   snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Sources", formatted_name.c_str(),
-            ( p -> primary_role() == ROLE_HEAL ? "Healing" : "Damage" ) );
+            ( p -> primary_role() == ROLE_HEAL ? "HPS" : "DPS" ) );
   s += buffer;
   s += "&amp;";
   if ( p -> sim -> print_styles )

@@ -1590,7 +1590,7 @@ void sim_t::analyze_player( player_t* p )
   // Charts =================================================================
 
   chart_t::action_dpet       ( p -> action_dpet_chart,               p );
-  chart_t::action_dmg        ( p -> action_dmg_chart,                p );
+  chart_t::aps_portion        ( p -> action_dmg_chart,                p );
   chart_t::time_spent        ( p -> time_spent_chart,                p );
 
   std::string encoded_name;
