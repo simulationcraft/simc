@@ -324,6 +324,73 @@ struct actor_pair_t
   actor_pair_t( targetdata_t* td );
 };
 
+
+// Type traits and metaprogramming tools ====================================
+
+template <bool Condition,typename T>
+struct enable_if { typedef T type; };
+template <typename T>
+struct enable_if<false,T> {};
+
+template <typename T>
+struct iterator_type
+{ typedef typename T::iterator type; };
+
+template <typename T>
+struct iterator_type<const T>
+{ typedef typename T::const_iterator type; };
+
+
+// iterable enumeration templates ===========================================
+
+/*
+ * Enumeration types in C++ implicitly convert to int but not from int (e.g.,
+ * "for ( attribute_type i = ATTR_STRENGTH; i < ATTR_MAX; ++i )" won't compile).
+ * This is why so much of the code uses int when it really means an enum type.
+ * Providing the kind of operations we want to use for enums lets us tighten up
+ * our use of the type system and avoid accidentally passing some other thing
+ * that converts to int when we really mean an enumeration type.
+ *
+ * The template functions tell the compiler it can perform prefix and postfix
+ * operators ++ and -- on any type by converting it to int and back. The magic
+ * with std::enable_if<> restricts those operations to types T for which the
+ * type trait "is_iterable_enum<T>" is true. This trait gives us a way to
+ * selectively control the functionality for a specific type T by specializing
+ * is_iterable_enum<T> as std::true_type or std::false_type.
+ */
+
+// All enumerations are iterable by default.
+template <typename T>
+struct is_iterable_enum : public std::is_enum<T> {};
+
+template <typename T>
+inline typename enable_if<is_iterable_enum<T>::value,T&>::type
+operator -- ( T& s )
+{ return s = static_cast<T>( s - 1 ); }
+
+template <typename T>
+inline typename enable_if<is_iterable_enum<T>::value,T>::type
+operator -- ( T& s, int )
+{
+  T tmp = s;
+  --s;
+  return tmp;
+}
+
+template <typename T>
+inline typename enable_if<is_iterable_enum<T>::value,T&>::type
+operator ++ ( T& s )
+{ return s = static_cast<T>( s + 1 ); }
+
+template <typename T>
+inline typename enable_if<is_iterable_enum<T>::value,T>::type
+operator ++ ( T& s, int )
+{
+  T tmp = s;
+  ++s;
+  return tmp;
+}
+
 // Enumerations =============================================================
 
 enum race_type
@@ -999,7 +1066,9 @@ enum snapshot_state_t
   STATE_MULTIPLIER    = 0x017700,
 };
 
-// Type utilities and generic programming tools =============================
+
+// Generic programming tools ================================================
+
 template <typename T, std::size_t N>
 inline std::size_t sizeof_array( const T ( & )[N] )
 { return N; }
@@ -1033,14 +1102,6 @@ struct delete_disposer_t
     delete t;
   }
 };
-
-template <typename T>
-struct iterator_type
-{ typedef typename T::iterator type; };
-
-template <typename T>
-struct iterator_type<const T>
-{ typedef typename T::const_iterator type; };
 
 // Generic algorithms =======================================================
 
