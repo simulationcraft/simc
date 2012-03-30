@@ -212,11 +212,10 @@ struct warlock_pet_attack_t : public attack_t
 
   virtual void player_buff()
   {
-    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
-    warlock_t* o = p -> owner -> cast_warlock();
+
     attack_t::player_buff();
 
-    if ( o -> buffs_hand_of_guldan -> up() )
+    if ( p() -> o() -> buffs.hand_of_guldan -> up() )
     {
       player_crit += 0.10;
     }
@@ -264,11 +263,9 @@ struct warlock_pet_spell_t : public spell_t
 
   virtual void player_buff()
   {
-    warlock_pet_t* p = ( warlock_pet_t* ) player -> cast_pet();
-    warlock_t* o = p -> owner -> cast_warlock();
     spell_t::player_buff();
 
-    if ( o -> buffs_hand_of_guldan -> up() )
+    if ( p() -> o() -> buffs.hand_of_guldan -> up() )
     {
       player_crit += 0.10;
     }
@@ -294,11 +291,10 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
     warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
-    warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
 
     if ( result_is_hit( impact_result ) )
     {
-      if ( o -> buffs_empowered_imp -> trigger() ) o -> procs_empowered_imp -> occur();
+      if ( p() -> o() -> buffs.empowered_imp -> trigger() ) p() -> o() -> procs.empowered_imp -> occur();
 
       warlock_t::trigger_burning_embers ( this, travel_dmg );
 
@@ -583,7 +579,7 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
 // Warlock Pet
 // ==========================================================================
 
-double warlock_pet_t::get_attribute_base( int level, int stat_type, pet_type_t pet_type )
+double warlock_pet_t::get_attribute_base( const int level, const int stat_type, const pet_type_t pet_type )
 {
   double r                      = 0.0;
   const pet_stats::_stat_list_t* base_list = 0;

@@ -42,35 +42,46 @@ struct warlock_t : public player_t
   pet_t* pet_ebon_imp;
 
   // Buffs
-  buff_t* buffs_backdraft;
-  buff_t* buffs_decimation;
-  buff_t* buffs_demon_armor;
-  buff_t* buffs_demonic_empowerment;
-  buff_t* buffs_empowered_imp;
-  buff_t* buffs_eradication;
-  buff_t* buffs_fel_armor;
-  buff_t* buffs_metamorphosis;
-  buff_t* buffs_molten_core;
-  buff_t* buffs_shadow_trance;
-  buff_t* buffs_hand_of_guldan;
-  buff_t* buffs_improved_soul_fire;
-  buff_t* buffs_dark_intent_feedback;
-  buff_t* buffs_soulburn;
-  buff_t* buffs_demon_soul_imp;
-  buff_t* buffs_demon_soul_felguard;
-  buff_t* buffs_demon_soul_felhunter;
-  buff_t* buffs_demon_soul_succubus;
-  buff_t* buffs_demon_soul_voidwalker;
-  buff_t* buffs_bane_of_havoc;
-  buff_t* buffs_searing_pain_soulburn;
-  buff_t* buffs_tier13_4pc_caster;
+  struct buffs_t
+  {
+    buff_t* backdraft;
+    buff_t* decimation;
+    buff_t* demon_armor;
+    buff_t* demonic_empowerment;
+    buff_t* empowered_imp;
+    buff_t* eradication;
+    buff_t* fel_armor;
+    buff_t* metamorphosis;
+    buff_t* molten_core;
+    buff_t* shadow_trance;
+    buff_t* hand_of_guldan;
+    buff_t* improved_soul_fire;
+    buff_t* dark_intent_feedback;
+    buff_t* soulburn;
+    buff_t* demon_soul_imp;
+    buff_t* demon_soul_felguard;
+    buff_t* demon_soul_felhunter;
+    buff_t* demon_soul_succubus;
+    buff_t* demon_soul_voidwalker;
+    buff_t* bane_of_havoc;
+    buff_t* searing_pain_soulburn;
+    buff_t* tier13_4pc_caster;
+  } buffs;
 
   // Cooldowns
-  cooldown_t* cooldowns_metamorphosis;
-  cooldown_t* cooldowns_infernal;
-  cooldown_t* cooldowns_doomguard;
+  struct cooldowns_t
+  {
+    cooldown_t* metamorphosis;
+    cooldown_t* infernal;
+    cooldown_t* doomguard;
+  } cooldowns;
 
   // Talents
+
+  struct talents_t
+  {
+    // Put MoP talents in here
+  } talents;
 
   // Affliction
   spell_id_t* talent_unstable_affliction;
@@ -150,31 +161,40 @@ struct warlock_t : public player_t
   std::string dark_intent_target_str;
 
   // Gains
-  gain_t* gains_fel_armor;
-  gain_t* gains_felhunter;
-  gain_t* gains_life_tap;
-  gain_t* gains_soul_leech;
-  gain_t* gains_soul_leech_health;
-  gain_t* gains_mana_feed;
-  gain_t* gains_tier13_4pc;
+  struct gains_t
+  {
+    gain_t* fel_armor;
+    gain_t* felhunter;
+    gain_t* life_tap;
+    gain_t* soul_leech;
+    gain_t* soul_leech_health;
+    gain_t* mana_feed;
+    gain_t* tier13_4pc;
+  } gains;
 
   // Uptimes
   benefit_t* uptimes_backdraft[ 4 ];
 
   // Procs
-  proc_t* procs_empowered_imp;
-  proc_t* procs_impending_doom;
-  proc_t* procs_shadow_trance;
-  proc_t* procs_ebon_imp;
+  struct procs_t
+  {
+    proc_t* empowered_imp;
+    proc_t* impending_doom;
+    proc_t* shadow_trance;
+    proc_t* ebon_imp;
+  } procs;
 
   // Random Number Generators
-  rng_t* rng_soul_leech;
-  rng_t* rng_everlasting_affliction;
-  rng_t* rng_pandemic;
-  rng_t* rng_cremation;
-  rng_t* rng_impending_doom;
-  rng_t* rng_siphon_life;
-  rng_t* rng_ebon_imp;
+  struct rngs_t
+  {
+    rng_t* soul_leech;
+    rng_t* everlasting_affliction;
+    rng_t* pandemic;
+    rng_t* cremation;
+    rng_t* impending_doom;
+    rng_t* siphon_life;
+    rng_t* ebon_imp;
+  } rngs;
 
   // Spells
   spell_t* spells_burning_embers;
@@ -257,15 +277,14 @@ struct _weapon_list_t;
 }
 struct warlock_pet_t : public pet_t
 {
-  pet_type_t       pet_type;
-  double    damage_modifier;
+  double damage_modifier;
   int stats_avaiable;
   int stats2_avaiable;
 
   gain_t* gains_mana_feed;
   proc_t* procs_mana_feed;
 
-  double get_attribute_base( int level, int stat_type, pet_type_t pet_type );
+  double get_attribute_base( const int level, const int stat_type, const pet_type_t pet_type );
 private:
   const pet_stats::_weapon_list_t* get_weapon( pet_type_t pet_type );
 public:
