@@ -814,7 +814,7 @@ void SimulationCraftWindow::createBestInSlotTab()
   const int TIER_MAX=1;
   const char* tierNames[] = { "T13" };
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
-  for ( player_type i=DEATH_KNIGHT; i <= WARRIOR; i++ )
+  for ( player_type_e i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
     // Ignore the Monk for now
     if ( i == MONK ) continue;
@@ -879,14 +879,14 @@ void SimulationCraftWindow::createBestInSlotTab()
       profile = QDir::toNativeSeparators( profile );
       profile += profileList[ i ];
 
-      player_type player = PLAYER_MAX;
+      player_type_e player = PLAYER_MAX;
 
       // Hack! For now...  Need to decide sim-wide just how the heck we want to refer to DKs.
       if ( profile.contains( "Death_Knight" ) )
         player = DEATH_KNIGHT;
       else
       {
-        for ( player_type j = PLAYER_NONE; j < PLAYER_MAX; j++ )
+        for ( player_type_e j = PLAYER_NONE; j < PLAYER_MAX; j++ )
         {
           if ( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
           {
