@@ -67,6 +67,7 @@ namespace std {using namespace tr1; }
 #include <tr1/unordered_map>
 namespace std {using namespace tr1; }
 #define smart_ptr auto_ptr
+#define static_assert( condition, message )
 #endif
 
 #include "dbc/data_enums.hh"
@@ -733,7 +734,7 @@ enum set_type
   SET_PVP_HEAL,   SET_PVP_2PC_HEAL,   SET_PVP_4PC_HEAL,
   SET_MAX
 };
-// static_assert( SET_MAX == N_TIER * 3 * N_TIER_BONUS / 2 );
+static_assert( SET_MAX == 1 + N_TIER * 3 * N_TIER_BONUS / 2, "enum set_type must be structured correctly." );
 
 enum gem_type
 {
