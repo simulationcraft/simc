@@ -14,7 +14,7 @@ std::string stat_to_str( int stat, int stat_amount )
 
   if ( stat_amount )
   {
-    stat_type s = util_t::translate_item_mod( stat );
+    stat_type_e s = util_t::translate_item_mod( stat );
     if ( s != STAT_NONE )
     {
       char stat_buf[64];
@@ -63,10 +63,10 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
 
   for ( int i = 0; i < 10; i++ )
   {
-    if ( item -> stat_type[ i ] < 0 )
+    if ( item -> stat_type_e[ i ] < 0 )
       continue;
 
-    std::string stat_str = stat_to_str( item -> stat_type[ i ], item -> stat_val[ i ] );
+    std::string stat_str = stat_to_str( item -> stat_type_e[ i ], item -> stat_val[ i ] );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
 
@@ -197,7 +197,7 @@ bool parse_weapon_type( item_t&            item,
   if ( ! speed || ! min_dam || ! max_dam )
     return true;
 
-  weapon_type w = util_t::translate_weapon_subclass( ( item_subclass_weapon ) item_data -> item_subclass );
+  weapon_type_e w = util_t::translate_weapon_subclass( ( item_subclass_weapon ) item_data -> item_subclass );
   if ( w == WEAPON_NONE || w == WEAPON_WAND )
     return true;
 

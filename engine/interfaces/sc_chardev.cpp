@@ -11,7 +11,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 static js_node_t* download_profile( sim_t* sim,
                                     const std::string& id,
-                                    cache::behavior_t caching )
+                                    cache::behavior_e caching )
 {
   std::string url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
   std::string profile_str;
@@ -58,7 +58,7 @@ static const char* translate_slot( int slot )
 
 player_t* chardev_t::download_player( sim_t* sim,
                                       const std::string& id,
-                                      cache::behavior_t caching )
+                                      cache::behavior_e caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;

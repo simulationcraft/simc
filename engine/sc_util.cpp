@@ -201,9 +201,9 @@ int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
 }
 #endif
 
-// util_t::dot_behavior_type_string =========================================
+// util_t::dot_behaviour_type_string =========================================
 
-const char* util_t::dot_behavior_type_string( dot_behavior_type t )
+const char* util_t::dot_behaviour_type_string( dot_behaviour_type_e t )
 {
   switch( t )
   {
@@ -215,7 +215,7 @@ const char* util_t::dot_behavior_type_string( dot_behavior_type t )
 
 // util_t::role_type_string =================================================
 
-const char* util_t::role_type_string( role_type role )
+const char* util_t::role_type_string( role_type_e role )
 {
   switch ( role )
   {
@@ -232,12 +232,12 @@ const char* util_t::role_type_string( role_type role )
 
 // util_t::parse_role_type ==================================================
 
-role_type util_t::parse_role_type( const std::string& name )
-{ return parse_enumeration<role_type,ROLE_NONE,ROLE_MAX,role_type_string>( name ); }
+role_type_e util_t::parse_role_type( const std::string& name )
+{ return parse_enumeration<role_type_e,ROLE_NONE,ROLE_MAX,role_type_string>( name ); }
 
 // util_t::race_type_string =================================================
 
-const char* util_t::race_type_string( race_type type )
+const char* util_t::race_type_string( race_type_e type )
 {
   switch ( type )
   {
@@ -264,12 +264,12 @@ const char* util_t::race_type_string( race_type type )
 
 // util_t::parse_race_type ==================================================
 
-race_type util_t::parse_race_type( const std::string &name )
-{ return parse_enumeration<race_type,RACE_NONE,RACE_MAX,race_type_string>( name ); }
+race_type_e util_t::parse_race_type( const std::string &name )
+{ return parse_enumeration<race_type_e,RACE_NONE,RACE_MAX,race_type_string>( name ); }
 
 // util_t::position_type_string =============================================
 
-const char* util_t::position_type_string( position_type type )
+const char* util_t::position_type_string( position_type_e type )
 {
   switch ( type )
   {
@@ -284,12 +284,12 @@ const char* util_t::position_type_string( position_type type )
 
 // util_t::parse_position_type ==============================================
 
-position_type util_t::parse_position_type( const std::string &name )
-{ return parse_enumeration<position_type,POSITION_NONE,POSITION_MAX,position_type_string>( name ); }
+position_type_e util_t::parse_position_type( const std::string &name )
+{ return parse_enumeration<position_type_e,POSITION_NONE,POSITION_MAX,position_type_string>( name ); }
 
 // util_t::profession_type_string ===========================================
 
-const char* util_t::profession_type_string( profession_type type )
+const char* util_t::profession_type_string( profession_type_e type )
 {
   switch ( type )
   {
@@ -311,12 +311,12 @@ const char* util_t::profession_type_string( profession_type type )
 
 // util_t::parse_profession_type ============================================
 
-profession_type util_t::parse_profession_type( const std::string& name )
-{ return parse_enumeration<profession_type,PROFESSION_NONE,PROFESSION_MAX,profession_type_string>( name ); }
+profession_type_e util_t::parse_profession_type( const std::string& name )
+{ return parse_enumeration<profession_type_e,PROFESSION_NONE,PROFESSION_MAX,profession_type_string>( name ); }
 
 // util_t::translate_profession_id ==========================================
 
-profession_type util_t::translate_profession_id( int skill_id )
+profession_type_e util_t::translate_profession_id( int skill_id )
 {
   switch ( skill_id )
   {
@@ -337,7 +337,7 @@ profession_type util_t::translate_profession_id( int skill_id )
 
 // util_t::player_type_string ===============================================
 
-const char* util_t::player_type_string( player_type type )
+const char* util_t::player_type_string( player_type_e type )
 {
   switch ( type )
   {
@@ -363,9 +363,9 @@ const char* util_t::player_type_string( player_type type )
 
 // util_t::parse_player_type ================================================
 
-player_type util_t::parse_player_type( const std::string& name )
+player_type_e util_t::parse_player_type( const std::string& name )
 {
-  for ( player_type i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+  for ( player_type_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
     if ( util_t::str_compare_ci( name, util_t::player_type_string( i ) ) )
       return i;
 
@@ -374,7 +374,7 @@ player_type util_t::parse_player_type( const std::string& name )
 
 // util_t::translate_class_str ==============================================
 
-player_type util_t::translate_class_str( std::string& s )
+player_type_e util_t::translate_class_str( std::string& s )
 {
   std::string fmt_s = armory_t::format( s );
   if ( fmt_s == "death_knight" ) return DEATH_KNIGHT;
@@ -449,11 +449,11 @@ const char* util_t::pet_type_string( int type )
 
 // util_t::parse_pet_type ===================================================
 
-pet_type_t util_t::parse_pet_type( const std::string& name )
+pet_type_e util_t::parse_pet_type( const std::string& name )
 {
   for ( int i=( int )PET_NONE; i < ( int )PET_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::pet_type_string( i ) ) )
-      return ( pet_type_t )i;
+      return ( pet_type_e )i;
 
   return PET_NONE;
 }
@@ -631,9 +631,9 @@ int util_t::parse_result_type( const std::string& name )
   return RESULT_NONE;
 }
 
-// util_t::resource_type_t_string =============================================
+// util_t::resource_type_string =============================================
 
-const char* util_t::resource_type_t_string( resource_type_t resource_type )
+const char* util_t::resource_type_string( resource_type_e resource_type )
 {
   switch ( resource_type )
   {
@@ -660,12 +660,12 @@ const char* util_t::resource_type_t_string( resource_type_t resource_type )
   return "unknown";
 }
 
-// util_t::parse_resource_type_t ==============================================
+// util_t::parse_resource_type ==============================================
 
-int util_t::parse_resource_type_t( const std::string& name )
+int util_t::parse_resource_type( const std::string& name )
 {
   for ( int i=0; i < RESOURCE_MAX; i++ )
-    if ( util_t::str_compare_ci( name, util_t::resource_type_t_string( static_cast<resource_type_t>( i ) ) ) )
+    if ( util_t::str_compare_ci( name, util_t::resource_type_string( static_cast<resource_type_e>( i ) ) ) )
       return i;
 
   return RESOURCE_NONE;
@@ -675,8 +675,8 @@ int util_t::parse_resource_type_t( const std::string& name )
 
 int util_t::school_type_component( int s_type, int c_type )
 {
-  uint32_t s_mask = spell_id_t::get_school_mask( ( school_type ) s_type );
-  uint32_t c_mask = spell_id_t::get_school_mask( ( school_type ) c_type );
+  uint32_t s_mask = spell_id_t::get_school_mask( ( school_type_e ) s_type );
+  uint32_t c_mask = spell_id_t::get_school_mask( ( school_type_e ) c_type );
 
   return s_mask & c_mask;
 }
@@ -727,18 +727,18 @@ const char* util_t::school_type_string( int school )
 
 // util_t::parse_school_type ================================================
 
-school_type util_t::parse_school_type( const std::string& name )
+school_type_e util_t::parse_school_type( const std::string& name )
 {
   for ( int i=SCHOOL_NONE; i < SCHOOL_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::school_type_string( i ) ) )
-      return ( school_type )( i );
+      return ( school_type_e )( i );
 
   return SCHOOL_NONE;
 }
 
 // util_t::talent_tree ======================================================
 
-int util_t::talent_tree( int tree, player_type ptype )
+int util_t::talent_tree( int tree, player_type_e ptype )
 {
   switch ( ptype )
   {
@@ -828,7 +828,7 @@ int util_t::talent_tree( int tree, player_type ptype )
   return TREE_NONE;
 }
 
-int util_t::spec_id( player_type ptype, talent_tree_type tree )
+int util_t::spec_id( player_type_e ptype, talent_tree_type_e tree )
 {
   switch ( ptype )
   {
@@ -940,7 +940,7 @@ int util_t::spec_id( player_type ptype, talent_tree_type tree )
 
 // util_t::translate_spec_id ================================================
 
-talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
+talent_tree_type_e util_t::translate_spec_id( player_type_e ptype, int tree )
 {
   switch ( ptype )
   {
@@ -1052,7 +1052,7 @@ talent_tree_type util_t::translate_spec_id( player_type ptype, int tree )
 
 // util_t::translate_spec_str ===============================================
 
-talent_tree_type util_t::translate_spec_str( player_type ptype, const std::string& spec_str )
+talent_tree_type_e util_t::translate_spec_str( player_type_e ptype, const std::string& spec_str )
 {
   switch ( ptype )
   {
@@ -1258,7 +1258,7 @@ talent_tree_type util_t::translate_spec_str( player_type ptype, const std::strin
   return TREE_NONE;
 }
 
-resource_type_t util_t::translate_power_type( power_type pt )
+resource_type_e util_t::translate_power_type( power_type_e pt )
 {
   switch ( pt )
   {
@@ -1575,7 +1575,7 @@ int util_t::parse_food_type( const std::string& name )
 
 // util_t::set_bonus_string =================================================
 
-const char* util_t::set_bonus_string( set_type type )
+const char* util_t::set_bonus_string( set_type_e type )
 {
   switch ( type )
   {
@@ -1617,11 +1617,11 @@ const char* util_t::set_bonus_string( set_type type )
 
 // util_t::parse_set_bonus ==================================================
 
-set_type util_t::parse_set_bonus( const std::string& name )
+set_type_e util_t::parse_set_bonus( const std::string& name )
 {
   for ( int i=0; i < SET_MAX; i++ )
-    if ( util_t::str_compare_ci( name, util_t::set_bonus_string( ( set_type ) i ) ) )
-      return ( set_type ) i;
+    if ( util_t::str_compare_ci( name, util_t::set_bonus_string( ( set_type_e ) i ) ) )
+      return ( set_type_e ) i;
 
   return SET_NONE;
 }
@@ -1657,11 +1657,11 @@ const char* util_t::slot_type_string( int slot )
 
 // util_t::armor_type_string ================================================
 
-const char* util_t::armor_type_string( player_type ptype, int slot_type )
+const char* util_t::armor_type_string( player_type_e ptype, int slot_type_e )
 {
   bool has_armor_type = false;
 
-  switch ( slot_type )
+  switch ( slot_type_e )
   {
   case SLOT_HEAD:
   case SLOT_SHOULDERS:
@@ -1865,19 +1865,19 @@ const char* util_t::stat_type_wowhead( int stat )
 
 // util_t::parse_stat_type ==================================================
 
-stat_type util_t::parse_stat_type( const std::string& name )
+stat_type_e util_t::parse_stat_type( const std::string& name )
 {
   for ( int i=0; i <= STAT_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::stat_type_string( i ) ) )
-      return ( stat_type ) i;
+      return ( stat_type_e ) i;
 
   for ( int i=0; i <= STAT_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::stat_type_abbrev( i ) ) )
-      return ( stat_type ) i;
+      return ( stat_type_e ) i;
 
   for ( int i=0; i <= STAT_MAX; i++ )
     if ( util_t::str_compare_ci( name, util_t::stat_type_wowhead( i ) ) )
-      return ( stat_type ) i;
+      return ( stat_type_e ) i;
 
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
 
@@ -1902,9 +1902,9 @@ stat_type util_t::parse_stat_type( const std::string& name )
 
 // util_t::parse_reforge_type ===============================================
 
-stat_type util_t::parse_reforge_type( const std::string& name )
+stat_type_e util_t::parse_reforge_type( const std::string& name )
 {
-  stat_type s = util_t::parse_stat_type( name );
+  stat_type_e s = util_t::parse_stat_type( name );
 
   switch ( s )
   {
@@ -2039,9 +2039,9 @@ unsigned util_t::race_mask( int r )
 
 // util_t::pet_class_type ===================================================
 
-player_type util_t::pet_class_type( int c )
+player_type_e util_t::pet_class_type( int c )
 {
-  player_type p = WARRIOR;
+  player_type_e p = WARRIOR;
 
   if ( c <= PET_HUNTER )
   {
@@ -2117,7 +2117,7 @@ const char* util_t::class_id_string( int type )
 
 // util_t::translate_class_id ===============================================
 
-player_type util_t::translate_class_id( int cid )
+player_type_e util_t::translate_class_id( int cid )
 {
   switch ( cid )
   {
@@ -2138,7 +2138,7 @@ player_type util_t::translate_class_id( int cid )
 
 // util_t::translate_race_id ================================================
 
-race_type util_t::translate_race_id( int rid )
+race_type_e util_t::translate_race_id( int rid )
 {
   switch ( rid )
   {
@@ -2161,7 +2161,7 @@ race_type util_t::translate_race_id( int rid )
 
 // util_t::translate_item_mod ===============================================
 
-stat_type util_t::translate_item_mod( int item_mod )
+stat_type_e util_t::translate_item_mod( int item_mod )
 {
   switch ( item_mod )
   {
@@ -2190,7 +2190,7 @@ stat_type util_t::translate_item_mod( int item_mod )
 
 // util_t::translate_weapon_subclass ========================================
 
-weapon_type util_t::translate_weapon_subclass( item_subclass_weapon id )
+weapon_type_e util_t::translate_weapon_subclass( item_subclass_weapon id )
 {
   switch ( id )
   {
@@ -2217,7 +2217,7 @@ weapon_type util_t::translate_weapon_subclass( item_subclass_weapon id )
 
 // util_t::translate_invtype ================================================
 
-slot_type util_t::translate_invtype( int inv_type )
+slot_type_e util_t::translate_invtype( int inv_type )
 {
   switch ( inv_type )
   {

@@ -635,7 +635,7 @@ class ItemDataGenerator(DataGenerator):
             fields += item.field('flags', 'flags_2', 'ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
             fields += item.field( 'bonding', 'delay', 'weapon_damage_range', 'item_damage_modifier', 'race_mask', 'class_mask') 
-            fields += [ '{ %s }' % ', '.join(item.field('stat_type_1', 'stat_type_2', 'stat_type_3', 'stat_type_4', 'stat_type_5', 'stat_type_6', 'stat_type_7', 'stat_type_8', 'stat_type_9', 'stat_type_10')) ]
+            fields += [ '{ %s }' % ', '.join(item.field('stat_type_e_1', 'stat_type_e_2', 'stat_type_e_3', 'stat_type_e_4', 'stat_type_e_5', 'stat_type_e_6', 'stat_type_e_7', 'stat_type_e_8', 'stat_type_e_9', 'stat_type_e_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_val_1', 'stat_val_2', 'stat_val_3', 'stat_val_4', 'stat_val_5', 'stat_val_6', 'stat_val_7', 'stat_val_8', 'stat_val_9', 'stat_val_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('id_spell_1', 'id_spell_2', 'id_spell_3', 'id_spell_4', 'id_spell_5')) ]
             fields += [ '{ %s }' % ', '.join(item.field('trg_spell_1', 'trg_spell_2', 'trg_spell_3', 'trg_spell_4', 'trg_spell_5')) ]
@@ -818,9 +818,9 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
 
                         item_ench = self._spellitemenchantment_db[item_ench_id]
                         for ie_id in xrange(1, 4):
-                            ie_stat_type = getattr(item_ench, 'type_%d' % ie_id)
+                            ie_stat_type_e = getattr(item_ench, 'type_%d' % ie_id)
                             ie_stat_prop = getattr(item_ench, 'id_property_%d' % ie_id)
-                            if ie_stat_type != 5:
+                            if ie_stat_type_e != 5:
                                 continue
                             
                             rsuffix_stats.append((ie_stat_prop, int(amount)))

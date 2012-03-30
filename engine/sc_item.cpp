@@ -520,8 +520,8 @@ bool item_t::decode_reforge()
     return false;
   }
 
-  stat_type s1 = util_t::parse_reforge_type( tokens[ 0 ].name );
-  stat_type s2 = util_t::parse_reforge_type( tokens[ 1 ].name );
+  stat_type_e s1 = util_t::parse_reforge_type( tokens[ 0 ].name );
+  stat_type_e s2 = util_t::parse_reforge_type( tokens[ 1 ].name );
   if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) )
   {
     sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n",
@@ -617,7 +617,7 @@ bool item_t::decode_random_suffix()
     {
       if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_type stat = util_t::translate_item_mod( enchant_data.ench_prop[ j ] );
+      stat_type_e stat = util_t::translate_item_mod( enchant_data.ench_prop[ j ] );
 
       if ( stat == STAT_NONE ) continue;
 
@@ -855,7 +855,7 @@ bool item_t::decode_special( special_effect_t& effect,
   {
     token_t& t = tokens[ i ];
     int s;
-    school_type sc;
+    school_type_e sc;
 
     if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
@@ -913,53 +913,53 @@ bool item_t::decode_special( special_effect_t& effect,
     }
     else if ( t.name == "nocrit" )
     {
-      effect.override_result_types_mask |= RESULT_CRIT_MASK;
-      effect.result_types_mask &= ~RESULT_CRIT_MASK;
+      effect.override_result_type_es_mask |= RESULT_CRIT_MASK;
+      effect.result_type_es_mask &= ~RESULT_CRIT_MASK;
     }
     else if ( t.name == "maycrit" )
     {
-      effect.override_result_types_mask |= RESULT_CRIT_MASK;
-      effect.result_types_mask |= RESULT_CRIT_MASK;
+      effect.override_result_type_es_mask |= RESULT_CRIT_MASK;
+      effect.result_type_es_mask |= RESULT_CRIT_MASK;
     }
     else if ( t.name == "nomiss" )
     {
-      effect.override_result_types_mask |= RESULT_MISS_MASK;
-      effect.result_types_mask &= ~RESULT_MISS_MASK;
+      effect.override_result_type_es_mask |= RESULT_MISS_MASK;
+      effect.result_type_es_mask &= ~RESULT_MISS_MASK;
     }
     else if ( t.name == "maymiss" )
     {
-      effect.override_result_types_mask |= RESULT_MISS_MASK;
-      effect.result_types_mask |= RESULT_MISS_MASK;
+      effect.override_result_type_es_mask |= RESULT_MISS_MASK;
+      effect.result_type_es_mask |= RESULT_MISS_MASK;
     }
     else if ( t.name == "nododge" )
     {
-      effect.override_result_types_mask |= RESULT_DODGE_MASK;
-      effect.result_types_mask &= ~RESULT_DODGE_MASK;
+      effect.override_result_type_es_mask |= RESULT_DODGE_MASK;
+      effect.result_type_es_mask &= ~RESULT_DODGE_MASK;
     }
     else if ( t.name == "maydodge" )
     {
-      effect.override_result_types_mask |= RESULT_DODGE_MASK;
-      effect.result_types_mask |= RESULT_DODGE_MASK;
+      effect.override_result_type_es_mask |= RESULT_DODGE_MASK;
+      effect.result_type_es_mask |= RESULT_DODGE_MASK;
     }
     else if ( t.name == "noparry" )
     {
-      effect.override_result_types_mask |= RESULT_PARRY_MASK;
-      effect.result_types_mask &= ~RESULT_PARRY_MASK;
+      effect.override_result_type_es_mask |= RESULT_PARRY_MASK;
+      effect.result_type_es_mask &= ~RESULT_PARRY_MASK;
     }
     else if ( t.name == "mayparry" )
     {
-      effect.override_result_types_mask |= RESULT_PARRY_MASK;
-      effect.result_types_mask |= RESULT_PARRY_MASK;
+      effect.override_result_type_es_mask |= RESULT_PARRY_MASK;
+      effect.result_type_es_mask |= RESULT_PARRY_MASK;
     }
     else if ( t.name == "noblock" )
     {
-      effect.override_result_types_mask |= RESULT_BLOCK_MASK;
-      effect.result_types_mask &= ~RESULT_BLOCK_MASK;
+      effect.override_result_type_es_mask |= RESULT_BLOCK_MASK;
+      effect.result_type_es_mask &= ~RESULT_BLOCK_MASK;
     }
     else if ( t.name == "mayblock" )
     {
-      effect.override_result_types_mask |= RESULT_BLOCK_MASK;
-      effect.result_types_mask |= RESULT_BLOCK_MASK;
+      effect.override_result_type_es_mask |= RESULT_BLOCK_MASK;
+      effect.result_type_es_mask |= RESULT_BLOCK_MASK;
     }
     else if ( t.name == "nobuffs" )
     {
@@ -1257,7 +1257,7 @@ bool item_t::decode_weapon()
   {
     token_t& t = tokens[ i ];
     int type;
-    school_type school;
+    school_type_e school;
 
     if ( ( type = util_t::parse_weapon_type( t.name ) ) != WEAPON_NONE )
     {
@@ -1347,7 +1347,7 @@ bool item_t::download_slot( item_t& item,
                             const std::string& rsuffix_id,
                             const std::string gem_ids[ 3 ] )
 {
-  const cache::behavior_t cb = cache::items();
+  const cache::behavior_e cb = cache::items();
   bool success = false;
 
   if ( cb != cache::CURRENT )
@@ -1523,46 +1523,46 @@ int item_t::parse_gem( item_t&            item,
     return GEM_NONE;
   }
 
-  int gem_type = GEM_NONE;
+  int gem_type_e = GEM_NONE;
 
   if ( cache::items() != cache::CURRENT )
   {
     // Check data source caches, except local
     bool has_local = false;
 
-    for ( unsigned i = 0; gem_type == GEM_NONE && i < source_list.size(); i++ )
+    for ( unsigned i = 0; gem_type_e == GEM_NONE && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "local" )
         has_local = true;
       else if ( source_list[ i ] == "wowhead" )
-        gem_type = wowhead_t::parse_gem( item, gem_id, false, cache::ONLY );
+        gem_type_e = wowhead_t::parse_gem( item, gem_id, false, cache::ONLY );
       else if ( source_list[ i ] == "ptrhead" )
-        gem_type = wowhead_t::parse_gem( item, gem_id, true, cache::ONLY );
+        gem_type_e = wowhead_t::parse_gem( item, gem_id, true, cache::ONLY );
       else if ( source_list[ i ] == "mmoc" )
-        gem_type = mmo_champion_t::parse_gem( item, gem_id, cache::ONLY );
+        gem_type_e = mmo_champion_t::parse_gem( item, gem_id, cache::ONLY );
       else if ( source_list[ i ] == "bcpapi" )
-        gem_type = bcp_api::parse_gem( item, gem_id, cache::ONLY );
+        gem_type_e = bcp_api::parse_gem( item, gem_id, cache::ONLY );
     }
 
-    if ( gem_type == GEM_NONE && has_local )
-      gem_type = item_database_t::parse_gem( item, gem_id );
+    if ( gem_type_e == GEM_NONE && has_local )
+      gem_type_e = item_database_t::parse_gem( item, gem_id );
   }
 
   if ( cache::items() != cache::ONLY )
   {
     // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
-    for ( unsigned i = 0; gem_type == GEM_NONE && i < source_list.size(); i++ )
+    for ( unsigned i = 0; gem_type_e == GEM_NONE && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "wowhead" )
-        gem_type = wowhead_t::parse_gem( item, gem_id );
+        gem_type_e = wowhead_t::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "ptrhead" )
-        gem_type = wowhead_t::parse_gem( item, gem_id, true );
+        gem_type_e = wowhead_t::parse_gem( item, gem_id, true );
       else if ( source_list[ i ] == "mmoc" )
-        gem_type = mmo_champion_t::parse_gem( item, gem_id );
+        gem_type_e = mmo_champion_t::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "bcpapi" )
-        gem_type = bcp_api::parse_gem( item, gem_id );
+        gem_type_e = bcp_api::parse_gem( item, gem_id );
     }
   }
 
-  return gem_type;
+  return gem_type_e;
 }

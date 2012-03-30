@@ -303,7 +303,7 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl ) const
 // Created by philoptik@gmail.com
 //
 // heal_target is set to player for now.
-// dmg_type = ABSORB, all crits killed
+// dmg_type_e = ABSORB, all crits killed
 // ==========================================================================
 
 // absorb_t::init_absorb_t_ == Absorb Constructor Initializations ===========

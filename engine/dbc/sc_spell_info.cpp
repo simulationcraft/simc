@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-static const struct { const char* name; player_type pt; } _class_map[] =
+static const struct { const char* name; player_type_e pt; } _class_map[] =
 {
   { 0, PLAYER_NONE },
   { "Warrior", WARRIOR },
@@ -233,7 +233,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
     switch ( e -> type() )
     {
     case E_SCHOOL_DAMAGE:
-      s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
+      s << ": " << util_t::school_type_string( spell_id_t::get_school_type_e( spell -> school_mask() ) );
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
@@ -262,7 +262,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       switch ( e -> subtype() )
       {
       case A_PERIODIC_DAMAGE:
-        s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
+        s << ": " << util_t::school_type_string( spell_id_t::get_school_type_e( spell -> school_mask() ) );
         if ( e -> period() != timespan_t::zero )
           s << " every " << e -> period().total_seconds() << " seconds";
         break;
@@ -377,7 +377,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
 std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int level )
 {
   std::ostringstream s;
-  player_type pt = PLAYER_NONE;
+  player_type_e pt = PLAYER_NONE;
   
   if ( spell -> level() > static_cast< unsigned >( level ) )
   {

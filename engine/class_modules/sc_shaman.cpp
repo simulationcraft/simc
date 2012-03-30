@@ -43,7 +43,7 @@ struct shaman_targetdata_t : public targetdata_t
 
 void register_shaman_targetdata( sim_t* sim )
 {
-  player_type t = SHAMAN;
+  player_type_e t = SHAMAN;
   typedef shaman_targetdata_t type;
 
   REGISTER_DOT( flame_shock );
@@ -223,7 +223,7 @@ struct shaman_t : public player_t
   spell_t*  flametongue_oh;
 
 
-  shaman_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, SHAMAN, name, r ),
+  shaman_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, SHAMAN, name, r ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) )
   {
@@ -282,17 +282,17 @@ struct shaman_t : public player_t
   virtual void      moving();
   virtual double    composite_attack_speed() const;
   virtual double    composite_spell_hit() const;
-  virtual double    composite_spell_power( const school_type school ) const;
+  virtual double    composite_spell_power( const school_type_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
-  virtual role_type primary_role() const;
+  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
+  virtual role_type_e primary_role() const;
   virtual void      combat_begin();
 
   // Event Tracking
@@ -323,7 +323,7 @@ struct shaman_attack_t : public attack_t
   bool flametongue;
 
   /* Old style construction, spell data will not be accessed */
-  shaman_attack_t( const char* n, shaman_t* player, school_type s, int t, bool special ) :
+  shaman_attack_t( const char* n, shaman_t* player, school_type_e s, int t, bool special ) :
     attack_t( n, player, RESOURCE_MANA, s, t, special ),
     actor( player -> cast_shaman() ), windfury( true ), flametongue( true )
   {
@@ -377,7 +377,7 @@ struct shaman_spell_t : public spell_t
   shaman_t* actor;
 
   /* Old style construction, spell data will not be accessed */
-  shaman_spell_t( const char* n, shaman_t* p, const std::string& options_str, const school_type s, int t ) :
+  shaman_spell_t( const char* n, shaman_t* p, const std::string& options_str, const school_type_e s, int t ) :
     spell_t( n, p, RESOURCE_MANA, s, t ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
     actor( p -> cast_shaman() )
@@ -610,7 +610,7 @@ struct spirit_wolf_pet_t : public pet_t
     return attack_power_multiplier;
   }
 
-  virtual double composite_player_multiplier( const school_type, action_t* ) const
+  virtual double composite_player_multiplier( const school_type_e, action_t* ) const
   {
     return 1.0;
   }
@@ -723,7 +723,7 @@ struct earth_elemental_pet_t : public pet_t
     action_list_str = "travel/auto_attack,moving=0";
   }
 
-  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
 
   virtual void regen( timespan_t /* periodicity */ ) { }
 
@@ -733,7 +733,7 @@ struct earth_elemental_pet_t : public pet_t
     owner_sp = owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
   }
 
-  virtual double composite_spell_power( const school_type ) const
+  virtual double composite_spell_power( const school_type_e ) const
   {
     return owner_sp;
   }
@@ -763,7 +763,7 @@ struct earth_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) const
+  virtual double composite_player_multiplier( const school_type_e /* school */, action_t* /* a */ ) const
   {
     double m = 1.0;
 
@@ -1055,7 +1055,7 @@ struct fire_elemental_pet_t : public pet_t
     fire_shield                      = new fire_shield_t( this );
   }
 
-  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
 
   virtual void regen( timespan_t periodicity )
   {
@@ -1088,7 +1088,7 @@ struct fire_elemental_pet_t : public pet_t
     return pet_t::composite_attribute( attr );
   }
 
-  virtual double composite_spell_power( const school_type ) const
+  virtual double composite_spell_power( const school_type_e ) const
   {
     return owner_sp;
   }
@@ -1119,7 +1119,7 @@ struct fire_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_player_multiplier( const school_type /* school */, action_t* /* a */ ) const
+  virtual double composite_player_multiplier( const school_type_e /* school */, action_t* /* a */ ) const
   {
     double m = 1.0;
 
@@ -3226,7 +3226,7 @@ struct magma_totem_t : public shaman_totem_t
     // Fill out scaling data
     trigger           = actor -> dbc.spell( actor -> dbc.spell( 8188 ) -> effectN( 1 ).trigger_spell_id() );
     // Also kludge totem school to fire for accurate damage
-    school            = spell_id_t::get_school_type( trigger -> school_mask() );
+    school            = spell_id_t::get_school_type_e( trigger -> school_mask() );
     stats -> school   = school;
 
     base_dd_min       = actor -> dbc.effect_min( trigger -> effectN( 1 ).id(), actor -> level );
@@ -3297,7 +3297,7 @@ struct searing_totem_t : public shaman_totem_t
     range            = actor -> dbc.spell( 3606 ) -> max_range();
     num_ticks        = ( int ) ( totem_duration / base_tick_time );
     // Also kludge totem school to fire
-    school           = spell_id_t::get_school_type( actor -> dbc.spell( 3606 ) -> school_mask() );
+    school           = spell_id_t::get_school_type_e( actor -> dbc.spell( 3606 ) -> school_mask() );
     stats -> school  = school;
     actor -> active_searing_flames_dot = new searing_flames_t( actor );
   }
@@ -3796,7 +3796,7 @@ void shaman_t::init_spells()
   sets                               = new set_bonus_array_t( this, set_bonuses );
 
   // Generic
-  spec.mail_specialization = find_specialization_spell( "Mail Specialization", "", ( talent_tree_type ) primary_tree() );
+  spec.mail_specialization = find_specialization_spell( "Mail Specialization", "", ( talent_tree_type_e ) primary_tree() );
 
   // Elemental
   spec.elemental_focus     = find_specialization_spell( "Elemental Focus" );
@@ -4260,7 +4260,7 @@ void shaman_t::moving()
 
 // shaman_t::matching_gear_multiplier =======================================
 
-double shaman_t::matching_gear_multiplier( const attribute_type attr ) const
+double shaman_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
   if ( attr == ATTR_AGILITY || attr == ATTR_INTELLECT )
     return spec.mail_specialization -> effectN( 1 ).percent();
@@ -4297,7 +4297,7 @@ double shaman_t::composite_attack_speed() const
 
 // shaman_t::composite_spell_power ==========================================
 
-double shaman_t::composite_spell_power( const school_type school ) const
+double shaman_t::composite_spell_power( const school_type_e school ) const
 {
   double sp = 0;
 
@@ -4321,7 +4321,7 @@ double shaman_t::composite_spell_power_multiplier() const
 
 // shaman_t::composite_player_multiplier ====================================
 
-double shaman_t::composite_player_multiplier( const school_type school, action_t* a ) const
+double shaman_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4408,7 +4408,7 @@ int shaman_t::decode_set( item_t& item )
 
 // shaman_t::primary_role ===================================================
 
-role_type shaman_t::primary_role() const
+role_type_e shaman_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
@@ -4438,7 +4438,7 @@ role_type shaman_t::primary_role() const
 
 // player_t::create_shaman  =================================================
 
-player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_type r )
+player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_type_e r )
 {
   SC_CREATE_SHAMAN( sim, name, r );
 }

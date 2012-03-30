@@ -66,7 +66,7 @@ struct item_data_t {
   double   item_modifier;
   int      class_mask;
   int      race_mask;
-  int      stat_type[10];         // item_mod_type
+  int      stat_type_e[10];         // item_mod_type
   int      stat_val[10];
   int      id_spell[5];
   int      trigger_spell[5];      // item_spell_trigger_type

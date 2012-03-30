@@ -266,7 +266,7 @@ public:
   std::vector<std::string> names;
   std::string region;
   std::string server;
-  cache::behavior_t cache;
+  cache::behavior_e cache;
 
   names_and_options_t( sim_t* sim, const std::string& context,
                        const option_t* client_options, const std::string& input )
@@ -415,7 +415,7 @@ bool parse_guild( sim_t*             sim,
       }
     }
 
-    player_type pt = PLAYER_NONE;
+    player_type_e pt = PLAYER_NONE;
     if ( ! type_str.empty() )
       pt = util_t::parse_player_type( type_str );
 
@@ -1560,7 +1560,7 @@ void sim_t::analyze_player( player_t* p )
   {
     chart_t::timeline        ( p -> timeline_resource_chart[ i ],      p,
                                p -> timeline_resource[ i ],
-                               encoded_name + ' ' + util_t::resource_type_t_string( static_cast<resource_type_t>( i ) ),
+                               encoded_name + ' ' + util_t::resource_type_string( static_cast<resource_type_e>( i ) ),
                                0,
                                chart_t::resource_color( i ) );
   }
@@ -1944,7 +1944,7 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
       return r;
   }
 
-  r = rng_t::create( this, n, static_cast<rng_type> ( type ) );
+  r = rng_t::create( this, n, static_cast<rng_type_e> ( type ) );
   r -> next = rng_list;
   rng_list = r;
 
@@ -2496,7 +2496,7 @@ int sim_t::errorf( const char* format, ... )
   return retcode;
 }
 
-void sim_t::register_targetdata_item( int kind, const char* name, player_type type, size_t offset )
+void sim_t::register_targetdata_item( int kind, const char* name, player_type_e type, size_t offset )
 {
   std::string s = name;
   targetdata_items[kind][s] = std::make_pair( type, offset );
@@ -2506,7 +2506,7 @@ void sim_t::register_targetdata_item( int kind, const char* name, player_type ty
 
 void* sim_t::get_targetdata_item( player_t* source, player_t* target, int kind, const std::string& name )
 {
-  std::unordered_map<std::string, std::pair<player_type, size_t> >::iterator i = targetdata_items[kind].find( name );
+  std::unordered_map<std::string, std::pair<player_type_e, size_t> >::iterator i = targetdata_items[kind].find( name );
   if ( i != targetdata_items[kind].end() )
   {
     if ( source->type == i->second.first )

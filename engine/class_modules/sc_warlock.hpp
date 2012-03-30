@@ -226,7 +226,7 @@ struct warlock_t : public player_t
 
   int use_pre_soulburn;
 
-  warlock_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE );
+  warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
 
 
   // Character Definition
@@ -248,17 +248,17 @@ struct warlock_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, int save_type_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
-  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
-  virtual role_type primary_role() const     { return ROLE_SPELL; }
+  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
+  virtual role_type_e primary_role() const     { return ROLE_SPELL; }
   virtual double    composite_armor() const;
-  virtual double    composite_spell_power( const school_type school ) const;
+  virtual double    composite_spell_power( const school_type_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
-  virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) const;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_td_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
 
   // Event Tracking
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
@@ -284,14 +284,14 @@ struct warlock_pet_t : public pet_t
   gain_t* gains_mana_feed;
   proc_t* procs_mana_feed;
 
-  double get_attribute_base( const int level, const int stat_type, const pet_type_t pet_type );
+  double get_attribute_base( const int level, const int stat_type_e, const pet_type_e pet_type );
 private:
-  const pet_stats::_weapon_list_t* get_weapon( pet_type_t pet_type );
+  const pet_stats::_weapon_list_t* get_weapon( pet_type_e pet_type );
 public:
-  double get_weapon_min( int level, pet_type_t pet_type );
-  double get_weapon_max( int level, pet_type_t pet_type );
-  timespan_t get_weapon_swing_time( int level, pet_type_t pet_type );
-  warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_t pt, bool guardian = false );
+  double get_weapon_min( int level, pet_type_e pet_type );
+  double get_weapon_max( int level, pet_type_e pet_type );
+  timespan_t get_weapon_swing_time( int level, pet_type_e pet_type );
+  warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
   virtual void init_base();
   virtual void init_resources( bool force );
@@ -301,7 +301,7 @@ public:
   virtual void dismiss();
   virtual double composite_spell_haste() const;
   virtual double composite_attack_haste() const;
-  virtual double composite_spell_power( const school_type school ) const;
+  virtual double composite_spell_power( const school_type_e school ) const;
   virtual double composite_attack_power() const;
   virtual double composite_attack_crit( weapon_t* ) const;
   virtual double composite_spell_crit() const;
@@ -315,12 +315,12 @@ public:
 
 struct warlock_main_pet_t : public warlock_pet_t
 {
-  warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_t pt );
+  warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt );
   virtual void summon( timespan_t duration=timespan_t::zero );
   virtual void dismiss();
   virtual double composite_attack_expertise( weapon_t* ) const;
-  virtual resource_type_t primary_resource() const;
-  virtual double composite_player_multiplier( const school_type school, action_t* a ) const;
+  virtual resource_type_e primary_resource() const;
+  virtual double composite_player_multiplier( const school_type_e school, action_t* a ) const;
   virtual double composite_mp5() const;
 };
 
@@ -332,7 +332,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 {
   double snapshot_crit, snapshot_haste, snapshot_sp, snapshot_mastery;
 
-  warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_t pt );
+  warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt );
   virtual void summon( timespan_t duration=timespan_t::zero );
   virtual double composite_attack_crit( weapon_t* ) const;
   virtual double composite_attack_expertise( weapon_t* ) const;
@@ -341,7 +341,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   virtual double composite_attack_power() const;
   virtual double composite_spell_crit() const;
   virtual double composite_spell_haste() const;
-  virtual double composite_spell_power( const school_type school ) const;
+  virtual double composite_spell_power( const school_type_e school ) const;
   virtual double composite_spell_power_multiplier() const;
 };
 
@@ -428,7 +428,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
-  virtual double composite_player_multiplier( const school_type school, action_t* a ) const;
+  virtual double composite_player_multiplier( const school_type_e school, action_t* a ) const;
 };
 
 // ==========================================================================

@@ -91,7 +91,7 @@ struct warrior_targetdata_t : public targetdata_t
 
 void register_warrior_targetdata( sim_t* sim )
 {
-  player_type t = WARRIOR;
+  player_type_e t = WARRIOR;
   typedef warrior_targetdata_t type;
 
   REGISTER_DOT( deep_wounds );
@@ -302,7 +302,7 @@ struct warrior_t : public player_t
   // Up-Times
   benefit_t* uptimes_rage_cap;
 
-  warrior_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
+  warrior_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) :
     player_t( sim, WARRIOR, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
@@ -352,19 +352,19 @@ struct warrior_t : public player_t
   virtual double    composite_attack_crit( weapon_t* ) const;
   virtual double    composite_mastery() const;
   virtual double    composite_attack_haste() const;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
   virtual double    composite_tank_block() const;
   virtual double    composite_tank_crit_block() const;
-  virtual double    composite_tank_crit( const school_type school ) const;
+  virtual double    composite_tank_crit( const school_type_e school ) const;
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
-  virtual resource_type_t primary_resource() const { return RESOURCE_RAGE; }
-  virtual role_type primary_role() const;
-  virtual double    assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
+  virtual resource_type_e primary_resource() const { return RESOURCE_RAGE; }
+  virtual role_type_e primary_role() const;
+  virtual double    assess_damage( double amount, const school_type_e school, int    dmg_type, int result, action_t* a );
   virtual void      copy_from( player_t* source );
 };
 
@@ -379,7 +379,7 @@ struct warrior_attack_t : public attack_t
 {
   int stancemask;
 
-  warrior_attack_t( const char* n, warrior_t* p, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) :
+  warrior_attack_t( const char* n, warrior_t* p, const school_type_e s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true  ) :
     attack_t( n, p, RESOURCE_RAGE, s, t, special ),
     stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
@@ -418,7 +418,7 @@ struct warrior_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int impact_result );
+  virtual void   assess_damage( player_t* t, double amount, int dmg_type_e, int impact_result );
 };
 
 
@@ -805,9 +805,9 @@ double warrior_attack_t::armor() const
 
 // warrior_attack_t::assess_damage ==========================================
 
-void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type, int impact_result )
+void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type_e, int impact_result )
 {
-  attack_t::assess_damage( t, amount, dmg_type, impact_result );
+  attack_t::assess_damage( t, amount, dmg_type_e, impact_result );
 
   /* warrior_t* p = player -> cast_warrior();
 
@@ -817,7 +817,7 @@ void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type, 
 
     if ( p -> buffs_sweeping_strikes -> up() && q -> adds_nearby )
     {
-      attack_t::additional_damage( q, amount, dmg_type, impact_result );
+      attack_t::additional_damage( q, amount, dmg_type_e, impact_result );
     }
   }*/
 }
@@ -1213,9 +1213,9 @@ struct bloodthirst_heal_t : public heal_t
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background= true;
     init();
-  }
-
-  virtual resource_type_t current_resource() const { return RESOURCE_NONE; }
+  }  
+  
+  virtual resource_type_e current_resource() const { return RESOURCE_NONE; }
 };
 
 struct bloodthirst_buff_callback_t : public action_callback_t
@@ -1511,9 +1511,9 @@ struct devastate_t : public warrior_attack_t
     }
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type_e )
   {
-    warrior_attack_t::target_debuff( t, dmg_type );
+    warrior_attack_t::target_debuff( t, dmg_type_e );
 
     target_dd_adder = t -> debuffs.sunder_armor -> stack() * effect_average( 2 );
   }
@@ -1555,7 +1555,7 @@ struct execute_t : public warrior_attack_t
 
     if ( sim -> debug )
       log_t::output( sim, "%s consumes %.1f %s for %s", p -> name(),
-                     resource_consumed, util_t::resource_type_t_string( current_resource() ), name() );
+                     resource_consumed, util_t::resource_type_string( current_resource() ), name() );
 
     player -> resource_loss( current_resource(), resource_consumed );
 
@@ -2488,7 +2488,7 @@ struct victory_rush_t : public warrior_attack_t
 struct warrior_spell_t : public spell_t
 {
   int stancemask;
-  warrior_spell_t( const char* n, warrior_t* p, const school_type s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
+  warrior_spell_t( const char* n, warrior_t* p, const school_type_e s=SCHOOL_PHYSICAL, int t=TREE_NONE ) :
     spell_t( n, p, RESOURCE_RAGE, s, t ),
     stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
@@ -2856,8 +2856,8 @@ struct stance_t : public warrior_spell_t
     trigger_gcd = timespan_t::zero;
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
   }
-
-  virtual resource_type_t current_resource() const { return RESOURCE_RAGE; }
+  
+  virtual resource_type_e current_resource() const { return RESOURCE_RAGE; }
 
   virtual void execute()
   {
@@ -3669,7 +3669,7 @@ double warrior_t::composite_attack_haste() const
 
 // warrior_t::composite_player_multiplier ===================================
 
-double warrior_t::composite_player_multiplier( const school_type school, action_t* a ) const
+double warrior_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3688,7 +3688,7 @@ double warrior_t::composite_player_multiplier( const school_type school, action_
 
 // warrior_t::matching_gear_multiplier ======================================
 
-double warrior_t::matching_gear_multiplier( const attribute_type attr ) const
+double warrior_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
   if ( ( attr == ATTR_STRENGTH ) && ( primary_tree() == TREE_ARMS || primary_tree() == TREE_FURY ) )
     return 0.05;
@@ -3729,7 +3729,7 @@ double warrior_t::composite_tank_crit_block() const
 
 // warrior_t::composite_tank_crit ===========================================
 
-double warrior_t::composite_tank_crit( const school_type school ) const
+double warrior_t::composite_tank_crit( const school_type_e school ) const
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -3754,7 +3754,7 @@ void warrior_t::regen( timespan_t periodicity )
 
 // warrior_t::primary_role() ================================================
 
-role_type warrior_t::primary_role() const
+role_type_e warrior_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;
@@ -3771,8 +3771,8 @@ role_type warrior_t::primary_role() const
 // warrior_t::assess_damage =================================================
 
 double warrior_t::assess_damage( double            amount,
-                                 const school_type school,
-                                 int               dmg_type,
+                                 const school_type_e school,
+                                 int               dmg_type_e,
                                  int               result,
                                  action_t*         action )
 {
@@ -3830,7 +3830,7 @@ double warrior_t::assess_damage( double            amount,
   if ( active_stance == STANCE_DEFENSE && buffs_defensive_stance -> up() )
     amount *= 0.90;
 
-  return player_t::assess_damage( amount, school, dmg_type, result, action );
+  return player_t::assess_damage( amount, school, dmg_type_e, result, action );
 }
 
 // warrior_t::create_options ================================================
@@ -3906,7 +3906,7 @@ int warrior_t::decode_set( item_t& item )
 
 // player_t::create_warrior =================================================
 
-player_t* player_t::create_warrior( sim_t* sim, const std::string& name, race_type r )
+player_t* player_t::create_warrior( sim_t* sim, const std::string& name, race_type_e r )
 {
   SC_CREATE_WARRIOR( sim, name, r );
 }

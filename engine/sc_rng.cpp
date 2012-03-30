@@ -318,7 +318,7 @@ public:
     rng_t( name, avg_range, avg_gauss )
   {}
 
-  virtual rng_type type() const // override
+  virtual rng_type_e type() const // override
   { return RNG_STANDARD; }
 
   virtual void seed( uint32_t start ) // override
@@ -588,7 +588,7 @@ public:
     rng_t( name, avg_range, avg_gauss )
   { seed( static_cast<uint32_t>( time( NULL ) ) ); }
 
-  virtual rng_type type() const
+  virtual rng_type_e type() const
   { return RNG_MERSENNE_TWISTER; }
 
   virtual double real()
@@ -613,7 +613,7 @@ public:
 
 rng_t* rng_t::create( sim_t*             sim,
                       const std::string& name,
-                      rng_type           type )
+                      rng_type_e           type )
 {
   if ( type == RNG_DEFAULT     ) type = RNG_MERSENNE_TWISTER;
 
@@ -631,7 +631,7 @@ rng_t* rng_t::create( sim_t*             sim,
 #ifdef UNIT_TEST
 
 std::string& armory_t::format( std::string& name, int ) { return name; }
-uint32_t spell_id_t::get_school_mask( school_type x ) { return 0; }
+uint32_t spell_id_t::get_school_mask( school_type_e x ) { return 0; }
 
 int main( int argc, char** argv )
 {

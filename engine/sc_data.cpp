@@ -38,7 +38,7 @@ void spell_data_t::set_enabled( bool value )
 
 // spell_data_t::is_class ===================================================
 
-bool spell_data_t::is_class( player_type c ) const
+bool spell_data_t::is_class( player_type_e c ) const
 {
   if ( ! _class_mask )
     return true;
@@ -49,7 +49,7 @@ bool spell_data_t::is_class( player_type c ) const
 
 // spell_data_t::is_race ====================================================
 
-bool spell_data_t::is_race( race_type r ) const
+bool spell_data_t::is_race( race_type_e r ) const
 {
   unsigned mask = util_t::race_mask( r );
   return ( _race_mask & mask ) == mask;
@@ -57,7 +57,7 @@ bool spell_data_t::is_race( race_type r ) const
 
 // spell_data_t::scaling_class ==============================================
 
-player_type spell_data_t::scaling_class() const
+player_type_e spell_data_t::scaling_class() const
 {
   switch ( _scaling_type )
   {
@@ -80,14 +80,14 @@ player_type spell_data_t::scaling_class() const
 
 // spell_data_t::cost =======================================================
 
-double spell_data_t::cost( power_type pt ) const
+double spell_data_t::cost( power_type_e pt ) const
 {
   if ( _power == 0 )
     return 0;
 
   for ( size_t i = 0; i < _power -> size(); i++ )
   {
-    if ( _power -> at( i ) -> _power_type == pt )
+    if ( _power -> at( i ) -> _power_type_e == pt )
       return _power -> at( i ) -> cost();
   }
   
@@ -113,7 +113,7 @@ timespan_t spell_data_t::cast_time( uint32_t level ) const
 
 // spell_data_t::flags ======================================================
 
-bool spell_data_t::flags( spell_attribute_t f ) const
+bool spell_data_t::flags( spell_attribute_e f ) const
 {
   unsigned bit = static_cast<unsigned>( f ) & 0x1Fu;
   unsigned index = ( static_cast<unsigned>( f ) >> 8 ) & 0xFFu;
@@ -150,9 +150,9 @@ void spelleffect_data_t::set_enabled( bool value )
     _flags &= ~FLAG_ENABLED;
 }
 
-resource_type_t spelleffect_data_t::resource_gain_type() const
+resource_type_e spelleffect_data_t::resource_gain_type() const
 {
-  return util_t::translate_power_type( static_cast< power_type >( _misc_value ) );
+  return util_t::translate_power_type( static_cast< power_type_e >( _misc_value ) );
 }
 
 // ==========================================================================
@@ -165,11 +165,11 @@ spellpower_data_nil_t::spellpower_data_nil_t() :
 
 spellpower_data_nil_t spellpower_data_nil_t::singleton;
 
-// spell_data_t::power_type =================================================
+// spell_data_t::power_type_e =================================================
 
-resource_type_t spellpower_data_t::resource() const
+resource_type_e spellpower_data_t::resource() const
 {
-  return util_t::translate_power_type( static_cast< power_type >( _power_type ) );
+  return util_t::translate_power_type( static_cast< power_type_e >( _power_type_e ) );
 }
 
 // ==========================================================================
@@ -198,7 +198,7 @@ void talent_data_t::set_enabled( bool value )
     _flags |= FLAG_DISABLED;
 }
 
-bool talent_data_t::is_class( player_type c ) const
+bool talent_data_t::is_class( player_type_e c ) const
 {
   unsigned mask = util_t::class_id_mask( c );
 
@@ -208,7 +208,7 @@ bool talent_data_t::is_class( player_type c ) const
   return ( ( _m_class & mask ) == mask );
 }
 
-bool talent_data_t::is_pet( pet_type_t p ) const
+bool talent_data_t::is_pet( pet_type_e p ) const
 {
   unsigned mask = util_t::pet_mask( p );
 

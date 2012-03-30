@@ -127,7 +127,7 @@ struct base_data
 
     printf( "Spell '%s' (%u):\n", s->name, s->id );
     printf( "  School:        %u\n", s->school );
-    printf( "  Power type:    %d\n", s->power_type );
+    printf( "  Power type:    %d\n", s->power_type_e );
     printf( "  Class:         %s\n", s_class.c_str() );
     printf( "  Level:         %u\n", s->spell_level );
     printf( "  Min range:     %lf\n", s->min_range );
@@ -312,7 +312,7 @@ void compare_spell( v1::data::spell_type const *s1, v2::data::spell_type const *
 
   h.cmp( s1->prj_speed,        s2->prj_speed,        "changed projectile speed from %lf to %lf\n" );
   h.cmp( s1->school,           s2->school,           "changed school from 0x%02x to 0x%02x\n" );
-  h.cmp( s1->power_type,       s2->power_type,       "changed power type from %d to %d\n" );
+  h.cmp( s1->power_type_e,       s2->power_type_e,       "changed power type from %d to %d\n" );
   h.cmp( s1->class_mask,       s2->class_mask,       "changed class mask from 0x%02x to 0x%02x\n" );
   h.cmp( s1->race_mask,        s2->race_mask,        "changed race mask from 0x%02x to 0x%02x\n" );
   h.cmp( s1->spell_level,      s2->spell_level,      "changed spell level from %d to %d\n" );

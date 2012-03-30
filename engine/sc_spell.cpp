@@ -40,7 +40,7 @@ spell_t::spell_t( const spell_id_t& s, int t ) :
   init_spell_t_();
 }
 
-spell_t::spell_t( const char* n, player_t* p, int r, const school_type s, int t ) :
+spell_t::spell_t( const char* n, player_t* p, int r, const school_type_e s, int t ) :
   action_t( ACTION_SPELL, n, p, r, s, t, true )
 {
   init_spell_t_();
@@ -113,9 +113,9 @@ void spell_t::player_buff()
 
 // spell_t::target_debuff ===================================================
 
-void spell_t::target_debuff( player_t* t, int dmg_type )
+void spell_t::target_debuff( player_t* t, int dmg_type_e )
 {
-  action_t::target_debuff( t, dmg_type );
+  action_t::target_debuff( t, dmg_type_e );
 
   int crit_debuff = std::max( t -> debuffs.critical_mass    -> stack() * 5,
                               t -> debuffs.shadow_and_flame -> stack() * 5 );

@@ -67,7 +67,7 @@ attack_t::attack_t( const spell_id_t& s, int t, bool special ) :
   init_attack_t_();
 }
 
-attack_t::attack_t( const char* n, player_t* p, int resource, const school_type school, int tree, bool special ) :
+attack_t::attack_t( const char* n, player_t* p, int resource, const school_type_e school, int tree, bool special ) :
   action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
@@ -134,9 +134,9 @@ void attack_t::player_buff()
 
 // attack_t::target_debuff ==================================================
 
-void attack_t::target_debuff( player_t* t, int dmg_type )
+void attack_t::target_debuff( player_t* t, int dmg_type_e )
 {
-  action_t::target_debuff( t, dmg_type );
+  action_t::target_debuff( t, dmg_type_e );
 
   target_expertise = 0;
 }

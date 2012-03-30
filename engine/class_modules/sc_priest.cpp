@@ -36,7 +36,7 @@ struct priest_targetdata_t : public targetdata_t
 
 void register_priest_targetdata( sim_t* sim )
 {
-  player_type t = PRIEST;
+  player_type_e t = PRIEST;
   typedef priest_targetdata_t type;
 
   REGISTER_DOT( devouring_plague );
@@ -251,7 +251,7 @@ struct priest_t : public player_t
 
   bool   was_sub_25;
 
-  priest_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
+  priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
 
@@ -299,25 +299,25 @@ struct priest_t : public player_t
   virtual void      demise();
   virtual void      init_party();
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, int save_type_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
-  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
-  virtual role_type primary_role() const;
+  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
+  virtual role_type_e primary_role() const;
   virtual void      combat_begin();
   virtual double    composite_armor() const;
-  virtual double    composite_spell_power( const school_type school ) const;
+  virtual double    composite_spell_power( const school_type_e school ) const;
   virtual double    composite_spell_hit() const;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
-  virtual double    composite_player_td_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_td_multiplier( const school_type_e school, action_t* a = NULL ) const;
   virtual double    composite_movement_speed() const;
 
-  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
 
-  virtual double    target_mitigation( double amount, const school_type school, int type, int result, action_t* a=0 );
+  virtual double    target_mitigation( double amount, const school_type_e school, int type, int result, action_t* a=0 );
 
   virtual double    shadow_orb_amount() const;
 
@@ -575,9 +575,9 @@ struct priest_heal_t : public heal_t
 
   virtual void player_buff();
 
-  virtual void target_debuff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type_e )
   {
-    heal_t::target_debuff( t, dmg_type );
+    heal_t::target_debuff( t, dmg_type_e );
 
     // Grace
     if ( p() -> spec.grace -> ok() )
@@ -712,7 +712,7 @@ struct atonement_heal_t : public priest_heal_t
       target = sim -> find_player( p -> atonement_target_str.c_str() );
   }
 
-  void trigger( double atonement_dmg, int dmg_type, int result )
+  void trigger( double atonement_dmg, int dmg_type_e, int result )
   {
     atonement_dmg *= p() -> glyphs.atonement -> effect1().percent();
     double cap = p() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
@@ -728,7 +728,7 @@ struct atonement_heal_t : public priest_heal_t
     if ( atonement_dmg > cap )
       atonement_dmg = cap;
 
-    if ( dmg_type == DMG_OVER_TIME )
+    if ( dmg_type_e == DMG_OVER_TIME )
     {
       // num_ticks = 1;
       base_td = atonement_dmg;
@@ -737,7 +737,7 @@ struct atonement_heal_t : public priest_heal_t
     }
     else
     {
-      assert( dmg_type == DMG_DIRECT );
+      assert( dmg_type_e == DMG_DIRECT );
       // num_ticks = 0;
       base_dd_min = base_dd_max = atonement_dmg;
       may_crit = ( result == RESULT_CRIT );
@@ -792,7 +792,7 @@ private:
   }
 
 public:
-  priest_spell_t( const std::string& n, priest_t* player, const school_type s, int t ) :
+  priest_spell_t( const std::string& n, priest_t* player, const school_type_e s, int t ) :
     spell_t( n.c_str(), player, RESOURCE_MANA, s, t ), atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
@@ -853,10 +853,10 @@ public:
 
   virtual void assess_damage( player_t* t,
                               double amount,
-                              int    dmg_type,
+                              int    dmg_type_e,
                               int    impact_result )
   {
-    spell_t::assess_damage( t, amount, dmg_type, impact_result );
+    spell_t::assess_damage( t, amount, dmg_type_e, impact_result );
 
     if ( p() -> buffs.vampiric_embrace -> up() && result_is_hit( impact_result ) )
     {
@@ -890,7 +890,7 @@ public:
     }
 
     if ( atonement )
-      atonement -> trigger( amount, dmg_type, impact_result );
+      atonement -> trigger( amount, dmg_type_e, impact_result );
   }
 
   static void trigger_shadowy_apparition( priest_t* player );
@@ -1045,7 +1045,7 @@ struct shadow_fiend_pet_t : public pet_t
     buffs.shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration() );
   }
 
-  virtual double composite_spell_power( const school_type school ) const
+  virtual double composite_spell_power( const school_type_e school ) const
   {
     double sp;
 
@@ -1707,9 +1707,9 @@ struct mind_blast_t : public priest_spell_t
     generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type_e )
   {
-    priest_spell_t::target_debuff( t, dmg_type );
+    priest_spell_t::target_debuff( t, dmg_type_e );
 
     target_crit       += p() -> buffs.mind_spike -> value() * p() -> buffs.mind_spike -> check();
   }
@@ -3115,9 +3115,9 @@ struct prayer_of_mending_t : public priest_heal_t
     }
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type_e )
   {
-    priest_heal_t::target_debuff( t, dmg_type );
+    priest_heal_t::target_debuff( t, dmg_type_e );
 
     if ( p() -> glyphs.prayer_of_mending -> ok() && t == target )
       target_multiplier *= 1.0 + p() -> glyphs.prayer_of_mending -> effect1().percent();
@@ -3176,7 +3176,7 @@ double priest_t::shadow_orb_amount() const
 
 // priest_t::primary_role ===================================================
 
-role_type priest_t::primary_role() const
+role_type_e priest_t::primary_role() const
 {
   switch ( player_t::primary_role() )
   {
@@ -3214,7 +3214,7 @@ double priest_t::composite_armor() const
 
 // priest_t::composite_spell_power ==========================================
 
-double priest_t::composite_spell_power( const school_type school ) const
+double priest_t::composite_spell_power( const school_type_e school ) const
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -3237,7 +3237,7 @@ double priest_t::composite_spell_hit() const
 
 // priest_t::composite_player_multiplier ====================================
 
-double priest_t::composite_player_multiplier( const school_type school, action_t* a ) const
+double priest_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3261,7 +3261,7 @@ double priest_t::composite_player_multiplier( const school_type school, action_t
   return m;
 }
 
-double priest_t::composite_player_td_multiplier( const school_type school, action_t* a ) const
+double priest_t::composite_player_td_multiplier( const school_type_e school, action_t* a ) const
 {
   double player_multiplier = player_t::composite_player_td_multiplier( school, a );
 
@@ -3288,7 +3288,7 @@ double priest_t::composite_movement_speed() const
 
 // priest_t::matching_gear_multiplier =======================================
 
-double priest_t::matching_gear_multiplier( const attribute_type attr ) const
+double priest_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;
@@ -3973,12 +3973,12 @@ void priest_t::pre_analyze_hook()
 // priest_t::target_mitigation ==============================================
 
 double priest_t::target_mitigation( double            amount,
-                                    const school_type school,
-                                    int               dmg_type,
+                                    const school_type_e school,
+                                    int               dmg_type_e,
                                     int               result,
                                     action_t*         action )
 {
-  amount = player_t::target_mitigation( amount, school, dmg_type, result, action );
+  amount = player_t::target_mitigation( amount, school, dmg_type_e, result, action );
 
   if ( buffs.shadowform -> check() )
   { amount *= 1.0 + buffs.shadowform -> effect3().percent(); }
@@ -4007,11 +4007,11 @@ void priest_t::create_options()
 
 // priest_t::create_profile =================================================
 
-bool priest_t::create_profile( std::string& profile_str, int save_type, bool save_html )
+bool priest_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
 {
-  player_t::create_profile( profile_str, save_type, save_html );
+  player_t::create_profile( profile_str, save_type_e, save_html );
 
-  if ( save_type == SAVE_ALL )
+  if ( save_type_e == SAVE_ALL )
   {
     if ( ! atonement_target_str.empty() )
       profile_str += "atonement_target=" + atonement_target_str + "\n";
@@ -4095,7 +4095,7 @@ int priest_t::decode_set( item_t& item )
 
 // player_t::create_priest  =================================================
 
-player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_type r )
+player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_type_e r )
 {
   SC_CREATE_PRIEST( sim, name, r );
 }

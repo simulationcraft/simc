@@ -43,7 +43,7 @@ std::string& format_server( std::string& name )
 
 static js_node_t* download_profile( sim_t* sim,
                                     const std::string& id,
-                                    cache::behavior_t caching )
+                                    cache::behavior_e caching )
 {
   std::string url_www = "http://www.wowhead.com/profile=load&id=" + id;
   std::string url_ptr = "http://ptr.wowhead.com/profile=load&id=" + id;
@@ -75,7 +75,7 @@ static js_node_t* download_profile( sim_t* sim,
 
 static xml_node_t* download_id( sim_t*             sim,
                                 const std::string& id_str,
-                                cache::behavior_t  caching,
+                                cache::behavior_e  caching,
                                 bool               ptr=false )
 {
   if ( id_str.empty() || id_str == "0" ) return 0;
@@ -245,29 +245,29 @@ static bool parse_weapon( item_t&     item,
   if ( ! xml_t::get_value( subclass_str, node, "subclass/cdata" ) )
     return true;
 
-  int weapon_type = WEAPON_NONE;
-  if      ( subclass_str == "One-Handed Axes"         ) weapon_type = WEAPON_AXE;
-  else if ( subclass_str == "Two-Handed Axes"         ) weapon_type = WEAPON_AXE_2H;
-  else if ( subclass_str == "Daggers"                 ) weapon_type = WEAPON_DAGGER;
-  else if ( subclass_str == "Fist Weapons"            ) weapon_type = WEAPON_FIST;
-  else if ( subclass_str == "One-Handed Maces"        ) weapon_type = WEAPON_MACE;
-  else if ( subclass_str == "Two-Handed Maces"        ) weapon_type = WEAPON_MACE_2H;
-  else if ( subclass_str == "Polearms"                ) weapon_type = WEAPON_POLEARM;
-  else if ( subclass_str == "Staves"                  ) weapon_type = WEAPON_STAFF;
-  else if ( subclass_str == "One-Handed Swords"       ) weapon_type = WEAPON_SWORD;
-  else if ( subclass_str == "Two-Handed Swords"       ) weapon_type = WEAPON_SWORD_2H;
-  else if ( subclass_str == "Bows"                    ) weapon_type = WEAPON_BOW;
-  else if ( subclass_str == "Crossbows"               ) weapon_type = WEAPON_CROSSBOW;
-  else if ( subclass_str == "Guns"                    ) weapon_type = WEAPON_GUN;
-  else if ( subclass_str == "Thrown"                  ) weapon_type = WEAPON_THROWN;
-  else if ( subclass_str == "Wands"                   ) weapon_type = WEAPON_WAND;
-  else if ( subclass_str == "Fishing Poles"           ) weapon_type = WEAPON_POLEARM;
-  else if ( subclass_str == "Miscellaneous (Weapons)" ) weapon_type = WEAPON_POLEARM;
+  int weapon_type_e = WEAPON_NONE;
+  if      ( subclass_str == "One-Handed Axes"         ) weapon_type_e = WEAPON_AXE;
+  else if ( subclass_str == "Two-Handed Axes"         ) weapon_type_e = WEAPON_AXE_2H;
+  else if ( subclass_str == "Daggers"                 ) weapon_type_e = WEAPON_DAGGER;
+  else if ( subclass_str == "Fist Weapons"            ) weapon_type_e = WEAPON_FIST;
+  else if ( subclass_str == "One-Handed Maces"        ) weapon_type_e = WEAPON_MACE;
+  else if ( subclass_str == "Two-Handed Maces"        ) weapon_type_e = WEAPON_MACE_2H;
+  else if ( subclass_str == "Polearms"                ) weapon_type_e = WEAPON_POLEARM;
+  else if ( subclass_str == "Staves"                  ) weapon_type_e = WEAPON_STAFF;
+  else if ( subclass_str == "One-Handed Swords"       ) weapon_type_e = WEAPON_SWORD;
+  else if ( subclass_str == "Two-Handed Swords"       ) weapon_type_e = WEAPON_SWORD_2H;
+  else if ( subclass_str == "Bows"                    ) weapon_type_e = WEAPON_BOW;
+  else if ( subclass_str == "Crossbows"               ) weapon_type_e = WEAPON_CROSSBOW;
+  else if ( subclass_str == "Guns"                    ) weapon_type_e = WEAPON_GUN;
+  else if ( subclass_str == "Thrown"                  ) weapon_type_e = WEAPON_THROWN;
+  else if ( subclass_str == "Wands"                   ) weapon_type_e = WEAPON_WAND;
+  else if ( subclass_str == "Fishing Poles"           ) weapon_type_e = WEAPON_POLEARM;
+  else if ( subclass_str == "Miscellaneous (Weapons)" ) weapon_type_e = WEAPON_POLEARM;
 
-  if ( weapon_type == WEAPON_NONE ) return false;
-  if ( weapon_type == WEAPON_WAND ) return true;
+  if ( weapon_type_e == WEAPON_NONE ) return false;
+  if ( weapon_type_e == WEAPON_WAND ) return true;
 
-  item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
+  item.armory_weapon_str = util_t::weapon_type_string( weapon_type_e );
   item.armory_weapon_str += "_" + speed + "speed" + "_" + dmgmin + "min" + "_" + dmgmax + "max";
 
   return true;
@@ -555,7 +555,7 @@ bool is_valid_profile_id( const std::string& id )
 player_t* download_player_profile( sim_t* sim,
                                    const std::string& id,
                                    const std::string& spec,
-                                   cache::behavior_t caching )
+                                   cache::behavior_e caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;
@@ -595,7 +595,7 @@ player_t* download_player_profile( sim_t* sim,
     sim -> errorf( "Unable to extract player class from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
-  player_type player_type = util_t::translate_class_id( atoi( cid_str.c_str() ) );
+  player_type_e player_type = util_t::translate_class_id( atoi( cid_str.c_str() ) );
   std::string type_str = util_t::player_type_string( player_type );
 
   std::string rid_str;
@@ -604,7 +604,7 @@ player_t* download_player_profile( sim_t* sim,
     sim -> errorf( "Unable to extract player race from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
-  race_type r = util_t::translate_race_id( atoi( rid_str.c_str() ) );
+  race_type_e r = util_t::translate_race_id( atoi( rid_str.c_str() ) );
 
   player_t* p = player_t::create( sim, type_str, name_str, r );
   sim -> active_player = p;
@@ -639,7 +639,7 @@ player_t* download_player_profile( sim_t* sim,
     p -> origin_str = "http://www.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + character_name;
   }
 
-  for ( profession_type i = PROFESSION_NONE; i < PROFESSION_MAX; i++ )
+  for ( profession_type_e i = PROFESSION_NONE; i < PROFESSION_MAX; i++ )
   {
     std::vector<std::string> skill_levels;
     if ( 2 == js_t::get_value( skill_levels, profile_js, translate_profession_id( i ) ) )
@@ -791,7 +791,7 @@ player_t* download_player_profile( sim_t* sim,
 int wowhead_t::parse_gem( item_t&            item,
                           const std::string& gem_id,
                           bool               ptr,
-                          cache::behavior_t  caching )
+                          cache::behavior_e  caching )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -804,7 +804,7 @@ int wowhead_t::parse_gem( item_t&            item,
     return GEM_NONE;
   }
 
-  int gem_type = GEM_NONE;
+  int gem_type_e = GEM_NONE;
 
   std::string color_str;
   if ( xml_t::get_value( color_str, node, "subclass/cdata" ) )
@@ -812,9 +812,9 @@ int wowhead_t::parse_gem( item_t&            item,
     std::string::size_type pos = color_str.find( ' ' );
     if ( pos != std::string::npos ) color_str.erase( pos );
     armory_t::format( color_str );
-    gem_type = util_t::parse_gem_type( color_str );
+    gem_type_e = util_t::parse_gem_type( color_str );
 
-    if ( gem_type == GEM_META )
+    if ( gem_type_e == GEM_META )
     {
       std::string name_str;
       if ( xml_t::get_value( name_str, node, "name/cdata" ) )
@@ -836,7 +836,7 @@ int wowhead_t::parse_gem( item_t&            item,
     }
   }
 
-  return gem_type;
+  return gem_type_e;
 }
 
 // wowhead_t::download_glyph ================================================
@@ -845,7 +845,7 @@ bool wowhead_t::download_glyph( player_t*          player,
                                 std::string&       glyph_name,
                                 const std::string& glyph_id,
                                 bool               ptr,
-                                cache::behavior_t  caching )
+                                cache::behavior_e  caching )
 {
   xml_node_t* node = download_id( player -> sim, glyph_id, caching, ptr );
   if ( ! node || ! xml_t::get_value( glyph_name, node, "name/cdata" ) )
@@ -866,7 +866,7 @@ bool wowhead_t::download_glyph( player_t*          player,
 bool wowhead_t::download_item( item_t&            item,
                                const std::string& item_id,
                                bool               ptr,
-                               cache::behavior_t  caching )
+                               cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -939,7 +939,7 @@ bool wowhead_t::download_slot( item_t&            item,
                                const std::string& rsuffix_id,
                                const std::string  gem_ids[ 3 ],
                                bool               ptr,
-                               cache::behavior_t  caching )
+                               cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -1045,7 +1045,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
                                       const std::string& server,
                                       const std::string& name,
                                       const std::string& spec,
-                                      cache::behavior_t  caching )
+                                      cache::behavior_e  caching )
 {
   std::string id = name;
 

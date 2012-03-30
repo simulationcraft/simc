@@ -602,7 +602,7 @@ void http_t::cache_save()
 
 bool http_t::get( std::string&       result,
                   const std::string& url,
-                  cache::behavior_t  caching,
+                  cache::behavior_e  caching,
                   const std::string& confirmation )
 {
   result.clear();
@@ -685,7 +685,7 @@ void http_t::format_( std::string& encoded_url,
 #include <iostream>
 
 std::string& armory_t::format( std::string& name, int ) { return name; }
-uint32_t spell_id_t::get_school_mask( school_type x ) { return 0; }
+uint32_t spell_id_t::get_school_mask( school_type_e x ) { return 0; }
 
 int main( int argc, char* argv[] )
 {

@@ -346,7 +346,7 @@ const char* xml_t::get_name( xml_node_t* node )
 
 xml_node_t* xml_t::get( sim_t*             sim,
                         const std::string& url,
-                        cache::behavior_t  caching,
+                        cache::behavior_e  caching,
                         const std::string& confirmation )
 {
   auto_lock_t lock( xml_mutex );

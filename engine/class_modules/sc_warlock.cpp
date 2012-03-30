@@ -55,7 +55,7 @@ int warlock_targetdata_t::active_dots()
 
 void register_warlock_targetdata( sim_t* sim )
 {
-  player_type t = WARLOCK;
+  player_type_e t = WARLOCK;
   typedef warlock_targetdata_t type;
 
   REGISTER_DOT( corruption );
@@ -81,7 +81,7 @@ warlock_targetdata_t::warlock_targetdata_t( player_t* source, player_t* target )
   debuffs_shadow_embrace        = add_aura( new buff_t( this, p -> talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", p -> talent_shadow_embrace -> rank() ) );
 }
 
-warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type r ) :
+warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   player_t( sim, WARLOCK, name, r == RACE_NONE ? RACE_UNDEAD : r )
 {
 
@@ -150,7 +150,7 @@ private:
   }
 
 public:
-  warlock_spell_t( const char* n, warlock_t* p, const school_type s, int t ) :
+  warlock_spell_t( const char* n, warlock_t* p, const school_type_e s, int t ) :
     spell_t( n, p, RESOURCE_MANA, s, t )
   {
     _init_warlock_spell_t();
@@ -216,11 +216,11 @@ public:
 
   // warlock_spell_t::target_debuff =========================================
 
-  virtual void target_debuff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type_e )
   {
     warlock_t* p = player -> cast_warlock();
 
-    spell_t::target_debuff( t, dmg_type );
+    spell_t::target_debuff( t, dmg_type_e );
 
     if ( p -> buffs.bane_of_havoc -> up() )
       target_multiplier *= 1.0 + p -> buffs.bane_of_havoc -> effect1().percent();
@@ -2559,7 +2559,7 @@ double warlock_t::composite_armor() const
 
 // warlock_t::composite_spell_power =========================================
 
-double warlock_t::composite_spell_power( const school_type school ) const
+double warlock_t::composite_spell_power( const school_type_e school ) const
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -2584,7 +2584,7 @@ double warlock_t::composite_spell_power_multiplier() const
 
 // warlock_t::composite_player_multiplier ===================================
 
-double warlock_t::composite_player_multiplier( const school_type school, action_t* a ) const
+double warlock_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
 {
   double player_multiplier = player_t::composite_player_multiplier( school, a );
 
@@ -2639,7 +2639,7 @@ double warlock_t::composite_player_multiplier( const school_type school, action_
 
 // warlock_t::composite_player_td_multiplier ================================
 
-double warlock_t::composite_player_td_multiplier( const school_type school, action_t* a ) const
+double warlock_t::composite_player_td_multiplier( const school_type_e school, action_t* a ) const
 {
   double player_multiplier = player_t::composite_player_td_multiplier( school, a );
 
@@ -2661,7 +2661,7 @@ double warlock_t::composite_player_td_multiplier( const school_type school, acti
 
 // warlock_t::matching_gear_multiplier ======================================
 
-double warlock_t::matching_gear_multiplier( const attribute_type attr ) const
+double warlock_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
   if ( ( attr == ATTR_INTELLECT ) && passive_spells.nethermancy -> ok() )
     return ( passive_spells.nethermancy -> effect_base_value( 1 ) * 0.01 );
@@ -3318,11 +3318,11 @@ void warlock_t::create_options()
 
 // warlock_t::create_profile ================================================
 
-bool warlock_t::create_profile( std::string& profile_str, int save_type, bool save_html )
+bool warlock_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
 {
-  player_t::create_profile( profile_str, save_type, save_html );
+  player_t::create_profile( profile_str, save_type_e, save_html );
 
-  if ( save_type == SAVE_ALL )
+  if ( save_type_e == SAVE_ALL )
   {
     if ( use_pre_soulburn ) profile_str += "use_pre_soulburn=1\n";
     if ( ! dark_intent_target_str.empty() ) profile_str += "dark_intent_target=" + dark_intent_target_str + "\n";
@@ -3371,7 +3371,7 @@ int warlock_t::decode_set( item_t& item )
 
 // player_t::create_warlock =================================================
 
-player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_type r )
+player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_type_e r )
 {
   SC_CREATE_WARLOCK( sim, name, r );
 }

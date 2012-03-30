@@ -22,7 +22,7 @@ static bool is_number( const std::string s )
 
 static void stat_search( std::string&              encoding_str,
                          std::vector<std::string>& description_tokens,
-                         int                       stat_type,
+                         int                       stat_type_e,
                          const std::string&        stat_str )
 {
   std::vector<std::string> stat_tokens;
@@ -76,7 +76,7 @@ static void stat_search( std::string&              encoding_str,
 
       if ( ! value_str.empty() )
       {
-        encoding_str += "_" + value_str + util_t::stat_type_abbrev( stat_type );
+        encoding_str += "_" + value_str + util_t::stat_type_abbrev( stat_type_e );
       }
     }
   }
@@ -212,13 +212,13 @@ int armory_t::parse_meta_gem( const std::string& description )
 
 // armory_t::format =========================================================
 
-std::string& armory_t::format( std::string& name, int format_type )
+std::string& armory_t::format( std::string& name, int format_type_e )
 {
   if ( name.empty() ) return name;
 
   std::string buffer;
 
-  switch ( format_type & FORMAT_CONVERT_MASK )
+  switch ( format_type_e & FORMAT_CONVERT_MASK )
   {
   case FORMAT_UTF8_MASK:
     util_t::urlencode( name );
@@ -239,7 +239,7 @@ std::string& armory_t::format( std::string& name, int format_type )
     }
     else if ( isalpha( c ) )
     {
-      switch ( format_type & FORMAT_ALL_NAME_MASK )
+      switch ( format_type_e & FORMAT_ALL_NAME_MASK )
       {
       case FORMAT_GUILD_NAME_MASK:
         break;

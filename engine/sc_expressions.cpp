@@ -15,11 +15,11 @@ struct expr_unary_t : public action_expr_t
   ~expr_unary_t() { delete input; }
   virtual int evaluate()
   {
-    result_type = TOK_UNKNOWN;
+    result_type_e = TOK_UNKNOWN;
     int input_result = input -> evaluate();
     if ( input_result == TOK_NUM )
     {
-      result_type = TOK_NUM;
+      result_type_e = TOK_NUM;
       switch ( operation )
       {
       case TOK_PLUS:  result_num =   input -> result_num; break;
@@ -35,7 +35,7 @@ struct expr_unary_t : public action_expr_t
       action -> sim -> errorf( "%s-%s: Unexpected input type (%s) for unary operator '%s'\n",
                                action -> player -> name(), action -> name(), input -> name_str.c_str(), name_str.c_str() );
     }
-    return result_type;
+    return result_type_e;
   }
 };
 
@@ -50,13 +50,13 @@ struct expr_binary_t : public action_expr_t
   ~expr_binary_t() { delete left; delete right; }
   virtual int evaluate()
   {
-    result_type = TOK_UNKNOWN;
+    result_type_e = TOK_UNKNOWN;
     int right_result,
         left_result = left -> evaluate();
 
     if ( left_result == TOK_NUM )
     {
-      result_type = TOK_NUM;
+      result_type_e = TOK_NUM;
       switch ( operation )
       {
       case TOK_ADD:
@@ -164,7 +164,7 @@ struct expr_binary_t : public action_expr_t
     }
     else if ( left_result == TOK_STR )
     {
-      result_type = TOK_NUM;
+      result_type_e = TOK_NUM;
       right_result = right -> evaluate();
       if ( left_result != right_result ) goto error;
       switch ( operation )
@@ -179,13 +179,13 @@ struct expr_binary_t : public action_expr_t
       default: assert( 0 );
       }
     }
-    return result_type;
+    return result_type_e;
 error:
     action -> sim -> errorf( "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n",
                              action -> player -> name(), action -> name(), left -> name_str.c_str(), right -> name_str.c_str(), name_str.c_str() );
     action -> sim -> cancel();
 
-    return result_type;
+    return result_type_e;
   }
 };
 
@@ -276,7 +276,7 @@ int expression_t::is_binary( int expr_token_type )
 
 // next_token ===============================================================
 
-int expression_t::next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str, token_type_t prev_token )
+int expression_t::next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str, token_type_e prev_token )
 {
   unsigned char c = expr_str[ current_index++ ];
 
@@ -380,11 +380,11 @@ void expression_t::parse_tokens( action_t* action,
 {
   expr_token_t token;
   int current_index=0;
-  token_type_t t = TOK_UNKNOWN;
+  token_type_e t = TOK_UNKNOWN;
 
   while ( ( token.type = next_token( action, expr_str, current_index, token.label, t ) ) != TOK_UNKNOWN )
   {
-    t = ( token_type_t ) token.type;
+    t = ( token_type_e ) token.type;
     tokens.push_back( token );
   }
 }
@@ -620,11 +620,11 @@ int main( int argc, char** argv )
         printf( "evaluate:\n" );
         std::string buffer;
         expr -> evaluate();
-        if ( expr -> result_type == TOK_NUM )
+        if ( expr -> result_type_e == TOK_NUM )
         {
           printf( "%f\n", expr -> result_num );
         }
-        else if ( expr -> result_type == TOK_STR )
+        else if ( expr -> result_type_e == TOK_STR )
         {
           printf( "%s\n", expr -> result_str.c_str() );
         }

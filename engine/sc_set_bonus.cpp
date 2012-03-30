@@ -143,14 +143,14 @@ bool set_bonus_t::init( player_t* p )
 action_expr_t* set_bonus_t::create_expression( action_t* action,
                                                const std::string& type )
 {
-  set_type bonus_type = util_t::parse_set_bonus( type );
+  set_type_e bonus_type = util_t::parse_set_bonus( type );
 
   if ( bonus_type != SET_NONE )
   {
     struct set_bonus_expr_t : public action_expr_t
     {
-      set_type set_bonus_type;
-      set_bonus_expr_t( action_t* a, set_type bonus_type ) : action_expr_t( a, util_t::set_bonus_string( bonus_type ), TOK_NUM ), set_bonus_type( bonus_type ) {}
+      set_type_e set_bonus_type;
+      set_bonus_expr_t( action_t* a, set_type_e bonus_type ) : action_expr_t( a, util_t::set_bonus_string( bonus_type ), TOK_NUM ), set_bonus_type( bonus_type ) {}
       virtual int evaluate() { result_num = action -> player -> sets -> has_set_bonus( set_bonus_type ); return TOK_NUM; }
     };
     return new set_bonus_expr_t( action, bonus_type );
@@ -180,7 +180,7 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIE
   default_value( new spell_id_t( p, 0 ) ), set_bonuses(), p( p )
 {
   // Map two-dimensional array into correct slots in the one-dimensional set_bonuses
-  // array, based on set_type enum
+  // array, based on set_type_e enum
   for ( int tier = 0; tier < N_TIER; ++tier )
   {
     for ( int j = 0; j < N_TIER_BONUS; j++ )
@@ -191,7 +191,7 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIE
   }
 }
 
-bool set_bonus_array_t::has_set_bonus( set_type s ) const
+bool set_bonus_array_t::has_set_bonus( set_type_e s ) const
 {
   if ( p -> set_bonus.count[ s ] > 0 )
     return true;
@@ -211,7 +211,7 @@ bool set_bonus_array_t::has_set_bonus( set_type s ) const
   return false;
 }
 
-const spell_id_t* set_bonus_array_t::set( set_type s ) const
+const spell_id_t* set_bonus_array_t::set( set_type_e s ) const
 {
   if ( has_set_bonus( s ) && set_bonuses[ s ].get() )
     return set_bonuses[ s ].get();

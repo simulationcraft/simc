@@ -377,7 +377,7 @@ void attack_t::calculate_result_s( action_state_t* state )
   int num_results = build_table_s( chances, results, state );
 
   if ( num_results == 1 )
-    state -> result = static_cast< result_type >( results[ 0 ] );
+    state -> result = static_cast< result_type_e >( results[ 0 ] );
   else
   {
     // 1-roll attack table
@@ -388,7 +388,7 @@ void attack_t::calculate_result_s( action_state_t* state )
     {
       if ( random <= chances[ i ] )
       {
-        state -> result = static_cast< result_type >( results[ i ] );
+        state -> result = static_cast< result_type_e >( results[ i ] );
         break;
       }
     }

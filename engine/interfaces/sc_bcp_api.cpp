@@ -17,7 +17,7 @@ const bool BCP_DEBUG_ITEMS = false;
 
 // download_id ==============================================================
 
-js_node_t* download_id( sim_t* sim, const std::string& region, const std::string& item_id, cache::behavior_t caching )
+js_node_t* download_id( sim_t* sim, const std::string& region, const std::string& item_id, cache::behavior_e caching )
 {
   if ( item_id.empty() || item_id == "0" ) return 0;
 
@@ -117,14 +117,14 @@ bool parse_talents( player_t* p, js_node_t* talents )
 
 bool parse_glyphs( player_t* p, js_node_t* build )
 {
-  static const char* const glyph_type_names[] =
+  static const char* const glyph_type_e_names[] =
   {
     "glyphs/prime", "glyphs/major", "glyphs/minor"
   };
 
-  for ( std::size_t i = 0; i < sizeof_array( glyph_type_names ); ++i )
+  for ( std::size_t i = 0; i < sizeof_array( glyph_type_e_names ); ++i )
   {
-    if ( js_node_t* glyphs = js_t::get_node( build, glyph_type_names[ i ] ) )
+    if ( js_node_t* glyphs = js_t::get_node( build, glyph_type_e_names[ i ] ) )
     {
       std::vector<js_node_t*> children;
       if ( js_t::get_children( children, glyphs ) > 0 )
@@ -232,7 +232,7 @@ struct player_spec_t
 player_t*
 parse_player( sim_t*             sim,
               player_spec_t&     player,
-              cache::behavior_t  caching )
+              cache::behavior_e  caching )
 {
   sim -> current_slot = 0;
 
@@ -364,7 +364,7 @@ player_t* download_player( sim_t*             sim,
                            const std::string& server,
                            const std::string& name,
                            const std::string& talents,
-                           cache::behavior_t  caching )
+                           cache::behavior_e  caching )
 {
   sim -> current_name = name;
 
@@ -394,7 +394,7 @@ struct item_info_t : public item_data_t
 };
 
 bool download_item_data( item_t& item, item_info_t& item_data,
-                         const std::string& item_id, cache::behavior_t caching )
+                         const std::string& item_id, cache::behavior_e caching )
 {
   // BCP API doesn't currently provide enough information to describe items completely.
   if ( ! BCP_DEBUG_ITEMS )
@@ -482,9 +482,9 @@ bool download_item_data( item_t& item, item_info_t& item_data,
     {
       std::vector<js_node_t*> nodes;
       js_t::get_children( nodes, stats );
-      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item_data.stat_type ) ); i < n; ++i )
+      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item_data.stat_type_e ) ); i < n; ++i )
       {
-        if ( ! js_t::get_value( item_data.stat_type[ i ], nodes[ i ], "stat" ) ) throw( "bonus stat" );
+        if ( ! js_t::get_value( item_data.stat_type_e[ i ], nodes[ i ], "stat" ) ) throw( "bonus stat" );
         if ( ! js_t::get_value( item_data.stat_val[ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
       }
     }
@@ -542,7 +542,7 @@ bool download_item_data( item_t& item, item_info_t& item_data,
 
 // bcp_api::download_item() =================================================
 
-bool download_item( item_t& item, const std::string& item_id, cache::behavior_t caching )
+bool download_item( item_t& item, const std::string& item_id, cache::behavior_e caching )
 {
   // BCP API doesn't currently provide enough information to describe items completely.
   if ( ! BCP_DEBUG_ITEMS )
@@ -561,7 +561,7 @@ bool download_slot( item_t& item,
                     const std::string& reforge_id,
                     const std::string& rsuffix_id,
                     const std::string gem_ids[ 3 ],
-                    cache::behavior_t caching )
+                    cache::behavior_e caching )
 {
   // BCP API doesn't currently provide enough information to describe items completely.
   if ( ! BCP_DEBUG_ITEMS )
@@ -608,7 +608,7 @@ js_node_t* download_roster( sim_t* sim,
                             const std::string& region,
                             const std::string& server,
                             const std::string& name,
-                            cache::behavior_t  caching )
+                            cache::behavior_e  caching )
 {
   std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
                     name + "?fields=members";
@@ -634,7 +634,7 @@ js_node_t* download_roster( sim_t* sim,
 // bcp_api::download_guild ==================================================
 
 bool download_guild( sim_t* sim, const std::string& region, const std::string& server, const std::string& name,
-                     const std::vector<int>& ranks, int player_filter, int max_rank, cache::behavior_t caching )
+                     const std::vector<int>& ranks, int player_filter, int max_rank, cache::behavior_e caching )
 {
   js_node_t* js = download_roster( sim, region, server, name, caching );
   if ( !js ) return false;
@@ -692,7 +692,7 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
 bool download_glyph( player_t*          player,
                      std::string&       glyph_name,
                      const std::string& glyph_id,
-                     cache::behavior_t  caching )
+                     cache::behavior_e  caching )
 {
   const std::string& region =
     ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
@@ -732,7 +732,7 @@ std::string parse_gem_stats( const std::string& bonus )
   in >> amount;
   in >> stat;
 
-  stat_type st = util_t::parse_stat_type( stat );
+  stat_type_e st = util_t::parse_stat_type( stat );
   if ( st != STAT_NONE )
     out << amount << util_t::stat_type_abbrev( st );
 
@@ -763,7 +763,7 @@ std::string parse_gem_stats( const std::string& bonus )
 
 // bcp_api::parse_gem =======================================================
 
-int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_t caching )
+int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e caching )
 {
   const std::string& region =
     item.player -> region_str.empty()
@@ -815,7 +815,7 @@ namespace wowreforge { // ==================================================
 
 player_t* download_player( sim_t*             sim,
                            const std::string& profile_id,
-                           cache::behavior_t  caching )
+                           cache::behavior_e  caching )
 {
   sim -> current_name = profile_id;
 

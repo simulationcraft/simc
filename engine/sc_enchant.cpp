@@ -541,7 +541,7 @@ static enchant_data_t enchant_db[] =
 // Add-Ons use the same enchant data-base for now
 static enchant_data_t* addon_db = enchant_db;
 
-static const stat_type reforge_stats[] =
+static const stat_type_e reforge_stats[] =
 {
   STAT_SPIRIT,
   STAT_DODGE_RATING,
@@ -596,13 +596,13 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type school, double dmg, double fc, double ppm=0, timespan_t cd=timespan_t::zero ) :
+  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type_e school, double dmg, double fc, double ppm=0, timespan_t cd=timespan_t::zero ) :
     action_callback_t( p ),
     name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm )
   {
     struct discharge_spell_t : public spell_t
     {
-      discharge_spell_t( const char* n, player_t* p, double dmg, const school_type s ) :
+      discharge_spell_t( const char* n, player_t* p, double dmg, const school_type_e s ) :
         spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         trigger_gcd = timespan_t::zero;
@@ -1024,8 +1024,8 @@ bool enchant_t::get_reforge_encoding( std::string& name,
 
 // enchant_t::get_reforge_id ================================================
 
-int enchant_t::get_reforge_id( stat_type stat_from,
-                               stat_type stat_to )
+int enchant_t::get_reforge_id( stat_type_e stat_from,
+                               stat_type_e stat_to )
 {
   int index_from;
   for ( index_from=0; reforge_stats[ index_from ] != STAT_NONE; index_from++ )

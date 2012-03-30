@@ -303,9 +303,9 @@ static bool parse_specialization( sim_t* sim,
 // player_t::player_t =======================================================
 
 player_t::player_t( sim_t*             s,
-                    player_type        t,
+                    player_type_e        t,
                     const std::string& n,
-                    race_type          r ) :
+                    race_type_e          r ) :
   sim( s ), name_str( n ),
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
@@ -1684,7 +1684,7 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
-  primary_resource_cap = get_uptime( util_t::resource_type_t_string( primary_resource() ) + ( std::string ) "_cap" );
+  primary_resource_cap = get_uptime( util_t::resource_type_string( primary_resource() ) + ( std::string ) "_cap" );
 }
 
 // player_t::init_benefits ===================================================
@@ -1742,7 +1742,7 @@ void player_t::init_scaling()
   {
     invert_scaling = 0;
 
-    role_type role = primary_role();
+    role_type_e role = primary_role();
 
     bool attack = ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK );
     bool spell  = ( role == ROLE_SPELL  || role == ROLE_HYBRID || role == ROLE_HEAL );
@@ -2168,7 +2168,7 @@ double player_t::composite_armor_multiplier() const
 
 // player_t::composite_spell_resistance =====================================
 
-double player_t::composite_spell_resistance( const school_type school ) const
+double player_t::composite_spell_resistance( const school_type_e school ) const
 {
   double a = spell_resistance[ school ];
 
@@ -2177,7 +2177,7 @@ double player_t::composite_spell_resistance( const school_type school ) const
 
 // player_t::composite_tank_miss ============================================
 
-double player_t::composite_tank_miss( const school_type school ) const
+double player_t::composite_tank_miss( const school_type_e school ) const
 {
   double m = 0;
 
@@ -2249,7 +2249,7 @@ double player_t::composite_tank_crit_block() const
 
 // player_t::composite_tank_crit ============================================
 
-double player_t::composite_tank_crit( const school_type /* school */ ) const
+double player_t::composite_tank_crit( const school_type_e /* school */ ) const
 {
   return 0;
 }
@@ -2341,7 +2341,7 @@ double player_t::composite_spell_haste() const
 
 // player_t::composite_spell_power ==========================================
 
-double player_t::composite_spell_power( const school_type school ) const
+double player_t::composite_spell_power( const school_type_e school ) const
 {
   double sp = spell_power[ school ];
 
@@ -2476,7 +2476,7 @@ double player_t::composite_attack_power_multiplier() const
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( const school_type school, action_t* /* a */ ) const
+double player_t::composite_player_multiplier( const school_type_e school, action_t* /* a */ ) const
 {
   double m = 1.0;
 
@@ -2528,7 +2528,7 @@ double player_t::composite_player_multiplier( const school_type school, action_t
 
 // player_t::composite_player_td_multiplier =================================
 
-double player_t::composite_player_td_multiplier( const school_type /* school */, action_t* /* a */ ) const
+double player_t::composite_player_td_multiplier( const school_type_e /* school */, action_t* /* a */ ) const
 {
   double m = 1.0;
 
@@ -2539,7 +2539,7 @@ double player_t::composite_player_td_multiplier( const school_type /* school */,
 
 // player_t::composite_player_heal_multiplier ===============================
 
-double player_t::composite_player_heal_multiplier( const school_type /* school */ ) const
+double player_t::composite_player_heal_multiplier( const school_type_e /* school */ ) const
 {
   double m = 1.0;
 
@@ -2557,7 +2557,7 @@ double player_t::composite_player_heal_multiplier( const school_type /* school *
 
 // player_t::composite_player_th_multiplier =================================
 
-double player_t::composite_player_th_multiplier( const school_type /* school */ ) const
+double player_t::composite_player_th_multiplier( const school_type_e /* school */ ) const
 {
   double m = 1.0;
 
@@ -2568,7 +2568,7 @@ double player_t::composite_player_th_multiplier( const school_type /* school */ 
 
 // player_t::composite_player_absorb_multiplier =============================
 
-double player_t::composite_player_absorb_multiplier( const school_type /* school */ ) const
+double player_t::composite_player_absorb_multiplier( const school_type_e /* school */ ) const
 {
   double m = 1.0;
 
@@ -2692,7 +2692,7 @@ double player_t::composite_attribute_multiplier( int attr ) const
 
 // player_t::get_attribute() ================================================
 
-double player_t::get_attribute( attribute_type a ) const
+double player_t::get_attribute( attribute_type_e a ) const
 { return attribute[ a ] * composite_attribute_multiplier( a ); }
 
 
@@ -3027,7 +3027,7 @@ void player_t::reset()
     attribute_multiplier[ i ] = attribute_multiplier_initial[ i ];
     // Matched gear. i.e. Mysticism etc.
     if ( ( level >= 50 ) && matching_gear )
-      attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( ( const attribute_type ) i );
+      attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( ( const attribute_type_e ) i );
   }
 
   for ( int i=0; i <= SCHOOL_MAX; i++ )
@@ -3442,7 +3442,7 @@ action_t* player_t::execute_action()
 
 void player_t::regen( const timespan_t periodicity )
 {
-  const resource_type_t r = primary_resource();
+  const resource_type_e r = primary_resource();
   double base = 0;
   gain_t* gain = NULL;
 
@@ -3499,7 +3499,7 @@ void player_t::regen( const timespan_t periodicity )
 
 // player_t::resource_loss ==================================================
 
-double player_t::resource_loss( resource_type_t resource_type,
+double player_t::resource_loss( resource_type_e resource_type,
                                 double    amount,
                                 action_t* action )
 {
@@ -3536,14 +3536,14 @@ double player_t::resource_loss( resource_type_t resource_type,
 
   if ( sim -> debug )
     log_t::output( sim, "Player %s loses %.2f (%.2f) %s. health pct: %.2f",
-                   name(), actual_amount, amount, util_t::resource_type_t_string( resource_type ), health_percentage()  );
+                   name(), actual_amount, amount, util_t::resource_type_string( resource_type ), health_percentage()  );
 
   return actual_amount;
 }
 
 // player_t::resource_gain ==================================================
 
-double player_t::resource_gain( resource_type_t resource_type,
+double player_t::resource_gain( resource_type_e resource_type,
                                 double    amount,
                                 gain_t*   source,
                                 action_t* action )
@@ -3573,7 +3573,7 @@ double player_t::resource_gain( resource_type_t resource_type,
   {
     log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)",
                    name(), actual_amount, amount,
-                   util_t::resource_type_t_string( resource_type ),
+                   util_t::resource_type_string( resource_type ),
                    source ? source -> name() : action ? action -> name() : "unknown",
                    resources.current[ resource_type ], resources.max[ resource_type ] );
   }
@@ -3583,7 +3583,7 @@ double player_t::resource_gain( resource_type_t resource_type,
 
 // player_t::resource_available =============================================
 
-bool player_t::resource_available( resource_type_t resource_type,
+bool player_t::resource_available( resource_type_e resource_type,
                                    double cost ) const
 {
   if ( resource_type == RESOURCE_NONE || cost <= 0 || infinite_resource[ resource_type ] == 1 )
@@ -3596,7 +3596,7 @@ bool player_t::resource_available( resource_type_t resource_type,
 
 // player_t::recalculate_resources.max =======================================
 
-void player_t::recalculate_resource_max( resource_type_t resource_type )
+void player_t::recalculate_resource_max( resource_type_e resource_type )
 {
   // The first 20pts of intellect/stamina only provide 1pt of mana/health.
 
@@ -3656,7 +3656,7 @@ int player_t::primary_tab()
 
 // player_t::primary_role ===================================================
 
-role_type player_t::primary_role() const
+role_type_e player_t::primary_role() const
 { return role; }
 
 // player_t::primary_tree_name ==============================================
@@ -3850,7 +3850,7 @@ void player_t::stat_loss( int       stat,
   case STAT_MAX_FOCUS:
   case STAT_MAX_RUNIC:
   {
-    resource_type_t r = ( ( stat == STAT_MAX_HEALTH ) ? RESOURCE_HEALTH :
+    resource_type_e r = ( ( stat == STAT_MAX_HEALTH ) ? RESOURCE_HEALTH :
               ( stat == STAT_MAX_MANA   ) ? RESOURCE_MANA   :
               ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
               ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
@@ -3962,8 +3962,8 @@ void player_t::cost_reduction_loss( int       school,
 // player_t::assess_damage ==================================================
 
 double player_t::assess_damage( double            amount,
-                                const school_type school,
-                                int               dmg_type,
+                                const school_type_e school,
+                                int               dmg_type_e,
                                 int               result,
                                 action_t*         action )
 {
@@ -3974,7 +3974,7 @@ double player_t::assess_damage( double            amount,
   if ( buffs.stoneform -> up() )
     amount *= 1.0 + buffs.stoneform -> effect1().percent();
 
-  double mitigated_amount = target_mitigation( amount, school, dmg_type, result, action );
+  double mitigated_amount = target_mitigation( amount, school, dmg_type_e, result, action );
 
   size_t num_absorbs = absorb_buffs.size();
   double absorbed_amount = 0;
@@ -4040,8 +4040,8 @@ double player_t::assess_damage( double            amount,
 // player_t::target_mitigation ==============================================
 
 double player_t::target_mitigation( double            amount,
-                                    const school_type school,
-                                    int               /* dmg_type */,
+                                    const school_type_e school,
+                                    int               /* dmg_type_e */,
                                     int               result,
                                     action_t*         action )
 {
@@ -4089,8 +4089,8 @@ double player_t::target_mitigation( double            amount,
 // player_t::assess_heal ====================================================
 
 player_t::heal_info_t player_t::assess_heal( double            amount,
-                                             const school_type /* school */,
-                                             int               /* dmg_type */,
+                                             const school_type_e /* school */,
+                                             int               /* dmg_type_e */,
                                              int               /* result */,
                                              action_t*         action )
 {
@@ -4149,7 +4149,7 @@ void player_t::register_callbacks()
 
 // player_t::register_resource_gain_callback ================================
 
-void player_t::register_resource_gain_callback( resource_type_t resource_type,
+void player_t::register_resource_gain_callback( resource_type_e resource_type,
                                                 action_callback_t* cb )
 {
   resource_gain_callbacks[ resource_type ].push_back( cb );
@@ -4157,7 +4157,7 @@ void player_t::register_resource_gain_callback( resource_type_t resource_type,
 
 // player_t::register_resource_loss_callback ================================
 
-void player_t::register_resource_loss_callback( resource_type_t resource_type,
+void player_t::register_resource_loss_callback( resource_type_e resource_type,
                                                 action_callback_t* cb )
 {
   resource_loss_callbacks[ resource_type ].push_back( cb );
@@ -4704,7 +4704,7 @@ struct arcane_torrent_t : public action_t
 
   virtual void execute()
   {
-    resource_type_t resource = player -> primary_resource();
+    resource_type_e resource = player -> primary_resource();
     double gain = 0;
     switch ( resource )
     {
@@ -4735,7 +4735,7 @@ struct arcane_torrent_t : public action_t
     if ( player -> race != RACE_BLOOD_ELF )
       return false;
 
-    resource_type_t resource = player -> primary_resource();
+    resource_type_e resource = player -> primary_resource();
     switch ( resource )
     {
     case RESOURCE_MANA:
@@ -5080,7 +5080,7 @@ struct snapshot_stats_t : public action_t
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     for ( int i=ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
-      p -> buffed.attribute[ i ] = floor( p -> get_attribute( static_cast<attribute_type>( i ) ) );
+      p -> buffed.attribute[ i ] = floor( p -> get_attribute( static_cast<attribute_type_e>( i ) ) );
 
     range::copy( p -> resources.max, p -> buffed.resource );
 
@@ -5108,7 +5108,7 @@ struct snapshot_stats_t : public action_t
     p -> buffed_block       = p -> composite_tank_block();
     p -> buffed_crit        = p -> composite_tank_crit( SCHOOL_PHYSICAL );
 
-    role_type role = p -> primary_role();
+    role_type_e role = p -> primary_role();
     int delta_level = sim -> target -> level - p -> level;
     double spell_hit_extra=0, attack_hit_extra=0, expertise_extra=0;
 
@@ -5290,7 +5290,7 @@ struct use_item_t : public action_t
       {
         trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                           e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                                          e.proc_chance, timespan_t::zero/*cd*/, e.no_player_benefits, e.no_debuffs, e.override_result_types_mask, e.result_types_mask );
+                                                          e.proc_chance, timespan_t::zero/*cd*/, e.no_player_benefits, e.no_debuffs, e.override_result_type_es_mask, e.result_type_es_mask );
       }
 
       if ( trigger ) trigger -> deactivate();
@@ -5299,21 +5299,21 @@ struct use_item_t : public action_t
     {
       struct discharge_spell_t : public spell_t
       {
-        discharge_spell_t( const char* n, player_t* p, double a, const school_type s, unsigned int override_result_types_mask = 0, unsigned int result_types_mask = 0 ) :
+        discharge_spell_t( const char* n, player_t* p, double a, const school_type_e s, unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
           spell_t( n, p, RESOURCE_NONE, s )
         {
           trigger_gcd = timespan_t::zero;
           base_dd_min = a;
           base_dd_max = a;
-          may_crit    = ( s != SCHOOL_DRAIN ) && ( ( override_result_types_mask & RESULT_CRIT_MASK ) ? ( result_types_mask & RESULT_CRIT_MASK ) : true ); // Default true
-          may_miss    = ( override_result_types_mask & RESULT_MISS_MASK ) ? ( result_types_mask & RESULT_MISS_MASK ) != 0 : may_miss;
+          may_crit    = ( s != SCHOOL_DRAIN ) && ( ( override_result_type_es_mask & RESULT_CRIT_MASK ) ? ( result_type_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
+          may_miss    = ( override_result_type_es_mask & RESULT_MISS_MASK ) ? ( result_type_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
           background  = true;
           base_spell_power_multiplier = 0;
           init();
         }
       };
 
-      discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school, e.override_result_types_mask, e.result_types_mask );
+      discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school, e.override_result_type_es_mask, e.result_type_es_mask );
     }
     else if ( e.stat )
     {
@@ -5732,7 +5732,7 @@ glyph_t* player_t::find_glyph( const std::string& n )
 
 // player_t::find_specialization_spell ======================================
 
-spell_id_t* player_t::find_specialization_spell( const char* name, const char* token, talent_tree_type tree )
+spell_id_t* player_t::find_specialization_spell( const char* name, const char* token, talent_tree_type_e tree )
 {
   spell_id_t* spec_spell = 0;
   unsigned spell_id = dbc.specialization_ability_id( type, name, util_t::spec_id( type, tree ) );
@@ -5744,7 +5744,7 @@ spell_id_t* player_t::find_specialization_spell( const char* name, const char* t
 
 // player_t::find_mastery_spell =============================================
 
-spell_id_t* player_t::find_mastery_spell( const char* name, const char* token, talent_tree_type tree )
+spell_id_t* player_t::find_mastery_spell( const char* name, const char* token, talent_tree_type_e tree )
 {
   spell_id_t* mastery_spell = 0;
   unsigned spell_id = dbc.mastery_ability_id( type, name, util_t::spec_id( type, tree ) );
@@ -5768,16 +5768,16 @@ action_expr_t* deprecate_expression( player_t* p, action_t* a, const std::string
 action_expr_t* player_t::create_expression( action_t* a,
                                             const std::string& name_str )
 {
-  int resource_type_t = util_t::parse_resource_type_t( name_str );
-  if ( resource_type_t != RESOURCE_NONE )
+  int resource_type_e = util_t::parse_resource_type( name_str );
+  if ( resource_type_e != RESOURCE_NONE )
   {
     struct resource_expr_t : public action_expr_t
     {
-      int resource_type_t;
-      resource_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
-      virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_t ]; return TOK_NUM; }
+      int resource_type_e;
+      resource_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
+      virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_e ]; return TOK_NUM; }
     };
-    return new resource_expr_t( a, name_str, resource_type_t );
+    return new resource_expr_t( a, name_str, resource_type_e );
   }
   if ( name_str == "level" )
   {
@@ -5896,97 +5896,97 @@ action_expr_t* player_t::create_expression( action_t* a,
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
 
-  if ( num_splits == 2 && ( resource_type_t = util_t::parse_resource_type_t( splits[ 0 ] ) ) != RESOURCE_NONE )
+  if ( num_splits == 2 && ( resource_type_e = util_t::parse_resource_type( splits[ 0 ] ) ) != RESOURCE_NONE )
    {
      if ( splits[ 1 ] == "deficit" )
      {
        struct resource_deficit_expr_t : public action_expr_t
        {
-         int resource_type_t;
-         resource_deficit_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type_t ] - action -> player -> resources.current[ resource_type_t ]; return TOK_NUM; }
+         int resource_type_e;
+         resource_deficit_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
+         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type_e ] - action -> player -> resources.current[ resource_type_e ]; return TOK_NUM; }
        };
-       return new resource_deficit_expr_t( a, name_str, resource_type_t );
+       return new resource_deficit_expr_t( a, name_str, resource_type_e );
      }
 
      else if ( splits[ 1 ] == "pct" || splits[ 1 ] == "percent" )
      {
        struct resource_pct_expr_t : public action_expr_t
        {
-         int resource_type_t;
-         resource_pct_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_t ] / action -> player -> resources.max[ resource_type_t ] * 100.0; return TOK_NUM; }
+         int resource_type_e;
+         resource_pct_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
+         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_e ] / action -> player -> resources.max[ resource_type_e ] * 100.0; return TOK_NUM; }
        };
-       return new resource_pct_expr_t( a, name_str, resource_type_t );
+       return new resource_pct_expr_t( a, name_str, resource_type_e );
      }
 
      else if ( splits[ 1 ] == "max" )
      {
        struct resource_max_expr_t : public action_expr_t
        {
-         int resource_type_t;
-         resource_max_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type_t ]; return TOK_NUM; }
+         int resource_type_e;
+         resource_max_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
+         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type_e ]; return TOK_NUM; }
        };
-       return new resource_max_expr_t( a, name_str, resource_type_t );
+       return new resource_max_expr_t( a, name_str, resource_type_e );
      }
      else if ( splits[ 1 ] == "max_nonproc" )
      {
        struct resource_max_nonproc_expr_t : public action_expr_t
        {
-         int resource_type_t;
-         resource_max_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
-         virtual int evaluate() { result_num = action -> player -> buffed.resource[ resource_type_t ]; return TOK_NUM; }
+         int resource_type_e;
+         resource_max_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
+         virtual int evaluate() { result_num = action -> player -> buffed.resource[ resource_type_e ]; return TOK_NUM; }
        };
-       return new resource_max_nonproc_expr_t( a, name_str, resource_type_t );
+       return new resource_max_nonproc_expr_t( a, name_str, resource_type_e );
      }
      else if ( splits[ 1 ] == "pct_nonproc" )
      {
        struct resource_pct_nonproc_expr_t : public action_expr_t
        {
-         int resource_type_t;
-         resource_pct_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_t ] / action -> player -> buffed.resource[ resource_type_t ] * 100.0; return TOK_NUM; }
+         int resource_type_e;
+         resource_pct_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
+         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_e ] / action -> player -> buffed.resource[ resource_type_e ] * 100.0; return TOK_NUM; }
        };
-       return new resource_pct_nonproc_expr_t( a, name_str, resource_type_t );
+       return new resource_pct_nonproc_expr_t( a, name_str, resource_type_e );
      }
      else if ( splits[ 1 ] == "net_regen" )
      {
        struct resource_net_regen_expr_t : public action_expr_t
        {
-         int resource_type_t;
-         resource_net_regen_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
-         virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds() ? ( action -> player -> resource_gained[ resource_type_t ] - action -> player -> resource_lost[ resource_type_t ] ) / action -> sim -> current_time.total_seconds() : 0.0; return TOK_NUM; }
+         int resource_type_e;
+         resource_net_regen_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
+         virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds() ? ( action -> player -> resource_gained[ resource_type_e ] - action -> player -> resource_lost[ resource_type_e ] ) / action -> sim -> current_time.total_seconds() : 0.0; return TOK_NUM; }
        };
-       return new resource_net_regen_expr_t( a, name_str, resource_type_t );
+       return new resource_net_regen_expr_t( a, name_str, resource_type_e );
      }
      else if ( splits[ 1 ] == "regen" )
      {
-       if ( resource_type_t == RESOURCE_ENERGY )
+       if ( resource_type_e == RESOURCE_ENERGY )
        {
          struct resource_regen_energy_expr_t : public action_expr_t
          {
-           int resource_type_t;
-           resource_regen_energy_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
+           int resource_type_e;
+           resource_regen_energy_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
            virtual int evaluate() { result_num = action -> player -> energy_regen_per_second(); return TOK_NUM; }
          };
-         return new resource_regen_energy_expr_t( a, name_str, resource_type_t );
+         return new resource_regen_energy_expr_t( a, name_str, resource_type_e );
        }
-       else if ( resource_type_t == RESOURCE_FOCUS )
+       else if ( resource_type_e == RESOURCE_FOCUS )
        {
          struct resource_regen_focus_expr_t : public action_expr_t
          {
-           int resource_type_t;
-           resource_regen_focus_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
+           int resource_type_e;
+           resource_regen_focus_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
            virtual int evaluate() { result_num = action -> player -> focus_regen_per_second(); return TOK_NUM; }
          };
-         return new resource_regen_focus_expr_t( a, name_str, resource_type_t );
+         return new resource_regen_focus_expr_t( a, name_str, resource_type_e );
        }
      }
 
      else if ( splits[ 1 ] == "time_to_max" )
      {
-       if ( resource_type_t == RESOURCE_ENERGY )
+       if ( resource_type_e == RESOURCE_ENERGY )
        {
          struct time_to_max_energy_expr_t : public action_expr_t
          {
@@ -6000,7 +6000,7 @@ action_expr_t* player_t::create_expression( action_t* a,
          };
          return new time_to_max_energy_expr_t( a );
        }
-       else if ( resource_type_t == RESOURCE_FOCUS )
+       else if ( resource_type_e == RESOURCE_FOCUS )
        {
          struct time_to_max_focus_expr_t : public action_expr_t
          {
@@ -6093,17 +6093,17 @@ action_expr_t* player_t::create_expression( action_t* a,
         struct temporary_stat_expr_t : public action_expr_t
         {
           int attr;
-          int stat_type;
+          int stat_type_e;
           double& stat;
-          temporary_stat_expr_t( action_t* a, double* p_stat, int stat_type, int attr ) :
-            action_expr_t( a, "temporary_stat", TOK_NUM ), attr( attr ), stat_type( stat_type ), stat( *p_stat ) { }
+          temporary_stat_expr_t( action_t* a, double* p_stat, int stat_type_e, int attr ) :
+            action_expr_t( a, "temporary_stat", TOK_NUM ), attr( attr ), stat_type_e( stat_type_e ), stat( *p_stat ) { }
 
           virtual int evaluate()
           {
             result_num = stat;
             if ( attr != -1 )
               result_num *= action -> player -> composite_attribute_multiplier( attr );
-            else if ( stat_type == STAT_SPELL_POWER )
+            else if ( stat_type_e == STAT_SPELL_POWER )
             {
               result_num += action -> player -> temporary.attribute[ ATTR_INTELLECT ] *
                             action -> player -> composite_attribute_multiplier( ATTR_INTELLECT ) *
@@ -6112,7 +6112,7 @@ action_expr_t* player_t::create_expression( action_t* a,
               result_num *= action -> player -> composite_spell_power_multiplier();
               //log_t::output( action -> sim, "temporary_bonus.spell_power=%f", result_num );
             }
-            else if ( stat_type == STAT_ATTACK_POWER )
+            else if ( stat_type_e == STAT_ATTACK_POWER )
             {
               result_num += action -> player -> temporary.attribute[ ATTR_STRENGTH ] *
                             action -> player -> composite_attribute_multiplier( ATTR_STRENGTH ) *
@@ -6357,7 +6357,7 @@ action_expr_t* player_t::create_expression( action_t* a,
 
 // player_t::create_profile =================================================
 
-bool player_t::create_profile( std::string& profile_str, int save_type, bool save_html )
+bool player_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
 {
   std::string term;
 
@@ -6366,7 +6366,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
   else
     term = "\n";
 
-  if ( save_type == SAVE_ALL )
+  if ( save_type_e == SAVE_ALL )
   {
     profile_str += "#!./simc " + term + term;
   }
@@ -6376,7 +6376,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     profile_str += "# " + comment_str + term;
   }
 
-  if ( save_type == SAVE_ALL )
+  if ( save_type_e == SAVE_ALL )
   {
     std::string pname = name_str;
 
@@ -6398,7 +6398,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     };
   }
 
-  if ( save_type == SAVE_ALL || save_type == SAVE_TALENTS )
+  if ( save_type_e == SAVE_ALL || save_type_e == SAVE_TALENTS )
   {
     talents_str = "http://www.wowhead.com/talent#";
     talents_str += util_t::player_type_string( type );
@@ -6426,7 +6426,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     }
   }
 
-  if ( save_type == SAVE_ALL || save_type == SAVE_ACTIONS )
+  if ( save_type_e == SAVE_ALL || save_type_e == SAVE_ACTIONS )
   {
     if ( action_list_str.size() > 0 )
     {
@@ -6445,7 +6445,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     }
   }
 
-  if ( save_type == SAVE_ALL || save_type == SAVE_GEAR )
+  if ( save_type_e == SAVE_ALL || save_type_e == SAVE_GEAR )
   {
     for ( int i=0; i < SLOT_MAX; i++ )
     {
@@ -6802,7 +6802,7 @@ void player_t::create_options()
 player_t* player_t::create( sim_t*             sim,
                             const std::string& type,
                             const std::string& name,
-                            race_type r )
+                            race_type_e r )
 {
   if ( type == "death_knight" || type == "deathknight" )
   {
@@ -6939,7 +6939,7 @@ double player_t::composite_attack_crit_vulnerability() const
   return 0.0;
 }
 
-double player_t::composite_player_vulnerability( school_type school ) const
+double player_t::composite_player_vulnerability( school_type_e school ) const
 {
   double m = 1.0;
 
@@ -6979,7 +6979,7 @@ double player_t::composite_ranged_attack_power_vulnerability() const
   return 0.0;
 }
 
-double player_t::composite_player_penetration_vulnerability( school_type /* s */ ) const
+double player_t::composite_player_penetration_vulnerability( school_type_e /* s */ ) const
 {
   double p = 0;
 

@@ -185,7 +185,7 @@ struct warlock_pet_melee_t : public attack_t
 
 struct warlock_pet_attack_t : public attack_t
 {
-  warlock_pet_attack_t( const char* n, warlock_pet_t* p, int r=RESOURCE_MANA, const school_type s=SCHOOL_PHYSICAL ) :
+  warlock_pet_attack_t( const char* n, warlock_pet_t* p, int r=RESOURCE_MANA, const school_type_e s=SCHOOL_PHYSICAL ) :
     attack_t( n, p, r, s, TREE_NONE, true )
   {
     weapon = &( p -> main_hand_weapon );
@@ -230,7 +230,7 @@ struct warlock_pet_attack_t : public attack_t
 struct warlock_pet_spell_t : public spell_t
 {
 
-  warlock_pet_spell_t( const char* n, warlock_pet_t* p, int r=RESOURCE_MANA, const school_type s=SCHOOL_SHADOW ) :
+  warlock_pet_spell_t( const char* n, warlock_pet_t* p, int r=RESOURCE_MANA, const school_type_e s=SCHOOL_SHADOW ) :
     spell_t( n, p, r, s )
   {
     may_crit = true;
@@ -356,7 +356,7 @@ struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_attack_t
     direct_tick = true;
   }
   
-  virtual resource_type_t current_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_e current_resource() const { return RESOURCE_MANA; }
 };
 
 struct felstorm_t : public warlock_pet_actions::warlock_pet_attack_t
@@ -579,7 +579,7 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
 // Warlock Pet
 // ==========================================================================
 
-double warlock_pet_t::get_attribute_base( const int level, const int stat_type, const pet_type_t pet_type )
+double warlock_pet_t::get_attribute_base( const int level, const int stat_type_e, const pet_type_e pet_type )
 {
   double r                      = 0.0;
   const pet_stats::_stat_list_t* base_list = 0;
@@ -597,7 +597,7 @@ double warlock_pet_t::get_attribute_base( const int level, const int stat_type, 
   else if ( pet_type == PET_EBON_IMP   ) pet_list = pet_stats::ebon_imp_base_stats;
   else if ( pet_type == PET_VOIDWALKER ) pet_list = pet_stats::voidwalker_base_stats;
 
-  if ( stat_type < 0 || stat_type >= BASE_STAT_MAX )
+  if ( stat_type_e < 0 || stat_type_e >= BASE_STAT_MAX )
   {
     return 0.0;
   }
@@ -608,13 +608,13 @@ double warlock_pet_t::get_attribute_base( const int level, const int stat_type, 
     {
       if ( level == base_list[ i ].id )
       {
-        r += base_list[ i ].stats[ stat_type ];
+        r += base_list[ i ].stats[ stat_type_e ];
         stats_avaiable++;
         break;
       }
       if ( level > base_list[ i ].id )
       {
-        r += base_list[ i ].stats[ stat_type ];
+        r += base_list[ i ].stats[ stat_type_e ];
         break;
       }
     }
@@ -626,13 +626,13 @@ double warlock_pet_t::get_attribute_base( const int level, const int stat_type, 
     {
       if ( level == pet_list[ i ].id )
       {
-        r += pet_list[ i ].stats[ stat_type ];
+        r += pet_list[ i ].stats[ stat_type_e ];
         stats2_avaiable++;
         break;
       }
       if ( level > pet_list[ i ].id )
       {
-        r += pet_list[ i ].stats[ stat_type ];
+        r += pet_list[ i ].stats[ stat_type_e ];
         break;
       }
     }
@@ -641,7 +641,7 @@ double warlock_pet_t::get_attribute_base( const int level, const int stat_type, 
   return r;
 }
 
-const pet_stats::_weapon_list_t* warlock_pet_t::get_weapon( pet_type_t pet_type )
+const pet_stats::_weapon_list_t* warlock_pet_t::get_weapon( pet_type_e pet_type )
 {
   const pet_stats::_weapon_list_t*  weapon_list = 0;
 
@@ -657,7 +657,7 @@ const pet_stats::_weapon_list_t* warlock_pet_t::get_weapon( pet_type_t pet_type 
   return weapon_list;
 }
 
-double warlock_pet_t::get_weapon_min( int level, pet_type_t pet_type )
+double warlock_pet_t::get_weapon_min( int level, pet_type_e pet_type )
 {
   const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -678,7 +678,7 @@ double warlock_pet_t::get_weapon_min( int level, pet_type_t pet_type )
   return r;
 }
 
-double warlock_pet_t::get_weapon_max( int level, pet_type_t pet_type )
+double warlock_pet_t::get_weapon_max( int level, pet_type_e pet_type )
 {
   const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -699,7 +699,7 @@ double warlock_pet_t::get_weapon_max( int level, pet_type_t pet_type )
   return r;
 }
 
-timespan_t warlock_pet_t::get_weapon_swing_time( int level, pet_type_t pet_type )
+timespan_t warlock_pet_t::get_weapon_swing_time( int level, pet_type_e pet_type )
 {
   const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -722,8 +722,8 @@ timespan_t warlock_pet_t::get_weapon_swing_time( int level, pet_type_t pet_type 
   return r;
 }
 
-warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_t pt, bool guardian ) :
-  pet_t( sim, owner, pet_name, guardian ), pet_type( pt ), damage_modifier( 1.0 )
+warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian ) :
+  pet_t( sim, owner, pet_name, pt, guardian ), damage_modifier( 1.0 )
 {
   gains_mana_feed = get_gain( "mana_feed" );
   procs_mana_feed = get_proc( "mana_feed" );
@@ -835,7 +835,7 @@ double warlock_pet_t::composite_attack_haste() const
   return h;
 }
 
-double warlock_pet_t::composite_spell_power( const school_type school ) const
+double warlock_pet_t::composite_spell_power( const school_type_e school ) const
 {
   double sp = pet_t::composite_spell_power( school );
   sp += owner -> composite_spell_power( school ) * ( level / 80.0 ) * 0.5 * owner -> composite_spell_power_multiplier();
@@ -875,7 +875,7 @@ double warlock_pet_t::composite_spell_crit() const
 // Warlock Main Pet
 // ==========================================================================
 
-warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_t pt ) :
+warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt ) :
   warlock_pet_t( sim, owner, pet_name, pt )
 {}
 
@@ -898,9 +898,9 @@ double warlock_main_pet_t::composite_attack_expertise( weapon_t* ) const
   return owner -> spell_hit * 26.0 / 17.0;
 }
 
-resource_type_t warlock_main_pet_t::primary_resource() const { return RESOURCE_MANA; }
+resource_type_e warlock_main_pet_t::primary_resource() const { return RESOURCE_MANA; }
 
-double warlock_main_pet_t::composite_player_multiplier( const school_type school, action_t* a ) const
+double warlock_main_pet_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school, a );
 
@@ -924,7 +924,7 @@ double warlock_main_pet_t::composite_mp5() const
 // Warlock Guardian Pet
 // ==========================================================================
 
-warlock_guardian_pet_t::warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_t pt ) :
+warlock_guardian_pet_t::warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt ) :
   warlock_pet_t( sim, owner, pet_name, pt, true ),
   snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 ), snapshot_mastery( 0 )
 {}
@@ -977,7 +977,7 @@ double warlock_guardian_pet_t::composite_spell_haste() const
   return snapshot_haste;
 }
 
-double warlock_guardian_pet_t::composite_spell_power( const school_type school ) const
+double warlock_guardian_pet_t::composite_spell_power( const school_type_e school ) const
 {
   double sp = pet_t::composite_spell_power( school );
   sp += snapshot_sp * ( level / 80.0 ) * 0.5;
@@ -1206,7 +1206,7 @@ action_t* doomguard_pet_t::create_action( const std::string& name,
 }
 
 
-double doomguard_pet_t::composite_player_multiplier( const school_type school, action_t* a ) const
+double doomguard_pet_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
 {
   //FIXME: This is all untested, but seems to match what people are reporting in forums
 

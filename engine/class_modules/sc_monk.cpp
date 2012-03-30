@@ -23,7 +23,7 @@ struct monk_targetdata_t : public targetdata_t
 
 void register_monk_targetdata( sim_t* /* sim */ )
 {
-  /* player_type t = MONK; */
+  /* player_type_e t = MONK; */
   typedef monk_targetdata_t type;
 }
 
@@ -80,7 +80,7 @@ struct monk_t : public player_t
   };
   glyphs_t glyphs;
 
-  monk_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) :
+  monk_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) :
     player_t( sim, MONK, name, ( r == RACE_NONE ) ? RACE_PANDAREN : r )
   {
 
@@ -109,10 +109,10 @@ struct monk_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      init_resources( bool force=false );
-  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
   virtual int       decode_set( item_t& item );
-  virtual resource_type_t primary_resource() const;
-  virtual role_type primary_role() const;
+  virtual resource_type_e primary_resource() const;
+  virtual role_type_e primary_role() const;
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -249,9 +249,9 @@ struct tiger_palm_t : public monk_attack_t
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type_e )
   {
-    monk_attack_t::target_debuff( t, dmg_type );
+    monk_attack_t::target_debuff( t, dmg_type_e );
 
     if ( t -> health_percentage() > 50.0 )
       target_dd_adder = 0;
@@ -564,7 +564,7 @@ void monk_t::init_resources( bool force )
 
 // monk_t::matching_gear_multiplier =========================================
 
-double monk_t::matching_gear_multiplier( const attribute_type attr ) const
+double monk_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
   if ( primary_tree() == TREE_MISTWEAVER )
   {
@@ -601,7 +601,7 @@ int monk_t::decode_set( item_t& item )
 
 // monk_t::primary_role ==================================================
 
-resource_type_t monk_t::primary_resource() const
+resource_type_e monk_t::primary_resource() const
 {
   // FIXME: change to healing stance
   if ( primary_tree() == TREE_MISTWEAVER )
@@ -612,7 +612,7 @@ resource_type_t monk_t::primary_resource() const
 
 // monk_t::primary_role ==================================================
 
-role_type monk_t::primary_role() const
+role_type_e monk_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
     return ROLE_HYBRID;
@@ -640,7 +640,7 @@ role_type monk_t::primary_role() const
 
 // player_t::create_monk  ===================================================
 
-player_t* player_t::create_monk( sim_t* sim, const std::string& name, race_type r )
+player_t* player_t::create_monk( sim_t* sim, const std::string& name, race_type_e r )
 {
   SC_CREATE_MONK( sim, name, r );
 }

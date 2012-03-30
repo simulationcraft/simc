@@ -228,7 +228,7 @@ bool spell_id_t::initialize( const char* s_name )
 
   // For pets, find stuff based on owner class, as that's how our spell lists
   // are structured
-  player_type player_class;
+  player_type_e player_class;
   if ( s_player -> is_pet() )
     player_class = s_player -> cast_pet() -> owner -> type;
   else
@@ -435,7 +435,7 @@ uint32_t spell_id_t::school_mask() const
   return s_data -> school_mask();
 }
 
-uint32_t spell_id_t::get_school_mask( const school_type s )
+uint32_t spell_id_t::get_school_mask( const school_type_e s )
 {
   switch ( s )
   {
@@ -477,12 +477,12 @@ uint32_t spell_id_t::get_school_mask( const school_type s )
   return 0x00;
 }
 
-bool spell_id_t::is_school( const school_type s, const school_type s2 )
+bool spell_id_t::is_school( const school_type_e s, const school_type_e s2 )
 {
   return ( get_school_mask( s ) & get_school_mask( s2 ) ) != 0;
 }
 
-school_type spell_id_t::get_school_type( const uint32_t mask )
+school_type_e spell_id_t::get_school_type_e( const uint32_t mask )
 {
   switch ( mask )
   {
@@ -523,12 +523,12 @@ school_type spell_id_t::get_school_type( const uint32_t mask )
   }
 }
 
-school_type spell_id_t::get_school_type() const
+school_type_e spell_id_t::get_school_type_e() const
 {
   if ( ! ok() )
     return SCHOOL_NONE;
 
-  return get_school_type( school_mask() );
+  return get_school_type_e( school_mask() );
 }
 
 double spell_id_t::min_range() const
@@ -605,7 +605,7 @@ timespan_t spell_id_t::duration() const
   return d;
 }
 
-double spell_id_t::power_cost( power_type pt ) const
+double spell_id_t::power_cost( power_type_e pt ) const
 {
   if ( ! ok() )
     return 0.0;
@@ -669,7 +669,7 @@ uint32_t spell_id_t::effect_id( uint32_t effect_num ) const
   return s_data -> effect_id( effect_num );
 }
 
-bool spell_id_t::flags( spell_attribute_t f ) const
+bool spell_id_t::flags( spell_attribute_e f ) const
 {
   if ( ! ok() )
     return false;

@@ -11,7 +11,7 @@
 
 // rating_t::init ===========================================================
 
-void rating_t::init( sim_t* sim, dbc_t& dbc, int level, player_type type )
+void rating_t::init( sim_t* sim, dbc_t& dbc, int level, player_type_e type )
 {
   if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%d type=%s",
                                      level, util_t::player_type_string( type ) );
@@ -102,11 +102,11 @@ double rating_t::interpolate( int    level,
 
 // rating_t::get_attribute_base =============================================
 
-double rating_t::get_attribute_base( sim_t* /* sim */, dbc_t& dbc, int level, player_type class_type, race_type race, base_stat_type stat_type )
+double rating_t::get_attribute_base( sim_t* /* sim */, dbc_t& dbc, int level, player_type_e class_type, race_type_e race, base_stat_type_e_e stat_type_e )
 {
   double res                       = 0.0;
 
-  switch ( stat_type )
+  switch ( stat_type_e )
   {
   case BASE_STAT_STRENGTH:           res = dbc.race_base( race ).strength + dbc.attribute_base( class_type, level ).strength; break;
   case BASE_STAT_AGILITY:            res = dbc.race_base( race ).agility + dbc.attribute_base( class_type, level ).agility; break;

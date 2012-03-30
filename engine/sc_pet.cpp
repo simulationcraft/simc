@@ -47,7 +47,7 @@ pet_t::pet_t( sim_t*             s,
 pet_t::pet_t( sim_t*             s,
               player_t*          o,
               const std::string& n,
-              pet_type_t         pt,
+              pet_type_e         pt,
               bool               g ) :
   player_t( s, pt == PET_ENEMY ? ENEMY_ADD : g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
 {
@@ -180,15 +180,15 @@ void pet_t::dismiss()
 // pet_t::assess_damage =====================================================
 
 double pet_t::assess_damage( double            amount,
-                             const school_type school,
-                             int               dmg_type,
+                             const school_type_e school,
+                             int               dmg_type_e,
                              int               result,
                              action_t*         action )
 {
   if ( ! action || action -> aoe )
     amount *= 0.10;
 
-  return player_t::assess_damage( amount, school, dmg_type, result, action );
+  return player_t::assess_damage( amount, school, dmg_type_e, result, action );
 }
 
 // pet_t::combat_begin ======================================================
@@ -203,7 +203,7 @@ void pet_t::combat_begin()
 
 // pet_t::composite_player_multiplier ======================================================
 
-double pet_t::composite_player_multiplier( const school_type school, action_t* a ) const
+double pet_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 

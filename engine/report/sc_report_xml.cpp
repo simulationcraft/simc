@@ -307,7 +307,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
     writer.print_attribute( "value", util_t::to_string( p -> dpr ) );
     writer.print_attribute( "rps_loss", util_t::to_string( p -> rps_loss ) );
     writer.print_attribute( "rps_gain", util_t::to_string( p -> rps_gain ) );
-    writer.print_attribute( "resource", util_t::resource_type_t_string( p -> primary_resource() ) );
+    writer.print_attribute( "resource", util_t::resource_type_string( p -> primary_resource() ) );
     writer.end_tag(); // </dpr>
   }
 
@@ -344,7 +344,7 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   for ( int i = 1; i < ATTRIBUTE_MAX; i++ )
   {
   print_xml_player_attribute( writer, util_t::attribute_type_string( i ),
-            p -> get_attribute( static_cast<attribute_type>( i ) ),  p -> stats.attribute[ i  ], p -> buffed.attribute[ i  ] );
+            p -> get_attribute( static_cast<attribute_type_e>( i ) ),  p -> stats.attribute[ i  ], p -> buffed.attribute[ i  ] );
   }
   print_xml_player_attribute( writer, "mastery",
                               p -> composite_mastery(), p -> stats.mastery_rating, p -> buffed_mastery );
@@ -1192,7 +1192,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         writer.print_attribute( "id", util_t::to_string( a -> id ) );
         writer.print_attribute( "name", a -> name() );
         writer.print_tag( "school", util_t::school_type_string( a-> school ) );
-        writer.print_tag( "resource", util_t::resource_type_t_string( a -> current_resource() ) );
+        writer.print_tag( "resource", util_t::resource_type_string( a -> current_resource() ) );
         writer.print_tag( "tree", util_t::talent_tree_string( a -> tree ) );
         writer.print_tag( "range", util_t::to_string( a -> range ) );
         writer.print_tag( "travel_speed", util_t::to_string( a -> travel_speed ) );
@@ -1235,7 +1235,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.print_tag( "num_ticks", util_t::to_string( a -> num_ticks ) );
           writer.print_tag( "base_tick_time", util_t::to_string( a -> base_tick_time.total_seconds() ) );
           writer.print_tag( "hasted_ticks", util_t::to_string( a -> hasted_ticks ) );
-          writer.print_tag( "dot_behavior", util_t::dot_behavior_type_string( a -> dot_behavior ) );
+          writer.print_tag( "dot_behavior", util_t::dot_behaviour_type_string( a -> dot_behavior ) );
           writer.end_tag(); // </damage_over_time>
         }
         // Extra Reporting for DKs

@@ -18,7 +18,7 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 
 static xml_node_t* download_id( sim_t*             sim,
                                 const std::string& id_str,
-                                cache::behavior_t  caching )
+                                cache::behavior_e  caching )
 {
   if ( id_str.empty() || id_str == "0" ) return 0;
   std::string url = "http://db.mmo-champion.com/i/" + id_str + '/';
@@ -227,29 +227,29 @@ static bool parse_weapon( item_t&     item,
 
   if ( ( slot_str == "Main Hand" ) || ( slot_str == "Off-Hand" ) ) slot_str = "One-Hand";
 
-  int weapon_type = WEAPON_NONE;
-  if      ( subclass_str == "Axe" && slot_str == "One-Hand"   ) weapon_type = WEAPON_AXE;
-  else if ( subclass_str == "Axe" && slot_str == "Two-Hand"   ) weapon_type = WEAPON_AXE_2H;
-  else if ( subclass_str == "Dagger"                          ) weapon_type = WEAPON_DAGGER;
-  else if ( subclass_str == "Fist Weapon"                     ) weapon_type = WEAPON_FIST;
-  else if ( subclass_str == "Mace" && slot_str == "One-Hand"  ) weapon_type = WEAPON_MACE;
-  else if ( subclass_str == "Mace" && slot_str == "Two-Hand"  ) weapon_type = WEAPON_MACE_2H;
-  else if ( subclass_str == "Polearm"                         ) weapon_type = WEAPON_POLEARM;
-  else if ( subclass_str == "Staff"                           ) weapon_type = WEAPON_STAFF;
-  else if ( subclass_str == "Sword" && slot_str == "One-Hand" ) weapon_type = WEAPON_SWORD;
-  else if ( subclass_str == "Sword" && slot_str == "Two-Hand" ) weapon_type = WEAPON_SWORD_2H;
-  else if ( subclass_str == "Bow"                             ) weapon_type = WEAPON_BOW;
-  else if ( subclass_str == "Crossbow"                        ) weapon_type = WEAPON_CROSSBOW;
-  else if ( subclass_str == "Gun"                             ) weapon_type = WEAPON_GUN;
-  else if ( subclass_str == "Thrown"                          ) weapon_type = WEAPON_THROWN;
-  else if ( subclass_str == "Wand"                            ) weapon_type = WEAPON_WAND;
-  else if ( subclass_str == "Fishing Pole"                    ) weapon_type = WEAPON_POLEARM;
-  else if ( subclass_str == "Miscellaneous"                   ) weapon_type = WEAPON_POLEARM;
+  int weapon_type_e = WEAPON_NONE;
+  if      ( subclass_str == "Axe" && slot_str == "One-Hand"   ) weapon_type_e = WEAPON_AXE;
+  else if ( subclass_str == "Axe" && slot_str == "Two-Hand"   ) weapon_type_e = WEAPON_AXE_2H;
+  else if ( subclass_str == "Dagger"                          ) weapon_type_e = WEAPON_DAGGER;
+  else if ( subclass_str == "Fist Weapon"                     ) weapon_type_e = WEAPON_FIST;
+  else if ( subclass_str == "Mace" && slot_str == "One-Hand"  ) weapon_type_e = WEAPON_MACE;
+  else if ( subclass_str == "Mace" && slot_str == "Two-Hand"  ) weapon_type_e = WEAPON_MACE_2H;
+  else if ( subclass_str == "Polearm"                         ) weapon_type_e = WEAPON_POLEARM;
+  else if ( subclass_str == "Staff"                           ) weapon_type_e = WEAPON_STAFF;
+  else if ( subclass_str == "Sword" && slot_str == "One-Hand" ) weapon_type_e = WEAPON_SWORD;
+  else if ( subclass_str == "Sword" && slot_str == "Two-Hand" ) weapon_type_e = WEAPON_SWORD_2H;
+  else if ( subclass_str == "Bow"                             ) weapon_type_e = WEAPON_BOW;
+  else if ( subclass_str == "Crossbow"                        ) weapon_type_e = WEAPON_CROSSBOW;
+  else if ( subclass_str == "Gun"                             ) weapon_type_e = WEAPON_GUN;
+  else if ( subclass_str == "Thrown"                          ) weapon_type_e = WEAPON_THROWN;
+  else if ( subclass_str == "Wand"                            ) weapon_type_e = WEAPON_WAND;
+  else if ( subclass_str == "Fishing Pole"                    ) weapon_type_e = WEAPON_POLEARM;
+  else if ( subclass_str == "Miscellaneous"                   ) weapon_type_e = WEAPON_POLEARM;
 
-  if ( weapon_type == WEAPON_NONE ) return false;
-  if ( weapon_type == WEAPON_WAND ) return true;
+  if ( weapon_type_e == WEAPON_NONE ) return false;
+  if ( weapon_type_e == WEAPON_WAND ) return true;
 
-  item.armory_weapon_str = util_t::weapon_type_string( weapon_type );
+  item.armory_weapon_str = util_t::weapon_type_string( weapon_type_e );
   item.armory_weapon_str += "_" + speed_str + "speed" + "_" + dmg_min_str + "min" + "_" + dmg_max_str + "max";
 
   return true;
@@ -452,7 +452,7 @@ static bool parse_quality( item_t&     item,
 
 int mmo_champion_t::parse_gem( item_t&            item,
                                const std::string& gem_id,
-                               cache::behavior_t  caching )
+                               cache::behavior_e  caching )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -472,25 +472,25 @@ int mmo_champion_t::parse_gem( item_t&            item,
     if ( get_tti_value( color_str, node, "tti-subclass" ) )
     {
       armory_t::format( color_str );
-      int gem_type = util_t::parse_gem_type( color_str );
+      int gem_type_e = util_t::parse_gem_type( color_str );
 
       std::string property_str;
       xml_node_t* property_node = get_tti_node( node, "tti-gem_properties" );
       if ( property_node ) xml_t::get_value( property_str, property_node, "a/." );
 
-      if ( gem_type == GEM_NONE || property_str.empty() )
+      if ( gem_type_e == GEM_NONE || property_str.empty() )
         return GEM_NONE;
 
       std::string& s = item.armory_gems_str;
 
-      if ( gem_type == GEM_META )
+      if ( gem_type_e == GEM_META )
       {
-        int meta_gem_type = armory_t::parse_meta_gem( property_str );
+        int meta_gem_type_e = armory_t::parse_meta_gem( property_str );
 
-        if ( meta_gem_type != META_GEM_NONE )
+        if ( meta_gem_type_e != META_GEM_NONE )
         {
           s += "_";
-          s += util_t::meta_gem_type_string( meta_gem_type );
+          s += util_t::meta_gem_type_string( meta_gem_type_e );
         }
         else
         {
@@ -502,7 +502,7 @@ int mmo_champion_t::parse_gem( item_t&            item,
         armory_t::fuzzy_stats( s, property_str );
       }
 
-      return gem_type;
+      return gem_type_e;
     }
   }
 
@@ -514,7 +514,7 @@ int mmo_champion_t::parse_gem( item_t&            item,
 bool mmo_champion_t::download_glyph( player_t*          player,
                                      std::string&       glyph_name,
                                      const std::string& glyph_id,
-                                     cache::behavior_t  caching )
+                                     cache::behavior_e  caching )
 {
   xml_node_t* node = download_id( player -> sim, glyph_id, caching );
   if ( ! node || ! xml_t::get_value( glyph_name, node, "title/." ) )
@@ -535,7 +535,7 @@ bool mmo_champion_t::download_glyph( player_t*          player,
 
 bool mmo_champion_t::download_item( item_t&            item,
                                     const std::string& item_id,
-                                    cache::behavior_t  caching )
+                                    cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -607,7 +607,7 @@ bool mmo_champion_t::download_slot( item_t&            item,
                                     const std::string& reforge_id,
                                     const std::string& rsuffix_id,
                                     const std::string  gem_ids[ 3 ],
-                                    cache::behavior_t  caching )
+                                    cache::behavior_e  caching )
 {
   player_t* p = item.player;
 

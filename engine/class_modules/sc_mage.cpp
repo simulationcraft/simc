@@ -28,7 +28,7 @@ struct mage_targetdata_t : public targetdata_t
 
 void register_mage_targetdata( sim_t* sim )
 {
-  player_type t = MAGE;
+  player_type_e t = MAGE;
   typedef mage_targetdata_t type;
 
   REGISTER_DOT( frostfire_bolt );
@@ -265,7 +265,7 @@ struct mage_t : public player_t
   int mana_gem_charges;
   timespan_t mage_armor_timer;
 
-  mage_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, MAGE, name, r ), ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) )
+  mage_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, MAGE, name, r ), ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) )
   {
     if ( race == RACE_NONE ) race = RACE_UNDEAD;
 
@@ -314,28 +314,28 @@ struct mage_t : public player_t
   virtual void      reset();
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, int save_type_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
-  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
-  virtual role_type primary_role() const { return ROLE_SPELL; }
+  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
+  virtual role_type_e primary_role() const { return ROLE_SPELL; }
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_mastery() const;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
-  virtual double    composite_spell_power( const school_type school ) const;
-  virtual double    composite_spell_resistance( const school_type school ) const;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    composite_spell_power( const school_type_e school ) const;
+  virtual double    composite_spell_resistance( const school_type_e school ) const;
+  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
   virtual void      stun();
 
   // Event Tracking
   virtual void   regen( timespan_t periodicity );
-  virtual double resource_gain( int resource, double amount, gain_t* source=0, action_t* action=0 );
-  virtual double resource_loss( int resource, double amount, action_t* action=0 );
+  virtual double resource_gain( resource_type_e resource, double amount, gain_t* source=0, action_t* action=0 );
+  virtual double resource_loss( resource_type_e resource, double amount, action_t* action=0 );
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -370,7 +370,7 @@ struct mage_spell_t : public spell_t
     }
   }
 
-  mage_spell_t( const char* n, mage_t* player, const school_type s, int t ) :
+  mage_spell_t( const char* n, mage_t* player, const school_type_e s, int t ) :
     spell_t( n, player, RESOURCE_MANA, s, t )
   {
     _init_mage_spell_t();
@@ -400,7 +400,7 @@ struct mage_spell_t : public spell_t
   virtual void   impact( player_t* t, int impact_result, double travel_dmg );
   virtual void   consume_resource();
   virtual void   player_buff();
-  virtual void   target_debuff( player_t* t, int dmg_type );
+  virtual void   target_debuff( player_t* t, int dmg_type_e );
   virtual double total_crit() const;
   virtual double hot_streak_crit() { return player_crit; }
 };
@@ -651,7 +651,7 @@ struct mirror_image_pet_t : public pet_t
     attribute_base[ ATTR_STAMINA   ] = 190;
     attribute_base[ ATTR_INTELLECT ] = 133;
 
-    health_per_stamina = 7.5;
+    //health_per_stamina = 7.5;
     mana_per_intellect = 5;
   }
 
@@ -702,7 +702,7 @@ struct mirror_image_pet_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual double composite_spell_power( const school_type school ) const
+  virtual double composite_spell_power( const school_type_e school ) const
   {
     if ( school == SCHOOL_ARCANE )
     {
@@ -1210,11 +1210,11 @@ void mage_spell_t::player_buff()
 
 // mage_spell_t::target_debuff ==============================================
 
-void mage_spell_t::target_debuff( player_t* t, int dmg_type )
+void mage_spell_t::target_debuff( player_t* t, int dmg_type_e )
 {
-  spell_t::target_debuff( t, dmg_type );
+  spell_t::target_debuff( t, dmg_type_e );
 
-  if ( school == SCHOOL_FIRE && dmg_type == DMG_OVER_TIME )
+  if ( school == SCHOOL_FIRE && dmg_type_e == DMG_OVER_TIME )
   {
     mage_t* p = player -> cast_mage();
     target_multiplier *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
@@ -1983,7 +1983,7 @@ struct flame_orb_tick_t : public mage_spell_t
     }
   }
 
-  virtual resource_type_t current_resource() const { return RESOURCE_NONE; }
+  virtual resource_type_e current_resource() const { return RESOURCE_NONE; }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
@@ -2544,7 +2544,7 @@ struct living_bomb_explosion_t : public mage_spell_t
     }
   }
 
-  virtual resource_type_t current_resource() const { return RESOURCE_NONE; }
+  virtual resource_type_e current_resource() const { return RESOURCE_NONE; }
 
   virtual void impact( player_t* t, int impact_result, double travel_dmg )
   {
@@ -2571,11 +2571,11 @@ struct living_bomb_t : public mage_spell_t
     add_child( explosion_spell );
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type )
+  virtual void target_debuff( player_t* t, int dmg_type_e )
   {
     // Override the mage_spell_t version to ensure mastery effect is stacked additively.  Someday I will make this cleaner.
     mage_t* p = player -> cast_mage();
-    spell_t::target_debuff( t, dmg_type );
+    spell_t::target_debuff( t, dmg_type_e );
 
     target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect1().percent() +
                                  p -> talents.critical_mass -> effect2().percent() +
@@ -3917,7 +3917,7 @@ double mage_t::composite_mastery() const
 
 // mage_t::composite_player_multipler =======================================
 
-double mage_t::composite_player_multiplier( const school_type school, action_t* a ) const
+double mage_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3976,7 +3976,7 @@ double mage_t::composite_spell_haste() const
 
 // mage_t::composite_spell_power ============================================
 
-double mage_t::composite_spell_power( const school_type school ) const
+double mage_t::composite_spell_power( const school_type_e school ) const
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -3990,7 +3990,7 @@ double mage_t::composite_spell_power( const school_type school ) const
 
 // mage_t::composite_spell_resistance =======================================
 
-double mage_t::composite_spell_resistance( const school_type school ) const
+double mage_t::composite_spell_resistance( const school_type_e school ) const
 {
   double sr = player_t::composite_spell_resistance( school );
 
@@ -4008,7 +4008,7 @@ double mage_t::composite_spell_resistance( const school_type school ) const
 
 // mage_t::matching_gear_multiplier =========================================
 
-double mage_t::matching_gear_multiplier( const attribute_type attr ) const
+double mage_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;
@@ -4054,7 +4054,7 @@ void mage_t::regen( timespan_t periodicity )
 
 // mage_t::resource_gain ====================================================
 
-double mage_t::resource_gain( int       resource,
+double mage_t::resource_gain( resource_type_e resource,
                               double    amount,
                               gain_t*   source,
                               action_t* action )
@@ -4075,7 +4075,7 @@ double mage_t::resource_gain( int       resource,
 
 // mage_t::resource_loss ====================================================
 
-double mage_t::resource_loss( int       resource,
+double mage_t::resource_loss( resource_type_e resource,
                               double    amount,
                               action_t* action )
 {
@@ -4209,11 +4209,11 @@ void mage_t::create_options()
 
 // mage_t::create_profile ===================================================
 
-bool mage_t::create_profile( std::string& profile_str, int save_type, bool save_html )
+bool mage_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
 {
-  player_t::create_profile( profile_str, save_type, save_html );
+  player_t::create_profile( profile_str, save_type_e, save_html );
 
-  if ( save_type == SAVE_ALL )
+  if ( save_type_e == SAVE_ALL )
   {
     if ( ! focus_magic_target_str.empty() ) profile_str += "focus_magic_target=" + focus_magic_target_str + "\n";
   }
@@ -4260,7 +4260,7 @@ int mage_t::decode_set( item_t& item )
 
 // player_t::create_mage  ===================================================
 
-player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type r )
+player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type_e r )
 {
   SC_CREATE_MAGE( sim, name, r );
 }

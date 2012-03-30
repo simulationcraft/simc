@@ -145,7 +145,7 @@ struct rogue_targetdata_t : public targetdata_t
 
 void register_rogue_targetdata( sim_t* sim )
 {
-  player_type t = ROGUE;
+  player_type_e t = ROGUE;
   typedef rogue_targetdata_t type;
 
   REGISTER_DOT( rupture );
@@ -371,7 +371,7 @@ struct rogue_t : public player_t
 
   uint32_t fof_p1, fof_p2, fof_p3;
 
-  rogue_t( sim_t* sim, const std::string& name, race_type r = RACE_NONE ) : player_t( sim, ROGUE, name, r )
+  rogue_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, ROGUE, name, r )
   {
     if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
 
@@ -435,16 +435,16 @@ struct rogue_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_expr_t* create_expression( action_t* a, const std::string& name_str );
   virtual int       decode_set( item_t& item );
-  virtual resource_type_t primary_resource() const { return RESOURCE_ENERGY; }
-  virtual role_type primary_role() const     { return ROLE_ATTACK; }
+  virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
+  virtual role_type_e primary_role() const     { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
 
   virtual double    composite_attribute_multiplier( int attr ) const;
   virtual double    composite_attack_speed() const;
-  virtual double    matching_gear_multiplier( const attribute_type attr ) const;
+  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
   virtual double    composite_attack_power_multiplier() const;
-  virtual double    composite_player_multiplier( const school_type school, action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
 };
 
 namespace // ANONYMOUS NAMESPACE ============================================
@@ -508,7 +508,7 @@ struct rogue_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type, int impact_result );
+  virtual void   assess_damage( player_t* t, double amount, int dmg_type_e, int impact_result );
   virtual double total_multiplier() const;
   virtual double armor() const;
 
@@ -1210,10 +1210,10 @@ bool rogue_attack_t::ready()
 
 void rogue_attack_t::assess_damage( player_t* t,
                                     double amount,
-                                    int    dmg_type,
+                                    int    dmg_type_e,
                                     int impact_result )
 {
-  attack_t::assess_damage( t, amount, dmg_type, impact_result );
+  attack_t::assess_damage( t, amount, dmg_type_e, impact_result );
 
   /*rogue_t* p = player -> cast_rogue();
 
@@ -1224,7 +1224,7 @@ void rogue_attack_t::assess_damage( player_t* t,
     target_t* q = t -> cast_target();
 
     if ( p -> buffs_blade_flurry -> up() && q -> adds_nearby )
-      attack_t::additional_damage( q, amount, dmg_type, impact_result );
+      attack_t::additional_damage( q, amount, dmg_type_e, impact_result );
   }*/
 }
 
@@ -3211,7 +3211,7 @@ double rogue_t::composite_attack_speed() const
 
 // rogue_t::matching_gear_multiplier ========================================
 
-double rogue_t::matching_gear_multiplier( const attribute_type attr ) const
+double rogue_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
   if ( attr == ATTR_AGILITY )
     return 0.05;
@@ -3234,7 +3234,7 @@ double rogue_t::composite_attack_power_multiplier() const
 
 // rogue_t::composite_player_multiplier =====================================
 
-double rogue_t::composite_player_multiplier( const school_type school, action_t* a ) const
+double rogue_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4013,11 +4013,11 @@ void rogue_t::create_options()
 
 // rogue_t::create_profile ==================================================
 
-bool rogue_t::create_profile( std::string& profile_str, int save_type, bool save_html )
+bool rogue_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
 {
-  player_t::create_profile( profile_str, save_type, save_html );
+  player_t::create_profile( profile_str, save_type_e, save_html );
 
-  if ( save_type == SAVE_ALL || save_type == SAVE_ACTIONS )
+  if ( save_type_e == SAVE_ALL || save_type_e == SAVE_ACTIONS )
   {
     if ( talents.honor_among_thieves -> rank() )
     {
@@ -4070,7 +4070,7 @@ int rogue_t::decode_set( item_t& item )
 
 // player_t::create_rogue  ==================================================
 
-player_t* player_t::create_rogue( sim_t* sim, const std::string& name, race_type r )
+player_t* player_t::create_rogue( sim_t* sim, const std::string& name, race_type_e r )
 {
   SC_CREATE_ROGUE( sim, name, r );
 }

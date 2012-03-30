@@ -63,7 +63,7 @@ void stats_t::add_child( stats_t* child )
   children.push_back( child );
 }
 
-void stats_t::consume_resource( resource_type_t resource_type, double r )
+void stats_t::consume_resource( resource_type_e resource_type, double r )
 {
   resource_gain->add( resource_type, r );
 }
@@ -78,14 +78,14 @@ void stats_t::reset()
 
 void stats_t::add_result( double act_amount,
                           double tot_amount,
-                          int    dmg_type,
+                          int    dmg_type_e,
                           int    result )
 {
   iteration_actual_amount += act_amount;
   iteration_total_amount += tot_amount;
 
   stats_results_t* r = 0;
-  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
+  if ( dmg_type_e == DMG_DIRECT || dmg_type_e == HEAL_DIRECT || dmg_type_e == ABSORB )
   {
     r = &( direct_results[ result ] );
     num_direct_results++;
