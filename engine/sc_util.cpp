@@ -200,6 +200,20 @@ int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
 }
 #endif
 
+// util_t::dot_behavior_type_string =========================================
+
+const char* util_t::dot_behavior_type_string( dot_behavior_type t )
+{
+  switch( t )
+  {
+  case DOT_REFRESH: return "DOT_REFRESH";
+  case DOT_CLIP: return "DOT_CLIP";
+  // WTF?
+  // case DOT_WAIT: return "DOT_WAIT";
+  default: return "unknown";
+  }
+}
+
 // util_t::role_type_string =================================================
 
 const char* util_t::role_type_string( int role )

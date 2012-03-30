@@ -96,24 +96,20 @@ namespace std {using namespace tr1; }
 // GCC (and probably the C++ standard in general) doesn't like offsetof on non-POD types
 #ifdef _MSC_VER
 #define nonpod_offsetof(t, m) offsetof(t, m)
-#define finline               __forceinline
-#define SC_FINLINE_EXT
 #else
 #define nonpod_offsetof(t, m) ((size_t) ( (volatile char *)&((volatile t *)(size_t)0x10000)->m - (volatile char *)(size_t)0x10000 ))
 #endif
 
 #if defined(__GNUC__)
-#  define finline         inline
-#  define likely(x)       __builtin_expect((x),1)
-#  define unlikely(x)     __builtin_expect((x),0)
+#  define likely(x)         __builtin_expect((x),1)
+#  define unlikely(x)       __builtin_expect((x),0)
 #else
-#  define likely(x) (x)
-#  define unlikely(x) (x)
+#  define likely(x)        (x)
+#  define unlikely(x)      (x)
 #  define __attribute__(x)
 #endif
 
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
-#define SC_FINLINE_EXT        __attribute__((always_inline))
 
 #define SC_MAJOR_VERSION "500"
 #define SC_MINOR_VERSION "1"
@@ -509,7 +505,7 @@ enum dmg_type { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME, ABSO
 
 enum stats_type { STATS_DMG, STATS_HEAL, STATS_ABSORB };
 
-enum dot_behavior_type { DOT_CLIP=0, DOT_REFRESH };
+enum dot_behavior_type { DOT_CLIP, DOT_REFRESH };
 
 enum attribute_type { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
@@ -2641,6 +2637,7 @@ public:
 
   static const char* attribute_type_string     ( int type );
   static const char* dmg_type_string           ( int type );
+  static const char* dot_behavior_type_string  ( dot_behavior_type t );
   static const char* elixir_type_string        ( int type );
   static const char* flask_type_string         ( int type );
   static const char* food_type_string          ( int type );
@@ -3366,7 +3363,7 @@ struct action_expr_t
   action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action( a ), name_str( n ) { result_type = TOK_STR; result_str = constant_value; }
   virtual ~action_expr_t() {}
   virtual int evaluate() { return result_type; }
-  finline bool success() { return ( evaluate() == TOK_NUM ) && ( result_num != 0 ); }
+  bool success() { return ( evaluate() == TOK_NUM ) && ( result_num != 0 ); }
 
   static action_expr_t* parse( action_t*, const std::string& expr_str );
 };
@@ -5191,7 +5188,7 @@ struct action_t : public spell_id_t
   bool tick_may_crit, tick_zero, hasted_ticks;
   bool no_buffs, no_debuffs;
   bool stateless;
-  int dot_behavior;
+  dot_behavior_type dot_behavior;
   timespan_t ability_lag, ability_lag_stddev;
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;

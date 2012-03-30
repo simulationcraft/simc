@@ -475,7 +475,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                   a -> num_ticks,
                   a -> base_tick_time.total_seconds(),
                   a -> hasted_ticks?"true":"false",
-                  a -> dot_behavior==DOT_REFRESH?"DOT_REFRESH":a -> dot_behavior==DOT_CLIP?"DOT_CLIP":"DOT_WAIT" );
+                  util_t::dot_behavior_type_string( a -> dot_behavior ) );
       }
       // Extra Reporting for DKs
       if ( a -> player -> type == DEATH_KNIGHT )
