@@ -1558,9 +1558,9 @@ void sim_t::analyze_player( player_t* p )
 
   for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    chart_t::timeline        ( p -> timeline_resource_chart[i],      p,
-                               p -> timeline_resource[i],
-                               encoded_name + ' ' + util_t::resource_type_string( i ),
+    chart_t::timeline        ( p -> timeline_resource_chart[ i ],      p,
+                               p -> timeline_resource[ i ],
+                               encoded_name + ' ' + util_t::resource_type_t_string( static_cast<resource_type_t>( i ) ),
                                0,
                                chart_t::resource_color( i ) );
   }

@@ -425,7 +425,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
                 a -> id,
                 util_t::school_type_string( a-> school ),
-                util_t::resource_type_string( a -> current_resource() ),
+                util_t::resource_type_t_string( a -> current_resource() ),
                 util_t::talent_tree_string( a -> tree ),
                 a -> range,
                 a -> travel_speed,
@@ -549,7 +549,7 @@ void print_html_action_resource( FILE* file, stats_t* s, int j )
              "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
              s -> name_str.c_str(),
-             util_t::resource_type_string( i ),
+             util_t::resource_type_t_string( static_cast<resource_type_t>( i ) ),
              s -> resource_portion[  i ] * 100,
              s -> apr[ i ],
              s -> rpe[ i ] );
@@ -666,7 +666,7 @@ void print_html_stats ( FILE* file, player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
              ( j%2 == 1 )? " class=\"odd\"" : "",
-             util_t::resource_type_string( i ),
+             util_t::resource_type_t_string( static_cast<resource_type_t>( i ) ),
              a -> buffed.resource[ i ],
              a -> resources.max[ i ],
              0.0 );
@@ -1280,7 +1280,7 @@ void print_html_gain( FILE* file, gain_t* g )
                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
                "\t\t\t\t\t\t\t</tr>\n",
                g -> name(),
-               util_t::resource_type_string( i ),
+               util_t::resource_type_t_string( static_cast<resource_type_t>( i ) ),
                g -> count[ i ],
                g -> actual[ i ],
                g -> actual[ i ] / g -> count[ i ],
@@ -1410,7 +1410,7 @@ void print_html_player_resources( FILE* file, player_t* p )
 
     if ( total_gain > 0 )
     {
-      chart_t::gains( p -> gains_chart, p, ( resource_type ) i );
+      chart_t::gains( p -> gains_chart, p, ( resource_type_t ) i );
       if ( ! p -> gains_chart.empty() )
       {
         fprintf( file,
@@ -1958,7 +1958,7 @@ void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_t* p )
                    "\t\t\t\t\t\t</table>\n",
                    p -> rps_loss,
                    p -> rps_gain,
-                   util_t::resource_type_string( p -> primary_resource() ),
+                   util_t::resource_type_t_string( p -> primary_resource() ),
                    p -> fight_length.mean ? 100.0 * p -> waiting_time.mean / p -> fight_length.mean : 0,
                    p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0,
                    sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0 );

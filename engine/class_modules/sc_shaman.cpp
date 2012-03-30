@@ -291,7 +291,7 @@ struct shaman_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual resource_type primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
   virtual int       primary_role() const;
   virtual void      combat_begin();
 
@@ -723,7 +723,7 @@ struct earth_elemental_pet_t : public pet_t
     action_list_str = "travel/auto_attack,moving=0";
   }
 
-  virtual resource_type primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
 
   virtual void regen( timespan_t /* periodicity */ ) { }
 
@@ -1055,7 +1055,7 @@ struct fire_elemental_pet_t : public pet_t
     fire_shield                      = new fire_shield_t( this );
   }
 
-  virtual resource_type primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
 
   virtual void regen( timespan_t periodicity )
   {

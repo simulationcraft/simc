@@ -251,7 +251,7 @@ struct warlock_t : public player_t
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
-  virtual resource_type primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
   virtual int       primary_role() const     { return ROLE_SPELL; }
   virtual double    composite_armor() const;
   virtual double    composite_spell_power( const school_type school ) const;
@@ -319,7 +319,7 @@ struct warlock_main_pet_t : public warlock_pet_t
   virtual void summon( timespan_t duration=timespan_t::zero );
   virtual void dismiss();
   virtual double composite_attack_expertise( weapon_t* ) const;
-  virtual resource_type primary_resource() const;
+  virtual resource_type_t primary_resource() const;
   virtual double composite_player_multiplier( const school_type school, action_t* a ) const;
   virtual double composite_mp5() const;
 };

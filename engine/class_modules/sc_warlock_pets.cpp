@@ -356,7 +356,7 @@ struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_attack_t
     direct_tick = true;
   }
   
-  virtual resource_type current_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_t current_resource() const { return RESOURCE_MANA; }
 };
 
 struct felstorm_t : public warlock_pet_actions::warlock_pet_attack_t
@@ -898,7 +898,7 @@ double warlock_main_pet_t::composite_attack_expertise( weapon_t* ) const
   return owner -> spell_hit * 26.0 / 17.0;
 }
 
-resource_type warlock_main_pet_t::primary_resource() const { return RESOURCE_MANA; }
+resource_type_t warlock_main_pet_t::primary_resource() const { return RESOURCE_MANA; }
 
 double warlock_main_pet_t::composite_player_multiplier( const school_type school, action_t* a ) const
 {

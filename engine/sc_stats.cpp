@@ -63,9 +63,9 @@ void stats_t::add_child( stats_t* child )
   children.push_back( child );
 }
 
-void stats_t::consume_resource( resource_type rt, double r )
+void stats_t::consume_resource( resource_type_t resource_type, double r )
 {
-  resource_gain->add( rt, r );
+  resource_gain->add( resource_type, r );
 }
 // stats_t::reset ===========================================================
 

@@ -370,7 +370,7 @@ void print_text_gains( FILE* file, gain_t* g, int max_length )
   {
     if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {
-      util_t::fprintf( file, "    %8.1f : %-*s (%s)", g -> actual[ i ], max_length, g -> name(),  util_t::resource_type_string( i ) );
+      util_t::fprintf( file, "    %8.1f : %-*s (%s)", g -> actual[ i ], max_length, g -> name(),  util_t::resource_type_t_string( static_cast<resource_type_t>( i ) ) );
       double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
       if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
       util_t::fprintf( file, "\n" );
@@ -788,7 +788,7 @@ void print_text_player( FILE* file, player_t* p )
   {
     util_t::fprintf( file, "  DPR=%.1f  RPS-Out=%.1f RPS-In=%.1f  Resource=(%s) Waiting=%.1f ApM=%.1f",
                      p -> dpr, p -> rps_loss, p -> rps_gain,
-                     util_t::resource_type_string( p -> primary_resource() ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean, 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean  );
+                     util_t::resource_type_t_string( p -> primary_resource() ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean, 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean  );
   }
 
   util_t::fprintf( file, "\n" );

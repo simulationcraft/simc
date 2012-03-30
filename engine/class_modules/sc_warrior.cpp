@@ -362,7 +362,7 @@ struct warrior_t : public player_t
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& item );
-  virtual resource_type primary_resource() const { return RESOURCE_RAGE; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_RAGE; }
   virtual int       primary_role() const;
   virtual double    assess_damage( double amount, const school_type school, int    dmg_type, int result, action_t* a );
   virtual void      copy_from( player_t* source );
@@ -1215,7 +1215,7 @@ struct bloodthirst_heal_t : public heal_t
     init();
   }  
   
-  virtual resource_type current_resource() const { return RESOURCE_NONE; }
+  virtual resource_type_t current_resource() const { return RESOURCE_NONE; }
 };
 
 struct bloodthirst_buff_callback_t : public action_callback_t
@@ -1555,7 +1555,7 @@ struct execute_t : public warrior_attack_t
 
     if ( sim -> debug )
       log_t::output( sim, "%s consumes %.1f %s for %s", p -> name(),
-                     resource_consumed, util_t::resource_type_string( current_resource() ), name() );
+                     resource_consumed, util_t::resource_type_t_string( current_resource() ), name() );
 
     player -> resource_loss( current_resource(), resource_consumed );
 
@@ -2857,7 +2857,7 @@ struct stance_t : public warrior_spell_t
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
   }
   
-  virtual resource_type current_resource() const { return RESOURCE_RAGE; }
+  virtual resource_type_t current_resource() const { return RESOURCE_RAGE; }
 
   virtual void execute()
   {

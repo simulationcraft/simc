@@ -118,7 +118,7 @@ static unsigned char simple_encoding( int number )
   return encoding[ number ];
 }
 
-static const char* chart_resource_type_string( int type )
+static const char* chart_resource_type_t_string( int type )
 {
   switch ( type )
   {
@@ -978,7 +978,7 @@ struct compare_gain
 };
 
 const char* chart_t::gains( std::string& s,
-                            player_t* p, resource_type type )
+                            player_t* p, resource_type_t type )
 {
   std::vector<gain_t*> gains_list;
 
@@ -1028,7 +1028,7 @@ const char* chart_t::gains( std::string& s,
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Gains", formatted_name.c_str(), chart_resource_type_string( type ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Gains", formatted_name.c_str(), chart_resource_type_t_string( type ) ); s += buffer;
   s += "&amp;";
   if ( p -> sim -> print_styles )
   {

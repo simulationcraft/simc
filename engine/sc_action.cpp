@@ -491,7 +491,7 @@ double action_t::cost() const
   if ( is_dtr_action )
     c = 0;
 
-  if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ current_resource() ], c, util_t::resource_type_string( current_resource() ) );
+  if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ current_resource() ], c, util_t::resource_type_t_string( current_resource() ) );
 
   return floor( c );
 }
@@ -949,7 +949,7 @@ void action_t::consume_resource()
 
   if ( sim -> log )
     log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),
-                   resource_consumed, util_t::resource_type_string( current_resource() ),
+                   resource_consumed, util_t::resource_type_t_string( current_resource() ),
                    name(), player -> resources.current[ current_resource() ] );
 
   stats -> consume_resource( current_resource(), resource_consumed );

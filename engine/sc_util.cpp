@@ -668,11 +668,11 @@ int util_t::parse_result_type( const std::string& name )
   return RESULT_NONE;
 }
 
-// util_t::resource_type_string =============================================
+// util_t::resource_type_t_string =============================================
 
-const char* util_t::resource_type_string( int type )
+const char* util_t::resource_type_t_string( resource_type_t resource_type )
 {
-  switch ( type )
+  switch ( resource_type )
   {
   case RESOURCE_NONE:          return "none";
   case RESOURCE_HEALTH:        return "health";
@@ -692,16 +692,17 @@ const char* util_t::resource_type_string( int type )
   case RESOURCE_HOLY_POWER:    return "holy_power";
   case RESOURCE_CHI:           return "chi";
   case RESOURCE_SHADOW_ORB:    return "shadow_orb";
+  default: break;
   }
   return "unknown";
 }
 
-// util_t::parse_resource_type ==============================================
+// util_t::parse_resource_type_t ==============================================
 
-int util_t::parse_resource_type( const std::string& name )
+int util_t::parse_resource_type_t( const std::string& name )
 {
   for ( int i=0; i < RESOURCE_MAX; i++ )
-    if ( util_t::str_compare_ci( name, util_t::resource_type_string( i ) ) )
+    if ( util_t::str_compare_ci( name, util_t::resource_type_t_string( static_cast<resource_type_t>( i ) ) ) )
       return i;
 
   return RESOURCE_NONE;
@@ -1294,7 +1295,7 @@ talent_tree_type util_t::translate_spec_str( player_type ptype, const std::strin
   return TREE_NONE;
 }
 
-resource_type util_t::translate_power_type( power_type pt )
+resource_type_t util_t::translate_power_type( power_type pt )
 {
   switch ( pt )
   {

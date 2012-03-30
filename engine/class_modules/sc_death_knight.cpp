@@ -409,7 +409,7 @@ struct death_knight_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual resource_type primary_resource() const { return RESOURCE_RUNIC_POWER; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_RUNIC_POWER; }
   virtual int       primary_role() const;
   virtual void      trigger_runic_empowerment();
   virtual int       runes_count( rune_type rt, bool include_death, int position );
@@ -874,7 +874,7 @@ struct army_ghoul_pet_t : public pet_t
       base_multiplier *= 8.0; // 8 ghouls
     }
 
-    army_ghoul_pet_attack_t( const char* n, army_ghoul_pet_t* p, const resource_type r=RESOURCE_ENERGY, bool special=true ) :
+    army_ghoul_pet_attack_t( const char* n, army_ghoul_pet_t* p, const resource_type_t r=RESOURCE_ENERGY, bool special=true ) :
       attack_t( n, p, r, SCHOOL_PHYSICAL, TREE_NONE, special )
     {
       _init_army_ghoul_pet_attack_t();
@@ -994,7 +994,7 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual double composite_attack_hit() const { return snapshot_hit; }
 
-  virtual resource_type primary_resource() const { return RESOURCE_ENERGY; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_ENERGY; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
@@ -1071,7 +1071,7 @@ struct bloodworms_pet_t : public pet_t
     melee -> schedule_execute();
   }
 
-  virtual resource_type primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
 };
 
 // ==========================================================================
@@ -1184,7 +1184,7 @@ struct ghoul_pet_t : public pet_t
 
   struct ghoul_pet_attack_t : public attack_t
   {
-    ghoul_pet_attack_t( const char* n, ghoul_pet_t* p, const resource_type r=RESOURCE_ENERGY, bool special=true ) :
+    ghoul_pet_attack_t( const char* n, ghoul_pet_t* p, const resource_type_t r=RESOURCE_ENERGY, bool special=true ) :
       attack_t( n, p, r, SCHOOL_PHYSICAL, TREE_NONE, special )
     {
       weapon = &( player -> main_hand_weapon );
@@ -1420,7 +1420,7 @@ struct ghoul_pet_t : public pet_t
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
-  virtual resource_type primary_resource() const
+  virtual resource_type_t primary_resource() const
   {
     return RESOURCE_ENERGY;
   }
@@ -3571,7 +3571,7 @@ struct presence_t : public death_knight_spell_t
     harmful     = false;
   }
 
-  virtual resource_type current_resource() const
+  virtual resource_type_t current_resource() const
   {
     return RESOURCE_RUNIC_POWER;
   }
@@ -4775,7 +4775,7 @@ void death_knight_t::init_gains()
   gains_empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
   gains_blood_tap                        = get_gain( "blood_tap"                  );
   // gains_blood_tap_blood                  = get_gain( "blood_tap_blood"            );
-  //gains_blood_tap_blood          -> type = ( resource_type ) RESOURCE_RUNE_BLOOD   ;
+  //gains_blood_tap_blood          -> type = ( resource_type_t ) RESOURCE_RUNE_BLOOD   ;
 }
 
 // death_knight_t::init_procs ===============================================

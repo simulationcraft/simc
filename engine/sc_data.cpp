@@ -150,7 +150,7 @@ void spelleffect_data_t::set_enabled( bool value )
     _flags &= ~FLAG_ENABLED;
 }
 
-resource_type spelleffect_data_t::resource_gain_type() const
+resource_type_t spelleffect_data_t::resource_gain_type() const
 {
   return util_t::translate_power_type( static_cast< power_type >( _misc_value ) );
 }
@@ -167,7 +167,7 @@ spellpower_data_nil_t spellpower_data_nil_t::singleton;
 
 // spell_data_t::power_type =================================================
 
-resource_type spellpower_data_t::resource() const
+resource_type_t spellpower_data_t::resource() const
 {
   return util_t::translate_power_type( static_cast< power_type >( _power_type ) );
 }

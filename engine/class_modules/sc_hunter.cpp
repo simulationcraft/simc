@@ -267,7 +267,7 @@ struct hunter_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual resource_type primary_resource() const { return RESOURCE_FOCUS; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_FOCUS; }
   virtual int       primary_role() const     { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
@@ -670,7 +670,7 @@ struct hunter_pet_t : public pet_t
     return m;
   }
 
-  virtual resource_type primary_resource() const { return RESOURCE_FOCUS; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_FOCUS; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
 

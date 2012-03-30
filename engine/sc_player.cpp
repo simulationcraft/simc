@@ -1684,7 +1684,7 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
-  primary_resource_cap = get_uptime( util_t::resource_type_string( primary_resource() ) + ( std::string ) "_cap" );
+  primary_resource_cap = get_uptime( util_t::resource_type_t_string( primary_resource() ) + ( std::string ) "_cap" );
 }
 
 // player_t::init_benefits ===================================================
@@ -3442,7 +3442,7 @@ action_t* player_t::execute_action()
 
 void player_t::regen( const timespan_t periodicity )
 {
-  const resource_type r = primary_resource();
+  const resource_type_t r = primary_resource();
   double base = 0;
   gain_t* gain = NULL;
 
@@ -3499,7 +3499,7 @@ void player_t::regen( const timespan_t periodicity )
 
 // player_t::resource_loss ==================================================
 
-double player_t::resource_loss( int       resource,
+double player_t::resource_loss( resource_type_t resource_type,
                                 double    amount,
                                 action_t* action )
 {
@@ -3509,41 +3509,41 @@ double player_t::resource_loss( int       resource,
   if ( sleeping )
     return 0;
 
-  if ( resource == primary_resource() )
+  if ( resource_type == primary_resource() )
     primary_resource_cap -> update( false );
 
   double actual_amount;
 
-  if ( infinite_resource[ resource ] == 0 || is_enemy() )
+  if ( infinite_resource[ resource_type ] == 0 || is_enemy() )
   {
-    actual_amount = std::min( amount, resources.current[ resource ] );
-    resources.current[ resource ] -= actual_amount;
-    resource_lost[ resource ] += actual_amount;
+    actual_amount = std::min( amount, resources.current[ resource_type ] );
+    resources.current[ resource_type ] -= actual_amount;
+    resource_lost[ resource_type ] += actual_amount;
   }
   else
   {
     actual_amount = amount;
-    resources.current[ resource ] -= actual_amount;
-    resource_lost[ resource ] += actual_amount;
+    resources.current[ resource_type ] -= actual_amount;
+    resource_lost[ resource_type ] += actual_amount;
   }
 
-  if ( resource == RESOURCE_MANA )
+  if ( resource_type == RESOURCE_MANA )
   {
     last_cast = sim -> current_time;
   }
 
-  action_callback_t::trigger( resource_loss_callbacks[ resource ], action, ( void* ) &actual_amount );
+  action_callback_t::trigger( resource_loss_callbacks[ resource_type ], action, ( void* ) &actual_amount );
 
   if ( sim -> debug )
     log_t::output( sim, "Player %s loses %.2f (%.2f) %s. health pct: %.2f",
-                   name(), actual_amount, amount, util_t::resource_type_string( resource ), health_percentage()  );
+                   name(), actual_amount, amount, util_t::resource_type_t_string( resource_type ), health_percentage()  );
 
   return actual_amount;
 }
 
 // player_t::resource_gain ==================================================
 
-double player_t::resource_gain( int       resource,
+double player_t::resource_gain( resource_type_t resource_type,
                                 double    amount,
                                 gain_t*   source,
                                 action_t* action )
@@ -3551,31 +3551,31 @@ double player_t::resource_gain( int       resource,
   if ( sleeping )
     return 0;
 
-  double actual_amount = std::min( amount, resources.max[ resource ] - resources.current[ resource ] );
+  double actual_amount = std::min( amount, resources.max[ resource_type ] - resources.current[ resource_type ] );
 
   if ( actual_amount > 0 )
   {
-    resources.current[ resource ] += actual_amount;
-    resource_gained [ resource ] += actual_amount;
+    resources.current[ resource_type ] += actual_amount;
+    resource_gained [ resource_type ] += actual_amount;
   }
 
-  if ( resource == primary_resource() && resources.max[ resource ] <= resources.current[ resource ] )
+  if ( resource_type == primary_resource() && resources.max[ resource_type ] <= resources.current[ resource_type ] )
     primary_resource_cap -> update( true );
 
   if ( source )
   {
-    source -> add( static_cast<resource_type>( resource ), actual_amount, amount - actual_amount );
+    source -> add( resource_type, actual_amount, amount - actual_amount );
   }
 
-  action_callback_t::trigger( resource_gain_callbacks[ resource ], action, ( void* ) &actual_amount );
+  action_callback_t::trigger( resource_gain_callbacks[ resource_type ], action, ( void* ) &actual_amount );
 
   if ( sim -> log )
   {
     log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)",
                    name(), actual_amount, amount,
-                   util_t::resource_type_string( resource ),
+                   util_t::resource_type_t_string( resource_type ),
                    source ? source -> name() : action ? action -> name() : "unknown",
-                   resources.current[ resource ], resources.max[ resource ] );
+                   resources.current[ resource_type ], resources.max[ resource_type ] );
   }
 
   return actual_amount;
@@ -3583,47 +3583,47 @@ double player_t::resource_gain( int       resource,
 
 // player_t::resource_available =============================================
 
-bool player_t::resource_available( int    resource,
+bool player_t::resource_available( resource_type_t resource_type,
                                    double cost ) const
 {
-  if ( resource == RESOURCE_NONE || cost <= 0 || infinite_resource[ resource ] == 1 )
+  if ( resource_type == RESOURCE_NONE || cost <= 0 || infinite_resource[ resource_type ] == 1 )
   {
     return true;
   }
 
-  return resources.current[ resource ] >= cost;
+  return resources.current[ resource_type ] >= cost;
 }
 
 // player_t::recalculate_resources.max =======================================
 
-void player_t::recalculate_resource_max( int resource )
+void player_t::recalculate_resource_max( resource_type_t resource_type )
 {
   // The first 20pts of intellect/stamina only provide 1pt of mana/health.
 
-  resources.max[ resource ] = resources.base[ resource ] * resources.base_multiplier[ resource ]+
-                             gear.resource[ resource ] +
-                             enchant.resource[ resource ] +
-                             ( is_pet() ? 0 : sim -> enchant.resource[ resource ] );
-  resources.max[ resource ] *= resources.initial_multiplier[ resource ];
-  switch ( resource )
+  resources.max[ resource_type ] = resources.base[ resource_type ] * resources.base_multiplier[ resource_type ]+
+                             gear.resource[ resource_type ] +
+                             enchant.resource[ resource_type ] +
+                             ( is_pet() ? 0 : sim -> enchant.resource[ resource_type ] );
+  resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
+  switch ( resource_type )
   {
   case RESOURCE_MANA:
   {
     // Arcane Brilliance needs to be done here as a generic resource, otherwise override will
     // not (and did not previously) work
     if ( type != PLAYER_GUARDIAN )
-      resources.max[ resource ] += buffs.arcane_brilliance -> value();
+      resources.max[ resource_type ] += buffs.arcane_brilliance -> value();
     break;
   }
   case RESOURCE_HEALTH:
   {
     double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
-    resources.max[ resource ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
+    resources.max[ resource_type ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
 
     if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
     {
       // ICC buff.
-      resources.max[ resource ] *= 1.30;
+      resources.max[ resource_type ] *= 1.30;
     }
     break;
   }
@@ -3852,7 +3852,7 @@ void player_t::stat_loss( int       stat,
   case STAT_MAX_FOCUS:
   case STAT_MAX_RUNIC:
   {
-    int r = ( ( stat == STAT_MAX_HEALTH ) ? RESOURCE_HEALTH :
+    resource_type_t r = ( ( stat == STAT_MAX_HEALTH ) ? RESOURCE_HEALTH :
               ( stat == STAT_MAX_MANA   ) ? RESOURCE_MANA   :
               ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
               ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
@@ -4151,18 +4151,18 @@ void player_t::register_callbacks()
 
 // player_t::register_resource_gain_callback ================================
 
-void player_t::register_resource_gain_callback( int resource,
+void player_t::register_resource_gain_callback( resource_type_t resource_type,
                                                 action_callback_t* cb )
 {
-  resource_gain_callbacks[ resource ].push_back( cb );
+  resource_gain_callbacks[ resource_type ].push_back( cb );
 }
 
 // player_t::register_resource_loss_callback ================================
 
-void player_t::register_resource_loss_callback( int resource,
+void player_t::register_resource_loss_callback( resource_type_t resource_type,
                                                 action_callback_t* cb )
 {
-  resource_loss_callbacks[ resource ].push_back( cb );
+  resource_loss_callbacks[ resource_type ].push_back( cb );
 }
 
 // player_t::register_attack_callback =======================================
@@ -4706,7 +4706,7 @@ struct arcane_torrent_t : public action_t
 
   virtual void execute()
   {
-    resource_type resource = player -> primary_resource();
+    resource_type_t resource = player -> primary_resource();
     double gain = 0;
     switch ( resource )
     {
@@ -4737,7 +4737,7 @@ struct arcane_torrent_t : public action_t
     if ( player -> race != RACE_BLOOD_ELF )
       return false;
 
-    resource_type resource = player -> primary_resource();
+    resource_type_t resource = player -> primary_resource();
     switch ( resource )
     {
     case RESOURCE_MANA:
@@ -5770,16 +5770,16 @@ action_expr_t* deprecate_expression( player_t* p, action_t* a, const std::string
 action_expr_t* player_t::create_expression( action_t* a,
                                             const std::string& name_str )
 {
-  int resource_type = util_t::parse_resource_type( name_str );
-  if ( resource_type != RESOURCE_NONE )
+  int resource_type_t = util_t::parse_resource_type_t( name_str );
+  if ( resource_type_t != RESOURCE_NONE )
   {
     struct resource_expr_t : public action_expr_t
     {
-      int resource_type;
-      resource_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-      virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type ]; return TOK_NUM; }
+      int resource_type_t;
+      resource_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
+      virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_t ]; return TOK_NUM; }
     };
-    return new resource_expr_t( a, name_str, resource_type );
+    return new resource_expr_t( a, name_str, resource_type_t );
   }
   if ( name_str == "level" )
   {
@@ -5898,97 +5898,97 @@ action_expr_t* player_t::create_expression( action_t* a,
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
 
-  if ( num_splits == 2 && ( resource_type = util_t::parse_resource_type( splits[ 0 ] ) ) != RESOURCE_NONE )
+  if ( num_splits == 2 && ( resource_type_t = util_t::parse_resource_type_t( splits[ 0 ] ) ) != RESOURCE_NONE )
    {
      if ( splits[ 1 ] == "deficit" )
      {
        struct resource_deficit_expr_t : public action_expr_t
        {
-         int resource_type;
-         resource_deficit_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type ] - action -> player -> resources.current[ resource_type ]; return TOK_NUM; }
+         int resource_type_t;
+         resource_deficit_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
+         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type_t ] - action -> player -> resources.current[ resource_type_t ]; return TOK_NUM; }
        };
-       return new resource_deficit_expr_t( a, name_str, resource_type );
+       return new resource_deficit_expr_t( a, name_str, resource_type_t );
      }
 
      else if ( splits[ 1 ] == "pct" || splits[ 1 ] == "percent" )
      {
        struct resource_pct_expr_t : public action_expr_t
        {
-         int resource_type;
-         resource_pct_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type ] / action -> player -> resources.max[ resource_type ] * 100.0; return TOK_NUM; }
+         int resource_type_t;
+         resource_pct_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
+         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_t ] / action -> player -> resources.max[ resource_type_t ] * 100.0; return TOK_NUM; }
        };
-       return new resource_pct_expr_t( a, name_str, resource_type );
+       return new resource_pct_expr_t( a, name_str, resource_type_t );
      }
 
      else if ( splits[ 1 ] == "max" )
      {
        struct resource_max_expr_t : public action_expr_t
        {
-         int resource_type;
-         resource_max_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type ]; return TOK_NUM; }
+         int resource_type_t;
+         resource_max_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
+         virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type_t ]; return TOK_NUM; }
        };
-       return new resource_max_expr_t( a, name_str, resource_type );
+       return new resource_max_expr_t( a, name_str, resource_type_t );
      }
      else if ( splits[ 1 ] == "max_nonproc" )
      {
        struct resource_max_nonproc_expr_t : public action_expr_t
        {
-         int resource_type;
-         resource_max_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> buffed.resource[ resource_type ]; return TOK_NUM; }
+         int resource_type_t;
+         resource_max_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
+         virtual int evaluate() { result_num = action -> player -> buffed.resource[ resource_type_t ]; return TOK_NUM; }
        };
-       return new resource_max_nonproc_expr_t( a, name_str, resource_type );
+       return new resource_max_nonproc_expr_t( a, name_str, resource_type_t );
      }
      else if ( splits[ 1 ] == "pct_nonproc" )
      {
        struct resource_pct_nonproc_expr_t : public action_expr_t
        {
-         int resource_type;
-         resource_pct_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type ] / action -> player -> buffed.resource[ resource_type ] * 100.0; return TOK_NUM; }
+         int resource_type_t;
+         resource_pct_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
+         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_t ] / action -> player -> buffed.resource[ resource_type_t ] * 100.0; return TOK_NUM; }
        };
-       return new resource_pct_nonproc_expr_t( a, name_str, resource_type );
+       return new resource_pct_nonproc_expr_t( a, name_str, resource_type_t );
      }
      else if ( splits[ 1 ] == "net_regen" )
      {
        struct resource_net_regen_expr_t : public action_expr_t
        {
-         int resource_type;
-         resource_net_regen_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
-         virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds() ? ( action -> player -> resource_gained[ resource_type ] - action -> player -> resource_lost[ resource_type ] ) / action -> sim -> current_time.total_seconds() : 0.0; return TOK_NUM; }
+         int resource_type_t;
+         resource_net_regen_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
+         virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds() ? ( action -> player -> resource_gained[ resource_type_t ] - action -> player -> resource_lost[ resource_type_t ] ) / action -> sim -> current_time.total_seconds() : 0.0; return TOK_NUM; }
        };
-       return new resource_net_regen_expr_t( a, name_str, resource_type );
+       return new resource_net_regen_expr_t( a, name_str, resource_type_t );
      }
      else if ( splits[ 1 ] == "regen" )
      {
-       if ( resource_type == RESOURCE_ENERGY )
+       if ( resource_type_t == RESOURCE_ENERGY )
        {
          struct resource_regen_energy_expr_t : public action_expr_t
          {
-           int resource_type;
-           resource_regen_energy_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
+           int resource_type_t;
+           resource_regen_energy_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
            virtual int evaluate() { result_num = action -> player -> energy_regen_per_second(); return TOK_NUM; }
          };
-         return new resource_regen_energy_expr_t( a, name_str, resource_type );
+         return new resource_regen_energy_expr_t( a, name_str, resource_type_t );
        }
-       else if ( resource_type == RESOURCE_FOCUS )
+       else if ( resource_type_t == RESOURCE_FOCUS )
        {
          struct resource_regen_focus_expr_t : public action_expr_t
          {
-           int resource_type;
-           resource_regen_focus_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type( r ) {}
+           int resource_type_t;
+           resource_regen_focus_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_t( r ) {}
            virtual int evaluate() { result_num = action -> player -> focus_regen_per_second(); return TOK_NUM; }
          };
-         return new resource_regen_focus_expr_t( a, name_str, resource_type );
+         return new resource_regen_focus_expr_t( a, name_str, resource_type_t );
        }
      }
 
      else if ( splits[ 1 ] == "time_to_max" )
      {
-       if ( resource_type == RESOURCE_ENERGY )
+       if ( resource_type_t == RESOURCE_ENERGY )
        {
          struct time_to_max_energy_expr_t : public action_expr_t
          {
@@ -6002,7 +6002,7 @@ action_expr_t* player_t::create_expression( action_t* a,
          };
          return new time_to_max_energy_expr_t( a );
        }
-       else if ( resource_type == RESOURCE_FOCUS )
+       else if ( resource_type_t == RESOURCE_FOCUS )
        {
          struct time_to_max_focus_expr_t : public action_expr_t
          {

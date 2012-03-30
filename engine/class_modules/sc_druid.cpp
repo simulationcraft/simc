@@ -378,7 +378,7 @@ struct druid_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual resource_type primary_resource() const;
+  virtual resource_type_t primary_resource() const;
   virtual int       primary_role() const;
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
   virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
@@ -1301,7 +1301,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
       // Let the additional energy consumption create it's own debug log entries.
       if ( sim -> debug )
         log_t::output( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
-                       excess_energy, util_t::resource_type_string( current_resource() ), name() );
+                       excess_energy, util_t::resource_type_t_string( current_resource() ), name() );
 
       player -> resource_loss( current_resource(), excess_energy );
       stats -> consume_resource( current_resource(), excess_energy );
@@ -5098,7 +5098,7 @@ void druid_t::reset()
 
 void druid_t::regen( timespan_t periodicity )
 {
-  resource_type rt = primary_resource();
+  resource_type_t resource_type = primary_resource();
 
   if ( rt == RESOURCE_ENERGY )
   {
@@ -5457,7 +5457,7 @@ int druid_t::primary_role() const
 
 // druid_t::primary_resource ================================================
 
-resource_type druid_t::primary_resource() const
+resource_type_t druid_t::primary_resource() const
 {
   if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL )
     return RESOURCE_MANA;

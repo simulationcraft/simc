@@ -321,7 +321,7 @@ struct paladin_t : public player_t
   virtual double    matching_gear_multiplier( const attribute_type attr ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
-  virtual resource_type primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_t primary_resource() const { return RESOURCE_MANA; }
   virtual int       primary_role() const;
   virtual void      regen( timespan_t periodicity );
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
@@ -1376,7 +1376,7 @@ struct paladin_seal_t : public paladin_attack_t
     base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
   }
   
-  virtual resource_type current_resource() const { return RESOURCE_MANA; }
+  virtual resource_type_t current_resource() const { return RESOURCE_MANA; }
 
   virtual void execute()
   {

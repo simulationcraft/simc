@@ -516,7 +516,7 @@ enum base_stat_type { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA
                       BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
                     };
 
-enum resource_type
+enum resource_type_t
 {
   RESOURCE_NONE = 0,
   RESOURCE_HEALTH,
@@ -2012,7 +2012,7 @@ struct spellpower_data_t
   double   _cost_2;
   int      _cost_per_second;    // Unsure
 
-  resource_type resource() const;
+  resource_type_t resource() const;
   unsigned id() const { return _id; }
   unsigned spell_id() const { return _spell_id; }
   unsigned aura_id() const { return _aura_id; }
@@ -2113,11 +2113,11 @@ public:
   int                        base_value() const { return _base_value; }
   double                     percent() const { return _base_value * ( 1 / 100.0 ); }
   timespan_t                 time_value() const { return timespan_t::from_millis( _base_value ); }
-  resource_type              resource_gain_type() const;
+  resource_type_t              resource_gain_type() const;
 
-  double resource( int type ) const
+  double resource( resource_type_t resource_type ) const
   {
-    switch ( type )
+    switch ( resource_type )
     {
     case RESOURCE_RUNIC_POWER:
     case RESOURCE_RAGE:
@@ -2649,7 +2649,7 @@ public:
   static const char* profession_type_string    ( int type );
   static const char* race_type_string          ( int type );
   static const char* role_type_string          ( int type );
-  static const char* resource_type_string      ( int type );
+  static const char* resource_type_t_string      ( resource_type_t resource_type );
   static const char* result_type_string        ( int type );
   static int         school_type_component     ( int s_type, int c_type );
   static const char* school_type_string        ( int type );
@@ -2663,7 +2663,7 @@ public:
   static int         spec_id                   ( player_type ptype, talent_tree_type tree );
   static talent_tree_type translate_spec_str   ( player_type ptype, const std::string& spec_str );
   static talent_tree_type translate_spec_id    ( player_type ptype, int spec_id );
-  static resource_type translate_power_type    ( power_type );
+  static resource_type_t translate_power_type    ( power_type );
   static const char* talent_tree_string        ( int tree, bool armory_format = true );
   static const char* weapon_type_string        ( int type );
   static const char* weapon_class_string       ( int class_ );
@@ -2684,7 +2684,7 @@ public:
   static position_type parse_position_type     ( const std::string& name );
   static race_type parse_race_type             ( const std::string& name );
   static role_type parse_role_type             ( const std::string& name );
-  static int parse_resource_type               ( const std::string& name );
+  static int parse_resource_type_t               ( const std::string& name );
   static int parse_result_type                 ( const std::string& name );
   static school_type parse_school_type         ( const std::string& name );
   static set_type parse_set_bonus              ( const std::string& name );
@@ -4812,11 +4812,11 @@ struct player_t : public noncopyable
   virtual std::string print_action_map( int iterations, int precision );
 
   virtual void   regen( timespan_t periodicity=timespan_t::from_seconds( 0.25 ) );
-  virtual double resource_gain( int resource, double amount, gain_t* g=0, action_t* a=0 );
-  virtual double resource_loss( int resource, double amount, action_t* a=0 );
-  virtual void   recalculate_resource_max( int resource );
-  virtual bool   resource_available( int resource, double cost ) const;
-  virtual resource_type primary_resource() const { return RESOURCE_NONE; }
+  virtual double resource_gain( resource_type_t resource_type, double amount, gain_t* g=0, action_t* a=0 );
+  virtual double resource_loss( resource_type_t resource_type, double amount, action_t* a=0 );
+  virtual void   recalculate_resource_max( resource_type_t resource_type);
+  virtual bool   resource_available( resource_type_t resource_type, double cost ) const;
+  virtual resource_type_t primary_resource() const { return RESOURCE_NONE; }
   virtual int    primary_role() const;
   virtual int    primary_tree() const;
   virtual int    primary_tab();
@@ -4847,8 +4847,8 @@ struct player_t : public noncopyable
   virtual bool is_moving() { return buffs.raid_movement -> check() || buffs.self_movement -> check(); }
 
   virtual void register_callbacks();
-  virtual void register_resource_gain_callback( int resource,        action_callback_t* );
-  virtual void register_resource_loss_callback( int resource,        action_callback_t* );
+  virtual void register_resource_gain_callback( resource_type_t,       action_callback_t* );
+  virtual void register_resource_loss_callback( resource_type_t,       action_callback_t* );
   virtual void register_attack_callback       ( int64_t result_mask, action_callback_t* );
   virtual void register_spell_callback        ( int64_t result_mask, action_callback_t* );
   virtual void register_tick_callback         ( int64_t result_mask, action_callback_t* );
@@ -5159,7 +5159,7 @@ struct stats_t
   ~stats_t();
 
   void add_child( stats_t* child );
-  void consume_resource( resource_type rt, double r );
+  void consume_resource( resource_type_t resource_type, double r );
   void add_result( double act_amount, double tot_amount, int dmg_type, int result );
   void add_tick   ( timespan_t time );
   void add_execute( timespan_t time );
@@ -5293,7 +5293,7 @@ public:
   virtual double armor() const;
   virtual double resistance() const;
   virtual void   consume_resource();
-  virtual resource_type current_resource() const {
+  virtual resource_type_t current_resource() const {
     if ( likely( s_data && s_data -> _power && s_data -> _power -> size() == 1 ) )
       return s_data -> _power -> at( 0 ) -> resource();
 
@@ -6151,7 +6151,7 @@ struct gain_t
     range::fill( overflow, 0.0 );
     range::fill( count, 0.0 );
   }
-  void add( resource_type rt, double a, double o=0 ) { actual[ rt ] += a; overflow[ rt ] += o; count[ rt ]++; }
+  void add( resource_type_t resource_type, double a, double o=0 ) { actual[ resource_type ] += a; overflow[ resource_type ] += o; count[ resource_type ]++; }
   void merge( const gain_t* other )
   {
     for ( size_t i=0; i<RESOURCE_MAX; i++ )
@@ -6240,7 +6240,7 @@ struct chart_t
   static const char* action_dpet      ( std::string& s, player_t* );
   static const char* aps_portion       ( std::string& s, player_t* );
   static const char* time_spent       ( std::string& s, player_t* );
-  static const char* gains            ( std::string& s, player_t*, resource_type );
+  static const char* gains            ( std::string& s, player_t*, resource_type_t );
   static const char* timeline         ( std::string& s, player_t*, const std::vector<double>&, const std::string&, double avg=0, const char* color="FDD017" );
   static const char* timeline_dps_error( std::string& s, player_t* );
   static const char* scale_factors    ( std::string& s, player_t* );
