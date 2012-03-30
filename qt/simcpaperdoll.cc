@@ -1633,7 +1633,7 @@ PaperdollRaceButtonGroup::classSelected( player_type t )
 {
   assert( t < PLAYER_PET && t > PLAYER_NONE );
 
-  for ( race_type race = RACE_NIGHT_ELF; race < RACE_MAX; race=(race_type)((int)race+1) )
+  for ( race_type race = RACE_NIGHT_ELF; race < RACE_MAX; ++race )
     m_raceButtons[ race - RACE_NIGHT_ELF ] -> setEnabled( false );
 
   for ( int i = 0; i < RACE_MAX - RACE_NIGHT_ELF; i++ )
