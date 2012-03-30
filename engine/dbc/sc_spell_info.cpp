@@ -233,7 +233,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
     switch ( e -> type() )
     {
     case E_SCHOOL_DAMAGE:
-      s << ": " << util_t::school_type_string( spell_id_t::get_school_type_e( spell -> school_mask() ) );
+      s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
@@ -262,7 +262,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       switch ( e -> subtype() )
       {
       case A_PERIODIC_DAMAGE:
-        s << ": " << util_t::school_type_string( spell_id_t::get_school_type_e( spell -> school_mask() ) );
+        s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
         if ( e -> period() != timespan_t::zero )
           s << " every " << e -> period().total_seconds() << " seconds";
         break;

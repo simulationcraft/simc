@@ -2837,7 +2837,7 @@ struct spell_id_t
   virtual const std::string token() const;
   virtual double missile_speed() const;
   virtual uint32_t school_mask() const;
-  virtual school_type_e get_school_type_e() const;
+  virtual school_type_e get_school_type() const;
   virtual double min_range() const;
   virtual double max_range() const;
   virtual double extra_coeff() const;
@@ -2888,7 +2888,7 @@ struct spell_id_t
 
   // Spell data specific static methods
   static uint32_t get_school_mask( const school_type_e s );
-  static school_type_e get_school_type_e( const uint32_t mask );
+  static school_type_e get_school_type( const uint32_t mask );
   static bool is_school( const school_type_e s, const school_type_e s2 );
 
   const spell_data_t& spell() const { return ( ok() ? *s_data : *spell_data_t::nil() ); }
@@ -3360,15 +3360,15 @@ struct action_expr_t
   action_t* action;
   std::string name_str;
 
-  int result_type_e;
+  token_type_e token_type;
   double result_num;
   std::string result_str;
 
-  action_expr_t( action_t* a, const std::string& n, int t=TOK_UNKNOWN ) : action( a ), name_str( n ), result_type_e( t ), result_num( 0 ) {}
-  action_expr_t( action_t* a, const std::string& n, double       constant_value ) : action( a ), name_str( n ) { result_type_e = TOK_NUM; result_num = constant_value; }
-  action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action( a ), name_str( n ) { result_type_e = TOK_STR; result_str = constant_value; }
+  action_expr_t( action_t* a, const std::string& n, token_type_e t=TOK_UNKNOWN ) : action( a ), name_str( n ), token_type( t ), result_num( 0 ) {}
+  action_expr_t( action_t* a, const std::string& n, double       constant_value ) : action( a ), name_str( n ) { token_type = TOK_NUM; result_num = constant_value; }
+  action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action( a ), name_str( n ) { token_type = TOK_STR; result_str = constant_value; }
   virtual ~action_expr_t() {}
-  virtual int evaluate() { return result_type_e; }
+  virtual int evaluate() { return token_type; }
   bool success() { return ( evaluate() == TOK_NUM ) && ( result_num != 0 ); }
 
   static action_expr_t* parse( action_t*, const std::string& expr_str );

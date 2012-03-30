@@ -15,11 +15,11 @@ struct expr_unary_t : public action_expr_t
   ~expr_unary_t() { delete input; }
   virtual int evaluate()
   {
-    result_type_e = TOK_UNKNOWN;
+    token_type = TOK_UNKNOWN;
     int input_result = input -> evaluate();
     if ( input_result == TOK_NUM )
     {
-      result_type_e = TOK_NUM;
+      token_type = TOK_NUM;
       switch ( operation )
       {
       case TOK_PLUS:  result_num =   input -> result_num; break;
@@ -35,7 +35,7 @@ struct expr_unary_t : public action_expr_t
       action -> sim -> errorf( "%s-%s: Unexpected input type (%s) for unary operator '%s'\n",
                                action -> player -> name(), action -> name(), input -> name_str.c_str(), name_str.c_str() );
     }
-    return result_type_e;
+    return token_type;
   }
 };
 
@@ -50,13 +50,13 @@ struct expr_binary_t : public action_expr_t
   ~expr_binary_t() { delete left; delete right; }
   virtual int evaluate()
   {
-    result_type_e = TOK_UNKNOWN;
+    token_type = TOK_UNKNOWN;
     int right_result,
         left_result = left -> evaluate();
 
     if ( left_result == TOK_NUM )
     {
-      result_type_e = TOK_NUM;
+      token_type = TOK_NUM;
       switch ( operation )
       {
       case TOK_ADD:
@@ -164,7 +164,7 @@ struct expr_binary_t : public action_expr_t
     }
     else if ( left_result == TOK_STR )
     {
-      result_type_e = TOK_NUM;
+      token_type = TOK_NUM;
       right_result = right -> evaluate();
       if ( left_result != right_result ) goto error;
       switch ( operation )
@@ -179,13 +179,13 @@ struct expr_binary_t : public action_expr_t
       default: assert( 0 );
       }
     }
-    return result_type_e;
+    return token_type;
 error:
     action -> sim -> errorf( "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n",
                              action -> player -> name(), action -> name(), left -> name_str.c_str(), right -> name_str.c_str(), name_str.c_str() );
     action -> sim -> cancel();
 
-    return result_type_e;
+    return token_type;
   }
 };
 

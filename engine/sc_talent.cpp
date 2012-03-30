@@ -482,7 +482,7 @@ bool spell_id_t::is_school( const school_type_e s, const school_type_e s2 )
   return ( get_school_mask( s ) & get_school_mask( s2 ) ) != 0;
 }
 
-school_type_e spell_id_t::get_school_type_e( const uint32_t mask )
+school_type_e spell_id_t::get_school_type( const uint32_t mask )
 {
   switch ( mask )
   {
@@ -523,12 +523,12 @@ school_type_e spell_id_t::get_school_type_e( const uint32_t mask )
   }
 }
 
-school_type_e spell_id_t::get_school_type_e() const
+school_type_e spell_id_t::get_school_type() const
 {
   if ( ! ok() )
     return SCHOOL_NONE;
 
-  return get_school_type_e( school_mask() );
+  return get_school_type( school_mask() );
 }
 
 double spell_id_t::min_range() const

@@ -2512,7 +2512,7 @@ struct lifebloom_bloom_t : public druid_heal_t
     direct_power_mod   = bloom -> effect2().coeff();
     base_dd_min        = player -> dbc.effect_min( bloom -> effect2().id(), player -> level );
     base_dd_max        = player -> dbc.effect_max( bloom -> effect2().id(), player -> level );
-    school             = spell_id_t::get_school_type_e( bloom -> school_mask() );
+    school             = spell_id_t::get_school_type( bloom -> school_mask() );
 
     base_crit          += p -> glyphs.lifebloom -> mod_additive( P_CRIT );
     base_dd_multiplier *= 1.0 + p -> talents.gift_of_the_earthmother -> effect1().percent();
@@ -4241,7 +4241,7 @@ struct wild_mushroom_detonate_t : public druid_spell_t
     direct_power_mod   = damage_spell -> effect1().coeff();
     base_dd_min        = player -> dbc.effect_min( damage_spell -> effect1().id(), player -> level );
     base_dd_max        = player -> dbc.effect_max( damage_spell -> effect1().id(), player -> level );
-    school             = spell_id_t::get_school_type_e( damage_spell -> school_mask() );
+    school             = spell_id_t::get_school_type( damage_spell -> school_mask() );
     stats -> school    = school;
     aoe                = -1;
   }

@@ -3226,7 +3226,7 @@ struct magma_totem_t : public shaman_totem_t
     // Fill out scaling data
     trigger           = actor -> dbc.spell( actor -> dbc.spell( 8188 ) -> effectN( 1 ).trigger_spell_id() );
     // Also kludge totem school to fire for accurate damage
-    school            = spell_id_t::get_school_type_e( trigger -> school_mask() );
+    school            = spell_id_t::get_school_type( trigger -> school_mask() );
     stats -> school   = school;
 
     base_dd_min       = actor -> dbc.effect_min( trigger -> effectN( 1 ).id(), actor -> level );
@@ -3297,7 +3297,7 @@ struct searing_totem_t : public shaman_totem_t
     range            = actor -> dbc.spell( 3606 ) -> max_range();
     num_ticks        = ( int ) ( totem_duration / base_tick_time );
     // Also kludge totem school to fire
-    school           = spell_id_t::get_school_type_e( actor -> dbc.spell( 3606 ) -> school_mask() );
+    school           = spell_id_t::get_school_type( actor -> dbc.spell( 3606 ) -> school_mask() );
     stats -> school  = school;
     actor -> active_searing_flames_dot = new searing_flames_t( actor );
   }
