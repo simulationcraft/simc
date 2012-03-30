@@ -1388,10 +1388,10 @@ struct fortitude_t : public priest_spell_t
     {
       if ( p -> ooc_buffs() )
       {
-        double before = p -> attribute[ ATTR_STAMINA ];
+        double before = p -> resources.current[ RESOURCE_HEALTH ];
         p -> buffs.fortitude -> trigger( 1, bonus );
-        double  after = p -> attribute[ ATTR_STAMINA ];
-        p -> stat_gain( STAT_HEALTH, ( after - before ) * p -> health_per_stamina );
+        double  after = p -> resources.current[ RESOURCE_HEALTH ];
+        p -> stat_gain( STAT_HEALTH, after - before );
       }
     }
   }

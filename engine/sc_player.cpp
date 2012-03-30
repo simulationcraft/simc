@@ -469,7 +469,7 @@ player_t::player_t( sim_t*             s,
   // Attacks
   main_hand_attack( 0 ), off_hand_attack( 0 ), ranged_attack( 0 ),
   // Resources
-  mana_per_intellect( 0 ), health_per_stamina( 0 ),
+  mana_per_intellect( 0 ),
   // Consumables
   elixir_guardian( ELIXIR_NONE ),
   elixir_battle( ELIXIR_NONE ),
@@ -836,9 +836,6 @@ void player_t::init_base()
     resources.base_multiplier[ RESOURCE_MANA ] *= 1.05;
   }
 
-  if ( level <= 80 ) health_per_stamina = 10;
-  else if ( level <= 85 ) health_per_stamina = ( level - 80 ) / 5 * 4 + 10;
-  else if ( level <= MAX_LEVEL ) health_per_stamina = 14;
   if ( world_lag_stddev < timespan_t::zero ) world_lag_stddev = world_lag * 0.1;
   if ( brain_lag_stddev < timespan_t::zero ) brain_lag_stddev = brain_lag * 0.1;
 }
@@ -1268,7 +1265,7 @@ void player_t::init_resources( bool force )
       if ( i == RESOURCE_HEALTH )
       {
         double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
-        resources.initial[ i ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
+        resources.initial[ i ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
 
         if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
         {
@@ -3733,7 +3730,7 @@ void player_t::recalculate_resource_max( int resource )
   case RESOURCE_HEALTH:
   {
     double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
-    resources.max[ resource ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
+    resources.max[ resource ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
 
     if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
     {
@@ -3947,7 +3944,7 @@ void player_t::stat_loss( int       stat,
   {
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temp_value * amount; attribute[ ATTR_STRENGTH  ] -= amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temp_value * amount; attribute[ ATTR_AGILITY   ] -= amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * health_per_stamina, action ); break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * dbc.health_per_stamina( level ), action ); break;
   case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA, floor( amount * composite_attribute_multiplier( ATTR_INTELLECT ) ) * mana_per_intellect, action ); break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
 

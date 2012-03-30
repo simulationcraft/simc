@@ -2365,6 +2365,9 @@ public:
   double dodge_scaling( pet_type_t t, unsigned level ) const;
   double regen_spirit( player_type t, unsigned level ) const;
   double regen_spirit( pet_type_t t, unsigned level ) const;
+  double mp5_per_spirit( player_type t, unsigned level ) const;
+  double mp5_per_spirit( pet_type_t t, unsigned level ) const;
+  double health_per_stamina( unsigned level ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
   double oct_combat_rating( unsigned combat_rating_id, player_type t ) const;
@@ -4318,7 +4321,6 @@ struct player_t : public noncopyable
 
 
   double  mana_per_intellect;
-  double  health_per_stamina;
   uptime_t* primary_resource_cap;
 
   // Replenishment

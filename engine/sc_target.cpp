@@ -403,8 +403,6 @@ void enemy_t::init_base()
   if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
     waiting_time = timespan_t::from_seconds( 1.0 );
 
-  health_per_stamina = 10;
-
   base_attack_crit = 0.05;
 
   if ( initial_armor <= 0 )

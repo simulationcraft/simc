@@ -382,6 +382,36 @@ double dbc_t::regen_spirit( pet_type_t t, unsigned level ) const
   return regen_spirit( util_t::pet_class_type( t ), level );
 }
 
+double dbc_t::mp5_per_spirit( player_type t, unsigned level ) const
+{
+  uint32_t class_id = util_t::class_id( t );
+
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_regen_mpper_spt[ class_id ][ level - 1 ]
+             : __gt_regen_mpper_spt[ class_id ][ level - 1 ];
+#else
+  return __gt_regen_mpper_spt[ class_id ][ level - 1 ];
+#endif
+}
+
+double dbc_t::mp5_per_spirit( pet_type_t t, unsigned level ) const
+{
+  return mp5_per_spirit( util_t::pet_class_type( t ), level );
+}
+
+double dbc_t::health_per_stamina( unsigned level ) const
+{
+  assert( level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_octhp_per_stamina[ level - 1 ]
+             : __gt_octhp_per_stamina[ level - 1 ];
+#else
+  return __gt_octhp_per_stamina[ level - 1 ];
+#endif
+}
+
+
 stat_data_t& dbc_t::attribute_base( player_type t, unsigned level ) const
 {
   uint32_t class_id = util_t::class_id( t );

@@ -985,7 +985,7 @@ const char* chart_t::gains( std::string& s,
   double total_gain=0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if ( g -> actual <= 0 ) continue;
+    if ( g -> actual[ type ] <= 0 ) continue;
     total_gain += g -> actual[ type ];
     gains_list.push_back( g );
   }

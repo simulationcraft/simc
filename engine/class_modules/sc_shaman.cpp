@@ -714,7 +714,6 @@ struct earth_elemental_pet_t : public pet_t
     resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
     resources.base[ RESOURCE_MANA   ] = 0; //
 
-    health_per_stamina = 13.75; // See above
     mana_per_intellect = 0;
 
     // Simple as it gets, travel to target, kick off melee
@@ -1033,7 +1032,6 @@ struct fire_elemental_pet_t : public pet_t
     resources.base[ RESOURCE_HEALTH ] = 4643; // Approximated from lvl83 fire elem with naked shaman
     resources.base[ RESOURCE_MANA   ] = 8508; //
 
-    health_per_stamina               = 7.5; // See above
     mana_per_intellect               = 4.5;
 
     main_hand_weapon.type            = WEAPON_BEAST;
