@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "utf8.h"
 
 namespace { // ANONYMOUS ====================================================
 
@@ -2615,7 +2614,7 @@ void util_t::str_to_utf8_( std::string& str )
 void util_t::str_to_latin1_( std::string& str )
 {
   if ( str.empty() ) return;
-  if ( ! utf8::is_valid( str.begin(), str.end() ) ) return;
+  if ( ! range::is_valid_utf8( str ) ) return;
 
 
   std::string temp;
@@ -2690,7 +2689,7 @@ void util_t::urldecode_( std::string& str )
 void util_t::format_text_( std::string& name, bool input_is_utf8 )
 {
   if ( name.empty() ) return;
-  bool is_utf8 = utf8::is_valid( name.begin(), name.end() );
+  bool is_utf8 = range::is_valid_utf8( name );
 
   if ( is_utf8 && ! input_is_utf8 )
     util_t::str_to_latin1( name );

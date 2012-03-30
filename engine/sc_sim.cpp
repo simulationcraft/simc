@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "utf8.h"
 
 #ifdef SC_SIGACTION
 #include <signal.h>
@@ -178,7 +177,7 @@ static bool parse_player( sim_t*             sim,
 
     option_t::parse( sim, "player", options, player_options );
 
-    sim -> input_is_utf8 = utf8::is_valid( player_name.begin(), player_name.end() ) && utf8::is_valid( server.begin(), server.end() );
+    sim -> input_is_utf8 = range::is_valid_utf8( player_name ) && range::is_valid_utf8( server );
     cache::behavior_t caching = use_cache ? cache::ANY : cache::players();
 
     if ( wowhead.empty() )
@@ -332,7 +331,7 @@ static bool parse_armory( sim_t*             sim,
       }
 
       if ( ! sim -> input_is_utf8 )
-        sim -> input_is_utf8 = utf8::is_valid( player_name.begin(), player_name.end() ) && utf8::is_valid( server.begin(), server.end() );
+        sim -> input_is_utf8 = range::is_valid_utf8( player_name ) && range::is_valid_utf8( server );
 
       sim -> active_player = bcp_api::download_player( sim, region, server, player_name, description );
       if ( ! sim -> active_player ) return false;
@@ -384,7 +383,7 @@ static bool parse_armory( sim_t*             sim,
       }
     }
 
-    sim -> input_is_utf8 = utf8::is_valid( guild_name.begin(), guild_name.end() ) && utf8::is_valid( server.begin(), server.end() );
+    sim -> input_is_utf8 = range::is_valid_utf8( guild_name ) && range::is_valid_utf8( server );
 
     int player_type = PLAYER_NONE;
     if ( ! type_str.empty() ) player_type = util_t::parse_player_type( type_str );

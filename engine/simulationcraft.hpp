@@ -7,7 +7,7 @@
 
 // Platform Initialization ==================================================
 
-#if defined( _MSC_VER ) || defined( __MINGW__ ) || defined( _WINDOWS ) || defined( WIN32 )
+#if defined( _MSC_VER ) || defined( __MINGW__ ) || defined( __MINGW32__ ) || defined( _WINDOWS ) || defined( WIN32 )
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
 #  define _CRT_SECURE_NO_WARNINGS
@@ -53,32 +53,23 @@
 #include <typeinfo>
 #include <vector>
 
-#if _MSC_VER || __cplusplus >= 201103L
+#if _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+// Use C++11
+#include <type_traits>
 #include <unordered_map>
-#if _MSC_VER < 1600
+#define smart_ptr unique_ptr
+#if defined(_MSC_VER) && _MSC_VER < 1600
 namespace std {using namespace tr1; }
 #endif
 #else
+// Use TR1
+#include <tr1/type_traits>
 #include <tr1/unordered_map>
 namespace std {using namespace tr1; }
-#endif
-
-// GCC (and probably the C++ standard in general) doesn't like offsetof on non-POD types
-#ifdef _MSC_VER
-#define nonpod_offsetof(t, m) offsetof(t, m)
-#else
-#define nonpod_offsetof(t, m) ((size_t) ( (volatile char *)&((volatile t *)(size_t)0x10000)->m - (volatile char *)(size_t)0x10000 ))
+#define smart_ptr auto_ptr
 #endif
 
 #include "dbc/data_enums.hh"
-
-#if defined( _MSC_VER )
-# define finline                     __forceinline
-# define SC_FINLINE_EXT
-#elif defined( __GNUC__ )
-# define finline                     inline
-# define SC_FINLINE_EXT              __attribute__((always_inline))
-#endif
 
 #if __BSD_VISIBLE
 #  include <netinet/in.h>
@@ -98,7 +89,20 @@ namespace std {using namespace tr1; }
 #include <unistd.h>
 #endif
 
+#include "dbc/data_definitions.hh"
+#include "utf8.h"
+
+// GCC (and probably the C++ standard in general) doesn't like offsetof on non-POD types
+#ifdef _MSC_VER
+#define nonpod_offsetof(t, m) offsetof(t, m)
+#define finline               __forceinline
+#define SC_FINLINE_EXT
+#else
+#define nonpod_offsetof(t, m) ((size_t) ( (volatile char *)&((volatile t *)(size_t)0x10000)->m - (volatile char *)(size_t)0x10000 ))
+#endif
+
 #if defined(__GNUC__)
+#  define finline         inline
 #  define likely(x)       __builtin_expect((x),1)
 #  define unlikely(x)     __builtin_expect((x),0)
 #else
@@ -106,9 +110,9 @@ namespace std {using namespace tr1; }
 #  define unlikely(x) (x)
 #  define __attribute__(x)
 #endif
-#define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 
-#include "dbc/data_definitions.hh"
+#define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
+#define SC_FINLINE_EXT        __attribute__((always_inline))
 
 #define SC_MAJOR_VERSION "500"
 #define SC_MINOR_VERSION "1"
@@ -1018,10 +1022,16 @@ private:
   // nonmoveable& operator = ( nonmoveable&& ) = delete;
 };
 
+// Adapted from (read "stolen") boost::checked_deleter
 struct delete_disposer_t
 {
   template <typename T>
-  void operator () ( T* t ) const { delete t; }
+  void operator () ( T* t ) const
+  {
+    typedef int force_T_to_be_complete[ sizeof(T) ? 1 : -1 ];
+    ( void )sizeof( force_T_to_be_complete );
+    delete t;
+  }
 };
 
 template <typename T>
@@ -1035,8 +1045,9 @@ struct iterator_type<const T>
 // Generic algorithms =======================================================
 
 // Wrappers for std::fill, std::fill_n, and std::find that perform any type
-// conversions for t at the callsite instead of per assignement in the
-// loop body.
+// conversions for t at the callsite instead of per assignment in the loop body.
+// (i.e., fill( T**, T**, 0 ) will deduce T* for the third argument, as opposed
+//  to std::fill( T**, T**, 0 ) simply defaulting to int and failing to compile).
 template <typename I>
 inline void fill( I first, I last, typename std::iterator_traits<I>::value_type const& t )
 { std::fill( first, last, t ); }
@@ -1253,6 +1264,10 @@ inline typename range::traits<Range>::iterator unique( Range& r )
 template <typename Range, typename Comp>
 inline typename range::traits<Range>::iterator unique( Range& r, Comp c )
 { return std::unique( range::begin( r ), range::end( r ), c ); }
+
+template <typename Range>
+inline bool is_valid_utf8( const Range& r )
+{ return utf8::is_valid( range::begin( r ), range::end( r ) ); }
 
 } // namespace range ========================================================
 
@@ -4152,8 +4167,8 @@ struct set_bonus_t
 struct set_bonus_array_t
 {
 private:
-  const std::auto_ptr<spell_id_t> default_value;
-  std::auto_ptr<spell_id_t> set_bonuses[ SET_MAX ];
+  const std::smart_ptr<spell_id_t> default_value;
+  std::smart_ptr<spell_id_t> set_bonuses[ SET_MAX ];
   player_t* p;
 
   spell_id_t* create_set_bonus( uint32_t spell_id );
