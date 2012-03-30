@@ -1431,7 +1431,7 @@ struct hymn_of_hope_tick_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    p() -> resource_gain( RESOURCE_MANA, effect1().percent() * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.hymn_of_hope );
+    p() -> resource_gain( RESOURCE_MANA, data().effect1().percent() * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.hymn_of_hope );
 
     // Hymn of Hope only adds +x% of the current_max mana, it doesn't change if afterwards max_mana changes.
     player -> buffs.hymn_of_hope -> trigger();
@@ -1654,7 +1654,7 @@ struct shadow_fiend_spell_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     cooldown = p -> cooldowns.shadow_fiend;
-    cooldown -> duration = spell_id_t::cooldown();
+    cooldown -> duration = data().cooldown();
 
     harmful = false;
   }
@@ -1851,7 +1851,7 @@ struct mind_spike_t : public priest_spell_t
       p() -> buffs.chakra_pre -> expire();
 
       p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration  = p() -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p() -> cooldowns.chakra -> duration  = p() -> buffs.chakra_pre -> data().cooldown();
       p() -> cooldowns.chakra -> start();
     }
   }
@@ -1870,7 +1870,7 @@ struct mind_spike_t : public priest_spell_t
 
       p() -> buffs.mind_spike -> trigger( 1, 1.0 );
 
-      p() -> buffs.mind_spike -> trigger( 1, effect2().percent() );
+      p() -> buffs.mind_spike -> trigger( 1, data().effect2().percent() );
 
       if ( ! td -> remove_dots_event )
       {
@@ -1943,13 +1943,7 @@ struct shadow_word_death_t : public priest_spell_t
   shadow_word_death_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "shadow_word_death", p, "Shadow Word: Death" ), mb_min_wait( timespan_t::zero ), mb_max_wait( timespan_t::zero )
   {
-    option_t options[] =
-    {
-      { "mb_min_wait", OPT_TIMESPAN,  &mb_min_wait },
-      { "mb_max_wait", OPT_TIMESPAN,  &mb_max_wait },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     base_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) / 100.0;
 
@@ -2024,7 +2018,6 @@ struct shadow_word_pain_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     may_crit   = false;
-
     tick_zero = true;
 
     stats -> children.push_back( player -> get_stats( "shadowy_apparition", this ) );
@@ -2162,7 +2155,7 @@ struct penance_t : public priest_spell_t
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
 
-    cooldown -> duration = spell_id_t::cooldown() + p -> glyphs.penance -> effect1().time_value();
+    cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effect1().time_value();
 
     tick_spell = new penance_tick_t( p );
   }
@@ -2426,7 +2419,7 @@ struct divine_hymn_t : public priest_heal_t
     harmful = false;
     channeled = true;
 
-    divine_hymn_tick = new divine_hymn_tick_t( p, effect2().base_value() );
+    divine_hymn_tick = new divine_hymn_tick_t( p, data().effect2().base_value() );
     add_child( divine_hymn_tick );
   }
 
@@ -2556,7 +2549,7 @@ struct greater_heal_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p() -> cooldowns.inner_focus -> reset();
-      p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> spell_id_t::cooldown();
+      p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> data().cooldown();
       p() -> cooldowns.inner_focus -> start();
       p() -> buffs.inner_focus -> expire();
     }
@@ -2569,7 +2562,7 @@ struct greater_heal_t : public priest_heal_t
       p() -> buffs.chakra_pre -> expire();
 
       p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
       p() -> cooldowns.chakra -> start();
     }
   }
@@ -2587,7 +2580,7 @@ struct greater_heal_t : public priest_heal_t
     priest_heal_t::player_buff();
 
     if ( p() -> buffs.inner_focus -> up() )
-      player_crit += p() -> buffs.inner_focus -> effect2().percent();
+      player_crit += p() -> buffs.inner_focus -> data().effect2().percent();
   }
 
   virtual double cost() const
@@ -2623,7 +2616,7 @@ struct _heal_t : public priest_heal_t
       p() -> buffs.chakra_pre -> expire();
 
       p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
       p() -> cooldowns.chakra -> start();
     }
   }
@@ -2656,7 +2649,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
       priest_heal_t::player_buff();
 
       if ( p() -> buffs.chakra_sanctuary -> up() )
-        player_multiplier *= 1.0 + p() -> buffs.chakra_sanctuary -> effect1().percent();
+        player_multiplier *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effect1().percent();
     }
   };
 
@@ -2713,7 +2706,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
     // Implemented 06/12/2011 ( Patch 4.3 ),
     // see Issue1023 and http://elitistjerks.com/f77/t110245-cataclysm_holy_priest_compendium/p25/#post2054467
 
-    c *= 1.0 + p() -> buffs.inner_will -> check() * p() -> buffs.inner_will -> effect1().percent();
+    c *= 1.0 + p() -> buffs.inner_will -> check() * p() -> buffs.inner_will -> data().effect1().percent();
     c  = floor( c );
 
     return c;
@@ -2934,7 +2927,7 @@ struct penance_heal_t : public priest_heal_t
   {
     double c = priest_heal_t::cost();
 
-    c *= 1.0 + ( p() -> buffs.holy_evangelism -> check() * p() -> buffs.holy_evangelism -> effect2().percent() );
+    c *= 1.0 + ( p() -> buffs.holy_evangelism -> check() * p() -> buffs.holy_evangelism -> data().effect2().percent() );
 
     return c;
   }
@@ -3045,7 +3038,7 @@ struct prayer_of_healing_t : public priest_heal_t
     {
       // Inner Focus cooldown starts when consumed.
       p() -> cooldowns.inner_focus -> reset();
-      p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> spell_id_t::cooldown();
+      p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> data().cooldown();
       p() -> cooldowns.inner_focus -> start();
       p() -> buffs.inner_focus -> expire();
     }
@@ -3058,7 +3051,7 @@ struct prayer_of_healing_t : public priest_heal_t
       p() -> buffs.chakra_pre -> expire();
 
       p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
       p() -> cooldowns.chakra -> start();
     }
   }
@@ -3079,10 +3072,10 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_heal_t::player_buff();
 
     if ( p() -> buffs.inner_focus -> up() )
-      player_crit += p() -> buffs.inner_focus -> effect2().percent();
+      player_crit += p() -> buffs.inner_focus -> data().effect2().percent();
 
     if ( p() -> buffs.chakra_sanctuary -> up() )
-      player_multiplier *= 1.0 + p() -> buffs.chakra_sanctuary -> effect1().percent();
+      player_multiplier *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effect1().percent();
   }
 
   virtual double cost() const
@@ -3111,7 +3104,7 @@ struct prayer_of_mending_t : public priest_heal_t
     };
     parse_options( options, options_str );
 
-    direct_power_mod = effect_coeff( 1 );
+    direct_power_mod = data().effect1().coeff();
     base_dd_min = base_dd_max = effect_min( 1 );
 
     can_trigger_DA = false;
@@ -3124,7 +3117,7 @@ struct prayer_of_mending_t : public priest_heal_t
     priest_heal_t::player_buff();
 
     if ( p() -> buffs.chakra_sanctuary -> up() )
-      player_multiplier *= 1.0 + p() -> buffs.chakra_sanctuary -> effect1().percent();
+      player_multiplier *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effect1().percent();
   }
 
   virtual void execute()
@@ -3140,7 +3133,7 @@ struct prayer_of_mending_t : public priest_heal_t
       p() -> buffs.chakra_pre -> expire();
 
       p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> spell_id_t::cooldown();
+      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
       p() -> cooldowns.chakra -> start();
     }
   }
@@ -3186,7 +3179,7 @@ struct renew_t : public priest_heal_t
     priest_heal_t::player_buff();
 
     if ( p() -> buffs.chakra_sanctuary -> up() )
-      player_multiplier *= 1.0 + p() -> buffs.chakra_sanctuary -> effect1().percent();
+      player_multiplier *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effect1().percent();
   }
 };
 } // ANONYMOUS NAMESPACE ====================================================
@@ -3292,7 +3285,7 @@ double priest_t::composite_player_td_multiplier( const school_type school, actio
   if ( school == SCHOOL_SHADOW )
   {
     // Shadow TD
-    player_multiplier += buffs.dark_evangelism -> stack () * buffs.dark_evangelism -> effect1().percent();
+    player_multiplier += buffs.dark_evangelism -> stack () * buffs.dark_evangelism -> data().effect1().percent();
   }
 
   return player_multiplier;
