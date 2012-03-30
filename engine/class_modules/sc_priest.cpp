@@ -957,7 +957,7 @@ struct shadow_fiend_pet_t : public pet_t
           p -> o() -> buffs.shadow_orb -> trigger( 3, 1, p -> o() -> constants.shadow_orb_proc_value );
 
         p -> o() -> resource_gain( RESOURCE_MANA, p -> o() -> resources.max[ RESOURCE_MANA ] *
-                                   p -> mana_leech -> effect_base_value( 1 ) / 100.0,
+                                   p -> mana_leech -> effectN( 1 ).percent(),
                                    p -> o() -> gains.shadow_fiend );
       }
     }

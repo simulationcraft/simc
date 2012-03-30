@@ -242,10 +242,10 @@ bool spell_id_t::initialize( const char* s_name )
 
     if ( ( s_id = s_player -> dbc.mastery_ability_id( player_class, s_name ) ) )
       s_type      = T_MASTERY;
-    else if ( ! s_id && ( s_id = s_player -> dbc.specialization_ability_id( player_class, s_name ) ) )
-      s_type      = T_SPEC;
     else if ( ! s_id && ( s_id = s_player -> dbc.class_ability_id( player_class, s_name ) ) )
       s_type      = T_CLASS;
+    else if ( ! s_id && ( s_id = s_player -> dbc.specialization_ability_id( player_class, s_name ) ) )
+      s_type      = T_SPEC;
     else if ( ! s_id && ( s_id = s_player -> dbc.race_ability_id( player_class, s_player -> race, s_name ) ) )
       s_type      = T_RACE;
     else if ( ! s_id && ( s_id = s_player -> dbc.glyph_spell_id( player_class, s_name ) ) )
