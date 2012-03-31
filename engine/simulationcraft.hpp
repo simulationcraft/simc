@@ -57,6 +57,9 @@
 // Use C++11
 #include <type_traits>
 #include <unordered_map>
+#if _MSVC_VER < 1600
+namespace std {using namespace tr1; }
+#endif
 #else
 // Use TR1
 #include <tr1/type_traits>
