@@ -6377,11 +6377,9 @@ bool player_t::create_profile( std::string& profile_str, int save_type_e, bool s
 
   if ( save_type_e == SAVE_ALL )
   {
-    std::string pname = name_str;
-
     profile_str += util_t::player_type_string( type );
-    profile_str += "=" + util_t::format_text( pname, sim -> input_is_utf8 ) + term;
-    profile_str += "origin=\"" + origin_str + "\"" + term;
+    profile_str += "=\"" + name_str + '"' + term;
+    profile_str += "origin=\"" + origin_str + '"' + term;
     profile_str += "level=" + util_t::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
     profile_str += "spec=";
