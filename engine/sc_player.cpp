@@ -306,9 +306,9 @@ player_t::player_t( sim_t*             s,
                     player_type_e        t,
                     const std::string& n,
                     race_type_e          r ) :
-  sim( s ), name_str( n ),
+  sim( s ), type( t ), name_str( n ), race( r ),
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
-  next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
+  next( 0 ), index( -1 ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ),
   skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( timespan_t::zero ), base_gcd( timespan_t::from_seconds( 1.5 ) ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
@@ -323,7 +323,6 @@ player_t::player_t( sim_t*             s,
   world_lag_override( false ), world_lag_stddev_override( false ),
   events( 0 ),
   dbc( s -> dbc ),
-  race( r ),
   // Haste
   base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
   spell_haste( 1.0 ),  buffed_spell_haste( 1.0 ),
@@ -6620,7 +6619,6 @@ void player_t::create_options()
   option_t player_options[] =
   {
     // General
-    { "name",                                 OPT_STRING,   &( name_str                               ) },
     { "origin",                               OPT_STRING,   &( origin_str                             ) },
     { "region",                               OPT_STRING,   &( region_str                             ) },
     { "server",                               OPT_STRING,   &( server_str                             ) },

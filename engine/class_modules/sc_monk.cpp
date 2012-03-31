@@ -80,8 +80,8 @@ struct monk_t : public player_t
   };
   glyphs_t glyphs;
 
-  monk_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) :
-    player_t( sim, MONK, name, ( r == RACE_NONE ) ? RACE_PANDAREN : r )
+  monk_t( sim_t* sim, const std::string& name, race_type_e r = RACE_PANDAREN ) :
+    player_t( sim, MONK, name, r )
   {
 
     // FIXME

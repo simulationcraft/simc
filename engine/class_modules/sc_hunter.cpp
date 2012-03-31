@@ -206,11 +206,10 @@ struct hunter_t : public player_t
   double tier13_4pc_cooldown;
   uint32_t vishanka;
 
-  hunter_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, HUNTER, name, r )
+  hunter_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) :
+    player_t( sim, HUNTER, name, r == RACE_NONE ? RACE_NIGHT_ELF : r )
   {
-    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
-
-    tree_type[ HUNTER_BEAST_MASTERY ] = TREE_BEAST_MASTERY;
+     tree_type[ HUNTER_BEAST_MASTERY ] = TREE_BEAST_MASTERY;
     tree_type[ HUNTER_MARKSMANSHIP  ] = TREE_MARKSMANSHIP;
     tree_type[ HUNTER_SURVIVAL      ] = TREE_SURVIVAL;
 
@@ -840,7 +839,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
 
   if ( p -> merge_piercing_shots > 0 ) // Does not report Piercing Shots seperately.
   {
-    int result = a -> result;
+    result_type_e result = a -> result;
     a -> result = RESULT_HIT;
     a -> assess_damage( a -> target, piercing_shots_dmg * p -> merge_piercing_shots, DMG_OVER_TIME, a -> result );
     a -> result = result;

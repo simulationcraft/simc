@@ -340,11 +340,9 @@ struct death_knight_t : public player_t
   // Uptimes
   benefit_t* uptimes_rp_cap;
 
-  death_knight_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) :
+  death_knight_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r )
   {
-    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
-
     tree_type[ DEATH_KNIGHT_BLOOD  ] = TREE_BLOOD;
     tree_type[ DEATH_KNIGHT_FROST  ] = TREE_FROST;
     tree_type[ DEATH_KNIGHT_UNHOLY ] = TREE_UNHOLY;
@@ -4075,7 +4073,7 @@ action_expr_t* death_knight_t::create_expression( action_t* a, const std::string
       struct death_expr_t : public action_expr_t
       {
         std::string name;
-        death_expr_t( action_t* a, const std::string name_in ) : action_expr_t( a, name_in ), name( name_in ) { result_type_e = TOK_NUM; }
+        death_expr_t( action_t* a, const std::string name_in ) : action_expr_t( a, name_in ), name( name_in ) { token_type = TOK_NUM; }
         virtual int evaluate()
         {
           result_num = count_death_runes( action -> player -> cast_death_knight(), name == "inactive_death" ); return TOK_NUM;

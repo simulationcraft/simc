@@ -371,10 +371,9 @@ struct rogue_t : public player_t
 
   uint32_t fof_p1, fof_p2, fof_p3;
 
-  rogue_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, ROGUE, name, r )
+  rogue_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+    player_t( sim, ROGUE, name, r )
   {
-    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
-
     tree_type[ ROGUE_ASSASSINATION ] = TREE_ASSASSINATION;
     tree_type[ ROGUE_COMBAT        ] = TREE_COMBAT;
     tree_type[ ROGUE_SUBTLETY      ] = TREE_SUBTLETY;

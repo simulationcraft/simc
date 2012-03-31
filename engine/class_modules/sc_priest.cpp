@@ -251,10 +251,9 @@ struct priest_t : public player_t
 
   bool   was_sub_25;
 
-  priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, PRIEST, name, r )
+  priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+    player_t( sim, PRIEST, name, r )
   {
-    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
-
     tree_type[ PRIEST_DISCIPLINE ] = TREE_DISCIPLINE;
     tree_type[ PRIEST_HOLY       ] = TREE_HOLY;
     tree_type[ PRIEST_SHADOW     ] = TREE_SHADOW;

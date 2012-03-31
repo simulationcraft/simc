@@ -121,17 +121,17 @@ namespace std {using namespace tr1; }
 #endif
 
 // Enabled classes
-#define SC_DEATH_KNIGHT 0
-#define SC_DRUID        0
-#define SC_HUNTER       0
-#define SC_MAGE         0
-#define SC_MONK         0
-#define SC_PALADIN      0
+#define SC_DEATH_KNIGHT 1
+#define SC_DRUID        1
+#define SC_HUNTER       1
+#define SC_MAGE         1
+#define SC_MONK         1
+#define SC_PALADIN      1
 #define SC_PRIEST       1
-#define SC_ROGUE        0
+#define SC_ROGUE        1
 #define SC_SHAMAN       1
-#define SC_WARLOCK      0
-#define SC_WARRIOR      0
+#define SC_WARLOCK      1
+#define SC_WARRIOR      1
 
 #define BLOCKED_CLASS( sim, name_str, pt, r_type ) { \
   ( void ) name_str; ( void ) r_type; \
@@ -4252,11 +4252,13 @@ public:
 struct player_t : public noncopyable
 {
   sim_t* const sim;
-  std::string name_str, talents_str, glyphs_str, id_str, target_str;
+  const player_type_e type;
+  const std::string name_str;
+  race_type_e race;
+  std::string talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   player_t*   next;
   int         index;
-  const player_type_e type;
   role_type_e   role;
   player_t*   target;
   int         level, use_pre_potion, party, member;
@@ -4310,7 +4312,6 @@ struct player_t : public noncopyable
 
   // Race
   std::string race_str;
-  race_type_e race;
 
   // Haste
   double base_haste_rating, initial_haste_rating, haste_rating;

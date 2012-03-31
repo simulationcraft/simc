@@ -82,7 +82,7 @@ warlock_targetdata_t::warlock_targetdata_t( player_t* source, player_t* target )
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
-  player_t( sim, WARLOCK, name, r == RACE_NONE ? RACE_UNDEAD : r )
+  player_t( sim, WARLOCK, name, r )
 {
 
   tree_type[ WARLOCK_AFFLICTION  ] = TREE_AFFLICTION;

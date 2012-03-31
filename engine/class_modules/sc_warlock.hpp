@@ -226,7 +226,7 @@ struct warlock_t : public player_t
 
   int use_pre_soulburn;
 
-  warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
+  warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
 
 
   // Character Definition

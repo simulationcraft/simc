@@ -260,10 +260,9 @@ struct paladin_t : public player_t
   player_t* beacon_target;
   int ret_pvp_gloves;
 
-  paladin_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, PALADIN, name, r )
+  paladin_t( sim_t* sim, const std::string& name, race_type_e r = RACE_TAUREN ) :
+    player_t( sim, PALADIN, name, r )
   {
-    if ( race == RACE_NONE ) race = RACE_TAUREN;
-
     tree_type[ PALADIN_HOLY        ] = TREE_HOLY;
     tree_type[ PALADIN_PROTECTION  ] = TREE_PROTECTION;
     tree_type[ PALADIN_RETRIBUTION ] = TREE_RETRIBUTION;
@@ -2240,7 +2239,7 @@ struct holy_shock_t : public paladin_spell_t
 
     // hack! spell 20473 has the cooldown/cost/etc stuff, but the actual spell cast
     // to do damage is 25912
-    parse_effect_data( player -> dbc.effect( 25912 ) );
+    parse_effect_data( (*player -> dbc.effect( 25912 )) );
 
     base_multiplier *= 1.0 + p -> talents.blazing_light -> mod_additive( P_GENERIC )
                        + p -> talents.crusade -> mod_additive( P_GENERIC ); // TODO how do they stack?
@@ -2571,7 +2570,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     parse_options( NULL, options_str );
 
     // Heal info is in 25914
-    parse_effect_data( player -> dbc.effect( 25914 ) );
+    parse_effect_data( (*player -> dbc.effect( 25914 )) );
 
     base_crit += p -> glyphs.holy_shock -> effect1().percent()
                  + p -> talents.infusion_of_light -> effect2().percent();

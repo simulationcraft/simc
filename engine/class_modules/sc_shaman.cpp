@@ -223,12 +223,11 @@ struct shaman_t : public player_t
   spell_t*  flametongue_oh;
 
 
-  shaman_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, SHAMAN, name, r ),
+  shaman_t( sim_t* sim, const std::string& name, race_type_e r = RACE_TAUREN ) :
+    player_t( sim, SHAMAN, name, r ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) )
   {
-    if ( race == RACE_NONE ) race = RACE_TAUREN;
-
     tree_type[ SHAMAN_ELEMENTAL   ] = TREE_ELEMENTAL;
     tree_type[ SHAMAN_ENHANCEMENT ] = TREE_ENHANCEMENT;
     tree_type[ SHAMAN_RESTORATION ] = TREE_RESTORATION;

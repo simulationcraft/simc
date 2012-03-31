@@ -265,10 +265,10 @@ struct mage_t : public player_t
   int mana_gem_charges;
   timespan_t mage_armor_timer;
 
-  mage_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, MAGE, name, r ), ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) )
+  mage_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+    player_t( sim, MAGE, name, r ),
+    ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) )
   {
-    if ( race == RACE_NONE ) race = RACE_UNDEAD;
-
     tree_type[ MAGE_ARCANE ] = TREE_ARCANE;
     tree_type[ MAGE_FIRE   ] = TREE_FIRE;
     tree_type[ MAGE_FROST  ] = TREE_FROST;
@@ -961,7 +961,7 @@ static void trigger_ignite( spell_t* s, double dmg )
 
   if ( p -> merge_ignite > 0 ) // Does not report Ignite seperately.
   {
-    int result = s -> result;
+    result_type_e result = s -> result;
     s -> result = RESULT_HIT;
     s -> assess_damage( s -> target, ignite_dmg * p -> merge_ignite, DMG_OVER_TIME, s -> result );
     s -> result = result;

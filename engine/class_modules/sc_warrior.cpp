@@ -302,11 +302,9 @@ struct warrior_t : public player_t
   // Up-Times
   benefit_t* uptimes_rage_cap;
 
-  warrior_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) :
+  warrior_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r )
   {
-    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
-
     tree_type[ WARRIOR_ARMS       ] = TREE_ARMS;
     tree_type[ WARRIOR_FURY       ] = TREE_FURY;
     tree_type[ WARRIOR_PROTECTION ] = TREE_PROTECTION;

@@ -306,10 +306,9 @@ struct druid_t : public player_t
   };
   talents_t talents;
 
-  druid_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) : player_t( sim, DRUID, name, r )
+  druid_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+    player_t( sim, DRUID, name, r )
   {
-    if ( race == RACE_NONE ) race = RACE_NIGHT_ELF;
-
     tree_type[ DRUID_BALANCE     ] = TREE_BALANCE;
     tree_type[ DRUID_FERAL       ] = TREE_FERAL;
     tree_type[ DRUID_RESTORATION ] = TREE_RESTORATION;
@@ -2792,7 +2791,7 @@ struct tranquility_t : public druid_heal_t
     channeled         = true;
 
     // Healing is in spell effect 1
-    parse_spell_data( player.dbc( data().effect1().trigger_spell_id() ) );
+    parse_spell_data( (*player -> dbc.spell( data().effect1().trigger_spell_id() )) );
 
     // FIXME: The hot should stack
 
