@@ -3,6 +3,7 @@
 
 enum specialization_t {
   SPEC_NONE            = 0,
+  SPEC_PET             = 1,
   WARRIOR_ARMS         = 71,
   WARRIOR_FURY         = 72,
   WARRIOR_PROTECTION   = 73,
