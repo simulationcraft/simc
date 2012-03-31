@@ -49,7 +49,7 @@ plot_t::plot_t( sim_t* s ) :
   dps_plot_points( 20 ),
   dps_plot_iterations ( -1 ),
   dps_plot_debug( 0 ),
-  current_plot_stat( 0 ),
+  current_plot_stat( STAT_NONE ),
   num_plot_stats( 0 ),
   remaining_plot_stats( 0 ),
   remaining_plot_points( 0 ),
@@ -95,7 +95,7 @@ void plot_t::analyze_stats()
       remaining_plot_stats++;
   num_plot_stats = remaining_plot_stats;
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( sim -> canceled ) break;
 

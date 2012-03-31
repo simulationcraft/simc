@@ -177,7 +177,13 @@ void action_t::init_action_t_()
   stats = player -> get_stats( name_str , this );
 
   id = data().id();
-  tree = util_t::talent_tree( s_tree, player -> type );
+  if ( tree == TREE_NONE )
+    tree = s_tree;
+  else if ( s_tree != TREE_NONE && s_tree != tree )
+  {
+    sim -> errorf( "Weirdness in action_t(): specified tree '%s' does not agree with ability tree '%s'.\n",
+                   util_t::talent_tree_string( tree ), util_t::talent_tree_string( s_tree ) );
+  }
 
   if ( data().id() ) // FIXME: Replace with ok() check once it is in there
     parse_spell_data( data() );
@@ -194,9 +200,9 @@ void action_t::init_action_t_()
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required spec (%s (%d) != %s (%d) ).\n",
                    player -> name(), name(),
-                   util_t::talent_tree_string( static_cast<int>( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ) ),
+                   util_t::talent_tree_string( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ),
                    static_cast<int>( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ),
-                   util_t::talent_tree_string( static_cast<int>( player->spec ) ),
+                   util_t::talent_tree_string( player->spec ),
                    static_cast<int>( player->spec ) );
 
     background = true; // prevent action from being executed
@@ -210,13 +216,13 @@ void action_t::init_dot( const std::string& name )
     targetdata_dot_offset = ( int )doti->second.second;
 }
 
-action_t::action_t( int               ty,
-                    const char*       n,
-                    player_t*         p,
-                    int               /* r */,
-                    const school_type_e s,
-                    int               tr,
-                    bool              sp ) :
+action_t::action_t( action_type_e      ty,
+                    const char*        n,
+                    player_t*          p,
+                    resource_type_e,
+                    school_type_e      s,
+                    talent_tree_type_e tr,
+                    bool               sp ) :
   spell_id_t( p, n ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
   player( s_player ), target( s_player -> target ), school( s ),
@@ -225,7 +231,12 @@ action_t::action_t( int               ty,
   init_action_t_();
 }
 
-action_t::action_t( int ty, const char* name, const char* sname, player_t* p, int t, bool sp ) :
+action_t::action_t( action_type_e      ty,
+                    const char*        name,
+                    const char*        sname,
+                    player_t*          p,
+                    talent_tree_type_e t,
+                    bool               sp ) :
   spell_id_t( p, name, sname ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
   player( s_player ), target( s_player -> target ), school( get_school_type() ),
@@ -234,7 +245,10 @@ action_t::action_t( int ty, const char* name, const char* sname, player_t* p, in
   init_action_t_();
 }
 
-action_t::action_t( int ty, const spell_id_t& s, int t, bool sp ) :
+action_t::action_t( action_type_e      ty,
+                    const spell_id_t&  s,
+                    talent_tree_type_e t,
+                    bool               sp ) :
   spell_id_t( s ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
   player( s_player ), target( s_player -> target ), school( get_school_type() ),
@@ -243,7 +257,12 @@ action_t::action_t( int ty, const spell_id_t& s, int t, bool sp ) :
   init_action_t_();
 }
 
-action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, int t, bool sp ) :
+action_t::action_t( action_type_e      type,
+                    const char*        name,
+                    const uint32_t     id,
+                    player_t*          p,
+                    talent_tree_type_e t,
+                    bool               sp ) :
   spell_id_t( p, name, id ),
   sim( s_player->sim ), type( type ), name_str( s_token ),
   player( s_player ), target( s_player -> target ), school( get_school_type() ),
@@ -254,8 +273,7 @@ action_t::action_t( int type, const char* name, const uint32_t id, player_t* p, 
 
 action_t::~action_t()
 {
-  if ( state )
-    delete state;
+  delete state;
 
   if ( ! is_dtr_action )
   {
@@ -568,7 +586,7 @@ void action_t::player_buff()
 
 // action_t::target_debuff ==================================================
 
-void action_t::target_debuff( player_t* t, int /* dmg_type_e */ )
+void action_t::target_debuff( player_t* t, dmg_type_e )
 {
   target_multiplier            = 1.0;
   target_hit                   = 0;
@@ -649,7 +667,7 @@ void action_t::snapshot()
 
 // action_t::result_is_hit ==================================================
 
-bool action_t::result_is_hit( int r ) const
+bool action_t::result_is_hit( result_type_e r ) const
 {
   if ( r == RESULT_UNKNOWN ) r = result;
 
@@ -663,7 +681,7 @@ bool action_t::result_is_hit( int r ) const
 
 // action_t::result_is_miss =================================================
 
-bool action_t::result_is_miss( int r ) const
+bool action_t::result_is_miss( result_type_e r ) const
 {
   if ( r == RESULT_UNKNOWN ) r = result;
 
@@ -1166,7 +1184,7 @@ void action_t::last_tick( dot_t* d )
 
 // action_t::impact =========================================================
 
-void action_t::impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
+void action_t::impact( player_t* t, result_type_e impact_result, double impact_dmg )
 {
   assess_damage( t, impact_dmg, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, impact_result );
 
@@ -1227,15 +1245,15 @@ void action_t::impact( player_t* t, const result_type_e impact_result, const dou
 
 // action_t::assess_damage ==================================================
 
-void action_t::assess_damage( player_t* t,
-                              double dmg_amount,
-                              const dmg_type_e dmg_type,
-                              const result_type_e dmg_result )
+void action_t::assess_damage( player_t*     t,
+                              double        amount,
+                              dmg_type_e    type,
+                              result_type_e result )
 {
-  double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
+  double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
   double actual_amount = t -> infinite_resource[ RESOURCE_HEALTH ] ? dmg_adjusted : std::min( dmg_adjusted, t -> resources.current[ RESOURCE_HEALTH ] );
 
-  if ( dmg_type == DMG_DIRECT )
+  if ( type == DMG_DIRECT )
   {
     if ( sim -> log )
     {
@@ -1243,7 +1261,7 @@ void action_t::assess_damage( player_t* t,
                      player -> name(), name(),
                      t -> name(), dmg_adjusted,
                      util_t::school_type_string( school ),
-                     util_t::result_type_string( dmg_result ) );
+                     util_t::result_type_string( result ) );
     }
 
     direct_dmg = dmg_adjusted;
@@ -1260,7 +1278,7 @@ void action_t::assess_damage( player_t* t,
                      dot -> current_tick, dot -> num_ticks,
                      t -> name(), dmg_adjusted,
                      util_t::school_type_string( school ),
-                     util_t::result_type_string( dmg_result ) );
+                     util_t::result_type_string( result ) );
     }
 
     tick_dmg = dmg_adjusted;
@@ -1268,20 +1286,20 @@ void action_t::assess_damage( player_t* t,
     if ( callbacks ) action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
   }
 
-  stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : dmg_type ), dmg_result );
+  stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : type ), result );
 }
 
 // action_t::additional_damage ==============================================
 
-void action_t::additional_damage( player_t* t,
-                                  const double dmg_amount,
-                                  const dmg_type_e dmg_type,
-                                  const result_type_e dmg_result )
+void action_t::additional_damage( player_t*     t,
+                                  double        amount,
+                                  dmg_type_e    type,
+                                  result_type_e result )
 {
-  double modified_amount = dmg_amount / target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
-  double dmg_adjusted = t -> assess_damage( modified_amount, school, dmg_type, dmg_result, this );
+  amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
+  double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
   double actual_amount = std::min( dmg_adjusted, t -> resources.current[ current_resource() ] );
-  stats -> add_result( actual_amount, modified_amount, dmg_type, dmg_result );
+  stats -> add_result( actual_amount, amount, type, result );
 }
 
 // action_t::schedule_execute ===============================================
@@ -1707,7 +1725,7 @@ void action_t::check_race( race_type_e race )
 
 // action_t::check_spec =====================================================
 
-void action_t::check_spec( int necessary_spec )
+void action_t::check_spec( talent_tree_type_e necessary_spec )
 {
   if ( player -> primary_tree() != necessary_spec )
   {

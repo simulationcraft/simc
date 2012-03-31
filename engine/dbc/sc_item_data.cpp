@@ -8,7 +8,7 @@
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
 
-std::string stat_to_str( int stat, int stat_amount )
+std::string stat_to_str( item_mod_type stat, int stat_amount )
 {
   std::string stat_str;
 
@@ -50,7 +50,8 @@ std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantmen
     if ( enchantment.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
       continue;
 
-    std::string stat_str = stat_to_str( enchantment.ench_prop[ i ], enchantment.ench_amount[ i ] );
+    std::string stat_str = stat_to_str( static_cast<item_mod_type>( enchantment.ench_prop[ i ] ),
+                                        enchantment.ench_amount[ i ] );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
 
@@ -66,7 +67,8 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
     if ( item -> stat_type_e[ i ] < 0 )
       continue;
 
-    std::string stat_str = stat_to_str( item -> stat_type_e[ i ], item -> stat_val[ i ] );
+    std::string stat_str = stat_to_str( static_cast<item_mod_type>( item -> stat_type_e[ i ] ),
+                                        item -> stat_val[ i ] );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
 
@@ -671,19 +673,19 @@ bool item_database_t::download_glyph( player_t* player, std::string& glyph_name,
 
 // item_database_t::parse_gem ===============================================
 
-int item_database_t::parse_gem( item_t& item, const std::string& gem_id )
+gem_type_e item_database_t::parse_gem( item_t& item, const std::string& gem_id )
 {
   long gid = strtol( gem_id.c_str(), 0, 10 );
   if ( gid <= 0 )
-    return SOCKET_COLOR_NONE;
+    return GEM_NONE;
 
   const item_data_t* gem = item.player -> dbc.item( gid );
   if ( ! gem )
-    return SOCKET_COLOR_NONE;
+    return GEM_NONE;
 
   const gem_property_data_t& gem_prop = item.player -> dbc.gem_property( gem -> gem_properties );
   if ( ! gem_prop.id )
-    return SOCKET_COLOR_NONE;
+    return GEM_NONE;
 
   if ( gem_prop.color == SOCKET_COLOR_META )
   {
@@ -713,5 +715,5 @@ int item_database_t::parse_gem( item_t& item, const std::string& gem_id )
     }
   }
 
-  return gem_prop.color;
+  return util_t::translate_socket_color( static_cast<item_socket_color>( gem_prop.color ) );
 }

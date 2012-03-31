@@ -53,7 +53,7 @@ static int parse_tokens( std::vector<token_t>& tokens,
 
 static bool is_meta_prefix( const std::string& option_name )
 {
-  for ( int i=0; i < META_GEM_MAX; i++ )
+  for ( meta_gem_type_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
     const char* meta_gem_name = util_t::meta_gem_type_string( i );
 
@@ -69,7 +69,7 @@ static bool is_meta_prefix( const std::string& option_name )
 
 static bool is_meta_suffix( const std::string& option_name )
 {
-  for ( int i=0; i < META_GEM_MAX; i++ )
+  for ( meta_gem_type_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
     const char* meta_gem_name = util_t::meta_gem_type_string( i );
 
@@ -87,14 +87,11 @@ static bool is_meta_suffix( const std::string& option_name )
 
 // parse_meta_gem ===========================================================
 
-static int parse_meta_gem( const std::string& prefix,
-                           const std::string& suffix )
+meta_gem_type_e parse_meta_gem( const std::string& prefix,
+                                const std::string& suffix )
 {
   if ( prefix.empty() || suffix.empty() ) return META_GEM_NONE;
-
-  std::string name = prefix + "_" + suffix;
-
-  return util_t::parse_meta_gem_type( name );
+  return util_t::parse_meta_gem_type( prefix + '_' + suffix );
 }
 
 } // ANONYMOUS NAMESPACE ====================================================
@@ -102,7 +99,7 @@ static int parse_meta_gem( const std::string& prefix,
 // item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
-  sim( p -> sim ), player( p ), slot( SLOT_NONE ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
+  sim( p -> sim ), player( p ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
   unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( p -> dbc.ptr ),
   is_matching_type( false ), is_reforged( false ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ),
   options_str( o )
@@ -113,7 +110,7 @@ item_t::item_t( player_t* p, const std::string& o ) :
 
 bool item_t::active() const
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   if ( ! encoded_name_str.empty() ) return true;
   return false;
 }
@@ -122,7 +119,7 @@ bool item_t::active() const
 
 bool item_t::heroic() const
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   return is_heroic;
 }
 
@@ -130,7 +127,7 @@ bool item_t::heroic() const
 
 bool item_t::lfr() const
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   return is_lfr;
 }
 
@@ -145,7 +142,7 @@ bool item_t::ptr() const
 
 bool item_t::matching_type()
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   return is_matching_type;
 }
 
@@ -153,7 +150,7 @@ bool item_t::matching_type()
 
 bool item_t::reforged() const
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   return is_reforged;
 }
 
@@ -467,7 +464,7 @@ bool item_t::decode_stats()
   {
     token_t& t = tokens[ i ];
 
-    int s = util_t::parse_stat_type( t.name );
+    stat_type_e s = util_t::parse_stat_type( t.name );
 
     if ( s != STAT_NONE )
     {
@@ -617,7 +614,7 @@ bool item_t::decode_random_suffix()
     {
       if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_type_e stat = util_t::translate_item_mod( enchant_data.ench_prop[ j ] );
+      stat_type_e stat = util_t::translate_item_mod( static_cast<item_mod_type>( enchant_data.ench_prop[ j ] ) );
 
       if ( stat == STAT_NONE ) continue;
 
@@ -687,7 +684,7 @@ bool item_t::decode_gems()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int s;
+    stat_type_e s;
 
     if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
@@ -708,7 +705,7 @@ bool item_t::decode_gems()
     }
   }
 
-  int meta_gem = parse_meta_gem( meta_prefix, meta_suffix );
+  meta_gem_type_e meta_gem = parse_meta_gem( meta_prefix, meta_suffix );
 
   if ( meta_gem != META_GEM_NONE )
   {
@@ -775,7 +772,7 @@ bool item_t::decode_enchant()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int s;
+    stat_type_e s;
 
     if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
@@ -825,7 +822,7 @@ bool item_t::decode_addon()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int s;
+    stat_type_e s;
 
     if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
@@ -854,7 +851,7 @@ bool item_t::decode_special( special_effect_t& effect,
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int s;
+    stat_type_e s;
     school_type_e sc;
 
     if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
@@ -1256,7 +1253,7 @@ bool item_t::decode_weapon()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int type;
+    weapon_type_e type;
     school_type_e school;
 
     if ( ( type = util_t::parse_weapon_type( t.name ) ) != WEAPON_NONE )
@@ -1509,8 +1506,8 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
 
 // item_t::parse_gem ========================================================
 
-int item_t::parse_gem( item_t&            item,
-                       const std::string& gem_id )
+gem_type_e item_t::parse_gem( item_t&            item,
+                              const std::string& gem_id )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -1523,46 +1520,46 @@ int item_t::parse_gem( item_t&            item,
     return GEM_NONE;
   }
 
-  int gem_type_e = GEM_NONE;
+  gem_type_e type = GEM_NONE;
 
   if ( cache::items() != cache::CURRENT )
   {
     // Check data source caches, except local
     bool has_local = false;
 
-    for ( unsigned i = 0; gem_type_e == GEM_NONE && i < source_list.size(); i++ )
+    for ( unsigned i = 0; type == GEM_NONE && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "local" )
         has_local = true;
       else if ( source_list[ i ] == "wowhead" )
-        gem_type_e = wowhead_t::parse_gem( item, gem_id, false, cache::ONLY );
+        type = wowhead_t::parse_gem( item, gem_id, false, cache::ONLY );
       else if ( source_list[ i ] == "ptrhead" )
-        gem_type_e = wowhead_t::parse_gem( item, gem_id, true, cache::ONLY );
+        type = wowhead_t::parse_gem( item, gem_id, true, cache::ONLY );
       else if ( source_list[ i ] == "mmoc" )
-        gem_type_e = mmo_champion_t::parse_gem( item, gem_id, cache::ONLY );
+        type = mmo_champion_t::parse_gem( item, gem_id, cache::ONLY );
       else if ( source_list[ i ] == "bcpapi" )
-        gem_type_e = bcp_api::parse_gem( item, gem_id, cache::ONLY );
+        type = bcp_api::parse_gem( item, gem_id, cache::ONLY );
     }
 
-    if ( gem_type_e == GEM_NONE && has_local )
-      gem_type_e = item_database_t::parse_gem( item, gem_id );
+    if ( type == GEM_NONE && has_local )
+      type = item_database_t::parse_gem( item, gem_id );
   }
 
   if ( cache::items() != cache::ONLY )
   {
     // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
-    for ( unsigned i = 0; gem_type_e == GEM_NONE && i < source_list.size(); i++ )
+    for ( unsigned i = 0; type == GEM_NONE && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "wowhead" )
-        gem_type_e = wowhead_t::parse_gem( item, gem_id );
+        type = wowhead_t::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "ptrhead" )
-        gem_type_e = wowhead_t::parse_gem( item, gem_id, true );
+        type = wowhead_t::parse_gem( item, gem_id, true );
       else if ( source_list[ i ] == "mmoc" )
-        gem_type_e = mmo_champion_t::parse_gem( item, gem_id );
+        type = mmo_champion_t::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "bcpapi" )
-        gem_type_e = bcp_api::parse_gem( item, gem_id );
+        type = bcp_api::parse_gem( item, gem_id );
     }
   }
 
-  return gem_type_e;
+  return type;
 }

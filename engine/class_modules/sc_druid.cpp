@@ -363,15 +363,15 @@ struct druid_t : public player_t
   virtual double    composite_attack_power() const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_attack_crit( weapon_t* ) const;
-  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
   virtual double    composite_spell_hit() const;
   virtual double    composite_spell_crit() const;
-  virtual double    composite_attribute_multiplier( int attr ) const;
-  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
+  virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual double    composite_block_value() const { return 0; }
   virtual double    composite_tank_parry() const { return 0; }
   virtual double    composite_tank_block() const { return 0; }
-  virtual double    composite_tank_crit( const school_type_e school ) const;
+  virtual double    composite_tank_crit( school_type_e school ) const;
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
@@ -379,9 +379,9 @@ struct druid_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual resource_type_e primary_resource() const;
   virtual role_type_e primary_role() const;
-  virtual double    assess_damage( double amount, const school_type_e school, int dmg_type, int result, action_t* a );
-  virtual heal_info_t assess_heal( double amount, const school_type_e school, int type, int result, action_t* a );
-  virtual double    composite_attribute( int attr ) const;
+  virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
+  virtual heal_info_t assess_heal( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
+  virtual double    composite_attribute( attribute_type_e attr ) const;
 
 
   void reset_gcd()
@@ -406,7 +406,8 @@ struct druid_cat_attack_t : public attack_t
   bool requires_combo_points;
   int adds_combo_points;
 
-  druid_cat_attack_t( const char* n, druid_t* player, const school_type_e s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  druid_cat_attack_t( const char* n, druid_t* player, school_type_e s=SCHOOL_PHYSICAL,
+                      talent_tree_type_e t=TREE_NONE, bool special=true ) :
     attack_t( n, player, RESOURCE_ENERGY, s, t, special ),
     requires_stealth( 0 ),
     requires_position( POSITION_NONE ),
@@ -417,7 +418,7 @@ struct druid_cat_attack_t : public attack_t
   }
 
   druid_cat_attack_t( const char* n, uint32_t id, druid_t* p, bool special = true ) :
-    attack_t( n, id, p, 0, special ),
+    attack_t( n, id, p, TREE_NONE, special ),
     adds_combo_points( 0 )
   {
     adds_combo_points     = ( int ) base_value( E_ADD_COMBO_POINTS );
@@ -444,12 +445,12 @@ struct druid_cat_attack_t : public attack_t
 
 struct druid_bear_attack_t : public attack_t
 {
-  druid_bear_attack_t( const char* n, druid_t* player, const school_type_e s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  druid_bear_attack_t( const char* n, druid_t* player, school_type_e s=SCHOOL_PHYSICAL, talent_tree_type_e t=TREE_NONE, bool special=true ) :
     attack_t( n, player, RESOURCE_RAGE, s, t, special )
   {}
 
   druid_bear_attack_t( const char* n, uint32_t id, druid_t* p, bool special = true ) :
-    attack_t( n, id, p, 0, special )
+    attack_t( n, id, p, TREE_NONE, special )
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -474,7 +475,7 @@ struct druid_heal_t : public heal_t
   double additive_factors;
   bool consume_ooc;
 
-  druid_heal_t( const char* n, druid_t* p, const uint32_t id, int t = TREE_NONE ) :
+  druid_heal_t( const char* n, druid_t* p, uint32_t id, talent_tree_type_e t = TREE_NONE ) :
     heal_t( n, p, id, t ), additive_factors( 0 ), consume_ooc( false )
   {
     dot_behavior      = DOT_REFRESH;
@@ -508,13 +509,13 @@ struct druid_spell_t : public spell_t
 {
   double additive_multiplier;
 
-  druid_spell_t( const char* n, druid_t* p, const school_type_e s, int t ) :
+  druid_spell_t( const char* n, druid_t* p, school_type_e s, talent_tree_type_e t ) :
     spell_t( n, p, RESOURCE_MANA, s, t ), additive_multiplier( 0.0 )
   {
   }
 
   druid_spell_t( const char* n, uint32_t id, druid_t* p ) :
-    spell_t( n, id, p, 0 ), additive_multiplier( 0.0 )
+    spell_t( n, id, p, TREE_NONE ), additive_multiplier( 0.0 )
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -1802,9 +1803,9 @@ struct shred_t : public druid_cat_attack_t
     }
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    druid_cat_attack_t::target_debuff( t, dmg_type_e );
+    druid_cat_attack_t::target_debuff( t, dtype );
     druid_t* p = player -> cast_druid();
 
     if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
@@ -2229,9 +2230,9 @@ struct maul_t : public druid_bear_attack_t
     }
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    druid_bear_attack_t::target_debuff( t, dmg_type_e );
+    druid_bear_attack_t::target_debuff( t, dtype );
     druid_t* p = player -> cast_druid();
 
     if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
@@ -2608,9 +2609,9 @@ struct nourish_t : public druid_heal_t
       trigger_living_seed( this );
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    druid_heal_t::target_debuff( t, dmg_type_e );
+    druid_heal_t::target_debuff( t, dtype );
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
     if ( td -> hot_ticking() )
@@ -3746,9 +3747,9 @@ struct starfire_t : public druid_spell_t
     }
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    druid_spell_t::target_debuff( t, dmg_type_e );
+    druid_spell_t::target_debuff( t, dtype );
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
@@ -3940,9 +3941,9 @@ struct starsurge_t : public druid_spell_t
       return druid_spell_t::ready();
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    druid_spell_t::target_debuff( t, dmg_type_e );
+    druid_spell_t::target_debuff( t, dtype );
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
@@ -4318,9 +4319,9 @@ struct wrath_t : public druid_spell_t
       player_multiplier *= 1.30;
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    druid_spell_t::target_debuff( t, dmg_type_e );
+    druid_spell_t::target_debuff( t, dtype );
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
@@ -4330,7 +4331,7 @@ struct wrath_t : public druid_spell_t
       target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg=0 )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
     druid_t* p = player -> cast_druid();
@@ -5266,7 +5267,7 @@ double druid_t::composite_spell_crit() const
 
 // druid_t::composite_attribute_multiplier ==================================
 
-double druid_t::composite_attribute_multiplier( int attr ) const
+double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -5304,7 +5305,7 @@ double druid_t::composite_attribute_multiplier( int attr ) const
 
 // Heart of the Wild does nothing for base int so we need to do completely silly
 // tricks to match paper doll in game
-double druid_t::composite_attribute( int attr ) const
+double druid_t::composite_attribute( attribute_type_e attr ) const
 {
   double a = player_t::composite_attribute( attr );
 
@@ -5316,7 +5317,7 @@ double druid_t::composite_attribute( int attr ) const
 
 // druid_t::matching_gear_multiplier ========================================
 
-double druid_t::matching_gear_multiplier( const attribute_type_e attr ) const
+double druid_t::matching_gear_multiplier( attribute_type_e attr ) const
 {
   switch ( primary_tree() )
   {
@@ -5334,7 +5335,7 @@ double druid_t::matching_gear_multiplier( const attribute_type_e attr ) const
 
 // druid_t::composite_tank_crit =============================================
 
-double druid_t::composite_tank_crit( const school_type_e school ) const
+double druid_t::composite_tank_crit( school_type_e school ) const
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -5466,11 +5467,11 @@ resource_type_e druid_t::primary_resource() const
 
 // druid_t::assess_damage ===================================================
 
-double druid_t::assess_damage( double            amount,
-                               const school_type_e school,
-                               int               dmg_type,
-                               int               result,
-                               action_t*         action )
+double druid_t::assess_damage( double        amount,
+                               school_type_e school,
+                               dmg_type_e    dtype,
+                               result_type_e result,
+                               action_t*     action )
 {
   if ( result == RESULT_DODGE && talents.natural_reaction -> rank() )
     resource_gain( RESOURCE_RAGE, talents.natural_reaction -> effect2().base_value(), gains_natural_reaction );
@@ -5493,7 +5494,7 @@ double druid_t::assess_damage( double            amount,
     amount *= 1.0 + buffs_survival_instincts -> value();
 
   // Call here to benefit from -10% physical damage before SD is taken into account
-  amount = player_t::assess_damage( amount, school, dmg_type, result, action );
+  amount = player_t::assess_damage( amount, school, dtype, result, action );
 
   if ( school == SCHOOL_PHYSICAL && buffs_savage_defense -> up() )
   {
@@ -5508,11 +5509,11 @@ double druid_t::assess_damage( double            amount,
   return amount;
 }
 
-player_t::heal_info_t druid_t::assess_heal( double            amount,
-                                            const school_type_e school,
-                                            int               dmg_type,
-                                            int               result,
-                                            action_t*         action )
+player_t::heal_info_t druid_t::assess_heal( double        amount,
+                                            school_type_e school,
+                                            dmg_type_e    dmg_type,
+                                            result_type_e result,
+                                            action_t*     action )
 {
   amount *= 1.0 + buffs_frenzied_regeneration -> check() * glyphs.frenzied_regeneration -> effect1().percent();
 

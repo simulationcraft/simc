@@ -314,7 +314,7 @@ struct mage_t : public player_t
   virtual void      reset();
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, int save_type_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -324,12 +324,12 @@ struct mage_t : public player_t
   virtual role_type_e primary_role() const { return ROLE_SPELL; }
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_mastery() const;
-  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
-  virtual double    composite_spell_power( const school_type_e school ) const;
-  virtual double    composite_spell_resistance( const school_type_e school ) const;
-  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
+  virtual double    composite_spell_power( school_type_e school ) const;
+  virtual double    composite_spell_resistance( school_type_e school ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual void      stun();
 
   // Event Tracking
@@ -370,7 +370,7 @@ struct mage_spell_t : public spell_t
     }
   }
 
-  mage_spell_t( const char* n, mage_t* player, const school_type_e s, int t ) :
+  mage_spell_t( const char* n, mage_t* player, const school_type_e s, talent_tree_type_e t ) :
     spell_t( n, player, RESOURCE_MANA, s, t )
   {
     _init_mage_spell_t();
@@ -400,7 +400,7 @@ struct mage_spell_t : public spell_t
   virtual void   impact( player_t* t, const result_type_e impact_result, const double travel_dmg );
   virtual void   consume_resource();
   virtual void   player_buff();
-  virtual void   target_debuff( player_t* t, int dmg_type_e );
+  virtual void   target_debuff( player_t* t, dmg_type_e );
   virtual double total_crit() const;
   virtual double hot_streak_crit() { return player_crit; }
 };
@@ -1210,11 +1210,11 @@ void mage_spell_t::player_buff()
 
 // mage_spell_t::target_debuff ==============================================
 
-void mage_spell_t::target_debuff( player_t* t, int dmg_type_e )
+void mage_spell_t::target_debuff( player_t* t, dmg_type_e dt )
 {
-  spell_t::target_debuff( t, dmg_type_e );
+  spell_t::target_debuff( t, dt );
 
-  if ( school == SCHOOL_FIRE && dmg_type_e == DMG_OVER_TIME )
+  if ( school == SCHOOL_FIRE && dt == DMG_OVER_TIME )
   {
     mage_t* p = player -> cast_mage();
     target_multiplier *= 1.0 + p -> specializations.flashburn * p -> composite_mastery();
@@ -2571,11 +2571,11 @@ struct living_bomb_t : public mage_spell_t
     add_child( explosion_spell );
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
     // Override the mage_spell_t version to ensure mastery effect is stacked additively.  Someday I will make this cleaner.
     mage_t* p = player -> cast_mage();
-    spell_t::target_debuff( t, dmg_type_e );
+    spell_t::target_debuff( t, dt );
 
     target_multiplier *= 1.0 + ( p -> glyphs.living_bomb -> effect1().percent() +
                                  p -> talents.critical_mass -> effect2().percent() +
@@ -4209,11 +4209,11 @@ void mage_t::create_options()
 
 // mage_t::create_profile ===================================================
 
-bool mage_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
+bool mage_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
-  player_t::create_profile( profile_str, save_type_e, save_html );
+  player_t::create_profile( profile_str, stype, save_html );
 
-  if ( save_type_e == SAVE_ALL )
+  if ( stype == SAVE_ALL )
   {
     if ( ! focus_magic_target_str.empty() ) profile_str += "focus_magic_target=" + focus_magic_target_str + "\n";
   }

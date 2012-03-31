@@ -668,18 +668,17 @@ static void register_synapse_springs( item_t* item )
     return;
   }
 
-  int attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTRIBUTE_NONE };
-  int stat[] = { STAT_STRENGTH, STAT_AGILITY, STAT_INTELLECT, STAT_NONE };
+  static const attribute_type_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT };
 
-  int    max_stat  = STAT_INTELLECT;
+  stat_type_e max_stat = STAT_INTELLECT;
   double max_value = -1;
 
-  for ( int i=0; attr[ i ] != ATTRIBUTE_NONE; i++ )
+  for ( unsigned i = 0; i < sizeof_array( attr ); ++i )
   {
     if ( p -> attribute[ attr[ i ] ] > max_value )
     {
       max_value = p -> attribute[ attr[ i ] ];
-      max_stat = stat[ i ];
+      max_stat = stat_from_attr( attr[ i ] );
     }
   }
 

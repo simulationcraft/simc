@@ -125,7 +125,8 @@ struct monk_attack_t : public attack_t
 {
   int stancemask;
 
-  monk_attack_t( const char* n, uint32_t id, monk_t* p, int t=TREE_NONE, bool special = true ) :
+  monk_attack_t( const char* n, uint32_t id, monk_t* p,
+                 talent_tree_type_e t=TREE_NONE, bool special = true ) :
     attack_t( n, id, p, t, special ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
   {
@@ -249,9 +250,9 @@ struct tiger_palm_t : public monk_attack_t
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
-    monk_attack_t::target_debuff( t, dmg_type_e );
+    monk_attack_t::target_debuff( t, dt );
 
     if ( t -> health_percentage() > 50.0 )
       target_dd_adder = 0;
@@ -273,7 +274,7 @@ struct blackout_kick_t : public monk_attack_t
 struct spinning_crane_kick_tick_t : public monk_attack_t
 {
   spinning_crane_kick_tick_t( monk_t* p ) :
-    monk_attack_t( "spinning_crane_kick_tick", ( uint32_t ) 0, p )
+    monk_attack_t( "spinning_crane_kick_tick", 0u, p )
   {
     background  = true;
     dual        = true;

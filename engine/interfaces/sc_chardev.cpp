@@ -135,10 +135,9 @@ player_t* chardev_t::download_player( sim_t* sim,
     {
       if ( ( reforge_from >= 0 ) && ( reforge_to >= 0 ) )
       {
-        std::stringstream ss;
-        ss << enchant_t::get_reforge_id( util_t::translate_item_mod( reforge_from ),
-                                         util_t::translate_item_mod( reforge_to   ) );
-        reforge_id = ss.str();
+        stat_type_e from = util_t::translate_item_mod( static_cast<item_mod_type>( reforge_from ) );
+        stat_type_e to   = util_t::translate_item_mod( static_cast<item_mod_type>( reforge_to ) );
+        reforge_id = util_t::to_string( enchant_t::get_reforge_id( from, to ) );
       }
     }
 

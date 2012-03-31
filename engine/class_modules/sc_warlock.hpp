@@ -248,17 +248,17 @@ struct warlock_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual bool      create_profile( std::string& profile_str, int save_type_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const     { return ROLE_SPELL; }
   virtual double    composite_armor() const;
-  virtual double    composite_spell_power( const school_type_e school ) const;
+  virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
-  virtual double    composite_player_td_multiplier( const school_type_e school, action_t* a = NULL ) const;
-  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_td_multiplier( school_type_e school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
 
   // Event Tracking
   virtual action_expr_t* create_expression( action_t*, const std::string& name );

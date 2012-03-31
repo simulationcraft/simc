@@ -34,25 +34,25 @@ void spell_t::init_spell_t_()
   }
 }
 
-spell_t::spell_t( const spell_id_t& s, int t ) :
+spell_t::spell_t( const spell_id_t& s, talent_tree_type_e t ) :
   action_t( ACTION_SPELL, s, t, true )
 {
   init_spell_t_();
 }
 
-spell_t::spell_t( const char* n, player_t* p, int r, const school_type_e s, int t ) :
+spell_t::spell_t( const char* n, player_t* p, resource_type_e r, school_type_e s, talent_tree_type_e t ) :
   action_t( ACTION_SPELL, n, p, r, s, t, true )
 {
   init_spell_t_();
 }
 
-spell_t::spell_t( const char* name, const char* sname, player_t* p, int t ) :
+spell_t::spell_t( const char* name, const char* sname, player_t* p, talent_tree_type_e t ) :
   action_t( ACTION_SPELL, name, sname, p, t, true )
 {
   init_spell_t_();
 }
 
-spell_t::spell_t( const char* name, const uint32_t id, player_t* p, int t ) :
+spell_t::spell_t( const char* name, const uint32_t id, player_t* p, talent_tree_type_e t ) :
   action_t( ACTION_SPELL, name, id, p, t, true )
 {
   init_spell_t_();
@@ -113,9 +113,9 @@ void spell_t::player_buff()
 
 // spell_t::target_debuff ===================================================
 
-void spell_t::target_debuff( player_t* t, int dmg_type_e )
+void spell_t::target_debuff( player_t* t, dmg_type_e type )
 {
-  action_t::target_debuff( t, dmg_type_e );
+  action_t::target_debuff( t, type );
 
   int crit_debuff = std::max( t -> debuffs.critical_mass    -> stack() * 5,
                               t -> debuffs.shadow_and_flame -> stack() * 5 );
@@ -151,14 +151,8 @@ double spell_t::miss_chance( int delta_level ) const
 
 // spell_t::crit_chance =====================================================
 
-double spell_t::crit_chance( int delta_level ) const
-{
-  double chance = total_crit();
-
-  ( void ) delta_level;
-
-  return chance;
-}
+double spell_t::crit_chance( int /* delta_level */ ) const
+{ return total_crit(); }
 
 // spell_t::calculate_result ================================================
 

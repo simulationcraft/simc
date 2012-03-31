@@ -172,7 +172,7 @@ getPaperdollPixmap( const QString& name, bool draw_border, QSize s )
 
 PaperdollProfile::PaperdollProfile() :
   QObject(),
-  m_class( PLAYER_NONE ), m_race( RACE_NONE ), m_currentSlot( SLOT_NONE )
+  m_class( PLAYER_NONE ), m_race( RACE_NONE ), m_currentSlot( SLOT_INVALID )
 {
   m_professions[ 0 ] = m_professions[ 1 ] = PROFESSION_NONE;
 
@@ -228,7 +228,7 @@ PaperdollProfile::setClass( int player_class )
   assert( player_class > PLAYER_NONE && player_class < PLAYER_PET );
   m_class = ( player_type_e ) player_class;
 
-  for ( slot_type_e t = SLOT_NONE; t < SLOT_MAX; t=(slot_type_e)((int)t+1) )
+  for ( slot_type_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_type_e)((int)t+1) )
     validateSlot( t );
 
   emit classChanged( m_class );
@@ -241,7 +241,7 @@ PaperdollProfile::setRace( int player_race )
   assert( player_race >= RACE_NIGHT_ELF && player_race <= RACE_GOBLIN );
   m_race = ( race_type_e ) player_race;
 
-  for ( slot_type_e t = SLOT_NONE; t < SLOT_MAX; t=(slot_type_e)((int)t+1) )
+  for ( slot_type_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_type_e)((int)t+1) )
     validateSlot( t );
 
   emit raceChanged( m_race );
@@ -255,7 +255,7 @@ PaperdollProfile::setProfession( int profession, int type )
 
   m_professions[ profession ] = ( profession_type_e ) type;
 
-  for ( slot_type_e t = SLOT_NONE; t < SLOT_MAX; t=(slot_type_e)((int)t+1) )
+  for ( slot_type_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_type_e)((int)t+1) )
     validateSlot( t );
 
   emit professionChanged( m_professions[ profession ] );
@@ -482,7 +482,7 @@ PaperdollProfile::itemFitsProfileSlot( const item_data_t* item ) const
 void
 PaperdollProfile::validateSlot( slot_type_e t )
 {
-  if ( t == SLOT_NONE ) return;
+  if ( t == SLOT_INVALID ) return;
   if ( ! m_slotItem[ t ] ) return;
 
   // Make sure item is still usable, if not, clear the slot
@@ -502,7 +502,7 @@ PaperdollProfile::validateSlot( slot_type_e t )
 bool
 PaperdollProfile::clearSlot( slot_type_e t )
 {
-  if ( t == SLOT_NONE ) return false;
+  if ( t == SLOT_INVALID ) return false;
   bool has_item = m_slotItem[ t ] != 0;
 
   m_slotItem   [ t ] = 0;
@@ -598,7 +598,7 @@ ItemFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& source
   const QModelIndex& idx  = sourceModel() -> index( sourceRow, 0, sourceParent );
   const item_data_t* item = reinterpret_cast< const item_data_t* >( idx.data( Qt::UserRole ).value< void* >() );
 
-  if ( m_profile -> currentSlot() == SLOT_NONE )
+  if ( m_profile -> currentSlot() == SLOT_INVALID )
     return false;
 
   bool state = filterByName( item ) &&
@@ -1154,7 +1154,7 @@ RandomSuffixDataModel::stateChanged()
 int
 RandomSuffixDataModel::rowCount( const QModelIndex& ) const
 {
-  if ( m_profile -> currentSlot() == SLOT_NONE )
+  if ( m_profile -> currentSlot() == SLOT_INVALID )
     return 0;
 
   const item_data_t* item = m_profile -> slotItem( m_profile -> currentSlot() );
@@ -1382,7 +1382,7 @@ EnchantFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sou
   slot_type_e          slot = m_profile -> currentSlot();
   const item_data_t* item = m_profile -> slotItem( slot );
 
-  if ( slot == SLOT_NONE || ! item )
+  if ( slot == SLOT_INVALID || ! item )
     return false;
 
   return m_profile -> enchantUsableByProfile( ed );

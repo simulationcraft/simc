@@ -15,11 +15,12 @@
 
 struct flask_t : public action_t
 {
-  int type;
   gain_t* gain;
+  flask_type_e type;
 
   flask_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "flask", p ), type( FLASK_NONE )
+    action_t( ACTION_USE, "flask", p ),
+    gain( p -> get_gain( "flask" ) )
   {
     std::string type_str;
 
@@ -32,21 +33,13 @@ struct flask_t : public action_t
 
     trigger_gcd = timespan_t::zero;
     harmful = false;
-    for ( int i=0; i < FLASK_MAX; i++ )
-    {
-      if ( type_str == util_t::flask_type_string( i ) )
-      {
-        type = i;
-        break;
-      }
-    }
+    type = util_t::parse_flask_type( type_str );
     if ( type == FLASK_NONE )
     {
       sim -> errorf( "Player %s attempting to use flask of type '%s', which is not supported.\n",
                      player -> name(), type_str.c_str() );
       sim -> cancel();
     }
-    gain = p -> get_gain( "flask" );
   }
 
   virtual void execute()
@@ -176,11 +169,11 @@ struct flask_t : public action_t
 
 struct food_t : public action_t
 {
-  int type;
   gain_t* gain;
+  food_type_e type;
 
   food_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "food", p ), type( FOOD_NONE )
+    action_t( ACTION_USE, "food", p ), gain( p -> get_gain( "food" ) )
   {
     std::string type_str;
 
@@ -193,16 +186,13 @@ struct food_t : public action_t
 
     trigger_gcd = timespan_t::zero;
     harmful = false;
-    for ( int i=0; i < FOOD_MAX; i++ )
+
+    type = util_t::parse_food_type( type_str );
+    if ( type == FOOD_NONE )
     {
-      if ( type_str == util_t::food_type_string( i ) )
-      {
-        type = i;
-        break;
-      }
+      sim -> errorf( "Invalid food type '%s'\n", type_str.c_str() );
+      sim -> cancel();
     }
-    assert( type != FOOD_NONE );
-    gain = p -> get_gain( "food" );
   }
 
   virtual void execute()

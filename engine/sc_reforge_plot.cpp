@@ -60,7 +60,7 @@ reforge_plot_t::reforge_plot_t( sim_t* s ) :
 // generate_stat_mods =======================================================
 
 void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
-                                         const std::vector<int> &stat_indices,
+                                         const std::vector<stat_type_e> &stat_indices,
                                          int cur_mod_stat,
                                          std::vector<int> cur_stat_mods )
 {
@@ -75,7 +75,6 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
     if ( abs( sum ) > reforge_plot_amount )
       return;
 
-    int negative_stat = 0;
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> quiet )
@@ -83,10 +82,8 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
       if ( p -> is_pet() )
         continue;
       if ( p -> stats.get_stat( stat_indices[ cur_mod_stat ] ) - sum < 0 )
-        negative_stat = 1;
+        return;
     }
-    if ( negative_stat )
-      return;
 
     cur_stat_mods[ cur_mod_stat ] = -1 * sum;
     stat_mods.push_back( cur_stat_mods );
@@ -97,7 +94,7 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
         mod_amount <= reforge_plot_amount;
         mod_amount += reforge_plot_step )
   {
-    int negative_stat = 0;
+    bool negative_stat = false;
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> quiet )
@@ -105,7 +102,10 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
       if ( p -> is_pet() )
         continue;
       if ( p -> stats.get_stat( stat_indices[ cur_mod_stat ] ) + mod_amount < 0 )
-        negative_stat = 1;
+      {
+        negative_stat = true;
+        break;
+      }
     }
     if ( negative_stat )
       continue;
@@ -126,7 +126,7 @@ void reforge_plot_t::analyze_stats()
 
   int num_players = ( int ) sim -> players_by_name.size();
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
     if ( is_plot_stat( sim, i ) )
       reforge_plot_stat_indices.push_back( i );
 

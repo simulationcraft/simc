@@ -22,7 +22,7 @@ static bool is_number( const std::string s )
 
 static void stat_search( std::string&              encoding_str,
                          std::vector<std::string>& description_tokens,
-                         int                       stat_type_e,
+                         stat_type_e               type,
                          const std::string&        stat_str )
 {
   std::vector<std::string> stat_tokens;
@@ -76,7 +76,7 @@ static void stat_search( std::string&              encoding_str,
 
       if ( ! value_str.empty() )
       {
-        encoding_str += "_" + value_str + util_t::stat_type_abbrev( stat_type_e );
+        encoding_str += '_' + value_str + util_t::stat_type_abbrev( type );
       }
     }
   }
@@ -151,7 +151,7 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
 
 // armory_t::parse_meta_gem =================================================
 
-int armory_t::parse_meta_gem( const std::string& description )
+meta_gem_type_e armory_t::parse_meta_gem( const std::string& description )
 {
   if ( description == "+54 Agility and 3% Increased Critical Damage"                      ) return META_AGILE_SHADOWSPIRIT;
   if ( description == "+32 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_EARTHSIEGE;

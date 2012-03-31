@@ -50,7 +50,7 @@ void heal_t::init_heal_t_()
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
 
-heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
+heal_t::heal_t( const char* n, player_t* player, const char* sname, talent_tree_type_e t ) :
   action_t( ACTION_HEAL, n, sname, player, t )
 {
   init_heal_t_();
@@ -58,7 +58,7 @@ heal_t::heal_t( const char* n, player_t* player, const char* sname, int t ) :
 
 // heal_t::heal_t ======== Heal Constructor by Spell ID =====================
 
-heal_t::heal_t( const char* n, player_t* player, const uint32_t id, int t ) :
+heal_t::heal_t( const char* n, player_t* player, const uint32_t id, talent_tree_type_e t ) :
   action_t( ACTION_HEAL, n, id, player, t )
 {
   init_heal_t_();
@@ -188,12 +188,10 @@ void heal_t::schedule_execute()
 // heal_t::assess_damage ====================================================
 
 void heal_t::assess_damage( player_t* t,
-                            const double heal_amount,
-                            const dmg_type_e heal_type,
-                            const result_type_e heal_result )
+                            double heal_amount,
+                            dmg_type_e heal_type,
+                            result_type_e heal_result )
 {
-
-
   player_t::heal_info_t heal = t -> assess_heal( heal_amount, school, heal_type, heal_result, this );
 
   total_heal   += heal.amount;
@@ -326,7 +324,7 @@ void absorb_t::init_absorb_t_()
 
 // absorb_t::absorb_t ======== Absorb Constructor by Spell Name =============
 
-absorb_t::absorb_t( const char* n, player_t* player, const char* sname, int t ) :
+absorb_t::absorb_t( const char* n, player_t* player, const char* sname, talent_tree_type_e t ) :
   action_t( ACTION_ABSORB, n, sname, player, t )
 {
   init_absorb_t_();
@@ -334,7 +332,7 @@ absorb_t::absorb_t( const char* n, player_t* player, const char* sname, int t ) 
 
 // absorb_t::absorb_t ======== absorb Constructor by Spell ID ===============
 
-absorb_t::absorb_t( const char* n, player_t* player, const uint32_t id, int t ) :
+absorb_t::absorb_t( const char* n, player_t* player, const uint32_t id, talent_tree_type_e t ) :
   action_t( ACTION_ABSORB, n, id, player, t )
 {
   init_absorb_t_();
@@ -423,7 +421,7 @@ void absorb_t::execute()
 
 // absorb_t::impact =========================================================
 
-void absorb_t::impact( player_t* t, const result_type_e impact_result, const double travel_dmg=0 )
+void absorb_t::impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
 {
   if ( travel_dmg > 0 )
   {
@@ -433,10 +431,10 @@ void absorb_t::impact( player_t* t, const result_type_e impact_result, const dou
 
 // absorb_t::assess_damage ==================================================
 
-void absorb_t::assess_damage( player_t* t,
-                              const double    heal_amount,
-                              const dmg_type_e heal_type,
-                              const result_type_e heal_result )
+void absorb_t::assess_damage( player_t*     t,
+                              double        heal_amount,
+                              dmg_type_e    heal_type,
+                              result_type_e heal_result )
 {
   double heal_actual = direct_dmg = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
 

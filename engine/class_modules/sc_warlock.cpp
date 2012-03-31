@@ -150,25 +150,25 @@ private:
   }
 
 public:
-  warlock_spell_t( const char* n, warlock_t* p, const school_type_e s, int t ) :
+  warlock_spell_t( const char* n, warlock_t* p, const school_type_e s, talent_tree_type_e t ) :
     spell_t( n, p, RESOURCE_MANA, s, t )
   {
     _init_warlock_spell_t();
   }
 
-  warlock_spell_t( const spell_id_t& s, int t = TREE_NONE ) :
+  warlock_spell_t( const spell_id_t& s, talent_tree_type_e t = TREE_NONE ) :
     spell_t( s, t )
   {
     _init_warlock_spell_t();
   }
 
-  warlock_spell_t( const char* n, warlock_t* p, const char* sname, int t = TREE_NONE ) :
+  warlock_spell_t( const char* n, warlock_t* p, const char* sname, talent_tree_type_e t = TREE_NONE ) :
     spell_t( n, sname, p, t )
   {
     _init_warlock_spell_t();
   }
 
-  warlock_spell_t( const char* n, warlock_t* p, const uint32_t id, int t = TREE_NONE ) :
+  warlock_spell_t( const char* n, warlock_t* p, uint32_t id, talent_tree_type_e t = TREE_NONE ) :
     spell_t( n, id, p, t )
   {
     _init_warlock_spell_t();
@@ -205,7 +205,7 @@ public:
 
     spell_t::player_buff();
 
-    if ( base_execute_time > timespan_t::zero && s_tree == WARLOCK_DESTRUCTION && p -> buffs.demon_soul_imp -> up() )
+    if ( base_execute_time > timespan_t::zero && s_tree == TREE_DESTRUCTION && p -> buffs.demon_soul_imp -> up() )
     {
       player_crit += p -> buffs.demon_soul_imp -> effect1().percent();
     }
@@ -216,11 +216,11 @@ public:
 
   // warlock_spell_t::target_debuff =========================================
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
     warlock_t* p = player -> cast_warlock();
 
-    spell_t::target_debuff( t, dmg_type_e );
+    spell_t::target_debuff( t, dtype );
 
     if ( p -> buffs.bane_of_havoc -> up() )
       target_multiplier *= 1.0 + p -> buffs.bane_of_havoc -> effect1().percent();
@@ -1168,7 +1168,7 @@ struct haunt_t : public warlock_spell_t
 struct immolate_t : public warlock_spell_t
 {
   immolate_t( warlock_t* p, const std::string& options_str, bool dtr=false ) :
-    warlock_spell_t( "immolate", p, "Immolate", WARLOCK )
+    warlock_spell_t( "immolate", p, "Immolate" )
   {
     parse_options( NULL, options_str );
 
@@ -3318,11 +3318,11 @@ void warlock_t::create_options()
 
 // warlock_t::create_profile ================================================
 
-bool warlock_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
+bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
-  player_t::create_profile( profile_str, save_type_e, save_html );
+  player_t::create_profile( profile_str, stype, save_html );
 
-  if ( save_type_e == SAVE_ALL )
+  if ( stype == SAVE_ALL )
   {
     if ( use_pre_soulburn ) profile_str += "use_pre_soulburn=1\n";
     if ( ! dark_intent_target_str.empty() ) profile_str += "dark_intent_target=" + dark_intent_target_str + "\n";

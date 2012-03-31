@@ -106,10 +106,10 @@ static void parse_stats( std::string& encoding,
 
     if ( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
     {
-      int type = util_t::parse_stat_type( type_str );
+      stat_type_e type = util_t::parse_stat_type( type_str );
       if ( type != STAT_NONE )
       {
-        encoding += "_";
+        encoding += '_';
         encoding += value_str;
         encoding += util_t::stat_type_abbrev( type );
       }
@@ -134,7 +134,7 @@ static bool parse_gems( item_t&           item,
   util_t::string_strip_quotes( temp_stats_str );
   util_t::tolower( temp_stats_str );
 
-  int sockets[ 3 ] = { GEM_NONE, GEM_NONE, GEM_NONE };
+  int sockets[ 3 ] = { 0, 0, 0 };
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, temp_stats_str, "," );
   int num_sockets = 0;
@@ -166,19 +166,20 @@ static bool parse_gems( item_t&           item,
   bool match = true;
   for ( int i=0; i < num_sockets; i++ )
   {
-    int gem = item_t::parse_gem( item, gem_ids[ i ] );
+    gem_type_e gem = item_t::parse_gem( item, gem_ids[ i ] );
 
+    gem_type_e socket;
     switch ( sockets[ i ] )
     {
-    case  0: sockets[ i ] = GEM_NONE;     break;
-    case  1: sockets[ i ] = GEM_META;     break;
-    case  2: sockets[ i ] = GEM_RED;      break;
-    case  4: sockets[ i ] = GEM_YELLOW;   break;
-    case  8: sockets[ i ] = GEM_BLUE;     break;
-    case 32: sockets[ i ] = GEM_COGWHEEL; break;
+    case  1: socket = GEM_META;     break;
+    case  2: socket = GEM_RED;      break;
+    case  4: socket = GEM_YELLOW;   break;
+    case  8: socket = GEM_BLUE;     break;
+    case 32: socket = GEM_COGWHEEL; break;
+    default: socket = GEM_NONE;     break;
     }
 
-    if ( ! util_t::socket_gem_match( sockets[ i ], gem ) )
+    if ( ! util_t::socket_gem_match( socket, gem ) )
       match = false;
   }
 
@@ -245,29 +246,29 @@ static bool parse_weapon( item_t&     item,
   if ( ! xml_t::get_value( subclass_str, node, "subclass/cdata" ) )
     return true;
 
-  int weapon_type_e = WEAPON_NONE;
-  if      ( subclass_str == "One-Handed Axes"         ) weapon_type_e = WEAPON_AXE;
-  else if ( subclass_str == "Two-Handed Axes"         ) weapon_type_e = WEAPON_AXE_2H;
-  else if ( subclass_str == "Daggers"                 ) weapon_type_e = WEAPON_DAGGER;
-  else if ( subclass_str == "Fist Weapons"            ) weapon_type_e = WEAPON_FIST;
-  else if ( subclass_str == "One-Handed Maces"        ) weapon_type_e = WEAPON_MACE;
-  else if ( subclass_str == "Two-Handed Maces"        ) weapon_type_e = WEAPON_MACE_2H;
-  else if ( subclass_str == "Polearms"                ) weapon_type_e = WEAPON_POLEARM;
-  else if ( subclass_str == "Staves"                  ) weapon_type_e = WEAPON_STAFF;
-  else if ( subclass_str == "One-Handed Swords"       ) weapon_type_e = WEAPON_SWORD;
-  else if ( subclass_str == "Two-Handed Swords"       ) weapon_type_e = WEAPON_SWORD_2H;
-  else if ( subclass_str == "Bows"                    ) weapon_type_e = WEAPON_BOW;
-  else if ( subclass_str == "Crossbows"               ) weapon_type_e = WEAPON_CROSSBOW;
-  else if ( subclass_str == "Guns"                    ) weapon_type_e = WEAPON_GUN;
-  else if ( subclass_str == "Thrown"                  ) weapon_type_e = WEAPON_THROWN;
-  else if ( subclass_str == "Wands"                   ) weapon_type_e = WEAPON_WAND;
-  else if ( subclass_str == "Fishing Poles"           ) weapon_type_e = WEAPON_POLEARM;
-  else if ( subclass_str == "Miscellaneous (Weapons)" ) weapon_type_e = WEAPON_POLEARM;
+  weapon_type_e type = WEAPON_NONE;
+  if      ( subclass_str == "One-Handed Axes"         ) type = WEAPON_AXE;
+  else if ( subclass_str == "Two-Handed Axes"         ) type = WEAPON_AXE_2H;
+  else if ( subclass_str == "Daggers"                 ) type = WEAPON_DAGGER;
+  else if ( subclass_str == "Fist Weapons"            ) type = WEAPON_FIST;
+  else if ( subclass_str == "One-Handed Maces"        ) type = WEAPON_MACE;
+  else if ( subclass_str == "Two-Handed Maces"        ) type = WEAPON_MACE_2H;
+  else if ( subclass_str == "Polearms"                ) type = WEAPON_POLEARM;
+  else if ( subclass_str == "Staves"                  ) type = WEAPON_STAFF;
+  else if ( subclass_str == "One-Handed Swords"       ) type = WEAPON_SWORD;
+  else if ( subclass_str == "Two-Handed Swords"       ) type = WEAPON_SWORD_2H;
+  else if ( subclass_str == "Bows"                    ) type = WEAPON_BOW;
+  else if ( subclass_str == "Crossbows"               ) type = WEAPON_CROSSBOW;
+  else if ( subclass_str == "Guns"                    ) type = WEAPON_GUN;
+  else if ( subclass_str == "Thrown"                  ) type = WEAPON_THROWN;
+  else if ( subclass_str == "Wands"                   ) type = WEAPON_WAND;
+  else if ( subclass_str == "Fishing Poles"           ) type = WEAPON_POLEARM;
+  else if ( subclass_str == "Miscellaneous (Weapons)" ) type = WEAPON_POLEARM;
 
-  if ( weapon_type_e == WEAPON_NONE ) return false;
-  if ( weapon_type_e == WEAPON_WAND ) return true;
+  if ( type == WEAPON_NONE ) return false;
+  if ( type == WEAPON_WAND ) return true;
 
-  item.armory_weapon_str = util_t::weapon_type_string( weapon_type_e );
+  item.armory_weapon_str = util_t::weapon_type_string( type );
   item.armory_weapon_str += "_" + speed + "speed" + "_" + dmgmin + "min" + "_" + dmgmax + "max";
 
   return true;
@@ -788,10 +789,10 @@ player_t* download_player_profile( sim_t* sim,
 
 // wowhead_t::parse_gem =====================================================
 
-int wowhead_t::parse_gem( item_t&            item,
-                          const std::string& gem_id,
-                          bool               ptr,
-                          cache::behavior_e  caching )
+gem_type_e wowhead_t::parse_gem( item_t&            item,
+                                 const std::string& gem_id,
+                                 bool               ptr,
+                                 cache::behavior_e  caching )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -804,7 +805,7 @@ int wowhead_t::parse_gem( item_t&            item,
     return GEM_NONE;
   }
 
-  int gem_type_e = GEM_NONE;
+  gem_type_e type = GEM_NONE;
 
   std::string color_str;
   if ( xml_t::get_value( color_str, node, "subclass/cdata" ) )
@@ -812,9 +813,9 @@ int wowhead_t::parse_gem( item_t&            item,
     std::string::size_type pos = color_str.find( ' ' );
     if ( pos != std::string::npos ) color_str.erase( pos );
     armory_t::format( color_str );
-    gem_type_e = util_t::parse_gem_type( color_str );
+    type = util_t::parse_gem_type( color_str );
 
-    if ( gem_type_e == GEM_META )
+    if ( type == GEM_META )
     {
       std::string name_str;
       if ( xml_t::get_value( name_str, node, "name/cdata" ) )
@@ -836,7 +837,7 @@ int wowhead_t::parse_gem( item_t&            item,
     }
   }
 
-  return gem_type_e;
+  return type;
 }
 
 // wowhead_t::download_glyph ================================================

@@ -457,7 +457,7 @@ player_t::player_t( sim_t*             s,
   range::fill( over_cap, 0 );
 
   items.resize( SLOT_MAX );
-  for ( int i=0; i < SLOT_MAX; i++ )
+  for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
     items[ i ].slot = i;
     items[ i ].sim = sim;
@@ -534,12 +534,8 @@ player_t::~player_t()
     delete d;
   }
 
-  if ( false )
-  {
-    // FIXME! This cannot be done until we use refcounts.
-    // FIXME! I see the same callback pointer being registered multiple times.
-    range::dispose( all_callbacks );
-  }
+  range::sort( all_callbacks );
+  dispose( all_callbacks.begin(), range::unique( all_callbacks ) );
 
   for ( size_t i=0; i < sizeof_array( talent_trees ); i++ )
     range::dispose( talent_trees[ i ] );
@@ -762,29 +758,20 @@ void player_t::init_items()
   gear_stats_t item_stats;
 
   bool slots[ SLOT_MAX ];
-  for ( int i = 0; i < SLOT_MAX; i++ )
-  {
-    if ( util_t::armor_type_string( type, i ) )
-    {
-      slots[ i ] = false;
-    }
-    else
-    {
-      slots[ i ] = true;
-    }
-  }
+  for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+    slots[ i ] = ! util_t::armor_type_string( type, i );
 
-  int num_items = ( int ) items.size();
-  for ( int i=0; i < num_items; i++ )
+  size_t num_items = items.size();
+  for ( size_t i=0; i < num_items; i++ )
   {
-    // If the item has been specified in options we want to start from scratch, forgetting about lingering stuff from profile copy
-    if ( items[ i ].options_str != "" )
-    {
-      items[ i ] = item_t( this, items[ i ].options_str );
-      items[ i ].slot = i;
-    }
-
     item_t& item = items[ i ];
+
+    // If the item has been specified in options we want to start from scratch, forgetting about lingering stuff from profile copy
+    if ( ! item.options_str.empty() )
+    {
+      item = item_t( this, item.options_str );
+      item.slot = static_cast<slot_type_e>( i );
+    }
 
     if ( ! item.init() )
     {
@@ -801,10 +788,8 @@ void player_t::init_items()
 
     slots[ item.slot ] = item.matching_type();
 
-    for ( int j=0; j < STAT_MAX; j++ )
-    {
+    for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
       item_stats.add_stat( j, item.stats.get_stat( j ) );
-    }
   }
 
   if ( num_ilvl_items > 1 )
@@ -819,9 +804,9 @@ void player_t::init_items()
     break;
   default:
     matching_gear = true;
-    for ( int i=0; i < SLOT_MAX; i++ )
+    for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {
-      if ( slots[ i ] == false )
+      if ( ! slots[ i ] )
       {
         matching_gear = false;
         break;
@@ -832,12 +817,10 @@ void player_t::init_items()
 
   init_meta_gem( item_stats );
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( gear.get_stat( i ) == 0 )
-    {
+    if ( ! gear.get_stat( i ) )
       gear.set_stat( i, item_stats.get_stat( i ) );
-    }
   }
 
   if ( sim -> debug )
@@ -1547,7 +1530,7 @@ void player_t::init_actions()
 
   int capacity = std::max( 1200, ( int ) ( sim -> max_time.total_seconds() / 2.0 ) );
   action_sequence.reserve( capacity );
-  action_sequence = "";
+  action_sequence.clear();
 }
 
 // player_t::init_rating ====================================================
@@ -2073,6 +2056,8 @@ double player_t::composite_attack_expertise( weapon_t* weapon ) const
     case WEAPON_FIST:
       m += 0.03;
       break;
+    default:
+      break;
     }
     break;
   }
@@ -2086,6 +2071,8 @@ double player_t::composite_attack_expertise( weapon_t* weapon ) const
     case WEAPON_SWORD_2H:
       m += 0.03;
       break;
+    default:
+      break;
     }
     break;
   }
@@ -2097,6 +2084,8 @@ double player_t::composite_attack_expertise( weapon_t* weapon ) const
     case WEAPON_MACE_2H:
       m += 0.03;
       break;
+    default:
+      break;
     }
     break;
   }
@@ -2107,6 +2096,8 @@ double player_t::composite_attack_expertise( weapon_t* weapon ) const
     case WEAPON_DAGGER:
     case WEAPON_SWORD:
       m += 0.03;
+      break;
+    default:
       break;
     }
     break;
@@ -2619,7 +2610,7 @@ double player_t::composite_movement_speed() const
 
 // player_t::composite_attribute =================================
 
-double player_t::composite_attribute( int attr ) const
+double player_t::composite_attribute( attribute_type_e attr ) const
 {
   double a = attribute[ attr ];
 
@@ -2662,7 +2653,7 @@ double player_t::composite_attribute( int attr ) const
 
 // player_t::composite_attribute_multiplier =================================
 
-double player_t::composite_attribute_multiplier( int attr ) const
+double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 {
   double m = attribute_multiplier[ attr ];
 
@@ -3630,25 +3621,15 @@ void player_t::recalculate_resource_max( resource_type_e resource_type )
 
 // player_t::primary_tab ====================================================
 
-int player_t::primary_tab()
+talent_tab_type_e player_t::primary_tab() const
 {
-  specialization = TALENT_TAB_NONE;
+  int best = 0;
 
-  int max_points = 0;
+  for ( int i = 1; i < MAX_TALENT_TREES; i++ )
+    if ( talent_tab_points[ i ] > talent_tab_points[ best ] )
+      best = i;
 
-  for ( int i=0; i < MAX_TALENT_TREES; i++ )
-  {
-    if ( talent_tab_points[ i ] > 0 )
-    {
-      if ( specialization == TALENT_TAB_NONE || ( talent_tab_points[ i ] > max_points ) )
-      {
-        specialization = i;
-        max_points = talent_tab_points[ i ];
-      }
-    }
-  }
-
-  return specialization;
+  return static_cast<talent_tab_type_e>( best );
 }
 
 // player_t::primary_role ===================================================
@@ -3665,7 +3646,7 @@ const char* player_t::primary_tree_name() const
 
 // player_t::primary_tree ===================================================
 
-int player_t::primary_tree() const
+talent_tree_type_e player_t::primary_tree() const
 {
   /*
   if ( specialization == TALENT_TAB_NONE )
@@ -3678,16 +3659,15 @@ int player_t::primary_tree() const
 
 // player_t::normalize_by ===================================================
 
-int player_t::normalize_by() const
+stat_type_e player_t::normalize_by() const
 {
   if ( sim -> normalized_stat != STAT_NONE )
-  {
     return sim -> normalized_stat;
-  }
 
-  if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL )
+  role_type_e role = primary_role();
+  if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( primary_role() == ROLE_TANK )
+  else if ( role == ROLE_TANK )
     return STAT_ARMOR;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE )
     return STAT_AGILITY;
@@ -3701,7 +3681,7 @@ int player_t::normalize_by() const
 
 double player_t::health_percentage() const
 {
-  return resources.current[ RESOURCE_HEALTH ] / resources.max[ RESOURCE_HEALTH ] * 100 ;
+  return resources.current[ RESOURCE_HEALTH ] / resources.max[ RESOURCE_HEALTH ] * 100;
 }
 
 // target_t::time_to_die ====================================================
@@ -3731,7 +3711,7 @@ timespan_t player_t::total_reaction_time() const
 
 // player_t::stat_gain ======================================================
 
-void player_t::stat_gain( int       stat,
+void player_t::stat_gain( stat_type_e stat,
                           double    amount,
                           gain_t*   gain,
                           action_t* action,
@@ -3813,7 +3793,7 @@ void player_t::stat_gain( int       stat,
 
 // player_t::stat_loss ======================================================
 
-void player_t::stat_loss( int       stat,
+void player_t::stat_loss( stat_type_e stat,
                           double    amount,
                           action_t* action,
                           bool      temporary_buff )
@@ -3905,10 +3885,10 @@ void player_t::stat_loss( int       stat,
 
 // player_t::cost_reduction_gain ============================================
 
-void player_t::cost_reduction_gain( int       school,
-                                    double    amount,
-                                    gain_t*   /* gain */,
-                                    action_t* /* action */ )
+void player_t::cost_reduction_gain( school_type_e school,
+                                    double        amount,
+                                    gain_t*       /* gain */,
+                                    action_t*     /* action */ )
 {
   if ( amount <= 0 ) return;
 
@@ -3916,7 +3896,7 @@ void player_t::cost_reduction_gain( int       school,
 
   if ( school > SCHOOL_MAX_PRIMARY )
   {
-    for ( int i = 1; i < SCHOOL_MAX_PRIMARY; i++ )
+    for ( school_type_e i = SCHOOL_NONE; ++i < SCHOOL_MAX_PRIMARY; )
     {
       if ( util_t::school_type_component( school, i ) )
       {
@@ -3932,9 +3912,9 @@ void player_t::cost_reduction_gain( int       school,
 
 // player_t::cost_reduction_loss ============================================
 
-void player_t::cost_reduction_loss( int       school,
-                                    double    amount,
-                                    action_t* /* action */ )
+void player_t::cost_reduction_loss( school_type_e school,
+                                    double        amount,
+                                    action_t*     /* action */ )
 {
   if ( amount <= 0 ) return;
 
@@ -3942,7 +3922,7 @@ void player_t::cost_reduction_loss( int       school,
 
   if ( school > SCHOOL_MAX_PRIMARY )
   {
-    for ( int i = 1; i < SCHOOL_MAX_PRIMARY; i++ )
+    for ( school_type_e i = SCHOOL_NONE; ++i < SCHOOL_MAX_PRIMARY; )
     {
       if ( util_t::school_type_component( school, i ) )
       {
@@ -3958,20 +3938,19 @@ void player_t::cost_reduction_loss( int       school,
 
 // player_t::assess_damage ==================================================
 
-double player_t::assess_damage( double            amount,
-                                const school_type_e school,
-                                int               dmg_type_e,
-                                int               result,
-                                action_t*         action )
+double player_t::assess_damage( double        amount,
+                                school_type_e school,
+                                dmg_type_e    type,
+                                result_type_e result,
+                                action_t*     action )
 {
-
   if ( buffs.pain_supression -> up() )
     amount *= 1.0 + buffs.pain_supression -> effect1().percent();
 
   if ( buffs.stoneform -> up() )
     amount *= 1.0 + buffs.stoneform -> effect1().percent();
 
-  double mitigated_amount = target_mitigation( amount, school, dmg_type_e, result, action );
+  double mitigated_amount = target_mitigation( amount, school, type, result, action );
 
   size_t num_absorbs = absorb_buffs.size();
   double absorbed_amount = 0;
@@ -4036,11 +4015,11 @@ double player_t::assess_damage( double            amount,
 
 // player_t::target_mitigation ==============================================
 
-double player_t::target_mitigation( double            amount,
-                                    const school_type_e school,
-                                    int               /* dmg_type_e */,
-                                    int               result,
-                                    action_t*         action )
+double player_t::target_mitigation( double        amount,
+                                    school_type_e school,
+                                    dmg_type_e,
+                                    result_type_e result,
+                                    action_t*     action )
 {
   if ( amount == 0 )
     return 0;
@@ -4085,11 +4064,11 @@ double player_t::target_mitigation( double            amount,
 
 // player_t::assess_heal ====================================================
 
-player_t::heal_info_t player_t::assess_heal( double            amount,
-                                             const school_type_e /* school */,
-                                             int               /* dmg_type_e */,
-                                             int               /* result */,
-                                             action_t*         action )
+player_t::heal_info_t player_t::assess_heal( double        amount,
+                                             school_type_e,
+                                             dmg_type_e,
+                                             result_type_e,
+                                             action_t*     action )
 {
   heal_info_t heal;
 
@@ -6057,12 +6036,12 @@ action_expr_t* player_t::create_expression( action_t* a,
   }
   else if ( splits[ 0 ] == "temporary_bonus" )
   {
-    int stat = util_t::parse_stat_type( splits[ 1 ] );
+    stat_type_e stat = util_t::parse_stat_type( splits[ 1 ] );
 
     if ( stat != STAT_NONE )
     {
       double* p_stat = 0;
-      int attr = -1;
+      attribute_type_e attr = ATTRIBUTE_NONE;
 
       switch ( stat )
       {
@@ -6089,18 +6068,19 @@ action_expr_t* player_t::create_expression( action_t* a,
       {
         struct temporary_stat_expr_t : public action_expr_t
         {
-          int attr;
-          int stat_type_e;
+          attribute_type_e attr;
+          stat_type_e stype;
           double& stat;
-          temporary_stat_expr_t( action_t* a, double* p_stat, int stat_type_e, int attr ) :
-            action_expr_t( a, "temporary_stat", TOK_NUM ), attr( attr ), stat_type_e( stat_type_e ), stat( *p_stat ) { }
+
+          temporary_stat_expr_t( action_t* a, double& stat, stat_type_e stype, attribute_type_e attr ) :
+            action_expr_t( a, "temporary_stat" ), attr( attr ), stype( stype ), stat( stat ) { }
 
           virtual int evaluate()
           {
             result_num = stat;
-            if ( attr != -1 )
+            if ( attr != ATTRIBUTE_NONE )
               result_num *= action -> player -> composite_attribute_multiplier( attr );
-            else if ( stat_type_e == STAT_SPELL_POWER )
+            else if ( stype == STAT_SPELL_POWER )
             {
               result_num += action -> player -> temporary.attribute[ ATTR_INTELLECT ] *
                             action -> player -> composite_attribute_multiplier( ATTR_INTELLECT ) *
@@ -6109,7 +6089,7 @@ action_expr_t* player_t::create_expression( action_t* a,
               result_num *= action -> player -> composite_spell_power_multiplier();
               //log_t::output( action -> sim, "temporary_bonus.spell_power=%f", result_num );
             }
-            else if ( stat_type_e == STAT_ATTACK_POWER )
+            else if ( stype == STAT_ATTACK_POWER )
             {
               result_num += action -> player -> temporary.attribute[ ATTR_STRENGTH ] *
                             action -> player -> composite_attribute_multiplier( ATTR_STRENGTH ) *
@@ -6124,7 +6104,7 @@ action_expr_t* player_t::create_expression( action_t* a,
             return TOK_NUM;
           }
         };
-        return new temporary_stat_expr_t( a, p_stat, stat, attr );
+        return new temporary_stat_expr_t( a, *p_stat, stat, attr );
       }
     }
   }
@@ -6274,10 +6254,10 @@ action_expr_t* player_t::create_expression( action_t* a,
     else if ( splits[ 0 ] == "swing" )
     {
       std::string& s = splits[ 1 ];
-      int hand = SLOT_NONE;
+      int hand = SLOT_INVALID;
       if ( s == "mh" || s == "mainhand" || s == "main_hand" ) hand = SLOT_MAIN_HAND;
       if ( s == "oh" || s ==  "offhand" || s ==  "off_hand" ) hand = SLOT_OFF_HAND;
-      if ( hand == SLOT_NONE ) return 0;
+      if ( hand == SLOT_INVALID ) return 0;
       if ( splits[ 2 ] == "remains" )
       {
         struct swing_remains_expr_t : public action_expr_t
@@ -6354,7 +6334,7 @@ action_expr_t* player_t::create_expression( action_t* a,
 
 // player_t::create_profile =================================================
 
-bool player_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
+bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
   std::string term;
 
@@ -6363,7 +6343,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type_e, bool s
   else
     term = "\n";
 
-  if ( save_type_e == SAVE_ALL )
+  if ( stype == SAVE_ALL )
   {
     profile_str += "#!./simc " + term + term;
   }
@@ -6373,7 +6353,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type_e, bool s
     profile_str += "# " + comment_str + term;
   }
 
-  if ( save_type_e == SAVE_ALL )
+  if ( stype == SAVE_ALL )
   {
     profile_str += util_t::player_type_string( type );
     profile_str += "=\"" + name_str + '"' + term;
@@ -6393,7 +6373,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type_e, bool s
     };
   }
 
-  if ( save_type_e == SAVE_ALL || save_type_e == SAVE_TALENTS )
+  if ( stype == SAVE_ALL || stype == SAVE_TALENTS )
   {
     talents_str = "http://www.wowhead.com/talent#";
     talents_str += util_t::player_type_string( type );
@@ -6421,7 +6401,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type_e, bool s
     }
   }
 
-  if ( save_type_e == SAVE_ALL || save_type_e == SAVE_ACTIONS )
+  if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
   {
     if ( action_list_str.size() > 0 )
     {
@@ -6440,7 +6420,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type_e, bool s
     }
   }
 
-  if ( save_type_e == SAVE_ALL || save_type_e == SAVE_GEAR )
+  if ( stype == SAVE_ALL || stype == SAVE_GEAR )
   {
     for ( int i=0; i < SLOT_MAX; i++ )
     {
@@ -6458,7 +6438,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type_e, bool s
     }
 
     profile_str += "# Gear Summary" + term;
-    for ( int i=0; i < STAT_MAX; i++ )
+    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       double value = initial_stats.get_stat( i );
       if ( value != 0 )
@@ -6520,7 +6500,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type_e, bool s
     if ( set_bonus.pvp_2pc_heal()   ) profile_str += "# pvp_2pc_heal=1" + term;
     if ( set_bonus.pvp_4pc_heal()   ) profile_str += "# pvp_4pc_heal=1" + term;
 
-    for ( int i=0; i < SLOT_MAX; i++ )
+    for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {
       item_t& item = items[ i ];
       if ( ! item.active() ) continue;

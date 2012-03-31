@@ -259,8 +259,8 @@ struct hunter_t : public player_t
   virtual double    composite_attack_power() const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_attack_haste() const;
-  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
-  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
@@ -268,7 +268,7 @@ struct hunter_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual resource_type_e primary_resource() const { return RESOURCE_FOCUS; }
   virtual role_type_e primary_role() const { return ROLE_ATTACK; }
-  virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
@@ -691,18 +691,21 @@ struct hunter_attack_t : public attack_t
     normalize_weapon_speed = true;
     dot_behavior           = DOT_REFRESH;
   }
-  hunter_attack_t( const char* n, player_t* player, const school_type_e s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true ) :
+  hunter_attack_t( const char* n, player_t* player, school_type_e s=SCHOOL_PHYSICAL,
+                   talent_tree_type_e t=TREE_NONE, bool special=true ) :
     attack_t( n, player, RESOURCE_FOCUS, s, t, special )
   {
     _init_hunter_attack_t();
   }
-  hunter_attack_t( const char* n, player_t* player, const char* sname, int t=TREE_NONE, bool special=true ) :
+  hunter_attack_t( const char* n, player_t* player, const char* sname,
+                   talent_tree_type_e t=TREE_NONE, bool special=true ) :
     attack_t( n, sname, player, t, special )
   {
     _init_hunter_attack_t();
   }
 
-  hunter_attack_t( const char* n, player_t* player, const uint32_t id, int t=TREE_NONE, bool special=true ) :
+  hunter_attack_t( const char* n, player_t* player, uint32_t id,
+                   talent_tree_type_e t=TREE_NONE, bool special=true ) :
     attack_t( n, id, player, t, special )
   {
     _init_hunter_attack_t();
@@ -743,7 +746,8 @@ struct hunter_spell_t : public spell_t
   {
   }
 
-  hunter_spell_t( const char* n, player_t* p, const school_type_e s, int t=TREE_NONE ) :
+  hunter_spell_t( const char* n, player_t* p, school_type_e s,
+                  talent_tree_type_e t=TREE_NONE ) :
     spell_t( n, p, RESOURCE_FOCUS, s, t )
   {
     _init_hunter_spell_t();
@@ -753,7 +757,7 @@ struct hunter_spell_t : public spell_t
   {
     _init_hunter_spell_t();
   }
-  hunter_spell_t( const char* n, player_t* p, const uint32_t id ) :
+  hunter_spell_t( const char* n, player_t* p, uint32_t id ) :
     spell_t( n, id, p )
   {
     _init_hunter_spell_t();
@@ -811,7 +815,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
 
     void player_buff() {}
 
-    void target_debuff( player_t* t, int /* dmg_type_e */ )
+    void target_debuff( player_t* t, dmg_type_e )
     {
       if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() || t -> debuffs.tendon_rip -> up() )
       {
@@ -819,7 +823,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       }
     }
 
-    virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg )
+    virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg )
     {
       attack_t::impact( t, impact_result, 0 );
 
@@ -1031,9 +1035,9 @@ struct hunter_pet_attack_t : public attack_t
 
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    attack_t::target_debuff( t, dmg_type_e );
+    attack_t::target_debuff( t, dtype );
 
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
@@ -1333,9 +1337,9 @@ struct hunter_pet_spell_t : public spell_t
 
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    spell_t::target_debuff( t, dmg_type_e );
+    spell_t::target_debuff( t, dtype );
 
     hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
 
@@ -2010,11 +2014,11 @@ struct aimed_shot_t : public hunter_attack_t
       normalize_weapon_speed = true;
     }
 
-    virtual void target_debuff( player_t* t, int dmg_type_e )
+    virtual void target_debuff( player_t* t, dmg_type_e dt )
     {
       hunter_t* p = player -> cast_hunter();
 
-      hunter_attack_t::target_debuff( t, dmg_type_e );
+      hunter_attack_t::target_debuff( t, dt );
 
       if ( p -> talents.careful_aim -> rank() && t-> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
       {
@@ -2096,11 +2100,11 @@ struct aimed_shot_t : public hunter_attack_t
     return hunter_attack_t::execute_time();
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
     hunter_t* p = player -> cast_hunter();
 
-    hunter_attack_t::target_debuff( t, dmg_type_e );
+    hunter_attack_t::target_debuff( t, dt );
 
     if ( p -> talents.careful_aim -> rank() && t -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
     {
@@ -4191,9 +4195,9 @@ void hunter_t::create_options()
 
 // hunter_t::create_profile =================================================
 
-bool hunter_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
+bool hunter_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
-  player_t::create_profile( profile_str, save_type_e, save_html );
+  player_t::create_profile( profile_str, stype, save_html );
 
   for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
   {

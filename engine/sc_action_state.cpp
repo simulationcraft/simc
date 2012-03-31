@@ -365,8 +365,8 @@ double attack_t::crit_block_chance_s( const action_state_t* /* state */ ) const
 
 void attack_t::calculate_result_s( action_state_t* state )
 {
-  double chances[ RESULT_MAX ];
-  int results[ RESULT_MAX ];
+  std::array<double,RESULT_MAX> chances;
+  std::array<result_type_e,RESULT_MAX> results;
   action_t* action = state -> action;
 
   state -> result        = RESULT_NONE;
@@ -414,7 +414,9 @@ void attack_t::calculate_result_s( action_state_t* state )
                    util_t::result_type_string( state -> result ) );
 }
 
-int attack_t::build_table_s( double* chances, int* results, const action_state_t* s )
+int attack_t::build_table_s( std::array<double,RESULT_MAX>&        chances,
+                             std::array<result_type_e,RESULT_MAX>& results,
+                             const action_state_t*                 s )
 {
   double miss=0, dodge=0, parry=0, glance=0, block=0,crit_block=0, crit=0;
 

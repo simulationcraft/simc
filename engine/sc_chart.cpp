@@ -8,7 +8,7 @@
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // Colors returned by this function are defined as http://www.wowpedia.org/Class_colors
-static const char* class_color( int type )
+const char* class_color( player_type_e type )
 {
   switch ( type )
   {
@@ -32,7 +32,7 @@ static const char* class_color( int type )
 }
 
 // The above colors don't all work for text rendered on a light (white) background.  These colors work better by reducing the brightness HSV component of the above colors
-static const char* class_text_color( int type )
+const char* class_text_color( player_type_e type )
 {
   switch ( type )
   {
@@ -44,7 +44,7 @@ static const char* class_text_color( int type )
 }
 
 // These colors are picked to sort of line up with classes, but match the "feel" of the spell class' color
-static const char* school_color( int type )
+const char* school_color( school_type_e type )
 {
   switch ( type )
   {
@@ -69,7 +69,7 @@ static const char* school_color( int type )
   return 0;
 }
 
-static const char* stat_color( int type )
+const char* stat_color( stat_type_e type )
 {
   switch ( type )
   {
@@ -90,35 +90,37 @@ static const char* stat_color( int type )
   }
 }
 
-static const char* get_color( player_t* p )
+const char* get_color( player_t* p )
 {
+  player_type_e type;
   if ( p -> is_pet() )
-  {
-    return class_color( p -> cast_pet() -> owner -> type );
-  }
-  return class_color( p -> type );
+    type = p -> cast_pet() -> owner -> type;
+  else
+    type = p -> type;
+  return class_color( type );
 }
 
-static const char* get_text_color( player_t* p )
+const char* get_text_color( player_t* p )
 {
+  player_type_e type;
   if ( p -> is_pet() )
-  {
-    return class_text_color( p -> cast_pet() -> owner -> type );
-  }
-  return class_text_color ( p -> type );
+    type = p -> cast_pet() -> owner -> type;
+  else
+    type = p -> type;
+  return class_text_color ( type );
 }
 
-static unsigned char simple_encoding( int number )
+unsigned char simple_encoding( int number )
 {
   if ( number < 0  ) number = 0;
   if ( number > 61 ) number = 61;
 
-  static const char* encoding = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  static const char encoding[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   return encoding[ number ];
 }
 
-static const char* chart_resource_type_string( int type )
+const char* chart_resource_type_string( resource_type_e type )
 {
   switch ( type )
   {
@@ -139,14 +141,15 @@ static const char* chart_resource_type_string( int type )
   case RESOURCE_RUNE_BLOOD:    return "Blood Rune";
   case RESOURCE_RUNE_UNHOLY:   return "Unholy Rune";
   case RESOURCE_RUNE_FROST:    return "Frost Rune";
+  case RESOURCE_SHADOW_ORB:    return "Shadow Orb";
+  default:                     return "Unknown";
   }
-  return "Unknown";
 }
 
 static const char* get_chart_base_url()
 {
   static int round_robin = -1;
-  static const char* base_urls[] =
+  static const char* const base_urls[] =
   {
     "http://0.chart.apis.google.com/chart?",
     "http://1.chart.apis.google.com/chart?",
@@ -163,27 +166,6 @@ static const char* get_chart_base_url()
 
   return base_urls[ round_robin ];
 }
-
-#if 0
-static const char* extended_encoding( int number )
-{
-  if ( number < 0    ) number = 0;
-  if ( number > 4095 ) number = 4095;
-
-  static const char* encoding = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  int first  = number / 64;
-  int second = number - ( first * 64 );
-
-  std::string pair;
-
-  pair = "";
-  pair += encoding[ first  ];
-  pair += encoding[ second ];
-
-  return pair.c_str();
-}
-#endif
 
 } // ANONYMOUS NAMESPACE =====================================================
 
@@ -303,16 +285,17 @@ int chart_t::raid_aps( std::vector<std::string>& images,
 int chart_t::raid_gear( std::vector<std::string>& images,
                         sim_t* sim )
 {
-  int num_players = ( int ) sim -> players_by_dps.size();
+  size_t num_players = sim -> players_by_dps.size();
 
-  if ( num_players == 0 )
+  if ( ! num_players )
     return 0;
 
   std::vector<double> data_points[ STAT_MAX ];
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    for ( int j=0; j < num_players; j++ )
+    data_points[ i ].reserve( num_players );
+    for ( size_t j=0; j < num_players; j++ )
     {
       player_t* p = sim -> players_by_dps[ j ];
 
@@ -322,10 +305,10 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   }
 
   double max_total=0;
-  for ( int i=0; i < num_players; i++ )
+  for ( size_t i=0; i < num_players; i++ )
   {
     double total=0;
-    for ( int j=0; j < STAT_MAX; j++ )
+    for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( ! stat_color( j ) ) continue;
       total += data_points[ j ][ i ];
@@ -338,7 +321,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
   bool first;
 
   std::vector<player_t*> player_list = sim -> players_by_dps;
-  int max_players = MAX_PLAYERS_PER_CHART;
+  static const size_t max_players = MAX_PLAYERS_PER_CHART;
 
   while ( true )
   {
@@ -362,12 +345,12 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     s += "&amp;";
     s += "chd=t:";
     first = true;
-    for ( int i=0; i < STAT_MAX; i++ )
+    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       if ( ! stat_color( i ) ) continue;
       if ( ! first ) s += "|";
       first = false;
-      for ( int j=0; j < num_players; j++ )
+      for ( size_t j=0; j < num_players; j++ )
       {
         snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j?",":"" ), data_points[ i ][ j ] ); s += buffer;
       }
@@ -377,7 +360,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     s += "&amp;";
     s += "chco=";
     first = true;
-    for ( int i=0; i < STAT_MAX; i++ )
+    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       if ( ! stat_color( i ) ) continue;
       if ( ! first ) s += ",";
@@ -408,7 +391,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
     s += "&amp;";
     s += "chdl=";
     first = true;
-    for ( int i=0; i < STAT_MAX; i++ )
+    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       if ( ! stat_color( i ) ) continue;
       if ( ! first ) s += "|";
@@ -438,7 +421,7 @@ int chart_t::raid_gear( std::vector<std::string>& images,
 
     images.push_back( s );
 
-    for ( int i=0; i < STAT_MAX; i++ )
+    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       std::vector<double>& c = data_points[ i ];
       c.erase( c.begin(), c.begin() + num_players );
@@ -1044,23 +1027,12 @@ const char* chart_t::gains( std::string& s,
 
 // chart_t::scale_factors ===================================================
 
-struct compare_scale_factors
-{
-  player_t* player;
-  compare_scale_factors( player_t* p ) : player( p ) {}
-  bool operator()( int l, int r ) const
-  {
-    return player -> scaling.get_stat( l ) >
-           player -> scaling.get_stat( r );
-  }
-};
-
 const char* chart_t::scale_factors( std::string& s,
                                     player_t* p )
 {
-  std::vector<int> scaling_stats;
+  std::vector<stat_type_e> scaling_stats;
 
-  for ( int i=0; i < ( int ) sizeof_array( p -> scales_with ); ++i )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; ++i )
   {
     if ( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0 )
       scaling_stats.push_back( i );
@@ -1178,7 +1150,7 @@ const char* chart_t::scaling_dps( std::string& s,
   }
   s += "chd=t:";
   bool first=true;
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( ! stat_color( i ) ) continue;
     std::vector<double>& pd = p -> dps_plot_data[ i ];
@@ -1209,7 +1181,7 @@ const char* chart_t::scaling_dps( std::string& s,
   s += "&amp;";
   s += "chdl=";
   first = true;
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( ! stat_color( i ) ) continue;
     size_t size = p -> dps_plot_data[ i ].size();
@@ -1226,7 +1198,7 @@ const char* chart_t::scaling_dps( std::string& s,
   }
   s += "chco=";
   first = true;
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( ! stat_color( i ) ) continue;
     size_t size = p -> dps_plot_data[ i ].size();
@@ -1319,7 +1291,7 @@ const char* chart_t::reforge_dps( std::string& s,
   {
     int range = p -> sim -> reforge_plot -> reforge_plot_amount;
     int num_points = ( int ) pd.size();
-    std::vector<int> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
+    std::vector<stat_type_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
     const reforge_plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
     double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
     double max_delta = ( max_dps + baseline.error / 2 ) - baseline.value;
@@ -1537,7 +1509,7 @@ const char* chart_t::reforge_dps( std::string& s,
     }
     s += "\n";
     s += "<input type='hidden' name='chem' value='";
-    std::vector<int> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
+    std::vector<stat_type_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
     s += "y;s=text_outline;d=FF9473,18,l,000000,_,";
     snprintf( buffer, sizeof( buffer ), "%s", util_t::stat_type_string( stat_indices[ 0 ] ) );
     s += buffer;
@@ -1833,12 +1805,12 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
   default: break;
   }
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
 
-    const char* name=0;
+    const char* name;
     switch ( i )
     {
     case STAT_STRENGTH:                 name = "Str";  break;
@@ -1860,6 +1832,7 @@ const char* chart_t::gear_weights_lootrank( std::string& s,
     case STAT_WEAPON_SPEED:
       if ( HUNTER == p -> type ) name = "rsp"; else name = "msp"; break;
     case STAT_WEAPON_OFFHAND_SPEED:     name = "osp"; break;
+    default: name = 0; break;
     }
 
     if ( name )
@@ -1910,7 +1883,7 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
   std::string    id_string = "";
   std::string value_string = "";
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
@@ -1933,6 +1906,7 @@ const char* chart_t::gear_weights_wowhead( std::string& s,
     case STAT_MASTERY_RATING:           id = 170; break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
+    default: break;
     }
 
     if ( id )
@@ -1989,7 +1963,7 @@ const char* chart_t::gear_weights_wowreforge( std::string& s,
   s += "-";
   s += util_t::talent_tree_string( p -> primary_tree() );
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
@@ -2005,24 +1979,13 @@ const char* chart_t::gear_weights_wowreforge( std::string& s,
 
 // chart_t::gear_weights_pawn ===============================================
 
-struct compare_stat_scale_factors
-{
-  player_t* player;
-  compare_stat_scale_factors( player_t* p ) : player( p ) {}
-  bool operator()( int l, int r ) const
-  {
-    return( player -> scaling.get_stat( l ) >
-            player -> scaling.get_stat( r ) );
-  }
-};
-
 const char* chart_t::gear_weights_pawn( std::string& s,
                                         player_t*    p,
                                         bool hit_expertise )
 {
-  std::vector<int> stats;
-  for ( int i=0; i < STAT_MAX; i++ ) stats.push_back( i );
-  range::sort( stats, compare_stat_scale_factors( p ) );
+  std::vector<stat_type_e> stats;
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ ) stats.push_back( i );
+  range::sort( stats, compare_scale_factors( p ) );
 
   char buffer[ 1024 ];
   bool first = true;
@@ -2035,9 +1998,9 @@ const char* chart_t::gear_weights_pawn( std::string& s,
   double maxB = 0;
   double maxY = 0;
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    int stat = stats[ i ];
+    stat_type_e stat = stats[ i ];
 
     double value = p -> scaling.get_stat( stat );
     if ( value == 0 ) continue;
@@ -2064,6 +2027,7 @@ const char* chart_t::gear_weights_pawn( std::string& s,
     case STAT_ARMOR:                    name = "Armor";            break;
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;
+    default: break;
     }
 
     if ( name )

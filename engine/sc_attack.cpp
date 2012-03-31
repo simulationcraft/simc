@@ -61,27 +61,29 @@ void attack_t::init_attack_t_()
   }
 }
 
-attack_t::attack_t( const spell_id_t& s, int t, bool special ) :
+attack_t::attack_t( const spell_id_t& s, talent_tree_type_e t, bool special ) :
   action_t( ACTION_ATTACK, s, t, special )
 {
   init_attack_t_();
 }
 
-attack_t::attack_t( const char* n, player_t* p, int resource, const school_type_e school, int tree, bool special ) :
+attack_t::attack_t( const char* n, player_t* p, resource_type_e resource,
+                    school_type_e school, talent_tree_type_e tree, bool special ) :
   action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   init_attack_t_();
 }
 
-attack_t::attack_t( const char* name, const char* sname, player_t* p, int t, bool special ) :
+attack_t::attack_t( const char* name, const char* sname, player_t* p,
+                    talent_tree_type_e t, bool special ) :
   action_t( ACTION_ATTACK, name, sname, p, t, special ),
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   init_attack_t_();
 }
 
-attack_t::attack_t( const char* name, const uint32_t id, player_t* p, int t, bool special ) :
+attack_t::attack_t( const char* name, const uint32_t id, player_t* p, talent_tree_type_e t, bool special ) :
   action_t( ACTION_ATTACK, name, id, p, t, special ),
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
@@ -134,9 +136,9 @@ void attack_t::player_buff()
 
 // attack_t::target_debuff ==================================================
 
-void attack_t::target_debuff( player_t* t, int dmg_type_e )
+void attack_t::target_debuff( player_t* t, dmg_type_e dt )
 {
-  action_t::target_debuff( t, dmg_type_e );
+  action_t::target_debuff( t, dt );
 
   target_expertise = 0;
 }
@@ -257,8 +259,8 @@ double attack_t::crit_chance( int delta_level ) const
 
 // attack_t::build_table ====================================================
 
-int attack_t::build_table( double* chances,
-                           int*    results )
+int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
+                           std::array<result_type_e,RESULT_MAX>& results )
 {
   double miss=0, dodge=0, parry=0, glance=0, block=0,crit_block=0, crit=0;
 
@@ -361,13 +363,12 @@ int attack_t::build_table( double* chances,
 void attack_t::calculate_result()
 {
   direct_dmg = 0;
-
-  double chances[ RESULT_MAX ];
-  int results[ RESULT_MAX ];
-
   result = RESULT_NONE;
 
   if ( ! harmful || ! may_hit ) return;
+
+  std::array<double,RESULT_MAX> chances;
+  std::array<result_type_e,RESULT_MAX> results;
 
   int num_results = build_table( chances, results );
 

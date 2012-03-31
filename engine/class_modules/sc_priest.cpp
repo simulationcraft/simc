@@ -298,7 +298,7 @@ struct priest_t : public player_t
   virtual void      demise();
   virtual void      init_party();
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, int save_type_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -308,15 +308,15 @@ struct priest_t : public player_t
   virtual role_type_e primary_role() const;
   virtual void      combat_begin();
   virtual double    composite_armor() const;
-  virtual double    composite_spell_power( const school_type_e school ) const;
+  virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_spell_hit() const;
-  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
-  virtual double    composite_player_td_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_td_multiplier( school_type_e school, action_t* a = NULL ) const;
   virtual double    composite_movement_speed() const;
 
-  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
 
-  virtual double    target_mitigation( double amount, const school_type_e school, int type, int result, action_t* a=0 );
+  virtual double    target_mitigation( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a=0 );
 
   virtual double    shadow_orb_amount() const;
 
@@ -374,13 +374,15 @@ private:
   }
 
 public:
-  priest_absorb_t( const std::string& n, priest_t* player, const char* sname, int t = TREE_NONE ) :
+  priest_absorb_t( const std::string& n, priest_t* player,
+                   const char* sname, talent_tree_type_e t = TREE_NONE) :
     absorb_t( n.c_str(), player, sname, t )
   {
     _init_priest_absorb_t();
   }
 
-  priest_absorb_t( const std::string& n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
+  priest_absorb_t( const std::string& n, priest_t* player,
+                   uint32_t id, talent_tree_type_e t = TREE_NONE ) :
     absorb_t( n.c_str(), player, id, t )
   {
     _init_priest_absorb_t();
@@ -473,7 +475,7 @@ struct priest_heal_t : public heal_t
       shield_multiple  = p -> spec.divine_aegis -> effect1().percent();
     }
 
-    virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+    virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
     {
       priest_targetdata_t* td = targetdata() -> cast_priest();
 
@@ -557,13 +559,15 @@ struct priest_heal_t : public heal_t
     }
   }
 
-  priest_heal_t( const std::string& n, priest_t* player, const char* sname, int t = TREE_NONE ) :
+  priest_heal_t( const std::string& n, priest_t* player,
+                 const char* sname, talent_tree_type_e t = TREE_NONE ) :
     heal_t( n.c_str(), player, sname, t ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
   }
 
-  priest_heal_t( const std::string& n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
+  priest_heal_t( const std::string& n, priest_t* player,
+                 uint32_t id, talent_tree_type_e t = TREE_NONE ) :
     heal_t( n.c_str(), player, id, t ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
@@ -574,9 +578,9 @@ struct priest_heal_t : public heal_t
 
   virtual void player_buff();
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e type )
   {
-    heal_t::target_debuff( t, dmg_type_e );
+    heal_t::target_debuff( t, type );
 
     // Grace
     if ( p() -> spec.grace -> ok() )
@@ -614,7 +618,7 @@ struct priest_heal_t : public heal_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     heal_t::impact( t, impact_result, travel_dmg );
     priest_targetdata_t* td = targetdata() -> cast_priest();
@@ -791,8 +795,10 @@ private:
   }
 
 public:
-  priest_spell_t( const std::string& n, priest_t* player, const school_type_e s, int t ) :
-    spell_t( n.c_str(), player, RESOURCE_MANA, s, t ), atonement( 0 ), can_trigger_atonement( 0 )
+  priest_spell_t( const std::string& n, priest_t* player,
+                  school_type_e s, talent_tree_type_e t = TREE_NONE ) :
+    spell_t( n.c_str(), player, RESOURCE_MANA, s, t ),
+    atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
   }
@@ -803,14 +809,18 @@ public:
     _init_priest_spell_t();
   }
 
-  priest_spell_t( const std::string& n, priest_t* player, const char* sname, int t = TREE_NONE ) :
-    spell_t( n.c_str(), sname, player, t ), atonement( 0 ), can_trigger_atonement( 0 )
+  priest_spell_t( const std::string& n, priest_t* player,
+                  const char* sname, talent_tree_type_e t = TREE_NONE ) :
+    spell_t( n.c_str(), sname, player, t ),
+    atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
   }
 
-  priest_spell_t( const std::string& n, priest_t* player, const uint32_t id, int t = TREE_NONE ) :
-    spell_t( n.c_str(), id, player, t ), atonement( 0 ), can_trigger_atonement( 0 )
+  priest_spell_t( const std::string& n, priest_t* player,
+                  uint32_t id, talent_tree_type_e t = TREE_NONE ) :
+    spell_t( n.c_str(), id, player, t ),
+    atonement( 0 ), can_trigger_atonement( 0 )
   {
     _init_priest_spell_t();
   }
@@ -851,11 +861,11 @@ public:
   }
 
   virtual void assess_damage( player_t* t,
-                              const double amount,
-                              const dmg_type_e dmg_type,
-                              const result_type_e impact_result )
+                              double amount,
+                              dmg_type_e type,
+                              result_type_e impact_result )
   {
-    spell_t::assess_damage( t, amount, dmg_type, impact_result );
+    spell_t::assess_damage( t, amount, type, impact_result );
 
     if ( p() -> buffs.vampiric_embrace -> up() && result_is_hit( impact_result ) )
     {
@@ -888,7 +898,7 @@ public:
     }
 
     if ( atonement )
-      atonement -> trigger( amount, dmg_type, impact_result );
+      atonement -> trigger( amount, type, impact_result );
   }
 
   static void trigger_shadowy_apparition( priest_t* player );
@@ -954,11 +964,11 @@ struct shadow_fiend_pet_t : public pet_t
       player_multiplier *= 1.0 + p -> buffs.shadowcrawl -> value();
     }
 
-    virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+    virtual void impact( player_t* t, result_type_e impact_result, double dmg )
     {
       shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player );
 
-      attack_t::impact( t, impact_result, travel_dmg );
+      attack_t::impact( t, impact_result, dmg );
 
       if ( result_is_hit( impact_result ) )
       {
@@ -1215,10 +1225,9 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     init();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e result, double dmg )
   {
-    priest_spell_t::impact( t, impact_result, travel_dmg );
-
+    priest_spell_t::impact( t, result, dmg );
 
     // Needs testing
     if ( p() -> set_bonus.tier13_4pc_caster() )
@@ -1705,11 +1714,11 @@ struct mind_blast_t : public priest_spell_t
     generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
-    priest_spell_t::target_debuff( t, dmg_type_e );
+    priest_spell_t::target_debuff( t, dt );
 
-    target_crit       += p() -> buffs.mind_spike -> value() * p() -> buffs.mind_spike -> check();
+    target_crit += p() -> buffs.mind_spike -> value() * p() -> buffs.mind_spike -> check();
   }
 
   virtual timespan_t execute_time() const
@@ -1836,9 +1845,9 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double dmg )
   {
-    priest_spell_t::impact( t, impact_result, travel_dmg );
+    priest_spell_t::impact( t, impact_result, dmg );
 
     if ( result_is_hit( impact_result ) )
     {
@@ -1934,7 +1943,7 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     priest_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2442,7 +2451,7 @@ struct flash_heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 
@@ -2541,7 +2550,7 @@ struct greater_heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 
@@ -2595,7 +2604,7 @@ struct _heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 
@@ -2856,7 +2865,7 @@ struct penance_heal_tick_t : public priest_heal_t
     stats = player -> get_stats( "penance_heal", this );
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 
@@ -2954,7 +2963,7 @@ struct power_word_shield_t : public priest_absorb_t
     return c;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     priest_targetdata_t* td = targetdata() -> cast_priest();
 
@@ -3030,7 +3039,7 @@ struct prayer_of_healing_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 
@@ -3112,9 +3121,9 @@ struct prayer_of_mending_t : public priest_heal_t
     }
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
-    priest_heal_t::target_debuff( t, dmg_type_e );
+    priest_heal_t::target_debuff( t, dt );
 
     if ( p() -> glyphs.prayer_of_mending -> ok() && t == target )
       target_multiplier *= 1.0 + p() -> glyphs.prayer_of_mending -> effect1().percent();
@@ -3970,13 +3979,13 @@ void priest_t::pre_analyze_hook()
 
 // priest_t::target_mitigation ==============================================
 
-double priest_t::target_mitigation( double            amount,
-                                    const school_type_e school,
-                                    int               dmg_type_e,
-                                    int               result,
-                                    action_t*         action )
+double priest_t::target_mitigation( double        amount,
+                                    school_type_e school,
+                                    dmg_type_e    dt,
+                                    result_type_e result,
+                                    action_t*     action )
 {
-  amount = player_t::target_mitigation( amount, school, dmg_type_e, result, action );
+  amount = player_t::target_mitigation( amount, school, dt, result, action );
 
   if ( buffs.shadowform -> check() )
   { amount *= 1.0 + buffs.shadowform -> effect3().percent(); }
@@ -4005,11 +4014,11 @@ void priest_t::create_options()
 
 // priest_t::create_profile =================================================
 
-bool priest_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
+bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool save_html )
 {
-  player_t::create_profile( profile_str, save_type_e, save_html );
+  player_t::create_profile( profile_str, type, save_html );
 
-  if ( save_type_e == SAVE_ALL )
+  if ( type == SAVE_ALL )
   {
     if ( ! atonement_target_str.empty() )
       profile_str += "atonement_target=" + atonement_target_str + "\n";

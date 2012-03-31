@@ -24,6 +24,7 @@ int weapon_t::group() const
   case WEAPON_AXE:
   case WEAPON_FIST:
   case WEAPON_1H:
+  case WEAPON_BEAST:
     return WEAPON_1H;
 
   case WEAPON_SWORD_2H:
@@ -32,6 +33,7 @@ int weapon_t::group() const
   case WEAPON_STAFF:
   case WEAPON_POLEARM:
   case WEAPON_2H:
+  case WEAPON_BEAST_2H:
     return WEAPON_2H;
 
   case WEAPON_BOW:
@@ -41,8 +43,10 @@ int weapon_t::group() const
   case WEAPON_THROWN:
   case WEAPON_RANGED:
     return WEAPON_RANGED;
+
+  default:
+    return WEAPON_NONE;
   }
-  return WEAPON_NONE;
 }
 
 // weapon_t::normalized_weapon_speed ========================================

@@ -546,7 +546,7 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
 
     gear_stats_t& sf = ( sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
 
-    for ( int j=0; j < STAT_MAX; j++ )
+    for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( p -> scales_with[ j ] != 0 )
       {
@@ -581,7 +581,7 @@ void print_text_scale_factors( FILE* file, player_t* p )
   gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
 
   util_t::fprintf( file, "    Weights :" );
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( p -> scales_with[ i ] != 0 )
     {
@@ -631,7 +631,7 @@ void print_text_dps_plots( FILE* file, player_t* p )
 
   util_t::fprintf( file, "  DPS Plot Data ( min=%.1f max=%.1f points=%d )\n", min, max, points );
 
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     std::vector<double>& pd = p -> dps_plot_data[ i ];
 
@@ -682,7 +682,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
 
   if ( sim -> scaling -> has_scale_factors() )
   {
-    for ( int j=0; j < STAT_MAX; j++ )
+    for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( ref_p -> scales_with[ j ] != 0 )
       {
@@ -709,7 +709,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
 
       if ( sim -> scaling -> has_scale_factors() )
       {
-        for ( int j=0; j < STAT_MAX; j++ )
+        for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
         {
           if ( ref_p -> scales_with[ j ] != 0 )
           {
@@ -732,7 +732,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
 
 struct compare_hat_donor_interval
 {
-  bool operator()( player_t* l, player_t* r ) const
+  bool operator()( const player_t* l, const player_t* r ) const
   {
     return ( l -> procs.hat_donor -> frequency < r -> procs.hat_donor -> frequency );
   }
@@ -753,7 +753,7 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
   int num_donors = ( int ) hat_donors.size();
   if ( num_donors )
   {
-    range::sort( hat_donors, compare_hat_donor_interval()  );
+    range::sort( hat_donors, compare_hat_donor_interval() );
 
     util_t::fprintf( file, "\nHonor Among Thieves Donor Report:\n" );
 

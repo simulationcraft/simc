@@ -763,7 +763,7 @@ std::string parse_gem_stats( const std::string& bonus )
 
 // bcp_api::parse_gem =======================================================
 
-int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e caching )
+gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e caching )
 {
   const std::string& region =
     item.player -> region_str.empty()
@@ -779,7 +779,7 @@ int parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e cachin
     return GEM_NONE;
   armory_t::format( type_str );
 
-  int type = util_t::parse_gem_type( type_str );
+  gem_type_e type = util_t::parse_gem_type( type_str );
 
   std::string result;
   if ( type == GEM_META )

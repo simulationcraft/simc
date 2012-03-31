@@ -11,8 +11,8 @@
 
 // gear_stats_t::add_stat ===================================================
 
-void gear_stats_t::add_stat( int    stat,
-                             double value )
+void gear_stats_t::add_stat( stat_type_e stat,
+                             double      value )
 {
   switch ( stat )
   {
@@ -76,8 +76,8 @@ void gear_stats_t::add_stat( int    stat,
 
 // gear_stats_t::set_stat ===================================================
 
-void gear_stats_t::set_stat( int    stat,
-                             double value )
+void gear_stats_t::set_stat( stat_type_e stat,
+                             double      value )
 {
   switch ( stat )
   {
@@ -141,7 +141,7 @@ void gear_stats_t::set_stat( int    stat,
 
 // gear_stats_t::get_stat ===================================================
 
-double gear_stats_t::get_stat( int stat ) const
+double gear_stats_t::get_stat( stat_type_e stat ) const
 {
   switch ( stat )
   {
@@ -205,13 +205,14 @@ double gear_stats_t::get_stat( int stat ) const
 
 void gear_stats_t::print( FILE* file )
 {
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = get_stat( i );
 
     if ( value != 0 )
     {
-      util_t::fprintf( file, " %s=%.*f", util_t::stat_type_abbrev( i ), ( ( ( value - ( int ) value ) > 0 ) ? 3 : 0 ), value );
+      util_t::fprintf( file, " %s=%.*f", util_t::stat_type_abbrev( i ),
+                       ( ( ( value - ( int ) value ) > 0 ) ? 3 : 0 ), value );
     }
   }
   util_t::fprintf( file, "\n" );
@@ -219,7 +220,7 @@ void gear_stats_t::print( FILE* file )
 
 // gear_stats_t::stat_mod ===================================================
 
-double gear_stats_t::stat_mod( int stat )
+double gear_stats_t::stat_mod( stat_type_e stat )
 {
   switch ( stat )
   {
@@ -227,6 +228,6 @@ double gear_stats_t::stat_mod( int stat )
   case STAT_ATTACK_POWER:      return 0.50;
   case STAT_SPELL_POWER:       return 0.86;
   case STAT_SPELL_PENETRATION: return 0.80;
+  default:                     return 1.0;
   }
-  return 1.0;
 }

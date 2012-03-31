@@ -56,7 +56,7 @@ pet_t::pet_t( sim_t*             s,
 
 // player_t::pet_attribute =================================
 
-double pet_t::composite_attribute( int attr ) const
+double pet_t::composite_attribute( attribute_type_e attr ) const
 {
   double a = attribute[ attr ];
 
@@ -179,16 +179,16 @@ void pet_t::dismiss()
 
 // pet_t::assess_damage =====================================================
 
-double pet_t::assess_damage( double            amount,
+double pet_t::assess_damage( double              amount,
                              const school_type_e school,
-                             int               dmg_type_e,
-                             int               result,
-                             action_t*         action )
+                             dmg_type_e          type,
+                             result_type_e       result,
+                             action_t*           action )
 {
   if ( ! action || action -> aoe )
     amount *= 0.10;
 
-  return player_t::assess_damage( amount, school, dmg_type_e, result, action );
+  return player_t::assess_damage( amount, school, type, result, action );
 }
 
 // pet_t::combat_begin ======================================================

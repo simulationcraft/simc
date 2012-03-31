@@ -185,7 +185,7 @@ struct warlock_pet_melee_t : public attack_t
 
 struct warlock_pet_attack_t : public attack_t
 {
-  warlock_pet_attack_t( const char* n, warlock_pet_t* p, int r=RESOURCE_MANA, const school_type_e s=SCHOOL_PHYSICAL ) :
+  warlock_pet_attack_t( const char* n, warlock_pet_t* p, resource_type_e r=RESOURCE_MANA, school_type_e s=SCHOOL_PHYSICAL ) :
     attack_t( n, p, r, s, TREE_NONE, true )
   {
     weapon = &( p -> main_hand_weapon );
@@ -193,14 +193,14 @@ struct warlock_pet_attack_t : public attack_t
     special = true;
   }
 
-  warlock_pet_attack_t( const char* n, warlock_pet_t* player, const char* sname, int t = TREE_NONE ) :
+  warlock_pet_attack_t( const char* n, warlock_pet_t* player, const char* sname, talent_tree_type_e t = TREE_NONE ) :
     attack_t( n, sname, player, t, true )
   {
     may_crit   = true;
     special = true;
   }
 
-  warlock_pet_attack_t( const char* n, const uint32_t id, warlock_pet_t* player, int t = TREE_NONE ) :
+  warlock_pet_attack_t( const char* n, uint32_t id, warlock_pet_t* player, talent_tree_type_e t = TREE_NONE ) :
     attack_t( n, id, player, t, true )
   {
     may_crit   = true;
@@ -230,28 +230,28 @@ struct warlock_pet_attack_t : public attack_t
 struct warlock_pet_spell_t : public spell_t
 {
 
-  warlock_pet_spell_t( const char* n, warlock_pet_t* p, int r=RESOURCE_MANA, const school_type_e s=SCHOOL_SHADOW ) :
+  warlock_pet_spell_t( const char* n, warlock_pet_t* p, resource_type_e r=RESOURCE_MANA, school_type_e s=SCHOOL_SHADOW ) :
     spell_t( n, p, r, s )
   {
     may_crit = true;
     crit_multiplier *= 1.33;
   }
 
-  warlock_pet_spell_t( const spell_id_t& s, int t = TREE_NONE ) :
+  warlock_pet_spell_t( const spell_id_t& s, talent_tree_type_e t = TREE_NONE ) :
     spell_t( s, t )
   {
     may_crit = true;
     crit_multiplier *= 1.33;
   }
 
-  warlock_pet_spell_t( const char* n, warlock_pet_t* p, const char* sname, int t = TREE_NONE ) :
+  warlock_pet_spell_t( const char* n, warlock_pet_t* p, const char* sname, talent_tree_type_e t = TREE_NONE ) :
     spell_t( n, sname, p, t )
   {
     may_crit = true;
     crit_multiplier *= 1.33;
   }
 
-  warlock_pet_spell_t( const char* n, const uint32_t id, warlock_pet_t* p, int t = TREE_NONE ) :
+  warlock_pet_spell_t( const char* n, uint32_t id, warlock_pet_t* p, talent_tree_type_e t = TREE_NONE ) :
     spell_t( n, id, p, t )
   {
     may_crit = true;
@@ -288,7 +288,7 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   }
 // imp_pet_t::fire_bolt_t::execute ==========================================
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -355,7 +355,7 @@ struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_attack_t
     aoe         = -1;
     direct_tick = true;
   }
-  
+
   virtual resource_type_e current_resource() const { return RESOURCE_MANA; }
 };
 
@@ -776,7 +776,7 @@ void warlock_pet_t::init_base()
   initial_spell_crit_per_intellect  += owner -> initial_spell_crit_per_intellect; // untested
   //health_per_stamina = 10.0; // untested!
   mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per point of owner int that exceeds owner base int
-  //mp5_per_intellect  = 2.0 / 3.0; // untested!  
+  //mp5_per_intellect  = 2.0 / 3.0; // untested!
 }
 
 void warlock_pet_t::init_resources( bool force )

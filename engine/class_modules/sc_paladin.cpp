@@ -307,24 +307,24 @@ struct paladin_t : public player_t
   virtual void      init_values();
   virtual void      init_actions();
   virtual void      reset();
-  virtual double    composite_attribute_multiplier( int attr ) const;
-  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
   virtual double    composite_attack_expertise( weapon_t* ) const;
   virtual double    composite_attack_haste() const;
   virtual double    composite_spell_haste() const;
-  virtual double    composite_spell_power( const school_type_e school ) const;
+  virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_tank_block() const;
   virtual double    composite_tank_block_reduction() const;
-  virtual double    composite_tank_crit( const school_type_e school ) const;
+  virtual double    composite_tank_crit( school_type_e school ) const;
   virtual void      create_options();
-  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& item );
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const;
   virtual void      regen( timespan_t periodicity );
-  virtual double    assess_damage( double amount, const school_type_e school, int dmg_type_e, int result, action_t* a );
-  virtual heal_info_t assess_heal( double amount, const school_type_e school, int type, int result, action_t* a );
+  virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
+  virtual heal_info_t assess_heal( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
@@ -420,13 +420,15 @@ struct paladin_heal_t : public heal_t
     weapon_multiplier = 0.0;
   }
 
-  paladin_heal_t( const char* n, paladin_t* player, const char* sname, int t = TREE_NONE ) :
+  paladin_heal_t( const char* n, paladin_t* player,
+                  const char* sname, talent_tree_type_e t = TREE_NONE ) :
     heal_t( n, player, sname, t )
   {
     _init_paladin_heal_t();
   }
 
-  paladin_heal_t( const char* n, paladin_t* player, const uint32_t id, int t = TREE_NONE ) :
+  paladin_heal_t( const char* n, paladin_t* player,
+                  uint32_t id, talent_tree_type_e t = TREE_NONE ) :
     heal_t( n, player, id, t )
   {
     _init_paladin_heal_t();
@@ -511,23 +513,28 @@ struct paladin_attack_t : public attack_t
   bool use_spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
   bool trigger_dp;
 
-  paladin_attack_t( const char* n, paladin_t* p, const school_type_e s=SCHOOL_PHYSICAL, int t=TREE_NONE, bool special=true, bool use2hspec=true )
-    : attack_t( n, p, RESOURCE_MANA, s, t, special ),
-      trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
+  paladin_attack_t( const char*        n,
+                    paladin_t*         p,
+                    school_type_e      s=SCHOOL_PHYSICAL,
+                    talent_tree_type_e t=TREE_NONE,
+                    bool               special=true,
+                    bool               use2hspec=true ) :
+    attack_t( n, p, RESOURCE_MANA, s, t, special ),
+    trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
-  paladin_attack_t( const char* n, uint32_t id, paladin_t* p, bool use2hspec=true, bool special=true )
-    : attack_t( n, id, p, TREE_NONE, special ),
-      trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
+  paladin_attack_t( const char* n, uint32_t id, paladin_t* p, bool use2hspec=true, bool special=true ) :
+    attack_t( n, id, p, TREE_NONE, special ),
+    trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
-  paladin_attack_t( const char* n, const char* sname, paladin_t* p, bool use2hspec=true, bool special=true )
-    : attack_t( n, sname, p, TREE_NONE, special ),
-      trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
+  paladin_attack_t( const char* n, const char* sname, paladin_t* p, bool use2hspec=true, bool special=true ) :
+    attack_t( n, sname, p, TREE_NONE, special ),
+    trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
@@ -670,7 +677,8 @@ struct paladin_spell_t : public spell_t
 {
   bool trigger_dp;
 
-  paladin_spell_t( const char* n, paladin_t* p, const school_type_e s=SCHOOL_HOLY, int t=TREE_NONE )
+  paladin_spell_t( const char* n, paladin_t* p,
+                   school_type_e s=SCHOOL_HOLY, talent_tree_type_e t=TREE_NONE )
     : spell_t( n, p, RESOURCE_MANA, s, t ), trigger_dp( false )
   {
     initialize_();
@@ -976,7 +984,7 @@ static void trigger_tower_of_radiance( heal_t* h )
 struct melee_t : public paladin_attack_t
 {
   melee_t( paladin_t* p )
-    : paladin_attack_t( "melee", p, SCHOOL_PHYSICAL, true/*2hspec*/, false/*special*/ )
+    : paladin_attack_t( "melee", p, SCHOOL_PHYSICAL, TREE_NONE, true/*2hspec*/, false/*special*/ )
   {
     special           = false;
     trigger_seal      = true;
@@ -1350,9 +1358,9 @@ struct hand_of_light_proc_t : public attack_t
     player_multiplier *= 1.0 + p -> buffs_inquisition -> value();
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
-    attack_t::target_debuff( t, dmg_type_e );
+    attack_t::target_debuff( t, dt );
     // not *= since we don't want to double dip in other effects (like vunerability)
     target_multiplier = 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
                                 std::max( t -> debuffs.earth_and_moon     -> value(),
@@ -1374,7 +1382,7 @@ struct paladin_seal_t : public paladin_attack_t
     harmful    = false;
     base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
   }
-  
+
   virtual resource_type_e current_resource() const { return RESOURCE_MANA; }
 
   virtual void execute()
@@ -2731,9 +2739,9 @@ struct word_of_glory_t : public paladin_heal_t
       player_multiplier *= 1.0 + p -> talents.selfless_healer -> effect1().percent();
   }
 
-  virtual void target_debuff( player_t* t, int dmg_type_e )
+  virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
-    paladin_heal_t::target_debuff( t, dmg_type_e );
+    paladin_heal_t::target_debuff( t, dt );
 
     paladin_t* p = player -> cast_paladin();
 
@@ -3391,7 +3399,7 @@ double paladin_t::composite_spell_haste() const
 
 // paladin_t::composite_attribute_multiplier ================================
 
-double paladin_t::composite_attribute_multiplier( int attr ) const
+double paladin_t::composite_attribute_multiplier( attribute_type_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
   if ( attr == ATTR_STRENGTH && buffs_ancient_power -> check() )
@@ -3403,7 +3411,7 @@ double paladin_t::composite_attribute_multiplier( int attr ) const
 
 // paladin_t::composite_player_multiplier ===================================
 
-double paladin_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
+double paladin_t::composite_player_multiplier( school_type_e school, action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3426,7 +3434,7 @@ double paladin_t::composite_player_multiplier( const school_type_e school, actio
 
 // paladin_t::composite_spell_power =========================================
 
-double paladin_t::composite_spell_power( const school_type_e school ) const
+double paladin_t::composite_spell_power( school_type_e school ) const
 {
   double sp = player_t::composite_spell_power( school );
   switch ( primary_tree() )
@@ -3530,18 +3538,18 @@ void paladin_t::regen( timespan_t periodicity )
 
 // paladin_t::assess_damage =================================================
 
-double paladin_t::assess_damage( double            amount,
-                                 const school_type_e school,
-                                 int               dmg_type_e,
-                                 int               result,
-                                 action_t*         action )
+double paladin_t::assess_damage( double        amount,
+                                 school_type_e school,
+                                 dmg_type_e    dtype,
+                                 result_type_e result,
+                                 action_t*     action )
 {
   if ( buffs_divine_shield -> up() )
   {
     amount = 0;
 
     // Return out, as you don't get to benefit from anything else
-    return player_t::assess_damage( amount, school, dmg_type_e, result, action );
+    return player_t::assess_damage( amount, school, dtype, result, action );
   }
 
   if ( buffs_gotak_prot -> up() )
@@ -3587,21 +3595,21 @@ double paladin_t::assess_damage( double            amount,
     }
   }
 
-  return player_t::assess_damage( amount, school, dmg_type_e, result, action );
+  return player_t::assess_damage( amount, school, dtype, result, action );
 }
 
 // paladin_t::assess_heal ===================================================
 
-player_t::heal_info_t paladin_t::assess_heal( double            amount,
-                                              const school_type_e school,
-                                              int               dmg_type_e,
-                                              int               result,
-                                              action_t*         action )
+player_t::heal_info_t paladin_t::assess_heal( double        amount,
+                                              school_type_e school,
+                                              dmg_type_e    dtype,
+                                              result_type_e result,
+                                              action_t*     action )
 {
 
   amount *= 1.0 + talents.divinity -> effect1().percent();
 
-  return player_t::assess_heal( amount, school, dmg_type_e, result, action );
+  return player_t::assess_heal( amount, school, dtype, result, action );
 }
 
 // paladin_t::get_cooldown ==================================================

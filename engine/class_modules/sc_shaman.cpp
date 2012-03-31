@@ -322,7 +322,7 @@ struct shaman_attack_t : public attack_t
   bool flametongue;
 
   /* Old style construction, spell data will not be accessed */
-  shaman_attack_t( const char* n, shaman_t* player, school_type_e s, int t, bool special ) :
+  shaman_attack_t( const char* n, shaman_t* player, school_type_e s, talent_tree_type_e t, bool special ) :
     attack_t( n, player, RESOURCE_MANA, s, t, special ),
     actor( player -> cast_shaman() ), windfury( true ), flametongue( true )
   {
@@ -376,7 +376,8 @@ struct shaman_spell_t : public spell_t
   shaman_t* actor;
 
   /* Old style construction, spell data will not be accessed */
-  shaman_spell_t( const char* n, shaman_t* p, const std::string& options_str, const school_type_e s, int t ) :
+  shaman_spell_t( const char* n, shaman_t* p, const std::string& options_str,
+                  const school_type_e s, talent_tree_type_e t ) :
     spell_t( n, p, RESOURCE_MANA, s, t ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
     actor( p -> cast_shaman() )
@@ -591,12 +592,7 @@ struct spirit_wolf_pet_t : public pet_t
     melee -> execute(); // Kick-off repeating attack
   }
 
-  virtual double composite_attribute_multiplier( int attr ) const
-  {
-    return attribute_multiplier[ attr ];
-  }
-
-  virtual double composite_attribute_multiplier( int attr )
+  virtual double composite_attribute_multiplier( attribute_type_e attr ) const
   {
     if ( attr == ATTR_STRENGTH || attr == ATTR_AGILITY )
       return 1.0;
@@ -1079,7 +1075,7 @@ struct fire_elemental_pet_t : public pet_t
     cooldown_fire_blast -> start();
   }
 
-  virtual double composite_attribute( int attr ) const
+  virtual double composite_attribute( attribute_type_e attr ) const
   {
     if ( attr == ATTR_INTELLECT )
       return owner_int;
@@ -1087,7 +1083,7 @@ struct fire_elemental_pet_t : public pet_t
     return pet_t::composite_attribute( attr );
   }
 
-  virtual double composite_spell_power( const school_type_e ) const
+  virtual double composite_spell_power( school_type_e ) const
   {
     return owner_sp;
   }

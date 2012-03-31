@@ -186,7 +186,7 @@ uint32_t talent_t::rank() const
 spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
   s_type( T_SPELL ), s_id( 0 ), s_data( 0 ), s_enabled( false ), s_player( player ),
   s_overridden( false ), s_token( t_name ? t_name : "" ),
-  s_required_talent( 0 ), s_single( 0 ), s_tree( -1 ), s_list( 0 )
+  s_required_talent( 0 ), s_single( 0 ), s_tree( TREE_NONE ), s_list( 0 )
 {
   armory_t::format( s_token, FORMAT_ASCII_MASK );
   range::fill( s_effects, 0 );
@@ -194,7 +194,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name ) :
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent ) :
   s_type( T_SPELL ), s_id( id ), s_data( 0 ), s_enabled( false ), s_player( player ),
-  s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 ), s_list( 0 )
+  s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( TREE_NONE ), s_list( 0 )
 {
   initialize();
   armory_t::format( s_token, FORMAT_ASCII_MASK );
@@ -202,7 +202,7 @@ spell_id_t::spell_id_t( player_t* player, const char* t_name, const uint32_t id,
 
 spell_id_t::spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent ) :
   s_type( T_SPELL ), s_id( 0 ), s_data( 0 ), s_enabled( false ), s_player( player ),
-  s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( -1 ), s_list( 0 )
+  s_overridden( false ), s_token( t_name ), s_required_talent( talent ), s_single( 0 ), s_tree( TREE_NONE ), s_list( 0 )
 {
   initialize( s_name );
   armory_t::format( s_token, FORMAT_ASCII_MASK );
@@ -296,13 +296,13 @@ bool spell_id_t::initialize( const char* s_name )
     s_tree = util_t::translate_spec_id( s_player -> type, s_player -> dbc.specialization_ability_tree( player_class, s_id ) );
     break;
   case T_CLASS:
-    s_tree = s_player -> dbc.class_ability_tree( player_class, s_id );
+    s_tree = util_t::translate_spec_id( s_player -> type, s_player -> dbc.class_ability_tree( player_class, s_id ) );
     break;
   case T_MASTERY:
     s_tree = util_t::translate_spec_id( s_player -> type, s_player -> dbc.mastery_ability_tree( player_class, s_id ) );
     break;
   default:
-    s_tree = -1;
+    s_tree = TREE_NONE;
     break;
   }
 

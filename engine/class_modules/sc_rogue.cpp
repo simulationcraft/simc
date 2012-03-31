@@ -407,10 +407,6 @@ struct rogue_t : public player_t
     create_options();
   }
 
-  ~rogue_t()
-  {
-  }
-
   // Character Definition
   virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new rogue_targetdata_t( source, target );}
   virtual void      init_talents();
@@ -436,14 +432,14 @@ struct rogue_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
   virtual role_type_e primary_role() const     { return ROLE_ATTACK; }
-  virtual bool      create_profile( std::string& profile_str, int save_type=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
 
-  virtual double    composite_attribute_multiplier( int attr ) const;
+  virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
   virtual double    composite_attack_speed() const;
-  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual double    composite_attack_power_multiplier() const;
-  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
 };
 
 namespace // ANONYMOUS NAMESPACE ============================================
@@ -483,14 +479,14 @@ struct rogue_attack_t : public attack_t
   }
 
   rogue_attack_t( const char* n, uint32_t id, rogue_t* p, bool simple = false ) :
-    attack_t( n, id, p, 0, true ),
+    attack_t( n, id, p, TREE_NONE, true ),
     simple( simple ), m_buff( 0 ), adds_combo_points( 0 )
   {
     init_rogue_attack_t_();
   }
 
   rogue_attack_t( const char* n, const char* sn, rogue_t* p, bool simple = false ) :
-    attack_t( n, sn, p, 0, true ),
+    attack_t( n, sn, p, TREE_NONE, true ),
     simple( simple ), m_buff( 0 ), adds_combo_points( 0 )
   {
     init_rogue_attack_t_();
@@ -3180,7 +3176,7 @@ struct vendetta_buff_t : public buff_t
 
 // rogue_t::composite_attribute_multiplier ==================================
 
-double rogue_t::composite_attribute_multiplier( int attr ) const
+double rogue_t::composite_attribute_multiplier( attribute_type_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -3210,7 +3206,7 @@ double rogue_t::composite_attack_speed() const
 
 // rogue_t::matching_gear_multiplier ========================================
 
-double rogue_t::matching_gear_multiplier( const attribute_type_e attr ) const
+double rogue_t::matching_gear_multiplier( attribute_type_e attr ) const
 {
   if ( attr == ATTR_AGILITY )
     return 0.05;
@@ -4012,11 +4008,11 @@ void rogue_t::create_options()
 
 // rogue_t::create_profile ==================================================
 
-bool rogue_t::create_profile( std::string& profile_str, int save_type_e, bool save_html )
+bool rogue_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
-  player_t::create_profile( profile_str, save_type_e, save_html );
+  player_t::create_profile( profile_str, stype, save_html );
 
-  if ( save_type_e == SAVE_ALL || save_type_e == SAVE_ACTIONS )
+  if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
   {
     if ( talents.honor_among_thieves -> rank() )
     {
