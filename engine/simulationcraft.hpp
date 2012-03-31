@@ -2255,6 +2255,8 @@ public:
   int         _cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
   double      _c_scaling;          // A scaling multiplier for level based scaling
   unsigned    _c_scaling_level;    // A scaling divisor for level based scaling
+  // SpecializationSpells.dbc 
+  unsigned    _replace_spell_id;
   // Spell.dbc flags
   unsigned    _attributes[NUM_SPELL_FLAGS];// Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
   const char* _desc;               // Spell.dbc description stringblock

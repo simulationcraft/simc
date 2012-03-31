@@ -1399,6 +1399,8 @@ class SpellDataGenerator(DataGenerator):
                 mask_class = DataGenerator._class_masks[3]
             
             self.process_spell(spell.id, ids, mask_class, 0)
+            if ids.has_key(spell.id):
+                ids[spell.id]['replace_spell_id'] = spec_spell_data.replace_spell_id
         
         for spec_id, spec_data in self._chrspecialization_db.iteritems():
             s = self._spell_db[spec_data.id_mastery]
@@ -1669,6 +1671,11 @@ class SpellDataGenerator(DataGenerator):
                 # Use default values, i.e., zeros
                 fields += self._spellscaling_db[0].field('cast_div', 'c_scaling', 'c_scaling_threshold' )
 
+            if ids.has_key(id) and ids[id].has_key('replace_spell_id'):
+                fields += [ '%6u' % ids[id]['replace_spell_id'] ]
+            else:
+                fields += [ '%6u' % 0 ]
+            
             s_effect = []
             effect_ids = []
             for effect in spell._effects:

@@ -11,6 +11,12 @@ FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtWebKit QtMain QtNetwork)
 FIND_PACKAGE(Threads REQUIRED)
 FIND_PACKAGE(OpenSSL)
 
+IF(APPLE)
+    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+    MARK_AS_ADVANCED(COCOA_LIBRARY)
+    SET(COCOA_LIBS ${COCOA_LIBRARY})
+ENDIF(APPLE)
+
 SET(EXECUTABLE_OUTPUT_PATH bin)
 SET(LIBRARY_OUTPUT_PATH lib)
 
@@ -23,6 +29,7 @@ SET(SIMC_ENGINE_INCLUDE_DIRS
 
 SET(SIMC_ENGINE_SOURCE
   "engine/sc_action.cpp"
+  "engine/sc_action_state.cpp"
   "engine/interfaces/sc_armory.cpp"
   "engine/sc_attack.cpp"
   "engine/interfaces/sc_bcp_api.cpp"
@@ -87,6 +94,7 @@ SET(SIMC_ENGINE_SOURCE
   "engine/class_modules/sc_rogue.cpp"
   "engine/class_modules/sc_shaman.cpp"
   "engine/class_modules/sc_warlock.cpp"
+  "engine/class_modules/sc_warlock_pets.cpp"
   "engine/class_modules/sc_warrior.cpp"
 )
 
@@ -171,6 +179,7 @@ IF(QT4_FOUND)
 
   IF(APPLE)
     SET(SIMC_QT_ICON ${CMAKE_CURRENT_SOURCE_DIR}/qt/icon/Simcraft2.icns)
+    ADD_DEFINITIONS(-DSIMC_NO_AUTOUPDATE)
   ELSE(APPLE)
     SET(SIMC_QT_ICON ${CMAKE_CURRENT_SOURCE_DIR}/qt/icon/Simcraft2.ico)
   ENDIF(APPLE)
@@ -205,6 +214,9 @@ IF(QT4_FOUND)
   IF(OPENSSL_FOUND)
     TARGET_LINK_LIBRARIES(simc-qt ${OPENSSL_LIBRARIES})
   ENDIF(OPENSSL_FOUND)
+  IF(APPLE)
+    TARGET_LINK_LIBRARIES(simc-qt ${COCOA_LIBS})
+  ENDIF(APPLE)
 
   IF(APPLE)
     SET(MACOSX_BUNDLE_ICON_FILE qt/icon/Simcraft2.icns)
