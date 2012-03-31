@@ -120,7 +120,6 @@
     </None>
     <None Include="engine\sc_item_data.inc" />
     <None Include="engine\sc_item_data_ptr.inc" />
-    <None Include="engine\xs_float\xs_Float.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Data Files">
