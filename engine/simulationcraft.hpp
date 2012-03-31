@@ -3954,8 +3954,8 @@ private:
 
 public:
   event_t*  next;
-  sim_t*    sim;
-  player_t* player;
+  sim_t* const sim;
+  player_t* const player;
   uint32_t  id;
   timespan_t time;
   timespan_t reschedule_time;
@@ -5370,10 +5370,9 @@ public:
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
   // Move to ability_t in future
-  const spell_data_t* spell;
-  const spelleffect_data_t& effect1() const { return spell -> effect1(); }
-  const spelleffect_data_t& effect2() const { return spell -> effect2(); }
-  const spelleffect_data_t& effect3() const { return spell -> effect3(); }
+  const spelleffect_data_t& effect1() const { return data().effect1(); }
+  const spelleffect_data_t& effect2() const { return data().effect2(); }
+  const spelleffect_data_t& effect3() const { return data().effect3(); }
 
   targetdata_t* targetdata() const
   {

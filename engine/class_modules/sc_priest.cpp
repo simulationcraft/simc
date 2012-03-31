@@ -331,7 +331,7 @@ namespace   // ANONYMOUS NAMESPACE ==========================================
 struct remove_dots_event_t : public event_t
 {
 private:
-  priest_targetdata_t* td;
+  priest_targetdata_t* const td;
 
   static void cancel_dot( dot_t* dot )
   {
@@ -1869,7 +1869,6 @@ struct mind_sear_tick_t : public priest_spell_t
 };
 
 struct mind_sear_t : public priest_spell_t
-
 {
   mind_sear_tick_t* mind_sear_tick;
 
@@ -3267,6 +3266,7 @@ double priest_t::composite_player_td_multiplier( const school_type_e school, act
   {
     // Shadow TD
     player_multiplier += buffs.dark_evangelism -> stack () * buffs.dark_evangelism -> data().effect1().percent();
+    player_multiplier += mastery_spells.shadow_orb_power -> ok() * 0.20; // FIXME: find a way to get the number from the dbc
   }
 
   return player_multiplier;
