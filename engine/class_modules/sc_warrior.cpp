@@ -416,7 +416,7 @@ struct warrior_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type_e, int impact_result );
+  virtual void   assess_damage( player_t* t, const double, const dmg_type_e, const result_type_e );
 };
 
 
@@ -489,12 +489,12 @@ struct deep_wounds_t : public warrior_attack_t
   }
   virtual double total_td_multiplier() const { return target_multiplier; }
   virtual timespan_t travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
-  virtual void impact( player_t* t, int impact_result, double deep_wounds_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, 0 );
     if ( result_is_hit( impact_result ) )
     {
-      base_td = deep_wounds_dmg / dot() -> num_ticks;
+      base_td = travel_dmg / dot() -> num_ticks;
       trigger_blood_frenzy( this );
     }
   }
@@ -803,9 +803,9 @@ double warrior_attack_t::armor() const
 
 // warrior_attack_t::assess_damage ==========================================
 
-void warrior_attack_t::assess_damage( player_t* t, double amount, int dmg_type_e, int impact_result )
+void warrior_attack_t::assess_damage( player_t* t, const double amount, const dmg_type_e dmg_type, const result_type_e impact_result )
 {
-  attack_t::assess_damage( t, amount, dmg_type_e, impact_result );
+  attack_t::assess_damage( t, amount, dmg_type, impact_result );
 
   /* warrior_t* p = player -> cast_warrior();
 
@@ -1464,9 +1464,9 @@ struct demoralizing_shout_t : public warrior_attack_t
     may_glance = false;
   }
 
-  virtual void impact( player_t* t, int impact_result, double dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
-    warrior_attack_t::impact( t, impact_result, dmg );
+    warrior_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( result_is_hit( impact_result ) )
     {
@@ -1516,9 +1516,9 @@ struct devastate_t : public warrior_attack_t
     target_dd_adder = t -> debuffs.sunder_armor -> stack() * effect_average( 2 );
   }
 
-  virtual void impact( player_t* t, int impact_result, double dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
-    warrior_attack_t::impact( t, impact_result, dmg );
+    warrior_attack_t::impact( t, impact_result, travel_dmg );
 
     t -> debuffs.sunder_armor -> trigger();
   }
@@ -2054,7 +2054,7 @@ struct revenge_t : public warrior_attack_t
     trigger_sword_and_board( this, result );
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
     warrior_t* p = player -> cast_warrior();
@@ -2066,7 +2066,7 @@ struct revenge_t : public warrior_attack_t
       {
         double amount = 0.20 * travel_dmg;
         p -> buffs_tier13_2pc_tank -> trigger( 1, amount );
-        absorb_stats -> add_result( amount, amount, STATS_ABSORB, impact_result );
+        absorb_stats -> add_result( amount, amount, ABSORB, impact_result );
         absorb_stats -> add_execute( timespan_t::zero );
       }
     }
@@ -2360,9 +2360,9 @@ struct sunder_armor_t : public warrior_attack_t
     // TODO: Glyph of Sunder armor applies affect to nearby target
   }
 
-  virtual void impact( player_t* t, int impact_result, double dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
-    warrior_attack_t::impact( t, impact_result, dmg );
+    warrior_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( result_is_hit( impact_result ) )
     {

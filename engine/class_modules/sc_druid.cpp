@@ -1482,9 +1482,9 @@ struct mangle_cat_t : public druid_cat_attack_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
   {
-    druid_cat_attack_t::impact( t, impact_result, travel_dmg );
+    druid_cat_attack_t::impact( t, impact_result, impact_dmg );
 
     if ( result_is_hit( impact_result ) )
     {
@@ -2186,7 +2186,7 @@ struct mangle_bear_t : public druid_bear_attack_t
       cooldown -> reset();
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg=0 )
   {
     druid_bear_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -3892,8 +3892,7 @@ struct starsurge_t : public druid_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result,
-                       double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
     druid_t* p = player -> cast_druid();
@@ -4331,8 +4330,7 @@ struct wrath_t : public druid_spell_t
       target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
   }
 
-  virtual void impact( player_t* t, int impact_result,
-                       double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
     druid_t* p = player -> cast_druid();

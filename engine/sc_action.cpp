@@ -1166,9 +1166,9 @@ void action_t::last_tick( dot_t* d )
 
 // action_t::impact =========================================================
 
-void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
+void action_t::impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
 {
-  assess_damage( t, travel_dmg, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, impact_result );
+  assess_damage( t, impact_dmg, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, impact_result );
 
   // Set target so aoe dots work
   player_t* orig_target = target;
@@ -1229,13 +1229,13 @@ void action_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
 
 void action_t::assess_damage( player_t* t,
                               double dmg_amount,
-                              int    dmg_type_e,
-                              int    dmg_result )
+                              const dmg_type_e dmg_type,
+                              const result_type_e dmg_result )
 {
-  double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type_e, dmg_result, this );
+  double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type, dmg_result, this );
   double actual_amount = t -> infinite_resource[ RESOURCE_HEALTH ] ? dmg_adjusted : std::min( dmg_adjusted, t -> resources.current[ RESOURCE_HEALTH ] );
 
-  if ( dmg_type_e == DMG_DIRECT )
+  if ( dmg_type == DMG_DIRECT )
   {
     if ( sim -> log )
     {
@@ -1268,20 +1268,20 @@ void action_t::assess_damage( player_t* t,
     if ( callbacks ) action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
   }
 
-  stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : dmg_type_e ), dmg_result );
+  stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : dmg_type ), dmg_result );
 }
 
 // action_t::additional_damage ==============================================
 
 void action_t::additional_damage( player_t* t,
-                                  double dmg_amount,
-                                  int    dmg_type_e,
-                                  int    dmg_result )
+                                  const double dmg_amount,
+                                  const dmg_type_e dmg_type,
+                                  const result_type_e dmg_result )
 {
-  dmg_amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
-  double dmg_adjusted = t -> assess_damage( dmg_amount, school, dmg_type_e, dmg_result, this );
+  double modified_amount = dmg_amount / target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
+  double dmg_adjusted = t -> assess_damage( modified_amount, school, dmg_type, dmg_result, this );
   double actual_amount = std::min( dmg_adjusted, t -> resources.current[ current_resource() ] );
-  stats -> add_result( actual_amount, dmg_amount, dmg_type_e, dmg_result );
+  stats -> add_result( actual_amount, modified_amount, dmg_type, dmg_result );
 }
 
 // action_t::schedule_execute ===============================================

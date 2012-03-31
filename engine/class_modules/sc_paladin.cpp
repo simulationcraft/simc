@@ -1603,7 +1603,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     player_multiplier *= td -> debuffs_censure -> stack();
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg=0 )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     if ( result_is_hit( impact_result ) )
     {
@@ -1943,7 +1943,7 @@ struct consecration_t : public paladin_spell_t
     tick_spell -> stats = stats;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg=0 )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     if ( t -> debuffs.flying -> check() )
     {

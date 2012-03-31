@@ -819,12 +819,12 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       }
     }
 
-    virtual void impact( player_t* t, int impact_result, double piercing_shots_dmg )
+    virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg )
     {
       attack_t::impact( t, impact_result, 0 );
 
       // FIXME: Is a is_hit check necessary here?
-      base_td = piercing_shots_dmg / dot() -> num_ticks;
+      base_td = impact_dmg / dot() -> num_ticks;
     }
 
     virtual timespan_t travel_time()
@@ -1557,7 +1557,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1588,7 +1588,7 @@ struct corrosive_spit_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1613,7 +1613,7 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1644,7 +1644,7 @@ struct ravage_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1674,7 +1674,7 @@ struct tailspin_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1705,7 +1705,7 @@ struct tear_armor_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1732,7 +1732,7 @@ struct tendon_rip_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2039,7 +2039,7 @@ struct aimed_shot_t : public hunter_attack_t
       p -> buffs_master_marksman_fire -> expire();
     }
 
-    virtual void impact( player_t* t, int impact_result, double travel_dmg )
+    virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
     {
       hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2145,7 +2145,7 @@ struct aimed_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2397,7 +2397,7 @@ struct chimera_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2460,7 +2460,7 @@ struct cobra_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
   }
@@ -2705,7 +2705,7 @@ struct serpent_sting_t : public hunter_attack_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2752,7 +2752,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2783,7 +2783,7 @@ struct multi_shot_t : public hunter_attack_t
       spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_t* p = player -> cast_hunter();
     //target_t* q = t -> cast_target();
@@ -2873,7 +2873,7 @@ struct steady_shot_t : public hunter_attack_t
     p -> buffs_pre_improved_steady_shot -> trigger( 1 );
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -3248,7 +3248,7 @@ struct hunters_mark_t : public hunter_spell_t
     harmful = false;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     hunter_spell_t::impact( t, impact_result, travel_dmg );
 

@@ -2573,7 +2573,7 @@ struct death_and_decay_t : public death_knight_spell_t
     num_ticks        = ( int ) n_ticks;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg=0 )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
   {
     if ( t -> debuffs.flying -> check() )
     {
@@ -2581,7 +2581,7 @@ struct death_and_decay_t : public death_knight_spell_t
     }
     else
     {
-      death_knight_spell_t::impact( t, impact_result, travel_dmg );
+      death_knight_spell_t::impact( t, impact_result, impact_dmg );
     }
   }
 };
@@ -2786,9 +2786,9 @@ struct frost_fever_t : public death_knight_spell_t
                        + p -> talents.virulence -> effect1().percent();
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
   {
-    death_knight_spell_t::impact( t, impact_result, travel_dmg );
+    death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
     if ( result_is_hit( impact_result ) )
       trigger_brittle_bones( this, t );
@@ -3027,9 +3027,9 @@ struct howling_blast_t : public death_knight_spell_t
     p -> buffs_rime -> decrement();
   }
 
-  virtual void impact( player_t* t, int result, double dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
   {
-    death_knight_spell_t::impact( t, result, dmg );
+    death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
     if ( result_is_hit( result ) )
     {
@@ -3386,9 +3386,9 @@ struct pestilence_t : public death_knight_spell_t
       p -> active_dancing_rune_weapon -> drw_pestilence -> execute();
   }
 
-  virtual void impact( player_t* t, int result, double dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
   {
-    death_knight_spell_t::impact( t, result, dmg );
+    death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
     // Doesn't affect the original target
     if ( t == source )

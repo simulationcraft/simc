@@ -1474,7 +1474,7 @@ void sim_t::analyze_player( player_t* p )
   // Procs ==================================================================
 
   for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
-    proc -> analyze( this );
+    proc -> analyze();
 
   // Damage Timelines =======================================================
 
@@ -1507,7 +1507,7 @@ void sim_t::analyze_player( player_t* p )
   {
     for ( int i=0; i < iterations; i += convergence_scale )
     {
-      double i_dps = p -> dps.data[ i ];
+      double i_dps = p -> dps.data()[ i ];
       convergence_dps += i_dps;
       if ( convergence_min > i_dps ) convergence_min = i_dps;
       if ( convergence_max < i_dps ) convergence_max = i_dps;
@@ -1524,7 +1524,7 @@ void sim_t::analyze_player( player_t* p )
     {
       p -> dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
 
-      double delta = p -> dps.data[ i ] - convergence_dps;
+      double delta = p -> dps.data()[ i ] - convergence_dps;
       double delta_squared = delta * delta;
 
       sum_of_squares += delta_squared;

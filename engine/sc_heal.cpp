@@ -188,9 +188,9 @@ void heal_t::schedule_execute()
 // heal_t::assess_damage ====================================================
 
 void heal_t::assess_damage( player_t* t,
-                            double heal_amount,
-                            int    heal_type,
-                            int    heal_result )
+                            const double heal_amount,
+                            const dmg_type_e heal_type,
+                            const result_type_e heal_result )
 {
 
 
@@ -423,7 +423,7 @@ void absorb_t::execute()
 
 // absorb_t::impact =========================================================
 
-void absorb_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
+void absorb_t::impact( player_t* t, const result_type_e impact_result, const double travel_dmg=0 )
 {
   if ( travel_dmg > 0 )
   {
@@ -434,9 +434,9 @@ void absorb_t::impact( player_t* t, int impact_result, double travel_dmg=0 )
 // absorb_t::assess_damage ==================================================
 
 void absorb_t::assess_damage( player_t* t,
-                              double    heal_amount,
-                              int       heal_type,
-                              int       heal_result )
+                              const double    heal_amount,
+                              const dmg_type_e heal_type,
+                              const result_type_e heal_result )
 {
   double heal_actual = direct_dmg = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
 

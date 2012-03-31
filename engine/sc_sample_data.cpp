@@ -37,7 +37,7 @@ void sample_data_t::add( double x )
     ++count;
   }
   else
-    data.push_back( x );
+    _data.push_back( x );
 }
 
 
@@ -79,16 +79,16 @@ void sample_data_t::analyze_basics()
     return;
   }
 
-  size_t sample_size = data.size();
+  size_t sample_size = data().size();
   if ( sample_size == 0 )
     return;
 
   // Calculate Sum, Mean, Min, Max
-  sum = min = max = data[ 0 ];
+  sum = min = max = data()[ 0 ];
 
   for ( size_t i=1; i < sample_size; i++ )
   {
-    double i_data = data[ i ];
+    double i_data = data()[ i ];
     sum  += i_data;
     if ( i_data < min ) min = i_data;
     if ( i_data > max ) max = i_data;
@@ -110,7 +110,7 @@ void sample_data_t::analyze_variance()
 
   analyze_basics();
 
-  size_t sample_size = data.size();
+  size_t sample_size = data().size();
 
   if ( sample_size == 0 )
     return;
@@ -118,7 +118,7 @@ void sample_data_t::analyze_variance()
   variance = 0;
   for ( size_t i=0; i < sample_size; i++ )
   {
-    double delta = data[ i ] - mean;
+    double delta = data()[ i ] - mean;
     variance += delta * delta;
   }
 
@@ -147,7 +147,7 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
   if ( !basics_analyzed() )
     return;
 
-  if ( data.size() == 0 )
+  if ( data().size() == 0 )
     return;
 
   if ( max > min )
@@ -155,9 +155,9 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
     double range = max - min + 2;
 
     distribution.assign( num_buckets, 0 );
-    for ( unsigned int i=0; i < data.size(); i++ )
+    for ( unsigned int i=0; i < data().size(); i++ )
     {
-      int index = ( int ) ( num_buckets * ( data[ i ] - min + 1 ) / range );
+      int index = ( int ) ( num_buckets * ( data()[ i ] - min + 1 ) / range );
       assert( 0 <= index && static_cast<size_t>( index ) < distribution.size() );
       distribution[ index ]++;
     }
@@ -173,13 +173,13 @@ double sample_data_t::percentile( double x )
   if ( simple )
     return std::numeric_limits<double>::quiet_NaN();
 
-  if ( data.empty() )
+  if ( data().empty() )
     return std::numeric_limits<double>::quiet_NaN();
 
   sort();
 
   // Should be improved to use linear interpolation
-  return data[ ( int ) ( x * ( data.size() - 1 ) ) ];
+  return data()[ ( int ) ( x * ( data().size() - 1 ) ) ];
 }
 
 // sample_data_t::sort ======================================================
@@ -188,7 +188,7 @@ void sample_data_t::sort()
 {
   if ( ! is_sorted )
   {
-    range::sort( data );
+    range::sort( _data );
     is_sorted = true;
   }
 }
@@ -211,7 +211,7 @@ void sample_data_t::merge( const sample_data_t& other )
     }
   }
   else
-    data.insert( data.end(), other.data.begin(), other.data.end() );
+    _data.insert( _data.end(), other._data.begin(), other._data.end() );
 }
 
 // sample_data_t::merge =====================================================
@@ -222,7 +222,7 @@ double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_
   if ( x.simple || y.simple )
     return std::numeric_limits<double>::quiet_NaN();
 
-  if ( x.data.size() != y.data.size() )
+  if ( x.data().size() != y.data().size() )
     return std::numeric_limits<double>::quiet_NaN();
 
   if ( ! x.basics_analyzed() || ! y.basics_analyzed() )
@@ -233,12 +233,12 @@ double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_
 
   double corr = 0;
 
-  for ( size_t i=0; i < x.data.size(); i++ )
+  for ( size_t i=0; i < x.data().size(); i++ )
   {
-    corr += ( x.data[ i ] - x.mean ) * ( y.data[ i ] - y.mean );
+    corr += ( x.data()[ i ] - x.mean ) * ( y.data()[ i ] - y.mean );
   }
-  if ( x.data.size() > 1 )
-    corr /= ( x.data.size() - 1 );
+  if ( x.data().size() > 1 )
+    corr /= ( x.data().size() - 1 );
 
   corr /= x.std_dev;
   corr /= y.std_dev;

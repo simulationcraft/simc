@@ -2969,7 +2969,7 @@ void player_t::merge( player_t& other )
 
   for ( proc_t* proc = proc_list; proc; proc = proc -> next )
   {
-    proc -> merge( other.get_proc( proc -> name_str ) );
+    proc -> merge( (*other.get_proc( proc -> name_str )) );
   }
 
   for ( gain_t* gain = gain_list; gain; gain = gain -> next )

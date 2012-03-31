@@ -3076,7 +3076,6 @@ struct gear_stats_t : public internal::gear_stats_t
 
 struct sample_data_t
 {
-  std::vector<double> data;
   // Analyzed Results
   double sum;
   double mean;
@@ -3088,8 +3087,8 @@ struct sample_data_t
   std::vector<int> distribution;
   const bool simple;
   const bool min_max;
-
 private:
+  std::vector<double> _data;
   int count;
 
   bool analyzed_basics;
@@ -3097,40 +3096,33 @@ private:
   bool created_dist;
   bool is_sorted;
 public:
-
   sample_data_t( bool s=true, bool mm=false );
 
   void reserve( std::size_t capacity )
-  { if ( ! simple ) data.reserve( capacity ); }
-
+  { if ( ! simple ) _data.reserve( capacity ); }
   void add( double x=0 );
 
   bool basics_analyzed() const { return analyzed_basics; }
   bool variance_analyzed() const { return analyzed_variance; }
   bool distribution_created() const { return created_dist; }
   bool sorted() const { return is_sorted; }
-  int size() const { if ( simple ) return count; return ( int ) data.size(); }
+  int size() const { if ( simple ) return count; return ( int ) _data.size(); }
 
   void analyze(
     bool calc_basics=true,
     bool calc_variance=true,
     bool s=true,
     unsigned int create_dist=0 );
-
-
   void analyze_basics();
-
   void analyze_variance();
-
   void sort();
-
   void create_distribution( unsigned int num_buckets=50 );
+  void clear() { count = 0; sum = 0; _data.clear(); distribution.clear(); }
 
+  // Access functions
   double percentile( double );
-
+  const std::vector<double>& data() const { return _data; }
   void merge( const sample_data_t& );
-
-  void clear() { count = 0; sum = 0; data.clear(); distribution.clear(); }
 
   static double pearson_correlation( const sample_data_t&, const sample_data_t& );
 };
@@ -5178,8 +5170,8 @@ struct stats_t
   ~stats_t();
 
   void add_child( stats_t* child );
-  void consume_resource( resource_type_e resource_type, double r );
-  void add_result( double act_amount, double tot_amount, int dmg_type_e, int result );
+  void consume_resource( const resource_type_e resource_type, const double resource_amount );
+  void add_result( const double act_amount, const double tot_amount, const dmg_type_e dmg_type, const result_type_e result );
   void add_tick   ( timespan_t time );
   void add_execute( timespan_t time );
   void combat_begin();
@@ -5322,9 +5314,9 @@ public:
   virtual void   execute();
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
-  virtual void   impact( player_t*, int result, double dmg );
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type_e, int impact_result );
-  virtual void   additional_damage( player_t* t, double amount, int dmg_type_e, int impact_result );
+  virtual void   impact( player_t*, const result_type_e impact_result, const double impact_dmg );
+  virtual void   assess_damage( player_t* t, double amount, const dmg_type_e dmg_type, const result_type_e impact_result );
+  virtual void   additional_damage( player_t* t, const double amount, const dmg_type_e dmg_type, const result_type_e impact_result );
   virtual void   schedule_execute();
   virtual void   schedule_travel( player_t* t );
   virtual void   reschedule_execute( timespan_t time );
@@ -5753,7 +5745,7 @@ public:
   virtual timespan_t execute_time() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
-                              int    dmg_type_e, int impact_result );
+                              const dmg_type_e dmg_type , const result_type_e impact_result );
   virtual void calculate_result();
   virtual double crit_chance( int delta_level ) const;
   virtual void   schedule_execute();
@@ -5786,9 +5778,9 @@ public:
   virtual timespan_t execute_time() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
-                              int    dmg_type_e, int impact_result );
+                              const dmg_type_e dmg_type, const result_type_e impact_result );
   virtual void calculate_result();
-  virtual void impact( player_t*, int impact_result, double travel_dmg );
+  virtual void impact( player_t*, const result_type_e impact_result, const double impact_dmg );
   virtual void   schedule_execute();
 
   /* New stuffs */
@@ -5975,7 +5967,7 @@ struct action_travel_event_t : public event_t
 {
   action_t* const action;
   player_t* const target;
-  int result;
+  result_type_e result;
   double damage;
   action_travel_event_t( sim_t* sim, player_t* t, action_t* a, timespan_t time_to_travel );
   virtual void execute();
@@ -6170,16 +6162,17 @@ struct gain_t
     range::fill( overflow, 0.0 );
     range::fill( count, 0.0 );
   }
-  void add( resource_type_e resource_type, double a, double o=0 ) { actual[ resource_type ] += a; overflow[ resource_type ] += o; count[ resource_type ]++; }
+  void add( const resource_type_e resource_type, const double a, const double o=0 )
+    { actual[ resource_type ] += a; overflow[ resource_type ] += o; count[ resource_type ]++; }
   void merge( const gain_t* other )
   {
     for ( size_t i=0; i<RESOURCE_MAX; i++ )
-    { actual[i] += other -> actual[i]; overflow[i] += other -> overflow[i]; count[i] += other -> count[i]; }
+      { actual[i] += other -> actual[i]; overflow[i] += other -> overflow[i]; count[i] += other -> count[i]; }
   }
   void analyze( const sim_t* sim )
   {
     for ( size_t i=0; i<RESOURCE_MAX; i++ )
-    { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
+      { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
   }
   const char* name() const { return name_str.c_str(); }
 };
@@ -6188,21 +6181,21 @@ struct gain_t
 
 struct proc_t
 {
+  sim_t* const sim;
+  player_t* const player;
+  const std::string name_str;
+
   double count;
   timespan_t last_proc;
   timespan_t interval_sum;
   double interval_count;
-
   double frequency;
-  sim_t* const sim;
-
-  player_t* const player;
-  const std::string name_str;
   proc_t* next;
 
   proc_t( sim_t* s, player_t* p, const std::string& n ) :
-    count( 0 ), last_proc( timespan_t::zero ), interval_sum( timespan_t::zero ), interval_count( 0 ),
-    frequency( 0 ), sim( s ), player( p ), name_str( n ), next( 0 )
+    sim( s ), player( p ), name_str( n ),
+    count( 0.0 ), last_proc( timespan_t::zero ), interval_sum( timespan_t::zero ), interval_count( 0.0 ),
+    frequency( 0.0 ),  next( NULL )
   {}
 
   void occur()
@@ -6216,14 +6209,14 @@ struct proc_t
     last_proc = sim -> current_time;
   }
 
-  void merge( const proc_t* other )
+  void merge( const proc_t& other )
   {
-    count          += other -> count;
-    interval_sum   += other -> interval_sum;
-    interval_count += other -> interval_count;
+    count          += other.count;
+    interval_sum   += other.interval_sum;
+    interval_count += other.interval_count;
   }
 
-  void analyze( const sim_t* sim )
+  void analyze()
   {
     count /= sim -> iterations;
     if ( interval_count > 0 ) frequency = interval_sum.total_seconds() / interval_count;

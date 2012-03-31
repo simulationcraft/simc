@@ -473,14 +473,14 @@ struct priest_heal_t : public heal_t
       shield_multiple  = p -> spec.divine_aegis -> effect1().percent();
     }
 
-    virtual void impact( player_t* t, int impact_result, double travel_dmg )
+    virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
     {
       priest_targetdata_t* td = targetdata() -> cast_priest();
 
       double old_amount = td -> buffs_divine_aegis -> current_value;
       double new_amount = std::min( t -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
       td -> buffs_divine_aegis -> trigger( 1, old_amount + new_amount );
-      stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, STATS_ABSORB, impact_result );
+      stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, ABSORB, impact_result );
     }
   };
 
@@ -614,7 +614,7 @@ struct priest_heal_t : public heal_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     heal_t::impact( t, impact_result, travel_dmg );
     priest_targetdata_t* td = targetdata() -> cast_priest();
@@ -851,11 +851,11 @@ public:
   }
 
   virtual void assess_damage( player_t* t,
-                              double amount,
-                              int    dmg_type_e,
-                              int    impact_result )
+                              const double amount,
+                              const dmg_type_e dmg_type,
+                              const result_type_e impact_result )
   {
-    spell_t::assess_damage( t, amount, dmg_type_e, impact_result );
+    spell_t::assess_damage( t, amount, dmg_type, impact_result );
 
     if ( p() -> buffs.vampiric_embrace -> up() && result_is_hit( impact_result ) )
     {
@@ -888,7 +888,7 @@ public:
     }
 
     if ( atonement )
-      atonement -> trigger( amount, dmg_type_e, impact_result );
+      atonement -> trigger( amount, dmg_type, impact_result );
   }
 
   static void trigger_shadowy_apparition( priest_t* player );
@@ -954,11 +954,11 @@ struct shadow_fiend_pet_t : public pet_t
       player_multiplier *= 1.0 + p -> buffs.shadowcrawl -> value();
     }
 
-    virtual void impact( player_t* t, int impact_result, double dmg )
+    virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
     {
       shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player );
 
-      attack_t::impact( t, result, dmg );
+      attack_t::impact( t, impact_result, travel_dmg );
 
       if ( result_is_hit( impact_result ) )
       {
@@ -1215,9 +1215,9 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     init();
   }
 
-  virtual void impact( player_t* t, int result, double dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
-    priest_spell_t::impact( t, result, dmg );
+    priest_spell_t::impact( t, impact_result, travel_dmg );
 
 
     // Needs testing
@@ -1836,9 +1836,9 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
-    priest_spell_t::impact( t, impact_result, dmg );
+    priest_spell_t::impact( t, impact_result, travel_dmg );
 
     if ( result_is_hit( impact_result ) )
     {
@@ -1934,7 +1934,7 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     priest_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2442,7 +2442,7 @@ struct flash_heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 
@@ -2541,7 +2541,7 @@ struct greater_heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 
@@ -2595,7 +2595,7 @@ struct _heal_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 
@@ -2856,7 +2856,7 @@ struct penance_heal_tick_t : public priest_heal_t
     stats = player -> get_stats( "penance_heal", this );
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 
@@ -2954,7 +2954,7 @@ struct power_word_shield_t : public priest_absorb_t
     return c;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     priest_targetdata_t* td = targetdata() -> cast_priest();
 
@@ -2962,7 +2962,7 @@ struct power_word_shield_t : public priest_absorb_t
 
     td -> buffs_power_word_shield -> trigger( 1, travel_dmg );
 
-    stats -> add_result( travel_dmg, travel_dmg, STATS_ABSORB, impact_result );
+    stats -> add_result( travel_dmg, travel_dmg, ABSORB, impact_result );
 
     // Glyph
     if ( glyph_pws )
@@ -3030,7 +3030,7 @@ struct prayer_of_healing_t : public priest_heal_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     priest_heal_t::impact( t, impact_result, travel_dmg );
 

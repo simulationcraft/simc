@@ -507,7 +507,7 @@ struct rogue_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, double amount, int dmg_type_e, int impact_result );
+  virtual void   assess_damage( player_t* t, const double, const dmg_type_e, const result_type_e );
   virtual double total_multiplier() const;
   virtual double armor() const;
 
@@ -1208,11 +1208,11 @@ bool rogue_attack_t::ready()
 // rogue_attack_t::assess_damage ============================================
 
 void rogue_attack_t::assess_damage( player_t* t,
-                                    double amount,
-                                    int    dmg_type_e,
-                                    int impact_result )
+                                    const double amount,
+                                    const dmg_type_e dmg_type,
+                                    const result_type_e impact_result )
 {
-  attack_t::assess_damage( t, amount, dmg_type_e, impact_result );
+  attack_t::assess_damage( t, amount, dmg_type, impact_result );
 
   /*rogue_t* p = player -> cast_rogue();
 
@@ -2273,7 +2273,7 @@ struct rupture_t : public rogue_attack_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     rogue_t* p = player -> cast_rogue();
     if ( result_is_hit( impact_result ) )

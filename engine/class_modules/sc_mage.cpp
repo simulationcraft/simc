@@ -397,7 +397,7 @@ struct mage_spell_t : public spell_t
   virtual double haste() const;
   virtual void   execute();
   virtual timespan_t execute_time() const;
-  virtual void   impact( player_t* t, int impact_result, double travel_dmg );
+  virtual void   impact( player_t* t, const result_type_e impact_result, const double travel_dmg );
   virtual void   consume_resource();
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type_e );
@@ -888,11 +888,11 @@ static void trigger_ignite( spell_t* s, double dmg )
           dot_behavior  = DOT_REFRESH;
           init();
         }
-        virtual void impact( player_t* t, int impact_result, double ignite_dmg )
+        virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
         {
           mage_spell_t::impact( t, impact_result, 0 );
 
-          base_td = ignite_dmg;
+          base_td = travel_dmg;
         }
         virtual timespan_t travel_time()
         {
@@ -1130,7 +1130,7 @@ timespan_t mage_spell_t::execute_time() const
 
 // mage_spell_t::impact =====================================================
 
-void mage_spell_t::impact( player_t* t, int impact_result, double travel_dmg )
+void mage_spell_t::impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
 {
   mage_t* p = player -> cast_mage();
 
@@ -1960,7 +1960,7 @@ struct flame_orb_explosion_t : public mage_spell_t
     base_multiplier *= 1.0 + p -> talents.critical_mass -> effect2().percent();
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     // Ticks don't trigger ignite
     spell_t::impact( t, impact_result, travel_dmg );
@@ -1985,7 +1985,7 @@ struct flame_orb_tick_t : public mage_spell_t
 
   virtual resource_type_e current_resource() const { return RESOURCE_NONE; }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     // Ticks don't trigger ignite
     spell_t::impact( t, impact_result, travel_dmg );
@@ -2323,7 +2323,7 @@ struct frostfire_bolt_t : public mage_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     mage_t* p = player -> cast_mage();
 
@@ -2361,7 +2361,7 @@ struct frostfire_orb_explosion_t : public mage_spell_t
     may_chill = ( p -> talents.frostfire_orb -> rank() == 2 );
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     // Ticks don't trigger ignite
     spell_t::impact( t, impact_result, travel_dmg );
@@ -2389,7 +2389,7 @@ struct frostfire_orb_tick_t : public mage_spell_t
     }
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     // Ticks don't trigger ignite
     spell_t::impact( t, impact_result, travel_dmg );
@@ -2546,7 +2546,7 @@ struct living_bomb_explosion_t : public mage_spell_t
 
   virtual resource_type_e current_resource() const { return RESOURCE_NONE; }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     // Ticks don't trigger ignite
     spell_t::impact( t, impact_result, travel_dmg );

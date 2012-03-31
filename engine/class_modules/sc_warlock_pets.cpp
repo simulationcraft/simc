@@ -288,7 +288,7 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   }
 // imp_pet_t::fire_bolt_t::execute ==========================================
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -420,7 +420,7 @@ struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
     player_multiplier *= 1.0 + td -> active_dots() * effect3().percent();
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
     if ( result_is_hit( impact_result ) )
@@ -451,7 +451,7 @@ struct lash_of_pain_t : public warlock_pet_actions::warlock_pet_spell_t
     if ( o -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -490,7 +490,7 @@ struct torment_t : public warlock_pet_actions::warlock_pet_spell_t
     direct_power_mod = 0.512;
   }
 
-  virtual void impact( player_t* t, int impact_result, double travel_dmg )
+  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
   {
     warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
 
