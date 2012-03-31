@@ -147,7 +147,7 @@ void plot_t::analyze_stats()
       {
         player_t* p = sim -> players_by_name[ k ];
 
-        if ( p -> scales_with[ i ] <= 0 ) continue;
+        if ( ! p -> scales_with[ i ] ) continue;
 
         if ( delta_sim )
         {

@@ -1053,7 +1053,7 @@ struct shadow_fiend_pet_t : public pet_t
     buffs.shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration() );
   }
 
-  virtual double composite_spell_power( const school_type_e school ) const
+  virtual double composite_spell_power( school_type_e school ) const
   {
     double sp;
 

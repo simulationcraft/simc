@@ -281,10 +281,10 @@ struct shaman_t : public player_t
   virtual void      moving();
   virtual double    composite_attack_speed() const;
   virtual double    composite_spell_hit() const;
-  virtual double    composite_spell_power( const school_type_e school ) const;
+  virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
-  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
@@ -605,7 +605,7 @@ struct spirit_wolf_pet_t : public pet_t
     return attack_power_multiplier;
   }
 
-  virtual double composite_player_multiplier( const school_type_e, action_t* ) const
+  virtual double composite_player_multiplier( school_type_e, action_t* ) const
   {
     return 1.0;
   }
@@ -728,7 +728,7 @@ struct earth_elemental_pet_t : public pet_t
     owner_sp = owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
   }
 
-  virtual double composite_spell_power( const school_type_e ) const
+  virtual double composite_spell_power( school_type_e ) const
   {
     return owner_sp;
   }
@@ -758,7 +758,7 @@ struct earth_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_player_multiplier( const school_type_e /* school */, action_t* /* a */ ) const
+  virtual double composite_player_multiplier( school_type_e /* school */, action_t* /* a */ ) const
   {
     double m = 1.0;
 
@@ -1114,7 +1114,7 @@ struct fire_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_player_multiplier( const school_type_e /* school */, action_t* /* a */ ) const
+  virtual double composite_player_multiplier( school_type_e /* school */, action_t* /* a */ ) const
   {
     double m = 1.0;
 
@@ -3862,12 +3862,12 @@ void shaman_t::init_scaling()
 
   if ( primary_tree() == TREE_ENHANCEMENT )
   {
-    scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors;
-    scales_with[ STAT_HIT_RATING2           ] = 1;
-    scales_with[ STAT_SPIRIT                ] = 0;
-    scales_with[ STAT_SPELL_POWER           ] = 0;
-    scales_with[ STAT_INTELLECT             ] = 0;
+    scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
+    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
+    scales_with[ STAT_HIT_RATING2           ] = true;
+    scales_with[ STAT_SPIRIT                ] = false;
+    scales_with[ STAT_SPELL_POWER           ] = false;
+    scales_with[ STAT_INTELLECT             ] = false;
   }
 
   // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though

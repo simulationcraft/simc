@@ -653,7 +653,7 @@ struct hunter_pet_t : public pet_t
     o -> active_pet = 0;
   }
 
-  virtual double composite_player_multiplier( const school_type_e school, action_t* a ) const
+  virtual double composite_player_multiplier( school_type_e school, action_t* a ) const
   {
     double m = pet_t::composite_player_multiplier( school, a );
 
@@ -1561,7 +1561,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1592,7 +1592,7 @@ struct corrosive_spit_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1617,7 +1617,7 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1648,7 +1648,7 @@ struct ravage_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1678,7 +1678,7 @@ struct tailspin_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1709,7 +1709,7 @@ struct tear_armor_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1736,7 +1736,7 @@ struct tendon_rip_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2043,7 +2043,7 @@ struct aimed_shot_t : public hunter_attack_t
       p -> buffs_master_marksman_fire -> expire();
     }
 
-    virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+    virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
     {
       hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2149,7 +2149,7 @@ struct aimed_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2401,7 +2401,7 @@ struct chimera_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2464,7 +2464,7 @@ struct cobra_shot_t : public hunter_attack_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
   }
@@ -2709,7 +2709,7 @@ struct serpent_sting_t : public hunter_attack_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2756,7 +2756,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2787,7 +2787,7 @@ struct multi_shot_t : public hunter_attack_t
       spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_t* p = player -> cast_hunter();
     //target_t* q = t -> cast_target();
@@ -2877,7 +2877,7 @@ struct steady_shot_t : public hunter_attack_t
     p -> buffs_pre_improved_steady_shot -> trigger( 1 );
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -3252,7 +3252,7 @@ struct hunters_mark_t : public hunter_spell_t
     harmful = false;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -3911,8 +3911,8 @@ void hunter_t::init_scaling()
 {
   player_t::init_scaling();
 
-  scales_with[ STAT_STRENGTH ]         = 0;
-  scales_with[ STAT_EXPERTISE_RATING ] = 0;
+  scales_with[ STAT_STRENGTH ]         = false;
+  scales_with[ STAT_EXPERTISE_RATING ] = false;
 }
 
 // hunter_t::init_actions ===================================================

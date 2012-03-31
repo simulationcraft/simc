@@ -284,7 +284,7 @@ struct warlock_pet_t : public pet_t
   gain_t* gains_mana_feed;
   proc_t* procs_mana_feed;
 
-  double get_attribute_base( const int level, const int stat_type_e, const pet_type_e pet_type );
+  double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type );
 private:
   const pet_stats::_weapon_list_t* get_weapon( pet_type_e pet_type );
 public:
@@ -301,7 +301,7 @@ public:
   virtual void dismiss();
   virtual double composite_spell_haste() const;
   virtual double composite_attack_haste() const;
-  virtual double composite_spell_power( const school_type_e school ) const;
+  virtual double composite_spell_power( school_type_e school ) const;
   virtual double composite_attack_power() const;
   virtual double composite_attack_crit( weapon_t* ) const;
   virtual double composite_spell_crit() const;
@@ -320,7 +320,7 @@ struct warlock_main_pet_t : public warlock_pet_t
   virtual void dismiss();
   virtual double composite_attack_expertise( weapon_t* ) const;
   virtual resource_type_e primary_resource() const;
-  virtual double composite_player_multiplier( const school_type_e school, action_t* a ) const;
+  virtual double composite_player_multiplier( school_type_e school, action_t* a ) const;
   virtual double composite_mp5() const;
 };
 
@@ -341,7 +341,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   virtual double composite_attack_power() const;
   virtual double composite_spell_crit() const;
   virtual double composite_spell_haste() const;
-  virtual double composite_spell_power( const school_type_e school ) const;
+  virtual double composite_spell_power( school_type_e school ) const;
   virtual double composite_spell_power_multiplier() const;
 };
 
@@ -428,7 +428,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
-  virtual double composite_player_multiplier( const school_type_e school, action_t* a ) const;
+  virtual double composite_player_multiplier( school_type_e school, action_t* a ) const;
 };
 
 // ==========================================================================

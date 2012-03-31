@@ -1483,7 +1483,7 @@ struct mangle_cat_t : public druid_cat_attack_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
   {
     druid_cat_attack_t::impact( t, impact_result, impact_dmg );
 
@@ -2187,7 +2187,7 @@ struct mangle_bear_t : public druid_bear_attack_t
       cooldown -> reset();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg=0 )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_bear_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -3893,7 +3893,7 @@ struct starsurge_t : public druid_spell_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg=0 )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
     druid_t* p = player -> cast_druid();
@@ -4742,10 +4742,10 @@ void druid_t::init_scaling()
 
   equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time.total_seconds();
 
-  scales_with[ STAT_WEAPON_SPEED  ] = 0;
+  scales_with[ STAT_WEAPON_SPEED  ] = false;
 
   if ( primary_tree() == TREE_FERAL )
-    scales_with[ STAT_SPIRIT ] = 0;
+    scales_with[ STAT_SPIRIT ] = false;
 
   // Balance of Power treats Spirit like Spell Hit Rating
   if ( talents.balance_of_power -> rank() && sim -> scaling -> scale_stat == STAT_SPIRIT )

@@ -5826,7 +5826,7 @@ public:
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const;
   virtual void execute();
-  virtual void assess_damage( player_t* t, const double amount,
+  virtual void assess_damage( player_t* t, double amount,
                               dmg_type_e, result_type_e impact_result );
   virtual void calculate_result();
   virtual void impact( player_t*, result_type_e impact_result, double travel_dmg );

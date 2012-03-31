@@ -548,7 +548,7 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
 
     for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      if ( p -> scales_with[ j ] != 0 )
+      if ( p -> scales_with[ j ] )
       {
         util_t::fprintf( file, "  %s=%.*f(%.*f)", util_t::stat_type_abbrev( j ),
                          sim -> report_precision, sf.get_stat( j ),
@@ -583,7 +583,7 @@ void print_text_scale_factors( FILE* file, player_t* p )
   util_t::fprintf( file, "    Weights :" );
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( p -> scales_with[ i ] != 0 )
+    if ( p -> scales_with[ i ] )
     {
       util_t::fprintf( file, "  %s=%.*f(%.*f)", util_t::stat_type_abbrev( i ),
                        p -> sim -> report_precision, sf.get_stat( i ),
@@ -684,7 +684,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
   {
     for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      if ( ref_p -> scales_with[ j ] != 0 )
+      if ( ref_p -> scales_with[ j ] )
       {
         util_t::fprintf( file, "  %s=%.*f", util_t::stat_type_abbrev( j ), sim -> report_precision, ref_p -> scaling.get_stat( j ) );
       }
@@ -711,7 +711,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
       {
         for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
         {
-          if ( ref_p -> scales_with[ j ] != 0 )
+          if ( ref_p -> scales_with[ j ] )
           {
             double ref_sf = ref_p -> scaling.get_stat( j );
             double     sf =     p -> scaling.get_stat( j );

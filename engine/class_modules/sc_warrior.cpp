@@ -418,7 +418,7 @@ struct warrior_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, const double, const dmg_type_e, const result_type_e );
+  virtual void   assess_damage( player_t* t, double, dmg_type_e, result_type_e );
 };
 
 
@@ -491,7 +491,7 @@ struct deep_wounds_t : public warrior_attack_t
   }
   virtual double total_td_multiplier() const { return target_multiplier; }
   virtual timespan_t travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, 0 );
     if ( result_is_hit( impact_result ) )
@@ -1466,7 +1466,7 @@ struct demoralizing_shout_t : public warrior_attack_t
     may_glance = false;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2056,7 +2056,7 @@ struct revenge_t : public warrior_attack_t
     trigger_sword_and_board( this, result );
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
     warrior_t* p = player -> cast_warrior();
@@ -2362,7 +2362,7 @@ struct sunder_armor_t : public warrior_attack_t
     // TODO: Glyph of Sunder armor applies affect to nearby target
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -3220,15 +3220,15 @@ void warrior_t::init_scaling()
 
   if ( talents.single_minded_fury -> ok() || talents.titans_grip -> ok() )
   {
-    scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors;
-    scales_with[ STAT_HIT_RATING2           ] = 1;
+    scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
+    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
+    scales_with[ STAT_HIT_RATING2           ] = true;
   }
 
   if ( primary_role() == ROLE_TANK )
   {
-    scales_with[ STAT_PARRY_RATING ] = 1;
-    scales_with[ STAT_BLOCK_RATING ] = 1;
+    scales_with[ STAT_PARRY_RATING ] = true;
+    scales_with[ STAT_BLOCK_RATING ] = true;
   }
 }
 

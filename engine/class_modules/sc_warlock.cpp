@@ -629,7 +629,7 @@ struct shadow_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::impact( t, impact_result, travel_dmg );
@@ -714,7 +714,7 @@ struct chaos_bolt_t : public warlock_spell_t
       player_multiplier *= 1 + p -> talent_fire_and_brimstone -> effect1().percent();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -735,7 +735,7 @@ struct death_coil_t : public warlock_spell_t
     binary = true;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -772,7 +772,7 @@ struct shadowburn_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -955,7 +955,7 @@ struct drain_life_t : public warlock_spell_t
       p -> buffs.soulburn -> expire();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1149,7 +1149,7 @@ struct haunt_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1296,7 +1296,7 @@ struct conflagrate_t : public warlock_spell_t
     warlock_spell_t::execute();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::impact( t, impact_result, travel_dmg );
@@ -1362,7 +1362,7 @@ struct incinerate_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
     warlock_t* p = player -> cast_warlock();
@@ -1513,7 +1513,7 @@ struct soul_fire_t : public warlock_spell_t
     return t;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2056,7 +2056,7 @@ struct hand_of_guldan_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::impact( t, impact_result, travel_dmg );
@@ -2108,7 +2108,7 @@ struct fel_flame_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t,  result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2390,7 +2390,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     base_crit += p -> talent_everlasting_affliction -> effect2().percent();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 

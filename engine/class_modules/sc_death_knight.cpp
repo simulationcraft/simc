@@ -392,14 +392,14 @@ struct death_knight_t : public player_t
   virtual double    composite_attack_hit() const;
   virtual double    composite_attack_power() const;
   virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
-  virtual double    matching_gear_multiplier( const attribute_type_e attr ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual double    composite_spell_hit() const;
   virtual double    composite_tank_parry() const;
-  virtual double    composite_player_multiplier( const school_type_e school, action_t* a = NULL ) const;
-  virtual double    composite_tank_crit( const school_type_e school ) const;
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_tank_crit( school_type_e school ) const;
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
-  virtual double    assess_damage( double amount, const school_type_e school, dmg_type_e, result_type_e, action_t* a );
+  virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
   virtual void      combat_begin();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -2573,7 +2573,7 @@ struct death_and_decay_t : public death_knight_spell_t
     num_ticks        = ( int ) n_ticks;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
   {
     if ( t -> debuffs.flying -> check() )
     {
@@ -2786,7 +2786,7 @@ struct frost_fever_t : public death_knight_spell_t
                        + p -> talents.virulence -> effect1().percent();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
@@ -3027,7 +3027,7 @@ struct howling_blast_t : public death_knight_spell_t
     p -> buffs_rime -> decrement();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
@@ -3386,7 +3386,7 @@ struct pestilence_t : public death_knight_spell_t
       p -> active_dancing_rune_weapon -> drw_pestilence -> execute();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double impact_dmg=0 )
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
@@ -4674,17 +4674,17 @@ void death_knight_t::init_scaling()
   player_t::init_scaling();
 
   if ( talents.bladed_armor -> rank() > 0 )
-    scales_with[ STAT_ARMOR ] = 1;
+    scales_with[ STAT_ARMOR ] = true;
 
   if ( off_hand_weapon.type != WEAPON_NONE )
   {
-    scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = 1;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = sim -> weapon_speed_scale_factors;
-    scales_with[ STAT_HIT_RATING2          ] = 1;
+    scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
+    scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = sim -> weapon_speed_scale_factors != 0;
+    scales_with[ STAT_HIT_RATING2          ] = true;
   }
 
   if ( primary_role() == ROLE_TANK )
-    scales_with[ STAT_PARRY_RATING ] = 1;
+    scales_with[ STAT_PARRY_RATING ] = true;
 }
 
 // death_knight_t::init_buffs ===============================================

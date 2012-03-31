@@ -503,7 +503,7 @@ struct rogue_attack_t : public attack_t
   virtual double calculate_weapon_damage();
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, const double, const dmg_type_e, const result_type_e );
+  virtual void   assess_damage( player_t* t, double, dmg_type_e, result_type_e );
   virtual double total_multiplier() const;
   virtual double armor() const;
 
@@ -2269,7 +2269,7 @@ struct rupture_t : public rogue_attack_t
     }
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     rogue_t* p = player -> cast_rogue();
     if ( result_is_hit( impact_result ) )
@@ -3725,9 +3725,9 @@ void rogue_t::init_scaling()
 {
   player_t::init_scaling();
 
-  scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = 1;
-  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors;
-  scales_with[ STAT_HIT_RATING2           ] = 1;
+  scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
+  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
+  scales_with[ STAT_HIT_RATING2           ] = true;
 }
 
 // rogue_t::init_buffs ======================================================

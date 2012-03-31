@@ -1611,7 +1611,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
     player_multiplier *= td -> debuffs_censure -> stack();
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     if ( result_is_hit( impact_result ) )
     {
@@ -1951,7 +1951,7 @@ struct consecration_t : public paladin_spell_t
     tick_spell -> stats = stats;
   }
 
-  virtual void impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     if ( t -> debuffs.flying -> check() )
     {
@@ -2920,7 +2920,7 @@ void paladin_t::init_scaling()
 {
   player_t::init_scaling();
 
-  int tree = primary_tree();
+  talent_tree_type_e tree = primary_tree();
 
   // Technically prot and ret scale with int and sp too, but it's so minor it's not worth the sim time.
   scales_with[ STAT_INTELLECT   ] = tree == TREE_HOLY;
@@ -2929,9 +2929,9 @@ void paladin_t::init_scaling()
 
   if ( primary_role() == ROLE_TANK )
   {
-    scales_with[ STAT_PARRY_RATING ] = 1;
-    scales_with[ STAT_BLOCK_RATING ] = 1;
-    scales_with[ STAT_STRENGTH     ] = 1;
+    scales_with[ STAT_PARRY_RATING ] = true;
+    scales_with[ STAT_BLOCK_RATING ] = true;
+    scales_with[ STAT_STRENGTH     ] = true;
   }
 }
 

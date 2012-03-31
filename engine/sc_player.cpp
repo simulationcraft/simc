@@ -453,7 +453,7 @@ player_t::player_t( sim_t*             s,
 
   range::fill( profession, 0 );
 
-  range::fill( scales_with, 0 );
+  range::fill( scales_with, false );
   range::fill( over_cap, 0 );
 
   items.resize( SLOT_MAX );
@@ -1734,38 +1734,38 @@ void player_t::init_scaling()
     scales_with[ STAT_INTELLECT ] = spell;
     scales_with[ STAT_SPIRIT    ] = spell;
 
-    scales_with[ STAT_HEALTH ] = 0;
-    scales_with[ STAT_MANA   ] = 0;
-    scales_with[ STAT_RAGE   ] = 0;
-    scales_with[ STAT_ENERGY ] = 0;
-    scales_with[ STAT_FOCUS  ] = 0;
-    scales_with[ STAT_RUNIC  ] = 0;
+    scales_with[ STAT_HEALTH ] = false;
+    scales_with[ STAT_MANA   ] = false;
+    scales_with[ STAT_RAGE   ] = false;
+    scales_with[ STAT_ENERGY ] = false;
+    scales_with[ STAT_FOCUS  ] = false;
+    scales_with[ STAT_RUNIC  ] = false;
 
     scales_with[ STAT_SPELL_POWER       ] = spell;
-    scales_with[ STAT_SPELL_PENETRATION ] = 0;
-    scales_with[ STAT_MP5               ] = 0;
+    scales_with[ STAT_SPELL_PENETRATION ] = false;
+    scales_with[ STAT_MP5               ] = false;
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
     scales_with[ STAT_EXPERTISE_RATING         ] = attack;
     scales_with[ STAT_EXPERTISE_RATING2        ] = attack && ( position == POSITION_FRONT );
 
-    scales_with[ STAT_HIT_RATING                ] = 1;
-    scales_with[ STAT_CRIT_RATING               ] = 1;
-    scales_with[ STAT_HASTE_RATING              ] = 1;
-    scales_with[ STAT_MASTERY_RATING            ] = 1;
+    scales_with[ STAT_HIT_RATING                ] = true;
+    scales_with[ STAT_CRIT_RATING               ] = true;
+    scales_with[ STAT_HASTE_RATING              ] = true;
+    scales_with[ STAT_MASTERY_RATING            ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
-    scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : 0;
+    scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : false;
 
-    scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = 0;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = 0;
+    scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = false;
+    scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = false;
 
     scales_with[ STAT_ARMOR          ] = tank;
-    scales_with[ STAT_BONUS_ARMOR    ] = 0;
+    scales_with[ STAT_BONUS_ARMOR    ] = false;
     scales_with[ STAT_DODGE_RATING   ] = tank;
-    scales_with[ STAT_PARRY_RATING   ] = 0;
+    scales_with[ STAT_PARRY_RATING   ] = false;
 
-    scales_with[ STAT_BLOCK_RATING ] = 0;
+    scales_with[ STAT_BLOCK_RATING ] = false;
 
     if ( sim -> scaling -> scale_stat != STAT_NONE && scale_player )
     {

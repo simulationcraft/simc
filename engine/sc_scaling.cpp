@@ -281,7 +281,7 @@ void scaling_t::analyze_stats()
 
 
 
-      if ( p -> scales_with[ i ] <= 0 ) continue;
+      if ( ! p -> scales_with[ i ] ) continue;
 
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
@@ -479,7 +479,7 @@ void scaling_t::normalize()
 
     for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      if ( p -> scales_with[ i ] == 0 ) continue;
+      if ( ! p -> scales_with[ i ] ) continue;
 
       p -> scaling_normalized.set_stat( i, p -> scaling.get_stat( i ) / divisor );
 
