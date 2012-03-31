@@ -3730,7 +3730,14 @@ void player_t::stat_gain( stat_type_e stat,
   case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; temporary.attribute[ ATTR_INTELLECT ] += temp_value * amount; recalculate_resource_max( RESOURCE_MANA ); break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; attribute[ ATTR_SPIRIT    ] += amount; temporary.attribute[ ATTR_SPIRIT    ] += temp_value * amount; break;
 
-  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] += amount; temporary.attribute[ i ] += temp_value * amount; attribute[ i ] += amount; } break;
+  case STAT_ALL:
+    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+    {
+      stats.attribute[ i ] += amount;
+      temporary.attribute[ i ] += temp_value * amount;
+      attribute[ i ] += amount;
+    }
+    break;
 
   case STAT_HEALTH: resource_gain( RESOURCE_HEALTH, amount, gain, action ); break;
   case STAT_MANA:   resource_gain( RESOURCE_MANA,   amount, gain, action ); break;
@@ -3811,7 +3818,14 @@ void player_t::stat_loss( stat_type_e stat,
   case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA, floor( amount * composite_attribute_multiplier( ATTR_INTELLECT ) ) * mana_per_intellect, action ); break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
 
-  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { stats.attribute[ i ] -= amount; temporary.attribute[ i ] -= temp_value * amount; attribute[ i ] -= amount; } break;
+  case STAT_ALL:
+    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+    {
+      stats.attribute[ i ] -= amount;
+      temporary.attribute[ i ] -= temp_value * amount;
+      attribute[ i ] -= amount;
+    }
+    break;
 
   case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount, action ); break;
   case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount, action ); break;

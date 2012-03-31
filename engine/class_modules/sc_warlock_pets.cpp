@@ -579,7 +579,7 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
 // Warlock Pet
 // ==========================================================================
 
-double warlock_pet_t::get_attribute_base( const int level, const int stat_type_e, const pet_type_e pet_type )
+double warlock_pet_t::get_attribute_base( int level, int stat_type_e, pet_type_e pet_type )
 {
   double r                      = 0.0;
   const pet_stats::_stat_list_t* base_list = 0;
