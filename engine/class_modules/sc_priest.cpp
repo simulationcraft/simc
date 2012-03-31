@@ -1284,7 +1284,7 @@ void priest_spell_t::add_more_shadowy_apparitions( priest_t* p )
   }
 
   if ( p -> sim -> debug )
-    log_t::output( p -> sim, "%s created %d shadowy apparitions", p -> name(), p -> shadowy_apparition_free_list.size() );
+    log_t::output( p -> sim, "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> shadowy_apparition_free_list.size() ));
 }
 
 void priest_spell_t::generate_shadow_orb( action_t* s, gain_t* g, unsigned number )

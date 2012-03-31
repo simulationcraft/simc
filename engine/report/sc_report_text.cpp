@@ -366,11 +366,12 @@ void print_text_defense_stats( FILE* file, player_t* p )
 
 void print_text_gains( FILE* file, gain_t* g, int max_length )
 {
-  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
+
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {
-      util_t::fprintf( file, "    %8.1f : %-*s (%s)", g -> actual[ i ], max_length, g -> name(),  util_t::resource_type_string( static_cast<resource_type_e>( i ) ) );
+      util_t::fprintf( file, "    %8.1f : %-*s (%s)", g -> actual[ i ], max_length, g -> name(),  util_t::resource_type_string( i ) );
       double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
       if ( overflow_pct > 1.0 ) util_t::fprintf( file, "  (overflow=%.1f%%)", overflow_pct );
       util_t::fprintf( file, "\n" );
@@ -384,10 +385,13 @@ void print_text_player_gains( FILE* file, player_t* p )
   int max_length = 0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    if ( g -> actual > 0 || g -> overflow > 0 )
+    for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     {
-      int length = ( int ) strlen( g -> name() );
-      if ( length > max_length ) max_length = length;
+      if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
+      {
+        int length = ( int ) strlen( g -> name() );
+        if ( length > max_length ) max_length = length;
+      }
     }
   }
   if ( max_length == 0 ) return;
@@ -411,10 +415,13 @@ void print_text_pet_gains( FILE* file, player_t* p )
     int max_length = 0;
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
     {
-      if ( g -> actual > 0 || g -> overflow > 0 )
+      for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
       {
-        int length = ( int ) strlen( g -> name() );
-        if ( length > max_length ) max_length = length;
+        if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
+        {
+          int length = ( int ) strlen( g -> name() );
+          if ( length > max_length ) max_length = length;
+        }
       }
     }
     if ( max_length > 0 )

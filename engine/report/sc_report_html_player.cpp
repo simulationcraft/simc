@@ -1375,18 +1375,15 @@ void print_html_player_resources( FILE* file, player_t* p )
     bool first = true;
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
     {
-      if ( g -> actual > 0 || g -> overflow > 0 )
+      if ( first )
       {
-        if ( first )
-        {
-          first = false;
-          fprintf( file,
-                   "\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t<th>pet - %s</th>\n"
-                   "\t\t\t\t\t\t\t\t<td colspan=\"6\" class=\"filler\"></td>\n"
-                   "\t\t\t\t\t\t\t</tr>\n",
-                   pet -> name_str.c_str() );
-        }
+        first = false;
+        fprintf( file,
+                 "\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<th>pet - %s</th>\n"
+                 "\t\t\t\t\t\t\t\t<td colspan=\"6\" class=\"filler\"></td>\n"
+                 "\t\t\t\t\t\t\t</tr>\n",
+                 pet -> name_str.c_str() );
       }
       print_html_gain( file, g );
     }

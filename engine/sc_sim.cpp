@@ -535,7 +535,7 @@ static bool parse_spell_query( sim_t*             sim,
   }
 
   sim -> spell_query = spell_data_expr_t::parse( sim, sq_str );
-  return sim -> spell_query > 0;
+  return sim -> spell_query != 0;
 }
 
 // parse_item_sources =======================================================

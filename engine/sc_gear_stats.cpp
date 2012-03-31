@@ -200,6 +200,8 @@ double gear_stats_t::get_stat( stat_type_e stat ) const
 
   case STAT_MASTERY_RATING: return mastery_rating;
 
+  case STAT_ALL: return 0;
+
   default: assert( 0 );
   }
   return 0;

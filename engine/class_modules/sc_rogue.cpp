@@ -2086,7 +2086,7 @@ struct mutilate_strike_t : public rogue_attack_t
 
     rogue_t* p = player -> cast_rogue();
 
-    p -> uptimes_poisoned -> update( target -> debuffs.poisoned > 0 );
+    p -> uptimes_poisoned -> update( target -> debuffs.poisoned-> check() );
   }
 };
 
