@@ -880,7 +880,6 @@ public:
         q -> resource_gain( RESOURCE_HEALTH, a * 0.03, q -> gains.vampiric_embrace );
 
         r = q -> pet_list;
-
         while ( r )
         {
           r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );

@@ -5276,8 +5276,8 @@ public:
   void init_dot( const std::string& dot_name );
 
   const spell_data_t& data() const { return ( ok() ? *s_data : *spell_data_t::nil() ); } // FIXME: Althor, please replace me!
-  virtual void   parse_data();
-  virtual void   parse_effect_data( int spell_id, int effect_nr );
+  virtual void   parse_spell_data( const spell_data_t& );
+  virtual void   parse_effect_data( const spelleffect_data_t& );
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost() const;
   virtual double total_haste() const  { return haste();           }

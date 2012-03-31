@@ -2792,8 +2792,7 @@ struct tranquility_t : public druid_heal_t
     channeled         = true;
 
     // Healing is in spell effect 1
-    parse_effect_data( this -> effect_trigger_spell( 1 ), 1 ); // Initial Hit
-    parse_effect_data( this -> effect_trigger_spell( 1 ), 2 ); // HoT
+    parse_spell_data( player.dbc( data().effect1().trigger_spell_id() ) );
 
     // FIXME: The hot should stack
 
