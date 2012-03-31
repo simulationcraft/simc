@@ -1378,13 +1378,13 @@ void sim_t::analyze_player( player_t* p )
 
 
   // Pet Chart Adjustment ===================================================
-  int max_buckets = ( int ) p -> fight_length.max;
+  size_t max_buckets = static_cast<size_t>( p -> fight_length.max );
 
   // Make the pet graphs the same length as owner's
   if ( p -> is_pet() )
   {
     player_t* o = p -> cast_pet() -> owner;
-    max_buckets = ( int ) o -> fight_length.max;
+    max_buckets = static_cast<size_t>( o -> fight_length.max );
   }
 
 
@@ -1441,20 +1441,16 @@ void sim_t::analyze_player( player_t* p )
 
 
   // Resources & Gains ======================================================
-  for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    int num_buckets = ( int ) p -> timeline_resource[i].size();
+    size_t num_buckets = p -> timeline_resource[ i ].size();
 
-    if ( num_buckets > max_buckets ) p -> timeline_resource[i].resize( max_buckets );
+    if ( num_buckets > max_buckets ) p -> timeline_resource[ i ].resize( max_buckets );
 
-    for ( int j=0; j < max_buckets; j++ )
+    for ( size_t j = 0; j < max_buckets; j++ )
     {
-      p -> timeline_resource[i][ j ] /= divisor_timeline[ j ];
+      p -> timeline_resource[ i ][ j ] /= divisor_timeline[ j ];
     }
-  }
-
-  for ( int i=0; i < RESOURCE_MAX; i++ )
-  {
     p -> resource_lost  [ i ] /= iterations;
     p -> resource_gained[ i ] /= iterations;
   }
@@ -1488,8 +1484,8 @@ void sim_t::analyze_player( player_t* p )
     stats_t* s = stats_list[ i ];
     if ( ( s -> type != STATS_DMG ) == is_hps )
     {
-      int j_max = std::min( max_buckets, ( int ) s -> timeline_amount.size() );
-      for ( int j = 0; j < j_max; j++ )
+      size_t j_max = std::min( max_buckets, s -> timeline_amount.size() );
+      for ( size_t j = 0; j < j_max; j++ )
         p -> timeline_dmg[ j ] += s -> timeline_amount[ j ];
     }
   }
@@ -1556,11 +1552,11 @@ void sim_t::analyze_player( player_t* p )
   std::string encoded_name;
   http_t::format( encoded_name, p -> name_str );
 
-  for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     chart_t::timeline        ( p -> timeline_resource_chart[ i ],      p,
                                p -> timeline_resource[ i ],
-                               encoded_name + ' ' + util_t::resource_type_string( static_cast<resource_type_e>( i ) ),
+                               encoded_name + ' ' + util_t::resource_type_string( i ),
                                0,
                                chart_t::resource_color( i ) );
   }

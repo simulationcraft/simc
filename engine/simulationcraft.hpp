@@ -5187,7 +5187,8 @@ struct action_t : public spell_id_t
   player_t* target;
   uint32_t id;
   school_type_e school;
-  int tree, result, aoe;
+  result_type_e result;
+  int tree, aoe;
   bool dual, callbacks, special, binary, channeled, background, sequence, use_off_gcd;
   bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot, may_trigger_dtr, discharge_proc, auto_cast, initialized;
   bool may_hit, may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
@@ -5660,7 +5661,7 @@ public:
   virtual timespan_t execute_time() const;
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, int dmg_type_e );
-  virtual int    build_table( double* chances, int* results );
+  virtual int    build_table( double* chances, result_type_e* results );
   virtual void   calculate_result();
   virtual void   execute();
 
@@ -5675,7 +5676,7 @@ public:
   virtual double   crit_chance( int delta_level ) const;
 
   /* New stuffs */
-  virtual int    build_table_s( double*, int*, const action_state_t* );
+  virtual int    build_table_s( double*, result_type_e*, const action_state_t* );
   virtual void calculate_result_s( action_state_t* );
   virtual double   miss_chance_s( const action_state_t* ) const;
   virtual double  dodge_chance_s( const action_state_t* ) const;
