@@ -478,7 +478,7 @@ struct position_event_t : public raid_event_t
 
 // raid_event_t::raid_event_t ===============================================
 
-raid_event_t::raid_event_t( sim_t* s, const char* n ) :
+raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   sim( s ), name_str( n ),
   num_starts( 0 ), first( timespan_t::zero ), last( timespan_t::zero ),
   cooldown( timespan_t::zero ), cooldown_stddev( timespan_t::zero ),

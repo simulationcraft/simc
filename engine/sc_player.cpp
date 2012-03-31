@@ -325,16 +325,15 @@ player_t::player_t( sim_t*             s,
   dbc( s -> dbc ),
   // Haste
   base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
-  spell_haste( 1.0 ),  buffed_spell_haste( 1.0 ),
-  attack_haste( 1.0 ), buffed_attack_haste( 1.0 ), buffed_attack_speed( 1.0 ),
+  spell_haste( 1.0 ), attack_haste( 1.0 ),
   // Mastery
-  mastery( 0 ), buffed_mastery ( 0 ), mastery_rating( 0 ), initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
+  mastery( 0 ), mastery_rating( 0 ), initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
   // Spell Mechanics
-  base_spell_power( 0 ), buffed_spell_power( 0 ),
-  base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),         buffed_spell_hit( 0 ),
-  base_spell_crit( 0 ),        initial_spell_crit( 0 ),        spell_crit( 0 ),        buffed_spell_crit( 0 ),
-  base_spell_penetration( 0 ), initial_spell_penetration( 0 ), spell_penetration( 0 ), buffed_spell_penetration( 0 ),
-  base_mp5( 0 ),               initial_mp5( 0 ),               mp5( 0 ),               buffed_mp5( 0 ),
+  base_spell_power( 0 ),
+  base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),
+  base_spell_crit( 0 ),        initial_spell_crit( 0 ),        spell_crit( 0 ),
+  base_spell_penetration( 0 ), initial_spell_penetration( 0 ), spell_penetration( 0 ),
+  base_mp5( 0 ),               initial_mp5( 0 ),               mp5( 0 ),
   spell_power_multiplier( 1.0 ),  initial_spell_power_multiplier( 1.0 ),
   spell_power_per_intellect( 0 ), initial_spell_power_per_intellect( 0 ),
   spell_crit_per_intellect( 0 ),  initial_spell_crit_per_intellect( 0 ),
@@ -342,11 +341,10 @@ player_t::player_t( sim_t*             s,
   base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
   last_cast( timespan_t::zero ),
   // Attack Mechanics
-  base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),       buffed_attack_power( 0 ),
-  base_attack_hit( 0 ),         initial_attack_hit( 0 ),          attack_hit( 0 ),         buffed_attack_hit( 0 ),
-  base_attack_expertise( 0 ),   initial_attack_expertise( 0 ),    attack_expertise( 0 ),   buffed_mh_attack_expertise( 0 ),
-  buffed_oh_attack_expertise( 0 ),
-  base_attack_crit( 0 ),        initial_attack_crit( 0 ),         attack_crit( 0 ),        buffed_attack_crit( 0 ),
+  base_attack_power( 0 ),       initial_attack_power( 0 ),        attack_power( 0 ),
+  base_attack_hit( 0 ),         initial_attack_hit( 0 ),          attack_hit( 0 ),
+  base_attack_expertise( 0 ),   initial_attack_expertise( 0 ),    attack_expertise( 0 ),
+  base_attack_crit( 0 ),        initial_attack_crit( 0 ),         attack_crit( 0 ),
   attack_power_multiplier( 1.0 ), initial_attack_power_multiplier( 1.0 ),
   attack_power_per_strength( 0 ), initial_attack_power_per_strength( 0 ),
   attack_power_per_agility( 0 ),  initial_attack_power_per_agility( 0 ),
@@ -354,12 +352,12 @@ player_t::player_t( sim_t*             s,
   position( POSITION_BACK ), position_str ( "" ),
   // Defense Mechanics
   target_auto_attack( 0 ),
-  base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ),       buffed_armor( 0 ),
+  base_armor( 0 ),       initial_armor( 0 ),       armor( 0 ),
   base_bonus_armor( 0 ), initial_bonus_armor( 0 ), bonus_armor( 0 ),
-  base_miss( 0 ),        initial_miss( 0 ),        miss( 0 ),        buffed_miss( 0 ), buffed_crit( 0 ),
-  base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),       buffed_dodge( 0 ),
-  base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),       buffed_parry( 0 ),
-  base_block( 0 ),       initial_block( 0 ),       block( 0 ),       buffed_block( 0 ),
+  base_miss( 0 ),        initial_miss( 0 ),        miss( 0 ),
+  base_dodge( 0 ),       initial_dodge( 0 ),       dodge( 0 ),
+  base_parry( 0 ),       initial_parry( 0 ),       parry( 0 ),
+  base_block( 0 ),       initial_block( 0 ),       block( 0 ),
   base_block_reduction( 0.3 ), initial_block_reduction( 0 ), block_reduction( 0 ),
   armor_multiplier( 1.0 ), initial_armor_multiplier( 1.0 ),
   dodge_per_agility( 0 ), initial_dodge_per_agility( 0 ),
@@ -5083,29 +5081,29 @@ struct snapshot_stats_t : public action_t
 
     range::copy( p -> resources.max, p -> buffed.resource );
 
-    p -> buffed_spell_haste  = p -> composite_spell_haste();
-    p -> buffed_attack_haste = p -> composite_attack_haste();
-    p -> buffed_attack_speed = p -> composite_attack_speed();
-    p -> buffed_mastery      = p -> composite_mastery();
+    p -> buffed.spell_haste  = p -> composite_spell_haste();
+    p -> buffed.attack_haste = p -> composite_attack_haste();
+    p -> buffed.attack_speed = p -> composite_attack_speed();
+    p -> buffed.mastery      = p -> composite_mastery();
 
-    p -> buffed_spell_power       = floor( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
-    p -> buffed_spell_hit         = p -> composite_spell_hit();
-    p -> buffed_spell_crit        = p -> composite_spell_crit();
-    p -> buffed_spell_penetration = p -> composite_spell_penetration();
-    p -> buffed_mp5               = p -> composite_mp5();
+    p -> buffed.spell_power       = floor( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
+    p -> buffed.spell_hit         = p -> composite_spell_hit();
+    p -> buffed.spell_crit        = p -> composite_spell_crit();
+    p -> buffed.spell_penetration = p -> composite_spell_penetration();
+    p -> buffed.mp5               = p -> composite_mp5();
 
-    p -> buffed_attack_power       = p -> composite_attack_power() * p -> composite_attack_power_multiplier();
-    p -> buffed_attack_hit         = p -> composite_attack_hit();
-    p -> buffed_mh_attack_expertise   = p -> composite_attack_expertise( &( p -> main_hand_weapon ) );
-    p -> buffed_oh_attack_expertise   = p -> composite_attack_expertise( &( p -> off_hand_weapon ) );
-    p -> buffed_attack_crit        = p -> composite_attack_crit( &( p -> main_hand_weapon ) );
+    p -> buffed.attack_power       = p -> composite_attack_power() * p -> composite_attack_power_multiplier();
+    p -> buffed.attack_hit         = p -> composite_attack_hit();
+    p -> buffed.mh_attack_expertise   = p -> composite_attack_expertise( &( p -> main_hand_weapon ) );
+    p -> buffed.oh_attack_expertise   = p -> composite_attack_expertise( &( p -> off_hand_weapon ) );
+    p -> buffed.attack_crit        = p -> composite_attack_crit( &( p -> main_hand_weapon ) );
 
-    p -> buffed_armor       = p -> composite_armor();
-    p -> buffed_miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL );
-    p -> buffed_dodge       = p -> composite_tank_dodge() - p -> diminished_dodge();
-    p -> buffed_parry       = p -> composite_tank_parry() - p -> diminished_parry();
-    p -> buffed_block       = p -> composite_tank_block();
-    p -> buffed_crit        = p -> composite_tank_crit( SCHOOL_PHYSICAL );
+    p -> buffed.armor       = p -> composite_armor();
+    p -> buffed.miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL );
+    p -> buffed.dodge       = p -> composite_tank_dodge() - p -> diminished_dodge();
+    p -> buffed.parry       = p -> composite_tank_parry() - p -> diminished_parry();
+    p -> buffed.block       = p -> composite_tank_block();
+    p -> buffed.crit        = p -> composite_tank_crit( SCHOOL_PHYSICAL );
 
     role_type_e role = p -> primary_role();
     int delta_level = sim -> target -> level - p -> level;

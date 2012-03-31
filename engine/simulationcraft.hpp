@@ -2994,7 +2994,7 @@ struct mastery_t : public spell_id_t
 
 struct raid_event_t
 {
-  sim_t* sim;
+  sim_t* const sim;
   std::string name_str;
   int64_t num_starts;
   timespan_t first, last;
@@ -3012,7 +3012,7 @@ struct raid_event_t
   rng_t* rng;
   std::vector<player_t*> affected_players;
 
-  raid_event_t( sim_t*, const char* name );
+  raid_event_t( sim_t*, const std::string& );
   virtual ~raid_event_t() {}
 
   virtual timespan_t cooldown_time() const;
@@ -4319,8 +4319,7 @@ struct player_t : public noncopyable
 
   // Haste
   double base_haste_rating, initial_haste_rating, haste_rating;
-  double spell_haste, buffed_spell_haste;
-  double attack_haste, buffed_attack_haste, buffed_attack_speed;
+  double spell_haste, attack_haste;
 
   // Attributes
   double attribute                   [ ATTRIBUTE_MAX ];
@@ -4329,14 +4328,14 @@ struct player_t : public noncopyable
   double attribute_multiplier        [ ATTRIBUTE_MAX ];
   double attribute_multiplier_initial[ ATTRIBUTE_MAX ];
 
-  double mastery, buffed_mastery, mastery_rating, initial_mastery_rating,base_mastery;
+  double mastery, mastery_rating, initial_mastery_rating,base_mastery;
 
   // Spell Mechanics
-  double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ], buffed_spell_power;
-  double base_spell_hit,         initial_spell_hit,                   spell_hit,                   buffed_spell_hit;
-  double base_spell_crit,        initial_spell_crit,                  spell_crit,                  buffed_spell_crit;
-  double base_spell_penetration, initial_spell_penetration,           spell_penetration,           buffed_spell_penetration;
-  double base_mp5,               initial_mp5,                         mp5,                         buffed_mp5;
+  double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ];
+  double base_spell_hit,         initial_spell_hit,                   spell_hit;
+  double base_spell_crit,        initial_spell_crit,                  spell_crit;
+  double base_spell_penetration, initial_spell_penetration,           spell_penetration;
+  double base_mp5,               initial_mp5,                         mp5;
   double spell_power_multiplier,    initial_spell_power_multiplier;
   double spell_power_per_intellect, initial_spell_power_per_intellect;
   double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
@@ -4348,10 +4347,10 @@ struct player_t : public noncopyable
   timespan_t last_cast;
 
   // Attack Mechanics
-  double base_attack_power,       initial_attack_power,        attack_power,       buffed_attack_power;
-  double base_attack_hit,         initial_attack_hit,          attack_hit,         buffed_attack_hit;
-  double base_attack_expertise,   initial_attack_expertise,    attack_expertise,   buffed_mh_attack_expertise, buffed_oh_attack_expertise;
-  double base_attack_crit,        initial_attack_crit,         attack_crit,        buffed_attack_crit;
+  double base_attack_power,       initial_attack_power,        attack_power;
+  double base_attack_hit,         initial_attack_hit,          attack_hit;
+  double base_attack_expertise,   initial_attack_expertise,    attack_expertise;
+  double base_attack_crit,        initial_attack_crit,         attack_crit;
   double attack_power_multiplier,   initial_attack_power_multiplier;
   double attack_power_per_strength, initial_attack_power_per_strength;
   double attack_power_per_agility,  initial_attack_power_per_agility;
@@ -4361,12 +4360,12 @@ struct player_t : public noncopyable
 
   // Defense Mechanics
   event_t* target_auto_attack;
-  double base_armor,       initial_armor,       armor,       buffed_armor;
+  double base_armor,       initial_armor,       armor;
   double base_bonus_armor, initial_bonus_armor, bonus_armor;
-  double base_miss,        initial_miss,        miss,        buffed_miss, buffed_crit;
-  double base_dodge,       initial_dodge,       dodge,       buffed_dodge;
-  double base_parry,       initial_parry,       parry,       buffed_parry;
-  double base_block,       initial_block,       block,       buffed_block;
+  double base_miss,        initial_miss,        miss;
+  double base_dodge,       initial_dodge,       dodge;
+  double base_parry,       initial_parry,       parry;
+  double base_block,       initial_block,       block;
   double base_block_reduction, initial_block_reduction, block_reduction;
   double armor_multiplier,  initial_armor_multiplier;
   double dodge_per_agility, initial_dodge_per_agility;
@@ -4473,6 +4472,15 @@ struct player_t : public noncopyable
     double attribute[ ATTRIBUTE_MAX ];
     double resource[ RESOURCE_MAX ];
 
+    double spell_power, spell_hit, spell_crit, spell_penetration, mp5;
+
+    double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
+
+    double armor, miss, crit, dodge, parry, block;
+
+    double spell_haste, attack_haste, attack_speed;
+
+    double mastery;
 
   } buffed;
 
