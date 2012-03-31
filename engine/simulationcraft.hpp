@@ -5323,7 +5323,7 @@ public:
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
   virtual void   impact( player_t*, const result_type_e impact_result, const double impact_dmg );
-  virtual void   assess_damage( player_t* t, double amount, const dmg_type_e dmg_type, const result_type_e impact_result );
+  virtual void   assess_damage( player_t* t, const double amount, const dmg_type_e dmg_type, const result_type_e impact_result );
   virtual void   additional_damage( player_t* t, const double amount, const dmg_type_e dmg_type, const result_type_e impact_result );
   virtual void   schedule_execute();
   virtual void   schedule_travel( player_t* t );
@@ -5752,7 +5752,7 @@ public:
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const;
   virtual void execute();
-  virtual void assess_damage( player_t* t, double amount,
+  virtual void assess_damage( player_t* t, const double amount,
                               const dmg_type_e dmg_type , const result_type_e impact_result );
   virtual void calculate_result();
   virtual double crit_chance( int delta_level ) const;
@@ -5785,7 +5785,7 @@ public:
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const;
   virtual void execute();
-  virtual void assess_damage( player_t* t, double amount,
+  virtual void assess_damage( player_t* t, const double amount,
                               const dmg_type_e dmg_type, const result_type_e impact_result );
   virtual void calculate_result();
   virtual void impact( player_t*, const result_type_e impact_result, const double impact_dmg );
