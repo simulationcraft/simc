@@ -116,8 +116,8 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   std::vector<std::string> splits;
   util_t::string_split( splits, buffer, "_." );
 
-  stat_search( encoding_str, splits, STAT_MAX,  "all stats" );
-  stat_search( encoding_str, splits, STAT_MAX,  "to all stats" );
+  stat_search( encoding_str, splits, STAT_ALL,  "all stats" );
+  stat_search( encoding_str, splits, STAT_ALL,  "to all stats" );
 
   stat_search( encoding_str, splits, STAT_STRENGTH,  "strength" );
   stat_search( encoding_str, splits, STAT_AGILITY,   "agility" );

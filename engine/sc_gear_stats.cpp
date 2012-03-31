@@ -67,7 +67,9 @@ void gear_stats_t::add_stat( stat_type_e stat,
 
   case STAT_MASTERY_RATING: mastery_rating += value; break;
 
-  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] += value; }
+  case STAT_ALL:
+    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+      { attribute[ i ] += value; }
     break;
 
   default: assert( 0 );
@@ -132,7 +134,9 @@ void gear_stats_t::set_stat( stat_type_e stat,
 
   case STAT_MASTERY_RATING: mastery_rating = value; break;
 
-  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] = value; }
+  case STAT_ALL:
+    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+      { attribute[ i ] = value; }
     break;
 
   default: assert( 0 );

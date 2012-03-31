@@ -1747,7 +1747,7 @@ const char* util_t::stat_type_string( stat_type_e stat )
 
   case STAT_MASTERY_RATING: return "mastery_rating";
 
-  case STAT_MAX: return "all";
+  case STAT_ALL: return "all";
 
   default: return "unknown";
   }
@@ -1807,7 +1807,7 @@ const char* util_t::stat_type_abbrev( stat_type_e stat )
 
   case STAT_MASTERY_RATING: return "Mastery";
 
-  case STAT_MAX: return "All";
+  case STAT_ALL: return "All";
 
   default: return "unknown";
   }
