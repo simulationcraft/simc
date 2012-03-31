@@ -10,7 +10,9 @@
 #if defined( _MSC_VER ) || defined( __MINGW__ ) || defined( __MINGW32__ ) || defined( _WINDOWS ) || defined( WIN32 )
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
-#  define _CRT_SECURE_NO_WARNINGS
+#  ifndef _CRT_SECURE_NO_WARNINGS
+#    define _CRT_SECURE_NO_WARNINGS
+#  endif
 #  define DIRECTORY_DELIMITER "\\"
 #  ifndef UNICODE
 #    define UNICODE
@@ -57,7 +59,7 @@
 // Use C++11
 #include <type_traits>
 #include <unordered_map>
-#if ( _MSVC_VER && _MSVC_VER < 1600 )
+#if ( _MSC_VER && _MSC_VER < 1600 )
 namespace std {using namespace tr1; }
 #endif
 #else
@@ -1249,9 +1251,15 @@ inline typename traits<const T>::iterator cend( const T& t )
 
 // Range-based generic algorithms ===========================================
 
+#if _MSC_VER && _MSC_VER < 1600
+#pragma warning( disable : 4996 )
+#endif
 template <typename Range, typename Out>
 inline Out copy( const Range& r, Out o )
 { return std::copy( range::begin( r ), range::end( r ), o ); }
+#if _MSC_VER && _MSC_VER < 1600
+#pragma warning( default : 4996 )
+#endif
 
 template <typename Range, typename D>
 inline Range& dispose( Range& r, D disposer )

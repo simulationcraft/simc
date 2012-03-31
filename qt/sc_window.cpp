@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"

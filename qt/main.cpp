@@ -1,3 +1,4 @@
+#include "simulationcraft.hpp"
 #include <QLocale>
 #include <QtGui/QApplication>
 #include <locale>

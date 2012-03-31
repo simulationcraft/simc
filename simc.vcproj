@@ -40,13 +40,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D &quot;_CRT_SECURE_NO_WARNINGS&quot;"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="simulationcraft.hpp"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -116,17 +118,18 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions=" /w34263 /w34264 /w34265 /w34266 "
+				AdditionalOptions="/D &quot;_CRT_SECURE_NO_WARNINGS&quot;"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="0"
-				AdditionalIncludeDirectories="c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt;C:\data\code\simcraft\simulationcraft;C:\data\code\simcraft\simulationcraft\vs;C:\data\code\simcraft\simulationcraft\sfmt"
+				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;WINDOWS"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
 				TreatWChar_tAsBuiltInType="false"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="simulationcraft.hpp"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4005;4100"
@@ -317,6 +320,22 @@
 		<File
 			RelativePath=".\engine\sc_main.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\engine\interfaces\sc_mmo_champion.cpp"

@@ -1246,7 +1246,7 @@ void priest_spell_t::trigger_shadowy_apparition( priest_t* p )
 {
   if ( !p -> shadowy_apparition_free_list.empty() )
   {
-    for ( int i = p-> resources.current[ RESOURCE_SHADOW_ORB ]; i > 0; i-- )
+    for ( int i = (int)p -> resources.current[ RESOURCE_SHADOW_ORB ]; i > 0; i-- )
     {
       spell_t* s = p -> shadowy_apparition_free_list.front();
 
