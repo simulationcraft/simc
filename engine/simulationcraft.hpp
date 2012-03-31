@@ -53,16 +53,20 @@
 #include <typeinfo>
 #include <vector>
 
-#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 // Use C++11
 #include <type_traits>
 #include <unordered_map>
-#define smart_ptr unique_ptr
 #else
 // Use TR1
 #include <tr1/type_traits>
 #include <tr1/unordered_map>
 namespace std {using namespace tr1; }
+#endif
+
+#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#define smart_ptr unique_ptr
+#else
 #define smart_ptr auto_ptr
 #define static_assert( condition, message )
 #endif
