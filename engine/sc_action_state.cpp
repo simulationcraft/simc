@@ -366,7 +366,7 @@ double attack_t::crit_block_chance_s( const action_state_t* /* state */ ) const
 void attack_t::calculate_result_s( action_state_t* state )
 {
   double chances[ RESULT_MAX ];
-  result_type_e results[ RESULT_MAX ];
+  int results[ RESULT_MAX ];
   action_t* action = state -> action;
 
   state -> result        = RESULT_NONE;
@@ -377,7 +377,7 @@ void attack_t::calculate_result_s( action_state_t* state )
   int num_results = build_table_s( chances, results, state );
 
   if ( num_results == 1 )
-    state -> result = results[ 0 ];
+    state -> result = static_cast<result_type_e>( results[ 0 ] );
   else
   {
     // 1-roll attack table
@@ -388,7 +388,7 @@ void attack_t::calculate_result_s( action_state_t* state )
     {
       if ( random <= chances[ i ] )
       {
-        state -> result = results[ i ];
+        state -> result = static_cast<result_type_e>( results[ i ] );
         break;
       }
     }
@@ -414,7 +414,7 @@ void attack_t::calculate_result_s( action_state_t* state )
                    util_t::result_type_string( state -> result ) );
 }
 
-int attack_t::build_table_s( double* chances, result_type_e* results, const action_state_t* s )
+int attack_t::build_table_s( double* chances, int* results, const action_state_t* s )
 {
   double miss=0, dodge=0, parry=0, glance=0, block=0,crit_block=0, crit=0;
 

@@ -258,7 +258,7 @@ double attack_t::crit_chance( int delta_level ) const
 // attack_t::build_table ====================================================
 
 int attack_t::build_table( double* chances,
-                           result_type_e*    results )
+                           int*    results )
 {
   double miss=0, dodge=0, parry=0, glance=0, block=0,crit_block=0, crit=0;
 
@@ -363,7 +363,7 @@ void attack_t::calculate_result()
   direct_dmg = 0;
 
   double chances[ RESULT_MAX ];
-  result_type_e results[ RESULT_MAX ];
+  int results[ RESULT_MAX ];
 
   result = RESULT_NONE;
 
@@ -373,7 +373,7 @@ void attack_t::calculate_result()
 
   if ( num_results == 1 )
   {
-    result = results[ 0 ];
+    result = static_cast<result_type_e>( results[ 0 ] );
   }
   else
   {
@@ -385,7 +385,7 @@ void attack_t::calculate_result()
     {
       if ( random <= chances[ i ] )
       {
-        result = results[ i ];
+        result = static_cast<result_type_e>( results[ i ] );
         break;
       }
     }
