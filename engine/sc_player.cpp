@@ -1627,6 +1627,7 @@ void player_t::init_buffs()
   debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
   debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
   debuffs.flying       = new debuff_t( this, "flying",   -1 );
+  debuffs.physical_vulnerability = new debuff_t( this, 81326, "physical_vulnerability" );
 }
 
 // player_t::init_gains =====================================================
@@ -3091,6 +3092,9 @@ void player_t::reset()
   {
     action_callback_t::reset( attack_callbacks[ i ] );
     action_callback_t::reset( spell_callbacks [ i ] );
+    action_callback_t::reset( harmful_spell_callbacks [ i ] );
+    action_callback_t::reset( heal_callbacks [ i ] );
+    action_callback_t::reset( absorb_callbacks [ i ] );
     action_callback_t::reset( tick_callbacks  [ i ] );
   }
   for ( int i=0; i < SCHOOL_MAX; i++ )
@@ -4202,6 +4206,20 @@ void player_t::register_heal_callback( int64_t mask,
   }
 }
 
+// player_t::register_absorb_callback =========================================
+
+void player_t::register_absorb_callback( int64_t mask,
+                                       action_callback_t* cb )
+{
+  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      absorb_callbacks[ i ].push_back( cb );
+    }
+  }
+}
+
 // player_t::register_harmful_spell_callback ================================
 
 void player_t::register_harmful_spell_callback( int64_t mask,
@@ -4211,7 +4229,7 @@ void player_t::register_harmful_spell_callback( int64_t mask,
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      spell_callbacks[ i ].push_back( cb );
+      harmful_spell_callbacks[ i ].push_back( cb );
     }
   }
 }
@@ -6924,29 +6942,21 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
 {
   double m = 1.0;
 
+  // MoP COE: increases "magic" damage taken by 5%
+  if ( school != SCHOOL_NONE && ( school & SCHOOL_MAGIC_MASK ) )
+    m *= 1.0 + debuffs.curse_of_elements  -> value();
+
   if ( school == SCHOOL_PHYSICAL ||
        school == SCHOOL_BLEED    )
   {
-    if ( debuffs.savage_combat -> up() )
-    {
-      m *= 1.04;
-    }
-    else if ( debuffs.blood_frenzy_physical -> value() ||
-              debuffs.brittle_bones -> value() ||
-              debuffs.ravage -> value() )
-    {
-      m *= 1.0 + std::max( std::max( debuffs.blood_frenzy_physical -> value() * 0.01,
-                                     debuffs.brittle_bones         -> value() ),
-                           debuffs.ravage                          -> value() * 0.01 );
+    m *= 1.0 + debuffs.physical_vulnerability -> up() * debuffs.physical_vulnerability->data().effect1().percent();
 
-    }
   }
   else
   {
-    m *= 1.0 + ( std::max( debuffs.curse_of_elements  -> value(),
-                           std::max( debuffs.earth_and_moon     -> value(),
+    m *= 1.0 + ( std::max( debuffs.earth_and_moon     -> value(),
                                      std::max( debuffs.ebon_plaguebringer -> value(),
-                                               debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
+                                               debuffs.lightning_breath   -> value() ) ) * 0.01 );
   }
 
   if ( debuffs.vulnerable -> up() )
@@ -6966,8 +6976,6 @@ double player_t::composite_ranged_attack_power_vulnerability() const
 double player_t::composite_player_penetration_vulnerability( school_type_e /* s */ ) const
 {
   double p = 0;
-
-  if ( debuffs.curse_of_elements -> check() ) p += 88;
 
   return p;
 }

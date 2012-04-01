@@ -1648,18 +1648,6 @@ struct ravage_t : public hunter_pet_spell_t
     auto_cast = true;
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-    {
-      hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-      t -> debuffs.ravage -> expire();
-      t -> debuffs.ravage -> trigger( 1, effect1().base_value() );
-      t -> debuffs.ravage -> source = p;
-    }
-  }
 };
 
 // Fox Tailspin  ============================================================
@@ -4476,7 +4464,6 @@ void player_t::hunter_init( sim_t* sim )
     p -> debuffs.corrosive_spit       = new debuff_t( p, 95466, "corrosive_spit" );
     p -> debuffs.demoralizing_screech = new debuff_t( p, 24423, "demoralizing_screech" );
     p -> debuffs.lightning_breath     = new debuff_t( p, 24844, "lightning_breath" );
-    p -> debuffs.ravage               = new debuff_t( p, 50518, "ravage" );
     p -> debuffs.tailspin             = new debuff_t( p, 90315, "tailspin" );
     p -> debuffs.tear_armor           = new debuff_t( p, 95467, "tear_armor" );
     p -> debuffs.tendon_rip           = new debuff_t( p, 50271, "tendon_rip" );
@@ -4500,7 +4487,6 @@ void player_t::hunter_combat_begin( sim_t* sim )
     if ( sim -> overrides.lightning_breath       ) t -> debuffs.lightning_breath -> override( 1, 8 );
     if ( sim -> overrides.corrosive_spit         ) t -> debuffs.corrosive_spit -> override( 1, 12 );
     if ( sim -> overrides.demoralizing_screech   ) t -> debuffs.demoralizing_screech -> override( 1, 10 );
-    if ( sim -> overrides.ravage                 ) t -> debuffs.ravage -> override( 1, 4 );
     if ( sim -> overrides.tailspin               ) t -> debuffs.tailspin -> override( 1, 20 );
     if ( sim -> overrides.tear_armor             ) t -> debuffs.tear_armor -> override( 1, 12 );
     if ( sim -> overrides.tendon_rip             ) t -> debuffs.tendon_rip -> override( 1, 30 );

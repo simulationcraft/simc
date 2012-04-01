@@ -75,7 +75,7 @@ static OptionEntry* getDebuffOptions()
     { "Bleed Damage",           "override.mangle",                "Blood Frenzy\nGore\nHemorrhage\nMangle\nStampede\nTendon Rip"                                                  },
     { "Bleeding",               "override.bleeding",              "Rip\nRupture\nPiercing Shots"                                                                                  },
     { "Physical Damage Done",   "override.demoralizing_roar",     "Curse of Weakness\nDemoralizing Roar\nDemoralizing Shout\nScarlet Fever\nVindication"                          },
-    { "Physical Damage Taken",  "override.blood_frenzy_physical", "Acid Spit\nBlood Frenzy\nBrittle Bones\nRavage\nSavage Combat"                                                 },
+    { "Physical Vulnerability", "override.physical_vulnerability", "Physical Vulnerability ( 4 % )"                                                 },
     { "Poisoned",               "override.poisoned",              "Deadly Poison\nSerpent Sting"                                                                                  },
     { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                                                                 },
     { "Reduced Attack Speed",   "override.thunder_clap",          "Dust Cloud\nEarth Shock\nFrost Fever\nInfected Wounds\nJudgements of the Just\nTailspin\nThunder Clap\nWaylay" },

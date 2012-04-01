@@ -152,7 +152,6 @@ void attack_t::target_debuff( player_t* t, dmg_type_e dt )
                                    std::max( t -> debuffs.ebon_plaguebringer -> value(),
                                              t -> debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
 
-      if ( t -> debuffs.curse_of_elements -> check() ) target_penetration += 183;
     }
   }
 }

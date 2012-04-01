@@ -1739,20 +1739,13 @@ static void trigger_blood_caked_blade( action_t* a )
 
 // Trigger Brittle Bones ====================================================
 
-static void trigger_brittle_bones( spell_t* s, player_t* t )
+static void trigger_brittle_bones( spell_t* s, player_t* )
 {
   death_knight_t* p = s -> player -> cast_death_knight();
 
   if ( ! p -> talents.brittle_bones -> rank() )
     return;
 
-  double bb_value = p -> talents.brittle_bones -> effect2().percent();
-
-  if ( bb_value >= t -> debuffs.brittle_bones -> current_value )
-  {
-    t -> debuffs.brittle_bones -> trigger( 1, bb_value );
-    t -> debuffs.brittle_bones -> source = p;
-  }
 }
 
 // Trigger Ebon Plaguebringer ===============================================
@@ -2794,15 +2787,6 @@ struct frost_fever_t : public death_knight_spell_t
       trigger_brittle_bones( this, t );
   }
 
-  virtual void last_tick( dot_t* d )
-  {
-    death_knight_spell_t::last_tick( d );
-
-    if ( target -> debuffs.brittle_bones -> check()
-         && target -> debuffs.brittle_bones -> source
-         && target -> debuffs.brittle_bones -> source == player )
-      target -> debuffs.brittle_bones -> expire();
-  }
 };
 
 // Frost Strike =============================================================
@@ -5267,7 +5251,6 @@ void player_t::death_knight_init( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     p -> buffs.unholy_frenzy        = new   buff_t( p, 49016, "unholy_frenzy" );
-    p -> debuffs.brittle_bones      = new debuff_t( p, "brittle_bones",      1 );
     p -> debuffs.ebon_plaguebringer = new debuff_t( p, 65142, "ebon_plaguebringer" );
     p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, timespan_t::from_seconds( 21.0 ) );
   }
@@ -5288,7 +5271,6 @@ void player_t::death_knight_combat_begin( sim_t* sim )
 
   for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
-    if ( sim -> overrides.brittle_bones      ) t -> debuffs.brittle_bones      -> override( 1, 0.04 );
     if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1,  8.0 );
     if ( sim -> overrides.scarlet_fever      ) t -> debuffs.scarlet_fever      -> override();
   }

@@ -627,6 +627,11 @@ const int64_t SCHOOL_SPELL_MASK  ( ( int64_t( 1 ) << SCHOOL_ARCANE )         | (
                                    ( int64_t( 1 ) << SCHOOL_SPELLFROST )     | ( int64_t( 1 ) << SCHOOL_SPELLSHADOW )  |
                                    ( int64_t( 1 ) << SCHOOL_ELEMENTAL )      | ( int64_t( 1 ) << SCHOOL_CHROMATIC )    |
                                    ( int64_t( 1 ) << SCHOOL_MAGIC ) );
+
+const int64_t SCHOOL_MAGIC_MASK  ( ( int64_t( 1 ) << SCHOOL_ARCANE )         |
+                                   ( int64_t( 1 ) << SCHOOL_FIRE )           | ( int64_t( 1 ) << SCHOOL_FROST )        |
+                                   ( int64_t( 1 ) << SCHOOL_FROSTFIRE )      | ( int64_t( 1 ) << SCHOOL_HOLY )         |
+                                   ( int64_t( 1 ) << SCHOOL_NATURE )         | ( int64_t( 1 ) << SCHOOL_SHADOW ) );
 #define SCHOOL_ALL_MASK    ( int64_t( -1 ) )
 
 enum talent_tree_type_e
@@ -3657,9 +3662,8 @@ public:
     int blessing_of_kings;
     int blessing_of_might;
     int blood_frenzy_bleed;
-    int blood_frenzy_physical;
+    int physical_vulnerability;
     int bloodlust;
-    int brittle_bones;
     int burning_wrath;
     int communion;
     int corrosive_spit;
@@ -3701,9 +3705,7 @@ public:
     int moonkin_aura;
     int poisoned;
     int rampage;
-    int ravage;
     int roar_of_courage;
-    int savage_combat;
     int scarlet_fever;
     int shadow_and_flame;
     int strength_of_wrynn;
@@ -4454,7 +4456,9 @@ struct player_t : public noncopyable
   std::vector<action_callback_t*> all_callbacks;
   std::vector<action_callback_t*> attack_callbacks[ RESULT_MAX ];
   std::vector<action_callback_t*>  spell_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*>  harmful_spell_callbacks[ RESULT_MAX ];
   std::vector<action_callback_t*>  heal_callbacks[ RESULT_MAX ];
+  std::vector<action_callback_t*>  absorb_callbacks[ RESULT_MAX ];
   std::vector<action_callback_t*>   tick_callbacks[ RESULT_MAX ];
   std::vector<action_callback_t*> direct_damage_callbacks[ SCHOOL_MAX ];
   std::vector<action_callback_t*>   tick_damage_callbacks[ SCHOOL_MAX ];
@@ -4639,8 +4643,7 @@ struct player_t : public noncopyable
   {
     debuff_t* bleeding;
     debuff_t* blood_frenzy_bleed;
-    debuff_t* blood_frenzy_physical;
-    debuff_t* brittle_bones;
+    debuff_t* physical_vulnerability;
     debuff_t* casting;
     debuff_t* corrosive_spit;
     debuff_t* critical_mass;
@@ -4664,8 +4667,6 @@ struct player_t : public noncopyable
     debuff_t* mangle;
     debuff_t* master_poisoner;
     debuff_t* poisoned;
-    debuff_t* ravage;
-    debuff_t* savage_combat;
     debuff_t* scarlet_fever;
     debuff_t* shadow_and_flame;
     debuff_t* shattering_throw;
@@ -4893,6 +4894,7 @@ struct player_t : public noncopyable
   virtual void register_spell_callback        ( int64_t result_mask, action_callback_t* );
   virtual void register_tick_callback         ( int64_t result_mask, action_callback_t* );
   virtual void register_heal_callback         ( int64_t result_mask, action_callback_t* );
+  virtual void register_absorb_callback         ( int64_t result_mask, action_callback_t* );
   virtual void register_harmful_spell_callback( int64_t result_mask, action_callback_t* );
   virtual void register_tick_damage_callback  ( int64_t result_mask, action_callback_t* );
   virtual void register_direct_damage_callback( int64_t result_mask, action_callback_t* );

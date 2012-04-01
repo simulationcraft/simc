@@ -443,10 +443,6 @@ static void trigger_blood_frenzy( action_t* a )
   {
     t -> debuffs.blood_frenzy_bleed -> buff_duration = a -> num_ticks * a -> base_tick_time;
   }
-  if ( t -> debuffs.blood_frenzy_physical -> buff_duration > timespan_t::zero )
-  {
-    t -> debuffs.blood_frenzy_physical -> buff_duration = a -> num_ticks * a -> base_tick_time;
-  }
 
   double rank = p -> talents.blood_frenzy -> rank();
 
@@ -454,11 +450,6 @@ static void trigger_blood_frenzy( action_t* a )
   {
     t -> debuffs.blood_frenzy_bleed -> trigger( 1, rank * 15 );
     t -> debuffs.blood_frenzy_bleed -> source = p;
-  }
-  if ( rank * 2 >= t -> debuffs.blood_frenzy_physical -> current_value )
-  {
-    t -> debuffs.blood_frenzy_physical -> trigger( 1, rank * 2 );
-    t -> debuffs.blood_frenzy_physical -> source = p;
   }
 }
 
@@ -3919,7 +3910,6 @@ void player_t::warrior_init( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     p -> debuffs.blood_frenzy_bleed    = new debuff_t( p, "blood_frenzy_bleed",    1, timespan_t::from_seconds( 60.0 ) );
-    p -> debuffs.blood_frenzy_physical = new debuff_t( p, "blood_frenzy_physical", 1, timespan_t::from_seconds( 60.0 ) );
     p -> debuffs.demoralizing_shout    = new debuff_t( p, "demoralizing_shout",    1, timespan_t::from_seconds( 30.0 ) );
     p -> debuffs.shattering_throw      = new debuff_t( p, 64382, "shattering_throw" );
     p -> debuffs.sunder_armor          = new debuff_t( p, 58567, "sunder_armor" );
@@ -3943,7 +3933,6 @@ void player_t::warrior_combat_begin( sim_t* sim )
   for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
     if ( sim -> overrides.blood_frenzy_bleed    ) t -> debuffs.blood_frenzy_bleed    -> override( 1, 30 );
-    if ( sim -> overrides.blood_frenzy_physical ) t -> debuffs.blood_frenzy_physical -> override( 1,  4 );
     if ( sim -> overrides.demoralizing_shout    ) t -> debuffs.demoralizing_shout    -> override();
     if ( sim -> overrides.sunder_armor          ) t -> debuffs.sunder_armor          -> override( 3 );
     if ( sim -> overrides.thunder_clap          ) t -> debuffs.thunder_clap          -> override();

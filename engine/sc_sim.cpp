@@ -1833,7 +1833,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.blessing_of_kings      = optimal_raid;
   overrides.blessing_of_might      = optimal_raid;
   overrides.blood_frenzy_bleed     = optimal_raid;
-  overrides.blood_frenzy_physical  = optimal_raid;
+  overrides.physical_vulnerability = optimal_raid;
   overrides.bloodlust              = optimal_raid;
   overrides.burning_wrath          = optimal_raid;
   overrides.communion              = optimal_raid;
@@ -1872,8 +1872,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.poisoned               = optimal_raid;
   overrides.qiraji_fortitude       = optimal_raid;
   overrides.rampage                = optimal_raid;
-  overrides.ravage                 = optimal_raid;
-  overrides.savage_combat          = optimal_raid;
   overrides.scarlet_fever          = optimal_raid;
   overrides.sunder_armor           = optimal_raid;
   overrides.tailspin               = optimal_raid;
@@ -2097,7 +2095,7 @@ void sim_t::create_options()
     { "override.blessing_of_kings",       OPT_BOOL,   &( overrides.blessing_of_kings              ) },
     { "override.blessing_of_might",       OPT_BOOL,   &( overrides.blessing_of_might              ) },
     { "override.blood_frenzy_bleed",      OPT_BOOL,   &( overrides.blood_frenzy_bleed             ) },
-    { "override.blood_frenzy_physical",   OPT_BOOL,   &( overrides.blood_frenzy_physical          ) },
+    { "override.physical_vulnerability",  OPT_BOOL,   &( overrides.physical_vulnerability         ) },
     { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
     { "override.burning_wrath",           OPT_BOOL,   &( overrides.burning_wrath                  ) },
     { "bloodlust_percent",                OPT_INT,    &( bloodlust_percent                        ) },
@@ -2140,9 +2138,7 @@ void sim_t::create_options()
     { "override.poisoned",                OPT_BOOL,   &( overrides.poisoned                       ) },
     { "override.qiraji_fortitude",        OPT_BOOL,   &( overrides.qiraji_fortitude               ) },
     { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
-    { "override.ravage",                  OPT_BOOL,   &( overrides.ravage                         ) },
     { "override.roar_of_courage",         OPT_BOOL,   &( overrides.roar_of_courage                ) },
-    { "override.savage_combat",           OPT_BOOL,   &( overrides.savage_combat                  ) },
     { "override.scarlet_fever",           OPT_BOOL,   &( overrides.scarlet_fever                  ) },
     { "override.strength_of_wrynn",       OPT_BOOL,   &( overrides.strength_of_wrynn              ) },
     { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },

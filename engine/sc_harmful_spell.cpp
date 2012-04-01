@@ -62,13 +62,11 @@ void spell_t::player_buff()
 {
   spell_base_t::player_buff();
 
-  player_t* p = player;
-
   if ( ! no_buffs )
   {
-    player_hit  = p -> composite_spell_hit();
+    player_hit  = player -> composite_spell_hit();
 
-    player_penetration = p -> composite_spell_penetration();
+    player_penetration = player -> composite_spell_penetration();
   }
 
   if ( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f penetration=%.2f",
@@ -95,7 +93,7 @@ void spell_t::target_debuff( player_t* t, dmg_type_e type )
 
 double spell_t::miss_chance( int delta_level ) const
 {
-  double miss=0;
+  double miss = 0;
 
   if ( delta_level > 2 )
   {
@@ -124,11 +122,11 @@ void spell_t::execute()
   {
     if ( result != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> spell_callbacks[ result ], this );
+      action_callback_t::trigger( player -> harmful_spell_callbacks[ result ], this );
     }
     if ( ! background ) // OnSpellCast
     {
-      action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> harmful_spell_callbacks[ RESULT_NONE ], this );
     }
   }
 }
