@@ -554,11 +554,6 @@ void action_t::player_buff()
   {
     player_t* p = player;
 
-    if ( school != SCHOOL_PHYSICAL )
-    {
-      player_penetration = p -> composite_spell_penetration();
-    }
-
     player_multiplier    = p -> composite_player_multiplier   ( school, this );
     player_dd_multiplier = p -> composite_player_dd_multiplier( school, this );
     player_td_multiplier = p -> composite_player_td_multiplier( school, this );
@@ -597,49 +592,12 @@ void action_t::target_debuff( player_t* t, dmg_type_e )
 
   if ( ! no_debuffs )
   {
-    if ( school == SCHOOL_PHYSICAL ||
-         school == SCHOOL_BLEED    )
-    {
-      if ( t -> debuffs.savage_combat -> up() )
-      {
-        target_multiplier *= 1.04;
-      }
-      else if ( t -> debuffs.blood_frenzy_physical -> value() || t -> debuffs.brittle_bones -> value() || t -> debuffs.ravage -> value() )
-      {
-        target_multiplier *= 1.0 + std::max(
-                                   std::max( t -> debuffs.blood_frenzy_physical -> value() * 0.01,
-                                             t -> debuffs.brittle_bones         -> value() ),
-                                             t -> debuffs.ravage                -> value() * 0.01 );
+    target_multiplier *= t -> composite_player_vulnerability( school );
+    target_penetration *= t -> composite_player_penetration_vulnerability( school );
 
-      }
-    }
-
-    if ( school == SCHOOL_BLEED )
-    {
-      if ( t -> debuffs.mangle -> up() || t -> debuffs.hemorrhage -> up() || t -> debuffs.tendon_rip -> up() )
-      {
-        target_multiplier *= 1.30;
-      }
-      else if ( t -> debuffs.blood_frenzy_bleed -> value() )
-      {
-        target_multiplier *= 1.0 + t -> debuffs.blood_frenzy_bleed -> value() * 0.01;
-      }
-    }
-
-    if ( base_attack_power_multiplier > 0 )
-    {
-      bool ranged = ( player -> position == POSITION_RANGED_FRONT ||
-                      player -> position == POSITION_RANGED_BACK );
-
-      if ( ranged )
-      {
-        target_attack_power += t -> debuffs.hunters_mark -> value();
-      }
-    }
-
-    if ( t -> debuffs.vulnerable -> up() && ( type == ACTION_SPELL || type == ACTION_ATTACK ) )
-      target_multiplier *= t -> debuffs.vulnerable -> value();
-
+    if ( player -> position == POSITION_RANGED_FRONT ||
+         player -> position == POSITION_RANGED_BACK )
+      target_attack_power = t -> composite_ranged_attack_power_vulnerability();
   }
 
   if ( sim -> debug )

@@ -64,10 +64,15 @@ void spell_t::player_buff()
 
   player_t* p = player;
 
-  player_hit  = p -> composite_spell_hit();
+  if ( ! no_buffs )
+  {
+    player_hit  = p -> composite_spell_hit();
 
-  if ( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f",
-                                     name(), player_hit );
+    player_penetration = p -> composite_spell_penetration();
+  }
+
+  if ( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f penetration=%.2f",
+                                     name(), player_hit, player_penetration );
 }
 
 // spell_t::target_debuff ===================================================
@@ -76,22 +81,9 @@ void spell_t::target_debuff( player_t* t, dmg_type_e type )
 {
   spell_base_t::target_debuff( t, type );
 
-  int crit_debuff = std::max( t -> debuffs.critical_mass    -> stack() * 5,
-                              t -> debuffs.shadow_and_flame -> stack() * 5 );
-  target_crit += crit_debuff * 0.01;
-
   if ( ! no_debuffs )
   {
-    if ( ! ( school == SCHOOL_PHYSICAL ||
-         school == SCHOOL_BLEED )    )
-    {
-      target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
-                                   std::max( t -> debuffs.earth_and_moon     -> value(),
-                                   std::max( t -> debuffs.ebon_plaguebringer -> value(),
-                                             t -> debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
-
-      if ( t -> debuffs.curse_of_elements -> check() ) target_penetration += 183;
-    }
+    target_crit += target -> composite_spell_crit_vulnerability();
   }
 
   if ( sim -> debug )

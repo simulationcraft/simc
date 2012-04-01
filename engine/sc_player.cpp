@@ -6949,6 +6949,9 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
                                                debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
   }
 
+  if ( debuffs.vulnerable -> up() )
+    m *= debuffs.vulnerable -> value();
+
   return m;
 }
 
