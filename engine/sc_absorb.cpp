@@ -32,14 +32,14 @@ void absorb_t::init_absorb_t_()
 
 // absorb_t::absorb_t ======== Absorb Constructor by Spell Name =============
 
-absorb_t::absorb_t( const std::string& n, player_t* player, const char* sname, talent_tree_type_e t ) :
-  spell_base_t( ACTION_ABSORB, n, sname, player, t )
+absorb_t::absorb_t( const std::string& n, player_t* p, const char* sname, talent_tree_type_e t ) :
+  spell_base_t( ACTION_ABSORB, n, sname, p, t )
 { init_absorb_t_(); }
 
 // absorb_t::absorb_t ======== absorb Constructor by Spell ID ===============
 
-absorb_t::absorb_t( const std::string& n, player_t* player, const uint32_t id, talent_tree_type_e t ) :
-  spell_base_t( ACTION_ABSORB, n, id, player, t )
+absorb_t::absorb_t( const std::string& n, player_t* p, const uint32_t id, talent_tree_type_e t ) :
+  spell_base_t( ACTION_ABSORB, n, id, p, t )
 { init_absorb_t_(); }
 
 // absorb_t::player_buff ====================================================

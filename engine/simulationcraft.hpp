@@ -5313,13 +5313,13 @@ private:
   void init_action_t_();
 
 public:
-  action_t( action_type_e, const std::string& name, player_t* p=0, resource_type_e=RESOURCE_NONE,
-            school_type_e=SCHOOL_NONE, talent_tree_type_e=TREE_NONE, bool special=false );
-  action_t( action_type_e, const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=false );
-  action_t( action_type_e, const std::string& name, const char* sname, player_t* p=0,
-            talent_tree_type_e=TREE_NONE, bool special=false );
-  action_t( action_type_e, const std::string& name, const uint32_t id, player_t* p=0,
-            talent_tree_type_e=TREE_NONE, bool special=false );
+  action_t( action_type_e, const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
+            school_type_e = SCHOOL_NONE, talent_tree_type_e = TREE_NONE, bool special = false );
+  action_t( action_type_e, const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = false );
+  action_t( action_type_e, const std::string& name, const char* sname, player_t*,
+            talent_tree_type_e = TREE_NONE, bool special = false );
+  action_t( action_type_e, const std::string& name, const uint32_t id, player_t*,
+            talent_tree_type_e = TREE_NONE, bool special = false );
   virtual ~action_t();
   void init_dot( const std::string& dot_name );
 
@@ -5690,11 +5690,11 @@ private:
   void init_attack_t_();
 
 public:
-  attack_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=false );
-  attack_t( const std::string& name=0, player_t* p=0, resource_type_e r=RESOURCE_NONE,
-            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special=false );
-  attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
-  attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
+  attack_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = false );
+  attack_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
+            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e = TREE_NONE, bool special = false );
+  attack_t( const std::string& name, const char* sname, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
+  attack_t( const std::string& name, uint32_t id, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
 
   // Attack Overrides
   virtual double haste() const;
@@ -5737,11 +5737,11 @@ private:
   void init_melee_attack_t_();
 
 public:
-  melee_attack_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=false );
-  melee_attack_t( const std::string& name=0, player_t* p=0, resource_type_e r=RESOURCE_NONE,
-            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special=false );
-  melee_attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
-  melee_attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
+  melee_attack_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = false );
+  melee_attack_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
+            school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special = false );
+  melee_attack_t( const std::string& name, const char* sname, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
+  melee_attack_t( const std::string& name, uint32_t id, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
 
   // Melee Attack Overrides
   virtual void   player_buff();
@@ -5762,11 +5762,11 @@ private:
   void init_ranged_attack_t_();
 
 public:
-  ranged_attack_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=true );
-  ranged_attack_t( const std::string& name=0, player_t* p=0, resource_type_e r=RESOURCE_NONE,
-            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special=true );
-  ranged_attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special=true );
-  ranged_attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special=true );
+  ranged_attack_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = true );
+  ranged_attack_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
+            school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special = true );
+  ranged_attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special = true );
+  ranged_attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special = true );
 
   // Ranged Attack Overrides
   virtual void   target_debuff( player_t* t, dmg_type_e );
@@ -5780,9 +5780,9 @@ private:
   void init_spell_base_t_();
 
 public:
-  spell_base_t( action_type_e, const spell_id_t& s, talent_tree_type_e=TREE_NONE );
-  spell_base_t( action_type_e, const std::string& n=0, player_t* p=0, resource_type_e=RESOURCE_NONE,
-           school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE );
+  spell_base_t( action_type_e, const spell_id_t& s, talent_tree_type_e = TREE_NONE );
+  spell_base_t( action_type_e, const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
+           school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e = TREE_NONE );
   spell_base_t( action_type_e, const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE );
   spell_base_t( action_type_e, const std::string& name, const uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE );
 
@@ -5810,11 +5810,11 @@ private:
   void init_spell_t_();
 
 public:
-  spell_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE );
-  spell_t( const std::string& n=0, player_t* p=0, resource_type_e=RESOURCE_NONE,
-           school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE );
-  spell_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE );
-  spell_t( const std::string& name, const uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE );
+  spell_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE );
+  spell_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
+           school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e = TREE_NONE );
+  spell_t( const std::string& name, const char* sname, player_t*, talent_tree_type_e = TREE_NONE );
+  spell_t( const std::string& name, const uint32_t id, player_t*, talent_tree_type_e = TREE_NONE );
 
   // Harmful Spell Overrides
   virtual void   player_buff();
@@ -5838,8 +5838,8 @@ private:
   void init_heal_t_();
 
 public:
-  heal_t( const std::string& n, player_t* player, const char* sname, talent_tree_type_e = TREE_NONE );
-  heal_t( const std::string& n, player_t* player, const uint32_t id, talent_tree_type_e = TREE_NONE );
+  heal_t( const std::string& name, player_t*, const char* sname, talent_tree_type_e = TREE_NONE );
+  heal_t( const std::string& name, player_t*, const uint32_t id, talent_tree_type_e = TREE_NONE );
 
   virtual void player_buff();
   virtual void execute();
@@ -5860,8 +5860,8 @@ private:
   void init_absorb_t_();
 
 public:
-  absorb_t( const std::string& n, player_t* player, const char* sname, talent_tree_type_e = TREE_NONE );
-  absorb_t( const std::string& n, player_t* player, const uint32_t id, talent_tree_type_e = TREE_NONE );
+  absorb_t( const std::string& name, player_t*, const char* sname, talent_tree_type_e = TREE_NONE );
+  absorb_t( const std::string& name, player_t*, const uint32_t id, talent_tree_type_e = TREE_NONE );
 
   virtual void player_buff();
   virtual void execute();

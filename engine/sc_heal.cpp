@@ -45,16 +45,16 @@ void heal_t::init_heal_t_()
 
 // heal_t::heal_t ======== Heal Constructor by Spell Name ===================
 
-heal_t::heal_t( const std::string& n, player_t* player, const char* sname, talent_tree_type_e t ) :
-  spell_base_t( ACTION_HEAL, n, sname, player, t )
+heal_t::heal_t( const std::string& n, player_t* p, const char* sname, talent_tree_type_e t ) :
+  spell_base_t( ACTION_HEAL, n, sname, p, t )
 {
   init_heal_t_();
 }
 
 // heal_t::heal_t ======== Heal Constructor by Spell ID =====================
 
-heal_t::heal_t( const std::string& n, player_t* player, const uint32_t id, talent_tree_type_e t ) :
-  spell_base_t( ACTION_HEAL, n, id, player, t )
+heal_t::heal_t( const std::string& n, player_t* p, const uint32_t id, talent_tree_type_e t ) :
+  spell_base_t( ACTION_HEAL, n, id, p, t )
 {
   init_heal_t_();
 }
