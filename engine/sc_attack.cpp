@@ -105,13 +105,6 @@ void attack_t::player_buff()
                    name(), player_hit, player_crit );
 }
 
-// attack_t::target_debuff ==================================================
-
-void attack_t::target_debuff( player_t* t, dmg_type_e dt )
-{
-  action_t::target_debuff( t, dt );
-}
-
 // attack_t::miss_chance ====================================================
 
 double attack_t::miss_chance( int delta_level ) const

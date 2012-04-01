@@ -682,33 +682,33 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 // Hunter Attack
 // ==========================================================================
 
-struct hunter_attack_t : public attack_t
+struct hunter_ranged_attack_t : public ranged_attack_t
 {
-  void _init_hunter_attack_t()
+  void _init_hunter_ranged_attack_t()
   {
     may_crit               = true;
     tick_may_crit          = true;
     normalize_weapon_speed = true;
     dot_behavior           = DOT_REFRESH;
   }
-  hunter_attack_t( const char* n, player_t* player, school_type_e s=SCHOOL_PHYSICAL,
+  hunter_ranged_attack_t( const char* n, player_t* player, school_type_e s=SCHOOL_PHYSICAL,
                    talent_tree_type_e t=TREE_NONE, bool special=true ) :
-    attack_t( n, player, RESOURCE_FOCUS, s, t, special )
+                     ranged_attack_t( n, player, RESOURCE_FOCUS, s, t, special )
   {
-    _init_hunter_attack_t();
+    _init_hunter_ranged_attack_t();
   }
-  hunter_attack_t( const char* n, player_t* player, const char* sname,
+  hunter_ranged_attack_t( const char* n, player_t* player, const char* sname,
                    talent_tree_type_e t=TREE_NONE, bool special=true ) :
-    attack_t( n, sname, player, t, special )
+                     ranged_attack_t( n, sname, player, t, special )
   {
-    _init_hunter_attack_t();
+    _init_hunter_ranged_attack_t();
   }
 
-  hunter_attack_t( const char* n, player_t* player, uint32_t id,
+  hunter_ranged_attack_t( const char* n, player_t* player, uint32_t id,
                    talent_tree_type_e t=TREE_NONE, bool special=true ) :
-    attack_t( n, id, player, t, special )
+                     ranged_attack_t( n, id, player, t, special )
   {
-    _init_hunter_attack_t();
+    _init_hunter_ranged_attack_t();
   }
 
   virtual void trigger_improved_steady_shot()
@@ -923,10 +923,10 @@ static void trigger_vishanka( attack_t* a )
 
   if ( ! p -> active_vishanka )
   {
-    struct vishanka_t : public hunter_attack_t
+    struct vishanka_t : public hunter_ranged_attack_t
     {
       vishanka_t( hunter_t* p, uint32_t id ) :
-        hunter_attack_t( "vishanka_jaws_of_the_earth", p, id )
+        hunter_ranged_attack_t( "vishanka_jaws_of_the_earth", p, id )
       {
         background  = true;
         proc        = true;
@@ -1791,13 +1791,13 @@ struct froststorm_breath_t : public hunter_pet_spell_t
 // Hunter Attacks
 // ==========================================================================
 
-// hunter_attack_t::cost ====================================================
+// hunter_ranged_attack_t::cost ====================================================
 
-double hunter_attack_t::cost() const
+double hunter_ranged_attack_t::cost() const
 {
   hunter_t* p = player -> cast_hunter();
 
-  double c = attack_t::cost();
+  double c = ranged_attack_t::cost();
 
   if ( c == 0 )
     return 0;
@@ -1808,11 +1808,11 @@ double hunter_attack_t::cost() const
   return c;
 }
 
-// hunter_attack_t::execute =================================================
+// hunter_ranged_attack_t::execute =================================================
 
-void hunter_attack_t::execute()
+void hunter_ranged_attack_t::execute()
 {
-  attack_t::execute();
+  ranged_attack_t::execute();
   hunter_t* p = player -> cast_hunter();
 
   if ( p -> talents.improved_steady_shot -> rank() )
@@ -1828,9 +1828,9 @@ void hunter_attack_t::execute()
     trigger_vishanka( this );
 }
 
-// hunter_attack_t::execute_time ============================================
+// hunter_ranged_attack_t::execute_time ============================================
 
-timespan_t hunter_attack_t::execute_time() const
+timespan_t hunter_ranged_attack_t::execute_time() const
 {
   timespan_t t = attack_t::execute_time();
 
@@ -1840,13 +1840,13 @@ timespan_t hunter_attack_t::execute_time() const
   return t;
 }
 
-// hunter_attack_t::player_buff =============================================
+// hunter_ranged_attack_t::player_buff =============================================
 
-void hunter_attack_t::player_buff()
+void hunter_ranged_attack_t::player_buff()
 {
   hunter_t* p = player -> cast_hunter();
 
-  attack_t::player_buff();
+  ranged_attack_t::player_buff();
 
   if (  p -> buffs_beast_within -> up() )
     player_multiplier *= 1.0 + p -> buffs_beast_within -> effect2().percent();
@@ -1859,13 +1859,13 @@ void hunter_attack_t::player_buff()
     player_multiplier *= 1.0 + ( p -> buffs_culling_the_herd -> effect1().percent() );
 }
 
-// hunter_attack_t::swing_haste =============================================
+// hunter_ranged_attack_t::swing_haste =============================================
 
-double hunter_attack_t::swing_haste() const
+double hunter_ranged_attack_t::swing_haste() const
 {
   hunter_t* p = player -> cast_hunter();
 
-  double h = attack_t::swing_haste();
+  double h = ranged_attack_t::swing_haste();
 
   if ( p -> buffs_improved_steady_shot -> up() )
     h *= 1.0/ ( 1.0 + p -> talents.improved_steady_shot -> effect1().percent() );
@@ -1875,10 +1875,10 @@ double hunter_attack_t::swing_haste() const
 
 // Ranged Attack ============================================================
 
-struct ranged_t : public hunter_attack_t
+struct ranged_t : public hunter_ranged_attack_t
 {
   ranged_t( player_t* player, const char* name="ranged" ) :
-    hunter_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/true )
+    hunter_ranged_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, /*special*/true )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -1891,19 +1891,12 @@ struct ranged_t : public hunter_attack_t
     repeating   = true;
   }
 
-  virtual void calculate_result()
-  {
-    special = true;
-    hunter_attack_t::calculate_result();
-    special = false;
-  }
-
   virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
 
-    return hunter_attack_t::execute_time();
+    return hunter_ranged_attack_t::execute_time();
   }
 
   virtual void trigger_improved_steady_shot()
@@ -1911,7 +1904,7 @@ struct ranged_t : public hunter_attack_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -1922,7 +1915,7 @@ struct ranged_t : public hunter_attack_t
 
   virtual void player_buff()
   {
-    hunter_attack_t::player_buff();
+    hunter_ranged_attack_t::player_buff();
 
     hunter_t* p = player -> cast_hunter();
 
@@ -1932,12 +1925,12 @@ struct ranged_t : public hunter_attack_t
 
 // Auto Shot ================================================================
 
-struct auto_shot_t : public hunter_attack_t
+struct auto_shot_t : public hunter_ranged_attack_t
 {
-  auto_shot_t( player_t* player, const std::string& /* options_str */ ) :
-    hunter_attack_t( "auto_shot", player )
+  auto_shot_t( hunter_t* p, const std::string& options_str ) :
+    hunter_ranged_attack_t( "auto_shot", p )
   {
-    hunter_t* p = player -> cast_hunter();
+    parse_options( NULL, options_str );
 
     p -> ranged_attack = new ranged_t( player );
 
@@ -1965,25 +1958,23 @@ struct auto_shot_t : public hunter_attack_t
     h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party       -> value(),
                                  sim -> auras.improved_icy_talons -> value() ) );
 
-    return hunter_attack_t::execute_time() * h;
+    return hunter_ranged_attack_t::execute_time() * h;
   }
 };
 
 // Aimed Shot ===============================================================
 
-struct aimed_shot_t : public hunter_attack_t
+struct aimed_shot_t : public hunter_ranged_attack_t
 {
 
   // Aimed Shot - Master Marksman ===========================================
 
-  struct aimed_shot_mm_t : public hunter_attack_t
+  struct aimed_shot_mm_t : public hunter_ranged_attack_t
   {
-    aimed_shot_mm_t( player_t* player, const std::string& options_str=std::string() ) :
-      hunter_attack_t( "aimed_shot_mm", player, 82928 )
+    aimed_shot_mm_t( hunter_t* p ) :
+      hunter_ranged_attack_t( "aimed_shot_mm", p, 82928 )
     {
-      hunter_t* p = player -> cast_hunter();
       check_spec ( TREE_MARKSMANSHIP );
-      if ( ! options_str.empty() ) parse_options( NULL, options_str );
 
       // Don't know why these values aren't 0 in the database.
       base_execute_time = timespan_t::zero;
@@ -2006,7 +1997,7 @@ struct aimed_shot_t : public hunter_attack_t
     {
       hunter_t* p = player -> cast_hunter();
 
-      hunter_attack_t::target_debuff( t, dt );
+      hunter_ranged_attack_t::target_debuff( t, dt );
 
       if ( p -> talents.careful_aim -> rank() && t-> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
       {
@@ -2018,7 +2009,7 @@ struct aimed_shot_t : public hunter_attack_t
     {
       hunter_t* p = player -> cast_hunter();
 
-      hunter_attack_t::execute();
+      hunter_ranged_attack_t::execute();
 
       if ( result == RESULT_CRIT )
       {
@@ -2033,7 +2024,7 @@ struct aimed_shot_t : public hunter_attack_t
 
     virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
     {
-      hunter_attack_t::impact( t, impact_result, travel_dmg );
+      hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
       if ( impact_result == RESULT_CRIT )
         trigger_piercing_shots( this, travel_dmg );
@@ -2044,7 +2035,7 @@ struct aimed_shot_t : public hunter_attack_t
   int casted;
 
   aimed_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "aimed_shot", player, "Aimed Shot" ), as_mm( 0 )
+    hunter_ranged_attack_t( "aimed_shot", player, "Aimed Shot" ), as_mm( 0 )
   {
     hunter_t* p = player -> cast_hunter();
     check_spec ( TREE_MARKSMANSHIP );
@@ -2075,7 +2066,7 @@ struct aimed_shot_t : public hunter_attack_t
     if ( p -> buffs_master_marksman_fire -> check() )
       return 0;
 
-    return hunter_attack_t::cost();
+    return hunter_ranged_attack_t::cost();
   }
 
   virtual timespan_t execute_time() const
@@ -2085,14 +2076,14 @@ struct aimed_shot_t : public hunter_attack_t
     if ( p -> buffs_master_marksman_fire -> check() )
       return timespan_t::zero;
 
-    return hunter_attack_t::execute_time();
+    return hunter_ranged_attack_t::execute_time();
   }
 
   virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
     hunter_t* p = player -> cast_hunter();
 
-    hunter_attack_t::target_debuff( t, dt );
+    hunter_ranged_attack_t::target_debuff( t, dt );
 
     if ( p -> talents.careful_aim -> rank() && t -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
     {
@@ -2104,7 +2095,7 @@ struct aimed_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    hunter_attack_t::schedule_execute();
+    hunter_ranged_attack_t::schedule_execute();
 
     if ( time_to_execute > timespan_t::zero )
     {
@@ -2127,7 +2118,7 @@ struct aimed_shot_t : public hunter_attack_t
     }
     else
     {
-      hunter_attack_t::execute();
+      hunter_ranged_attack_t::execute();
       if ( result == RESULT_CRIT )
       {
         if ( p -> active_pet )
@@ -2139,7 +2130,7 @@ struct aimed_shot_t : public hunter_attack_t
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
-    hunter_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( impact_result == RESULT_CRIT )
       trigger_piercing_shots( this, travel_dmg );
@@ -2148,10 +2139,10 @@ struct aimed_shot_t : public hunter_attack_t
 
 // Arcane Shot Attack =======================================================
 
-struct arcane_shot_t : public hunter_attack_t
+struct arcane_shot_t : public hunter_ranged_attack_t
 {
   arcane_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "arcane_shot", player, "Arcane Shot" )
+    hunter_ranged_attack_t( "arcane_shot", player, "Arcane Shot" )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2169,7 +2160,7 @@ struct arcane_shot_t : public hunter_attack_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     hunter_t* p = player -> cast_hunter();
 
@@ -2192,10 +2183,10 @@ struct arcane_shot_t : public hunter_attack_t
 
 // Flaming Arrow Attack =====================================================
 
-struct flaming_arrow_t : public hunter_attack_t
+struct flaming_arrow_t : public hunter_ranged_attack_t
 {
   flaming_arrow_t( player_t* player ) :
-    hunter_attack_t( "flaming_arrow", player, 99058 )
+    hunter_ranged_attack_t( "flaming_arrow", player, 99058 )
   {
     background = true;
     repeating = false;
@@ -2209,10 +2200,10 @@ struct flaming_arrow_t : public hunter_attack_t
 
 // Black Arrow ==============================================================
 
-struct black_arrow_t : public hunter_attack_t
+struct black_arrow_t : public hunter_ranged_attack_t
 {
   black_arrow_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "black_arrow", player, "Black Arrow" )
+    hunter_ranged_attack_t( "black_arrow", player, "Black Arrow" )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2247,12 +2238,12 @@ struct black_arrow_t : public hunter_attack_t
       p -> procs_black_arrow_focus_starved -> occur();
     }
 
-    return hunter_attack_t::ready();
+    return hunter_ranged_attack_t::ready();
   }
 
   virtual void tick( dot_t* d )
   {
-    hunter_attack_t::tick( d );
+    hunter_ranged_attack_t::tick( d );
 
     hunter_t* p = player -> cast_hunter();
 
@@ -2265,7 +2256,7 @@ struct black_arrow_t : public hunter_attack_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     trigger_thrill_of_the_hunt( this );
   }
@@ -2273,10 +2264,10 @@ struct black_arrow_t : public hunter_attack_t
 
 // Explosive Trap ===========================================================
 
-struct explosive_trap_effect_t : public hunter_attack_t
+struct explosive_trap_effect_t : public hunter_ranged_attack_t
 {
   explosive_trap_effect_t( hunter_t* player )
-    : hunter_attack_t( "explosive_trap", player, 13812 )
+    : hunter_ranged_attack_t( "explosive_trap", player, 13812 )
   {
     hunter_t* p = player -> cast_hunter();
     aoe = -1;
@@ -2292,7 +2283,7 @@ struct explosive_trap_effect_t : public hunter_attack_t
 
   virtual void tick( dot_t* d )
   {
-    hunter_attack_t::tick( d );
+    hunter_ranged_attack_t::tick( d );
 
     hunter_t* p = player -> cast_hunter();
 
@@ -2304,13 +2295,13 @@ struct explosive_trap_effect_t : public hunter_attack_t
   }
 };
 
-struct explosive_trap_t : public hunter_attack_t
+struct explosive_trap_t : public hunter_ranged_attack_t
 {
   attack_t* trap_effect;
   int trap_launcher;
 
   explosive_trap_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "explosive_trap", player, 13813 ), trap_effect( 0 ),
+    hunter_ranged_attack_t( "explosive_trap", player, 13813 ), trap_effect( 0 ),
     trap_launcher( 0 )
   {
     hunter_t* p = player -> cast_hunter();
@@ -2336,7 +2327,7 @@ struct explosive_trap_t : public hunter_attack_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     trap_effect -> execute();
   }
@@ -2348,16 +2339,16 @@ struct explosive_trap_t : public hunter_attack_t
     if ( trap_launcher )
       return 20.0 + p -> glyphs.trap_launcher -> effect1().resource( RESOURCE_FOCUS );
 
-    return hunter_attack_t::cost();
+    return hunter_ranged_attack_t::cost();
   }
 };
 
 // Chimera Shot =============================================================
 
-struct chimera_shot_t : public hunter_attack_t
+struct chimera_shot_t : public hunter_ranged_attack_t
 {
   chimera_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "chimera_shot", player, "Chimera Shot" )
+    hunter_ranged_attack_t( "chimera_shot", player, "Chimera Shot" )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2380,7 +2371,7 @@ struct chimera_shot_t : public hunter_attack_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -2391,7 +2382,7 @@ struct chimera_shot_t : public hunter_attack_t
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
-    hunter_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( impact_result == RESULT_CRIT )
       trigger_piercing_shots( this, travel_dmg );
@@ -2400,12 +2391,12 @@ struct chimera_shot_t : public hunter_attack_t
 
 // Cobra Shot Attack ========================================================
 
-struct cobra_shot_t : public hunter_attack_t
+struct cobra_shot_t : public hunter_ranged_attack_t
 {
   double focus_gain;
 
   cobra_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "cobra_shot", player, "Cobra Shot" )
+    hunter_ranged_attack_t( "cobra_shot", player, "Cobra Shot" )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2433,7 +2424,7 @@ struct cobra_shot_t : public hunter_attack_t
 
   void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -2454,14 +2445,14 @@ struct cobra_shot_t : public hunter_attack_t
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
-    hunter_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
   }
 
   void player_buff()
   {
     hunter_t* p = player -> cast_hunter();
 
-    hunter_attack_t::player_buff();
+    hunter_ranged_attack_t::player_buff();
 
     if ( p -> talents.careful_aim -> rank() && target -> health_percentage() > p -> talents.careful_aim -> effect2().base_value() )
     {
@@ -2475,7 +2466,7 @@ struct cobra_shot_t : public hunter_attack_t
 
 // Explosive Shot ===========================================================
 
-struct explosive_shot_t : public hunter_attack_t
+struct explosive_shot_t : public hunter_ranged_attack_t
 {
   int lock_and_load;
   int non_consecutive;
@@ -2483,7 +2474,7 @@ struct explosive_shot_t : public hunter_attack_t
   double base_td_min; double base_td_max;
 
   explosive_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "explosive_shot", player, "Explosive Shot" ),
+    hunter_ranged_attack_t( "explosive_shot", player, "Explosive Shot" ),
     lock_and_load( 0 ), non_consecutive( 0 ),
     base_td_min( 0 ), base_td_max( 0 )
   {
@@ -2523,7 +2514,7 @@ struct explosive_shot_t : public hunter_attack_t
     if ( p -> buffs_lock_and_load -> check() )
       return 0;
 
-    return hunter_attack_t::cost();
+    return hunter_ranged_attack_t::cost();
   }
 
   virtual bool ready()
@@ -2542,7 +2533,7 @@ struct explosive_shot_t : public hunter_attack_t
         return false;
     }
 
-    return hunter_attack_t::ready();
+    return hunter_ranged_attack_t::ready();
   }
 
   virtual void update_ready()
@@ -2551,13 +2542,13 @@ struct explosive_shot_t : public hunter_attack_t
 
     cooldown -> duration = ( p -> buffs_lock_and_load -> check() ? timespan_t::zero : spell_id_t::cooldown() );
 
-    hunter_attack_t::update_ready();
+    hunter_ranged_attack_t::update_ready();
   }
 
   virtual void execute()
   {
     base_td = sim -> range( base_td_min, base_td_max );
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     hunter_t* p = player -> cast_hunter();
 
@@ -2573,13 +2564,13 @@ struct explosive_shot_t : public hunter_attack_t
 
 // Kill Shot ================================================================
 
-struct kill_shot_t : public hunter_attack_t
+struct kill_shot_t : public hunter_ranged_attack_t
 {
 
   cooldown_t* cooldowns_glyph_kill_shot;
 
   kill_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "kill_shot", player, "Kill Shot" ),
+    hunter_ranged_attack_t( "kill_shot", player, "Kill Shot" ),
     cooldowns_glyph_kill_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
@@ -2606,7 +2597,7 @@ struct kill_shot_t : public hunter_attack_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     if ( cooldowns_glyph_kill_shot && cooldowns_glyph_kill_shot -> remains() == timespan_t::zero )
     {
@@ -2620,16 +2611,16 @@ struct kill_shot_t : public hunter_attack_t
     if ( target -> health_percentage() > 20 )
       return false;
 
-    return hunter_attack_t::ready();
+    return hunter_ranged_attack_t::ready();
   }
 };
 
 // Scatter Shot Attack ======================================================
 
-struct scatter_shot_t : public hunter_attack_t
+struct scatter_shot_t : public hunter_ranged_attack_t
 {
   scatter_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "scatter_shot", player, "Scatter Shot" )
+    hunter_ranged_attack_t( "scatter_shot", player, "Scatter Shot" )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2644,22 +2635,22 @@ struct scatter_shot_t : public hunter_attack_t
 
 // Serpent Sting Attack =====================================================
 
-struct serpent_sting_burst_t : public hunter_attack_t
+struct serpent_sting_burst_t : public hunter_ranged_attack_t
 {
   serpent_sting_burst_t( player_t* player ) :
-    hunter_attack_t( "serpent_sting_burst", player, SCHOOL_NATURE, TREE_MARKSMANSHIP )
+    hunter_ranged_attack_t( "serpent_sting_burst", player, SCHOOL_NATURE, TREE_MARKSMANSHIP )
   {
     proc       = true;
     background = true;
   }
 };
 
-struct serpent_sting_t : public hunter_attack_t
+struct serpent_sting_t : public hunter_ranged_attack_t
 {
   serpent_sting_burst_t* serpent_sting_burst;
 
   serpent_sting_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "serpent_sting", player, "Serpent Sting" )
+    hunter_ranged_attack_t( "serpent_sting", player, "Serpent Sting" )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2682,7 +2673,7 @@ struct serpent_sting_t : public hunter_attack_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     hunter_t* p = player -> cast_hunter();
 
@@ -2699,7 +2690,7 @@ struct serpent_sting_t : public hunter_attack_t
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
-    hunter_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( result_is_hit( impact_result ) )
       t -> debuffs.poisoned -> increment();
@@ -2707,7 +2698,7 @@ struct serpent_sting_t : public hunter_attack_t
 
   virtual void last_tick( dot_t* d )
   {
-    hunter_attack_t::last_tick( d );
+    hunter_ranged_attack_t::last_tick( d );
 
     // FIXME: change to dot target once they are on the target
     target -> debuffs.poisoned -> decrement();
@@ -2729,7 +2720,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     hunter_t* p = player -> cast_hunter();
 
@@ -2746,7 +2737,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
-    hunter_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( result_is_hit( impact_result ) )
       t -> debuffs.poisoned -> increment();
@@ -2755,12 +2746,12 @@ struct serpent_sting_spread_t : public serpent_sting_t
 
 // Multi Shot Attack ========================================================
 
-struct multi_shot_t : public hunter_attack_t
+struct multi_shot_t : public hunter_ranged_attack_t
 {
   serpent_sting_spread_t* spread_sting;
 
   multi_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "multi_shot", player, "Multi-Shot" ), spread_sting( 0 )
+    hunter_ranged_attack_t( "multi_shot", player, "Multi-Shot" ), spread_sting( 0 )
   {
     hunter_t* p = player -> cast_hunter();
     assert( p -> ranged_weapon.type != WEAPON_NONE );
@@ -2780,7 +2771,7 @@ struct multi_shot_t : public hunter_attack_t
     hunter_t* p = player -> cast_hunter();
     //target_t* q = t -> cast_target();
 
-    hunter_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
     int crit_occurred = 0;
 
     if ( result_is_hit( impact_result ) )
@@ -2809,16 +2800,16 @@ struct multi_shot_t : public hunter_attack_t
     if ( p -> buffs_bombardment -> check() )
       return base_costs[ current_resource() ] * ( 1 + p -> buffs_bombardment -> effect1().percent() );
 
-    return hunter_attack_t::cost();
+    return hunter_ranged_attack_t::cost();
   }
 };
 
 // Silencing Shot Attack ====================================================
 
-struct silencing_shot_t : public hunter_attack_t
+struct silencing_shot_t : public hunter_ranged_attack_t
 {
   silencing_shot_t( player_t* player, const std::string& /* options_str */ ) :
-    hunter_attack_t( "silencing_shot", player, "Silencing Shot" )
+    hunter_ranged_attack_t( "silencing_shot", player, "Silencing Shot" )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2836,12 +2827,12 @@ struct silencing_shot_t : public hunter_attack_t
 
 // Steady Shot Attack =======================================================
 
-struct steady_shot_t : public hunter_attack_t
+struct steady_shot_t : public hunter_ranged_attack_t
 {
   double focus_gain;
 
   steady_shot_t( player_t* player, const std::string& options_str ) :
-    hunter_attack_t( "steady_shot", player, "Steady Shot" )
+    hunter_ranged_attack_t( "steady_shot", player, "Steady Shot" )
   {
     hunter_t* p = player -> cast_hunter();
     parse_options( NULL, options_str );
@@ -2869,7 +2860,7 @@ struct steady_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    hunter_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( result_is_hit( impact_result ) && ! p -> buffs_master_marksman_fire -> check() )
     {
@@ -2896,7 +2887,7 @@ struct steady_shot_t : public hunter_attack_t
 
   void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -2914,7 +2905,7 @@ struct steady_shot_t : public hunter_attack_t
   {
     hunter_t* p = player -> cast_hunter();
 
-    hunter_attack_t::player_buff();
+    hunter_ranged_attack_t::player_buff();
 
     player_multiplier *= 1.0 + p -> glyphs.steady_shot -> mod_additive( P_GENERIC );
 
@@ -2942,7 +2933,7 @@ struct wild_quiver_shot_t : public ranged_t
 
   virtual void execute()
   {
-    hunter_attack_t::execute();
+    hunter_ranged_attack_t::execute();
   }
 };
 

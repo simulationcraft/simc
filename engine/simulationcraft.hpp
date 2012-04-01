@@ -5702,7 +5702,6 @@ public:
   virtual double swing_haste() const;
   virtual timespan_t execute_time() const;
   virtual void   player_buff();
-  virtual void   target_debuff( player_t* t, dmg_type_e );
           int    build_table( std::array<double,RESULT_MAX>& chances,
                               std::array<result_type_e,RESULT_MAX>& results );
   virtual void   calculate_result();
@@ -5763,11 +5762,11 @@ private:
   void init_ranged_attack_t_();
 
 public:
-  ranged_attack_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=false );
+  ranged_attack_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=true );
   ranged_attack_t( const std::string& name=0, player_t* p=0, resource_type_e r=RESOURCE_NONE,
-            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special=false );
-  ranged_attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
-  ranged_attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
+            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special=true );
+  ranged_attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special=true );
+  ranged_attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special=true );
 
   // Ranged Attack Overrides
   virtual void   target_debuff( player_t* t, dmg_type_e );
