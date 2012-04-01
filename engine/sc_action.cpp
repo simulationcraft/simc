@@ -120,8 +120,6 @@ void action_t::init_action_t_()
   bloodlust_active               = 0;
   max_haste                      = 0.0;
   haste_gain_percentage          = 0.0;
-  min_current_time               = timespan_t::zero;
-  max_current_time               = timespan_t::zero;
   min_health_percentage          = 0.0;
   max_health_percentage          = 0.0;
   moving                         = -1;
@@ -419,6 +417,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 void action_t::parse_options( option_t*          options,
                               const std::string& options_str )
 {
+  // FIXME: remove deprecated options when all MoP class modules are finished
   option_t base_options[] =
   {
     { "bloodlust",              OPT_BOOL,   &bloodlust_active      },
@@ -434,9 +433,9 @@ void action_t::parse_options( option_t*          options,
     { "flying",                 OPT_BOOL,   &flying                },
     { "moving",                 OPT_BOOL,   &moving                },
     { "sync",                   OPT_STRING, &sync_str              },
-    { "time<",                  OPT_TIMESPAN, &max_current_time    },
-    { "time>",                  OPT_TIMESPAN, &min_current_time    },
-    { "travel_speed",           OPT_FLT,    &travel_speed          },
+    { "time<",                  OPT_DEPRECATED, (void* ) "if=time<=" },
+    { "time>",                  OPT_DEPRECATED, (void* ) "if=time>=" },
+    { "travel_speed",           OPT_DEPRECATED, (void* ) "if=travel_speed" },
     { "vulnerable",             OPT_BOOL,   &vulnerable            },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
     { "target",                 OPT_STRING, &target_str            },
@@ -1472,14 +1471,6 @@ bool action_t::ready()
 
   if ( if_expr && ! if_expr -> success() )
     return false;
-
-  if ( min_current_time > timespan_t::zero )
-    if ( sim -> current_time < min_current_time )
-      return false;
-
-  if ( max_current_time > timespan_t::zero )
-    if ( sim -> current_time > max_current_time )
-      return false;
 
   if ( max_haste > 0 )
     if ( ( ( 1.0 / haste() ) - 1.0 ) > max_haste )

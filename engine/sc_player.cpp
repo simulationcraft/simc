@@ -5904,10 +5904,11 @@ action_expr_t* player_t::create_expression( action_t* a,
        struct resource_pct_expr_t : public action_expr_t
        {
          int resource_type_e;
-         resource_pct_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
-         virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_e ] / action -> player -> resources.max[ resource_type_e ] * 100.0; return TOK_NUM; }
+         player_t* player;
+         resource_pct_expr_t( action_t* a, player_t* p, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ), player( p ) {}
+         virtual int evaluate() { result_num = player -> resources.current[ resource_type_e ] / player -> resources.max[ resource_type_e ] * 100.0; return TOK_NUM; }
        };
-       return new resource_pct_expr_t( a, name_str, resource_type_e );
+       return new resource_pct_expr_t( a, this, name_str, resource_type_e );
      }
 
      else if ( splits[ 1 ] == "max" )
