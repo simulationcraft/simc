@@ -15,38 +15,11 @@ void attack_t::init_attack_t_()
 {
   player_t* p = player;
 
-  may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
-
-  if ( special ) may_glance = false;
-
-  if ( p -> position == POSITION_BACK )
-  {
-    may_block = false;
-    may_parry = false;
-  }
-  else if ( p -> position == POSITION_RANGED_FRONT )
-  {
-    may_block  = true;
-    may_dodge  = false;
-    may_glance = false; // FIXME! If we decide to make ranged auto-shot become "special" this line goes away.
-    may_parry  = false;
-  }
-  else if ( p -> position == POSITION_RANGED_BACK )
-  {
-    may_block  = false;
-    may_dodge  = false;
-    may_glance = false; // FIXME! If we decide to make ranged auto-shot become "special" this line goes away.
-    may_parry  = false;
-  }
-
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
 
   min_gcd = timespan_t::from_seconds( 1.0 );
   hasted_ticks = false;
-
-  // Prevent melee from being scheduled when player is moving
-  if ( range < 0 ) range = 5;
 
   if ( p -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
        p -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
@@ -69,23 +42,20 @@ attack_t::attack_t( const spell_id_t& s, talent_tree_type_e t, bool special ) :
 
 attack_t::attack_t( const std::string& n, player_t* p, resource_type_e resource,
                     school_type_e school, talent_tree_type_e tree, bool special ) :
-  action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+  action_t( ACTION_ATTACK, n, p, resource, school, tree, special )
 {
   init_attack_t_();
 }
 
 attack_t::attack_t( const std::string& n, const char* sname, player_t* p,
                     talent_tree_type_e t, bool special ) :
-  action_t( ACTION_ATTACK, n, sname, p, t, special ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+  action_t( ACTION_ATTACK, n, sname, p, t, special )
 {
   init_attack_t_();
 }
 
 attack_t::attack_t( const std::string& n, const uint32_t id, player_t* p, talent_tree_type_e t, bool special ) :
-  action_t( ACTION_ATTACK, n, id, p, t, special ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+  action_t( ACTION_ATTACK, n, id, p, t, special )
 {
   init_attack_t_();
 }
@@ -108,7 +78,8 @@ double attack_t::haste() const
 
 timespan_t attack_t::execute_time() const
 {
-  if ( base_execute_time == timespan_t::zero ) return timespan_t::zero;
+  if ( base_execute_time == timespan_t::zero )
+    return timespan_t::zero;
 
   if ( ! harmful && ! player -> in_combat )
     return timespan_t::zero;
@@ -123,15 +94,15 @@ void attack_t::player_buff()
 {
   action_t::player_buff();
 
-  player_t* p = player;
-
-  player_hit       = p -> composite_attack_hit();
-  player_expertise = p -> composite_attack_expertise( weapon );
-  player_crit      = p -> composite_attack_crit( weapon );
+  if ( !no_buffs )
+  {
+    player_hit       += player -> composite_attack_hit();
+    player_crit      += player -> composite_attack_crit( weapon );
+  }
 
   if ( sim -> debug )
-    log_t::output( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
-                   name(), player_hit, player_expertise, player_crit );
+    log_t::output( sim, "attack_t::player_buff: %s hit=%.2f crit=%.2f",
+                   name(), player_hit, player_crit );
 }
 
 // attack_t::target_debuff ==================================================
@@ -139,34 +110,6 @@ void attack_t::player_buff()
 void attack_t::target_debuff( player_t* t, dmg_type_e dt )
 {
   action_t::target_debuff( t, dt );
-
-  target_expertise = 0;
-
-  if ( ! no_debuffs )
-  {
-    if ( ! ( school == SCHOOL_PHYSICAL ||
-         school == SCHOOL_BLEED )    )
-    {
-      target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
-                                   std::max( t -> debuffs.earth_and_moon     -> value(),
-                                   std::max( t -> debuffs.ebon_plaguebringer -> value(),
-                                             t -> debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
-
-    }
-  }
-}
-
-// attack_t::total_expertise ================================================
-
-double attack_t::total_expertise() const
-{
-  double e = base_expertise + player_expertise + target_expertise;
-
-  // Round down to dicrete units of Expertise?  Not according to EJ:
-  // http://elitistjerks.com/f78/t38095-retesting_hit_table_assumptions/p3/#post1092985
-  if ( false ) e = floor( 100.0 * e ) / 100.0;
-
-  return e;
 }
 
 // attack_t::miss_chance ====================================================
@@ -193,43 +136,6 @@ double attack_t::miss_chance( int delta_level ) const
     else
       return 0.05 + delta_level * 0.01;
   }
-}
-
-// attack_t::dodge_chance ===================================================
-
-double attack_t::dodge_chance( int delta_level ) const
-{
-  return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
-}
-
-// attack_t::parry_chance ===================================================
-
-double attack_t::parry_chance( int delta_level ) const
-{
-  // Tested on 03.03.2011 with a data set for delta_level = 5 which gave 22%
-  if ( delta_level > 2 )
-    return 0.10 + ( delta_level - 2 ) * 0.04 - 0.25 * total_expertise();
-  else
-    return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
-}
-
-// attack_t::glance_chance ==================================================
-
-double attack_t::glance_chance( int delta_level ) const
-{
-  return (  delta_level  + 1 ) * 0.06;
-}
-
-// attack_t::block_chance ===================================================
-
-double attack_t::block_chance( int /* delta_level */ ) const
-{
-  // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
-  // % is 5%, and not 5% + delta_level * 0.5%.
-  // Moved 5% to target_t::composite_tank_block
-
-  // FIXME: Test Target -> Player
-  return 0;
 }
 
 // attack_t::crit_block_chance ==============================================
@@ -387,7 +293,7 @@ void attack_t::calculate_result()
 
   if ( num_results == 1 )
   {
-    result = static_cast<result_type_e>( results[ 0 ] );
+    result = results[ 0 ];
   }
   else
   {
@@ -399,7 +305,7 @@ void attack_t::calculate_result()
     {
       if ( random <= chances[ i ] )
       {
-        result = static_cast<result_type_e>( results[ i ] );
+        result = results[ i ];
         break;
       }
     }
@@ -427,13 +333,6 @@ void attack_t::calculate_result()
   if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
-// attack_t::execute ========================================================
-
-void attack_t::execute()
-{
-  action_t::execute();
-}
-
 void attack_t::init()
 {
   action_t::init();
@@ -445,3 +344,193 @@ void attack_t::init()
   if ( may_dodge || may_parry )
     snapshot_flags |= STATE_EXPERTISE;
 }
+
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
+#include "simulationcraft.hpp"
+
+// ==========================================================================
+// Attack
+// ==========================================================================
+
+// attack_t::attack_t =======================================================
+
+void melee_attack_t::init_melee_attack_t_()
+{
+  player_t* p = player;
+
+  may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
+
+  if ( special )
+    may_glance = false;
+
+  if ( p -> position == POSITION_BACK )
+  {
+    may_block = false;
+    may_parry = false;
+  }
+
+  // Prevent melee from being scheduled when player is moving
+  if ( range < 0 ) range = 5;
+}
+
+melee_attack_t::melee_attack_t( const spell_id_t& s, talent_tree_type_e t, bool special ) :
+  attack_t( s, t, special )
+{
+  init_melee_attack_t_();
+}
+
+melee_attack_t::melee_attack_t( const std::string& n, player_t* p, resource_type_e resource,
+                    school_type_e school, talent_tree_type_e tree, bool special ) :
+  attack_t( n, p, resource, school, tree, special ),
+  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+{
+  init_melee_attack_t_();
+}
+
+melee_attack_t::melee_attack_t( const std::string& n, const char* sname, player_t* p,
+                    talent_tree_type_e t, bool special ) :
+  attack_t( n, sname, p, t, special ),
+  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+{
+  init_melee_attack_t_();
+}
+
+melee_attack_t::melee_attack_t( const std::string& n, const uint32_t id, player_t* p, talent_tree_type_e t, bool special ) :
+  attack_t( n, id, p, t, special ),
+  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+{
+  init_melee_attack_t_();
+}
+
+// melee_attack_t::player_buff ====================================================
+
+void melee_attack_t::player_buff()
+{
+  attack_t::player_buff();
+
+  if ( !no_buffs )
+  {
+    player_expertise = player -> composite_attack_expertise( weapon );
+  }
+
+  if ( sim -> debug )
+    log_t::output( sim, "melee_attack_t::player_buff: %s expertise=%.2f",
+                   name(), player_expertise );
+}
+
+// melee_attack_t::target_debuff ==================================================
+
+void melee_attack_t::target_debuff( player_t* t, dmg_type_e dt )
+{
+  attack_t::target_debuff( t, dt );
+
+  target_expertise = 0;
+}
+
+// melee_attack_t::total_expertise ================================================
+
+double melee_attack_t::total_expertise() const
+{
+  double e = base_expertise + player_expertise + target_expertise;
+
+  // FIXME
+  // Round down to dicrete units of Expertise?  Not according to EJ:
+  // http://elitistjerks.com/f78/t38095-retesting_hit_table_assumptions/p3/#post1092985
+  if ( false ) e = floor( 100.0 * e ) / 100.0;
+
+  return e;
+}
+
+// melee_attack_t::dodge_chance ===================================================
+
+double melee_attack_t::dodge_chance( int delta_level ) const
+{
+  return 0.05 + ( delta_level * 0.005 ) - ( 0.25 * total_expertise() );
+}
+
+// melee_attack_t::parry_chance ===================================================
+
+double melee_attack_t::parry_chance( int delta_level ) const
+{
+  // Tested on 03.03.2011 with a data set for delta_level = 5 which gave 22%
+  if ( delta_level > 2 )
+    return 0.10 + ( delta_level - 2 ) * 0.04 - 0.25 * total_expertise();
+  else
+    return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
+}
+
+// melee_attack_t::glance_chance ==================================================
+
+double melee_attack_t::glance_chance( int delta_level ) const
+{
+  return (  delta_level  + 1 ) * 0.06;
+}
+
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+
+#include "simulationcraft.hpp"
+
+// ==========================================================================
+// Attack
+// ==========================================================================
+
+// ranged_attack_t::ranged_attack_t =======================================================
+
+void ranged_attack_t::init_ranged_attack_t_()
+{
+  player_t* p = player;
+
+  may_miss = true;
+  may_resist = true;
+
+  if ( p -> position == POSITION_RANGED_FRONT )
+    may_block = true;
+}
+
+ranged_attack_t::ranged_attack_t( const spell_id_t& s, talent_tree_type_e t, bool special ) :
+  attack_t( s, t, special )
+{
+  init_ranged_attack_t_();
+}
+
+ranged_attack_t::ranged_attack_t( const std::string& n, player_t* p, resource_type_e resource,
+                    school_type_e school, talent_tree_type_e tree, bool special ) :
+  attack_t( n, p, resource, school, tree, special )
+{
+  init_ranged_attack_t_();
+}
+
+ranged_attack_t::ranged_attack_t( const std::string& n, const char* sname, player_t* p,
+                    talent_tree_type_e t, bool special ) :
+  attack_t( n, sname, p, t, special )
+{
+  init_ranged_attack_t_();
+}
+
+ranged_attack_t::ranged_attack_t( const std::string& n, const uint32_t id, player_t* p, talent_tree_type_e t, bool special ) :
+  attack_t( n, id, p, t, special )
+{
+  init_ranged_attack_t_();
+}
+
+void ranged_attack_t::target_debuff( player_t* t, dmg_type_e dt )
+{
+  attack_t::target_debuff( t, dt );
+
+  if ( !no_debuffs )
+  {
+    target_multiplier       *= t -> composite_ranged_attack_player_vulnerability();
+  }
+
+  if ( sim -> debug )
+    log_t::output( sim, "ranged_attack_t::target_debuff: %s mult=%.2f",
+                   name(), target_multiplier );
+}
+

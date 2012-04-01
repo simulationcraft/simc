@@ -121,29 +121,29 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // Monk Abilities
 // ==========================================================================
 
-struct monk_attack_t : public attack_t
+struct monk_melee_attack_t : public melee_attack_t
 {
   int stancemask;
 
-  monk_attack_t( const char* n, uint32_t id, monk_t* p,
+  monk_melee_attack_t( const char* n, uint32_t id, monk_t* p,
                  talent_tree_type_e t=TREE_NONE, bool special = true ) :
-    attack_t( n, id, p, t, special ),
+    melee_attack_t( n, id, p, t, special ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
   {
-    _init_monk_attack_t();
+    _init_monk_melee_attack_t();
   }
 
-  monk_attack_t( const char* n, const char* s_name, monk_t* p ) :
-    attack_t( n, s_name, p, TREE_NONE, true ),
+  monk_melee_attack_t( const char* n, const char* s_name, monk_t* p ) :
+    melee_attack_t( n, s_name, p, TREE_NONE, true ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
   {
-    _init_monk_attack_t();
+    _init_monk_melee_attack_t();
   }
 
   monk_t* p() const
   { return static_cast<monk_t*>( player ); }
 
-  void _init_monk_attack_t()
+  void _init_monk_melee_attack_t()
   {
     may_crit   = true;
     may_glance = false;
@@ -210,11 +210,11 @@ struct monk_heal_t : public heal_t
   virtual bool   ready();
 };
 
-// monk_attack_t::ready ================================================
+// monk_melee_attack_t::ready ================================================
 
-bool monk_attack_t::ready()
+bool monk_melee_attack_t::ready()
 {
-  if ( ! attack_t::ready() )
+  if ( ! melee_attack_t::ready() )
     return false;
 
   // Attack available in current stance?
@@ -224,10 +224,10 @@ bool monk_attack_t::ready()
   return true;
 }
 
-struct jab_t : public monk_attack_t
+struct jab_t : public monk_melee_attack_t
 {
   jab_t( monk_t* p, const std::string& options_str ) :
-    monk_attack_t( "jab", "Jab", p )
+    monk_melee_attack_t( "jab", "Jab", p )
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
@@ -235,16 +235,16 @@ struct jab_t : public monk_attack_t
 
   virtual void execute()
   {
-    monk_attack_t::execute();
+    monk_melee_attack_t::execute();
 
     p() -> resource_gain( RESOURCE_CHI,  effectN( 2 ).base_value() , p() -> gains_chi );
   }
 };
 
-struct tiger_palm_t : public monk_attack_t
+struct tiger_palm_t : public monk_melee_attack_t
 {
   tiger_palm_t( monk_t* p, const std::string& options_str ) :
-    monk_attack_t( "tiger_palm", "Tiger Palm", p )
+    monk_melee_attack_t( "tiger_palm", "Tiger Palm", p )
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
@@ -252,7 +252,7 @@ struct tiger_palm_t : public monk_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
-    monk_attack_t::target_debuff( t, dt );
+    monk_melee_attack_t::target_debuff( t, dt );
 
     if ( t -> health_percentage() > 50.0 )
       target_dd_adder = 0;
@@ -262,19 +262,19 @@ struct tiger_palm_t : public monk_attack_t
   }
 };
 
-struct blackout_kick_t : public monk_attack_t
+struct blackout_kick_t : public monk_melee_attack_t
 {
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
-    monk_attack_t( "blackout_kick", "Blackout Kick", p )
+    monk_melee_attack_t( "blackout_kick", "Blackout Kick", p )
   {
     parse_options( 0, options_str );
   }
 };
 
-struct spinning_crane_kick_tick_t : public monk_attack_t
+struct spinning_crane_kick_tick_t : public monk_melee_attack_t
 {
   spinning_crane_kick_tick_t( monk_t* p ) :
-    monk_attack_t( "spinning_crane_kick_tick", 0u, p )
+    monk_melee_attack_t( "spinning_crane_kick_tick", 0u, p )
   {
     background  = true;
     dual        = true;
@@ -283,12 +283,12 @@ struct spinning_crane_kick_tick_t : public monk_attack_t
   }
 };
 
-struct spinning_crane_kick_t : public monk_attack_t
+struct spinning_crane_kick_t : public monk_melee_attack_t
 {
   spinning_crane_kick_tick_t* spinning_crane_kick_tick;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ) :
-    monk_attack_t( "spinning_crane_kick", "Spinning Crane Kick", p ),
+    monk_melee_attack_t( "spinning_crane_kick", "Spinning Crane Kick", p ),
     spinning_crane_kick_tick( 0 )
   {
     parse_options( 0, options_str );
@@ -305,7 +305,7 @@ struct spinning_crane_kick_t : public monk_attack_t
 
   virtual void init()
   {
-    monk_attack_t::init();
+    monk_melee_attack_t::init();
 
     spinning_crane_kick_tick -> stats = stats;
   }

@@ -124,7 +124,7 @@ void spell_t::execute()
     {
       action_callback_t::trigger( player -> harmful_spell_callbacks[ result ], this );
     }
-    if ( ! background ) // OnSpellCast
+    if ( ! background ) // OnHarmfulSpellCast
     {
       action_callback_t::trigger( player -> harmful_spell_callbacks[ RESULT_NONE ], this );
     }

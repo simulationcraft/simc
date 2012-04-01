@@ -621,23 +621,23 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  struct drw_attack_t : public attack_t
+  struct drw_melee_attack_t : public melee_attack_t
   {
-    drw_attack_t( const char* n, uint32_t id, dancing_rune_weapon_pet_t* p, bool special=false ) :
-      attack_t( n, id, p, TREE_NONE, special )
+    drw_melee_attack_t( const char* n, uint32_t id, dancing_rune_weapon_pet_t* p, bool special=false ) :
+      melee_attack_t( n, id, p, TREE_NONE, special )
     { }
 
-    drw_attack_t( const char* n, dancing_rune_weapon_pet_t* p, resource_type_e r=RESOURCE_NONE, school_type_e s=SCHOOL_PHYSICAL, talent_tree_type_e t=TREE_NONE, bool special = false ) :
-      attack_t( n, p, r, s, t, special )
+    drw_melee_attack_t( const char* n, dancing_rune_weapon_pet_t* p, resource_type_e r=RESOURCE_NONE, school_type_e s=SCHOOL_PHYSICAL, talent_tree_type_e t=TREE_NONE, bool special = false ) :
+      melee_attack_t( n, p, r, s, t, special )
     { }
 
     virtual bool ready() { return false; }
   };
 
-  struct drw_death_strike_t : public drw_attack_t
+  struct drw_death_strike_t : public drw_melee_attack_t
   {
     drw_death_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_attack_t( "death_strike", 49998, p, true )
+      drw_melee_attack_t( "death_strike", 49998, p, true )
     {
       death_knight_t* o = p -> owner -> cast_death_knight();
 
@@ -667,10 +667,10 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  struct drw_heart_strike_t : public drw_attack_t
+  struct drw_heart_strike_t : public drw_melee_attack_t
   {
     drw_heart_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_attack_t( "heart_strike", 55050, p )
+      drw_melee_attack_t( "heart_strike", 55050, p )
     {
       death_knight_t* o = p -> owner -> cast_death_knight();
 
@@ -684,7 +684,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     void target_debuff( player_t* t, dmg_type_e dtype )
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
-      drw_attack_t::target_debuff( t, dtype );
+      drw_melee_attack_t::target_debuff( t, dtype );
 
       target_multiplier *= 1 + p -> drw_diseases( t ) * effect3().percent();
     }
@@ -725,10 +725,10 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  struct drw_plague_strike_t : public drw_attack_t
+  struct drw_plague_strike_t : public drw_melee_attack_t
   {
     drw_plague_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_attack_t( "plague_strike", 45462, p, true )
+      drw_melee_attack_t( "plague_strike", 45462, p, true )
     {
       background       = true;
       trigger_gcd      = timespan_t::zero;
@@ -739,7 +739,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
 
-      drw_attack_t::execute();
+      drw_melee_attack_t::execute();
 
       if ( result_is_hit() )
       {
@@ -750,10 +750,10 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  struct drw_melee_t : public drw_attack_t
+  struct drw_melee_t : public drw_melee_attack_t
   {
     drw_melee_t( dancing_rune_weapon_pet_t* p ) :
-      drw_attack_t( "drw_melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+      drw_melee_attack_t( "drw_melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       weapon            = &( p -> owner -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -767,7 +767,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
     virtual bool ready()
     {
-      return attack_t::ready();
+      return melee_attack_t::ready();
     }
   };
 
@@ -775,13 +775,13 @@ struct dancing_rune_weapon_pet_t : public pet_t
   spell_t*  drw_blood_boil;
   spell_t*  drw_blood_plague;
   spell_t*  drw_death_coil;
-  attack_t* drw_death_strike;
+  melee_attack_t* drw_death_strike;
   spell_t*  drw_frost_fever;
-  attack_t* drw_heart_strike;
+  melee_attack_t* drw_heart_strike;
   spell_t*  drw_icy_touch;
   spell_t*  drw_pestilence;
-  attack_t* drw_plague_strike;
-  attack_t* drw_melee;
+  melee_attack_t* drw_plague_strike;
+  melee_attack_t* drw_melee;
 
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "dancing_rune_weapon", true ),
@@ -863,32 +863,32 @@ struct army_ghoul_pet_t : public pet_t
     action_list_str = "snapshot_stats/auto_attack/claw";
   }
 
-  struct army_ghoul_pet_attack_t : public attack_t
+  struct army_ghoul_pet_melee_attack_t : public melee_attack_t
   {
-    void _init_army_ghoul_pet_attack_t()
+    void _init_army_ghoul_pet_melee_attack_t()
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
       base_multiplier *= 8.0; // 8 ghouls
     }
 
-    army_ghoul_pet_attack_t( const char* n, army_ghoul_pet_t* p, const resource_type_e r=RESOURCE_ENERGY, bool special=true ) :
-      attack_t( n, p, r, SCHOOL_PHYSICAL, TREE_NONE, special )
+    army_ghoul_pet_melee_attack_t( const char* n, army_ghoul_pet_t* p, const resource_type_e r=RESOURCE_ENERGY, bool special=true ) :
+      melee_attack_t( n, p, r, SCHOOL_PHYSICAL, TREE_NONE, special )
     {
-      _init_army_ghoul_pet_attack_t();
+      _init_army_ghoul_pet_melee_attack_t();
     }
 
-    army_ghoul_pet_attack_t( const char* n, uint32_t id, army_ghoul_pet_t* p, bool special=true ) :
-      attack_t( n, id, p, TREE_NONE, special )
+    army_ghoul_pet_melee_attack_t( const char* n, uint32_t id, army_ghoul_pet_t* p, bool special=true ) :
+      melee_attack_t( n, id, p, TREE_NONE, special )
     {
-      _init_army_ghoul_pet_attack_t();
+      _init_army_ghoul_pet_melee_attack_t();
     }
   };
 
-  struct army_ghoul_pet_melee_t : public army_ghoul_pet_attack_t
+  struct army_ghoul_pet_melee_t : public army_ghoul_pet_melee_attack_t
   {
     army_ghoul_pet_melee_t( army_ghoul_pet_t* p ) :
-      army_ghoul_pet_attack_t( "melee", p, RESOURCE_NONE, false )
+      army_ghoul_pet_melee_attack_t( "melee", p, RESOURCE_NONE, false )
     {
       base_execute_time = weapon -> swing_time;
       background        = true;
@@ -897,10 +897,10 @@ struct army_ghoul_pet_t : public pet_t
     }
   };
 
-  struct army_ghoul_pet_auto_attack_t : public army_ghoul_pet_attack_t
+  struct army_ghoul_pet_auto_melee_attack_t : public army_ghoul_pet_melee_attack_t
   {
-    army_ghoul_pet_auto_attack_t( army_ghoul_pet_t* p ) :
-      army_ghoul_pet_attack_t( "auto_attack", p )
+    army_ghoul_pet_auto_melee_attack_t( army_ghoul_pet_t* p ) :
+      army_ghoul_pet_melee_attack_t( "auto_attack", p )
     {
       weapon = &( p -> main_hand_weapon );
       p -> main_hand_attack = new army_ghoul_pet_melee_t( p );
@@ -920,10 +920,10 @@ struct army_ghoul_pet_t : public pet_t
     }
   };
 
-  struct army_ghoul_pet_claw_t : public army_ghoul_pet_attack_t
+  struct army_ghoul_pet_claw_t : public army_ghoul_pet_melee_attack_t
   {
     army_ghoul_pet_claw_t( army_ghoul_pet_t* p ) :
-      army_ghoul_pet_attack_t( "claw", 91776, p )
+      army_ghoul_pet_melee_attack_t( "claw", 91776, p )
     {
       weapon_power_mod  = 0.0055 / weapon -> swing_time.total_seconds(); // FIXME: Needs further testing
     }
@@ -996,7 +996,7 @@ struct army_ghoul_pet_t : public pet_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
-    if ( name == "auto_attack"    ) return new  army_ghoul_pet_auto_attack_t( this );
+    if ( name == "auto_attack"    ) return new  army_ghoul_pet_auto_melee_attack_t( this );
     if ( name == "claw"           ) return new         army_ghoul_pet_claw_t( this );
 
     return pet_t::create_action( name, options_str );
@@ -1022,10 +1022,10 @@ struct army_ghoul_pet_t : public pet_t
 struct bloodworms_pet_t : public pet_t
 {
   // FIXME: Level 80/85 values
-  struct melee_t : public attack_t
+  struct melee_t : public melee_attack_t
   {
     melee_t( player_t* player ) :
-      attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+      melee_attack_t( "bloodworm_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -1180,17 +1180,17 @@ struct ghoul_pet_t : public pet_t
     action_list_str = "auto_attack/sweeping_claws/claw";
   }
 
-  struct ghoul_pet_attack_t : public attack_t
+  struct ghoul_pet_melee_attack_t : public melee_attack_t
   {
-    ghoul_pet_attack_t( const char* n, ghoul_pet_t* p, const resource_type_e r=RESOURCE_ENERGY, bool special=true ) :
-      attack_t( n, p, r, SCHOOL_PHYSICAL, TREE_NONE, special )
+    ghoul_pet_melee_attack_t( const char* n, ghoul_pet_t* p, const resource_type_e r=RESOURCE_ENERGY, bool special=true ) :
+      melee_attack_t( n, p, r, SCHOOL_PHYSICAL, TREE_NONE, special )
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
     }
 
-    ghoul_pet_attack_t( const char* n, uint32_t id, ghoul_pet_t* p, bool special=true ) :
-      attack_t( n, id, p, TREE_NONE, special )
+    ghoul_pet_melee_attack_t( const char* n, uint32_t id, ghoul_pet_t* p, bool special=true ) :
+      melee_attack_t( n, id, p, TREE_NONE, special )
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
@@ -1198,7 +1198,7 @@ struct ghoul_pet_t : public pet_t
 
     virtual void player_buff()
     {
-      attack_t::player_buff();
+      melee_attack_t::player_buff();
 
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
@@ -1213,10 +1213,10 @@ struct ghoul_pet_t : public pet_t
     }
   };
 
-  struct ghoul_pet_melee_t : public ghoul_pet_attack_t
+  struct ghoul_pet_melee_t : public ghoul_pet_melee_attack_t
   {
     ghoul_pet_melee_t( ghoul_pet_t* p ) :
-      ghoul_pet_attack_t( "melee", p, RESOURCE_NONE, false )
+      ghoul_pet_melee_attack_t( "melee", p, RESOURCE_NONE, false )
     {
       base_execute_time = weapon -> swing_time;
       background        = true;
@@ -1225,10 +1225,10 @@ struct ghoul_pet_t : public pet_t
     }
   };
 
-  struct ghoul_pet_auto_attack_t : public ghoul_pet_attack_t
+  struct ghoul_pet_auto_melee_attack_t : public ghoul_pet_melee_attack_t
   {
-    ghoul_pet_auto_attack_t( ghoul_pet_t* p ) :
-      ghoul_pet_attack_t( "auto_attack", p )
+    ghoul_pet_auto_melee_attack_t( ghoul_pet_t* p ) :
+      ghoul_pet_melee_attack_t( "auto_attack", p )
     {
       weapon = &( p -> main_hand_weapon );
       p -> main_hand_attack = new ghoul_pet_melee_t( p );
@@ -1248,19 +1248,19 @@ struct ghoul_pet_t : public pet_t
     }
   };
 
-  struct ghoul_pet_claw_t : public ghoul_pet_attack_t
+  struct ghoul_pet_claw_t : public ghoul_pet_melee_attack_t
   {
     ghoul_pet_claw_t( ghoul_pet_t* p ) :
-      ghoul_pet_attack_t( "claw", 91776, p )
+      ghoul_pet_melee_attack_t( "claw", 91776, p )
     {
       weapon_power_mod = 0.120 / weapon -> swing_time.total_seconds(); // should be exact as of 4.2
     }
   };
 
-  struct ghoul_pet_sweeping_claws_t : public ghoul_pet_attack_t
+  struct ghoul_pet_sweeping_claws_t : public ghoul_pet_melee_attack_t
   {
     ghoul_pet_sweeping_claws_t( ghoul_pet_t* p ) :
-      ghoul_pet_attack_t( "sweeping_claws", 91778, p )
+      ghoul_pet_melee_attack_t( "sweeping_claws", 91778, p )
     {
       aoe = 2;
       weapon_power_mod = 0.120 / weapon -> swing_time.total_seconds(); // Copied from claw, but seems Ok
@@ -1273,7 +1273,7 @@ struct ghoul_pet_t : public pet_t
       if ( ! o -> buffs_dark_transformation -> check() )
         return false;
 
-      return ghoul_pet_attack_t::ready();
+      return ghoul_pet_melee_attack_t::ready();
     }
   };
 
@@ -1425,7 +1425,7 @@ struct ghoul_pet_t : public pet_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
-    if ( name == "auto_attack"    ) return new    ghoul_pet_auto_attack_t( this );
+    if ( name == "auto_attack"    ) return new    ghoul_pet_auto_melee_attack_t( this );
     if ( name == "claw"           ) return new           ghoul_pet_claw_t( this );
     if ( name == "sweeping_claws" ) return new ghoul_pet_sweeping_claws_t( this );
 
@@ -1450,7 +1450,7 @@ struct ghoul_pet_t : public pet_t
 // Death Knight Attack
 // ==========================================================================
 
-struct death_knight_attack_t : public attack_t
+struct death_knight_melee_attack_t : public melee_attack_t
 {
   bool   always_consume;
   bool   requires_weapon;
@@ -1462,8 +1462,8 @@ struct death_knight_attack_t : public attack_t
   bool   use[RUNE_SLOT_MAX];
   gain_t* rp_gains;
 
-  death_knight_attack_t( const char* n, death_knight_t* p, bool special = false ) :
-    attack_t( n, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, special ),
+  death_knight_melee_attack_t( const char* n, death_knight_t* p, bool special = false ) :
+    melee_attack_t( n, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, special ),
     always_consume( false ), requires_weapon( true ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     m_dd_additive( 0 )
@@ -1471,8 +1471,8 @@ struct death_knight_attack_t : public attack_t
     _init_dk_attack();
   }
 
-  death_knight_attack_t( const char* n, uint32_t id, death_knight_t* p ) :
-    attack_t( n, id, p, TREE_NONE, true ),
+  death_knight_melee_attack_t( const char* n, uint32_t id, death_knight_t* p ) :
+    melee_attack_t( n, id, p, TREE_NONE, true ),
     always_consume( false ), requires_weapon( true ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     m_dd_additive( 0 )
@@ -1480,8 +1480,8 @@ struct death_knight_attack_t : public attack_t
     _init_dk_attack();
   }
 
-  death_knight_attack_t( const char* n, const char* sname, death_knight_t* p ) :
-    attack_t( n, sname, p, TREE_NONE, true ),
+  death_knight_melee_attack_t( const char* n, const char* sname, death_knight_t* p ) :
+    melee_attack_t( n, sname, p, TREE_NONE, true ),
     always_consume( false ), requires_weapon( true ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     m_dd_additive( 0 )
@@ -1708,10 +1708,10 @@ static void trigger_blood_caked_blade( action_t* a )
 
   if ( p -> rng_blood_caked_blade -> roll( p -> talents.blood_caked_blade -> proc_chance() ) )
   {
-    struct bcs_t : public death_knight_attack_t
+    struct bcs_t : public death_knight_melee_attack_t
     {
       bcs_t( death_knight_t* p ) :
-        death_knight_attack_t( "blood_caked_strike", 50463, p )
+        death_knight_melee_attack_t( "blood_caked_strike", 50463, p )
       {
         may_crit       = false;
         background     = true;
@@ -1724,7 +1724,7 @@ static void trigger_blood_caked_blade( action_t* a )
 
       virtual void target_debuff( player_t* t, dmg_type_e dtype )
       {
-        death_knight_attack_t::target_debuff( t, dtype );
+        death_knight_melee_attack_t::target_debuff( t, dtype );
         death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
         target_multiplier *= 1.0 + td -> diseases() * effect1().percent() / 2.0;
@@ -1806,18 +1806,18 @@ static void trigger_unholy_blight( action_t* a, double death_coil_dmg )
 // Death Knight Attack Methods
 // ==========================================================================
 
-// death_knight_attack_t::reset() ===========================================
+// death_knight_melee_attack_t::reset() ===========================================
 
-void death_knight_attack_t::reset()
+void death_knight_melee_attack_t::reset()
 {
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
 
   action_t::reset();
 }
 
-// death_knight_attack_t::consume_resource() ================================
+// death_knight_melee_attack_t::consume_resource() ================================
 
-void death_knight_attack_t::consume_resource()
+void death_knight_melee_attack_t::consume_resource()
 {
   death_knight_t* p = player -> cast_death_knight();
 
@@ -1842,7 +1842,7 @@ void death_knight_attack_t::consume_resource()
   }
   else
   {
-    attack_t::consume_resource();
+    melee_attack_t::consume_resource();
   }
 
   if ( result_is_hit() || always_consume )
@@ -1851,13 +1851,13 @@ void death_knight_attack_t::consume_resource()
     refund_power( this );
 }
 
-// death_knight_attack_t::execute() =========================================
+// death_knight_melee_attack_t::execute() =========================================
 
-void death_knight_attack_t::execute()
+void death_knight_melee_attack_t::execute()
 {
   death_knight_t* p = player -> cast_death_knight();
 
-  attack_t::execute();
+  melee_attack_t::execute();
 
   if ( result_is_hit() )
   {
@@ -1868,13 +1868,13 @@ void death_knight_attack_t::execute()
   }
 }
 
-// death_knight_attack_t::player_buff() =====================================
+// death_knight_melee_attack_t::player_buff() =====================================
 
-void death_knight_attack_t::player_buff()
+void death_knight_melee_attack_t::player_buff()
 {
   death_knight_t* p = player -> cast_death_knight();
 
-  attack_t::player_buff();
+  melee_attack_t::player_buff();
 
   if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
     if ( ! proc )
@@ -1884,13 +1884,13 @@ void death_knight_attack_t::player_buff()
   player_multiplier *= 1.0 + m_dd_additive;
 }
 
-// death_knight_attack_t::ready() ===========================================
+// death_knight_melee_attack_t::ready() ===========================================
 
-bool death_knight_attack_t::ready()
+bool death_knight_melee_attack_t::ready()
 {
   death_knight_t* p = player -> cast_death_knight();
 
-  if ( ! attack_t::ready() )
+  if ( ! melee_attack_t::ready() )
     return false;
 
   if ( requires_weapon )
@@ -1900,11 +1900,11 @@ bool death_knight_attack_t::ready()
   return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
 }
 
-// death_knight_attack_t::swing_haste() =====================================
+// death_knight_melee_attack_t::swing_haste() =====================================
 
-double death_knight_attack_t::swing_haste() const
+double death_knight_melee_attack_t::swing_haste() const
 {
-  double haste = attack_t::swing_haste();
+  double haste = melee_attack_t::swing_haste();
   death_knight_t* p = player -> cast_death_knight();
 
   haste *= 1.0 / ( 1.0 + p -> spells.icy_talons -> effect1().percent() );
@@ -1915,11 +1915,11 @@ double death_knight_attack_t::swing_haste() const
   return haste;
 }
 
-// death_knight_attack_t::target_debuff =====================================
+// death_knight_melee_attack_t::target_debuff =====================================
 
-void death_knight_attack_t::target_debuff( player_t* t, dmg_type_e dtype )
+void death_knight_melee_attack_t::target_debuff( player_t* t, dmg_type_e dtype )
 {
-  attack_t::target_debuff( t, dtype );
+  melee_attack_t::target_debuff( t, dtype );
   death_knight_t* p = player -> cast_death_knight();
 
   if ( school == SCHOOL_FROST  )
@@ -2037,11 +2037,11 @@ void death_knight_spell_t::target_debuff( player_t* t, dmg_type_e dtype )
 
 // Melee Attack =============================================================
 
-struct melee_t : public death_knight_attack_t
+struct melee_t : public death_knight_melee_attack_t
 {
   int sync_weapons;
   melee_t( const char* name, death_knight_t* p, int sw ) :
-    death_knight_attack_t( name, p ), sync_weapons( sw )
+    death_knight_melee_attack_t( name, p ), sync_weapons( sw )
   {
     may_glance      = true;
     background      = true;
@@ -2054,7 +2054,7 @@ struct melee_t : public death_knight_attack_t
 
   virtual timespan_t execute_time() const
   {
-    timespan_t t = death_knight_attack_t::execute_time();
+    timespan_t t = death_knight_melee_attack_t::execute_time();
     if ( ! player -> in_combat )
     {
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.2 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
@@ -2066,7 +2066,7 @@ struct melee_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -2121,12 +2121,12 @@ struct melee_t : public death_knight_attack_t
 
 // Auto Attack ==============================================================
 
-struct auto_attack_t : public death_knight_attack_t
+struct auto_attack_t : public death_knight_melee_attack_t
 {
   int sync_weapons;
 
   auto_attack_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "auto_attack", p ), sync_weapons( 0 )
+    death_knight_melee_attack_t( "auto_attack", p ), sync_weapons( 0 )
   {
     option_t options[] =
     {
@@ -2305,10 +2305,10 @@ struct blood_plague_t : public death_knight_spell_t
 
 // Blood Strike =============================================================
 
-struct blood_strike_offhand_t : public death_knight_attack_t
+struct blood_strike_offhand_t : public death_knight_melee_attack_t
 {
   blood_strike_offhand_t( death_knight_t* p ) :
-    death_knight_attack_t( "blood_strike_offhand", 66215, p )
+    death_knight_melee_attack_t( "blood_strike_offhand", 66215, p )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
@@ -2320,18 +2320,18 @@ struct blood_strike_offhand_t : public death_knight_attack_t
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
-    death_knight_attack_t::target_debuff( t, dtype );
+    death_knight_melee_attack_t::target_debuff( t, dtype );
 
     target_multiplier *= 1 + td -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
 };
 
-struct blood_strike_t : public death_knight_attack_t
+struct blood_strike_t : public death_knight_melee_attack_t
 {
-  attack_t* oh_attack;
+  melee_attack_t* oh_attack;
 
   blood_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "blood_strike", "Blood Strike", p ), oh_attack( 0 )
+    death_knight_melee_attack_t( "blood_strike", "Blood Strike", p ), oh_attack( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2349,7 +2349,7 @@ struct blood_strike_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
 
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2360,7 +2360,7 @@ struct blood_strike_t : public death_knight_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_attack_t::target_debuff( t, dtype );
+    death_knight_melee_attack_t::target_debuff( t, dtype );
 
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
@@ -2632,10 +2632,10 @@ struct death_coil_t : public death_knight_spell_t
 
 // Death Strike =============================================================
 
-struct death_strike_offhand_t : public death_knight_attack_t
+struct death_strike_offhand_t : public death_knight_melee_attack_t
 {
   death_strike_offhand_t( death_knight_t* p ) :
-    death_knight_attack_t( "death_strike_offhand", 66188, p )
+    death_knight_melee_attack_t( "death_strike_offhand", 66188, p )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
@@ -2645,12 +2645,12 @@ struct death_strike_offhand_t : public death_knight_attack_t
   }
 };
 
-struct death_strike_t : public death_knight_attack_t
+struct death_strike_t : public death_knight_melee_attack_t
 {
-  attack_t* oh_attack;
+  melee_attack_t* oh_attack;
 
   death_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "death_strike", "Death Strike", p ),
+    death_knight_melee_attack_t( "death_strike", "Death Strike", p ),
     oh_attack( 0 )
   {
     parse_options( NULL, options_str );
@@ -2672,7 +2672,7 @@ struct death_strike_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
@@ -2685,7 +2685,7 @@ struct death_strike_t : public death_knight_attack_t
 
   virtual void player_buff()
   {
-    death_knight_attack_t::player_buff();
+    death_knight_melee_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
     if ( p -> glyphs.death_strike -> ok() )
     {
@@ -2726,10 +2726,10 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
 // Festering Strike =========================================================
 
-struct festering_strike_t : public death_knight_attack_t
+struct festering_strike_t : public death_knight_melee_attack_t
 {
   festering_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "festering_strike", "Festering Strike", p )
+    death_knight_melee_attack_t( "festering_strike", "Festering Strike", p )
   {
     parse_options( NULL, options_str );
 
@@ -2744,7 +2744,7 @@ struct festering_strike_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -2791,10 +2791,10 @@ struct frost_fever_t : public death_knight_spell_t
 
 // Frost Strike =============================================================
 
-struct frost_strike_offhand_t : public death_knight_attack_t
+struct frost_strike_offhand_t : public death_knight_melee_attack_t
 {
   frost_strike_offhand_t( death_knight_t* p ) :
-    death_knight_attack_t( "frost_strike_offhand", 66196, p )
+    death_knight_melee_attack_t( "frost_strike_offhand", 66196, p )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
@@ -2805,7 +2805,7 @@ struct frost_strike_offhand_t : public death_knight_attack_t
 
   virtual void player_buff()
   {
-    death_knight_attack_t::player_buff();
+    death_knight_melee_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
 
     player_crit += p -> buffs_killing_machine -> value();
@@ -2813,7 +2813,7 @@ struct frost_strike_offhand_t : public death_knight_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_attack_t::target_debuff( t, dtype );
+    death_knight_melee_attack_t::target_debuff( t, dtype );
 
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2822,12 +2822,12 @@ struct frost_strike_offhand_t : public death_knight_attack_t
   }
 };
 
-struct frost_strike_t : public death_knight_attack_t
+struct frost_strike_t : public death_knight_melee_attack_t
 {
-  attack_t* oh_attack;
+  melee_attack_t* oh_attack;
 
   frost_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "frost_strike", "Frost Strike", p ), oh_attack( 0 )
+    death_knight_melee_attack_t( "frost_strike", "Frost Strike", p ), oh_attack( 0 )
   {
     check_spec( TREE_FROST );
 
@@ -2843,7 +2843,7 @@ struct frost_strike_t : public death_knight_attack_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
 
     if ( result_is_hit() )
       p -> trigger_runic_empowerment();
@@ -2860,7 +2860,7 @@ struct frost_strike_t : public death_knight_attack_t
 
   virtual void player_buff()
   {
-    death_knight_attack_t::player_buff();
+    death_knight_melee_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
 
     player_crit += p -> buffs_killing_machine -> value();
@@ -2868,7 +2868,7 @@ struct frost_strike_t : public death_knight_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_attack_t::target_debuff( t, dtype );
+    death_knight_melee_attack_t::target_debuff( t, dtype );
 
     death_knight_t* p = player -> cast_death_knight();
 
@@ -2879,10 +2879,10 @@ struct frost_strike_t : public death_knight_attack_t
 
 // Heart Strike =============================================================
 
-struct heart_strike_t : public death_knight_attack_t
+struct heart_strike_t : public death_knight_melee_attack_t
 {
   heart_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "heart_strike", "Heart Strike", p )
+    death_knight_melee_attack_t( "heart_strike", "Heart Strike", p )
   {
     check_spec( TREE_BLOOD );
 
@@ -2898,7 +2898,7 @@ struct heart_strike_t : public death_knight_attack_t
 
   void execute()
   {
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
     if ( result_is_hit() )
@@ -2914,7 +2914,7 @@ struct heart_strike_t : public death_knight_attack_t
   {
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
-    death_knight_attack_t::target_debuff( t, dtype );
+    death_knight_melee_attack_t::target_debuff( t, dtype );
 
     target_multiplier *= 1 + td -> diseases() * effect3().percent();
   }
@@ -3158,10 +3158,10 @@ struct mind_freeze_t : public death_knight_spell_t
 
 // Necrotic Strike ==========================================================
 
-struct necrotic_strike_t : public death_knight_attack_t
+struct necrotic_strike_t : public death_knight_melee_attack_t
 {
   necrotic_strike_t( death_knight_t* player, const std::string& options_str ) :
-    death_knight_attack_t( "necrotic_strike", "Necrotic Strike", player )
+    death_knight_melee_attack_t( "necrotic_strike", "Necrotic Strike", player )
   {
     parse_options( NULL, options_str );
 
@@ -3171,10 +3171,10 @@ struct necrotic_strike_t : public death_knight_attack_t
 
 // Obliterate ===============================================================
 
-struct obliterate_offhand_t : public death_knight_attack_t
+struct obliterate_offhand_t : public death_knight_melee_attack_t
 {
   obliterate_offhand_t( death_knight_t* p ) :
-    death_knight_attack_t( "obliterate_offhand", 66198, p )
+    death_knight_melee_attack_t( "obliterate_offhand", 66198, p )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
@@ -3190,7 +3190,7 @@ struct obliterate_offhand_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    death_knight_attack_t::player_buff();
+    death_knight_melee_attack_t::player_buff();
 
     player_crit += p -> buffs_killing_machine -> value();
   }
@@ -3199,7 +3199,7 @@ struct obliterate_offhand_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
-    death_knight_attack_t::target_debuff( t, dtype );
+    death_knight_melee_attack_t::target_debuff( t, dtype );
 
     target_multiplier *= 1 + td -> diseases() * effect3().percent() / 2.0;
 
@@ -3208,12 +3208,12 @@ struct obliterate_offhand_t : public death_knight_attack_t
   }
 };
 
-struct obliterate_t : public death_knight_attack_t
+struct obliterate_t : public death_knight_melee_attack_t
 {
-  attack_t* oh_attack;
+  melee_attack_t* oh_attack;
 
   obliterate_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "obliterate", "Obliterate", p ), oh_attack( 0 )
+    death_knight_melee_attack_t( "obliterate", "Obliterate", p ), oh_attack( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -3235,7 +3235,7 @@ struct obliterate_t : public death_knight_attack_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -3282,7 +3282,7 @@ struct obliterate_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    death_knight_attack_t::player_buff();
+    death_knight_melee_attack_t::player_buff();
 
     player_crit += p -> buffs_killing_machine -> value();
   }
@@ -3291,7 +3291,7 @@ struct obliterate_t : public death_knight_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
     death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
-    death_knight_attack_t::target_debuff( t, dtype );
+    death_knight_melee_attack_t::target_debuff( t, dtype );
 
     target_multiplier *= 1 + td -> diseases() * effect3().percent() / 2.0;
 
@@ -3447,10 +3447,10 @@ struct pillar_of_frost_t : public death_knight_spell_t
 
 // Plague Strike ============================================================
 
-struct plague_strike_offhand_t : public death_knight_attack_t
+struct plague_strike_offhand_t : public death_knight_melee_attack_t
 {
   plague_strike_offhand_t( death_knight_t* p ) :
-    death_knight_attack_t( "plague_strike_offhand", 66216, p )
+    death_knight_melee_attack_t( "plague_strike_offhand", 66216, p )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
@@ -3462,7 +3462,7 @@ struct plague_strike_offhand_t : public death_knight_attack_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -3471,12 +3471,12 @@ struct plague_strike_offhand_t : public death_knight_attack_t
   }
 };
 
-struct plague_strike_t : public death_knight_attack_t
+struct plague_strike_t : public death_knight_melee_attack_t
 {
-  attack_t* oh_attack;
+  melee_attack_t* oh_attack;
 
   plague_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "plague_strike", "Plague Strike", p ), oh_attack( 0 )
+    death_knight_melee_attack_t( "plague_strike", "Plague Strike", p ), oh_attack( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -3493,7 +3493,7 @@ struct plague_strike_t : public death_knight_attack_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
 
     if ( p -> buffs_dancing_rune_weapon -> check() )
       p -> active_dancing_rune_weapon -> drw_plague_strike -> execute();
@@ -3652,10 +3652,10 @@ struct raise_dead_t : public death_knight_spell_t
 
 // Rune Strike ==============================================================
 
-struct rune_strike_offhand_t : public death_knight_attack_t
+struct rune_strike_offhand_t : public death_knight_melee_attack_t
 {
   rune_strike_offhand_t( death_knight_t* p ) :
-    death_knight_attack_t( "rune_strike_offhand", 66217, p )
+    death_knight_melee_attack_t( "rune_strike_offhand", 66217, p )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
@@ -3666,12 +3666,12 @@ struct rune_strike_offhand_t : public death_knight_attack_t
   }
 };
 
-struct rune_strike_t : public death_knight_attack_t
+struct rune_strike_t : public death_knight_melee_attack_t
 {
-  attack_t* oh_attack;
+  melee_attack_t* oh_attack;
 
   rune_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "rune_strike", "Rune Strike", p ),
+    death_knight_melee_attack_t( "rune_strike", "Rune Strike", p ),
     oh_attack( 0 )
   {
     parse_options( NULL, options_str );
@@ -3688,7 +3688,7 @@ struct rune_strike_t : public death_knight_attack_t
 
   virtual void execute()
   {
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
     p -> buffs_rune_strike -> expire();
@@ -3708,13 +3708,13 @@ struct rune_strike_t : public death_knight_attack_t
     if ( ! p -> buffs_blood_presence -> check() || p -> buffs_rune_strike -> check() )
       return false;
 
-    return death_knight_attack_t::ready();
+    return death_knight_melee_attack_t::ready();
   }
 };
 
 // Scourge Strike ===========================================================
 
-struct scourge_strike_t : public death_knight_attack_t
+struct scourge_strike_t : public death_knight_melee_attack_t
 {
   spell_t* scourge_strike_shadow;
 
@@ -3749,7 +3749,7 @@ struct scourge_strike_t : public death_knight_attack_t
   };
 
   scourge_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_attack_t( "scourge_strike", "Scourge Strike", p ),
+    death_knight_melee_attack_t( "scourge_strike", "Scourge Strike", p ),
     scourge_strike_shadow( 0 )
   {
     parse_options( NULL, options_str );
@@ -3762,7 +3762,7 @@ struct scourge_strike_t : public death_knight_attack_t
 
   void execute()
   {
-    death_knight_attack_t::execute();
+    death_knight_melee_attack_t::execute();
     if ( result_is_hit() )
     {
       // We divide out our composite_player_multiplier here because we

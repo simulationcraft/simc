@@ -3667,7 +3667,6 @@ public:
     int burning_wrath;
     int communion;
     int corrosive_spit;
-    int critical_mass;
     int curse_of_elements;
     int dark_intent;
     int demonic_pact;
@@ -3707,7 +3706,6 @@ public:
     int rampage;
     int roar_of_courage;
     int scarlet_fever;
-    int shadow_and_flame;
     int strength_of_wrynn;
     int sunder_armor;
     int tailspin;
@@ -4646,7 +4644,6 @@ struct player_t : public noncopyable
     debuff_t* physical_vulnerability;
     debuff_t* casting;
     debuff_t* corrosive_spit;
-    debuff_t* critical_mass;
     debuff_t* curse_of_elements;
     debuff_t* demoralizing_roar;
     debuff_t* demoralizing_screech;
@@ -4668,7 +4665,6 @@ struct player_t : public noncopyable
     debuff_t* master_poisoner;
     debuff_t* poisoned;
     debuff_t* scarlet_fever;
-    debuff_t* shadow_and_flame;
     debuff_t* shattering_throw;
     debuff_t* slow;
     debuff_t* sunder_armor;
@@ -5063,7 +5059,7 @@ struct player_t : public noncopyable
   virtual double composite_player_penetration_vulnerability( school_type_e ) const;
   virtual double composite_spell_crit_vulnerability() const;
   virtual double composite_attack_crit_vulnerability() const;
-  virtual double composite_ranged_attack_power_vulnerability() const;
+  virtual double composite_ranged_attack_player_vulnerability() const;
 };
 
 struct compare_scale_factors
@@ -5559,11 +5555,7 @@ struct action_state_t
   }
 
   virtual inline void snapshot_target_attack_power()
-  {
-    if ( action -> player -> position == POSITION_RANGED_FRONT ||
-         action -> player -> position == POSITION_RANGED_BACK )
-      target_attack_power = target -> composite_ranged_attack_power_vulnerability();
-  }
+  { }
 
   virtual inline void snapshot_attack_power_multiplier()
   {
@@ -5694,8 +5686,6 @@ struct action_state_t
 
 struct attack_t : public action_t
 {
-  double base_expertise, player_expertise, target_expertise;
-
 private:
   void init_attack_t_();
 
@@ -5716,15 +5706,10 @@ public:
           int    build_table( std::array<double,RESULT_MAX>& chances,
                               std::array<result_type_e,RESULT_MAX>& results );
   virtual void   calculate_result();
-  virtual void   execute();
   virtual void   init();
-  virtual double total_expertise() const;
 
   virtual double   miss_chance( int delta_level ) const;
-  virtual double  dodge_chance( int delta_level ) const;
-  virtual double  parry_chance( int delta_level ) const;
-  virtual double glance_chance( int delta_level ) const;
-  virtual double  block_chance( int delta_level ) const;
+  virtual double  block_chance( int /* delta_level */ ) const { return 0.0; }
   virtual double  crit_block_chance( int delta_level ) const;
   virtual double   crit_chance( int delta_level ) const;
 
@@ -5740,6 +5725,52 @@ public:
   virtual double  block_chance_s( const action_state_t* ) const;
   virtual double  crit_block_chance_s( const action_state_t* ) const;
   virtual double   crit_chance_s( const action_state_t* ) const;
+};
+
+
+// Melee Attack ===================================================================
+
+struct melee_attack_t : public attack_t
+{
+  double base_expertise, player_expertise, target_expertise;
+
+private:
+  void init_melee_attack_t_();
+
+public:
+  melee_attack_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=false );
+  melee_attack_t( const std::string& name=0, player_t* p=0, resource_type_e r=RESOURCE_NONE,
+            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special=false );
+  melee_attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
+  melee_attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
+
+  // Melee Attack Overrides
+  virtual void   player_buff();
+  virtual void   target_debuff( player_t* t, dmg_type_e );
+  virtual double total_expertise() const;
+
+  virtual double  dodge_chance( int delta_level ) const;
+  virtual double  parry_chance( int delta_level ) const;
+  virtual double glance_chance( int delta_level ) const;
+};
+
+
+// Ranged Attack ===================================================================
+
+struct ranged_attack_t : public attack_t
+{
+private:
+  void init_ranged_attack_t_();
+
+public:
+  ranged_attack_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=false );
+  ranged_attack_t( const std::string& name=0, player_t* p=0, resource_type_e r=RESOURCE_NONE,
+            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special=false );
+  ranged_attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
+  ranged_attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
+
+  // Ranged Attack Overrides
+  virtual void   target_debuff( player_t* t, dmg_type_e );
 };
 
 // Spell Base ====================================================================

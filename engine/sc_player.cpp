@@ -5124,7 +5124,7 @@ struct snapshot_stats_t : public action_t
 
     if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
     {
-      if ( ! attack ) attack = new attack_t( "snapshot_attack", p );
+      if ( ! attack ) attack = new melee_attack_t( "snapshot_attack", p );
       attack -> background = true;
       attack -> player_buff();
       attack -> target_debuff( target, DMG_DIRECT );
@@ -6929,8 +6929,7 @@ aura_t* targetdata_t::add_aura( aura_t* a )
 
 double player_t::composite_spell_crit_vulnerability() const
 {
-  return std::max( debuffs.critical_mass    -> stack() * 5,
-                   debuffs.shadow_and_flame -> stack() * 5 ) / 100.0;
+  return 0.0;
 }
 
 double player_t::composite_attack_crit_vulnerability() const
@@ -6944,7 +6943,7 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
 
   // MoP COE: increases "magic" damage taken by 5%
   if ( school != SCHOOL_NONE && ( school & SCHOOL_MAGIC_MASK ) )
-    m *= 1.0 + debuffs.curse_of_elements  -> value();
+    m *= 1.0 + debuffs.curse_of_elements  -> up() * debuffs.curse_of_elements -> data().effect1().percent();
 
   if ( school == SCHOOL_PHYSICAL ||
        school == SCHOOL_BLEED    )
@@ -6959,18 +6958,19 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
                                                debuffs.lightning_breath   -> value() ) ) * 0.01 );
   }
 
-  if ( debuffs.vulnerable -> up() )
-    m *= debuffs.vulnerable -> value();
+  m *= 1.0 + debuffs.vulnerable -> value();
 
   return m;
 }
 
-double player_t::composite_ranged_attack_power_vulnerability() const
+double player_t::composite_ranged_attack_player_vulnerability() const
 {
-  if ( debuffs.hunters_mark -> check() )
-    return debuffs.hunters_mark -> value();
+  double m = 1.0;
 
-  return 0.0;
+  // MoP: Increase ranged damage taken by 5%. make sure
+  m *= 1.0 + debuffs.hunters_mark -> up() * debuffs.hunters_mark -> data().effect2().percent();
+
+  return m;
 }
 
 double player_t::composite_player_penetration_vulnerability( school_type_e /* s */ ) const

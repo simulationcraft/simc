@@ -2847,9 +2847,6 @@ struct pyroblast_t : public mage_spell_t
     mage_spell_t::execute();
     if ( result_is_hit() )
     {
-      target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
-      target -> debuffs.critical_mass -> source = p;
-
       if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
     }
@@ -2886,9 +2883,6 @@ struct pyroblast_hs_t : public mage_spell_t
     mage_spell_t::execute();
     if ( result_is_hit() )
     {
-      target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
-      target -> debuffs.critical_mass -> source = p;
-
       if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 0.5 );
     }
@@ -2941,35 +2935,6 @@ struct scorch_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     return p -> talents.firestarter -> rank() != 0;
-  }
-
-  virtual void execute()
-  {
-    mage_t* p = player -> cast_mage();
-    mage_spell_t::execute();
-    if ( result_is_hit() )
-    {
-      target -> debuffs.critical_mass -> trigger( 1, 1.0, p -> talents.critical_mass -> proc_chance() );
-      target -> debuffs.critical_mass -> source = p;
-    }
-  }
-
-  virtual bool ready()
-  {
-    if ( ! mage_spell_t::ready() )
-      return false;
-
-    if ( debuff )
-    {
-
-      if ( target -> debuffs.shadow_and_flame -> check() )
-        return false;
-
-      if ( target -> debuffs.critical_mass -> remains_gt( timespan_t::from_seconds( 6.0 ) ) )
-        return false;
-    }
-
-    return true;
   }
 };
 
@@ -4276,7 +4241,6 @@ void player_t::mage_init( sim_t* sim )
     player_t* p = sim -> actor_list[i];
     p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MAX_MANA, p -> level < MAX_LEVEL ? sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1().id(), sim -> max_player_level ) : 0, !p -> is_pet() );
     p -> buffs.focus_magic       = new      buff_t( p, 54646, "focus_magic" );
-    p -> debuffs.critical_mass   = new debuff_t( p, 22959, "critical_mass" );
     p -> debuffs.slow            = new debuff_t( p, 31589, "slow" );
   }
 }
@@ -4292,11 +4256,6 @@ void player_t::mage_combat_begin( sim_t* sim )
       if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1().id(), sim -> max_player_level ) );
       if ( sim -> overrides.focus_magic       ) p -> buffs.focus_magic       -> override();
     }
-  }
-
-  for ( player_t* t = sim -> target_list; t; t = t -> next )
-  {
-    if ( sim -> overrides.critical_mass ) t -> debuffs.critical_mass -> override( 1 );
   }
 
   if ( sim -> overrides.arcane_tactics ) sim -> auras.arcane_tactics -> override( 1 );

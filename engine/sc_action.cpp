@@ -592,11 +592,7 @@ void action_t::target_debuff( player_t* t, dmg_type_e )
   if ( ! no_debuffs )
   {
     target_multiplier *= t -> composite_player_vulnerability( school );
-    target_penetration *= t -> composite_player_penetration_vulnerability( school );
-
-    if ( player -> position == POSITION_RANGED_FRONT ||
-         player -> position == POSITION_RANGED_BACK )
-      target_attack_power = t -> composite_ranged_attack_power_vulnerability();
+    target_penetration += t -> composite_player_penetration_vulnerability( school );
   }
 
   if ( sim -> debug )

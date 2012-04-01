@@ -343,14 +343,14 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // TODO: melee attack
 struct guardian_of_ancient_kings_ret_t : public pet_t
 {
-  attack_t* melee;
+  melee_attack_t* melee;
 
-  struct melee_t : public attack_t
+  struct melee_t : public melee_attack_t
   {
     paladin_t* owner;
 
     melee_t( player_t *p )
-      : attack_t( "melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL ), owner( 0 )
+      : melee_attack_t( "melee", p, RESOURCE_NONE, SCHOOL_PHYSICAL ), owner( 0 )
     {
       weapon = &( p -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -364,7 +364,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 
     virtual void execute()
     {
-      attack_t::execute();
+      melee_attack_t::execute();
       if ( result_is_hit() )
       {
         owner -> buffs_ancient_power -> trigger();
@@ -506,34 +506,34 @@ struct paladin_heal_t : public heal_t
 // Paladin Attacks
 // ==========================================================================
 
-struct paladin_attack_t : public attack_t
+struct paladin_melee_attack_t : public melee_attack_t
 {
   bool trigger_seal;
   bool trigger_seal_of_righteousness;
   bool use_spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
   bool trigger_dp;
 
-  paladin_attack_t( const char*        n,
+  paladin_melee_attack_t( const char*        n,
                     paladin_t*         p,
                     school_type_e      s=SCHOOL_PHYSICAL,
                     talent_tree_type_e t=TREE_NONE,
                     bool               special=true,
                     bool               use2hspec=true ) :
-    attack_t( n, p, RESOURCE_MANA, s, t, special ),
+    melee_attack_t( n, p, RESOURCE_MANA, s, t, special ),
     trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
-  paladin_attack_t( const char* n, uint32_t id, paladin_t* p, bool use2hspec=true, bool special=true ) :
-    attack_t( n, id, p, TREE_NONE, special ),
+  paladin_melee_attack_t( const char* n, uint32_t id, paladin_t* p, bool use2hspec=true, bool special=true ) :
+    melee_attack_t( n, id, p, TREE_NONE, special ),
     trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
   }
 
-  paladin_attack_t( const char* n, const char* sname, paladin_t* p, bool use2hspec=true, bool special=true ) :
-    attack_t( n, sname, p, TREE_NONE, special ),
+  paladin_melee_attack_t( const char* n, const char* sname, paladin_t* p, bool use2hspec=true, bool special=true ) :
+    melee_attack_t( n, sname, p, TREE_NONE, special ),
     trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
     initialize_( use2hspec );
@@ -552,18 +552,18 @@ struct paladin_attack_t : public attack_t
   virtual double haste() const
   {
     paladin_t* p = player -> cast_paladin();
-    return use_spell_haste ? p -> composite_spell_haste() : attack_t::haste();
+    return use_spell_haste ? p -> composite_spell_haste() : melee_attack_t::haste();
   }
 
   virtual double total_haste() const
   {
     paladin_t* p = player -> cast_paladin();
-    return use_spell_haste ? p -> composite_spell_haste() : attack_t::total_haste();
+    return use_spell_haste ? p -> composite_spell_haste() : melee_attack_t::total_haste();
   }
 
   virtual void execute()
   {
-    attack_t::execute();
+    melee_attack_t::execute();
     if ( result_is_hit() )
     {
       paladin_t* pa = player -> cast_paladin();
@@ -623,7 +623,7 @@ struct paladin_attack_t : public attack_t
   virtual void player_buff()
   {
     paladin_t* p = player -> cast_paladin();
-    attack_t::player_buff();
+    melee_attack_t::player_buff();
 
     if ( p -> set_bonus.tier13_4pc_melee() && p -> buffs_zealotry -> check() )
     {
@@ -655,12 +655,12 @@ struct paladin_attack_t : public attack_t
       return std::max( base_costs[ RESOURCE_HOLY_POWER ], p -> resources.current[ RESOURCE_HOLY_POWER ] );
     }
 
-    return attack_t::cost();
+    return melee_attack_t::cost();
   }
 
   virtual void consume_resource()
   {
-    attack_t::consume_resource();
+    melee_attack_t::consume_resource();
 
     paladin_t* p = player -> cast_paladin();
 
@@ -981,10 +981,10 @@ static void trigger_tower_of_radiance( heal_t* h )
 
 // Melee Attack =============================================================
 
-struct melee_t : public paladin_attack_t
+struct melee_t : public paladin_melee_attack_t
 {
   melee_t( paladin_t* p )
-    : paladin_attack_t( "melee", p, SCHOOL_PHYSICAL, TREE_NONE, true/*2hspec*/, false/*special*/ )
+    : paladin_melee_attack_t( "melee", p, SCHOOL_PHYSICAL, TREE_NONE, true/*2hspec*/, false/*special*/ )
   {
     special           = false;
     trigger_seal      = true;
@@ -998,13 +998,13 @@ struct melee_t : public paladin_attack_t
   virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat ) return timespan_t::from_seconds( 0.01 );
-    return paladin_attack_t::execute_time();
+    return paladin_melee_attack_t::execute_time();
   }
 
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::execute();
+    paladin_melee_attack_t::execute();
     if ( result_is_hit() )
     {
       bool already_up = p -> buffs_the_art_of_war -> check() != 0;
@@ -1018,7 +1018,7 @@ struct melee_t : public paladin_attack_t
     {
       p -> buffs_reckoning -> decrement();
       proc = true;
-      paladin_attack_t::execute();
+      paladin_melee_attack_t::execute();
       proc = false;
     }
   }
@@ -1026,10 +1026,10 @@ struct melee_t : public paladin_attack_t
 
 // Auto Attack ==============================================================
 
-struct auto_attack_t : public paladin_attack_t
+struct auto_melee_attack_t : public paladin_melee_attack_t
 {
-  auto_attack_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "auto_attack", p )
+  auto_melee_attack_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "auto_attack", p )
   {
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( p );
@@ -1088,10 +1088,10 @@ struct ancient_fury_t : public paladin_spell_t
 
 // Avengers Shield ==========================================================
 
-struct avengers_shield_t : public paladin_attack_t
+struct avengers_shield_t : public paladin_melee_attack_t
 {
   avengers_shield_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "avengers_shield", "Avenger's Shield", p )
+    : paladin_melee_attack_t( "avengers_shield", "Avenger's Shield", p )
   {
     parse_options( NULL, options_str );
 
@@ -1117,7 +1117,7 @@ struct avengers_shield_t : public paladin_attack_t
 
   virtual void execute()
   {
-    paladin_attack_t::execute();
+    paladin_melee_attack_t::execute();
 
     paladin_t* p = player -> cast_paladin();
     if ( p -> buffs_grand_crusader -> up() )
@@ -1130,11 +1130,11 @@ struct avengers_shield_t : public paladin_attack_t
 
 // Crusader Strike ==========================================================
 
-struct crusader_strike_t : public paladin_attack_t
+struct crusader_strike_t : public paladin_melee_attack_t
 {
   timespan_t base_cooldown;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "crusader_strike", "Crusader Strike", p ), base_cooldown( timespan_t::zero )
+    : paladin_melee_attack_t( "crusader_strike", "Crusader Strike", p ), base_cooldown( timespan_t::zero )
   {
     parse_options( NULL, options_str );
 
@@ -1156,7 +1156,7 @@ struct crusader_strike_t : public paladin_attack_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::execute();
+    paladin_melee_attack_t::execute();
 
     if ( result_is_hit() )
     {
@@ -1177,18 +1177,18 @@ struct crusader_strike_t : public paladin_attack_t
       if ( sim -> log ) log_t::output( sim, "%s %s cooldown is %.2f", p -> name(), name(),  cooldown -> duration.total_seconds() );
     }
 
-    paladin_attack_t::update_ready();
+    paladin_melee_attack_t::update_ready();
   }
 };
 
 // Divine Storm =============================================================
 
-struct divine_storm_t : public paladin_attack_t
+struct divine_storm_t : public paladin_melee_attack_t
 {
   timespan_t base_cooldown;
 
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "divine_storm", "Divine Storm", p ), base_cooldown( timespan_t::zero )
+    : paladin_melee_attack_t( "divine_storm", "Divine Storm", p ), base_cooldown( timespan_t::zero )
   {
     check_talent( p -> talents.divine_storm -> rank() );
 
@@ -1213,13 +1213,13 @@ struct divine_storm_t : public paladin_attack_t
       cooldown -> duration = base_cooldown * haste();
     }
 
-    paladin_attack_t::update_ready();
+    paladin_melee_attack_t::update_ready();
   }
 
   virtual void execute()
   {
     // paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::execute();
+    paladin_melee_attack_t::execute();
     if ( result_is_hit() )
     {
       trigger_hand_of_light( this );
@@ -1235,10 +1235,10 @@ struct divine_storm_t : public paladin_attack_t
 
 // Hammer of Justice ========================================================
 
-struct hammer_of_justice_t : public paladin_attack_t
+struct hammer_of_justice_t : public paladin_melee_attack_t
 {
   hammer_of_justice_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "hammer_of_justice", "Hammer of Justice", p )
+    : paladin_melee_attack_t( "hammer_of_justice", "Hammer of Justice", p )
   {
     parse_options( NULL, options_str );
 
@@ -1248,10 +1248,10 @@ struct hammer_of_justice_t : public paladin_attack_t
 
 // Hammer of the Righteous ==================================================
 
-struct hammer_of_the_righteous_aoe_t : public paladin_attack_t
+struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t( paladin_t* p )
-    : paladin_attack_t( "hammer_of_the_righteous_aoe", 88263, p, false )
+    : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", 88263, p, false )
   {
     may_dodge = false;
     may_parry = false;
@@ -1266,12 +1266,12 @@ struct hammer_of_the_righteous_aoe_t : public paladin_attack_t
   }
 };
 
-struct hammer_of_the_righteous_t : public paladin_attack_t
+struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t *proc;
 
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "hammer_of_the_righteous", "Hammer of the Righteous", p, false ), proc( 0 )
+    : paladin_melee_attack_t( "hammer_of_the_righteous", "Hammer of the Righteous", p, false ), proc( 0 )
   {
     check_talent( p -> talents.hammer_of_the_righteous -> rank() );
 
@@ -1287,7 +1287,7 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
 
   virtual void execute()
   {
-    paladin_attack_t::execute();
+    paladin_melee_attack_t::execute();
     if ( result_is_hit() )
     {
       proc -> execute();
@@ -1298,10 +1298,10 @@ struct hammer_of_the_righteous_t : public paladin_attack_t
 
 // Hammer of Wrath ==========================================================
 
-struct hammer_of_wrath_t : public paladin_attack_t
+struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "hammer_of_wrath", "Hammer of Wrath", p, false )
+    : paladin_melee_attack_t( "hammer_of_wrath", "Hammer of Wrath", p, false )
   {
     parse_options( NULL, options_str );
 
@@ -1329,16 +1329,16 @@ struct hammer_of_wrath_t : public paladin_attack_t
     if ( target -> health_percentage() > 20 && ! ( p -> talents.sanctified_wrath -> rank() && p -> buffs_avenging_wrath -> check() ) )
       return false;
 
-    return paladin_attack_t::ready();
+    return paladin_melee_attack_t::ready();
   }
 };
 
 // Hand of Light proc =======================================================
 
-struct hand_of_light_proc_t : public attack_t
+struct hand_of_light_proc_t : public melee_attack_t
 {
   hand_of_light_proc_t( paladin_t* p )
-    : attack_t( "hand_of_light", p, RESOURCE_NONE, SCHOOL_HOLY, TREE_RETRIBUTION, true )
+    : melee_attack_t( "hand_of_light", p, RESOURCE_NONE, SCHOOL_HOLY, TREE_RETRIBUTION, true )
   {
     may_crit    = false;
     may_miss    = false;
@@ -1351,7 +1351,7 @@ struct hand_of_light_proc_t : public attack_t
 
   virtual void player_buff()
   {
-    attack_t::player_buff();
+    melee_attack_t::player_buff();
     paladin_t* p = player -> cast_paladin();
     // not *= since we don't want to double dip, just calling base to initialize variables
     player_multiplier = p -> get_hand_of_light();
@@ -1360,7 +1360,7 @@ struct hand_of_light_proc_t : public attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dt )
   {
-    attack_t::target_debuff( t, dt );
+    melee_attack_t::target_debuff( t, dt );
     // not *= since we don't want to double dip in other effects (like vunerability)
     target_multiplier = 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
                                 std::max( t -> debuffs.earth_and_moon     -> value(),
@@ -1370,12 +1370,12 @@ struct hand_of_light_proc_t : public attack_t
 
 // Paladin Seals ============================================================
 
-struct paladin_seal_t : public paladin_attack_t
+struct paladin_seal_t : public paladin_melee_attack_t
 {
   seal_type_e seal_type;
 
   paladin_seal_t( paladin_t* p, const char* n, seal_type_e st, const std::string& options_str )
-    : paladin_attack_t( n, p ), seal_type( st )
+    : paladin_melee_attack_t( n, p ), seal_type( st )
   {
     parse_options( NULL, options_str );
 
@@ -1397,16 +1397,16 @@ struct paladin_seal_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     if ( p -> active_seal == seal_type ) return false;
-    return paladin_attack_t::ready();
+    return paladin_melee_attack_t::ready();
   }
 };
 
 // Rebuke ===================================================================
 
-struct rebuke_t : public paladin_attack_t
+struct rebuke_t : public paladin_melee_attack_t
 {
   rebuke_t( paladin_t* p, const std::string& options_str ) :
-    paladin_attack_t( "rebuke", "Rebuke", p )
+    paladin_melee_attack_t( "rebuke", "Rebuke", p )
   {
     parse_options( NULL, options_str );
 
@@ -1420,7 +1420,7 @@ struct rebuke_t : public paladin_attack_t
     if ( ! target -> debuffs.casting -> check() )
       return false;
 
-    return paladin_attack_t::ready();
+    return paladin_melee_attack_t::ready();
   }
 };
 
@@ -1447,10 +1447,10 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   }
 };
 
-struct seal_of_insight_judgement_t : public paladin_attack_t
+struct seal_of_insight_judgement_t : public paladin_melee_attack_t
 {
   seal_of_insight_judgement_t( paladin_t* p ) :
-    paladin_attack_t( "judgement_of_insight", p, SCHOOL_HOLY )
+    paladin_melee_attack_t( "judgement_of_insight", p, SCHOOL_HOLY )
   {
     background = true;
 
@@ -1476,10 +1476,10 @@ struct seal_of_insight_judgement_t : public paladin_attack_t
 
 // Seal of Justice ==========================================================
 
-struct seal_of_justice_proc_t : public paladin_attack_t
+struct seal_of_justice_proc_t : public paladin_melee_attack_t
 {
   seal_of_justice_proc_t( paladin_t* p ) :
-    paladin_attack_t( "seal_of_justice", p, SCHOOL_HOLY )
+    paladin_melee_attack_t( "seal_of_justice", p, SCHOOL_HOLY )
   {
     background        = true;
     proc              = true;
@@ -1494,10 +1494,10 @@ struct seal_of_justice_proc_t : public paladin_attack_t
   }
 };
 
-struct seal_of_justice_judgement_t : public paladin_attack_t
+struct seal_of_justice_judgement_t : public paladin_melee_attack_t
 {
   seal_of_justice_judgement_t( paladin_t* p ) :
-    paladin_attack_t( "judgement_of_justice", p, SCHOOL_HOLY )
+    paladin_melee_attack_t( "judgement_of_justice", p, SCHOOL_HOLY )
   {
     background = true;
     may_parry  = false;
@@ -1524,10 +1524,10 @@ struct seal_of_justice_judgement_t : public paladin_attack_t
 
 // Seal of Righteousness ====================================================
 
-struct seal_of_righteousness_proc_t : public paladin_attack_t
+struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
 {
   seal_of_righteousness_proc_t( paladin_t* p ) :
-    paladin_attack_t( "seal_of_righteousness", p, SCHOOL_HOLY )
+    paladin_melee_attack_t( "seal_of_righteousness", p, SCHOOL_HOLY )
   {
     background  = true;
     may_crit    = true;
@@ -1547,10 +1547,10 @@ struct seal_of_righteousness_proc_t : public paladin_attack_t
   }
 };
 
-struct seal_of_righteousness_judgement_t : public paladin_attack_t
+struct seal_of_righteousness_judgement_t : public paladin_melee_attack_t
 {
   seal_of_righteousness_judgement_t( paladin_t* p ) :
-    paladin_attack_t( "judgement_of_righteousness", p, SCHOOL_HOLY )
+    paladin_melee_attack_t( "judgement_of_righteousness", p, SCHOOL_HOLY )
   {
     background = true;
     may_parry  = false;
@@ -1579,10 +1579,10 @@ struct seal_of_righteousness_judgement_t : public paladin_attack_t
 
 // Seal of Truth ============================================================
 
-struct seal_of_truth_dot_t : public paladin_attack_t
+struct seal_of_truth_dot_t : public paladin_melee_attack_t
 {
   seal_of_truth_dot_t( paladin_t* p )
-    : paladin_attack_t( "censure", 31803, p, false )
+    : paladin_melee_attack_t( "censure", 31803, p, false )
   {
     background       = true;
     proc             = true;
@@ -1606,7 +1606,7 @@ struct seal_of_truth_dot_t : public paladin_attack_t
 
   virtual void player_buff()
   {
-    paladin_attack_t::player_buff();
+    paladin_melee_attack_t::player_buff();
     paladin_targetdata_t* td = targetdata() -> cast_paladin();
     player_multiplier *= td -> debuffs_censure -> stack();
   }
@@ -1619,21 +1619,21 @@ struct seal_of_truth_dot_t : public paladin_attack_t
       td -> debuffs_censure -> trigger();
       player_buff(); // update with new stack of the debuff
     }
-    paladin_attack_t::impact( t, impact_result, travel_dmg );
+    paladin_melee_attack_t::impact( t, impact_result, travel_dmg );
   }
 
   virtual void last_tick( dot_t* d )
   {
     paladin_targetdata_t* td = targetdata() -> cast_paladin();
-    paladin_attack_t::last_tick( d );
+    paladin_melee_attack_t::last_tick( d );
     td -> debuffs_censure -> expire();
   }
 };
 
-struct seal_of_truth_proc_t : public paladin_attack_t
+struct seal_of_truth_proc_t : public paladin_melee_attack_t
 {
   seal_of_truth_proc_t( paladin_t* p )
-    : paladin_attack_t( "seal_of_truth", 42463, p )
+    : paladin_melee_attack_t( "seal_of_truth", 42463, p )
   {
     background  = true;
     proc        = true;
@@ -1646,15 +1646,15 @@ struct seal_of_truth_proc_t : public paladin_attack_t
   virtual void player_buff()
   {
     paladin_targetdata_t* td = targetdata() -> cast_paladin();
-    paladin_attack_t::player_buff();
+    paladin_melee_attack_t::player_buff();
     player_multiplier *= td -> debuffs_censure -> stack() * 0.2;
   }
 };
 
-struct seal_of_truth_judgement_t : public paladin_attack_t
+struct seal_of_truth_judgement_t : public paladin_melee_attack_t
 {
   seal_of_truth_judgement_t( paladin_t* p )
-    : paladin_attack_t( "judgement_of_truth", 31804, p )
+    : paladin_melee_attack_t( "judgement_of_truth", 31804, p )
   {
     background   = true;
     may_parry    = false;
@@ -1679,17 +1679,17 @@ struct seal_of_truth_judgement_t : public paladin_attack_t
   virtual void player_buff()
   {
     paladin_targetdata_t* td = targetdata() -> cast_paladin();
-    paladin_attack_t::player_buff();
+    paladin_melee_attack_t::player_buff();
     player_multiplier *= 1.0 + td -> debuffs_censure -> stack() * 0.20;
   }
 };
 
 // Seals of Command proc ====================================================
 
-struct seals_of_command_proc_t : public paladin_attack_t
+struct seals_of_command_proc_t : public paladin_melee_attack_t
 {
   seals_of_command_proc_t( paladin_t* p )
-    : paladin_attack_t( "seals_of_command", 20424, p )
+    : paladin_melee_attack_t( "seals_of_command", 20424, p )
   {
     background  = true;
     proc        = true;
@@ -1698,7 +1698,7 @@ struct seals_of_command_proc_t : public paladin_attack_t
 
 // Judgement ================================================================
 
-struct judgement_t : public paladin_attack_t
+struct judgement_t : public paladin_melee_attack_t
 {
   action_t* seal_of_justice;
   action_t* seal_of_insight;
@@ -1706,7 +1706,7 @@ struct judgement_t : public paladin_attack_t
   action_t* seal_of_truth;
 
   judgement_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "judgement", "Judgment", p ),
+    : paladin_melee_attack_t( "judgement", "Judgment", p ),
       seal_of_justice( 0 ), seal_of_insight( 0 ),
       seal_of_righteousness( 0 ), seal_of_truth( 0 )
   {
@@ -1786,16 +1786,16 @@ struct judgement_t : public paladin_attack_t
   {
     action_t* seal = active_seal();
     if ( ! seal ) return false;
-    return paladin_attack_t::ready();
+    return paladin_melee_attack_t::ready();
   }
 };
 
 // Shield of Righteousness ==================================================
 
-struct shield_of_the_righteous_t : public paladin_attack_t
+struct shield_of_the_righteous_t : public paladin_melee_attack_t
 {
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
-    paladin_attack_t( "shield_of_the_righteous", "Shield of the Righteous", p )
+    paladin_melee_attack_t( "shield_of_the_righteous", "Shield of the Righteous", p )
   {
     check_talent( p -> talents.shield_of_the_righteous -> rank() );
 
@@ -1815,7 +1815,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   virtual void execute()
   {
     paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::execute();
+    paladin_melee_attack_t::execute();
     if ( result_is_hit() )
     {
       p -> buffs_sacred_duty -> expire();
@@ -1825,7 +1825,7 @@ struct shield_of_the_righteous_t : public paladin_attack_t
   virtual void player_buff()
   {
     paladin_t* p = player -> cast_paladin();
-    paladin_attack_t::player_buff();
+    paladin_melee_attack_t::player_buff();
     player_multiplier *= util_t::talent_rank( p -> holy_power_stacks(), 3, 1.0, 3.0, 6.0 );
     if ( p -> buffs_sacred_duty -> up() )
     {
@@ -1840,16 +1840,16 @@ struct shield_of_the_righteous_t : public paladin_attack_t
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
       return false;
 
-    return paladin_attack_t::ready();
+    return paladin_melee_attack_t::ready();
   }
 };
 
 // Templar's Verdict ========================================================
 
-struct templars_verdict_t : public paladin_attack_t
+struct templars_verdict_t : public paladin_melee_attack_t
 {
   templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : paladin_attack_t( "templars_verdict", "Templar's Verdict", p )
+    : paladin_melee_attack_t( "templars_verdict", "Templar's Verdict", p )
   {
     parse_options( NULL, options_str );
 
@@ -1865,7 +1865,7 @@ struct templars_verdict_t : public paladin_attack_t
   {
     paladin_t* p = player -> cast_paladin();
     weapon_multiplier = util_t::talent_rank( p -> holy_power_stacks(), 3, 0.30, 0.90, 2.35 );
-    paladin_attack_t::execute();
+    paladin_melee_attack_t::execute();
     if ( result_is_hit() )
     {
       trigger_hand_of_light( this );
@@ -2763,7 +2763,7 @@ struct word_of_glory_t : public paladin_heal_t
 
 action_t* paladin_t::create_action( const std::string& name, const std::string& options_str )
 {
-  if ( name == "auto_attack"               ) return new auto_attack_t              ( this, options_str );
+  if ( name == "auto_attack"               ) return new auto_melee_attack_t              ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );

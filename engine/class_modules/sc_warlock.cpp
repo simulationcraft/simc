@@ -331,7 +331,7 @@ public:
 
 struct coe_debuff_t : public debuff_t
 {
-  coe_debuff_t( player_t* t ) : debuff_t( t, "curse_of_elements", 1, timespan_t::from_seconds( 300.0 ) )
+  coe_debuff_t( player_t* t ) : debuff_t( t, 1490, "curse_of_elements" )
   {}
 
   virtual void expire()
@@ -631,7 +631,6 @@ struct shadow_bolt_t : public warlock_spell_t
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::impact( t, impact_result, travel_dmg );
 
     if ( result_is_hit( impact_result ) )
@@ -641,17 +640,7 @@ struct shadow_bolt_t : public warlock_spell_t
       trigger_decimation( this, impact_result );
       trigger_impending_doom( this );
       td -> debuffs_shadow_embrace -> trigger();
-      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> proc_chance() );
     }
-  }
-
-  virtual bool ready()
-  {
-    if ( isb )
-      if ( ! target -> debuffs.shadow_and_flame -> check() )
-        return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
@@ -1365,13 +1354,11 @@ struct incinerate_t : public warlock_spell_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warlock_spell_t::impact( t, impact_result, travel_dmg );
-    warlock_t* p = player -> cast_warlock();
 
     if ( result_is_hit( impact_result ) )
     {
       trigger_decimation( this, impact_result );
       trigger_impending_doom( this );
-      t -> debuffs.shadow_and_flame -> trigger( 1, 1.0, p -> talent_shadow_and_flame -> proc_chance() );
     }
   }
 
@@ -3386,11 +3373,10 @@ void player_t::warlock_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> debuffs.shadow_and_flame     = new     debuff_t( p, 17800, "shadow_and_flame" );
 #if SC_WARLOCK == 1
     p -> debuffs.curse_of_elements    = new coe_debuff_t( p );
 #else
-    p -> debuffs.curse_of_elements = new debuff_t( p, "curse_of_elements_dummy_buff" );
+    p -> debuffs.curse_of_elements = new debuff_t( p, 1490, "curse_of_elements_dummy_buff" );
 #endif // SC_WARLOCK
   }
 }
@@ -3415,7 +3401,6 @@ void player_t::warlock_combat_begin( sim_t* sim )
   for ( player_t* t = sim -> target_list; t; t = t -> next )
   {
     if ( sim -> overrides.curse_of_elements ) t -> debuffs.curse_of_elements -> override( 1, 8 );
-    if ( sim -> overrides.shadow_and_flame  ) t -> debuffs.shadow_and_flame  -> override();
   }
 }
 

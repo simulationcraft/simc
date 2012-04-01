@@ -161,10 +161,10 @@ namespace warlock_pet_actions {
 // Warlock Pet Melee
 // ==========================================================================
 
-struct warlock_pet_melee_t : public attack_t
+struct warlock_pet_melee_t : public melee_attack_t
 {
   warlock_pet_melee_t( warlock_pet_t* p, const char* name ) :
-    attack_t( name, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+    melee_attack_t( name, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
   {
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
@@ -183,25 +183,25 @@ struct warlock_pet_melee_t : public attack_t
 // Warlock Pet Attack
 // ==========================================================================
 
-struct warlock_pet_attack_t : public attack_t
+struct warlock_pet_melee_attack_t : public melee_attack_t
 {
-  warlock_pet_attack_t( const char* n, warlock_pet_t* p, resource_type_e r=RESOURCE_MANA, school_type_e s=SCHOOL_PHYSICAL ) :
-    attack_t( n, p, r, s, TREE_NONE, true )
+  warlock_pet_melee_attack_t( const char* n, warlock_pet_t* p, resource_type_e r=RESOURCE_MANA, school_type_e s=SCHOOL_PHYSICAL ) :
+    melee_attack_t( n, p, r, s, TREE_NONE, true )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
     special = true;
   }
 
-  warlock_pet_attack_t( const char* n, warlock_pet_t* player, const char* sname, talent_tree_type_e t = TREE_NONE ) :
-    attack_t( n, sname, player, t, true )
+  warlock_pet_melee_attack_t( const char* n, warlock_pet_t* player, const char* sname, talent_tree_type_e t = TREE_NONE ) :
+    melee_attack_t( n, sname, player, t, true )
   {
     may_crit   = true;
     special = true;
   }
 
-  warlock_pet_attack_t( const char* n, uint32_t id, warlock_pet_t* player, talent_tree_type_e t = TREE_NONE ) :
-    attack_t( n, id, player, t, true )
+  warlock_pet_melee_attack_t( const char* n, uint32_t id, warlock_pet_t* player, talent_tree_type_e t = TREE_NONE ) :
+    melee_attack_t( n, id, player, t, true )
   {
     may_crit   = true;
     special = true;
@@ -213,7 +213,7 @@ struct warlock_pet_attack_t : public attack_t
   virtual void player_buff()
   {
 
-    attack_t::player_buff();
+    melee_attack_t::player_buff();
 
     if ( p() -> o() -> buffs.hand_of_guldan -> up() )
     {
@@ -307,10 +307,10 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
 
 namespace felguard_spells
 {
-struct legion_strike_t : public warlock_pet_actions::warlock_pet_attack_t
+struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 {
   legion_strike_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_attack_t( "legion_strike", p, "Legion Strike" )
+    warlock_pet_actions::warlock_pet_melee_attack_t( "legion_strike", p, "Legion Strike" )
   {
     warlock_t*      o = p -> owner -> cast_warlock();
     aoe               = -1;
@@ -321,7 +321,7 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_attack_t
 
   virtual void execute()
   {
-    warlock_pet_actions::warlock_pet_attack_t::execute();
+    warlock_pet_actions::warlock_pet_melee_attack_t::execute();
 
     warlock_t::trigger_mana_feed ( this, result );
   }
@@ -329,7 +329,7 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_attack_t
   virtual void player_buff()
   {
     warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
-    warlock_pet_actions::warlock_pet_attack_t::player_buff();
+    warlock_pet_actions::warlock_pet_melee_attack_t::player_buff();
 
     if ( o -> race == RACE_ORC )
     {
@@ -344,10 +344,10 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_attack_t
   }
 };
 
-struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_attack_t
+struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 {
   felstorm_tick_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_attack_t( "felstorm_tick", 89753, p )
+    warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm_tick", 89753, p )
   {
     direct_power_mod = 0.231; // hardcoded from the tooltip
     dual        = true;
@@ -359,12 +359,12 @@ struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_attack_t
   virtual resource_type_e current_resource() const { return RESOURCE_MANA; }
 };
 
-struct felstorm_t : public warlock_pet_actions::warlock_pet_attack_t
+struct felstorm_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 {
   felstorm_tick_t* felstorm_tick;
 
   felstorm_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_attack_t( "felstorm", 89751, p ), felstorm_tick( 0 )
+    warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm", 89751, p ), felstorm_tick( 0 )
   {
     aoe       = -1;
     harmful   = false;

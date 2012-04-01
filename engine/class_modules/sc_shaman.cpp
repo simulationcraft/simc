@@ -217,8 +217,8 @@ struct shaman_t : public player_t
   } glyph;
 
   // Weapon Enchants
-  attack_t* windfury_mh;
-  attack_t* windfury_oh;
+  melee_attack_t* windfury_mh;
+  melee_attack_t* windfury_oh;
   spell_t*  flametongue_mh;
   spell_t*  flametongue_oh;
 
@@ -315,15 +315,15 @@ struct shaman_attack_state_t : public action_state_t
     td( targetdata_t::get( action -> player, target ) -> cast_shaman() ) { }
 };
 
-struct shaman_attack_t : public attack_t
+struct shaman_melee_attack_t : public melee_attack_t
 {
   shaman_t* actor;
   bool windfury;
   bool flametongue;
 
   /* Old style construction, spell data will not be accessed */
-  shaman_attack_t( const char* n, shaman_t* player, school_type_e s, talent_tree_type_e t, bool special ) :
-    attack_t( n, player, RESOURCE_MANA, s, t, special ),
+  shaman_melee_attack_t( const char* n, shaman_t* player, school_type_e s, talent_tree_type_e t, bool special ) :
+    melee_attack_t( n, player, RESOURCE_MANA, s, t, special ),
     actor( player -> cast_shaman() ), windfury( true ), flametongue( true )
   {
     if ( player -> primary_tree() == TREE_ENHANCEMENT &&
@@ -332,8 +332,8 @@ struct shaman_attack_t : public attack_t
   }
 
   /* Class spell data based construction, spell name in s_name */
-  shaman_attack_t( const char* n, const char* s_name, shaman_t* player ) :
-    attack_t( n, s_name, player, TREE_NONE, true ),
+  shaman_melee_attack_t( const char* n, const char* s_name, shaman_t* player ) :
+    melee_attack_t( n, s_name, player, TREE_NONE, true ),
     actor( player -> cast_shaman() ), windfury( true ), flametongue( true )
   {
     may_crit    = true;
@@ -343,8 +343,8 @@ struct shaman_attack_t : public attack_t
   }
 
   /* Spell data based construction, spell id in spell_id */
-  shaman_attack_t( const char* n, uint32_t spell_id, shaman_t* player ) :
-    attack_t( n, spell_id, player, TREE_NONE, true ),
+  shaman_melee_attack_t( const char* n, uint32_t spell_id, shaman_t* player ) :
+    melee_attack_t( n, spell_id, player, TREE_NONE, true ),
     actor( player -> cast_shaman() ), windfury( true ), flametongue( true )
   {
     may_crit    = true;
@@ -494,10 +494,10 @@ inline void shaman_spell_state_t::snapshot_actor_multiplier( uint32_t flags )
 
 struct spirit_wolf_pet_t : public pet_t
 {
-  struct melee_t : public attack_t
+  struct melee_t : public melee_attack_t
   {
     melee_t( player_t* player ) :
-      attack_t( "wolf_melee", player )
+      melee_attack_t( "wolf_melee", player )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -515,7 +515,7 @@ struct spirit_wolf_pet_t : public pet_t
     {
       shaman_t* o = player -> cast_pet() -> owner -> cast_shaman();
 
-      attack_t::execute();
+      melee_attack_t::execute();
 
       // Two independent chances to proc it since we model 2 wolf pets as 1 ..
       if ( result_is_hit() )
@@ -624,10 +624,10 @@ struct earth_elemental_pet_t : public pet_t
     virtual bool usable_moving() { return true; }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_melee_attack_t : public melee_attack_t
   {
-    auto_attack_t( player_t* player ) :
-      attack_t( "auto_attack", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+    auto_melee_attack_t( player_t* player ) :
+      melee_attack_t( "auto_attack", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       pet_t* p = player -> cast_pet();
 
@@ -652,10 +652,10 @@ struct earth_elemental_pet_t : public pet_t
     }
   };
 
-  struct melee_t : public attack_t
+  struct melee_t : public melee_attack_t
   {
     melee_t( player_t* player ) :
-      attack_t( "earth_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+      melee_attack_t( "earth_melee", player, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
     {
       may_crit          = true;
       background        = true;
@@ -753,7 +753,7 @@ struct earth_elemental_pet_t : public pet_t
                                    const std::string& options_str )
   {
     if ( name == "travel"      ) return new travel_t( this );
-    if ( name == "auto_attack" ) return new auto_attack_t ( this );
+    if ( name == "auto_attack" ) return new auto_melee_attack_t ( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -941,13 +941,13 @@ struct fire_elemental_pet_t : public pet_t
     }
   };
 
-  struct fire_melee_t : public attack_t
+  struct fire_melee_t : public melee_attack_t
   {
     double int_multiplier;
     double sp_multiplier;
 
     fire_melee_t( player_t* player ) :
-      attack_t( "fire_melee", player, RESOURCE_NONE, SCHOOL_FIRE ),
+      melee_attack_t( "fire_melee", player, RESOURCE_NONE, SCHOOL_FIRE ),
       int_multiplier( 0.9647 ), sp_multiplier ( 0.6457 )
     {
       may_crit                     = true;
@@ -981,14 +981,14 @@ struct fire_elemental_pet_t : public pet_t
       if ( time_to_execute > timespan_t::zero && player -> executing )
         schedule_execute();
       else
-        attack_t::execute();
+        melee_attack_t::execute();
     }
   };
 
-  struct auto_attack_t : public attack_t
+  struct auto_melee_attack_t : public melee_attack_t
   {
-    auto_attack_t( player_t* player ) :
-      attack_t( "auto_attack", player, RESOURCE_NONE, SCHOOL_FIRE, TREE_NONE, false )
+    auto_melee_attack_t( player_t* player ) :
+      melee_attack_t( "auto_attack", player, RESOURCE_NONE, SCHOOL_FIRE, TREE_NONE, false )
     {
       player -> main_hand_attack = new fire_melee_t( player );
       player -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
@@ -1109,7 +1109,7 @@ struct fire_elemental_pet_t : public pet_t
     if ( name == "travel"      ) return new travel_t     ( this );
     if ( name == "fire_nova"   ) return new fire_nova_t  ( this );
     if ( name == "fire_blast"  ) return new fire_blast_t ( this );
-    if ( name == "auto_attack" ) return new auto_attack_t ( this );
+    if ( name == "auto_attack" ) return new auto_melee_attack_t ( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -1135,7 +1135,7 @@ struct fire_elemental_pet_t : public pet_t
 
 // trigger_flametongue_weapon ===============================================
 
-static void trigger_flametongue_weapon( attack_t* a )
+static void trigger_flametongue_weapon( melee_attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
 
@@ -1149,10 +1149,10 @@ static void trigger_flametongue_weapon( attack_t* a )
 
 struct windfury_delay_event_t : public event_t
 {
-  attack_t* wf;
+  melee_attack_t* wf;
   timespan_t delay;
 
-  windfury_delay_event_t( sim_t* sim, player_t* p, attack_t* wf, timespan_t delay ) :
+  windfury_delay_event_t( sim_t* sim, player_t* p, melee_attack_t* wf, timespan_t delay ) :
     event_t( sim, p ), wf( wf ), delay( delay )
   {
     name = "windfury_delay_event";
@@ -1170,10 +1170,10 @@ struct windfury_delay_event_t : public event_t
   }
 };
 
-static bool trigger_windfury_weapon( attack_t* a )
+static bool trigger_windfury_weapon( melee_attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
-  attack_t* wf = 0;
+  melee_attack_t* wf = 0;
 
   if ( a -> weapon -> slot == SLOT_MAIN_HAND )
     wf = p -> windfury_mh;
@@ -1221,7 +1221,7 @@ static bool trigger_rolling_thunder ( spell_t* s )
 
 // trigger_static_shock =====================================================
 
-static bool trigger_static_shock ( attack_t* a )
+static bool trigger_static_shock ( melee_attack_t* a )
 {
   shaman_t* p = a -> player -> cast_shaman();
 
@@ -1239,7 +1239,7 @@ static bool trigger_static_shock ( attack_t* a )
 
 // trigger_improved_lava_lash ===============================================
 
-static bool trigger_improved_lava_lash( attack_t* a )
+static bool trigger_improved_lava_lash( melee_attack_t* a )
 {
   struct improved_lava_lash_t : public shaman_spell_t
   {
@@ -1661,7 +1661,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   }
 };
 
-struct windfury_weapon_attack_t : public shaman_attack_t
+struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
 {
   struct windfury_state_t : public shaman_attack_state_t
   {
@@ -1676,8 +1676,8 @@ struct windfury_weapon_attack_t : public shaman_attack_t
     }
   };
 
-  windfury_weapon_attack_t( shaman_t* player, const std::string& n, weapon_t* w ) :
-    shaman_attack_t( n.c_str(), 33757, player )
+  windfury_weapon_melee_attack_t( shaman_t* player, const std::string& n, weapon_t* w ) :
+    shaman_melee_attack_t( n.c_str(), 33757, player )
   {
     weapon           = w;
     school           = SCHOOL_PHYSICAL;
@@ -1695,10 +1695,10 @@ struct windfury_weapon_attack_t : public shaman_attack_t
   }
 };
 
-struct unleash_wind_t : public shaman_attack_t
+struct unleash_wind_t : public shaman_melee_attack_t
 {
   unleash_wind_t( shaman_t* player ) :
-    shaman_attack_t( "unleash_wind", 73681, player )
+    shaman_melee_attack_t( "unleash_wind", 73681, player )
   {
     background            = true;
     windfury              = false;
@@ -1715,22 +1715,22 @@ struct unleash_wind_t : public shaman_attack_t
     if ( actor -> main_hand_weapon.buff_type == WINDFURY_IMBUE )
     {
       weapon = &( actor -> main_hand_weapon );
-      shaman_attack_t::execute();
+      shaman_melee_attack_t::execute();
     }
 
     if ( actor -> off_hand_weapon.type != WEAPON_NONE &&
          actor -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
     {
       weapon = &( actor -> off_hand_weapon );
-      shaman_attack_t::execute();
+      shaman_melee_attack_t::execute();
     }
   }
 };
 
-struct stormstrike_attack_t : public shaman_attack_t
+struct stormstrike_melee_attack_t : public shaman_melee_attack_t
 {
-  stormstrike_attack_t( shaman_t* player, const char* n, uint32_t id, weapon_t* w ) :
-    shaman_attack_t( n, id, player )
+  stormstrike_melee_attack_t( shaman_t* player, const char* n, uint32_t id, weapon_t* w ) :
+    shaman_melee_attack_t( n, id, player )
   {
     background           = true;
     may_miss             = false;
@@ -1745,23 +1745,23 @@ struct stormstrike_attack_t : public shaman_attack_t
 // Shaman Attack
 // ==========================================================================
 
-action_state_t* shaman_attack_t::new_state()
+action_state_t* shaman_melee_attack_t::new_state()
 {
   return new shaman_attack_state_t( this, target );
 }
 
-// shaman_attack_t::execute =================================================
+// shaman_melee_attack_t::execute =================================================
 
-void shaman_attack_t::execute()
+void shaman_melee_attack_t::execute()
 {
-  attack_t::execute();
+  melee_attack_t::execute();
 
   actor -> buff.spiritwalkers_grace -> up();
 }
 
-void shaman_attack_t::impact_s( action_state_t* state )
+void shaman_melee_attack_t::impact_s( action_state_t* state )
 {
-  attack_t::impact_s( state );
+  melee_attack_t::impact_s( state );
 
   if ( result_is_hit( state -> result ) && ! proc )
   {
@@ -1791,18 +1791,18 @@ void shaman_attack_t::impact_s( action_state_t* state )
   }
 }
 
-// shaman_attack_t::cost_reduction ==========================================
+// shaman_melee_attack_t::cost_reduction ==========================================
 
-double shaman_attack_t::cost_reduction() const
+double shaman_melee_attack_t::cost_reduction() const
 {
   return actor -> buff.shamanistic_rage -> effectN( 1 ).percent();
 }
 
-// shaman_attack_t::cost ====================================================
+// shaman_melee_attack_t::cost ====================================================
 
-double shaman_attack_t::cost() const
+double shaman_melee_attack_t::cost() const
 {
-  double    c = attack_t::cost();
+  double    c = melee_attack_t::cost();
   c *= 1.0 + cost_reduction();
   if ( c < 0 ) c = 0.0;
   return c;
@@ -1810,12 +1810,12 @@ double shaman_attack_t::cost() const
 
 // Melee Attack =============================================================
 
-struct melee_t : public shaman_attack_t
+struct melee_t : public shaman_melee_attack_t
 {
   int sync_weapons;
 
   melee_t( const char* name, shaman_t* player, int sw ) :
-    shaman_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
+    shaman_melee_attack_t( name, player, SCHOOL_PHYSICAL, TREE_NONE, false ), sync_weapons( sw )
   {
     may_crit    = true;
     background  = true;
@@ -1828,7 +1828,7 @@ struct melee_t : public shaman_attack_t
 
   virtual timespan_t execute_time() const
   {
-    timespan_t t = shaman_attack_t::execute_time();
+    timespan_t t = shaman_melee_attack_t::execute_time();
     if ( ! player -> in_combat )
     {
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.2 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
@@ -1845,13 +1845,13 @@ struct melee_t : public shaman_attack_t
     }
     else
     {
-      shaman_attack_t::execute();
+      shaman_melee_attack_t::execute();
     }
   }
 
   void impact_s( action_state_t* state )
   {
-    shaman_attack_t::impact_s( state );
+    shaman_melee_attack_t::impact_s( state );
 
     if ( state -> result == RESULT_CRIT )
       actor -> buff.flurry -> trigger( actor -> buff.flurry -> initial_stacks() );
@@ -1859,7 +1859,7 @@ struct melee_t : public shaman_attack_t
 
   void schedule_execute()
   {
-    shaman_attack_t::schedule_execute();
+    shaman_melee_attack_t::schedule_execute();
     // Clipped swings do not eat unleash wind buffs
     if ( time_to_execute > timespan_t::zero && ! actor -> executing )
       actor -> buff.unleash_wind -> decrement();
@@ -1868,12 +1868,12 @@ struct melee_t : public shaman_attack_t
 
 // Auto Attack ==============================================================
 
-struct auto_attack_t : public shaman_attack_t
+struct auto_melee_attack_t : public shaman_melee_attack_t
 {
   int sync_weapons;
 
-  auto_attack_t( shaman_t* player, const std::string& options_str ) :
-    shaman_attack_t( "auto_attack", player, SCHOOL_PHYSICAL, TREE_NONE, false ),
+  auto_melee_attack_t( shaman_t* player, const std::string& options_str ) :
+    shaman_melee_attack_t( "auto_attack", player, SCHOOL_PHYSICAL, TREE_NONE, false ),
     sync_weapons( 0 )
   {
     option_t options[] =
@@ -1915,7 +1915,7 @@ struct auto_attack_t : public shaman_attack_t
 
 // Lava Lash Attack =========================================================
 
-struct lava_lash_t : public shaman_attack_t
+struct lava_lash_t : public shaman_melee_attack_t
 {
   // Lava Lash multiplier calculation from
   // http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p11/#post1935780
@@ -1940,7 +1940,7 @@ struct lava_lash_t : public shaman_attack_t
   };
 
   lava_lash_t( shaman_t* player, const std::string& options_str ) :
-    shaman_attack_t( "lava_lash", "Lava Lash", player )
+    shaman_melee_attack_t( "lava_lash", "Lava Lash", player )
   {
     check_spec( TREE_ENHANCEMENT );
 
@@ -1960,7 +1960,7 @@ struct lava_lash_t : public shaman_attack_t
 
   void impact_s( action_state_t* state )
   {
-    shaman_attack_t::impact_s( state );
+    shaman_melee_attack_t::impact_s( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -1978,10 +1978,10 @@ struct lava_lash_t : public shaman_attack_t
 
 // Primal Strike Attack =====================================================
 
-struct primal_strike_t : public shaman_attack_t
+struct primal_strike_t : public shaman_melee_attack_t
 {
   primal_strike_t( shaman_t* player, const std::string& options_str ) :
-    shaman_attack_t( "primal_strike", "Primal Strike", player )
+    shaman_melee_attack_t( "primal_strike", "Primal Strike", player )
   {
     parse_options( NULL, options_str );
 
@@ -1993,7 +1993,7 @@ struct primal_strike_t : public shaman_attack_t
 
   void impact_s( action_state_t* state )
   {
-    shaman_attack_t::impact_s( state );
+    shaman_melee_attack_t::impact_s( state );
     if ( result_is_hit( state -> result ) )
       trigger_static_shock( this );
   }
@@ -2001,13 +2001,13 @@ struct primal_strike_t : public shaman_attack_t
 
 // Stormstrike Attack =======================================================
 
-struct stormstrike_t : public shaman_attack_t
+struct stormstrike_t : public shaman_melee_attack_t
 {
-  stormstrike_attack_t * stormstrike_mh;
-  stormstrike_attack_t * stormstrike_oh;
+  stormstrike_melee_attack_t * stormstrike_mh;
+  stormstrike_melee_attack_t * stormstrike_oh;
 
   stormstrike_t( shaman_t* player, const std::string& options_str ) :
-    shaman_attack_t( "stormstrike", "Stormstrike", player ),
+    shaman_melee_attack_t( "stormstrike", "Stormstrike", player ),
     stormstrike_mh( 0 ), stormstrike_oh( 0 )
   {
     check_spec( TREE_ENHANCEMENT );
@@ -2021,13 +2021,13 @@ struct stormstrike_t : public shaman_attack_t
     cooldown             = actor -> cooldown.strike;
     cooldown -> duration = actor -> dbc.spell( id ) -> cooldown();
 
-    // Actual damaging attacks are done by stormstrike_attack_t
-    stormstrike_mh = new stormstrike_attack_t( actor, "stormstrike_mh", effect_trigger_spell( 2 ), &( actor -> main_hand_weapon ) );
+    // Actual damaging attacks are done by stormstrike_melee_attack_t
+    stormstrike_mh = new stormstrike_melee_attack_t( actor, "stormstrike_mh", effect_trigger_spell( 2 ), &( actor -> main_hand_weapon ) );
     add_child( stormstrike_mh );
 
     if ( actor -> off_hand_weapon.type != WEAPON_NONE )
     {
-      stormstrike_oh = new stormstrike_attack_t( actor, "stormstrike_oh", effect_trigger_spell( 3 ), &( actor -> off_hand_weapon ) );
+      stormstrike_oh = new stormstrike_melee_attack_t( actor, "stormstrike_oh", effect_trigger_spell( 3 ), &( actor -> off_hand_weapon ) );
       add_child( stormstrike_oh );
     }
   }
@@ -2035,8 +2035,8 @@ struct stormstrike_t : public shaman_attack_t
   void impact_s( action_state_t* state )
   {
     // Bypass shaman-specific attack based procs and co for this spell, the relevant ones
-    // are handled by stormstrike_attack_t
-    attack_t::impact_s( state );
+    // are handled by stormstrike_melee_attack_t
+    melee_attack_t::impact_s( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -3449,10 +3449,10 @@ struct windfury_weapon_t : public shaman_spell_t
     may_miss     = false;
 
     if ( main )
-      actor -> windfury_mh = new windfury_weapon_attack_t( actor, "windfury_mh", &( actor -> main_hand_weapon ) );
+      actor -> windfury_mh = new windfury_weapon_melee_attack_t( actor, "windfury_mh", &( actor -> main_hand_weapon ) );
 
     if ( off )
-      actor -> windfury_oh = new windfury_weapon_attack_t( actor, "windfury_oh", &( actor -> off_hand_weapon ) );
+      actor -> windfury_oh = new windfury_weapon_melee_attack_t( actor, "windfury_oh", &( actor -> off_hand_weapon ) );
   }
 
   virtual void execute()
@@ -3700,7 +3700,7 @@ void shaman_t::create_options()
 action_t* shaman_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
+  if ( name == "auto_attack"             ) return new              auto_melee_attack_t( this, options_str );
   if ( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
   if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );

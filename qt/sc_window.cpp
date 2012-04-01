@@ -79,7 +79,6 @@ static OptionEntry* getDebuffOptions()
     { "Poisoned",               "override.poisoned",              "Deadly Poison\nSerpent Sting"                                                                                  },
     { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                                                                 },
     { "Reduced Attack Speed",   "override.thunder_clap",          "Dust Cloud\nEarth Shock\nFrost Fever\nInfected Wounds\nJudgements of the Just\nTailspin\nThunder Clap\nWaylay" },
-    { "Spell Critical Strike",  "override.critical_mass",         "Critical Mass\nShadow and Flame"                                                                               },
     { "Spell Damage",           "override.earth_and_moon",        "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger\nFire Breath\nLightning Breath\nMaster Poisoner"      },
     { NULL, NULL, NULL }
   };

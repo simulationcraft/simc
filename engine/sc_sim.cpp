@@ -1838,7 +1838,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.burning_wrath          = optimal_raid;
   overrides.communion              = optimal_raid;
   overrides.corrosive_spit         = optimal_raid;
-  overrides.critical_mass          = optimal_raid;
   overrides.curse_of_elements      = optimal_raid;
   overrides.demonic_pact           = optimal_raid;
   overrides.demoralizing_roar      = optimal_raid;
@@ -1860,7 +1859,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.improved_icy_talons    = optimal_raid;
   overrides.hunting_party          = optimal_raid;
   overrides.roar_of_courage        = optimal_raid;
-  overrides.shadow_and_flame       = optimal_raid;
   overrides.infected_wounds        = optimal_raid;
   overrides.judgements_of_the_just = optimal_raid;
   overrides.leader_of_the_pack     = optimal_raid;
@@ -2102,7 +2100,6 @@ void sim_t::create_options()
     { "bloodlust_time",                   OPT_INT,    &( bloodlust_time                           ) },
     { "override.communion",               OPT_BOOL,   &( overrides.communion                      ) },
     { "override.corrosive_spit",          OPT_BOOL,   &( overrides.corrosive_spit                 ) },
-    { "override.critical_mass",           OPT_BOOL,   &( overrides.critical_mass                  ) },
     { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
     { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
     { "override.demonic_pact",            OPT_BOOL,   &( overrides.demonic_pact                   ) },
@@ -2126,7 +2123,6 @@ void sim_t::create_options()
     { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
     { "override.improved_icy_talons",     OPT_BOOL,   &( overrides.improved_icy_talons            ) },
     { "override.hunting_party",           OPT_BOOL,   &( overrides.hunting_party                  ) },
-    { "override.shadow_and_flame",        OPT_BOOL,   &( overrides.shadow_and_flame               ) },
     { "override.infected_wounds",         OPT_BOOL,   &( overrides.infected_wounds                ) },
     { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },
     { "override.leader_of_the_pack",      OPT_BOOL,   &( overrides.leader_of_the_pack             ) },
