@@ -11,7 +11,7 @@
 
 #if SC_MAGE == 1
 
-enum rotation_t { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
+enum mage_rotation_e { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
 struct mage_targetdata_t : public targetdata_t
 {
@@ -183,7 +183,7 @@ struct mage_t : public player_t
   // Rotation (DPS vs DPM)
   struct rotation_t
   {
-    int    current;
+    mage_rotation_e current;
     double mana_gain;
     double dps_mana_loss;
     double dpm_mana_loss;

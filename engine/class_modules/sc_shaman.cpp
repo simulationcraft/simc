@@ -25,9 +25,9 @@
 
 #if SC_SHAMAN == 1
 
-enum totem_type { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
+enum totem_type_e { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 
-enum imbue_type_t { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
+enum imbue_type_e { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
 
 struct shaman_targetdata_t : public targetdata_t
 {
@@ -2999,9 +2999,9 @@ struct shaman_totem_t : public shaman_spell_t
 {
   timespan_t totem_duration;
   double totem_bonus;
-  totem_type totem;
+  totem_type_e totem;
 
-  shaman_totem_t( const char * name, const char * totem_name, shaman_t* player, const std::string& options_str, totem_type t ) :
+  shaman_totem_t( const char * name, const char * totem_name, shaman_t* player, const std::string& options_str, totem_type_e t ) :
     shaman_spell_t( name, totem_name, player, options_str ), totem_duration( timespan_t::zero ), totem_bonus( 0 ), totem( t )
   {
     is_totem             = true;

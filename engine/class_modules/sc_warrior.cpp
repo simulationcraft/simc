@@ -109,7 +109,7 @@ struct warrior_t : public player_t
   action_t* active_deep_wounds;
   action_t* active_retaliation;
   action_t* active_opportunity_strike;
-  int       active_stance;
+  warrior_stance  active_stance;
 
   // Buffs
   buff_t* buffs_bastion_of_defense;
@@ -2826,12 +2826,12 @@ struct shield_block_t : public warrior_spell_t
 
 struct stance_t : public warrior_spell_t
 {
-  int switch_to_stance;
+  warrior_stance switch_to_stance;
   std::string stance_str;
 
   stance_t( warrior_t* p, const std::string& options_str ) :
     warrior_spell_t( "stance", p ),
-    switch_to_stance( 0 ), stance_str( "" )
+    switch_to_stance( STANCE_BATTLE ), stance_str( "" )
   {
     option_t options[] =
     {
@@ -2848,11 +2848,6 @@ struct stance_t : public warrior_spell_t
         switch_to_stance = STANCE_BERSERKER;
       else if ( stance_str == "def" || stance_str == "defensive" )
         switch_to_stance = STANCE_DEFENSE;
-    }
-    else
-    {
-      // Default to Battle Stance
-      switch_to_stance = STANCE_BATTLE;
     }
 
     harmful = false;

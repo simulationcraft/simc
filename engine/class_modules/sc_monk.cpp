@@ -11,7 +11,7 @@
 
 #if SC_MONK == 1
 
-enum monk_stance { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
+enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
 struct monk_targetdata_t : public targetdata_t
 {
@@ -29,7 +29,7 @@ void register_monk_targetdata( sim_t* /* sim */ )
 
 struct monk_t : public player_t
 {
-  int active_stance;
+  monk_stance_e active_stance;
 
   // Buffs
   //buff_t* buffs_<buffname>;
@@ -337,12 +337,12 @@ bool monk_spell_t::ready()
 
 struct stance_t : public monk_spell_t
 {
-  int switch_to_stance;
+  monk_stance_e switch_to_stance;
   std::string stance_str;
 
   stance_t( monk_t* p, const std::string& options_str ) :
     monk_spell_t( "stance", ( uint32_t ) 0, p ),
-    switch_to_stance( 0 ), stance_str( "" )
+    switch_to_stance( STANCE_FIERCE_TIGER ), stance_str( "" )
   {
     option_t options[] =
     {
@@ -359,11 +359,6 @@ struct stance_t : public monk_spell_t
         switch_to_stance = STANCE_FIERCE_TIGER;
       else if ( stance_str == "heal" )
         switch_to_stance = STANCE_HEAL;
-    }
-    else
-    {
-      // Default to Fierce Tiger Stance
-      switch_to_stance = STANCE_FIERCE_TIGER;
     }
 
     harmful = false;

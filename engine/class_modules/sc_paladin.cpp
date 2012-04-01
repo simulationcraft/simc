@@ -11,7 +11,7 @@
 
 #if SC_PALADIN == 1
 
-enum seal_type_t
+enum seal_type_e
 {
   SEAL_NONE=0,
   SEAL_OF_JUSTICE,
@@ -53,7 +53,7 @@ void register_paladin_targetdata( sim_t* sim )
 struct paladin_t : public player_t
 {
   // Active
-  int       active_seal;
+  seal_type_e active_seal;
   heal_t*   active_beacon_of_light;
   heal_t*   active_enlightened_judgements;
   action_t* active_hand_of_light_proc;
@@ -1372,9 +1372,9 @@ struct hand_of_light_proc_t : public attack_t
 
 struct paladin_seal_t : public paladin_attack_t
 {
-  int seal_type;
+  seal_type_e seal_type;
 
-  paladin_seal_t( paladin_t* p, const char* n, int st, const std::string& options_str )
+  paladin_seal_t( paladin_t* p, const char* n, seal_type_e st, const std::string& options_str )
     : paladin_attack_t( n, p ), seal_type( st )
   {
     parse_options( NULL, options_str );
@@ -1735,6 +1735,9 @@ struct judgement_t : public paladin_attack_t
       return seal_of_righteousness;
     case SEAL_OF_TRUTH:
       return seal_of_truth;
+    default:
+      return 0;
+      break;
     }
     return 0;
   }

@@ -37,7 +37,7 @@ struct hunter_t : public player_t
 {
   // Active
   hunter_pet_t* active_pet;
-  int           active_aspect;
+  aspect_type   active_aspect;
   action_t*     active_piercing_shots;
   action_t*     active_vishanka;
 
