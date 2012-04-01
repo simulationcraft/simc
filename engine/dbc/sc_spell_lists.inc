@@ -228,23 +228,19 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 15 abilities
+    // Pet tree, 11 abilities
     {
-       90337, // Bad Manner
        17253, // Bite (Basic Attack)
        93433, // Burrow Attack (Exotic Ability)
-       90363, // Embrace of the Shale Spider (Exotic Ability)
        93434, // Horn Toss (Exotic Ability)
        90327, // Lock Jaw (Special Ability)
        90347, // Play (Bonus Ability)
        90364, // Qiraji Fortitude (Exotic Ability)
        94019, // Rest (Bonus Ability)
-       49966, // Smack (Basic Attack)
        91644, // Snatch (Special Ability)
        90314, // Tailspin (Special Ability)
        90309, // Terrifying Roar (Special Ability)
        94022, // Trick (Bonus Ability)
-       96201, // Web Wrap (Special Ability)
            0,
     },
   },
@@ -533,11 +529,15 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 3 abilities
+    // Pet tree, 7 abilities
     {
+       36213, // Angered Earth
        57984, // Fire Blast
        12470, // Fire Nova
+      117588, // Fire Nova
        13376, // Fire Shield
+      118297, // Immolate
+      118345, // Pulverize
            0,
     },
   },

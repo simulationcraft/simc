@@ -921,15 +921,15 @@ class SpellDataGenerator(DataGenerator):
     # General
     _skill_categories = [
           0,
-        803,    # Warrior
+        840,    # Warrior
         800,    # Paladin
         795,    # Hunter
-        797,    # Rogue
+        921,    # Rogue
         804,    # Priest
         796,    # Death Knight
-        801,    # Shaman
-        799,    # Mage
-        802,    # Warlock
+        924,    # Shaman
+        904,    # Mage
+        849,    # Warlock
         829,    # Monk
         798,    # Druid
     ]
@@ -938,13 +938,13 @@ class SpellDataGenerator(DataGenerator):
         ( ),
         ( ),         # Warrior
         ( ),         # Paladin
-        ( 653, 210, 818, 655, 211, 213, 209, 214, 212, 811, 763, 780, 787, 781, 786, 783, 788, 808, 270, 215, 654, 815, 775, 764, 217, 767, 236, 768, 817, 203, 765, 218, 251, 766, 656, 208, 785, 784 ),       # Hunter
+        ( 203, 208, 209, 210, 211, 212, 213, 214, 215, 217, 218, 236, 251, 270, 653, 654, 655, 656, 763, 764, 765, 766, 767, 768, 775, 780, 781, 783, 784, 785, 786, 787, 788, 808, 811 ),       # Hunter
         ( ),         # Rogue
         ( ),         # Priest
         ( 782, ),    # Death Knight
-        ( ),         # Shaman
+        ( 962, 963 ),         # Shaman
         ( 805, ),    # Mage
-        ( 207, 761, 206, 204, 205, 189, 188 ),  # Warlock
+        ( 188, 189, 204, 205, 206, 207, 761 ),  # Warlock
         ( ),         # Monk
         ( ),         # Druid
     ]
@@ -952,18 +952,18 @@ class SpellDataGenerator(DataGenerator):
     # Specialization categories, Spec0 | Spec1 | Spec2 
     # Note, these are reset for MoP
     _spec_skill_categories = [
-        ( ),
-        (  26, 256, 257, 0 ),  # Warrior
-        ( 594, 267, 184, 0 ),  # Paladin
-        (  50, 163,  51, 0 ),  # Hunter
-        ( 253,  38,  39, 0 ),  # Rogue
-        ( 613,  56,  78, 0 ),  # Priest
-        ( 770, 771, 772, 0 ),  # Death Knight
-        ( 375, 373, 374, 0 ),  # Shaman
-        ( 237,   8,   6, 0 ),  # Mage
-        ( 355, 354, 593, 0 ),  # Warlock
-        ( ), 
-        ( 574, 134, 573, 0 ),  # Druid
+        (),
+        (  71,  72,  73,   0 ), # Warrior
+        (  65,  66,  70,   0 ), # Paladin
+        ( 254, 255, 256,   0 ), # Hunter
+        ( 259, 260, 261,   0 ), # Rogue
+        ( 256, 257, 258,   0 ), # Priest
+        ( 250, 251, 252,   0 ), # Death Knight
+        ( 262, 263, 264,   0 ), # Shaman
+        (  62,  63,  64,   0 ), # Mage
+        ( 265, 266, 267,   0 ), # Warlock
+        ( 268, 270, 269,   0 ), # Monk
+        ( 102, 103, 104, 105 ), # Druid
     ]
     
     _race_categories = [
@@ -1097,38 +1097,6 @@ class SpellDataGenerator(DataGenerator):
         self._dbc.append( 'ChrSpecialization' )
         self._dbc.append( 'SpellEffectScaling' )
         
-        # Mop General skill categories
-        self._skill_categories = [
-              0,
-            840,    # Warrior
-            800,    # Paladin
-            795,    # Hunter
-            921,    # Rogue
-            804,    # Priest
-            796,    # Death Knight
-            924,    # Shaman
-            904,    # Mage
-            849,    # Warlock
-            829,    # Monk
-            798,    # Druid
-        ]
-        
-        # MoP Spec specific categories
-        self._spec_skill_categories = [
-            (),
-            (  71,  72,  73,   0 ), # Warrior
-            (  65,  66,  70,   0 ), # Paladin
-            ( 254, 255, 256,   0 ), # Hunter
-            ( 259, 260, 261,   0 ), # Rogue
-            ( 256, 257, 258,   0 ), # Priest
-            ( 250, 251, 252,   0 ), # Death Knight
-            ( 262, 263, 264,   0 ), # Shaman
-            (  62,  63,  64,   0 ), # Mage
-            ( 265, 266, 267,   0 ), # Warlock
-            ( 268, 270, 269,   0 ), # Monk
-            ( 102, 103, 104, 105 ), # Druid
-        ]
-
         DataGenerator.__init__(self, options)
 
     def initialize(self):
@@ -1366,6 +1334,9 @@ class SpellDataGenerator(DataGenerator):
             mask_class_category = self.class_mask_by_skill(ability_data.id_skill)
             if mask_class_category == 0:
                 mask_class_category = self.class_mask_by_spec_skill(ability_data.id_skill)
+            
+            if mask_class_category == 0:
+                mask_class_category = self.class_mask_by_pet_skill(ability_data.id_skill)
 
             # Guess race based on skill category identifier
             mask_race_category = self.race_mask_by_skill(ability_data.id_skill)
@@ -2173,13 +2144,16 @@ class SpellListGenerator(SpellDataGenerator):
             
         # Skip passive spells
         if spell.flags & 0x40:
+            self.debug( "Spell id %u (%s) marked as passive" % ( spell.id, spell.name ) )
             return False
             
         # Skip by possible indicator for spellbook visibility
         if spell.flags_4 & 0x8000:
+            self.debug( "Spell id %u (%s) marked as hidden in spellbook" % ( spell.id, spell.name ) )
             return False;
         
         # Skip spells without any resource cost and category
+        
         found_power = False
         for power in spell._powers:
             if not power:
@@ -2190,23 +2164,27 @@ class SpellListGenerator(SpellDataGenerator):
                 break
         
         if not found_power and spell.id_rune_cost == 0 and spell.id_categories == 0:
+            self.debug( "Spell id %u (%s) has no power requirements" % ( spell.id, spell.name ) )
             return False
         
         # Make sure rune cost makes sense, even if the rune cost id is valid
         if spell.id_rune_cost > 0:
             src = self._spellrunecost_db[spell.id_rune_cost]
             if src.rune_cost_1 == 0 and src.rune_cost_2 == 0 and src.rune_cost_3 == 0:
+                self.debug( "Spell id %u (%s) has no sensible rune cost" % ( spell.id, spell.name ) )
                 return False
                 
         # Filter out any "Rank x" string, as there should no longer be such things. This should filter out 
         # some silly left over? things, or things not shown to player anyhow, so should be all good.
         if spell.ofs_rank > 0 and 'Rank ' in spell.rank:
+            self.debug( "Spell id %u (%s) has a rank defined" % ( spell.id, spell.name ) )
             return False
         
         # Let's not accept spells that have over 100y range, as they cannot really be base abilities then
         if spell.id_range > 0:
             range = self._spellrange_db[spell.id_range]
             if range.max_range > 100.0 or range.max_range_2 > 100.0:
+                self.debug( "Spell id %u (%s) has a high range (%f, %f)" % ( spell.id, spell.name, range.max_range, range.max_range_2 ) )
                 return False
         
         return True
@@ -2217,8 +2195,8 @@ class SpellListGenerator(SpellDataGenerator):
         spell_tree = -1
         spell_tree_name = ''
         for ability_id, ability_data in self._skilllineability_db.iteritems():
-            if ability_data.max_value > 0 or ability_data.min_value > 0:
-                continue
+            #if ability_data.max_value > 0 or ability_data.min_value > 0:
+            #    continue
 
             if ability_data.id_skill in SpellDataGenerator._skill_category_blacklist:
                 continue

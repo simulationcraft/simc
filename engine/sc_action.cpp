@@ -153,8 +153,7 @@ void action_t::init_action_t_()
   state_cache = 0;
   state = 0;
 
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-    base_costs[ i ] = 0.0;
+  range::fill( base_costs, 0.0 );
 
   init_dot( name_str );
 
