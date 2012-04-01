@@ -1588,7 +1588,6 @@ void player_t::init_buffs()
 {
   buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
   buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1, timespan_t::from_seconds( 4.0 ) );
-  buffs.corruption_absolute       = new buff_t( this, 82170, "corruption_absolute"          );
   buffs.dark_intent               = new buff_t( this, 85767, "dark_intent"                  );
   buffs.dark_intent_feedback      = new buff_t( this, 85759, "dark_intent_feedback"         );
   buffs.essence_of_the_red        = new buff_t( this,        "essence_of_the_red"           );
@@ -2488,9 +2487,6 @@ double player_t::composite_player_multiplier( const school_type_e school, action
       m *= 1.30;
     }
 
-    if ( buffs.corruption_absolute -> up() )
-      m *= 2.0;
-
     if ( buffs.tricks_of_the_trade -> check() )
     {
       // because of the glyph we now track the damage % increase in the buff value
@@ -2782,10 +2778,6 @@ void player_t::combat_begin()
   if ( sim -> overrides.essence_of_the_red )
   {
     buffs.essence_of_the_red -> trigger();
-  }
-  if ( sim -> overrides.corruption_absolute )
-  {
-    buffs.corruption_absolute -> trigger();
   }
   if ( sim -> overrides.strength_of_wrynn )
   {

@@ -73,9 +73,6 @@ timespan_t spell_base_t::execute_time() const
   if ( ! harmful && ! player -> in_combat )
     return timespan_t::zero;
 
-  if ( player -> buffs.corruption_absolute -> up() )
-    return timespan_t::zero;
-
   if ( t <= timespan_t::zero ) return timespan_t::zero;
   t *= haste();
 
