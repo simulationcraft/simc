@@ -187,7 +187,7 @@ void stateless_travel_event_t::execute()
     action -> travel_event = NULL;
 }
 
-void spell_t::calculate_result_s( action_state_t* state )
+void spell_base_t::calculate_result_s( action_state_t* state )
 {
   state -> result        = RESULT_NONE;
   state -> result_amount = 0;
@@ -222,6 +222,11 @@ void spell_t::calculate_result_s( action_state_t* state )
                    player -> name(),
                    name(),
                    util_t::result_type_string( state -> result ) );
+}
+
+double spell_base_t::crit_chance_s( const action_state_t* state ) const
+{
+  return state -> total_crit();
 }
 
 void action_t::schedule_travel_s( action_state_t* s )
@@ -331,11 +336,6 @@ double spell_t::miss_chance_s( const action_state_t* state ) const
   if ( miss > 0.99 ) miss = 0.99;
 
   return miss;
-}
-
-double spell_t::crit_chance_s( const action_state_t* state ) const
-{
-  return state -> total_crit();
 }
 
 double attack_t::glance_chance_s( const action_state_t* state ) const
@@ -510,43 +510,6 @@ int attack_t::build_table_s( std::array<double,RESULT_MAX>&        chances,
   }
 
   return num_results;
-}
-
-double heal_t::crit_chance_s( const action_state_t* state ) const
-{
-  return state -> total_crit();
-}
-
-void heal_t::calculate_result_s( action_state_t* state )
-{
-  state -> result_amount = 0;
-  state -> result = RESULT_NONE;
-
-  if ( ! state -> action -> harmful ) return;
-
-  state -> result = RESULT_HIT;
-
-  if ( state -> action -> may_crit )
-  {
-    if ( state -> action -> rng_result -> roll( crit_chance_s( state ) ) )
-    {
-      state -> result = RESULT_CRIT;
-    }
-  }
-
-  if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( state -> result ) );
-}
-
-void absorb_t::calculate_result_s( action_state_t* state )
-{
-  state -> result_amount = 0;
-  state -> result = RESULT_NONE;
-
-  if ( ! state -> action -> harmful ) return;
-
-  state -> result = RESULT_HIT;
-
-  if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( state -> result ) );
 }
 
 double action_t::calculate_direct_damage_s( int chain_target, const action_state_t* state )

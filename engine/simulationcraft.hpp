@@ -5317,12 +5317,12 @@ private:
   void init_action_t_();
 
 public:
-  action_t( action_type_e, const char* name, player_t* p=0, resource_type_e=RESOURCE_NONE,
+  action_t( action_type_e, const std::string& name, player_t* p=0, resource_type_e=RESOURCE_NONE,
             school_type_e=SCHOOL_NONE, talent_tree_type_e=TREE_NONE, bool special=false );
   action_t( action_type_e, const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=false );
-  action_t( action_type_e, const char* name, const char* sname, player_t* p=0,
+  action_t( action_type_e, const std::string& name, const char* sname, player_t* p=0,
             talent_tree_type_e=TREE_NONE, bool special=false );
-  action_t( action_type_e, const char* name, const uint32_t id, player_t* p=0,
+  action_t( action_type_e, const std::string& name, const uint32_t id, player_t* p=0,
             talent_tree_type_e=TREE_NONE, bool special=false );
   virtual ~action_t();
   void init_dot( const std::string& dot_name );
@@ -5701,10 +5701,10 @@ private:
 
 public:
   attack_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE, bool special=false );
-  attack_t( const char* n=0, player_t* p=0, resource_type_e r=RESOURCE_NONE,
+  attack_t( const std::string& name=0, player_t* p=0, resource_type_e r=RESOURCE_NONE,
             school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special=false );
-  attack_t( const char* name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
-  attack_t( const char* name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
+  attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
+  attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special=false );
 
   // Attack Overrides
   virtual double haste() const;
@@ -5717,7 +5717,7 @@ public:
                               std::array<result_type_e,RESULT_MAX>& results );
   virtual void   calculate_result();
   virtual void   execute();
-
+  virtual void   init();
   virtual double total_expertise() const;
 
   virtual double   miss_chance( int delta_level ) const;
@@ -5742,43 +5742,63 @@ public:
   virtual double   crit_chance_s( const action_state_t* ) const;
 };
 
-// Spell ====================================================================
+// Spell Base ====================================================================
 
-struct spell_t : public action_t
+struct spell_base_t : public action_t
 {
 private:
-  void init_spell_t_();
+  void init_spell_base_t_();
 
 public:
-  spell_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE );
-  spell_t( const char* n=0, player_t* p=0, resource_type_e=RESOURCE_NONE,
+  spell_base_t( action_type_e, const spell_id_t& s, talent_tree_type_e=TREE_NONE );
+  spell_base_t( action_type_e, const std::string& n=0, player_t* p=0, resource_type_e=RESOURCE_NONE,
            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE );
-  spell_t( const char* name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE );
-  spell_t( const char* name, const uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE );
+  spell_base_t( action_type_e, const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE );
+  spell_base_t( action_type_e, const std::string& name, const uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE );
 
   // Spell Overrides
   virtual double haste() const;
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const;
   virtual void   player_buff();
-  virtual void   target_debuff( player_t* t, dmg_type_e );
   virtual void   calculate_result();
   virtual void   execute();
-
-  virtual double miss_chance( int delta_level ) const;
   virtual double crit_chance( int delta_level ) const;
-
   virtual void   schedule_execute();
+  virtual void   init();
 
   /* New stuffs */
   virtual void calculate_result_s( action_state_t* );
-  virtual double miss_chance_s( const action_state_t* ) const;
   virtual double crit_chance_s( const action_state_t* ) const;
+};
+
+// Harmful Spell ====================================================================
+
+struct spell_t : public spell_base_t
+{
+private:
+  void init_spell_t_();
+
+public:
+  spell_t( const spell_id_t& s, talent_tree_type_e=TREE_NONE );
+  spell_t( const std::string& n=0, player_t* p=0, resource_type_e=RESOURCE_NONE,
+           school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE );
+  spell_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE );
+  spell_t( const std::string& name, const uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE );
+
+  // Harmful Spell Overrides
+  virtual void   player_buff();
+  virtual void   target_debuff( player_t* t, dmg_type_e );
+  virtual void   execute();
+  virtual double miss_chance( int delta_level ) const;
+
+  /* New stuffs */
+  virtual double miss_chance_s( const action_state_t* ) const;
 };
 
 // Heal =====================================================================
 
-struct heal_t : public action_t
+struct heal_t : public spell_base_t
 {
   bool group_only;
   // Reporting
@@ -5788,30 +5808,20 @@ private:
   void init_heal_t_();
 
 public:
-  heal_t( const char* n, player_t* player, const char* sname, talent_tree_type_e = TREE_NONE );
-  heal_t( const char* n, player_t* player, const uint32_t id, talent_tree_type_e = TREE_NONE );
+  heal_t( const std::string& n, player_t* player, const char* sname, talent_tree_type_e = TREE_NONE );
+  heal_t( const std::string& n, player_t* player, const uint32_t id, talent_tree_type_e = TREE_NONE );
 
   virtual void player_buff();
-  virtual double haste() const;
-  virtual timespan_t gcd() const;
-  virtual timespan_t execute_time() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount, dmg_type_e, result_type_e );
-  virtual void calculate_result();
-  virtual double crit_chance( int delta_level ) const;
-  virtual void   schedule_execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
   virtual size_t available_targets( std::vector< player_t* >& ) const;
-
-  /* New stuffs */
-  virtual void calculate_result_s( action_state_t* );
-  virtual double crit_chance_s( const action_state_t* ) const;
 };
 
 // Absorb ===================================================================
 
-struct absorb_t : public action_t
+struct absorb_t : public spell_base_t
 {
   // Reporting
   double total_heal, total_actual;
@@ -5820,22 +5830,16 @@ private:
   void init_absorb_t_();
 
 public:
-  absorb_t( const char* n, player_t* player, const char* sname, talent_tree_type_e = TREE_NONE );
-  absorb_t( const char* n, player_t* player, const uint32_t id, talent_tree_type_e = TREE_NONE );
+  absorb_t( const std::string& n, player_t* player, const char* sname, talent_tree_type_e = TREE_NONE );
+  absorb_t( const std::string& n, player_t* player, const uint32_t id, talent_tree_type_e = TREE_NONE );
 
   virtual void player_buff();
-  virtual double haste() const;
-  virtual timespan_t gcd() const;
-  virtual timespan_t execute_time() const;
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                               dmg_type_e, result_type_e impact_result );
-  virtual void calculate_result();
   virtual void impact( player_t*, result_type_e impact_result, double travel_dmg );
-  virtual void schedule_execute();
 
   /* New stuffs */
-  virtual void calculate_result_s( action_state_t* );
   virtual void impact_s( action_state_t* );
 };
 

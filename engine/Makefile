@@ -100,7 +100,9 @@ SRC = \
 	sc_sequence.cpp \
 	sc_set_bonus.cpp \
 	sc_sim.cpp \
-	sc_spell.cpp \
+	sc_spell_base.cpp \
+	sc_harmful_spell.cpp \
+	sc_absorb.cpp \
 	sc_stats.cpp \
 	sc_talent.cpp \
 	sc_target.cpp \

@@ -147,7 +147,13 @@
     <ClCompile Include="engine\sc_sim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_spell.cpp">
+    <ClCompile Include="engine\sc_spell_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\sc_harmful_spell.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\sc_absorb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\dbc\sc_spell_data.cpp">

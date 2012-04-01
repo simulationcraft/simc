@@ -67,7 +67,7 @@ attack_t::attack_t( const spell_id_t& s, talent_tree_type_e t, bool special ) :
   init_attack_t_();
 }
 
-attack_t::attack_t( const char* n, player_t* p, resource_type_e resource,
+attack_t::attack_t( const std::string& n, player_t* p, resource_type_e resource,
                     school_type_e school, talent_tree_type_e tree, bool special ) :
   action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
@@ -75,16 +75,16 @@ attack_t::attack_t( const char* n, player_t* p, resource_type_e resource,
   init_attack_t_();
 }
 
-attack_t::attack_t( const char* name, const char* sname, player_t* p,
+attack_t::attack_t( const std::string& n, const char* sname, player_t* p,
                     talent_tree_type_e t, bool special ) :
-  action_t( ACTION_ATTACK, name, sname, p, t, special ),
+  action_t( ACTION_ATTACK, n, sname, p, t, special ),
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   init_attack_t_();
 }
 
-attack_t::attack_t( const char* name, const uint32_t id, player_t* p, talent_tree_type_e t, bool special ) :
-  action_t( ACTION_ATTACK, name, id, p, t, special ),
+attack_t::attack_t( const std::string& n, const uint32_t id, player_t* p, talent_tree_type_e t, bool special ) :
+  action_t( ACTION_ATTACK, n, id, p, t, special ),
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   init_attack_t_();
@@ -141,6 +141,20 @@ void attack_t::target_debuff( player_t* t, dmg_type_e dt )
   action_t::target_debuff( t, dt );
 
   target_expertise = 0;
+
+  if ( ! no_debuffs )
+  {
+    if ( ! ( school == SCHOOL_PHYSICAL ||
+         school == SCHOOL_BLEED )    )
+    {
+      target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
+                                   std::max( t -> debuffs.earth_and_moon     -> value(),
+                                   std::max( t -> debuffs.ebon_plaguebringer -> value(),
+                                             t -> debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
+
+      if ( t -> debuffs.curse_of_elements -> check() ) target_penetration += 183;
+    }
+  }
 }
 
 // attack_t::total_expertise ================================================
@@ -419,4 +433,16 @@ void attack_t::calculate_result()
 void attack_t::execute()
 {
   action_t::execute();
+}
+
+void attack_t::init()
+{
+  action_t::init();
+
+  if ( base_attack_power_multiplier > 0 &&
+       ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
+    snapshot_flags |= STATE_AP | STATE_TARGET_POWER;
+
+  if ( may_dodge || may_parry )
+    snapshot_flags |= STATE_EXPERTISE;
 }

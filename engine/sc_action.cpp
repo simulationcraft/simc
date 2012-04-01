@@ -30,7 +30,7 @@ void action_t::init_action_t_()
   proc                           = false;
   item_proc                      = false;
   proc_ignores_slot              = false;
-  may_trigger_dtr                = true;
+  may_trigger_dtr                = false;
   discharge_proc                 = false;
   auto_cast                      = false;
   initialized                    = false;
@@ -215,13 +215,13 @@ void action_t::init_dot( const std::string& name )
 }
 
 action_t::action_t( action_type_e      ty,
-                    const char*        n,
+                    const std::string& n,
                     player_t*          p,
                     resource_type_e,
                     school_type_e      s,
                     talent_tree_type_e tr,
                     bool               sp ) :
-  spell_id_t( p, n ),
+  spell_id_t( p, n.c_str() ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
   player( s_player ), target( s_player -> target ), school( s ),
   tree( tr ), special( sp )
@@ -230,12 +230,12 @@ action_t::action_t( action_type_e      ty,
 }
 
 action_t::action_t( action_type_e      ty,
-                    const char*        name,
+                    const std::string& n,
                     const char*        sname,
                     player_t*          p,
                     talent_tree_type_e t,
                     bool               sp ) :
-  spell_id_t( p, name, sname ),
+  spell_id_t( p, n.c_str(), sname ),
   sim( s_player->sim ), type( ty ), name_str( s_token ),
   player( s_player ), target( s_player -> target ), school( get_school_type() ),
   tree( t ), special( sp )
@@ -256,12 +256,12 @@ action_t::action_t( action_type_e      ty,
 }
 
 action_t::action_t( action_type_e      type,
-                    const char*        name,
+                    const std::string& n,
                     const uint32_t     id,
                     player_t*          p,
                     talent_tree_type_e t,
                     bool               sp ) :
-  spell_id_t( p, name, id ),
+  spell_id_t( p, n.c_str(), id ),
   sim( s_player->sim ), type( type ), name_str( s_token ),
   player( s_player ), target( s_player -> target ), school( get_school_type() ),
   tree( t ), special( sp )
@@ -613,15 +613,6 @@ void action_t::target_debuff( player_t* t, dmg_type_e )
 
       }
     }
-    else if ( type == ACTION_SPELL || type == ACTION_ATTACK )
-    {
-      target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
-                                   std::max( t -> debuffs.earth_and_moon     -> value(),
-                                   std::max( t -> debuffs.ebon_plaguebringer -> value(),
-                                             t -> debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
-
-      if ( t -> debuffs.curse_of_elements -> check() ) target_penetration += 88;
-    }
 
     if ( school == SCHOOL_BLEED )
     {
@@ -646,7 +637,8 @@ void action_t::target_debuff( player_t* t, dmg_type_e )
       }
     }
 
-    if ( t -> debuffs.vulnerable -> up() && ( type == ACTION_SPELL || type == ACTION_ATTACK ) ) target_multiplier *= t -> debuffs.vulnerable -> value();
+    if ( t -> debuffs.vulnerable -> up() && ( type == ACTION_SPELL || type == ACTION_ATTACK ) )
+      target_multiplier *= t -> debuffs.vulnerable -> value();
 
   }
 
@@ -1586,29 +1578,6 @@ void action_t::init()
 
     if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
       snapshot_flags |= STATE_DA_ACTION_MUL;
-  }
-
-  switch ( type )
-  {
-  case ACTION_ATTACK:
-    if ( base_attack_power_multiplier > 0 &&
-         ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
-      snapshot_flags |= STATE_AP | STATE_TARGET_POWER;
-
-    if ( may_dodge || may_parry )
-      snapshot_flags |= STATE_EXPERTISE;
-
-    break;
-  case ACTION_SPELL:
-    if ( base_spell_power_multiplier > 0 &&
-         ( direct_power_mod > 0 || tick_power_mod > 0 ) )
-      snapshot_flags |= STATE_SP | STATE_TARGET_POWER;
-
-    if ( num_ticks > 0 && hasted_ticks )
-      snapshot_flags |= STATE_HASTE;
-    break;
-  default:
-    break;
   }
 
   if ( ! target -> is_enemy() )

@@ -596,7 +596,15 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_spell.cpp"
+				RelativePath="engine\sc_spell_base.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_harmful_spell.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\sc_absorb.cpp"
 				>
 			</File>
 			<File
