@@ -34,27 +34,48 @@ void attack_t::init_attack_t_()
   }
 }
 
-attack_t::attack_t( const spell_id_t& s, talent_tree_type_e t, bool special ) :
+// == Attack Constructor by spell_id_t ===============
+
+attack_t::attack_t( const spell_id_t&   s,
+                    talent_tree_type_e  t,
+                    bool                special ) :
   action_t( ACTION_ATTACK, s, t, special )
 {
   init_attack_t_();
 }
 
-attack_t::attack_t( const std::string& n, player_t* p, resource_type_e resource,
-                    school_type_e school, talent_tree_type_e tree, bool special ) :
-  action_t( ACTION_ATTACK, n, p, resource, school, tree, special )
+// == Attack Constructor by without database access ===============
+
+attack_t::attack_t( const std::string&  n,
+                    player_t*           p,
+                    resource_type_e     rt,
+                    school_type_e       s,
+                    talent_tree_type_e  tree,
+                    bool                special ) :
+  action_t( ACTION_ATTACK, n, p, rt, s, tree, special )
 {
   init_attack_t_();
 }
 
-attack_t::attack_t( const std::string& n, const char* sname, player_t* p,
-                    talent_tree_type_e t, bool special ) :
+// == Attack Constructor by Spell Name ===============
+
+attack_t::attack_t( const std::string&  n,
+                    const char*         sname,
+                    player_t*           p,
+                    talent_tree_type_e  t,
+                    bool                special ) :
   action_t( ACTION_ATTACK, n, sname, p, t, special )
 {
   init_attack_t_();
 }
 
-attack_t::attack_t( const std::string& n, const uint32_t id, player_t* p, talent_tree_type_e t, bool special ) :
+// == Attack Constructor by Spell ID ===============
+
+attack_t::attack_t( const std::string&  n,
+                    const uint32_t      id,
+                    player_t*           p,
+                    talent_tree_type_e  t,
+                    bool                special ) :
   action_t( ACTION_ATTACK, n, id, p, t, special )
 {
   init_attack_t_();
@@ -153,7 +174,7 @@ double attack_t::crit_chance( int delta_level ) const
   {
     if ( delta_level > 2 )
     {
-      chance -= ( 0.03 + delta_level * 0.006 );
+      chance -= ( 0.03 + ( delta_level * 0.006 ) );
     }
     else
     {
@@ -197,7 +218,8 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
     crit = crit_chance( delta_level ) + target -> composite_tank_crit( school );
   }
 
-  if ( sim -> debug ) log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit_block=%.3f crit=%.3f",
+  if ( sim -> debug )
+    log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit_block=%.3f crit=%.3f",
                                      name(), miss, dodge, parry, glance, block, crit_block, crit );
 
   double limit = 1.0;
@@ -323,7 +345,8 @@ void attack_t::calculate_result()
     }
   }
 
-  if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+  if ( sim -> debug )
+    log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
 }
 
 void attack_t::init()
@@ -339,28 +362,19 @@ void attack_t::init()
 }
 
 // ==========================================================================
-// Dedmonwakeen's Raid DPS/TPS Simulator.
-// Send questions to natehieter@gmail.com
+// Melee Attack
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
-// ==========================================================================
-// Attack
-// ==========================================================================
-
-// attack_t::attack_t =======================================================
+// melee_attack_t::melee_attack_t =======================================================
 
 void melee_attack_t::init_melee_attack_t_()
 {
-  player_t* p = player;
-
   may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
 
   if ( special )
     may_glance = false;
 
-  if ( p -> position == POSITION_BACK )
+  if ( player -> position == POSITION_BACK )
   {
     may_block = false;
     may_parry = false;
@@ -370,31 +384,49 @@ void melee_attack_t::init_melee_attack_t_()
   if ( range < 0 ) range = 5;
 }
 
-melee_attack_t::melee_attack_t( const spell_id_t& s, talent_tree_type_e t, bool special ) :
+// == Melee Attack Constructor by spell_id_t ===============
+
+melee_attack_t::melee_attack_t( const spell_id_t&   s,
+                                talent_tree_type_e  t,
+                                bool                special ) :
   attack_t( s, t, special )
 {
   init_melee_attack_t_();
 }
 
-melee_attack_t::melee_attack_t( const std::string& n, player_t* p, resource_type_e resource,
-                    school_type_e school, talent_tree_type_e tree, bool special ) :
-  attack_t( n, p, resource, school, tree, special ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+// == Melee Attack Constructor by without database access ===============
+
+melee_attack_t::melee_attack_t( const std::string&  n,
+                                player_t*           p,
+                                resource_type_e     rt,
+                                school_type_e       s,
+                                talent_tree_type_e  tree,
+                                bool                special ) :
+  attack_t( n, p, rt, s, tree, special )
 {
   init_melee_attack_t_();
 }
 
-melee_attack_t::melee_attack_t( const std::string& n, const char* sname, player_t* p,
-                    talent_tree_type_e t, bool special ) :
-  attack_t( n, sname, p, t, special ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+// == Melee Attack Constructor by Spell Name ===============
+
+melee_attack_t::melee_attack_t( const std::string&  n,
+                                const char*         sname,
+                                player_t*           p,
+                                talent_tree_type_e  t,
+                                bool                special ) :
+  attack_t( n, sname, p, t, special )
 {
   init_melee_attack_t_();
 }
 
-melee_attack_t::melee_attack_t( const std::string& n, const uint32_t id, player_t* p, talent_tree_type_e t, bool special ) :
-  attack_t( n, id, p, t, special ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+// == Melee Attack Constructor by Spell ID ===============
+
+melee_attack_t::melee_attack_t( const std::string&  n,
+                                const uint32_t      id,
+                                player_t*           p,
+                                talent_tree_type_e  t,
+                                bool                special ) :
+  attack_t( n, id, p, t, special )
 {
   init_melee_attack_t_();
 }
@@ -464,50 +496,62 @@ double melee_attack_t::glance_chance( int delta_level ) const
 }
 
 // ==========================================================================
-// Dedmonwakeen's Raid DPS/TPS Simulator.
-// Send questions to natehieter@gmail.com
-// ==========================================================================
-
-#include "simulationcraft.hpp"
-
-// ==========================================================================
-// Attack
+// Ranged Attack
 // ==========================================================================
 
 // ranged_attack_t::ranged_attack_t =======================================================
 
 void ranged_attack_t::init_ranged_attack_t_()
 {
-  player_t* p = player;
-
   may_miss = true;
   may_resist = true;
 
-  if ( p -> position == POSITION_RANGED_FRONT )
+  if ( player -> position == POSITION_RANGED_FRONT )
     may_block = true;
 }
 
-ranged_attack_t::ranged_attack_t( const spell_id_t& s, talent_tree_type_e t, bool special ) :
+// == Ranged Attack Constructor by spell_id_t ===============
+
+ranged_attack_t::ranged_attack_t( const spell_id_t&   s,
+                                  talent_tree_type_e  t,
+                                  bool                special ) :
   attack_t( s, t, special )
 {
   init_ranged_attack_t_();
 }
 
-ranged_attack_t::ranged_attack_t( const std::string& n, player_t* p, resource_type_e resource,
-                    school_type_e school, talent_tree_type_e tree, bool special ) :
-  attack_t( n, p, resource, school, tree, special )
+// == Ranged Attack Constructor by without database access ===============
+
+ranged_attack_t::ranged_attack_t( const std::string&  n,
+                                  player_t*           p,
+                                  resource_type_e     rt,
+                                  school_type_e       s,
+                                  talent_tree_type_e  tree,
+                                  bool                special ) :
+  attack_t( n, p, rt, s, tree, special )
 {
   init_ranged_attack_t_();
 }
 
-ranged_attack_t::ranged_attack_t( const std::string& n, const char* sname, player_t* p,
-                    talent_tree_type_e t, bool special ) :
+// == Ranged Attack Constructor by Spell Name ===============
+
+ranged_attack_t::ranged_attack_t( const std::string&  n,
+                                  const char*         sname,
+                                  player_t*           p,
+                                  talent_tree_type_e  t,
+                                  bool                special ) :
   attack_t( n, sname, p, t, special )
 {
   init_ranged_attack_t_();
 }
 
-ranged_attack_t::ranged_attack_t( const std::string& n, const uint32_t id, player_t* p, talent_tree_type_e t, bool special ) :
+// == Ranged Attack Constructor by Spell ID ===============
+
+ranged_attack_t::ranged_attack_t( const std::string&  n,
+                                  const uint32_t      id,
+                                  player_t*           p,
+                                  talent_tree_type_e  t,
+                                  bool                special ) :
   attack_t( n, id, p, t, special )
 {
   init_ranged_attack_t_();

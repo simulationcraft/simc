@@ -208,9 +208,9 @@ void action_t::init_action_t_()
 
 void action_t::init_dot( const std::string& name )
 {
-  std::unordered_map<std::string, std::pair<player_type_e, size_t> >::iterator doti = sim->targetdata_items[0].find( name );
-  if ( doti != sim->targetdata_items[0].end() && doti->second.first == player->type )
-    targetdata_dot_offset = ( int )doti->second.second;
+  std::unordered_map<std::string, std::pair<player_type_e, size_t> >::iterator doti = sim->targetdata_items[ 0 ].find( name );
+  if ( doti != sim -> targetdata_items[ 0 ].end() && doti -> second.first == player->type )
+    targetdata_dot_offset = ( int ) doti->second.second;
 }
 
 action_t::action_t( action_type_e      ty,
