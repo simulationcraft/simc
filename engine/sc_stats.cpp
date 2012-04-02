@@ -10,18 +10,24 @@
 stats_t::stats_t( const std::string& n, player_t* p ) :
   name_str( n ), sim( p -> sim ), player( p ), next( 0 ), parent( 0 ),
   school( SCHOOL_NONE ), type( STATS_DMG ),
-  analyzed( false ), quiet( false ), background( true ), rpe_sum( 0 ),
-  /* frequency( 0 ), */ num_executes( 0 ), num_ticks( 0 ),
+  resource_gain( gain_t( "stats_gain_" + n ) ),
+  //Flags
+  analyzed( false ), quiet( false ), background( true ),
+  // Variables used both during combat and for reporting
+   num_executes( 0 ), num_ticks( 0 ),
   num_direct_results( 0 ), num_tick_results( 0 ),
-  total_execute_time( timespan_t::zero ), total_tick_time( timespan_t::zero ), total_time( timespan_t::zero ),
+  total_execute_time( timespan_t::zero ), total_tick_time( timespan_t::zero ),
   portion_amount( 0 ),
-  aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
   total_intervals( timespan_t::zero ), num_intervals( 0 ),
   last_execute( timespan_t::min ),
   iteration_actual_amount( 0 ), actual_amount( p -> sim -> statistics_level < 3 ),
   total_amount( p -> sim -> statistics_level < 3 ),portion_aps( p -> sim -> statistics_level < 3 ),
-  compound_actual( 0 ), compound_amount( 0 ), opportunity_cost( 0 ),
-  direct_results( RESULT_MAX, stats_results_t( p -> sim ) ), tick_results( RESULT_MAX, stats_results_t( p -> sim ) )
+  compound_actual( 0 ), opportunity_cost( 0 ),
+  // Reporting only
+  rpe_sum( 0 ),frequency( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
+  aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
+  total_time( timespan_t::zero ),
+  direct_results( RESULT_MAX, stats_results_t( p -> sim ) ),tick_results( RESULT_MAX, stats_results_t( p -> sim ) )
 {
   int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
   if ( size <= 0 )size = 600; // Default to 10 minutes
@@ -32,17 +38,10 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   range::fill( apr, 0.0 );
   range::fill( rpe, 0.0 );
 
-  resource_gain = new gain_t( n );
-
-  timeline_amount.assign( size, 0 );
+  timeline_amount.assign( size, 0.0 );
   actual_amount.reserve( sim -> iterations );
   total_amount.reserve( sim -> iterations );
   portion_aps.reserve( sim -> iterations );
-}
-
-stats_t::~stats_t()
-{
-  delete resource_gain;
 }
 
 // stats_t::add_child =======================================================
@@ -65,7 +64,7 @@ void stats_t::add_child( stats_t* child )
 
 void stats_t::consume_resource( resource_type_e resource_type, double resource_amount )
 {
-  resource_gain->add( resource_type, resource_amount );
+  resource_gain.add( resource_type, resource_amount );
 }
 // stats_t::reset ===========================================================
 
@@ -223,19 +222,19 @@ void stats_t::analyze()
 
   portion_aps.analyze( true, true, true, 50 );
 
-  resource_gain -> analyze( sim );
+  resource_gain.analyze( sim );
 
   num_executes       /= num_iterations;
   num_ticks          /= num_iterations;
 
   for ( size_t i = 0; i < RESOURCE_MAX; i++ )
   {
-    rpe[ i ] = num_executes ? resource_gain->actual[ i ] / num_executes : -1;
+    rpe[ i ] = num_executes ? resource_gain.actual[ i ] / num_executes : -1;
     rpe_sum += rpe[ i ];
 
     double resource_total = player -> resource_lost [ i ] / num_iterations;
 
-    resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain->actual[ i ] / resource_total ) : 0;
+    resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain.actual[ i ] / resource_total ) : 0;
   }
 
   frequency = num_intervals ? total_intervals.total_seconds() / num_intervals : 0;
@@ -267,7 +266,7 @@ void stats_t::analyze()
     apet = ( total_time > timespan_t::zero ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
-      apr[ i ]  = ( resource_gain->actual[ i ] > 0 ) ? ( compound_amount / resource_gain->actual[ i ] ) : 0;
+      apr[ i ]  = ( resource_gain.actual[ i ] > 0 ) ? ( compound_amount / resource_gain.actual[ i ] ) : 0;
   }
   else
     total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero );
@@ -339,7 +338,7 @@ inline void stats_t::stats_results_t::combat_end()
 
 void stats_t::merge( const stats_t* other )
 {
-  resource_gain -> merge( other->resource_gain );
+  resource_gain.merge( other->resource_gain );
   num_direct_results  += other -> num_direct_results;
   num_tick_results    += other -> num_tick_results;
   num_executes        += other -> num_executes;

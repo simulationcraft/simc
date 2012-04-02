@@ -2956,7 +2956,7 @@ void player_t::merge( player_t& other )
 
   for ( gain_t* gain = gain_list; gain; gain = gain -> next )
   {
-    gain -> merge( other.get_gain( gain -> name_str ) );
+    gain -> merge( *other.get_gain( gain -> name_str ) );
   }
 
   for ( stats_t* stats = stats_list; stats; stats = stats -> next )

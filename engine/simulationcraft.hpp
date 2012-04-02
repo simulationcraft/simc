@@ -3400,7 +3400,6 @@ struct action_expr_t
   static action_expr_t* parse( action_t*, const std::string& expr_str );
 };
 
-
 struct spell_data_expr_t
 {
   std::string name_str;
@@ -5150,43 +5149,71 @@ public:
   virtual const char* id();
 };
 
+// Gain =====================================================================
+
+struct gain_t
+{
+  std::array<double, RESOURCE_MAX> actual, overflow, count;
+
+  const std::string name_str;
+  gain_t* next;
+
+  gain_t( const std::string& n ) :
+    name_str( n ), next( NULL )
+  {
+    range::fill( actual, 0.0 );
+    range::fill( overflow, 0.0 );
+    range::fill( count, 0.0 );
+  }
+  void add( const resource_type_e resource_type, const double a, const double o=0 )
+    { actual[ resource_type ] += a; overflow[ resource_type ] += o; count[ resource_type ]++; }
+  void merge( const gain_t& other )
+  {
+    for ( size_t i=0; i<RESOURCE_MAX; i++ )
+      { actual[i] += other.actual[i]; overflow[i] += other.overflow[i]; count[i] += other.count[i]; }
+  }
+  void analyze( const sim_t* sim )
+  {
+    for ( size_t i=0; i<RESOURCE_MAX; i++ )
+      { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
+  }
+  const char* name() const { return name_str.c_str(); }
+};
+
 // Stats ====================================================================
 
 struct stats_t
 {
   const std::string name_str;
-  sim_t* sim;
+  sim_t* const sim;
   player_t* const player;
   stats_t* next;
   stats_t* parent;
+  // We should make school and type const or const-like, and either stricly define when, where and who defines the values,
+  // or make sure that it is equal to the value of all it's actions.
   school_type_e school;
   stats_type_e type;
+
   std::vector<action_t*> action_list;
+  gain_t resource_gain;
+  // Flags
   bool analyzed;
   bool quiet;
   bool background;
-  gain_t* resource_gain;
 
-  double resource_portion[ RESOURCE_MAX ];
-  double rpe_sum;
-  double frequency, num_executes, num_ticks;
+  // Variables used both during combat and for reporting
+  double num_executes, num_ticks;
   double num_direct_results, num_tick_results;
-  timespan_t total_execute_time, total_tick_time, total_time;
-  double portion_amount, overkill_pct;
-  double aps, ape, apet, apr[ RESOURCE_MAX ], rpe[ RESOURCE_MAX ], etpe, ttpt;
+  timespan_t total_execute_time, total_tick_time;
+  double portion_amount;
   timespan_t total_intervals;
   double num_intervals;
   timespan_t last_execute;
   double iteration_actual_amount, iteration_total_amount;
   sample_data_t actual_amount, total_amount, portion_aps;
-  std::string aps_distribution_chart;
-
   std::vector<stats_t*> children;
-  double compound_actual,compound_amount;
+  double compound_actual;
   double opportunity_cost;
-
-  gear_stats_t scaling;
-  gear_stats_t scaling_error;
 
   struct stats_results_t
   {
@@ -5194,7 +5221,7 @@ struct stats_t
     int iteration_count;
     double iteration_actual_amount, iteration_total_amount,pct, overkill_pct;
 
-    stats_results_t( sim_t* s );
+    stats_results_t( sim_t* );
 
     void merge( const stats_results_t& other );
     void combat_end();
@@ -5203,11 +5230,22 @@ struct stats_t
   std::vector<stats_results_t>   tick_results;
 
   std::vector<double> timeline_amount;
+
+  // Reporting only
+  std::array<double,RESOURCE_MAX> resource_portion, apr, rpe;
+  double rpe_sum, frequency, compound_amount, overkill_pct;
+  double aps, ape, apet, etpe, ttpt;
+  timespan_t total_time;
+  std::string aps_distribution_chart;
+
   std::vector<double> timeline_aps;
   std::string timeline_aps_chart;
 
+  // Scale factor container
+  gear_stats_t scaling;
+  gear_stats_t scaling_error;
+
   stats_t( const std::string& name, player_t* );
-  ~stats_t();
 
   void add_child( stats_t* child );
   void consume_resource( const resource_type_e resource_type, const double resource_amount );
@@ -6230,37 +6268,6 @@ struct uptime_t : public uptime_common_t
 
 struct buff_uptime_t : public uptime_common_t
 { buff_uptime_t( sim_t* s ) : uptime_common_t( s ) {} };
-
-// Gain =====================================================================
-
-struct gain_t
-{
-  double actual[ RESOURCE_MAX ], overflow[ RESOURCE_MAX ], count[ RESOURCE_MAX ];
-
-  const std::string name_str;
-  gain_t* next;
-
-  gain_t( const std::string& n ) :
-    name_str( n )
-  {
-    range::fill( actual, 0.0 );
-    range::fill( overflow, 0.0 );
-    range::fill( count, 0.0 );
-  }
-  void add( const resource_type_e resource_type, const double a, const double o=0 )
-    { actual[ resource_type ] += a; overflow[ resource_type ] += o; count[ resource_type ]++; }
-  void merge( const gain_t* other )
-  {
-    for ( size_t i=0; i<RESOURCE_MAX; i++ )
-      { actual[i] += other -> actual[i]; overflow[i] += other -> overflow[i]; count[i] += other -> count[i]; }
-  }
-  void analyze( const sim_t* sim )
-  {
-    for ( size_t i=0; i<RESOURCE_MAX; i++ )
-      { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
-  }
-  const char* name() const { return name_str.c_str(); }
-};
 
 // Proc =====================================================================
 

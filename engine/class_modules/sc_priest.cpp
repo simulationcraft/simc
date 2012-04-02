@@ -3978,7 +3978,7 @@ void priest_t::fixup_atonement_stats( const char* trigger_spell_name,
     {
       // Copy stats from the trigger spell to the atonement spell
       // to get proper HPR and HPET reports.
-      atonement -> resource_gain->merge( trigger->resource_gain );
+      atonement -> resource_gain.merge( trigger->resource_gain );
       atonement -> total_execute_time = trigger -> total_execute_time;
       atonement -> total_tick_time = trigger -> total_tick_time;
     }

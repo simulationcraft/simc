@@ -459,7 +459,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       writer.print_attribute( "dpe", util_t::to_string( s -> ape, 0 ) );
       writer.print_attribute( "dpe_pct", util_t::to_string( s -> portion_amount * 100.0 ) );
       writer.print_attribute( "dpet", util_t::to_string( s -> apet ) );
-      writer.print_attribute( "apr", util_t::to_string( s -> apr ) );
+      writer.print_attribute( "apr", util_t::to_string( s -> apr[ p -> primary_resource() ] ) );
       writer.print_attribute( "pdps", util_t::to_string( s -> portion_aps.mean ) );
 
       if ( ! s -> timeline_aps_chart.empty() )
