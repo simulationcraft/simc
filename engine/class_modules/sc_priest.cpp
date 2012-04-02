@@ -164,6 +164,7 @@ struct priest_t : public player_t
     gain_t* shadow_orb_swp;
     gain_t* shadow_orb_mb;
     gain_t* shadow_orb_tier13_4pc;
+    gain_t* shadow_orb_mastery_refund;
   } gains;
 
   // Benefits
@@ -719,10 +720,8 @@ struct atonement_heal_t : public priest_heal_t
 
     if ( result == RESULT_CRIT )
     {
-      // FIXME: Crits in 4.1 capped at 150% of the non-crit cap. This may
-      //        be changed to 200% in 4.2 along with the general heal
-      //        crit multiplier change.
-      cap *= 1.5;
+      // FIXME: Assume capped at 200% of the non-crit cap.
+      cap *= 2.0;
     }
 
     if ( atonement_dmg > cap )
@@ -2049,6 +2048,8 @@ struct vampiric_touch_t : public priest_spell_t
     parse_options( NULL, options_str );
     may_crit   = false;
   }
+
+  // FIXME: implement self-heal on tick()
 };
 
 // Holy Fire Spell ==========================================================
@@ -2264,7 +2265,9 @@ struct shadowy_apparition_t : priest_spell_t
     // but directly at spell execution, not when shadowy apparitions reach the target.
     // tested in mop beta, 02/04/2012 by philoptik@gmail.com
 
+    priest_spell_t::generate_shadow_orb( this, p() -> gains.shadow_orb_mastery_refund, triggered_shadow_orb_mastery );
 
+    triggered_shadow_orb_mastery = 0;
   }
 
   virtual double cost() const
@@ -3432,6 +3435,7 @@ void priest_t::init_gains()
   gains.shadow_orb_swp = get_gain( "Shadow Orbs from Shadow Word: Pain" );
   gains.shadow_orb_mb = get_gain( "Shadow Orbs from Mind Blast" );
   gains.shadow_orb_tier13_4pc = get_gain( "Shadow Orbs from Tier13 4pc" );
+  gains.shadow_orb_mastery_refund = get_gain( "Shadow Orbs refunded from Shadow Orb Mastery" );
 }
 
 // priest_t::init_procs. =====================================================
