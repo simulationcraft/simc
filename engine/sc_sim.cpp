@@ -1637,7 +1637,7 @@ void sim_t::analyze()
   chart_t::raid_aps     ( hps_charts,     this, players_by_hps, false );
   chart_t::raid_dpet    ( dpet_charts,    this );
   chart_t::raid_gear    ( gear_charts,    this );
-  chart_t::raid_downtime( downtime_chart, this );
+  downtime_chart = chart_t::raid_downtime( this );
   chart_t::distribution( timeline_chart, this,
                          simulation_length.distribution, "Timeline",
                          simulation_length.mean,

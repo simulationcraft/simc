@@ -50,6 +50,7 @@
 #include <numeric>
 #include <queue>
 #include <sstream>
+#include <iomanip>
 #include <stack>
 #include <string>
 #include <typeinfo>
@@ -6340,7 +6341,7 @@ struct chart_t
   static int raid_dpet( std::vector<std::string>& images, sim_t* );
   static int raid_gear( std::vector<std::string>& images, sim_t* );
 
-  static const char* raid_downtime    ( std::string& s, sim_t* );
+  static std::string raid_downtime    ( sim_t* );
   static const char* action_dpet      ( std::string& s, player_t* );
   static const char* aps_portion       ( std::string& s, player_t* );
   static const char* time_spent       ( std::string& s, player_t* );

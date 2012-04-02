@@ -447,8 +447,7 @@ struct compare_downtime
 
 // chart_t::raid_downtime ===================================================
 
-const char* chart_t::raid_downtime( std::string& s,
-                                    sim_t* sim )
+std::string chart_t::raid_downtime( sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_name.size();
 
@@ -466,63 +465,67 @@ const char* chart_t::raid_downtime( std::string& s,
     }
   }
 
-  int num_waiting = ( int ) waiting_list.size();
-  if ( num_waiting == 0 ) return 0;
+  if ( waiting_list.size() == 0 )
+    return "";
 
   range::sort( waiting_list, compare_downtime() );
 
-  char buffer[ 1024 ];
-
-  s = get_chart_base_url();
-  snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_waiting * 30 + 30 ); s += buffer;
-  s += "&amp;";
-  s += "cht=bhg";
-  s += "&amp;";
+  std::string amp = "&amp;";
+  std::ostringstream s;
+  s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
+  s << get_chart_base_url();
+  s << "chs=500x" << ( waiting_list.size() * 30 + 30 );
+  s << amp;
+  s << "cht=bhg";
+  s << amp;
   if ( ! sim -> print_styles )
   {
-    s += "chf=bg,s,333333";
-    s += "&amp;";
+    s << "chf=bg,s,333333";
+    s << amp;
   }
-  s += "chd=t:";
+  s << "chd=t:";
   double max_waiting=0;
-  for ( int i=0; i < num_waiting; i++ )
+  for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
     player_t* p = waiting_list[ i ];
     double waiting = 100.0 * p -> waiting_time.mean / p -> fight_length.mean;
     if ( waiting > max_waiting ) max_waiting = waiting;
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), waiting ); s += buffer;
+    s << ( i?"|":"" );
+    s << std::setprecision(2) << waiting;
   }
-  s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_waiting * 1.9 ); s += buffer;
-  s += "&amp;";
-  s += "chco=";
-  for ( int i=0; i < num_waiting; i++ )
+  s << amp;
+  s << "chds=0," << ( max_waiting * 1.9 );
+  s << amp;
+  s << "chco=";
+  for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
-    if ( i ) s += ",";
-    s += get_color( waiting_list[ i ] );
+    if ( i ) s << ",";
+    s << get_color( waiting_list[ i ] );
   }
-  s += "&amp;";
-  s += "chm=";
-  for ( int i=0; i < num_waiting; i++ )
+  s << amp;
+  s << "chm=";
+  for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
     player_t* p = waiting_list[ i ];
     std::string formatted_name = p -> name_str;
     util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f%%++%s,%s,%d,0,15", ( i?"|":"" ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean, formatted_name.c_str(), get_text_color( p ), i ); s += buffer;
+    double waiting = ( 100.0 * p -> waiting_time.mean / p -> fight_length.mean );
+    s << ( i?"|":"" )  << "t++" << std::setprecision( 2 ) << waiting;
+    s << "%++" << formatted_name.c_str() << "," << get_text_color( p ) << "," << i << ",0,15";
   }
-  s += "&amp;";
-  s += "chtt=Player+Waiting-Time";
-  s += "&amp;";
+  s << amp;
+  s << "chtt=Player+Waiting-Time";
+  s << amp;
   if ( sim -> print_styles )
   {
-    s += "chts=666666,18";
+    s << "chts=666666,18";
   }
   else
   {
-    s += "chts=dddddd,18";
+    s << "chts=dddddd,18";
   }
 
-  return s.c_str();
+  return s.str();
 }
 
 // chart_t::raid_dpet =======================================================
