@@ -426,9 +426,11 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
       if ( pd -> cost() == 0 )
         continue;
 
-      s << "Resource     : " << spell -> cost( pd -> type() ) * 100.0;
+      s << "Resource     : ";
       if ( pd -> type() == POWER_MANA )
-        s << "%";
+        s << spell -> cost( pd -> type() ) * 100.0 << "%";
+      else
+        s << spell -> cost( pd -> type() );
 
       s << " ";
 
@@ -444,7 +446,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
       }
 
       if ( pd -> aura_id() > 0 && sim -> dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
-        s << " w/ " << sim -> dbc.spell( pd -> aura_id() ) -> name_cstr();
+        s << " w/ " << sim -> dbc.spell( pd -> aura_id() ) -> name_cstr() << " (id=" << pd -> aura_id() << ")";
 
       s << std::endl;
     }
