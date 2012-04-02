@@ -42,6 +42,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <iomanip>
 #include <iterator>
 #include <limits>
 #include <list>
@@ -50,7 +51,6 @@
 #include <numeric>
 #include <queue>
 #include <sstream>
-#include <iomanip>
 #include <stack>
 #include <string>
 #include <typeinfo>
@@ -224,11 +224,11 @@ namespace std {using namespace tr1; }
 
 // Forward Declarations =====================================================
 
-struct action_state_t;
-struct action_t;
 struct action_callback_t;
 struct action_expr_t;
 struct action_priority_list_t;
+struct action_state_t;
+struct action_t;
 struct alias_t;
 struct attack_t;
 struct benefit_t;
@@ -238,13 +238,14 @@ struct callback_t;
 struct cooldown_t;
 class  dbc_t;
 struct death_knight_t;
-struct druid_t;
 struct dot_t;
+struct druid_t;
 struct effect_t;
-struct enemy_t;
 struct enchant_t;
+struct enemy_t;
 struct event_t;
 struct gain_t;
+struct heal_t;
 struct hunter_t;
 struct item_t;
 struct js_node_t;
@@ -259,21 +260,19 @@ struct priest_t;
 struct proc_t;
 struct raid_event_t;
 struct rating_t;
-struct reforge_plot_t;
 struct reforge_plot_data_t;
+struct reforge_plot_t;
 struct report_t;
 struct rng_t;
-struct talent_t;
-struct spell_id_t;
 struct rogue_t;
+struct sample_data_t;
 struct scaling_t;
 struct shaman_t;
 struct sim_t;
-struct spell_t;
 struct spell_data_t;
+struct spell_id_t;
+struct spell_t;
 struct spelleffect_data_t;
-struct sample_data_t;
-struct heal_t;
 struct stats_t;
 struct talent_t;
 struct talent_translation_t;
@@ -330,7 +329,6 @@ struct actor_pair_t
   actor_pair_t( targetdata_t* td );
 };
 
-
 // Type traits and metaprogramming tools ====================================
 
 template <bool Condition,typename T>
@@ -345,7 +343,6 @@ struct iterator_type
 template <typename T>
 struct iterator_type<const T>
 { typedef typename T::const_iterator type; };
-
 
 // iterable enumeration templates ===========================================
 
@@ -855,22 +852,22 @@ inline stat_type_e stat_from_attr( attribute_type_e a )
 enum elixir_type_e
 {
   ELIXIR_NONE=0,
-  ELIXIR_DRAENIC_WISDOM,
-  ELIXIR_MAJOR_MAGEBLOOD,
-  ELIXIR_GUARDIAN,
   ELIXIR_ADEPT,
+  ELIXIR_BATTLE,
+  ELIXIR_DRAENIC_WISDOM,
   ELIXIR_FEL_STRENGTH,
   ELIXIR_GREATER_ARCANE,
+  ELIXIR_GUARDIAN,
   ELIXIR_MAJOR_AGILITY,
   ELIXIR_MAJOR_FIRE_POWER,
   ELIXIR_MAJOR_FROST_POWER,
+  ELIXIR_MAJOR_MAGEBLOOD,
   ELIXIR_MAJOR_SHADOW_POWER,
   ELIXIR_MAJOR_STRENGTH,
   ELIXIR_MASTERY,
   ELIXIR_MONGOOSE,
   ELIXIR_ONSLAUGHT,
   ELIXIR_SAGES,
-  ELIXIR_BATTLE,
   ELIXIR_MAX
 };
 
@@ -1094,7 +1091,6 @@ enum snapshot_state_e
   STATE_MULTIPLIER    = 0x017700,
 };
 
-
 // Generic programming tools ================================================
 
 template <typename T, std::size_t N>
@@ -1210,7 +1206,6 @@ void sliding_window_average( Fwd first, Fwd last, Out out )
     fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
   }
 }
-
 
 // Machinery for range-based generic algorithms =============================
 
@@ -1390,7 +1385,6 @@ private:
   static const time_t MILLIS_PER_MINUTE;
   static const double MINUTES_PER_MILLI;
 
-
   explicit timespan_t( const time_t millis ) : time( millis ) { }
 
 public:
@@ -1418,7 +1412,6 @@ private:
   static const double MINUTES_PER_SECOND;
   static const time_t SECONDS_PER_MILLI;
   static const time_t SECONDS_PER_MINUTE;
-
 
   explicit timespan_t( const time_t millis ) : time( millis ) { }
 
@@ -2313,7 +2306,7 @@ public:
   uint32_t             level() const { return _spell_level; }
   uint32_t             max_level() const { return _max_level; }
 
-  player_type_e          scaling_class() const;
+  player_type_e        scaling_class() const;
 
   double               missile_speed() const { return _prj_speed; }
   double               min_range() const { return _min_range; }
@@ -3096,7 +3089,6 @@ struct gear_stats_t : public internal::gear_stats_t
   static double stat_mod( stat_type_e stat );
 };
 
-
 // Statistical Sample Data
 
 struct sample_data_t
@@ -3315,7 +3307,6 @@ struct debuff_t : public buff_t
   debuff_t( player_t*, const uint32_t id, const std::string& name,
             double chance=-1, timespan_t duration=timespan_t::min,
             bool quiet=false, bool reverse=false );
-
 };
 
 typedef struct buff_t aura_t;
@@ -3537,7 +3528,6 @@ public:
   ~auto_lock_t() { mutex.unlock(); }
 };
 
-
 // Simple freelist allocator for events =====================================
 
 class event_freelist_t
@@ -3553,7 +3543,6 @@ public:
   void* allocate( std::size_t );
   void deallocate( void* );
 };
-
 
 // Simulation Engine ========================================================
 
@@ -3622,7 +3611,6 @@ struct sim_t : private thread_t
   std::vector<std::string> party_encoding;
   std::vector<std::string> item_db_sources;
 
-
   // Random Number Generation
 private:
   rng_t* default_rng_;     // == (deterministic_rng ? deterministic_rng : rng )
@@ -3664,7 +3652,6 @@ public:
     int blessing_of_kings;
     int blessing_of_might;
     int blood_frenzy_bleed;
-    int physical_vulnerability;
     int bloodlust;
     int burning_wrath;
     int communion;
@@ -3704,7 +3691,9 @@ public:
     int master_poisoner;
     int mind_quickening;
     int moonkin_aura;
+    int physical_vulnerability;
     int poisoned;
+    int qiraji_fortitude;
     int rampage;
     int roar_of_courage;
     int scarlet_fever;
@@ -3715,7 +3704,6 @@ public:
     int tendon_rip;
     int thunder_clap;
     int trueshot_aura;
-    int qiraji_fortitude;
     int vindication;
   };
   overrides_t overrides;
@@ -3737,8 +3725,8 @@ public:
     aura_t* hunting_party;
     aura_t* improved_icy_talons;
     aura_t* leader_of_the_pack;
-    aura_t* moonkin;
     aura_t* mind_quickening;
+    aura_t* moonkin;
     aura_t* qiraji_fortitude;
     aura_t* rampage;
     aura_t* roar_of_courage;
@@ -4410,7 +4398,6 @@ struct player_t : public noncopyable
   attack_t*  off_hand_attack;
   attack_t* ranged_attack;
 
-
   // Resources
   struct resources_t
   {
@@ -4427,7 +4414,6 @@ struct player_t : public noncopyable
       range::fill( base_multiplier, 1.0 ); range::fill( initial_multiplier, 1.0 );
     }
   } resources;
-
 
   double  mana_per_intellect;
   uptime_t* primary_resource_cap;
@@ -4548,7 +4534,6 @@ struct player_t : public noncopyable
   sample_data_t htps;
   sample_data_t heal_taken;
 
-
   std::string action_sequence;
   std::string action_dpet_chart, action_dmg_chart, time_spent_chart, gains_chart;
   std::vector<std::string> timeline_resource_chart;
@@ -4601,10 +4586,10 @@ struct player_t : public noncopyable
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
     buff_t* body_and_soul;
+    buff_t* commanding_shout;
     buff_t* dark_intent;
     buff_t* dark_intent_feedback;
     buff_t* destruction_potion;
-    buff_t* commanding_shout;
     buff_t* earthen_potion;
     buff_t* essence_of_the_red;
     buff_t* exhaustion;
@@ -4688,12 +4673,14 @@ struct player_t : public noncopyable
   {
     gain_t* arcane_torrent;
     gain_t* blessing_of_might;
+    gain_t* chi_regen;
     gain_t* dark_rune;
     gain_t* energy_regen;
     gain_t* essence_of_the_red;
     gain_t* focus_regen;
-    gain_t* innervate;
     gain_t* glyph_of_innervate;
+    gain_t* hymn_of_hope;
+    gain_t* innervate;
     gain_t* mana_potion;
     gain_t* mana_spring_totem;
     gain_t* mp5_regen;
@@ -4702,8 +4689,6 @@ struct player_t : public noncopyable
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
-    gain_t* hymn_of_hope;
-    gain_t* chi_regen;
     void reset() { *this = gains_t(); }
   };
   gains_t gains;
@@ -4719,13 +4704,13 @@ struct player_t : public noncopyable
 
   struct rngs_t
   {
+    rng_t* lag_ability;
+    rng_t* lag_brain;
     rng_t* lag_channel;
     rng_t* lag_gcd;
     rng_t* lag_queue;
-    rng_t* lag_ability;
     rng_t* lag_reaction;
     rng_t* lag_world;
-    rng_t* lag_brain;
     void reset() { *this = rngs_t(); }
   };
   rngs_t rngs;
@@ -5771,7 +5756,6 @@ public:
   virtual double   crit_chance_s( const action_state_t* ) const;
 };
 
-
 // Melee Attack ===================================================================
 
 struct melee_attack_t : public attack_t
@@ -5797,7 +5781,6 @@ public:
   virtual double  parry_chance( int delta_level ) const;
   virtual double glance_chance( int delta_level ) const;
 };
-
 
 // Ranged Attack ===================================================================
 
@@ -6606,7 +6589,6 @@ struct xml_t
   static void print( xml_node_t* root, FILE* f=0, int spacing=0 );
 };
 
-
 // Java Script ==============================================================
 
 struct js_t
@@ -6623,7 +6605,6 @@ struct js_t
   static void print( js_node_t* root, FILE* f=0, int spacing=0 );
   static const char* get_name( js_node_t* root );
 };
-
 
 // Handy Actions ============================================================
 
