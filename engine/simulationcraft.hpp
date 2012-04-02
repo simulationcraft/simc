@@ -520,11 +520,11 @@ enum dot_behaviour_type_e { DOT_CLIP, DOT_REFRESH };
 enum attribute_type_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
 enum base_stat_type_e_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
-                      BASE_STAT_HEALTH, BASE_STAT_MANA,
-                      BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
-                      BASE_STAT_DODGE_PER_AGI,
-                      BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
-                    };
+                          BASE_STAT_HEALTH, BASE_STAT_MANA,
+                          BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
+                          BASE_STAT_DODGE_PER_AGI,
+                          BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
+                        };
 
 enum resource_type_e
 {
@@ -1129,7 +1129,7 @@ struct delete_disposer_t
   template <typename T>
   void operator () ( T* t ) const
   {
-    typedef int force_T_to_be_complete[ sizeof(T) ? 1 : -1 ];
+    typedef int force_T_to_be_complete[ sizeof( T ) ? 1 : -1 ];
     ( void )sizeof( force_T_to_be_complete );
     delete t;
   }
@@ -2058,7 +2058,8 @@ struct spellpower_data_t
   unsigned spell_id() const { return _spell_id; }
   unsigned aura_id() const { return _aura_id; }
   power_type_e type() const { return static_cast< power_type_e >( _power_type_e ); }
-  double cost() const {
+  double cost() const
+  {
     double cost = 0.0;
     double divisor;
 
@@ -2069,16 +2070,16 @@ struct spellpower_data_t
 
     switch ( type() )
     {
-      case POWER_MANA:
-        divisor = 100.0;
-        break;
-      case POWER_RAGE:
-      case POWER_RUNIC_POWER:
-        divisor = 10.0;
-        break;
-      default:
-        divisor = 1.0;
-        break;
+    case POWER_MANA:
+      divisor = 100.0;
+      break;
+    case POWER_RAGE:
+    case POWER_RUNIC_POWER:
+      divisor = 10.0;
+      break;
+    default:
+      divisor = 1.0;
+      break;
     }
 
     return cost / divisor;
@@ -2261,7 +2262,7 @@ public:
   int         _cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
   double      _c_scaling;          // A scaling multiplier for level based scaling
   unsigned    _c_scaling_level;    // A scaling divisor for level based scaling
-  // SpecializationSpells.dbc 
+  // SpecializationSpells.dbc
   unsigned    _replace_spell_id;
   // Spell.dbc flags
   unsigned    _attributes[NUM_SPELL_FLAGS];// Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
@@ -2281,7 +2282,8 @@ public:
   const spelleffect_data_t& effect2() const { return effectN( 2 ); }
   const spelleffect_data_t& effect3() const { return effectN( 3 ); }
 
-  const spellpower_data_t& powerN( int pt ) const {
+  const spellpower_data_t& powerN( int pt ) const
+  {
     assert( pt >= POWER_HEALTH && pt < POWER_MAX );
     for ( size_t i = 0; i < _power -> size(); i++ )
     {
@@ -4419,8 +4421,11 @@ struct player_t : public noncopyable
     double base_multiplier[ RESOURCE_MAX ];
     double initial_multiplier[ RESOURCE_MAX ];
 
-    resources_t() { range::fill( base, 0.0); range::fill( initial, 0.0 ); range::fill( max, 0.0); range::fill( current, 0.0 );
-    range::fill( base_multiplier, 1.0 ); range::fill( initial_multiplier, 1.0 ); }
+    resources_t()
+    {
+      range::fill( base, 0.0 ); range::fill( initial, 0.0 ); range::fill( max, 0.0 ); range::fill( current, 0.0 );
+      range::fill( base_multiplier, 1.0 ); range::fill( initial_multiplier, 1.0 );
+    }
   } resources;
 
 
@@ -4851,7 +4856,7 @@ struct player_t : public noncopyable
   virtual void   regen( timespan_t periodicity=timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_type_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
   virtual double resource_loss( resource_type_e resource_type, double amount, action_t* a=0 );
-  virtual void   recalculate_resource_max( resource_type_e resource_type);
+  virtual void   recalculate_resource_max( resource_type_e resource_type );
   virtual bool   resource_available( resource_type_e resource_type, double cost ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_NONE; }
   virtual role_type_e primary_role() const;
@@ -5167,16 +5172,16 @@ struct gain_t
     range::fill( count, 0.0 );
   }
   void add( const resource_type_e resource_type, const double a, const double o=0 )
-    { actual[ resource_type ] += a; overflow[ resource_type ] += o; count[ resource_type ]++; }
+  { actual[ resource_type ] += a; overflow[ resource_type ] += o; count[ resource_type ]++; }
   void merge( const gain_t& other )
   {
     for ( size_t i=0; i<RESOURCE_MAX; i++ )
-      { actual[i] += other.actual[i]; overflow[i] += other.overflow[i]; count[i] += other.count[i]; }
+    { actual[i] += other.actual[i]; overflow[i] += other.overflow[i]; count[i] += other.count[i]; }
   }
   void analyze( const sim_t* sim )
   {
     for ( size_t i=0; i<RESOURCE_MAX; i++ )
-      { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
+    { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
   }
   const char* name() const { return name_str.c_str(); }
 };
@@ -5387,7 +5392,8 @@ public:
   virtual double armor() const;
   virtual double resistance() const;
   virtual void   consume_resource();
-  virtual resource_type_e current_resource() const {
+  virtual resource_type_e current_resource() const
+  {
     if ( likely( s_data && s_data -> _power && s_data -> _power -> size() == 1 ) )
       return s_data -> _power -> at( 0 ) -> resource();
 
@@ -5741,8 +5747,8 @@ public:
   virtual double swing_haste() const;
   virtual timespan_t execute_time() const;
   virtual void   player_buff();
-          int    build_table( std::array<double,RESULT_MAX>& chances,
-                              std::array<result_type_e,RESULT_MAX>& results );
+  int build_table( std::array<double,RESULT_MAX>& chances,
+                   std::array<result_type_e,RESULT_MAX>& results );
   virtual void   calculate_result();
   virtual void   init();
 
@@ -5752,9 +5758,9 @@ public:
   virtual double   crit_chance( int delta_level ) const;
 
   /* New stuffs */
-          int      build_table_s( std::array<double,RESULT_MAX>&,
-                                  std::array<result_type_e,RESULT_MAX>&,
-                                  const action_state_t* );
+  int build_table_s( std::array<double,RESULT_MAX>&,
+                     std::array<result_type_e,RESULT_MAX>&,
+                     const action_state_t* );
   virtual void calculate_result_s( action_state_t* );
   virtual double   miss_chance_s( const action_state_t* ) const;
   virtual double  dodge_chance_s( const action_state_t* ) const;
@@ -5778,7 +5784,7 @@ private:
 public:
   melee_attack_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = false );
   melee_attack_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
-            school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special = false );
+                  school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special = false );
   melee_attack_t( const std::string& name, const char* sname, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
   melee_attack_t( const std::string& name, uint32_t id, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
 
@@ -5803,7 +5809,7 @@ private:
 public:
   ranged_attack_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = true );
   ranged_attack_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
-            school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special = true );
+                   school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special = true );
   ranged_attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special = true );
   ranged_attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special = true );
 
@@ -5821,7 +5827,7 @@ private:
 public:
   spell_base_t( action_type_e, const spell_id_t& s, talent_tree_type_e = TREE_NONE );
   spell_base_t( action_type_e, const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
-           school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e = TREE_NONE );
+                school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e = TREE_NONE );
   spell_base_t( action_type_e, const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE );
   spell_base_t( action_type_e, const std::string& name, const uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE );
 

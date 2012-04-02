@@ -491,7 +491,7 @@ std::string chart_t::raid_downtime( sim_t* sim )
     double waiting = 100.0 * p -> waiting_time.mean / p -> fight_length.mean;
     if ( waiting > max_waiting ) max_waiting = waiting;
     s << ( i?"|":"" );
-    s << std::setprecision(2) << waiting;
+    s << std::setprecision( 2 ) << waiting;
   }
   s << amp;
   s << "chds=0," << ( max_waiting * 1.9 );
@@ -750,7 +750,7 @@ struct compare_amount
 };
 
 const char* chart_t::aps_portion( std::string& s,
-                                 player_t* p )
+                                  player_t* p )
 {
   std::vector<stats_t*> stats_list;
 

@@ -273,7 +273,8 @@ public:
   {
     int use_cache = 0;
 
-    option_t base_options[] = {
+    option_t base_options[] =
+    {
       { "region", OPT_STRING,  &region    },
       { "server", OPT_STRING,  &server    },
       { "cache",  OPT_BOOL,    &use_cache },
@@ -374,7 +375,7 @@ bool parse_armory( sim_t*             sim,
     }
   }
 
-  catch( names_and_options_t::error& )
+  catch ( names_and_options_t::error& )
   { return false; }
 
   return true;
@@ -429,7 +430,7 @@ bool parse_guild( sim_t*             sim,
     }
   }
 
-  catch( names_and_options_t::error& )
+  catch ( names_and_options_t::error& )
   { return false; }
 
   return true;
@@ -522,7 +523,7 @@ static bool parse_spell_query( sim_t*             sim,
   std::string sq_str = value;
   size_t lvl_offset = std::string::npos;
 
-  if ( ( lvl_offset = value.rfind("@") ) != std::string::npos )
+  if ( ( lvl_offset = value.rfind( "@" ) ) != std::string::npos )
   {
     std::string lvl_offset_str = value.substr( lvl_offset + 1 );
     int sq_lvl = strtol( lvl_offset_str.c_str(), 0, 10 );

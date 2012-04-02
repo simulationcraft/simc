@@ -126,7 +126,7 @@ struct monk_melee_attack_t : public melee_attack_t
   int stancemask;
 
   monk_melee_attack_t( const char* n, uint32_t id, monk_t* p,
-                 talent_tree_type_e t=TREE_NONE, bool special = true ) :
+                       talent_tree_type_e t=TREE_NONE, bool special = true ) :
     melee_attack_t( n, id, p, t, special ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
   {

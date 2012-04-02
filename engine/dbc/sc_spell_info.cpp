@@ -378,7 +378,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
 {
   std::ostringstream s;
   player_type_e pt = PLAYER_NONE;
-  
+
   if ( spell -> level() > static_cast< unsigned >( level ) )
   {
     s << std::endl << "Too low spell level " << level << " for " << spell -> name_cstr() << ", minimum is " << spell -> level() << "." << std::endl << std::endl;
@@ -416,13 +416,13 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
     s.seekp( -2, std::ios_base::cur );
     s << std::endl;
   }
-  
+
   if ( spell -> rune_cost() == 0 )
   {
     for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
     {
       const spellpower_data_t* pd = spell -> _power -> at( i );
-      
+
       if ( pd -> cost() == 0 )
         continue;
 
@@ -437,15 +437,15 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
         s << _resource_strings[ pd -> type() + POWER_OFFSET ];
       else
         s << "Unknown (" << pd -> type() << ")";
-        
+
       if ( pd -> type() == POWER_MANA )
       {
         s << " (" << floor( sim -> dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
       }
-      
+
       if ( pd -> aura_id() > 0 && sim -> dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
         s << " w/ " << sim -> dbc.spell( pd -> aura_id() ) -> name_cstr();
-        
+
       s << std::endl;
     }
   }

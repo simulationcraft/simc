@@ -1,7 +1,8 @@
 #define MAX_SPECS_PER_CLASS (4)
 #define MAX_SPEC_CLASS  (13)
 
-enum specialization_t {
+enum specialization_t
+{
   SPEC_NONE            = 0,
   SPEC_PET             = 1,
   WARRIOR_ARMS         = 71,
@@ -43,7 +44,7 @@ enum specialization_t {
   PET_CUNNING          = 79,
 };
 
-static specialization_t __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] = 
+static specialization_t __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =
 {
   {
     SPEC_NONE,

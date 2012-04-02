@@ -407,7 +407,7 @@ struct druid_cat_melee_attack_t : public melee_attack_t
   int adds_combo_points;
 
   druid_cat_melee_attack_t( const char* n, druid_t* player, school_type_e s=SCHOOL_PHYSICAL,
-                      talent_tree_type_e t=TREE_NONE, bool special=true ) :
+                            talent_tree_type_e t=TREE_NONE, bool special=true ) :
     melee_attack_t( n, player, RESOURCE_ENERGY, s, t, special ),
     requires_stealth( 0 ),
     requires_position( POSITION_NONE ),
@@ -2792,7 +2792,7 @@ struct tranquility_t : public druid_heal_t
     channeled         = true;
 
     // Healing is in spell effect 1
-    parse_spell_data( (*player -> dbc.spell( data().effect1().trigger_spell_id() )) );
+    parse_spell_data( ( *player -> dbc.spell( data().effect1().trigger_spell_id() ) ) );
 
     // FIXME: The hot should stack
 
@@ -5274,7 +5274,7 @@ double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
   // The matching_gear_multiplier is done statically for performance reasons,
   // unfortunately that's before we're in cat form or bear form, so let's compensate here
 
-  switch( attr )
+  switch ( attr )
   {
   case ATTR_AGILITY:
     if ( buffs_cat_form -> check() )

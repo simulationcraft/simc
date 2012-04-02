@@ -90,7 +90,7 @@ double spell_data_t::cost( power_type_e pt ) const
     if ( _power -> at( i ) -> _power_type_e == pt )
       return _power -> at( i ) -> cost();
   }
-  
+
   return 0.0;
 }
 

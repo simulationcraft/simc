@@ -1198,9 +1198,9 @@ bool rogue_melee_attack_t::ready()
 // rogue_melee_attack_t::assess_damage ============================================
 
 void rogue_melee_attack_t::assess_damage( player_t* t,
-                                    const double amount,
-                                    const dmg_type_e dmg_type,
-                                    const result_type_e impact_result )
+                                          const double amount,
+                                          const dmg_type_e dmg_type,
+                                          const result_type_e impact_result )
 {
   melee_attack_t::assess_damage( t, amount, dmg_type, impact_result );
 

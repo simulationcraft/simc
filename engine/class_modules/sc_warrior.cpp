@@ -379,7 +379,7 @@ struct warrior_attack_t : public melee_attack_t
 
   warrior_attack_t( const char* n, warrior_t* p, school_type_e s=SCHOOL_PHYSICAL,
                     talent_tree_type_e t=TREE_NONE, bool special=true  ) :
-                      melee_attack_t( n, p, RESOURCE_RAGE, s, t, special ),
+    melee_attack_t( n, p, RESOURCE_RAGE, s, t, special ),
     stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
     _init_warrior_attack_t();
@@ -387,7 +387,7 @@ struct warrior_attack_t : public melee_attack_t
 
   warrior_attack_t( const char* n, uint32_t id, warrior_t* p,
                     talent_tree_type_e t=TREE_NONE, bool special = true ) :
-                      melee_attack_t( n, id, p, t, special ),
+    melee_attack_t( n, id, p, t, special ),
     stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
     _init_warrior_attack_t();

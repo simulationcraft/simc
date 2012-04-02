@@ -205,7 +205,7 @@ int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
 
 const char* util_t::dot_behaviour_type_string( dot_behaviour_type_e t )
 {
-  switch( t )
+  switch ( t )
   {
   case DOT_REFRESH: return "DOT_REFRESH";
   case DOT_CLIP:    return "DOT_CLIP";
@@ -736,7 +736,7 @@ talent_tree_type_e util_t::talent_tree( talent_tab_type_e tree,
     }
     break;
   case MONK:
-    switch( tree )
+    switch ( tree )
     {
     case MONK_BREWMASTER:       return TREE_BREWMASTER;
     case MONK_MISTWEAVER:       return TREE_MISTWEAVER;
@@ -1238,20 +1238,20 @@ resource_type_e util_t::translate_power_type( power_type_e pt )
 {
   switch ( pt )
   {
-    case POWER_HEALTH:        return RESOURCE_HEALTH;
-    case POWER_MANA:          return RESOURCE_MANA;
-    case POWER_RAGE:          return RESOURCE_RAGE;
-    case POWER_FOCUS:         return RESOURCE_FOCUS;
-    case POWER_ENERGY:        return RESOURCE_ENERGY;
-    case POWER_MONK_ENERGY:   return RESOURCE_MONK_ENERGY;
-    case POWER_RUNIC_POWER:   return RESOURCE_RUNIC_POWER;
-    case POWER_SOUL_SHARDS:   return RESOURCE_SOUL_SHARD;
-    case POWER_BURNING_EMBER: return RESOURCE_BURNING_EMBER;
-    case POWER_DEMONIC_FURY:  return RESOURCE_DEMONIC_FURY;
-    case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;
-    case POWER_CHI:           return RESOURCE_CHI;
-    case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
-    default:                  return RESOURCE_NONE;
+  case POWER_HEALTH:        return RESOURCE_HEALTH;
+  case POWER_MANA:          return RESOURCE_MANA;
+  case POWER_RAGE:          return RESOURCE_RAGE;
+  case POWER_FOCUS:         return RESOURCE_FOCUS;
+  case POWER_ENERGY:        return RESOURCE_ENERGY;
+  case POWER_MONK_ENERGY:   return RESOURCE_MONK_ENERGY;
+  case POWER_RUNIC_POWER:   return RESOURCE_RUNIC_POWER;
+  case POWER_SOUL_SHARDS:   return RESOURCE_SOUL_SHARD;
+  case POWER_BURNING_EMBER: return RESOURCE_BURNING_EMBER;
+  case POWER_DEMONIC_FURY:  return RESOURCE_DEMONIC_FURY;
+  case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;
+  case POWER_CHI:           return RESOURCE_CHI;
+  case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
+  default:                  return RESOURCE_NONE;
   }
 }
 
@@ -2274,7 +2274,7 @@ bool util_t::socket_gem_match( gem_type_e socket, gem_type_e gem )
 
 gem_type_e util_t::translate_socket_color( item_socket_color c )
 {
-  switch( c )
+  switch ( c )
   {
   case SOCKET_COLOR_BLUE:      return GEM_BLUE;
   case SOCKET_COLOR_META:      return GEM_META;

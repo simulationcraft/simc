@@ -220,7 +220,7 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
 
   if ( sim -> debug )
     log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit_block=%.3f crit=%.3f",
-                                     name(), miss, dodge, parry, glance, block, crit_block, crit );
+                   name(), miss, dodge, parry, glance, block, crit_block, crit );
 
   double limit = 1.0;
   double total = 0;

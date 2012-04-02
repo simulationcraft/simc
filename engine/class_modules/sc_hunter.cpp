@@ -209,7 +209,7 @@ struct hunter_t : public player_t
   hunter_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r == RACE_NONE ? RACE_NIGHT_ELF : r )
   {
-     tree_type[ HUNTER_BEAST_MASTERY ] = TREE_BEAST_MASTERY;
+    tree_type[ HUNTER_BEAST_MASTERY ] = TREE_BEAST_MASTERY;
     tree_type[ HUNTER_MARKSMANSHIP  ] = TREE_MARKSMANSHIP;
     tree_type[ HUNTER_SURVIVAL      ] = TREE_SURVIVAL;
 
@@ -692,21 +692,21 @@ struct hunter_ranged_attack_t : public ranged_attack_t
     dot_behavior           = DOT_REFRESH;
   }
   hunter_ranged_attack_t( const char* n, player_t* player, school_type_e s=SCHOOL_PHYSICAL,
-                   talent_tree_type_e t=TREE_NONE, bool special=true ) :
-                     ranged_attack_t( n, player, RESOURCE_FOCUS, s, t, special )
+                          talent_tree_type_e t=TREE_NONE, bool special=true ) :
+    ranged_attack_t( n, player, RESOURCE_FOCUS, s, t, special )
   {
     _init_hunter_ranged_attack_t();
   }
   hunter_ranged_attack_t( const char* n, player_t* player, const char* sname,
-                   talent_tree_type_e t=TREE_NONE, bool special=true ) :
-                     ranged_attack_t( n, sname, player, t, special )
+                          talent_tree_type_e t=TREE_NONE, bool special=true ) :
+    ranged_attack_t( n, sname, player, t, special )
   {
     _init_hunter_ranged_attack_t();
   }
 
   hunter_ranged_attack_t( const char* n, player_t* player, uint32_t id,
-                   talent_tree_type_e t=TREE_NONE, bool special=true ) :
-                     ranged_attack_t( n, id, player, t, special )
+                          talent_tree_type_e t=TREE_NONE, bool special=true ) :
+    ranged_attack_t( n, id, player, t, special )
   {
     _init_hunter_ranged_attack_t();
   }

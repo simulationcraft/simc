@@ -642,34 +642,34 @@ void print_html_stats ( FILE* file, player_t* a )
     for ( attribute_type_e i = ATTRIBUTE_NONE; ++i < ATTRIBUTE_MAX; )
     {
       fprintf( file,
-             "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-             "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-             "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
-             util_t::attribute_type_string( i ),
-             a -> buffed.attribute[ i ],
-             a -> get_attribute( static_cast<attribute_type_e>( i ) ),
-             a -> stats.attribute[ i ] );
+               "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+               "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
+               "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+               "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+               "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+               "\t\t\t\t\t\t\t\t\t</tr>\n",
+               ( j%2 == 1 )? " class=\"odd\"" : "",
+               util_t::attribute_type_string( i ),
+               a -> buffed.attribute[ i ],
+               a -> get_attribute( static_cast<attribute_type_e>( i ) ),
+               a -> stats.attribute[ i ] );
       j++;
     }
     for ( resource_type_e i = RESOURCE_NONE; ++i < RESOURCE_MAX; )
     {
       if ( a -> resources.max[ i ] > 0 )
         fprintf( file,
-             "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-             "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-             "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
-             util_t::resource_type_string( static_cast<resource_type_e>( i ) ),
-             a -> buffed.resource[ i ],
-             a -> resources.max[ i ],
-             0.0 );
+                 "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+                 "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
+                 "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+                 "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+                 "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+                 "\t\t\t\t\t\t\t\t\t</tr>\n",
+                 ( j%2 == 1 )? " class=\"odd\"" : "",
+                 util_t::resource_type_string( static_cast<resource_type_e>( i ) ),
+                 a -> buffed.resource[ i ],
+                 a -> resources.max[ i ],
+                 0.0 );
       j++;
     }
 

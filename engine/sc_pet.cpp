@@ -60,7 +60,7 @@ double pet_t::composite_attribute( attribute_type_e attr ) const
 {
   double a = attribute[ attr ];
 
-  switch( attr )
+  switch ( attr )
   {
   case ATTR_INTELLECT:
     a += intellect_per_owner * owner -> intellect();

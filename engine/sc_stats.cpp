@@ -14,7 +14,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   //Flags
   analyzed( false ), quiet( false ), background( true ),
   // Variables used both during combat and for reporting
-   num_executes( 0 ), num_ticks( 0 ),
+  num_executes( 0 ), num_ticks( 0 ),
   num_direct_results( 0 ), num_tick_results( 0 ),
   total_execute_time( timespan_t::zero ), total_tick_time( timespan_t::zero ),
   portion_amount( 0 ),

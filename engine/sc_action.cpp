@@ -385,16 +385,16 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case A_ADD_FLAT_MODIFIER:
       switch ( spelleffect_data.misc_value1() )
       case E_APPLY_AURA:
-        switch ( spelleffect_data.subtype() )
-        {
-        case P_CRIT:
-          base_crit += 0.01 * spelleffect_data.base_value();
-          break;
-        case P_COOLDOWN:
-          cooldown -> duration += spelleffect_data.time_value();
-          break;
-        default: break;
-        }
+      switch ( spelleffect_data.subtype() )
+      {
+      case P_CRIT:
+        base_crit += 0.01 * spelleffect_data.base_value();
+        break;
+      case P_COOLDOWN:
+        cooldown -> duration += spelleffect_data.time_value();
+        break;
+      default: break;
+      }
       break;
     case A_ADD_PCT_MODIFIER:
       switch ( spelleffect_data.misc_value1() )
@@ -432,9 +432,9 @@ void action_t::parse_options( option_t*          options,
     { "flying",                 OPT_BOOL,   &flying                },
     { "moving",                 OPT_BOOL,   &moving                },
     { "sync",                   OPT_STRING, &sync_str              },
-    { "time<",                  OPT_DEPRECATED, (void* ) "if=time<=" },
-    { "time>",                  OPT_DEPRECATED, (void* ) "if=time>=" },
-    { "travel_speed",           OPT_DEPRECATED, (void* ) "if=travel_speed" },
+    { "time<",                  OPT_DEPRECATED, ( void* ) "if=time<=" },
+    { "time>",                  OPT_DEPRECATED, ( void* ) "if=time>=" },
+    { "travel_speed",           OPT_DEPRECATED, ( void* ) "if=travel_speed" },
     { "vulnerable",             OPT_BOOL,   &vulnerable            },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
     { "target",                 OPT_STRING, &target_str            },

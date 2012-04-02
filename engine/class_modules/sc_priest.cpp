@@ -373,7 +373,7 @@ private:
 
 public:
   priest_absorb_t( const std::string& n, priest_t* player,
-                   const char* sname, talent_tree_type_e t = TREE_NONE) :
+                   const char* sname, talent_tree_type_e t = TREE_NONE ) :
     absorb_t( n.c_str(), player, sname, t )
   {
     _init_priest_absorb_t();
@@ -1289,7 +1289,7 @@ void priest_spell_t::add_more_shadowy_apparitions( priest_t* p )
   }
 
   if ( p -> sim -> debug )
-    log_t::output( p -> sim, "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> shadowy_apparition_free_list.size() ));
+    log_t::output( p -> sim, "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> shadowy_apparition_free_list.size() ) );
 }
 
 void priest_spell_t::generate_shadow_orb( action_t* s, gain_t* g, unsigned number )
@@ -2250,7 +2250,7 @@ struct shadowy_apparition_t : priest_spell_t
     stats -> children.push_back( player -> get_stats( "shadowy_apparition_spell", this ) );
   }
 
-  virtual void schedule_travel( player_t* t)
+  virtual void schedule_travel( player_t* t )
   {
     priest_spell_t::schedule_travel( t );
 

@@ -514,11 +514,11 @@ struct paladin_melee_attack_t : public melee_attack_t
   bool trigger_dp;
 
   paladin_melee_attack_t( const char*        n,
-                    paladin_t*         p,
-                    school_type_e      s=SCHOOL_PHYSICAL,
-                    talent_tree_type_e t=TREE_NONE,
-                    bool               special=true,
-                    bool               use2hspec=true ) :
+                          paladin_t*         p,
+                          school_type_e      s=SCHOOL_PHYSICAL,
+                          talent_tree_type_e t=TREE_NONE,
+                          bool               special=true,
+                          bool               use2hspec=true ) :
     melee_attack_t( n, p, RESOURCE_MANA, s, t, special ),
     trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false ), trigger_dp( false )
   {
@@ -2250,7 +2250,7 @@ struct holy_shock_t : public paladin_spell_t
 
     // hack! spell 20473 has the cooldown/cost/etc stuff, but the actual spell cast
     // to do damage is 25912
-    parse_effect_data( (*player -> dbc.effect( 25912 )) );
+    parse_effect_data( ( *player -> dbc.effect( 25912 ) ) );
 
     base_multiplier *= 1.0 + p -> talents.blazing_light -> mod_additive( P_GENERIC )
                        + p -> talents.crusade -> mod_additive( P_GENERIC ); // TODO how do they stack?
@@ -2581,7 +2581,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     parse_options( NULL, options_str );
 
     // Heal info is in 25914
-    parse_effect_data( (*player -> dbc.effect( 25914 )) );
+    parse_effect_data( ( *player -> dbc.effect( 25914 ) ) );
 
     base_crit += p -> glyphs.holy_shock -> effect1().percent()
                  + p -> talents.infusion_of_light -> effect2().percent();

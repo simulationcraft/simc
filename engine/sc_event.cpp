@@ -124,7 +124,7 @@ void event_t::execute()
 player_ready_event_t::player_ready_event_t( sim_t*    sim,
                                             player_t* p,
                                             timespan_t delta_time ) :
-                                            event_t( sim, p )
+  event_t( sim, p )
 {
   name = "Player-Ready";
   if ( sim -> debug ) log_t::output( sim, "New Player-Ready Event: %s", p -> name() );
@@ -203,7 +203,7 @@ void player_gcd_event_t::execute()
 action_execute_event_t::action_execute_event_t( sim_t*    sim,
                                                 action_t* a,
                                                 timespan_t time_to_execute ) :
-                                                event_t( sim, a -> player ), action( a )
+  event_t( sim, a -> player ), action( a )
 {
   name = "Action-Execute";
   if ( sim -> debug ) log_t::output( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute.total_seconds() );
@@ -330,7 +330,7 @@ action_travel_event_t::action_travel_event_t( sim_t*    sim,
                                               player_t* t,
                                               action_t* a,
                                               timespan_t time_to_travel ) :
-                                              event_t( sim, a -> player ), action( a ), target( t )
+  event_t( sim, a -> player ), action( a ), target( t )
 {
   name   = "Action Travel";
   result = a -> result;
