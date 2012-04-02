@@ -170,7 +170,6 @@ struct priest_t : public player_t
   struct benefits_t
   {
     benefit_t* mind_spike[ 4 ];
-    benefit_t* shadow_orb[ 4 ];
   } benefits;
 
   // Procs
@@ -236,9 +235,6 @@ struct priest_t : public player_t
     // Shadow
     double shadow_power_damage_value;
     double shadow_power_crit_value;
-    double shadow_orb_proc_value;
-    double shadow_orb_damage_value;
-    double shadow_orb_mastery_value;
 
     double twisted_faith_static_value;
     double twisted_faith_dynamic_value;
@@ -1267,9 +1263,7 @@ unsigned priest_spell_t::trigger_shadowy_apparition( priest_t* p )
 
       p -> shadowy_apparition_active_list.push_back( s );
 
-      double so_chance = p -> mastery_spells.shadow_orb_power -> effect1().coeff() / 100.0 * p -> composite_mastery();
-
-      if ( p->rngs.sa_shadow_orb_mastery -> roll( so_chance ) )
+      if ( p->rngs.sa_shadow_orb_mastery -> roll( p -> shadow_orb_amount() ) )
       {
         p -> procs.sa_shadow_orb_mastery -> occur();
         shadow_orb_procs++;
@@ -3201,7 +3195,7 @@ struct renew_t : public priest_heal_t
 
 double priest_t::shadow_orb_amount() const
 {
-  double a = composite_mastery() * constants.shadow_orb_mastery_value;
+  double a = mastery_spells.shadow_orb_power -> effect1().coeff() / 100.0 * composite_mastery();
 
   return a;
 }
@@ -3301,7 +3295,7 @@ double priest_t::composite_player_td_multiplier( const school_type_e school, act
   {
     // Shadow TD
     player_multiplier += buffs.dark_evangelism -> stack () * buffs.dark_evangelism -> data().effect1().percent();
-    player_multiplier += mastery_spells.shadow_orb_power -> effect1().coeff() / 100.0 * composite_mastery();
+    player_multiplier += shadow_orb_amount();
   }
 
   return player_multiplier;
@@ -3481,11 +3475,6 @@ void priest_t::init_benefits()
   benefits.mind_spike[ 1 ] = get_benefit( "mind_spike_1" );
   benefits.mind_spike[ 2 ] = get_benefit( "mind_spike_2" );
   benefits.mind_spike[ 3 ] = get_benefit( "mind_spike_3" );
-
-  benefits.shadow_orb[ 0 ] = get_benefit( "Percentage of Mind Blasts benefiting from 0 Shadow Orbs" );
-  benefits.shadow_orb[ 1 ] = get_benefit( "Percentage of Mind Blasts benefiting from 1 Shadow Orbs" );
-  benefits.shadow_orb[ 2 ] = get_benefit( "Percentage of Mind Blasts benefiting from 2 Shadow Orbs" );
-  benefits.shadow_orb[ 3 ] = get_benefit( "Percentage of Mind Blasts benefiting from 3 Shadow Orbs" );
 }
 
 // priest_t::init_rng =======================================================
@@ -3917,8 +3906,6 @@ void priest_t::init_values()
   // Shadow Core
   constants.shadow_power_damage_value       = spec.shadow_power       -> effect1().percent();
   constants.shadow_power_crit_value         = spec.shadow_power       -> effect2().percent();
-  constants.shadow_orb_proc_value           = mastery_spells.shadow_orb_power   -> proc_chance();
-  constants.shadow_orb_mastery_value        = mastery_spells.shadow_orb_power   -> base_value( E_APPLY_AURA, A_DUMMY, P_GENERIC );
 
   // Shadow
   constants.twisted_faith_static_value      = spec.twisted_faith             -> effect2().percent();
