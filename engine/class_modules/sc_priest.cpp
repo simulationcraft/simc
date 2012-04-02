@@ -176,7 +176,7 @@ struct priest_t : public player_t
   // Procs
   struct procs_t
   {
-    proc_t* shadowy_apparation;
+    proc_t* sa_shadow_orb_mastery;
   } procs;
 
   // Special
@@ -188,6 +188,7 @@ struct priest_t : public player_t
   // Random Number Generators
   struct rngs_t
   {
+    rng_t* sa_shadow_orb_mastery;
   } rngs;
 
   // Pets
@@ -901,7 +902,7 @@ public:
       atonement -> trigger( amount, type, impact_result );
   }
 
-  static void trigger_shadowy_apparition( priest_t* player );
+  static unsigned trigger_shadowy_apparition( priest_t* player );
   static void add_more_shadowy_apparitions( priest_t* player );
   static void generate_shadow_orb( action_t*, gain_t*, unsigned number=1 );
 };
@@ -1251,11 +1252,14 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   }
 };
 
-void priest_spell_t::trigger_shadowy_apparition( priest_t* p )
+unsigned priest_spell_t::trigger_shadowy_apparition( priest_t* p )
 {
+  // Trigger Shadowy apparitions and report back the number of successful Shadow Orb refunds
+  unsigned shadow_orb_procs = 0;
+
   if ( !p -> shadowy_apparition_free_list.empty() )
   {
-    for ( int i = (int)p -> resources.current[ RESOURCE_SHADOW_ORB ]; i > 0; i-- )
+    for ( int i = static_cast<int>( p -> resources.current[ RESOURCE_SHADOW_ORB ] ); i > 0; i-- )
     {
       spell_t* s = p -> shadowy_apparition_free_list.front();
 
@@ -1263,11 +1267,19 @@ void priest_spell_t::trigger_shadowy_apparition( priest_t* p )
 
       p -> shadowy_apparition_active_list.push_back( s );
 
-      p -> procs.shadowy_apparation -> occur();
+      double so_chance = p -> mastery_spells.shadow_orb_power -> effect1().coeff() / 100.0 * p -> composite_mastery();
+
+      if ( p->rngs.sa_shadow_orb_mastery -> roll( so_chance ) )
+      {
+        p -> procs.sa_shadow_orb_mastery -> occur();
+        shadow_orb_procs++;
+      }
 
       s -> execute();
     }
   }
+
+  return shadow_orb_procs;
 }
 
 void priest_spell_t::add_more_shadowy_apparitions( priest_t* p )
@@ -2230,8 +2242,11 @@ struct smite_t : public priest_spell_t
 
 struct shadowy_apparition_t : priest_spell_t
 {
+  unsigned triggered_shadow_orb_mastery;
+
   shadowy_apparition_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "shadowy_apparition", player, "Shadowy Apparition" )
+    priest_spell_t( "shadowy_apparition", player, "Shadowy Apparition" ),
+    triggered_shadow_orb_mastery( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2244,7 +2259,18 @@ struct shadowy_apparition_t : priest_spell_t
   {
     priest_spell_t::schedule_travel( t );
 
-    trigger_shadowy_apparition( p() );
+    triggered_shadow_orb_mastery = trigger_shadowy_apparition( p() );
+  }
+
+  virtual void consume_resource()
+  {
+    priest_spell_t::consume_resource();
+
+    // implement mastery shadow orb restore, after the original resource got consumed,
+    // but directly at spell execution, not when shadowy apparitions reach the target.
+    // tested in mop beta, 02/04/2012 by philoptik@gmail.com
+
+
   }
 
   virtual double cost() const
@@ -3275,7 +3301,7 @@ double priest_t::composite_player_td_multiplier( const school_type_e school, act
   {
     // Shadow TD
     player_multiplier += buffs.dark_evangelism -> stack () * buffs.dark_evangelism -> data().effect1().percent();
-    player_multiplier += mastery_spells.shadow_orb_power -> ok() * 0.20; // FIXME: find a way to get the number from the dbc
+    player_multiplier += mastery_spells.shadow_orb_power -> effect1().coeff() / 100.0 * composite_mastery();
   }
 
   return player_multiplier;
@@ -3396,6 +3422,7 @@ void priest_t::init_base()
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
   diminished_parry_capi = 0.006650;
+
 }
 
 // priest_t::init_gains =====================================================
@@ -3419,7 +3446,7 @@ void priest_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.shadowy_apparation     = get_proc( "shadowy_apparation_proc" );
+  procs.sa_shadow_orb_mastery = get_proc( "shadowy_apparation_shadow_orb_mastery_proc" );
 }
 
 // priest_t::init_scaling ===================================================
@@ -3467,6 +3494,7 @@ void priest_t::init_rng()
 {
   player_t::init_rng();
 
+  rngs.sa_shadow_orb_mastery = get_rng( "sa_shadow_orb_mastery" );
 }
 
 // priest_t::init_talents ===================================================

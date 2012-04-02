@@ -4641,10 +4641,9 @@ struct player_t : public noncopyable
   {
     debuff_t* bleeding;
     debuff_t* blood_frenzy_bleed;
-    debuff_t* physical_vulnerability;
     debuff_t* casting;
     debuff_t* corrosive_spit;
-    debuff_t* curse_of_elements;
+    debuff_t* curse_of_elements; // mop ready
     debuff_t* demoralizing_roar;
     debuff_t* demoralizing_screech;
     debuff_t* demoralizing_shout;
@@ -4655,7 +4654,7 @@ struct player_t : public noncopyable
     debuff_t* flying;
     debuff_t* forbearance;
     debuff_t* hemorrhage;
-    debuff_t* hunters_mark;
+    debuff_t* hunters_mark; // mop ready
     debuff_t* infected_wounds;
     debuff_t* insect_swarm;
     debuff_t* invulnerable;
@@ -4663,6 +4662,7 @@ struct player_t : public noncopyable
     debuff_t* lightning_breath;
     debuff_t* mangle;
     debuff_t* master_poisoner;
+    debuff_t* physical_vulnerability; // mop ready
     debuff_t* poisoned;
     debuff_t* scarlet_fever;
     debuff_t* shattering_throw;
