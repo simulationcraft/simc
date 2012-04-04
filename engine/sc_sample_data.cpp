@@ -22,7 +22,6 @@ sample_data_t::sample_data_t( const bool s, const bool mm ):
 
 void sample_data_t::add( double x )
 {
-
   if ( simple )
   {
     if ( min_max )
@@ -62,7 +61,6 @@ void sample_data_t::analyze(
 
   if ( create_dist > 0 )
     create_distribution( create_dist );
-
 }
 
 // sample_data_t::analyze_basics ===============================================
@@ -86,7 +84,7 @@ void sample_data_t::analyze_basics()
   // Calculate Sum, Mean, Min, Max
   sum = min = max = data()[ 0 ];
 
-  for ( size_t i=1; i < sample_size; i++ )
+  for ( size_t i = 1; i < sample_size; i++ )
   {
     double i_data = data()[ i ];
     sum  += i_data;
@@ -116,7 +114,7 @@ void sample_data_t::analyze_variance()
     return;
 
   variance = 0;
-  for ( size_t i=0; i < sample_size; i++ )
+  for ( size_t i = 0; i < sample_size; i++ )
   {
     double delta = data()[ i ] - mean;
     variance += delta * delta;
@@ -130,7 +128,7 @@ void sample_data_t::analyze_variance()
   std_dev = sqrt( variance );
 
   // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
-  mean_std_dev = std_dev / sqrt ( ( double ) sample_size );
+  mean_std_dev = std_dev / sqrt ( static_cast<double>( sample_size ) );
 }
 
 // sample_data_t::create_dist ===============================================
@@ -155,10 +153,10 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
     double range = max - min + 2;
 
     distribution.assign( num_buckets, 0 );
-    for ( unsigned int i=0; i < data().size(); i++ )
+    for ( size_t i = 0; i < data().size(); i++ )
     {
-      int index = ( int ) ( num_buckets * ( data()[ i ] - min + 1 ) / range );
-      assert( 0 <= index && static_cast<size_t>( index ) < distribution.size() );
+      size_t index = static_cast<size_t>( num_buckets * ( data()[ i ] - min + 1 ) / range );
+      assert( index < distribution.size() );
       distribution[ index ]++;
     }
   }

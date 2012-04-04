@@ -2944,9 +2944,7 @@ void player_t::merge( player_t& other )
   {
     buff_t *otherbuff = buff_t::find( &other, b -> name_str.c_str() );
     if ( otherbuff )
-    {
-      b -> merge( otherbuff );
-    }
+    { b -> merge( otherbuff ); }
   }
 
   for ( proc_t* proc = proc_list; proc; proc = proc -> next )
@@ -3002,23 +3000,28 @@ void player_t::reset()
   mastery = base_mastery + mastery_rating / rating.mastery;
   recalculate_haste();
 
-  for ( int i=0; i < ATTRIBUTE_MAX; i++ )
-  {
-    attribute           [ i ] = attribute_initial           [ i ];
-    attribute_multiplier[ i ] = attribute_multiplier_initial[ i ];
-    // Matched gear. i.e. Mysticism etc.
-    if ( ( level >= 50 ) && matching_gear )
-      attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( ( const attribute_type_e ) i );
-  }
+  std::copy( attribute_initial.begin(), attribute_initial.end(), attribute.begin() );
+  std::copy( attribute_multiplier_initial.begin(), attribute_multiplier_initial.end(), attribute_multiplier.begin() );
 
-  for ( int i=0; i <= SCHOOL_MAX; i++ )
-  {
-    spell_power[ i ] = initial_spell_power[ i ];
-  }
-  for ( int i=0; i < SCHOOL_MAX; i++ )
-  {
-    resource_reduction[ i ] = initial_resource_reduction[ i ];
-  }
+  if ( ( level >= 50 ) && matching_gear )
+    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+    {
+        attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( i );
+    }
+
+  std::copy( initial_spell_power.begin(), initial_spell_power.end(), spell_power.begin() );
+  std::copy( initial_resource_reduction.begin(), initial_resource_reduction.end(), resource_reduction.begin() );
+  /*range::copy( attribute_initial, attribute );
+  range::copy( attribute_multiplier_initial, attribute_multiplier );
+
+  if ( ( level >= 50 ) && matching_gear )
+    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+    {
+        attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( i );
+    }
+
+  range::copy( initial_spell_power, spell_power );
+  range::copy( initial_resource_reduction, resource_reduction );*/
 
   spell_hit         = initial_spell_hit;
   spell_crit        = initial_spell_crit;
@@ -3105,11 +3108,14 @@ void player_t::reset()
 
   init_resources( true );
 
-  for ( action_t* a = action_list; a; a = a -> next ) a -> reset();
+  for ( action_t* a = action_list; a; a = a -> next )
+    a -> reset();
 
-  for ( cooldown_t* c = cooldown_list; c; c = c -> next ) c -> reset();
+  for ( cooldown_t* c = cooldown_list; c; c = c -> next )
+    c -> reset();
 
-  for ( dot_t* d = dot_list; d; d = d -> next ) d -> reset();
+  for ( dot_t* d = dot_list; d; d = d -> next )
+    d -> reset();
 
   for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
   {
@@ -3117,7 +3123,8 @@ void player_t::reset()
       ( *i )->reset();
   }
 
-  for ( stats_t* s = stats_list; s; s = s -> next ) s -> reset();
+  for ( stats_t* s = stats_list; s; s = s -> next )
+    s -> reset();
 
   potion_used = 0;
 
@@ -3478,9 +3485,6 @@ void player_t::regen( const timespan_t periodicity )
   {
     if ( resources.max[ i ] != 0 )
       timeline_resource[ i ][ index ] += resources.current[ i ] * periodicity.total_seconds();
-
-    /*if ( i == RESOURCE_MANA )
-      sim -> errorf( "%.4f\n", timeline_resource[ i ][ index ] );*/
   }
 }
 

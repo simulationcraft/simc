@@ -95,9 +95,7 @@ struct enemy_add_t : public pet_t
   }
 
   virtual resource_type_e primary_resource() const
-  {
-    return RESOURCE_HEALTH;
-  }
+  { return RESOURCE_HEALTH; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
 };
@@ -108,7 +106,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct melee_t : public attack_t
 {
-  melee_t( const char* name, player_t* player ) :
+  melee_t( const std::string& name, player_t* player ) :
     attack_t( name, player, RESOURCE_MANA, SCHOOL_PHYSICAL )
   {
     may_crit    = true;
@@ -146,7 +144,7 @@ struct auto_attack_t : public attack_t
   auto_attack_t( player_t* p, const std::string& options_str ) :
     attack_t( "auto_attack", p, RESOURCE_MANA, SCHOOL_PHYSICAL )
   {
-    p -> main_hand_attack = new melee_t( "melee_main_hand", player );
+    p -> main_hand_attack = new melee_t( "melee_main_hand", p );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds( 2.4 );
 
@@ -179,20 +177,17 @@ struct auto_attack_t : public attack_t
 
   virtual void execute()
   {
-    enemy_t* p = player -> cast_enemy();
-
-    p -> main_hand_attack -> schedule_execute();
-    if ( p -> off_hand_attack )
+    player -> main_hand_attack -> schedule_execute();
+    if ( player -> off_hand_attack )
     {
-      p -> off_hand_attack -> schedule_execute();
+      player -> off_hand_attack -> schedule_execute();
     }
   }
 
   virtual bool ready()
   {
-    enemy_t* p = player -> cast_enemy();
-    if ( p -> is_moving() ) return false;
-    return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+    if ( player -> is_moving() ) return false;
+    return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
 
@@ -314,7 +309,7 @@ struct summon_add_t : public spell_t
   timespan_t summoning_duration;
   pet_t* pet;
 
-  summon_add_t( player_t* player, const std::string& options_str ) :
+  summon_add_t( player_t* p, const std::string& options_str ) :
     spell_t( "summon_add", player, RESOURCE_MANA, SCHOOL_PHYSICAL ),
     add_name( "" ), summoning_duration( timespan_t::zero ), pet( 0 )
   {
@@ -326,8 +321,6 @@ struct summon_add_t : public spell_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-
-    enemy_t* p = player -> cast_enemy();
 
     pet = p -> find_pet( add_name );
     if ( ! pet )
@@ -343,11 +336,9 @@ struct summon_add_t : public spell_t
 
   virtual void execute()
   {
-    enemy_t* p = player -> cast_enemy();
+spell_t::execute();
 
-    spell_t::execute();
-
-    p -> summon_pet( add_name.c_str(), summoning_duration );
+    player -> summon_pet( add_name.c_str(), summoning_duration );
   }
 
   virtual bool ready()
@@ -644,8 +635,8 @@ void enemy_t::combat_end()
 action_t* enemy_add_t::create_action( const std::string& name,
                                       const std::string& options_str )
 {
-  if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
-  if ( name == "spell_nuke"              ) return new               spell_nuke_t( this, options_str );
+  if ( name == "auto_attack"             ) return new auto_attack_t( this, options_str );
+  if ( name == "spell_nuke"              ) return new spell_nuke_t( this, options_str );
 
   return pet_t::create_action( name, options_str );
 }

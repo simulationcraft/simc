@@ -4330,7 +4330,7 @@ struct player_t : public noncopyable
 
   // Profs
   std::string professions_str;
-  int profession[ PROFESSION_MAX ];
+  std::array<int,PROFESSION_MAX> profession;
 
   // Race
   std::string race_str;
@@ -4340,16 +4340,15 @@ struct player_t : public noncopyable
   double spell_haste, attack_haste;
 
   // Attributes
-  double attribute                   [ ATTRIBUTE_MAX ];
-  double attribute_base              [ ATTRIBUTE_MAX ];
-  double attribute_initial           [ ATTRIBUTE_MAX ];
-  double attribute_multiplier        [ ATTRIBUTE_MAX ];
-  double attribute_multiplier_initial[ ATTRIBUTE_MAX ];
+  std::array<double,ATTRIBUTE_MAX> attribute, attribute_base, attribute_initial,
+                                   attribute_multiplier, attribute_multiplier_initial;
 
   double mastery, mastery_rating, initial_mastery_rating,base_mastery;
 
   // Spell Mechanics
-  double base_spell_power,       initial_spell_power[ SCHOOL_MAX+1 ], spell_power[ SCHOOL_MAX+1 ];
+  double base_spell_power;
+  std::array<double,SCHOOL_MAX + 1> initial_spell_power;
+  std::array<double,SCHOOL_MAX + 1> spell_power;
   double base_spell_hit,         initial_spell_hit,                   spell_hit;
   double base_spell_crit,        initial_spell_crit,                  spell_crit;
   double base_spell_penetration, initial_spell_penetration,           spell_penetration;
@@ -4361,7 +4360,7 @@ struct player_t : public noncopyable
   double base_energy_regen_per_second;
   double base_focus_regen_per_second;
   double base_chi_regen_per_second;
-  double resource_reduction[ SCHOOL_MAX ], initial_resource_reduction[ SCHOOL_MAX ];
+  std::array<double,SCHOOL_MAX> resource_reduction, initial_resource_reduction;
   timespan_t last_cast;
 
   // Attack Mechanics

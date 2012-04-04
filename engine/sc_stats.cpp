@@ -101,8 +101,7 @@ void stats_t::add_result( const double act_amount,
   r -> iteration_actual_amount += act_amount;
   r -> iteration_total_amount += tot_amount;
 
-  int index = ( int ) ( sim -> current_time.total_seconds() );
-
+  const unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
 
   timeline_amount[ index ] += act_amount;
 }
@@ -135,7 +134,6 @@ void stats_t::add_tick( timespan_t time )
 
 void stats_t::combat_begin()
 {
-
   iteration_actual_amount = 0;
   iteration_total_amount = 0;
 }
@@ -222,7 +220,7 @@ void stats_t::analyze()
   num_executes       /= num_iterations;
   num_ticks          /= num_iterations;
 
-  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     rpe[ i ] = num_executes ? resource_gain.actual[ i ] / num_executes : -1;
     rpe_sum += rpe[ i ];
@@ -242,8 +240,7 @@ void stats_t::analyze()
 
   compound_amount = actual_amount.mean - opportunity_cost;
 
-  size_t num_children = children.size();
-  for ( size_t i=0; i < num_children; i++ )
+  for ( size_t i = 0; i < children.size(); i++ )
   {
     children[ i ] -> analyze();
     compound_amount += children[ i ] -> compound_amount;
@@ -269,9 +266,8 @@ void stats_t::analyze()
   ttpt = num_ticks ? total_tick_time.total_seconds() / num_ticks : 0;
   etpe = num_executes? ( total_execute_time.total_seconds() + ( channeled ? total_tick_time.total_seconds() : 0 ) ) / num_executes : 0;
 
-  int num_buckets = ( int ) timeline_amount.size();
-  int max_buckets = std::min( num_buckets, ( int ) sim -> divisor_timeline.size() );
-  for ( int i=0; i < max_buckets; i++ )
+  size_t max_buckets = std::min( timeline_amount.size(), sim -> divisor_timeline.size() );
+  for ( size_t i=0; i < max_buckets; i++ )
     timeline_amount[ i ] /= sim -> divisor_timeline[ i ];
 }
 
@@ -346,13 +342,13 @@ void stats_t::merge( const stats_t* other )
   actual_amount.merge( other -> actual_amount );
   portion_aps.merge( other -> portion_aps );
 
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; ++i )
+  {
     direct_results[ i ].merge( other -> direct_results[ i ] );
-
-  for ( int i=0; i < RESULT_MAX; i++ )
     tick_results[ i ].merge( other -> tick_results[ i ] );
+  }
 
-  int i_max = ( int ) std::min( timeline_amount.size(), other -> timeline_amount.size() );
-  for ( int i=0; i < i_max; i++ )
+  size_t i_max = std::min( timeline_amount.size(), other -> timeline_amount.size() );
+  for ( size_t i=0; i < i_max; i++ )
     timeline_amount[ i ] += other -> timeline_amount[ i ];
 }
