@@ -332,7 +332,6 @@ player_t::player_t( sim_t*             s,
   base_spell_power( 0 ),
   base_spell_hit( 0 ),         initial_spell_hit( 0 ),         spell_hit( 0 ),
   base_spell_crit( 0 ),        initial_spell_crit( 0 ),        spell_crit( 0 ),
-  base_spell_penetration( 0 ), initial_spell_penetration( 0 ), spell_penetration( 0 ),
   base_mp5( 0 ),               initial_mp5( 0 ),               mp5( 0 ),
   spell_power_multiplier( 1.0 ),  initial_spell_power_multiplier( 1.0 ),
   spell_power_per_intellect( 0 ), initial_spell_power_per_intellect( 0 ),
@@ -1006,7 +1005,6 @@ void player_t::init_spell()
   if ( sim -> debug ) log_t::output( sim, "Initializing spells for player (%s)", name() );
 
   initial_stats.spell_power       = gear.spell_power       + enchant.spell_power       + ( is_pet() ? 0 : sim -> enchant.spell_power );
-  initial_stats.spell_penetration = gear.spell_penetration + enchant.spell_penetration + ( is_pet() ? 0 : sim -> enchant.spell_penetration );
   initial_stats.mp5               = gear.mp5               + enchant.mp5               + ( is_pet() ? 0 : sim -> enchant.mp5 );
 
   initial_spell_power[ SCHOOL_MAX ] = base_spell_power + initial_stats.spell_power;
@@ -1014,8 +1012,6 @@ void player_t::init_spell()
   initial_spell_hit = base_spell_hit + initial_stats.hit_rating / rating.spell_hit;
 
   initial_spell_crit = base_spell_crit + initial_stats.crit_rating / rating.spell_crit;
-
-  initial_spell_penetration = base_spell_penetration + initial_stats.spell_penetration;
 
   initial_mp5 = base_mp5 + initial_stats.mp5;
 
@@ -1741,7 +1737,6 @@ void player_t::init_scaling()
     scales_with[ STAT_RUNIC  ] = false;
 
     scales_with[ STAT_SPELL_POWER       ] = spell;
-    scales_with[ STAT_SPELL_PENETRATION ] = false;
     scales_with[ STAT_MP5               ] = false;
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
@@ -1779,7 +1774,6 @@ void player_t::init_scaling()
       case STAT_SPIRIT:    attribute_initial[ ATTR_SPIRIT    ] += v; break;
 
       case STAT_SPELL_POWER:       initial_spell_power[ SCHOOL_MAX ] += v; break;
-      case STAT_SPELL_PENETRATION: initial_spell_penetration         += v; break;
       case STAT_MP5:               initial_mp5                       += v; break;
 
       case STAT_ATTACK_POWER:      initial_attack_power              += v; break;
@@ -3012,7 +3006,6 @@ void player_t::reset()
 
   spell_hit         = initial_spell_hit;
   spell_crit        = initial_spell_crit;
-  spell_penetration = initial_spell_penetration;
   mp5               = initial_mp5;
 
   attack_power       = initial_attack_power;
@@ -3744,7 +3737,6 @@ void player_t::stat_gain( stat_type_e stat,
   case STAT_MAX_RUNIC:  resources.max[ RESOURCE_RUNIC_POWER  ] += amount; resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
   case STAT_SPELL_POWER:       stats.spell_power       += amount; temporary.spell_power += temp_value * amount; spell_power[ SCHOOL_MAX ] += amount; break;
-  case STAT_SPELL_PENETRATION: stats.spell_penetration += amount; spell_penetration         += amount; break;
   case STAT_MP5:               stats.mp5               += amount; mp5                       += amount; break;
 
   case STAT_ATTACK_POWER:             stats.attack_power             += amount; temporary.attack_power += temp_value * amount; attack_power       += amount;                            break;
@@ -3843,7 +3835,6 @@ void player_t::stat_loss( stat_type_e stat,
   break;
 
   case STAT_SPELL_POWER:       stats.spell_power       -= amount; temporary.spell_power -= temp_value * amount; spell_power[ SCHOOL_MAX ] -= amount; break;
-  case STAT_SPELL_PENETRATION: stats.spell_penetration -= amount; spell_penetration         -= amount; break;
   case STAT_MP5:               stats.mp5               -= amount; mp5                       -= amount; break;
 
   case STAT_ATTACK_POWER:             stats.attack_power             -= amount; temporary.attack_power -= temp_value * amount; attack_power       -= amount;                            break;
@@ -5092,7 +5083,6 @@ struct snapshot_stats_t : public action_t
     p -> buffed.spell_power       = floor( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     p -> buffed.spell_hit         = p -> composite_spell_hit();
     p -> buffed.spell_crit        = p -> composite_spell_crit();
-    p -> buffed.spell_penetration = p -> composite_spell_penetration();
     p -> buffed.mp5               = p -> composite_mp5();
 
     p -> buffed.attack_power       = p -> composite_attack_power() * p -> composite_attack_power_multiplier();
@@ -5118,7 +5108,7 @@ struct snapshot_stats_t : public action_t
       spell -> background = true;
       spell -> player_buff();
       spell -> target_debuff( target, DMG_DIRECT );
-      double chance = spell -> miss_chance( delta_level );
+      double chance = spell -> miss_chance( spell -> composite_hit(), delta_level );
       if ( chance < 0 ) spell_hit_extra = -chance * p -> rating.spell_hit;
     }
 
@@ -5128,10 +5118,10 @@ struct snapshot_stats_t : public action_t
       attack -> background = true;
       attack -> player_buff();
       attack -> target_debuff( target, DMG_DIRECT );
-      double chance = attack -> miss_chance( delta_level );
+      double chance = attack -> miss_chance( attack -> composite_hit(), delta_level );
       if ( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> rating.attack_hit;
-      chance = attack -> dodge_chance(  delta_level );
+      chance = attack -> dodge_chance( p -> composite_attack_expertise(), delta_level );
       if ( chance < 0 ) expertise_extra = -chance * 4 * p -> rating.expertise;
     }
 
@@ -6171,10 +6161,14 @@ action_expr_t* player_t::create_expression( action_t* a,
       {
         struct duration_expr_t : public action_expr_t
         {
-          duration_expr_t( action_t* a ) : action_expr_t( a, "dot_duration", TOK_NUM ) {}
-          virtual int evaluate() { result_num = action -> num_ticks * action -> tick_time().total_seconds(); return TOK_NUM; }
+          dot_t* dot;
+          duration_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_duration", TOK_NUM ), dot( d ) {}
+          virtual int evaluate() {
+            double haste = ( dot -> state ) ? dot -> state -> haste : action -> player_haste;
+            result_num = action -> num_ticks * action -> tick_time( haste ).total_seconds(); return TOK_NUM; 
+          }
         };
-        return new duration_expr_t( a );
+        return new duration_expr_t( a, dot );
       }
       if ( splits[ 2 ] == "multiplier" )
       {
@@ -6231,7 +6225,7 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
           dot_t* dot;
           dot_spell_power_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_spell_power", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> total_spell_power() : 0; return TOK_NUM; }
+          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> spell_power : 0; return TOK_NUM; }
         };
         return new dot_spell_power_expr_t( a, dot );
       }
@@ -6241,10 +6235,11 @@ action_expr_t* player_t::create_expression( action_t* a,
         {
           dot_t* dot;
           dot_attack_power_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_attack_power", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> total_attack_power() : 0; return TOK_NUM; }
+          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> attack_power : 0; return TOK_NUM; }
         };
         return new dot_attack_power_expr_t( a, dot );
       }
+      /*
       else if ( splits[ 2 ] == "mastery" )
       {
         struct dot_mastery_expr_t : public action_expr_t
@@ -6255,13 +6250,14 @@ action_expr_t* player_t::create_expression( action_t* a,
         };
         return new dot_mastery_expr_t( a, dot );
       }
+      */
       else if ( splits[ 2 ] == "haste_pct" )
       {
         struct dot_haste_pct_expr_t : public action_expr_t
         {
           dot_t* dot;
           dot_haste_pct_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_haste_pct", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> total_haste() : 0; return TOK_NUM; }
+          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> haste : 0; return TOK_NUM; }
         };
         return new dot_haste_pct_expr_t( a, dot );
       }
@@ -6972,11 +6968,3 @@ double player_t::composite_ranged_attack_player_vulnerability() const
 
   return m;
 }
-
-double player_t::composite_player_penetration_vulnerability( school_type_e /* s */ ) const
-{
-  double p = 0;
-
-  return p;
-}
-

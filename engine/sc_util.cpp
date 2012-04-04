@@ -585,7 +585,6 @@ const char* util_t::result_type_string( result_type_e type )
   {
   case RESULT_NONE:       return "none";
   case RESULT_MISS:       return "miss";
-  case RESULT_RESIST:     return "resist";
   case RESULT_DODGE:      return "dodge";
   case RESULT_PARRY:      return "parry";
   case RESULT_BLOCK:      return "block";
@@ -1719,7 +1718,6 @@ const char* util_t::stat_type_string( stat_type_e stat )
   case STAT_MAX_RUNIC: return "maximum_runic";
 
   case STAT_SPELL_POWER:       return "spell_power";
-  case STAT_SPELL_PENETRATION: return "spell_penetration";
   case STAT_MP5:               return "mp5";
 
   case STAT_ATTACK_POWER:             return "attack_power";
@@ -1779,7 +1777,6 @@ const char* util_t::stat_type_abbrev( stat_type_e stat )
   case STAT_MAX_RUNIC: return "MaxRunic";
 
   case STAT_SPELL_POWER:       return "SP";
-  case STAT_SPELL_PENETRATION: return "SPen";
   case STAT_MP5:               return "MP5";
 
   case STAT_ATTACK_POWER:             return "AP";
@@ -1833,7 +1830,6 @@ const char* util_t::stat_type_wowhead( stat_type_e stat )
   case STAT_RUNIC:  return "runic";
 
   case STAT_SPELL_POWER:       return "spellPower";
-  case STAT_SPELL_PENETRATION: return "spellPen";
 
   case STAT_ATTACK_POWER:             return "attackPower";
   case STAT_EXPERTISE_RATING:         return "expertiseRating";
@@ -1884,7 +1880,6 @@ stat_type_e util_t::parse_stat_type( const std::string& name )
   if ( name == "parryrtng"      ) return STAT_PARRY_RATING;
   if ( name == "resiliencertng" ) return STAT_RESILIENCE_RATING;
   if ( name == "splpwr"         ) return STAT_SPELL_POWER;
-  if ( name == "splpen"         ) return STAT_SPELL_PENETRATION;
   if ( name == "spi"            ) return STAT_SPIRIT;
   if ( util_t::str_compare_ci( name, "__wpds"   ) ) return STAT_WEAPON_DPS;
   if ( util_t::str_compare_ci( name, "__wspeed" ) ) return STAT_WEAPON_SPEED;

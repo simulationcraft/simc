@@ -95,33 +95,27 @@ void spell_base_t::player_buff()
 
 // spell_base_t::crit_chance =====================================================
 
-double spell_base_t::crit_chance( int /* delta_level */ ) const
-{ return total_crit(); }
+double spell_base_t::crit_chance( double crit, int /* delta_level */ ) const
+{ 
+  return crit;
+}
 
 // spell_base_t::calculate_result ================================================
 
-void spell_base_t::calculate_result()
+result_type_e spell_base_t::calculate_result( double crit, unsigned target_level )
 {
-  int delta_level = target -> level - player -> level;
+  int delta_level = target_level - player -> level;
 
   direct_dmg = 0;
-  result = RESULT_NONE;
+  result_type_e result = RESULT_NONE;
 
-  if ( ! harmful || ! may_hit ) return;
+  if ( ! harmful || ! may_hit ) return RESULT_NONE;
 
   if ( ( result == RESULT_NONE ) && may_miss )
   {
-    if ( rng_result -> roll( miss_chance( delta_level ) ) )
+    if ( rng_result -> roll( miss_chance( composite_hit(), delta_level ) ) )
     {
       result = RESULT_MISS;
-    }
-  }
-
-  if ( ( result == RESULT_NONE ) && may_resist && binary )
-  {
-    if ( rng_result -> roll( resistance() ) )
-    {
-      result = RESULT_RESIST;
     }
   }
 
@@ -131,14 +125,14 @@ void spell_base_t::calculate_result()
 
     if ( may_crit )
     {
-      if ( rng_result -> roll( crit_chance( delta_level ) ) )
-      {
+      if ( rng_result -> roll( crit_chance( crit, delta_level ) ) )
         result = RESULT_CRIT;
-      }
     }
   }
 
   if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+  
+  return result;
 }
 
 // spell_base_t::execute =========================================================
@@ -177,9 +171,8 @@ void spell_base_t::init()
 {
   action_t::init();
 
-  if ( base_spell_power_multiplier > 0 &&
-       ( direct_power_mod > 0 || tick_power_mod > 0 ) )
-    snapshot_flags |= STATE_SP | STATE_TARGET_POWER;
+  if ( base_spell_power_multiplier > 0 && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+    snapshot_flags |= STATE_SP;
 
   if ( num_ticks > 0 && hasted_ticks )
     snapshot_flags |= STATE_HASTE;

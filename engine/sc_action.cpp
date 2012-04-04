@@ -19,7 +19,6 @@ void action_t::init_action_t_()
   aoe                            = 0;
   dual                           = false;
   callbacks                      = true;
-  binary                         = false;
   channeled                      = false;
   background                     = false;
   sequence                       = false;
@@ -36,7 +35,6 @@ void action_t::init_action_t_()
   initialized                    = false;
   may_hit                        = true;
   may_miss                       = false;
-  may_resist                     = false;
   may_dodge                      = false;
   may_parry                      = false;
   may_glance                     = false;
@@ -69,18 +67,15 @@ void action_t::init_action_t_()
   base_multiplier                = 1.0;
   base_hit                       = 0.0;
   base_crit                      = 0.0;
-  base_penetration               = 0.0;
   player_multiplier              = 1.0;
   player_td_multiplier           = 1.0;
   player_dd_multiplier           = 1.0;
   player_hit                     = 0.0;
   player_crit                    = 0.0;
-  player_penetration             = 0.0;
   rp_gain                        = 0.0;
   target_multiplier              = 1.0;
   target_hit                     = 0.0;
   target_crit                    = 0.0;
-  target_penetration             = 0.0;
   base_spell_power               = 0.0;
   base_attack_power              = 0.0;
   player_spell_power             = 0.0;
@@ -149,7 +144,7 @@ void action_t::init_action_t_()
   // New Stuff
   stateless = false;
   snapshot_flags = 0;
-  update_flags = STATE_TARGET;
+  update_flags = STATE_MUL_TARGET;
   state_cache = 0;
   state = 0;
 
@@ -542,7 +537,6 @@ void action_t::player_buff()
   player_td_multiplier           = 1.0;
   player_hit                     = 0;
   player_crit                    = 0;
-  player_penetration             = 0;
   player_dd_adder                = 0;
   player_spell_power             = 0;
   player_attack_power            = 0;
@@ -573,8 +567,8 @@ void action_t::player_buff()
   player_haste = total_haste();
 
   if ( sim -> debug )
-    log_t::output( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f penetration=%.0f spell_power=%.2f attack_power=%.2f ",
-                   name(), player_hit, player_crit, player_penetration, player_spell_power, player_attack_power );
+    log_t::output( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f spell_power=%.2f attack_power=%.2f ",
+                   name(), player_hit, player_crit, player_spell_power, player_attack_power );
 }
 
 // action_t::target_debuff ==================================================
@@ -586,18 +580,16 @@ void action_t::target_debuff( player_t* t, dmg_type_e )
   target_crit                  = 0;
   target_attack_power          = 0;
   target_spell_power           = 0;
-  target_penetration           = 0;
   target_dd_adder              = 0;
 
   if ( ! no_debuffs )
   {
     target_multiplier *= t -> composite_player_vulnerability( school );
-    target_penetration += t -> composite_player_penetration_vulnerability( school );
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "action_t::target_debuff: %s (target=%s) multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f penetration=%.0f",
-                   name(), t -> name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power, target_penetration );
+    log_t::output( sim, "action_t::target_debuff: %s (target=%s) multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f",
+                   name(), t -> name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power );
 }
 
 // action_t::snapshot
@@ -631,8 +623,7 @@ bool action_t::result_is_miss( result_type_e r ) const
 
   return( r == RESULT_MISS   ||
           r == RESULT_DODGE  ||
-          r == RESULT_PARRY  ||
-          r == RESULT_RESIST );
+          r == RESULT_PARRY );
 }
 
 // action_t::armor ==========================================================
@@ -646,68 +637,7 @@ double action_t::armor() const
 
 double action_t::resistance() const
 {
-  if ( ! may_resist )
-    return 0;
-
-  player_t* t = target;
-  double resist = 0;
-
-  double penetration = base_penetration + player_penetration + target_penetration;
-
-  if ( school == SCHOOL_BLEED )
-  {
-    // Bleeds cannot be resisted
-  }
-  else
-  {
-    double resist_rating = t -> composite_spell_resistance( school );
-
-    if ( school == SCHOOL_FROSTFIRE )
-    {
-      resist_rating = std::min( t -> composite_spell_resistance( SCHOOL_FROST ),
-                                t -> composite_spell_resistance( SCHOOL_FIRE  ) );
-    }
-    else if ( school == SCHOOL_SPELLSTORM )
-    {
-      resist_rating = std::min( t -> composite_spell_resistance( SCHOOL_ARCANE ),
-                                t -> composite_spell_resistance( SCHOOL_NATURE ) );
-    }
-    else if ( school == SCHOOL_SHADOWFROST )
-    {
-      resist_rating = std::min( t -> composite_spell_resistance( SCHOOL_SHADOW ),
-                                t -> composite_spell_resistance( SCHOOL_FROST  ) );
-    }
-    else if ( school == SCHOOL_SHADOWFLAME )
-    {
-      resist_rating = std::min( t -> composite_spell_resistance( SCHOOL_SHADOW ),
-                                t -> composite_spell_resistance( SCHOOL_FIRE   ) );
-    }
-
-    resist_rating -= penetration;
-    if ( resist_rating < 0 ) resist_rating = 0;
-    if ( resist_rating > 0 )
-    {
-      resist = resist_rating / ( resist_rating + player -> half_resistance_rating );
-    }
-
-#if 0
-// TO-DO: No sign of partial resists on either Beta or PTR. ifdefing out for now in case they come back...
-    if ( ! binary )
-    {
-      int delta_level = t -> level - player -> level;
-      if ( delta_level > 0 )
-      {
-        resist += delta_level * 0.02;
-      }
-    }
-#endif
-
-    if ( resist > 1.0 ) resist = 1.0;
-  }
-
-  if ( sim -> debug ) log_t::output( sim, "%s queries resistance for %s: %.2f", player -> name(), name(), resist );
-
-  return resist;
+  return 0;
 }
 
 // action_t::total_crit_bonus ===============================================
@@ -739,7 +669,7 @@ double action_t::total_power() const
 
 // action_t::calculate_weapon_damage ========================================
 
-double action_t::calculate_weapon_damage()
+double action_t::calculate_weapon_damage( double attack_power )
 {
   if ( ! weapon || weapon_multiplier <= 0 ) return 0;
 
@@ -747,7 +677,7 @@ double action_t::calculate_weapon_damage()
 
   timespan_t weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
-  double power_damage = weapon_speed.total_seconds() * weapon_power_mod * total_attack_power();
+  double power_damage = weapon_speed.total_seconds() * weapon_power_mod * attack_power;
 
   double total_dmg = dmg + power_damage;
 
@@ -758,7 +688,7 @@ double action_t::calculate_weapon_damage()
   if ( sim -> debug )
   {
     log_t::output( sim, "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
-                   player -> name(), name(), total_dmg, dmg, weapon -> bonus_dmg, weapon_speed.total_seconds(), power_damage, total_attack_power() );
+                   player -> name(), name(), total_dmg, dmg, weapon -> bonus_dmg, weapon_speed.total_seconds(), power_damage, attack_power );
   }
 
   return total_dmg;
@@ -766,7 +696,7 @@ double action_t::calculate_weapon_damage()
 
 // action_t::calculate_tick_damage ==========================================
 
-double action_t::calculate_tick_damage()
+double action_t::calculate_tick_damage( result_type_e r, double power, double multiplier )
 {
   double dmg = 0;
 
@@ -774,19 +704,14 @@ double action_t::calculate_tick_damage()
 
   if ( base_td == 0 && tick_power_mod == 0 ) return 0;
 
-  dmg  = floor( base_td + 0.5 ) + total_power() * tick_power_mod;
-  dmg *= total_td_multiplier();
+  dmg  = floor( base_td + 0.5 ) + power * tick_power_mod;
+  dmg *= multiplier;
 
   double init_tick_dmg = dmg;
 
-  if ( result == RESULT_CRIT )
+  if ( r == RESULT_CRIT )
   {
     dmg *= 1.0 + total_crit_bonus();
-  }
-
-  if ( ! binary )
-  {
-    dmg *= 1.0 - resistance();
   }
 
   if ( ! sim -> average_range )
@@ -794,9 +719,9 @@ double action_t::calculate_tick_damage()
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f",
+    log_t::output( sim, "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f power=%.0f mult=%.2f",
                    player -> name(), name(), dmg, init_tick_dmg, base_td, tick_power_mod,
-                   total_power(), base_multiplier * base_td_multiplier, player_multiplier, target_multiplier );
+                   power, multiplier );
   }
 
   return dmg;
@@ -804,7 +729,7 @@ double action_t::calculate_tick_damage()
 
 // action_t::calculate_direct_damage ========================================
 
-double action_t::calculate_direct_damage( int chain_target )
+double action_t::calculate_direct_damage( result_type_e r, int chain_target, unsigned target_level, double ap, double sp, double multiplier )
 {
   double dmg = sim -> range( base_dd_min, base_dd_max );
 
@@ -821,18 +746,18 @@ double action_t::calculate_direct_damage( int chain_target )
   {
     // x% weapon damage + Y
     // e.g. Obliterate, Shred, Backstab
-    dmg += calculate_weapon_damage();
+    dmg += calculate_weapon_damage( ap );
     dmg *= weapon_multiplier;
     weapon_dmg = dmg;
   }
-  dmg += direct_power_mod * total_power();
-  dmg *= total_dd_multiplier();
+  dmg += direct_power_mod * ( ap + sp );
+  dmg *= multiplier;
 
   double init_direct_dmg = dmg;
 
-  if ( result == RESULT_GLANCE )
+  if ( r == RESULT_GLANCE )
   {
-    double delta_skill = ( target -> level - player -> level ) * 5.0;
+    double delta_skill = ( target_level - player -> level ) * 5.0;
 
     if ( delta_skill < 0.0 )
       delta_skill = 0.0;
@@ -860,14 +785,9 @@ double action_t::calculate_direct_damage( int chain_target )
 
     dmg *= sim -> range( min_glance, max_glance ); // 0.75 against +3 targets.
   }
-  else if ( result == RESULT_CRIT )
+  else if ( r == RESULT_CRIT )
   {
     dmg *= 1.0 + total_crit_bonus();
-  }
-
-  if ( ! binary )
-  {
-    dmg *= 1.0 - resistance();
   }
 
   // AoE with decay per target
@@ -882,9 +802,9 @@ double action_t::calculate_direct_damage( int chain_target )
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f b_mult=%.2f p_mult=%.2f t_mult=%.2f w_mult=%.2f",
+    log_t::output( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
                    player -> name(), name(), dmg, init_direct_dmg, weapon_dmg, base_direct_dmg, direct_power_mod,
-                   total_power(), base_multiplier * base_dd_multiplier, player_multiplier, target_multiplier, weapon_multiplier );
+                   ( ap + sp ), multiplier, weapon_multiplier );
   }
 
   return dmg;
@@ -986,10 +906,10 @@ void action_t::execute()
       {
         target_debuff( tl[ t ], DMG_DIRECT );
 
-        calculate_result();
+        result = calculate_result( total_crit(), tl[ t ] -> level );
 
         if ( result_is_hit() )
-          direct_dmg = calculate_direct_damage( t + 1 );
+          direct_dmg = calculate_direct_damage( result, t + 1, tl[ t ] -> level, total_attack_power(), total_spell_power(), total_dd_multiplier() );
 
         schedule_travel( tl[ t ] );
       }
@@ -998,10 +918,10 @@ void action_t::execute()
     {
       target_debuff( target, DMG_DIRECT );
 
-      calculate_result();
+      result = calculate_result( total_crit(), target -> level );
 
       if ( result_is_hit() )
-        direct_dmg = calculate_direct_damage( 0 );
+        direct_dmg = calculate_direct_damage( result, 0, target -> level, total_attack_power(), total_spell_power(), total_dd_multiplier() );
 
       schedule_travel( target );
     }
@@ -1016,11 +936,11 @@ void action_t::execute()
       {
         action_state_t* s = get_state();
         s -> target = tl[ t ];
-        s -> take_state( snapshot_flags );
-        calculate_result_s( s );
+        snapshot_state( s, snapshot_flags );
+        s -> result = calculate_result( s -> crit, s -> target -> level );
 
         if ( result_is_hit( s -> result ) )
-          s -> result_amount = calculate_direct_damage_s( t + 1, s );
+          s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> target -> level, s -> attack_power, s -> spell_power, s -> composite_da_multiplier() );
 
         if ( sim -> debug )
           s -> debug();
@@ -1031,11 +951,12 @@ void action_t::execute()
     else
     {
       action_state_t* s = get_state();
-      s -> take_state( snapshot_flags );
-      calculate_result_s( s );
+      s -> target = target;
+      snapshot_state( s, snapshot_flags );
+      s -> result = calculate_result( s -> crit, s -> target -> level );
 
       if ( result_is_hit( s -> result ) )
-        s -> result_amount = calculate_direct_damage_s( 0, s );
+        s -> result_amount = calculate_direct_damage( s -> result, 0, s -> target -> level, s -> attack_power, s -> spell_power, s -> composite_da_multiplier() );
 
       if ( sim -> debug )
         s -> debug();
@@ -1071,13 +992,13 @@ void action_t::tick( dot_t* d )
     {
       int delta_level = target -> level - player -> level;
 
-      if ( rng_result-> roll( crit_chance( delta_level ) ) )
+      if ( rng_result-> roll( crit_chance( total_crit(), delta_level ) ) )
       {
         result = RESULT_CRIT;
       }
     }
 
-    tick_dmg = calculate_tick_damage();
+    tick_dmg = calculate_tick_damage( result, total_power(), total_td_multiplier() );
 
     d -> prev_tick_amount = tick_dmg;
 
@@ -1088,15 +1009,15 @@ void action_t::tick( dot_t* d )
   else
   {
     d -> state -> result = RESULT_HIT;
-    d -> state -> take_state( update_flags );
+    snapshot_state( d -> state, update_flags );
 
     if ( tick_may_crit )
     {
-      if ( rng_result -> roll( crit_chance_s( d -> state ) ) )
+      if ( rng_result -> roll( crit_chance( state -> crit, state -> target -> level - player -> level ) ) )
         d -> state -> result = RESULT_CRIT;
     }
 
-    d -> state -> result_amount = calculate_tick_damage_s( d -> state );
+    d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier() );
 
     assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
 
@@ -1519,22 +1440,13 @@ void action_t::init()
   }
 
   if ( may_crit || tick_may_crit )
-    snapshot_flags |= STATE_CRIT | STATE_TARGET_CRIT;
+    snapshot_flags |= STATE_CRIT;
 
-  if ( may_miss )
-    snapshot_flags |= STATE_HIT;
+  if ( base_td > 0 || num_ticks > 0 )
+    snapshot_flags |= STATE_MUL_TA | STATE_MUL_TARGET;
 
-  if ( harmful )
-  {
-    if ( base_td > 0 || num_ticks > 0 )
-      snapshot_flags |= STATE_TA_ACTION_MUL;
-
-    if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
-      snapshot_flags |= STATE_DA_ACTION_MUL;
-  }
-
-  if ( ! target -> is_enemy() )
-    snapshot_flags |= STATE_PENETRATION | STATE_TARGET_PEN;
+  if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
+    snapshot_flags |= STATE_MUL_DA | STATE_MUL_TARGET;
 
   initialized = true;
 }
@@ -1721,7 +1633,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     struct tick_time_expr_t : public action_expr_t
     {
       tick_time_expr_t( action_t* a ) : action_expr_t( a, "tick_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( ( action -> dot() -> ticking ) ? action -> dot() -> action -> tick_time() : timespan_t::zero ).total_seconds(); return TOK_NUM; }
+      virtual int evaluate() { result_num = ( ( action -> dot() -> ticking ) ? action -> dot() -> action -> tick_time( action -> player_haste ) : timespan_t::zero ).total_seconds(); return TOK_NUM; }
     };
     return new tick_time_expr_t( this );
   }
@@ -1916,12 +1828,12 @@ double action_t::ppm_proc_chance( double PPM ) const
 
 // action_t::tick_time ======================================================
 
-timespan_t action_t::tick_time() const
+timespan_t action_t::tick_time( double haste ) const
 {
   timespan_t t = base_tick_time;
   if ( channeled || hasted_ticks )
   {
-    t *= player_haste;
+    t *= haste;
   }
   return t;
 }
@@ -1950,3 +1862,32 @@ int action_t::hasted_num_ticks( double haste, timespan_t d ) const
 
   return ( int ) floor( n + 0.5 );
 }
+
+// action_t::snapshot_state ===================================================
+
+void action_t::snapshot_state( action_state_t* state, uint32_t flags )
+{
+  assert( state );
+
+  if ( flags & STATE_CRIT )
+    state -> crit = composite_crit();
+
+  if ( flags & STATE_HASTE )
+    state -> haste = composite_haste();
+
+  if ( flags & STATE_AP )
+    state -> attack_power = floor( composite_attack_power() * composite_attack_power_multiplier() );
+  
+  if ( flags & STATE_SP )
+    state -> spell_power = floor( composite_spell_power() * composite_spell_power_multiplier() );
+
+  if ( flags & STATE_MUL_DA )
+    state -> da_multiplier = composite_da_multiplier();
+  
+  if ( flags & STATE_MUL_TA )
+    state -> ta_multiplier = composite_ta_multiplier();
+  
+  if ( flags & STATE_MUL_TARGET )
+    state -> target_multiplier = state -> target -> composite_player_vulnerability( school );
+}
+

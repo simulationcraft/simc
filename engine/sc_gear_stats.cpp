@@ -39,7 +39,6 @@ void gear_stats_t::add_stat( stat_type_e stat,
   case STAT_MAX_RUNIC:  break;
 
   case STAT_SPELL_POWER:       spell_power       += value; break;
-  case STAT_SPELL_PENETRATION: spell_penetration += value; break;
   case STAT_MP5:               mp5               += value; break;
 
   case STAT_ATTACK_POWER:             attack_power             += value; break;
@@ -106,7 +105,6 @@ void gear_stats_t::set_stat( stat_type_e stat,
   case STAT_MAX_RUNIC:  break;
 
   case STAT_SPELL_POWER:       spell_power       = value; break;
-  case STAT_SPELL_PENETRATION: spell_penetration = value; break;
   case STAT_MP5:               mp5               = value; break;
 
   case STAT_ATTACK_POWER:             attack_power             = value; break;
@@ -172,7 +170,6 @@ double gear_stats_t::get_stat( stat_type_e stat ) const
   case STAT_MAX_RUNIC:  return 0;
 
   case STAT_SPELL_POWER:       return spell_power;
-  case STAT_SPELL_PENETRATION: return spell_penetration;
   case STAT_MP5:               return mp5;
 
   case STAT_ATTACK_POWER:             return attack_power;
@@ -233,7 +230,6 @@ double gear_stats_t::stat_mod( stat_type_e stat )
   case STAT_MP5:               return 2.50;
   case STAT_ATTACK_POWER:      return 0.50;
   case STAT_SPELL_POWER:       return 0.86;
-  case STAT_SPELL_PENETRATION: return 0.80;
   default:                     return 1.0;
   }
 }

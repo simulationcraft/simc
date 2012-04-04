@@ -367,7 +367,6 @@ private:
     may_crit          = false;
     tick_may_crit     = false;
     may_miss          = false;
-    may_resist        = false;
     min_interval      = player -> get_cooldown( "min_interval_" + name_str );
   }
 
@@ -1777,12 +1776,12 @@ struct mind_flay_t : public priest_spell_t
     }
   }
 
-  virtual double calculate_tick_damage()
+  virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
   {
     if ( no_dmg )
       return 0.0;
 
-    return priest_spell_t::calculate_tick_damage();
+    return priest_spell_t::calculate_tick_damage( r, power, multiplier );
   }
 
   virtual void tick( dot_t* d )

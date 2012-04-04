@@ -245,7 +245,6 @@ std::string stat_color( stat_type_e type )
   case STAT_HASTE_RATING:             return class_color( SHAMAN );
   case STAT_MASTERY_RATING:           return class_text_color( ROGUE );
   case STAT_EXPERTISE_RATING:         return school_color( SCHOOL_BLEED );
-  case STAT_SPELL_PENETRATION:        return class_text_color( PRIEST );
   default:                            return std::string();
   }
 }

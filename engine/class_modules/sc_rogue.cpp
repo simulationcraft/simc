@@ -500,7 +500,7 @@ struct rogue_melee_attack_t : public melee_attack_t
   virtual double cost() const;
   virtual void   consume_resource();
   virtual void   execute();
-  virtual double calculate_weapon_damage();
+  virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   player_buff();
   virtual bool   ready();
   virtual void   assess_damage( player_t* t, double, dmg_type_e, result_type_e );
@@ -1094,9 +1094,9 @@ void rogue_melee_attack_t::execute()
 
 // rogue_melee_attack_t::calculate_weapon_damage ==================================
 
-double rogue_melee_attack_t::calculate_weapon_damage()
+double rogue_melee_attack_t::calculate_weapon_damage( double attack_power )
 {
-  double dmg = melee_attack_t::calculate_weapon_damage();
+  double dmg = melee_attack_t::calculate_weapon_damage( attack_power );
 
   if ( dmg == 0 ) return 0;
 
@@ -1957,7 +1957,7 @@ struct hemorrhage_t : public rogue_melee_attack_t
         // Dot can crit and double dips in player multipliers
         // Damage is based off actual damage, not normalized to hits like FFB
         // http://elitistjerks.com/f78/t105429-cataclysm_mechanics_testing/p6/#post1796877
-        double dot_dmg = calculate_direct_damage( 0 ) * p -> glyphs.hemorrhage -> base_value() / 100.0;
+        double dot_dmg = calculate_direct_damage( result, 0, target -> level, total_attack_power(), total_spell_power(), total_dd_multiplier() ) * p -> glyphs.hemorrhage -> base_value() / 100.0;
         base_td = dot_dmg / num_ticks;
       }
     }
@@ -1972,12 +1972,11 @@ struct kick_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "kick", 1766, p )
   {
     base_dd_min = base_dd_max = 1;
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_crit = false;
     base_attack_power_multiplier = 0.0;
 
     parse_options( NULL, options_str );
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     if ( p -> glyphs.kick -> ok() )
     {
@@ -2684,7 +2683,7 @@ struct deadly_poison_t : public rogue_poison_t
 
       player_buff();
       target_debuff( target, DMG_DIRECT );
-      calculate_result();
+      calculate_result( total_crit(), target -> level );
 
       if ( result_is_hit() )
       {
@@ -2718,10 +2717,10 @@ struct deadly_poison_t : public rogue_poison_t
     }
   }
 
-  virtual double calculate_tick_damage()
+  virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
   {
     rogue_targetdata_t* td = targetdata() -> cast_rogue();
-    return rogue_poison_t::calculate_tick_damage() * td -> debuffs_poison_doses -> stack();
+    return rogue_poison_t::calculate_tick_damage( r, power, multiplier ) * td -> debuffs_poison_doses -> stack();
   }
 
   virtual void last_tick( dot_t* d )

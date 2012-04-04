@@ -13,7 +13,7 @@
 
 void spell_t::init_spell_t_()
 {
-  may_miss = may_resist = true;
+  may_miss = true;
 
   may_trigger_dtr                = true;
 
@@ -84,12 +84,10 @@ void spell_t::player_buff()
   if ( ! no_buffs )
   {
     player_hit  = player -> composite_spell_hit();
-
-    player_penetration = player -> composite_spell_penetration();
   }
 
-  if ( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f penetration=%.2f",
-                                     name(), player_hit, player_penetration );
+  if ( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f",
+                                     name(), player_hit );
 }
 
 // spell_t::target_debuff ===================================================
@@ -110,7 +108,7 @@ void spell_t::target_debuff( player_t* t, dmg_type_e type )
 
 // spell_t::miss_chance =====================================================
 
-double spell_t::miss_chance( int delta_level ) const
+double spell_t::miss_chance( double hit, int delta_level ) const
 {
   double miss = 0;
 
@@ -123,7 +121,7 @@ double spell_t::miss_chance( int delta_level ) const
     miss = 0.04 + delta_level * 0.01;
   }
 
-  miss -= total_hit();
+  miss -= hit;
 
   if ( miss < 0.00 ) miss = 0.00;
   if ( miss > 0.99 ) miss = 0.99;

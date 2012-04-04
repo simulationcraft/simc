@@ -555,7 +555,7 @@ enum result_type_e
 {
   RESULT_UNKNOWN=-1,
   RESULT_NONE=0,
-  RESULT_MISS,  RESULT_RESIST, RESULT_DODGE, RESULT_PARRY,
+  RESULT_MISS,  RESULT_DODGE, RESULT_PARRY,
   RESULT_BLOCK, RESULT_CRIT_BLOCK, RESULT_GLANCE, RESULT_CRIT, RESULT_HIT,
   RESULT_MAX
 };
@@ -825,7 +825,7 @@ enum stat_type_e
   STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT,
   STAT_HEALTH, STAT_MANA, STAT_RAGE, STAT_ENERGY, STAT_FOCUS, STAT_RUNIC,
   STAT_MAX_HEALTH, STAT_MAX_MANA, STAT_MAX_RAGE, STAT_MAX_ENERGY, STAT_MAX_FOCUS, STAT_MAX_RUNIC,
-  STAT_SPELL_POWER, STAT_SPELL_PENETRATION, STAT_MP5,
+  STAT_SPELL_POWER, STAT_MP5,
   STAT_ATTACK_POWER, STAT_EXPERTISE_RATING, STAT_EXPERTISE_RATING2,
   STAT_HIT_RATING, STAT_HIT_RATING2,STAT_CRIT_RATING, STAT_HASTE_RATING,STAT_MASTERY_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
@@ -1061,35 +1061,14 @@ enum rating_type_e
 // New stuff
 enum snapshot_state_e
 {
-  STATE_HIT           = 0x000001,
-  STATE_EXPERTISE     = 0x000002,
-  STATE_HASTE         = 0x000004,
-  STATE_CRIT          = 0x000010,
-  STATE_MASTERY       = 0x000020,
-  STATE_AP            = 0x000040,
-  STATE_SP            = 0x000080,
-
-  STATE_BASE_MUL      = 0x000100,
-  STATE_BASE_MUL_DA   = 0x000200,
-  STATE_BASE_MUL_TA   = 0x000400,
-
-  STATE_ACTOR_MUL     = 0x001000,
-  STATE_ACTOR_MUL_DA  = 0x002000,
-  STATE_ACTOR_MUL_TA  = 0x004000,
-
-  STATE_TARGET_MUL    = 0x010000,
-  STATE_TARGET_CRIT   = 0x020000,
-  STATE_TARGET_POWER  = 0x040000,
-  STATE_TARGET_PEN    = 0x080000,
-  STATE_TARGET        = 0x0F0000,
-
-  // PVP Stuffs
-  STATE_PENETRATION   = 0x200000,
-
-  // Convenience enums for multipliers
-  STATE_DA_ACTION_MUL = 0x013300,
-  STATE_TA_ACTION_MUL = 0x015500,
-  STATE_MULTIPLIER    = 0x017700,
+  STATE_HASTE         = 0x000001,
+  STATE_CRIT          = 0x000002,
+  STATE_AP            = 0x000004,
+  STATE_SP            = 0x000008,
+  
+  STATE_MUL_DA        = 0x000010,
+  STATE_MUL_TA        = 0x000020,
+  STATE_MUL_TARGET    = 0x000040,
 };
 
 // Generic programming tools ================================================
@@ -3057,7 +3036,6 @@ struct gear_stats_t
   std::array<double,ATTRIBUTE_MAX> attribute;
   std::array<double,RESOURCE_MAX> resource;
   double spell_power;
-  double spell_penetration;
   double mp5;
   double attack_power;
   double expertise_rating;
@@ -4351,7 +4329,6 @@ struct player_t : public noncopyable
   std::array<double,SCHOOL_MAX + 1> spell_power;
   double base_spell_hit,         initial_spell_hit,                   spell_hit;
   double base_spell_crit,        initial_spell_crit,                  spell_crit;
-  double base_spell_penetration, initial_spell_penetration,           spell_penetration;
   double base_mp5,               initial_mp5,                         mp5;
   double spell_power_multiplier,    initial_spell_power_multiplier;
   double spell_power_per_intellect, initial_spell_power_per_intellect;
@@ -4492,7 +4469,7 @@ struct player_t : public noncopyable
     double attribute[ ATTRIBUTE_MAX ];
     double resource[ RESOURCE_MAX ];
 
-    double spell_power, spell_hit, spell_crit, spell_penetration, mp5;
+    double spell_power, spell_hit, spell_crit, mp5;
 
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
 
@@ -4788,7 +4765,6 @@ struct player_t : public noncopyable
   virtual double composite_spell_power( school_type_e school ) const;
   virtual double composite_spell_crit() const;
   virtual double composite_spell_hit() const;
-  virtual double composite_spell_penetration() const { return spell_penetration; }
   virtual double composite_mp5() const;
   virtual double composite_mastery() const;
 
@@ -5054,7 +5030,6 @@ struct player_t : public noncopyable
 
   /* New stuff */
   virtual double composite_player_vulnerability( school_type_e ) const;
-  virtual double composite_player_penetration_vulnerability( school_type_e ) const;
   virtual double composite_spell_crit_vulnerability() const;
   virtual double composite_attack_crit_vulnerability() const;
   virtual double composite_ranged_attack_player_vulnerability() const;
@@ -5272,9 +5247,9 @@ struct action_t : public spell_id_t
   talent_tree_type_e tree;
   result_type_e result;
   int aoe;
-  bool dual, callbacks, special, binary, channeled, background, sequence, use_off_gcd;
+  bool dual, callbacks, special, channeled, background, sequence, use_off_gcd;
   bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot, may_trigger_dtr, discharge_proc, auto_cast, initialized;
-  bool may_hit, may_miss, may_resist, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
+  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   bool no_buffs, no_debuffs;
   bool stateless;
@@ -5290,9 +5265,9 @@ struct action_t : public spell_id_t
   double base_dd_min, base_dd_max, base_td, base_td_init;
   double   base_dd_multiplier,   base_td_multiplier;
   double player_dd_multiplier, player_td_multiplier;
-  double   base_multiplier,   base_hit,   base_crit,   base_penetration;
-  double player_multiplier, player_hit, player_crit, player_penetration;
-  double target_multiplier, target_hit, target_crit, target_penetration;
+  double   base_multiplier,   base_hit,   base_crit;
+  double player_multiplier, player_hit, player_crit;
+  double target_multiplier, target_hit, target_crit;
   double   base_spell_power,   base_attack_power;
   double player_spell_power, player_attack_power;
   double target_spell_power, target_attack_power;
@@ -5369,19 +5344,19 @@ public:
   virtual double haste() const        { return 1.0;               }
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const { return base_execute_time; }
-  virtual timespan_t tick_time() const;
+  virtual timespan_t tick_time( double /* haste */ ) const;
   virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min ) const;
   virtual timespan_t travel_time();
   virtual void   player_buff();
   virtual void   player_tick() {}
   virtual void   target_debuff( player_t* t, dmg_type_e );
   virtual void   snapshot();
-  virtual void   calculate_result() { assert( 0 ); }
+  virtual result_type_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( 0 ); }
   virtual bool   result_is_hit ( result_type_e=RESULT_UNKNOWN ) const;
   virtual bool   result_is_miss( result_type_e=RESULT_UNKNOWN ) const;
-  virtual double calculate_direct_damage( int );
-  virtual double calculate_tick_damage();
-  virtual double calculate_weapon_damage();
+  virtual double calculate_direct_damage( result_type_e /* result */, int /* chain_target */, unsigned /* target_level */, double /* attack_power */,  double /* spell_power */, double /* multiplier */ );
+  virtual double calculate_tick_damage( result_type_e /* result */, double /* power */, double /* multiplier */ );
+  virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual double armor() const;
   virtual double resistance() const;
   virtual void   consume_resource();
@@ -5413,15 +5388,14 @@ public:
   virtual void   check_race( race_type_e race );
   virtual const char* name() const { return name_str.c_str(); }
 
-  virtual double   miss_chance( int /* delta_level */ ) const { return 0; }
-  virtual double  dodge_chance( int /* delta_level */ ) const { return 0; }
-  virtual double  parry_chance( int /* delta_level */ ) const { return 0; }
+  virtual double   miss_chance( double /* hit */, int /* delta_level */ ) const { return 0; }
+  virtual double  dodge_chance( double /* expertise */, int /* delta_level */ ) const { return 0; }
+  virtual double  parry_chance( double /* expertise */, int /* delta_level */ ) const { return 0; }
   virtual double glance_chance( int /* delta_level */ ) const { return 0; }
   virtual double  block_chance( int /* delta_level */ ) const { return 0; }
-  virtual double   crit_chance( int /* delta_level */ ) const { return 0; }
+  virtual double   crit_chance( double /* crit */, int /* delta_level */ ) const { return 0; }
 
   virtual double total_multiplier() const { return   base_multiplier * player_multiplier * target_multiplier; }
-  virtual double total_hit() const        { return   base_hit        + player_hit        + target_hit;        }
   virtual double total_crit() const       { return   base_crit       + player_crit       + target_crit;       }
   virtual double total_crit_bonus() const;
 
@@ -5484,239 +5458,71 @@ public:
   virtual void schedule_travel_s( action_state_t* );
   virtual void impact_s( action_state_t* );
 
-  virtual double   miss_chance_s( const action_state_t* ) const { return 0; }
-  virtual double  dodge_chance_s( const action_state_t* ) const { return 0; }
-  virtual double  parry_chance_s( const action_state_t* ) const { return 0; }
-  virtual double glance_chance_s( const action_state_t* ) const { return 0; }
-  virtual double  block_chance_s( const action_state_t* ) const { return 0; }
-  virtual double   crit_chance_s( const action_state_t* ) const { return 0; }
-  virtual double    resistance_s( const action_state_t* ) const;
-
+  virtual void   snapshot_state( action_state_t*, uint32_t );
+  
   virtual double action_multiplier() const { return base_multiplier; }
   virtual double action_da_multiplier() const { return base_dd_multiplier; }
   virtual double action_ta_multiplier() const { return base_td_multiplier; }
 
-  virtual double calculate_direct_damage_s( int, const action_state_t* );
-  virtual double calculate_weapon_damage_s( const action_state_t* );
-  virtual double calculate_tick_damage_s( const action_state_t* );
-
-  virtual void calculate_result_s( action_state_t* ) { assert( 0 ); }
-  virtual timespan_t tick_time_s( const action_state_t* ) const;
+  virtual double composite_hit() const { return base_hit; }
+  virtual double composite_expertise() const { return 0.0; }
+  virtual double composite_crit() const { return base_crit; }
+  virtual double composite_haste() const { return 1.0; }
+  virtual double composite_attack_power() const { return base_attack_power; }
+  virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier; }
+  virtual double composite_spell_power() const { return base_spell_power; }
+  virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier; }
+  virtual double composite_da_multiplier() { 
+    return action_multiplier() * action_da_multiplier() * 
+           player -> composite_player_multiplier( school, this ) *
+           player -> composite_player_dd_multiplier( school, this );
+  }
+  virtual double composite_ta_multiplier() { 
+    return action_multiplier() * action_ta_multiplier() * 
+           player -> composite_player_multiplier( school, this ) *
+           player -> composite_player_td_multiplier( school, this );
+  }
 };
 
 struct action_state_t
 {
   // Source action, target actor
-  action_t* action;
-  player_t* target;
-
+  action_t*       action;
+  player_t*       target;
   // Results
-  result_type_e result;
-  double      result_amount;
-
+  result_type_e   result;
+  double          result_amount;
   // Snapshotted stats during execution
-  double base_hit, actor_hit;
-  double actor_expertise;
-  double haste;
-  double base_crit, actor_crit, target_crit;
-  double mastery;
-  double base_attack_power, actor_attack_power, target_attack_power;
-  double base_spell_power, actor_spell_power;
-  double base_penetration, actor_penetration, target_penetration;
-
-  // Snapshotted multipliers during execution
-  double base_multiplier, base_da_multiplier, base_ta_multiplier;
-  double actor_multiplier, actor_da_multiplier, actor_ta_multiplier;
-  double target_multiplier;
-  double base_ap_multiplier, actor_ap_multiplier;
-  double base_sp_multiplier, actor_sp_multiplier;
-
+  double          haste;
+  double          crit;
+  double          attack_power;
+  double          spell_power;
+  // Multipliers
+  double          da_multiplier;
+  double          ta_multiplier;
+  double          target_multiplier;
+  // Cache pointer
   action_state_t* next;
 
   action_state_t( action_t*, player_t* );
   virtual ~action_state_t() {};
 
-  virtual void take_state( uint32_t );
   virtual void copy_state( const action_state_t* );
   virtual void debug() const;
 
-  virtual inline void snapshot_crit()
+  virtual inline double composite_power() const
   {
-    base_crit     = action -> base_crit;
-
-    if ( action -> type == ACTION_ATTACK )
-      actor_crit  = action -> player -> composite_attack_crit( action -> weapon );
-    else
-      actor_crit  = action -> player -> composite_spell_crit();
+    return attack_power + spell_power;
   }
 
-  virtual inline void snapshot_target_crit()
+  virtual inline double composite_da_multiplier() const
   {
-    if ( action -> type == ACTION_ATTACK )
-      target_crit = target -> composite_attack_crit_vulnerability();
-    else
-      target_crit = target -> composite_spell_crit_vulnerability();
+    return da_multiplier * target_multiplier;
   }
 
-  virtual inline void snapshot_mastery()
+  virtual inline double composite_ta_multiplier() const
   {
-    mastery = action -> player -> composite_mastery();
-  }
-
-  virtual inline void snapshot_haste()
-  {
-    if ( action -> type == ACTION_ATTACK )
-      haste = action -> player -> composite_attack_haste();
-    else
-      haste = action -> player -> composite_spell_haste();
-  }
-
-  virtual inline void snapshot_hit()
-  {
-    base_hit = action -> base_hit;
-
-    if ( action -> type == ACTION_ATTACK )
-      actor_hit = action -> player -> composite_attack_hit();
-    else
-      actor_hit = action -> player -> composite_spell_hit();
-  }
-
-  virtual inline void snapshot_expertise()
-  {
-    actor_expertise = action -> player -> composite_attack_expertise( action -> weapon );
-  }
-
-  virtual inline void snapshot_attack_power()
-  {
-    base_attack_power     = action -> base_attack_power;
-    actor_attack_power    = action -> player -> composite_attack_power();
-  }
-
-  virtual inline void snapshot_target_attack_power()
-  { }
-
-  virtual inline void snapshot_attack_power_multiplier()
-  {
-    base_ap_multiplier  = action -> base_attack_power_multiplier;
-    actor_ap_multiplier = action -> player -> composite_attack_power_multiplier();
-  }
-
-  virtual inline void snapshot_spell_power()
-  {
-    base_spell_power  = action -> base_spell_power;
-    actor_spell_power = action -> player -> composite_spell_power( action -> school );
-  }
-
-  virtual void inline snapshot_spell_power_multiplier()
-  {
-    base_sp_multiplier  = action -> base_spell_power_multiplier;
-    actor_sp_multiplier = action -> player -> composite_spell_power_multiplier();
-  }
-
-  virtual inline void snapshot_base_multiplier( uint32_t flags )
-  {
-    if ( flags & STATE_BASE_MUL )
-      base_multiplier      = action -> action_multiplier();
-
-    if ( flags & STATE_BASE_MUL_DA )
-      base_da_multiplier   = action -> action_da_multiplier();
-
-    if ( flags & STATE_BASE_MUL_TA )
-      base_ta_multiplier   = action -> action_ta_multiplier();
-  }
-
-  virtual inline void snapshot_actor_multiplier( uint32_t flags )
-  {
-    if ( flags & STATE_ACTOR_MUL )
-      actor_multiplier    = action -> player -> composite_player_multiplier( action -> school, action );
-
-    if ( flags & STATE_ACTOR_MUL_DA )
-      actor_da_multiplier = action -> player -> composite_player_dd_multiplier( action -> school, action );
-
-    if ( flags & STATE_ACTOR_MUL_TA )
-      actor_ta_multiplier = action -> player -> composite_player_td_multiplier( action -> school, action );
-  }
-
-  virtual inline void snapshot_target_multiplier()
-  {
-    target_multiplier = target -> composite_player_vulnerability( action -> school );
-  }
-
-  virtual inline void snapshot_penetration()
-  {
-    base_penetration   = action -> base_penetration;
-    actor_penetration  = action -> player -> spell_penetration;
-  }
-
-  virtual inline void snapshot_target_penetration()
-  {
-    target_penetration = target -> composite_player_penetration_vulnerability( action -> school );
-  }
-
-  // Query methods
-  virtual inline double total_crit() const
-  {
-    return base_crit + actor_crit + target_crit;
-  }
-
-  virtual inline double total_power() const
-  {
-    return total_attack_power() + total_spell_power();
-  }
-
-  virtual inline double total_attack_power() const
-  {
-    return total_ap_multiplier() * ( base_attack_power + actor_attack_power + target_attack_power );
-  }
-
-  virtual inline double total_ap_multiplier() const
-  {
-    return base_ap_multiplier * actor_ap_multiplier;
-  }
-
-  virtual inline double total_spell_power() const
-  {
-    return total_sp_multiplier() * ( base_spell_power + actor_spell_power );
-  }
-
-  virtual inline double total_sp_multiplier() const
-  {
-    return base_sp_multiplier * actor_sp_multiplier;
-  }
-
-  virtual inline double total_mastery() const
-  {
-    return mastery;
-  }
-
-  virtual inline double total_haste() const
-  {
-    return haste;
-  }
-
-  virtual inline double total_hit() const
-  {
-    return base_hit + actor_hit;
-  }
-
-  virtual inline double total_expertise() const
-  {
-    return actor_expertise;
-  }
-
-  virtual inline double total_da_multiplier() const
-  {
-    return base_multiplier * base_da_multiplier * actor_multiplier * actor_da_multiplier * target_multiplier;
-  }
-
-  virtual inline double total_ta_multiplier() const
-  {
-    return base_multiplier * base_ta_multiplier * actor_multiplier * actor_ta_multiplier * target_multiplier;
-  }
-
-  virtual inline double total_penetration() const
-  {
-    return base_penetration + actor_penetration + target_penetration;
+    return ta_multiplier * target_multiplier;
   }
 };
 
@@ -5741,27 +5547,23 @@ public:
   virtual timespan_t execute_time() const;
   virtual void   player_buff();
   int build_table( std::array<double,RESULT_MAX>& chances,
-                   std::array<result_type_e,RESULT_MAX>& results );
-  virtual void   calculate_result();
+                   std::array<result_type_e,RESULT_MAX>& results,
+                   unsigned level,
+                   double /* attack_crit */ );
+  virtual result_type_e calculate_result( double, unsigned );
   virtual void   init();
 
-  virtual double   miss_chance( int delta_level ) const;
+  virtual double   miss_chance( double /* hit */, int delta_level ) const;
   virtual double  block_chance( int /* delta_level */ ) const { return 0.0; }
   virtual double  crit_block_chance( int delta_level ) const;
-  virtual double   crit_chance( int delta_level ) const;
+  virtual double   crit_chance( double /* crit */, int delta_level ) const;
 
   /* New stuffs */
-  int build_table_s( std::array<double,RESULT_MAX>&,
-                     std::array<result_type_e,RESULT_MAX>&,
-                     const action_state_t* );
-  virtual void calculate_result_s( action_state_t* );
-  virtual double   miss_chance_s( const action_state_t* ) const;
-  virtual double  dodge_chance_s( const action_state_t* ) const;
-  virtual double  parry_chance_s( const action_state_t* ) const;
-  virtual double glance_chance_s( const action_state_t* ) const;
-  virtual double  block_chance_s( const action_state_t* ) const;
-  virtual double  crit_block_chance_s( const action_state_t* ) const;
-  virtual double   crit_chance_s( const action_state_t* ) const;
+  virtual double composite_hit() const { return action_t::composite_hit() + player -> composite_attack_hit(); }
+  virtual double composite_crit() const { return action_t::composite_crit() + player -> composite_attack_crit( weapon ); }
+  virtual double composite_haste() const { return action_t::composite_haste() * player -> composite_attack_haste(); }
+  virtual double composite_attack_power() const { return action_t::composite_attack_power() + player -> composite_attack_power(); }
+  virtual double composite_attack_power_multiplier() const { return action_t::composite_attack_power_multiplier() * player -> composite_attack_power_multiplier(); }
 };
 
 // Melee Attack ===================================================================
@@ -5785,9 +5587,12 @@ public:
   virtual void   target_debuff( player_t* t, dmg_type_e );
   virtual double total_expertise() const;
 
-  virtual double  dodge_chance( int delta_level ) const;
-  virtual double  parry_chance( int delta_level ) const;
+  virtual double  dodge_chance( double /* expertise */, int delta_level ) const;
+  virtual double  parry_chance( double /* expertise */, int delta_level ) const;
   virtual double glance_chance( int delta_level ) const;
+
+  /* New stuffs */
+  virtual double composite_expertise() const { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
 };
 
 // Ranged Attack ===================================================================
@@ -5827,15 +5632,17 @@ public:
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const;
   virtual void   player_buff();
-  virtual void   calculate_result();
+  virtual result_type_e   calculate_result( double, unsigned );
   virtual void   execute();
-  virtual double crit_chance( int delta_level ) const;
+  virtual double crit_chance( double /* crit */, int delta_level ) const;
   virtual void   schedule_execute();
   virtual void   init();
 
   /* New stuffs */
-  virtual void calculate_result_s( action_state_t* );
-  virtual double crit_chance_s( const action_state_t* ) const;
+  virtual double composite_crit() const { return action_t::composite_crit() + player -> composite_spell_crit(); }
+  virtual double composite_haste() const { return action_t::composite_haste() * player -> composite_spell_haste(); }
+  virtual double composite_spell_power() const { return action_t::composite_spell_power() + player -> composite_spell_power( school ); }
+  virtual double composite_spell_power_multiplier() const { return action_t::composite_spell_power_multiplier() * player -> composite_spell_power_multiplier(); }
 };
 
 // Harmful Spell ====================================================================
@@ -5856,10 +5663,10 @@ public:
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, dmg_type_e );
   virtual void   execute();
-  virtual double miss_chance( int delta_level ) const;
+  virtual double miss_chance( double /* hit */, int delta_level ) const;
 
   /* New stuffs */
-  virtual double miss_chance_s( const action_state_t* ) const;
+  virtual double composite_hit() const { return action_t::composite_hit() + player -> composite_spell_hit(); }
 };
 
 // Heal =====================================================================

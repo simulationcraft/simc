@@ -803,7 +803,6 @@ static void trigger_piercing_shots( action_t* a, double dmg )
       proc          = true;
       hasted_ticks  = false;
       tick_may_crit = false;
-      may_resist    = true;
       dot_behavior  = DOT_REFRESH;
 
       base_multiplier = 1.0;
@@ -2820,7 +2819,7 @@ struct silencing_shot_t : public hunter_ranged_attack_t
     assert( weapon -> group() == WEAPON_RANGED );
     weapon_multiplier = 0.0;
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     normalize_weapon_speed = true;
   }

@@ -2001,8 +2001,8 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
 
   if ( sim -> debug )
-    log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f, p_mult=%.0f",
-                   name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
+    log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f p_mult=%.0f",
+                   name(), player_hit, player_crit, player_spell_power, player_multiplier );
 }
 
 // death_knight_spell_t::ready() ============================================
@@ -3144,7 +3144,7 @@ struct mind_freeze_t : public death_knight_spell_t
     if ( p -> talents.endless_winter -> rank() )
       base_costs[ current_resource() ] += p -> talents.endless_winter -> mod_additive( P_RESOURCE_COST ) / 10.0;
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
   virtual bool ready()
@@ -3813,7 +3813,6 @@ struct unholy_blight_t : public death_knight_spell_t
     background     = true;
     proc           = true;
     may_crit       = false;
-    may_resist     = false;
     may_miss       = false;
     hasted_ticks   = false;
   }
@@ -4578,7 +4577,6 @@ void death_knight_t::init_enchant()
     {
       may_miss    = false;
       may_crit    = false;
-      may_resist  = true;
       background  = true;
       proc        = true;
     }

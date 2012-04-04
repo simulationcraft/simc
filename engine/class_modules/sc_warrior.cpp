@@ -415,7 +415,7 @@ struct warrior_attack_t : public melee_attack_t
   virtual void   consume_resource();
   virtual double cost() const;
   virtual void   execute();
-  virtual double calculate_weapon_damage();
+  virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   player_buff();
   virtual bool   ready();
   virtual void   assess_damage( player_t* t, double, dmg_type_e, result_type_e );
@@ -517,7 +517,7 @@ static void trigger_deep_wounds( action_t* a )
 
   p -> active_deep_wounds -> player_buff();
 
-  double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage() *
+  double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage( a -> total_attack_power() ) *
                              p -> active_deep_wounds -> weapon_multiplier *
                              p -> active_deep_wounds -> player_multiplier );
 
@@ -888,9 +888,9 @@ void warrior_attack_t::execute()
 
 // warrior_attack_t::calculate_weapon_damage ================================
 
-double warrior_attack_t::calculate_weapon_damage()
+double warrior_attack_t::calculate_weapon_damage( double attack_power )
 {
-  double dmg = attack_t::calculate_weapon_damage();
+  double dmg = attack_t::calculate_weapon_damage( attack_power );
 
   // Catch the case where weapon == 0 so we don't crash/retest below.
   if ( dmg == 0 )
@@ -1836,7 +1836,7 @@ struct pummel_t : public warrior_attack_t
 
     base_costs[ current_resource() ] *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
   virtual bool ready()
@@ -1953,7 +1953,7 @@ struct rend_dot_t : public warrior_attack_t
 
   }
 
-  virtual double calculate_direct_damage( int )
+  virtual double calculate_direct_damage( result_type_e, int, unsigned, double, double, double )
   {
     // Rend doesn't actually hit with the weapon, but ticks on application
     return 0.0;
@@ -2118,7 +2118,7 @@ struct shield_bash_t : public warrior_attack_t
 
     base_costs[ current_resource() ] *= 1.0 + p -> talents.drums_of_war -> effect1().percent();
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
   }

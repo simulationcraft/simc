@@ -655,7 +655,6 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    may_resist = false;
     may_miss = false;
 
     base_execute_time += p -> talent_bane -> effect1().time_value();
@@ -720,8 +719,6 @@ struct death_coil_t : public warlock_spell_t
     warlock_spell_t( "death_coil", p, "Death Coil" )
   {
     parse_options( NULL, options_str );
-
-    binary = true;
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
@@ -928,7 +925,6 @@ struct drain_life_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     channeled    = true;
-    binary       = true;
     hasted_ticks = false;
     may_crit     = false;
 
@@ -952,10 +948,10 @@ struct drain_life_t : public warlock_spell_t
       trigger_everlasting_affliction( this );
   }
 
-  virtual timespan_t tick_time() const
+  virtual timespan_t tick_time( double haste ) const
   {
     warlock_t* p = player -> cast_warlock();
-    timespan_t t = warlock_spell_t::tick_time();
+    timespan_t t = warlock_spell_t::tick_time( haste );
 
     if ( p -> buffs.soulburn -> up() )
       t *= 1.0 - 0.5;
@@ -2505,7 +2501,7 @@ void warlock_t::trigger_burning_embers ( spell_t* s, double dmg )
         init();
       }
 
-      virtual double calculate_tick_damage() { return base_td; }
+      virtual double calculate_tick_damage( result_type_e, double, double ) { return base_td; }
     };
 
     if ( ! p -> spells_burning_embers ) p -> spells_burning_embers = new burning_embers_t( p );

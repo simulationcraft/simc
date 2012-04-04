@@ -128,18 +128,18 @@ void attack_t::player_buff()
 
 // attack_t::miss_chance ====================================================
 
-double attack_t::miss_chance( int delta_level ) const
+double attack_t::miss_chance( double hit, int delta_level ) const
 {
   if ( target -> is_enemy() || target -> is_add() )
   {
     if ( delta_level > 2 )
     {
       // FIXME: needs testing for delta_level > 3
-      return 0.06 + ( delta_level - 2 ) * 0.02 - total_hit();
+      return 0.06 + ( delta_level - 2 ) * 0.02 - hit;
     }
     else
     {
-      return 0.05 + delta_level * 0.005 - total_hit();
+      return 0.05 + delta_level * 0.005 - hit;
     }
   }
   else
@@ -166,9 +166,9 @@ double attack_t::crit_block_chance( int /* delta_level */ ) const
 
 // attack_t::crit_chance ====================================================
 
-double attack_t::crit_chance( int delta_level ) const
+double attack_t::crit_chance( double crit, int delta_level ) const
 {
-  double chance = total_crit();
+  double chance = crit;
 
   if ( target -> is_enemy() || target -> is_add() )
   {
@@ -193,15 +193,17 @@ double attack_t::crit_chance( int delta_level ) const
 // attack_t::build_table ====================================================
 
 int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
-                           std::array<result_type_e,RESULT_MAX>& results )
+                           std::array<result_type_e,RESULT_MAX>& results,
+                           unsigned target_level,
+                           double   attack_crit )
 {
   double miss=0, dodge=0, parry=0, glance=0, block=0,crit_block=0, crit=0;
 
-  int delta_level = target -> level - player -> level;
+  int delta_level = target_level - player -> level;
 
-  if ( may_miss   )   miss =   miss_chance( delta_level ) + target -> composite_tank_miss( school );
-  if ( may_dodge  )  dodge =  dodge_chance( delta_level ) + target -> composite_tank_dodge() - target -> diminished_dodge();
-  if ( may_parry  )  parry =  parry_chance( delta_level ) + target -> composite_tank_parry() - target -> diminished_parry();
+  if ( may_miss   )   miss =   miss_chance( composite_hit(), delta_level ) + target -> composite_tank_miss( school );
+  if ( may_dodge  )  dodge =  dodge_chance( composite_expertise(), delta_level ) + target -> composite_tank_dodge() - target -> diminished_dodge();
+  if ( may_parry  )  parry =  parry_chance( composite_expertise(), delta_level ) + target -> composite_tank_parry() - target -> diminished_parry();
   if ( may_glance ) glance = glance_chance( delta_level );
 
   if ( may_block )
@@ -214,9 +216,7 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
   }
 
   if ( may_crit && ! special ) // Specials are 2-roll calculations
-  {
-    crit = crit_chance( delta_level ) + target -> composite_tank_crit( school );
-  }
+    crit = crit_chance( attack_crit, delta_level ) + target -> composite_tank_crit( school );
 
   if ( sim -> debug )
     log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit_block=%.3f crit=%.3f",
@@ -294,17 +294,17 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
 
 // attack_t::calculate_result ===============================================
 
-void attack_t::calculate_result()
+result_type_e attack_t::calculate_result( double crit, unsigned target_level )
 {
   direct_dmg = 0;
-  result = RESULT_NONE;
+  result_type_e result = RESULT_NONE;
 
-  if ( ! harmful || ! may_hit ) return;
+  if ( ! harmful || ! may_hit ) return RESULT_NONE;
 
   std::array<double,RESULT_MAX> chances;
   std::array<result_type_e,RESULT_MAX> results;
 
-  int num_results = build_table( chances, results );
+  int num_results = build_table( chances, results, target_level, crit );
 
   if ( num_results == 1 )
   {
@@ -328,37 +328,26 @@ void attack_t::calculate_result()
 
   assert( result != RESULT_NONE );
 
-  if ( result_is_hit() )
+  if ( result == RESULT_HIT && special && may_crit ) // Specials are 2-roll calculations
   {
-    if ( binary && rng_result -> roll( resistance() ) )
-    {
-      result = RESULT_RESIST;
-    }
-    else if ( special && may_crit && ( result == RESULT_HIT ) ) // Specials are 2-roll calculations
-    {
-      int delta_level = target -> level - player -> level;
+    int delta_level = target_level - player -> level;
 
-      if ( rng_result -> roll( crit_chance( delta_level ) ) )
-      {
-        result = RESULT_CRIT;
-      }
-    }
+    if ( rng_result -> roll( crit_chance( crit, delta_level ) ) )
+      result = RESULT_CRIT;
   }
 
   if ( sim -> debug )
     log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+  
+  return result;
 }
 
 void attack_t::init()
 {
   action_t::init();
 
-  if ( base_attack_power_multiplier > 0 &&
-       ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
-    snapshot_flags |= STATE_AP | STATE_TARGET_POWER;
-
-  if ( may_dodge || may_parry )
-    snapshot_flags |= STATE_EXPERTISE;
+  if ( base_attack_power_multiplier > 0 && ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
+    snapshot_flags |= STATE_AP;
 }
 
 // ==========================================================================
@@ -369,7 +358,7 @@ void attack_t::init()
 
 void melee_attack_t::init_melee_attack_t_()
 {
-  may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
+  may_miss = may_dodge = may_parry = may_glance = may_block = true;
 
   if ( special )
     may_glance = false;
@@ -472,20 +461,20 @@ double melee_attack_t::total_expertise() const
 
 // melee_attack_t::dodge_chance ===================================================
 
-double melee_attack_t::dodge_chance( int delta_level ) const
+double melee_attack_t::dodge_chance( double expertise, int delta_level ) const
 {
-  return 0.05 + ( delta_level * 0.005 ) - ( 0.25 * total_expertise() );
+  return 0.05 + ( delta_level * 0.005 ) - ( 0.25 * expertise );
 }
 
 // melee_attack_t::parry_chance ===================================================
 
-double melee_attack_t::parry_chance( int delta_level ) const
+double melee_attack_t::parry_chance( double expertise, int delta_level ) const
 {
   // Tested on 03.03.2011 with a data set for delta_level = 5 which gave 22%
   if ( delta_level > 2 )
-    return 0.10 + ( delta_level - 2 ) * 0.04 - 0.25 * total_expertise();
+    return 0.10 + ( delta_level - 2 ) * 0.04 - 0.25 * expertise;
   else
-    return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
+    return 0.05 + delta_level * 0.005 - 0.25 * expertise;
 }
 
 // melee_attack_t::glance_chance ==================================================
@@ -504,7 +493,6 @@ double melee_attack_t::glance_chance( int delta_level ) const
 void ranged_attack_t::init_ranged_attack_t_()
 {
   may_miss = true;
-  may_resist = true;
 
   if ( player -> position == POSITION_RANGED_FRONT )
     may_block = true;

@@ -1839,7 +1839,7 @@ struct skull_bash_cat_t : public druid_cat_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     cooldown -> duration += p -> talents.brutal_impact -> effect3().time_value();
   }
@@ -2288,7 +2288,7 @@ struct skull_bash_bear_t : public druid_bear_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     cooldown -> duration  += p -> talents.brutal_impact -> effect2().time_value();
   }
@@ -2547,11 +2547,11 @@ struct lifebloom_t : public druid_heal_t
     // TODO: this can be only cast on one target, unless Tree of Life is up
   }
 
-  virtual double calculate_tick_damage()
+  virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
   {
     druid_targetdata_t* td = targetdata() -> cast_druid();
 
-    return druid_heal_t::calculate_tick_damage() * td -> buffs_lifebloom -> check();
+    return druid_heal_t::calculate_tick_damage( r, power, multiplier ) * td -> buffs_lifebloom -> check();
   }
 
   virtual void execute()

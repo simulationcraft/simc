@@ -1413,7 +1413,7 @@ struct rebuke_t : public paladin_melee_attack_t
 
     base_costs[ current_resource() ] *= 1.0 + p -> glyphs.rebuke -> effect1().percent();
 
-    may_miss = may_resist = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
   virtual bool ready()

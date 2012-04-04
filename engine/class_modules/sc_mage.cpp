@@ -756,8 +756,8 @@ static double calculate_dot_dps( dot_t* dot )
   action_t* a = dot -> action;
 
   a -> result = RESULT_HIT;
-
-  return ( a -> calculate_tick_damage() / a -> base_tick_time.total_seconds() );
+  
+  return ( a -> calculate_tick_damage( a -> result, a -> total_power(), a -> total_td_multiplier() ) / a -> base_tick_time.total_seconds() );
 }
 
 // consume_brain_freeze =====================================================
@@ -882,7 +882,6 @@ static void trigger_ignite( spell_t* s, double dmg )
           // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
           // proc          = false;
 
-          may_resist    = true;
           tick_may_crit = false;
           hasted_ticks  = false;
           dot_behavior  = DOT_REFRESH;
@@ -1204,8 +1203,8 @@ void mage_spell_t::player_buff()
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f penetration=%.0f mult=%.2f",
-                   name(), player_hit, player_crit, player_spell_power, player_penetration, player_multiplier );
+    log_t::output( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f mult=%.2f",
+                   name(), player_hit, player_crit, player_spell_power, player_multiplier );
 }
 
 // mage_spell_t::target_debuff ==============================================
@@ -1449,7 +1448,7 @@ struct arcane_missiles_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     channeled = true;
-    may_miss = may_resist = false;
+    may_miss = false;
     num_ticks += p -> talents.improved_arcane_missiles -> rank();
     hasted_ticks = false;
 
@@ -1747,7 +1746,7 @@ struct counterspell_t : public mage_spell_t
     mage_spell_t( "counterspell", 2139, p )
   {
     parse_options( NULL, options_str );
-    may_miss = may_resist = may_crit = false;
+    may_miss = may_crit = false;
   }
 
   virtual void execute()
@@ -2331,7 +2330,7 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       if ( dot_stack < 3 ) dot_stack++;
       result = RESULT_HIT;
-      double dot_dmg = calculate_direct_damage( 0 ) * 0.03;
+      double dot_dmg = calculate_direct_damage( result, 0, t -> level, total_spell_power(), total_attack_power(), total_dd_multiplier() ) * 0.03;
       base_td = dot_stack * dot_dmg / num_ticks;
     }
     mage_spell_t::impact( t, impact_result, travel_dmg );

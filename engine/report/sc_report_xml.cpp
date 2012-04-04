@@ -356,8 +356,6 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
                               100 * p -> composite_spell_hit(), p -> stats.hit_rating, 100 * p -> buffed.spell_hit );
   print_xml_player_attribute( writer, "spellcrit",
                               100 * p -> composite_spell_crit(), p -> stats.crit_rating, 100 * p -> buffed.spell_crit );
-  print_xml_player_attribute( writer, "spellpenetration",
-                              100 * p -> composite_spell_penetration(), p -> stats.spell_penetration, 100 * p -> buffed.spell_penetration );
   print_xml_player_attribute( writer, "spellhaste",
                               100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating, 100 * ( 1 / p -> buffed.spell_haste - 1 ) );
   print_xml_player_attribute( writer, "mp5",
