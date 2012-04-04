@@ -11,8 +11,8 @@ const std::string amp = "&amp;";
 }
 
 namespace google_chart {
-
-enum chart_type_e { HORIZONTAL_BAR_CHART };
+// chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
+enum chart_type_e { HORIZONTAL_BAR, PIE };
 enum fill_area_e { FILL_BACKGROUND };
 enum fill_type_e { FILL_SOLID };
 
@@ -30,8 +30,11 @@ std::string chart_type( chart_type_e t )
 
   switch ( t )
   {
-  case HORIZONTAL_BAR_CHART:
+  case HORIZONTAL_BAR:
     s << "bhg";
+    break;
+  case PIE:
+    s << "p";
     break;
   default: break;
   }
@@ -343,7 +346,7 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
   s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
   s << get_chart_base_url();
   s << google_chart::chart_size( 500, ( waiting_list.size() * 30 + 30 ) ); // Set chart size
-  s << google_chart::chart_type( google_chart::HORIZONTAL_BAR_CHART ); // Set chart type
+  s << google_chart::chart_type( google_chart::HORIZONTAL_BAR ); // Set chart type
   if ( !print_styles )
   {
     s << google_chart::fill_chart( google_chart::FILL_BACKGROUND, google_chart::FILL_SOLID, "333333" ); // fill chart background solid
@@ -386,7 +389,7 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
 
     double waiting_pct = ( 100.0 * p -> waiting_time.mean / p -> fight_length.mean );
 
-    s << ( i?"|":"" )  << "t++" << std::setprecision( 2 ) << waiting_pct; // Insert waiting percent
+    s << ( i?"|":"" )  << "t++" << std::setprecision( p -> sim -> report_precision / 2 ) << waiting_pct; // Insert waiting percent
 
     s << "%++" << formatted_name.c_str(); // Insert player name
 
@@ -1142,52 +1145,52 @@ std::string chart::gains( const player_t* p, resource_type_e type )
 
   range::sort( gains_list, compare_gain() );
 
-  char buffer[ 1024 ];
-
-  std::string s = std::string();
-  s = get_chart_base_url();
-  snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_gains * 10 ); s += buffer;
-  s += "&amp;";
-  s += "cht=p";
-  s += "&amp;";
+  std::ostringstream s;
+  s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
+  s << get_chart_base_url();
+  s << google_chart::chart_size( 550, 200 + num_gains * 10 );
+  s << google_chart::chart_type( google_chart::PIE );
   if ( ! p -> sim -> print_styles )
-  {
-    s += "chf=bg,s,333333";
-    s += "&amp;";
-  }
-  s += "chd=t:";
+    s << google_chart::fill_chart( google_chart::FILL_BACKGROUND, google_chart::FILL_SOLID, "333333" );
+
+  // Insert Chart Data
+  s << "chd=t:";
   for ( int i=0; i < num_gains; i++ )
   {
     gain_t* g = gains_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%d", ( i?",":"" ), ( int ) floor( 100.0 * g -> actual[ type ] / total_gain + 0.5 ) ); s += buffer;
+    s << ( i?",":"" );
+    s << std::setprecision( p -> sim -> report_precision / 2 ) << 100.0 * ( g -> actual[ type ] / total_gain );
   }
-  s += "&amp;";
-  s += "chds=0,100";
-  s += "&amp;";
-  s += "chco=";
-  s += resource_color( type );
-  s += "&amp;";
-  s += "chl=";
+  s << "&amp;";
+
+  // Chart scaling, may not be necessary if numbers are not shown
+  s << "chds=0,100";
+  s << "&amp;";
+
+  // Series color
+  s << "chco=";
+  s << resource_color( type );
+  s << "&amp;";
+
+  // Labels
+  s << "chl=";
   for ( int i=0; i < num_gains; i++ )
   {
-    if ( i ) s += "|";
-    s += gains_list[ i ] -> name();
+    if ( i ) s << "|";
+    s << gains_list[ i ] -> name();
   }
-  s += "&amp;";
+  s << "&amp;";
+
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Gains", formatted_name.c_str(), chart_resource_type_string( type ).c_str() ); s += buffer;
-  s += "&amp;";
-  if ( p -> sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
+  s << google_chart::chart_title( formatted_name + "+" + chart_resource_type_string( type ) + "+Gains" );
 
-  return s;
+  if ( p -> sim -> print_styles )
+    s << google_chart::chart_title_formating( "666666", 18 );
+  else
+    s << google_chart::chart_title_formating( "dddddd", 18 );
+
+  return s.str();
 }
 
 // chart_t::scale_factors ===================================================
