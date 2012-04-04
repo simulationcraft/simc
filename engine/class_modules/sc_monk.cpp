@@ -110,7 +110,7 @@ struct monk_t : public player_t
   virtual void      init_actions();
   virtual void      init_resources( bool force=false );
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const;
   virtual role_type_e primary_role() const;
 };
@@ -575,7 +575,7 @@ double monk_t::matching_gear_multiplier( const attribute_type_e attr ) const
 
 // monk_t::decode_set =======================================================
 
-int monk_t::decode_set( item_t& item )
+int monk_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

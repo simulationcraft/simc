@@ -3330,7 +3330,7 @@ void warlock_t::copy_from( player_t* source )
 
 // warlock_t::decode_set ====================================================
 
-int warlock_t::decode_set( item_t& item )
+int warlock_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

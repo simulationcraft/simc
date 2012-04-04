@@ -158,7 +158,7 @@ void stats_t::combat_end()
   }
   portion_aps.add( player -> iteration_fight_length != timespan_t::zero ? iteration_actual_amount / player -> iteration_fight_length.total_seconds() : 0 );
 
-  for ( resource_type_e i = RESOURCE_NONE; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     direct_results[ i ].combat_end();
     tick_results[ i ].combat_end();

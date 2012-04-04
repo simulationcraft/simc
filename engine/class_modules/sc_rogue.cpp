@@ -429,7 +429,7 @@ struct rogue_t : public player_t
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_expr_t* create_expression( action_t* a, const std::string& name_str );
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
   virtual role_type_e primary_role() const     { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
@@ -4031,7 +4031,7 @@ void rogue_t::copy_from( player_t* source )
 
 // rogue_t::decode_set ======================================================
 
-int rogue_t::decode_set( item_t& item )
+int rogue_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

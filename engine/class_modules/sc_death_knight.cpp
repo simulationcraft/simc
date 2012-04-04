@@ -406,7 +406,7 @@ struct death_knight_t : public player_t
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_RUNIC_POWER; }
   virtual role_type_e primary_role() const;
   virtual void      trigger_runic_empowerment();
@@ -4995,7 +4995,7 @@ void death_knight_t::create_options()
 
 // death_knight_t::decode_set ===============================================
 
-int death_knight_t::decode_set( item_t& item )
+int death_knight_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

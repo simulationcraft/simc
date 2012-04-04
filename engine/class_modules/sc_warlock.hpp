@@ -250,7 +250,7 @@ struct warlock_t : public player_t
   virtual void      create_pets();
   virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const     { return ROLE_SPELL; }
   virtual double    composite_armor() const;

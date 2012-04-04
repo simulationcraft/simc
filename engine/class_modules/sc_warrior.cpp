@@ -359,7 +359,7 @@ struct warrior_t : public player_t
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_RAGE; }
   virtual role_type_e primary_role() const;
   virtual double    assess_damage( double amount, school_type_e, dmg_type_e, result_type_e, action_t* a );
@@ -3851,7 +3851,7 @@ void warrior_t::copy_from( player_t* source )
 
 // warrior_t::decode_set ====================================================
 
-int warrior_t::decode_set( item_t& item )
+int warrior_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

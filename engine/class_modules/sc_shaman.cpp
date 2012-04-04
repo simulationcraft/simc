@@ -289,7 +289,7 @@ struct shaman_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const;
   virtual void      combat_begin();
@@ -4356,7 +4356,7 @@ void shaman_t::combat_begin()
 
 // shaman_t::decode_set =====================================================
 
-int shaman_t::decode_set( item_t& item )
+int shaman_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

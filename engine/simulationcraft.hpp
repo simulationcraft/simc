@@ -4919,7 +4919,7 @@ struct player_t : public noncopyable
   virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return 0; }
   virtual pet_t*    find_pet  ( const std::string& name );
 
-  virtual int decode_set( item_t& item ) { ( void )item; assert( item.name() ); return SET_NONE; }
+  virtual int decode_set( const item_t& item ) const { ( void )item; assert( item.name() ); return SET_NONE; }
 
   virtual void recalculate_haste();
 

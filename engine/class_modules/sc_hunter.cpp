@@ -253,6 +253,7 @@ struct hunter_t : public player_t
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      init_actions();
+  virtual void      init_items();
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
@@ -265,7 +266,7 @@ struct hunter_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_FOCUS; }
   virtual role_type_e primary_role() const { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
@@ -4035,6 +4036,22 @@ void hunter_t::init_actions()
   player_t::init_actions();
 }
 
+void hunter_t::init_items()
+{
+  player_t::init_items();
+
+  // Check for Vishanka, Jaws of the Earth
+  items.size();
+  for ( size_t i = 0; i < items.size(); ++i )
+  {
+    const item_t& item = items[ i ];
+    if ( item.slot == SLOT_RANGED && strstr( item.name(), "vishanka_jaws_of_the_earth" ) )
+    {
+      // Store the spell id, not just if we have it or not
+      vishanka = item.heroic() ? 109859 : item.lfr() ? 109857 : 107822;
+    }
+  }
+}
 // hunter_t::register_callbacks ==============================================
 
 void hunter_t::register_callbacks()
@@ -4388,16 +4405,10 @@ void hunter_t::armory_extensions( const std::string& region,
 
 // hunter_t::decode_set =====================================================
 
-int hunter_t::decode_set( item_t& item )
+int hunter_t::decode_set( const item_t& item ) const
 {
   const char* s = item.name();
 
-  // Check for Vishanka, Jaws of the Earth
-  if ( item.slot == SLOT_RANGED && strstr( s, "vishanka_jaws_of_the_earth" ) )
-  {
-    // Store the spell id, not just if we have it or not
-    vishanka = item.heroic() ? 109859 : item.lfr() ? 109857 : 107822;
-  }
 
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

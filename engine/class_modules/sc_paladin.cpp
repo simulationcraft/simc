@@ -306,6 +306,7 @@ struct paladin_t : public player_t
   virtual void      init_spells();
   virtual void      init_values();
   virtual void      init_actions();
+  virtual void      init_items();
   virtual void      reset();
   virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
   virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
@@ -319,7 +320,7 @@ struct paladin_t : public player_t
   virtual void      create_options();
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const;
   virtual void      regen( timespan_t periodicity );
@@ -2940,7 +2941,7 @@ void paladin_t::init_scaling()
 
 // paladin_t::decode_set ====================================================
 
-int paladin_t::decode_set( item_t& item )
+int paladin_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&
@@ -2952,11 +2953,6 @@ int paladin_t::decode_set( item_t& item )
   }
 
   const char* s = item.name();
-
-  if ( item.slot == SLOT_HANDS && ret_pvp_gloves == -1 )  // i.e. hasn't been overriden by option
-  {
-    ret_pvp_gloves = strstr( s, "gladiators_scaled_gauntlets" ) && item.ilevel > 140;
-  }
 
   if ( strstr( s, "_of_radiant_glory" ) )
   {
@@ -3348,6 +3344,20 @@ void paladin_t::init_values()
     attribute_initial[ ATTR_STRENGTH ] += 90;
 }
 
+void paladin_t::init_items()
+{
+  player_t::init_items();
+
+  items.size();
+  for ( size_t i = 0; i < items.size(); ++i )
+  {
+    const item_t& item = items[ i ];
+    if ( item.slot == SLOT_HANDS && ret_pvp_gloves == -1 )  // i.e. hasn't been overriden by option
+    {
+      ret_pvp_gloves = strstr( item.name(), "gladiators_scaled_gauntlets" ) && item.ilevel > 140;
+    }
+  }
+}
 // paladin_t::primary_role ==================================================
 
 role_type_e paladin_t::primary_role() const

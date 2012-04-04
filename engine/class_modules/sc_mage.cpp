@@ -319,7 +319,7 @@ struct mage_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& item ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const { return ROLE_SPELL; }
   virtual double    composite_armor_multiplier() const;
@@ -4197,7 +4197,7 @@ void mage_t::copy_from( player_t* source )
 
 // mage_t::decode_set =======================================================
 
-int mage_t::decode_set( item_t& item )
+int mage_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

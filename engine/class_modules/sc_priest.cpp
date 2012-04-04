@@ -301,7 +301,7 @@ struct priest_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const;
   virtual void      combat_begin();
@@ -4061,7 +4061,7 @@ void priest_t::copy_from( player_t* source )
 
 // priest_t::decode_set =====================================================
 
-int priest_t::decode_set( item_t& item )
+int priest_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

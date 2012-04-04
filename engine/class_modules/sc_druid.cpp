@@ -376,7 +376,7 @@ struct druid_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual int       decode_set( item_t& item );
+  virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const;
   virtual role_type_e primary_role() const;
   virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
@@ -5374,7 +5374,7 @@ action_expr_t* druid_t::create_expression( action_t* a, const std::string& name_
 
 // druid_t::decode_set ======================================================
 
-int druid_t::decode_set( item_t& item )
+int druid_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

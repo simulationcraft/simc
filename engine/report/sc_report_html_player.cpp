@@ -558,39 +558,36 @@ void print_html_action_resource( FILE* file, const stats_t* s, int j )
 
 // print_html_gear ==========================================================
 
-void print_html_gear ( FILE* file, const player_t* a )
+void print_html_gear ( FILE* file, const double& avg_ilvl, const std::vector<item_t>& items )
 {
-  if ( a -> fight_length.mean > 0 )
+  fprintf( file,
+           "\t\t\t\t\t\t<div class=\"player-section gear\">\n"
+           "\t\t\t\t\t\t\t<h3 class=\"toggle\">Gear</h3>\n"
+           "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
+           "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
+           "\t\t\t\t\t\t\t\t\t<tr>\n"
+           "\t\t\t\t\t\t\t\t\t\t<th></th>\n"
+           "\t\t\t\t\t\t\t\t\t\t<th>Average Item Level: %.2f</th>\n"
+           "\t\t\t\t\t\t\t\t\t</tr>\n",
+           avg_ilvl );
+
+  for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
+    const item_t& item = items[ i ];
+
     fprintf( file,
-             "\t\t\t\t\t\t<div class=\"player-section gear\">\n"
-             "\t\t\t\t\t\t\t<h3 class=\"toggle\">Gear</h3>\n"
-             "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-             "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
              "\t\t\t\t\t\t\t\t\t<tr>\n"
-             "\t\t\t\t\t\t\t\t\t\t<th></th>\n"
-             "\t\t\t\t\t\t\t\t\t\t<th>Average Item Level: %.2f</th>\n"
+             "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
+             "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             a -> avg_ilvl );
-
-    for ( int i=0; i < SLOT_MAX; i++ )
-    {
-      const item_t& item = a -> items[ i ];
-
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t\t<tr>\n"
-               "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
-               "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-               "\t\t\t\t\t\t\t\t\t</tr>\n",
-               item.slot_name(),
-               item.active() ? item.options_str.c_str() : "empty" );
-    }
-
-    fprintf( file,
-             "\t\t\t\t\t\t\t\t</table>\n"
-             "\t\t\t\t\t\t\t</div>\n"
-             "\t\t\t\t\t\t</div>\n" );
+             item.slot_name(),
+             item.active() ? item.options_str.c_str() : "empty" );
   }
+
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t</table>\n"
+           "\t\t\t\t\t\t\t</div>\n"
+           "\t\t\t\t\t\t</div>\n" );
 }
 
 // print_html_profile =======================================================
@@ -2232,7 +2229,7 @@ void print_html_player_benefits_uptimes( FILE* file, const player_t* p )
 
 // print_html_player_procs ========================================================
 
-void print_html_player_procs( FILE* file, const player_t* p )
+void print_html_player_procs( FILE* file, const proc_t* pr )
 {
   // Procs Section
   fprintf( file,
@@ -2246,7 +2243,7 @@ void print_html_player_procs( FILE* file, const player_t* p )
            "\t\t\t\t\t\t\t\t\t<th>Interval</th>\n"
            "\t\t\t\t\t\t\t\t</tr>\n" );
   int i = 1;
-  for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
+  for ( const proc_t* proc = pr; proc; proc = proc -> next )
   {
     if ( proc -> count > 0 )
     {
@@ -2428,7 +2425,7 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 
   print_html_player_benefits_uptimes( file, p );
 
-  print_html_player_procs( file, p );
+  print_html_player_procs( file, p -> proc_list );
 
   print_html_player_deaths( file, p, p -> report_information );
 
@@ -2438,7 +2435,7 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 
   print_html_stats( file, p );
 
-  print_html_gear( file, p );
+  print_html_gear( file, p -> avg_ilvl, p -> items );
 
   print_html_talents( file, p );
 
