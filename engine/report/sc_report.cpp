@@ -10,27 +10,6 @@
 // Report
 // ==========================================================================
 
-// report::encode_html ====================================================
-
-void report::encode_html( std::string& buffer )
-{
-  util_t::replace_all( buffer, '&', "&amp;" );
-  util_t::replace_all( buffer, '<', "&lt;" );
-  util_t::replace_all( buffer, '>', "&gt;" );
-}
-
-std::string report::encode_html( const char* str )
-{
-  std::string nstr;
-
-  if ( str )
-  {
-    nstr = str;
-    encode_html( nstr );
-  }
-
-  return nstr;
-}
 
 // report::print_profiles =================================================
 
@@ -227,7 +206,7 @@ void report::print_suite( sim_t* sim )
   report::print_profiles( sim );
 }
 
-void report_utility::print_html_rng_information( FILE* file, rng_t* rng )
+void report::print_html_rng_information( FILE* file, const rng_t* rng )
 {
   fprintf( file,
            "\t\t\t\t\t\t\t<table>\n"
@@ -257,7 +236,7 @@ void report_utility::print_html_rng_information( FILE* file, rng_t* rng )
            "\t\t\t\t\t\t\t\t</table>\n" );
 
 }
-void report_utility::print_html_sample_data( FILE* file, player_t* p, sample_data_t& data, const std::string& name )
+void report::print_html_sample_data( FILE* file, const player_t* p, const sample_data_t& data, const std::string& name )
 {
   // Print Statistics of a Sample Data Container
 
@@ -445,7 +424,7 @@ void report_utility::print_html_sample_data( FILE* file, player_t* p, sample_dat
 
 }
 
-void report_utility::generate_player_report_information( const player_t*  p, player_t::report_information_t& ri )
+void report::generate_player_report_information( const player_t*  p, player_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
@@ -555,7 +534,7 @@ void report_utility::generate_player_report_information( const player_t*  p, pla
   ri.charts_generated = true;
 }
 
-void report_utility::generate_sim_report_information( const sim_t* s , sim_t::report_information_t& ri )
+void report::generate_sim_report_information( const sim_t* s , sim_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
@@ -572,12 +551,6 @@ void report_utility::generate_sim_report_information( const sim_t* s , sim_t::re
 
    ri.charts_generated = true;
 }
-
-void report_t::encode_html( std::string& buffer )
-{ return report::encode_html( buffer ); }
-
-std::string report_t::encode_html( const char* str )
-{ return report::encode_html( str ); }
 
 void report_t::print_spell_query( sim_t* s , unsigned level )
 { return report::print_spell_query( s, level ); }

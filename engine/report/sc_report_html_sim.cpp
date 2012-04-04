@@ -287,7 +287,7 @@ void print_html_sim_summary( FILE*  file, sim_t* sim, const sim_t::report_inform
 
   }
 
-  report_utility::print_html_rng_information( file, sim -> rng );
+  report::print_html_rng_information( file, sim -> rng );
 
   fprintf( file,
            "\t\t\t\t\t\t</table>\n" );
@@ -1256,7 +1256,7 @@ void print_html_( sim_t* sim )
     return;
   }
 
-  report_utility::generate_sim_report_information( sim, sim->report_information );
+  report::generate_sim_report_information( sim, sim->report_information );
 
   fprintf( file,
            "<!DOCTYPE html>\n\n" );

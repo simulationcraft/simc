@@ -2807,6 +2807,15 @@ std::string tolower( const std::string& src )
   return dest;
 }
 
+std::string util_t::encode_html( const std::string& s )
+{
+  std::string buffer = s;
+  util_t::replace_all( buffer, '&', "&amp;" );
+  util_t::replace_all( buffer, '<', "&lt;" );
+  util_t::replace_all( buffer, '>', "&gt;" );
+  return buffer;
+}
+
 #if 0 // UNUSED
 std::string trim( const std::string& src )
 {

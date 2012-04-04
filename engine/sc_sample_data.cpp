@@ -166,17 +166,15 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
 
 // sample_data_t::percentile ================================================
 
-double sample_data_t::percentile( double x )
+double sample_data_t::percentile( double x ) const
 {
   assert( x >= 0 && x <= 1.0 );
 
-  if ( simple )
+  if ( simple || ! is_sorted )
     return std::numeric_limits<double>::quiet_NaN();
 
   if ( data().empty() )
     return std::numeric_limits<double>::quiet_NaN();
-
-  sort();
 
   // Should be improved to use linear interpolation
   return data()[ ( int ) ( x * ( data().size() - 1 ) ) ];

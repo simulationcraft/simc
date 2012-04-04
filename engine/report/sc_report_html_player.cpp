@@ -172,9 +172,9 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
               "\t\t\t\t\t\t\t\t\t</table>\n" );
     if ( ! s -> portion_aps.simple || ! s -> actual_amount.simple )
     {
-      report_utility::print_html_sample_data( file, p, s -> actual_amount, "Actual Amount" );
+      report::print_html_sample_data( file, p, s -> actual_amount, "Actual Amount" );
 
-      report_utility::print_html_sample_data( file, p, s -> portion_aps, "portion Amount per Second ( pAPS )" );
+      report::print_html_sample_data( file, p, s -> portion_aps, "portion Amount per Second ( pAPS )" );
 
       if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
       {
@@ -398,7 +398,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 "\t\t\t\t\t\t\t\t\t<h4>Action details: %s </h4>\n", a -> name() );
 
       if ( a->sim->separated_rng )
-        report_utility::print_html_rng_information( file, a->rng_result );
+        report::print_html_rng_information( file, a->rng_result );
 
       fprintf ( file,
                 "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
@@ -438,7 +438,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 a -> target ? a -> target -> name() : "",
                 a -> harmful ? "true" : "false",
                 a -> tooltip(),
-                report::encode_html( a -> desc() ).c_str() );
+                util_t::encode_html( a -> desc() ).c_str() );
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
       {
         fprintf ( file,
@@ -1146,13 +1146,12 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
       fprintf( file, " class=\"odd\"" );
     }
     fprintf( file, ">\n" );
-    std::string enc_action = a -> signature_str; report::encode_html( enc_action );
     fprintf( file,
              "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">%c</th>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
              a -> marker,
-             enc_action.c_str() );
+             util_t::encode_html( a -> signature_str ).c_str() );
     i++;
   }
   fprintf( file,
@@ -1204,25 +1203,25 @@ void print_html_player_statistics( FILE* file, player_t* p, const player_t::repo
            "\t\t\t\t\t\t\t\t<tr>\n"
            "\t\t\t\t\t\t\t\t<td>\n" );
 
-  report_utility::print_html_sample_data( file, p, p -> fight_length, "Fight Length" );
+  report::print_html_sample_data( file, p, p -> fight_length, "Fight Length" );
 
-  report_utility::print_html_sample_data( file, p, p -> dps, "DPS" );
+  report::print_html_sample_data( file, p, p -> dps, "DPS" );
 
-  report_utility::print_html_sample_data( file, p, p -> dpse, "DPS(e)" );
+  report::print_html_sample_data( file, p, p -> dpse, "DPS(e)" );
 
-  report_utility::print_html_sample_data( file, p, p -> dmg, "Damage" );
+  report::print_html_sample_data( file, p, p -> dmg, "Damage" );
 
-  report_utility::print_html_sample_data( file, p, p -> dtps, "DTPS" );
+  report::print_html_sample_data( file, p, p -> dtps, "DTPS" );
 
-  report_utility::print_html_sample_data( file, p, p -> hps, "HPS" );
+  report::print_html_sample_data( file, p, p -> hps, "HPS" );
 
-  report_utility::print_html_sample_data( file, p, p -> hpse, "HPS(e)" );
+  report::print_html_sample_data( file, p, p -> hpse, "HPS(e)" );
 
-  report_utility::print_html_sample_data( file, p, p -> heal, "Heal" );
+  report::print_html_sample_data( file, p, p -> heal, "Heal" );
 
-  report_utility::print_html_sample_data( file, p, p -> htps, "HTPS" );
+  report::print_html_sample_data( file, p, p -> htps, "HTPS" );
 
-  report_utility::print_html_sample_data( file, p, p -> executed_foreground_actions, "#Executed Foreground Actions" );
+  report::print_html_sample_data( file, p, p -> executed_foreground_actions, "#Executed Foreground Actions" );
 
   std::string timeline_dps_error_str           = "";
   std::string dps_error_str                    = "";
@@ -1967,7 +1966,7 @@ void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_t* p )
     {
       std::string enc_url = p -> origin_str;
       util_t::urldecode( enc_url );
-      report::encode_html( enc_url );
+      enc_url = util_t::encode_html( enc_url );
       fprintf( file,
                "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                "\t\t\t\t\t\t\t\t<th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
@@ -1978,8 +1977,7 @@ void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_t* p )
     }
     if ( ! p -> talents_str.empty() )
     {
-      std::string enc_url = p -> talents_str;
-      report::encode_html( enc_url );
+      std::string enc_url = util_t::encode_html( p -> talents_str );
       fprintf( file,
                "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                "\t\t\t\t\t\t\t\t<th>Talents</th>\n"
@@ -2408,7 +2406,7 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
   std::string n = p -> name();
   util_t::format_text( n, true );
 
-  report_utility::generate_player_report_information( p, p->report_information );
+  report::generate_player_report_information( p, p->report_information );
 
   print_html_player_description( file, sim, p, j, n );
 

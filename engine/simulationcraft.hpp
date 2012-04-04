@@ -2798,6 +2798,7 @@ public:
   static double round( double X, unsigned int decplaces = 0 );
 
   static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
+  static std::string encode_html( const std::string& );
 
   static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
 };
@@ -3137,7 +3138,7 @@ public:
   void clear() { count = 0; sum = 0; _data.clear(); distribution.clear(); }
 
   // Access functions
-  double percentile( double );
+  double percentile( double ) const;
   const std::vector<double>& data() const { return _data; }
   void merge( const sample_data_t& );
 
@@ -6318,9 +6319,7 @@ struct proc_t
 
 struct report_t
 {
-  // In the end, the idea is to only have the print_suite remaining, and completly separate report from simulationcraft.hpp
-  static void encode_html( std::string& buffer );
-  static std::string encode_html( const char* str );
+  // In the end, the idea is to only have print_suite remaining, and completly separate the report from simulationcraft.hpp
   static void print_spell_query( sim_t*, unsigned level = MAX_LEVEL );
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );

@@ -278,7 +278,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
 
 void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_t * owner )
 {
-  report_utility::generate_player_report_information( p, p->report_information );
+  report::generate_player_report_information( p, p->report_information );
   writer.begin_tag( "player" );
   writer.print_attribute( "name", p -> name() );
   if ( owner )
@@ -1213,7 +1213,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         {
           writer.print_tag( "tooltip", a -> tooltip() );
         }
-        writer.print_tag( "description", report::encode_html( a -> desc() ) );
+        writer.print_tag( "description", util_t::encode_html( a -> desc() ).c_str() );
 
         if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
         {
@@ -1287,7 +1287,7 @@ void report::print_xml( sim_t* sim )
     return;
   }
 
-  report_utility::generate_sim_report_information( sim, sim->report_information );
+  report::generate_sim_report_information( sim, sim->report_information );
 
   writer.init_document( sim -> xml_stylesheet_file_str );
   writer.begin_tag( "simulationcraft" );
