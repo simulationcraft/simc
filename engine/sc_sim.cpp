@@ -1273,7 +1273,7 @@ bool sim_t::init()
 
   raid_event_t::init( this );
 
-  if ( report_precision < 0 ) report_precision = 3;
+  if ( report_precision < 0 ) report_precision = 4;
 
   raid_dps.reserve( iterations );
   total_dmg.reserve( iterations );

@@ -7,11 +7,8 @@
 #include "sc_report.hpp"
 
 namespace {
-
 const std::string amp = "&amp;";
 }
-
-
 
 namespace google_chart {
 

@@ -10,7 +10,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // print_html_contents ======================================================
 
-void print_html_contents( FILE*  file, sim_t* sim )
+void print_html_contents( FILE*  file, const sim_t* sim )
 {
   size_t c = 2;     // total number of TOC entries
   if ( sim -> scaling -> has_scale_factors() )
@@ -172,7 +172,7 @@ void print_html_contents( FILE*  file, sim_t* sim )
 
 // print_html_sim_summary ===================================================
 
-void print_html_sim_summary( FILE*  file, sim_t* sim, const sim_t::report_information_t& ri )
+void print_html_sim_summary( FILE*  file, const sim_t* sim, const sim_t::report_information_t& ri )
 {
 
   fprintf( file,
@@ -347,7 +347,7 @@ void print_html_sim_summary( FILE*  file, sim_t* sim, const sim_t::report_inform
 
 // print_html_raid_summary ==================================================
 
-void print_html_raid_summary( FILE*  file, sim_t* sim, const sim_t::report_information_t& ri )
+void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report_information_t& ri )
 {
   fprintf( file,
            "\t\t<div id=\"raid-summary\" class=\"section section-open\">\n\n" );
@@ -463,7 +463,7 @@ void print_html_raid_summary( FILE*  file, sim_t* sim, const sim_t::report_infor
 
 // print_html_raid_imagemaps ==================================================
 
-void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps )
+void print_html_raid_imagemap( FILE* file, const sim_t* sim, int num, bool dps )
 {
   std::vector<player_t*> player_list = ( dps ) ? sim -> players_by_dps : sim -> players_by_hps;
   int start = num * MAX_PLAYERS_PER_CHART;
@@ -508,7 +508,7 @@ void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps )
            imgid, mapid, imgid, mapid, mapid );
 }
 
-void print_html_raid_imagemaps( FILE*  file, sim_t* sim, const sim_t::report_information_t& ri )
+void print_html_raid_imagemaps( FILE*  file, const sim_t* sim, const sim_t::report_information_t& ri )
 {
 
   fprintf( file,
@@ -546,12 +546,9 @@ void print_html_raid_imagemaps( FILE*  file, sim_t* sim, const sim_t::report_inf
 
 // print_html_scale_factors =================================================
 
-void print_html_scale_factors( FILE*  file, sim_t* sim )
+void print_html_scale_factors( FILE*  file, const sim_t* sim )
 {
   if ( ! sim -> scaling -> has_scale_factors() ) return;
-
-  if ( sim -> report_precision < 0 )
-    sim -> report_precision = 2;
 
   fprintf( file,
            "\t\t<div id=\"raid-scale-factors\" class=\"section grouped-first\">\n\n"
@@ -640,7 +637,7 @@ void print_html_scale_factors( FILE*  file, sim_t* sim )
 
 // print_html_help_boxes ====================================================
 
-void print_html_help_boxes( FILE*  file, sim_t* sim )
+void print_html_help_boxes( FILE*  file, const sim_t* sim )
 {
   fprintf( file,
            "\t\t<!-- Help Boxes -->\n" );
@@ -944,7 +941,7 @@ void print_html_help_boxes( FILE*  file, sim_t* sim )
 
 // print_html_styles ====================================================
 
-void print_html_styles( FILE*  file, sim_t* sim )
+void print_html_styles( FILE*  file, const sim_t* sim )
 {
   // Styles
   // If file is being hosted on simulationcraft.org, link to the local
@@ -1190,7 +1187,7 @@ void print_html_styles( FILE*  file, sim_t* sim )
 
 // print_html_masthead ====================================================
 
-void print_html_masthead( FILE*  file, sim_t* sim )
+void print_html_masthead( FILE* file, const sim_t* sim )
 {
   // Begin masthead section
   fprintf( file,
@@ -1241,22 +1238,9 @@ void print_html_masthead( FILE*  file, sim_t* sim )
 
 
 // print_html =====================================================
-void print_html_( sim_t* sim )
+void print_html_( FILE* file, const sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_name.size();
-
-  if ( num_players == 0 ) return;
-  if ( sim -> simulation_length.mean == 0 ) return;
-  if ( sim -> html_file_str.empty() ) return;
-
-  FILE* file = fopen( sim -> html_file_str.c_str(), "w" );
-  if ( ! file )
-  {
-    sim -> errorf( "Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
-    return;
-  }
-
-  report::generate_sim_report_information( sim, sim->report_information );
 
   fprintf( file,
            "<!DOCTYPE html>\n\n" );
@@ -1528,5 +1512,18 @@ void print_html_( sim_t* sim )
 
 void report::print_html( sim_t* sim )
 {
-  print_html_( sim );
+  if ( !sim -> players_by_name.size() ) return;
+  if ( sim -> simulation_length.mean == 0 ) return;
+  if ( sim -> html_file_str.empty() ) return;
+
+  FILE* file = fopen( sim -> html_file_str.c_str(), "w" );
+  if ( ! file )
+  {
+    sim -> errorf( "Unable to open html file '%s'\n", sim -> html_file_str.c_str() );
+    return;
+  }
+
+  report::generate_sim_report_information( sim, sim -> report_information );
+
+  print_html_( file, sim );
 }
