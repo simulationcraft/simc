@@ -4985,13 +4985,13 @@ struct restart_sequence_t : public action_t
   std::string seq_name_str;
 
   restart_sequence_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "restart_sequence", player ), seq( 0 )
+    action_t( ACTION_OTHER, "restart_sequence", player ),
+    seq( 0 ), seq_name_str( "default" ) // matches default name for sequences
   {
-    seq_name_str = "default"; // matches default name for sequences
     option_t options[] =
     {
-      { "name", OPT_STRING, &seq_name_str },
-      { NULL, OPT_UNKNOWN, NULL }
+      { "name", OPT_STRING,  &seq_name_str },
+      { NULL,   OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
@@ -5002,7 +5002,7 @@ struct restart_sequence_t : public action_t
   {
     if ( ! seq )
     {
-      for ( action_t* a = player -> action_list; a; a = a -> next )
+      for ( action_t* a = player -> action_list; a && ! seq; a = a -> next )
       {
         if ( a -> type != ACTION_SEQUENCE )
           continue;
@@ -5011,10 +5011,16 @@ struct restart_sequence_t : public action_t
           if ( seq_name_str != a -> name_str )
             continue;
 
-        seq = dynamic_cast< sequence_t* >( a );
+        seq = dynamic_cast<sequence_t*>( a );
       }
 
-      assert( seq );
+      if ( !seq )
+      {
+        sim -> errorf( "Can't find sequence %s\n",
+                       seq_name_str.empty() ? "(default)" : seq_name_str.c_str() );
+        sim -> cancel();
+        return;
+      }
     }
 
     seq -> restart();
@@ -5022,7 +5028,7 @@ struct restart_sequence_t : public action_t
 
   virtual bool ready()
   {
-    if ( seq ) return ! seq -> restarted;
+    if ( seq ) return seq -> can_restart();
     return action_t::ready();
   }
 };

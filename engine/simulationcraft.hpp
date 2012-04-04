@@ -5917,13 +5917,16 @@ struct sequence_t : public action_t
   std::vector<action_t*> sub_actions;
   int current_action;
   bool restarted;
+  timespan_t last_restart;
 
   sequence_t( player_t*, const std::string& sub_action_str );
 
   virtual void schedule_execute();
   virtual void reset();
   virtual bool ready();
-  virtual void restart() { current_action=0; restarted=true;}
+  void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time; }
+  bool can_restart()
+  { return ! restarted || last_restart + timespan_t::from_millis(1) < sim -> current_time; }
 };
 
 // Cooldown =================================================================

@@ -12,24 +12,26 @@
 // sequence_t::sequence_t ===================================================
 
 sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
-  action_t( ACTION_SEQUENCE, "default", p ), current_action( -1 ), restarted( false )
+  action_t( ACTION_SEQUENCE, "default", p ),
+  current_action( -1 ), restarted( false ), last_restart( timespan_t::min )
 {
   trigger_gcd = timespan_t::zero;
 
   std::vector<std::string> splits;
-  int size = util_t::string_split( splits, sub_action_str, ":" );
-
-  option_t options[] =
+  size_t size = util_t::string_split( splits, sub_action_str, ":" );
+  if ( ! splits.empty() )
   {
-    { "name", OPT_STRING,  &name_str },
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-  parse_options( options, splits[ 0 ] );
+    option_t options[] =
+    {
+      { "name", OPT_STRING,  &name_str },
+      { NULL,   OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, splits[ 0 ] );
+  }
 
   // First token is sequence options, so skip
-  for ( int i=1; i < size; i++ )
+  for ( size_t i=1; i < size; ++i )
   {
-
     std::string::size_type cut_pt = splits[ i ].find( ',' );
     std::string action_name( splits[ i ], 0, cut_pt );
     std::string action_options;
@@ -68,17 +70,15 @@ void sequence_t::reset()
   action_t::reset();
   if ( current_action == -1 )
   {
-    for ( unsigned i=0; i < sub_actions.size(); i++ )
+    for ( size_t i = 0; i < sub_actions.size(); ++i )
     {
-      action_t* a = sub_actions[ i ];
-      if ( a -> wait_on_ready == -1 )
-      {
-        a -> wait_on_ready = wait_on_ready;
-      }
+      if ( sub_actions[ i ] -> wait_on_ready == -1 )
+        sub_actions[ i ] -> wait_on_ready = wait_on_ready;
     }
   }
   current_action = 0;
   restarted = false;
+  last_restart = timespan_t::min;
 }
 
 // sequence_t::ready ========================================================
