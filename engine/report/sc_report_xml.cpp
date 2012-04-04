@@ -177,7 +177,7 @@ public:
   }
 };
 
-// report_t::print_xml ======================================================
+// report::print_xml ======================================================
 
 void print_xml_errors( sim_t* sim, xml_writer_t & writer );
 void print_xml_raid_events( sim_t* sim, xml_writer_t & writer );
@@ -1213,7 +1213,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         {
           writer.print_tag( "tooltip", a -> tooltip() );
         }
-        writer.print_tag( "description", report_t::encode_html( a -> desc() ) );
+        writer.print_tag( "description", report::encode_html( a -> desc() ) );
 
         if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
         {
@@ -1270,9 +1270,9 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
 } // ANONYMOUS NAMESPACE ====================================================
 
 
-// report_t::print_xml ======================================================
+// report::print_xml ======================================================
 
-void report_t::print_xml( sim_t* sim )
+void report::print_xml( sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_name.size();
 

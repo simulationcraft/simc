@@ -438,7 +438,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 a -> target ? a -> target -> name() : "",
                 a -> harmful ? "true" : "false",
                 a -> tooltip(),
-                report_t::encode_html( a -> desc() ).c_str() );
+                report::encode_html( a -> desc() ).c_str() );
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
       {
         fprintf ( file,
@@ -1146,7 +1146,7 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
       fprintf( file, " class=\"odd\"" );
     }
     fprintf( file, ">\n" );
-    std::string enc_action = a -> signature_str; report_t::encode_html( enc_action );
+    std::string enc_action = a -> signature_str; report::encode_html( enc_action );
     fprintf( file,
              "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">%c</th>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
@@ -1967,7 +1967,7 @@ void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_t* p )
     {
       std::string enc_url = p -> origin_str;
       util_t::urldecode( enc_url );
-      report_t::encode_html( enc_url );
+      report::encode_html( enc_url );
       fprintf( file,
                "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                "\t\t\t\t\t\t\t\t<th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
@@ -1979,7 +1979,7 @@ void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_t* p )
     if ( ! p -> talents_str.empty() )
     {
       std::string enc_url = p -> talents_str;
-      report_t::encode_html( enc_url );
+      report::encode_html( enc_url );
       fprintf( file,
                "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                "\t\t\t\t\t\t\t\t<th>Talents</th>\n"
@@ -2452,9 +2452,9 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-// report_t::print_html_player ====================================================
+// report::print_html_player ====================================================
 
-void report_t::print_html_player( FILE* file, player_t* p, int j=0 )
+void report::print_html_player( FILE* file, player_t* p, int j=0 )
 {
   print_html_player_( file, p -> sim, p, j );
 }

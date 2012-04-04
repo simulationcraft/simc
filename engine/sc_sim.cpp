@@ -1361,8 +1361,6 @@ void sim_t::analyze_player( player_t* p )
   p -> dtps_error = p -> dtps.mean_std_dev * confidence_estimator;
   p -> hps_error = p -> hps.mean_std_dev * confidence_estimator;
 
-
-
   for ( buff_t* b = p -> buff_list; b; b = b -> next )
     b -> analyze();
 
@@ -1371,8 +1369,6 @@ void sim_t::analyze_player( player_t* p )
 
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
     u -> analyze();
-
-
 
   if ( p -> quiet ) return;
   if ( p -> fight_length.mean == 0 ) return;
@@ -1409,25 +1405,12 @@ void sim_t::analyze_player( player_t* p )
       stats_t* s = stats_list[ i ];
       s -> analyze();
 
-      // Create Stats Timeline Chart
-      s -> timeline_aps.clear();
-      s -> timeline_aps.reserve( max_buckets );
-      s -> timeline_amount.resize( max_buckets );
-      range::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( s -> timeline_aps ) );
-      assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
-
-
       if ( s -> type == STATS_DMG )
-      {
         s -> portion_amount = p -> compound_dmg.mean ? s -> compound_amount / p -> compound_dmg.mean : 0 ;
-      }
       else
-      {
         s -> portion_amount = p -> compound_heal.mean ? s -> compound_amount / p -> compound_heal.mean : 0;
-      }
     }
   }
-
 
   // Actor Lists ============================================================
   if (  ! p -> quiet && ! p -> is_enemy() && ! p -> is_add() && ! ( p -> is_pet() && report_pets_separately ) )
@@ -1541,8 +1524,6 @@ void sim_t::analyze_player( player_t* p )
 
   if ( convergence_error > 0 )
     p -> dps_convergence = convergence_error / ( p -> dps_error * convergence_scale );
-
-
 
 }
 

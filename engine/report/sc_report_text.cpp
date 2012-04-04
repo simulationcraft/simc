@@ -821,9 +821,9 @@ void print_text_player( FILE* file, player_t* p )
 
 
 
-// report_t::print_text =====================================================
+// report::print_text =====================================================
 
-void report_t::print_text( FILE* file, sim_t* sim, bool detail )
+void report::print_text( FILE* file, sim_t* sim, bool detail )
 {
   if ( sim -> simulation_length.mean == 0 ) return;
 

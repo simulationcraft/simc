@@ -1240,7 +1240,7 @@ void print_html_masthead( FILE*  file, sim_t* sim )
 }
 
 
-// report_t::print_html =====================================================
+// print_html =====================================================
 void print_html_( sim_t* sim )
 {
   int num_players = ( int ) sim -> players_by_name.size();
@@ -1338,7 +1338,7 @@ void print_html_( sim_t* sim )
   // Players
   for ( int i=0; i < num_players; i++ )
   {
-    report_t::print_html_player( file, sim -> players_by_name[ i ], i );
+    report::print_html_player( file, sim -> players_by_name[ i ], i );
 
     // Pets
     if ( sim -> report_pets_separately )
@@ -1346,7 +1346,7 @@ void print_html_( sim_t* sim )
       for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
       {
         if ( pet -> summoned )
-          report_t::print_html_player( file, pet, 1 );
+          report::print_html_player( file, pet, 1 );
       }
     }
   }
@@ -1359,7 +1359,7 @@ void print_html_( sim_t* sim )
   {
     for ( int i=0; i < ( int ) sim -> targets_by_name.size(); i++ )
     {
-      report_t::print_html_player( file, sim -> targets_by_name[ i ], i );
+      report::print_html_player( file, sim -> targets_by_name[ i ], i );
 
       // Pets
       if ( sim -> report_pets_separately )
@@ -1367,7 +1367,7 @@ void print_html_( sim_t* sim )
         for ( pet_t* pet = sim -> targets_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
         {
           //if ( pet -> summoned )
-          report_t::print_html_player( file, pet, 1 );
+          report::print_html_player( file, pet, 1 );
         }
       }
     }
@@ -1526,7 +1526,7 @@ void print_html_( sim_t* sim )
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-void report_t::print_html( sim_t* sim )
+void report::print_html( sim_t* sim )
 {
   print_html_( sim );
 }

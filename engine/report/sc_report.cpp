@@ -10,16 +10,16 @@
 // Report
 // ==========================================================================
 
-// report_t::encode_html ====================================================
+// report::encode_html ====================================================
 
-void report_t::encode_html( std::string& buffer )
+void report::encode_html( std::string& buffer )
 {
   util_t::replace_all( buffer, '&', "&amp;" );
   util_t::replace_all( buffer, '<', "&lt;" );
   util_t::replace_all( buffer, '>', "&gt;" );
 }
 
-std::string report_t::encode_html( const char* str )
+std::string report::encode_html( const char* str )
 {
   std::string nstr;
 
@@ -32,9 +32,9 @@ std::string report_t::encode_html( const char* str )
   return nstr;
 }
 
-// report_t::print_profiles =================================================
+// report::print_profiles =================================================
 
-void report_t::print_profiles( sim_t* sim )
+void report::print_profiles( sim_t* sim )
 {
   int k = 0;
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
@@ -183,9 +183,9 @@ void report_t::print_profiles( sim_t* sim )
   }
 }
 
-// report_t::print_spell_query ==============================================
+// report::print_spell_query ==============================================
 
-void report_t::print_spell_query( sim_t* sim, unsigned level )
+void report::print_spell_query( sim_t* sim, unsigned level )
 {
   spell_data_expr_t* sq = sim -> spell_query;
   assert( sq );
@@ -217,14 +217,14 @@ void report_t::print_spell_query( sim_t* sim, unsigned level )
   }
 }
 
-// report_t::print_suite ====================================================
+// report::print_suite ====================================================
 
-void report_t::print_suite( sim_t* sim )
+void report::print_suite( sim_t* sim )
 {
-  report_t::print_text( sim -> output_file, sim, sim -> report_details != 0 );
-  report_t::print_html( sim );
-  report_t::print_xml( sim );
-  report_t::print_profiles( sim );
+  report::print_text( sim -> output_file, sim, sim -> report_details != 0 );
+  report::print_html( sim );
+  report::print_xml( sim );
+  report::print_profiles( sim );
 }
 
 void report_utility::print_html_rng_information( FILE* file, rng_t* rng )
@@ -456,10 +456,12 @@ void report_utility::generate_player_report_information( const player_t*  p, pla
   // Make the pet graphs the same length as owner's
   if ( p -> is_pet() )
   {
-    player_t* o = const_cast<player_t*>( p ) -> cast_pet() -> owner;
+    const player_t* o = const_cast<player_t*>( p ) -> cast_pet() -> owner;
     max_buckets = static_cast<size_t>( o -> fight_length.max );
   }
 
+
+  // Stats Charts
   std::vector<stats_t*> stats_list;
 
   for ( stats_t* s = p -> stats_list; s; s = s -> next )
@@ -476,7 +478,6 @@ void report_utility::generate_player_report_information( const player_t*  p, pla
     for ( int i=0; i < num_stats; i++ )
     {
       stats_t* s = stats_list[ i ];
-      s -> analyze();
 
       // Create Stats Timeline Chart
       s -> timeline_aps.clear();
@@ -485,70 +486,63 @@ void report_utility::generate_player_report_information( const player_t*  p, pla
       range::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( s -> timeline_aps ) );
       assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
       s -> timeline_aps_chart = chart::timeline( p, s -> timeline_aps, s -> name_str + " APS", s -> aps );
-  s -> aps_distribution_chart = chart::distribution( p -> sim, s -> portion_aps.distribution, s -> name_str + " APS", s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
+      s -> aps_distribution_chart = chart::distribution( p -> sim, s -> portion_aps.distribution, s -> name_str + " APS", s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
 
     }
   }
-  ri.action_dpet_chart = chart::action_dpet ( p );
-  ri.action_dmg_chart  = chart::aps_portion ( p );
-  ri.time_spent_chart  = chart::time_spent  ( p );
+  // End Stats Charts
 
-  ri.scaling_dps_chart = chart::scaling_dps( p );
+  // Player Charts
+  ri.action_dpet_chart    = chart::action_dpet  ( p );
+  ri.action_dmg_chart     = chart::aps_portion  ( p );
+  ri.time_spent_chart     = chart::time_spent   ( p );
+  ri.scaling_dps_chart    = chart::scaling_dps  ( p );
+  ri.reforge_dps_chart    = chart::reforge_dps  ( p );
+  ri.scale_factors_chart  = chart::scale_factors( p );
 
+  std::string encoded_name;
+  http_t::format( encoded_name, p -> name_str );
 
-  ri.reforge_dps_chart = chart::reforge_dps( p );
+  ri.timeline_dps_chart = chart::timeline( p, p -> timeline_dps, encoded_name + " DPS", p -> dps.mean );
+  ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
+  ri.dps_error_chart = chart::dps_error         ( p );
 
-  ri.scale_factors_chart = chart::scale_factors( p );
-        // Charts =================================================================
+  if ( p -> primary_role() == ROLE_HEAL )
+  {
+    ri.distribution_dps_chart = chart::distribution( p -> sim,
+                                                     p -> hps.distribution, encoded_name + " HPS",
+                                                     p -> hps.mean,
+                                                     p -> hps.min,
+                                                     p -> hps.max );
+  }
+  else
+  {
+    ri.distribution_dps_chart = chart::distribution( p -> sim,
+                                                     p -> dps.distribution, encoded_name + " DPS",
+                                                     p -> dps.mean,
+                                                     p -> dps.min,
+                                                     p -> dps.max );
+  }
 
+  ri.distribution_deaths_chart = chart::distribution      ( p -> sim,
+                               p -> deaths.distribution, encoded_name + " Death",
+                               p -> deaths.mean,
+                               p -> deaths.min,
+                               p -> deaths.max );
 
+  // Resource Charts
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  {
+    ri.timeline_resource_chart[ i ] = chart::timeline        ( p,
+                               p -> timeline_resource[ i ],
+                               encoded_name + ' ' + util_t::resource_type_string( i ),
+                               0,
+                               chart::resource_color( i ) );
+    ri.gains_chart = chart::gains( p, i );
 
-        std::string encoded_name;
-        http_t::format( encoded_name, p -> name_str );
+  }
 
-        for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-        {
-          ri.timeline_resource_chart[ i ] = chart::timeline        ( p,
-                                     p -> timeline_resource[ i ],
-                                     encoded_name + ' ' + util_t::resource_type_string( i ),
-                                     0,
-                                     chart::resource_color( i ) );
-          ri.gains_chart = chart::gains( p, i );
-
-        }
-
-        ri.timeline_dps_chart = chart::timeline          (  p,
-                                     p -> timeline_dps,
-                                     encoded_name + " DPS",
-                                     p -> dps.mean );
-
-        ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
-        ri.dps_error_chart = chart::dps_error         ( p );
-
-        if ( p -> primary_role() == ROLE_HEAL )
-        {
-          ri.distribution_dps_chart = chart::distribution      ( p -> sim,
-                                       p -> hps.distribution, encoded_name + " HPS",
-                                       p -> hps.mean,
-                                       p -> hps.min,
-                                       p -> hps.max );
-        }
-        else
-        {
-          ri.distribution_dps_chart = chart::distribution      ( p -> sim,
-                                       p -> dps.distribution, encoded_name + " DPS",
-                                       p -> dps.mean,
-                                       p -> dps.min,
-                                       p -> dps.max );
-        }
-
-        ri.distribution_deaths_chart = chart::distribution      ( p -> sim,
-                                     p -> deaths.distribution, encoded_name + " Death",
-                                     p -> deaths.mean,
-                                     p -> deaths.min,
-                                     p -> deaths.max );
-
-        ri.charts_generated = true;
+  ri.charts_generated = true;
 }
 
 void report_utility::generate_sim_report_information( const sim_t* s , sim_t::report_information_t& ri )
@@ -586,3 +580,22 @@ void scaling_t::analyze_gear_weights()
     p -> report_information.gear_weights_pawn_alt_string = chart::gear_weights_pawn      ( p, false );
   }
 }
+
+
+void report_t::encode_html( std::string& buffer )
+{ return report::encode_html( buffer ); }
+
+std::string report_t::encode_html( const char* str )
+{ return report::encode_html( str ); }
+
+void report_t::print_spell_query( sim_t* s , unsigned level )
+{ return report::print_spell_query( s, level ); }
+
+void report_t::print_profiles( sim_t* s )
+{ return report::print_profiles( s ); }
+
+void report_t::print_text( FILE* f, sim_t* s , bool detail )
+{ return report::print_text( f, s, detail ); }
+
+void report_t::print_suite( sim_t* s )
+{ return report::print_html( s ); }

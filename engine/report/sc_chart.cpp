@@ -5,12 +5,25 @@
 
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
+
+namespace {
+
+const std::string amp = "&amp;";
+}
+
+
+
 namespace google_chart {
 
 enum chart_type_e { HORIZONTAL_BAR_CHART };
+enum fill_area_e { FILL_BACKGROUND };
+enum fill_type_e { FILL_SOLID };
 
 std::string chart_type( chart_type_e );
 std::string chart_size( unsigned width, unsigned height );
+std::string fill_chart( fill_area_e, fill_type_e, const std::string& color );
+std::string chart_title( const std::string& );
+std::string chart_title_formating ( const std::string& color, unsigned font_size );
 
 
 std::string chart_type( chart_type_e t )
@@ -25,6 +38,7 @@ std::string chart_type( chart_type_e t )
     break;
   default: break;
   }
+  s << amp;
   return s.str();
 }
 
@@ -35,6 +49,60 @@ std::string chart_size( unsigned width, unsigned height )
   s << width;
   s << "x";
   s << height;
+  s << amp;
+  return s.str();
+}
+
+std::string fill_chart( fill_area_e fa, fill_type_e ft, const std::string& color )
+{
+  std::ostringstream s;
+
+  s << "chf=";
+
+  switch ( fa )
+  {
+  case FILL_BACKGROUND:
+    s << "bg";
+    break;
+  default: break;
+  }
+  s <<    ",";
+  switch ( ft )
+  {
+  case FILL_SOLID:
+    s << "s";
+    break;
+  default: break;
+  }
+  s << ",";
+
+  s << color;
+
+  s << amp;
+
+  return s.str();
+}
+
+std::string chart_title( const std::string& t )
+{
+  std::ostringstream s;
+
+  s << "chtt=";
+  s << t;
+  s << amp;
+
+  return s.str();
+}
+
+std::string chart_title_formating ( const std::string& color, unsigned font_size )
+{
+  std::ostringstream s;
+
+  s << "chts=";
+  s << color;
+  s << ",";
+  s << font_size;
+  s << amp;
 
   return s.str();
 }
@@ -246,12 +314,12 @@ struct compare_downtime
     return l -> waiting_time.mean > r -> waiting_time.mean;
   }
 };
-const std::string amp = "&amp;";
 }
 
-std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name, bool print_styles )
+std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name, int print_styles )
 {
   // This chart should serve as a well documented example on how to do a chart in a clean and elegant way.
+  // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html#gcharts_solid_fills
 
   size_t num_players = players_by_name.size();
 
@@ -274,19 +342,17 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
 
   range::sort( waiting_list, compare_downtime() );
 
-
   std::ostringstream s;
   s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
   s << get_chart_base_url();
   s << google_chart::chart_size( 500, ( waiting_list.size() * 30 + 30 ) ); // Set chart size
-  s << amp;
   s << google_chart::chart_type( google_chart::HORIZONTAL_BAR_CHART ); // Set chart type
-  s << amp;
-  if ( ! print_styles )
+  if ( !print_styles )
   {
-    s << "chf=bg,s,333333";
-    s << amp;
+    s << google_chart::fill_chart( google_chart::FILL_BACKGROUND, google_chart::FILL_SOLID, "333333" ); // fill chart background solid
   }
+
+  // Fill in data
   s << "chd=t:";
   double max_waiting=0;
   for ( size_t i = 0; i < waiting_list.size(); i++ )
@@ -298,8 +364,12 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
     s << std::setprecision(2) << waiting;
   }
   s << amp;
+
+  // Custom chart data scaling
   s << "chds=0," << ( max_waiting * 1.9 );
   s << amp;
+
+  // Fill in color series
   s << "chco=";
   for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
@@ -307,6 +377,8 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
     s << class_color( get_player_or_owner_type( waiting_list[ i ] ) );
   }
   s << amp;
+
+
   s << "chm=";
   for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
@@ -318,16 +390,14 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
     s << "%++" << formatted_name.c_str() << "," << class_text_color( get_player_or_owner_type( p ) ) << "," << i << ",0,15";
   }
   s << amp;
-  s << "chtt=Player+Waiting-Time";
-  s << amp;
+
+  s << google_chart::chart_title( "Player+Waiting-Time" ); // Set chart title
+
+  // Format chart title with color and font size
   if ( print_styles )
-  {
-    s << "chts=666666,18";
-  }
+    s << google_chart::chart_title_formating( "666666", 18 );
   else
-  {
-    s << "chts=dddddd,18";
-  }
+    s << google_chart::chart_title_formating( "dddddd", 18 );
 
   return s.str();
 }

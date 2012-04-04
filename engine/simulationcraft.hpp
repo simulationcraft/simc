@@ -6319,24 +6319,16 @@ struct proc_t
 
 struct report_t
 {
+  // In the end, the idea is to only have the print_suite remaining, and completly separate report from simulationcraft.hpp
   static void encode_html( std::string& buffer );
   static std::string encode_html( const char* str );
   static void print_spell_query( sim_t*, unsigned level = MAX_LEVEL );
   static void print_profiles( sim_t* );
   static void print_text( FILE*, sim_t*, bool detail=true );
-  static void print_html( sim_t* );
-  static void print_html_player( FILE*, player_t*, int );
-  static void print_xml( sim_t* );
+
   static void print_suite( sim_t* );
 };
 
-// Chart ====================================================================
-
-struct chart_t
-{
-  // This struct will be abandoned, please migrate functions to namespace chart in report/sc_report.hpp and report/sc_chart.cpp
-
-};
 
 // Log ======================================================================
 
