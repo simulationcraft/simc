@@ -3054,8 +3054,8 @@ struct raid_event_t
 namespace internal {
 struct gear_stats_t
 {
-  double attribute[ ATTRIBUTE_MAX ];
-  double resource[ RESOURCE_MAX ];
+  std::array<double,ATTRIBUTE_MAX> attribute;
+  std::array<double,RESOURCE_MAX> resource;
   double spell_power;
   double spell_penetration;
   double mp5;
