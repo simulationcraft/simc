@@ -234,6 +234,7 @@ struct alias_t;
 struct attack_t;
 struct benefit_t;
 struct buff_t;
+struct buff_creator_t;
 struct buff_uptime_t;
 struct callback_t;
 struct cooldown_t;
@@ -3126,6 +3127,32 @@ public:
 
 // Buffs ====================================================================
 
+struct buff_creator_t
+{
+private:
+  actor_pair_t _player;
+  std::string _name;
+  double _chance;
+  unsigned _max_stack;
+  timespan_t _duration, _cooldown;
+  uint32_t _id;
+  friend class buff_t;
+public:
+  buff_creator_t( actor_pair_t p, const std::string& n ) :
+    _player( p ), _name( n ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero ), _cooldown( timespan_t::zero ), _id( 0 )
+  {}
+  buff_creator_t& set_duration( timespan_t d )
+  { _duration=d; return *this; }
+  buff_creator_t& set_chance( double c )
+  { _chance=c; return *this; }
+  buff_creator_t& set_max_stack( unsigned ms )
+  { _max_stack=ms; return *this; }
+  buff_creator_t& set_cd( timespan_t t )
+  { _cooldown=t; return *this; }
+  buff_creator_t& set_id( uint32_t i )
+  { _id=i; return *this; }
+};
+
 struct buff_t : public spell_id_t
 {
   double current_value, react;
@@ -3169,6 +3196,8 @@ struct buff_t : public spell_id_t
   buff_t( actor_pair_t pair, const std::string& name,
           int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
           double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0, bool activated=true );
+
+  buff_t( buff_creator_t params );
 
   // Player Buff with extracted data
 private:
@@ -4382,12 +4411,8 @@ struct player_t : public noncopyable
   // Resources
   struct resources_t
   {
-    double base   [ RESOURCE_MAX ];
-    double initial[ RESOURCE_MAX ];
-    double max    [ RESOURCE_MAX ];
-    double current[ RESOURCE_MAX ];
-    double base_multiplier[ RESOURCE_MAX ];
-    double initial_multiplier[ RESOURCE_MAX ];
+    std::array<double,RESOURCE_MAX> base, initial, max, current,
+                                    base_multiplier, initial_multiplier;
 
     resources_t()
     {
@@ -4651,8 +4676,7 @@ struct player_t : public noncopyable
     debuff_t* vulnerable;
 
     bool snared();
-  };
-  debuffs_t debuffs;
+  } debuffs;
 
   struct gains_t
   {
@@ -4674,16 +4698,12 @@ struct player_t : public noncopyable
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
-    void reset() { *this = gains_t(); }
-  };
-  gains_t gains;
+  } gains;
 
   struct procs_t
   {
     proc_t* hat_donor;
-    void reset() { *this = procs_t(); }
-  };
-  procs_t procs;
+  } procs;
 
   rng_t* rng_list;
 
@@ -4696,9 +4716,7 @@ struct player_t : public noncopyable
     rng_t* lag_queue;
     rng_t* lag_reaction;
     rng_t* lag_world;
-    void reset() { *this = rngs_t(); }
-  };
-  rngs_t rngs;
+  } rngs;
 
   int targetdata_id;
   std::vector<targetdata_t*> targetdata;
@@ -5999,10 +6017,10 @@ struct consumable_t
 
 struct benefit_t : public noncopyable
 {
+private:
   int up, down;
-
+public:
   double ratio;
-
   benefit_t* next;
   const std::string name_str;
 

@@ -91,6 +91,17 @@ buff_t::buff_t( actor_pair_t       p,
   init();
 }
 
+buff_t::buff_t( buff_creator_t params ) :
+    spell_id_t( params._player.source, params._name.c_str() ),
+    buff_duration( params._duration ), buff_cooldown( params._cooldown ), default_chance( params._chance ),
+    name_str( params._name ), sim( params._player.target -> sim ), player( params._player.target ),
+    source( params._player.source ), initial_source( params._player.source ),
+    max_stack( params._max_stack ), aura_id( 0 ),
+    activated( true ), reverse( false ), constant( false ), quiet( false ),
+    uptime_pct()
+{
+init();
+}
 // buff_t::init_buff_from_talent_ ===========================================
 
 void buff_t::init_from_talent_( player_t* /* p */, talent_t* talent )

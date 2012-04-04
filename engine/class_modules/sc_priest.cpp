@@ -3594,7 +3594,8 @@ void priest_t::init_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
 
   // Discipline
-  buffs.dark_evangelism            = new buff_t( this, 87117, "dark_evangelism", spec.evangelism -> ok() );
+  //buffs.dark_evangelism            = new buff_t( this, 87117, "dark_evangelism", spec.evangelism -> ok() );
+  buffs.dark_evangelism = new buff_t( buff_creator_t( this, "dark_evangelism").set_id( 87117 ).set_chance( spec.evangelism->ok() ) );
   buffs.dark_evangelism -> activated = false;
   buffs.holy_evangelism            = new buff_t( this, 81660, "holy_evangelism", spec.evangelism -> ok() );
   buffs.holy_evangelism -> activated = false;
@@ -3614,7 +3615,9 @@ void priest_t::init_buffs()
   // TEST: buffs.serenity -> activated = false;
 
   // Shadow
-  buffs.glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, timespan_t::from_seconds( 6.0 )  );
+  buffs.glyph_of_shadow_word_death = new buff_t( buff_creator_t( this, "glyph_of_shadow_word_death").
+                                                 set_max_stack( 1 ).set_duration( timespan_t::from_seconds( 6.0 ) ) );
+  //buffs.glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, timespan_t::from_seconds( 6.0 )  );
   buffs.glyph_mind_spike                  = new buff_t( this, glyphs.mind_spike -> effect2().trigger_spell_id(), "mind_spike"                 );
   buffs.mind_spike                 = new buff_t( this, "mind_spike",                 3, timespan_t::from_seconds( 12.0 ) );
   buffs.shadowform                = new buff_t( this, "shadowform", "Shadowform" );

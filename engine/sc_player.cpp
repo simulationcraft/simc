@@ -1154,8 +1154,10 @@ void player_t::init_resources( bool force )
         }
       }
     }
-    resources.current[ i ] = resources.max[ i ] = resources.initial[ i ];
   }
+
+
+  resources.current = resources.max = resources.initial;
 
   if ( timeline_resource[ 0 ].empty() )
   {
@@ -1359,21 +1361,23 @@ std::string player_t::init_use_racial_actions( const std::string& append )
   std::string buffer;
   bool race_action_found = false;
 
-  if ( race == RACE_ORC )
+  switch ( race )
   {
+  case RACE_ORC:
     buffer += "/blood_fury";
     race_action_found = true;
-  }
-  else if ( race == RACE_TROLL )
-  {
+    break;
+  case RACE_TROLL:
     buffer += "/berserking";
     race_action_found = true;
-  }
-  else if ( race == RACE_BLOOD_ELF )
-  {
+    break;
+  case RACE_BLOOD_ELF:
     buffer += "/arcane_torrent";
     race_action_found = true;
+    break;
+  default: break;
   }
+
   if ( race_action_found && ! append.empty() )
   {
     buffer += append;
@@ -1543,12 +1547,12 @@ void player_t::init_rating()
 
 void player_t::init_talents()
 {
-  for ( int i=0; i < MAX_TALENT_TREES; i++ )
+  for ( size_t i = 0; i < MAX_TALENT_TREES; i++ )
   {
     talent_tab_points[ i ] = 0;
 
     size_t size=talent_trees[ i ].size();
-    for ( size_t j=0; j < size; j++ )
+    for ( size_t j = 0; j < size; j++ )
     {
       talent_tab_points[ i ] += talent_trees[ i ][ j ] -> rank();
     }
@@ -1562,13 +1566,14 @@ void player_t::init_talents()
 void player_t::init_glyphs()
 {
   std::vector<std::string> glyph_names;
-  int num_glyphs = util_t::string_split( glyph_names, glyphs_str, ",/" );
+  util_t::string_split( glyph_names, glyphs_str, ",/" );
 
-  for ( int i=0; i < num_glyphs; i++ )
+  for ( size_t i = 0; i < glyph_names.size(); i++ )
   {
     glyph_t* g = find_glyph( glyph_names[ i ] );
 
-    if ( g ) g -> enable();
+    if ( g )
+      g -> enable();
   }
 }
 
@@ -1880,11 +1885,10 @@ void player_t::init_scaling()
 
 item_t* player_t::find_item( const std::string& str )
 {
-  int num_items = ( int ) items.size();
 
-  for ( int i=0; i < num_items; i++ )
+  for ( size_t i = 0; i < items.size(); i++ )
     if ( str == items[ i ].name() )
-      return &( items[ i ] );
+      return &items[ i ];
 
   return 0;
 }
@@ -2110,7 +2114,8 @@ double player_t::composite_attack_hit() const
 
   // Changes here may need to be reflected in the corresponding pet_t
   // function in simulationcraft.hpp
-  if ( buffs.heroic_presence -> up() ) ah += 0.01;
+  if ( buffs.heroic_presence -> up() )
+    ah += 0.01;
 
   return ah;
 }
@@ -2162,12 +2167,9 @@ double player_t::composite_tank_miss( const school_type_e school ) const
 {
   double m = 0;
 
-  if ( school == SCHOOL_PHYSICAL )
+  if ( school == SCHOOL_PHYSICAL && race == RACE_NIGHT_ELF ) // Quickness
   {
-    if ( race == RACE_NIGHT_ELF ) // Quickness
-    {
-      m += 0.02;
-    }
+    m += 0.02;
   }
 
   if      ( m > 1.0 ) m = 1.0;
@@ -2239,13 +2241,14 @@ double player_t::composite_tank_crit( const school_type_e /* school */ ) const
 
 double player_t::diminished_dodge() const
 {
-  if ( diminished_kfactor == 0 || diminished_dodge_capi == 0 ) return 0;
+  if ( diminished_kfactor == 0 || diminished_dodge_capi == 0 )
+    return 0;
 
   // Only contributions from gear are subject to diminishing returns;
 
   double d = stats.dodge_rating / rating.dodge;
 
-  d += dodge_per_agility * stats.attribute[ ATTR_AGILITY ] * composite_attribute_multiplier( ATTR_AGILITY );
+  d += dodge_per_agility * ( agility() - attribute_base[ ATTR_AGILITY ] );
 
   if ( d == 0 ) return 0;
 
@@ -2326,27 +2329,30 @@ double player_t::composite_spell_power( const school_type_e school ) const
 {
   double sp = spell_power[ school ];
 
-  if ( school == SCHOOL_FROSTFIRE )
+  switch ( school )
   {
+  case SCHOOL_FROSTFIRE:
     sp = std::max( spell_power[ SCHOOL_FROST ],
                    spell_power[ SCHOOL_FIRE  ] );
-  }
-  else if ( school == SCHOOL_SPELLSTORM )
-  {
+    break;
+  case SCHOOL_SPELLSTORM:
     sp = std::max( spell_power[ SCHOOL_NATURE ],
                    spell_power[ SCHOOL_ARCANE ] );
-  }
-  else if ( school == SCHOOL_SHADOWFROST )
-  {
+    break;
+  case SCHOOL_SHADOWFROST:
     sp = std::max( spell_power[ SCHOOL_SHADOW ],
                    spell_power[ SCHOOL_FROST ] );
-  }
-  else if ( school == SCHOOL_SHADOWFLAME )
-  {
+    break;
+  case SCHOOL_SHADOWFLAME:
     sp = std::max( spell_power[ SCHOOL_SHADOW ],
                    spell_power[ SCHOOL_FIRE ] );
+    break;
+  default: break;
   }
-  if ( school != SCHOOL_MAX ) sp += spell_power[ SCHOOL_MAX ];
+
+  if ( school != SCHOOL_MAX )
+    sp += spell_power[ SCHOOL_MAX ];
+
 
   sp += spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
 
@@ -2358,17 +2364,14 @@ double player_t::composite_spell_power( const school_type_e school ) const
 double player_t::composite_spell_power_multiplier() const
 {
   double m = spell_power_multiplier;
+
   if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
   {
     if ( sim -> auras.demonic_pact -> up() )
-    {
       m *= 1.10;
-    }
     else
-    {
       m *= 1.0 + std::max( sim -> auras.burning_wrath -> value(),
                            buffs.arcane_brilliance -> up() * 0.06 );
-    }
   }
   return m;
 }
@@ -2381,7 +2384,8 @@ double player_t::composite_spell_crit() const
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
-    if ( buffs.focus_magic -> up() ) sc += 0.03;
+    if ( buffs.focus_magic -> up() )
+      sc += 0.03;
 
     if ( sim -> auras.leader_of_the_pack -> up() ||
          sim -> auras.honor_among_thieves -> up() ||
@@ -2391,13 +2395,12 @@ double player_t::composite_spell_crit() const
       sc += 0.05;
     }
 
-    if ( buffs.destruction_potion -> check() ) sc += 0.02;
+    if ( buffs.destruction_potion -> check() )
+      sc += 0.02;
   }
 
-  if ( ( race == RACE_WORGEN ) )
-  {
+  if ( race == RACE_WORGEN )
     sc += 0.01;
-  }
 
   return sc;
 }
@@ -2410,7 +2413,8 @@ double player_t::composite_spell_hit() const
 
   // Changes here may need to be reflected in the corresponding pet_t
   // function in simulationcraft.hpp
-  if ( buffs.heroic_presence -> up() ) sh += 0.01;
+  if ( buffs.heroic_presence -> up() )
+    sh += 0.01;
 
   return sh;
 }
@@ -2424,7 +2428,7 @@ double player_t::composite_mp5() const
 
 double player_t::composite_mastery() const
 {
-  double m = floor( ( mastery * 100.0 ) + 0.5 ) * 0.01;
+  double m = floor( ( mastery * 100.0 ) + 0.5 ) / 100.0;
 
   if ( sim -> auras.grace_of_air -> check() )
     m += sim -> auras.grace_of_air -> value();
@@ -2672,74 +2676,6 @@ double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 
 double player_t::get_attribute( attribute_type_e a ) const
 { return composite_attribute( a ) * composite_attribute_multiplier( a ); }
-
-
-/*
-// player_t::haste_rating() =================================================
-
-double player_t::haste_rating() const
-{
-  double a = stats.haste_rating;
-
-  return a;
-}
-
-// player_t::crit_rating() ==================================================
-
-double player_t::crit_rating() const
-{
-  double a = stats.crit_rating;
-
-  return a;
-}
-
-// player_t::mastery_rating() ===============================================
-
-double player_t::mastery_rating() const
-{
-  double a = stats.mastery_rating;
-
-  return a;
-}
-
-// player_t::hit_rating() ===================================================
-
-double player_t::hit_rating() const
-{
-  double a = stats.hit_rating;
-
-  return a;
-}
-
-// player_t::expertise_rating() =============================================
-
-double player_t::expertise_rating() const
-{
-  double a = stats.expertise_rating;
-
-  return a;
-}
-
-// player_t::dodge_rating() =================================================
-
-double player_t::dodge_rating() const
-{
-  double a = stats.dodge_rating;
-
-  return a;
-}
-
-// player_t::parry_rating() =================================================
-
-double player_t::parry_rating() const
-{
-  double a = stats.parry_rating;
-
-  a += strength() * parry_rating_per_strength;
-
-  return a;
-}
-*/
 
 // player_t::combat_begin ===================================================
 
