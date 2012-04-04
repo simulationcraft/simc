@@ -319,7 +319,7 @@ struct compare_downtime
 std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name, int print_styles )
 {
   // This chart should serve as a well documented example on how to do a chart in a clean and elegant way.
-  // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html#gcharts_solid_fills
+  // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
 
   size_t num_players = players_by_name.size();
 
@@ -378,16 +378,28 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
   }
   s << amp;
 
-
+  // Text Data
   s << "chm=";
   for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
     player_t* p = waiting_list[ i ];
+
     std::string formatted_name = p -> name_str;
     util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-    double waiting = ( 100.0 * p -> waiting_time.mean / p -> fight_length.mean );
-    s << ( i?"|":"" )  << "t++" << std::setprecision( 2 ) << waiting;
-    s << "%++" << formatted_name.c_str() << "," << class_text_color( get_player_or_owner_type( p ) ) << "," << i << ",0,15";
+
+    double waiting_pct = ( 100.0 * p -> waiting_time.mean / p -> fight_length.mean );
+
+    s << ( i?"|":"" )  << "t++" << std::setprecision( 2 ) << waiting_pct; // Insert waiting percent
+
+    s << "%++" << formatted_name.c_str(); // Insert player name
+
+    s << "," << class_text_color( get_player_or_owner_type( p ) ); // Insert player class text color
+
+    s << "," << i; // Series Index
+
+    s << ",0"; // <opt_which_points> 0 == draw markers for all points
+
+    s << ",15"; // size
   }
   s << amp;
 

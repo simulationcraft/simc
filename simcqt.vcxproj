@@ -151,7 +151,7 @@
     <ClCompile Include="engine\sc_attack.cpp" />
     <ClCompile Include="engine\sc_buff.cpp" />
     <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
-    <ClCompile Include="engine\sc_chart.cpp" />
+    <ClCompile Include="engine\report\sc_chart.cpp" />
     <ClCompile Include="engine\dbc\sc_const_data.cpp" />
     <ClCompile Include="engine\sc_consumable.cpp" />
     <ClCompile Include="engine\sc_data.cpp" />

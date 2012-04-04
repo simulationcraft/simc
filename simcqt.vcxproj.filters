@@ -36,7 +36,7 @@
     <ClCompile Include="engine\interfaces\sc_chardev.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_chart.cpp">
+    <ClCompile Include="engine\report\sc_chart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\dbc\sc_const_data.cpp">

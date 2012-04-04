@@ -226,7 +226,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_chart.cpp"
+			RelativePath=".\engine\report\sc_chart.cpp"
 			>
 		</File>
 		<File

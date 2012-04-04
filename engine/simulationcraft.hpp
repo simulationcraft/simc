@@ -6327,7 +6327,6 @@ struct report_t
   static void print_suite( sim_t* );
 };
 
-
 // Log ======================================================================
 
 struct log_t

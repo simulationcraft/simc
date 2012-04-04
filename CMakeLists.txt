@@ -35,7 +35,7 @@ SET(SIMC_ENGINE_SOURCE
   "engine/interfaces/sc_bcp_api.cpp"
   "engine/sc_buff.cpp"
   "engine/interfaces/sc_chardev.cpp"
-  "engine/sc_chart.cpp"
+  "engine/report/sc_chart.cpp"
   "engine/dbc/sc_const_data.cpp"
   "engine/sc_consumable.cpp"
   "engine/sc_data.cpp"

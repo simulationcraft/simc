@@ -75,7 +75,6 @@ SRC = \
 	sc_action.cpp \
 	sc_attack.cpp \
 	sc_buff.cpp \
-	sc_chart.cpp \
 	sc_consumable.cpp \
 	sc_data.cpp \
 	sc_dot.cpp \
