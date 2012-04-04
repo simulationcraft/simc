@@ -517,7 +517,7 @@ void report::generate_player_report_information( const player_t*  p, player_t::r
                                encoded_name + ' ' + util_t::resource_type_string( i ),
                                0,
                                chart::resource_color( i ) );
-    ri.gains_chart = chart::gains( p, i );
+    ri.gains_chart[ i ] = chart::gains( p, i );
 
   }
 

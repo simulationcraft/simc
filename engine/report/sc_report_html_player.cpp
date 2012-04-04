@@ -1403,11 +1403,11 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
 
     if ( total_gain > 0 )
     {
-      if ( ! ri.gains_chart.empty() )
+      if ( ! ri.gains_chart[ j ].empty() )
       {
         fprintf( file,
                  "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Gains Chart\" />\n",
-                 ri.gains_chart.c_str() );
+                 ri.gains_chart[ j ].c_str() );
       }
     }
   }

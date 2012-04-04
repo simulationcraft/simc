@@ -1162,14 +1162,16 @@ void player_t::init_resources( bool force )
     resources.current[ i ] = resources.max[ i ] = resources.initial[ i ];
   }
 
+  if ( timeline_resource[ 0 ].empty() )
+  {
+    int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
+    if ( size <= 0 ) size = 600; // Default to 10 minutes
+    size *= 2;
+    size += 3; // Buffer against rounding.
 
-  int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
-  if ( size <= 0 ) size = 600; // Default to 10 minutes
-  size *= 2;
-  size += 3; // Buffer against rounding.
-
-  for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-    timeline_resource[i].assign( size, 0 );
+    for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+      timeline_resource[i].assign( size, 0 );
+  }
 }
 
 // player_t::init_professions ===============================================
@@ -3472,10 +3474,13 @@ void player_t::regen( const timespan_t periodicity )
 
   const unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
 
-  for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( resources.max[ i ] != 0 )
       timeline_resource[ i ][ index ] += resources.current[ i ] * periodicity.total_seconds();
+
+    /*if ( i == RESOURCE_MANA )
+      sim -> errorf( "%.4f\n", timeline_resource[ i ][ index ] );*/
   }
 }
 

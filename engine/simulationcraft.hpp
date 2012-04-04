@@ -4542,8 +4542,8 @@ struct player_t : public noncopyable
   {
     bool charts_generated;
     std::string action_sequence;
-    std::string action_dpet_chart, action_dmg_chart, time_spent_chart, gains_chart;
-    std::array<std::string, RESOURCE_MAX> timeline_resource_chart;
+    std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
+    std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
     std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
     std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
     std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
