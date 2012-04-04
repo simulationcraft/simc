@@ -2247,7 +2247,16 @@ struct shadowy_apparition_t : priest_spell_t
 
     may_crit = false;
 
-    stats -> children.push_back( player -> get_stats( "shadowy_apparition_spell", this ) );
+
+  }
+
+  virtual void init()
+  {
+    priest_spell_t::init();
+
+    stats_t* s = player -> find_stats( "shadowy_apparition_spell" );
+    if ( s )
+      stats -> add_child( s );
   }
 
   virtual void schedule_travel( player_t* t )
@@ -2885,6 +2894,7 @@ struct penance_heal_tick_t : public priest_heal_t
     dual        = true;
     direct_tick = true;
 
+    school = SCHOOL_HOLY;
     stats = player -> get_stats( "penance_heal", this );
   }
 

@@ -165,6 +165,21 @@ void stats_t::combat_end()
   }
 }
 
+void stats_t::stats_results_t::analyze( const stats_t& s )
+{
+  count.analyze();
+  if ( count.mean == 0 )
+    return
+
+  avg_actual_amount.analyze();
+  count.analyze();
+  pct = 100.0 * count.mean / static_cast<double>( s.num_direct_results );
+  fight_total_amount.analyze();
+  fight_actual_amount.analyze();
+  actual_amount.analyze();
+  total_amount.analyze();
+  overkill_pct = fight_total_amount.mean ? 100.0 * ( fight_total_amount.mean - fight_actual_amount.mean ) / fight_total_amount.mean : 0;
+}
 // stats_t::analyze =========================================================
 
 void stats_t::analyze()
@@ -177,6 +192,12 @@ void stats_t::analyze()
   for ( size_t i=0; i < num_actions; i++ )
   {
     action_t* a = action_list[ i ];
+    if ( school != SCHOOL_NONE && school != a -> school )
+    {
+      sim -> errorf( "stats_t::analyze() stats %s school %s and action %s school %s are not equal",
+                      name_str.c_str(), util_t::school_type_string( school),
+                      a->name(), util_t::school_type_string( a->school) );
+    }
     if ( a -> channeled ) channeled = true;
     school   = a -> school;
     if ( ! a -> background ) background = false;
@@ -190,34 +211,8 @@ void stats_t::analyze()
 
   for ( int i=0; i < RESULT_MAX; i++ )
   {
-    direct_results[ i ].count.analyze();
-    if ( direct_results[ i ].count.mean != 0 )
-    {
-      stats_results_t& r = direct_results[ i ];
-
-      r.avg_actual_amount.analyze();
-      r.count.analyze();
-      r.pct = 100.0 * r.count.mean / ( double ) num_direct_results;
-      r.fight_total_amount.analyze();
-      r.fight_actual_amount.analyze();
-      r.actual_amount.analyze();
-      r.total_amount.analyze();
-      r.overkill_pct = r.fight_total_amount.mean ? 100.0 * ( r.fight_total_amount.mean - r.fight_actual_amount.mean ) / r.fight_total_amount.mean : 0;
-    }
-
-    tick_results[ i ].count.analyze();
-    if ( tick_results[ i ].count.mean != 0 )
-    {
-      stats_results_t& r = tick_results[ i ];
-
-      r.avg_actual_amount.analyze();
-      r.pct = 100.0 * r.count.mean / ( double ) num_tick_results;
-      r.fight_total_amount.analyze();
-      r.fight_actual_amount.analyze();
-      r.actual_amount.analyze();
-      r.total_amount.analyze();
-      r.overkill_pct = r.fight_total_amount.mean ? 100.0 * ( r.fight_total_amount.mean - r.fight_actual_amount.mean ) / r.fight_total_amount.mean : 0;
-    }
+    direct_results[ i ].analyze( *this );
+    tick_results[ i ].analyze( *this);
   }
 
   portion_aps.analyze( true, true, true, 50 );
