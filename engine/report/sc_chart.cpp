@@ -5,6 +5,41 @@
 
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
+namespace google_chart {
+
+enum chart_type_e { HORIZONTAL_BAR_CHART };
+
+std::string chart_type( chart_type_e );
+std::string chart_size( unsigned width, unsigned height );
+
+
+std::string chart_type( chart_type_e t )
+{
+  std::ostringstream s;
+  s << "cht=";
+
+  switch ( t )
+  {
+  case HORIZONTAL_BAR_CHART:
+    s << "bhg";
+    break;
+  default: break;
+  }
+  return s.str();
+}
+
+std::string chart_size( unsigned width, unsigned height )
+{
+  std::ostringstream s;
+  s << "chs=";
+  s << width;
+  s << "x";
+  s << height;
+
+  return s.str();
+}
+
+};
 
 namespace {
 
@@ -216,10 +251,12 @@ const std::string amp = "&amp;";
 
 std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name, bool print_styles )
 {
+  // This chart should serve as a well documented example on how to do a chart in a clean and elegant way.
+
   size_t num_players = players_by_name.size();
 
   if ( num_players == 0 )
-    return "";
+    return std::string();
 
   std::vector<player_t*> waiting_list;
 
@@ -233,7 +270,7 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
   }
 
   if ( waiting_list.size() == 0 )
-    return "";
+    return std::string();
 
   range::sort( waiting_list, compare_downtime() );
 
@@ -241,9 +278,9 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
   std::ostringstream s;
   s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
   s << get_chart_base_url();
-  s << "chs=500x" << ( waiting_list.size() * 30 + 30 );
+  s << google_chart::chart_size( 500, ( waiting_list.size() * 30 + 30 ) ); // Set chart size
   s << amp;
-  s << "cht=bhg";
+  s << google_chart::chart_type( google_chart::HORIZONTAL_BAR_CHART ); // Set chart type
   s << amp;
   if ( ! print_styles )
   {
@@ -317,7 +354,7 @@ int chart::raid_aps( std::vector<std::string>& images,
   else
     max_aps = players_by_aps[ 0 ] -> hps.mean;
 
-  std::string s;
+  std::string s = std::string();
   char buffer[ 1024 ];
   bool first = true;
 
@@ -716,13 +753,14 @@ std::string chart::action_dpet( const player_t* p )
   }
 
   int num_stats = ( int ) stats_list.size();
-  if ( num_stats == 0 ) return 0;
+  if ( num_stats == 0 )
+    return std::string();
 
   range::sort( stats_list, compare_dpet() );
 
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = get_chart_base_url();
   snprintf( buffer, sizeof( buffer ), "chs=550x%d", num_stats * 30 + 30 ); s += buffer;
   s += "&amp;";
@@ -816,13 +854,14 @@ std::string chart::aps_portion( const player_t* p )
   }
 
   int num_stats = ( int ) stats_list.size();
-  if ( num_stats == 0 ) return 0;
+  if ( num_stats == 0 )
+    return std::string();
 
   range::sort( stats_list, compare_amount() );
 
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = get_chart_base_url();
   snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_stats * 10 ); s += buffer;
   s += "&amp;";
@@ -920,7 +959,7 @@ std::string chart::time_spent( const player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = get_chart_base_url();
   snprintf( buffer, sizeof( buffer ), "chs=525x%d", 200 + num_stats * 10 ); s += buffer;
   s += "&amp;";
@@ -1019,13 +1058,14 @@ std::string chart::gains( const player_t* p, resource_type_e type )
   }
 
   int num_gains = ( int ) gains_list.size();
-  if ( num_gains == 0 ) return 0;
+  if ( num_gains == 0 )
+    return std::string();
 
   range::sort( gains_list, compare_gain() );
 
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = get_chart_base_url();
   snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_gains * 10 ); s += buffer;
   s += "&amp;";
@@ -1085,7 +1125,8 @@ std::string chart::scale_factors( const player_t* p )
 
   assert( scaling_stats.size() <= static_cast<std::size_t>( std::numeric_limits<int>::max() ) );
   int num_scaling_stats = static_cast<int>( scaling_stats.size() );
-  if ( num_scaling_stats == 0 ) return 0;
+  if ( num_scaling_stats == 0 )
+    return std::string();
 
   range::sort( scaling_stats, compare_scale_factors( p ) );
 
@@ -1093,7 +1134,7 @@ std::string chart::scale_factors( const player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = get_chart_base_url();
   snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_scaling_stats * 30 + 30 ); s += buffer;
   s += "&amp;";
@@ -1173,7 +1214,8 @@ std::string chart::scaling_dps( const player_t* p )
       if ( pd[ j ] < min_dps ) min_dps = pd[ j ];
     }
   }
-  if ( max_dps <= 0 ) return 0;
+  if ( max_dps <= 0 )
+    return std::string();
 
   double step = p -> sim -> plot -> dps_plot_step;
   int range = p -> sim -> plot -> dps_plot_points / 2;
@@ -1183,7 +1225,7 @@ std::string chart::scaling_dps( const player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = get_chart_base_url();
   s += "chs=550x300";
   s += "&amp;";
@@ -1309,19 +1351,19 @@ std::string chart::reforge_dps( const player_t* p )
   double dps_range=0, min_dps=FLT_MAX, max_dps=0;
 
   if ( ! p )
-    return 0;
+    return std::string();
   const std::vector< std::vector<reforge_plot_data_t> >& pd = p -> reforge_plot_data;
   if ( pd.size() == 0 )
-    return 0;
+    return std::string();
 
   size_t num_stats = pd[ 0 ].size() - 1;
   if ( num_stats != 3 && num_stats != 2 )
   {
     p -> sim -> errorf( "You must choose 2 or 3 stats to generate a reforge plot.\n" );
-    return 0;
+    return std::string();
   }
 
-  for ( size_t i=0; i < pd.size(); i++ )
+  for ( size_t i = 0; i < pd.size(); i++ )
   {
     assert( num_stats < pd[ i ].size() );
     if ( pd[ i ][ num_stats ].value < min_dps )
@@ -1602,7 +1644,7 @@ std::string chart::timeline( const player_t* p,
 
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = get_chart_base_url();
   s += "chs=525x185";
   s += "&amp;";
@@ -1661,7 +1703,8 @@ std::string chart::timeline( const player_t* p,
 std::string chart::timeline_dps_error( const player_t* p )
 {
   int max_buckets = ( int ) p -> dps_convergence_error.size();
-  if ( ! max_buckets ) return 0;
+  if ( ! max_buckets )
+    return std::string();
 
   int max_points  = 600;
   int increment   = 1;
@@ -1684,7 +1727,7 @@ std::string chart::timeline_dps_error( const player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = get_chart_base_url();
   s += "chs=525x185";
   s += "&amp;";
@@ -1753,13 +1796,13 @@ std::string chart::distribution( const sim_t* sim,
   int max_buckets = ( int ) dist_data.size();
 
   if ( ! max_buckets )
-    return 0;
+    return std::string();
 
   int count_max = *std::max_element( dist_data.begin(), dist_data.end() );
 
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = get_chart_base_url();
   s += "chs=525x185";
   s += "&amp;";
@@ -1815,7 +1858,7 @@ std::string chart::gear_weights_lootrank( const player_t*    p )
 {
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
   s = "http://www.guildox.com/wr.asp?";
 
   switch ( p -> type )
@@ -1901,7 +1944,7 @@ std::string chart::gear_weights_wowhead( const player_t*    p )
   char buffer[ 1024 ];
   bool first=true;
 
-  std::string s;
+  std::string s = std::string();
   s = "http://www.wowhead.com/?items&amp;filter=";
 
   switch ( p -> type )
@@ -1984,7 +2027,7 @@ std::string chart::gear_weights_wowreforge( const player_t*    p )
 {
   char buffer[ 1024 ];
 
-  std::string s;
+  std::string s = std::string();
 
   std::string region_str, server_str, name_str;
 
@@ -2033,7 +2076,7 @@ std::string chart::gear_weights_pawn( const player_t*    p,
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ ) stats.push_back( i );
   range::sort( stats, compare_scale_factors( p ) );
 
-  std::string s;
+  std::string s = std::string();
   char buffer[ 1024 ];
   bool first = true;
 
@@ -2096,7 +2139,7 @@ std::string chart::gear_weights_pawn( const player_t*    p,
 std::string chart::dps_error( const player_t* p )
 {
   char buffer[ 1024 ];
-  std::string s;
+  std::string s = std::string();
 
   double std_dev = p -> dps.mean_std_dev;
 
