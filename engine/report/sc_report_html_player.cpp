@@ -649,7 +649,7 @@ void print_html_stats ( FILE* file, const player_t* a )
                ( j%2 == 1 )? " class=\"odd\"" : "",
                util_t::attribute_type_string( i ),
                a -> buffed.attribute[ i ],
-               a -> get_attribute( static_cast<attribute_type_e>( i ) ),
+               a -> get_attribute( i ),
                a -> stats.attribute[ i ] );
       j++;
     }

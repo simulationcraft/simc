@@ -822,8 +822,7 @@ void player_t::init_items()
 
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( ! gear.get_stat( i ) )
-      gear.set_stat( i, item_stats.get_stat( i ) );
+    gear.add_stat( i, item_stats.get_stat( i ) );
   }
 
   if ( sim -> debug )
@@ -940,7 +939,7 @@ void player_t::init_core()
   initial_haste_rating   = initial_stats.haste_rating;
   initial_mastery_rating = initial_stats.mastery_rating;
 
-  for ( int i=0; i < ATTRIBUTE_MAX; i++ )
+  for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
   {
     initial_stats.attribute[ i ] = gear.attribute[ i ] + enchant.attribute[ i ] + ( is_pet() ? 0 : sim -> enchant.attribute[ i ] );
 
