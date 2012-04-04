@@ -2809,7 +2809,8 @@ std::string tolower( const std::string& src )
 
 std::string util_t::encode_html( const std::string& s )
 {
-  std::string buffer = s;
+  std::string buffer = std::string();
+  buffer += s;
   util_t::replace_all( buffer, '&', "&amp;" );
   util_t::replace_all( buffer, '<', "&lt;" );
   util_t::replace_all( buffer, '>', "&gt;" );

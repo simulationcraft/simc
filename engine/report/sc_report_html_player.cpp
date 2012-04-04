@@ -438,7 +438,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 a -> target ? a -> target -> name() : "",
                 a -> harmful ? "true" : "false",
                 a -> tooltip(),
-                util_t::encode_html( a -> desc() ).c_str() );
+                util_t::encode_html( a -> desc() ? std::string( a -> desc() ) : std::string() ).c_str() );
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
       {
         fprintf ( file,
