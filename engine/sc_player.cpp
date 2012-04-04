@@ -2671,7 +2671,7 @@ double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 // player_t::get_attribute() ================================================
 
 double player_t::get_attribute( attribute_type_e a ) const
-{ return attribute[ a ] * composite_attribute_multiplier( a ); }
+{ return composite_attribute( a ) * composite_attribute_multiplier( a ); }
 
 
 /*
