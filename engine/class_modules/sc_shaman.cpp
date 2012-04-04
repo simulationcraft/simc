@@ -743,7 +743,7 @@ struct earth_elemental_pet_t : public pet_t
     return owner -> composite_spell_hit();
   }
 
-  virtual double composite_attack_expertise( weapon_t* ) const
+  virtual double composite_attack_expertise( const weapon_t* ) const
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
@@ -1098,7 +1098,7 @@ struct fire_elemental_pet_t : public pet_t
     return owner -> composite_spell_hit();
   }
 
-  virtual double composite_attack_expertise( weapon_t* ) const
+  virtual double composite_attack_expertise( const weapon_t* ) const
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0;
   }

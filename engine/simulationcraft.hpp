@@ -4910,7 +4910,7 @@ struct player_t : public noncopyable
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
   virtual void create_options();
-  virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
+  virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
 
   virtual void copy_from( player_t* source );
 

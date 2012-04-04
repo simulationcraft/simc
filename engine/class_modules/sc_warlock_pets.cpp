@@ -893,7 +893,7 @@ void warlock_main_pet_t::dismiss()
   o -> active_pet = 0;
 }
 
-double warlock_main_pet_t::composite_attack_expertise( weapon_t* ) const
+double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 {
   return owner -> spell_hit * 26.0 / 17.0;
 }

@@ -6357,7 +6357,7 @@ action_expr_t* player_t::create_expression( action_t* a,
 
 // player_t::create_profile =================================================
 
-bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
+bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
   std::string term;
 
@@ -6447,7 +6447,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
   {
     for ( int i=0; i < SLOT_MAX; i++ )
     {
-      item_t& item = items[ i ];
+      const item_t& item = items[ i ];
 
       if ( item.active() )
       {
@@ -6525,7 +6525,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
 
     for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {
-      item_t& item = items[ i ];
+      const item_t& item = items[ i ];
       if ( ! item.active() ) continue;
       if ( item.unique || item.unique_enchant || item.unique_addon || ! item.encoded_weapon_str.empty() )
       {

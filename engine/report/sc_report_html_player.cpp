@@ -600,6 +600,7 @@ void print_html_profile ( FILE* file, player_t* a )
   if ( a -> fight_length.mean > 0 )
   {
     std::string profile_str;
+    std::string talents_str;
     a -> create_profile( profile_str, SAVE_ALL, true );
 
     fprintf( file,
@@ -2404,11 +2405,9 @@ void print_html_player_gear_weights( FILE* file, const player_t* p, const player
 
 // print_html_player_ ========================================================
 
-void print_html_player_( FILE* file, sim_t* s, player_t* q, int j=0 )
+void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 {
-  report::generate_player_report_information( q, q->report_information );
-
-  const sim_t* sim = s; const player_t* p = q;
+  report::generate_player_report_information( p, p->report_information );
 
   std::string n = p -> name();
   util_t::format_text( n, true );

@@ -362,7 +362,7 @@ struct druid_t : public player_t
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_attack_power() const;
   virtual double    composite_attack_power_multiplier() const;
-  virtual double    composite_attack_crit( weapon_t* ) const;
+  virtual double    composite_attack_crit( const weapon_t* ) const;
   virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
   virtual double    composite_spell_hit() const;
   virtual double    composite_spell_crit() const;
@@ -598,7 +598,7 @@ struct treants_pet_t : public pet_t
     return owner -> composite_spell_hit();
   }
 
-  virtual double composite_attack_expertise( weapon_t* ) const
+  virtual double composite_attack_expertise( const weapon_t* ) const
   {
     // Hit scales that if they are hit capped, you're expertise capped.
     return owner -> composite_spell_hit() * 26.0 / 17.0;
@@ -5190,7 +5190,7 @@ double druid_t::composite_attack_power_multiplier() const
 
 // druid_t::composite_attack_crit ===========================================
 
-double druid_t::composite_attack_crit( weapon_t* w ) const
+double druid_t::composite_attack_crit( const weapon_t* w ) const
 {
   double c = player_t::composite_attack_crit( w );
 

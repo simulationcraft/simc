@@ -314,7 +314,7 @@ struct mage_t : public player_t
   virtual void      reset();
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -4174,7 +4174,7 @@ void mage_t::create_options()
 
 // mage_t::create_profile ===================================================
 
-bool mage_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
+bool mage_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
   player_t::create_profile( profile_str, stype, save_html );
 

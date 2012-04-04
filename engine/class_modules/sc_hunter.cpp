@@ -268,7 +268,7 @@ struct hunter_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual resource_type_e primary_resource() const { return RESOURCE_FOCUS; }
   virtual role_type_e primary_role() const { return ROLE_ATTACK; }
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
@@ -588,7 +588,7 @@ struct hunter_pet_t : public pet_t
     return mult;
   }
 
-  virtual double composite_attack_crit( weapon_t* /* w */ ) const
+  virtual double composite_attack_crit( const weapon_t* /* w */ ) const
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -623,7 +623,7 @@ struct hunter_pet_t : public pet_t
     return o -> composite_attack_hit();
   }
 
-  virtual double composite_attack_expertise( weapon_t* /* w */ ) const
+  virtual double composite_attack_expertise( const weapon_t* /* w */ ) const
   {
     hunter_t* o = owner -> cast_hunter();
 
@@ -4174,7 +4174,7 @@ void hunter_t::create_options()
 
 // hunter_t::create_profile =================================================
 
-bool hunter_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
+bool hunter_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
   player_t::create_profile( profile_str, stype, save_html );
 

@@ -309,7 +309,7 @@ struct paladin_t : public player_t
   virtual void      reset();
   virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
   virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
-  virtual double    composite_attack_expertise( weapon_t* ) const;
+  virtual double    composite_attack_expertise( const weapon_t* ) const;
   virtual double    composite_attack_haste() const;
   virtual double    composite_spell_haste() const;
   virtual double    composite_spell_power( school_type_e school ) const;

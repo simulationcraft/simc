@@ -296,7 +296,7 @@ struct priest_t : public player_t
   virtual void      demise();
   virtual void      init_party();
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -1066,12 +1066,12 @@ struct shadow_fiend_pet_t : public pet_t
     return owner -> composite_spell_hit();
   }
 
-  virtual double composite_attack_expertise( weapon_t* /* w */ ) const
+  virtual double composite_attack_expertise( const weapon_t* /* w */ ) const
   {
     return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
 
-  virtual double composite_attack_crit( weapon_t* /* w */ ) const
+  virtual double composite_attack_crit( const weapon_t* /* w */ ) const
   {
     double c = pet_t::composite_attack_crit();
 
@@ -4033,7 +4033,7 @@ void priest_t::create_options()
 
 // priest_t::create_profile =================================================
 
-bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool save_html ) const
+bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool save_html )
 {
   player_t::create_profile( profile_str, type, save_html );
 

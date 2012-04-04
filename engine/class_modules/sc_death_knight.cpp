@@ -817,7 +817,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_melee         = new drw_melee_t        ( this );
   }
 
-  virtual double composite_attack_crit( weapon_t* ) const        { return snapshot_attack_crit; }
+  virtual double composite_attack_crit( const weapon_t* ) const        { return snapshot_attack_crit; }
   virtual double composite_attack_haste() const       { return haste_snapshot; }
   virtual double composite_attack_speed() const       { return speed_snapshot; }
   virtual double composite_attack_power() const       { return attack_power; }
@@ -979,12 +979,12 @@ struct army_ghoul_pet_t : public pet_t
     snapshot_strength = o -> strength();
   }
 
-  virtual double composite_attack_expertise( weapon_t* ) const
+  virtual double composite_attack_expertise( const weapon_t* ) const
   {
     return ( ( 100.0 * snapshot_hit ) * 26.0 / 8.0 ) / 100.0; // Hit gains equal to expertise
   }
 
-  virtual double composite_attack_crit( weapon_t* ) const { return snapshot_crit; }
+  virtual double composite_attack_crit( const weapon_t* ) const { return snapshot_crit; }
 
   virtual double composite_attack_speed() const { return snapshot_speed; }
 
@@ -1337,7 +1337,7 @@ struct ghoul_pet_t : public pet_t
     snapshot_strength = o -> strength();
   }
 
-  virtual double composite_attack_crit( weapon_t* ) const
+  virtual double composite_attack_crit( const weapon_t* ) const
   {
     death_knight_t* o = owner -> cast_death_knight();
 
@@ -1353,7 +1353,7 @@ struct ghoul_pet_t : public pet_t
     }
   }
 
-  virtual double composite_attack_expertise( weapon_t* ) const
+  virtual double composite_attack_expertise( const weapon_t* ) const
   {
     death_knight_t* o = owner -> cast_death_knight();
 
