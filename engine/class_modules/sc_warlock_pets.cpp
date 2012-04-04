@@ -849,7 +849,7 @@ double warlock_pet_t::composite_attack_power() const
   return ap;
 }
 
-double warlock_pet_t::composite_attack_crit( weapon_t* ) const
+double warlock_pet_t::composite_attack_crit( const weapon_t* ) const
 {
   double ac = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
@@ -940,12 +940,12 @@ void warlock_guardian_pet_t::summon( timespan_t duration )
   snapshot_mastery = owner -> composite_mastery();
 }
 
-double warlock_guardian_pet_t::composite_attack_crit( weapon_t* ) const
+double warlock_guardian_pet_t::composite_attack_crit( const weapon_t* ) const
 {
   return snapshot_crit;
 }
 
-double warlock_guardian_pet_t::composite_attack_expertise( weapon_t* ) const
+double warlock_guardian_pet_t::composite_attack_expertise( const weapon_t* ) const
 {
   return 0;
 }

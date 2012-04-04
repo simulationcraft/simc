@@ -296,7 +296,7 @@ struct priest_t : public player_t
   virtual void      demise();
   virtual void      init_party();
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -4033,7 +4033,7 @@ void priest_t::create_options()
 
 // priest_t::create_profile =================================================
 
-bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool save_html )
+bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool save_html ) const
 {
   player_t::create_profile( profile_str, type, save_html );
 

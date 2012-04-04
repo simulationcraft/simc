@@ -347,7 +347,7 @@ struct warrior_t : public player_t
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual double    composite_attack_hit() const;
-  virtual double    composite_attack_crit( weapon_t* ) const;
+  virtual double    composite_attack_crit( const weapon_t* ) const;
   virtual double    composite_mastery() const;
   virtual double    composite_attack_haste() const;
   virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
@@ -3618,7 +3618,7 @@ double warrior_t::composite_attack_hit() const
 
 // warrior_t::composite_attack_crit =========================================
 
-double warrior_t::composite_attack_crit( weapon_t* w ) const
+double warrior_t::composite_attack_crit( const weapon_t* w ) const
 {
   double c = player_t::composite_attack_crit( w );
 

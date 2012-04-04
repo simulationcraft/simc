@@ -3366,7 +3366,7 @@ role_type_e paladin_t::primary_role() const
 
 // paladin_t::composite_attack_expertise ====================================
 
-double paladin_t::composite_attack_expertise( weapon_t* w ) const
+double paladin_t::composite_attack_expertise( const weapon_t* w ) const
 {
   double m = player_t::composite_attack_expertise( w );
   if ( ( ( active_seal == SEAL_OF_TRUTH ) || ( active_seal == SEAL_OF_RIGHTEOUSNESS ) )&& glyphs.seal_of_truth -> ok() )

@@ -4780,8 +4780,8 @@ struct player_t : public noncopyable
   virtual double composite_attack_haste() const;
   virtual double composite_attack_speed() const;
   virtual double composite_attack_power() const;
-  virtual double composite_attack_crit( weapon_t* = 0 ) const;
-  virtual double composite_attack_expertise( weapon_t* = 0 ) const;
+  virtual double composite_attack_crit( const weapon_t* = 0 ) const;
+  virtual double composite_attack_expertise( const weapon_t* = 0 ) const;
   virtual double composite_attack_hit() const;
 
   virtual double composite_spell_haste() const;
@@ -4844,7 +4844,7 @@ struct player_t : public noncopyable
   virtual timespan_t available() const { return timespan_t::from_seconds( 0.1 ); }
   virtual action_t* execute_action();
 
-  virtual std::string print_action_map( int iterations, int precision );
+  virtual std::string print_action_map( const int iterations, int precision ) const;
 
   virtual void   regen( timespan_t periodicity=timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_type_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
@@ -4910,7 +4910,7 @@ struct player_t : public noncopyable
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
 
   virtual void create_options();
-  virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
+  virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
 
   virtual void copy_from( player_t* source );
 
@@ -5127,7 +5127,7 @@ public:
   // Pets gain their owners' hit rating, but it rounds down to a
   // percentage.  Also, heroic presence does not contribute to pet
   // expertise, so we use raw attack_hit.
-  virtual double composite_attack_expertise( weapon_t* ) const { return floor( floor( 100.0 * owner -> attack_hit ) * ( 26.0 / 8.0 ) ) / 100.0; }
+  virtual double composite_attack_expertise( const weapon_t* ) const { return floor( floor( 100.0 * owner -> attack_hit ) * ( 26.0 / 8.0 ) ) / 100.0; }
   virtual double composite_attack_hit() const { return floor( 100.0 * owner -> composite_attack_hit() ) / 100.0; }
   virtual double composite_spell_hit() const { return floor( 100.0 * owner -> composite_spell_hit() ) / 100.0;  }
   virtual double composite_player_multiplier( school_type_e school, action_t* a ) const;

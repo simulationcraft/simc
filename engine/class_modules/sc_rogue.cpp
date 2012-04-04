@@ -432,7 +432,7 @@ struct rogue_t : public player_t
   virtual int       decode_set( item_t& item );
   virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
   virtual role_type_e primary_role() const     { return ROLE_ATTACK; }
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
   virtual void      copy_from( player_t* source );
 
   virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
@@ -4002,7 +4002,7 @@ void rogue_t::create_options()
 
 // rogue_t::create_profile ==================================================
 
-bool rogue_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
+bool rogue_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
 {
   player_t::create_profile( profile_str, stype, save_html );
 

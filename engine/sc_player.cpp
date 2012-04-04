@@ -1998,7 +1998,7 @@ double player_t::composite_attack_power() const
 
 // player_t::composite_attack_crit ==========================================
 
-double player_t::composite_attack_crit( weapon_t* weapon ) const
+double player_t::composite_attack_crit( const weapon_t* weapon ) const
 {
   double ac = attack_crit + ( agility() / attack_crit_per_agility / 100.0 );
 
@@ -2036,7 +2036,7 @@ double player_t::composite_attack_crit( weapon_t* weapon ) const
 }
 
 // player_t::composite_attack_expertise =====================================
-double player_t::composite_attack_expertise( weapon_t* weapon ) const
+double player_t::composite_attack_expertise( const weapon_t* weapon ) const
 {
   double m = attack_expertise;
 
@@ -3365,7 +3365,7 @@ void player_t::clear_debuffs()
 
 // player_t::print_action_map ===============================================
 
-std::string player_t::print_action_map( int iterations, int precision )
+std::string player_t::print_action_map( const int iterations, int precision ) const
 {
   std::ostringstream ret;
   ret.precision( precision );
@@ -6357,7 +6357,7 @@ action_expr_t* player_t::create_expression( action_t* a,
 
 // player_t::create_profile =================================================
 
-bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
+bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
 {
   std::string term;
 
