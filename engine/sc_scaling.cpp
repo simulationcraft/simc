@@ -483,7 +483,6 @@ void scaling_t::analyze()
   init_deltas();
   analyze_stats();
   analyze_lag();
-  analyze_gear_weights();
   normalize();
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )

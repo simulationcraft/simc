@@ -1322,6 +1322,59 @@ struct compare_name
   }
 };
 
+namespace {
+
+void player_convergence( const int& iterations, const int& convergence_scale, const double& confidence_estimator,
+                  const sample_data_t& dps, std::vector<double>& dps_convergence_error, const double& dps_error, double& dps_convergence )
+{
+  // Error Convergence ======================================================
+
+    int    convergence_iterations = 0;
+    double convergence_dps = 0;
+    double convergence_min = +1.0E+50;
+    double convergence_max = -1.0E+50;
+    double convergence_std_dev = 0;
+
+    if ( iterations > 1 && convergence_scale > 1 && !dps.simple )
+    {
+      for ( int i=0; i < iterations; i += convergence_scale )
+      {
+        double i_dps = dps.data()[ i ];
+        convergence_dps += i_dps;
+        if ( convergence_min > i_dps ) convergence_min = i_dps;
+        if ( convergence_max < i_dps ) convergence_max = i_dps;
+      }
+      convergence_iterations = ( iterations + convergence_scale - 1 ) / convergence_scale;
+      convergence_dps /= convergence_iterations;
+
+      assert( dps_convergence_error.empty() );
+      dps_convergence_error.reserve( iterations );
+
+      double sum_of_squares = 0;
+
+      for ( int i=0; i < iterations; i++ )
+      {
+        dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
+
+        double delta = dps.data()[ i ] - convergence_dps;
+        double delta_squared = delta * delta;
+
+        sum_of_squares += delta_squared;
+
+        if ( ( i % convergence_scale ) == 0 )
+          convergence_std_dev += delta_squared;
+      }
+    }
+
+    if ( convergence_iterations > 1 ) convergence_std_dev /= convergence_iterations;
+    convergence_std_dev = sqrt( convergence_std_dev );
+    double convergence_error = confidence_estimator * convergence_std_dev;
+    if ( convergence_iterations > 1 ) convergence_error /= sqrt( ( float ) convergence_iterations );
+
+    if ( convergence_error > 0 )
+      dps_convergence = convergence_error / ( dps_error * convergence_scale );
+}
+}
 // sim_t::analyze_player ====================================================
 
 void sim_t::analyze_player( player_t* p )
@@ -1373,8 +1426,6 @@ void sim_t::analyze_player( player_t* p )
   if ( p -> quiet ) return;
   if ( p -> fight_length.mean == 0 ) return;
 
-
-
   // Pet Chart Adjustment ===================================================
   size_t max_buckets = static_cast<size_t>( p -> fight_length.max );
 
@@ -1384,7 +1435,6 @@ void sim_t::analyze_player( player_t* p )
     player_t* o = p -> cast_pet() -> owner;
     max_buckets = static_cast<size_t>( o -> fight_length.max );
   }
-
 
   // Stats Analysis =========================================================
   std::vector<stats_t*> stats_list;
@@ -1479,51 +1529,8 @@ void sim_t::analyze_player( player_t* p )
   assert( p -> timeline_dps.size() == ( std::size_t ) max_buckets );
 
   // Error Convergence ======================================================
-
-  int    convergence_iterations = 0;
-  double convergence_dps = 0;
-  double convergence_min = +1.0E+50;
-  double convergence_max = -1.0E+50;
-  double convergence_std_dev = 0;
-
-  if ( iterations > 1 && convergence_scale > 1 && !p -> dps.simple )
-  {
-    for ( int i=0; i < iterations; i += convergence_scale )
-    {
-      double i_dps = p -> dps.data()[ i ];
-      convergence_dps += i_dps;
-      if ( convergence_min > i_dps ) convergence_min = i_dps;
-      if ( convergence_max < i_dps ) convergence_max = i_dps;
-    }
-    convergence_iterations = ( iterations + convergence_scale - 1 ) / convergence_scale;
-    convergence_dps /= convergence_iterations;
-
-    assert( p -> dps_convergence_error.empty() );
-    p -> dps_convergence_error.reserve( iterations );
-
-    double sum_of_squares = 0;
-
-    for ( int i=0; i < iterations; i++ )
-    {
-      p -> dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
-
-      double delta = p -> dps.data()[ i ] - convergence_dps;
-      double delta_squared = delta * delta;
-
-      sum_of_squares += delta_squared;
-
-      if ( ( i % convergence_scale ) == 0 )
-        convergence_std_dev += delta_squared;
-    }
-  }
-
-  if ( convergence_iterations > 1 ) convergence_std_dev /= convergence_iterations;
-  convergence_std_dev = sqrt( convergence_std_dev );
-  double convergence_error = confidence_estimator * convergence_std_dev;
-  if ( convergence_iterations > 1 ) convergence_error /= sqrt( ( float ) convergence_iterations );
-
-  if ( convergence_error > 0 )
-    p -> dps_convergence = convergence_error / ( p -> dps_error * convergence_scale );
+  player_convergence( iterations, convergence_scale, confidence_estimator,
+                    p -> dps, p -> dps_convergence_error, p -> dps_error, p -> dps_convergence );
 
 }
 
@@ -1535,7 +1542,6 @@ void sim_t::analyze()
   if ( simulation_length.mean == 0 ) return;
 
   // divisor_timeline is necessary because not all iterations go the same length of time
-
   int max_buckets = ( int ) simulation_length.max + 1;
   divisor_timeline.assign( max_buckets, 0 );
 
@@ -1561,13 +1567,10 @@ void sim_t::analyze()
   for ( unsigned int i = 0; i < actor_list.size(); i++ )
     analyze_player( actor_list[i] );
 
-
   range::sort( players_by_dps, compare_dps() );
   range::sort( players_by_hps, compare_hps() );
   range::sort( players_by_name, compare_name() );
   range::sort( targets_by_name, compare_name() );
-
-
 }
 
 // sim_t::iterate ===========================================================

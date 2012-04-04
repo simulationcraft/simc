@@ -3890,7 +3890,6 @@ struct scaling_t
   void analyze_stats();
   void analyze_ability_stats( stat_type_e, double, player_t*, player_t*, player_t* );
   void analyze_lag();
-  void analyze_gear_weights();
   void normalize();
   void derive();
   double progress( std::string& phase );

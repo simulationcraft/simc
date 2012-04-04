@@ -542,6 +542,16 @@ void report_utility::generate_player_report_information( const player_t*  p, pla
 
   }
 
+  // Scaling charts
+  if ( ! ( ( p -> sim -> scaling -> num_scaling_stats <= 0 ) || p -> quiet || p -> is_pet() || p -> is_enemy() || p -> is_add() ) )
+  {
+    ri.gear_weights_lootrank_link    = chart::gear_weights_lootrank   ( p );
+    ri.gear_weights_wowhead_link     = chart::gear_weights_wowhead    ( p );
+    ri.gear_weights_wowreforge_link  = chart::gear_weights_wowreforge ( p );
+    ri.gear_weights_pawn_std_string  = chart::gear_weights_pawn       ( p, true  );
+    ri.gear_weights_pawn_alt_string  = chart::gear_weights_pawn       ( p, false );
+  }
+
   ri.charts_generated = true;
 }
 
@@ -563,25 +573,6 @@ void report_utility::generate_sim_report_information( const sim_t* s , sim_t::re
    ri.charts_generated = true;
 }
 
-void scaling_t::analyze_gear_weights()
-{
-  if ( num_scaling_stats <= 0 ) return;
-
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> quiet ) continue;
-
-    if ( p -> is_pet() ) continue;
-
-    p -> report_information.gear_weights_lootrank_link = chart::gear_weights_lootrank  ( p );
-    p -> report_information.gear_weights_wowhead_link  = chart::gear_weights_wowhead   ( p );
-    p -> report_information.gear_weights_wowreforge_link = chart::gear_weights_wowreforge( p );
-    p -> report_information.gear_weights_pawn_std_string = chart::gear_weights_pawn      ( p, true  );
-    p -> report_information.gear_weights_pawn_alt_string = chart::gear_weights_pawn      ( p, false );
-  }
-}
-
-
 void report_t::encode_html( std::string& buffer )
 { return report::encode_html( buffer ); }
 
@@ -598,4 +589,4 @@ void report_t::print_text( FILE* f, sim_t* s , bool detail )
 { return report::print_text( f, s, detail ); }
 
 void report_t::print_suite( sim_t* s )
-{ return report::print_html( s ); }
+{ return report::print_suite( s ); }
